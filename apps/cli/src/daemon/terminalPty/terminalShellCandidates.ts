@@ -17,13 +17,13 @@ function shouldUseLoginArgs(file: string): boolean {
 function shouldDisablePromptSpacing(file: string, env: NodeJS.ProcessEnv): boolean {
   const lower = file.toLowerCase();
   const hasVisiblePromptEolMarkOverride =
-    typeof env.HAPPIER_DAEMON_TERMINAL_PROMPT_EOL_MARK === 'string'
-    && env.HAPPIER_DAEMON_TERMINAL_PROMPT_EOL_MARK.length > 0;
+    typeof env.PIGGERCODE_DAEMON_TERMINAL_PROMPT_EOL_MARK === 'string'
+    && env.PIGGERCODE_DAEMON_TERMINAL_PROMPT_EOL_MARK.length > 0;
   return (lower.endsWith('/zsh') || lower === 'zsh') && !hasVisiblePromptEolMarkOverride;
 }
 
 export function resolveTerminalShell(env: NodeJS.ProcessEnv, platform: NodeJS.Platform): ResolvedTerminalShell {
-  const override = normalizeNonEmptyString(env.HAPPIER_DAEMON_TERMINAL_SHELL);
+  const override = normalizeNonEmptyString(env.PIGGERCODE_DAEMON_TERMINAL_SHELL);
   if (override) {
     return { file: override, args: [] };
   }

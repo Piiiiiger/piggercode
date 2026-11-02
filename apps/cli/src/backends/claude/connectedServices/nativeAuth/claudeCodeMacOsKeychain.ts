@@ -11,7 +11,7 @@ import {
 } from './claudeCodeNativeCredentialPayload';
 
 const DEFAULT_CLAUDE_CODE_KEYCHAIN_SERVICE = 'Claude Code-credentials';
-const HAPPIER_MANAGED_CLAUDE_CODE_KEYCHAIN_SERVICE_PATTERN = /^Claude Code-credentials-[a-f0-9]{8}$/;
+const PIGGERCODE_MANAGED_CLAUDE_CODE_KEYCHAIN_SERVICE_PATTERN = /^Claude Code-credentials-[a-f0-9]{8}$/;
 const KEYCHAIN_TIMESTAMP_PATTERN = /"mdat"<timedate>=[^\n"]*"(\d{14})Z\\000"/;
 const CLAUDE_CODE_KEYCHAIN_SECURITY_TIMEOUT_MS = 10_000;
 
@@ -174,7 +174,7 @@ function classifyKeychainSweepEntry(params: Readonly<{
   // so it is deleted regardless of whether its home is currently live.
   if (params.entry.account !== params.username) return 'different_account';
   if (params.entry.service === DEFAULT_CLAUDE_CODE_KEYCHAIN_SERVICE) return 'global_service';
-  if (!HAPPIER_MANAGED_CLAUDE_CODE_KEYCHAIN_SERVICE_PATTERN.test(params.entry.service)) {
+  if (!PIGGERCODE_MANAGED_CLAUDE_CODE_KEYCHAIN_SERVICE_PATTERN.test(params.entry.service)) {
     return 'not_happier_managed_service';
   }
   return 'delete';

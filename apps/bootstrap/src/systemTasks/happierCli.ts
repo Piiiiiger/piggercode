@@ -33,8 +33,8 @@ import { CommandTimeoutError, parseFirstJsonObject, runCommandCapture } from './
 import { planLocalHappierCliUpdateRestart } from './localDaemonCli.js';
 
 const DEFAULT_ENV_VAR_NAMES = [
-  'HAPPIER_BOOTSTRAP_CLI_PATH',
-  'HAPPIER_BOOTSTRAP_HAPPIER_PATH',
+  'PIGGERCODE_BOOTSTRAP_CLI_PATH',
+  'PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH',
 ] as const;
 
 /**
@@ -419,7 +419,7 @@ export type LocalHappierCliChoiceInspection = Readonly<{
  * CLI is below the setup floor (keeping it cannot finish setup), and when the kept CLI disappeared
  * (R13 b) — about a `happier` installed since elsewhere, or else about the missing one by its path,
  * so nothing is acquired in its place unasked. `reconsider` is Settings' change action, which asks
- * again about whichever CLI there is to choose. A developer override (`HAPPIER_BOOTSTRAP_CLI_PATH`)
+ * again about whichever CLI there is to choose. A developer override (`PIGGERCODE_BOOTSTRAP_CLI_PATH`)
  * is never asked about, and a computer with no other CLI keeps the managed default with no question.
  */
 export async function inspectLocalHappierCliChoice(

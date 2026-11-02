@@ -148,7 +148,7 @@ async function main() {
         bullets([
           `Writes ${cyan('~/.happier-stack/.env')} as a stable pointer file (helps launchd/SwiftBar find the install).`,
           `Runtime install is skipped if the same version is already installed (use ${cyan('--force-runtime')} to reinstall).`,
-          `Set ${cyan('HAPPIER_STACK_INIT_NO_RUNTIME=1')} to persist skipping runtime installs on this machine.`,
+          `Set ${cyan('PIGGERCODE_STACK_INIT_NO_RUNTIME=1')} to persist skipping runtime installs on this machine.`,
           `Optional: ${cyan('--install-path')} adds shims to your shell PATH (idempotent).`,
           `By default, runs ${cyan('hstack bootstrap --interactive')} at the end (TTY only) if components are missing.`,
         ]),
@@ -166,84 +166,84 @@ async function main() {
   // anything else (or directly from a repo checkout). So we load it here too.
   const canonicalHomeDirRaw = parseArgValue(argv, 'canonical-home-dir');
   const canonicalHomeDir = expandHome(
-    firstNonEmpty(canonicalHomeDirRaw, process.env.HAPPIER_STACK_CANONICAL_HOME_DIR, join(homedir(), '.happier-stack'))
+    firstNonEmpty(canonicalHomeDirRaw, process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR, join(homedir(), '.happier-stack'))
   );
-  process.env.HAPPIER_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
+  process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
 
   const canonicalEnvPath = join(canonicalHomeDir, '.env');
   if (existsSync(canonicalEnvPath)) {
     await loadEnvFile(canonicalEnvPath, { override: false });
-    await loadEnvFile(canonicalEnvPath, { override: true, overridePrefix: 'HAPPIER_STACK_' });
+    await loadEnvFile(canonicalEnvPath, { override: true, overridePrefix: 'PIGGERCODE_STACK_' });
   }
 
   const homeDirRaw = parseArgValue(argv, 'home-dir');
-  const homeDir = expandHome(firstNonEmpty(homeDirRaw, process.env.HAPPIER_STACK_HOME_DIR, join(homedir(), '.happier-stack')));
-  process.env.HAPPIER_STACK_HOME_DIR = homeDir;
+  const homeDir = expandHome(firstNonEmpty(homeDirRaw, process.env.PIGGERCODE_STACK_HOME_DIR, join(homedir(), '.happier-stack')));
+  process.env.PIGGERCODE_STACK_HOME_DIR = homeDir;
 
   const workspaceDirRaw = parseArgValue(argv, 'workspace-dir');
   const workspaceDirExpanded = expandHome(firstNonEmpty(
     workspaceDirRaw,
-    process.env.HAPPIER_STACK_WORKSPACE_DIR,
+    process.env.PIGGERCODE_STACK_WORKSPACE_DIR,
     join(homeDir, 'workspace'),
   ));
   // If the user passes a relative --workspace-dir, interpret it as relative to the home dir
   // (not the current cwd). This keeps setup predictable, especially when invoked via `npx`.
   const workspaceDir = workspaceDirExpanded.startsWith('/') ? workspaceDirExpanded : resolve(homeDir, workspaceDirExpanded);
-  process.env.HAPPIER_STACK_WORKSPACE_DIR = workspaceDir;
+  process.env.PIGGERCODE_STACK_WORKSPACE_DIR = workspaceDir;
 
   const runtimeDirRaw = parseArgValue(argv, 'runtime-dir');
   const runtimeDir = expandHome(firstNonEmpty(
     runtimeDirRaw,
-    process.env.HAPPIER_STACK_RUNTIME_DIR,
+    process.env.PIGGERCODE_STACK_RUNTIME_DIR,
     join(homeDir, 'runtime'),
   ));
-  process.env.HAPPIER_STACK_RUNTIME_DIR = runtimeDir;
+  process.env.PIGGERCODE_STACK_RUNTIME_DIR = runtimeDir;
 
   const storageDirRaw = parseArgValue(argv, 'storage-dir');
   const storageDirOverride = expandHome((storageDirRaw ?? '').trim());
   if (storageDirOverride) {
     // In sandbox mode, storage dir MUST be isolated and must override any pre-existing env.
-    process.env.HAPPIER_STACK_STORAGE_DIR = isSandboxed() ? storageDirOverride : (process.env.HAPPIER_STACK_STORAGE_DIR ?? storageDirOverride);
+    process.env.PIGGERCODE_STACK_STORAGE_DIR = isSandboxed() ? storageDirOverride : (process.env.PIGGERCODE_STACK_STORAGE_DIR ?? storageDirOverride);
   }
 
   const cliRootDirRaw = parseArgValue(argv, 'cli-root-dir');
   const cliRootDirOverride = expandHome((cliRootDirRaw ?? '').trim());
   if (cliRootDirOverride) {
-    process.env.HAPPIER_STACK_CLI_ROOT_DIR = process.env.HAPPIER_STACK_CLI_ROOT_DIR ?? cliRootDirOverride;
+    process.env.PIGGERCODE_STACK_CLI_ROOT_DIR = process.env.PIGGERCODE_STACK_CLI_ROOT_DIR ?? cliRootDirOverride;
   }
 
   const tailscaleBinRaw = parseArgValue(argv, 'tailscale-bin');
   const tailscaleBinOverride = expandHome((tailscaleBinRaw ?? '').trim());
   if (tailscaleBinOverride) {
-    process.env.HAPPIER_STACK_TAILSCALE_BIN = process.env.HAPPIER_STACK_TAILSCALE_BIN ?? tailscaleBinOverride;
+    process.env.PIGGERCODE_STACK_TAILSCALE_BIN = process.env.PIGGERCODE_STACK_TAILSCALE_BIN ?? tailscaleBinOverride;
   }
 
   const tailscaleCmdTimeoutMsRaw = parseArgValue(argv, 'tailscale-cmd-timeout-ms');
   const tailscaleCmdTimeoutMsOverride = (tailscaleCmdTimeoutMsRaw ?? '').trim();
   if (tailscaleCmdTimeoutMsOverride) {
-    process.env.HAPPIER_STACK_TAILSCALE_CMD_TIMEOUT_MS =
-      process.env.HAPPIER_STACK_TAILSCALE_CMD_TIMEOUT_MS ?? tailscaleCmdTimeoutMsOverride;
+    process.env.PIGGERCODE_STACK_TAILSCALE_CMD_TIMEOUT_MS =
+      process.env.PIGGERCODE_STACK_TAILSCALE_CMD_TIMEOUT_MS ?? tailscaleCmdTimeoutMsOverride;
   }
 
   const tailscaleEnableTimeoutMsRaw = parseArgValue(argv, 'tailscale-enable-timeout-ms');
   const tailscaleEnableTimeoutMsOverride = (tailscaleEnableTimeoutMsRaw ?? '').trim();
   if (tailscaleEnableTimeoutMsOverride) {
-    process.env.HAPPIER_STACK_TAILSCALE_ENABLE_TIMEOUT_MS =
-      process.env.HAPPIER_STACK_TAILSCALE_ENABLE_TIMEOUT_MS ?? tailscaleEnableTimeoutMsOverride;
+    process.env.PIGGERCODE_STACK_TAILSCALE_ENABLE_TIMEOUT_MS =
+      process.env.PIGGERCODE_STACK_TAILSCALE_ENABLE_TIMEOUT_MS ?? tailscaleEnableTimeoutMsOverride;
   }
 
   const tailscaleEnableTimeoutMsAutoRaw = parseArgValue(argv, 'tailscale-enable-timeout-ms-auto');
   const tailscaleEnableTimeoutMsAutoOverride = (tailscaleEnableTimeoutMsAutoRaw ?? '').trim();
   if (tailscaleEnableTimeoutMsAutoOverride) {
-    process.env.HAPPIER_STACK_TAILSCALE_ENABLE_TIMEOUT_MS_AUTO =
-      process.env.HAPPIER_STACK_TAILSCALE_ENABLE_TIMEOUT_MS_AUTO ?? tailscaleEnableTimeoutMsAutoOverride;
+    process.env.PIGGERCODE_STACK_TAILSCALE_ENABLE_TIMEOUT_MS_AUTO =
+      process.env.PIGGERCODE_STACK_TAILSCALE_ENABLE_TIMEOUT_MS_AUTO ?? tailscaleEnableTimeoutMsAutoOverride;
   }
 
   const tailscaleResetTimeoutMsRaw = parseArgValue(argv, 'tailscale-reset-timeout-ms');
   const tailscaleResetTimeoutMsOverride = (tailscaleResetTimeoutMsRaw ?? '').trim();
   if (tailscaleResetTimeoutMsOverride) {
-    process.env.HAPPIER_STACK_TAILSCALE_RESET_TIMEOUT_MS =
-      process.env.HAPPIER_STACK_TAILSCALE_RESET_TIMEOUT_MS ?? tailscaleResetTimeoutMsOverride;
+    process.env.PIGGERCODE_STACK_TAILSCALE_RESET_TIMEOUT_MS =
+      process.env.PIGGERCODE_STACK_TAILSCALE_RESET_TIMEOUT_MS ?? tailscaleResetTimeoutMsOverride;
   }
 
   const nodePath = process.execPath;
@@ -256,16 +256,16 @@ async function main() {
   await mkdir(join(homeDir, 'bin'), { recursive: true });
 
   const pointerUpdates = [
-    { key: 'HAPPIER_STACK_HOME_DIR', value: homeDir },
-    { key: 'HAPPIER_STACK_WORKSPACE_DIR', value: workspaceDir },
-    { key: 'HAPPIER_STACK_RUNTIME_DIR', value: runtimeDir },
-    { key: 'HAPPIER_STACK_NODE', value: nodePath },
+    { key: 'PIGGERCODE_STACK_HOME_DIR', value: homeDir },
+    { key: 'PIGGERCODE_STACK_WORKSPACE_DIR', value: workspaceDir },
+    { key: 'PIGGERCODE_STACK_RUNTIME_DIR', value: runtimeDir },
+    { key: 'PIGGERCODE_STACK_NODE', value: nodePath },
   ];
   if (storageDirOverride) {
-    pointerUpdates.push({ key: 'HAPPIER_STACK_STORAGE_DIR', value: storageDirOverride });
+    pointerUpdates.push({ key: 'PIGGERCODE_STACK_STORAGE_DIR', value: storageDirOverride });
   }
   if (cliRootDirOverride) {
-    pointerUpdates.push({ key: 'HAPPIER_STACK_CLI_ROOT_DIR', value: cliRootDirOverride });
+    pointerUpdates.push({ key: 'PIGGERCODE_STACK_CLI_ROOT_DIR', value: cliRootDirOverride });
   }
 
   // Write the "real" home env (used by runtime + scripts), AND a stable pointer at ~/.happier-stack/.env.
@@ -274,7 +274,7 @@ async function main() {
   await ensureHomeEnvUpdated({ updates: pointerUpdates });
   await ensureCanonicalHomeEnvUpdated({ updates: pointerUpdates });
 
-  const initNoRuntimeRaw = (process.env.HAPPIER_STACK_INIT_NO_RUNTIME ?? '').trim();
+  const initNoRuntimeRaw = (process.env.PIGGERCODE_STACK_INIT_NO_RUNTIME ?? '').trim();
   const initNoRuntime = initNoRuntimeRaw === '1' || initNoRuntimeRaw.toLowerCase() === 'true' || initNoRuntimeRaw.toLowerCase() === 'yes';
   const forceRuntime = argv.includes('--force-runtime');
   const skipRuntime = argv.includes('--no-runtime') || (initNoRuntime && !forceRuntime);
@@ -336,36 +336,36 @@ async function main() {
     '',
     // Preserve the caller's original working directory so the Node CLI can infer
     // repo/worktree context even if this shim `cd`s into the workspace root.
-    'export HAPPIER_STACK_INVOKED_CWD="${HAPPIER_STACK_INVOKED_CWD:-${PWD:-$HOME}}"',
+    'export PIGGERCODE_STACK_INVOKED_CWD="${PIGGERCODE_STACK_INVOKED_CWD:-${PWD:-$HOME}}"',
     '',
     '# Best-effort: if env vars are not exported (common under launchd/SwiftBar),',
     '# read the stable pointer file at CANONICAL_ENV to discover the real dirs.',
     'if [[ -f "$CANONICAL_ENV" ]]; then',
-    '  if [[ -z "${HAPPIER_STACK_HOME_DIR:-}" ]]; then',
-      '    HAPPIER_STACK_HOME_DIR="$(grep -E \'^HAPPIER_STACK_HOME_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^HAPPIER_STACK_HOME_DIR=//\')" || true',
-    '    export HAPPIER_STACK_HOME_DIR',
+    '  if [[ -z "${PIGGERCODE_STACK_HOME_DIR:-}" ]]; then',
+      '    PIGGERCODE_STACK_HOME_DIR="$(grep -E \'^PIGGERCODE_STACK_HOME_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^PIGGERCODE_STACK_HOME_DIR=//\')" || true',
+    '    export PIGGERCODE_STACK_HOME_DIR',
     '  fi',
-    '  if [[ -z "${HAPPIER_STACK_WORKSPACE_DIR:-}" ]]; then',
-    '    HAPPIER_STACK_WORKSPACE_DIR="$(grep -E \'^HAPPIER_STACK_WORKSPACE_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^HAPPIER_STACK_WORKSPACE_DIR=//\')" || true',
-    '    export HAPPIER_STACK_WORKSPACE_DIR',
+    '  if [[ -z "${PIGGERCODE_STACK_WORKSPACE_DIR:-}" ]]; then',
+    '    PIGGERCODE_STACK_WORKSPACE_DIR="$(grep -E \'^PIGGERCODE_STACK_WORKSPACE_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^PIGGERCODE_STACK_WORKSPACE_DIR=//\')" || true',
+    '    export PIGGERCODE_STACK_WORKSPACE_DIR',
     '  fi',
-    '  if [[ -z "${HAPPIER_STACK_RUNTIME_DIR:-}" ]]; then',
-    '    HAPPIER_STACK_RUNTIME_DIR="$(grep -E \'^HAPPIER_STACK_RUNTIME_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^HAPPIER_STACK_RUNTIME_DIR=//\')" || true',
-    '    export HAPPIER_STACK_RUNTIME_DIR',
+    '  if [[ -z "${PIGGERCODE_STACK_RUNTIME_DIR:-}" ]]; then',
+    '    PIGGERCODE_STACK_RUNTIME_DIR="$(grep -E \'^PIGGERCODE_STACK_RUNTIME_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^PIGGERCODE_STACK_RUNTIME_DIR=//\')" || true',
+    '    export PIGGERCODE_STACK_RUNTIME_DIR',
     '  fi',
-    '  if [[ -z "${HAPPIER_STACK_NODE:-}" ]]; then',
-    '    HAPPIER_STACK_NODE="$(grep -E \'^HAPPIER_STACK_NODE=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^HAPPIER_STACK_NODE=//\')" || true',
-    '    export HAPPIER_STACK_NODE',
+    '  if [[ -z "${PIGGERCODE_STACK_NODE:-}" ]]; then',
+    '    PIGGERCODE_STACK_NODE="$(grep -E \'^PIGGERCODE_STACK_NODE=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^PIGGERCODE_STACK_NODE=//\')" || true',
+    '    export PIGGERCODE_STACK_NODE',
     '  fi',
-    '  if [[ -z "${HAPPIER_STACK_CLI_ROOT_DIR:-}" ]]; then',
-    '    HAPPIER_STACK_CLI_ROOT_DIR="$(grep -E \'^HAPPIER_STACK_CLI_ROOT_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^HAPPIER_STACK_CLI_ROOT_DIR=//\')" || true',
-    '    export HAPPIER_STACK_CLI_ROOT_DIR',
+    '  if [[ -z "${PIGGERCODE_STACK_CLI_ROOT_DIR:-}" ]]; then',
+    '    PIGGERCODE_STACK_CLI_ROOT_DIR="$(grep -E \'^PIGGERCODE_STACK_CLI_ROOT_DIR=\' "$CANONICAL_ENV" | head -n 1 | sed \'s/^PIGGERCODE_STACK_CLI_ROOT_DIR=//\')" || true',
+    '    export PIGGERCODE_STACK_CLI_ROOT_DIR',
     '  fi',
     'fi',
     '',
-    `HOME_DIR="\${HAPPIER_STACK_HOME_DIR:-${canonicalHomeDir}}"`,
+    `HOME_DIR="\${PIGGERCODE_STACK_HOME_DIR:-${canonicalHomeDir}}"`,
     'ENV_FILE="$HOME_DIR/.env"',
-    'WORKDIR="${HAPPIER_STACK_WORKSPACE_DIR:-$HOME_DIR/workspace}"',
+    'WORKDIR="${PIGGERCODE_STACK_WORKSPACE_DIR:-$HOME_DIR/workspace}"',
     'if [[ -d "$WORKDIR" ]]; then',
     '  cd "$WORKDIR"',
     'else',
@@ -374,33 +374,33 @@ async function main() {
     'CURRENT_NODE_BIN="$(command -v node 2>/dev/null || true)"',
     'NODE_BIN="$CURRENT_NODE_BIN"',
     'if [[ -z "$NODE_BIN" ]]; then',
-    '  NODE_BIN="${HAPPIER_STACK_NODE:-}"',
+    '  NODE_BIN="${PIGGERCODE_STACK_NODE:-}"',
     'fi',
     'if [[ -z "$NODE_BIN" && -f "$ENV_FILE" ]]; then',
-    '  NODE_BIN="$(grep -E \'^HAPPIER_STACK_NODE=\' "$ENV_FILE" | head -n 1 | sed \'s/^HAPPIER_STACK_NODE=//\')"',
+    '  NODE_BIN="$(grep -E \'^PIGGERCODE_STACK_NODE=\' "$ENV_FILE" | head -n 1 | sed \'s/^PIGGERCODE_STACK_NODE=//\')"',
     'fi',
     'if [[ -n "$NODE_BIN" && ! -x "$NODE_BIN" ]]; then',
     '  NODE_BIN=""',
     'fi',
-    'CLI_ROOT_DIR="${HAPPIER_STACK_CLI_ROOT_DIR:-}"',
+    'CLI_ROOT_DIR="${PIGGERCODE_STACK_CLI_ROOT_DIR:-}"',
     'if [[ -z "$CLI_ROOT_DIR" && -f "$ENV_FILE" ]]; then',
-    '  CLI_ROOT_DIR="$(grep -E \'^HAPPIER_STACK_CLI_ROOT_DIR=\' "$ENV_FILE" | head -n 1 | sed \'s/^HAPPIER_STACK_CLI_ROOT_DIR=//\')" || true',
+    '  CLI_ROOT_DIR="$(grep -E \'^PIGGERCODE_STACK_CLI_ROOT_DIR=\' "$ENV_FILE" | head -n 1 | sed \'s/^PIGGERCODE_STACK_CLI_ROOT_DIR=//\')" || true',
     'fi',
     'if [[ -n "$CLI_ROOT_DIR" ]]; then',
     '  CLI_ENTRY="$CLI_ROOT_DIR/bin/hstack.mjs"',
     '  if [[ -f "$CLI_ENTRY" ]]; then',
     '    if [[ -z "$NODE_BIN" ]]; then',
-    '      echo "[hstack] missing node runtime; install node on PATH or set HAPPIER_STACK_NODE." >&2',
+    '      echo "[hstack] missing node runtime; install node on PATH or set PIGGERCODE_STACK_NODE." >&2',
     '      exit 127',
     '    fi',
     '    exec "$NODE_BIN" "$CLI_ENTRY" "$@"',
     '  fi',
     'fi',
-    'RUNTIME_DIR="${HAPPIER_STACK_RUNTIME_DIR:-$HOME_DIR/runtime}"',
+    'RUNTIME_DIR="${PIGGERCODE_STACK_RUNTIME_DIR:-$HOME_DIR/runtime}"',
     'ENTRY="$RUNTIME_DIR/node_modules/@piggercode/stack/bin/hstack.mjs"',
     'if [[ -f "$ENTRY" ]]; then',
     '  if [[ -z "$NODE_BIN" ]]; then',
-    '    echo "[hstack] missing node runtime; install node on PATH or set HAPPIER_STACK_NODE." >&2',
+    '    echo "[hstack] missing node runtime; install node on PATH or set PIGGERCODE_STACK_NODE." >&2',
     '    exit 127',
     '  fi',
     '  exec "$NODE_BIN" "$ENTRY" "$@"',
@@ -425,7 +425,7 @@ async function main() {
   if (argv.includes('--install-path')) {
     if (isSandboxed() && !sandboxAllowsGlobalSideEffects()) {
       console.log(`${yellow('!')} sandbox mode: skipping --install-path (would modify your shell config)`);
-      console.log(`${dim('Tip:')} set ${cyan('HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1')} if you really want to test PATH modifications`);
+      console.log(`${dim('Tip:')} set ${cyan('PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1')} if you really want to test PATH modifications`);
     } else {
       const res = await ensurePathInstalled({ homeDir });
       didInstallPath = true;
@@ -437,7 +437,7 @@ async function main() {
     }
   }
 
-  const invokedBySetup = (process.env.HAPPIER_STACK_SETUP_CHILD ?? '').trim() === '1';
+  const invokedBySetup = (process.env.PIGGERCODE_STACK_SETUP_CHILD ?? '').trim() === '1';
 
   console.log('');
   console.log(`${green('✓')} init complete`);

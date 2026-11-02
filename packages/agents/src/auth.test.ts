@@ -63,7 +63,7 @@ describe('AGENT_AUTH_PROBE_CONFIG', () => {
 
   it('omits the generic Cursor agent fallback binary from auth probing when disabled by env', () => {
     expect(getAgentAuthProbeConfig(cursorAgentId, {
-      HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0',
+      PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0',
     }).binaryNames).toEqual(['cursor-agent']);
   });
 

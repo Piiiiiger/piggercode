@@ -6,13 +6,13 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 
 import type { AgentStateRequestSettlementEncryptionScope } from './agentStateRequestSettlementEncryption';
 
-const envScope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_ACTIVE_SERVER_ID']);
+const envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_ACTIVE_SERVER_ID']);
 const tokenForAccount = (account: string, revision = 1) => `header.${Buffer.from(JSON.stringify({ sub: account, revision })).toString('base64url')}.sig`;
 const settlement = { v: 1 as const, entries: [] };
 
 async function withScope(run: (scope: AgentStateRequestSettlementEncryptionScope) => Promise<void>) {
     await withTempDir('happier-settlement-encryption-', async (home) => {
-        envScope.patch({ HAPPIER_HOME_DIR: home });
+        envScope.patch({ PIGGERCODE_HOME_DIR: home });
         vi.resetModules();
         const { configuration } = await import('@/configuration');
         const { writeCredentialsTokenOnly } = await import('@/persistence');
@@ -38,11 +38,11 @@ describe('local request settlement encryption', () => {
             const config = await import('@/configuration');
             const content = await sealAgentStateRequestSettlement(scope, settlement);
             expect(content.t).toBe('installation_encrypted_v1');
-            envScope.patch({ HAPPIER_ACTIVE_SERVER_ID: 'other-profile' });
+            envScope.patch({ PIGGERCODE_ACTIVE_SERVER_ID: 'other-profile' });
             config.reloadConfiguration();
             expect(config.configuration.activeServerId).toBe('other-profile');
             await expect(openAgentStateRequestSettlement(scope, content)).resolves.toEqual(settlement);
-            envScope.patch({ HAPPIER_ACTIVE_SERVER_ID: scope.serverId });
+            envScope.patch({ PIGGERCODE_ACTIVE_SERVER_ID: scope.serverId });
             config.reloadConfiguration();
             await writeCredentialsTokenOnly({ token: tokenForAccount('account', 2) });
             await expect(openAgentStateRequestSettlement(scope, content)).resolves.toEqual(settlement);

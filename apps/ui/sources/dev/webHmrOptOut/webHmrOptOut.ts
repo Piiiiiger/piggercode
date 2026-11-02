@@ -22,10 +22,10 @@ declare global {
     // When true, web HMR is initialized but disabled (no Fast Refresh / autoreload).
     // When false/undefined, default Expo web dev behavior remains unchanged.
     // eslint-disable-next-line no-var
-    var __HAPPIER_WEB_HMR_OPT_OUT__: boolean | undefined;
+    var __PIGGERCODE_WEB_HMR_OPT_OUT__: boolean | undefined;
 
     // eslint-disable-next-line no-var
-    var __HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__:
+    var __PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__:
         | {
               originalWebSocket: WebSocketCtorLike;
               sessionStorage: SessionStorageLike;
@@ -100,8 +100,8 @@ type WebSocketGlobalTargetLike = {
     location?: {
         href?: string;
     };
-    __HAPPIER_WEB_HMR_OPT_OUT__?: boolean;
-    __HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__?: typeof globalThis.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
+    __PIGGERCODE_WEB_HMR_OPT_OUT__?: boolean;
+    __PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__?: typeof globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
 };
 
 function isWebHmrOptOutDisabled(
@@ -110,7 +110,7 @@ function isWebHmrOptOutDisabled(
 ): boolean {
     return (
         sessionStorage.getItem(WEB_HMR_OPT_OUT_SESSION_STORAGE_KEY) === 'disabled' ||
-        globalTarget.__HAPPIER_WEB_HMR_OPT_OUT__ === true
+        globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT__ === true
     );
 }
 
@@ -126,7 +126,7 @@ export function readWebHmrOptOutRuntimeState({
             available: false,
             disabled: false,
             enabled: false,
-            guardInstalled: Boolean(globalTarget.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__),
+            guardInstalled: Boolean(globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__),
             requiresPageReload: true,
         };
     }
@@ -136,7 +136,7 @@ export function readWebHmrOptOutRuntimeState({
         available: true,
         disabled,
         enabled: !disabled,
-        guardInstalled: Boolean(globalTarget.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__),
+        guardInstalled: Boolean(globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__),
         requiresPageReload: true,
     };
 }
@@ -156,7 +156,7 @@ export function setWebHmrOptOutDisabledForWebTab({
         sessionStorage.removeItem(WEB_HMR_OPT_OUT_SESSION_STORAGE_KEY);
     }
 
-    globalTarget.__HAPPIER_WEB_HMR_OPT_OUT__ = disabled;
+    globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT__ = disabled;
     return readWebHmrOptOutRuntimeState({ sessionStorage, globalTarget });
 }
 
@@ -275,7 +275,7 @@ export function installWebHmrOptOutWebSocketGuard({
     sessionStorage: SessionStorageLike;
     globalTarget?: WebSocketGlobalTargetLike;
 }): void {
-    const existing = globalTarget.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
+    const existing = globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
     if (existing) {
         existing.sessionStorage = sessionStorage;
         existing.fallbackPageUrl = pageUrl;
@@ -287,7 +287,7 @@ export function installWebHmrOptOutWebSocketGuard({
         return;
     }
 
-    globalTarget.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__ = {
+    globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__ = {
         originalWebSocket: NativeWebSocket,
         sessionStorage,
         fallbackPageUrl: pageUrl,
@@ -295,7 +295,7 @@ export function installWebHmrOptOutWebSocketGuard({
 
     globalTarget.WebSocket = new Proxy(NativeWebSocket, {
         construct(target, args, newTarget) {
-            const guardState = globalTarget.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
+            const guardState = globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__;
             const currentPageUrl = (() => {
                 try {
                     const href = String(globalTarget.location?.href ?? '').trim();
@@ -348,7 +348,7 @@ export function installWebHmrOptOutForWebTab({
     // Treat query-param stripping as best-effort only. Some environments can throw from replaceState
     // (or other history shims) even when the URL is same-origin. We still want the opt-out decision
     // and WebSocket guard to be applied reliably for this tab.
-    globalThis.__HAPPIER_WEB_HMR_OPT_OUT__ = res.disabled;
+    globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__ = res.disabled;
     installWebHmrOptOutWebSocketGuard({
         pageUrl: url,
         sessionStorage,

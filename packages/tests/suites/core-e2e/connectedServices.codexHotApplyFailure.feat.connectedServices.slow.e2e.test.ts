@@ -80,9 +80,9 @@ describe('core e2e: Codex connected-service auth switch projection', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
       },
     });
 
@@ -134,28 +134,28 @@ describe('core e2e: Codex connected-service auth switch projection', () => {
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_ACTIVE_SERVER_ID: serverId,
-        HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+        PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
       },
     });
 
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_ACTIVE_SERVER_ID: serverId,
-      HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-      HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
-      HAPPIER_DAEMON_HEARTBEAT_INTERVAL: '5000',
-      HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+      PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+      PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
+      PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL: '5000',
+      PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     await ensureCliSharedDepsBuilt({ testDir, env: daemonEnv });
@@ -189,12 +189,12 @@ describe('core e2e: Codex connected-service auth switch projection', () => {
         terminal: { mode: 'plain' },
         codexBackendMode: 'appServer',
         environmentVariables: {
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: server.baseUrl,
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-          HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: server.baseUrl,
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+          PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
         },
         connectedServices: {
           v: 1,

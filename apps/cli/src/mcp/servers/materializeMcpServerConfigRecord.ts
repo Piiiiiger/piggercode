@@ -128,7 +128,7 @@ async function materializeStdioServer(params: Readonly<{
         args: launcherCommand.args,
         env: {
           ...(launcherCommand.env ?? {}),
-          HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
         },
       },
     };
@@ -171,7 +171,7 @@ async function materializeRemoteServer(params: Readonly<{
   const env = {
     ...(bridgeCommand.env ?? {}),
     ...params.resolvedEnv,
-    HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
+    PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
   };
 
   return {

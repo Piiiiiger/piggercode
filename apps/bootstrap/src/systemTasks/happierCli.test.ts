@@ -92,7 +92,7 @@ describe('runLocalHappierJsonCommand', () => {
         versionId: string;
       }>) => {
         writeInstalledPayloadFixture({
-          happyHomeDir: String(params.processEnv?.HAPPIER_HOME_DIR ?? happyHomeDir),
+          happyHomeDir: String(params.processEnv?.PIGGERCODE_HOME_DIR ?? happyHomeDir),
           versionId: params.versionId,
           binaryContents: '#!/bin/sh\nprintf \'%s\\n\' \'{"ok":true,"data":{"authenticated":true,"machineId":"machine-auto-installed"}}\'\n',
         });
@@ -108,7 +108,7 @@ describe('runLocalHappierJsonCommand', () => {
         args: ['auth', 'status', '--json'],
         processEnv: {
           ...process.env,
-          HAPPIER_HOME_DIR: happyHomeDir,
+          PIGGERCODE_HOME_DIR: happyHomeDir,
         },
       })).resolves.toMatchObject({
         ok: true,
@@ -140,7 +140,7 @@ describe('runLocalHappierJsonCommand', () => {
         args: ['auth', 'status', '--json'],
         processEnv: {
           ...process.env,
-          HAPPIER_BOOTSTRAP_CLI_PATH: cliPath,
+          PIGGERCODE_BOOTSTRAP_CLI_PATH: cliPath,
         },
       })).rejects.toMatchObject({
         code: 'cli_command_failed',
@@ -176,7 +176,7 @@ describe('runLocalHappierJsonCommand', () => {
         args: ['daemon', 'service', 'start', '--json'],
         processEnv: {
           ...process.env,
-          HAPPIER_BOOTSTRAP_CLI_PATH: cliPath,
+          PIGGERCODE_BOOTSTRAP_CLI_PATH: cliPath,
         },
       })).rejects.toMatchObject({
         code: expectedCode,
@@ -210,7 +210,7 @@ describe('runLocalHappierJsonCommand', () => {
         allowJsonFailure: true,
         processEnv: {
           ...process.env,
-          HAPPIER_BOOTSTRAP_CLI_PATH: cliPath,
+          PIGGERCODE_BOOTSTRAP_CLI_PATH: cliPath,
         },
       })).resolves.toMatchObject({
         ok: false,
@@ -267,7 +267,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
     chmodSync(cliPath, 0o755);
     return run({
       cliPath,
-      processEnv: { ...process.env, HAPPIER_HOME_DIR: join(rootDir, 'home'), HAPPIER_BOOTSTRAP_CLI_PATH: cliPath },
+      processEnv: { ...process.env, PIGGERCODE_HOME_DIR: join(rootDir, 'home'), PIGGERCODE_BOOTSTRAP_CLI_PATH: cliPath },
     }).finally(() => rmSync(rootDir, { recursive: true, force: true }));
   }
 
@@ -301,7 +301,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
       preparePayloadMock.mockResolvedValue({ versionId: '0.2.12', payloadRoot: rootDir, cleanup: async () => {} });
       installPayloadMock.mockResolvedValue(undefined);
       const readVersion = vi.fn(async () => '0.2.12');
-      const processEnv = { ...process.env, HAPPIER_HOME_DIR: happyHomeDir };
+      const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir };
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'stable', processEnv }, { readVersion }))
         .rejects.toMatchObject({ code: 'cli_below_setup_floor' });
@@ -330,7 +330,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
       const readVersion = vi.fn(async () => SETUP_CLI_VERSION_FLOOR);
       // A temp repo root keeps the walk from finding this checkout as a repo-local override; an
       // Empty PATH and a temp HOME keep macOS's supplemental search path out of the real user home.
-      const processEnv = { ...process.env, HOME: rootDir, HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_BOOTSTRAP_CLI_PATH: '', HAPPIER_STACK_REPO_DIR: rootDir, PATH: '' };
+      const processEnv = { ...process.env, HOME: rootDir, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir, PATH: '' };
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'preview', processEnv }, { readVersion }))
         .resolves.toEqual({
@@ -361,7 +361,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-choice-default-channel-'));
     const happyHomeDir = join(rootDir, '.happier-home');
     try {
-      const processEnv = { ...process.env, HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_BOOTSTRAP_CLI_PATH: '', HAPPIER_STACK_REPO_DIR: rootDir, PATH: '' };
+      const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir, PATH: '' };
       await writeHappierCliChoice({ choice: { mode: 'managed' }, processEnv });
       preparePayloadMock.mockRejectedValue(new Error('offline'));
 
@@ -389,7 +389,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
       writeFileSync(join(happyHomeDir, 'default-cli-release-channel.json'), '{"releaseChannel":"stable"}\n', 'utf8');
       preparePayloadMock.mockResolvedValue({ versionId: '0.2.12', payloadRoot: rootDir, cleanup: async () => {} });
       const readVersion = vi.fn(async () => '0.2.12');
-      const processEnv = { ...process.env, HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_BOOTSTRAP_CLI_PATH: '', HAPPIER_STACK_REPO_DIR: rootDir };
+      const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir };
 
       const failure = await ensureSetupCapableLocalHappierCli({ releaseRing: 'preview', processEnv }, { readVersion })
         .then(() => null, (error: unknown) => error as { code?: string; message?: string });
@@ -426,7 +426,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
         if (!match?.[1]) throw new Error(`no fixture version in ${command}`);
         return match[1];
       };
-      const processEnv = { ...process.env, HAPPIER_HOME_DIR: happyHomeDir };
+      const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir };
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'stable', processEnv }, { readVersion }))
         .resolves.toEqual({ command: binaryPath, provenance: 'managed', version: SETUP_CLI_VERSION_FLOOR });
@@ -460,7 +460,7 @@ describe('updateManagedLocalHappierCli', () => {
     const rootDir = mkdtempSync(join(tmpdir(), prefix));
     const happyHomeDir = join(rootDir, '.happier-home');
     writeInstalledPayloadFixture({ happyHomeDir, versionId: '0.2.13', binaryContents: '#!/bin/sh\necho 0.2.13\n' });
-    const processEnv = { ...process.env, HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_BOOTSTRAP_CLI_PATH: '', HAPPIER_STACK_REPO_DIR: rootDir };
+    const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir };
     return { rootDir, happyHomeDir, processEnv };
   }
 
@@ -535,7 +535,7 @@ describe('updateManagedLocalHappierCli', () => {
     try {
       writeFileSync(cliPath, '#!/bin/sh\n', 'utf8');
       chmodSync(cliPath, 0o755);
-      const processEnv = { ...process.env, HAPPIER_HOME_DIR: join(rootDir, 'home'), HAPPIER_BOOTSTRAP_CLI_PATH: cliPath };
+      const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: join(rootDir, 'home'), PIGGERCODE_BOOTSTRAP_CLI_PATH: cliPath };
 
       await expect(updateManagedLocalHappierCli({ releaseRing: 'stable', processEnv, planRestart: async () => null }, { readVersion: async () => '0.2.13' }))
         .rejects.toMatchObject({ code: 'cli_not_managed', message: expect.stringContaining(cliPath) });
@@ -561,7 +561,7 @@ describe('the one-CLI question (R12)', () => {
     symlinkSync(join(packageRoot, 'bin', 'happier.mjs'), command);
     return run({
       command,
-      processEnv: { HOME: rootDir, HAPPIER_HOME_DIR: join(rootDir, 'home'), HAPPIER_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin },
+      processEnv: { HOME: rootDir, PIGGERCODE_HOME_DIR: join(rootDir, 'home'), PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin },
     }).finally(() => rmSync(rootDir, { recursive: true, force: true }));
   }
 
@@ -588,7 +588,7 @@ describe('the one-CLI question (R12)', () => {
   it('does not ask an installer user whose terminal runs the managed CLI first; Settings\' change says what keeping a copy behind it needs (RV3-1)', async () => {
     await withNpmCli(async ({ command, processEnv }) => {
       const readVersion = vi.fn(async () => '0.2.13');
-      const happyHomeDir = String(processEnv.HAPPIER_HOME_DIR);
+      const happyHomeDir = String(processEnv.PIGGERCODE_HOME_DIR);
       // The official installer: a managed install, its shim, and `~/.local/bin/happier` → that shim,
       // ahead of an npm copy on PATH.
       writeInstalledPayloadFixture({ happyHomeDir, versionId: '0.2.13', binaryContents: '#!/bin/sh\n' });
@@ -619,7 +619,7 @@ describe('the one-CLI question (R12)', () => {
       const readVersion = vi.fn(async () => '0.2.13');
       await writeHappierCliChoice({ choice: { mode: 'own', command }, processEnv });
       // A managed copy from before "Keep my own" is still on disk.
-      writeInstalledPayloadFixture({ happyHomeDir: String(processEnv.HAPPIER_HOME_DIR), versionId: '0.2.13', binaryContents: '#!/bin/sh\n' });
+      writeInstalledPayloadFixture({ happyHomeDir: String(processEnv.PIGGERCODE_HOME_DIR), versionId: '0.2.13', binaryContents: '#!/bin/sh\n' });
       rmSync(command, { force: true });
 
       await expect(inspectLocalHappierCliChoice({ processEnv }, { readVersion })).resolves.toMatchObject({
@@ -636,7 +636,7 @@ describe('the one-CLI question (R12)', () => {
       expect(describeUnservedCliChoiceFailure(required, { releaseRing: 'stable', processEnv })).toBe(required);
 
       // A happier installed since somewhere else is what there is to choose now.
-      const otherBin = join(String(processEnv.HAPPIER_HOME_DIR), '..', 'brew', 'bin');
+      const otherBin = join(String(processEnv.PIGGERCODE_HOME_DIR), '..', 'brew', 'bin');
       mkdirSync(otherBin, { recursive: true });
       writeFileSync(join(otherBin, 'happier'), '#!/bin/sh\n', 'utf8');
       chmodSync(join(otherBin, 'happier'), 0o755);
@@ -706,14 +706,14 @@ describe('the one-CLI question (R12)', () => {
       await writeHappierCliChoice({ choice: { mode: 'own', command }, processEnv });
       expect(describeUnservedCliChoiceFailure(failure, { releaseRing: 'stable', processEnv })).toMatchObject({ code: 'cli_choice_required' });
       expect(describeUnservedCliChoiceFailure(new SystemTaskExecutionError('cancelled', 'x'), { releaseRing: 'stable', processEnv })).toBeNull();
-      expect(describeUnservedCliChoiceFailure(failure, { releaseRing: 'stable', processEnv: { ...processEnv, HAPPIER_BOOTSTRAP_CLI_PATH: '/dev/happier' } })).toBeNull();
+      expect(describeUnservedCliChoiceFailure(failure, { releaseRing: 'stable', processEnv: { ...processEnv, PIGGERCODE_BOOTSTRAP_CLI_PATH: '/dev/happier' } })).toBeNull();
     });
   });
 
   it('never asks while a developer override names the CLI, nor when no other CLI exists', async () => {
     await withNpmCli(async ({ processEnv }) => {
       const readVersion = vi.fn(async () => '0.2.13');
-      await expect(inspectLocalHappierCliChoice({ processEnv: { ...processEnv, HAPPIER_BOOTSTRAP_CLI_PATH: '/dev/happier' } }, { readVersion }))
+      await expect(inspectLocalHappierCliChoice({ processEnv: { ...processEnv, PIGGERCODE_BOOTSTRAP_CLI_PATH: '/dev/happier' } }, { readVersion }))
         .resolves.toMatchObject({ question: null });
       await expect(inspectLocalHappierCliChoice({ processEnv: { ...processEnv, PATH: '' } }, { readVersion }))
         .resolves.toEqual({ choice: null, question: null });

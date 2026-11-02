@@ -135,7 +135,7 @@ async function runDaemonSessionReport(
     const nowFn = deps.nowFn ?? (() => Date.now());
     const retryIntervalMs =
         deps.retryIntervalMs ??
-        resolveDaemonReportRetryValue(process.env.HAPPIER_DAEMON_REPORT_SESSION_RETRY_INTERVAL_MS, 250, {
+        resolveDaemonReportRetryValue(process.env.PIGGERCODE_DAEMON_REPORT_SESSION_RETRY_INTERVAL_MS, 250, {
             min: 50,
             max: 10_000,
         });
@@ -147,7 +147,7 @@ async function runDaemonSessionReport(
         const revision = state.revision;
         const metadata = state.latestMetadata;
         const startedBy = String(metadata?.startedBy ?? '').trim().toLowerCase();
-        const daemonAutostartEnabled = isTruthyEnvFlag(process.env.HAPPIER_SESSION_AUTOSTART_DAEMON);
+        const daemonAutostartEnabled = isTruthyEnvFlag(process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON);
         const defaultRetryTimeoutMs =
             startedBy === 'daemon'
                 ? 90_000
@@ -156,14 +156,14 @@ async function runDaemonSessionReport(
                     : 10_000;
         const retryTimeoutMs =
             deps.retryTimeoutMs ??
-            resolveDaemonReportRetryValue(process.env.HAPPIER_DAEMON_REPORT_SESSION_RETRY_TIMEOUT_MS, defaultRetryTimeoutMs, {
+            resolveDaemonReportRetryValue(process.env.PIGGERCODE_DAEMON_REPORT_SESSION_RETRY_TIMEOUT_MS, defaultRetryTimeoutMs, {
                 min: 0,
                 max: 120_000,
             });
         const defaultReportAttemptTimeoutMs = startedBy === 'daemon' ? 10_000 : 2_500;
         const reportAttemptTimeoutMs =
             deps.reportAttemptTimeoutMs ??
-            resolveDaemonReportRetryValue(process.env.HAPPIER_DAEMON_REPORT_SESSION_HTTP_TIMEOUT_MS, defaultReportAttemptTimeoutMs, {
+            resolveDaemonReportRetryValue(process.env.PIGGERCODE_DAEMON_REPORT_SESSION_HTTP_TIMEOUT_MS, defaultReportAttemptTimeoutMs, {
                 min: 100,
                 max: 30_000,
             });

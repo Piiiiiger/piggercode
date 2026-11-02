@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { SessionForkRpcParamsSchema } from './sessionFork.js';
 import { SessionContinueWithReplayRequestSchema } from './sessionContinueWithReplay.js';
 import {
-  HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
-  HAPPIER_REPLAY_SEED_ACCEPTED_MIN_CHARS,
-  HAPPIER_REPLAY_SEED_MAX_CHARS,
-  HAPPIER_REPLAY_SEED_MIN_CHARS,
+  PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT,
+  PIGGERCODE_REPLAY_SEED_ACCEPTED_MIN_CHARS,
+  PIGGERCODE_REPLAY_SEED_MAX_CHARS,
+  PIGGERCODE_REPLAY_SEED_MIN_CHARS,
   HappierReplayRecentMessagesCountSchema,
   HappierReplayWireMaxSeedCharsSchema,
   HappierReplayWritableMaxSeedCharsSchema,
@@ -14,17 +14,17 @@ import {
 
 describe('Replay seed budget bounds', () => {
   it('states the measured writer floor and the shared ceiling once', () => {
-    expect(HAPPIER_REPLAY_SEED_MIN_CHARS).toBe(1_024);
-    expect(HAPPIER_REPLAY_SEED_MAX_CHARS).toBe(200_000);
+    expect(PIGGERCODE_REPLAY_SEED_MIN_CHARS).toBe(1_024);
+    expect(PIGGERCODE_REPLAY_SEED_MAX_CHARS).toBe(200_000);
   });
 
   // The whole defect in one assertion: 1023 is the largest budget that cannot
   // carry a seed, and no writer may produce it.
   it('refuses a writable budget one character below the floor', () => {
-    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_MIN_CHARS - 1).success).toBe(false);
-    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_MIN_CHARS).success).toBe(true);
-    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_MAX_CHARS).success).toBe(true);
-    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_MAX_CHARS + 1).success).toBe(false);
+    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_MIN_CHARS - 1).success).toBe(false);
+    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_MIN_CHARS).success).toBe(true);
+    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_MAX_CHARS).success).toBe(true);
+    expect(HappierReplayWritableMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_MAX_CHARS + 1).success).toBe(false);
   });
 
   // A released client clamps against its own older floor of 500 before sending,
@@ -32,12 +32,12 @@ describe('Replay seed budget bounds', () => {
   // The builder owns its contract at every budget in this range.
   it('keeps accepting released-client wire budgets below the writer floor', () => {
     expect(HappierReplayWireMaxSeedCharsSchema.safeParse(500).success).toBe(true);
-    expect(HappierReplayWireMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_ACCEPTED_MIN_CHARS).success).toBe(true);
-    expect(HappierReplayWireMaxSeedCharsSchema.safeParse(HAPPIER_REPLAY_SEED_ACCEPTED_MIN_CHARS - 1).success).toBe(false);
+    expect(HappierReplayWireMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_ACCEPTED_MIN_CHARS).success).toBe(true);
+    expect(HappierReplayWireMaxSeedCharsSchema.safeParse(PIGGERCODE_REPLAY_SEED_ACCEPTED_MIN_CHARS - 1).success).toBe(false);
   });
 
   it('bounds the recent-messages window at the one window every owner uses', () => {
-    expect(HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT).toBe(500);
+    expect(PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT).toBe(500);
     expect(HappierReplayRecentMessagesCountSchema.safeParse(500).success).toBe(true);
     expect(HappierReplayRecentMessagesCountSchema.safeParse(501).success).toBe(false);
     expect(HappierReplayRecentMessagesCountSchema.safeParse(0).success).toBe(false);
@@ -64,7 +64,7 @@ describe('Replay wire ingresses read the released range', () => {
   it('rejects a budget beyond the shared ceiling at the wire', () => {
     expect(SessionContinueWithReplayRequestSchema.safeParse({
       previousSessionId: 'previous',
-      maxSeedChars: HAPPIER_REPLAY_SEED_MAX_CHARS + 1,
+      maxSeedChars: PIGGERCODE_REPLAY_SEED_MAX_CHARS + 1,
     }).success).toBe(false);
   });
 });

@@ -4,7 +4,7 @@ import type { FeaturesResponse } from '../featuresResponseSchema.js';
 import { isRecord } from '../isRecord.js';
 
 export const MACHINE_TRANSFER_SERVER_ROUTED_MAX_BYTES_ENV_KEY =
-  'HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES';
+  'PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES';
 
 export function normalizeMachineTransferServerRoutedMaxBytes(raw: unknown): number | null {
   if (raw === null || raw === undefined) return null;

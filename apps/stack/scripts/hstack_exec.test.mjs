@@ -24,7 +24,7 @@ function setup(t, { siblingSource, executable = true } = {}) {
     chmodSync(sibling, executable ? 0o755 : 0o644);
   }
   // No executable discovery dependencies may be needed for local execution.
-  const env = { ...process.env, PATH: '', HAPPIER_ROUTED_EXECUTOR: '' };
+  const env = { ...process.env, PATH: '', PIGGERCODE_ROUTED_EXECUTOR: '' };
   return { wrapper, repo, cwd, env };
 }
 
@@ -46,7 +46,7 @@ test('disabled routing and a non-executable sibling preserve local execution', p
   for (const disabled of ['0', 'off', 'false', 'disabled']) {
     const fixture = setup(t, { siblingSource });
     const result = await runCommandCapture(fixture.wrapper, ['/bin/sh', '-c', 'printf local; exit 23'], {
-      ...fixture, env: { ...fixture.env, HAPPIER_ROUTED_EXECUTOR: disabled },
+      ...fixture, env: { ...fixture.env, PIGGERCODE_ROUTED_EXECUTOR: disabled },
     });
     assert.equal(result.code, 23, disabled);
     assert.equal(result.stdout, 'local', disabled);

@@ -1,7 +1,7 @@
 import type { DirectSessionActivityV1 } from '@piggercode/protocol';
 
 function resolveRecentActivityWindowMs(env: NodeJS.ProcessEnv): number {
-  const raw = Number.parseInt(String(env.HAPPIER_DIRECT_SESSIONS_RECENT_ACTIVITY_WINDOW_MS ?? ''), 10);
+  const raw = Number.parseInt(String(env.PIGGERCODE_DIRECT_SESSIONS_RECENT_ACTIVITY_WINDOW_MS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 15_000;
   return Math.max(1000, Math.min(60 * 60 * 1000, configured));
 }

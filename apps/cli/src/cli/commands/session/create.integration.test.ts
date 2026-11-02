@@ -41,16 +41,16 @@ describe('happier session create (integration)', () => {
   }
 
   const envKeys = [
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_LOCAL_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_ACTIVE_SERVER_ID',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SESSION_ID',
-    'HAPPIER_STACK_INVOKED_CWD',
-    'HAPPIER_SESSION_REQUESTED_DIRECTORY',
-    'HAPPIER_SESSION_SOCKET_CONNECT_TIMEOUT_MS',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_LOCAL_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SESSION_ID',
+    'PIGGERCODE_STACK_INVOKED_CWD',
+    'PIGGERCODE_SESSION_REQUESTED_DIRECTORY',
+    'PIGGERCODE_SESSION_SOCKET_CONNECT_TIMEOUT_MS',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
@@ -214,15 +214,15 @@ describe('happier session create (integration)', () => {
       throw new Error('Failed to resolve session control integration test server address');
     }
 
-    process.env.HAPPIER_SERVER_URL = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = `http://127.0.0.1:${address.port}`;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     envScope.patch({
-      HAPPIER_PUBLIC_SERVER_URL: undefined,
-      HAPPIER_LOCAL_SERVER_URL: undefined,
-      HAPPIER_ACTIVE_SERVER_ID: undefined,
-      HAPPIER_STACK_INVOKED_CWD: undefined,
-      HAPPIER_SESSION_REQUESTED_DIRECTORY: undefined,
+      PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+      PIGGERCODE_LOCAL_SERVER_URL: undefined,
+      PIGGERCODE_ACTIVE_SERVER_ID: undefined,
+      PIGGERCODE_STACK_INVOKED_CWD: undefined,
+      PIGGERCODE_SESSION_REQUESTED_DIRECTORY: undefined,
     });
 
     const { reloadConfiguration } = await import('@/configuration');
@@ -288,7 +288,7 @@ describe('happier session create (integration)', () => {
 
   it('returns a session_create JSON envelope and marks created=true when tag does not exist', async () => {
     const { handleSessionCommand } = await import('./index');
-    envScope.patch({ HAPPIER_SESSION_ID: 'sess_integration_caller_123' });
+    envScope.patch({ PIGGERCODE_SESSION_ID: 'sess_integration_caller_123' });
 
     const output = captureConsoleJsonOutput();
 
@@ -335,7 +335,7 @@ describe('happier session create (integration)', () => {
 
   it('treats ambient session permission as an inherited default, not direct-CLI authority', async () => {
     const { handleSessionCommand } = await import('./index');
-    envScope.patch({ HAPPIER_SESSION_ID: 'sess_integration_caller_123' });
+    envScope.patch({ PIGGERCODE_SESSION_ID: 'sess_integration_caller_123' });
     callerPermissionMode = 'safe-yolo';
     const output = captureConsoleJsonOutput();
 
@@ -398,7 +398,7 @@ describe('happier session create (integration)', () => {
 
   it('returns success when create-time title metadata falls back after a session socket connect timeout', async () => {
     const { handleSessionCommand } = await import('./index');
-    envScope.patch({ HAPPIER_SESSION_SOCKET_CONNECT_TIMEOUT_MS: '1' });
+    envScope.patch({ PIGGERCODE_SESSION_SOCKET_CONNECT_TIMEOUT_MS: '1' });
     sessionSocket.connect.mockImplementation(() => sessionSocket);
 
     const output = captureConsoleJsonOutput();

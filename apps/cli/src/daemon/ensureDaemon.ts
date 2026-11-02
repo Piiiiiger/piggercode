@@ -54,16 +54,16 @@ export function shouldAutoStartDaemonAfterAuth(
   if (params.callerIntent === 'setup-managed') return false;
   if (params.isDaemonProcess) return false;
   if (params.startedBy === 'daemon') return false;
-  const raw = (params.env.HAPPIER_SESSION_AUTOSTART_DAEMON ?? '').toString().trim().toLowerCase();
+  const raw = (params.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON ?? '').toString().trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'y';
 }
 
 export function applyDaemonAutostartEnvForInvocation(params: Readonly<{ args: string[]; env: NodeJS.ProcessEnv }>): void {
   if (!shouldEnsureDaemonForInvocation({ args: params.args })) return;
   if (readStartedByArg(params.args).value === 'daemon') return;
-  const current = (params.env.HAPPIER_SESSION_AUTOSTART_DAEMON ?? '').toString().trim();
+  const current = (params.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON ?? '').toString().trim();
   if (current.length > 0) return;
-  params.env.HAPPIER_SESSION_AUTOSTART_DAEMON = '1';
+  params.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = '1';
 }
 
 export async function ensureDaemonRunningForSessionCommand(): Promise<void> {

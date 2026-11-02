@@ -34,7 +34,7 @@ async function buildControlProcessEnv(params: Readonly<{
             processEnv: params.processEnv,
             metadata: params.metadata,
         }),
-        ...(timeoutMs !== null ? { HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(timeoutMs) } : {}),
+        ...(timeoutMs !== null ? { PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(timeoutMs) } : {}),
     };
 }
 

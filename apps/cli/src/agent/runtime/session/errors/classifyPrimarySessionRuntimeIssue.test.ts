@@ -8,7 +8,7 @@ describe('classifyPrimarySessionRuntimeIssue', () => {
   it.each([requireProviderCliCommand, requireProviderCliLaunchSpec])('preserves CLI resolution failures as actionable dependency errors', (requireCli) => {
     let error: unknown;
     try {
-      requireCli('pi', { processEnv: { HOME: '/missing-pi-home', HAPPIER_HOME_DIR: '/missing-happier-home', PATH: '' } });
+      requireCli('pi', { processEnv: { HOME: '/missing-pi-home', PIGGERCODE_HOME_DIR: '/missing-happier-home', PATH: '' } });
     } catch (failure) {
       error = failure;
     }

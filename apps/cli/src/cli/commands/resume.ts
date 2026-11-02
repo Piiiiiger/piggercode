@@ -271,8 +271,8 @@ export async function handleResumeCommand(
       })(),
   });
 
-  const prevAttachEnv = process.env.HAPPIER_SESSION_ATTACH_FILE;
-  process.env.HAPPIER_SESSION_ATTACH_FILE = attach.filePath;
+  const prevAttachEnv = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+  process.env.PIGGERCODE_SESSION_ATTACH_FILE = attach.filePath;
   let restoreConnectedServiceEnv: (() => void) | null = null;
   let connectedServiceEnv: Awaited<
     ReturnType<typeof resolveDirectConnectedServiceEnvironment>
@@ -322,9 +322,9 @@ export async function handleResumeCommand(
       connectedServiceEnv?.cleanupOnExit?.();
     }
     if (prevAttachEnv === undefined) {
-      delete process.env.HAPPIER_SESSION_ATTACH_FILE;
+      delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
     } else {
-      process.env.HAPPIER_SESSION_ATTACH_FILE = prevAttachEnv;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = prevAttachEnv;
     }
   }
 }

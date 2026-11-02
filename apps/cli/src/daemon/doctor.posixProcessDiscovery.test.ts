@@ -75,7 +75,7 @@ describe('doctor POSIX process discovery', () => {
         return `Ss   node ${command}`;
       }
       if (args.at(0) === 'eww') {
-        return `HAPPIER_HOME_DIR=/h ${command}`;
+        return `PIGGERCODE_HOME_DIR=/h ${command}`;
       }
       return '';
     });
@@ -96,6 +96,6 @@ describe('doctor POSIX process discovery', () => {
       expect(options.env?.PATH).toBe(process.env.PATH);
     }
     expect(info?.cmd).toBe(command);
-    expect(info?.daemonOwnershipEnvironmentVariables?.HAPPIER_HOME_DIR).toBe('/h');
+    expect(info?.daemonOwnershipEnvironmentVariables?.PIGGERCODE_HOME_DIR).toBe('/h');
   });
 });

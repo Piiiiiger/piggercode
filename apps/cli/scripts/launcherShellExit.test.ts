@@ -28,7 +28,7 @@ it.skipIf(process.platform === 'win32').each(['claude-cmd', 'claude-forced', 'te
       windowsVerbatimArguments: !direct }));
     const source = `Object.defineProperty(process, 'platform', {value:'win32'});
       process.env.ComSpec = ${JSON.stringify(shell)};
-      process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = ${JSON.stringify(kind === 'claude-forced' ? '1' : '0')};
+      process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = ${JSON.stringify(kind === 'claude-forced' ? '1' : '0')};
       require(${JSON.stringify(runtime)}).runClaudeCli(${JSON.stringify(direct ? shell : join(directory, kind === 'claude-cmd' ? 'claude.cmd' : 'claude.exe'))});`;
     // The terminal runner enables its controller channel only as a genuine executable entry point.
     const child = terminal

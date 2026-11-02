@@ -13,7 +13,7 @@ vi.mock('@/daemon/controlClient', () => ({
 }));
 
 function stubConnectedGeminiSelection(): void {
-  vi.stubEnv('HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON', JSON.stringify([{
+  vi.stubEnv('PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON', JSON.stringify([{
     kind: 'group',
     serviceId: 'gemini',
     groupId: 'gemini-main',
@@ -74,7 +74,7 @@ describe('createGeminiBackendMessageHandler (provider runtime error events)', ()
   it('never renders raw provider runtime error payloads to the transcript or terminal', () => {
     // No gemini connected-service selection -> classification is null and nothing is reported;
     // either way the RAW payload must stay suppressed (Gemini CLI retries 429s internally).
-    vi.stubEnv('HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON', '');
+    vi.stubEnv('PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON', '');
 
     const { handler, messageBuffer, session } = createHarness();
 
@@ -204,7 +204,7 @@ describe('createGeminiBackendMessageHandler (provider runtime error events)', ()
   });
 
   it('preserves the raw fallback when unhandled turn-failure persistence rejects', async () => {
-    vi.stubEnv('HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON', '');
+    vi.stubEnv('PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON', '');
     const { handler, session, state } = createHarness();
     state.thinking = true;
     session.sessionTurnLifecycle = {

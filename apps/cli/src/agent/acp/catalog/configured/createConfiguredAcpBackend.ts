@@ -1,6 +1,6 @@
 import { createAcpBackend } from '@/agent/acp/createAcpBackend';
 import type { AcpBackend, AcpPermissionHandler } from '@/agent/acp/AcpBackend';
-import { HAPPIER_SESSION_ID_ENV_KEY, withCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';
+import { PIGGERCODE_SESSION_ID_ENV_KEY, withCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';
 import type { AgentFactoryOptions, McpServerConfig } from '@/agent/core';
 
 import type { ResolvedConfiguredAcpBackend } from './resolveConfiguredAcpBackendFromAccountSettings';
@@ -25,7 +25,7 @@ export function createConfiguredAcpBackend(options: ConfiguredAcpBackendOptions)
       ? withCurrentHappierSessionId(env, options.happierSessionId)
       : env,
     // The process adapter merges ambient env again; clear caller identity before explicit overrides.
-    unsetEnv: options.happierSessionId !== undefined ? [HAPPIER_SESSION_ID_ENV_KEY] : undefined,
+    unsetEnv: options.happierSessionId !== undefined ? [PIGGERCODE_SESSION_ID_ENV_KEY] : undefined,
     mcpServers: options.mcpServers,
     permissionHandler: options.permissionHandler,
     transportHandler: resolveAcpCatalogTransportHandler(options.backend.transportProfile),

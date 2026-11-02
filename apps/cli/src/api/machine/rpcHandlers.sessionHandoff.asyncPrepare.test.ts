@@ -264,7 +264,7 @@ describe('rpcHandlers (session handoff async prepare)', () => {
         state: 'failed', error: { errorCode: 'existing_session_state_unavailable', error: 'Claude existing native session is unreachable' },
       }), { timeout: 10_000 });
       expect(runnerLaunches).toBe(launchesBeforeNativeLoss);
-      const outputPath = process.env.HAPPIER_HANDOFF_FAILURE_TEST_OUTPUT;
+      const outputPath = process.env.PIGGERCODE_HANDOFF_FAILURE_TEST_OUTPUT;
       if (outputPath) await writeFile(outputPath, JSON.stringify({ admission, terminal: snapshots.at(-1), prepareResult: missingResult, launchFailure }));
     } finally {
       if (previousClaudeHome === undefined) delete process.env.CLAUDE_CONFIG_DIR;

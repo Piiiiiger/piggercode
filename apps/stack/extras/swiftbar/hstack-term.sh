@@ -4,7 +4,7 @@ set -euo pipefail
 # Open preferred terminal and run a hstack command.
 #
 # Preference order follows wt shell semantics:
-# - HAPPIER_STACK_WT_TERMINAL=ghostty|iterm|terminal|current
+# - PIGGERCODE_STACK_WT_TERMINAL=ghostty|iterm|terminal|current
 #   (also accepts "auto" which tries ghostty->iterm->terminal->current)
 #
 # Notes:
@@ -15,14 +15,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_HOME_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Prefer explicit env vars, but default to the install location inferred from this script path.
-CANONICAL_HOME_DIR="${HAPPIER_STACK_CANONICAL_HOME_DIR:-$DEFAULT_HOME_DIR}"
-HOME_DIR="${HAPPIER_STACK_HOME_DIR:-$DEFAULT_HOME_DIR}"
+CANONICAL_HOME_DIR="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$DEFAULT_HOME_DIR}"
+HOME_DIR="${PIGGERCODE_STACK_HOME_DIR:-$DEFAULT_HOME_DIR}"
 
-export HAPPIER_STACK_HOME_DIR="$HOME_DIR"
-export HAPPIER_STACK_CANONICAL_HOME_DIR="$CANONICAL_HOME_DIR"
+export PIGGERCODE_STACK_HOME_DIR="$HOME_DIR"
+export PIGGERCODE_STACK_CANONICAL_HOME_DIR="$CANONICAL_HOME_DIR"
 
 # Prefer running against an explicit repo checkout if provided.
-ROOT_DIR="${HAPPIER_STACK_CLI_ROOT_DIR:-$HOME_DIR}"
+ROOT_DIR="${PIGGERCODE_STACK_CLI_ROOT_DIR:-$HOME_DIR}"
 
 LIB_DIR="$ROOT_DIR/extras/swiftbar/lib"
 if [[ -f "$LIB_DIR/utils.sh" ]]; then
@@ -30,7 +30,7 @@ if [[ -f "$LIB_DIR/utils.sh" ]]; then
   source "$LIB_DIR/utils.sh"
 fi
 
-WORKDIR="${HAPPIER_STACK_WORKSPACE_DIR:-$(resolve_workspace_dir 2>/dev/null || true)}"
+WORKDIR="${PIGGERCODE_STACK_WORKSPACE_DIR:-$(resolve_workspace_dir 2>/dev/null || true)}"
 [[ -z "$WORKDIR" ]] && WORKDIR="$HOME_DIR/workspace"
 if [[ ! -d "$WORKDIR" ]]; then
   WORKDIR="$HOME"
@@ -42,7 +42,7 @@ if [[ ! -x "$hstack_SH" ]]; then
   exit 1
 fi
 
-pref_raw="$(echo "${HAPPIER_STACK_WT_TERMINAL:-auto}" | tr '[:upper:]' '[:lower:]')"
+pref_raw="$(echo "${PIGGERCODE_STACK_WT_TERMINAL:-auto}" | tr '[:upper:]' '[:lower:]')"
 pref="$pref_raw"
 if [[ "$pref" == "" ]]; then pref="auto"; fi
 

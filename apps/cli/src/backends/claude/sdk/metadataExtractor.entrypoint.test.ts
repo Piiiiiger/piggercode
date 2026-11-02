@@ -32,9 +32,9 @@ it('applies Happier attribution to metadata probes and isolates cached catalogs 
       }
     }
   `);
-  vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier'));
+  vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier'));
   vi.stubEnv('CLAUDE_CONFIG_DIR', configDir);
-  vi.stubEnv('HAPPIER_CLAUDE_PATH', claudePath);
+  vi.stubEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
   vi.stubEnv('CLAUDE_CODE_ENTRYPOINT', 'sdk-ts');
   vi.stubEnv('CLAUDECODE', '1');
   vi.resetModules();
@@ -67,11 +67,11 @@ it.each([true, false])('retains only captured metadata when the owned probe fail
       }
     }
   `);
-  vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier'));
-  vi.stubEnv('HAPPIER_JS_RUNTIME_PATH', process.execPath);
+  vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier'));
+  vi.stubEnv('PIGGERCODE_JS_RUNTIME_PATH', process.execPath);
   vi.stubEnv('CLAUDE_CONFIG_DIR', configDir);
-  vi.stubEnv('HAPPIER_CLAUDE_PATH', claudePath);
-  vi.stubEnv('HAPPIER_CLAUDE_SDK_METADATA_CACHE_INVALIDATE', '0');
+  vi.stubEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
+  vi.stubEnv('PIGGERCODE_CLAUDE_SDK_METADATA_CACHE_INVALIDATE', '0');
   const originalCwd = process.cwd();
   process.chdir(projectDir);
   vi.resetModules();

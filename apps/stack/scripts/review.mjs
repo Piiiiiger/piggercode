@@ -151,7 +151,7 @@ function resolveComponentFromCwdOrNull({ rootDir, invokedCwd }) {
 }
 
 function stackRemoteFallbackFromEnv(env) {
-  return String(env.HAPPIER_STACK_STACK_REMOTE ?? '').trim();
+  return String(env.PIGGERCODE_STACK_STACK_REMOTE ?? '').trim();
 }
 
 function targetFromLegacyComponent(component) {
@@ -332,11 +332,11 @@ async function main() {
   });
 
   const inferredFromCwd = resolveComponentFromCwdOrNull({ rootDir, invokedCwd });
-  if (inferredFromCwd && !(process.env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim()) {
+  if (inferredFromCwd && !(process.env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim()) {
     // Make downstream getComponentDir() resolve to the inferred repo dir for this run.
     // This is intentionally independent of target positionals: users often pass `all`/`ui`/`cli`/`server`
     // but still expect the repo/worktree to be inferred from their current directory.
-    process.env.HAPPIER_STACK_REPO_DIR = inferredFromCwd.repoDir;
+    process.env.PIGGERCODE_STACK_REPO_DIR = inferredFromCwd.repoDir;
   }
 
   const inStackMode = isStackMode(process.env);
@@ -415,10 +415,10 @@ async function main() {
     throw new Error('[review] invalid --chunking (expected: auto|head-slice|commit-window)');
   }
 
-  if (codexModelFlag) process.env.HAPPIER_STACK_CODEX_MODEL = codexModelFlag;
-  if (claudeModelFlag) process.env.HAPPIER_STACK_CLAUDE_MODEL = claudeModelFlag;
-  if (augmentModelFlag) process.env.HAPPIER_STACK_AUGMENT_MODEL = augmentModelFlag;
-  if (augmentMaxTurnsFlag) process.env.HAPPIER_STACK_AUGMENT_MAX_TURNS = augmentMaxTurnsFlag;
+  if (codexModelFlag) process.env.PIGGERCODE_STACK_CODEX_MODEL = codexModelFlag;
+  if (claudeModelFlag) process.env.PIGGERCODE_STACK_CLAUDE_MODEL = claudeModelFlag;
+  if (augmentModelFlag) process.env.PIGGERCODE_STACK_AUGMENT_MODEL = augmentModelFlag;
+  if (augmentMaxTurnsFlag) process.env.PIGGERCODE_STACK_AUGMENT_MAX_TURNS = augmentMaxTurnsFlag;
 
   let customReviewPrompt = String(reviewPromptFlag ?? '').trim();
   if (reviewPromptFileFlag) {
@@ -433,7 +433,7 @@ async function main() {
   await ensureDir(reviewsRootDir);
   const runLabelOverride = (kv.get('--run-label') ?? '').toString().trim();
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
-  const stackName = (process.env.HAPPIER_STACK_STACK ?? '').toString().trim();
+  const stackName = (process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim();
   const defaultLabel = `review-${ts}${stackName ? `-${sanitizeLabel(stackName)}` : ''}`;
   const runLabel = sanitizeLabel(runLabelOverride || defaultLabel) || defaultLabel;
   const runDir = join(reviewsRootDir, runLabel);
@@ -444,7 +444,7 @@ async function main() {
   const coderabbitConfigFiles = depth === 'deep' ? [deepInstructionsPath] : [];
 
   if (reviewers.includes('coderabbit')) {
-    const coderabbitHomeKey = 'HAPPIER_STACK_CODERABBIT_HOME_DIR';
+    const coderabbitHomeKey = 'PIGGERCODE_STACK_CODERABBIT_HOME_DIR';
     if (!(process.env[coderabbitHomeKey] ?? '').toString().trim()) {
       process.env[coderabbitHomeKey] = join(rootDir, '.project', 'coderabbit-home');
     }
@@ -464,14 +464,14 @@ async function main() {
   }
 
   if (reviewers.includes('codex')) {
-    const codexHomeKey = 'HAPPIER_STACK_CODEX_HOME_DIR';
+    const codexHomeKey = 'PIGGERCODE_STACK_CODEX_HOME_DIR';
     if (!(process.env[codexHomeKey] ?? '').toString().trim()) {
       process.env[codexHomeKey] = join(runDir, 'tool-homes', 'codex');
     }
     await ensureDir(process.env[codexHomeKey]);
 
-    if (!(process.env.HAPPIER_STACK_CODEX_SANDBOX ?? '').toString().trim()) {
-      process.env.HAPPIER_STACK_CODEX_SANDBOX = 'workspace-write';
+    if (!(process.env.PIGGERCODE_STACK_CODEX_SANDBOX ?? '').toString().trim()) {
+      process.env.PIGGERCODE_STACK_CODEX_SANDBOX = 'workspace-write';
     }
 
     // Seed Codex auth/config into the isolated CODEX_HOME to avoid sandbox permission issues
@@ -488,7 +488,7 @@ async function main() {
   }
 
   if (reviewers.includes('augment')) {
-    const augmentHomeKey = 'HAPPIER_STACK_AUGMENT_CACHE_DIR';
+    const augmentHomeKey = 'PIGGERCODE_STACK_AUGMENT_CACHE_DIR';
     if (!(process.env[augmentHomeKey] ?? '').toString().trim()) {
       process.env[augmentHomeKey] = join(rootDir, '.project', 'augment-home');
     }
@@ -870,7 +870,7 @@ async function main() {
                 baseRef: null,
                 env: process.env,
                 jsonMode,
-                model: process.env.HAPPIER_STACK_CODEX_MODEL,
+                model: process.env.PIGGERCODE_STACK_CODEX_MODEL,
                 prompt,
                 streamLabel: stream && !jsonMode ? `${component}:codex` : undefined,
                 teeFile: logFile,
@@ -947,7 +947,7 @@ async function main() {
                         baseRef: null,
                         env: process.env,
                         jsonMode,
-                        model: process.env.HAPPIER_STACK_CODEX_MODEL,
+                        model: process.env.PIGGERCODE_STACK_CODEX_MODEL,
                         prompt,
                         streamLabel: stream && !jsonMode ? `monorepo:codex:${index}/${of}` : undefined,
                         teeFile: logFile,
@@ -1030,7 +1030,7 @@ async function main() {
                           baseRef: null,
                           env: process.env,
                         jsonMode,
-                        model: process.env.HAPPIER_STACK_CODEX_MODEL,
+                        model: process.env.PIGGERCODE_STACK_CODEX_MODEL,
                         prompt,
                         streamLabel: stream && !jsonMode ? `monorepo:codex:${index}/${of}` : undefined,
                         teeFile: logFile,
@@ -1092,7 +1092,7 @@ async function main() {
                 baseRef: usePromptMode ? null : changeType === 'uncommitted' ? null : base.baseRef,
               env: process.env,
               jsonMode,
-              model: process.env.HAPPIER_STACK_CODEX_MODEL,
+              model: process.env.PIGGERCODE_STACK_CODEX_MODEL,
               prompt,
               streamLabel: stream && !jsonMode ? `${component}:codex` : undefined,
               teeFile: logFile,
@@ -1131,7 +1131,7 @@ async function main() {
                 repoDir,
                 env: process.env,
                 prompt,
-                model: process.env.HAPPIER_STACK_CLAUDE_MODEL,
+                model: process.env.PIGGERCODE_STACK_CLAUDE_MODEL,
                 streamLabel: stream ? `${component}:claude` : undefined,
                 teeFile: logFile,
                 teeLabel: `${component}:claude`,
@@ -1199,7 +1199,7 @@ async function main() {
                         repoDir: worktreeDir,
                         env: process.env,
                         prompt,
-                        model: process.env.HAPPIER_STACK_CLAUDE_MODEL,
+                        model: process.env.PIGGERCODE_STACK_CLAUDE_MODEL,
                         streamLabel: stream && !jsonMode ? `monorepo:claude:${index}/${of}` : undefined,
                         teeFile: logFile,
                         teeLabel: `monorepo:claude:${index}/${of}`,
@@ -1278,7 +1278,7 @@ async function main() {
                           repoDir: worktreeDir,
                           env: process.env,
                           prompt,
-                        model: process.env.HAPPIER_STACK_CLAUDE_MODEL,
+                        model: process.env.PIGGERCODE_STACK_CLAUDE_MODEL,
                         streamLabel: stream && !jsonMode ? `monorepo:claude:${index}/${of}` : undefined,
                         teeFile: logFile,
                         teeLabel: `monorepo:claude:${index}/${of}`,
@@ -1334,7 +1334,7 @@ async function main() {
                 repoDir,
                 env: process.env,
               prompt,
-              model: process.env.HAPPIER_STACK_CLAUDE_MODEL,
+              model: process.env.PIGGERCODE_STACK_CLAUDE_MODEL,
               streamLabel: stream && !jsonMode ? `${component}:claude` : undefined,
               teeFile: logFile,
               teeLabel: `${component}:claude`,
@@ -1372,9 +1372,9 @@ async function main() {
                 repoDir,
                 env: process.env,
                 prompt,
-                cacheDir: process.env.HAPPIER_STACK_AUGMENT_CACHE_DIR,
-                model: process.env.HAPPIER_STACK_AUGMENT_MODEL,
-                maxTurns: process.env.HAPPIER_STACK_AUGMENT_MAX_TURNS,
+                cacheDir: process.env.PIGGERCODE_STACK_AUGMENT_CACHE_DIR,
+                model: process.env.PIGGERCODE_STACK_AUGMENT_MODEL,
+                maxTurns: process.env.PIGGERCODE_STACK_AUGMENT_MAX_TURNS,
                 rulesFiles: coderabbitConfigFiles,
                 streamLabel: stream ? `${component}:augment` : undefined,
                 teeFile: logFile,
@@ -1398,9 +1398,9 @@ async function main() {
                 ? (uncommittedOps?.all?.size ?? 0)
                 : await countChangedFiles({ cwd: repoDir, env: process.env, base: base.baseRef });
             const autoChunks = fileCount > maxFiles;
-            const cacheDir = (process.env.HAPPIER_STACK_AUGMENT_CACHE_DIR ?? '').toString().trim();
-            const model = (process.env.HAPPIER_STACK_AUGMENT_MODEL ?? '').toString().trim();
-            const maxTurnsRaw = (process.env.HAPPIER_STACK_AUGMENT_MAX_TURNS ?? '').toString().trim();
+            const cacheDir = (process.env.PIGGERCODE_STACK_AUGMENT_CACHE_DIR ?? '').toString().trim();
+            const model = (process.env.PIGGERCODE_STACK_AUGMENT_MODEL ?? '').toString().trim();
+            const maxTurnsRaw = (process.env.PIGGERCODE_STACK_AUGMENT_MAX_TURNS ?? '').toString().trim();
             const maxTurns = maxTurnsRaw ? Number(maxTurnsRaw) : null;
 
             if (monorepo && effectiveChunking === 'head-slice' && usePromptMode && (wantChunksAugment ?? autoChunks)) {

@@ -199,7 +199,7 @@ describe('packTarball (npmExecpath)', () => {
       spawnSync: spawn,
       existsSync,
       env: {
-        HAPPIER_CLI_PACK_TARBALL_TIMEOUT_MS: '123456',
+        PIGGERCODE_CLI_PACK_TARBALL_TIMEOUT_MS: '123456',
       },
     });
 

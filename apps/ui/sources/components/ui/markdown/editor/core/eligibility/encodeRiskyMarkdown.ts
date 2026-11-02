@@ -25,7 +25,7 @@
  *    serialize output is the original markdown and needs NO decode pass.
  *  - `encodeRiskyMarkdown` therefore must run at EVERY parse/seed boundary, and
  *    must NEVER run on serialize output (that would double-encode).
- *  - Re-encoding is guarded: an existing `[[HAPPIER_` sentinel run is copied
+ *  - Re-encoding is guarded: an existing `[[PIGGERCODE_` sentinel run is copied
  *    verbatim so encoding is idempotent.
  *
  * PURE — NO `@tiptap/*` import (R18). This file lives in the native-reachable
@@ -34,9 +34,9 @@
  */
 
 /** Sentinel prefix for an inline raw-HTML run (URI-encoded payload follows). */
-export const RAW_HTML_INLINE_PLACEHOLDER_PREFIX = '[[HAPPIER_RAW_HTML_INLINE:';
+export const RAW_HTML_INLINE_PLACEHOLDER_PREFIX = '[[PIGGERCODE_RAW_HTML_INLINE:';
 /** Sentinel prefix for a block-only raw-HTML line (URI-encoded payload follows). */
-export const RAW_HTML_BLOCK_PLACEHOLDER_PREFIX = '[[HAPPIER_RAW_HTML_BLOCK:';
+export const RAW_HTML_BLOCK_PLACEHOLDER_PREFIX = '[[PIGGERCODE_RAW_HTML_BLOCK:';
 /** Sentinel terminator. Safe because the payload is URI-encoded (no literal `]]`). */
 export const RAW_HTML_PLACEHOLDER_SUFFIX = ']]';
 
@@ -44,7 +44,7 @@ export const RAW_HTML_PLACEHOLDER_SUFFIX = ']]';
  * The common sentinel namespace prefix. Used as the re-encode guard: a run that
  * already starts with this is copied verbatim so encoding is idempotent.
  */
-export const RAW_HTML_PLACEHOLDER_NAMESPACE = '[[HAPPIER_';
+export const RAW_HTML_PLACEHOLDER_NAMESPACE = '[[PIGGERCODE_';
 
 /** The "risky" placeholder kinds this pre-pass produces. */
 export type RiskyMarkdownPlaceholderKind = 'inline' | 'block';
@@ -192,7 +192,7 @@ function matchBlockHtml(content: string, start: number): string | null {
  *  5. Otherwise copy one character.
  *
  * The existing-sentinel guard lives on the inline `<`/block paths implicitly: a
- * `[[HAPPIER_…]]` run starts with `[`, not `<`, and `isLineOnlyHtml` rejects it,
+ * `[[PIGGERCODE_…]]` run starts with `[`, not `<`, and `isLineOnlyHtml` rejects it,
  * so a previously-encoded document is copied verbatim (idempotent encode).
  */
 export function encodeRiskyMarkdown(content: string): string {

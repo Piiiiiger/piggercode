@@ -18,7 +18,7 @@ import { pruneComponentArtifacts, resolveRuntimeRetentionPolicy } from './runtim
 import { ensureStackRuntimeModePrefer } from '../runtime/shared/ensureStackRuntimeModePrefer.mjs';
 
 function assertNamedStack(env) {
-  const stackName = String(env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  const stackName = String(env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
   if (stackName === 'main') {
     throw new Error('[build] stack-local artifact builds are supported for named stacks only in v1.');
   }
@@ -68,12 +68,12 @@ export async function buildStackArtifacts({ rootDir, argv = [], env = process.en
     const buildComponent = async (component, builder) => {
       const buildInputs = [];
       if (component === 'server') {
-        buildInputs.push(`bunExternals=${String(env.HAPPIER_SERVER_BUN_EXTERNALS ?? 'redis').trim() || 'redis'}`);
+        buildInputs.push(`bunExternals=${String(env.PIGGERCODE_SERVER_BUN_EXTERNALS ?? 'redis').trim() || 'redis'}`);
         buildInputs.push(`platform=${process.platform}`);
         buildInputs.push(`arch=${process.arch}`);
       }
       if (component === 'daemon') {
-        buildInputs.push(`bunExternals=${String(env.HAPPIER_CLI_BUN_EXTERNALS ?? '').trim()}`);
+        buildInputs.push(`bunExternals=${String(env.PIGGERCODE_CLI_BUN_EXTERNALS ?? '').trim()}`);
         buildInputs.push(`platform=${process.platform}`);
         buildInputs.push(`arch=${process.arch}`);
       }

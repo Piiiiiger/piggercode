@@ -367,8 +367,8 @@ describe('runCodex app-server composer reference resolution', () => {
     });
 
     envScope.patch({
-      HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-      HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
+      PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+      PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
     });
 
     const { session } = createFakeSession({

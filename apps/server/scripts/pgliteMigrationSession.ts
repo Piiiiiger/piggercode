@@ -16,7 +16,7 @@ export async function openPgliteMigrationSession(
     { purpose }: Readonly<{ purpose: string }>,
 ): Promise<PgliteMigrationSession> {
     applyLightDefaultEnv(env);
-    const dbDir = String(env.HAPPIER_SERVER_LIGHT_DB_DIR ?? env.HAPPY_SERVER_LIGHT_DB_DIR ?? '').trim();
+    const dbDir = String(env.PIGGERCODE_SERVER_LIGHT_DB_DIR ?? env.HAPPY_SERVER_LIGHT_DB_DIR ?? '').trim();
     if (!dbDir) throw new Error('PGlite database directory is required');
     await mkdir(dbDir, { recursive: true });
 

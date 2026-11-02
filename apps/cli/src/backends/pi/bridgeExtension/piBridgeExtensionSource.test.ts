@@ -213,7 +213,7 @@ if (args.input.value === 'fail') {
         launch: {
           filePath: process.execPath,
           argPrefix: [executableScript],
-          env: { HAPPIER_TEST_BRIDGE: '1' },
+          env: { PIGGERCODE_TEST_BRIDGE: '1' },
         },
       }));
       const factory = await loadExtensionFactory();

@@ -45,9 +45,9 @@ function runCliVersionViaDist(homeDir: string, envOverrides?: NodeJS.ProcessEnv)
     cwd: process.cwd(),
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_VARIANT: 'stable',
-      HAPPIER_CLI_UPDATE_CHECK: '0',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_VARIANT: 'stable',
+      PIGGERCODE_CLI_UPDATE_CHECK: '0',
       ...envOverrides,
     },
     encoding: 'utf-8',
@@ -79,12 +79,12 @@ describe('runtime re-exec wiring', () => {
     expect(stdout).toContain('RUNTIME_ENTRYPOINT');
   }, 120000);
 
-  it('respects HAPPIER_CLI_UPDATE_PACKAGE_NAME for runtime resolution', () => {
+  it('respects PIGGERCODE_CLI_UPDATE_PACKAGE_NAME for runtime resolution', () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-runtime-home-'));
     tempDirs.push(homeDir);
     createRuntimePackage(homeDir, '@company/happier-cli', 'RUNTIME_ENTRYPOINT_OVERRIDE');
     const stdout = runCliVersionViaDist(homeDir, {
-      HAPPIER_CLI_UPDATE_PACKAGE_NAME: '@company/happier-cli',
+      PIGGERCODE_CLI_UPDATE_PACKAGE_NAME: '@company/happier-cli',
     });
     expect(stdout).toContain('RUNTIME_ENTRYPOINT_OVERRIDE');
   }, 120000);

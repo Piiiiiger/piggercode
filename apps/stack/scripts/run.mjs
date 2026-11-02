@@ -144,8 +144,8 @@ async function main() {
     });
     if (inferred) {
       // Stack env should win. Only infer from CWD when the repo dir isn't already configured.
-      if (!(process.env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim()) {
-        process.env.HAPPIER_STACK_REPO_DIR = inferred.repoDir;
+      if (!(process.env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim()) {
+        process.env.PIGGERCODE_STACK_REPO_DIR = inferred.repoDir;
       }
     }
   }
@@ -198,29 +198,29 @@ async function main() {
     throw new Error('[local] mysql requires an explicit DATABASE_URL before startup');
   }
   const usesFullManagedInfra = serverComponentName === 'happier-server'
-    && (process.env.HAPPIER_STACK_MANAGED_INFRA ?? '1') !== '0';
+    && (process.env.PIGGERCODE_STACK_MANAGED_INFRA ?? '1') !== '0';
   if (dbProvider === 'postgres' && !usesFullManagedInfra && !String(process.env.DATABASE_URL ?? '').trim()) {
     throw new Error('[local] postgres requires DATABASE_URL when the selected preset does not manage Postgres');
   }
 
-  const startDaemon = !flags.has('--no-daemon') && (process.env.HAPPIER_STACK_DAEMON ?? '1') !== '0';
-  const serveUiWanted = !flags.has('--no-ui') && (process.env.HAPPIER_STACK_SERVE_UI ?? '1') !== '0';
+  const startDaemon = !flags.has('--no-daemon') && (process.env.PIGGERCODE_STACK_DAEMON ?? '1') !== '0';
+  const serveUiWanted = !flags.has('--no-ui') && (process.env.PIGGERCODE_STACK_SERVE_UI ?? '1') !== '0';
   let serveUi = serveUiWanted;
   // Capability semantics: if UI serving is enabled, default to "required" (fail closed)
   // unless explicitly disabled.
-  const uiRequiredRaw = (process.env.HAPPIER_STACK_UI_REQUIRED ?? '').toString().trim();
+  const uiRequiredRaw = (process.env.PIGGERCODE_STACK_UI_REQUIRED ?? '').toString().trim();
   const uiRequired = uiRequiredRaw ? uiRequiredRaw !== '0' : Boolean(serveUiWanted);
   const startMobile = flags.has('--mobile') || flags.has('--with-mobile');
   const expoTailscale = flags.has('--expo-tailscale') || resolveExpoTailscaleEnabled({ env: process.env });
-  const noBrowser = flags.has('--no-browser') || (process.env.HAPPIER_STACK_NO_BROWSER ?? '').toString().trim() === '1';
-  const uiPrefix = process.env.HAPPIER_STACK_UI_PREFIX?.trim() ? process.env.HAPPIER_STACK_UI_PREFIX.trim() : '/';
+  const noBrowser = flags.has('--no-browser') || (process.env.PIGGERCODE_STACK_NO_BROWSER ?? '').toString().trim() === '1';
+  const uiPrefix = process.env.PIGGERCODE_STACK_UI_PREFIX?.trim() ? process.env.PIGGERCODE_STACK_UI_PREFIX.trim() : '/';
   const uiBuildDir = runtimeSnapshot
     ? join(runtimeSnapshot.launchPath ?? runtimeSnapshot.snapshotPath, 'ui')
-    : process.env.HAPPIER_STACK_UI_BUILD_DIR?.trim()
-      ? process.env.HAPPIER_STACK_UI_BUILD_DIR.trim()
+    : process.env.PIGGERCODE_STACK_UI_BUILD_DIR?.trim()
+      ? process.env.PIGGERCODE_STACK_UI_BUILD_DIR.trim()
       : join(autostart.baseDir, 'ui');
 
-  const enableTailscaleServe = (process.env.HAPPIER_STACK_TAILSCALE_SERVE ?? '0') === '1';
+  const enableTailscaleServe = (process.env.PIGGERCODE_STACK_TAILSCALE_SERVE ?? '0') === '1';
 
   const sourceServerDir = getComponentDir(rootDir, serverComponentName);
   const serverDir = serverLaunchSpec?.serverDir ?? sourceServerDir;
@@ -232,8 +232,8 @@ async function main() {
   const cliCommand = cliLaunchSpec?.command ?? '';
   const cliCommandArgs = cliLaunchSpec?.args ?? [];
 
-  const cliHomeDir = process.env.HAPPIER_STACK_CLI_HOME_DIR?.trim()
-    ? expandHome(process.env.HAPPIER_STACK_CLI_HOME_DIR.trim())
+  const cliHomeDir = process.env.PIGGERCODE_STACK_CLI_HOME_DIR?.trim()
+    ? expandHome(process.env.PIGGERCODE_STACK_CLI_HOME_DIR.trim())
     : join(autostart.baseDir, 'cli');
   const restart = flags.has('--restart');
 
@@ -329,7 +329,7 @@ async function main() {
 	  const stackCtx = resolveStackContext({ env: baseEnv, autostart });
 	  const { stackMode, runtimeStatePath, stackName, envPath, ephemeral } = stackCtx;
 	  const daemonScopeEnv = applyStackActiveServerScopeEnv({ env: baseEnv, stackName, cliIdentity: 'default' });
-	  const serviceMode = (daemonScopeEnv.HAPPIER_STACK_SERVICE_MODE ?? '').toString().trim() === '1';
+	  const serviceMode = (daemonScopeEnv.PIGGERCODE_STACK_SERVICE_MODE ?? '').toString().trim() === '1';
   serverPort = await selectLocalServerPortCandidateForStack({
     env: baseEnv,
     stackMode,
@@ -396,7 +396,7 @@ async function main() {
   const allowEnableTailscale =
     !stackMode ||
     stackName === 'main' ||
-    (baseEnv.HAPPIER_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
+    (baseEnv.PIGGERCODE_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
   const resolvedUrls = await resolveServerUrls({ env: baseEnv, serverPort, allowEnable: allowEnableTailscale });
   defaultPublicUrl = resolvedUrls.defaultPublicUrl;
   if (stackMode && stackName !== 'main' && !resolvedUrls.envPublicUrl) {
@@ -464,7 +464,7 @@ async function main() {
     // You can override with METRICS_ENABLED=true if you want it.
     METRICS_ENABLED: baseEnv.METRICS_ENABLED ?? 'false',
     // Server-side enforcement: if UI serving is enabled (capability), require a valid bundle.
-    ...(serveUi ? { HAPPIER_SERVER_UI_REQUIRED: uiRequired ? '1' : '0' } : {}),
+    ...(serveUi ? { PIGGERCODE_SERVER_UI_REQUIRED: uiRequired ? '1' : '0' } : {}),
     ...resolveServerUiEnv({ serveUi, uiBuildDir, uiPrefix, uiBuildDirExists: Boolean(serveUi && uiBuildDirExists && uiIndexExists) }),
   };
   applyServerComponentFlavorEnv({ serverComponentName, targetEnv: serverEnv });
@@ -497,7 +497,7 @@ async function main() {
   let effectiveInternalServerUrl = internalServerUrl;
   let activeServerProcess = null;
   if (serverComponentName === 'happier-server') {
-    const managed = (baseEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1') !== '0';
+    const managed = (baseEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1') !== '0';
     if (managed && startupDecision.startServer) {
       const envPath = resolveExplicitStackEnvFilePath(baseEnv);
       const infra = await ensureHappyServerManagedInfra({
@@ -511,7 +511,7 @@ async function main() {
       });
 
       // Backend runs on a separate port; gateway owns the public port.
-      const backendPortRaw = (baseEnv.HAPPIER_STACK_SERVER_BACKEND_PORT ?? '').trim();
+      const backendPortRaw = (baseEnv.PIGGERCODE_STACK_SERVER_BACKEND_PORT ?? '').trim();
       const backendPort = backendPortRaw ? Number(backendPortRaw) : serverPort + 10;
       const backendUrl = `http://127.0.0.1:${backendPort}`;
       if (!stackMode) {
@@ -520,7 +520,7 @@ async function main() {
 
       const backendEnv = { ...serverEnv, ...infra.env, PORT: String(backendPort) };
       if (!runtimeBackedStart) {
-        const autoMigrate = (baseEnv.HAPPIER_STACK_PRISMA_MIGRATE ?? '1') !== '0';
+        const autoMigrate = (baseEnv.PIGGERCODE_STACK_PRISMA_MIGRATE ?? '1') !== '0';
         if (autoMigrate) {
           await applyServerMigrations({ serverDir: sourceServerDir, env: backendEnv, dbProvider });
         }
@@ -588,7 +588,7 @@ async function main() {
   }
 
   // Default server start (happier-server-light, or happier-server without managed infra).
-  if (!(serverComponentName === 'happier-server' && (baseEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1') !== '0')) {
+  if (!(serverComponentName === 'happier-server' && (baseEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1') !== '0')) {
     if (startupDecision.startServer) {
       const server = runtimeSnapshot
         ? await spawnRuntimeServerAfterMigration({
@@ -680,11 +680,11 @@ async function main() {
       if (gate.reason === 'auth_flow_missing_credentials') {
         console.log('[local] auth flow: skipping daemon start until credentials exist');
         if (serviceMode) {
-          const pollMs = daemonScopeEnv.HAPPIER_STACK_SERVICE_DAEMON_AUTOSTART_POLL_MS ?? '';
+          const pollMs = daemonScopeEnv.PIGGERCODE_STACK_SERVICE_DAEMON_AUTOSTART_POLL_MS ?? '';
           const maxAttemptsPerCredentials =
-            daemonScopeEnv.HAPPIER_STACK_SERVICE_DAEMON_AUTOSTART_MAX_ATTEMPTS_PER_CREDENTIALS ?? '';
-          const retryBaseMs = daemonScopeEnv.HAPPIER_STACK_SERVICE_DAEMON_AUTOSTART_RETRY_BASE_MS ?? '';
-          const retryMaxMs = daemonScopeEnv.HAPPIER_STACK_SERVICE_DAEMON_AUTOSTART_RETRY_MAX_MS ?? '';
+            daemonScopeEnv.PIGGERCODE_STACK_SERVICE_DAEMON_AUTOSTART_MAX_ATTEMPTS_PER_CREDENTIALS ?? '';
+          const retryBaseMs = daemonScopeEnv.PIGGERCODE_STACK_SERVICE_DAEMON_AUTOSTART_RETRY_BASE_MS ?? '';
+          const retryMaxMs = daemonScopeEnv.PIGGERCODE_STACK_SERVICE_DAEMON_AUTOSTART_RETRY_MAX_MS ?? '';
 
           const getCredentialFingerprint = async () => {
             const path = findExistingStackCredentialPath({

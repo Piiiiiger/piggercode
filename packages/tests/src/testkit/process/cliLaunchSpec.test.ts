@@ -47,7 +47,7 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
           },
         },
         {
@@ -150,8 +150,8 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'copy',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'copy',
           },
         },
         {
@@ -227,8 +227,8 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
           },
         },
         {
@@ -269,8 +269,8 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
           },
         },
         {
@@ -316,8 +316,8 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
           },
         },
         {
@@ -401,8 +401,8 @@ describe('resolveCliTestLaunchSpec', () => {
           testDir: resolve(repoRoot, '.project'),
           env: {
             ...process.env,
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'copy',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'copy',
           },
         },
         {

@@ -125,11 +125,11 @@ process.on('SIGINT', shutdown);
 const envKeys = [
   'PATH',
   'HOME',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_OPENCODE_PATH',
-  'HAPPIER_OPENCODE_CLI_GENERATION',
-  'HAPPIER_OPENCODE_SERVER_STATE_PATH',
-  'HAPPIER_OPENCODE_SERVER_URL',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_OPENCODE_PATH',
+  'PIGGERCODE_OPENCODE_CLI_GENERATION',
+  'PIGGERCODE_OPENCODE_SERVER_STATE_PATH',
+  'PIGGERCODE_OPENCODE_SERVER_URL',
   'OPENCODE_PASSWORD',
   'OPENCODE_SERVER_PASSWORD',
   'OPENCODE_SERVER_USERNAME',
@@ -148,9 +148,9 @@ async function prepareManagedServerEnv(): Promise<Readonly<{ root: string; logsD
     fileName: 'fake-opencode',
     contents: FAKE_OPEN_CODE_V2_SERVE,
   });
-  process.env.HAPPIER_HOME_DIR = join(root, 'happier-home');
-  process.env.HAPPIER_OPENCODE_PATH = shimPath;
-  delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+  process.env.PIGGERCODE_HOME_DIR = join(root, 'happier-home');
+  process.env.PIGGERCODE_OPENCODE_PATH = shimPath;
+  delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
   delete process.env.OPENCODE_PASSWORD;
   delete process.env.OPENCODE_SERVER_PASSWORD;
   delete process.env.OPENCODE_SERVER_USERNAME;
@@ -174,9 +174,9 @@ describe('startManagedOpenCodeServer managed credential', () => {
     const { root } = await prepareManagedServerEnv();
     const statePath = join(root, 'managed-server.json');
     envScope.patch({
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: statePath,
-      HAPPIER_OPENCODE_SERVER_URL: undefined,
-      HAPPIER_OPENCODE_CLI_GENERATION: 'stable',
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: statePath,
+      PIGGERCODE_OPENCODE_SERVER_URL: undefined,
+      PIGGERCODE_OPENCODE_CLI_GENERATION: 'stable',
       OPENCODE_TEST_LEGACY_API: '1',
       OPENCODE_SERVER_PASSWORD: 'fixture-password',
     });
@@ -252,7 +252,7 @@ describe('startManagedOpenCodeServer managed credential', () => {
       processEnv: { ...process.env, OPENCODE_TEST_PID_FILE: pidPath,
         OPENCODE_TEST_READY_FILE: readyPath, OPENCODE_TEST_CATALOG_READ_FILE: catalogReadPath,
         OPENCODE_TEST_HANG_COMMANDS: '1', ...(generation === 'v1' ? { OPENCODE_TEST_LEGACY_API: '1' } : {}),
-        HAPPIER_OPENCODE_CLI_GENERATION: generation === 'v1' ? 'stable' : 'v2', OPENCODE_SERVER_PASSWORD: 'deadline-fixture-password' },
+        PIGGERCODE_OPENCODE_CLI_GENERATION: generation === 'v1' ? 'stable' : 'v2', OPENCODE_SERVER_PASSWORD: 'deadline-fixture-password' },
     });
     try {
       await expect(pending).rejects.toThrow(/timed out/i);
@@ -329,7 +329,7 @@ describe('startManagedOpenCodeServer managed credential', () => {
   it('retains the credential in a private managed-server state file and authenticates the reuse probe', async () => {
     const { root } = await prepareManagedServerEnv();
     const statePath = join(root, 'managed-server.json');
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = statePath;
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = statePath;
     const probedCredentials: Array<unknown> = [];
 
     const probeHealth = async (

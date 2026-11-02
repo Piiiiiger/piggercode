@@ -9435,7 +9435,7 @@ settingsSession: {
         manifest: {
           title: "モデルパックのマニフェスト",
           subtitle:
-            "既定では Happier のモデルパックを使用します（EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS で上書き可能）。",
+            "既定では Happier のモデルパックを使用します（EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS で上書き可能）。",
           detailResolved: "解決済み",
           detailMissing: "見つかりません",
         },
@@ -9481,7 +9481,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "マニフェスト URL がありません",
-            body: "モデルパックのマニフェスト URL を解決できません。EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS（または旧 Kokoro の環境変数）を確認してください。",
+            body: "モデルパックのマニフェスト URL を解決できません。EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS（または旧 Kokoro の環境変数）を確認してください。",
           },
           notInstalledTitle: "未インストール",
           notInstalledBody:

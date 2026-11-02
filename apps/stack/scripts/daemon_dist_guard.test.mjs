@@ -32,14 +32,14 @@ function runGit(args, cwd) {
 function buildDaemonDistGuardEnv(overrides = {}) {
   return {
     ...process.env,
-    HAPPIER_STACK_REPO_DIR: '',
-    HAPPIER_STACK_CLI_ROOT_DIR: '',
-    HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '',
-    HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '',
-    HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '',
-    HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-    HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-    HAPPIER_STACK_LOG_TEE_DIR: '',
+    PIGGERCODE_STACK_REPO_DIR: '',
+    PIGGERCODE_STACK_CLI_ROOT_DIR: '',
+    PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '',
+    PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '',
+    PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '',
+    PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+    PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+    PIGGERCODE_STACK_LOG_TEE_DIR: '',
     ...overrides,
   };
 }
@@ -60,7 +60,7 @@ test('watch startup admits a validated prior CLI publication without waiting for
     {
       cliBin,
       admitPriorDistImmediately: true,
-      env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir },
+      env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir },
     },
     {
       ensureCliBuiltImpl: async () => {
@@ -96,7 +96,7 @@ test('watch startup retries a transient atomic CLI publication gap before waitin
     {
       cliBin,
       admitPriorDistImmediately: true,
-      env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir },
+      env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir },
     },
     {
       ensureCliBuiltImpl: async () => {
@@ -126,7 +126,7 @@ test('source admission forces one last-chance build when builds are disabled and
   const calls = [];
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir, HAPPIER_STACK_CLI_BUILD: '0' } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir, PIGGERCODE_STACK_CLI_BUILD: '0' } },
     {
       ensureCliBuiltImpl: async (_cliDir, options) => {
         calls.push(options.buildCli);
@@ -161,7 +161,7 @@ test('source admission does not force a disabled build when prior dist is valid'
   const probes = [];
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir, HAPPIER_STACK_CLI_BUILD: '0' } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir, PIGGERCODE_STACK_CLI_BUILD: '0' } },
     {
       ensureCliBuiltImpl: async (_cliDir, options) => {
         calls.push(options.buildCli);
@@ -195,7 +195,7 @@ test('source admission exposes an unchanged runnable prior dist as degraded when
   const probes = [];
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir } },
     {
       ensureCliBuiltImpl: async () => {
         throw new Error('yarn failed (code=47)');
@@ -226,7 +226,7 @@ test('source admission uses a successful current build without entering degraded
   await writeDistBuildManifestForTest(distEntrypoint, 'abcdef1234567890');
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir } },
     {
       ensureCliBuiltImpl: async () => ({ built: true, current: true, reason: 'changed' }),
       probeCliDistRuntimeImportImpl: async () => {
@@ -253,7 +253,7 @@ test('source admission exposes a successful but superseded build as degraded wit
   await writeDistBuildManifestForTest(distEntrypoint, 'abcdef1234567890');
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir } },
     {
       ensureCliBuiltImpl: async () => ({
         built: true,
@@ -287,7 +287,7 @@ test('source admission never promotes a different dist identity from a failed re
   let probes = 0;
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir } },
     {
       ensureCliBuiltImpl: async () => {
         await writeDistBuildManifestForTest(distEntrypoint, 'bbbbbbbbbbbbbbbb');
@@ -318,7 +318,7 @@ test('source admission rejects a manifest-valid prior dist when its runtime impo
   await writeDistBuildManifestForTest(distEntrypoint, 'abcdef1234567890');
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir } },
     {
       ensureCliBuiltImpl: async () => {
         throw new Error('yarn failed (code=47)');
@@ -342,7 +342,7 @@ test('source admission fails closed when the disabled-build recovery cannot prod
   const calls = [];
 
   const result = await ensureHappierCliDistExists(
-    { cliBin, env: { ...process.env, HAPPIER_STACK_REPO_DIR: repoDir, HAPPIER_STACK_CLI_BUILD: '0' } },
+    { cliBin, env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: repoDir, PIGGERCODE_STACK_CLI_BUILD: '0' } },
     { ensureCliBuiltImpl: async (_cliDir, options) => {
       calls.push(options.buildCli);
       if (options.buildCli) throw new Error('forced build failed');
@@ -375,8 +375,8 @@ test('source daemon admission reuses an exact watcher-admitted dist without a se
       admittedDistClosureFingerprint: 'abcdef1234567890',
       env: {
         ...process.env,
-        HAPPIER_STACK_REPO_DIR: repoDir,
-        HAPPIER_STACK_CLI_BUILD_MODE: 'always',
+        PIGGERCODE_STACK_REPO_DIR: repoDir,
+        PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
       },
     },
     {
@@ -399,8 +399,8 @@ test('source daemon admission reuses an exact watcher-admitted dist without a se
       admittedDistClosureFingerprint: '1111111111111111',
       env: {
         ...process.env,
-        HAPPIER_STACK_REPO_DIR: repoDir,
-        HAPPIER_STACK_CLI_BUILD_MODE: 'always',
+        PIGGERCODE_STACK_REPO_DIR: repoDir,
+        PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
       },
     },
     {
@@ -482,14 +482,14 @@ try {
     isShuttingDown: () => false,
     env: {
       ...process.env,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '100',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '100',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
       SPAWN_MARKER: spawnMarker,
     },
     stackName: 'dev',
@@ -570,7 +570,7 @@ test('source daemon lifecycle commands run after the CLI publication lock is rel
       'appendFileSync(process.env.EVENTS_PATH, JSON.stringify({',
       '  args: process.argv.slice(2),',
       '  publicationLockHeld: existsSync(process.env.PUBLICATION_LOCK_PATH),',
-      "  publicationLockLease: process.env.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD || null,",
+      "  publicationLockLease: process.env.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD || null,",
       "}) + '\\n');",
       "if (process.argv[2] === 'start') process.exit(1);",
       'process.exit(0);',
@@ -590,12 +590,12 @@ test('source daemon lifecycle commands run after the CLI publication lock is rel
       isShuttingDown: () => false,
       forceRestart: true,
       env: buildDaemonDistGuardEnv({
-        HAPPIER_STACK_REPO_DIR: repoDir,
-        HAPPIER_STACK_TUI: '0',
-        HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1',
-        HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
-        HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-        HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+        PIGGERCODE_STACK_REPO_DIR: repoDir,
+        PIGGERCODE_STACK_TUI: '0',
+        PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
         EVENTS_PATH: eventsPath,
         PUBLICATION_LOCK_PATH: lockPath,
       }),
@@ -631,10 +631,10 @@ test('applyDaemonDistClosureRuntimeEnv exposes the current stack dist fingerprin
 
   assert.equal(nextEnv, env);
   assert.equal(nextEnv.KEEP_ME, '1');
-  assert.equal(nextEnv.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, '/tmp/happier/stack.runtime.json');
-  assert.equal(nextEnv.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/repo/apps/cli/dist/index.mjs');
-  assert.equal(nextEnv.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
-  assert.equal(nextEnv.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
+  assert.equal(nextEnv.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, '/tmp/happier/stack.runtime.json');
+  assert.equal(nextEnv.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/repo/apps/cli/dist/index.mjs');
+  assert.equal(nextEnv.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
+  assert.equal(nextEnv.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
 });
 
 test('applyDaemonDistClosureRuntimeEnv marks an admitted runtime-backed daemon and preserves its immutable fingerprint', () => {
@@ -647,17 +647,17 @@ test('applyDaemonDistClosureRuntimeEnv marks an admitted runtime-backed daemon a
     runtimeBacked: true,
   });
 
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/tmp/happier/runtime/builds/snap-1/cli/package-dist/index.mjs');
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/tmp/happier/runtime/builds/snap-1/cli/package-dist/index.mjs');
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
 });
 
 test('applyDaemonDistClosureRuntimeEnv clears the dist runner fast path when the fingerprint is missing', () => {
   const env = {
-    HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '/tmp/happier/stack.runtime.json',
-    HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/repo/apps/cli/dist/index.mjs',
-    HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abc123def4567890',
-    HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
+    PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '/tmp/happier/stack.runtime.json',
+    PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/repo/apps/cli/dist/index.mjs',
+    PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abc123def4567890',
+    PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
   };
 
   applyDaemonDistClosureRuntimeEnv(env, {
@@ -666,10 +666,10 @@ test('applyDaemonDistClosureRuntimeEnv clears the dist runner fast path when the
     distClosureFingerprint: null,
   });
 
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, undefined);
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, undefined);
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, undefined);
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, undefined);
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, undefined);
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, undefined);
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
 });
 
 test('applyDaemonDistClosureRuntimeEnv pins detached daemon launch without a runtime projection path', () => {
@@ -681,9 +681,9 @@ test('applyDaemonDistClosureRuntimeEnv pins detached daemon launch without a run
     distClosureFingerprint: 'abc123def4567890',
   });
 
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, undefined);
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/repo/apps/cli/dist/index.mjs');
-  assert.equal(env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH, undefined);
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/repo/apps/cli/dist/index.mjs');
+  assert.equal(env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abc123def4567890');
 });
 
 test('daemon dist guard does not restart when only dist mtimes are newer than daemon startup', async (t) => {
@@ -798,7 +798,7 @@ if (!statePath) process.exit(2);
 const server = http.createServer((req, res) => {
   if (req.url === '/ping') {
     const distClosureFingerprint = String(
-      process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT || '',
+      process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT || '',
     ).trim();
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({
@@ -844,14 +844,14 @@ const FAKE_PING_AWARE_DAEMON_CHILD_SCRIPT = ${JSON.stringify(FAKE_PING_AWARE_DAE
 
 function startFakePingAwareDaemon(statePath) {
   const forcedDistClosureFingerprint = String(
-    process.env.HAPPIER_TEST_DAEMON_CHILD_DIST_FINGERPRINT || '',
+    process.env.PIGGERCODE_TEST_DAEMON_CHILD_DIST_FINGERPRINT || '',
   ).trim();
   const child = spawn(process.execPath, ['-e', FAKE_PING_AWARE_DAEMON_CHILD_SCRIPT, statePath, 'daemon', 'start'], {
     detached: true,
     env: {
       ...process.env,
       ...(forcedDistClosureFingerprint
-        ? { HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: forcedDistClosureFingerprint }
+        ? { PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: forcedDistClosureFingerprint }
         : {}),
     },
     stdio: 'ignore',
@@ -871,10 +871,10 @@ import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
-if (args[0] === 'server' && args[1] === 'set' && process.env.HAPPIER_TEST_FAIL_SERVER_SET === '1') process.exit(73);
+if (args[0] === 'server' && args[1] === 'set' && process.env.PIGGERCODE_TEST_FAIL_SERVER_SET === '1') process.exit(73);
 if (args[0] !== 'daemon') process.exit(0);
 if (args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -935,8 +935,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
-const eventsPath = process.env.HAPPIER_TEST_DAEMON_EVENTS_PATH;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
+const eventsPath = process.env.PIGGERCODE_TEST_DAEMON_EVENTS_PATH;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -991,10 +991,10 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
-const eventsPath = process.env.HAPPIER_TEST_DAEMON_EVENTS_PATH;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
+const eventsPath = process.env.PIGGERCODE_TEST_DAEMON_EVENTS_PATH;
 if (!home) process.exit(2);
-const lifecycleScopeId = String(process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID || '').trim();
+const lifecycleScopeId = String(process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID || '').trim();
 const state = lifecycleScopeId
   ? join(home, 'servers', lifecycleScopeId, 'daemon.state.json')
   : join(home, 'daemon.state.json');
@@ -1062,7 +1062,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -1111,9 +1111,9 @@ test('pid-only false-ready fixture publishes daemon command identity and cleans 
     await mkdir(cliHomeDir, { recursive: true });
     const env = {
       ...process.env,
-      HAPPIER_HOME_DIR: cliHomeDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_PROCESS_KIND: 'daemon',
+      PIGGERCODE_HOME_DIR: cliHomeDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_PROCESS_KIND: 'daemon',
     };
 
     execFileSync(process.execPath, [cliEntrypoint, 'daemon', 'start'], { env, stdio: 'ignore' });
@@ -1145,7 +1145,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -1207,7 +1207,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -1273,7 +1273,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -1347,7 +1347,7 @@ fs.writeFileSync(
 `)} ${shellQuote(preStartStatePath)} ${shellQuote(preStartLockPath)} ${shellQuote(preStartObservationPath)} || exit $?`
     : '';
   const script = `#!/bin/sh
-HOME_DIR="${'$'}{HAPPIER_HOME_DIR:-${'$'}{HAPPIER_STACK_CLI_HOME_DIR:-}}"
+HOME_DIR="${'$'}{PIGGERCODE_HOME_DIR:-${'$'}{PIGGERCODE_STACK_CLI_HOME_DIR:-}}"
 if [ -z "$HOME_DIR" ]; then
   exit 2
 fi
@@ -1489,10 +1489,10 @@ test('startLocalDaemonWithAuth requires daemon control ping before accepting run
     await writeFile(join(cliHomeDir, 'access.key'), 'dummy\n', 'utf-8');
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '250',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '250',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     });
 
     await assert.rejects(
@@ -1548,7 +1548,7 @@ test('startLocalDaemonWithAuth does not require a second CLI build when dist/ind
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_CLI_BUILD: '1',
     });
 
     // If startLocalDaemonWithAuth tries to rebuild, this will fail because package.json has no build script.
@@ -1607,10 +1607,10 @@ test('startLocalDaemonWithAuth cold-starts runnable prior dist and preserves the
   await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
   const env = buildDaemonDistGuardEnv({
-    HAPPIER_STACK_REPO_DIR: tmp,
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'hstack-home'),
-    HAPPIER_STACK_CLI_BUILD: '0',
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_REPO_DIR: tmp,
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'hstack-home'),
+    PIGGERCODE_STACK_CLI_BUILD: '0',
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
   });
   t.after(async () => {
     await stopLocalDaemon({
@@ -1646,9 +1646,9 @@ test('startLocalDaemonWithAuth cold-starts runnable prior dist and preserves the
     forceRestart: false,
     env: {
       ...env,
-      HAPPIER_STACK_REPO_DIR: '',
-      HAPPIER_STACK_CLI_ROOT_DIR: tmp,
-      HAPPIER_TEST_FAIL_SERVER_SET: '1',
+      PIGGERCODE_STACK_REPO_DIR: '',
+      PIGGERCODE_STACK_CLI_ROOT_DIR: tmp,
+      PIGGERCODE_TEST_FAIL_SERVER_SET: '1',
     },
     stackName: 'dev',
     cliIdentity: 'default',
@@ -1675,7 +1675,7 @@ case "$*" in
   *"pgid="*) printf "%s\\n" "$FAKE_LISTEN_PID" ;;
   *"eww -p $FAKE_LISTEN_PID"*)
     printf "PID COMMAND\\n"
-    printf "%s node HAPPIER_STACK_STACK=%s HAPPIER_STACK_ENV_FILE=%s HAPPIER_STACK_PROCESS_KIND=server\\n" \
+    printf "%s node PIGGERCODE_STACK_STACK=%s PIGGERCODE_STACK_ENV_FILE=%s PIGGERCODE_STACK_PROCESS_KIND=server\\n" \
       "$FAKE_LISTEN_PID" "$FAKE_STACK_NAME" "$FAKE_STACK_ENV_FILE"
     ;;
   *) exec /bin/ps "$@" ;;
@@ -1697,8 +1697,8 @@ esac
   const buildEnv = {
     ...env,
     PATH: `${binDir}:/usr/bin:/bin`,
-    HAPPIER_STACK_CLI_BUILD: '1',
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_CLI_BUILD: '1',
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
   };
   await startLocalDaemonWithAuth({
     cliBin,
@@ -1718,7 +1718,7 @@ esac
     env: buildEnv,
     stackName: 'dev',
   });
-  const upToDateEnv = { ...buildEnv, HAPPIER_STACK_CLI_BUILD_MODE: 'auto' };
+  const upToDateEnv = { ...buildEnv, PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto' };
   await startLocalDaemonWithAuth({
     cliBin,
     cliHomeDir,
@@ -1764,9 +1764,9 @@ test('source stack start uses an unchanged runnable prior dist when the current 
   `], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
   });
@@ -1813,7 +1813,7 @@ case "$*" in
   *"pgid="*) printf "%s\\n" "$FAKE_LISTEN_PID" ;;
   *"eww -p $FAKE_LISTEN_PID"*)
     printf "PID COMMAND\\n"
-    printf "%s node HAPPIER_STACK_STACK=%s HAPPIER_STACK_ENV_FILE=%s HAPPIER_STACK_PROCESS_KIND=server\\n" \
+    printf "%s node PIGGERCODE_STACK_STACK=%s PIGGERCODE_STACK_ENV_FILE=%s PIGGERCODE_STACK_PROCESS_KIND=server\\n" \
       "$FAKE_LISTEN_PID" "$FAKE_STACK_NAME" "$FAKE_STACK_ENV_FILE"
     ;;
   *) exec /bin/ps "$@" ;;
@@ -1852,23 +1852,23 @@ esac
   await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
   const env = buildDaemonDistGuardEnv({
-    HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'hstack-home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'stacks'),
-    HAPPIER_STACK_STACK: '',
-    HAPPIER_STACK_ENV_FILE: envPath,
-    HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-    HAPPIER_STACK_RUNTIME_MODE: 'source',
-    HAPPIER_STACK_REPO_DIR: repoDir,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_SERVER_PORT: String(serverPort),
-    HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-    HAPPIER_STACK_MANAGED_INFRA: '0',
-    HAPPIER_STACK_CLI_BUILD: '1',
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-    HAPPIER_STACK_SERVE_UI: '0',
-    HAPPIER_STACK_NO_BROWSER: '1',
+    PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'hstack-home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'stacks'),
+    PIGGERCODE_STACK_STACK: '',
+    PIGGERCODE_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+    PIGGERCODE_STACK_REPO_DIR: repoDir,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_SERVER_PORT: String(serverPort),
+    PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+    PIGGERCODE_STACK_MANAGED_INFRA: '0',
+    PIGGERCODE_STACK_CLI_BUILD: '1',
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_SERVE_UI: '0',
+    PIGGERCODE_STACK_NO_BROWSER: '1',
     FAKE_LISTEN_PID: String(healthServer.pid),
     FAKE_STACK_NAME: stackName,
     FAKE_STACK_ENV_FILE: envPath,
@@ -1959,8 +1959,8 @@ test('startLocalDaemonWithAuth ignores unreachable stale dist chunks when the en
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_REPO_DIR: tmp,
-      HAPPIER_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_REPO_DIR: tmp,
+      PIGGERCODE_STACK_CLI_BUILD: '1',
     });
 
     await startLocalDaemonWithAuth({
@@ -2003,7 +2003,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 if (args[0] === 'daemon' && args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 ${fakePingAwareDaemonSpawnerSource()}
@@ -2036,8 +2036,8 @@ process.exit(0);
 
     const cliBin = join(cliBinDir, 'happier.mjs');
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_TUI: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_TUI: '0',
     });
 
     await startLocalDaemonWithAuth({
@@ -2084,7 +2084,7 @@ import { join } from 'node:path';
 const args = process.argv.slice(2);
 if (args[0] !== 'daemon') process.exit(0);
 if (args[1] === '--help') process.exit(0);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const state = join(home, 'daemon.state.json');
 
@@ -2137,7 +2137,7 @@ process.exit(0);
       join(cliDir, 'scripts', 'build.mjs'),
       `import { mkdirSync, writeFileSync } from 'node:fs';\n` +
         `import { join } from 'node:path';\n` +
-      `const dist = process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR || process.env.HAPPIER_CLI_BUILD_OUTPUT_DIR || join(process.cwd(), 'dist');\n` +
+      `const dist = process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR || process.env.PIGGERCODE_CLI_BUILD_OUTPUT_DIR || join(process.cwd(), 'dist');\n` +
       `mkdirSync(dist, { recursive: true });\n` +
         `writeFileSync(join(dist, 'index.mjs'), ${JSON.stringify(distScript.trimStart())}, 'utf-8');\n` +
         `writeFileSync(join(dist, '.build-manifest.json'), JSON.stringify({ fingerprint: '3333333333333333', builtAt: '2026-07-09T00:00:00.000Z', fileCount: 1, toolVersion: '1' }) + '\\n', 'utf-8');\n`,
@@ -2165,7 +2165,7 @@ process.exit(0);
         `const { spawnSync } = require('node:child_process');\n` +
         `const { appendFileSync } = require('node:fs');\n` +
         `const { join } = require('node:path');\n` +
-        `appendFileSync(process.env.HAPPIER_TEST_YARN_INVOCATIONS, process.argv.slice(2).join(' ') + '\\n');\n` +
+        `appendFileSync(process.env.PIGGERCODE_TEST_YARN_INVOCATIONS, process.argv.slice(2).join(' ') + '\\n');\n` +
         `if (process.argv.includes('--version')) { console.log('1.22.22'); process.exit(0); }\n` +
         `if (process.argv.includes('build')) {\n` +
         `  const result = spawnSync(process.execPath, [join(process.cwd(), 'scripts', 'build.mjs')], { stdio: 'inherit', env: process.env });\n` +
@@ -2188,11 +2188,11 @@ process.exit(0);
 
     const cliBin = join(cliBinDir, 'happier.mjs');
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_HOME_DIR: join(tmp, 'hstack-home'),
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-      HAPPIER_STACK_TUI: '0',
-      HAPPIER_TEST_YARN_INVOCATIONS: join(tmp, 'yarn-invocations.log'),
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_HOME_DIR: join(tmp, 'hstack-home'),
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_TUI: '0',
+      PIGGERCODE_TEST_YARN_INVOCATIONS: join(tmp, 'yarn-invocations.log'),
       PATH: `${binDir}:${process.env.PATH}`,
     });
 
@@ -2239,7 +2239,7 @@ test('startLocalDaemonWithAuth coalesces concurrent non-forced starts behind an 
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_TEST_DAEMON_EVENTS_PATH: eventsPath,
+      PIGGERCODE_TEST_DAEMON_EVENTS_PATH: eventsPath,
     });
 
     await Promise.all([
@@ -2300,9 +2300,9 @@ test('startLocalDaemonWithAuth keeps a running daemon when a concurrent CLI buil
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_TEST_DAEMON_EVENTS_PATH: eventsPath,
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '3000',
+      PIGGERCODE_TEST_DAEMON_EVENTS_PATH: eventsPath,
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '3000',
     });
     const daemonEnv = getDaemonEnv({
       baseEnv: env,
@@ -2390,7 +2390,7 @@ test('startLocalDaemonWithAuth reconciles a stale dist fingerprint through the c
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_TEST_DAEMON_EVENTS_PATH: eventsPath,
+      PIGGERCODE_TEST_DAEMON_EVENTS_PATH: eventsPath,
     });
 
     await startLocalDaemonWithAuth({
@@ -2437,7 +2437,7 @@ test('startLocalDaemonWithAuth reconciles a stale dist fingerprint through the c
               stackName: 'dev',
               cliIdentity: 'default',
             }),
-            HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: args.successorDistClosureFingerprint,
+            PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: args.successorDistClosureFingerprint,
           },
         });
         assert.doesNotThrow(() => process.kill(daemonPid, 0));
@@ -2497,7 +2497,7 @@ test('startLocalDaemonWithAuth preserves the old daemon when stale-dist overlap 
     await mkdir(cliHomeDir, { recursive: true });
     await writeFile(join(cliHomeDir, 'access.key'), 'dummy\n', 'utf-8');
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
-    const env = buildDaemonDistGuardEnv({ HAPPIER_TEST_DAEMON_EVENTS_PATH: eventsPath });
+    const env = buildDaemonDistGuardEnv({ PIGGERCODE_TEST_DAEMON_EVENTS_PATH: eventsPath });
 
     await startLocalDaemonWithAuth({
       cliBin,
@@ -2580,7 +2580,7 @@ test('startLocalDaemonWithAuth reconciles an initial healthy mismatch during pre
           stackName: 'dev',
           cliIdentity: 'default',
         }),
-        HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: existingFingerprint,
+        PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: existingFingerprint,
       },
     });
     await writeFile(
@@ -2624,7 +2624,7 @@ test('startLocalDaemonWithAuth reconciles an initial healthy mismatch during pre
               stackName: 'dev',
               cliIdentity: 'default',
             }),
-            HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: currentFingerprint,
+            PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: currentFingerprint,
           },
         });
         process.kill(daemonPid, 'SIGTERM');
@@ -2671,8 +2671,8 @@ test('startLocalDaemonWithAuth reconciles a mismatched daemon adopted during col
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_TEST_DAEMON_CHILD_DIST_FINGERPRINT: adoptedFingerprint,
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_TEST_DAEMON_CHILD_DIST_FINGERPRINT: adoptedFingerprint,
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     });
     let overlapRestartUsed = false;
 
@@ -2706,7 +2706,7 @@ test('startLocalDaemonWithAuth reconciles a mismatched daemon adopted during col
               stackName: 'dev',
               cliIdentity: 'default',
             }),
-            HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: currentFingerprint,
+            PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: currentFingerprint,
           },
         });
         process.kill(adoptedPid, 'SIGTERM');
@@ -2756,9 +2756,9 @@ test('startLocalDaemonWithAuth rejects incomplete dist when index imports missin
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_REPO_DIR: tmp,
-      HAPPIER_STACK_CLI_ROOT_DIR: tmp,
-      HAPPIER_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_REPO_DIR: tmp,
+      PIGGERCODE_STACK_CLI_ROOT_DIR: tmp,
+      PIGGERCODE_STACK_CLI_BUILD: '0',
     });
 
     await assert.rejects(
@@ -2883,7 +2883,7 @@ test('startLocalDaemonWithAuth accepts a runtime snapshot cli executable without
       isShuttingDown: () => false,
       forceRestart: true,
       env: buildDaemonDistGuardEnv({
-        HAPPIER_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -2929,7 +2929,7 @@ test('startLocalDaemonWithAuth prefers a runtime snapshot node entrypoint over t
       isShuttingDown: () => false,
       forceRestart: true,
       env: buildDaemonDistGuardEnv({
-        HAPPIER_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -2979,7 +2979,7 @@ test('startLocalDaemonWithAuth preserve-existing runtime adoption replaces a dae
       daemon: { distClosureFingerprint: admittedFingerprint },
     });
 
-    const env = buildDaemonDistGuardEnv({ HAPPIER_STACK_CLI_BUILD: '0' });
+    const env = buildDaemonDistGuardEnv({ PIGGERCODE_STACK_CLI_BUILD: '0' });
     daemonPid = await spawnReplacementDaemonForTest({
       statePath,
       previousPid: null,
@@ -3028,7 +3028,7 @@ test('startLocalDaemonWithAuth preserve-existing runtime adoption replaces a dae
               stackName: 'dev',
               cliIdentity: 'default',
             }),
-            HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: admittedFingerprint,
+            PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: admittedFingerprint,
           },
         });
         process.kill(daemonPid, 'SIGTERM');
@@ -3092,7 +3092,7 @@ test('startLocalDaemonWithAuth fails closed on an unreachable runtime-backed dae
       daemon: { distClosureFingerprint: priorFingerprint },
     });
 
-    const env = buildDaemonDistGuardEnv({ HAPPIER_STACK_CLI_BUILD: '0' });
+    const env = buildDaemonDistGuardEnv({ PIGGERCODE_STACK_CLI_BUILD: '0' });
     const daemonEnv = getDaemonEnv({
       baseEnv: env,
       cliHomeDir,
@@ -3169,7 +3169,7 @@ test('startLocalDaemonWithAuth still prefers a runtime snapshot node entrypoint 
       isShuttingDown: () => false,
       forceRestart: true,
       env: buildDaemonDistGuardEnv({
-        HAPPIER_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -3210,7 +3210,7 @@ test('startLocalDaemonWithAuth runs runtime snapshot JS commands through node wh
       isShuttingDown: () => false,
       forceRestart: true,
       env: buildDaemonDistGuardEnv({
-        HAPPIER_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -3249,7 +3249,7 @@ test('startLocalDaemonWithAuth rejects missing runtime snapshot command paths be
         isShuttingDown: () => false,
         forceRestart: true,
         env: buildDaemonDistGuardEnv({
-          HAPPIER_STACK_CLI_BUILD: '0',
+          PIGGERCODE_STACK_CLI_BUILD: '0',
         }),
         stackName: 'dev',
         cliIdentity: 'default',
@@ -3275,7 +3275,7 @@ test('startLocalDaemonWithAuth restarts PATH-resolved runtime commands instead o
     const statePath = join(cliHomeDir, 'daemon.state.json');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
     });
 
@@ -3337,7 +3337,7 @@ test('startLocalDaemonWithAuth kills the daemon from daemon.state.json when daem
     const statePath = join(cliHomeDir, 'daemon.state.json');
 
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
     });
 
@@ -3393,7 +3393,7 @@ test('startLocalDaemonWithAuth preserves exact daemon publication bytes until th
     const binDir = join(tmp, 'bin');
     const observationPath = join(tmp, 'pre-start-publication.json');
     const env = buildDaemonDistGuardEnv({
-      HAPPIER_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
     });
     const daemonEnv = getDaemonEnv({

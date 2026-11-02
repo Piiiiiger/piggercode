@@ -48,7 +48,7 @@ function expectCapabilityData(
 describe('registerCommonHandlers capabilities', () => {
     const originalPath = process.env.PATH;
     const originalPathext = process.env.PATHEXT;
-    const originalHappierHomeDir = process.env.HAPPIER_HOME_DIR;
+    const originalHappierHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
     beforeEach(() => {
         if (originalPath === undefined) delete process.env.PATH;
@@ -57,8 +57,8 @@ describe('registerCommonHandlers capabilities', () => {
         if (originalPathext === undefined) delete process.env.PATHEXT;
         else process.env.PATHEXT = originalPathext;
 
-        if (originalHappierHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-        else process.env.HAPPIER_HOME_DIR = originalHappierHomeDir;
+        if (originalHappierHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+        else process.env.PIGGERCODE_HOME_DIR = originalHappierHomeDir;
         reloadConfiguration();
     });
 
@@ -69,8 +69,8 @@ describe('registerCommonHandlers capabilities', () => {
         if (originalPathext === undefined) delete process.env.PATHEXT;
         else process.env.PATHEXT = originalPathext;
 
-        if (originalHappierHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-        else process.env.HAPPIER_HOME_DIR = originalHappierHomeDir;
+        if (originalHappierHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+        else process.env.PIGGERCODE_HOME_DIR = originalHappierHomeDir;
         reloadConfiguration();
     });
 
@@ -343,7 +343,7 @@ describe('registerCommonHandlers capabilities', () => {
     it('supports per-capability params (includeLoginStatus) and skips latest-version checks when onlyIfInstalled=true and not installed', async () => {
         const dir = await mkdtemp(join(tmpdir(), 'happier-cli-capabilities-login-'));
         try {
-            process.env.HAPPIER_HOME_DIR = join(dir, 'happier-home');
+            process.env.PIGGERCODE_HOME_DIR = join(dir, 'happier-home');
             reloadConfiguration();
             const isWindows = process.platform === 'win32';
             const fakeCodex = join(dir, isWindows ? 'codex.cmd' : 'codex');

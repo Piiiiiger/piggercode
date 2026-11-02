@@ -10,8 +10,8 @@ test('hstack tools help includes profiling tools', async () => {
   const rootDir = getStackRootFromMeta(import.meta.url);
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'tools', '--help'], { cwd: rootDir, env });
@@ -24,14 +24,14 @@ test('hstack tools profile-processes samples the selected pid', async (t) => {
   const rootDir = getStackRootFromMeta(import.meta.url);
   const outputDir = await mkdtemp(join(tmpdir(), 'happier-tools-profile-processes-'));
   const envFile = join(outputDir, 'env');
-  await writeFile(envFile, 'HAPPIER_STACK_STACK=test-stack\n', 'utf8');
+  await writeFile(envFile, 'PIGGERCODE_STACK_STACK=test-stack\n', 'utf8');
   t.after(async () => {
     await rm(outputDir, { recursive: true, force: true }).catch(() => {});
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: envFile,
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: envFile,
   };
 
   const res = await runNodeCapture(
@@ -60,14 +60,14 @@ test('hstack tools profile-mobile-scenario lists canonical mobile scenarios', as
   const rootDir = getStackRootFromMeta(import.meta.url);
   const fixtureDir = await mkdtemp(join(tmpdir(), 'happier-tools-mobile-profile-list-'));
   const envFile = join(fixtureDir, 'env');
-  await writeFile(envFile, 'HAPPIER_STACK_STACK=test-stack\n', 'utf8');
+  await writeFile(envFile, 'PIGGERCODE_STACK_STACK=test-stack\n', 'utf8');
   t.after(async () => {
     await rm(fixtureDir, { recursive: true, force: true }).catch(() => {});
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: envFile,
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: envFile,
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'tools', 'profile-mobile-scenario', '--list', '--json'], {
@@ -88,15 +88,15 @@ test('hstack tools profile-mobile-scenario generates current-device Argent flow 
   const projectRoot = await mkdtemp(join(tmpdir(), 'happier-tools-mobile-profile-project-'));
   const outputDir = await mkdtemp(join(tmpdir(), 'happier-tools-mobile-profile-output-'));
   const envFile = join(projectRoot, 'env');
-  await writeFile(envFile, 'HAPPIER_STACK_STACK=test-stack\n', 'utf8');
+  await writeFile(envFile, 'PIGGERCODE_STACK_STACK=test-stack\n', 'utf8');
   t.after(async () => {
     await rm(projectRoot, { recursive: true, force: true }).catch(() => {});
     await rm(outputDir, { recursive: true, force: true }).catch(() => {});
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: envFile,
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: envFile,
   };
 
   const res = await runNodeCapture(

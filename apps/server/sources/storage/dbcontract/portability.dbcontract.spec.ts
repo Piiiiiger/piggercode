@@ -5,7 +5,7 @@ import { reconcileSessionPendingQueueState } from "@/app/session/pending/reconci
 import { inTx } from "@/storage/inTx";
 
 function resolveContractProviderFromEnv(): "postgres" | "mysql" {
-    const raw = (process.env.HAPPIER_DB_PROVIDER ?? process.env.HAPPY_DB_PROVIDER ?? "postgres")
+    const raw = (process.env.PIGGERCODE_DB_PROVIDER ?? process.env.HAPPY_DB_PROVIDER ?? "postgres")
         .toString()
         .trim()
         .toLowerCase();
@@ -13,7 +13,7 @@ function resolveContractProviderFromEnv(): "postgres" | "mysql" {
     if (raw === "postgresql" || raw === "postgres") return "postgres";
     if (raw === "mysql") return "mysql";
     throw new Error(
-        `Unsupported contract provider: ${raw}. Set HAPPIER_DB_PROVIDER=postgres|mysql (or HAPPY_DB_PROVIDER=postgres|mysql)`,
+        `Unsupported contract provider: ${raw}. Set PIGGERCODE_DB_PROVIDER=postgres|mysql (or HAPPY_DB_PROVIDER=postgres|mysql)`,
     );
 }
 

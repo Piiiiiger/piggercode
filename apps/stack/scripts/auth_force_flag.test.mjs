@@ -14,15 +14,15 @@ test('resolveAuthForceFlag is true when --force flag is present', () => {
   assert.equal(resolveAuthForceFlag({ flags, kv }), true);
 });
 
-test('applyAuthForceEnv sets HAPPIER_AUTH_FORCE=1 when forced', () => {
+test('applyAuthForceEnv sets PIGGERCODE_AUTH_FORCE=1 when forced', () => {
   const out = applyAuthForceEnv({ SOME: 'x' }, true);
-  assert.equal(out.HAPPIER_AUTH_FORCE, '1');
+  assert.equal(out.PIGGERCODE_AUTH_FORCE, '1');
   assert.equal(out.SOME, 'x');
 });
 
 test('applyAuthForceEnv preserves env when not forced', () => {
   const out = applyAuthForceEnv({ SOME: 'x' }, false);
-  assert.equal(out.HAPPIER_AUTH_FORCE, undefined);
+  assert.equal(out.PIGGERCODE_AUTH_FORCE, undefined);
   assert.equal(out.SOME, 'x');
 });
 

@@ -9,8 +9,8 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { isClaudeCliJavaScriptFile, resolveClaudeCliPath } from './resolveClaudeCliPath';
 
 it('preserves the canonical dependency error for an unavailable Claude executable', () => {
-  const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH']);
-  process.env.HAPPIER_CLAUDE_PATH = '/missing-private-claude-launcher';
+  const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH']);
+  process.env.PIGGERCODE_CLAUDE_PATH = '/missing-private-claude-launcher';
   try {
     let error: unknown;
     try {
@@ -22,7 +22,7 @@ it('preserves the canonical dependency error for an unavailable Claude executabl
     expect(classifyPrimarySessionRuntimeIssue({ provider: 'claude', cause: 'session_error', error })).toMatchObject({
       source: 'dependency_failure',
       code: 'provider_cli_not_found',
-      sanitizedPreview: expect.stringContaining('HAPPIER_CLAUDE_PATH'),
+      sanitizedPreview: expect.stringContaining('PIGGERCODE_CLAUDE_PATH'),
     });
     expect(JSON.stringify(classifyPrimarySessionRuntimeIssue({ error }))).not.toContain('/missing-private');
   } finally {
@@ -32,14 +32,14 @@ it('preserves the canonical dependency error for an unavailable Claude executabl
 
 it.runIf(process.platform !== 'win32')('follows the selected Claude symlink target across provider restarts', () => {
   const dir = mkdtempSync(join(tmpdir(), 'happier-claude-selected-symlink-'));
-  const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH']);
+  const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH']);
   const script = join(dir, 'cli.js');
   const native = join(dir, 'native');
   const selected = join(dir, 'claude');
   writeFileSync(script, '', { mode: 0o755 });
   writeFileSync(native, '', { mode: 0o755 });
   symlinkSync(script, selected);
-  env.patch({ HAPPIER_CLAUDE_PATH: selected });
+  env.patch({ PIGGERCODE_CLAUDE_PATH: selected });
   try {
     expect(resolveClaudeCliPath()).toBe(selected);
     // Info/probe launch specs pass the selected command directly to this shared classifier.

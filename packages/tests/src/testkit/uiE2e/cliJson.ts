@@ -64,7 +64,7 @@ export async function runCliJson(params: Readonly<{
     ...sanitizedEnv,
     ...(params.launchOptions?.skipSharedDepsBuild
       ? {
-          HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+          PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
         }
       : {}),
   };
@@ -77,12 +77,12 @@ export async function runCliJson(params: Readonly<{
       ...env,
       ...(cliLaunchSpec.env ?? {}),
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_HOME_DIR: params.cliHomeDir,
-      HAPPIER_SERVER_URL: params.serverUrl,
-      HAPPIER_WEBAPP_URL: params.webappUrl,
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_VARIANT: 'dev',
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_HOME_DIR: params.cliHomeDir,
+      PIGGERCODE_SERVER_URL: params.serverUrl,
+      PIGGERCODE_WEBAPP_URL: params.webappUrl,
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_VARIANT: 'dev',
     },
     stdoutPath,
     stderrPath,

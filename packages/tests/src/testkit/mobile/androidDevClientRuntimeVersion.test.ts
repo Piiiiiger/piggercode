@@ -43,8 +43,8 @@ exit 11
     const runtimeVersion = resolveInstalledAndroidDevClientRuntimeVersion({
       appId: 'dev.happier.app.publicdev.devclient',
       env: {
-        HAPPIER_E2E_ADB_BIN: adbBin,
-        HAPPIER_E2E_UNZIP_BIN: unzipBin,
+        PIGGERCODE_E2E_ADB_BIN: adbBin,
+        PIGGERCODE_E2E_UNZIP_BIN: unzipBin,
       },
       outputDir: join(dir, 'runtime'),
     });
@@ -84,8 +84,8 @@ exit 11
     expect(resolveInstalledAndroidDevClientRuntimeVersion({
       appId: 'dev.happier.app.publicdev.devclient',
       env: {
-        HAPPIER_E2E_ADB_BIN: adbBin,
-        HAPPIER_E2E_UNZIP_BIN: unzipBin,
+        PIGGERCODE_E2E_ADB_BIN: adbBin,
+        PIGGERCODE_E2E_UNZIP_BIN: unzipBin,
       },
       outputDir: join(dir, 'runtime'),
     })).toBeNull();

@@ -102,7 +102,7 @@ rl.on('close', () => process.exit(0));
   }
 
   it('forwards Claude SDK tool-call/tool-result/token-count into the run sidechain', async () => {
-    const savedClaudePath = process.env.HAPPIER_CLAUDE_PATH;
+    const savedClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
     const savedDebug = process.env.DEBUG;
 
     let dir: string | null = null;
@@ -112,7 +112,7 @@ rl.on('close', () => process.exit(0));
       const cwd = dir;
       const entry = join(dir, 'fake-claude.cjs');
       await writeFile(entry, createFakeClaudeReviewEntrypointSource(), 'utf8');
-      process.env.HAPPIER_CLAUDE_PATH = entry;
+      process.env.PIGGERCODE_CLAUDE_PATH = entry;
 
       const sent: Array<{ provider: string; body: ACPMessageData; meta?: Record<string, unknown> }> = [];
       const manager = new ExecutionRunManager({
@@ -169,8 +169,8 @@ rl.on('close', () => process.exit(0));
       expect(tokenCount.body.tokens?.cache_creation).toBe(4);
       expect(tokenCount.body.cost?.total).toBe(0.123);
     } finally {
-      if (savedClaudePath === undefined) delete process.env.HAPPIER_CLAUDE_PATH;
-      else process.env.HAPPIER_CLAUDE_PATH = savedClaudePath;
+      if (savedClaudePath === undefined) delete process.env.PIGGERCODE_CLAUDE_PATH;
+      else process.env.PIGGERCODE_CLAUDE_PATH = savedClaudePath;
       if (savedDebug === undefined) delete process.env.DEBUG;
       else process.env.DEBUG = savedDebug;
       if (dir) await rm(dir, { recursive: true, force: true });
@@ -178,7 +178,7 @@ rl.on('close', () => process.exit(0));
   }, 60_000);
 
 	  it('supports steer_if_supported delivery for long-lived runs without failing the run', async () => {
-	    const savedClaudePath = process.env.HAPPIER_CLAUDE_PATH;
+	    const savedClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
 	    const savedDebug = process.env.DEBUG;
 
 	    let dir: string | null = null;
@@ -190,7 +190,7 @@ rl.on('close', () => process.exit(0));
 	      const cwd = dir;
 	      const entry = join(dir, 'fake-claude.cjs');
       await writeFile(entry, createFakeClaudeLongLivedSteerEntrypointSource(), 'utf8');
-      process.env.HAPPIER_CLAUDE_PATH = entry;
+      process.env.PIGGERCODE_CLAUDE_PATH = entry;
 
 	      const sent: Array<{ provider: string; body: ACPMessageData; meta?: Record<string, unknown> }> = [];
 	      manager = new ExecutionRunManager({
@@ -253,8 +253,8 @@ rl.on('close', () => process.exit(0));
 	        }
 	        await manager.waitForTerminal(runId).catch(() => {});
 	      }
-	      if (savedClaudePath === undefined) delete process.env.HAPPIER_CLAUDE_PATH;
-	      else process.env.HAPPIER_CLAUDE_PATH = savedClaudePath;
+	      if (savedClaudePath === undefined) delete process.env.PIGGERCODE_CLAUDE_PATH;
+	      else process.env.PIGGERCODE_CLAUDE_PATH = savedClaudePath;
 	      if (savedDebug === undefined) delete process.env.DEBUG;
 	      else process.env.DEBUG = savedDebug;
       if (dir) await rm(dir, { recursive: true, force: true });

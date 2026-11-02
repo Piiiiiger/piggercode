@@ -7,7 +7,7 @@
  * Defaults:
  * - daemon processes: `debug` (daemon logs are the primary `happier doctor` forensics
  *   artifact and are already pruned by count)
- * - session processes: `info` (debug entries are opt-in via `DEBUG` or `HAPPIER_LOG_LEVEL`)
+ * - session processes: `info` (debug entries are opt-in via `DEBUG` or `PIGGERCODE_LOG_LEVEL`)
  */
 
 export type FileLogLevel = 'debug' | 'info' | 'warn' | 'silent';
@@ -29,7 +29,7 @@ export function resolveFileLogLevel(params: {
   env: Readonly<Record<string, string | undefined>>;
   isDaemonProcess: boolean;
 }): FileLogLevel {
-  const explicit = parseFileLogLevel(params.env.HAPPIER_LOG_LEVEL);
+  const explicit = parseFileLogLevel(params.env.PIGGERCODE_LOG_LEVEL);
   if (explicit) return explicit;
   if (params.env.DEBUG) return 'debug';
   return params.isDaemonProcess ? 'debug' : 'info';

@@ -15,7 +15,7 @@ export function buildMissingProviderCliCommandErrorMessage(
   opts: Readonly<{ processEnv?: NodeJS.ProcessEnv }> = {},
 ): string {
   const processEnv = opts.processEnv ?? process.env;
-  const envKey = `HAPPIER_${agentId.toUpperCase()}_PATH`;
+  const envKey = `PIGGERCODE_${agentId.toUpperCase()}_PATH`;
   if (readProviderCliOverride(agentId, processEnv)) {
     return (
       `${capitalize(agentId)} CLI (${agentId}) is unavailable because ${envKey} is set ` +

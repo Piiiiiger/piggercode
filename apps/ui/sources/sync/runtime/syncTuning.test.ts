@@ -9,7 +9,7 @@ describe('loadSyncTuning', () => {
         expect(loadSyncTuning().sessionListVirtualizedEngine).toBe('flashList');
 
         expect(loadSyncTuning({
-            env: { EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({ sessionListVirtualizedEngine: 'legendList' }) },
+            env: { EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({ sessionListVirtualizedEngine: 'legendList' }) },
         }).sessionListVirtualizedEngine).toBe('legendList');
     });
 
@@ -80,7 +80,7 @@ describe('loadSyncTuning', () => {
     it('applies env JSON overrides', () => {
         const tuning = loadSyncTuning({
             env: {
-                EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                     messageLargeGapSeq: 12,
                     transcriptForwardPrefetchThresholdPx: 34,
                     transcriptFlashListEstimatedItemSize: 222,
@@ -252,7 +252,7 @@ describe('loadSyncTuning', () => {
     it('keeps the projection routing rollback switch configurable', () => {
         const tuning = loadSyncTuning({
             env: {
-                EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                     sessionRealtimeProjectionMode: 'disabled',
                 }),
             },
@@ -264,7 +264,7 @@ describe('loadSyncTuning', () => {
     it('ignores invalid env JSON overrides', () => {
         const tuning = loadSyncTuning({
             env: {
-                EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                     messageLargeGapSeq: -1,
                     transcriptWebHotTailItemCount: 0,
                     transcriptLegendListSpikeSurface: 'legend',
@@ -409,7 +409,7 @@ describe('loadSyncTuning', () => {
     it('preserves explicit disabled drawDistance overrides', () => {
         const tuning = loadSyncTuning({
             env: {
-                EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                     transcriptFlashListDrawDistance: 0,
                 }),
             },
@@ -422,7 +422,7 @@ describe('loadSyncTuning', () => {
         for (const surface of ['off', 'flashList'] as const) {
             expect(loadSyncTuning({
                 env: {
-                    EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                    EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                         transcriptLegendListSpikeSurface: surface,
                     }),
                 },
@@ -432,7 +432,7 @@ describe('loadSyncTuning', () => {
         for (const legacyValue of ['readOnly', 'sidechain', 'main'] as const) {
             expect(loadSyncTuning({
                 env: {
-                    EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                    EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                         transcriptLegendListSpikeSurface: legacyValue,
                     }),
                 },
@@ -442,7 +442,7 @@ describe('loadSyncTuning', () => {
         for (const value of [true, 'legend', 'mainChat', '', 'read-only', null, 1]) {
             expect(loadSyncTuning({
                 env: {
-                    EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+                    EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
                         transcriptLegendListSpikeSurface: value,
                     }),
                 },

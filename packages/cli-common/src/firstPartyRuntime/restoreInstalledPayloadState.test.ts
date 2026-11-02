@@ -40,7 +40,7 @@ describe('captureInstalledPayloadStateForActivation', () => {
   });
 
   it('puts every launcher it already moved back when a later one cannot be moved', async () => {
-    const env = { HAPPIER_HOME_DIR: homeDir };
+    const env = { PIGGERCODE_HOME_DIR: homeDir };
     // Preview is the default channel: its update rewrites two launchers (`happier` and `hprev`).
     await writeDefaultManagedReleaseChannel({ processEnv: env, releaseChannel: 'preview' });
     const payloadRoot = join(homeDir, 'payload');

@@ -49,7 +49,7 @@ type LogicalTailRowProbe = Readonly<{
 
 async function installViewportTelemetryOverride(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    (globalThis as Record<string, unknown>).__HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__ = {
+    (globalThis as Record<string, unknown>).__PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__ = {
       enabled: true,
       capacity: 5000,
     };
@@ -58,7 +58,7 @@ async function installViewportTelemetryOverride(page: Page): Promise<void> {
 
 async function readViewportTelemetrySnapshot(page: Page): Promise<ViewportTelemetrySnapshot | null> {
   return await page.evaluate(() => {
-    const readEvents = (globalThis as Record<string, unknown>).__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__;
+    const readEvents = (globalThis as Record<string, unknown>).__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__;
     if (typeof readEvents !== 'function') return null;
     return (readEvents as () => ViewportTelemetrySnapshot)();
   });
@@ -177,8 +177,8 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -189,9 +189,9 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'metro',
-        HAPPIER_E2E_UI_WEB_NO_DEV: '0',
-        EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+        PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+        PIGGERCODE_E2E_UI_WEB_NO_DEV: '0',
+        EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
           // Keep thresholds forgiving; this test targets background/foreground resume rather than large-gap behavior.
           messageLargeGapSeq: 100,
           messageMaxIncrementalPagesOnResume: 3,
@@ -222,7 +222,7 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
 
     await installViewportTelemetryOverride(page);
     await page.addInitScript(() => {
-      const key = '__HAPPIER_E2E_VIS_STATE__';
+      const key = '__PIGGERCODE_E2E_VIS_STATE__';
       const getState = () => {
         const raw = (globalThis as any)[key];
         return raw === 'hidden' ? 'hidden' : 'visible';
@@ -256,8 +256,8 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
         ...process.env,
         HOME: cliHomeDir,
         CI: '1',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
       },
     });
 
@@ -277,15 +277,15 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
         ...process.env,
         HOME: cliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
       },
     });
 
@@ -306,7 +306,7 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
 
     // Simulate background via visibility change.
     await page.evaluate(() => {
-      (globalThis as any).__HAPPIER_E2E_VIS_STATE__ = 'hidden';
+      (globalThis as any).__PIGGERCODE_E2E_VIS_STATE__ = 'hidden';
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await expect.poll(() => page.evaluate(() => document.visibilityState), { timeout: 10_000 }).toBe('hidden');
@@ -332,7 +332,7 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
 
     const reconnectStart = Date.now();
     await page.evaluate(() => {
-      (globalThis as any).__HAPPIER_E2E_VIS_STATE__ = 'visible';
+      (globalThis as any).__PIGGERCODE_E2E_VIS_STATE__ = 'visible';
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await expect.poll(() => page.evaluate(() => document.visibilityState), { timeout: 10_000 }).toBe('visible');
@@ -399,7 +399,7 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
 
     // Background again, send more activity, then return.
     await page.evaluate(() => {
-      (globalThis as any).__HAPPIER_E2E_VIS_STATE__ = 'hidden';
+      (globalThis as any).__PIGGERCODE_E2E_VIS_STATE__ = 'hidden';
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await expect.poll(() => page.evaluate(() => document.visibilityState), { timeout: 10_000 }).toBe('hidden');
@@ -423,7 +423,7 @@ test.describe('ui e2e: transcript background/foreground catch-up (visibility)', 
     }
 
     await page.evaluate(() => {
-      (globalThis as any).__HAPPIER_E2E_VIS_STATE__ = 'visible';
+      (globalThis as any).__PIGGERCODE_E2E_VIS_STATE__ = 'visible';
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await expect.poll(() => page.evaluate(() => document.visibilityState), { timeout: 10_000 }).toBe('visible');

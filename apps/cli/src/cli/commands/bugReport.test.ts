@@ -347,7 +347,7 @@ describe('runBugReportCommand', () => {
     const runnerLogPath = join(stackLogsDir, 'dev.1.log');
 
     await mkdir(stackLogsDir, { recursive: true });
-    await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`, 'utf8');
+    await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`, 'utf8');
     await writeFile(
       runtimeStatePath,
       JSON.stringify(
@@ -364,12 +364,12 @@ describe('runBugReportCommand', () => {
     );
     await writeFile(runnerLogPath, 'stack runner started\n', 'utf8');
 
-    const previousStackName = process.env.HAPPIER_STACK_STACK;
-    const previousEnvPath = process.env.HAPPIER_STACK_ENV_FILE;
-    const previousRuntimePath = process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
-    process.env.HAPPIER_STACK_STACK = stackName;
-    process.env.HAPPIER_STACK_ENV_FILE = envPath;
-    process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = runtimeStatePath;
+    const previousStackName = process.env.PIGGERCODE_STACK_STACK;
+    const previousEnvPath = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const previousRuntimePath = process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
+    process.env.PIGGERCODE_STACK_STACK = stackName;
+    process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
+    process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = runtimeStatePath;
 
     try {
       const snapshot = await collectBugReportMachineDiagnosticsSnapshot!({
@@ -383,19 +383,19 @@ describe('runBugReportCommand', () => {
       expect(typeof snapshot.stackContext?.runtimeState).toBe('string');
     } finally {
       if (previousStackName === undefined) {
-        delete process.env.HAPPIER_STACK_STACK;
+        delete process.env.PIGGERCODE_STACK_STACK;
       } else {
-        process.env.HAPPIER_STACK_STACK = previousStackName;
+        process.env.PIGGERCODE_STACK_STACK = previousStackName;
       }
       if (previousEnvPath === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = previousEnvPath;
+        process.env.PIGGERCODE_STACK_ENV_FILE = previousEnvPath;
       }
       if (previousRuntimePath === undefined) {
-        delete process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
+        delete process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
       } else {
-        process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
+        process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
       }
     }
   });
@@ -428,15 +428,15 @@ describe('runBugReportCommand', () => {
     const runtimeStatePath = join(stackBaseDir, 'stack.runtime.json');
 
     await mkdir(stackLogsDir, { recursive: true });
-    await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`, 'utf8');
+    await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`, 'utf8');
     await writeFile(runtimeStatePath, '{"logs":{"runner":"/tmp/runner.log"', 'utf8');
 
-    const previousStackName = process.env.HAPPIER_STACK_STACK;
-    const previousEnvPath = process.env.HAPPIER_STACK_ENV_FILE;
-    const previousRuntimePath = process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
-    process.env.HAPPIER_STACK_STACK = stackName;
-    process.env.HAPPIER_STACK_ENV_FILE = envPath;
-    process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = runtimeStatePath;
+    const previousStackName = process.env.PIGGERCODE_STACK_STACK;
+    const previousEnvPath = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const previousRuntimePath = process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
+    process.env.PIGGERCODE_STACK_STACK = stackName;
+    process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
+    process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = runtimeStatePath;
 
     try {
       const snapshot = await collectBugReportMachineDiagnosticsSnapshot!({
@@ -448,19 +448,19 @@ describe('runBugReportCommand', () => {
       expect(snapshot.stackContext?.logCandidates).toEqual([]);
     } finally {
       if (previousStackName === undefined) {
-        delete process.env.HAPPIER_STACK_STACK;
+        delete process.env.PIGGERCODE_STACK_STACK;
       } else {
-        process.env.HAPPIER_STACK_STACK = previousStackName;
+        process.env.PIGGERCODE_STACK_STACK = previousStackName;
       }
       if (previousEnvPath === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = previousEnvPath;
+        process.env.PIGGERCODE_STACK_ENV_FILE = previousEnvPath;
       }
       if (previousRuntimePath === undefined) {
-        delete process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
+        delete process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
       } else {
-        process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
+        process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
       }
     }
   });

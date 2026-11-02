@@ -21,7 +21,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
 
   it('offline device observes new session via /v2/changes and sees it in /v2/sessions after reconnect', async () => {
     const testDir = run.testDir('sessions-list-catchup');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -35,7 +35,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
       testName: 'sessions-list-catchup',
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -69,7 +69,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
 
   it('tracks multiple new sessions after a cursor checkpoint and then stabilizes with no new changes', async () => {
     const testDir = run.testDir('sessions-list-catchup.multi');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -83,7 +83,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
       testName: 'sessions-list-catchup.multi',
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -124,7 +124,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
 
   it('lets independent devices read the same change set from the same cursor', async () => {
     const testDir = run.testDir('sessions-list-catchup.non-consumptive');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -138,7 +138,7 @@ describe('core e2e: sessions list catch-up via /v2/changes', () => {
       testName: 'sessions-list-catchup.non-consumptive',
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

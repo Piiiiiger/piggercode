@@ -102,7 +102,7 @@ describe('createPtyTerminalHostAdapter', () => {
       sessionName: 'happier-claude-windows',
       workingDirectory: 'C:\\repo',
       spawnArgv: ['node.exe', 'runner.cjs', 'launch.json'],
-      spawnEnv: { HAPPIER_SECRET: 'secret', TERM: 'xterm-256color' },
+      spawnEnv: { PIGGERCODE_SECRET: 'secret', TERM: 'xterm-256color' },
       isolatedEnv: true,
     });
     fake.processes[0]?.emitData('\u001b[2J\u001b[HWhat would you like to work on?\r\n> ');
@@ -125,7 +125,7 @@ describe('createPtyTerminalHostAdapter', () => {
         rows: 4,
       },
     });
-    expect(fake.spawnCalls[0]?.options.env?.HAPPIER_SECRET).toBe('secret');
+    expect(fake.spawnCalls[0]?.options.env?.PIGGERCODE_SECRET).toBe('secret');
     await expect(adapter.captureInputState?.(handle)).resolves.toMatchObject({
       stable: true,
       currentInput: 'What would you like to work on?\n>',

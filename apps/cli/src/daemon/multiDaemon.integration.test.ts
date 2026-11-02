@@ -31,10 +31,10 @@ function writeValidPinnedDaemonServiceForCurrentRuntime(homeDir: string, serverI
         label: paths.label,
         programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
         env: {
-          HAPPIER_HOME_DIR: homeDir,
-          HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-          HAPPIER_ACTIVE_SERVER_ID: serverId,
-          HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+          PIGGERCODE_HOME_DIR: homeDir,
+          PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+          PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+          PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
         },
         stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
         stderrPath: join(homeDir, 'logs', 'daemon-service.default.err.log'),
@@ -52,11 +52,11 @@ function writeValidPinnedDaemonServiceForCurrentRuntime(homeDir: string, serverI
         description: 'Happier Daemon',
         execStart: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
         env: {
-          HAPPIER_HOME_DIR: homeDir,
-          HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-          HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-          HAPPIER_ACTIVE_SERVER_ID: serverId,
-          HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+          PIGGERCODE_HOME_DIR: homeDir,
+          PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+          PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+          PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+          PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
         },
         wantedBy: 'default.target',
       }),
@@ -71,12 +71,12 @@ function writeValidPinnedDaemonServiceForCurrentRuntime(homeDir: string, serverI
       workingDirectory: homeDir,
       programArgs: ['C:\\hq\\happier.exe', 'daemon', 'start-sync'],
       env: {
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-        HAPPIER_ACTIVE_SERVER_ID: serverId,
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+        PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
       },
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath: join(homeDir, 'logs', 'daemon-service.default.err.log'),
@@ -283,9 +283,9 @@ describe('multi-daemon helpers', () => {
       {
         prefix: 'happier-multi-daemon-active-env-',
         env: {
-          HAPPIER_ACTIVE_SERVER_ID: 'stack_qa-agent-4__id_default',
-          HAPPIER_SERVER_URL: 'http://127.0.0.1:3999',
-          HAPPIER_WEBAPP_URL: 'http://happier-qa-agent-4.localhost:8085',
+          PIGGERCODE_ACTIVE_SERVER_ID: 'stack_qa-agent-4__id_default',
+          PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3999',
+          PIGGERCODE_WEBAPP_URL: 'http://happier-qa-agent-4.localhost:8085',
         },
       },
       async ({ homeDir }) => {
@@ -442,12 +442,12 @@ describe('multi-daemon helpers', () => {
     });
   });
 
-  it('falls back to default timeout when HAPPIER_DAEMON_HTTP_TIMEOUT is invalid', async () => {
+  it('falls back to default timeout when PIGGERCODE_DAEMON_HTTP_TIMEOUT is invalid', async () => {
     await withConfiguredDaemonTestHome(
       {
         prefix: 'happier-multi-daemon-invalid-timeout-',
         env: {
-          HAPPIER_DAEMON_HTTP_TIMEOUT: 'not-a-number',
+          PIGGERCODE_DAEMON_HTTP_TIMEOUT: 'not-a-number',
         },
       },
       async ({ homeDir }) => {

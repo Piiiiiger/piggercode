@@ -67,7 +67,7 @@ export async function buildCgroupSelfMigratingHappyCliLaunchSpec(params: Readonl
                     ...(baseLaunchSpec.env ?? {}),
                     // A systemd scope is the owner of this process tree. Do not let the
                     // legacy runner-side cgroup migration move the child out of it.
-                    HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP: '',
+                    PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP: '',
                 },
             },
         });
@@ -89,14 +89,14 @@ export async function buildCgroupSelfMigratingHappyCliLaunchSpec(params: Readonl
         filePath: '/bin/sh',
         args: [
             '-lc',
-            'target_dir="$HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR/happier-session-$$.scope"; mkdir -p "$target_dir" 2>/dev/null || true; printf "%s\\n" "$$" > "$target_dir/cgroup.procs" 2>/dev/null || true; exec "$@"',
+            'target_dir="$PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR/happier-session-$$.scope"; mkdir -p "$target_dir" 2>/dev/null || true; printf "%s\\n" "$$" > "$target_dir/cgroup.procs" 2>/dev/null || true; exec "$@"',
             'sh',
             baseLaunchSpec.filePath,
             ...baseLaunchSpec.args,
         ],
         env: {
             ...(baseLaunchSpec.env ?? {}),
-            HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR: appSliceAbsolutePath,
+            PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR: appSliceAbsolutePath,
         },
     };
 }

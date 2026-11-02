@@ -4,7 +4,7 @@ import { chmodSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { PiRpcBackend } from './PiRpcBackend';
 
@@ -201,7 +201,7 @@ describe('PiRpcBackend.waitForResponseComplete', () => {
       command: process.execPath,
       args: [scriptPath],
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'openai-codex',

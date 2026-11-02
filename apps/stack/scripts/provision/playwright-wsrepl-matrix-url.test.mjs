@@ -25,16 +25,16 @@ test('qa wsrepl url helper resolves stack runtime ports using a loopback 127.0.0
     'utf8',
   );
 
-  const prev = process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH;
-  process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH = runtimePath;
+  const prev = process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH;
+  process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH = runtimePath;
   try {
     const out = qa.resolveQaUiUrl();
     const parsed = new URL(out);
     assert.equal(parsed.origin, 'http://127.0.0.1:19364');
     assert.equal(parsed.searchParams.get('server'), 'http://127.0.0.1:53288');
   } finally {
-    if (prev === undefined) delete process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH;
-    else process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH = prev;
+    if (prev === undefined) delete process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH;
+    else process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH = prev;
   }
 });
 
@@ -61,12 +61,12 @@ test('qa wsrepl url helper can auto-detect the newest stack.runtime.json when st
     'utf8',
   );
 
-  const prevStacksDir = process.env.HAPPIER_QA_STACKS_DIR;
-  const prevRuntimePath = process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH;
-  const prevStackName = process.env.HAPPIER_QA_STACK_NAME;
-  delete process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH;
-  delete process.env.HAPPIER_QA_STACK_NAME;
-  process.env.HAPPIER_QA_STACKS_DIR = stacksDir;
+  const prevStacksDir = process.env.PIGGERCODE_QA_STACKS_DIR;
+  const prevRuntimePath = process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH;
+  const prevStackName = process.env.PIGGERCODE_QA_STACK_NAME;
+  delete process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH;
+  delete process.env.PIGGERCODE_QA_STACK_NAME;
+  process.env.PIGGERCODE_QA_STACKS_DIR = stacksDir;
 
   try {
     const out = qa.resolveQaUiUrl();
@@ -74,12 +74,12 @@ test('qa wsrepl url helper can auto-detect the newest stack.runtime.json when st
     assert.equal(parsed.origin, 'http://127.0.0.1:50002');
     assert.equal(parsed.searchParams.get('server'), 'http://127.0.0.1:50001');
   } finally {
-    if (prevStacksDir === undefined) delete process.env.HAPPIER_QA_STACKS_DIR;
-    else process.env.HAPPIER_QA_STACKS_DIR = prevStacksDir;
-    if (prevRuntimePath === undefined) delete process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH;
-    else process.env.HAPPIER_QA_STACK_RUNTIME_JSON_PATH = prevRuntimePath;
-    if (prevStackName === undefined) delete process.env.HAPPIER_QA_STACK_NAME;
-    else process.env.HAPPIER_QA_STACK_NAME = prevStackName;
+    if (prevStacksDir === undefined) delete process.env.PIGGERCODE_QA_STACKS_DIR;
+    else process.env.PIGGERCODE_QA_STACKS_DIR = prevStacksDir;
+    if (prevRuntimePath === undefined) delete process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH;
+    else process.env.PIGGERCODE_QA_STACK_RUNTIME_JSON_PATH = prevRuntimePath;
+    if (prevStackName === undefined) delete process.env.PIGGERCODE_QA_STACK_NAME;
+    else process.env.PIGGERCODE_QA_STACK_NAME = prevStackName;
   }
 });
 

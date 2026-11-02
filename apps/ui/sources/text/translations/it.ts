@@ -9525,7 +9525,7 @@ settingsSession: {
         manifest: {
           title: "Manifest del pacchetto modello",
           subtitle:
-            "Per impostazione predefinita usa i model pack di Happier (override tramite EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).",
+            "Per impostazione predefinita usa i model pack di Happier (override tramite EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).",
           detailResolved: "Risolto",
           detailMissing: "Mancante",
         },
@@ -9570,7 +9570,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "URL del manifest mancante",
-            body: "Impossibile risolvere l’URL del manifest del model pack. Controlla EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (o le vecchie variabili d’ambiente Kokoro).",
+            body: "Impossibile risolvere l’URL del manifest del model pack. Controlla EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (o le vecchie variabili d’ambiente Kokoro).",
           },
           notInstalledTitle: "Non installato",
           notInstalledBody:

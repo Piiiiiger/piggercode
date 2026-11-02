@@ -5,7 +5,7 @@
 # - dismisses the developer menu if present, and
 # - waits for the Welcome screen "Create account" button.
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     file: dismissAndroidSystemNotRespondingDialogMaybe.yaml

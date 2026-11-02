@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
   CONNECTED_SERVICE_RUNTIME_AUTH_FAILURE_REPORT_TIMEOUT_MS,
   resetConnectedServiceRuntimeAuthFailureReportDedupeForTests,
@@ -96,8 +96,8 @@ function createScheduledRuntimeAuthRecoveryReport(input: Readonly<{ includeTrans
 }
 
 function installClaudeSelectionEnv(): string | undefined {
-  const previous = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-  process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+  const previous = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+  process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
     kind: 'group',
     serviceId: 'claude-subscription',
     groupId: 'team-pool',
@@ -111,10 +111,10 @@ function installClaudeSelectionEnv(): string | undefined {
 
 function restoreClaudeSelectionEnv(previous: string | undefined): void {
   if (previous === undefined) {
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     return;
   }
-  process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previous;
+  process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previous;
 }
 
 describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
@@ -330,8 +330,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
   });
 
   it.each([null, 95])('keeps measured rejected and other windows even with top-level usage %s', async (utilization) => {
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const window = {
       v: 1 as const,
       retryAfterMs: null,
@@ -371,8 +371,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
         }),
       }));
     } finally {
-      if (previousSelectionEnv === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-      else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+      if (previousSelectionEnv === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+      else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
     }
   });
 
@@ -683,8 +683,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
   });
 
   it('lets Claude SDK provider-owned native 401 retries continue without surfacing an auth failure', async () => {
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const sendSessionEvent = vi.fn();
     const failTurn = createClaudeFailTurnSpy();
     try {
@@ -714,8 +714,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
   });
 
   it('surfaces native Claude OAuth SDK 401 evidence without connected-service recovery', async () => {
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const sendSessionEvent = vi.fn();
     const failTurn = createClaudeFailTurnSpy();
     try {
@@ -1019,8 +1019,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
   });
 
   it('records native Claude usage-limit evidence without connected-service recovery when no connected selection exists', async () => {
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const previousHome = process.env.HOME;
     process.env.HOME = '/tmp/happier-claude-native-home';
     const failTurn = createClaudeFailTurnSpy();
@@ -1089,9 +1089,9 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
       expect(mockNotifyDaemonConnectedServiceRuntimeAuthFailure).not.toHaveBeenCalled();
     } finally {
       if (previousSelectionEnv === undefined) {
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
       } else {
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
       }
       if (previousHome === undefined) {
         delete process.env.HOME;
@@ -1102,8 +1102,8 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
   });
 
   it('surfaces native Claude temporary throttles without connected-service recovery when no connected selection exists', async () => {
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const previousHome = process.env.HOME;
     process.env.HOME = '/tmp/happier-claude-native-throttle-home';
     const failTurn = createClaudeFailTurnSpy();
@@ -1146,9 +1146,9 @@ describe('surfaceClaudeRuntimeIssues runtime-auth projection', () => {
       expect(mockNotifyDaemonConnectedServiceRuntimeAuthFailure).not.toHaveBeenCalled();
     } finally {
       if (previousSelectionEnv === undefined) {
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
       } else {
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
       }
       if (previousHome === undefined) {
         delete process.env.HOME;
@@ -1362,7 +1362,7 @@ describe('R3-4: Claude in-band evidence becomes source-backed → predictive sof
 
   it('preserves burn history when repeated native Claude observations attest the same user and organization', async () => {
     await writeMaterializedClaudeConfig({ accountUuid: 'acct_live_uuid', organizationUuid: 'org-live' });
-    const selection = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    const selection = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     if (!selection) throw new Error('Expected the connected-service selection fixture.');
     const runtimeQuotaSnapshots = new ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore();
     const firstAt = Date.now();
@@ -1377,7 +1377,7 @@ describe('R3-4: Claude in-band evidence becomes source-backed → predictive sof
         await recordConnectedServiceRuntimeQuotaSnapshotForSession({
           getChildren: () => [{ startedBy: 'daemon', happySessionId: 'same-org-burn', pid: 123,
             spawnOptions: { directory: '/tmp/project', environmentVariables: {
-              [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: selection,
+              [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: selection,
             }, connectedServices: { v: 1, bindingsByServiceId: { 'claude-subscription': {
               source: 'connected', selection: 'group', profileId: 'claude-main', groupId: 'team-pool',
             } } } },

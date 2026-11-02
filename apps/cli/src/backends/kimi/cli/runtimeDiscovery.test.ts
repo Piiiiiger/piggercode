@@ -20,7 +20,7 @@ function readFixture(name: string): unknown {
 function writeFixtureExecutable(command: string, fixture: string): string {
   writeFileSync(command, `#!${process.execPath}
 const readline = require('node:readline');
-if (process.env.HAPPIER_KIMI_FIXTURE_ENV !== 'forwarded') process.exit(2);
+if (process.env.PIGGERCODE_KIMI_FIXTURE_ENV !== 'forwarded') process.exit(2);
 readline.createInterface({ input: process.stdin }).on('line', (line) => {
   const request = JSON.parse(line);
   process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: request.id, result: ${JSON.stringify(readFixture(fixture))} }) + '\\n');
@@ -61,7 +61,7 @@ describe('Kimi ACP runtime discovery', () => {
     try {
       const legacy = writeFixtureExecutable(join(legacyDir, 'kimi'), 'legacy');
       const current = writeFixtureExecutable(join(currentDir, 'kimi'), 'current');
-      const processEnv = { ...process.env, PATH: `${legacyDir}${delimiter}${currentDir}`, HOME: root, HAPPIER_KIMI_FIXTURE_ENV: 'forwarded' };
+      const processEnv = { ...process.env, PATH: `${legacyDir}${delimiter}${currentDir}`, HOME: root, PIGGERCODE_KIMI_FIXTURE_ENV: 'forwarded' };
       const candidates = await discoverKimiRuntimeCandidates({ processEnv, cwd: root, probeTimeoutMs: 2_000 });
 
       expect(candidates.map(({ command, kind }) => ({ command, kind }))).toEqual([
@@ -86,7 +86,7 @@ describe('Kimi ACP runtime discovery', () => {
     writeFixtureExecutable(join(currentDir, 'kimi'), 'current');
     try {
       await expect(requireCurrentKimiRuntime({
-        processEnv: { ...process.env, PATH: currentDir, HOME: root, HAPPIER_KIMI_PATH: explicit, HAPPIER_KIMI_FIXTURE_ENV: 'forwarded' },
+        processEnv: { ...process.env, PATH: currentDir, HOME: root, PIGGERCODE_KIMI_PATH: explicit, PIGGERCODE_KIMI_FIXTURE_ENV: 'forwarded' },
         cwd: root,
         probeTimeoutMs: 2_000,
       })).rejects.toThrow(/Legacy kimi-cli.*`kimi migrate` manually.*never runs migration/);
@@ -104,7 +104,7 @@ describe('Kimi ACP runtime discovery', () => {
     chmodSync(command, 0o755);
     try {
       await expect(requireCurrentKimiRuntime({
-        processEnv: { ...process.env, HAPPIER_KIMI_PATH: command }, cwd: root, probeTimeoutMs: 150,
+        processEnv: { ...process.env, PIGGERCODE_KIMI_PATH: command }, cwd: root, probeTimeoutMs: 150,
       })).rejects.toThrow(/Could not identify the Kimi runtime/);
     } finally { rmSync(root, { recursive: true, force: true }); }
   });

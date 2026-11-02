@@ -4,7 +4,7 @@ import { PLANET_FRAME_INTERVAL_MS, createPlanetFrame, planetFrameIntervalMs, pla
 import { ACCENT_HEX } from './presentation.js';
 
 export function isTerminalAnimationDisabled(): boolean {
-  return ['1', 'true', 'yes', 'on'].includes(String(process.env.HAPPIER_NO_ANIMATION ?? '').trim().toLowerCase());
+  return ['1', 'true', 'yes', 'on'].includes(String(process.env.PIGGERCODE_NO_ANIMATION ?? '').trim().toLowerCase());
 }
 
 /**
@@ -82,7 +82,7 @@ export function renderSetupWelcome(options: Readonly<{
 }>): string {
   // The bootstrapper already introduced Happier. Keep this operation's context,
   // but do not restart the visual welcome when it hands over to guided setup.
-  if (process.env.HAPPIER_INSTALLER_WELCOME_SHOWN === '1') {
+  if (process.env.PIGGERCODE_INSTALLER_WELCOME_SHOWN === '1') {
     return ['', options.subtitle, `Computer: ${options.machineName}`, ''].join('\n');
   }
   const rich = Boolean(process.stdout.isTTY) && process.env.TERM !== 'dumb';
@@ -214,7 +214,7 @@ export function renderSetupChoice(options: SetupChoiceRenderOptions): string {
   const width = Math.max(20, Math.floor(options.columns ?? process.stdout.columns ?? 80));
   const rows = options.rows ?? process.stdout.rows ?? 24;
   const isTTY = options.isTTY ?? Boolean(process.stdout.isTTY);
-  const showBrand = process.env.HAPPIER_INSTALLER_WELCOME_SHOWN !== '1';
+  const showBrand = process.env.PIGGERCODE_INSTALLER_WELCOME_SHOWN !== '1';
   const color = isTTY && process.env.TERM !== 'dumb' && !process.env.NO_COLOR && chalk.level > 0;
   const rich = options.showWelcome !== false && canRenderSetupChoiceRich(options, width, rows, isTTY, showBrand);
   if (!rich) {
@@ -251,7 +251,7 @@ export function createSetupChoicePrompt(options: SetupChoiceRenderOptions): Setu
   const width = Math.max(20, Math.floor(options.columns ?? process.stdout.columns ?? 80));
   const rows = options.rows ?? process.stdout.rows ?? 24;
   const isTTY = options.isTTY ?? Boolean(process.stdout.isTTY);
-  const showBrand = process.env.HAPPIER_INSTALLER_WELCOME_SHOWN !== '1';
+  const showBrand = process.env.PIGGERCODE_INSTALLER_WELCOME_SHOWN !== '1';
   const rich = options.showWelcome !== false && canRenderSetupChoiceRich(options, width, rows, isTTY, showBrand);
   const canNavigate = isTTY && process.env.TERM !== 'dumb';
   const canAnimate = !isTerminalAnimationDisabled() && rich;

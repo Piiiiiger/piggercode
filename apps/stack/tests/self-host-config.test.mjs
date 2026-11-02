@@ -29,13 +29,13 @@ function parseJsonLinesBestEffort(stdout) {
 
 async function runSelfHost(args, { homeDir }) {
   const originalHome = process.env.HOME;
-  const originalForward = process.env.HAPPIER_STACK_SELF_HOST_FORWARD;
+  const originalForward = process.env.PIGGERCODE_STACK_SELF_HOST_FORWARD;
   let stdout = '';
 
   process.env.HOME = homeDir;
   // Exercise this legacy entrypoint directly; forwarding to a separately installed
   // `happier` CLI is an external-system boundary covered by its own CLI tests.
-  process.env.HAPPIER_STACK_SELF_HOST_FORWARD = '0';
+  process.env.PIGGERCODE_STACK_SELF_HOST_FORWARD = '0';
 
   try {
     await runSelfHostCli(args, {
@@ -50,8 +50,8 @@ async function runSelfHost(args, { homeDir }) {
   } finally {
     if (originalHome === undefined) delete process.env.HOME;
     else process.env.HOME = originalHome;
-    if (originalForward === undefined) delete process.env.HAPPIER_STACK_SELF_HOST_FORWARD;
-    else process.env.HAPPIER_STACK_SELF_HOST_FORWARD = originalForward;
+    if (originalForward === undefined) delete process.env.PIGGERCODE_STACK_SELF_HOST_FORWARD;
+    else process.env.PIGGERCODE_STACK_SELF_HOST_FORWARD = originalForward;
   }
 }
 

@@ -11,7 +11,7 @@ import { deleteKeychainBundle } from '../../../scripts/pipeline/secrets/delete-k
 import { readKeychainBundle } from '../../../scripts/pipeline/secrets/read-keychain-bundle.mjs';
 import { writeKeychainBundle } from '../../../scripts/pipeline/secrets/write-keychain-bundle.mjs';
 
-const BOT_TOKEN_ENV_KEY = 'HAPPIER_GITHUB_BOT_TOKEN';
+const BOT_TOKEN_ENV_KEY = 'PIGGERCODE_GITHUB_BOT_TOKEN';
 const BOT_LOGIN = 'happier-bot';
 const KEYCHAIN_SERVICE = 'happier/ghops';
 const KEYCHAIN_ACCOUNT = BOT_LOGIN;
@@ -25,17 +25,17 @@ Usage:
   yarn ghops git push --repo OWNER/REPO --source REVISION --target refs/heads/BRANCH [--force-with-lease EXPECTED_SHA]
 
 Required:
-  Bot token from HAPPIER_GITHUB_BOT_TOKEN, or macOS Keychain after auth store.
+  Bot token from PIGGERCODE_GITHUB_BOT_TOKEN, or macOS Keychain after auth store.
   Issue mutations require repository permission: Issues (read and write).
   Explicit bot Git pushes require repository permission: Contents (read and write) and write access to the target branch.
 
 Optional:
-  HAPPIER_GHOPS_GH_PATH      Path to the 'gh' executable (default: "gh")
-  HAPPIER_GHOPS_GIT_PATH     Path to the 'git' executable (default: "git")
-  HAPPIER_GHOPS_CONFIG_DIR   Override GH_CONFIG_DIR (default: <repo>/.happier/local/ghops/gh)
+  PIGGERCODE_GHOPS_GH_PATH      Path to the 'gh' executable (default: "gh")
+  PIGGERCODE_GHOPS_GIT_PATH     Path to the 'git' executable (default: "git")
+  PIGGERCODE_GHOPS_CONFIG_DIR   Override GH_CONFIG_DIR (default: <repo>/.happier/local/ghops/gh)
 
 Behavior:
-  - Prefers HAPPIER_GITHUB_BOT_TOKEN, then macOS Keychain service '${KEYCHAIN_SERVICE}' locally or through the active execution-host broker
+  - Prefers PIGGERCODE_GITHUB_BOT_TOKEN, then macOS Keychain service '${KEYCHAIN_SERVICE}' locally or through the active execution-host broker
   - Forces GH_TOKEN from the resolved bot token (no fallback to stored gh auth)
   - Disables interactive prompts (GH_PROMPT_DISABLED=1)
   - Uses an isolated GH_CONFIG_DIR by default
@@ -92,7 +92,7 @@ function readStoredBotToken() {
 
 async function readMacHostBotToken(repoRoot) {
   if (process.platform !== 'linux') return null;
-  const configuredStackName = String(process.env.HAPPIER_STACK_STACK ?? '').trim();
+  const configuredStackName = String(process.env.PIGGERCODE_STACK_STACK ?? '').trim();
   const stackName = configuredStackName || resolveRepoStackIdentity({
     repoRoot,
     stacksStorageRoot: resolveStacksStorageRoot(process.env),
@@ -348,10 +348,10 @@ async function main() {
   }
 
   const repoRoot = resolveRepoRoot(process.cwd());
-  const ghPath = resolvePath(repoRoot, process.env.HAPPIER_GHOPS_GH_PATH, process.env) || 'gh';
-  const gitPath = resolvePath(repoRoot, process.env.HAPPIER_GHOPS_GIT_PATH, process.env) || 'git';
+  const ghPath = resolvePath(repoRoot, process.env.PIGGERCODE_GHOPS_GH_PATH, process.env) || 'gh';
+  const gitPath = resolvePath(repoRoot, process.env.PIGGERCODE_GHOPS_GIT_PATH, process.env) || 'git';
   const configDir =
-    resolvePath(repoRoot, process.env.HAPPIER_GHOPS_CONFIG_DIR, process.env) ?? join(repoRoot, '.happier', 'local', 'ghops', 'gh');
+    resolvePath(repoRoot, process.env.PIGGERCODE_GHOPS_CONFIG_DIR, process.env) ?? join(repoRoot, '.happier', 'local', 'ghops', 'gh');
 
   mkdirSync(configDir, { recursive: true });
 

@@ -268,7 +268,7 @@ export async function listPidsWithEnvNeedle(needle) {
   const viaProc = await listLinuxProcPidsWithEnvNeedles([n]);
   if (Array.isArray(viaProc)) return viaProc;
   try {
-    // Include environment variables (eww) so we can match on HAPPIER_STACK_ENV_FILE=/.../env safely.
+    // Include environment variables (eww) so we can match on PIGGERCODE_STACK_ENV_FILE=/.../env safely.
     const out = await runCapture('ps', ['eww', '-ax', '-o', 'pid=,command=']);
     return parsePsPidCommandOutputForNeedles(out, [n]);
   } catch {
@@ -283,7 +283,7 @@ export async function listPidsWithEnvNeedles(needles) {
   const viaProc = await listLinuxProcPidsWithEnvNeedles(ns);
   if (Array.isArray(viaProc)) return viaProc;
   try {
-    // Include environment variables (eww) so we can match on HAPPIER_STACK_ENV_FILE=/.../env safely.
+    // Include environment variables (eww) so we can match on PIGGERCODE_STACK_ENV_FILE=/.../env safely.
     const out = await runCapture('ps', ['eww', '-ax', '-o', 'pid=,command=']);
     return parsePsPidCommandOutputForNeedles(out, ns);
   } catch {
@@ -322,7 +322,7 @@ export async function getProcessGroupId(pid, { timeoutMs, signal } = {}) {
 }
 
 export function readStackProcessKindFromEnvLine(line) {
-  const match = String(line ?? '').match(/(?:^|[\s\x00])HAPPIER_STACK_PROCESS_KIND=([^\s\x00]+)/);
+  const match = String(line ?? '').match(/(?:^|[\s\x00])PIGGERCODE_STACK_PROCESS_KIND=([^\s\x00]+)/);
   return match ? String(match[1] ?? '').trim() : '';
 }
 
@@ -372,20 +372,20 @@ export async function resolvePidStackOwnership(
 
   // Require at least one stack identifier.
   const hasStack =
-    (sn && textContainsNeedle(line, `HAPPIER_STACK_STACK=${sn}`)) ||
-    (!sn && textContainsEnvBindingName(line, 'HAPPIER_STACK_STACK'));
+    (sn && textContainsNeedle(line, `PIGGERCODE_STACK_STACK=${sn}`)) ||
+    (!sn && textContainsEnvBindingName(line, 'PIGGERCODE_STACK_STACK'));
   if (!hasStack) return { status: 'not_owned', owned: false, reason: 'stack_name_mismatch' };
 
   // Prefer env-file binding (strongest).
   if (ep) {
-    if (textContainsNeedle(line, `HAPPIER_STACK_ENV_FILE=${ep}`)) {
+    if (textContainsNeedle(line, `PIGGERCODE_STACK_ENV_FILE=${ep}`)) {
       return { status: 'owned', owned: true, reason: 'env_file' };
     }
   }
 
   // Fallback: CLI home dir binding (useful for daemon-related processes).
   if (ch) {
-    if (textContainsNeedle(line, `HAPPIER_HOME_DIR=${ch}`) || textContainsNeedle(line, `HAPPIER_STACK_CLI_HOME_DIR=${ch}`)) {
+    if (textContainsNeedle(line, `PIGGERCODE_HOME_DIR=${ch}`) || textContainsNeedle(line, `PIGGERCODE_STACK_CLI_HOME_DIR=${ch}`)) {
       return { status: 'owned', owned: true, reason: 'cli_home' };
     }
   }

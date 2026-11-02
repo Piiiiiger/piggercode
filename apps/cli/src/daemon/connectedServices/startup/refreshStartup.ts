@@ -35,7 +35,7 @@ export function startConnectedServiceRefreshStartup(input: Readonly<{
   loopHandle: ReturnType<typeof startConnectedServiceRefreshLoop> | null;
 }> {
   const connectedServicesRefreshEnabled = input.parseBooleanEnv(
-    input.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED,
+    input.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED,
     true,
   );
   if (!connectedServicesRefreshEnabled) {
@@ -43,22 +43,22 @@ export function startConnectedServiceRefreshStartup(input: Readonly<{
   }
 
   const refreshTickMs = input.resolvePositiveIntEnv(
-    input.env.HAPPIER_CONNECTED_SERVICES_REFRESH_TICK_MS,
+    input.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_TICK_MS,
     30_000,
     { min: 5_000, max: 5 * 60_000 },
   );
   const refreshWindowMs = input.resolvePositiveIntEnv(
-    input.env.HAPPIER_CONNECTED_SERVICES_REFRESH_WINDOW_MS,
+    input.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_WINDOW_MS,
     10 * 60_000,
     { min: 10_000, max: 60 * 60_000 },
   );
   const refreshLeaseMs = input.resolvePositiveIntEnv(
-    input.env.HAPPIER_CONNECTED_SERVICES_REFRESH_LEASE_MS,
+    input.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_LEASE_MS,
     2 * 60_000,
     { min: 10_000, max: 30 * 60_000 },
   );
   const refreshLeaseContentionWaitMaxMs = input.resolvePositiveIntEnv(
-    input.env.HAPPIER_CONNECTED_SERVICES_REFRESH_LEASE_CONTENTION_WAIT_MAX_MS,
+    input.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_LEASE_CONTENTION_WAIT_MAX_MS,
     5_000,
     { min: 0, max: 30_000 },
   );

@@ -88,7 +88,7 @@ describe('optionalWorkspaceBundleLock', () => {
             {
               repoRoot,
               lockPath,
-              env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
+              env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
               lockTimeoutMs: 60,
               lockPollIntervalMs: 10,
               lockStaleAfterMs: 1_000,
@@ -121,7 +121,7 @@ describe('optionalWorkspaceBundleLock', () => {
               {
                 repoRoot,
                 lockPath,
-                env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: join(repoRoot, 'different.lock') },
+                env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: join(repoRoot, 'different.lock') },
                 lockTimeoutMs: 60,
                 lockPollIntervalMs: 10,
                 lockStaleAfterMs: 1_000,

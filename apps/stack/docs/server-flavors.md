@@ -4,7 +4,7 @@ hstack supports two compatibility-facing server preset names. They select topolo
 
 ## What’s the difference?
 
-Both presets use the **same server codebase**. An explicit `HAPPIER_DB_PROVIDER=postgres|mysql|pglite|sqlite` wins under either preset. Without an explicit provider, light defaults to SQLite and full defaults to Postgres.
+Both presets use the **same server codebase**. An explicit `PIGGERCODE_DB_PROVIDER=postgres|mysql|pglite|sqlite` wins under either preset. Without an explicit provider, light defaults to SQLite and full defaults to Postgres.
 
 ### `happier-server-light` (recommended default)
 
@@ -23,9 +23,9 @@ Light stacks are isolated by default:
 
 Key env vars (stored in the stack env file):
 
-- `HAPPIER_SERVER_LIGHT_DATA_DIR`
-- `HAPPIER_SERVER_LIGHT_FILES_DIR`
-- `HAPPIER_SERVER_LIGHT_DB_DIR`
+- `PIGGERCODE_SERVER_LIGHT_DATA_DIR`
+- `PIGGERCODE_SERVER_LIGHT_FILES_DIR`
+- `PIGGERCODE_SERVER_LIGHT_DB_DIR`
 
 ### `happier-server` (full server)
 
@@ -48,7 +48,7 @@ This happens automatically when you run `hstack start/dev --server=happier-serve
 unless you disable it with:
 
 ```bash
-export HAPPIER_STACK_MANAGED_INFRA=0
+export PIGGERCODE_STACK_MANAGED_INFRA=0
 ```
 
 If disabled, you must provide `DATABASE_URL`, `REDIS_URL`, and `S3_*` yourself.
@@ -88,7 +88,7 @@ Notes:
 ## Prisma behavior (why start is safer under LaunchAgents)
 
 - **`hstack start`** is “production-like”. It avoids running heavyweight schema sync loops under launchd KeepAlive.
-- **`hstack dev`** is for rapid iteration. Migration selection follows the provider under either preset (configurable via `HAPPIER_STACK_PRISMA_MIGRATE`): Postgres uses Prisma migrate deploy, MySQL uses `migrate:mysql:deploy`, SQLite uses `migrate:sqlite:deploy`, and PGlite uses `migrate:light:deploy`.
+- **`hstack dev`** is for rapid iteration. Migration selection follows the provider under either preset (configurable via `PIGGERCODE_STACK_PRISMA_MIGRATE`): Postgres uses Prisma migrate deploy, MySQL uses `migrate:mysql:deploy`, SQLite uses `migrate:sqlite:deploy`, and PGlite uses `migrate:light:deploy`.
 
 Important: for a given run (`hstack start` / `hstack dev`) you choose **one** flavor.
 
@@ -103,7 +103,7 @@ hstack srv use happier-server
 hstack srv use --interactive
 ```
 
-This persists `HAPPIER_STACK_SERVER_COMPONENT`.
+This persists `PIGGERCODE_STACK_SERVER_COMPONENT`.
 
 ## How to switch for a specific stack
 
@@ -135,10 +135,10 @@ hstack dev --server=happier-server
 There are two separate concepts:
 
 - **Flavor selection**: which server flavor hstack runs
-  - controlled by `HAPPIER_STACK_SERVER_COMPONENT` (via `hstack srv use ...`)
+  - controlled by `PIGGERCODE_STACK_SERVER_COMPONENT` (via `hstack srv use ...`)
 - **Repo selection**: which monorepo checkout/worktree the stack runs from
-  - controlled by `HAPPIER_STACK_REPO_DIR` (via `hstack wt use ...` / `hstack stack wt <stack> -- use ...`)
+  - controlled by `PIGGERCODE_STACK_REPO_DIR` (via `hstack wt use ...` / `hstack stack wt <stack> -- use ...`)
 
 ## Database provider note
 
-SQLite is the light preset default and Postgres is the full preset default. Set `HAPPIER_DB_PROVIDER` in the stack env to choose independently. PostgreSQL and MySQL require `DATABASE_URL` unless the full preset is allowed to manage its default Postgres service.
+SQLite is the light preset default and Postgres is the full preset default. Set `PIGGERCODE_DB_PROVIDER` in the stack env to choose independently. PostgreSQL and MySQL require `DATABASE_URL` unless the full preset is allowed to manage its default Postgres service.

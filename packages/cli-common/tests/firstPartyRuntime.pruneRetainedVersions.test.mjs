@@ -21,7 +21,7 @@ async function createStagedPayload(rootDir, versionId) {
 
 test('pruneRetainedVersions removes versions outside the retained set', async () => {
   const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-'));
-  const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+  const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
   try {
     await promoteVersionedPayload({

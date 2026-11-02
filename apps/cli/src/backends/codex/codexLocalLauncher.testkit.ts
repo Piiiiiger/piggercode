@@ -13,8 +13,8 @@ type SessionEvent = { type?: string; message?: string };
 type RpcHandler = (params: unknown) => Promise<boolean>;
 
 const TRACKED_ENV_KEYS = [
-  'HAPPIER_CODEX_SESSIONS_DIR',
-  'HAPPIER_CODEX_TUI_BIN',
+  'PIGGERCODE_CODEX_SESSIONS_DIR',
+  'PIGGERCODE_CODEX_TUI_BIN',
   'CODEX_HOME',
   'CODEX_THREAD_ID',
   'CODEX_CI',
@@ -72,8 +72,8 @@ export async function cleanupCodexBinaryFixture(fixture: { sessionsRoot: string;
 
 export function applyCodexLauncherEnv(vars: Partial<Record<(typeof TRACKED_ENV_KEYS)[number], string | undefined>>): () => void {
   const previous: Record<(typeof TRACKED_ENV_KEYS)[number], string | undefined> = {
-    HAPPIER_CODEX_SESSIONS_DIR: process.env.HAPPIER_CODEX_SESSIONS_DIR,
-    HAPPIER_CODEX_TUI_BIN: process.env.HAPPIER_CODEX_TUI_BIN,
+    PIGGERCODE_CODEX_SESSIONS_DIR: process.env.PIGGERCODE_CODEX_SESSIONS_DIR,
+    PIGGERCODE_CODEX_TUI_BIN: process.env.PIGGERCODE_CODEX_TUI_BIN,
     CODEX_HOME: process.env.CODEX_HOME,
     CODEX_THREAD_ID: process.env.CODEX_THREAD_ID,
     CODEX_CI: process.env.CODEX_CI,
@@ -144,12 +144,12 @@ const script = `#!/usr/bin/env node
 const fs = require('node:fs');
 const path = require('node:path');
 
-const root = process.env.HAPPIER_CODEX_SESSIONS_DIR
-  ? process.env.HAPPIER_CODEX_SESSIONS_DIR
+const root = process.env.PIGGERCODE_CODEX_SESSIONS_DIR
+  ? process.env.PIGGERCODE_CODEX_SESSIONS_DIR
   : process.env.CODEX_HOME
     ? path.join(process.env.CODEX_HOME, 'sessions')
     : '';
-if (!root) throw new Error('Missing HAPPIER_CODEX_SESSIONS_DIR or CODEX_HOME');
+if (!root) throw new Error('Missing PIGGERCODE_CODEX_SESSIONS_DIR or CODEX_HOME');
 fs.mkdirSync(root, { recursive: true });
 const filePath = path.join(root, 'rollout-test.jsonl');
 const id = process.env.TEST_CODEX_SESSION_ID || 'sid';

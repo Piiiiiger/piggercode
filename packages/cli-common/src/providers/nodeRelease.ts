@@ -28,7 +28,7 @@ function parseNodeVersion(tag: string): string {
 }
 
 function resolveRequestedNodeTag(processEnv: NodeJS.ProcessEnv): string | null {
-  return normalizeNodeTag(processEnv.HAPPIER_MANAGED_NODE_VERSION);
+  return normalizeNodeTag(processEnv.PIGGERCODE_MANAGED_NODE_VERSION);
 }
 
 function resolvePreferredNodeAssetNames(params: Readonly<{ tag: string; platform?: NodeJS.Platform; arch?: string }>): ReadonlyArray<string> {

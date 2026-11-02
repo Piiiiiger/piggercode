@@ -59,7 +59,7 @@ describe('selected-account discovery admission by method', () => {
         }});
       `);
       await chmod(executable, 0o755);
-      vi.stubEnv(agentId === 'claude' ? 'HAPPIER_CLAUDE_PATH' : 'HAPPIER_GEMINI_PATH', executable);
+      vi.stubEnv(agentId === 'claude' ? 'PIGGERCODE_CLAUDE_PATH' : 'PIGGERCODE_GEMINI_PATH', executable);
       vi.stubEnv('ANTHROPIC_AUTH_TOKEN', 'ambient-wrong-account');
       vi.stubEnv('GEMINI_API_KEY', 'ambient-wrong-account');
       const requests: string[] = [];
@@ -75,10 +75,10 @@ describe('selected-account discovery admission by method', () => {
           const selected = method === 'runtime';
           if (selected) {
             vi.stubEnv('GOOGLE_GENAI_USE_VERTEXAI', '1');
-            vi.stubEnv('HAPPIER_GEMINI_ACP_AUTH_METHOD', 'gateway');
+            vi.stubEnv('PIGGERCODE_GEMINI_ACP_AUTH_METHOD', 'gateway');
           }
           const { backend } = createGeminiBackend({ cwd, env: { HOME: home, GEMINI_CLI_HOME: home,
-            ...(selected ? { HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{ kind: 'profile', serviceId: 'gemini', profileId: 'selected', credentialRevision: 'csr_1123456789ABCDEFGHJKMNPQRS' }]) } : {}) },
+            ...(selected ? { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{ kind: 'profile', serviceId: 'gemini', profileId: 'selected', credentialRevision: 'csr_1123456789ABCDEFGHJKMNPQRS' }]) } : {}) },
             ...(selected ? {} : { apiKey: 'native-explicit-key' }), model: null });
           try {
             await backend.startSession();

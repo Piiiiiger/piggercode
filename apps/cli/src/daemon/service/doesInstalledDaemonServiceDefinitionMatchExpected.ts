@@ -97,8 +97,8 @@ function shallowEqualStringMap(a: Readonly<Record<string, string>>, b: Readonly<
  *
  * We consider them equivalent when the trailing args match. The leading
  * launcher differs (shim vs node+entry), but the daemon reads its behavior
- * from the env vars (HAPPIER_HOME_DIR + HAPPIER_PUBLIC_RELEASE_CHANNEL +
- * HAPPIER_DAEMON_SERVICE_TARGET_MODE), which ARE compared strictly below.
+ * from the env vars (PIGGERCODE_HOME_DIR + PIGGERCODE_PUBLIC_RELEASE_CHANNEL +
+ * PIGGERCODE_DAEMON_SERVICE_TARGET_MODE), which ARE compared strictly below.
  * Since those env vars pin the CLI install + channel + mode, a drifted
  * launcher path still ends up running the same daemon under the same config.
  */

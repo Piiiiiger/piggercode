@@ -41,7 +41,7 @@ describe('Claude unified Herdr grouping', () => {
     await withHerdrApi(async (api) => {
       boundary.socketPath = api.socketPath;
       boundary.startedServers.length = 0;
-      vi.stubEnv('HAPPIER_CLAUDE_PATH', process.execPath);
+      vi.stubEnv('PIGGERCODE_CLAUDE_PATH', process.execPath);
       const abort = new AbortController();
       if (recordedServer) {
         const attachmentId = 'recorded-herdr-group' as TerminalAttachmentId;

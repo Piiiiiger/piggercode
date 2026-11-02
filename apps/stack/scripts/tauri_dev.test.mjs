@@ -41,7 +41,7 @@ test('tauri_dev --json prints the resolved launch plan without running build hoo
   const { stdout, stderr } = await execFileAsync(process.execPath, [scriptPath, '--json'], {
     cwd: dirname(scriptsDir),
     env: isolatedTauriEnv({
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '0',
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '0',
     }),
     encoding: 'utf8',
   });
@@ -85,10 +85,10 @@ test('tauri_dev prefers the ready runtime Expo port over an environment pin', as
   const { stdout, stderr } = await execFileAsync(process.execPath, [scriptPath, '--json'], {
     cwd: repoRoot,
     env: isolatedTauriEnv({
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '0',
-      HAPPIER_STACK_STORAGE_DIR: storageRoot,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_EXPO_DEV_PORT: '12345',
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageRoot,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '12345',
     }),
     encoding: 'utf8',
   });
@@ -124,15 +124,15 @@ test('tauri_dev prefers the ready runtime Expo port over the stack env-file pin'
     ),
     'utf-8',
   );
-  await writeFile(join(stackBaseDir, 'env'), 'HAPPIER_STACK_EXPO_DEV_PORT=12345\n', 'utf-8');
+  await writeFile(join(stackBaseDir, 'env'), 'PIGGERCODE_STACK_EXPO_DEV_PORT=12345\n', 'utf-8');
 
   const { stdout, stderr } = await execFileAsync(process.execPath, [scriptPath, '--json'], {
     cwd: repoRoot,
     env: isolatedTauriEnv({
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '0',
-      HAPPIER_STACK_EXPO_DEV_PORT: '0',
-      HAPPIER_STACK_STORAGE_DIR: storageRoot,
-      HAPPIER_STACK_STACK: stackName,
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '0',
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageRoot,
+      PIGGERCODE_STACK_STACK: stackName,
     }),
     encoding: 'utf8',
   });
@@ -145,7 +145,7 @@ test('tauri_dev prefers the ready runtime Expo port over the stack env-file pin'
   assert.equal(payload?.devUrl?.includes('12345'), false);
 });
 
-test('tauri_dev falls back to HAPPIER_STACK_CLI_ROOT_DIR when HAPPIER_STACK_REPO_DIR is misconfigured', async () => {
+test('tauri_dev falls back to PIGGERCODE_STACK_CLI_ROOT_DIR when PIGGERCODE_STACK_REPO_DIR is misconfigured', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const repoRoot = dirname(scriptsDir);
   const scriptPath = join(scriptsDir, 'tauri_dev.mjs');
@@ -154,10 +154,10 @@ test('tauri_dev falls back to HAPPIER_STACK_CLI_ROOT_DIR when HAPPIER_STACK_REPO
   const { stdout, stderr } = await execFileAsync(process.execPath, [scriptPath, '--json'], {
     cwd: repoRoot,
     env: isolatedTauriEnv({
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '0',
-      HAPPIER_STACK_REPO_DIR: fakeRepo,
-      HAPPIER_STACK_CLI_ROOT_DIR: repoRoot,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '0',
+      PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+      PIGGERCODE_STACK_CLI_ROOT_DIR: repoRoot,
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
     }),
     encoding: 'utf8',
   });
@@ -183,9 +183,9 @@ test('tauri_dev --json falls back to the CLI root repo when the stack repo dir i
   const { stdout, stderr } = await execFileAsync(process.execPath, [scriptPath, '--json'], {
     cwd: repoRoot,
     env: isolatedTauriEnv({
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '0',
-      HAPPIER_STACK_REPO_DIR: fakeRepo,
-      HAPPIER_STACK_CLI_ROOT_DIR: repoRoot,
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '0',
+      PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+      PIGGERCODE_STACK_CLI_ROOT_DIR: repoRoot,
     }),
     encoding: 'utf8',
   });

@@ -11,15 +11,15 @@ describe('claude execution run isolation', () => {
   let homeDir: string | null = null;
 
   beforeEach(async () => {
-    prevHomeDir = process.env.HAPPIER_HOME_DIR;
+    prevHomeDir = process.env.PIGGERCODE_HOME_DIR;
     homeDir = await mkdtemp(join(tmpdir(), 'happier-cli-home-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
     reloadConfiguration();
   });
 
   afterEach(async () => {
-    if (prevHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = prevHomeDir;
+    if (prevHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = prevHomeDir;
     reloadConfiguration();
     if (homeDir) {
       await rm(homeDir, { recursive: true, force: true });

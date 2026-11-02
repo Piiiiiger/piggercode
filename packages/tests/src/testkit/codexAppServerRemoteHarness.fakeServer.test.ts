@@ -52,7 +52,7 @@ async function withFakeServer<T>(
     env: {
       ...process.env,
       CODEX_HOME: '',
-      HAPPIER_E2E_FAKE_CODEX_APP_SERVER_INITIAL_ACCOUNT_ID: 'acct-1',
+      PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_INITIAL_ACCOUNT_ID: 'acct-1',
     },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
@@ -112,7 +112,7 @@ async function withPersistentFakeServer<T>(
     env: {
       ...process.env,
       CODEX_HOME: '',
-      HAPPIER_E2E_FAKE_CODEX_APP_SERVER_INITIAL_ACCOUNT_ID: 'acct-1',
+      PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_INITIAL_ACCOUNT_ID: 'acct-1',
     },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
@@ -665,8 +665,8 @@ describe('fake Codex app-server harness', () => {
   });
 
   it('models steer inside the active turn with active rollback rejection', async () => {
-    const previousDelay = process.env.HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS;
-    process.env.HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS = '1000';
+    const previousDelay = process.env.PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS;
+    process.env.PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS = '1000';
     try {
       await withFakeServer(
         {},
@@ -759,9 +759,9 @@ describe('fake Codex app-server harness', () => {
       );
     } finally {
       if (previousDelay === undefined) {
-        delete process.env.HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS;
+        delete process.env.PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS;
       } else {
-        process.env.HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS = previousDelay;
+        process.env.PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS = previousDelay;
       }
     }
   });

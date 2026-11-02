@@ -9,10 +9,10 @@ import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 import { resolveJavaScriptRuntimeExecutable } from './resolveJavaScriptRuntimeExecutable';
 
 const envKeys = [
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_NODE_PATH',
-  'HAPPIER_HOME_DIR',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_NODE_PATH',
+  'PIGGERCODE_HOME_DIR',
   'PATH',
 ] as const;
 
@@ -36,17 +36,17 @@ describe('resolveJavaScriptRuntimeExecutable', () => {
     writeFileSync(overridePath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(overridePath, 0o755);
 
-    envScope.patch({ HAPPIER_MANAGED_NODE_BIN: overridePath });
+    envScope.patch({ PIGGERCODE_MANAGED_NODE_BIN: overridePath });
 
     expect(resolveJavaScriptRuntimeExecutable({ isBunRuntime: false })).toBe(overridePath);
   });
 
   it('falls back to process.execPath under the node runtime', () => {
     envScope.patch({
-      HAPPIER_MANAGED_NODE_BIN: undefined,
-      HAPPIER_JS_RUNTIME_PATH: undefined,
-      HAPPIER_NODE_PATH: undefined,
-      HAPPIER_HOME_DIR: undefined,
+      PIGGERCODE_MANAGED_NODE_BIN: undefined,
+      PIGGERCODE_JS_RUNTIME_PATH: undefined,
+      PIGGERCODE_NODE_PATH: undefined,
+      PIGGERCODE_HOME_DIR: undefined,
     });
 
     expect(resolveJavaScriptRuntimeExecutable({ isBunRuntime: false })).toBe(process.execPath);
@@ -68,10 +68,10 @@ describe('resolveJavaScriptRuntimeExecutable', () => {
     if (process.platform !== 'win32') chmodSync(runtimeBinaryPath, 0o755);
 
     envScope.patch({
-      HAPPIER_MANAGED_NODE_BIN: undefined,
-      HAPPIER_JS_RUNTIME_PATH: undefined,
-      HAPPIER_NODE_PATH: undefined,
-      HAPPIER_HOME_DIR: happyHomeDir,
+      PIGGERCODE_MANAGED_NODE_BIN: undefined,
+      PIGGERCODE_JS_RUNTIME_PATH: undefined,
+      PIGGERCODE_NODE_PATH: undefined,
+      PIGGERCODE_HOME_DIR: happyHomeDir,
       PATH: '',
     });
 
@@ -84,10 +84,10 @@ describe('resolveJavaScriptRuntimeExecutable', () => {
 
   it('uses the current bun executable under the direct bun runtime', () => {
     envScope.patch({
-      HAPPIER_MANAGED_NODE_BIN: undefined,
-      HAPPIER_JS_RUNTIME_PATH: undefined,
-      HAPPIER_NODE_PATH: undefined,
-      HAPPIER_HOME_DIR: undefined,
+      PIGGERCODE_MANAGED_NODE_BIN: undefined,
+      PIGGERCODE_JS_RUNTIME_PATH: undefined,
+      PIGGERCODE_NODE_PATH: undefined,
+      PIGGERCODE_HOME_DIR: undefined,
       PATH: '',
     });
 
@@ -99,10 +99,10 @@ describe('resolveJavaScriptRuntimeExecutable', () => {
     tempDirs.add(happyHomeDir);
 
     envScope.patch({
-      HAPPIER_MANAGED_NODE_BIN: undefined,
-      HAPPIER_JS_RUNTIME_PATH: undefined,
-      HAPPIER_NODE_PATH: undefined,
-      HAPPIER_HOME_DIR: happyHomeDir,
+      PIGGERCODE_MANAGED_NODE_BIN: undefined,
+      PIGGERCODE_JS_RUNTIME_PATH: undefined,
+      PIGGERCODE_NODE_PATH: undefined,
+      PIGGERCODE_HOME_DIR: happyHomeDir,
       PATH: '',
     });
 
@@ -124,10 +124,10 @@ describe('resolveJavaScriptRuntimeExecutable', () => {
     writeFileSync(overridePath, '#!/bin/sh\n', 'utf8');
 
     envScope.patch({
-      HAPPIER_MANAGED_NODE_BIN: overridePath,
-      HAPPIER_JS_RUNTIME_PATH: undefined,
-      HAPPIER_NODE_PATH: undefined,
-      HAPPIER_HOME_DIR: undefined,
+      PIGGERCODE_MANAGED_NODE_BIN: overridePath,
+      PIGGERCODE_JS_RUNTIME_PATH: undefined,
+      PIGGERCODE_NODE_PATH: undefined,
+      PIGGERCODE_HOME_DIR: undefined,
     });
 
     expect(resolveJavaScriptRuntimeExecutable({ isBunRuntime: false })).toBe(null);

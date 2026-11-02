@@ -65,14 +65,14 @@ function listen(server: http.Server): Promise<{ port: number }> {
 }
 
 describe('daemon control client (HTTP error responses)', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
   let tmpHomeDir: string | null = null;
 
   afterEach(async () => {
     vi.restoreAllMocks();
     await clearDaemonStateForTests();
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
     reloadConfiguration();
     if (tmpHomeDir) {
       await removeTempDir(tmpHomeDir);
@@ -92,7 +92,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-pid-namespace-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: 987_654_321,
@@ -111,7 +111,7 @@ describe('daemon control client (HTTP error responses)', () => {
 
   it('rejects session listing when there is no daemon instead of returning an empty inventory', async () => {
     tmpHomeDir = await createTempDir('happier-daemon-list-no-state-');
-    envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
     reloadConfiguration();
 
     await expect(controlClient.listDaemonSessions()).rejects.toThrow('No daemon running');
@@ -127,7 +127,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-list-http-error-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -159,7 +159,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-inspect-pid-namespace-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: 987_654_321,
@@ -180,7 +180,7 @@ describe('daemon control client (HTTP error responses)', () => {
 
   it('keeps a hidden PID with no authenticated control answer as not running', async () => {
     tmpHomeDir = await createTempDir('happier-daemon-inspect-pid-dead-');
-    envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
     reloadConfiguration();
     const server = http.createServer((_req, res) => {
       res.statusCode = 200;
@@ -209,7 +209,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-lifecycle-owned-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -244,7 +244,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-abort-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -298,7 +298,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -369,7 +369,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -440,7 +440,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -483,7 +483,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -529,7 +529,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -602,7 +602,7 @@ describe('daemon control client (HTTP error responses)', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -671,7 +671,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -724,7 +724,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -791,7 +791,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-refresh-health-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -849,7 +849,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -916,7 +916,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-claude-refresh-health-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -954,7 +954,7 @@ describe('daemon control client (HTTP error responses)', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,

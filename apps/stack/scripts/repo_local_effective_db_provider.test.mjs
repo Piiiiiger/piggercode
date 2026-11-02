@@ -24,14 +24,14 @@ async function createFixture(t, lines) {
   await writeFile(envPath, [...lines, ''].join('\n'), 'utf8');
 
   const env = { ...process.env };
-  for (const key of ['HAPPIER_STACK_SERVER_COMPONENT', 'HAPPIER_DB_PROVIDER', 'HAPPY_DB_PROVIDER', 'DATABASE_URL', 'HAPPIER_STACK_ENV_FILE', 'HAPPIER_STACK_STACK']) {
+  for (const key of ['PIGGERCODE_STACK_SERVER_COMPONENT', 'PIGGERCODE_DB_PROVIDER', 'HAPPY_DB_PROVIDER', 'DATABASE_URL', 'PIGGERCODE_STACK_ENV_FILE', 'PIGGERCODE_STACK_STACK']) {
     delete env[key];
   }
   Object.assign(env, {
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_HOME_DIR: join(root, 'stack-home'),
-    HAPPIER_STACK_REPO_LOCAL_AUTO_INSTALL: '0',
-    HAPPIER_STACK_REPO_LOCAL_PREFLIGHT_ONLY: '1',
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'stack-home'),
+    PIGGERCODE_STACK_REPO_LOCAL_AUTO_INSTALL: '0',
+    PIGGERCODE_STACK_REPO_LOCAL_PREFLIGHT_ONLY: '1',
   });
   return { env, envPath, root };
 }
@@ -49,8 +49,8 @@ import { writeFileSync } from 'node:fs';
 export function spawnSync(_command, _args, options = {}) {
   const env = options.env ?? {};
   writeFileSync(${JSON.stringify(markerPath)}, JSON.stringify({
-    component: env.HAPPIER_STACK_SERVER_COMPONENT ?? null,
-    primary: env.HAPPIER_DB_PROVIDER ?? null,
+    component: env.PIGGERCODE_STACK_SERVER_COMPONENT ?? null,
+    primary: env.PIGGERCODE_DB_PROVIDER ?? null,
     legacy: env.HAPPY_DB_PROVIDER ?? null,
     databaseUrl: env.DATABASE_URL ?? null,
   }), 'utf8');
@@ -71,43 +71,43 @@ export async function resolve(specifier, context, defaultResolve) {
     '',
   ].join('\n'), 'utf8');
   const env = { ...fixture.env };
-  delete env.HAPPIER_STACK_REPO_LOCAL_PREFLIGHT_ONLY;
+  delete env.PIGGERCODE_STACK_REPO_LOCAL_PREFLIGHT_ONLY;
   const result = await runNodeCapture(['--import', registerPath, repoLocalScript, 'dev'], { cwd: repoRoot, env });
   return { result, captured: JSON.parse(await readFile(markerPath, 'utf8')) };
 }
 
 test('repo-local writer preserves compatible PGlite and prunes light DATABASE_URL', async (t) => {
   const fixture = await createFixture(t, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-    'HAPPIER_DB_PROVIDER=pglite',
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+    'PIGGERCODE_DB_PROVIDER=pglite',
     'DATABASE_URL=mysql://stale-shell/db',
   ]);
   const result = await runRepoLocal(fixture);
   assert.equal(result.code, 0, `stdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
   const raw = await readFile(fixture.envPath, 'utf8');
-  assert.match(raw, /^HAPPIER_DB_PROVIDER=pglite$/m);
+  assert.match(raw, /^PIGGERCODE_DB_PROVIDER=pglite$/m);
   assert.doesNotMatch(raw, /^DATABASE_URL=/m);
 });
 
 test('repo-local writer preserves compatible MySQL provider and DATABASE_URL', async (t) => {
   const databaseUrl = 'mysql://operator:secret@db.example.test:3306/happier';
   const fixture = await createFixture(t, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server',
-    'HAPPIER_DB_PROVIDER=mysql',
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server',
+    'PIGGERCODE_DB_PROVIDER=mysql',
     `DATABASE_URL=${databaseUrl}`,
   ]);
   const result = await runRepoLocal(fixture);
   assert.equal(result.code, 0, `stdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
   const raw = await readFile(fixture.envPath, 'utf8');
-  assert.match(raw, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server$/m);
-  assert.match(raw, /^HAPPIER_DB_PROVIDER=mysql$/m);
+  assert.match(raw, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server$/m);
+  assert.match(raw, /^PIGGERCODE_DB_PROVIDER=mysql$/m);
   assert.match(raw, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
 });
 
 test('repo-local writer fails closed on corrupt explicit provider metadata', async (t) => {
   const fixture = await createFixture(t, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-    'HAPPIER_DB_PROVIDER=unsupported',
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+    'PIGGERCODE_DB_PROVIDER=unsupported',
   ]);
   const before = await readFile(fixture.envPath, 'utf8');
   const result = await runRepoLocal(fixture);
@@ -118,11 +118,11 @@ test('repo-local writer fails closed on corrupt explicit provider metadata', asy
 
 test('repo-local child receives canonical persisted authority instead of exported shell provider state', async (t) => {
   const fixture = await createFixture(t, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-    'HAPPIER_DB_PROVIDER=sqlite',
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+    'PIGGERCODE_DB_PROVIDER=sqlite',
   ]);
   Object.assign(fixture.env, {
-    HAPPIER_DB_PROVIDER: 'mysql',
+    PIGGERCODE_DB_PROVIDER: 'mysql',
     HAPPY_DB_PROVIDER: 'mysql',
     DATABASE_URL: 'mysql://shell-override/db',
   });
@@ -140,12 +140,12 @@ test('repo-local child receives canonical persisted authority instead of exporte
 test('repo-local child retains compatible persisted external Postgres authority', async (t) => {
   const databaseUrl = 'postgresql://operator:secret@db.example.test:5432/happier';
   const fixture = await createFixture(t, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server',
-    'HAPPIER_DB_PROVIDER=postgres',
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server',
+    'PIGGERCODE_DB_PROVIDER=postgres',
     `DATABASE_URL=${databaseUrl}`,
   ]);
   Object.assign(fixture.env, {
-    HAPPIER_DB_PROVIDER: 'mysql',
+    PIGGERCODE_DB_PROVIDER: 'mysql',
     HAPPY_DB_PROVIDER: 'mysql',
     DATABASE_URL: 'mysql://shell-override/db',
   });

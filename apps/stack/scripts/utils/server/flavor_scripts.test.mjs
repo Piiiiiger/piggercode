@@ -12,13 +12,13 @@ import {
 import { resolvePrismaClientImportForDbProvider } from './prisma_client_import.mjs';
 
 test('applyServerComponentFlavorEnv overrides ambient flavor with the admitted component', () => {
-  const fullEnv = { HAPPIER_SERVER_FLAVOR: 'light', HAPPY_SERVER_FLAVOR: 'light' };
+  const fullEnv = { PIGGERCODE_SERVER_FLAVOR: 'light', HAPPY_SERVER_FLAVOR: 'light' };
   assert.equal(applyServerComponentFlavorEnv({ serverComponentName: 'happier-server', targetEnv: fullEnv }), 'full');
-  assert.deepEqual(fullEnv, { HAPPIER_SERVER_FLAVOR: 'full', HAPPY_SERVER_FLAVOR: 'full' });
+  assert.deepEqual(fullEnv, { PIGGERCODE_SERVER_FLAVOR: 'full', HAPPY_SERVER_FLAVOR: 'full' });
 
-  const lightEnv = { HAPPIER_SERVER_FLAVOR: 'full', HAPPY_SERVER_FLAVOR: 'full' };
+  const lightEnv = { PIGGERCODE_SERVER_FLAVOR: 'full', HAPPY_SERVER_FLAVOR: 'full' };
   assert.equal(applyServerComponentFlavorEnv({ serverComponentName: 'happier-server-light', targetEnv: lightEnv }), 'light');
-  assert.deepEqual(lightEnv, { HAPPIER_SERVER_FLAVOR: 'light', HAPPY_SERVER_FLAVOR: 'light' });
+  assert.deepEqual(lightEnv, { PIGGERCODE_SERVER_FLAVOR: 'light', HAPPY_SERVER_FLAVOR: 'light' });
 });
 
 test('applyServerComponentFlavorEnv rejects an unknown admitted component', () => {

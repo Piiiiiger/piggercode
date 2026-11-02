@@ -10,12 +10,12 @@ import { handleServerCommand } from './server';
 
 describe('happier server --json', () => {
   let home = '';
-  let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
   beforeEach(async () => {
-    envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
     home = await createTempDir('happier-server-json-');
-    envScope.patch({ HAPPIER_HOME_DIR: home });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home });
     reloadConfiguration();
   });
 

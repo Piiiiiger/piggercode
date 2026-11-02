@@ -46,7 +46,7 @@ function resolveScmMaxOutputBytes(inputMaxOutputBytes: number | undefined): numb
         return Math.floor(inputMaxOutputBytes);
     }
 
-    const envValue = process.env.HAPPIER_SCM_MAX_OUTPUT_BYTES;
+    const envValue = process.env.PIGGERCODE_SCM_MAX_OUTPUT_BYTES;
     if (!envValue) return DEFAULT_SCM_MAX_OUTPUT_BYTES;
     const parsed = Number(envValue);
     if (!Number.isFinite(parsed) || parsed <= 0) {

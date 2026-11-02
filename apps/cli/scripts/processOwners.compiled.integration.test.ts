@@ -42,7 +42,7 @@ it('loads both process owners from a detached compiled executable without runtim
     await copyFile(builtExecutable, detachedExecutable);
     const { stdout } = await execFileAsync(detachedExecutable, [], {
       cwd: unrelatedCwd,
-      env: { ...process.env, HAPPIER_HOME_DIR: homeDir },
+      env: { ...process.env, PIGGERCODE_HOME_DIR: homeDir },
     });
     expect(JSON.parse(stdout)).toEqual({ alive: true });
   });

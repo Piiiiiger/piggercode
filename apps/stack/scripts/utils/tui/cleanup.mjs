@@ -32,8 +32,8 @@ export async function stopStackForTuiExit({
   const env = {
     ...(outerEnv ?? process.env),
     ...stackEnv,
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   };
 
   return await stopStackWithEnv({

@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-    HAPPIER_SKILL_MENTIONS_METADATA_KEY,
-    HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
-    HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY,
+    PIGGERCODE_SKILL_MENTIONS_METADATA_KEY,
+    PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1,
+    PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY,
     MENTION_KIND_V1,
     buildMentionRefForKindV1,
 } from '@piggercode/protocol';
@@ -62,7 +62,7 @@ function catalogs(overrides: Partial<{ listSkills: () => Promise<unknown>; listV
 }
 
 function metaWithMentions(mentions: readonly Record<string, unknown>[]): Record<string, unknown> {
-    return { [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1, mentions } };
+    return { [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1, mentions } };
 }
 
 const SKILL_MENTION = { kind: MENTION_KIND_V1.skill, ref: SKILL_REF, token: '$review', start: 4, end: 11 };
@@ -73,7 +73,7 @@ const VENDOR_MENTION = { kind: MENTION_KIND_V1.vendorPlugin, ref: VENDOR_REF, to
  * R-10 measures against.
  */
 const LEGACY_META = {
-    [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: {
+    [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: {
         v: 1,
         skillMentions: [{
             name: 'review',
@@ -248,13 +248,13 @@ describe('resolveStructuredInputProviderContextInMeta', () => {
     it('drops the legacy arrays and meta-root aliases D-4 had already ruled out', async () => {
         const resolved = await resolveStructuredInputProviderContextInMeta({
             meta: {
-                [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: {
+                [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: {
                     v: 1,
                     mentions: [VENDOR_MENTION],
                     skillMentions: [{ name: 'stale', path: '/stale/SKILL.md' }],
                 },
-                [HAPPIER_SKILL_MENTIONS_METADATA_KEY]: [{ name: 'alias', path: '/alias/SKILL.md' }],
-                [HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY]: [{ vendorPluginRef: 'plugin://alias@happier' }],
+                [PIGGERCODE_SKILL_MENTIONS_METADATA_KEY]: [{ name: 'alias', path: '/alias/SKILL.md' }],
+                [PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY]: [{ vendorPluginRef: 'plugin://alias@happier' }],
             },
             catalogs: catalogs(),
         });
@@ -268,7 +268,7 @@ describe('resolveStructuredInputProviderContextInMeta', () => {
     it('preserves the attachments the envelope carries alongside references', async () => {
         const resolved = await resolveStructuredInputProviderContextInMeta({
             meta: {
-                [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: {
+                [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: {
                     v: 1,
                     mentions: [VENDOR_MENTION],
                     attachments: [{ kind: 'image', url: 'https://example.test/a.png' }],

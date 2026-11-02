@@ -19,14 +19,14 @@ import {
 test('listPsPidsForEnvQueries resolves multiple ownership queries from one macOS snapshot', async () => {
   let captures = 0;
   const output = [
-    '101 cmd HAPPIER_STACK_ENV_FILE=/tmp/a/env HAPPIER_STACK_PROCESS_KIND=infra',
-    '102 cmd HAPPIER_STACK_ENV_FILE=/tmp/a/env npm_package_name=@piggercode/server npm_lifecycle_event=dev',
+    '101 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/a/env PIGGERCODE_STACK_PROCESS_KIND=infra',
+    '102 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/a/env npm_package_name=@piggercode/server npm_lifecycle_event=dev',
   ].join('\n');
 
   const result = await listPsPidsForEnvQueries([
-    { needles: ['HAPPIER_STACK_ENV_FILE=/tmp/a/env', 'HAPPIER_STACK_PROCESS_KIND=infra'] },
+    { needles: ['PIGGERCODE_STACK_ENV_FILE=/tmp/a/env', 'PIGGERCODE_STACK_PROCESS_KIND=infra'] },
     {
-      needles: ['HAPPIER_STACK_ENV_FILE=/tmp/a/env', 'npm_package_name=@piggercode/server'],
+      needles: ['PIGGERCODE_STACK_ENV_FILE=/tmp/a/env', 'npm_package_name=@piggercode/server'],
       bindingNames: ['npm_lifecycle_event'],
     },
   ], {
@@ -110,14 +110,14 @@ test('Windows stack ownership uses an exact persisted process-instance fingerpri
 
 test('parsePsPidCommandOutputForNeedles requires all needles to match', () => {
   const output = [
-    '101 node server.js HAPPIER_STACK_ENV_FILE=/tmp/a/env HAPPIER_STACK_PROCESS_KIND=infra',
-    '102 node server.js HAPPIER_STACK_ENV_FILE=/tmp/a/env HAPPIER_STACK_PROCESS_KIND=session',
-    '103 node server.js HAPPIER_STACK_ENV_FILE=/tmp/b/env HAPPIER_STACK_PROCESS_KIND=infra',
+    '101 node server.js PIGGERCODE_STACK_ENV_FILE=/tmp/a/env PIGGERCODE_STACK_PROCESS_KIND=infra',
+    '102 node server.js PIGGERCODE_STACK_ENV_FILE=/tmp/a/env PIGGERCODE_STACK_PROCESS_KIND=session',
+    '103 node server.js PIGGERCODE_STACK_ENV_FILE=/tmp/b/env PIGGERCODE_STACK_PROCESS_KIND=infra',
   ].join('\n');
 
   const pids = parsePsPidCommandOutputForNeedles(output, [
-    'HAPPIER_STACK_ENV_FILE=/tmp/a/env',
-    'HAPPIER_STACK_PROCESS_KIND=infra',
+    'PIGGERCODE_STACK_ENV_FILE=/tmp/a/env',
+    'PIGGERCODE_STACK_PROCESS_KIND=infra',
   ]);
 
   assert.deepEqual(pids, [101]);
@@ -125,15 +125,15 @@ test('parsePsPidCommandOutputForNeedles requires all needles to match', () => {
 
 test('parsePsPidCommandOutputForNeedles deduplicates matches and ignores invalid pid lines', () => {
   const output = [
-    '201 cmd HAPPIER_STACK_ENV_FILE=/tmp/x/env HAPPIER_STACK_PROCESS_KIND=infra',
-    'not-a-pid cmd HAPPIER_STACK_ENV_FILE=/tmp/x/env HAPPIER_STACK_PROCESS_KIND=infra',
-    '201 cmd HAPPIER_STACK_ENV_FILE=/tmp/x/env HAPPIER_STACK_PROCESS_KIND=infra',
-    '1 cmd HAPPIER_STACK_ENV_FILE=/tmp/x/env HAPPIER_STACK_PROCESS_KIND=infra',
+    '201 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/x/env PIGGERCODE_STACK_PROCESS_KIND=infra',
+    'not-a-pid cmd PIGGERCODE_STACK_ENV_FILE=/tmp/x/env PIGGERCODE_STACK_PROCESS_KIND=infra',
+    '201 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/x/env PIGGERCODE_STACK_PROCESS_KIND=infra',
+    '1 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/x/env PIGGERCODE_STACK_PROCESS_KIND=infra',
   ].join('\n');
 
   const pids = parsePsPidCommandOutputForNeedles(output, [
-    'HAPPIER_STACK_ENV_FILE=/tmp/x/env',
-    'HAPPIER_STACK_PROCESS_KIND=infra',
+    'PIGGERCODE_STACK_ENV_FILE=/tmp/x/env',
+    'PIGGERCODE_STACK_PROCESS_KIND=infra',
   ]);
 
   assert.deepEqual(pids, [201]);
@@ -141,45 +141,45 @@ test('parsePsPidCommandOutputForNeedles deduplicates matches and ignores invalid
 
 test('parsePsPidCommandOutputForNeedles matches environment bindings exactly', () => {
   const output = [
-    '301 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env-old HAPPIER_STACK_PROCESS_KIND=infra',
-    '302 cmd HAPPIER_HOME_DIR=/tmp/stack/cli-other HAPPIER_STACK_PROCESS_KIND=daemon',
-    '303 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env HAPPIER_STACK_PROCESS_KIND=infra',
+    '301 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env-old PIGGERCODE_STACK_PROCESS_KIND=infra',
+    '302 cmd PIGGERCODE_HOME_DIR=/tmp/stack/cli-other PIGGERCODE_STACK_PROCESS_KIND=daemon',
+    '303 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env PIGGERCODE_STACK_PROCESS_KIND=infra',
   ].join('\n');
 
   assert.deepEqual(parsePsPidCommandOutputForNeedles(output, [
-    'HAPPIER_STACK_ENV_FILE=/tmp/stack/env',
-    'HAPPIER_STACK_PROCESS_KIND=infra',
+    'PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env',
+    'PIGGERCODE_STACK_PROCESS_KIND=infra',
   ]), [303]);
   assert.deepEqual(parsePsPidCommandOutputForNeedles(output, [
-    'HAPPIER_HOME_DIR=/tmp/stack/cli',
-    'HAPPIER_STACK_PROCESS_KIND=daemon',
+    'PIGGERCODE_HOME_DIR=/tmp/stack/cli',
+    'PIGGERCODE_STACK_PROCESS_KIND=daemon',
   ]), []);
 });
 
 test('textContainsNeedle matches exact environment bindings in nul-delimited proc environ text', () => {
   const envText = [
-    'HAPPIER_STACK_ENV_FILE=/tmp/stack/env',
-    'HAPPIER_STACK_PROCESS_KIND=infra',
-    'HAPPIER_HOME_DIR=/tmp/stack/cli',
+    'PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env',
+    'PIGGERCODE_STACK_PROCESS_KIND=infra',
+    'PIGGERCODE_HOME_DIR=/tmp/stack/cli',
   ].join('\0');
 
-  assert.equal(textContainsNeedle(envText, 'HAPPIER_STACK_ENV_FILE=/tmp/stack/env'), true);
-  assert.equal(textContainsNeedle(envText, 'HAPPIER_HOME_DIR=/tmp/stack/cli'), true);
-  assert.equal(textContainsNeedle(envText, 'HAPPIER_STACK_ENV_FILE=/tmp/stack/env-old'), false);
+  assert.equal(textContainsNeedle(envText, 'PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env'), true);
+  assert.equal(textContainsNeedle(envText, 'PIGGERCODE_HOME_DIR=/tmp/stack/cli'), true);
+  assert.equal(textContainsNeedle(envText, 'PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env-old'), false);
 });
 
 test('parsePsPidCommandOutputForNeedlesAndEnvBindingNames requires binding names without pinning values', () => {
   const output = [
-    '401 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
-    '402 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_package_name=@piggercode/server',
-    '403 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event= npm_package_name=@piggercode/server',
-    '404 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env-extra npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
+    '401 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
+    '402 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env npm_package_name=@piggercode/server',
+    '403 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event= npm_package_name=@piggercode/server',
+    '404 cmd PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env-extra npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
   ].join('\n');
 
   assert.deepEqual(parsePsPidCommandOutputForNeedlesAndEnvBindingNames(
     output,
     [
-      'HAPPIER_STACK_ENV_FILE=/tmp/stack/env',
+      'PIGGERCODE_STACK_ENV_FILE=/tmp/stack/env',
       'npm_package_name=@piggercode/server',
     ],
     ['npm_lifecycle_event']
@@ -198,9 +198,9 @@ test('listPidsWithEnvNeedles finds real stack-owned infra processes', async (t) 
     env: {
       PATH: process.env.PATH ?? '',
       HOME: process.env.HOME ?? '',
-      HAPPIER_STACK_STACK: 'test-stack',
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: 'test-stack',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
     stdio: 'ignore',
   });
@@ -209,8 +209,8 @@ test('listPidsWithEnvNeedles finds real stack-owned infra processes', async (t) 
   try {
     assert.ok(Number.isFinite(childPid) && childPid > 1, 'expected child pid');
     const needles = [
-      `HAPPIER_STACK_ENV_FILE=${envPath}`,
-      'HAPPIER_STACK_PROCESS_KIND=infra',
+      `PIGGERCODE_STACK_ENV_FILE=${envPath}`,
+      'PIGGERCODE_STACK_PROCESS_KIND=infra',
     ];
     const timeoutMs = 5_000;
     const startedAt = Date.now();
@@ -245,8 +245,8 @@ test('listPidsWithEnvNeedlesAndEnvBindingNames finds real processes with present
     env: {
       PATH: process.env.PATH ?? '',
       HOME: process.env.HOME ?? '',
-      HAPPIER_STACK_STACK: 'test-stack',
-      HAPPIER_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_STACK: 'test-stack',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -262,7 +262,7 @@ test('listPidsWithEnvNeedlesAndEnvBindingNames finds real processes with present
     while (Date.now() - startedAt < timeoutMs) {
       // eslint-disable-next-line no-await-in-loop
       found = await listPidsWithEnvNeedlesAndEnvBindingNames([
-        `HAPPIER_STACK_ENV_FILE=${envPath}`,
+        `PIGGERCODE_STACK_ENV_FILE=${envPath}`,
         'npm_package_name=@piggercode/server',
       ], ['npm_lifecycle_event']);
       if (found.includes(childPid)) break;

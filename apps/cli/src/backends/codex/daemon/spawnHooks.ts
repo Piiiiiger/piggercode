@@ -13,7 +13,7 @@ function resolveCodexDaemonBackendMode(params: DaemonSpawnRuntimeSelection): 'mc
 
 export const codexDaemonSpawnHooks: DaemonSpawnHooks = {
   resolveTerminalPresentation: ({ host, runtimeSelection, processEnv }) => {
-    const admitted = processEnv.HAPPIER_CODEX_BACKEND_MODE;
+    const admitted = processEnv.PIGGERCODE_CODEX_BACKEND_MODE;
     const mode = resolveCodexBackendModeForRun({
       codexBackendMode: admitted === 'acp' || admitted === 'mcp' || admitted === 'appServer'
         ? admitted
@@ -61,6 +61,6 @@ export const codexDaemonSpawnHooks: DaemonSpawnHooks = {
   },
 
   buildExtraEnvForChild: (runtimeSelection) => ({
-    ...(resolveCodexDaemonBackendMode(runtimeSelection) === 'acp' ? { HAPPIER_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
+    ...(resolveCodexDaemonBackendMode(runtimeSelection) === 'acp' ? { PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
   }),
 };

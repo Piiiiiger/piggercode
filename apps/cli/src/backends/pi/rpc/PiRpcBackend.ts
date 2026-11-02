@@ -25,7 +25,7 @@ import { PI_BRIDGE_CONFIG_PATH_FLAG } from '@/backends/pi/bridgeExtension/piBrid
 import { logger } from '@/ui/logger';
 import { materializePiModelDiscoveryExtension, parsePiModelDiscoveryLine } from '../models/piModelDiscoveryExtension';
 import {
-  HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
   readConnectedServiceChildSelectionsFromEnv,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { reportConnectedServiceRuntimeAuthFailureToDaemon } from '@/daemon/connectedServices/runtimeAuth/reportConnectedServiceRuntimeAuthFailureToDaemon';
@@ -232,10 +232,10 @@ const DEFAULT_PI_RPC_AGENT_END_BUSY_GRACE_MS = 30_000;
 const PI_RPC_RECOVERABLE_ASSISTANT_ERROR_PATTERN =
   /(?:context[_ -]?length[_ -]?exceeded|server[_ -]?is[_ -]?overloaded|service[_ -]?unavailable|\bhappier_broker_bridge_status_5\d\d\b|websocket[^\n]*closed|\bECONN(?:RESET|REFUSED|ABORTED)\b)/iu;
 
-const PI_RPC_TURN_STALL_TIMEOUT_ENV = 'HAPPIER_PI_RPC_TURN_STALL_TIMEOUT_MS';
-const PI_RPC_COMPACTION_RESUME_GRACE_ENV = 'HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS';
-const PI_RPC_AGENT_END_SETTLE_ENV = 'HAPPIER_PI_RPC_AGENT_END_SETTLE_MS';
-const PI_RPC_AGENT_END_BUSY_GRACE_ENV = 'HAPPIER_PI_RPC_AGENT_END_BUSY_GRACE_MS';
+const PI_RPC_TURN_STALL_TIMEOUT_ENV = 'PIGGERCODE_PI_RPC_TURN_STALL_TIMEOUT_MS';
+const PI_RPC_COMPACTION_RESUME_GRACE_ENV = 'PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS';
+const PI_RPC_AGENT_END_SETTLE_ENV = 'PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS';
+const PI_RPC_AGENT_END_BUSY_GRACE_ENV = 'PIGGERCODE_PI_RPC_AGENT_END_BUSY_GRACE_MS';
 
 const DEFAULT_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS = 10_000;
 const DEFAULT_PI_RPC_MAX_SILENT_PROBES = 4;
@@ -280,7 +280,7 @@ function redactPiDiagnosticText(value: string): string {
   return redactBugReportSensitiveText(value).replace(PI_RPC_PROVIDER_TOKEN_PATTERN, '[redacted-provider-token]');
 }
 
-const PI_RPC_FAILURE_TRACE_ENV = 'HAPPIER_PI_RPC_FAILURE_TRACE';
+const PI_RPC_FAILURE_TRACE_ENV = 'PIGGERCODE_PI_RPC_FAILURE_TRACE';
 const PI_RPC_FAILURE_TRACE_MAX_STRING_LENGTH = 240;
 const PI_RPC_FAILURE_TRACE_MAX_ARRAY_LENGTH = 10;
 const PI_RPC_FAILURE_TRACE_SAFE_SCALAR_FIELDS = [
@@ -583,12 +583,12 @@ function isPiFailedAssistantTerminalEvent(event: Record<string, unknown>): boole
   return terminalStatus === 'failed' || terminalStatus === 'failure' || terminalStatus === 'error';
 }
 
-const PI_RPC_LIVENESS_PROBE_TIMEOUT_ENV = 'HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS';
-const PI_RPC_MAX_SILENT_PROBES_ENV = 'HAPPIER_PI_RPC_MAX_SILENT_PROBES';
-const PI_RPC_PROMPT_COLLISION_IDLE_WAIT_ENV = 'HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS';
-const PI_RPC_PROMPT_COLLISION_IDLE_POLL_ENV = 'HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS';
-const PI_RPC_COMPACTION_AUTO_CONTINUE_MAX_ENV = 'HAPPIER_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX';
-const PI_RPC_COMPACTION_AUTO_CONTINUE_PROMPT_ENV = 'HAPPIER_PI_RPC_COMPACTION_AUTO_CONTINUE_PROMPT';
+const PI_RPC_LIVENESS_PROBE_TIMEOUT_ENV = 'PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS';
+const PI_RPC_MAX_SILENT_PROBES_ENV = 'PIGGERCODE_PI_RPC_MAX_SILENT_PROBES';
+const PI_RPC_PROMPT_COLLISION_IDLE_WAIT_ENV = 'PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS';
+const PI_RPC_PROMPT_COLLISION_IDLE_POLL_ENV = 'PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS';
+const PI_RPC_COMPACTION_AUTO_CONTINUE_MAX_ENV = 'PIGGERCODE_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX';
+const PI_RPC_COMPACTION_AUTO_CONTINUE_PROMPT_ENV = 'PIGGERCODE_PI_RPC_COMPACTION_AUTO_CONTINUE_PROMPT';
 
 function readPositiveIntegerEnv(env: Record<string, string>, key: string, fallback: number): number {
   const raw = env[key];
@@ -1693,7 +1693,7 @@ export class PiRpcBackend implements AgentBackend {
     const agentDir = asNonEmptyString(this.options.env.PI_CODING_AGENT_DIR);
     if (agentDir) fields.push(`agentDir=${agentDir}`);
     const materializationRoot = asNonEmptyString(
-      this.options.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
+      this.options.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
     );
     if (materializationRoot) fields.push(`materializationRoot=${materializationRoot}`);
     const stderrTail = this.recentStderrLines.slice(-PI_RPC_STDERR_TAIL_MAX_LINES).join(' | ');

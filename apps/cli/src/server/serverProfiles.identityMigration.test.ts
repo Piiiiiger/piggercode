@@ -9,11 +9,11 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { addServerProfile, useServerProfile } from './serverProfiles';
 
 const token = `header.${Buffer.from(JSON.stringify({ sub: 'account-a' })).toString('base64url')}.signature`;
-const scope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID', 'HAPPIER_LOCAL_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL']);
+const scope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_LOCAL_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL']);
 afterEach(() => { scope.restore(); reloadConfiguration(); });
 
 async function seed(home: string): Promise<string> {
-  scope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_SERVER_URL: 'https://relay.example.test', HAPPIER_WEBAPP_URL: 'https://relay.example.test', HAPPIER_ACTIVE_SERVER_ID: undefined, HAPPIER_PUBLIC_SERVER_URL: undefined, HAPPIER_LOCAL_SERVER_URL: undefined });
+  scope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_SERVER_URL: 'https://relay.example.test', PIGGERCODE_WEBAPP_URL: 'https://relay.example.test', PIGGERCODE_ACTIVE_SERVER_ID: undefined, PIGGERCODE_PUBLIC_SERVER_URL: undefined, PIGGERCODE_LOCAL_SERVER_URL: undefined });
   reloadConfiguration();
   const sourceId = configuration.activeServerId;
   const machineKey = new Uint8Array(32).fill(8);
@@ -26,7 +26,7 @@ async function seed(home: string): Promise<string> {
     lastChangesCursorByServerIdByAccountId: { [sourceId]: { 'account-a': 41 } },
     machineReplacementCandidatesByServerIdByAccountId: { [sourceId]: {} },
   }));
-  scope.patch({ HAPPIER_SERVER_URL: undefined, HAPPIER_WEBAPP_URL: undefined });
+  scope.patch({ PIGGERCODE_SERVER_URL: undefined, PIGGERCODE_WEBAPP_URL: undefined });
   reloadConfiguration();
   return sourceId;
 }

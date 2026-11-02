@@ -27,7 +27,7 @@ test('collectBuildSourceMetadata changes dirtyHash when dirty file contents chan
   const repoDir = await createTempRepo(t);
   const env = {
     ...process.env,
-    HAPPIER_STACK_REPO_DIR: repoDir,
+    PIGGERCODE_STACK_REPO_DIR: repoDir,
   };
 
   await writeFile(join(repoDir, 'tracked.txt'), 'two\n', 'utf8');
@@ -44,19 +44,19 @@ test('collectBuildSourceMetadata delegates provider aliases and cross-flavor acc
   const repoDir = await createTempRepo(t);
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_REPO_DIR: repoDir,
-    HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+    PIGGERCODE_STACK_REPO_DIR: repoDir,
+    PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
   };
 
   const aliased = await collectBuildSourceMetadata({
     rootDir: repoDir,
-    env: { ...baseEnv, HAPPIER_DB_PROVIDER: ' PostgreSQL ' },
+    env: { ...baseEnv, PIGGERCODE_DB_PROVIDER: ' PostgreSQL ' },
   });
   assert.equal(aliased.dbProvider, 'postgres');
 
   const crossFlavor = await collectBuildSourceMetadata({
     rootDir: repoDir,
-    env: { ...baseEnv, HAPPIER_DB_PROVIDER: 'sqlite' },
+    env: { ...baseEnv, PIGGERCODE_DB_PROVIDER: 'sqlite' },
   });
   assert.equal(crossFlavor.dbProvider, 'sqlite');
 });

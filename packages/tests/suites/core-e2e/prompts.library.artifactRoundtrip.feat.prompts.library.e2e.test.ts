@@ -33,7 +33,7 @@ describe('core e2e: prompts library artifact roundtrip', () => {
 
   it('roundtrips prompt docs and skill bundles through the artifacts api', async () => {
     const testDir = run.testDir(`prompts-library-artifact-roundtrip-${randomUUID()}`);
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -47,7 +47,7 @@ describe('core e2e: prompts library artifact roundtrip', () => {
       testName: 'prompts-library-artifact-roundtrip',
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

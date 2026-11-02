@@ -27,11 +27,11 @@ describe('createOpenCodeServerRuntimeClient (MCP)', () => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
 
-    for (const key of ['HAPPIER_OPENCODE_SERVER_URL', 'OPENCODE_SERVER_PASSWORD', 'OPENCODE_SERVER_USERNAME'] as const) {
+    for (const key of ['PIGGERCODE_OPENCODE_SERVER_URL', 'OPENCODE_SERVER_PASSWORD', 'OPENCODE_SERVER_USERNAME'] as const) {
       prevEnv[key] = process.env[key];
     }
 
-    process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+    process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
     delete process.env.OPENCODE_SERVER_PASSWORD;
     delete process.env.OPENCODE_SERVER_USERNAME;
   });

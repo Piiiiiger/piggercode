@@ -29,8 +29,8 @@ describe('core e2e: connected services quotas sealed snapshot round-trip', () =>
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
       },
     });
 

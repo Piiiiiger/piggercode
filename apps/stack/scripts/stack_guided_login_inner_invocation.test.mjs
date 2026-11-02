@@ -28,8 +28,8 @@ test('guided stack auth login invokes core happier auth login directly', async (
   const webappUrl = 'http://localhost:1234';
   const inv = await buildStackAuthLoginInvocation({ rootDir, stackName: 'main', webappUrl });
   assertCoreAuthLoginInvocation(inv);
-  assert.equal(inv?.env?.HAPPIER_WEBAPP_URL, webappUrl);
-  assert.notEqual(inv?.env?.HAPPIER_STACK_AUTH_INNER, '1');
+  assert.equal(inv?.env?.PIGGERCODE_WEBAPP_URL, webappUrl);
+  assert.notEqual(inv?.env?.PIGGERCODE_STACK_AUTH_INNER, '1');
 });
 
 test('guided stack auth login defaults stack name to main and preserves invocation ordering', async () => {
@@ -37,7 +37,7 @@ test('guided stack auth login defaults stack name to main and preserves invocati
   const webappUrl = 'http://localhost:4321';
   const inv = await buildStackAuthLoginInvocation({ rootDir, stackName: '   ', webappUrl });
   assertCoreAuthLoginInvocation(inv);
-  assert.equal(inv.env.HAPPIER_WEBAPP_URL, webappUrl);
+  assert.equal(inv.env.PIGGERCODE_WEBAPP_URL, webappUrl);
 });
 
 test('guided stack auth login invocation merges caller env', async () => {
@@ -46,10 +46,10 @@ test('guided stack auth login invocation merges caller env', async () => {
     rootDir,
     stackName: 'feature-1',
     webappUrl: 'http://localhost:5555',
-    env: { CUSTOM_FLAG: 'yes', HAPPIER_STACK_AUTH_INNER: '0' },
+    env: { CUSTOM_FLAG: 'yes', PIGGERCODE_STACK_AUTH_INNER: '0' },
   });
   assert.equal(inv.env.CUSTOM_FLAG, 'yes');
-  assert.equal(inv.env.HAPPIER_STACK_AUTH_INNER, '0');
+  assert.equal(inv.env.PIGGERCODE_STACK_AUTH_INNER, '0');
 });
 
 test('guided stack auth login invocation rejects empty webappUrl', async () => {
@@ -66,7 +66,7 @@ test('guided stack auth login invocation uses the active runtime snapshot cli wh
     prefix: 'stack-guided-login-runtime-',
     stackName: 'dev-built',
     stackEnvLines: [
-      'HAPPIER_STACK_RUNTIME_MODE=prefer',
+      'PIGGERCODE_STACK_RUNTIME_MODE=prefer',
     ],
   });
 
@@ -95,7 +95,7 @@ test('guided stack auth login invocation uses the active runtime snapshot cli wh
       rootDir,
       stackName: 'dev-built',
       webappUrl: 'http://localhost:5555',
-      env: fixture.buildEnv({ HAPPIER_STACK_RUNTIME_MODE: 'prefer' }),
+      env: fixture.buildEnv({ PIGGERCODE_STACK_RUNTIME_MODE: 'prefer' }),
     });
 
     assert.equal(inv.command, join(snapshotDir, 'cli', 'happier'));

@@ -45,10 +45,10 @@ vi.mock('./utils/claudeCheckSession', () => ({
 
 describe('claudeLocal abort escalation timers', () => {
   it('uses configured abort escalation/kill delays (SIGINT → SIGTERM → SIGKILL)', async () => {
-    const previousEscalate = process.env.HAPPIER_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS;
-    const previousKill = process.env.HAPPIER_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS;
-    process.env.HAPPIER_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS = '50';
-    process.env.HAPPIER_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS = '100';
+    const previousEscalate = process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS;
+    const previousKill = process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS;
+    process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS = '50';
+    process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS = '100';
 
     try {
       vi.useFakeTimers();
@@ -118,10 +118,10 @@ describe('claudeLocal abort escalation timers', () => {
       await expect(promise).resolves.toBeTruthy();
     } finally {
       vi.useRealTimers();
-      if (previousEscalate === undefined) delete process.env.HAPPIER_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS;
-      else process.env.HAPPIER_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS = previousEscalate;
-      if (previousKill === undefined) delete process.env.HAPPIER_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS;
-      else process.env.HAPPIER_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS = previousKill;
+      if (previousEscalate === undefined) delete process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS;
+      else process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_ESCALATE_AFTER_MS = previousEscalate;
+      if (previousKill === undefined) delete process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS;
+      else process.env.PIGGERCODE_CLAUDE_LOCAL_ABORT_KILL_AFTER_MS = previousKill;
     }
   });
 });

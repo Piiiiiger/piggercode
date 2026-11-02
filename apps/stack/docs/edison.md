@@ -37,13 +37,13 @@ Use:
 
 Why this wrapper is mandatory:
 
-- Loads the correct stack env (`HAPPIER_STACK_STACK` + `HAPPIER_STACK_ENV_FILE`)
+- Loads the correct stack env (`PIGGERCODE_STACK_STACK` + `PIGGERCODE_STACK_ENV_FILE`)
 - Enforces fail-closed guardrails (right stack + right repo worktree)
 - Makes evidence capture deterministic (fingerprints the actual repo checkout the stack uses)
 
 Reference:
 
-- `.edison/guidelines/agents/HAPPIER_STACK_EDISON_WRAPPER.md`
+- `.edison/guidelines/agents/PIGGERCODE_STACK_EDISON_WRAPPER.md`
 
 ---
 

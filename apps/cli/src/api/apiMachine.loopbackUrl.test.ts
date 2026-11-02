@@ -19,12 +19,12 @@ vi.mock('socket.io-client', () => ({
 }));
 
 const envKeys = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_LOCAL_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_LOCAL_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
 ] as const;
 let envScope = createEnvKeyScope(envKeys);
 
@@ -33,11 +33,11 @@ describe('ApiMachineClient loopback url resolution', () => {
     bindApiSessionSocketMock(mockIo, createApiSessionSocketStub());
     vi.resetModules();
 
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-cli-test-loopback-machine';
-    process.env.HAPPIER_SERVER_URL = 'http://localhost:3005';
-    process.env.HAPPIER_WEBAPP_URL = 'http://localhost:8080';
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    delete process.env.HAPPIER_PUBLIC_SERVER_URL;
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-cli-test-loopback-machine';
+    process.env.PIGGERCODE_SERVER_URL = 'http://localhost:3005';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://localhost:8080';
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
     reloadConfiguration();
   });
 
@@ -69,13 +69,13 @@ describe('ApiMachineClient loopback url resolution', () => {
   });
 
   it('uses the canonical endpoint selected by loaded configuration', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://localhost:41001';
-    delete process.env.HAPPIER_LOCAL_SERVER_URL;
+    process.env.PIGGERCODE_SERVER_URL = 'http://localhost:41001';
+    delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
     reloadConfiguration();
 
     const mod = await import('./apiMachine');
 
-    process.env.HAPPIER_SERVER_URL = 'http://localhost:52002';
+    process.env.PIGGERCODE_SERVER_URL = 'http://localhost:52002';
 
     const machine: Machine = {
       id: 'test-machine',

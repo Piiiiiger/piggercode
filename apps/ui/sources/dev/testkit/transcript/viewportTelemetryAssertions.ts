@@ -16,7 +16,7 @@ import type {
  * transaction owners (`entry`, `prepend`, `explicit`) across a phase.
  *
  * Used by unit/integration tests and by manual-QA snapshot analysis of
- * `__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__()` traces.
+ * `__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__()` traces.
  */
 
 export type ViewportTelemetryPhaseWindow = Readonly<{

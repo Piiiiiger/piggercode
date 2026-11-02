@@ -6,7 +6,7 @@
   - `hstack edison --stack=<stack> -- <edison args...>`
 
 Why:
-- The wrapper loads the correct stack env (`HAPPIER_STACK_STACK` + `HAPPIER_STACK_ENV_FILE`).
+- The wrapper loads the correct stack env (`PIGGERCODE_STACK_STACK` + `PIGGERCODE_STACK_ENV_FILE`).
 - Evidence capture fingerprints the actual component repos/worktrees used by the stack.
 - Guards fail-closed to prevent editing default checkouts or running against the wrong stack.
 

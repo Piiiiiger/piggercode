@@ -36,7 +36,7 @@ export function resolveExtendedDbCommandTimeoutMs(raw, fallbackMs) {
 }
 
 export function resolveExtendedDbStepTimeoutMs(env) {
-  return resolveExtendedDbCommandTimeoutMs(env?.HAPPIER_E2E_EXTENDED_DB_STEP_TIMEOUT_MS, 3_600_000);
+  return resolveExtendedDbCommandTimeoutMs(env?.PIGGERCODE_E2E_EXTENDED_DB_STEP_TIMEOUT_MS, 3_600_000);
 }
 
 function formatCommand(cmd, args) {
@@ -138,7 +138,7 @@ export async function main(argv = process.argv) {
   }
 
   const dockerCommandTimeoutMs = resolveExtendedDbCommandTimeoutMs(
-    process.env.HAPPIER_E2E_EXTENDED_DB_DOCKER_TIMEOUT_MS,
+    process.env.PIGGERCODE_E2E_EXTENDED_DB_DOCKER_TIMEOUT_MS,
     120_000,
   );
   const testStepTimeoutMs = resolveExtendedDbStepTimeoutMs(process.env);

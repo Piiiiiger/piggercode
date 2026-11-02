@@ -211,7 +211,7 @@ export const LEGEND_PATCH_MARKERS = Object.freeze([
     },
     {
         id: 'absolute-total-sentinel',
-        marker: 'HAPPIER_TOTAL_SIZE_ABSOLUTE',
+        marker: 'PIGGERCODE_TOTAL_SIZE_ABSOLUTE',
         // One declaration, one comparison in addTotalSize, and the four intentional absolute-write
         // call sites. A regeneration that kept the comparison but lost the call sites would leave a
         // sentinel nobody passes, i.e. no absolute write at all, so all six must be present.

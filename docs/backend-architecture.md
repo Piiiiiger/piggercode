@@ -265,7 +265,7 @@ that the session stopped.
 
 The archive stage uses one deadline across readiness, the POST, response-body
 consumption, and any inactivity retries. It starts after Stop and defaults to
-75 seconds. `EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS=0` disables
+75 seconds. `EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS=0` disables
 inactivity polling while retaining one request with the default finite deadline.
 Expiration cancels the HTTP read and releases admission so a user can retry;
 the operation returns `session_archive_timeout` without a raw display message,

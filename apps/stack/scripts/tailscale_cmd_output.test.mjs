@@ -65,12 +65,12 @@ test('tailscale enable output includes stack context + upstream', async () => {
       cwd: repoRoot,
       env: {
         ...process.env,
-        HAPPIER_TAILSCALE_BIN: tailscaleBin,
-        HAPPIER_STACK_SERVER_PORT: String(internalPort),
-        HAPPIER_STACK_STACK: 'repo-test-1234',
-        HAPPIER_STACK_ENV_FILE: envPath,
+        PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+        PIGGERCODE_STACK_SERVER_PORT: String(internalPort),
+        PIGGERCODE_STACK_STACK: 'repo-test-1234',
+        PIGGERCODE_STACK_ENV_FILE: envPath,
         // Prevent any other behavior from probing global state.
-        HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL: '1',
+        PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL: '1',
       },
     });
 
@@ -122,9 +122,9 @@ test('tailscale url returns the relay-comparable ts.net URL when multiple serve 
       cwd: repoRoot,
       env: {
         ...process.env,
-        HAPPIER_TAILSCALE_BIN: tailscaleBin,
-        HAPPIER_STACK_SERVER_PORT: String(relayPort),
-        HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL: '1',
+        PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+        PIGGERCODE_STACK_SERVER_PORT: String(relayPort),
+        PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL: '1',
       },
     });
 

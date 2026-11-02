@@ -18,7 +18,7 @@ export function resolveUiPostinstallTasks({ env }) {
         'verify-react-native-enriched-markdown-web-streaming-patch',
     ]
 
-    const vendorWebAssetsOverride = parseOptionalBoolean(env?.HAPPIER_UI_VENDOR_WEB_ASSETS)
+    const vendorWebAssetsOverride = parseOptionalBoolean(env?.PIGGERCODE_UI_VENDOR_WEB_ASSETS)
     const vendorWebAssetsEnabled = vendorWebAssetsOverride ?? true
 
     if (vendorWebAssetsEnabled) {

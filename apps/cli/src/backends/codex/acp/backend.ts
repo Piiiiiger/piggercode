@@ -31,14 +31,14 @@ export interface CodexAcpBackendResult {
 
 function resolveCodexAcpInitTimeoutMs(spawn: SpawnSpec): number {
   const npxSpecific = spawn.command === 'npx'
-    ? readPositiveIntEnv('HAPPIER_CODEX_ACP_NPX_INIT_TIMEOUT_MS')
+    ? readPositiveIntEnv('PIGGERCODE_CODEX_ACP_NPX_INIT_TIMEOUT_MS')
     : null;
-  const base = readPositiveIntEnv('HAPPIER_CODEX_ACP_INIT_TIMEOUT_MS');
+  const base = readPositiveIntEnv('PIGGERCODE_CODEX_ACP_INIT_TIMEOUT_MS');
   return npxSpecific ?? base ?? 180_000;
 }
 
 function resolveCodexAcpPreToolIdleTimeoutMs(): number {
-  return readPositiveIntEnv('HAPPIER_CODEX_ACP_PRE_TOOL_IDLE_TIMEOUT_MS') ?? 1_000;
+  return readPositiveIntEnv('PIGGERCODE_CODEX_ACP_PRE_TOOL_IDLE_TIMEOUT_MS') ?? 1_000;
 }
 
 export function createCodexAcpBackend(options: CodexAcpBackendOptions): CodexAcpBackendResult {

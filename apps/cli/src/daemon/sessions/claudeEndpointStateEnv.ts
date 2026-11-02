@@ -3,7 +3,7 @@ import {
   evaluateTerminalHostLivenessForRecovery,
 } from '@/integrations/terminalHost/livenessPolicy';
 import {
-  HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+  PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
   readClaudeEndpointDescriptor as readDefaultClaudeEndpointDescriptor,
   type AttachmentBoundClaudeEndpointState,
 } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
@@ -62,7 +62,7 @@ export function buildClaudeEndpointStateEnvironmentVariables(
   state: AttachmentBoundClaudeEndpointState,
 ): Record<string, string> {
   return {
-    [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(state),
+    [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(state),
   };
 }
 
@@ -82,11 +82,11 @@ export function mergeClaudeEndpointStateIntoSpawnOptions(
 
 function clearClaudeEndpointStateFromSpawnOptions(spawnOptions: SpawnSessionOptions): SpawnSessionOptions {
   const environmentVariables = spawnOptions.environmentVariables;
-  if (!environmentVariables || !(HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY in environmentVariables)) {
+  if (!environmentVariables || !(PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY in environmentVariables)) {
     return spawnOptions;
   }
   const {
-    [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: _staleClaudeEndpointState,
+    [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: _staleClaudeEndpointState,
     ...retainedEnvironmentVariables
   } = environmentVariables;
   return {

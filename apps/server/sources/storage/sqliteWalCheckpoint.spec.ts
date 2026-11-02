@@ -31,30 +31,30 @@ describe("resolveSqliteWalCheckpointIntervalMsFromEnv", () => {
     });
 
     it("treats 0 as disabled", () => {
-        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "0" })).toBe(0);
+        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "0" })).toBe(0);
     });
 
     it("reads an explicit interval and the HAPPY_ alias", () => {
-        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "5000" })).toBe(5000);
+        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "5000" })).toBe(5000);
         expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPY_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "1500" })).toBe(1500);
     });
 
     it("rejects non-numeric values", () => {
-        expect(() => resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "soon" })).toThrow();
+        expect(() => resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "soon" })).toThrow();
     });
 
     it("rejects values that are not safe integers", () => {
         expect(() =>
-            resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "99999999999999999999" }),
+            resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "99999999999999999999" }),
         ).toThrow();
     });
 
     it("rejects intervals beyond the 32-bit setInterval bound", () => {
-        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "2147483647" })).toBe(
+        expect(resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "2147483647" })).toBe(
             2_147_483_647,
         );
         expect(() =>
-            resolveSqliteWalCheckpointIntervalMsFromEnv({ HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "2147483648" }),
+            resolveSqliteWalCheckpointIntervalMsFromEnv({ PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS: "2147483648" }),
         ).toThrow();
     });
 });
@@ -66,7 +66,7 @@ describe("resolveSqliteWalCheckpointBusyTimeoutMsFromEnv", () => {
 
     it("reads an explicit timeout and the HAPPY_ alias", () => {
         expect(resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
-            HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "2500",
+            PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "2500",
         })).toBe(2500);
         expect(resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
             HAPPY_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "1500",
@@ -75,24 +75,24 @@ describe("resolveSqliteWalCheckpointBusyTimeoutMsFromEnv", () => {
 
     it("allows 0 for an explicitly opportunistic checkpoint", () => {
         expect(resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
-            HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "0",
+            PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "0",
         })).toBe(0);
     });
 
     it("rejects invalid or unsafe timeout values", () => {
         expect(() =>
             resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
-                HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "soon",
+                PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "soon",
             }),
         ).toThrow();
         expect(() =>
             resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
-                HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "99999999999999999999",
+                PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "99999999999999999999",
             }),
         ).toThrow();
         expect(() =>
             resolveSqliteWalCheckpointBusyTimeoutMsFromEnv({
-                HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "2147483648",
+                PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS: "2147483648",
             }),
         ).toThrow();
     });
@@ -105,7 +105,7 @@ describe("resolveSqliteIncrementalVacuumIntervalMsFromEnv", () => {
 
     it("treats 0 as disabled and accepts the HAPPY_ alias", () => {
         expect(resolveSqliteIncrementalVacuumIntervalMsFromEnv({
-            HAPPIER_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS: "0",
+            PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS: "0",
         })).toBe(0);
         expect(resolveSqliteIncrementalVacuumIntervalMsFromEnv({
             HAPPY_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS: "1500",
@@ -120,13 +120,13 @@ describe("resolveSqliteIncrementalVacuumPagesFromEnv", () => {
 
     it("rejects zero, invalid, and unsafe page counts", () => {
         expect(() => resolveSqliteIncrementalVacuumPagesFromEnv({
-            HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES: "0",
+            PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES: "0",
         })).toThrow();
         expect(() => resolveSqliteIncrementalVacuumPagesFromEnv({
-            HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES: "soon",
+            PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES: "soon",
         })).toThrow();
         expect(() => resolveSqliteIncrementalVacuumPagesFromEnv({
-            HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES: "99999999999999999999",
+            PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES: "99999999999999999999",
         })).toThrow();
     });
 });

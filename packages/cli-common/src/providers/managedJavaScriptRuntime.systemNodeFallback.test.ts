@@ -13,15 +13,15 @@ function makeExecutableFile(path: string, content: string): void {
 
 describe('managedJavaScriptRuntime binary-safe selection', () => {
     const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
-    const originalJsRuntimePath = process.env.HAPPIER_JS_RUNTIME_PATH;
+    const originalJsRuntimePath = process.env.PIGGERCODE_JS_RUNTIME_PATH;
     const originalPathext = process.env.PATHEXT;
 
     afterEach(() => {
         if (originalPlatformDescriptor) {
             Object.defineProperty(process, 'platform', originalPlatformDescriptor);
         }
-        if (originalJsRuntimePath === undefined) delete process.env.HAPPIER_JS_RUNTIME_PATH;
-        else process.env.HAPPIER_JS_RUNTIME_PATH = originalJsRuntimePath;
+        if (originalJsRuntimePath === undefined) delete process.env.PIGGERCODE_JS_RUNTIME_PATH;
+        else process.env.PIGGERCODE_JS_RUNTIME_PATH = originalJsRuntimePath;
         if (originalPathext === undefined) delete process.env.PATHEXT;
         else process.env.PATHEXT = originalPathext;
     });
@@ -44,7 +44,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
 
     const env = {
       PATH: binDir,
-      HAPPIER_HOME_DIR: join(root, 'home'),
+      PIGGERCODE_HOME_DIR: join(root, 'home'),
     } satisfies NodeJS.ProcessEnv;
 
     expect(resolveJavaScriptRuntimeCommand({
@@ -73,7 +73,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
 
         const env = {
             PATH: '',
-            HAPPIER_HOME_DIR: join(root, 'home'),
+            PIGGERCODE_HOME_DIR: join(root, 'home'),
         } satisfies NodeJS.ProcessEnv;
 
         expect(resolveJavaScriptRuntimeCommand({
@@ -97,7 +97,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
 
         const env = {
             PATH: '',
-            HAPPIER_HOME_DIR: join(root, 'home'),
+            PIGGERCODE_HOME_DIR: join(root, 'home'),
         } satisfies NodeJS.ProcessEnv;
 
         expect(resolveJavaScriptRuntimeCommand({
@@ -121,7 +121,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
 
         const env = {
             PATH: binDir,
-            HAPPIER_HOME_DIR: join(root, 'home'),
+            PIGGERCODE_HOME_DIR: join(root, 'home'),
         } satisfies NodeJS.ProcessEnv;
 
         expect(resolveJavaScriptRuntimeCommand({
@@ -141,7 +141,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
 
         const env = {
             PATH: '',
-            HAPPIER_HOME_DIR: join(root, 'home'),
+            PIGGERCODE_HOME_DIR: join(root, 'home'),
         } satisfies NodeJS.ProcessEnv;
 
         expect(resolveJavaScriptRuntimeCommand({
@@ -165,7 +165,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
         const cmdShimPath = join(root, 'node.cmd');
         writeFileSync(cmdShimPath, '@echo off\r\necho ok\r\n', 'utf8');
 
-        process.env.HAPPIER_JS_RUNTIME_PATH = extensionlessPath;
+        process.env.PIGGERCODE_JS_RUNTIME_PATH = extensionlessPath;
         process.env.PATHEXT = '.CMD;.EXE';
 
         expect(resolveJavaScriptRuntimeCommand({
@@ -193,7 +193,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
             processEnv: {
                 HOME: homeDir,
                 USERPROFILE: homeDir,
-                HAPPIER_JS_RUNTIME_PATH: `~/custom-runtime/${process.platform === 'win32' ? 'node.exe' : 'node'}`,
+                PIGGERCODE_JS_RUNTIME_PATH: `~/custom-runtime/${process.platform === 'win32' ? 'node.exe' : 'node'}`,
             },
             currentExecPath: join(root, 'happier'),
         })).toBe(nodePath);

@@ -13,8 +13,8 @@ describe('resolveWaitForAuthConfig', () => {
 
   it('parses enabled flags and non-negative timeout', () => {
     const config = resolveWaitForAuthConfig({
-      HAPPIER_DAEMON_WAIT_FOR_AUTH: 'yes',
-      HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '1234',
+      PIGGERCODE_DAEMON_WAIT_FOR_AUTH: 'yes',
+      PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '1234',
     });
 
     expect(config.waitForAuthEnabled).toBe(true);
@@ -22,8 +22,8 @@ describe('resolveWaitForAuthConfig', () => {
   });
 
   it('falls back to default timeout for invalid values', () => {
-    const negative = resolveWaitForAuthConfig({ HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '-1' });
-    const invalid = resolveWaitForAuthConfig({ HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: 'abc' });
+    const negative = resolveWaitForAuthConfig({ PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '-1' });
+    const invalid = resolveWaitForAuthConfig({ PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: 'abc' });
 
     expect(negative.waitForAuthTimeoutMs).toBe(600_000);
     expect(invalid.waitForAuthTimeoutMs).toBe(600_000);

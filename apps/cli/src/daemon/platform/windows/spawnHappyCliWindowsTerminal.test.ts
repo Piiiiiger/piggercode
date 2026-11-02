@@ -49,7 +49,7 @@ describe('startHappySessionInWindowsTerminal', () => {
   });
 
   it('does not resurrect ambient env outside the daemon-provided launch environment', async () => {
-    vi.stubEnv('HAPPIER_TEST_AMBIENT_WINDOWS_TERMINAL_SPAWN', 'ambient-only');
+    vi.stubEnv('PIGGERCODE_TEST_AMBIENT_WINDOWS_TERMINAL_SPAWN', 'ambient-only');
     const child = createFakeChildProcess();
     vi.mocked(spawn).mockReturnValue(child as unknown as ReturnType<typeof spawn>);
 
@@ -63,7 +63,7 @@ describe('startHappySessionInWindowsTerminal', () => {
     });
 
     expect(vi.mocked(spawn).mock.calls[0]?.[2]?.env).not.toHaveProperty(
-      'HAPPIER_TEST_AMBIENT_WINDOWS_TERMINAL_SPAWN',
+      'PIGGERCODE_TEST_AMBIENT_WINDOWS_TERMINAL_SPAWN',
     );
 
     child.stdout.emit('data', Buffer.from('12345\r\n'));

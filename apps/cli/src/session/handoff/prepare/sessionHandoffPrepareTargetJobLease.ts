@@ -46,7 +46,7 @@ const MIN_LEASE_TTL_MS = 5_000;
 const MAX_LEASE_TTL_MS = 60 * 60 * 1000;
 
 export function resolveSessionHandoffPrepareTargetJobLeaseTtlMs(): number {
-  const raw = process.env.HAPPIER_SESSION_HANDOFF_PREPARE_TARGET_JOB_LEASE_TTL_MS;
+  const raw = process.env.PIGGERCODE_SESSION_HANDOFF_PREPARE_TARGET_JOB_LEASE_TTL_MS;
   if (!raw) {
     return DEFAULT_LEASE_TTL_MS;
   }

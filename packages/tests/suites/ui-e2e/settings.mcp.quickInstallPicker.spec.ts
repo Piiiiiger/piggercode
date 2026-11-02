@@ -34,8 +34,8 @@ test.describe('ui e2e: MCP settings quick install and new-session picker', () =>
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 

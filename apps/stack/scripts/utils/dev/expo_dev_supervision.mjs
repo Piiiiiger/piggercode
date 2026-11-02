@@ -30,22 +30,22 @@ function parsePositiveInteger(raw, fallback) {
 }
 
 export function resolveExpoRestartPolicy({ env = process.env, stackMode = false } = {}) {
-  const enabledOverride = parseBooleanOverride(env.HAPPIER_STACK_EXPO_SUPERVISE_RESTARTS);
-  const enabled = enabledOverride ?? Boolean(stackMode || String(env.HAPPIER_STACK_TUI ?? '').trim() === '1');
+  const enabledOverride = parseBooleanOverride(env.PIGGERCODE_STACK_EXPO_SUPERVISE_RESTARTS);
+  const enabled = enabledOverride ?? Boolean(stackMode || String(env.PIGGERCODE_STACK_TUI ?? '').trim() === '1');
   const maxAttempts = parseNonNegativeInteger(
-    env.HAPPIER_STACK_EXPO_RESTART_MAX_ATTEMPTS,
+    env.PIGGERCODE_STACK_EXPO_RESTART_MAX_ATTEMPTS,
     DEFAULT_MAX_RESTART_ATTEMPTS
   );
   const baseDelayMs = parsePositiveInteger(
-    env.HAPPIER_STACK_EXPO_RESTART_BASE_DELAY_MS,
+    env.PIGGERCODE_STACK_EXPO_RESTART_BASE_DELAY_MS,
     DEFAULT_RESTART_BASE_DELAY_MS
   );
   const maxDelayMs = parsePositiveInteger(
-    env.HAPPIER_STACK_EXPO_RESTART_MAX_DELAY_MS,
+    env.PIGGERCODE_STACK_EXPO_RESTART_MAX_DELAY_MS,
     DEFAULT_RESTART_MAX_DELAY_MS
   );
   const healthyResetMs = parsePositiveInteger(
-    env.HAPPIER_STACK_EXPO_RESTART_HEALTHY_RESET_MS,
+    env.PIGGERCODE_STACK_EXPO_RESTART_HEALTHY_RESET_MS,
     DEFAULT_RESTART_HEALTHY_RESET_MS
   );
 

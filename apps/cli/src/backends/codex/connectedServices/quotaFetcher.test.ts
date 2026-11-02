@@ -63,9 +63,9 @@ describe('createOpenAiCodexQuotaFetcher', () => {
 
     const fetcher = descriptor!.loadQuota({
       env: {
-        HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: usageUrl,
-        HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_RESET_CREDITS_URL: resetCreditsUrl,
-        HAPPIER_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-descriptor-agent/1.0',
+        PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: usageUrl,
+        PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_RESET_CREDITS_URL: resetCreditsUrl,
+        PIGGERCODE_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-descriptor-agent/1.0',
       },
       staleAfterMs: 123_000,
     });

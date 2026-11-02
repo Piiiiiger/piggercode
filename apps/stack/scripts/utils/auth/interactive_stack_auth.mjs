@@ -12,7 +12,7 @@ export function needsAuthSeed({ cliHomeDir, accountCount }) {
 }
 
 export function shouldSuppressInteractiveStackAuthSetup({ env = process.env } = {}) {
-  const isTuiManaged = (env?.HAPPIER_STACK_TUI ?? '').toString().trim() === '1';
+  const isTuiManaged = (env?.PIGGERCODE_STACK_TUI ?? '').toString().trim() === '1';
   if (isTuiManaged) return 'tui_managed';
   return null;
 }

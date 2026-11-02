@@ -21,21 +21,21 @@ describe('ACP subprocess harness', () => {
   })
 
   it('restores ACP subprocess env keys after patching', () => {
-    process.env.HAPPIER_ACP_CAPTURE_IO = '0'
+    process.env.PIGGERCODE_ACP_CAPTURE_IO = '0'
     const scope = createAcpSubprocessEnvScope()
 
     scope.patch({
-      HAPPIER_ACP_CAPTURE_IO: '1',
-      HAPPIER_STACK_TOOL_TRACE_FILE: '/tmp/happier.trace',
+      PIGGERCODE_ACP_CAPTURE_IO: '1',
+      PIGGERCODE_STACK_TOOL_TRACE_FILE: '/tmp/happier.trace',
     })
 
-    expect(process.env.HAPPIER_ACP_CAPTURE_IO).toBe('1')
-    expect(process.env.HAPPIER_STACK_TOOL_TRACE_FILE).toBe('/tmp/happier.trace')
+    expect(process.env.PIGGERCODE_ACP_CAPTURE_IO).toBe('1')
+    expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE).toBe('/tmp/happier.trace')
 
     scope.restore()
 
-    expect(process.env.HAPPIER_ACP_CAPTURE_IO).toBe('0')
-    expect(process.env.HAPPIER_STACK_TOOL_TRACE_FILE).toBeUndefined()
+    expect(process.env.PIGGERCODE_ACP_CAPTURE_IO).toBe('0')
+    expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE).toBeUndefined()
   })
 
   it('builds transport handlers with default and override ACP timings', () => {

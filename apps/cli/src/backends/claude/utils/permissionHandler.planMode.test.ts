@@ -13,9 +13,9 @@ vi.mock('@/lib', () => ({
 describe('PermissionHandler (plan mode)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_DIR;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR;
   });
 
   it('does not auto-deny read-only tools in plan mode (it requests permission instead)', async () => {

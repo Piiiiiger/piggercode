@@ -6,9 +6,9 @@ import type { FeatureId } from '@piggercode/protocol';
 
 describe('featureLocalPolicy', () => {
     it('disables connectedServices when build-time env is falsy', () => {
-        const envBackup = process.env.EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED;
+        const envBackup = process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED;
         try {
-            process.env.EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED = '0';
+            process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED = '0';
             expect(resolveLocalFeaturePolicyEnabled('connectedServices', {
                 ...settingsDefaults,
                 experiments: true,
@@ -16,10 +16,10 @@ describe('featureLocalPolicy', () => {
             })).toBe(false);
         } finally {
             if (typeof envBackup === 'string') {
-                process.env.EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED = envBackup;
+                process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED = envBackup;
             } else {
                 const env = process.env as Record<string, string | undefined>;
-                delete env.EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED;
+                delete env.EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED;
             }
         }
     });

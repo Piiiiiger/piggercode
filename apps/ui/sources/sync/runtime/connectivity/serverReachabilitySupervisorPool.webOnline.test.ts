@@ -3,17 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetRuntimeFetch, setRuntimeFetch } from '@/utils/system/runtimeFetch';
 
 describe('serverReachabilitySupervisorPool (web online events)', () => {
-    const previousRetryMs = process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
+    const previousRetryMs = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
 
     beforeEach(() => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
     });
 
     afterEach(async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = previousRetryMs;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = previousRetryMs;
         resetRuntimeFetch();
         vi.useRealTimers();
         vi.restoreAllMocks();

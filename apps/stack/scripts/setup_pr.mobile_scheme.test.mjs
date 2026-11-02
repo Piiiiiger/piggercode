@@ -62,10 +62,10 @@ function mark(line) {
 export async function run(_cmd, args, { env } = {}) {
   const script = String(args?.[0] ?? '').split(/[\\\\/]/).pop();
   if (script === 'stack.mjs') {
-    mark('stack.mobileScheme=' + String(env?.HAPPIER_STACK_MOBILE_SCHEME ?? ''));
-    mark('stack.devClientScheme=' + String(env?.HAPPIER_STACK_DEV_CLIENT_SCHEME ?? ''));
-    mark('stack.reviewOverride=' + String(env?.HAPPIER_STACK_REVIEW_MOBILE_SCHEME ?? ''));
-    mark('stack.sandbox=' + String(env?.HAPPIER_STACK_SANDBOX_DIR ?? ''));
+    mark('stack.mobileScheme=' + String(env?.PIGGERCODE_STACK_MOBILE_SCHEME ?? ''));
+    mark('stack.devClientScheme=' + String(env?.PIGGERCODE_STACK_DEV_CLIENT_SCHEME ?? ''));
+    mark('stack.reviewOverride=' + String(env?.PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME ?? ''));
+    mark('stack.sandbox=' + String(env?.PIGGERCODE_STACK_SANDBOX_DIR ?? ''));
   }
   return { status: 0 };
 }
@@ -104,10 +104,10 @@ export async function resolve(specifier, context, defaultResolve) {
   const env = {
     ...process.env,
     HSTACK_SETUP_PR_MARKER: markerPath,
-    HAPPIER_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
-    HAPPIER_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
+    PIGGERCODE_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
+    PIGGERCODE_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
   };
 
   const res = await runNode(
@@ -131,7 +131,7 @@ export async function resolve(specifier, context, defaultResolve) {
   assert.equal(mobileScheme, 'stack.mobileScheme=hstack-dev');
 });
 
-test('setup-pr ignores HAPPIER_STACK_DEV_CLIENT_SCHEME in sandbox without review override', async (t) => {
+test('setup-pr ignores PIGGERCODE_STACK_DEV_CLIENT_SCHEME in sandbox without review override', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-setup-pr-mobile-scheme-explicit-'));
@@ -163,8 +163,8 @@ function mark(line) {
 export async function run(_cmd, args, { env } = {}) {
   const script = String(args?.[0] ?? '').split(/[\\\\/]/).pop();
   if (script === 'stack.mjs') {
-    mark('stack.mobileScheme=' + String(env?.HAPPIER_STACK_MOBILE_SCHEME ?? ''));
-    mark('stack.devClientScheme=' + String(env?.HAPPIER_STACK_DEV_CLIENT_SCHEME ?? ''));
+    mark('stack.mobileScheme=' + String(env?.PIGGERCODE_STACK_MOBILE_SCHEME ?? ''));
+    mark('stack.devClientScheme=' + String(env?.PIGGERCODE_STACK_DEV_CLIENT_SCHEME ?? ''));
   }
   return { status: 0 };
 }
@@ -203,11 +203,11 @@ export async function resolve(specifier, context, defaultResolve) {
   const env = {
     ...process.env,
     HSTACK_SETUP_PR_MARKER: markerPath,
-    HAPPIER_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
-    HAPPIER_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
-    HAPPIER_STACK_DEV_CLIENT_SCHEME: 'happier-dev',
+    PIGGERCODE_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
+    PIGGERCODE_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
+    PIGGERCODE_STACK_DEV_CLIENT_SCHEME: 'happier-dev',
   };
 
   const res = await runNode(
@@ -231,7 +231,7 @@ export async function resolve(specifier, context, defaultResolve) {
   assert.equal(mobileScheme, 'stack.mobileScheme=hstack-dev');
 });
 
-test('setup-pr honors HAPPIER_STACK_REVIEW_MOBILE_SCHEME in sandbox', async (t) => {
+test('setup-pr honors PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME in sandbox', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-setup-pr-mobile-scheme-review-'));
@@ -263,8 +263,8 @@ function mark(line) {
 export async function run(_cmd, args, { env } = {}) {
   const script = String(args?.[0] ?? '').split(/[\\\\/]/).pop();
   if (script === 'stack.mjs') {
-    mark('stack.mobileScheme=' + String(env?.HAPPIER_STACK_MOBILE_SCHEME ?? ''));
-    mark('stack.reviewOverride=' + String(env?.HAPPIER_STACK_REVIEW_MOBILE_SCHEME ?? ''));
+    mark('stack.mobileScheme=' + String(env?.PIGGERCODE_STACK_MOBILE_SCHEME ?? ''));
+    mark('stack.reviewOverride=' + String(env?.PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME ?? ''));
   }
   return { status: 0 };
 }
@@ -303,11 +303,11 @@ export async function resolve(specifier, context, defaultResolve) {
   const env = {
     ...process.env,
     HSTACK_SETUP_PR_MARKER: markerPath,
-    HAPPIER_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
-    HAPPIER_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
-    HAPPIER_STACK_REVIEW_MOBILE_SCHEME: 'hstack-dev',
+    PIGGERCODE_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
+    PIGGERCODE_STACK_WORKSPACE_DIR: join(tmp, 'workspace'),
+    PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME: 'hstack-dev',
   };
 
   const res = await runNode(

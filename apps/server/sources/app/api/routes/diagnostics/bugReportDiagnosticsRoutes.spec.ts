@@ -32,7 +32,7 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("returns 404 when diagnostics endpoint is disabled", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "0",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "0",
         });
         const route = await createDiagnosticsRoute();
         const { reply, response } = await route.invoke();
@@ -53,10 +53,10 @@ describe("bugReportDiagnosticsRoutes", () => {
         );
     });
 
-    it("allows overriding diagnostics snapshot max/window via HAPPIER_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_*", async () => {
+    it("allows overriding diagnostics snapshot max/window via PIGGERCODE_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_*", async () => {
         resetEnv({
-            HAPPIER_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_MAX: "7",
-            HAPPIER_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_WINDOW: "30 seconds",
+            PIGGERCODE_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_MAX: "7",
+            PIGGERCODE_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_WINDOW: "30 seconds",
         });
 
         const route = await createDiagnosticsRoute();
@@ -75,9 +75,9 @@ describe("bugReportDiagnosticsRoutes", () => {
         const logPath = join(dir, "server.log");
         writeFileSync(logPath, "INFO hello\nauthorization: bearer ghp_abcd1234abcd1234abcd1234\n", "utf8");
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
-            HAPPIER_BUG_REPORTS_SERVER_LOG_PATH: logPath,
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: logPath,
         });
 
         try {
@@ -100,9 +100,9 @@ describe("bugReportDiagnosticsRoutes", () => {
         writeFileSync(logPath, "INFO hello\n", "utf8");
         resetEnv({
             HOME: homeDir,
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
-            HAPPIER_BUG_REPORTS_SERVER_LOG_PATH: "~/.happier/logs/server.log",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: "~/.happier/logs/server.log",
         });
 
         try {
@@ -124,10 +124,10 @@ describe("bugReportDiagnosticsRoutes", () => {
         const filler = "x".repeat(12_000);
         writeFileSync(logPath, `${prefix}\n${filler}\n${suffix}\n`, "utf8");
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
-            HAPPIER_BUG_REPORTS_SERVER_LOG_PATH: logPath,
-            HAPPIER_BUG_REPORTS_SERVER_LOG_MAX_BYTES: "256",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: logPath,
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_MAX_BYTES: "256",
         });
 
         try {
@@ -148,9 +148,9 @@ describe("bugReportDiagnosticsRoutes", () => {
     it("does not fail when configured log path exists but cannot be read", async () => {
         const dir = mkdtempSync(join(tmpdir(), "happier-bug-report-diag-unreadable-"));
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
-            HAPPIER_BUG_REPORTS_SERVER_LOG_PATH: dir,
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: dir,
         });
 
         try {
@@ -166,9 +166,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("returns 403 for non-owner when owner-only access mode is enabled", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
-            HAPPIER_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
+            PIGGERCODE_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
         });
 
         const route = await createDiagnosticsRoute();
@@ -180,9 +180,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("defaults to owner-only access and rejects requests when owners are not configured", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: undefined,
-            HAPPIER_SERVER_OWNER_USER_IDS: undefined,
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: undefined,
+            PIGGERCODE_SERVER_OWNER_USER_IDS: undefined,
         });
 
         const route = await createDiagnosticsRoute();
@@ -194,9 +194,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("defaults to owner-only access and rejects non-owner users when owners are configured", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: undefined,
-            HAPPIER_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: undefined,
+            PIGGERCODE_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
         });
 
         const route = await createDiagnosticsRoute();
@@ -208,9 +208,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("allows owner when owner-only access mode is enabled", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
-            HAPPIER_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
+            PIGGERCODE_SERVER_OWNER_USER_IDS: "owner-1,owner-2",
         });
 
         const route = await createDiagnosticsRoute();
@@ -221,9 +221,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("returns 403 when owner-only mode is enabled without configured owners", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
-            HAPPIER_SERVER_OWNER_USER_IDS: "   ",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "owner",
+            PIGGERCODE_SERVER_OWNER_USER_IDS: "   ",
         });
 
         const route = await createDiagnosticsRoute();
@@ -235,9 +235,9 @@ describe("bugReportDiagnosticsRoutes", () => {
 
     it("returns 403 when diagnostics access mode env is invalid", async () => {
         resetEnv({
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
-            HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "oops",
-            HAPPIER_SERVER_OWNER_USER_IDS: "owner-1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
+            PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "oops",
+            PIGGERCODE_SERVER_OWNER_USER_IDS: "owner-1",
         });
 
         const route = await createDiagnosticsRoute();

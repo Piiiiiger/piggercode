@@ -118,7 +118,7 @@ describe('core e2e: direct Codex app-server sessions takeover+continue', () => {
         testDir,
         dbProvider: 'sqlite',
         extraEnv: {
-          HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+          PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
         },
       });
       const serverBaseUrl = server.baseUrl;
@@ -138,14 +138,14 @@ describe('core e2e: direct Codex app-server sessions takeover+continue', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: serverBaseUrl,
-          HAPPIER_WEBAPP_URL: serverBaseUrl,
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: serverBaseUrl,
+          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
           CODEX_HOME: codexHomeDir,
-          HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-          HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
-          HAPPIER_CODEX_TUI_BIN: fakeLocalCodex,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+          PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
+          PIGGERCODE_CODEX_TUI_BIN: fakeLocalCodex,
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
       });
 

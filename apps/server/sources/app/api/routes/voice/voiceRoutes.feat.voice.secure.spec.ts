@@ -38,7 +38,7 @@ describe("voiceRoutes (secure)", () => {
         dbTransaction.transaction.mockClear();
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
@@ -65,7 +65,7 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 when voice is disabled", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "0",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "0",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
@@ -91,8 +91,8 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 when build policy denies voice even if voice is requested but misconfigured", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
-            HAPPIER_BUILD_FEATURES_DENY: "voice,voice.happierVoice",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_BUILD_FEATURES_DENY: "voice,voice.happierVoice",
             ELEVENLABS_API_KEY: undefined,
             ELEVENLABS_AGENT_ID_PROD: undefined,
             REVENUECAT_SECRET_KEY: "rc_secret",
@@ -118,7 +118,7 @@ describe("voiceRoutes (secure)", () => {
     it("returns 503 when ElevenLabs is not configured", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: undefined,
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
@@ -165,7 +165,7 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 quota_exceeded when user is not subscribed and free minutes are exhausted", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
@@ -374,11 +374,11 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 when max minutes per day is exceeded", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
-            HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
+            PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
             VOICE_MAX_MINUTES_PER_DAY: "1",
             VOICE_FREE_SESSIONS_PER_MONTH: "0",
             VOICE_MAX_CONCURRENT_SESSIONS: "1",
@@ -408,11 +408,11 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 when max minutes per day is exceeded by pending leases", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",
-            HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
+            PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
             VOICE_MAX_MINUTES_PER_DAY: "1",
             VOICE_FREE_SESSIONS_PER_MONTH: "0",
             VOICE_MAX_CONCURRENT_SESSIONS: "1",
@@ -439,7 +439,7 @@ describe("voiceRoutes (secure)", () => {
     it("returns 403 quota_exceeded when free minutes are exhausted by pending leases", async () => {
         resetVoiceEnv({
             NODE_ENV: "production",
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID_PROD: "agent_prod",
             REVENUECAT_SECRET_KEY: "rc_secret",

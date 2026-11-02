@@ -75,14 +75,14 @@ describe('openCodeBrokerPluginSource (generated artifact, exercised live)', () =
   beforeEach(() => {
     delete process.env[OPEN_CODE_BROKER_SELECTIONS_ENV];
     delete process.env[OPEN_CODE_BROKER_STATE_PATH_ENV];
-    delete process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE;
+    delete process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE;
   });
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
     delete process.env[OPEN_CODE_BROKER_SELECTIONS_ENV];
     delete process.env[OPEN_CODE_BROKER_STATE_PATH_ENV];
-    delete process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE;
+    delete process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE;
   });
 
   it('engages only on its exact provider/version marker', async () => {
@@ -284,8 +284,8 @@ describe('openCodeBrokerPluginSource (generated artifact, exercised live)', () =
       anthropic: { serviceId: 'claude-subscription', profileId: 'claude-pro', accountId: null, planType: null },
     });
     const selectionIdentity = `opencode|connected|broker:${OPEN_CODE_BROKER_PLUGIN_VERSION}|openai-codex:codex-pro:`;
-    process.env.HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY = selectionIdentity;
-    process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE = 'opencode-spawn-1';
+    process.env.PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY = selectionIdentity;
+    process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE = 'opencode-spawn-1';
     const calls: Array<{ url: string; headers: Headers; body: string }> = [];
     globalThis.fetch = vi.fn(async (input: unknown, init: unknown) => {
       const url = String(input);
@@ -315,8 +315,8 @@ describe('openCodeBrokerPluginSource (generated artifact, exercised live)', () =
       expect(handshake!.headers.get('x-happier-daemon-token')).not.toBe(MASTER_CONTROL_TOKEN_SENTINEL);
       expect(handshake!.body).not.toContain(MASTER_CONTROL_TOKEN_SENTINEL);
     } finally {
-      delete process.env.HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY;
-      delete process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE;
+      delete process.env.PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY;
+      delete process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE;
     }
   });
 
@@ -325,9 +325,9 @@ describe('openCodeBrokerPluginSource (generated artifact, exercised live)', () =
     process.env[OPEN_CODE_BROKER_SELECTIONS_ENV] = serializeOpenCodeBrokerSelections({
       openai: { serviceId: 'openai-codex', profileId: 'p', accountId: null, planType: null },
     });
-    process.env.HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY =
+    process.env.PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY =
       `opencode|connected|broker:${OPEN_CODE_BROKER_PLUGIN_VERSION}|openai-codex:p:`;
-    process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE = 'opencode-spawn-retry';
+    process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE = 'opencode-spawn-retry';
     let handshakeCalls = 0;
     globalThis.fetch = vi.fn(async (input: unknown) => {
       if (String(input).includes('/connected-service-auth/broker/loaded')) {
@@ -352,8 +352,8 @@ describe('openCodeBrokerPluginSource (generated artifact, exercised live)', () =
       await new Promise((resolve) => setTimeout(resolve, 20));
       expect(handshakeCalls).toBe(2);
     } finally {
-      delete process.env.HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY;
-      delete process.env.HAPPIER_OPENCODE_BROKER_LOAD_NONCE;
+      delete process.env.PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY;
+      delete process.env.PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE;
     }
   });
 

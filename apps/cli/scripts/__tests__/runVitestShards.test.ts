@@ -19,9 +19,9 @@ describe('runVitestShards', () => {
   });
 
   it('accepts a positive inner-worker override and rejects invalid values', () => {
-    expect(resolveVitestMaxWorkers({ HAPPIER_CLI_VITEST_MAX_WORKERS: '2' }, 'vitest.config.ts')).toBe(2);
-    expect(resolveVitestMaxWorkers({ HAPPIER_CLI_VITEST_MAX_WORKERS: '0' }, 'vitest.config.ts')).toBe(2);
-    expect(resolveVitestMaxWorkers({ HAPPIER_CLI_VITEST_MAX_WORKERS: 'many' }, 'vitest.config.ts')).toBe(2);
+    expect(resolveVitestMaxWorkers({ PIGGERCODE_CLI_VITEST_MAX_WORKERS: '2' }, 'vitest.config.ts')).toBe(2);
+    expect(resolveVitestMaxWorkers({ PIGGERCODE_CLI_VITEST_MAX_WORKERS: '0' }, 'vitest.config.ts')).toBe(2);
+    expect(resolveVitestMaxWorkers({ PIGGERCODE_CLI_VITEST_MAX_WORKERS: 'many' }, 'vitest.config.ts')).toBe(2);
   });
 
   it('uses a smaller per-process unit slice while retaining the integration default', () => {
@@ -29,23 +29,23 @@ describe('runVitestShards', () => {
     expect(resolveVitestShardCount({}, 'vitest.integration.config.ts')).toBe(8);
   });
 
-  it('uses HAPPIER_CLI_VITEST_SHARDS override when valid', () => {
-    expect(resolveVitestShardCount({ HAPPIER_CLI_VITEST_SHARDS: '4' }, 'vitest.config.ts')).toBe(4);
+  it('uses PIGGERCODE_CLI_VITEST_SHARDS override when valid', () => {
+    expect(resolveVitestShardCount({ PIGGERCODE_CLI_VITEST_SHARDS: '4' }, 'vitest.config.ts')).toBe(4);
   });
 
   it('ignores invalid shard overrides', () => {
-    expect(resolveVitestShardCount({ HAPPIER_CLI_VITEST_SHARDS: '0' }, 'vitest.config.ts')).toBe(64);
-    expect(resolveVitestShardCount({ HAPPIER_CLI_VITEST_SHARDS: 'nope' }, 'vitest.config.ts')).toBe(64);
+    expect(resolveVitestShardCount({ PIGGERCODE_CLI_VITEST_SHARDS: '0' }, 'vitest.config.ts')).toBe(64);
+    expect(resolveVitestShardCount({ PIGGERCODE_CLI_VITEST_SHARDS: 'nope' }, 'vitest.config.ts')).toBe(64);
   });
 
   it('partitions the configured shard count into balanced CI parts', () => {
-    expect(resolveVitestShardRange({ HAPPIER_CLI_VITEST_PART: '1', HAPPIER_CLI_VITEST_PARTS: '2' }, 64)).toEqual({
+    expect(resolveVitestShardRange({ PIGGERCODE_CLI_VITEST_PART: '1', PIGGERCODE_CLI_VITEST_PARTS: '2' }, 64)).toEqual({
       start: 1,
       end: 32,
       part: 1,
       parts: 2,
     });
-    expect(resolveVitestShardRange({ HAPPIER_CLI_VITEST_PART: '2', HAPPIER_CLI_VITEST_PARTS: '2' }, 8)).toEqual({
+    expect(resolveVitestShardRange({ PIGGERCODE_CLI_VITEST_PART: '2', PIGGERCODE_CLI_VITEST_PARTS: '2' }, 8)).toEqual({
       start: 5,
       end: 8,
       part: 2,
@@ -55,7 +55,7 @@ describe('runVitestShards', () => {
 
   it('runs the full shard range when partition inputs are absent or invalid', () => {
     expect(resolveVitestShardRange({}, 8)).toEqual({ start: 1, end: 8, part: 1, parts: 1 });
-    expect(resolveVitestShardRange({ HAPPIER_CLI_VITEST_PART: '3', HAPPIER_CLI_VITEST_PARTS: '2' }, 8)).toEqual({
+    expect(resolveVitestShardRange({ PIGGERCODE_CLI_VITEST_PART: '3', PIGGERCODE_CLI_VITEST_PARTS: '2' }, 8)).toEqual({
       start: 1,
       end: 8,
       part: 1,
@@ -100,8 +100,8 @@ describe('runVitestShards', () => {
     const plans = Array.from({ length: parts }, (_, index) => resolveVitestIsolationPlan(
       'vitest.config.ts',
       resolveVitestShardRange({
-        HAPPIER_CLI_VITEST_PART: String(index + 1),
-        HAPPIER_CLI_VITEST_PARTS: String(parts),
+        PIGGERCODE_CLI_VITEST_PART: String(index + 1),
+        PIGGERCODE_CLI_VITEST_PARTS: String(parts),
       }, 64),
     ));
 

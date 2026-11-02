@@ -40,7 +40,7 @@ function setRawModeSupportForTest(supported: boolean): () => void {
 }
 
 describe('doAuth (Ink raw mode guard)', () => {
-  const envKeys = ['HAPPIER_AUTH_METHOD'] as const;
+  const envKeys = ['PIGGERCODE_AUTH_METHOD'] as const;
   let restoreTty: (() => void) | null = null;
   let restoreRawMode: (() => void) | null = null;
 

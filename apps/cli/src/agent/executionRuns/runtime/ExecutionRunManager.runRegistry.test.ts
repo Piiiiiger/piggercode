@@ -44,12 +44,12 @@ function createInactiveTimeoutBackend(): AgentBackend {
 }
 
 describe('ExecutionRunManager execution-run registry integration', () => {
-  const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+  const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
   let happyHomeDir: string;
 
   beforeEach(() => {
     happyHomeDir = join(tmpdir(), `happier-cli-exec-run-mgr-registry-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     vi.resetModules();
   });
 
@@ -58,9 +58,9 @@ describe('ExecutionRunManager execution-run registry integration', () => {
       rmSync(happyHomeDir, { recursive: true, force: true });
     }
     if (originalHappyHomeDir === undefined) {
-      delete process.env.HAPPIER_HOME_DIR;
+      delete process.env.PIGGERCODE_HOME_DIR;
     } else {
-      process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+      process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     }
   });
 

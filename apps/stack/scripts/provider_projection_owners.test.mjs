@@ -8,14 +8,14 @@ import { probeExistingAccountCountForServerComponent } from './utils/stack/start
 test('auth provider projection delegates preset defaults and accepts cross-preset providers', () => {
   assert.equal(resolveDbProviderFromEnv({ serverComponentName: 'happier-server-light', env: {} }), 'sqlite');
   assert.equal(resolveDbProviderFromEnv({ serverComponentName: 'happier-server-light', env: { HAPPY_DB_PROVIDER: ' PGLITE ' } }), 'pglite');
-  assert.equal(resolveDbProviderFromEnv({ serverComponentName: 'happier-server-light', env: { HAPPIER_DB_PROVIDER: 'mysql' } }), 'mysql');
+  assert.equal(resolveDbProviderFromEnv({ serverComponentName: 'happier-server-light', env: { PIGGERCODE_DB_PROVIDER: 'mysql' } }), 'mysql');
 });
 
 test('startup account projection admits cross-preset providers before probing', async () => {
   const result = await probeExistingAccountCountForServerComponent({
     serverComponentName: 'happier-server-light',
     serverDir: '/unused',
-    env: { HAPPIER_DB_PROVIDER: 'postgres' },
+    env: { PIGGERCODE_DB_PROVIDER: 'postgres' },
   });
   assert.equal(result.ok, false);
   assert.doesNotMatch(result.error, /unsupported DB provider/i);

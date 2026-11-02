@@ -50,7 +50,7 @@ describe('resolveTrackedConnectedServiceSwitchContinuityContext', () => {
       },
       targetMaterializedRoot: join(baseDir, 'csm_pi', 'pi'),
       targetMaterializedEnv: {
-        HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_pi', 'pi'),
+        PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_pi', 'pi'),
       },
       vendorResumeId: piSessionFile,
       cwd: '/tmp/project',
@@ -113,7 +113,7 @@ describe('resolveTrackedConnectedServiceSwitchContinuityContext', () => {
       },
       targetMaterializedRoot: join(baseDir, 'csm_metadata_pi', 'pi'),
       targetMaterializedEnv: {
-        HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_metadata_pi', 'pi'),
+        PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_metadata_pi', 'pi'),
       },
       vendorResumeId: piSessionFile,
       cwd: '/tmp/project',
@@ -185,7 +185,7 @@ describe('resolveTrackedConnectedServiceSwitchContinuityContext', () => {
       },
       targetMaterializedRoot: join(baseDir, 'csm_latest_pi', 'pi'),
       targetMaterializedEnv: {
-        HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_latest_pi', 'pi'),
+        PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: join(baseDir, 'csm_latest_pi', 'pi'),
       },
       vendorResumeId: piSessionFile,
       cwd: '/tmp/project',
@@ -354,7 +354,7 @@ describe('resolveTrackedConnectedServiceSwitchContinuityContext', () => {
           directory: '/tmp/project',
           resume: 'claude-session-1',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: oldConfigDir,
+            PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: oldConfigDir,
             CLAUDE_CONFIG_DIR: oldConfigDir,
           },
           connectedServiceMaterializationIdentityV1: {
@@ -372,7 +372,7 @@ describe('resolveTrackedConnectedServiceSwitchContinuityContext', () => {
     })).toMatchObject({
       targetMaterializedRoot: newConfigDir,
       targetMaterializedEnv: {
-        HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: newConfigDir,
+        PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: newConfigDir,
         CLAUDE_CONFIG_DIR: newConfigDir,
       },
       vendorResumeId: 'claude-session-1',

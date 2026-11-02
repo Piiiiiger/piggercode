@@ -24,7 +24,7 @@ function responseItemLine(payload: Record<string, unknown>): string {
 
 function createDirectSessionsEnv(codexHome: string, overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return createCodexAppServerProcessEnv(
-    overrides.HAPPIER_CODEX_APP_SERVER_BIN ?? join(codexHome, 'missing-codex-app-server-binary'),
+    overrides.PIGGERCODE_CODEX_APP_SERVER_BIN ?? join(codexHome, 'missing-codex-app-server-binary'),
     {
       CODEX_HOME: codexHome,
       ...overrides,
@@ -427,7 +427,7 @@ describe('listCodexSessionCandidates', () => {
 
     const result = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
-      env: createDirectSessionsEnv(codexHome, { HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer }),
+      env: createDirectSessionsEnv(codexHome, { PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 10,
     });
@@ -469,7 +469,7 @@ describe('listCodexSessionCandidates', () => {
 
     const result = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
-      env: createDirectSessionsEnv(codexHome, { HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer }),
+      env: createDirectSessionsEnv(codexHome, { PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 10,
     });
@@ -502,7 +502,7 @@ describe('listCodexSessionCandidates', () => {
 
     const result = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
-      env: createDirectSessionsEnv(codexHome, { HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer }),
+      env: createDirectSessionsEnv(codexHome, { PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 10,
     });
@@ -918,7 +918,7 @@ describe('listCodexSessionCandidates', () => {
 
     const first = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
-      env: createDirectSessionsEnv(codexHome, { HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer }),
+      env: createDirectSessionsEnv(codexHome, { PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 1,
     });
@@ -927,7 +927,7 @@ describe('listCodexSessionCandidates', () => {
 
     const second = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
-      env: createDirectSessionsEnv(codexHome, { HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer }),
+      env: createDirectSessionsEnv(codexHome, { PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer }),
       activeServerDir: join(root, 'servers', 'cloud'),
       cursor: first.nextCursor ?? undefined,
       limit: 1,
@@ -968,8 +968,8 @@ describe('listCodexSessionCandidates', () => {
     const result = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
       env: createDirectSessionsEnv(codexHome, {
-        HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-        HAPPIER_CODEX_DIRECT_SESSIONS_APP_SERVER_LIST_TIMEOUT_MS: '100',
+        PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+        PIGGERCODE_CODEX_DIRECT_SESSIONS_APP_SERVER_LIST_TIMEOUT_MS: '100',
       }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 10,

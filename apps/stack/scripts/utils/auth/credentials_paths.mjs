@@ -137,13 +137,13 @@ export function resolvePreferredStackServerIdFromCliSettings(params = {}) {
 }
 
 function resolveActiveServerIdOverride(env = process.env) {
-  const raw = String(env?.HAPPIER_ACTIVE_SERVER_ID ?? '').trim();
+  const raw = String(env?.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim();
   if (!raw) return '';
   return sanitizeServerIdForFilesystem(raw, '');
 }
 
 function resolveDaemonLifecycleScopeIdOverride(env = process.env) {
-  const raw = String(env?.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim();
+  const raw = String(env?.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim();
   if (!raw) return '';
   const sanitized = sanitizeServerIdForFilesystem(raw, '');
   return sanitized === raw ? sanitized : '';
@@ -208,7 +208,7 @@ export function resolveStackCredentialPaths({ cliHomeDir, serverUrl = '', env = 
   // Runtime identity follows the explicit stack scope. A matching settings profile is only a
   // credential migration source; letting it become active also changes the CLI machine-id scope.
   const activeServerId = stableScopeServerId || daemonLifecycleScopeId || urlHashServerId;
-  const matchingSettingsCredentialSourceIds = String(env?.HAPPIER_STACK_STACK ?? '').trim()
+  const matchingSettingsCredentialSourceIds = String(env?.PIGGERCODE_STACK_STACK ?? '').trim()
     ? matchingSettingsServerIds.filter((id) => id !== activeServerId)
     : [];
   const serverScopedPath = join(home, 'servers', activeServerId, 'access.key');
@@ -260,7 +260,7 @@ export function resolveStackDaemonStatePaths({ cliHomeDir, serverUrl = '', env =
   const stableScopeServerId = resolveActiveServerIdOverride(env);
   const daemonLifecycleScopeId = resolveDaemonLifecycleScopeIdOverride(env);
   // Daemon state is lifecycle state, not a credential-profile artifact. Settings profiles may
-  // select HAPPIER_ACTIVE_SERVER_ID for credentials, but never select or alias daemon state.
+  // select PIGGERCODE_ACTIVE_SERVER_ID for credentials, but never select or alias daemon state.
   const activeServerId = daemonLifecycleScopeId || stableScopeServerId || urlHashServerId;
 
   const legacyStatePath = join(home, 'daemon.state.json');

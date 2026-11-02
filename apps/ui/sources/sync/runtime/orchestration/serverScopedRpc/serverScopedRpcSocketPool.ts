@@ -50,7 +50,7 @@ type PoolEntry = {
 
 const INTENTIONAL_DISCONNECT_FLAG_RESET_MS = 1_000;
 
-const GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN_KEY = '__HAPPIER_GLOBAL_SCOPED_RPC_TOKEN_CACHE_KEY_BY_TOKEN__';
+const GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN_KEY = '__PIGGERCODE_GLOBAL_SCOPED_RPC_TOKEN_CACHE_KEY_BY_TOKEN__';
 const GLOBAL_TOKEN_CACHE_KEY_MAX_ENTRIES = 512;
 
 function getGlobalTokenCacheHost(): Record<string, unknown> {
@@ -105,7 +105,7 @@ function normalizeServerUrl(raw: unknown): string {
 }
 
 function readScopedRpcSocketIdleDisconnectMsFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_SOCKET_IDLE_DISCONNECT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_SOCKET_IDLE_DISCONNECT_MS ?? '').trim();
     if (!raw) return 5_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed) || parsed < 0) return 5_000;

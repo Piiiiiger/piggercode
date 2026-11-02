@@ -49,9 +49,9 @@ function isPluginEntry(entry) {
 }
 
 export async function resolveSwiftbarPluginsDir({ env = process.env } = {}) {
-  const override = (env.HAPPIER_STACK_SWIFTBAR_PLUGINS_DIR ?? '').trim();
+  const override = (env.PIGGERCODE_STACK_SWIFTBAR_PLUGINS_DIR ?? '').trim();
   if (override) {
-    const allowNonDarwinOverride = parseBool(env.HAPPIER_STACK_SWIFTBAR_ALLOW_OVERRIDE_NON_DARWIN);
+    const allowNonDarwinOverride = parseBool(env.PIGGERCODE_STACK_SWIFTBAR_ALLOW_OVERRIDE_NON_DARWIN);
     if (process.platform !== 'darwin' && !allowNonDarwinOverride) {
       return null;
     }

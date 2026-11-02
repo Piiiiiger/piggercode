@@ -90,7 +90,7 @@ function createRunnerControlHarness(metadata: Metadata, sessionId: string, rpcFa
 
 describe('happier attach', () => {
   const localSettings = { machineId: 'machine-local' } as Settings;
-  const previousManagedServerStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+  const previousManagedServerStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
   const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
     throw new Error(`process.exit(${code ?? 0})`);
   }) as any);
@@ -111,9 +111,9 @@ describe('happier attach', () => {
 
   afterEach(() => {
     if (previousManagedServerStatePath === undefined) {
-      delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
     } else {
-      process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
+      process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
     }
     vi.unstubAllGlobals();
   });
@@ -193,8 +193,8 @@ describe('happier attach', () => {
 
   it('attaches the existing local OpenCode terminal after machine id drift', async () => {
     const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-attach-command-'));
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
+    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
       baseUrl: 'http://127.0.0.1:4096/',
       pid: 12345,
       startedAtMs: Date.now(),

@@ -27,13 +27,13 @@ function createSocketStub() {
 }
 
 describe('sync socket transports', () => {
-  const previousForceWebsocket = process.env.EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET;
+  const previousForceWebsocket = process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET;
 
   afterEach(() => {
     ioSpy.mockReset();
     vi.resetModules();
-    if (previousForceWebsocket === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET;
-    else process.env.EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET = previousForceWebsocket;
+    if (previousForceWebsocket === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET;
+    else process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET = previousForceWebsocket;
   });
 
   it('uses the Engine.IO defaults by default (polling then upgrade)', async () => {
@@ -80,7 +80,7 @@ describe('sync socket transports', () => {
   });
 
   it('can force websocket-only via config flag', async () => {
-    process.env.EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET = '1';
+    process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET = '1';
 
     const fakeSocket = createSocketStub();
     ioSpy.mockReturnValue(fakeSocket);

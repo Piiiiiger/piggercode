@@ -12,7 +12,7 @@ type AcpBackendLike = {
   };
 };
 
-const envKeys = ['PATH', 'HAPPIER_GEMINI_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_GEMINI_PATH'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -36,7 +36,7 @@ afterEach(() => {
 
 function getBackendArgsForMode(params: { permissionMode: PermissionMode; env?: Record<string, string> }): string[] {
   process.env.PATH = '';
-  process.env.HAPPIER_GEMINI_PATH = createFakeBin('gemini');
+  process.env.PIGGERCODE_GEMINI_PATH = createFakeBin('gemini');
   const result = createGeminiBackend({
     cwd: '/tmp',
     env: params.env ?? {},
@@ -58,7 +58,7 @@ function readFlagValue(args: string[], flag: string): string | null {
 describe('Gemini ACP backend permissions', () => {
   it('fails closed when the Gemini CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     expect(() => createGeminiBackend({ cwd: '/tmp', env: {}, model: null })).toThrow(/system install/i);
   });
@@ -81,11 +81,11 @@ describe('Gemini ACP backend permissions', () => {
     },
   );
 
-  it('enables --sandbox when HAPPIER_GEMINI_USE_SANDBOX is truthy', () => {
+  it('enables --sandbox when PIGGERCODE_GEMINI_USE_SANDBOX is truthy', () => {
     const args = getBackendArgsForMode({
       permissionMode: 'default',
       env: {
-        HAPPIER_GEMINI_USE_SANDBOX: 'true',
+        PIGGERCODE_GEMINI_USE_SANDBOX: 'true',
       },
     });
     expect(args.includes('--sandbox')).toBe(true);

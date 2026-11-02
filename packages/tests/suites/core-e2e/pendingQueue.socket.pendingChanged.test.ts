@@ -26,7 +26,7 @@ const run = createRunDirs({ runLabel: 'core' });
 describe('core e2e: pending queue v2 emits pending-changed socket updates', () => {
   it('broadcasts pending-changed to connected sockets on enqueue', async () => {
     const testDir = run.testDir('pending-queue-v2-socket-pending-changed');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     const server = await startServerLight({ testDir });
@@ -44,7 +44,7 @@ describe('core e2e: pending queue v2 emits pending-changed socket updates', () =
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -118,7 +118,7 @@ describe('core e2e: pending queue v2 emits pending-changed socket updates', () =
 
   it('broadcasts pending-changed on materialize-next via socket RPC', async () => {
     const testDir = run.testDir('pending-queue-v2-socket-pending-changed.materialize');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     const server = await startServerLight({ testDir });
@@ -141,7 +141,7 @@ describe('core e2e: pending queue v2 emits pending-changed socket updates', () =
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

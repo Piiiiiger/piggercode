@@ -1,7 +1,7 @@
 import { type AgentId, getBuiltInAcpConfig } from '@piggercode/agents';
 
 import type { AcpBackendOptions, AcpPermissionHandler } from '@/agent/acp/AcpBackend';
-import { HAPPIER_SESSION_ID_ENV_KEY, withCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';
+import { PIGGERCODE_SESSION_ID_ENV_KEY, withCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';
 import type { PermissionMode } from '@/api/types';
 import { createAcpBackend } from '@/agent/acp/createAcpBackend';
 import type { AgentBackend, AgentFactoryOptions, AgentSessionOpenOptions, McpServerConfig, SessionId, StartSessionResult } from '@/agent/core';
@@ -43,7 +43,7 @@ export function createCatalogDefinedAcpBackend(
       : env,
     prepareProcessLaunch: options.prepareProcessLaunch,
     unsetEnv: options.happierSessionId !== undefined
-      ? [...(options.unsetEnv ?? []), HAPPIER_SESSION_ID_ENV_KEY]
+      ? [...(options.unsetEnv ?? []), PIGGERCODE_SESSION_ID_ENV_KEY]
       : options.unsetEnv,
     isAuthenticationSetupFailure: options.isAuthenticationSetupFailure,
     sessionModelAdapter: options.sessionModelAdapter,

@@ -87,15 +87,15 @@ import { appendFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
-const sdkPath = process.env.HAPPIER_E2E_ACP_SDK_ENTRY;
-if (!sdkPath) throw new Error("Missing HAPPIER_E2E_ACP_SDK_ENTRY");
+const sdkPath = process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY;
+if (!sdkPath) throw new Error("Missing PIGGERCODE_E2E_ACP_SDK_ENTRY");
 const acp = await import(pathToFileURL(sdkPath).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
-const modelLog = process.env.HAPPIER_E2E_MODEL_LOG;
-const promptLog = process.env.HAPPIER_E2E_PROMPT_LOG;
+const modelLog = process.env.PIGGERCODE_E2E_MODEL_LOG;
+const promptLog = process.env.PIGGERCODE_E2E_PROMPT_LOG;
 
 class FakeAgent {
   connection;
@@ -123,7 +123,7 @@ class FakeAgent {
   }
   async authenticate() { return {}; }
   async unstable_setSessionModel(params) {
-    if (process.env.HAPPIER_E2E_DISABLE_SET_MODEL === "1") {
+    if (process.env.PIGGERCODE_E2E_DISABLE_SET_MODEL === "1") {
       const err = new Error("Method not found");
       err.code = -32601;
       throw err;
@@ -177,16 +177,16 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-      HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
-      HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
-      HAPPIER_E2E_MODEL_LOG: modelLogPath,
-      HAPPIER_E2E_PROMPT_LOG: promptLogPath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+      PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
+      PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
+      PIGGERCODE_E2E_MODEL_LOG: modelLogPath,
+      PIGGERCODE_E2E_PROMPT_LOG: promptLogPath,
       PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
     };
 
@@ -358,8 +358,8 @@ import { Readable } from "node:stream";
 import * as acp from ${JSON.stringify(sdkEntry)};
 import { connectAcpTestAgentApp } from ${JSON.stringify(agentAppAdapterEntry)};
 
-const modelLog = process.env.HAPPIER_E2E_MODEL_LOG;
-const promptLog = process.env.HAPPIER_E2E_PROMPT_LOG;
+const modelLog = process.env.PIGGERCODE_E2E_MODEL_LOG;
+const promptLog = process.env.PIGGERCODE_E2E_PROMPT_LOG;
 
 class FakeAgent {
   connection;
@@ -427,16 +427,16 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-      HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
-      HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
-      HAPPIER_E2E_MODEL_LOG: modelLogPath,
-      HAPPIER_E2E_PROMPT_LOG: promptLogPath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+      PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
+      PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
+      PIGGERCODE_E2E_MODEL_LOG: modelLogPath,
+      PIGGERCODE_E2E_PROMPT_LOG: promptLogPath,
       PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
     };
 

@@ -27,18 +27,18 @@ git_cache_dir() {
 
 git_cache_ttl_sec() {
   # Default: 6 hours.
-  local v="${HAPPIER_STACK_SWIFTBAR_GIT_TTL_SEC:-21600}"
+  local v="${PIGGERCODE_STACK_SWIFTBAR_GIT_TTL_SEC:-21600}"
   [[ "$v" =~ ^[0-9]+$ ]] || v=21600
   echo "$v"
 }
 
 git_cache_refresh_on_stale() {
-  [[ "${HAPPIER_STACK_SWIFTBAR_GIT_REFRESH_ON_STALE:-0}" == "1" ]]
+  [[ "${PIGGERCODE_STACK_SWIFTBAR_GIT_REFRESH_ON_STALE:-0}" == "1" ]]
 }
 
 git_cache_auto_refresh_scope() {
   # off | main | all
-  local s="${HAPPIER_STACK_SWIFTBAR_GIT_AUTO_REFRESH_SCOPE:-main}"
+  local s="${PIGGERCODE_STACK_SWIFTBAR_GIT_AUTO_REFRESH_SCOPE:-main}"
   s="$(echo "$s" | tr '[:upper:]' '[:lower:]')"
   case "$s" in
     off|none|0) echo "off" ;;
@@ -129,7 +129,7 @@ git_cache_maybe_refresh_async() {
 
 git_cache_mode() {
   # cached (default) | live
-  local m="${HAPPIER_STACK_SWIFTBAR_GIT_MODE:-cached}"
+  local m="${PIGGERCODE_STACK_SWIFTBAR_GIT_MODE:-cached}"
   m="$(echo "$m" | tr '[:upper:]' '[:lower:]')"
   [[ "$m" == "live" ]] && echo "live" || echo "cached"
 }
@@ -553,7 +553,7 @@ resolve_component_dir_from_env_file() {
   local env_file="$1"
   local component="$2"
   : "$component"
-  local stacks_key="HAPPIER_STACK_REPO_DIR"
+  local stacks_key="PIGGERCODE_STACK_REPO_DIR"
 
   local fallback
   fallback="$(resolve_workspace_dir)/happier"
@@ -586,7 +586,7 @@ resolve_component_dir_from_env() {
   # Output: absolute path (best-effort). Falls back to <workspace>/happier.
   local component="$1"
   : "$component"
-  local stacks_key="HAPPIER_STACK_REPO_DIR"
+  local stacks_key="PIGGERCODE_STACK_REPO_DIR"
 
   local raw=""
   if [[ -n "$stacks_key" && -n "${!stacks_key:-}" ]]; then

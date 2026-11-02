@@ -30,8 +30,8 @@ describe('resolveTailscaleBin', () => {
     const resolved = await resolveTailscaleBin(
       {
         env: {
-          HAPPIER_TAILSCALE_BIN: '/custom/tailscale',
-          HAPPIER_STACK_TAILSCALE_BIN: '/legacy/tailscale',
+          PIGGERCODE_TAILSCALE_BIN: '/custom/tailscale',
+          PIGGERCODE_STACK_TAILSCALE_BIN: '/legacy/tailscale',
         },
       },
       {

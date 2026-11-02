@@ -141,7 +141,7 @@ export function normalizeRestartSessionRunnerResult(
 }
 
 // The daemon answers a restart only after the old runner exits and its replacement spawns, bounded by its
-// restart completion window (HAPPIER_DAEMON_SESSION_RUNNER_RESTART_COMPLETION_TIMEOUT_MS, default 60s).
+// restart completion window (PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_COMPLETION_TIMEOUT_MS, default 60s).
 // Outlasting that window keeps a slow but successful restart from surfacing as a transport timeout; a replay
 // while the restart is still in flight joins it, and a replay after it landed is resolved by observing status.
 const SESSION_RUNNER_RESTART_RPC_TIMEOUT_MS = 90_000;

@@ -54,17 +54,17 @@ test('runtime CLI provenance is one canonical shape for daemon options and neste
     env: {},
     cliLaunchSpec: launchSpec,
   });
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/tmp/runtime/builds/snap-a/cli/package-dist/index.mjs');
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abcdef1234567890');
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, '/tmp/runtime/builds/snap-a/cli/package-dist/index.mjs');
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, 'abcdef1234567890');
 });
 
 test('source CLI provenance clears inherited runtime-backed subprocess policy', () => {
   const projected = applyCliRuntimeLaunchProvenanceEnv({
     env: {
-      HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
-      HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stale/runtime/index.mjs',
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
+      PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stale/runtime/index.mjs',
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
       KEEP_ME: 'yes',
     },
     cliLaunchSpec: null,
@@ -74,9 +74,9 @@ test('source CLI provenance clears inherited runtime-backed subprocess policy', 
     admittedDistClosureFingerprint: null,
     distEntrypoint: '',
   });
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, undefined);
-  assert.equal(projected.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, undefined);
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, undefined);
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, undefined);
+  assert.equal(projected.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT, undefined);
   assert.equal(projected.KEEP_ME, 'yes');
 });
 

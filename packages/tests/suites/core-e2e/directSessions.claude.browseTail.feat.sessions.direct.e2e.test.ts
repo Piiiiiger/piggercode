@@ -77,7 +77,7 @@ describe('core e2e: direct Claude sessions browse/link/tail', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -99,11 +99,11 @@ describe('core e2e: direct Claude sessions browse/link/tail', () => {
         CI: '1',
         // This path is already covered by cliDist coverage; using the source entrypoint
         // keeps the direct-session flow stable under lane load.
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_CLAUDE_CONFIG_DIR: claudeConfigDir,
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_CLAUDE_CONFIG_DIR: claudeConfigDir,
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
       },
     });
 
@@ -294,8 +294,8 @@ describe('core e2e: direct Claude sessions browse/link/tail', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -315,15 +315,15 @@ describe('core e2e: direct Claude sessions browse/link/tail', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_CLAUDE_CONFIG_DIR: claudeConfigDir,
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
-        HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_CLAUDE_CONFIG_DIR: claudeConfigDir,
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 

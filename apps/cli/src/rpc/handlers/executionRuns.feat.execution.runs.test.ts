@@ -1341,8 +1341,8 @@ describe('executionRuns session RPC handlers', () => {
   });
 
   it('acks bounded external sends once the replacement turn is adopted, even if the backend never completes it', async () => {
-    const previousAckTimeout = process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
-    process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = '20';
+    const previousAckTimeout = process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
+    process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = '20';
     try {
       const client = createEncryptedRpcTestClient({
         scopePrefix: 'sess_1',
@@ -1385,9 +1385,9 @@ describe('executionRuns session RPC handlers', () => {
       expect(got.run?.status).toBe('running');
     } finally {
       if (previousAckTimeout === undefined) {
-        delete process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = previousAckTimeout;
+        process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = previousAckTimeout;
       }
     }
   });
@@ -2300,8 +2300,8 @@ describe('executionRuns session RPC handlers', () => {
   });
 
   it('rejects voice_agent runs when voice feature is locally disabled', async () => {
-    const prev = process.env.HAPPIER_FEATURE_VOICE__ENABLED;
-    process.env.HAPPIER_FEATURE_VOICE__ENABLED = '0';
+    const prev = process.env.PIGGERCODE_FEATURE_VOICE__ENABLED;
+    process.env.PIGGERCODE_FEATURE_VOICE__ENABLED = '0';
     try {
       const client = createEncryptedRpcTestClient({
         scopePrefix: 'sess_1',
@@ -2328,8 +2328,8 @@ describe('executionRuns session RPC handlers', () => {
       expect(res.ok).toBe(false);
       expect(res.errorCode).toBe('execution_run_not_allowed');
     } finally {
-      if (prev === undefined) delete process.env.HAPPIER_FEATURE_VOICE__ENABLED;
-      else process.env.HAPPIER_FEATURE_VOICE__ENABLED = prev;
+      if (prev === undefined) delete process.env.PIGGERCODE_FEATURE_VOICE__ENABLED;
+      else process.env.PIGGERCODE_FEATURE_VOICE__ENABLED = prev;
     }
   });
 
@@ -2831,8 +2831,8 @@ describe('executionRuns session RPC handlers', () => {
   });
 
   it('fails early when starting a CodeRabbit review whose scope exceeds the configured file limit', async () => {
-    const originalMaxEligibleFiles = process.env.HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES;
-    process.env.HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES = '1';
+    const originalMaxEligibleFiles = process.env.PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES;
+    process.env.PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES = '1';
     try {
       const remote = mkdtempSync(join(tmpdir(), 'happier-execution-run-coderabbit-remote-'));
       runGit(remote, ['init', '--bare', '--initial-branch=main']);
@@ -2893,8 +2893,8 @@ describe('executionRuns session RPC handlers', () => {
       expect(String(started.error ?? '')).toContain('Too many reviewable files');
       expect(createBackendCalls).toBe(0);
     } finally {
-      if (originalMaxEligibleFiles === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES = originalMaxEligibleFiles;
+      if (originalMaxEligibleFiles === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES = originalMaxEligibleFiles;
     }
   });
 
@@ -3007,8 +3007,8 @@ describe('executionRuns session RPC handlers', () => {
   });
 
   it('uses centralized configuration defaults when no explicit policy override is provided', async () => {
-    const previousMaxConcurrentRuns = process.env.HAPPIER_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION;
-    process.env.HAPPIER_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION = '1';
+    const previousMaxConcurrentRuns = process.env.PIGGERCODE_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION;
+    process.env.PIGGERCODE_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION = '1';
     reloadConfiguration();
 
     try {
@@ -3049,8 +3049,8 @@ describe('executionRuns session RPC handlers', () => {
       expect(second.ok).toBe(false);
       expect(second.errorCode).toBe('execution_run_budget_exceeded');
     } finally {
-      if (previousMaxConcurrentRuns === undefined) delete process.env.HAPPIER_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION;
-      else process.env.HAPPIER_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION = previousMaxConcurrentRuns;
+      if (previousMaxConcurrentRuns === undefined) delete process.env.PIGGERCODE_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION;
+      else process.env.PIGGERCODE_EXECUTION_RUNS_MAX_CONCURRENT_PER_SESSION = previousMaxConcurrentRuns;
       reloadConfiguration();
     }
   });

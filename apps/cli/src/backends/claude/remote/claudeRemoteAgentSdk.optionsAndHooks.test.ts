@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { configuration } from '@/configuration';
 import { logger } from '@/ui/logger';
 import {
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { claudeRemoteAgentSdk } from './claudeRemoteAgentSdk';
 import { makeMode } from './claudeRemoteAgentSdk.testkit';
@@ -1614,9 +1614,9 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
 
     it('forwards explicit GUI/profile env keys into the Claude subprocess env even when not allowlisted', async () => {
         const originalToken = process.env.GITHUB_TOKEN;
-        const originalMarker = process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+        const originalMarker = process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
         process.env.GITHUB_TOKEN = 'ghp_test';
-        process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['GITHUB_TOKEN']);
+        process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['GITHUB_TOKEN']);
 
         try {
             let capturedOptions: any = null;
@@ -1662,23 +1662,23 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions).toBeTruthy();
             expect(capturedOptions.env).toBeTruthy();
             expect(capturedOptions.env.GITHUB_TOKEN).toBe('ghp_test');
-            expect(capturedOptions.env.HAPPIER_SESSION_ID).toBe('managed-session-1');
-            expect(capturedOptions.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
+            expect(capturedOptions.env.PIGGERCODE_SESSION_ID).toBe('managed-session-1');
+            expect(capturedOptions.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
         } finally {
             if (originalToken === undefined) delete process.env.GITHUB_TOKEN;
             else process.env.GITHUB_TOKEN = originalToken;
-            if (originalMarker === undefined) delete process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
-            else process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = originalMarker;
+            if (originalMarker === undefined) delete process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+            else process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = originalMarker;
         }
     });
 
     it.each(['', '   ', 'offline-local-session'])(
         'removes an inherited managed session id when the supplied id is unusable (%j)',
         async (happySessionId: string) => {
-            const originalSessionId = process.env.HAPPIER_SESSION_ID;
-            const originalMarker = process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
-            process.env.HAPPIER_SESSION_ID = 'outer-session';
-            process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['HAPPIER_SESSION_ID']);
+            const originalSessionId = process.env.PIGGERCODE_SESSION_ID;
+            const originalMarker = process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+            process.env.PIGGERCODE_SESSION_ID = 'outer-session';
+            process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['PIGGERCODE_SESSION_ID']);
 
             try {
                 let capturedOptions: any = null;
@@ -1718,12 +1718,12 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
                     createQuery,
                 } as any);
 
-                expect(capturedOptions.env.HAPPIER_SESSION_ID).toBeUndefined();
+                expect(capturedOptions.env.PIGGERCODE_SESSION_ID).toBeUndefined();
             } finally {
-                if (originalSessionId === undefined) delete process.env.HAPPIER_SESSION_ID;
-                else process.env.HAPPIER_SESSION_ID = originalSessionId;
-                if (originalMarker === undefined) delete process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
-                else process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = originalMarker;
+                if (originalSessionId === undefined) delete process.env.PIGGERCODE_SESSION_ID;
+                else process.env.PIGGERCODE_SESSION_ID = originalSessionId;
+                if (originalMarker === undefined) delete process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+                else process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = originalMarker;
             }
         },
     );
@@ -1790,16 +1790,16 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         const originals = {
             refreshToken: process.env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN,
             scopes: process.env.CLAUDE_CODE_OAUTH_SCOPES,
-            marker: process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON,
-            explicitAllowed: process.env.HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST,
+            marker: process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON,
+            explicitAllowed: process.env.PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST,
         };
         process.env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN = 'refresh-secret';
         process.env.CLAUDE_CODE_OAUTH_SCOPES = 'user:inference';
-        process.env.HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST = 'allowed-explicit-value';
-        process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify([
+        process.env.PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST = 'allowed-explicit-value';
+        process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify([
             'CLAUDE_CODE_OAUTH_REFRESH_TOKEN',
             'CLAUDE_CODE_OAUTH_SCOPES',
-            'HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST',
+            'PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST',
         ]);
 
         try {
@@ -1844,7 +1844,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
 
             expect(capturedOptions.env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN).toBeUndefined();
             expect(capturedOptions.env.CLAUDE_CODE_OAUTH_SCOPES).toBeUndefined();
-            expect(capturedOptions.env.HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST).toBe('allowed-explicit-value');
+            expect(capturedOptions.env.PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST).toBe('allowed-explicit-value');
 
             // Bash commands must reach Claude Code's permission layer unmodified: the only
             // PreToolUse hook is the provider-owned AskUserQuestion bridge. Auth isolation
@@ -1857,10 +1857,10 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             else process.env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN = originals.refreshToken;
             if (originals.scopes === undefined) delete process.env.CLAUDE_CODE_OAUTH_SCOPES;
             else process.env.CLAUDE_CODE_OAUTH_SCOPES = originals.scopes;
-            if (originals.marker === undefined) delete process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
-            else process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = originals.marker;
-            if (originals.explicitAllowed === undefined) delete process.env.HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST;
-            else process.env.HAPPIER_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST = originals.explicitAllowed;
+            if (originals.marker === undefined) delete process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+            else process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = originals.marker;
+            if (originals.explicitAllowed === undefined) delete process.env.PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST;
+            else process.env.PIGGERCODE_CLAUDE_EXPLICIT_ENV_ALLOWED_TEST = originals.explicitAllowed;
         }
     });
 
@@ -1870,13 +1870,13 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             apiKey: process.env.ANTHROPIC_API_KEY,
             oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN,
             configDir: process.env.CLAUDE_CONFIG_DIR,
-            selection: process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY],
+            selection: process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY],
         };
         const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => undefined);
         process.env.ANTHROPIC_API_KEY = 'sk-ant-secret';
         process.env.CLAUDE_CODE_OAUTH_TOKEN = 'claude-oauth-secret';
         process.env.CLAUDE_CONFIG_DIR = '/Users/test/.claude';
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'claude',
@@ -1960,15 +1960,15 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             else process.env.CLAUDE_CODE_OAUTH_TOKEN = originals.oauthToken;
             if (originals.configDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
             else process.env.CLAUDE_CONFIG_DIR = originals.configDir;
-            if (originals.selection === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-            else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originals.selection;
+            if (originals.selection === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+            else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originals.selection;
         }
     });
 
     it('passes a Claude subscription OAuth refresh callback that delegates forced refresh to the daemon bridge', async () => {
         const transcriptPath = await createMaterializedClaudeTranscript('session-1');
-        const originalSelection = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+        const originalSelection = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'claude',
@@ -2040,15 +2040,15 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
                 forceRefresh: false,
             });
         } finally {
-            if (originalSelection === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-            else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
+            if (originalSelection === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+            else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
         }
     });
 
     it('uses the explicit Claude subscription refresh binding instead of rereading ambient runner env', async () => {
         const transcriptPath = await createMaterializedClaudeTranscript('session-explicit-binding');
-        const originalSelection = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+        const originalSelection = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'stale',
@@ -2113,15 +2113,15 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
                 forceRefresh: false,
             });
         } finally {
-            if (originalSelection === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-            else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
+            if (originalSelection === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+            else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
         }
     });
 
     it('does not derive getOAuthToken from ambient runner env without an explicit connected-service binding', async () => {
         const transcriptPath = await createMaterializedClaudeTranscript('ambient-env-session');
-        const originalSelection = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+        const originalSelection = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
             kind: 'profile',
             serviceId: 'claude-subscription',
             profileId: 'ambient-profile',
@@ -2170,15 +2170,15 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions).not.toHaveProperty('getOAuthToken');
             expect(refreshDaemonClaudeSubscriptionAnthropicAuthTokensForBridgeMock).not.toHaveBeenCalled();
         } finally {
-            if (originalSelection === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-            else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
+            if (originalSelection === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+            else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
         }
     });
 
     it('does not provide getOAuthToken for native Claude sessions', async () => {
         const transcriptPath = await createMaterializedClaudeTranscript('native-session');
-        const originalSelection = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        const originalSelection = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
 
         let capturedOptions: any = null;
         const createQuery = vi.fn((_params: any) => {
@@ -2224,8 +2224,8 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions).not.toHaveProperty('getOAuthToken');
             expect(refreshDaemonClaudeSubscriptionAnthropicAuthTokensForBridgeMock).not.toHaveBeenCalled();
         } finally {
-            if (originalSelection === undefined) delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-            else process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
+            if (originalSelection === undefined) delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+            else process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = originalSelection;
         }
     });
 
@@ -2349,9 +2349,9 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
     });
 
     it('forwards the resolved Claude config dir override to the Claude subprocess env', async () => {
-        const originalHappierClaudeConfigDir = process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+        const originalHappierClaudeConfigDir = process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
         const originalClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
-        process.env.HAPPIER_CLAUDE_CONFIG_DIR = '/tmp/happier-claude-config';
+        process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = '/tmp/happier-claude-config';
         delete process.env.CLAUDE_CONFIG_DIR;
 
         try {
@@ -2397,10 +2397,10 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions).toBeTruthy();
             expect(capturedOptions.env).toBeTruthy();
             expect(capturedOptions.env.CLAUDE_CONFIG_DIR).toBe('/tmp/happier-claude-config');
-            expect(capturedOptions.env.HAPPIER_CLAUDE_CONFIG_DIR).toBeUndefined();
+            expect(capturedOptions.env.PIGGERCODE_CLAUDE_CONFIG_DIR).toBeUndefined();
         } finally {
-            if (originalHappierClaudeConfigDir === undefined) delete process.env.HAPPIER_CLAUDE_CONFIG_DIR;
-            else process.env.HAPPIER_CLAUDE_CONFIG_DIR = originalHappierClaudeConfigDir;
+            if (originalHappierClaudeConfigDir === undefined) delete process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
+            else process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = originalHappierClaudeConfigDir;
             if (originalClaudeConfigDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
             else process.env.CLAUDE_CONFIG_DIR = originalClaudeConfigDir;
         }
@@ -3271,8 +3271,8 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
 
     it('applies allowlisted advanced options JSON without allowing control-plane overrides', async () => {
         let capturedOptions: any = null;
-        const prevArtifactsDir = process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR;
-        process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR = '/tmp/happier-claude-debug-artifacts';
+        const prevArtifactsDir = process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR;
+        process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR = '/tmp/happier-claude-debug-artifacts';
 
         try {
             const createQuery = vi.fn((_params: any) => {
@@ -3321,13 +3321,13 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions?.debugFile).toMatch(/^\/tmp\/happier-claude-debug-artifacts\//);
             expect(typeof capturedOptions?.stderr).toBe('function');
         } finally {
-            if (typeof prevArtifactsDir === 'string') process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR = prevArtifactsDir;
-            else delete process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR;
+            if (typeof prevArtifactsDir === 'string') process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR = prevArtifactsDir;
+            else delete process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR;
         }
     });
 
     it('omits debugFile and stderr when subprocess artifacts are disabled', async () => {
-        const prevEnabled = process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED;
+        const prevEnabled = process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED;
 
         let capturedOptions: any = null;
         const createQuery = vi.fn((_params: any) => {
@@ -3346,7 +3346,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         });
 
         try {
-            process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED = '0';
+            process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED = '0';
 
             let didSendFirst = false;
             const nextMessage = vi.fn(async () => {
@@ -3373,8 +3373,8 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
             expect(capturedOptions?.debugFile).toBeUndefined();
             expect(capturedOptions?.stderr).toBeUndefined();
         } finally {
-            if (prevEnabled === undefined) delete process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED;
-            else process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED = prevEnabled;
+            if (prevEnabled === undefined) delete process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED;
+            else process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED = prevEnabled;
         }
     });
 

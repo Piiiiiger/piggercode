@@ -4,8 +4,8 @@ import { buildMissingJavaScriptRuntimeMessage } from './buildMissingJavaScriptRu
 
 describe('buildMissingJavaScriptRuntimeMessage', () => {
   it('includes the supported runtime override guidance', () => {
-    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('HAPPIER_JS_RUNTIME_PATH');
-    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('HAPPIER_MANAGED_NODE_BIN');
-    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('HAPPIER_NODE_PATH');
+    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('PIGGERCODE_JS_RUNTIME_PATH');
+    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('PIGGERCODE_MANAGED_NODE_BIN');
+    expect(buildMissingJavaScriptRuntimeMessage('Claude Code')).toContain('PIGGERCODE_NODE_PATH');
   });
 });

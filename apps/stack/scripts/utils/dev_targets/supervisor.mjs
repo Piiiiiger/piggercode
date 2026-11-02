@@ -25,7 +25,7 @@ import {
 } from './remote_commands.mjs';
 
 export function resolveRemoteServerReadyTimeoutMs(env = process.env) {
-  const configured = Number.parseInt(String(env.HAPPIER_STACK_SERVER_READY_TIMEOUT_MS ?? ''), 10);
+  const configured = Number.parseInt(String(env.PIGGERCODE_STACK_SERVER_READY_TIMEOUT_MS ?? ''), 10);
   return Number.isFinite(configured) && configured >= 1_000
     ? configured
     : DEFAULT_REMOTE_STACK_STARTUP_TIMEOUT_MS;
@@ -206,7 +206,7 @@ export async function startStackDevTargets(
 
   const infraEnv = {
     ...env,
-    HAPPIER_STACK_PROCESS_KIND: 'infra',
+    PIGGERCODE_STACK_PROCESS_KIND: 'infra',
   };
   const siblingOwner = await loadSiblingMutagenOwner(sourceDir);
   const sharedRuntime = siblingOwner?.resolveRuntime({ stackBaseDir, sourceDir, env });
@@ -218,7 +218,7 @@ export async function startStackDevTargets(
     ? { sshArgs: ['-F', join(sharedRuntime.opensshDir, 'config')], mutagenEnv: sharedRuntime.env }
     : await prepareOpenSsh({ targets: synchronizedTargets, mutagenDir, env });
   const {
-    HAPPIER_STACK_PROCESS_KIND: _inheritedStackProcessKind,
+    PIGGERCODE_STACK_PROCESS_KIND: _inheritedStackProcessKind,
     ...mutagenServiceBaseEnv
   } = openSsh.mutagenEnv;
   const mutagenEnv = {
@@ -228,7 +228,7 @@ export async function startStackDevTargets(
   };
   const mutagenMonitorEnv = {
     ...mutagenEnv,
-    HAPPIER_STACK_PROCESS_KIND: 'infra',
+    PIGGERCODE_STACK_PROCESS_KIND: 'infra',
   };
   if (!siblingOwner) await mkdir(mutagenDataDir, { recursive: true });
 
@@ -504,7 +504,7 @@ export async function startStackDevTargets(
         }
         const remoteOptions = {
           services,
-          attended: env.HAPPIER_STACK_TUI === '1',
+          attended: env.PIGGERCODE_STACK_TUI === '1',
           serverUrl: `http://127.0.0.1:${remoteServerPort}`,
           publicServerUrl,
           activeServerId,

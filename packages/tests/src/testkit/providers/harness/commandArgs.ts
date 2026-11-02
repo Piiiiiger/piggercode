@@ -99,15 +99,15 @@ export function resolveProviderModelCliArgs(params: {
   const env = params.env ?? process.env;
   const providerSuffix = normalizeProviderModelEnvSuffix(params.providerId);
   const providerModel =
-    env[`HAPPIER_E2E_PROVIDER_MODEL_${providerSuffix}`] ??
+    env[`PIGGERCODE_E2E_PROVIDER_MODEL_${providerSuffix}`] ??
     env[`HAPPY_E2E_PROVIDER_MODEL_${providerSuffix}`] ??
     null;
   const mappedModel =
     parseProviderModelOverridesMap(
-      env.HAPPIER_E2E_PROVIDER_MODELS ?? env.HAPPY_E2E_PROVIDER_MODELS,
+      env.PIGGERCODE_E2E_PROVIDER_MODELS ?? env.HAPPY_E2E_PROVIDER_MODELS,
       params.providerId,
     ) ?? null;
-  const globalModel = env.HAPPIER_E2E_PROVIDER_MODEL ?? env.HAPPY_E2E_PROVIDER_MODEL ?? null;
+  const globalModel = env.PIGGERCODE_E2E_PROVIDER_MODEL ?? env.HAPPY_E2E_PROVIDER_MODEL ?? null;
   const model = [providerModel, mappedModel, globalModel]
     .find((candidate) => typeof candidate === 'string' && candidate.trim().length > 0)
     ?.trim();
@@ -145,5 +145,5 @@ export function resolveAllowPermissionAutoApproveInYolo(params: {
 
 export function resolveYoloForScenario(scenario: ProviderScenario): boolean {
   if (typeof scenario.yolo === 'boolean') return scenario.yolo;
-  return envFlag('HAPPIER_E2E_PROVIDER_YOLO_DEFAULT', true);
+  return envFlag('PIGGERCODE_E2E_PROVIDER_YOLO_DEFAULT', true);
 }

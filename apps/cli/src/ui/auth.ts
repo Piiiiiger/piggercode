@@ -48,13 +48,13 @@ function isAuthorizedWithTokenAndResponse(
 }
 
 function shouldAutoInferPublicServerUrl(): boolean {
-    const raw = String(process.env.HAPPIER_TAILSCALE_AUTO_PUBLIC_URL ?? '').trim().toLowerCase();
+    const raw = String(process.env.PIGGERCODE_TAILSCALE_AUTO_PUBLIC_URL ?? '').trim().toLowerCase();
     if (!raw) return true;
     return ['1', 'true', 'yes', 'on'].includes(raw);
 }
 
 function resolveTailscaleServeStatusTimeoutMs(): number {
-    const raw = Number.parseInt(String(process.env.HAPPIER_TAILSCALE_SERVE_STATUS_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(process.env.PIGGERCODE_TAILSCALE_SERVE_STATUS_TIMEOUT_MS ?? ''), 10);
     return Number.isFinite(raw) && raw > 0 ? raw : 750;
 }
 
@@ -68,7 +68,7 @@ function resolveTailscaleServeStatusTimeoutMs(): number {
  * the same way the poll interval and the auth method already do.
  */
 function resolveTerminalAuthWaitTimeoutMs(): number | null {
-    const raw = Number.parseInt(String(process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS ?? ''), 10);
     return Number.isFinite(raw) && raw > 0 ? raw : null;
 }
 
@@ -86,7 +86,7 @@ function printMobileLinkMissingServerUrlHint(params: Readonly<{ serverUrl: strin
         ? [
             'Your relay URL is set to localhost, which is only reachable on this machine.',
             'On your phone, open Happier → Settings → Relays and add a URL your phone can reach (LAN IP/VPN/Tailscale).',
-            'Tip (recommended): set HAPPIER_PUBLIC_SERVER_URL to a shareable https:// URL so future QR codes include it automatically.',
+            'Tip (recommended): set PIGGERCODE_PUBLIC_SERVER_URL to a shareable https:// URL so future QR codes include it automatically.',
         ]
         : ['Your phone will use its currently configured relay (Happier → Settings → Relays).'];
     // eslint-disable-next-line no-console
@@ -133,7 +133,7 @@ const SAME_ACCOUNT_NOTE = chalk.gray('If you already have a Happier account on a
 
 async function applyAutoPublicServerUrlFromTailscaleServeBestEffort(): Promise<void> {
     if (!shouldAutoInferPublicServerUrl()) return;
-    if (String(process.env.HAPPIER_PUBLIC_SERVER_URL ?? '').trim()) return;
+    if (String(process.env.PIGGERCODE_PUBLIC_SERVER_URL ?? '').trim()) return;
 
     const serverUrl = String(configuration.serverUrl ?? '').trim();
     const publicServerUrl = String(configuration.publicServerUrl ?? '').trim();
@@ -148,7 +148,7 @@ async function applyAutoPublicServerUrlFromTailscaleServeBestEffort(): Promise<v
     });
     if (!inferred) return;
 
-    process.env.HAPPIER_PUBLIC_SERVER_URL = inferred;
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = inferred;
     reloadConfiguration();
 
     const serverId = String(configuration.activeServerId ?? '').trim();
@@ -188,22 +188,22 @@ async function applyAutoPublicServerUrlFromTailscaleServeBestEffort(): Promise<v
 function rehydrateRelayScopeEnvFromConfiguration(): void {
     const activeServerId = sanitizeServerIdForFilesystem(configuration.activeServerId ?? '', '');
     if (activeServerId) {
-        process.env.HAPPIER_ACTIVE_SERVER_ID = activeServerId;
+        process.env.PIGGERCODE_ACTIVE_SERVER_ID = activeServerId;
     }
 
     const serverUrl = String(configuration.serverUrl ?? '').trim();
     if (serverUrl) {
-        process.env.HAPPIER_SERVER_URL = serverUrl;
+        process.env.PIGGERCODE_SERVER_URL = serverUrl;
     }
 
     const publicServerUrl = String(configuration.publicServerUrl ?? '').trim();
     if (publicServerUrl) {
-        process.env.HAPPIER_PUBLIC_SERVER_URL = publicServerUrl;
+        process.env.PIGGERCODE_PUBLIC_SERVER_URL = publicServerUrl;
     }
 
     const webappUrl = String(configuration.webappUrl ?? '').trim();
     if (webappUrl) {
-        process.env.HAPPIER_WEBAPP_URL = webappUrl;
+        process.env.PIGGERCODE_WEBAPP_URL = webappUrl;
     }
 }
 
@@ -215,7 +215,7 @@ export async function doAuth(): Promise<Credentials | null> {
     const debugRaw = (process.env.DEBUG ?? '').toString();
     const debugEnabled = Boolean(debugRaw) && debugRaw !== '0' && debugRaw.toLowerCase() !== 'false';
 
-    const envMethodRaw = (process.env.HAPPIER_AUTH_METHOD ?? '').toString().trim().toLowerCase();
+    const envMethodRaw = (process.env.PIGGERCODE_AUTH_METHOD ?? '').toString().trim().toLowerCase();
     const envMethod = envMethodRaw === 'web' || envMethodRaw === 'browser' ? 'web' : envMethodRaw === 'mobile' ? 'mobile' : null;
     const authMethod: AuthMethod | 'both' | null = envMethod ?? (isInteractive ? await selectAuthenticationMethod() : 'both');
     if (!authMethod) {
@@ -321,7 +321,7 @@ async function doBothAuth(params: Readonly<{
             ]
             : [
                 'Make sure your phone is already configured to the right relay (Happier → Settings → Relays)',
-                'Tip: set HAPPIER_PUBLIC_SERVER_URL to embed a shareable relay URL in future QR codes',
+                'Tip: set PIGGERCODE_PUBLIC_SERVER_URL to embed a shareable relay URL in future QR codes',
             ]),
         'Sign in (or create an account)',
         'If you already have a Happier account on another device, sign in with that same account',
@@ -332,7 +332,7 @@ async function doBothAuth(params: Readonly<{
         printMobileLinkMissingServerUrlHint({ serverUrl: configuration.serverUrl, kind: 'terminalConnect' });
     }
 
-    const printConfigureLinksRaw = String(process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS ?? '').trim().toLowerCase();
+    const printConfigureLinksRaw = String(process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS ?? '').trim().toLowerCase();
     if (['1', 'true', 'yes', 'on'].includes(printConfigureLinksRaw)) printConfigureServerLinks();
 
     console.log(sectionTitle('Mobile app (recommended)'));
@@ -347,7 +347,7 @@ async function doBothAuth(params: Readonly<{
     console.log(terminalLinks.webUrl);
     console.log('');
 
-    const noOpenRaw = (process.env.HAPPIER_NO_BROWSER_OPEN ?? '').toString().trim();
+    const noOpenRaw = (process.env.PIGGERCODE_NO_BROWSER_OPEN ?? '').toString().trim();
     const noOpen = Boolean(noOpenRaw) && noOpenRaw !== '0' && noOpenRaw.toLowerCase() !== 'false';
     if (!noOpen && process.stdout.isTTY) {
         try {
@@ -416,7 +416,7 @@ async function doMobileAuth(params: Readonly<{
     });
     const terminalMobileEmbedsServerUrl = terminalLinks.mobileUrl.includes('server=');
 
-    const printConfigureLinksRaw = String(process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS ?? '').trim().toLowerCase();
+    const printConfigureLinksRaw = String(process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS ?? '').trim().toLowerCase();
     if (['1', 'true', 'yes', 'on'].includes(printConfigureLinksRaw)) printConfigureServerLinks();
 
     if (!terminalMobileEmbedsServerUrl) {
@@ -458,7 +458,7 @@ async function doWebAuth(params: Readonly<{
         pairing: toTerminalConnectPairingContext(params.pairing),
     });
     const webUrl = terminalLinks.webUrl;
-    const noOpenRaw = (process.env.HAPPIER_NO_BROWSER_OPEN ?? '').toString().trim();
+    const noOpenRaw = (process.env.PIGGERCODE_NO_BROWSER_OPEN ?? '').toString().trim();
     const noOpen = Boolean(noOpenRaw) && noOpenRaw !== '0' && noOpenRaw.toLowerCase() !== 'false';
     if (!noOpen) {
         const browserOpened = await openBrowser(webUrl);
@@ -517,7 +517,7 @@ async function waitForAuthentication(
     process.on('SIGINT', handleInterrupt);
 
     try {
-        const pollIntervalMsRaw = Number(process.env.HAPPIER_AUTH_POLL_INTERVAL_MS ?? '');
+        const pollIntervalMsRaw = Number(process.env.PIGGERCODE_AUTH_POLL_INTERVAL_MS ?? '');
         const pollIntervalMs = Number.isFinite(pollIntervalMsRaw) && pollIntervalMsRaw > 0 ? pollIntervalMsRaw : 1000;
         const waitTimeoutMs = resolveTerminalAuthWaitTimeoutMs();
         const waitDeadlineMs = waitTimeoutMs === null ? null : Date.now() + waitTimeoutMs;

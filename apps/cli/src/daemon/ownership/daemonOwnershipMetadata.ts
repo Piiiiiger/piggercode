@@ -23,8 +23,8 @@ export function normalizeDaemonStartupSource(raw: unknown): DaemonStartupSource 
 export function resolveDaemonStartupSourceFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): DaemonStartupSource {
-  const explicit = normalizeDaemonStartupSource(env.HAPPIER_DAEMON_STARTUP_SOURCE);
-  if (String(env.HAPPIER_DAEMON_RUNTIME_ID ?? '').trim()) {
+  const explicit = normalizeDaemonStartupSource(env.PIGGERCODE_DAEMON_STARTUP_SOURCE);
+  if (String(env.PIGGERCODE_DAEMON_RUNTIME_ID ?? '').trim()) {
     if (!explicit || explicit === 'manual') {
       return 'self-restart';
     }
@@ -38,7 +38,7 @@ export function resolveDaemonStartupSourceFromEnv(
 export function resolveDaemonServiceLabelFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): string | undefined {
-  const serviceLabel = String(env.HAPPIER_DAEMON_SERVICE_LABEL ?? '').trim();
+  const serviceLabel = String(env.PIGGERCODE_DAEMON_SERVICE_LABEL ?? '').trim();
   return serviceLabel.length > 0 ? serviceLabel : undefined;
 }
 
@@ -48,7 +48,7 @@ export function resolveDaemonTakeoverRequestedFromEnv(
   if (resolveDaemonStartupSourceFromEnv(env) === 'self-restart') {
     return true;
   }
-  const raw = String(env.HAPPIER_DAEMON_TAKEOVER ?? '').trim().toLowerCase();
+  const raw = String(env.PIGGERCODE_DAEMON_TAKEOVER ?? '').trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes';
 }
 

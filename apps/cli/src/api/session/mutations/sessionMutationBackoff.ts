@@ -11,9 +11,9 @@ function readBoundedIntEnv(name: string, fallback: number): number {
 }
 
 export function resolveSessionMutationRetryDelayMs(attempts: number): number {
-    const baseMs = readBoundedIntEnv('HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', DEFAULT_BASE_RETRY_MS);
-    const maxMs = readBoundedIntEnv('HAPPIER_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', DEFAULT_MAX_RETRY_MS);
-    const jitterMs = readBoundedIntEnv('HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS', DEFAULT_JITTER_MS);
+    const baseMs = readBoundedIntEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', DEFAULT_BASE_RETRY_MS);
+    const maxMs = readBoundedIntEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', DEFAULT_MAX_RETRY_MS);
+    const jitterMs = readBoundedIntEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS', DEFAULT_JITTER_MS);
     const exponent = Math.min(Math.max(0, attempts), 8);
     const delay = Math.min(maxMs, baseMs * (2 ** exponent));
     const jitter = jitterMs > 0 ? Math.floor(Math.random() * jitterMs) : 0;
@@ -21,18 +21,18 @@ export function resolveSessionMutationRetryDelayMs(attempts: number): number {
 }
 
 export function resolveSessionMutationMaxAttempts(): number {
-    return Math.max(1, readBoundedIntEnv('HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS', DEFAULT_MAX_ATTEMPTS));
+    return Math.max(1, readBoundedIntEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS', DEFAULT_MAX_ATTEMPTS));
 }
 
 export function resolveSessionMutationMaxAgeMs(): number {
-    return readBoundedIntEnv('HAPPIER_SESSION_MUTATION_OUTBOX_MAX_AGE_MS', DEFAULT_MAX_AGE_MS);
+    return readBoundedIntEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_AGE_MS', DEFAULT_MAX_AGE_MS);
 }
 
 export function resolveSessionMutationTranscriptFlushBatchLimit(): number {
     return Math.max(
         1,
         readBoundedIntEnv(
-            'HAPPIER_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT',
+            'PIGGERCODE_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT',
             DEFAULT_TRANSCRIPT_FLUSH_BATCH_LIMIT,
         ),
     );

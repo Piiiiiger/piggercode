@@ -20,9 +20,9 @@ test('hstack stack stop sweeps infra when stack.runtime.json exists but ownerPid
   const infra = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   }));
   assert.ok(Number(infra.pid) > 1, 'expected infra pid');
@@ -32,9 +32,9 @@ test('hstack stack stop sweeps infra when stack.runtime.json exists but ownerPid
   const sessionLike = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   }));
   assert.ok(Number(sessionLike.pid) > 1, 'expected session-like child pid');

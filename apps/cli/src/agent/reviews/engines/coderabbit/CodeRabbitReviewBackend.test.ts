@@ -49,7 +49,7 @@ describe('CodeRabbitReviewBackend', () => {
     const { CodeRabbitReviewBackend } = await import('./CodeRabbitReviewBackend');
     const backend = new CodeRabbitReviewBackend({
       cwd: workspace,
-      env: { ...process.env, HAPPIER_CODERABBIT_REVIEW_CMD: 'coderabbit' },
+      env: { ...process.env, PIGGERCODE_CODERABBIT_REVIEW_CMD: 'coderabbit' },
     });
 
     try {
@@ -93,7 +93,7 @@ describe('CodeRabbitReviewBackend', () => {
     const { CodeRabbitReviewBackend } = await import('./CodeRabbitReviewBackend');
     const backend = new CodeRabbitReviewBackend({
       cwd: workspace,
-      env: { ...process.env, HAPPIER_CODERABBIT_REVIEW_CMD: 'coderabbit' },
+      env: { ...process.env, PIGGERCODE_CODERABBIT_REVIEW_CMD: 'coderabbit' },
       start: {
         intentInput: {
           engineIds: ['coderabbit'],

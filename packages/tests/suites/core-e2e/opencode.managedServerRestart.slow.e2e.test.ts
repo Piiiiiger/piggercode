@@ -274,12 +274,12 @@ describe('core e2e: OpenCode managed-server restart during an in-flight turn (fa
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       ...buildFakeOpenCodeServerEnv({ statePath, logPath: fakeLogPath, teardownMode: 'crash', exitDelayMs: 150 }),
     };
 
@@ -384,12 +384,12 @@ describe('core e2e: OpenCode managed-server restart during an in-flight turn (fa
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       ...buildFakeOpenCodeServerEnv({ statePath, logPath: fakeLogPath, teardownMode: 'stay_alive' }),
     };
 

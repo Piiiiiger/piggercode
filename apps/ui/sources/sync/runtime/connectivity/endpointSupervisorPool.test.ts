@@ -33,7 +33,7 @@ function okResponse(): Response {
 }
 
 describe('endpointSupervisorPool', () => {
-    const idleTtlEnvKey = 'EXPO_PUBLIC_HAPPIER_ENDPOINT_SUPERVISOR_IDLE_TTL_MS';
+    const idleTtlEnvKey = 'EXPO_PUBLIC_PIGGERCODE_ENDPOINT_SUPERVISOR_IDLE_TTL_MS';
     let originalIdleTtlEnvValue: string | undefined;
     let hadWindow: boolean;
     let originalWindow: unknown;

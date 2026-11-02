@@ -319,16 +319,16 @@ describe('SettingsView (runs entry)', () => {
     });
 
     it("omits the What's New entry when changelog UI is disabled by build policy", async () => {
-        const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.changelog';
+        const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.changelog';
         vi.resetModules();
 
         try {
             const screen = await renderSettingsViewUnderTest();
             expect(screen.findRowByTitle('settings.whatsNew')).toBeNull();
         } finally {
-            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-            else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+            else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
         }
     });
 

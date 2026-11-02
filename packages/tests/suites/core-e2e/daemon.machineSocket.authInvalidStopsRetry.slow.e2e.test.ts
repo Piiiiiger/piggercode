@@ -52,12 +52,12 @@ describe('core e2e: daemon machine socket auth handling', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: cliHome,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS: '250',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: cliHome,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS: '250',
       },
     });
 

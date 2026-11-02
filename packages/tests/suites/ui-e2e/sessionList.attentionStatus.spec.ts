@@ -540,28 +540,28 @@ test.describe('ui e2e: session list attention', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '0',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '0',
         AUTH_ANONYMOUS_SIGNUP_ENABLED: '0',
         AUTH_SIGNUP_PROVIDERS: '',
 
-        HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
+        PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
 
-        HAPPIER_FEATURE_AUTH_MTLS__ENABLED: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__MODE: 'forwarded',
-        HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: 'san_email',
-        HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: 'example.com',
-        HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: IDENTITY_HEADERS.issuer,
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: 'x-happier-client-cert-email',
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: 'x-happier-client-cert-issuer',
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: 'x-happier-client-cert-sha256',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__MODE: 'forwarded',
+        PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: 'san_email',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: 'example.com',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: IDENTITY_HEADERS.issuer,
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: 'x-happier-client-cert-email',
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: 'x-happier-client-cert-issuer',
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: 'x-happier-client-cert-sha256',
 
-        HAPPIER_FEATURE_AUTH_UI__AUTO_REDIRECT_ENABLED: '1',
-        HAPPIER_FEATURE_AUTH_UI__AUTO_REDIRECT_PROVIDER_ID: 'mtls',
+        PIGGERCODE_FEATURE_AUTH_UI__AUTO_REDIRECT_ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_UI__AUTO_REDIRECT_PROVIDER_ID: 'mtls',
       },
     });
 
@@ -593,7 +593,7 @@ test.describe('ui e2e: session list attention', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: proxy.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-session-list-attention-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'export',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'export',
       },
     });
 
@@ -764,9 +764,9 @@ test.describe('ui e2e: session list attention', () => {
 
       await page.evaluate(() => {
         const globalTarget = globalThis as typeof globalThis & {
-          __HAPPIER_E2E_ORIGINAL_DATE_NOW__?: typeof Date.now;
+          __PIGGERCODE_E2E_ORIGINAL_DATE_NOW__?: typeof Date.now;
         };
-        globalTarget.__HAPPIER_E2E_ORIGINAL_DATE_NOW__ = Date.now.bind(Date);
+        globalTarget.__PIGGERCODE_E2E_ORIGINAL_DATE_NOW__ = Date.now.bind(Date);
         const staleNow = Date.now() + 180_000;
         Date.now = () => staleNow;
       });
@@ -782,11 +782,11 @@ test.describe('ui e2e: session list attention', () => {
       } finally {
         await page.evaluate(() => {
           const globalTarget = globalThis as typeof globalThis & {
-            __HAPPIER_E2E_ORIGINAL_DATE_NOW__?: typeof Date.now;
+            __PIGGERCODE_E2E_ORIGINAL_DATE_NOW__?: typeof Date.now;
           };
-          if (globalTarget.__HAPPIER_E2E_ORIGINAL_DATE_NOW__) {
-            Date.now = globalTarget.__HAPPIER_E2E_ORIGINAL_DATE_NOW__;
-            delete globalTarget.__HAPPIER_E2E_ORIGINAL_DATE_NOW__;
+          if (globalTarget.__PIGGERCODE_E2E_ORIGINAL_DATE_NOW__) {
+            Date.now = globalTarget.__PIGGERCODE_E2E_ORIGINAL_DATE_NOW__;
+            delete globalTarget.__PIGGERCODE_E2E_ORIGINAL_DATE_NOW__;
           }
         });
       }

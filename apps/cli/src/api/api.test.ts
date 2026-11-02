@@ -92,13 +92,13 @@ const testInstallationProofSignature = Buffer.from(new Uint8Array(tweetnacl.sign
 describe('Api server error handling', () => {
     let api: ApiClient;
     const envKeys = [
-        'HAPPIER_API_CREATE_SESSION_RETRY_MAX_ATTEMPTS',
-        'HAPPIER_API_CREATE_SESSION_RETRY_BASE_DELAY_MS',
-        'HAPPIER_API_CREATE_SESSION_RETRY_MAX_DELAY_MS',
-        'HAPPIER_E2E_DELAY_CREATE_SESSION_MS',
-        'HAPPIER_LOCAL_SERVER_URL',
-        'HAPPIER_PUBLIC_SERVER_URL',
-        'HAPPIER_SERVER_URL',
+        'PIGGERCODE_API_CREATE_SESSION_RETRY_MAX_ATTEMPTS',
+        'PIGGERCODE_API_CREATE_SESSION_RETRY_BASE_DELAY_MS',
+        'PIGGERCODE_API_CREATE_SESSION_RETRY_MAX_DELAY_MS',
+        'PIGGERCODE_E2E_DELAY_CREATE_SESSION_MS',
+        'PIGGERCODE_LOCAL_SERVER_URL',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
+        'PIGGERCODE_SERVER_URL',
     ] as const;
     let envScope = createEnvKeyScope(envKeys);
 
@@ -109,12 +109,12 @@ describe('Api server error handling', () => {
 
         // Keep retry loops fast and deterministic in unit tests.
         envScope.patch(Object.fromEntries([
-            ['HAPPIER_API_CREATE_SESSION_RETRY_MAX_ATTEMPTS', '3'],
-            ['HAPPIER_API_CREATE_SESSION_RETRY_BASE_DELAY_MS', '0'],
-            ['HAPPIER_API_CREATE_SESSION_RETRY_MAX_DELAY_MS', '0'],
-            ['HAPPIER_LOCAL_SERVER_URL', undefined],
-            ['HAPPIER_PUBLIC_SERVER_URL', undefined],
-            ['HAPPIER_SERVER_URL', undefined],
+            ['PIGGERCODE_API_CREATE_SESSION_RETRY_MAX_ATTEMPTS', '3'],
+            ['PIGGERCODE_API_CREATE_SESSION_RETRY_BASE_DELAY_MS', '0'],
+            ['PIGGERCODE_API_CREATE_SESSION_RETRY_MAX_DELAY_MS', '0'],
+            ['PIGGERCODE_LOCAL_SERVER_URL', undefined],
+            ['PIGGERCODE_PUBLIC_SERVER_URL', undefined],
+            ['PIGGERCODE_SERVER_URL', undefined],
         ]) as Readonly<Record<string, string>>);
 
         // Create a mock credential
@@ -211,9 +211,9 @@ describe('Api server error handling', () => {
             });
         });
 
-        it('delays session creation when HAPPIER_E2E_DELAY_CREATE_SESSION_MS is set', async () => {
+        it('delays session creation when PIGGERCODE_E2E_DELAY_CREATE_SESSION_MS is set', async () => {
             vi.useFakeTimers();
-            envScope.patch({ HAPPIER_E2E_DELAY_CREATE_SESSION_MS: '1000' });
+            envScope.patch({ PIGGERCODE_E2E_DELAY_CREATE_SESSION_MS: '1000' });
 
             try {
                 mockPost.mockResolvedValue({ status: 201, data: { session: { id: 's1' } } });

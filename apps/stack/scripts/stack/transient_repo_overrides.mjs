@@ -9,7 +9,7 @@ export function resolveTransientRepoOverrides({ rootDir, kv }) {
 
   let resolved = '';
   if (raw === 'default' || raw === 'main') {
-    resolved = getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+    resolved = getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
   } else if (raw === 'active') {
     resolved = getRepoDir(rootDir, process.env);
   } else {
@@ -25,5 +25,5 @@ export function resolveTransientRepoOverrides({ rootDir, kv }) {
   if (!monoRoot) {
     throw new Error(`[stack] --repo is not a Happier monorepo root: ${resolved}`);
   }
-  return { HAPPIER_STACK_REPO_DIR: monoRoot };
+  return { PIGGERCODE_STACK_REPO_DIR: monoRoot };
 }

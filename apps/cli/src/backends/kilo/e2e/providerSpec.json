@@ -1,7 +1,7 @@
 {
   "v": 1,
   "id": "kilo",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_KILO",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_KILO",
   "protocol": "acp",
   "traceProvider": "kilo",
   "requiredBinaries": ["kilo"],
@@ -65,10 +65,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_KILO_PATH": "HAPPIER_E2E_PROVIDER_KILO_BIN"
+      "PIGGERCODE_KILO_PATH": "PIGGERCODE_E2E_PROVIDER_KILO_BIN"
     }
   }
 }

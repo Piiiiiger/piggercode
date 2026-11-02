@@ -21,7 +21,7 @@ async function createStagedPayload(rootDir: string, versionId: string, contents:
 describe('syncInstalledFirstPartyShims default release-channel handling', () => {
   it('keeps the happier shim pointed at the selected default release-channel', async () => {
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-'));
-    const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+    const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
     try {
       await writeDefaultManagedReleaseChannel({

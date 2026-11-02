@@ -21,7 +21,7 @@ async function createStagedPayload(rootDir, versionId, contents) {
 
 test('promoteVersionedPayload updates current payload and preserves previous payload', async () => {
   const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-'));
-  const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+  const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
   try {
     const firstStage = await createStagedPayload(homeDir, '1.0.0', 'first-version');
@@ -61,7 +61,7 @@ test('promoteVersionedPayload updates current payload and preserves previous pay
 
 test('promoteVersionedPayload fails closed without leaving a partial version directory', async () => {
   const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-atomic-'));
-  const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+  const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
   try {
     const firstStage = await createStagedPayload(homeDir, '1.0.0', 'first-version');
@@ -105,7 +105,7 @@ test('promoteVersionedPayload fails closed without leaving a partial version dir
 
 test('promoteVersionedPayload detects a legacy current install when the current payload exists without version markers', async () => {
   const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-legacy-'));
-  const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+  const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
   try {
     const paths = resolveInstalledFirstPartyComponentPaths({

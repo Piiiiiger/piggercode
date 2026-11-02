@@ -13,5 +13,5 @@ export function supportsPierreRuntime(): boolean {
 }
 
 export function isPierreDiffKillSwitchEnabled(): boolean {
-    return parseBooleanEnv(process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED, true) === true;
+    return parseBooleanEnv(process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED, true) === true;
 }

@@ -111,13 +111,13 @@ describe('core e2e: Codex MCP attach strips stale ACP session state metadata', (
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
       // Ensure MCP engine (no ACP).
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '0',
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '0',
     };
 
     await ensureCliDistBuilt({ testDir, env: cliEnv });

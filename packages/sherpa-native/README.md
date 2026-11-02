@@ -5,7 +5,7 @@ Expo native module for on-device Kokoro TTS and streaming STT (mobile), backed b
 ## Runtime version and C API header
 
 Android (`android/build.gradle`) and iOS (`ios/HappierSherpaNative.podspec`) pin the same sherpa-onnx release
-(`HAPPIER_SHERPA_ONNX_VERSION`, default `v1.12.25`). The Android release archive ships only prebuilt `.so` files, so
+(`PIGGERCODE_SHERPA_ONNX_VERSION`, default `v1.12.25`). The Android release archive ships only prebuilt `.so` files, so
 the JNI layer compiles against `android/src/main/cpp/include/sherpa-onnx/c-api/c-api.h`, a verbatim copy of upstream
 `sherpa-onnx/c-api/c-api.h` at that tag. iOS compiles against the header inside the downloaded xcframework.
 

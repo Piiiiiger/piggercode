@@ -24,15 +24,15 @@ export type ReleaseNotesRevalidationResult = Readonly<{
 
 function resolveRemoteAssetFileUrl(fileName: string): string {
     const explicit =
-        process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_MANIFEST_URL?.trim() ?? '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_MANIFEST_URL?.trim() ?? '';
     if (fileName === DEFAULT_MANIFEST_FILE && explicit) {
         return explicit;
     }
     const repo =
-        (process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_ASSETS_REPO ?? DEFAULT_REPO).trim()
+        (process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_ASSETS_REPO ?? DEFAULT_REPO).trim()
         || DEFAULT_REPO;
     const tag =
-        (process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_ASSETS_TAG ?? DEFAULT_TAG).trim()
+        (process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_ASSETS_TAG ?? DEFAULT_TAG).trim()
         || DEFAULT_TAG;
     return `https://github.com/${repo}/releases/download/${tag}/${fileName}`;
 }

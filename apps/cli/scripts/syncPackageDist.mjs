@@ -43,7 +43,7 @@ export function resolveCliPackageRoot(scriptDir = __dirname) {
 export function syncPackageDist(options = {}) {
   const packageRoot = resolve(String(options.packageRoot ?? resolveCliPackageRoot()));
   const env = options.env ?? process.env;
-  if (String(env?.HAPPIER_CLI_SKIP_PACKAGE_DIST_SYNC ?? '').trim() === '1') {
+  if (String(env?.PIGGERCODE_CLI_SKIP_PACKAGE_DIST_SYNC ?? '').trim() === '1') {
     return { packageRoot, skipped: true };
   }
   return withOptionalCliSharedDepsBuildLockSync(() => syncPackageDistUnlocked({ ...options, packageRoot }), {
@@ -61,7 +61,7 @@ export function syncPackageDist(options = {}) {
 function syncPackageDistUnlocked(options = {}) {
   const packageRoot = resolve(String(options.packageRoot ?? resolveCliPackageRoot()));
   const env = options.env ?? process.env;
-  const distDir = resolve(String(options.distDir ?? resolve(packageRoot, env?.HAPPIER_CLI_BUILD_OUTPUT_DIR ?? 'dist')));
+  const distDir = resolve(String(options.distDir ?? resolve(packageRoot, env?.PIGGERCODE_CLI_BUILD_OUTPUT_DIR ?? 'dist')));
   const packageDistDir = resolve(String(options.packageDistDir ?? resolve(packageRoot, 'package-dist')));
   const exists = options.existsSync ?? existsSync;
   const { copy, makeDir, rename, remove } = resolveWriteFs(options);

@@ -233,7 +233,7 @@ let sharedDepsBuildPromise: Promise<void> | null = null;
 let sharedGenerateProvidersPromise: Promise<void> | null = null;
 
 export function resolveTestDbProvider(env: NodeJS.ProcessEnv): TestDbProvider {
-  const raw = (env.HAPPIER_E2E_DB_PROVIDER ?? env.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim().toLowerCase();
+  const raw = (env.PIGGERCODE_E2E_DB_PROVIDER ?? env.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim().toLowerCase();
   if (raw === 'sqlite') return 'sqlite';
   if (raw === 'postgres' || raw === 'postgresql') return 'postgres';
   if (raw === 'mysql') return 'mysql';
@@ -574,7 +574,7 @@ function resolveServerSourceEntrypoint(params: { rootDir: string; provider: Test
 
 export function shouldUseServerSourceEntrypoint(env: NodeJS.ProcessEnv): boolean {
   const raw = (
-    env.HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??
+    env.PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??
     env.HAPPY_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??
     ''
   )
@@ -642,7 +642,7 @@ export function resolveSharedDepsBuildArgs(): string[] {
 
 export function shouldSkipServerSharedDepsBuild(env: NodeJS.ProcessEnv): boolean {
   const raw = (
-    env.HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD ??
+    env.PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD ??
     env.HAPPY_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD ??
     ''
   )
@@ -759,9 +759,9 @@ async function prepareServerLightDataDir(params: {
           HAPPY_SERVER_LIGHT_DATA_DIR: templateDataDir,
           HAPPY_SERVER_LIGHT_DB_DIR: join(templateDataDir, 'pglite'),
           HAPPY_SERVER_LIGHT_FILES_DIR: join(templateDataDir, 'files'),
-          HAPPIER_SERVER_LIGHT_DATA_DIR: templateDataDir,
-          HAPPIER_SERVER_LIGHT_DB_DIR: join(templateDataDir, 'pglite'),
-          HAPPIER_SERVER_LIGHT_FILES_DIR: join(templateDataDir, 'files'),
+          PIGGERCODE_SERVER_LIGHT_DATA_DIR: templateDataDir,
+          PIGGERCODE_SERVER_LIGHT_DB_DIR: join(templateDataDir, 'pglite'),
+          PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(templateDataDir, 'files'),
           PORT: '0',
           PUBLIC_URL: 'http://127.0.0.1:0',
           ...(params.dbProvider === 'sqlite'
@@ -817,7 +817,7 @@ async function ensureServerSharedDepsBuilt(params: { testDir: string; env: NodeJ
 
 export function shouldSkipServerGenerateProviders(env: NodeJS.ProcessEnv): boolean {
   const raw = (
-    env.HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE ??
+    env.PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE ??
     env.HAPPY_E2E_PROVIDER_SKIP_SERVER_GENERATE ??
     ''
   )
@@ -870,7 +870,7 @@ async function ensureServerGeneratedProviders(params: { testDir: string; env: No
           PORT: '0',
           PUBLIC_URL: 'http://127.0.0.1:0',
           DATABASE_URL: 'postgresql://postgres@127.0.0.1:5432/postgres?sslmode=disable',
-          HAPPIER_BUILD_DB_PROVIDERS: provider,
+          PIGGERCODE_BUILD_DB_PROVIDERS: provider,
         },
         stdoutPath: resolve(params.testDir, 'server.generate.stdout.log'),
         stderrPath: resolve(params.testDir, 'server.generate.stderr.log'),
@@ -913,17 +913,17 @@ export async function startServerLight(params: {
     // Core E2E assumes a fresh auth key can always mint an account token unless a test explicitly disables it.
     AUTH_ANONYMOUS_SIGNUP_ENABLED: mergedEnv.AUTH_ANONYMOUS_SIGNUP_ENABLED ?? 'true',
     // Core E2E suite expects public file storage to work without extra services (Minio/S3).
-    HAPPIER_FILES_BACKEND: 'local',
+    PIGGERCODE_FILES_BACKEND: 'local',
     HAPPY_SERVER_LIGHT_DATA_DIR: dataDir,
     HAPPY_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
     HAPPY_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
-    HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-    HAPPIER_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
-    HAPPIER_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
-    HAPPIER_DB_PROVIDER: dbProvider,
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
+    PIGGERCODE_DB_PROVIDER: dbProvider,
     HAPPY_DB_PROVIDER: dbProvider,
     // Some sandboxed environments disallow binding to 0.0.0.0; prefer loopback for E2E.
-    HAPPIER_SERVER_HOST: '127.0.0.1',
+    PIGGERCODE_SERVER_HOST: '127.0.0.1',
     HAPPY_SERVER_HOST: '127.0.0.1',
   };
 
@@ -941,7 +941,7 @@ export async function startServerLight(params: {
     && !!mergedEnv.DATABASE_URL?.toString().trim();
   const databaseUrlForExternalProvider = mergedEnv.DATABASE_URL?.toString().trim();
   if ((dbProvider === 'postgres' || dbProvider === 'mysql') && !databaseUrlForExternalProvider) {
-    throw new Error(`Missing DATABASE_URL for HAPPIER_E2E_DB_PROVIDER or HAPPY_E2E_DB_PROVIDER=${dbProvider}`);
+    throw new Error(`Missing DATABASE_URL for PIGGERCODE_E2E_DB_PROVIDER or HAPPY_E2E_DB_PROVIDER=${dbProvider}`);
   }
 
   // Ensure Prisma client is generated for the current schema.

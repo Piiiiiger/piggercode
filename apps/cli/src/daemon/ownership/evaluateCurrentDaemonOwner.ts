@@ -64,7 +64,7 @@ export function isDaemonProcessForCurrentRuntimeRoot(processInfo: HappyProcessIn
 }
 
 async function findStateLessDaemonProcessForCurrentRuntimeRoot(): Promise<HappyProcessInfo | null> {
-  if (process.env.NODE_ENV === 'test' && process.env.HAPPIER_DAEMON_PROCESS_INVENTORY_FALLBACK !== '1') {
+  if (process.env.NODE_ENV === 'test' && process.env.PIGGERCODE_DAEMON_PROCESS_INVENTORY_FALLBACK !== '1') {
     return null;
   }
 

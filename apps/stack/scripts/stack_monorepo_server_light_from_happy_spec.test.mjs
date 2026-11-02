@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setupStackNewMonorepoFixture } from './testkit/stack_new_monorepo_testkit.mjs';
 
-test('hstack stack new pins HAPPIER_STACK_REPO_DIR from monorepo path specs', async (t) => {
+test('hstack stack new pins PIGGERCODE_STACK_REPO_DIR from monorepo path specs', async (t) => {
   const fixture = await setupStackNewMonorepoFixture({
     importMetaUrl: import.meta.url,
     t,
@@ -31,7 +31,7 @@ test('hstack stack new pins HAPPIER_STACK_REPO_DIR from monorepo path specs', as
     );
 
     const contents = await fixture.readStackEnv(testCase.stackName);
-    assert.ok(contents.includes(`HAPPIER_STACK_REPO_DIR=${monoRoot}\n`), `${testCase.name}\n${contents}`);
-    assert.ok(!contents.includes('HAPPIER_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
+    assert.ok(contents.includes(`PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`), `${testCase.name}\n${contents}`);
+    assert.ok(!contents.includes('PIGGERCODE_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
   }
 });

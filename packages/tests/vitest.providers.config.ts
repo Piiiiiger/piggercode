@@ -20,7 +20,7 @@ export default defineConfig({
     globals: false,
     exclude: [...resolveVitestFeatureTestExcludeGlobs()],
     env: {
-      HAPPIER_FEATURE_POLICY_ENV: '',
+      PIGGERCODE_FEATURE_POLICY_ENV: '',
     },
   },
 });

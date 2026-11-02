@@ -23,7 +23,7 @@ function normalizeFlavor(raw) {
 
 async function writeFlavor({ rootDir, flavor }) {
   const envPath = resolveUserConfigEnvPath({ cliRootDir: rootDir });
-  const previousFlavor = process.env.HAPPIER_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
+  const previousFlavor = process.env.PIGGERCODE_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
   const transition = resolveEffectiveDbProviderTransition({
     previousServerComponentName: previousFlavor,
     nextServerComponentName: flavor,
@@ -45,8 +45,8 @@ async function writeFlavor({ rootDir, flavor }) {
   await ensureEnvFileMutated({
     envPath,
     updates: [
-      { key: 'HAPPIER_STACK_SERVER_COMPONENT', value: flavor },
-      { key: 'HAPPIER_DB_PROVIDER', value: dbProvider },
+      { key: 'PIGGERCODE_STACK_SERVER_COMPONENT', value: flavor },
+      { key: 'PIGGERCODE_DB_PROVIDER', value: dbProvider },
       ...(transition.databaseUrl ? [{ key: 'DATABASE_URL', value: transition.databaseUrl }] : []),
     ],
     removeKeys: transition.removeDatabaseUrl ? ['DATABASE_URL'] : [],
@@ -72,7 +72,7 @@ async function cmdUse({ rootDir, argv }) {
   printResult({
     json,
     data: { ok: true, flavor, dbProvider },
-    text: `[server-flavor] set HAPPIER_STACK_SERVER_COMPONENT=${flavor} (saved to ${envPath})`,
+    text: `[server-flavor] set PIGGERCODE_STACK_SERVER_COMPONENT=${flavor} (saved to ${envPath})`,
   });
 }
 
@@ -90,7 +90,7 @@ async function cmdUseInteractive({ rootDir, argv }) {
     printResult({
       json,
       data: { ok: true, flavor, dbProvider },
-      text: `[server-flavor] set HAPPIER_STACK_SERVER_COMPONENT=${flavor} (saved to ${envPath})`,
+      text: `[server-flavor] set PIGGERCODE_STACK_SERVER_COMPONENT=${flavor} (saved to ${envPath})`,
     });
   });
 }
@@ -98,7 +98,7 @@ async function cmdUseInteractive({ rootDir, argv }) {
 async function cmdStatus({ argv }) {
   const { flags } = parseArgs(argv);
   const json = wantsJson(argv, { flags });
-  const flavor = process.env.HAPPIER_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
+  const flavor = process.env.PIGGERCODE_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
   printResult({ json, data: { flavor }, text: `[server-flavor] current: ${flavor}` });
 }
 

@@ -5,7 +5,7 @@
  * - Validates that Claude Code writes per-subagent JSONL output files under ".claude/projects/<project>/<session_id>/subagents/".
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.subagents.jsonl.realProbe.test.ts
+ *   PIGGERCODE_TEST_REAL_CLAUDE=1 PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.subagents.jsonl.realProbe.test.ts
  */
 
 import { readFileSync } from 'node:fs';
@@ -17,12 +17,12 @@ import {
   runRealClaudeCliStreamJsonProbe,
 } from '../../src/testkit/providers/claude/realClaudeCliProbe';
 
-const ENABLED = process.env.HAPPIER_TEST_REAL_CLAUDE === '1';
-const FULL_PROBE = process.env.HAPPIER_TEST_REAL_CLAUDE_FULL === '1';
+const ENABLED = process.env.PIGGERCODE_TEST_REAL_CLAUDE === '1';
+const FULL_PROBE = process.env.PIGGERCODE_TEST_REAL_CLAUDE_FULL === '1';
 
 describe('real Claude subagent JSONL probe', () => {
   if (!ENABLED || !FULL_PROBE) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE=1 and HAPPIER_TEST_REAL_CLAUDE_FULL=1 (opt-in)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE=1 and PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 (opt-in)', () => {});
     return;
   }
 

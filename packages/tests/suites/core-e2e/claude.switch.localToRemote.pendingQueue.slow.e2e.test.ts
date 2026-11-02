@@ -140,26 +140,26 @@ describe('core e2e: Claude local→remote switch drains pending UI message', () 
         sessionIds: [sessionId],
         env: {
           CI: process.env.CI,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
         },
       });
 
       const cliEnv: NodeJS.ProcessEnv = {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_HOME_DIR: cliHome,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_SESSION_ATTACH_FILE: attachFile,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_CLAUDE_CONFIG_DIR: claudeConfigDir,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: cliHome,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_CLAUDE_CONFIG_DIR: claudeConfigDir,
         CLAUDE_CONFIG_DIR: claudeConfigDir,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: fakeClaudeSessionId,
-        HAPPIER_E2E_FAKE_CLAUDE_LOCAL_ACTIVE_TURN: '1',
-        HAPPIER_E2E_FAKE_CLAUDE_LOCAL_START_SIGNAL: startLocalTurnSignalPath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOCAL_COMPLETE_SIGNAL: completeLocalTurnSignalPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: fakeClaudeSessionId,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_ACTIVE_TURN: '1',
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_START_SIGNAL: startLocalTurnSignalPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_COMPLETE_SIGNAL: completeLocalTurnSignalPath,
       };
       await ensureCliDistBuilt({ testDir, env: cliEnv }, { skipSourceFreshnessCheck: true });
 

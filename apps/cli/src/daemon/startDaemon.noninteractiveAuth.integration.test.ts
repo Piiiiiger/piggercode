@@ -64,12 +64,12 @@ describe.sequential('daemon start-sync auth gating', () => {
 
     const env: NodeJS.ProcessEnv = {
       ...process.env,
-      HAPPIER_HOME_DIR: home,
+      PIGGERCODE_HOME_DIR: home,
       // Ensure we do not accidentally hit real infra
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:9',
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:9',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:9',
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:9',
       // Make the test hermetic even if the developer environment enables daemon auth wait.
-      HAPPIER_DAEMON_WAIT_FOR_AUTH: '0',
+      PIGGERCODE_DAEMON_WAIT_FOR_AUTH: '0',
       DEBUG: '1',
     };
 
@@ -83,19 +83,19 @@ describe.sequential('daemon start-sync auth gating', () => {
   }, 90_000);
 
   it(
-    'creates a lock and waits for credentials when HAPPIER_DAEMON_WAIT_FOR_AUTH=1',
+    'creates a lock and waits for credentials when PIGGERCODE_DAEMON_WAIT_FOR_AUTH=1',
     async () => {
     const home = await createTempDir('happier-cli-home-');
     const entry = join(projectPath(), 'src', 'index.ts');
 
     const env: NodeJS.ProcessEnv = {
       ...process.env,
-      HAPPIER_HOME_DIR: home,
+      PIGGERCODE_HOME_DIR: home,
       // Ensure we do not accidentally hit real infra
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:9',
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:9',
-      HAPPIER_DAEMON_WAIT_FOR_AUTH: '1',
-      HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '0',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:9',
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:9',
+      PIGGERCODE_DAEMON_WAIT_FOR_AUTH: '1',
+      PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '0',
       DEBUG: '1',
     };
 

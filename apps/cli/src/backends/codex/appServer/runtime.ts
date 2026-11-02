@@ -898,8 +898,8 @@ const CODEX_APP_SERVER_CONTEXT_WINDOW_EXHAUSTED_MESSAGE_MARKERS = [
     'codex ran out of room',
     'context window',
 ] as const;
-const CODEX_CONTEXT_WINDOW_RECOVERY_MODE_ENV_KEY = 'HAPPIER_CODEX_CONTEXT_WINDOW_RECOVERY_MODE';
-const CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT_ENV_KEY = 'HAPPIER_CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT';
+const CODEX_CONTEXT_WINDOW_RECOVERY_MODE_ENV_KEY = 'PIGGERCODE_CODEX_CONTEXT_WINDOW_RECOVERY_MODE';
+const CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT_ENV_KEY = 'PIGGERCODE_CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT';
 const CODEX_CONTEXT_WINDOW_RECOVERY_CONTINUATION_PROMPT =
     'Please continue the interrupted work from the compacted Codex context. Do not restart or repeat completed work.';
 
@@ -2144,7 +2144,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
             session: params.session,
             getCodexThreadId: () => threadId,
             backendMode: 'appServer',
-            transcriptStorage: runtimeEnv.HAPPIER_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
+            transcriptStorage: runtimeEnv.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
             codexHome: runtimeEnv.CODEX_HOME ?? null,
             activeServerDir: params.activeServerDir ?? null,
             processEnv: runtimeEnv,

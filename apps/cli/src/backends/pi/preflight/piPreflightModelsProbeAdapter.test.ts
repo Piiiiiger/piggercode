@@ -68,7 +68,7 @@ describe('piPreflightModelsProbeAdapter', () => {
     const command = writeFakePi(directory, outcome);
     return await piPreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: directory, timeoutMs, backendTarget: undefined, accountSettings: null, bypassCache,
-      processEnv: {...process.env, HAPPIER_PI_PATH: command, PI_TEST_SELECTED_PROVIDER: 'openai-codex', PI_OFFLINE: offline},
+      processEnv: {...process.env, PIGGERCODE_PI_PATH: command, PI_TEST_SELECTED_PROVIDER: 'openai-codex', PI_OFFLINE: offline},
     });
   }
 

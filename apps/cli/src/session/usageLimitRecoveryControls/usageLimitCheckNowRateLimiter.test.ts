@@ -6,7 +6,7 @@ import {
   resolveUsageLimitCheckNowThrottleMs,
 } from './usageLimitCheckNowRateLimiter';
 
-const THROTTLE_ENV = 'HAPPIER_USAGE_LIMIT_CHECK_NOW_THROTTLE_MS';
+const THROTTLE_ENV = 'PIGGERCODE_USAGE_LIMIT_CHECK_NOW_THROTTLE_MS';
 
 describe('usageLimitCheckNowRateLimiter', () => {
   let savedEnvValue: string | undefined;

@@ -2343,7 +2343,7 @@ class Sync {
             const DEBUG_SESSION_HYDRATE =
                 typeof globalThis !== 'undefined'
                 && (
-                    (globalThis as any).__HAPPIER_DEBUG_SESSION_HYDRATE__ === true
+                    (globalThis as any).__PIGGERCODE_DEBUG_SESSION_HYDRATE__ === true
                     || (() => {
                         try {
                             return typeof localStorage !== 'undefined' && localStorage.getItem('happier.debug.sessionHydrate') === '1';

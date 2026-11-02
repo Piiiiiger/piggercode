@@ -47,8 +47,8 @@ function makeManifestForCurrentTestVersion(): string {
 describe('useReleaseNotesUnread', () => {
     beforeEach(() => {
         (Constants as { expoConfig?: { version?: string } }).expoConfig = { version: '0.0.0' };
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = '';
         clearLastSeenReleaseId();
         clearCachedManifest();
         storageWithOptionalAssetIndexCache.clearCachedAssetIndex?.();
@@ -94,7 +94,7 @@ describe('useReleaseNotesUnread', () => {
     });
 
     it('keeps release-note unread status available without an explicit story allow', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = '';
         commitRemoteManifest(makeManifestForCurrentTestVersion());
 
         const hook = await renderHook(() => useReleaseNotesUnread());

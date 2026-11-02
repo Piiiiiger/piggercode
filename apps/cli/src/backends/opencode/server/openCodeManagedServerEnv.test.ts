@@ -26,14 +26,14 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
       baseEnv: {
         PATH: '/bin',
         HOME: '/Users/example',
-        HAPPIER_HOME_DIR: '/tmp/happier-home',
+        PIGGERCODE_HOME_DIR: '/tmp/happier-home',
       },
       xdgRootDir: null,
       isolateConfig: false,
     });
 
     expect(env.HOME).toBe('/Users/example');
-    expect(env.HAPPIER_HOME_DIR).toBe('/tmp/happier-home');
+    expect(env.PIGGERCODE_HOME_DIR).toBe('/tmp/happier-home');
     expect(env.XDG_CONFIG_HOME).toBeUndefined();
     expect(env.XDG_DATA_HOME).toBeUndefined();
     expect(env.XDG_STATE_HOME).toBeUndefined();
@@ -46,7 +46,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
         PATH: '/bin',
         HOME: '/Users/example',
         USERPROFILE: '/Users/example-profile',
-        HAPPIER_HOME_DIR: '/tmp/happier-home',
+        PIGGERCODE_HOME_DIR: '/tmp/happier-home',
         XDG_CONFIG_HOME: '/Users/example/.config',
         XDG_DATA_HOME: '/Users/example/.local/share',
         XDG_STATE_HOME: '/Users/example/.local/state',
@@ -58,7 +58,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
 
     expect(env.HOME).toBe('/Users/example');
     expect(env.USERPROFILE).toBe('/Users/example-profile');
-    expect(env.HAPPIER_HOME_DIR).toBe('/tmp/happier-home');
+    expect(env.PIGGERCODE_HOME_DIR).toBe('/tmp/happier-home');
     expect(env.XDG_CONFIG_HOME).toBe('/Users/example/.config');
     expect(env.XDG_DATA_HOME).toBe('/Users/example/.local/share');
     expect(env.XDG_STATE_HOME).toBe('/Users/example/.local/state');
@@ -70,7 +70,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
       baseEnv: {
         PATH: '/bin',
         HOME: '/Users/example',
-        HAPPIER_HOME_DIR: '/tmp/happier-home',
+        PIGGERCODE_HOME_DIR: '/tmp/happier-home',
         XDG_CONFIG_HOME: '/Users/example/.config',
       },
       xdgRootDir: null,
@@ -173,7 +173,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
     const stable = resolveOpenCodeManagedServerLaunchFingerprint({
       baseEnv: {
         HOME: '/Users/example',
-        HAPPIER_OPENCODE_CLI_GENERATION: 'stable',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'stable',
       },
       xdgRootDir: null,
       isolateConfig: false,
@@ -181,7 +181,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
     const v2 = resolveOpenCodeManagedServerLaunchFingerprint({
       baseEnv: {
         HOME: '/Users/example',
-        HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       },
       xdgRootDir: null,
       isolateConfig: false,
@@ -268,12 +268,12 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
     expect(fingerprintBefore).not.toContain('refresh-1');
   });
 
-  it('reads the selection identity from HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY env when no explicit param is given', () => {
+  it('reads the selection identity from PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY env when no explicit param is given', () => {
     const viaEnv = resolveOpenCodeManagedServerLaunchFingerprint({
       baseEnv: {
         HOME: '/Users/example',
         OPENCODE_AUTH_CONTENT: JSON.stringify({ openai: { type: 'oauth', access: 'rotating-1' } }),
-        HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY: 'opencode|connected|openai-codex|profile-a',
+        PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY: 'opencode|connected|openai-codex|profile-a',
       },
       xdgRootDir: '/xdg-root',
       isolateConfig: true,
@@ -328,7 +328,7 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
     expect(withoutBroker).not.toBe(withBroker);
   });
 
-  it('changes the fingerprint when the opencode binary identity changes (explicit param or HAPPIER_OPENCODE_PATH)', () => {
+  it('changes the fingerprint when the opencode binary identity changes (explicit param or PIGGERCODE_OPENCODE_PATH)', () => {
     const v1 = resolveOpenCodeManagedServerLaunchFingerprint({
       baseEnv: { HOME: '/Users/example' },
       xdgRootDir: null,
@@ -344,12 +344,12 @@ describe('resolveOpenCodeManagedServerChildEnv', () => {
     expect(v1).not.toBe(v2);
 
     const pathA = resolveOpenCodeManagedServerLaunchFingerprint({
-      baseEnv: { HOME: '/Users/example', HAPPIER_OPENCODE_PATH: '/opt/a/opencode' },
+      baseEnv: { HOME: '/Users/example', PIGGERCODE_OPENCODE_PATH: '/opt/a/opencode' },
       xdgRootDir: null,
       isolateConfig: false,
     });
     const pathB = resolveOpenCodeManagedServerLaunchFingerprint({
-      baseEnv: { HOME: '/Users/example', HAPPIER_OPENCODE_PATH: '/opt/b/opencode' },
+      baseEnv: { HOME: '/Users/example', PIGGERCODE_OPENCODE_PATH: '/opt/b/opencode' },
       xdgRootDir: null,
       isolateConfig: false,
     });

@@ -54,27 +54,27 @@ export function buildStackStableScopeId({ stackName = 'main', cliIdentity = 'def
 }
 
 export function isStableScopeDisabled(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_DISABLE_STABLE_SCOPE ?? '').trim().toLowerCase();
+  const raw = String(env?.PIGGERCODE_STACK_DISABLE_STABLE_SCOPE ?? '').trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'y';
 }
 
 export function resolveStackActiveServerId({ env = process.env, stackName = null, cliIdentity = null } = {}) {
   if (isStableScopeDisabled(env)) return '';
-  const explicit = String(env?.HAPPIER_ACTIVE_SERVER_ID ?? '').trim();
+  const explicit = String(env?.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim();
   const inStackContext =
     Boolean((stackName ?? '').toString().trim()) ||
     Boolean((cliIdentity ?? '').toString().trim()) ||
-    Boolean((env?.HAPPIER_STACK_STACK ?? '').toString().trim()) ||
-    Boolean((env?.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim());
+    Boolean((env?.PIGGERCODE_STACK_STACK ?? '').toString().trim()) ||
+    Boolean((env?.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim());
   if (!inStackContext && isScopeIdSafe(explicit)) return explicit;
 
   const name =
     (stackName ?? '').toString().trim() ||
-    (env?.HAPPIER_STACK_STACK ?? '').toString().trim() ||
+    (env?.PIGGERCODE_STACK_STACK ?? '').toString().trim() ||
     'main';
   const identity =
     (cliIdentity ?? '').toString().trim() ||
-    (env?.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() ||
+    (env?.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() ||
     'default';
   return buildStackStableScopeId({ stackName: name, cliIdentity: identity });
 }
@@ -83,10 +83,10 @@ export function applyStackActiveServerScopeEnv({ env = process.env, stackName = 
   const base = { ...(env ?? {}) };
   const activeServerId = resolveStackActiveServerId({ env: base, stackName, cliIdentity });
   if (!activeServerId) {
-    delete base.HAPPIER_ACTIVE_SERVER_ID;
+    delete base.PIGGERCODE_ACTIVE_SERVER_ID;
     return base;
   }
-  base.HAPPIER_ACTIVE_SERVER_ID = activeServerId;
+  base.PIGGERCODE_ACTIVE_SERVER_ID = activeServerId;
   return base;
 }
 
@@ -94,9 +94,9 @@ export function applyStackDaemonLifecycleScopeEnv({ env = process.env, stackName
   const base = { ...(env ?? {}) };
   const lifecycleScopeId = resolveStackActiveServerId({ env: base, stackName, cliIdentity });
   if (!lifecycleScopeId) {
-    delete base.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
+    delete base.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
     return base;
   }
-  base.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID = lifecycleScopeId;
+  base.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID = lifecycleScopeId;
   return base;
 }

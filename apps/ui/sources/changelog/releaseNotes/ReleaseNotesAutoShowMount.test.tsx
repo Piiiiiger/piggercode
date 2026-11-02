@@ -69,8 +69,8 @@ describe('ReleaseNotesAutoShowMount', () => {
     const originalEnv = { ...process.env };
 
     beforeEach(() => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = '';
         authState.credentials = { token: 'token', secret: 'secret' };
         onboardingShowcaseState.hasUnread = false;
         setupIntentState.pending = null;
@@ -123,7 +123,7 @@ describe('ReleaseNotesAutoShowMount', () => {
     });
 
     it('does not auto-open when the release-notes feature is denied', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.releaseNotes';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.releaseNotes';
 
         const { ReleaseNotesAutoShowMount } = await import('./ReleaseNotesAutoShowMount');
         await renderScreen(<ReleaseNotesAutoShowMount />);
@@ -134,7 +134,7 @@ describe('ReleaseNotesAutoShowMount', () => {
     });
 
     it('does not auto-open without an explicit release-notes story allow', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = '';
 
         const { ReleaseNotesAutoShowMount } = await import('./ReleaseNotesAutoShowMount');
         await renderScreen(<ReleaseNotesAutoShowMount />);

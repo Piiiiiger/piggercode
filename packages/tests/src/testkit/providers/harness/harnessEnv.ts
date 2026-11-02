@@ -8,7 +8,7 @@ export function applyHomeIsolationEnv(params: {
   if (params.mode === 'host') {
     return {
       ...params.env,
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
     };
   }
   return {
@@ -18,7 +18,7 @@ export function applyHomeIsolationEnv(params: {
     USERPROFILE: params.cliHome,
     // Provider e2e runs must not auto-start detached daemons. Detached daemons can get stuck
     // in non-interactive auth flows and outlive the test harness, leaking provider processes.
-    HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
+    PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
   };
 }
 

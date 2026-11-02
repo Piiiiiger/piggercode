@@ -45,11 +45,11 @@ interface PreviewEnvResponse {
 describe('registerCommonHandlers preview-env', () => {
     const trackedEnvKeys = [
         'PATH',
-        'HAPPIER_ENV_PREVIEW_SECRETS',
+        'PIGGERCODE_ENV_PREVIEW_SECRETS',
         'npm_config_registry',
         'SECRET_TOKEN',
         'ANTHROPIC_AUTH_TOKEN',
-        'HAPPIER_ENV_PREVIEW_SECRET_NAME_REGEX',
+        'PIGGERCODE_ENV_PREVIEW_SECRET_NAME_REGEX',
         'BAR_TOKEN',
     ] as const;
     const baselineEnv: Record<string, string | undefined> = Object.fromEntries(
@@ -74,7 +74,7 @@ describe('registerCommonHandlers preview-env', () => {
 
     it('returns effective env values with embedded ${VAR} expansion', async () => {
         process.env.PATH = '/usr/bin';
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
 
         const { call } = createTestRpcManager();
 
@@ -92,7 +92,7 @@ describe('registerCommonHandlers preview-env', () => {
 
     it('accepts lowercase env var keys', async () => {
         process.env.npm_config_registry = 'https://example.test';
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
 
         const { call } = createTestRpcManager();
 
@@ -106,7 +106,7 @@ describe('registerCommonHandlers preview-env', () => {
     });
 
     it('rejects dangerous prototype keys', async () => {
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
 
         const { call } = createTestRpcManager();
 
@@ -117,9 +117,9 @@ describe('registerCommonHandlers preview-env', () => {
         expect(result.error).toMatch(/Invalid env var key/);
     });
 
-    it('hides sensitive values when HAPPIER_ENV_PREVIEW_SECRETS=none', async () => {
+    it('hides sensitive values when PIGGERCODE_ENV_PREVIEW_SECRETS=none', async () => {
         process.env.SECRET_TOKEN = 'sk-1234567890';
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
 
         const { call } = createTestRpcManager();
 
@@ -139,9 +139,9 @@ describe('registerCommonHandlers preview-env', () => {
         expect(result.values.ANTHROPIC_AUTH_TOKEN.value).toBeNull();
     });
 
-    it('redacts sensitive values when HAPPIER_ENV_PREVIEW_SECRETS=redacted', async () => {
+    it('redacts sensitive values when PIGGERCODE_ENV_PREVIEW_SECRETS=redacted', async () => {
         process.env.SECRET_TOKEN = 'sk-1234567890';
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'redacted';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'redacted';
 
         const { call } = createTestRpcManager();
 
@@ -158,9 +158,9 @@ describe('registerCommonHandlers preview-env', () => {
         expect(result.values.ANTHROPIC_AUTH_TOKEN.value).toBe('sk-*******890');
     });
 
-    it('returns full sensitive values when HAPPIER_ENV_PREVIEW_SECRETS=full', async () => {
+    it('returns full sensitive values when PIGGERCODE_ENV_PREVIEW_SECRETS=full', async () => {
         process.env.SECRET_TOKEN = 'sk-1234567890';
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'full';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'full';
 
         const { call } = createTestRpcManager();
 
@@ -177,9 +177,9 @@ describe('registerCommonHandlers preview-env', () => {
         expect(result.values.ANTHROPIC_AUTH_TOKEN.value).toBe('sk-1234567890');
     });
 
-    it('supports overriding the secret name regex via HAPPIER_ENV_PREVIEW_SECRET_NAME_REGEX', async () => {
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
-        process.env.HAPPIER_ENV_PREVIEW_SECRET_NAME_REGEX = '^FOO$';
+    it('supports overriding the secret name regex via PIGGERCODE_ENV_PREVIEW_SECRET_NAME_REGEX', async () => {
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRET_NAME_REGEX = '^FOO$';
         process.env.BAR_TOKEN = 'sk-1234567890';
 
         const { call } = createTestRpcManager();
@@ -196,9 +196,9 @@ describe('registerCommonHandlers preview-env', () => {
         expect(result.values.BAR_TOKEN.value).toBe('sk-1234567890');
     });
 
-    it('falls back to default secret regex when HAPPIER_ENV_PREVIEW_SECRET_NAME_REGEX is invalid', async () => {
-        process.env.HAPPIER_ENV_PREVIEW_SECRETS = 'none';
-        process.env.HAPPIER_ENV_PREVIEW_SECRET_NAME_REGEX = '(';
+    it('falls back to default secret regex when PIGGERCODE_ENV_PREVIEW_SECRET_NAME_REGEX is invalid', async () => {
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRETS = 'none';
+        process.env.PIGGERCODE_ENV_PREVIEW_SECRET_NAME_REGEX = '(';
         process.env.BAR_TOKEN = 'sk-1234567890';
 
         const { call } = createTestRpcManager();

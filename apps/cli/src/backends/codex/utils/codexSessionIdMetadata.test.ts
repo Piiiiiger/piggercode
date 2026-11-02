@@ -5,7 +5,7 @@ import type { Metadata } from '@/api/types';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
 import { maybeUpdateCodexSessionIdMetadata, publishCodexSessionIdMetadata } from './codexSessionIdMetadata';
 import { resolveConfiguredCodexHome } from './resolveConfiguredCodexHome';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 const TEST_HOME_PATH = resolve(join('/tmp', 'happier-codex-home'));
 const TEST_CODEX_HOME_ENV: NodeJS.ProcessEnv = {
@@ -475,7 +475,7 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
       activeServerDir: '/Users/test/.happier/servers/cloud',
       processEnv: {
         CODEX_SQLITE_HOME: '/Users/test/.codex-state',
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai-codex',
           profileId: 'profile-1',

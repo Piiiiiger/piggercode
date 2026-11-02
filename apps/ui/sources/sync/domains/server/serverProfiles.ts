@@ -14,7 +14,7 @@ export type ServerProfileSource = 'manual' | 'url' | 'stack-env' | 'notification
  * compare an active server URL against it (via createServerUrlComparableKey)
  * without scattering the string literal across the codebase.
  */
-export const HAPPIER_CLOUD_SERVER_URL = 'https://api.happier.dev' as const;
+export const PIGGERCODE_CLOUD_SERVER_URL = 'https://api.happier.dev' as const;
 
 /**
  * The relay this build ships as its built-in server: native builds seed it when nothing else is
@@ -248,7 +248,7 @@ function parsePreconfiguredServersFromEnv(): PreconfiguredServer[] {
 
     // On web with no explicitly configured server, fall back to same-origin so that
     // self-hosted deployments (e.g. https://happier.example.com) get a server profile
-    // without needing EXPO_PUBLIC_HAPPIER_SERVER_URL set at build time.
+    // without needing EXPO_PUBLIC_PIGGERCODE_SERVER_URL set at build time.
     if (entries.length === 0) {
         const origin = getWebSameOriginServerUrl();
         if (origin) {
@@ -692,7 +692,7 @@ export function getWebSameOriginServerUrl(): string | null {
         // Keep the legacy app.happier.dev alias valid while preferring cloud.happier.dev
         // in new links and defaults.
         if (['cloud.happier.dev', 'app.happier.dev'].includes(parsed.hostname.toLowerCase())) {
-            return HAPPIER_CLOUD_SERVER_URL;
+            return PIGGERCODE_CLOUD_SERVER_URL;
         }
         return origin;
     } catch {

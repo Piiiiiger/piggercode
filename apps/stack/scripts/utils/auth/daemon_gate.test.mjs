@@ -38,14 +38,14 @@ test('hasStackCredentials detects server-scoped access.key for env server urls',
 
 test('daemonStartGate blocks daemon start in auth flow when missing credentials', async (t) => {
   const dir = await withTempRoot(t);
-  const gate = daemonStartGate({ env: { HAPPIER_STACK_AUTH_FLOW: '1' }, cliHomeDir: dir });
+  const gate = daemonStartGate({ env: { PIGGERCODE_STACK_AUTH_FLOW: '1' }, cliHomeDir: dir });
   assert.equal(gate.ok, false);
   assert.equal(gate.reason, 'auth_flow_missing_credentials');
 });
 
 test('daemonStartGate blocks daemon start in daemon-wait auth flow when missing credentials', async (t) => {
   const dir = await withTempRoot(t);
-  const gate = daemonStartGate({ env: { HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH: '1' }, cliHomeDir: dir });
+  const gate = daemonStartGate({ env: { PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH: '1' }, cliHomeDir: dir });
   assert.equal(gate.ok, false);
   assert.equal(gate.reason, 'auth_flow_missing_credentials');
 });
@@ -68,7 +68,7 @@ test('daemonStartGate allows daemon start when credentials exist', async (t) => 
 test('daemonStartGate resolves server-scoped credentials from env server url', async (t) => {
   const dir = await withTempRoot(t);
   const serverUrl = 'http://127.0.0.1:4010';
-  const env = { HAPPIER_SERVER_URL: serverUrl };
+  const env = { PIGGERCODE_SERVER_URL: serverUrl };
   const paths = resolveStackCredentialPaths({ cliHomeDir: dir, serverUrl, env });
   await mkdir(join(dir, 'servers', paths.activeServerId), { recursive: true });
   await writeFile(paths.serverScopedPath, 'dummy', 'utf-8');
@@ -81,10 +81,10 @@ test('daemonStartGate resolves server-scoped credentials from env server url', a
   assert.equal(gate.reason, 'credentials_present');
 });
 
-test('daemonStartGate resolves stable-scope credentials from HAPPIER_ACTIVE_SERVER_ID', async (t) => {
+test('daemonStartGate resolves stable-scope credentials from PIGGERCODE_ACTIVE_SERVER_ID', async (t) => {
   const dir = await withTempRoot(t);
   const serverUrl = 'http://127.0.0.1:4010';
-  const env = { HAPPIER_SERVER_URL: serverUrl, HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' };
+  const env = { PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' };
   const paths = resolveStackCredentialPaths({ cliHomeDir: dir, serverUrl, env });
   await mkdir(join(dir, 'servers', paths.activeServerId), { recursive: true });
   await writeFile(paths.serverScopedPath, 'dummy', 'utf-8');
@@ -102,7 +102,7 @@ test('daemonStartGate prefers credentials over auth-flow toggles', async (t) => 
   await writeFile(join(dir, 'access.key'), 'dummy', 'utf-8');
 
   const gate = daemonStartGate({
-    env: { HAPPIER_STACK_AUTH_FLOW: 'true', HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH: '1' },
+    env: { PIGGERCODE_STACK_AUTH_FLOW: 'true', PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH: '1' },
     cliHomeDir: dir,
   });
   assert.equal(gate.ok, true);

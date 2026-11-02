@@ -10,7 +10,7 @@ import { previewDaemonServiceInstall } from './installer';
 import { parseDaemonServiceBundleId, planDaemonServiceInstall } from './plan';
 
 /**
- * A service the desktop app created carries `HAPPIER_DAEMON_SERVICE_MANAGED_BY=desktop` in its own
+ * A service the desktop app created carries `PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop` in its own
  * definition, so the inventory can tell it from a service the user installed by hand (which the
  * app must leave alone). The marker survives every rewrite of that definition.
  */
@@ -79,7 +79,7 @@ describe('daemon service management marker', () => {
         entryPath: '',
       });
 
-      expect(preview.plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_SERVICE_MANAGED_BY=desktop');
+      expect(preview.plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop');
       expect(preview.exactTargetMatchesExpectedDefinition).toBe(true);
     });
   });
@@ -120,7 +120,7 @@ describe('daemon service management marker', () => {
         expect(desktop.files[0]!.content).toContain('<key>AssociatedBundleIdentifiers</key>');
         expect(readInstalledDaemonServiceBundleId({ platform: 'darwin', path: writePlanFile(desktop) })).toBe('dev.happier.app');
         // The lifecycle marker is untouched: attribution does not make a service the desktop's.
-        expect(desktop.files[0]!.content).not.toContain('HAPPIER_DAEMON_SERVICE_MANAGED_BY');
+        expect(desktop.files[0]!.content).not.toContain('PIGGERCODE_DAEMON_SERVICE_MANAGED_BY');
 
         const terminal = plan(null);
         expect(terminal.files[0]!.content).not.toContain('AssociatedBundleIdentifiers');

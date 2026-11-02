@@ -13,7 +13,7 @@ test('mobile-dev-client --help runs without syntax errors', async () => {
   const env = {
     ...process.env,
     // Prevent env.mjs from selecting a real stack env file (keeps the test fast and hermetic).
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
   };
 
   const res = await runNodeCapture([script, '--help'], { cwd: rootDir, env });

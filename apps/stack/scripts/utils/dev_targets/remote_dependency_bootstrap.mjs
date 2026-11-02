@@ -22,7 +22,7 @@ function resolveInitialInstallEnv(env) {
     NPM_CONFIG_PRODUCTION: 'false',
     COREPACK_ENABLE_AUTO_PIN: '0',
   };
-  const cacheBaseDir = String(resolved.HAPPIER_STACK_PM_CACHE_BASE_DIR ?? '').trim();
+  const cacheBaseDir = String(resolved.PIGGERCODE_STACK_PM_CACHE_BASE_DIR ?? '').trim();
   if (cacheBaseDir) {
     resolved.XDG_CACHE_HOME ||= join(cacheBaseDir, 'xdg');
     resolved.YARN_CACHE_FOLDER ||= join(cacheBaseDir, 'yarn');

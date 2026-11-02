@@ -55,7 +55,7 @@ describe('resolveRequestedSessionDirectory', () => {
     it('prefers the stack-invoked cwd when present', () => {
         const env: NodeJS.ProcessEnv = {
             HOME: '/Users/tester',
-            HAPPIER_STACK_INVOKED_CWD: '~/happier-stack-invoked-cwd',
+            PIGGERCODE_STACK_INVOKED_CWD: '~/happier-stack-invoked-cwd',
             PWD: '/tmp/happier-wrapper-cwd',
         };
 

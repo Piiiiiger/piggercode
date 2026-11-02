@@ -18,7 +18,7 @@ function tempAgentDir(): string {
 afterEach(() => {
   for (const dir of TEMP_DIRS) removeTempDirSync(dir);
   TEMP_DIRS.clear();
-  delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+  delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
 });
 
 describe('resolveHappyToolsBridgeBackendOptions', () => {
@@ -72,7 +72,7 @@ describe('resolveHappyToolsBridgeBackendOptions', () => {
     expect(disabled?.sessionConfig.directTools.map((tool) => tool.name)).not.toContain('change_title');
     expect(disabled?.sessionConfig.directTools.map((tool) => tool.name)).not.toContain('session_title_set');
     expect(disabled?.sessionConfig.promptAddition).not.toContain('change_title');
-    expect(JSON.parse(disabled?.sessionConfig.launch.env.HAPPIER_ACTIONS_SETTINGS_V1 ?? '{}')).toMatchObject({
+    expect(JSON.parse(disabled?.sessionConfig.launch.env.PIGGERCODE_ACTIONS_SETTINGS_V1 ?? '{}')).toMatchObject({
       actions: {
         'session.title.set': { enabled: false },
       },
@@ -110,7 +110,7 @@ describe('resolveHappyToolsBridgeBackendOptions', () => {
     });
 
     expect(resolved?.sessionConfig.directTools.map((tool) => tool.name)).not.toContain('session_title_set');
-    expect(JSON.parse(resolved?.sessionConfig.launch.env.HAPPIER_ACTIONS_SETTINGS_V1 ?? '{}')).toMatchObject({
+    expect(JSON.parse(resolved?.sessionConfig.launch.env.PIGGERCODE_ACTIONS_SETTINGS_V1 ?? '{}')).toMatchObject({
       actions: {
         'session.title.set': { enabled: false },
       },
@@ -156,7 +156,7 @@ describe('resolveHappyToolsBridgeBackendOptions', () => {
   });
 
   it('uses one environment-overridden action policy for registration and child execution', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'memory.search': { toolExposureModes: { session_agent: 'discoverable_only' } },
@@ -178,7 +178,7 @@ describe('resolveHappyToolsBridgeBackendOptions', () => {
     });
 
     expect(resolved?.sessionConfig.directTools.map((tool) => tool.name)).not.toContain('memory_search');
-    expect(JSON.parse(resolved?.sessionConfig.launch.env.HAPPIER_ACTIONS_SETTINGS_V1 ?? 'null')).toMatchObject({
+    expect(JSON.parse(resolved?.sessionConfig.launch.env.PIGGERCODE_ACTIONS_SETTINGS_V1 ?? 'null')).toMatchObject({
       v: 1,
       actions: {
         'memory.search': { toolExposureModes: { session_agent: 'discoverable_only' } },
@@ -195,7 +195,7 @@ describe('resolveHappyToolsBridgeBackendOptions', () => {
       memoryRecallGuidanceEnabled: false,
     });
     const content = readFileSync(resolved!.extensionPath, 'utf8');
-    expect(content).not.toContain('HAPPIER_CLI_FILE_PATH');
+    expect(content).not.toContain('PIGGERCODE_CLI_FILE_PATH');
     expect(resolved?.sessionConfig.launch.filePath).toBeTruthy();
     const prefix = resolved?.sessionConfig.launch.argPrefix ?? [];
     expect(prefix[prefix.length - 1]).not.toBe('tools');

@@ -39,7 +39,7 @@ import { resolveDevServerConnection } from '../utils/dev/resolveDevServerConnect
 function shouldAwaitRequestedDaemonForBackgroundStart({ scriptPath, args = [], env = {} } = {}) {
   if (scriptPath !== 'run.mjs' && scriptPath !== 'dev.mjs') return false;
   if (args.includes('--no-daemon')) return false;
-  if ((env.HAPPIER_STACK_DAEMON ?? '1').toString().trim() === '0') return false;
+  if ((env.PIGGERCODE_STACK_DAEMON ?? '1').toString().trim() === '0') return false;
   // Orchestrated/service auth flows intentionally keep the server alive while daemon startup is
   // deferred until credentials arrive. The inner runner remains the owner of that lifecycle.
   if (isAuthFlowEnabled(env)) return false;
@@ -133,7 +133,7 @@ export function shouldReuseRuntimePortsOnRestart({ wantsRestart = false, runtime
 }
 
 export function resolveRequestedStackServeUi({ args = [], env = {} } = {}) {
-  return !args.includes('--no-ui') && String(env.HAPPIER_STACK_SERVE_UI ?? '1').trim() !== '0';
+  return !args.includes('--no-ui') && String(env.PIGGERCODE_STACK_SERVE_UI ?? '1').trim() !== '0';
 }
 
 export function createOuterStackRuntimeStartPublication({
@@ -191,7 +191,7 @@ export async function createStackRunnerLogPath({
   logsDir,
   scriptPath,
   nowMs = Date.now(),
-  keepCount = resolveLogKeepCount(process.env.HAPPIER_STACK_RUNNER_LOG_KEEP_COUNT, 10),
+  keepCount = resolveLogKeepCount(process.env.PIGGERCODE_STACK_RUNNER_LOG_KEEP_COUNT, 10),
 } = {}) {
   const baseName = String(scriptPath ?? '').replace(/\.mjs$/, '');
   const logPath = join(logsDir, `${baseName}.${nowMs}.log`);
@@ -393,11 +393,11 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
         return;
       }
 
-      const pinnedServerPort = Boolean((stackEnv.HAPPIER_STACK_SERVER_PORT ?? '').trim());
-      const serverComponent = (stackEnv.HAPPIER_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
+      const pinnedServerPort = Boolean((stackEnv.PIGGERCODE_STACK_SERVER_PORT ?? '').trim());
+      const serverComponent = (stackEnv.PIGGERCODE_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
       const managedInfra =
         serverComponent === 'happier-server'
-          ? (stackEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0'
+          ? (stackEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0'
           : false;
       const { baseDir } = resolveStackEnvPath(stackName, env);
       const expectedUiDir = getComponentDir(rootDir, 'happier-ui', env);
@@ -436,7 +436,7 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
             serverEnv: env,
             logger: console,
           });
-          env.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE = '1';
+          env.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE = '1';
         }
         if (isTrueRestart) {
           await completeStackRestartStopBeforeSuccessor({
@@ -464,7 +464,7 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
           console.log(`[stack] ${stackName}: already running (pid=${existingOwnerPid}${serverPart}${uiPart})`);
 
           const isInteractive = Boolean(process.stdin.isTTY && process.stdout.isTTY);
-          const noBrowser = args.includes('--no-browser') || (env.HAPPIER_STACK_NO_BROWSER ?? '').toString().trim() === '1';
+          const noBrowser = args.includes('--no-browser') || (env.PIGGERCODE_STACK_NO_BROWSER ?? '').toString().trim() === '1';
           const openBrowser = isInteractive && !wantsJson && !noBrowser;
 
           const host = resolveLocalhostHost({ stackMode: true, stackName });
@@ -645,19 +645,19 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
 
         const childEnv = {
           ...env,
-          HAPPIER_STACK_EPHEMERAL_PORTS: '1',
-          HAPPIER_STACK_SERVER_PORT: String(ports.server),
+          PIGGERCODE_STACK_EPHEMERAL_PORTS: '1',
+          PIGGERCODE_STACK_SERVER_PORT: String(ports.server),
           ...(serverComponent === 'happier-server' && ports.backend
             ? {
-                HAPPIER_STACK_SERVER_BACKEND_PORT: String(ports.backend),
+                PIGGERCODE_STACK_SERVER_BACKEND_PORT: String(ports.backend),
               }
             : {}),
           ...(managedInfra && ports.pg
             ? {
-                HAPPIER_STACK_PG_PORT: String(ports.pg),
-                HAPPIER_STACK_REDIS_PORT: String(ports.redis),
-                HAPPIER_STACK_MINIO_PORT: String(ports.minio),
-                HAPPIER_STACK_MINIO_CONSOLE_PORT: String(ports.minioConsole),
+                PIGGERCODE_STACK_PG_PORT: String(ports.pg),
+                PIGGERCODE_STACK_REDIS_PORT: String(ports.redis),
+                PIGGERCODE_STACK_MINIO_PORT: String(ports.minio),
+                PIGGERCODE_STACK_MINIO_CONSOLE_PORT: String(ports.minioConsole),
               }
             : {}),
         };
@@ -672,15 +672,15 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
         // because the daemon can enter its own auth flow and become stranded (lock held, no machine registration).
         if (background && scriptPath === 'dev.mjs') {
           const startUi = resolveRequestedStackServeUi({ args, env });
-          const startDaemon = !args.includes('--no-daemon') && (env.HAPPIER_STACK_DAEMON ?? '1').toString().trim() !== '0';
+          const startDaemon = !args.includes('--no-daemon') && (env.PIGGERCODE_STACK_DAEMON ?? '1').toString().trim() !== '0';
           if (startUi && startDaemon) {
             try {
               const stackBaseDir = resolveStackEnvPath(stackName).baseDir;
               const cliHomeDir = getCliHomeDirFromEnvOrDefault({ stackBaseDir, env });
-              const serverUrl = (childEnv.HAPPIER_SERVER_URL ?? env.HAPPIER_SERVER_URL ?? '').toString().trim();
+              const serverUrl = (childEnv.PIGGERCODE_SERVER_URL ?? env.PIGGERCODE_SERVER_URL ?? '').toString().trim();
               const hasCreds = Boolean(findExistingStackCredentialPath({ cliHomeDir, serverUrl, env: childEnv }));
               if (!hasCreds) {
-                childEnv.HAPPIER_STACK_AUTH_FLOW = '1';
+                childEnv.PIGGERCODE_STACK_AUTH_FLOW = '1';
               }
             } catch {
               // If we can't resolve CLI home dir, skip auto auth-flow markers (best-effort).
@@ -752,7 +752,7 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
               });
             });
             const readyPromise = (async () => {
-              const timeoutMsRaw = (process.env.HAPPIER_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS ?? '180000').toString().trim();
+              const timeoutMsRaw = (process.env.PIGGERCODE_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS ?? '180000').toString().trim();
               const timeoutMs = timeoutMsRaw ? Number(timeoutMsRaw) : 180_000;
               await waitForBackgroundStackReadiness({
                 stackName,
@@ -842,9 +842,9 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
         return;
       }
       if (background) {
-        const pinnedPort = coercePort(env.HAPPIER_STACK_SERVER_PORT);
+        const pinnedPort = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
         if (!pinnedPort) {
-          throw new Error(`[stack] ${stackName}: cannot start in background (missing HAPPIER_STACK_SERVER_PORT)`);
+          throw new Error(`[stack] ${stackName}: cannot start in background (missing PIGGERCODE_STACK_SERVER_PORT)`);
         }
 
         const stackBaseDir = resolveStackEnvPath(stackName).baseDir;
@@ -900,7 +900,7 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
             });
           });
           const readyPromise = (async () => {
-            const timeoutMsRaw = (process.env.HAPPIER_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS ?? '180000').toString().trim();
+            const timeoutMsRaw = (process.env.PIGGERCODE_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS ?? '180000').toString().trim();
             const timeoutMs = timeoutMsRaw ? Number(timeoutMsRaw) : 180_000;
             await waitForBackgroundStackReadiness({
               stackName,
@@ -957,7 +957,7 @@ export async function runStackScriptWithStackEnv({ rootDir, stackName, scriptPat
         return;
       }
       if (isTrueRestart) {
-        const pinnedPort = coercePort(env.HAPPIER_STACK_SERVER_PORT);
+        const pinnedPort = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
         if (pinnedPort && !(await isTcpPortFree(pinnedPort))) {
           throw new Error(
             `[stack] ${stackName}: server port ${pinnedPort} is not free on restart.\n` +

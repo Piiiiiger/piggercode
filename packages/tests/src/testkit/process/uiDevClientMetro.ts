@@ -65,7 +65,7 @@ export async function startUiDevClientMetro(params: {
   const stdoutPath = resolvePath(params.testDir, 'ui.dev-client.metro.stdout.log');
   const stderrPath = resolvePath(params.testDir, 'ui.dev-client.metro.stderr.log');
 
-  const clearRaw = (params.env.HAPPIER_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
+  const clearRaw = (params.env.PIGGERCODE_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
   const clearCache = clearRaw === '1' || clearRaw === 'true' || clearRaw === 'yes' || clearRaw === 'y';
 
   const expoCliPath = resolvePath(repoRootDir(), 'node_modules', 'expo', 'bin', 'cli');

@@ -304,7 +304,7 @@ export function buildCodeMirrorWebViewHtml(params: Readonly<{
         let langPhp = null;
 
         if (embedded) {
-          const bundle = globalThis.HAPPIER_CODEMIRROR_WEBVIEW || globalThis.__CM6__ || null;
+          const bundle = globalThis.PIGGERCODE_CODEMIRROR_WEBVIEW || globalThis.__CM6__ || null;
           if (!bundle) throw new Error('CodeMirror bundle missing');
           ({ EditorState } = bundle);
           ({ EditorView, lineNumbers, keymap, drawSelection, highlightSpecialChars, highlightActiveLine, highlightActiveLineGutter } = bundle);

@@ -22,7 +22,7 @@ const RELATIONSHIP_ID_REGEX = /^rel_[A-Za-z0-9_-]+$/u;
 const DIRECTION_ID_REGEX = /^dir_[A-Za-z0-9_-]+$/u;
 
 export function resolveWorkspaceReplicationScopeLeaseTtlMs(): number {
-  const raw = process.env.HAPPIER_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
+  const raw = process.env.PIGGERCODE_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
   if (!raw) {
     return DEFAULT_LEASE_TTL_MS;
   }

@@ -4,14 +4,14 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 const ENV_KEYS = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_LOCAL_SERVER_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_ACCESS_TOKEN',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_LOCAL_SERVER_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_ACCESS_TOKEN',
 ] as const;
 
 let envScope = createEnvKeyScope(ENV_KEYS);
@@ -30,37 +30,37 @@ describe('resolveHappierRuntimeContextEnvFromConfiguration', () => {
     const home = createTempDirSync('happier-runtime-ctx-home-');
     tempDirs.add(home);
     envScope.patch({
-      HAPPIER_HOME_DIR: home,
-      HAPPIER_ACTIVE_SERVER_ID: 'preview',
-      HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
+      PIGGERCODE_HOME_DIR: home,
+      PIGGERCODE_ACTIVE_SERVER_ID: 'preview',
+      PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
       // public != server -> split local/public stack
-      HAPPIER_PUBLIC_SERVER_URL: 'https://public.happier.example',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:48999',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.example',
-      HAPPIER_ACCESS_TOKEN: 'secret-token-that-must-not-leak',
+      PIGGERCODE_PUBLIC_SERVER_URL: 'https://public.happier.example',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:48999',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.example',
+      PIGGERCODE_ACCESS_TOKEN: 'secret-token-that-must-not-leak',
     });
     vi.resetModules();
 
     const { resolveHappierRuntimeContextEnvFromConfiguration } = await import(
       './resolveHappierRuntimeContextEnvFromConfiguration'
     );
-    const { HAPPIER_RUNTIME_CONTEXT_ENV_KEYS } = await import('./resolveHappierRuntimeContextEnv');
+    const { PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS } = await import('./resolveHappierRuntimeContextEnv');
 
     const env = resolveHappierRuntimeContextEnvFromConfiguration();
 
     // Home dir flows through from configuration (the credential anchor).
-    expect(env.HAPPIER_HOME_DIR).toBe(home);
+    expect(env.PIGGERCODE_HOME_DIR).toBe(home);
     // A resolved server URL is always present.
-    expect(env.HAPPIER_SERVER_URL).toBeTruthy();
-    expect(env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
+    expect(env.PIGGERCODE_SERVER_URL).toBeTruthy();
+    expect(env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
       'stack_repo-remote-dev-d72117acdb__id_default',
     );
 
     // Only allowed, non-secret context keys are emitted.
     for (const key of Object.keys(env)) {
-      expect(HAPPIER_RUNTIME_CONTEXT_ENV_KEYS).toContain(key);
+      expect(PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS).toContain(key);
     }
-    expect(env).not.toHaveProperty('HAPPIER_ACCESS_TOKEN');
+    expect(env).not.toHaveProperty('PIGGERCODE_ACCESS_TOKEN');
     expect(JSON.stringify(env)).not.toContain('secret-token-that-must-not-leak');
   });
 });

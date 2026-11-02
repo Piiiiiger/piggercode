@@ -34,7 +34,7 @@ test('hstack stack install dry-run plans runtime, service, and desktop installat
       encoding: 'utf-8',
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: join(tmp, 'stacks'),
+        PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'stacks'),
       },
     },
   );
@@ -85,9 +85,9 @@ test('hstack stack install dry-run plans repo updates for existing stacks', asyn
   await writeFile(
     join(stackDir, 'env'),
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_PORT=4309',
-      'HAPPIER_STACK_REPO_DIR=/old/repo',
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_PORT=4309',
+      'PIGGERCODE_STACK_REPO_DIR=/old/repo',
     ].join('\n'),
     'utf-8',
   );
@@ -108,7 +108,7 @@ test('hstack stack install dry-run plans repo updates for existing stacks', asyn
       encoding: 'utf-8',
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
       },
     },
   );
@@ -119,7 +119,7 @@ test('hstack stack install dry-run plans repo updates for existing stacks', asyn
   const updateStep = payload.steps.find((step) => step.id === 'update-stack-env');
 
   assert.deepEqual(updateStep.envUpdates, [
-    { key: 'HAPPIER_STACK_SERVER_PORT', value: '4309' },
-    { key: 'HAPPIER_STACK_REPO_DIR', value: '/next/repo' },
+    { key: 'PIGGERCODE_STACK_SERVER_PORT', value: '4309' },
+    { key: 'PIGGERCODE_STACK_REPO_DIR', value: '/next/repo' },
   ]);
 });

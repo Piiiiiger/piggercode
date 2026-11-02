@@ -39,14 +39,14 @@ describe('listCodexDirectSessionCandidatesViaAppServer', () => {
             });
 
             const envScope = createCodexAppServerTestEnvScope();
-            envScope.patch({ HAPPIER_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE: '11' });
+            envScope.patch({ PIGGERCODE_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE: '11' });
 
             try {
                 await listCodexDirectSessionCandidatesViaAppServer({
                     codexHome: join(root, 'codex-home'),
                     env: {
-                        HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-                        HAPPIER_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE: '7',
+                        PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+                        PIGGERCODE_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE: '7',
                     },
                 });
             } finally {
@@ -87,7 +87,7 @@ describe('listCodexDirectSessionCandidatesViaAppServer', () => {
             const result = await listCodexDirectSessionCandidatesViaAppServer({
                 codexHome: join(root, 'codex-home'),
                 env: {
-                    HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
+                    PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
                 },
             });
 

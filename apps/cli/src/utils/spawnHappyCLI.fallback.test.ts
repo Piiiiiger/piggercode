@@ -33,15 +33,15 @@ function writeStackRuntimeFingerprint(runtimeStatePath: string, fingerprint: str
 
 function patchFreshDistEnv(entrypoint: string, runtimeStatePath: string, fingerprint: string): void {
   envScope.patch({
-    HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-    HAPPIER_VARIANT: 'dev',
-    HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-    HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: undefined,
-    HAPPIER_CLI_SUBPROCESS_PREFER_TSX: undefined,
-    HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: entrypoint,
-    HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: fingerprint,
-    HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-    HAPPIER_STACK_STACK: 'qa-agent-1',
+    PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+    PIGGERCODE_VARIANT: 'dev',
+    PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+    PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: undefined,
+    PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: undefined,
+    PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: entrypoint,
+    PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: fingerprint,
+    PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+    PIGGERCODE_STACK_STACK: 'qa-agent-1',
     TSX_TSCONFIG_PATH: undefined,
   });
 }
@@ -84,10 +84,10 @@ function writeTinyRuntimeAssets(root: string, { includeDevCommandWrapper = true 
 describe('spawnHappyCLI fallback invocation', () => {
   it('falls back to tsx source entrypoint in dev mode by default when dist entrypoint is missing', async () => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-      HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-default-${Date.now()}`, 'index.mjs'),
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-default-${Date.now()}`, 'index.mjs'),
       TSX_TSCONFIG_PATH: undefined,
     });
 
@@ -110,10 +110,10 @@ describe('spawnHappyCLI fallback invocation', () => {
 
   it('falls back to tsx source entrypoint in dev mode when dist entrypoint is missing', async () => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
-      HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-entry-${Date.now()}`, 'index.mjs'),
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
+      PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-entry-${Date.now()}`, 'index.mjs'),
       TSX_TSCONFIG_PATH: undefined,
     });
 
@@ -134,13 +134,13 @@ describe('spawnHappyCLI fallback invocation', () => {
     expect(process.env.TSX_TSCONFIG_PATH).toBeUndefined();
   });
 
-  it('falls back to tsx source entrypoint in stack context even when HAPPIER_VARIANT is not set', async () => {
+  it('falls back to tsx source entrypoint in stack context even when PIGGERCODE_VARIANT is not set', async () => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-      HAPPIER_VARIANT: undefined,
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-      HAPPIER_STACK_STACK: 'qa-agent-1',
-      HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-stack-${Date.now()}`, 'index.mjs'),
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+      PIGGERCODE_VARIANT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+      PIGGERCODE_STACK_STACK: 'qa-agent-1',
+      PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: join(tmpdir(), `missing-happier-stack-${Date.now()}`, 'index.mjs'),
       TSX_TSCONFIG_PATH: undefined,
     });
 
@@ -163,15 +163,15 @@ describe('spawnHappyCLI fallback invocation', () => {
 
   it('prefers the tsx source entrypoint in stack context even when dist exists', async () => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-      HAPPIER_VARIANT: undefined,
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-      HAPPIER_STACK_STACK: 'qa-agent-1',
-      HAPPIER_CLI_SUBPROCESS_PREFER_TSX: undefined,
-      HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: undefined,
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: undefined,
-      HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: undefined,
-      HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+      PIGGERCODE_VARIANT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+      PIGGERCODE_STACK_STACK: 'qa-agent-1',
+      PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: undefined,
       TSX_TSCONFIG_PATH: undefined,
     });
 
@@ -385,7 +385,7 @@ describe('spawnHappyCLI fallback invocation', () => {
       const runtimeStatePath = join(root, 'stack.runtime.json');
       writeStackRuntimeFingerprint(runtimeStatePath, fingerprint);
       patchFreshDistEnv(entrypoint, runtimeStatePath, fingerprint);
-      envScope.patch({ HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1' });
+      envScope.patch({ PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1' });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
       const inv = mod.buildHappyCliSubprocessInvocation(['claude', '--started-by', 'daemon']);
@@ -410,8 +410,8 @@ describe('spawnHappyCLI fallback invocation', () => {
       writeStackRuntimeFingerprint(runtimeStatePath, fingerprint);
       patchFreshDistEnv(entrypoint, runtimeStatePath, fingerprint);
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -434,8 +434,8 @@ describe('spawnHappyCLI fallback invocation', () => {
       writeStackRuntimeFingerprint(runtimeStatePath, admittedFingerprint);
       patchFreshDistEnv(entrypoint, runtimeStatePath, admittedFingerprint);
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -456,13 +456,13 @@ describe('spawnHappyCLI fallback invocation', () => {
       const runtimeStatePath = join(root, 'stack.runtime.json');
       writeStackRuntimeFingerprint(runtimeStatePath, fingerprint);
       patchFreshDistEnv(entrypoint, runtimeStatePath, fingerprint);
-      envScope.patch({ HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1' });
+      envScope.patch({ PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1' });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
       const runtimeDecision = mod.resolveHappyCliSubprocessRuntimeDecision();
       expect(runtimeDecision).not.toBeNull();
 
-      envScope.patch({ HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'ffffffffffffffff' });
+      envScope.patch({ PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'ffffffffffffffff' });
       const tmux = mod.buildHappyCliSubprocessLaunchSpec(['claude', '--happy-terminal-mode', 'tmux'], {
         runtimeDecision: runtimeDecision!,
       });
@@ -615,15 +615,15 @@ describe('spawnHappyCLI fallback invocation', () => {
     });
   });
 
-  it.each(['maybe', '2', 'enabled', 'yup'])('does not treat unknown HAPPIER_CLI_SUBPROCESS_PREFER_TSX=%s as enabled', async (rawValue) => {
+  it.each(['maybe', '2', 'enabled', 'yup'])('does not treat unknown PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX=%s as enabled', async (rawValue) => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-      HAPPIER_VARIANT: undefined,
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-      HAPPIER_STACK_REPO_DIR: undefined,
-      HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-      HAPPIER_STACK_STACK: undefined,
-      HAPPIER_CLI_SUBPROCESS_PREFER_TSX: rawValue,
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+      PIGGERCODE_VARIANT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+      PIGGERCODE_STACK_REPO_DIR: undefined,
+      PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+      PIGGERCODE_STACK_STACK: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: rawValue,
     });
 
     vi.doMock('node:fs', async () => {

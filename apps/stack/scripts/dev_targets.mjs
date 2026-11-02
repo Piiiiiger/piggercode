@@ -25,7 +25,7 @@ async function main() {
   const positionals = argv.filter((arg) => !arg.startsWith('--'));
   const command = String(positionals[0] ?? '').trim();
   const stackName =
-    String(kv.get('--stack') ?? process.env.HAPPIER_STACK_STACK ?? 'main').trim() || 'main';
+    String(kv.get('--stack') ?? process.env.PIGGERCODE_STACK_STACK ?? 'main').trim() || 'main';
   const path = resolveDevTargetsConfigPath({ stackName, env: process.env });
 
   if (wantsHelp(argv, { flags }) || !command) {

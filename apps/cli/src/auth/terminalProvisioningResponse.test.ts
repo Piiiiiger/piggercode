@@ -39,10 +39,10 @@ describe('openTerminalProvisioningResponse', () => {
 
   it('reads the opt-in v3 requirement and rejects unknown values', () => {
     expect(readTerminalPairingRequirement({})).toBeNull();
-    expect(readTerminalPairingRequirement({ HAPPIER_TERMINAL_PAIRING_REQUIRE: ' v3 ' })).toBe('v3');
+    expect(readTerminalPairingRequirement({ PIGGERCODE_TERMINAL_PAIRING_REQUIRE: ' v3 ' })).toBe('v3');
     expect(() => readTerminalPairingRequirement({
-      HAPPIER_TERMINAL_PAIRING_REQUIRE: 'future',
-    })).toThrow('HAPPIER_TERMINAL_PAIRING_REQUIRE');
+      PIGGERCODE_TERMINAL_PAIRING_REQUIRE: 'future',
+    })).toThrow('PIGGERCODE_TERMINAL_PAIRING_REQUIRE');
   });
 
   it('authenticates v3 responses before returning a data key', () => {

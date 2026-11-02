@@ -80,18 +80,18 @@ async function buildRuntime(sendToAllDevicesAsync: SendToAllDevicesAsync) {
 }
 
 describe('surfaceConnectedServiceAccountSwitchOutcome', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
     listProfiles.mockClear();
   });
 
   it('emits BOTH the transcript switch event and the user notification for a recovery (usage_limit) swap', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     stubSessionFetch();
     const postSpy = vi.spyOn(axios, 'post').mockResolvedValue({
@@ -133,7 +133,7 @@ describe('surfaceConnectedServiceAccountSwitchOutcome', () => {
   });
 
   it('commits the transcript event but suppresses the notification for a manual swap', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     stubSessionFetch();
     const postSpy = vi.spyOn(axios, 'post').mockResolvedValue({
@@ -164,7 +164,7 @@ describe('surfaceConnectedServiceAccountSwitchOutcome', () => {
   });
 
   it('emits BOTH the transcript switch event and the preventive notification for a preemptive (soft_threshold) swap', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     stubSessionFetch();
     const postSpy = vi.spyOn(axios, 'post').mockResolvedValue({
@@ -204,7 +204,7 @@ describe('surfaceConnectedServiceAccountSwitchOutcome', () => {
   });
 
   it('stays fully silent for an internal same-provider fanout swap: no transcript event, no notification', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     stubSessionFetch();
     const postSpy = vi.spyOn(axios, 'post').mockResolvedValue({

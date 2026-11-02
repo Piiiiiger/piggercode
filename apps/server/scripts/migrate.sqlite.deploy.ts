@@ -55,8 +55,8 @@ export async function runSqliteMigrationDeploy(
     if (!databasePath) {
         throw new Error("SQLite migration deploy requires DATABASE_URL=file:... to be set");
     }
-    env.HAPPIER_SQLITE_MIGRATIONS_DIR =
-        String(env.HAPPIER_SQLITE_MIGRATIONS_DIR ?? env.HAPPY_SQLITE_MIGRATIONS_DIR ?? "").trim()
+    env.PIGGERCODE_SQLITE_MIGRATIONS_DIR =
+        String(env.PIGGERCODE_SQLITE_MIGRATIONS_DIR ?? env.HAPPY_SQLITE_MIGRATIONS_DIR ?? "").trim()
         || join(serverRoot, "prisma", "sqlite", "migrations");
 
     return await applySqliteMigrations({

@@ -10,7 +10,7 @@ function isDevMode(): boolean {
 }
 
 function getLocalAssetsBaseUrl(): string | null {
-    const raw = process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL;
+    const raw = process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL;
     if (typeof raw !== 'string') return null;
     const trimmed = raw.trim();
     return trimmed.length > 0 ? trimmed : null;
@@ -26,10 +26,10 @@ function getRemoteAssetsBaseUrl(): string {
         return manifest.assetBaseUrl;
     }
     const repo =
-        (process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_ASSETS_REPO ?? DEFAULT_REPO).trim()
+        (process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_ASSETS_REPO ?? DEFAULT_REPO).trim()
         || DEFAULT_REPO;
     const tag =
-        (process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_ASSETS_TAG ?? DEFAULT_TAG).trim()
+        (process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_ASSETS_TAG ?? DEFAULT_TAG).trim()
         || DEFAULT_TAG;
     return `https://github.com/${repo}/releases/download/${tag}/`;
 }

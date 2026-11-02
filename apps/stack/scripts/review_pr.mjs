@@ -31,8 +31,8 @@ function usage() {
     '',
     'VM port forwarding (optional):',
     '- `--vm-ports`: convenience preset for port-forwarded VMs (stack ports ~13xxx, Expo ports ~18xxx)',
-    '- `--stack-port-start=<n>`: sets HAPPIER_STACK_STACK_PORT_START inside the sandbox',
-    '- `--expo-dev-port-strategy=stable|ephemeral`: sets HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY inside the sandbox',
+    '- `--stack-port-start=<n>`: sets PIGGERCODE_STACK_STACK_PORT_START inside the sandbox',
+    '- `--expo-dev-port-strategy=stable|ephemeral`: sets PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY inside the sandbox',
     '- `--expo-dev-port-base=<n>` / `--expo-dev-port-range=<n>`: stable Expo port hashing params',
     '- `--expo-dev-port=<n>`: force the Expo dev (Metro) port inside the sandbox',
     '',
@@ -103,37 +103,37 @@ function resolveSandboxPortEnvOverrides(argv) {
 
   // Convenience preset for VM review flows (pairs with Lima port-forward ranges in docs).
   if (argvHasFlag(argv, ['--vm-ports'])) {
-    overrides.HAPPIER_STACK_STACK_PORT_START = '13005';
+    overrides.PIGGERCODE_STACK_STACK_PORT_START = '13005';
 
     // Keep Expo dev ports stable per stack so forwarded ports remain predictable.
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY = 'stable';
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_BASE = '18081';
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_RANGE = '1000';
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY = 'stable';
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE = '18081';
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE = '1000';
   }
 
   const stackPortStart = (kvValue(argv, ['--stack-port-start']) ?? '').trim();
   if (stackPortStart) {
-    overrides.HAPPIER_STACK_STACK_PORT_START = stackPortStart;
+    overrides.PIGGERCODE_STACK_STACK_PORT_START = stackPortStart;
   }
 
   const expoStrategy = (kvValue(argv, ['--expo-dev-port-strategy']) ?? '').trim().toLowerCase();
   if (expoStrategy === 'stable' || expoStrategy === 'ephemeral') {
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY = expoStrategy;
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY = expoStrategy;
   }
 
   const expoBase = (kvValue(argv, ['--expo-dev-port-base']) ?? '').trim();
   if (expoBase) {
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_BASE = expoBase;
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE = expoBase;
   }
 
   const expoRange = (kvValue(argv, ['--expo-dev-port-range']) ?? '').trim();
   if (expoRange) {
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT_RANGE = expoRange;
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE = expoRange;
   }
 
   const expoForced = (kvValue(argv, ['--expo-dev-port']) ?? '').trim();
   if (expoForced) {
-    overrides.HAPPIER_STACK_EXPO_DEV_PORT = expoForced;
+    overrides.PIGGERCODE_STACK_EXPO_DEV_PORT = expoForced;
   }
 
   return Object.keys(overrides).length ? overrides : null;
@@ -151,8 +151,8 @@ function resolveWorkspaceCacheConfig(argv) {
     if (explicitDirRaw) {
       return resolve(expandHome(explicitDirRaw));
     }
-    const baseHome = (process.env.HAPPIER_STACK_HOME_DIR ?? '').trim()
-      ? process.env.HAPPIER_STACK_HOME_DIR.trim()
+    const baseHome = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
+      ? process.env.PIGGERCODE_STACK_HOME_DIR.trim()
       : join(homedir(), '.happier-stack');
     const nextDefault = resolve(join(baseHome, 'cache', 'sandbox', 'workspace'));
     const legacyDefault = resolve(join(baseHome, 'cache', 'review-pr', 'workspace'));
@@ -164,8 +164,8 @@ function resolveWorkspaceCacheConfig(argv) {
     return nextDefault;
   })();
 
-  const baseHome = (process.env.HAPPIER_STACK_HOME_DIR ?? '').trim()
-    ? process.env.HAPPIER_STACK_HOME_DIR.trim()
+  const baseHome = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
+    ? process.env.PIGGERCODE_STACK_HOME_DIR.trim()
     : join(homedir(), '.happier-stack');
   const suggestedDir = resolve(join(baseHome, 'cache', 'sandbox', 'workspace'));
   const legacyDir = resolve(join(baseHome, 'cache', 'review-pr', 'workspace'));
@@ -435,7 +435,7 @@ async function main() {
         const mainDir = join(workspaceCache.workspaceDir, 'main');
         if (existsSync(join(mainDir, '.git'))) {
           const stableBranch =
-            (process.env.HAPPIER_STACK_STABLE_BRANCH ?? '').trim() ||
+            (process.env.PIGGERCODE_STACK_STABLE_BRANCH ?? '').trim() ||
             (await resolveDefaultRemoteBranch({ dir: mainDir, remote: 'origin' })) ||
             'main';
           const label = `update cached workspace (main:${stableBranch})`;
@@ -474,8 +474,8 @@ async function main() {
               const pmCacheBaseDir = resolvePmCacheBaseDirFromWorkspaceDir(workspaceCache.workspaceDir);
               const env = await applyStackCacheEnv({
                 ...process.env,
-                HAPPIER_STACK_PM_CACHE_BASE_DIR: pmCacheBaseDir,
-                HAPPIER_STACK_PM_ISOLATE_HOME: '1',
+                PIGGERCODE_STACK_PM_CACHE_BASE_DIR: pmCacheBaseDir,
+                PIGGERCODE_STACK_PM_ISOLATE_HOME: '1',
               });
               const quiet = verbosity === 0 && !json;
               try {
@@ -533,9 +533,9 @@ async function main() {
 
     const childEnv = portEnv ? { ...process.env, ...portEnv } : { ...process.env };
     if (workspaceCache.enabled) {
-      childEnv.HAPPIER_STACK_SANDBOX_WORKSPACE_DIR = workspaceCache.workspaceDir;
+      childEnv.PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR = workspaceCache.workspaceDir;
     } else {
-      delete childEnv.HAPPIER_STACK_SANDBOX_WORKSPACE_DIR;
+      delete childEnv.PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR;
     }
     child = spawn(process.execPath, [bin, '--sandbox-dir', sandboxDir, 'setup-pr', ...argvForSetupPr], {
       cwd: rootDir,

@@ -15,13 +15,13 @@ import { probeCodexAppServerExecutionRunAvailability } from './probeCodexAppServ
 import { selectCodexExecutionRunTransport } from './selectCodexExecutionRunTransport';
 
 const CODEX_EXECUTION_RUN_PROCESS_ENV_KEYS = [
-  'HAPPIER_CODEX_APP_SERVER_BIN',
-  'HAPPIER_CODEX_TUI_BIN',
+  'PIGGERCODE_CODEX_APP_SERVER_BIN',
+  'PIGGERCODE_CODEX_TUI_BIN',
   'HAPPY_CODEX_TUI_BIN',
-  'HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT',
-  'HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS',
-  'HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS',
-  'HAPPIER_CODEX_HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS',
+  'PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT',
+  'PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS',
+  'PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS',
+  'PIGGERCODE_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS',
 ] as const;
 
 function buildCodexExecutionRunBaseEnv(isolationEnv: NodeJS.ProcessEnv | undefined): NodeJS.ProcessEnv | undefined {
@@ -60,8 +60,8 @@ export const executionRunBackendFactory: ExecutionRunBackendFactory = (opts) => 
         processEnv: env,
       })
     : {};
-  const preferredTransport = typeof env.HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT === 'string'
-    ? env.HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT
+  const preferredTransport = typeof env.PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT === 'string'
+    ? env.PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT
     : typeof runtimeExtras.codexBackendMode === 'string'
       ? runtimeExtras.codexBackendMode
       : undefined;

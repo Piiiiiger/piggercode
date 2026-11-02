@@ -13,7 +13,7 @@ hstack is **monorepo-only**: UI/CLI/server all live in the same Happier git repo
 
 - Keep a stable checkout at `<workspace>/main`
 - Put all development work in `<workspace>/dev` or repo worktrees under `<workspace>/{pr,local,tmp}/...`
-- Point stacks at a repo checkout via **`HAPPIER_STACK_REPO_DIR`** (managed by `hstack wt use ...` / `hstack stack wt ...`)
+- Point stacks at a repo checkout via **`PIGGERCODE_STACK_REPO_DIR`** (managed by `hstack wt use ...` / `hstack stack wt ...`)
 
 ---
 
@@ -58,7 +58,7 @@ PR worktrees use `pr/...` branch names.
 
 hstack selects the active repo checkout using:
 
-- `HAPPIER_STACK_REPO_DIR` (absolute path to the monorepo root)
+- `PIGGERCODE_STACK_REPO_DIR` (absolute path to the monorepo root)
 
 Recommended ways to set it:
 

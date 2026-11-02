@@ -206,7 +206,7 @@ describe('apiSocket reconnect semantics', () => {
         reachability.listenersByServerUrl.clear();
         transportFactory.createSyncSocketTransportSpy.mockReset();
         transportFactory.lastController = null;
-        delete process.env.EXPO_PUBLIC_HAPPIER_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS;
         vi.resetModules();
         vi.useRealTimers();
     });
@@ -636,7 +636,7 @@ describe('apiSocket reconnect semantics', () => {
 
     it('rejects session RPC when the active socket ack never settles before the timeout', async () => {
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS = '0';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS = '0';
 
         const controller = createTransportController();
         const emitWithAck = vi.fn(() => new Promise<unknown>(() => {}));

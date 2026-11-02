@@ -67,7 +67,7 @@ export async function buildCliCommonDist(options = {}) {
   const packageDir = resolve(options.packageDir ?? dirname(scriptsDir));
   const lockPath = options.lockPath ?? resolveCliCommonDistBuildLockPath(packageDir);
   const env = { ...process.env, ...(options.env ?? {}) };
-  const outputDir = String(env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR ?? '').trim() || undefined;
+  const outputDir = String(env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR ?? '').trim() || undefined;
   const runBuild = async ({ heldLockValue }) => {
     await reclaimStaleLegacyBuildArtifacts(packageDir, {
       staleAfterMs: options.staleArtifactAfterMs ?? 24 * 60 * 60 * 1_000,
@@ -79,7 +79,7 @@ export async function buildCliCommonDist(options = {}) {
       outputDir,
       env: {
         ...env,
-        HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+        PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
       },
       stdio: options.stdio ?? 'inherit',
       platform: options.platform ?? process.platform,
@@ -91,7 +91,7 @@ export async function buildCliCommonDist(options = {}) {
 
   return await withWorkspaceBundleLock(runBuild, {
     lockPath,
-    heldLockValue: env.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD,
+    heldLockValue: env.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD,
     timeoutMs: options.timeoutMs,
     pollIntervalMs: options.pollIntervalMs,
     staleAfterMs: options.staleAfterMs,

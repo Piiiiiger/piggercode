@@ -7,25 +7,25 @@ import {
   scrubHappierStackEnv,
 } from './scrub_env.mjs';
 
-test('scrubHappierStackEnv removes non-preserved HAPPIER_STACK_* vars and clears selected unprefixed keys', () => {
+test('scrubHappierStackEnv removes non-preserved PIGGERCODE_STACK_* vars and clears selected unprefixed keys', () => {
   const env = {
     PATH: '/bin',
-    HAPPIER_STACK_VERBOSE: '1',
-    HAPPIER_STACK_FOO: 'bar',
-    HAPPIER_HOME_DIR: '/tmp/happier-home',
-    HAPPIER_SERVER_URL: 'http://example.com',
+    PIGGERCODE_STACK_VERBOSE: '1',
+    PIGGERCODE_STACK_FOO: 'bar',
+    PIGGERCODE_HOME_DIR: '/tmp/happier-home',
+    PIGGERCODE_SERVER_URL: 'http://example.com',
   };
 
   const scrubbed = scrubHappierStackEnv(env, {
     keepHappierStackKeys: SANDBOX_PRESERVE_KEYS,
-    clearUnprefixedKeys: ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL'],
+    clearUnprefixedKeys: ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL'],
   });
 
   assert.equal(scrubbed.PATH, '/bin');
-  assert.equal(scrubbed.HAPPIER_STACK_VERBOSE, '1');
-  assert.equal(scrubbed.HAPPIER_STACK_FOO, undefined);
-  assert.equal(scrubbed.HAPPIER_HOME_DIR, undefined);
-  assert.equal(scrubbed.HAPPIER_SERVER_URL, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_VERBOSE, '1');
+  assert.equal(scrubbed.PIGGERCODE_STACK_FOO, undefined);
+  assert.equal(scrubbed.PIGGERCODE_HOME_DIR, undefined);
+  assert.equal(scrubbed.PIGGERCODE_SERVER_URL, undefined);
 });
 
 test('scrubHappierStackEnv keeps runtime-critical non-HAPPIER env keys', () => {
@@ -34,7 +34,7 @@ test('scrubHappierStackEnv keeps runtime-critical non-HAPPIER env keys', () => {
     HOME: '/tmp/home',
     TMPDIR: '/tmp',
     SHELL: '/bin/zsh',
-    HAPPIER_STACK_SECRET: 'drop-me',
+    PIGGERCODE_STACK_SECRET: 'drop-me',
   };
 
   const scrubbed = scrubHappierStackEnv(env, {
@@ -46,51 +46,51 @@ test('scrubHappierStackEnv keeps runtime-critical non-HAPPIER env keys', () => {
   assert.equal(scrubbed.HOME, '/tmp/home');
   assert.equal(scrubbed.TMPDIR, '/tmp');
   assert.equal(scrubbed.SHELL, '/bin/zsh');
-  assert.equal(scrubbed.HAPPIER_STACK_SECRET, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_SECRET, undefined);
 });
 
-test('scrubHappierStackEnv preserves only explicitly kept HAPPIER_STACK keys', () => {
+test('scrubHappierStackEnv preserves only explicitly kept PIGGERCODE_STACK keys', () => {
   const env = {
-    HAPPIER_STACK_VERBOSE: '1',
-    HAPPIER_STACK_SANDBOX_DIR: '/tmp/sandbox',
-    HAPPIER_STACK_SECRET: 'drop-me',
+    PIGGERCODE_STACK_VERBOSE: '1',
+    PIGGERCODE_STACK_SANDBOX_DIR: '/tmp/sandbox',
+    PIGGERCODE_STACK_SECRET: 'drop-me',
   };
   const scrubbed = scrubHappierStackEnv(env, {
-    keepHappierStackKeys: [' HAPPIER_STACK_SANDBOX_DIR ', ''],
+    keepHappierStackKeys: [' PIGGERCODE_STACK_SANDBOX_DIR ', ''],
     clearUnprefixedKeys: [],
   });
 
-  assert.equal(scrubbed.HAPPIER_STACK_SANDBOX_DIR, '/tmp/sandbox');
-  assert.equal(scrubbed.HAPPIER_STACK_VERBOSE, undefined);
-  assert.equal(scrubbed.HAPPIER_STACK_SECRET, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_SANDBOX_DIR, '/tmp/sandbox');
+  assert.equal(scrubbed.PIGGERCODE_STACK_VERBOSE, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_SECRET, undefined);
 });
 
 test('scrubHappierStackEnv trims and de-duplicates clearUnprefixedKeys', () => {
   const env = {
     PATH: '/bin',
-    HAPPIER_HOME_DIR: '/tmp/home',
-    HAPPIER_SERVER_URL: 'http://localhost:3000',
-    HAPPIER_STACK_KEEP: 'keep',
+    PIGGERCODE_HOME_DIR: '/tmp/home',
+    PIGGERCODE_SERVER_URL: 'http://localhost:3000',
+    PIGGERCODE_STACK_KEEP: 'keep',
   };
   const scrubbed = scrubHappierStackEnv(env, {
-    keepHappierStackKeys: ['HAPPIER_STACK_KEEP'],
-    clearUnprefixedKeys: [' HAPPIER_HOME_DIR ', 'HAPPIER_SERVER_URL', 'HAPPIER_SERVER_URL'],
+    keepHappierStackKeys: ['PIGGERCODE_STACK_KEEP'],
+    clearUnprefixedKeys: [' PIGGERCODE_HOME_DIR ', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_SERVER_URL'],
   });
 
   assert.equal(scrubbed.PATH, '/bin');
-  assert.equal(scrubbed.HAPPIER_HOME_DIR, undefined);
-  assert.equal(scrubbed.HAPPIER_SERVER_URL, undefined);
-  assert.equal(scrubbed.HAPPIER_STACK_KEEP, 'keep');
+  assert.equal(scrubbed.PIGGERCODE_HOME_DIR, undefined);
+  assert.equal(scrubbed.PIGGERCODE_SERVER_URL, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_KEEP, 'keep');
 });
 
-test('scrubHappierStackEnv preserves HAPPIER_STACK_TUI in stack wrapper mode', () => {
+test('scrubHappierStackEnv preserves PIGGERCODE_STACK_TUI in stack wrapper mode', () => {
   const env = {
     PATH: '/bin',
-    HAPPIER_STACK_TUI: '1',
-    HAPPIER_STACK_RESCUE: '1',
-    HAPPIER_STACK_VERBOSE: '1',
-    HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '90000',
-    HAPPIER_STACK_SECRET: 'drop-me',
+    PIGGERCODE_STACK_TUI: '1',
+    PIGGERCODE_STACK_RESCUE: '1',
+    PIGGERCODE_STACK_VERBOSE: '1',
+    PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '90000',
+    PIGGERCODE_STACK_SECRET: 'drop-me',
   };
   const scrubbed = scrubHappierStackEnv(env, {
     keepHappierStackKeys: STACK_WRAPPER_PRESERVE_KEYS,
@@ -98,9 +98,9 @@ test('scrubHappierStackEnv preserves HAPPIER_STACK_TUI in stack wrapper mode', (
   });
 
   assert.equal(scrubbed.PATH, '/bin');
-  assert.equal(scrubbed.HAPPIER_STACK_TUI, '1');
-  assert.equal(scrubbed.HAPPIER_STACK_RESCUE, '1');
-  assert.equal(scrubbed.HAPPIER_STACK_VERBOSE, '1');
-  assert.equal(scrubbed.HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS, '90000');
-  assert.equal(scrubbed.HAPPIER_STACK_SECRET, undefined);
+  assert.equal(scrubbed.PIGGERCODE_STACK_TUI, '1');
+  assert.equal(scrubbed.PIGGERCODE_STACK_RESCUE, '1');
+  assert.equal(scrubbed.PIGGERCODE_STACK_VERBOSE, '1');
+  assert.equal(scrubbed.PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS, '90000');
+  assert.equal(scrubbed.PIGGERCODE_STACK_SECRET, undefined);
 });

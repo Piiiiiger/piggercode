@@ -103,8 +103,8 @@ describe('file transfers (download)', () => {
   });
 
   it('removes temp zip files when archive creation fails before a download session opens', async () => {
-    const previousMaxEntryCount = process.env.HAPPIER_FILES_ZIP_MAX_ENTRY_COUNT;
-    process.env.HAPPIER_FILES_ZIP_MAX_ENTRY_COUNT = '5';
+    const previousMaxEntryCount = process.env.PIGGERCODE_FILES_ZIP_MAX_ENTRY_COUNT;
+    process.env.PIGGERCODE_FILES_ZIP_MAX_ENTRY_COUNT = '5';
     try {
       // This test must not scale with production defaults (10k entries), otherwise it can
       // time out on slower filesystems. Reload configuration-sensitive modules with the
@@ -151,9 +151,9 @@ describe('file transfers (download)', () => {
       expect(afterEntries).toEqual([]);
     } finally {
       if (previousMaxEntryCount === undefined) {
-        delete process.env.HAPPIER_FILES_ZIP_MAX_ENTRY_COUNT;
+        delete process.env.PIGGERCODE_FILES_ZIP_MAX_ENTRY_COUNT;
       } else {
-        process.env.HAPPIER_FILES_ZIP_MAX_ENTRY_COUNT = previousMaxEntryCount;
+        process.env.PIGGERCODE_FILES_ZIP_MAX_ENTRY_COUNT = previousMaxEntryCount;
       }
     }
   });
@@ -245,7 +245,7 @@ describe('file transfers (download)', () => {
   });
 
   it('rejects downloads that exceed the advertised server-routed size limit when registered via registerFileSystemHandlers (no bypass)', async () => {
-    vi.stubEnv('HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES', '4');
+    vi.stubEnv('PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES', '4');
 
     const workspace = mkdtempSync(join(tmpdir(), 'happier-files-download-'));
     writeFileSync(join(workspace, 'file.txt'), 'hello\n', 'utf8');

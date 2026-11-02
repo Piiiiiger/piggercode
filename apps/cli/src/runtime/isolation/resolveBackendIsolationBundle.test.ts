@@ -7,10 +7,10 @@ describe('resolveBackendIsolationBundle', () => {
   it('preserves user HOME and XDG directories without allocating a run root while scrubbing inherited connected services', async () => {
     const homeDir = await mkdtemp(join(os.tmpdir(), 'happier-isolation-home-'));
     const previousEnv = {
-      HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR,
-      HAPPIER_SERVER_URL: process.env.HAPPIER_SERVER_URL,
-      HAPPIER_WEBAPP_URL: process.env.HAPPIER_WEBAPP_URL,
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: process.env.HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS,
+      PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR,
+      PIGGERCODE_SERVER_URL: process.env.PIGGERCODE_SERVER_URL,
+      PIGGERCODE_WEBAPP_URL: process.env.PIGGERCODE_WEBAPP_URL,
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: process.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS,
       HOME: process.env.HOME,
       USERPROFILE: process.env.USERPROFILE,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
@@ -20,15 +20,15 @@ describe('resolveBackendIsolationBundle', () => {
       XDG_DATA_HOME: process.env.XDG_DATA_HOME,
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,
       CODEX_HOME: process.env.CODEX_HOME,
-      HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON,
-      HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON: process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON,
-      HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: process.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT,
+      PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON,
+      PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON: process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON,
+      PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: process.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT,
     };
     try {
-      process.env.HAPPIER_HOME_DIR = homeDir;
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-      process.env.HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS = '123456';
+      process.env.PIGGERCODE_HOME_DIR = homeDir;
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS = '123456';
       process.env.HOME = join(homeDir, 'real-home');
       process.env.USERPROFILE = join(homeDir, 'real-profile');
       process.env.ANTHROPIC_API_KEY = 'native-user-auth';
@@ -38,9 +38,9 @@ describe('resolveBackendIsolationBundle', () => {
       process.env.XDG_DATA_HOME = join(homeDir, 'real-data');
       process.env.OPENAI_API_KEY = 'parent-connected-secret';
       process.env.CODEX_HOME = join(homeDir, 'parent-connected-codex');
-      process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON = JSON.stringify([{ serviceId: 'openai-codex', source: 'connected' }]);
-      process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON = JSON.stringify(['OPENAI_API_KEY', 'CODEX_HOME']);
-      process.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT = join(homeDir, 'parent-connected-root');
+      process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON = JSON.stringify([{ serviceId: 'openai-codex', source: 'connected' }]);
+      process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON = JSON.stringify(['OPENAI_API_KEY', 'CODEX_HOME']);
+      process.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT = join(homeDir, 'parent-connected-root');
 
       const { reloadConfiguration } = await import('@/configuration');
       reloadConfiguration();
@@ -62,16 +62,16 @@ describe('resolveBackendIsolationBundle', () => {
       expect(bundle.env.XDG_DATA_HOME).toBe(join(homeDir, 'real-data'));
       await bundle.cleanup?.();
       await expect(access(root)).rejects.toThrow();
-      expect(bundle.env.HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS).toBe('123456');
+      expect(bundle.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS).toBe('123456');
       expect(bundle.env.HOME).toBe(join(homeDir, 'real-home'));
       expect(bundle.env.USERPROFILE).toBe(join(homeDir, 'real-profile'));
       expect(bundle.env.ANTHROPIC_API_KEY).toBe('native-user-auth');
       expect(bundle.env.XDG_CONFIG_HOME).toBe(join(homeDir, 'real-config'));
       expect(bundle.env.OPENAI_API_KEY).toBeUndefined();
       expect(bundle.env.CODEX_HOME).toBeUndefined();
-      expect(bundle.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON).toBeUndefined();
-      expect(bundle.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON).toBeUndefined();
-      expect(bundle.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT).toBeUndefined();
+      expect(bundle.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON).toBeUndefined();
+      expect(bundle.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON).toBeUndefined();
+      expect(bundle.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT).toBeUndefined();
     } finally {
       vi.resetModules();
       await rm(homeDir, { recursive: true, force: true });

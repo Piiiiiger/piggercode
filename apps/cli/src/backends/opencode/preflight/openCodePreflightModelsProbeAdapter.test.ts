@@ -15,7 +15,7 @@ function makeTempDir(prefix: string): string {
   return mkdtempSync(join(tmpdir(), prefix));
 }
 
-const envKeys = ['HAPPIER_OPENCODE_PATH', 'PATH'] as const;
+const envKeys = ['PIGGERCODE_OPENCODE_PATH', 'PATH'] as const;
 let envScope = createEnvKeyScope(envKeys);
 
 afterEach(() => {
@@ -88,7 +88,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
       timeoutMs: 2_000,
-      processEnv: { ...process.env, HAPPIER_OPENCODE_PATH: fakeOpenCode },
+      processEnv: { ...process.env, PIGGERCODE_OPENCODE_PATH: fakeOpenCode },
     });
     expect(raw).toEqual([]);
   });
@@ -125,7 +125,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     });
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
@@ -189,7 +189,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const stdout = execFileSync(fakeOpenCode, ['models', '--verbose'], { cwd: tempDir, encoding: 'utf8' });
     expect(stdout).toContain('openai/codex-mini-latest');
@@ -243,7 +243,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
@@ -277,7 +277,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     await expect(openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
@@ -303,7 +303,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
@@ -346,7 +346,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,
@@ -377,7 +377,7 @@ describe('openCodePreflightModelsProbeAdapter', () => {
     ]);
 
     process.env.PATH = '/usr/bin:/bin';
-    process.env.HAPPIER_OPENCODE_PATH = fakeOpenCode;
+    process.env.PIGGERCODE_OPENCODE_PATH = fakeOpenCode;
 
     const raw = await openCodePreflightModelsProbeAdapter.probeModelsRaw?.({
       cwd: tempDir,

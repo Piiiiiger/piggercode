@@ -156,8 +156,8 @@ async function main() {
         '  If run from inside a repo checkout/worktree, that checkout is used for this run (without requiring `hstack wt use`).',
         '',
         'env:',
-        '  HAPPIER_STACK_EXPO_TAILSCALE=1   # enable Expo Tailscale forwarding via env var',
-        '  HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB=8192  # default: 8192 (8GB) heap for the Expo/Metro Node process',
+        '  PIGGERCODE_STACK_EXPO_TAILSCALE=1   # enable Expo Tailscale forwarding via env var',
+        '  PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB=8192  # default: 8192 (8GB) heap for the Expo/Metro Node process',
       ].join('\n'),
     });
     return;
@@ -182,8 +182,8 @@ async function main() {
 	    });
     if (inferred) {
       // Stack env should win. Only infer from CWD when the repo dir isn't already configured.
-      if (!(process.env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim()) {
-        process.env.HAPPIER_STACK_REPO_DIR = inferred.repoDir;
+      if (!(process.env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim()) {
+        process.env.PIGGERCODE_STACK_REPO_DIR = inferred.repoDir;
       }
     }
   }
@@ -206,7 +206,7 @@ async function main() {
   const startUi = !flags.has('--no-ui');
   const requestedStartDaemon = !flags.has('--no-daemon');
   const openReactNativeDevtools = flags.has('--rn-devtools') || flags.has('--react-native-devtools');
-  const noBrowser = startTauri || flags.has('--no-browser') || (process.env.HAPPIER_STACK_NO_BROWSER ?? '').toString().trim() === '1';
+  const noBrowser = startTauri || flags.has('--no-browser') || (process.env.PIGGERCODE_STACK_NO_BROWSER ?? '').toString().trim() === '1';
   const expoTailscale = flags.has('--expo-tailscale') || resolveExpoTailscaleEnabled({ env: process.env });
   const startMobile = flags.has('--mobile') || flags.has('--with-mobile') || expoTailscale;
   const requestedStartExpo = startUi || startMobile;
@@ -223,9 +223,9 @@ async function main() {
   const autostart = getDefaultAutostartPaths();
   const baseEnv = { ...process.env };
   const parentServerRestartPreflightAlreadyDone = String(
-    baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE ?? '',
+    baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE ?? '',
   ).trim() === '1';
-  delete baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
+  delete baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
   const stackCtx = resolveStackContext({ env: baseEnv, autostart });
   const { stackMode, runtimeStatePath, stackName, envPath, ephemeral } = stackCtx;
   const devTargetsEnabled = !flags.has('--no-dev-targets');
@@ -244,7 +244,7 @@ async function main() {
   const allowEnableTailscale =
     !stackMode ||
     stackName === 'main' ||
-    (baseEnv.HAPPIER_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
+    (baseEnv.PIGGERCODE_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
   const resolvedUrls = await resolveServerUrls({ env: baseEnv, serverPort, allowEnable: allowEnableTailscale });
   const serverConnection = resolveDevServerConnection({
     flags,
@@ -268,8 +268,8 @@ async function main() {
   const uiApiUrl = requestedStartServer ? resolvedUrls.defaultPublicUrl : serverConnection.uiApiUrl;
   const serverConnectionSource = serverConnection.source;
   const restart = flags.has('--restart');
-  const cliHomeDir = process.env.HAPPIER_STACK_CLI_HOME_DIR?.trim()
-    ? expandHome(process.env.HAPPIER_STACK_CLI_HOME_DIR.trim())
+  const cliHomeDir = process.env.PIGGERCODE_STACK_CLI_HOME_DIR?.trim()
+    ? expandHome(process.env.PIGGERCODE_STACK_CLI_HOME_DIR.trim())
     : join(autostart.baseDir, 'cli');
 
   const executionPolicy = resolveDevTargetExecutionPolicy(loadedDevTargets.config, {
@@ -395,7 +395,7 @@ async function main() {
   process.on('SIGTERM', () => dispatchShutdown('SIGTERM'));
   installExitCleanup({ label: 'local', children });
 
-  const buildCli = (baseEnv.HAPPIER_STACK_CLI_BUILD ?? '1').toString().trim() !== '0';
+  const buildCli = (baseEnv.PIGGERCODE_STACK_CLI_BUILD ?? '1').toString().trim() !== '0';
 
   // Watch mode (interactive only by default): rebuild happier-cli and restart daemon when code changes.
   const watchEnabled =
@@ -472,7 +472,7 @@ async function main() {
   }
 
   const remoteExpoPlan = servicePlans.targets.find((plan) => plan.services.expo) ?? null;
-  const configuredRemoteExpoPort = Number(baseEnv.HAPPIER_STACK_EXPO_DEV_PORT);
+  const configuredRemoteExpoPort = Number(baseEnv.PIGGERCODE_STACK_EXPO_DEV_PORT);
   const initialRemoteExpoProjection = remoteExpoPlan
     && Number.isInteger(configuredRemoteExpoPort)
     && configuredRemoteExpoPort > 0
@@ -633,7 +633,7 @@ async function main() {
         serverDir,
         autostart,
         baseEnv: parentServerRestartPreflightAlreadyDone
-          ? { ...baseEnv, HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1' }
+          ? { ...baseEnv, PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1' }
           : baseEnv,
         serverPort,
         serverBindPort,
@@ -730,8 +730,8 @@ async function main() {
 
   let expoResEarly = null;
   const wantsAuthFlow =
-    (baseEnv.HAPPIER_STACK_AUTH_FLOW ?? '').toString().trim() === '1' ||
-    (baseEnv.HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim() === '1';
+    (baseEnv.PIGGERCODE_STACK_AUTH_FLOW ?? '').toString().trim() === '1' ||
+    (baseEnv.PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim() === '1';
 
   if (startServer) {
     // CRITICAL (review-pr / setup-pr guided login):
@@ -760,7 +760,7 @@ async function main() {
       rootDir,
       // In dev mode, guided login must target the Expo web UI origin (not the server port).
       // Mark this as an auth-flow so URL resolution fails closed if Expo isn't ready.
-      env: startUi ? { ...baseEnv, HAPPIER_STACK_AUTH_FLOW: '1' } : baseEnv,
+      env: startUi ? { ...baseEnv, PIGGERCODE_STACK_AUTH_FLOW: '1' } : baseEnv,
       stackName,
       cliHomeDir,
       accountCount,
@@ -770,7 +770,7 @@ async function main() {
         if (!startUi) {
           throw new Error(
             `[local] auth: interactive login requires the web UI.\n` +
-              `Re-run without --no-ui, or set HAPPIER_WEBAPP_URL to a reachable Happier UI for this stack.`
+              `Re-run without --no-ui, or set PIGGERCODE_WEBAPP_URL to a reachable Happier UI for this stack.`
           );
         }
         if (expoResEarly) return;
@@ -828,7 +828,7 @@ async function main() {
         runtimeStatePath,
         restart,
         startLastGreen: watchEnabled,
-        keepServerRunningOnFailure: baseEnv.HAPPIER_STACK_TUI === '1',
+        keepServerRunningOnFailure: baseEnv.PIGGERCODE_STACK_TUI === '1',
         isShuttingDown: () => shuttingDown,
         env: baseEnv,
         stackName,
@@ -1104,7 +1104,7 @@ async function main() {
         runtimeStatePath,
         env: baseEnv,
         stackName,
-        cliIdentity: String(baseEnv.HAPPIER_STACK_CLI_IDENTITY ?? '').trim() || 'default',
+        cliIdentity: String(baseEnv.PIGGERCODE_STACK_CLI_IDENTITY ?? '').trim() || 'default',
       });
     }
 

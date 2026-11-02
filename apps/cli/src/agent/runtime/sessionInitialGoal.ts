@@ -3,7 +3,7 @@ import {
   type SessionInitialGoalRequestV1,
 } from '@piggercode/protocol';
 
-export const HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY = 'HAPPIER_DAEMON_INITIAL_GOAL_V1_JSON';
+export const PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY = 'PIGGERCODE_DAEMON_INITIAL_GOAL_V1_JSON';
 
 export function serializeDaemonInitialGoalForEnv(goal: SessionInitialGoalRequestV1): string {
   return JSON.stringify(SessionInitialGoalRequestV1Schema.parse(goal));
@@ -12,10 +12,10 @@ export function serializeDaemonInitialGoalForEnv(goal: SessionInitialGoalRequest
 export function readDaemonInitialGoalFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): SessionInitialGoalRequestV1 | null {
-  const raw = typeof env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY] === 'string'
-    ? env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY]
+  const raw = typeof env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY] === 'string'
+    ? env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY]
     : '';
-  delete env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY];
+  delete env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY];
   if (!raw.trim()) return null;
 
   try {

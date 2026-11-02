@@ -414,7 +414,7 @@ describe('AcpBackend.sendPrompt (prompt ACK vs first session/update)', () => {
       const scriptPath = writeFakeAcpAgentNeverAckPromptScript({ dir });
       let backendForCleanup: AcpBackend | undefined;
       const envScope = createAcpSubprocessEnvScope();
-      envScope.patch({ HAPPIER_ACP_PROMPT_LIVENESS_TIMEOUT_MS: '50' });
+      envScope.patch({ PIGGERCODE_ACP_PROMPT_LIVENESS_TIMEOUT_MS: '50' });
 
       try {
         const backend = new AcpBackend({

@@ -42,9 +42,9 @@ describe('materializeGeminiConnectedServiceAuth', () => {
       GEMINI_FORCE_ENCRYPTED_FILE_STORAGE: 'false',
       GEMINI_FORCE_FILE_STORAGE: 'true',
       GOOGLE_APPLICATION_CREDENTIALS: '',
-      HAPPIER_GEMINI_CONNECTED_SERVICE_PROVIDER_ACCOUNT_ID: 'google-account',
-      HAPPIER_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL: 'user@example.com',
-      HAPPIER_GEMINI_CONNECTED_SERVICE_CREDENTIAL_FINGERPRINT:
+      PIGGERCODE_GEMINI_CONNECTED_SERVICE_PROVIDER_ACCOUNT_ID: 'google-account',
+      PIGGERCODE_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL: 'user@example.com',
+      PIGGERCODE_GEMINI_CONNECTED_SERVICE_CREDENTIAL_FINGERPRINT:
         computeConnectedServiceAccessTokenFingerprint('gemini-access'),
       ...(process.platform === 'win32' ? { USERPROFILE: homeDir } : {}),
     });

@@ -101,7 +101,7 @@ async function writeYarnWorkspaceBuildStub({ binDir, outputPath }) {
       '',
       '# Simulate `yarn -s build` creating dist outputs for workspace packages.',
       'if [[ "${1:-}" == "-s" && "${2:-}" == "build" ]]; then',
-      '  out="${HAPPIER_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
+      '  out="${PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
       '  if [[ "$(pwd)" == */packages/protocol ]]; then',
       '    mkdir -p "$out"',
       "    printf '%s\\n' 'export const ok = true;' > \"$out/index.js\"",
@@ -198,7 +198,7 @@ test('ensureWorkspacePackagesBuiltForComponent builds internal dist-based worksp
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureWorkspacePackagesBuiltForComponent(join(root, 'apps', 'ui'), { quiet: true, env: process.env });
@@ -301,7 +301,7 @@ test('ensureWorkspacePackagesBuiltForComponent builds unscoped internal workspac
       prepareEnv: async (_pkgDir, env) => ({ ...env }),
       runPackageBuild: async (pkgDir, { env }) => {
         buildCalls.push(pkgDir);
-        const outputDir = env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR;
+        const outputDir = env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR;
         assert.ok(outputDir);
         await mkdir(outputDir, { recursive: true });
         await writeFile(join(outputDir, 'index.js'), 'export const privacy = true;\n', 'utf-8');
@@ -381,7 +381,7 @@ test('ensureWorkspacePackagesBuiltForComponent walks the full internal workspace
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureWorkspacePackagesBuiltForComponent(join(root, 'apps', 'ui'), { quiet: true, env: process.env });
@@ -476,7 +476,7 @@ test('ensureWorkspacePackagesBuiltForComponent rebuilds internal workspaces when
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureWorkspacePackagesBuiltForComponent(join(root, 'apps', 'ui'), { quiet: true, env: process.env });
@@ -526,7 +526,7 @@ test('ensureWorkspacePackagesBuiltForComponent serializes concurrent internal wo
       'echo "$(pwd) :: $*" >> "${OUTPUT_PATH:?}"',
       'if [[ "${1:-}" == "--version" ]]; then IFS= read -r _ || true; echo "1.22.22"; exit 0; fi',
       'if [[ "${1:-}" == "-s" && "${2:-}" == "build" && "$(pwd)" == */packages/cli-common ]]; then',
-      '  out="${HAPPIER_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
+      '  out="${PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
       '  sleep 0.12',
       '  mkdir -p "$out"',
       "  printf '%s\\n' 'export const ok = true;' > \"$out/index.js\"",
@@ -543,7 +543,7 @@ test('ensureWorkspacePackagesBuiltForComponent serializes concurrent internal wo
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await Promise.all([
@@ -617,7 +617,7 @@ const fs = require('node:fs');
 const net = require('node:net');
 const path = require('node:path');
 const args = process.argv.slice(2);
-const out = process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR || 'dist';
+const out = process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR || 'dist';
 fs.appendFileSync(process.env.OUTPUT_PATH, process.cwd() + ' :: ' + args.join(' ') + ' :: out=' + out + '\\n');
 if (args[0] === '--version') {
   process.stdin.resume();
@@ -654,7 +654,7 @@ if (args[0] === '--version') {
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const buildBarrier = await createAtomicBuildBarrier();
@@ -747,7 +747,7 @@ const fs = require('node:fs');
 const net = require('node:net');
 const path = require('node:path');
 const args = process.argv.slice(2);
-const out = process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR || 'dist';
+const out = process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR || 'dist';
 fs.appendFileSync(process.env.OUTPUT_PATH, process.cwd() + ' :: ' + args.join(' ') + ' :: out=' + out + '\\n');
 if (args[0] === '--version') {
   process.stdin.resume();
@@ -785,7 +785,7 @@ if (args[0] === '--version') {
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const cleanupProbe = await createAtomicBuildBarrier();

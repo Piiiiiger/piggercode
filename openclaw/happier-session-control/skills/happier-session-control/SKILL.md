@@ -31,7 +31,7 @@ or:
 
 Common error codes to handle:
 
-- `not_authenticated`: run `happier auth login` on the host (or mount/provide a valid `HAPPIER_HOME_DIR`).
+- `not_authenticated`: run `happier auth login` on the host (or mount/provide a valid `PIGGERCODE_HOME_DIR`).
 - `session_id_ambiguous`: pick deterministically from `error.candidates` (prefer exact id; otherwise ask the user).
 - `session_not_found`: call `happier session list --json` and retry.
 - `unsupported`: feature disabled by server policy or backend doesn’t support the requested intent.

@@ -10,7 +10,7 @@ import { basename } from 'node:path';
  * read `hdev daemon start`, not `happier daemon start`.
  *
  * Resolution order:
- *  1. `HAPPIER_CLI_INVOKER_NAME` env var (set by shim wrappers when known).
+ *  1. `PIGGERCODE_CLI_INVOKER_NAME` env var (set by shim wrappers when known).
  *  2. `process.argv[1]` basename (the path to the CLI entry).
  *  3. `process.argv[0]` basename (the runtime — usually `node`, but on
  *     packaged single-executable builds it's the shim).
@@ -20,7 +20,7 @@ import { basename } from 'node:path';
  * canonical user-facing name.
  */
 export function resolveInvokerName(): string | null {
-  const envInvokerName = sanitizeInvokerName(process.env.HAPPIER_CLI_INVOKER_NAME);
+  const envInvokerName = sanitizeInvokerName(process.env.PIGGERCODE_CLI_INVOKER_NAME);
   if (envInvokerName) return envInvokerName;
 
   for (const candidate of [process.argv[1] ?? '', process.argv[0] ?? '']) {

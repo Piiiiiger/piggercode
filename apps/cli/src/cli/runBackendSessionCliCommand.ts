@@ -35,7 +35,7 @@ import {
   resolveDirectConnectedServiceEnvironment,
 } from '@/cli/connectedServices/resolveDirectConnectedServiceEnvironment';
 import { resolveDirectCliConnectedServiceBindings } from '@/cli/connectedServices/resolveDirectCliConnectedServiceBindings';
-import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
 import { fail } from '@piggercode/cli-common/output';
 
 type CommonBackendRunOptions = ParsedSessionStartArgs & {
@@ -276,7 +276,7 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
           startedBy !== 'daemon'
           && agentIdForProfiles !== undefined
           && accountSettingsContext !== null
-          && !process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
+          && !process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
         if (shouldResolveDirectConnectedServices) {
           if (!accountSettingsContext) {
             throw new Error('connected_service_auth_unsupported');

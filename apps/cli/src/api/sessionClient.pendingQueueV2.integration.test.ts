@@ -50,7 +50,7 @@ async function expectSessionAuthFailed(client: ApiSessionClient): Promise<void> 
 }
 
 describe('ApiSessionClient pending queue V2 helpers', () => {
-  const envScope = createEnvKeyScope(['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL']);
+  const envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL']);
   let server: Server | null = null;
   let serverUrl = '';
   let pendingRows: PendingRow[] = [];
@@ -136,8 +136,8 @@ describe('ApiSessionClient pending queue V2 helpers', () => {
 
     serverUrl = `http://127.0.0.1:${address.port}`;
     envScope.patch({
-      HAPPIER_SERVER_URL: serverUrl,
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000',
+      PIGGERCODE_SERVER_URL: serverUrl,
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000',
     });
   });
 

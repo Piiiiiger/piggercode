@@ -1,6 +1,6 @@
-import { HAPPIER_RUNTIME_CONTEXT_ENV_KEYS } from './resolveHappierRuntimeContextEnv';
+import { PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS } from './resolveHappierRuntimeContextEnv';
 
-type RuntimeContextEnv = Partial<Record<typeof HAPPIER_RUNTIME_CONTEXT_ENV_KEYS[number], string>>;
+type RuntimeContextEnv = Partial<Record<typeof PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS[number], string>>;
 
 const RUNTIME_CONTEXT_FLAG = '--runtime-context';
 
@@ -22,7 +22,7 @@ function decodeRuntimeContext(value: string | undefined): RuntimeContextEnv {
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw invalidContext();
   const context: RuntimeContextEnv = {};
   for (const [key, entry] of Object.entries(parsed)) {
-    const contextKey = HAPPIER_RUNTIME_CONTEXT_ENV_KEYS.find((candidate) => candidate === key);
+    const contextKey = PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS.find((candidate) => candidate === key);
     if (!contextKey || typeof entry !== 'string' || entry.includes('\0')) throw invalidContext();
     if (contextKey.endsWith('_URL')) {
       let url: URL;
@@ -59,7 +59,7 @@ export function createRuntimeContextPrefixArgs(context: Readonly<Record<string, 
 export function applyRuntimeContextPrefixEnv(argv: readonly string[], env: NodeJS.ProcessEnv): void {
   const { context } = parseRuntimeContextPrefixArgs(argv);
   if (!context) return;
-  for (const key of HAPPIER_RUNTIME_CONTEXT_ENV_KEYS) {
+  for (const key of PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS) {
     if (context[key] === undefined) delete env[key];
     else env[key] = context[key];
   }

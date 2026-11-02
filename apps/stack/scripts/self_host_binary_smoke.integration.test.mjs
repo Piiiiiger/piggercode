@@ -92,7 +92,7 @@ test('compiled hstack binary runs self-host help outside repo checkout', async (
     encoding: 'utf-8',
     env: {
       ...process.env,
-      HAPPIER_NONINTERACTIVE: '1',
+      PIGGERCODE_NONINTERACTIVE: '1',
     },
   });
   assert.equal(help.status, 0, help.stderr || help.stdout);

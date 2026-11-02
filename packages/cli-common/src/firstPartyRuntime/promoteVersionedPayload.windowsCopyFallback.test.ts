@@ -113,7 +113,7 @@ describe('promoteVersionedPayload Windows copy fallback', () => {
     it('falls back to a manual recursive copy when the Windows junction creation fails', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-versioned-payload-win32-fallback-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 const paths = resolveInstalledFirstPartyComponentPaths({
@@ -144,7 +144,7 @@ describe('promoteVersionedPayload Windows copy fallback', () => {
     it('quarantines a corrupted Windows install root and retries when preserving previous fails with a long path error', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-versioned-payload-win32-corrupt-retry-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 const paths = resolveInstalledFirstPartyComponentPaths({

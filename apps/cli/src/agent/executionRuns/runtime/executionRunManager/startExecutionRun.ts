@@ -77,7 +77,7 @@ function normalizeVoiceAgentModelId(value: unknown): string {
  * this is only the final aggregate backstop for an adapter that never settles at all. Keep it well
  * above observed loaded starts so it does not terminate valid admission work.
  */
-const BACKEND_PROVISION_TIMEOUT_ENV_KEY = 'HAPPIER_EXECUTION_RUN_BACKEND_PROVISION_TIMEOUT_MS';
+const BACKEND_PROVISION_TIMEOUT_ENV_KEY = 'PIGGERCODE_EXECUTION_RUN_BACKEND_PROVISION_TIMEOUT_MS';
 const DEFAULT_BACKEND_PROVISION_TIMEOUT_MS = 30 * 60_000;
 const MAX_NODE_TIMER_DELAY_MS = 2_147_483_647;
 

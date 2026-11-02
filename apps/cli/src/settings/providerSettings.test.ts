@@ -8,8 +8,8 @@ import {
 
 describe('providerSettings', () => {
   it('resolves Codex ACP spawn extras from account settings without mutating process env', () => {
-    const prevAcp = process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
-    process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = '0';
+    const prevAcp = process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
+    process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = '0';
 
     try {
       expect(
@@ -18,12 +18,12 @@ describe('providerSettings', () => {
           settings: { codexBackendMode: 'acp' },
         }),
       ).toEqual({ codexBackendMode: 'acp', experimentalCodexAcp: true });
-      expect(process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP).toBe('0');
+      expect(process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP).toBe('0');
     } finally {
       if (prevAcp === undefined) {
-        delete process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
+        delete process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
       } else {
-        process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = prevAcp;
+        process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = prevAcp;
       }
     }
   });
@@ -61,7 +61,7 @@ describe('providerSettings', () => {
       resolveProviderSpawnExtrasForRuntime({
         agentId: 'codex',
         settings: { codexBackendMode: 'acp' },
-        processEnv: { HAPPIER_EXPERIMENTAL_CODEX_ACP: '0' },
+        processEnv: { PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '0' },
       }),
     ).toEqual({});
   });
@@ -71,7 +71,7 @@ describe('providerSettings', () => {
       resolveProviderSpawnExtrasForRuntime({
         agentId: 'codex',
         settings: { codexBackendMode: 'acp' },
-        processEnv: { HAPPIER_CODEX_BACKEND_MODE: 'appServer' },
+        processEnv: { PIGGERCODE_CODEX_BACKEND_MODE: 'appServer' },
       }),
     ).toEqual({ codexBackendMode: 'appServer' });
   });
@@ -81,7 +81,7 @@ describe('providerSettings', () => {
       resolveProviderSpawnExtrasForRuntime({
         agentId: 'codex',
         settings: { codexBackendMode: 'acp' },
-        processEnv: { HAPPIER_CODEX_BACKEND_MODE: 'mcp' },
+        processEnv: { PIGGERCODE_CODEX_BACKEND_MODE: 'mcp' },
       }),
     ).toEqual({ codexBackendMode: 'mcp' });
   });
@@ -91,7 +91,7 @@ describe('providerSettings', () => {
       resolveProviderSpawnExtrasForRuntime({
         agentId: 'codex',
         settings: { codexBackendMode: 'appServer' },
-        processEnv: { HAPPIER_CODEX_BACKEND_MODE: '  mcp_resume  ' },
+        processEnv: { PIGGERCODE_CODEX_BACKEND_MODE: '  mcp_resume  ' },
       }),
     ).toEqual({ codexBackendMode: 'acp' });
   });

@@ -100,7 +100,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
     await withConfiguredDaemonTestHome({ prefix: 'opencode-import-identities-',
-      env: { HAPPIER_SERVER_URL: baseUrl, HAPPIER_SERVER_URL_LOCAL: baseUrl, HAPPIER_PUBLIC_SERVER_URL: baseUrl } }, async () => {
+      env: { PIGGERCODE_SERVER_URL: baseUrl, PIGGERCODE_SERVER_URL_LOCAL: baseUrl, PIGGERCODE_PUBLIC_SERVER_URL: baseUrl } }, async () => {
       const committed = new Map<string, unknown>();
       const socket = createApiSessionSocketStub({ connected: true, emitWithAck: (event, payload) => {
         if (event !== 'message') return resolveApiSessionSocketDefaultAck(event, payload);
@@ -146,7 +146,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
     await withConfiguredDaemonTestHome({ prefix: 'opencode-sidechain-identities-',
-      env: { HAPPIER_SERVER_URL: baseUrl, HAPPIER_SERVER_URL_LOCAL: baseUrl, HAPPIER_PUBLIC_SERVER_URL: baseUrl } }, async () => {
+      env: { PIGGERCODE_SERVER_URL: baseUrl, PIGGERCODE_SERVER_URL_LOCAL: baseUrl, PIGGERCODE_PUBLIC_SERVER_URL: baseUrl } }, async () => {
       const socket = createApiSessionSocketStub({ connected: true, emitWithAck: (event, payload) => {
         if (event !== 'message') return resolveApiSessionSocketDefaultAck(event, payload);
         const body = payload as Record<string, unknown>;
@@ -246,7 +246,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
     await withConfiguredDaemonTestHome({ prefix: 'opencode-cold-resume-',
-      env: { HAPPIER_SERVER_URL: baseUrl, HAPPIER_SERVER_URL_LOCAL: baseUrl, HAPPIER_PUBLIC_SERVER_URL: baseUrl } }, async () => {
+      env: { PIGGERCODE_SERVER_URL: baseUrl, PIGGERCODE_SERVER_URL_LOCAL: baseUrl, PIGGERCODE_PUBLIC_SERVER_URL: baseUrl } }, async () => {
       let metadata = createTestMetadata({ flavor: 'opencode', opencodeSessionId: nativeSessionId });
       const metadataWithProviderCorrelation = {
         ...metadata,
@@ -270,7 +270,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
       const fixture: Session = storage === 'plain' ? createPlainSessionFixture({ id: happySessionId, metadata })
         : { ...createPlainSessionFixture({ id: happySessionId, metadata }), encryptionMode: 'e2ee', encryptionKey: key, encryptionVariant: 'dataKey' };
       const session = new ApiSessionClient('synthetic-token', fixture);
-      const env = { ...process.env, HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
+      const env = { ...process.env, PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
       let client = await createOpenCodeServerRuntimeClient({ directory, baseUrlOverride: baseUrl, env, messageBuffer: new MessageBuffer() });
       const makeRuntime = () => createOpenCodeServerRuntime({ directory, env, session, messageBuffer: new MessageBuffer(), mcpServers: {},
         happierMcpAdmission: { kind: 'not_available_for_execution_run' }, permissionHandler: new ProviderEnforcedPermissionHandler(session, { logPrefix: '[test]' }),
@@ -395,7 +395,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     const baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
     await withConfiguredDaemonTestHome({
       prefix: 'opencode-native-transcript-',
-      env: { HAPPIER_SERVER_URL: baseUrl, HAPPIER_SERVER_URL_LOCAL: baseUrl, HAPPIER_PUBLIC_SERVER_URL: baseUrl },
+      env: { PIGGERCODE_SERVER_URL: baseUrl, PIGGERCODE_SERVER_URL_LOCAL: baseUrl, PIGGERCODE_PUBLIC_SERVER_URL: baseUrl },
     }, async () => {
       const committed: Array<Record<string, unknown>> = [];
       // Relay socket/ACK boundary only; production session commit, plain envelope and importer stay real.
@@ -416,7 +416,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
       });
       bindApiSessionSocketMock(mockIo, socket);
       const session = new ApiSessionClient('synthetic-token', createPlainSessionFixture({ id: 'happy_native_transcript' }));
-      const env = { ...process.env, HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
+      const env = { ...process.env, PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
       const client = await createOpenCodeServerRuntimeClient({
         directory, baseUrlOverride: baseUrl, env, messageBuffer: new MessageBuffer(),
       });
@@ -588,7 +588,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     openServers.push(server);
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-    const env = { ...process.env, HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
+    const env = { ...process.env, PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
     const client = await createOpenCodeServerRuntimeClient({
       directory: '/tmp', baseUrlOverride: baseUrl, env, messageBuffer: new MessageBuffer(),
     });
@@ -763,7 +763,7 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const address = server.address() as AddressInfo;
     const baseUrl = `http://127.0.0.1:${address.port}`;
-    const env = { ...process.env, HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
+    const env = { ...process.env, PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0' };
     const client = await createOpenCodeServerRuntimeClient({
       directory: '/tmp', baseUrlOverride: baseUrl, env, messageBuffer: new MessageBuffer(),
     });
@@ -1035,8 +1035,8 @@ describe('OpenCode client/runtime lifecycle composition', () => {
     const baseUrl = `http://127.0.0.1:${address.port}`;
     const env = {
       ...process.env,
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     };
     const client = await createOpenCodeServerRuntimeClient({
       directory: '/tmp',

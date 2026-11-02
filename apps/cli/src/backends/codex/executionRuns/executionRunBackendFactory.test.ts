@@ -22,8 +22,8 @@ describe('executionRunBackendFactory (codex)', () => {
 
     vi.stubEnv('PATH', 'C:\\Users\\alice\\AppData\\Roaming\\npm;C:\\Windows\\System32');
     vi.stubEnv('PATHEXT', '.COM;.EXE;.CMD');
-    vi.stubEnv('HAPPIER_CODEX_PARENT_SENTINEL', 'inherited');
-    vi.stubEnv('HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
+    vi.stubEnv('PIGGERCODE_CODEX_PARENT_SENTINEL', 'inherited');
+    vi.stubEnv('PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
 
     vi.doMock('./createCodexAppServerExecutionRunBackend', () => ({
       createCodexAppServerExecutionRunBackend: (options: Record<string, unknown>) => {
@@ -44,7 +44,7 @@ describe('executionRunBackendFactory (codex)', () => {
     expect(appServerCalls[0]?.env).toMatchObject({
       PATH: `${resolve('/tmp/happier-worktree', 'scripts', 'shims')}${delimiter}C:\\Users\\alice\\AppData\\Roaming\\npm;C:\\Windows\\System32`,
       PATHEXT: '.COM;.EXE;.CMD',
-      HAPPIER_CODEX_PARENT_SENTINEL: 'inherited',
+      PIGGERCODE_CODEX_PARENT_SENTINEL: 'inherited',
     });
   });
 
@@ -73,7 +73,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
           XDG_STATE_HOME: '/tmp/state',
           CODEX_THREAD_ID: 'poisoned-thread',
           CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'poisoned-origin',
@@ -128,7 +128,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
         },
       },
     } as any);
@@ -183,7 +183,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
         },
       },
     } as any);
@@ -195,7 +195,7 @@ describe('executionRunBackendFactory (codex)', () => {
         permissionMode: 'read-only',
         env: expect.objectContaining({
           PATH: `${resolve('/tmp/happier-worktree', 'scripts', 'shims')}${delimiter}/tmp/isolated-bin:/usr/bin`,
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'acp',
         }),
       }),
     ]);
@@ -231,7 +231,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
         },
       },
     } as any);
@@ -246,7 +246,7 @@ describe('executionRunBackendFactory (codex)', () => {
         retentionPolicy: 'ephemeral',
       },
       env: expect.objectContaining({
-        HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+        PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
         PATH: `${resolve('/tmp/happier-worktree', 'scripts', 'shims')}${delimiter}/tmp/isolated-bin:/usr/bin`,
       }),
     });
@@ -255,10 +255,10 @@ describe('executionRunBackendFactory (codex)', () => {
   it('preserves Codex app-server process overrides when execution-run isolation is enabled', async () => {
     const appServerCalls: Array<Record<string, unknown>> = [];
 
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', '/tmp/fake-codex-app-server');
-    vi.stubEnv('HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS', '1234');
-    vi.stubEnv('HAPPIER_CODEX_HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS', '7230500');
+    vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', '/tmp/fake-codex-app-server');
+    vi.stubEnv('PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
+    vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS', '1234');
+    vi.stubEnv('PIGGERCODE_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS', '7230500');
 
     vi.doMock('./createCodexAppServerExecutionRunBackend', () => ({
       createCodexAppServerExecutionRunBackend: (options: Record<string, unknown>) => {
@@ -287,16 +287,16 @@ describe('executionRunBackendFactory (codex)', () => {
 
     expect(appServerCalls).toHaveLength(1);
     expect(appServerCalls[0]?.env).toMatchObject({
-      HAPPIER_CODEX_APP_SERVER_BIN: '/tmp/fake-codex-app-server',
-      HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
-      HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1234',
-      HAPPIER_CODEX_HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS: '7230500',
+      PIGGERCODE_CODEX_APP_SERVER_BIN: '/tmp/fake-codex-app-server',
+      PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+      PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1234',
+      PIGGERCODE_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS: '7230500',
       XDG_STATE_HOME: '/tmp/state',
       PATH: `${resolve('/tmp/happier-worktree', 'scripts', 'shims')}${delimiter}/tmp/isolated-bin:/usr/bin`,
     });
   });
 
-  it('resolves HAPPIER_CODEX_BACKEND_MODE against the isolated env (not process.env) when selecting the transport', async () => {
+  it('resolves PIGGERCODE_CODEX_BACKEND_MODE against the isolated env (not process.env) when selecting the transport', async () => {
     const mcpCalls: Array<Record<string, unknown>> = [];
     const appServerCalls: Array<Record<string, unknown>> = [];
 
@@ -333,7 +333,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_BACKEND_MODE: 'mcp',
+          PIGGERCODE_CODEX_BACKEND_MODE: 'mcp',
         },
       },
     } as any);
@@ -523,7 +523,7 @@ describe('executionRunBackendFactory (codex)', () => {
       isolation: {
         env: {
           PATH: '/tmp/isolated-bin:/usr/bin',
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
         },
       },
     } as any);
@@ -534,7 +534,7 @@ describe('executionRunBackendFactory (codex)', () => {
       cwd: '/tmp/happier-worktree',
       permissionMode: 'read-only',
       env: expect.objectContaining({
-        HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+        PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
         PATH: `${resolve('/tmp/happier-worktree', 'scripts', 'shims')}${delimiter}/tmp/isolated-bin:/usr/bin`,
       }),
     });

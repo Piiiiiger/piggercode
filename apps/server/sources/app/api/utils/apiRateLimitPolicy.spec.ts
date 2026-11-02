@@ -18,18 +18,18 @@ vi.mock("@/app/auth/auth", () => ({
 }));
 
 describe("apiRateLimitPolicy", () => {
-    it("disables all rate limiting when HAPPIER_API_RATE_LIMITS_ENABLED=0", () => {
+    it("disables all rate limiting when PIGGERCODE_API_RATE_LIMITS_ENABLED=0", () => {
         const env = {
-            HAPPIER_API_RATE_LIMITS_ENABLED: "0",
-            HAPPIER_API_RATE_LIMITS_GLOBAL_MAX: "100",
-            HAPPIER_API_RATE_LIMITS_GLOBAL_WINDOW: "1 minute",
+            PIGGERCODE_API_RATE_LIMITS_ENABLED: "0",
+            PIGGERCODE_API_RATE_LIMITS_GLOBAL_MAX: "100",
+            PIGGERCODE_API_RATE_LIMITS_GLOBAL_WINDOW: "1 minute",
         } as const;
 
         expect(resolveApiRateLimitPluginOptions(env)).toEqual({ global: false });
         expect(
             resolveRouteRateLimit(env, {
-                maxEnvKey: "HAPPIER_SESSION_MESSAGES_RATE_LIMIT_MAX",
-                windowEnvKey: "HAPPIER_SESSION_MESSAGES_RATE_LIMIT_WINDOW",
+                maxEnvKey: "PIGGERCODE_SESSION_MESSAGES_RATE_LIMIT_MAX",
+                windowEnvKey: "PIGGERCODE_SESSION_MESSAGES_RATE_LIMIT_WINDOW",
                 defaultMax: 600,
                 defaultWindow: "1 minute",
             }),
@@ -38,9 +38,9 @@ describe("apiRateLimitPolicy", () => {
 
     it("enables global rate limiting when global max is set", () => {
         const env = {
-            HAPPIER_API_RATE_LIMITS_ENABLED: "1",
-            HAPPIER_API_RATE_LIMITS_GLOBAL_MAX: "123",
-            HAPPIER_API_RATE_LIMITS_GLOBAL_WINDOW: "30 seconds",
+            PIGGERCODE_API_RATE_LIMITS_ENABLED: "1",
+            PIGGERCODE_API_RATE_LIMITS_GLOBAL_MAX: "123",
+            PIGGERCODE_API_RATE_LIMITS_GLOBAL_WINDOW: "30 seconds",
         } as const;
 
         expect(resolveApiRateLimitPluginOptions(env)).toEqual(
@@ -53,16 +53,16 @@ describe("apiRateLimitPolicy", () => {
         );
     });
 
-    it("parses HAPPIER_SERVER_TRUST_PROXY booleans", () => {
+    it("parses PIGGERCODE_SERVER_TRUST_PROXY booleans", () => {
         expect(resolveApiTrustProxy({})).toBeUndefined();
-        expect(resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: "true" })).toBe(true);
-        expect(resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: " ON " })).toBe(true);
-        expect(resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: "false" })).toBe(false);
-        expect(resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: " Off " })).toBe(false);
+        expect(resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: "true" })).toBe(true);
+        expect(resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: " ON " })).toBe(true);
+        expect(resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: "false" })).toBe(false);
+        expect(resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: " Off " })).toBe(false);
     });
 
     it("uses forwarded client details only when the connecting peer is a listed proxy", async () => {
-        const app = Fastify({ trustProxy: resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: "10.0.0.0/8, 127.0.0.1, ::1" }) });
+        const app = Fastify({ trustProxy: resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: "10.0.0.0/8, 127.0.0.1, ::1" }) });
         const keyGen = createApiRateLimitKeyGenerator({}, { strategy: "ip-only" });
         app.get("/key", async (request) => ({ key: await keyGen(request), host: request.host, protocol: request.protocol }));
 
@@ -89,16 +89,16 @@ describe("apiRateLimitPolicy", () => {
         }
     });
 
-    it("rejects a HAPPIER_SERVER_TRUST_PROXY hop count with migration guidance", () => {
+    it("rejects a PIGGERCODE_SERVER_TRUST_PROXY hop count with migration guidance", () => {
         for (const hops of ["0", "1", "2"]) {
-            expect(() => resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: hops })).toThrow(
-                /HAPPIER_SERVER_TRUST_PROXY.*addresses or CIDRs/,
+            expect(() => resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: hops })).toThrow(
+                /PIGGERCODE_SERVER_TRUST_PROXY.*addresses or CIDRs/,
             );
         }
     });
 
     it("fails startup for an invalid proxy list instead of silently ignoring it", () => {
-        expect(() => Fastify({ trustProxy: resolveApiTrustProxy({ HAPPIER_SERVER_TRUST_PROXY: "10.0.0.0/8,invalid-proxy" }) })).toThrow();
+        expect(() => Fastify({ trustProxy: resolveApiTrustProxy({ PIGGERCODE_SERVER_TRUST_PROXY: "10.0.0.0/8,invalid-proxy" }) })).toThrow();
     });
 
     it("keys authenticated requests by verified user id (not by raw Authorization header)", async () => {
@@ -125,7 +125,7 @@ describe("apiRateLimitPolicy", () => {
     });
 
     it("truncates untrusted ip strings used in rate limit keys", async () => {
-        const keyGen = createApiRateLimitKeyGenerator({ HAPPIER_API_RATE_LIMITS_ROUTE_KEY_STRATEGY: "ip-only" });
+        const keyGen = createApiRateLimitKeyGenerator({ PIGGERCODE_API_RATE_LIMITS_ROUTE_KEY_STRATEGY: "ip-only" });
         const hugeIp = "203.0.113.9," + "a".repeat(5000);
         const key = await keyGen({ headers: {}, ip: hugeIp });
 
@@ -145,14 +145,14 @@ describe("apiRateLimitPolicy", () => {
     });
 
     it("can force ip-only keying strategy via env", async () => {
-        const keyGen = createApiRateLimitKeyGenerator({ HAPPIER_API_RATE_LIMITS_ROUTE_KEY_STRATEGY: "ip-only" });
+        const keyGen = createApiRateLimitKeyGenerator({ PIGGERCODE_API_RATE_LIMITS_ROUTE_KEY_STRATEGY: "ip-only" });
         const key = await keyGen({ headers: { authorization: "Bearer valid-token" }, ip: "203.0.113.9" });
         expect(key).toBe("ip:203.0.113.9");
     });
 
-    it("gates fixed route rate limits behind HAPPIER_API_RATE_LIMITS_ENABLED", () => {
-        const enabledEnv = { HAPPIER_API_RATE_LIMITS_ENABLED: "1" } as const;
-        const disabledEnv = { HAPPIER_API_RATE_LIMITS_ENABLED: "0" } as const;
+    it("gates fixed route rate limits behind PIGGERCODE_API_RATE_LIMITS_ENABLED", () => {
+        const enabledEnv = { PIGGERCODE_API_RATE_LIMITS_ENABLED: "1" } as const;
+        const disabledEnv = { PIGGERCODE_API_RATE_LIMITS_ENABLED: "0" } as const;
         const config = { max: 10, timeWindow: "1 minute" } as const;
 
         expect(gateRateLimitConfig(enabledEnv, config)).toEqual(config);

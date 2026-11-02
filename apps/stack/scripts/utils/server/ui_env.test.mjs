@@ -48,10 +48,10 @@ test('resolveServerUiEnv sets both full and light env keys when enabled', () => 
       uiBuildDirExists: true,
     }),
     {
-      HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-      HAPPIER_SERVER_UI_PREFIX: '/ui',
-      HAPPIER_SERVER_LIGHT_UI_DIR: '/tmp/ui',
-      HAPPIER_SERVER_LIGHT_UI_PREFIX: '/ui',
+      PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+      PIGGERCODE_SERVER_UI_PREFIX: '/ui',
+      PIGGERCODE_SERVER_LIGHT_UI_DIR: '/tmp/ui',
+      PIGGERCODE_SERVER_LIGHT_UI_PREFIX: '/ui',
     }
   );
 });

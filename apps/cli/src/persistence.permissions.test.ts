@@ -4,13 +4,13 @@ import { applyEnvValues, restoreEnvValues, snapshotEnvValues } from '@/testkit/e
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 describe('persistence file permissions (posix)', () => {
-  const envBackup = snapshotEnvValues(['HAPPIER_HOME_DIR']);
+  const envBackup = snapshotEnvValues(['PIGGERCODE_HOME_DIR']);
   let homeDir: string | undefined;
 
   beforeEach(async () => {
     if (process.platform === 'win32') return;
     homeDir = await createTempDir('happier-cli-perms-');
-    applyEnvValues({ HAPPIER_HOME_DIR: homeDir });
+    applyEnvValues({ PIGGERCODE_HOME_DIR: homeDir });
     vi.resetModules();
   });
 

@@ -40,8 +40,8 @@ export async function run(_cmd, args, { env } = {}) {
   mark(JSON.stringify({
     type: 'run',
     args,
-    workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-    setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+    workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+    setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
   }));
   return { status: 0, stdout: '', stderr: '' };
 }
@@ -50,8 +50,8 @@ export async function runCapture(_cmd, args, { env } = {}) {
   mark(JSON.stringify({
     type: 'runCapture',
     args,
-    workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-    setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+    workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+    setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
   }));
   return '';
 }
@@ -93,9 +93,9 @@ export async function resolve(specifier, context, defaultResolve) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_TEST_TTY: '1',
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
+    PIGGERCODE_STACK_TEST_TTY: '1',
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
   };
 
   try {

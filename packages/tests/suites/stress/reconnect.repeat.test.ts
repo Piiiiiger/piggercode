@@ -32,8 +32,8 @@ describe('stress: reconnect repeat', () => {
   });
 
   it('repeats multi-device disconnect/reconnect and verifies transcript head convergence', async () => {
-    const repeats = parsePositiveInt(process.env.HAPPIER_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT, 5);
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const repeats = parsePositiveInt(process.env.PIGGERCODE_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT, 5);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     for (let i = 1; i <= repeats; i++) {
@@ -51,8 +51,8 @@ describe('stress: reconnect repeat', () => {
         testName: `repeat-${i}`,
         sessionIds: [sessionId],
         env: {
-          HAPPIER_E2E_REPEAT: process.env.HAPPIER_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT,
-          HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+          PIGGERCODE_E2E_REPEAT: process.env.PIGGERCODE_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT,
+          PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
         },
       });
 

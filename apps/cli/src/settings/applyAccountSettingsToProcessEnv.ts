@@ -24,8 +24,8 @@ export function __resetApplyAccountSettingsToProcessEnvStateForTests(): void {
 export function applyAccountSettingsToProcessEnv(params: Readonly<{
   settings: AccountSettingsEnvInput;
 }>): void {
-  const currentScmEnvValue = typeof process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY === 'string'
-    ? process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY
+  const currentScmEnvValue = typeof process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY === 'string'
+    ? process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY
     : null;
   if (scmIncludeCoAuthoredByManagedBySettings && currentScmEnvValue !== scmIncludeCoAuthoredByLastManagedValue) {
     scmIncludeCoAuthoredByManagedBySettings = false;
@@ -35,18 +35,18 @@ export function applyAccountSettingsToProcessEnv(params: Readonly<{
     const raw = params.settings?.scmIncludeCoAuthoredBy;
     if (typeof raw === 'boolean') {
       const nextValue = raw ? '1' : '0';
-      process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY = nextValue;
+      process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY = nextValue;
       scmIncludeCoAuthoredByManagedBySettings = true;
       scmIncludeCoAuthoredByLastManagedValue = nextValue;
     } else if (scmIncludeCoAuthoredByManagedBySettings) {
-      delete process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY;
+      delete process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY;
       scmIncludeCoAuthoredByManagedBySettings = false;
       scmIncludeCoAuthoredByLastManagedValue = null;
     }
   }
 
-  const currentActionsEnvValue = typeof process.env.HAPPIER_ACTIONS_SETTINGS_V1 === 'string'
-    ? process.env.HAPPIER_ACTIONS_SETTINGS_V1
+  const currentActionsEnvValue = typeof process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 === 'string'
+    ? process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
     : null;
   if (actionsSettingsManagedBySettings && currentActionsEnvValue !== actionsSettingsLastManagedValue) {
     actionsSettingsManagedBySettings = false;
@@ -58,20 +58,20 @@ export function applyAccountSettingsToProcessEnv(params: Readonly<{
     if (parsed) {
       try {
         const serialized = JSON.stringify(parsed);
-        process.env.HAPPIER_ACTIONS_SETTINGS_V1 = serialized;
+        process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = serialized;
         actionsSettingsManagedBySettings = true;
         actionsSettingsLastManagedValue = serialized;
       } catch {
         // ignore
       }
     } else if (actionsSettingsManagedBySettings) {
-      delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+      delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
       actionsSettingsManagedBySettings = false;
       actionsSettingsLastManagedValue = null;
     }
   }
 
-  if (typeof process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON !== 'string') {
+  if (typeof process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON !== 'string') {
     // Allow explicit env var overrides (for debugging / CI) on the first write only.
   }
   const rawPreferences = params.settings.backendCliSourcePreferenceByTargetKey ?? params.settings.backendCliSourcePreferenceById;
@@ -83,8 +83,8 @@ export function applyAccountSettingsToProcessEnv(params: Readonly<{
           ),
         )
       : null;
-  const envAlreadySet = typeof process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON === 'string';
-  const currentEnvValue = envAlreadySet ? process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON ?? null : null;
+  const envAlreadySet = typeof process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON === 'string';
+  const currentEnvValue = envAlreadySet ? process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON ?? null : null;
   if (backendCliSourcePreferencesManagedBySettings && currentEnvValue !== backendCliSourcePreferencesLastManagedValue) {
     backendCliSourcePreferencesManagedBySettings = false;
     backendCliSourcePreferencesLastManagedValue = null;
@@ -93,14 +93,14 @@ export function applyAccountSettingsToProcessEnv(params: Readonly<{
     if (parsed && Object.keys(parsed).length > 0) {
       try {
         const serialized = JSON.stringify(parsed);
-        process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON = serialized;
+        process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = serialized;
         backendCliSourcePreferencesManagedBySettings = true;
         backendCliSourcePreferencesLastManagedValue = serialized;
       } catch {
         // ignore
       }
     } else if (backendCliSourcePreferencesManagedBySettings) {
-      delete process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
+      delete process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
       backendCliSourcePreferencesManagedBySettings = false;
       backendCliSourcePreferencesLastManagedValue = null;
     }

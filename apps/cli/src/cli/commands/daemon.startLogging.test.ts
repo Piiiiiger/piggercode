@@ -117,7 +117,7 @@ describe('happier daemon start output', () => {
     spawnDetachedDaemonStartSyncMock.mockResolvedValue({ unref: () => {} });
   });
 
-  it('honors HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS to bound polling (fail-closed)', async () => {
+  it('honors PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS to bound polling (fail-closed)', async () => {
     vi.useFakeTimers();
 
     const isRunning = vi.fn(async () => false);
@@ -142,22 +142,22 @@ describe('happier daemon start output', () => {
     vi.useRealTimers();
 
     const envScope = createEnvKeyScope([
-      'HAPPIER_HOME_DIR',
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_ACTIVE_SERVER_ID',
-      'HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS',
+      'PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
+      'PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS',
     ]);
     const tmp = await createTempDir('happier-daemon-start-');
 
     try {
       vi.resetModules();
       envScope.patch({
-        HAPPIER_HOME_DIR: tmp,
-        HAPPIER_SERVER_URL: 'http://localhost:4321',
-        HAPPIER_WEBAPP_URL: 'http://localhost:9999',
-        HAPPIER_ACTIVE_SERVER_ID: 'env_test',
-        HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1',
+        PIGGERCODE_HOME_DIR: tmp,
+        PIGGERCODE_SERVER_URL: 'http://localhost:4321',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:9999',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_test',
+        PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1',
       });
 
       const credDir = join(tmp, 'servers', 'env_test');
@@ -191,22 +191,22 @@ describe('happier daemon start output', () => {
     vi.useRealTimers();
 
     const envScope = createEnvKeyScope([
-      'HAPPIER_HOME_DIR',
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_ACTIVE_SERVER_ID',
-      'HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS',
+      'PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
+      'PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS',
     ]);
     const tmp = await createTempDir('happier-daemon-start-json-');
 
     try {
       vi.resetModules();
       envScope.patch({
-        HAPPIER_HOME_DIR: tmp,
-        HAPPIER_SERVER_URL: 'http://localhost:4321',
-        HAPPIER_WEBAPP_URL: 'http://localhost:9999',
-        HAPPIER_ACTIVE_SERVER_ID: 'env_test',
-        HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1',
+        PIGGERCODE_HOME_DIR: tmp,
+        PIGGERCODE_SERVER_URL: 'http://localhost:4321',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:9999',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_test',
+        PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1',
       });
 
       const credDir = join(tmp, 'servers', 'env_test');
@@ -277,10 +277,10 @@ describe('happier daemon start output', () => {
     checkIfDaemonRunningMock.mockResolvedValue(false);
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
-    const envScope = createEnvKeyScope(['HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS']);
+    const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
       vi.resetModules();
-      envScope.patch({ HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
+      envScope.patch({ PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
 
       const stdout = await runDaemonStartAndCapture(1);
 
@@ -307,10 +307,10 @@ describe('happier daemon start output', () => {
     });
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
-    const envScope = createEnvKeyScope(['HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS']);
+    const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
       vi.resetModules();
-      envScope.patch({ HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
+      envScope.patch({ PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
 
       const stdout = await runDaemonStartAndCapture(0);
 
@@ -332,10 +332,10 @@ describe('happier daemon start output', () => {
     });
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
-    const envScope = createEnvKeyScope(['HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS']);
+    const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
       vi.resetModules();
-      envScope.patch({ HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
+      envScope.patch({ PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1' });
 
       const stdout = await runDaemonStartAndCapture(0);
 
@@ -363,22 +363,22 @@ describe('happier daemon start output', () => {
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
     const envScope = createEnvKeyScope([
-      'HAPPIER_HOME_DIR',
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_ACTIVE_SERVER_ID',
-      'HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS',
+      'PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
+      'PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS',
     ]);
     const tmp = await createTempDir('happier-daemon-starting-json-');
 
     try {
       vi.resetModules();
       envScope.patch({
-        HAPPIER_HOME_DIR: tmp,
-        HAPPIER_SERVER_URL: 'http://localhost:4321',
-        HAPPIER_WEBAPP_URL: 'http://localhost:9999',
-        HAPPIER_ACTIVE_SERVER_ID: 'env_test',
-        HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS: '1',
+        PIGGERCODE_HOME_DIR: tmp,
+        PIGGERCODE_SERVER_URL: 'http://localhost:4321',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:9999',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_test',
+        PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS: '1',
       });
 
       const output = captureStdoutJsonOutput<{
@@ -422,17 +422,17 @@ describe('happier daemon start output', () => {
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
     const envScope = createEnvKeyScope([
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_ACTIVE_SERVER_ID',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
     ]);
 
     try {
       vi.resetModules();
       envScope.patch({
-        HAPPIER_SERVER_URL: 'http://localhost:4321',
-        HAPPIER_WEBAPP_URL: 'http://localhost:9999',
-        HAPPIER_ACTIVE_SERVER_ID: 'env_test',
+        PIGGERCODE_SERVER_URL: 'http://localhost:4321',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:9999',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_test',
       });
 
       const output = captureStdoutJsonOutput<{
@@ -480,17 +480,17 @@ describe('happier daemon start output', () => {
     getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
 
     const envScope = createEnvKeyScope([
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_ACTIVE_SERVER_ID',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
     ]);
 
     try {
       vi.resetModules();
       envScope.patch({
-        HAPPIER_SERVER_URL: 'http://localhost:4321',
-        HAPPIER_WEBAPP_URL: 'http://localhost:9999',
-        HAPPIER_ACTIVE_SERVER_ID: 'env_test',
+        PIGGERCODE_SERVER_URL: 'http://localhost:4321',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:9999',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_test',
       });
 
       const output = captureStdoutJsonOutput<{

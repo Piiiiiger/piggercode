@@ -23,7 +23,7 @@ type ThreadListResult = Readonly<{
 }>;
 
 function readThreadListPageSize(env?: NodeJS.ProcessEnv): number {
-    const raw = Number.parseInt(String(env?.HAPPIER_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE ?? ''), 10);
+    const raw = Number.parseInt(String(env?.PIGGERCODE_CODEX_APP_SERVER_THREAD_LIST_PAGE_SIZE ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 200;
     return Math.max(1, Math.min(1000, configured));
 }

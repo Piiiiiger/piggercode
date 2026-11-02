@@ -197,19 +197,19 @@ async function startAutomationServer(params: {
 }
 
 describe('automationWorker integration', () => {
-  const previousHome = process.env.HAPPIER_HOME_DIR;
-  const previousServer = process.env.HAPPIER_SERVER_URL;
-  const previousWebapp = process.env.HAPPIER_WEBAPP_URL;
+  const previousHome = process.env.PIGGERCODE_HOME_DIR;
+  const previousServer = process.env.PIGGERCODE_SERVER_URL;
+  const previousWebapp = process.env.PIGGERCODE_WEBAPP_URL;
 
   afterEach(async () => {
-    if (previousHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHome;
+    if (previousHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHome;
 
-    if (previousServer === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = previousServer;
+    if (previousServer === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = previousServer;
 
-    if (previousWebapp === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = previousWebapp;
+    if (previousWebapp === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = previousWebapp;
 
     vi.resetModules();
   });
@@ -250,9 +250,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -265,11 +265,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -304,9 +304,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-missing-routes-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -318,8 +318,8 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
       } as NodeJS.ProcessEnv,
     });
 
@@ -371,9 +371,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-invalid-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -386,10 +386,10 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -411,7 +411,7 @@ describe('automationWorker integration', () => {
     }
   });
 
-  it('does not execute when HAPPIER_FEATURE_AUTOMATIONS__ENABLED is disabled', async () => {
+  it('does not execute when PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED is disabled', async () => {
     const now = Date.now();
     const template = buildEncryptedTemplateCiphertext({ directory: '/tmp/happier-automation' });
 
@@ -447,9 +447,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-disabled-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -462,11 +462,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '0',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '0',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -524,9 +524,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-existing-disabled-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -539,11 +539,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -605,9 +605,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-existing-prompt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -620,11 +620,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -686,9 +686,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-existing-plain-prompt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -701,11 +701,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -776,9 +776,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-existing-prompt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -791,11 +791,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -852,9 +852,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-existing-unavailable-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -872,11 +872,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -934,9 +934,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-new-prompt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -952,11 +952,11 @@ describe('automationWorker integration', () => {
       encryption: TEST_ENCRYPTION,
       spawnSession,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 
@@ -1023,9 +1023,9 @@ describe('automationWorker integration', () => {
     });
 
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-automation-worker-budget-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = server.baseUrl;
-    process.env.HAPPIER_WEBAPP_URL = server.baseUrl;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = server.baseUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = server.baseUrl;
 
     vi.resetModules();
     const { startAutomationWorker } = await import('./automationWorker');
@@ -1042,11 +1042,11 @@ describe('automationWorker integration', () => {
       spawnSession,
       budgetRegistry,
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '20',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
-        HAPPIER_AUTOMATION_LEASE_MS: '200',
-        HAPPIER_AUTOMATION_HEARTBEAT_MS: '50',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '20',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '20',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '200',
+        PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '50',
       } as NodeJS.ProcessEnv,
     });
 

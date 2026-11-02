@@ -5,7 +5,7 @@
  * failure shape WITHOUT the real OpenCode binary, so the core-e2e suite can assert
  * Happier's generation-aware recovery deterministically.
  *
- * It is wired in via `HAPPIER_OPENCODE_PATH` (Happier launches it as
+ * It is wired in via `PIGGERCODE_OPENCODE_PATH` (Happier launches it as
  * `<jsRuntime> <this-file> serve --hostname=<h> --port=<p>` because the path ends
  * in `.cjs`, see `providerCliPathRequiresJavaScriptRuntime`). It implements only the
  * HTTP surface the Happier OpenCode server runtime/client touch:
@@ -31,7 +31,7 @@
  *   - GET  /provider             { all: [], connected: [] }
  *   - POST /mcp | /mcp/:n/disconnect    no-op
  *
- * Cross-process durable state lives at `HAPPIER_E2E_FAKE_OPENCODE_STATE_PATH` (JSON),
+ * Cross-process durable state lives at `PIGGERCODE_E2E_FAKE_OPENCODE_STATE_PATH` (JSON),
  * so the *replacement* server process started by Happier reads the SAME session and
  * history (with the tool still `running`).
  *
@@ -39,7 +39,7 @@
  *   1. Persist a user message + an assistant message whose only part is a tool part
  *      with `state.status: 'running'` (NO terminal status), set `toolRunning=true`.
  *   2. Emit those as live SSE events to any open stream.
- *   3. After `HAPPIER_E2E_FAKE_OPENCODE_EXIT_DELAY_MS` (default 150ms), `process.exit(0)`
+ *   3. After `PIGGERCODE_E2E_FAKE_OPENCODE_EXIT_DELAY_MS` (default 150ms), `process.exit(0)`
  *      WITHOUT emitting a terminal tool status. The in-flight turn is now orphaned.
  * On replacement start, the new process reads the persisted state and re-serves the
  * same session/history with the tool still `running`, and replays the running-tool
@@ -91,18 +91,18 @@ if (!Number.isFinite(port) || port <= 0) {
   process.exit(2);
 }
 
-const statePath = String(process.env.HAPPIER_E2E_FAKE_OPENCODE_STATE_PATH || '').trim();
-const logPath = String(process.env.HAPPIER_E2E_FAKE_OPENCODE_LOG || '').trim();
+const statePath = String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_STATE_PATH || '').trim();
+const logPath = String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_LOG || '').trim();
 const teardownMode = (() => {
-  const raw = String(process.env.HAPPIER_E2E_FAKE_OPENCODE_TEARDOWN_MODE || 'crash').trim().toLowerCase();
+  const raw = String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_TEARDOWN_MODE || 'crash').trim().toLowerCase();
   return raw === 'stay_alive' ? 'stay_alive' : 'crash';
 })();
 const exitDelayMs = (() => {
-  const raw = Number.parseInt(String(process.env.HAPPIER_E2E_FAKE_OPENCODE_EXIT_DELAY_MS || ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_EXIT_DELAY_MS || ''), 10);
   return Number.isFinite(raw) && raw >= 0 ? raw : 150;
 })();
-const toolName = String(process.env.HAPPIER_E2E_FAKE_OPENCODE_TOOL_NAME || 'read').trim() || 'read';
-const fixedSessionId = String(process.env.HAPPIER_E2E_FAKE_OPENCODE_SESSION_ID || '').trim();
+const toolName = String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_TOOL_NAME || 'read').trim() || 'read';
+const fixedSessionId = String(process.env.PIGGERCODE_E2E_FAKE_OPENCODE_SESSION_ID || '').trim();
 
 const baseUrl = `http://${hostname}:${port}`;
 
@@ -124,7 +124,7 @@ function logEvent(entry) {
 }
 
 // ---------------------------------------------------------------------------
-// Durable cross-process state (JSON at HAPPIER_E2E_FAKE_OPENCODE_STATE_PATH)
+// Durable cross-process state (JSON at PIGGERCODE_E2E_FAKE_OPENCODE_STATE_PATH)
 // ---------------------------------------------------------------------------
 
 function emptyState() {

@@ -4,30 +4,30 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('generateWebAuthUrl', () => {
-  const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-  const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
-  const prevPublicServerUrl = process.env.HAPPIER_PUBLIC_SERVER_URL;
-  const prevHomeDir = process.env.HAPPIER_HOME_DIR;
+  const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+  const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
+  const prevPublicServerUrl = process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+  const prevHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
   afterEach(() => {
-    if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = prevServerUrl;
+    if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
 
-    if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+    if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
 
-    if (prevPublicServerUrl === undefined) delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-    else process.env.HAPPIER_PUBLIC_SERVER_URL = prevPublicServerUrl;
+    if (prevPublicServerUrl === undefined) delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+    else process.env.PIGGERCODE_PUBLIC_SERVER_URL = prevPublicServerUrl;
 
-    if (prevHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = prevHomeDir;
+    if (prevHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = prevHomeDir;
 
     vi.resetModules();
   });
 
   it('includes the server URL in the web terminal connect link', async () => {
-    process.env.HAPPIER_SERVER_URL = 'https://stack.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'https://stack.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
 
     vi.resetModules();
     const { generateWebAuthUrl } = await import('./webAuth');
@@ -41,10 +41,10 @@ describe('generateWebAuthUrl', () => {
     );
   });
 
-  it('embeds HAPPIER_PUBLIC_SERVER_URL when set (even if the API server URL is different)', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://127.0.0.1:3005';
-    process.env.HAPPIER_PUBLIC_SERVER_URL = 'https://my-stack.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'https://app.happier.dev';
+  it('embeds PIGGERCODE_PUBLIC_SERVER_URL when set (even if the API server URL is different)', async () => {
+    process.env.PIGGERCODE_SERVER_URL = 'http://127.0.0.1:3005';
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = 'https://my-stack.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'https://app.happier.dev';
 
     vi.resetModules();
     const { generateWebAuthUrl } = await import('./webAuth');
@@ -59,9 +59,9 @@ describe('generateWebAuthUrl', () => {
   });
 
   it('keeps the loopback server URL in the web auth link when the web app is served from that same local origin', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://127.0.0.1:26731';
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:26731';
-    delete process.env.HAPPIER_PUBLIC_SERVER_URL;
+    process.env.PIGGERCODE_SERVER_URL = 'http://127.0.0.1:26731';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:26731';
+    delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
 
     vi.resetModules();
     const { generateWebAuthUrl } = await import('./webAuth');
@@ -75,14 +75,14 @@ describe('generateWebAuthUrl', () => {
     );
   });
 
-  it('uses persisted canonical serverUrl from the active server profile when HAPPIER_PUBLIC_SERVER_URL is unset', async () => {
+  it('uses persisted canonical serverUrl from the active server profile when PIGGERCODE_PUBLIC_SERVER_URL is unset', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-webAuth-public-profile-'));
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      delete process.env.HAPPIER_SERVER_URL;
-      delete process.env.HAPPIER_WEBAPP_URL;
-      delete process.env.HAPPIER_PUBLIC_SERVER_URL;
+      process.env.PIGGERCODE_HOME_DIR = home;
+      delete process.env.PIGGERCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_WEBAPP_URL;
+      delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
 
       await writeFile(
         join(home, 'settings.json'),

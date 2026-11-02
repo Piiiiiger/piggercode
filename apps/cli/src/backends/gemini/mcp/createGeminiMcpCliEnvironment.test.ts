@@ -30,7 +30,7 @@ describe('createGeminiMcpCliEnvironment', () => {
         expect(prepared.env.HOME).toBe(prepared.cliHomeDir);
         expect(prepared.env.XDG_CONFIG_HOME).toBe(join(prepared.cliHomeDir, '.config'));
         expect(readFileSync(join(prepared.cliHomeDir, '.gemini', 'oauth_creds.json'), 'utf8')).toContain('oauth-token');
-        expect(prepared.env.HAPPIER_GEMINI_MCP_ENV_QA_STDIO_QA_TOKEN).toBeUndefined();
+        expect(prepared.env.PIGGERCODE_GEMINI_MCP_ENV_QA_STDIO_QA_TOKEN).toBeUndefined();
 
         const settings = JSON.parse(readFileSync(join(prepared.cliHomeDir, '.gemini', 'settings.json'), 'utf8')) as {
           theme?: string;

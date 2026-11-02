@@ -21,9 +21,9 @@ describe('native crypto worker mobile probe flow', () => {
 
     expect(flow).toContain('_shared/connectUsingLaunchUrl.yaml');
     expect(flow).toContain('_shared/loginCreateAccount.yaml');
-    expect(flow).toContain('${HAPPIER_E2E_MOBILE_APP_ID}:///dev/native-crypto-worker');
-    expect(flow).toContain('${HAPPIER_E2E_MOBILE_APP_SCHEME}:///dev/native-crypto-worker');
-    expect(flow).not.toContain('HAPPIER_E2E_DEV_CLIENT_NATIVE_CRYPTO_WORKER_LAUNCH_URL');
+    expect(flow).toContain('${PIGGERCODE_E2E_MOBILE_APP_ID}:///dev/native-crypto-worker');
+    expect(flow).toContain('${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///dev/native-crypto-worker');
+    expect(flow).not.toContain('PIGGERCODE_E2E_DEV_CLIENT_NATIVE_CRYPTO_WORKER_LAUNCH_URL');
     for (const testId of requiredProbeIds) {
       expect(flow).toContain(`id: ${testId}`);
     }

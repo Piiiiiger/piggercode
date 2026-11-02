@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Cross-platform environment wrapper for Happier CLI
- * Sets HAPPIER_HOME_DIR and provides visual feedback
+ * Sets PIGGERCODE_HOME_DIR and provides visual feedback
  *
  * Usage: node scripts/env-wrapper.js <variant> <command> [...args]
  *
@@ -24,13 +24,13 @@ const VARIANTS = {
     homeDir: path.join(os.homedir(), '.happier'),
     color: '\x1b[32m', // Green
     label: '✅ STABLE',
-    serverUrl: process.env.HAPPIER_SERVER_URL || 'https://api.happier.dev'
+    serverUrl: process.env.PIGGERCODE_SERVER_URL || 'https://api.happier.dev'
   },
   dev: {
     homeDir: path.join(os.homedir(), '.happier-dev'),
     color: '\x1b[33m', // Yellow
     label: '🔧 DEV',
-    serverUrl: process.env.HAPPIER_SERVER_URL || 'https://api.happier.dev'
+    serverUrl: process.env.PIGGERCODE_SERVER_URL || 'https://api.happier.dev'
   }
 };
 
@@ -73,9 +73,9 @@ console.log(`${config.color}${config.label}\x1b[0m Happier CLI (data: ${config.h
 // Set environment and execute command
 const env = {
   ...process.env,
-  HAPPIER_HOME_DIR: config.homeDir,
-  HAPPIER_SERVER_URL: config.serverUrl,
-  HAPPIER_VARIANT: variant, // For internal validation
+  PIGGERCODE_HOME_DIR: config.homeDir,
+  PIGGERCODE_SERVER_URL: config.serverUrl,
+  PIGGERCODE_VARIANT: variant, // For internal validation
 };
 
 const binPath = path.join(__dirname, '..', 'bin', 'happier.mjs');

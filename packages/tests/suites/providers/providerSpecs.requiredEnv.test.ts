@@ -7,7 +7,7 @@ describe('providers: providerSpec requiredEnv', () => {
     const parsed = E2eCliProviderSpecV1Schema.parse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       requiredEnv: ['OPENAI_API_KEY'],
@@ -23,7 +23,7 @@ describe('providers: providerSpec requiredEnv', () => {
     const parsed = E2eCliProviderSpecV1Schema.parse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       requiredEnv: ['OPENAI_API_KEY', 'CODEX_API_KEY'],
@@ -39,7 +39,7 @@ describe('providers: providerSpec requiredEnv', () => {
     const parsed = E2eCliProviderSpecV1Schema.safeParse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       requiredEnv: 'OPENAI_API_KEY',

@@ -247,10 +247,10 @@ describe('fake Claude fixture helpers', () => {
       const child = spawn(process.execPath, [fakeClaudeFixturePath(), '--output-format', 'stream-json', '--input-format', 'stream-json'], {
         env: {
           ...process.env,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'usage-limit-once',
-          HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL: signalPath,
-          HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS: '500',
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'usage-limit-once',
+          PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL: signalPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS: '500',
         },
         stdio: ['pipe', 'pipe', 'pipe'],
       });
@@ -288,7 +288,7 @@ describe('fake Claude fixture helpers', () => {
         {
           env: {
             ...process.env,
-            HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
+            PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
           },
           stdio: ['pipe', 'pipe', 'pipe'],
         },
@@ -376,7 +376,7 @@ describe('fake Claude fixture helpers', () => {
         cwd: dir,
         env: {
           ...process.env,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
         },
         stdio: ['ignore', 'pipe', 'pipe'],
       });

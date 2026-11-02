@@ -12,13 +12,13 @@ afterEach(() => {
 });
 
 describe('handleOpenCodeCliCommand', () => {
-  const prevAccountSettingsMode = process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
+  const prevAccountSettingsMode = process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
 
   afterEach(() => {
     if (typeof prevAccountSettingsMode === 'string') {
-      process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = prevAccountSettingsMode;
+      process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = prevAccountSettingsMode;
     } else {
-      delete process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
+      delete process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
     }
   });
 
@@ -43,7 +43,7 @@ describe('handleOpenCodeCliCommand', () => {
   });
 
   it('passes valid starting mode and resume/session flags to runOpenCode', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     const authSpy = vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);

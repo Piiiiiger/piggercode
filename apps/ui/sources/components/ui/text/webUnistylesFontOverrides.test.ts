@@ -7,8 +7,8 @@ import {
     observeWebUnistylesFontMetricSources,
     syncOverrideStyleElement,
     setRootCssVar,
-    HAPPIER_UI_FONT_SCALE_CSS_VAR,
-    HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID,
+    PIGGERCODE_UI_FONT_SCALE_CSS_VAR,
+    PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID,
 } from './webUnistylesFontOverrides';
 
 describe('webUnistylesFontOverrides', () => {
@@ -33,12 +33,12 @@ describe('webUnistylesFontOverrides', () => {
 
         const css = overrideEl.textContent ?? '';
         expect(css).toContain(`.${'unistyles_a1'}`);
-        expect(css).toContain(`font-size: calc(16px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}))`);
-        expect(css).toContain(`line-height: calc(24px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}))`);
-        expect(css).toContain(`letter-spacing: calc(0.15px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}))`);
+        expect(css).toContain(`font-size: calc(16px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}))`);
+        expect(css).toContain(`line-height: calc(24px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}))`);
+        expect(css).toContain(`letter-spacing: calc(0.15px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}))`);
 
         expect(css).toContain(`.${'unistyles_b2'}`);
-        expect(css).toContain(`font-size: calc(14px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}))`);
+        expect(css).toContain(`font-size: calc(14px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}))`);
     });
 
     it('sets the root CSS variable to the provided scale', () => {
@@ -46,7 +46,7 @@ describe('webUnistylesFontOverrides', () => {
         const { document } = dom.window;
 
         setRootCssVar(document, 1.1);
-        const raw = document.documentElement.style.getPropertyValue(HAPPIER_UI_FONT_SCALE_CSS_VAR);
+        const raw = document.documentElement.style.getPropertyValue(PIGGERCODE_UI_FONT_SCALE_CSS_VAR);
         expect(raw.trim()).toBe('1.1');
     });
 
@@ -62,7 +62,7 @@ describe('webUnistylesFontOverrides', () => {
         scanDocumentForUnistylesFontMetrics(document, metrics);
 
         const overrideEl = ensureOverrideStyleElement(document);
-        expect(overrideEl.id).toBe(HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID);
+        expect(overrideEl.id).toBe(PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID);
 
         const appended1 = syncOverrideStyleElement(overrideEl, metrics);
         const appended2 = syncOverrideStyleElement(overrideEl, metrics);

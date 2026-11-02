@@ -7,7 +7,7 @@ import {
   resolveAutostartWorkingDirectory,
 } from './stack_autostart_resolution.mjs';
 
-test('resolveAutostartEnvFilePath prefers explicit HAPPIER_STACK_ENV_FILE override', () => {
+test('resolveAutostartEnvFilePath prefers explicit PIGGERCODE_STACK_ENV_FILE override', () => {
   assert.equal(
     resolveAutostartEnvFilePath({
       mode: 'system',

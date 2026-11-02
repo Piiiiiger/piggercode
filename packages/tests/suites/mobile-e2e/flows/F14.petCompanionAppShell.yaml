@@ -1,4 +1,4 @@
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - launchApp:
     clearState: true
@@ -13,7 +13,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 - runFlow:
     file: _shared/loginCreateAccount.yaml
 
-- openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///settings/features
+- openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///settings/features
 
 - runFlow:
     file: _shared/acceptIosOpenInPromptMaybe.yaml
@@ -35,7 +35,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 1000
 
-- openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///settings/pets
+- openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///settings/pets
 
 - runFlow:
     file: _shared/acceptIosOpenInPromptMaybe.yaml

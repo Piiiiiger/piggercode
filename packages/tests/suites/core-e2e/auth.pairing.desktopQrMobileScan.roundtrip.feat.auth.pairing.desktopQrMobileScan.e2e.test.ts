@@ -70,7 +70,7 @@ describe('core e2e: auth pairing (desktop QR → mobile scan)', () => {
 
   it('restores a logged-out mobile device via desktop pairing QR', async () => {
     const testDir = run.testDir('auth-pairing-desktop-qr-mobile-scan');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -86,7 +86,7 @@ describe('core e2e: auth pairing (desktop QR → mobile scan)', () => {
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

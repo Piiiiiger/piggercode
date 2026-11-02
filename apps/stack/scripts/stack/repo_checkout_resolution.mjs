@@ -17,7 +17,7 @@ export async function resolveRequestedRepoCheckoutDir({ rootDir, repoSelection, 
   } else {
     const spec = String(repoSelection ?? '').trim();
     if (spec === 'default' || spec === 'main') {
-      resolved = defaultRepoDir || getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+      resolved = defaultRepoDir || getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
     } else if (spec === 'active') {
       resolved = getRepoDir(rootDir, process.env);
     } else {

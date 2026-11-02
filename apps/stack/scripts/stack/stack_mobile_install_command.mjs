@@ -29,9 +29,9 @@ function resolveInstallConfiguration({ appEnv, mobileKv, profilingRuntime = fals
 
 function buildDevelopmentInstallExtraEnv() {
   return {
-    HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE: 'most-recent',
-    HAPPIER_EXPO_DEVCLIENT_SILENT_LAUNCH: 'true',
-    HAPPIER_EXPO_USE_NATIVE_DEBUG: 'true',
+    PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE: 'most-recent',
+    PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH: 'true',
+    PIGGERCODE_EXPO_USE_NATIVE_DEBUG: 'true',
     EX_UPDATES_NATIVE_DEBUG: '1',
   };
 }
@@ -47,8 +47,8 @@ export function resolveStackMobileInstallPlan({ stackName, passthrough, existing
 
   const priorNameKey =
     appEnv === 'development'
-      ? 'HAPPIER_STACK_MOBILE_DEVELOPMENT_IOS_APP_NAME'
-      : 'HAPPIER_STACK_MOBILE_RELEASE_IOS_APP_NAME';
+      ? 'PIGGERCODE_STACK_MOBILE_DEVELOPMENT_IOS_APP_NAME'
+      : 'PIGGERCODE_STACK_MOBILE_RELEASE_IOS_APP_NAME';
   const priorName = (existing?.[priorNameKey] ?? '').toString().trim();
   const identity =
     appEnv === 'development'
@@ -65,14 +65,14 @@ export function resolveStackMobileInstallPlan({ stackName, passthrough, existing
   const envUpdates =
     appEnv === 'development'
       ? [
-          { key: 'HAPPIER_STACK_MOBILE_DEVELOPMENT_IOS_APP_NAME', value: identity.iosAppName },
-          { key: 'HAPPIER_STACK_MOBILE_DEVELOPMENT_IOS_BUNDLE_ID', value: identity.iosBundleId },
-          { key: 'HAPPIER_STACK_MOBILE_DEVELOPMENT_SCHEME', value: identity.scheme },
+          { key: 'PIGGERCODE_STACK_MOBILE_DEVELOPMENT_IOS_APP_NAME', value: identity.iosAppName },
+          { key: 'PIGGERCODE_STACK_MOBILE_DEVELOPMENT_IOS_BUNDLE_ID', value: identity.iosBundleId },
+          { key: 'PIGGERCODE_STACK_MOBILE_DEVELOPMENT_SCHEME', value: identity.scheme },
         ]
       : [
-          { key: 'HAPPIER_STACK_MOBILE_RELEASE_IOS_APP_NAME', value: identity.iosAppName },
-          { key: 'HAPPIER_STACK_MOBILE_RELEASE_IOS_BUNDLE_ID', value: identity.iosBundleId },
-          { key: 'HAPPIER_STACK_MOBILE_RELEASE_SCHEME', value: identity.scheme },
+          { key: 'PIGGERCODE_STACK_MOBILE_RELEASE_IOS_APP_NAME', value: identity.iosAppName },
+          { key: 'PIGGERCODE_STACK_MOBILE_RELEASE_IOS_BUNDLE_ID', value: identity.iosBundleId },
+          { key: 'PIGGERCODE_STACK_MOBILE_RELEASE_SCHEME', value: identity.scheme },
         ];
 
   const args = [

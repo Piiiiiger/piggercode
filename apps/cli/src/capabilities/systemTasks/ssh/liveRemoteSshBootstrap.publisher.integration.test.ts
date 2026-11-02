@@ -15,7 +15,7 @@ const { remoteProcess, home } = await vi.hoisted(async () => {
   const os = await import('node:os');
   const path = await import('node:path');
   const home = await fs.mkdtemp(path.join(os.tmpdir(), 'happier-ssh-bootstrap-auth-'));
-  vi.stubEnv('HAPPIER_HOME_DIR', home);
+  vi.stubEnv('PIGGERCODE_HOME_DIR', home);
   return { remoteProcess: vi.fn(), home };
 });
 
@@ -30,7 +30,7 @@ vi.mock('node:child_process', async (importOriginal) => {
   };
 });
 
-const fixtureDir = process.env.HAPPIER_TEST_REMOTE_BOOTSTRAP_RELEASE_FIXTURE_DIR;
+const fixtureDir = process.env.PIGGERCODE_TEST_REMOTE_BOOTSTRAP_RELEASE_FIXTURE_DIR;
 const assets = [
   'happier-v0.2.15-linux-x64.tar.gz',
   'checksums-happier-v0.2.15.txt',
@@ -105,10 +105,10 @@ describe.skipIf(!fixtureDir)('real SSH bootstrap with publisher-signed CLI 0.2.1
 
     try {
       vi.stubEnv('NODE_ENV', 'development');
-      vi.stubEnv('HAPPIER_HOME_DIR', home);
-      vi.stubEnv('HAPPIER_SERVER_URL', origin);
-      vi.stubEnv('HAPPIER_WEBAPP_URL', origin);
-      vi.stubEnv('HAPPIER_FIRST_PARTY_RELEASE_API_BASE_URL', origin);
+      vi.stubEnv('PIGGERCODE_HOME_DIR', home);
+      vi.stubEnv('PIGGERCODE_SERVER_URL', origin);
+      vi.stubEnv('PIGGERCODE_WEBAPP_URL', origin);
+      vi.stubEnv('PIGGERCODE_FIRST_PARTY_RELEASE_API_BASE_URL', origin);
       reloadConfiguration();
       await writeCredentialsLegacy({ secret: recoverySecret, token: 'local-fixture-token' });
 

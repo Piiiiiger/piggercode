@@ -24,7 +24,7 @@ type NodeRelaySpawnProcess = (
   }>,
 ) => ChildProcessWithoutNullStreams;
 
-const relayWriteFramePrefix = '\u001eHAPPIER_PTY_WRITE ';
+const relayWriteFramePrefix = '\u001ePIGGERCODE_PTY_WRITE ';
 const relayKillFallbackMs = 2_000;
 
 function normalizeArgs(args: string[] | string): string[] {
@@ -238,8 +238,8 @@ export function createNodePtyRelayProvider(params?: Readonly<{
       });
       const relayEnv: NodeJS.ProcessEnv = {
         ...(spawnParams.options.env ?? env),
-        HAPPIER_NODE_PTY_RELAY_COLS: normalizeDimensionEnvValue(spawnParams.options.cols),
-        HAPPIER_NODE_PTY_RELAY_ROWS: normalizeDimensionEnvValue(spawnParams.options.rows),
+        PIGGERCODE_NODE_PTY_RELAY_COLS: normalizeDimensionEnvValue(spawnParams.options.cols),
+        PIGGERCODE_NODE_PTY_RELAY_ROWS: normalizeDimensionEnvValue(spawnParams.options.rows),
       };
       const child = spawnProcess(invocation.command, invocation.args, {
         cwd: spawnParams.options.cwd,

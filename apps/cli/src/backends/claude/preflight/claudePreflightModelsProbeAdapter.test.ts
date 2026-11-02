@@ -179,7 +179,7 @@ describe('claudePreflightModelsProbeAdapter', () => {
     const processEnv = {
       ...process.env,
       ANTHROPIC_API_KEY: 'profile-api-key',
-      HAPPIER_CLAUDE_PATH: '/profile/claude',
+      PIGGERCODE_CLAUDE_PATH: '/profile/claude',
     };
 
     const raw = await claudePreflightModelsProbeAdapter.probeModelsRaw?.({

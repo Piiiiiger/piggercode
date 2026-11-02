@@ -10,17 +10,17 @@ import { __resetToolTraceForTests, initToolTraceIfEnabled, recordToolTraceEvent,
 
 function withToolTraceDir(prefix: string, fn: (dir: string) => void): void {
   const envScope = createEnvKeyScope([
-    'HAPPIER_STACK_TOOL_TRACE',
-    'HAPPIER_STACK_TOOL_TRACE_DIR',
-    'HAPPIER_STACK_TOOL_TRACE_FILE',
+    'PIGGERCODE_STACK_TOOL_TRACE',
+    'PIGGERCODE_STACK_TOOL_TRACE_DIR',
+    'PIGGERCODE_STACK_TOOL_TRACE_FILE',
   ]);
 
   try {
     withTempDirSync(prefix, (dir) => {
       envScope.patch({
-        HAPPIER_STACK_TOOL_TRACE: '1',
-        HAPPIER_STACK_TOOL_TRACE_DIR: dir,
-        HAPPIER_STACK_TOOL_TRACE_FILE: undefined,
+        PIGGERCODE_STACK_TOOL_TRACE: '1',
+        PIGGERCODE_STACK_TOOL_TRACE_DIR: dir,
+        PIGGERCODE_STACK_TOOL_TRACE_FILE: undefined,
       });
       __resetToolTraceForTests();
       fn(dir);

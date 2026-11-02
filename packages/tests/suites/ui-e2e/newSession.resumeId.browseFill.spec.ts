@@ -74,9 +74,9 @@ test.describe('ui e2e: /new resume id browse fills from direct sessions', () => 
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
     });
 
@@ -85,7 +85,7 @@ test.describe('ui e2e: /new resume id browse fills from direct sessions', () => 
       env: {
         ...process.env,
         EXPO_PUBLIC_DEBUG: '1',
-        EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS: '300000',
+        EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS: '300000',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-resume-browse`,
       },
@@ -125,9 +125,9 @@ test.describe('ui e2e: /new resume id browse fills from direct sessions', () => 
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 
@@ -141,14 +141,14 @@ test.describe('ui e2e: /new resume id browse fills from direct sessions', () => 
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
         CODEX_HOME: codexHomeDir,
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '50',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '50',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
     const machineId = await waitForDaemonMachineIdFromCliSettings({ cliHomeDir, timeoutMs: 120_000 });

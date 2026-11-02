@@ -46,7 +46,7 @@ describe("startSocket redis adapter config", () => {
     it("enables redis-streams adapter when explicitly configured in full flavor", async () => {
         resetSocketAdapterEnv({
             HAPPY_SERVER_FLAVOR: "full",
-            HAPPIER_SOCKET_ADAPTER: "redis-streams",
+            PIGGERCODE_SOCKET_ADAPTER: "redis-streams",
             REDIS_URL: "redis://localhost:6379",
         });
 
@@ -63,7 +63,7 @@ describe("startSocket redis adapter config", () => {
     it("enables adapter in light flavor when explicitly configured", async () => {
         resetSocketAdapterEnv({
             HAPPY_SERVER_FLAVOR: "light",
-            HAPPIER_SOCKET_ADAPTER: "redis-streams",
+            PIGGERCODE_SOCKET_ADAPTER: "redis-streams",
             REDIS_URL: "redis://localhost:6379",
         });
 
@@ -78,7 +78,7 @@ describe("startSocket redis adapter config", () => {
     it("keeps memory adapter when redis-streams is requested without REDIS_URL", async () => {
         resetSocketAdapterEnv({
             HAPPY_SERVER_FLAVOR: "full",
-            HAPPIER_SOCKET_ADAPTER: "redis-streams",
+            PIGGERCODE_SOCKET_ADAPTER: "redis-streams",
             REDIS_URL: undefined,
         });
 
@@ -92,7 +92,7 @@ describe("startSocket redis adapter config", () => {
     it("keeps memory adapter when explicit adapter token is unsupported", async () => {
         resetSocketAdapterEnv({
             HAPPY_SERVER_FLAVOR: "full",
-            HAPPIER_SOCKET_ADAPTER: "not-a-real-adapter",
+            PIGGERCODE_SOCKET_ADAPTER: "not-a-real-adapter",
             REDIS_URL: "redis://localhost:6379",
         });
 
@@ -105,8 +105,8 @@ describe("startSocket redis adapter config", () => {
     it("supports the legacy boolean redis adapter flag when REDIS_URL is present", async () => {
         resetSocketAdapterEnv({
             HAPPY_SERVER_FLAVOR: "full",
-            HAPPIER_SOCKET_ADAPTER: undefined,
-            HAPPIER_SOCKET_REDIS_ADAPTER: "1",
+            PIGGERCODE_SOCKET_ADAPTER: undefined,
+            PIGGERCODE_SOCKET_REDIS_ADAPTER: "1",
             REDIS_URL: "redis://localhost:6379",
         });
 

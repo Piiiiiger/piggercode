@@ -48,7 +48,7 @@ export async function createRuntimeSnapshotFixture(
       nodeContent: 'export {};\n',
     },
   });
-  await writeFile(join(stackDir, 'env'), 'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
+  await writeFile(join(stackDir, 'env'), 'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
 
   return {
     root,

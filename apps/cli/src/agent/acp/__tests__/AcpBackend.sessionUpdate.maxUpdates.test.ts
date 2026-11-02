@@ -6,12 +6,12 @@ import { logger } from '@/ui/logger';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createAcpToolCallLifecycle } from '../updates/toolCalls/createAcpToolCallLifecycle';
 
-const envScope = createEnvKeyScope(['HAPPIER_ACP_MAX_UPDATES_PER_NOTIFICATION']);
+const envScope = createEnvKeyScope(['PIGGERCODE_ACP_MAX_UPDATES_PER_NOTIFICATION']);
 
 describe('AcpBackend session/update max updates guard', () => {
   it('truncates excessive updates per notification using an env override', () => {
     const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    envScope.patch({ HAPPIER_ACP_MAX_UPDATES_PER_NOTIFICATION: '1' });
+    envScope.patch({ PIGGERCODE_ACP_MAX_UPDATES_PER_NOTIFICATION: '1' });
     try {
       const emitted: any[] = [];
       const toolCalls = createAcpToolCallLifecycle({

@@ -18,7 +18,7 @@ function runCapture(cmd, args, { cwd, env } = {}) {
   });
 }
 
-test('sandbox mode honors HAPPIER_STACK_SANDBOX_WORKSPACE_DIR override', async (t) => {
+test('sandbox mode honors PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR override', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const bin = join(rootDir, 'bin', 'hstack.mjs');
@@ -32,7 +32,7 @@ test('sandbox mode honors HAPPIER_STACK_SANDBOX_WORKSPACE_DIR override', async (
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_SANDBOX_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR: workspaceDir,
   };
 
   const res = await runCapture(process.execPath, [bin, '--sandbox-dir', sandboxDir, 'where', '--json'], { cwd: rootDir, env });

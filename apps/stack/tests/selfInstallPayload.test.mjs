@@ -26,7 +26,7 @@ test('hstack self __install-payload installs an extracted hstack payload into th
       cwd: stackRoot,
       env: {
         ...process.env,
-        HAPPIER_HOME_DIR: happyHomeDir,
+        PIGGERCODE_HOME_DIR: happyHomeDir,
       },
       encoding: 'utf8',
     }

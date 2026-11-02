@@ -14,16 +14,16 @@ describe('resolveDaemonSessionRunnerRestartTimeoutMs', () => {
 
   it('honors the env override within bounds', () => {
     expect(resolveDaemonSessionRunnerRestartTimeoutMs({
-      HAPPIER_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '90000',
+      PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '90000',
     })).toBe(90_000);
     expect(resolveDaemonSessionRunnerRestartTimeoutMs({
-      HAPPIER_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '1',
+      PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '1',
     })).toBe(1_000);
     expect(resolveDaemonSessionRunnerRestartTimeoutMs({
-      HAPPIER_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '99999999',
+      PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: '99999999',
     })).toBe(300_000);
     expect(resolveDaemonSessionRunnerRestartTimeoutMs({
-      HAPPIER_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: 'garbage',
+      PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS: 'garbage',
     })).toBe(resolveDaemonSessionRunnerRestartTimeoutMs({}));
   });
 });

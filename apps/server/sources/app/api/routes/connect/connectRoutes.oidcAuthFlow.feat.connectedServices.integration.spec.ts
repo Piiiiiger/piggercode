@@ -69,7 +69,7 @@ describe("connectRoutes (OIDC callback) external auth flow (integration)", () =>
                     redirectUrl: "https://api.example.test/v1/oauth/okta/callback",
                 },
             ]),
-            HAPPIER_WEBAPP_URL: "https://app.example.test",
+            PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         });
 
         const seed = new Uint8Array(32).fill(1);

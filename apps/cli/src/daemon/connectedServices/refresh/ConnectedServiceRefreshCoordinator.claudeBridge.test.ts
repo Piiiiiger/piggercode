@@ -30,7 +30,7 @@ vi.mock('node:child_process', async (importOriginal) => {
 
 import { ConnectedServiceRefreshCoordinator } from './ConnectedServiceRefreshCoordinator';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { computeClaudeCodeCredentialSafeTokenFingerprint } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialFile';
 
 const credentials = {
@@ -637,7 +637,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selection]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selection]),
       },
       materializationKey: 'sess-group',
     });
@@ -708,7 +708,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([currentSelection]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([currentSelection]),
       },
       materializationKey: 'sess-swapped',
     });
@@ -966,7 +966,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([currentSelection]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([currentSelection]),
       },
       materializationKey: 'sess-stale',
     });

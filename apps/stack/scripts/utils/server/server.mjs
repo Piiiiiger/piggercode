@@ -42,7 +42,7 @@ async function fetchHappierMonitoringEndpoint(baseUrl, endpoint) {
 
 export function getServerComponentName({ kv } = {}) {
   const fromArgRaw = kv?.get('--server')?.trim() ? kv.get('--server').trim() : '';
-  const fromEnvRaw = process.env.HAPPIER_STACK_SERVER_COMPONENT?.trim() ? process.env.HAPPIER_STACK_SERVER_COMPONENT.trim() : '';
+  const fromEnvRaw = process.env.PIGGERCODE_STACK_SERVER_COMPONENT?.trim() ? process.env.PIGGERCODE_STACK_SERVER_COMPONENT.trim() : '';
   const raw = fromArgRaw || fromEnvRaw || 'happier-server-light';
   const v = raw.toLowerCase();
   if (v === 'light' || v === 'server-light' || v === 'happier-server-light' || v === 'happy-server-light') {
@@ -94,7 +94,7 @@ function formatServerReadyEarlyExit(url, code, signal) {
 }
 
 export function resolveServerReadyTimeoutMs({ serverComponentName = '', env = process.env } = {}) {
-  const configured = Number.parseInt(String(env?.HAPPIER_STACK_SERVER_READY_TIMEOUT_MS ?? '').trim(), 10);
+  const configured = Number.parseInt(String(env?.PIGGERCODE_STACK_SERVER_READY_TIMEOUT_MS ?? '').trim(), 10);
   if (Number.isFinite(configured) && configured >= 1_000) {
     return configured;
   }
@@ -102,7 +102,7 @@ export function resolveServerReadyTimeoutMs({ serverComponentName = '', env = pr
 }
 
 export function resolveServerMigrationTimeoutMs({ env = process.env } = {}) {
-  const configured = Number.parseInt(String(env?.HAPPIER_STACK_SERVER_MIGRATION_TIMEOUT_MS ?? '').trim(), 10);
+  const configured = Number.parseInt(String(env?.PIGGERCODE_STACK_SERVER_MIGRATION_TIMEOUT_MS ?? '').trim(), 10);
   if (Number.isFinite(configured) && configured >= 1_000 && configured <= MAX_SERVER_MIGRATION_TIMEOUT_MS) {
     return configured;
   }
@@ -185,7 +185,7 @@ export async function waitForServerReady(url, {
   intervalMs = 300,
   childProcess = null,
   startupDeadline = null,
-  continueWhileChildAlive = process.env.HAPPIER_STACK_TUI === '1',
+  continueWhileChildAlive = process.env.PIGGERCODE_STACK_TUI === '1',
   onTimeoutCheckpoint = ({ phase }) => {
     console.warn(`[stack] server ${phase} is still in progress at ${url}; continuing to wait (TUI is attended)`);
   },

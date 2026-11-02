@@ -40,11 +40,11 @@ export function createOpenCodeBackend(options: OpenCodeBackendOptions): AgentBac
     DEBUG: '',
   };
 
-  const shouldPrintLogs = parseBooleanEnv(mergedEnv['HAPPIER_OPENCODE_ACP_PRINT_LOGS'], true);
+  const shouldPrintLogs = parseBooleanEnv(mergedEnv['PIGGERCODE_OPENCODE_ACP_PRINT_LOGS'], true);
 
   // OpenCode 1 accepts uppercase levels; OpenCode 2 accepts lowercase levels.
   // Let the executable own its default and validate explicitly requested values.
-  const logLevel = mergedEnv['HAPPIER_OPENCODE_ACP_LOG_LEVEL']?.trim();
+  const logLevel = mergedEnv['PIGGERCODE_OPENCODE_ACP_LOG_LEVEL']?.trim();
   const launch = resolveOpenCodeCliLaunchSpec(mergedEnv);
 
   const backendOptions: AcpBackendOptions = {

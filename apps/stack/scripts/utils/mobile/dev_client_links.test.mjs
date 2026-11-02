@@ -5,7 +5,7 @@ import { resolveMobileQrPayload } from './dev_client_links.mjs';
 
 test('resolveMobileQrPayload uses the configured app scheme for the dev-client deep link', () => {
   const env = {
-    HAPPIER_STACK_MOBILE_HOST: 'localhost',
+    PIGGERCODE_STACK_MOBILE_HOST: 'localhost',
     EXPO_APP_SCHEME: 'happier-dev',
   };
 
@@ -17,7 +17,7 @@ test('resolveMobileQrPayload uses the configured app scheme for the dev-client d
 
 test('resolveMobileQrPayload does not require EXPO_APP_SLUG', () => {
   const env = {
-    HAPPIER_STACK_MOBILE_HOST: 'localhost',
+    PIGGERCODE_STACK_MOBILE_HOST: 'localhost',
     EXPO_APP_SCHEME: 'happier-dev',
     EXPO_APP_SLUG: undefined,
   };

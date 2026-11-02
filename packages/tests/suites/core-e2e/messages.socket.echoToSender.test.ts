@@ -23,7 +23,7 @@ describe('core e2e: socket message echoToSender', () => {
 
   it('skips sender by default but delivers updates to sender when echoToSender=true', async () => {
     const testDir = run.testDir('messages-socket-echo-to-sender');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -42,7 +42,7 @@ describe('core e2e: socket message echoToSender', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

@@ -61,7 +61,7 @@ describe('extended-db docker script timeouts', () => {
   it('uses a generous default step timeout (overrideable by env)', () => {
     expect(resolveExtendedDbStepTimeoutMs({} as unknown as NodeJS.ProcessEnv)).toBe(3_600_000);
     expect(
-      resolveExtendedDbStepTimeoutMs({ HAPPIER_E2E_EXTENDED_DB_STEP_TIMEOUT_MS: '120000' } as unknown as NodeJS.ProcessEnv),
+      resolveExtendedDbStepTimeoutMs({ PIGGERCODE_E2E_EXTENDED_DB_STEP_TIMEOUT_MS: '120000' } as unknown as NodeJS.ProcessEnv),
     ).toBe(120_000);
   });
 

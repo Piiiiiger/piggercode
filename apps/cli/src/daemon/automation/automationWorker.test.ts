@@ -64,9 +64,9 @@ function buildQueuedRun(params: { id: string; automationId: string; at: number }
 }
 
 describe('automationWorker', () => {
-  const previousServer = process.env.HAPPIER_SERVER_URL;
-  const previousWebapp = process.env.HAPPIER_WEBAPP_URL;
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
+  const previousServer = process.env.PIGGERCODE_SERVER_URL;
+  const previousWebapp = process.env.PIGGERCODE_WEBAPP_URL;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
   beforeEach(() => {
     vi.useRealTimers();
@@ -99,20 +99,20 @@ describe('automationWorker', () => {
     vi.restoreAllMocks();
     vi.resetModules();
 
-    if (previousServer === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = previousServer;
+    if (previousServer === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = previousServer;
 
-    if (previousWebapp === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = previousWebapp;
+    if (previousWebapp === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = previousWebapp;
 
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
   });
 
   it('disables itself when automation endpoints are missing (404) to avoid repeated polling', async () => {
-    process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-    process.env.HAPPIER_HOME_DIR = join(
+    process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+    process.env.PIGGERCODE_HOME_DIR = join(
       os.tmpdir(),
       `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
     );
@@ -130,8 +130,8 @@ describe('automationWorker', () => {
       encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
       spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
       env: {
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '5000',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '5000',
       } as NodeJS.ProcessEnv,
     });
 
@@ -162,9 +162,9 @@ describe('automationWorker', () => {
   }, 60_000);
 
   it('does not make time-driven requests after the startup assignment refresh', async () => {
-    process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-    process.env.HAPPIER_HOME_DIR = join(
+    process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+    process.env.PIGGERCODE_HOME_DIR = join(
       os.tmpdir(),
       `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
     );
@@ -203,9 +203,9 @@ describe('automationWorker', () => {
       encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
       spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
       env: {
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '5000',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
-        HAPPIER_AUTOMATION_LEASE_MS: '5000',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '5000',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
+        PIGGERCODE_AUTOMATION_LEASE_MS: '5000',
       } as NodeJS.ProcessEnv,
     });
 
@@ -223,9 +223,9 @@ describe('automationWorker', () => {
   }, 120_000);
 
   it('suppresses assignment refresh while paused and resumes it afterwards', async () => {
-    process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-    process.env.HAPPIER_HOME_DIR = join(
+    process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+    process.env.PIGGERCODE_HOME_DIR = join(
       os.tmpdir(),
       `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
     );
@@ -243,8 +243,8 @@ describe('automationWorker', () => {
       encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
       spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
       env: {
-        HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
-        HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
+        PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
+        PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
       } as NodeJS.ProcessEnv,
     });
 
@@ -268,9 +268,9 @@ describe('automationWorker', () => {
       vi.setSystemTime(new Date('2026-02-01T00:00:00.000Z'));
       const now = Date.now();
 
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-      process.env.HAPPIER_HOME_DIR = join(
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = join(
         os.tmpdir(),
         `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
       );
@@ -334,9 +334,9 @@ describe('automationWorker', () => {
         encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
         spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
         env: {
-          HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
-          HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
-          HAPPIER_AUTOMATION_LEASE_MS: '30000',
+          PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
+          PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
+          PIGGERCODE_AUTOMATION_LEASE_MS: '30000',
         } as NodeJS.ProcessEnv,
       });
 
@@ -363,9 +363,9 @@ describe('automationWorker', () => {
     try {
       vi.setSystemTime(new Date('2026-02-01T00:00:00.000Z'));
 
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-      process.env.HAPPIER_HOME_DIR = join(
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = join(
         os.tmpdir(),
         `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
       );
@@ -383,8 +383,8 @@ describe('automationWorker', () => {
         encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
         spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
         env: {
-          HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
-          HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
+          PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
+          PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
         } as NodeJS.ProcessEnv,
       });
 
@@ -420,9 +420,9 @@ describe('automationWorker', () => {
       vi.setSystemTime(new Date('2026-02-01T00:00:00.000Z'));
       const now = Date.now();
 
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-      process.env.HAPPIER_HOME_DIR = join(
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = join(
         os.tmpdir(),
         `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
       );
@@ -463,9 +463,9 @@ describe('automationWorker', () => {
         encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
         spawnSession: vi.fn(async () => ({ type: 'error' as const, errorCode: 'SPAWN_FAILED' as const, errorMessage: 'noop' })),
         env: {
-          HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
-          HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
-          HAPPIER_AUTOMATION_LEASE_MS: '30000',
+          PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
+          PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
+          PIGGERCODE_AUTOMATION_LEASE_MS: '30000',
         } as NodeJS.ProcessEnv,
       });
 
@@ -520,9 +520,9 @@ describe('automationWorker', () => {
       vi.setSystemTime(new Date('2026-02-01T00:00:00.000Z'));
       const now = Date.now();
 
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
-      process.env.HAPPIER_HOME_DIR = join(
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = join(
         os.tmpdir(),
         `happier-automation-worker-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`,
       );
@@ -605,10 +605,10 @@ describe('automationWorker', () => {
         encryption: { type: 'legacy', secret },
         spawnSession,
         env: {
-          HAPPIER_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
-          HAPPIER_AUTOMATION_CLAIM_POLL_MS: '1000',
-          HAPPIER_AUTOMATION_LEASE_MS: '30000',
-          HAPPIER_AUTOMATION_HEARTBEAT_MS: '10000',
+          PIGGERCODE_AUTOMATION_ASSIGNMENT_REFRESH_MS: '600000',
+          PIGGERCODE_AUTOMATION_CLAIM_POLL_MS: '1000',
+          PIGGERCODE_AUTOMATION_LEASE_MS: '30000',
+          PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '10000',
         } as NodeJS.ProcessEnv,
       });
 

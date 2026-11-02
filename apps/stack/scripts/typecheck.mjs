@@ -96,8 +96,8 @@ async function main() {
         })
       : null;
   if (inferredLegacy) {
-    if (!(process.env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim()) {
-      process.env.HAPPIER_STACK_REPO_DIR = inferredLegacy.repoDir;
+    if (!(process.env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim()) {
+      process.env.PIGGERCODE_STACK_REPO_DIR = inferredLegacy.repoDir;
     }
   }
 

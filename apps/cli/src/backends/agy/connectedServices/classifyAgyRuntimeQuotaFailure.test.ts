@@ -44,7 +44,7 @@ describe('Antigravity ACP quota diagnostic admission', () => {
     });
     const backend = createFakeAcpRuntimeBackend();
     const runtime = createTestAcpRuntime({ provider: 'agy', directory: '/tmp', happierSessionId: 'agy-selected-recovery',
-      processEnv: { HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{ kind: 'group', serviceId: 'antigravity', groupId: 'selected-pool', activeProfileId: 'selected-profile', fallbackProfileId: 'fallback', generation: 7, credentialRevision: 'csr_abcdefghijklmnopqrstuv' }]) },
+      processEnv: { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{ kind: 'group', serviceId: 'antigravity', groupId: 'selected-pool', activeProfileId: 'selected-profile', fallbackProfileId: 'fallback', generation: 7, credentialRevision: 'csr_abcdefghijklmnopqrstuv' }]) },
       session: createBasicSessionClientWithOverrides({ sessionTurnLifecycle: lifecycle, sendAgentMessage: (provider, body) => { sent.push(body); void lifecycle.observeAcpLifecycleMarker({ provider, body }).pendingWrite; } }),
       messageBuffer: new MessageBuffer(), mcpServers: {}, permissionHandler: createApprovedPermissionHandler(), onThinkingChange: () => {}, ensureBackend: async () => backend,
       hooks: await agent.getAcpRuntimeTurnHooks() });

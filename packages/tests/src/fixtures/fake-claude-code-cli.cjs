@@ -10,7 +10,7 @@
  *   records for submitted stdin lines, can optionally append signal-file driven turns, then
  *   stays alive until SIGTERM (mode-switch abort).
  *
- * This file is used via `HAPPIER_CLAUDE_PATH` so the real user-installed Claude Code is not required.
+ * This file is used via `PIGGERCODE_CLAUDE_PATH` so the real user-installed Claude Code is not required.
  */
 
 const path = require('node:path');
@@ -32,17 +32,17 @@ const { buildWorkflowSpec } = require('./fake-claude-workflow-transcript.cjs');
 
 const argv = process.argv.slice(2);
 const invocationId =
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID ||
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID ||
   process.env.HAPPY_E2E_FAKE_CLAUDE_INVOCATION_ID ||
   `fake-claude-${randomUUID()}`;
 const resumeSessionId = findArgValue(argv, '--resume');
 const sessionId =
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID ||
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID ||
   process.env.HAPPY_E2E_FAKE_CLAUDE_SESSION_ID ||
   (typeof resumeSessionId === 'string' && resumeSessionId.length > 0 ? resumeSessionId : '') ||
   `fake-claude-session-${randomUUID()}`;
 const processNonce = randomUUID();
-const logPath = process.env.HAPPIER_E2E_FAKE_CLAUDE_LOG || process.env.HAPPY_E2E_FAKE_CLAUDE_LOG || '';
+const logPath = process.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOG || process.env.HAPPY_E2E_FAKE_CLAUDE_LOG || '';
 
 const mcpConfigs = parseMcpConfigs(argv);
 const mergedMcpServers = mergeMcpServers(mcpConfigs);
@@ -54,18 +54,18 @@ const isSdkStreamJson = isStreamJson && inputFormat === 'stream-json';
 const hasPrint = argv.includes('--print');
 const replayUserMessages = argv.includes('--replay-user-messages');
 const mode = isSdkStreamJson ? 'sdk' : 'local';
-const scenario = process.env.HAPPIER_E2E_FAKE_CLAUDE_SCENARIO || process.env.HAPPY_E2E_FAKE_CLAUDE_SCENARIO || '';
+const scenario = process.env.PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO || process.env.HAPPY_E2E_FAKE_CLAUDE_SCENARIO || '';
 const localActiveTurnEnabled = ['1', 'true', 'yes'].includes(
-  String(process.env.HAPPIER_E2E_FAKE_CLAUDE_LOCAL_ACTIVE_TURN || '').trim().toLowerCase(),
+  String(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_ACTIVE_TURN || '').trim().toLowerCase(),
 );
 const localActiveTurnStartSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_LOCAL_START_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_START_SIGNAL || '',
 ).trim();
 const localActiveTurnCompleteSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_LOCAL_COMPLETE_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOCAL_COMPLETE_SIGNAL || '',
 ).trim();
 const runtimeActivityTerminalSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_RUNTIME_ACTIVITY_TERMINAL_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_RUNTIME_ACTIVITY_TERMINAL_SIGNAL || '',
 ).trim();
 
 // `goal-status-attachment` scenario (T3): in local/unified-terminal mode, when a
@@ -75,14 +75,14 @@ const runtimeActivityTerminalSignalPath = String(
 // The signal file's contents (if any) become the goal `condition`/objective so a
 // test can correlate the emitted goal with what it requested.
 const goalStatusActiveSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_GOAL_ACTIVE_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_GOAL_ACTIVE_SIGNAL || '',
 ).trim();
 const goalStatusCompletedSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_GOAL_COMPLETED_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_GOAL_COMPLETED_SIGNAL || '',
 ).trim();
 const goalStatusSignalsEnabled = goalStatusActiveSignalPath.length > 0 || goalStatusCompletedSignalPath.length > 0;
 const goalStatusDefaultObjective = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_GOAL_OBJECTIVE || 'fake claude goal objective',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_GOAL_OBJECTIVE || 'fake claude goal objective',
 ).trim();
 
 // `workflow-activity` scenario (T2): in local/unified-terminal mode, when the workflow signal file
@@ -93,22 +93,22 @@ const goalStatusDefaultObjective = String(
 // are stamped with the fake CLI's OWN session id so the source's foreign-session guard accepts them.
 // The signal file's (non-empty) contents select the preset (`success`, `progress`, `failure`,
 // `stopped`, `no-phase`, `long-preview`, `concurrent`); the stream is emitted exactly once.
-const workflowSignalPath = String(process.env.HAPPIER_E2E_FAKE_CLAUDE_WORKFLOW_SIGNAL || '').trim();
+const workflowSignalPath = String(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_WORKFLOW_SIGNAL || '').trim();
 const workflowSignalsEnabled = workflowSignalPath.length > 0;
 const workflowTerminalSignalPath = String(
-  process.env.HAPPIER_E2E_FAKE_CLAUDE_WORKFLOW_TERMINAL_SIGNAL || '',
+  process.env.PIGGERCODE_E2E_FAKE_CLAUDE_WORKFLOW_TERMINAL_SIGNAL || '',
 ).trim();
 
 function resolveClaudeConfigDir() {
   const explicit = String(process.env.CLAUDE_CONFIG_DIR || '').trim();
   if (explicit) return explicit;
-  const happierOverride = String(process.env.HAPPIER_CLAUDE_CONFIG_DIR || '').trim();
+  const happierOverride = String(process.env.PIGGERCODE_CLAUDE_CONFIG_DIR || '').trim();
   if (happierOverride) return happierOverride;
   return path.join(os.homedir(), '.claude');
 }
 
 const requireNativeOauth = ['1', 'true', 'yes'].includes(
-  String(process.env.HAPPIER_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH || '').trim().toLowerCase(),
+  String(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH || '').trim().toLowerCase(),
 );
 
 function parseCredentialsJson(credentialsPath) {
@@ -146,12 +146,12 @@ function inspectNativeOauthContract() {
   const hasSetupEnvToken = typeof process.env.CLAUDE_CODE_SETUP_TOKEN === 'string' && process.env.CLAUDE_CODE_SETUP_TOKEN.length > 0;
   const hasClaudeConfigDirEnv = typeof process.env.CLAUDE_CONFIG_DIR === 'string' && process.env.CLAUDE_CONFIG_DIR.trim().length > 0;
   const hasHappierClaudeConfigDirEnv =
-    typeof process.env.HAPPIER_CLAUDE_CONFIG_DIR === 'string' && process.env.HAPPIER_CLAUDE_CONFIG_DIR.trim().length > 0;
+    typeof process.env.PIGGERCODE_CLAUDE_CONFIG_DIR === 'string' && process.env.PIGGERCODE_CLAUDE_CONFIG_DIR.trim().length > 0;
   const hasCredentialFile = fs.existsSync(credentialsPath);
   const hasAccessToken = typeof claudeAiOauth?.accessToken === 'string' && claudeAiOauth.accessToken.length > 0;
   const hasRefreshToken = typeof claudeAiOauth?.refreshToken === 'string' && claudeAiOauth.refreshToken.length > 0;
   // Agent SDK auth leases intentionally materialize access-only native credentials.
-  const allowAccessOnly = process.env.HAPPIER_E2E_FAKE_CLAUDE_ALLOW_ACCESS_ONLY_NATIVE_OAUTH === '1';
+  const allowAccessOnly = process.env.PIGGERCODE_E2E_FAKE_CLAUDE_ALLOW_ACCESS_ONLY_NATIVE_OAUTH === '1';
   const ok =
     hasClaudeConfigDirEnv &&
     hasCredentialFile &&
@@ -853,7 +853,7 @@ async function runSdkStreamUntilEof() {
     if (scenario === 'usage-limit-once') {
       const previous = fs.existsSync(logPath) ? fs.readFileSync(logPath, 'utf8') : '';
       if (!previous.includes('"type":"sdk_usage_limit"')) {
-        const resetAtMs = now + Number(process.env.HAPPIER_E2E_FAKE_CLAUDE_RESET_DELAY_MS || '8000');
+        const resetAtMs = now + Number(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_RESET_DELAY_MS || '8000');
         safeAppendJsonl(logPath, { type: 'sdk_usage_limit', invocationId, sessionId, resetAtMs, ts: now });
         emitSdk({
           type: 'rate_limit_event',
@@ -867,9 +867,9 @@ async function runSdkStreamUntilEof() {
         emitSdk({ ...createResultSuccess(), subtype: 'error_during_execution', is_error: true, errors: [failureText], result: failureText });
         continue;
       }
-      const acceptSignal = process.env.HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL;
+      const acceptSignal = process.env.PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL;
       // The recipe owns this phase's budget; do not leave a failed assertion's SDK child waiting forever.
-      const acceptTimeoutMs = Number(process.env.HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS);
+      const acceptTimeoutMs = Number(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS);
       if (acceptSignal && (!Number.isFinite(acceptTimeoutMs) || acceptTimeoutMs <= 0)) {
         throw new Error('continuation_accept_signal_timeout_not_configured');
       }

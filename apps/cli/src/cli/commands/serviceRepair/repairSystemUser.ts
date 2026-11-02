@@ -13,7 +13,7 @@ export function resolveBackgroundServiceRepairSystemUser(params: Readonly<{
   const processEnv = params.processEnv ?? process.env;
   const explicitSystemUser =
     normalizeSystemUser(params.systemUser)
-    || normalizeSystemUser(processEnv.HAPPIER_DAEMON_SERVICE_SYSTEM_USER);
+    || normalizeSystemUser(processEnv.PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER);
 
   if (explicitSystemUser) {
     return explicitSystemUser;
@@ -41,6 +41,6 @@ export function assertRepairPlanSystemUserAvailable(params: Readonly<{
     return;
   }
   throw new Error(
-    'System mode automatic startup repair requires --system-user (or SUDO_USER / HAPPIER_DAEMON_SERVICE_SYSTEM_USER)',
+    'System mode automatic startup repair requires --system-user (or SUDO_USER / PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER)',
   );
 }

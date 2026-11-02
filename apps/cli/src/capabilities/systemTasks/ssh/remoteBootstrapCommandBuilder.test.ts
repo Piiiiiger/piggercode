@@ -40,9 +40,9 @@ describe('buildRemoteBootstrapCommand', () => {
       daemonServiceMode: 'user',
     });
 
-    expect(command).toContain("HAPPIER_DAEMON_SERVICE_SERVER_URL='https://relay.example.test'");
-    expect(command).toContain("HAPPIER_DAEMON_SERVICE_WEBAPP_URL='https://app.example.test'");
-    expect(command).toContain("HAPPIER_DAEMON_SERVICE_PUBLIC_SERVER_URL='https://public.example.test'");
+    expect(command).toContain("PIGGERCODE_DAEMON_SERVICE_SERVER_URL='https://relay.example.test'");
+    expect(command).toContain("PIGGERCODE_DAEMON_SERVICE_WEBAPP_URL='https://app.example.test'");
+    expect(command).toContain("PIGGERCODE_DAEMON_SERVICE_PUBLIC_SERVER_URL='https://public.example.test'");
     expect(command).toContain('daemon service install --mode=user --json');
   });
 

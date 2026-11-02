@@ -20,7 +20,7 @@ export type DaemonServiceInstallTarget = Readonly<{
   ring: PublicReleaseRingId | null;
   instanceId: string | null;
   happierHomeDir: string | null;
-  /** The server profile a pinned target serves (its `HAPPIER_ACTIVE_SERVER_ID`); absent = unknown. */
+  /** The server profile a pinned target serves (its `PIGGERCODE_ACTIVE_SERVER_ID`); absent = unknown. */
   activeServerId?: string | null;
   /** The relay URL a pinned target serves; absent = unknown. */
   serverUrl?: string | null;
@@ -107,7 +107,7 @@ function resolveServiceRelay(
   return sameHome ? target.defaultFollowingServer ?? null : null;
 }
 
-/** The relay a pinned service serves: its baked `HAPPIER_ACTIVE_SERVER_ID` (else its unit id) and relay URL. */
+/** The relay a pinned service serves: its baked `PIGGERCODE_ACTIVE_SERVER_ID` (else its unit id) and relay URL. */
 export function resolvePinnedDaemonServiceRelay(service: Readonly<{
   serverId: string;
   activeServerId?: string | null;

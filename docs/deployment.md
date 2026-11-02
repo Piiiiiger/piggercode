@@ -4,9 +4,9 @@ This document records the server implementation behind deployment.
 
 ## Runtime overview
 - **App server:** Fastify + Socket.IO. Published `relay-server` images run the packaged server binary and embed the web UI; source-based `server` images use the repository start script.
-- **Database:** selected independently by `HAPPIER_DB_PROVIDER`; prebuilt images include SQLite and Postgres.
+- **Database:** selected independently by `PIGGERCODE_DB_PROVIDER`; prebuilt images include SQLite and Postgres.
 - **Socket fanout:** in-memory by default; optional Redis Streams for multiple API replicas and split workers.
-- **Files:** S3-compatible storage or local disk, selected by `HAPPIER_FILES_BACKEND`.
+- **Files:** S3-compatible storage or local disk, selected by `PIGGERCODE_FILES_BACKEND`.
 - **Metrics:** Optional Prometheus `/metrics` server on a separate port.
 
 In current development source, source-based server images install the production dependency closure after generation and compilation. Generated Prisma clients and native runtime dependencies remain in the image; development-only Redis validation tools are excluded.
@@ -20,7 +20,7 @@ Run `yarn --cwd apps/server validate:redis-adapter` from a development checkout 
 
 2. **Redis**
    - Optional for one `SERVER_ROLE=all` process. Startup pings Redis only when the Redis socket adapter is enabled.
-   - Multi-replica API and split-worker deployments need `REDIS_URL` and `HAPPIER_SOCKET_ADAPTER=redis-streams`, plus load-balancer affinity for HTTP polling.
+   - Multi-replica API and split-worker deployments need `REDIS_URL` and `PIGGERCODE_SOCKET_ADAPTER=redis-streams`, plus load-balancer affinity for HTTP polling.
 
 3. **S3-compatible storage**
    - Used for avatars and other uploaded assets.
@@ -63,12 +63,12 @@ Run `yarn --cwd apps/server validate:redis-adapter` from a development checkout 
     - `AUTH_GITHUB_APP_INSTALLATION_ID_BY_ORG` (e.g. `acme=123,other=456`)
 - Voice (server-minted ElevenLabs conversation tokens via `POST /v1/voice/token`):
   - Required: `ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID_PROD`
-  - Required when `HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION=true`: `REVENUECAT_SECRET_KEY`
+  - Required when `PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION=true`: `REVENUECAT_SECRET_KEY`
   - Optional controls:
-    - `HAPPIER_FEATURE_VOICE__ENABLED` (`true`/`false`, default `true`)
-    - `HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION` (`true`/`false`, defaults to `true` when `NODE_ENV=production`)
+    - `PIGGERCODE_FEATURE_VOICE__ENABLED` (`true`/`false`, default `true`)
+    - `PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION` (`true`/`false`, defaults to `true` when `NODE_ENV=production`)
     - `VOICE_FREE_SESSIONS_PER_MONTH` (default `0`)
-    - `VOICE_FREE_MINUTES_PER_MONTH` (default `0`, enforced when `HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION=true`)
+    - `VOICE_FREE_MINUTES_PER_MONTH` (default `0`, enforced when `PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION=true`)
     - `VOICE_MAX_CONCURRENT_SESSIONS` (default `1`)
     - `VOICE_MAX_SESSION_SECONDS` (default `1200`, min `30`)
     - `VOICE_MAX_MINUTES_PER_DAY` (default `0` = unlimited; global per-user guardrail)
@@ -77,7 +77,7 @@ Run `yarn --cwd apps/server validate:redis-adapter` from a development checkout 
     - `VOICE_LEASE_CLEANUP` (`true`/`false`, default `false`)
     - `VOICE_LEASE_RETENTION_DAYS` (default `30`, clamp 7–365)
     - `VOICE_LEASE_CLEANUP_INTERVAL_MS` (default `21600000` = 6h, min `10000`)
-- Logging format (development source): `HAPPIER_SERVER_LOG_FORMAT=json` opts Node into structured stdout; unset or invalid values retain pretty output. See the published self-hosting environment reference for logging settings.
+- Logging format (development source): `PIGGERCODE_SERVER_LOG_FORMAT=json` opts Node into structured stdout; unset or invalid values retain pretty output. See the published self-hosting environment reference for logging settings.
 - Sentry native CPU profiling (development source): `SENTRY_PROFILE_SESSION_SAMPLE_RATE` defaults to `0`. A positive rate enables the native integration on Node. Bun-based servers cannot load the V8 profiler; they emit a `profiling-unavailable` warning and retain Sentry error capture. Native profiling is not available in Bun-compiled server binaries.
 - Debug logging: `DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING` (enables file logging + dev log endpoint).
 

@@ -16,7 +16,7 @@ function pathApi(platform: NodeJS.Platform) {
  * Machine/daemon RPC handlers need a stable default directory for relative paths.
  *
  * Filesystem authorization is resolved separately by the filesystem access policy. Do not use
- * `HAPPIER_MACHINE_RPC_WORKING_DIRECTORY` here; that env var is an explicit restriction policy,
+ * `PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY` here; that env var is an explicit restriction policy,
  * not the default relative-path base.
  */
 export function resolveMachineRpcWorkingDirectory(overrides?: Partial<Deps>): string {

@@ -15,25 +15,25 @@ const __scriptsDir = dirname(__utilsDir);
 const __cliRootDir = dirname(__scriptsDir);
 
 function resolveHomeDir() {
-  const fromEnv = (process.env.HAPPIER_STACK_HOME_DIR ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv, process.env);
   }
   return join(homedir(), '.happier-stack');
 }
 
-// If HAPPIER_STACK_HOME_DIR isn't set, try the canonical pointer file at <canonicalHomeDir>/.env first.
+// If PIGGERCODE_STACK_HOME_DIR isn't set, try the canonical pointer file at <canonicalHomeDir>/.env first.
 //
 // This allows installs where the "real" home/workspace/runtime are elsewhere, while still
 // giving us a stable discovery location for launchd/SwiftBar/minimal shells.
 const canonicalEnvPath = getCanonicalHomeEnvPathFromEnv(process.env);
-if (!(process.env.HAPPIER_STACK_HOME_DIR ?? '').trim() && existsSync(canonicalEnvPath)) {
+if (!(process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim() && existsSync(canonicalEnvPath)) {
   await loadEnvFile(canonicalEnvPath, { override: false });
-  await loadEnvFile(canonicalEnvPath, { override: true, overridePrefix: 'HAPPIER_STACK_' });
+  await loadEnvFile(canonicalEnvPath, { override: true, overridePrefix: 'PIGGERCODE_STACK_' });
 }
 
 const __homeDir = resolveHomeDir();
-process.env.HAPPIER_STACK_HOME_DIR = process.env.HAPPIER_STACK_HOME_DIR ?? __homeDir;
+process.env.PIGGERCODE_STACK_HOME_DIR = process.env.PIGGERCODE_STACK_HOME_DIR ?? __homeDir;
 
 // Prefer canonical home config:
 //   ~/.happier-stack/.env
@@ -52,10 +52,10 @@ const repoEnv = join(__cliRootDir, '.env');
 // 1) Load defaults first (lowest precedence)
 if (hasHomeConfig) {
   await loadEnvFile(homeEnv, { override: false });
-  await loadEnvFile(homeLocal, { override: true, overridePrefix: 'HAPPIER_STACK_' });
+  await loadEnvFile(homeLocal, { override: true, overridePrefix: 'PIGGERCODE_STACK_' });
 } else {
   await loadEnvFile(join(__cliRootDir, '.env'), { override: false });
-  await loadEnvFile(join(__cliRootDir, 'env.local'), { override: true, overridePrefix: 'HAPPIER_STACK_' });
+  await loadEnvFile(join(__cliRootDir, 'env.local'), { override: true, overridePrefix: 'PIGGERCODE_STACK_' });
 }
 
 // Repo-local fallback (dev convenience):
@@ -64,9 +64,9 @@ if (hasHomeConfig) {
 // overrides and could unexpectedly fight with stack/home configuration when present.
 if (hasHomeConfig) {
   // IMPORTANT:
-  // When home config exists, do not let repo-local .env set HAPPIER_STACK_* keys.
+  // When home config exists, do not let repo-local .env set PIGGERCODE_STACK_* keys.
   // Otherwise a cloned repo's .env can accidentally leak global URLs/ports into every stack.
-  await loadEnvFileIgnoringPrefixes(repoEnv, { ignorePrefixes: ['HAPPIER_STACK_'] });
+  await loadEnvFileIgnoringPrefixes(repoEnv, { ignorePrefixes: ['PIGGERCODE_STACK_'] });
 } else {
   await loadEnvFile(repoEnv, { override: false });
 }
@@ -74,15 +74,15 @@ if (hasHomeConfig) {
 // If no explicit env file is set, and we're on the default "main" stack, prefer the stack-scoped env file
 // if it exists: ~/.happier/stacks/main/env
 (() => {
-  if ((process.env.HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD ?? '').toString().trim() === '1') {
+  if ((process.env.PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD ?? '').toString().trim() === '1') {
     return;
   }
   const stacksEnv = resolveExplicitStackEnvFilePath(process.env);
   if (stacksEnv) {
-    process.env.HAPPIER_STACK_ENV_FILE = stacksEnv;
+    process.env.PIGGERCODE_STACK_ENV_FILE = stacksEnv;
     return;
   }
-  const stackName = (process.env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  const stackName = (process.env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
   const stacksStorageRoot = getStacksStorageRoot(process.env);
 
   const candidates = [
@@ -91,17 +91,17 @@ if (hasHomeConfig) {
   const envPath = candidates.find((p) => existsSync(p));
   if (!envPath) return;
 
-  process.env.HAPPIER_STACK_ENV_FILE = envPath;
+  process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
 })();
 // 3) Load explicit env file overlay (stack env, or any caller-provided env file) last (highest precedence).
 //
 // IMPORTANT:
-// Stack env files intentionally include some non-prefixed keys (e.g. DATABASE_URL, HAPPIER_SERVER_LIGHT_DATA_DIR)
+// Stack env files intentionally include some non-prefixed keys (e.g. DATABASE_URL, PIGGERCODE_SERVER_LIGHT_DATA_DIR)
 // that must apply for true per-stack isolation. Do not filter by prefix here.
 {
   const stacksEnv = resolveExplicitStackEnvFilePath(process.env);
   if (stacksEnv) {
-    process.env.HAPPIER_STACK_ENV_FILE = stacksEnv;
+    process.env.PIGGERCODE_STACK_ENV_FILE = stacksEnv;
   }
   const unique = Array.from(new Set([stacksEnv].filter(Boolean)));
   for (const p of unique) {

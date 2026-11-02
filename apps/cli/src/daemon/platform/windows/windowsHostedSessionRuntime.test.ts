@@ -45,13 +45,13 @@ describe('windowsHostedSessionRuntime', () => {
     expect(resolveWindowsTerminalWindowName({
       requested: 'from-ui',
       env: {
-        HAPPIER_WINDOWS_TERMINAL_WINDOW_NAME: 'from-env',
+        PIGGERCODE_WINDOWS_TERMINAL_WINDOW_NAME: 'from-env',
       },
     })).toBe('from-env');
     expect(resolveWindowsTerminalWindowName({
       requested: 'from-ui',
       env: {
-        HAPPIER_WINDOWS_TERMINAL_WINDOW_ID: 'from-legacy-env',
+        PIGGERCODE_WINDOWS_TERMINAL_WINDOW_ID: 'from-legacy-env',
       },
     })).toBe('from-legacy-env');
   });

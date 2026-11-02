@@ -49,17 +49,17 @@ function readPositiveIntFromEnv(params: Readonly<{
 export function resolvePayloadOwnerStopTimeoutMs(processEnv: NodeJS.ProcessEnv): number {
   return readPositiveIntFromEnv({
     processEnv,
-    name: 'HAPPIER_CLI_PAYLOAD_OWNER_STOP_TIMEOUT_MS',
+    name: 'PIGGERCODE_CLI_PAYLOAD_OWNER_STOP_TIMEOUT_MS',
   })
     ?? readPositiveIntFromEnv({
       processEnv,
-      name: 'HAPPIER_INSTALLER_PRE_INSTALL_COMMAND_TIMEOUT_MS',
+      name: 'PIGGERCODE_INSTALLER_PRE_INSTALL_COMMAND_TIMEOUT_MS',
     })
     ?? DEFAULT_PAYLOAD_OWNER_STOP_TIMEOUT_MS;
 }
 
 function shouldSkipInstalledCliStopCommands(processEnv: NodeJS.ProcessEnv): boolean {
-  return processEnv.HAPPIER_CLI_SKIP_PAYLOAD_OWNER_STOP_COMMANDS === '1';
+  return processEnv.PIGGERCODE_CLI_SKIP_PAYLOAD_OWNER_STOP_COMMANDS === '1';
 }
 
 function resolveManagedCliInvoker(paths: Readonly<{

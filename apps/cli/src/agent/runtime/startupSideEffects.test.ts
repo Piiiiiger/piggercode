@@ -309,8 +309,8 @@ describe('startup side effects: daemon session reporting retry', () => {
   });
 
   it('uses a longer default retry window when daemon autostart is enabled for terminal sessions', async () => {
-    const previousAutostart = process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
-    process.env.HAPPIER_SESSION_AUTOSTART_DAEMON = '1';
+    const previousAutostart = process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
+    process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = '1';
 
     try {
       let calls = 0;
@@ -335,8 +335,8 @@ describe('startup side effects: daemon session reporting retry', () => {
       // attempt at t=0, 10s, 20s, 30s (then stop).
       expect(calls).toBe(4);
     } finally {
-      if (previousAutostart === undefined) delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
-      else process.env.HAPPIER_SESSION_AUTOSTART_DAEMON = previousAutostart;
+      if (previousAutostart === undefined) delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
+      else process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = previousAutostart;
     }
   });
 });

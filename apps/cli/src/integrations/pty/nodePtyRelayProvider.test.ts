@@ -9,7 +9,7 @@ import {
   createNodePtyRelayProvider,
 } from './nodePtyRelayProvider';
 
-const relayWriteFramePrefix = '\u001eHAPPIER_PTY_WRITE ';
+const relayWriteFramePrefix = '\u001ePIGGERCODE_PTY_WRITE ';
 
 function expectedRelayWriteFrame(data: string): string {
   return `${relayWriteFramePrefix}${Buffer.from(data, 'utf8').toString('base64')}\n`;
@@ -136,8 +136,8 @@ describe('createNodePtyRelayProvider', () => {
         env: {
           PATH: 'C:\\Windows\\System32',
           TERM: 'xterm-256color',
-          HAPPIER_NODE_PTY_RELAY_COLS: '132',
-          HAPPIER_NODE_PTY_RELAY_ROWS: '48',
+          PIGGERCODE_NODE_PTY_RELAY_COLS: '132',
+          PIGGERCODE_NODE_PTY_RELAY_ROWS: '48',
         },
         stdio: 'pipe',
         windowsHide: true,
@@ -170,8 +170,8 @@ describe('createNodePtyRelayProvider', () => {
         env: expect.objectContaining({
           PATH: 'C:\\Windows\\System32',
           SystemRoot: 'C:\\Windows',
-          HAPPIER_NODE_PTY_RELAY_COLS: '80',
-          HAPPIER_NODE_PTY_RELAY_ROWS: '24',
+          PIGGERCODE_NODE_PTY_RELAY_COLS: '80',
+          PIGGERCODE_NODE_PTY_RELAY_ROWS: '24',
         }),
       }),
     );

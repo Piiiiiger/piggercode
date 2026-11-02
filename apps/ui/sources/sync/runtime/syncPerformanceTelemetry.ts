@@ -406,7 +406,7 @@ export function installSyncPerformanceTelemetryGlobal(
     telemetry: SyncPerformanceTelemetry = syncPerformanceTelemetry,
 ): void {
     const target = globalThis as unknown as {
-        __HAPPIER_SYNC_PERFORMANCE__?: {
+        __PIGGERCODE_SYNC_PERFORMANCE__?: {
             configure?: (options: SyncPerformanceTelemetryGlobalConfigureOptions) => void;
             snapshot: () => SyncPerformanceTelemetrySummary;
             flush: () => SyncPerformanceTelemetrySummary | null;
@@ -414,7 +414,7 @@ export function installSyncPerformanceTelemetryGlobal(
             markScenario: (name: string, fields?: SyncPerformanceTelemetryFields) => void;
         };
     };
-    target.__HAPPIER_SYNC_PERFORMANCE__ = {
+    target.__PIGGERCODE_SYNC_PERFORMANCE__ = {
         snapshot: () => {
             return telemetry.snapshot();
         },
@@ -429,7 +429,7 @@ export function installSyncPerformanceTelemetryGlobal(
         },
     };
     if (readDevFlag()) {
-        target.__HAPPIER_SYNC_PERFORMANCE__.configure = (options) => {
+        target.__PIGGERCODE_SYNC_PERFORMANCE__.configure = (options) => {
             telemetry.configure(options);
         };
     }

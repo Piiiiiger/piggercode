@@ -75,7 +75,7 @@ async function clearAndroidNativeModuleBuildState({ repoRoot, uiDir }) {
 }
 
 export function shouldClearAndroidNativeBuildState(env) {
-  return isTruthyEnvValue(env?.HAPPIER_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE);
+  return isTruthyEnvValue(env?.PIGGERCODE_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE);
 }
 
 export async function clearAndroidGeneratedBuildState({ repoRoot, uiDir, includeNativeModuleBuildState }) {

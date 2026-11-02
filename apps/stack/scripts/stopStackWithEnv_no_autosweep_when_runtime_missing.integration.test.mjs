@@ -30,11 +30,11 @@ test('stopStackWithEnv does not auto-sweep when autoSweep=false and stack.runtim
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -62,8 +62,8 @@ test('stopStackWithEnv does not auto-sweep when autoSweep=false and stack.runtim
   owned = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
     },
   });
   assert.ok(Number(owned.pid) > 1, 'expected child pid');
@@ -75,12 +75,12 @@ test('stopStackWithEnv does not auto-sweep when autoSweep=false and stack.runtim
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
     },
     json: true,
     noDocker: true,

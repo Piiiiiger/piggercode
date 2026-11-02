@@ -24,8 +24,8 @@ describe("rpcHandler", () => {
   const resetRpcAvailabilityEnv = createEnvReset();
   const setRpcAvailabilityEnv = () => {
     resetRpcAvailabilityEnv({
-      HAPPIER_RPC_METHOD_AVAILABILITY_GRACE_MS: "100",
-      HAPPIER_RPC_METHOD_AVAILABILITY_POLL_MS: "10",
+      PIGGERCODE_RPC_METHOD_AVAILABILITY_GRACE_MS: "100",
+      PIGGERCODE_RPC_METHOD_AVAILABILITY_POLL_MS: "10",
     });
   };
 

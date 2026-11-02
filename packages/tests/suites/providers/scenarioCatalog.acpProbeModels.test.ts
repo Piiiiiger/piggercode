@@ -6,7 +6,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function acpProvider(id: string): ProviderUnderTest {
   return {
     id,
-    enableEnvVar: `HAPPIER_E2E_PROVIDER_${id.toUpperCase()}`,
+    enableEnvVar: `PIGGERCODE_E2E_PROVIDER_${id.toUpperCase()}`,
     protocol: 'acp',
     traceProvider: id,
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: ['acp_probe_models'] } },

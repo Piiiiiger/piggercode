@@ -70,7 +70,7 @@ const androidPackageOverride = (process.env.EXPO_ANDROID_PACKAGE || '').trim();
 const ownerOverride = (process.env.EXPO_APP_OWNER || '').trim();
 const slugOverride = (process.env.EXPO_APP_SLUG || '').trim();
 const versionOverride = (process.env.EXPO_APP_VERSION || '').trim();
-const appVariantOverride = normalizeVariantOverride(process.env.HAPPIER_APP_VARIANT_OVERRIDE);
+const appVariantOverride = normalizeVariantOverride(process.env.PIGGERCODE_APP_VARIANT_OVERRIDE);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = (() => {
     try {
@@ -90,10 +90,10 @@ const appEnvironmentConfig = getAppEnvironmentConfig(rawAppEnvironment);
 
 // Android size tuning (primarily for direct-download APKs).
 // Prefer controlling these knobs from EAS build profile env so store builds (AAB) keep their defaults.
-const androidEnableMinifyInReleaseBuilds = readBoolEnv('HAPPIER_ANDROID_ENABLE_MINIFY', false);
-const androidEnableShrinkResourcesInReleaseBuilds = readBoolEnv('HAPPIER_ANDROID_ENABLE_SHRINK_RESOURCES', false);
-const androidGradleJvmArgsOverride = String(process.env.HAPPIER_ANDROID_GRADLE_JVMARGS ?? '').trim();
-const androidUsesCleartextTraffic = readBoolEnv('HAPPIER_ANDROID_USES_CLEARTEXT_TRAFFIC', true);
+const androidEnableMinifyInReleaseBuilds = readBoolEnv('PIGGERCODE_ANDROID_ENABLE_MINIFY', false);
+const androidEnableShrinkResourcesInReleaseBuilds = readBoolEnv('PIGGERCODE_ANDROID_ENABLE_SHRINK_RESOURCES', false);
+const androidGradleJvmArgsOverride = String(process.env.PIGGERCODE_ANDROID_GRADLE_JVMARGS ?? '').trim();
+const androidUsesCleartextTraffic = readBoolEnv('PIGGERCODE_ANDROID_USES_CLEARTEXT_TRAFFIC', true);
 // Canonical owner of the generated native build properties. Every prebuild path derives
 // ios/Podfile.properties.json from this: `yarn prebuild`, `expo run:ios`, `hstack mobile`,
 // and EAS (which re-prebuilds because /ios/ is .easignore'd).
@@ -161,10 +161,10 @@ const parseOptionalBoolean = (raw) => {
     return null;
 };
 
-const explicitRuntimeVersion = String(process.env.HAPPIER_EXPO_RUNTIME_VERSION ?? '').trim();
+const explicitRuntimeVersion = String(process.env.PIGGERCODE_EXPO_RUNTIME_VERSION ?? '').trim();
 
 function resolveDefaultExpoRuntimeVersion() {
-    const overrideRaw = String(process.env.HAPPIER_EXPO_RUNTIME_VERSION_POLICY ?? '').trim().toLowerCase();
+    const overrideRaw = String(process.env.PIGGERCODE_EXPO_RUNTIME_VERSION_POLICY ?? '').trim().toLowerCase();
     const override =
         overrideRaw === 'fingerprint' ? 'fingerprint' :
         overrideRaw === 'appversion' || overrideRaw === 'app_version' || overrideRaw === 'app-version' ? 'appVersion' :
@@ -185,11 +185,11 @@ function resolveDefaultExpoRuntimeVersion() {
     return packageJsonRuntimeVersion;
 }
 
-const devClientLaunchMode = (process.env.HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE || '').trim();
-const devClientSilentLaunch = parseOptionalBoolean(process.env.HAPPIER_EXPO_DEVCLIENT_SILENT_LAUNCH);
-const iosMemoryProfilingRuntime = readBoolEnv('HAPPIER_IOS_MEMORY_PROFILING_RUNTIME', false);
+const devClientLaunchMode = (process.env.PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE || '').trim();
+const devClientSilentLaunch = parseOptionalBoolean(process.env.PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH);
+const iosMemoryProfilingRuntime = readBoolEnv('PIGGERCODE_IOS_MEMORY_PROFILING_RUNTIME', false);
 const updatesNativeDebugEnabled =
-    parseOptionalBoolean(process.env.HAPPIER_EXPO_USE_NATIVE_DEBUG) ??
+    parseOptionalBoolean(process.env.PIGGERCODE_EXPO_USE_NATIVE_DEBUG) ??
     parseOptionalBoolean(process.env.EX_UPDATES_NATIVE_DEBUG) ??
     null;
 
@@ -216,8 +216,8 @@ const variantFeaturePolicyEnv = appEnvironmentConfig.featurePolicyEnv;
 const buildFeaturePolicyEnv =
     updatesChannel === 'production' ? 'production' : updatesChannel === 'preview' ? 'preview' : '';
 const resolvedFeaturePolicyEnv = variantFeaturePolicyEnv || (isBuildContext ? buildFeaturePolicyEnv : '');
-if (!process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV && resolvedFeaturePolicyEnv) {
-    process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV = resolvedFeaturePolicyEnv;
+if (!process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV && resolvedFeaturePolicyEnv) {
+    process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV = resolvedFeaturePolicyEnv;
 }
 
 const linkHost = (process.env.EXPO_APP_LINK_HOST || DEFAULTS.linkHost).trim();
@@ -256,8 +256,8 @@ const iosBackgroundAudioOverride = parseOptionalBoolean(
 );
 const iosBackgroundAudioEnabled = iosBackgroundAudioOverride ?? true;
 const syncTuningJson = (
-    process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON ||
-    process.env.HAPPIER_SYNC_TUNING_JSON ||
+    process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON ||
+    process.env.PIGGERCODE_SYNC_TUNING_JSON ||
     ''
 ).trim();
 
@@ -265,12 +265,12 @@ const syncTuningJson = (
 // at bundle time, so we provide a dev-safe default mapping that can be overridden in EAS/env.
 //
 // Override points:
-// - EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (full JSON mapping)
-// - EXPO_PUBLIC_HAPPIER_MODEL_PACKS_REPO + EXPO_PUBLIC_HAPPIER_MODEL_PACKS_TAG (convenience)
-const defaultModelPacksRepo = (process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACKS_REPO || 'happier-dev/happier-assets').trim();
-const defaultModelPacksTag = (process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACKS_TAG || 'model-packs').trim();
-if (!process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS) {
-    process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS = JSON.stringify({
+// - EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (full JSON mapping)
+// - EXPO_PUBLIC_PIGGERCODE_MODEL_PACKS_REPO + EXPO_PUBLIC_PIGGERCODE_MODEL_PACKS_TAG (convenience)
+const defaultModelPacksRepo = (process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACKS_REPO || 'happier-dev/happier-assets').trim();
+const defaultModelPacksTag = (process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACKS_TAG || 'model-packs').trim();
+if (!process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS) {
+    process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS = JSON.stringify({
         "kokoro-82m-v1.0-onnx-q8-wasm": `https://github.com/${defaultModelPacksRepo}/releases/download/${defaultModelPacksTag}/kokoro-82m-v1.0-onnx-q8-wasm__manifest.json`,
         "sherpa-onnx-streaming-zipformer-en-20M-2023-02-17": `https://github.com/${defaultModelPacksRepo}/releases/download/${defaultModelPacksTag}/sherpa-onnx-streaming-zipformer-en-20M-2023-02-17__manifest.json`
     });

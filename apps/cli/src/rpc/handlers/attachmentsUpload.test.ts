@@ -179,7 +179,7 @@ describe('attachments upload (chunked)', () => {
 
     try {
       await writeFile(join(workingDirectory, '.gitignore'), '# existing\n', 'utf8');
-      vi.stubEnv('HAPPIER_FILES_UPLOAD_MAX_FILE_BYTES', '4');
+      vi.stubEnv('PIGGERCODE_FILES_UPLOAD_MAX_FILE_BYTES', '4');
       reloadConfiguration();
 
       const mgr = createRpcHandlerManager();

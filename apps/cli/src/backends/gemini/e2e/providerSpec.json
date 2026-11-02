@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "gemini",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_GEMINI",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_GEMINI",
   "protocol": "acp",
   "traceProvider": "gemini",
   "requiredBinaries": [
     {
       "bin": "gemini",
-      "envOverride": "HAPPIER_E2E_PROVIDER_GEMINI_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_GEMINI_BIN",
       "requireExists": true
     }
   ],
@@ -57,10 +57,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_GEMINI_PATH": "HAPPIER_E2E_PROVIDER_GEMINI_BIN"
+      "PIGGERCODE_GEMINI_PATH": "PIGGERCODE_E2E_PROVIDER_GEMINI_BIN"
     }
   }
 }

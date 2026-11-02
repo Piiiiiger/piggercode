@@ -44,7 +44,7 @@ describe('core e2e: existing_session automation target', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);

@@ -33,7 +33,7 @@ async function loadCliCommonWorkspacesModule(repoRoot, heldLockValue, env = proc
       quiet: false,
       env: {
         ...env,
-        HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+        PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
       },
     });
   }
@@ -59,9 +59,9 @@ export async function bundleWorkspaceDeps(opts = {}) {
   return withWorkspaceBundleLock(async ({ heldLockValue }) => {
     const heldLockEnv = {
       ...baseEnv,
-      HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+      PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
     };
-    delete heldLockEnv.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR;
+    delete heldLockEnv.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR;
     const {
       bundleWorkspacePackages,
       resolveWorkspaceBundlesFromPackageJson,
@@ -90,7 +90,7 @@ export async function bundleWorkspaceDeps(opts = {}) {
     heldLockValue: String(
       opts.heldLockValue
         ?? opts.heldLockPath
-        ?? baseEnv?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD
+        ?? baseEnv?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD
         ?? '',
     ).trim(),
     timeoutMs: 240_000,

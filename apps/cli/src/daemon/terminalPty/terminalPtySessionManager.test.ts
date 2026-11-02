@@ -181,7 +181,7 @@ describe('TerminalPtySessionManager', () => {
     const provider = new FakePtyProvider();
     const env: NodeJS.ProcessEnv = {
       SHELL: '/bin/zsh',
-      HAPPIER_DAEMON_TERMINAL_PROMPT_EOL_MARK: 'marker',
+      PIGGERCODE_DAEMON_TERMINAL_PROMPT_EOL_MARK: 'marker',
     };
     const manager = createTerminalPtySessionManager({
       ptyProvider: provider,
@@ -197,7 +197,7 @@ describe('TerminalPtySessionManager', () => {
     expect(provider.spawned[0]?.params.args).toEqual(['-l']);
     expect(provider.spawned[0]?.params.options.env).toMatchObject({
       SHELL: '/bin/zsh',
-      HAPPIER_DAEMON_TERMINAL_PROMPT_EOL_MARK: 'marker',
+      PIGGERCODE_DAEMON_TERMINAL_PROMPT_EOL_MARK: 'marker',
       PROMPT_EOL_MARK: 'marker',
     });
   });

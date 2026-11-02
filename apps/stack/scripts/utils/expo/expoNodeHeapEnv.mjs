@@ -8,7 +8,7 @@ function coercePositiveInt(value) {
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : null;
 }
 
-export function parseExpoMaxOldSpaceSizeMb(env, envKey = 'HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB') {
+export function parseExpoMaxOldSpaceSizeMb(env, envKey = 'PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB') {
   const raw = String(env?.[envKey] ?? '').trim();
   if (!raw) return { explicit: false, value: null };
   if (raw === '0') return { explicit: true, value: 0 };
@@ -28,7 +28,7 @@ export function setOrReplaceMaxOldSpaceSizeFlag(nodeOptions, sizeMb) {
 
 export function applyExpoNodeHeapEnv(baseEnv, options = {}) {
   const env = /** @type {Record<string, string>} */ ({ ...(baseEnv ?? process.env) });
-  const envKey = String(options.envKey ?? 'HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB');
+  const envKey = String(options.envKey ?? 'PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB');
   const defaultSizeMb = Number.isFinite(options.defaultSizeMb) && options.defaultSizeMb > 0
     ? Math.floor(options.defaultSizeMb)
     : DEFAULT_EXPO_MAX_OLD_SPACE_SIZE_MB;

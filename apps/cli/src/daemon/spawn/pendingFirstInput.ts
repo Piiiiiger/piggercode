@@ -7,7 +7,7 @@ import {
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import { resolveSessionUserMessageRequestedAction } from '@/session/services/resolveSessionUserMessageRequestedAction';
 
-export const HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY = 'HAPPIER_DAEMON_PENDING_FIRST_INPUT';
+export const PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY = 'PIGGERCODE_DAEMON_PENDING_FIRST_INPUT';
 
 export type PendingFirstInput = Readonly<PendingFirstInputV1>;
 
@@ -38,7 +38,7 @@ export function serializePendingFirstInputForEnv(input: PendingFirstInput): stri
 export function readPendingFirstInputFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): PendingFirstInput | null {
-  const raw = env[HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY];
+  const raw = env[PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY];
   if (raw === undefined) return null;
   let parsed: unknown;
   try {
@@ -54,7 +54,7 @@ export function readPendingFirstInputFromEnv(
 }
 
 export function clearPendingFirstInputFromEnv(env: NodeJS.ProcessEnv = process.env): void {
-  delete env[HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY];
+  delete env[PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY];
 }
 
 export type PendingFirstInputCommitter = Readonly<{

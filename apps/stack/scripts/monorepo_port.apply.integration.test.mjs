@@ -200,7 +200,7 @@ test('monorepo port guide auto-clones target when --target does not exist', asyn
     ],
     {
       cwd: process.cwd(),
-      env: { ...env, HAPPIER_STACK_TEST_TTY: '1', HAPPIER_STACK_DISABLE_LLM_AUTOEXEC: '1' },
+      env: { ...env, PIGGERCODE_STACK_TEST_TTY: '1', PIGGERCODE_STACK_DISABLE_LLM_AUTOEXEC: '1' },
       stdio: ['pipe', 'pipe', 'pipe'],
     }
   );
@@ -567,7 +567,7 @@ test('monorepo port works via bin/hstack.mjs entrypoint (CLI registry end-to-end
   await run('git', ['add', '.'], { cwd: sourceCli, env: gitEnv() });
   await run('git', ['commit', '-q', '-m', 'feat: update hello'], { cwd: sourceCli, env: gitEnv() });
 
-  const env = { ...gitEnv(), HAPPIER_STACK_HOME_DIR: join(root, 'home') };
+  const env = { ...gitEnv(), PIGGERCODE_STACK_HOME_DIR: join(root, 'home') };
   const out = await runCapture(
     process.execPath,
     [

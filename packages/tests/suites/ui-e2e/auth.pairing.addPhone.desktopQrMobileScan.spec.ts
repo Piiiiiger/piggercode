@@ -78,8 +78,8 @@ test.describe('ui e2e: add your phone (desktop QR → mobile scan)', () => {
       dbProvider: 'sqlite',
       extraEnv: {
         // Keep UI web create-account unblocked (see existing ui-e2e suites).
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 

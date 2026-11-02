@@ -141,9 +141,9 @@ describe('buildResumeSessionExtrasFromUiState', () => {
             } as any,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
             },
         });
     });
@@ -163,9 +163,9 @@ describe('buildResumeSessionExtrasFromUiState', () => {
             } as any,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4999/',
-                HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4999/',
+                PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
             },
         });
     });
@@ -290,9 +290,9 @@ describe('buildWakeResumeExtras', () => {
             } as any,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
             },
         });
     });
@@ -311,7 +311,7 @@ describe('buildWakeResumeExtras', () => {
             session: null,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
             },
         });
 
@@ -328,7 +328,7 @@ describe('buildWakeResumeExtras', () => {
             session: null,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
             },
         });
     });
@@ -358,9 +358,9 @@ describe('buildWakeResumeExtras', () => {
             } as any,
         })).toEqual({
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
             },
         });
     });
@@ -402,10 +402,10 @@ describe('buildSpawnEnvironmentVariablesFromUiState', () => {
             newSessionOptions: null,
         })).toEqual({
             FOO: '1',
-            HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-            HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
-            HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4097/',
-            HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+            PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
+            PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4097/',
+            PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
         });
 
         expect(buildSpawnEnvironmentVariablesFromUiState({
@@ -414,7 +414,7 @@ describe('buildSpawnEnvironmentVariablesFromUiState', () => {
             environmentVariables: undefined,
             newSessionOptions: null,
         })).toEqual({
-            HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
         });
     });
 
@@ -436,9 +436,9 @@ describe('buildSpawnEnvironmentVariablesFromUiState', () => {
             },
         })).toEqual({
             FOO: '1',
-            HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-            HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4097/',
-            HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+            PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4097/',
+            PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
         });
     });
 
@@ -453,7 +453,7 @@ describe('buildSpawnEnvironmentVariablesFromUiState', () => {
             newSessionOptions: null,
         })).toEqual({
             FOO: '1',
-            HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
         });
     });
 
@@ -470,7 +470,7 @@ describe('buildSpawnEnvironmentVariablesFromUiState', () => {
             newSessionOptions: null,
         })).toEqual({
             FOO: '1',
-            HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
         });
     });
 

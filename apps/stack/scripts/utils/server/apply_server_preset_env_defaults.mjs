@@ -15,18 +15,18 @@ export function applyServerPresetEnvDefaults({ serverComponentName, baseEnv, ser
   if (databaseAuthority.removeDatabaseUrl) delete serverEnv.DATABASE_URL;
   const lightPreset = serverComponentName === 'happier-server-light';
   if (!lightPreset && dbProvider !== 'sqlite' && dbProvider !== 'pglite') return;
-  const dataDir = baseEnv.HAPPIER_SERVER_LIGHT_DATA_DIR?.trim()
-    ? expandHome(baseEnv.HAPPIER_SERVER_LIGHT_DATA_DIR.trim(), baseEnv)
+  const dataDir = baseEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR?.trim()
+    ? expandHome(baseEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR.trim(), baseEnv)
     : join(baseDir, 'server-light');
-  serverEnv.HAPPIER_SERVER_LIGHT_DATA_DIR = dataDir;
+  serverEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR = dataDir;
   if (lightPreset) {
-    serverEnv.HAPPIER_SERVER_LIGHT_FILES_DIR = baseEnv.HAPPIER_SERVER_LIGHT_FILES_DIR?.trim()
-      ? expandHome(baseEnv.HAPPIER_SERVER_LIGHT_FILES_DIR.trim(), baseEnv)
+    serverEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR = baseEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR?.trim()
+      ? expandHome(baseEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR.trim(), baseEnv)
       : join(dataDir, 'files');
   }
   if (dbProvider === 'pglite' || lightPreset) {
-    serverEnv.HAPPIER_SERVER_LIGHT_DB_DIR = baseEnv.HAPPIER_SERVER_LIGHT_DB_DIR?.trim()
-      ? expandHome(baseEnv.HAPPIER_SERVER_LIGHT_DB_DIR.trim(), baseEnv)
+    serverEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR = baseEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR?.trim()
+      ? expandHome(baseEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR.trim(), baseEnv)
       : join(dataDir, 'pglite');
   }
 }

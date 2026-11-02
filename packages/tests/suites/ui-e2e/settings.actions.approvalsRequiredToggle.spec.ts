@@ -101,7 +101,7 @@ test.describe('ui e2e: actions settings detail approval modes', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 
@@ -112,7 +112,7 @@ test.describe('ui e2e: actions settings detail approval modes', () => {
                 EXPO_PUBLIC_DEBUG: '1',
                 EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
                 EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-settings-actions-approvals-${run.runId}`,
-                EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY: 'app.ui.onboardingShowcase',
+                EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY: 'app.ui.onboardingShowcase',
             },
         });
 

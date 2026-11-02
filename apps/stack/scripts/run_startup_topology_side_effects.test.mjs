@@ -42,9 +42,9 @@ async function spawnForeignHealthServer({ stackName, envPath, healthStatus = 200
   `], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
     detached: true,
@@ -112,8 +112,8 @@ test('run adopts exact-owned topology before package-manager or infrastructure s
   await writeFile(join(fakeRepo, 'apps', 'cli', 'package.json'), JSON.stringify({ name: 'fake-cli', private: true }) + '\n');
   await writeFile(join(fakeRepo, 'apps', 'ui', 'package.json'), JSON.stringify({ name: 'fake-ui', private: true }) + '\n');
   await writeFile(join(fakeRepo, 'apps', 'cli', 'dist', 'index.mjs'), 'process.exit(0);\n');
-  await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`);
-  await writeFile(foreignEnvPath, 'HAPPIER_STACK_STACK=foreign-stack\n');
+  await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`);
+  await writeFile(foreignEnvPath, 'PIGGERCODE_STACK_STACK=foreign-stack\n');
 
   server = await spawnForeignHealthServer({ stackName, envPath, healthStatus: 503 });
   await writeFile(join(binDir, 'lsof'), '#!/bin/sh\nprintf "%s\\n" "$FAKE_LISTEN_PID"\n');
@@ -122,7 +122,7 @@ case "$*" in
   *"pgid="*) printf "%s\\n" "$FAKE_LISTEN_PID" ;;
   *"eww -p"*)
     printf "PID COMMAND\\n"
-    printf "%s node HAPPIER_STACK_STACK=%s HAPPIER_STACK_ENV_FILE=%s HAPPIER_STACK_PROCESS_KIND=server\\n" "$FAKE_LISTEN_PID" "$FAKE_STACK_NAME" "$FAKE_STACK_ENV_FILE"
+    printf "%s node PIGGERCODE_STACK_STACK=%s PIGGERCODE_STACK_ENV_FILE=%s PIGGERCODE_STACK_PROCESS_KIND=server\\n" "$FAKE_LISTEN_PID" "$FAKE_STACK_NAME" "$FAKE_STACK_ENV_FILE"
     ;;
   *) exec /bin/ps "$@" ;;
 esac
@@ -150,18 +150,18 @@ esac
       FAKE_STACK_ENV_FILE: envPath,
       FOREIGN_ENV_FILE: foreignEnvPath,
       CI: '1',
-      HAPPIER_STACK_RUNTIME_MODE: 'source',
-      HAPPIER_STACK_REPO_DIR: fakeRepo,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '0',
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-      HAPPIER_STACK_SERVER_PORT: String(server.port),
-      HAPPIER_STACK_PRISMA_MIGRATE: '0',
-      HAPPIER_STACK_DOCKER_AUTOSTART: '0',
-      HAPPIER_STACK_SERVE_UI: '0',
+      PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+      PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '0',
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_SERVER_PORT: String(server.port),
+      PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+      PIGGERCODE_STACK_DOCKER_AUTOSTART: '0',
+      PIGGERCODE_STACK_SERVE_UI: '0',
     },
   });
 
@@ -179,10 +179,10 @@ esac
       FAKE_LISTEN_PID: String(server.child.pid),
       FAKE_STACK_NAME: stackName,
       FAKE_STACK_ENV_FILE: envPath,
-      CI: '1', HAPPIER_STACK_REPO_DIR: fakeRepo, HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName, HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath, HAPPIER_STACK_SERVER_PORT: String(server.port),
-      HAPPIER_STACK_PRISMA_MIGRATE: '0', HAPPIER_STACK_DOCKER_AUTOSTART: '0', HAPPIER_STACK_SERVE_UI: '0',
+      CI: '1', PIGGERCODE_STACK_REPO_DIR: fakeRepo, PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName, PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath, PIGGERCODE_STACK_SERVER_PORT: String(server.port),
+      PIGGERCODE_STACK_PRISMA_MIGRATE: '0', PIGGERCODE_STACK_DOCKER_AUTOSTART: '0', PIGGERCODE_STACK_SERVE_UI: '0',
     },
   });
   assert.notEqual(devResult.code, 0, 'the fake UI launcher should terminate the public dev fixture');

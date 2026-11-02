@@ -16,7 +16,7 @@ const expoAppDir = path.resolve(path.dirname(url.fileURLToPath(import.meta.url))
 
 describe('native Mermaid WebView bundle', () => {
     it('contains the local runtime and no CDN fallback', () => {
-        expect(MERMAID_WEBVIEW_BUNDLE_JS).toContain('HAPPIER_MERMAID');
+        expect(MERMAID_WEBVIEW_BUNDLE_JS).toContain('PIGGERCODE_MERMAID');
         expect(MERMAID_WEBVIEW_BUNDLE_JS).not.toContain('cdn.jsdelivr.net');
         expect(MERMAID_WEBVIEW_BUNDLE_JS).not.toContain('unpkg.com');
     });

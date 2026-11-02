@@ -6,7 +6,7 @@ import { resolveCommonApiKeyStatus, runCliCommandBestEffort } from '@/capabiliti
 const DEFAULT_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS = 2_000;
 
 function resolveCursorCliAuthProbeTimeoutMs(): number {
-  const raw = process.env.HAPPIER_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS;
+  const raw = process.env.PIGGERCODE_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS;
   const normalized = typeof raw === 'string' ? raw.replaceAll('_', '').trim() : '';
   const parsed = normalized ? Number(normalized) : Number.NaN;
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS;

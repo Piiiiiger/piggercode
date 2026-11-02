@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { resolveSpawnChildEnvironment } from './resolveSpawnChildEnvironment';
 
 describe('resolveSpawnChildEnvironment (transcript storage)', () => {
-  it('sets HAPPIER_TRANSCRIPT_STORAGE=direct when transcriptStorage=direct', async () => {
+  it('sets PIGGERCODE_TRANSCRIPT_STORAGE=direct when transcriptStorage=direct', async () => {
     const result = await resolveSpawnChildEnvironment({
       options: {
         directory: '/tmp',
@@ -19,10 +19,10 @@ describe('resolveSpawnChildEnvironment (transcript storage)', () => {
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.extraEnvForChild.HAPPIER_TRANSCRIPT_STORAGE).toBe('direct');
+    expect(result.extraEnvForChild.PIGGERCODE_TRANSCRIPT_STORAGE).toBe('direct');
   });
 
-  it('omits HAPPIER_TRANSCRIPT_STORAGE when transcriptStorage is unset', async () => {
+  it('omits PIGGERCODE_TRANSCRIPT_STORAGE when transcriptStorage is unset', async () => {
     const result = await resolveSpawnChildEnvironment({
       options: {
         directory: '/tmp',
@@ -37,10 +37,10 @@ describe('resolveSpawnChildEnvironment (transcript storage)', () => {
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.extraEnvForChild.HAPPIER_TRANSCRIPT_STORAGE).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_TRANSCRIPT_STORAGE).toBeUndefined();
   });
 
-  it('sets HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY when requested', async () => {
+  it('sets PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY when requested', async () => {
     const result = await resolveSpawnChildEnvironment({
       options: {
         directory: '/tmp',
@@ -56,6 +56,6 @@ describe('resolveSpawnChildEnvironment (transcript storage)', () => {
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.extraEnvForChild.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY).toBe('replace_with_runtime_identity');
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY).toBe('replace_with_runtime_identity');
   });
 });

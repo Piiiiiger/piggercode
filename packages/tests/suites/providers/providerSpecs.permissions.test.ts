@@ -7,7 +7,7 @@ describe('providers: providerSpec permissions', () => {
     const parsed = E2eCliProviderSpecV1Schema.parse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       permissions: {
@@ -33,7 +33,7 @@ describe('providers: providerSpec permissions', () => {
     const parsed = E2eCliProviderSpecV1Schema.parse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       permissions: {
@@ -99,7 +99,7 @@ describe('providers: providerSpec permissions', () => {
     const parsed = E2eCliProviderSpecV1Schema.parse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       permissions: {

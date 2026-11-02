@@ -29,7 +29,7 @@ it('keeps the dialog after no-copy refusal and sends only the corrected transfer
     modal.spies.show.mockImplementation(() => `handoff-modal-${++nextModalId}`);
     storage.getState().applySessions([createSessionFixture({ id: 'handoff-test-session', active: false, metadata: { ...createSessionFixture().metadata!, machineId: 'handoff-test-source', path: '/project', flavor: 'claude' } })]);
     machineRpc.mockResolvedValue({ ok: false, errorCode: 'existing_session_state_unavailable', error: 'Native session unavailable' });
-    const outputPath = process.env.HAPPIER_HANDOFF_FAILURE_TEST_OUTPUT;
+    const outputPath = process.env.PIGGERCODE_HANDOFF_FAILURE_TEST_OUTPUT;
     let expectedError = 'Native session unavailable';
     if (outputPath) {
         const produced: unknown = JSON.parse(await readFile(outputPath, 'utf8'));

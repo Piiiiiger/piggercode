@@ -1,7 +1,7 @@
 {
   "v": 1,
   "id": "opencode_server",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_OPENCODE_SERVER",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER",
   "protocol": "acp",
   "traceProvider": "opencode",
   "requiredBinaries": ["opencode"],
@@ -57,8 +57,8 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_OPENCODE_BACKEND_MODE": "server",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_OPENCODE_BACKEND_MODE": "server",
+      "PIGGERCODE_VARIANT": "dev"
     }
   }
 }

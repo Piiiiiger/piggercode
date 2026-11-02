@@ -39,12 +39,12 @@ test('hstack start fails closed when UI serving is enabled and index.html is mis
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_REPO_DIR: monoRoot,
-      HAPPIER_STACK_SERVE_UI: '1',
-      HAPPIER_STACK_UI_BUILD_DIR: uiBuildDir,
+      PIGGERCODE_STACK_REPO_DIR: monoRoot,
+      PIGGERCODE_STACK_SERVE_UI: '1',
+      PIGGERCODE_STACK_UI_BUILD_DIR: uiBuildDir,
       // Ensure we do not spawn real services during this test.
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_TAILSCALE_SERVE: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_TAILSCALE_SERVE: '0',
     };
 
     const res = await runNode([join(rootDir, 'scripts', 'run.mjs'), '--json'], { cwd: rootDir, env });

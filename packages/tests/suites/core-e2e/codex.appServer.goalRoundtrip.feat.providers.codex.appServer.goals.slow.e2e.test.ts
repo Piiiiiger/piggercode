@@ -172,12 +172,12 @@ async function runCliSessionAction(params: Readonly<{
     env: {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: params.harness.cliHome,
-      HAPPIER_SERVER_URL: params.harness.serverBaseUrl,
-      HAPPIER_WEBAPP_URL: params.harness.serverBaseUrl,
-      HAPPIER_CODEX_APP_SERVER_BIN: params.harness.fakeAppServerPath,
-      HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '5000',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: params.harness.cliHome,
+      PIGGERCODE_SERVER_URL: params.harness.serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: params.harness.serverBaseUrl,
+      PIGGERCODE_CODEX_APP_SERVER_BIN: params.harness.fakeAppServerPath,
+      PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '5000',
     },
     stdoutPath: `${params.testDir}/${params.label}.stdout.log`,
     stderrPath: `${params.testDir}/${params.label}.stderr.log`,
@@ -403,11 +403,11 @@ describe('core e2e: Codex app-server goal session controls', () => {
         sessionBusySteerSendPolicy: 'server_pending',
       },
       cliEnvOverrides: {
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '50',
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_NATIVE_GOAL_SUCCESSOR: '1',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '50',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_NATIVE_GOAL_SUCCESSOR: '1',
         // Keep the successor open long enough for a real encrypted HTTP enqueue/list roundtrip
         // under contended CI; the assertion must observe queued custody before terminal drain.
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_NATIVE_GOAL_SUCCESSOR_DELAY_MS: '10000',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_NATIVE_GOAL_SUCCESSOR_DELAY_MS: '10000',
       },
     });
     const { auth, requestLogPath, secret, serverBaseUrl, sessionId } = harness;

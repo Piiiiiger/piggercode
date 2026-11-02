@@ -64,7 +64,7 @@ function buildCrashFixtureEnv(root, extraEnv) {
     baseEnv: buildStackFixtureEnv({ baseEnv: process.env, stripStackEnv: true }),
     binDirs: [listenerFixtureBinDir],
     extraEnv: {
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
       TEST_EXPO_LISTENER_DIR: root,
       ...extraEnv,
     },
@@ -146,11 +146,11 @@ test('ensureDevExpoServer resets the consecutive crash budget after a healthy Ex
       baseEnv: buildCrashFixtureEnv(tmp, {
           FAKE_EXPO_RUN_COUNT_PATH: runCountPath,
           FAKE_EXPO_ARGS_PATH: argsPath,
-          HAPPIER_STACK_EXPO_CLEAR_CACHE: '0',
-          HAPPIER_STACK_EXPO_RESTART_BASE_DELAY_MS: '10',
-          HAPPIER_STACK_EXPO_RESTART_MAX_DELAY_MS: '10',
-          HAPPIER_STACK_EXPO_RESTART_MAX_ATTEMPTS: '1',
-          HAPPIER_STACK_EXPO_RESTART_HEALTHY_RESET_MS: '2000',
+          PIGGERCODE_STACK_EXPO_CLEAR_CACHE: '0',
+          PIGGERCODE_STACK_EXPO_RESTART_BASE_DELAY_MS: '10',
+          PIGGERCODE_STACK_EXPO_RESTART_MAX_DELAY_MS: '10',
+          PIGGERCODE_STACK_EXPO_RESTART_MAX_ATTEMPTS: '1',
+          PIGGERCODE_STACK_EXPO_RESTART_HEALTHY_RESET_MS: '2000',
       }),
       apiServerUrl: 'http://127.0.0.1:1',
       restart: false,
@@ -280,9 +280,9 @@ test('ensureDevExpoServer cancels a pending post-readiness restart when shutdown
       autostart: { baseDir: tmp },
       baseEnv: buildCrashFixtureEnv(tmp, {
           FAKE_EXPO_RUN_COUNT_PATH: runCountPath,
-          HAPPIER_STACK_EXPO_RESTART_BASE_DELAY_MS: '1000',
-          HAPPIER_STACK_EXPO_RESTART_MAX_DELAY_MS: '1000',
-          HAPPIER_STACK_EXPO_RESTART_MAX_ATTEMPTS: '1',
+          PIGGERCODE_STACK_EXPO_RESTART_BASE_DELAY_MS: '1000',
+          PIGGERCODE_STACK_EXPO_RESTART_MAX_DELAY_MS: '1000',
+          PIGGERCODE_STACK_EXPO_RESTART_MAX_ATTEMPTS: '1',
       }),
       apiServerUrl: 'http://127.0.0.1:1',
       restart: false,
@@ -316,7 +316,7 @@ test('restart attempt reset requires a certified healthy interval', () => {
   assert.equal(resolveExpoRestartPolicy({ env: {} }).healthyResetMs, 5 * 60_000);
   const policy = resolveExpoRestartPolicy({
     env: {
-      HAPPIER_STACK_EXPO_RESTART_HEALTHY_RESET_MS: '2000',
+      PIGGERCODE_STACK_EXPO_RESTART_HEALTHY_RESET_MS: '2000',
     },
   });
 

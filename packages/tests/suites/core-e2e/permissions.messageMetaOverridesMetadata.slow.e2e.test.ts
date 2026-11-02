@@ -80,11 +80,11 @@ import { appendFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
-const sdkEntry = process.env.HAPPIER_E2E_ACP_SDK_ENTRY;
-if (!sdkEntry) throw new Error("Missing HAPPIER_E2E_ACP_SDK_ENTRY");
+const sdkEntry = process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY;
+if (!sdkEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_SDK_ENTRY");
 const acp = await import(pathToFileURL(sdkEntry).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
 class FakeAgent {
@@ -96,7 +96,7 @@ class FakeAgent {
   async newSession() { return { sessionId: randomUUID() }; }
   async authenticate() { return {}; }
   async prompt(params) {
-    const delayMs = Number(process.env.HAPPIER_E2E_PERMISSION_DELAY_MS || "100");
+    const delayMs = Number(process.env.PIGGERCODE_E2E_PERMISSION_DELAY_MS || "100");
     await new Promise((r) => setTimeout(r, Number.isFinite(delayMs) ? delayMs : 100));
 
     const resp = await this.connection.requestPermission({
@@ -115,7 +115,7 @@ class FakeAgent {
       ],
     });
 
-    const logPath = process.env.HAPPIER_E2E_PERMISSION_LOG;
+    const logPath = process.env.PIGGERCODE_E2E_PERMISSION_LOG;
     if (logPath) appendFileSync(logPath, JSON.stringify({ outcome: resp.outcome }) + "\\n", "utf8");
 
     return { stopReason: "end_turn" };
@@ -144,21 +144,21 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CODEX_BACKEND_MODE: 'acp',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_E2E_PROVIDERS: '1',
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-      HAPPIER_CODEX_ACP_BIN: fakeAgentPath,
-      HAPPIER_CODEX_ACP_ALLOW_NPX: '0',
-      HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
-      HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
-      HAPPIER_E2E_PERMISSION_LOG: permissionLogPath,
-      HAPPIER_E2E_PERMISSION_DELAY_MS: '250',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CODEX_BACKEND_MODE: 'acp',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_E2E_PROVIDERS: '1',
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_CODEX_ACP_BIN: fakeAgentPath,
+      PIGGERCODE_CODEX_ACP_ALLOW_NPX: '0',
+      PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
+      PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
+      PIGGERCODE_E2E_PERMISSION_LOG: permissionLogPath,
+      PIGGERCODE_E2E_PERMISSION_DELAY_MS: '250',
     };
 
     const proc: SpawnedProcess = spawnLoggedProcess({

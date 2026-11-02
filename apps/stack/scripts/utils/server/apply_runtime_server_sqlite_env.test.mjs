@@ -6,7 +6,7 @@ import { applyRuntimeServerSqliteEnv } from './apply_runtime_server_sqlite_env.m
 
 test('applyRuntimeServerSqliteEnv uses the bounded local pool by default', () => {
   const env = {
-    HAPPIER_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
   };
 
   applyRuntimeServerSqliteEnv({ env, serverDir: '/tmp/happier-server' });
@@ -19,9 +19,9 @@ test('applyRuntimeServerSqliteEnv uses the bounded local pool by default', () =>
 
 test('applyRuntimeServerSqliteEnv applies sqlite URL params from env when generating DATABASE_URL', () => {
   const env = {
-    HAPPIER_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
-    HAPPIER_SQLITE_BUSY_TIMEOUT_MS: '500',
-    HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
+    PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: '500',
+    PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
   };
 
   applyRuntimeServerSqliteEnv({ env, serverDir: '/tmp/happier-server' });
@@ -34,9 +34,9 @@ test('applyRuntimeServerSqliteEnv applies sqlite URL params from env when genera
 
 test('applyRuntimeServerSqliteEnv preserves explicit DATABASE_URL passthrough', () => {
   const env = {
-    HAPPIER_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
-    HAPPIER_SQLITE_BUSY_TIMEOUT_MS: '500',
-    HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/tmp/happier-data',
+    PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: '500',
+    PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
     DATABASE_URL: `file:${join('/custom', 'operator.sqlite')}?socket_timeout=9`,
   };
 

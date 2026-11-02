@@ -28,7 +28,7 @@ function applyGithubExternalAuthCallbackEnv(
         GITHUB_CLIENT_SECRET: "gh_secret",
         GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
         AUTH_SIGNUP_PROVIDERS: "github",
-        HAPPIER_WEBAPP_URL: "https://app.example.test",
+        PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         ...overrides,
     });
 }
@@ -127,9 +127,9 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
         { origin: "tauri://evil.example.test", allowedSchemes: "tauri", expectedBase: "https://app.example.test" },
     ])("returns OAuth from $origin to $expectedBase with allowed schemes '$allowedSchemes'", async ({ origin, allowedSchemes, expectedBase }) => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_SERVER_UI_DIR: "/tmp/ui",
-            HAPPIER_SERVER_UI_PREFIX: "/ui",
-            HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: allowedSchemes,
+            PIGGERCODE_SERVER_UI_DIR: "/tmp/ui",
+            PIGGERCODE_SERVER_UI_PREFIX: "/ui",
+            PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: allowedSchemes,
         });
 
         const seed = new Uint8Array(32).fill(2);
@@ -185,11 +185,11 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
 
     it("creates a pending auth record for proofHash auth-start and includes provisioning hints in the redirect", async () => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
 
         const ghProfile = {
@@ -255,8 +255,8 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
         { origin: "tauri://localhost", expectedBase: "tauri://localhost" },
     ])("returns cancellation to $expectedBase without creating pending credentials", async ({ origin, expectedBase }) => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_SERVER_UI_DIR: "/tmp/ui",
-            HAPPIER_SERVER_UI_PREFIX: "/ui",
+            PIGGERCODE_SERVER_UI_DIR: "/tmp/ui",
+            PIGGERCODE_SERVER_UI_PREFIX: "/ui",
         });
 
         const seed = new Uint8Array(32).fill(9);
@@ -319,8 +319,8 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
 
     it("does not allow an http webapp oauth return url even when http is allowlisted", async () => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: "http://evil.example.test/oauth",
-            HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: "http",
+            PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: "http://evil.example.test/oauth",
+            PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: "http",
         });
 
         const seed = new Uint8Array(32).fill(8);
@@ -365,7 +365,7 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
 
         expect(res.statusCode).toBe(302);
         const redirect = new URL(res.headers.location as string);
-        // must ignore http base and fall back to https HAPPIER_WEBAPP_URL
+        // must ignore http base and fall back to https PIGGERCODE_WEBAPP_URL
         expect(redirect.origin + redirect.pathname).toBe("https://app.example.test/oauth/github");
 
         await app.close();
@@ -432,9 +432,9 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
         await app.close();
     });
 
-    it("ignores an unsafe HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE and falls back to HAPPIER_WEBAPP_URL", async () => {
+    it("ignores an unsafe PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE and falls back to PIGGERCODE_WEBAPP_URL", async () => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: "javascript:alert(1)",
+            PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: "javascript:alert(1)",
         });
 
         const seed = new Uint8Array(32).fill(9);
@@ -486,8 +486,8 @@ describe("connectRoutes (GitHub callback) external auth flow (integration)", () 
 
     it("allows a custom OAuth return scheme when explicitly allowlisted", async () => {
         applyGithubExternalAuthCallbackEnv(harness, {
-            HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: "myapp://oauth",
-            HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: "myapp",
+            PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: "myapp://oauth",
+            PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: "myapp",
         });
 
         const seed = new Uint8Array(32).fill(8);

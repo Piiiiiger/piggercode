@@ -21,7 +21,7 @@ async function createPayload(rootDir: string, versionId: string, contents: strin
 describe('promoteVersionedPayload', () => {
     it('ignores AppleDouble metadata files in the staged payload', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-versioned-payload-appledouble-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
         try {
             const stagedPayloadPath = await createPayload(homeDir, '1.0.0', 'first-version');
@@ -52,7 +52,7 @@ describe('promoteVersionedPayload', () => {
 
     it('moves the staged payload into the versioned install tree on posix platforms', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-versioned-payload-move-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
         try {
             const stagedPayloadPath = await createPayload(homeDir, '1.0.1', 'moved-version');

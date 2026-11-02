@@ -7,7 +7,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function cursorAcpStubProvider(): ProviderUnderTest {
   return {
     id: 'cursor_acp_stub',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_CURSOR_ACP_STUB',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_CURSOR_ACP_STUB',
     protocol: 'acp',
     traceProvider: 'cursor',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: [] } },
@@ -23,7 +23,7 @@ describe('scenarioCatalog: Cursor ACP stub parity scenarios', () => {
     expect(cursorStub).toBeTruthy();
     expect(cursorStub?.traceProvider).toBe('cursor');
     expect(cursorStub?.cli.subcommand).toBe('cursor');
-    expect(cursorStub?.cli.env?.HAPPIER_E2E_ACP_TRACE_MARKERS).toBe('1');
+    expect(cursorStub?.cli.env?.PIGGERCODE_E2E_ACP_TRACE_MARKERS).toBe('1');
     expect(cursorStub?.scenarioRegistry.tiers.smoke).toEqual([
       'cursor_acp_stub_model_config_alias',
       'cursor_acp_stub_mode_config_option',

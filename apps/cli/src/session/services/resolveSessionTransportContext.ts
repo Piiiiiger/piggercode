@@ -85,11 +85,11 @@ async function fetchSessionTransportRecord(params: Readonly<{
     }
 
     const retryAttempts = resolvePositiveIntFromEnv(
-        'HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS',
+        'PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS',
         DEFAULT_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS,
     );
     const retryDelayMs = resolvePositiveIntFromEnv(
-        'HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS',
+        'PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS',
         DEFAULT_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS,
     );
 

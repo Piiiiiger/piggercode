@@ -32,7 +32,7 @@ function resolveForCompare(rawPath) {
 }
 
 function getLocalOwner(env = process.env) {
-  const explicit = String(env.HAPPIER_STACK_OWNER ?? '').trim();
+  const explicit = String(env.PIGGERCODE_STACK_OWNER ?? '').trim();
   if (explicit) return explicit;
   try {
     const u = userInfo();
@@ -121,7 +121,7 @@ export function worktreeSpecFromDir({ rootDir, component, dir, env = process.env
 
   const workspaceDirNative = resolveForCompare(getWorkspaceDir(rootDir, env));
   const workspaceDir = normalizePathForCompare(workspaceDirNative);
-  const mainDirNative = resolveForCompare(getRepoDir(rootDir, { ...env, HAPPIER_STACK_REPO_DIR: '' }));
+  const mainDirNative = resolveForCompare(getRepoDir(rootDir, { ...env, PIGGERCODE_STACK_REPO_DIR: '' }));
   const mainDir = normalizePathForCompare(mainDirNative);
   const devDirNative = resolveForCompare(getDevRepoDir(rootDir, env));
   const devDir = normalizePathForCompare(devDirNative);
@@ -151,7 +151,7 @@ export function resolveComponentSpecToDir({ rootDir, component, spec, env = proc
 
   // Special tokens:
   if (raw === 'main') {
-    return getRepoDir(rootDir, { ...env, HAPPIER_STACK_REPO_DIR: '' });
+    return getRepoDir(rootDir, { ...env, PIGGERCODE_STACK_REPO_DIR: '' });
   }
   if (raw === 'dev') {
     return getDevRepoDir(rootDir, env);

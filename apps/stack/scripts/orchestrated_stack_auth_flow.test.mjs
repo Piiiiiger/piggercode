@@ -43,7 +43,7 @@ test('resolveRunnerLogPathFromRuntime returns runtime logs.runner path', async (
       'utf-8'
     );
 
-    const envKey = 'HAPPIER_STACK_STORAGE_DIR';
+    const envKey = 'PIGGERCODE_STACK_STORAGE_DIR';
     const prev = process.env[envKey];
     process.env[envKey] = storageDir;
     try {
@@ -80,14 +80,14 @@ test('startDaemonPostAuth delegates before resolving a missing runtime server po
       'utf-8'
     );
 
-    const envKey = 'HAPPIER_STACK_STORAGE_DIR';
+    const envKey = 'PIGGERCODE_STACK_STORAGE_DIR';
     const prev = process.env[envKey];
     process.env[envKey] = storageDir;
     try {
       const result = await startDaemonPostAuth({
         rootDir: tmp,
         stackName,
-        env: { ...process.env, HAPPIER_STACK_SERVER_PORT: '' },
+        env: { ...process.env, PIGGERCODE_STACK_SERVER_PORT: '' },
         forceRestart: true,
       });
       assert.equal(result.status, 'delegated_to_lifecycle_owner');
@@ -113,19 +113,19 @@ test('startDaemonPostAuth still rejects a missing server port when no lifecycle 
       ownerPid: 999_999_999,
       ports: {},
     }), 'utf-8');
-    const prev = process.env.HAPPIER_STACK_STORAGE_DIR;
-    process.env.HAPPIER_STACK_STORAGE_DIR = storageDir;
+    const prev = process.env.PIGGERCODE_STACK_STORAGE_DIR;
+    process.env.PIGGERCODE_STACK_STORAGE_DIR = storageDir;
     try {
       await assert.rejects(
         () => startDaemonPostAuth({
           rootDir: tmp,
           stackName,
-          env: { ...process.env, HAPPIER_STACK_SERVER_PORT: '' },
+          env: { ...process.env, PIGGERCODE_STACK_SERVER_PORT: '' },
         }),
         /could not resolve server port/i,
       );
     } finally {
-      restoreEnvVar('HAPPIER_STACK_STORAGE_DIR', prev);
+      restoreEnvVar('PIGGERCODE_STACK_STORAGE_DIR', prev);
     }
   } finally {
     await rm(tmp, { recursive: true, force: true });
@@ -155,7 +155,7 @@ test('resolveRunnerLogPathFromRuntime returns empty string when runtime owner pi
       'utf-8'
     );
 
-    const envKey = 'HAPPIER_STACK_STORAGE_DIR';
+    const envKey = 'PIGGERCODE_STACK_STORAGE_DIR';
     const prev = process.env[envKey];
     process.env[envKey] = storageDir;
     try {

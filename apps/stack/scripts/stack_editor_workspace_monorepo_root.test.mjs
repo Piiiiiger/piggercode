@@ -16,8 +16,8 @@ async function withStackEnvDirectories(tmp, callback) {
   const homeDir = join(tmp, 'home');
 
   const restore = withPatchedProcessEnv(null, {
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
   });
 
   try {
@@ -42,7 +42,7 @@ test('stack code workspace groups monorepo components to the monorepo root', asy
     await mkdir(dirname(envPath), { recursive: true });
     await writeFile(
       envPath,
-      ['HAPPIER_STACK_SERVER_COMPONENT=happier-server', `HAPPIER_STACK_REPO_DIR=${monoRoot}`, ''].join('\n'),
+      ['PIGGERCODE_STACK_SERVER_COMPONENT=happier-server', `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`, ''].join('\n'),
       'utf-8'
     );
 
@@ -74,7 +74,7 @@ test('stack code workspace normalizes nested monorepo package path to monorepo r
     await mkdir(dirname(envPath), { recursive: true });
     await writeFile(
       envPath,
-      ['HAPPIER_STACK_SERVER_COMPONENT=happier-server-light', `HAPPIER_STACK_REPO_DIR=${join(monoRoot, 'apps', 'ui')}`, ''].join('\n'),
+      ['PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light', `PIGGERCODE_STACK_REPO_DIR=${join(monoRoot, 'apps', 'ui')}`, ''].join('\n'),
       'utf-8'
     );
 

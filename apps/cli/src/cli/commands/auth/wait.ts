@@ -143,7 +143,7 @@ export async function handleAuthWait(argsRaw: string[]): Promise<void> {
     process.exit(1);
   }
 
-  const pollIntervalMsRaw = Number(process.env.HAPPIER_AUTH_POLL_INTERVAL_MS ?? '');
+  const pollIntervalMsRaw = Number(process.env.PIGGERCODE_AUTH_POLL_INTERVAL_MS ?? '');
   const pollIntervalMs = Number.isFinite(pollIntervalMsRaw) && pollIntervalMsRaw > 0 ? pollIntervalMsRaw : 1000;
 
   while (true) {

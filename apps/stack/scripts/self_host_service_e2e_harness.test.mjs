@@ -11,16 +11,16 @@ test('self-host Windows commands retain executable extensions without inheriting
   withPatchedProcessEnv(t, {
     PATHEXT: '.COM;.EXE;.BAT;.CMD',
     NODE_OPTIONS: '--no-warnings',
-    HAPPIER_HOME_DIR: 'unrelated-parent-home',
+    PIGGERCODE_HOME_DIR: 'unrelated-parent-home',
   });
 
   const probe = ['-e', `process.stdout.write(JSON.stringify({
     pathExt: Object.entries(process.env).find(([key]) => key.toUpperCase() === 'PATHEXT')?.[1] ?? null,
     nodeOptions: process.env.NODE_OPTIONS ?? null,
-    homeDir: process.env.HAPPIER_HOME_DIR ?? null,
-    installRoot: process.env.HAPPIER_SELF_HOST_INSTALL_ROOT,
+    homeDir: process.env.PIGGERCODE_HOME_DIR ?? null,
+    installRoot: process.env.PIGGERCODE_SELF_HOST_INSTALL_ROOT,
   }))`];
-  const env = { PATH: process.env.PATH ?? '', HAPPIER_SELF_HOST_INSTALL_ROOT: 'test-install' };
+  const env = { PATH: process.env.PATH ?? '', PIGGERCODE_SELF_HOST_INSTALL_ROOT: 'test-install' };
   const result = run(process.execPath, probe, { env });
 
   assert.deepEqual(JSON.parse(result.stdout), {

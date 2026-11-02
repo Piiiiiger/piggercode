@@ -40,7 +40,7 @@ describe('syncInstalledFirstPartyShims Windows hard-link path', () => {
     it('prefers hard links for Windows shim installation', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-sync-shims-win32-link-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 await writeDefaultManagedReleaseChannel({

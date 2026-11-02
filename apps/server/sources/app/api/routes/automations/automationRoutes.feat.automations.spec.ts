@@ -101,7 +101,7 @@ describe("automationRoutes", () => {
         vi.clearAllMocks();
         dbMocks.reset();
         resetAutomationsEnv({
-            HAPPIER_FEATURE_AUTOMATIONS__ENABLED: undefined,
+            PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: undefined,
         });
         findAccountById.mockResolvedValue({ publicKey: "pk-test", encryptionMode: null });
     });
@@ -135,9 +135,9 @@ describe("automationRoutes", () => {
         expect(claimRoute.handler).toBeTypeOf("function");
     });
 
-    it("does not register routes when HAPPIER_FEATURE_AUTOMATIONS__ENABLED=0", async () => {
+    it("does not register routes when PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED=0", async () => {
         resetAutomationsEnv({
-            HAPPIER_FEATURE_AUTOMATIONS__ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: "0",
         });
         const { automationRoutes } = await import("./automationRoutes");
         const route = createRouteTestBuilder({

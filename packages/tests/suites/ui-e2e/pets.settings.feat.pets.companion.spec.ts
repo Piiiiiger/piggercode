@@ -37,9 +37,9 @@ test.describe('ui e2e: pets settings', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '0',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '0',
       },
     });
 
@@ -50,7 +50,7 @@ test.describe('ui e2e: pets settings', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-pets-settings-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'export',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'export',
       },
     });
 
@@ -85,7 +85,7 @@ test.describe('ui e2e: pets settings', () => {
       uiBaseUrl,
       extraEnv: {
         CODEX_HOME: codexHomeDir,
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '0',
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '0',
       },
     });
 

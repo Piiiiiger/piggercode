@@ -185,11 +185,11 @@ async function performDaemonSelfRestart(params: Readonly<{
   const runtimeId = typeof params.runtimeId === 'string' ? params.runtimeId.trim() : '';
   const restartEnv: Record<string, string | undefined> = {
     ...env,
-    HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
-    HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID: params.correlationId,
-    HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + Math.max(0, timeoutMs)),
-    ...(runtimeId ? { HAPPIER_DAEMON_RUNTIME_ID: runtimeId } : {}),
-    ...(takeover ? { HAPPIER_DAEMON_TAKEOVER: '1' } : {}),
+    PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
+    PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID: params.correlationId,
+    PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + Math.max(0, timeoutMs)),
+    ...(runtimeId ? { PIGGERCODE_DAEMON_RUNTIME_ID: runtimeId } : {}),
+    ...(takeover ? { PIGGERCODE_DAEMON_TAKEOVER: '1' } : {}),
   };
 
   let spawned: { unref?: () => void } | null = null;

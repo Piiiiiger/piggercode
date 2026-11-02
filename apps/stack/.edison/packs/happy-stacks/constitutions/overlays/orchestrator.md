@@ -6,7 +6,7 @@
   - Always run:
     - `hstack edison -- <edison args...>`
     - `hstack edison --stack=<stack> -- <edison args...>` (recommended)
-  - See: `.edison/guidelines/agents/HAPPIER_STACK_EDISON_WRAPPER.md`
+  - See: `.edison/guidelines/agents/PIGGERCODE_STACK_EDISON_WRAPPER.md`
   - Useful reads:
     - `hstack edison -- read START_PLAN_FEATURE --type start`
     - `hstack edison -- read START_VALIDATE_TASK --type start`

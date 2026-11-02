@@ -1352,7 +1352,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
       };
     }
 
-    const maxTextChars = parseEnvBoundedInt('HAPPIER_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
+    const maxTextChars = parseEnvBoundedInt('PIGGERCODE_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
 
     const credentials = await readCredentials().catch(() => null);
     if (!credentials) {
@@ -1652,7 +1652,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
       });
     };
 
-    const maxTextChars = parseEnvBoundedInt('HAPPIER_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
+    const maxTextChars = parseEnvBoundedInt('PIGGERCODE_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
 
     // `native` is the generic user intent the fork strategy modal sends. It
     // enables exactly the native attempts `auto` enables, in the same order.

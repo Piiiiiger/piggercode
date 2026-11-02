@@ -12,21 +12,21 @@ vi.mock('node:crypto', async (importActual) => {
 });
 
 describe('ensureMachineIdInSettings', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
     vi.resetModules();
   });
 
   it('allocates a selected account identity when only another account has recorded history', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-id-history-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
     try {
       const settingsPath = join(homeDir, 'settings.json');
       writeFileSync(settingsPath, JSON.stringify({ schemaVersion: 6,
@@ -48,8 +48,8 @@ describe('ensureMachineIdInSettings', () => {
 
   it('returns the existing per-server machine id when present', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-id-binding-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -93,8 +93,8 @@ describe('ensureMachineIdInSettings', () => {
 
   it('generates and persists a new machine id when missing for the active server', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-id-binding-account-swap-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -138,8 +138,8 @@ describe('ensureMachineIdInSettings', () => {
 
   it('forceNew rotates the machine id for the current account', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-id-binding-force-new-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const settingsPath = join(homeDir, 'settings.json');

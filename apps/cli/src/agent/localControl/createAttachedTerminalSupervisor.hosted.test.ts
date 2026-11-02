@@ -213,7 +213,7 @@ describe('shared hosted native presentation', () => {
       const nativeFile = join(homeDir, 'native.json');
       const cliPath = join(homeDir, 'native-codex.js');
       await writeFile(cliPath, `require('node:fs').writeFileSync(${JSON.stringify(nativeFile)},JSON.stringify({pid:process.pid,parent:process.ppid,args:process.argv.slice(2)}));setInterval(()=>{},1000)`);
-      vi.stubEnv('HAPPIER_CODEX_TUI_BIN', cliPath);
+      vi.stubEnv('PIGGERCODE_CODEX_TUI_BIN', cliPath);
       await writeCodexSharedControlEndpoint({ happyHomeDir: homeDir, sessionId: session.sessionId, endpoint: 'unix:///same-running-controller.sock' });
       let control: ReturnType<typeof createCodexSharedLocalControl> | undefined;
       let front: Promise<void> | undefined;
@@ -582,7 +582,7 @@ describe('shared hosted native presentation', () => {
       const target = { baseUrl: 'http://127.0.0.1:41997', directory: homeDir,
         sessionId: 'same-native-session', managedServerLaunchFingerprint: 'not-created-in-this-home' };
       const supervisor = createOpenCodeTuiSupervisor({ command: process.execPath,
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
         terminalPresentation: { runtime: { mode: 'plain', requested }, getSession: () => session },
       });
       const control = createSharedProviderLocalControl({ supported: true, startingMode: 'local',
@@ -617,7 +617,7 @@ describe('shared hosted native presentation', () => {
       vi.stubEnv('XDG_CONFIG_HOME', providerConfigRoot);
       const nativeReady = join(homeDir, 'native-ready');
       const supervisor = createAttachedTerminalSupervisor({
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir, XDG_CONFIG_HOME: providerConfigRoot },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir, XDG_CONFIG_HOME: providerConfigRoot },
         terminalPresentation: { runtime: { mode: 'plain', requested: 'herdr', herdrSessionName: sessionName,
           herdrSocketPath: socketPath }, getSession: () => session },
         resolveInvocation: () => ({ command: process.execPath, args: ['-e',
@@ -684,7 +684,7 @@ describe('shared hosted native presentation', () => {
         }
       };
       const supervisor = createAttachedTerminalSupervisor({
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
         terminalPresentation: { runtime: { mode: 'plain', requested: 'herdr', herdrSessionName: sessionName }, getSession: () => session },
         resolveInvocation: () => ({ command: process.execPath, args: ['-e', 'setInterval(()=>{},1000)'] }),
       });
@@ -728,8 +728,8 @@ describe('shared hosted native presentation', () => {
       // process can be acknowledged; the owning terminal can still be physically disposed.
       await writeFile(preload, `if(process.argv[1]?.endsWith('terminal_launch_spec_runner.cjs')){require('node:fs').writeFileSync(${JSON.stringify(blocked)},'blocked');Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0);}`);
       const supervisor = createAttachedTerminalSupervisor({
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir,
-          HAPPIER_JS_RUNTIME_PATH: process.execPath, NODE_OPTIONS: `--require ${JSON.stringify(preload)}` },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir,
+          PIGGERCODE_JS_RUNTIME_PATH: process.execPath, NODE_OPTIONS: `--require ${JSON.stringify(preload)}` },
         terminalPresentation: { runtime: { mode: 'plain', requested: 'herdr', herdrSessionName: sessionName }, getSession: () => session },
         resolveInvocation: () => ({ command: process.execPath, args: ['-e', 'setInterval(()=>{},1000)'] }),
       });
@@ -762,7 +762,7 @@ describe('shared hosted native presentation', () => {
       const sessionName = `happier-failed-host-${process.pid}-${Date.now()}`;
       const binary = process.env.HERDR_BIN_PATH ?? 'herdr';
       const supervisor = createAttachedTerminalSupervisor({
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
         terminalPresentation: { runtime: { mode: 'plain', requested: 'herdr', herdrSessionName: sessionName }, getSession: () => session },
         resolveInvocation: () => ({ command: join(homeDir, 'missing-native-executable'), args: [] }),
       });
@@ -792,7 +792,7 @@ describe('shared hosted native presentation', () => {
         return child;
       }) as unknown as typeof spawn;
       const supervisor = createAttachedTerminalSupervisor({ spawnProcess,
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
         resolveInvocation: () => ({ command: process.execPath, args: ['-e', 'setInterval(()=>{},1000)'] }),
       });
       let target = 'selected-native-session';
@@ -827,7 +827,7 @@ describe('shared hosted native presentation', () => {
           runtime: { mode: 'plain' as const, requested: 'herdr' as const, herdrSessionName: sessionName },
           getSession: () => session,
         },
-        env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: homeDir },
+        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
         resolveInvocation: (providerSessionId: string) => ({
           command: process.execPath,
           args: ['-e', `require('node:fs').writeFileSync(${JSON.stringify(nativeReadyPath)}, JSON.stringify({providerSessionId:${JSON.stringify(providerSessionId)},pid:process.pid}));setInterval(()=>{},1000)`],
@@ -866,7 +866,7 @@ describe('shared hosted native presentation', () => {
         await vi.waitFor(() => expect(session.getAgentStateSnapshot()?.localControl).toMatchObject({ attached: true, canDetach: true, topology: 'shared', remoteWritable: true }));
         await client.closePane(pane!.paneId);
         phase = 'heartbeat retirement';
-        vi.stubEnv('HAPPIER_DAEMON_HEARTBEAT_INTERVAL', '100');
+        vi.stubEnv('PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL', '100');
         const tracked: TrackedSession = { pid: process.pid, startedBy: 'daemon', happySessionId: session.sessionId,
           spawnOptions: { directory: homeDir, backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             codexBackendMode: 'appServer', terminal: { mode: 'herdr' } },

@@ -117,10 +117,10 @@ test.describe('ui e2e: plaintext mode + public share', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
-      HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -130,10 +130,10 @@ test.describe('ui e2e: plaintext mode + public share', () => {
       dbProvider: 'sqlite',
       extraEnv: {
         // Keep web create-account stable (binding signature is not reliably available on web).
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
       },
     });
 
@@ -165,11 +165,11 @@ test.describe('ui e2e: plaintext mode + public share', () => {
     const diagnostics = collectBrowserDiagnostics({ page });
     const daemonEnv = {
       ...process.env,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: uiBaseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     let daemon: StartedDaemon | null = null;
@@ -210,7 +210,7 @@ test.describe('ui e2e: plaintext mode + public share', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-create',
         args: ['session', 'create', '--tag', tag, '--no-load-existing', '--json'],
@@ -233,7 +233,7 @@ test.describe('ui e2e: plaintext mode + public share', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-send',
         args: ['session', 'send', sessionId, message, '--json'],

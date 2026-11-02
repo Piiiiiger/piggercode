@@ -67,7 +67,7 @@ test('self-host uninstall preserves payload and retained data when service teard
     'import { syncBuiltinESMExports } from "node:module";',
     // Only OS command execution and the OS home-directory adapter are replaced.
     // The CLI dispatcher, service registration inspection, teardown and filesystem stay real.
-    'os.homedir = () => process.env.HAPPIER_TEST_SELF_HOST_HOME;',
+    'os.homedir = () => process.env.PIGGERCODE_TEST_SELF_HOST_HOME;',
     'const spawnSync = childProcess.spawnSync;',
     'childProcess.spawnSync = (command, args, options) => {',
     '  if (command === "sh" && args[0] === "-lc" && args[1]?.startsWith("command -v ")) return spawnSync(command, args, options);',
@@ -85,14 +85,14 @@ test('self-host uninstall preserves payload and retained data when service teard
     env: buildStackHarnessEnv({
       binDirs: [binDir],
       extraEnv: {
-        HAPPIER_TEST_SELF_HOST_HOME: fixture.path('home'),
-        HAPPIER_STACK_SELF_HOST_FORWARD: '0',
-        HAPPIER_SELF_HOST_INSTALL_ROOT: installRoot,
-        HAPPIER_SELF_HOST_BIN_DIR: fixture.path('exposed-bin'),
-        HAPPIER_SELF_HOST_CONFIG_DIR: configDir,
-        HAPPIER_SELF_HOST_DATA_DIR: dataDir,
-        HAPPIER_SELF_HOST_LOG_DIR: logDir,
-        HAPPIER_SELF_HOST_SERVICE_NAME: serviceName,
+        PIGGERCODE_TEST_SELF_HOST_HOME: fixture.path('home'),
+        PIGGERCODE_STACK_SELF_HOST_FORWARD: '0',
+        PIGGERCODE_SELF_HOST_INSTALL_ROOT: installRoot,
+        PIGGERCODE_SELF_HOST_BIN_DIR: fixture.path('exposed-bin'),
+        PIGGERCODE_SELF_HOST_CONFIG_DIR: configDir,
+        PIGGERCODE_SELF_HOST_DATA_DIR: dataDir,
+        PIGGERCODE_SELF_HOST_LOG_DIR: logDir,
+        PIGGERCODE_SELF_HOST_SERVICE_NAME: serviceName,
       },
     }),
   });
@@ -265,8 +265,8 @@ test('self-host install-time migration delegates to the canonical provider plan'
   assert.equal(typeof selfHostRuntimeModule.applySelfHostServerMigrationsAtInstallTime, 'function');
   const calls = [];
   const env = {
-    HAPPIER_SQLITE_AUTO_MIGRATE: '0',
-    HAPPIER_SQLITE_MIGRATIONS_DIR: '/var/lib/happier/migrations/sqlite',
+    PIGGERCODE_SQLITE_AUTO_MIGRATE: '0',
+    PIGGERCODE_SQLITE_MIGRATIONS_DIR: '/var/lib/happier/migrations/sqlite',
     DATABASE_URL: 'file:/var/lib/happier/happier-server-light.sqlite',
   };
   const config = {
@@ -298,7 +298,7 @@ test('self-host install-time migration delegates to the canonical provider plan'
   calls.length = 0;
   await selfHostRuntimeModule.applySelfHostServerMigrationsAtInstallTime({
     config,
-    env: { HAPPIER_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgresql://db/happier' },
+    env: { PIGGERCODE_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgresql://db/happier' },
     runCommandImpl: (cmd, args, options) => {
       calls.push({ cmd, args, options });
       return { status: 0 };
@@ -316,7 +316,7 @@ test('self-host install-time SQLite migration preserves canonical binary failure
         installRoot: '/opt/happier',
         serverBinaryPath: '/opt/happier/bin/happier-server',
       },
-      env: { HAPPIER_SQLITE_AUTO_MIGRATE: '0' },
+      env: { PIGGERCODE_SQLITE_AUTO_MIGRATE: '0' },
       runCommandImpl: () => {
         throw failure;
       },
@@ -868,9 +868,9 @@ test('self-host release update fails closed if the process dies after sidecar pr
     '--eval',
     [
       `import { installSelfHostBinaryFromBundle } from ${JSON.stringify(runtimeModuleUrl)};`,
-      'const bundle = JSON.parse(process.env.HAPPIER_TEST_SELF_HOST_BUNDLE_JSON ?? "null");',
-      'const config = JSON.parse(process.env.HAPPIER_TEST_SELF_HOST_CONFIG_JSON ?? "null");',
-      'const pubkeyFile = process.env.HAPPIER_TEST_SELF_HOST_PUBKEY ?? "";',
+      'const bundle = JSON.parse(process.env.PIGGERCODE_TEST_SELF_HOST_BUNDLE_JSON ?? "null");',
+      'const config = JSON.parse(process.env.PIGGERCODE_TEST_SELF_HOST_CONFIG_JSON ?? "null");',
+      'const pubkeyFile = process.env.PIGGERCODE_TEST_SELF_HOST_PUBKEY ?? "";',
       'await installSelfHostBinaryFromBundle({',
       '  bundle,',
       '  binaryName: "happier-server",',
@@ -882,9 +882,9 @@ test('self-host release update fails closed if the process dies after sidecar pr
   ], {
     env: {
       ...process.env,
-      HAPPIER_TEST_SELF_HOST_BUNDLE_JSON: JSON.stringify(bundle),
-      HAPPIER_TEST_SELF_HOST_CONFIG_JSON: JSON.stringify(config),
-      HAPPIER_TEST_SELF_HOST_PUBKEY: pubkeyFile,
+      PIGGERCODE_TEST_SELF_HOST_BUNDLE_JSON: JSON.stringify(bundle),
+      PIGGERCODE_TEST_SELF_HOST_CONFIG_JSON: JSON.stringify(config),
+      PIGGERCODE_TEST_SELF_HOST_PUBKEY: pubkeyFile,
     },
     encoding: 'utf-8',
   });
@@ -1104,7 +1104,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores the previous servic
   const binDir = join(tempRoot, 'bin');
   const logPath = join(tempRoot, 'systemctl.log');
   const previousPath = process.env.PATH;
-  const previousLogPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+  const previousLogPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
   const previousHome = process.env.HOME;
 
   t.after(async () => {
@@ -1115,9 +1115,9 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores the previous servic
       process.env.HOME = previousHome;
     }
     if (previousLogPath == null) {
-      delete process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+      delete process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
     } else {
-      process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
+      process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
     }
     await rm(tempRoot, { recursive: true, force: true });
   });
@@ -1129,7 +1129,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores the previous servic
     [
       '#!/usr/bin/env node',
       "const fs = require('node:fs');",
-      "const logPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;",
+      "const logPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;",
       "if (logPath) fs.appendFileSync(logPath, `${JSON.stringify(process.argv.slice(2))}\\n`, 'utf8');",
     ].join('\n'),
     'utf8',
@@ -1137,7 +1137,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores the previous servic
   await chmod(systemctlPath, 0o755);
 
   process.env.PATH = `${binDir}${process.platform === 'win32' ? ';' : ':'}${previousPath ?? ''}`;
-  process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = logPath;
+  process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = logPath;
   process.env.HOME = tempRoot;
 
   const config = {
@@ -1217,7 +1217,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery does not recreate env or rei
   const binDir = join(tempRoot, 'bin');
   const logPath = join(tempRoot, 'systemctl.log');
   const previousPath = process.env.PATH;
-  const previousLogPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+  const previousLogPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
   const previousHome = process.env.HOME;
 
   t.after(async () => {
@@ -1228,9 +1228,9 @@ test('runSelfHostRuntimeMutationWithServiceRecovery does not recreate env or rei
       process.env.HOME = previousHome;
     }
     if (previousLogPath == null) {
-      delete process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+      delete process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
     } else {
-      process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
+      process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
     }
     await rm(tempRoot, { recursive: true, force: true });
   });
@@ -1242,7 +1242,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery does not recreate env or rei
     [
       '#!/usr/bin/env node',
       "const fs = require('node:fs');",
-      "const logPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;",
+      "const logPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;",
       "if (logPath) fs.appendFileSync(logPath, `${JSON.stringify(process.argv.slice(2))}\\n`, 'utf8');",
     ].join('\n'),
     'utf8',
@@ -1250,7 +1250,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery does not recreate env or rei
   await chmod(systemctlPath, 0o755);
 
   process.env.PATH = `${binDir}${process.platform === 'win32' ? ';' : ':'}${previousPath ?? ''}`;
-  process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = logPath;
+  process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = logPath;
   process.env.HOME = tempRoot;
 
   const config = {
@@ -1298,7 +1298,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores promoted runtime, u
   const binDir = join(tempRoot, 'bin');
   const logPath = join(tempRoot, 'systemctl.log');
   const previousPath = process.env.PATH;
-  const previousLogPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+  const previousLogPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
   const previousHome = process.env.HOME;
 
   t.after(async () => {
@@ -1309,9 +1309,9 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores promoted runtime, u
       process.env.HOME = previousHome;
     }
     if (previousLogPath == null) {
-      delete process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;
+      delete process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;
     } else {
-      process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
+      process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = previousLogPath;
     }
     await rm(tempRoot, { recursive: true, force: true });
   });
@@ -1323,7 +1323,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores promoted runtime, u
     [
       '#!/usr/bin/env node',
       "const fs = require('node:fs');",
-      "const logPath = process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH;",
+      "const logPath = process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH;",
       "if (logPath) fs.appendFileSync(logPath, `${JSON.stringify(process.argv.slice(2))}\\n`, 'utf8');",
     ].join('\n'),
     'utf8',
@@ -1331,7 +1331,7 @@ test('runSelfHostRuntimeMutationWithServiceRecovery restores promoted runtime, u
   await chmod(systemctlPath, 0o755);
 
   process.env.PATH = `${binDir}${process.platform === 'win32' ? ';' : ':'}${previousPath ?? ''}`;
-  process.env.HAPPIER_TEST_SYSTEMCTL_LOG_PATH = logPath;
+  process.env.PIGGERCODE_TEST_SYSTEMCTL_LOG_PATH = logPath;
   process.env.HOME = tempRoot;
 
   const config = {
@@ -1468,7 +1468,7 @@ test('resolveSelfHostServerInstallFromReleaseParams carries the local server bin
     binaryName: 'happier-server',
     config,
     env: {
-      HAPPIER_SELF_HOST_SERVER_BINARY: '/tmp/local/happier-server',
+      PIGGERCODE_SELF_HOST_SERVER_BINARY: '/tmp/local/happier-server',
     },
     beforeRuntimePromote,
   });
@@ -1624,15 +1624,15 @@ test('resolveSelfHostDefaults isolates publicdev into a side-by-side self-host r
 
 test('resolveConfig defaults serviceName to the channel-suffixed self-host defaults', () => {
   const previous = {
-    HAPPIER_SELF_HOST_SERVICE_NAME: process.env.HAPPIER_SELF_HOST_SERVICE_NAME,
+    PIGGERCODE_SELF_HOST_SERVICE_NAME: process.env.PIGGERCODE_SELF_HOST_SERVICE_NAME,
   };
 
-  process.env.HAPPIER_SELF_HOST_SERVICE_NAME = '';
+  process.env.PIGGERCODE_SELF_HOST_SERVICE_NAME = '';
   try {
     const cfg = selfHostRuntimeModule.resolveConfig({ platform: 'linux', mode: 'user', channel: 'publicdev' });
     assert.equal(cfg.serviceName, 'happier-server-dev');
   } finally {
-    process.env.HAPPIER_SELF_HOST_SERVICE_NAME = previous.HAPPIER_SELF_HOST_SERVICE_NAME;
+    process.env.PIGGERCODE_SELF_HOST_SERVICE_NAME = previous.PIGGERCODE_SELF_HOST_SERVICE_NAME;
   }
 });
 
@@ -1643,20 +1643,20 @@ test('resolveConfig expands ~/ self-host path overrides against HOME', async () 
   const previous = {
     HOME: process.env.HOME,
     USERPROFILE: process.env.USERPROFILE,
-    HAPPIER_SELF_HOST_INSTALL_ROOT: process.env.HAPPIER_SELF_HOST_INSTALL_ROOT,
-    HAPPIER_SELF_HOST_BIN_DIR: process.env.HAPPIER_SELF_HOST_BIN_DIR,
-    HAPPIER_SELF_HOST_CONFIG_DIR: process.env.HAPPIER_SELF_HOST_CONFIG_DIR,
-    HAPPIER_SELF_HOST_DATA_DIR: process.env.HAPPIER_SELF_HOST_DATA_DIR,
-    HAPPIER_SELF_HOST_LOG_DIR: process.env.HAPPIER_SELF_HOST_LOG_DIR,
+    PIGGERCODE_SELF_HOST_INSTALL_ROOT: process.env.PIGGERCODE_SELF_HOST_INSTALL_ROOT,
+    PIGGERCODE_SELF_HOST_BIN_DIR: process.env.PIGGERCODE_SELF_HOST_BIN_DIR,
+    PIGGERCODE_SELF_HOST_CONFIG_DIR: process.env.PIGGERCODE_SELF_HOST_CONFIG_DIR,
+    PIGGERCODE_SELF_HOST_DATA_DIR: process.env.PIGGERCODE_SELF_HOST_DATA_DIR,
+    PIGGERCODE_SELF_HOST_LOG_DIR: process.env.PIGGERCODE_SELF_HOST_LOG_DIR,
   };
 
   process.env.HOME = '/scoped/home';
   process.env.USERPROFILE = '/scoped/home';
-  process.env.HAPPIER_SELF_HOST_INSTALL_ROOT = '~/relay/install';
-  process.env.HAPPIER_SELF_HOST_BIN_DIR = '~/relay/bin';
-  process.env.HAPPIER_SELF_HOST_CONFIG_DIR = '~/relay/config';
-  process.env.HAPPIER_SELF_HOST_DATA_DIR = '~/relay/data';
-  process.env.HAPPIER_SELF_HOST_LOG_DIR = '~/relay/logs';
+  process.env.PIGGERCODE_SELF_HOST_INSTALL_ROOT = '~/relay/install';
+  process.env.PIGGERCODE_SELF_HOST_BIN_DIR = '~/relay/bin';
+  process.env.PIGGERCODE_SELF_HOST_CONFIG_DIR = '~/relay/config';
+  process.env.PIGGERCODE_SELF_HOST_DATA_DIR = '~/relay/data';
+  process.env.PIGGERCODE_SELF_HOST_LOG_DIR = '~/relay/logs';
 
   try {
     const config = mod.resolveConfig({ platform: 'linux', mode: 'user', channel: 'stable' });
@@ -1670,23 +1670,23 @@ test('resolveConfig expands ~/ self-host path overrides against HOME', async () 
     else process.env.HOME = previous.HOME;
     if (previous.USERPROFILE === undefined) delete process.env.USERPROFILE;
     else process.env.USERPROFILE = previous.USERPROFILE;
-    if (previous.HAPPIER_SELF_HOST_INSTALL_ROOT === undefined) delete process.env.HAPPIER_SELF_HOST_INSTALL_ROOT;
-    else process.env.HAPPIER_SELF_HOST_INSTALL_ROOT = previous.HAPPIER_SELF_HOST_INSTALL_ROOT;
-    if (previous.HAPPIER_SELF_HOST_BIN_DIR === undefined) delete process.env.HAPPIER_SELF_HOST_BIN_DIR;
-    else process.env.HAPPIER_SELF_HOST_BIN_DIR = previous.HAPPIER_SELF_HOST_BIN_DIR;
-    if (previous.HAPPIER_SELF_HOST_CONFIG_DIR === undefined) delete process.env.HAPPIER_SELF_HOST_CONFIG_DIR;
-    else process.env.HAPPIER_SELF_HOST_CONFIG_DIR = previous.HAPPIER_SELF_HOST_CONFIG_DIR;
-    if (previous.HAPPIER_SELF_HOST_DATA_DIR === undefined) delete process.env.HAPPIER_SELF_HOST_DATA_DIR;
-    else process.env.HAPPIER_SELF_HOST_DATA_DIR = previous.HAPPIER_SELF_HOST_DATA_DIR;
-    if (previous.HAPPIER_SELF_HOST_LOG_DIR === undefined) delete process.env.HAPPIER_SELF_HOST_LOG_DIR;
-    else process.env.HAPPIER_SELF_HOST_LOG_DIR = previous.HAPPIER_SELF_HOST_LOG_DIR;
+    if (previous.PIGGERCODE_SELF_HOST_INSTALL_ROOT === undefined) delete process.env.PIGGERCODE_SELF_HOST_INSTALL_ROOT;
+    else process.env.PIGGERCODE_SELF_HOST_INSTALL_ROOT = previous.PIGGERCODE_SELF_HOST_INSTALL_ROOT;
+    if (previous.PIGGERCODE_SELF_HOST_BIN_DIR === undefined) delete process.env.PIGGERCODE_SELF_HOST_BIN_DIR;
+    else process.env.PIGGERCODE_SELF_HOST_BIN_DIR = previous.PIGGERCODE_SELF_HOST_BIN_DIR;
+    if (previous.PIGGERCODE_SELF_HOST_CONFIG_DIR === undefined) delete process.env.PIGGERCODE_SELF_HOST_CONFIG_DIR;
+    else process.env.PIGGERCODE_SELF_HOST_CONFIG_DIR = previous.PIGGERCODE_SELF_HOST_CONFIG_DIR;
+    if (previous.PIGGERCODE_SELF_HOST_DATA_DIR === undefined) delete process.env.PIGGERCODE_SELF_HOST_DATA_DIR;
+    else process.env.PIGGERCODE_SELF_HOST_DATA_DIR = previous.PIGGERCODE_SELF_HOST_DATA_DIR;
+    if (previous.PIGGERCODE_SELF_HOST_LOG_DIR === undefined) delete process.env.PIGGERCODE_SELF_HOST_LOG_DIR;
+    else process.env.PIGGERCODE_SELF_HOST_LOG_DIR = previous.PIGGERCODE_SELF_HOST_LOG_DIR;
   }
 });
 
 test('resolveMinisignPublicKeyText prefers inline override and otherwise returns bundled key', () => {
   const bundled = resolveMinisignPublicKeyText({});
   assert.match(bundled, /minisign public key/i);
-  assert.equal(resolveMinisignPublicKeyText({ HAPPIER_MINISIGN_PUBKEY: 'hello' }), 'hello');
+  assert.equal(resolveMinisignPublicKeyText({ PIGGERCODE_MINISIGN_PUBKEY: 'hello' }), 'hello');
 });
 
 test('renderServerEnvFile emits sqlite/local defaults for self-host mode', () => {
@@ -1699,14 +1699,14 @@ test('renderServerEnvFile emits sqlite/local defaults for self-host mode', () =>
   });
   assert.match(envText, /PORT=3005/);
   assert.match(envText, /METRICS_ENABLED=false/);
-  assert.match(envText, /HAPPIER_DB_PROVIDER=sqlite/);
+  assert.match(envText, /PIGGERCODE_DB_PROVIDER=sqlite/);
   assert.match(envText, /DATABASE_URL=file:\/var\/lib\/happier\/happier-server-light\.sqlite/);
-  assert.match(envText, /HAPPIER_FILES_BACKEND=local/);
-  assert.match(envText, /HAPPIER_SQLITE_AUTO_MIGRATE=1/);
-  assert.match(envText, /HAPPIER_SQLITE_MIGRATIONS_DIR=\/var\/lib\/happier\/migrations\/sqlite/);
-  assert.match(envText, /HAPPIER_SERVER_LIGHT_DATA_DIR=\/var\/lib\/happier/);
-  assert.match(envText, /HAPPIER_SERVER_LIGHT_FILES_DIR=\/var\/lib\/happier\/files/);
-  assert.match(envText, /HAPPIER_SERVER_LIGHT_DB_DIR=\/var\/lib\/happier\/pglite/);
+  assert.match(envText, /PIGGERCODE_FILES_BACKEND=local/);
+  assert.match(envText, /PIGGERCODE_SQLITE_AUTO_MIGRATE=1/);
+  assert.match(envText, /PIGGERCODE_SQLITE_MIGRATIONS_DIR=\/var\/lib\/happier\/migrations\/sqlite/);
+  assert.match(envText, /PIGGERCODE_SERVER_LIGHT_DATA_DIR=\/var\/lib\/happier/);
+  assert.match(envText, /PIGGERCODE_SERVER_LIGHT_FILES_DIR=\/var\/lib\/happier\/files/);
+  assert.match(envText, /PIGGERCODE_SERVER_LIGHT_DB_DIR=\/var\/lib\/happier\/pglite/);
 });
 
 test('renderServerEnvFile includes ui bundle directory when provided', () => {
@@ -1718,7 +1718,7 @@ test('renderServerEnvFile includes ui bundle directory when provided', () => {
     dbDir: '/var/lib/happier/pglite',
     uiDir: '/var/lib/happier/ui-web/current',
   });
-  assert.match(envText, /HAPPIER_SERVER_UI_DIR=\/var\/lib\/happier\/ui-web\/current/);
+  assert.match(envText, /PIGGERCODE_SERVER_UI_DIR=\/var\/lib\/happier\/ui-web\/current/);
 });
 
 test('renderServerEnvFile includes PRISMA_QUERY_ENGINE_LIBRARY when a packaged sqlite engine is present', async () => {
@@ -1780,24 +1780,24 @@ test('resolveSelfHostHealthTimeoutMs defaults to a safe health timeout', () => {
 });
 
 test('resolveSelfHostHealthTimeoutMs honors explicit timeout values >= 10s', () => {
-  assert.equal(resolveSelfHostHealthTimeoutMs({ HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS: '120000' }), 120_000);
+  assert.equal(resolveSelfHostHealthTimeoutMs({ PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS: '120000' }), 120_000);
 });
 
 test('resolveSelfHostHealthTimeoutMs ignores invalid or too-small values', () => {
-  assert.equal(resolveSelfHostHealthTimeoutMs({ HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS: 'abc' }), 90_000);
-  assert.equal(resolveSelfHostHealthTimeoutMs({ HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS: '5000' }), 90_000);
+  assert.equal(resolveSelfHostHealthTimeoutMs({ PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS: 'abc' }), 90_000);
+  assert.equal(resolveSelfHostHealthTimeoutMs({ PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS: '5000' }), 90_000);
 });
 
 test('resolveSelfHostAutoUpdateDefault is opt-in (disabled by default)', () => {
   assert.equal(resolveSelfHostAutoUpdateDefault({}), false);
-  assert.equal(resolveSelfHostAutoUpdateDefault({ HAPPIER_SELF_HOST_AUTO_UPDATE: '1' }), true);
+  assert.equal(resolveSelfHostAutoUpdateDefault({ PIGGERCODE_SELF_HOST_AUTO_UPDATE: '1' }), true);
 });
 
 test('resolveSelfHostAutoUpdateIntervalMinutes provides a safe default and bounds invalid values', () => {
   assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({}), 1440);
-  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ HAPPIER_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: '60' }), 60);
-  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ HAPPIER_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: '0' }), 1440);
-  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ HAPPIER_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: 'abc' }), 1440);
+  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ PIGGERCODE_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: '60' }), 60);
+  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ PIGGERCODE_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: '0' }), 1440);
+  assert.equal(resolveSelfHostAutoUpdateIntervalMinutes({ PIGGERCODE_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES: 'abc' }), 1440);
 });
 
 test('renderUpdaterSystemdUnit runs self-host update without restart loops', () => {
@@ -1964,7 +1964,7 @@ test('mergeEnvTextWithDefaults preserves overrides while backfilling new default
   const existing = [
     ...defaults
       .split('\n')
-      .filter((line) => !line.startsWith('HAPPIER_SQLITE_AUTO_MIGRATE=') && !line.startsWith('HAPPIER_SQLITE_MIGRATIONS_DIR=')),
+      .filter((line) => !line.startsWith('PIGGERCODE_SQLITE_AUTO_MIGRATE=') && !line.startsWith('PIGGERCODE_SQLITE_MIGRATIONS_DIR=')),
     'PORT=7777',
     'FOO=bar',
     '',
@@ -1972,8 +1972,8 @@ test('mergeEnvTextWithDefaults preserves overrides while backfilling new default
 
   const merged = mergeEnvTextWithDefaults(existing, defaults);
   assert.match(merged, /PORT=7777/);
-  assert.match(merged, /HAPPIER_SQLITE_AUTO_MIGRATE=1/);
-  assert.match(merged, /HAPPIER_SQLITE_MIGRATIONS_DIR=\/var\/lib\/happier\/migrations\/sqlite/);
+  assert.match(merged, /PIGGERCODE_SQLITE_AUTO_MIGRATE=1/);
+  assert.match(merged, /PIGGERCODE_SQLITE_MIGRATIONS_DIR=\/var\/lib\/happier\/migrations\/sqlite/);
   assert.match(merged, /FOO=bar/);
 });
 

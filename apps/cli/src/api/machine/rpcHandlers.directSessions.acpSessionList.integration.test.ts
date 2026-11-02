@@ -204,7 +204,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('lists a paginated ACP page as resume-only candidates, preserving opaque session ids byte-exactly', async () => {
-    vi.stubEnv('HAPPIER_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
+    vi.stubEnv('PIGGERCODE_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
     const handler = registered.get(RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST)!;
 
     const first = (await handler({
@@ -246,7 +246,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   }, 30_000);
 
   it('fails clearly and disposes when the live handshake does not negotiate session listing', async () => {
-    vi.stubEnv('HAPPIER_FX_PATH', writeFakeAgent({ dir, fileName: 'fake-fx.mjs', negotiateList: false }));
+    vi.stubEnv('PIGGERCODE_FX_PATH', writeFakeAgent({ dir, fileName: 'fake-fx.mjs', negotiateList: false }));
     const handler = registered.get(RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST)!;
 
     const res = (await handler({
@@ -280,7 +280,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('advertises and dispatches exactly one provider-owned delete after live negotiation', async () => {
-    vi.stubEnv('HAPPIER_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
+    vi.stubEnv('PIGGERCODE_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
     const handler = registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE)!;
 
     const res = (await handler({
@@ -295,7 +295,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('does not advertise or dispatch delete when the live handshake omits it', async () => {
-    vi.stubEnv('HAPPIER_FX_PATH', writeFakeAgent({
+    vi.stubEnv('PIGGERCODE_FX_PATH', writeFakeAgent({
       dir,
       fileName: 'fake-fx-no-delete.mjs',
       negotiateList: true,
@@ -323,7 +323,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('surfaces provider delete failures without retrying the destructive request', async () => {
-    vi.stubEnv('HAPPIER_KIMI_PATH', writeFakeAgent({
+    vi.stubEnv('PIGGERCODE_KIMI_PATH', writeFakeAgent({
       dir,
       fileName: 'fake-kimi-delete-fails.mjs',
       negotiateList: true,
@@ -344,7 +344,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('rejects a relative cwd filter instead of resolving it against the daemon working directory', async () => {
-    vi.stubEnv('HAPPIER_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
+    vi.stubEnv('PIGGERCODE_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
     const handler = registered.get(RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST)!;
 
     const res = (await handler({
@@ -360,7 +360,7 @@ describe.skipIf(process.platform === 'win32')('registerMachineDirectSessionsRpcH
   });
 
   it('reports transcript paging and linking as unavailable for ACP listing providers instead of faking them', async () => {
-    vi.stubEnv('HAPPIER_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
+    vi.stubEnv('PIGGERCODE_KIMI_PATH', writeFakeAgent({ dir, fileName: 'fake-kimi.mjs', negotiateList: true }));
     const { readCredentials } = await import('@/persistence');
     vi.mocked(readCredentials).mockResolvedValueOnce({ token: 'token', secret: new Uint8Array(32) } as never);
 

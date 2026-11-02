@@ -18,7 +18,7 @@ import {
 } from '@/machines/transfer/transferPayloadSource';
 import type { WorkspaceReplicationManifestDigestIndexEntry } from './workspaceReplicationManifestIndex';
 
-export const WORKSPACE_REPLICATION_MANIFEST_STREAM_MAGIC = 'HAPPIER_WORKSPACE_REPLICATION_MANIFEST_V1';
+export const WORKSPACE_REPLICATION_MANIFEST_STREAM_MAGIC = 'PIGGERCODE_WORKSPACE_REPLICATION_MANIFEST_V1';
 
 const WorkspaceReplicationManifestHeaderSchema = z
   .object({

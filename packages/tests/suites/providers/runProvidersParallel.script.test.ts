@@ -192,9 +192,9 @@ describe('providers parallel child env defaults', () => {
       tokenLedgerPath: null,
     });
 
-    expect(env.HAPPIER_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD).toBe('0');
+    expect(env.PIGGERCODE_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD).toBe('0');
     expect(env.HAPPY_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD).toBe('0');
-    expect(env.HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE).toBe('1');
+    expect(env.PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE).toBe('1');
     expect(env.HAPPY_E2E_PROVIDER_SKIP_SERVER_GENERATE).toBe('1');
   });
 
@@ -206,7 +206,7 @@ describe('providers parallel child env defaults', () => {
       tokenLedgerPath: null,
     });
 
-    expect(env.HAPPIER_E2E_PROVIDER_SCENARIOS).toBe('read_known_file,search_known_token');
+    expect(env.PIGGERCODE_E2E_PROVIDER_SCENARIOS).toBe('read_known_file,search_known_token');
     expect(env.HAPPY_E2E_PROVIDER_SCENARIOS).toBe('read_known_file,search_known_token');
   });
 
@@ -218,7 +218,7 @@ describe('providers parallel child env defaults', () => {
       tokenLedgerPath: '/tmp/provider-token-ledger.qwen.json',
     });
 
-    expect(env.HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.qwen.json');
+    expect(env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.qwen.json');
     expect(env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.qwen.json');
   });
 });

@@ -6,7 +6,7 @@ export type DesktopPetOverlayBridgeInvocation = Readonly<{
 }>;
 
 export const desktopPetOverlayBridgeInvocationKey =
-  '__HAPPIER_E2E_DESKTOP_PET_OVERLAY_BRIDGE_INVOCATIONS__' as const;
+  '__PIGGERCODE_E2E_DESKTOP_PET_OVERLAY_BRIDGE_INVOCATIONS__' as const;
 
 export type DesktopPetOverlayProbeWindow = Window & {
   __TAURI_INTERNALS__?: {
@@ -53,7 +53,7 @@ export function createDesktopPetOverlayBridgeProbeInitScript(
   const windowState = options.windowState ?? null;
   return (serializedWindowState) => {
     const resolvedWindowState = serializedWindowState === undefined ? windowState : serializedWindowState;
-    const invocationKey = '__HAPPIER_E2E_DESKTOP_PET_OVERLAY_BRIDGE_INVOCATIONS__' as const;
+    const invocationKey = '__PIGGERCODE_E2E_DESKTOP_PET_OVERLAY_BRIDGE_INVOCATIONS__' as const;
     const target = window as DesktopPetOverlayProbeWindow;
     const existingInvoke = target.__TAURI_INTERNALS__?.invoke;
     target[invocationKey] = [];

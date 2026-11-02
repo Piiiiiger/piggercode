@@ -12,8 +12,8 @@ type AcpBackendLike = {
 function readPermissionConfig(permissionMode: PermissionMode | undefined): Record<string, string> {
   // This test only asserts the permission policy env payload. We don’t want it to
   // depend on whether `opencode` is installed on the machine running the tests.
-  const previousOpenCodePath = process.env.HAPPIER_OPENCODE_PATH;
-  process.env.HAPPIER_OPENCODE_PATH = previousOpenCodePath ?? process.execPath;
+  const previousOpenCodePath = process.env.PIGGERCODE_OPENCODE_PATH;
+  process.env.PIGGERCODE_OPENCODE_PATH = previousOpenCodePath ?? process.execPath;
 
   const backend = createOpenCodeBackend({
     cwd: '/tmp',
@@ -27,9 +27,9 @@ function readPermissionConfig(permissionMode: PermissionMode | undefined): Recor
     return JSON.parse(raw) as Record<string, string>;
   } finally {
     if (previousOpenCodePath === undefined) {
-      delete process.env.HAPPIER_OPENCODE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_PATH;
     } else {
-      process.env.HAPPIER_OPENCODE_PATH = previousOpenCodePath;
+      process.env.PIGGERCODE_OPENCODE_PATH = previousOpenCodePath;
     }
   }
 }

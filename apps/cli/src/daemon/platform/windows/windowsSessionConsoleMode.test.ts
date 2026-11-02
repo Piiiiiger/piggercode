@@ -30,7 +30,7 @@ describe('resolveWindowsRemoteSessionLaunchMode', () => {
     expect(resolveWindowsRemoteSessionLaunchMode({
       platform: 'win32',
       env: {
-        HAPPIER_WINDOWS_REMOTE_SESSION_LAUNCH_MODE: 'windows_terminal',
+        PIGGERCODE_WINDOWS_REMOTE_SESSION_LAUNCH_MODE: 'windows_terminal',
       },
     })).toBe('windows_terminal');
   });
@@ -39,7 +39,7 @@ describe('resolveWindowsRemoteSessionLaunchMode', () => {
     expect(resolveWindowsRemoteSessionLaunchMode({
       platform: 'win32',
       env: {
-        HAPPIER_WINDOWS_REMOTE_SESSION_CONSOLE: 'visible',
+        PIGGERCODE_WINDOWS_REMOTE_SESSION_CONSOLE: 'visible',
       },
     })).toBe('console');
   });

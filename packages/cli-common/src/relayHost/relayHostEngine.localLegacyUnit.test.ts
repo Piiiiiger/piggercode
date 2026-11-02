@@ -91,7 +91,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host-preview\n';
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n';
+              return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             return '';
           },
@@ -208,7 +208,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
           ...actual,
           readFile: async (path: string) => {
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n';
+              return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             if (path.endsWith('happier-server.service')) {
               return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host-preview\n';
@@ -333,7 +333,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
 `;
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n';
+              return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             return '';
           },
@@ -440,7 +440,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
           ...actual,
           readFile: async (path: string) => {
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n';
+              return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             if (path.endsWith('happier-server.plist')) {
               return `<?xml version="1.0" encoding="UTF-8"?>
@@ -568,7 +568,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.happier\\self-host-preview"\n';
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\r\nHAPPIER_SERVER_HOST=127.0.0.1\r\n';
+              return 'PORT=3005\r\nPIGGERCODE_SERVER_HOST=127.0.0.1\r\n';
             }
             return '';
           },
@@ -696,7 +696,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.happier\\self-host-preview"\n';
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\r\nHAPPIER_SERVER_HOST=127.0.0.1\r\n';
+              return 'PORT=3005\r\nPIGGERCODE_SERVER_HOST=127.0.0.1\r\n';
             }
             return '';
           },

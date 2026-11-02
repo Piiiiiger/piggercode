@@ -131,7 +131,7 @@ test('buildTypeScriptPackageDist promotes live dist under the canonical package 
     },
     resolveTypeScriptCommandInvocationImpl: ({ args }) => ({ command: 'tsc', args }),
     runCommandImpl: (_command, args, options) => {
-      compilerLockValue = options.env.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD;
+      compilerLockValue = options.env.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD;
       const outDir = args[args.indexOf('--outDir') + 1];
       mkdirSync(outDir, { recursive: true });
       writeFileSync(join(outDir, 'index.js'), 'export const built = true;\n', 'utf-8');

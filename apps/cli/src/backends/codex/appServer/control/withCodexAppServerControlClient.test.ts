@@ -37,7 +37,7 @@ describe('withCodexAppServerControlClient', () => {
             },
             processEnv: {
                 ...process.env,
-                HAPPIER_CODEX_APP_SERVER_BIN: join(process.cwd(), 'missing-codex-app-server'),
+                PIGGERCODE_CODEX_APP_SERVER_BIN: join(process.cwd(), 'missing-codex-app-server'),
             },
             run: async () => 'unexpected',
         });
@@ -91,7 +91,7 @@ describe('withCodexAppServerControlClient', () => {
                     }),
                 },
                 processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                    HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '250',
+                    PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '250',
                 }),
                 run: async (client) => await client.request('thread/list', { archived: false }),
             });

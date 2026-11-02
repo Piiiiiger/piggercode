@@ -26,7 +26,7 @@ describe('native same-pane controller lifetime', () => {
     const onExit = vi.fn();
     const supervisor = createAttachedTerminalSupervisor({
       resolveInvocation: () => ({ command: process.execPath, args: ['-e', provider] }),
-      env: { PATH: process.env.PATH, HOME: directory, HAPPIER_HOME_DIR: directory },
+      env: { PATH: process.env.PATH, HOME: directory, PIGGERCODE_HOME_DIR: directory },
       onExit,
     });
     const sentinel = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' });
@@ -65,7 +65,7 @@ describe('native same-pane controller lifetime', () => {
     const descendant = 'process.send(process.pid); setInterval(() => {}, 1000);';
     const provider = `
       const child = require('node:child_process').spawn(process.execPath, ['-e', ${JSON.stringify(descendant)}], { stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
-      child.once('message', pid => require('node:fs').writeFileSync(${JSON.stringify(readyPath)}, JSON.stringify({ provider: process.pid, descendant: pid, value: process.env.HAPPIER_NATIVE_FIXTURE_VALUE })));
+      child.once('message', pid => require('node:fs').writeFileSync(${JSON.stringify(readyPath)}, JSON.stringify({ provider: process.pid, descendant: pid, value: process.env.PIGGERCODE_NATIVE_FIXTURE_VALUE })));
       setInterval(() => {}, 1000);
     `;
     const invocation = `{ command: ${JSON.stringify(process.execPath)}, args: ['-e', ${JSON.stringify(provider)}] }`;
@@ -85,7 +85,7 @@ describe('native same-pane controller lifetime', () => {
       await runOpenCodeProviderAttach({ sessionId: 'fixture', metadata: { path: ${JSON.stringify(directory)}, opencodeSessionId: 'fixture-session', opencodeBackendMode: 'server', opencodeServerBaseUrl: ${JSON.stringify(baseUrl)}, opencodeServerBaseUrlExplicit: true }, command: ${JSON.stringify(process.execPath)}, commandArgs: ['-e', ${JSON.stringify(provider)}, '--'] });
     `;
     const controller = spawn(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', controllerSource], {
-      env: { PATH: process.env.PATH, HOME: directory, HAPPIER_HOME_DIR: directory, HAPPIER_NATIVE_FIXTURE_VALUE: 'synthetic-native-env' },
+      env: { PATH: process.env.PATH, HOME: directory, PIGGERCODE_HOME_DIR: directory, PIGGERCODE_NATIVE_FIXTURE_VALUE: 'synthetic-native-env' },
       stdio: ['ignore', 'ignore', 'pipe'],
     });
     const sentinel = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' });

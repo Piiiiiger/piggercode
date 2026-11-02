@@ -13,7 +13,7 @@ import type {
     SessionListSelectionStore,
 } from './sessionListSelectionTypes';
 
-const SESSION_LIST_SELECTION_CONTEXT_GLOBAL_KEY = '__HAPPIER_SESSION_LIST_SELECTION_CONTEXT__';
+const SESSION_LIST_SELECTION_CONTEXT_GLOBAL_KEY = '__PIGGERCODE_SESSION_LIST_SELECTION_CONTEXT__';
 
 type SessionListSelectionContextGlobal = typeof globalThis & {
     [SESSION_LIST_SELECTION_CONTEXT_GLOBAL_KEY]?: React.Context<SessionListSelectionStore | null>;

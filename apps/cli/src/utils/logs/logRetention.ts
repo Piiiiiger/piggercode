@@ -7,8 +7,8 @@
  * - non-zero crashed session logs are preserved outside the normal budget, capped by
  *   {@link DEFAULT_CRASHED_SESSION_LOG_KEEP_COUNT}
  *
- * Both budgets are env-overridable (`HAPPIER_DAEMON_LOG_KEEP_COUNT`,
- * `HAPPIER_SESSION_LOG_KEEP_COUNT`, `HAPPIER_CRASHED_SESSION_LOG_KEEP_COUNT`) for
+ * Both budgets are env-overridable (`PIGGERCODE_DAEMON_LOG_KEEP_COUNT`,
+ * `PIGGERCODE_SESSION_LOG_KEEP_COUNT`, `PIGGERCODE_CRASHED_SESSION_LOG_KEEP_COUNT`) for
  * support/debugging scenarios.
  */
 
@@ -27,13 +27,13 @@ function resolveKeepCount(rawValue: string | undefined, fallback: number): numbe
 }
 
 export function resolveDaemonLogKeepCount(env: EnvLike = process.env): number {
-  return resolveKeepCount(env.HAPPIER_DAEMON_LOG_KEEP_COUNT, DEFAULT_DAEMON_LOG_KEEP_COUNT);
+  return resolveKeepCount(env.PIGGERCODE_DAEMON_LOG_KEEP_COUNT, DEFAULT_DAEMON_LOG_KEEP_COUNT);
 }
 
 export function resolveSessionLogKeepCount(env: EnvLike = process.env): number {
-  return resolveKeepCount(env.HAPPIER_SESSION_LOG_KEEP_COUNT, DEFAULT_SESSION_LOG_KEEP_COUNT);
+  return resolveKeepCount(env.PIGGERCODE_SESSION_LOG_KEEP_COUNT, DEFAULT_SESSION_LOG_KEEP_COUNT);
 }
 
 export function resolveCrashedSessionLogKeepCount(env: EnvLike = process.env): number {
-  return resolveKeepCount(env.HAPPIER_CRASHED_SESSION_LOG_KEEP_COUNT, DEFAULT_CRASHED_SESSION_LOG_KEEP_COUNT);
+  return resolveKeepCount(env.PIGGERCODE_CRASHED_SESSION_LOG_KEEP_COUNT, DEFAULT_CRASHED_SESSION_LOG_KEEP_COUNT);
 }

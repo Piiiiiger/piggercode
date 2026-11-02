@@ -9,8 +9,8 @@ import type { WorkspaceReplicationSourceOffer } from '../transport/createWorkspa
 describe('executeWorkspaceReplicationJob', () => {
   it('heartbeats job updatedAtMs while apply is running so long apply phases stay observable', async () => {
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-replication-exec-job-apply-heartbeat-'));
-    const previous = process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS;
-    process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS = '1000';
+    const previous = process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS;
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS = '1000';
     vi.useFakeTimers();
 
     try {
@@ -121,9 +121,9 @@ describe('executeWorkspaceReplicationJob', () => {
     } finally {
       vi.useRealTimers();
       if (previous === undefined) {
-        delete process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS;
+        delete process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS = previous;
+        process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_STATUS_HEARTBEAT_INTERVAL_MS = previous;
       }
       await rm(activeServerDir, { recursive: true, force: true }).catch(() => undefined);
     }
@@ -1114,8 +1114,8 @@ describe('executeWorkspaceReplicationJob', () => {
   it('hard-stops and does not call apply when the lease is stolen mid-transfer (lost lease is fail-closed)', async () => {
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-replication-exec-lease-stolen-'));
 
-    const previousLeaseTtl = process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
-    process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = '5000';
+    const previousLeaseTtl = process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = '5000';
 
     try {
       const { createWorkspaceReplicationJobStore } = await import('../jobs/workspaceReplicationJobStore');
@@ -1205,9 +1205,9 @@ describe('executeWorkspaceReplicationJob', () => {
       expect(result.status.checkpoint).not.toBe('baseline_committed');
     } finally {
       if (previousLeaseTtl === undefined) {
-        delete process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
+        delete process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
       } else {
-        process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = previousLeaseTtl;
+        process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = previousLeaseTtl;
       }
       await rm(activeServerDir, { recursive: true, force: true });
     }
@@ -1216,8 +1216,8 @@ describe('executeWorkspaceReplicationJob', () => {
   it('hard-stops and does not call apply when the scope lease is stolen mid-transfer (lost scope lease is fail-closed)', async () => {
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-replication-exec-scope-lease-stolen-'));
 
-    const previousScopeLeaseTtl = process.env.HAPPIER_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
-    process.env.HAPPIER_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS = '5000';
+    const previousScopeLeaseTtl = process.env.PIGGERCODE_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS = '5000';
 
     try {
       const { createWorkspaceReplicationJobStore } = await import('../jobs/workspaceReplicationJobStore');
@@ -1308,9 +1308,9 @@ describe('executeWorkspaceReplicationJob', () => {
       expect(result.status.checkpoint).not.toBe('baseline_committed');
     } finally {
       if (previousScopeLeaseTtl === undefined) {
-        delete process.env.HAPPIER_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
+        delete process.env.PIGGERCODE_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS;
       } else {
-        process.env.HAPPIER_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS = previousScopeLeaseTtl;
+        process.env.PIGGERCODE_WORKSPACE_REPLICATION_SCOPE_LEASE_TTL_MS = previousScopeLeaseTtl;
       }
       await rm(activeServerDir, { recursive: true, force: true });
     }
@@ -1402,8 +1402,8 @@ describe('executeWorkspaceReplicationJob', () => {
   it('hard-stops before marking completed when the lease is stolen after commitBaseline finishes (final lease guard)', async () => {
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-replication-exec-final-lease-guard-'));
 
-    const previousLeaseTtl = process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
-    process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = '5000';
+    const previousLeaseTtl = process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = '5000';
 
     try {
       const { createWorkspaceReplicationJobStore } = await import('../jobs/workspaceReplicationJobStore');
@@ -1487,9 +1487,9 @@ describe('executeWorkspaceReplicationJob', () => {
       });
     } finally {
       if (previousLeaseTtl === undefined) {
-        delete process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
+        delete process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
       } else {
-        process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = previousLeaseTtl;
+        process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS = previousLeaseTtl;
       }
       await rm(activeServerDir, { recursive: true, force: true });
     }

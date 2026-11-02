@@ -33,7 +33,7 @@ export function daemonStatePath(happyHomeDir: string): string {
 }
 
 function resolveDaemonCliSnapshotDir(params: { testDir: string; env: NodeJS.ProcessEnv }): string {
-  const raw = (process.env.HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE ?? '').toString().trim().toLowerCase();
+  const raw = (process.env.PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE ?? '').toString().trim().toLowerCase();
   if (raw === 'testdir' || raw === 'per-test' || raw === 'per_test' || raw === 'pertest') {
     return resolve(params.testDir, 'cli-dist');
   }
@@ -48,7 +48,7 @@ function resolveDaemonCliSnapshotDir(params: { testDir: string; env: NodeJS.Proc
 }
 
 function resolveDaemonSnapshotNodeModulesMode(env: NodeJS.ProcessEnv): 'symlink' | 'copy' {
-  const raw = (env.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? '').toString().trim().toLowerCase();
+  const raw = (env.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? '').toString().trim().toLowerCase();
   if (raw === 'copy' || raw === 'symlink') {
     return raw;
   }
@@ -348,18 +348,18 @@ function parsePositiveInteger(raw: string | undefined): number | null {
 const DEFAULT_DAEMON_STARTUP_PHASE_TIMEOUT_MS = 300_000;
 
 function resolveDaemonStartupPhaseTimeoutMs(env: NodeJS.ProcessEnv, startupTimeoutMs: number | undefined): number {
-  return parsePositiveInteger(env.HAPPIER_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS)
+  return parsePositiveInteger(env.PIGGERCODE_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS)
     ?? startupTimeoutMs
     ?? DEFAULT_DAEMON_STARTUP_PHASE_TIMEOUT_MS;
 }
 
 function resolveDaemonCliDistBuildTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return parsePositiveInteger(env.HAPPIER_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS)
+  return parsePositiveInteger(env.PIGGERCODE_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS)
     ?? DEFAULT_CLI_DIST_BUILD_TIMEOUT_MS;
 }
 
 function resolveDaemonLaunchSpecPhaseTimeoutMs(env: NodeJS.ProcessEnv, startupTimeoutMs: number | undefined): number {
-  const explicitPhaseTimeoutMs = parsePositiveInteger(env.HAPPIER_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS);
+  const explicitPhaseTimeoutMs = parsePositiveInteger(env.PIGGERCODE_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS);
   if (explicitPhaseTimeoutMs != null) return explicitPhaseTimeoutMs;
   if (startupTimeoutMs != null) return startupTimeoutMs;
   return Math.max(DEFAULT_DAEMON_STARTUP_PHASE_TIMEOUT_MS, resolveDaemonCliDistBuildTimeoutMs(env));
@@ -585,24 +585,24 @@ export function sanitizeDaemonEnvForSpawn(env: NodeJS.ProcessEnv): NodeJS.Proces
   const sanitized = sanitizeCliTestEnv(env);
   // Source-entrypoint E2E runs must not inherit a stack's pinned-dist fast path.
   if (shouldUseCliSourceEntrypoint(sanitized)) {
-    sanitized.HAPPIER_CLI_SUBPROCESS_PREFER_TSX = '1';
-    delete sanitized.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT;
-    delete sanitized.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
+    sanitized.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX = '1';
+    delete sanitized.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT;
+    delete sanitized.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
   }
   delete sanitized.TMUX;
   delete sanitized.TMUX_PANE;
   delete sanitized.TMUX_TMPDIR;
   // Daemons should never inherit per-session attach/trace env. If they do, they can consume and
   // delete attach files intended for the actual session runner process, breaking provider e2e.
-  delete sanitized.HAPPIER_SESSION_ATTACH_FILE;
+  delete sanitized.PIGGERCODE_SESSION_ATTACH_FILE;
   delete sanitized.HAPPY_SESSION_ATTACH_FILE;
-  delete sanitized.HAPPIER_STACK_TOOL_TRACE_FILE;
+  delete sanitized.PIGGERCODE_STACK_TOOL_TRACE_FILE;
   delete sanitized.HAPPY_STACK_TOOL_TRACE_FILE;
-  if (sanitized.HAPPIER_DISABLE_CAFFEINATE === undefined || sanitized.HAPPIER_DISABLE_CAFFEINATE === '') {
-    sanitized.HAPPIER_DISABLE_CAFFEINATE = '1';
+  if (sanitized.PIGGERCODE_DISABLE_CAFFEINATE === undefined || sanitized.PIGGERCODE_DISABLE_CAFFEINATE === '') {
+    sanitized.PIGGERCODE_DISABLE_CAFFEINATE = '1';
   }
-  if (sanitized.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED === undefined || sanitized.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED === '') {
-    sanitized.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED = '0';
+  if (sanitized.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED === undefined || sanitized.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED === '') {
+    sanitized.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED = '0';
   }
   return sanitized;
 }
@@ -613,8 +613,8 @@ function resolveDaemonSubprocessEntrypointEnv(cliLaunchSpec: Readonly<{ command:
   const entrypoint = cliLaunchSpec.args[0]?.trim() ?? '';
   if (!entrypoint.endsWith('.mjs')) return {};
   return {
-    HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-    HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+    PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+    PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
   };
 }
 
@@ -665,7 +665,7 @@ export async function startTestDaemon(params: {
         testDir: params.testDir,
         env: {
           ...params.env,
-          HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: resolveDaemonSnapshotNodeModulesMode(params.env),
+          PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: resolveDaemonSnapshotNodeModulesMode(params.env),
         },
       },
       {
@@ -700,7 +700,7 @@ export async function startTestDaemon(params: {
       ...(cliLaunchSpec.env ?? {}),
       ...resolveDaemonSubprocessEntrypointEnv(cliLaunchSpec),
       CI: '1',
-      HAPPIER_HOME_DIR: params.happyHomeDir,
+      PIGGERCODE_HOME_DIR: params.happyHomeDir,
     },
     stdoutPath,
     stderrPath,
@@ -832,7 +832,7 @@ export async function replaceTestDaemonWithoutStoppingSessions(params: {
       ...(cliLaunchSpec.env ?? {}),
       ...resolveDaemonSubprocessEntrypointEnv(cliLaunchSpec),
       CI: '1',
-      HAPPIER_HOME_DIR: params.happyHomeDir,
+      PIGGERCODE_HOME_DIR: params.happyHomeDir,
     },
     stdoutPath: params.stdoutPath ?? resolve(params.testDir, 'daemon.replace.stdout.log'),
     stderrPath: params.stderrPath ?? resolve(params.testDir, 'daemon.replace.stderr.log'),

@@ -6,12 +6,12 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('configuration server selection (persisted settings)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_LOCAL_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_ACTIVE_SERVER_ID',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_LOCAL_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -23,19 +23,19 @@ describe('configuration server selection (persisted settings)', () => {
 
   /**
    * Desktop setup reads the target relay's saved credentials before `server set`, by scoping only
-   * the URL env and clearing `HAPPIER_ACTIVE_SERVER_ID` (hsetup `createSetupCliScope`'s `target`). The
+   * the URL env and clearing `PIGGERCODE_ACTIVE_SERVER_ID` (hsetup `createSetupCliScope`'s `target`). The
    * account it asks about (D1) must be the one stored for THAT relay's persisted profile, never the
    * active profile's — reading the wrong credential directory is what made a URL probe unsafe.
    */
   it('resolves the credential directory of the persisted profile matching an env-scoped relay, not the active one', async () => {
     await withTempDir('happier-cli-config-scoped-target-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'https://relay-y.example.test',
-        HAPPIER_LOCAL_SERVER_URL: '',
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: 'https://app-y.example.test',
-        HAPPIER_ACTIVE_SERVER_ID: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'https://relay-y.example.test',
+        PIGGERCODE_LOCAL_SERVER_URL: '',
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: 'https://app-y.example.test',
+        PIGGERCODE_ACTIVE_SERVER_ID: undefined,
       });
       const profile = (id: string, serverUrl: string) => ({
         id, name: id, serverUrl, webappUrl: 'https://app.example.test', createdAt: 1, updatedAt: 1, lastUsedAt: 1,
@@ -66,12 +66,12 @@ describe('configuration server selection (persisted settings)', () => {
   it('does not treat remote http URL as localServerUrl when legacy publicServerUrl exists', async () => {
     await withTempDir('happier-cli-config-server-selection-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_ACTIVE_SERVER_ID: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_ACTIVE_SERVER_ID: undefined,
       });
 
       writeFileSync(
@@ -111,12 +111,12 @@ describe('configuration server selection (persisted settings)', () => {
   it('preserves an explicit runtime server id for equivalent persisted loopback aliases', async () => {
     await withTempDir('happier-cli-config-loopback-alias-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:53288',
-        HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:53288',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-stack.localhost:53288',
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_ACTIVE_SERVER_ID: 'env_deadbeef',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:53288',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:53288',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-stack.localhost:53288',
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'env_deadbeef',
       });
 
       writeFileSync(

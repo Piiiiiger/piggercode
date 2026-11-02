@@ -40,9 +40,9 @@ async function ensureSignedInAndConnected(params: Readonly<{
         env: {
             ...process.env,
             CI: '1',
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_VARIANT: 'dev',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_VARIANT: 'dev',
         },
     });
 
@@ -66,12 +66,12 @@ async function ensureSignedInAndConnected(params: Readonly<{
         env: {
             ...process.env,
             CI: '1',
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_HOME_DIR: cliHomeDir,
-            HAPPIER_SERVER_URL: server.baseUrl,
-            HAPPIER_WEBAPP_URL: uiBaseUrl,
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_VARIANT: 'dev',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_HOME_DIR: cliHomeDir,
+            PIGGERCODE_SERVER_URL: server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_VARIANT: 'dev',
         },
     });
 
@@ -243,15 +243,15 @@ test.describe('ui e2e: directory path browser reuse', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: `path-browser-directory-inputs-${run.runId}`,
-        HAPPIER_E2E_EXPO_CLEAR: '1',
-        HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: '900000',
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: `path-browser-directory-inputs-${run.runId}`,
+        PIGGERCODE_E2E_EXPO_CLEAR: '1',
+        PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: '900000',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
         // This suite exercises the shared path-browser contract; the Metro dev server adds
         // unnecessary startup cost and flake here, while the exported web bundle still proves
             // the same user-facing behavior.
-            HAPPIER_E2E_UI_WEB_MODE: 'export',
-            HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+            PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
         };
         test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
 
@@ -259,8 +259,8 @@ test.describe('ui e2e: directory path browser reuse', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 
@@ -268,7 +268,7 @@ test.describe('ui e2e: directory path browser reuse', () => {
             testDir: suiteDir,
             env: {
                 ...uiWebEnv,
-                EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS: '300000',
+                EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS: '300000',
                 EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
             },
         });

@@ -161,7 +161,7 @@ function parseDailyAtTime(raw) {
 }
 
 export function resolveSelfHostHealthTimeoutMs(env = process.env) {
-  const raw = String(env?.HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS ?? '').trim();
   if (!raw) return DEFAULTS.healthCheckTimeoutMs;
   const parsed = Number(raw);
   return Number.isFinite(parsed) && parsed >= 10_000
@@ -175,11 +175,11 @@ export function resolveSelfHostEffectiveServerPort({ config, env } = {}) {
 }
 
 export function resolveSelfHostAutoUpdateDefault(env = process.env) {
-  return parseBoolean(env?.HAPPIER_SELF_HOST_AUTO_UPDATE, false);
+  return parseBoolean(env?.PIGGERCODE_SELF_HOST_AUTO_UPDATE, false);
 }
 
 export function resolveSelfHostAutoUpdateIntervalMinutes(env = process.env) {
-  const raw = String(env?.HAPPIER_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES ?? '').trim();
+  const raw = String(env?.PIGGERCODE_SELF_HOST_AUTO_UPDATE_INTERVAL_MINUTES ?? '').trim();
   if (!raw) return DEFAULTS.autoUpdateIntervalMinutes;
   const parsed = Number(raw);
   const minutes = Number.isFinite(parsed) ? Math.floor(parsed) : NaN;
@@ -189,7 +189,7 @@ export function resolveSelfHostAutoUpdateIntervalMinutes(env = process.env) {
 }
 
 export function resolveSelfHostAutoUpdateAt(env = process.env) {
-  const raw = String(env?.HAPPIER_SELF_HOST_AUTO_UPDATE_AT ?? '').trim();
+  const raw = String(env?.PIGGERCODE_SELF_HOST_AUTO_UPDATE_AT ?? '').trim();
   const parsed = parseDailyAtTime(raw);
   return parsed?.normalized || '';
 }
@@ -372,10 +372,10 @@ export function resolveConfig({ channel, mode = 'user', platform = process.platf
   const configDir = configuredPaths.configDir;
   const dataDir = configuredPaths.dataDir;
   const logDir = configuredPaths.logDir;
-  const serviceName = String(process.env.HAPPIER_SELF_HOST_SERVICE_NAME ?? defaults.serviceName).trim() || defaults.serviceName;
-  const serverHost = String(process.env.HAPPIER_SERVER_HOST ?? DEFAULTS.serverHost).trim();
-  const serverPort = parsePort(process.env.HAPPIER_SERVER_PORT, DEFAULTS.serverPort);
-  const githubRepo = String(process.env.HAPPIER_GITHUB_REPO ?? DEFAULTS.githubRepo).trim();
+  const serviceName = String(process.env.PIGGERCODE_SELF_HOST_SERVICE_NAME ?? defaults.serviceName).trim() || defaults.serviceName;
+  const serverHost = String(process.env.PIGGERCODE_SERVER_HOST ?? DEFAULTS.serverHost).trim();
+  const serverPort = parsePort(process.env.PIGGERCODE_SERVER_PORT, DEFAULTS.serverPort);
+  const githubRepo = String(process.env.PIGGERCODE_GITHUB_REPO ?? DEFAULTS.githubRepo).trim();
   const autoUpdate = resolveSelfHostAutoUpdateDefault(process.env);
   const autoUpdateIntervalMinutes = resolveSelfHostAutoUpdateIntervalMinutes(process.env);
   const autoUpdateAt = resolveSelfHostAutoUpdateAt(process.env);
@@ -962,14 +962,14 @@ function resolveAutoUpdateAt(argv, fallback) {
 }
 
 function resolveUpdaterLabel(config) {
-  const override = String(process.env.HAPPIER_SELF_HOST_UPDATER_LABEL ?? '').trim();
+  const override = String(process.env.PIGGERCODE_SELF_HOST_UPDATER_LABEL ?? '').trim();
   if (override) return override;
   const base = String(config?.serviceName ?? '').trim() || 'happier-server';
   return `${base}-updater`;
 }
 
 function resolveHstackPathForUpdater(config) {
-  const override = String(process.env.HAPPIER_SELF_HOST_HSTACK_PATH ?? '').trim();
+  const override = String(process.env.PIGGERCODE_SELF_HOST_HSTACK_PATH ?? '').trim();
   if (override) return override;
   const platform = String(config?.platform ?? '').trim() || process.platform;
   const exe = platform === 'win32' ? 'hstack.exe' : 'hstack';
@@ -1166,7 +1166,7 @@ async function checkHealth({ port }) {
 }
 
 export function resolveMinisignPublicKeyText(env = process.env) {
-  const inline = String(env?.HAPPIER_MINISIGN_PUBKEY ?? '').trim();
+  const inline = String(env?.PIGGERCODE_MINISIGN_PUBKEY ?? '').trim();
   return inline || DEFAULT_MINISIGN_PUBLIC_KEY;
 }
 
@@ -1955,12 +1955,12 @@ async function cmdInstall({ channel, mode, argv, json }) {
   const autoUpdateEnabled = resolveAutoUpdateEnabled(argvSansEnv, config.autoUpdate);
   const autoUpdateIntervalMinutes = resolveAutoUpdateIntervalMinutes(argvSansEnv, config.autoUpdateIntervalMinutes);
   const autoUpdateAt = resolveAutoUpdateAt(argvSansEnv, config.autoUpdateAt);
-  const withoutCli = argvSansEnv.includes('--without-cli') || parseBoolean(process.env.HAPPIER_WITH_CLI, true) === false;
+  const withoutCli = argvSansEnv.includes('--without-cli') || parseBoolean(process.env.PIGGERCODE_WITH_CLI, true) === false;
   const withUi =
     !(argvSansEnv.includes('--without-ui')
-      || parseBoolean(process.env.HAPPIER_WITH_UI, true) === false
-      || parseBoolean(process.env.HAPPIER_SELF_HOST_WITH_UI, true) === false);
-  const nonInteractive = argvSansEnv.includes('--non-interactive') || parseBoolean(process.env.HAPPIER_NONINTERACTIVE, false);
+      || parseBoolean(process.env.PIGGERCODE_WITH_UI, true) === false
+      || parseBoolean(process.env.PIGGERCODE_SELF_HOST_WITH_UI, true) === false);
+  const nonInteractive = argvSansEnv.includes('--non-interactive') || parseBoolean(process.env.PIGGERCODE_NONINTERACTIVE, false);
 
   if (normalizeOs(config.platform) === 'windows' && !commandExists('powershell')) {
     throw new Error('[self-host] powershell is required on Windows');
@@ -2212,8 +2212,8 @@ async function cmdUpdate({ channel, mode, json }) {
     fallbackIntervalMinutes: config.autoUpdateIntervalMinutes,
   });
   const withUi =
-    parseBoolean(process.env.HAPPIER_WITH_UI, true) !== false
-    && parseBoolean(process.env.HAPPIER_SELF_HOST_WITH_UI, true) !== false;
+    parseBoolean(process.env.PIGGERCODE_WITH_UI, true) !== false
+    && parseBoolean(process.env.PIGGERCODE_SELF_HOST_WITH_UI, true) !== false;
   let postPromoteResult = null;
   const installResult = await runSelfHostRuntimeMutationWithServiceRecovery({
     config,
@@ -2338,9 +2338,9 @@ async function cmdUninstall({ channel, mode, argv, json }) {
     assertRoot();
   }
   const purgeData = argv.includes('--purge-data');
-  const yes = argv.includes('--yes') || parseBoolean(process.env.HAPPIER_NONINTERACTIVE, false);
+  const yes = argv.includes('--yes') || parseBoolean(process.env.PIGGERCODE_NONINTERACTIVE, false);
   if (!yes) {
-    throw new Error('[self-host] uninstall requires --yes (or HAPPIER_NONINTERACTIVE=1)');
+    throw new Error('[self-host] uninstall requires --yes (or PIGGERCODE_NONINTERACTIVE=1)');
   }
 
   const envText = existsSync(config.configEnvPath)
@@ -2424,10 +2424,10 @@ function redactEnvForDisplay(env) {
   const out = {};
   const allowed = new Set([
     'PORT',
-    'HAPPIER_SERVER_HOST',
-    'HAPPIER_DB_PROVIDER',
-    'HAPPIER_FILES_BACKEND',
-    'HAPPIER_SERVER_UI_DIR',
+    'PIGGERCODE_SERVER_HOST',
+    'PIGGERCODE_DB_PROVIDER',
+    'PIGGERCODE_FILES_BACKEND',
+    'PIGGERCODE_SERVER_UI_DIR',
   ]);
   for (const [k, v] of Object.entries(input)) {
     if (!allowed.has(k)) continue;
@@ -2605,7 +2605,7 @@ export function usageText() {
     '',
     sectionTitle('notes:'),
     '- works without a repository checkout (binary-safe flow).',
-    `- runtime paths are configurable via env vars (${dim('HAPPIER_SELF_HOST_*')}).`,
+    `- runtime paths are configurable via env vars (${dim('PIGGERCODE_SELF_HOST_*')}).`,
   ].join('\n');
 }
 
@@ -2621,7 +2621,7 @@ export function resolveRelayHostForwardedArgv(argv) {
 }
 
 function shouldAttemptRelayHostForward(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_SELF_HOST_FORWARD ?? '1').trim().toLowerCase();
+  const raw = String(env?.PIGGERCODE_STACK_SELF_HOST_FORWARD ?? '1').trim().toLowerCase();
   if (!raw) return true;
   if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
   return true;
@@ -2669,11 +2669,11 @@ export async function runSelfHostCli(argv = process.argv.slice(2), { configOutpu
 
   const { flags, kv } = parseArgs(argv);
   const json = wantsJson(argv, { flags });
-  const channel = normalizeChannel(String(kv.get('--channel') ?? process.env.HAPPIER_CHANNEL ?? 'stable'));
+  const channel = normalizeChannel(String(kv.get('--channel') ?? process.env.PIGGERCODE_CHANNEL ?? 'stable'));
   const mode = normalizeMode(
     String(
       kv.get('--mode') ??
-        (argv.includes('--system') ? 'system' : argv.includes('--user') ? 'user' : process.env.HAPPIER_SELF_HOST_MODE ?? 'user')
+        (argv.includes('--system') ? 'system' : argv.includes('--user') ? 'user' : process.env.PIGGERCODE_SELF_HOST_MODE ?? 'user')
     )
   );
 

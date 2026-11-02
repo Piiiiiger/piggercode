@@ -11,7 +11,7 @@ export async function applyServerMigrations(
     dir: serverDir,
     bin: 'migrate:deploy',
     args: [],
-    env: { ...env, HAPPIER_DB_PROVIDER: effectiveDbProvider },
+    env: { ...env, PIGGERCODE_DB_PROVIDER: effectiveDbProvider },
     quiet,
   });
 }

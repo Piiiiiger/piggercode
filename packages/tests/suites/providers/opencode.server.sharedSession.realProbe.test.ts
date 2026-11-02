@@ -50,9 +50,9 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 describe('providers: OpenCode shared session real probe', () => {
-  const providersEnabled = envFlag(['HAPPIER_E2E_PROVIDERS', 'HAPPY_E2E_PROVIDERS'], false);
-  const opencodeServerEnabled = envFlag(['HAPPIER_E2E_PROVIDER_OPENCODE_SERVER', 'HAPPY_E2E_PROVIDER_OPENCODE_SERVER'], false);
-  const liveProbeEnabled = envFlag('HAPPIER_TEST_REAL_OPENCODE', false);
+  const providersEnabled = envFlag(['PIGGERCODE_E2E_PROVIDERS', 'HAPPY_E2E_PROVIDERS'], false);
+  const opencodeServerEnabled = envFlag(['PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER', 'HAPPY_E2E_PROVIDER_OPENCODE_SERVER'], false);
+  const liveProbeEnabled = envFlag('PIGGERCODE_TEST_REAL_OPENCODE', false);
 
   let stopServer: (() => Promise<void>) | null = null;
 
@@ -81,9 +81,9 @@ describe('providers: OpenCode shared session real probe', () => {
         ports: { server: port },
         baseUrl,
         env: {
-          HAPPIER_E2E_PROVIDERS: process.env.HAPPIER_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
-          HAPPIER_E2E_PROVIDER_OPENCODE_SERVER: process.env.HAPPIER_E2E_PROVIDER_OPENCODE_SERVER ?? process.env.HAPPY_E2E_PROVIDER_OPENCODE_SERVER,
-          HAPPIER_TEST_REAL_OPENCODE: process.env.HAPPIER_TEST_REAL_OPENCODE,
+          PIGGERCODE_E2E_PROVIDERS: process.env.PIGGERCODE_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
+          PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER: process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER ?? process.env.HAPPY_E2E_PROVIDER_OPENCODE_SERVER,
+          PIGGERCODE_TEST_REAL_OPENCODE: process.env.PIGGERCODE_TEST_REAL_OPENCODE,
         },
       });
 

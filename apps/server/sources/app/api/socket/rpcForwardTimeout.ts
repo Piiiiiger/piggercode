@@ -15,13 +15,13 @@ function parsePositiveInt(value: unknown): number | null {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
-const RPC_FORWARD_TIMEOUT_MS = parsePositiveIntOrDefault(process.env.HAPPIER_RPC_FORWARD_TIMEOUT_MS, 30_000);
+const RPC_FORWARD_TIMEOUT_MS = parsePositiveIntOrDefault(process.env.PIGGERCODE_RPC_FORWARD_TIMEOUT_MS, 30_000);
 const RPC_FORWARD_CAPABILITIES_TIMEOUT_MS = parsePositiveIntOrDefault(
-    process.env.HAPPIER_RPC_FORWARD_CAPABILITIES_TIMEOUT_MS,
+    process.env.PIGGERCODE_RPC_FORWARD_CAPABILITIES_TIMEOUT_MS,
     120_000,
 );
 const RPC_FORWARD_MAX_TIMEOUT_MS = parsePositiveIntOrDefault(
-    process.env.HAPPIER_RPC_FORWARD_MAX_TIMEOUT_MS,
+    process.env.PIGGERCODE_RPC_FORWARD_MAX_TIMEOUT_MS,
     300_000,
 );
 const RPC_FORWARD_CALLER_LIFECYCLE_TIMEOUT_MS = 2_147_483_647;

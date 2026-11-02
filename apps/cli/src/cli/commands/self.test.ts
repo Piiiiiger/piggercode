@@ -14,9 +14,9 @@ describe('self command helpers', () => {
 
   beforeEach(() => {
     envScope.patch({
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-      HAPPIER_RELEASE_RING: undefined,
-      HAPPIER_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_RELEASE_RING: undefined,
+      PIGGERCODE_RELEASE_CHANNEL: undefined,
     });
   });
 

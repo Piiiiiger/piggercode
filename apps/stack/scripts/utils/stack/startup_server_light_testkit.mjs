@@ -105,9 +105,9 @@ export function buildServerLightEnv({ binDir, root, extraEnv = {} }) {
   return {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-    HAPPIER_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
-    HAPPIER_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
     ...extraEnv,
   };
 }

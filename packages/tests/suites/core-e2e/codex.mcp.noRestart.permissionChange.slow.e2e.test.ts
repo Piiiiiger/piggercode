@@ -110,7 +110,7 @@ const { StdioServerTransport } = await import(pathToFileURL(sdkStdioPath).href);
 const { z } = await import(pathToFileURL(zodPath).href);
 
 function log(line) {
-  const p = process.env.HAPPIER_E2E_FAKE_CODEX_MCP_LOG;
+  const p = process.env.PIGGERCODE_E2E_FAKE_CODEX_MCP_LOG;
   if (!p) return;
   appendFileSync(p, JSON.stringify(line) + '\\n', 'utf8');
 }
@@ -209,14 +209,14 @@ try {
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CODEX_BACKEND_MODE: 'mcp',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_E2E_FAKE_CODEX_MCP_LOG: fakeCodexLog,
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CODEX_BACKEND_MODE: 'mcp',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_E2E_FAKE_CODEX_MCP_LOG: fakeCodexLog,
       // Ensure our fake codex binary is found.
       PATH: `${fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
     };

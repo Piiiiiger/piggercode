@@ -5,7 +5,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('changes cursor persistence', () => {
-    const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID'] as const;
+    const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_ACTIVE_SERVER_ID'] as const;
     let envScope = createEnvKeyScope(envKeys);
 
     afterEach(() => {
@@ -18,10 +18,10 @@ describe('changes cursor persistence', () => {
         await withTempDir('happy-cli-changes-cursor-', async (homeDir) => {
             vi.resetModules();
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_SERVER_URL: undefined,
-                HAPPIER_WEBAPP_URL: undefined,
-                HAPPIER_ACTIVE_SERVER_ID: undefined,
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_SERVER_URL: undefined,
+                PIGGERCODE_WEBAPP_URL: undefined,
+                PIGGERCODE_ACTIVE_SERVER_ID: undefined,
             });
 
             const [{ configuration }, { readAccountChangesCursor, writeAccountChangesCursor }] = await Promise.all([
@@ -49,10 +49,10 @@ describe('changes cursor persistence', () => {
 
             vi.resetModules();
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_SERVER_URL: serverUrl,
-                HAPPIER_WEBAPP_URL: serverUrl,
-                HAPPIER_ACTIVE_SERVER_ID: undefined,
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_SERVER_URL: serverUrl,
+                PIGGERCODE_WEBAPP_URL: serverUrl,
+                PIGGERCODE_ACTIVE_SERVER_ID: undefined,
             });
 
             const { configuration } = await import('./configuration');

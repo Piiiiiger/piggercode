@@ -12,7 +12,7 @@ function trimEnvValue(value) {
 }
 
 export function resolveWsreplLimaMatrixScriptPath(env, repoRoot = resolveRepoRoot()) {
-  const override = trimEnvValue(env?.HAPPIER_E2E_WSREPL_LIMA_SCRIPT);
+  const override = trimEnvValue(env?.PIGGERCODE_E2E_WSREPL_LIMA_SCRIPT);
   if (override) {
     return isAbsolute(override) ? override : resolve(repoRoot, override);
   }
@@ -31,7 +31,7 @@ export function resolveWsreplLimaMatrixInvocation({
   repoRoot = resolveRepoRoot(),
 }) {
   const scriptPath = resolveWsreplLimaMatrixScriptPath(env, repoRoot);
-  const hasOverride = trimEnvValue(env?.HAPPIER_E2E_WSREPL_LIMA_SCRIPT).length > 0;
+  const hasOverride = trimEnvValue(env?.PIGGERCODE_E2E_WSREPL_LIMA_SCRIPT).length > 0;
   const isSupportedHostPlatform = platform === 'darwin' || platform === 'linux';
 
   if (!hasOverride && !isSupportedHostPlatform) {

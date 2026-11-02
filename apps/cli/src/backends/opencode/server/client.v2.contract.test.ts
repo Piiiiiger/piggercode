@@ -40,7 +40,7 @@ async function makeReleasedV2Client(env: NodeJS.ProcessEnv = {}) {
   return await createOpenCodeServerRuntimeClient({
     directory: '/repo',
     messageBuffer: { push: () => {} } as never,
-    env: { HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:9999', ...env },
+    env: { PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:9999', ...env },
   });
 }
 
@@ -470,7 +470,7 @@ describe('OpenCodeServerRuntimeClient released V2 contract', () => {
       }
       return new Response(null, { status: 404 });
     }));
-    const client = await makeReleasedV2Client({ HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS: '1000' });
+    const client = await makeReleasedV2Client({ PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS: '1000' });
     vi.useFakeTimers();
     const outcome = client.sessionCommand({ sessionId: 'ses_1', command: 'review', arguments: '' })
       .then(() => null, (error: unknown) => error);

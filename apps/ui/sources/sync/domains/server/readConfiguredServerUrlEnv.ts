@@ -13,7 +13,7 @@ function readFirstNonEmptyEnv(...values: Array<string | undefined>): string {
 export function readConfiguredServerUrlEnvRaw(): string {
     return readFirstNonEmptyEnv(
         readWebRuntimeConfigServerUrl(),
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL,
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL,
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL,
         process.env.EXPO_PUBLIC_SERVER_URL,
     );

@@ -206,8 +206,8 @@ describe('core e2e: session transcript/events action role stamping', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);

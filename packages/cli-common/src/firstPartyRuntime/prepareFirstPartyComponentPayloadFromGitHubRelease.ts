@@ -210,7 +210,7 @@ function resolveFirstPartyReleaseArtifactSource(params: Readonly<{
   apiBaseUrl?: string;
 }> {
   const source = params.artifactSource?.kind === 'github-release' ? params.artifactSource : null;
-  const override = process.env.HAPPIER_FIRST_PARTY_RELEASE_API_BASE_URL;
+  const override = process.env.PIGGERCODE_FIRST_PARTY_RELEASE_API_BASE_URL;
   let apiBaseUrl: string | undefined;
   if (override !== undefined) {
     if (process.env.NODE_ENV !== 'development') {
@@ -234,8 +234,8 @@ function resolveFirstPartyReleaseArtifactSource(params: Readonly<{
     githubRepo: normalizeFirstPartyReleaseValue(
       source?.githubRepo
         ?? params.githubRepo
-        ?? process.env.HAPPIER_FIRST_PARTY_RELEASE_REPO
-        ?? process.env.HAPPIER_GITHUB_REPO
+        ?? process.env.PIGGERCODE_FIRST_PARTY_RELEASE_REPO
+        ?? process.env.PIGGERCODE_GITHUB_REPO
         ?? 'happier-dev/happier',
       'happier-dev/happier',
     ),
@@ -243,8 +243,8 @@ function resolveFirstPartyReleaseArtifactSource(params: Readonly<{
     githubToken: apiBaseUrl ? '' : normalizeFirstPartyReleaseValue(
       source?.githubToken
         ?? params.githubToken
-        ?? process.env.HAPPIER_FIRST_PARTY_RELEASE_TOKEN
-        ?? process.env.HAPPIER_GITHUB_TOKEN
+        ?? process.env.PIGGERCODE_FIRST_PARTY_RELEASE_TOKEN
+        ?? process.env.PIGGERCODE_GITHUB_TOKEN
         ?? process.env.GITHUB_TOKEN
         ?? process.env.GH_TOKEN
         ?? '',
@@ -253,7 +253,7 @@ function resolveFirstPartyReleaseArtifactSource(params: Readonly<{
     userAgent: normalizeFirstPartyReleaseValue(
       source?.userAgent
         ?? params.userAgent
-        ?? process.env.HAPPIER_FIRST_PARTY_RELEASE_USER_AGENT
+        ?? process.env.PIGGERCODE_FIRST_PARTY_RELEASE_USER_AGENT
         ?? 'happier-first-party-runtime',
       'happier-first-party-runtime',
     ),
@@ -284,7 +284,7 @@ function wrapFirstPartyReleaseSourceError(params: Readonly<{
     || (status === 404 && params.stage === 'resolve release tag')
   );
   const tokenHint = shouldSuggestToken
-    ? 'No GitHub token was configured; if the release repository is private, set HAPPIER_FIRST_PARTY_RELEASE_TOKEN, HAPPIER_GITHUB_TOKEN, or GH_TOKEN.'
+    ? 'No GitHub token was configured; if the release repository is private, set PIGGERCODE_FIRST_PARTY_RELEASE_TOKEN, PIGGERCODE_GITHUB_TOKEN, or GH_TOKEN.'
     : 'Verify the repository, release tag, and release assets.';
   const statusHint =
     status === 404

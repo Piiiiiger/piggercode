@@ -159,19 +159,19 @@ describe('daemon service install plan — autostart dimension', () => {
     // trigger lives outside the definition file.
     it('writes the selected mode into the service definition on every platform', () => {
       expect(planDaemonServiceInstall({ ...DARWIN_BASE, autostart: 'on-demand' }).files[0]?.content ?? '')
-        .toContain('<key>HAPPIER_DAEMON_SERVICE_AUTOSTART</key>');
+        .toContain('<key>PIGGERCODE_DAEMON_SERVICE_AUTOSTART</key>');
       expect(planDaemonServiceInstall({ ...DARWIN_BASE, autostart: 'on-demand' }).files[0]?.content ?? '')
         .toContain('<string>on-demand</string>');
       expect(planDaemonServiceInstall({ ...DARWIN_BASE }).files[0]?.content ?? '')
         .toContain('<string>at-login</string>');
 
       expect(planDaemonServiceInstall({ ...LINUX_BASE, autostart: 'on-demand' }).files[0]?.content ?? '')
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=on-demand');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=on-demand');
       expect(planDaemonServiceInstall({ ...LINUX_BASE }).files[0]?.content ?? '')
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=at-login');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=at-login');
 
       expect(planDaemonServiceInstall({ ...WIN32_BASE, autostart: 'on-demand' }).files[0]?.content ?? '')
-        .toContain('HAPPIER_DAEMON_SERVICE_AUTOSTART');
+        .toContain('PIGGERCODE_DAEMON_SERVICE_AUTOSTART');
     });
   });
 });

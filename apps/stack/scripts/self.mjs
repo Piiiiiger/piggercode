@@ -94,7 +94,7 @@ async function cmdStatus({ rootDir, argv }) {
   const { updateJson, cacheDir } = cachePaths();
   const invoker = await readJsonIfExists(join(rootDir, 'package.json'), { defaultValue: null });
   const packageName = resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_STACK_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_STACK_UPDATE_PACKAGE_NAME,
     fallback: String(invoker?.name ?? '').trim(),
   });
   const invokerVersion = await getInvokerVersion({ rootDir });
@@ -165,7 +165,7 @@ async function cmdUpdate({ rootDir, argv }) {
   const channel = parseSelfChannel({ flags, kv: kvArgs });
   const invoker = await readJsonIfExists(join(rootDir, 'package.json'), { defaultValue: null });
   const pkgName = resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_STACK_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_STACK_UPDATE_PACKAGE_NAME,
     fallback: String(invoker?.name ?? '').trim(),
   });
   if (!pkgName) throw new Error('[self] unable to resolve package name (missing package.json name)');
@@ -178,7 +178,7 @@ async function cmdUpdate({ rootDir, argv }) {
   const installRes = installRuntimeFromNpm({ runtimeDir, spec, cwd: rootDir, env: process.env });
   if (!installRes.ok) {
     // Pre-publish dev fallback: allow updating runtime from the local checkout.
-    if (!to && !String(process.env.HAPPIER_STACK_UPDATE_PACKAGE_NAME ?? '').trim() && existsSync(join(rootDir, 'package.json'))) {
+    if (!to && !String(process.env.PIGGERCODE_STACK_UPDATE_PACKAGE_NAME ?? '').trim() && existsSync(join(rootDir, 'package.json'))) {
       try {
         const raw = await readFile(join(rootDir, 'package.json'), 'utf-8');
         const pkg = JSON.parse(raw);
@@ -238,7 +238,7 @@ async function cmdCheck({ rootDir, argv }) {
   const current = runtimeVersion || invokerVersion;
   const invoker = await readJsonIfExists(join(rootDir, 'package.json'), { defaultValue: null });
   const packageName = resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_STACK_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_STACK_UPDATE_PACKAGE_NAME,
     fallback: String(invoker?.name ?? '').trim(),
   });
 
@@ -321,7 +321,7 @@ async function cmdUseCli({ rootDir, argv }) {
   const target = positional[1] ?? '';
   const stackFlag = String(kv.get('--stack') ?? '').trim();
 
-  const key = 'HAPPIER_STACK_CLI_ROOT_DIR';
+  const key = 'PIGGERCODE_STACK_CLI_ROOT_DIR';
   const homeEnv = getHomeEnvPath();
   const canonicalEnv = getCanonicalHomeEnvPath();
 
@@ -369,9 +369,9 @@ async function cmdUseCli({ rootDir, argv }) {
     const { envPath } = resolveStackEnvPath(stackFlag, process.env);
     const raw = existsSync(envPath) ? await readFile(envPath, 'utf-8') : '';
     const parsed = raw ? parseEnvToObject(raw) : {};
-    const repoDirRaw = String(parsed.HAPPIER_STACK_REPO_DIR ?? '').trim();
+    const repoDirRaw = String(parsed.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
     if (!repoDirRaw) {
-      throw new Error(`[self use-cli] stack "${stackFlag}" has no HAPPIER_STACK_REPO_DIR in ${envPath}`);
+      throw new Error(`[self use-cli] stack "${stackFlag}" has no PIGGERCODE_STACK_REPO_DIR in ${envPath}`);
     }
     const repoRoot = coerceHappyMonorepoRootFromPath(repoDirRaw) || repoDirRaw;
     const fromStack = join(repoRoot, 'apps', 'stack');

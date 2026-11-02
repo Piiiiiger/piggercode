@@ -142,10 +142,10 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
-      HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -155,11 +155,11 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
       dbProvider: 'sqlite',
       extraEnv: {
         // Keep web create-account stable (binding signature is not reliably available on web).
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
-        HAPPIER_FEATURE_SESSIONS_DRAFTS__ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+        PIGGERCODE_FEATURE_SESSIONS_DRAFTS__ENABLED: '1',
       },
     });
 
@@ -192,11 +192,11 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
     const diagnostics = collectBrowserDiagnostics({ page });
     const daemonEnv = {
       ...process.env,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: uiBaseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     let daemon: StartedDaemon | null = null;
@@ -227,7 +227,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-create-a',
         args: ['session', 'create', '--tag', tagA, '--no-load-existing', '--json'],
@@ -246,7 +246,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-send-a',
         args: ['session', 'send', sessionAId, msgA, '--json'],
@@ -286,7 +286,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-create-b',
         args: ['session', 'create', '--tag', tagB, '--no-load-existing', '--json'],
@@ -305,7 +305,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-send-b',
         args: ['session', 'send', sessionBId, msgB, '--json'],
@@ -339,7 +339,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-create-c',
         args: ['session', 'create', '--tag', tagC, '--no-load-existing', '--json'],
@@ -358,7 +358,7 @@ test.describe('ui e2e: encryption opt-out mode switching', () => {
         webappUrl: uiBaseUrl,
         env: {
           ...process.env,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         label: 'session-send-c',
         args: ['session', 'send', sessionCId, msgC, '--json'],

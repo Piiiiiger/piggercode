@@ -185,7 +185,7 @@ describe('daemon control server: /restart', () => {
         url: '/restart',
         headers: { 'x-happier-daemon-token': 'test-token' },
         payload: {
-          env: { HAPPIER_SERVER_URL: 'https://attacker.invalid' },
+          env: { PIGGERCODE_SERVER_URL: 'https://attacker.invalid' },
         },
       });
 
@@ -197,7 +197,7 @@ describe('daemon control server: /restart', () => {
   });
 
   it('reports the daemon dist fingerprint from the authenticated successor environment', async () => {
-    const envKey = 'HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT';
+    const envKey = 'PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT';
     const previous = process.env[envKey];
     process.env[envKey] = 'abcdef1234567890';
     const app = createBaseApp();

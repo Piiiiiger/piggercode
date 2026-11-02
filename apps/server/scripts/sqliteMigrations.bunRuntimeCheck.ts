@@ -28,10 +28,10 @@ try {
     cwd: serverDir,
     env: {
       ...process.env,
-      HAPPIER_SERVER_LIGHT_DATA_DIR: root,
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: root,
       HAPPY_SERVER_LIGHT_DATA_DIR: root,
-      HAPPIER_SQLITE_AUTO_MIGRATE: '0',
-      HAPPIER_SQLITE_MIGRATIONS_DIR: migrationsDir,
+      PIGGERCODE_SQLITE_AUTO_MIGRATE: '0',
+      PIGGERCODE_SQLITE_MIGRATIONS_DIR: migrationsDir,
       DATABASE_URL: `file:${dbPath}`,
     },
     stdout: 'pipe',

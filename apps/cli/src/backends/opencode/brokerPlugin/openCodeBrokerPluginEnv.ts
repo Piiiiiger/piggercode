@@ -13,13 +13,13 @@
  */
 
 /** JSON map of brokered providers → their refresh selection + account identity (NO tokens). */
-export const OPEN_CODE_BROKER_SELECTIONS_ENV = 'HAPPIER_OPENCODE_BROKER_SELECTIONS';
+export const OPEN_CODE_BROKER_SELECTIONS_ENV = 'PIGGERCODE_OPENCODE_BROKER_SELECTIONS';
 
 /** Absolute path to the Happier broker-state file. The path itself is not secret. */
-export const OPEN_CODE_BROKER_STATE_PATH_ENV = 'HAPPIER_OPENCODE_BROKER_STATE_PATH';
+export const OPEN_CODE_BROKER_STATE_PATH_ENV = 'PIGGERCODE_OPENCODE_BROKER_STATE_PATH';
 
 /** Broker plugin version (for cache-keying + drift diagnostics). */
-export const OPEN_CODE_BROKER_PLUGIN_VERSION_ENV = 'HAPPIER_OPENCODE_BROKER_PLUGIN_VERSION';
+export const OPEN_CODE_BROKER_PLUGIN_VERSION_ENV = 'PIGGERCODE_OPENCODE_BROKER_PLUGIN_VERSION';
 
 /**
  * Stable connected-service selection identity (the managed-server fingerprint key). The broker reads
@@ -27,10 +27,10 @@ export const OPEN_CODE_BROKER_PLUGIN_VERSION_ENV = 'HAPPIER_OPENCODE_BROKER_PLUG
  * Mirrors `OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY_ENV` in the managed-server-env module; kept
  * here as the broker's own constant so the generated plugin source imports nothing from that module.
  */
-export const OPEN_CODE_BROKER_SELECTION_IDENTITY_ENV = 'HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY';
+export const OPEN_CODE_BROKER_SELECTION_IDENTITY_ENV = 'PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY';
 
 /** Per-managed-server-process nonce that correlates the broker load handshake to the current spawn. */
-export const OPEN_CODE_BROKER_LOAD_NONCE_ENV = 'HAPPIER_OPENCODE_BROKER_LOAD_NONCE';
+export const OPEN_CODE_BROKER_LOAD_NONCE_ENV = 'PIGGERCODE_OPENCODE_BROKER_LOAD_NONCE';
 
 /** Stable, non-secret prefix for the broker auth marker stored in `OPENCODE_AUTH_CONTENT`. */
 export const OPEN_CODE_BROKER_MARKER_PREFIX = 'happier-broker';

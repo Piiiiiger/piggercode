@@ -14,8 +14,8 @@ describe('enableErrorHandlers', () => {
         const app = Fastify();
         const envSnapshot = snapshotEnv();
         applyEnvValues({
-            HAPPIER_SERVER_UI_DIR: dir,
-            HAPPIER_SERVER_UI_PREFIX: '/',
+            PIGGERCODE_SERVER_UI_DIR: dir,
+            PIGGERCODE_SERVER_UI_PREFIX: '/',
         });
 
         try {
@@ -36,8 +36,8 @@ describe('enableErrorHandlers', () => {
         const app = Fastify();
         const envSnapshot = snapshotEnv();
         applyEnvValues({
-            HAPPIER_SERVER_UI_DIR: dir,
-            HAPPIER_SERVER_UI_PREFIX: '/',
+            PIGGERCODE_SERVER_UI_DIR: dir,
+            PIGGERCODE_SERVER_UI_PREFIX: '/',
         });
 
         try {

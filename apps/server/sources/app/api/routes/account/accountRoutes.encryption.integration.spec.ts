@@ -122,7 +122,7 @@ describe("accountRoutes (encryption mode integration)", () => {
         harness = await createLightSqliteHarness({
             tempDirPrefix: "happier-account-encryption-",
             initAuth: false,
-            env: { HAPPIER_SQLITE_CONNECTION_LIMIT: "2" },
+            env: { PIGGERCODE_SQLITE_CONNECTION_LIMIT: "2" },
         });
     }, 120_000);
 
@@ -173,8 +173,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("PATCH /v1/account/encryption returns 404 when account opt-out is disabled", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "0",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "0",
         });
 
         const account = await db.account.create({
@@ -206,8 +206,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("PATCH /v1/account/encryption updates the account mode when account opt-out is enabled", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({
@@ -244,8 +244,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("PATCH /v1/account/encryption preserves the internal response for a missing account", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         await withAuthenticatedTestApp(
@@ -266,8 +266,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("PATCH /v1/account/encryption rejects mode flips that require migration", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({
@@ -305,8 +305,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("serializes a mode PATCH against a first V2 credential write", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({
@@ -381,8 +381,8 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("serializes a plain automation create against a plain-to-e2ee mode PATCH", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
         const account = await db.account.create({
             data: { publicKey: "pk-account-automation-mode-race", encryptionMode: "plain" },
@@ -445,9 +445,9 @@ describe("accountRoutes (encryption mode integration)", () => {
 
     it("rejects a mode PATCH after a first V3 credential write wins", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
 
         const account = await db.account.create({

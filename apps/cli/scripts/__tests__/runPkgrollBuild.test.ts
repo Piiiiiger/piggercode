@@ -440,7 +440,7 @@ runPkgrollBuild({
         packageJsonPath,
         outputDir,
         spawn,
-        env: { HAPPIER_CLI_PKGROLL_TIMEOUT_MS: '120000' },
+        env: { PIGGERCODE_CLI_PKGROLL_TIMEOUT_MS: '120000' },
       });
 
       expect(spawn).toHaveBeenCalledWith(

@@ -18,17 +18,17 @@ async function pathExists(path: string): Promise<boolean> {
 describe('withOpenCodeServerFileLock', () => {
   it('defaults the lock timeout beyond the canonical managed-server startup deadline', () => {
     expect(resolveOpenCodeServerLockTimeoutMsFromEnv({
-      HAPPIER_OPENCODE_SERVER_START_TIMEOUT_MS: '30000',
+      PIGGERCODE_OPENCODE_SERVER_START_TIMEOUT_MS: '30000',
     })).toBe(35_000);
     expect(resolveOpenCodeServerLockTimeoutMsFromEnv({
-      HAPPIER_OPENCODE_SERVER_START_TIMEOUT_MS: '120000',
+      PIGGERCODE_OPENCODE_SERVER_START_TIMEOUT_MS: '120000',
     })).toBe(125_000);
     expect(resolveOpenCodeServerLockTimeoutMsFromEnv({})).toBe(125_000);
   });
 
   it('honors explicit lock timeouts longer than the former 60 second cap', () => {
     expect(resolveOpenCodeServerLockTimeoutMsFromEnv({
-      HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS: '300000',
+      PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS: '300000',
     })).toBe(300_000);
   });
 
@@ -39,8 +39,8 @@ describe('withOpenCodeServerFileLock', () => {
       await writeFile(lockFile, JSON.stringify({ pid: 999_999, createdAtMs: Date.now() }), 'utf8');
       expect(await pathExists(lockFile)).toBe(true);
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '50';
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '50';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
 
       const ran = await withOpenCodeServerFileLock(lockFile, async () => {
         return true;
@@ -50,8 +50,8 @@ describe('withOpenCodeServerFileLock', () => {
       expect(await pathExists(lockFile)).toBe(false);
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
     }
   });
 
@@ -60,7 +60,7 @@ describe('withOpenCodeServerFileLock', () => {
     try {
       const lockFile = join(dir, 'opencode.lock');
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '1000';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '1000';
 
       const events: string[] = [];
       await Promise.all([
@@ -82,7 +82,7 @@ describe('withOpenCodeServerFileLock', () => {
       expect(await pathExists(lockFile)).toBe(false);
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
     }
   });
 
@@ -92,16 +92,16 @@ describe('withOpenCodeServerFileLock', () => {
       const lockFile = join(dir, 'opencode.lock');
       await writeFile(lockFile, JSON.stringify({ pid: process.pid, createdAtMs: Date.now() }), 'utf8');
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '50';
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '50';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
 
       await expect(withOpenCodeServerFileLock(lockFile, async () => {})).rejects.toThrow(
         'Timeout acquiring OpenCode server lock after 50ms',
       );
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
     }
   });
 
@@ -114,16 +114,16 @@ describe('withOpenCodeServerFileLock', () => {
       const nowSeconds = Date.now() / 1000;
       await utimes(lockFile, nowSeconds - 60, nowSeconds - 60);
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '100';
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '100';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS = '600000';
 
       const ran = await withOpenCodeServerFileLock(lockFile, async () => true);
       expect(ran).toBe(true);
       expect(await pathExists(lockFile)).toBe(false);
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS;
     }
   });
 
@@ -132,14 +132,14 @@ describe('withOpenCodeServerFileLock', () => {
     try {
       const lockFile = join(dir, 'missing', 'opencode.lock');
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '250';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '250';
 
       const ran = await withOpenCodeServerFileLock(lockFile, async () => true);
       expect(ran).toBe(true);
       expect(await pathExists(lockFile)).toBe(false);
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
     }
   });
 
@@ -151,14 +151,14 @@ describe('withOpenCodeServerFileLock', () => {
       await rm(lockFile, { recursive: true, force: true });
       await mkdir(lockFile, { recursive: true });
 
-      process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '250';
+      process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS = '250';
 
       await expect(withOpenCodeServerFileLock(lockFile, async () => {})).rejects.toThrow(
         'Failed to acquire OpenCode server lock: EISDIR',
       );
     } finally {
       await rm(dir, { recursive: true, force: true });
-      delete process.env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS;
     }
   });
 });

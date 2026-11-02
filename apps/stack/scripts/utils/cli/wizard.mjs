@@ -8,11 +8,11 @@ import { bold, cyan, dim, green } from '../ui/ansi.mjs';
 import { warn } from '../ui/layout.mjs';
 
 export function isTty() {
-  const nonInteractive = (process.env.HAPPIER_STACK_NON_INTERACTIVE ?? '').toString().trim().toLowerCase();
+  const nonInteractive = (process.env.PIGGERCODE_STACK_NON_INTERACTIVE ?? '').toString().trim().toLowerCase();
   if (nonInteractive === '1' || nonInteractive === 'true' || nonInteractive === 'yes' || nonInteractive === 'y') {
     return false;
   }
-  if (process.env.HAPPIER_STACK_TEST_TTY === '1') {
+  if (process.env.PIGGERCODE_STACK_TEST_TTY === '1') {
     return true;
   }
   return Boolean(process.stdin.isTTY && process.stdout.isTTY);

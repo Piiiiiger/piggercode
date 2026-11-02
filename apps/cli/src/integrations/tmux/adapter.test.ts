@@ -82,7 +82,7 @@ describe('createTmuxTerminalHostAdapter', () => {
       sessionName: 'happy',
       workingDirectory: '/workspace/project',
       spawnArgv: ['/managed/node', 'claude_local_launcher.cjs'],
-      spawnEnv: { HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js' },
+      spawnEnv: { PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js' },
       isolatedEnv: true,
     });
     expect(handle).toMatchObject({
@@ -108,7 +108,7 @@ describe('createTmuxTerminalHostAdapter', () => {
         cwd: '/workspace/project',
         requireNewSession: true,
       },
-      { HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js' },
+      { PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js' },
     );
   });
 
@@ -655,8 +655,8 @@ describe('createTmuxTerminalHostAdapter', () => {
   });
 
   it('keeps leading-dash prompt text out of tmux argv by loading it through stdin', async () => {
-    const originalChunkSize = process.env.HAPPIER_CLI_TMUX_SEND_KEYS_CHUNK_SIZE;
-    process.env.HAPPIER_CLI_TMUX_SEND_KEYS_CHUNK_SIZE = '4';
+    const originalChunkSize = process.env.PIGGERCODE_CLI_TMUX_SEND_KEYS_CHUNK_SIZE;
+    process.env.PIGGERCODE_CLI_TMUX_SEND_KEYS_CHUNK_SIZE = '4';
     try {
       const tmux = new TmuxUtilities();
       const executeTmuxCommand = vi.spyOn(tmux, 'executeTmuxCommand').mockResolvedValue({
@@ -696,9 +696,9 @@ describe('createTmuxTerminalHostAdapter', () => {
       expect(calls.flatMap((call) => call[0])).not.toContain('-abcdef');
     } finally {
       if (originalChunkSize === undefined) {
-        delete process.env.HAPPIER_CLI_TMUX_SEND_KEYS_CHUNK_SIZE;
+        delete process.env.PIGGERCODE_CLI_TMUX_SEND_KEYS_CHUNK_SIZE;
       } else {
-        process.env.HAPPIER_CLI_TMUX_SEND_KEYS_CHUNK_SIZE = originalChunkSize;
+        process.env.PIGGERCODE_CLI_TMUX_SEND_KEYS_CHUNK_SIZE = originalChunkSize;
       }
     }
   });

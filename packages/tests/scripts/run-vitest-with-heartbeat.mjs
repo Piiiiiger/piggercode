@@ -15,8 +15,8 @@ if (!config) {
   process.exit(2);
 }
 
-const vitestEntrypoint = process.env.HAPPIER_TEST_VITEST_ENTRYPOINT || require.resolve('vitest/vitest.mjs');
-const diagnosticPath = process.env.HAPPIER_CI_DIAGNOSTIC_PATH
+const vitestEntrypoint = process.env.PIGGERCODE_TEST_VITEST_ENTRYPOINT || require.resolve('vitest/vitest.mjs');
+const diagnosticPath = process.env.PIGGERCODE_CI_DIAGNOSTIC_PATH
   || resolve(repoRoot, '.project/logs/e2e/vitest-heartbeat-diagnostic.ndjson');
 const reporterPath = resolve(scriptsDir, 'vitestHeartbeatReporter.mjs');
 const childArgs = [
@@ -40,7 +40,7 @@ await runHeartbeatWrappedCommand({
     stdio: 'inherit',
     env: {
       ...process.env,
-      HAPPIER_CI_DIAGNOSTIC_PATH: diagnosticPath,
+      PIGGERCODE_CI_DIAGNOSTIC_PATH: diagnosticPath,
     },
   },
   resolveExitCode(result) {

@@ -134,22 +134,22 @@ trap 'wsrepl_early_terminate_due_to_signal 130 int' INT
 #   ./packages/tests/scripts/wsrepl-lima-matrix.sh [--headed|--headless] [vm-name] [vm-name-2 ...]
 #
 # Required env for the Playwright matrix:
-#   HAPPIER_QA_SESSION_ID=...
-#   HAPPIER_QA_STEPS_JSON='[{"targetMachineId":"...","strategy":"transfer_snapshot"},{"targetMachineId":"...","strategy":"sync_changes"}]'
+#   PIGGERCODE_QA_SESSION_ID=...
+#   PIGGERCODE_QA_STEPS_JSON='[{"targetMachineId":"...","strategy":"transfer_snapshot"},{"targetMachineId":"...","strategy":"sync_changes"}]'
 #   (name-based selection is supported as a fallback, but ids are preferred for determinism)
-#   HAPPIER_QA_STEPS_JSON='[{"targetMachineNamePattern":"lima-*","strategy":"transfer_snapshot"},{"targetMachineNamePattern":"my-host","strategy":"sync_changes"}]'
+#   PIGGERCODE_QA_STEPS_JSON='[{"targetMachineNamePattern":"lima-*","strategy":"transfer_snapshot"},{"targetMachineNamePattern":"my-host","strategy":"sync_changes"}]'
 #
 # Convenience env (repeatable matrix defaults):
-#   WSREPL_QA_HOST_MACHINE_ID=...    # used to derive HAPPIER_QA_STEPS_JSON when omitted
-#   WSREPL_QA_VM_MACHINE_ID=...      # used to derive HAPPIER_QA_STEPS_JSON when omitted
-#   WSREPL_QA_LARGE_REPO_PATH=...    # sets HAPPIER_QA_SESSION_PATH when omitted
+#   WSREPL_QA_HOST_MACHINE_ID=...    # used to derive PIGGERCODE_QA_STEPS_JSON when omitted
+#   WSREPL_QA_VM_MACHINE_ID=...      # used to derive PIGGERCODE_QA_STEPS_JSON when omitted
+#   WSREPL_QA_LARGE_REPO_PATH=...    # sets PIGGERCODE_QA_SESSION_PATH when omitted
 #
 # Optional env:
-#   HAPPIER_UI_URL="http://.../?server=..."
-#   HAPPIER_QA_HEADLESS=1
-#   HAPPIER_QA_RETRIES_PER_STEP=2
+#   PIGGERCODE_UI_URL="http://.../?server=..."
+#   PIGGERCODE_QA_HEADLESS=1
+#   PIGGERCODE_QA_RETRIES_PER_STEP=2
 #   WSREPL_QA_OUTPUT_DIR=...  # default: output/wsrepl-lima-matrix/<ts>-<vm>
-#   WSREPL_QA_TIMEOUT_MS=...  # default: 1800000 (30min) when HAPPIER_QA_TIMEOUT_MS is unset
+#   WSREPL_QA_TIMEOUT_MS=...  # default: 1800000 (30min) when PIGGERCODE_QA_TIMEOUT_MS is unset
 #   WSREPL_QA_DAEMON_START_RETRIES=...  # default: 1 (retry wrapper-managed host daemon restarts on transient failures)
 #   WSREPL_QA_DAEMON_START_RETRY_DELAY_MS=...  # default: 250 (delay between host daemon start retries)
 #   WSREPL_QA_HOST_DAEMON_START_POLL_RETRIES=...  # default: 30 (post-start health poll retries)
@@ -168,16 +168,16 @@ trap 'wsrepl_early_terminate_due_to_signal 130 int' INT
 #   WSREPL_QA_VM_DIRECT_PEER_BIND_PORT=...  # stable guest direct-peer bind port; when set, the wrapper forwards the same port through Lima
 #   WSREPL_QA_VM_DIRECT_PEER_BIND_PORT_DEFAULT=...  # stable guest direct-peer bind port default for WSREPL runs; default: 13377
 #   WSREPL_QA_VM_DIRECT_PEER_ADVERTISED_HOSTS=...  # guest direct-peer advertised hosts; defaults to 127.0.0.1 (or 127.0.0.1,host.lima.internal for multi-VM runs)
-#   WSREPL_QA_HOST_HAPPIER_SOURCE=auto|stack_runtime|worktree_node|explicit:/abs/path  # default: auto
+#   WSREPL_QA_HOST_PIGGERCODE_SOURCE=auto|stack_runtime|worktree_node|explicit:/abs/path  # default: auto
 #   WSREPL_QA_FORCE_VM_RECONFIGURE=1  # force stop/reconfigure/start via lima-vm.sh (default is reuse-first)
-#   WSREPL_QA_VM_HAPPIER_MODE=skip|require|autoupdate  # default: require (fail closed if the guest is running an unexpected Happier build)
+#   WSREPL_QA_VM_PIGGERCODE_MODE=skip|require|autoupdate  # default: require (fail closed if the guest is running an unexpected Happier build)
 #     - autoupdate builds a Linux CLI artifact from this repo and installs it into the VM
 #   WSREPL_QA_VM_BUN_TARGET=bun-linux-arm64|bun-linux-x64-baseline  # override bun target for autoupdate
 #
 # Notes on guest version checks:
 # - `require` mode is intended for dev QA and uses a build marker (git rev) when available.
 # - If the worktree git rev is available but the guest does not have a wsrepl build marker installed,
-#   `require` fails closed and instructs you to rerun with `WSREPL_QA_VM_HAPPIER_MODE=autoupdate`.
+#   `require` fails closed and instructs you to rerun with `WSREPL_QA_VM_PIGGERCODE_MODE=autoupdate`.
 
 usage() {
   cat <<'EOF'
@@ -186,15 +186,15 @@ Usage:
 
 Examples:
   WSREPL_QA_OUTPUT_DIR=output/wsrepl-lima-matrix-local \
-  HAPPIER_UI_URL="http://localhost:19364/?server=http%3A%2F%2Flocalhost%3A53288&happier_hmr=0" \
-  HAPPIER_QA_SESSION_ID="..." \
-  HAPPIER_QA_STEPS_JSON='[{"targetMachineId":"<vmMachineId>","strategy":"transfer_snapshot"},{"targetMachineId":"<hostMachineId>","strategy":"sync_changes"}]' \
+  PIGGERCODE_UI_URL="http://localhost:19364/?server=http%3A%2F%2Flocalhost%3A53288&happier_hmr=0" \
+  PIGGERCODE_QA_SESSION_ID="..." \
+  PIGGERCODE_QA_STEPS_JSON='[{"targetMachineId":"<vmMachineId>","strategy":"transfer_snapshot"},{"targetMachineId":"<hostMachineId>","strategy":"sync_changes"}]' \
   ./packages/tests/scripts/wsrepl-lima-matrix.sh happier-wsrepl-qa-0323
 
   # Or: let the wrapper derive the default 2-step host↔VM matrix.
   WSREPL_QA_HOST_MACHINE_ID="<hostMachineId>" \
   WSREPL_QA_VM_MACHINE_ID="<vmMachineId>" \
-  HAPPIER_QA_SESSION_ID="..." \
+  PIGGERCODE_QA_SESSION_ID="..." \
   ./packages/tests/scripts/wsrepl-lima-matrix.sh happier-wsrepl-qa-0323
 EOF
 }
@@ -278,12 +278,12 @@ EXTRA_VM_NAMES=("${VM_NAMES[@]:1}")
 # Default Playwright to headless for CI/automation ergonomics; allow `--headed` for manual debugging.
 #
 # IMPORTANT: force the default regardless of the caller's ambient shell env. If a developer wants
-# headed mode they should pass `--headed` explicitly so that accidental `HAPPIER_QA_HEADLESS=0`
+# headed mode they should pass `--headed` explicitly so that accidental `PIGGERCODE_QA_HEADLESS=0`
 # doesn't cause the runner to pop UI windows.
 if [[ "${WSREPL_QA_PLAYWRIGHT_HEADLESS_MODE}" == "headed" ]]; then
-  export HAPPIER_QA_HEADLESS="0"
+  export PIGGERCODE_QA_HEADLESS="0"
 else
-  export HAPPIER_QA_HEADLESS="1"
+  export PIGGERCODE_QA_HEADLESS="1"
 fi
 
 timestamp() {
@@ -334,7 +334,7 @@ wsrepl_matrix_csv_has_value() {
 }
 
 seed_guest_fake_claude_cli_if_needed() {
-  if ! wsrepl_matrix_csv_has_value "${HAPPIER_QA_PREFERRED_AGENT_ENGINES:-}" "claude"; then
+  if ! wsrepl_matrix_csv_has_value "${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES:-}" "claude"; then
     return 0
   fi
 
@@ -860,10 +860,10 @@ start_host_daemon_watchdog_background() {
     while true; do
       # `happier daemon status` can exit 0 even when unhealthy; treat explicit "not running" as unhealthy.
       if [[ -n "${watchdog_cli_root}" && -n "${watchdog_active_server_id}" ]]; then
-        status_out="$(HAPPIER_SERVER_URL="${host_server_url:-}" HAPPIER_HOME_DIR="${watchdog_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${watchdog_active_server_id}" run_host_happier daemon status 2>&1)"
+        status_out="$(PIGGERCODE_SERVER_URL="${host_server_url:-}" PIGGERCODE_HOME_DIR="${watchdog_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${watchdog_active_server_id}" run_host_happier daemon status 2>&1)"
         status_code=$?
       else
-        status_out="$(HAPPIER_SERVER_URL="${host_server_url:-}" run_host_happier daemon status 2>&1)"
+        status_out="$(PIGGERCODE_SERVER_URL="${host_server_url:-}" run_host_happier daemon status 2>&1)"
         status_code=$?
       fi
       if [[ "${status_code}" != "0" ]]; then
@@ -940,13 +940,13 @@ refresh_host_daemon_status_best_effort() {
   fi
   if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
     if [[ -n "${server_url}" ]]; then
-      HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+      PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
     else
-      HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+      PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
     fi
   else
     if [[ -n "${server_url}" ]]; then
-      HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+      PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
     else
       run_host_happier daemon status >"${status_file}" 2>&1 || true
     fi
@@ -1032,15 +1032,15 @@ capture_host_daemon_status_out_and_code() {
   set +e
   if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
     if [[ -n "${server_url}" ]]; then
-      out="$(HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status 2>&1)"
+      out="$(PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status 2>&1)"
       code=$?
     else
-      out="$(HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status 2>&1)"
+      out="$(PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status 2>&1)"
       code=$?
     fi
   else
     if [[ -n "${server_url}" ]]; then
-      out="$(HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status 2>&1)"
+      out="$(PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status 2>&1)"
       code=$?
     else
       out="$(run_host_happier daemon status 2>&1)"
@@ -1144,7 +1144,7 @@ PY
 }
 
 resolve_stack_runtime_cli_bin() {
-  local stack_name="${HAPPIER_QA_STACK_NAME:-}"
+  local stack_name="${PIGGERCODE_QA_STACK_NAME:-}"
   if [[ -z "${stack_name}" ]]; then
     # Infer the stack name from the same UI-url-derived credentials path used elsewhere so the
     # wrapper can run on an existing runtime snapshot even when the worktree cannot build.
@@ -1185,8 +1185,8 @@ PY
 }
 
 run_host_happier() {
-  WSREPL_QA_HOST_HAPPIER_KIND=""
-  local source="${WSREPL_QA_HOST_HAPPIER_SOURCE:-auto}"
+  WSREPL_QA_HOST_PIGGERCODE_KIND=""
+  local source="${WSREPL_QA_HOST_PIGGERCODE_SOURCE:-auto}"
   source="$(printf "%s" "${source}" | tr '[:upper:]' '[:lower:]')"
 
   local kind=""
@@ -1198,7 +1198,7 @@ run_host_happier() {
   local write_resolution="${DAEMON_DIAG_DIR:-}/host.happier.resolve.json"
 
   write_resolution_once() {
-    if [[ -n "${WSREPL_QA_HOST_HAPPIER_RESOLVE_WRITTEN:-}" ]]; then
+    if [[ -n "${WSREPL_QA_HOST_PIGGERCODE_RESOLVE_WRITTEN:-}" ]]; then
       return 0
     fi
     if [[ -z "${DAEMON_DIAG_DIR:-}" ]]; then
@@ -1233,15 +1233,15 @@ path.write_text(
     encoding="utf-8",
 )
 PY
-    WSREPL_QA_HOST_HAPPIER_RESOLVE_WRITTEN=1
-    export WSREPL_QA_HOST_HAPPIER_RESOLVE_WRITTEN
+    WSREPL_QA_HOST_PIGGERCODE_RESOLVE_WRITTEN=1
+    export WSREPL_QA_HOST_PIGGERCODE_RESOLVE_WRITTEN
   }
 
   if [[ "${source}" == explicit:* ]]; then
-    local explicit_path="${WSREPL_QA_HOST_HAPPIER_SOURCE#explicit:}"
+    local explicit_path="${WSREPL_QA_HOST_PIGGERCODE_SOURCE#explicit:}"
     explicit_path="$(printf "%s" "${explicit_path}" | tr -d '\r')"
     if [[ -z "${explicit_path}" || ! -x "${explicit_path}" ]]; then
-      echo "[wsrepl-qa] invalid WSREPL_QA_HOST_HAPPIER_SOURCE (explicit path not executable): ${WSREPL_QA_HOST_HAPPIER_SOURCE}" >&2
+      echo "[wsrepl-qa] invalid WSREPL_QA_HOST_PIGGERCODE_SOURCE (explicit path not executable): ${WSREPL_QA_HOST_PIGGERCODE_SOURCE}" >&2
       return 2
     fi
     kind="explicit"
@@ -1249,7 +1249,7 @@ PY
     invocation=("${explicit_path}")
     version_output="$("${explicit_path}" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=("${explicit_path}" "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
@@ -1259,7 +1259,7 @@ PY
     local runtime_cli_bin=""
     runtime_cli_bin="$(resolve_stack_runtime_cli_bin)"
     if [[ -z "${runtime_cli_bin}" ]]; then
-      echo "[wsrepl-qa] WSREPL_QA_HOST_HAPPIER_SOURCE=stack_runtime but no stack runtime CLI was found" >&2
+      echo "[wsrepl-qa] WSREPL_QA_HOST_PIGGERCODE_SOURCE=stack_runtime but no stack runtime CLI was found" >&2
       return 2
     fi
     kind="stack_runtime"
@@ -1267,7 +1267,7 @@ PY
     invocation=("${runtime_cli_bin}")
     version_output="$("${runtime_cli_bin}" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=("${runtime_cli_bin}" "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
@@ -1279,14 +1279,14 @@ PY
     invocation=(node "${REPO_DIR}/apps/cli/bin/happier.mjs")
     version_output="$(node "${REPO_DIR}/apps/cli/bin/happier.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=(node "${REPO_DIR}/apps/cli/bin/happier.mjs" "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
   fi
 
   if [[ "${source}" != "auto" && -n "${source}" ]]; then
-    echo "[wsrepl-qa] invalid WSREPL_QA_HOST_HAPPIER_SOURCE: ${WSREPL_QA_HOST_HAPPIER_SOURCE} (expected auto|stack_runtime|worktree_node|explicit:/abs/path)" >&2
+    echo "[wsrepl-qa] invalid WSREPL_QA_HOST_PIGGERCODE_SOURCE: ${WSREPL_QA_HOST_PIGGERCODE_SOURCE} (expected auto|stack_runtime|worktree_node|explicit:/abs/path)" >&2
     return 2
   fi
 
@@ -1298,7 +1298,7 @@ PY
     invocation=("${runtime_cli_bin}")
     version_output="$("${runtime_cli_bin}" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=("${runtime_cli_bin}" "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
@@ -1310,7 +1310,7 @@ PY
     invocation=("$HOME/.happier/bin/happier")
     version_output="$("$HOME/.happier/bin/happier" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=("$HOME/.happier/bin/happier" "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
@@ -1321,7 +1321,7 @@ PY
     invocation=("happier")
     version_output="$(happier --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     cmd=(happier "$@")
-    WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+    WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
@@ -1331,7 +1331,7 @@ PY
   invocation=(node "${REPO_DIR}/apps/cli/bin/happier.mjs")
   version_output="$(node "${REPO_DIR}/apps/cli/bin/happier.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
   cmd=(node "${REPO_DIR}/apps/cli/bin/happier.mjs" "$@")
-  WSREPL_QA_HOST_HAPPIER_KIND="${kind}"
+  WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
   write_resolution_once
   "${cmd[@]}"
   return $?
@@ -1352,10 +1352,10 @@ const { resolveQaStackName, resolveStackNameFromServerPort } = await import(auth
 const { resolveStackCliAccessKeyCandidatesForUi } = await import(matrixCredentialsModuleUrl);
 
 const homeDir = String(process.env.HOME ?? '').trim() || os.homedir();
-const explicitStackName = String(process.env.HAPPIER_QA_STACK_NAME ?? '').trim();
-const explicitAccessKeyPath = String(process.env.HAPPIER_QA_ACCESS_KEY_PATH ?? '').trim();
-const uiUrl = String(process.env.HAPPIER_UI_URL ?? '').trim();
-const envServerUrl = String(process.env.HAPPIER_SERVER_URL ?? '').trim();
+const explicitStackName = String(process.env.PIGGERCODE_QA_STACK_NAME ?? '').trim();
+const explicitAccessKeyPath = String(process.env.PIGGERCODE_QA_ACCESS_KEY_PATH ?? '').trim();
+const uiUrl = String(process.env.PIGGERCODE_UI_URL ?? '').trim();
+const envServerUrl = String(process.env.PIGGERCODE_SERVER_URL ?? '').trim();
 
 function resolvePort(rawUrl) {
   const raw = String(rawUrl ?? '').trim();
@@ -1435,7 +1435,7 @@ PY
       return 0
     fi
   fi
-  local explicit="${HAPPIER_QA_ACCESS_KEY_PATH:-}"
+  local explicit="${PIGGERCODE_QA_ACCESS_KEY_PATH:-}"
   if [[ -n "${explicit}" ]]; then
     # For watchdog stack hint resolution we only need the path shape to recover
     # `<cli_root>/servers/<serverId>/access.key`. Prefer explicit caller input
@@ -1457,7 +1457,7 @@ PY
     return 0
   fi
 
-  local stack_name="${HAPPIER_QA_STACK_NAME:-}"
+  local stack_name="${PIGGERCODE_QA_STACK_NAME:-}"
   local server_port=""
   if [[ -n "${server_url_hint}" ]]; then
     server_port="$(python3 - <<'PY' "${server_url_hint}" 2>/dev/null || true
@@ -1472,8 +1472,8 @@ print(srv.port or "")
 PY
     )"
   fi
-  if [[ -z "${server_port}" && -n "${HAPPIER_SERVER_URL:-}" ]]; then
-    server_port="$(python3 - <<'PY' "${HAPPIER_SERVER_URL}" 2>/dev/null || true
+  if [[ -z "${server_port}" && -n "${PIGGERCODE_SERVER_URL:-}" ]]; then
+    server_port="$(python3 - <<'PY' "${PIGGERCODE_SERVER_URL}" 2>/dev/null || true
 import sys
 from urllib.parse import urlparse
 
@@ -1485,8 +1485,8 @@ print(srv.port or "")
 PY
     )"
   fi
-  if [[ -z "${server_port}" && -n "${HAPPIER_UI_URL:-}" ]]; then
-    server_port="$(python3 - <<'PY' "${HAPPIER_UI_URL}" 2>/dev/null || true
+  if [[ -z "${server_port}" && -n "${PIGGERCODE_UI_URL:-}" ]]; then
+    server_port="$(python3 - <<'PY' "${PIGGERCODE_UI_URL}" 2>/dev/null || true
 import sys
 from urllib.parse import urlparse, parse_qs, unquote
 
@@ -1654,7 +1654,7 @@ resolve_stack_cli_home_and_active_server_id_from_server_dir() {
 
 resolve_stack_cli_home_and_active_server_id_for_ui_url() {
   local server_url_hint="${1:-}"
-  local active_server_dir="${HAPPIER_QA_ACTIVE_SERVER_DIR:-}"
+  local active_server_dir="${PIGGERCODE_QA_ACTIVE_SERVER_DIR:-}"
   if [[ -n "${active_server_dir}" ]]; then
     local from_active_server_dir
     from_active_server_dir="$(resolve_stack_cli_home_and_active_server_id_from_server_dir "${active_server_dir}")"
@@ -1676,7 +1676,7 @@ resolve_stack_cli_home_and_active_server_id_for_ui_url() {
 
 resolve_machine_transfer_server_routed_max_bytes_seed_from_server_features() {
   local server_url="${1:-}"
-  if [[ -n "${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}" ]]; then
+  if [[ -n "${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}" ]]; then
     echo ""
     return 0
   fi
@@ -1936,7 +1936,7 @@ restart_host_daemon_and_capture_logs() {
   server_routed_max_bytes_seed="$(resolve_machine_transfer_server_routed_max_bytes_seed_from_server_features "${server_url}")"
 
   local host_provider_install_id=""
-  host_provider_install_id="${HAPPIER_QA_PREFERRED_AGENT_ENGINES%%,*}"
+  host_provider_install_id="${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES%%,*}"
   if [[ -z "${host_provider_install_id}" ]]; then
     host_provider_install_id="codex"
   fi
@@ -1947,21 +1947,21 @@ restart_host_daemon_and_capture_logs() {
     set +e
     if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_CLAUDE_PATH="${HAPPIER_CLAUDE_PATH:-}" \
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" \
+        PIGGERCODE_CLAUDE_PATH="${PIGGERCODE_CLAUDE_PATH:-}" \
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" \
           run_host_happier install provider "${host_provider_install_id}" >"${provider_install_file}" 2>&1
       else
-        HAPPIER_CLAUDE_PATH="${HAPPIER_CLAUDE_PATH:-}" \
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" \
+        PIGGERCODE_CLAUDE_PATH="${PIGGERCODE_CLAUDE_PATH:-}" \
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" \
           run_host_happier install provider "${host_provider_install_id}" >"${provider_install_file}" 2>&1
       fi
     else
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_CLAUDE_PATH="${HAPPIER_CLAUDE_PATH:-}" \
-        HAPPIER_SERVER_URL="${server_url}" \
+        PIGGERCODE_CLAUDE_PATH="${PIGGERCODE_CLAUDE_PATH:-}" \
+        PIGGERCODE_SERVER_URL="${server_url}" \
           run_host_happier install provider "${host_provider_install_id}" >"${provider_install_file}" 2>&1
       else
-        HAPPIER_CLAUDE_PATH="${HAPPIER_CLAUDE_PATH:-}" \
+        PIGGERCODE_CLAUDE_PATH="${PIGGERCODE_CLAUDE_PATH:-}" \
           run_host_happier install provider "${host_provider_install_id}" >"${provider_install_file}" 2>&1
       fi
     fi
@@ -2007,46 +2007,46 @@ PY
     local run_host_direct_peer_advertised_hosts="${8:-}"
     local run_host_direct_peer_server_enabled="${9:-}"
 
-    local effective_server_routed_max_bytes="${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-${run_server_routed_max_bytes_seed}}"
-    local effective_host_direct_peer_feature_enabled="${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-${run_host_direct_peer_feature_enabled}}"
+    local effective_server_routed_max_bytes="${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-${run_server_routed_max_bytes_seed}}"
+    local effective_host_direct_peer_feature_enabled="${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-${run_host_direct_peer_feature_enabled}}"
     # Prefer the wrapper-resolved port so stale ambient env cannot override the scanned port for this run.
-    local effective_host_direct_peer_bind_port="${run_host_direct_peer_bind_port:-${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}}"
-    local effective_host_direct_peer_advertised_hosts="${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-${run_host_direct_peer_advertised_hosts}}"
-    local effective_host_direct_peer_server_enabled="${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-${run_host_direct_peer_server_enabled}}"
+    local effective_host_direct_peer_bind_port="${run_host_direct_peer_bind_port:-${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}}"
+    local effective_host_direct_peer_advertised_hosts="${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-${run_host_direct_peer_advertised_hosts}}"
+    local effective_host_direct_peer_server_enabled="${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-${run_host_direct_peer_server_enabled}}"
 
     (
-      export HAPPIER_CLAUDE_PATH="${HAPPIER_CLAUDE_PATH:-}"
-      export HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED="${effective_host_direct_peer_feature_enabled}"
-      export HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS="${effective_host_direct_peer_advertised_hosts}"
-      export HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED="${effective_host_direct_peer_server_enabled}"
-      export HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK=1
-      export HAPPIER_DAEMON_WAIT_FOR_AUTH=1
-      export HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS="${HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS:-600000}"
+      export PIGGERCODE_CLAUDE_PATH="${PIGGERCODE_CLAUDE_PATH:-}"
+      export PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED="${effective_host_direct_peer_feature_enabled}"
+      export PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS="${effective_host_direct_peer_advertised_hosts}"
+      export PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED="${effective_host_direct_peer_server_enabled}"
+      export PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK=1
+      export PIGGERCODE_DAEMON_WAIT_FOR_AUTH=1
+      export PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS="${PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS:-600000}"
 
       if [[ -n "${effective_server_routed_max_bytes}" ]]; then
-        export HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES="${effective_server_routed_max_bytes}"
+        export PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES="${effective_server_routed_max_bytes}"
       else
-        unset HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES
+        unset PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES
       fi
 
       if [[ -n "${effective_host_direct_peer_bind_port}" ]]; then
-        export HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT="${effective_host_direct_peer_bind_port}"
+        export PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT="${effective_host_direct_peer_bind_port}"
       else
-        unset HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT
+        unset PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT
       fi
 
       if [[ -n "${run_server_url}" ]]; then
-        export HAPPIER_SERVER_URL="${run_server_url}"
+        export PIGGERCODE_SERVER_URL="${run_server_url}"
       else
-        unset HAPPIER_SERVER_URL
+        unset PIGGERCODE_SERVER_URL
       fi
 
       if [[ -n "${run_stack_cli_root}" && -n "${run_stack_active_server_id}" ]]; then
-        export HAPPIER_HOME_DIR="${run_stack_cli_root}"
-        export HAPPIER_ACTIVE_SERVER_ID="${run_stack_active_server_id}"
+        export PIGGERCODE_HOME_DIR="${run_stack_cli_root}"
+        export PIGGERCODE_ACTIVE_SERVER_ID="${run_stack_active_server_id}"
       else
-        unset HAPPIER_HOME_DIR
-        unset HAPPIER_ACTIVE_SERVER_ID
+        unset PIGGERCODE_HOME_DIR
+        unset PIGGERCODE_ACTIVE_SERVER_ID
       fi
 
       run_host_happier daemon start >"${output_file}" 2>&1
@@ -2057,9 +2057,9 @@ PY
 	  if [[ -n "${server_url}" ]]; then
 	    if [[ "${should_stop}" == "1" ]]; then
 	      if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-	        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
+	        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
 	      else
-	        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
+	        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
 	      fi
 	      if ! wait_for_host_daemon_stopped_after_stop "${server_url}" "${stack_cli_root}" "${stack_active_server_id}"; then
 	        FAILURE_STAGE="host_daemon"
@@ -2073,16 +2073,16 @@ PY
       start_status=$?
       set -e
       if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       else
-        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       fi
   else
 	    if [[ "${should_stop}" == "1" ]]; then
 	      if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-	        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon stop >/dev/null 2>&1 || true
+	        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon stop >/dev/null 2>&1 || true
 	      else
 	        run_host_happier daemon stop >/dev/null 2>&1 || true
 	      fi
@@ -2098,8 +2098,8 @@ PY
       start_status=$?
       set -e
       if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       else
         run_host_happier daemon status >"${status_file}" 2>&1 || true
         run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
@@ -2117,7 +2117,7 @@ PY
   wait_for_host_daemon_health_after_start "${status_file}" "${log_path_file}" "${log_tail_file}" "${server_url}" "${stack_cli_root}" "${stack_active_server_id}" || true
 
   local cli_dist_rebuild_attempted=0
-  if [[ "${WSREPL_QA_HOST_HAPPIER_KIND:-}" == "worktree_node" ]] && grep -Eq "Cannot find module '.*/apps/cli/(dist|package-dist)/index\\.mjs'|Daemon packaged entrypoint is missing: .*/apps/cli/package-dist/index\\.mjs" "${start_file}" "${status_file}" "${log_tail_file}" 2>/dev/null; then
+  if [[ "${WSREPL_QA_HOST_PIGGERCODE_KIND:-}" == "worktree_node" ]] && grep -Eq "Cannot find module '.*/apps/cli/(dist|package-dist)/index\\.mjs'|Daemon packaged entrypoint is missing: .*/apps/cli/package-dist/index\\.mjs" "${start_file}" "${status_file}" "${log_tail_file}" 2>/dev/null; then
     cli_dist_rebuild_attempted=1
     echo "[wsrepl-qa] host daemon start/status reported a missing CLI dist entrypoint; rebuilding and retrying..." >&2
     (
@@ -2132,16 +2132,16 @@ PY
 
     if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       else
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       fi
     else
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       else
         run_host_happier daemon status >"${status_file}" 2>&1 || true
         run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
@@ -2159,13 +2159,13 @@ PY
   refresh_host_daemon_status_only_best_effort() {
     if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
       else
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
       fi
     else
       if [[ -n "${server_url}" ]]; then
-        HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
       else
         run_host_happier daemon status >"${status_file}" 2>&1 || true
       fi
@@ -2207,7 +2207,7 @@ PY
   if [[ "${WSREPL_QA_DERIVE_STEPS_LATER:-0}" == "1" ]]; then
     should_poll_host_machine_id="1"
   fi
-  case "$(printf "%s" "${HAPPIER_QA_CREATE_SESSION:-}" | tr '[:upper:]' '[:lower:]')" in
+  case "$(printf "%s" "${PIGGERCODE_QA_CREATE_SESSION:-}" | tr '[:upper:]' '[:lower:]')" in
     1|true|yes|y)
       should_poll_host_machine_id="1"
       ;;
@@ -2222,7 +2222,7 @@ PY
     fi
   fi
 
-  if [[ "${should_poll_host_machine_id}" == "1" && -z "${WSREPL_QA_HOST_MACHINE_ID:-}" && -z "${HAPPIER_QA_SOURCE_MACHINE_ID:-}" && -s "${status_file}" ]] && ! grep -qi "Daemon is not running" "${status_file}" 2>/dev/null; then
+  if [[ "${should_poll_host_machine_id}" == "1" && -z "${WSREPL_QA_HOST_MACHINE_ID:-}" && -z "${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}" && -s "${status_file}" ]] && ! grep -qi "Daemon is not running" "${status_file}" 2>/dev/null; then
     poll_host_machine_id_if_needed_best_effort
   fi
 
@@ -2240,7 +2240,7 @@ PY
     # In dev worktrees the CLI entrypoint depends on `apps/cli/dist/**`. If another process is
     # rebuilding the CLI (or the dist folder is missing), `daemon start` can fail with a missing
     # entrypoint. Recover by rebuilding once and retrying so the QA harness doesn't fail flakily.
-    if [[ "${cli_dist_rebuild_attempted}" != "1" && "${WSREPL_QA_HOST_HAPPIER_KIND:-}" == "worktree_node" ]] && grep -Eq "Cannot find module '.*/apps/cli/(dist|package-dist)/index\\.mjs'|Daemon packaged entrypoint is missing: .*/apps/cli/package-dist/index\\.mjs" "${start_file}" "${log_tail_file}" 2>/dev/null; then
+    if [[ "${cli_dist_rebuild_attempted}" != "1" && "${WSREPL_QA_HOST_PIGGERCODE_KIND:-}" == "worktree_node" ]] && grep -Eq "Cannot find module '.*/apps/cli/(dist|package-dist)/index\\.mjs'|Daemon packaged entrypoint is missing: .*/apps/cli/package-dist/index\\.mjs" "${start_file}" "${log_tail_file}" 2>/dev/null; then
       echo "[wsrepl-qa] host daemon start failed due to missing CLI dist entrypoint; rebuilding and retrying..." >&2
       (
         cd "${REPO_DIR}"
@@ -2253,12 +2253,12 @@ PY
       set -e
 
       if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-        HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+        PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
       else
         if [[ -n "${server_url}" ]]; then
-          HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-          HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+          PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+          PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
         else
           run_host_happier daemon status >"${status_file}" 2>&1 || true
           run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
@@ -2288,16 +2288,16 @@ PY
         start_status=$?
         if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
           if [[ -n "${server_url}" ]]; then
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           else
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           fi
         else
           if [[ -n "${server_url}" ]]; then
-            HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           else
             run_host_happier daemon status >"${status_file}" 2>&1 || true
             run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
@@ -2324,13 +2324,13 @@ PY
         if [[ "${should_stop}" == "1" ]]; then
           if [[ -n "${server_url}" ]]; then
             if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-              HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
+              PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
             else
-              HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
+              PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon stop >/dev/null 2>&1 || true
             fi
           else
             if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
-              HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon stop >/dev/null 2>&1 || true
+              PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon stop >/dev/null 2>&1 || true
             else
               run_host_happier daemon stop >/dev/null 2>&1 || true
             fi
@@ -2346,16 +2346,16 @@ PY
 
         if [[ -n "${stack_cli_root}" && -n "${stack_active_server_id}" ]]; then
           if [[ -n "${server_url}" ]]; then
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           else
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_HOME_DIR="${stack_cli_root}" HAPPIER_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_HOME_DIR="${stack_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${stack_active_server_id}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           fi
         else
           if [[ -n "${server_url}" ]]; then
-            HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
-            HAPPIER_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
+            PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon status >"${status_file}" 2>&1 || true
+            PIGGERCODE_SERVER_URL="${server_url}" run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
           else
             run_host_happier daemon status >"${status_file}" 2>&1 || true
             run_host_happier daemon logs >"${log_path_file}" 2>&1 || true
@@ -2416,7 +2416,7 @@ restart_guest_daemon_and_capture_logs() {
   if [[ -z "${server_routed_max_bytes_seed}" ]]; then
     server_routed_max_bytes_seed="$(resolve_machine_transfer_server_routed_max_bytes_seed_from_server_features "${server_url}")"
   fi
-  guest_server_routed_max_bytes="${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-${server_routed_max_bytes_seed}}"
+  guest_server_routed_max_bytes="${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-${server_routed_max_bytes_seed}}"
   guest_direct_peer_bind_port="$(resolve_wsrepl_vm_direct_peer_bind_port_for_vm "${VM_NAME}")"
   if [[ -n "${guest_direct_peer_bind_port}" ]]; then
     guest_direct_peer_advertised_hosts="$(resolve_wsrepl_vm_direct_peer_advertised_hosts)"
@@ -2473,21 +2473,21 @@ PY
 
   set +e
   limactl shell "${VM_NAME}" -- env \
-    HAPPIER_SERVER_URL="${server_url}" \
+    PIGGERCODE_SERVER_URL="${server_url}" \
     ${guest_happier_home_rel:+WSREPL_QA_GUEST_HOME_REL="${guest_happier_home_rel}"} \
-    ${guest_active_server_id:+HAPPIER_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
-    ${guest_server_routed_max_bytes:+HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES="${guest_server_routed_max_bytes}"} \
-    ${guest_direct_peer_bind_port:+HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT="${guest_direct_peer_bind_port}"} \
-    ${guest_direct_peer_advertised_hosts:+HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS="${guest_direct_peer_advertised_hosts}"} \
-    ${guest_direct_peer_feature_enabled:+HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED="${guest_direct_peer_feature_enabled}"} \
-    ${guest_direct_peer_server_enabled:+HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED="${guest_direct_peer_server_enabled}"} \
+    ${guest_active_server_id:+PIGGERCODE_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
+    ${guest_server_routed_max_bytes:+PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES="${guest_server_routed_max_bytes}"} \
+    ${guest_direct_peer_bind_port:+PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT="${guest_direct_peer_bind_port}"} \
+    ${guest_direct_peer_advertised_hosts:+PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS="${guest_direct_peer_advertised_hosts}"} \
+    ${guest_direct_peer_feature_enabled:+PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED="${guest_direct_peer_feature_enabled}"} \
+    ${guest_direct_peer_server_enabled:+PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED="${guest_direct_peer_server_enabled}"} \
     bash -lc '
     set -euo pipefail
     if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
-      export HAPPIER_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
+      export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
     fi
-    if [[ -z "${HAPPIER_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-      export HAPPIER_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+      export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
     fi
     HAPPY=""
     if [[ -x "$HOME/.happier/bin/happier" ]]; then
@@ -2501,8 +2501,8 @@ PY
 	    fi
 	    "$HAPPY" daemon stop >/dev/null 2>&1 || true
 	    set +e
-	    HAPPIER_DAEMON_WAIT_FOR_AUTH=1 \
-	    HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS="${HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS:-600000}" \
+	    PIGGERCODE_DAEMON_WAIT_FOR_AUTH=1 \
+	    PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS="${PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS:-600000}" \
 	    "$HAPPY" daemon start 2>&1
 	    start_status=$?
 	    set -e
@@ -2512,16 +2512,16 @@ PY
 	  set -e
 
 	  limactl shell "${VM_NAME}" -- env \
-      HAPPIER_SERVER_URL="${server_url}" \
+      PIGGERCODE_SERVER_URL="${server_url}" \
       ${guest_happier_home_rel:+WSREPL_QA_GUEST_HOME_REL="${guest_happier_home_rel}"} \
-      ${guest_active_server_id:+HAPPIER_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
+      ${guest_active_server_id:+PIGGERCODE_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
       bash -lc '
 	    set -euo pipefail
       if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
-        export HAPPIER_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
+        export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
       fi
-      if [[ -z "${HAPPIER_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-        export HAPPIER_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+      if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+        export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
       fi
 	    HAPPY=""
     if [[ -x "$HOME/.happier/bin/happier" ]]; then
@@ -2534,16 +2534,16 @@ PY
   ' >"${status_file}" 2>&1 || true
 
   limactl shell "${VM_NAME}" -- env \
-    HAPPIER_SERVER_URL="${server_url}" \
+    PIGGERCODE_SERVER_URL="${server_url}" \
     ${guest_happier_home_rel:+WSREPL_QA_GUEST_HOME_REL="${guest_happier_home_rel}"} \
-    ${guest_active_server_id:+HAPPIER_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
+    ${guest_active_server_id:+PIGGERCODE_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
     bash -lc '
     set -euo pipefail
     if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
-      export HAPPIER_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
+      export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
     fi
-    if [[ -z "${HAPPIER_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-      export HAPPIER_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+      export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
     fi
     HAPPY=""
     if [[ -x "$HOME/.happier/bin/happier" ]]; then
@@ -2584,13 +2584,13 @@ PY
 	      attempt=$((attempt + 1))
 	      sleep "${delay_s}"
 	      limactl shell "${VM_NAME}" -- env \
-	        HAPPIER_SERVER_URL="${server_url}" \
+	        PIGGERCODE_SERVER_URL="${server_url}" \
 	        ${guest_happier_home_rel:+WSREPL_QA_GUEST_HOME_REL="${guest_happier_home_rel}"} \
-	        ${guest_active_server_id:+HAPPIER_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
+	        ${guest_active_server_id:+PIGGERCODE_ACTIVE_SERVER_ID="${guest_active_server_id}"} \
 	        bash -lc '
 	        set -euo pipefail
 	        if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
-	          export HAPPIER_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
+	          export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
 	        fi
 	        HAPPY=""
 	        if [[ -x "$HOME/.happier/bin/happier" ]]; then
@@ -2629,7 +2629,7 @@ PY
         fi
 
         # Retry once after seeding, and require status to be healthy so the matrix does not hang.
-        limactl shell "${VM_NAME}" -- env HAPPIER_SERVER_URL="${server_url}" bash -lc '
+        limactl shell "${VM_NAME}" -- env PIGGERCODE_SERVER_URL="${server_url}" bash -lc '
           set -euo pipefail
           HAPPY=""
           if [[ -x "$HOME/.happier/bin/happier" ]]; then
@@ -2675,7 +2675,7 @@ ensure_guest_provider_cli_installed() {
   fi
 
   # If the guest does not have Happier installed, keep this best-effort and let the matrix fail
-  # on its own (common in local harness tests with WSREPL_QA_VM_HAPPIER_MODE=skip).
+  # on its own (common in local harness tests with WSREPL_QA_VM_PIGGERCODE_MODE=skip).
   if ! limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.happier/bin/happier" ]] || command -v happier >/dev/null 2>&1' >/dev/null 2>&1; then
     printf "%s\n" "(guest happier not found; skipping provider install)" > "${out_file}"
     return 0
@@ -2716,10 +2716,10 @@ ensure_summary() {
   local status="$1"
   local ended_at
   ended_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-  local steps_json="${HAPPIER_QA_STEPS_JSON:-}"
-  local session_path="${HAPPIER_QA_SESSION_PATH:-}"
-  local session_id="${HAPPIER_QA_SESSION_ID:-}"
-  local source_machine_id="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"
+  local steps_json="${PIGGERCODE_QA_STEPS_JSON:-}"
+  local session_path="${PIGGERCODE_QA_SESSION_PATH:-}"
+  local session_id="${PIGGERCODE_QA_SESSION_ID:-}"
+  local source_machine_id="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"
   local host_machine_id="${WSREPL_QA_HOST_MACHINE_ID:-}"
   local vm_machine_id="${WSREPL_QA_VM_MACHINE_ID:-}"
 
@@ -2838,7 +2838,7 @@ PY
 }
 
 resolve_playwright_session_id_best_effort() {
-  python3 - "$PLAYWRIGHT_OUTDIR" "${HAPPIER_QA_SESSION_ID:-}" <<'PY'
+  python3 - "$PLAYWRIGHT_OUTDIR" "${PIGGERCODE_QA_SESSION_ID:-}" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -3337,7 +3337,7 @@ autoupdate_guest_happier_from_worktree() {
   # resolves relative to the current working directory, which can be a temp dir or `apps/stack`).
   if ! (
     cd "${REPO_DIR}"
-    WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR="${payload_dir}" \
+    WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR="${payload_dir}" \
       node --input-type=module - "${REPO_DIR}" "${payload_dir}" "${bun_target}" <<'NODE'
 	import { buildCliBinaryArtifactPayload, CLI_BINARY_TARGETS } from '@piggercode/cli-common/componentArtifacts';
 
@@ -3498,7 +3498,7 @@ ensure_current_vm_happier_matches_worktree() {
   local guest_marker_version=""
   local guest_version=""
 
-  if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" == "autoupdate" ]]; then
+  if [[ "${WSREPL_QA_VM_PIGGERCODE_MODE}" == "autoupdate" ]]; then
     if ! autoupdate_guest_happier_from_worktree "${expected_version}" "${expected_git_rev}"; then
       echo "[wsrepl-qa] guest autoupdate failed" >&2
       return 2
@@ -3513,17 +3513,17 @@ ensure_current_vm_happier_matches_worktree() {
 
   if [[ -n "${expected_git_rev}" ]]; then
     if [[ -z "${guest_marker_git_rev}" ]]; then
-      echo "[wsrepl-qa] guest wsrepl build marker is missing, but the worktree git rev is available (mode=${WSREPL_QA_VM_HAPPIER_MODE})." >&2
+      echo "[wsrepl-qa] guest wsrepl build marker is missing, but the worktree git rev is available (mode=${WSREPL_QA_VM_PIGGERCODE_MODE})." >&2
       echo "[wsrepl-qa] expected git rev: ${expected_git_rev}" >&2
       echo "[wsrepl-qa] expected marker path: \$HOME/.happier/wsrepl-dev/payload/wsrepl-build.json" >&2
-      echo "[wsrepl-qa] Fix: rerun with WSREPL_QA_VM_HAPPIER_MODE=autoupdate (installs a matching build marker), or set WSREPL_QA_VM_HAPPIER_MODE=skip to bypass this guard." >&2
+      echo "[wsrepl-qa] Fix: rerun with WSREPL_QA_VM_PIGGERCODE_MODE=autoupdate (installs a matching build marker), or set WSREPL_QA_VM_PIGGERCODE_MODE=skip to bypass this guard." >&2
       return 2
     fi
     if [[ "${guest_marker_git_rev}" != "${expected_git_rev}" ]]; then
-      echo "[wsrepl-qa] guest wsrepl build marker does not match the current worktree (mode=${WSREPL_QA_VM_HAPPIER_MODE})." >&2
+      echo "[wsrepl-qa] guest wsrepl build marker does not match the current worktree (mode=${WSREPL_QA_VM_PIGGERCODE_MODE})." >&2
       echo "[wsrepl-qa] expected git rev: ${expected_git_rev}" >&2
       echo "[wsrepl-qa] guest git rev:    ${guest_marker_git_rev}" >&2
-      echo "[wsrepl-qa] Fix: rerun with WSREPL_QA_VM_HAPPIER_MODE=autoupdate, or set WSREPL_QA_VM_HAPPIER_MODE=skip to bypass this guard." >&2
+      echo "[wsrepl-qa] Fix: rerun with WSREPL_QA_VM_PIGGERCODE_MODE=autoupdate, or set WSREPL_QA_VM_PIGGERCODE_MODE=skip to bypass this guard." >&2
       return 2
     fi
     if [[ -n "${guest_marker_version}" && "${guest_marker_version}" != "${expected_version}" ]]; then
@@ -3538,10 +3538,10 @@ ensure_current_vm_happier_matches_worktree() {
       return 2
     fi
     if [[ "${guest_version}" != "${expected_version}" ]]; then
-      echo "[wsrepl-qa] guest Happier CLI version does not match the current worktree (mode=${WSREPL_QA_VM_HAPPIER_MODE})." >&2
+      echo "[wsrepl-qa] guest Happier CLI version does not match the current worktree (mode=${WSREPL_QA_VM_PIGGERCODE_MODE})." >&2
       echo "[wsrepl-qa] expected: ${expected_version}" >&2
       echo "[wsrepl-qa] guest:    ${guest_version}" >&2
-      echo "[wsrepl-qa] Fix: update the VM's Happier install to the same commit/build, rerun with WSREPL_QA_VM_HAPPIER_MODE=autoupdate, or set WSREPL_QA_VM_HAPPIER_MODE=skip to bypass this guard." >&2
+      echo "[wsrepl-qa] Fix: update the VM's Happier install to the same commit/build, rerun with WSREPL_QA_VM_PIGGERCODE_MODE=autoupdate, or set WSREPL_QA_VM_PIGGERCODE_MODE=skip to bypass this guard." >&2
       return 2
     fi
   fi
@@ -3549,46 +3549,46 @@ ensure_current_vm_happier_matches_worktree() {
   return 0
 }
 
-if [[ -z "${HAPPIER_QA_SESSION_PATH:-}" && -n "${WSREPL_QA_LARGE_REPO_PATH:-}" ]]; then
-  export HAPPIER_QA_SESSION_PATH="${WSREPL_QA_LARGE_REPO_PATH}"
+if [[ -z "${PIGGERCODE_QA_SESSION_PATH:-}" && -n "${WSREPL_QA_LARGE_REPO_PATH:-}" ]]; then
+  export PIGGERCODE_QA_SESSION_PATH="${WSREPL_QA_LARGE_REPO_PATH}"
 fi
 
 # Prefer the canonical large-repo fixture when available so “unset session path” runs
 # still exercise the intended large-repo handoff matrix (but keep the repo fallback
 # for dev/smoke runs when the fixture is not present).
-if [[ -z "${HAPPIER_QA_SESSION_PATH:-}" && -z "${WSREPL_QA_LARGE_REPO_PATH:-}" ]]; then
+if [[ -z "${PIGGERCODE_QA_SESSION_PATH:-}" && -z "${WSREPL_QA_LARGE_REPO_PATH:-}" ]]; then
   # Prefer a non-hidden fixture location when present. Lima guests mount the macOS home directory,
   # but cannot reliably traverse host `chmod 700` parents like `.happier` due to UID/GID/perms
   # mapping, which can surface as ENOENT during target staging.
   SAFE_WSREPL_QA_LARGE_REPO_PATH="${HOME}/wsrepl-qa-fixtures/large-repo-k8s"
   LEGACY_WSREPL_QA_LARGE_REPO_PATH="${HOME}/.happier/wsrepl-qa-fixtures/large-repo-k8s"
   if [[ -d "${SAFE_WSREPL_QA_LARGE_REPO_PATH}" ]]; then
-    export HAPPIER_QA_SESSION_PATH="${SAFE_WSREPL_QA_LARGE_REPO_PATH}"
+    export PIGGERCODE_QA_SESSION_PATH="${SAFE_WSREPL_QA_LARGE_REPO_PATH}"
   elif [[ -d "${LEGACY_WSREPL_QA_LARGE_REPO_PATH}" ]]; then
-    export HAPPIER_QA_SESSION_PATH="${LEGACY_WSREPL_QA_LARGE_REPO_PATH}"
+    export PIGGERCODE_QA_SESSION_PATH="${LEGACY_WSREPL_QA_LARGE_REPO_PATH}"
   fi
 fi
 
 # Default session path to the repo worktree so the Playwright harness never falls back to its
 # own hardcoded default (keeps wrapper summary + runner behavior aligned).
-if [[ -z "${HAPPIER_QA_SESSION_PATH:-}" ]]; then
-  export HAPPIER_QA_SESSION_PATH="${REPO_DIR}"
+if [[ -z "${PIGGERCODE_QA_SESSION_PATH:-}" ]]; then
+  export PIGGERCODE_QA_SESSION_PATH="${REPO_DIR}"
 fi
 
-if [[ -n "${HAPPIER_QA_SESSION_PATH:-}" ]]; then
-  if [[ ! -d "${HAPPIER_QA_SESSION_PATH}" ]]; then
-    echo "[wsrepl-qa] HAPPIER_QA_SESSION_PATH does not exist or is not a directory: ${HAPPIER_QA_SESSION_PATH}" >&2
+if [[ -n "${PIGGERCODE_QA_SESSION_PATH:-}" ]]; then
+  if [[ ! -d "${PIGGERCODE_QA_SESSION_PATH}" ]]; then
+    echo "[wsrepl-qa] PIGGERCODE_QA_SESSION_PATH does not exist or is not a directory: ${PIGGERCODE_QA_SESSION_PATH}" >&2
     exit 2
   fi
 fi
 
-if [[ -z "${HAPPIER_QA_TIMEOUT_MS:-}" ]]; then
-  export HAPPIER_QA_TIMEOUT_MS="${WSREPL_QA_TIMEOUT_MS:-1800000}"
+if [[ -z "${PIGGERCODE_QA_TIMEOUT_MS:-}" ]]; then
+  export PIGGERCODE_QA_TIMEOUT_MS="${WSREPL_QA_TIMEOUT_MS:-1800000}"
 fi
 
 # Default to creating a fresh QA session unless the caller pins a specific sessionId.
-if [[ -z "${HAPPIER_QA_SESSION_ID:-}" && -z "${HAPPIER_QA_CREATE_SESSION:-}" ]]; then
-  export HAPPIER_QA_CREATE_SESSION="1"
+if [[ -z "${PIGGERCODE_QA_SESSION_ID:-}" && -z "${PIGGERCODE_QA_CREATE_SESSION:-}" ]]; then
+  export PIGGERCODE_QA_CREATE_SESSION="1"
 fi
 
   # Default the matrix to a deterministic engine choice (and allow override).
@@ -3596,27 +3596,27 @@ fi
   # IMPORTANT: keep the wrapper default aligned with the Playwright harness default to avoid
   # “hidden claude” drift where the wrapper silently forces `claude` even when the stack/UI
   # hides/disables it.
-  if [[ -z "${HAPPIER_QA_PREFERRED_AGENT_ENGINES:-}" ]]; then
+  if [[ -z "${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES:-}" ]]; then
     # Default to the fake Claude CLI fixture for stable, non-authenticated session creation in QA.
     # `codex` can require real provider auth and otherwise fail silently at session creation time,
     # which would prevent the matrix from exercising workspace replication at all.
-    export HAPPIER_QA_PREFERRED_AGENT_ENGINES="claude"
+    export PIGGERCODE_QA_PREFERRED_AGENT_ENGINES="claude"
   fi
 
   # The matrix needs a deterministic, non-authenticated provider CLI so session creation is stable.
   # The daemon process does not consult the Playwright env, so we must inject any provider overrides
   # into the daemon's own process environment (see restart_host_daemon_and_capture_logs below).
-  if wsrepl_matrix_csv_has_value "${HAPPIER_QA_PREFERRED_AGENT_ENGINES:-}" "claude"; then
-    if [[ -z "${HAPPIER_CLAUDE_PATH:-}" || ! -f "${HAPPIER_CLAUDE_PATH:-}" ]]; then
-      export HAPPIER_CLAUDE_PATH="${REPO_DIR}/packages/tests/src/fixtures/fake-claude-code-cli.js"
+  if wsrepl_matrix_csv_has_value "${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES:-}" "claude"; then
+    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" || ! -f "${PIGGERCODE_CLAUDE_PATH:-}" ]]; then
+      export PIGGERCODE_CLAUDE_PATH="${REPO_DIR}/packages/tests/src/fixtures/fake-claude-code-cli.js"
     fi
   fi
 
   # The handoff path exports a provider bundle and requires a vendor handoff id. Ensure the initial
   # QA session actually starts the provider runtime so the vendor resume id is persisted into session
   # metadata before the first handoff step.
-  if [[ -z "${HAPPIER_QA_SESSION_SEED_PROMPT:-}" ]]; then
-    export HAPPIER_QA_SESSION_SEED_PROMPT="ping"
+  if [[ -z "${PIGGERCODE_QA_SESSION_SEED_PROMPT:-}" ]]; then
+    export PIGGERCODE_QA_SESSION_SEED_PROMPT="ping"
   fi
 
 # Default the Playwright source machine id once we know the host daemon machine id.
@@ -3652,14 +3652,14 @@ if [[ -n "${step_out_after_back_strategy}" && "${step_out_after_back_strategy}" 
 fi
 
 WSREPL_QA_DERIVE_STEPS_LATER=0
-if [[ -z "${HAPPIER_QA_STEPS_JSON:-}" ]]; then
+if [[ -z "${PIGGERCODE_QA_STEPS_JSON:-}" ]]; then
   host_machine_id="${WSREPL_QA_HOST_MACHINE_ID:-}"
   vm_machine_id="${WSREPL_QA_VM_MACHINE_ID:-}"
   if [[ -n "${host_machine_id}" && -n "${vm_machine_id}" ]]; then
     vm_machine_name_pattern="$(resolve_vm_machine_name_pattern_for_ui)"
     host_machine_name_pattern="$(resolve_host_machine_name_pattern_for_ui)"
-    export HAPPIER_QA_STEPS_JSON
-    HAPPIER_QA_STEPS_JSON="$(python3 - "$vm_machine_id" "$host_machine_id" "$vm_machine_name_pattern" "$host_machine_name_pattern" "$step_out_strategy" "$step_back_strategy" "$step_out_after_back_strategy" <<-'PY'
+    export PIGGERCODE_QA_STEPS_JSON
+    PIGGERCODE_QA_STEPS_JSON="$(python3 - "$vm_machine_id" "$host_machine_id" "$vm_machine_name_pattern" "$host_machine_name_pattern" "$step_out_strategy" "$step_back_strategy" "$step_out_after_back_strategy" <<-'PY'
 import json
 import sys
 
@@ -3736,22 +3736,22 @@ fi
 echo "[wsrepl-qa] seed guest fake Claude CLI (if needed)..."
 seed_guest_fake_claude_cli_if_needed
 
-if [[ -z "${HAPPIER_UI_URL:-}" ]]; then
+if [[ -z "${PIGGERCODE_UI_URL:-}" ]]; then
   # Keep the wrapper's stack selection in lock-step with the Playwright runner: it uses
   # `scripts/qa/resolveQaUiUrl.mjs` under the same env surface. Without this, the
   # wrapper can restart daemons against one stack while Playwright targets another.
-  HAPPIER_UI_URL="$(cd "${REPO_DIR}" && node --input-type=module -e \
+  PIGGERCODE_UI_URL="$(cd "${REPO_DIR}" && node --input-type=module -e \
     "import { resolveQaUiUrl, ensureQaUiUrlHasHmrDisabled } from './scripts/qa/resolveQaUiUrl.mjs'; console.log(ensureQaUiUrlHasHmrDisabled(resolveQaUiUrl()));" \
     2>/dev/null || true)"
-  export HAPPIER_UI_URL
+  export PIGGERCODE_UI_URL
 fi
-if [[ -n "${HAPPIER_UI_URL:-}" ]]; then
-  echo "[wsrepl-qa] ui url: ${HAPPIER_UI_URL}"
+if [[ -n "${PIGGERCODE_UI_URL:-}" ]]; then
+  echo "[wsrepl-qa] ui url: ${PIGGERCODE_UI_URL}"
 fi
 
-host_server_url="${HAPPIER_SERVER_URL:-}"
-if [[ -z "${host_server_url}" && -n "${HAPPIER_UI_URL:-}" ]]; then
-  host_server_url="$(python3 - <<'PY' "${HAPPIER_UI_URL}" 2>/dev/null || true
+host_server_url="${PIGGERCODE_SERVER_URL:-}"
+if [[ -z "${host_server_url}" && -n "${PIGGERCODE_UI_URL:-}" ]]; then
+  host_server_url="$(python3 - <<'PY' "${PIGGERCODE_UI_URL}" 2>/dev/null || true
 import sys
 from urllib.parse import urlparse, parse_qs, unquote
 
@@ -3764,10 +3764,10 @@ PY
 )"
 fi
 if [[ -z "${host_server_url}" ]]; then
-  # When the wrapper is invoked without HAPPIER_UI_URL, derive the server port from the most-recent
+  # When the wrapper is invoked without PIGGERCODE_UI_URL, derive the server port from the most-recent
   # stack.runtime.json (same heuristic as resolveQaUiUrl.mjs) so the host daemon is started against
   # the same local stack server that Playwright will later resolve.
-  host_server_url="$(python3 - <<'PY' "$HOME/.happier/stacks" "${HAPPIER_QA_STACK_NAME:-}" 2>/dev/null || true
+  host_server_url="$(python3 - <<'PY' "$HOME/.happier/stacks" "${PIGGERCODE_QA_STACK_NAME:-}" 2>/dev/null || true
 import json
 import sys
 from pathlib import Path
@@ -3848,17 +3848,17 @@ if [[ -n "${guest_server_url:-}" ]]; then
   echo "[wsrepl-qa] guest server url: ${guest_server_url}"
 fi
 
-WSREPL_QA_VM_HAPPIER_MODE="${WSREPL_QA_VM_HAPPIER_MODE:-require}"
-case "${WSREPL_QA_VM_HAPPIER_MODE}" in
+WSREPL_QA_VM_PIGGERCODE_MODE="${WSREPL_QA_VM_PIGGERCODE_MODE:-require}"
+case "${WSREPL_QA_VM_PIGGERCODE_MODE}" in
   skip|require|autoupdate)
     ;;
   *)
-    echo "[wsrepl-qa] invalid WSREPL_QA_VM_HAPPIER_MODE: ${WSREPL_QA_VM_HAPPIER_MODE} (expected skip|require|autoupdate)" >&2
+    echo "[wsrepl-qa] invalid WSREPL_QA_VM_PIGGERCODE_MODE: ${WSREPL_QA_VM_PIGGERCODE_MODE} (expected skip|require|autoupdate)" >&2
     exit 2
     ;;
 esac
 
-if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" != "skip" ]]; then
+if [[ "${WSREPL_QA_VM_PIGGERCODE_MODE}" != "skip" ]]; then
   expected_version="$(resolve_expected_worktree_happier_version)"
   expected_git_rev="$(resolve_expected_worktree_git_rev)"
   if [[ -z "${expected_version}" ]]; then
@@ -3871,7 +3871,7 @@ if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" != "skip" ]]; then
   if ! ensure_current_vm_happier_matches_worktree "${expected_version}" "${expected_git_rev}"; then
     FAILURE_STAGE="guest_version_check"
     FAILURE_REASON="$(
-      if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" == "autoupdate" ]]; then
+      if [[ "${WSREPL_QA_VM_PIGGERCODE_MODE}" == "autoupdate" ]]; then
         printf "%s" "guest_autoupdate_failed"
       elif [[ -n "${expected_git_rev}" ]]; then
         printf "%s" "guest_build_mismatch"
@@ -3894,7 +3894,7 @@ if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" != "skip" ]]; then
       ) 2>&1 | tee "${extra_root}/guest.happier.version.txt" >/dev/null; then
         FAILURE_STAGE="guest_version_check"
         FAILURE_REASON="$(
-          if [[ "${WSREPL_QA_VM_HAPPIER_MODE}" == "autoupdate" ]]; then
+          if [[ "${WSREPL_QA_VM_PIGGERCODE_MODE}" == "autoupdate" ]]; then
             printf "%s" "guest_autoupdate_failed"
           elif [[ -n "${expected_git_rev}" ]]; then
             printf "%s" "guest_build_mismatch"
@@ -3913,7 +3913,7 @@ restart_guest_daemon_and_capture_logs "${guest_server_url}" "${server_routed_max
 
 guest_provider_install_id="${WSREPL_QA_GUEST_PROVIDER_ID:-}"
 if [[ -z "${guest_provider_install_id}" ]]; then
-  guest_provider_install_id="${HAPPIER_QA_PREFERRED_AGENT_ENGINES%%,*}"
+  guest_provider_install_id="${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES%%,*}"
 fi
 guest_provider_install_log="${DAEMON_DIAG_DIR}/guest.provider.install.${guest_provider_install_id}.txt"
 echo "[wsrepl-qa] ensure guest provider installed: ${guest_provider_install_id}..."
@@ -3953,11 +3953,11 @@ if [[ -z "${WSREPL_QA_VM_MACHINE_ID:-}" ]]; then
   fi
 fi
 
-if [[ -z "${HAPPIER_QA_SOURCE_MACHINE_ID:-}" && -n "${WSREPL_QA_HOST_MACHINE_ID:-}" ]]; then
-  export HAPPIER_QA_SOURCE_MACHINE_ID="${WSREPL_QA_HOST_MACHINE_ID}"
+if [[ -z "${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}" && -n "${WSREPL_QA_HOST_MACHINE_ID:-}" ]]; then
+  export PIGGERCODE_QA_SOURCE_MACHINE_ID="${WSREPL_QA_HOST_MACHINE_ID}"
 fi
 
-if [[ "${WSREPL_QA_DERIVE_STEPS_LATER:-0}" == "1" && -z "${HAPPIER_QA_STEPS_JSON:-}" ]]; then
+if [[ "${WSREPL_QA_DERIVE_STEPS_LATER:-0}" == "1" && -z "${PIGGERCODE_QA_STEPS_JSON:-}" ]]; then
   host_machine_id="${WSREPL_QA_HOST_MACHINE_ID:-}"
   vm_machine_id="${WSREPL_QA_VM_MACHINE_ID:-}"
   if [[ -z "${host_machine_id}" ]]; then
@@ -3975,14 +3975,14 @@ if [[ "${WSREPL_QA_DERIVE_STEPS_LATER:-0}" == "1" && -z "${HAPPIER_QA_STEPS_JSON
   if [[ -z "${host_machine_id}" || -z "${vm_machine_id}" ]]; then
     FAILURE_STAGE="preflight"
     FAILURE_REASON="missing_steps_json"
-    echo "[wsrepl-qa] missing required env: HAPPIER_QA_STEPS_JSON" >&2
+    echo "[wsrepl-qa] missing required env: PIGGERCODE_QA_STEPS_JSON" >&2
     echo "[wsrepl-qa] Fix: set WSREPL_QA_HOST_MACHINE_ID + WSREPL_QA_VM_MACHINE_ID, or ensure the host+guest daemons are reachable so the wrapper can auto-derive them." >&2
     exit 2
   fi
   vm_machine_name_pattern="$(resolve_vm_machine_name_pattern_for_ui)"
   host_machine_name_pattern="$(resolve_host_machine_name_pattern_for_ui)"
-  export HAPPIER_QA_STEPS_JSON
-  HAPPIER_QA_STEPS_JSON="$(python3 - "$vm_machine_id" "$host_machine_id" "$vm_machine_name_pattern" "$host_machine_name_pattern" "$step_out_strategy" "$step_back_strategy" "$step_out_after_back_strategy" <<'PY'
+  export PIGGERCODE_QA_STEPS_JSON
+  PIGGERCODE_QA_STEPS_JSON="$(python3 - "$vm_machine_id" "$host_machine_id" "$vm_machine_name_pattern" "$host_machine_name_pattern" "$step_out_strategy" "$step_back_strategy" "$step_out_after_back_strategy" <<'PY'
 import json
 import sys
 
@@ -4125,20 +4125,20 @@ print((match.group("prefix") if match else name) or "")
 PY
 }
 
-if [[ -z "${HAPPIER_QA_STACK_NAME:-}" ]]; then
+if [[ -z "${PIGGERCODE_QA_STACK_NAME:-}" ]]; then
   inferred_stack_name="$(infer_stack_name_for_wsrepl "$HOME/.happier/stacks" "${host_server_url:-}" 2>/dev/null || true)"
   if [[ -n "${inferred_stack_name}" ]]; then
-    export HAPPIER_QA_STACK_NAME="${inferred_stack_name}"
+    export PIGGERCODE_QA_STACK_NAME="${inferred_stack_name}"
   fi
 fi
 
-if [[ -n "${HAPPIER_QA_STACK_NAME:-}" && -z "${HAPPIER_QA_ACTIVE_SERVER_DIR:-}" ]]; then
-  stack_server_slug="$(resolve_stack_server_slug_for_active_dir "${HAPPIER_QA_STACK_NAME}" 2>/dev/null || true)"
-  stack_home_dir="$HOME/.happier/stacks/${HAPPIER_QA_STACK_NAME}"
+if [[ -n "${PIGGERCODE_QA_STACK_NAME:-}" && -z "${PIGGERCODE_QA_ACTIVE_SERVER_DIR:-}" ]]; then
+  stack_server_slug="$(resolve_stack_server_slug_for_active_dir "${PIGGERCODE_QA_STACK_NAME}" 2>/dev/null || true)"
+  stack_home_dir="$HOME/.happier/stacks/${PIGGERCODE_QA_STACK_NAME}"
   candidate_active_server_dir="${stack_home_dir}/cli/servers/${stack_server_slug}"
   if [[ -d "${candidate_active_server_dir}" ]]; then
-    export HAPPIER_QA_STACK_HOME_DIR="${stack_home_dir}"
-    export HAPPIER_QA_ACTIVE_SERVER_DIR="${candidate_active_server_dir}"
+    export PIGGERCODE_QA_STACK_HOME_DIR="${stack_home_dir}"
+    export PIGGERCODE_QA_ACTIVE_SERVER_DIR="${candidate_active_server_dir}"
   fi
 fi
 
@@ -4146,14 +4146,14 @@ fi
 # Without a consistent EXPO_PUBLIC_HAPPY_STORAGE_SCOPE, the UI can ignore the seeded
 # server profile/tab selection and fall back to a different preconfigured server id,
 # which triggers "server-switch" request aborts.
-if [[ -z "${EXPO_PUBLIC_HAPPY_STORAGE_SCOPE:-}" && -n "${HAPPIER_QA_STACK_NAME:-}" ]]; then
-  export EXPO_PUBLIC_HAPPY_STORAGE_SCOPE="${HAPPIER_QA_STACK_NAME}"
+if [[ -z "${EXPO_PUBLIC_HAPPY_STORAGE_SCOPE:-}" && -n "${PIGGERCODE_QA_STACK_NAME:-}" ]]; then
+  export EXPO_PUBLIC_HAPPY_STORAGE_SCOPE="${PIGGERCODE_QA_STACK_NAME}"
 fi
 if [[ -z "${EXPO_PUBLIC_HAPPY_SERVER_CONTEXT:-}" ]]; then
   export EXPO_PUBLIC_HAPPY_SERVER_CONTEXT="stack"
 fi
-if [[ -z "${EXPO_PUBLIC_HAPPIER_SERVER_URL:-}" && -n "${host_server_url:-}" ]]; then
-  export EXPO_PUBLIC_HAPPIER_SERVER_URL="${host_server_url}"
+if [[ -z "${EXPO_PUBLIC_PIGGERCODE_SERVER_URL:-}" && -n "${host_server_url:-}" ]]; then
+  export EXPO_PUBLIC_PIGGERCODE_SERVER_URL="${host_server_url}"
 fi
 
 FAILURE_STAGE="playwright"
@@ -4167,8 +4167,8 @@ run_playwright_attempt() {
 
   start_host_daemon_watchdog_background "${outdir}" "${host_server_url:-}"
 
-  HAPPIER_QA_OUTDIR="${outdir}" \
-    run_with_timeout_ms "${HAPPIER_QA_TIMEOUT_MS}" \
+  PIGGERCODE_QA_OUTDIR="${outdir}" \
+    run_with_timeout_ms "${PIGGERCODE_QA_TIMEOUT_MS}" \
       node "${REPO_DIR}/scripts/qa/playwright-session-handoff-wsrepl-matrix.mjs" \
       2>&1 | tee "${outdir}/runner.log"
   local status="${PIPESTATUS[0]}"

@@ -9,12 +9,12 @@ import { existsSync, mkdirSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 
 describe('server profiles', () => {
-  const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID'] as const;
+  const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_ACTIVE_SERVER_ID'] as const;
   let envScope = createEnvKeyScope(envKeys);
 
   function patchServerProfileEnv(values: Readonly<Partial<Record<(typeof envKeys)[number], string | undefined>>>): void {
     envScope.patch({
-      HAPPIER_ACTIVE_SERVER_ID: undefined,
+      PIGGERCODE_ACTIVE_SERVER_ID: undefined,
       ...values,
     });
   }
@@ -39,9 +39,9 @@ describe('server profiles', () => {
   it('adds a server profile and can switch active server', async () => {
     await withTempDir('happier-cli-servers-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -82,9 +82,9 @@ describe('server profiles', () => {
   it('refuses to remove the active server profile unless forced', async () => {
     await withTempDir('happier-cli-servers-remove-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -110,9 +110,9 @@ describe('server profiles', () => {
   it('can resolve a server profile by name without changing the active server', async () => {
     await withTempDir('happier-cli-servers-resolve-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -134,9 +134,9 @@ describe('server profiles', () => {
   it('can resolve a server profile by relay URL without changing the active server', async () => {
     await withTempDir('happier-cli-servers-resolve-url-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -158,9 +158,9 @@ describe('server profiles', () => {
   it('refuses to create a server profile with reserved name "cloud"', async () => {
     await withTempDir('happier-cli-servers-reserved-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -179,9 +179,9 @@ describe('server profiles', () => {
   it('sanitizes profile ids to filesystem-safe values', async () => {
     await withTempDir('happier-cli-servers-sanitize-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -205,9 +205,9 @@ describe('server profiles', () => {
   it('upserts an existing profile when the comparable relay URL already exists', async () => {
     await withTempDir('happier-cli-servers-upsert-url-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -237,9 +237,9 @@ describe('server profiles', () => {
   it('clears a split local URL when the canonical relay URL becomes local again', async () => {
     await withTempDir('happier-cli-servers-upsert-clear-local-url-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -276,9 +276,9 @@ describe('server profiles', () => {
   it('migrates server-scoped access.key when switching from env-derived serverId to a named profile', async () => {
     await withTempDir('happier-cli-servers-migrate-access-key-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'http://localhost:33005',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:33005',
       });
 
       vi.resetModules();
@@ -296,9 +296,9 @@ describe('server profiles', () => {
       expect(existsSync(join(homeDir, 'servers', envDerivedServerId, 'access.key'))).toBe(true);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -324,9 +324,9 @@ describe('server profiles', () => {
   it('migrates server-scoped access.key from legacy env-derived serverId when selecting a named profile', async () => {
     await withTempDir('happier-cli-servers-migrate-access-key-legacy-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'http://localhost:33005',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:33005',
       });
 
       vi.resetModules();
@@ -353,9 +353,9 @@ describe('server profiles', () => {
       expect(existsSync(legacyKeyPath)).toBe(true);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -379,9 +379,9 @@ describe('server profiles', () => {
   it('migrates server-scoped access.key when upserting an existing profile that lacks credentials', async () => {
     await withTempDir('happier-cli-servers-migrate-access-key-upsert-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -399,9 +399,9 @@ describe('server profiles', () => {
       expect(existsSync(join(homeDir, 'servers', existing.id, 'access.key'))).toBe(false);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'http://localhost:33005',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:33005',
       });
 
       vi.resetModules();
@@ -418,9 +418,9 @@ describe('server profiles', () => {
       expect(existsSync(join(homeDir, 'servers', envDerivedServerId, 'access.key'))).toBe(true);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -443,9 +443,9 @@ describe('server profiles', () => {
   it('copies access.key from env-derived serverId when selecting a matching named profile', async () => {
     await withTempDir('happier-cli-servers-migrate-access-key-select-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'http://localhost:33005',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:33005',
       });
 
       vi.resetModules();
@@ -461,9 +461,9 @@ describe('server profiles', () => {
       expect(existsSync(join(homeDir, 'servers', envDerivedServerId, 'access.key'))).toBe(true);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -497,9 +497,9 @@ describe('server profiles', () => {
   it('copies access.key from env-derived serverId when using a named profile by id', async () => {
     await withTempDir('happier-cli-servers-migrate-access-key-use-', async (homeDir) => {
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'http://localhost:33005',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:33005',
       });
 
       vi.resetModules();
@@ -515,9 +515,9 @@ describe('server profiles', () => {
       expect(existsSync(join(homeDir, 'servers', envDerivedServerId, 'access.key'))).toBe(true);
 
       patchServerProfileEnv({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();

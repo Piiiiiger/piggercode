@@ -79,7 +79,7 @@ test.describe('ui e2e: server/account scoped settings', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -87,7 +87,7 @@ test.describe('ui e2e: server/account scoped settings', () => {
       testDir: resolve(join(suiteDir, 'secondary-server')),
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 

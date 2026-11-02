@@ -67,7 +67,7 @@ vi.mock('@/integrations/terminalHost/defaultRegistry', () => ({
 
 describe('requestSessionStop marker fallback', () => {
   let happyHomeDir = '';
-  const previousHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+  const previousHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
   const credentials = {
     token: 'token-1',
     encryption: { type: 'legacy' as const, secret: new Uint8Array(32).fill(1) },
@@ -76,7 +76,7 @@ describe('requestSessionStop marker fallback', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     happyHomeDir = await createTempDir('happier-marker-stop-');
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     reloadConfiguration();
     mocks.resolveSessionIdOrPrefix.mockResolvedValue({
       ok: true,
@@ -260,8 +260,8 @@ describe('requestSessionStop marker fallback', () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    if (previousHappyHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHappyHomeDir;
+    if (previousHappyHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHappyHomeDir;
     reloadConfiguration();
     if (happyHomeDir) await removeTempDir(happyHomeDir);
     happyHomeDir = '';
@@ -284,10 +284,10 @@ describe('requestSessionStop marker fallback', () => {
   });
 
   it('distinguishes a proven physical stop when relay inactivity is not yet observed', async () => {
-    const previousStopTimeoutMs = process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS;
-    const previousStopPollIntervalMs = process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS;
-    process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS = '1';
-    process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS = '1';
+    const previousStopTimeoutMs = process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS;
+    const previousStopPollIntervalMs = process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS;
+    process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS = '1';
+    process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS = '1';
     reloadConfiguration();
     mocks.stopDaemonSession.mockResolvedValue({ status: 'stopped' });
     mocks.fetchSessionByIdCompat.mockResolvedValue({ id: 'sess-marker-stop', active: true });
@@ -304,10 +304,10 @@ describe('requestSessionStop marker fallback', () => {
         },
       });
     } finally {
-      if (previousStopTimeoutMs === undefined) delete process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS;
-      else process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS = previousStopTimeoutMs;
-      if (previousStopPollIntervalMs === undefined) delete process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS;
-      else process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS = previousStopPollIntervalMs;
+      if (previousStopTimeoutMs === undefined) delete process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS;
+      else process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS = previousStopTimeoutMs;
+      if (previousStopPollIntervalMs === undefined) delete process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS;
+      else process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS = previousStopPollIntervalMs;
       reloadConfiguration();
     }
   });

@@ -84,9 +84,9 @@ describe('raw-HTML markdown round-trip (Phase-1.5)', () => {
         const doc = markdownToDoc(md);
         const out = docToMarkdown(doc);
         // docToMarkdown must NOT re-encode: the output is the original markdown,
-        // never a `[[HAPPIER_…]]` sentinel.
+        // never a `[[PIGGERCODE_…]]` sentinel.
         expect(out).toContain('<div class="note">hello</div>');
-        expect(out).not.toContain('[[HAPPIER_');
+        expect(out).not.toContain('[[PIGGERCODE_');
     });
 
     it('still does not preserve HTML written inside a code fence (stays literal code)', () => {
@@ -95,6 +95,6 @@ describe('raw-HTML markdown round-trip (Phase-1.5)', () => {
         const md = '```html\n<div>x</div>\n```';
         const out = roundTripMarkdown(md);
         expect(out).toContain('<div>x</div>');
-        expect(out).not.toContain('[[HAPPIER_');
+        expect(out).not.toContain('[[PIGGERCODE_');
     });
 });

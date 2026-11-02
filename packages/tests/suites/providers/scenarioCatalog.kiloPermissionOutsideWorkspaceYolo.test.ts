@@ -6,7 +6,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function providerStub(id: string): ProviderUnderTest {
   return {
     id,
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_KILO',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_KILO',
     protocol: 'acp',
     traceProvider: id,
     permissions: { v: 1, acp: { permissionSurfaceOutsideWorkspaceYolo: true } },

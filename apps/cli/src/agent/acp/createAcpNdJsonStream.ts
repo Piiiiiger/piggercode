@@ -13,7 +13,7 @@ export function createAcpNdJsonStream(
   const textEncoder = new TextEncoder();
   const textDecoder = new TextDecoder();
   const messageCapture: WriteStream | null =
-    process.env.HAPPIER_ACP_CAPTURE_IO === '1'
+    process.env.PIGGERCODE_ACP_CAPTURE_IO === '1'
       ? createWriteStream(join(tmpdir(), 'acp.client.messages.raw'), { flags: 'a' })
       : null;
 

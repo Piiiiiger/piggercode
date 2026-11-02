@@ -13,11 +13,11 @@ const __dirname = dirname(__filename);
  *
  * Can be enabled via:
  * - --expo-tailscale flag (passed as expoTailscale option)
- * - HAPPIER_STACK_EXPO_TAILSCALE=1 env var
+ * - PIGGERCODE_STACK_EXPO_TAILSCALE=1 env var
  */
 export function resolveExpoTailscaleEnabled({ env = process.env, expoTailscale = false } = {}) {
   if (expoTailscale) return true;
-  const envVal = (env.HAPPIER_STACK_EXPO_TAILSCALE ?? '').toString().trim();
+  const envVal = (env.PIGGERCODE_STACK_EXPO_TAILSCALE ?? '').toString().trim();
   return envVal === '1' || envVal.toLowerCase() === 'true';
 }
 

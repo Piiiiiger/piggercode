@@ -698,8 +698,8 @@ describe('createAcpRuntime (session models)', () => {
 
   it('does not issue a fallback while a slow session/set_model request is still pending', async () => {
     vi.useFakeTimers();
-    const previousTimeout = process.env.HAPPIER_ACP_SESSION_CONTROL_TIMEOUT_MS;
-    process.env.HAPPIER_ACP_SESSION_CONTROL_TIMEOUT_MS = '1';
+    const previousTimeout = process.env.PIGGERCODE_ACP_SESSION_CONTROL_TIMEOUT_MS;
+    process.env.PIGGERCODE_ACP_SESSION_CONTROL_TIMEOUT_MS = '1';
     let resolveModel!: () => void;
     let settled = false;
     const setSessionConfigOption = vi.fn(async () => undefined);
@@ -734,8 +734,8 @@ describe('createAcpRuntime (session models)', () => {
       await pending;
     } finally {
       vi.useRealTimers();
-      if (previousTimeout === undefined) delete process.env.HAPPIER_ACP_SESSION_CONTROL_TIMEOUT_MS;
-      else process.env.HAPPIER_ACP_SESSION_CONTROL_TIMEOUT_MS = previousTimeout;
+      if (previousTimeout === undefined) delete process.env.PIGGERCODE_ACP_SESSION_CONTROL_TIMEOUT_MS;
+      else process.env.PIGGERCODE_ACP_SESSION_CONTROL_TIMEOUT_MS = previousTimeout;
     }
   });
 

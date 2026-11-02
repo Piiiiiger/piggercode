@@ -319,8 +319,8 @@ async function ensureWorkspacePackageBuiltUnderLock({
   await buildIntoTempThenReplace(distDir, async (tmpDistDir) => {
     const buildEnv = {
       ...env,
-      HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
-      HAPPIER_WORKSPACE_DIST_OUTPUT_DIR: tmpDistDir,
+      PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+      PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR: tmpDistDir,
     };
     await workspaceBuildBoundary.runPackageBuild(pkgDir, { env: buildEnv, quiet });
 
@@ -333,7 +333,7 @@ async function ensureWorkspacePackageBuiltUnderLock({
       throw new Error(
         `[local] build completed but expected staged outputs are still missing for ${pkgJson?.name ?? pkgDir}:\n`
         + missingStaged.map((path) => `- ${path}`).join('\n')
-        + '\nFix: ensure the package build honors HAPPIER_WORKSPACE_DIST_OUTPUT_DIR or generates the files referenced by package.json exports/main/types.',
+        + '\nFix: ensure the package build honors PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR or generates the files referenced by package.json exports/main/types.',
       );
     }
 

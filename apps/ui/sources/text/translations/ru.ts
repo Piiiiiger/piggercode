@@ -9168,7 +9168,7 @@ settingsSession: {
         manifest: {
           title: "Манифест пакета модели",
           subtitle:
-            "По умолчанию используются пакеты моделей Happier (переопределяется через EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).",
+            "По умолчанию используются пакеты моделей Happier (переопределяется через EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).",
           detailResolved: "Определён",
           detailMissing: "Отсутствует",
         },
@@ -9210,7 +9210,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "Отсутствует URL манифеста",
-            body: "Не удалось определить URL манифеста пакета модели. Проверьте EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (или устаревшие переменные окружения Kokoro).",
+            body: "Не удалось определить URL манифеста пакета модели. Проверьте EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (или устаревшие переменные окружения Kokoro).",
           },
           notInstalledTitle: "Не установлено",
           notInstalledBody:

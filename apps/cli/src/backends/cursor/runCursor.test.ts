@@ -80,9 +80,9 @@ describe('runCursor', () => {
 
     expect(createCursorAcpRuntimeMock).toHaveBeenCalledWith(expect.objectContaining({
       env: expect.objectContaining({
-        HAPPIER_CURSOR_PATH: '/opt/cursor/cursor-agent',
-        HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0',
-        HAPPIER_CURSOR_API_ENDPOINT: 'https://cursor.example.test',
+        PIGGERCODE_CURSOR_PATH: '/opt/cursor/cursor-agent',
+        PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0',
+        PIGGERCODE_CURSOR_API_ENDPOINT: 'https://cursor.example.test',
       }),
     }));
   });

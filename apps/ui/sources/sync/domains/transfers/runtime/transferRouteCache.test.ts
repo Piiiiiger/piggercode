@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('transferRouteCache', () => {
     beforeEach(() => {
         vi.resetModules();
-        delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
-        delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
     });
 
     it('uses server scope and endpoint set when caching direct-peer unavailability', async () => {

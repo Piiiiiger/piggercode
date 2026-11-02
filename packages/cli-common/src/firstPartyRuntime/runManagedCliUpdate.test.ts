@@ -53,7 +53,7 @@ describe('runManagedCliUpdate — the one CLI update transaction', () => {
 
   beforeEach(async () => {
     homeDir = await mkdtemp(join(tmpdir(), 'happier-cli-update-tx-'));
-    env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+    env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
   });
   afterEach(async () => {
     await rm(homeDir, { recursive: true, force: true });

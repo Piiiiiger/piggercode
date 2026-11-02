@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-    HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
-    HAPPIER_REPLAY_SEED_MAX_CHARS,
-    HAPPIER_REPLAY_SEED_MIN_CHARS,
+    PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT,
+    PIGGERCODE_REPLAY_SEED_MAX_CHARS,
+    PIGGERCODE_REPLAY_SEED_MIN_CHARS,
 } from '@piggercode/protocol';
 
 import { ACCOUNT_DISPLAY_SETTING_DEFINITIONS } from './accountDisplaySettingDefinitions';
@@ -43,18 +43,18 @@ describe('ACCOUNT_DISPLAY_SETTING_DEFINITIONS', () => {
     it('bounds the replay seed budget at the measured floor and shared ceiling', () => {
         const schema = ACCOUNT_DISPLAY_SETTING_DEFINITIONS.sessionReplayMaxSeedChars.schema;
 
-        expect(schema.safeParse(HAPPIER_REPLAY_SEED_MIN_CHARS - 1).success).toBe(false);
-        expect(schema.safeParse(HAPPIER_REPLAY_SEED_MIN_CHARS).success).toBe(true);
-        expect(schema.safeParse(HAPPIER_REPLAY_SEED_MAX_CHARS).success).toBe(true);
-        expect(schema.safeParse(HAPPIER_REPLAY_SEED_MAX_CHARS + 1).success).toBe(false);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_SEED_MIN_CHARS - 1).success).toBe(false);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_SEED_MIN_CHARS).success).toBe(true);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_SEED_MAX_CHARS).success).toBe(true);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_SEED_MAX_CHARS + 1).success).toBe(false);
         expect(schema.safeParse(500).success).toBe(false);
     });
 
     it('bounds the replay recent-messages window at the window the resolver enforces', () => {
         const schema = ACCOUNT_DISPLAY_SETTING_DEFINITIONS.sessionReplayRecentMessagesCount.schema;
 
-        expect(schema.safeParse(HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT).success).toBe(true);
-        expect(schema.safeParse(HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT + 1).success).toBe(false);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT).success).toBe(true);
+        expect(schema.safeParse(PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT + 1).success).toBe(false);
         expect(schema.safeParse(10_000).success).toBe(false);
         expect(schema.safeParse(0).success).toBe(false);
     });

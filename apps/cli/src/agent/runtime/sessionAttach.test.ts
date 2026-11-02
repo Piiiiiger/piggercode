@@ -5,8 +5,8 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_SESSION_ATTACH_FILE',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_SESSION_ATTACH_FILE',
 ]);
 
 describe('readSessionAttachFromEnv', () => {
@@ -14,8 +14,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -27,7 +27,7 @@ describe('readSessionAttachFromEnv', () => {
       const filePath = join(attachDir, 'attach.json');
 
       await writeFile(filePath, JSON.stringify({ v: 2, encryptionMode: 'plain' }), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       await expect(readSessionAttachFromEnv()).rejects.toThrow('Invalid session attach file location');
     } finally {
@@ -40,8 +40,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -57,7 +57,7 @@ describe('readSessionAttachFromEnv', () => {
       const linkPath = join(attachDir, 'attach.json');
       await symlink(targetPath, linkPath);
 
-      process.env.HAPPIER_SESSION_ATTACH_FILE = linkPath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = linkPath;
 
       await expect(readSessionAttachFromEnv()).rejects.toThrow();
 
@@ -74,8 +74,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -94,7 +94,7 @@ describe('readSessionAttachFromEnv', () => {
       };
 
       await writeFile(filePath, JSON.stringify(payload), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const res = await readSessionAttachFromEnv();
       expect(res).toEqual({ encryptionMode: 'e2ee', encryptionVariant: 'dataKey', encryptionKey: key });
@@ -111,8 +111,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -131,7 +131,7 @@ describe('readSessionAttachFromEnv', () => {
       };
 
       await writeFile(filePath, JSON.stringify(payload), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const res = await readSessionAttachFromEnv();
       expect(res).toEqual({
@@ -139,7 +139,7 @@ describe('readSessionAttachFromEnv', () => {
         lastObservedMessageSeq: 55,
         initialTranscriptAfterSeq: 0,
       });
-      expect(process.env.HAPPIER_SESSION_ATTACH_FILE).toBeUndefined();
+      expect(process.env.PIGGERCODE_SESSION_ATTACH_FILE).toBeUndefined();
 
       // File should be deleted.
       await expect(stat(filePath)).rejects.toMatchObject({ code: 'ENOENT' });
@@ -153,8 +153,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -177,7 +177,7 @@ describe('readSessionAttachFromEnv', () => {
       };
 
       await writeFile(filePath, JSON.stringify(payload), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const res = await readSessionAttachFromEnv();
       expect(res).toEqual({
@@ -187,7 +187,7 @@ describe('readSessionAttachFromEnv', () => {
         lastObservedMessageSeq: 55,
         initialTranscriptAfterSeq: 54,
       });
-      expect(process.env.HAPPIER_SESSION_ATTACH_FILE).toBeUndefined();
+      expect(process.env.PIGGERCODE_SESSION_ATTACH_FILE).toBeUndefined();
 
       // File should be deleted.
       await expect(stat(filePath)).rejects.toMatchObject({ code: 'ENOENT' });
@@ -201,8 +201,8 @@ describe('readSessionAttachFromEnv', () => {
     const dir = await createTempDir('happy-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
 
       vi.resetModules();
@@ -225,7 +225,7 @@ describe('readSessionAttachFromEnv', () => {
       };
 
       await writeFile(filePath, JSON.stringify(payload), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       await expect(readSessionAttachFromEnv()).rejects.toThrow('Invalid session attach file');
     } finally {
@@ -241,8 +241,8 @@ describe('readSessionAttachFromEnv', () => {
     const previousUserProfile = process.env.USERPROFILE;
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
       process.env.HOME = homeDir;
       process.env.USERPROFILE = homeDir;
@@ -256,7 +256,7 @@ describe('readSessionAttachFromEnv', () => {
       const filePath = join(attachDir, 'attach.json');
 
       await writeFile(filePath, JSON.stringify({ v: 2, encryptionMode: 'plain' }), { mode: 0o600 });
-      process.env.HAPPIER_SESSION_ATTACH_FILE = '~/.happier/tmp/session-attach/attach.json';
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.happier/tmp/session-attach/attach.json';
 
       const res = await readSessionAttachFromEnv();
       expect(res).toEqual({ encryptionMode: 'plain' });

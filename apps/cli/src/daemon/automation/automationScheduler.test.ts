@@ -14,8 +14,8 @@ describe('resolveAutomationPollingConfig', () => {
 
   it('clamps values into configured ranges', () => {
     const config = resolveAutomationPollingConfig({
-      HAPPIER_AUTOMATION_LEASE_MS: '1000',
-      HAPPIER_AUTOMATION_HEARTBEAT_MS: '9999999',
+      PIGGERCODE_AUTOMATION_LEASE_MS: '1000',
+      PIGGERCODE_AUTOMATION_HEARTBEAT_MS: '9999999',
     } as NodeJS.ProcessEnv);
 
     expect(config).toEqual({
@@ -26,8 +26,8 @@ describe('resolveAutomationPollingConfig', () => {
 
   it('falls back for non-numeric values', () => {
     const config = resolveAutomationPollingConfig({
-      HAPPIER_AUTOMATION_LEASE_MS: 'NaN',
-      HAPPIER_AUTOMATION_HEARTBEAT_MS: 'x',
+      PIGGERCODE_AUTOMATION_LEASE_MS: 'NaN',
+      PIGGERCODE_AUTOMATION_HEARTBEAT_MS: 'x',
     } as NodeJS.ProcessEnv);
 
     expect(config).toEqual({

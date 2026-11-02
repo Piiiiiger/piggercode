@@ -64,23 +64,23 @@ describe('core e2e: Claude fast-start', () => {
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_ACTIVE_SERVER_ID: serverId,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-      HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+      PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
       // Make server session creation slow enough that we can verify local spawn happens first.
-      HAPPIER_E2E_DELAY_CREATE_SESSION_MS: '30000',
+      PIGGERCODE_E2E_DELAY_CREATE_SESSION_MS: '30000',
     };
 
     const cliDistEntrypoint = await ensureCliDistBuilt(

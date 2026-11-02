@@ -2,13 +2,13 @@ import readline from 'node:readline';
 import { appendFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-if (process.env.HAPPIER_TEST_CATALOG_START_FILE) appendFileSync(process.env.HAPPIER_TEST_CATALOG_START_FILE, `${process.pid}\n`);
-if (process.env.HAPPIER_TEST_CATALOG_ENV_FILE) writeFileSync(process.env.HAPPIER_TEST_CATALOG_ENV_FILE, JSON.stringify({ HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR }));
-if (process.env.HAPPIER_TEST_CATALOG_SHUTDOWN_DELAY_MS) {
-  process.on('SIGTERM', () => setTimeout(() => process.exit(0), Number(process.env.HAPPIER_TEST_CATALOG_SHUTDOWN_DELAY_MS)));
+if (process.env.PIGGERCODE_TEST_CATALOG_START_FILE) appendFileSync(process.env.PIGGERCODE_TEST_CATALOG_START_FILE, `${process.pid}\n`);
+if (process.env.PIGGERCODE_TEST_CATALOG_ENV_FILE) writeFileSync(process.env.PIGGERCODE_TEST_CATALOG_ENV_FILE, JSON.stringify({ PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR }));
+if (process.env.PIGGERCODE_TEST_CATALOG_SHUTDOWN_DELAY_MS) {
+  process.on('SIGTERM', () => setTimeout(() => process.exit(0), Number(process.env.PIGGERCODE_TEST_CATALOG_SHUTDOWN_DELAY_MS)));
 }
 
-const delayMs = Number.parseInt(process.env.HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS ?? '', 10) || 600;
+const delayMs = Number.parseInt(process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS ?? '', 10) || 600;
 
 function write(obj) {
   process.stdout.write(`${JSON.stringify(obj)}\n`);
@@ -26,17 +26,17 @@ function handleInitialize(msg) {
 }
 
 function handleModelList(msg) {
-  if (process.env.HAPPIER_TEST_CONTROL_PROCESS_CAPTURE_FILE) {
-    writeFileSync(process.env.HAPPIER_TEST_CONTROL_PROCESS_CAPTURE_FILE, JSON.stringify({
+  if (process.env.PIGGERCODE_TEST_CONTROL_PROCESS_CAPTURE_FILE) {
+    writeFileSync(process.env.PIGGERCODE_TEST_CONTROL_PROCESS_CAPTURE_FILE, JSON.stringify({
       cwd: process.cwd(),
-      rpcTimeoutMs: Number(process.env.HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS),
+      rpcTimeoutMs: Number(process.env.PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS),
     }));
   }
-  if (process.env.HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE) {
-    writeFileSync(process.env.HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE, JSON.stringify({
+  if (process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE) {
+    writeFileSync(process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE, JSON.stringify({
       CODEX_HOME: process.env.CODEX_HOME ?? null,
       CODEX_SQLITE_HOME: process.env.CODEX_SQLITE_HOME ?? null,
-      HAPPIER_FAKE_PROFILE_MARKER: process.env.HAPPIER_FAKE_PROFILE_MARKER ?? null,
+      PIGGERCODE_FAKE_PROFILE_MARKER: process.env.PIGGERCODE_FAKE_PROFILE_MARKER ?? null,
       OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? null,
       CODEX_AUTH_FILE_PRESENT: typeof process.env.CODEX_HOME === 'string'
         ? existsSync(join(process.env.CODEX_HOME, 'auth.json'))
@@ -98,7 +98,7 @@ rl.on('line', (line) => {
     const respond = () => write({ id: msg.id, result: { data: [{ cwd: msg.params.cwds[0], skills: [{
       name: 'review', path: `${msg.params.cwds[0]}/SKILL.md`, description: 'Review code', enabled: true,
     }], errors: [] }] } });
-    const catalogDelayMs = Number(process.env.HAPPIER_TEST_CATALOG_DELAY_MS ?? 0);
+    const catalogDelayMs = Number(process.env.PIGGERCODE_TEST_CATALOG_DELAY_MS ?? 0);
     if (catalogDelayMs > 0) setTimeout(respond, catalogDelayMs);
     else respond();
     return;

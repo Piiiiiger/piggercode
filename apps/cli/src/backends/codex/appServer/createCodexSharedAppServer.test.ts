@@ -131,7 +131,7 @@ describe('createCodexSharedAppServer', () => {
       // or AppServer logic: this is the native process failure boundary.
       const failure = await createCodexSharedAppServer({
         directory,
-        processEnv: { ...process.env, HAPPIER_CODEX_APP_SERVER_BIN: process.execPath },
+        processEnv: { ...process.env, PIGGERCODE_CODEX_APP_SERVER_BIN: process.execPath },
         dependencies: { createRuntimeDirectory: () => mkdtemp(join(directory, 'runtime-')) },
       }).catch((error: unknown) => error);
       expect(failure).toMatchObject({ message: expect.stringContaining('exited before its socket was ready') });
@@ -155,7 +155,7 @@ describe('createCodexSharedAppServer', () => {
       directory: '/workspace',
       processEnv: {
         HOME: '/home/test',
-        HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '90000',
+        PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '90000',
       },
       configOverrides: buildCodexAppServerConfigOverrides({}, {
         codexArgs: ['-c', 'model="gpt-5"', '--config=model_reasoning_effort=low'],

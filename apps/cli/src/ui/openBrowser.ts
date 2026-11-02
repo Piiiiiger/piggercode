@@ -39,10 +39,10 @@ async function hasExecutableOnPath(executable: string): Promise<boolean> {
  */
 export async function openBrowser(url: string): Promise<boolean> {
     try {
-        const noOpenRaw = (process.env.HAPPIER_NO_BROWSER_OPEN ?? '').toString().trim();
+        const noOpenRaw = (process.env.PIGGERCODE_NO_BROWSER_OPEN ?? '').toString().trim();
         const noOpen = Boolean(noOpenRaw) && noOpenRaw !== '0' && noOpenRaw.toLowerCase() !== 'false';
         if (noOpen) {
-            logger.debug('[browser] Browser opening disabled (HAPPIER_NO_BROWSER_OPEN), skipping browser open');
+            logger.debug('[browser] Browser opening disabled (PIGGERCODE_NO_BROWSER_OPEN), skipping browser open');
             return false;
         }
         // Check if we're in a headless environment

@@ -11,7 +11,7 @@ fn background_command_preserves_piped_io_without_a_windows_console() {
     // A real console-subsystem child observes its own console and exchanges task-like data.
     let mut child = background_command::background_command(std::env::current_exe().unwrap())
         .args(["--exact", "report_background_child_state", "--nocapture"])
-        .env("HAPPIER_TEST_REPORT_BACKGROUND_CHILD", "1")
+        .env("PIGGERCODE_TEST_REPORT_BACKGROUND_CHILD", "1")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -35,7 +35,7 @@ fn background_command_preserves_piped_io_without_a_windows_console() {
 
 #[test]
 fn report_background_child_state() {
-    if std::env::var_os("HAPPIER_TEST_REPORT_BACKGROUND_CHILD").is_none() {
+    if std::env::var_os("PIGGERCODE_TEST_REPORT_BACKGROUND_CHILD").is_none() {
         return;
     }
     let mut input = String::new();

@@ -9,8 +9,8 @@ export function resolveOpenCodeServerLockTimeoutMsFromEnv(env: NodeJS.ProcessEnv
 }
 
 function resolveLockStaleAfterMsFromEnv(env: NodeJS.ProcessEnv): number {
-  const raw = typeof env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS === 'string'
-    ? env.HAPPIER_OPENCODE_SERVER_LOCK_STALE_AFTER_MS.trim()
+  const raw = typeof env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS === 'string'
+    ? env.PIGGERCODE_OPENCODE_SERVER_LOCK_STALE_AFTER_MS.trim()
     : '';
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0) return 300_000;

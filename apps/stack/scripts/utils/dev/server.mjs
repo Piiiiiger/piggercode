@@ -58,7 +58,7 @@ function getDbProviderFromServerEnv(serverEnv = {}, serverComponentName = 'happi
 }
 
 function getPgliteDbDirFromServerEnv(serverEnv = {}) {
-  return String(serverEnv.HAPPIER_SERVER_LIGHT_DB_DIR ?? serverEnv.HAPPY_SERVER_LIGHT_DB_DIR ?? '').trim();
+  return String(serverEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR ?? serverEnv.HAPPY_SERVER_LIGHT_DB_DIR ?? '').trim();
 }
 
 export function createDevServerReloadPlan({
@@ -589,12 +589,12 @@ function localServerUrlForPort(port) {
 
 function serverReloadMigrationEnv(reloadPlan) {
   return {
-    HAPPIER_STACK_MIGRATE_MODE: reloadPlan.migrationMode === 'skip' ? 'skip' : 'always',
+    PIGGERCODE_STACK_MIGRATE_MODE: reloadPlan.migrationMode === 'skip' ? 'skip' : 'always',
   };
 }
 
 function resolveDevProxyDrainMs(serverEnv = {}) {
-  const rawValue = serverEnv.HAPPIER_STACK_DEV_PROXY_DRAIN_MS;
+  const rawValue = serverEnv.PIGGERCODE_STACK_DEV_PROXY_DRAIN_MS;
   if (rawValue === undefined || rawValue === null || String(rawValue).trim() === '') {
     return 2000;
   }
@@ -762,10 +762,10 @@ export async function preflightDevServerRestart(
   { pmExecBinImpl = pmExecBin } = {},
 ) {
   const parentPreflightAlreadyDone = String(
-    serverEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE ?? '',
+    serverEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE ?? '',
   ).trim() === '1';
-  delete serverEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
-  const enabled = String(serverEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT ?? '').trim() !== '0';
+  delete serverEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
+  const enabled = String(serverEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT ?? '').trim() !== '0';
   if (!enabled) return { ran: false, reason: 'disabled' };
   if (parentPreflightAlreadyDone) {
     return { ran: false, reason: 'already-done' };
@@ -785,7 +785,7 @@ export async function preflightDevServerRestart(
       args: [],
       env: {
         ...serverEnv,
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: serverEnv.HAPPIER_STACK_SKIP_REFRESH_DEPS ?? '1',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: serverEnv.PIGGERCODE_STACK_SKIP_REFRESH_DEPS ?? '1',
       },
       quiet: false,
     });
@@ -796,7 +796,7 @@ export async function preflightDevServerRestart(
     args: [],
     env: {
       ...serverEnv,
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: serverEnv.HAPPIER_STACK_SKIP_REFRESH_DEPS ?? '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: serverEnv.PIGGERCODE_STACK_SKIP_REFRESH_DEPS ?? '1',
     },
     quiet: false,
   });
@@ -810,19 +810,19 @@ export function resolveStackUiDevPortStart({ env = process.env, stackName }) {
   return resolveStablePortStart({
     env: {
       ...env,
-      HAPPIER_STACK_UI_DEV_PORT_BASE: (env.HAPPIER_STACK_UI_DEV_PORT_BASE ?? '8081').toString(),
-      HAPPIER_STACK_UI_DEV_PORT_RANGE: (env.HAPPIER_STACK_UI_DEV_PORT_RANGE ?? '1000').toString(),
+      PIGGERCODE_STACK_UI_DEV_PORT_BASE: (env.PIGGERCODE_STACK_UI_DEV_PORT_BASE ?? '8081').toString(),
+      PIGGERCODE_STACK_UI_DEV_PORT_RANGE: (env.PIGGERCODE_STACK_UI_DEV_PORT_RANGE ?? '1000').toString(),
     },
     stackName,
-    baseKey: 'HAPPIER_STACK_UI_DEV_PORT_BASE',
-    rangeKey: 'HAPPIER_STACK_UI_DEV_PORT_RANGE',
+    baseKey: 'PIGGERCODE_STACK_UI_DEV_PORT_BASE',
+    rangeKey: 'PIGGERCODE_STACK_UI_DEV_PORT_RANGE',
     defaultBase: 8081,
     defaultRange: 1000,
   });
 }
 
 export async function pickDevMetroPort({ startPort, reservedPorts = new Set(), host = '127.0.0.1' } = {}) {
-  const forcedPort = (process.env.HAPPIER_STACK_UI_DEV_PORT ?? '').toString().trim();
+  const forcedPort = (process.env.PIGGERCODE_STACK_UI_DEV_PORT ?? '').toString().trim();
   return await pickMetroPort({ startPort, forcedPort, reservedPorts, host });
 }
 
@@ -875,14 +875,14 @@ export async function startDevServer({
     METRICS_ENABLED: baseEnv.METRICS_ENABLED ?? 'false',
   };
   applyServerComponentFlavorEnv({ serverComponentName, targetEnv: serverEnv });
-  delete baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
+  delete baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE;
   const dbProvider = applyEffectiveDbProviderEnv({ serverComponentName, env: baseEnv, targetEnv: serverEnv });
   const explicitDatabaseUrl = serverEnv.DATABASE_URL;
   if (dbProvider === 'mysql' && !String(explicitDatabaseUrl ?? '').trim()) {
     throw new Error('[local] mysql requires an explicit DATABASE_URL before managed infra startup');
   }
   const usesFullManagedInfra = serverComponentName === 'happier-server'
-    && (baseEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1') !== '0';
+    && (baseEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1') !== '0';
   if (dbProvider === 'postgres' && !usesFullManagedInfra && !String(explicitDatabaseUrl ?? '').trim()) {
     throw new Error('[local] postgres requires DATABASE_URL when the selected preset does not manage Postgres');
   }
@@ -910,12 +910,12 @@ export async function startDevServer({
     }
 
   }
-  const autoMigrate = (baseEnv.HAPPIER_STACK_PRISMA_MIGRATE ?? '1') !== '0';
+  const autoMigrate = (baseEnv.PIGGERCODE_STACK_PRISMA_MIGRATE ?? '1') !== '0';
   if (autoMigrate) {
     await applyServerMigrationsImpl({ serverDir, env: serverEnv, dbProvider });
   }
 
-  const prismaPush = (baseEnv.HAPPIER_STACK_PRISMA_PUSH ?? '1').toString().trim() !== '0';
+  const prismaPush = (baseEnv.PIGGERCODE_STACK_PRISMA_PUSH ?? '1').toString().trim() !== '0';
   const serverScript = resolveServerDevScript({ serverComponentName, serverDir, prismaPush });
 
   const ensureWorkspacePackagesBuiltBeforeSpawn = async () => {

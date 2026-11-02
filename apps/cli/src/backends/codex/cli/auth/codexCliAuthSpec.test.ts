@@ -14,8 +14,8 @@ const envKeys = [
   'HOME',
   'USERPROFILE',
   'CODEX_HOME',
-  'HAPPIER_PNPM_BIN',
-  'HAPPIER_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS',
+  'PIGGERCODE_PNPM_BIN',
+  'PIGGERCODE_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS',
   'OPENAI_API_KEY',
   'CODEX_API_KEY',
 ] as const;
@@ -59,7 +59,7 @@ describe('codexCliAuthSpec', () => {
       CODEX_HOME: join(dir, '.codex'),
       OPENAI_API_KEY: undefined,
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const detectAuthStatus = codexCliAuthSpec.detectAuthStatus;
     expect(detectAuthStatus).toBeTypeOf('function');
@@ -100,7 +100,7 @@ describe('codexCliAuthSpec', () => {
       USERPROFILE: dir,
       CODEX_HOME: join(dir, '.codex'),
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const authDir = join(dir, '.codex');
     await mkdir(authDir, { recursive: true });
@@ -161,9 +161,9 @@ describe('codexCliAuthSpec', () => {
       HOME: dir,
       USERPROFILE: dir,
       CODEX_HOME: join(dir, '.codex'),
-      HAPPIER_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS: '3_000',
+      PIGGERCODE_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS: '3_000',
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const detectAuthStatus = codexCliAuthSpec.detectAuthStatus;
     expect(detectAuthStatus).toBeTypeOf('function');
@@ -206,7 +206,7 @@ describe('codexCliAuthSpec', () => {
       CODEX_HOME: join(dir, '.codex'),
       OPENAI_API_KEY: undefined,
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const authDir = join(dir, '.codex');
     await mkdir(authDir, { recursive: true });
@@ -264,7 +264,7 @@ describe('codexCliAuthSpec', () => {
       CODEX_HOME: join(dir, '.codex'),
       OPENAI_API_KEY: 'sk-test-codex',
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const authDir = join(dir, '.codex');
     await mkdir(authDir, { recursive: true });
@@ -324,7 +324,7 @@ describe('codexCliAuthSpec', () => {
       OPENAI_API_KEY: undefined,
       CODEX_API_KEY: 'codex-test-key',
     });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const detectAuthStatus = codexCliAuthSpec.detectAuthStatus;
     expect(detectAuthStatus).toBeTypeOf('function');

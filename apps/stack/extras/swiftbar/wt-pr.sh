@@ -33,7 +33,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 hstack="$SCRIPT_DIR/hstack.sh"
 if [[ ! -x "$hstack" ]]; then
-  if [[ -n "${HAPPIER_STACK_SANDBOX_DIR:-}" ]]; then
+  if [[ -n "${PIGGERCODE_STACK_SANDBOX_DIR:-}" ]]; then
     echo "missing hstack wrapper in sandbox: $hstack" >&2
     exit 1
   fi

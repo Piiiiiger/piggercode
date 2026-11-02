@@ -59,7 +59,7 @@ function applyOidcOffboardingEnv(providersConfig: unknown, strict?: string): voi
         AUTH_OFFBOARDING_INTERVAL_SECONDS: "60",
         AUTH_OFFBOARDING_STRICT: strict,
         AUTH_PROVIDERS_CONFIG_JSON: JSON.stringify(providersConfig),
-        HAPPIER_WEBAPP_URL: "https://app.example.test",
+        PIGGERCODE_WEBAPP_URL: "https://app.example.test",
     });
 }
 

@@ -21,7 +21,7 @@ export function resolveHappierRuntimeContextEnvFromConfiguration(): Record<strin
   return resolveHappierRuntimeContextEnv({
     homeDir: configuration.happyHomeDir,
     daemonLifecycleScopeId:
-      String(process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim()
+      String(process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim()
       || configuration.activeServerId,
     server: {
       activeServerId: configuration.activeServerId,

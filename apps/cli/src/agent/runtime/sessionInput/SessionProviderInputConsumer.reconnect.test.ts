@@ -30,7 +30,7 @@ describe('active-turn pending wake recovery', () => {
 
   it('applies idle metadata controls through the shared consumer without granting Pending eligibility', async () => {
     const testHome = await mkdtemp(join(tmpdir(), 'happier-idle-control-wake-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', testHome);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', testHome);
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { ApiSessionClient } = await import('@/api/session/sessionClient');
@@ -122,7 +122,7 @@ describe('active-turn pending wake recovery', () => {
 
   it('recovers failed settings convergence on a later pending hint without another connection', async () => {
     const testHome = await mkdtemp(join(tmpdir(), 'happier-pending-settings-recovery-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', testHome);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', testHome);
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { ApiSessionClient } = await import('@/api/session/sessionClient');
@@ -175,7 +175,7 @@ describe('active-turn pending wake recovery', () => {
     { phase: 'idle', updateTiming: 'during_backoff' },
   ] as const)('$phase input survives repeated disconnects and resumes on a pending update $updateTiming without polling', async ({ phase, updateTiming }) => {
     const testHome = await mkdtemp(join(tmpdir(), 'happier-pending-wake-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', testHome);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', testHome);
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { ApiSessionClient } = await import('@/api/session/sessionClient');

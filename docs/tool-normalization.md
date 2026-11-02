@@ -76,7 +76,7 @@ Codex local-control is intentionally different from Claude local-control:
 Codex rollout source directory:
 
 - Default: `~/.codex/sessions`
-- Override (tests / nonstandard installs): `HAPPIER_CODEX_SESSIONS_DIR`
+- Override (tests / nonstandard installs): `PIGGERCODE_CODEX_SESSIONS_DIR`
 
 Mapping Codex rollout tool names to canonical tools:
 
@@ -176,12 +176,12 @@ Tool tracing captures real provider payloads as JSONL so we can curate fixtures 
 
 Stack-scoped env vars:
 
-- `HAPPIER_STACK_TOOL_TRACE=1`
+- `PIGGERCODE_STACK_TOOL_TRACE=1`
 
 Optional overrides:
 
-- `HAPPIER_STACK_TOOL_TRACE_DIR=/path/to/dir` (defaults to `$HAPPIER_HOME_DIR/tool-traces`)
-- `HAPPIER_STACK_TOOL_TRACE_FILE=/path/to/file.jsonl` (forces a single file)
+- `PIGGERCODE_STACK_TOOL_TRACE_DIR=/path/to/dir` (defaults to `$PIGGERCODE_HOME_DIR/tool-traces`)
+- `PIGGERCODE_STACK_TOOL_TRACE_FILE=/path/to/file.jsonl` (forces a single file)
 
 Implementation:
 

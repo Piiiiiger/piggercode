@@ -51,7 +51,7 @@ describe('resolveScopedMachineEncryptionContext', () => {
 
     afterEach(async () => {
         vi.unstubAllGlobals();
-        delete process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX;
         resetScopedMachineDataKeyCacheForTests();
         try {
             const { resetServerReachabilitySupervisors } = await import('@/sync/runtime/connectivity/serverReachabilitySupervisorPool');
@@ -232,8 +232,8 @@ describe('resolveScopedMachineEncryptionContext', () => {
         expect(decryptSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('evicts oldest machine keys when cache exceeds EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX = '1';
+    it('evicts oldest machine keys when cache exceeds EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX', async () => {
+        process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX = '1';
 
         const fetchSpy = vi.fn(async (url: string) => {
             if (url.endsWith('/health') || url.endsWith('/v1/auth/ping')) {

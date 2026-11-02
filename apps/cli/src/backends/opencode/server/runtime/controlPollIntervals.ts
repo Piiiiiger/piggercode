@@ -20,11 +20,11 @@ export function resolveOpenCodeServerControlPollIntervals(
   env: OpenCodeServerControlPollEnv,
 ): OpenCodeServerControlPollIntervals {
   const pollSleepMs = readBoundedPollIntervalMs(
-    readEnvString(env, 'HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS'),
+    readEnvString(env, 'PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS'),
     2_000,
   );
   const turnActivePollSleepMs = readBoundedPollIntervalMs(
-    readEnvString(env, 'HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS'),
+    readEnvString(env, 'PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS'),
     pollSleepMs,
   );
 

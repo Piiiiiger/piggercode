@@ -1282,7 +1282,7 @@ function sanitizeReactNativeNestedObjectLiteral(
     const indent = '    '.repeat(indentLevel);
     const propertyIndent = '    '.repeat(indentLevel + 1);
     const lines: string[] = [`${indent}{`];
-    const skipPropertySentinel = '__HAPPIER_SKIP_REACT_NATIVE_PROPERTY__';
+    const skipPropertySentinel = '__PIGGERCODE_SKIP_REACT_NATIVE_PROPERTY__';
 
     const normalizeExpressionText = (value: string): string => {
         let nextValue = value;

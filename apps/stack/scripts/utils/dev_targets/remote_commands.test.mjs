@@ -54,7 +54,7 @@ test('remote bootstrap reuses canonical dependency freshness instead of reinstal
     posixCommand,
     /corepack yarn node .*apps\/stack\/scripts\/utils\/dev_targets\/remote_dependency_bootstrap\.mjs/,
   );
-  assert.match(posixCommand, /HAPPIER_STACK_PM_CACHE_BASE_DIR=.*HOME.*\/\.cache/);
+  assert.match(posixCommand, /PIGGERCODE_STACK_PM_CACHE_BASE_DIR=.*HOME.*\/\.cache/);
   assert.doesNotMatch(posixCommand, /corepack yarn install --frozen-lockfile/);
   assert.match(posixCommand, /Happier repo/);
 
@@ -68,7 +68,7 @@ test('remote bootstrap reuses canonical dependency freshness instead of reinstal
   );
   assert.match(
     decodedPowerShell,
-    /\$env:HAPPIER_STACK_PM_CACHE_BASE_DIR = Join-Path \$env:USERPROFILE '\.cache'/,
+    /\$env:PIGGERCODE_STACK_PM_CACHE_BASE_DIR = Join-Path \$env:USERPROFILE '\.cache'/,
   );
   assert.doesNotMatch(decodedPowerShell, /corepack yarn install --frozen-lockfile/);
 });
@@ -100,14 +100,14 @@ test('remote daemon command reuses the Stack dev owner and adopts a last-green d
   );
   assert.doesNotMatch(command, /--restart/);
   assert.match(command, /stack-state\/repo-local-dev\/env/);
-  assert.match(command, /HAPPIER_HOME_DIR/);
-  assert.match(command, /HAPPIER_STACK_CLI_HOME_DIR/);
-  assert.match(command, /HAPPIER_STACK_STORAGE_DIR/);
-  assert.match(command, /export HAPPIER_STACK_CLI_ROOT_DISABLE=1;.*corepack yarn workspace/s);
-  assert.match(command, /HAPPIER_STACK_PM_CACHE_BASE_DIR=.*HOME.*\/\.cache/);
-  assert.match(command, /HAPPIER_STACK_STACK/);
-  assert.match(command, /HAPPIER_ACTIVE_SERVER_ID/);
-  assert.match(command, /HAPPIER_CLI_PKGROLL_TIMEOUT_MS=1800000/);
+  assert.match(command, /PIGGERCODE_HOME_DIR/);
+  assert.match(command, /PIGGERCODE_STACK_CLI_HOME_DIR/);
+  assert.match(command, /PIGGERCODE_STACK_STORAGE_DIR/);
+  assert.match(command, /export PIGGERCODE_STACK_CLI_ROOT_DISABLE=1;.*corepack yarn workspace/s);
+  assert.match(command, /PIGGERCODE_STACK_PM_CACHE_BASE_DIR=.*HOME.*\/\.cache/);
+  assert.match(command, /PIGGERCODE_STACK_STACK/);
+  assert.match(command, /PIGGERCODE_ACTIVE_SERVER_ID/);
+  assert.match(command, /PIGGERCODE_CLI_PKGROLL_TIMEOUT_MS=1800000/);
   assert.match(command, /http:\/\/127\.0\.0\.1:43005/);
   assert.doesNotMatch(command, /stack stop/);
   assert.doesNotMatch(command, /corepack yarn dev /);
@@ -120,14 +120,14 @@ test('remote daemon command reuses the Stack dev owner and adopts a last-green d
     stackName: 'repo-local-dev',
   });
   const decodedPowerShell = Buffer.from(windowsCommand.split(' ').at(-1), 'base64').toString('utf16le');
-  assert.match(decodedPowerShell, /\$env:HAPPIER_STACK_CLI_HOME_DIR/);
-  assert.match(decodedPowerShell, /\$env:HAPPIER_STACK_CLI_ROOT_DISABLE = '1';.*corepack yarn workspace/s);
+  assert.match(decodedPowerShell, /\$env:PIGGERCODE_STACK_CLI_HOME_DIR/);
+  assert.match(decodedPowerShell, /\$env:PIGGERCODE_STACK_CLI_ROOT_DISABLE = '1';.*corepack yarn workspace/s);
   assert.match(
     decodedPowerShell,
-    /\$env:HAPPIER_STACK_PM_CACHE_BASE_DIR = Join-Path \$env:USERPROFILE '\.cache'/,
+    /\$env:PIGGERCODE_STACK_PM_CACHE_BASE_DIR = Join-Path \$env:USERPROFILE '\.cache'/,
   );
-  assert.match(decodedPowerShell, /\$env:HAPPIER_STACK_STACK = 'repo-local-dev'/);
-  assert.match(decodedPowerShell, /HAPPIER_CLI_PKGROLL_TIMEOUT_MS=1800000/);
+  assert.match(decodedPowerShell, /\$env:PIGGERCODE_STACK_STACK = 'repo-local-dev'/);
+  assert.match(decodedPowerShell, /PIGGERCODE_CLI_PKGROLL_TIMEOUT_MS=1800000/);
   assert.match(
     decodedPowerShell,
     /corepack yarn workspace @piggercode\/stack stack dev 'repo-local-dev' --no-server --no-ui --no-browser --no-dev-targets --watch/,
@@ -147,7 +147,7 @@ test('attended dev-target Stack preserves attended server readiness on the targe
     attended: true,
   });
 
-  assert.match(command, /export HAPPIER_STACK_TUI=1/);
+  assert.match(command, /export PIGGERCODE_STACK_TUI=1/);
   const windowsCommand = buildRemoteStackCommand(windows, {
     services: { server: false, daemon: true },
     serverUrl: 'http://127.0.0.1:43005',
@@ -157,21 +157,21 @@ test('attended dev-target Stack preserves attended server readiness on the targe
     attended: true,
   });
   const decodedWindowsCommand = Buffer.from(windowsCommand.split(' ').at(-1), 'base64').toString('utf16le');
-  assert.match(decodedWindowsCommand, /\$env:HAPPIER_STACK_TUI = '1'/);
+  assert.match(decodedWindowsCommand, /\$env:PIGGERCODE_STACK_TUI = '1'/);
 });
 
 test('remote server command pins stable public URL and exact target-local SQLite semantics', () => {
   const runtimeConfig = resolveRemoteServerRuntimeConfig({
     serverComponentName: 'happier-server-light',
     env: {
-      HAPPIER_DB_PROVIDER: 'sqlite',
-      HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-      HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
-      HAPPIER_SERVER_RETENTION__ENABLED: '1',
-      HAPPIER_SERVER_RETENTION__INTERVAL_MS: '3600000',
-      HAPPIER_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__MODE: 'delete_older_than',
-      HAPPIER_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS: '7',
-      HAPPIER_SERVER_LIGHT_DATA_DIR: '/guest/data-must-not-leak',
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+      PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
+      PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+      PIGGERCODE_SERVER_RETENTION__INTERVAL_MS: '3600000',
+      PIGGERCODE_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__MODE: 'delete_older_than',
+      PIGGERCODE_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS: '7',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/guest/data-must-not-leak',
       DATABASE_URL: 'file:/guest/data-must-not-leak/db.sqlite',
     },
   });
@@ -187,18 +187,18 @@ test('remote server command pins stable public URL and exact target-local SQLite
   const command = buildRemoteStackCommand(posix, options);
   const stopCommand = buildRemoteStackStopCommand(posix, options);
 
-  assert.match(command, /HAPPIER_DB_PROVIDER=sqlite/);
-  assert.match(command, /HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY=optional/);
-  assert.match(command, /HAPPIER_SQLITE_CONNECTION_LIMIT=1/);
-  assert.match(command, /HAPPIER_SERVER_RETENTION__ENABLED=1/);
-  assert.match(command, /HAPPIER_STACK_SERVER_PORT=43005/);
-  assert.match(command, /HAPPIER_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS=7/);
+  assert.match(command, /PIGGERCODE_DB_PROVIDER=sqlite/);
+  assert.match(command, /PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY=optional/);
+  assert.match(command, /PIGGERCODE_SQLITE_CONNECTION_LIMIT=1/);
+  assert.match(command, /PIGGERCODE_SERVER_RETENTION__ENABLED=1/);
+  assert.match(command, /PIGGERCODE_STACK_SERVER_PORT=43005/);
+  assert.match(command, /PIGGERCODE_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS=7/);
   assert.match(command, /--server-public-url=.*127\.0\.0\.1:52753/);
   assert.doesNotMatch(command, /--no-proxy/);
   assert.doesNotMatch(command, /--no-server|--no-daemon/);
   assert.doesNotMatch(command, /guest\/data-must-not-leak|DATABASE_URL/);
   assert.match(stopCommand, /stack stop .*repo-local-dev.* --yes --no-docker --preserve-daemon/);
-  assert.match(stopCommand, /export HAPPIER_STACK_CLI_ROOT_DISABLE=1/);
+  assert.match(stopCommand, /export PIGGERCODE_STACK_CLI_ROOT_DISABLE=1/);
   assert.doesNotMatch(stopCommand, /stack dev/);
 });
 
@@ -217,15 +217,15 @@ test('remote Stack command projects target-owned Expo through the guest Metro en
       serverComponentName: 'happier-server-light',
       dbProvider: 'sqlite',
       environment: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
       },
     },
   });
 
-  assert.match(command, /HAPPIER_STACK_EXPO_DEV_PORT=48081/);
-  assert.match(command, /HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY=stable/);
-  assert.match(command, /HAPPIER_STACK_EXPO_HOST=localhost/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_DEV_PORT=48081/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY=stable/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_HOST=localhost/);
   assert.match(command, /EXPO_PACKAGER_PROXY_URL=http:\/\/192\.168\.1\.20:18081/);
   assert.match(command, /--mobile/);
   assert.doesNotMatch(command, /--no-server|--no-ui/);
@@ -251,16 +251,16 @@ test('remote target resolves automatically detected mobile public addresses at i
       serverComponentName: 'happier-server-light',
       dbProvider: 'sqlite',
       environment: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
       },
     },
   });
 
   assert.match(command, /--mobile/);
-  assert.match(command, /HAPPIER_STACK_EXPO_HOST=localhost/);
-  assert.match(command, /HAPPIER_STACK_EXPO_PUBLIC_PORT=18829/);
-  assert.match(command, /HAPPIER_STACK_EXPO_DEV_PORT=30685/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_HOST=localhost/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_PUBLIC_PORT=18829/);
+  assert.match(command, /PIGGERCODE_STACK_EXPO_DEV_PORT=30685/);
   assert.doesNotMatch(command, /EXPO_PACKAGER_PROXY_URL=/);
   assert.doesNotMatch(command, /--server-public-url=/);
   assert.doesNotMatch(command, /192\.168\.5\.15/);
@@ -279,26 +279,26 @@ test('co-located remote server waits for deferred daemon credentials without cre
       serverComponentName: 'happier-server-light',
       dbProvider: 'sqlite',
       environment: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
       },
     },
     deferDaemonStartUntilCredentials: true,
   };
 
   const command = buildRemoteStackCommand(posix, options);
-  assert.match(command, /HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH=1/);
+  assert.match(command, /PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH=1/);
   assert.match(command, /stack dev .*repo-local-dev/);
 
   const ordinaryCommand = buildRemoteStackCommand(posix, {
     ...options,
     deferDaemonStartUntilCredentials: false,
   });
-  assert.doesNotMatch(ordinaryCommand, /HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH/);
+  assert.doesNotMatch(ordinaryCommand, /PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH/);
 
   const windowsCommand = buildRemoteStackCommand(windows, options);
   const decodedWindowsCommand = Buffer.from(windowsCommand.split(' ').at(-1), 'base64').toString('utf16le');
-  assert.match(decodedWindowsCommand, /HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH=1/);
+  assert.match(decodedWindowsCommand, /PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH=1/);
 });
 
 test('remote server runtime configuration rejects semantics that could diverge from the retained SQLite database', () => {
@@ -306,9 +306,9 @@ test('remote server runtime configuration rejects semantics that could diverge f
     () => resolveRemoteServerRuntimeConfig({
       serverComponentName: 'happier-server-light',
       env: {
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'required_e2ee',
-        HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'required_e2ee',
+        PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
       },
     }),
     /encryption storage policy must be optional/i,
@@ -317,9 +317,9 @@ test('remote server runtime configuration rejects semantics that could diverge f
     () => resolveRemoteServerRuntimeConfig({
       serverComponentName: 'happier-server-light',
       env: {
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_SQLITE_CONNECTION_LIMIT: '2',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_SQLITE_CONNECTION_LIMIT: '2',
       },
     }),
     /SQLite connection limit must be 1/i,

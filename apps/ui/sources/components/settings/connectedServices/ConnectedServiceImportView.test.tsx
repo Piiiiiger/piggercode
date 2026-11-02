@@ -31,7 +31,7 @@ describe('native login import machine flow', () => {
     const originalServerId = getActiveServerSnapshot().serverId;
     let testServerId = '';
     beforeEach(async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED', 'true');
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED', 'true');
         machineRpc.mockReset();
         alert.mockClear();
         resetServerFeaturesClientForTests();

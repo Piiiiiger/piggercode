@@ -6,13 +6,13 @@ import { captureConsoleText } from '@/testkit/logger/captureOutput';
 
 describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_DAEMON_SERVICE_NODE_PATH',
-    'HAPPIER_DAEMON_SERVICE_ENTRY_PATH',
-    'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-    'HAPPIER_RELEASE_RING',
-    'HAPPIER_RELEASE_CHANNEL',
-    'HAPPIER_DAEMON_SERVICE_CHANNEL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_DAEMON_SERVICE_NODE_PATH',
+    'PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH',
+    'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+    'PIGGERCODE_RELEASE_RING',
+    'PIGGERCODE_RELEASE_CHANNEL',
+    'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -25,8 +25,8 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
   it('derives the bundled entrypoint for an explicit managed js runtime wrapper path', async () => {
     withTempDirSync('happier-cli-daemon-service-entry-', (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
       });
 
       const output = captureConsoleText();
@@ -45,11 +45,11 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
   it('infers the preview release channel from a managed preview entry path when re-execed through node', async () => {
     withTempDirSync('happier-cli-daemon-service-preview-ring-', (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: '',
-        HAPPIER_RELEASE_RING: '',
-        HAPPIER_RELEASE_CHANNEL: '',
-        HAPPIER_DAEMON_SERVICE_CHANNEL: '',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: '',
+        PIGGERCODE_RELEASE_RING: '',
+        PIGGERCODE_RELEASE_CHANNEL: '',
+        PIGGERCODE_DAEMON_SERVICE_CHANNEL: '',
       });
 
       const originalArgv = [...process.argv];
@@ -76,13 +76,13 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
   it('infers the public dev release channel from an explicit managed dev entry path when argv no longer carries the lane', async () => {
     withTempDirSync('happier-cli-daemon-service-dev-ring-', (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
-        HAPPIER_DAEMON_SERVICE_ENTRY_PATH: '/Users/test/.happier/cli-dev/versions/0.2.3/package-dist/index.mjs',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: '',
-        HAPPIER_RELEASE_RING: '',
-        HAPPIER_RELEASE_CHANNEL: '',
-        HAPPIER_DAEMON_SERVICE_CHANNEL: '',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '/Users/test/.happier/cli-dev/versions/0.2.3/package-dist/index.mjs',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: '',
+        PIGGERCODE_RELEASE_RING: '',
+        PIGGERCODE_RELEASE_CHANNEL: '',
+        PIGGERCODE_DAEMON_SERVICE_CHANNEL: '',
       });
 
       const originalArgv = [...process.argv];

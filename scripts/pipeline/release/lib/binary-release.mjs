@@ -77,7 +77,7 @@ function clampMs(value, { min, max }) {
 }
 
 function resolveParentArchiveTimeoutBudgetMs(env = process.env) {
-  const raw = String(env.HAPPIER_RELEASE_PARENT_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_RELEASE_PARENT_TIMEOUT_MS ?? '').trim();
   if (!raw) return null;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) return null;
@@ -88,7 +88,7 @@ function shouldCollectArchiveStats({
   platform = process.platform,
   env = process.env,
 } = {}) {
-  const forcedRaw = String(env.HAPPIER_RELEASE_COLLECT_ARCHIVE_STATS ?? '').trim().toLowerCase();
+  const forcedRaw = String(env.PIGGERCODE_RELEASE_COLLECT_ARCHIVE_STATS ?? '').trim().toLowerCase();
   if (forcedRaw) {
     if (forcedRaw === '1' || forcedRaw === 'true' || forcedRaw === 'yes' || forcedRaw === 'on') {
       return true;
@@ -211,7 +211,7 @@ function resolveTarCreateArgs({ isGnuTar, excludeArgs, artifactArg, sourceDirArg
 }
 
 export function resolveGzipExecutionTimeoutMs(env = process.env, archiveStats = null) {
-  const raw = String(env.HAPPIER_RELEASE_GZIP_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_RELEASE_GZIP_TIMEOUT_MS ?? '').trim();
   if (raw) {
     const parsed = Number.parseInt(raw, 10);
     if (Number.isFinite(parsed)) {
@@ -264,7 +264,7 @@ async function createDeterministicGzipFromTar({
 }
 
 function shouldForceWindowsSplitArchive(env = process.env) {
-  const raw = String(env.HAPPIER_RELEASE_WINDOWS_SPLIT_ARCHIVE ?? '').trim().toLowerCase();
+  const raw = String(env.PIGGERCODE_RELEASE_WINDOWS_SPLIT_ARCHIVE ?? '').trim().toLowerCase();
   if (!raw) return null;
   if (raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on') return true;
   if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
@@ -293,7 +293,7 @@ export function resolveArchiveBackend({
   archiveStats = null,
   env = process.env,
 } = {}) {
-  const explicit = normalizeArchiveBackendOverride(env.HAPPIER_RELEASE_ARCHIVE_BACKEND);
+  const explicit = normalizeArchiveBackendOverride(env.PIGGERCODE_RELEASE_ARCHIVE_BACKEND);
   if (explicit) {
     return explicit;
   }
@@ -332,7 +332,7 @@ export function shouldUseWindowsSplitTarGzip({
 }
 
 export function resolveNodeArchiveExecutionTimeoutMs(env = process.env, archiveStats = null) {
-  const raw = String(env.HAPPIER_RELEASE_NODE_ARCHIVE_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_RELEASE_NODE_ARCHIVE_TIMEOUT_MS ?? '').trim();
   if (raw) {
     const parsed = Number.parseInt(raw, 10);
     if (Number.isFinite(parsed)) {
@@ -606,7 +606,7 @@ async function prunePackagedTreeDirectory(params) {
 }
 
 export function resolveTarExecutionTimeoutMs(env = process.env, archiveStats = null) {
-  const raw = String(env.HAPPIER_RELEASE_TAR_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_RELEASE_TAR_TIMEOUT_MS ?? '').trim();
   if (raw) {
     const parsed = Number.parseInt(raw, 10);
     if (Number.isFinite(parsed)) {

@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "grok",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_GROK",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_GROK",
   "protocol": "acp",
   "traceProvider": "grok",
   "requiredBinaries": [
     {
       "bin": "grok",
-      "envOverride": "HAPPIER_E2E_PROVIDER_GROK_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_GROK_BIN",
       "requireExists": true
     }
   ],
@@ -57,10 +57,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_GROK_PATH": "HAPPIER_E2E_PROVIDER_GROK_BIN"
+      "PIGGERCODE_GROK_PATH": "PIGGERCODE_E2E_PROVIDER_GROK_BIN"
     }
   }
 }

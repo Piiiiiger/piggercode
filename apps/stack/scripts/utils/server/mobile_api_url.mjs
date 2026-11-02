@@ -2,15 +2,15 @@ import { pickLanIpv4 } from '../net/lan_ip.mjs';
 import { normalizeUrlNoTrailingSlash } from '../net/url.mjs';
 
 function resolveLanIp({ env = process.env } = {}) {
-  const raw = (env.HAPPIER_STACK_LAN_IP ?? '').toString().trim();
+  const raw = (env.PIGGERCODE_STACK_LAN_IP ?? '').toString().trim();
   return raw || pickLanIpv4() || '';
 }
 
 export function hasExplicitMobileReachableHost({ env = process.env, preferredHost = '' } = {}) {
   return Boolean(
     String(preferredHost ?? '').trim()
-    || String(env.HAPPIER_STACK_LAN_IP ?? '').trim()
-    || String(env.HAPPIER_STACK_LAN_HOST ?? '').trim(),
+    || String(env.PIGGERCODE_STACK_LAN_IP ?? '').trim()
+    || String(env.PIGGERCODE_STACK_LAN_HOST ?? '').trim(),
   );
 }
 

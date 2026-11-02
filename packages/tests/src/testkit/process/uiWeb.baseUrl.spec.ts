@@ -40,7 +40,7 @@ vi.mock('./spawnProcess', () => {
           'utf8',
         );
         await mkdir(join(outputDir, '_expo/static/js/web'), { recursive: true });
-        await writeFile(join(outputDir, '_expo/static/js/web/index.js'), 'globalThis.__HAPPIER_E2E__ = true;', 'utf8');
+        await writeFile(join(outputDir, '_expo/static/js/web/index.js'), 'globalThis.__PIGGERCODE_E2E__ = true;', 'utf8');
       }
     },
     spawnLoggedProcess: (params: { stdoutPath: string; stderrPath: string; args?: unknown; env?: unknown }) => {
@@ -110,18 +110,18 @@ async function buildUiWebExportCacheKeyLike(env: NodeJS.ProcessEnv): Promise<str
     EXPO_UNSTABLE_WEB_MODAL: '1',
     EXPO_PUBLIC_DEBUG: debug,
     EXPO_PUBLIC_POSTHOG_KEY: String(env.EXPO_PUBLIC_POSTHOG_KEY ?? 'phc-clear-export').trim() || 'phc-clear-export',
-    EXPO_PUBLIC_HAPPIER_SERVER_URL: '',
+    EXPO_PUBLIC_PIGGERCODE_SERVER_URL: '',
     EXPO_PUBLIC_HAPPY_SERVER_URL: '',
     EXPO_PUBLIC_SERVER_URL: '',
     EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: '',
-    EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: '',
+    EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: '',
   };
   const relevantEntries = Object.entries(exportEnv)
     .filter(([key]) =>
       key.startsWith('EXPO_PUBLIC_')
       || key === 'APP_ENV'
       || key === 'APP_VARIANT'
-      || key === 'HAPPIER_APP_VARIANT_OVERRIDE'
+      || key === 'PIGGERCODE_APP_VARIANT_OVERRIDE'
       || key === 'EAS_BUILD_PROFILE'
       || key === 'EXPO_UPDATES_CHANNEL'
       || key === 'EXPO_UNSTABLE_WEB_MODAL'
@@ -196,7 +196,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const started = await startUiWeb({
       testDir,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-posthog-${Date.now()}`,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-posthog-${Date.now()}`,
       },
     });
 
@@ -213,7 +213,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const { startUiWeb, resolveUiWebExportRootDir } = await import('./uiWeb');
     const exportNamespace = buildUniqueUiWebExportNamespace('shared-export-build');
     const cacheDir = resolveUiWebExportRootDir({
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
     });
     await removePathWithRetries(cacheDir);
 
@@ -223,15 +223,15 @@ describe('startUiWeb baseUrl resolution', () => {
     const startedA = await startUiWeb({
       testDir: testDirA,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_HAPPY_SERVER_URL: 'http://127.0.0.1:4011',
-        EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({ changesPageLimit: 12 }),
+        EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({ changesPageLimit: 12 }),
       },
     });
     const startedB = await startUiWeb({
       testDir: testDirB,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_HAPPY_SERVER_URL: 'http://127.0.0.1:4012',
       },
     });
@@ -241,17 +241,17 @@ describe('startUiWeb baseUrl resolution', () => {
       expect(spawnCallCount).toBe(0);
 
       const html = await fetch(startedA.baseUrl).then((response) => response.text());
-      expect(html).toContain('__HAPPIER_WEB_RUNTIME_CONFIG__');
+      expect(html).toContain('__PIGGERCODE_WEB_RUNTIME_CONFIG__');
       expect(html).toContain('http://127.0.0.1:4011');
-      expect(html).toContain('HAPPIER_SYNC_TUNING_JSON');
+      expect(html).toContain('PIGGERCODE_SYNC_TUNING_JSON');
 
       const htmlB = await fetch(startedB.baseUrl).then((response) => response.text());
-      expect(htmlB).toContain('__HAPPIER_WEB_RUNTIME_CONFIG__');
+      expect(htmlB).toContain('__PIGGERCODE_WEB_RUNTIME_CONFIG__');
       expect(htmlB).toContain('http://127.0.0.1:4012');
       expect(htmlB).not.toContain('http://127.0.0.1:4011');
 
       const asset = await fetch(new URL('/_expo/static/js/web/index.js', startedB.baseUrl)).then((response) => response.text());
-      expect(asset).toContain('__HAPPIER_E2E__');
+      expect(asset).toContain('__PIGGERCODE_E2E__');
     } finally {
       await startedA.stop();
       await startedB.stop();
@@ -262,7 +262,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const { startUiWeb, resolveUiWebExportRootDir } = await import('./uiWeb');
     const exportNamespace = buildUniqueUiWebExportNamespace('persisted-cache');
     const cacheDir = resolveUiWebExportRootDir({
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
     });
     const distDir = resolve(cacheDir, 'dist');
     const cacheKeyPath = resolve(cacheDir, 'cache-key.json');
@@ -271,10 +271,10 @@ describe('startUiWeb baseUrl resolution', () => {
     await mkdir(distDir, { recursive: true });
     await writeFile(join(distDir, 'index.html'), '<!doctype html><html><head></head><body>cached</body></html>', 'utf8');
     await mkdir(join(distDir, '_expo', 'static', 'js', 'web'), { recursive: true });
-    await writeFile(join(distDir, '_expo', 'static', 'js', 'web', 'index.js'), 'globalThis.__HAPPIER_E2E__ = true;', 'utf8');
+    await writeFile(join(distDir, '_expo', 'static', 'js', 'web', 'index.js'), 'globalThis.__PIGGERCODE_E2E__ = true;', 'utf8');
 
     const env = {
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: 'http://127.0.0.1:4011',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: 'e2e-cache-test',
@@ -300,7 +300,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const { startUiWeb, resolveUiWebExportRootDir } = await import('./uiWeb');
     const exportNamespace = buildUniqueUiWebExportNamespace('persisted-cache-missing-manifest');
     const cacheDir = resolveUiWebExportRootDir({
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
     });
     const distDir = resolve(cacheDir, 'dist');
     const cacheKeyPath = resolve(cacheDir, 'cache-key.json');
@@ -308,10 +308,10 @@ describe('startUiWeb baseUrl resolution', () => {
     await mkdir(distDir, { recursive: true });
     await writeFile(join(distDir, 'index.html'), '<!doctype html><html><head></head><body>cached</body></html>', 'utf8');
     await mkdir(join(distDir, '_expo', 'static', 'js', 'web'), { recursive: true });
-    await writeFile(join(distDir, '_expo', 'static', 'js', 'web', 'index.js'), 'globalThis.__HAPPIER_E2E__ = true;', 'utf8');
+    await writeFile(join(distDir, '_expo', 'static', 'js', 'web', 'index.js'), 'globalThis.__PIGGERCODE_E2E__ = true;', 'utf8');
 
     const env = {
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: 'http://127.0.0.1:4011',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: 'e2e-cache-test',
@@ -326,7 +326,7 @@ describe('startUiWeb baseUrl resolution', () => {
       expect(runLoggedCalls).toHaveLength(1);
       expect(spawnCallCount).toBe(0);
       const html = await fetch(started.baseUrl).then((response) => response.text());
-      expect(html).toContain('__HAPPIER_WEB_RUNTIME_CONFIG__');
+      expect(html).toContain('__PIGGERCODE_WEB_RUNTIME_CONFIG__');
     } finally {
       await started.stop();
     }
@@ -343,14 +343,14 @@ describe('startUiWeb baseUrl resolution', () => {
     const startedA = await startUiWeb({
       testDir: testDirA,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_POSTHOG_KEY: 'phc_first',
       },
     });
     const startedB = await startUiWeb({
       testDir: testDirB,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_POSTHOG_KEY: 'phc_second',
       },
     });
@@ -378,7 +378,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const startedA = await startUiWeb({
       testDir: testDirA,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_POSTHOG_KEY: 'phc-source-change',
       },
     });
@@ -389,7 +389,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const startedB = await startUiWebAfterChange({
       testDir: testDirB,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_POSTHOG_KEY: 'phc-source-change',
       },
     });
@@ -414,14 +414,14 @@ describe('startUiWeb baseUrl resolution', () => {
     const startedA = await startUiWeb({
       testDir: testDirA,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_UPDATES_CHANNEL: 'preview',
       },
     });
     const startedB = await startUiWeb({
       testDir: testDirB,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_UPDATES_CHANNEL: 'production',
       },
     });
@@ -444,7 +444,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const started = await startUiWeb({
       testDir,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
       },
     });
 
@@ -467,7 +467,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     const testDir = await mkdtemp(join(tmpdir(), 'happier-uiweb-'));
     const lockPath = resolve(resolveUiWebExportRootDir({
-      HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+      PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
     }), 'build.lock');
     await mkdir(dirname(lockPath), { recursive: true });
     writeFileSync(lockPath, '', 'utf8');
@@ -475,7 +475,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const started = await startUiWeb({
       testDir,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
         EXPO_PUBLIC_POSTHOG_KEY: `phc-lock-${Date.now()}`,
       },
     });
@@ -499,8 +499,8 @@ describe('startUiWeb baseUrl resolution', () => {
     const started = await startUiWeb({
       testDir,
       env: {
-        HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
-        EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({ injected: '</script><script>window.__BROKEN__=true</script>' }),
+        PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: exportNamespace,
+        EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({ injected: '</script><script>window.__BROKEN__=true</script>' }),
       },
     });
 
@@ -533,7 +533,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       if (parsed.port === '19006') {
@@ -556,7 +556,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     try {
       const started = await Promise.race([
-        startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro' } }),
+        startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro' } }),
         new Promise<never>((_, reject) => {
           setTimeout(() => {
             const calledUrls = fetchMock.mock.calls
@@ -596,7 +596,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       if (parsed.port === '19006') return notOk();
@@ -610,7 +610,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     try {
       const started = await Promise.race([
-        startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro' } }),
+        startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro' } }),
         new Promise<never>((_, reject) => {
           setTimeout(() => {
             const calledUrls = fetchMock.mock.calls
@@ -650,7 +650,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       if (parsed.port === '19006') return notOk();
@@ -664,7 +664,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     try {
       const started = await Promise.race([
-        startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro' } }),
+        startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro' } }),
         new Promise<never>((_, reject) => {
           setTimeout(() => {
             reject(new Error('startUiWeb did not finish quickly'));
@@ -695,9 +695,9 @@ describe('startUiWeb baseUrl resolution', () => {
       startUiWeb({
         testDir,
         env: {
-          HAPPIER_E2E_UI_WEB_MODE: 'export',
-          HAPPIER_E2E_EXPO_CLEAR: '1',
-          HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-clear-${Date.now()}`,
+          PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+          PIGGERCODE_E2E_EXPO_CLEAR: '1',
+          PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-clear-${Date.now()}`,
           EXPO_PUBLIC_POSTHOG_KEY: 'phc-clear-export',
         },
       }),
@@ -734,7 +734,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       if (parsed.port === '19006' && parsed.pathname === '/') {
@@ -753,7 +753,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     try {
       const started = await Promise.race([
-        startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro' } }),
+        startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro' } }),
         new Promise<never>((_, reject) => {
           setTimeout(() => {
             reject(new Error('startUiWeb did not finish quickly'));
@@ -790,7 +790,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       if (parsed.port === '19006') return notOk();
@@ -804,7 +804,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
     try {
       const started = await Promise.race([
-        startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro', HAPPIER_E2E_EXPO_CLEAR: '1' } }),
+        startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro', PIGGERCODE_E2E_EXPO_CLEAR: '1' } }),
         new Promise<never>((_, reject) => {
           setTimeout(() => {
             reject(new Error('startUiWeb did not finish quickly'));
@@ -862,7 +862,7 @@ describe('startUiWeb baseUrl resolution', () => {
     const originalFetch = globalThis.fetch;
     (globalThis as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch;
 
-    const startedPromise = startUiWeb({ testDir, env: { HAPPIER_E2E_UI_WEB_MODE: 'metro' } });
+    const startedPromise = startUiWeb({ testDir, env: { PIGGERCODE_E2E_UI_WEB_MODE: 'metro' } });
     let startupSettled = false;
     void startedPromise.then(
       () => { startupSettled = true; },
@@ -876,7 +876,7 @@ describe('startUiWeb baseUrl resolution', () => {
     } finally {
       const pendingBundleResolver = pendingBundleRef.current;
       if (pendingBundleResolver) {
-        pendingBundleResolver(okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript'));
+        pendingBundleResolver(okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript'));
       }
       const started = await startedPromise.catch(() => null);
       await started?.stop().catch(() => {});
@@ -914,7 +914,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
       if (parsed.pathname.startsWith('/index.bundle')) {
         bundleFetchCount += 1;
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -928,9 +928,9 @@ describe('startUiWeb baseUrl resolution', () => {
         startUiWeb({
           testDir,
           env: {
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_ENTRY_PROBE_TIMEOUT_MS: '50',
-            HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '200',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_ENTRY_PROBE_TIMEOUT_MS: '50',
+            PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '200',
           },
         }),
       ).rejects.toThrow('Expo web entry page');
@@ -976,7 +976,7 @@ describe('startUiWeb baseUrl resolution', () => {
             }, { once: true });
           });
         }
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -990,9 +990,9 @@ describe('startUiWeb baseUrl resolution', () => {
         startUiWeb({
           testDir,
           env: {
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
           },
         }),
         new Promise<never>((_, reject) => {
@@ -1055,10 +1055,10 @@ describe('startUiWeb baseUrl resolution', () => {
         startUiWeb({
           testDir,
           env: {
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
-            HAPPIER_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
           },
         }),
       ).rejects.toThrow('expo web primary script ready');
@@ -1106,8 +1106,8 @@ describe('startUiWeb baseUrl resolution', () => {
       await expect(startUiWeb({
         testDir,
         env: {
-          HAPPIER_E2E_UI_WEB_MODE: 'metro',
-          HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+          PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
         },
       })).rejects.toThrow('expo web primary script ready');
 
@@ -1146,7 +1146,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname.startsWith('/index.bundle')) {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -1159,9 +1159,9 @@ describe('startUiWeb baseUrl resolution', () => {
       const started = await startUiWeb({
         testDir,
         env: {
-          HAPPIER_E2E_UI_WEB_MODE: 'export',
-          HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '1',
-          HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-fallback-${Date.now()}`,
+          PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+          PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '1',
+          PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: `uiweb-fallback-${Date.now()}`,
         },
       });
 
@@ -1185,7 +1185,7 @@ describe('startUiWeb baseUrl resolution', () => {
     expect(typeof resolveUiWebBeforeAllTimeoutMs).toBe('function');
     expect(
       (resolveUiWebBeforeAllTimeoutMs as (env: NodeJS.ProcessEnv) => number)({
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '420000',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '420000',
       }),
     ).toBeGreaterThan(420_000);
   });
@@ -1207,7 +1207,7 @@ describe('startUiWeb baseUrl resolution', () => {
     expect(typeof resolveUiWebScriptFetchAttemptTimeoutMs).toBe('function');
 
     const totalTimeoutMs = (resolveUiWebScriptFetchTotalTimeoutMs as (env: NodeJS.ProcessEnv) => number)({
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '1000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '1000',
     });
     expect(totalTimeoutMs).toBe(1000);
 
@@ -1220,13 +1220,13 @@ describe('startUiWeb baseUrl resolution', () => {
 
     expect(
       (resolveUiWebScriptFetchAttemptTimeoutMs as (env: NodeJS.ProcessEnv, totalTimeoutMs: number) => number)({
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '5000',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '5000',
       }, totalTimeoutMs),
     ).toBe(totalTimeoutMs);
 
     expect(
       (resolveUiWebScriptFetchAttemptTimeoutMs as (env: NodeJS.ProcessEnv, totalTimeoutMs: number) => number)({
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '250',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '250',
       }, totalTimeoutMs),
     ).toBe(250);
   });
@@ -1261,7 +1261,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname === '/bundle-b.js') {
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -1275,9 +1275,9 @@ describe('startUiWeb baseUrl resolution', () => {
         startUiWeb({
           testDir,
           env: {
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
           },
         }),
         new Promise<never>((_, reject) => {
@@ -1338,7 +1338,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
       if (parsed.pathname === '/node_modules/expo-router/entry.bundle') {
         entryFetchCount += 1;
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -1352,9 +1352,9 @@ describe('startUiWeb baseUrl resolution', () => {
         startUiWeb({
           testDir,
           env: {
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
           },
         }),
         new Promise<never>((_, reject) => {
@@ -1409,7 +1409,7 @@ describe('startUiWeb baseUrl resolution', () => {
       }
 
       if (parsed.pathname === '/runtime.js') {
-        return okText('globalThis.__HAPPIER_RUNTIME__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_RUNTIME__ = true;', 'application/javascript');
       }
 
       if (parsed.pathname === '/node_modules/expo-router/entry.bundle') {
@@ -1417,7 +1417,7 @@ describe('startUiWeb baseUrl resolution', () => {
         if (!entryReady) {
           return okText('<!doctype html><html><head></head><body>not ready</body></html>', 'text/html');
         }
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -1430,9 +1430,9 @@ describe('startUiWeb baseUrl resolution', () => {
       const startPromise = startUiWeb({
         testDir,
         env: {
-          HAPPIER_E2E_UI_WEB_MODE: 'metro',
-          HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '2000',
-          HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+          PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '2000',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
         },
       });
 
@@ -1500,7 +1500,7 @@ describe('startUiWeb baseUrl resolution', () => {
 
       if (parsed.pathname === '/bundle-b.js') {
         readyScriptFetchCount += 1;
-        return okText('globalThis.__HAPPIER_E2E__ = true;', 'application/javascript');
+        return okText('globalThis.__PIGGERCODE_E2E__ = true;', 'application/javascript');
       }
 
       return notOk();
@@ -1513,10 +1513,10 @@ describe('startUiWeb baseUrl resolution', () => {
       const started = await startUiWeb({
         testDir,
         env: {
-          HAPPIER_E2E_UI_WEB_MODE: 'metro',
-          HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
-          HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
-          HAPPIER_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
+          PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '500',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '50',
+          PIGGERCODE_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
         },
       });
 

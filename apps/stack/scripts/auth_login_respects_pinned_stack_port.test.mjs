@@ -48,9 +48,9 @@ async function spawnStackOwnedHealthServer({ stackName, envPath, env }) {
     detached: true,
     env: {
       ...env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
   });
@@ -102,12 +102,12 @@ test('hstack stack auth <stack> login --print prefers pinned env port over stale
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-        'HAPPIER_STACK_SERVER_PORT=4101',
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+        'PIGGERCODE_STACK_SERVER_PORT=4101',
         // Avoid external probes so --json stays hermetic.
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
         '',
       ].join('\n'),
       'utf-8'
@@ -122,7 +122,7 @@ test('hstack stack auth <stack> login --print prefers pinned env port over stale
 
     const env = {
       ...sanitizeStackTestRunnerEnv(process.env),
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     };
 
     const res = await runNode(
@@ -155,11 +155,11 @@ test('hstack stack auth <stack> login --print uses last runtime port when stack 
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-        // Intentionally omit HAPPIER_STACK_SERVER_PORT (ephemeral model).
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+        // Intentionally omit PIGGERCODE_STACK_SERVER_PORT (ephemeral model).
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
         '',
       ].join('\n'),
       'utf-8'
@@ -173,7 +173,7 @@ test('hstack stack auth <stack> login --print uses last runtime port when stack 
 
     const env = {
       ...sanitizeStackTestRunnerEnv(process.env),
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     };
 
     const res = await runNode(
@@ -207,11 +207,11 @@ test('hstack stack dev <stack> --json reuses recorded runtime port for ephemeral
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-        // Intentionally omit HAPPIER_STACK_SERVER_PORT (ephemeral model).
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+        // Intentionally omit PIGGERCODE_STACK_SERVER_PORT (ephemeral model).
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
         '',
       ].join('\n'),
       'utf-8'
@@ -234,7 +234,7 @@ test('hstack stack dev <stack> --json reuses recorded runtime port for ephemeral
 
     const env = {
       ...isolatedEnv,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     };
 
     const res = await runNode(

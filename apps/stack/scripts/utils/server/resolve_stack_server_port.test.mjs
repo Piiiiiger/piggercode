@@ -15,7 +15,7 @@ test('pinned stack port retries typed bind availability without requiring listen
   let waitOptions = null;
   const port = await reserveUnusedPort();
   const selected = await resolveLocalServerPortForStack({
-    env: { HAPPIER_STACK_SERVER_PORT: String(port) },
+    env: { PIGGERCODE_STACK_SERVER_PORT: String(port) },
     stackMode: true,
     stackName: 'repo-test-abc',
     runtimeStatePath: null,
@@ -40,7 +40,7 @@ test('pinned stack port reports unresolved availability without claiming another
   const port = await reserveUnusedPort();
   await assert.rejects(
     () => resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_SERVER_PORT: String(port) },
+      env: { PIGGERCODE_STACK_SERVER_PORT: String(port) },
       stackMode: true,
       stackName: 'repo-test-abc',
       runtimeStatePath: null,
@@ -76,7 +76,7 @@ function createProcessIdentityFixtureScope(linesByPid = new Map(), pidsByPort) {
         ...options,
         observePsEnvLineImpl: async () => ({
           status: 'ok',
-          line: linesByPid.get(Number(pid)) ?? `${pid} node HAPPIER_STACK_STACK=other-stack`,
+          line: linesByPid.get(Number(pid)) ?? `${pid} node PIGGERCODE_STACK_STACK=other-stack`,
           reason: 'fixture-ps-boundary',
         }),
       },
@@ -85,7 +85,7 @@ function createProcessIdentityFixtureScope(linesByPid = new Map(), pidsByPort) {
 }
 
 function stackOwnedProcessLine(pid, { stackName, envPath }) {
-  return `${pid} node HAPPIER_STACK_STACK=${stackName} HAPPIER_STACK_ENV_FILE=${envPath} HAPPIER_STACK_PROCESS_KIND=server`;
+  return `${pid} node PIGGERCODE_STACK_STACK=${stackName} PIGGERCODE_STACK_ENV_FILE=${envPath} PIGGERCODE_STACK_PROCESS_KIND=server`;
 }
 
 async function reserveUnusedPort() {
@@ -172,9 +172,9 @@ async function spawnStackOwnedIdleProcess({ stackName, envPath }) {
   const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 10000)'], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: 'ignore',
   });
@@ -205,9 +205,9 @@ async function spawnStackOwnedMaintenanceServer({ stackName, envPath }) {
   `], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
   });
@@ -255,9 +255,9 @@ async function spawnStackOwnedHealthServer({ stackName, envPath }) {
   `], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
   });
@@ -304,7 +304,7 @@ test('non-main stack reuses runtime port when a stack-owned server is already ru
     ]), new Map([[port, [child.pid]]]));
     await writeFile(runtimeStatePath, JSON.stringify({ stackName, ports: { server: port } }), 'utf-8');
     const out = await resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName,
       runtimeStatePath,
@@ -329,8 +329,8 @@ test('non-main stack does not reuse a healthy runtime port without stack-owned l
     await writeFile(runtimeStatePath, JSON.stringify({ stackName: 'repo-test-abc', ports: { server: port } }), 'utf-8');
     const out = await resolveLocalServerPortForStack({
       env: {
-        HAPPIER_STACK_SERVER_PORT_BASE: String(port),
-        HAPPIER_STACK_SERVER_PORT_RANGE: '10',
+        PIGGERCODE_STACK_SERVER_PORT_BASE: String(port),
+        PIGGERCODE_STACK_SERVER_PORT_RANGE: '10',
       },
       stackMode: true,
       stackName: 'repo-test-abc',
@@ -377,8 +377,8 @@ test('non-main stack fails closed when a real listener has inconclusive process 
     await assert.rejects(
       () => resolveLocalServerPortForStack({
         env: {
-          HAPPIER_STACK_SERVER_PORT_BASE: String(port),
-          HAPPIER_STACK_SERVER_PORT_RANGE: '10',
+          PIGGERCODE_STACK_SERVER_PORT_BASE: String(port),
+          PIGGERCODE_STACK_SERVER_PORT_RANGE: '10',
         },
         stackMode: true,
         stackName: 'repo-test-abc',
@@ -406,7 +406,7 @@ test('non-main stack rejects a pinned healthy server port without stack-owned li
     await assert.rejects(
       () =>
         resolveLocalServerPortForStack({
-          env: { HAPPIER_STACK_SERVER_PORT: String(port) },
+          env: { PIGGERCODE_STACK_SERVER_PORT: String(port) },
           stackMode: true,
           stackName: 'repo-test-abc',
           runtimeStatePath: null,
@@ -414,7 +414,7 @@ test('non-main stack rejects a pinned healthy server port without stack-owned li
           listenerObservationScope,
           waitForTcpPortFreeImpl: async () => ({ status: 'occupied' }),
         }),
-      /HAPPIER_STACK_SERVER_PORT/
+      /PIGGERCODE_STACK_SERVER_PORT/
     );
   } finally {
     await new Promise((resolvePromise) => server.close(resolvePromise));
@@ -444,7 +444,7 @@ test('non-main stack accepts pinned stable port during dev proxy maintenance whe
     );
 
     const out = await resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_SERVER_PORT: String(port), HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PIGGERCODE_STACK_SERVER_PORT: String(port), PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName,
       runtimeStatePath,
@@ -501,7 +501,7 @@ test('pinned startup adopts the exact runtime proxy without a broad listener sca
     });
 
     const out = await resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_SERVER_PORT: '52753', HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PIGGERCODE_STACK_SERVER_PORT: '52753', PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName,
       runtimeStatePath,
@@ -540,7 +540,7 @@ test('non-main stack reuses runtime stable port during dev proxy maintenance whe
     );
 
     const out = await resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName,
       runtimeStatePath,
@@ -577,7 +577,7 @@ for (const [projectionName, serverProxy] of [
       }), 'utf-8');
 
       const out = await resolveLocalServerPortForStack({
-        env: { HAPPIER_STACK_SERVER_PORT: String(port), HAPPIER_STACK_ENV_FILE: envPath },
+        env: { PIGGERCODE_STACK_SERVER_PORT: String(port), PIGGERCODE_STACK_ENV_FILE: envPath },
         stackMode: true,
         stackName,
         runtimeStatePath,
@@ -618,7 +618,7 @@ test('non-main stack rejects runtime dev proxy maintenance port when proxy pid i
     );
 
     const out = await resolveLocalServerPortForStack({
-      env: { HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName,
       runtimeStatePath,
@@ -645,8 +645,8 @@ test('non-main stack ignores runtime port when it falls outside the configured s
 
   const out = await resolveLocalServerPortForStack({
     env: {
-      HAPPIER_STACK_SERVER_PORT_BASE: '52005',
-      HAPPIER_STACK_SERVER_PORT_RANGE: '2000',
+      PIGGERCODE_STACK_SERVER_PORT_BASE: '52005',
+      PIGGERCODE_STACK_SERVER_PORT_RANGE: '2000',
     },
     stackMode: true,
     stackName: 'repo-test-abc',
@@ -676,8 +676,8 @@ test('non-main stack does not reuse runtime port with only a live pid and non-ha
 
     const out = await resolveLocalServerPortForStack({
       env: {
-        HAPPIER_STACK_SERVER_PORT_BASE: String(port),
-        HAPPIER_STACK_SERVER_PORT_RANGE: '10',
+        PIGGERCODE_STACK_SERVER_PORT_BASE: String(port),
+        PIGGERCODE_STACK_SERVER_PORT_RANGE: '10',
       },
       stackMode: true,
       stackName: 'repo-test-abc',
@@ -706,7 +706,7 @@ test('non-main stack errors when pinned server port is occupied by a non-happier
     await assert.rejects(
       () =>
         resolveLocalServerPortForStack({
-          env: { HAPPIER_STACK_SERVER_PORT: String(port) },
+          env: { PIGGERCODE_STACK_SERVER_PORT: String(port) },
           stackMode: true,
           stackName: 'repo-test-abc',
           runtimeStatePath: null,
@@ -714,7 +714,7 @@ test('non-main stack errors when pinned server port is occupied by a non-happier
           listenerObservationScope,
           waitForTcpPortFreeImpl: async () => ({ status: 'occupied' }),
         }),
-      /HAPPIER_STACK_SERVER_PORT/
+      /PIGGERCODE_STACK_SERVER_PORT/
     );
   } finally {
     await new Promise((resolvePromise) => server.close(resolvePromise));
@@ -731,7 +731,7 @@ test('non-main stack errors when pinned server port health responds 200 for anot
     await assert.rejects(
       () =>
         resolveLocalServerPortForStack({
-          env: { HAPPIER_STACK_SERVER_PORT: String(port) },
+          env: { PIGGERCODE_STACK_SERVER_PORT: String(port) },
           stackMode: true,
           stackName: 'repo-test-abc',
           runtimeStatePath: null,
@@ -739,7 +739,7 @@ test('non-main stack errors when pinned server port health responds 200 for anot
           listenerObservationScope,
           waitForTcpPortFreeImpl: async () => ({ status: 'occupied' }),
         }),
-      /HAPPIER_STACK_SERVER_PORT/
+      /PIGGERCODE_STACK_SERVER_PORT/
     );
   } finally {
     await new Promise((resolvePromise) => server.close(resolvePromise));
@@ -751,8 +751,8 @@ test('non-main stack picks a stable free port when no runtime port exists', asyn
   const runtimeStatePath = join(tmp, 'missing.runtime.json');
   const out = await resolveLocalServerPortForStack({
     env: {
-      HAPPIER_STACK_SERVER_PORT_BASE: '31200',
-      HAPPIER_STACK_SERVER_PORT_RANGE: '1',
+      PIGGERCODE_STACK_SERVER_PORT_BASE: '31200',
+      PIGGERCODE_STACK_SERVER_PORT_RANGE: '1',
     },
     stackMode: true,
     stackName: 'repo-test-abc',
@@ -780,8 +780,8 @@ test('non-main fresh selection uses authoritative bind evidence when listener di
 
   const out = await resolveLocalServerPortForStack({
     env: {
-      HAPPIER_STACK_SERVER_PORT_BASE: String(port),
-      HAPPIER_STACK_SERVER_PORT_RANGE: '1',
+      PIGGERCODE_STACK_SERVER_PORT_BASE: String(port),
+      PIGGERCODE_STACK_SERVER_PORT_RANGE: '1',
     },
     stackMode: true,
     stackName: 'repo-test-fresh-bind-proof',
@@ -804,8 +804,8 @@ test('non-main stack skips occupied stable port and picks the next free port', a
     // Keep the chosen stable start port occupied.
     const out = await resolveLocalServerPortForStack({
       env: {
-        HAPPIER_STACK_SERVER_PORT_BASE: String(port),
-        HAPPIER_STACK_SERVER_PORT_RANGE: '1',
+        PIGGERCODE_STACK_SERVER_PORT_BASE: String(port),
+        PIGGERCODE_STACK_SERVER_PORT_RANGE: '1',
       },
       stackMode: true,
       stackName: 'repo-test-abc',
@@ -819,9 +819,9 @@ test('non-main stack skips occupied stable port and picks the next free port', a
   }
 });
 
-test('main stack preserves legacy port selection via HAPPIER_SERVER_URL', async () => {
+test('main stack preserves legacy port selection via PIGGERCODE_SERVER_URL', async () => {
   const out = await resolveLocalServerPortForStack({
-    env: { HAPPIER_SERVER_URL: 'http://127.0.0.1:3999' },
+    env: { PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3999' },
     stackMode: true,
     stackName: 'main',
     runtimeStatePath: null,
@@ -841,7 +841,7 @@ test('runtime free-port fallback reuses the command listener verdict before bind
   await mkdir(binDir, { recursive: true });
   await writeFile(join(binDir, 'lsof'), '#!/bin/sh\nprintf x >> "$FAKE_LSOF_COUNT"\nexit 0\n', 'utf-8');
   await chmod(join(binDir, 'lsof'), 0o755);
-  await writeFile(envPath, 'HAPPIER_STACK_STACK=repo-test-single-verdict\n', 'utf-8');
+  await writeFile(envPath, 'PIGGERCODE_STACK_STACK=repo-test-single-verdict\n', 'utf-8');
   idleProcess = await spawnStackOwnedIdleProcess({ stackName: 'repo-test-single-verdict', envPath });
   await writeFile(runtimeStatePath, JSON.stringify({
     stackName: 'repo-test-single-verdict',
@@ -861,7 +861,7 @@ test('runtime free-port fallback reuses the command listener verdict before bind
       })],
     ]));
     const selected = await resolveLocalServerPortForStack({
-      env: { PATH: process.env.PATH, HAPPIER_STACK_ENV_FILE: envPath },
+      env: { PATH: process.env.PATH, PIGGERCODE_STACK_ENV_FILE: envPath },
       stackMode: true,
       stackName: 'repo-test-single-verdict',
       runtimeStatePath,

@@ -18,13 +18,13 @@ const mergedTestEnv: NodeJS.ProcessEnv = {
     ...testEnv,
 };
 
-if (mergedTestEnv.HAPPIER_SERVER_URL && !mergedTestEnv.HAPPIER_WEBAPP_URL) {
-    mergedTestEnv.HAPPIER_WEBAPP_URL = mergedTestEnv.HAPPIER_SERVER_URL;
+if (mergedTestEnv.PIGGERCODE_SERVER_URL && !mergedTestEnv.PIGGERCODE_WEBAPP_URL) {
+    mergedTestEnv.PIGGERCODE_WEBAPP_URL = mergedTestEnv.PIGGERCODE_SERVER_URL;
 }
 
 // CLI tests should not inherit embedded build-policy gating (set in CI).
 // Clear it by default so feature tests can opt-in explicitly per case.
-mergedTestEnv.HAPPIER_FEATURE_POLICY_ENV = '';
+mergedTestEnv.PIGGERCODE_FEATURE_POLICY_ENV = '';
 
 export default defineConfig({
     optimizeDeps: {

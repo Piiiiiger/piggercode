@@ -42,7 +42,7 @@ describe('sync JS thread lag telemetry lifecycle', () => {
     });
 
     it('starts JS-lag sampling when sync performance telemetry is enabled', async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON', JSON.stringify({
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON', JSON.stringify({
             syncPerformanceTelemetryEnabled: true,
             jsThreadLagTelemetrySampleIntervalMs: 50,
             jsThreadLagTelemetryThresholdMs: 10,
@@ -64,7 +64,7 @@ describe('sync JS thread lag telemetry lifecycle', () => {
     });
 
     it('flushes JS-lag summaries while sync remains connected', async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON', JSON.stringify({
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON', JSON.stringify({
             syncPerformanceTelemetryEnabled: true,
             syncPerformanceTelemetryFlushIntervalMs: 1000,
             jsThreadLagTelemetrySampleIntervalMs: 50,
@@ -87,7 +87,7 @@ describe('sync JS thread lag telemetry lifecycle', () => {
     });
 
     it('does not start JS-lag sampling when sync performance telemetry is disabled', async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON', JSON.stringify({
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON', JSON.stringify({
             syncPerformanceTelemetryEnabled: false,
             jsThreadLagTelemetrySampleIntervalMs: 50,
             jsThreadLagTelemetryThresholdMs: 10,

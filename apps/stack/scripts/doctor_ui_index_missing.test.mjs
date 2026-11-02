@@ -20,8 +20,8 @@ test('doctor reports a missing UI index.html when UI build dir exists', async (t
   const env = doctorEnv({
     monoRoot,
     extraEnv: {
-      HAPPIER_STACK_UI_BUILD_DIR: uiBuildDir,
-      HAPPIER_STACK_TAILSCALE_SERVE: '0',
+      PIGGERCODE_STACK_UI_BUILD_DIR: uiBuildDir,
+      PIGGERCODE_STACK_TAILSCALE_SERVE: '0',
     },
   });
 

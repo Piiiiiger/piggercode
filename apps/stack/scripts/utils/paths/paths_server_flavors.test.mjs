@@ -36,7 +36,7 @@ async function createMonorepoServerFixture({ rootDir, includeSqliteSchema }) {
 
 test('getComponentDir prefers happier-server for happier-server-light when unified schema exists', async (t) => {
   const rootDir = await withTempRoot(t);
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
   const { serverDir } = await createMonorepoServerFixture({ rootDir, includeSqliteSchema: true });
 
   assert.equal(getComponentDir(rootDir, 'happier-server-light', env), serverDir);
@@ -44,7 +44,7 @@ test('getComponentDir prefers happier-server for happier-server-light when unifi
 
 test('getComponentDir resolves happier-server-light to the monorepo server package dir', async (t) => {
   const rootDir = await withTempRoot(t);
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
   const { serverDir } = await createMonorepoServerFixture({ rootDir, includeSqliteSchema: false });
   assert.equal(getComponentDir(rootDir, 'happier-server-light', env), serverDir);
 });

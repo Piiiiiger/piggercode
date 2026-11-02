@@ -109,7 +109,7 @@ describe('core e2e: socket-first session convergence contract', () => {
 
   it('emits a self-sufficient pending-changed payload for list ordering after pending enqueue', async () => {
     const testDir = run.testDir('session-socket-first-pending-changed-activity');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -126,7 +126,7 @@ describe('core e2e: socket-first session convergence contract', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -180,7 +180,7 @@ describe('core e2e: socket-first session convergence contract', () => {
 
   it('lets a missed pending-changed event converge from /v2/changes without a session-detail read', async () => {
     const testDir = run.testDir('session-socket-first-missed-pending-changed-cursor');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -196,7 +196,7 @@ describe('core e2e: socket-first session convergence contract', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -251,16 +251,16 @@ describe('core e2e: socket-first session convergence contract', () => {
 
   it('emits self-sufficient recipient share permission payloads for create and update', async () => {
     const testDir = run.testDir('session-socket-first-share-permission-convergence');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
       },
     });
     const owner = await createTestAuth(server.baseUrl);
@@ -301,7 +301,7 @@ describe('core e2e: socket-first session convergence contract', () => {
       sessionIds: typeof sessionId === 'string' ? [sessionId] : [],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 
@@ -408,7 +408,7 @@ describe('core e2e: socket-first session convergence contract', () => {
 
   it('acknowledges socket session-end to the sender while broadcasting durable inactive state to other sockets', async () => {
     const testDir = run.testDir('session-socket-first-session-end-ack');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -426,7 +426,7 @@ describe('core e2e: socket-first session convergence contract', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

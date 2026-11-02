@@ -22,7 +22,7 @@ export function createPublicdevDevClientIosPlan({
   return {
     env: {
       ...profileEnv,
-      HAPPIER_UI_METRO_DISABLE_WATCHMAN: '1',
+      PIGGERCODE_UI_METRO_DISABLE_WATCHMAN: '1',
       SENTRY_DISABLE_AUTO_UPLOAD: 'true',
     },
     commands: [

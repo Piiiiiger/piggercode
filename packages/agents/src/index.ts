@@ -417,7 +417,7 @@ export {
   fitHappierReplaySeedWithinTotalBudget,
   measureHappierReplayDialogLineChars,
   planHappierReplayTranscriptCharBudget,
-  HAPPIER_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
+  PIGGERCODE_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
   type HappierReplayContinuity,
   type HappierReplayDialogItem,
   type HappierReplayFrameParams,

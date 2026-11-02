@@ -1,5 +1,5 @@
 import {
-    HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
+    PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1,
     MENTION_BOUNDS,
     sanitizeMentionRefsV1,
 } from '@piggercode/protocol';
@@ -63,7 +63,7 @@ export class ResolvedMentionContextTooLargeError extends Error {
 
 function readResolvedContextChars(meta: unknown, key: 'skillMentions' | 'vendorPluginMentions'): number {
     if (!meta || typeof meta !== 'object' || Array.isArray(meta)) return 0;
-    const envelope = (meta as Record<string, unknown>)[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1];
+    const envelope = (meta as Record<string, unknown>)[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1];
     if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return 0;
     const records = (envelope as Record<string, unknown>)[key];
     if (!Array.isArray(records) || records.length === 0) return 0;
@@ -74,7 +74,7 @@ function readResolvedContextChars(meta: unknown, key: 'skillMentions' | 'vendorP
 
 function countInboundReferences(meta: unknown): number {
     if (!meta || typeof meta !== 'object' || Array.isArray(meta)) return 0;
-    const envelope = (meta as Record<string, unknown>)[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1];
+    const envelope = (meta as Record<string, unknown>)[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1];
     if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return 0;
     return sanitizeMentionRefsV1((envelope as Record<string, unknown>).mentions).length;
 }

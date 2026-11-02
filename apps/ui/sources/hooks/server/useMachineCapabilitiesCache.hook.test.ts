@@ -232,7 +232,7 @@ describe('useMachineCapabilitiesCache (hook)', () => {
 
     it('retries error states after a short backoff even when staleMs is large', async () => {
         vi.resetModules();
-        process.env.EXPO_PUBLIC_HAPPIER_MACHINE_CAPABILITIES_ERROR_BACKOFF_MS = '1000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_CAPABILITIES_ERROR_BACKOFF_MS = '1000';
 
         const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(1_000_000);
         try {
@@ -273,7 +273,7 @@ describe('useMachineCapabilitiesCache (hook)', () => {
             expect(machineCapabilitiesDetect).toHaveBeenCalledTimes(2);
         } finally {
             nowSpy.mockRestore();
-            delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_CAPABILITIES_ERROR_BACKOFF_MS;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_CAPABILITIES_ERROR_BACKOFF_MS;
         }
     });
 

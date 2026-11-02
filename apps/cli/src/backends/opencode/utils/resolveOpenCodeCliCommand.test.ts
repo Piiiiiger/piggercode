@@ -11,7 +11,7 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
   it('preserves the canonical dependency error when no CLI candidate exists', () => {
     let error: unknown;
     try {
-      resolveOpenCodeCliLaunchSpec({ HAPPIER_OPENCODE_PATH: '/missing-opencode-launcher' });
+      resolveOpenCodeCliLaunchSpec({ PIGGERCODE_OPENCODE_PATH: '/missing-opencode-launcher' });
     } catch (failure) {
       error = failure;
     }
@@ -19,7 +19,7 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
     expect(classifyPrimarySessionRuntimeIssue({ provider: 'opencode', cause: 'session_error', error })).toMatchObject({
       source: 'dependency_failure',
       code: 'provider_cli_not_found',
-      sanitizedPreview: expect.stringContaining('HAPPIER_OPENCODE_PATH'),
+      sanitizedPreview: expect.stringContaining('PIGGERCODE_OPENCODE_PATH'),
     });
   });
 
@@ -43,12 +43,12 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
       expect(resolveOpenCodeCliLaunchSpec({
         PATH: root,
         HOME: root,
-        HAPPIER_OPENCODE_CLI_GENERATION: 'stable',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'stable',
       })).toMatchObject({ resolvedPath: stable, command: stable, apiGeneration: 'auto' });
       expect(resolveOpenCodeCliLaunchSpec({
         PATH: root,
         HOME: root,
-        HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       })).toMatchObject({ resolvedPath: v2, command: v2 });
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -70,8 +70,8 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
       expect(resolveOpenCodeCliLaunchSpec({
         PATH: root,
         HOME: root,
-        HAPPIER_OPENCODE_PATH: stable,
-        HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+        PIGGERCODE_OPENCODE_PATH: stable,
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       })).toMatchObject({
         resolvedPath: stable,
         command: stable,
@@ -81,8 +81,8 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
       expect(() => resolveOpenCodeCliLaunchSpec({
         PATH: root,
         HOME: root,
-        HAPPIER_OPENCODE_PATH: v2,
-        HAPPIER_OPENCODE_CLI_GENERATION: 'stable',
+        PIGGERCODE_OPENCODE_PATH: v2,
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'stable',
       })).toThrow(/explicit OpenCode path.*V2.*stable/i);
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -120,7 +120,7 @@ describe('resolveOpenCodeCliLaunchSpec', () => {
       expect(resolveOpenCodeCliLaunchSpec({
         PATH: root,
         HOME: root,
-        HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       })).toMatchObject({
         resolvedPath: releasedV2,
         command: releasedV2,

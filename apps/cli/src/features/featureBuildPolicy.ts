@@ -8,12 +8,12 @@ import {
 
 export function getCliFeatureBuildPolicyDecision(featureId: FeatureId, env: NodeJS.ProcessEnv): FeatureBuildPolicyEvaluation {
   const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(
-    env.HAPPIER_FEATURE_POLICY_ENV ?? env.HAPPIER_EMBEDDED_POLICY_ENV,
+    env.PIGGERCODE_FEATURE_POLICY_ENV ?? env.PIGGERCODE_EMBEDDED_POLICY_ENV,
   );
   const policy = resolveFeatureBuildPolicyFromEnvOrEmbedded({
     embeddedEnv: embeddedEnv ?? undefined,
-    allowRaw: env.HAPPIER_BUILD_FEATURES_ALLOW,
-    denyRaw: env.HAPPIER_BUILD_FEATURES_DENY,
+    allowRaw: env.PIGGERCODE_BUILD_FEATURES_ALLOW,
+    denyRaw: env.PIGGERCODE_BUILD_FEATURES_DENY,
   });
 
   return evaluateFeatureBuildPolicy(policy, featureId);

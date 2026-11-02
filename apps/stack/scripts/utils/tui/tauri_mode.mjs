@@ -94,12 +94,12 @@ export function resolveTauriPaneInvocation({ rootDir, env = process.env } = {}) 
 export function buildTauriPaneEnv({ env = process.env, resolveUserHomeDir, forceExpoClearCache = false } = {}) {
   const nextEnv = {
     ...buildTauriRuntimeEnv({ env, resolveUserHomeDir }),
-    HAPPIER_STACK_TUI: '1',
+    PIGGERCODE_STACK_TUI: '1',
     COREPACK_ENABLE_AUTO_PIN: '0',
     COREPACK_ENABLE_STRICT: '0',
   };
-  if (forceExpoClearCache && !String(nextEnv.HAPPIER_STACK_EXPO_CLEAR_CACHE ?? '').trim()) {
-    nextEnv.HAPPIER_STACK_EXPO_CLEAR_CACHE = '1';
+  if (forceExpoClearCache && !String(nextEnv.PIGGERCODE_STACK_EXPO_CLEAR_CACHE ?? '').trim()) {
+    nextEnv.PIGGERCODE_STACK_EXPO_CLEAR_CACHE = '1';
   }
   return nextEnv;
 }
@@ -113,10 +113,10 @@ export function resolveTauriPaneLaunchEnv({
   const tauriEnv = buildTauriPaneEnv({ env, resolveUserHomeDir });
   const resolvedExpoPort = Number(expoPort);
   if (Number.isFinite(resolvedExpoPort) && resolvedExpoPort > 0) {
-    tauriEnv.HAPPIER_STACK_EXPO_DEV_PORT = String(Math.floor(resolvedExpoPort));
+    tauriEnv.PIGGERCODE_STACK_EXPO_DEV_PORT = String(Math.floor(resolvedExpoPort));
   }
   if (skipExpoWait) {
-    tauriEnv.HAPPIER_STACK_TAURI_WAIT_FOR_EXPO = '0';
+    tauriEnv.PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO = '0';
   }
   return tauriEnv;
 }
@@ -142,8 +142,8 @@ export function resolveTauriPaneSpawnConfig({
 
 function resolveTauriPaneExpoWaitTimeoutMs(env = process.env) {
   const raw = String(
-    env?.HAPPIER_STACK_TUI_TAURI_EXPO_WAIT_TIMEOUT_MS
-      ?? env?.HAPPIER_STACK_EXPO_METRO_WAIT_TIMEOUT_MS
+    env?.PIGGERCODE_STACK_TUI_TAURI_EXPO_WAIT_TIMEOUT_MS
+      ?? env?.PIGGERCODE_STACK_EXPO_METRO_WAIT_TIMEOUT_MS
       ?? ''
   ).trim();
   if (!raw) {
@@ -155,8 +155,8 @@ function resolveTauriPaneExpoWaitTimeoutMs(env = process.env) {
 
 function resolveTauriPaneExpoWaitIntervalMs(env = process.env) {
   const raw = String(
-    env?.HAPPIER_STACK_TUI_TAURI_EXPO_WAIT_INTERVAL_MS
-      ?? env?.HAPPIER_STACK_EXPO_METRO_WAIT_INTERVAL_MS
+    env?.PIGGERCODE_STACK_TUI_TAURI_EXPO_WAIT_INTERVAL_MS
+      ?? env?.PIGGERCODE_STACK_EXPO_METRO_WAIT_INTERVAL_MS
       ?? ''
   ).trim();
   const intervalMs = Number(raw);
@@ -185,7 +185,7 @@ export async function waitForTauriPaneExpoReady(
     nowMsImpl = () => Date.now(),
   } = {},
 ) {
-  const resolvedStackName = String(stackName ?? env?.HAPPIER_STACK_STACK ?? '').trim();
+  const resolvedStackName = String(stackName ?? env?.PIGGERCODE_STACK_STACK ?? '').trim();
   const resolvedRuntimeStatePath =
     String(runtimeStatePath ?? '').trim()
     || (resolvedStackName ? join(resolveStackEnvPath(resolvedStackName, env).baseDir, 'stack.runtime.json') : '');

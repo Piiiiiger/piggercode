@@ -299,7 +299,7 @@ describe('createSkillsShPromptRegistryAdapter', () => {
       git(fallbackRepo, ['add', '.']);
       git(fallbackRepo, ['commit', '-m', 'init']);
 
-      vi.stubEnv('HAPPIER_SKILLS_SH_GITHUB_BASE_URL', `file://${repositoryRoot}`);
+      vi.stubEnv('PIGGERCODE_SKILLS_SH_GITHUB_BASE_URL', `file://${repositoryRoot}`);
       vi.stubGlobal('fetch', vi.fn(async () => ({
         ok: true,
         json: async () => ({

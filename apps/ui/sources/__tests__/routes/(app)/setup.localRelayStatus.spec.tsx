@@ -54,7 +54,7 @@ vi.mock('@/sync/domains/server/serverProfiles', async (importOriginal) => {
     return createServerProfilesModuleMock({
         importOriginal,
         overrides: {
-            HAPPIER_CLOUD_SERVER_URL: 'https://api.happier.dev',
+            PIGGERCODE_CLOUD_SERVER_URL: 'https://api.happier.dev',
             listServerProfiles: () => ([
                 {
                     id: 'relay-1',

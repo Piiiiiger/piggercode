@@ -20,7 +20,7 @@ test('hstack stack create-dev-auth-seed --json preserves an existing pinned repo
   assert.equal(created.code, 0, `stack new should succeed\nstdout:\n${created.stdout}\nstderr:\n${created.stderr}`);
 
   const before = await fixture.readStackEnv(stackName);
-  assert.ok(before.includes(`HAPPIER_STACK_REPO_DIR=${devRoot}\n`), before);
+  assert.ok(before.includes(`PIGGERCODE_STACK_REPO_DIR=${devRoot}\n`), before);
 
   const reseeded = await runNodeCapture(
     [join(fixture.rootDir, 'scripts', 'stack.mjs'), 'create-dev-auth-seed', stackName, '--non-interactive', '--json'],
@@ -37,7 +37,7 @@ test('hstack stack create-dev-auth-seed --json preserves an existing pinned repo
 
   const after = await fixture.readStackEnv(stackName);
   assert.ok(
-    after.includes(`HAPPIER_STACK_REPO_DIR=${devRoot}\n`),
+    after.includes(`PIGGERCODE_STACK_REPO_DIR=${devRoot}\n`),
     `expected existing repo pin to survive create-dev-auth-seed --json\n${after}`
   );
 });

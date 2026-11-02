@@ -147,8 +147,8 @@ test.describe('ui e2e: automations authoring', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 
@@ -157,10 +157,10 @@ test.describe('ui e2e: automations authoring', () => {
             EXPO_PUBLIC_DEBUG: '1',
             EXPO_PUBLIC_HAPPY_SERVER_URL: '',
             EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-            HAPPIER_E2E_UI_WEB_MODE: 'metro',
-            HAPPIER_E2E_UI_WEB_NO_DEV: '0',
-            HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '600000',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '900000',
+            PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+            PIGGERCODE_E2E_UI_WEB_NO_DEV: '0',
+            PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '600000',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '900000',
         };
 
         test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
@@ -203,9 +203,9 @@ test.describe('ui e2e: automations authoring', () => {
             createAccount: false,
             extraEnv: {
                 HOME: cliHomeDir,
-                HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-                HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
-                HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-automations-${run.runId}`,
+                PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+                PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
+                PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-automations-${run.runId}`,
             },
         });
 

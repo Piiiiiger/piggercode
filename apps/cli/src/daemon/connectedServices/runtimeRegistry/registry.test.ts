@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import {
   ConnectedServiceRuntimeRegistry,
   readConnectedServiceRuntimeTargetIdentity,
@@ -19,7 +19,7 @@ const connectedServicesBindingsRaw = {
 } as const;
 
 const connectedServiceSelectionsEnv = {
-  [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+  [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
     kind: 'group',
     serviceId: 'openai-codex',
     groupId: 'team',
@@ -31,7 +31,7 @@ const connectedServiceSelectionsEnv = {
 
 function connectedServiceSelectionsEnvWithCredentialRevision(credentialRevision: string) {
   return {
-    [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+    [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'team',

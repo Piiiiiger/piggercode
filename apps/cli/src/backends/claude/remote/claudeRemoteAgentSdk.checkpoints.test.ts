@@ -353,10 +353,10 @@ describe('claudeRemoteAgentSdk checkpoints and rewind', () => {
         const testDir = await mkdtemp(join(tmpdir(), 'happier-claude-remote-sdk-'));
         const traceFile = join(testDir, 'tooltrace.jsonl');
 
-        const previousTrace = process.env.HAPPIER_STACK_TOOL_TRACE;
-        const previousTraceFile = process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-        process.env.HAPPIER_STACK_TOOL_TRACE = '1';
-        process.env.HAPPIER_STACK_TOOL_TRACE_FILE = traceFile;
+        const previousTrace = process.env.PIGGERCODE_STACK_TOOL_TRACE;
+        const previousTraceFile = process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+        process.env.PIGGERCODE_STACK_TOOL_TRACE = '1';
+        process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE = traceFile;
         __resetToolTraceForTests();
 
         try {
@@ -412,14 +412,14 @@ describe('claudeRemoteAgentSdk checkpoints and rewind', () => {
             expect(raw).toContain('checkpoint-rewind');
         } finally {
             if (previousTrace == null) {
-                delete process.env.HAPPIER_STACK_TOOL_TRACE;
+                delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
             } else {
-                process.env.HAPPIER_STACK_TOOL_TRACE = previousTrace;
+                process.env.PIGGERCODE_STACK_TOOL_TRACE = previousTrace;
             }
             if (previousTraceFile == null) {
-                delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
+                delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
             } else {
-                process.env.HAPPIER_STACK_TOOL_TRACE_FILE = previousTraceFile;
+                process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE = previousTraceFile;
             }
             __resetToolTraceForTests();
             await rm(testDir, { recursive: true, force: true });

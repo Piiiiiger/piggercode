@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
   createOpenAiCodexBridgeRefreshFailureClassification,
   resolveOpenAiCodexDaemonRefreshSelection,
@@ -9,7 +9,7 @@ import {
 describe('resolveOpenAiCodexDaemonRefreshSelection', () => {
   it('uses current session metadata before stale child env selection', () => {
     const resolution = resolveOpenAiCodexDaemonRefreshSelection({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',
@@ -72,7 +72,7 @@ describe('resolveOpenAiCodexDaemonRefreshSelection', () => {
 
   it('falls back to child env when session metadata has no connected binding', () => {
     expect(resolveOpenAiCodexDaemonRefreshSelection({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',
@@ -97,7 +97,7 @@ describe('resolveOpenAiCodexDaemonRefreshSelection', () => {
 
   it('falls back to child env when session metadata preserves only the group id', () => {
     expect(resolveOpenAiCodexDaemonRefreshSelection({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',

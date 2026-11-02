@@ -14,7 +14,7 @@ type AcpBackendLike = {
 };
 
 describe('createKiloBackend command resolution', () => {
-  const envKeys = ['HAPPIER_KILO_PATH', 'HAPPIER_HOME_DIR', 'PATH'] as const;
+  const envKeys = ['PIGGERCODE_KILO_PATH', 'PIGGERCODE_HOME_DIR', 'PATH'] as const;
   let envScope = createEnvKeyScope(envKeys);
   const tempDirs: string[] = [];
 
@@ -35,17 +35,17 @@ describe('createKiloBackend command resolution', () => {
   ])('fails closed for $label when no Kilo CLI is resolvable', ({ override }) => {
     const homeDir = createTempDirSync('happier-kilo-home-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
     process.env.PATH = '';
-    if (override === undefined) delete process.env.HAPPIER_KILO_PATH;
-    else process.env.HAPPIER_KILO_PATH = override;
+    if (override === undefined) delete process.env.PIGGERCODE_KILO_PATH;
+    else process.env.PIGGERCODE_KILO_PATH = override;
 
     expect(() => createKiloBackend({ cwd: '/tmp', env: {} })).toThrow(
       /Kilo CLI \(kilo\) .*available/i,
     );
   });
 
-  it('uses HAPPIER_KILO_PATH when it points to an existing executable', () => {
+  it('uses PIGGERCODE_KILO_PATH when it points to an existing executable', () => {
     const workDir = createTempDirSync('happier-kilo-backend-');
     tempDirs.push(workDir);
     const binDir = join(workDir, 'bin');
@@ -58,7 +58,7 @@ describe('createKiloBackend command resolution', () => {
       contents: isWindows ? ['@echo off', 'echo ok', ''].join('\r\n') : ['#!/bin/sh', 'echo "ok"', ''].join('\n'),
     });
 
-    process.env.HAPPIER_KILO_PATH = kiloPath;
+    process.env.PIGGERCODE_KILO_PATH = kiloPath;
 
     const backend = createKiloBackend({ cwd: workDir, env: {} }) as unknown as AcpBackendLike;
     expect(backend.options.command).toBe(kiloPath);

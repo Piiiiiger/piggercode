@@ -26,7 +26,7 @@ test('hstack stack new repo selectors pin workspace dev monorepo checkout', asyn
     );
 
     const contents = await fixture.readStackEnv(testCase.stackName);
-    assert.ok(contents.includes(`HAPPIER_STACK_REPO_DIR=${devRoot}\n`), `${testCase.name}\n${contents}`);
-    assert.ok(!contents.includes('HAPPIER_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
+    assert.ok(contents.includes(`PIGGERCODE_STACK_REPO_DIR=${devRoot}\n`), `${testCase.name}\n${contents}`);
+    assert.ok(!contents.includes('PIGGERCODE_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
   }
 });

@@ -12,7 +12,7 @@ test('0.2 execution-host adapter is absent by default and ignores Linux and guar
   const fileOps = { existsSync: () => false, readFileSync: () => '' };
   assert.equal(resolveExecutionHostController({ env: {}, platform: 'darwin', fileOps }), null);
   assert.equal(resolveExecutionHostController({
-    env: { HAPPIER_STACK_EXECUTION_HOST_ADAPTER_REENTRY: '1' },
+    env: { PIGGERCODE_STACK_EXECUTION_HOST_ADAPTER_REENTRY: '1' },
     platform: 'darwin',
     fileOps,
   }), null);
@@ -23,7 +23,7 @@ test('0.2 adapter delegates only to the controller entrypoint materialized by 0.
   const calls = [];
   const controller = '/Users/dev/happier/dev/apps/stack/scripts/execution_host_bridge.mjs';
   const resolved = resolveExecutionHostController({
-    env: { HAPPIER_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
+    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
     platform: 'darwin',
     fileOps: {
       existsSync: () => true,
@@ -62,12 +62,12 @@ test('0.2 adapter delegates only to the controller entrypoint materialized by 0.
     '--', 'tui', '--json',
   ]);
   assert.equal(calls[0].options.shell, false);
-  assert.equal(calls[0].options.env.HAPPIER_STACK_STACK, 'repo-remote-dev-d72117acdb');
+  assert.equal(calls[0].options.env.PIGGERCODE_STACK_STACK, 'repo-remote-dev-d72117acdb');
 });
 
 test('0.2 adapter fails closed when the configured 0.3 controller profile is malformed', () => {
   assert.throws(() => resolveExecutionHostController({
-    env: { HAPPIER_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
+    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
     platform: 'darwin',
     fileOps: { existsSync: () => true, readFileSync: () => '{broken' },
   }), /failed to read execution-host controller/);
@@ -91,9 +91,9 @@ test('0.2 yarn dev-vm reaches the same controller with the SSH primary assignmen
   const before = await readFile(join(home, 'execution-host.json'), 'utf8');
   const result = await runCommandCapture('corepack', ['yarn', '-s', 'dev-vm', 'primary', 'assign', 'nl2', '--stack=lane', '--json'], {
     cwd: repoRoot,
-    env: { ...process.env, NODE_OPTIONS: `--import=${platform}`, HAPPIER_STACK_HOME_DIR: home,
-      HAPPIER_STACK_STORAGE_DIR: fixture.path('stacks'), HAPPIER_STACK_INVOKED_CWD: repoRoot,
-      HAPPIER_STACK_EXECUTION_HOST_ADAPTER_REENTRY: '', HAPPIER_STACK_REPO_LOCAL_AUTO_INSTALL: '0' },
+    env: { ...process.env, NODE_OPTIONS: `--import=${platform}`, PIGGERCODE_STACK_HOME_DIR: home,
+      PIGGERCODE_STACK_STORAGE_DIR: fixture.path('stacks'), PIGGERCODE_STACK_INVOKED_CWD: repoRoot,
+      PIGGERCODE_STACK_EXECUTION_HOST_ADAPTER_REENTRY: '', PIGGERCODE_STACK_REPO_LOCAL_AUTO_INSTALL: '0' },
   });
   assert.equal(result.code, 0, result.stderr);
   const observed = JSON.parse(result.stdout.trim().split('\n').at(-1));

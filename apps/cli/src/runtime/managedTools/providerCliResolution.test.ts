@@ -13,13 +13,13 @@ import {
 } from './providerCliResolution';
 
 const envKeys = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
-  'HAPPIER_CODEX_PATH',
-  'HAPPIER_CLAUDE_PATH',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
+  'PIGGERCODE_CODEX_PATH',
+  'PIGGERCODE_CLAUDE_PATH',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
   'PATH',
   'PATHEXT',
 ] as const;
@@ -65,15 +65,15 @@ describe('resolveProviderCliCommand', () => {
   it('prefers the system-installed CLI by default when both system and managed installs exist', () => {
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
 
     const systemBin = join(root, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     const systemPath = makeExecutable(systemBin, 'codex');
     process.env.PATH = systemBin;
 
-    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.HAPPIER_HOME_DIR });
+    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.PIGGERCODE_HOME_DIR });
     mkdirSync(join(root, 'home', '.noop'), { recursive: true });
     writeManagedExecutable(managedPath, process.platform === 'win32' ? '@echo off\r\necho ok\r\n' : '#!/bin/sh\necho ok\n');
 
@@ -88,12 +88,12 @@ describe('resolveProviderCliCommand', () => {
   it('falls back to the managed CLI when the system install is missing', () => {
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
     process.env.PATH = join(root, 'empty-path');
     mkdirSync(process.env.PATH, { recursive: true });
 
-    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.HAPPIER_HOME_DIR });
+    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.PIGGERCODE_HOME_DIR });
     writeManagedExecutable(managedPath, process.platform === 'win32' ? '@echo off\r\necho ok\r\n' : '#!/bin/sh\necho ok\n');
 
     expect(resolveProviderCliCommand('codex')).toEqual(
@@ -109,12 +109,12 @@ describe('resolveProviderCliCommand', () => {
 
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
     process.env.PATH = join(root, 'empty-path');
     mkdirSync(process.env.PATH, { recursive: true });
 
-    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.HAPPIER_HOME_DIR });
+    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.PIGGERCODE_HOME_DIR });
     writeTextFileSync(managedPath, '#!/bin/sh\necho ok\n');
     chmodSync(managedPath, 0o644);
 
@@ -124,18 +124,18 @@ describe('resolveProviderCliCommand', () => {
   it('honors managed-first source preferences for backend CLIs', () => {
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
 
     const systemBin = join(root, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     makeExecutable(systemBin, 'codex');
     process.env.PATH = systemBin;
 
-    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.HAPPIER_HOME_DIR });
+    const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: process.env.PIGGERCODE_HOME_DIR });
     writeManagedExecutable(managedPath, process.platform === 'win32' ? '@echo off\r\necho ok\r\n' : '#!/bin/sh\necho ok\n');
 
-    process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ codex: 'managed-first' });
+    process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ codex: 'managed-first' });
 
     expect(resolveProviderCliCommand('codex')).toEqual(
       expect.objectContaining({
@@ -151,7 +151,7 @@ describe('resolveProviderCliCommand', () => {
     const overrideDir = join(root, 'override');
     mkdirSync(overrideDir, { recursive: true });
     const overridePath = makeExecutable(overrideDir, 'codex');
-    process.env.HAPPIER_CODEX_PATH = overridePath;
+    process.env.PIGGERCODE_CODEX_PATH = overridePath;
 
     expect(resolveProviderCliCommand('codex')).toEqual(
       expect.objectContaining({
@@ -176,7 +176,7 @@ describe('resolveProviderCliCommand', () => {
     const processEnv = {
       ...process.env,
       HOME: homeDir,
-      HAPPIER_CODEX_PATH: '~/.local/bin/codex',
+      PIGGERCODE_CODEX_PATH: '~/.local/bin/codex',
     };
 
     expect(resolveProviderCliCommand('codex', { processEnv })).toEqual(
@@ -190,15 +190,15 @@ describe('resolveProviderCliCommand', () => {
   it('fails closed when an explicit override is set but does not point to an executable', () => {
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
 
     const systemBin = join(root, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     makeExecutable(systemBin, 'codex');
     process.env.PATH = systemBin;
 
-    process.env.HAPPIER_CODEX_PATH = join(root, 'missing-codex');
+    process.env.PIGGERCODE_CODEX_PATH = join(root, 'missing-codex');
 
     expect(resolveProviderCliCommand('codex')).toBeNull();
   });
@@ -213,8 +213,8 @@ describe('resolveProviderCliCommand', () => {
     const overridePath = join(overrideDir, 'claude.js');
     writeTextFileSync(overridePath, 'import "./entry.cjs";\n');
     chmodSync(overridePath, 0o644);
-    process.env.HAPPIER_CLAUDE_PATH = overridePath;
-    process.env.HAPPIER_JS_RUNTIME_PATH = join(root, 'missing-runtime', 'node');
+    process.env.PIGGERCODE_CLAUDE_PATH = overridePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = join(root, 'missing-runtime', 'node');
 
     expect(resolveProviderCliCommand('claude')).toBeNull();
   });
@@ -227,8 +227,8 @@ describe('resolveProviderCliCommand', () => {
     const overridePath = join(overrideDir, 'claude.js');
     writeTextFileSync(overridePath, 'import "./entry.cjs";\n');
     if (process.platform !== 'win32') chmodSync(overridePath, 0o644);
-    process.env.HAPPIER_CLAUDE_PATH = overridePath;
-    process.env.HAPPIER_JS_RUNTIME_PATH = resolveSystemJavaScriptRuntimeBinary(originalPath);
+    process.env.PIGGERCODE_CLAUDE_PATH = overridePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = resolveSystemJavaScriptRuntimeBinary(originalPath);
 
     expect(resolveProviderCliCommand('claude')).toEqual(
       expect.objectContaining({
@@ -243,17 +243,17 @@ describe('resolveProviderCliCommand', () => {
 
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
     const systemBin = join(root, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     const systemPath = join(systemBin, 'gemini');
     writeTextFileSync(systemPath, '#!/usr/bin/env node\nconsole.log("ok");\n');
     chmodSync(systemPath, 0o755);
     process.env.PATH = systemBin;
-    delete process.env.HAPPIER_JS_RUNTIME_PATH;
-    delete process.env.HAPPIER_MANAGED_NODE_BIN;
-    delete process.env.HAPPIER_NODE_PATH;
+    delete process.env.PIGGERCODE_JS_RUNTIME_PATH;
+    delete process.env.PIGGERCODE_MANAGED_NODE_BIN;
+    delete process.env.PIGGERCODE_NODE_PATH;
 
     expect(
       resolveProviderCliCommand('gemini', {
@@ -268,15 +268,15 @@ describe('resolveProviderCliCommand', () => {
 
     const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
     tempDirs.add(root);
-    process.env.HAPPIER_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.HAPPIER_HOME_DIR, { recursive: true });
+    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
+    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
     const systemBin = join(root, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     const systemPath = join(systemBin, 'gemini');
     writeTextFileSync(systemPath, '#!/usr/bin/env node\nconsole.log("ok");\n');
     chmodSync(systemPath, 0o755);
     process.env.PATH = systemBin;
-    process.env.HAPPIER_JS_RUNTIME_PATH = resolveSystemJavaScriptRuntimeBinary(originalPath);
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = resolveSystemJavaScriptRuntimeBinary(originalPath);
 
     expect(
       resolveProviderCliCommand('gemini', {
@@ -337,7 +337,7 @@ describe('resolveProviderCliCommand', () => {
       contents: '@echo off\r\necho ok\r\n',
     });
 
-    process.env.HAPPIER_CODEX_PATH = extensionlessPath;
+    process.env.PIGGERCODE_CODEX_PATH = extensionlessPath;
     process.env.PATHEXT = '.CMD;.EXE';
 
     const resolved = resolveProviderCliCommand('codex');

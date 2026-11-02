@@ -9,7 +9,7 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { installAxiosFastifyAdapter } from '@/testkit/http/axiosAdapter';
 import { captureConsoleLogAndMuteStdout } from '@/testkit/logger/captureOutput';
 
-const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_TERMINAL_PAIRING_REQUIRE'] as const;
+const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_TERMINAL_PAIRING_REQUIRE'] as const;
 const envScope = createEnvKeyScope(envKeys);
 const tokenForAccount = (account: string) => `header.${Buffer.from(JSON.stringify({ sub: account })).toString('base64url')}.sig`;
 
@@ -21,7 +21,7 @@ afterEach(() => {
 describe('token-only terminal pairing', () => {
   it('rejects malformed token-only credentials without erasing incumbent encryption keys', async () => {
     await withTempDir('happier-invalid-token-only-', async (home) => {
-      envScope.patch({ HAPPIER_HOME_DIR: home });
+      envScope.patch({ PIGGERCODE_HOME_DIR: home });
       vi.resetModules();
       const persistence = await import('@/persistence');
       const incumbent = {
@@ -41,11 +41,11 @@ describe('token-only terminal pairing', () => {
   it.each(['none', 'sameAccount', 'otherAccount'] as const)('claims authenticated token-only pairing with existing keys: %s', async (existingKeys) => {
     await withTempDir('happier-auth-token-only-', async (home) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_TERMINAL_PAIRING_REQUIRE: 'v3',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_TERMINAL_PAIRING_REQUIRE: 'v3',
       });
       vi.resetModules();
       const app = fastify({ logger: false });
@@ -115,9 +115,9 @@ describe('token-only terminal pairing', () => {
   it('refuses public-key-only approval when the terminal cannot receive token-only credentials', async () => {
     await withTempDir('happier-approve-token-only-', async (home) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
       });
       vi.resetModules();
       const { writeCredentialsTokenOnly } = await import('@/persistence');

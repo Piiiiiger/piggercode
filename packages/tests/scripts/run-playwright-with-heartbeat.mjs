@@ -25,7 +25,7 @@ const invocation = resolveYarnCommandInvocation(childArgs);
 await runHeartbeatWrappedCommand({
   toolName: 'playwright',
   config,
-  diagnosticPath: process.env.HAPPIER_CI_DIAGNOSTIC_PATH
+  diagnosticPath: process.env.PIGGERCODE_CI_DIAGNOSTIC_PATH
     || resolve(repoRoot, '.project/logs/e2e/playwright-heartbeat-diagnostic.ndjson'),
   command: invocation.command,
   args: invocation.args,

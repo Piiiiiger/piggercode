@@ -30,15 +30,15 @@ function delayedResponse(params: Readonly<{ ms: number; response: Response; sign
 }
 
 describe('serverReachabilitySupervisorPool (probe timeouts)', () => {
-    const previousProbeTimeout = process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS;
+    const previousProbeTimeout = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS;
 
     beforeEach(() => {
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = '50';
     });
 
     afterEach(async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = previousProbeTimeout;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = previousProbeTimeout;
         resetRuntimeFetch();
         await resetServerReachabilitySupervisors();
         vi.useRealTimers();

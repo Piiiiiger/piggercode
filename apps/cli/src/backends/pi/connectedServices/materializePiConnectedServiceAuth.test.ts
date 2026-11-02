@@ -15,7 +15,7 @@ import {
   resolvePiBrokerExtensionPath,
 } from '@/backends/pi/brokerExtension';
 import { configuration } from '@/configuration';
-import { HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
 
 import {
   applyPiCodingAgentDirChildEnvFormatting,
@@ -251,7 +251,7 @@ describe('materializePiConnectedServiceAuth', () => {
     expect(res.env[PI_BROKER_STATE_PATH_ENV]).toBe(configuration.connectedServiceBrokerStateFile);
     expect(res.env[PI_BROKER_STATE_PATH_ENV]).not.toBe(configuration.daemonStateFile);
     expect(typeof res.env[PI_BROKER_SELECTION_IDENTITY_ENV]).toBe('string');
-    expect(res.env[HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY]).toBe(
+    expect(res.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY]).toBe(
       res.env[PI_BROKER_SELECTION_IDENTITY_ENV],
     );
 
@@ -617,6 +617,6 @@ describe('materializePiConnectedServiceAuth', () => {
 
     // The scoped capability follows daemon replacement through broker-state; it is not frozen into
     // the long-lived Pi child environment.
-    expect(res.env.HAPPIER_CONNECTED_SERVICE_BROKER_REFRESH_TOKEN).toBeUndefined();
+    expect(res.env.PIGGERCODE_CONNECTED_SERVICE_BROKER_REFRESH_TOKEN).toBeUndefined();
   });
 });

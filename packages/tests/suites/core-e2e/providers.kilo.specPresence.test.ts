@@ -8,6 +8,6 @@ describe('providers: kilo', () => {
     const kilo = specs.find((spec) => spec.id === 'kilo') ?? null;
     expect(kilo).not.toBeNull();
     if (!kilo) return;
-    expect(kilo.enableEnvVar).toBe('HAPPIER_E2E_PROVIDER_KILO');
+    expect(kilo.enableEnvVar).toBe('PIGGERCODE_E2E_PROVIDER_KILO');
   });
 });

@@ -9,8 +9,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { logger } from '@/ui/logger';
 
@@ -173,8 +173,8 @@ describe('createClaudeConnectedServicesMaterializer', () => {
     expect(result!.targetMaterializedRoot).toBe(expectedProfileClaudeConfigDir);
     expect(result!.env.CLAUDE_CODE_OAUTH_TOKEN).toBeUndefined();
     expect(result!.env.CLAUDE_CODE_SETUP_TOKEN).toBeUndefined();
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
     expect(result!.diagnostics ?? []).toEqual([]);
 
     const credential = JSON.parse(await readFile(join(result!.env.CLAUDE_CONFIG_DIR!, '.credentials.json'), 'utf8'));
@@ -608,7 +608,7 @@ describe('createClaudeConnectedServicesMaterializer', () => {
         processEnv: {
           CLAUDE_CONFIG_DIR: sourceClaudeConfigDir,
           HOME: homeDir,
-          HAPPIER_HOME_DIR: '~/custom-happier',
+          PIGGERCODE_HOME_DIR: '~/custom-happier',
           USER: 'tester',
         },
         cleanupRoot: () => {},

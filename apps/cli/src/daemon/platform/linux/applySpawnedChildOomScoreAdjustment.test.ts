@@ -9,13 +9,13 @@ describe('resolveSpawnedChildOomScoreAdjustmentValue', () => {
 
   it('returns null when the env value is zero', () => {
     expect(resolveSpawnedChildOomScoreAdjustmentValue({
-      HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '0',
+      PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '0',
     })).toBeNull();
   });
 
   it('clamps values to the supported linux range', () => {
     expect(resolveSpawnedChildOomScoreAdjustmentValue({
-      HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '5000',
+      PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '5000',
     })).toBe(1000);
   });
 });
@@ -27,7 +27,7 @@ describe('applySpawnedChildOomScoreAdjustment', () => {
     const applied = await applySpawnedChildOomScoreAdjustment({
       pid: 4242,
       platform: 'linux',
-      env: { HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '321' },
+      env: { PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '321' },
       writeFile,
       logDebug: vi.fn(),
     });
@@ -42,7 +42,7 @@ describe('applySpawnedChildOomScoreAdjustment', () => {
     const applied = await applySpawnedChildOomScoreAdjustment({
       pid: 4242,
       platform: 'darwin',
-      env: { HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '600' },
+      env: { PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '600' },
       writeFile,
       logDebug: vi.fn(),
     });
@@ -60,7 +60,7 @@ describe('applySpawnedChildOomScoreAdjustment', () => {
     const applied = await applySpawnedChildOomScoreAdjustment({
       pid: 4242,
       platform: 'linux',
-      env: { HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '250' },
+      env: { PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ: '250' },
       writeFile,
       logDebug,
     });

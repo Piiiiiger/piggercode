@@ -6,7 +6,7 @@ import { resolveClaudeExternalSandboxEnv } from '@/backends/claude/spawn/resolve
 import { resolveProviderOutgoingMessageMetaExtras } from '@/settings/providerSettings';
 import { readDaemonClaudeUnifiedTerminalPin, resolveInitialClaudeRemoteMetaState } from '@/backends/claude/remote/resolveInitialClaudeRemoteMetaState';
 import { normalizeClaudeRemoteMode } from '@/backends/claude/remote/normalizeClaudeRemoteMode';
-import { HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
+import { PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 
 export const claudeDaemonSpawnHooks: DaemonSpawnHooks = {
   resolveTerminalPresentation: ({ host, accountSettings, processEnv }) => {
@@ -14,7 +14,7 @@ export const claudeDaemonSpawnHooks: DaemonSpawnHooks = {
       ? resolveProviderOutgoingMessageMetaExtras({ agentId: 'claude', settings: accountSettings, session: null })
       : {};
     const hasRecoverableDetachedProvider = Boolean(
-      processEnv[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]?.trim(),
+      processEnv[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]?.trim(),
     );
     const unified = hasRecoverableDetachedProvider
       || normalizeClaudeRemoteMode(resolveInitialClaudeRemoteMetaState({ metaDefaults: defaults,
@@ -25,10 +25,10 @@ export const claudeDaemonSpawnHooks: DaemonSpawnHooks = {
         ? {
           kind: 'runner',
           startingMode: 'local',
-          childEnv: { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '1' },
+          childEnv: { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '1' },
         }
-        : { kind: 'provider', childEnv: { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '1' } }
-      : { kind: 'runner', startingMode: 'remote', childEnv: { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '0' } };
+        : { kind: 'provider', childEnv: { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '1' } }
+      : { kind: 'runner', startingMode: 'remote', childEnv: { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '0' } };
   },
   validateSpawn: async ({ environmentVariables }) => validateProviderCliSpawn({ agentId: 'claude', processEnv: environmentVariables }),
   buildExtraEnvForChild: () => {

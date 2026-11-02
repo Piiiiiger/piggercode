@@ -211,9 +211,9 @@ function resolveServiceInstallationSnapshot(
   const snapshot = resolveDaemonServiceInstallationSnapshotFromEnv({
     processEnv: {
       ...process.env,
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: params.targetMode,
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: params.serverId,
-      HAPPIER_DAEMON_SERVICE_SERVER_URL: params.serverUrl,
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: params.targetMode,
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: params.serverId,
+      PIGGERCODE_DAEMON_SERVICE_SERVER_URL: params.serverUrl,
     },
   });
   return { installed: snapshot.installed, platform: snapshot.platform, installedPath: snapshot.installedPath };
@@ -319,7 +319,7 @@ async function waitForProcessDeath(observation: PublishedDaemonOwnerObservation,
 
 async function stopDaemonViaHttpBestEffort(state: NormalizedDaemonState, opts: StopDaemonOptions): Promise<boolean> {
   try {
-    const rawTimeout = process.env.HAPPIER_DAEMON_HTTP_TIMEOUT;
+    const rawTimeout = process.env.PIGGERCODE_DAEMON_HTTP_TIMEOUT;
     const parsedTimeout = typeof rawTimeout === 'string' ? Number.parseInt(rawTimeout, 10) : Number.NaN;
     const timeout = Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 10_000;
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };

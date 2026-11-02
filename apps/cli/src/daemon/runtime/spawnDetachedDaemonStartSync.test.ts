@@ -33,18 +33,18 @@ describe('spawnDetachedDaemonStartSync', () => {
       expect.arrayContaining(['daemon', 'start-sync']),
       expect.objectContaining({
         env: expect.objectContaining({
-          HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID: expect.stringMatching(/^self-restart-/),
-          HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS: expect.any(String),
+          PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID: expect.stringMatching(/^self-restart-/),
+          PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS: expect.any(String),
         }),
       }),
     );
   });
   const envScope = createEnvKeyScope([
-    'HAPPIER_RELEASE_RING',
-    'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_DAEMON_STARTUP_SOURCE',
-    'HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT',
+    'PIGGERCODE_RELEASE_RING',
+    'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_DAEMON_STARTUP_SOURCE',
+    'PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT',
     'DBUS_SESSION_BUS_ADDRESS',
   ]);
   const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
@@ -67,9 +67,9 @@ describe('spawnDetachedDaemonStartSync', () => {
   it('propagates the public release channel to the detached daemon so state files are scoped per lane', async () => {
     Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
     envScope.patch({
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-      HAPPIER_HOME_DIR: '/tmp/happier-cli-test-home',
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_HOME_DIR: '/tmp/happier-cli-test-home',
       DBUS_SESSION_BUS_ADDRESS: undefined,
     });
 
@@ -78,7 +78,7 @@ describe('spawnDetachedDaemonStartSync', () => {
 
     expect(spawnMock).toHaveBeenCalledTimes(1);
     const [, , options] = spawnMock.mock.calls[0] as any[];
-    expect(options?.env?.HAPPIER_PUBLIC_RELEASE_CHANNEL).toBe('dev');
+    expect(options?.env?.PIGGERCODE_PUBLIC_RELEASE_CHANNEL).toBe('dev');
   });
 
   it('launches a detached Linux daemon in the provisioned critical systemd slice', async () => {
@@ -153,8 +153,8 @@ describe('spawnDetachedDaemonStartSync', () => {
   it('lets an explicit startup source override an inherited daemon startup source', async () => {
     Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
     envScope.patch({
-      HAPPIER_DAEMON_STARTUP_SOURCE: 'manual',
-      HAPPIER_HOME_DIR: '/tmp/happier-cli-test-home',
+      PIGGERCODE_DAEMON_STARTUP_SOURCE: 'manual',
+      PIGGERCODE_HOME_DIR: '/tmp/happier-cli-test-home',
       DBUS_SESSION_BUS_ADDRESS: undefined,
     });
 
@@ -165,17 +165,17 @@ describe('spawnDetachedDaemonStartSync', () => {
 
     expect(spawnMock).toHaveBeenCalledTimes(1);
     const [, , options] = spawnMock.mock.calls[0] as any[];
-    expect(options?.env?.HAPPIER_DAEMON_STARTUP_SOURCE).toBe('self-restart');
+    expect(options?.env?.PIGGERCODE_DAEMON_STARTUP_SOURCE).toBe('self-restart');
   });
 
   it('resolves the successor launch from the detached child environment', async () => {
     Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '1111111111111111',
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '1111111111111111',
     });
     const successorEnv = {
       ...process.env,
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '2222222222222222',
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '2222222222222222',
       DBUS_SESSION_BUS_ADDRESS: undefined,
     };
 

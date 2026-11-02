@@ -618,8 +618,8 @@ describe('claudeLocalLauncher', () => {
     const discardDeferred = createDeferred<number>();
     let pendingCount = 1;
 
-    const previousE2e = process.env.HAPPIER_E2E_PROVIDERS;
-    process.env.HAPPIER_E2E_PROVIDERS = '1';
+    const previousE2e = process.env.PIGGERCODE_E2E_PROVIDERS;
+    process.env.PIGGERCODE_E2E_PROVIDERS = '1';
 
     client.peekPendingMessageQueueV2Count = vi.fn(async () => pendingCount);
     client.discardPendingMessageQueueV2All = vi.fn(async () => {
@@ -648,7 +648,7 @@ describe('claudeLocalLauncher', () => {
       expect(mockClaudeLocal).toHaveBeenCalledTimes(1);
       expect(client.discardPendingMessageQueueV2All).toHaveBeenCalledTimes(1);
     } finally {
-      process.env.HAPPIER_E2E_PROVIDERS = previousE2e;
+      process.env.PIGGERCODE_E2E_PROVIDERS = previousE2e;
       vi.useRealTimers();
     }
   });
@@ -1139,8 +1139,8 @@ describe('claudeLocalLauncher', () => {
   });
 
   it('surfaces transcript missing warnings to the UI', async () => {
-    const previousWarningMs = process.env.HAPPIER_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS;
-    process.env.HAPPIER_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS = '20000';
+    const previousWarningMs = process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS;
+    process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS = '20000';
     vi.resetModules();
     try {
       const { session, sendSessionEvent } = createLocalHarness();
@@ -1171,7 +1171,7 @@ describe('claudeLocalLauncher', () => {
           .some((msg) => msg.toLowerCase().includes('file not found')),
       ).toBe(false);
     } finally {
-      process.env.HAPPIER_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS = previousWarningMs;
+      process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_MISSING_WARNING_MS = previousWarningMs;
       vi.resetModules();
     }
   });
@@ -1486,8 +1486,8 @@ describe('claudeLocalLauncher', () => {
   it('auto-discards queued messages in provider/e2e mode without prompting, then continues into local mode', async () => {
     const { session } = createLocalHarness();
 
-    const prev = process.env.HAPPIER_E2E_PROVIDERS;
-    process.env.HAPPIER_E2E_PROVIDERS = '1';
+    const prev = process.env.PIGGERCODE_E2E_PROVIDERS;
+    process.env.PIGGERCODE_E2E_PROVIDERS = '1';
     try {
       Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
       Object.defineProperty(process.stdout, 'isTTY', { value: true, configurable: true });
@@ -1504,7 +1504,7 @@ describe('claudeLocalLauncher', () => {
       expect(mockClaudeLocal).toHaveBeenCalledTimes(1);
       expect(session.queue.size()).toBe(0);
     } finally {
-      process.env.HAPPIER_E2E_PROVIDERS = prev;
+      process.env.PIGGERCODE_E2E_PROVIDERS = prev;
     }
   });
 

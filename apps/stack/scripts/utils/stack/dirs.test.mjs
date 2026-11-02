@@ -12,7 +12,7 @@ test('getCliHomeDirFromEnvOrDefault expands ~/ overrides against HOME', () => {
       stackBaseDir: '/stack/base',
       env: {
         HOME: '/scoped/home',
-        HAPPIER_STACK_CLI_HOME_DIR: '~/cli-home',
+        PIGGERCODE_STACK_CLI_HOME_DIR: '~/cli-home',
       },
     }),
     '/scoped/home/cli-home',
@@ -25,7 +25,7 @@ test('getServerLightDataDirFromEnvOrDefault expands ~/ overrides against HOME', 
       stackBaseDir: '/stack/base',
       env: {
         HOME: '/scoped/home',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: '~/server-light',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: '~/server-light',
       },
     }),
     '/scoped/home/server-light',

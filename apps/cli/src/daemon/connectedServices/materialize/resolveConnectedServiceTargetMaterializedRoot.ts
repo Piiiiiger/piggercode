@@ -1,7 +1,7 @@
 import { dirname, isAbsolute } from 'node:path';
 
 import type { CatalogAgentId } from '@/backends/types';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 
 function normalizeOptionalString(value: unknown): string | null {
   if (typeof value !== 'string') return null;
@@ -30,7 +30,7 @@ export function resolveConnectedServiceTargetMaterializedRoot(input: Readonly<{
 }>): string | null {
   void input.agentId;
   const explicitRoot = normalizeOptionalString(
-    input.targetMaterializedEnv?.[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
+    input.targetMaterializedEnv?.[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
   );
   if (explicitRoot) return explicitRoot;
   return deriveLegacyMaterializedRootFromEnv(input.targetMaterializedEnv);

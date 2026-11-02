@@ -7,20 +7,20 @@ const envScope = createSpawnHappyCliEnvScope();
 describe('buildHappyCliSubprocessInvocation (missing entrypoint)', () => {
   beforeEach(() => {
     envScope.patch({
-      HAPPIER_CLI_SUBPROCESS_RUNTIME: undefined,
-      HAPPIER_MANAGED_NODE_BIN: undefined,
-      HAPPIER_VARIANT: undefined,
-      HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
-      HAPPIER_CLI_SUBPROCESS_PREFER_TSX: undefined,
-      HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: undefined,
-      HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: undefined,
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: undefined,
-      HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: undefined,
-      HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: undefined,
-      HAPPIER_WINDOWS_SESSION_RUNNER_BINARY: undefined,
-      HAPPIER_STACK_REPO_DIR: undefined,
-      HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-      HAPPIER_STACK_STACK: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME: undefined,
+      PIGGERCODE_MANAGED_NODE_BIN: undefined,
+      PIGGERCODE_VARIANT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: undefined,
+      PIGGERCODE_WINDOWS_SESSION_RUNNER_BINARY: undefined,
+      PIGGERCODE_STACK_REPO_DIR: undefined,
+      PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+      PIGGERCODE_STACK_STACK: undefined,
       TSX_TSCONFIG_PATH: undefined,
     });
   });
@@ -53,8 +53,8 @@ describe('buildHappyCliSubprocessInvocation (missing entrypoint)', () => {
 
   it('falls back to tsx entrypoint in stack dev mode when dist/index.mjs is missing', async () => {
     vi.resetModules();
-    vi.stubEnv('HAPPIER_STACK_STACK', 'dev2');
-    vi.stubEnv('HAPPIER_VARIANT', '');
+    vi.stubEnv('PIGGERCODE_STACK_STACK', 'dev2');
+    vi.stubEnv('PIGGERCODE_VARIANT', '');
 
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
@@ -107,7 +107,7 @@ describe('buildHappyCliSubprocessInvocation (missing entrypoint)', () => {
 
   it('uses argv-only fallback when dist entrypoint is missing in a self-contained bundled runtime without an explicit runtime override', async () => {
     vi.resetModules();
-    vi.stubEnv('HAPPIER_CLI_SUBPROCESS_ENTRYPOINT', '/$bunfs/dist/index.mjs');
+    vi.stubEnv('PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT', '/$bunfs/dist/index.mjs');
 
     const originalArgv = [...process.argv];
     const originalExecPath = process.execPath;

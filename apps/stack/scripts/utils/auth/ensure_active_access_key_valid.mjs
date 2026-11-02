@@ -90,7 +90,7 @@ export async function ensureActiveAccessKeyValid({ cliHomeDir, serverUrl, env = 
     ? buildCredentialValidationCacheKey({ path: activePath, token: activeToken, serverUrl })
     : null;
   const allowAccountSwitch =
-    (env.HAPPIER_STACK_AUTH_REPAIR_ALLOW_ACCOUNT_SWITCH ?? '').toString().trim() === '1';
+    (env.PIGGERCODE_STACK_AUTH_REPAIR_ALLOW_ACCOUNT_SWITCH ?? '').toString().trim() === '1';
   const activeSub = activeToken ? decodeJwtPayloadUnsafe(activeToken)?.sub ?? null : null;
   const activeValid = activeToken
     ? validationCache.get(activeCacheKey) ?? await validateTokenAgainstServer({ token: activeToken, serverUrl, timeoutMs })

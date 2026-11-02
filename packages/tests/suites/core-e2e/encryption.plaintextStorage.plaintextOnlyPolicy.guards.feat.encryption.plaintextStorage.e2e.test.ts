@@ -20,7 +20,7 @@ describe('core e2e: plaintext_only policy guards', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
 

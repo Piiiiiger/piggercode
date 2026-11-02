@@ -265,10 +265,10 @@ describe('PROVIDER_CLI_RUNTIME_SPECS', () => {
 
   it('filters Cursor fallback binary aliases when the fallback env var is disabled', () => {
     expect(getProviderCliBinaryNames(cursorAgentId, {
-      HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0',
+      PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0',
     })).toEqual(['cursor-agent']);
     expect(getProviderCliBinaryNames(cursorAgentId, {
-      HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '1',
+      PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '1',
     })).toEqual(['cursor-agent', 'agent']);
   });
 

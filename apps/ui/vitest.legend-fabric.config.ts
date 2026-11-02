@@ -9,7 +9,7 @@ const native = nativeConfig as any;
 
 /**
  * The lane that executes the SHIPPED native path: Legend's native build, `Platform.OS === 'ios'`
- * (or `'android'` via `HAPPIER_LEGEND_NATIVE_OS`), New Architecture ON.
+ * (or `'android'` via `PIGGERCODE_LEGEND_NATIVE_OS`), New Architecture ON.
  *
  * Why this is a separate lane rather than a flag inside `vitest.legend-native.config.ts`:
  * `IsNewArchitecture` is captured from `global.nativeFabricUIManager` when the Legend build is

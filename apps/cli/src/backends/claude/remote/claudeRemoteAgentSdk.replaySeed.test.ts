@@ -14,8 +14,8 @@ import { createDeferred } from '@/testkit/async/deferred';
 import { claudeRemote } from '../claudeRemote';
 
 describe('Claude Agent SDK replay handoff recovery', () => {
-    it.runIf(Boolean(process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH)).each(['agentSdk', 'legacy'] as const)('retires a handoff from native acknowledgment and preserves its context in the native transcript (%s)', async (runtime) => {
-        const nativePath = process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH!;
+    it.runIf(Boolean(process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH)).each(['agentSdk', 'legacy'] as const)('retires a handoff from native acknowledgment and preserves its context in the native transcript (%s)', async (runtime) => {
+        const nativePath = process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH!;
         const root = await mkdtemp(join(tmpdir(), 'happier-native-handoff-'));
         const configDir = join(root, 'claude');
         const projectDir = join(root, 'project');
@@ -44,7 +44,7 @@ describe('Claude Agent SDK replay handoff recovery', () => {
         });
         try {
             vi.stubEnv('CLAUDE_CONFIG_DIR', configDir);
-            vi.stubEnv('HAPPIER_CLAUDE_PATH', nativePath);
+            vi.stubEnv('PIGGERCODE_CLAUDE_PATH', nativePath);
             vi.stubEnv('ANTHROPIC_BASE_URL', boundary.url);
             vi.stubEnv('ANTHROPIC_API_KEY', 'local-test-key');
             vi.stubEnv('ANTHROPIC_AUTH_TOKEN', undefined);

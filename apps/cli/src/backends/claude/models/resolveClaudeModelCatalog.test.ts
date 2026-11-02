@@ -33,7 +33,7 @@ const envKeys = [
   'ANTHROPIC_OAUTH_TOKEN',
   'CLAUDE_CODE_OAUTH_TOKEN',
   'ANTHROPIC_BASE_URL',
-  'HAPPIER_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED',
+  'PIGGERCODE_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED',
 ] as const;
 let envScope = createEnvKeyScope(envKeys);
 
@@ -91,7 +91,7 @@ describe('resolveClaudeModelCatalog', () => {
       updatedAtMs: 0,
       source: 'file',
     });
-    process.env.HAPPIER_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED = '0';
+    process.env.PIGGERCODE_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED = '0';
     fetchAnthropicModelsMock.mockResolvedValue([{ id: 'claude-account-only', displayName: 'Account only' }]);
 
     const resolution = await resolveClaudeModelCatalogResolution({

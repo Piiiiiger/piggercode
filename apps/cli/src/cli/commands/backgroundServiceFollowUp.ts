@@ -18,7 +18,7 @@ type ServerChangeCredentialState = 'authenticated' | 'authentication-required' |
  * larger relay → auth → service sequence. The follow-up decision still has one
  * owner here; the child merely defers it until authentication has completed.
  */
-export const DEFER_SERVER_SELECTION_FOLLOW_UP_ENV = 'HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP';
+export const DEFER_SERVER_SELECTION_FOLLOW_UP_ENV = 'PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP';
 
 function shouldDeferServerSelectionFollowUp(): boolean {
     const raw = String(process.env[DEFER_SERVER_SELECTION_FOLLOW_UP_ENV] ?? '').trim().toLowerCase();

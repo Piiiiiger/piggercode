@@ -61,7 +61,7 @@ test('hstack stack new copies server-scoped credentials from source stack', asyn
   const sourceCred = resolveStackCredentialPaths({
     cliHomeDir: sourceCliHome,
     serverUrl,
-    env: { ...process.env, HAPPIER_ACTIVE_SERVER_ID: '' },
+    env: { ...process.env, PIGGERCODE_ACTIVE_SERVER_ID: '' },
   });
   await mkdir(dirname(sourceCred.serverScopedPath), { recursive: true });
   await writeFile(sourceCred.serverScopedPath, 'seed-credential\n', 'utf-8');
@@ -69,9 +69,9 @@ test('hstack stack new copies server-scoped credentials from source stack', asyn
   await writeFile(
     join(storageDir, sourceStack, 'env'),
     [
-      `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${sourceCliHome}`,
-      `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
+      `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${sourceCliHome}`,
+      `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -79,10 +79,10 @@ test('hstack stack new copies server-scoped credentials from source stack', asyn
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_SANDBOX_DIR: sandboxDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir,
   };
 
   const res = await runNode(
@@ -100,14 +100,14 @@ test('hstack stack new copies server-scoped credentials from source stack', asyn
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const targetCliHome = join(storageDir, targetStack, 'cli');
-  const targetStableEnv = { HAPPIER_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
+  const targetStableEnv = { PIGGERCODE_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
   const targetCred = resolveStackCredentialPaths({ cliHomeDir: targetCliHome, serverUrl, env: targetStableEnv });
   const targetCredRaw = await readFile(targetCred.serverScopedPath, 'utf-8');
   assert.equal(targetCredRaw.trim(), 'seed-credential');
   const targetEnvRaw = await readFile(join(storageDir, targetStack, 'env'), 'utf-8');
-  assert.match(targetEnvRaw, new RegExp(`^HAPPIER_STACK_AUTH_SEED_FROM=${sourceStack}$`, 'm'));
-  assert.match(targetEnvRaw, /^HAPPIER_STACK_AUTO_AUTH_SEED=1$/m);
-  assert.doesNotMatch(targetEnvRaw, /^HAPPIER_STACK_SERVER_PORT=/m);
+  assert.match(targetEnvRaw, new RegExp(`^PIGGERCODE_STACK_AUTH_SEED_FROM=${sourceStack}$`, 'm'));
+  assert.match(targetEnvRaw, /^PIGGERCODE_STACK_AUTO_AUTH_SEED=1$/m);
+  assert.doesNotMatch(targetEnvRaw, /^PIGGERCODE_STACK_SERVER_PORT=/m);
 
   await rm(tmp, { recursive: true, force: true });
 });
@@ -140,7 +140,7 @@ test('hstack stack new copy-auth prefers source server-scoped credentials over u
   const sourceCred = resolveStackCredentialPaths({
     cliHomeDir: sourceCliHome,
     serverUrl,
-    env: { ...process.env, HAPPIER_ACTIVE_SERVER_ID: '' },
+    env: { ...process.env, PIGGERCODE_ACTIVE_SERVER_ID: '' },
   });
   await mkdir(dirname(sourceCred.serverScopedPath), { recursive: true });
   await writeFile(join(sourceCliHome, 'access.key'), 'legacy-wrong\n', 'utf-8');
@@ -149,9 +149,9 @@ test('hstack stack new copy-auth prefers source server-scoped credentials over u
   await writeFile(
     join(storageDir, sourceStack, 'env'),
     [
-      `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${sourceCliHome}`,
-      `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
+      `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${sourceCliHome}`,
+      `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -159,10 +159,10 @@ test('hstack stack new copy-auth prefers source server-scoped credentials over u
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_SANDBOX_DIR: sandboxDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir,
   };
 
   const res = await runNode(
@@ -180,7 +180,7 @@ test('hstack stack new copy-auth prefers source server-scoped credentials over u
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const targetCliHome = join(storageDir, targetStack, 'cli');
-  const targetStableEnv = { HAPPIER_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
+  const targetStableEnv = { PIGGERCODE_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
   const targetCred = resolveStackCredentialPaths({ cliHomeDir: targetCliHome, serverUrl, env: targetStableEnv });
   const targetCredRaw = await readFile(targetCred.serverScopedPath, 'utf-8');
   assert.equal(targetCredRaw.trim(), 'server-scoped-correct');
@@ -213,7 +213,7 @@ test('hstack stack new copy-auth copies stable-scope credentials from source sta
   await writeFile(join(monoRoot, 'apps', 'server', 'prisma', 'sqlite', 'schema.prisma'), 'datasource db { provider = \"sqlite\" }\n', 'utf-8');
 
   const sourceCliHome = join(storageDir, sourceStack, 'cli');
-  const sourceStableEnv = { HAPPIER_ACTIVE_SERVER_ID: `stack_${sourceStack}__id_default` };
+  const sourceStableEnv = { PIGGERCODE_ACTIVE_SERVER_ID: `stack_${sourceStack}__id_default` };
   const sourceCredStable = resolveStackCredentialPaths({ cliHomeDir: sourceCliHome, serverUrl, env: sourceStableEnv });
   await mkdir(dirname(sourceCredStable.serverScopedPath), { recursive: true });
   await writeFile(join(sourceCliHome, 'access.key'), 'legacy-wrong\n', 'utf-8');
@@ -222,9 +222,9 @@ test('hstack stack new copy-auth copies stable-scope credentials from source sta
   await writeFile(
     join(storageDir, sourceStack, 'env'),
     [
-      `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${sourceCliHome}`,
-      `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
+      `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${sourceCliHome}`,
+      `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -232,10 +232,10 @@ test('hstack stack new copy-auth copies stable-scope credentials from source sta
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_SANDBOX_DIR: sandboxDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir,
   };
 
   const res = await runNode(
@@ -253,7 +253,7 @@ test('hstack stack new copy-auth copies stable-scope credentials from source sta
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const targetCliHome = join(storageDir, targetStack, 'cli');
-  const targetStableEnv = { HAPPIER_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
+  const targetStableEnv = { PIGGERCODE_ACTIVE_SERVER_ID: `stack_${targetStack}__id_default` };
   const targetCredStable = resolveStackCredentialPaths({ cliHomeDir: targetCliHome, serverUrl, env: targetStableEnv });
   const targetCredRaw = await readFile(targetCredStable.serverScopedPath, 'utf-8');
   assert.equal(targetCredRaw.trim(), 'stable-correct');

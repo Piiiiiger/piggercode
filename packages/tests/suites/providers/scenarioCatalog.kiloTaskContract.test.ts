@@ -6,7 +6,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function kiloProvider(): ProviderUnderTest {
   return {
     id: 'kilo',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_KILO',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_KILO',
     protocol: 'acp',
     traceProvider: 'kilo',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: ['kilo_task_subagent_reply'] } },

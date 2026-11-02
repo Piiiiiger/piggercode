@@ -107,9 +107,9 @@ function parseRepairInvocation(argv: readonly string[]): Readonly<{
     asJson: argv.includes('--json'),
     reportOnly: argv.includes('--report-only'),
     migrate: argv.includes('--migrate'),
-    mode: mode ?? (String(process.env.HAPPIER_DAEMON_SERVICE_MODE ?? '').trim().toLowerCase() === 'system' ? 'system' : 'user'),
+    mode: mode ?? (String(process.env.PIGGERCODE_DAEMON_SERVICE_MODE ?? '').trim().toLowerCase() === 'system' ? 'system' : 'user'),
     modeExplicit: mode !== null,
-    systemUser: systemUser || String(process.env.HAPPIER_DAEMON_SERVICE_SYSTEM_USER ?? '').trim(),
+    systemUser: systemUser || String(process.env.PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER ?? '').trim(),
     targetServerSelector,
   };
 }
@@ -209,11 +209,11 @@ export async function handleServiceRepairCliCommand(params: Readonly<{
     preferredMode: parsed.mode,
     systemUser: parsed.systemUser,
   });
-  // `--migrate` (explicit, discoverable) or `HAPPIER_INSTALLER_MIGRATION=1`
+  // `--migrate` (explicit, discoverable) or `PIGGERCODE_INSTALLER_MIGRATION=1`
   // (legacy env hook used by the self-update + install-payload migration path)
   // both enable migration-scope auto-apply for the 0.2.3 convergence findings.
   const onMigration = parsed.migrate
-    || String(process.env.HAPPIER_INSTALLER_MIGRATION ?? '').trim() === '1';
+    || String(process.env.PIGGERCODE_INSTALLER_MIGRATION ?? '').trim() === '1';
   const targetServerId = await resolveRepairTargetServerId(parsed.targetServerSelector);
   const { report, plan, snapshot, runtime } = await resolveDoctorRepairReport({
     preferredMode: parsed.mode,

@@ -235,8 +235,8 @@ test('hstack wrapper keeps dependency-free dev-target commands responsive during
         cwd: rootDir,
         env: {
           ...process.env,
-          HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-          HAPPIER_STACK_UPDATE_CHECK: '0',
+          PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+          PIGGERCODE_STACK_UPDATE_CHECK: '0',
           NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
         },
       },
@@ -264,8 +264,8 @@ test('hstack service mode exits successfully before preflight when its explicit 
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_ENV_FILE: missingEnvPath,
-        HAPPIER_STACK_SERVICE_MODE: '1',
+        PIGGERCODE_STACK_ENV_FILE: missingEnvPath,
+        PIGGERCODE_STACK_SERVICE_MODE: '1',
         NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
       },
     });
@@ -289,8 +289,8 @@ test('hstack service mode only treats the installed start --restart invocation a
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_ENV_FILE: missingEnvPath,
-        HAPPIER_STACK_SERVICE_MODE: '1',
+        PIGGERCODE_STACK_ENV_FILE: missingEnvPath,
+        PIGGERCODE_STACK_SERVICE_MODE: '1',
         NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
       },
     });
@@ -312,8 +312,8 @@ test('hstack help remains available with service mode and a missing explicit env
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_ENV_FILE: join(fixtureDir, 'missing', 'env'),
-        HAPPIER_STACK_SERVICE_MODE: '1',
+        PIGGERCODE_STACK_ENV_FILE: join(fixtureDir, 'missing', 'env'),
+        PIGGERCODE_STACK_SERVICE_MODE: '1',
         NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
       },
     });
@@ -336,8 +336,8 @@ test('hstack interactive invocation fails clearly before preflight when its expl
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_ENV_FILE: missingEnvPath,
-        HAPPIER_STACK_SERVICE_MODE: '',
+        PIGGERCODE_STACK_ENV_FILE: missingEnvPath,
+        PIGGERCODE_STACK_SERVICE_MODE: '',
         NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
       },
     });

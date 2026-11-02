@@ -37,7 +37,7 @@ function applyGithubConnectCallbackEnv(
         GITHUB_CLIENT_ID: "gh_client",
         GITHUB_CLIENT_SECRET: "gh_secret",
         GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
-        HAPPIER_WEBAPP_URL: "https://app.example.test",
+        PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         ...overrides,
     });
 }
@@ -113,8 +113,8 @@ describe("connectRoutes (GitHub callback)", () => {
 
     it("returns 404 not_found for /v1/connect/external/:provider/params when connected services are disabled", async () => {
         applyGithubConnectCallbackEnv(harness, {
-            HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0",
-            HAPPIER_WEBAPP_URL: undefined,
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0",
+            PIGGERCODE_WEBAPP_URL: undefined,
         });
 
         const u1 = await db.account.create({
@@ -159,7 +159,7 @@ describe("connectRoutes (GitHub callback)", () => {
         const state = paramsUrl.searchParams.get("state");
         expect(state).toBeTruthy();
 
-        applyGithubConnectCallbackEnv(harness, { HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
+        applyGithubConnectCallbackEnv(harness, { PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
 
         const fetchMock = vi.fn(async (url: any) => {
             if (typeof url === "string" && url.includes("https://github.com/login/oauth/access_token")) {
@@ -191,10 +191,10 @@ describe("connectRoutes (GitHub callback)", () => {
         await app.close();
     });
 
-    it("uses HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE when redirecting back to the client", async () => {
+    it("uses PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE when redirecting back to the client", async () => {
         applyGithubConnectCallbackEnv(harness, {
-            HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: "https://app.example.test/custom-oauth",
-            HAPPIER_WEBAPP_URL: undefined,
+            PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: "https://app.example.test/custom-oauth",
+            PIGGERCODE_WEBAPP_URL: undefined,
         });
 
         const u1 = await db.account.create({
@@ -242,7 +242,7 @@ describe("connectRoutes (GitHub callback)", () => {
         applyGithubConnectCallbackEnv(harness, {
             GITHUB_CLIENT_ID: "client-id",
             GITHUB_CLIENT_SECRET: undefined,
-            HAPPIER_WEBAPP_URL: undefined,
+            PIGGERCODE_WEBAPP_URL: undefined,
         });
 
         const app = createTestApp();
@@ -316,7 +316,7 @@ describe("connectRoutes (GitHub callback)", () => {
         applyGithubConnectCallbackEnv(harness, {
             GITHUB_CLIENT_ID: "client-id",
             GITHUB_CLIENT_SECRET: "client-secret",
-            HAPPIER_WEBAPP_URL: "https://webapp.example.test",
+            PIGGERCODE_WEBAPP_URL: "https://webapp.example.test",
         });
 
         const app = createTestApp();

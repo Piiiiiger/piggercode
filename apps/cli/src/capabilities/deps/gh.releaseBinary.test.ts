@@ -32,8 +32,8 @@ vi.mock('@piggercode/cli-common/firstPartyRuntime', async () => {
   };
 });
 
-const ORIGINAL_HOME = process.env.HAPPIER_HOME_DIR;
-const envKeys = ['HAPPIER_HOME_DIR', 'PATH', 'PATHEXT'] as const;
+const ORIGINAL_HOME = process.env.PIGGERCODE_HOME_DIR;
+const envKeys = ['PIGGERCODE_HOME_DIR', 'PATH', 'PATHEXT'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -58,8 +58,8 @@ function currentGhAssetName(): string {
 afterEach(async () => {
   envScope.restore();
   envScope = createEnvKeyScope(envKeys);
-  if (ORIGINAL_HOME === undefined) delete process.env.HAPPIER_HOME_DIR;
-  else process.env.HAPPIER_HOME_DIR = ORIGINAL_HOME;
+  if (ORIGINAL_HOME === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+  else process.env.PIGGERCODE_HOME_DIR = ORIGINAL_HOME;
   vi.restoreAllMocks();
   vi.resetModules();
   for (const dir of tempDirs) {
@@ -72,7 +72,7 @@ describe('gh release-binary installer', () => {
   it('detects a managed GitHub CLI binary in the Happier tools directory', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-gh-home-'));
     tempDirs.add(home);
-    envScope.patch({ HAPPIER_HOME_DIR: home, PATH: '' });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home, PATH: '' });
 
     const { getGhDepStatus, ghBinPath, resolveExistingGhManagedBinPath, resolveGithubCliCommandPath } = await import('./gh');
     await mkdir(dirname(ghBinPath()), { recursive: true });
@@ -92,7 +92,7 @@ describe('gh release-binary installer', () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-gh-prefer-system-home-'));
     tempDirs.add(home);
     const { dir, binPath: systemGhPath } = await createFakeSystemGhBinary();
-    envScope.patch({ HAPPIER_HOME_DIR: home, PATH: dir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home, PATH: dir });
 
     const { ghBinPath, resolveGithubCliCommandPath } = await import('./gh');
     await mkdir(dirname(ghBinPath()), { recursive: true });
@@ -106,7 +106,7 @@ describe('gh release-binary installer', () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-gh-system-status-home-'));
     tempDirs.add(home);
     const { dir, binPath: systemGhPath } = await createFakeSystemGhBinary();
-    envScope.patch({ HAPPIER_HOME_DIR: home, PATH: dir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home, PATH: dir });
 
     const { getGhDepStatus, resolveExistingGhManagedBinPath } = await import('./gh');
 
@@ -121,7 +121,7 @@ describe('gh release-binary installer', () => {
   it('installs GitHub CLI from a release archive by copying the extracted bin/gh payload', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-gh-install-home-'));
     tempDirs.add(home);
-    envScope.patch({ HAPPIER_HOME_DIR: home });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home });
 
     const fetchMock = vi.fn(async (url: string) => {
       if (url === 'https://api.github.com/repos/cli/cli/releases/latest') {

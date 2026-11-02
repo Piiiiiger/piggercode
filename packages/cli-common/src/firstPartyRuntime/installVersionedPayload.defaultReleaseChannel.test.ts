@@ -32,7 +32,7 @@ async function readJsonReleaseChannel(path: string): Promise<string> {
 describe('installVersionedPayload default release-channel persistence', () => {
     it('rejects cancellation before installation without changing the current payload, shims, or markers', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-cancel-before-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
         const layout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv: env });
         const binaryName = process.platform === 'win32' ? 'happier.exe' : 'happier';
         try {
@@ -61,7 +61,7 @@ describe('installVersionedPayload default release-channel persistence', () => {
 
     it('finishes promotion and finalization when cancellation arrives after installation starts', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-cancel-during-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
         const layout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', channel: 'preview', processEnv: env });
         const executableSuffix = process.platform === 'win32' ? '.exe' : '';
         const binaryName = `happier${executableSuffix}`;
@@ -96,7 +96,7 @@ describe('installVersionedPayload default release-channel persistence', () => {
 
     it('keeps the installed default channel when another channel is acquired, and sets it on first install or explicit selection', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-channel-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
         const statePath = resolveDefaultManagedReleaseChannelStatePath({ processEnv: env });
         const binaryName = process.platform === 'win32' ? 'happier.exe' : 'happier';
         const defaultShimPath = join(homeDir, 'bin', binaryName);
@@ -140,7 +140,7 @@ describe('installVersionedPayload default release-channel persistence', () => {
 
     it('does not advance the persisted default release channel when shim sync fails', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-channel-failure-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
         const statePath = resolveDefaultManagedReleaseChannelStatePath({ processEnv: env });
 
         try {
@@ -172,7 +172,7 @@ describe('installVersionedPayload default release-channel persistence', () => {
 
     it('does not update the persisted default release channel when installing non-default-shim components', async () => {
         const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-channel-non-cli-'));
-        const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+        const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
         const statePath = resolveDefaultManagedReleaseChannelStatePath({ processEnv: env });
 
         try {

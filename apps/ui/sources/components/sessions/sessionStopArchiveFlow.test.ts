@@ -34,8 +34,8 @@ describe('stopSessionAndMaybeArchive', () => {
     afterEach(() => {
         standardCleanup();
         vi.useRealTimers();
-        delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_RETRY_MS;
-        delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_RETRY_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS;
     });
 
     it.each([
@@ -137,7 +137,7 @@ describe('stopSessionAndMaybeArchive', () => {
     });
 
     it('keeps a first archive attempt but disables inactivity polling when the configured timeout is zero', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '0';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '0';
         const archiveSession = vi.fn(async () => ({ success: false, code: 'session_active' }));
         await expect(stopSessionAndMaybeArchive(params({ archiveSession })))
             .rejects.toMatchObject({ message: 'archive failed' });
@@ -146,7 +146,7 @@ describe('stopSessionAndMaybeArchive', () => {
     });
 
     it('recovers archive admission when the first request never settles', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '1000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '1000';
         vi.useFakeTimers();
         const cleanup = createDeferred<{ success: boolean }>();
         const network: { signal?: AbortSignal } = {};

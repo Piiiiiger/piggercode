@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { resolveConfiguredCodexHome } from '../../utils/resolveConfiguredCodexHome';
 import { createCodexAppServerClient } from '../client/createCodexAppServerClient';
 
-export const CODEX_APP_SERVER_TRANSPORT_ENV_KEY = 'HAPPIER_CODEX_APP_SERVER_TRANSPORT';
+export const CODEX_APP_SERVER_TRANSPORT_ENV_KEY = 'PIGGERCODE_CODEX_APP_SERVER_TRANSPORT';
 export const CODEX_APP_SERVER_DAEMON_PROXY_TRANSPORT = 'daemonProxy';
 
 export function shouldUseCodexAppServerDaemonProxy(env: NodeJS.ProcessEnv): boolean {

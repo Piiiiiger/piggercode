@@ -21,13 +21,13 @@ function toSpawnEnv(env) {
       'LANG',
       'LC_ALL',
       'TERM',
-      'HAPPIER_STACK_STACK',
-      'HAPPIER_STACK_ENV_FILE',
-      'HAPPIER_STACK_PROCESS_KIND',
+      'PIGGERCODE_STACK_STACK',
+      'PIGGERCODE_STACK_ENV_FILE',
+      'PIGGERCODE_STACK_PROCESS_KIND',
       'npm_lifecycle_event',
       'npm_package_name',
     ],
-    keepPrefixes: ['HAPPIER_', 'npm_'],
+    keepPrefixes: ['PIGGERCODE_', 'npm_'],
   });
 }
 
@@ -114,11 +114,11 @@ export async function setupStackStopSweepFixture({
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'

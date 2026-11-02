@@ -8,7 +8,7 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { spawnTestProcess } from '@/testkit/process/spawn';
 
 function resolveBunExecutable(): string | null {
-  const explicit = String(process.env.HAPPIER_TEST_BUN_EXECUTABLE ?? '').trim();
+  const explicit = String(process.env.PIGGERCODE_TEST_BUN_EXECUTABLE ?? '').trim();
   if (explicit) return explicit;
 
   const command = process.platform === 'win32' ? 'where' : 'which';

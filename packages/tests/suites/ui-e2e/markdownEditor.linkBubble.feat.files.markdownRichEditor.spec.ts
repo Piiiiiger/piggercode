@@ -125,11 +125,11 @@ test.describe('UI e2e: markdown rich editor link bubble', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
-        HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
       },
     });
 
@@ -174,10 +174,10 @@ test.describe('UI e2e: markdown rich editor link bubble', () => {
         serverUrl: server.baseUrl,
         uiBaseUrl,
         extraEnv: {
-          HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
 

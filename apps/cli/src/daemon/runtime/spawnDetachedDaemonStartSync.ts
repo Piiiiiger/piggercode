@@ -16,7 +16,7 @@ import { resolveDaemonLaunchSpec } from './resolveDaemonLaunchSpec';
 
 function shouldForwardDetachedDaemonEnvKey(key: string): boolean {
   const normalized = String(key ?? '').trim();
-  return normalized.startsWith('HAPPIER_');
+  return normalized.startsWith('PIGGERCODE_');
 }
 
 function buildWindowsDetachedDaemonCreateInvocation(params: Readonly<{
@@ -115,20 +115,20 @@ export async function spawnDetachedDaemonStartSync(
   // Detached daemon is typically spawned via `node <entry> daemon start-sync`, so argv no longer encodes
   // the shim name (`hprev`/`hdev`). Force the lane into the child environment so daemon state files are
   // scoped per public release channel.
-  if (!String(env.HAPPIER_PUBLIC_RELEASE_CHANNEL ?? '').trim()) {
-    env.HAPPIER_PUBLIC_RELEASE_CHANNEL = getReleaseRingCatalogEntry(configuration.publicReleaseRing).publicLabel;
+  if (!String(env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL ?? '').trim()) {
+    env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = getReleaseRingCatalogEntry(configuration.publicReleaseRing).publicLabel;
   }
   if (startupSource) {
-    env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSource;
-  } else if (!String(env.HAPPIER_DAEMON_STARTUP_SOURCE ?? '').trim()) {
-    env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSource ?? 'manual';
+    env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSource;
+  } else if (!String(env.PIGGERCODE_DAEMON_STARTUP_SOURCE ?? '').trim()) {
+    env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSource ?? 'manual';
   }
   if (startupSource === 'self-restart') {
-    if (!String(env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '').trim()) {
-      env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID = `self-restart-${randomUUID()}`;
+    if (!String(env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '').trim()) {
+      env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID = `self-restart-${randomUUID()}`;
     }
-    if (!String(env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS ?? '').trim()) {
-      env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
+    if (!String(env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS ?? '').trim()) {
+      env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
     }
   }
 

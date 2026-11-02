@@ -17,13 +17,13 @@ export async function ensureStackRuntimeModePrefer({ envPath }) {
   }
 
   const parsed = existing ? parseEnvToObject(existing) : {};
-  if (Object.prototype.hasOwnProperty.call(parsed, 'HAPPIER_STACK_RUNTIME_MODE')) {
-    return { ok: true, changed: false, previous: parsed.HAPPIER_STACK_RUNTIME_MODE };
+  if (Object.prototype.hasOwnProperty.call(parsed, 'PIGGERCODE_STACK_RUNTIME_MODE')) {
+    return { ok: true, changed: false, previous: parsed.PIGGERCODE_STACK_RUNTIME_MODE };
   }
 
   await ensureEnvFileUpdated({
     envPath: path,
-    updates: [{ key: 'HAPPIER_STACK_RUNTIME_MODE', value: 'prefer' }],
+    updates: [{ key: 'PIGGERCODE_STACK_RUNTIME_MODE', value: 'prefer' }],
   });
 
   return { ok: true, changed: true, previous: null };

@@ -41,9 +41,9 @@ const useLocalSettingMutableMock = vi.fn();
 describe('FeaturesSettingsScreen gating', () => {
     beforeEach(() => {
         vi.resetModules();
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW;
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        delete process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV;
 
         installSessionSettingsEntryModuleMocks({
             reactNative: async () => {
@@ -106,7 +106,7 @@ describe('FeaturesSettingsScreen gating', () => {
     });
 
     it('hides build-policy denied feature toggles from the list', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'execution.runs,social.friends,scm.writeOperations';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'execution.runs,social.friends,scm.writeOperations';
         vi.resetModules();
         const { getFeatureBuildPolicyDecision } = await import('@/sync/domains/features/featureBuildPolicy');
         expect(getFeatureBuildPolicyDecision('execution.runs')).toBe('deny');
@@ -127,7 +127,7 @@ describe('FeaturesSettingsScreen gating', () => {
     });
 
     it('hides server-disabled toggles even when build policy allows them', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = 'social.friends';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = 'social.friends';
 
         useEffectiveServerSelectionMock.mockReturnValue({ serverIds: ['server-1'] });
         useServerFeaturesMainSelectionSnapshotMock.mockReturnValue({

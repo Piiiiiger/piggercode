@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { materializeConnectedServicesForSpawn } from './materializeConnectedServicesForSpawn';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { resolveConnectedServiceHomeDir } from '../homes/resolveConnectedServiceHomeDir';
 
 describe('materializeConnectedServicesForSpawn materialization identity', () => {
@@ -211,10 +211,10 @@ describe('materializeConnectedServicesForSpawn materialization identity', () => 
     expect(second!.env.CODEX_HOME).toBe(first!.env.CODEX_HOME);
     expect(first!.materializationRoot).toBe(accountRoot);
     expect(second!.materializationRoot).toBe(accountRoot);
-    expect(first!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
+    expect(first!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
       accountRoot,
     );
-    expect(second!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
+    expect(second!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
       accountRoot,
     );
 

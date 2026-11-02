@@ -22,7 +22,7 @@ describe('codexAcpRuntimeInstallable', () => {
 
   it('skips auto-install when an explicit ACP override is configured', async () => {
     const result = await detectCodexAcpLaunchResolution(
-      { env: { HAPPIER_CODEX_ACP_BIN: '/broken/codex-acp' } as NodeJS.ProcessEnv },
+      { env: { PIGGERCODE_CODEX_ACP_BIN: '/broken/codex-acp' } as NodeJS.ProcessEnv },
       {
         resolveCodexAcpSpawn: () => ({ command: '/broken/codex-acp', args: [] }),
         validateCodexAcpSpawnAvailability: () => ({ ok: false, errorMessage: 'Resolved command does not exist: /broken/codex-acp' }),

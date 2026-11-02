@@ -189,7 +189,7 @@ function resolveStacklessSummaryEnv({ rootDir }) {
     return { env: process.env, invokedCwd };
   }
   return {
-    env: { ...process.env, HAPPIER_STACK_REPO_DIR: inferred.repoDir },
+    env: { ...process.env, PIGGERCODE_STACK_REPO_DIR: inferred.repoDir },
     invokedCwd,
   };
 }
@@ -293,7 +293,7 @@ function formatRepoRef({ rootDir, dir }) {
   if (!raw) return '(unset)';
 
   const abs = resolve(raw);
-  const defaultDir = resolve(getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' }));
+  const defaultDir = resolve(getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' }));
   if (abs === defaultDir) return 'main';
 
   const spec = worktreeSpecFromDir({ rootDir, component: 'happier-ui', dir: abs, env: process.env });
@@ -305,7 +305,7 @@ async function buildStackSummaryLines({ rootDir, stackName }) {
   if (!stackName) {
     const { env, invokedCwd } = resolveStacklessSummaryEnv({ rootDir });
     const serverComponent =
-      getEnvValueAny(env, ['HAPPIER_STACK_SERVER_COMPONENT']) || 'happier-server-light';
+      getEnvValueAny(env, ['PIGGERCODE_STACK_SERVER_COMPONENT']) || 'happier-server-light';
 
     const lines = [];
     lines.push('stack: (stackless)');
@@ -349,7 +349,7 @@ async function buildStackSummaryLines({ rootDir, stackName }) {
   const runtime = await readStackRuntimeStateFile(runtimePath);
 
   const serverComponent =
-    getEnvValueAny(env, ['HAPPIER_STACK_SERVER_COMPONENT']) || 'happier-server-light';
+    getEnvValueAny(env, ['PIGGERCODE_STACK_SERVER_COMPONENT']) || 'happier-server-light';
 
   const ports = runtime?.ports && typeof runtime.ports === 'object' ? runtime.ports : {};
   const expo = runtime?.expo && typeof runtime.expo === 'object' ? runtime.expo : {};
@@ -655,7 +655,7 @@ async function main() {
   const childEnv = buildTauriPaneEnv({
     env: {
       ...process.env,
-      ...(rescue ? { HAPPIER_STACK_RESCUE: '1' } : {}),
+      ...(rescue ? { PIGGERCODE_STACK_RESCUE: '1' } : {}),
     },
     forceExpoClearCache: withTauri,
   });
@@ -962,7 +962,7 @@ async function main() {
     // Waiting here avoids triggering auth's "start the stack in background" prompt, which would
     // try to start a second stack instance and confuse users.
     const runtimePath = getStackRuntimeStatePath(stackName);
-    const waitTimeoutRaw = (process.env.HAPPIER_STACK_TUI_AUTH_WAIT_TIMEOUT_MS ?? '').toString().trim();
+    const waitTimeoutRaw = (process.env.PIGGERCODE_STACK_TUI_AUTH_WAIT_TIMEOUT_MS ?? '').toString().trim();
     const waitTimeoutMs = waitTimeoutRaw ? Number(waitTimeoutRaw) : 45_000;
     const deadline = Date.now() + (Number.isFinite(waitTimeoutMs) && waitTimeoutMs > 0 ? waitTimeoutMs : 45_000);
     let internalServerUrl = '';
@@ -1264,7 +1264,7 @@ async function main() {
               const minLogW = 24;
               const minQrW = 22;
               const maxQrW = Math.max(0, Math.min(80, colW - minLogW));
-              const fixedQrWRaw = (process.env.HAPPIER_STACK_TUI_QR_WIDTH ?? '').toString().trim();
+              const fixedQrWRaw = (process.env.PIGGERCODE_STACK_TUI_QR_WIDTH ?? '').toString().trim();
               const fixedQrW = fixedQrWRaw ? Number(fixedQrWRaw) : 44;
               const qrW = clamp(Number.isFinite(fixedQrW) && fixedQrW > 0 ? fixedQrW : maxLineLen + 2, minQrW, maxQrW);
               const canSplit = qrW >= minQrW && colW - qrW >= minLogW;

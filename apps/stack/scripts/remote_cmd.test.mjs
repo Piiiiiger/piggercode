@@ -107,7 +107,7 @@ test('remote server setup forwards ssh trust flags to happier relay host install
       '--server-binary',
       '/tmp/happier-server',
       '--env',
-      'HAPPIER_DB_PROVIDER=postgres',
+      'PIGGERCODE_DB_PROVIDER=postgres',
       '--json',
     ],
     {
@@ -131,7 +131,7 @@ test('remote server setup forwards ssh trust flags to happier relay host install
     '--server-binary',
     '/tmp/happier-server',
     '--env',
-    'HAPPIER_DB_PROVIDER=postgres',
+    'PIGGERCODE_DB_PROVIDER=postgres',
     '--json',
   ]);
 });

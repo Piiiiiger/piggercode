@@ -17,7 +17,7 @@ afterEach(() => {
 describe('runBackendSessionCliCommand (session runner lock)', () => {
   it('refuses an existing Session without entering its runner or releasing the current owner', async () => {
     const happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-existing-runner-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', happyHomeDir);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', happyHomeDir);
     reloadConfiguration();
     const sessionId = 'session-already-running';
     const lock = await acquireSessionRunnerLock({ sessionId });

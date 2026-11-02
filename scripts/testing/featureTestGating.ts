@@ -11,11 +11,11 @@ import {
 function resolveDisabledFeatureIdsBase(env: NodeJS.ProcessEnv): Set<FeatureId> {
   const disabled = new Set<FeatureId>();
 
-  const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(env.HAPPIER_FEATURE_POLICY_ENV ?? env.HAPPIER_EMBEDDED_POLICY_ENV);
+  const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(env.PIGGERCODE_FEATURE_POLICY_ENV ?? env.PIGGERCODE_EMBEDDED_POLICY_ENV);
   const buildPolicy = resolveFeatureBuildPolicyFromEnvOrEmbedded({
     embeddedEnv: embeddedEnv ?? undefined,
-    allowRaw: env.HAPPIER_BUILD_FEATURES_ALLOW ?? null,
-    denyRaw: [env.HAPPIER_BUILD_FEATURES_DENY, env.HAPPIER_TEST_FEATURES_DENY].filter(Boolean).join(',') || null,
+    allowRaw: env.PIGGERCODE_BUILD_FEATURES_ALLOW ?? null,
+    denyRaw: [env.PIGGERCODE_BUILD_FEATURES_DENY, env.PIGGERCODE_TEST_FEATURES_DENY].filter(Boolean).join(',') || null,
   });
 
   for (const featureId of FEATURE_IDS) {

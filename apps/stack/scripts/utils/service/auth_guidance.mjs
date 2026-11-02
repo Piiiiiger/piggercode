@@ -44,7 +44,7 @@ export function buildServiceAuthGuidance({
     warnings.push(
       `[service] Mobile authentication will not work yet because this stack has no public server URL.\n` +
         `[service] Current public URL: ${url || '(empty)'}\n` +
-        `[service] Fix: set HAPPIER_STACK_SERVER_URL to an https:// URL (Tailscale Serve or a reverse proxy).`
+        `[service] Fix: set PIGGERCODE_STACK_SERVER_URL to an https:// URL (Tailscale Serve or a reverse proxy).`
     );
   }
 

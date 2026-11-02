@@ -49,17 +49,17 @@ test('web memory profile env defaults are explicit and do not embed local secret
   const { buildWebMemoryProfileUsage, parseWebMemoryProfileArgs } = await loadModule();
 
   assert.equal(
-    parseWebMemoryProfileArgs([], { HAPPIER_WEB_MEMORY_AGENT_BROWSER_SESSION: 'warm-ui' }).agentBrowserSession,
+    parseWebMemoryProfileArgs([], { PIGGERCODE_WEB_MEMORY_AGENT_BROWSER_SESSION: 'warm-ui' }).agentBrowserSession,
     'warm-ui',
   );
   assert.equal(
-    parseWebMemoryProfileArgs([], { HAPPIER_WEB_MEMORY_CDP_URL: 'ws://127.0.0.1:1/devtools/browser/test' }).cdpUrl,
+    parseWebMemoryProfileArgs([], { PIGGERCODE_WEB_MEMORY_CDP_URL: 'ws://127.0.0.1:1/devtools/browser/test' }).cdpUrl,
     'ws://127.0.0.1:1/devtools/browser/test',
   );
 
   const usage = buildWebMemoryProfileUsage();
-  assert.match(usage, /HAPPIER_WEB_MEMORY_CDP_URL/);
-  assert.match(usage, /HAPPIER_WEB_MEMORY_AGENT_BROWSER_SESSION/);
+  assert.match(usage, /PIGGERCODE_WEB_MEMORY_CDP_URL/);
+  assert.match(usage, /PIGGERCODE_WEB_MEMORY_AGENT_BROWSER_SESSION/);
   assert.doesNotMatch(usage, /[A-Z0-9]{5}(?:-[A-Z0-9]{5}){9}/);
   assert.doesNotMatch(usage, /happier-repo-[a-z0-9-]+\.localhost/i);
 });
@@ -219,7 +219,7 @@ test('web memory profile pre-navigation script enables sync telemetry before app
   const installed = vm.runInNewContext(buildWebMemoryProfileSyncTuningInitScript({ flushIntervalMs: 120000 }), context);
 
   assert.equal(installed, true);
-  assert.deepEqual(JSON.parse(storage.get('HAPPIER_SYNC_TUNING_JSON')), {
+  assert.deepEqual(JSON.parse(storage.get('PIGGERCODE_SYNC_TUNING_JSON')), {
     syncPerformanceTelemetryEnabled: true,
     syncPerformanceTelemetrySlowThresholdMs: 16,
     syncPerformanceTelemetryFlushIntervalMs: 120000,
@@ -252,7 +252,7 @@ test('web memory profile can configure telemetry without resetting cold-start ev
         },
       };
       const previousWindow = globalThis.window;
-      globalThis.window = { __HAPPIER_SYNC_PERFORMANCE__: telemetry };
+      globalThis.window = { __PIGGERCODE_SYNC_PERFORMANCE__: telemetry };
       try {
         return fn(arg);
       } finally {

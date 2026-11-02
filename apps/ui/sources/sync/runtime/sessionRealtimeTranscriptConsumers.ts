@@ -41,10 +41,10 @@ type TranscriptConsumerReleaseListener = (sessionId: string) => void;
 function getTranscriptConsumerReleaseListeners(): Set<TranscriptConsumerReleaseListener> {
     // Key inlined (not a module-scoped const) so this hoisted function is TDZ-safe.
     const host = globalThis as typeof globalThis & {
-        __HAPPIER_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__?: Set<TranscriptConsumerReleaseListener>;
+        __PIGGERCODE_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__?: Set<TranscriptConsumerReleaseListener>;
     };
-    host.__HAPPIER_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__ ??= new Set<TranscriptConsumerReleaseListener>();
-    return host.__HAPPIER_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__;
+    host.__PIGGERCODE_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__ ??= new Set<TranscriptConsumerReleaseListener>();
+    return host.__PIGGERCODE_TRANSCRIPT_CONSUMER_RELEASE_LISTENERS__;
 }
 
 function notifyTranscriptConsumerReleased(sessionId: string): void {

@@ -9,18 +9,18 @@ import { createExecutionRunBackend } from './createExecutionRunBackend';
 
 describe('createExecutionRunBackend (coderabbit)', () => {
   it('does not throw when the command env var is missing (defaults to "coderabbit")', () => {
-    const prevCmd = process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-    const prevTimeout = process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
+    const prevCmd = process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+    const prevTimeout = process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
     try {
-      delete process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-      delete process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+      delete process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
 
       expect(() => createExecutionRunBackend({ cwd: process.cwd(), backendId: 'coderabbit', permissionMode: 'read_only' })).not.toThrow();
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_CMD = prevCmd;
-      if (prevTimeout === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = prevCmd;
+      if (prevTimeout === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
     }
   });
 
@@ -44,11 +44,11 @@ describe('createExecutionRunBackend (coderabbit)', () => {
     );
     await chmod(scriptPath, 0o755);
 
-    const prevCmd = process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-    const prevTimeout = process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
+    const prevCmd = process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+    const prevTimeout = process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
     try {
-      process.env.HAPPIER_CODERABBIT_REVIEW_CMD = scriptPath;
-      process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = scriptPath;
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
 
       const backend = createExecutionRunBackend({
         cwd: dir,
@@ -88,10 +88,10 @@ describe('createExecutionRunBackend (coderabbit)', () => {
       expect(String(parsed.stdin ?? '')).toBe('');
       await backend.dispose();
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_CMD = prevCmd;
-      if (prevTimeout === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = prevCmd;
+      if (prevTimeout === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
     }
   }, 20_000);
 
@@ -114,25 +114,25 @@ describe('createExecutionRunBackend (coderabbit)', () => {
     );
     await chmod(scriptPath, 0o755);
 
-    const prevCmd = process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-    const prevTimeout = process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-    const prevHomeDir = process.env.HAPPIER_HOME_DIR;
-    const prevServer = process.env.HAPPIER_SERVER_URL;
-    const prevWebapp = process.env.HAPPIER_WEBAPP_URL;
+    const prevCmd = process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+    const prevTimeout = process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+    const prevHomeDir = process.env.PIGGERCODE_HOME_DIR;
+    const prevServer = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebapp = process.env.PIGGERCODE_WEBAPP_URL;
     const prevState = process.env.XDG_STATE_HOME;
     const prevCache = process.env.XDG_CACHE_HOME;
     const prevData = process.env.XDG_DATA_HOME;
     try {
-      process.env.HAPPIER_CODERABBIT_REVIEW_CMD = scriptPath;
-      process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = scriptPath;
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
 
       process.env.XDG_STATE_HOME = '/tmp/xdg-state-original';
       process.env.XDG_CACHE_HOME = '/tmp/xdg-cache-original';
       process.env.XDG_DATA_HOME = '/tmp/xdg-data-original';
 
-      process.env.HAPPIER_HOME_DIR = homeDir;
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = homeDir;
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
 
       const configMod = await import('@/configuration');
       configMod.reloadConfiguration();
@@ -173,17 +173,17 @@ describe('createExecutionRunBackend (coderabbit)', () => {
 
       await backend.dispose();
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_CMD = prevCmd;
-      if (prevTimeout === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = prevCmd;
+      if (prevTimeout === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
 
-      if (prevHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHomeDir;
-      if (prevServer === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServer;
-      if (prevWebapp === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebapp;
+      if (prevHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHomeDir;
+      if (prevServer === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServer;
+      if (prevWebapp === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebapp;
 
       if (prevState === undefined) delete process.env.XDG_STATE_HOME;
       else process.env.XDG_STATE_HOME = prevState;
@@ -216,25 +216,25 @@ describe('createExecutionRunBackend (coderabbit)', () => {
     );
     await chmod(scriptPath, 0o755);
 
-    const prevCmd = process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-    const prevTimeout = process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-    const prevHomeDir = process.env.HAPPIER_HOME_DIR;
-    const prevServer = process.env.HAPPIER_SERVER_URL;
-    const prevWebapp = process.env.HAPPIER_WEBAPP_URL;
+    const prevCmd = process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+    const prevTimeout = process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+    const prevHomeDir = process.env.PIGGERCODE_HOME_DIR;
+    const prevServer = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebapp = process.env.PIGGERCODE_WEBAPP_URL;
     const prevState = process.env.XDG_STATE_HOME;
     const prevCache = process.env.XDG_CACHE_HOME;
     const prevData = process.env.XDG_DATA_HOME;
     try {
-      process.env.HAPPIER_CODERABBIT_REVIEW_CMD = scriptPath;
-      process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = scriptPath;
+      process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = '5000';
 
       process.env.XDG_STATE_HOME = '/tmp/xdg-state-original';
       process.env.XDG_CACHE_HOME = '/tmp/xdg-cache-original';
       process.env.XDG_DATA_HOME = '/tmp/xdg-data-original';
 
-      process.env.HAPPIER_HOME_DIR = homeDir;
-      process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://app.example.test';
+      process.env.PIGGERCODE_HOME_DIR = homeDir;
+      process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
 
       const configMod = await import('@/configuration');
       configMod.reloadConfiguration();
@@ -275,17 +275,17 @@ describe('createExecutionRunBackend (coderabbit)', () => {
 
       await backend.dispose();
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_CMD;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_CMD = prevCmd;
-      if (prevTimeout === undefined) delete process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS;
-      else process.env.HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD = prevCmd;
+      if (prevTimeout === undefined) delete process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS;
+      else process.env.PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS = prevTimeout;
 
-      if (prevHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHomeDir;
-      if (prevServer === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServer;
-      if (prevWebapp === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebapp;
+      if (prevHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHomeDir;
+      if (prevServer === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServer;
+      if (prevWebapp === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebapp;
 
       if (prevState === undefined) delete process.env.XDG_STATE_HOME;
       else process.env.XDG_STATE_HOME = prevState;

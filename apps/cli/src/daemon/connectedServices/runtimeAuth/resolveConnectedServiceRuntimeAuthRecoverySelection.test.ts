@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { resolveConnectedServiceRuntimeAuthRecoverySelection } from './resolveConnectedServiceRuntimeAuthRecoverySelection';
 import type { ConnectedServiceRuntimeFailureClassification } from './types';
 
@@ -43,7 +43,7 @@ describe('resolveConnectedServiceRuntimeAuthRecoverySelection', () => {
         groupId: 'reported-group',
       },
       environmentVariables: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'stale-env-group',
@@ -69,7 +69,7 @@ describe('resolveConnectedServiceRuntimeAuthRecoverySelection', () => {
     expect(resolveConnectedServiceRuntimeAuthRecoverySelection({
       classification: baseClassification,
       environmentVariables: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',

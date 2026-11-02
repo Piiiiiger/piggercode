@@ -21,7 +21,7 @@ export default async function globalSetupCoreSlow(): Promise<void> {
       env: {
         ...process.env,
         CI: process.env.CI ?? '1',
-        HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: process.env.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? 'symlink',
+        PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: process.env.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? 'symlink',
       },
     },
     {

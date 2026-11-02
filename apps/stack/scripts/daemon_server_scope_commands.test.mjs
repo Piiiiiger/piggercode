@@ -87,7 +87,7 @@ function spawnOtherServerDaemon(cliHomeDir, env) {
         stdio: ['ignore', 'ignore', 'ignore'],
         env: {
             ...env,
-            HAPPIER_HOME_DIR: cliHomeDir,
+            PIGGERCODE_HOME_DIR: cliHomeDir,
         },
     });
 }
@@ -144,9 +144,9 @@ async function withHealthServer({ stackName, envPath, env }, fn) {
         detached: true,
         env: {
             ...env,
-            HAPPIER_STACK_STACK: stackName,
-            HAPPIER_STACK_ENV_FILE: envPath,
-            HAPPIER_STACK_PROCESS_KIND: 'server',
+            PIGGERCODE_STACK_STACK: stackName,
+            PIGGERCODE_STACK_ENV_FILE: envPath,
+            PIGGERCODE_STACK_PROCESS_KIND: 'server',
         },
         stdio: ['ignore', 'pipe', 'ignore'],
     });
@@ -189,7 +189,7 @@ async function createListenerOwnershipBoundary({ rootDir, pid, stackName, envPat
 case " $* " in
   *" eww -p "*)
     printf 'PID COMMAND\\n'
-    printf '%s node HAPPIER_STACK_STACK=%s HAPPIER_STACK_ENV_FILE=%s HAPPIER_STACK_PROCESS_KIND=server\\n' \
+    printf '%s node PIGGERCODE_STACK_STACK=%s PIGGERCODE_STACK_ENV_FILE=%s PIGGERCODE_STACK_PROCESS_KIND=server\\n' \
       "$OWNED_LISTENER_PID" "$OWNED_STACK_NAME" "$OWNED_STACK_ENV_PATH"
     ;;
   *" -o pgid= "*) printf '%s\\n' "$OWNED_LISTENER_PID" ;;
@@ -229,10 +229,10 @@ test('hstack dev ignores a running daemon from another server scope', async () =
                 env: {
                     ...isolatedEnv,
                     CI: '1',
-                    HAPPIER_STACK_REPO_DIR: fakeRepo,
-                    HAPPIER_STACK_STORAGE_DIR: storageDir,
-                    HAPPIER_STACK_STACK: stackName,
-                    HAPPIER_STACK_CLI_BUILD: '0',
+                    PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+                    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+                    PIGGERCODE_STACK_STACK: stackName,
+                    PIGGERCODE_STACK_CLI_BUILD: '0',
                 },
             },
         );
@@ -281,11 +281,11 @@ test('hstack start ignores a running daemon from another server scope', async ()
                     ...isolatedEnv,
                     ...ownershipEnv,
                     CI: '1',
-                    HAPPIER_STACK_REPO_DIR: fakeRepo,
-                    HAPPIER_STACK_STORAGE_DIR: storageDir,
-                    HAPPIER_STACK_STACK: stackName,
-                    HAPPIER_STACK_CLI_BUILD: '0',
-                    HAPPIER_STACK_SERVER_PORT: String(port),
+                    PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+                    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+                    PIGGERCODE_STACK_STACK: stackName,
+                    PIGGERCODE_STACK_CLI_BUILD: '0',
+                    PIGGERCODE_STACK_SERVER_PORT: String(port),
                 },
             });
 

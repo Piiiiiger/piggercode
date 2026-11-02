@@ -44,8 +44,8 @@ function createMachine(): Machine {
 
 afterEach(() => {
   spawnedPtys.length = 0;
-  delete process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY;
-  delete process.env.HAPPIER_DAEMON_TERMINAL_ENABLED;
+  delete process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY;
+  delete process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED;
   while (tempDirectories.length > 0) {
     const directory = tempDirectories.pop();
     if (directory) {
@@ -63,11 +63,11 @@ describe('ApiMachineClient terminal handlers', () => {
     mkdirSync(allowedRoot, { recursive: true });
     mkdirSync(outsideRoot, { recursive: true });
 
-    process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
-    process.env.HAPPIER_DAEMON_TERMINAL_ENABLED = '1';
+    process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
+    process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED = '1';
     const client = new ApiMachineClient('token', createMachine());
 
-    delete process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY;
+    delete process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY;
     client.setRPCHandlers({
       spawnSession: async () => ({ type: 'success', sessionId: 's1' }),
       stopSession: async () => true,
@@ -99,8 +99,8 @@ describe('ApiMachineClient terminal handlers', () => {
     const allowedRoot = join(suiteDir, 'allowed');
     mkdirSync(allowedRoot, { recursive: true });
 
-    process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
-    process.env.HAPPIER_DAEMON_TERMINAL_ENABLED = '1';
+    process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
+    process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED = '1';
     const client = new ApiMachineClient('token', createMachine());
     client.setRPCHandlers({
       spawnSession: async () => ({ type: 'success', sessionId: 's1' }),

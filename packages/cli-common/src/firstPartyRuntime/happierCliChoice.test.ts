@@ -148,8 +148,8 @@ posixOnly('a happier this app did not install (R12)', () => {
             const terminal = (extra: Record<string, string>) => resolveTerminalHappierCli({ binDir, processEnv: { Path: binDir, PATHEXT: '.EXE', ...extra } });
             // The PowerShell installer's own entry.
             expect(terminal({})).toMatchObject({ managed: true, desktopExposed: false });
-            expect(terminal({ HAPPIER_DESKTOP_PATH_ENTRIES: binDir.toUpperCase() })).toMatchObject({ managed: true, desktopExposed: true });
-            expect(terminal({ HAPPIER_DESKTOP_PATH_MOVES: `${binDir}|C:\\npm` })).toMatchObject({ managed: true, desktopExposed: true });
+            expect(terminal({ PIGGERCODE_DESKTOP_PATH_ENTRIES: binDir.toUpperCase() })).toMatchObject({ managed: true, desktopExposed: true });
+            expect(terminal({ PIGGERCODE_DESKTOP_PATH_MOVES: `${binDir}|C:\\npm` })).toMatchObject({ managed: true, desktopExposed: true });
         } finally {
             Object.defineProperty(process, 'platform', { value: realPlatform, configurable: true });
         }

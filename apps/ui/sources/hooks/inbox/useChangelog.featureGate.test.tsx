@@ -29,14 +29,14 @@ vi.mock('react-native-mmkv', () => {
 });
 
 describe('useChangelog (feature gate)', () => {
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
     let tree: renderer.ReactTestRenderer | null = null;
 
     beforeEach(() => {
         vi.resetModules();
         mmkvAccess.getNumber.mockClear();
         mmkvAccess.set.mockClear();
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.changelog';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.changelog';
     });
 
     afterEach(() => {
@@ -46,8 +46,8 @@ describe('useChangelog (feature gate)', () => {
             });
             tree = null;
         }
-        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
     });
 
     it('reports no unread entries when changelog UI is disabled', async () => {

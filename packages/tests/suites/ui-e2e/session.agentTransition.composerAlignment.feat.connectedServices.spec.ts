@@ -44,10 +44,10 @@ test.describe('UI e2e: armed Agent composer alignment', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES__QUOTAS__ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__QUOTAS__ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
       },
     });
     ui = await startUiWeb({
@@ -55,7 +55,7 @@ test.describe('UI e2e: armed Agent composer alignment', () => {
       env: {
         ...process.env,
         EXPO_PUBLIC_DEBUG: '1',
-        EXPO_PUBLIC_HAPPIER_SERVER_URL: server.baseUrl,
+        EXPO_PUBLIC_PIGGERCODE_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-composer-alignment`,
       },
@@ -87,13 +87,13 @@ test.describe('UI e2e: armed Agent composer alignment', () => {
         extraEnv: {
           CLAUDE_CONFIG_DIR: resolve(cliHomeDir, '.claude'),
           CODEX_HOME: resolve(cliHomeDir, '.codex'),
-          HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
           ANTHROPIC_BASE_URL: new URL(providerHttp.tokenUrl).origin,
-          HAPPIER_CONNECTED_SERVICES_ANTHROPIC_USAGE_URL: `${new URL(providerHttp.tokenUrl).origin}/api/oauth/usage`,
-          HAPPIER_CODEX_BACKEND_MODE: 'appServer',
-          HAPPIER_CODEX_APP_SERVER_BIN: codexBin,
-          HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+          PIGGERCODE_CONNECTED_SERVICES_ANTHROPIC_USAGE_URL: `${new URL(providerHttp.tokenUrl).origin}/api/oauth/usage`,
+          PIGGERCODE_CODEX_BACKEND_MODE: 'appServer',
+          PIGGERCODE_CODEX_APP_SERVER_BIN: codexBin,
+          PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
         },
       });
       const access = await readCliAccessKey(cliHomeDir);

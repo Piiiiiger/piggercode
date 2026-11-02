@@ -30,7 +30,7 @@ async function expectSettled<T>(promise: Promise<T>): Promise<T | 'pending'> {
 }
 
 describe('createCliActionExecutorHarness', () => {
-  const envScope = createEnvKeyScope(['HAPPIER_ACTIONS_SETTINGS_V1', 'HAPPIER_BLOCKING_APPROVAL_POLL_INTERVAL_MS']);
+  const envScope = createEnvKeyScope(['PIGGERCODE_ACTIONS_SETTINGS_V1', 'PIGGERCODE_BLOCKING_APPROVAL_POLL_INTERVAL_MS']);
 
   beforeEach(() => {
     envScope.restore();
@@ -229,7 +229,7 @@ describe('createCliActionExecutorHarness', () => {
   });
 
   it('wakes a blocking waiter from durable executed approval state across process boundaries', async () => {
-    process.env.HAPPIER_BLOCKING_APPROVAL_POLL_INTERVAL_MS = '1';
+    process.env.PIGGERCODE_BLOCKING_APPROVAL_POLL_INTERVAL_MS = '1';
     const requests = new Map<string, ApprovalRequestV1>();
     const recordedResult = {
       sessions: [{ id: 'sess_1', title: 'Recorded session' }],

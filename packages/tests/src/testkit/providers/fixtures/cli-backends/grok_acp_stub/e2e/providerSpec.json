@@ -1,7 +1,7 @@
 {
   "v": 1,
   "id": "grok_acp_stub",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_GROK_ACP_STUB",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_GROK_ACP_STUB",
   "protocol": "acp",
   "traceProvider": "grok",
   "requiredBinaries": ["node"],
@@ -45,9 +45,9 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev",
-      "HAPPIER_E2E_ACP_TRACE_MARKERS": "1",
-      "HAPPIER_GROK_PATH": "../../packages/tests/src/testkit/providers/fixtures/grok-acp-stub-provider.mjs",
+      "PIGGERCODE_VARIANT": "dev",
+      "PIGGERCODE_E2E_ACP_TRACE_MARKERS": "1",
+      "PIGGERCODE_GROK_PATH": "../../packages/tests/src/testkit/providers/fixtures/grok-acp-stub-provider.mjs",
       "XAI_API_KEY": "fixture-not-a-real-secret"
     }
   }

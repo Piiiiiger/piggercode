@@ -16,16 +16,16 @@ function normalizeProxyHost(raw) {
 export function shouldEnableStackDevProxy({ startServer = true, flags = new Set(), env = process.env } = {}) {
   if (!startServer) return false;
   if (flags?.has?.('--no-proxy')) return false;
-  const raw = String(env?.HAPPIER_STACK_DEV_PROXY ?? '').trim().toLowerCase();
+  const raw = String(env?.PIGGERCODE_STACK_DEV_PROXY ?? '').trim().toLowerCase();
   if (raw && DISABLED_ENV_VALUES.has(raw)) return false;
   return true;
 }
 
 export function resolveDevProxyStableHost({ env = process.env } = {}) {
-  const explicit = normalizeProxyHost(env?.HAPPIER_STACK_DEV_PROXY_HOST);
+  const explicit = normalizeProxyHost(env?.PIGGERCODE_STACK_DEV_PROXY_HOST);
   if (explicit) return explicit;
 
-  const bindMode = String(env?.HAPPIER_STACK_BIND_MODE ?? '').trim().toLowerCase();
+  const bindMode = String(env?.PIGGERCODE_STACK_BIND_MODE ?? '').trim().toLowerCase();
   const host = normalizeProxyHost(env?.HOST).toLowerCase();
   if (bindMode === 'loopback' || LOOPBACK_HOSTS.has(host)) {
     return '127.0.0.1';

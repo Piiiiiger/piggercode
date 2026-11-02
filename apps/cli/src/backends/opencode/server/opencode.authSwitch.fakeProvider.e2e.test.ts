@@ -242,9 +242,9 @@ describe('OpenCode auth-switch fake-provider e2e', () => {
     const homePreview = await prepareIsolatedDaemonTestHome({
       prefix: 'happier-opencode-auth-switch-startup-scan-',
       extraEnv: ({ homeDir }) => ({
-        HAPPIER_OPENCODE_PATH: fakeOpenCodePath,
-        HAPPIER_OPENCODE_SERVER_STATE_PATH: join(homeDir, 'opencode', 'current-managed-server.json'),
-        HAPPIER_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
+        PIGGERCODE_OPENCODE_PATH: fakeOpenCodePath,
+        PIGGERCODE_OPENCODE_SERVER_STATE_PATH: join(homeDir, 'opencode', 'current-managed-server.json'),
+        PIGGERCODE_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
       }),
     });
     preparedHome = homePreview;
@@ -333,8 +333,8 @@ describe('OpenCode auth-switch fake-provider e2e', () => {
     const homePreview = await prepareIsolatedDaemonTestHome({
       prefix: 'happier-opencode-auth-switch-release-',
       extraEnv: {
-        HAPPIER_OPENCODE_PATH: fakeOpenCodePath,
-        HAPPIER_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
+        PIGGERCODE_OPENCODE_PATH: fakeOpenCodePath,
+        PIGGERCODE_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
       },
     });
     preparedHome = homePreview;
@@ -558,8 +558,8 @@ describe('OpenCode auth-switch fake-provider e2e', () => {
     const homePreview = await prepareIsolatedDaemonTestHome({
       prefix: 'happier-opencode-auth-switch-inflight-',
       extraEnv: {
-        HAPPIER_OPENCODE_PATH: fakeOpenCodePath,
-        HAPPIER_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
+        PIGGERCODE_OPENCODE_PATH: fakeOpenCodePath,
+        PIGGERCODE_OPENCODE_AUTH_SWITCH_DRAIN_MS: '200',
       },
     });
     preparedHome = homePreview;

@@ -9,7 +9,7 @@ const poolSpy = vi.fn();
 let rendererMode: 'happier' | 'pierre' = 'pierre';
 let killSwitchEnabled = true;
 let runtimeSupported = true;
-const PREWARM_MARKER = '__HAPPIER_PIERRE_DIFF_WORKER_PREWARMED__';
+const PREWARM_MARKER = '__PIGGERCODE_PIERRE_DIFF_WORKER_PREWARMED__';
 
 vi.mock('@/sync/domains/state/storage', async () => {
     const { createStorageModuleStub } = await import('@/dev/testkit/mocks/storage');

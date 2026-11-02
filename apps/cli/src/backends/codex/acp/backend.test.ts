@@ -90,10 +90,10 @@ describe('createCodexAcpBackend', () => {
       writeFileSync(wrapper, `#!/bin/sh\n\"${process.execPath}\" \"${agentScript}\"\n`, 'utf8');
       await (await import('node:fs/promises')).chmod(wrapper, 0o755);
       await withEnv({
-        HAPPIER_VARIANT: 'stable',
-        HAPPIER_HOME_DIR: dir,
+        PIGGERCODE_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: dir,
         CODEX_HOME: dir,
-        HAPPIER_CODEX_ACP_BIN: wrapper,
+        PIGGERCODE_CODEX_ACP_BIN: wrapper,
         OPENAI_API_KEY: 'sk-test',
       }, async () => {
         const mod = await import('./backend');
@@ -128,10 +128,10 @@ describe('createCodexAcpBackend', () => {
         await (await import('node:fs/promises')).chmod(wrapper, 0o755);
 
         await withEnv({
-          HAPPIER_VARIANT: 'stable',
-          HAPPIER_HOME_DIR: undefined,
+          PIGGERCODE_VARIANT: 'stable',
+          PIGGERCODE_HOME_DIR: undefined,
           CODEX_HOME: undefined,
-          HAPPIER_CODEX_ACP_BIN: undefined,
+          PIGGERCODE_CODEX_ACP_BIN: undefined,
           OPENAI_API_KEY: undefined,
         }, async () => {
           const mod = await import('./backend');
@@ -139,7 +139,7 @@ describe('createCodexAcpBackend', () => {
             cwd: dir,
             env: {
               CODEX_HOME: dir,
-              HAPPIER_CODEX_ACP_BIN: wrapper,
+              PIGGERCODE_CODEX_ACP_BIN: wrapper,
               OPENAI_API_KEY: 'scoped-openai-key',
             },
           });
@@ -162,8 +162,8 @@ describe('createCodexAcpBackend', () => {
     const captured: Array<any> = [];
 
     await withEnv({
-      HAPPIER_VARIANT: 'stable',
-      HAPPIER_CODEX_ACP_BIN: '/bin/echo',
+      PIGGERCODE_VARIANT: 'stable',
+      PIGGERCODE_CODEX_ACP_BIN: '/bin/echo',
       OPENAI_API_KEY: undefined,
       CODEX_API_KEY: undefined,
     }, async () => {
@@ -197,8 +197,8 @@ describe('createCodexAcpBackend', () => {
       writeFileSync(join(pathDir, 'codex-acp'), '#!/bin/sh\necho ok\n', 'utf8');
       await (await import('node:fs/promises')).chmod(join(pathDir, 'codex-acp'), 0o755);
       await withEnv({
-        HAPPIER_VARIANT: 'stable',
-        HAPPIER_HOME_DIR: homeDir,
+        PIGGERCODE_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: homeDir,
         CODEX_HOME: homeDir,
         PATH: pathDir,
       }, async () => {
@@ -220,11 +220,11 @@ describe('createCodexAcpBackend', () => {
       writeFileSync(join(pathDir, 'codex-acp'), '#!/bin/sh\necho ok\n', 'utf8');
       await (await import('node:fs/promises')).chmod(join(pathDir, 'codex-acp'), 0o755);
       await withEnv({
-        HAPPIER_VARIANT: 'stable',
-        HAPPIER_HOME_DIR: homeDir,
+        PIGGERCODE_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: homeDir,
         CODEX_HOME: homeDir,
         PATH: pathDir,
-        HAPPIER_CODEX_ACP_CONFIG_OVERRIDES: undefined,
+        PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES: undefined,
       }, async () => {
         const mod = await import('./backend');
 	        const created = mod.createCodexAcpBackend({ cwd: homeDir, env: {}, permissionMode: 'yolo' });
@@ -250,8 +250,8 @@ describe('createCodexAcpBackend', () => {
       writeFileSync(join(pathDir, 'codex-acp'), '#!/bin/sh\necho ok\n', 'utf8');
       await (await import('node:fs/promises')).chmod(join(pathDir, 'codex-acp'), 0o755);
       await withEnv({
-        HAPPIER_VARIANT: 'stable',
-        HAPPIER_HOME_DIR: homeDir,
+        PIGGERCODE_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: homeDir,
         PATH: pathDir,
       }, async () => {
         vi.doMock('@/agent/acp/AcpBackend', () => ({
@@ -284,12 +284,12 @@ describe('createCodexAcpBackend', () => {
 
       await withEnv(
         {
-          HAPPIER_VARIANT: 'stable',
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_VARIANT: 'stable',
+          PIGGERCODE_HOME_DIR: homeDir,
           CODEX_HOME: homeDir,
-          HAPPIER_CODEX_ACP_BIN: fakeBin,
-          HAPPIER_CODEX_ACP_INIT_TIMEOUT_MS: undefined,
-          HAPPIER_CODEX_ACP_NPX_INIT_TIMEOUT_MS: undefined,
+          PIGGERCODE_CODEX_ACP_BIN: fakeBin,
+          PIGGERCODE_CODEX_ACP_INIT_TIMEOUT_MS: undefined,
+          PIGGERCODE_CODEX_ACP_NPX_INIT_TIMEOUT_MS: undefined,
         },
         async () => {
           vi.doMock('@/agent/acp/AcpBackend', () => ({
@@ -318,8 +318,8 @@ describe('createCodexAcpBackend', () => {
 
     await withEnv(
       {
-        HAPPIER_CODEX_ACP_INIT_TIMEOUT_MS: undefined,
-        HAPPIER_CODEX_ACP_NPX_INIT_TIMEOUT_MS: '240000',
+        PIGGERCODE_CODEX_ACP_INIT_TIMEOUT_MS: undefined,
+        PIGGERCODE_CODEX_ACP_NPX_INIT_TIMEOUT_MS: '240000',
       },
       async () => {
         vi.doMock('@/agent/acp/AcpBackend', () => ({

@@ -3,20 +3,20 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { probeOpenAiCodexOauthRefreshToken } from './openCodeAuthState';
 
 describe('probeOpenAiCodexOauthRefreshToken', () => {
-  const previousTimeout = process.env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
+  const previousTimeout = process.env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
 
   afterEach(() => {
     if (typeof previousTimeout === 'string') {
-      process.env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = previousTimeout;
+      process.env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = previousTimeout;
     } else {
-      delete process.env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
     }
     vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
   it('returns unknown when the token probe times out', async () => {
-    process.env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = '25';
     const fetchMock = vi.fn((_input: unknown, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
       init?.signal?.addEventListener('abort', () => {
         reject(new Error('aborted'));
@@ -30,7 +30,7 @@ describe('probeOpenAiCodexOauthRefreshToken', () => {
 
   it('clears pending timeout handles after a successful probe', async () => {
     vi.useFakeTimers();
-    process.env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS = '25';
     const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 

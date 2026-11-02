@@ -25,7 +25,7 @@ import { dispatchConnectedServiceAutomaticQuotaResetNotificationAsync } from '..
 import { createOpenAiCodexQuotaFetcher } from '@/backends/codex/connectedServices/quotaFetcher';
 import { createClaudeSubscriptionQuotaFetcher } from '@/backends/claude/connectedServices/quotaFetcher';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../accountGroups/quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
 import { createProviderAccountUsageStore } from '../accountUsage/store';
 import { computeConnectedServiceAccessTokenFingerprint } from '../refresh/credentialFreshness/tokenFingerprint';
@@ -2143,7 +2143,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -2245,7 +2245,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -2368,7 +2368,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -2614,7 +2614,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -2847,7 +2847,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3077,7 +3077,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3261,7 +3261,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3368,7 +3368,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3474,7 +3474,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3583,7 +3583,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -3955,7 +3955,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -4117,7 +4117,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -4236,7 +4236,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -4345,7 +4345,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -4465,7 +4465,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'claude-subscription',
           groupId: 'team',
@@ -4588,7 +4588,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -4718,7 +4718,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -4845,7 +4845,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -4990,7 +4990,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -5058,7 +5058,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -5179,7 +5179,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -5248,7 +5248,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -5362,7 +5362,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -5444,7 +5444,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -5554,7 +5554,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -5652,7 +5652,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -5783,7 +5783,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
             },
           },
           connectedServiceSelectionsEnv: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'team',
@@ -5956,7 +5956,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6069,7 +6069,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6158,7 +6158,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6259,7 +6259,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6347,7 +6347,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6459,7 +6459,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6592,7 +6592,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
             },
           },
           connectedServiceSelectionsEnv: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'team',
@@ -6713,7 +6713,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6833,7 +6833,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -6925,7 +6925,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7009,7 +7009,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -7126,7 +7126,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -7196,7 +7196,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -7267,7 +7267,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'claude-subscription',
           groupId: 'team',
@@ -7352,7 +7352,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -7449,7 +7449,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7554,7 +7554,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7702,7 +7702,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7806,7 +7806,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7886,7 +7886,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -7980,7 +7980,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -8066,7 +8066,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -8173,7 +8173,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'team',
@@ -8265,7 +8265,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId,
@@ -9193,7 +9193,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -9315,7 +9315,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -9487,7 +9487,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -9581,7 +9581,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',

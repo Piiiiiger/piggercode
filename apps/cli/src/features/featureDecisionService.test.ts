@@ -57,7 +57,7 @@ describe('resolveCliFeatureDecision', () => {
     const decision = resolveCliFeatureDecision({
       featureId: 'automations',
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'false',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'false',
       } as NodeJS.ProcessEnv,
     });
 
@@ -69,8 +69,8 @@ describe('resolveCliFeatureDecision', () => {
     const decision = resolveCliFeatureDecision({
       featureId: 'automations',
       env: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'true',
-        HAPPIER_BUILD_FEATURES_DENY: 'automations',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'true',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'automations',
       } as NodeJS.ProcessEnv,
     });
 
@@ -87,8 +87,8 @@ describe('resolveCliFeatureDecision', () => {
     const decision = resolveCliFeatureDecision({
       featureId: 'connectedServices.quotas',
       env: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
       } as NodeJS.ProcessEnv,
       serverSnapshot: snapshot,
     });
@@ -136,7 +136,7 @@ describe('resolveCliFeatureDecision', () => {
     const decision = resolveCliFeatureDecision({
       featureId: 'providers.claude.unifiedTerminal.tuiRuntimeControl',
       env: {
-        HAPPIER_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED: '0',
+        PIGGERCODE_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED: '0',
       } as NodeJS.ProcessEnv,
     });
 
@@ -148,8 +148,8 @@ describe('resolveCliFeatureDecision', () => {
     const decision = resolveCliFeatureDecision({
       featureId: 'voice.agent',
       env: {
-        HAPPIER_FEATURE_EXECUTION_RUNS__ENABLED: '0',
-        HAPPIER_FEATURE_VOICE__ENABLED: '1',
+        PIGGERCODE_FEATURE_EXECUTION_RUNS__ENABLED: '0',
+        PIGGERCODE_FEATURE_VOICE__ENABLED: '1',
       } as NodeJS.ProcessEnv,
     });
 

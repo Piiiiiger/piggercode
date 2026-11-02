@@ -6,7 +6,7 @@ import { writeExecutableShimSync } from '@/testkit/fs/executableShim';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 const ORIGINAL_PLATFORM_DESCRIPTOR = Object.getOwnPropertyDescriptor(process, 'platform');
-const SCOPED_ENV_KEYS = ['PATH', 'PATHEXT', 'HAPPIER_CODEX_PATH', 'ComSpec'] as const;
+const SCOPED_ENV_KEYS = ['PATH', 'PATHEXT', 'PIGGERCODE_CODEX_PATH', 'ComSpec'] as const;
 type ScopedEnvKey = (typeof SCOPED_ENV_KEYS)[number];
 const envBaseline = snapshotEnvValues(SCOPED_ENV_KEYS) as Record<ScopedEnvKey, string | undefined>;
 
@@ -49,7 +49,7 @@ describe('detectCliSnapshotOnDaemonPath (Windows cmd shim)', () => {
       fileName: 'codex.cmd',
       contents: '@echo off\r\necho codex 0.43.0\r\n',
     });
-    process.env.HAPPIER_CODEX_PATH = codexCmd;
+    process.env.PIGGERCODE_CODEX_PATH = codexCmd;
     process.env.PATH = binDir;
     process.env.PATHEXT = '.CMD';
     delete (process.env as any).ComSpec;

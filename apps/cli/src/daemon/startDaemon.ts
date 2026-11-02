@@ -131,7 +131,7 @@ import {
   ClaudeEndpointRecoveryFenceError,
   resolveClaudeEndpointRecoverySpawnOptions,
 } from './sessions/claudeEndpointStateEnv';
-import { HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
+import { PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 import { buildTerminalAttachmentMetadataFromHostHandle } from '@/agent/runtime/terminal/attachmentMetadata';
 import { adoptReportedHappySessionId, adoptReportedSessionRunnerIdentity, correlateTrackedSessionReport, createOnHappySessionWebhook } from './sessions/onHappySessionWebhook';
 import { applyTrackedSessionTurnLifecycle } from './sessions/applyTrackedSessionTurnLifecycle';
@@ -243,13 +243,13 @@ import {
   writeSessionMarker,
 } from './sessionRegistry';
 import {
-  HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY,
+  PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY,
   serializePendingFirstInputForEnv,
 } from './spawn/pendingFirstInput';
 import { createDefaultTerminalHostRegistry } from '@/integrations/terminalHost/defaultRegistry';
 import { resolveLiveRunnerSnapshotFingerprints } from './sessionRunnerRuntime/resolveLiveRunnerSnapshotFingerprints';
 import { buildHappySessionControlArgs } from './sessionSpawnArgs';
-import { serializeDaemonInitialGoalForEnv, HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY } from '@/agent/runtime/sessionInitialGoal';
+import { serializeDaemonInitialGoalForEnv, PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY } from '@/agent/runtime/sessionInitialGoal';
 import { resolveExistingSessionAttachContext } from './sessionEncryption/resolveExistingSessionAttachContext';
 import { resolveWaitForAuthConfig } from './startup/waitForAuthConfig';
 import { ensureSessionDirectory } from './startup/ensureSessionDirectory';
@@ -1613,14 +1613,14 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
   let daemonLockHandle: Awaited<ReturnType<typeof acquireDaemonLock>> = null;
   let publishedDaemonStateOwner: Readonly<{ pid: number; startedAt: number }> | null = null;
-  const inheritedRuntimeId = String(process.env.HAPPIER_DAEMON_RUNTIME_ID ?? '').trim();
+  const inheritedRuntimeId = String(process.env.PIGGERCODE_DAEMON_RUNTIME_ID ?? '').trim();
   const runtimeId = inheritedRuntimeId || randomUUID();
   const startupSource = resolveDaemonStartupSourceFromEnv(process.env);
-  const selfRestartCorrelationId = String(process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '').trim();
+  const selfRestartCorrelationId = String(process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '').trim();
   assertCurrentDaemonSelfRestartAuthorization({
     startupSource,
     correlationId: selfRestartCorrelationId,
-    deadlineMs: process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS,
+    deadlineMs: process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS,
   });
   const serviceLabel = resolveDaemonServiceLabelFromEnv(process.env);
   const takeoverRequested = startupSource === 'self-restart'
@@ -1932,7 +1932,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       const connectedServiceRuntimeAuthSwitchAttempts = new ConnectedServiceRuntimeAuthSwitchAttemptTracker({
         nowMs: () => Date.now(),
         windowMs: resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_SWITCH_ATTEMPT_WINDOW_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_SWITCH_ATTEMPT_WINDOW_MS,
           10 * 60_000,
           { min: 1_000, max: 24 * 60 * 60_000 },
         ),
@@ -1940,12 +1940,12 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       const connectedServiceSessionAuthSwitchCore = createConnectedServiceSessionAuthSwitchCore();
       const inactiveUsageLimitRecoveryCheckOwner = createInactiveUsageLimitRecoveryCheckOwner();
       const inactiveUsageLimitRecoveryRunnerUnavailableRetryDelayMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_USAGE_LIMIT_RECOVERY_RUNNER_UNAVAILABLE_RETRY_DELAY_MS,
+        process.env.PIGGERCODE_USAGE_LIMIT_RECOVERY_RUNNER_UNAVAILABLE_RETRY_DELAY_MS,
         60_000,
         { min: 1_000, max: 60 * 60_000 },
       );
       const inactiveUsageLimitRecoveryWakeCoalesceWindowMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_USAGE_LIMIT_RECOVERY_WAKE_COALESCE_WINDOW_MS,
+        process.env.PIGGERCODE_USAGE_LIMIT_RECOVERY_WAKE_COALESCE_WINDOW_MS,
         1_000,
         { min: 1, max: 60_000 },
       );
@@ -2024,12 +2024,12 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         runtimeRegistry: connectedServiceRuntimeRegistry,
         nowMs: () => Date.now(),
         rootTtlMs: resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_MATERIALIZED_HOME_TTL_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_MATERIALIZED_HOME_TTL_MS,
           30 * 24 * 60 * 60_000,
           { min: 60_000, max: 365 * 24 * 60 * 60_000 },
         ),
         attemptsTtlMs: resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_MATERIALIZED_ATTEMPTS_TTL_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_MATERIALIZED_ATTEMPTS_TTL_MS,
           60 * 60_000,
           { min: 60_000, max: 7 * 24 * 60 * 60_000 },
         ),
@@ -2050,7 +2050,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       const daemonServerWorkScheduler: DaemonServerWorkScheduler = createDaemonServerWorkScheduler({
         budget: createDaemonServerWorkBudget({
           maxConcurrentWrites: resolvePositiveIntEnv(
-            process.env.HAPPIER_DAEMON_SERVER_WORK_MAX_CONCURRENT_WRITES,
+            process.env.PIGGERCODE_DAEMON_SERVER_WORK_MAX_CONCURRENT_WRITES,
             1,
             { min: 1, max: 8 },
           ),
@@ -2080,7 +2080,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             const pidToSpawnResultResolver = new Map<number, (result: SpawnSessionResult) => void>();
             const pidToSpawnWebhookTimeout = new Map<number, NodeJS.Timeout>();
             const spawnConcurrencyGate = createSpawnConcurrencyGate(
-              resolvePositiveIntEnv(process.env.HAPPIER_DAEMON_MAX_CONCURRENT_SPAWNS, 0, { min: 0, max: 64 }),
+              resolvePositiveIntEnv(process.env.PIGGERCODE_DAEMON_MAX_CONCURRENT_SPAWNS, 0, { min: 0, max: 64 }),
             );
 
         const resolveAcceptedExistingSessionStartup = async (
@@ -2173,7 +2173,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         };
 
         const spawnRecentSuccessTtlMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SPAWN_RECENT_SUCCESS_TTL_MS,
+          process.env.PIGGERCODE_DAEMON_SPAWN_RECENT_SUCCESS_TTL_MS,
           2000,
           { min: 0, max: 60_000 },
         );
@@ -2181,7 +2181,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           recentSuccessTtlMs: spawnRecentSuccessTtlMs,
         });
         const acceptedSpawnNonceTtlMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS,
+          process.env.PIGGERCODE_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS,
           15 * 60_000,
           { min: 1000, max: 60 * 60_000 },
         );
@@ -2189,12 +2189,12 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           ttlMs: acceptedSpawnNonceTtlMs,
         });
         const shutdownSpawnDrainGraceMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS,
+          process.env.PIGGERCODE_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS,
           10_000,
           { min: 0, max: 120_000 },
         );
         const shutdownSpawnDrainPollMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SHUTDOWN_SPAWN_DRAIN_POLL_MS,
+          process.env.PIGGERCODE_DAEMON_SHUTDOWN_SPAWN_DRAIN_POLL_MS,
           100,
           { min: 10, max: 5_000 },
         );
@@ -2460,7 +2460,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 ),
               nowMs: () => Date.now(),
               dedupeWindowMs: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_ACCOUNT_SWITCH_NOTIFICATION_DEDUPE_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_ACCOUNT_SWITCH_NOTIFICATION_DEDUPE_MS,
                 60_000,
                 { min: 0, max: 24 * 60 * 60_000 },
               ),
@@ -2616,14 +2616,14 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           }
         };
         const connectedServiceContinuationProviderActivityTimeoutMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_CONTINUATION_PROVIDER_ACTIVITY_TIMEOUT_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_CONTINUATION_PROVIDER_ACTIVITY_TIMEOUT_MS,
           5 * 60_000,
           { min: 1_000, max: 60 * 60_000 },
         );
         connectedServiceMaterializedHomeCleanupLoopHandle = startConnectedServiceMaterializedHomeCleanupLoop({
           enabled: true,
           tickMs: resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_MATERIALIZED_HOME_CLEANUP_TICK_MS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_MATERIALIZED_HOME_CLEANUP_TICK_MS,
             30 * 60_000,
             { min: 60_000, max: 24 * 60 * 60_000 },
           ),
@@ -3633,7 +3633,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   };
                   try {
                     const connectedServiceAuthQuotaFreshnessMs = resolvePositiveIntEnv(
-                      process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
+                      process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
                       5 * 60_000,
                       { min: 1_000, max: 60 * 60_000 },
                     );
@@ -3823,7 +3823,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     : {}),
                 };
                 const sessionChildProcessEnv: NodeJS.ProcessEnv = { ...process.env };
-                delete sessionChildProcessEnv[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+                delete sessionChildProcessEnv[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
                 const childServerSelectionEnv = {
                   activeServerId: configuration.activeServerId,
                   canonicalServerUrl: configuration.serverUrl,
@@ -3925,13 +3925,13 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             const extraEnvForChildWithMessage = {
               ...extraEnvForChild,
               ...(sessionAttachFilePath
-                ? { HAPPIER_SESSION_ATTACH_FILE: sessionAttachFilePath }
+                ? { PIGGERCODE_SESSION_ATTACH_FILE: sessionAttachFilePath }
                 : {}),
               ...(pendingFirstInput
-                ? { [HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv(pendingFirstInput) }
+                ? { [PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv(pendingFirstInput) }
                 : {}),
               ...(initialGoal
-                ? { [HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY]: serializeDaemonInitialGoalForEnv(initialGoal) }
+                ? { [PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY]: serializeDaemonInitialGoalForEnv(initialGoal) }
                 : {}),
               ...stackProcessKindOverride,
             };
@@ -4369,8 +4369,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   directoryCreated,
                   message: directoryCreated ? `The path '${resolvedDirectory}' did not exist. We created a new folder and spawned a new session there.` : undefined,
                 };
-                const pollMsRaw = typeof process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS === 'string'
-                  ? process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS.trim()
+                const pollMsRaw = typeof process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS === 'string'
+                  ? process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS.trim()
                   : '';
                 const pollMsParsed = pollMsRaw ? Number(pollMsRaw) : NaN;
                 const pollMs = Number.isFinite(pollMsParsed) && pollMsParsed > 0 ? pollMsParsed : 5000;
@@ -4863,12 +4863,12 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             }
           },
           baseBackoffMs: resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_TEMPORARY_THROTTLE_BASE_BACKOFF_MS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_TEMPORARY_THROTTLE_BASE_BACKOFF_MS,
             1_000,
             { min: 100, max: 60_000 },
           ),
           maxBackoffMs: resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_TEMPORARY_THROTTLE_MAX_BACKOFF_MS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_TEMPORARY_THROTTLE_MAX_BACKOFF_MS,
             60_000,
             { min: 1_000, max: 10 * 60_000 },
           ),
@@ -4943,24 +4943,24 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
         // Generic crash respawn remains opt-in. Deliberate recovery operations pass forceRestart
         // through the manager and are bounded by their own intended-restart policy.
-        const sessionRespawnEnabled = parseBooleanEnv(process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED, false);
+        const sessionRespawnEnabled = parseBooleanEnv(process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED, false);
         const sessionRespawnMaxAttempts = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_RESPAWN_MAX_ATTEMPTS,
+          process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_MAX_ATTEMPTS,
           10,
           { min: 0, max: 100 },
         );
         const sessionRespawnBaseDelayMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS,
+          process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS,
           1_000,
           { min: 50, max: 5 * 60_000 },
         );
         const sessionRespawnMaxDelayMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_RESPAWN_MAX_DELAY_MS,
+          process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_MAX_DELAY_MS,
           60_000,
           { min: 50, max: 30 * 60_000 },
         );
         const sessionRespawnJitterMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_RESPAWN_JITTER_MS,
+          process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_JITTER_MS,
           250,
           { min: 0, max: 10_000 },
         );
@@ -4978,17 +4978,17 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         };
         const sessionRespawnMaxRestarts = sessionRespawnMaxAttempts === 0 ? null : sessionRespawnMaxAttempts;
         const sessionIntendedRestartMaxAttempts = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_INTENDED_RESTART_MAX_ATTEMPTS,
+          process.env.PIGGERCODE_DAEMON_SESSION_INTENDED_RESTART_MAX_ATTEMPTS,
           20,
           { min: 0, max: 200 },
         );
         const sessionIntendedRestartWindowMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_INTENDED_RESTART_WINDOW_MS,
+          process.env.PIGGERCODE_DAEMON_SESSION_INTENDED_RESTART_WINDOW_MS,
           30 * 60_000,
           { min: 60_000, max: 24 * 60 * 60_000 },
         );
         const sessionRunnerRestartCompletionTimeoutMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_DAEMON_SESSION_RUNNER_RESTART_COMPLETION_TIMEOUT_MS,
+          process.env.PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_COMPLETION_TIMEOUT_MS,
           60_000,
           { min: 1_000, max: 10 * 60_000 },
         );
@@ -5081,11 +5081,11 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
         const connectedServiceTurnDeferralQueue = createConnectedServiceSwitchDeferralQueue({
           timeoutMs: resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_TURN_DEFERRAL_TIMEOUT_MS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_TURN_DEFERRAL_TIMEOUT_MS,
             60_000,
             { min: 1_000, max: 10 * 60_000 },
           ),
-          disableDeferral: String(process.env.HAPPIER_CONNECTED_SERVICES_DISABLE_TURN_DEFERRAL ?? '').trim() === '1',
+          disableDeferral: String(process.env.PIGGERCODE_CONNECTED_SERVICES_DISABLE_TURN_DEFERRAL ?? '').trim() === '1',
           emitSessionEvent: (sessionId, event) => {
             void commitConnectedServiceAccountSwitchSessionEvent({
               credentials,
@@ -5460,7 +5460,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 return;
               }
               const restartSignalDelayMs = resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
                 250,
                 { min: 0, max: 5_000 },
               );
@@ -6204,7 +6204,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             accountUsageStore: providerAccountUsageStore,
             leases: connectedServiceAuthGroupSwitchLeases,
             quotaFreshnessMs: resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
               5 * 60_000,
               { min: 1_000, max: 60 * 60_000 },
             ),
@@ -6234,7 +6234,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               const tracked = getCurrentChildren().find((child) => child.happySessionId === input.sessionId) ?? null;
               if (!tracked) return;
               const restartSignalDelayMs = resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
                 250,
                 { min: 0, max: 5_000 },
               );
@@ -6350,7 +6350,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 return;
               }
               const restartSignalDelayMs = resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_REFRESH_RESTART_SIGNAL_DELAY_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_REFRESH_RESTART_SIGNAL_DELAY_MS,
                 250,
                 { min: 0, max: 5_000 },
               );
@@ -6546,22 +6546,22 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         };
 
         const runtimeAuthRecoveryBaseBackoffMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS,
           2_000,
           { min: 250, max: 60_000 },
         );
         const runtimeAuthRecoveryMaxBackoffMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS,
           60_000,
           { min: 1_000, max: 10 * 60_000 },
         );
         const runtimeAuthRecoveryStormWindowMs = resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_STORM_WINDOW_MS,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_STORM_WINDOW_MS,
           60_000,
           { min: 1_000, max: 10 * 60_000 },
         );
         const runtimeAuthRecoveryStormThreshold = resolvePositiveIntEnv(
-          process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_STORM_THRESHOLD,
+          process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_STORM_THRESHOLD,
           3,
           { min: 2, max: 100 },
         );
@@ -6625,7 +6625,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           jitterMs: runtimeAuthRecoveryJitterMs,
           providerOutcomePendingWaitMs: connectedServiceContinuationProviderActivityTimeoutMs,
           maxAttempts: resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS,
             5,
             { min: 1, max: 25 },
           ),
@@ -7079,7 +7079,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               ? input.expectedGroupGenerationByServiceId?.[primaryServiceId]
               : undefined;
             const restartSignalDelayMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_AUTH_SWITCH_RESTART_SIGNAL_DELAY_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_SWITCH_RESTART_SIGNAL_DELAY_MS,
               250,
               { min: 0, max: 5_000 },
             );
@@ -7428,7 +7428,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             timeoutMs: readDaemonRestartVerifyTimeoutMs(),
             pollMs: readDaemonRestartVerifyPollMs(),
             postConfirmationOverlapMs: resolvePositiveIntEnv(
-              process.env.HAPPIER_DAEMON_RESTART_OVERLAP_EXIT_GRACE_MS,
+              process.env.PIGGERCODE_DAEMON_RESTART_OVERLAP_EXIT_GRACE_MS,
               1_000,
               { min: 0, max: 5_000 },
             ),
@@ -7436,7 +7436,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             env: successorDistClosureFingerprint
               ? {
                   ...process.env,
-                  HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: successorDistClosureFingerprint,
+                  PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: successorDistClosureFingerprint,
                 }
               : undefined,
           },
@@ -7515,7 +7515,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         };
 
       const restartOnAuthUpdate = parseBooleanEnv(
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_RESTART_ENABLED,
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_RESTART_ENABLED,
         true,
       );
       const restartAfterAuthUpdated = createConnectedServicesAuthUpdatedRestartHandler({
@@ -7572,7 +7572,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             },
             resolveProcessGroupPid: resolveConnectedServiceRestartProcessGroupPid,
             restartSignalDelayMs: resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_RESTART_SIGNAL_DELAY_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_RESTART_SIGNAL_DELAY_MS,
               250,
               { min: 0, max: 5_000 },
             ),
@@ -7681,7 +7681,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               },
               nowMs: () => Date.now(),
               dedupeWindowMs: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_CREDENTIAL_HEALTH_NOTIFICATION_DEDUPE_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_CREDENTIAL_HEALTH_NOTIFICATION_DEDUPE_MS,
                 60_000,
                 { min: 0, max: 24 * 60 * 60_000 },
               ),
@@ -7706,7 +7706,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         featureId: 'connectedServices.subscription',
       });
       const quotaGroupFreshnessMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
+        process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
         5 * 60_000,
         { min: 1_000, max: 60 * 60_000 },
       );
@@ -7740,7 +7740,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           const current = getCurrentChildren().find((child) => child.happySessionId === input.sessionId) ?? null;
           if (!current) return;
           const restartSignalDelayMs = resolvePositiveIntEnv(
-            process.env.HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
+            process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS,
             250,
             { min: 0, max: 5_000 },
           );
@@ -7778,7 +7778,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       });
       if (connectedServicesQuotasEnabled || connectedServicesSubscriptionEnabled) {
             const quotasTickMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_QUOTAS_TICK_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_TICK_MS,
               60_000,
               { min: 5_000, max: 30 * 60_000 },
             );
@@ -7793,22 +7793,22 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               groupSwitchCheckJitterMs,
             } = resolveConnectedServiceQuotasDaemonOptions(process.env);
             const quotaCredentialRefreshWindowMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_WINDOW_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_WINDOW_MS,
               10 * 60_000,
               { min: 10_000, max: 60 * 60_000 },
             );
             const quotaFetchLeaseMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_FETCH_LEASE_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_FETCH_LEASE_MS,
               30_000,
               { min: 1_000, max: 5 * 60_000 },
             );
             const quotaFetchLeaseContentionWaitMaxMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_FETCH_LEASE_CONTENTION_WAIT_MAX_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_FETCH_LEASE_CONTENTION_WAIT_MAX_MS,
               5_000,
               { min: 0, max: 60_000 },
             );
             const groupSwitchCheckMinIntervalMs = resolvePositiveIntEnv(
-              process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_GROUP_SWITCH_CHECK_MIN_INTERVAL_MS,
+              process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_GROUP_SWITCH_CHECK_MIN_INTERVAL_MS,
               quotaGroupFreshnessMs,
               { min: 0, max: 30 * 60_000 },
             );
@@ -7867,27 +7867,27 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               quotaPersistenceServerWorkScheduler: daemonServerWorkScheduler,
               quotaPersistenceServerScope: configuration.serverUrl,
               quotaPersistenceMinIntervalMs: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_IN_BAND_MIN_INTERVAL_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_IN_BAND_MIN_INTERVAL_MS,
                 5_000,
                 { min: 0, max: 60_000 },
               ),
               quotaPersistenceMaxKeys: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_KEYS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_KEYS,
                 256,
                 { min: 1, max: 10_000 },
               ),
               quotaPersistenceMaxKeyAgeMs: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_KEY_AGE_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_KEY_AGE_MS,
                 60 * 60_000,
                 { min: 60_000, max: 24 * 60 * 60_000 },
               ),
               quotaPersistenceMaxPendingPayloadAgeMs: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_PENDING_PAYLOAD_AGE_MS,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_PENDING_PAYLOAD_AGE_MS,
                 5 * 60_000,
                 { min: 1_000, max: 60 * 60_000 },
               ),
               quotaPersistenceMaxConsecutiveFailures: resolvePositiveIntEnv(
-                process.env.HAPPIER_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_CONSECUTIVE_FAILURES,
+                process.env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_IN_BAND_MAX_CONSECUTIVE_FAILURES,
                 5,
                 { min: 1, max: 100 },
               ),
@@ -8429,23 +8429,23 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         },
       });
       const machineRegistrationTimeoutMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_TIMEOUT_MS,
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_TIMEOUT_MS,
         10_000,
         { min: 250, max: 120_000 },
       );
       const machineRegistrationRetryBaseDelayMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS
-          ?? process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS,
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS
+          ?? process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS,
         10_000,
         { min: 0, max: 5 * 60_000 },
       );
       const machineRegistrationRetryMaxDelayMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS,
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS,
         5 * 60_000,
         { min: 0, max: 30 * 60_000 },
       );
       const machineRegistrationRetryJitterMs = resolvePositiveIntEnv(
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS,
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS,
         1_000,
         { min: 0, max: 60_000 },
       );
@@ -8454,7 +8454,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         machineRegistrationRetryMaxDelayMs,
       );
       const machineRegistrationMaxAttempts = resolvePositiveIntEnv(
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_MAX_ATTEMPTS,
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_MAX_ATTEMPTS,
         0,
         { min: 0, max: 10_000 },
       );
@@ -8884,7 +8884,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               });
               cliUpdateMetadataPublisher.watch({
                 channel: configuration.publicReleaseRing,
-                processEnv: { ...process.env, HAPPIER_HOME_DIR: configuration.happyHomeDir },
+                processEnv: { ...process.env, PIGGERCODE_HOME_DIR: configuration.happyHomeDir },
               });
               const publishDaemonMetadata = cliUpdateMetadataPublisher.publish;
               connectedApiMachine.connect({
@@ -9114,7 +9114,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         machineConnectionStateCleanup?.();
         machineConnectionStateCleanup = null;
           const daemonStateUpdateTimeoutMs = resolvePositiveIntEnv(
-            process.env.HAPPIER_DAEMON_SHUTDOWN_STATE_UPDATE_TIMEOUT_MS,
+            process.env.PIGGERCODE_DAEMON_SHUTDOWN_STATE_UPDATE_TIMEOUT_MS,
             250,
             { min: 50, max: 30_000 },
           );

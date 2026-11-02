@@ -32,7 +32,7 @@ test('swiftbar plugin renders the configured primary stack header', async (t) =>
   const stackDir = join(storageDir, stackName);
   await mkdir(stackDir, { recursive: true });
   await mkdir(join(stackDir, 'cli'), { recursive: true });
-  await writeFile(join(stackDir, 'env'), 'HAPPIER_STACK_STACK=repo-foo-1234567890\n', 'utf8');
+  await writeFile(join(stackDir, 'env'), 'PIGGERCODE_STACK_STACK=repo-foo-1234567890\n', 'utf8');
 
   const plugin = join(rootDir, 'extras', 'swiftbar', 'hstack.5s.sh');
   const res = await run('bash', [plugin], {
@@ -40,14 +40,14 @@ test('swiftbar plugin renders the configured primary stack header', async (t) =>
     env: {
       ...process.env,
       HOME: tmp,
-      HAPPIER_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
-      HAPPIER_STACK_CLI_ROOT_DIR: rootDir,
-      HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-      HAPPIER_STACK_CANONICAL_HOME_DIR: join(tmp, 'canonical'),
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: join(stackDir, 'env'),
-      HAPPIER_STACK_MENUBAR_MODE: 'selfhost',
+      PIGGERCODE_STACK_SANDBOX_DIR: join(tmp, 'sandbox'),
+      PIGGERCODE_STACK_CLI_ROOT_DIR: rootDir,
+      PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+      PIGGERCODE_STACK_CANONICAL_HOME_DIR: join(tmp, 'canonical'),
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: join(stackDir, 'env'),
+      PIGGERCODE_STACK_MENUBAR_MODE: 'selfhost',
     },
   });
   assert.equal(res.code, 0, `expected bash exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);

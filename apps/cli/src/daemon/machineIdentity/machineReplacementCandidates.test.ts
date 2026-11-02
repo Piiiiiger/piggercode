@@ -29,21 +29,21 @@ function seedSettings(homeDir: string): void {
 }
 
 describe('machine replacement candidates', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
     vi.resetModules();
   });
 
   it('records and reads replacement candidates scoped by active server and account', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-replacement-candidate-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       seedSettings(homeDir);
@@ -73,8 +73,8 @@ describe('machine replacement candidates', () => {
 
   it('clearMachineId can preserve the old exact machine id as a replacement candidate', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-clear-machine-replacement-candidate-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       seedSettings(homeDir);
@@ -96,8 +96,8 @@ describe('machine replacement candidates', () => {
 
   it('clears the scoped candidate only after the posted replacement intent succeeds', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-consume-machine-replacement-candidate-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       seedSettings(homeDir);
@@ -150,8 +150,8 @@ describe('machine replacement candidates', () => {
 
   it('consumes an acknowledged candidate even when the persisted active server id is stale', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-consume-machine-replacement-candidate-stale-active-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     try {
       seedSettings(homeDir);
@@ -185,8 +185,8 @@ describe('machine replacement candidates', () => {
 
   it('reads the only account candidate when the persisted active server id is stale', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-read-machine-replacement-candidate-stale-active-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     try {
       seedSettings(homeDir);
@@ -217,8 +217,8 @@ describe('machine replacement candidates', () => {
 
   it('does not guess between multiple stale account candidates', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-read-machine-replacement-candidate-ambiguous-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     try {
       seedSettings(homeDir);

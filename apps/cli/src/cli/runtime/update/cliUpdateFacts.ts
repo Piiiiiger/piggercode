@@ -43,7 +43,7 @@ function resolveRunningCliInstallSource(params: Readonly<{
   const layout = resolveFirstPartyInstallLayout({
     componentId: 'happier-cli',
     channel: params.publicReleaseRing,
-    processEnv: { HAPPIER_HOME_DIR: params.homeDir },
+    processEnv: { PIGGERCODE_HOME_DIR: params.homeDir },
   });
   const { currentVersionId } = readInstalledVersionMarkersSync(layout);
   const versionsDir = `${comparablePath(layout.versionsDir, params.platform)}/`;
@@ -122,7 +122,7 @@ export function readCliUpdateFacts(params: Readonly<{
     updateCommand: managed ? `${resolveManagedCliToolNameForRing(params.publicReleaseRing)} self update` : packageManagerCommand,
     canUpdateRemotely: managed && params.platform !== 'win32',
     lastUpdate: managed
-      ? readLastCliUpdateResult({ channel: params.publicReleaseRing, processEnv: { HAPPIER_HOME_DIR: params.homeDir } })
+      ? readLastCliUpdateResult({ channel: params.publicReleaseRing, processEnv: { PIGGERCODE_HOME_DIR: params.homeDir } })
       : null,
   };
 }
@@ -130,7 +130,7 @@ export function readCliUpdateFacts(params: Readonly<{
 /** The npm package this CLI is published as (the update-package override, else its own name). */
 export function resolveThisCliNpmPackageName(): string {
   return resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_CLI_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_CLI_UPDATE_PACKAGE_NAME,
     fallback: String(packageJson.name ?? '').trim(),
   });
 }

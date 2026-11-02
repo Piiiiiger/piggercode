@@ -6,7 +6,7 @@ describe('createHappierMcpServer (change_title without credentials)', () => {
     beforeEach(() => {
         vi.resetModules();
         process.env = { ...env };
-        delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+        delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
     });
 
     it('can change the current session title without user credentials', async () => {

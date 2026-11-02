@@ -33,17 +33,17 @@ import { buildTerminalMetadataFromRuntimeFlags } from '@/terminal/runtime/termin
 import { resolveRequestedSessionDirectory } from './resolveRequestedSessionDirectory';
 import { readSessionNativeEnvironment, type SessionNativeEnvironment } from './sessionNativeEnvironment';
 import {
-    HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
+    PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
     parseSessionConnectedServicesBindingsJson,
 } from './sessionConnectedServicesBindingsEnv';
 import {
-    HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
+    PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
     parseSessionConnectedServiceMaterializationIdentityJson,
 } from './sessionConnectedServiceMaterializationIdentityEnv';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 import { buildSessionWorkspaceLocationFromEnvironment } from './sessionWorkspaceLocation';
 import {
-    HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY,
+    PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY,
     readSessionConnectedServiceBrokerSelectionIdentity,
 } from './sessionConnectedServiceBrokerSelectionIdentityEnv';
 
@@ -86,11 +86,11 @@ export interface CreateSessionMetadataOptions {
 
 function consumeSessionEnv(
     name:
-        | 'HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON'
-        | 'HAPPIER_SESSION_MCP_SELECTION_JSON'
-        | typeof HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY
-        | typeof HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY
-        | typeof HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
+        | 'PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON'
+        | 'PIGGERCODE_SESSION_MCP_SELECTION_JSON'
+        | typeof PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY
+        | typeof PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY
+        | typeof PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
 ): string | null {
     const raw = process.env[name];
     delete process.env[name];
@@ -98,7 +98,7 @@ function consumeSessionEnv(
 }
 
 function parseSessionConfigOptionOverridesFromEnvironment(): ReturnType<typeof AcpConfigOptionOverridesV1Schema.parse> | null {
-    const raw = consumeSessionEnv('HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON');
+    const raw = consumeSessionEnv('PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON');
     if (raw === null) {
         return null;
     }
@@ -166,17 +166,17 @@ export function createSessionMetadata(opts: CreateSessionMetadataOptions): Sessi
         controlledByUser: false,
     };
 
-    const profileIdEnv = process.env.HAPPIER_SESSION_PROFILE_ID;
+    const profileIdEnv = process.env.PIGGERCODE_SESSION_PROFILE_ID;
     const profileId = profileIdEnv === undefined ? undefined : (profileIdEnv.trim() || null);
-    const mcpSelection = parseSessionMcpSelectionV1Json(consumeSessionEnv('HAPPIER_SESSION_MCP_SELECTION_JSON'));
+    const mcpSelection = parseSessionMcpSelectionV1Json(consumeSessionEnv('PIGGERCODE_SESSION_MCP_SELECTION_JSON'));
     const connectedServices = parseSessionConnectedServicesBindingsJson(
-        consumeSessionEnv(HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY),
+        consumeSessionEnv(PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY),
     );
     const connectedServiceMaterializationIdentityV1 = parseSessionConnectedServiceMaterializationIdentityJson(
-        consumeSessionEnv(HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY),
+        consumeSessionEnv(PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY),
     );
     const connectedServiceBrokerSelectionIdentityV1 = readSessionConnectedServiceBrokerSelectionIdentity(
-        consumeSessionEnv(HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY),
+        consumeSessionEnv(PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY),
     );
     const sessionConfigOptionOverrides = parseSessionConfigOptionOverridesFromEnvironment();
     const sessionPath = resolveRequestedSessionDirectory({ requestedDirectory: opts.directory });

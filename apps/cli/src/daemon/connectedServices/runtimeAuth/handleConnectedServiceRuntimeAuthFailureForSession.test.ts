@@ -20,7 +20,7 @@ import type {
 import type { RuntimeAuthRecoveryIntent } from './RuntimeAuthRecoveryScheduler';
 import type { ConnectedServiceRuntimeFailureClassification } from './types';
 import { resolveRuntimeAuthFailureSourceProfile } from './resolveRuntimeAuthFailureSourceProfile';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import type { ConnectedServiceRuntimeAuthApplyCapability } from '../credentials/lifecycleTypes';
 
 const exactLiveRuntimeIdentityCapability = {
@@ -220,7 +220,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'main',
@@ -608,7 +608,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'main',
@@ -754,7 +754,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'profile',
             serviceId: 'gemini',
             profileId: 'work',
@@ -840,7 +840,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'profile',
             serviceId: 'claude-subscription',
             profileId: 'stale-spawn-profile',
@@ -931,7 +931,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'main',
@@ -1449,7 +1449,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         spawnOptions: {
           directory: '/tmp/project',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -1519,7 +1519,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'main',
@@ -1580,7 +1580,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+          PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
             kind: 'group',
             serviceId: 'gemini',
             groupId: 'main',
@@ -2009,7 +2009,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         spawnOptions: {
           directory: '/tmp/project',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -2072,7 +2072,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         spawnOptions: {
           directory: '/tmp/project',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -2138,7 +2138,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         spawnOptions: {
           directory: '/tmp/project',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -2212,7 +2212,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       spawnOptions: {
         directory: '/tmp/project',
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'main',
@@ -2292,7 +2292,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         spawnOptions: {
           directory: '/tmp/project',
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -3866,7 +3866,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
           },
         },
         environmentVariables: {
-          HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+          PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'claude',
@@ -4160,7 +4160,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
             },
           },
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',
@@ -5698,7 +5698,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
             },
           },
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'claude-subscription',
               groupId: 'claude',
@@ -5787,7 +5787,7 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
             },
           },
           environmentVariables: {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'group',
               serviceId: 'openai-codex',
               groupId: 'main',

@@ -3,7 +3,7 @@ import type { ConnectedServiceCredentialRecordV1, ConnectedServiceId } from '@pi
 import { configuration } from '@/configuration';
 import { requireConnectedServiceTokenCredentialRecord } from '@/daemon/connectedServices/shared/connectedServiceCredentialRecord';
 import { brokerSelectionIdentityGroupSuffix } from '@/daemon/connectedServices/broker/brokerSelectionIdentityGroup';
-import { HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
 import type { ConnectedServiceResolvedSelection } from '@/daemon/connectedServices/materialize/materializeConnectedServicesForSpawn';
 
 import {
@@ -150,7 +150,7 @@ export async function materializeOpenCodeConnectedServiceAuth(params: Materializ
     ...identityFragments.slice().sort(),
   ].join('|');
   env[OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY_ENV] = brokerSelectionIdentity;
-  env[HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY] = brokerSelectionIdentity;
+  env[PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY] = brokerSelectionIdentity;
 
   return { env };
 }

@@ -69,10 +69,10 @@ test('SwiftBar stack status uses server-scoped daemon state and canonical stack 
   await writeFile(
     envFile,
     [
-      'HAPPIER_STACK_STACK=dev-built',
-      'HAPPIER_STACK_SERVER_PORT=23456',
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHome}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
+      'PIGGERCODE_STACK_STACK=dev-built',
+      'PIGGERCODE_STACK_SERVER_PORT=23456',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHome}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
       '',
     ].join('\n'),
     'utf8'
@@ -87,13 +87,13 @@ test('SwiftBar stack status uses server-scoped daemon state and canonical stack 
     env: {
       HOME: fakeHome,
       PATH: `${fakeBin}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_CLI_ROOT_DIR: stackRoot,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_ENV_FILE: envFile,
-      HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_MENUBAR_MODE: 'selfhost',
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_CLI_ROOT_DIR: stackRoot,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_ENV_FILE: envFile,
+      PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_MENUBAR_MODE: 'selfhost',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
     },
   });
   const helperRes = runBashInline(
@@ -107,13 +107,13 @@ test('SwiftBar stack status uses server-scoped daemon state and canonical stack 
       env: {
         HOME: fakeHome,
         PATH: `${fakeBin}:${process.env.PATH ?? ''}`,
-        HAPPIER_STACK_CLI_ROOT_DIR: stackRoot,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_ENV_FILE: envFile,
-        HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_MENUBAR_MODE: 'selfhost',
-        HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+        PIGGERCODE_STACK_CLI_ROOT_DIR: stackRoot,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_ENV_FILE: envFile,
+        PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_MENUBAR_MODE: 'selfhost',
+        PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
       },
     }
   );
@@ -133,7 +133,7 @@ test('SwiftBar stack status uses server-scoped daemon state and canonical stack 
   assert.match(res.stdout, /--Plist: /, `stdout:\n${res.stdout}`);
 });
 
-test('installed SwiftBar assets resolve server-scoped daemon state without HAPPIER_STACK_CLI_ROOT_DIR', async (t) => {
+test('installed SwiftBar assets resolve server-scoped daemon state without PIGGERCODE_STACK_CLI_ROOT_DIR', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const stackRoot = dirname(scriptsDir);
   const sourceSwiftbarDir = join(stackRoot, 'extras', 'swiftbar');
@@ -204,10 +204,10 @@ test('installed SwiftBar assets resolve server-scoped daemon state without HAPPI
   await writeFile(
     envFile,
     [
-      'HAPPIER_STACK_STACK=dev-built',
-      'HAPPIER_STACK_SERVER_PORT=23456',
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHome}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
+      'PIGGERCODE_STACK_STACK=dev-built',
+      'PIGGERCODE_STACK_SERVER_PORT=23456',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHome}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
       '',
     ].join('\n'),
     'utf8'
@@ -229,13 +229,13 @@ test('installed SwiftBar assets resolve server-scoped daemon state without HAPPI
       env: {
         HOME: fakeHome,
         PATH: `${fakeBin}:${process.env.PATH ?? ''}`,
-        HAPPIER_STACK_HOME_DIR: fakeHome,
-        HAPPIER_STACK_CANONICAL_HOME_DIR: fakeHome,
-        HAPPIER_STACK_RUNTIME_DIR: join(fakeHome, 'runtime'),
-        HAPPIER_STACK_ENV_FILE: envFile,
-        HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_MENUBAR_MODE: 'selfhost',
+        PIGGERCODE_STACK_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_CANONICAL_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_RUNTIME_DIR: join(fakeHome, 'runtime'),
+        PIGGERCODE_STACK_ENV_FILE: envFile,
+        PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_MENUBAR_MODE: 'selfhost',
       },
     }
   );
@@ -247,7 +247,7 @@ test('installed SwiftBar assets resolve server-scoped daemon state without HAPPI
   );
 });
 
-test('installed SwiftBar assets prefer the stack repo helper from HAPPIER_STACK_REPO_DIR when the helper path contains spaces', async (t) => {
+test('installed SwiftBar assets prefer the stack repo helper from PIGGERCODE_STACK_REPO_DIR when the helper path contains spaces', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const stackRoot = dirname(scriptsDir);
   const repoRoot = resolve(stackRoot, '..', '..');
@@ -339,11 +339,11 @@ test('installed SwiftBar assets prefer the stack repo helper from HAPPIER_STACK_
   await writeFile(
     envFile,
     [
-      'HAPPIER_STACK_STACK=dev-built',
-      'HAPPIER_STACK_SERVER_PORT=23456',
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHome}`,
-      `HAPPIER_STACK_REPO_DIR=${relativeRepoRoot}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
+      'PIGGERCODE_STACK_STACK=dev-built',
+      'PIGGERCODE_STACK_SERVER_PORT=23456',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHome}`,
+      `PIGGERCODE_STACK_REPO_DIR=${relativeRepoRoot}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
       '',
     ].join('\n'),
     'utf8'
@@ -365,13 +365,13 @@ test('installed SwiftBar assets prefer the stack repo helper from HAPPIER_STACK_
       env: {
         HOME: fakeHome,
         PATH: `${fakeBin}:${process.env.PATH ?? ''}`,
-        HAPPIER_STACK_HOME_DIR: fakeHome,
-        HAPPIER_STACK_CANONICAL_HOME_DIR: fakeHome,
-        HAPPIER_STACK_RUNTIME_DIR: join(fakeHome, 'runtime'),
-        HAPPIER_STACK_ENV_FILE: envFile,
-        HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_MENUBAR_MODE: 'selfhost',
+        PIGGERCODE_STACK_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_CANONICAL_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_RUNTIME_DIR: join(fakeHome, 'runtime'),
+        PIGGERCODE_STACK_ENV_FILE: envFile,
+        PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: stackName,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_MENUBAR_MODE: 'selfhost',
       },
     }
   );
@@ -416,9 +416,9 @@ test('SwiftBar tailscale fallback uses the shared parser to normalize the report
       env: {
         HOME: fakeHome,
         PATH: `${fakeBin}:${process.env.PATH ?? ''}`,
-        HAPPIER_STACK_HOME_DIR: fakeHome,
-        HAPPIER_STACK_CANONICAL_HOME_DIR: fakeHome,
-        HAPPIER_STACK_REPO_DIR: repoRoot,
+        PIGGERCODE_STACK_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_CANONICAL_HOME_DIR: fakeHome,
+        PIGGERCODE_STACK_REPO_DIR: repoRoot,
         hstack_ROOT_DIR: fakeHome,
       },
     }

@@ -15,9 +15,9 @@ export function normalizeStackTauriSlug(rawValue) {
 }
 
 export function resolveStackTauriIdentity({ env = {}, baseProductName = 'Happier' } = {}) {
-  const stackSlug = normalizeStackTauriSlug(getTrimmedEnv(env, 'HAPPIER_STACK_STACK'));
-  const explicitIdentifier = getTrimmedEnv(env, 'HAPPIER_STACK_TAURI_IDENTIFIER');
-  const explicitProductName = getTrimmedEnv(env, 'HAPPIER_STACK_TAURI_PRODUCT_NAME');
+  const stackSlug = normalizeStackTauriSlug(getTrimmedEnv(env, 'PIGGERCODE_STACK_STACK'));
+  const explicitIdentifier = getTrimmedEnv(env, 'PIGGERCODE_STACK_TAURI_IDENTIFIER');
+  const explicitProductName = getTrimmedEnv(env, 'PIGGERCODE_STACK_TAURI_PRODUCT_NAME');
   const shouldScope = stackSlug && stackSlug !== 'main';
   return {
     stackSlug,
@@ -27,7 +27,7 @@ export function resolveStackTauriIdentity({ env = {}, baseProductName = 'Happier
 }
 
 export function applyStackTauriOverrides({ tauriConfig, env }) {
-  const createUpdaterArtifactsOverride = getTrimmedEnv(env, 'HAPPIER_STACK_TAURI_CREATE_UPDATER_ARTIFACTS');
+  const createUpdaterArtifactsOverride = getTrimmedEnv(env, 'PIGGERCODE_STACK_TAURI_CREATE_UPDATER_ARTIFACTS');
   const signingPrivateKey = getTrimmedEnv(env, 'TAURI_SIGNING_PRIVATE_KEY');
   const identity = resolveStackTauriIdentity({
     env,

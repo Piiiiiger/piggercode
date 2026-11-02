@@ -3,10 +3,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 import { createSessionMetadata } from './createSessionMetadata';
-import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from './sessionConnectedServicesBindingsEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from './sessionConnectedServicesBindingsEnv';
 
-const HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
-    'HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON';
+const PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
+    'PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON';
 
 describe('createSessionMetadata', () => {
     it('captures only the non-secret native account directories for later resume', () => {
@@ -90,8 +90,8 @@ describe('createSessionMetadata', () => {
     });
 
     it('seeds sessionConfigOptionOverridesV1 from the daemon-provided environment override', () => {
-        const previous = process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
-        process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify({
+        const previous = process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
+        process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify({
             v: 1,
             updatedAt: 123,
             overrides: {
@@ -120,19 +120,19 @@ describe('createSessionMetadata', () => {
                     speed: { updatedAt: 123, value: 'fast' },
                 },
             });
-            expect(process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON).toBeUndefined();
+            expect(process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON).toBeUndefined();
         } finally {
             if (previous === undefined) {
-                delete process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
+                delete process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
             } else {
-                process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON = previous;
+                process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON = previous;
             }
         }
     });
 
     it('ignores non-string config option values when seeding daemon-provided overrides', () => {
-        const previous = process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
-        process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify({
+        const previous = process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
+        process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify({
             v: 1,
             updatedAt: 123,
             overrides: {
@@ -164,9 +164,9 @@ describe('createSessionMetadata', () => {
             });
         } finally {
             if (previous === undefined) {
-                delete process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
+                delete process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON;
             } else {
-                process.env.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON = previous;
+                process.env.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON = previous;
             }
         }
     });
@@ -184,8 +184,8 @@ describe('createSessionMetadata', () => {
     });
 
     it('seeds mcpSelectionV1 from the daemon-provided environment override', () => {
-        const previous = process.env.HAPPIER_SESSION_MCP_SELECTION_JSON;
-        process.env.HAPPIER_SESSION_MCP_SELECTION_JSON = JSON.stringify({
+        const previous = process.env.PIGGERCODE_SESSION_MCP_SELECTION_JSON;
+        process.env.PIGGERCODE_SESSION_MCP_SELECTION_JSON = JSON.stringify({
             v: 1,
             managedServersEnabled: false,
             forceIncludeServerIds: ['server-a'],
@@ -205,19 +205,19 @@ describe('createSessionMetadata', () => {
                 forceIncludeServerIds: ['server-a'],
                 forceExcludeServerIds: ['server-b'],
             });
-            expect(process.env.HAPPIER_SESSION_MCP_SELECTION_JSON).toBeUndefined();
+            expect(process.env.PIGGERCODE_SESSION_MCP_SELECTION_JSON).toBeUndefined();
         } finally {
             if (previous === undefined) {
-                delete process.env.HAPPIER_SESSION_MCP_SELECTION_JSON;
+                delete process.env.PIGGERCODE_SESSION_MCP_SELECTION_JSON;
             } else {
-                process.env.HAPPIER_SESSION_MCP_SELECTION_JSON = previous;
+                process.env.PIGGERCODE_SESSION_MCP_SELECTION_JSON = previous;
             }
         }
     });
 
     it('seeds connected service bindings from the daemon-provided environment override', () => {
-        const previous = process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
-        process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = JSON.stringify({
+        const previous = process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
+        process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = JSON.stringify({
             v: 1,
             bindingsByServiceId: {
                 'openai-codex': {
@@ -245,19 +245,19 @@ describe('createSessionMetadata', () => {
                     },
                 },
             });
-            expect(process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]).toBeUndefined();
+            expect(process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]).toBeUndefined();
         } finally {
             if (previous === undefined) {
-                delete process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
+                delete process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
             } else {
-                process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = previous;
+                process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = previous;
             }
         }
     });
 
     it('ignores invalid connected service bindings from the daemon-provided environment override', () => {
-        const previous = process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
-        process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = JSON.stringify({
+        const previous = process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
+        process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = JSON.stringify({
             v: 1,
             bindingsByServiceId: {
                 'not-a-service': {
@@ -276,19 +276,19 @@ describe('createSessionMetadata', () => {
             });
 
             expect((metadata as Record<string, unknown>).connectedServices).toBeUndefined();
-            expect(process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]).toBeUndefined();
+            expect(process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]).toBeUndefined();
         } finally {
             if (previous === undefined) {
-                delete process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
+                delete process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY];
             } else {
-                process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = previous;
+                process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = previous;
             }
         }
     });
 
     it('seeds connected service materialization identity from the daemon-provided environment override', () => {
-        const previous = process.env[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
-        process.env[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] = JSON.stringify({
+        const previous = process.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
+        process.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] = JSON.stringify({
             v: 1,
             id: 'csm_metadata_1',
             createdAtMs: 123,
@@ -306,18 +306,18 @@ describe('createSessionMetadata', () => {
                 id: 'csm_metadata_1',
                 createdAtMs: 123,
             });
-            expect(process.env[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]).toBeUndefined();
+            expect(process.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]).toBeUndefined();
         } finally {
             if (previous === undefined) {
-                delete process.env[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
+                delete process.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
             } else {
-                process.env[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] = previous;
+                process.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] = previous;
             }
         }
     });
 
     it('publishes the broker selection identity needed to authorize terminal-started connected sessions', () => {
-        const envKey = 'HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY';
+        const envKey = 'PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY';
         const previous = process.env[envKey];
         process.env[envKey] = 'opencode|connected|broker:1|openai-codex:work:acct-1|group:team';
 
@@ -377,9 +377,9 @@ describe('createSessionMetadata', () => {
     });
 
     it('prefers the daemon-seeded requested directory over a canonicalized cwd', () => {
-        const previousRequestedDirectory = process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
+        const previousRequestedDirectory = process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
         const previousPwd = process.env.PWD;
-        process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = '/tmp/happier-requested-directory';
+        process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = '/tmp/happier-requested-directory';
         process.env.PWD = '/private/tmp/happier-requested-directory';
 
         try {
@@ -390,12 +390,12 @@ describe('createSessionMetadata', () => {
             } as any);
 
             expect(metadata.path).toBe('/tmp/happier-requested-directory');
-            expect(process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY).toBeUndefined();
+            expect(process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY).toBeUndefined();
         } finally {
             if (previousRequestedDirectory === undefined) {
-                delete process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
+                delete process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
             } else {
-                process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
+                process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
             }
 
             if (previousPwd === undefined) {
@@ -407,10 +407,10 @@ describe('createSessionMetadata', () => {
     });
 
     it('publishes the agent and machine workspace roots as one machine-bound mapping', () => {
-        const previousRequestedDirectory = process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
-        const previousMachineDirectory = process.env.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH;
-        process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = '/home/coder/project';
-        process.env.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH = '/Users/alice/project';
+        const previousRequestedDirectory = process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
+        const previousMachineDirectory = process.env.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH;
+        process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = '/home/coder/project';
+        process.env.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH = '/Users/alice/project';
 
         try {
             const { metadata } = createSessionMetadata({
@@ -426,17 +426,17 @@ describe('createSessionMetadata', () => {
                 agentPath: '/home/coder/project',
                 machinePath: '/Users/alice/project',
             });
-            expect(process.env.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH).toBeUndefined();
+            expect(process.env.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH).toBeUndefined();
         } finally {
             if (previousRequestedDirectory === undefined) {
-                delete process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
+                delete process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
             } else {
-                process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
+                process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
             }
             if (previousMachineDirectory === undefined) {
-                delete process.env.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH;
+                delete process.env.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH;
             } else {
-                process.env.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH = previousMachineDirectory;
+                process.env.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH = previousMachineDirectory;
             }
         }
     });

@@ -32,25 +32,25 @@ function pickReviewerMobileSchemeEnv(env) {
   // For review-pr flows, the mobile "dev-client" deep link must target a dev-client app install,
   // not the production Happier app. Default to the dev-client scheme (see docs/mobile-ios.md).
   // If the user explicitly set a review-specific override, honor it.
-  const reviewOverride = (env.HAPPIER_STACK_REVIEW_MOBILE_SCHEME ?? '').toString().trim();
+  const reviewOverride = (env.PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME ?? '').toString().trim();
   if (reviewOverride) {
-    return { ...env, HAPPIER_STACK_MOBILE_SCHEME: reviewOverride };
+    return { ...env, PIGGERCODE_STACK_MOBILE_SCHEME: reviewOverride };
   }
 
   // If the user already configured a scheme, keep it.
-  const explicitMobile = (env.HAPPIER_STACK_MOBILE_SCHEME ?? '').toString().trim();
+  const explicitMobile = (env.PIGGERCODE_STACK_MOBILE_SCHEME ?? '').toString().trim();
   if (explicitMobile) return env;
 
-  const devClientScheme = (env.HAPPIER_STACK_DEV_CLIENT_SCHEME ?? '').toString().trim();
+  const devClientScheme = (env.PIGGERCODE_STACK_DEV_CLIENT_SCHEME ?? '').toString().trim();
   if (devClientScheme && !isSandboxed()) {
-    return { ...env, HAPPIER_STACK_MOBILE_SCHEME: devClientScheme };
+    return { ...env, PIGGERCODE_STACK_MOBILE_SCHEME: devClientScheme };
   }
 
   // Default to the dev-client scheme.
   // Note: in sandbox mode, prefer a deterministic default and avoid reading host-machine config by default.
-  // If the user wants a specific scheme in sandbox mode, set HAPPIER_STACK_DEV_CLIENT_SCHEME or HAPPIER_STACK_REVIEW_MOBILE_SCHEME.
+  // If the user wants a specific scheme in sandbox mode, set PIGGERCODE_STACK_DEV_CLIENT_SCHEME or PIGGERCODE_STACK_REVIEW_MOBILE_SCHEME.
   const fallback = isSandboxed() ? 'hstack-dev' : devClientScheme || 'hstack-dev';
-  return { ...env, HAPPIER_STACK_MOBILE_SCHEME: fallback };
+  return { ...env, PIGGERCODE_STACK_MOBILE_SCHEME: fallback };
 }
 
 async function printReviewerStackSummary({ rootDir, stackName, env, wantsMobile }) {
@@ -184,9 +184,9 @@ function detectBestAuthSource() {
 }
 
 function detectLinkDefault() {
-  const rawLink = (process.env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim();
+  const rawLink = (process.env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim();
   if (rawLink) return rawLink !== '0';
-  const rawMode = (process.env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim().toLowerCase();
+  const rawMode = (process.env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim().toLowerCase();
   if (rawMode) return rawMode === 'link';
   // Default for setup-pr: prefer reuse/symlink to avoid stale creds and reduce re-login friction.
   return true;
@@ -331,7 +331,7 @@ async function main() {
     throw new Error(
       '[setup-pr] auth seeding is disabled in sandbox mode.\n' +
         'Reason: it reuses global machine state (other stacks) and breaks sandbox isolation.\n' +
-        'Use guided login instead, or set: HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1'
+        'Use guided login instead, or set: PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1'
     );
   }
 
@@ -374,7 +374,7 @@ async function main() {
         ...setupChildEnv,
         // Hint to the dev runner that it should start the Expo web UI early (before daemon auth),
         // so guided login can open the correct UI origin (not the server port).
-        HAPPIER_STACK_AUTH_FLOW: '1',
+        PIGGERCODE_STACK_AUTH_FLOW: '1',
       }
     : setupChildEnv;
   if (wantsMobile) {
@@ -386,7 +386,7 @@ async function main() {
   // 1) Ensure happy-stacks home is initialized (idempotent).
   // 2) Bootstrap component repos and deps (idempotent; clones only if missing).
   if (quietUi) {
-    const baseLogDir = join(process.env.HAPPIER_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
+    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
     const initLog = join(baseLogDir, `init.${Date.now()}.log`);
     const installLog = join(baseLogDir, `install.${Date.now()}.log`);
     try {
@@ -479,7 +479,7 @@ async function main() {
     stackArgs.push('--', ...forwardedEffective);
   }
   if (quietUi) {
-    const baseLogDir = join(process.env.HAPPIER_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
+    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
     const stackLog = join(baseLogDir, `stack-pr.${Date.now()}.log`);
     await runCommandLogged({
       label: `start PR stack${isSandboxed() ? ' (sandbox)' : ''}`,

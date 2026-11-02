@@ -12,7 +12,7 @@ import { captureConsoleText } from '@/testkit/logger/captureOutput';
 
 import { handleAuthCommand } from '../auth';
 
-const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID'] as const;
+const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_ACTIVE_SERVER_ID'] as const;
 let envScope = createEnvKeyScope(envKeys);
 
 beforeEach(() => {
@@ -32,7 +32,7 @@ describe('happier auth status --json', () => {
         const output = captureConsoleText();
 
         try {
-          envScope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_ACTIVE_SERVER_ID: undefined });
+          envScope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_ACTIVE_SERVER_ID: undefined });
           reloadConfiguration();
 
           await handleAuthCommand(['status', '--json']);
@@ -69,7 +69,7 @@ describe('happier auth status --json', () => {
         const output = captureConsoleText();
 
         try {
-          envScope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_ACTIVE_SERVER_ID: undefined });
+          envScope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_ACTIVE_SERVER_ID: undefined });
           reloadConfiguration();
           vi.stubGlobal('fetch', vi.fn(async () => {
             throw new Error('network unavailable');
@@ -144,10 +144,10 @@ describe('happier auth status --json', () => {
 
         try {
           envScope.patch({
-            HAPPIER_HOME_DIR: home,
-            HAPPIER_SERVER_URL: serverUrl,
-            HAPPIER_WEBAPP_URL: serverUrl,
-            HAPPIER_ACTIVE_SERVER_ID: undefined,
+            PIGGERCODE_HOME_DIR: home,
+            PIGGERCODE_SERVER_URL: serverUrl,
+            PIGGERCODE_WEBAPP_URL: serverUrl,
+            PIGGERCODE_ACTIVE_SERVER_ID: undefined,
           });
           reloadConfiguration();
 
@@ -224,10 +224,10 @@ describe('happier auth status --json', () => {
 
         try {
           envScope.patch({
-            HAPPIER_HOME_DIR: home,
-            HAPPIER_SERVER_URL: serverUrl,
-            HAPPIER_WEBAPP_URL: serverUrl,
-            HAPPIER_ACTIVE_SERVER_ID: undefined,
+            PIGGERCODE_HOME_DIR: home,
+            PIGGERCODE_SERVER_URL: serverUrl,
+            PIGGERCODE_WEBAPP_URL: serverUrl,
+            PIGGERCODE_ACTIVE_SERVER_ID: undefined,
           });
           reloadConfiguration();
 
@@ -248,10 +248,10 @@ describe('happier auth status --json', () => {
           }));
 
           envScope.patch({
-            HAPPIER_HOME_DIR: home,
-            HAPPIER_SERVER_URL: undefined,
-            HAPPIER_WEBAPP_URL: undefined,
-            HAPPIER_ACTIVE_SERVER_ID: undefined,
+            PIGGERCODE_HOME_DIR: home,
+            PIGGERCODE_SERVER_URL: undefined,
+            PIGGERCODE_WEBAPP_URL: undefined,
+            PIGGERCODE_ACTIVE_SERVER_ID: undefined,
           });
           reloadConfiguration();
 

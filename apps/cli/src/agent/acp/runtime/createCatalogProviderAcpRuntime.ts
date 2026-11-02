@@ -110,7 +110,7 @@ export function createCatalogProviderAcpRuntime<TBackendOptions extends object =
         },
       };
   const shouldPersistSessionMedia =
-    process.env.HAPPIER_TRANSCRIPT_STORAGE !== 'direct' &&
+    process.env.PIGGERCODE_TRANSCRIPT_STORAGE !== 'direct' &&
     isAgentMediaCapabilitySupported(params.provider, 'emitsSessionMedia');
   const sessionIdentity = (() => {
     if (params.sessionIdentity.kind === 'manifest-metadata') {

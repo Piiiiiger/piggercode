@@ -4066,7 +4066,7 @@ describe('sessionHandoffs ops', () => {
     });
 
     it('polls status and result-get when target prepare returns a job-backed ack without the final resume payload', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS = '10000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS = '10000';
         machineRpcWithServerScopeMock
             .mockResolvedValueOnce({
                 handoffId: 'handoff_retry_prepare_async',
@@ -4188,12 +4188,12 @@ describe('sessionHandoffs ops', () => {
                 timeoutMs: 10_000,
             }));
         } finally {
-            delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS;
         }
     });
 
     it('treats socket.io ack timeouts as transient while polling target prepare status', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS = '10000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS = '10000';
         machineRpcWithServerScopeMock
             .mockResolvedValueOnce({
                 handoffId: 'handoff_retry_prepare_ack_timeout',
@@ -4287,7 +4287,7 @@ describe('sessionHandoffs ops', () => {
                 method: 'daemon.sessionHandoff.status.get',
             }));
         } finally {
-            delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_HANDOFF_MACHINE_RPC_POLL_TIMEOUT_MS;
         }
     });
 
@@ -6198,8 +6198,8 @@ describe('sessionHandoffs ops', () => {
                         },
                     },
                     environmentVariables: {
-                        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
                     },
                 },
             },
@@ -6227,8 +6227,8 @@ describe('sessionHandoffs ops', () => {
             },
             codexBackendMode: 'appServer',
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
             },
         }));
     });

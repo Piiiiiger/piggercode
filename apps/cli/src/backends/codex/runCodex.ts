@@ -568,20 +568,20 @@ export async function runCodex(opts: {
 	    });
 	    let localModeFallbackMessage: string | null = null;
 	    let codexAcpFallbackToMcpMessage: string | null = (() => {
-	        const raw = typeof process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE === 'string'
-	            ? process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE.trim()
+	        const raw = typeof process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE === 'string'
+	            ? process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE.trim()
 	            : '';
 	        return raw ? raw : null;
 	    })();
 	    if (!codexAcpFallbackToMcpMessage && experimentalCodexAcpEnabled && !resumeIdFromArgs) {
-	        const envOverride = typeof process.env.HAPPIER_CODEX_ACP_BIN === 'string'
-	            ? process.env.HAPPIER_CODEX_ACP_BIN.trim()
+	        const envOverride = typeof process.env.PIGGERCODE_CODEX_ACP_BIN === 'string'
+	            ? process.env.PIGGERCODE_CODEX_ACP_BIN.trim()
 	            : '';
 	        const shouldTreatOverrideAsPath = envOverride.startsWith('.') || envOverride.startsWith('/') || envOverride.includes('\\');
 	        if (envOverride && shouldTreatOverrideAsPath) {
 	            const resolved = resolve(process.cwd(), envOverride);
 	            if (!existsSync(resolved)) {
-	                const reason = `Codex ACP is enabled but HAPPIER_CODEX_ACP_BIN does not exist: ${resolved}`;
+	                const reason = `Codex ACP is enabled but PIGGERCODE_CODEX_ACP_BIN does not exist: ${resolved}`;
 	                codexAcpFallbackToMcpMessage =
 	                    codexAcpFallbackToMcpMessage ??
 	                    `Codex ACP could not start (${reason}). Falling back to MCP for this new session.`;
@@ -1464,7 +1464,7 @@ export async function runCodex(opts: {
 	        session.sendSessionEvent({ type: 'message', message: codexAcpFallbackToMcpMessage });
 	        messageBuffer.addMessage(codexAcpFallbackToMcpMessage, 'status');
 	    }
-    const shouldLogAcpDebug = Boolean(process.env.DEBUG) || process.env.HAPPIER_E2E_PROVIDERS === '1';
+    const shouldLogAcpDebug = Boolean(process.env.DEBUG) || process.env.PIGGERCODE_E2E_PROVIDERS === '1';
     if (shouldLogAcpDebug) {
         logger.debug(`[Codex] Remote engine selected: ${useCodexAcp ? 'acp' : useCodexAppServer ? 'appServer' : 'mcp'}`);
     }
@@ -1732,7 +1732,7 @@ export async function runCodex(opts: {
     if (useCodexAppServer) {
         codexAppServerConfigOverrides = buildCodexAppServerConfigOverrides(mcpServers, {
             codexArgs: opts.codexArgs,
-            happierSessionId: codexProviderProcessEnv.HAPPIER_SESSION_ID,
+            happierSessionId: codexProviderProcessEnv.PIGGERCODE_SESSION_ID,
             happierMcpToolCallTimeoutMs: configuration.codexHappierMcpToolCallTimeoutMs,
             processEnv: codexAppServerProcessEnv,
         });
@@ -1809,7 +1809,7 @@ export async function runCodex(opts: {
             session,
             getCodexThreadId: () => (client ? client.getSessionId() : (getCodexRemoteRuntime()?.getSessionId() ?? null)),
             backendMode: publishedBackendMode,
-            transcriptStorage: process.env.HAPPIER_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
+            transcriptStorage: process.env.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
             codexHome: process.env.CODEX_HOME ?? null,
             activeServerDir: configuration.activeServerDir,
             processEnv: process.env,
@@ -2018,7 +2018,7 @@ export async function runCodex(opts: {
                     throw attachRuntimeAuthClassificationToError(error, classification);
                 }
             },
-            ...(codexAppServerProcessEnv.HAPPIER_TRANSCRIPT_STORAGE === 'direct'
+            ...(codexAppServerProcessEnv.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct'
                 ? {}
                 : {
                     sessionMedia: createAgentSessionMediaPersister({

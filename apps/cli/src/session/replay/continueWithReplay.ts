@@ -65,7 +65,7 @@ export async function continueSessionWithReplay(
         replay,
   } = params;
 
-    const maxTextCharsEnv = parseEnvBoundedInt('HAPPIER_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
+    const maxTextCharsEnv = parseEnvBoundedInt('PIGGERCODE_REPLAY_MAX_TEXT_CHARS', { min: 1, max: 50_000 }, null);
     const maxTextChars = maxTextCharsEnv ?? undefined;
 
     const credentials = await readCredentials().catch(() => null);

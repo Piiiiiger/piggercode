@@ -1,12 +1,12 @@
 import type { CatalogAgentId } from '@/backends/types';
 import type { ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import {
-  HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY,
   readSessionConnectedServiceBrokerSelectionIdentity,
 } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
 import { logger as defaultLogger } from '@/ui/logger';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import type { resolveConnectedServiceAuthForSpawn } from '../resolveConnectedServiceAuthForSpawn';
 import type { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { buildRuntimeAccountIdentitySelectionFactV1 } from '../quotas/identity/runtimeAccountIdentityTypes';
@@ -194,9 +194,9 @@ export function createExecutionRunConnectedServicesBridge(deps: Readonly<{
       // materialized env carries a stable pool identity. Indexing it on the run target lets the broker
       // access-token refresh authorize the run even when no live session shares the pool.
       const brokerSelectionIdentity = readSessionConnectedServiceBrokerSelectionIdentity(
-        resolved.env[HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY],
+        resolved.env[PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY],
       );
-      const connectedServiceSelectionsJson = resolved.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]?.trim() || null;
+      const connectedServiceSelectionsJson = resolved.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]?.trim() || null;
 
       // Register the run in the runtime-registry RUN KEYSPACE (keyed by materialization key, carrying
       // the runner pid for liveness) so it coexists with the host session's pid-keyed target and BOTH
@@ -217,7 +217,7 @@ export function createExecutionRunConnectedServicesBridge(deps: Readonly<{
           ...(brokerSelectionIdentity ? { brokerSelectionIdentity } : {}),
           connectedServicesBindingsRaw: resolved.connectedServicesBindings,
           connectedServiceSelectionsEnv: connectedServiceSelectionsJson
-            ? { [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson }
+            ? { [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson }
             : null,
           materializationKey: request.materializationKey,
           sessionDirectory: request.sessionDirectory ?? null,

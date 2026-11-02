@@ -288,7 +288,7 @@ function resolveAmbientClaudeStateSourceDir(params: Readonly<{
   if (explicit) return explicit;
   const envWithoutOverrides = { ...params.sourceEnv };
   delete envWithoutOverrides.CLAUDE_CONFIG_DIR;
-  delete envWithoutOverrides.HAPPIER_CLAUDE_CONFIG_DIR;
+  delete envWithoutOverrides.PIGGERCODE_CLAUDE_CONFIG_DIR;
   return resolveConfiguredClaudeConfigDir({ env: envWithoutOverrides });
 }
 

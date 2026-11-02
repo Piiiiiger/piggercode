@@ -154,12 +154,12 @@ describe('core e2e: durable transcript reconnect', () => {
       runId: run.runId,
       testName: 'session-transcript-durable-reconnect',
       cliEnvOverrides: {
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '1000',
-        HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS: '60000',
-        HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS: '0',
-        HAPPIER_STREAM_CHECKPOINT_MIN_CHARS: '1',
-        HAPPIER_STREAM_CHECKPOINT_MS: '0',
-        HAPPIER_STREAM_INITIAL_CHECKPOINT_MS: '0',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '1000',
+        PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS: '60000',
+        PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS: '0',
+        PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS: '1',
+        PIGGERCODE_STREAM_CHECKPOINT_MS: '0',
+        PIGGERCODE_STREAM_INITIAL_CHECKPOINT_MS: '0',
       },
     });
 
@@ -202,7 +202,7 @@ describe('core e2e: durable transcript reconnect', () => {
       dbProvider: 'sqlite',
       preserveExistingDataDir: true,
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
       __portAllocator: async () => server.port,
     });

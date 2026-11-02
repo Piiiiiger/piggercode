@@ -17,7 +17,7 @@ function buildStubHappyCliScript() {
     "import { join } from 'node:path';",
     '',
     'const args = process.argv.slice(2);',
-    "const home = process.env.HAPPIER_HOME_DIR || process.cwd();",
+    "const home = process.env.PIGGERCODE_HOME_DIR || process.cwd();",
     "const logPath = join(home, 'resume-invocations.log');",
     "const supportsDaemonResume = process.env.STUB_DAEMON_RESUME_SUPPORT === '1';",
     '',

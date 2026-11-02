@@ -24,8 +24,8 @@ describe('ensureDaemonRunningForSessionCommand', () => {
   });
 
   it('polls daemon readiness after spawning', async () => {
-    vi.stubEnv('HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS', '50');
-    vi.stubEnv('HAPPIER_DAEMON_START_WAIT_POLL_MS', '1');
+    vi.stubEnv('PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS', '50');
+    vi.stubEnv('PIGGERCODE_DAEMON_START_WAIT_POLL_MS', '1');
 
     const isRunning = vi.mocked(isDaemonRunningCurrentlyInstalledHappyVersion);
     isRunning

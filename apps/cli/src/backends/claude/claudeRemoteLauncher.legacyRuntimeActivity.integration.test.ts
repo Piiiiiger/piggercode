@@ -177,7 +177,7 @@ function createHarness(providerTasks?: SessionRuntimeActivityContributionHandle,
 }
 
 describe.sequential('claudeRemoteLauncher legacy Runtime Activity subscriber', () => {
-  const previousGraceMs = process.env.HAPPIER_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS;
+  const previousGraceMs = process.env.PIGGERCODE_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -185,7 +185,7 @@ describe.sequential('claudeRemoteLauncher legacy Runtime Activity subscriber', (
     mockClaudeRemote.mockReset();
     mockClaudeRemoteAgentSdk.mockReset();
     mockRunClaudeUnifiedTerminalSession.mockReset();
-    process.env.HAPPIER_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS = '0';
+    process.env.PIGGERCODE_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS = '0';
   });
 
   it('records a pre-spawn resume failure in the normal file log while preserving the conversation', async () => {
@@ -692,9 +692,9 @@ describe.sequential('claudeRemoteLauncher legacy Runtime Activity subscriber', (
 
   afterEach(() => {
     if (previousGraceMs === undefined) {
-      delete process.env.HAPPIER_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS;
+      delete process.env.PIGGERCODE_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS;
     } else {
-      process.env.HAPPIER_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS = previousGraceMs;
+      process.env.PIGGERCODE_CLAUDE_REMOTE_INTERRUPT_THEN_TEARDOWN_GRACE_MS = previousGraceMs;
     }
     for (const session of createdSessions.splice(0)) session.cleanup();
   });

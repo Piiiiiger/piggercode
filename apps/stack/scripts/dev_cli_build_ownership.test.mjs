@@ -32,7 +32,7 @@ test('dev publishes a configured remote Expo service in its initial runtime decl
   );
   assert.match(
     source.slice(remoteExpoPlanIndex, runtimeStartIndex),
-    /remoteExpoPlan[\s\S]*HAPPIER_STACK_EXPO_DEV_PORT[\s\S]*remoteTarget/u,
+    /remoteExpoPlan[\s\S]*PIGGERCODE_STACK_EXPO_DEV_PORT[\s\S]*remoteTarget/u,
     'only a configured remote Expo plan may be published before target startup',
   );
 });
@@ -91,7 +91,7 @@ async function createCliBuildFixture(t) {
     'case "$PWD" in',
     '*/packages/agents)',
     '  echo "shared:agents" >> "${EVENTS_PATH:?}"',
-    '  out="${HAPPIER_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
+    '  out="${PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
     '  mkdir -p "$out"',
     '  printf "export const agents = true;\\n" > "$out/index.js"',
     '  exit 0',
@@ -105,7 +105,7 @@ async function createCliBuildFixture(t) {
     '  mkdir -p "$repo/packages/agents/dist"',
     '  printf "export const agents = true;\\n" > "$repo/packages/agents/dist/index.js"',
     '  echo "cli:build" >> "${EVENTS_PATH:?}"',
-    '  out="${HAPPIER_CLI_BUILD_OUTPUT_DIR:-dist}"',
+    '  out="${PIGGERCODE_CLI_BUILD_OUTPUT_DIR:-dist}"',
     '  mkdir -p "$out"',
     '  printf "export const cli = true;\\n" > "$out/index.mjs"',
     '  printf "{\\"fingerprint\\":\\"abcdef1234567890\\",\\"fileCount\\":1}\\n" > "$out/.build-manifest.json"',
@@ -124,10 +124,10 @@ async function createCliBuildFixture(t) {
     PATH: `${binDir}:/usr/bin:/bin`,
     FIXTURE_ROOT: root,
     EVENTS_PATH: eventsPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'auto',
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto',
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
   });
   return { cliDir, agentsDir, eventsPath };
 }

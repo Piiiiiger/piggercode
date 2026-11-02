@@ -91,14 +91,14 @@ async function appendRuntimeHealthDiagnostics(message, stackName) {
 }
 
 function resolveAuthUiStartTimeoutMs(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_AUTH_UI_START_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_AUTH_UI_START_TIMEOUT_MS ?? '').trim();
   const parsed = raw ? Number(raw) : NaN;
   const timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 20_000;
   return timeoutMs;
 }
 
 function resolveAuthExpoProgressIntervalMs(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_AUTH_EXPO_PROGRESS_INTERVAL_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_AUTH_EXPO_PROGRESS_INTERVAL_MS ?? '').trim();
   if (!raw) return 20_000;
   const n = Number(raw);
   if (!Number.isFinite(n)) return 20_000;
@@ -107,7 +107,7 @@ function resolveAuthExpoProgressIntervalMs(env = process.env) {
 }
 
 function resolveAuthExpoBundleReadyTimeoutMs(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
   const n = raw ? Number(raw) : NaN;
   return Number.isFinite(n) && n > 0 ? n : 60_000;
 }
@@ -147,8 +147,8 @@ async function tryStartStackUiInBackgroundForAuth({ rootDir, stackName, env = pr
         env: {
           ...process.env,
           ...(env ?? {}),
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          ...(useRuntimeStart ? {} : { HAPPIER_STACK_AUTH_FLOW: '1' }),
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          ...(useRuntimeStart ? {} : { PIGGERCODE_STACK_AUTH_FLOW: '1' }),
         },
       }
     );
@@ -318,7 +318,7 @@ export async function runGuidedLogin({ rootDir, stackName, env, webappUrl, forwa
     await guidedStackAuthLoginNow({
       rootDir,
       stackName: name,
-      env: { ...(env ?? process.env), HAPPIER_STACK_AUTH_SKIP_BUNDLE_CHECK: '1' },
+      env: { ...(env ?? process.env), PIGGERCODE_STACK_AUTH_SKIP_BUNDLE_CHECK: '1' },
       webappUrl: url,
       webappKind: target.kind,
     });
@@ -342,7 +342,7 @@ export async function resolveServerPortForPostAuthDaemonStart({ stackName, env =
     return runtimePort;
   }
 
-  const envPort = Number((env?.HAPPIER_STACK_SERVER_PORT ?? '').toString().trim());
+  const envPort = Number((env?.PIGGERCODE_STACK_SERVER_PORT ?? '').toString().trim());
   if (Number.isFinite(envPort) && envPort > 0) {
     return envPort;
   }
@@ -379,7 +379,7 @@ export async function startDaemonPostAuth({
   const mergedEnv = { ...process.env, ...(stackEnv ?? {}), ...(env ?? {}) };
 
   const cliHomeDir =
-    (mergedEnv.HAPPIER_STACK_CLI_HOME_DIR ?? '').toString().trim() ||
+    (mergedEnv.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').toString().trim() ||
     join(baseDir, 'cli');
   const runtimeLaunchContext = await resolveStackRuntimeLaunchContext({ argv: [], env: mergedEnv });
   const cliLaunchSpec = runtimeLaunchContext.snapshot

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 
 import {
-    HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
+    PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1,
     MENTION_BOUNDS,
     MENTION_KIND_V1,
     buildMentionRefForKindV1,
@@ -46,7 +46,7 @@ function skillCatalog(description: string) {
 }
 
 function metaWith(mentions: readonly Record<string, unknown>[]): Record<string, unknown> {
-    return { [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1, mentions } };
+    return { [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1, mentions } };
 }
 
 const SESSION_MENTION = {
@@ -104,14 +104,14 @@ async function dispatch(params: Readonly<{ meta: unknown; description?: string }
 }
 
 describe('resolveProviderPromptForDispatch catalog diagnostics', () => {
-    const envKeys = ['DEBUG', 'HAPPIER_HOME_DIR', 'HAPPIER_LOG_LEVEL'] as const;
+    const envKeys = ['DEBUG', 'PIGGERCODE_HOME_DIR', 'PIGGERCODE_LOG_LEVEL'] as const;
     let envScope = createEnvKeyScope(envKeys);
     let tempDir: string;
 
     beforeEach(() => {
         envScope = createEnvKeyScope(envKeys);
         tempDir = createTempDirSync('happier-prompt-dispatch-log-');
-        envScope.patch({ HAPPIER_HOME_DIR: tempDir, DEBUG: undefined, HAPPIER_LOG_LEVEL: undefined });
+        envScope.patch({ PIGGERCODE_HOME_DIR: tempDir, DEBUG: undefined, PIGGERCODE_LOG_LEVEL: undefined });
         vi.resetModules();
     });
 
@@ -151,7 +151,7 @@ describe('resolveProviderPromptForDispatch catalog diagnostics', () => {
 
             expect(resolution.providerPrompt).toBe('private user prompt');
             expect(resolution.meta).toEqual({
-                [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1 },
+                [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: { v: 1 },
             });
             expect(logSpy).not.toHaveBeenCalled();
             expect(existsSync(logger.getLogPath())).toBe(true);
@@ -246,7 +246,7 @@ describe('resolveProviderPromptForDispatch — D-27 total resolved-context bound
 
         expect(resolution.providerPrompt).toContain('<happier_session_reference>');
         expect(resolution.providerPrompt).toContain('sess-referenced-1');
-        const envelope = (resolution.meta as Record<string, any>)[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1];
+        const envelope = (resolution.meta as Record<string, any>)[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1];
         expect(envelope.skillMentions).toEqual([expect.objectContaining({ name: 'review' })]);
     });
 
@@ -343,10 +343,10 @@ describe('resolveProviderPromptForDispatch — D-27 total resolved-context bound
     // `seedApplied` there would let every backend's settle branch erase the whole
     // replay context for a prompt that carried none of it.
     it('reports no applied seed when the fit leaves no room to deliver any of it', async () => {
-        const previousMaxSeedChars = process.env.HAPPIER_REPLAY_MAX_SEED_CHARS;
+        const previousMaxSeedChars = process.env.PIGGERCODE_REPLAY_MAX_SEED_CHARS;
         // The smallest supported cap, so the reference block alone reserves the
         // whole budget without building a 120k-character block.
-        process.env.HAPPIER_REPLAY_MAX_SEED_CHARS = '500';
+        process.env.PIGGERCODE_REPLAY_MAX_SEED_CHARS = '500';
         reloadConfiguration();
         try {
             const { session } = createSession({ withPendingSeed: true });
@@ -379,9 +379,9 @@ describe('resolveProviderPromptForDispatch — D-27 total resolved-context bound
             expect(resolution.seedApplied).toBe(false);
         } finally {
             if (previousMaxSeedChars === undefined) {
-                delete process.env.HAPPIER_REPLAY_MAX_SEED_CHARS;
+                delete process.env.PIGGERCODE_REPLAY_MAX_SEED_CHARS;
             } else {
-                process.env.HAPPIER_REPLAY_MAX_SEED_CHARS = previousMaxSeedChars;
+                process.env.PIGGERCODE_REPLAY_MAX_SEED_CHARS = previousMaxSeedChars;
             }
             reloadConfiguration();
         }
@@ -408,7 +408,7 @@ describe('resolveProviderPromptForDispatch — D-27 total resolved-context bound
         // A legacy message carries provider context that resolution never produced. D-27 bounds
         // RESOLVED context, so a legacy envelope larger than the bound must still dispatch.
         const legacyMeta = {
-            [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: {
+            [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: {
                 v: 1,
                 skillMentions: [{
                     name: 'review',

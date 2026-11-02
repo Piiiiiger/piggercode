@@ -128,7 +128,7 @@ async function cmdNew({ rootDir, argv, emit = true }) {
   const copyAuth = !(flags.has('--no-copy-auth') || flags.has('--fresh-auth'));
   const copyAuthFrom =
     (kv.get('--copy-auth-from') ?? '').trim() ||
-    (process.env.HAPPIER_STACK_AUTH_SEED_FROM ?? '').trim() ||
+    (process.env.PIGGERCODE_STACK_AUTH_SEED_FROM ?? '').trim() ||
     'main';
   const linkAuth =
     flags.has('--link-auth') ||
@@ -137,8 +137,8 @@ async function cmdNew({ rootDir, argv, emit = true }) {
     (kv.get('--link-auth') ?? '').trim() === '1' ||
     (kv.get('--auth-mode') ?? '').trim() === 'link' ||
     (kv.get('--copy-auth-mode') ?? '').trim() === 'link' ||
-    (process.env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
-    (process.env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
+    (process.env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
+    (process.env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
   const forcePort = flags.has('--force-port');
   const dbProviderOptionPresent = kv.has('--db-provider') || kv.has('--db');
   const dbProviderRaw = (kv.has('--db-provider') ? kv.get('--db-provider') : kv.get('--db') ?? '').toString().trim().toLowerCase();
@@ -199,7 +199,7 @@ async function cmdNew({ rootDir, argv, emit = true }) {
   }
   const dbProviderResolution = resolveEffectiveDbProvider({
     serverComponentName: serverComponent,
-    env: dbProviderOptionPresent ? { HAPPIER_DB_PROVIDER: dbProviderRaw } : {},
+    env: dbProviderOptionPresent ? { PIGGERCODE_DB_PROVIDER: dbProviderRaw } : {},
   });
   if (!dbProviderResolution.ok) {
     throw new Error(
@@ -265,33 +265,33 @@ async function cmdNew({ rootDir, argv, emit = true }) {
 
   // Prepare component dirs (may create worktrees).
   const stackEnv = {
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_STACK_SERVER_COMPONENT: serverComponent,
-    HAPPIER_STACK_UI_BUILD_DIR: uiBuildDir,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_STACK_REMOTE: config.createRemote?.trim() ? config.createRemote.trim() : 'upstream',
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_STACK_SERVER_COMPONENT: serverComponent,
+    PIGGERCODE_STACK_UI_BUILD_DIR: uiBuildDir,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_STACK_REMOTE: config.createRemote?.trim() ? config.createRemote.trim() : 'upstream',
     ...defaultRepoEnv,
   };
   // Persist DB provider explicitly so existing behavior is stable even if defaults evolve later.
-  stackEnv.HAPPIER_DB_PROVIDER = effectiveDbProvider;
+  stackEnv.PIGGERCODE_DB_PROVIDER = effectiveDbProvider;
   // Power user knob: override DATABASE_URL (required for mysql today, useful for external DBs).
   if (databaseUrlOverride) {
     stackEnv.DATABASE_URL = databaseUrlOverride;
   }
   if (port != null) {
-    stackEnv.HAPPIER_STACK_SERVER_PORT = String(port);
+    stackEnv.PIGGERCODE_STACK_SERVER_PORT = String(port);
   }
 
   // Server-light storage isolation: ensure stacks have their own light data dir.
   // (This prevents a dev stack from mutating main stack's data when schema changes.)
   if (serverComponent === 'happier-server-light' || effectiveDbProvider === 'sqlite' || effectiveDbProvider === 'pglite') {
     const dataDir = join(baseDir, 'server-light');
-    stackEnv.HAPPIER_SERVER_LIGHT_DATA_DIR = dataDir;
+    stackEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR = dataDir;
     if (serverComponent === 'happier-server-light') {
-      stackEnv.HAPPIER_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
+      stackEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
     }
     if (effectiveDbProvider === 'pglite') {
-      stackEnv.HAPPIER_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
+      stackEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
     }
   }
   if (serverComponent === 'happier-server') {
@@ -304,13 +304,13 @@ async function cmdNew({ rootDir, argv, emit = true }) {
     const s3AccessKey = randomToken(12);
     const s3SecretKey = randomToken(24);
 
-    stackEnv.HAPPIER_STACK_MANAGED_INFRA = stackEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1';
+    stackEnv.PIGGERCODE_STACK_MANAGED_INFRA = stackEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1';
     if (usesManagedPostgres) {
-      stackEnv.HAPPIER_STACK_PG_USER = pgUser;
-      stackEnv.HAPPIER_STACK_PG_PASSWORD = pgPassword;
-      stackEnv.HAPPIER_STACK_PG_DATABASE = pgDb;
+      stackEnv.PIGGERCODE_STACK_PG_USER = pgUser;
+      stackEnv.PIGGERCODE_STACK_PG_PASSWORD = pgPassword;
+      stackEnv.PIGGERCODE_STACK_PG_DATABASE = pgDb;
     }
-    stackEnv.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE = join(baseDir, 'happier-server', 'handy-master-secret.txt');
+    stackEnv.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE = join(baseDir, 'happier-server', 'handy-master-secret.txt');
     stackEnv.S3_ACCESS_KEY = s3AccessKey;
     stackEnv.S3_SECRET_KEY = s3SecretKey;
     stackEnv.S3_BUCKET = s3Bucket;
@@ -334,13 +334,13 @@ async function cmdNew({ rootDir, argv, emit = true }) {
 
 	      const s3PublicUrl = `http://127.0.0.1:${minioPort}/${s3Bucket}`;
 
-	      stackEnv.HAPPIER_STACK_SERVER_BACKEND_PORT = String(backendPort);
+	      stackEnv.PIGGERCODE_STACK_SERVER_BACKEND_PORT = String(backendPort);
 	      if (dbPort != null) {
-	        stackEnv.HAPPIER_STACK_PG_PORT = String(dbPort);
+	        stackEnv.PIGGERCODE_STACK_PG_PORT = String(dbPort);
 	      }
-	      stackEnv.HAPPIER_STACK_REDIS_PORT = String(redisPort);
-	      stackEnv.HAPPIER_STACK_MINIO_PORT = String(minioPort);
-	      stackEnv.HAPPIER_STACK_MINIO_CONSOLE_PORT = String(minioConsolePort);
+	      stackEnv.PIGGERCODE_STACK_REDIS_PORT = String(redisPort);
+	      stackEnv.PIGGERCODE_STACK_MINIO_PORT = String(minioPort);
+	      stackEnv.PIGGERCODE_STACK_MINIO_CONSOLE_PORT = String(minioConsolePort);
 
 	      // Vars consumed by happier-server:
 	      if (databaseUrlOverride) {
@@ -363,8 +363,8 @@ async function cmdNew({ rootDir, argv, emit = true }) {
     const resolved = await resolveRequestedRepoCheckoutDir({
       rootDir,
       repoSelection: config.repo,
-      defaultRepoDir: String(defaultRepoEnv.HAPPIER_STACK_REPO_DIR ?? '').trim(),
-      remoteName: config.repo?.remote || stackEnv.HAPPIER_STACK_STACK_REMOTE,
+      defaultRepoDir: String(defaultRepoEnv.PIGGERCODE_STACK_REPO_DIR ?? '').trim(),
+      remoteName: config.repo?.remote || stackEnv.PIGGERCODE_STACK_STACK_REMOTE,
     });
 
     if (!resolved || !existsSync(resolved)) {
@@ -383,12 +383,12 @@ async function cmdNew({ rootDir, argv, emit = true }) {
           `- expected to contain apps/ui, apps/cli, and apps/server\n`
       );
     }
-    stackEnv.HAPPIER_STACK_REPO_DIR = monoRoot;
+    stackEnv.PIGGERCODE_STACK_REPO_DIR = monoRoot;
   }
 
   if (copyAuth) {
     // Default: inherit seed stack auth so creating a new stack doesn't require re-login.
-    // Source: --copy-auth-from (highest), else HAPPIER_STACK_AUTH_SEED_FROM (default: main).
+    // Source: --copy-auth-from (highest), else PIGGERCODE_STACK_AUTH_SEED_FROM (default: main).
     // Users can opt out with --no-copy-auth to force a fresh auth / machine identity.
     await copyAuthFromStackIntoNewStack({
       fromStackName: copyAuthFrom,
@@ -401,8 +401,8 @@ async function cmdNew({ rootDir, argv, emit = true }) {
     })
       .then(() => {
         if (kv.has('--copy-auth-from') && copyAuthFrom) {
-          stackEnv.HAPPIER_STACK_AUTH_SEED_FROM = copyAuthFrom;
-          stackEnv.HAPPIER_STACK_AUTO_AUTH_SEED = '1';
+          stackEnv.PIGGERCODE_STACK_AUTH_SEED_FROM = copyAuthFrom;
+          stackEnv.PIGGERCODE_STACK_AUTO_AUTH_SEED = '1';
         }
       })
       .catch((err) => {
@@ -471,8 +471,8 @@ async function cmdEdit({ rootDir, argv }) {
     port = null;
   }
 
-  const serverComponent = (config.serverComponent || existingEnv.HAPPIER_STACK_SERVER_COMPONENT || 'happier-server-light').trim();
-  const previousServerComponent = (existingEnv.HAPPIER_STACK_SERVER_COMPONENT || 'happier-server-light').trim();
+  const serverComponent = (config.serverComponent || existingEnv.PIGGERCODE_STACK_SERVER_COMPONENT || 'happier-server-light').trim();
+  const previousServerComponent = (existingEnv.PIGGERCODE_STACK_SERVER_COMPONENT || 'happier-server-light').trim();
   const dbTransition = resolveEffectiveDbProviderTransition({
     previousServerComponentName: previousServerComponent,
     nextServerComponentName: serverComponent,
@@ -493,32 +493,32 @@ async function cmdEdit({ rootDir, argv }) {
   const effectiveDbProvider = dbTransition.provider;
 
   const next = {
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_STACK_SERVER_COMPONENT: serverComponent,
-    HAPPIER_STACK_UI_BUILD_DIR: uiBuildDir,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_STACK_REMOTE: config.createRemote?.trim()
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_STACK_SERVER_COMPONENT: serverComponent,
+    PIGGERCODE_STACK_UI_BUILD_DIR: uiBuildDir,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_STACK_REMOTE: config.createRemote?.trim()
       ? config.createRemote.trim()
-      : (existingEnv.HAPPIER_STACK_STACK_REMOTE || 'upstream'),
+      : (existingEnv.PIGGERCODE_STACK_STACK_REMOTE || 'upstream'),
     // Always pin defaults; overrides below can replace.
     ...resolveDefaultRepoEnv({ rootDir }),
   };
-  next.HAPPIER_DB_PROVIDER = effectiveDbProvider;
-  if ((existingEnv.HAPPIER_STACK_REPO_DIR ?? '').trim()) {
-    next.HAPPIER_STACK_REPO_DIR = String(existingEnv.HAPPIER_STACK_REPO_DIR).trim();
+  next.PIGGERCODE_DB_PROVIDER = effectiveDbProvider;
+  if ((existingEnv.PIGGERCODE_STACK_REPO_DIR ?? '').trim()) {
+    next.PIGGERCODE_STACK_REPO_DIR = String(existingEnv.PIGGERCODE_STACK_REPO_DIR).trim();
   }
   if (port != null) {
-    next.HAPPIER_STACK_SERVER_PORT = String(port);
+    next.PIGGERCODE_STACK_SERVER_PORT = String(port);
   }
 
   if (serverComponent === 'happier-server-light' || effectiveDbProvider === 'sqlite' || effectiveDbProvider === 'pglite') {
     const dataDir = join(baseDir, 'server-light');
-    next.HAPPIER_SERVER_LIGHT_DATA_DIR = dataDir;
+    next.PIGGERCODE_SERVER_LIGHT_DATA_DIR = dataDir;
     if (serverComponent === 'happier-server-light') {
-      next.HAPPIER_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
+      next.PIGGERCODE_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
     }
     if (effectiveDbProvider === 'pglite') {
-      next.HAPPIER_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
+      next.PIGGERCODE_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
     }
     if (dbTransition.removeDatabaseUrl) delete next.DATABASE_URL;
   }
@@ -527,24 +527,24 @@ async function cmdEdit({ rootDir, argv }) {
   }
   if (serverComponent === 'happier-server') {
     // Persist stable infra credentials. Ports are ephemeral unless explicitly pinned.
-    const pgUser = (existingEnv.HAPPIER_STACK_PG_USER ?? 'handy').trim() || 'handy';
-    const pgPassword = (existingEnv.HAPPIER_STACK_PG_PASSWORD ?? '').trim() || randomToken(24);
-    const pgDb = (existingEnv.HAPPIER_STACK_PG_DATABASE ?? 'handy').trim() || 'handy';
+    const pgUser = (existingEnv.PIGGERCODE_STACK_PG_USER ?? 'handy').trim() || 'handy';
+    const pgPassword = (existingEnv.PIGGERCODE_STACK_PG_PASSWORD ?? '').trim() || randomToken(24);
+    const pgDb = (existingEnv.PIGGERCODE_STACK_PG_DATABASE ?? 'handy').trim() || 'handy';
     const s3Bucket =
       (existingEnv.S3_BUCKET ?? sanitizeDnsLabel(`happier-${stackName}`, { fallback: 'happier' })).trim() ||
       sanitizeDnsLabel(`happier-${stackName}`, { fallback: 'happier' });
     const s3AccessKey = (existingEnv.S3_ACCESS_KEY ?? '').trim() || randomToken(12);
     const s3SecretKey = (existingEnv.S3_SECRET_KEY ?? '').trim() || randomToken(24);
 
-    next.HAPPIER_STACK_MANAGED_INFRA = (existingEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1').trim() || '1';
+    next.PIGGERCODE_STACK_MANAGED_INFRA = (existingEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1').trim() || '1';
     const usesManagedPostgres = effectiveDbProvider === 'postgres' && !dbTransition.databaseUrl;
     if (usesManagedPostgres) {
-      next.HAPPIER_STACK_PG_USER = pgUser;
-      next.HAPPIER_STACK_PG_PASSWORD = pgPassword;
-      next.HAPPIER_STACK_PG_DATABASE = pgDb;
+      next.PIGGERCODE_STACK_PG_USER = pgUser;
+      next.PIGGERCODE_STACK_PG_PASSWORD = pgPassword;
+      next.PIGGERCODE_STACK_PG_DATABASE = pgDb;
     }
-    next.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE =
-      (existingEnv.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim() || join(baseDir, 'happier-server', 'handy-master-secret.txt');
+    next.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE =
+      (existingEnv.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim() || join(baseDir, 'happier-server', 'handy-master-secret.txt');
     next.S3_ACCESS_KEY = s3AccessKey;
     next.S3_SECRET_KEY = s3SecretKey;
     next.S3_BUCKET = s3Bucket;
@@ -552,35 +552,35 @@ async function cmdEdit({ rootDir, argv }) {
       // If user pinned the server port, keep ports + derived URLs stable as well.
       const reservedPorts = await collectReservedStackPorts({ excludeStackName: stackName });
       reservedPorts.add(port);
-      const backendPort = existingEnv.HAPPIER_STACK_SERVER_BACKEND_PORT?.trim()
-        ? Number(existingEnv.HAPPIER_STACK_SERVER_BACKEND_PORT.trim())
+      const backendPort = existingEnv.PIGGERCODE_STACK_SERVER_BACKEND_PORT?.trim()
+        ? Number(existingEnv.PIGGERCODE_STACK_SERVER_BACKEND_PORT.trim())
         : await pickNextFreePort(port + 10, { reservedPorts });
       reservedPorts.add(backendPort);
       const pgPort = usesManagedPostgres
-        ? (existingEnv.HAPPIER_STACK_PG_PORT?.trim()
-          ? Number(existingEnv.HAPPIER_STACK_PG_PORT.trim())
+        ? (existingEnv.PIGGERCODE_STACK_PG_PORT?.trim()
+          ? Number(existingEnv.PIGGERCODE_STACK_PG_PORT.trim())
           : await pickNextFreePort(port + 1000, { reservedPorts }))
         : null;
       if (pgPort != null) reservedPorts.add(pgPort);
-      const redisPort = existingEnv.HAPPIER_STACK_REDIS_PORT?.trim()
-        ? Number(existingEnv.HAPPIER_STACK_REDIS_PORT.trim())
+      const redisPort = existingEnv.PIGGERCODE_STACK_REDIS_PORT?.trim()
+        ? Number(existingEnv.PIGGERCODE_STACK_REDIS_PORT.trim())
         : await pickNextFreePort(pgPort != null ? pgPort + 1 : port + 1000, { reservedPorts });
       reservedPorts.add(redisPort);
-      const minioPort = existingEnv.HAPPIER_STACK_MINIO_PORT?.trim()
-        ? Number(existingEnv.HAPPIER_STACK_MINIO_PORT.trim())
+      const minioPort = existingEnv.PIGGERCODE_STACK_MINIO_PORT?.trim()
+        ? Number(existingEnv.PIGGERCODE_STACK_MINIO_PORT.trim())
         : await pickNextFreePort(redisPort + 1, { reservedPorts });
       reservedPorts.add(minioPort);
-      const minioConsolePort = existingEnv.HAPPIER_STACK_MINIO_CONSOLE_PORT?.trim()
-        ? Number(existingEnv.HAPPIER_STACK_MINIO_CONSOLE_PORT.trim())
+      const minioConsolePort = existingEnv.PIGGERCODE_STACK_MINIO_CONSOLE_PORT?.trim()
+        ? Number(existingEnv.PIGGERCODE_STACK_MINIO_CONSOLE_PORT.trim())
         : await pickNextFreePort(minioPort + 1, { reservedPorts });
 
       const s3PublicUrl = `http://127.0.0.1:${minioPort}/${s3Bucket}`;
 
-      next.HAPPIER_STACK_SERVER_BACKEND_PORT = String(backendPort);
-      if (pgPort != null) next.HAPPIER_STACK_PG_PORT = String(pgPort);
-      next.HAPPIER_STACK_REDIS_PORT = String(redisPort);
-      next.HAPPIER_STACK_MINIO_PORT = String(minioPort);
-      next.HAPPIER_STACK_MINIO_CONSOLE_PORT = String(minioConsolePort);
+      next.PIGGERCODE_STACK_SERVER_BACKEND_PORT = String(backendPort);
+      if (pgPort != null) next.PIGGERCODE_STACK_PG_PORT = String(pgPort);
+      next.PIGGERCODE_STACK_REDIS_PORT = String(redisPort);
+      next.PIGGERCODE_STACK_MINIO_PORT = String(minioPort);
+      next.PIGGERCODE_STACK_MINIO_CONSOLE_PORT = String(minioConsolePort);
 
       if (dbTransition.databaseUrl) {
         next.DATABASE_URL = dbTransition.databaseUrl;
@@ -600,7 +600,7 @@ async function cmdEdit({ rootDir, argv }) {
     const resolved = await resolveRequestedRepoCheckoutDir({
       rootDir,
       repoSelection: config.repo,
-      remoteName: config.repo?.remote || next.HAPPIER_STACK_STACK_REMOTE,
+      remoteName: config.repo?.remote || next.PIGGERCODE_STACK_STACK_REMOTE,
     });
 
     if (!resolved || !existsSync(resolved)) {
@@ -610,7 +610,7 @@ async function cmdEdit({ rootDir, argv }) {
     if (!monoRoot) {
       throw new Error(`[stack] invalid repo checkout (expected Happier monorepo root): ${resolved}`);
     }
-    next.HAPPIER_STACK_REPO_DIR = monoRoot;
+    next.PIGGERCODE_STACK_REPO_DIR = monoRoot;
   }
 
   const wrote = await writeStackEnv({ stackName, env: next });
@@ -656,7 +656,7 @@ async function cmdAudit({ rootDir, argv }) {
     // If the env file is missing/empty, optionally reconstruct a safe baseline env.
     if (!raw.trim() && wantsEnvRepair && (stackName !== 'main' || fixMain)) {
       const serverComponent =
-        getEnvValue(env, 'HAPPIER_STACK_SERVER_COMPONENT') ||
+        getEnvValue(env, 'PIGGERCODE_STACK_SERVER_COMPONENT') ||
         'happier-server-light';
       const expectedUi = join(baseDir, 'ui');
       const expectedCli = join(baseDir, 'cli');
@@ -665,29 +665,29 @@ async function cmdAudit({ rootDir, argv }) {
       const port = stackName === 'main' ? await pickNextFreePort(getDefaultPortStart(), { reservedPorts }) : null;
 
       const nextEnv = {
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_SERVER_COMPONENT: serverComponent,
-        HAPPIER_STACK_UI_BUILD_DIR: expectedUi,
-        HAPPIER_STACK_CLI_HOME_DIR: expectedCli,
-        HAPPIER_STACK_STACK_REMOTE: 'upstream',
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_SERVER_COMPONENT: serverComponent,
+        PIGGERCODE_STACK_UI_BUILD_DIR: expectedUi,
+        PIGGERCODE_STACK_CLI_HOME_DIR: expectedCli,
+        PIGGERCODE_STACK_STACK_REMOTE: 'upstream',
         ...resolveDefaultRepoEnv({ rootDir }),
       };
       const repairedProvider = resolveEffectiveDbProvider({ serverComponentName: serverComponent, env });
       if (repairedProvider.ok) {
-        nextEnv.HAPPIER_DB_PROVIDER = repairedProvider.provider;
+        nextEnv.PIGGERCODE_DB_PROVIDER = repairedProvider.provider;
       }
       if (port != null) {
-        nextEnv.HAPPIER_STACK_SERVER_PORT = String(port);
+        nextEnv.PIGGERCODE_STACK_SERVER_PORT = String(port);
       }
 
       if (serverComponent === 'happier-server-light' || ['sqlite', 'pglite'].includes(repairedProvider.provider)) {
         const dataDir = join(baseDir, 'server-light');
-        nextEnv.HAPPIER_SERVER_LIGHT_DATA_DIR = dataDir;
+        nextEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR = dataDir;
         if (serverComponent === 'happier-server-light') {
-          nextEnv.HAPPIER_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
+          nextEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR = join(dataDir, 'files');
         }
         if (repairedProvider.provider === 'pglite') {
-          nextEnv.HAPPIER_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
+          nextEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR = join(dataDir, 'pglite');
         }
       }
 
@@ -696,7 +696,7 @@ async function cmdAudit({ rootDir, argv }) {
       env = parseEnvToObject(raw);
     }
 
-    let serverComponent = getEnvValue(env, 'HAPPIER_STACK_SERVER_COMPONENT') || 'happier-server-light';
+    let serverComponent = getEnvValue(env, 'PIGGERCODE_STACK_SERVER_COMPONENT') || 'happier-server-light';
     let effectiveDbProvider = resolveEffectiveDbProvider({ serverComponentName: serverComponent, env });
 
     // Optional: unpin ports for non-main stacks (ephemeral port model).
@@ -710,14 +710,14 @@ async function cmdAudit({ rootDir, argv }) {
         );
       const remove = [
         // Always remove pinned public server port.
-        'HAPPIER_STACK_SERVER_PORT',
+        'PIGGERCODE_STACK_SERVER_PORT',
         // Happier-server gateway/backend ports.
-        'HAPPIER_STACK_SERVER_BACKEND_PORT',
+        'PIGGERCODE_STACK_SERVER_BACKEND_PORT',
         // Managed infra ports.
-        'HAPPIER_STACK_PG_PORT',
-        'HAPPIER_STACK_REDIS_PORT',
-        'HAPPIER_STACK_MINIO_PORT',
-        'HAPPIER_STACK_MINIO_CONSOLE_PORT',
+        'PIGGERCODE_STACK_PG_PORT',
+        'PIGGERCODE_STACK_REDIS_PORT',
+        'PIGGERCODE_STACK_MINIO_PORT',
+        'PIGGERCODE_STACK_MINIO_CONSOLE_PORT',
       ];
       if (serverComponent === 'happier-server') {
         // These are derived from the ports above; safe to re-compute at start time.
@@ -729,11 +729,11 @@ async function cmdAudit({ rootDir, argv }) {
       await ensureEnvFilePruned({ envPath, removeKeys: remove });
       raw = await readExistingEnv(envPath);
       env = parseEnvToObject(raw);
-      serverComponent = getEnvValue(env, 'HAPPIER_STACK_SERVER_COMPONENT') || 'happier-server-light';
+      serverComponent = getEnvValue(env, 'PIGGERCODE_STACK_SERVER_COMPONENT') || 'happier-server-light';
       effectiveDbProvider = resolveEffectiveDbProvider({ serverComponentName: serverComponent, env });
     }
 
-    const portRaw = getEnvValue(env, 'HAPPIER_STACK_SERVER_PORT');
+    const portRaw = getEnvValue(env, 'PIGGERCODE_STACK_SERVER_PORT');
     const port = portRaw ? Number(portRaw) : null;
     if (Number.isFinite(port) && port > 0) {
       const existing = ports.get(port) ?? [];
@@ -767,7 +767,7 @@ async function cmdAudit({ rootDir, argv }) {
       issues.push({ code: 'missing_env', message: `env file missing/empty (${envPath})` });
     }
 
-    const uiBuildDir = getEnvValue(env, 'HAPPIER_STACK_UI_BUILD_DIR');
+    const uiBuildDir = getEnvValue(env, 'PIGGERCODE_STACK_UI_BUILD_DIR');
     const expectedUi = join(baseDir, 'ui');
     if (!uiBuildDir) {
       issues.push({ code: 'missing_ui_build_dir', message: `missing UI build dir (expected ${expectedUi})` });
@@ -775,7 +775,7 @@ async function cmdAudit({ rootDir, argv }) {
       issues.push({ code: 'ui_build_dir_mismatch', message: `UI build dir points to ${uiBuildDir} (expected ${expectedUi})` });
     }
 
-    const cliHomeDir = getEnvValue(env, 'HAPPIER_STACK_CLI_HOME_DIR');
+    const cliHomeDir = getEnvValue(env, 'PIGGERCODE_STACK_CLI_HOME_DIR');
     const expectedCli = join(baseDir, 'cli');
     if (!cliHomeDir) {
       issues.push({ code: 'missing_cli_home_dir', message: `missing CLI home dir (expected ${expectedCli})` });
@@ -784,20 +784,20 @@ async function cmdAudit({ rootDir, argv }) {
     }
 
     const missingRepoKeys = [];
-    const repoDir = getEnvValue(env, 'HAPPIER_STACK_REPO_DIR');
+    const repoDir = getEnvValue(env, 'PIGGERCODE_STACK_REPO_DIR');
     if (!repoDir) {
-      missingRepoKeys.push('HAPPIER_STACK_REPO_DIR');
-      issues.push({ code: 'missing_repo_dir', message: `missing HAPPIER_STACK_REPO_DIR` });
+      missingRepoKeys.push('PIGGERCODE_STACK_REPO_DIR');
+      issues.push({ code: 'missing_repo_dir', message: `missing PIGGERCODE_STACK_REPO_DIR` });
     } else if (!isAbsolute(repoDir)) {
-      issues.push({ code: 'relative_repo_dir', message: `HAPPIER_STACK_REPO_DIR is relative (${repoDir}); prefer absolute paths under this workspace` });
+      issues.push({ code: 'relative_repo_dir', message: `PIGGERCODE_STACK_REPO_DIR is relative (${repoDir}); prefer absolute paths under this workspace` });
     } else {
       const norm = repoDir.replaceAll('\\', '/');
       if (norm.startsWith(otherWorkspaceRoot.replaceAll('\\', '/') + '/')) {
-        issues.push({ code: 'foreign_workspace_repo_dir', message: `HAPPIER_STACK_REPO_DIR points to another workspace: ${repoDir}` });
+        issues.push({ code: 'foreign_workspace_repo_dir', message: `PIGGERCODE_STACK_REPO_DIR points to another workspace: ${repoDir}` });
       }
       // Optional: fail-closed existence check.
       if (!existsSync(repoDir)) {
-        issues.push({ code: 'missing_repo_path', message: `HAPPIER_STACK_REPO_DIR path does not exist: ${repoDir}` });
+        issues.push({ code: 'missing_repo_path', message: `PIGGERCODE_STACK_REPO_DIR path does not exist: ${repoDir}` });
       }
     }
 
@@ -805,22 +805,22 @@ async function cmdAudit({ rootDir, argv }) {
     const dbProvider = effectiveDbProvider.ok ? effectiveDbProvider.provider : null;
     const needsLocalData = serverComponent === 'happier-server-light' || dbProvider === 'sqlite' || dbProvider === 'pglite';
     const needsLocalFiles = serverComponent === 'happier-server-light'
-      || ['local', 'filesystem'].includes(String(env.HAPPIER_FILES_BACKEND ?? env.HAPPY_FILES_BACKEND ?? '').trim().toLowerCase());
+      || ['local', 'filesystem'].includes(String(env.PIGGERCODE_FILES_BACKEND ?? env.HAPPY_FILES_BACKEND ?? '').trim().toLowerCase());
     if (needsLocalData || needsLocalFiles) {
-      const dataDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_DATA_DIR');
-      const filesDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_FILES_DIR');
-      const dbDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_DB_DIR');
+      const dataDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_DATA_DIR');
+      const filesDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_FILES_DIR');
+      const dbDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_DB_DIR');
       const expectedDataDir = join(baseDir, 'server-light');
       const expectedFilesDir = join(expectedDataDir, 'files');
       const expectedDbDir = join(expectedDataDir, 'pglite');
 
-      if (needsLocalData && !dataDir) issues.push({ code: 'missing_server_light_data_dir', message: `missing HAPPIER_SERVER_LIGHT_DATA_DIR (expected ${expectedDataDir})` });
-      if (needsLocalFiles && !filesDir) issues.push({ code: 'missing_server_light_files_dir', message: `missing HAPPIER_SERVER_LIGHT_FILES_DIR (expected ${expectedFilesDir})` });
-      if (needsLocalData && dataDir && dataDir !== expectedDataDir) issues.push({ code: 'server_light_data_dir_mismatch', message: `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir} (expected ${expectedDataDir})` });
-      if (needsLocalFiles && filesDir && filesDir !== expectedFilesDir) issues.push({ code: 'server_light_files_dir_mismatch', message: `HAPPIER_SERVER_LIGHT_FILES_DIR=${filesDir} (expected ${expectedFilesDir})` });
+      if (needsLocalData && !dataDir) issues.push({ code: 'missing_server_light_data_dir', message: `missing PIGGERCODE_SERVER_LIGHT_DATA_DIR (expected ${expectedDataDir})` });
+      if (needsLocalFiles && !filesDir) issues.push({ code: 'missing_server_light_files_dir', message: `missing PIGGERCODE_SERVER_LIGHT_FILES_DIR (expected ${expectedFilesDir})` });
+      if (needsLocalData && dataDir && dataDir !== expectedDataDir) issues.push({ code: 'server_light_data_dir_mismatch', message: `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir} (expected ${expectedDataDir})` });
+      if (needsLocalFiles && filesDir && filesDir !== expectedFilesDir) issues.push({ code: 'server_light_files_dir_mismatch', message: `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${filesDir} (expected ${expectedFilesDir})` });
       if (dbProvider === 'pglite') {
-        if (!dbDir) issues.push({ code: 'missing_server_light_db_dir', message: `missing HAPPIER_SERVER_LIGHT_DB_DIR (expected ${expectedDbDir})` });
-        if (dbDir && dbDir !== expectedDbDir) issues.push({ code: 'server_light_db_dir_mismatch', message: `HAPPIER_SERVER_LIGHT_DB_DIR=${dbDir} (expected ${expectedDbDir})` });
+        if (!dbDir) issues.push({ code: 'missing_server_light_db_dir', message: `missing PIGGERCODE_SERVER_LIGHT_DB_DIR (expected ${expectedDbDir})` });
+        if (dbDir && dbDir !== expectedDbDir) issues.push({ code: 'server_light_db_dir_mismatch', message: `PIGGERCODE_SERVER_LIGHT_DB_DIR=${dbDir} (expected ${expectedDbDir})` });
       }
 
       const legacyDbUrl = getEnvValue(env, 'DATABASE_URL');
@@ -837,41 +837,41 @@ async function cmdAudit({ rootDir, argv }) {
       const updates = [];
 
       if (effectiveDbProvider.ok && effectiveDbProvider.source === 'default') {
-        updates.push({ key: 'HAPPIER_DB_PROVIDER', value: effectiveDbProvider.provider });
+        updates.push({ key: 'PIGGERCODE_DB_PROVIDER', value: effectiveDbProvider.provider });
       }
 
       // Always ensure stack directories are explicitly pinned when missing.
-      if (!uiBuildDir) updates.push({ key: 'HAPPIER_STACK_UI_BUILD_DIR', value: expectedUi });
-      if (!cliHomeDir) updates.push({ key: 'HAPPIER_STACK_CLI_HOME_DIR', value: expectedCli });
+      if (!uiBuildDir) updates.push({ key: 'PIGGERCODE_STACK_UI_BUILD_DIR', value: expectedUi });
+      if (!cliHomeDir) updates.push({ key: 'PIGGERCODE_STACK_CLI_HOME_DIR', value: expectedCli });
       if (fixPaths) {
-        if (uiBuildDir && uiBuildDir !== expectedUi) updates.push({ key: 'HAPPIER_STACK_UI_BUILD_DIR', value: expectedUi });
-        if (cliHomeDir && cliHomeDir !== expectedCli) updates.push({ key: 'HAPPIER_STACK_CLI_HOME_DIR', value: expectedCli });
+        if (uiBuildDir && uiBuildDir !== expectedUi) updates.push({ key: 'PIGGERCODE_STACK_UI_BUILD_DIR', value: expectedUi });
+        if (cliHomeDir && cliHomeDir !== expectedCli) updates.push({ key: 'PIGGERCODE_STACK_CLI_HOME_DIR', value: expectedCli });
       }
 
       // Pin repo dir if missing (best-effort).
       if (missingRepoKeys.length) {
         const defaults = resolveDefaultRepoEnv({ rootDir });
-        const repo = String(defaults.HAPPIER_STACK_REPO_DIR ?? '').trim();
+        const repo = String(defaults.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
         if (repo) {
-          updates.push({ key: 'HAPPIER_STACK_REPO_DIR', value: repo });
+          updates.push({ key: 'PIGGERCODE_STACK_REPO_DIR', value: repo });
         }
       }
 
       // Server-light storage isolation.
       if (needsLocalData || needsLocalFiles) {
-        const dataDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_DATA_DIR');
-        const filesDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_FILES_DIR');
-        const dbDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_DB_DIR');
+        const dataDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_DATA_DIR');
+        const filesDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_FILES_DIR');
+        const dbDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_DB_DIR');
         const expectedDataDir = join(baseDir, 'server-light');
         const expectedFilesDir = join(expectedDataDir, 'files');
         const expectedDbDir = join(expectedDataDir, 'pglite');
-        if (needsLocalData && (!dataDir || (fixPaths && dataDir !== expectedDataDir))) updates.push({ key: 'HAPPIER_SERVER_LIGHT_DATA_DIR', value: expectedDataDir });
-        if (needsLocalFiles && (!filesDir || (fixPaths && filesDir !== expectedFilesDir))) updates.push({ key: 'HAPPIER_SERVER_LIGHT_FILES_DIR', value: expectedFilesDir });
-        if (dbProvider === 'pglite' && (!dbDir || (fixPaths && dbDir !== expectedDbDir))) updates.push({ key: 'HAPPIER_SERVER_LIGHT_DB_DIR', value: expectedDbDir });
+        if (needsLocalData && (!dataDir || (fixPaths && dataDir !== expectedDataDir))) updates.push({ key: 'PIGGERCODE_SERVER_LIGHT_DATA_DIR', value: expectedDataDir });
+        if (needsLocalFiles && (!filesDir || (fixPaths && filesDir !== expectedFilesDir))) updates.push({ key: 'PIGGERCODE_SERVER_LIGHT_FILES_DIR', value: expectedFilesDir });
+        if (dbProvider === 'pglite' && (!dbDir || (fixPaths && dbDir !== expectedDbDir))) updates.push({ key: 'PIGGERCODE_SERVER_LIGHT_DB_DIR', value: expectedDbDir });
       }
 
       if (fixWorkspace) {
-        const repoKey = 'HAPPIER_STACK_REPO_DIR';
+        const repoKey = 'PIGGERCODE_STACK_REPO_DIR';
         const current = getEnvValue(env, repoKey);
         if (current) {
           const otherNorm = otherWorkspaceRoot.replaceAll('\\', '/') + '/';
@@ -898,7 +898,7 @@ async function cmdAudit({ rootDir, argv }) {
           await ensureEnvFilePruned({ envPath, removeKeys: ['DATABASE_URL'] });
         }
         if (dbProvider === 'sqlite') {
-          await ensureEnvFilePruned({ envPath, removeKeys: ['HAPPIER_SERVER_LIGHT_DB_DIR', 'HAPPY_SERVER_LIGHT_DB_DIR'] });
+          await ensureEnvFilePruned({ envPath, removeKeys: ['PIGGERCODE_SERVER_LIGHT_DB_DIR', 'HAPPY_SERVER_LIGHT_DB_DIR'] });
         }
       }
     }
@@ -960,8 +960,8 @@ async function cmdAudit({ rootDir, argv }) {
         const env = parseEnvToObject(raw);
 
         const serverComponent =
-          getEnvValue(env, 'HAPPIER_STACK_SERVER_COMPONENT') || 'happier-server-light';
-        const portRaw = getEnvValue(env, 'HAPPIER_STACK_SERVER_PORT');
+          getEnvValue(env, 'PIGGERCODE_STACK_SERVER_COMPONENT') || 'happier-server-light';
+        const portRaw = getEnvValue(env, 'PIGGERCODE_STACK_SERVER_PORT');
         const currentPort = portRaw ? Number(portRaw) : NaN;
         if (Number.isFinite(currentPort) && currentPort > 0) {
           // Fail-safe: don't rewrite ports for a stack that appears to be actively running.
@@ -981,7 +981,7 @@ async function cmdAudit({ rootDir, argv }) {
         const updates = [];
         const newServerPort = await pickNextFreePort(startFrom, { reservedPorts: planned });
         planned.add(newServerPort);
-        updates.push({ key: 'HAPPIER_STACK_SERVER_PORT', value: String(newServerPort) });
+        updates.push({ key: 'PIGGERCODE_STACK_SERVER_PORT', value: String(newServerPort) });
 
         if (serverComponent === 'happier-server') {
           planned.add(newServerPort);
@@ -1002,17 +1002,17 @@ async function cmdAudit({ rootDir, argv }) {
           const minioConsolePort = await pickNextFreePort(minioPort + 1, { reservedPorts: planned });
           planned.add(minioConsolePort);
 
-          updates.push({ key: 'HAPPIER_STACK_SERVER_BACKEND_PORT', value: String(backendPort) });
-          if (pgPort != null) updates.push({ key: 'HAPPIER_STACK_PG_PORT', value: String(pgPort) });
-          updates.push({ key: 'HAPPIER_STACK_REDIS_PORT', value: String(redisPort) });
-          updates.push({ key: 'HAPPIER_STACK_MINIO_PORT', value: String(minioPort) });
-          updates.push({ key: 'HAPPIER_STACK_MINIO_CONSOLE_PORT', value: String(minioConsolePort) });
+          updates.push({ key: 'PIGGERCODE_STACK_SERVER_BACKEND_PORT', value: String(backendPort) });
+          if (pgPort != null) updates.push({ key: 'PIGGERCODE_STACK_PG_PORT', value: String(pgPort) });
+          updates.push({ key: 'PIGGERCODE_STACK_REDIS_PORT', value: String(redisPort) });
+          updates.push({ key: 'PIGGERCODE_STACK_MINIO_PORT', value: String(minioPort) });
+          updates.push({ key: 'PIGGERCODE_STACK_MINIO_CONSOLE_PORT', value: String(minioConsolePort) });
 
           // Update only managed Postgres; external database authority is operator-owned.
           if (managedPostgres && pgPort != null) {
-            const pgUser = getEnvValue(env, 'HAPPIER_STACK_PG_USER') || 'handy';
-            const pgPassword = getEnvValue(env, 'HAPPIER_STACK_PG_PASSWORD') || '';
-            const pgDb = getEnvValue(env, 'HAPPIER_STACK_PG_DATABASE') || 'handy';
+            const pgUser = getEnvValue(env, 'PIGGERCODE_STACK_PG_USER') || 'handy';
+            const pgPassword = getEnvValue(env, 'PIGGERCODE_STACK_PG_PASSWORD') || '';
+            const pgDb = getEnvValue(env, 'PIGGERCODE_STACK_PG_DATABASE') || 'handy';
             let user = pgUser;
             let pass = pgPassword;
             let db = pgDb;
@@ -1135,7 +1135,7 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
         created: createdPayload,
         next: {
           login: `hstack stack auth ${name} login`,
-          setEnv: `# add to ${getHomeEnvLocalPath()}:\nHAPPIER_STACK_AUTH_SEED_FROM=${name}\nHAPPIER_STACK_AUTO_AUTH_SEED=1`,
+          setEnv: `# add to ${getHomeEnvLocalPath()}:\nPIGGERCODE_STACK_AUTH_SEED_FROM=${name}\nPIGGERCODE_STACK_AUTO_AUTH_SEED=1`,
           reseedAll: `hstack auth copy-from ${name} --all --except=main,${name}`,
         },
       },
@@ -1184,7 +1184,7 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
         const steps = createStepPrinter({ enabled: quietAuthFlow });
 
         // Pick a temporary server port for the guided login flow.
-        // Respect HAPPIER_STACK_STACK_PORT_START so VM/CI environments can avoid host port collisions
+        // Respect PIGGERCODE_STACK_STACK_PORT_START so VM/CI environments can avoid host port collisions
         // without pinning stack env ports explicitly.
         const serverPortStart = getDefaultPortStart(name);
         const serverPort = await pickNextFreeTcpPort(serverPortStart, { host: '127.0.0.1' });
@@ -1204,8 +1204,8 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
           extraEnv: {
             // Make sure stack auth login uses the same port we just picked, and avoid inheriting
             // any global/public URL (e.g. main stack’s Tailscale URL) for this guided flow.
-            HAPPIER_STACK_SERVER_PORT: String(serverPort),
-            HAPPIER_STACK_SERVER_URL: '',
+            PIGGERCODE_STACK_SERVER_PORT: String(serverPort),
+            PIGGERCODE_STACK_SERVER_URL: '',
             ...(bindMode
               ? applyBindModeToEnv(
                   {
@@ -1311,7 +1311,7 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
                 // instruct the user to use the stack-scoped *.localhost origin for storage isolation.
                 await waitForHttpOk(uiRootLocalhost || uiRoot, { timeoutMs: 30_000 });
 	                try {
-	                  const bundleTimeoutRaw = String(process.env.HAPPIER_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
+	                  const bundleTimeoutRaw = String(process.env.PIGGERCODE_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
 	                  const bundleTimeoutMs = bundleTimeoutRaw ? Number(bundleTimeoutRaw) : null;
 	                  await assertExpoWebappBundlesOrThrow({
 	                    rootDir,
@@ -1405,7 +1405,7 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
           title:
             `${bold('Automatic sign-in for new stacks')}\n` +
             `${dim(`Recommended: when you create a new stack, copy/symlink auth from ${cyan(name)} automatically.`)}\n` +
-            `${dim(`This writes ${cyan('HAPPIER_STACK_AUTO_AUTH_SEED=1')} + ${cyan(`HAPPIER_STACK_AUTH_SEED_FROM=${name}`)} in ${envLocalPath}.`)}`,
+            `${dim(`This writes ${cyan('PIGGERCODE_STACK_AUTO_AUTH_SEED=1')} + ${cyan(`PIGGERCODE_STACK_AUTH_SEED_FROM=${name}`)} in ${envLocalPath}.`)}`,
           options: [
             { label: `yes (${green('recommended')}) — enable automatic auth seeding`, value: true },
             { label: `no — I will configure this later`, value: false },
@@ -1416,14 +1416,14 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
           await ensureEnvFileUpdated({
             envPath: envLocalPath,
             updates: [
-              { key: 'HAPPIER_STACK_AUTH_SEED_FROM', value: name },
-              { key: 'HAPPIER_STACK_AUTO_AUTH_SEED', value: '1' },
+              { key: 'PIGGERCODE_STACK_AUTH_SEED_FROM', value: name },
+              { key: 'PIGGERCODE_STACK_AUTO_AUTH_SEED', value: '1' },
             ],
           });
           console.log(`[stack] updated: ${envLocalPath}`);
         } else {
           console.log(
-            `[stack] tip: set in ${envLocalPath}: HAPPIER_STACK_AUTH_SEED_FROM=${name} and HAPPIER_STACK_AUTO_AUTH_SEED=1`
+            `[stack] tip: set in ${envLocalPath}: PIGGERCODE_STACK_AUTH_SEED_FROM=${name} and PIGGERCODE_STACK_AUTO_AUTH_SEED=1`
           );
         }
       }
@@ -1457,8 +1457,8 @@ async function cmdCreateDevAuthSeed({ rootDir, argv }) {
     });
   } else {
     console.log(`- set as default seed (recommended) in ${getHomeEnvLocalPath()}:`);
-    console.log(`  HAPPIER_STACK_AUTH_SEED_FROM=${name}`);
-    console.log(`  HAPPIER_STACK_AUTO_AUTH_SEED=1`);
+    console.log(`  PIGGERCODE_STACK_AUTH_SEED_FROM=${name}`);
+    console.log(`  PIGGERCODE_STACK_AUTO_AUTH_SEED=1`);
     console.log(`- (optional) seed existing stacks: hstack auth copy-from ${name} --all --except=main,${name}`);
     console.log(`- (optional) store dev key for UI automation: hstack auth dev-key --set="<key>"`);
   }
@@ -1480,7 +1480,7 @@ async function cmdArchiveStack({ rootDir, argv, stackName }) {
 
   // Collect unique git worktree roots referenced by this stack.
   const byRoot = new Map();
-  const rawRepo = (env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim();
+  const rawRepo = (env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim();
   if (rawRepo) {
     const abs = isAbsolute(rawRepo) ? rawRepo : resolve(workspaceDir, rawRepo);
     // Only archive paths that live under workspace worktree categories (<workspace>/{pr,local,tmp}/...).
@@ -1600,7 +1600,7 @@ async function cmdArchiveStack({ rootDir, argv, stackName }) {
   return { ok: true, dryRun: false, stackName, date, archivedStackDir: destStackDir, archivedWorktrees };
 }
 
-// (removed) per-component stack pinning: stacks now pin a single monorepo checkout via HAPPIER_STACK_REPO_DIR.
+// (removed) per-component stack pinning: stacks now pin a single monorepo checkout via PIGGERCODE_STACK_REPO_DIR.
 
 async function cmdDuplicate({ rootDir, argv }) {
   const { flags, kv } = parseArgs(argv);
@@ -1638,9 +1638,9 @@ async function cmdDuplicate({ rootDir, argv }) {
   });
   toStack = created?.stackName ?? toStack;
 
-  const fromRepoDir = String(fromEnv.HAPPIER_STACK_REPO_DIR ?? '').trim();
+  const fromRepoDir = String(fromEnv.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
   if (!fromRepoDir) {
-    throw new Error(`[stack] duplicate: source stack is missing HAPPIER_STACK_REPO_DIR (${fromStack})`);
+    throw new Error(`[stack] duplicate: source stack is missing PIGGERCODE_STACK_REPO_DIR (${fromStack})`);
   }
 
   let nextRepoDir = fromRepoDir;
@@ -1666,7 +1666,7 @@ async function cmdDuplicate({ rootDir, argv }) {
     }
   }
 
-  const updates = [{ key: 'HAPPIER_STACK_REPO_DIR', value: nextRepoDir }];
+  const updates = [{ key: 'PIGGERCODE_STACK_REPO_DIR', value: nextRepoDir }];
 
   // Apply component dir overrides to the destination stack env file.
   const toEnvPath = resolveStackEnvPath(toStack).envPath;
@@ -1880,8 +1880,8 @@ async function cmdPrStack({ rootDir, argv }) {
   const authForce = flags.has('--auth-force') || flags.has('--force-auth');
   const authLinkFlag = flags.has('--link-auth') || flags.has('--link') || flags.has('--symlink-auth') ? true : null;
   const authLinkEnv =
-    (process.env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
-    (process.env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
+    (process.env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
+    (process.env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
 
 	  const isInteractive = Boolean(process.stdin.isTTY && process.stdout.isTTY) && !json;
 
@@ -1900,9 +1900,9 @@ async function cmdPrStack({ rootDir, argv }) {
   // Default behavior for stack pr:
   // - if user explicitly flags --seed-auth/--no-seed-auth, obey
   // - otherwise in interactive mode: prompt when we have *some* plausible source, default yes
-  // - in non-interactive mode: follow HAPPIER_STACK_AUTO_AUTH_SEED (if set), else default false
+  // - in non-interactive mode: follow PIGGERCODE_STACK_AUTO_AUTH_SEED (if set), else default false
   const envAutoSeed =
-    (process.env.HAPPIER_STACK_AUTO_AUTH_SEED ?? '').toString().trim();
+    (process.env.PIGGERCODE_STACK_AUTO_AUTH_SEED ?? '').toString().trim();
   const autoSeedEnabled = envAutoSeed ? envAutoSeed !== '0' : false;
 
   let seedAuth = seedAuthFlag != null ? seedAuthFlag : autoSeedEnabled;
@@ -2055,7 +2055,7 @@ async function cmdPrStack({ rootDir, argv }) {
       if (!isWorktreePath({ rootDir, dir: repoDir, env: process.env })) {
         throw new Error(`[stack] pr: refusing to pin repo because the checked out path is not a worktree: ${repoDir}`);
       }
-      await ensureEnvFileUpdated({ envPath: stackEnvPath, updates: [{ key: 'HAPPIER_STACK_REPO_DIR', value: repoDir }] });
+      await ensureEnvFileUpdated({ envPath: stackEnvPath, updates: [{ key: 'PIGGERCODE_STACK_REPO_DIR', value: repoDir }] });
     }
     if (json) {
       // collected above
@@ -2086,11 +2086,11 @@ async function cmdPrStack({ rootDir, argv }) {
     }
     const afterRaw = await readExistingEnv(stackEnvPath);
     const afterEnv = parseEnvToObject(afterRaw);
-    const pinned = String(afterEnv.HAPPIER_STACK_REPO_DIR ?? '').trim();
+    const pinned = String(afterEnv.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
     if (!pinned) {
       throw new Error(
         `[stack] pr: failed to pin repo to the PR checkout.\n` +
-          `- missing env key: HAPPIER_STACK_REPO_DIR\n` +
+          `- missing env key: PIGGERCODE_STACK_REPO_DIR\n` +
           `- expected: ${expectedRepo}\n` +
           `Fix: re-run with --force, or delete/recreate the stack (${stackName}).`
       );
@@ -2100,7 +2100,7 @@ async function cmdPrStack({ rootDir, argv }) {
     if (expected !== actual) {
       throw new Error(
         `[stack] pr: stack is pinned to the wrong checkout.\n` +
-          `- env key: HAPPIER_STACK_REPO_DIR\n` +
+          `- env key: PIGGERCODE_STACK_REPO_DIR\n` +
           `- expected: ${expected}\n` +
           `- actual:   ${actual}\n` +
           `Fix: re-run with --force, or delete/recreate the stack (${stackName}).`

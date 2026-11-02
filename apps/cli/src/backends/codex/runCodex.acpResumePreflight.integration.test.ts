@@ -8,10 +8,10 @@ import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
 
 import type { Credentials } from '@/persistence';
 import {
-  HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY,
+  PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY,
   serializeDaemonInitialGoalForEnv,
 } from '@/agent/runtime/sessionInitialGoal';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { CONNECTED_SERVICE_RUNTIME_AUTH_FAILURE_REPORT_TIMEOUT_MS } from '@/daemon/connectedServices/runtimeAuth/reportConnectedServiceRuntimeAuthFailureToDaemon';
 import { createCodexPermissionHandler } from './utils/createCodexPermissionHandler';
 import { applyPermissionModeToCodexPermissionHandler } from './utils/applyPermissionModeToHandler';
@@ -583,10 +583,10 @@ describe('runCodex CodexACP resume behavior', () => {
     lastSessionClient = null;
     lastOnUserMessageHandler = null;
     lastOnSwitchToLocal = null;
-    delete process.env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    delete process.env.HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS;
-    delete process.env.HAPPIER_CODEX_APP_SERVER_TRANSPORT;
+    delete process.env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env.PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_CODEX_APP_SERVER_TRANSPORT;
     const experiments = await import('@/backends/codex/experiments');
     (experiments.isExperimentalCodexAcpEnabled as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
     const { resolveCodexStartingMode } = await import('./utils/resolveCodexStartingMode');
@@ -1054,7 +1054,7 @@ describe('runCodex CodexACP resume behavior', () => {
   it('wires Happier MCP servers into the future app-server runtime', async () => {
     const experiments = await import('@/backends/codex/experiments');
     (experiments.isExperimentalCodexAcpEnabled as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
-    process.env.HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS = '90000';
+    process.env.PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS = '90000';
     mockAttachedSessionMetadata({ codexSessionId: 'vendor-thread-existing-123', codexBackendMode: 'appServer' });
     resolveRunnerMcpServersSpy.mockImplementationOnce(async () => ({
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
@@ -1088,7 +1088,7 @@ describe('runCodex CodexACP resume behavior', () => {
     expect(createCodexAppServerRuntimeSpy).toHaveBeenCalledWith(expect.objectContaining({
       configOverrides: expect.arrayContaining([
         'mcp_optional_startup_grace_ms=90000',
-        'shell_environment_policy.set.HAPPIER_SESSION_ID="sess_1"',
+        'shell_environment_policy.set.PIGGERCODE_SESSION_ID="sess_1"',
         'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
         'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
         'mcp_servers.happier.enabled=true',
@@ -1103,12 +1103,12 @@ describe('runCodex CodexACP resume behavior', () => {
       };
     } | undefined;
     expect(runtimeArgs?.processEnv).toEqual(expect.objectContaining({
-      HAPPIER_SESSION_ID: 'sess_1',
+      PIGGERCODE_SESSION_ID: 'sess_1',
     }));
     expect(runtimeArgs?.transcriptSession?.sendAgentMessageEphemeral).toBeTypeOf('function');
     expect(runtimeArgs?.configOverrides).toEqual(expect.arrayContaining([
       'mcp_optional_startup_grace_ms=90000',
-      'shell_environment_policy.set.HAPPIER_SESSION_ID="sess_1"',
+      'shell_environment_policy.set.PIGGERCODE_SESSION_ID="sess_1"',
       'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
       'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
       'mcp_servers.happier.enabled=true',
@@ -1382,8 +1382,8 @@ describe('runCodex CodexACP resume behavior', () => {
   });
 
   it('reuses the existing Codex daemon transport without creating or publishing a Happier-owned server', async () => {
-    process.env.HAPPIER_CODEX_APP_SERVER_TRANSPORT = 'daemonProxy';
-    process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS = '250';
+    process.env.PIGGERCODE_CODEX_APP_SERVER_TRANSPORT = 'daemonProxy';
+    process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = '250';
     resolveCodexSharedControlSupportSpy.mockResolvedValueOnce({ ok: true as const });
     resolveRunnerMcpServersSpy.mockResolvedValueOnce({
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
@@ -1423,7 +1423,7 @@ describe('runCodex CodexACP resume behavior', () => {
       });
     } finally {
       processExitSpy.mockRestore();
-      delete process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
     }
   });
 
@@ -1432,7 +1432,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'profile',
       serviceId: 'openai-codex',
       profileId: 'work',
@@ -1471,7 +1471,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -1516,7 +1516,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -1583,7 +1583,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -1690,7 +1690,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -1747,7 +1747,7 @@ describe('runCodex CodexACP resume behavior', () => {
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {},
     }));
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -4653,7 +4653,7 @@ describe('runCodex CodexACP resume behavior', () => {
       mcpServers: {},
     }));
 
-    process.env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY] = serializeDaemonInitialGoalForEnv({
+    process.env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY] = serializeDaemonInitialGoalForEnv({
       objective: 'continue the goal',
     });
     mockAttachedSessionMetadata({

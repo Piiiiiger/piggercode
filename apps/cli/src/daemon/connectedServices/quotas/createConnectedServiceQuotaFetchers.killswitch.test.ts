@@ -1,5 +1,5 @@
 /**
- * Kill-switch env: HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1
+ * Kill-switch env: PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1
  *
  * When set, the factory must produce a fetcher that skips the private endpoint
  * and returns a quota_unknown snapshot (X7 pattern) — falling back to stale-but-
@@ -59,7 +59,7 @@ describe('createConnectedServiceQuotaFetchers — kill-switch env', () => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const fetchers = createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
     });
     const codexFetcher = fetchers.find((f) => f.serviceId === 'openai-codex');
     expect(codexFetcher).toBeTruthy();
@@ -98,7 +98,7 @@ describe('createConnectedServiceQuotaFetchers — kill-switch env', () => {
 
   it('per-call usageUrl override takes precedence over the kill-switch env', async () => {
     // The per-call usageUrl is configured at factory time via env
-    // HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL — this is the documented escape hatch.
+    // PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL — this is the documented escape hatch.
     // Even with kill-switch set, a custom usageUrl should be honoured.
     const customUrl = 'https://corp-proxy.example.com/codex-usage';
     const fetchMock = vi.fn(async () => ({
@@ -108,8 +108,8 @@ describe('createConnectedServiceQuotaFetchers — kill-switch env', () => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const fetchers = createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: customUrl,
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: customUrl,
     });
     const codexFetcher = fetchers.find((f) => f.serviceId === 'openai-codex');
     const now = 1_000_000;
@@ -128,7 +128,7 @@ describe('createConnectedServiceQuotaFetchers — kill-switch env', () => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const fetchers = createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
     });
     const claudeFetcher = fetchers.find((f) => f.serviceId === 'claude-subscription');
     expect(claudeFetcher).toBeTruthy();
@@ -174,8 +174,8 @@ describe('createConnectedServiceQuotaFetchers — kill-switch env', () => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const fetchers = createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL: customUrl,
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL: customUrl,
     });
     const claudeFetcher = fetchers.find((f) => f.serviceId === 'claude-subscription');
     const now = 1_000_000;

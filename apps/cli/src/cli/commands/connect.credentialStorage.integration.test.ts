@@ -19,10 +19,10 @@ vi.mock('@/ui/openBrowser', () => ({ openBrowser: async () => { throw new Error(
 
 describe('connect credential storage', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_LOCAL_SERVER_URL',
-    'HAPPIER_VARIANT',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_LOCAL_SERVER_URL',
+    'PIGGERCODE_VARIANT',
     'CODEX_HOME',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
@@ -61,7 +61,7 @@ describe('connect credential storage', () => {
       throw new Error('Native valid Codex import must not begin OAuth or refresh.');
     }));
     try {
-      envScope.patch({ CODEX_HOME: homeDir, HAPPIER_HOME_DIR: homeDir, HAPPIER_SERVER_URL: 'http://happier-connect.test', HAPPIER_LOCAL_SERVER_URL: 'http://happier-connect.test', HAPPIER_VARIANT: 'stable' });
+      envScope.patch({ CODEX_HOME: homeDir, PIGGERCODE_HOME_DIR: homeDir, PIGGERCODE_SERVER_URL: 'http://happier-connect.test', PIGGERCODE_LOCAL_SERVER_URL: 'http://happier-connect.test', PIGGERCODE_VARIANT: 'stable' });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
       await writeCredentialsLegacy({ secret: new Uint8Array(32).fill(7), token: 'happy-token' });
@@ -125,7 +125,7 @@ describe('connect credential storage', () => {
       throw new Error(`Unexpected provider request: ${String(input)}`);
     }));
     try {
-      envScope.patch({ HAPPIER_HOME_DIR: homeDir, HAPPIER_SERVER_URL: 'http://happier-connect.test', HAPPIER_LOCAL_SERVER_URL: 'http://happier-connect.test', HAPPIER_VARIANT: 'stable' });
+      envScope.patch({ PIGGERCODE_HOME_DIR: homeDir, PIGGERCODE_SERVER_URL: 'http://happier-connect.test', PIGGERCODE_LOCAL_SERVER_URL: 'http://happier-connect.test', PIGGERCODE_VARIANT: 'stable' });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
       await writeCredentialsLegacy({ secret: new Uint8Array(32).fill(7), token: 'happy-token' });
@@ -175,10 +175,10 @@ describe('connect credential storage', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://happier-connect.test',
-        HAPPIER_LOCAL_SERVER_URL: 'http://happier-connect.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-connect.test',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://happier-connect.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');

@@ -6542,7 +6542,7 @@ describe('Legend transcript renderer adapter', () => {
         // diagnostics sink stayed empty on device and every native A/B was unfalsifiable.
         setPlatformOS('ios');
         vi.stubEnv(
-            'EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON',
+            'EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON',
             JSON.stringify({ transcriptViewportDiagnosticsEnabled: true }),
         );
         const {
@@ -6591,7 +6591,7 @@ describe('Legend transcript renderer adapter', () => {
         ]);
 
         // Closing the channel installs nothing: the sink stays absent on the next mount.
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON', JSON.stringify({}));
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON', JSON.stringify({}));
         resetTranscriptViewportDiagnosticsForTests();
         capturedLegendListProps.onScroll({ nativeEvent: { contentOffset: { x: 0, y: 8_000 } } });
 

@@ -18,7 +18,7 @@ const EMPTY_NORMALIZED_SESSION_LIST_KEY_PARTS: NormalizedSessionListKeyParts = {
 };
 
 function readMaxNormalizedSessionListKeyPartsCacheEntriesFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SESSION_LIST_KEY_PARTS_CACHE_MAX ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_LIST_KEY_PARTS_CACHE_MAX ?? '').trim();
     if (!raw) return 4096;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 4096;

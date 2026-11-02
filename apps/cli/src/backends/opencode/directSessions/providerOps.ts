@@ -61,9 +61,9 @@ export const openCodeDirectSessionProviderOps: DirectSessionProviderOps = {
       transcriptStorage: 'direct',
       environmentVariables: mergeDirectSessionEnvironmentVariables([
         {
-          HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-          ...(baseUrl ? { HAPPIER_OPENCODE_SERVER_URL: baseUrl } : {}),
-          ...(baseUrl ? { HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1' } : {}),
+          PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+          ...(baseUrl ? { PIGGERCODE_OPENCODE_SERVER_URL: baseUrl } : {}),
+          ...(baseUrl ? { PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1' } : {}),
         },
       ]),
     };

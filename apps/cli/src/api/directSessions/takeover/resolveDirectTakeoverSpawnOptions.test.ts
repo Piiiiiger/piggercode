@@ -296,7 +296,7 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       environmentVariables: {
         CODEX_HOME: codexHome,
         CODEX_SQLITE_HOME: TEST_CODEX_SQLITE_HOME,
-        HAPPIER_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
+        PIGGERCODE_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
       },
       connectedServices: {
         v: 1,
@@ -388,7 +388,7 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       environmentVariables: {
         CODEX_HOME: codexHome,
         CODEX_SQLITE_HOME: TEST_CODEX_SQLITE_HOME,
-        HAPPIER_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
+        PIGGERCODE_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
       },
       connectedServices: {
         v: 1,
@@ -541,7 +541,7 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       }],
     });
     vi.stubEnv('CODEX_HOME', codexHome);
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServer);
+    vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', fakeAppServer);
 
     const spawnOptions = await resolveDirectTakeoverSpawnOptions({
       credentials: TEST_CREDENTIALS,
@@ -587,9 +587,9 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       approvedNewDirectoryCreation: true,
       transcriptStorage: 'direct',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
-        HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
       },
     });
   });
@@ -635,7 +635,7 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       connectedServices,
       connectedServiceMaterializationIdentityV1: materializationIdentity,
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
       },
     });
   });
@@ -694,7 +694,7 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
       connectedServicesUpdatedAt: 1_718_719_299_000,
       connectedServiceMaterializationIdentityV1: materializationIdentity,
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
       },
     });
   });

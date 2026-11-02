@@ -1,5 +1,5 @@
-const STATIC_EXPO_PUBLIC_HAPPIER_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES =
-    process.env.EXPO_PUBLIC_HAPPIER_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES;
+const STATIC_EXPO_PUBLIC_PIGGERCODE_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES =
+    process.env.EXPO_PUBLIC_PIGGERCODE_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES;
 
 const DEFAULT_LARGE_PAYLOAD_THRESHOLD_BYTES = 256 * 1024;
 const DEFAULT_WORKER_TIMEOUT_MS = 60_000;
@@ -29,7 +29,7 @@ let nextRequestId = 1;
 const pendingRequests = new Map<number, PendingRequest>();
 
 function readEnvThreshold(): number | null {
-    const raw = STATIC_EXPO_PUBLIC_HAPPIER_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES;
+    const raw = STATIC_EXPO_PUBLIC_PIGGERCODE_CRYPTO_JSON_DECRYPT_WORKER_THRESHOLD_BYTES;
     if (typeof raw !== 'string' || raw.trim().length === 0) return null;
     const parsed = Number(raw);
     if (!Number.isFinite(parsed)) return null;

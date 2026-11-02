@@ -6,7 +6,7 @@ import {
   type TerminalAttachmentInfo,
 } from '@/terminal/attachment/terminalAttachmentInfo';
 
-export const HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY = 'HAPPIER_CLAUDE_ENDPOINT_STATE';
+export const PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY = 'PIGGERCODE_CLAUDE_ENDPOINT_STATE';
 
 export type AttachmentBoundClaudeEndpointState = Readonly<{
   v: 2;

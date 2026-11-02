@@ -14,7 +14,7 @@ import type { RpcHandlerManager } from './rpc/RpcHandlerManager';
 describe('ApiMachineClient existing-state handoff', () => {
   it('prepares the unchanged native transcript using the daemon connected-service environment', async () => {
     const root = await mkdtemp(join(tmpdir(), 'happier-api-machine-existing-'));
-    const env = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_ACTIVE_SERVER_ID', 'CLAUDE_CONFIG_DIR']);
+    const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_ACTIVE_SERVER_ID', 'CLAUDE_CONFIG_DIR']);
     const targetPath = join(root, 'workspace');
     const claudeHome = join(root, 'materialized-claude');
     const transcriptPath = join(claudeHome, 'projects', 'existing-project', 'native-1.jsonl');
@@ -22,7 +22,7 @@ describe('ApiMachineClient existing-state handoff', () => {
     // Account lookup is the HTTP boundary. Registration, job persistence,
     // metadata resolution, catalog dispatch and native reachability stay real.
     const accountLookup = vi.spyOn(axios, 'get').mockResolvedValue({ status: 200, data: { id: 'account-test' } });
-    env.patch({ HAPPIER_HOME_DIR: root, HAPPIER_ACTIVE_SERVER_ID: undefined, CLAUDE_CONFIG_DIR: join(root, 'wrong-claude-home') });
+    env.patch({ PIGGERCODE_HOME_DIR: root, PIGGERCODE_ACTIVE_SERVER_ID: undefined, CLAUDE_CONFIG_DIR: join(root, 'wrong-claude-home') });
     reloadConfiguration();
     try {
       await mkdir(join(claudeHome, 'projects', 'existing-project'), { recursive: true });

@@ -138,7 +138,7 @@ describe("pendingMessageService transaction acquisition", () => {
             trustedPublisherFence,
         })).resolves.toMatchObject({ ok: true, didMaterialize: true });
 
-        process.env.HAPPIER_DB_PROVIDER = "sqlite";
+        process.env.PIGGERCODE_DB_PROVIDER = "sqlite";
         const transactionBoundary = installAcquisitionFailures(1);
         try {
             await expect(resolveAcceptedPendingDelivery({
@@ -193,8 +193,8 @@ describe("pendingMessageService transaction acquisition", () => {
         });
         const localId = `pending-enqueue-busy-${randomUUID()}`;
 
-        process.env.HAPPIER_DB_PROVIDER = "sqlite";
-        process.env.HAPPIER_DB_TX_MAX_RETRIES = "0";
+        process.env.PIGGERCODE_DB_PROVIDER = "sqlite";
+        process.env.PIGGERCODE_DB_TX_MAX_RETRIES = "0";
         const transactionBoundary = installAcquisitionFailures(1);
         try {
             await expect(enqueuePendingMessage({

@@ -7,8 +7,8 @@ test('resolveStackContext expands ~/ explicit env file overrides against HOME', 
   const out = resolveStackContext({
     env: {
       HOME: '/scoped/home',
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
     },
   });
 

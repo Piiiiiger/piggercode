@@ -24,7 +24,7 @@ import {
   type SessionMcpSelectionV1,
 } from '@piggercode/protocol';
 import {
-  HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
   parseSessionConnectedServiceMaterializationIdentityJson,
 } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
 
@@ -115,7 +115,7 @@ function readMaterializationIdentityCandidate(value: unknown): MaterializationId
 function readMaterializationIdentityFromOptionsEnv(
   options: SpawnSessionOptions | null | undefined,
 ): MaterializationIdentityCandidate | null {
-  const raw = options?.environmentVariables?.[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
+  const raw = options?.environmentVariables?.[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY];
   const parsed = parseSessionConnectedServiceMaterializationIdentityJson(typeof raw === 'string' ? raw : null);
   return parsed ? { value: parsed } : null;
 }

@@ -160,9 +160,9 @@ function resolveRelayRuntimeConfig(params: RelayRuntimeTaskParams): RelayRuntime
   const configDir = configuredPaths.configDir;
   const dataDir = configuredPaths.dataDir;
   const logDir = configuredPaths.logDir;
-  const serviceName = String(process.env.HAPPIER_SELF_HOST_SERVICE_NAME ?? defaults.serviceName).trim() || defaults.serviceName;
-  const serverHost = String(process.env.HAPPIER_SERVER_HOST ?? defaults.serverHost).trim() || defaults.serverHost;
-  const serverPort = parsePort(process.env.HAPPIER_SERVER_PORT, defaults.serverPort);
+  const serviceName = String(process.env.PIGGERCODE_SELF_HOST_SERVICE_NAME ?? defaults.serviceName).trim() || defaults.serviceName;
+  const serverHost = String(process.env.PIGGERCODE_SERVER_HOST ?? defaults.serverHost).trim() || defaults.serverHost;
+  const serverPort = parsePort(process.env.PIGGERCODE_SERVER_PORT, defaults.serverPort);
   const githubRepo = resolveHappierGithubRepo();
   const serverBinaryName = platform === 'win32' ? 'happier-server.exe' : 'happier-server';
 
@@ -195,9 +195,9 @@ function renderRelayRuntimeEnv(config: RelayRuntimeConfig, existingEnvText: stri
   const sqliteEnv = { ...process.env, ...existing };
   const defaults: Record<string, string> = {
     PORT: String(config.serverPort),
-    HAPPIER_SERVER_HOST: config.serverHost,
+    PIGGERCODE_SERVER_HOST: config.serverHost,
     METRICS_ENABLED: 'false',
-    HAPPIER_DB_PROVIDER: 'sqlite',
+    PIGGERCODE_DB_PROVIDER: 'sqlite',
     DATABASE_URL: renderPrismaCompatibleSqliteDatabaseUrl({
       dbPath: config.platform === 'win32'
         ? join(config.dataDir, 'happier-server-light.sqlite')
@@ -205,12 +205,12 @@ function renderRelayRuntimeEnv(config: RelayRuntimeConfig, existingEnvText: stri
       platform: config.platform,
       sqlite: resolvePrismaSqliteDatabaseUrlOptionsFromEnv(sqliteEnv),
     }),
-    HAPPIER_FILES_BACKEND: 'local',
-    HAPPIER_SQLITE_AUTO_MIGRATE: '1',
-    HAPPIER_SQLITE_MIGRATIONS_DIR: join(config.currentPath, 'prisma', 'sqlite', 'migrations'),
-    HAPPIER_SERVER_LIGHT_DATA_DIR: config.dataDir,
-    HAPPIER_SERVER_LIGHT_FILES_DIR: config.filesDir,
-    HAPPIER_SERVER_LIGHT_DB_DIR: config.dbDir,
+    PIGGERCODE_FILES_BACKEND: 'local',
+    PIGGERCODE_SQLITE_AUTO_MIGRATE: '1',
+    PIGGERCODE_SQLITE_MIGRATIONS_DIR: join(config.currentPath, 'prisma', 'sqlite', 'migrations'),
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: config.dataDir,
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: config.filesDir,
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: config.dbDir,
     NODE_PATH: join(config.currentPath, 'node_modules'),
   };
 
@@ -269,7 +269,7 @@ async function syncPointerDirectory(params: Readonly<{
 }
 
 async function waitForHealthyRelay(config: RelayRuntimeConfig): Promise<RelayRuntimeHealthResult> {
-  const timeoutMsRaw = Number(process.env.HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS ?? '');
+  const timeoutMsRaw = Number(process.env.PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS ?? '');
   const timeoutMs = Number.isFinite(timeoutMsRaw) && timeoutMsRaw >= 10_000 ? Math.floor(timeoutMsRaw) : 90_000;
   const startedAt = Date.now();
   let latest: RelayRuntimeHealthResult = {

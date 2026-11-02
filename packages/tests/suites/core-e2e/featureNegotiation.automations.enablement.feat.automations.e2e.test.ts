@@ -20,7 +20,7 @@ describe('core e2e: feature negotiation automations enablement', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '0',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '0',
       },
     });
 

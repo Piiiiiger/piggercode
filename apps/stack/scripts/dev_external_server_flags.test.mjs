@@ -30,14 +30,14 @@ test('dev --json reports local server mode by default', async () => {
       cwd: repoRoot,
       env: {
         ...process.env,
-        HAPPIER_SERVER_URL: '',
-        HAPPIER_STACK_STACK: 'repo-local-default',
-        HAPPIER_STACK_HOME_DIR: join(storageDir, 'home'),
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
-        HAPPIER_STACK_REPO_DIR: '',
-        HAPPIER_STACK_ENV_FILE: '',
-        HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+        PIGGERCODE_SERVER_URL: '',
+        PIGGERCODE_STACK_STACK: 'repo-local-default',
+        PIGGERCODE_STACK_HOME_DIR: join(storageDir, 'home'),
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
+        PIGGERCODE_STACK_REPO_DIR: '',
+        PIGGERCODE_STACK_ENV_FILE: '',
+        PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
       },
     });
     assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
@@ -57,7 +57,7 @@ test('dev --no-server --json fails without an external server URL', async () => 
 
   const res = await runNode([devScript, '--no-server', '--json'], {
     cwd: repoRoot,
-    env: { ...process.env, HAPPIER_SERVER_URL: '' },
+    env: { ...process.env, PIGGERCODE_SERVER_URL: '' },
   });
   assert.equal(res.code, 1);
   assert.match(res.stderr, /--no-server requires an external server URL/);
@@ -89,7 +89,7 @@ test('external-server startup sanitizes parent preflight authority before descen
   const watchdogBoundary = source.indexOf('spawnStackOwnerDeathWatchdog({');
   const optionalServerBoundary = source.indexOf('const { serverEnv, serverScript, serverProc }');
   const descendantBoundary = source.indexOf('const accountProbe');
-  const sanitationBoundary = source.indexOf('delete baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE');
+  const sanitationBoundary = source.indexOf('delete baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE');
 
   assert.ok(
     orchestrationEnvBoundary >= 0
@@ -170,13 +170,13 @@ test('dev --json discovers stack-scoped remote development targets without start
       cwd: repoRoot,
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_HOME_DIR: join(storageDir, 'home'),
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
-        HAPPIER_STACK_REPO_DIR: '',
-        HAPPIER_STACK_ENV_FILE: '',
-        HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_HOME_DIR: join(storageDir, 'home'),
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
+        PIGGERCODE_STACK_REPO_DIR: '',
+        PIGGERCODE_STACK_ENV_FILE: '',
+        PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
       },
     });
     assert.equal(res.code, 0, res.stderr);
@@ -216,13 +216,13 @@ test('configured dev targets fail closed when dev uses an external server', asyn
       cwd: repoRoot,
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_HOME_DIR: join(storageDir, 'home'),
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
-        HAPPIER_STACK_REPO_DIR: '',
-        HAPPIER_STACK_ENV_FILE: '',
-        HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_HOME_DIR: join(storageDir, 'home'),
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_SANDBOX_DIR: join(storageDir, 'sandbox'),
+        PIGGERCODE_STACK_REPO_DIR: '',
+        PIGGERCODE_STACK_ENV_FILE: '',
+        PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
       },
     });
     assert.equal(res.code, 1);

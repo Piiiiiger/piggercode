@@ -39,7 +39,7 @@ function summarizeSessionAgentState(params: Readonly<{
 }
 
 function resolveLiveStatusWaitMs(): number {
-  const liveWaitRaw = String(process.env.HAPPIER_SESSION_STATUS_LIVE_WAIT_MS ?? '').trim();
+  const liveWaitRaw = String(process.env.PIGGERCODE_SESSION_STATUS_LIVE_WAIT_MS ?? '').trim();
   const liveWaitParsed = liveWaitRaw ? Number.parseInt(liveWaitRaw, 10) : NaN;
   return Number.isFinite(liveWaitParsed) && liveWaitParsed > 0 ? Math.min(30_000, liveWaitParsed) : 3_000;
 }

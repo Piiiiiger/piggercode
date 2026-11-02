@@ -36,13 +36,13 @@ function runNode(args, { cwd, env }) {
 function createStubStackEnv(overrides = {}) {
   return {
     ...process.env,
-    HAPPIER_STACK_REPO_DIR: '',
-    HAPPIER_STACK_CLI_ROOT_DIR: '',
-    HAPPIER_STACK_TUI: '',
-    HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '',
-    HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '',
-    HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '',
-    HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '',
+    PIGGERCODE_STACK_REPO_DIR: '',
+    PIGGERCODE_STACK_CLI_ROOT_DIR: '',
+    PIGGERCODE_STACK_TUI: '',
+    PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '',
+    PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH: '',
+    PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '',
+    PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '',
     ...overrides,
   };
 }
@@ -60,7 +60,7 @@ import { join } from 'node:path';
 import { spawnDaemonLikeProcess } from ${JSON.stringify(DAEMON_TEST_PROCESS_HELPER_PATH)};
 
 const args = process.argv.slice(2);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 ${buildStubHappierServerSetSource({ ignoreServerSet })}
@@ -79,8 +79,8 @@ writeFileSync(
 );
 spawnDaemonLikeProcess({
   cliHomeDir: home,
-  internalServerUrl: String(process.env.HAPPIER_SERVER_URL || ''),
-  publicServerUrl: String(process.env.HAPPIER_WEBAPP_URL || ''),
+  internalServerUrl: String(process.env.PIGGERCODE_SERVER_URL || ''),
+  publicServerUrl: String(process.env.PIGGERCODE_WEBAPP_URL || ''),
   statePaths: [${JSON.stringify(statePath)}],
 });
 process.exit(0);
@@ -94,7 +94,7 @@ import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 const logsDir = join(home, 'logs');
 
@@ -194,7 +194,7 @@ async function writeAccessKeyFile(path, token) {
 
 test('stack daemon start verification default matches the daemon restart wait budget', () => {
   assert.equal(resolveStackDaemonStartVerifyTimeoutMs({}), 120_000);
-  assert.equal(resolveStackDaemonStartVerifyTimeoutMs({ HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1234' }), 1234);
+  assert.equal(resolveStackDaemonStartVerifyTimeoutMs({ PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1234' }), 1234);
 });
 
 test('attended daemon verification only extends a checkpoint for a live daemon process', () => {
@@ -228,13 +228,13 @@ test('startLocalDaemonWithAuth treats daemon start exit=0 as failure when daemon
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = createStubStackEnv({
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     });
 
     await assert.rejects(
@@ -266,14 +266,14 @@ test('startLocalDaemonWithAuth fails fast when stack-scoped auth is stale and on
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = createStubStackEnv({
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
-      HAPPIER_ACTIVE_SERVER_ID: 'stack_dev__id_default',
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'stack_dev__id_default',
     });
 
     const staleToken = createTestJwt({ sub: 'account-a', jti: 'stale' });
@@ -320,15 +320,15 @@ test('startLocalDaemonWithAuth does not backfill legacy access.key from main whe
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
     const env = createStubStackEnv({
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '1',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
-      HAPPIER_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '1',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
     });
 
     const currentToken = createTestJwt({ sub: 'current-account', jti: 'current' });
@@ -339,7 +339,7 @@ test('startLocalDaemonWithAuth does not backfill legacy access.key from main whe
       const mainPaths = resolveStackCredentialPaths({
         cliHomeDir: mainCliHomeDir,
         serverUrl,
-        env: { ...env, HAPPIER_STACK_STACK: 'main', HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+        env: { ...env, PIGGERCODE_STACK_STACK: 'main', PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
       });
 
       await writeAccessKeyFile(targetPaths.serverScopedPath, currentToken);
@@ -407,13 +407,13 @@ import { startLocalDaemonWithAuth } from ${JSON.stringify(join(rootDir, 'scripts
 
 const env = {
   ...process.env,
-  HAPPIER_STACK_TUI: '1',
-  HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-  HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-  HAPPIER_STACK_CLI_BUILD: '0',
-  HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
-  HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-  HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+  PIGGERCODE_STACK_TUI: '1',
+  PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+  PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+  PIGGERCODE_STACK_CLI_BUILD: '0',
+  PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
+  PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+  PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
 };
 
 try {
@@ -487,13 +487,13 @@ await startLocalDaemonWithAuth({
   forceRestart: true,
   env: {
     ...process.env,
-    HAPPIER_STACK_TUI: '1',
-    HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-    HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-    HAPPIER_STACK_CLI_BUILD: '0',
-    HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
-    HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-    HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+    PIGGERCODE_STACK_TUI: '1',
+    PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+    PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+    PIGGERCODE_STACK_CLI_BUILD: '0',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
   },
   stackName: 'dev',
 });
@@ -555,14 +555,14 @@ await startLocalDaemonWithAuth({
   forceRestart: true,
   env: {
     ...process.env,
-    HAPPIER_STACK_TUI: '1',
-    HAPPIER_STACK_STACK: 'dev',
-    HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-    HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-    HAPPIER_STACK_CLI_BUILD: '0',
-    HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
-    HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-    HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+    PIGGERCODE_STACK_TUI: '1',
+    PIGGERCODE_STACK_STACK: 'dev',
+    PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+    PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+    PIGGERCODE_STACK_CLI_BUILD: '0',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '20',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
   },
   stackName: 'dev',
 });
@@ -608,13 +608,13 @@ await startLocalDaemonWithAuth({
   forceRestart: true,
   env: {
     ...process.env,
-    HAPPIER_STACK_TUI: '1',
-    HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-    HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-    HAPPIER_STACK_CLI_BUILD: '0',
-    HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
-    HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
-    HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+    PIGGERCODE_STACK_TUI: '1',
+    PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+    PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+    PIGGERCODE_STACK_CLI_BUILD: '0',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '1',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '1',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
   },
   stackName: 'dev',
 });
@@ -674,9 +674,9 @@ await new Promise((resolve) => control.listen(0, '127.0.0.1', resolve));
 const dummy = spawn(process.execPath, ['-e', 'setInterval(()=>{}, 1e6)'], {
   env: {
     ...process.env,
-    HAPPIER_HOME_DIR: cliHomeDir,
-    HAPPIER_SERVER_URL: internalServerUrl,
-    HAPPIER_WEBAPP_URL: publicServerUrl,
+    PIGGERCODE_HOME_DIR: cliHomeDir,
+    PIGGERCODE_SERVER_URL: internalServerUrl,
+    PIGGERCODE_WEBAPP_URL: publicServerUrl,
   },
   stdio: ['ignore', 'ignore', 'ignore'],
   detached: true,
@@ -705,11 +705,11 @@ try {
     forceRestart: false,
     env: {
       ...process.env,
-      HAPPIER_STACK_TUI: '1',
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_TUI: '1',
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
     },
     stackName: 'dev',
     cliIdentity: 'default',
@@ -779,20 +779,20 @@ test('startLocalDaemonWithAuth reconciles a stale active stack profile before sp
 
     const env = {
       ...createStubStackEnv(),
-      HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '2000',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '2000',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
     const credentialPaths = resolveStackCredentialPaths({
       cliHomeDir,
       serverUrl: internalServerUrl,
-      env: { ...env, HAPPIER_ACTIVE_SERVER_ID: activeServerId },
+      env: { ...env, PIGGERCODE_ACTIVE_SERVER_ID: activeServerId },
     });
     await mkdir(dirname(credentialPaths.serverScopedPath), { recursive: true });
     await writeFile(credentialPaths.serverScopedPath, credentialContents, 'utf-8');
@@ -880,15 +880,15 @@ test('startLocalDaemonWithAuth rejects a CLI that exits successfully without rec
 
     const env = {
       ...createStubStackEnv(),
-      HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '1',
-      HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '2000',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '1',
+      PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '2000',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
 
     await assert.rejects(
@@ -971,9 +971,9 @@ await new Promise((resolve) => control.listen(0, '127.0.0.1', resolve));
 const dummy = spawn(process.execPath, ['-e', 'setInterval(()=>{}, 1e6)'], {
   env: {
     ...process.env,
-    HAPPIER_HOME_DIR: cliHomeDir,
-    HAPPIER_SERVER_URL: staleServerUrl,
-    HAPPIER_WEBAPP_URL: publicServerUrl,
+    PIGGERCODE_HOME_DIR: cliHomeDir,
+    PIGGERCODE_SERVER_URL: staleServerUrl,
+    PIGGERCODE_WEBAPP_URL: publicServerUrl,
   },
   stdio: ['ignore', 'ignore', 'ignore'],
   detached: true,
@@ -1003,13 +1003,13 @@ try {
     preserveExistingRunning: true,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '200',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '200',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     },
     stackName: 'dev',
     cliIdentity: 'default',
@@ -1052,9 +1052,9 @@ test('startLocalDaemonWithAuth preserves a live daemon across a transient contro
     dummy = spawn(process.execPath, ['-e', 'setInterval(()=>{}, 1e6)'], {
       env: {
         ...process.env,
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: internalServerUrl,
-        HAPPIER_WEBAPP_URL: publicServerUrl,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: internalServerUrl,
+        PIGGERCODE_WEBAPP_URL: publicServerUrl,
       },
       stdio: ['ignore', 'ignore', 'ignore'],
       detached: true,
@@ -1084,13 +1084,13 @@ test('startLocalDaemonWithAuth preserves a live daemon across a transient contro
         forceRestart: false,
         preserveExistingRunning: true,
         env: createStubStackEnv({
-          HAPPIER_STACK_STACK: 'dev',
-          HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-          HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-          HAPPIER_STACK_CLI_BUILD: '0',
-          HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '200',
-          HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-          HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+          PIGGERCODE_STACK_STACK: 'dev',
+          PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+          PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+          PIGGERCODE_STACK_CLI_BUILD: '0',
+          PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '200',
+          PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+          PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
         }),
         stackName: 'dev',
       }),
@@ -1129,7 +1129,7 @@ import { spawn } from 'node:child_process';
 
 const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 if (args[0] !== 'daemon') process.exit(0);
@@ -1200,12 +1200,12 @@ process.exit(0);
       isShuttingDown: () => false,
       forceRestart: true,
       env: createStubStackEnv({
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-        HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
-        HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+        PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -1245,7 +1245,7 @@ import { spawn } from 'node:child_process';
 
 const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 if (args[0] !== 'daemon') process.exit(0);
@@ -1315,12 +1315,12 @@ process.exit(0);
       isShuttingDown: () => false,
       forceRestart: true,
       env: createStubStackEnv({
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-        HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
-        HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+        PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -1355,7 +1355,7 @@ import { spawn } from 'node:child_process';
 
 const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 if (args[0] !== 'daemon') process.exit(0);
@@ -1429,12 +1429,12 @@ process.exit(0);
       isShuttingDown: () => false,
       forceRestart: true,
       env: createStubStackEnv({
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-        HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
-        HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+        PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -1476,7 +1476,7 @@ import { spawn } from 'node:child_process';
 
 const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 if (args[0] !== 'daemon') process.exit(0);
@@ -1547,12 +1547,12 @@ process.exit(0);
       isShuttingDown: () => false,
       forceRestart: true,
       env: createStubStackEnv({
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-        HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
-        HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+        PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '50',
+        PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
       }),
       stackName: 'dev',
       cliIdentity: 'default',
@@ -1579,9 +1579,9 @@ test('checkDaemonState ignores running daemon state from a different active serv
   const dummy = spawnDetachedInlineNodeTestProcess('setInterval(()=>{}, 1e6)', {
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: cliHomeDir,
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:4301',
-      HAPPIER_WEBAPP_URL: 'http://localhost:4301',
+      PIGGERCODE_HOME_DIR: cliHomeDir,
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:4301',
+      PIGGERCODE_WEBAPP_URL: 'http://localhost:4301',
     },
     stdio: ['ignore', 'ignore', 'ignore'],
   });
@@ -1596,7 +1596,7 @@ test('checkDaemonState ignores running daemon state from a different active serv
     );
 
     const env = createStubStackEnv({
-      HAPPIER_ACTIVE_SERVER_ID: 'stack_dev2__id_default',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'stack_dev2__id_default',
     });
     const state = checkDaemonState(cliHomeDir, { serverUrl: 'http://127.0.0.1:4301', env });
     assert.deepEqual(state, { status: 'stopped', pid: null });
@@ -1613,9 +1613,9 @@ test('checkDaemonState ignores running daemon state from a different active serv
 test('matchDaemonEnvLine identifies which daemon env binding differs', () => {
   const line = [
     'node',
-    'HAPPIER_HOME_DIR=/tmp/happier-stack/cli',
-    'HAPPIER_SERVER_URL=http://127.0.0.1:52753',
-    'HAPPIER_WEBAPP_URL=http://stale.localhost:52753',
+    'PIGGERCODE_HOME_DIR=/tmp/happier-stack/cli',
+    'PIGGERCODE_SERVER_URL=http://127.0.0.1:52753',
+    'PIGGERCODE_WEBAPP_URL=http://stale.localhost:52753',
   ].join(' ');
 
   assert.deepEqual(matchDaemonEnvLine({
@@ -1626,7 +1626,7 @@ test('matchDaemonEnvLine identifies which daemon env binding differs', () => {
   }), {
     matches: false,
     reason: 'webapp',
-    key: 'HAPPIER_WEBAPP_URL',
+    key: 'PIGGERCODE_WEBAPP_URL',
     expected: 'http://happier-stack.localhost:52753',
   });
 });

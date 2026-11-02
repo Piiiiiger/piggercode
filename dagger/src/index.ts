@@ -131,13 +131,13 @@ export class HappierPipeline {
       ])
       .withExec(["git", "init"])
       .withExec(["bash", "-lc", `set -euo pipefail && mkdir -p "${artifactDir}"`])
-      .withEnvVariable("HAPPIER_PIPELINE_LOCAL_RUNTIME", "dagger")
+      .withEnvVariable("PIGGERCODE_PIPELINE_LOCAL_RUNTIME", "dagger")
       .withSecretVariable("EXPO_TOKEN", expoToken)
       .withSecretVariable("SENTRY_AUTH_TOKEN", sentryAuthToken)
       .withEnvVariable("EAS_CLI_VERSION", easCliVersion)
       .withEnvVariable("NODE_OPTIONS", nodeOptions)
-      .withEnvVariable("HAPPIER_INSTALL_SCOPE", "ui,protocol,agents")
-      .withEnvVariable("HAPPIER_UI_VENDOR_WEB_ASSETS", "0")
+      .withEnvVariable("PIGGERCODE_INSTALL_SCOPE", "ui,protocol,agents")
+      .withEnvVariable("PIGGERCODE_UI_VENDOR_WEB_ASSETS", "0")
 
     container = container
       .withEnvVariable("npm_config_registry", "https://registry.npmjs.org")

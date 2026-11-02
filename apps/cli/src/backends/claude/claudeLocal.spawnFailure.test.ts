@@ -12,12 +12,12 @@ import { resolveClaudeCliPath } from './utils/resolveClaudeCliPath';
 it('reports a disappeared executable and releases the local launch abort listener', async () => {
     const directory = mkdtempSync(join(tmpdir(), 'happier-claude-local-spawn-failure-'));
     const executable = join(directory, 'cli.js');
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
     const abort = new AbortController();
     const stdinWasPaused = process.stdin.isPaused();
     const exits: Array<Readonly<{ providerStopped: boolean }>> = [];
     writeFileSync(executable, '', { mode: 0o700 });
-    env.patch({ HAPPIER_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
+    env.patch({ PIGGERCODE_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
 
     try {
         expect(resolveClaudeCliPath()).toBe(executable);

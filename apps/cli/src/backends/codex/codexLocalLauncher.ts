@@ -57,8 +57,8 @@ function resolveRolloutDiscoveryConfig(overrides?: Partial<CodexRolloutDiscovery
 
 function resolveCodexSessionsRootDir(): string {
   const override = expandHomeDirPath(
-    typeof process.env.HAPPIER_CODEX_SESSIONS_DIR === 'string'
-      ? process.env.HAPPIER_CODEX_SESSIONS_DIR.trim()
+    typeof process.env.PIGGERCODE_CODEX_SESSIONS_DIR === 'string'
+      ? process.env.PIGGERCODE_CODEX_SESSIONS_DIR.trim()
       : typeof process.env.HAPPY_CODEX_SESSIONS_DIR === 'string'
         ? process.env.HAPPY_CODEX_SESSIONS_DIR.trim()
         : '',
@@ -78,7 +78,7 @@ async function resolveCodexTuiInvocation(opts: {
     args: buildCodexTuiArgs(opts),
     cwd: opts.cwd,
     processEnv: process.env,
-    overrideEnvVarKeys: ['HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
+    overrideEnvVarKeys: ['PIGGERCODE_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
     targetLabel: 'Codex CLI',
   });
 }
@@ -92,14 +92,14 @@ function buildCodexTuiChildEnv(): NodeJS.ProcessEnv {
   // file and breaks local-control discovery + switching.
   const env: NodeJS.ProcessEnv = { ...process.env };
   const expandedSessionsDir = resolveCodexSessionsRootDir();
-  if (typeof env.HAPPIER_CODEX_SESSIONS_DIR === 'string' || typeof env.HAPPY_CODEX_SESSIONS_DIR === 'string') {
-    env.HAPPIER_CODEX_SESSIONS_DIR = expandedSessionsDir;
+  if (typeof env.PIGGERCODE_CODEX_SESSIONS_DIR === 'string' || typeof env.HAPPY_CODEX_SESSIONS_DIR === 'string') {
+    env.PIGGERCODE_CODEX_SESSIONS_DIR = expandedSessionsDir;
     delete env.HAPPY_CODEX_SESSIONS_DIR;
   }
 
   const preserveRaw =
-    typeof process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS === 'string'
-      ? process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS.trim()
+    typeof process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS === 'string'
+      ? process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS.trim()
       : '';
   const preserveKeys = new Set<string>(
     preserveRaw

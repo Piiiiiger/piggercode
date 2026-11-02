@@ -88,7 +88,7 @@ if (!siblingArgument) {
       resolve(packageRoot, 'suites/contracts/runtimeActivityProjection.test.ts'),
     ], packageRoot, {
       ...process.env,
-      HAPPIER_RUNTIME_ACTIVITY_PARITY_SIBLING: siblingCheckout,
+      PIGGERCODE_RUNTIME_ACTIVITY_PARITY_SIBLING: siblingCheckout,
     });
 
     if (result.status !== 0) {

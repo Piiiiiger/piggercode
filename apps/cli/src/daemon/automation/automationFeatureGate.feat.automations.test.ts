@@ -8,22 +8,22 @@ describe('isAutomationWorkerEnabled', () => {
   });
 
   it('supports explicit disabled values', () => {
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '0' } as NodeJS.ProcessEnv)).toBe(false);
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'false' } as NodeJS.ProcessEnv)).toBe(false);
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'no' } as NodeJS.ProcessEnv)).toBe(false);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '0' } as NodeJS.ProcessEnv)).toBe(false);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'false' } as NodeJS.ProcessEnv)).toBe(false);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'no' } as NodeJS.ProcessEnv)).toBe(false);
   });
 
   it('supports explicit enabled values', () => {
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1' } as NodeJS.ProcessEnv)).toBe(true);
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'true' } as NodeJS.ProcessEnv)).toBe(true);
-    expect(isAutomationWorkerEnabled({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: 'yes' } as NodeJS.ProcessEnv)).toBe(true);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1' } as NodeJS.ProcessEnv)).toBe(true);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'true' } as NodeJS.ProcessEnv)).toBe(true);
+    expect(isAutomationWorkerEnabled({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: 'yes' } as NodeJS.ProcessEnv)).toBe(true);
   });
 
   it('respects build policy deny list', () => {
     expect(
       isAutomationWorkerEnabled({
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-        HAPPIER_BUILD_FEATURES_DENY: 'automations',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'automations',
       } as NodeJS.ProcessEnv),
     ).toBe(false);
   });
@@ -32,8 +32,8 @@ describe('isAutomationWorkerEnabled', () => {
 describe('getAutomationWorkerFeatureDecision', () => {
   it('reports build_policy block when denied', () => {
     const decision = getAutomationWorkerFeatureDecision({
-      HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
-      HAPPIER_BUILD_FEATURES_DENY: 'automations',
+      PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
+      PIGGERCODE_BUILD_FEATURES_DENY: 'automations',
     } as NodeJS.ProcessEnv);
 
     expect(decision.featureId).toBe('automations');

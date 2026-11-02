@@ -27,7 +27,7 @@ function resolveOpenCodeAuthJsonPath(env: NodeJS.ProcessEnv = process.env): stri
 }
 
 function resolveOpenCodeOauthRefreshTokenProbeTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
-  const raw = env.HAPPIER_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
+  const raw = env.PIGGERCODE_OPENCODE_OAUTH_REFRESH_TOKEN_PROBE_TIMEOUT_MS;
   const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;

@@ -41,14 +41,14 @@ describe('createLoggingTransportTargets', () => {
   it('omits the pino-pretty transport when the json log format is selected', async () => {
     setBunRuntime(false);
     const mod = await import('./log');
-    const targets = mod.createLoggingTransportTargets({ HAPPIER_SERVER_LOG_FORMAT: ' JSON ' } as NodeJS.ProcessEnv);
+    const targets = mod.createLoggingTransportTargets({ PIGGERCODE_SERVER_LOG_FORMAT: ' JSON ' } as NodeJS.ProcessEnv);
     expect(targets.some(t => t?.target === 'pino-pretty')).toBe(false);
   });
 
   it('keeps the pino-pretty transport for unrecognized log formats', async () => {
     setBunRuntime(false);
     const mod = await import('./log');
-    const targets = mod.createLoggingTransportTargets({ HAPPIER_SERVER_LOG_FORMAT: 'yaml' } as NodeJS.ProcessEnv);
+    const targets = mod.createLoggingTransportTargets({ PIGGERCODE_SERVER_LOG_FORMAT: 'yaml' } as NodeJS.ProcessEnv);
     expect(targets.some(t => t?.target === 'pino-pretty')).toBe(true);
   });
 
@@ -61,14 +61,14 @@ describe('createLoggingTransportTargets', () => {
   it('honors explicit server log level env overrides', async () => {
     const mod = await import('./log');
 
-    expect(mod.resolveServerLogLevelFromEnv({ HAPPIER_SERVER_LOG_LEVEL: 'debug' } as NodeJS.ProcessEnv)).toBe('debug');
+    expect(mod.resolveServerLogLevelFromEnv({ PIGGERCODE_SERVER_LOG_LEVEL: 'debug' } as NodeJS.ProcessEnv)).toBe('debug');
     expect(mod.resolveServerLogLevelFromEnv({ LOG_LEVEL: 'warn' } as NodeJS.ProcessEnv)).toBe('warn');
   });
 
   it('falls back to info for invalid server log levels', async () => {
     const mod = await import('./log');
 
-    expect(mod.resolveServerLogLevelFromEnv({ HAPPIER_SERVER_LOG_LEVEL: 'verbose' } as NodeJS.ProcessEnv)).toBe('info');
+    expect(mod.resolveServerLogLevelFromEnv({ PIGGERCODE_SERVER_LOG_LEVEL: 'verbose' } as NodeJS.ProcessEnv)).toBe('info');
   });
 });
 
@@ -88,8 +88,8 @@ describe('JSON stdout', () => {
         encoding: 'utf8',
         env: {
           ...process.env,
-          HAPPIER_SERVER_LOG_FORMAT: 'json',
-          HAPPIER_SERVER_LOG_LEVEL: 'debug',
+          PIGGERCODE_SERVER_LOG_FORMAT: 'json',
+          PIGGERCODE_SERVER_LOG_LEVEL: 'debug',
           DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING: debug ? '1' : '',
         },
       });

@@ -10,7 +10,7 @@ import { resolveOpenCodeAttachCliDialect } from './resolveOpenCodeAttachCliDiale
 import { resolveOpenCodeCliLaunchSpec } from '../utils/resolveOpenCodeCliCommand';
 
 function resolveDetachTimeoutMs(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_OPENCODE_LOCAL_DETACH_TIMEOUT_MS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_OPENCODE_LOCAL_DETACH_TIMEOUT_MS ?? ''), 10);
   const value = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 3_000;
   return Math.max(100, Math.min(60_000, value));
 }

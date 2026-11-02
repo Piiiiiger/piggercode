@@ -167,7 +167,7 @@ export async function interactiveNew({ rootDir, rl, defaults, deps = {} }) {
     console.log('');
     // eslint-disable-next-line no-console
     console.log(sectionTitle('Worktrees'));
-    const mainDir = getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+    const mainDir = getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
     const upstreamRepo = await describeGitRemote({ repoDir: mainDir, remote: 'upstream' });
     const originRepo = await describeGitRemote({ repoDir: mainDir, remote: 'origin' });
     const defaultRemote = await resolveDefaultCreateRemote({ repoDir: mainDir });
@@ -210,7 +210,7 @@ export async function interactiveEdit({ rootDir, rl, stackName, existingEnv, def
 
   const out = { ...defaults, stackName };
 
-  const currentServer = existingEnv.HAPPIER_STACK_SERVER_COMPONENT ?? '';
+  const currentServer = existingEnv.PIGGERCODE_STACK_SERVER_COMPONENT ?? '';
   out.serverComponent = await promptSelectFn(rl, {
     title: `${sectionTitle('Server flavor')}\n${dim('Pick the backend this stack should run. You can switch again later.')}`,
     options: [
@@ -220,7 +220,7 @@ export async function interactiveEdit({ rootDir, rl, stackName, existingEnv, def
     defaultIndex: (currentServer || 'happier-server-light') === 'happier-server' ? 1 : 0,
   });
 
-  const currentPort = existingEnv.HAPPIER_STACK_SERVER_PORT ?? '';
+  const currentPort = existingEnv.PIGGERCODE_STACK_SERVER_PORT ?? '';
   // eslint-disable-next-line no-console
   console.log('');
   // eslint-disable-next-line no-console
@@ -234,12 +234,12 @@ export async function interactiveEdit({ rootDir, rl, stackName, existingEnv, def
   const existingPort = currentPort ? Number(currentPort) : null;
   out.port = parsed.kind === 'empty' ? (Number.isFinite(existingPort) ? existingPort : null) : parsed.port;
 
-  const currentRemote = existingEnv.HAPPIER_STACK_STACK_REMOTE ?? '';
+  const currentRemote = existingEnv.PIGGERCODE_STACK_STACK_REMOTE ?? '';
   // eslint-disable-next-line no-console
   console.log('');
   // eslint-disable-next-line no-console
   console.log(sectionTitle('Worktrees'));
-  const mainDir = getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+  const mainDir = getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
   const upstreamRepo = await describeGitRemote({ repoDir: mainDir, remote: 'upstream' });
   const originRepo = await describeGitRemote({ repoDir: mainDir, remote: 'origin' });
   if (upstreamRepo || originRepo) {

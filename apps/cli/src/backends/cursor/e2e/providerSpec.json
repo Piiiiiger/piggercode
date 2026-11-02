@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "cursor",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_CURSOR",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_CURSOR",
   "protocol": "acp",
   "traceProvider": "cursor",
   "requiredBinaries": [
     {
       "bin": "cursor-agent",
-      "envOverride": "HAPPIER_E2E_PROVIDER_CURSOR_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_CURSOR_BIN",
       "requireExists": true
     }
   ],
@@ -57,10 +57,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_CURSOR_PATH": "HAPPIER_E2E_PROVIDER_CURSOR_BIN"
+      "PIGGERCODE_CURSOR_PATH": "PIGGERCODE_E2E_PROVIDER_CURSOR_BIN"
     }
   }
 }

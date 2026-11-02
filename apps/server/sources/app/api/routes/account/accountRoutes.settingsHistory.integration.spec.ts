@@ -147,7 +147,7 @@ describe("accountRoutes (/v2/account/settings/history) (integration)", () => {
     });
 
     it("prunes history snapshots to the configured limit", async () => {
-        harness.resetEnv({ HAPPIER_ACCOUNT_SETTINGS_HISTORY_LIMIT: "2" });
+        harness.resetEnv({ PIGGERCODE_ACCOUNT_SETTINGS_HISTORY_LIMIT: "2" });
         const account = await db.account.create({
             data: {
                 publicKey: "pk-settings-history-prune",
@@ -184,7 +184,7 @@ describe("accountRoutes (/v2/account/settings/history) (integration)", () => {
     });
 
     it("does not retain history snapshots when the configured limit is zero", async () => {
-        harness.resetEnv({ HAPPIER_ACCOUNT_SETTINGS_HISTORY_LIMIT: "0" });
+        harness.resetEnv({ PIGGERCODE_ACCOUNT_SETTINGS_HISTORY_LIMIT: "0" });
         const account = await db.account.create({
             data: {
                 publicKey: "pk-settings-history-disabled",

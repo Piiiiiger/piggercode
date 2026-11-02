@@ -6,7 +6,7 @@ import { createExecutableShim } from '@/testkit/fs/executableShim';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { codexDaemonSpawnHooks } from './spawnHooks';
 
-const envKeys = ['HAPPIER_CODEX_ACP_BIN', 'PATH', 'CODEX_HOME'] as const;
+const envKeys = ['PIGGERCODE_CODEX_ACP_BIN', 'PATH', 'CODEX_HOME'] as const;
 const ORIGINAL_CWD = process.cwd();
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
@@ -52,14 +52,14 @@ describe('codexDaemonSpawnHooks.validateSpawn', () => {
       host: 'tmux',
       accountSettings: null,
       runtimeSelection: { codexBackendMode: 'acp' },
-      processEnv: { HAPPIER_CODEX_BACKEND_MODE: 'mcp' },
+      processEnv: { PIGGERCODE_CODEX_BACKEND_MODE: 'mcp' },
     })).toEqual({ kind: 'runner', startingMode: 'remote' });
   });
   it('validates ACP spawn when codexBackendMode=acp is set without the legacy flag', async () => {
     const cwd = await createTempDir('happier-codex-spawnhooks-cwd-');
     tempDirs.add(cwd);
     process.chdir(cwd);
-    envScope.patch({ HAPPIER_CODEX_ACP_BIN: './missing-codex-acp' });
+    envScope.patch({ PIGGERCODE_CODEX_ACP_BIN: './missing-codex-acp' });
 
     const res = await codexDaemonSpawnHooks.validateSpawn!({
       codexBackendMode: 'acp',
@@ -69,11 +69,11 @@ describe('codexDaemonSpawnHooks.validateSpawn', () => {
     expect(res.errorMessage).toContain(join(cwd, 'missing-codex-acp'));
   });
 
-  it('reports an absolute missing path for relative HAPPIER_CODEX_ACP_BIN', async () => {
+  it('reports an absolute missing path for relative PIGGERCODE_CODEX_ACP_BIN', async () => {
     const cwd = await createTempDir('happier-codex-spawnhooks-cwd-');
     tempDirs.add(cwd);
     process.chdir(cwd);
-    envScope.patch({ HAPPIER_CODEX_ACP_BIN: './missing-codex-acp' });
+    envScope.patch({ PIGGERCODE_CODEX_ACP_BIN: './missing-codex-acp' });
 
     const res = await codexDaemonSpawnHooks.validateSpawn!({
       experimentalCodexAcp: true,
@@ -85,7 +85,7 @@ describe('codexDaemonSpawnHooks.validateSpawn', () => {
 
   it('rejects ACP spawn when codex-acp is not installed on PATH', async () => {
     const pathDir = await createFakeBin('other-cli');
-    envScope.patch({ HAPPIER_CODEX_ACP_BIN: undefined, PATH: pathDir });
+    envScope.patch({ PIGGERCODE_CODEX_ACP_BIN: undefined, PATH: pathDir });
 
     const res = await codexDaemonSpawnHooks.validateSpawn!({
       experimentalCodexAcp: true,
@@ -96,7 +96,7 @@ describe('codexDaemonSpawnHooks.validateSpawn', () => {
   it('rejects ACP spawn when codex-acp is not installed anywhere', async () => {
     const pathDir = await createTempDir('happier-codex-spawnhooks-empty-');
     tempDirs.add(pathDir);
-    envScope.patch({ HAPPIER_CODEX_ACP_BIN: undefined, PATH: pathDir });
+    envScope.patch({ PIGGERCODE_CODEX_ACP_BIN: undefined, PATH: pathDir });
 
     const res = await codexDaemonSpawnHooks.validateSpawn!({
       experimentalCodexAcp: true,
@@ -108,7 +108,7 @@ describe('codexDaemonSpawnHooks.validateSpawn', () => {
     if (process.platform === 'win32') return;
 
     const pathDir = await createNonExecutableBin('codex-acp');
-    envScope.patch({ HAPPIER_CODEX_ACP_BIN: undefined, PATH: pathDir });
+    envScope.patch({ PIGGERCODE_CODEX_ACP_BIN: undefined, PATH: pathDir });
 
     const res = await codexDaemonSpawnHooks.validateSpawn!({
       experimentalCodexAcp: true,
@@ -141,7 +141,7 @@ describe('codexDaemonSpawnHooks.buildExtraEnvForChild', () => {
       codexDaemonSpawnHooks.buildExtraEnvForChild?.({
         codexBackendMode: 'acp',
       } as any),
-    ).toEqual({ HAPPIER_EXPERIMENTAL_CODEX_ACP: '1' });
+    ).toEqual({ PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1' });
   });
 
   it('does not publish the ACP env marker when codexBackendMode=appServer overrides the legacy flag', async () => {

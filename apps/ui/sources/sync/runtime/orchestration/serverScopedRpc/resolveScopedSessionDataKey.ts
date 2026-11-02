@@ -28,7 +28,7 @@ const sessionCryptoContextResolutions = createScopedResolutionSingleFlight<Scope
 const sessionTokenKeys = createScopedCacheTokenKeyRegistry();
 
 function readMaxSessionKeyCacheEntriesFromEnv(): number {
-  const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_SESSION_KEY_CACHE_MAX ?? '').trim();
+  const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_SESSION_KEY_CACHE_MAX ?? '').trim();
   if (!raw) return 256;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return 256;

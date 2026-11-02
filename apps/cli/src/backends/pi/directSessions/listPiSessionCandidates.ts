@@ -53,7 +53,7 @@ function parsePositiveIntEnv(params: Readonly<{
 function resolvePiDiscoveryConcurrency(env: NodeJS.ProcessEnv): number {
   return parsePositiveIntEnv({
     env,
-    key: 'HAPPIER_DIRECT_SESSIONS_PI_DISCOVERY_CONCURRENCY',
+    key: 'PIGGERCODE_DIRECT_SESSIONS_PI_DISCOVERY_CONCURRENCY',
     defaultValue: 64,
     min: 1,
     max: 512,
@@ -75,7 +75,7 @@ export function resolvePiDiscoveryConcurrencyBudget(totalConcurrency: number): R
 function resolvePiSearchCandidateLimit(env: NodeJS.ProcessEnv): number {
   return parsePositiveIntEnv({
     env,
-    key: 'HAPPIER_DIRECT_SESSIONS_PI_SEARCH_CANDIDATE_LIMIT',
+    key: 'PIGGERCODE_DIRECT_SESSIONS_PI_SEARCH_CANDIDATE_LIMIT',
     defaultValue: 2000,
     min: 1,
     max: 50_000,

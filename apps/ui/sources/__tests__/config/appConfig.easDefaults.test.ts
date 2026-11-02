@@ -50,7 +50,7 @@ function getPluginOptions(exp: ReturnType<typeof getPublicConfig>, pluginName: s
 function withCleanEnv<T>(fn: () => T): T {
     const keys = [
         'APP_ENV',
-        'HAPPIER_APP_VARIANT_OVERRIDE',
+        'PIGGERCODE_APP_VARIANT_OVERRIDE',
         'EXPO_PUBLIC_EAS_PROJECT_ID',
         'EAS_PROJECT_ID',
         'EXPO_EAS_PROJECT_ID',
@@ -62,20 +62,20 @@ function withCleanEnv<T>(fn: () => T): T {
         'EXPO_APP_SLUG',
         'EXPO_APP_BUNDLE_ID',
         'EXPO_ANDROID_PACKAGE',
-        'HAPPIER_EXPO_RUNTIME_VERSION',
-        'HAPPIER_EXPO_RUNTIME_VERSION_POLICY',
+        'PIGGERCODE_EXPO_RUNTIME_VERSION',
+        'PIGGERCODE_EXPO_RUNTIME_VERSION_POLICY',
         'EXPO_APP_LOCAL_CONFIG_PATH',
-        'EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV',
+        'EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV',
         'EXPO_PUBLIC_IOS_BACKGROUND_AUDIO',
         'EXPO_IOS_BACKGROUND_AUDIO',
-        'HAPPIER_ANDROID_USES_CLEARTEXT_TRAFFIC',
-        'HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE',
-        'HAPPIER_EXPO_DEVCLIENT_SILENT_LAUNCH',
-        'HAPPIER_IOS_MEMORY_PROFILING_RUNTIME',
-        'HAPPIER_EXPO_USE_NATIVE_DEBUG',
+        'PIGGERCODE_ANDROID_USES_CLEARTEXT_TRAFFIC',
+        'PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE',
+        'PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH',
+        'PIGGERCODE_IOS_MEMORY_PROFILING_RUNTIME',
+        'PIGGERCODE_EXPO_USE_NATIVE_DEBUG',
         'EX_UPDATES_NATIVE_DEBUG',
-        'EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON',
-        'HAPPIER_SYNC_TUNING_JSON',
+        'EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON',
+        'PIGGERCODE_SYNC_TUNING_JSON',
     ] as const;
 
     const previous: Partial<Record<(typeof keys)[number], string | undefined>> = {};
@@ -107,7 +107,7 @@ describe('app.config.js', () => {
 
         const client = withCleanEnv(() => {
             process.env.APP_ENV = 'publicdev';
-            process.env.HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
+            process.env.PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
             return getPublicConfig();
         });
         expect(client.ios?.infoPlist?.NSAppTransportSecurity).toEqual({
@@ -149,7 +149,7 @@ describe('app.config.js', () => {
             const exp = getPublicConfig();
             return {
                 exp,
-                featurePolicyEnv: process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV,
+                featurePolicyEnv: process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV,
             };
         });
 
@@ -204,7 +204,7 @@ describe('app.config.js', () => {
 
     it('allows disabling Android cleartext traffic explicitly via env override', () => {
         const exp = withCleanEnv(() => {
-            process.env.HAPPIER_ANDROID_USES_CLEARTEXT_TRAFFIC = 'false';
+            process.env.PIGGERCODE_ANDROID_USES_CLEARTEXT_TRAFFIC = 'false';
             return getPublicConfig();
         });
         expect(getPluginOptions(exp, 'expo-build-properties')).toEqual(
@@ -222,7 +222,7 @@ describe('app.config.js', () => {
             const exp = getPublicConfig();
             return {
                 exp,
-                featurePolicyEnv: process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV,
+                featurePolicyEnv: process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV,
             };
         });
 
@@ -239,7 +239,7 @@ describe('app.config.js', () => {
     it('allows overriding extra.app.variant without changing production identity config', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'production';
-            process.env.HAPPIER_APP_VARIANT_OVERRIDE = 'preview';
+            process.env.PIGGERCODE_APP_VARIANT_OVERRIDE = 'preview';
             return getPublicConfig();
         });
 
@@ -271,11 +271,11 @@ describe('app.config.js', () => {
         expect(exp.extra?.app?.repositoryUrl).toBe('https://github.com/Piiiiiger/piggercode');
     });
 
-    it('defaults EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV based on the app variant', () => {
+    it('defaults EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV based on the app variant', () => {
         const envValue = withCleanEnv(() => {
             process.env.APP_ENV = 'production';
             getPublicConfig();
-            return process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV;
+            return process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV;
         });
 
         expect(envValue).toBe('production');
@@ -346,7 +346,7 @@ describe('app.config.js', () => {
     it('allows forcing an Expo runtime policy for development diagnostics', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'production';
-            process.env.HAPPIER_EXPO_RUNTIME_VERSION_POLICY = 'appVersion';
+            process.env.PIGGERCODE_EXPO_RUNTIME_VERSION_POLICY = 'appVersion';
             return getPublicConfig();
         });
 
@@ -356,7 +356,7 @@ describe('app.config.js', () => {
     it('allows forcing an explicit Expo runtime version for maintenance OTA trains', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'preview';
-            process.env.HAPPIER_EXPO_RUNTIME_VERSION = '18';
+            process.env.PIGGERCODE_EXPO_RUNTIME_VERSION = '18';
             return getPublicConfig();
         });
 
@@ -381,7 +381,7 @@ describe('app.config.js', () => {
             nativeCryptoWorkerMode: 'auto',
         });
         const exp = withCleanEnv(() => {
-            process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON = tuningJson;
+            process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON = tuningJson;
             return getPublicConfig();
         });
 
@@ -468,9 +468,9 @@ describe('app.config.js', () => {
     it('enables OTA-native debug development-client behavior only when explicitly requested by env', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'development';
-            process.env.HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
-            process.env.HAPPIER_EXPO_DEVCLIENT_SILENT_LAUNCH = 'true';
-            process.env.HAPPIER_EXPO_USE_NATIVE_DEBUG = 'true';
+            process.env.PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
+            process.env.PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH = 'true';
+            process.env.PIGGERCODE_EXPO_USE_NATIVE_DEBUG = 'true';
             return getPublicConfig();
         });
 
@@ -489,9 +489,9 @@ describe('app.config.js', () => {
 
         const memoryExp: ExpoConfigWithAutolinking = withCleanEnv(() => {
             process.env.APP_ENV = 'development';
-            process.env.HAPPIER_IOS_MEMORY_PROFILING_RUNTIME = '1';
-            process.env.HAPPIER_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
-            process.env.HAPPIER_EXPO_DEVCLIENT_SILENT_LAUNCH = 'true';
+            process.env.PIGGERCODE_IOS_MEMORY_PROFILING_RUNTIME = '1';
+            process.env.PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
+            process.env.PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH = 'true';
             return getPublicConfig();
         });
 

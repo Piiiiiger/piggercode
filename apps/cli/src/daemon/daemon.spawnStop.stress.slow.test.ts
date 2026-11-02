@@ -5,7 +5,7 @@
  * resource-intensive and can be sensitive to CI machine load.
  *
  * Run with a local integration server and credentials:
- * - `HAPPIER_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION=1 yarn workspace @piggercode/cli test:slow`
+ * - `PIGGERCODE_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION=1 yarn workspace @piggercode/cli test:slow`
  */
 
 import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach } from 'vitest';
@@ -55,7 +55,7 @@ let preparedDaemonHome: PreparedDaemonTestHome | null = null;
 let startedDaemon: ReturnType<typeof startDaemonProcessForStartSync> | null = null;
 
 const daemonClaudeCliStubPath = fileURLToPath(new URL('./testkit/claudeCliStub.mjs', import.meta.url));
-const daemonSpawnStopStressEnabled = process.env.HAPPIER_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION === '1';
+const daemonSpawnStopStressEnabled = process.env.PIGGERCODE_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION === '1';
 
 async function listDaemonSessionsTyped(): Promise<DaemonSessionRecord[]> {
   return (await listDaemonSessions()) as DaemonSessionRecord[];
@@ -110,8 +110,8 @@ describe.skipIf(!daemonSpawnStopStressEnabled)('daemon spawn/stop stress (slow l
       prefix: 'happier-cli-daemon-slow-',
       logCopyPrefix: 'daemon-slow',
       extraEnv: {
-        HAPPIER_CLAUDE_PATH: daemonClaudeCliStubPath,
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: join(process.cwd(), 'dist', 'index.mjs'),
+        PIGGERCODE_CLAUDE_PATH: daemonClaudeCliStubPath,
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: join(process.cwd(), 'dist', 'index.mjs'),
       },
     });
     const credentialsReady = await ensureDaemonIntegrationCredentialsForActiveServer();

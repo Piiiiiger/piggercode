@@ -62,10 +62,10 @@ describe('core e2e: server retention account-change pruning', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_SERVER_RETENTION__ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__INTERVAL_MS: '200',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '1',
+        PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__INTERVAL_MS: '200',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '1',
       },
     });
 

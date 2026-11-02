@@ -5,7 +5,7 @@
  * - Validates the SendMessage tool_use input + tool_result shape (JSON payload) so Happier normalization stays aligned.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.sendMessage.resultShape.realProbe.test.ts
+ *   PIGGERCODE_TEST_REAL_CLAUDE=1 PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.sendMessage.resultShape.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';
@@ -15,8 +15,8 @@ import {
   runRealClaudeCliStreamJsonProbe,
 } from '../../src/testkit/providers/claude/realClaudeCliProbe';
 
-const ENABLED = process.env.HAPPIER_TEST_REAL_CLAUDE === '1';
-const FULL_PROBE = process.env.HAPPIER_TEST_REAL_CLAUDE_FULL === '1';
+const ENABLED = process.env.PIGGERCODE_TEST_REAL_CLAUDE === '1';
+const FULL_PROBE = process.env.PIGGERCODE_TEST_REAL_CLAUDE_FULL === '1';
 
 function tryParseJsonObject(text: string | null): Record<string, unknown> | null {
   if (!text) return null;
@@ -31,12 +31,12 @@ function tryParseJsonObject(text: string | null): Record<string, unknown> | null
 
 describe('real Claude Agent Teams SendMessage result shape probe', () => {
   if (!ENABLED) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
     return;
   }
 
   if (!FULL_PROBE) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE_FULL=1 (opt-in, multi-turn)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 (opt-in, multi-turn)', () => {});
     return;
   }
 

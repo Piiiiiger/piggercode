@@ -73,7 +73,7 @@ test.describe('ui e2e: new-session formSheet responsiveness', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
             },
         });
 

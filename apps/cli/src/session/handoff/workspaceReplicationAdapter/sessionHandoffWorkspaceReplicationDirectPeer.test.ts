@@ -29,9 +29,9 @@ describe('session handoff direct-peer workspace replication publication', () => 
   });
 
   it('publishes blob-pack transferIds that fit within the direct-peer URL param length budget (no embedded digests)', async () => {
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024 * 1024);
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '256';
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '256';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024 * 1024);
 
 	    vi.resetModules();
 	    const { buildSessionHandoffWorkspaceDirectPeerBlobPackTransferId } = await import(
@@ -324,9 +324,9 @@ describe('session handoff direct-peer workspace replication publication', () => 
   });
 
   it('dedupes duplicate manifest digests when computing the direct-peer pack budget', async () => {
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '2';
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024);
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '2';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024);
 
     vi.resetModules();
     const { createSessionHandoffWorkspaceReplicationDirectPeerOnDemandScope } = await import(
@@ -462,9 +462,9 @@ describe('session handoff direct-peer workspace replication publication', () => 
   });
 
   it('rejects multi-digest blob-pack requests whose total bytes exceed the blob-pack target bytes (no oversized on-demand packs)', async () => {
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '10';
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '5';
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = '100';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '10';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '5';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = '100';
 
     vi.resetModules();
     const { createSessionHandoffWorkspaceReplicationDirectPeerOnDemandScope } = await import(
@@ -526,9 +526,9 @@ describe('session handoff direct-peer workspace replication publication', () => 
   });
 
   it('accepts a valid digest subset even when it is not part of the canonical full-manifest pack partition (on-demand packs match engine missing-blob batching)', async () => {
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '2';
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024);
-    process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_BLOBS = '2';
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = String(1024 * 1024);
+    process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_MAX_SINGLE_BLOB_BYTES = String(1024 * 1024);
 
     vi.resetModules();
     const { createSessionHandoffWorkspaceReplicationDirectPeerOnDemandScope } = await import(

@@ -7,13 +7,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { openCodeProviderAttachOps } from './providerAttachOps';
 
 describe('openCodeProviderAttachOps', () => {
-  const previousManagedServerStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+  const previousManagedServerStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
 
   afterEach(() => {
     if (previousManagedServerStatePath === undefined) {
-      delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
     } else {
-      process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
+      process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
     }
     vi.unstubAllGlobals();
   });
@@ -39,8 +39,8 @@ describe('openCodeProviderAttachOps', () => {
 
   it('treats a local attachment marker as authoritative local ownership', async () => {
     const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-provider-attach-'));
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
+    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
       baseUrl: 'http://127.0.0.1:4096/',
       pid: 12345,
       startedAtMs: Date.now(),
@@ -65,8 +65,8 @@ describe('openCodeProviderAttachOps', () => {
 
   it('probes a Happier-managed (loopback) server with the credential retained for it', async () => {
     const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-provider-attach-'));
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
+    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
       baseUrl: 'http://127.0.0.1:4096',
       pid: 12345,
       startedAtMs: Date.now(),

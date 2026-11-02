@@ -19,7 +19,7 @@ import { buildMissingJavaScriptRuntimeMessage } from "@/runtime/js/buildMissingJ
 import { isEmbeddedBunBundlePath } from "@/runtime/js/isEmbeddedBunBundlePath";
 import { resolveWindowsCommandInvocation, type CommandInvocation } from '@piggercode/cli-common/process';
 import { resolveCliRuntimeAssetPath } from '@/runtime/assets/resolveCliRuntimeAssetPath';
-import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
+import { PIGGERCODE_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 import { isNativeProcessExited, isProviderInLauncher } from '../../../scripts/native_process_exit.cjs';
 import { logClaudeRuntimeAuthEnvDiagnostic } from './spawn/logClaudeRuntimeAuthEnvDiagnostic';
@@ -326,7 +326,7 @@ export async function claudeLocal(opts: {
             const systemPromptText = typeof opts.systemPromptText === 'string' ? opts.systemPromptText.trim() : '';
             const fallbackPrompt = (() => {
                 const providerBlocks = getClaudeSystemPrompt();
-                const base = HAPPIER_BASE_SYSTEM_PROMPT_V1;
+                const base = PIGGERCODE_BASE_SYSTEM_PROMPT_V1;
                 return providerBlocks.trim().length > 0 ? `${base}\n\n${providerBlocks}` : base;
             })();
             args.push('--append-system-prompt', systemPromptText || fallbackPrompt);
@@ -451,8 +451,8 @@ export async function claudeLocal(opts: {
                 }
 
                 // Avoid re-running auto-discovery inside the node wrapper (saves filesystem work).
-                if (!env.HAPPIER_CLAUDE_PATH && !env.HAPPY_CLAUDE_PATH) {
-                    env.HAPPIER_CLAUDE_PATH = resolvedClaudeCliPath;
+                if (!env.PIGGERCODE_CLAUDE_PATH && !env.HAPPY_CLAUDE_PATH) {
+                    env.PIGGERCODE_CLAUDE_PATH = resolvedClaudeCliPath;
                 }
             }
 

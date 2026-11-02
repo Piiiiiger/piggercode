@@ -59,7 +59,7 @@ describe('CodeRabbitReviewBackend Windows .CMD shim spawning', () => {
 
       const backend = new CodeRabbitReviewBackend({
         cwd: process.cwd(),
-        env: { ...process.env, HAPPIER_CODERABBIT_REVIEW_CMD: cmdPath },
+        env: { ...process.env, PIGGERCODE_CODERABBIT_REVIEW_CMD: cmdPath },
       });
       try {
         const started = await backend.startSession();

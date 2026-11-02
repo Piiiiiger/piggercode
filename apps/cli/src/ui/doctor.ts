@@ -124,9 +124,9 @@ export function hasDaemonOwnerMismatchForCurrentInvocation(params: Readonly<{
 export function getEnvironmentInfo(): Record<string, any> {
     return {
         PWD: process.env.PWD,
-        HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR,
-        HAPPIER_SERVER_URL: process.env.HAPPIER_SERVER_URL,
-        HAPPIER_PROJECT_ROOT: process.env.HAPPIER_PROJECT_ROOT,
+        PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR,
+        PIGGERCODE_SERVER_URL: process.env.PIGGERCODE_SERVER_URL,
+        PIGGERCODE_PROJECT_ROOT: process.env.PIGGERCODE_PROJECT_ROOT,
         DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING: process.env.DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING,
         NODE_ENV: process.env.NODE_ENV,
         DEBUG: process.env.DEBUG,
@@ -244,8 +244,8 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
         // Environment
         console.log(`\n${sectionTitle('Environment variables')}`);
         const env = getEnvironmentInfo();
-        console.log(`HAPPIER_HOME_DIR: ${env.HAPPIER_HOME_DIR ? chalk.green(env.HAPPIER_HOME_DIR) : chalk.gray('not set')}`);
-        console.log(`HAPPIER_SERVER_URL: ${env.HAPPIER_SERVER_URL ? chalk.green(env.HAPPIER_SERVER_URL) : chalk.gray('not set')}`);
+        console.log(`PIGGERCODE_HOME_DIR: ${env.PIGGERCODE_HOME_DIR ? chalk.green(env.PIGGERCODE_HOME_DIR) : chalk.gray('not set')}`);
+        console.log(`PIGGERCODE_SERVER_URL: ${env.PIGGERCODE_SERVER_URL ? chalk.green(env.PIGGERCODE_SERVER_URL) : chalk.gray('not set')}`);
         console.log(`DANGEROUSLY_LOG_TO_SERVER: ${env.DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING ? chalk.yellow('ENABLED') : chalk.gray('not set')}`);
         console.log(`DEBUG: ${env.DEBUG ? chalk.green(env.DEBUG) : chalk.gray('not set')}`);
         console.log(`NODE_ENV: ${env.NODE_ENV ? chalk.green(env.NODE_ENV) : chalk.gray('not set')}`);

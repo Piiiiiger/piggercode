@@ -59,7 +59,7 @@ function ensureCliSourceSnapshot(
   }
 
   const snapshotNodeModulesModeRaw = (
-    env.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? ''
+    env.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? ''
   ).toString().trim().toLowerCase();
   const snapshotNodeModulesMode =
     snapshotNodeModulesModeRaw === 'symlink' || snapshotNodeModulesModeRaw === 'copy'
@@ -164,7 +164,7 @@ async function resolveCliSourceLaunchSpec(
 
 export function shouldUseCliSourceEntrypoint(env: NodeJS.ProcessEnv): boolean {
   const raw = (
-    env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT ??
+    env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT ??
     env.HAPPY_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT ??
     ''
   )
@@ -177,7 +177,7 @@ export function shouldUseCliSourceEntrypoint(env: NodeJS.ProcessEnv): boolean {
 
 export function shouldSkipCliSharedDepsBuild(env: NodeJS.ProcessEnv): boolean {
   const raw = (
-    env.HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD ??
+    env.PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD ??
     env.HAPPY_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD ??
     ''
   )

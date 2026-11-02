@@ -36,21 +36,21 @@ import { spawnDetachedDaemonStartSync } from '@/daemon/runtime/spawnDetachedDaem
 import { spawnSleepyDetachedProcess } from '@/daemon/testkit/fakeDaemonLifecycle.testkit';
 
 describe('startDaemonHeartbeatLoop daemon self-restart', () => {
-  const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+  const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
   let happyHomeDir: string | null = null;
 
   afterEach(() => {
-    delete process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL;
-    delete process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS;
-    delete process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS;
+    delete process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL;
+    delete process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS;
     if (happyHomeDir && existsSync(happyHomeDir)) {
       rmSync(happyHomeDir, { recursive: true, force: true });
     }
     happyHomeDir = null;
     if (originalHappyHomeDir === undefined) {
-      delete process.env.HAPPIER_HOME_DIR;
+      delete process.env.PIGGERCODE_HOME_DIR;
     } else {
-      process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+      process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     }
     vi.restoreAllMocks();
     vi.useRealTimers();
@@ -58,11 +58,11 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('does not permanently lock the heartbeat loop if reading package.json throws', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-self-restart-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '25';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS = '5';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '25';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS = '5';
 
     vi.resetModules();
 
@@ -123,11 +123,11 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('uses start-sync and keeps the current daemon alive if replacement is not confirmed', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-self-restart-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '25';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS = '5';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '25';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS = '5';
 
     vi.resetModules();
 
@@ -178,8 +178,8 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
     expect(spawnDetachedDaemonStartSync).toHaveBeenCalledTimes(1);
     expect(spawnDetachedDaemonStartSync).toHaveBeenCalledWith(expect.objectContaining({
       env: expect.objectContaining({
-        HAPPIER_DAEMON_RUNTIME_ID: 'runtime-heartbeat-restart',
-        HAPPIER_DAEMON_TAKEOVER: '1',
+        PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-heartbeat-restart',
+        PIGGERCODE_DAEMON_TAKEOVER: '1',
       }),
       startupSource: 'self-restart',
     }));
@@ -190,11 +190,11 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('exits only after replacement daemon with current CLI version is confirmed', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-self-restart-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '40';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS = '5';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '40';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS = '5';
     const replacement = spawnSleepyDetachedProcess();
 
     try {
@@ -211,7 +211,7 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
       vi.mocked(readFileSync).mockReturnValue(JSON.stringify({ version: '2.0.0' }) as any);
       let selfRestartCorrelationId = '';
       vi.mocked(spawnDetachedDaemonStartSync).mockImplementation(async (options) => {
-        selfRestartCorrelationId = String(options?.env?.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
+        selfRestartCorrelationId = String(options?.env?.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
         return { unref: vi.fn() } as any;
       });
       vi.mocked(readDaemonState)
@@ -283,8 +283,8 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
       expect(spawnDetachedDaemonStartSync).toHaveBeenCalledTimes(1);
       expect(spawnDetachedDaemonStartSync).toHaveBeenCalledWith(expect.objectContaining({
         env: expect.objectContaining({
-          HAPPIER_DAEMON_RUNTIME_ID: 'runtime-heartbeat-confirmed',
-          HAPPIER_DAEMON_TAKEOVER: '1',
+          PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-heartbeat-confirmed',
+          PIGGERCODE_DAEMON_TAKEOVER: '1',
         }),
         startupSource: 'self-restart',
       }));
@@ -298,9 +298,9 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('preserves ownership metadata when writing heartbeat state updates', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-metadata-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
 
     vi.resetModules();
 
@@ -363,9 +363,9 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('requests shutdown without overwriting a successor daemon publication', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-successor-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
 
     vi.resetModules();
 
@@ -416,9 +416,9 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
 
   it('fails closed when a successor takes the lifecycle lock after ownership is read', async () => {
     happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-lock-successor-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     mkdirSync(join(happyHomeDir, 'logs'), { recursive: true });
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
 
     vi.resetModules();
 

@@ -36,12 +36,12 @@ function buildSourceResumeEnvironmentVariables(metadata: Metadata): Record<strin
         const serverBaseUrl = openCodeRuntime?.serverBaseUrl ?? (typeof metadata.opencodeServerBaseUrl === 'string' ? metadata.opencodeServerBaseUrl : null);
         const serverBaseUrlExplicit = openCodeRuntime?.serverBaseUrlExplicit ?? Boolean(metadata.opencodeServerBaseUrlExplicit);
         const env: Record<string, string> = {
-            HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+            PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
         };
         if (serverBaseUrl) {
-            env.HAPPIER_OPENCODE_SERVER_URL = serverBaseUrl;
+            env.PIGGERCODE_OPENCODE_SERVER_URL = serverBaseUrl;
             if (serverBaseUrlExplicit) {
-                env.HAPPIER_OPENCODE_SERVER_URL_EXPLICIT = '1';
+                env.PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT = '1';
             }
         }
         return env;

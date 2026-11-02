@@ -326,8 +326,8 @@ describe('runClaude startup metadata ordering', () => {
 
     it('retries legacy offline startup against the same durable Session creation tag', async () => {
         const happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-claude-offline-owner-'));
-        vi.stubEnv('HAPPIER_HOME_DIR', happyHomeDir);
-        vi.stubEnv('HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN', '0');
+        vi.stubEnv('PIGGERCODE_HOME_DIR', happyHomeDir);
+        vi.stubEnv('PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN', '0');
         reloadConfiguration();
         // The health HTTP request and provider process are the genuine external boundaries.
         const health = vi.spyOn(axios, 'get').mockResolvedValue({ status: 200 });
@@ -495,8 +495,8 @@ describe('runClaude startup metadata ordering', () => {
 
     it('passes runtime identity replacement through attach startup metadata writes during handoff resume', async () => {
         currentMetadataVersion = -1;
-        const previousAttachMetadataIdentityPolicy = process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
-        process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY = 'replace_with_runtime_identity';
+        const previousAttachMetadataIdentityPolicy = process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
+        process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY = 'replace_with_runtime_identity';
         try {
             const { runClaude } = await import('./runClaude');
 
@@ -523,9 +523,9 @@ describe('runClaude startup metadata ordering', () => {
             await expect(runPromise).resolves.toBe(stopAfterSeed);
         } finally {
             if (previousAttachMetadataIdentityPolicy === undefined) {
-                delete process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
+                delete process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
             } else {
-                process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY = previousAttachMetadataIdentityPolicy;
+                process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY = previousAttachMetadataIdentityPolicy;
             }
         }
     });
@@ -570,8 +570,8 @@ describe('runClaude startup metadata ordering', () => {
 
     it('uses the requested directory seed instead of a canonicalized cwd during remote startup', async () => {
         currentMetadataVersion = 1;
-        const previousRequestedDirectory = process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
-        process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = '/tmp/requested-remote-directory';
+        const previousRequestedDirectory = process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
+        process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = '/tmp/requested-remote-directory';
         try {
             const { runClaude } = await import('./runClaude');
 
@@ -596,9 +596,9 @@ describe('runClaude startup metadata ordering', () => {
             await expect(runPromise).resolves.toBe(stopAfterSeed);
         } finally {
             if (previousRequestedDirectory === undefined) {
-                delete process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY;
+                delete process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY;
             } else {
-                process.env.HAPPIER_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
+                process.env.PIGGERCODE_SESSION_REQUESTED_DIRECTORY = previousRequestedDirectory;
             }
         }
     });
@@ -677,7 +677,7 @@ describe('runClaude startup metadata ordering', () => {
     });
 
     it('commits daemon-carried first input after binding the consumer and before launching the direct provider path', async () => {
-        vi.stubEnv('HAPPIER_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
+        vi.stubEnv('PIGGERCODE_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
             text: 'Commit this first turn before launch.',
             localId: 'spawn-first:claude-direct',
             meta: { model: 'opus' },
@@ -717,7 +717,7 @@ describe('runClaude startup metadata ordering', () => {
             expect(enqueueSessionUserMessageMock.mock.invocationCallOrder[0]).toBeLessThan(
                 vi.mocked(loop).mock.invocationCallOrder[0]!,
             );
-            expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeUndefined();
+            expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeUndefined();
         } finally {
             vi.unstubAllEnvs();
         }

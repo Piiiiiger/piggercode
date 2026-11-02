@@ -406,7 +406,7 @@ function buildManifest(releases: AuthoredRelease[]): {
         schemaVersion: 'v1',
         latestReleaseId: sorted.length > 0 ? sorted[0].releaseId : null,
         generatedAt: new Date().toISOString(),
-        assetBaseUrl: process.env.HAPPIER_RELEASE_NOTES_ASSET_BASE_URL
+        assetBaseUrl: process.env.PIGGERCODE_RELEASE_NOTES_ASSET_BASE_URL
             || 'https://github.com/happier-dev/happier-assets/releases/download/release-notes/',
         releases: sorted,
     };
@@ -450,7 +450,7 @@ function main() {
     console.log('Parsing release notes...');
     const releases = listAuthoredReleases();
     const generatedAt = new Date().toISOString();
-    const assetBaseUrl = process.env.HAPPIER_RELEASE_NOTES_ASSET_BASE_URL
+    const assetBaseUrl = process.env.PIGGERCODE_RELEASE_NOTES_ASSET_BASE_URL
         || 'https://github.com/happier-dev/happier-assets/releases/download/release-notes/';
 
     if (releases.length === 0) {

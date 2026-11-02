@@ -4,9 +4,9 @@ export const PUSH_NOTIFICATION_CATEGORY_IDS = {
 } as const;
 
 export const PUSH_NOTIFICATION_ACTION_IDS = {
-  permissionAllowV1: 'HAPPIER_PERMISSION_ALLOW_V1',
-  permissionDenyV1: 'HAPPIER_PERMISSION_DENY_V1',
-  userActionOpenV1: 'HAPPIER_USER_ACTION_OPEN_V1',
+  permissionAllowV1: 'PIGGERCODE_PERMISSION_ALLOW_V1',
+  permissionDenyV1: 'PIGGERCODE_PERMISSION_DENY_V1',
+  userActionOpenV1: 'PIGGERCODE_USER_ACTION_OPEN_V1',
 } as const;
 
 export const PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS = {

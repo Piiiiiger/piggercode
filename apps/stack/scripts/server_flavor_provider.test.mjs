@@ -22,17 +22,17 @@ async function switchFlavor(t, {
   const storageDir = join(root, 'stacks');
   const envPath = join(storageDir, 'main', 'env');
   await mkdir(join(storageDir, 'main'), { recursive: true });
-  const providerLine = initialProvider === undefined ? '' : `HAPPIER_DB_PROVIDER=${initialProvider}\n`;
+  const providerLine = initialProvider === undefined ? '' : `PIGGERCODE_DB_PROVIDER=${initialProvider}\n`;
   const databaseUrlLine = databaseUrl === undefined ? '' : `DATABASE_URL=${databaseUrl}\n`;
-  await writeFile(envPath, `HAPPIER_STACK_SERVER_COMPONENT=${initialComponent}\n${providerLine}${databaseUrlLine}`, 'utf8');
+  await writeFile(envPath, `PIGGERCODE_STACK_SERVER_COMPONENT=${initialComponent}\n${providerLine}${databaseUrlLine}`, 'utf8');
 
   const childEnv = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'main',
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_STACK: 'main',
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   };
-  delete childEnv.HAPPIER_DB_PROVIDER;
+  delete childEnv.PIGGERCODE_DB_PROVIDER;
   delete childEnv.HAPPY_DB_PROVIDER;
   delete childEnv.DATABASE_URL;
   if (databaseUrlInProcess !== undefined) childEnv.DATABASE_URL = databaseUrlInProcess;
@@ -48,8 +48,8 @@ async function switchFlavor(t, {
 test('server flavor writer defaults an absent provider and preserves supported cross-preset providers', async (t) => {
   for (const [initialProvider, expectedProvider] of [[undefined, 'postgres'], ['sqlite', 'sqlite'], ['pglite', 'pglite']]) {
     const { contents } = await switchFlavor(t, { initialProvider, target: 'full' });
-    assert.match(contents, /HAPPIER_STACK_SERVER_COMPONENT=happier-server\n/);
-    assert.match(contents, new RegExp(`HAPPIER_DB_PROVIDER=${expectedProvider}\\n`));
+    assert.match(contents, /PIGGERCODE_STACK_SERVER_COMPONENT=happier-server\n/);
+    assert.match(contents, new RegExp(`PIGGERCODE_DB_PROVIDER=${expectedProvider}\\n`));
   }
 
   const { contents: light } = await switchFlavor(t, {
@@ -58,8 +58,8 @@ test('server flavor writer defaults an absent provider and preserves supported c
     databaseUrl: 'mysql://operator:secret@db.example.test:3306/happier',
     target: 'light',
   });
-  assert.match(light, /HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n/);
-  assert.match(light, /HAPPIER_DB_PROVIDER=mysql\n/);
+  assert.match(light, /PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n/);
+  assert.match(light, /PIGGERCODE_DB_PROVIDER=mysql\n/);
   assert.match(light, /^DATABASE_URL=mysql:\/\/operator:secret@db\.example\.test:3306\/happier$/m);
 });
 
@@ -67,8 +67,8 @@ test('server flavor writer rejects explicitly empty or unknown provider metadata
   for (const initialProvider of ['', 'unsupported']) {
     const { contents, result } = await switchFlavor(t, { initialProvider, target: 'full', expectCode: 1 });
     assert.match(`${result.stdout}\n${result.stderr}`, /invalid DB provider/i);
-    assert.match(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server-light$/m);
-    assert.doesNotMatch(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server$/m);
+    assert.match(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light$/m);
+    assert.doesNotMatch(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server$/m);
   }
 });
 
@@ -80,7 +80,7 @@ test('server flavor writer preserves compatible explicit providers', async (t) =
     databaseUrl,
     target: 'full',
   });
-  assert.match(mysql, /HAPPIER_DB_PROVIDER=mysql\n/);
+  assert.match(mysql, /PIGGERCODE_DB_PROVIDER=mysql\n/);
   assert.match(mysql, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
 
   const { contents: shellMysql } = await switchFlavor(t, {
@@ -92,7 +92,7 @@ test('server flavor writer preserves compatible explicit providers', async (t) =
   assert.match(shellMysql, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
 
   const { contents: pglite } = await switchFlavor(t, { initialProvider: 'pglite', target: 'light' });
-  assert.match(pglite, /HAPPIER_DB_PROVIDER=pglite\n/);
+  assert.match(pglite, /PIGGERCODE_DB_PROVIDER=pglite\n/);
 });
 
 test('server flavor writer fails closed when preserving MySQL without DATABASE_URL', async (t) => {
@@ -103,8 +103,8 @@ test('server flavor writer fails closed when preserving MySQL without DATABASE_U
     expectCode: 1,
   });
   assert.match(`${result.stdout}\n${result.stderr}`, /mysql.*DATABASE_URL|DATABASE_URL.*mysql/i);
-  assert.match(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server$/m);
-  assert.match(contents, /^HAPPIER_DB_PROVIDER=mysql$/m);
+  assert.match(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server$/m);
+  assert.match(contents, /^PIGGERCODE_DB_PROVIDER=mysql$/m);
 });
 
 test('server flavor writer preserves the provider while removing an incompatible database URL', async (t) => {
@@ -113,7 +113,7 @@ test('server flavor writer preserves the provider while removing an incompatible
     databaseUrl: 'mysql://stale:secret@db.example.test:3306/happier',
     target: 'full',
   });
-  assert.match(contents, /^HAPPIER_DB_PROVIDER=sqlite$/m);
+  assert.match(contents, /^PIGGERCODE_DB_PROVIDER=sqlite$/m);
   assert.doesNotMatch(contents, /^DATABASE_URL=/m);
 
   const { contents: lightUrlContents } = await switchFlavor(t, {
@@ -121,6 +121,6 @@ test('server flavor writer preserves the provider while removing an incompatible
     databaseUrl: 'file:/tmp/stale-light-database',
     target: 'full',
   });
-  assert.match(lightUrlContents, /^HAPPIER_DB_PROVIDER=pglite$/m);
+  assert.match(lightUrlContents, /^PIGGERCODE_DB_PROVIDER=pglite$/m);
   assert.doesNotMatch(lightUrlContents, /^DATABASE_URL=/m);
 });

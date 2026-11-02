@@ -52,11 +52,11 @@ import { pruneLogsByCount } from './utils/proc/pruneLogsByCount.mjs';
  */
 
 const STACK_DAEMON_MACHINE_TRANSFER_ENV_KEYS = [
-  'HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES',
-  'HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED',
-  'HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED',
-  'HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT',
-  'HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS',
+  'PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES',
+  'PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED',
+  'PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED',
+  'PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT',
+  'PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS',
 ];
 
 function resolveServerUrlFromOptions(options) {
@@ -107,8 +107,8 @@ function isPathInsideDir(pathLike, dirLike) {
 }
 
 function resolveActiveCliDirForDaemonLaunch(env = process.env) {
-  const repoDir = String(env?.HAPPIER_STACK_REPO_DIR ?? '').trim();
-  const cliRootDir = String(env?.HAPPIER_STACK_CLI_ROOT_DIR ?? '').trim();
+  const repoDir = String(env?.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
+  const cliRootDir = String(env?.PIGGERCODE_STACK_CLI_ROOT_DIR ?? '').trim();
   if (!repoDir && !cliRootDir) return null;
   try {
     const rootDir = getRootDir(import.meta.url);
@@ -117,7 +117,7 @@ function resolveActiveCliDirForDaemonLaunch(env = process.env) {
     if (!monorepoRoot) return null;
     return getComponentDir(rootDir, 'happier-cli', {
       ...env,
-      HAPPIER_STACK_REPO_DIR: monorepoRoot,
+      PIGGERCODE_STACK_REPO_DIR: monorepoRoot,
     });
   } catch {
     return null;
@@ -203,13 +203,13 @@ function sleepMs(ms) {
 
 export function resolveStackDaemonStartVerifyTimeoutMs(env = process.env) {
   return parseNonNegativeInt(
-    env?.HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS,
+    env?.PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS,
     DEFAULT_STACK_DAEMON_START_VERIFY_TIMEOUT_MS,
   );
 }
 
 function hasExplicitServerContext({ serverUrl = '', env = process.env }) {
-  return String(serverUrl ?? '').trim() !== '' || String(env?.HAPPIER_ACTIVE_SERVER_ID ?? '').trim() !== '';
+  return String(serverUrl ?? '').trim() !== '' || String(env?.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim() !== '';
 }
 
 async function persistStackDaemonMachineTransferEnv({ stackName, env = process.env } = {}) {
@@ -406,16 +406,16 @@ export function matchDaemonEnvLine({ line, cliHomeDir, internalServerUrl, public
   const web = String(publicServerUrl ?? '').trim();
 
   // Must be for the same stack home dir.
-  if (home && !raw.includes(`HAPPIER_HOME_DIR=${home}`)) {
-    return { matches: false, reason: 'home', key: 'HAPPIER_HOME_DIR', expected: home };
+  if (home && !raw.includes(`PIGGERCODE_HOME_DIR=${home}`)) {
+    return { matches: false, reason: 'home', key: 'PIGGERCODE_HOME_DIR', expected: home };
   }
   // If we have a desired server URL, require it (prevents ephemeral port mismatches).
-  if (server && !raw.includes(`HAPPIER_SERVER_URL=${server}`)) {
-    return { matches: false, reason: 'server', key: 'HAPPIER_SERVER_URL', expected: server };
+  if (server && !raw.includes(`PIGGERCODE_SERVER_URL=${server}`)) {
+    return { matches: false, reason: 'server', key: 'PIGGERCODE_SERVER_URL', expected: server };
   }
   // Public URL mismatch is less fatal, but prefer it stable too when provided.
-  if (web && !raw.includes(`HAPPIER_WEBAPP_URL=${web}`)) {
-    return { matches: false, reason: 'webapp', key: 'HAPPIER_WEBAPP_URL', expected: web };
+  if (web && !raw.includes(`PIGGERCODE_WEBAPP_URL=${web}`)) {
+    return { matches: false, reason: 'webapp', key: 'PIGGERCODE_WEBAPP_URL', expected: web };
   }
   return { matches: true };
 }
@@ -514,22 +514,22 @@ export function applyDaemonDistClosureRuntimeEnv(
   const statePath = String(runtimeStatePath ?? '').trim();
   if (fingerprint && entrypoint) {
     if (statePath) {
-      env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH = statePath;
+      env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH = statePath;
     } else {
-      delete env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
+      delete env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
     }
-    env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT = entrypoint;
-    env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = fingerprint;
+    env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT = entrypoint;
+    env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = fingerprint;
     if (runtimeBacked === true) {
-      env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED = '1';
+      env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED = '1';
     } else {
-      delete env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED;
+      delete env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED;
     }
   } else {
-    delete env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
-    delete env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT;
-    delete env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
-    delete env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED;
+    delete env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
+    delete env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT;
+    delete env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
+    delete env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED;
   }
   return env;
 }
@@ -562,7 +562,7 @@ export async function createDaemonStartAttemptLogPath({
   cliHomeDir,
   nowMs = Date.now(),
   pid = process.pid,
-  keepCount = resolveLogKeepCount(process.env.HAPPIER_STACK_DAEMON_START_ATTEMPT_LOG_KEEP_COUNT, 20),
+  keepCount = resolveLogKeepCount(process.env.PIGGERCODE_STACK_DAEMON_START_ATTEMPT_LOG_KEEP_COUNT, 20),
 } = {}) {
   const logsDir = join(cliHomeDir, 'logs');
   const logPath = join(logsDir, `${formatTimestampForLogFilename(nowMs)}-pid-${pid}-daemon-start-attempt.log`);
@@ -750,7 +750,7 @@ export async function ensureHappierCliDistExists(
   const distEntrypoint = guardedDist.ok ? guardedDist.distEntrypoint : activeDistEntrypoint;
   const cliDir = activeCliDir || join(dirname(cliBin), '..');
   const buildCli =
-    (env.HAPPIER_STACK_CLI_BUILD ?? '1').toString().trim() !== '0';
+    (env.PIGGERCODE_STACK_CLI_BUILD ?? '1').toString().trim() !== '0';
 
   const readIntegrity = () => readCliDistIntegrity(distEntrypoint);
 
@@ -972,7 +972,7 @@ function extractFirstDaemonStartNoticeLine(excerpt) {
 }
 
 function allowDaemonWaitForAuthWithoutTty() {
-  const raw = (process.env.HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim().toLowerCase();
+  const raw = (process.env.PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim().toLowerCase();
   return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'y';
 }
 
@@ -1048,7 +1048,7 @@ async function maybeAutoReseedInvalidAuth({
 
   const seed = resolveAuthSeedFromEnv(env);
   const allowAccountSwitch =
-    (env.HAPPIER_STACK_AUTO_AUTH_RESEED_ALLOW_ACCOUNT_SWITCH ?? '').toString().trim() === '1';
+    (env.PIGGERCODE_STACK_AUTO_AUTH_RESEED_ALLOW_ACCOUNT_SWITCH ?? '').toString().trim() === '1';
   const guard = shouldSkipAutoReseedForDifferentAccount({
     stackName,
     seed,
@@ -1303,7 +1303,7 @@ async function killDaemonPidSafely({
   }
   const resolvedStackName =
     String(stackName ?? '').trim() ||
-    String(env?.HAPPIER_STACK_STACK ?? '').trim() ||
+    String(env?.PIGGERCODE_STACK_STACK ?? '').trim() ||
     'main';
   const processInstanceFingerprint =
     readRecordedDaemonProcessInstanceFingerprint(runtimeStatePath, pid);
@@ -1444,33 +1444,33 @@ export function getDaemonEnv({
     stackName,
     cliIdentity,
   });
-  const explicitStartupSource = String(baseEnv?.HAPPIER_DAEMON_STARTUP_SOURCE ?? '').trim();
-  const explicitServiceLabel = String(baseEnv?.HAPPIER_DAEMON_SERVICE_LABEL ?? '').trim();
+  const explicitStartupSource = String(baseEnv?.PIGGERCODE_DAEMON_STARTUP_SOURCE ?? '').trim();
+  const explicitServiceLabel = String(baseEnv?.PIGGERCODE_DAEMON_SERVICE_LABEL ?? '').trim();
   const startupSource =
     explicitStartupSource ||
-    (String(baseEnv?.HAPPIER_STACK_SERVICE_MODE ?? '').trim() === '1' ? 'background-service' : 'manual');
+    (String(baseEnv?.PIGGERCODE_STACK_SERVICE_MODE ?? '').trim() === '1' ? 'background-service' : 'manual');
   // Machine identity, credentials, state, and locks stay on the stable stack scope. Matching
   // settings profiles remain credential migration sources in resolveStackCredentialPaths().
   const stackNameForOwnership =
     String(stackName ?? '').trim() ||
-    String(scopedEnv.HAPPIER_STACK_STACK ?? '').trim();
+    String(scopedEnv.PIGGERCODE_STACK_STACK ?? '').trim();
   if (stackNameForOwnership) {
-    scopedEnv.HAPPIER_STACK_STACK = stackNameForOwnership;
+    scopedEnv.PIGGERCODE_STACK_STACK = stackNameForOwnership;
   }
   const hasStackOwnershipContext =
     Boolean(stackNameForOwnership) ||
-    Boolean(String(scopedEnv.HAPPIER_STACK_ENV_FILE ?? '').trim()) ||
-    Boolean(String(scopedEnv.HAPPIER_STACK_REPO_DIR ?? '').trim());
+    Boolean(String(scopedEnv.PIGGERCODE_STACK_ENV_FILE ?? '').trim()) ||
+    Boolean(String(scopedEnv.PIGGERCODE_STACK_REPO_DIR ?? '').trim());
   if (hasStackOwnershipContext) {
-    scopedEnv.HAPPIER_STACK_PROCESS_KIND = 'daemon';
+    scopedEnv.PIGGERCODE_STACK_PROCESS_KIND = 'daemon';
   }
   return {
     ...scopedEnv,
-    HAPPIER_SERVER_URL: internalServerUrl,
-    HAPPIER_WEBAPP_URL: publicServerUrl,
-    HAPPIER_HOME_DIR: cliHomeDir,
-    HAPPIER_DAEMON_STARTUP_SOURCE: startupSource,
-    HAPPIER_DAEMON_SERVICE_LABEL: explicitServiceLabel,
+    PIGGERCODE_SERVER_URL: internalServerUrl,
+    PIGGERCODE_WEBAPP_URL: publicServerUrl,
+    PIGGERCODE_HOME_DIR: cliHomeDir,
+    PIGGERCODE_DAEMON_STARTUP_SOURCE: startupSource,
+    PIGGERCODE_DAEMON_SERVICE_LABEL: explicitServiceLabel,
   };
 }
 
@@ -1502,23 +1502,23 @@ export async function stopLocalDaemon({
   });
   const resolvedStackName =
     String(stackName ?? '').trim() ||
-    String(env?.HAPPIER_STACK_STACK ?? '').trim() ||
+    String(env?.PIGGERCODE_STACK_STACK ?? '').trim() ||
     'main';
   const daemonLifecycleLockTimeoutMs = parseNonNegativeInt(
-    env?.HAPPIER_STACK_DAEMON_LIFECYCLE_LOCK_TIMEOUT_MS,
+    env?.PIGGERCODE_STACK_DAEMON_LIFECYCLE_LOCK_TIMEOUT_MS,
     120_000,
   );
   const daemonLifecycleLockPollMs = parseNonNegativeInt(
-    env?.HAPPIER_STACK_DAEMON_LIFECYCLE_LOCK_POLL_MS,
+    env?.PIGGERCODE_STACK_DAEMON_LIFECYCLE_LOCK_POLL_MS,
     125,
   );
   const daemonStopTimeoutMs = Math.max(
     1,
-    parseNonNegativeInt(env?.HAPPIER_STACK_DAEMON_STOP_TIMEOUT_MS, 10_000),
+    parseNonNegativeInt(env?.PIGGERCODE_STACK_DAEMON_STOP_TIMEOUT_MS, 10_000),
   );
   const daemonStopTerminateGraceMs = Math.max(
     1,
-    parseNonNegativeInt(env?.HAPPIER_STACK_DAEMON_STOP_TERMINATE_GRACE_MS, 500),
+    parseNonNegativeInt(env?.PIGGERCODE_STACK_DAEMON_STOP_TERMINATE_GRACE_MS, 500),
   );
 
   return await withStackDaemonLifecycleLock(
@@ -1655,11 +1655,11 @@ export async function startLocalDaemonWithAuth({
 } = {}) {
   const resolvedStackName =
     (stackName ?? '').toString().trim() ||
-    (env.HAPPIER_STACK_STACK ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_STACK ?? '').toString().trim() ||
     'main';
   const resolvedCliIdentity =
     (cliIdentity ?? '').toString().trim() ||
-    (env.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() ||
     'default';
   const baseEnv = { ...env };
   await persistStackDaemonMachineTransferEnv({
@@ -1674,7 +1674,7 @@ export async function startLocalDaemonWithAuth({
     stackName: resolvedStackName,
     cliIdentity: resolvedCliIdentity,
   });
-  const isTui = (baseEnv.HAPPIER_STACK_TUI ?? '').toString().trim() === '1';
+  const isTui = (baseEnv.PIGGERCODE_STACK_TUI ?? '').toString().trim() === '1';
   const syncRuntimeDaemonState = async ({ runtimeDaemonPid = null } = {}) => {
     const observedState = await checkDaemonStatePingAware(cliHomeDir, {
       serverUrl: internalServerUrl,
@@ -1695,9 +1695,9 @@ export async function startLocalDaemonWithAuth({
   };
   const daemonLifecycleLockTimeoutMs = resolveAttendedStartupTimeoutMs({
     isTui,
-    timeoutMs: parseNonNegativeInt(baseEnv.HAPPIER_STACK_DAEMON_LIFECYCLE_LOCK_TIMEOUT_MS, 180_000),
+    timeoutMs: parseNonNegativeInt(baseEnv.PIGGERCODE_STACK_DAEMON_LIFECYCLE_LOCK_TIMEOUT_MS, 180_000),
   });
-  const daemonLifecycleLockPollMs = parseNonNegativeInt(baseEnv.HAPPIER_STACK_DAEMON_LIFECYCLE_LOCK_POLL_MS, 125);
+  const daemonLifecycleLockPollMs = parseNonNegativeInt(baseEnv.PIGGERCODE_STACK_DAEMON_LIFECYCLE_LOCK_POLL_MS, 125);
 
   return await withStackDaemonLifecycleLock(
     { cliHomeDir, internalServerUrl, stackName: resolvedStackName },
@@ -1788,7 +1788,7 @@ export async function startLocalDaemonWithAuth({
   const canReconcileProfileWithAdmittedCli =
     !distCheck.generationAdmissionRequired || distCheck.current === true;
   if (canReconcileProfileWithAdmittedCli && existsSync(join(cliHomeDir, 'settings.json'))) {
-    const serverId = String(daemonEnv.HAPPIER_ACTIVE_SERVER_ID ?? '').trim();
+    const serverId = String(daemonEnv.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim();
     if (serverId) {
       const verifyPersistedProfile = shouldVerifyStackServerProfileReconciliation(cliHomeDir);
       const profileCommand = resolveDaemonCommandSpec({
@@ -1809,7 +1809,7 @@ export async function startLocalDaemonWithAuth({
           ...buildStackServerProfileSetArgs({ serverId, internalServerUrl, publicServerUrl }),
         ],
         {
-          env: { ...daemonEnv, HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP: '1' },
+          env: { ...daemonEnv, PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP: '1' },
           stdio: 'ignore',
           timeoutMs: 10_000,
           captureFailureDiagnostic: { env: daemonEnv },
@@ -1828,7 +1828,7 @@ export async function startLocalDaemonWithAuth({
 
   // If this is a migrated/new stack home dir, seed credentials from the user's existing login (best-effort)
   // to avoid requiring an interactive auth flow under launchd.
-  const migrateCreds = (baseEnv.HAPPIER_STACK_MIGRATE_CREDENTIALS ?? '1').trim() !== '0';
+  const migrateCreds = (baseEnv.PIGGERCODE_STACK_MIGRATE_CREDENTIALS ?? '1').trim() !== '0';
   if (migrateCreds) {
     await seedCredentialsIfMissing({ cliHomeDir });
   }
@@ -1847,7 +1847,7 @@ export async function startLocalDaemonWithAuth({
     // best-effort only
   }
   let credentialRepair = null;
-  const credentialValidateTimeoutMs = parseNonNegativeInt(baseEnv.HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS, 2_500);
+  const credentialValidateTimeoutMs = parseNonNegativeInt(baseEnv.PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS, 2_500);
   try {
     credentialRepair = await ensureActiveAccessKeyValid({
       cliHomeDir,
@@ -1919,7 +1919,7 @@ export async function startLocalDaemonWithAuth({
         : null;
     console.log(
       formatDaemonAuthScopeDiagnostic({
-        activeServerId: daemonEnv.HAPPIER_ACTIVE_SERVER_ID,
+        activeServerId: daemonEnv.PIGGERCODE_ACTIVE_SERVER_ID,
         activeCredentialPath: credentialPaths.serverScopedPath,
         tokenSub: tokenSub ? String(tokenSub) : null,
         tokenSubBeforeRepair: tokenSubBeforeRepair ? String(tokenSubBeforeRepair) : null,
@@ -2054,8 +2054,8 @@ export async function startLocalDaemonWithAuth({
   // Daemon startup can outlive the CLI's short foreground "still starting" window: source
   // daemons reattach sessions and hydrate local state, and packaged daemons may warm runtime state.
   const startVerifyTimeoutMs = resolveStackDaemonStartVerifyTimeoutMs(baseEnv);
-  const startVerifyPollMs = parseNonNegativeInt(baseEnv.HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS, 125);
-  const startVerifyStableMs = parseNonNegativeInt(baseEnv.HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS, 750);
+  const startVerifyPollMs = parseNonNegativeInt(baseEnv.PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS, 125);
+  const startVerifyStableMs = parseNonNegativeInt(baseEnv.PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS, 750);
 
   const restartStaleRunningDaemon = async ({ pid, distRestartReason }) => {
     console.warn(`[local] daemon is running with stale runtime; requesting confirmed overlap restart (pid=${pid}).\n[local] ${distRestartReason}`);

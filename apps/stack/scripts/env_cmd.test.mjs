@@ -27,8 +27,8 @@ test('hstack env path defaults to main stack env file when no explicit env file 
   const baseEnv = {
     ...process.env,
     // Prevent loading the user's real ~/.happier-stack/.env via canonical discovery.
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'env.mjs'), 'path', '--json'], {
@@ -45,7 +45,7 @@ test('hstack env path defaults to main stack env file when no explicit env file 
   );
 });
 
-test('hstack env edits the explicit stack env file when HAPPIER_STACK_ENV_FILE is set', async (t) => {
+test('hstack env edits the explicit stack env file when PIGGERCODE_STACK_ENV_FILE is set', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await withTempRoot(t);
@@ -59,9 +59,9 @@ test('hstack env edits the explicit stack env file when HAPPIER_STACK_ENV_FILE i
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'env.mjs'), 'set', 'FOO=bar'], { cwd: rootDir, env: baseEnv });
@@ -85,9 +85,9 @@ test('hstack env expands ~/ explicit env file overrides against HOME', async (t)
   const baseEnv = {
     ...process.env,
     HOME: homeDir,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
   };
 
   const setRes = await runNode([join(rootDir, 'scripts', 'env.mjs'), 'set', 'FOO=bar'], { cwd: rootDir, env: baseEnv });
@@ -115,8 +115,8 @@ test('hstack env (no subcommand) prints usage and exits 0', async (t) => {
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'env.mjs')], { cwd: rootDir, env: baseEnv });
@@ -139,9 +139,9 @@ test('hstack env list prints keys in text mode', async (t) => {
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'env.mjs'), 'list'], { cwd: rootDir, env: baseEnv });

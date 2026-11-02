@@ -71,10 +71,10 @@ test('hstack stack start --runtime --background launches the active runtime snap
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
 
   const startRes = await runNode(
@@ -94,15 +94,15 @@ test('hstack stack start --runtime --background launches the active runtime snap
     assert.equal(runtimeState.runtimeSnapshotId, 'snap-startable');
 
     const serverRuntimeEnv = JSON.parse(await readFile(fixture.serverEnvCapturePath, 'utf8'));
-    assert.equal(serverRuntimeEnv.HAPPIER_SERVER_FLAVOR, 'light');
+    assert.equal(serverRuntimeEnv.PIGGERCODE_SERVER_FLAVOR, 'light');
     assert.equal(serverRuntimeEnv.HAPPY_SERVER_FLAVOR, 'light');
-    assert.equal(serverRuntimeEnv.HAPPIER_SQLITE_AUTO_MIGRATE, '1');
+    assert.equal(serverRuntimeEnv.PIGGERCODE_SQLITE_AUTO_MIGRATE, '1');
     assert.equal(
-      serverRuntimeEnv.HAPPIER_SQLITE_MIGRATIONS_DIR,
+      serverRuntimeEnv.PIGGERCODE_SQLITE_MIGRATIONS_DIR,
       join(fixture.snapshotDir, 'server', 'prisma', 'sqlite', 'migrations'),
     );
     assert.notEqual(
-      serverRuntimeEnv.HAPPIER_SQLITE_MIGRATIONS_DIR,
+      serverRuntimeEnv.PIGGERCODE_SQLITE_MIGRATIONS_DIR,
       join(fixture.stackDir, 'runtime', 'current', 'server', 'prisma', 'sqlite', 'migrations'),
     );
     assert.equal(
@@ -113,7 +113,7 @@ test('hstack stack start --runtime --background launches the active runtime snap
         sqlite: resolveServerLightSqliteDatabaseUrlOptionsFromEnv(env),
       }),
     );
-    assert.equal(serverRuntimeEnv.HAPPIER_SERVER_LIGHT_DATA_DIR, join(fixture.stackDir, 'server-light'));
+    assert.equal(serverRuntimeEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR, join(fixture.stackDir, 'server-light'));
 
     await waitForStackDaemonRunning({ rootDir, fixture, env });
   } finally {
@@ -132,10 +132,10 @@ test('unmanaged full runtime migrates from the admitted immutable server directo
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
   const startRes = await runNode([
     join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName,
@@ -166,10 +166,10 @@ test('light preset with postgres uses the same packaged provider migration path'
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
   const startRes = await runNode([
     join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName,
@@ -200,11 +200,11 @@ test('full preset with sqlite uses the canonical in-process migration path', asy
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_RUNTIME_SERVER_ENV_CAPTURE_PATH: fixture.serverEnvCapturePath,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_RUNTIME_SERVER_ENV_CAPTURE_PATH: fixture.serverEnvCapturePath,
   };
   const startRes = await runNode([
     join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName,
@@ -215,9 +215,9 @@ test('full preset with sqlite uses the canonical in-process migration path', asy
     assert.equal(startRes.code, 0, `stdout:\n${startRes.stdout}\nstderr:\n${startRes.stderr}`);
     await waitForHealth(fixture.baseUrl, { timeoutMs: 30_000 });
     const serverEnv = JSON.parse(await readFile(fixture.serverEnvCapturePath, 'utf8'));
-    assert.equal(serverEnv.HAPPIER_SERVER_FLAVOR, 'full');
-    assert.equal(serverEnv.HAPPIER_SQLITE_AUTO_MIGRATE, '1');
-    assert.equal(serverEnv.HAPPIER_SERVER_LIGHT_DATA_DIR, join(fixture.stackDir, 'server-light'));
+    assert.equal(serverEnv.PIGGERCODE_SERVER_FLAVOR, 'full');
+    assert.equal(serverEnv.PIGGERCODE_SQLITE_AUTO_MIGRATE, '1');
+    assert.equal(serverEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR, join(fixture.stackDir, 'server-light'));
     assert.equal((await readFile(fixture.runtimeServerEventLogPath, 'utf8')).trim(), 'server');
   } finally {
     await runNode([join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'stop', fixture.stackName, '--yes'], { cwd: rootDir, env });
@@ -233,10 +233,10 @@ test('unmanaged full runtime with no artifact migration command fails before nor
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
   const startRes = await runNode([
     join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName,
@@ -263,14 +263,14 @@ test('runtime start rejects requested light flavor when the admitted snapshot is
   });
   const envPath = join(fixture.stackDir, 'env');
   const mismatchedEnv = (await readFile(envPath, 'utf8'))
-    .replace('HAPPIER_STACK_SERVER_COMPONENT=happier-server\n', 'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n');
+    .replace('PIGGERCODE_STACK_SERVER_COMPONENT=happier-server\n', 'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n');
   await writeFile(envPath, mismatchedEnv, 'utf8');
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   };
   const startRes = await runNode([
     join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName,
@@ -293,10 +293,10 @@ test('hstack stack start --runtime --no-ui publishes the effective disabled UI d
   const fixture = await createStartableRuntimeSnapshotFixture(t, { stackName: 'runtime-no-ui' });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
 
   const startRes = await runNode(
@@ -348,11 +348,11 @@ test('hstack stack start --runtime --background fails when the requested daemon 
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS: '15000',
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS: '15000',
   };
 
   const startRes = await runNode(
@@ -377,17 +377,17 @@ test('hstack stack start --runtime --restart reuses persisted direct-peer topolo
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
   const topologyEnv = {
     ...baseEnv,
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: 'host.lima.internal',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '13378',
-    HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: 'true',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: 'true',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: 'host.lima.internal',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '13378',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: 'true',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: 'true',
   };
 
   const startArgs = [join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName, '--background', '--runtime', '--no-browser'];
@@ -401,10 +401,10 @@ test('hstack stack start --runtime --restart reuses persisted direct-peer topolo
     const daemonBeforeRestart = await waitForStackDaemonRunning({ rootDir, fixture, env: topologyEnv });
 
     const envTextAfterStart = await readFile(join(fixture.stackDir, 'env'), 'utf8');
-    assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=host\.lima\.internal/);
-    assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=13378/);
-    assert.match(envTextAfterStart, /HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=true/);
-    assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=true/);
+    assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=host\.lima\.internal/);
+    assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=13378/);
+    assert.match(envTextAfterStart, /PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=true/);
+    assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=true/);
 
     const daemonLogPath = join(fixture.cliHomeDir, 'runtime-daemon.log');
     const daemonLogAfterStart = await readFile(daemonLogPath, 'utf8');
@@ -443,11 +443,11 @@ test('hstack stack start --runtime --restart keeps a service-mode stack healthy'
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_SERVICE_MODE: '1',
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_SERVICE_MODE: '1',
   };
 
   const startArgs = [join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'start', fixture.stackName, '--background', '--runtime', '--no-browser'];
@@ -495,27 +495,27 @@ test('hstack stack start --runtime --restart keeps a service-owned daemon alive 
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
   };
 
   await writeFile(
     join(fixture.stackDir, 'env'),
     [
-      `HAPPIER_STACK_STACK=${fixture.stackName}`,
-      `HAPPIER_STACK_REPO_DIR=${rootDir}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_SERVER_PORT=${fixture.serverPort}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${fixture.cliHomeDir}`,
-      'HAPPIER_STACK_RUNTIME_MODE=require',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_SERVICE_MODE=1',
-      'HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH=1',
-      'HAPPIER_RUNTIME_SNAPSHOT_MARKER=snap-startable',
-      `HAPPIER_RUNTIME_SERVER_ENV_CAPTURE_PATH=${fixture.serverEnvCapturePath}`,
+      `PIGGERCODE_STACK_STACK=${fixture.stackName}`,
+      `PIGGERCODE_STACK_REPO_DIR=${rootDir}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_SERVER_PORT=${fixture.serverPort}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${fixture.cliHomeDir}`,
+      'PIGGERCODE_STACK_RUNTIME_MODE=require',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_SERVICE_MODE=1',
+      'PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH=1',
+      'PIGGERCODE_RUNTIME_SNAPSHOT_MARKER=snap-startable',
+      `PIGGERCODE_RUNTIME_SERVER_ENV_CAPTURE_PATH=${fixture.serverEnvCapturePath}`,
       '',
     ].join('\n'),
     'utf8',

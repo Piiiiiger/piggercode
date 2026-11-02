@@ -1138,15 +1138,15 @@ test('resolveDevReloadPollIntervalMs defaults on and supports explicit opt-out',
   assert.equal(resolveDevReloadPollIntervalMs({}), 10_000);
   assert.equal(resolveDevReloadPollIntervalMs({}, { defaultMs: 2000 }), 2000);
   assert.equal(
-    resolveDevReloadPollIntervalMs({ HAPPIER_STACK_DEV_RELOAD_POLL_MS: '750' }, { defaultMs: 2000 }),
+    resolveDevReloadPollIntervalMs({ PIGGERCODE_STACK_DEV_RELOAD_POLL_MS: '750' }, { defaultMs: 2000 }),
     750,
   );
   assert.equal(
-    resolveDevReloadPollIntervalMs({ HAPPIER_STACK_DEV_RELOAD_POLL_MS: '0' }, { defaultMs: 2000 }),
+    resolveDevReloadPollIntervalMs({ PIGGERCODE_STACK_DEV_RELOAD_POLL_MS: '0' }, { defaultMs: 2000 }),
     0,
   );
   assert.equal(
-    resolveDevReloadPollIntervalMs({ HAPPIER_STACK_DEV_RELOAD_POLL_MS: '-1' }, { defaultMs: 2000 }),
+    resolveDevReloadPollIntervalMs({ PIGGERCODE_STACK_DEV_RELOAD_POLL_MS: '-1' }, { defaultMs: 2000 }),
     2000,
   );
 });

@@ -175,7 +175,7 @@ test('resolveTauriPaneSpawnConfig builds a Tauri env with cargo available even w
   assert.ok(entries.includes('/usr/bin'));
   assert.ok(entries.includes('/bin'));
   assert.equal(env.CARGO, cargoBinary);
-  assert.equal(env.HAPPIER_STACK_TUI, '1');
+  assert.equal(env.PIGGERCODE_STACK_TUI, '1');
 });
 
 test('resolveTauriPaneSpawnConfig exports rustup homes for the real user cargo toolchain', async () => {
@@ -251,16 +251,16 @@ test('resolveTauriPaneSpawnConfig can pin the TUI-orchestrated Expo port and ski
       PATH: '/usr/bin:/bin',
       HOME: isolatedHome,
       USERPROFILE: isolatedHome,
-      HAPPIER_STACK_EXPO_DEV_PORT: '19364',
-      HAPPIER_STACK_TAURI_WAIT_FOR_EXPO: '1',
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '19364',
+      PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO: '1',
     },
     expoPort: 24876,
     skipExpoWait: true,
     resolveUserHomeDir: () => realHome,
   });
 
-  assert.equal(env.HAPPIER_STACK_EXPO_DEV_PORT, '24876');
-  assert.equal(env.HAPPIER_STACK_TAURI_WAIT_FOR_EXPO, '0');
+  assert.equal(env.PIGGERCODE_STACK_EXPO_DEV_PORT, '24876');
+  assert.equal(env.PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO, '0');
 });
 
 test('buildTauriPaneEnv can force a clean Expo cache for TUI-managed Tauri runs', () => {
@@ -269,20 +269,20 @@ test('buildTauriPaneEnv can force a clean Expo cache for TUI-managed Tauri runs'
     forceExpoClearCache: true,
   });
 
-  assert.equal(env.HAPPIER_STACK_TUI, '1');
-  assert.equal(env.HAPPIER_STACK_EXPO_CLEAR_CACHE, '1');
+  assert.equal(env.PIGGERCODE_STACK_TUI, '1');
+  assert.equal(env.PIGGERCODE_STACK_EXPO_CLEAR_CACHE, '1');
 });
 
 test('buildTauriPaneEnv preserves an explicit Expo cache opt-out', () => {
   const env = tauriMode.buildTauriPaneEnv({
     env: {
       PATH: '/usr/bin:/bin',
-      HAPPIER_STACK_EXPO_CLEAR_CACHE: '0',
+      PIGGERCODE_STACK_EXPO_CLEAR_CACHE: '0',
     },
     forceExpoClearCache: true,
   });
 
-  assert.equal(env.HAPPIER_STACK_EXPO_CLEAR_CACHE, '0');
+  assert.equal(env.PIGGERCODE_STACK_EXPO_CLEAR_CACHE, '0');
 });
 
 test('waitForTauriPaneExpoReady waits for the TUI runtime Expo port to become reachable', async () => {

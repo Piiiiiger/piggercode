@@ -101,7 +101,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
         arch: 'arm64',
         homeDir,
         env: {
-          HAPPIER_WEBAPP_URL: 'https://web.example.test',
+          PIGGERCODE_WEBAPP_URL: 'https://web.example.test',
           HAPPY_WEBAPP_URL: 'https://legacy-web.example.test',
         },
         runServiceCommands: false,
@@ -126,7 +126,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
         homeDir,
       });
       const envText = await readFileText(join(defaults.configDir, 'server.env'));
-      expect(envText).toContain('HAPPIER_WEBAPP_URL=https://web.example.test');
+      expect(envText).toContain('PIGGERCODE_WEBAPP_URL=https://web.example.test');
       expect(envText).toContain('HAPPY_WEBAPP_URL=https://legacy-web.example.test');
     } finally {
       await rm(homeDir, { recursive: true, force: true });
@@ -208,7 +208,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
           platform: 'linux',
           arch: 'arm64',
           homeDir,
-          env: { HAPPIER_SQLITE_AUTO_MIGRATE: '0' },
+          env: { PIGGERCODE_SQLITE_AUTO_MIGRATE: '0' },
           runServiceCommands: false,
           skipHealthCheck: true,
         });
@@ -245,7 +245,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
         platform: 'linux',
         arch: 'arm64',
         homeDir,
-        env: { HAPPIER_SQLITE_AUTO_MIGRATE: '0' },
+        env: { PIGGERCODE_SQLITE_AUTO_MIGRATE: '0' },
         runServiceCommands: false,
         skipHealthCheck: true,
       })).rejects.toThrow(/database migration exited with status 3[\s\S]*database is locked/);
@@ -291,7 +291,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
     }
   });
 
-  it('writes HAPPIER_SERVER_UI_DIR pointing at the installRoot ui-web/current', async () => {
+  it('writes PIGGERCODE_SERVER_UI_DIR pointing at the installRoot ui-web/current', async () => {
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-cli-common-relay-runtime-'));
     try {
       const payloadRoot = join(homeDir, 'payload');
@@ -322,13 +322,13 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
       const envPath = join(defaults.configDir, 'server.env');
       const envText = await readFileText(envPath);
 
-      expect(envText).toContain(`HAPPIER_SERVER_UI_DIR=${join(defaults.installRoot, 'ui-web', 'current')}`);
+      expect(envText).toContain(`PIGGERCODE_SERVER_UI_DIR=${join(defaults.installRoot, 'ui-web', 'current')}`);
     } finally {
       await rm(homeDir, { recursive: true, force: true });
     }
   });
 
-  it('rejects HAPPIER_SERVER_UI_DIR overrides instead of persisting a volatile UI source path', async () => {
+  it('rejects PIGGERCODE_SERVER_UI_DIR overrides instead of persisting a volatile UI source path', async () => {
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-cli-common-relay-runtime-'));
     try {
       const payloadRoot = join(homeDir, 'payload');
@@ -347,7 +347,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
         arch: 'arm64',
         homeDir,
         env: {
-          HAPPIER_SERVER_UI_DIR: join(tmpdir(), 'happier-ui-web-volatile'),
+          PIGGERCODE_SERVER_UI_DIR: join(tmpdir(), 'happier-ui-web-volatile'),
         },
         runServiceCommands: false,
         skipHealthCheck: true,
@@ -572,7 +572,7 @@ describe('installOrUpdateRelayRuntimeLocal', () => {
       await expect(readFileText(installedGeneratedEnginePath)).resolves.toBe('generated-engine\n');
       await expect(lstat(installedBinaryPath)).resolves.toSatisfy((stats) => stats.isSymbolicLink() === false);
       const envText = await readFileText(envPath);
-      expect(envText).toContain('HAPPIER_SQLITE_AUTO_MIGRATE=1');
+      expect(envText).toContain('PIGGERCODE_SQLITE_AUTO_MIGRATE=1');
       expect(envText).toContain(`NODE_PATH=${join(defaults.installRoot, 'bin', 'node_modules')}`);
       expect(envText).toContain(`PRISMA_QUERY_ENGINE_LIBRARY=${installedPrismaEnginePath}`);
     } finally {

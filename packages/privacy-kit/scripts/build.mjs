@@ -64,7 +64,7 @@ function runBuild() {
   const packageJsonPath = join(packageRoot, 'package.json');
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
   const outputFiles = collectDistOutputFiles(packageJson);
-  const requestedOutputDir = String(process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR ?? '').trim();
+  const requestedOutputDir = String(process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR ?? '').trim();
   const outputDir = resolve(packageRoot, requestedOutputDir || 'dist');
   const sourceDir = realpathSync.native(join(packageRoot, 'src'));
 

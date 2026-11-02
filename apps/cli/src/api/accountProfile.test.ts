@@ -12,13 +12,13 @@ describe('fetchAccountProfile', () => {
   });
 
   it('uses the canonical endpoint selected by loaded configuration', async () => {
-    vi.stubEnv('HAPPIER_LOCAL_SERVER_URL', '');
-    vi.stubEnv('HAPPIER_PUBLIC_SERVER_URL', '');
-    vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:41001');
+    vi.stubEnv('PIGGERCODE_LOCAL_SERVER_URL', '');
+    vi.stubEnv('PIGGERCODE_PUBLIC_SERVER_URL', '');
+    vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:41001');
 
     await import('@/configuration');
 
-    vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:52002');
+    vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:52002');
     (axios.get as any).mockResolvedValue({
       status: 200,
       data: { id: 'acct_1' },

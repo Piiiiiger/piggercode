@@ -7,8 +7,8 @@ describe('providers harness: model startup args', () => {
     const args = resolveProviderModelCliArgs({
       providerId: 'codex',
       env: {
-        HAPPIER_E2E_PROVIDER_MODEL: 'global-default',
-        HAPPIER_E2E_PROVIDER_MODEL_CODEX: 'provider-specific',
+        PIGGERCODE_E2E_PROVIDER_MODEL: 'global-default',
+        PIGGERCODE_E2E_PROVIDER_MODEL_CODEX: 'provider-specific',
       },
       nowMs: () => 1700000000000,
     });
@@ -20,7 +20,7 @@ describe('providers harness: model startup args', () => {
     const args = resolveProviderModelCliArgs({
       providerId: 'claude',
       env: {
-        HAPPIER_E2E_PROVIDER_MODEL: 'global-default',
+        PIGGERCODE_E2E_PROVIDER_MODEL: 'global-default',
       },
       nowMs: () => 1700000000001,
     });

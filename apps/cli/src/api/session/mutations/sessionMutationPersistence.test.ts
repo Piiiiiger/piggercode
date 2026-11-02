@@ -6,12 +6,12 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let tempHomeDir: string | null = null;
-const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
 async function useTempHappyHome(): Promise<string> {
     const dir = await mkdtemp(join(tmpdir(), 'happier-cli-session-mutation-persistence-'));
     tempHomeDir = dir;
-    process.env.HAPPIER_HOME_DIR = dir;
+    process.env.PIGGERCODE_HOME_DIR = dir;
     return dir;
 }
 
@@ -69,7 +69,7 @@ describe('session mutation persistence', () => {
     });
 
     afterEach(async () => {
-        process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+        process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
         if (tempHomeDir) {
             await rm(tempHomeDir, { recursive: true, force: true });
             tempHomeDir = null;

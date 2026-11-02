@@ -436,23 +436,23 @@ and no armed intent — and the submit path reads only the armed intent.
 Server env (`apps/server/sources/app/features/catalog/featureEnvSchema.ts`,
 `readFeatureEnv.ts`):
 
-- `HAPPIER_FEATURE_SESSIONS_AGENT_SWITCHING__ENABLED` — parsed with a `true`
+- `PIGGERCODE_FEATURE_SESSIONS_AGENT_SWITCHING__ENABLED` — parsed with a `true`
   default, so this is an **opt-out**. The feature is on unless an operator
   turns it off.
 
 Daemon env (`apps/cli/src/configuration.ts`) — these bound the shared Replay
 seed pass, so they also affect forking and source-context spawns:
 
-- `HAPPIER_REPLAY_MAX_SEED_CHARS` — default `120000`, min `1024`, max `200000`.
+- `PIGGERCODE_REPLAY_MAX_SEED_CHARS` — default `120000`, min `1024`, max `200000`.
   The minimum is not a round number: the prompt builder's frame floor is 814
   characters (pinned in `happierReplayPrompt.spec.ts`), and below that floor the
   builder correctly returns **no** seed rather than a frame with no transcript
   under it. `1024` sits above the measured floor with room to grow, so a clamped
   value can always deliver a real prompt. A caller-supplied `maxSeedChars` on
   the wire is not clamped here and may be lower.
-- `HAPPIER_REPLAY_SEED_CANDIDATE_LIMIT` — default `500`, min `50`, max `500`.
-- `HAPPIER_REPLAY_SEED_MAX_TRANSCRIPT_REQUESTS` — default `8`, min `1`, max `24`.
-- `HAPPIER_REPLAY_SEED_TRANSCRIPT_DEADLINE_MS` — default `15000`, min `1000`,
+- `PIGGERCODE_REPLAY_SEED_CANDIDATE_LIMIT` — default `500`, min `50`, max `500`.
+- `PIGGERCODE_REPLAY_SEED_MAX_TRANSCRIPT_REQUESTS` — default `8`, min `1`, max `24`.
+- `PIGGERCODE_REPLAY_SEED_TRANSCRIPT_DEADLINE_MS` — default `15000`, min `1000`,
   max `120000`. This walk runs after the source runtime is stopped and while the
   user is waiting.
 

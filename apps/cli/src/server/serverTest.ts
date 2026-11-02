@@ -8,7 +8,7 @@ import net from 'node:net';
 import { isLoopbackHostname } from '@piggercode/protocol';
 
 function resolveTimeoutMs(): number {
-  const raw = Number(process.env.HAPPIER_SERVER_TEST_TIMEOUT_MS ?? '');
+  const raw = Number(process.env.PIGGERCODE_SERVER_TEST_TIMEOUT_MS ?? '');
   if (Number.isFinite(raw) && raw > 0) return raw;
   return 5000;
 }

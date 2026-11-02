@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HAPPIER_SESSION_ID_ENV_KEY,
+  PIGGERCODE_SESSION_ID_ENV_KEY,
   readCurrentHappierSessionIdFromEnv,
   withCurrentHappierSessionId,
 } from './currentSessionIdEnv';
@@ -12,7 +12,7 @@ describe('currentSessionIdEnv', () => {
 
     expect(env).toEqual({
       PATH: '/bin',
-      [HAPPIER_SESSION_ID_ENV_KEY]: 'session-123',
+      [PIGGERCODE_SESSION_ID_ENV_KEY]: 'session-123',
     });
     expect(readCurrentHappierSessionIdFromEnv(env)).toBe('session-123');
   });
@@ -21,11 +21,11 @@ describe('currentSessionIdEnv', () => {
     'clears an inherited caller session for unresolved id %j',
     (sessionId) => {
       const env = withCurrentHappierSessionId({
-        [HAPPIER_SESSION_ID_ENV_KEY]: 'outer-session',
+        [PIGGERCODE_SESSION_ID_ENV_KEY]: 'outer-session',
       }, sessionId);
 
       expect(readCurrentHappierSessionIdFromEnv(env)).toBeNull();
-      expect(env).not.toHaveProperty(HAPPIER_SESSION_ID_ENV_KEY);
+      expect(env).not.toHaveProperty(PIGGERCODE_SESSION_ID_ENV_KEY);
     },
   );
 
@@ -33,7 +33,7 @@ describe('currentSessionIdEnv', () => {
     'does not expose unusable ambient session id %j',
     (sessionId) => {
       expect(readCurrentHappierSessionIdFromEnv({
-        [HAPPIER_SESSION_ID_ENV_KEY]: sessionId,
+        [PIGGERCODE_SESSION_ID_ENV_KEY]: sessionId,
       })).toBeNull();
     },
   );

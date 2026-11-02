@@ -3,11 +3,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
-import { HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceBrokerSelectionIdentityEnv';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
 } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { rehydrateLiveExecutionRunRuntimeTargets } from '../startup/executionRunTargetRehydration';
@@ -124,7 +124,7 @@ describe('createExecutionRunConnectedServicesBridge', () => {
         ...buildResolved(),
         env: {
           CODEX_HOME: '/materialized/run/codex/codex-home',
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson,
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson,
         },
         connectedServicesBindings,
       })) as unknown as ResolveConnectedServiceAuthForRun,
@@ -241,7 +241,7 @@ describe('createExecutionRunConnectedServicesBridge', () => {
         ...buildResolved(),
         env: {
           OPENCODE_SERVER: 'http://x',
-          [HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY]: 'oc-pool-x',
+          [PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY]: 'oc-pool-x',
         },
       })) as unknown as ResolveConnectedServiceAuthForRun,
       runtimeRegistry: registry,
@@ -342,7 +342,7 @@ describe('createExecutionRunConnectedServicesBridge', () => {
         cleanupMaterializationRoot,
         env: {
           CODEX_HOME: providerTargetRoot,
-          [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: providerTargetRoot,
+          [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: providerTargetRoot,
         },
       })) as unknown as ResolveConnectedServiceAuthForRun,
       runtimeRegistry: registry,

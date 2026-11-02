@@ -86,7 +86,7 @@ async function main() {
         '',
         'Notes:',
         '- This script is designed to avoid editing upstream UI config in-place.',
-        '- If you explicitly set HAPPIER_PUBLIC_SERVER_URL (or HAPPIER_STACK_SERVER_URL as a fallback), it bakes that URL into the app via EXPO_PUBLIC_HAPPY_SERVER_URL.',
+        '- If you explicitly set PIGGERCODE_PUBLIC_SERVER_URL (or PIGGERCODE_STACK_SERVER_URL as a fallback), it bakes that URL into the app via EXPO_PUBLIC_HAPPY_SERVER_URL.',
       ].join('\n'),
     });
     return;
@@ -126,10 +126,10 @@ async function main() {
   // Default to a dev bundle identifier/scheme that is distinct from the App Store build so iOS opens
   // the dev build instead of the App Store app when scanning QR/deeplinks.
   const appEnv = process.env.APP_ENV ?? kv.get('--app-env') ?? 'development';
-  const host = kv.get('--host') ?? process.env.HAPPIER_STACK_MOBILE_HOST ?? 'lan';
+  const host = kv.get('--host') ?? process.env.PIGGERCODE_STACK_MOBILE_HOST ?? 'lan';
   const expoTailscale = flags.has('--expo-tailscale') || resolveExpoTailscaleEnabled({ env: process.env });
   const portFromArg = kv.get('--port') ?? '';
-  const portFromEnv = process.env.HAPPIER_STACK_MOBILE_PORT ?? '';
+  const portFromEnv = process.env.PIGGERCODE_STACK_MOBILE_PORT ?? '';
   const portRaw = portFromArg || portFromEnv || '8081';
   // Default behavior:
   // - `hstack mobile` starts Metro and keeps running.
@@ -146,7 +146,7 @@ async function main() {
     APP_ENV: appEnv,
   };
   if (memoryAttributionRuntime) {
-    env.HAPPIER_IOS_MEMORY_PROFILING_RUNTIME = '1';
+    env.PIGGERCODE_IOS_MEMORY_PROFILING_RUNTIME = '1';
   }
 
   const cfgBase = resolveMobileExpoConfig({ env });
@@ -163,7 +163,7 @@ async function main() {
   // If we stick to the default 8081, builds are much more likely to fail late if another Metro/Expo claims 8081 mid-build.
   //
   // Strategy:
-  // - If the user explicitly sets --port or HAPPIER_STACK_MOBILE_PORT, honor it.
+  // - If the user explicitly sets --port or PIGGERCODE_STACK_MOBILE_PORT, honor it.
   // - Otherwise pick a stable, collision-resistant port in a higher range for build-only steps.
   const needsNativeBuildPort = flags.has('--prebuild') || flags.has('--run-ios') || flags.has('--run-android');
   if (needsNativeBuildPort) {
@@ -172,8 +172,8 @@ async function main() {
     const startPort = resolveStablePortStart({
       env,
       stackName: stableKey,
-      baseKey: 'HAPPIER_STACK_MOBILE_BUILD_PORT_BASE',
-      rangeKey: 'HAPPIER_STACK_MOBILE_BUILD_PORT_RANGE',
+      baseKey: 'PIGGERCODE_STACK_MOBILE_BUILD_PORT_BASE',
+      rangeKey: 'PIGGERCODE_STACK_MOBILE_BUILD_PORT_RANGE',
       defaultBase: 19000,
       defaultRange: 10000,
     });
@@ -216,7 +216,7 @@ async function main() {
   // This is read by the app via `process.env.EXPO_PUBLIC_HAPPY_SERVER_URL`.
   const serverPort = resolveServerPortFromEnv({ env, defaultPort: 3005 });
   const allowEnableTailscale =
-    !stackMode || stackName === 'main' || (env.HAPPIER_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
+    !stackMode || stackName === 'main' || (env.PIGGERCODE_STACK_TAILSCALE_SERVE ?? '0').toString().trim() === '1';
   const resolvedUrls = await resolveServerUrls({ env, serverPort, allowEnable: allowEnableTailscale });
   if (resolvedUrls.publicServerUrl && !env.EXPO_PUBLIC_HAPPY_SERVER_URL) {
     env.EXPO_PUBLIC_HAPPY_SERVER_URL = resolvedUrls.publicServerUrl;
@@ -410,10 +410,10 @@ async function main() {
 
   // Unify Expo: one Expo dev server per stack/worktree. If dev mode already started Expo, we reuse it.
   // If Expo is already running without dev-client enabled, we fail closed (no second Expo).
-  env.HAPPIER_STACK_EXPO_HOST = host;
-  env.HAPPIER_STACK_MOBILE_HOST = host;
-  env.HAPPIER_STACK_MOBILE_SCHEME = scheme;
-  env.HAPPIER_STACK_EXPO_DEV_PORT = String(portRaw);
+  env.PIGGERCODE_STACK_EXPO_HOST = host;
+  env.PIGGERCODE_STACK_MOBILE_HOST = host;
+  env.PIGGERCODE_STACK_MOBILE_SCHEME = scheme;
+  env.PIGGERCODE_STACK_EXPO_DEV_PORT = String(portRaw);
 
   const children = [];
   await ensureDevExpoServer({

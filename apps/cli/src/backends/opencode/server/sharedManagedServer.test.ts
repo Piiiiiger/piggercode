@@ -356,7 +356,7 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
     const statePath = join(homeDir, '.opencode', 'managed-server.json');
     const previousHome = process.env.HOME;
     const previousUserProfile = process.env.USERPROFILE;
-    const previousStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+    const previousStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
 
     await mkdir(join(homeDir, '.opencode'), { recursive: true });
     await writeFile(
@@ -372,7 +372,7 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
 
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = '~/.opencode/managed-server.json';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = '~/.opencode/managed-server.json';
 
     try {
       await expect(readSharedManagedOpenCodeServerStateBestEffort()).resolves.toEqual({
@@ -393,9 +393,9 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
         process.env.USERPROFILE = previousUserProfile;
       }
       if (previousStatePath === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = previousStatePath;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousStatePath;
       }
       await rm(tempRoot, { recursive: true, force: true });
     }
@@ -407,7 +407,7 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
     const statePath = join(homeDir, '.opencode', 'managed-server.json');
     const previousHome = process.env.HOME;
     const previousUserProfile = process.env.USERPROFILE;
-    const previousStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+    const previousStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
 
     await mkdir(join(homeDir, '.opencode'), { recursive: true });
     await writeFile(
@@ -424,7 +424,7 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
 
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = '~/.opencode/managed-server.json';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = '~/.opencode/managed-server.json';
 
     try {
       await expect(readSharedManagedOpenCodeServerStateBestEffort()).resolves.toEqual({
@@ -446,9 +446,9 @@ describe('resolveSharedManagedOpenCodeServerBaseUrl', () => {
         process.env.USERPROFILE = previousUserProfile;
       }
       if (previousStatePath === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = previousStatePath;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousStatePath;
       }
       await rm(tempRoot, { recursive: true, force: true });
     }

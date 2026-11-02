@@ -15,8 +15,8 @@ set -euo pipefail
 # - bare      : do nothing (useful if you explicitly want an unprovisioned VM)
 #
 # Env overrides:
-# - HAPPIER_PROVISION_NODE_MAJOR (default: 24)
-# - HAPPIER_PROVISION_YARN_VERSION (default: 1.22.22)
+# - PIGGERCODE_PROVISION_NODE_MAJOR (default: 24)
+# - PIGGERCODE_PROVISION_YARN_VERSION (default: 1.22.22)
 
 usage() {
   cat <<'EOF'
@@ -70,8 +70,8 @@ say() {
   echo "[provision] $*"
 }
 
-NODE_MAJOR="${HAPPIER_PROVISION_NODE_MAJOR:-24}"
-YARN_VERSION="${HAPPIER_PROVISION_YARN_VERSION:-1.22.22}"
+NODE_MAJOR="${PIGGERCODE_PROVISION_NODE_MAJOR:-24}"
+YARN_VERSION="${PIGGERCODE_PROVISION_YARN_VERSION:-1.22.22}"
 
 case "${PROFILE}" in
   happier|installer|bare) ;;

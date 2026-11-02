@@ -67,7 +67,7 @@ describe('claude session handoff bundle', () => {
       },
       remoteSessionId: 'claude_session_fake',
       env: {
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: transcriptPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: transcriptPath,
       },
     });
 
@@ -78,7 +78,7 @@ describe('claude session handoff bundle', () => {
     });
   });
 
-  it('resolves transcript heuristics from HAPPIER_CLAUDE_CONFIG_DIR when CLAUDE_CONFIG_DIR is not set', async () => {
+  it('resolves transcript heuristics from PIGGERCODE_CLAUDE_CONFIG_DIR when CLAUDE_CONFIG_DIR is not set', async () => {
     const root = await mkdtemp(join(tmpdir(), 'happier-claude-handoff-export-happier-config-'));
     const workspacePath = join(root, 'workspace');
     const claudeConfigDir = join(root, '.claude-source');
@@ -94,7 +94,7 @@ describe('claude session handoff bundle', () => {
       },
       remoteSessionId: 'claude_session_env',
       env: {
-        HAPPIER_CLAUDE_CONFIG_DIR: claudeConfigDir,
+        PIGGERCODE_CLAUDE_CONFIG_DIR: claudeConfigDir,
       },
     });
 
@@ -269,7 +269,7 @@ describe('claude session handoff bundle', () => {
     await expect(readFile(importedPath, 'utf8')).resolves.toBe('{"type":"assistant","text":"long-path"}\n');
   });
 
-  it('uses HAPPIER_CLAUDE_CONFIG_DIR for target import when CLAUDE_CONFIG_DIR is unset', async () => {
+  it('uses PIGGERCODE_CLAUDE_CONFIG_DIR for target import when CLAUDE_CONFIG_DIR is unset', async () => {
     const root = await mkdtemp(join(tmpdir(), 'happier-claude-handoff-import-happier-config-'));
     const targetPath = join(root, 'workspace');
     const configDir = join(root, '.claude-target-override');
@@ -283,7 +283,7 @@ describe('claude session handoff bundle', () => {
       },
       targetPath,
       env: {
-        HAPPIER_CLAUDE_CONFIG_DIR: configDir,
+        PIGGERCODE_CLAUDE_CONFIG_DIR: configDir,
       },
     });
 

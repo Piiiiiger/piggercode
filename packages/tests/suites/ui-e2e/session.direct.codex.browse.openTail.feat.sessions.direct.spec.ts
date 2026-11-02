@@ -66,9 +66,9 @@ test.describe('ui e2e: direct Codex sessions browse/open/tail', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
     });
 
@@ -116,9 +116,9 @@ test.describe('ui e2e: direct Codex sessions browse/open/tail', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 
@@ -133,14 +133,14 @@ test.describe('ui e2e: direct Codex sessions browse/open/tail', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
         CODEX_HOME: codexHomeDir,
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 

@@ -4,17 +4,17 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('server profile persistence', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
   const tempDirs: string[] = [];
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
-    delete process.env.HAPPIER_SERVER_URL;
-    delete process.env.HAPPIER_WEBAPP_URL;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
+    delete process.env.PIGGERCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_WEBAPP_URL;
     vi.resetModules();
     for (const tempDir of tempDirs) {
       rmSync(tempDir, { recursive: true, force: true });
@@ -25,10 +25,10 @@ describe('server profile persistence', () => {
   it('loads serverUrl/webappUrl from active server profile when env vars are unset', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-server-profiles-'));
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_SERVER_URL;
-    delete process.env.HAPPIER_WEBAPP_URL;
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_WEBAPP_URL;
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     writeFileSync(
       join(homeDir, 'settings.json'),
@@ -66,10 +66,10 @@ describe('server profile persistence', () => {
   it('writes credentials to a per-server access.key file', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-server-cred-'));
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_SERVER_URL;
-    delete process.env.HAPPIER_WEBAPP_URL;
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_WEBAPP_URL;
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     writeFileSync(
       join(homeDir, 'settings.json'),

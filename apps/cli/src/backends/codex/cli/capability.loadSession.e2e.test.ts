@@ -32,12 +32,12 @@ function resolveCodexAcpIfAvailable(): string | null {
 }
 
 function resolveProbeGate(): { enabled: boolean; reason: string } {
-  const providersGate = process.env.HAPPIER_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS;
-  const codexGate = process.env.HAPPIER_E2E_PROVIDER_CODEX ?? process.env.HAPPY_E2E_PROVIDER_CODEX;
+  const providersGate = process.env.PIGGERCODE_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS;
+  const codexGate = process.env.PIGGERCODE_E2E_PROVIDER_CODEX ?? process.env.HAPPY_E2E_PROVIDER_CODEX;
   if (providersGate !== '1' || codexGate !== '1') {
     return {
       enabled: false,
-      reason: 'requires HAPPIER_E2E_PROVIDERS=1 and HAPPIER_E2E_PROVIDER_CODEX=1',
+      reason: 'requires PIGGERCODE_E2E_PROVIDERS=1 and PIGGERCODE_E2E_PROVIDER_CODEX=1',
     };
   }
 
@@ -62,16 +62,16 @@ describe('cli.codex capability (ACP)', () => {
   const gate = resolveProbeGate();
   if (gate.enabled) {
     it(`detects session/load support when codex ACP is available [${gate.reason}]`, async () => {
-      const originalAcpBin = process.env.HAPPIER_CODEX_ACP_BIN;
+      const originalAcpBin = process.env.PIGGERCODE_CODEX_ACP_BIN;
 
       // This is a real binary probe. Keep it opt-in (mirrors provider harness gating).
       try {
-        const envAcpBinRaw = process.env.HAPPIER_E2E_PROVIDER_CODEX_ACP_BIN ?? process.env.HAPPY_E2E_PROVIDER_CODEX_ACP_BIN;
+        const envAcpBinRaw = process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_BIN ?? process.env.HAPPY_E2E_PROVIDER_CODEX_ACP_BIN;
         const envAcpBin = typeof envAcpBinRaw === 'string'
           ? envAcpBinRaw.trim()
           : '';
         if (envAcpBin) {
-          process.env.HAPPIER_CODEX_ACP_BIN = envAcpBin;
+          process.env.PIGGERCODE_CODEX_ACP_BIN = envAcpBin;
         }
 
         const resolvedCodexPath = resolveBinaryOnPath('codex');
@@ -122,9 +122,9 @@ describe('cli.codex capability (ACP)', () => {
       } finally {
         if (originalAcpBin === undefined) {
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-          delete process.env.HAPPIER_CODEX_ACP_BIN;
+          delete process.env.PIGGERCODE_CODEX_ACP_BIN;
         } else {
-          process.env.HAPPIER_CODEX_ACP_BIN = originalAcpBin;
+          process.env.PIGGERCODE_CODEX_ACP_BIN = originalAcpBin;
         }
       }
     }, 60_000);

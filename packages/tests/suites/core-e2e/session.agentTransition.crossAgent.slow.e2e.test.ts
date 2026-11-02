@@ -94,15 +94,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function createProviderEnv(params: ProviderEnvParams): Record<string, string> {
   return {
     CI: '1',
-    HAPPIER_VARIANT: 'dev',
-    HAPPIER_DISABLE_CAFFEINATE: '1',
-    HAPPIER_HOME_DIR: params.daemonHomeDir,
-    HAPPIER_SERVER_URL: params.serverBaseUrl,
-    HAPPIER_WEBAPP_URL: params.serverBaseUrl,
-    HAPPIER_CLAUDE_PATH: params.fakeClaudePath,
-    HAPPIER_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
-    HAPPIER_GEMINI_PATH: params.fakeGeminiPath,
-    HAPPIER_E2E_GEMINI_LOG: params.fakeGeminiLogPath,
+    PIGGERCODE_VARIANT: 'dev',
+    PIGGERCODE_DISABLE_CAFFEINATE: '1',
+    PIGGERCODE_HOME_DIR: params.daemonHomeDir,
+    PIGGERCODE_SERVER_URL: params.serverBaseUrl,
+    PIGGERCODE_WEBAPP_URL: params.serverBaseUrl,
+    PIGGERCODE_CLAUDE_PATH: params.fakeClaudePath,
+    PIGGERCODE_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
+    PIGGERCODE_GEMINI_PATH: params.fakeGeminiPath,
+    PIGGERCODE_E2E_GEMINI_LOG: params.fakeGeminiLogPath,
     GEMINI_API_KEY: 'e2e-fake-gemini-api-key',
     PATH: `${params.fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
   };
@@ -117,21 +117,21 @@ function createClaudeCodexProviderEnv(params: Readonly<{
 }>): Record<string, string> {
   return {
     CI: '1',
-    HAPPIER_VARIANT: 'dev',
-    HAPPIER_DISABLE_CAFFEINATE: '1',
-    HAPPIER_HOME_DIR: params.daemonHomeDir,
-    HAPPIER_SERVER_URL: params.serverBaseUrl,
-    HAPPIER_WEBAPP_URL: params.serverBaseUrl,
-    HAPPIER_CLAUDE_PATH: params.fakeClaudePath,
+    PIGGERCODE_VARIANT: 'dev',
+    PIGGERCODE_DISABLE_CAFFEINATE: '1',
+    PIGGERCODE_HOME_DIR: params.daemonHomeDir,
+    PIGGERCODE_SERVER_URL: params.serverBaseUrl,
+    PIGGERCODE_WEBAPP_URL: params.serverBaseUrl,
+    PIGGERCODE_CLAUDE_PATH: params.fakeClaudePath,
     // The composed assertion reads the target's real prompt. The default
     // fixture log only retains a preview, which can omit the admitted input
     // after a bounded replay seed.
-    HAPPIER_E2E_FAKE_CLAUDE_LOG_FULL_STDIN: '1',
-    HAPPIER_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
-    HAPPIER_CODEX_APP_SERVER_BIN: params.fakeCodexAppServerPath,
-    HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
-    HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
-    HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+    PIGGERCODE_E2E_FAKE_CLAUDE_LOG_FULL_STDIN: '1',
+    PIGGERCODE_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
+    PIGGERCODE_CODEX_APP_SERVER_BIN: params.fakeCodexAppServerPath,
+    PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
+    PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
+    PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
   };
 }
 
@@ -151,7 +151,7 @@ if (process.argv.includes("--help")) {
 }
 
 function log(line) {
-  const p = process.env.HAPPIER_E2E_GEMINI_LOG;
+  const p = process.env.PIGGERCODE_E2E_GEMINI_LOG;
   if (p) appendFileSync(p, JSON.stringify({ ts: Date.now(), ...line }) + "\\n", "utf8");
 }
 
@@ -162,8 +162,8 @@ function promptText(blocks) {
 }
 
 const acp = await import(pathToFileURL(${JSON.stringify(acpSdkEntry)}).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
 class FakeGeminiAgent {
@@ -410,7 +410,7 @@ describe('core e2e: same-Session cross-Agent transition', () => {
       env: {
         ...process.env,
         ...providerEnv,
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
       snapshotDir: resolve(join(testDir, 'daemon-cli-snapshot')),
     });

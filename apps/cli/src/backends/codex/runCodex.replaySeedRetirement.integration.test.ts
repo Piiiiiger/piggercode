@@ -8,10 +8,10 @@ import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
 
 import type { Credentials } from '@/persistence';
 import {
-  HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY,
+  PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY,
   serializeDaemonInitialGoalForEnv,
 } from '@/agent/runtime/sessionInitialGoal';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { createCodexPermissionHandler } from './utils/createCodexPermissionHandler';
 import { applyPermissionModeToCodexPermissionHandler } from './utils/applyPermissionModeToHandler';
 
@@ -829,8 +829,8 @@ describe('runCodex replay seed retirement', () => {
     lastSessionClient = null;
     lastOnUserMessageHandler = null;
     lastOnSwitchToLocal = null;
-    delete process.env[HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY];
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_DAEMON_INITIAL_GOAL_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     const experiments = await import('@/backends/codex/experiments');
     (experiments.isExperimentalCodexAcpEnabled as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
     const { resolveCodexStartingMode } = await import('./utils/resolveCodexStartingMode');

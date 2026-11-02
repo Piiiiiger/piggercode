@@ -38,10 +38,10 @@ async function withHealthyStackServer(run, { dropConnection = false } = {}) {
 test('background readiness leaves deferred-auth daemon startup to the inner runner', async () => {
   const mod = await import('./run_script_with_stack_env.mjs');
   for (const env of [
-    { HAPPIER_STACK_AUTH_FLOW: '1' },
-    { HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH: '1' },
-    { HAPPIER_STACK_AUTH_FLOW: 'true' },
-    { HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH: 'true' },
+    { PIGGERCODE_STACK_AUTH_FLOW: '1' },
+    { PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH: '1' },
+    { PIGGERCODE_STACK_AUTH_FLOW: 'true' },
+    { PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH: 'true' },
   ]) {
     await withHealthyStackServer(async (internalServerUrl) => {
       await mod.waitForBackgroundStackReadiness({
@@ -82,7 +82,7 @@ test('background dev readiness uses the selected external relay instead of an al
       for (const selection of [
         { args: ['--no-server', `--server-url=${externalServerUrl}`], env: {} },
         { args: [`--server-url=${externalServerUrl}`], env: {} },
-        { args: ['--no-server'], env: { HAPPIER_SERVER_URL: externalServerUrl } },
+        { args: ['--no-server'], env: { PIGGERCODE_SERVER_URL: externalServerUrl } },
       ]) {
         await mod.waitForBackgroundStackReadiness({
           stackName: 'external-relay', scriptPath: 'dev.mjs',
@@ -226,20 +226,20 @@ test('runStackScriptWithStackEnv delegates start-like restart JSON without outer
   const stackName = 'restart-json';
   const stackDir = join(storageDir, stackName);
   const rootDir = join(fixtureRoot, 'repo-without-buildable-components');
-  const previousStorageDir = process.env.HAPPIER_STACK_STORAGE_DIR;
+  const previousStorageDir = process.env.PIGGERCODE_STACK_STORAGE_DIR;
   const incumbent = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], {
     stdio: 'ignore',
   });
   t.after(async () => {
     incumbent.kill('SIGTERM');
-    if (previousStorageDir == null) delete process.env.HAPPIER_STACK_STORAGE_DIR;
-    else process.env.HAPPIER_STACK_STORAGE_DIR = previousStorageDir;
+    if (previousStorageDir == null) delete process.env.PIGGERCODE_STACK_STORAGE_DIR;
+    else process.env.PIGGERCODE_STACK_STORAGE_DIR = previousStorageDir;
     await rm(fixtureRoot, { recursive: true, force: true });
   });
-  process.env.HAPPIER_STACK_STORAGE_DIR = storageDir;
+  process.env.PIGGERCODE_STACK_STORAGE_DIR = storageDir;
   await mkdir(join(rootDir, 'scripts'), { recursive: true });
   await mkdir(stackDir, { recursive: true });
-  await writeFile(join(stackDir, 'env'), 'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
+  await writeFile(join(stackDir, 'env'), 'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
   const runtimeStatePath = join(stackDir, 'stack.runtime.json');
   const runtimeState = JSON.stringify({
     version: 1,
@@ -253,13 +253,13 @@ test('runStackScriptWithStackEnv delegates start-like restart JSON without outer
   await writeFile(runtimeStatePath, runtimeState, 'utf-8');
   await writeFile(
     join(rootDir, 'scripts', 'dev.mjs'),
-    'if (process.env.HAPPIER_STACK_SERVER_PORT !== "43123") throw new Error("missing runtime port overlay");\n' +
+    'if (process.env.PIGGERCODE_STACK_SERVER_PORT !== "43123") throw new Error("missing runtime port overlay");\n' +
       'console.log(JSON.stringify({ mode: "dev", dryRun: true }));\n',
     'utf-8',
   );
   await writeFile(
     join(rootDir, 'scripts', 'run.mjs'),
-    'if (process.env.HAPPIER_STACK_SERVER_PORT !== "43123") throw new Error("missing runtime port overlay");\n' +
+    'if (process.env.PIGGERCODE_STACK_SERVER_PORT !== "43123") throw new Error("missing runtime port overlay");\n' +
       'console.log(JSON.stringify({ mode: "start", dryRun: true }));\n',
     'utf-8',
   );
@@ -302,9 +302,9 @@ test('runStackScriptWithStackEnv delegates start-like restart JSON without outer
     cliHomeDir,
     statePaths: [daemonStatePath],
     env: {
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: join(stackDir, 'env'),
-      HAPPIER_STACK_PROCESS_KIND: 'daemon',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: join(stackDir, 'env'),
+      PIGGERCODE_STACK_PROCESS_KIND: 'daemon',
     },
   });
   t.after(() => killDetachedProcessGroup(observedDaemon.pid));
@@ -348,7 +348,7 @@ test('outer dev restart preflight delegates local/external selection to the cano
     mod.shouldPreflightLocalDevServerRestart({
       scriptPath: 'dev.mjs',
       args: ['--restart', '--no-server'],
-      env: { HAPPIER_SERVER_URL: 'https://api.example.com' },
+      env: { PIGGERCODE_SERVER_URL: 'https://api.example.com' },
     }),
     false,
   );

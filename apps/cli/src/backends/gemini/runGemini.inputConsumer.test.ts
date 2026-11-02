@@ -482,7 +482,7 @@ describe('runGemini input consumer migration', () => {
   });
 
   it('suppresses failed-turn raw fallback when the daemon handled a superseded source tuple', async () => {
-    vi.stubEnv('HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON', JSON.stringify([{
+    vi.stubEnv('PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON', JSON.stringify([{
       kind: 'group',
       serviceId: 'gemini',
       groupId: 'gemini-main',
@@ -601,7 +601,7 @@ describe('runGemini input consumer migration', () => {
   });
 
   it('uses the exact materialized Gemini provider email without resolving an ambient default profile', async () => {
-    vi.stubEnv('HAPPIER_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL', 'selected-account@example.com');
+    vi.stubEnv('PIGGERCODE_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL', 'selected-account@example.com');
     const { resolveConnectedServiceCredentials } = await import('@/cloud/connectedServices/resolveConnectedServiceCredentials');
     const { runGemini } = await import('./runGemini');
 

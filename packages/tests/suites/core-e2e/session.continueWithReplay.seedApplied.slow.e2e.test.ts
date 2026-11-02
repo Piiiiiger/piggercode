@@ -280,14 +280,14 @@ describe('core e2e: replaySeedV1 is applied to the first provider prompt but not
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeChildLogPath,
-        HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeChildLogPath,
+        PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
       },
     });
 

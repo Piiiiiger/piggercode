@@ -467,7 +467,7 @@ export async function installDaemonService(options: Readonly<{
 }
 
 function resolveDaemonServiceInstallerStrategyFromEnv(processEnv: NodeJS.ProcessEnv): DaemonServiceInstallStrategy {
-  const raw = String(processEnv.HAPPIER_INSTALLER_DAEMON_SERVICE_STRATEGY ?? '').trim().toLowerCase();
+  const raw = String(processEnv.PIGGERCODE_INSTALLER_DAEMON_SERVICE_STRATEGY ?? '').trim().toLowerCase();
   if (raw === 'add') return 'add';
   if (raw === 'replace-ring') return 'replace-ring';
   if (raw === 'replace-all') return 'replace-all';

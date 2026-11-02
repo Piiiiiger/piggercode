@@ -60,8 +60,8 @@ async function resolveExistingStackRepoUpdate({ rootDir, stackName, repo }) {
   const resolved = await resolveRequestedRepoCheckoutDir({
     rootDir,
     repoSelection: requested,
-    defaultRepoDir: String(env.HAPPIER_STACK_REPO_DIR ?? '').trim(),
-    remoteName: String(env.HAPPIER_STACK_STACK_REMOTE ?? '').trim() || 'upstream',
+    defaultRepoDir: String(env.PIGGERCODE_STACK_REPO_DIR ?? '').trim(),
+    remoteName: String(env.PIGGERCODE_STACK_STACK_REMOTE ?? '').trim() || 'upstream',
   });
   return resolved || requested;
 }
@@ -73,7 +73,7 @@ async function resolveInstallPort({ stackName, explicitPortRaw, stackAlreadyExis
   }
   if (stackAlreadyExists) {
     const { env } = await readStackEnv(stackName);
-    const existing = coercePort(env.HAPPIER_STACK_SERVER_PORT);
+    const existing = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
     if (existing) return existing;
   }
 
@@ -83,7 +83,7 @@ async function resolveInstallPort({ stackName, explicitPortRaw, stackAlreadyExis
 
 async function assertPortCanBePinned({ stackName, port, stackAlreadyExists }) {
   const { env } = stackAlreadyExists ? await readStackEnv(stackName) : { env: {} };
-  const existing = coercePort(env.HAPPIER_STACK_SERVER_PORT);
+  const existing = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
   if (existing === port) return;
   const free = await isPortFree(port);
   if (!free) {
@@ -95,7 +95,7 @@ function buildDesktopMetadata({ stackName, port, desktopDebug, env = process.env
   const identity = resolveStackTauriIdentity({
     env: {
       ...env,
-      HAPPIER_STACK_STACK: stackName,
+      PIGGERCODE_STACK_STACK: stackName,
     },
     baseProductName: 'Happier',
   });
@@ -163,11 +163,11 @@ export async function buildStackInstallPlan({
     });
   } else {
     const envUpdates = [
-      { key: 'HAPPIER_STACK_SERVER_PORT', value: String(port) },
+      { key: 'PIGGERCODE_STACK_SERVER_PORT', value: String(port) },
     ];
     if (repo) {
       envUpdates.push({
-        key: 'HAPPIER_STACK_REPO_DIR',
+        key: 'PIGGERCODE_STACK_REPO_DIR',
         value: await resolveExistingStackRepoUpdate({ rootDir, stackName, repo }),
       });
     }
@@ -184,7 +184,7 @@ export async function buildStackInstallPlan({
   });
   steps.push({
     id: 'set-runtime-mode',
-    envUpdates: [{ key: 'HAPPIER_STACK_RUNTIME_MODE', value: runtimeMode }],
+    envUpdates: [{ key: 'PIGGERCODE_STACK_RUNTIME_MODE', value: runtimeMode }],
   });
 
   const desktop = desktopMode === 'none'
@@ -197,8 +197,8 @@ export async function buildStackInstallPlan({
       script: 'build.mjs',
       args: ['--tauri'],
       env: {
-        HAPPIER_STACK_TAURI_SERVER_URL: desktop.serverUrl,
-        HAPPIER_STACK_TAURI_DEBUG: desktop.debug ? '1' : '0',
+        PIGGERCODE_STACK_TAURI_SERVER_URL: desktop.serverUrl,
+        PIGGERCODE_STACK_TAURI_DEBUG: desktop.debug ? '1' : '0',
       },
     });
   }

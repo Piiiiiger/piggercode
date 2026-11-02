@@ -18,7 +18,7 @@ export function buildStubHappierServerSetSource({ ignoreServerSet = false, callL
 if (args[0] === 'server' && args[1] === 'set') {
   const { appendFileSync, readFileSync, writeFileSync } = await import('node:fs');
   const { join } = await import('node:path');
-  const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+  const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
   if (!home) process.exit(2);
   ${callLogFileName ? `appendFileSync(join(home, ${JSON.stringify(callLogFileName)}), JSON.stringify(args) + '\\n');` : ''}
   ${ignoreServerSet ? 'process.exit(0);' : ''}

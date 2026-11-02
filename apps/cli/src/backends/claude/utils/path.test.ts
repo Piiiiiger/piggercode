@@ -20,10 +20,10 @@ function restoreClaudeConfigDir(value: string | undefined): void {
 
 function restoreHappierClaudeConfigDir(value: string | undefined): void {
   if (value === undefined) {
-    delete process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+    delete process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
     return;
   }
-  process.env.HAPPIER_CLAUDE_CONFIG_DIR = value;
+  process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = value;
 }
 
 function restoreHome(value: string | undefined): void {
@@ -37,10 +37,10 @@ function restoreHome(value: string | undefined): void {
 describe('getProjectPath', () => {
   beforeEach(() => {
     previousClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
-    previousHappierClaudeConfigDir = process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+    previousHappierClaudeConfigDir = process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
     previousHome = process.env.HOME;
     delete process.env.CLAUDE_CONFIG_DIR;
-    delete process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+    delete process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
   });
 
   afterEach(() => {
@@ -164,8 +164,8 @@ describe('getProjectPath', () => {
       expect(result).toBe(join('/custom/claude/config', 'projects', '-Users-steve-projects-my-app'));
     });
 
-    it('should use HAPPIER_CLAUDE_CONFIG_DIR when CLAUDE_CONFIG_DIR is unset', () => {
-      process.env.HAPPIER_CLAUDE_CONFIG_DIR = '/custom/happier-claude/config';
+    it('should use PIGGERCODE_CLAUDE_CONFIG_DIR when CLAUDE_CONFIG_DIR is unset', () => {
+      process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = '/custom/happier-claude/config';
       const workingDir = '/Users/steve/projects/my-app';
       const result = getProjectPath(workingDir);
       expect(result).toBe(join('/custom/happier-claude/config', 'projects', '-Users-steve-projects-my-app'));

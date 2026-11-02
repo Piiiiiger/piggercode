@@ -39,7 +39,7 @@ export const DESKTOP_SYSTEM_TASK_COMMANDS = [
 export type DesktopSystemTaskCommand = (typeof DESKTOP_SYSTEM_TASK_COMMANDS)[number];
 
 /** Binding the fake Tauri bridge forwards system-task commands to (see fakeTauriDesktop.ts). */
-export const DESKTOP_SYSTEM_TASK_HOST_BINDING = '__HAPPIER_FAKE_TAURI_SYSTEM_TASK_HOST__';
+export const DESKTOP_SYSTEM_TASK_HOST_BINDING = '__PIGGERCODE_FAKE_TAURI_SYSTEM_TASK_HOST__';
 
 export type SystemTaskEvent = Readonly<{
     protocolVersion: number;
@@ -519,8 +519,8 @@ export async function attachDesktopSystemTaskHost(
     const host = createHost(async (channel, payload) => {
         await page.evaluate(
             ([eventName, eventPayload]) => {
-                const emitter = (window as unknown as { __HAPPIER_FAKE_TAURI_EMIT__?: (event: string, payload: unknown) => void })
-                    .__HAPPIER_FAKE_TAURI_EMIT__;
+                const emitter = (window as unknown as { __PIGGERCODE_FAKE_TAURI_EMIT__?: (event: string, payload: unknown) => void })
+                    .__PIGGERCODE_FAKE_TAURI_EMIT__;
                 if (!emitter) throw new Error('Fake Tauri event emitter is not installed.');
                 emitter(eventName, eventPayload);
             },

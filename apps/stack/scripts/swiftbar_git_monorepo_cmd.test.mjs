@@ -49,8 +49,8 @@ test('swiftbar git cache treats monorepo package dirs as git repos', async (t) =
   const stacksHome = join(tmp, 'happier-stack-home');
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: stacksHome,
-    HAPPIER_STACK_CANONICAL_HOME_DIR: stacksHome,
+    PIGGERCODE_STACK_HOME_DIR: stacksHome,
+    PIGGERCODE_STACK_CANONICAL_HOME_DIR: stacksHome,
   };
 
   const bashScript = [

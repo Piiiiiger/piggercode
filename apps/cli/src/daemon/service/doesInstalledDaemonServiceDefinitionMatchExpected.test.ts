@@ -39,21 +39,21 @@ const BOILERPLATE = `<?xml version="1.0" encoding="UTF-8"?>
     <dict>
       <key>PATH</key>
       <string>__PATH__</string>
-      <key>HAPPIER_HOME_DIR</key>
+      <key>PIGGERCODE_HOME_DIR</key>
       <string>/Users/me/.happier</string>
-      <key>HAPPIER_PUBLIC_RELEASE_CHANNEL</key>
+      <key>PIGGERCODE_PUBLIC_RELEASE_CHANNEL</key>
       <string>dev</string>
-      <key>HAPPIER_DAEMON_STARTUP_SOURCE</key>
+      <key>PIGGERCODE_DAEMON_STARTUP_SOURCE</key>
       <string>background-service</string>
-      <key>HAPPIER_DAEMON_SERVICE_LABEL</key>
+      <key>PIGGERCODE_DAEMON_SERVICE_LABEL</key>
       <string>com.happier.cli.daemon.default</string>
-      <key>HAPPIER_DAEMON_SERVICE_TARGET_MODE</key>
+      <key>PIGGERCODE_DAEMON_SERVICE_TARGET_MODE</key>
       <string>default-following</string>
-      <key>HAPPIER_NO_BROWSER_OPEN</key>
+      <key>PIGGERCODE_NO_BROWSER_OPEN</key>
       <string>1</string>
-      <key>HAPPIER_DAEMON_WAIT_FOR_AUTH</key>
+      <key>PIGGERCODE_DAEMON_WAIT_FOR_AUTH</key>
       <string>1</string>
-      <key>HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS</key>
+      <key>PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS</key>
       <string>0</string>
     </dict>
   </dict>

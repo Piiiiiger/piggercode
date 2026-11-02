@@ -14,7 +14,7 @@ const DEFAULT_ANDROID_PRIME_APP_LAUNCH_TIMEOUT_MS = 15_000;
 const MAX_ADB_DIAGNOSTIC_CHARS = 1_000;
 
 function adbCommand(env: NodeJS.ProcessEnv): string {
-  return (String(env.HAPPIER_E2E_ADB_BIN ?? '').trim() || 'adb');
+  return (String(env.PIGGERCODE_E2E_ADB_BIN ?? '').trim() || 'adb');
 }
 
 function readPositiveInteger(value: unknown, fallback: number): number {
@@ -36,7 +36,7 @@ function summarizeAdbOutput(params: Readonly<{
 }
 
 function resolveAndroidBaseArgs(env: NodeJS.ProcessEnv): string[] {
-  const serial = String(env.HAPPIER_E2E_ANDROID_SERIAL ?? env.ANDROID_SERIAL ?? '').trim();
+  const serial = String(env.PIGGERCODE_E2E_ANDROID_SERIAL ?? env.ANDROID_SERIAL ?? '').trim();
   return serial ? ['-s', serial] : [];
 }
 
@@ -58,15 +58,15 @@ export async function defaultPrimePlatformAppLaunch(params: PrimePlatformAppLaun
   if (params.platform !== 'android') return;
 
   const timeoutMs = readPositiveInteger(
-    params.env.HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_TIMEOUT_MS,
+    params.env.PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_TIMEOUT_MS,
     DEFAULT_ANDROID_PRIME_APP_LAUNCH_TIMEOUT_MS,
   );
   const attempts = readPositiveInteger(
-    params.env.HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS,
+    params.env.PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS,
     DEFAULT_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS,
   );
   const retryDelayMs = readPositiveInteger(
-    params.env.HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS,
+    params.env.PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS,
     DEFAULT_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS,
   );
   const baseArgs = resolveAndroidBaseArgs(params.env);

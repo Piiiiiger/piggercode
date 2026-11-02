@@ -10,11 +10,11 @@ async function importSetupModule() {
 }
 
 describe('CLI test global setup', () => {
-    const envScope = createEnvKeyScope(['HAPPIER_CLI_TEST_SKIP_BUILD']);
+    const envScope = createEnvKeyScope(['PIGGERCODE_CLI_TEST_SKIP_BUILD']);
 
     beforeEach(() => {
         // Build-policy cases own this input even when CI reuses its prebuilt runtime.
-        envScope.patch({ HAPPIER_CLI_TEST_SKIP_BUILD: undefined });
+        envScope.patch({ PIGGERCODE_CLI_TEST_SKIP_BUILD: undefined });
     });
 
     afterEach(() => {
@@ -61,7 +61,7 @@ describe('CLI test global setup', () => {
 
     it('respects the global skip-build override', async () => {
         const { setup } = await importSetupModule();
-        process.env.HAPPIER_CLI_TEST_SKIP_BUILD = 'true';
+        process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD = 'true';
 
         const ensureSharedDepsBuiltOnce = vi.fn(async () => undefined);
         const ensureDistBuiltOnce = vi.fn(async () => undefined);

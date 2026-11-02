@@ -19,7 +19,7 @@ const callToolSpy = vi.fn(async (_call: ClientCall) => ({
 const createdClientIds: number[] = [];
 const staleClientIds = new Set<number>();
 let nextClientId = 1;
-const envKeys = ['PATH', 'HAPPIER_CODEX_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_CODEX_PATH'] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -89,7 +89,7 @@ vi.mock('@modelcontextprotocol/sdk/client/index.js', () => {
 describe('CodexMcpClient connection recovery', () => {
   beforeEach(async () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CODEX_PATH = await createFakeCodexBinary();
+    process.env.PIGGERCODE_CODEX_PATH = await createFakeCodexBinary();
     connectSpy.mockClear();
     closeSpy.mockClear();
     callToolSpy.mockReset();

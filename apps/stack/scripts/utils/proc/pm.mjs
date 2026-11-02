@@ -31,7 +31,7 @@ async function readJson(path) {
 }
 
 function isServiceMode(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_SERVICE_MODE ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_SERVICE_MODE ?? '').trim();
   if (raw) return raw !== '0';
 
   // In CI, we prefer deterministic builds and want failures to surface.
@@ -47,8 +47,8 @@ function isServiceMode(env = process.env) {
 
 function applyStackInfraProcessKind(env) {
   const effectiveEnv = env && typeof env === 'object' ? env : {};
-  return (effectiveEnv.HAPPIER_STACK_ENV_FILE ?? '').toString().trim()
-    ? { ...effectiveEnv, HAPPIER_STACK_PROCESS_KIND: 'infra' }
+  return (effectiveEnv.PIGGERCODE_STACK_ENV_FILE ?? '').toString().trim()
+    ? { ...effectiveEnv, PIGGERCODE_STACK_PROCESS_KIND: 'infra' }
     : effectiveEnv;
 }
 
@@ -243,8 +243,8 @@ async function getComponentPm(dir, env = process.env) {
     return { name: 'yarn', cmd: 'yarn', prefixArgs: [] };
   }
 
-  const binaryMode = String(env.HAPPIER_STACK_BINARY_MODE ?? '').trim() === '1'
-    || String(env.HAPPIER_STACK_INSTALL_SOURCE ?? '').trim() === 'binary';
+  const binaryMode = String(env.PIGGERCODE_STACK_BINARY_MODE ?? '').trim() === '1'
+    || String(env.PIGGERCODE_STACK_INSTALL_SOURCE ?? '').trim() === 'binary';
   if (binaryMode && (await commandExists('npm', { cwd: dir, env }))) {
     return { name: 'npm', cmd: 'npm', prefixArgs: [] };
   }
@@ -504,7 +504,7 @@ export async function requireDir(label, dir) {
 }
 
 function resolveStackCacheBaseDirFromEnv(env) {
-  const explicit = (env.HAPPIER_STACK_PM_CACHE_BASE_DIR ?? '').toString().trim();
+  const explicit = (env.PIGGERCODE_STACK_PM_CACHE_BASE_DIR ?? '').toString().trim();
   if (explicit) {
     try {
       return resolve(expandHome(explicit, env));
@@ -531,8 +531,8 @@ export async function applyStackCacheEnv(baseEnv) {
   // Yarn can skip devDependencies and the install fails in confusing ways.
   //
   // Default: scrub production-mode flags for stack-invoked package-manager commands.
-  // Opt-out via: HAPPIER_STACK_PM_ALLOW_PRODUCTION=1
-  const allowProduction = String(env.HAPPIER_STACK_PM_ALLOW_PRODUCTION ?? '').trim() === '1';
+  // Opt-out via: PIGGERCODE_STACK_PM_ALLOW_PRODUCTION=1
+  const allowProduction = String(env.PIGGERCODE_STACK_PM_ALLOW_PRODUCTION ?? '').trim() === '1';
   const isTruthy = (v) => {
     const s = String(v ?? '').trim().toLowerCase();
     return s === '1' || s === 'true' || s === 'yes' || s === 'on';
@@ -556,7 +556,7 @@ export async function applyStackCacheEnv(baseEnv) {
   // Prisma engines currently default to ~/.cache/prisma (via os.homedir()).
   // In stack mode, isolate HOME for package-manager driven commands so Prisma/Yarn/NPM don't
   // depend on global home caches (and so sandboxed runs can succeed).
-  const isolateHomeRaw = (env.HAPPIER_STACK_PM_ISOLATE_HOME ?? '').toString().trim();
+  const isolateHomeRaw = (env.PIGGERCODE_STACK_PM_ISOLATE_HOME ?? '').toString().trim();
   const isolateHome = isolateHomeRaw ? isolateHomeRaw !== '0' : true;
   if (isolateHome) {
     const stackHome = envFile ? join(dirname(envFile), 'home') : join(stackCacheBase, 'home');
@@ -647,8 +647,8 @@ export async function ensureDepsInstalled(dir, label, { quiet = false, env: envI
 
   if (await pathExists(nodeModules)) {
     const skipRefresh =
-      String(env?.HAPPIER_STACK_SKIP_REFRESH_DEPS ?? '').trim() === '1' ||
-      String(env?.HAPPIER_STACK_DISABLE_REFRESH_DEPS ?? '').trim() === '1';
+      String(env?.PIGGERCODE_STACK_SKIP_REFRESH_DEPS ?? '').trim() === '1' ||
+      String(env?.PIGGERCODE_STACK_DISABLE_REFRESH_DEPS ?? '').trim() === '1';
     if (skipRefresh) {
       await ensureComponentPrerequisites(componentDir, label, { quiet, env, pm });
       return;
@@ -658,8 +658,8 @@ export async function ensureDepsInstalled(dir, label, { quiet = false, env: envI
     // files changed on disk. This keeps long-running stacks resilient even if the checkout becomes
     // temporarily un-buildable (e.g. mid-rebase / failing typecheck).
     const allowRefresh =
-      String(env?.HAPPIER_STACK_SERVICE_ALLOW_REFRESH_DEPS ?? '').trim() === '1' ||
-      String(env?.HAPPIER_STACK_ALLOW_REFRESH_DEPS ?? '').trim() === '1';
+      String(env?.PIGGERCODE_STACK_SERVICE_ALLOW_REFRESH_DEPS ?? '').trim() === '1' ||
+      String(env?.PIGGERCODE_STACK_ALLOW_REFRESH_DEPS ?? '').trim() === '1';
     if (isServiceMode(env) && !allowRefresh) {
       await ensureComponentPrerequisites(componentDir, label, { quiet, env, pm });
       return;
@@ -678,7 +678,7 @@ export async function ensureDepsInstalled(dir, label, { quiet = false, env: envI
           cwd: installDir,
           stdio,
           env: heldCliLockValue
-            ? { ...env, HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldCliLockValue }
+            ? { ...env, PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldCliLockValue }
             : env,
         });
       });
@@ -697,7 +697,7 @@ export async function ensureDepsInstalled(dir, label, { quiet = false, env: envI
       cwd: installDir,
       stdio,
       env: heldCliLockValue
-        ? { ...env, HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldCliLockValue }
+        ? { ...env, PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldCliLockValue }
         : env,
     });
   };
@@ -785,11 +785,11 @@ export async function ensureCliBuilt(cliDir, { buildCli, quiet = false, env: env
     // Default: build only when needed (fast + reliable for worktrees that haven't been built yet).
     //
     // You can force always-build by setting:
-    // - HAPPIER_STACK_CLI_BUILD_MODE=always
+    // - PIGGERCODE_STACK_CLI_BUILD_MODE=always
     // Or disable via:
-    // - HAPPIER_STACK_CLI_BUILD=0
+    // - PIGGERCODE_STACK_CLI_BUILD=0
     const serviceDefaultMode = isServiceMode(envIn) ? 'never' : 'auto';
-    const modeRaw = (envIn.HAPPIER_STACK_CLI_BUILD_MODE ?? serviceDefaultMode).trim().toLowerCase();
+    const modeRaw = (envIn.PIGGERCODE_STACK_CLI_BUILD_MODE ?? serviceDefaultMode).trim().toLowerCase();
     const mode = modeRaw === 'always' || modeRaw === 'auto' || modeRaw === 'never' ? modeRaw : 'auto';
     const distDir = join(cliDir, 'dist');
     const legacyDistBackupDir = join(cliDir, '.dist.hstack-backup');
@@ -852,7 +852,7 @@ export async function ensureCliBuilt(cliDir, { buildCli, quiet = false, env: env
       // The stack lock covers the cache decision and the delegated CLI build as one transaction.
       // The CLI build owner authenticates this exact owner lease and must not reacquire its
       // parent's live lock in the child process.
-      HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+      PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
     };
     await runPm(pm, ['build'], { cwd: cliDir, env: buildEnv, stdio: quiet ? 'ignore' : 'inherit' });
 
@@ -917,7 +917,7 @@ if [[ -x "$hstack" ]]; then
 fi
 
 # Fallback: run hstack from runtime install if present.
-HOME_DIR="\${HAPPIER_STACK_HOME_DIR:-$HOME/.happier-stack}"
+HOME_DIR="\${PIGGERCODE_STACK_HOME_DIR:-$HOME/.happier-stack}"
 RUNTIME="$HOME_DIR/runtime/node_modules/@piggercode/stack/bin/hstack.mjs"
 if [[ -f "$RUNTIME" ]]; then
   exec node "$RUNTIME" happier "$@"

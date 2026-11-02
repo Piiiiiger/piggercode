@@ -20,7 +20,7 @@ const run = createRunDirs({ runLabel: 'ui-e2e' });
 
 /**
  * Transcript viewport single-owner invariants (plan §4 A/B/D/E/H, §5 G2) asserted against the
- * live web telemetry buffer `__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__()`.
+ * live web telemetry buffer `__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__()`.
  *
  * Assertion semantics mirror `apps/ui/sources/dev/testkit/transcript/viewportTelemetryAssertions.ts`
  * (Lane 0.3). They are replicated minimally here because `@piggercode/tests` cannot import
@@ -30,7 +30,7 @@ const run = createRunDirs({ runLabel: 'ui-e2e' });
  * - `scroll-observed` telemetry is native-only in ChatList, so "final write confirmed" (E3) is
  *   asserted via live DOM scroll metrics instead of telemetry observations.
  * - Telemetry is dev-build-gated (`__DEV__`), so this suite runs the Expo web bundle through
- *   metro in dev mode (`HAPPIER_E2E_UI_WEB_MODE=metro` + `HAPPIER_E2E_UI_WEB_NO_DEV=0`).
+ *   metro in dev mode (`PIGGERCODE_E2E_UI_WEB_MODE=metro` + `PIGGERCODE_E2E_UI_WEB_NO_DEV=0`).
  * - The override global is installed via `page.addInitScript` BEFORE app load so it survives
  *   full-page navigations (a post-load `page.evaluate` override is wiped by `page.goto`).
  */
@@ -210,7 +210,7 @@ async function installViewportTelemetryOverride(page: Page): Promise<void> {
   // MUST run before app load: init scripts re-apply on every full-page navigation, while a
   // post-load evaluate override is wiped by the next `page.goto` (plan §2 E10 audit evidence).
   await page.addInitScript(() => {
-    (globalThis as Record<string, unknown>).__HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__ = {
+    (globalThis as Record<string, unknown>).__PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__ = {
       enabled: true,
       capacity: 5000,
     };
@@ -219,7 +219,7 @@ async function installViewportTelemetryOverride(page: Page): Promise<void> {
 
 async function readViewportTelemetrySnapshot(page: Page): Promise<ViewportTelemetrySnapshot | null> {
   return await page.evaluate(() => {
-    const fn = (globalThis as Record<string, unknown>).__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__;
+    const fn = (globalThis as Record<string, unknown>).__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__;
     if (typeof fn !== 'function') return null;
     return (fn as () => { events: unknown[]; droppedCount: number })();
   }) as ViewportTelemetrySnapshot | null;
@@ -232,9 +232,9 @@ async function waitForViewportTelemetryReadable(page: Page, timeoutMs = 60_000):
       .toBe(true);
   } catch {
     throw new Error([
-      '__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__ never became readable.',
+      '__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__ never became readable.',
       'The viewport telemetry override is dev-build-gated (__DEV__): this suite must run the web UI',
-      'through metro in dev mode (HAPPIER_E2E_UI_WEB_MODE=metro, HAPPIER_E2E_UI_WEB_NO_DEV=0) and the',
+      'through metro in dev mode (PIGGERCODE_E2E_UI_WEB_MODE=metro, PIGGERCODE_E2E_UI_WEB_NO_DEV=0) and the',
       'override must be installed via page.addInitScript before app load.',
     ].join('\n'));
   }
@@ -441,10 +441,10 @@ test.describe('ui e2e: transcript viewport invariants', () => {
       EXPO_PUBLIC_HAPPY_SERVER_URL: '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
       // Viewport telemetry (and its debug override) are dev-build-gated.
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
-      HAPPIER_E2E_UI_WEB_NO_DEV: '0',
-      HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_NO_DEV: '0',
+      PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
       // Small message pages so the seed leaves older pages to prepend; immediate older-load
       // spinner so invariant H's loading indicator is observable. The initial-fill budget is
       // tightened because the entry fill loop legitimately pages older content until the list is
@@ -452,7 +452,7 @@ test.describe('ui e2e: transcript viewport invariants', () => {
       // older-response delay, a 1200ms budget bounds entry drain to ≤2 pages, so a 6-message page
       // size (36 seeded messages = 5 older pages) always leaves ≥3 pages for the user-triggered
       // prepend (premise observed drained live 2026-06-11 with pageSize 12 + default 2000ms budget).
-      EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+      EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
         sessionMessagesPageSize: 6,
         transcriptInitialFillBudgetMs: 1200,
         transcriptBackwardPrefetchThresholdPx: MANUAL_SCROLL_PREFETCH_THRESHOLD_PX,
@@ -466,8 +466,8 @@ test.describe('ui e2e: transcript viewport invariants', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -534,11 +534,11 @@ test.describe('ui e2e: transcript viewport invariants', () => {
       uiBaseUrl,
       extraEnv: {
         HOME: cliHomeDir,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
       },
     });
 

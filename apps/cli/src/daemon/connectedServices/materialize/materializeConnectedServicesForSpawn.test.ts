@@ -11,9 +11,9 @@ import { resolveOpenCodeConnectedConfigHomeDir } from '@/backends/opencode/broke
 import { buildPiBrokerMarker } from '@/backends/pi/brokerExtension';
 import { materializeConnectedServicesForSpawn } from './materializeConnectedServicesForSpawn';
 import { normalizeMaterializationKeyForPath } from './normalizeMaterializationKeyForPath';
-import { HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY } from '../connectedServiceChildEnvironment';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { CLAUDE_SUBSCRIPTION_OAUTH_SCOPE } from '../descriptors/connectedAccountDescriptors';
 import { resolveConnectedServiceHomeDir, resolveConnectedServiceGroupHomeDir } from '../homes/resolveConnectedServiceHomeDir';
 
@@ -187,7 +187,7 @@ describe('materializeConnectedServicesForSpawn', () => {
       join(expectedCodexRoot, 'codex-home'),
     );
     expect(result!.env.CODEX_SQLITE_HOME).toBe(sourceSqliteHome);
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
       expectedCodexRoot,
     );
     expect(result!.materializationRoot).toBe(expectedCodexRoot);
@@ -494,7 +494,7 @@ describe('materializeConnectedServicesForSpawn', () => {
     expect(result!.env.CODEX_HOME).toBe(
       join(expectedCodexRoot, 'codex-home'),
     );
-    expect(JSON.parse(result!.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]!)).toEqual([
+    expect(JSON.parse(result!.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]!)).toEqual([
       {
         kind: 'group',
         serviceId: 'openai-codex',
@@ -603,7 +603,7 @@ describe('materializeConnectedServicesForSpawn', () => {
     expect(result!.env.XDG_CONFIG_HOME).toBe(resolveOpenCodeConnectedConfigHomeDir());
     expect(result!.env.XDG_CACHE_HOME).toBeUndefined();
     expect(result!.env.XDG_STATE_HOME).toBeUndefined();
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(
       join(baseDir, normalizeMaterializationKeyForPath('session-2'), 'opencode'),
     );
 
@@ -1020,8 +1020,8 @@ describe('materializeConnectedServicesForSpawn', () => {
       'claude-config',
     );
     expect(result!.env.CLAUDE_CONFIG_DIR).toBe(expectedClaudeConfigDir);
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedClaudeConfigDir);
-    expect(JSON.parse(result!.env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedClaudeConfigDir);
+    expect(JSON.parse(result!.env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
       ['CLAUDE_CONFIG_DIR'],
     );
     await expect(readFile(join(result!.env.CLAUDE_CONFIG_DIR!, 'settings.json'), 'utf8'))
@@ -1103,8 +1103,8 @@ describe('materializeConnectedServicesForSpawn', () => {
       'claude-config',
     );
     expect(result!.env.CLAUDE_CONFIG_DIR).toBe(expectedClaudeConfigDir);
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedClaudeConfigDir);
-    expect(JSON.parse(result!.env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedClaudeConfigDir);
+    expect(JSON.parse(result!.env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
       ['CLAUDE_CONFIG_DIR'],
     );
     await expect(readFile(join(result!.env.CLAUDE_CONFIG_DIR!, 'settings.json'), 'utf8')).resolves.toBe('{"theme":"dark"}\n');
@@ -1219,8 +1219,8 @@ describe('materializeConnectedServicesForSpawn', () => {
     expect(result!.env.CLAUDE_CONFIG_DIR).toBe(
       join(activeServerDir, 'daemon', 'connected-services', 'homes', 'anthropic', 'work', 'claude', 'claude-config'),
     );
-    expect(result!.env[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(result!.env.CLAUDE_CONFIG_DIR);
-    expect(JSON.parse(result!.env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
+    expect(result!.env[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(result!.env.CLAUDE_CONFIG_DIR);
+    expect(JSON.parse(result!.env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]!)).toEqual(
       ['ANTHROPIC_API_KEY', 'CLAUDE_CONFIG_DIR'],
     );
     await expect(readFile(join(result!.env.CLAUDE_CONFIG_DIR!, 'settings.json'), 'utf8')).resolves.toBe('{"theme":"dark"}\n');

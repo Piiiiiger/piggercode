@@ -252,12 +252,12 @@ async function spawnConnectedCodexGroupSession(params: Readonly<{
       terminal: { mode: 'plain' },
       experimentalCodexAcp: true,
       environmentVariables: {
-        HAPPIER_HOME_DIR: params.fixture.daemonHomeDir,
-        HAPPIER_SERVER_URL: params.fixture.daemonServerBaseUrl,
-        HAPPIER_WEBAPP_URL: params.fixture.daemonServerBaseUrl,
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-        HAPPIER_CODEX_ACP_BIN: params.fixture.acpStubProvider,
+        PIGGERCODE_HOME_DIR: params.fixture.daemonHomeDir,
+        PIGGERCODE_SERVER_URL: params.fixture.daemonServerBaseUrl,
+        PIGGERCODE_WEBAPP_URL: params.fixture.daemonServerBaseUrl,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+        PIGGERCODE_CODEX_ACP_BIN: params.fixture.acpStubProvider,
       },
       connectedServices: {
         v: 1,

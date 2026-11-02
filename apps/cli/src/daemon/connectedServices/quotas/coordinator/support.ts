@@ -781,7 +781,7 @@ export function isQuotaUnknownFallbackSnapshot(snapshot: ConnectedServiceQuotaSn
 }
 
 export class UnknownAccountModeQuotaPersistenceError extends Error {
-  public readonly code = 'HAPPIER_ACCOUNT_MODE_UNKNOWN';
+  public readonly code = 'PIGGERCODE_ACCOUNT_MODE_UNKNOWN';
   public readonly retryAfterMs = ACCOUNT_MODE_UNKNOWN_RETRY_AFTER_MS;
 
   public constructor() {

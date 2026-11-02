@@ -98,8 +98,8 @@ async function runExportAndReadArgs({ t, maxWorkersEnv, extraArgs = [] }) {
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_EXPO_EXPORT_MAX_WORKERS: maxWorkersEnv,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_EXPO_EXPORT_MAX_WORKERS: maxWorkersEnv,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({
@@ -118,14 +118,14 @@ async function runExportAndReadArgs({ t, maxWorkersEnv, extraArgs = [] }) {
   return { root, lines };
 }
 
-test('expoExec injects --max-workers from HAPPIER_STACK_EXPO_EXPORT_MAX_WORKERS', async (t) => {
+test('expoExec injects --max-workers from PIGGERCODE_STACK_EXPO_EXPORT_MAX_WORKERS', async (t) => {
   const { lines } = await runExportAndReadArgs({ t, maxWorkersEnv: '2' });
   assert.ok(lines.includes('--max-workers'));
   const idx = lines.indexOf('--max-workers');
   assert.equal(lines[idx + 1], '2');
 });
 
-test('expoExec does not inject --max-workers when explicitly disabled via HAPPIER_STACK_EXPO_EXPORT_MAX_WORKERS=0', async (t) => {
+test('expoExec does not inject --max-workers when explicitly disabled via PIGGERCODE_STACK_EXPO_EXPORT_MAX_WORKERS=0', async (t) => {
   const { lines } = await runExportAndReadArgs({ t, maxWorkersEnv: '0' });
   assert.ok(!lines.includes('--max-workers'));
 });

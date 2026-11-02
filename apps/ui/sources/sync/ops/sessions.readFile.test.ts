@@ -71,7 +71,7 @@ vi.mock('@/sync/ops/sessionMachineTarget', () => ({
 
 beforeEach(() => {
     policyConsulted = false;
-    delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES;
 
     machineRPCSpy.mockReset();
     machineRpcWithServerScopeSpy.mockReset();
@@ -193,7 +193,7 @@ describe('sessionReadFile', () => {
     it('fails closed when the inline max-bytes guard rejects the download', async () => {
         const { sessionReadFile } = await import('./sessionFileSystem');
 
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES = '4';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES = '4';
         readMachineTargetForSessionSpy.mockReturnValue({ machineId: 'm1', basePath: '/repo' });
 
         machineRPCSpy.mockImplementation(async (_machineId: string, method: string) => {
@@ -240,7 +240,7 @@ describe('sessionReadFile', () => {
     it('fails closed when the inline max-bytes env is misconfigured to an unsafe value (hard clamp)', async () => {
         const { sessionReadFile } = await import('./sessionFileSystem');
 
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES = '1000000000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES = '1000000000';
         readMachineTargetForSessionSpy.mockReturnValue({ machineId: 'm1', basePath: '/repo' });
 
         let readChunkCalled = 0;

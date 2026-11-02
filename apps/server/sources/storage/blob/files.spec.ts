@@ -14,7 +14,7 @@ describe('storage/files (S3 env parsing)', () => {
       });
 
       const { initFilesLocalFromEnv, loadFiles } = await import('./files');
-      initFilesLocalFromEnv({ HAPPIER_SERVER_LIGHT_FILES_DIR: dir } as unknown as NodeJS.ProcessEnv);
+      initFilesLocalFromEnv({ PIGGERCODE_SERVER_LIGHT_FILES_DIR: dir } as unknown as NodeJS.ProcessEnv);
       await expect(loadFiles()).resolves.toBeUndefined();
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -27,7 +27,7 @@ describe('storage/files (S3 env parsing)', () => {
     const { resolveLightPublicFilesDir } = await import('@/flavors/light/files');
     expect(resolveLightPublicFilesDir({
       HOME: '/scoped/home',
-      HAPPIER_SERVER_LIGHT_FILES_DIR: '~/server-light/files',
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: '~/server-light/files',
     } as unknown as NodeJS.ProcessEnv)).toBe('/scoped/home/server-light/files');
   });
 

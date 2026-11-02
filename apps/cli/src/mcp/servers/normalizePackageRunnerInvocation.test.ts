@@ -19,7 +19,7 @@ describe('normalizePackageRunnerInvocation', () => {
     await writeFile(pnpmPath, '#!/bin/sh\nexit 0\n', 'utf8');
     await chmod(pnpmPath, 0o755);
     processEnv = {
-      HAPPIER_PNPM_BIN: pnpmPath,
+      PIGGERCODE_PNPM_BIN: pnpmPath,
       PATH: '',
     } as NodeJS.ProcessEnv;
   });
@@ -36,7 +36,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '@scope/server', '--flag'],
       cwdPolicy: 'neutral',
     });
@@ -50,7 +50,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['exec', '@scope/server', '--flag'],
       cwdPolicy: 'workspace',
     });
@@ -64,7 +64,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '--package', '@scope/server', 'server', '--flag'],
       cwdPolicy: 'neutral',
     });
@@ -78,7 +78,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '--package=@scope/server', 'server', '--flag'],
       cwdPolicy: 'neutral',
     });
@@ -92,7 +92,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['run', 'dev', '--', '--port', '3000'],
       cwdPolicy: 'workspace',
     });
@@ -106,7 +106,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['exec', 'tsx', 'server.ts'],
       cwdPolicy: 'workspace',
     });
@@ -120,7 +120,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '@scope/server', '--flag'],
       cwdPolicy: 'neutral',
     });
@@ -134,7 +134,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '@scope/server'],
       cwdPolicy: 'neutral',
     });
@@ -172,7 +172,7 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '@scope/server'],
       cwdPolicy: 'neutral',
     });
@@ -186,15 +186,15 @@ describe('normalizePackageRunnerInvocation', () => {
         processEnv,
       }),
     ).resolves.toEqual({
-      command: processEnv.HAPPIER_PNPM_BIN,
+      command: processEnv.PIGGERCODE_PNPM_BIN,
       args: ['dlx', '@scope/server'],
       cwdPolicy: 'neutral',
     });
   });
 
-  it('fails closed when HAPPIER_PNPM_BIN is set but invalid', async () => {
+  it('fails closed when PIGGERCODE_PNPM_BIN is set but invalid', async () => {
     processEnv = {
-      HAPPIER_PNPM_BIN: join(rootDir, 'missing-pnpm'),
+      PIGGERCODE_PNPM_BIN: join(rootDir, 'missing-pnpm'),
       PATH: rootDir,
     } as NodeJS.ProcessEnv;
 
@@ -207,13 +207,13 @@ describe('normalizePackageRunnerInvocation', () => {
     ).resolves.toBeNull();
   });
 
-  it('fails closed when HAPPIER_PNPM_BIN points to an executable directory', async () => {
+  it('fails closed when PIGGERCODE_PNPM_BIN points to an executable directory', async () => {
     const pnpmDir = join(rootDir, 'pnpm-dir');
     await mkdir(pnpmDir, { recursive: true });
     await chmod(pnpmDir, 0o755);
 
     processEnv = {
-      HAPPIER_PNPM_BIN: pnpmDir,
+      PIGGERCODE_PNPM_BIN: pnpmDir,
       PATH: rootDir,
     } as NodeJS.ProcessEnv;
 

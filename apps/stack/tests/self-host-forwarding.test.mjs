@@ -21,8 +21,8 @@ function runHstack(repoRoot, args, extraEnv = {}) {
     cwd: repoRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
       ...extraEnv,
     },
     encoding: 'utf8',
@@ -38,7 +38,7 @@ async function writeHappierStub({ dir, logPath }) {
     '#!/usr/bin/env node',
     "import { appendFileSync } from 'node:fs';",
     '',
-    'const logPath = process.env.HAPPIER_STUB_LOG_PATH;',
+    'const logPath = process.env.PIGGERCODE_STUB_LOG_PATH;',
     'if (logPath) {',
     "  appendFileSync(logPath, JSON.stringify({ argv: process.argv.slice(2) }) + '\\n', 'utf8');",
     '}',
@@ -78,7 +78,7 @@ test('hstack self-host forwards to happier relay host when supported', async (t)
 
   const res = runHstack(repoRoot, ['self-host', 'status', '--json'], {
     PATH: `${stub.binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STUB_LOG_PATH: logPath,
+    PIGGERCODE_STUB_LOG_PATH: logPath,
   });
 
   assert.equal(res.status, 0, res.stderr);

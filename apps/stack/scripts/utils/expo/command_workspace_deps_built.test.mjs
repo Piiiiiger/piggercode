@@ -33,7 +33,7 @@ async function writeYarnStub({ binDir, outputPath }) {
       'fi',
       '',
       'if [[ "${1:-}" == "-s" && "${2:-}" == "build" && "$(pwd)" == */packages/protocol ]]; then',
-      '  out="${HAPPIER_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
+      '  out="${PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
       '  mkdir -p "$out"',
       "  printf '%s\\n' 'export const ok = true;' > \"$out/index.js\"",
       "  printf '%s\\n' 'export const ok = true;' > \"$out/rpcErrors.js\"",
@@ -61,7 +61,7 @@ async function writeYarnStub({ binDir, outputPath }) {
       'if "%~1"=="install" exit /b 0',
       'if "%~1"=="-s" if "%~2"=="build" (',
       '  if /I "%CD%"=="' + join(binDir, '..', 'packages', 'protocol') + '" (',
-      '    set "out=%HAPPIER_WORKSPACE_DIST_OUTPUT_DIR%"',
+      '    set "out=%PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR%"',
       '    if not defined out set "out=dist"',
       '    if not exist "!out!" mkdir "!out!"',
       "    >\"!out!\\index.js\" echo export const ok = true;",
@@ -204,7 +204,7 @@ test('expoExec builds workspace dist deps for the projectDir (not the runnerDir)
   withPatchedProcessEnv(t, {
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({
@@ -275,7 +275,7 @@ test('expoExec falls back to the monorepo root expo bin when runnerDir lacks nod
   withPatchedProcessEnv(t, {
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({

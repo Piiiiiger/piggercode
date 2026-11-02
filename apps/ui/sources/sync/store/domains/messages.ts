@@ -591,7 +591,7 @@ export function createMessagesDomain<S extends MessagesDomain & MessagesDomainDe
                 const DEBUG_MESSAGE_DECRYPT =
                     typeof globalThis !== 'undefined'
                     && (
-                        (globalThis as any).__HAPPIER_DEBUG_MESSAGE_DECRYPT__ === true
+                        (globalThis as any).__PIGGERCODE_DEBUG_MESSAGE_DECRYPT__ === true
                         || (typeof localStorage !== 'undefined' && localStorage.getItem('happier.debug.messageDecrypt') === '1')
                     );
 

@@ -140,7 +140,7 @@ function writeLocalCliPayload(params: Readonly<{ payloadRoot: string; launch: Cl
     // computer's OS-user-home fixture at the executable boundary, after that clearing.
     const envLines = Object.entries({
         ...params.launch.env,
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: params.userHomeDir,
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: params.userHomeDir,
     })
         .filter(([, value]) => typeof value === 'string')
         .map(([key, value]) => `export ${key}=${shellQuote(String(value))}`);
@@ -152,7 +152,7 @@ function writeLocalCliPayload(params: Readonly<{ payloadRoot: string; launch: Cl
         'self="$(readlink -f "$0")"',
         // A compiled release binary is argv[0]/argv[1] itself; this launcher's argv[1] is the entry
         // script, so name the command the way the binary would be named (`happier`, `hdev`, ...).
-        'export HAPPIER_CLI_INVOKER_NAME="$(basename "$0")"',
+        'export PIGGERCODE_CLI_INVOKER_NAME="$(basename "$0")"',
         `exec ${command} "$(dirname "$self")/package-dist/index.mjs" "$@"`,
         '',
     ].join('\n'));
@@ -180,7 +180,7 @@ function writeForeignCli(params: Readonly<{ npmPrefixDir: string; launch: CliTes
     writeFileSync(binEntry, `import ${JSON.stringify(pathToFileURL(entry).href)};\n`, 'utf8');
     const envLines = Object.entries({
         ...params.launch.env,
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: params.userHomeDir,
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: params.userHomeDir,
     })
         .filter(([, value]) => typeof value === 'string')
         .map(([key, value]) => `export ${key}=${shellQuote(String(value))}`);
@@ -231,7 +231,7 @@ export async function createHermeticDesktopComputer(params: Readonly<{
         '',
     ].join('\n'));
 
-    // Built from an allowlist, never from process.env: the runner's HAPPIER_*/XDG/D-Bus variables
+    // Built from an allowlist, never from process.env: the runner's PIGGERCODE_*/XDG/D-Bus variables
     // would point hsetup and the CLI at the host's own Happier home or systemd session.
     const env: NodeJS.ProcessEnv = {
         HOME: homeDir,
@@ -252,9 +252,9 @@ export async function createHermeticDesktopComputer(params: Readonly<{
         ].join(':'),
         // The CLI resolves the service user's home from the passwd entry, not HOME; this is its
         // documented override, and without it the unit file would land in the real home.
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
         // The CLI's daily update check calls the public release API; this computer is offline.
-        HAPPIER_CLI_UPDATE_CHECK: '0',
+        PIGGERCODE_CLI_UPDATE_CHECK: '0',
     };
     writeFileSync(join(fakeSystemdStateDir, 'manager-env.json'), JSON.stringify({
         HOME: env.HOME,
@@ -263,8 +263,8 @@ export async function createHermeticDesktopComputer(params: Readonly<{
         LANG: env.LANG,
         SHELL: env.SHELL,
         TMPDIR: env.TMPDIR,
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-        HAPPIER_CLI_UPDATE_CHECK: '0',
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+        PIGGERCODE_CLI_UPDATE_CHECK: '0',
     }, null, 2));
 
     const version = readCliPackageVersion();

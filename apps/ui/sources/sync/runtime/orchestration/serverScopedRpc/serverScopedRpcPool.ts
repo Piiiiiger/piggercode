@@ -30,7 +30,7 @@ const machineDataKeyResolutions = createScopedResolutionSingleFlight<ScopedMachi
 const machineTokenKeys = createScopedCacheTokenKeyRegistry();
 
 function readMaxMachineKeyCacheEntriesFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX ?? '').trim();
     if (!raw) return 256;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 256;

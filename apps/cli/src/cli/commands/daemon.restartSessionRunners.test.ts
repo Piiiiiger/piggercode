@@ -394,12 +394,12 @@ describe('handleDaemonCliCommand session runner restart controls', () => {
   });
 
   describe('--on-update', () => {
-    const envBackup = snapshotEnvValues(['HAPPIER_HOME_DIR']);
+    const envBackup = snapshotEnvValues(['PIGGERCODE_HOME_DIR']);
     let homeDir = '';
 
     beforeEach(async () => {
       homeDir = await createTempDir('happier-cli-runner-on-update-');
-      applyEnvValues({ HAPPIER_HOME_DIR: homeDir });
+      applyEnvValues({ PIGGERCODE_HOME_DIR: homeDir });
       vi.resetModules();
     });
 

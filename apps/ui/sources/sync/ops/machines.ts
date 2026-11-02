@@ -932,7 +932,7 @@ export async function machineCreateDirectory(
 
 /**
  * Reads a file in one piece, base64 encoded. The machine refuses folders and files above its own read
- * limit (`HAPPIER_FILES_READ_MAX_BYTES`, 2.5 MB unless set), so this is for previews, not bulk transfers.
+ * limit (`PIGGERCODE_FILES_READ_MAX_BYTES`, 2.5 MB unless set), so this is for previews, not bulk transfers.
  */
 export async function machineReadFile(
     machineId: string,
@@ -1071,7 +1071,7 @@ export type BugReportLogTailResult =
  *
  * This calls the daemon's `preview-env` RPC (if supported). The daemon computes:
  * - effective env = { ...daemon.process.env, ...expand(extraEnv) }
- * - applies `HAPPIER_ENV_PREVIEW_SECRETS` policy for sensitive variables
+ * - applies `PIGGERCODE_ENV_PREVIEW_SECRETS` policy for sensitive variables
  *
  * If the daemon is old and doesn't support `preview-env`, returns `{ supported: false }`.
  */

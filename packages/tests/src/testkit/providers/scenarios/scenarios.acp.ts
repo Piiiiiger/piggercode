@@ -280,8 +280,8 @@ export function makeAcpWriteThenStreamMarkdownTableScenario(params: {
  * Experimental scenario to detect whether an ACP provider uses ACP fs methods for writes.
  *
  * This scenario is intentionally *not* part of any provider's default registry; it is meant to be
- * run explicitly via `HAPPIER_E2E_PROVIDER_SCENARIOS=acp_fs_permission_experiment` together with
- * enabling the Happier CLI's ACP fs support (`HAPPIER_ACP_FS=1`).
+ * run explicitly via `PIGGERCODE_E2E_PROVIDER_SCENARIOS=acp_fs_permission_experiment` together with
+ * enabling the Happier CLI's ACP fs support (`PIGGERCODE_ACP_FS=1`).
  *
  * Expected behavior:
  * - If the provider routes file writes through ACP `fs.writeTextFile`, Happier will surface a

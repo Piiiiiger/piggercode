@@ -204,8 +204,8 @@ test.describe('ui e2e: Codex app-server fork from session info', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 
@@ -214,7 +214,7 @@ test.describe('ui e2e: Codex app-server fork from session info', () => {
             env: {
                 ...process.env,
                 EXPO_PUBLIC_DEBUG: '1',
-                EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS: '300000',
+                EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS: '300000',
                 EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
                 EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-codex-app-server-fork-info`,
             },
@@ -254,8 +254,8 @@ test.describe('ui e2e: Codex app-server fork from session info', () => {
             extraEnv: {
                 ...process.env,
                 HOME: cliHomeDir,
-                HAPPIER_CODEX_APP_SERVER_BIN: fakeCodexAppServerPath,
-                HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
+                PIGGERCODE_CODEX_APP_SERVER_BIN: fakeCodexAppServerPath,
+                PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
             },
         });
 

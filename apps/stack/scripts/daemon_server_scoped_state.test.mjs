@@ -93,7 +93,7 @@ test('checkDaemonState falls back to an older running daemon when the newest fal
   const running = spawnDetachedInlineNodeTestProcess('setInterval(() => {}, 1e6)', {
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: dir,
+      PIGGERCODE_HOME_DIR: dir,
     },
     stdio: ['ignore', 'ignore', 'ignore'],
   });

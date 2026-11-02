@@ -4,8 +4,8 @@ import { logger } from '@/ui/logger';
 import { openAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 function isAccountSettingsDebugEnabled(): boolean {
-  const raw = typeof process.env.HAPPIER_DEBUG_ACCOUNT_SETTINGS === 'string'
-    ? process.env.HAPPIER_DEBUG_ACCOUNT_SETTINGS.trim().toLowerCase()
+  const raw = typeof process.env.PIGGERCODE_DEBUG_ACCOUNT_SETTINGS === 'string'
+    ? process.env.PIGGERCODE_DEBUG_ACCOUNT_SETTINGS.trim().toLowerCase()
     : '';
   return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on';
 }

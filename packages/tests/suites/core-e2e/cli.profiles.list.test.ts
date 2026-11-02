@@ -25,8 +25,8 @@ describe('core e2e: cli profiles list', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -89,9 +89,9 @@ describe('core e2e: cli profiles list', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_ACTIVE_SERVER_ID: serverId,
-        HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+        PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
       },
       label: 'profiles.list',
       args: ['profiles', 'list', '--refresh-settings', '--json'],

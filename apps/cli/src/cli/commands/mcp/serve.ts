@@ -5,11 +5,11 @@ import { enableMcpStdioConsolePatch } from '@/mcp/server/mcpStdioConsolePatch';
 import type { McpCommandDeps } from './deps';
 
 function clearServerSelectionEnvOverrides(): void {
-  delete process.env.HAPPIER_SERVER_URL;
-  delete process.env.HAPPIER_LOCAL_SERVER_URL;
-  delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-  delete process.env.HAPPIER_WEBAPP_URL;
-  delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+  delete process.env.PIGGERCODE_SERVER_URL;
+  delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
+  delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+  delete process.env.PIGGERCODE_WEBAPP_URL;
+  delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 }
 
 export async function runMcpServeCommand(
@@ -38,12 +38,12 @@ export async function runMcpServeCommand(
   try {
     const actionsSettings = accountSettingsContext.settings.actionsSettingsV1;
     if (actionsSettings && typeof actionsSettings === 'object') {
-      process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify(actionsSettings);
+      process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify(actionsSettings);
     } else {
-      delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+      delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
     }
   } catch {
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   }
 
   const { mcp } = deps.createExternalMcpServer({ credentials, defaultSessionId });

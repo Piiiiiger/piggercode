@@ -57,8 +57,8 @@ describe('registerRunnerTerminationHandlers', () => {
 
   it('forces process exit even if onTerminate hangs (bounded by env timeout)', async () => {
     vi.useFakeTimers();
-    const previousTimeout = process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS;
-    process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS = '250';
+    const previousTimeout = process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
+    process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = '250';
 
     const fakeProcess = createFakeProcess();
     const exit = vi.fn();
@@ -84,9 +84,9 @@ describe('registerRunnerTerminationHandlers', () => {
     } finally {
       handlers.dispose();
       if (previousTimeout === undefined) {
-        delete process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
+        process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
       }
       vi.useRealTimers();
     }
@@ -225,8 +225,8 @@ describe('registerRunnerTerminationHandlers', () => {
 
   it('writes a semantic exit report before bounded cleanup can hang', async () => {
     vi.useFakeTimers();
-    const previousTimeout = process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS;
-    process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS = '250';
+    const previousTimeout = process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
+    process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = '250';
     const baseDir = await mkdtemp(join(tmpdir(), 'happy-runner-termination-report-'));
 
     const fakeProcess = createFakeProcess();
@@ -267,9 +267,9 @@ describe('registerRunnerTerminationHandlers', () => {
     } finally {
       handlers.dispose();
       if (previousTimeout === undefined) {
-        delete process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
+        process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
       }
       vi.useRealTimers();
     }

@@ -396,7 +396,7 @@ describe("Account profile (integration)", () => {
     });
 
     it("GET /v1/account/profile returns empty connectedServices + connectedServicesV2 when connected services feature is disabled", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
 
         await withAuthenticatedTestApp(
             (app) => accountRoutes(app as any),

@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import psList from 'ps-list';
 
-import { HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from './platform/linux/daemonSpawnedSessionCgroupSelfMigration';
+import { PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from './platform/linux/daemonSpawnedSessionCgroupSelfMigration';
 import { createHttpStatusError } from '@/api/client/httpStatusError';
 import { ensureMachineRegistered } from '@/api/machine/ensureMachineRegistered';
 import {
@@ -23,7 +23,7 @@ import { callSessionRpc } from '@/session/transport/rpc/sessionRpc';
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';
 import { createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';
 import {
-  HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
   parseSessionConnectedServicesBindingsJson,
 } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
 import { waitForSessionWebhook } from './spawn/waitForSessionWebhook';
@@ -41,7 +41,7 @@ import type { StopSessionResult } from './sessions/stopSessionContract';
 import type { TerminalHostAdapter } from '@/integrations/terminalHost/_types';
 import type { TerminalAttachmentInfo } from '@/terminal/attachment/terminalAttachmentInfo';
 import {
-  HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+  PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
   type AttachmentBoundClaudeEndpointState,
 } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 import {
@@ -633,7 +633,7 @@ const buildCgroupSelfMigratingHappyCliLaunchSpec = vi.hoisted(() => vi.fn(async 
   filePath: '/bin/sh',
   args: [
     '-lc',
-    'target_dir="$HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR/happier-session-$$.scope" && mkdir -p "$target_dir" && printf "%s\\n" "$$" > "$target_dir/cgroup.procs" && exec "$@"',
+    'target_dir="$PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR/happier-session-$$.scope" && mkdir -p "$target_dir" && printf "%s\\n" "$$" > "$target_dir/cgroup.procs" && exec "$@"',
     'sh',
     '/tmp/happier-runtime',
     'codex',
@@ -643,7 +643,7 @@ const buildCgroupSelfMigratingHappyCliLaunchSpec = vi.hoisted(() => vi.fn(async 
     'daemon',
   ],
   env: {
-    HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR: '/sys/fs/cgroup/user.slice/user-501.slice/user@501.service/app.slice',
+    PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR: '/sys/fs/cgroup/user.slice/user-501.slice/user@501.service/app.slice',
   },
 })));
 
@@ -1220,20 +1220,20 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     if (ORIGINAL_PLATFORM_DESCRIPTOR) {
       Object.defineProperty(process, 'platform', ORIGINAL_PLATFORM_DESCRIPTOR);
     }
-    delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    delete process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID;
-    delete process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS;
-    delete process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC;
-    delete process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER;
-    delete process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED;
-    delete process.env.HAPPIER_DAEMON_STOP_SESSION_WAIT_FOR_EXIT_MS;
-    delete process.env.HAPPIER_DAEMON_STOP_SESSION_WAIT_FOR_EXIT_POLL_INTERVAL_MS;
+    delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    delete process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID;
+    delete process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS;
+    delete process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC;
+    delete process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER;
+    delete process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED;
+    delete process.env.PIGGERCODE_DAEMON_STOP_SESSION_WAIT_FOR_EXIT_MS;
+    delete process.env.PIGGERCODE_DAEMON_STOP_SESSION_WAIT_FOR_EXIT_POLL_INTERVAL_MS;
   });
 
   it('binds startup-reattached live sessions to the daemon final machine identity', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -1280,9 +1280,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -1290,8 +1290,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('activates one exact Pending row after the UI disappears and delegates stale active state to runner serviceability', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const rawSession = createSessionRecordFixture({
       id: 'sess_plain',
       seq: 12,
@@ -1373,9 +1373,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (run) {
         harness.requestShutdown('happier-cli');
@@ -1387,8 +1387,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('recovers a waiting exact-machine activation from one reconnect scan without a live hint', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const rawSession = createSessionRecordFixture({
       id: 'sess_reconnect_activation',
       seq: 12,
@@ -1444,8 +1444,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
       run = null;
     } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       if (run) {
         harness.requestShutdown('happier-cli');
         await run.catch(() => {});
@@ -1456,9 +1456,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('leaves daemon session runner respawn disabled unless explicitly enabled', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    delete process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    delete process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED;
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -1478,9 +1478,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -1488,9 +1488,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('enables daemon session runner respawn when explicitly requested', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED = 'true';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED = 'true';
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -1511,19 +1511,19 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
-      delete process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED;
+      delete process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('settles an accepted nonce when the child exits before its webhook', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const waitForSessionWebhookMock = vi.mocked(waitForSessionWebhook);
     const webhookControl: {
       resolve: ((value:
@@ -1643,9 +1643,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run;
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
       featureDecisionSpy.mockRestore();
@@ -1676,8 +1676,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         : pid === 12345 ? (startup === 'wrapper' || startup === 'windows_dispatcher' ? 'fixture-wrapper-generation' : 'fixture-current-generation')
           : readFingerprint(pid));
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     sessionRunnerActivityBoundaryMocks.readProcessRunState.mockResolvedValue('servable');
     pendingMaterializationRpcMocks.callSessionRpc.mockResolvedValue({
       ok: false,
@@ -1876,8 +1876,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         harness.requestShutdown('happier-cli');
         await run;
       }
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
       featureDecisionSpy.mockRestore();
       fingerprintSpy.mockRestore();
@@ -1890,8 +1890,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('does not launch a runner when the handoff acceptance claim fails', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     const featureDecisionModule = await import('@/features/featureDecisionService');
     const featureDecisionSpy = vi.spyOn(featureDecisionModule, 'resolveCliFeatureDecisionForServer')
@@ -1939,8 +1939,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
       run = null;
     } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       featureDecisionSpy.mockRestore();
       if (run) {
         harness.requestShutdown('happier-cli');
@@ -1978,8 +1978,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       enterCleanup();
       await cleanupReleased;
     });
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     const onHappySessionWebhookModule = await import('./sessions/onHappySessionWebhook');
@@ -2078,9 +2078,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
       vi.mocked(onHappySessionWebhookModule.createOnHappySessionWebhook).mockImplementation(() => vi.fn());
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (watchdogCompletion) {
         releaseWatchdogGrace();
@@ -2095,8 +2095,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('ignores dead connected-service restart intents during startup without respawning', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -2142,9 +2142,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2152,8 +2152,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('ignores dead connected-service restart intents during startup when only the happy session id is resumable', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -2199,9 +2199,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2209,8 +2209,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('does not force-respawn orphaned dead OpenCode startup markers', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -2248,9 +2248,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2258,8 +2258,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('does not route dead startup terminal markers through the respawn manager', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -2294,9 +2294,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2304,8 +2304,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('publishes passive orphan state without attempting terminal recovery', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -2342,9 +2342,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2352,12 +2352,12 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('tracks respawn environment variables from the effective launched Claude child env', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
     const claudeConfigDirOriginal = process.env.CLAUDE_CONFIG_DIR;
-    const startupSourceOriginal = process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const startupSourceOriginal = process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     process.env.CLAUDE_CONFIG_DIR = '/tmp/claude-config';
-    delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
+    delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
 
     try {
       const backendsCatalog = await import('@/backends/catalog');
@@ -2448,9 +2448,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       vi.mocked(backendsCatalog.resolveAgentCliSubcommand).mockReturnValue('codex');
       vi.mocked(onHappySessionWebhookModule.createOnHappySessionWebhook).mockImplementation(() => vi.fn());
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (claudeConfigDirOriginal === undefined) {
         delete process.env.CLAUDE_CONFIG_DIR;
@@ -2458,9 +2458,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         process.env.CLAUDE_CONFIG_DIR = claudeConfigDirOriginal;
       }
       if (startupSourceOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
+        delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
       } else {
-        process.env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSourceOriginal;
+        process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSourceOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -2482,13 +2482,13 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     const { configuration } = await import('@/configuration');
     const originalHome = configuration.happyHomeDir;
     const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-hosted-completion-'));
-    const previousRefresh = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    const previousNonceTtl = process.env.HAPPIER_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS;
-    const previousExitPoll = process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS;
-    const previousHeartbeatInterval = process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL;
-    const previousTmuxInlineLimit = process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const previousNonceTtl = process.env.PIGGERCODE_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS;
+    const previousExitPoll = process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS;
+    const previousHeartbeatInterval = process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL;
+    const previousTmuxInlineLimit = process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
     const previousHerdrBinary = process.env.HERDR_BIN_PATH;
-    const previousClaudeBinary = process.env.HAPPIER_CLAUDE_PATH;
+    const previousClaudeBinary = process.env.PIGGERCODE_CLAUDE_PATH;
     const isTmuxCreation = contract === 'tmux_creation_unconfirmed' || contract === 'tmux_creation_not_started';
     const isHerdrCreation = contract === 'herdr_creation_unconfirmed' || contract === 'herdr_creation_stopped';
     const isTmux = contract === 'tmux_binding_exit_overlap' || isTmuxCreation;
@@ -2509,17 +2509,17 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     const realNow = Date.now.bind(Date);
     const replayClock = isNonceReplay ? vi.spyOn(Date, 'now').mockImplementation(() => realNow() + replayClockOffset) : undefined;
     if (isNonceReplay) {
-      process.env.HAPPIER_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS = '3000';
+      process.env.PIGGERCODE_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS = '3000';
     }
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED = isEarlyRegularExit || isBindingExit ? 'false' : 'true';
-    if (contract === 'binding_exit_overlap' || isCommittedBindingExit) process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = '10';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED = isEarlyRegularExit || isBindingExit ? 'false' : 'true';
+    if (contract === 'binding_exit_overlap' || isCommittedBindingExit) process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = '10';
     if (isHeartbeatExit) {
-      process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '10';
-      process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = '60000';
+      process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '10';
+      process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = '60000';
     }
-    process.env.HAPPIER_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS = '50';
-    process.env.HAPPIER_DAEMON_SESSION_RESPAWN_JITTER_MS = '0';
+    process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS = '50';
+    process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_JITTER_MS = '0';
     Object.defineProperty(configuration, 'happyHomeDir', { value: fixtureHome });
     vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
     // OS presence is the boundary; the webhook wait, binding, presentation and restart policy stay real.
@@ -2561,7 +2561,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       });
     };
     if (fixtureAgent === 'claude') {
-      process.env.HAPPIER_CLAUDE_PATH = await writeExecutableShim({
+      process.env.PIGGERCODE_CLAUDE_PATH = await writeExecutableShim({
         dir: fixtureHome, fileName: 'claude', contents: `#!${process.execPath}\nprocess.exit(0);\n`,
       });
       setActiveAccountSettingsSnapshot({
@@ -2628,7 +2628,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     const availabilityTimers: ReturnType<typeof setTimeout>[] = [];
     let tmuxLaunchHandoffPath: string | undefined;
     if (isTmux) {
-      if (isTmuxCreation) process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = '1';
+      if (isTmuxCreation) process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = '1';
       const originalSetTimeout = globalThis.setTimeout;
       vi.spyOn(globalThis, 'setTimeout').mockImplementation(((...args: Parameters<typeof setTimeout>) => {
         const timer = originalSetTimeout(...args);
@@ -3207,8 +3207,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     } finally {
       if (previousHerdrBinary === undefined) delete process.env.HERDR_BIN_PATH;
       else process.env.HERDR_BIN_PATH = previousHerdrBinary;
-      if (previousClaudeBinary === undefined) delete process.env.HAPPIER_CLAUDE_PATH;
-      else process.env.HAPPIER_CLAUDE_PATH = previousClaudeBinary;
+      if (previousClaudeBinary === undefined) delete process.env.PIGGERCODE_CLAUDE_PATH;
+      else process.env.PIGGERCODE_CLAUDE_PATH = previousClaudeBinary;
       replayClock?.mockRestore();
       releaseMarker();
       releaseBinding();
@@ -3235,20 +3235,20 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       for (const timer of exitPolls) clearInterval(timer);
       for (const timer of availabilityTimers) clearTimeout(timer);
       if (tmuxLaunchHandoffPath) await rm(dirname(tmuxLaunchHandoffPath), { recursive: true, force: true });
-      if (previousTmuxInlineLimit === undefined) delete process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
-      else process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = previousTmuxInlineLimit;
+      if (previousTmuxInlineLimit === undefined) delete process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
+      else process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = previousTmuxInlineLimit;
       for (const restore of restoreDelegates) restore();
       Object.defineProperty(configuration, 'happyHomeDir', { value: originalHome });
-      if (previousRefresh === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
-      if (previousNonceTtl === undefined) delete process.env.HAPPIER_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS;
-      else process.env.HAPPIER_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS = previousNonceTtl;
-      if (previousExitPoll === undefined) delete process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS;
-      else process.env.HAPPIER_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = previousExitPoll;
-      if (previousHeartbeatInterval === undefined) delete process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL;
-      else process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = previousHeartbeatInterval;
-      delete process.env.HAPPIER_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS;
-      delete process.env.HAPPIER_DAEMON_SESSION_RESPAWN_JITTER_MS;
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousNonceTtl === undefined) delete process.env.PIGGERCODE_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS;
+      else process.env.PIGGERCODE_DAEMON_SPAWN_ACCEPTED_NONCE_TTL_MS = previousNonceTtl;
+      if (previousExitPoll === undefined) delete process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS;
+      else process.env.PIGGERCODE_DAEMON_VISIBLE_CONSOLE_EXIT_POLL_MS = previousExitPoll;
+      if (previousHeartbeatInterval === undefined) delete process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL;
+      else process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = previousHeartbeatInterval;
+      delete process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS;
+      delete process.env.PIGGERCODE_DAEMON_SESSION_RESPAWN_JITTER_MS;
       await rm(fixtureHome, { recursive: true, force: true });
     }
     };
@@ -3261,10 +3261,10 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('returns typed host setup recovery when the actual Herdr executable is absent', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const previousRefresh = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
     const previousHerdr = process.env.HERDR_BIN_PATH;
     const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-host-unavailable-'));
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     process.env.HERDR_BIN_PATH = join(fixtureHome, 'absent-herdr');
     let run: Promise<void> | null = null;
     const hosts = await import('@/integrations/terminalHost/defaultRegistry');
@@ -3294,8 +3294,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       if (run) { harness.requestShutdown('happier-cli'); await run; }
       if (previousInventory) vi.mocked(hosts.createDefaultTerminalHostRegistry).mockImplementation(previousInventory);
       if (previousRuntime) vi.mocked(runtime.resolveHerdrRuntimeBinary).mockImplementation(previousRuntime);
-      if (previousRefresh === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
       if (previousHerdr === undefined) delete process.env.HERDR_BIN_PATH;
       else process.env.HERDR_BIN_PATH = previousHerdr;
       await restoreDaemonExitBoundary(exitSpy);
@@ -3305,8 +3305,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('launches an app-created Codex App Server controller with an optional local Herdr client', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const previousRefresh = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     try {
       const catalog = await import('@/backends/catalog');
@@ -3348,7 +3348,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
           '--happy-herdr-session-name', 'default',
           '--happy-herdr-socket-path', expect.any(String),
         ]));
-      expect(options).toMatchObject({ env: { HAPPIER_CODEX_BACKEND_MODE: 'appServer' } });
+      expect(options).toMatchObject({ env: { PIGGERCODE_CODEX_BACKEND_MODE: 'appServer' } });
       expect(herdrSpawnCapture.createPane).not.toHaveBeenCalled();
     } finally {
       if (run) {
@@ -3361,16 +3361,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }));
       const { buildHappyCliSubprocessLaunchSpec } = await import('@/utils/spawnHappyCLI');
       vi.mocked(buildHappyCliSubprocessLaunchSpec).mockReset();
-      if (previousRefresh === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('launches an app-created Codex App Server controller with an optional local Zellij client', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const previousRefresh = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     try {
       const catalog = await import('@/backends/catalog');
@@ -3407,7 +3407,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         'codex', '--happy-starting-mode', 'local',
         '--happy-terminal-mode', 'plain', '--happy-terminal-requested', 'zellij',
       ]));
-      expect(options).toMatchObject({ env: { HAPPIER_CODEX_BACKEND_MODE: 'appServer' } });
+      expect(options).toMatchObject({ env: { PIGGERCODE_CODEX_BACKEND_MODE: 'appServer' } });
       expect(zellijSpawnCapture.createOrAttachHost).not.toHaveBeenCalled();
     } finally {
       if (run) {
@@ -3420,16 +3420,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }));
       const { buildHappyCliSubprocessLaunchSpec } = await import('@/utils/spawnHappyCLI');
       vi.mocked(buildHappyCliSubprocessLaunchSpec).mockReset();
-      if (previousRefresh === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('launches app-created unified Claude in one daemon-owned Herdr pane', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const previousRefresh = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     try {
       const catalog = await import('@/backends/catalog');
@@ -3479,7 +3479,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
           '--happy-herdr-session-name', 'default',
           '--happy-terminal-attachment-id',
         ]),
-        env: expect.objectContaining({ HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '1' }),
+        env: expect.objectContaining({ PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '1' }),
       }));
       expect(spawnHappyCLI).not.toHaveBeenCalled();
     } finally {
@@ -3495,16 +3495,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       vi.mocked(catalog.resolveAgentCliSubcommand).mockReturnValue('codex');
       const { buildHappyCliSubprocessLaunchSpec } = await import('@/utils/spawnHappyCLI');
       vi.mocked(buildHappyCliSubprocessLaunchSpec).mockReset();
-      if (previousRefresh === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('propagates canonicalized connected-service group bindings into the launched child env and tracked spawn options', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const onHappySessionWebhookModule = await import('./sessions/onHappySessionWebhook');
@@ -3586,7 +3586,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
 
       expect(parseSessionConnectedServicesBindingsJson(
-        launchedEnv[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] ?? null,
+        launchedEnv[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] ?? null,
       )).toEqual({
         v: 1,
         bindingsByServiceId: {
@@ -3621,9 +3621,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       const onHappySessionWebhookModule = await import('./sessions/onHappySessionWebhook');
       vi.mocked(onHappySessionWebhookModule.createOnHappySessionWebhook).mockImplementation(() => vi.fn());
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -3631,8 +3631,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('fails closed with a stable validation result when hard-limit quota evidence is incomplete', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<unknown> | null = null;
     let shutdownRequested = false;
     try {
@@ -3674,16 +3674,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         harness.requestShutdown('happier-cli');
         await run?.catch(() => {});
       }
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('tracks connected-service materialization diagnostics on spawn options for downstream switch surfaces', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     const diagnostics = [{
       code: 'state_sharing_degraded',
@@ -3765,9 +3765,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run.catch(() => {});
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -3775,8 +3775,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('launches daemon-managed session runners as detached ignored-stdio children and unreferences them', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const runtimeDecision: HappyCliSubprocessRuntimeDecision = {
       runtime: 'node',
       argvPrefix: [
@@ -3784,7 +3784,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         '--no-deprecation',
         '/runtime/.runner-snapshots/0123456789abcdef/index.mjs',
       ],
-      env: { HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
+      env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
     };
     resolveHappyCliSubprocessRuntimeDecision.mockReturnValue(runtimeDecision);
 
@@ -3837,9 +3837,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -3847,8 +3847,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('derives vendor resume id from existing session metadata and passes --resume to the spawned runner', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -3886,9 +3886,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -3896,8 +3896,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('resolves persisted runtime state before spawning an existing session with stale incoming controls', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(
       createSessionRecordFixture({
@@ -3954,9 +3954,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -3964,12 +3964,12 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('tags daemon-spawned session runners as stack process kind=session (does not inherit infra)', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    const stackEnvFileOriginal = process.env.HAPPIER_STACK_ENV_FILE;
-    const stackProcessKindOriginal = process.env.HAPPIER_STACK_PROCESS_KIND;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_STACK_ENV_FILE = '/tmp/stack.env';
-    process.env.HAPPIER_STACK_PROCESS_KIND = 'infra';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const stackEnvFileOriginal = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const stackProcessKindOriginal = process.env.PIGGERCODE_STACK_PROCESS_KIND;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_STACK_ENV_FILE = '/tmp/stack.env';
+    process.env.PIGGERCODE_STACK_PROCESS_KIND = 'infra';
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -3997,25 +3997,25 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         throw new Error('Expected spawnHappyCLI to be called');
       }
       const opts = firstCall[1] as { env?: NodeJS.ProcessEnv } | undefined;
-      expect(opts?.env?.HAPPIER_STACK_PROCESS_KIND).toBe('session');
+      expect(opts?.env?.PIGGERCODE_STACK_PROCESS_KIND).toBe('session');
 
       harness.requestShutdown('happier-cli');
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (stackEnvFileOriginal === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = stackEnvFileOriginal;
+        process.env.PIGGERCODE_STACK_ENV_FILE = stackEnvFileOriginal;
       }
       if (stackProcessKindOriginal === undefined) {
-        delete process.env.HAPPIER_STACK_PROCESS_KIND;
+        delete process.env.PIGGERCODE_STACK_PROCESS_KIND;
       } else {
-        process.env.HAPPIER_STACK_PROCESS_KIND = stackProcessKindOriginal;
+        process.env.PIGGERCODE_STACK_PROCESS_KIND = stackProcessKindOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4026,15 +4026,15 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       throw new Error('Expected process.platform to be configurable for this test');
     }
     Object.defineProperty(process, 'platform', { ...ORIGINAL_PLATFORM_DESCRIPTOR, value: 'linux' });
-    process.env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSource;
+    process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSource;
     if (startupSource === 'self-restart') {
-      process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID = 'spawn-resume-cgroup-wrapper';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID = 'spawn-resume-cgroup-wrapper';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
     }
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     let run: Promise<void> | null = null;
     try {
@@ -4055,7 +4055,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       expect(buildCgroupSelfMigratingHappyCliLaunchSpec).toHaveBeenCalledTimes(1);
       expect(buildCgroupSelfMigratingHappyCliLaunchSpec).toHaveBeenCalledWith(expect.objectContaining({
         environment: expect.objectContaining({
-          HAPPIER_SESSION_REQUESTED_DIRECTORY: '/tmp',
+          PIGGERCODE_SESSION_REQUESTED_DIRECTORY: '/tmp',
         }),
       }));
       expect(spawnChildProcess).toHaveBeenCalledTimes(1);
@@ -4067,8 +4067,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       expect(spawnArgs).toEqual(expect.arrayContaining(['-lc']));
       expect(spawnArgs?.join(' ')).toContain('happier-session-$$.scope');
       expect(spawnArgs?.join(' ')).toContain('exec "$@"');
-      expect(spawnOptions?.env?.HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR).toContain('/sys/fs/cgroup/');
-      expect(spawnOptions?.env?.[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
+      expect(spawnOptions?.env?.PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR).toContain('/sys/fs/cgroup/');
+      expect(spawnOptions?.env?.[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
       expect(applySpawnedChildOomScoreAdjustmentMock).toHaveBeenCalledWith(expect.objectContaining({
         pid: 12345,
       }));
@@ -4082,9 +4082,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run;
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4095,11 +4095,11 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       throw new Error('Expected process.platform to be configurable for this test');
     }
     Object.defineProperty(process, 'platform', { ...ORIGINAL_PLATFORM_DESCRIPTOR, value: 'linux' });
-    process.env.HAPPIER_DAEMON_STARTUP_SOURCE = 'manual';
+    process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = 'manual';
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -4128,9 +4128,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4141,15 +4141,15 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       throw new Error('Expected process.platform to be configurable for this test');
     }
     Object.defineProperty(process, 'platform', { ...ORIGINAL_PLATFORM_DESCRIPTOR, value: 'linux' });
-    process.env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSource;
+    process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSource;
     if (startupSource === 'self-restart') {
-      process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID = 'spawn-resume-cgroup-reattach';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID = 'spawn-resume-cgroup-reattach';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
     }
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const reattachModule = await import('./sessions/reattachFromMarkers');
@@ -4190,9 +4190,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4200,8 +4200,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('keeps live reattached daemon sessions running under their original CLI runtime during startup', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const reattachModule = await import('./sessions/reattachFromMarkers');
@@ -4241,9 +4241,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4291,9 +4291,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       filePath: process.execPath,
       args: ['/home/alice/.happier/cli/versions/0.2.11/package-dist/index.mjs', ...args],
     }));
-    const envKeys = ['HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED', ...Object.keys(options.env ?? {})];
+    const envKeys = ['PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED', ...Object.keys(options.env ?? {})];
     const envBackup = new Map(envKeys.map((key) => [key, process.env[key]]));
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     for (const [key, value] of Object.entries(options.env ?? {})) process.env[key] = value;
     let run: Promise<void> | null = null;
     let finished = false;
@@ -4423,7 +4423,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       manager?.__params.onRespawnSuccess?.({ sessionId: 'sess-stale-on-update', previousPid: 6480, result: {} });
       await run;
       expect(shutdownFinished).toBe(true);
-    }, { env: { HAPPIER_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS: '5000' } });
+    }, { env: { PIGGERCODE_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS: '5000' } });
   });
 
   it('records a turn start as in flight before its marker write finishes', async () => {
@@ -4543,8 +4543,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
       return true;
     }) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -4600,9 +4600,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       killSpy.mockRestore();
       await restoreDaemonExitBoundary(exitSpy);
@@ -4617,8 +4617,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
       return true;
     }) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -4667,9 +4667,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       }));
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       killSpy.mockRestore();
       await restoreDaemonExitBoundary(exitSpy);
@@ -4678,8 +4678,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('observes an already-missing tracked runner before stop attempts signaling', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     let loadTerminalHostAdapters: (() => Promise<unknown>) | undefined;
 
@@ -4755,9 +4755,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run;
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -4768,8 +4768,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     const { configuration } = await import('@/configuration');
     const originalHome = configuration.happyHomeDir;
     const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-reattached-borrowed-'));
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     Object.defineProperty(configuration, 'happyHomeDir', { value: fixtureHome });
     const pid = 2_147_482_911;
     const sessionId = 'sess-reattached-borrowed';
@@ -4939,8 +4939,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       releaseProbe();
       if (run) { harness.requestShutdown('happier-cli'); await run; }
       Object.defineProperty(configuration, 'happyHomeDir', { value: originalHome });
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       vi.mocked(reattach.reattachTrackedSessionsFromMarkers).mockReset();
       vi.mocked(reattach.reattachTrackedSessionsFromMarkers).mockResolvedValue({ orphanedDeadDaemonSessions: [], connectedServiceRestartIntents: [] });
       vi.mocked(exits.createOnChildExited).mockReset();
@@ -4959,8 +4959,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('preserves an exact terminal-host exit marker and routes later Stop through disconnected-host retirement', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     const catalog = await import('@/backends/catalog');
     const actualCatalog = await vi.importActual<typeof import('@/backends/catalog')>('@/backends/catalog');
@@ -5245,9 +5245,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       claudeEndpointRecoveryBoundaryMocks.readTerminalAttachmentInfo.mockReset();
       claudeEndpointRecoveryBoundaryMocks.readTerminalAttachmentInfo.mockResolvedValue(null);
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
       vi.mocked(catalog.requireCatalogEntry).mockReset();
@@ -5257,8 +5257,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('waits for exact terminal-host retirement before a concurrent resume can spawn', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     let releaseHostRetirement!: () => void;
     const hostRetirementPending = new Promise<void>((resolve) => {
@@ -5338,9 +5338,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
       stopSessionMocks.createStopSession.mockImplementation(() => stopSessionMocks.stopSession);
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -5348,8 +5348,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('spawns an existing session without re-fetching it when a pre-resolved attach payload is supplied', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(waitForSessionWebhook).mockImplementationOnce((params) => completeReportedSession(params, 'sess-pre-resolved-1'));
     vi.mocked(fetchSessionByIdCompat).mockRejectedValue(new Error('fetch should not be needed when the attach payload is pre-resolved'));
 
@@ -5393,9 +5393,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -5405,8 +5405,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     const explicitRecoveryCheckSpy = vi.spyOn(UsageLimitRecoveryScheduler.prototype, 'checkNow')
       .mockRejectedValueOnce(new Error('recovery check temporarily unavailable'));
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     sessionRunnerActivityBoundaryMocks.readProcessRunState.mockResolvedValue('servable');
     pendingMaterializationRpcMocks.callSessionRpc.mockImplementation(async (params) =>
       params.method.endsWith('wakeCapability.v1.get')
@@ -5597,9 +5597,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       const onHappySessionWebhookModule = await import('./sessions/onHappySessionWebhook');
       vi.mocked(onHappySessionWebhookModule.createOnHappySessionWebhook).mockImplementation(() => vi.fn());
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
       explicitRecoveryCheckSpy.mockRestore();
@@ -5608,8 +5608,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('launches markerless explicit Claude Resume with the exact live attachment descriptor in the child environment', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const sessionId = 'sess_markerless_exact_recovery';
     const attachmentId = 'attachment-markerless-exact' as NonNullable<
       import('@/integrations/terminalHost/_types').TerminalHostHandle['attachmentId']
@@ -5673,15 +5673,15 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
       const launch = spawnHappyCLI.mock.calls.at(-1);
       expect((launch?.[1] as { env?: Record<string, string> } | undefined)?.env?.[
-        HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY
+        PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY
       ]).toBe(JSON.stringify(endpointState));
     } finally {
       if (run) {
         harness.requestShutdown('happier-cli');
         await run;
       }
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await endpointFixture.cleanup();
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -5689,8 +5689,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('destroys an exact unusable preserved Claude host and launches fresh in the same Resume attempt', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const { configuration } = await import('@/configuration');
     const originalHome = configuration.happyHomeDir;
     const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-endpoint-retirement-'));
@@ -5780,7 +5780,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         existingSessionId: sessionId,
         token: 'token-from-spawn-options',
         environmentVariables: {
-          [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ stale: true }),
+          [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ stale: true }),
         },
       })).resolves.toMatchObject({ type: 'success' });
 
@@ -5794,7 +5794,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       expect(spawnHappyCLI).toHaveBeenCalledTimes(1);
       const launch = spawnHappyCLI.mock.calls[0];
       expect((launch?.[1] as { env?: Record<string, string> } | undefined)?.env).not.toHaveProperty(
-        HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+        PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
       );
     } finally {
       if (run) {
@@ -5810,8 +5810,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       claudeEndpointRecoveryBoundaryMocks.evaluateLiveness.mockReset();
       claudeEndpointRecoveryBoundaryMocks.evaluateLiveness.mockResolvedValue({ paneAlive: true, observedAt: 1 });
       claudeEndpointRecoveryBoundaryMocks.dispose.mockClear();
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       Object.defineProperty(configuration, 'happyHomeDir', { value: originalHome });
       await rm(fixtureHome, { recursive: true, force: true });
       await restoreDaemonExitBoundary(exitSpy);
@@ -5820,15 +5820,15 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('clears inherited Claude endpoint recovery proof before a fresh launch after exact positive death', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    const endpointStateEnvOriginal = process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const endpointStateEnvOriginal = process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const { configuration } = await import('@/configuration');
     const originalHome = configuration.happyHomeDir;
     const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-dead-endpoint-retirement-'));
     Object.defineProperty(configuration, 'happyHomeDir', { value: fixtureHome });
     const attachments = await vi.importActual<typeof import('@/terminal/attachment/terminalAttachmentInfo')>('@/terminal/attachment/terminalAttachmentInfo');
-    process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify({ daemonStale: true });
+    process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify({ daemonStale: true });
     const sessionId = 'sess_positive_dead_stale_recovery';
     const attachmentId = 'attachment-positive-dead' as NonNullable<
       import('@/integrations/terminalHost/_types').TerminalHostHandle['attachmentId']
@@ -5901,7 +5901,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         existingSessionId: sessionId,
         token: 'token-from-spawn-options',
         environmentVariables: {
-          [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ stale: true }),
+          [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ stale: true }),
         },
       })).resolves.toMatchObject({ type: 'success' });
 
@@ -5914,17 +5914,17 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       expect(spawnHappyCLI).toHaveBeenCalled();
       const launch = spawnHappyCLI.mock.calls.at(-1);
       expect((launch?.[1] as { env?: Record<string, string> } | undefined)?.env).not.toHaveProperty(
-        HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+        PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
       );
     } finally {
       if (run) {
         harness.requestShutdown('happier-cli');
         await run;
       }
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
-      if (endpointStateEnvOriginal === undefined) delete process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
-      else process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = endpointStateEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (endpointStateEnvOriginal === undefined) delete process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+      else process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = endpointStateEnvOriginal;
       claudeEndpointRecoveryBoundaryMocks.readTerminalAttachmentInfo.mockReset();
       claudeEndpointRecoveryBoundaryMocks.readTerminalAttachmentInfo.mockResolvedValue(null);
       claudeEndpointRecoveryBoundaryMocks.removeTerminalAttachmentInfo.mockReset();
@@ -5939,8 +5939,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('delegates marker-derived Claude runner absence to exact endpoint recovery', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const sessionId = 'sess_marker_exact_recovery';
     const attachmentId = 'attachment-marker-exact' as NonNullable<
       import('@/integrations/terminalHost/_types').TerminalHostHandle['attachmentId']
@@ -6030,7 +6030,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       expect(spawnHappyCLI).toHaveBeenCalledTimes(1);
       const launch = spawnHappyCLI.mock.calls[0];
       expect((launch?.[1] as { env?: Record<string, string> } | undefined)?.env?.[
-        HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY
+        PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY
       ]).toBe(JSON.stringify(endpointState));
       expect(claudeEndpointRecoveryBoundaryMocks.removeTerminalAttachmentInfo).not.toHaveBeenCalled();
       expect(claudeEndpointRecoveryBoundaryMocks.dispose).not.toHaveBeenCalled();
@@ -6058,16 +6058,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       claudeEndpointRecoveryBoundaryMocks.evaluateLiveness.mockResolvedValue({ paneAlive: true, observedAt: 1 });
       claudeEndpointRecoveryBoundaryMocks.dispose.mockClear();
       await endpointFixture.cleanup();
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('fences explicit Resume before spawn when an exact preserved host lacks its control descriptor', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6151,16 +6151,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         state: 'recoverable_unservable',
         reason: 'control_descriptor_missing',
       });
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('routes explicit Stop to the exact preserved host only after proving all runners absent', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6242,16 +6242,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         orphanedDeadDaemonSessions: [],
         connectedServiceRestartIntents: [],
       });
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('makes explicit Stop supersede every automatic recovery owner without letting cleanup failure block retirement', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     const usageLimitCancelSpy = vi.spyOn(UsageLimitRecoveryScheduler.prototype, 'cancel');
     const runtimeAuthCancelSpy = vi.spyOn(RuntimeAuthRecoveryScheduler.prototype, 'cancel');
     const temporaryThrottleCancelSpy = vi.spyOn(TemporaryThrottleRecoveryScheduler.prototype, 'stopRetrying');
@@ -6326,16 +6326,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       usageLimitCancelSpy.mockRestore();
       runtimeAuthCancelSpy.mockRestore();
       temporaryThrottleCancelSpy.mockRestore();
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('keeps a repeated exact Stop successful after the same daemon already completed it', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6375,16 +6375,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         harness.requestShutdown('happier-cli');
         await run;
       }
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('allows immediate exact Resume after an exact successful Stop retires the cached preserved host on the same daemon', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6588,16 +6588,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         reason: 'control_descriptor_missing',
       });
       stopSessionMocks.createStopSession.mockImplementation(() => stopSessionMocks.stopSession);
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('repairs dead legacy terminal topology through the canonical Stop owner before Resume', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6646,16 +6646,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         orphanedDeadDaemonSessions: [],
         connectedServiceRestartIntents: [],
       });
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('keeps explicit Resume fenced when canonical Stop cannot verify legacy retirement', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
 
     try {
@@ -6705,16 +6705,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         connectedServiceRestartIntents: [],
       });
       stopSessionMocks.stopSession.mockResolvedValue({ status: 'stopped' });
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('waits for an unresponsive predecessor to exit before spawning the explicit resume successor', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     sessionRunnerActivityBoundaryMocks.readProcessRunState
       .mockResolvedValueOnce('servable')
       .mockResolvedValue('dead');
@@ -6804,9 +6804,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         result: { type: 'no_pending' },
       });
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -6814,8 +6814,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('waits for a terminating predecessor to exit before spawning the explicit resume successor', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let predecessorTerminationObserved = false;
     sessionRunnerActivityBoundaryMocks.readProcessRunState.mockImplementation(async () => (
       predecessorTerminationObserved ? 'dead' : 'servable'
@@ -6899,9 +6899,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       const onHappySessionWebhookModule = await import('./sessions/onHappySessionWebhook');
       vi.mocked(onHappySessionWebhookModule.createOnHappySessionWebhook).mockImplementation(() => vi.fn());
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -6909,8 +6909,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('repairs a missing materialization identity before resuming an existing Claude connected-service session', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(resolveConnectedServiceSwitchContinuity).mockResolvedValueOnce({
       mode: 'unsupported',
       reason: 'provider_session_state_unavailable_for_resume',
@@ -6996,9 +6996,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run?.catch(() => {});
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7006,8 +7006,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('fails closed when resuming an existing connected-service session without identity or provider resume state', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(
       createSessionRecordFixture({
@@ -7083,9 +7083,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run?.catch(() => {});
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7093,8 +7093,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('publishes one idempotent pending queue wake through the guarded live session RPC after fresh attach', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     const guardedRpcMock = vi.mocked(callSessionRpc);
     guardedRpcMock
@@ -7150,9 +7150,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         result: { type: 'no_pending' },
       });
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7161,8 +7161,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
   it('does not arm a daemon materialization retry timer after the one-shot attach wake', async () => {
     vi.useFakeTimers();
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(callSessionRpc).mockImplementation(async (raw?: unknown) =>
       (raw as { method?: string } | undefined)?.method?.endsWith('wakeCapability.v1.get') === true
         ? { ok: true, capability: 'pending_queue_wake_v1', protocolVersion: 1, method: 'session.pendingQueue.wake.v1' }
@@ -7201,9 +7201,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     } finally {
       vi.useRealTimers();
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7211,9 +7211,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('normalizes ~/ session directories before spawning the child runner and seeding requested-directory env', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
     const homeOriginal = process.env.HOME;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     process.env.HOME = '/Users/tester';
 
     try {
@@ -7238,15 +7238,15 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       }
       const opts = firstCall[1] as { cwd?: string; env?: NodeJS.ProcessEnv } | undefined;
       expect(opts?.cwd).toBe('/Users/tester/Documents');
-      expect(opts?.env?.HAPPIER_SESSION_REQUESTED_DIRECTORY).toBe('/Users/tester/Documents');
+      expect(opts?.env?.PIGGERCODE_SESSION_REQUESTED_DIRECTORY).toBe('/Users/tester/Documents');
 
       harness.requestShutdown('happier-cli');
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (homeOriginal === undefined) {
         delete process.env.HOME;
@@ -7264,11 +7264,11 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     Object.defineProperty(process, 'platform', { ...ORIGINAL_PLATFORM_DESCRIPTOR, value: 'darwin' });
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    const startupSourceOriginal = process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const startupSourceOriginal = process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
     const homeOriginal = process.env.HOME;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_DAEMON_STARTUP_SOURCE = 'background-service';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = 'background-service';
     process.env.HOME = '/Users/tester';
 
     try {
@@ -7304,14 +7304,14 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       if (startupSourceOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
+        delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
       } else {
-        process.env.HAPPIER_DAEMON_STARTUP_SOURCE = startupSourceOriginal;
+        process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = startupSourceOriginal;
       }
       if (homeOriginal === undefined) {
         delete process.env.HOME;
@@ -7324,8 +7324,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('waits for webhook proof instead of passing an existing session id shortcut for attach spawns', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     const waitForSessionWebhookMock = vi.mocked(waitForSessionWebhook);
     waitForSessionWebhookMock.mockImplementationOnce(completeReportedSession);
@@ -7361,9 +7361,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       waitForSessionWebhookMock.mockReset();
       waitForSessionWebhookMock.mockImplementation(completeReportedSession);
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7371,8 +7371,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('derives the exact configured ACP resume identity while attaching an existing session', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(createSessionRecordFixture({
       id: 'sess_plain',
       encryptionMode: 'plain',
@@ -7417,9 +7417,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     } finally {
       spawnHappyCLI.mockClear();
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7427,8 +7427,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('routes an explicit load-capable configured ACP resume through the acp-catalog command', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
 
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -7455,16 +7455,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       spawnHappyCLI.mockClear();
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('rejects configured ACP resume when the current catalog declares static load unsupported', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     try {
       const { startDaemon } = await import('./startDaemon');
       const run = startDaemon();
@@ -7484,16 +7484,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       harness.requestShutdown('happier-cli');
       await run;
     } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('rejects configured ACP resume when the exact configured target is disabled', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     try {
       const { startDaemon } = await import('./startDaemon');
       const run = startDaemon();
@@ -7513,16 +7513,16 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       harness.requestShutdown('happier-cli');
       await run;
     } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });
 
   it('returns INVALID_REQUEST when the existing session cannot be fetched for resume', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(null);
 
     try {
@@ -7551,9 +7551,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7561,8 +7561,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('returns UNEXPECTED when fetching the existing session fails before resume attach', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(fetchSessionByIdCompat).mockRejectedValueOnce(new Error('fetch exploded'));
 
     try {
@@ -7591,9 +7591,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7601,8 +7601,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('returns not_authenticated when fetching the existing session fails with stale auth before resume attach', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     vi.mocked(fetchSessionByIdCompat).mockRejectedValueOnce(
       createHttpStatusError(401, 'Unauthorized (401)', 'not_authenticated'),
     );
@@ -7633,9 +7633,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7643,10 +7643,10 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('marks control routes as shutting down once beforeShutdown quiesces quota producers', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    delete process.env.HAPPIER_DAEMON_WAIT_FOR_AUTH;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    delete process.env.PIGGERCODE_DAEMON_WAIT_FOR_AUTH;
 
     try {
       vi.resetModules();
@@ -7677,9 +7677,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       await run;
     } finally {
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7687,12 +7687,12 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('defers shutdown completion until pending machine RPC requests settle', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC = 'false';
-    process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER = 'false';
-    delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    delete process.env.HAPPIER_DAEMON_WAIT_FOR_AUTH;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC = 'false';
+    process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER = 'false';
+    delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    delete process.env.PIGGERCODE_DAEMON_WAIT_FOR_AUTH;
 
     harness.apiMachine.setRPCHandlers.mockClear();
     harness.apiMachine.awaitPendingRpcRequests.mockClear();
@@ -7759,9 +7759,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       harness.apiMachine.awaitPendingRpcRequests.mockReset();
       harness.apiMachine.awaitPendingRpcRequests.mockImplementation(async () => {});
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7769,12 +7769,12 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('flushes daemon server work again after pending machine RPC requests settle', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC = 'false';
-    process.env.HAPPIER_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER = 'false';
-    delete process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    delete process.env.HAPPIER_DAEMON_WAIT_FOR_AUTH;
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_MACHINE_SYNC = 'false';
+    process.env.PIGGERCODE_DAEMON_DIAGNOSTIC_DISABLE_AUTOMATION_WORKER = 'false';
+    delete process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    delete process.env.PIGGERCODE_DAEMON_WAIT_FOR_AUTH;
 
     harness.apiMachine.setRPCHandlers.mockClear();
     harness.apiMachine.awaitPendingRpcRequests.mockClear();
@@ -7861,9 +7861,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       harness.apiMachine.awaitPendingRpcRequests.mockReset();
       harness.apiMachine.awaitPendingRpcRequests.mockImplementation(async () => {});
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7871,14 +7871,14 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('uses the visible Windows console spawner when the resolved launch mode is console', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     const immutableEntrypoint = '/runtime/.runner-snapshots/0123456789abcdef/index.mjs';
     const runtimeDecision: HappyCliSubprocessRuntimeDecision = {
       runtime: 'node',
       argvPrefix: ['--no-warnings', '--no-deprecation', immutableEntrypoint],
-      env: { HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
+      env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
     };
     resolveHappyCliSubprocessRuntimeDecision.mockReturnValue(runtimeDecision);
 
@@ -7922,7 +7922,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         filePath: 'node',
         args: expect.arrayContaining([immutableEntrypoint, 'codex', '--happy-starting-mode', 'remote']),
         workingDirectory: '/tmp',
-        env: expect.objectContaining({ HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef' }),
+        env: expect.objectContaining({ PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef' }),
       }));
       const launchOptions = vi.mocked(buildHappyCliSubprocessLaunchSpec).mock.calls.at(-1)?.[1];
       expect(launchOptions).toEqual(expect.objectContaining({
@@ -7938,9 +7938,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run;
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }
@@ -7948,14 +7948,14 @@ describe('startDaemon spawn resume wiring (integration)', () => {
 
   it('uses the same admitted immutable runner decision for the Windows Terminal adapter', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
     let run: Promise<void> | null = null;
     const immutableEntrypoint = '/runtime/.runner-snapshots/fedcba9876543210/index.mjs';
     const runtimeDecision: HappyCliSubprocessRuntimeDecision = {
       runtime: 'node',
       argvPrefix: ['--no-warnings', '--no-deprecation', immutableEntrypoint],
-      env: { HAPPIER_TEST_ADMITTED_CLOSURE: 'fedcba9876543210' },
+      env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: 'fedcba9876543210' },
     };
     resolveHappyCliSubprocessRuntimeDecision.mockReturnValue(runtimeDecision);
 
@@ -7999,7 +7999,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         filePath: 'node',
         args: expect.arrayContaining([immutableEntrypoint, 'codex', '--happy-starting-mode', 'remote']),
         workingDirectory: '/tmp',
-        env: expect.objectContaining({ HAPPIER_TEST_ADMITTED_CLOSURE: 'fedcba9876543210' }),
+        env: expect.objectContaining({ PIGGERCODE_TEST_ADMITTED_CLOSURE: 'fedcba9876543210' }),
       }));
       const launchOptions = vi.mocked(buildHappyCliSubprocessLaunchSpec).mock.calls.at(-1)?.[1];
       expect(launchOptions).toEqual(expect.objectContaining({
@@ -8015,9 +8015,9 @@ describe('startDaemon spawn resume wiring (integration)', () => {
         await run;
       }
       if (refreshEnvOriginal === undefined) {
-        delete process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED;
+        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
       } else {
-        process.env.HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
+        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
       await restoreDaemonExitBoundary(exitSpy);
     }

@@ -130,9 +130,9 @@ describe('buildSessionHandoffRecoveryPlan', () => {
                 agent: 'opencode',
                 resume: 'remote_opencode_session',
                 environmentVariables: {
-                    HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                    HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                    HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+                    PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                    PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                    PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
                 },
             }),
         });

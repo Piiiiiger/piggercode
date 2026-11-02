@@ -34,7 +34,7 @@ describe('machine plaintext storage (SQLite route and socket integration)', () =
     }, 120_000);
 
     beforeEach(() => {
-        vi.stubEnv('HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY', 'optional');
+        vi.stubEnv('PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY', 'optional');
     });
 
     afterEach(async () => {
@@ -113,7 +113,7 @@ describe('machine plaintext storage (SQLite route and socket integration)', () =
 
     it('enforces the canonical feature deny on plaintext writes while retaining encrypted registration', async () => {
         await account();
-        vi.stubEnv('HAPPIER_BUILD_FEATURES_DENY', 'encryption.plaintextMachine');
+        vi.stubEnv('PIGGERCODE_BUILD_FEATURES_DENY', 'encryption.plaintextMachine');
         expect((await register(randomUUID())).statusCode).toBe(404);
         const old = await encryptedMachine();
         const transition = await app.inject({ method: 'POST', url: `/v1/machines/${old.id}/content-key/transition`, payload: {

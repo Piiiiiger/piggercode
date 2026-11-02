@@ -43,10 +43,10 @@ describe('OpenCode attach target authentication', () => {
   ] as const)(
     'native $operation honors exact pooled affinity: $ambientState, managed=$managed, target=$targetState', async ({ ambientState, managed, targetState, operation }) => {
       await withTempDir('opencode-native-attach-target-', async (root) => {
-        vi.stubEnv('HAPPIER_HOME_DIR', root);
-        vi.stubEnv('HAPPIER_OPENCODE_SERVER_STATE_PATH', join(root, 'ambient.json'));
-        vi.stubEnv('HAPPIER_OPENCODE_SERVER_URL', '');
-        vi.stubEnv('HAPPIER_OPENCODE_SERVER_XDG_ROOT_DIR', '');
+        vi.stubEnv('PIGGERCODE_HOME_DIR', root);
+        vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_STATE_PATH', join(root, 'ambient.json'));
+        vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_URL', '');
+        vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_XDG_ROOT_DIR', '');
         vi.resetModules();
         const pool = join(root, 'opencode', 'managed-servers');
         const inventoryObserver: { complete: ((entries: unknown) => void) | null } = { complete: null };
@@ -186,7 +186,7 @@ describe('OpenCode attach target authentication', () => {
         if (operation === 'fork') {
           // Ambient context is an explicit different endpoint, so a wrong selection cannot
           // accidentally start a managed provider process in this boundary-only fixture.
-          vi.stubEnv('HAPPIER_OPENCODE_SERVER_URL', 'http://127.0.0.1:4100');
+          vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_URL', 'http://127.0.0.1:4100');
           metadata.connectedServices = {
             v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'group', groupId: 'target-group', profileId: 'target-profile' } },
           };
@@ -221,8 +221,8 @@ describe('OpenCode attach target authentication', () => {
               connectedServiceMaterializationIdentityV1: context.materializationIdentity,
             });
             expect(context.materializationIdentity).not.toBeNull();
-            expect(childLaunch.environmentVariables).toEqual(managed ? { HAPPIER_OPENCODE_BACKEND_MODE: 'server' } : {
-              HAPPIER_OPENCODE_BACKEND_MODE: 'server', HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4200/', HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+            expect(childLaunch.environmentVariables).toEqual(managed ? { PIGGERCODE_OPENCODE_BACKEND_MODE: 'server' } : {
+              PIGGERCODE_OPENCODE_BACKEND_MODE: 'server', PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4200/', PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
             });
           }
           return;
@@ -259,7 +259,7 @@ describe('OpenCode attach target authentication', () => {
 
   it('rejects external fingerprint traversal at the canonical pooled-state reader', async () => {
     await withTempDir('opencode-affinity-state-boundary-', async (root) => {
-      vi.stubEnv('HAPPIER_HOME_DIR', root);
+      vi.stubEnv('PIGGERCODE_HOME_DIR', root);
       vi.resetModules();
       const { readSharedManagedOpenCodeServerStateByLaunchFingerprintBestEffort } = await import('../server/sharedManagedServer');
       await mkdir(join(root, 'opencode', 'managed-servers'), { recursive: true });
@@ -270,7 +270,7 @@ describe('OpenCode attach target authentication', () => {
 
   it.each(['missing', 'mismatched'] as const)('known credential affinity refuses ambient fallback: %s', async (stateKind) => {
     await withTempDir('opencode-known-auth-affinity-', async (root) => {
-      vi.stubEnv('HAPPIER_HOME_DIR', root);
+      vi.stubEnv('PIGGERCODE_HOME_DIR', root);
       vi.resetModules();
       const { resolveOpenCodeManagedServerLaunchFingerprint } = await import('../server/openCodeManagedServerEnv');
       const { resolveOpenCodeAttachChildEnv, resolveOpenCodeAttachTargetAuthHeaders } = await import('./openCodeAttachTargetAuth');

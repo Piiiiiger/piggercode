@@ -12,7 +12,7 @@ const envKeys = [
   'HOME',
   'USERPROFILE',
   'CLAUDE_CONFIG_DIR',
-  'HAPPIER_CLAUDE_CONFIG_DIR',
+  'PIGGERCODE_CLAUDE_CONFIG_DIR',
   'ANTHROPIC_API_KEY',
   'ANTHROPIC_AUTH_TOKEN',
 ] as const;
@@ -53,7 +53,7 @@ describe('claudeCliAuthSpec', () => {
       HOME: dir,
       USERPROFILE: dir,
       CLAUDE_CONFIG_DIR: overriddenConfigDir,
-      HAPPIER_CLAUDE_CONFIG_DIR: undefined,
+      PIGGERCODE_CLAUDE_CONFIG_DIR: undefined,
       ANTHROPIC_API_KEY: undefined,
       ANTHROPIC_AUTH_TOKEN: undefined,
     });
@@ -104,7 +104,7 @@ describe('claudeCliAuthSpec', () => {
       HOME: dir,
       USERPROFILE: dir,
       CLAUDE_CONFIG_DIR: claudeConfigDir,
-      HAPPIER_CLAUDE_CONFIG_DIR: undefined,
+      PIGGERCODE_CLAUDE_CONFIG_DIR: undefined,
       ANTHROPIC_API_KEY: undefined,
       ANTHROPIC_AUTH_TOKEN: undefined,
     });
@@ -167,7 +167,7 @@ describe('claudeCliAuthSpec', () => {
       HOME: dir,
       USERPROFILE: dir,
       CLAUDE_CONFIG_DIR: claudeConfigDir,
-      HAPPIER_CLAUDE_CONFIG_DIR: undefined,
+      PIGGERCODE_CLAUDE_CONFIG_DIR: undefined,
       ANTHROPIC_API_KEY: undefined,
       ANTHROPIC_AUTH_TOKEN: undefined,
     });

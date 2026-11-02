@@ -7,11 +7,11 @@ describe('registerHappierMcpBridgeTools', () => {
   beforeEach(() => {
     vi.resetModules();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
   it('registers only the currently enabled Happier MCP tools and forwards calls', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['session_agent'], disabledPlacements: [] },

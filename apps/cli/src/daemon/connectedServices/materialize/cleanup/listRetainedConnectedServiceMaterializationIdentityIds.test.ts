@@ -10,8 +10,8 @@ describe('listRetainedConnectedServiceMaterializationIdentityIds', () => {
   it.each(['archived', 'unreadable', 'page-limit', 'repeated-cursor', 'missing-cursor', 'complete'] as const)(
     'does not dispose Session history from a %s retention snapshot', async (snapshot) => {
       const home = await createTempDir('happier-session-retention-snapshot-');
-      const env = createEnvKeyScope(['HAPPIER_HOME_DIR']);
-      env.patch({ HAPPIER_HOME_DIR: home });
+      const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
+      env.patch({ PIGGERCODE_HOME_DIR: home });
       vi.resetModules();
       try {
         const { default: axios } = await import('axios');
@@ -71,8 +71,8 @@ describe('listRetainedConnectedServiceMaterializationIdentityIds', () => {
 
   it('keeps aged live, retained and unidentified legacy Run homes and cleans explicit disposable Runs', async () => {
     const home = await createTempDir('happier-run-retention-collector-');
-    const env = createEnvKeyScope(['HAPPIER_HOME_DIR']);
-    env.patch({ HAPPIER_HOME_DIR: home });
+    const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
+    env.patch({ PIGGERCODE_HOME_DIR: home });
     vi.resetModules();
     try {
       const { default: axios } = await import('axios');

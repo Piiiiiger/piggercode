@@ -42,16 +42,16 @@ function parseNonNegativeInt(rawValue: string | undefined, fallback: number): nu
 }
 
 export function resolveDirectPeerFeatureEnabled(): boolean {
-  return parseBooleanEnv(process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED, true);
+  return parseBooleanEnv(process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED, true);
 }
 
 export function resolveDirectPeerServerEnabled(): boolean {
   return resolveDirectPeerFeatureEnabled()
-    && parseBooleanEnv(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED, true);
+    && parseBooleanEnv(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED, true);
 }
 
 export function resolveDirectPeerAdvertisedHosts(networkInterfacesFn: typeof networkInterfaces = networkInterfaces): string[] {
-  const configuredHosts = String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS ?? '')
+  const configuredHosts = String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS ?? '')
     .split(',')
     .map((value) => value.trim())
     .filter((value) => value.length > 0);
@@ -72,12 +72,12 @@ export function resolveDirectPeerAdvertisedHosts(networkInterfacesFn: typeof net
 }
 
 export function resolveDirectPeerTransferTtlMs(): number {
-  return parsePositiveInt(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS, DEFAULT_DIRECT_PEER_TTL_MS);
+  return parsePositiveInt(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS, DEFAULT_DIRECT_PEER_TTL_MS);
 }
 
 export function resolveDirectPeerTransferRequestTimeoutMs(): number {
   return parsePositiveInt(
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_REQUEST_TIMEOUT_MS,
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_REQUEST_TIMEOUT_MS,
     DEFAULT_DIRECT_PEER_REQUEST_TIMEOUT_MS,
   );
 }
@@ -93,33 +93,33 @@ export function resolveDirectPeerTransferRequestTimeoutOverrideMs(timeoutMs: num
 }
 
 export function resolveDirectPeerTransferBindPort(): number {
-  return readPositiveIntEnv('HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT', 0) ?? 0;
+  return readPositiveIntEnv('PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT', 0) ?? 0;
 }
 
 export function resolveDirectPeerTransferChunkBytes(): number {
   return Math.min(clampTransferChunkBytes(parsePositiveInt(
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES,
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES,
     DEFAULT_DIRECT_PEER_CHUNK_BYTES,
   )), DIRECT_PEER_CHUNK_HARD_MAX_BYTES);
 }
 
 export function resolveDirectPeerTransferExpirySkewMs(): number {
   return parseNonNegativeInt(
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS,
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS,
     DEFAULT_DIRECT_PEER_EXPIRY_SKEW_MS,
   );
 }
 
 export function resolveDirectPeerTransferOpenBodyMaxBytes(): number {
   return Math.min(
-    parsePositiveInt(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES, DEFAULT_DIRECT_PEER_OPEN_BODY_MAX_BYTES),
+    parsePositiveInt(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES, DEFAULT_DIRECT_PEER_OPEN_BODY_MAX_BYTES),
     DIRECT_PEER_OPEN_BODY_HARD_MAX_BYTES,
   );
 }
 
 export function resolveDirectPeerTransferMaxTotalChunks(): number {
   return Math.min(
-    parsePositiveInt(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS, DEFAULT_DIRECT_PEER_MAX_TOTAL_CHUNKS),
+    parsePositiveInt(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS, DEFAULT_DIRECT_PEER_MAX_TOTAL_CHUNKS),
     DIRECT_PEER_MAX_TOTAL_CHUNKS_HARD_MAX,
   );
 }
@@ -127,7 +127,7 @@ export function resolveDirectPeerTransferMaxTotalChunks(): number {
 export function resolveDirectPeerTransferPublishedTransferRegistryMaxEntries(): number {
   return Math.min(
     parsePositiveInt(
-      process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES,
+      process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES,
       DEFAULT_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES,
     ),
     DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_HARD_MAX_ENTRIES,
@@ -135,12 +135,12 @@ export function resolveDirectPeerTransferPublishedTransferRegistryMaxEntries(): 
 }
 
 export function resolveDirectPeerTransferBindHost(): string {
-  return process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_HOST ?? DEFAULT_DIRECT_PEER_BIND_HOST;
+  return process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_HOST ?? DEFAULT_DIRECT_PEER_BIND_HOST;
 }
 
 export function resolveServerRoutedTransferTimeoutMs(): number {
   return Math.min(
-    readPositiveIntEnv('HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS', DEFAULT_TRANSFER_TIMEOUT_MS),
+    readPositiveIntEnv('PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS', DEFAULT_TRANSFER_TIMEOUT_MS),
     30 * 60_000,
   );
 }
@@ -148,7 +148,7 @@ export function resolveServerRoutedTransferTimeoutMs(): number {
 export function resolveServerRoutedTransferMaxActiveTransfers(): number {
   return Math.min(
     readPositiveIntEnv(
-      'HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS',
+      'PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS',
       DEFAULT_TRANSFER_MAX_ACTIVE_TRANSFERS,
     ),
     TRANSFER_MAX_ACTIVE_TRANSFERS_HARD_MAX,
@@ -157,14 +157,14 @@ export function resolveServerRoutedTransferMaxActiveTransfers(): number {
 
 export function resolveServerRoutedTransferChunkBytes(): number {
   return clampTransferChunkBytes(readPositiveIntEnv(
-    'HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES',
+    'PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES',
     DEFAULT_TRANSFER_CHUNK_BYTES,
   ));
 }
 
 export function resolveServerRoutedTransferOpenPayloadMaxBytes(): number {
   const configured = readPositiveIntEnv(
-    'HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES',
+    'PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES',
     DEFAULT_TRANSFER_OPEN_PAYLOAD_MAX_BYTES,
   );
   return Math.min(configured, resolveInMemoryTransferMaxBytes(), TRANSFER_OPEN_PAYLOAD_HARD_MAX_BYTES);

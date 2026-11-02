@@ -87,7 +87,7 @@ function redactOpenCodeUrlForError(rawUrl: string): string {
 }
 
 function resolveOpenCodeServerHttpTimeoutMs(env: NodeJS.ProcessEnv): number | null {
-  const raw = env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
+  const raw = env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
   const defaultTimeoutMs = 60_000;
   if (typeof raw !== 'string') return defaultTimeoutMs;
   const parsed = Number.parseInt(raw.trim(), 10);
@@ -97,7 +97,7 @@ function resolveOpenCodeServerHttpTimeoutMs(env: NodeJS.ProcessEnv): number | nu
 }
 
 export function resolveOpenCodeSseReadIdleTimeoutMs(env: NodeJS.ProcessEnv): number | null {
-  const raw = env.HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS;
+  const raw = env.PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS;
   if (typeof raw !== 'string') return null;
 
   const parsed = Number.parseInt(raw.trim(), 10);
@@ -361,8 +361,8 @@ export type OpenCodeServerRuntimeClient = Readonly<{
 }>;
 
 function resolveSseReconnectDelayMs(attempt: number, env: NodeJS.ProcessEnv): number {
-  const baseRaw = Number.parseInt(String(env.HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS ?? ''), 10);
-  const maxRaw = Number.parseInt(String(env.HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS ?? ''), 10);
+  const baseRaw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS ?? ''), 10);
+  const maxRaw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS ?? ''), 10);
   const baseMs = Number.isFinite(baseRaw) && baseRaw > 0 ? Math.trunc(baseRaw) : 250;
   const maxMs = Number.isFinite(maxRaw) && maxRaw > 0 ? Math.trunc(maxRaw) : 5_000;
 
@@ -582,7 +582,7 @@ export async function createOpenCodeServerRuntimeClient(params: Readonly<{
   const httpTimeoutMs = resolveOpenCodeServerHttpTimeoutMs(env);
   const readIdleTimeoutMs = resolveOpenCodeSseReadIdleTimeoutMs(env);
   const baseUrlOverrideRaw = typeof params.baseUrlOverride === 'string' ? params.baseUrlOverride.trim() : '';
-  const envUrlRaw = typeof env.HAPPIER_OPENCODE_SERVER_URL === 'string' ? env.HAPPIER_OPENCODE_SERVER_URL.trim() : '';
+  const envUrlRaw = typeof env.PIGGERCODE_OPENCODE_SERVER_URL === 'string' ? env.PIGGERCODE_OPENCODE_SERVER_URL.trim() : '';
   const usingManagedServer = baseUrlOverrideRaw.length === 0 && envUrlRaw.length === 0;
 
   const headers = resolveOpenCodeServerAuthHeadersFromEnv(env);
@@ -811,7 +811,7 @@ export async function createOpenCodeServerRuntimeClient(params: Readonly<{
     const legacyRecord = legacy && typeof legacy === 'object' && !Array.isArray(legacy) ? legacy as Record<string, unknown> : null;
     if (legacyRecord?.healthy === true
       && typeof legacyRecord.version === 'string'
-      && normalizeOpenCodeCliGeneration(env.HAPPIER_OPENCODE_CLI_GENERATION) !== 'v2') {
+      && normalizeOpenCodeCliGeneration(env.PIGGERCODE_OPENCODE_CLI_GENERATION) !== 'v2') {
       return rememberDetectedGeneration({ kind: 'v1' });
     }
     const v2Health = await probe('/api/health');

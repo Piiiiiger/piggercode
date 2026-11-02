@@ -6,7 +6,7 @@
  *   and that the routed teammate message appears in that transcript.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.subagentJsonl.realProbe.test.ts
+ *   PIGGERCODE_TEST_REAL_CLAUDE=1 PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.subagentJsonl.realProbe.test.ts
  */
 
 import { readFileSync } from 'node:fs';
@@ -17,8 +17,8 @@ import {
   runRealClaudeCliStreamJsonProbe,
 } from '../../src/testkit/providers/claude/realClaudeCliProbe';
 
-const ENABLED = process.env.HAPPIER_TEST_REAL_CLAUDE === '1';
-const FULL_PROBE = process.env.HAPPIER_TEST_REAL_CLAUDE_FULL === '1';
+const ENABLED = process.env.PIGGERCODE_TEST_REAL_CLAUDE === '1';
+const FULL_PROBE = process.env.PIGGERCODE_TEST_REAL_CLAUDE_FULL === '1';
 
 async function waitFor<T>(fn: () => T | null, timeoutMs: number): Promise<T | null> {
   const start = Date.now();
@@ -32,12 +32,12 @@ async function waitFor<T>(fn: () => T | null, timeoutMs: number): Promise<T | nu
 
 describe('real Claude Agent Teams subagent JSONL probe', () => {
   if (!ENABLED) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
     return;
   }
 
   if (!FULL_PROBE) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE_FULL=1 (opt-in, multi-turn)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE_FULL=1 (opt-in, multi-turn)', () => {});
     return;
   }
 

@@ -314,7 +314,7 @@ export class ScmRepositoryService {
             return Math.max(0, Math.floor(value));
         }
 
-        const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SCM_REPO_SNAPSHOT_ALIAS_CACHE_MAX ?? '').trim();
+        const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SCM_REPO_SNAPSHOT_ALIAS_CACHE_MAX ?? '').trim();
         if (!raw) return 2048;
         const parsed = Number.parseInt(raw, 10);
         if (!Number.isFinite(parsed)) return 2048;

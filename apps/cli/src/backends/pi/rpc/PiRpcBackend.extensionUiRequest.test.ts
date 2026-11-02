@@ -136,7 +136,7 @@ describe('PiRpcBackend extension UI requests', () => {
       args: [writeFakePiExtensionUiScript(dir)],
       permissionHandler: { handleToolCall },
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1',
         PI_EXTENSION_RESPONSE_FILE: join(dir, 'extension-response.json'),
       },
     });
@@ -193,7 +193,7 @@ describe('PiRpcBackend extension UI requests', () => {
       args: [scriptPath],
       permissionHandler: { handleToolCall },
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1',
         PI_EXTENSION_RESPONSE_FILE: join(dir, 'extension-response.json'),
       },
     });
@@ -247,7 +247,7 @@ describe('PiRpcBackend extension UI requests', () => {
       args: [writeFakePiExtensionUiScript(dir)],
       permissionHandler,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1',
         PI_EXTENSION_RESPONSE_FILE: join(dir, 'extension-response.json'),
       },
     });
@@ -291,7 +291,7 @@ describe('PiRpcBackend extension UI requests', () => {
       args: [scriptPath],
       permissionHandler,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1',
         PI_EXTENSION_RESPONSE_FILE: join(dir, 'extension-response.json'),
       },
     });

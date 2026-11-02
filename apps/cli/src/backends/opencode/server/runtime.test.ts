@@ -13,7 +13,7 @@ import {
 } from '@/agent/runtime/providerPromptSubmission';
 import { buildChangeTitleInstruction } from '@/agent/runtime/changeTitleInstruction';
 import { logger } from '@/ui/logger';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
   CONNECTED_SERVICE_RUNTIME_AUTH_FAILURE_REPORT_TIMEOUT_MS,
   resetConnectedServiceRuntimeAuthFailureReportDedupeForTests,
@@ -880,7 +880,7 @@ describe('createOpenCodeServerRuntime', () => {
         happier: {
           command: process.execPath,
           args: ['--version'],
-          env: { HAPPIER_TEST_MCP: '1' },
+          env: { PIGGERCODE_TEST_MCP: '1' },
         },
       },
       permissionHandler: createFakePermissionHandler() as unknown as ProviderEnforcedPermissionHandler,
@@ -898,7 +898,7 @@ describe('createOpenCodeServerRuntime', () => {
         type: 'local',
         enabled: true,
         command: [process.execPath, '--version'],
-        environment: { HAPPIER_TEST_MCP: '1' },
+        environment: { PIGGERCODE_TEST_MCP: '1' },
       },
     });
   });
@@ -2281,7 +2281,7 @@ describe('createOpenCodeServerRuntime', () => {
         localId: 'local-active-keepalive-heartbeat',
         env: {
           ...process.env,
-          HAPPIER_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS: '100',
+          PIGGERCODE_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS: '100',
         },
       });
       runtime = started.runtime;
@@ -2338,7 +2338,7 @@ describe('createOpenCodeServerRuntime', () => {
       directory: '/tmp',
       env: {
         ...process.env,
-        HAPPIER_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS: '100',
+        PIGGERCODE_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS: '100',
       },
       session,
       messageBuffer: new MessageBuffer(),
@@ -3685,10 +3685,10 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('does not block the first prompt after resume behind a stale busy status snapshot', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const resumedSessionId = 'ses_1';
       const client = createFakeClient();
@@ -3737,10 +3737,10 @@ describe('createOpenCodeServerRuntime', () => {
 
       await expect(promptPromise).resolves.toBeUndefined();
     } finally {
-      if (prevPollInterval === undefined) delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-      else process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
-      if (prevStatusPoll === undefined) delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-      else process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+      if (prevPollInterval === undefined) delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+      else process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+      if (prevStatusPoll === undefined) delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+      else process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
     }
   });
 
@@ -4523,8 +4523,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not resolve a turn on session.idle before assistant activity and fails through the stuck-idle fallback', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -5233,9 +5233,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('uses SSE as the sole permission/question owner while status polling remains a bounded completion fallback', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '2000',
-      HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '250',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '2000',
+      PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '250',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -5388,8 +5388,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('dedupes cumulative text deltas and streams transcript-vNext updates with a stable happierStreamKey per OpenCode message', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
     try {
       const client = createFakeClient();
       const session = createFakeSession();
@@ -5468,8 +5468,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('buffers tiny text deltas into fewer transcript messages by default (prevents per-token transcript spam)', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
     try {
       const client = createFakeClient();
       const session = createFakeSession();
@@ -5542,8 +5542,8 @@ describe('createOpenCodeServerRuntime', () => {
   it('flushes buffered text chunks repeatedly while a turn is streaming (does not stall after the first flush)', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '50');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '50');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1');
     try {
       const client = createFakeClient();
       const session = createFakeSession();
@@ -5626,8 +5626,8 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('does not mix transcript-vNext localIds across different OpenCode messageIDs in the same turn', async () => {
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
     try {
       const client = createFakeClient();
       const session = createFakeSession();
@@ -5754,8 +5754,8 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('streams reasoning deltas through transcript-vNext with a stable happierStreamKey', async () => {
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
     try {
       const client = createFakeClient();
       const session = createFakeSession();
@@ -5820,8 +5820,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('flushes streamed assistant text before emitting an OpenCode tool-call boundary', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
     try {
       const client = createFakeClient();
@@ -5944,10 +5944,10 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('fails an idle turn without terminal assistant evidence through the stuck-idle fallback', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '10',
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '10',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -6039,9 +6039,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('fails an idle turn after a tool-call continuation without a final assistant terminal update', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -6133,9 +6133,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('cancels the stuck-idle fallback when final assistant terminal evidence arrives before timeout', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -6232,10 +6232,10 @@ describe('createOpenCodeServerRuntime', () => {
         localId: 'local-exact-parent-inventory-reconciliation',
         env: {
           ...process.env,
-          HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
-          HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+          PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
+          PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
         },
       });
       runtime = started.runtime;
@@ -6330,9 +6330,9 @@ describe('createOpenCodeServerRuntime', () => {
         localId: 'local-replay-safe-live-projection',
         env: {
           ...process.env,
-          HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+          PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
         },
       });
       runtime = started.runtime;
@@ -6499,10 +6499,10 @@ describe('createOpenCodeServerRuntime', () => {
         localId: 'local-exact-parent-provider-error',
         env: {
           ...process.env,
-          HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
-          HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
-          HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+          PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
+          PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
+          PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
         },
       });
       runtime = started.runtime;
@@ -6525,9 +6525,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('defers live session.error adjudication until idle confirms an exact-parent terminal provider error', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '1000',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
     let promptPromise: Promise<void> | null = null;
@@ -6621,8 +6621,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not let an uncorrelated live session.error fail a valid current assistant completion', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
     let promptPromise: Promise<void> | null = null;
@@ -6696,9 +6696,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('rejects stale and wrong-parent terminal inventory instead of satisfying idle completion', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS: '50',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -6785,8 +6785,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('ignores broad history running tools when live completion evidence is satisfied', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
@@ -6881,8 +6881,8 @@ describe('createOpenCodeServerRuntime', () => {
     const { client, session, runtime, promptPromise } = await beginOpenCodePromptForTest({
       localId: 'local-context-overflow-compaction',
       env: {
-        HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-        HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+        PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+        PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
       },
     });
     const outcome = observePromiseSettlement(promptPromise);
@@ -6912,8 +6912,8 @@ describe('createOpenCodeServerRuntime', () => {
     const { client, session, runtime, promptPromise } = await beginOpenCodePromptForTest({
       localId: 'local-context-overflow-normal-output-resumes',
       env: {
-        HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-        HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+        PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+        PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
       },
     });
 
@@ -7208,8 +7208,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not complete from missing status while current-turn history has a missed running provider tool', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
@@ -7355,8 +7355,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not retain no-active-turn session.next tool events as foreground work', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -7424,8 +7424,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not complete from missing status while refreshed current-turn history still contains a running provider tool', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
@@ -7480,8 +7480,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('ignores stale pre-prompt running tool history when resolving a later turn from missing status', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
@@ -7538,8 +7538,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not forward stale pre-prompt terminal tool history into a later turn', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     vi.useFakeTimers();
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
@@ -7666,10 +7666,10 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('resolves turns when the control-plane /session/status reports idle and idle SSE signals are missing', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient();
       // OpenCode 1.2.17 omits idle sessions from /session/status (it only returns busy sessions),
@@ -7730,23 +7730,23 @@ describe('createOpenCodeServerRuntime', () => {
       }
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
 
   it('resolves turns from control-plane idle when terminal assistant evidence arrived before idle polling', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient();
       client.sessionPromptAsync = vi.fn(async () => {
@@ -7787,18 +7787,18 @@ describe('createOpenCodeServerRuntime', () => {
         await runtime.reset().catch(() => {});
       }
     } finally {
-      if (prevPollInterval === undefined) delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-      else process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
-      if (prevStatusPoll === undefined) delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-      else process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+      if (prevPollInterval === undefined) delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+      else process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+      if (prevStatusPoll === undefined) delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+      else process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
     }
   });
 
   it('does not backfill assistant text after the former backfill grace window when live terminal evidence resolves the turn', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient() as any;
       const session = createFakeSession();
@@ -7882,23 +7882,23 @@ describe('createOpenCodeServerRuntime', () => {
       }
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
 
   it('dispatches through prompt_async without using provider-wide session status as foreground admission authority', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient() as any;
       const session = createFakeSession();
@@ -7948,23 +7948,23 @@ describe('createOpenCodeServerRuntime', () => {
       expect((client.sessionPromptAsync as any).mock.calls.length).toBe(1);
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
 
   it('does not backfill assistant text from control-plane history when live deltas were missed', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient() as any;
       const session = createFakeSession();
@@ -8012,23 +8012,23 @@ describe('createOpenCodeServerRuntime', () => {
       expect(JSON.stringify(session.sendAgentMessageCommitted.mock.calls)).not.toContain('STREAM_TABLE_E2E_OK');
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
 
   it('does not backfill assistant text from control-plane history when the turn only streamed thinking activity', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient() as any;
       const session = createFakeSession();
@@ -8101,14 +8101,14 @@ describe('createOpenCodeServerRuntime', () => {
       expect(JSON.stringify(session.sendAgentMessageCommitted.mock.calls)).not.toContain('STREAM_TABLE_E2E_OK');
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
@@ -8489,11 +8489,11 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('keeps the SSE-owned turn alive when best-effort status polling repeatedly fails', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
 
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     try {
       const client = createFakeClient() as any;
       client.sessionStatusList = vi.fn(async () => {
@@ -8535,14 +8535,14 @@ describe('createOpenCodeServerRuntime', () => {
       await runtime.reset().catch(() => {});
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
@@ -8627,7 +8627,7 @@ describe('createOpenCodeServerRuntime', () => {
     const runtime = createOpenCodeServerRuntime({
       directory: '/tmp',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai',
           groupId: 'team-pool',
@@ -8739,7 +8739,7 @@ describe('createOpenCodeServerRuntime', () => {
     const runtime = createOpenCodeServerRuntime({
       directory: '/tmp',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai',
           groupId: 'team-pool',
@@ -8842,7 +8842,7 @@ describe('createOpenCodeServerRuntime', () => {
     const runtime = createOpenCodeServerRuntime({
       directory: '/tmp',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai',
           groupId: 'team-pool',
@@ -8905,7 +8905,7 @@ describe('createOpenCodeServerRuntime', () => {
     const runtime = createOpenCodeServerRuntime({
       directory: '/tmp',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai',
           groupId: 'team-pool',
@@ -8964,10 +8964,10 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('fails active turns when OpenCode control-plane status polling reports a usage-limit retry', async () => {
-    const prevPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    const prevStatusPoll = process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
-    process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
+    const prevPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    const prevStatusPoll = process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = '1';
     mockNotifyDaemonConnectedServiceRuntimeAuthFailure.mockClear();
     try {
       const client = createFakeClient();
@@ -8984,7 +8984,7 @@ describe('createOpenCodeServerRuntime', () => {
       const runtime = createOpenCodeServerRuntime({
         directory: '/tmp',
         env: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'profile',
             serviceId: 'openai',
             profileId: 'primary',
@@ -9040,14 +9040,14 @@ describe('createOpenCodeServerRuntime', () => {
       }
     } finally {
       if (prevPollInterval === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = prevPollInterval;
       }
       if (prevStatusPoll === undefined) {
-        delete process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED;
       } else {
-        process.env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
+        process.env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED = prevStatusPoll;
       }
     }
   });
@@ -9123,8 +9123,8 @@ describe('createOpenCodeServerRuntime', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     try {
       const client = createFakeClient();
@@ -9177,8 +9177,8 @@ describe('createOpenCodeServerRuntime', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
     try {
@@ -9592,8 +9592,8 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('does not hang turn completion when native session diff never resolves', async () => {
-    const prior = process.env.HAPPIER_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS;
-    process.env.HAPPIER_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS = '25';
+    const prior = process.env.PIGGERCODE_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS;
+    process.env.PIGGERCODE_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS = '25';
     try {
       const client = createFakeClient() as any;
       client.sessionDiff = vi.fn(async () => await new Promise<unknown[]>(() => {}));
@@ -9644,9 +9644,9 @@ describe('createOpenCodeServerRuntime', () => {
       )).toBe(false);
     } finally {
       if (typeof prior === 'string') {
-        process.env.HAPPIER_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS = prior;
+        process.env.PIGGERCODE_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS = prior;
       } else {
-        delete process.env.HAPPIER_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS;
       }
     }
   });
@@ -10437,8 +10437,8 @@ describe('createOpenCodeServerRuntime', () => {
   it('streams sidechain text as incremental deltas (avoids duplicate prefixes when OpenCode emits cumulative deltas)', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '0');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '0');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1');
     try {
       const client = createFakeClient() as any;
       client.sessionMessagesList = vi.fn(async () => ([] as unknown[]));
@@ -11047,10 +11047,10 @@ describe('createOpenCodeServerRuntime', () => {
   });
 
   it('does not carry timed-out tool forwarding work into the next turn after idle completion', async () => {
-    const prior = process.env.HAPPIER_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS;
-    const priorPollInterval = process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
-    process.env.HAPPIER_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS = '100';
-    process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
+    const prior = process.env.PIGGERCODE_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS;
+    const priorPollInterval = process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+    process.env.PIGGERCODE_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS = '100';
+    process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = '25';
 
     try {
       const client = createFakeClient() as any;
@@ -11174,21 +11174,21 @@ describe('createOpenCodeServerRuntime', () => {
       )).toBe(false);
     } finally {
       if (typeof prior === 'string') {
-        process.env.HAPPIER_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS = prior;
+        process.env.PIGGERCODE_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS = prior;
       } else {
-        delete process.env.HAPPIER_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS;
       }
       if (typeof priorPollInterval === 'string') {
-        process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = priorPollInterval;
+        process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS = priorPollInterval;
       } else {
-        delete process.env.HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS;
       }
     }
   });
 
   it('cancel resolves even if the OpenCode abort endpoint hangs (does not wedge runner abort handling)', async () => {
-    const prior = process.env.HAPPIER_OPENCODE_SERVER_ABORT_TIMEOUT_MS;
-    process.env.HAPPIER_OPENCODE_SERVER_ABORT_TIMEOUT_MS = '25';
+    const prior = process.env.PIGGERCODE_OPENCODE_SERVER_ABORT_TIMEOUT_MS;
+    process.env.PIGGERCODE_OPENCODE_SERVER_ABORT_TIMEOUT_MS = '25';
     try {
       const client = createFakeClient() as any;
       client.sessionAbort = vi.fn(async () => await new Promise<void>(() => {}));
@@ -11221,9 +11221,9 @@ describe('createOpenCodeServerRuntime', () => {
       expect(outcome).toBe('cancelled');
     } finally {
       if (typeof prior === 'string') {
-        process.env.HAPPIER_OPENCODE_SERVER_ABORT_TIMEOUT_MS = prior;
+        process.env.PIGGERCODE_OPENCODE_SERVER_ABORT_TIMEOUT_MS = prior;
       } else {
-        delete process.env.HAPPIER_OPENCODE_SERVER_ABORT_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_ABORT_TIMEOUT_MS;
       }
     }
   });
@@ -11423,9 +11423,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('keeps status polling alive when one status lookup throws', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '1',
     });
     let runtime: ReturnType<typeof createOpenCodeServerRuntime> | null = null;
     let promptPromise: Promise<void> | null = null;
@@ -11461,9 +11461,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('honors generic retry backoff before retry timeout', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
-      HAPPIER_OPENCODE_SERVER_RETRY_MAX_WAIT_MS: '60000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_RETRY_MAX_WAIT_MS: '60000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11516,8 +11516,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('does not abort a long-running silent tool before it emits meaningful input', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11618,8 +11618,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('ignores unrelated control-plane history rows when refreshing live-known reconnect state', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11710,8 +11710,8 @@ describe('createOpenCodeServerRuntime', () => {
     'reconciles a missed terminal %s tool from control-plane history without forwarding provider input',
     async (status) => {
       const restoreEnv = withEnvForTest({
-        HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-        HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+        PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+        PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
       });
       vi.useFakeTimers();
       vi.setSystemTime(new Date(0));
@@ -11791,8 +11791,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('forwards a tool result after a long silent running period', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11866,8 +11866,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('uses a final status liveness probe before deadlock aborting a busy OpenCode session', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11902,8 +11902,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('adds final liveness probe diagnostics to deadlock guard failures', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -11930,8 +11930,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it.each(['permission', 'question'] as const)('does not fire deadlock guard while %s waits for the user', async (kind) => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12016,8 +12016,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('resets compaction guard state across turns', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12086,8 +12086,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('treats session.next text reasoning and step events as guard activity', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12138,8 +12138,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('treats session.next tool events as guard tool lifecycle', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12196,9 +12196,9 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('routes session.next retried through generic retry handling', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
-      HAPPIER_OPENCODE_SERVER_RETRY_MAX_WAIT_MS: '60000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_RETRY_MAX_WAIT_MS: '60000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12242,8 +12242,8 @@ describe('createOpenCodeServerRuntime', () => {
 
   it('routes nested session.next retried usage-limit errors through fail-fast handling', async () => {
     const restoreEnv = withEnvForTest({
-      HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
-      HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
+      PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: '10000',
     });
     vi.useFakeTimers();
     vi.setSystemTime(new Date(0));
@@ -12676,8 +12676,8 @@ describe('createOpenCodeServerRuntime — connected-service broker preflight (fa
       openai: { serviceId: 'openai-codex', profileId: 'primary', accountId: null, planType: null },
     });
     const restoreHome = withEnvForTest({
-      HAPPIER_HOME_DIR: home,
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: managedStatePath,
+      PIGGERCODE_HOME_DIR: home,
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: managedStatePath,
       [OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY_ENV]: 'opencode|connected|openai-codex:primary:',
       [OPEN_CODE_BROKER_SELECTIONS_ENV]: brokerSelections,
       [OPEN_CODE_BROKER_STATE_PATH_ENV]: daemonStatePath,
@@ -12838,7 +12838,7 @@ describe('createOpenCodeServerRuntime — connected-service broker preflight (fa
 
   it('does not forward a prompt when the turn is cancelled while broker preflight is pending', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-opencode-runtime-broker-home-'));
-    const restoreHome = withEnvForTest({ HAPPIER_HOME_DIR: home });
+    const restoreHome = withEnvForTest({ PIGGERCODE_HOME_DIR: home });
     reloadConfiguration();
     const daemonStatePath = join(home, 'daemon.state.json');
     await writeUsableDaemonState(daemonStatePath);

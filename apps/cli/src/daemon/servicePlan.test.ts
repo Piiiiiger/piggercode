@@ -33,11 +33,11 @@ describe('daemon service install plan', () => {
     expect(plan.files[0]?.content).toContain('<string>/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs</string>');
     expect(plan.files[0]?.content).toContain('<string>daemon</string>');
     expect(plan.files[0]?.content).toContain('<string>start-sync</string>');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_HOME_DIR</key>');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_ACTIVE_SERVER_ID</key>');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_SERVER_URL</key>');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_PUBLIC_SERVER_URL</key>');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_DAEMON_WAIT_FOR_AUTH</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_HOME_DIR</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_ACTIVE_SERVER_ID</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_SERVER_URL</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_PUBLIC_SERVER_URL</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_DAEMON_WAIT_FOR_AUTH</key>');
     expect(plan.files[0]?.content).toContain('<key>PATH</key>');
     expect(plan.files[0]?.content).toContain('/usr/local/sbin');
     expect(plan.files[0]?.content).toContain('/opt/homebrew/sbin');
@@ -102,7 +102,7 @@ describe('daemon service install plan', () => {
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/Users/test/Library/LaunchAgents/com.happier.cli.daemon.preview.cloud.plist');
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_PUBLIC_RELEASE_CHANNEL</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_PUBLIC_RELEASE_CHANNEL</key>');
     expect(plan.files[0]?.content).toContain('<string>preview</string>');
   });
 
@@ -128,7 +128,7 @@ describe('daemon service install plan', () => {
     expect(plan.files[0]?.content).toContain(
       '<string>com.happier.cli.daemon.preview.stack_macos-v0210_id_default</string>',
     );
-    expect(plan.files[0]?.content).toContain('<key>HAPPIER_ACTIVE_SERVER_ID</key>');
+    expect(plan.files[0]?.content).toContain('<key>PIGGERCODE_ACTIVE_SERVER_ID</key>');
     expect(plan.files[0]?.content).toContain('<string>stack_macos-v0210__id_default</string>');
   });
 
@@ -152,13 +152,13 @@ describe('daemon service install plan', () => {
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/home/test/.config/systemd/user/happier-daemon.cloud.service');
     expect(plan.files[0]?.content).toContain('ExecStart=/usr/bin/node /usr/lib/node_modules/@piggercode/cli/dist/index.mjs daemon start-sync');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_HOME_DIR=/home/test/.happier');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_STARTUP_SOURCE=background-service');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_SERVICE_LABEL=com.happier.cli.daemon.cloud');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_ACTIVE_SERVER_ID=cloud');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_SERVER_URL=https://api.happier.dev');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_PUBLIC_SERVER_URL=https://api.happier.dev');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_WAIT_FOR_AUTH=1');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_HOME_DIR=/home/test/.happier');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_STARTUP_SOURCE=background-service');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_LABEL=com.happier.cli.daemon.cloud');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=cloud');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_SERVER_URL=https://api.happier.dev');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_PUBLIC_SERVER_URL=https://api.happier.dev');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_WAIT_FOR_AUTH=1');
     expect(plan.files[0]?.content).toContain('Environment=PATH=');
     expect(plan.files[0]?.content).toContain('/home/test/.local/bin');
     expect(plan.files[0]?.content).toContain('KillMode=process');
@@ -194,13 +194,13 @@ describe('daemon service install plan', () => {
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/home/test/.config/systemd/user/happier-daemon.default.service');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_SERVICE_TARGET_MODE=default-following');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_STARTUP_SOURCE=background-service');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_SERVICE_LABEL=com.happier.cli.daemon.default');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_PUBLIC_RELEASE_CHANNEL=preview');
-    expect(plan.files[0]?.content).not.toContain('Environment=HAPPIER_ACTIVE_SERVER_ID=');
-    expect(plan.files[0]?.content).not.toContain('Environment=HAPPIER_SERVER_URL=');
-    expect(plan.files[0]?.content).not.toContain('Environment=HAPPIER_PUBLIC_SERVER_URL=');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=default-following');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_STARTUP_SOURCE=background-service');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_LABEL=com.happier.cli.daemon.default');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_PUBLIC_RELEASE_CHANNEL=preview');
+    expect(plan.files[0]?.content).not.toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=');
+    expect(plan.files[0]?.content).not.toContain('Environment=PIGGERCODE_SERVER_URL=');
+    expect(plan.files[0]?.content).not.toContain('Environment=PIGGERCODE_PUBLIC_SERVER_URL=');
     expect(plan.files[0]?.content).toContain('ManagedOOMPreference=avoid');
     expect(plan.files[0]?.content).not.toContain('ManagedOOMMemoryPressure=');
     expect(plan.files[0]?.content).not.toContain('ManagedOOMSwap=');
@@ -224,7 +224,7 @@ describe('daemon service install plan', () => {
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/home/test/.config/systemd/user/happier-daemon.dev.cloud.service');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_PUBLIC_RELEASE_CHANNEL=dev');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_PUBLIC_RELEASE_CHANNEL=dev');
   });
 
   it('uses launchctl print against the gui domain for darwin status checks', () => {
@@ -291,9 +291,9 @@ describe('daemon service install plan', () => {
     expect(plan.files[0]?.content).toContain('ExecStart=/usr/local/bin/happier daemon start-sync');
     expect(plan.files[0]?.content).toContain('User=happier');
     expect(plan.files[0]?.content).toContain('WorkingDirectory=/home/happier');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_HOME_DIR=/home/happier/.happier');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_HOME_DIR=/home/happier/.happier');
     expect(plan.files[0]?.content).toContain('Environment=PATH=/usr/local/bin:/root/.cargo/bin:/usr/local/sbin:/home/happier/.local/bin:/home/happier/bin');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_ACTIVE_SERVER_ID=cloud');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=cloud');
     expect(plan.files[0]?.content).toContain('KillMode=process');
 
     const systemctlArgsText = plan.commands
@@ -360,7 +360,7 @@ describe('daemon service install plan', () => {
     });
 
     expect(plan.files[0]?.path).toBe('/home/test/.config/systemd/user/happier-daemon.company.service');
-    expect(plan.files[0]?.content).toContain('Environment=HAPPIER_SERVER_URL=https://company.example.test');
+    expect(plan.files[0]?.content).toContain('Environment=PIGGERCODE_SERVER_URL=https://company.example.test');
   });
 
   it('plans a Scheduled Task install (win32)', () => {
@@ -380,8 +380,8 @@ describe('daemon service install plan', () => {
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('C:\\Users\\test\\.happier\\services\\happier-daemon.cloud.ps1');
-    expect(plan.files[0]?.content).toContain('$env:HAPPIER_HOME_DIR');
-    expect(plan.files[0]?.content).toContain('$env:HAPPIER_ACTIVE_SERVER_ID');
+    expect(plan.files[0]?.content).toContain('$env:PIGGERCODE_HOME_DIR');
+    expect(plan.files[0]?.content).toContain('$env:PIGGERCODE_ACTIVE_SERVER_ID');
     expect(plan.files[0]?.content).toContain('happier.exe');
 
   });
@@ -403,7 +403,7 @@ describe('daemon service install plan', () => {
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('C:\\Users\\test\\.happier\\services\\happier-daemon.dev.cloud.ps1');
-    expect(plan.files[0]?.content).toContain('HAPPIER_PUBLIC_RELEASE_CHANNEL');
+    expect(plan.files[0]?.content).toContain('PIGGERCODE_PUBLIC_RELEASE_CHANNEL');
   });
 
   it('plans default-following Scheduled Task lifecycle actions against the default task name on win32', () => {

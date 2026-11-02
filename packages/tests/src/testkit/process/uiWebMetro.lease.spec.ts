@@ -60,7 +60,7 @@ beforeEach(() => {
             return {
                 ok: true,
                 headers: { get: () => 'application/javascript' },
-                text: async () => 'globalThis.__HAPPIER_E2E__ = true;',
+                text: async () => 'globalThis.__PIGGERCODE_E2E__ = true;',
             };
         }
         return {
@@ -98,8 +98,8 @@ describe('startUiWebMetro', () => {
             await expect(startUiWebMetro({
                 testDir,
                 env: {
-                    HAPPIER_E2E_UI_WEB_METRO_STATUS_TIMEOUT_MS: '100',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
+                    PIGGERCODE_E2E_UI_WEB_METRO_STATUS_TIMEOUT_MS: '100',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
                 },
                 port: 19077,
             })).rejects.toThrow(/exited before ready \(signal=SIGABRT\)/);
@@ -131,9 +131,9 @@ describe('startUiWebMetro', () => {
             await expect(startUiWebMetro({
                 testDir,
                 env: {
-                    HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '20',
+                    PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '20',
                 },
                 port: 19077,
             })).rejects.toThrow(/expo web primary script ready/i);
@@ -172,10 +172,10 @@ describe('startUiWebMetro', () => {
             await expect(startUiWebMetro({
                 testDir,
                 env: {
-                    HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '20',
-                    HAPPIER_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
+                    PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: '100',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS: '20',
+                    PIGGERCODE_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT: '1',
                 },
                 port: 19077,
             })).rejects.toThrow(/expo web primary script ready/i);
@@ -201,7 +201,7 @@ describe('startUiWebMetro', () => {
                 return {
                     ok: true,
                     headers: { get: () => 'application/javascript' },
-                    text: async () => 'globalThis.__HAPPIER_E2E__ = true;',
+                    text: async () => 'globalThis.__PIGGERCODE_E2E__ = true;',
                 };
             }
             entryProbeCount += 1;
@@ -217,7 +217,7 @@ describe('startUiWebMetro', () => {
         try {
             const started = await startUiWebMetro({
                 testDir,
-                env: { HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000' },
+                env: { PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: '5000' },
                 port: 19077,
             });
 

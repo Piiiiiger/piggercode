@@ -12,20 +12,20 @@ vi.mock('@/daemon/runtime/spawnDetachedDaemonStartSync', () => ({
 
 describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
     const envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-        'HAPPIER_DAEMON_STARTUP_SOURCE',
-        'HAPPIER_DAEMON_SERVICE_PLATFORM',
-        'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_CHANNEL',
-        'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-        'HAPPIER_SERVER_URL',
-        'HAPPIER_PUBLIC_SERVER_URL',
-        'HAPPIER_WEBAPP_URL',
-        'HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS',
-        'HAPPIER_DAEMON_START_WAIT_POLL_MS',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_DAEMON_STARTUP_SOURCE',
+        'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+        'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+        'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+        'PIGGERCODE_SERVER_URL',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
+        'PIGGERCODE_WEBAPP_URL',
+        'PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS',
+        'PIGGERCODE_DAEMON_START_WAIT_POLL_MS',
     ]);
 
     beforeEach(() => {
@@ -47,9 +47,9 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
     it('warns and skips autostart when a different background service is already running for the selected relay', async () => {
         await withTempDir('happier-ensure-daemon-conflict-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -87,9 +87,9 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
     it('warns and skips autostart when a different manually started daemon is already running for the selected relay', async () => {
         await withTempDir('happier-ensure-daemon-manual-conflict-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -125,8 +125,8 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
 
     it('warns and skips autostart when a background service is installed but no daemon is active', async () => {
         envScope.patch({
-            HAPPIER_DAEMON_STARTUP_SOURCE: '',
-            HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
+            PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
+            PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         });
         vi.resetModules();
         vi.doMock('@/daemon/controlClient', async (importOriginal) => {

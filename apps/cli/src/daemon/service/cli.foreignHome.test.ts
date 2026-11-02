@@ -14,9 +14,9 @@ vi.mock('node:child_process', async (importOriginal) => ({
 }));
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_HOME_DIR', 'HAPPIER_DAEMON_SERVICE_PLATFORM', 'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR', 'HAPPIER_DAEMON_SERVICE_CHANNEL',
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE', 'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_HOME_DIR', 'PIGGERCODE_DAEMON_SERVICE_PLATFORM', 'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR', 'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE', 'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
 ]);
 
 afterEach(() => { envScope.restore(); vi.resetModules(); spawnSyncMock.mockReset(); });
@@ -27,13 +27,13 @@ describe('service definition home attribution', () => {
       const happierHomeDir = join(userHomeDir, 'qa-home');
       const foreignHomeDir = join(userHomeDir, 'foreign-home');
       envScope.patch({
-        HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_DAEMON_SERVICE_PLATFORM: platform,
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: userHomeDir,
-        HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
+        PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_DAEMON_SERVICE_PLATFORM: platform,
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: userHomeDir,
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
       });
       const foreignPlan = planDaemonServiceInstall({
         platform, mode: 'user', channel: 'stable', targetMode: 'default-following',

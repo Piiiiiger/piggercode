@@ -70,7 +70,7 @@ test('production reload composition keeps app and Prisma reloads exclusive while
     const pid = nextPid++;
     const child = { pid, exitCode: null, signalCode: null };
     spawnedChildren.set(pid, child);
-    calls.push(['spawn', pid, Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE ?? null]);
+    calls.push(['spawn', pid, Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE ?? null]);
     return child;
   };
   const proxyController = {
@@ -98,9 +98,9 @@ test('production reload composition keeps app and Prisma reloads exclusive while
     serverDir: fixture.serverDir,
     autostart: { stackName: 'test-stack', baseDir: join(fixture.rootDir, 'stack') },
     baseEnv: {
-      HAPPIER_SERVER_LIGHT_DATA_DIR: fixture.dataDir,
-      HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200ms',
-      HAPPIER_STACK_DEV_PROXY_DRAIN_MS: '0',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: fixture.dataDir,
+      PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200ms',
+      PIGGERCODE_STACK_DEV_PROXY_DRAIN_MS: '0',
     },
     serverPort: 4101,
     serverBindPort: 5101,
@@ -125,7 +125,7 @@ test('production reload composition keeps app and Prisma reloads exclusive while
     getProcessGroupIdImpl: async (pid) => processGroupForPid(pid),
   });
 
-  assert.equal(initial.serverEnv.HAPPIER_DB_PROVIDER, 'sqlite');
+  assert.equal(initial.serverEnv.PIGGERCODE_DB_PROVIDER, 'sqlite');
   const serverProcRef = { current: initial.serverProc };
   const composition = startDevReloadComposition({
     watchEnabled: true,
@@ -282,9 +282,9 @@ test('production reload composition retries typed inconclusive post-stop evidenc
       internalServerUrl: 'http://127.0.0.1:4101',
       serverScript: 'dev:light',
       serverEnv: {
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: fixture.dataDir,
-        HAPPIER_STACK_DEV_PROXY_DRAIN_MS: '0',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: fixture.dataDir,
+        PIGGERCODE_STACK_DEV_PROXY_DRAIN_MS: '0',
         PORT: '5101',
       },
       runtimeStatePath: fixture.runtimeStatePath,
@@ -329,7 +329,7 @@ test('production reload composition retries typed inconclusive post-stop evidenc
         return 5102;
       },
       pmSpawnScriptImpl: async ({ env }) => {
-        calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+        calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
         return { pid: 202, exitCode: null, signalCode: null };
       },
       waitForServerReadyImpl: async () => {},

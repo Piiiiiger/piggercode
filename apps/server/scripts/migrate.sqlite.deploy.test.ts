@@ -54,7 +54,7 @@ describe("migrate.sqlite.deploy.ts", () => {
 
         const env: NodeJS.ProcessEnv = {
             HAPPY_SERVER_LIGHT_DATA_DIR: lightDataDir,
-            HAPPIER_SERVER_LIGHT_DATA_DIR: lightDataDir,
+            PIGGERCODE_SERVER_LIGHT_DATA_DIR: lightDataDir,
         };
         const schemaSyncCalls: string[] = [];
 
@@ -116,7 +116,7 @@ describe("migrate.sqlite.deploy.ts", () => {
             runSqliteMigrationDeploy({
                 env: {
                     HAPPY_SERVER_LIGHT_DATA_DIR: lightDataDir,
-                    HAPPIER_SERVER_LIGHT_DATA_DIR: lightDataDir,
+                    PIGGERCODE_SERVER_LIGHT_DATA_DIR: lightDataDir,
                     DATABASE_URL: `file:${databasePath}`,
                 },
                 serverRoot,
@@ -148,7 +148,7 @@ describe("migrate.sqlite.deploy.ts", () => {
             runSqliteMigrationDeploy({
                 env: {
                     HAPPY_SERVER_LIGHT_DATA_DIR: lightDataDir,
-                    HAPPIER_SERVER_LIGHT_DATA_DIR: lightDataDir,
+                    PIGGERCODE_SERVER_LIGHT_DATA_DIR: lightDataDir,
                     DATABASE_URL: "postgresql://db.example.invalid/happier",
                 },
                 serverRoot,

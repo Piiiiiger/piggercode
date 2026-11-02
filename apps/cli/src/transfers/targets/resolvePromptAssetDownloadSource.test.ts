@@ -183,8 +183,8 @@ describe('resolvePromptAssetDownloadSource', () => {
   });
 
   it('fails closed when the prompt asset transfer payload exceeds the prompt transfer size limit', async () => {
-    const previous = process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
-    process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = '32';
+    const previous = process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
+    process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = '32';
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
 
@@ -217,9 +217,9 @@ describe('resolvePromptAssetDownloadSource', () => {
       });
     } finally {
       if (previous === undefined) {
-        delete process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
+        delete process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
       } else {
-        process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
+        process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
       }
       const { reloadConfiguration: reloadAfter } = await import('@/configuration');
       reloadAfter();

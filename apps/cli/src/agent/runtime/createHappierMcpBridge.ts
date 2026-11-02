@@ -19,7 +19,7 @@ function serializeActionSettingsForEnv(accountSettings: AccountSettings | null |
     }
   }
 
-  const actionSettingsEnv = process.env.HAPPIER_ACTIONS_SETTINGS_V1
+  const actionSettingsEnv = process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
   return typeof actionSettingsEnv === 'string' && actionSettingsEnv.length > 0 ? actionSettingsEnv : null
 }
 
@@ -33,7 +33,7 @@ function withActionSettingsEnv(config: McpServerConfig, accountSettings?: Accoun
     ...config,
     env: {
       ...(config.env ?? {}),
-      HAPPIER_ACTIONS_SETTINGS_V1: actionSettings,
+      PIGGERCODE_ACTIONS_SETTINGS_V1: actionSettings,
     },
   }
 }
@@ -47,7 +47,7 @@ async function resolveHappierMcpServerConfig(
     distEntrypointSegments: ['backends', 'codex', 'happyMcpStdioBridge.mjs'],
     sourceEntrypointSegments: ['backends', 'codex', 'happyMcpStdioBridge.ts'],
     args: ['--url', url],
-    preferSourceEntrypoint: isTruthyEnvFlag(process.env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT),
+    preferSourceEntrypoint: isTruthyEnvFlag(process.env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT),
   })
   return withActionSettingsEnv(config, accountSettings)
 }

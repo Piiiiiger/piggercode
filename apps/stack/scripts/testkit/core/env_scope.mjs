@@ -14,17 +14,17 @@ export function buildStackFixtureEnv({
   extraEnv = {},
 } = {}) {
   const seed = stripStackEnv
-    ? Object.fromEntries(Object.entries(baseEnv ?? {}).filter(([key]) => !key.startsWith('HAPPIER_STACK_')))
+    ? Object.fromEntries(Object.entries(baseEnv ?? {}).filter(([key]) => !key.startsWith('PIGGERCODE_STACK_')))
     : { ...(baseEnv ?? {}) };
 
   return sanitizeDefinedEnv({
     ...seed,
-    ...(homeDir ? { HAPPIER_STACK_HOME_DIR: homeDir } : {}),
-    ...(storageDir ? { HAPPIER_STACK_STORAGE_DIR: storageDir } : {}),
-    ...(workspaceDir ? { HAPPIER_STACK_WORKSPACE_DIR: workspaceDir } : {}),
-    ...(sandboxDir ? { HAPPIER_STACK_SANDBOX_DIR: sandboxDir } : {}),
-    ...(stackName ? { HAPPIER_STACK_STACK: stackName } : {}),
-    ...(envPath ? { HAPPIER_STACK_ENV_FILE: envPath } : {}),
+    ...(homeDir ? { PIGGERCODE_STACK_HOME_DIR: homeDir } : {}),
+    ...(storageDir ? { PIGGERCODE_STACK_STORAGE_DIR: storageDir } : {}),
+    ...(workspaceDir ? { PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir } : {}),
+    ...(sandboxDir ? { PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir } : {}),
+    ...(stackName ? { PIGGERCODE_STACK_STACK: stackName } : {}),
+    ...(envPath ? { PIGGERCODE_STACK_ENV_FILE: envPath } : {}),
     ...extraEnv,
   });
 }

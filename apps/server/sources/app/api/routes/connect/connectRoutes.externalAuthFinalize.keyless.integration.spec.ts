@@ -51,11 +51,11 @@ describe("connectRoutes (external auth finalize keyless) (integration)", () => {
 
     it("refuses keyless finalization when build policy denies keyless accounts", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_BUILD_FEATURES_DENY: "e2ee.keylessAccounts",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_BUILD_FEATURES_DENY: "e2ee.keylessAccounts",
         });
         const app = createTestApp();
         connectRoutes(app);
@@ -72,12 +72,12 @@ describe("connectRoutes (external auth finalize keyless) (integration)", () => {
 
     it("POST /v1/auth/external/:provider/finalize-keyless provisions a keyless account and returns a token when enabled", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const pendingKey = "oauth_pending_keylessA1";
@@ -149,10 +149,10 @@ describe("connectRoutes (external auth finalize keyless) (integration)", () => {
 
     it("POST /v1/auth/external/:provider/finalize-keyless returns 409 restore-required when the external identity is linked to a keyed account", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
 
         const keyedAccount = await db.account.create({
@@ -225,10 +225,10 @@ describe("connectRoutes (external auth finalize keyless) (integration)", () => {
 
     it("POST /v1/auth/external/:provider/finalize-keyless succeeds when the external identity is linked to a keyed-but-plain account", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
 
         const keyedPlainAccount = await db.account.create({
@@ -303,10 +303,10 @@ describe("connectRoutes (external auth finalize keyless) (integration)", () => {
 
     it("POST /v1/auth/external/:provider/finalize-keyless returns 403 e2ee-required when server storagePolicy=required_e2ee", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
         });
 
         const keylessAccount = await db.account.create({

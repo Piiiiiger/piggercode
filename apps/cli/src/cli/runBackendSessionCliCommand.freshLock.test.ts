@@ -21,7 +21,7 @@ afterEach(() => {
 describe('primary Session runner ownership', () => {
   it('holds the fresh Session lock before constructing its client and releases it on startup failure', async () => {
     const happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-fresh-runner-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', happyHomeDir);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', happyHomeDir);
     reloadConfiguration();
     await writeCredentialsLegacy({ token: 'test-token', secret: new Uint8Array(32) });
     vi.spyOn(logger, 'fatal').mockImplementation(() => {});

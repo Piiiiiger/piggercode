@@ -80,7 +80,7 @@ describe('runWsreplLimaMatrix.shared', () => {
             platform: 'win32',
             argv: ['demo-vm', '--verbose'],
             env: {
-                HAPPIER_E2E_WSREPL_LIMA_SCRIPT: overridePath,
+                PIGGERCODE_E2E_WSREPL_LIMA_SCRIPT: overridePath,
             },
         });
 

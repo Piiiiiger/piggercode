@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import type { AgentMessage } from '@/agent/core';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { PiRpcBackend } from './PiRpcBackend';
 
@@ -820,8 +820,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: writeFakePiRpcCompactionBusyResumeRaceScript(workDir, promptLogPath),
       env: {
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10',
       },
     });
     shortenPendingTurnTimeout(backend, 200);
@@ -884,8 +884,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '120',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '120',
       },
     });
 
@@ -928,7 +928,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15' },
+      env: { PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15' },
     });
     const messages: AgentMessage[] = [];
     backend.onMessage((message) => messages.push(message));
@@ -975,7 +975,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       errorMessage: '429: {"code":"1302","message":"Rate limit reached for requests"}',
       terminalStatus: 'failed',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai',
           profileId: 'openai-primary',
@@ -995,7 +995,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       errorMessage: 'OAuth refresh failed for openai-codex: happier_broker_bridge_status_500',
       terminalStatus: null,
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai-codex',
           profileId: 'codex-primary',
@@ -1035,7 +1035,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { ...env, HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10' },
+      env: { ...env, PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10' },
     });
     const messages: AgentMessage[] = [];
     backend.onMessage((message) => messages.push(message));
@@ -1102,7 +1102,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10' },
+      env: { PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10' },
     });
     const messages: AgentMessage[] = [];
     backend.onMessage((message) => messages.push(message));
@@ -1168,8 +1168,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '40',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '40',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1219,9 +1219,9 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
-        HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '20',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '20',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1282,7 +1282,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15' },
+      env: { PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15' },
     });
     const messages: AgentMessage[] = [];
     backend.onMessage((message) => messages.push(message));
@@ -1317,8 +1317,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1378,8 +1378,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1438,8 +1438,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1503,9 +1503,9 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '20',
-        HAPPIER_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '20',
+        PIGGERCODE_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX: '1',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1560,8 +1560,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_TURN_STALL_TIMEOUT_MS: '20',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_TURN_STALL_TIMEOUT_MS: '20',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1655,7 +1655,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { HAPPIER_PI_RPC_MAX_SILENT_PROBES: '3' },
+      env: { PIGGERCODE_PI_RPC_MAX_SILENT_PROBES: '3' },
     });
     const messages: AgentMessage[] = [];
     backend.onMessage((message) => messages.push(message));
@@ -1691,9 +1691,9 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10',
-        HAPPIER_PI_RPC_AGENT_END_BUSY_GRACE_MS: '30',
-        HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '50',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10',
+        PIGGERCODE_PI_RPC_AGENT_END_BUSY_GRACE_MS: '30',
+        PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '50',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1742,10 +1742,10 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_MAX_SILENT_PROBES: '2',
-        HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '100',
-        HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS: '40',
-        HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
+        PIGGERCODE_PI_RPC_MAX_SILENT_PROBES: '2',
+        PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '100',
+        PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS: '40',
+        PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
       },
     });
 
@@ -1780,7 +1780,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
     const backend = createBackend({
       workDir,
       scriptPath: fakeScript,
-      env: { HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '200' },
+      env: { PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '200' },
     });
 
     try {
@@ -1807,8 +1807,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '20',
-        HAPPIER_PI_RPC_MAX_SILENT_PROBES: '3',
+        PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '20',
+        PIGGERCODE_PI_RPC_MAX_SILENT_PROBES: '3',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1853,8 +1853,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '150',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '150',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1895,7 +1895,7 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '300',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '300',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1938,9 +1938,9 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
-        HAPPIER_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX: '0',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_COMPACTION_AUTO_CONTINUE_MAX: '0',
       },
     });
     const messages: AgentMessage[] = [];
@@ -1982,8 +1982,8 @@ describe('PiRpcBackend pending turn lifecycle', () => {
       workDir,
       scriptPath: fakeScript,
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '15',
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '15',
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '25',
       },
     });
     const messages: AgentMessage[] = [];

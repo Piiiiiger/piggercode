@@ -27,7 +27,7 @@ Interpret the returned fields rather than assuming that command success means th
 
 ## Happier homes and logs
 
-Trust `metadata.happyHomeDir` and `metadata.sessionLogPath` over guesses. `$HAPPIER_HOME_DIR` can override defaults. Common homes include:
+Trust `metadata.happyHomeDir` and `metadata.sessionLogPath` over guesses. `$PIGGERCODE_HOME_DIR` can override defaults. Common homes include:
 
 - release: `~/.happier/`;
 - preview: `~/.happier-preview/`;

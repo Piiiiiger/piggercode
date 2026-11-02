@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { resolveCodexInitialConnectedServiceRuntimeIdentity } from './resolveCodexInitialConnectedServiceRuntimeIdentity';
 import { computeConnectedServiceAccessTokenFingerprint } from '@/daemon/connectedServices/refresh/credentialFreshness/tokenFingerprint';
@@ -46,7 +46,7 @@ describe('resolveCodexInitialConnectedServiceRuntimeIdentity', () => {
       HOME: dir,
       USERPROFILE: dir,
       CODEX_HOME: codexHome,
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',
@@ -90,7 +90,7 @@ describe('resolveCodexInitialConnectedServiceRuntimeIdentity', () => {
       HOME: dir,
       USERPROFILE: dir,
       CODEX_HOME: codexHome,
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',
@@ -147,7 +147,7 @@ describe('resolveCodexInitialConnectedServiceRuntimeIdentity', () => {
       HOME: dir,
       USERPROFILE: dir,
       CODEX_HOME: codexHome,
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',
@@ -202,7 +202,7 @@ describe('resolveCodexInitialConnectedServiceRuntimeIdentity', () => {
       HOME: dir,
       USERPROFILE: dir,
       CODEX_HOME: codexHome,
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'main',

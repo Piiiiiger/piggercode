@@ -9,8 +9,8 @@ describe('resolveDaemonStartupSourceFromEnv', () => {
   it('defaults to manual when only service metadata env is present', () => {
     expect(
       resolveDaemonStartupSourceFromEnv({
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
       } as NodeJS.ProcessEnv),
     ).toBe('manual');
   });
@@ -18,7 +18,7 @@ describe('resolveDaemonStartupSourceFromEnv', () => {
   it('treats an inherited daemon runtime id as self-restart intent', () => {
     expect(
       resolveDaemonStartupSourceFromEnv({
-        HAPPIER_DAEMON_RUNTIME_ID: 'runtime-1',
+        PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-1',
       } as NodeJS.ProcessEnv),
     ).toBe('self-restart');
   });
@@ -26,8 +26,8 @@ describe('resolveDaemonStartupSourceFromEnv', () => {
   it('lets an inherited daemon runtime id override an inherited manual startup source', () => {
     expect(
       resolveDaemonStartupSourceFromEnv({
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'manual',
-        HAPPIER_DAEMON_RUNTIME_ID: 'runtime-1',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'manual',
+        PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-1',
       } as NodeJS.ProcessEnv),
     ).toBe('self-restart');
   });
@@ -35,9 +35,9 @@ describe('resolveDaemonStartupSourceFromEnv', () => {
   it('honors an explicit background-service startup source marker', () => {
     expect(
       resolveDaemonStartupSourceFromEnv({
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
       } as NodeJS.ProcessEnv),
     ).toBe('background-service');
   });

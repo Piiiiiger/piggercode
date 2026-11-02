@@ -78,7 +78,7 @@ describe('Pi native preflight catalogs', () => {
     let error: unknown;
     const result = await piPreflightModelsProbeAdapter.probeCatalogsRaw?.({
       cwd: directory, timeoutMs,
-      processEnv: { ...process.env, HAPPIER_PI_PATH: command, PI_TEST_SELECTED: 'scoped-auth' },
+      processEnv: { ...process.env, PIGGERCODE_PI_PATH: command, PI_TEST_SELECTED: 'scoped-auth' },
     }).catch((failure: unknown) => { error = failure; });
     const trace = existsSync(join(directory, 'trace.json'))
       ? JSON.parse(readFileSync(join(directory, 'trace.json'), 'utf8')) as {

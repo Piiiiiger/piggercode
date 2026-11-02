@@ -9,7 +9,7 @@ import {
 const DEFAULT_OPENCODE_CLI_AUTH_PROBE_TIMEOUT_MS = 6_000;
 
 function resolveOpenCodeCliAuthProbeTimeoutMs(): number {
-  const raw = process.env.HAPPIER_OPENCODE_CLI_AUTH_PROBE_TIMEOUT_MS;
+  const raw = process.env.PIGGERCODE_OPENCODE_CLI_AUTH_PROBE_TIMEOUT_MS;
   const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;

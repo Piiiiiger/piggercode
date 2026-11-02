@@ -51,7 +51,7 @@ describe('cli.pathExposure system task handlers', () => {
 posixOnly('cli.pathExposure system task handlers (POSIX)', () => {
   it('exposes the managed CLI bin dir in the shell profile and removes only that entry again', async () => {
     const homeDir = await createHome();
-    const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', HAPPIER_HOME_DIR: join(homeDir, '.happier') };
+    const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PIGGERCODE_HOME_DIR: join(homeDir, '.happier') };
     const zshrcPath = join(homeDir, '.zshrc');
     await writeFile(zshrcPath, '# mine\n', 'utf8');
 
@@ -74,7 +74,7 @@ posixOnly('cli.pathExposure system task handlers (POSIX)', () => {
       return;
     }
     const homeDir = await createHome();
-    const processEnv = { HOME: homeDir, SHELL: '/usr/bin/fish', HAPPIER_HOME_DIR: join(homeDir, '.happier') };
+    const processEnv = { HOME: homeDir, SHELL: '/usr/bin/fish', PIGGERCODE_HOME_DIR: join(homeDir, '.happier') };
     const profilePath = join(homeDir, '.profile');
     await writeFile(profilePath, '# locked\n', 'utf8');
     await chmod(profilePath, 0o444);

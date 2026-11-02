@@ -86,9 +86,9 @@ describe('native task completion through normalization and reducer', () => {
     });
 
     // The CLI regression emits these files only for the explicitly requested composed check.
-    it.runIf(Boolean(process.env.HAPPIER_TASK_PROJECTION_TEST_OUTPUT)).each(['completed', 'failed', 'stopped'] as const)(
+    it.runIf(Boolean(process.env.PIGGERCODE_TASK_PROJECTION_TEST_OUTPUT)).each(['completed', 'failed', 'stopped'] as const)(
         'reduces real persisted scanner output for %s', async status => {
-            const rows: unknown = JSON.parse(await readFile(`${process.env.HAPPIER_TASK_PROJECTION_TEST_OUTPUT}.${status}.json`, 'utf8'));
+            const rows: unknown = JSON.parse(await readFile(`${process.env.PIGGERCODE_TASK_PROJECTION_TEST_OUTPUT}.${status}.json`, 'utf8'));
             if (!Array.isArray(rows)) throw new Error('Expected scanner transcript rows');
             const folded = fold(rows);
             const roster = deriveSubAgentSidechainSubagents({ messages: folded.messages, flavor: 'claude' });

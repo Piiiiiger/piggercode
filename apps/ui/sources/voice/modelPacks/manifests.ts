@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS = 'EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS';
+const EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS = 'EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS';
 
 // Legacy Kokoro-only env keys (supported temporarily for backward compatibility).
 const EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL = 'EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL';
@@ -11,7 +11,7 @@ const EXPO_PUBLIC_KOKORO_NATIVE_MANIFESTS = 'EXPO_PUBLIC_KOKORO_NATIVE_MANIFESTS
 // build's values (inlined) and a test's stubbed environment both apply.
 function readBuildEnv(): Record<string, string | undefined> {
   return {
-    [EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS]: process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS,
+    [EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS]: process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS,
     [EXPO_PUBLIC_KOKORO_NATIVE_MANIFESTS]: process.env.EXPO_PUBLIC_KOKORO_NATIVE_MANIFESTS,
     [EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL]: process.env.EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL,
   };
@@ -37,7 +37,7 @@ export function resolveModelPackManifestUrl(opts: {
   const env = opts.env ?? readBuildEnv();
   const id = opts.packId && opts.packId.trim().length > 0 ? opts.packId.trim() : 'default';
 
-  const map = readManifestMap(env[EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS]);
+  const map = readManifestMap(env[EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS]);
   const fromMap = map?.[id];
   if (typeof fromMap === 'string' && fromMap.trim().length > 0) return fromMap.trim();
 

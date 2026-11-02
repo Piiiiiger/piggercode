@@ -6,12 +6,12 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('server selection flags', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_LOCAL_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_ACTIVE_SERVER_ID',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_LOCAL_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -24,11 +24,11 @@ describe('server selection flags', () => {
   it('does not persist when --server-url is used (default)', async () => {
     await withTempDir('happier-cli-server-select-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -40,7 +40,7 @@ describe('server selection flags', () => {
       expect(remaining).toEqual([]);
       expect(config.configuration.serverUrl).toBe('https://stack.example.test');
       expect(config.configuration.webappUrl).toBe('https://stack.example.test');
-      expect(process.env.HAPPIER_WEBAPP_URL).toBe('https://stack.example.test');
+      expect(process.env.PIGGERCODE_WEBAPP_URL).toBe('https://stack.example.test');
       expect((await getActiveServerProfile()).id).toBe('cloud');
     });
   });
@@ -48,11 +48,11 @@ describe('server selection flags', () => {
   it('supports --local-server-url to keep deep links canonical while using local API (no persist)', async () => {
     await withTempDir('happier-cli-server-select-local-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
       });
 
       vi.resetModules();
@@ -68,20 +68,20 @@ describe('server selection flags', () => {
       expect(remaining).toEqual([]);
       expect(config.configuration.serverUrl).toBe('https://stack.example.test');
       expect((config.configuration as any).apiServerUrl).toBe('http://127.0.0.1:53545');
-      expect(process.env.HAPPIER_PUBLIC_SERVER_URL).toBe('https://stack.example.test');
-      expect(process.env.HAPPIER_SERVER_URL).toBe('http://127.0.0.1:53545');
-      expect(process.env.HAPPIER_LOCAL_SERVER_URL).toBe('http://127.0.0.1:53545');
+      expect(process.env.PIGGERCODE_PUBLIC_SERVER_URL).toBe('https://stack.example.test');
+      expect(process.env.PIGGERCODE_SERVER_URL).toBe('http://127.0.0.1:53545');
+      expect(process.env.PIGGERCODE_LOCAL_SERVER_URL).toBe('http://127.0.0.1:53545');
     });
   });
 
   it('accepts legacy public-server-url flags from remote setup wrappers', async () => {
     await withTempDir('happier-cli-server-select-public-legacy-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
       });
 
       vi.resetModules();
@@ -96,19 +96,19 @@ describe('server selection flags', () => {
       expect(remaining).toEqual([]);
       expect(config.configuration.serverUrl).toBe('http://public-stack:3005');
       expect((config.configuration as any).apiServerUrl).toBe('http://stack:3005');
-      expect(process.env.HAPPIER_PUBLIC_SERVER_URL).toBe('http://public-stack:3005');
-      expect(process.env.HAPPIER_SERVER_URL).toBe('http://stack:3005');
+      expect(process.env.PIGGERCODE_PUBLIC_SERVER_URL).toBe('http://public-stack:3005');
+      expect(process.env.PIGGERCODE_SERVER_URL).toBe('http://stack:3005');
     });
   });
 
   it('persists a new server profile when --server-url is used with --persist', async () => {
     await withTempDir('happier-cli-server-select-persist-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -133,11 +133,11 @@ describe('server selection flags', () => {
   it('rejects --persist and --no-persist together', async () => {
     await withTempDir('happier-cli-server-select-both-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
       });
 
       vi.resetModules();
@@ -152,12 +152,12 @@ describe('server selection flags', () => {
   it('supports ephemeral prefix server selection without persisting settings', async () => {
     await withTempDir('happier-cli-server-prefix-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_ACTIVE_SERVER_ID: 'stale-profile',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stale-profile',
       });
 
       vi.resetModules();
@@ -186,7 +186,7 @@ describe('server selection flags', () => {
       expect(config.configuration.serverUrl).toBe('https://company.example.test');
       expect(config.configuration.webappUrl).toBe('https://app.company.example.test');
       expect(config.configuration.activeServerId).toBe('company');
-      expect(process.env.HAPPIER_ACTIVE_SERVER_ID).toBe('company');
+      expect(process.env.PIGGERCODE_ACTIVE_SERVER_ID).toBe('company');
 
       const settingsRaw = JSON.parse(readFileSync(join(homeDir, 'settings.json'), 'utf8'));
       expect(settingsRaw.activeServerId).toBe('cloud');
@@ -196,12 +196,12 @@ describe('server selection flags', () => {
   it('does not persist selected profile when --server is combined with --no-persist', async () => {
     await withTempDir('happier-cli-server-select-profile-np-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: undefined,
-        HAPPIER_LOCAL_SERVER_URL: undefined,
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_WEBAPP_URL: undefined,
-        HAPPIER_ACTIVE_SERVER_ID: 'stale-profile',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: undefined,
+        PIGGERCODE_LOCAL_SERVER_URL: undefined,
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_WEBAPP_URL: undefined,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stale-profile',
       });
 
       vi.resetModules();
@@ -227,9 +227,9 @@ describe('server selection flags', () => {
       expect(config.configuration.serverUrl).toBe('https://company.example.test');
       expect(config.configuration.webappUrl).toBe('https://app.company.example.test');
       expect(config.configuration.activeServerId).toBe('company');
-      expect(process.env.HAPPIER_SERVER_URL).toBe('https://company.example.test');
-      expect(process.env.HAPPIER_WEBAPP_URL).toBe('https://app.company.example.test');
-      expect(process.env.HAPPIER_ACTIVE_SERVER_ID).toBe('company');
+      expect(process.env.PIGGERCODE_SERVER_URL).toBe('https://company.example.test');
+      expect(process.env.PIGGERCODE_WEBAPP_URL).toBe('https://app.company.example.test');
+      expect(process.env.PIGGERCODE_ACTIVE_SERVER_ID).toBe('company');
       expect((await getActiveServerProfile()).id).toBe('cloud');
     });
   });

@@ -20,6 +20,6 @@ ${chalk.bold('Notes:')}
   • Credentials are stored per relay profile under ${configuration.serversDir}
   • Public relay URL is used for QR codes/deep links (defaults to relay URL)
   • add checks the relay answers /v1/version before saving it; --yes saves it without checking
-  • Env vars override for one run: HAPPIER_SERVER_URL / HAPPIER_PUBLIC_SERVER_URL / HAPPIER_WEBAPP_URL
+  • Env vars override for one run: PIGGERCODE_SERVER_URL / PIGGERCODE_PUBLIC_SERVER_URL / PIGGERCODE_WEBAPP_URL
 `);
 }

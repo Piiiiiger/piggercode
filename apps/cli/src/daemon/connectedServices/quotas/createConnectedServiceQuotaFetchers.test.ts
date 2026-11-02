@@ -8,8 +8,8 @@ import { createConnectedServiceQuotaFetchers } from './createConnectedServiceQuo
 describe('createConnectedServiceQuotaFetchers', () => {
   it('builds fetchers from provider descriptors and forwards generic host params unchanged', () => {
     const env = {
-      HAPPIER_CONNECTED_SERVICES_QUOTAS_STALE_AFTER_MS: '45000',
-      HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: 'https://provider-owned.example/usage',
+      PIGGERCODE_CONNECTED_SERVICES_QUOTAS_STALE_AFTER_MS: '45000',
+      PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL: 'https://provider-owned.example/usage',
     };
     const loaded: Array<Readonly<{
       env: NodeJS.ProcessEnv;
@@ -76,7 +76,7 @@ describe('createConnectedServiceQuotaFetchers', () => {
     ];
 
     createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_QUOTAS_STALE_AFTER_MS: '1',
+      PIGGERCODE_CONNECTED_SERVICES_QUOTAS_STALE_AFTER_MS: '1',
     }, descriptors);
 
     expect(loaded).toEqual([5_000]);
@@ -159,7 +159,7 @@ describe('createConnectedServiceQuotaFetchers', () => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const fetchers = createConnectedServiceQuotaFetchers({
-      HAPPIER_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-specific-agent/1.0',
+      PIGGERCODE_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-specific-agent/1.0',
     });
     const openAiFetcher = fetchers.find((fetcher) => fetcher.serviceId === 'openai-codex');
     const claudeFetcher = fetchers.find((fetcher) => fetcher.serviceId === 'claude-subscription');

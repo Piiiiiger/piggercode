@@ -10,11 +10,11 @@ import { coercePort, listPortsFromEnvObject, readPinnedServerPortFromEnvFile, ST
 const readExistingEnv = readTextOrEmpty;
 
 export function getDefaultPortStart(stackName = null) {
-  const raw = process.env.HAPPIER_STACK_STACK_PORT_START?.trim() ? process.env.HAPPIER_STACK_STACK_PORT_START.trim() : '';
+  const raw = process.env.PIGGERCODE_STACK_STACK_PORT_START?.trim() ? process.env.PIGGERCODE_STACK_STACK_PORT_START.trim() : '';
   // Default port strategy:
   // - main historically lives at 3005
   // - non-main stacks should avoid 3005 to reduce accidental collisions/confusion
-  const target = (stackName ?? '').toString().trim() || (process.env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  const target = (stackName ?? '').toString().trim() || (process.env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
   const fallback = target === 'main' ? 3005 : 3009;
   const n = raw ? Number(raw) : fallback;
   return Number.isFinite(n) ? n : fallback;

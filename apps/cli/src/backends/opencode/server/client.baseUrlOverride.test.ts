@@ -16,15 +16,15 @@ function jsonResponse(payload: unknown): Response {
 
 describe('createOpenCodeServerRuntimeClient (baseUrlOverride)', () => {
   const originalFetch = globalThis.fetch;
-  const originalUrl = process.env.HAPPIER_OPENCODE_SERVER_URL;
+  const originalUrl = process.env.PIGGERCODE_OPENCODE_SERVER_URL;
   const originalCanonicalPassword = process.env.OPENCODE_PASSWORD;
   const originalPassword = process.env.OPENCODE_SERVER_PASSWORD;
   const originalUsername = process.env.OPENCODE_SERVER_USERNAME;
-  const originalStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+  const originalStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
   const tempDirs = new Set<string>();
 
   beforeEach(() => {
-    process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://env.test';
+    process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://env.test';
     delete process.env.OPENCODE_PASSWORD;
     delete process.env.OPENCODE_SERVER_PASSWORD;
     delete process.env.OPENCODE_SERVER_USERNAME;
@@ -33,9 +33,9 @@ describe('createOpenCodeServerRuntimeClient (baseUrlOverride)', () => {
   afterEach(() => {
     globalThis.fetch = originalFetch;
     if (typeof originalUrl === 'string') {
-      process.env.HAPPIER_OPENCODE_SERVER_URL = originalUrl;
+      process.env.PIGGERCODE_OPENCODE_SERVER_URL = originalUrl;
     } else {
-      delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
     }
     if (typeof originalPassword === 'string') {
       process.env.OPENCODE_SERVER_PASSWORD = originalPassword;
@@ -53,9 +53,9 @@ describe('createOpenCodeServerRuntimeClient (baseUrlOverride)', () => {
       delete process.env.OPENCODE_SERVER_USERNAME;
     }
     if (typeof originalStatePath === 'string') {
-      process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = originalStatePath;
+      process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = originalStatePath;
     } else {
-      delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
     }
     for (const dir of tempDirs) removeTempDirSync(dir);
     tempDirs.clear();
@@ -102,7 +102,7 @@ describe('createOpenCodeServerRuntimeClient (baseUrlOverride)', () => {
     const dir = createTempDirSync('happier-opencode-client-override-auth-');
     tempDirs.add(dir);
     const statePath = join(dir, 'managed-server.json');
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = statePath;
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = statePath;
     delete process.env.OPENCODE_SERVER_PASSWORD;
     delete process.env.OPENCODE_SERVER_USERNAME;
     const managedBaseUrl = 'http://127.0.0.1:41234';

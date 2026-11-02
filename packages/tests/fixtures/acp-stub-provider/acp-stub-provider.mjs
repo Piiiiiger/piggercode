@@ -13,7 +13,7 @@
  *
  * Note: the E2E harness gates step2 ("steer") on observing the RUNNING marker while the first
  * turn is still in flight. The CLI can optionally record these markers into tool-trace via
- * `HAPPIER_E2E_ACP_TRACE_MARKERS=1`, but the stub itself only emits plain agent message chunks.
+ * `PIGGERCODE_E2E_ACP_TRACE_MARKERS=1`, but the stub itself only emits plain agent message chunks.
  */
 
 import { Readable, Writable } from 'node:stream';
@@ -25,8 +25,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function loadAcpSdk() {
-  const fromEnv = typeof process.env.HAPPIER_E2E_ACP_SDK_ENTRY === 'string'
-    ? process.env.HAPPIER_E2E_ACP_SDK_ENTRY.trim()
+  const fromEnv = typeof process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY === 'string'
+    ? process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY.trim()
     : '';
 
   // Default to the CLI workspace dependency (monorepo installs can be non-hoisted).
@@ -46,7 +46,7 @@ async function loadAcpSdk() {
   }
 
   throw new Error(
-    `Unable to load ACP SDK. Set HAPPIER_E2E_ACP_SDK_ENTRY or ensure ${defaultEntry} exists.`,
+    `Unable to load ACP SDK. Set PIGGERCODE_E2E_ACP_SDK_ENTRY or ensure ${defaultEntry} exists.`,
   );
 }
 
@@ -82,8 +82,8 @@ function withTimeout(promise, timeoutMs, label) {
 }
 
 function resolveSteerWaitMs() {
-  const raw = typeof process.env.HAPPIER_E2E_ACP_STUB_STEER_WAIT_MS === 'string'
-    ? process.env.HAPPIER_E2E_ACP_STUB_STEER_WAIT_MS.trim()
+  const raw = typeof process.env.PIGGERCODE_E2E_ACP_STUB_STEER_WAIT_MS === 'string'
+    ? process.env.PIGGERCODE_E2E_ACP_STUB_STEER_WAIT_MS.trim()
     : '';
   if (!raw) return 45_000;
   const parsed = Number.parseInt(raw, 10);

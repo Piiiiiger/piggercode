@@ -78,10 +78,10 @@ The wizard lets you:
 When creating `--server=happier-server` stacks, hstack will also reserve additional ports and persist
 the stack-scoped infra config in the stack env file (so restarts are stable):
 
-- `HAPPIER_STACK_PG_PORT`
-- `HAPPIER_STACK_REDIS_PORT`
-- `HAPPIER_STACK_MINIO_PORT`
-- `HAPPIER_STACK_MINIO_CONSOLE_PORT`
+- `PIGGERCODE_STACK_PG_PORT`
+- `PIGGERCODE_STACK_REDIS_PORT`
+- `PIGGERCODE_STACK_MINIO_PORT`
+- `PIGGERCODE_STACK_MINIO_CONSOLE_PORT`
 - `DATABASE_URL`, `REDIS_URL`, `S3_*`
 
 ## Run a stack
@@ -197,7 +197,7 @@ Implementation notes:
   - `exp1` → `com.happier.stack.exp1`
 - macOS: implemented via **launchd LaunchAgents**
 - Linux: implemented via **systemd user services** (if available)
-- The service persists `HAPPIER_STACK_ENV_FILE`, so you can edit the stack env file without reinstalling.
+- The service persists `PIGGERCODE_STACK_ENV_FILE`, so you can edit the stack env file without reinstalling.
 
 ## Repo/worktree selection per stack
 
@@ -233,9 +233,9 @@ On startup, `hstack` loads env in this order:
 
 1. `~/.happier-stack/.env` (defaults)
 2. `~/.happier-stack/env.local` (optional global overrides; prefer stack env for persistent config)
-3. `HAPPIER_STACK_ENV_FILE` (stack env; highest precedence)
+3. `PIGGERCODE_STACK_ENV_FILE` (stack env; highest precedence)
 
-`hstack stack ...` sets `HAPPIER_STACK_ENV_FILE=~/.happier/stacks/<name>/env` and clears any already-exported `HAPPIER_STACK_*` variables so the stack env stays authoritative.
+`hstack stack ...` sets `PIGGERCODE_STACK_ENV_FILE=~/.happier/stacks/<name>/env` and clears any already-exported `PIGGERCODE_STACK_*` variables so the stack env stays authoritative.
 
 For a full explanation of the different folders/paths (`home` vs `workspace` vs `runtime` vs stack storage) and the exact env precedence rules, see: `[docs/paths-and-env.md](docs/paths-and-env.md)`.
 
@@ -243,7 +243,7 @@ Cloned-repo fallback (before you run `hstack init`):
 
 1. `<repo>/.env` (defaults)
 2. `<repo>/env.local` (optional overrides)
-3. `HAPPIER_STACK_ENV_FILE` (stack env)
+3. `PIGGERCODE_STACK_ENV_FILE` (stack env)
 
 ## Manage per-stack environment variables (including API keys)
 
@@ -315,7 +315,7 @@ hstack stack daemon <stack> stop  --identity=account-a
 ```
 
 - For the **main** stack, use `<stack>=main` and the default `<port>=3005` (unless you changed it).
-- If you use Tailscale Serve, `HAPPIER_WEBAPP_URL` should be your HTTPS URL (what you get from `hstack tailscale url`).
+- If you use Tailscale Serve, `PIGGERCODE_WEBAPP_URL` should be your HTTPS URL (what you get from `hstack tailscale url`).
 - Logs live under:
   - default identity: `~/.happier/stacks/<stack>/cli/logs/`
   - named identities: `~/.happier/stacks/<stack>/cli-identities/<identity>/logs/`

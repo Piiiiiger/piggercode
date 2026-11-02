@@ -105,23 +105,23 @@ describe('daemon service installer', () => {
     ).rejects.toThrow('System mode background services are only supported on Linux');
   });
 
-  it('uses apiServerUrl for HAPPIER_SERVER_URL when canonical server URL differs (linux)', async () => {
+  it('uses apiServerUrl for PIGGERCODE_SERVER_URL when canonical server URL differs (linux)', async () => {
     const envScope = createEnvKeyScope([
-      'HAPPIER_HOME_DIR',
-      'HAPPIER_ACTIVE_SERVER_ID',
-      'HAPPIER_PUBLIC_SERVER_URL',
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
+      'PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
+      'PIGGERCODE_PUBLIC_SERVER_URL',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
     ]);
 
     await withTempDir('happier-service-installer-home-', async (userHomeDir) => {
       const happierHomeDir = join(userHomeDir, '.happier');
       envScope.patch({
-        HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_ACTIVE_SERVER_ID: 'company',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://public.example.test',
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-        HAPPIER_WEBAPP_URL: 'https://app.public.example.test',
+        PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'company',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://public.example.test',
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_WEBAPP_URL: 'https://app.public.example.test',
       });
       reloadConfiguration();
 
@@ -139,9 +139,9 @@ describe('daemon service installer', () => {
         const unitPath = join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.company.service');
         expect(existsSync(unitPath)).toBe(true);
         const raw = await (await import('node:fs/promises')).readFile(unitPath, 'utf-8');
-        expect(raw).toContain('Environment=HAPPIER_ACTIVE_SERVER_ID=company');
-        expect(raw).toContain('Environment=HAPPIER_SERVER_URL=http://127.0.0.1:3005');
-        expect(raw).toContain('Environment=HAPPIER_PUBLIC_SERVER_URL=https://public.example.test');
+        expect(raw).toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=company');
+        expect(raw).toContain('Environment=PIGGERCODE_SERVER_URL=http://127.0.0.1:3005');
+        expect(raw).toContain('Environment=PIGGERCODE_PUBLIC_SERVER_URL=https://public.example.test');
       } finally {
         envScope.restore();
         reloadConfiguration();

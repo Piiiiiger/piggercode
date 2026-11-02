@@ -1,7 +1,7 @@
 import {
-    HAPPIER_SKILL_MENTIONS_METADATA_KEY,
-    HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
-    HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY,
+    PIGGERCODE_SKILL_MENTIONS_METADATA_KEY,
+    PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1,
+    PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY,
     MENTION_KIND_V1,
     SessionSkillCatalogListResponseV1Schema,
     SessionVendorPluginCatalogListResponseV1Schema,
@@ -267,7 +267,7 @@ export async function resolveStructuredInputProviderContextInMeta(params: Readon
     const meta = asRecord(params.meta);
     if (!meta) return params.meta;
 
-    const envelope = asRecord(meta[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]);
+    const envelope = asRecord(meta[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]);
     if (!envelope) return params.meta;
 
     const mentions = sanitizeMentionRefsV1(envelope.mentions);
@@ -305,8 +305,8 @@ export async function resolveStructuredInputProviderContextInMeta(params: Readon
         delete resolvedEnvelope.vendorPluginMentions;
     }
 
-    const resolvedMeta: MetadataRecord = { ...meta, [HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1]: resolvedEnvelope };
-    delete resolvedMeta[HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY];
-    delete resolvedMeta[HAPPIER_SKILL_MENTIONS_METADATA_KEY];
+    const resolvedMeta: MetadataRecord = { ...meta, [PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1]: resolvedEnvelope };
+    delete resolvedMeta[PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY];
+    delete resolvedMeta[PIGGERCODE_SKILL_MENTIONS_METADATA_KEY];
     return resolvedMeta;
 }

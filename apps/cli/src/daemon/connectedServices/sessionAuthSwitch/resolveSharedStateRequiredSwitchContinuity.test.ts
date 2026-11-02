@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { accountSettingsParse } from '@piggercode/protocol';
 
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { resolveSharedStateRequiredSwitchContinuity } from './resolveSharedStateRequiredSwitchContinuity';
 
@@ -193,7 +193,7 @@ describe('resolveSharedStateRequiredSwitchContinuity', () => {
         // The reconstructed target: deterministic root via the env key, NO PI_CODING_AGENT_DIR yet.
         targetMaterializedRoot: reconstructedRoot,
         targetMaterializedEnv: {
-          [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
+          [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
         },
         materializationIdentity: { v: 1, id: 'csm_inactive' },
         vendorResumeId: 'pi-session-inactive',
@@ -239,7 +239,7 @@ describe('resolveSharedStateRequiredSwitchContinuity', () => {
         serviceId: 'openai-codex',
         targetMaterializedRoot: reconstructedRoot,
         targetMaterializedEnv: {
-          [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
+          [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
         },
         materializationIdentity: { v: 1, id: 'csm_inactive_miss' },
         vendorResumeId: 'pi-session-absent',

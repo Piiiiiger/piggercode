@@ -40,10 +40,10 @@ vi.mock('./plan', async (importOriginal) => {
 
 describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => {
     const envKeys = [
-        'HAPPIER_DAEMON_SERVICE_PLATFORM',
-        'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
+        'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+        'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
     ] as const;
     let envScope = createEnvKeyScope(envKeys);
 
@@ -57,9 +57,9 @@ describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => 
 
     it('uses the managed node runtime when dry-run planning a service install', async () => {
         envScope.patch({
-            HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-            HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
-            HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: '/home/test/.happier',
+            PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+            PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
+            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.happier',
         });
 
         const output = captureStdoutJsonOutput<{ ok: boolean }>();
@@ -95,10 +95,10 @@ describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => 
 
     it('preserves the resolved active server id when delegating direct pinned dry-run installs', async () => {
         envScope.patch({
-            HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-            HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
-            HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: '/home/test/.happier',
-            HAPPIER_ACTIVE_SERVER_ID: 'company-profile',
+            PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+            PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
+            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.happier',
+            PIGGERCODE_ACTIVE_SERVER_ID: 'company-profile',
         });
         const previewDaemonServiceInstallMock = vi.fn(async () => ({
             exactTargetExists: false,

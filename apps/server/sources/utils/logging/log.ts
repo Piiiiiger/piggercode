@@ -37,8 +37,8 @@ function formatLocalTime(timestamp?: number) {
 
 export function resolveServerLogLevelFromEnv(env: NodeJS.ProcessEnv): pino.LevelWithSilent {
     const raw = (
-        env.HAPPIER_SERVER_LOG_LEVEL
-        ?? env.HAPPIER_LOG_LEVEL
+        env.PIGGERCODE_SERVER_LOG_LEVEL
+        ?? env.PIGGERCODE_LOG_LEVEL
         ?? env.LOG_LEVEL
         ?? ""
     ).trim().toLowerCase();
@@ -49,7 +49,7 @@ export function resolveServerLogLevelFromEnv(env: NodeJS.ProcessEnv): pino.Level
 type ServerLogFormat = 'pretty' | 'json';
 
 function resolveServerLogFormatFromEnv(env: NodeJS.ProcessEnv): ServerLogFormat {
-    const raw = (env.HAPPIER_SERVER_LOG_FORMAT ?? '').trim().toLowerCase();
+    const raw = (env.PIGGERCODE_SERVER_LOG_FORMAT ?? '').trim().toLowerCase();
     return raw === 'json' ? 'json' : 'pretty';
 }
 

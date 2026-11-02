@@ -227,7 +227,7 @@ export function createGeminiBackend(options: GeminiBackendOptions): GeminiBacken
   // Gemini CLI's `--sandbox` can prevent ACP from answering `initialize` (hangs before stdio bridge is ready).
   // Keep it OFF by default and let Happier permissions enforce safety; opt-in via env when needed.
   const sandboxEnabled = isTruthyEnv(
-    mergedSourceEnv.HAPPIER_GEMINI_USE_SANDBOX
+    mergedSourceEnv.PIGGERCODE_GEMINI_USE_SANDBOX
   );
 
   // Build args - ACP + provider-native approvals.

@@ -42,7 +42,7 @@ class HappierSherpaNativeModule : Module() {
   }
 
   private fun reject(promise: Promise, e: Throwable) {
-    val code = if (e is SynthesisCancelledException) "ERR_HAPPIER_SHERPA_CANCELLED" else "ERR_HAPPIER_SHERPA"
+    val code = if (e is SynthesisCancelledException) "ERR_PIGGERCODE_SHERPA_CANCELLED" else "ERR_PIGGERCODE_SHERPA"
     promise.reject(code, e.message ?: e.toString(), e)
   }
 

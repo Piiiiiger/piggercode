@@ -91,8 +91,8 @@ test.describe('ui e2e: pets session state mapping', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -103,7 +103,7 @@ test.describe('ui e2e: pets session state mapping', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-pets-session-state-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'export',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'export',
       },
     });
 
@@ -140,8 +140,8 @@ test.describe('ui e2e: pets session state mapping', () => {
       serverUrl: server.baseUrl,
       uiBaseUrl,
       extraEnv: {
-        HAPPIER_CLAUDE_PATH: delayedFakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+        PIGGERCODE_CLAUDE_PATH: delayedFakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
       },
     });
 

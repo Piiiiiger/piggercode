@@ -8778,7 +8778,7 @@ settingsSession: {
                 manifest: {
                     title: 'Model pack manifest',
                     subtitle:
-                        'Defaults to Happier model packs (override via EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).',
+                        'Defaults to Happier model packs (override via EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).',
                     detailResolved: 'Resolved',
                     detailMissing: 'Missing',
                 },
@@ -8820,7 +8820,7 @@ settingsSession: {
                     },
                     missingManifest: {
                         title: 'Manifest URL missing',
-                        body: 'Unable to resolve the model pack manifest URL. Check EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (or legacy Kokoro env vars).',
+                        body: 'Unable to resolve the model pack manifest URL. Check EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (or legacy Kokoro env vars).',
                     },
                     notInstalledTitle: 'Not installed',
                     notInstalledBody: 'Download the model pack first to enable update checks.',

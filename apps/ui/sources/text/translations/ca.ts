@@ -8678,7 +8678,7 @@ settingsSession: {
                 },
                 manifest: {
                     title: 'Manifest del paquet de model',
-                    subtitle: 'Per defecte usa els paquets de model de Happier (es pot substituir amb EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).',
+                    subtitle: 'Per defecte usa els paquets de model de Happier (es pot substituir amb EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).',
                     detailResolved: 'Resolt',
                     detailMissing: 'Falta',
                 },
@@ -8720,7 +8720,7 @@ settingsSession: {
                     },
                     missingManifest: {
                         title: 'Falta l’URL del manifest',
-                        body: 'No s’ha pogut resoldre l’URL del manifest del paquet de model. Revisa EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (o variables d’entorn antigues de Kokoro).',
+                        body: 'No s’ha pogut resoldre l’URL del manifest del paquet de model. Revisa EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (o variables d’entorn antigues de Kokoro).',
                     },
                     notInstalledTitle: 'No instal·lat',
                     notInstalledBody: 'Descarrega primer el paquet de model per habilitar les comprovacions d\'actualització.',

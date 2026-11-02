@@ -95,13 +95,13 @@ describe('core e2e: CLI materializes server pending queue v2', () => {
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
     };
 
     proc = spawnLoggedProcess({
@@ -242,13 +242,13 @@ describe('core e2e: CLI materializes server pending queue v2', () => {
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
     };
 
     proc = spawnLoggedProcess({

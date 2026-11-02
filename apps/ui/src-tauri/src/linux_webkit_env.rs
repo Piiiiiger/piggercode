@@ -188,7 +188,7 @@ mod tests {
 
     #[test]
     fn workaround_sets_an_inherited_default_and_reports_activation() {
-        const CHILD: &str = "HAPPIER_TEST_NVIDIA_EXPLICIT_SYNC_CHILD";
+        const CHILD: &str = "PIGGERCODE_TEST_NVIDIA_EXPLICIT_SYNC_CHILD";
         if std::env::var_os(CHILD).is_some() {
             super::disable_nvidia_explicit_sync();
             let inherited = std::process::Command::new("/bin/sh")

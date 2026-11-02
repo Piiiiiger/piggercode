@@ -111,17 +111,17 @@ exit 0
         baseEnv,
         extraEnv: {
           HSTACK_MOBILE_DEV_CLIENT_TEST_STUB: '1',
-          HAPPIER_STACK_ENV_FILE: fixture.path('nonexistent-env'),
+          PIGGERCODE_STACK_ENV_FILE: fixture.path('nonexistent-env'),
           ...(androidHome ? { ANDROID_HOME: fixture.path('android-home') } : {}),
           ...(expoToken ? { EXPO_TOKEN: expoToken } : {}),
-          ...(repoDir ? { HAPPIER_STACK_REPO_DIR: repoDir } : {}),
-          ...(homeDir ? { HAPPIER_STACK_HOME_DIR: homeDir } : {}),
+          ...(repoDir ? { PIGGERCODE_STACK_REPO_DIR: repoDir } : {}),
+          ...(homeDir ? { PIGGERCODE_STACK_HOME_DIR: homeDir } : {}),
           ...(storageDir
             ? {
-                HAPPIER_STACK_STORAGE_DIR: storageDir,
-                HAPPIER_STACK_STACK: stackName,
-                HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL: '0',
-                HAPPIER_STACK_TAILSCALE_SERVE: '0',
+                PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+                PIGGERCODE_STACK_STACK: stackName,
+                PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL: '0',
+                PIGGERCODE_STACK_TAILSCALE_SERVE: '0',
               }
             : {}),
           ...extraEnv,

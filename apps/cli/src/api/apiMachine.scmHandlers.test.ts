@@ -31,7 +31,7 @@ function createMachine(): Machine {
 }
 
 afterEach(() => {
-  delete process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY;
+  delete process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY;
   vi.unstubAllGlobals();
   while (tempDirectories.length > 0) {
     const directory = tempDirectories.pop();
@@ -55,7 +55,7 @@ describe('ApiMachineClient SCM handlers', () => {
     execFileSync('git', ['commit', '-m', 'base'], { cwd: workspace, stdio: 'ignore' });
     execFileSync('git', ['checkout', '-b', 'feature/machine-connected-rest'], { cwd: workspace, stdio: 'ignore' });
     execFileSync('git', ['remote', 'add', 'origin', 'https://github.com/happier-dev/happier.git'], { cwd: workspace, stdio: 'ignore' });
-    process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = workspace;
+    process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = workspace;
     const fetcher = vi.fn(async (_url: string, init?: RequestInit) => {
       if (init?.method === 'GET') {
         return {
@@ -160,7 +160,7 @@ describe('ApiMachineClient SCM handlers', () => {
     tempDirectories.push(suiteDir);
     const allowedRoot = join(suiteDir, 'allowed');
     const outsideRoot = join(suiteDir, 'outside');
-    process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
+    process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
 
     const client = new ApiMachineClient('token', createMachine());
     const rpc = (client as unknown as { rpcHandlerManager: {
@@ -180,7 +180,7 @@ describe('ApiMachineClient SCM handlers', () => {
     tempDirectories.push(suiteDir);
     const allowedRoot = join(suiteDir, 'allowed');
     mkdirSync(allowedRoot, { recursive: true });
-    process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
+    process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = allowedRoot;
 
     const client = new ApiMachineClient('token', createMachine());
     const rpc = (client as unknown as { rpcHandlerManager: {

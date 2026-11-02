@@ -71,7 +71,7 @@ export function buildDaemonAuthNotice({
 
 export function parseStartDaemonFlagFromEnv(env = process.env) {
   // This mirrors dev.mjs default behavior: startDaemon is on unless explicitly disabled.
-  const raw = String(env?.HAPPIER_STACK_START_DAEMON ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_START_DAEMON ?? '').trim();
   if (!raw) return true;
   return isTruthy(raw);
 }

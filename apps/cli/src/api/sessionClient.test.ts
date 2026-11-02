@@ -492,9 +492,9 @@ describe('ApiSessionClient connection handling', () => {
 
     beforeEach(() => {
         envScope = createEnvKeyScope([
-            'HAPPIER_STACK_TOOL_TRACE',
-            'HAPPIER_STACK_TOOL_TRACE_FILE',
-            'HAPPIER_FEATURE_EXECUTION_RUNS__ENABLED',
+            'PIGGERCODE_STACK_TOOL_TRACE',
+            'PIGGERCODE_STACK_TOOL_TRACE_FILE',
+            'PIGGERCODE_FEATURE_EXECUTION_RUNS__ENABLED',
         ]);
         originalArgv = [...process.argv];
         vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -632,7 +632,7 @@ describe('ApiSessionClient connection handling', () => {
     });
 
     it('keeps execution.run.send RPC registered even when execution.runs is disabled', async () => {
-        envScope.patch({ HAPPIER_FEATURE_EXECUTION_RUNS__ENABLED: '0' });
+        envScope.patch({ PIGGERCODE_FEATURE_EXECUTION_RUNS__ENABLED: '0' });
 
         const client = createClient('token', mockSession);
 

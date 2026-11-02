@@ -56,7 +56,7 @@ export async function resolveInheritedHerdrRuntime(params: Readonly<{
     herdrTerminalId: pane.terminalId,
     herdrPaneId: pane.paneId,
     attachmentId: params.terminalRuntime?.attachmentId?.trim()
-      || params.env.HAPPIER_TERMINAL_ATTACHMENT_ID?.trim()
+      || params.env.PIGGERCODE_TERMINAL_ATTACHMENT_ID?.trim()
       || createTerminalAttachmentId(),
   };
 }

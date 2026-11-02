@@ -70,12 +70,12 @@ export function resolveReleasedServerV021ArtifactPrerequisite(params: Readonly<{
   const platform = params.platform ?? process.platform;
   const arch = params.arch ?? process.arch;
   const fileExists = params.fileExists ?? existsSync;
-  const configuredRaw = env.HAPPIER_E2E_RELEASED_SERVER_V0_2_1_DIR;
+  const configuredRaw = env.PIGGERCODE_E2E_RELEASED_SERVER_V0_2_1_DIR;
   const explicitlyConfigured = configuredRaw !== undefined;
   const configuredDir = configuredRaw?.trim();
 
   if (explicitlyConfigured && !configuredDir) {
-    throw new Error('HAPPIER_E2E_RELEASED_SERVER_V0_2_1_DIR was set but is empty');
+    throw new Error('PIGGERCODE_E2E_RELEASED_SERVER_V0_2_1_DIR was set but is empty');
   }
   const target = resolveReleasedServerV021ArtifactTarget(platform, arch);
   if (!target) {
@@ -503,22 +503,22 @@ export async function startReleasedServerLight(params: Readonly<{
       CI: '1',
       PORT: String(port),
       PUBLIC_URL: baseUrl,
-      HAPPIER_SERVER_HOST: '127.0.0.1',
+      PIGGERCODE_SERVER_HOST: '127.0.0.1',
       HAPPY_SERVER_HOST: '127.0.0.1',
       METRICS_ENABLED: 'false',
-      HAPPIER_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
       HAPPY_DB_PROVIDER: 'sqlite',
       DATABASE_URL: renderSqliteDatabaseUrl(databasePath, platform),
-      HAPPIER_FILES_BACKEND: 'local',
+      PIGGERCODE_FILES_BACKEND: 'local',
       HAPPY_SERVER_LIGHT_DATA_DIR: dataDir,
-      HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
       HAPPY_SERVER_LIGHT_FILES_DIR: resolve(dataDir, 'files'),
-      HAPPIER_SERVER_LIGHT_FILES_DIR: resolve(dataDir, 'files'),
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: resolve(dataDir, 'files'),
       HAPPY_SERVER_LIGHT_DB_DIR: resolve(dataDir, 'pglite'),
-      HAPPIER_SERVER_LIGHT_DB_DIR: resolve(dataDir, 'pglite'),
-      HAPPIER_SQLITE_AUTO_MIGRATE: '1',
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: resolve(dataDir, 'pglite'),
+      PIGGERCODE_SQLITE_AUTO_MIGRATE: '1',
       HAPPY_SQLITE_AUTO_MIGRATE: '1',
-      HAPPIER_SQLITE_MIGRATIONS_DIR: layout.migrationsDir,
+      PIGGERCODE_SQLITE_MIGRATIONS_DIR: layout.migrationsDir,
       HAPPY_SQLITE_MIGRATIONS_DIR: layout.migrationsDir,
       PRISMA_CLIENT_ENGINE_TYPE: 'library',
       PRISMA_QUERY_ENGINE_LIBRARY: layout.prismaEnginePath,

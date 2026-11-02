@@ -22,15 +22,15 @@ function sha256Base64Url(input: Buffer): string {
 
 describe('auth pairing commands (request/approve/wait) (json)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
-    'HAPPIER_TERMINAL_PAIRING_REQUIRE',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_VARIANT',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_TERMINAL_PAIRING_REQUIRE',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_VARIANT',
   ] as const;
 
   let restoreTty: (() => void) | null = null;
@@ -66,11 +66,11 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: remoteHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_TERMINAL_PAIRING_REQUIRE: 'v3',
+        PIGGERCODE_HOME_DIR: remoteHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_TERMINAL_PAIRING_REQUIRE: 'v3',
       });
       const { reloadConfiguration } = await import('@/configuration');
       reloadConfiguration();
@@ -159,14 +159,14 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
     try {
       // 1) Remote: create pairing request (json output should be clean even in dev variant)
       envScope.patch({
-        HAPPIER_HOME_DIR: remoteHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_METHOD: 'web',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: remoteHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_VARIANT: 'dev',
       });
       const { reloadConfiguration } = await import('@/configuration');
       reloadConfiguration();
@@ -191,11 +191,11 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
       // 2) Local: approve using existing local credentials (token never leaves local machine)
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       reloadConfiguration();
       const { writeCredentialsLegacy } = await import('@/persistence');
@@ -213,12 +213,12 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
       // 3) Remote: wait + claim, then write credentials (dataKey)
       envScope.patch({
-        HAPPIER_HOME_DIR: remoteHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: remoteHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_VARIANT: 'stable',
       });
       reloadConfiguration();
       const { handleAuthWait } = await import('./auth/wait');
@@ -267,14 +267,14 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_METHOD: 'web',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_VARIANT: 'stable',
       });
 
       const { reloadConfiguration } = await import('@/configuration');
@@ -383,14 +383,14 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
     try {
       // This machine is already signed in as account A with its own machine id.
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_METHOD: 'web',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_VARIANT: 'stable',
       });
       const { reloadConfiguration } = await import('@/configuration');
       reloadConfiguration();
@@ -411,11 +411,11 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
       // Account B approves from another home (the app's role in desktop setup).
       envScope.patch({
-        HAPPIER_HOME_DIR: remoteHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: remoteHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       reloadConfiguration();
       const approverPersistence = await import('@/persistence');
@@ -430,12 +430,12 @@ describe('auth pairing commands (request/approve/wait) (json)', () => {
 
       // Back on this machine: claim as account B without touching account A's mapping.
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_VARIANT: 'stable',
       });
       reloadConfiguration();
       const { handleAuthWait } = await import('./auth/wait');

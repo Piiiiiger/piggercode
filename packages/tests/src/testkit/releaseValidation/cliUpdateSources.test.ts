@@ -36,8 +36,8 @@ describe('cli update release-validation sources', () => {
     it('requires complete from/to source env when release-validation passes explicit sources', () => {
         expect(() =>
             resolveCliUpdateSourcePairFromEnv({
-                HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_KIND: 'published-channel',
-                HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_REF: 'preview',
+                PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_KIND: 'published-channel',
+                PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_REF: 'preview',
             }),
         ).toThrow(/complete cli-update source env/i);
     });
@@ -75,13 +75,13 @@ describe('cli update release-validation sources', () => {
     it('uses dist/package launch mode rather than source-entrypoint mode for update validation', () => {
         expect(
             resolveCliUpdateValidationLaunchEnv({
-                HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+                PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
                 HAPPY_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: 'true',
-                HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+                PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
                 UNRELATED: 'kept',
             }),
         ).toEqual({
-            HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+            PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
             UNRELATED: 'kept',
         });
     });
@@ -93,7 +93,7 @@ describe('cli update release-validation sources', () => {
                 role: 'to',
                 source: { kind: 'local-build', ref: 'HEAD' },
                 env: {
-                    HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+                    PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
                 },
             }),
         ).resolves.toBe('/tmp/happier-cli-update-test/cli-update-to');
@@ -103,7 +103,7 @@ describe('cli update release-validation sources', () => {
             {
                 testDir: '/tmp/happier-cli-update-test',
                 env: expect.objectContaining({
-                    HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+                    PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
                 }),
             },
             expect.objectContaining({
@@ -113,7 +113,7 @@ describe('cli update release-validation sources', () => {
             }),
         );
         expect(cliLaunchSpecMock.resolveCliTestLaunchSpec.mock.calls[0]?.[0].env).not.toHaveProperty(
-            'HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT',
+            'PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT',
         );
     });
 });

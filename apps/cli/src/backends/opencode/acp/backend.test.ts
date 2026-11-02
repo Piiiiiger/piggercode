@@ -44,29 +44,29 @@ function expectDefaultAcpArgs(args: string[]): void {
 }
 
 describe('createOpenCodeBackend command resolution', () => {
-  const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+  const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
   const originalHome = process.env.HOME;
-  const originalOpenCodePath = process.env.HAPPIER_OPENCODE_PATH;
+  const originalOpenCodePath = process.env.PIGGERCODE_OPENCODE_PATH;
   const originalPath = process.env.PATH;
-  const originalPrintLogs = process.env.HAPPIER_OPENCODE_ACP_PRINT_LOGS;
-  const originalLogLevel = process.env.HAPPIER_OPENCODE_ACP_LOG_LEVEL;
+  const originalPrintLogs = process.env.PIGGERCODE_OPENCODE_ACP_PRINT_LOGS;
+  const originalLogLevel = process.env.PIGGERCODE_OPENCODE_ACP_LOG_LEVEL;
   const tempDirs: string[] = [];
 
   afterEach(() => {
-    if (originalHappyHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+    if (originalHappyHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     if (originalHome === undefined) delete process.env.HOME;
     else process.env.HOME = originalHome;
-    if (originalOpenCodePath === undefined) delete process.env.HAPPIER_OPENCODE_PATH;
-    else process.env.HAPPIER_OPENCODE_PATH = originalOpenCodePath;
+    if (originalOpenCodePath === undefined) delete process.env.PIGGERCODE_OPENCODE_PATH;
+    else process.env.PIGGERCODE_OPENCODE_PATH = originalOpenCodePath;
     if (originalPath === undefined) delete process.env.PATH;
     else process.env.PATH = originalPath;
 
-    if (originalPrintLogs === undefined) delete process.env.HAPPIER_OPENCODE_ACP_PRINT_LOGS;
-    else process.env.HAPPIER_OPENCODE_ACP_PRINT_LOGS = originalPrintLogs;
+    if (originalPrintLogs === undefined) delete process.env.PIGGERCODE_OPENCODE_ACP_PRINT_LOGS;
+    else process.env.PIGGERCODE_OPENCODE_ACP_PRINT_LOGS = originalPrintLogs;
 
-    if (originalLogLevel === undefined) delete process.env.HAPPIER_OPENCODE_ACP_LOG_LEVEL;
-    else process.env.HAPPIER_OPENCODE_ACP_LOG_LEVEL = originalLogLevel;
+    if (originalLogLevel === undefined) delete process.env.PIGGERCODE_OPENCODE_ACP_LOG_LEVEL;
+    else process.env.PIGGERCODE_OPENCODE_ACP_LOG_LEVEL = originalLogLevel;
 
     while (tempDirs.length > 0) {
       const dir = tempDirs.pop();
@@ -88,16 +88,16 @@ describe('createOpenCodeBackend command resolution', () => {
     {
       label: 'non-existent override',
       override: join(tmpdir(), 'definitely-missing-opencode-binary'),
-      expectedMessage: /HAPPIER_OPENCODE_PATH is set but does not point to a supported CLI entrypoint/,
+      expectedMessage: /PIGGERCODE_OPENCODE_PATH is set but does not point to a supported CLI entrypoint/,
     },
   ])('fails closed for $label when OpenCode is not resolvable', ({ override, expectedMessage }) => {
     const happyHomeDir = makeTempDir('happier-opencode-home-');
     tempDirs.push(happyHomeDir);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     process.env.HOME = happyHomeDir;
     process.env.PATH = '';
-    if (override === undefined) delete process.env.HAPPIER_OPENCODE_PATH;
-    else process.env.HAPPIER_OPENCODE_PATH = override;
+    if (override === undefined) delete process.env.PIGGERCODE_OPENCODE_PATH;
+    else process.env.PIGGERCODE_OPENCODE_PATH = override;
 
     expect(() => createOpenCodeBackend({ cwd: tmpdir(), env: {} })).toThrow(
       expectedMessage,
@@ -107,7 +107,7 @@ describe('createOpenCodeBackend command resolution', () => {
   it('handles non-executable override paths with explicit platform semantics', () => {
     const happyHomeDir = makeTempDir('happier-opencode-home-');
     tempDirs.push(happyHomeDir);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     process.env.HOME = happyHomeDir;
     process.env.PATH = '';
     const workDir = makeTempDir('happier-opencode-backend-');
@@ -117,7 +117,7 @@ describe('createOpenCodeBackend command resolution', () => {
     const nonExecutablePath = join(binDir, process.platform === 'win32' ? 'opencode.txt' : 'opencode');
     writeFileSync(nonExecutablePath, '#!/bin/sh\necho "ok"\n', 'utf8');
 
-    process.env.HAPPIER_OPENCODE_PATH = nonExecutablePath;
+    process.env.PIGGERCODE_OPENCODE_PATH = nonExecutablePath;
 
     const factory = () => createOpenCodeBackend({ cwd: workDir, env: {} }) as unknown as AcpBackendLike;
     if (process.platform === 'win32') {
@@ -126,10 +126,10 @@ describe('createOpenCodeBackend command resolution', () => {
       expectDefaultAcpArgs(backend.options.args);
       return;
     }
-    expect(factory).toThrow(/HAPPIER_OPENCODE_PATH is set but does not point to a supported CLI entrypoint/);
+    expect(factory).toThrow(/PIGGERCODE_OPENCODE_PATH is set but does not point to a supported CLI entrypoint/);
   });
 
-  it('uses HAPPIER_OPENCODE_PATH when it points to an existing executable', () => {
+  it('uses PIGGERCODE_OPENCODE_PATH when it points to an existing executable', () => {
     const workDir = makeTempDir('happier-opencode-backend-');
     tempDirs.push(workDir);
     const binDir = join(workDir, 'bin');
@@ -147,7 +147,7 @@ describe('createOpenCodeBackend command resolution', () => {
         content: ['#!/bin/sh', 'echo "ok"', ''].join('\n'),
       });
 
-    process.env.HAPPIER_OPENCODE_PATH = opencodePath;
+    process.env.PIGGERCODE_OPENCODE_PATH = opencodePath;
 
     const backend = createOpenCodeBackend({ cwd: workDir, env: {} }) as unknown as AcpBackendLike;
     expect(backend.options.command).toBe(opencodePath);
@@ -169,8 +169,8 @@ describe('createOpenCodeBackend command resolution', () => {
       cwd: workDir,
       env: {
         PATH: binDir,
-        HAPPIER_OPENCODE_PATH: '',
-        HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+        PIGGERCODE_OPENCODE_PATH: '',
+        PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       },
     }) as unknown as AcpBackendLike;
 
@@ -238,7 +238,7 @@ describe('createOpenCodeBackend OPENCODE_CONFIG_CONTENT handling', () => {
   it('can disable stderr log printing via env', () => {
     const backend = createOpenCodeBackend({
       cwd: '/tmp',
-      env: { HAPPIER_OPENCODE_ACP_PRINT_LOGS: '0' },
+      env: { PIGGERCODE_OPENCODE_ACP_PRINT_LOGS: '0' },
     }) as unknown as AcpBackendLike;
     expect(backend.options.args[0]).toBe('acp');
     expect(backend.options.args).not.toContain('--print-logs');
@@ -250,8 +250,8 @@ describe('createOpenCodeBackend OPENCODE_CONFIG_CONTENT handling', () => {
       const backend = createOpenCodeBackend({
         cwd: tmpdir(),
         env: {
-          HAPPIER_OPENCODE_PATH: process.execPath,
-          HAPPIER_OPENCODE_ACP_LOG_LEVEL: ` ${level} `,
+          PIGGERCODE_OPENCODE_PATH: process.execPath,
+          PIGGERCODE_OPENCODE_ACP_LOG_LEVEL: ` ${level} `,
         },
       }) as unknown as AcpBackendLike;
       const levelIndex = backend.options.args.indexOf('--log-level');
@@ -264,8 +264,8 @@ describe('createOpenCodeBackend OPENCODE_CONFIG_CONTENT handling', () => {
     const backend = createOpenCodeBackend({
       cwd: tmpdir(),
       env: {
-        HAPPIER_OPENCODE_PATH: process.execPath,
-        HAPPIER_OPENCODE_ACP_LOG_LEVEL: '   ',
+        PIGGERCODE_OPENCODE_PATH: process.execPath,
+        PIGGERCODE_OPENCODE_ACP_LOG_LEVEL: '   ',
       },
     }) as unknown as AcpBackendLike;
     expect(backend.options.args).not.toContain('--log-level');

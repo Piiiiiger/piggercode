@@ -56,7 +56,7 @@ describe('installVersionedPayload Windows locked-version pruning', () => {
     it('keeps the new preview install active when pruning an older locked version fails', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-win32-prune-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 const {

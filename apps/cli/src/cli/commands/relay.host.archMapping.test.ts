@@ -71,8 +71,8 @@ function createFakeSsh(scenario: Readonly<{
         `#!/usr/bin/env node
 const { appendFileSync, readFileSync, writeFileSync } = require('node:fs');
 
-const statePath = process.env.HAPPIER_FAKE_SSH_STATE_PATH;
-const logPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+const statePath = process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
+const logPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
 const argv = process.argv.slice(2);
 appendFileSync(logPath, JSON.stringify(argv) + '\\n');
 
@@ -94,7 +94,7 @@ process.exit(Number(next.status ?? 0));
         `#!/usr/bin/env node
 const { appendFileSync } = require('node:fs');
 
-const logPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+const logPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
 appendFileSync(logPath, JSON.stringify(['scp', ...process.argv.slice(2)]) + '\\n');
 process.exit(0);
 `,
@@ -116,11 +116,11 @@ process.exit(0);
 
 function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
     const previousPath = process.env.PATH;
-    const previousStatePath = process.env.HAPPIER_FAKE_SSH_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
     process.env.PATH = `${binDir}:${previousPath ?? ''}`;
-    process.env.HAPPIER_FAKE_SSH_STATE_PATH = join(binDir, '..', 'scenario.json');
-    process.env.HAPPIER_FAKE_SSH_LOG_PATH = join(binDir, '..', 'invocations.log');
+    process.env.PIGGERCODE_FAKE_SSH_STATE_PATH = join(binDir, '..', 'scenario.json');
+    process.env.PIGGERCODE_FAKE_SSH_LOG_PATH = join(binDir, '..', 'invocations.log');
     return run().finally(() => {
         if (previousPath === undefined) {
             delete process.env.PATH;
@@ -128,28 +128,28 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
             process.env.PATH = previousPath;
         }
         if (previousStatePath === undefined) {
-            delete process.env.HAPPIER_FAKE_SSH_STATE_PATH;
+            delete process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
         } else {
-            process.env.HAPPIER_FAKE_SSH_STATE_PATH = previousStatePath;
+            process.env.PIGGERCODE_FAKE_SSH_STATE_PATH = previousStatePath;
         }
         if (previousLogPath === undefined) {
-            delete process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+            delete process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
         } else {
-            process.env.HAPPIER_FAKE_SSH_LOG_PATH = previousLogPath;
+            process.env.PIGGERCODE_FAKE_SSH_LOG_PATH = previousLogPath;
         }
     });
 }
 
 describe('happier relay host arch resolution', () => {
     let home = '';
-    let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
     beforeEach(async () => {
         preparedRoots = [];
-        envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         home = await createTempDir('happier-relay-host-arch-');
         envScope.patch({
-            HAPPIER_HOME_DIR: home,
+            PIGGERCODE_HOME_DIR: home,
         });
     });
 

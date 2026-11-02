@@ -1561,7 +1561,7 @@ function createLoopbackMachineTransferChannels() {
             await new Promise<void>((resolve) => setTimeout(resolve, 5));
           }
         }
-        await expect(readFile(destinationPath, 'utf8')).resolves.toContain('HAPPIER_WORKSPACE_REPLICATION_MANIFEST_V1');
+        await expect(readFile(destinationPath, 'utf8')).resolves.toContain('PIGGERCODE_WORKSPACE_REPLICATION_MANIFEST_V1');
       } finally {
         await rm(tempDir, { recursive: true, force: true }).catch(() => undefined);
       }
@@ -2252,7 +2252,7 @@ function createLoopbackMachineTransferChannels() {
       await writeFile(
         workspaceManifestFilePath,
         [
-          'HAPPIER_WORKSPACE_REPLICATION_MANIFEST_V1',
+          'PIGGERCODE_WORKSPACE_REPLICATION_MANIFEST_V1',
           JSON.stringify({ manifestFingerprint: workspaceManifest.fingerprint }),
           JSON.stringify(workspaceManifest.entries[0]),
           '',
@@ -2281,7 +2281,7 @@ function createLoopbackMachineTransferChannels() {
           transferId: `session-handoff:${handoffId}:workspace-manifest`,
           filePath: workspaceManifestFilePath,
           sizeBytes: Buffer.byteLength([
-            'HAPPIER_WORKSPACE_REPLICATION_MANIFEST_V1',
+            'PIGGERCODE_WORKSPACE_REPLICATION_MANIFEST_V1',
             JSON.stringify({ manifestFingerprint: workspaceManifest.fingerprint }),
             JSON.stringify(workspaceManifest.entries[0]),
             '',
@@ -5138,7 +5138,7 @@ function createLoopbackMachineTransferChannels() {
         });
       }, { timeout: 10_000 });
       const manifestText = await readFile(manifestDestinationPath, 'utf8');
-      expect(manifestText).toContain('HAPPIER_WORKSPACE_REPLICATION_MANIFEST_V1');
+      expect(manifestText).toContain('PIGGERCODE_WORKSPACE_REPLICATION_MANIFEST_V1');
 	    } finally {
 	      vi.doUnmock('@/configuration');
 	      vi.resetModules();
@@ -5405,7 +5405,7 @@ function createLoopbackMachineTransferChannels() {
     } finally {
       vi.doUnmock('@/configuration');
       vi.resetModules();
-      if (process.env.HAPPIER_DEBUG_KEEP_HANDOFF_TMP !== '1') {
+      if (process.env.PIGGERCODE_DEBUG_KEEP_HANDOFF_TMP !== '1') {
         await rm(sourcePath, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
         await rm(sourceActiveServerDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
         await rm(targetPath, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
@@ -5553,8 +5553,8 @@ function createLoopbackMachineTransferChannels() {
   it('acknowledges server-routed workspace handoff start before a large workspace export finishes and lets prepare wait for it', async () => {
     vi.resetModules();
 
-    const previousTransferTimeoutMs = process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '50';
+    const previousTransferTimeoutMs = process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '50';
 
     const sourcePath = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-server-routed-deferred-workspace-'));
     const sourceActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-server-routed-deferred-source-'));
@@ -5826,14 +5826,14 @@ function createLoopbackMachineTransferChannels() {
       await startedPromise;
     } finally {
       if (previousTransferTimeoutMs === undefined) {
-        delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = previousTransferTimeoutMs;
+        process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = previousTransferTimeoutMs;
       }
       vi.doUnmock('@/configuration');
       vi.resetModules();
       isolatedHome.restore();
-      if (process.env.HAPPIER_DEBUG_KEEP_HANDOFF_TMP !== '1') {
+      if (process.env.PIGGERCODE_DEBUG_KEEP_HANDOFF_TMP !== '1') {
         const cleanupOptions = { recursive: true, force: true, maxRetries: 5, retryDelay: 50 } as const;
         await rm(sourcePath, cleanupOptions);
         await rm(sourceActiveServerDir, cleanupOptions);
@@ -6088,7 +6088,7 @@ function createLoopbackMachineTransferChannels() {
       vi.resetModules();
       await published.dispose();
       isolatedHome.restore();
-      if (process.env.HAPPIER_DEBUG_KEEP_HANDOFF_TMP !== '1') {
+      if (process.env.PIGGERCODE_DEBUG_KEEP_HANDOFF_TMP !== '1') {
         const cleanupOptions = { recursive: true, force: true, maxRetries: 5, retryDelay: 50 } as const;
         await rm(sourcePath, cleanupOptions);
         await rm(sourceActiveServerDir, cleanupOptions);
@@ -6245,8 +6245,8 @@ function createLoopbackMachineTransferChannels() {
   it('does not wait for a target-local source-export record before issuing direct-peer prepare requests when request metadata already includes endpoint candidates', async () => {
     vi.resetModules();
 
-    const previousTransferTimeoutMs = process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '500';
+    const previousTransferTimeoutMs = process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '500';
 
     const targetActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-direct-peer-remote-target-'));
     const targetPath = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-direct-peer-remote-target-workspace-'));
@@ -6400,9 +6400,9 @@ function createLoopbackMachineTransferChannels() {
       vi.doUnmock('@/configuration');
       vi.resetModules();
       if (previousTransferTimeoutMs === undefined) {
-        delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = previousTransferTimeoutMs;
+        process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = previousTransferTimeoutMs;
       }
       await rm(targetActiveServerDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
       await rm(targetPath, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
@@ -6410,7 +6410,7 @@ function createLoopbackMachineTransferChannels() {
   });
 
   it('returns pending and then awaiting_recovery when the server-routed transfer is unavailable during prepare', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
     const sourceActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-server-routed-unavailable-source-'));
     const targetActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-server-routed-unavailable-target-'));
 
@@ -6551,7 +6551,7 @@ function createLoopbackMachineTransferChannels() {
       });
 	      expect(importSessionBundle).not.toHaveBeenCalled();
     } finally {
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
       vi.doUnmock('@/configuration');
       vi.resetModules();
       await rm(sourceActiveServerDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
@@ -6560,7 +6560,7 @@ function createLoopbackMachineTransferChannels() {
   });
 
   it('returns pending and then awaiting_recovery when the provider bundle fetch stalls during server-routed prepare', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
     const sourceActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-provider-timeout-source-'));
     const targetActiveServerDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-provider-timeout-target-'));
 
@@ -6715,7 +6715,7 @@ function createLoopbackMachineTransferChannels() {
       });
 	      expect(importSessionBundle).not.toHaveBeenCalled();
     } finally {
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
       vi.doUnmock('@/configuration');
       vi.resetModules();
       await rm(sourceActiveServerDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });

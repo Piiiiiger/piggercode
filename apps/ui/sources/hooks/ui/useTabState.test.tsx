@@ -25,7 +25,7 @@ describe('useTabState', () => {
   afterEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
-    delete process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY;
+    delete process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY;
   });
 
   it('loads the active tab from account KV on mount', async () => {

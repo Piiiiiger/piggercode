@@ -1,5 +1,5 @@
-export const HAPPIER_UI_FONT_SCALE_CSS_VAR = '--happier-ui-font-scale';
-export const HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID = 'happier-ui-font-scale-overrides';
+export const PIGGERCODE_UI_FONT_SCALE_CSS_VAR = '--happier-ui-font-scale';
+export const PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID = 'happier-ui-font-scale-overrides';
 
 export type UnistylesFontMetric = Readonly<{
     fontSize?: string;
@@ -103,13 +103,13 @@ export function scanDocumentForUnistylesFontMetrics(
 }
 
 export function ensureOverrideStyleElement(document: Document): HTMLStyleElement {
-    const existing = document.getElementById(HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID);
+    const existing = document.getElementById(PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID);
     if (existing && existing.tagName.toLowerCase() === 'style') {
         return existing as HTMLStyleElement;
     }
 
     const style = document.createElement('style');
-    style.id = HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID;
+    style.id = PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID;
     style.setAttribute?.('data-happier', 'ui-font-scale-overrides');
     document.head.appendChild(style);
     return style;
@@ -118,7 +118,7 @@ export function ensureOverrideStyleElement(document: Document): HTMLStyleElement
 function isFontMetricStyleSourceNode(node: Node | null | undefined): boolean {
     if (!node || node.nodeType !== 1) return false;
     const element = node as Element;
-    if (element.id === HAPPIER_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID) return false;
+    if (element.id === PIGGERCODE_UI_FONT_OVERRIDE_STYLE_ELEMENT_ID) return false;
     const tagName = element.tagName.toLowerCase();
     return tagName === 'style' || tagName === 'link';
 }
@@ -193,13 +193,13 @@ function getInjectedSet(styleEl: HTMLStyleElement): Set<string> {
 function buildOverrideRule(className: string, metric: UnistylesFontMetric): string {
     const parts: string[] = [];
     if (metric.fontSize) {
-        parts.push(`font-size: calc(${metric.fontSize} * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR})) !important;`);
+        parts.push(`font-size: calc(${metric.fontSize} * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR})) !important;`);
     }
     if (metric.lineHeight) {
-        parts.push(`line-height: calc(${metric.lineHeight} * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR})) !important;`);
+        parts.push(`line-height: calc(${metric.lineHeight} * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR})) !important;`);
     }
     if (metric.letterSpacing) {
-        parts.push(`letter-spacing: calc(${metric.letterSpacing} * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR})) !important;`);
+        parts.push(`letter-spacing: calc(${metric.letterSpacing} * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR})) !important;`);
     }
     if (parts.length === 0) return '';
     return `.${className} { ${parts.join(' ')} }\n`;
@@ -236,5 +236,5 @@ export function setRootCssVar(document: Document, scale: number): void {
         typeof scale === 'number' && Number.isFinite(scale)
             ? String(scale)
             : '1';
-    root.style.setProperty(HAPPIER_UI_FONT_SCALE_CSS_VAR, value);
+    root.style.setProperty(PIGGERCODE_UI_FONT_SCALE_CSS_VAR, value);
 }

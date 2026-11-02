@@ -8,13 +8,13 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 const ENV_KEYS = [
   'CODEX_HOME',
-  'HAPPIER_CODEX_ACP_BIN',
-  'HAPPIER_CODEX_ACP_CONFIG_OVERRIDES',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_CODEX_ACP_NPX_MODE',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_CODEX_ACP_BIN',
+  'PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_CODEX_ACP_NPX_MODE',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
   'PATH',
 ] as const;
 
@@ -81,8 +81,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { bin } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_CODEX_ACP_BIN = bin;
-    delete process.env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES;
+    process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
+    delete process.env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES;
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     const spawn = resolveCodexAcpSpawn();
@@ -94,8 +94,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { bin } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_CODEX_ACP_BIN = bin;
-    delete process.env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES;
+    process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
+    delete process.env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES;
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     const spawn = resolveCodexAcpSpawn({ disableUserMcpServers: true });
@@ -114,8 +114,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { bin } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_CODEX_ACP_BIN = bin;
-    process.env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES = 'approval_policy="on-request"';
+    process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
+    process.env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES = 'approval_policy="on-request"';
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     const spawn = resolveCodexAcpSpawn();
@@ -123,14 +123,14 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     expect(spawn.args).toEqual(['-c', 'approval_policy="on-request"']);
   }, 15_000);
 
-  it('resolves relative HAPPIER_CODEX_ACP_BIN to an absolute path', async () => {
+  it('resolves relative PIGGERCODE_CODEX_ACP_BIN to an absolute path', async () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
     const savedCwd = process.cwd();
     try {
       process.chdir(dir);
-      process.env.HAPPIER_CODEX_ACP_BIN = './codex-acp';
+      process.env.PIGGERCODE_CODEX_ACP_BIN = './codex-acp';
 
       const { resolveCodexAcpSpawn } = await import('./resolveCommand');
       const spawn = resolveCodexAcpSpawn();
@@ -142,13 +142,13 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     }
   }, 15_000);
 
-  it('rejects a non-executable HAPPIER_CODEX_ACP_BIN on Unix', async () => {
+  it('rejects a non-executable PIGGERCODE_CODEX_ACP_BIN on Unix', async () => {
     if (process.platform === 'win32') return;
 
     const { dir: codexHome } = await createFakeCodexHome(['context7']);
     process.env.CODEX_HOME = codexHome;
     const { bin } = await createNonExecutableCodexAcpBinary();
-    process.env.HAPPIER_CODEX_ACP_BIN = bin;
+    process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     expect(() => resolveCodexAcpSpawn()).toThrow(/not executable/i);
@@ -163,8 +163,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const emptyHappyHomeDir = await createTempDir('happier-codex-acp-empty-home-');
     tempDirs.add(emptyHappyHomeDir);
     process.env.PATH = dir;
-    process.env.HAPPIER_HOME_DIR = emptyHappyHomeDir;
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
+    process.env.PIGGERCODE_HOME_DIR = emptyHappyHomeDir;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     const spawn = resolveCodexAcpSpawn();
@@ -215,8 +215,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { bin } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_CODEX_ACP_BIN = bin;
-    process.env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES = 'approval_policy="on-request"';
+    process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
+    process.env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES = 'approval_policy="on-request"';
 
     const { resolveCodexAcpSpawn } = await import('./resolveCommand');
     const spawn = resolveCodexAcpSpawn({ permissionMode: 'yolo' });
@@ -237,7 +237,7 @@ describe.sequential('resolveCodexAcpSpawn', () => {
       const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
       process.env.CODEX_HOME = codexHome;
       const { bin } = await createFakeCodexAcpBinary();
-      process.env.HAPPIER_CODEX_ACP_BIN = bin;
+      process.env.PIGGERCODE_CODEX_ACP_BIN = bin;
 
       const { resolveCodexAcpSpawn } = await import('./resolveCommand');
       const spawn = resolveCodexAcpSpawn({ permissionMode });
@@ -250,9 +250,9 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
-    delete process.env.HAPPIER_CODEX_ACP_NPX_MODE;
+    process.env.PIGGERCODE_HOME_DIR = dir;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+    delete process.env.PIGGERCODE_CODEX_ACP_NPX_MODE;
 
     const managedBin = join(dir, 'tools', 'codex-acp', 'current', 'bin', 'codex-acp');
     await mkdir(join(dir, 'tools', 'codex-acp', 'current', 'bin'), { recursive: true });
@@ -271,10 +271,10 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
+    process.env.PIGGERCODE_HOME_DIR = dir;
     process.env.PATH = '';
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
-    delete process.env.HAPPIER_CODEX_ACP_NPX_MODE;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+    delete process.env.PIGGERCODE_CODEX_ACP_NPX_MODE;
 
     const managedBin = join(dir, 'tools', 'codex-acp', 'current', 'bin', 'codex-acp');
     await mkdir(join(dir, 'tools', 'codex-acp', 'current', 'bin'), { recursive: true });
@@ -290,9 +290,9 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
-    delete process.env.HAPPIER_CODEX_ACP_NPX_MODE;
+    process.env.PIGGERCODE_HOME_DIR = dir;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+    delete process.env.PIGGERCODE_CODEX_ACP_NPX_MODE;
 
     const legacyBin = join(dir, 'tools', 'codex-acp', 'node_modules', '.bin', 'codex-acp');
     await mkdir(join(dir, 'tools', 'codex-acp', 'node_modules', '.bin'), { recursive: true });
@@ -310,10 +310,10 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
+    process.env.PIGGERCODE_HOME_DIR = dir;
     process.env.PATH = '';
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
-    delete process.env.HAPPIER_CODEX_ACP_NPX_MODE;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+    delete process.env.PIGGERCODE_CODEX_ACP_NPX_MODE;
 
     const legacyBin = join(dir, 'tools', 'codex-acp', 'node_modules', '.bin', 'codex-acp');
     await mkdir(join(dir, 'tools', 'codex-acp', 'node_modules', '.bin'), { recursive: true });
@@ -330,8 +330,8 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
+    process.env.PIGGERCODE_HOME_DIR = dir;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
 
     const { dir: pathDir, bin } = await createFakeCodexAcpBinary();
     // Rename fake to match PATH lookup expectation.
@@ -349,9 +349,9 @@ describe.sequential('resolveCodexAcpSpawn', () => {
     const { dir: codexHome } = await createFakeCodexHome(['context7', 'sequential-thinking', 'playwright']);
     process.env.CODEX_HOME = codexHome;
     const { dir } = await createFakeCodexAcpBinary();
-    process.env.HAPPIER_HOME_DIR = dir;
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
-    process.env.HAPPIER_CODEX_ACP_NPX_MODE = 'never';
+    process.env.PIGGERCODE_HOME_DIR = dir;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+    process.env.PIGGERCODE_CODEX_ACP_NPX_MODE = 'never';
 
     const pathDir = await createTempDir('happier-codex-acp-path-');
     tempDirs.add(pathDir);

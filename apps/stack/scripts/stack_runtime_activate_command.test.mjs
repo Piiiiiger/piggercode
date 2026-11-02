@@ -57,10 +57,10 @@ test('hstack stack runtime activate --web updates only the current runtime web p
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: rootDir,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: rootDir,
   };
 
   const res = await runNode(
@@ -86,7 +86,7 @@ test('hstack stack runtime activate --web updates only the current runtime web p
   );
 
   const stackEnvAfter = parseEnvToObject(await readFile(join(fixture.stackDir, 'env'), 'utf8'));
-  assert.equal(stackEnvAfter.HAPPIER_STACK_RUNTIME_MODE, 'prefer');
+  assert.equal(stackEnvAfter.PIGGERCODE_STACK_RUNTIME_MODE, 'prefer');
 });
 
 test('hstack stack runtime activate --web fails closed when the active runtime server flavor mismatches the stack', async (t) => {
@@ -114,10 +114,10 @@ test('hstack stack runtime activate --web fails closed when the active runtime s
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: rootDir,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: rootDir,
   };
 
   const res = await runNode(

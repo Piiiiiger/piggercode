@@ -34,12 +34,12 @@ import { createApiSessionClientFixture, createMutableApiSessionClientFixture } f
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { runScmCommand } from '@/scm/runtime';
 import {
-    HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { setActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { normalizePermissionModeForAgentStart } from '@/settings/permissions/permissionModeSeed';
-import { HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { logger } from '@/ui/logger';
 import { resolveConnectedServiceSelectionHomeDir } from '@/daemon/connectedServices/homes/resolveConnectedServiceHomeDir';
 import { writeCodexAuthStoreFile } from '../connectedServices/writeCodexAuthStoreFile';
@@ -1871,17 +1871,17 @@ describe('createCodexAppServerRuntime', () => {
             failLocalDbLogDbLockInitializationOnce: options.failLocalDbLogDbLockInitializationOnce,
         });
         envScope.patch({
-            HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(options.rpcTimeoutMs ?? 10000),
-            ...(options.startupRpcTimeoutMs ? { HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: String(options.startupRpcTimeoutMs) } : {}),
-            ...(options.resumeRecoveryTimeoutMs ? { HAPPIER_CODEX_APP_SERVER_RESUME_RECOVERY_TIMEOUT_MS: String(options.resumeRecoveryTimeoutMs) } : {}),
-            ...(options.maxJsonLineChars ? { HAPPIER_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS: String(options.maxJsonLineChars) } : {}),
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(options.rpcTimeoutMs ?? 10000),
+            ...(options.startupRpcTimeoutMs ? { PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: String(options.startupRpcTimeoutMs) } : {}),
+            ...(options.resumeRecoveryTimeoutMs ? { PIGGERCODE_CODEX_APP_SERVER_RESUME_RECOVERY_TIMEOUT_MS: String(options.resumeRecoveryTimeoutMs) } : {}),
+            ...(options.maxJsonLineChars ? { PIGGERCODE_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS: String(options.maxJsonLineChars) } : {}),
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
             CODEX_API_KEY: undefined,
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: undefined,
-            [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: undefined,
-            [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: undefined,
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: undefined,
+            [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: undefined,
+            [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: undefined,
         });
         return { root, requestLogPath, fakeAppServer };
     }
@@ -2435,7 +2435,7 @@ describe('createCodexAppServerRuntime', () => {
     it('publishes connected-service direct-session metadata when activeServerDir owns CODEX_HOME', async () => {
         const { root, requestLogPath, fakeAppServer } = await createRuntimeFixture('happier-codex-app-server-runtime-direct-');
         const scopedEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_TRANSCRIPT_STORAGE: 'direct',
+            PIGGERCODE_TRANSCRIPT_STORAGE: 'direct',
             CODEX_HOME: join(root, 'servers', 'cloud', 'daemon', 'connected-services', 'homes', 'openai-codex', 'profile', 'codex', 'codex-home'),
         });
         const codexHomeDir = scopedEnv.CODEX_HOME;
@@ -3610,7 +3610,7 @@ describe('createCodexAppServerRuntime', () => {
         const runtime = createCodexAppServerRuntime({
             directory: root,
             processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+                [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                     kind: 'group',
                     serviceId: 'openai-codex',
                     groupId: 'handoff-group',
@@ -4997,7 +4997,7 @@ describe('createCodexAppServerRuntime', () => {
         } = {};
 
         envScope.patch({
-            HAPPIER_CODEX_APP_SERVER_TURN_COMPLETION_SETTLE_MS: '1000',
+            PIGGERCODE_CODEX_APP_SERVER_TURN_COMPLETION_SETTLE_MS: '1000',
         });
 
         const runtime = createCodexAppServerRuntime({
@@ -8902,7 +8902,7 @@ describe('createCodexAppServerRuntime', () => {
         const { root, fakeAppServer } = await createRuntimeFixture('happier-codex-app-server-runtime-usage-limit-group-');
         const sessionTurnLifecycle = createSessionTurnLifecycleTestDouble();
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'happier',
@@ -8984,7 +8984,7 @@ describe('createCodexAppServerRuntime', () => {
         const runtime = createCodexAppServerRuntime({
             directory: root,
             processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+                [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                     kind: 'group',
                     serviceId: 'openai-codex',
                     groupId: 'happier',
@@ -9413,7 +9413,7 @@ describe('createCodexAppServerRuntime', () => {
             },
         };
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'happier',
@@ -9602,7 +9602,7 @@ describe('createCodexAppServerRuntime', () => {
             },
         };
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'happier',
@@ -9747,7 +9747,7 @@ describe('createCodexAppServerRuntime', () => {
         const { root, fakeAppServer } = await createRuntimeFixture('happier-codex-app-server-runtime-refresh-reused-');
         const sessionTurnLifecycle = createSessionTurnLifecycleTestDouble();
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'happier',
@@ -9819,7 +9819,7 @@ describe('createCodexAppServerRuntime', () => {
             },
         });
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'happier',
@@ -9905,7 +9905,7 @@ describe('createCodexAppServerRuntime', () => {
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
                 {
                     kind: 'profile',
                     serviceId: 'openai-codex',
@@ -10287,7 +10287,7 @@ describe('createCodexAppServerRuntime', () => {
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
-            HAPPIER_DAEMON_EXECUTION_GENERATION_V1: 'daemon-before-restart',
+            PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1: 'daemon-before-restart',
         });
         const runtime = createCodexAppServerRuntime({
             directory: root,
@@ -10530,7 +10530,7 @@ describe('createCodexAppServerRuntime', () => {
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
                 {
                     kind: 'group',
                     serviceId: 'openai-codex',
@@ -10653,7 +10653,7 @@ describe('createCodexAppServerRuntime', () => {
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
                 {
                     kind: 'group',
                     serviceId: 'openai-codex',
@@ -10811,7 +10811,7 @@ describe('createCodexAppServerRuntime', () => {
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
             CODEX_HOME: join(root, 'codex-home'),
             OPENAI_API_KEY: 'test-openai-key',
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'team',
@@ -10910,7 +10910,7 @@ describe('createCodexAppServerRuntime', () => {
             processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
                 CODEX_HOME: join(root, 'codex-home'),
                 OPENAI_API_KEY: 'test-openai-key',
-                [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+                [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                     kind: 'group', serviceId: 'openai-codex', groupId: 'team', activeProfileId: 'primary', generation: 7,
                 }]),
             }),
@@ -10999,7 +10999,7 @@ describe('createCodexAppServerRuntime', () => {
             processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
                 CODEX_HOME: join(root, 'codex-home'),
                 OPENAI_API_KEY: 'test-openai-key',
-                [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+                [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                     kind: 'group', serviceId: 'openai-codex', groupId: 'team', activeProfileId: 'primary', generation: 7,
                 }]),
             }),
@@ -11999,7 +11999,7 @@ describe('createCodexAppServerRuntime', () => {
         const { root, requestLogPath, fakeAppServer } = await createRuntimeFixture('happier-codex-app-server-runtime-model-capacity-custom-continuation-');
         const customContinuationPrompt = 'CUSTOM_CAPACITY_CONTINUATION_PROMPT';
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT: customContinuationPrompt,
+            PIGGERCODE_CODEX_CONTEXT_WINDOW_CONTINUATION_PROMPT: customContinuationPrompt,
         });
 
         const runtime = createCodexAppServerRuntime({
@@ -12073,7 +12073,7 @@ describe('createCodexAppServerRuntime', () => {
     it('surfaces context-window exhaustion without compacting when Codex recovery is disabled', async () => {
         const { root, requestLogPath, fakeAppServer } = await createRuntimeFixture('happier-codex-app-server-runtime-context-window-disabled-');
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_CODEX_CONTEXT_WINDOW_RECOVERY_MODE: 'off',
+            PIGGERCODE_CODEX_CONTEXT_WINDOW_RECOVERY_MODE: 'off',
         });
 
         const sendCodexMessage = vi.fn();
@@ -12685,7 +12685,7 @@ describe('createCodexAppServerRuntime', () => {
             },
         );
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'main',
@@ -12869,7 +12869,7 @@ describe('createCodexAppServerRuntime', () => {
             },
         );
         const processEnv = createCodexAppServerProcessEnv(fakeAppServer, {
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
                 kind: 'group',
                 serviceId: 'openai-codex',
                 groupId: 'main',

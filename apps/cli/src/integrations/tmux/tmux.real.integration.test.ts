@@ -4,7 +4,7 @@
  * These tests start isolated tmux servers (via `-S` or `TMUX_TMPDIR`) and must
  * never interact with a user's existing tmux sessions.
  *
- * Enable with: `HAPPIER_CLI_TMUX_INTEGRATION=1`
+ * Enable with: `PIGGERCODE_CLI_TMUX_INTEGRATION=1`
  */
 
 import { describe, it, expect } from 'vitest';
@@ -20,7 +20,7 @@ function isTmuxInstalled(): boolean {
 }
 
 function shouldRunTmuxIntegration(): boolean {
-    return process.env.HAPPIER_CLI_TMUX_INTEGRATION === '1' && isTmuxInstalled();
+    return process.env.PIGGERCODE_CLI_TMUX_INTEGRATION === '1' && isTmuxInstalled();
 }
 
 function mkShortTempDir(prefix: string): string {

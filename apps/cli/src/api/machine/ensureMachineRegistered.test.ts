@@ -15,14 +15,14 @@ vi.mock('@/ui/logger', () => ({
 }));
 
 describe('ensureMachineRegistered', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
     vi.resetModules();
   });
 
@@ -30,8 +30,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
     const customRecoveryLogger = { info: vi.fn() };
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-conflict-custom-logger-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-old';
@@ -104,8 +104,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-conflict-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-old';
@@ -188,8 +188,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-conflict-replacement-candidate-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-old';
@@ -262,8 +262,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-conflict-cas-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const staleMachineId = 'machine-stale';
@@ -346,8 +346,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-revoked-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-revoked';
@@ -430,8 +430,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-replaced-adopt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-old';
@@ -525,8 +525,8 @@ describe('ensureMachineRegistered', () => {
     vi.useRealTimers();
 
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-conflict-account-binding-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const oldMachineId = 'machine-old';

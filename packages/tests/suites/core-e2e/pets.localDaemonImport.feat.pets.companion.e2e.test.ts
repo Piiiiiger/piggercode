@@ -176,7 +176,7 @@ describe('core e2e: pets local daemon import', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '0',
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '0',
       },
     });
     const serverBaseUrl = server.baseUrl;
@@ -201,15 +201,15 @@ describe('core e2e: pets local daemon import', () => {
       startupTimeoutMs: daemonStartupTimeoutMs,
       env: {
         ...process.env,
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         CI: '1',
         CODEX_HOME: codexHomeDir,
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '0',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '0',
       },
     });
 

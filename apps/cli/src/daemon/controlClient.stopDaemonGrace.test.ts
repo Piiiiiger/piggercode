@@ -10,9 +10,9 @@ vi.mock('@/daemon/doctor', () => ({
 
 describe('stopDaemon: graceful wait before force kill', () => {
   let envScope = createEnvKeyScope([
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_DAEMON_HTTP_TIMEOUT',
-    'HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_DAEMON_HTTP_TIMEOUT',
+    'PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS',
   ]);
 
   afterEach(() => {
@@ -21,18 +21,18 @@ describe('stopDaemon: graceful wait before force kill', () => {
     vi.unstubAllGlobals();
     envScope.restore();
     envScope = createEnvKeyScope([
-      'HAPPIER_HOME_DIR',
-      'HAPPIER_DAEMON_HTTP_TIMEOUT',
-      'HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS',
+      'PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_DAEMON_HTTP_TIMEOUT',
+      'PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS',
     ]);
   });
 
-  it('uses HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS to avoid force killing during slow shutdown', async () => {
+  it('uses PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS to avoid force killing during slow shutdown', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-stop-grace-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_HTTP_TIMEOUT: '1000',
-      HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '5000',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_HTTP_TIMEOUT: '1000',
+      PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '5000',
     });
 
     const daemonPid = 12345;
@@ -83,7 +83,7 @@ describe('stopDaemon: graceful wait before force kill', () => {
       const { stopDaemon, stopDaemonHttp } = controlClient;
       vi.useFakeTimers();
       vi.setSystemTime(new Date('2026-03-05T00:00:00.000Z'));
-      expect(process.env.HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS).toBe('5000');
+      expect(process.env.PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS).toBe('5000');
 
       const killSpy = vi.spyOn(process, 'kill').mockImplementation(((pid: number, signal?: any) => {
         if (pid !== daemonPid) {

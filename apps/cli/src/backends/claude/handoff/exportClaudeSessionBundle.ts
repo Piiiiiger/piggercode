@@ -79,7 +79,7 @@ async function resolveReadableTranscriptPath(params: Readonly<{
   }
 
   const fakeTranscriptLog = [
-    params.env.HAPPIER_E2E_FAKE_CLAUDE_LOG,
+    params.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOG,
     params.env.HAPPY_E2E_FAKE_CLAUDE_LOG,
   ].find((value) => typeof value === 'string' && value.trim().length > 0);
   if (typeof fakeTranscriptLog === 'string' && (await fileExists(fakeTranscriptLog))) {

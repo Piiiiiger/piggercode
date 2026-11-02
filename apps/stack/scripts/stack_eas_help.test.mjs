@@ -15,7 +15,7 @@ test('hstack stack eas help routing covers explicit, implicit, and missing-stack
   const stackName = 'exp-eas-help';
   const envPath = join(storageDir, stackName, 'env');
   await mkdir(dirname(envPath), { recursive: true });
-  await writeFile(envPath, 'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
+  await writeFile(envPath, 'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n', 'utf-8');
 
   t.after(async () => {
     await rm(tmp, { recursive: true, force: true }).catch(() => {});
@@ -23,8 +23,8 @@ test('hstack stack eas help routing covers explicit, implicit, and missing-stack
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     HSTACK_EAS_TEST_STUB: '1',
   };
 

@@ -15,21 +15,21 @@ async function createMigrationFixture(t, { sourceProvider, targetProvider, targe
   await mkdir(join(storageDir, 'from'), { recursive: true });
   await mkdir(join(storageDir, 'to'), { recursive: true });
   await writeFile(fromEnvPath, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-    ...(sourceProvider == null ? [] : [`HAPPIER_DB_PROVIDER=${sourceProvider}`]),
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+    ...(sourceProvider == null ? [] : [`PIGGERCODE_DB_PROVIDER=${sourceProvider}`]),
     '',
   ].join('\n'), 'utf8');
   await writeFile(toEnvPath, [
-    'HAPPIER_STACK_SERVER_COMPONENT=happier-server',
-    `HAPPIER_DB_PROVIDER=${targetProvider}`,
+    'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server',
+    `PIGGERCODE_DB_PROVIDER=${targetProvider}`,
     ...(targetDatabaseUrl ? [`DATABASE_URL=${targetDatabaseUrl}`] : []),
     '',
   ].join('\n'), 'utf8');
   return {
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_ENV_FILE: join(root, 'nonexistent-active-env'),
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_ENV_FILE: join(root, 'nonexistent-active-env'),
     },
     toEnvPath,
   };

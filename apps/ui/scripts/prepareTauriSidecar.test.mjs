@@ -76,7 +76,7 @@ test('prepareTauriSidecar builds app workspace dependencies before compiling hse
   assert.equal(calls[2][0], 'spawn');
   assert.equal(calls[2][1], 'yarn');
   assert.deepEqual(calls[2][2], ['-s', 'workspace', '@piggercode/bootstrap', 'build:binary']);
-  assert.equal(calls[2][3].env.HAPPIER_BUN_TARGET, 'bun-darwin-arm64');
+  assert.equal(calls[2][3].env.PIGGERCODE_BUN_TARGET, 'bun-darwin-arm64');
   assert.equal(calls[3][0], 'runtime');
   assert.equal(calls[4][0], 'entrypoint');
 });

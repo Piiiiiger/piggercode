@@ -286,7 +286,7 @@ export function spawnProc(label, cmd, args, env, options = {}) {
 
   let teePath = typeof teeFile === 'string' && teeFile.trim() ? teeFile.trim() : '';
   if (!teePath) {
-    const teeDir = String(env?.HAPPIER_STACK_LOG_TEE_DIR ?? '').trim();
+    const teeDir = String(env?.PIGGERCODE_STACK_LOG_TEE_DIR ?? '').trim();
     if (teeDir) {
       try {
         mkdirSync(teeDir, { recursive: true });

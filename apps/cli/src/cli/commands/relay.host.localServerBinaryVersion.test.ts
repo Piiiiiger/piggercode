@@ -62,13 +62,13 @@ describe('happier relay host install local server-binary version tracking', () =
     let home = '';
     let preparedPayloadRoot = '';
     let serverPayloadRoot = '';
-    let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
     beforeEach(async () => {
         vi.resetModules();
         resolvedLocalInstallVersion = null;
         receivedSelfHostRelayBinaryOverride = null;
-        envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         home = await createTempDir('happier-relay-local-version-home-');
         preparedPayloadRoot = await createTempDir('happier-relay-local-version-prepared-');
         serverPayloadRoot = await createTempDir('candidate-server-0.2.4');
@@ -84,7 +84,7 @@ describe('happier relay host install local server-binary version tracking', () =
         mockedPreparedVersionId = 'preview-release-0.2.1';
 
         envScope.patch({
-            HAPPIER_HOME_DIR: home,
+            PIGGERCODE_HOME_DIR: home,
         });
         reloadConfiguration();
     });

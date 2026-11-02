@@ -56,7 +56,7 @@ vi.mock("@/utils/process/shutdown", async () => {
 
 describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
     const startServerHarness = createStartServerHarness();
-    const originalDbSizeWarnBytes = process.env.HAPPIER_SERVER_DB_SIZE_WARN_BYTES;
+    const originalDbSizeWarnBytes = process.env.PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES;
 
     beforeEach(() => {
         callOrder.length = 0;
@@ -87,9 +87,9 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
     afterEach(() => {
         startServerHarness.restore();
         if (originalDbSizeWarnBytes === undefined) {
-            delete process.env.HAPPIER_SERVER_DB_SIZE_WARN_BYTES;
+            delete process.env.PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES;
         } else {
-            process.env.HAPPIER_SERVER_DB_SIZE_WARN_BYTES = originalDbSizeWarnBytes;
+            process.env.PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES = originalDbSizeWarnBytes;
         }
     });
 
@@ -98,10 +98,10 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
             SERVER_ROLE: "api",
             REDIS_URL: undefined,
             HAPPY_DB_PROVIDER: "sqlite",
-            HAPPIER_DB_PROVIDER: "sqlite",
+            PIGGERCODE_DB_PROVIDER: "sqlite",
             DATABASE_URL: "file:/tmp/happier-start-server-sqlite-shutdown-order.sqlite",
             HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-            HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+            PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
         });
 
         const { startServer } = await import("./startServer");
@@ -123,7 +123,7 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
         expect(startServerDbMocks.applySqliteRuntimePragmas).toHaveBeenCalledWith(
             startServerDbMocks.sqliteMaintenanceClient,
             expect.objectContaining({
-                HAPPIER_SQLITE_BUSY_TIMEOUT_MS: "5000",
+                PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: "5000",
                 HAPPY_SQLITE_BUSY_TIMEOUT_MS: "5000",
             }),
         );
@@ -142,10 +142,10 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
             SERVER_ROLE: "api",
             REDIS_URL: undefined,
             HAPPY_DB_PROVIDER: "sqlite",
-            HAPPIER_DB_PROVIDER: "sqlite",
+            PIGGERCODE_DB_PROVIDER: "sqlite",
             DATABASE_URL: "file:/tmp/happier-start-server-sqlite-shutdown-disabled.sqlite",
             HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-            HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+            PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
         });
 
         const { startServer } = await import("./startServer");
@@ -171,11 +171,11 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
                 SERVER_ROLE: "api",
                 REDIS_URL: undefined,
                 HAPPY_DB_PROVIDER: "sqlite",
-                HAPPIER_DB_PROVIDER: "sqlite",
-                HAPPIER_SERVER_DB_SIZE_WARN_BYTES: "4",
+                PIGGERCODE_DB_PROVIDER: "sqlite",
+                PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES: "4",
                 DATABASE_URL: `file:${dbPath}`,
                 HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-                HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+                PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
             });
 
             const { startServer } = await import("./startServer");
@@ -208,11 +208,11 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
                 SERVER_ROLE: "api",
                 REDIS_URL: undefined,
                 HAPPY_DB_PROVIDER: "sqlite",
-                HAPPIER_DB_PROVIDER: "sqlite",
-                HAPPIER_SERVER_DB_SIZE_WARN_BYTES: "4",
+                PIGGERCODE_DB_PROVIDER: "sqlite",
+                PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES: "4",
                 DATABASE_URL: `file:${dbPath}`,
                 HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-                HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+                PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
             });
 
             const { startServer } = await import("./startServer");
@@ -240,8 +240,8 @@ describe("startServer sqlite WAL checkpoint shutdown ordering", () => {
             SERVER_ROLE: "api",
             REDIS_URL: undefined,
             HAPPY_DB_PROVIDER: "pglite",
-            HAPPIER_DB_PROVIDER: "pglite",
-            HAPPIER_SERVER_DB_SIZE_WARN_BYTES: "1",
+            PIGGERCODE_DB_PROVIDER: "pglite",
+            PIGGERCODE_SERVER_DB_SIZE_WARN_BYTES: "1",
         });
         startServerDbMocks.getDbProviderFromEnv.mockReturnValue("pglite");
 

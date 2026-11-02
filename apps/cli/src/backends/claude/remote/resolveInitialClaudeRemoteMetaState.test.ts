@@ -4,9 +4,9 @@ import { pinClaudeUnifiedTerminalSelection, readDaemonClaudeUnifiedTerminalPin, 
 
 describe('resolveInitialClaudeRemoteMetaState', () => {
   it('only consumes a daemon-owned runtime pin for daemon starts', () => {
-    expect(readDaemonClaudeUnifiedTerminalPin('daemon', { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '1' })).toBe(true);
-    expect(readDaemonClaudeUnifiedTerminalPin('daemon', { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '0' })).toBe(false);
-    expect(readDaemonClaudeUnifiedTerminalPin('terminal', { HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN: '1' })).toBeNull();
+    expect(readDaemonClaudeUnifiedTerminalPin('daemon', { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '1' })).toBe(true);
+    expect(readDaemonClaudeUnifiedTerminalPin('daemon', { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '0' })).toBe(false);
+    expect(readDaemonClaudeUnifiedTerminalPin('terminal', { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '1' })).toBeNull();
   });
 
   it('keeps the daemon-selected runtime family when later message settings disagree', () => {

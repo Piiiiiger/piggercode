@@ -34,11 +34,11 @@ import { appendBrowserDiagnostics, collectBrowserDiagnostics } from '../../src/t
 
 const run = createRunDirs({ runLabel: 'ui-e2e' });
 const CONNECTED_SERVICE_FEATURE_ENV = {
-    HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-    HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
-    HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-    HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
-    HAPPIER_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
+    PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+    PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+    PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+    PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+    PIGGERCODE_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
 } as const;
 
 type UnknownRecord = Record<string, unknown>;
@@ -630,8 +630,8 @@ test.describe('ui e2e: connected-service quota switch and recovery surfaces', ()
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-                HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
                 ...CONNECTED_SERVICE_FEATURE_ENV,
             },
         });
@@ -988,7 +988,7 @@ test.describe('ui e2e: connected-service quota switch and recovery surfaces', ()
         const workspaceDir = resolve(join(daemonTestDir, 'workspace'));
         const fakeClaudeLogPath = resolve(join(daemonTestDir, 'fake-claude.jsonl'));
         let daemon: StartedDaemon | null = null;
-        const previousDaemonSnapshotMode = process.env.HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE;
+        const previousDaemonSnapshotMode = process.env.PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE;
 
         await page.setViewportSize({ width: 1440, height: 900 });
         await mkdir(workspaceDir, { recursive: true });
@@ -1030,7 +1030,7 @@ test.describe('ui e2e: connected-service quota switch and recovery surfaces', ()
         });
 
         try {
-            process.env.HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE = 'testdir';
+            process.env.PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE = 'testdir';
             try {
                 daemon = await startTestDaemon({
                     testDir: daemonTestDir,
@@ -1040,26 +1040,26 @@ test.describe('ui e2e: connected-service quota switch and recovery surfaces', ()
                         ...process.env,
                         ...CONNECTED_SERVICE_FEATURE_ENV,
                         CI: '1',
-                        HAPPIER_HOME_DIR: cliHomeDir,
-                        HAPPIER_SERVER_URL: server.baseUrl,
-                        HAPPIER_WEBAPP_URL: uiBaseUrl,
-                        HAPPIER_DISABLE_CAFFEINATE: '1',
-                        HAPPIER_VARIANT: 'dev',
-                        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-                        HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-                        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-                        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-                        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
-                        HAPPIER_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
-                        HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1',
-                        HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+                        PIGGERCODE_HOME_DIR: cliHomeDir,
+                        PIGGERCODE_SERVER_URL: server.baseUrl,
+                        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+                        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+                        PIGGERCODE_VARIANT: 'dev',
+                        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+                        PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+                        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+                        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+                        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+                        PIGGERCODE_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT: '1',
+                        PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1',
+                        PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
                     },
                 });
             } finally {
                 if (previousDaemonSnapshotMode === undefined) {
-                    delete process.env.HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE;
+                    delete process.env.PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE;
                 } else {
-                    process.env.HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE = previousDaemonSnapshotMode;
+                    process.env.PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE = previousDaemonSnapshotMode;
                 }
             }
 

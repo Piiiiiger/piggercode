@@ -8746,7 +8746,7 @@ settingsSession: {
                 manifest: {
                     title: 'Manifest des Modellpakets',
                     subtitle:
-                        'Nutzt standardmäßig die Happier-Modellpakete (überschreibbar über EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).',
+                        'Nutzt standardmäßig die Happier-Modellpakete (überschreibbar über EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).',
                     detailResolved: 'Aufgelöst',
                     detailMissing: 'Fehlt',
                 },
@@ -8788,7 +8788,7 @@ settingsSession: {
                     },
                     missingManifest: {
                         title: 'Manifest-URL fehlt',
-                        body: 'Die Manifest-URL des Modellpakets ließ sich nicht auflösen. Prüf EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (oder die alten Kokoro-Umgebungsvariablen).',
+                        body: 'Die Manifest-URL des Modellpakets ließ sich nicht auflösen. Prüf EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (oder die alten Kokoro-Umgebungsvariablen).',
                     },
                     notInstalledTitle: 'Nicht installiert',
                     notInstalledBody: 'Lade zuerst das Modellpaket herunter, um Update-Prüfungen zu aktivieren.',

@@ -1479,7 +1479,7 @@ export async function requestDirectPeerTransferToFile(params: Readonly<{
     return await requestDirectPeerTransfer({
       ...params,
       // File-backed transfers are still bounded per chunk to avoid OOM, but they must not be constrained
-      // by the small-only whole-buffer in-memory cap (`HAPPIER_FILES_READ_MAX_BYTES`).
+      // by the small-only whole-buffer in-memory cap (`PIGGERCODE_FILES_READ_MAX_BYTES`).
       maxInMemoryPayloadBytes: readDirectPeerChunkBytes(),
       onChunk: async (chunk) => {
         await sink.appendChunk(chunk);

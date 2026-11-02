@@ -1,5 +1,5 @@
 export {
-  HAPPIER_SHERPA_NATIVE_MODULE_NAME,
+  PIGGERCODE_SHERPA_NATIVE_MODULE_NAME,
   getOptionalHappierSherpaNativeModule,
 } from './HappierSherpaNative';
 

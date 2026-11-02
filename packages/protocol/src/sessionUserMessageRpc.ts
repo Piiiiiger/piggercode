@@ -10,9 +10,9 @@ import { ExecutionRunCompletionV1Schema } from './structuredMessages/executionRu
 
 export const SESSION_ATTACHMENT_UPLOAD_STRUCTURED_INPUT_PROVENANCE_KIND = 'sessionAttachmentUpload';
 
-export const HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1 = 'happierStructuredInputV1';
-export const HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY = 'happierVendorPluginMentions';
-export const HAPPIER_SKILL_MENTIONS_METADATA_KEY = 'happierSkillMentions';
+export const PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1 = 'happierStructuredInputV1';
+export const PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY = 'happierVendorPluginMentions';
+export const PIGGERCODE_SKILL_MENTIONS_METADATA_KEY = 'happierSkillMentions';
 
 type MetadataRecord = Record<string, unknown>;
 
@@ -257,7 +257,7 @@ export function readHappierStructuredInputV1FromMeta(
   if (!metadata) return null;
 
   const structuredInput = sanitizeHappierStructuredInputV1(
-    metadata[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1],
+    metadata[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1],
     options,
   );
   // The meta-root aliases are a legacy write shape, folded into the envelope here — but only
@@ -265,10 +265,10 @@ export function readHappierStructuredInputV1FromMeta(
   // entirely (D-4), which is what stops a dual-written message from reaching a provider twice.
   const mentions = structuredInput?.mentions ?? [];
   const aliasVendorPluginMentions = mentions.length === 0
-    ? asRecordArray(metadata[HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY])
+    ? asRecordArray(metadata[PIGGERCODE_VENDOR_PLUGIN_MENTIONS_METADATA_KEY])
     : [];
   const aliasSkillMentions = mentions.length === 0
-    ? asRecordArray(metadata[HAPPIER_SKILL_MENTIONS_METADATA_KEY])
+    ? asRecordArray(metadata[PIGGERCODE_SKILL_MENTIONS_METADATA_KEY])
     : [];
   if (!structuredInput) {
     if (aliasVendorPluginMentions.length === 0 && aliasSkillMentions.length === 0) return null;

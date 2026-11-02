@@ -30,7 +30,7 @@ import { removeSessionMarker } from '../sessionRegistry';
 
 describe('startDaemonHeartbeatLoop process-missing delegation', () => {
   beforeEach(() => {
-    process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
+    process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
     vi.useFakeTimers();
     vi.resetModules();
     readSessionMarkerForPid.mockReset();
@@ -38,7 +38,7 @@ describe('startDaemonHeartbeatLoop process-missing delegation', () => {
   });
 
   afterEach(() => {
-    delete process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL;
+    delete process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL;
     vi.useRealTimers();
     vi.restoreAllMocks();
   });

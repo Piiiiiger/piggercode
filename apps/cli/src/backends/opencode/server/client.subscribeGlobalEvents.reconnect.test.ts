@@ -44,16 +44,16 @@ describe('createOpenCodeServerRuntimeClient.subscribeGlobalEvents', () => {
     vi.mocked(readSharedManagedOpenCodeServerStateBestEffort).mockResolvedValue(null);
 
     for (const key of [
-      'HAPPIER_OPENCODE_SERVER_URL',
-      'HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS',
-      'HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS',
+      'PIGGERCODE_OPENCODE_SERVER_URL',
+      'PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS',
+      'PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS',
     ] as const) {
       prevEnv[key] = process.env[key];
     }
 
-    process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5';
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5';
+    process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5';
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5';
   });
 
   afterEach(() => {
@@ -307,8 +307,8 @@ describe('createOpenCodeServerRuntimeClient.subscribeGlobalEvents', () => {
   });
 
   it('dispose aborts reconnect sleep promptly (does not block on backoff timers)', async () => {
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5000';
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5000';
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5000';
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5000';
 
     const fetchSpy = vi.fn(async (url: any) => {
       if (String(url).includes('/global/health')) return createOkJsonResponse({ healthy: true, version: 'test' }) as any;
@@ -347,7 +347,7 @@ describe('createOpenCodeServerRuntimeClient.subscribeGlobalEvents', () => {
   });
 
   it('refreshes the managed OpenCode server baseUrl when the SSE stream drops (e.g. managed server restarted on a new port)', async () => {
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
     const fetchSpy = vi.fn(async (url: any) => {
       if (String(url).includes('/global/health')) return createOkJsonResponse({ healthy: true, version: 'test' }) as any;
@@ -409,7 +409,7 @@ describe('createOpenCodeServerRuntimeClient.subscribeGlobalEvents', () => {
   });
 
   it('does not re-ensure or replace the managed server from SSE reconnect alone', async () => {
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
     const fetchSpy = vi.fn(async (url: any) => {
       const urlStr = String(url);
@@ -480,7 +480,7 @@ describe('createOpenCodeServerRuntimeClient.subscribeGlobalEvents', () => {
   });
 
   it('ignores non-loopback managed server state during SSE reconnect refresh', async () => {
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
     const fetchSpy = vi.fn(async (url: any) => {
       const urlStr = String(url);
@@ -555,15 +555,15 @@ describe('createOpenCodeServerRuntimeClient managed-server identity change signa
     vi.unstubAllGlobals();
     vi.mocked(readSharedManagedOpenCodeServerStateBestEffort).mockResolvedValue(null);
     for (const key of [
-      'HAPPIER_OPENCODE_SERVER_URL',
-      'HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS',
-      'HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS',
+      'PIGGERCODE_OPENCODE_SERVER_URL',
+      'PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS',
+      'PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS',
     ] as const) {
       prevEnv[key] = process.env[key];
     }
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5';
-    process.env.HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5';
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS = '5';
+    process.env.PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS = '5';
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
   });
 
   afterEach(() => {
@@ -752,7 +752,7 @@ describe('createOpenCodeServerRuntimeClient managed-server identity change signa
   });
 
   it('never emits managed-server identity changes in explicit server URL mode', async () => {
-    process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+    process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
     const fetchSpy = vi.fn(async (url: any) => {
       if (String(url).includes('/global/health')) return createOkJsonResponse({ healthy: true, version: 'test' }) as any;
       return createOkJsonResponse({}) as any;

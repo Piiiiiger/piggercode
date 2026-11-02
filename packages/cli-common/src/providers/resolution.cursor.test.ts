@@ -65,7 +65,7 @@ describe('Cursor provider CLI resolution', () => {
         ...process.env,
         PATH: binDir,
         HOME: binDir,
-        HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0',
+        PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0',
       },
     })).toBeNull();
   });
@@ -87,7 +87,7 @@ describe('Cursor provider CLI resolution', () => {
     expect(resolveProviderCliCommand('cursor', {
       processEnv: {
         ...process.env,
-        HAPPIER_CURSOR_PATH: relativeCursorAgent,
+        PIGGERCODE_CURSOR_PATH: relativeCursorAgent,
         PATH: '',
         HOME: binDir,
       },

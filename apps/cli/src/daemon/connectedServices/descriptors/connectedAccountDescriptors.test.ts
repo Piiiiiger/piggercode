@@ -77,9 +77,9 @@ describe('connected account descriptors', () => {
     if (!mod) throw new Error('expected connected account descriptor module');
 
     const config = mod.resolveConnectedAccountOauthConfig('gemini', {
-      HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_ID: 'env-client',
-      HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET: 'env-secret',
-      HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL: 'https://example.test/token',
+      PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_ID: 'env-client',
+      PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET: 'env-secret',
+      PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL: 'https://example.test/token',
     });
 
     expect(config).toEqual({

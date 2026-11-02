@@ -20,18 +20,18 @@ function jsonResponse(payload: unknown): Response {
 
 describe('createOpenCodeServerRuntimeClient (session diff)', () => {
   const originalFetch = globalThis.fetch;
-  const originalUrl = process.env.HAPPIER_OPENCODE_SERVER_URL;
+  const originalUrl = process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
   beforeEach(() => {
-    process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://example.test';
   });
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
     if (typeof originalUrl === 'string') {
-      process.env.HAPPIER_OPENCODE_SERVER_URL = originalUrl;
+      process.env.PIGGERCODE_OPENCODE_SERVER_URL = originalUrl;
     } else {
-      delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
     }
   });
 
@@ -63,7 +63,7 @@ describe('createOpenCodeServerRuntimeClient (session diff)', () => {
   });
 
   it('retries session diff after a transient managed-server fetch failure', async () => {
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
     const { ensureSharedManagedOpenCodeServerBaseUrl, readSharedManagedOpenCodeServerStateBestEffort } = await import('./sharedManagedServer');
     const ensureMock = ensureSharedManagedOpenCodeServerBaseUrl as unknown as ReturnType<typeof vi.fn>;

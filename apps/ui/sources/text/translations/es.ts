@@ -9203,7 +9203,7 @@ settingsSession: {
         manifest: {
           title: "Manifiesto del paquete de modelo",
           subtitle:
-            "Por defecto usa paquetes de modelos de Happier (se puede sobrescribir con EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).",
+            "Por defecto usa paquetes de modelos de Happier (se puede sobrescribir con EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).",
           detailResolved: "Resuelto",
           detailMissing: "Falta",
         },
@@ -9248,7 +9248,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "Falta la URL del manifiesto",
-            body: "No se pudo resolver la URL del manifiesto del paquete de modelo. Revisa EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (o variables de entorno antiguas de Kokoro).",
+            body: "No se pudo resolver la URL del manifiesto del paquete de modelo. Revisa EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (o variables de entorno antiguas de Kokoro).",
           },
           notInstalledTitle: "No instalado",
           notInstalledBody:

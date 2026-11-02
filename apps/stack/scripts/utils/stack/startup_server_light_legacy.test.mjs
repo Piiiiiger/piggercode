@@ -31,12 +31,12 @@ test('ensureServerSchemaReady honors HAPPY_SERVER_LIGHT_DATA_DIR legacy fallback
     binDir,
     root,
     extraEnv: {
-      HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
-      HAPPIER_SERVER_LIGHT_FILES_DIR: undefined,
-      HAPPIER_SERVER_LIGHT_DB_DIR: undefined,
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: undefined,
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: undefined,
       HAPPY_SERVER_LIGHT_DATA_DIR: dataDir,
-      HAPPIER_SQLITE_BUSY_TIMEOUT_MS: '500',
-      HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+      PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: '500',
+      PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
     },
   });
   delete env.DATABASE_URL;
@@ -62,9 +62,9 @@ test('ensureServerSchemaReady falls back to HAPPY_SERVER_LIGHT_DATA_DIR when HAP
     binDir,
     root,
     extraEnv: {
-      HAPPIER_SERVER_LIGHT_DATA_DIR: '',
-      HAPPIER_SERVER_LIGHT_FILES_DIR: '',
-      HAPPIER_SERVER_LIGHT_DB_DIR: '',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: '',
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: '',
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: '',
       HAPPY_SERVER_LIGHT_DATA_DIR: dataDir,
     },
   });

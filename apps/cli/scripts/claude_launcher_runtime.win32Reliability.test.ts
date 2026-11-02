@@ -3,13 +3,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { buildClaudeBinarySpawnInvocation } from '../scripts/claude_launcher_runtime.cjs';
 
 describe('claude_launcher_runtime buildClaudeBinarySpawnInvocation', () => {
-  const originalForceViaComspec = process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC;
+  const originalForceViaComspec = process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC;
 
   afterEach(() => {
     if (originalForceViaComspec === undefined) {
-      delete process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC;
+      delete process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC;
     } else {
-      process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = originalForceViaComspec;
+      process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = originalForceViaComspec;
     }
   });
 
@@ -29,7 +29,7 @@ describe('claude_launcher_runtime buildClaudeBinarySpawnInvocation', () => {
   });
 
   it('can force ComSpec wrapping for executables on Windows', () => {
-    process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = '1';
+    process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC = '1';
 
     const inv = buildClaudeBinarySpawnInvocation({
       platform: 'win32',

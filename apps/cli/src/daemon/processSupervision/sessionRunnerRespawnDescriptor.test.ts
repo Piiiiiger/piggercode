@@ -9,7 +9,7 @@ import {
 } from './sessionRunnerRespawnDescriptor';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import type { Credentials } from '@/persistence';
-import { HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
 
 describe('sessionRunnerRespawnDescriptor', () => {
   it('does not persist the ephemeral pending first input across daemon restart', () => {
@@ -439,7 +439,7 @@ describe('sessionRunnerRespawnDescriptor', () => {
         CLAUDE_CONFIG_DIR: '/tmp/claude-config',
         CODEX_HOME: '/tmp/codex-home',
         CODEX_SQLITE_HOME: '/tmp/codex-sqlite-home',
-        HAPPIER_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
+        PIGGERCODE_CODEX_APP_SERVER_TRANSPORT: 'daemonProxy',
         OPENAI_API_KEY: 'test-key',
         ANTHROPIC_AUTH_TOKEN: 'test-token',
       },
@@ -502,7 +502,7 @@ describe('sessionRunnerRespawnDescriptor', () => {
       },
       approvedNewDirectoryCreation: true,
     });
-    expect(restored.environmentVariables).not.toHaveProperty('HAPPIER_CODEX_APP_SERVER_TRANSPORT');
+    expect(restored.environmentVariables).not.toHaveProperty('PIGGERCODE_CODEX_APP_SERVER_TRANSPORT');
   });
 
   it('builds tracked respawn environment variables from expanded env plus safe child runtime locators only', () => {
@@ -521,10 +521,10 @@ describe('sessionRunnerRespawnDescriptor', () => {
       },
       extraEnvForChild: {
         CLAUDE_CONFIG_DIR: '/tmp/claude-config',
-        HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON: '["OPENAI_API_KEY"]',
-        HAPPIER_SESSION_REQUESTED_DIRECTORY: '/tmp/repo',
-        HAPPIER_CODEX_BACKEND_MODE: 'acp',
-        [HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]: materializationIdentityJson,
+        PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON: '["OPENAI_API_KEY"]',
+        PIGGERCODE_SESSION_REQUESTED_DIRECTORY: '/tmp/repo',
+        PIGGERCODE_CODEX_BACKEND_MODE: 'acp',
+        [PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]: materializationIdentityJson,
       },
     })).toEqual({
       OPENAI_API_KEY: 'sk-openai',
@@ -532,7 +532,7 @@ describe('sessionRunnerRespawnDescriptor', () => {
       CODEX_HOME: '/tmp/codex-home',
       CODEX_SQLITE_HOME: '/tmp/codex-sqlite-home',
       CLAUDE_CONFIG_DIR: '/tmp/claude-config',
-      [HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]: materializationIdentityJson,
+      [PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]: materializationIdentityJson,
     });
   });
 });

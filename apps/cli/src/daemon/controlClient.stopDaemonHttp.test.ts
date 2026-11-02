@@ -40,13 +40,13 @@ function requireObserved(value: { token: string; body: string } | null): { token
 }
 
 describe('daemon control client: stopDaemonHttp', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
   let tmpHomeDir: string | null = null;
 
   afterEach(async () => {
     await clearDaemonStateForTests();
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
     reloadConfiguration();
     if (tmpHomeDir) {
       await removeTempDir(tmpHomeDir);
@@ -75,7 +75,7 @@ describe('daemon control client: stopDaemonHttp', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-stop-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -111,7 +111,7 @@ describe('daemon control client: stopDaemonHttp', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-stop-session-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,
@@ -146,7 +146,7 @@ describe('daemon control client: stopDaemonHttp', () => {
     try {
       const { port } = await listen(server);
       tmpHomeDir = await createTempDir('happier-daemon-client-lifecycle-stop-session-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,

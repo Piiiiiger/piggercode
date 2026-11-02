@@ -54,9 +54,9 @@ test.describe('ui e2e: SCM review position + tab state', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
       },
     });
 
@@ -69,7 +69,7 @@ test.describe('ui e2e: SCM review position + tab state', () => {
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
         // On cold caches, the initial Metro web bundle can take >2 minutes; avoid aborting the request
         // before it has a chance to complete (which can cause repeated restarts and flakiness).
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '420000',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '420000',
       },
     });
 
@@ -113,11 +113,11 @@ test.describe('ui e2e: SCM review position + tab state', () => {
           HOME: cliHomeDir,
           // Machine-scoped RPC (used as a fallback when a newly-spawned session has no encryption context yet)
           // must be allowed to read the repo fixture directory.
-          HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: testDir,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: testDir,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
       daemon = runDaemon;

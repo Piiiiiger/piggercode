@@ -60,7 +60,7 @@ describe('archive request recovery', () => {
         resetRuntimeFetch();
         vi.restoreAllMocks();
         vi.useRealTimers();
-        delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS;
     });
 
     it.each([
@@ -71,7 +71,7 @@ describe('archive request recovery', () => {
         { stalledPhase: 'body', afterStop: true, budget: '0', target: 'remote' },
         { stalledPhase: 'body', afterStop: true, budget: '1000', target: 'active' },
     ] as const)('aborts a stalled $target archive $stalledPhase (afterStop=$afterStop, budget=$budget), releases admission, and admits a successful retry', async ({ stalledPhase, afterStop, budget, target }) => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = budget;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = budget;
         const requested = createDeferred<void>();
         const network: { signal?: AbortSignal | null } = {};
         let attempts = 0;
@@ -136,7 +136,7 @@ describe('archive request recovery', () => {
     });
 
     it('shares one deadline across the first response body and later inactivity retries', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '1000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS = '1000';
         const firstRequested = createDeferred<void>();
         const firstResponse = createDeferred<Response>();
         const secondResponse = createDeferred<Response>();

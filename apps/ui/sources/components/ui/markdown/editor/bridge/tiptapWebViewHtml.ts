@@ -8,7 +8,7 @@
  *    to raw mode. (A markdown file editor writing to disk must be deterministic +
  *    offline.)
  *  - D4: the runtime uses headless `@tiptap/core` (the inlined bundle assigns
- *    `globalThis.HAPPIER_TIPTAP_WEBVIEW`), NO React.
+ *    `globalThis.PIGGERCODE_TIPTAP_WEBVIEW`), NO React.
  *
  * The inline `<script type="module">` owns only the chunked postMessage transport
  * + the `ready` handshake (the same wire format as `chunkedBridge.ts`, R4); it
@@ -254,7 +254,7 @@ export function buildTiptapWebViewHtml(params: Readonly<{
 
       function boot() {
         // D9: fail closed when the bundle is missing/empty (no CDN fallback).
-        const api = HAS_BUNDLE ? globalThis.HAPPIER_TIPTAP_WEBVIEW : null;
+        const api = HAS_BUNDLE ? globalThis.PIGGERCODE_TIPTAP_WEBVIEW : null;
         if (!api || typeof api.createRuntime !== 'function') {
           throw new Error('TipTap bundle missing');
         }

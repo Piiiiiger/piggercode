@@ -7,12 +7,12 @@ import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 import { buildMissingProviderCliCommandErrorMessage, requireProviderCliCommand } from './requireProviderCliCommand';
 
 describe('requireProviderCliCommand', () => {
-  let envScope = createEnvKeyScope(['PATH', 'HAPPIER_GEMINI_PATH']);
+  let envScope = createEnvKeyScope(['PATH', 'PIGGERCODE_GEMINI_PATH']);
   const tempDirs: string[] = [];
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['PATH', 'HAPPIER_GEMINI_PATH']);
+    envScope = createEnvKeyScope(['PATH', 'PIGGERCODE_GEMINI_PATH']);
 
     while (tempDirs.length > 0) {
       const dir = tempDirs.pop();
@@ -22,7 +22,7 @@ describe('requireProviderCliCommand', () => {
 
   it('throws a provider-specific error when the CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     expect(() => requireProviderCliCommand('gemini')).toThrow(
       buildMissingProviderCliCommandErrorMessage('gemini'),
@@ -38,7 +38,7 @@ describe('requireProviderCliCommand', () => {
       contents: process.platform === 'win32' ? '@echo off\r\necho ok\r\n' : '#!/bin/sh\necho ok\n',
     });
     process.env.PATH = dir;
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     expect(requireProviderCliCommand('gemini')).toBe(binPath);
   });
@@ -47,7 +47,7 @@ describe('requireProviderCliCommand', () => {
     process.env.PATH = '';
     const dir = createTempDirSync('happier-required-provider-cli-missing-');
     tempDirs.push(dir);
-    process.env.HAPPIER_GEMINI_PATH = join(dir, 'missing-gemini');
+    process.env.PIGGERCODE_GEMINI_PATH = join(dir, 'missing-gemini');
 
     expect(() => requireProviderCliCommand('gemini')).toThrow(/does not point to a supported cli entrypoint/i);
   });

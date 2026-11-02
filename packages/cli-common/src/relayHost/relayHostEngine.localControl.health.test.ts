@@ -87,7 +87,7 @@ describe('RelayHostEngine (local health control)', () => {
               return '{"version":"happier-server-v0.2.4-windows-x64"}\n';
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=3005\r\nHAPPIER_SERVER_HOST=127.0.0.1\r\n';
+              return 'PORT=3005\r\nPIGGERCODE_SERVER_HOST=127.0.0.1\r\n';
             }
             return '';
           },
@@ -194,7 +194,7 @@ describe('RelayHostEngine (local health control)', () => {
               return '{"version":"0.1.2"}\n';
             }
             if (path.endsWith('server.env')) {
-              return 'PORT=24851\nHAPPIER_SERVER_HOST=127.0.0.1\n';
+              return 'PORT=24851\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             return '';
           },
@@ -296,7 +296,7 @@ describe('RelayHostEngine (local health control)', () => {
         return {
           ...actual,
           readFile: async (path: string) => path.endsWith('server.env')
-            ? 'PORT=24851\nHAPPIER_SERVER_HOST=127.0.0.1\n'
+            ? 'PORT=24851\nPIGGERCODE_SERVER_HOST=127.0.0.1\n'
             : '',
         };
       });
@@ -331,14 +331,14 @@ describe('RelayHostEngine (local health control)', () => {
   it('retries the local relay health probe during start until the relay becomes healthy', async () => {
     const originalPlatform = process.platform;
     const originalFetch = globalThis.fetch;
-    const originalTimeoutEnv = process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+    const originalTimeoutEnv = process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
     const commands: string[] = [];
 
     Object.defineProperty(process, 'platform', { value: 'linux' });
 
     vi.useFakeTimers();
     try {
-      process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = '5000';
+      process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = '5000';
 
       let fetchAttempt = 0;
       globalThis.fetch = vi.fn(async () => {
@@ -392,7 +392,7 @@ describe('RelayHostEngine (local health control)', () => {
         return {
           ...actual,
           readFile: async (path: string) => path.endsWith('server.env')
-            ? 'PORT=24851\nHAPPIER_SERVER_HOST=127.0.0.1\n'
+            ? 'PORT=24851\nPIGGERCODE_SERVER_HOST=127.0.0.1\n'
             : '',
         };
       });
@@ -420,9 +420,9 @@ describe('RelayHostEngine (local health control)', () => {
       expect(commands.some((command) => command.includes('systemctl'))).toBe(true);
     } finally {
       if (originalTimeoutEnv === undefined) {
-        delete process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
+        process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
       }
       Object.defineProperty(process, 'platform', { value: originalPlatform });
       globalThis.fetch = originalFetch;
@@ -435,14 +435,14 @@ describe('RelayHostEngine (local health control)', () => {
   it('uses the long default local relay health timeout during restart', async () => {
     const originalPlatform = process.platform;
     const originalFetch = globalThis.fetch;
-    const originalTimeoutEnv = process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+    const originalTimeoutEnv = process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
     const commands: string[] = [];
 
     Object.defineProperty(process, 'platform', { value: 'linux' });
 
     vi.useFakeTimers();
     try {
-      delete process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
 
       const healthStartMs = Date.now();
       globalThis.fetch = vi.fn(async () => {
@@ -495,7 +495,7 @@ describe('RelayHostEngine (local health control)', () => {
         return {
           ...actual,
           readFile: async (path: string) => path.endsWith('server.env')
-            ? 'PORT=24851\nHAPPIER_SERVER_HOST=127.0.0.1\n'
+            ? 'PORT=24851\nPIGGERCODE_SERVER_HOST=127.0.0.1\n'
             : '',
         };
       });
@@ -522,9 +522,9 @@ describe('RelayHostEngine (local health control)', () => {
       expect(commands.some((command) => command.includes('systemctl --user restart'))).toBe(true);
     } finally {
       if (originalTimeoutEnv === undefined) {
-        delete process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
+        process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
       }
       Object.defineProperty(process, 'platform', { value: originalPlatform });
       globalThis.fetch = originalFetch;
@@ -537,12 +537,12 @@ describe('RelayHostEngine (local health control)', () => {
   it('rejects local restart when the relay never becomes healthy again', async () => {
     const originalPlatform = process.platform;
     const originalFetch = globalThis.fetch;
-    const originalTimeoutEnv = process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+    const originalTimeoutEnv = process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
 
     Object.defineProperty(process, 'platform', { value: 'linux' });
 
     try {
-      process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = '250';
+      process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = '250';
       globalThis.fetch = vi.fn(async () => ({
         ok: false,
         status: 503,
@@ -587,7 +587,7 @@ describe('RelayHostEngine (local health control)', () => {
         return {
           ...actual,
           readFile: async (path: string) => path.endsWith('server.env')
-            ? 'PORT=24851\nHAPPIER_SERVER_HOST=127.0.0.1\n'
+            ? 'PORT=24851\nPIGGERCODE_SERVER_HOST=127.0.0.1\n'
             : '',
         };
       });
@@ -609,9 +609,9 @@ describe('RelayHostEngine (local health control)', () => {
       })).rejects.toThrow(/healthy/i);
     } finally {
       if (originalTimeoutEnv === undefined) {
-        delete process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
+        process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS = originalTimeoutEnv;
       }
       Object.defineProperty(process, 'platform', { value: originalPlatform });
       globalThis.fetch = originalFetch;

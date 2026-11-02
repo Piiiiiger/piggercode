@@ -6,7 +6,7 @@ import type { ProviderScenario, ProviderUnderTest } from '../../src/testkit/prov
 function makeProvider(toolPermissionPromptsByModeYolo: boolean): ProviderUnderTest {
   return {
     id: 'kimi',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_KIMI',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_KIMI',
     protocol: 'acp',
     traceProvider: 'kimi',
     permissions: {

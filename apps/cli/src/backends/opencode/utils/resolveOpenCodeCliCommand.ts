@@ -25,7 +25,7 @@ export type OpenCodeCliLaunchSpec = ProviderCliLaunchSpec & Readonly<{
 export function resolveOpenCodeCliLaunchSpec(
   processEnv: NodeJS.ProcessEnv = process.env,
 ): OpenCodeCliLaunchSpec {
-  const generation = normalizeOpenCodeCliGeneration(processEnv.HAPPIER_OPENCODE_CLI_GENERATION);
+  const generation = normalizeOpenCodeCliGeneration(processEnv.PIGGERCODE_OPENCODE_CLI_GENERATION);
   const candidates = resolveProviderCliCommandCandidates('opencode', {
     processEnv,
     currentExecPath: process.execPath,
@@ -36,8 +36,8 @@ export function resolveOpenCodeCliLaunchSpec(
       ? candidates.find(({ command }) => !isOpenCodeV2Command(command))
       : candidates.find(({ command }) => !isOpenCodeV2Command(command)) ?? candidates[0];
   if (!resolved) {
-    const explicitPath = typeof processEnv.HAPPIER_OPENCODE_PATH === 'string'
-      ? processEnv.HAPPIER_OPENCODE_PATH.trim()
+    const explicitPath = typeof processEnv.PIGGERCODE_OPENCODE_PATH === 'string'
+      ? processEnv.PIGGERCODE_OPENCODE_PATH.trim()
       : '';
     if (explicitPath && candidates.length > 0 && generation === 'stable') {
       throw new ReferenceError(

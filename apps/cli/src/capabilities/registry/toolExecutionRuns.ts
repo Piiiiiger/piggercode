@@ -61,7 +61,7 @@ export const executionRunsCapability: Capability = {
     const voiceEnabled = resolveCliFeatureDecision({ featureId: 'voice', env: process.env }).state === 'enabled';
 
     const coderabbitOverride =
-      typeof process.env.HAPPIER_CODERABBIT_REVIEW_CMD === 'string' && process.env.HAPPIER_CODERABBIT_REVIEW_CMD.trim().length > 0;
+      typeof process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD === 'string' && process.env.PIGGERCODE_CODERABBIT_REVIEW_CMD.trim().length > 0;
     const mergedPath = (() => {
       const snapshotPath = typeof context?.cliSnapshot?.path === 'string' ? context.cliSnapshot.path.trim() : '';
       const envPath = typeof process.env.PATH === 'string' ? process.env.PATH.trim() : '';

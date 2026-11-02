@@ -273,7 +273,7 @@ describe('registerConnectedServiceRuntimeTargetForDaemon onRegisteredTarget', ()
         },
       },
       connectedServiceSelectionsEnv: {
-        HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+        PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',

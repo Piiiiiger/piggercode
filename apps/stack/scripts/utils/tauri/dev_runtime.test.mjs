@@ -69,8 +69,8 @@ test('buildStackTauriDevConfig applies explicit stack overrides after merging co
     },
     devUrl: 'http://localhost:18081',
     env: {
-      HAPPIER_STACK_TAURI_PRODUCT_NAME: 'Happier (stack exp1)',
-      HAPPIER_STACK_TAURI_IDENTIFIER: 'com.happier.stack.exp1',
+      PIGGERCODE_STACK_TAURI_PRODUCT_NAME: 'Happier (stack exp1)',
+      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'com.happier.stack.exp1',
     },
   });
 

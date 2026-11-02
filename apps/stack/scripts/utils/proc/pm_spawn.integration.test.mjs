@@ -49,7 +49,7 @@ async function writeStubYarnCaptureKind({ binDir }) {
       // pmSpawn* calls: yarn run <script/bin> ...
       'if (args[0] === "run") {',
       '  const out = process.env.TEST_OUT_FILE || "";',
-      '  if (out) fs.writeFileSync(out, String(process.env.HAPPIER_STACK_PROCESS_KIND || ""), "utf-8");',
+      '  if (out) fs.writeFileSync(out, String(process.env.PIGGERCODE_STACK_PROCESS_KIND || ""), "utf-8");',
       '  process.exit(0);',
       '}',
       'process.exit(0);',
@@ -123,7 +123,7 @@ test('pmSpawnBin does not reference effectiveEnv before initialization', async (
   assert.equal(res.code, 0);
 });
 
-test('pmSpawnScript marks stack-owned infra processes with HAPPIER_STACK_PROCESS_KIND=infra', async (t) => {
+test('pmSpawnScript marks stack-owned infra processes with PIGGERCODE_STACK_PROCESS_KIND=infra', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'hs-pm-spawn-kind-'));
   t.after(async () => {
     await rm(root, { recursive: true, force: true });
@@ -143,8 +143,8 @@ test('pmSpawnScript marks stack-owned infra processes with HAPPIER_STACK_PROCESS
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     TEST_OUT_FILE: outFile,
-    HAPPIER_STACK_STACK: 'k',
-    HAPPIER_STACK_ENV_FILE: join(root, 'stack-env'),
+    PIGGERCODE_STACK_STACK: 'k',
+    PIGGERCODE_STACK_ENV_FILE: join(root, 'stack-env'),
   };
   const child = await pmSpawnScript({ dir: componentDir, label: 'spawn-test', script: 'noop', env, quiet: true, options: { silent: true } });
   const res = await waitExit(child);

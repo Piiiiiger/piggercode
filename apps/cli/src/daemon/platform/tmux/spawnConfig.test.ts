@@ -45,8 +45,8 @@ describe('tmux session resource policy', () => {
       host: 'herdr',
       agent: 'codex',
       directory: '/tmp',
-      extraEnv: { HAPPIER_CODEX_BACKEND_MODE: 'appServer' },
-      processEnv: { PATH: '/bin', XDG_CONFIG_HOME: '/test/config', HAPPIER_ACTIVE_SERVER_ID: 'stale' },
+      extraEnv: { PIGGERCODE_CODEX_BACKEND_MODE: 'appServer' },
+      processEnv: { PATH: '/bin', XDG_CONFIG_HOME: '/test/config', PIGGERCODE_ACTIVE_SERVER_ID: 'stale' },
       serverSelectionEnv: {
         activeServerId: 'current',
         canonicalServerUrl: 'https://relay.example.test',
@@ -58,8 +58,8 @@ describe('tmux session resource policy', () => {
 
     expect(config.childEnv).toMatchObject({
       XDG_CONFIG_HOME: '/test/config',
-      HAPPIER_ACTIVE_SERVER_ID: 'current',
-      HAPPIER_CODEX_BACKEND_MODE: 'appServer',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'current',
+      PIGGERCODE_CODEX_BACKEND_MODE: 'appServer',
     });
     expect(config.commandTokens).toEqual(expect.arrayContaining(['codex', '--happy-starting-mode', 'local']));
   });
@@ -77,7 +77,7 @@ describe('tmux session resource policy', () => {
     vi.stubEnv('PATH', `${commandDirectory}${delimiter}${process.env.PATH ?? ''}`);
     vi.stubEnv('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/test/session-bus');
     vi.stubEnv('XDG_RUNTIME_DIR', '/test/runtime');
-    vi.stubEnv('HAPPIER_DAEMON_STARTUP_SOURCE', 'background-service');
+    vi.stubEnv('PIGGERCODE_DAEMON_STARTUP_SOURCE', 'background-service');
     Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' });
   }
 
@@ -87,11 +87,11 @@ describe('tmux session resource policy', () => {
     const config = await buildTmuxSpawnConfig({
       agent: 'codex',
       directory: '/tmp',
-      extraEnv: { HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP: '1' },
+      extraEnv: { PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP: '1' },
       launchOptions: { runtimeDecision: {
         runtime: 'node',
         argvPrefix: ['--no-warnings', '/test/admitted-runner.mjs'],
-        env: { HAPPIER_TEST_RUNNER_ENV: 'retained' },
+        env: { PIGGERCODE_TEST_RUNNER_ENV: 'retained' },
       } },
     });
 
@@ -101,8 +101,8 @@ describe('tmux session resource policy', () => {
     ]));
     expect(config.tmuxEnv.DBUS_SESSION_BUS_ADDRESS).toBe('unix:path=/test/session-bus');
     expect(config.tmuxEnv.XDG_RUNTIME_DIR).toBe('/test/runtime');
-    expect(config.tmuxEnv.HAPPIER_TEST_RUNNER_ENV).toBe('retained');
-    expect(config.tmuxEnv.HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP).not.toBe('1');
+    expect(config.tmuxEnv.PIGGERCODE_TEST_RUNNER_ENV).toBe('retained');
+    expect(config.tmuxEnv.PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP).not.toBe('1');
   });
 
   it('pins daemon-owned child keys so a long-lived tmux server cannot leak stale relay state', async () => {
@@ -112,11 +112,11 @@ describe('tmux session resource policy', () => {
       extraEnv: {},
       processEnv: {
         PATH: '/bin',
-        HAPPIER_ACTIVE_SERVER_ID: 'stale-server',
-        HAPPIER_SERVER_URL: 'https://stale.example.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stale-public.example.test',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stale-server',
+        PIGGERCODE_SERVER_URL: 'https://stale.example.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stale-public.example.test',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
       },
       serverSelectionEnv: {
         activeServerId: 'custom',
@@ -127,13 +127,13 @@ describe('tmux session resource policy', () => {
     });
 
     expect(config.tmuxEnv).toMatchObject({
-      HAPPIER_ACTIVE_SERVER_ID: 'custom',
-      HAPPIER_SERVER_URL: 'https://relay.example.test:27443',
-      HAPPIER_WEBAPP_URL: 'https://relay.example.test:27443',
-      HAPPIER_PUBLIC_SERVER_URL: '',
-      HAPPIER_LOCAL_SERVER_URL: '',
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_STARTUP_SOURCE: '',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'custom',
+      PIGGERCODE_SERVER_URL: 'https://relay.example.test:27443',
+      PIGGERCODE_WEBAPP_URL: 'https://relay.example.test:27443',
+      PIGGERCODE_PUBLIC_SERVER_URL: '',
+      PIGGERCODE_LOCAL_SERVER_URL: '',
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
     });
   });
 });

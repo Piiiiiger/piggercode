@@ -53,9 +53,9 @@ function dedupeToolsByName(
   return Object.freeze([...deduped.values()]);
 }
 
-export const HAPPIER_BUILT_IN_TOOLS: readonly HappierBuiltInToolDefinition[] = dedupeToolsByName([
+export const PIGGERCODE_BUILT_IN_TOOLS: readonly HappierBuiltInToolDefinition[] = dedupeToolsByName([
   ...MANUAL_TOOLS,
   ...buildActionBackedTools(),
 ] as const);
 
-export const HAPPIER_BUILT_IN_TOOL_NAMES = Object.freeze(HAPPIER_BUILT_IN_TOOLS.map((tool) => tool.name));
+export const PIGGERCODE_BUILT_IN_TOOL_NAMES = Object.freeze(PIGGERCODE_BUILT_IN_TOOLS.map((tool) => tool.name));

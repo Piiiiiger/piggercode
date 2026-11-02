@@ -108,8 +108,8 @@ function resolveAuthStackCliHomeDir({ stackName }) {
   }
 
   const mergedEnv = { ...stackEnv, ...process.env };
-  if (!String(mergedEnv.HAPPIER_STACK_CLI_HOME_DIR ?? '').trim()) {
-    mergedEnv.HAPPIER_STACK_CLI_HOME_DIR = getCliHomeDirFromEnvOrDefault({ stackBaseDir: baseDir, env: stackEnv });
+  if (!String(mergedEnv.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').trim()) {
+    mergedEnv.PIGGERCODE_STACK_CLI_HOME_DIR = getCliHomeDirFromEnvOrDefault({ stackBaseDir: baseDir, env: stackEnv });
   }
   return resolveCliHomeDir(mergedEnv, { preferStackCliHomeDir: true });
 }
@@ -119,14 +119,14 @@ async function resolveWebappUrlFromRunningExpo({ rootDir, stackName }) {
 }
 
 function resolveAuthCredentialValidationAttempts(env = process.env) {
-  const raw = String(env.HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS ?? '').trim();
+  const raw = String(env.PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS ?? '').trim();
   if (!raw) return 4;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 4;
 }
 
 function resolveAuthCredentialValidationRetryDelayMs(env = process.env) {
-  const raw = String(env.HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS ?? '').trim();
   if (!raw) return 250;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 250;
@@ -342,21 +342,21 @@ function argvKvValue(argv, name) {
 }
 
 function resolveGuidedServerReadyTimeoutMs(env = process.env) {
-  const raw = String(env.HAPPIER_STACK_AUTH_SERVER_READY_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_STACK_AUTH_SERVER_READY_TIMEOUT_MS ?? '').trim();
   if (!raw) return 30_000;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 1_000 ? n : 30_000;
 }
 
 function resolveAuthExpoSoftTimeoutMs(env = process.env) {
-  const raw = String(env.HAPPIER_STACK_AUTH_EXPO_SOFT_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_STACK_AUTH_EXPO_SOFT_TIMEOUT_MS ?? '').trim();
   if (!raw) return 120_000;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 1 ? n : 120_000;
 }
 
 function resolveAuthExpoMaxTimeoutMs(env = process.env) {
-  const raw = String(env.HAPPIER_STACK_AUTH_EXPO_MAX_TIMEOUT_MS ?? '').trim();
+  const raw = String(env.PIGGERCODE_STACK_AUTH_EXPO_MAX_TIMEOUT_MS ?? '').trim();
   if (!raw) return 900_000;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 1 ? n : 900_000;
@@ -383,7 +383,7 @@ async function isStackRuntimeOwnerAlive(stackName) {
 
 function resolveServerComponentForCurrentStack() {
   return (
-    (process.env.HAPPIER_STACK_SERVER_COMPONENT ?? 'happier-server-light').trim() ||
+    (process.env.PIGGERCODE_STACK_SERVER_COMPONENT ?? 'happier-server-light').trim() ||
     'happier-server-light'
   );
 }
@@ -495,7 +495,7 @@ async function cmdDevKey({ argv, json }) {
         console.log(
           bullets([
           `${dim('save locally:')} ${cmdFmt('hstack auth dev-key --set "<base64url-secret-or-backup-format>"')}`,
-          `${dim('or export for this shell:')} export HAPPIER_STACK_DEV_AUTH_SECRET_KEY="<base64url-secret>"`,
+          `${dim('or export for this shell:')} export PIGGERCODE_STACK_DEV_AUTH_SECRET_KEY="<base64url-secret>"`,
         ])
       );
       if (out.path) {
@@ -560,7 +560,7 @@ async function runNodeCapture({ cwd, env, args, stdin }) {
 }
 
 function resolveServerComponentFromEnv(env) {
-  const v = (env.HAPPIER_STACK_SERVER_COMPONENT ?? 'happier-server-light').trim() || 'happier-server-light';
+  const v = (env.PIGGERCODE_STACK_SERVER_COMPONENT ?? 'happier-server-light').trim() || 'happier-server-light';
   return v === 'happier-server' ? 'happier-server' : 'happier-server-light';
 }
 
@@ -596,22 +596,22 @@ function resolveDatabaseUrlFromEnvOrThrow({ env, stackName, label, provider }) {
 }
 
 function resolveEmbeddedDirsForStack({ env, baseDir }) {
-  const dataDir = (env.HAPPIER_SERVER_LIGHT_DATA_DIR ?? env.HAPPY_SERVER_LIGHT_DATA_DIR ?? '').toString().trim() || join(baseDir, 'server-light');
-  const filesDir = (env.HAPPIER_SERVER_LIGHT_FILES_DIR ?? env.HAPPY_SERVER_LIGHT_FILES_DIR ?? '').toString().trim() || join(dataDir, 'files');
-  const dbDir = (env.HAPPIER_SERVER_LIGHT_DB_DIR ?? env.HAPPY_SERVER_LIGHT_DB_DIR ?? '').toString().trim() || join(dataDir, 'pglite');
+  const dataDir = (env.PIGGERCODE_SERVER_LIGHT_DATA_DIR ?? env.HAPPY_SERVER_LIGHT_DATA_DIR ?? '').toString().trim() || join(baseDir, 'server-light');
+  const filesDir = (env.PIGGERCODE_SERVER_LIGHT_FILES_DIR ?? env.HAPPY_SERVER_LIGHT_FILES_DIR ?? '').toString().trim() || join(dataDir, 'files');
+  const dbDir = (env.PIGGERCODE_SERVER_LIGHT_DB_DIR ?? env.HAPPY_SERVER_LIGHT_DB_DIR ?? '').toString().trim() || join(dataDir, 'pglite');
   return { dataDir, filesDir, dbDir };
 }
 
 export function buildEmbeddedMigrationBaseEnv(processEnv, envIn) {
   const baseEnv = { ...(processEnv && typeof processEnv === 'object' ? processEnv : {}) };
   delete baseEnv.DATABASE_URL;
-  delete baseEnv.HAPPIER_SERVER_LIGHT_DATA_DIR;
-  delete baseEnv.HAPPIER_SERVER_LIGHT_FILES_DIR;
-  delete baseEnv.HAPPIER_SERVER_LIGHT_DB_DIR;
+  delete baseEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR;
+  delete baseEnv.PIGGERCODE_SERVER_LIGHT_FILES_DIR;
+  delete baseEnv.PIGGERCODE_SERVER_LIGHT_DB_DIR;
   delete baseEnv.HAPPY_SERVER_LIGHT_DATA_DIR;
   delete baseEnv.HAPPY_SERVER_LIGHT_FILES_DIR;
   delete baseEnv.HAPPY_SERVER_LIGHT_DB_DIR;
-  delete baseEnv.HAPPIER_DB_PROVIDER;
+  delete baseEnv.PIGGERCODE_DB_PROVIDER;
   delete baseEnv.HAPPY_DB_PROVIDER;
   return { ...baseEnv, ...(envIn && typeof envIn === 'object' ? envIn : {}) };
 }
@@ -637,9 +637,9 @@ async function ensureEmbeddedMigrationsApplied({ serverComponentName, serverDir,
   // Start from the current process env so we can spawn Yarn reliably, then overlay stack-specific vars.
   const env = buildEmbeddedMigrationBaseEnv(process.env, envIn);
   const { dataDir, filesDir, dbDir } = resolveEmbeddedDirsForStack({ env, baseDir });
-  env.HAPPIER_SERVER_LIGHT_DATA_DIR = dataDir;
-  env.HAPPIER_SERVER_LIGHT_FILES_DIR = filesDir;
-  env.HAPPIER_SERVER_LIGHT_DB_DIR = dbDir;
+  env.PIGGERCODE_SERVER_LIGHT_DATA_DIR = dataDir;
+  env.PIGGERCODE_SERVER_LIGHT_FILES_DIR = filesDir;
+  env.PIGGERCODE_SERVER_LIGHT_DB_DIR = dbDir;
   env.HAPPY_SERVER_LIGHT_DATA_DIR = env.HAPPY_SERVER_LIGHT_DATA_DIR ?? dataDir;
   env.HAPPY_SERVER_LIGHT_FILES_DIR = env.HAPPY_SERVER_LIGHT_FILES_DIR ?? filesDir;
   env.HAPPY_SERVER_LIGHT_DB_DIR = env.HAPPY_SERVER_LIGHT_DB_DIR ?? dbDir;
@@ -648,7 +648,7 @@ async function ensureEmbeddedMigrationsApplied({ serverComponentName, serverDir,
   if (provider !== 'sqlite' && provider !== 'pglite') {
     throw new Error(`[auth] embedded migration path does not support provider ${provider}`);
   }
-  env.HAPPIER_DB_PROVIDER = provider;
+  env.PIGGERCODE_DB_PROVIDER = provider;
 
   const envWithCache = await applyStackCacheEnv(env);
   await applyServerMigrations({ serverDir, env: envWithCache, dbProvider: provider, quiet });
@@ -956,8 +956,8 @@ async function cmdCopyFrom({ argv, json }) {
     (kv.get('--link') ?? '').trim() === '1' ||
     (kv.get('--symlink') ?? '').trim() === '1' ||
     (kv.get('--auth-mode') ?? '').trim() === 'link' ||
-    (process.env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
-    (process.env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
+    (process.env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
+    (process.env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
   const allowMain = flags.has('--allow-main') || flags.has('--main-ok') || (kv.get('--allow-main') ?? '').trim() === '1';
   const exceptRaw = (kv.get('--except') ?? '').trim();
   const except = new Set(exceptRaw.split(',').map((s) => s.trim()).filter(Boolean));
@@ -1058,9 +1058,9 @@ async function cmdCopyFrom({ argv, json }) {
   const targetBaseDir = getDefaultAutostartPaths().baseDir;
   const targetCli = resolveAuthStackCliHomeDir({ stackName });
   const targetServerLightDataDir =
-    (process.env.HAPPIER_SERVER_LIGHT_DATA_DIR ?? '').trim() || join(targetBaseDir, 'server-light');
+    (process.env.PIGGERCODE_SERVER_LIGHT_DATA_DIR ?? '').trim() || join(targetBaseDir, 'server-light');
   const targetSecretFile =
-    (process.env.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim() || join(targetBaseDir, 'happier-server', 'handy-master-secret.txt');
+    (process.env.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim() || join(targetBaseDir, 'happier-server', 'handy-master-secret.txt');
   const { secret, source } = await resolveHandyMasterSecretFromStack({
     stackName: fromStackName,
     requireStackExists: true,
@@ -1100,12 +1100,12 @@ async function cmdCopyFrom({ argv, json }) {
   };
 
   // IMPORTANT:
-  // Stack auth now uses stable server IDs (`HAPPIER_ACTIVE_SERVER_ID`) which are not persisted in stack env files.
+  // Stack auth now uses stable server IDs (`PIGGERCODE_ACTIVE_SERVER_ID`) which are not persisted in stack env files.
   // Reconstruct the stable scope ID here so copy-from reads the same source credential path that login wrote.
   // copy-from must use stack-stable credential scope even if the caller shell leaked
-  // rollback flags like HAPPIER_STACK_DISABLE_STABLE_SCOPE=1.
+  // rollback flags like PIGGERCODE_STACK_DISABLE_STABLE_SCOPE=1.
   const sourceScopeEnv = { ...process.env, ...sourceEnv };
-  delete sourceScopeEnv.HAPPIER_STACK_DISABLE_STABLE_SCOPE;
+  delete sourceScopeEnv.PIGGERCODE_STACK_DISABLE_STABLE_SCOPE;
   const sourceEnvScoped = applyStackActiveServerScopeEnv({
     env: sourceScopeEnv,
     stackName: fromStackName,
@@ -1121,7 +1121,7 @@ async function cmdCopyFrom({ argv, json }) {
     findAnyCredentialPathInCliHome({ cliHomeDir: sourceCli });
   const targetEnv = process.env;
   const targetScopeEnv = { ...targetEnv };
-  delete targetScopeEnv.HAPPIER_STACK_DISABLE_STABLE_SCOPE;
+  delete targetScopeEnv.PIGGERCODE_STACK_DISABLE_STABLE_SCOPE;
   const targetEnvScoped = applyStackActiveServerScopeEnv({
     env: targetScopeEnv,
     stackName,
@@ -1306,7 +1306,7 @@ async function cmdCopyFrom({ argv, json }) {
 	      } catch (e) {
         // For full server stacks, allow `copy-from --with-infra` to bring up Docker infra just-in-time
         // so we can seed DB accounts reliably.
-        const managed = (targetEnv.HAPPIER_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0';
+        const managed = (targetEnv.PIGGERCODE_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0';
 	        if (targetServerComponent === 'happier-server' && targetDbProvider === 'postgres' && withInfra && managed) {
           const { port } = await getInternalServerUrlCompat();
           const publicServerUrl = await preferStackLocalhostUrl(`http://localhost:${port}`, { stackName });
@@ -1567,7 +1567,7 @@ async function cmdLogin({ argv, json }) {
   const runtimeLaunchContext = await resolveStackRuntimeLaunchContext({ argv: [], env: process.env });
   const runtimeSnapshotActive = Boolean(runtimeLaunchContext.snapshot);
 
-  const serviceMode = (process.env.HAPPIER_STACK_SERVICE_MODE ?? '').toString().trim() === '1';
+  const serviceMode = (process.env.PIGGERCODE_STACK_SERVICE_MODE ?? '').toString().trim() === '1';
   const prefersExpoAuthInAuto =
     requestedWebappMode === 'auto' &&
     !explicitWebappUrl &&
@@ -1637,19 +1637,19 @@ async function cmdLogin({ argv, json }) {
 
   let env = {
     ...process.env,
-    HAPPIER_HOME_DIR: cliHomeDir,
-    HAPPIER_SERVER_URL: internalServerUrl,
-    HAPPIER_PUBLIC_SERVER_URL: publicServerUrl,
-    ...(webappUrl ? { HAPPIER_WEBAPP_URL: webappUrl } : {}),
-    ...(noOpen ? { HAPPIER_NO_BROWSER_OPEN: '1' } : {}),
-    ...(method ? { HAPPIER_AUTH_METHOD: method } : {}),
-    ...(force ? { HAPPIER_AUTH_FORCE: '1' } : {}),
+    PIGGERCODE_HOME_DIR: cliHomeDir,
+    PIGGERCODE_SERVER_URL: internalServerUrl,
+    PIGGERCODE_PUBLIC_SERVER_URL: publicServerUrl,
+    ...(webappUrl ? { PIGGERCODE_WEBAPP_URL: webappUrl } : {}),
+    ...(noOpen ? { PIGGERCODE_NO_BROWSER_OPEN: '1' } : {}),
+    ...(method ? { PIGGERCODE_AUTH_METHOD: method } : {}),
+    ...(force ? { PIGGERCODE_AUTH_FORCE: '1' } : {}),
   };
   env = applyStackActiveServerScopeEnv({ env, stackName, cliIdentity: identity });
   const credentialPaths = resolveStackCredentialPaths({ cliHomeDir, serverUrl: internalServerUrl, env });
   const loginEnv =
-    credentialPaths.activeServerId && credentialPaths.activeServerId !== env.HAPPIER_ACTIVE_SERVER_ID
-      ? { ...env, HAPPIER_ACTIVE_SERVER_ID: credentialPaths.activeServerId }
+    credentialPaths.activeServerId && credentialPaths.activeServerId !== env.PIGGERCODE_ACTIVE_SERVER_ID
+      ? { ...env, PIGGERCODE_ACTIVE_SERVER_ID: credentialPaths.activeServerId }
       : env;
 
   const cliExecutable = await resolveStackAuthCliExecutable({ rootDir, env: loginEnv });
@@ -1669,13 +1669,13 @@ async function cmdLogin({ argv, json }) {
 
   if (wantPrint) {
     const cmd =
-      `HAPPIER_HOME_DIR="${cliHomeDir}" ` +
-      `HAPPIER_SERVER_URL="${internalServerUrl}" ` +
-      `HAPPIER_PUBLIC_SERVER_URL="${publicServerUrl}" ` +
-      (loginEnv.HAPPIER_ACTIVE_SERVER_ID ? `HAPPIER_ACTIVE_SERVER_ID="${loginEnv.HAPPIER_ACTIVE_SERVER_ID}" ` : '') +
-      (webappUrl ? `HAPPIER_WEBAPP_URL="${webappUrl}" ` : '') +
-      (noOpen ? `HAPPIER_NO_BROWSER_OPEN="1" ` : '') +
-      (method ? `HAPPIER_AUTH_METHOD="${method}" ` : '') +
+      `PIGGERCODE_HOME_DIR="${cliHomeDir}" ` +
+      `PIGGERCODE_SERVER_URL="${internalServerUrl}" ` +
+      `PIGGERCODE_PUBLIC_SERVER_URL="${publicServerUrl}" ` +
+      (loginEnv.PIGGERCODE_ACTIVE_SERVER_ID ? `PIGGERCODE_ACTIVE_SERVER_ID="${loginEnv.PIGGERCODE_ACTIVE_SERVER_ID}" ` : '') +
+      (webappUrl ? `PIGGERCODE_WEBAPP_URL="${webappUrl}" ` : '') +
+      (noOpen ? `PIGGERCODE_NO_BROWSER_OPEN="1" ` : '') +
+      (method ? `PIGGERCODE_AUTH_METHOD="${method}" ` : '') +
       `"${loginCommand}" ${loginArgs.map((arg) => `"${arg}"`).join(' ')}`;
 
     const configureServer =
@@ -1746,7 +1746,7 @@ async function cmdLogin({ argv, json }) {
         // eslint-disable-next-line no-console
         console.error(`[auth] ${stackName}: service-mode stack is not becoming healthy; falling back to mobile login.`);
         method = 'mobile';
-        env.HAPPIER_AUTH_METHOD = 'mobile';
+        env.PIGGERCODE_AUTH_METHOD = 'mobile';
         const methodIdx = loginArgs.indexOf('--method');
         if (methodIdx >= 0) {
           loginArgs[methodIdx + 1] = 'mobile';
@@ -1767,7 +1767,7 @@ async function cmdLogin({ argv, json }) {
             `[auth] ${stackName}: the stack UI did not become healthy in time; falling back to mobile login.`
           );
           method = 'mobile';
-          env.HAPPIER_AUTH_METHOD = 'mobile';
+          env.PIGGERCODE_AUTH_METHOD = 'mobile';
           const methodIdx = loginArgs.indexOf('--method');
           if (methodIdx >= 0) {
             loginArgs[methodIdx + 1] = 'mobile';
@@ -1817,9 +1817,9 @@ async function cmdLogin({ argv, json }) {
           cwd: rootDir,
           env: {
             ...process.env,
-            HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+            PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
             ...(!shouldUseRuntimeStart && (effectiveWebappMode === 'expo' || shouldStartDevForAutoAuth)
-              ? { HAPPIER_STACK_AUTH_FLOW: '1' }
+              ? { PIGGERCODE_STACK_AUTH_FLOW: '1' }
               : {}),
           },
         }
@@ -1855,7 +1855,7 @@ async function cmdLogin({ argv, json }) {
   let webappUrlForDaemon = webappUrl;
   if (method !== 'mobile' && (effectiveWebappMode === 'expo' || webappUrlSource === 'expo' || startedStackForExpoAuth)) {
     const guidedEnv = applyStackActiveServerScopeEnv({
-      env: { ...scopedEnv, HAPPIER_STACK_AUTH_FLOW: '1' },
+      env: { ...scopedEnv, PIGGERCODE_STACK_AUTH_FLOW: '1' },
       stackName,
       cliIdentity: identity,
     });
@@ -1884,8 +1884,8 @@ async function cmdLogin({ argv, json }) {
             requestedWebappMode === 'auto' && attemptTimeoutMs
               ? {
                   ...guidedEnv,
-                  HAPPIER_STACK_AUTH_UI_READY_TIMEOUT_MS: String(attemptTimeoutMs),
-                  HAPPIER_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS: String(attemptTimeoutMs),
+                  PIGGERCODE_STACK_AUTH_UI_READY_TIMEOUT_MS: String(attemptTimeoutMs),
+                  PIGGERCODE_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS: String(attemptTimeoutMs),
                 }
               : guidedEnv,
           verbosity,
@@ -1909,7 +1909,7 @@ async function cmdLogin({ argv, json }) {
             `[auth] ${stackName}: Expo web UI is not ready yet.\n` +
               `[auth] Falling back to hosted web app (${HOSTED_WEBAPP_URL}) for the approval UI (targets: ${publicServerUrl}).`
           );
-          const hostedEnv = { ...scopedEnv, HAPPIER_WEBAPP_URL: HOSTED_WEBAPP_URL };
+          const hostedEnv = { ...scopedEnv, PIGGERCODE_WEBAPP_URL: HOSTED_WEBAPP_URL };
           await runLogin(hostedEnv);
           webappUrlForDaemon = HOSTED_WEBAPP_URL;
           break;
@@ -1942,7 +1942,7 @@ async function cmdLogin({ argv, json }) {
           console.error(
             `[auth] ${stackName}: falling back to hosted web app (${HOSTED_WEBAPP_URL}) for the approval UI (targets: ${publicServerUrl}).`
           );
-          const hostedEnv = { ...scopedEnv, HAPPIER_WEBAPP_URL: HOSTED_WEBAPP_URL };
+          const hostedEnv = { ...scopedEnv, PIGGERCODE_WEBAPP_URL: HOSTED_WEBAPP_URL };
           await runLogin(hostedEnv);
           webappUrlForDaemon = HOSTED_WEBAPP_URL;
           break;

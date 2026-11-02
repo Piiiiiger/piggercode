@@ -15,7 +15,7 @@ describe('buildCodexAppServerConfigOverrides', () => {
                 command: '/tmp/happier-mcp-bridge',
                 args: ['--url', 'http://127.0.0.1:0'],
                 env: {
-                    HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: '/tmp/bridge-config.json',
+                    PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: '/tmp/bridge-config.json',
                 },
             },
         });
@@ -24,7 +24,7 @@ describe('buildCodexAppServerConfigOverrides', () => {
             'mcp_optional_startup_grace_ms=60000',
             'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
             'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
-            'mcp_servers.happier.env={HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE="/tmp/bridge-config.json"}',
+            'mcp_servers.happier.env={PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE="/tmp/bridge-config.json"}',
             'mcp_servers.happier.enabled=true',
             'mcp_servers.happier.startup_timeout_sec=60',
             'mcp_servers.happier.tool_timeout_sec=3720',
@@ -39,7 +39,7 @@ describe('buildCodexAppServerConfigOverrides', () => {
             happier: { command: 'happier-mcp' },
         }, {
             processEnv: {
-                HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '90000',
+                PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '90000',
             },
         });
 
@@ -82,7 +82,7 @@ describe('buildCodexAppServerConfigOverrides', () => {
         });
 
         expect(overrides).toEqual([
-            'shell_environment_policy.set.HAPPIER_SESSION_ID="session-123"',
+            'shell_environment_policy.set.PIGGERCODE_SESSION_ID="session-123"',
         ]);
     });
 

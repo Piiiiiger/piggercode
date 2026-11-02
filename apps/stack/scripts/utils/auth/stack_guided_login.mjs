@@ -185,13 +185,13 @@ function pickHtmlBundlePath(html) {
   return m?.[1] ? String(m[1]) : '';
 }
 
-const HAPPIER_SERVER_UI_READY_MARKER = 'Welcome to Happier Server!';
+const PIGGERCODE_SERVER_UI_READY_MARKER = 'Welcome to Happier Server!';
 
 function isHappierServerHtmlResponse({ ok, contentType, body }) {
   if (!ok) return false;
   const html = String(body ?? '');
   const looksLikeHtml = String(contentType ?? '').includes('text/html') || /<html|<!doctype/i.test(html);
-  return looksLikeHtml && html.includes(HAPPIER_SERVER_UI_READY_MARKER);
+  return looksLikeHtml && html.includes(PIGGERCODE_SERVER_UI_READY_MARKER);
 }
 
 export function parseExpoBundleErrorPayload(payload) {
@@ -357,11 +357,11 @@ async function resolveServerWebappUrlForAuth({ stackName, env = process.env }) {
 export async function resolveStackWebappTargetForAuth({ rootDir, stackName, env = process.env } = {}) {
   const runtimeLaunchContext = await resolveStackRuntimeLaunchContext({ argv: [], env });
   const authFlow =
-    (env.HAPPIER_STACK_AUTH_FLOW ?? '').toString().trim() === '1' ||
-    (env.HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim() === '1';
+    (env.PIGGERCODE_STACK_AUTH_FLOW ?? '').toString().trim() === '1' ||
+    (env.PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim() === '1';
 
   const timeoutMsRaw =
-    (env.HAPPIER_STACK_AUTH_UI_READY_TIMEOUT_MS ?? '180000').toString().trim();
+    (env.PIGGERCODE_STACK_AUTH_UI_READY_TIMEOUT_MS ?? '180000').toString().trim();
   const timeoutMs = timeoutMsRaw ? Number(timeoutMsRaw) : 180_000;
   const expoUrl = await resolveBestExpoWebappUrlForAuth({
     rootDir,
@@ -399,7 +399,7 @@ export async function resolveStackWebappTargetForAuth({ rootDir, stackName, env 
     );
     const parsed = JSON.parse(String(raw ?? '').trim());
     const cmd = typeof parsed?.cmd === 'string' ? parsed.cmd : '';
-    const url = extractEnvVar(cmd, 'HAPPIER_WEBAPP_URL');
+    const url = extractEnvVar(cmd, 'PIGGERCODE_WEBAPP_URL');
     return { webappUrl: url ? await preferStackLocalhostUrl(url, { stackName }) : '', kind: 'server' };
   } catch {
     return { webappUrl: '', kind: 'server' };
@@ -425,13 +425,13 @@ function resolvePortFromUrl(urlRaw) {
 }
 
 async function resolveServerPortForCoreAuth({ stackName, env = process.env }) {
-  const direct = Number((env.HAPPIER_STACK_SERVER_PORT ?? '').toString().trim());
+  const direct = Number((env.PIGGERCODE_STACK_SERVER_PORT ?? '').toString().trim());
   if (Number.isFinite(direct) && direct > 0) return direct;
 
-  const fromInternal = resolvePortFromUrl(env.HAPPIER_SERVER_URL);
+  const fromInternal = resolvePortFromUrl(env.PIGGERCODE_SERVER_URL);
   if (fromInternal) return fromInternal;
 
-  const fromPublic = resolvePortFromUrl(env.HAPPIER_PUBLIC_SERVER_URL);
+  const fromPublic = resolvePortFromUrl(env.PIGGERCODE_PUBLIC_SERVER_URL);
   if (fromPublic) return fromPublic;
 
   try {
@@ -456,21 +456,21 @@ async function prepareCoreAuthEnv({ stackName, webappUrl, env = process.env } = 
     throw new Error('[auth] cannot run stack login: unable to resolve stack server port');
   }
 
-  const internalServerUrl = String(merged.HAPPIER_SERVER_URL ?? '').trim() || `http://127.0.0.1:${serverPort}`;
+  const internalServerUrl = String(merged.PIGGERCODE_SERVER_URL ?? '').trim() || `http://127.0.0.1:${serverPort}`;
   const resolvedPublic = await resolveServerUrls({
     env: merged,
     serverPort,
     allowEnable: false,
   });
   const publicServerUrl =
-    String(merged.HAPPIER_PUBLIC_SERVER_URL ?? '').trim() || String(resolvedPublic.publicServerUrl ?? '').trim();
+    String(merged.PIGGERCODE_PUBLIC_SERVER_URL ?? '').trim() || String(resolvedPublic.publicServerUrl ?? '').trim();
   if (!publicServerUrl) {
     throw new Error('[auth] cannot run stack login: unable to resolve public server URL');
   }
 
   const cliHomeDir =
-    String(merged.HAPPIER_HOME_DIR ?? '').trim() ||
-    String(merged.HAPPIER_STACK_CLI_HOME_DIR ?? '').trim() ||
+    String(merged.PIGGERCODE_HOME_DIR ?? '').trim() ||
+    String(merged.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').trim() ||
     join(baseDir, 'cli');
   const credentialPaths = resolveStackCredentialPaths({
     cliHomeDir,
@@ -480,11 +480,11 @@ async function prepareCoreAuthEnv({ stackName, webappUrl, env = process.env } = 
 
   return {
     ...merged,
-    HAPPIER_HOME_DIR: cliHomeDir,
-    HAPPIER_SERVER_URL: internalServerUrl,
-    HAPPIER_PUBLIC_SERVER_URL: publicServerUrl,
-    HAPPIER_WEBAPP_URL: webappUrl,
-    ...(credentialPaths.activeServerId ? { HAPPIER_ACTIVE_SERVER_ID: credentialPaths.activeServerId } : {}),
+    PIGGERCODE_HOME_DIR: cliHomeDir,
+    PIGGERCODE_SERVER_URL: internalServerUrl,
+    PIGGERCODE_PUBLIC_SERVER_URL: publicServerUrl,
+    PIGGERCODE_WEBAPP_URL: webappUrl,
+    ...(credentialPaths.activeServerId ? { PIGGERCODE_ACTIVE_SERVER_ID: credentialPaths.activeServerId } : {}),
   };
 }
 
@@ -527,20 +527,20 @@ export async function buildStackAuthLoginInvocation({ rootDir, stackName, webapp
     throw new Error('[auth] buildStackAuthLoginInvocation requires a webappUrl');
   }
   const cliExecutable = await resolveStackAuthCliExecutable({ rootDir: root, env });
-  const merged = { ...(env ?? process.env), HAPPIER_WEBAPP_URL: url };
-  const method = String(merged.HAPPIER_AUTH_METHOD ?? '').trim().toLowerCase();
+  const merged = { ...(env ?? process.env), PIGGERCODE_WEBAPP_URL: url };
+  const method = String(merged.PIGGERCODE_AUTH_METHOD ?? '').trim().toLowerCase();
   if (method && method !== 'web' && method !== 'browser' && method !== 'mobile') {
-    throw new Error(`[auth] invalid HAPPIER_AUTH_METHOD=${method} (expected: web|browser|mobile)`);
+    throw new Error(`[auth] invalid PIGGERCODE_AUTH_METHOD=${method} (expected: web|browser|mobile)`);
   }
   const normalizedMethod = method === 'browser' ? 'web' : method;
 
   const executableLooksLikeScript = cliExecutable.endsWith('.mjs') || cliExecutable.endsWith('.js') || cliExecutable.endsWith('.cjs');
   const command = executableLooksLikeScript ? process.execPath : cliExecutable;
   const args = executableLooksLikeScript ? [cliExecutable, 'auth', 'login'] : ['auth', 'login'];
-  if (String(merged.HAPPIER_AUTH_FORCE ?? '').trim() === '1') {
+  if (String(merged.PIGGERCODE_AUTH_FORCE ?? '').trim() === '1') {
     args.push('--force');
   }
-  if (String(merged.HAPPIER_NO_BROWSER_OPEN ?? '').trim() === '1') {
+  if (String(merged.PIGGERCODE_NO_BROWSER_OPEN ?? '').trim() === '1') {
     args.push('--no-open');
   }
   if (normalizedMethod) {
@@ -565,10 +565,10 @@ export async function guidedStackAuthLoginNow({ rootDir, stackName, env = proces
     throw new Error('[auth] cannot start guided login: web UI URL is empty');
   }
 
-  const skipBundleCheck = (env.HAPPIER_STACK_AUTH_SKIP_BUNDLE_CHECK ?? '').toString().trim() === '1';
+  const skipBundleCheck = (env.PIGGERCODE_STACK_AUTH_SKIP_BUNDLE_CHECK ?? '').toString().trim() === '1';
   // Surface common "blank page" issues (Metro resolver errors) even in quiet mode.
   if (!skipBundleCheck) {
-    const timeoutMsRaw = String(env.HAPPIER_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
+    const timeoutMsRaw = String(env.PIGGERCODE_STACK_AUTH_EXPO_BUNDLE_READY_TIMEOUT_MS ?? '').trim();
     const timeoutMs = timeoutMsRaw ? Number(timeoutMsRaw) : null;
     await assertGuidedAuthWebappReadyOrThrow({
       rootDir,

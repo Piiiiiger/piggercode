@@ -86,7 +86,7 @@ test('ensureActiveAccessKeyValid repairs server-scoped access key from url-hash 
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-repair-'));
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       assert.ok(resolved.urlHashServerScopedPath, 'expected url-hash server scoped path');
       assert.ok(resolved.hostPortServerScopedPath, 'expected host-port server scoped path');
@@ -108,7 +108,7 @@ test('ensureActiveAccessKeyValid repairs server-scoped access key from host-port
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-repair-hostport-'));
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       assert.ok(resolved.hostPortServerScopedPath, 'expected host-port server scoped path');
 
@@ -130,14 +130,14 @@ test('ensureActiveAccessKeyValid repairs a selected profile from the stable daem
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl }) => {
       const env = {
-        HAPPIER_ACTIVE_SERVER_ID: 'android-keyboard-qa',
-        HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev__id_default',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'android-keyboard-qa',
+        PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev__id_default',
       };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       const lifecycleCredentialPath = join(
         home,
         'servers',
-        env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID,
+        env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID,
         'access.key',
       );
 
@@ -166,8 +166,8 @@ test('ensureActiveAccessKeyValid repairs the stable stack scope from a historica
       const stableServerId = 'stack_repo-remote-dev__id_default';
       const historicalServerId = new URL(serverUrl).host.replace(':', '-');
       const env = {
-        HAPPIER_ACTIVE_SERVER_ID: stableServerId,
-        HAPPIER_STACK_STACK: 'repo-remote-dev',
+        PIGGERCODE_ACTIVE_SERVER_ID: stableServerId,
+        PIGGERCODE_STACK_STACK: 'repo-remote-dev',
       };
       writeFileSync(
         join(home, 'settings.json'),
@@ -201,7 +201,7 @@ test('ensureActiveAccessKeyValid does not overwrite an already-valid server-scop
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-keep-'));
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       assert.ok(resolved.urlHashServerScopedPath, 'expected url-hash server scoped path');
 
@@ -221,7 +221,7 @@ test('ensureActiveAccessKeyValid caches unchanged active credential validation',
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-cache-'));
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl, getRequestCount }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       writeAccessKeyFile(resolved.serverScopedPath, 'good-token');
 
@@ -241,7 +241,7 @@ test('ensureActiveAccessKeyValid revalidates when active credential content chan
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-cache-change-'));
   try {
     await withAuthServer({ goodToken: 'good-token-2' }, async ({ serverUrl, getRequestCount }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       writeAccessKeyFile(resolved.serverScopedPath, 'good-token-1');
       await ensureActiveAccessKeyValid({ cliHomeDir: home, serverUrl, env, timeoutMs: 2_500 });
@@ -261,7 +261,7 @@ test('ensureActiveAccessKeyValid seeds missing server-scoped access key from leg
   const home = mkdtempSync(join(tmpdir(), 'happier-stack-cred-legacy-'));
   try {
     await withAuthServer({ goodToken: 'good-token' }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
 
       assert.equal(existsSync(resolved.serverScopedPath), false);
@@ -282,7 +282,7 @@ test('ensureActiveAccessKeyValid does not switch accounts when the active key is
   try {
     const goodToken = createTestJwt({ sub: 'account-b' });
     await withAuthServer({ goodToken }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       assert.ok(resolved.urlHashServerScopedPath, 'expected url-hash server scoped path');
 
@@ -304,7 +304,7 @@ test('ensureActiveAccessKeyValid repairs server-scoped key when both active and 
   try {
     const goodToken = createTestJwt({ sub: 'account-a', jti: 'good' });
     await withAuthServer({ goodToken }, async ({ serverUrl }) => {
-      const env = { HAPPIER_ACTIVE_SERVER_ID: 'stack_test__id_default' };
+      const env = { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_test__id_default' };
       const resolved = resolveStackCredentialPaths({ cliHomeDir: home, serverUrl, env });
       assert.ok(resolved.urlHashServerScopedPath, 'expected url-hash server scoped path');
 

@@ -64,7 +64,7 @@ export async function withCliDistBuildLock(fn, options = {}) {
       lockPath,
       heldLockValue: options.heldLockValue
         ?? options.heldLockPath
-        ?? options.env?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD,
+        ?? options.env?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD,
       timeoutMs,
       pollIntervalMs,
       staleAfterMs,

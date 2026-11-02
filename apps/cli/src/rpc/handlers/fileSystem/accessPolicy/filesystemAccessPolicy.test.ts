@@ -13,7 +13,7 @@ describe('resolveFilesystemAccessPolicy', () => {
   it('uses a single absolute env root as restricted roots policy', () => {
     expect(
       resolveFilesystemAccessPolicy({
-        env: { HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project' },
+        env: { PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project' },
       }),
     ).toEqual({ kind: 'restrictedRoots', roots: ['/srv/project'] });
   });
@@ -21,7 +21,7 @@ describe('resolveFilesystemAccessPolicy', () => {
   it('parses comma-delimited roots in stable order', () => {
     expect(
       resolveFilesystemAccessPolicy({
-        env: { HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: ' /srv/project, /mnt/work ,, /home/server ' },
+        env: { PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: ' /srv/project, /mnt/work ,, /home/server ' },
       }),
     ).toEqual({ kind: 'restrictedRoots', roots: ['/srv/project', '/mnt/work', '/home/server'] });
   });
@@ -29,7 +29,7 @@ describe('resolveFilesystemAccessPolicy', () => {
   it('dedupes canonical duplicate roots', () => {
     expect(
       resolveFilesystemAccessPolicy({
-        env: { HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project,/srv/project/../project' },
+        env: { PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project,/srv/project/../project' },
       }),
     ).toEqual({ kind: 'restrictedRoots', roots: ['/srv/project'] });
   });
@@ -39,7 +39,7 @@ describe('resolveFilesystemAccessPolicy', () => {
       resolveFilesystemAccessPolicy({
         env: {
           HOME: '/home/alice',
-          HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: '~/project,~\\other',
+          PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: '~/project,~\\other',
         },
       }),
     ).toEqual({ kind: 'restrictedRoots', roots: ['/home/alice/project', '/home/alice/other'] });
@@ -52,7 +52,7 @@ describe('resolveFilesystemAccessPolicy', () => {
         env: {
           USERPROFILE: 'C:\\Users\\alice',
           HOME: '/home/alice',
-          HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: '~\\project,~/other',
+          PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: '~\\project,~/other',
         },
       }),
     ).toEqual({
@@ -64,7 +64,7 @@ describe('resolveFilesystemAccessPolicy', () => {
   it('fails closed when any configured root is not absolute', () => {
     expect(() =>
       resolveFilesystemAccessPolicy({
-        env: { HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project,relative/path' },
+        env: { PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: '/srv/project,relative/path' },
       }),
     ).toThrow(FilesystemAccessPolicyConfigurationError);
   });
@@ -72,7 +72,7 @@ describe('resolveFilesystemAccessPolicy', () => {
   it('fails closed when the configured env contains no usable roots', () => {
     expect(() =>
       resolveFilesystemAccessPolicy({
-        env: { HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: ', ,' },
+        env: { PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: ', ,' },
       }),
     ).toThrow(FilesystemAccessPolicyConfigurationError);
   });

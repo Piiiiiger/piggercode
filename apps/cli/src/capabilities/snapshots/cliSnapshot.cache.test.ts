@@ -7,20 +7,20 @@ import { writePnpmNodeBridge } from '@/testkit/fs/executableShim';
 import type { DetectCliRequest } from './cliSnapshot';
 
 describe('detectCliSnapshotOnDaemonPath (cache)', () => {
-  const previousOpenCodePath = process.env.HAPPIER_OPENCODE_PATH;
+  const previousOpenCodePath = process.env.PIGGERCODE_OPENCODE_PATH;
 
   beforeEach(() => {
     // Some CLI unit lanes provide a default OpenCode stub for machine-agnostic tests.
     // Cache behavior tests need full control over PATH vs overrides, so clear the global
     // override by default and let individual tests set it when needed.
-    delete process.env.HAPPIER_OPENCODE_PATH;
+    delete process.env.PIGGERCODE_OPENCODE_PATH;
   });
 
   afterEach(() => {
     if (previousOpenCodePath === undefined) {
-      delete process.env.HAPPIER_OPENCODE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_PATH;
     } else {
-      process.env.HAPPIER_OPENCODE_PATH = previousOpenCodePath;
+      process.env.PIGGERCODE_OPENCODE_PATH = previousOpenCodePath;
     }
   });
 
@@ -52,9 +52,9 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
     );
 
     const prevPath = process.env.PATH;
-    const prevProbeTimeout = process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
+    const prevProbeTimeout = process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = '25';
+    process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = '25';
 
     try {
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');
@@ -71,8 +71,8 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
       });
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevProbeTimeout === 'string') process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = prevProbeTimeout;
-      else delete process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
+      if (typeof prevProbeTimeout === 'string') process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = prevProbeTimeout;
+      else delete process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
       await fixture.cleanup();
     }
   }, 20_000);
@@ -228,7 +228,7 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
       opencodePath,
       `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("opencode 1.2.3\\n");
 process.exit(0);
@@ -236,11 +236,11 @@ process.exit(0);
     );
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-    const prevPnpmBin = process.env.HAPPIER_PNPM_BIN;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevPnpmBin = process.env.PIGGERCODE_PNPM_BIN;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
     try {
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');
 
@@ -258,15 +258,15 @@ process.exit(0);
       expect(afterThird).toBeGreaterThan(afterSecond);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-      if (typeof prevPnpmBin === 'string') process.env.HAPPIER_PNPM_BIN = prevPnpmBin;
-      else delete process.env.HAPPIER_PNPM_BIN;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevPnpmBin === 'string') process.env.PIGGERCODE_PNPM_BIN = prevPnpmBin;
+      else delete process.env.PIGGERCODE_PNPM_BIN;
       await fixture.cleanup();
     }
   }, 20_000);
 
-  it('invalidates cache when HAPPIER_*_PATH override changes', async () => {
+  it('invalidates cache when PIGGERCODE_*_PATH override changes', async () => {
     vi.resetModules();
 
     vi.doMock('@/backends/catalog', () => ({
@@ -288,7 +288,7 @@ process.exit(0);
     const altOpencodePath = resolve(join(altBinDir, 'opencode'));
     const script = `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("opencode 1.2.3\\n");
 process.exit(0);
@@ -297,13 +297,13 @@ process.exit(0);
     await writeExecutableScript(altOpencodePath, script);
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-    const prevOverride = process.env.HAPPIER_OPENCODE_PATH;
-    const prevPnpmBin = process.env.HAPPIER_PNPM_BIN;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
+    const prevPnpmBin = process.env.PIGGERCODE_PNPM_BIN;
 
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
 
     try {
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');
@@ -318,7 +318,7 @@ process.exit(0);
       expect(afterSecond).toBe(afterFirst);
 
       // Set override - should invalidate cache and re-probe
-      process.env.HAPPIER_OPENCODE_PATH = altOpencodePath;
+      process.env.PIGGERCODE_OPENCODE_PATH = altOpencodePath;
       await detectCliSnapshotOnDaemonPath({ includeLoginStatus: false });
       const afterThird = (await readFile(countFile, 'utf8')).length;
       expect(afterThird).toBeGreaterThan(afterSecond);
@@ -329,17 +329,17 @@ process.exit(0);
       expect(afterFourth).toBe(afterThird);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-      if (typeof prevOverride === 'string') process.env.HAPPIER_OPENCODE_PATH = prevOverride;
-      else delete process.env.HAPPIER_OPENCODE_PATH;
-      if (typeof prevPnpmBin === 'string') process.env.HAPPIER_PNPM_BIN = prevPnpmBin;
-      else delete process.env.HAPPIER_PNPM_BIN;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevOverride === 'string') process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
+      else delete process.env.PIGGERCODE_OPENCODE_PATH;
+      if (typeof prevPnpmBin === 'string') process.env.PIGGERCODE_PNPM_BIN = prevPnpmBin;
+      else delete process.env.PIGGERCODE_PNPM_BIN;
       await fixture.cleanup();
     }
   }, 20_000);
 
-  it('invalidates cache when HAPPIER_HOME_DIR changes', async () => {
+  it('invalidates cache when PIGGERCODE_HOME_DIR changes', async () => {
     vi.resetModules();
 
     vi.doMock('@/backends/catalog', () => ({
@@ -360,7 +360,7 @@ process.exit(0);
       opencodePath,
       `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("opencode 1.2.3\\n");
 process.exit(0);
@@ -368,14 +368,14 @@ process.exit(0);
     );
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-    const prevHomeDir = process.env.HAPPIER_HOME_DIR;
-    const prevPnpmBin = process.env.HAPPIER_PNPM_BIN;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevHomeDir = process.env.PIGGERCODE_HOME_DIR;
+    const prevPnpmBin = process.env.PIGGERCODE_PNPM_BIN;
 
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-home-1';
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-home-1';
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
 
     try {
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');
@@ -387,24 +387,24 @@ process.exit(0);
       const afterSecond = (await readFile(countFile, 'utf8')).length;
       expect(afterSecond).toBe(afterFirst);
 
-      // Change HAPPIER_HOME_DIR - should invalidate cache
-      process.env.HAPPIER_HOME_DIR = '/tmp/happier-home-2';
+      // Change PIGGERCODE_HOME_DIR - should invalidate cache
+      process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-home-2';
       await detectCliSnapshotOnDaemonPath({ includeLoginStatus: false });
       const afterThird = (await readFile(countFile, 'utf8')).length;
       expect(afterThird).toBeGreaterThan(afterSecond);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-      if (typeof prevHomeDir === 'string') process.env.HAPPIER_HOME_DIR = prevHomeDir;
-      else delete process.env.HAPPIER_HOME_DIR;
-      if (typeof prevPnpmBin === 'string') process.env.HAPPIER_PNPM_BIN = prevPnpmBin;
-      else delete process.env.HAPPIER_PNPM_BIN;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevHomeDir === 'string') process.env.PIGGERCODE_HOME_DIR = prevHomeDir;
+      else delete process.env.PIGGERCODE_HOME_DIR;
+      if (typeof prevPnpmBin === 'string') process.env.PIGGERCODE_PNPM_BIN = prevPnpmBin;
+      else delete process.env.PIGGERCODE_PNPM_BIN;
       await fixture.cleanup();
     }
   }, 20_000);
 
-  it('invalidates cache when HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON changes', async () => {
+  it('invalidates cache when PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON changes', async () => {
     vi.resetModules();
 
     vi.doMock('@/backends/catalog', () => ({
@@ -425,7 +425,7 @@ process.exit(0);
       opencodePath,
       `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("opencode 1.2.3\\n");
 process.exit(0);
@@ -433,13 +433,13 @@ process.exit(0);
     );
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-    const prevPrefs = process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
-    const prevPnpmBin = process.env.HAPPIER_PNPM_BIN;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevPrefs = process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
+    const prevPnpmBin = process.env.PIGGERCODE_PNPM_BIN;
 
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir: fixture.dir, pathLookup: prevPath });
 
     try {
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');
@@ -452,18 +452,18 @@ process.exit(0);
       expect(afterSecond).toBe(afterFirst);
 
       // Change source preferences - should invalidate cache
-      process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ opencode: 'managed-first' });
+      process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ opencode: 'managed-first' });
       await detectCliSnapshotOnDaemonPath({ includeLoginStatus: false });
       const afterThird = (await readFile(countFile, 'utf8')).length;
       expect(afterThird).toBeGreaterThan(afterSecond);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
-      if (typeof prevPrefs === 'string') process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON = prevPrefs;
-      else delete process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
-      if (typeof prevPnpmBin === 'string') process.env.HAPPIER_PNPM_BIN = prevPnpmBin;
-      else delete process.env.HAPPIER_PNPM_BIN;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevPrefs === 'string') process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = prevPrefs;
+      else delete process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON;
+      if (typeof prevPnpmBin === 'string') process.env.PIGGERCODE_PNPM_BIN = prevPnpmBin;
+      else delete process.env.PIGGERCODE_PNPM_BIN;
       await fixture.cleanup();
     }
   }, 20_000);
@@ -502,7 +502,7 @@ process.exit(0);
       claudePath,
       `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
@@ -510,10 +510,10 @@ process.exit(0);
     );
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
     const prevAnthropicKey = process.env.ANTHROPIC_API_KEY;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
     delete process.env.ANTHROPIC_API_KEY;
 
     try {
@@ -531,8 +531,8 @@ process.exit(0);
       expect(afterSecond).toBeGreaterThan(afterFirst);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
       if (typeof prevAnthropicKey === 'string') process.env.ANTHROPIC_API_KEY = prevAnthropicKey;
       else delete process.env.ANTHROPIC_API_KEY;
       await fixture.cleanup();
@@ -580,7 +580,7 @@ process.exit(0);
       claudePath,
       `#!/usr/bin/env node
 const fs = require("fs");
-const countFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
 process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
@@ -588,10 +588,10 @@ process.exit(0);
     );
 
     const prevPath = process.env.PATH;
-    const prevCountFile = process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+    const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
     const prevHome = process.env.HOME;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
+    process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = countFile;
     process.env.HOME = homeA;
 
     try {
@@ -609,8 +609,8 @@ process.exit(0);
       expect(afterSecond).toBeGreaterThan(afterFirst);
     } finally {
       process.env.PATH = prevPath;
-      if (typeof prevCountFile === 'string') process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
-      else delete process.env.HAPPIER_TEST_CLI_SNAPSHOT_COUNT_FILE;
+      if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
+      else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
       if (typeof prevHome === 'string') process.env.HOME = prevHome;
       else delete process.env.HOME;
       await fixture.cleanup();

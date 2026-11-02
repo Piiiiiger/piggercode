@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
   createCodexQuotaSnapshotDeliveryOutboxForNotify,
   flushPendingCodexQuotaSnapshotsToDaemon,
@@ -59,7 +59,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -130,7 +130,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -173,7 +173,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
       env: {
         // The child env keeps naming the PRE-switch member after a hot-apply
         // group switch; it must not own snapshot attribution.
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -236,7 +236,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
       }>;
     }> = {
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'old-group',
@@ -296,7 +296,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -333,7 +333,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
         CODEX_HOME: codexHome,
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -367,7 +367,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
         CODEX_HOME: codexHome,
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -410,7 +410,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -449,7 +449,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',
@@ -515,7 +515,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await expect(reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai-codex',
           profileId: 'backup',
@@ -548,7 +548,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await expect(reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai-codex',
           profileId: 'backup',
@@ -586,7 +586,7 @@ describe('reportCodexRateLimitSnapshotToDaemon', () => {
 
     await expect(reportCodexRateLimitSnapshotToDaemon({
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'profile',
           serviceId: 'openai-codex',
           profileId: 'backup',

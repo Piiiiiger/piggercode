@@ -47,7 +47,7 @@ test('outer start publication records requested UI truth before the child runner
 
   assert.equal(createOuterStackRuntimeStartPublication({ ...base, args: ['--no-ui'], env: {} }).serveUi, false);
   assert.equal(
-    createOuterStackRuntimeStartPublication({ ...base, args: [], env: { HAPPIER_STACK_SERVE_UI: '0' } }).serveUi,
+    createOuterStackRuntimeStartPublication({ ...base, args: [], env: { PIGGERCODE_STACK_SERVE_UI: '0' } }).serveUi,
     false,
   );
   assert.equal(createOuterStackRuntimeStartPublication({ ...base, args: [], env: {} }).serveUi, true);

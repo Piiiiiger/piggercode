@@ -316,7 +316,7 @@ describe('connectedServiceSwitchDeferralQueue', () => {
     expect(queue.getTurnLifecycleState('sess_1').forcedSwitchInterruptedLiveTurn).toBe(false);
   });
 
-  it('bypasses deferral when HAPPIER_CONNECTED_SERVICES_DISABLE_TURN_DEFERRAL is enabled', async () => {
+  it('bypasses deferral when PIGGERCODE_CONNECTED_SERVICES_DISABLE_TURN_DEFERRAL is enabled', async () => {
     const runSwitch = vi.fn(async () => {});
     const queue = createConnectedServiceSwitchDeferralQueue({
       timeoutMs: 60_000,

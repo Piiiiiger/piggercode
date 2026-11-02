@@ -36,7 +36,7 @@ When reviewing code changes, do **not** rely on `git diff` from the repo root.
 
 - **What `command-task-diff.txt` represents**:
   - A **per-component PR-style diff** computed *inside the stack-pinned component repos*.
-  - The diff base is the stack’s configured remote **default branch** (derived from `HAPPIER_STACK_STACK_REMOTE` and that remote’s `HEAD`/default branch).
+  - The diff base is the stack’s configured remote **default branch** (derived from `PIGGERCODE_STACK_STACK_REMOTE` and that remote’s `HEAD`/default branch).
   - Each component section includes `baseRef: <remote>/<defaultBranch>` (examples: `upstream/main`, `origin/main`, `fork/happy-server-light`).
 
 - **Multi-component tasks**:

@@ -299,7 +299,7 @@ test('resolveServerBuildDbProviders is the canonical parser for provider build p
   );
   assert.throws(
     () => artifacts.resolveServerBuildDbProviders('postgres|unknown'),
-    /Unsupported HAPPIER_BUILD_DB_PROVIDERS token: unknown/,
+    /Unsupported PIGGERCODE_BUILD_DB_PROVIDERS token: unknown/,
   );
 });
 

@@ -20,7 +20,7 @@ test('buildMobileDevClientInstallInvocation builds an Android run invocation whe
   assert.ok(inv.nodeArgs.includes('--port=14362'), `expected --port to be forwarded\nnodeArgs:\n${inv.nodeArgs.join(' ')}`);
   assert.ok(inv.nodeArgs.includes('--device=ABC123'), `expected --device to be forwarded\nnodeArgs:\n${inv.nodeArgs.join(' ')}`);
   assert.equal(inv.env.EXPO_ANDROID_PACKAGE, 'dev.happier.app.internaldev.devclient');
-  assert.equal(inv.env.HAPPIER_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE, '1');
+  assert.equal(inv.env.PIGGERCODE_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE, '1');
 });
 
 test('buildMobileDevClientInstallInvocation serializes Android Gradle work for native module build stability', () => {

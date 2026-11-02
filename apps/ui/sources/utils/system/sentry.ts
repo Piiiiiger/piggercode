@@ -12,9 +12,9 @@ import { redactSentryPublicShareTelemetry } from '@/utils/system/sentryPublicSha
 
 declare global {
     // eslint-disable-next-line no-var
-    var __HAPPIER_SENTRY_INIT__: boolean | undefined;
+    var __PIGGERCODE_SENTRY_INIT__: boolean | undefined;
     // eslint-disable-next-line no-var
-    var __HAPPIER_CRASH_REPORTS_OPTOUT__: boolean | undefined;
+    var __PIGGERCODE_CRASH_REPORTS_OPTOUT__: boolean | undefined;
 }
 
 const CRASH_REPORTS_FEATURE_ID = 'app.crashReports' as const satisfies FeatureId;
@@ -94,11 +94,11 @@ function readPersistedCrashReportsOptOut(): boolean {
 }
 
 function resolveCrashReportsOptOut(): boolean {
-    if (typeof globalThis.__HAPPIER_CRASH_REPORTS_OPTOUT__ === 'boolean') {
-        return globalThis.__HAPPIER_CRASH_REPORTS_OPTOUT__;
+    if (typeof globalThis.__PIGGERCODE_CRASH_REPORTS_OPTOUT__ === 'boolean') {
+        return globalThis.__PIGGERCODE_CRASH_REPORTS_OPTOUT__;
     }
     const optOut = readPersistedCrashReportsOptOut();
-    globalThis.__HAPPIER_CRASH_REPORTS_OPTOUT__ = optOut;
+    globalThis.__PIGGERCODE_CRASH_REPORTS_OPTOUT__ = optOut;
     return optOut;
 }
 
@@ -204,14 +204,14 @@ function applySentryRuntimeContext(): void {
 }
 
 export function initializeSentryOnce(): void {
-    if (globalThis.__HAPPIER_SENTRY_INIT__) return;
+    if (globalThis.__PIGGERCODE_SENTRY_INIT__) return;
     if (getFeatureBuildPolicyDecision(CRASH_REPORTS_FEATURE_ID) === 'deny') return;
     if (resolveCrashReportsOptOut()) return;
 
     const resolved = resolveSentryEnv();
     if (!resolved) return;
 
-    globalThis.__HAPPIER_SENTRY_INIT__ = true;
+    globalThis.__PIGGERCODE_SENTRY_INIT__ = true;
 
     cachedReplayIntegration = null;
     const replayIntegration =
@@ -262,14 +262,14 @@ export function initializeSentryOnce(): void {
 }
 
 export function applyCrashReportsOptOut(optOut: boolean): void {
-    globalThis.__HAPPIER_CRASH_REPORTS_OPTOUT__ = Boolean(optOut);
+    globalThis.__PIGGERCODE_CRASH_REPORTS_OPTOUT__ = Boolean(optOut);
 
     if (optOut) {
-        if (globalThis.__HAPPIER_SENTRY_INIT__) {
+        if (globalThis.__PIGGERCODE_SENTRY_INIT__) {
             void Sentry.close().catch(() => {});
             cachedReplayIntegration = null;
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete globalThis.__HAPPIER_SENTRY_INIT__;
+            delete globalThis.__PIGGERCODE_SENTRY_INIT__;
         }
         return;
     }

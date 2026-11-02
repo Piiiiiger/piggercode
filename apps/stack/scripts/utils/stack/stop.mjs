@@ -37,7 +37,7 @@ import { daemonControlPost, readDaemonControlState } from './daemonControlClient
 
 function resolveServerComponentFromStackEnv(env) {
   const v =
-    (env.HAPPIER_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
+    (env.PIGGERCODE_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
   return v === 'happier-server' ? 'happier-server' : 'happier-server-light';
 }
 
@@ -93,7 +93,7 @@ function isServerRuntimeProcessKey(key) {
 }
 
 function isEphemeralRuntimeFallbackKillAllowed(line, stackName) {
-  if (!line || !textContainsNeedle(line, `HAPPIER_STACK_STACK=${stackName}`)) {
+  if (!line || !textContainsNeedle(line, `PIGGERCODE_STACK_STACK=${stackName}`)) {
     return false;
   }
   const kind = readStackProcessKindFromEnvLine(line);
@@ -259,14 +259,14 @@ export function resolveStackCleanupExecutorLockPath(baseDir) {
 
 export function resolveStackCleanupExecutorLockTimeoutMs(input = {}, lockOptions = {}) {
   if (lockOptions.timeoutMs !== undefined) return lockOptions.timeoutMs;
-  return input?.env?.HAPPIER_STACK_TUI === '1' ? Number.POSITIVE_INFINITY : 300_000;
+  return input?.env?.PIGGERCODE_STACK_TUI === '1' ? Number.POSITIVE_INFINITY : 300_000;
 }
 
 async function withStackCleanupExecutorLock(input, dependencies, fn) {
   const lockOptions = dependencies.cleanupExecutorLockOptions ?? {};
   const lockPath = lockOptions.lockPath ?? resolveStackCleanupExecutorLockPath(input.baseDir);
   const timeoutMs = resolveStackCleanupExecutorLockTimeoutMs(input, lockOptions);
-  const attendedTui = input?.env?.HAPPIER_STACK_TUI === '1';
+  const attendedTui = input?.env?.PIGGERCODE_STACK_TUI === '1';
   let lastProgressLogAt = 0;
   const onWait = lockOptions.onWait ?? (attendedTui
     ? ({ waitedMs, owner }) => {
@@ -435,10 +435,10 @@ async function stopStackWithEnvInternal({
   };
 
   const serverComponent = resolveServerComponentFromStackEnv(env);
-  const port = coercePort(env.HAPPIER_STACK_SERVER_PORT);
-  const backendPort = coercePort(env.HAPPIER_STACK_SERVER_BACKEND_PORT);
+  const port = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
+  const backendPort = coercePort(env.PIGGERCODE_STACK_SERVER_BACKEND_PORT);
   const internalServerUrl = port ? `http://127.0.0.1:${port}` : 'http://127.0.0.1:3005';
-  const cliHomeDir = (env.HAPPIER_STACK_CLI_HOME_DIR ?? join(baseDir, 'cli')).toString();
+  const cliHomeDir = (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? join(baseDir, 'cli')).toString();
   const cliDir = getComponentDir(rootDir, 'happier-cli', env);
   const cliBin = join(cliDir, 'bin', 'happier.mjs');
   const envPath = resolveExplicitStackEnvFilePath(env);
@@ -536,7 +536,7 @@ async function stopStackWithEnvInternal({
     }
 
     // Back-compat for earlier "stackless" runs:
-    // Some repo-local runs started infra without HAPPIER_STACK_ENV_FILE/HAPPIER_HOME_DIR markers.
+    // Some repo-local runs started infra without PIGGERCODE_STACK_ENV_FILE/PIGGERCODE_HOME_DIR markers.
     // For ephemeral stacks, allow stopping runtime-recorded PIDs when the process environment still
     // proves the stack name, to avoid leaving orphaned servers/expo after quitting the TUI.
     if (runtimeState?.ephemeral && res.reason === 'not_owned') {
@@ -643,7 +643,7 @@ async function stopStackWithEnvInternal({
           runtimeStatePath: runtimeStopTransaction ? null : runtimeStatePath,
           env,
           stackName,
-          cliIdentity: String(env.HAPPIER_STACK_CLI_IDENTITY ?? '').trim() || 'default',
+          cliIdentity: String(env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').trim() || 'default',
         });
         actions.daemonStopped = true;
       }
@@ -682,7 +682,7 @@ async function stopStackWithEnvInternal({
   void backendPort;
   void port;
 
-  const managed = (env.HAPPIER_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0';
+  const managed = (env.PIGGERCODE_STACK_MANAGED_INFRA ?? '1').toString().trim() !== '0';
   if (!noDocker && serverComponent === 'happier-server' && managed) {
     try {
       actions.infra = await stopHappyServerManagedInfraImpl({ stackName, baseDir, removeVolumes: false });
@@ -699,9 +699,9 @@ async function stopStackWithEnvInternal({
   // IMPORTANT:
   // This must NOT kill daemon-spawned sessions/LLM/agent processes. Those should survive infra restarts.
   //
-  // We only target infra processes by requiring HAPPIER_STACK_PROCESS_KIND=infra in addition to the stack env file.
+  // We only target infra processes by requiring PIGGERCODE_STACK_PROCESS_KIND=infra in addition to the stack env file.
   // We also exclude our own PID.
-  const autoSweepFromEnvRaw = (env?.HAPPIER_STACK_STOP_AUTO_SWEEP ?? '').toString().trim();
+  const autoSweepFromEnvRaw = (env?.PIGGERCODE_STACK_STOP_AUTO_SWEEP ?? '').toString().trim();
   const autoSweepFromEnv = autoSweepFromEnvRaw ? autoSweepFromEnvRaw !== '0' : null;
   const autoSweepResolved = typeof autoSweepFromEnv === 'boolean' ? autoSweepFromEnv : Boolean(autoSweep);
 
@@ -710,17 +710,17 @@ async function stopStackWithEnvInternal({
   const runtimeStateUsable = Boolean(runtimeState) && Number.isFinite(runnerPid) && runnerPid > 1 && isPidAlive(runnerPid);
   const shouldAutoSweep = autoSweepResolved && envPath && !runtimeStateUsable;
   if ((sweepOwned || shouldAutoSweep) && envPath) {
-    const envNeedle = `HAPPIER_STACK_ENV_FILE=${envPath}`;
-    const repoDir = String(env.HAPPIER_STACK_REPO_DIR ?? '').trim();
+    const envNeedle = `PIGGERCODE_STACK_ENV_FILE=${envPath}`;
+    const repoDir = String(env.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
     const isRepoLocalStack = stackName && stackName !== 'main' && String(stackName).startsWith('repo-');
     const repoLocalNeedles = isRepoLocalStack && repoDir
-      ? [`HAPPIER_STACK_STACK=${stackName}`, `HAPPIER_STACK_REPO_DIR=${repoDir}`]
+      ? [`PIGGERCODE_STACK_STACK=${stackName}`, `PIGGERCODE_STACK_REPO_DIR=${repoDir}`]
       : null;
     const configuredInventoryTimeoutMs = Number.parseInt(
-      String(env.HAPPIER_STACK_PROCESS_INVENTORY_TIMEOUT_MS ?? ''),
+      String(env.PIGGERCODE_STACK_PROCESS_INVENTORY_TIMEOUT_MS ?? ''),
       10,
     );
-    const inventoryTimeoutMs = env.HAPPIER_STACK_TUI === '1'
+    const inventoryTimeoutMs = env.PIGGERCODE_STACK_TUI === '1'
       ? undefined
       : (Number.isFinite(configuredInventoryTimeoutMs) && configuredInventoryTimeoutMs > 0
           ? configuredInventoryTimeoutMs
@@ -731,9 +731,9 @@ async function stopStackWithEnvInternal({
       repoLocalInfraTagged = [],
       repoLocalLegacyServer = [],
     ] = await listPsPidsForEnvQueries([
-      { needles: [envNeedle, 'HAPPIER_STACK_PROCESS_KIND=infra'] },
+      { needles: [envNeedle, 'PIGGERCODE_STACK_PROCESS_KIND=infra'] },
       // Compatibility sweep for older stacks: some long-running infra (notably server dev loops)
-      // may not have been started with HAPPIER_STACK_PROCESS_KIND=infra yet. We restrict this
+      // may not have been started with PIGGERCODE_STACK_PROCESS_KIND=infra yet. We restrict this
       // fallback to npm/yarn managed server processes to avoid touching daemon-spawned sessions.
       {
         needles: [envNeedle, 'npm_package_name=@piggercode/server'],
@@ -741,7 +741,7 @@ async function stopStackWithEnvInternal({
       },
       ...(repoLocalNeedles
         ? [
-            { needles: [...repoLocalNeedles, 'HAPPIER_STACK_PROCESS_KIND=infra'] },
+            { needles: [...repoLocalNeedles, 'PIGGERCODE_STACK_PROCESS_KIND=infra'] },
             {
               needles: [...repoLocalNeedles, 'npm_package_name=@piggercode/server'],
               bindingNames: ['npm_lifecycle_event'],
@@ -810,7 +810,7 @@ async function stopStackWithEnvInternal({
       });
     }
 
-    // Repo-local fallback: older stackless infra runs may have omitted HAPPIER_STACK_ENV_FILE.
+    // Repo-local fallback: older stackless infra runs may have omitted PIGGERCODE_STACK_ENV_FILE.
     // Do not sweep by only (stackName + repoDir): daemon-spawned session runners inherit
     // those repo-local markers and must survive stack/TUI restarts.
     if (autoSweepResolved && shouldAutoSweep && swept.length === 0 && isRepoLocalStack && repoDir) {

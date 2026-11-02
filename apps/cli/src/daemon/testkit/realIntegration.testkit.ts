@@ -137,22 +137,22 @@ export async function prepareIsolatedDaemonTestHome(options: {
 
   const extraEnv = resolveExtraEnv(options.extraEnv, { homeDir, sourceHomeDir });
   const envScope = createEnvKeyScope([
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_ACTIVE_SERVER_ID',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK',
     ...Object.keys(extraEnv),
   ]);
 
   envScope.patch({
-    HAPPIER_HOME_DIR: homeDir,
-    HAPPIER_ACTIVE_SERVER_ID: sourceServerId,
-    HAPPIER_SERVER_URL: sourceServerUrl,
-    HAPPIER_WEBAPP_URL: sourceWebappUrl,
-    HAPPIER_PUBLIC_SERVER_URL: sourcePublicServerUrl,
-    HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
+    PIGGERCODE_HOME_DIR: homeDir,
+    PIGGERCODE_ACTIVE_SERVER_ID: sourceServerId,
+    PIGGERCODE_SERVER_URL: sourceServerUrl,
+    PIGGERCODE_WEBAPP_URL: sourceWebappUrl,
+    PIGGERCODE_PUBLIC_SERVER_URL: sourcePublicServerUrl,
+    PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
     ...extraEnv,
   });
   reloadConfiguration();
@@ -193,11 +193,11 @@ export async function prepareIsolatedDaemonTestHome(options: {
 }
 
 export function shouldRunDaemonReattachIntegration(): boolean {
-  return process.env.HAPPIER_CLI_DAEMON_REATTACH_INTEGRATION === '1';
+  return process.env.PIGGERCODE_CLI_DAEMON_REATTACH_INTEGRATION === '1';
 }
 
 function shouldAttemptDaemonIntegrationCredentialBootstrap(): boolean {
-  const raw = String(process.env.HAPPIER_CLI_DAEMON_INTEGRATION_BOOTSTRAP_AUTH ?? '').trim().toLowerCase();
+  const raw = String(process.env.PIGGERCODE_CLI_DAEMON_INTEGRATION_BOOTSTRAP_AUTH ?? '').trim().toLowerCase();
   if (!raw) return true;
   return !['0', 'false', 'no', 'off'].includes(raw);
 }

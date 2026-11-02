@@ -18,7 +18,7 @@ import { cyan, dim, green, yellow } from './utils/ui/ansi.mjs';
 
 function resolveWorkspaceDir({ rootDir, homeDir }) {
   // Uninstall should never default to deleting the repo root (getWorkspaceDir() can fall back to cliRootDir).
-  const fromEnv = (process.env.HAPPIER_STACK_WORKSPACE_DIR ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_WORKSPACE_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv);
   }

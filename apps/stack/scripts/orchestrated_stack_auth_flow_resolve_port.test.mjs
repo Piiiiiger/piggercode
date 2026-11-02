@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { withPatchedProcessEnv } from './testkit/core/env_scope.mjs';
 import { resolveServerPortForPostAuthDaemonStart } from './utils/auth/orchestrated_stack_auth_flow.mjs';
 
-test('resolveServerPortForPostAuthDaemonStart falls back to env HAPPIER_STACK_SERVER_PORT when runtime is missing it', async (t) => {
+test('resolveServerPortForPostAuthDaemonStart falls back to env PIGGERCODE_STACK_SERVER_PORT when runtime is missing it', async (t) => {
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-auth-flow-port-'));
   const storageDir = join(tmp, 'storage');
   const stackName = 'main';
@@ -16,11 +16,11 @@ test('resolveServerPortForPostAuthDaemonStart falls back to env HAPPIER_STACK_SE
 
   await writeFile(join(baseDir, 'stack.runtime.json'), JSON.stringify({ version: 1, stackName, ports: {} }) + '\n', 'utf-8');
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const port = await resolveServerPortForPostAuthDaemonStart({
       stackName,
-      env: { ...process.env, HAPPIER_STACK_SERVER_PORT: '4123' },
+      env: { ...process.env, PIGGERCODE_STACK_SERVER_PORT: '4123' },
     });
     assert.equal(port, 4123);
   } finally {
@@ -42,13 +42,13 @@ test('resolveServerPortForPostAuthDaemonStart throws when runtime and env ports 
 
   await writeFile(join(baseDir, 'stack.runtime.json'), JSON.stringify({ version: 1, stackName, ports: {} }) + '\n', 'utf-8');
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     await assert.rejects(
       () =>
         resolveServerPortForPostAuthDaemonStart({
           stackName,
-          env: { ...process.env, HAPPIER_STACK_SERVER_PORT: 'not-a-port' },
+          env: { ...process.env, PIGGERCODE_STACK_SERVER_PORT: 'not-a-port' },
         }),
       /could not resolve server port/i
     );
@@ -75,11 +75,11 @@ test('resolveServerPortForPostAuthDaemonStart ignores runtime port when runtime 
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const port = await resolveServerPortForPostAuthDaemonStart({
       stackName,
-      env: { ...process.env, HAPPIER_STACK_SERVER_PORT: '4222' },
+      env: { ...process.env, PIGGERCODE_STACK_SERVER_PORT: '4222' },
     });
     assert.equal(port, 4222);
   } finally {

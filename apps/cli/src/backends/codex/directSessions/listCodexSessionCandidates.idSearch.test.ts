@@ -36,7 +36,7 @@ function responseItemLine(payload: Record<string, unknown>): string {
 
 function createDirectSessionsEnv(codexHome: string, overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return createCodexAppServerProcessEnv(
-    overrides.HAPPIER_CODEX_APP_SERVER_BIN ?? join(codexHome, 'missing-codex-app-server-binary'),
+    overrides.PIGGERCODE_CODEX_APP_SERVER_BIN ?? join(codexHome, 'missing-codex-app-server-binary'),
     {
       CODEX_HOME: codexHome,
       ...overrides,
@@ -112,8 +112,8 @@ describe('listCodexSessionCandidates id search', () => {
     const result = await listCodexSessionCandidates({
       source: { kind: 'codexHome', home: 'user' },
       env: createDirectSessionsEnv(codexHome, {
-        HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-        HAPPIER_CODEX_DIRECT_SESSIONS_APP_SERVER_LIST_TIMEOUT_MS: '100',
+        PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+        PIGGERCODE_CODEX_DIRECT_SESSIONS_APP_SERVER_LIST_TIMEOUT_MS: '100',
       }),
       activeServerDir: join(root, 'servers', 'cloud'),
       limit: 10,

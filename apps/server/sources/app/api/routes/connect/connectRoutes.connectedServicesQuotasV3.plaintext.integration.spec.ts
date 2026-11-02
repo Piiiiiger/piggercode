@@ -55,10 +55,10 @@ describe("connectRoutes (connected services quotas v3) plaintext quota endpoints
 
     it("writes a provider-account-backed quota view and projects it back through GET", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v3_projection" });
@@ -137,10 +137,10 @@ describe("connectRoutes (connected services quotas v3) plaintext quota endpoints
 
     it("does not let direct provider-account usage writes act as quota view authority without a linked source", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v3_refresh" });
@@ -168,10 +168,10 @@ describe("connectRoutes (connected services quotas v3) plaintext quota endpoints
 
     it("refreshes the linked provider-account usage record instead of creating placeholders", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v3_refresh" });
@@ -220,10 +220,10 @@ describe("connectRoutes (connected services quotas v3) plaintext quota endpoints
 
     it("deletes quota access by unlinking the source and preserving the provider-account usage record", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v3_delete" });
@@ -281,10 +281,10 @@ describe("connectRoutes (connected services quotas v3) plaintext quota endpoints
 
     it("projects recovery credits from the linked provider-account usage record", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id);

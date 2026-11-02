@@ -5,17 +5,17 @@ import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it('commits manual profile switches without requiring a group id', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -98,7 +98,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('skips same-profile connected-service account switch transcript events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -174,7 +174,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('does not persist provider account ids as public profile labels on transcript events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -260,7 +260,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('commits connected-service account switch attempt diagnostics', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -375,7 +375,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('preserves exact accepted verification proof in switch attempt events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -465,7 +465,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('surfaces preemptive soft-threshold switch attempt transcript events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -531,7 +531,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('suppresses same-provider fanout switch attempt transcript events as background maintenance', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -585,7 +585,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('drops exact switch verification proof details without identity material', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -667,7 +667,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('preserves exact shared-auth-surface switch verification proof details', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -753,7 +753,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('commits provider state-sharing degraded diagnostics', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -827,7 +827,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('surfaces preventive soft-threshold switches as transcript events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -886,7 +886,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('commits the actual switch mode from runtime auth events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -953,7 +953,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('surfaces pre-turn auth-group soft-threshold switch coordinator events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -1016,7 +1016,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('suppresses same-provider fanout switch coordinator events as background maintenance', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -1073,7 +1073,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('commits auth-disabled switch coordinator events as auth-expired transcript events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -1151,7 +1151,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('commits active-turn deferral observability events to transcript', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 
@@ -1223,7 +1223,7 @@ describe('commitConnectedServiceAccountSwitchSessionEvent', () => {
   });
 
   it('uses deterministic semantic local ids for repeated maintenance event commits', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceAccountSwitchSessionEvent } = await import('./commitConnectedServiceAccountSwitchSessionEvent');
 

@@ -45,13 +45,13 @@ function runDevLightScript(params: Readonly<{
             TMPDIR="${process.env.TMPDIR ?? params.tmpDir}" \
             NODE_OPTIONS="" \
             TSX_TSCONFIG_PATH="" \
-            HAPPIER_SERVER_LIGHT_DATA_DIR="${params.lightDataDir}" \
+            PIGGERCODE_SERVER_LIGHT_DATA_DIR="${params.lightDataDir}" \
             HAPPY_SERVER_LIGHT_DATA_DIR="${params.lightDataDir}" \
-            HAPPIER_SERVER_LIGHT_FILES_DIR="${join(params.lightDataDir, 'files')}" \
+            PIGGERCODE_SERVER_LIGHT_FILES_DIR="${join(params.lightDataDir, 'files')}" \
             HAPPY_SERVER_LIGHT_FILES_DIR="${join(params.lightDataDir, 'files')}" \
-            HAPPIER_SERVER_LIGHT_DB_DIR="${join(params.lightDataDir, 'db')}" \
+            PIGGERCODE_SERVER_LIGHT_DB_DIR="${join(params.lightDataDir, 'db')}" \
             HAPPY_SERVER_LIGHT_DB_DIR="${join(params.lightDataDir, 'db')}" \
-            HAPPIER_STACK_MIGRATE_MODE="${params.migrateMode ?? ''}" \
+            PIGGERCODE_STACK_MIGRATE_MODE="${params.migrateMode ?? ''}" \
             node --import tsx "${getScriptPath()}"
         `], {
         env: {

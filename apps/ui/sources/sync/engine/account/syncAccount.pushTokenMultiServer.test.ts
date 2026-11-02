@@ -3,7 +3,7 @@ import { PermissionStatus } from 'expo-modules-core';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 
-const SECURE_STORE_DEV_FALLBACK_ENV = 'EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK';
+const SECURE_STORE_DEV_FALLBACK_ENV = 'EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK';
 let originalSecureStoreDevFallback: string | undefined;
 const runtimeFetchWithServerReachabilityMock = vi.hoisted(() => vi.fn());
 

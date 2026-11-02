@@ -65,14 +65,14 @@ describe('installOrUpdateRelayRuntimeLocal sequencing', () => {
         });
         checkRelayRuntimeHealthMock.mockImplementation(async () => {
             const activationSpec = [...serviceSpecs].reverse().find((spec) => (
-                spec.env.HAPPIER_SERVER_STARTUP_RECEIPT_PATH
-                && spec.env.HAPPIER_SERVER_STARTUP_RECEIPT_NONCE
+                spec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_PATH
+                && spec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_NONCE
             ));
             if (activationSpec) {
-                const receiptPath = activationSpec.env.HAPPIER_SERVER_STARTUP_RECEIPT_PATH;
+                const receiptPath = activationSpec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_PATH;
                 await mkdir(dirname(receiptPath), { recursive: true });
                 await writeFile(receiptPath, JSON.stringify({
-                    nonce: activationSpec.env.HAPPIER_SERVER_STARTUP_RECEIPT_NONCE,
+                    nonce: activationSpec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_NONCE,
                     pid: process.pid,
                 }), 'utf8');
             }
@@ -110,16 +110,16 @@ describe('installOrUpdateRelayRuntimeLocal sequencing', () => {
             checkRelayRuntimeHealthMock.mockImplementationOnce(async () => {
                 await expect(readFile(statePath, 'utf8')).resolves.toContain('0.1.2');
                 const activationSpec = [...serviceSpecs].reverse().find((spec) => (
-                    spec.env.HAPPIER_SERVER_STARTUP_RECEIPT_PATH
-                    && spec.env.HAPPIER_SERVER_STARTUP_RECEIPT_NONCE
+                    spec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_PATH
+                    && spec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_NONCE
                 ));
                 expect(activationSpec).toBeDefined();
                 if (activationSpec) {
-                    await mkdir(dirname(activationSpec.env.HAPPIER_SERVER_STARTUP_RECEIPT_PATH), { recursive: true });
+                    await mkdir(dirname(activationSpec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_PATH), { recursive: true });
                     await writeFile(
-                        activationSpec.env.HAPPIER_SERVER_STARTUP_RECEIPT_PATH,
+                        activationSpec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_PATH,
                         JSON.stringify({
-                            nonce: activationSpec.env.HAPPIER_SERVER_STARTUP_RECEIPT_NONCE,
+                            nonce: activationSpec.env.PIGGERCODE_SERVER_STARTUP_RECEIPT_NONCE,
                             pid: process.pid,
                         }),
                         'utf8',
@@ -143,7 +143,7 @@ describe('installOrUpdateRelayRuntimeLocal sequencing', () => {
             expect(committedState.version).toBe('0.2.0');
             expect(committedState.uiDeploymentDigest).toMatch(/^sha256:[a-f0-9]{64}$/);
             expect(committedState.uiDeploymentId).toMatch(/^[A-Za-z0-9_-]{16,128}$/);
-            expect(serviceSpecs.at(-1)?.env.HAPPIER_SERVER_UI_DEPLOYMENT_ID).toBe(committedState.uiDeploymentId);
+            expect(serviceSpecs.at(-1)?.env.PIGGERCODE_SERVER_UI_DEPLOYMENT_ID).toBe(committedState.uiDeploymentId);
         } finally {
             await rm(homeDir, { recursive: true, force: true });
         }
@@ -168,7 +168,7 @@ describe('installOrUpdateRelayRuntimeLocal sequencing', () => {
                 'root="$(dirname "$0")"',
                 'test -f "$root/runtime/fixture.txt"',
                 'test -f "$root/prisma/migrations/fixture.sql"',
-                'printf "%s\\n" "$HAPPIER_DB_PROVIDER" > "$MIGRATION_MARKER_PATH"',
+                'printf "%s\\n" "$PIGGERCODE_DB_PROVIDER" > "$MIGRATION_MARKER_PATH"',
                 '',
             ].join('\n'), 'utf8');
             await chmod(migrationBinaryPath, 0o755);
@@ -180,7 +180,7 @@ describe('installOrUpdateRelayRuntimeLocal sequencing', () => {
                 platform: 'linux',
                 homeDir,
                 env: {
-                    HAPPIER_DB_PROVIDER: 'postgres',
+                    PIGGERCODE_DB_PROVIDER: 'postgres',
                     DATABASE_URL: 'postgresql://operator:secret@db.example.test/happier',
                     MIGRATION_MARKER_PATH: migrationMarkerPath,
                 },

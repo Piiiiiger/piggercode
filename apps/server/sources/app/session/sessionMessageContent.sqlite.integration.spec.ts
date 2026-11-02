@@ -14,7 +14,7 @@ describe("session message content storage", () => {
     beforeAll(async () => {
         harness = await createLightSqliteHarness({
             tempDirPrefix: "happier-message-content-",
-            env: { HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" },
+            env: { PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" },
         });
     });
     afterAll(async () => { await harness?.close(); await postgres.close(); });

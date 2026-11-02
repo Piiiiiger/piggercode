@@ -42,7 +42,7 @@ vi.mock('@/daemon/pidSafety', () => ({
 }));
 
 describe('happier session stop (integration)', () => {
-  const envKeys = ['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR'] as const;
+  const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
   let happyHomeDir = '';
@@ -99,9 +99,9 @@ describe('happier session stop (integration)', () => {
     const address = server.address();
     if (!address || typeof address === 'string') throw new Error('Failed to resolve integration server address');
 
-    process.env.HAPPIER_SERVER_URL = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = `http://127.0.0.1:${address.port}`;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
@@ -198,8 +198,8 @@ describe('happier session stop (integration)', () => {
     });
     bindApiSessionSocketMock(mockIo, socket);
 
-    process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS = '20';
-    process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS = '1';
+    process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS = '20';
+    process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS = '1';
 
     const { handleSessionCommand } = await import('./index');
 
@@ -232,8 +232,8 @@ describe('happier session stop (integration)', () => {
         reason: 'local_session_not_found',
       });
     } finally {
-      delete process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS;
-      delete process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS;
       output.restore();
     }
   });
@@ -270,8 +270,8 @@ describe('happier session stop (integration)', () => {
     });
     bindApiSessionSocketMock(mockIo, socket);
 
-    process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS = '50';
-    process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS = '1';
+    process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS = '50';
+    process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS = '1';
 
     const { handleSessionCommand } = await import('./index');
 
@@ -308,8 +308,8 @@ describe('happier session stop (integration)', () => {
         reason: 'missing_topology_proof',
       });
     } finally {
-      delete process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS;
-      delete process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS;
       processKillSpy.mockRestore();
       output.restore();
     }
@@ -326,8 +326,8 @@ describe('happier session stop (integration)', () => {
     const socket = createApiSessionSocketStub();
     bindApiSessionSocketMock(mockIo, socket);
 
-    process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS = '20';
-    process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS = '1';
+    process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS = '20';
+    process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS = '1';
 
     const { handleSessionCommand } = await import('./index');
 
@@ -359,8 +359,8 @@ describe('happier session stop (integration)', () => {
         reason: 'relay_inactive_not_observed',
       });
     } finally {
-      delete process.env.HAPPIER_SESSION_STOP_TIMEOUT_MS;
-      delete process.env.HAPPIER_SESSION_STOP_POLL_INTERVAL_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS;
       output.restore();
     }
   });

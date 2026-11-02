@@ -215,22 +215,22 @@ describe('probeClaudeInstalledRuntimeCapabilities', () => {
 
 describe('resolveInstalledClaudeCliIdentity', () => {
   let tempDir: string;
-  const previousOverride = process.env.HAPPIER_CLAUDE_PATH;
+  const previousOverride = process.env.PIGGERCODE_CLAUDE_PATH;
 
   beforeEach(() => {
     tempDir = mkdtempSync(join(tmpdir(), 'happier-claude-probe-'));
   });
 
   afterEach(() => {
-    if (typeof previousOverride === 'string') process.env.HAPPIER_CLAUDE_PATH = previousOverride;
-    else delete process.env.HAPPIER_CLAUDE_PATH;
+    if (typeof previousOverride === 'string') process.env.PIGGERCODE_CLAUDE_PATH = previousOverride;
+    else delete process.env.PIGGERCODE_CLAUDE_PATH;
     rmSync(tempDir, { recursive: true, force: true });
   });
 
   it('changes when the binary at the same path is replaced', () => {
     const cliPath = join(tempDir, 'cli.mjs');
     writeFileSync(cliPath, '// claude 1\n');
-    process.env.HAPPIER_CLAUDE_PATH = cliPath;
+    process.env.PIGGERCODE_CLAUDE_PATH = cliPath;
 
     const before = resolveInstalledClaudeCliIdentity();
     expect(before).toContain(cliPath);
@@ -241,7 +241,7 @@ describe('resolveInstalledClaudeCliIdentity', () => {
   });
 
   it('reports no identity when the configured binary cannot be read', () => {
-    process.env.HAPPIER_CLAUDE_PATH = join(tempDir, 'missing', 'cli.mjs');
+    process.env.PIGGERCODE_CLAUDE_PATH = join(tempDir, 'missing', 'cli.mjs');
 
     expect(resolveInstalledClaudeCliIdentity()).toBeNull();
   });

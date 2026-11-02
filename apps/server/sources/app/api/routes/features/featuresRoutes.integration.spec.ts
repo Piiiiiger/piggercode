@@ -45,7 +45,7 @@ describe("featuresRoutes", () => {
     describe("server identity", () => {
         it("returns a compatibility-safe server identity capability", async () => {
             resetEnv({
-                HAPPIER_SERVER_IDENTITY_ID: "srv_routeIdentity123",
+                PIGGERCODE_SERVER_IDENTITY_ID: "srv_routeIdentity123",
             });
 
             const payload = await getFeaturesPayload();
@@ -67,9 +67,9 @@ describe("featuresRoutes", () => {
     describe('retention policy', () => {
         it('reports every active retention domain through an extensible complete payload', async () => {
             resetEnv({
-                HAPPIER_SERVER_RETENTION__ENABLED: '1',
-                HAPPIER_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__MODE: 'delete_older_than',
-                HAPPIER_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS: '7',
+                PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+                PIGGERCODE_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__MODE: 'delete_older_than',
+                PIGGERCODE_SERVER_RETENTION__SESSION_SIDECHAIN_MESSAGES__DAYS: '7',
             });
 
             const payload = await getRetentionPolicyPayload();
@@ -92,7 +92,7 @@ describe("featuresRoutes", () => {
             expect(payload.features.pets.companion.enabled).toBe(true);
 
             resetEnv({
-                HAPPIER_FEATURE_PETS_COMPANION__ENABLED: "0",
+                PIGGERCODE_FEATURE_PETS_COMPANION__ENABLED: "0",
             });
 
             payload = await getFeaturesPayload();
@@ -101,9 +101,9 @@ describe("featuresRoutes", () => {
     });
 
     describe("friends", () => {
-        it("returns friends=false when HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED is off", async () => {
+        it("returns friends=false when PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED is off", async () => {
             resetEnv({
-                HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+                PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
                 GITHUB_CLIENT_ID: "id",
                 GITHUB_CLIENT_SECRET: "secret",
                 GITHUB_REDIRECT_URL: "https://example.com/v1/oauth/github/callback",
@@ -113,10 +113,10 @@ describe("featuresRoutes", () => {
             expect(payload.features.social.friends.enabled).toBe(false);
         });
 
-        it("returns friends=true and allowUsername=true when HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME is on", async () => {
+        it("returns friends=true and allowUsername=true when PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME is on", async () => {
             resetEnv({
-                HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-                HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
+                PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+                PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
                 GITHUB_CLIENT_ID: undefined,
                 GITHUB_CLIENT_SECRET: undefined,
                 GITHUB_REDIRECT_URL: undefined,
@@ -131,8 +131,8 @@ describe("featuresRoutes", () => {
 
         it("returns friends=false when identity provider is required but OAuth provider is not configured", async () => {
             resetEnv({
-                HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-                HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+                PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+                PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
                 GITHUB_CLIENT_ID: undefined,
                 GITHUB_CLIENT_SECRET: undefined,
                 GITHUB_REDIRECT_URL: undefined,
@@ -150,7 +150,7 @@ describe("featuresRoutes", () => {
         it("returns voice=false when ElevenLabs is not configured", async () => {
             resetEnv({
                 NODE_ENV: "production",
-                HAPPIER_FEATURE_VOICE__ENABLED: "1",
+                PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
                 ELEVENLABS_API_KEY: undefined,
                 ELEVENLABS_AGENT_ID_PROD: undefined,
             });
@@ -166,7 +166,7 @@ describe("featuresRoutes", () => {
         it("returns voice=true when voice is enabled and ElevenLabs is configured", async () => {
             resetEnv({
                 NODE_ENV: "production",
-                HAPPIER_FEATURE_VOICE__ENABLED: "1",
+                PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
                 ELEVENLABS_API_KEY: "el_key",
                 ELEVENLABS_AGENT_ID_PROD: "agent_1",
                 REVENUECAT_SECRET_KEY: "rc_secret",
@@ -182,10 +182,10 @@ describe("featuresRoutes", () => {
         it("returns voice=false when subscription is required and RevenueCat is not configured", async () => {
             resetEnv({
                 NODE_ENV: "production",
-                HAPPIER_FEATURE_VOICE__ENABLED: "1",
+                PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
                 ELEVENLABS_API_KEY: "el_key",
                 ELEVENLABS_AGENT_ID_PROD: "agent_1",
-                HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: undefined,
+                PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: undefined,
                 REVENUECAT_SECRET_KEY: undefined,
             });
 
@@ -199,10 +199,10 @@ describe("featuresRoutes", () => {
         it("returns voice=true when subscription is not required even without RevenueCat", async () => {
             resetEnv({
                 NODE_ENV: "production",
-                HAPPIER_FEATURE_VOICE__ENABLED: "1",
+                PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
                 ELEVENLABS_API_KEY: "el_key",
                 ELEVENLABS_AGENT_ID_PROD: "agent_1",
-                HAPPIER_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
+                PIGGERCODE_FEATURE_VOICE__REQUIRE_SUBSCRIPTION: "0",
                 REVENUECAT_SECRET_KEY: undefined,
             });
 
@@ -313,7 +313,7 @@ describe("featuresRoutes", () => {
             resetEnv({
                 AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
                 AUTH_SIGNUP_PROVIDERS: "github",
-                HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
+                PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
                 GITHUB_CLIENT_ID: "id",
                 GITHUB_CLIENT_SECRET: "secret",
                 GITHUB_REDIRECT_URL: "https://example.com/oauth/github/callback",
@@ -324,11 +324,11 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.auth.recovery.providerReset.providers).toContain("github");
         });
 
-        it("exposes provider reset as disabled when HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED=0", async () => {
+        it("exposes provider reset as disabled when PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED=0", async () => {
             resetEnv({
                 AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
                 AUTH_SIGNUP_PROVIDERS: "github",
-                HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "0",
+                PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "0",
                 GITHUB_CLIENT_ID: "id",
                 GITHUB_CLIENT_SECRET: "secret",
                 GITHUB_REDIRECT_URL: "https://example.com/oauth/github/callback",
@@ -344,9 +344,9 @@ describe("featuresRoutes", () => {
             expect(payload.features.auth.ui.recoveryKeyReminder.enabled).toBe(true);
         });
 
-        it("allows disabling recovery key reminder UI via HAPPIER_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED=0", async () => {
+        it("allows disabling recovery key reminder UI via PIGGERCODE_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED=0", async () => {
             resetEnv({
-                HAPPIER_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED: "0",
+                PIGGERCODE_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED: "0",
             });
 
             const payload = await getFeaturesPayload();
@@ -363,9 +363,9 @@ describe("featuresRoutes", () => {
             );
         });
 
-        it("reports key-challenge login disabled when HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED=0", async () => {
+        it("reports key-challenge login disabled when PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED=0", async () => {
             resetEnv({
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             });
 
             const payload = await getFeaturesPayload();
@@ -379,11 +379,11 @@ describe("featuresRoutes", () => {
     describe("auth mtls", () => {
         it("exposes mtls policy details under capabilities.auth.mtls.policy", async () => {
             resetEnv({
-                HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-                HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-                HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-                HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "CN=Example Root CA\ncn=Example Intermediate CA",
-                HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com, example.org",
+                PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+                PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+                PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+                PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "CN=Example Root CA\ncn=Example Intermediate CA",
+                PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com, example.org",
             });
 
             const payload = await getFeaturesPayload();
@@ -402,9 +402,9 @@ describe("featuresRoutes", () => {
     describe("encryption", () => {
         it("reports required_e2ee by default", async () => {
             resetEnv({
-                HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-                HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "0",
-                HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+                PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+                PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "0",
+                PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
             });
 
             const payload = await getFeaturesPayload();
@@ -421,9 +421,9 @@ describe("featuresRoutes", () => {
 
         it("reports plaintext storage enabled when policy is optional", async () => {
             resetEnv({
-                HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-                HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-                HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+                PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+                PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+                PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
             });
 
             const payload = await getFeaturesPayload();
@@ -480,9 +480,9 @@ describe("featuresRoutes", () => {
     describe("bug reports", () => {
         it("returns bug report capability enabled by default", async () => {
             resetEnv({
-                HAPPIER_FEATURE_BUG_REPORTS__ENABLED: undefined,
-                HAPPIER_FEATURE_BUG_REPORTS__PROVIDER_URL: undefined,
-                HAPPIER_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS: undefined,
+                PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED: undefined,
+                PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL: undefined,
+                PIGGERCODE_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS: undefined,
             });
 
             const payload = await getFeaturesPayload();
@@ -494,10 +494,10 @@ describe("featuresRoutes", () => {
 
         it("allows disabling bug report capability via env", async () => {
             resetEnv({
-                HAPPIER_FEATURE_BUG_REPORTS__ENABLED: "0",
-                HAPPIER_FEATURE_BUG_REPORTS__PROVIDER_URL: "https://reports.enterprise.local",
-                HAPPIER_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS: "0",
-                HAPPIER_FEATURE_BUG_REPORTS__CONTEXT_WINDOW_MS: "60000",
+                PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED: "0",
+                PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL: "https://reports.enterprise.local",
+                PIGGERCODE_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS: "0",
+                PIGGERCODE_FEATURE_BUG_REPORTS__CONTEXT_WINDOW_MS: "60000",
             });
 
             const payload = await getFeaturesPayload();
@@ -509,7 +509,7 @@ describe("featuresRoutes", () => {
 
         it("fails closed when provider url env is invalid", async () => {
             resetEnv({
-                HAPPIER_FEATURE_BUG_REPORTS__PROVIDER_URL: "invalid-provider-url",
+                PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL: "invalid-provider-url",
             });
 
             const payload = await getFeaturesPayload();
@@ -521,7 +521,7 @@ describe("featuresRoutes", () => {
     describe("automations", () => {
         it("returns automations enabled by default", async () => {
             resetEnv({
-                HAPPIER_FEATURE_AUTOMATIONS__ENABLED: undefined,
+                PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: undefined,
             });
 
             const payload = await getFeaturesPayload();
@@ -536,9 +536,9 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.connectedServices.supportedServiceIds).toEqual(ConnectedServiceIdSchema.options);
         });
 
-        it("returns connectedServices.enabled=false when HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED is off", async () => {
+        it("returns connectedServices.enabled=false when PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED is off", async () => {
             resetEnv({
-                HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0",
+                PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0",
             });
             const payload = await getFeaturesPayload();
             expect(payload.features.connectedServices.enabled).toBe(false);
@@ -549,9 +549,9 @@ describe("featuresRoutes", () => {
             expect(payload.features.connectedServices.quotas.enabled).toBe(true);
         });
 
-        it("returns connectedServices.quotas.enabled=false when HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED is off", async () => {
+        it("returns connectedServices.quotas.enabled=false when PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED is off", async () => {
             resetEnv({
-                HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "0",
+                PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "0",
             });
             const payload = await getFeaturesPayload();
             expect(payload.features.connectedServices.quotas.enabled).toBe(false);
@@ -561,8 +561,8 @@ describe("featuresRoutes", () => {
     describe("server url capabilities", () => {
         it("exposes canonicalServerUrl + webappUrl when configured via env", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: "https://stack.example.test/",
-                HAPPIER_WEBAPP_URL: "https://ui.example.test/",
+                PIGGERCODE_PUBLIC_SERVER_URL: "https://stack.example.test/",
+                PIGGERCODE_WEBAPP_URL: "https://ui.example.test/",
             });
 
             const payload = await getFeaturesPayload();
@@ -570,10 +570,10 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.server.webappUrl).toBe("https://ui.example.test");
         });
 
-        it("exposes canonicalServerUrl when only HAPPIER_PUBLIC_SERVER_URL is set", async () => {
+        it("exposes canonicalServerUrl when only PIGGERCODE_PUBLIC_SERVER_URL is set", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: "https://stack.example.test/",
-                HAPPIER_WEBAPP_URL: undefined,
+                PIGGERCODE_PUBLIC_SERVER_URL: "https://stack.example.test/",
+                PIGGERCODE_WEBAPP_URL: undefined,
             });
 
             const payload = await getFeaturesPayload();
@@ -581,10 +581,10 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.server.webappUrl).toBeUndefined();
         });
 
-        it("exposes webappUrl when only HAPPIER_WEBAPP_URL is set", async () => {
+        it("exposes webappUrl when only PIGGERCODE_WEBAPP_URL is set", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: undefined,
-                HAPPIER_WEBAPP_URL: "https://ui.example.test/",
+                PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+                PIGGERCODE_WEBAPP_URL: "https://ui.example.test/",
             });
 
             const payload = await getFeaturesPayload();
@@ -592,12 +592,12 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.server.webappUrl).toBe("https://ui.example.test");
         });
 
-        it("derives webappUrl from canonicalServerUrl when the server serves UI at root and HAPPIER_WEBAPP_URL is unset", async () => {
+        it("derives webappUrl from canonicalServerUrl when the server serves UI at root and PIGGERCODE_WEBAPP_URL is unset", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: "https://stack.example.test/",
-                HAPPIER_WEBAPP_URL: undefined,
-                HAPPIER_SERVER_UI_DIR: "/tmp/ui",
-                HAPPIER_SERVER_UI_PREFIX: "/",
+                PIGGERCODE_PUBLIC_SERVER_URL: "https://stack.example.test/",
+                PIGGERCODE_WEBAPP_URL: undefined,
+                PIGGERCODE_SERVER_UI_DIR: "/tmp/ui",
+                PIGGERCODE_SERVER_UI_PREFIX: "/",
             });
 
             const payload = await getFeaturesPayload();
@@ -607,10 +607,10 @@ describe("featuresRoutes", () => {
 
         it("derives webappUrl from canonicalServerUrl plus the UI prefix when the server serves UI below root", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: "https://stack.example.test/base/",
-                HAPPIER_WEBAPP_URL: undefined,
-                HAPPIER_SERVER_UI_DIR: "/tmp/ui",
-                HAPPIER_SERVER_UI_PREFIX: "/ui/",
+                PIGGERCODE_PUBLIC_SERVER_URL: "https://stack.example.test/base/",
+                PIGGERCODE_WEBAPP_URL: undefined,
+                PIGGERCODE_SERVER_UI_DIR: "/tmp/ui",
+                PIGGERCODE_SERVER_UI_PREFIX: "/ui/",
             });
 
             const payload = await getFeaturesPayload();
@@ -620,8 +620,8 @@ describe("featuresRoutes", () => {
 
         it("strips userinfo/query/hash from advertised urls", async () => {
             resetEnv({
-                HAPPIER_PUBLIC_SERVER_URL: "https://user:pass@stack.example.test/?q=1#frag",
-                HAPPIER_WEBAPP_URL: "https://user:pass@ui.example.test/app/?q=1#frag",
+                PIGGERCODE_PUBLIC_SERVER_URL: "https://user:pass@stack.example.test/?q=1#frag",
+                PIGGERCODE_WEBAPP_URL: "https://user:pass@ui.example.test/app/?q=1#frag",
             });
 
             const payload = await getFeaturesPayload();
@@ -631,11 +631,11 @@ describe("featuresRoutes", () => {
 
         it("exposes retention capabilities when retention env is configured", async () => {
             resetEnv({
-                HAPPIER_SERVER_RETENTION__ENABLED: "true",
-                HAPPIER_SERVER_RETENTION__SESSIONS__MODE: "delete_inactive",
-                HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: "30",
-                HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: "delete_older_than",
-                HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: "30",
+                PIGGERCODE_SERVER_RETENTION__ENABLED: "true",
+                PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE: "delete_inactive",
+                PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: "30",
+                PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: "delete_older_than",
+                PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: "30",
             });
 
             const payload = await getFeaturesPayload();
@@ -660,11 +660,11 @@ describe("featuresRoutes", () => {
 
         it("omits retention capabilities when retention is not effectively enabled", async () => {
             resetEnv({
-                HAPPIER_SERVER_RETENTION__ENABLED: "false",
-                HAPPIER_SERVER_RETENTION__SESSIONS__MODE: "delete_inactive",
-                HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: "30",
-                HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: "delete_older_than",
-                HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: "30",
+                PIGGERCODE_SERVER_RETENTION__ENABLED: "false",
+                PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE: "delete_inactive",
+                PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: "30",
+                PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: "delete_older_than",
+                PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: "30",
             });
 
             const payload = await getFeaturesPayload();

@@ -141,7 +141,7 @@ describe('cli-common build Windows rename fallback', () => {
     await buildCliCommonDist({
       packageDir: fixtureDir,
       lockPath: join(fixtureDir, 'build.lock'),
-      env: { HAPPIER_WORKSPACE_DIST_OUTPUT_DIR: stagedOutputDir },
+      env: { PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR: stagedOutputDir },
       resolveTypeScriptCommandInvocationImpl: ({ args }) => ({ command: 'tsc', args }),
       runCommandImpl: (_cmd, args) => {
         const outDir = args[args.indexOf('--outDir') + 1];

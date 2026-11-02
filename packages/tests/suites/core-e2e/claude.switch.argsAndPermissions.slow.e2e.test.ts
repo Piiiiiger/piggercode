@@ -110,21 +110,21 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-      HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+      PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
     };
 
     const proc: SpawnedProcess = spawnLoggedProcess({
@@ -268,21 +268,21 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-      HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+      PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
     };
 
     const proc: SpawnedProcess = spawnLoggedProcess({
@@ -427,21 +427,21 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-      HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+      PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
     };
 
     const proc: SpawnedProcess = spawnLoggedProcess({

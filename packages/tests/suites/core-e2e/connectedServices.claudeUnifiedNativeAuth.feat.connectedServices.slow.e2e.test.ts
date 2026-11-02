@@ -188,8 +188,8 @@ describe('core e2e: Claude Unified connected services native auth', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
       },
     });
     const serverBaseUrl = server.baseUrl;
@@ -229,9 +229,9 @@ describe('core e2e: Claude Unified connected services native auth', () => {
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
       },
     });
 
@@ -288,16 +288,16 @@ describe('core e2e: Claude Unified connected services native auth', () => {
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
     };
 
     await ensureCliSharedDepsBuilt({ testDir, env: daemonEnv });
@@ -330,14 +330,14 @@ describe('core e2e: Claude Unified connected services native auth', () => {
         initialPrompt: 'E2E_CLAUDE_UNIFIED_NATIVE_AUTH',
         environmentVariables: {
           CI: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: serverBaseUrl,
-          HAPPIER_WEBAPP_URL: serverBaseUrl,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: serverBaseUrl,
+          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
         },
         connectedServices: {
           v: 1,
@@ -397,8 +397,8 @@ describe('core e2e: Claude Unified connected services native auth', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
       },
     });
     const serverBaseUrl = server.baseUrl;
@@ -466,9 +466,9 @@ describe('core e2e: Claude Unified connected services native auth', () => {
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
       },
     });
 
@@ -477,17 +477,17 @@ describe('core e2e: Claude Unified connected services native auth', () => {
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
-      HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
+      PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
     };
 
     await ensureCliSharedDepsBuilt({ testDir, env: daemonEnv });
@@ -520,14 +520,14 @@ describe('core e2e: Claude Unified connected services native auth', () => {
         initialPrompt: 'E2E_CLAUDE_UNIFIED_NATIVE_AUTH_GROUP_PRIMARY',
         environmentVariables: {
           CI: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: serverBaseUrl,
-          HAPPIER_WEBAPP_URL: serverBaseUrl,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: serverBaseUrl,
+          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_REQUIRE_NATIVE_OAUTH: '1',
         },
         connectedServices: {
           v: 1,

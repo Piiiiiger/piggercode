@@ -144,7 +144,7 @@ export {
 type ToolTraceEventV1 = ProviderTraceEvent;
 
 const run = createRunDirs({ runLabel: 'providers' });
-const shouldLogProviderProgress = envFlag('HAPPIER_E2E_PROVIDER_LOG_PROGRESS', false);
+const shouldLogProviderProgress = envFlag('PIGGERCODE_E2E_PROVIDER_LOG_PROGRESS', false);
 
 export function findFirstToolCallIdByName(events: Array<Pick<ToolTraceEventV1, 'kind' | 'payload'>>, toolName: string): string | null {
   for (const e of events) {
@@ -558,21 +558,21 @@ async function runOneScenario(params: {
     testName: `${provider.id}.${scenario.id}`,
     sessionIds: [sessionIdPhase1],
     env: {
-      HAPPIER_E2E_PROVIDERS: process.env.HAPPIER_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
+      PIGGERCODE_E2E_PROVIDERS: process.env.PIGGERCODE_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
       [provider.enableEnvVar]: process.env[provider.enableEnvVar],
-      HAPPIER_E2E_PROVIDER_WAIT_MS: process.env.HAPPIER_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
-      HAPPIER_E2E_PROVIDER_FLAKE_RETRY:
-        process.env.HAPPIER_E2E_PROVIDER_FLAKE_RETRY ?? process.env.HAPPY_E2E_PROVIDER_FLAKE_RETRY,
+      PIGGERCODE_E2E_PROVIDER_WAIT_MS: process.env.PIGGERCODE_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
+      PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY:
+        process.env.PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY ?? process.env.HAPPY_E2E_PROVIDER_FLAKE_RETRY,
     },
   });
 
   const baseCliEnvNoIsolation: NodeJS.ProcessEnv = {
     ...process.env,
     CI: '1',
-    HAPPIER_HOME_DIR: cliHome,
-    HAPPIER_SERVER_URL: server.baseUrl,
-    HAPPIER_WEBAPP_URL: server.baseUrl,
-    HAPPIER_STACK_TOOL_TRACE: '1',
+    PIGGERCODE_HOME_DIR: cliHome,
+    PIGGERCODE_SERVER_URL: server.baseUrl,
+    PIGGERCODE_WEBAPP_URL: server.baseUrl,
+    PIGGERCODE_STACK_TOOL_TRACE: '1',
     ...Object.fromEntries(
       Object.entries(provider.cli.envFrom ?? {}).flatMap(([dest, src]) => {
         const value = typeof process.env[src] === 'string' ? process.env[src]!.trim() : '';
@@ -676,8 +676,8 @@ async function runOneScenario(params: {
         repoRootDir: repoRootDir(),
         env: {
           ...authedCliEnv,
-          HAPPIER_SESSION_ATTACH_FILE: attachFile,
-          HAPPIER_STACK_TOOL_TRACE_FILE: params.traceFile,
+          PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+          PIGGERCODE_STACK_TOOL_TRACE_FILE: params.traceFile,
         },
       });
 
@@ -689,10 +689,10 @@ async function runOneScenario(params: {
         {
           allowRebuild: false,
           waitForAvailabilityMs: resolveCliDistAvailabilityWaitMs(
-            process.env.HAPPIER_E2E_CLI_DIST_WAIT_MS ?? process.env.HAPPY_E2E_CLI_DIST_WAIT_MS,
+            process.env.PIGGERCODE_E2E_CLI_DIST_WAIT_MS ?? process.env.HAPPY_E2E_CLI_DIST_WAIT_MS,
           ),
           buildTimeoutMs: resolveCliDistBuildTimeoutMs(
-            process.env.HAPPIER_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? process.env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS,
+            process.env.PIGGERCODE_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? process.env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS,
           ),
         },
       );
@@ -749,7 +749,7 @@ async function runOneScenario(params: {
 
       const maxWaitMs = resolveScenarioWaitMs({
         scenarioWaitMs: scenario.waitMs,
-        globalWaitMsRaw: process.env.HAPPIER_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
+        globalWaitMsRaw: process.env.PIGGERCODE_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
       });
       await waitForSessionActiveBestEffort({
         yolo,
@@ -758,7 +758,7 @@ async function runOneScenario(params: {
           token: auth.token,
           sessionId: params.sessionId,
           timeoutMs: resolveSessionActiveWaitMs(
-            process.env.HAPPIER_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
+            process.env.PIGGERCODE_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
           ),
         }),
       });
@@ -940,13 +940,13 @@ async function runOneScenario(params: {
         requiredMessageSubstrings: scenario.requiredMessageSubstrings,
       };
       const inactivityTimeoutMs = resolveProviderInactivityTimeoutMs(
-        process.env.HAPPIER_E2E_PROVIDER_NO_ACTIVITY_TIMEOUT_MS ?? process.env.HAPPY_E2E_PROVIDER_NO_ACTIVITY_TIMEOUT_MS,
+        process.env.PIGGERCODE_E2E_PROVIDER_NO_ACTIVITY_TIMEOUT_MS ?? process.env.HAPPY_E2E_PROVIDER_NO_ACTIVITY_TIMEOUT_MS,
         maxWaitMs,
         provider.id,
         scenario.inactivityTimeoutMs,
       );
       const permissionBlockTimeoutMs = resolveProviderPermissionBlockTimeoutMs(
-        process.env.HAPPIER_E2E_PROVIDER_PERMISSION_BLOCK_TIMEOUT_MS ??
+        process.env.PIGGERCODE_E2E_PROVIDER_PERMISSION_BLOCK_TIMEOUT_MS ??
           process.env.HAPPY_E2E_PROVIDER_PERMISSION_BLOCK_TIMEOUT_MS,
         maxWaitMs,
       );
@@ -1282,12 +1282,12 @@ async function runOneScenario(params: {
         testName: `${provider.id}.${scenario.id}`,
         sessionIds: [sessionIdPhase1, sessionIdPhase2],
         env: {
-          HAPPIER_E2E_PROVIDERS: process.env.HAPPIER_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
+          PIGGERCODE_E2E_PROVIDERS: process.env.PIGGERCODE_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS,
           [provider.enableEnvVar]: process.env[provider.enableEnvVar],
-          HAPPIER_E2E_PROVIDER_WAIT_MS:
-            process.env.HAPPIER_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
-          HAPPIER_E2E_PROVIDER_FLAKE_RETRY:
-            process.env.HAPPIER_E2E_PROVIDER_FLAKE_RETRY ?? process.env.HAPPY_E2E_PROVIDER_FLAKE_RETRY,
+          PIGGERCODE_E2E_PROVIDER_WAIT_MS:
+            process.env.PIGGERCODE_E2E_PROVIDER_WAIT_MS ?? process.env.HAPPY_E2E_PROVIDER_WAIT_MS,
+          PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY:
+            process.env.PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY ?? process.env.HAPPY_E2E_PROVIDER_FLAKE_RETRY,
         },
       });
     } else {
@@ -1405,7 +1405,7 @@ async function runOneScenario(params: {
     }
   }
 
-  const updateBaselines = envFlag('HAPPIER_E2E_PROVIDER_UPDATE_BASELINES', false);
+  const updateBaselines = envFlag('PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES', false);
   if (updateBaselines) {
     const baselineKeys = selectBaselineFixtureKeysFromScenario({
       scenario,
@@ -1420,7 +1420,7 @@ async function runOneScenario(params: {
   } else {
     const baseline = await loadProviderBaseline(provider.id, scenario.id);
     if (baseline) {
-      const strictKeys = envFlag('HAPPIER_E2E_PROVIDER_STRICT_KEYS', false);
+      const strictKeys = envFlag('PIGGERCODE_E2E_PROVIDER_STRICT_KEYS', false);
       const diff = diffProviderBaseline({
         baseline,
         observedFixtureKeys: keys,
@@ -1430,7 +1430,7 @@ async function runOneScenario(params: {
       });
       if (!diff.ok) {
         throw new Error(
-          `${diff.reason}. To update: HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1 (baseline: ${providerBaselinePath(provider.id, scenario.id)})`,
+          `${diff.reason}. To update: PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1 (baseline: ${providerBaselinePath(provider.id, scenario.id)})`,
         );
       }
     }
@@ -1466,7 +1466,7 @@ async function runProviderWithRetry(params: {
   server: StartedServer;
   testDir: string;
 }): Promise<void> {
-  const allowFlakeRetry = envFlag('HAPPIER_E2E_PROVIDER_FLAKE_RETRY', false);
+  const allowFlakeRetry = envFlag('PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY', false);
   await runWithFlakeRetry({
     enabled: allowFlakeRetry,
     flakyErrorMessage: `FLAKY: provider scenario passed on retry (${params.provider.id}.${params.scenario.id})`,
@@ -1478,8 +1478,8 @@ async function runProviderWithRetry(params: {
 }
 
 export async function runProviderContractMatrix(): Promise<ProviderContractMatrixResult> {
-  if (!envFlag('HAPPIER_E2E_PROVIDERS', false)) {
-    return { ok: true, skipped: { reason: 'providers disabled (set HAPPIER_E2E_PROVIDERS=1)' } };
+  if (!envFlag('PIGGERCODE_E2E_PROVIDERS', false)) {
+    return { ok: true, skipped: { reason: 'providers disabled (set PIGGERCODE_E2E_PROVIDERS=1)' } };
   }
 
   await resetProviderFailureReport();
@@ -1487,7 +1487,7 @@ export async function runProviderContractMatrix(): Promise<ProviderContractMatri
   const catalog = await loadProvidersFromCliSpecs();
   const enabledProviders = catalog.filter((p) => envFlag(p.enableEnvVar, false));
   if (enabledProviders.length === 0) {
-    return { ok: true, skipped: { reason: 'no providers enabled (set HAPPIER_E2E_PROVIDER_*=1)' } };
+    return { ok: true, skipped: { reason: 'no providers enabled (set PIGGERCODE_E2E_PROVIDER_*=1)' } };
   }
 
   let server: StartedServer | null = null;
@@ -1502,10 +1502,10 @@ export async function runProviderContractMatrix(): Promise<ProviderContractMatri
       {
         allowRebuild: resolveCliDistPreflightAllowRebuild(),
         waitForAvailabilityMs: resolveCliDistAvailabilityWaitMs(
-          process.env.HAPPIER_E2E_CLI_DIST_WAIT_MS ?? process.env.HAPPY_E2E_CLI_DIST_WAIT_MS,
+          process.env.PIGGERCODE_E2E_CLI_DIST_WAIT_MS ?? process.env.HAPPY_E2E_CLI_DIST_WAIT_MS,
         ),
         buildTimeoutMs: resolveCliDistBuildTimeoutMs(
-          process.env.HAPPIER_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? process.env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS,
+          process.env.PIGGERCODE_E2E_CLI_DIST_BUILD_TIMEOUT_MS ?? process.env.HAPPY_E2E_CLI_DIST_BUILD_TIMEOUT_MS,
         ),
       },
     );

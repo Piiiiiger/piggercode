@@ -67,13 +67,13 @@ describe('core e2e: Codex fast-start', () => {
 const fs = require('node:fs');
 const path = require('node:path');
 
-const sessionsRoot = process.env.HAPPIER_CODEX_SESSIONS_DIR;
-if (!sessionsRoot) throw new Error('Missing HAPPIER_CODEX_SESSIONS_DIR');
+const sessionsRoot = process.env.PIGGERCODE_CODEX_SESSIONS_DIR;
+if (!sessionsRoot) throw new Error('Missing PIGGERCODE_CODEX_SESSIONS_DIR');
 fs.mkdirSync(sessionsRoot, { recursive: true });
 
 const filePath = path.join(sessionsRoot, ${JSON.stringify('rollout-test.jsonl')});
-const id = process.env.HAPPIER_E2E_CODEX_SESSION_ID;
-if (!id) throw new Error('Missing HAPPIER_E2E_CODEX_SESSION_ID');
+const id = process.env.PIGGERCODE_E2E_CODEX_SESSION_ID;
+if (!id) throw new Error('Missing PIGGERCODE_E2E_CODEX_SESSION_ID');
 
 fs.appendFileSync(
   filePath,
@@ -98,27 +98,27 @@ setInterval(() => {}, 1000);
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_CODEX_TUI_BIN: fakeCodexPath,
+        PIGGERCODE_CODEX_TUI_BIN: fakeCodexPath,
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_ACTIVE_SERVER_ID: serverId,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_CODEX_TUI_BIN: fakeCodexPath,
-      HAPPIER_CODEX_SESSIONS_DIR: codexSessionsDir,
-      HAPPIER_E2E_CODEX_SESSION_ID: codexSessionId,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_CODEX_TUI_BIN: fakeCodexPath,
+      PIGGERCODE_CODEX_SESSIONS_DIR: codexSessionsDir,
+      PIGGERCODE_E2E_CODEX_SESSION_ID: codexSessionId,
       // Enable Codex local-control so `--happy-starting-mode local` uses the local launcher.
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-      HAPPIER_CODEX_ACP_NPX_MODE: 'never',
-      HAPPIER_CODEX_ACP_BIN: fakeCodexPath,
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_CODEX_ACP_NPX_MODE: 'never',
+      PIGGERCODE_CODEX_ACP_BIN: fakeCodexPath,
       // Make server session creation slow enough that we can verify local spawn happens first.
-      HAPPIER_E2E_DELAY_CREATE_SESSION_MS: '30000',
+      PIGGERCODE_E2E_DELAY_CREATE_SESSION_MS: '30000',
     };
 
     const cliDistEntrypoint = await ensureCliDistBuilt(

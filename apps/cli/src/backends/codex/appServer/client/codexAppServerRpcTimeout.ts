@@ -22,19 +22,19 @@ export function readCodexAppServerRpcTimeoutMs(env?: NodeJS.ProcessEnv): number 
     // Catalog, control, and account reads share the session-control load profile. A 15s cutoff
     // caused healthy app-server requests to fail during contention, so keep the default generous
     // while retaining a bounded operator override for genuinely slow local providers.
-    return clampRpcTimeoutMs(env?.HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS, 60_000, 10 * 60_000);
+    return clampRpcTimeoutMs(env?.PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS, 60_000, 10 * 60_000);
 }
 
 export function readCodexAppServerStartupRpcTimeoutMs(env?: NodeJS.ProcessEnv, baseTimeoutMs?: number): number {
     const base = baseTimeoutMs ?? readCodexAppServerRpcTimeoutMs(env);
-    const configured = clampRpcTimeoutMs(env?.HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS, 60_000, 120_000);
+    const configured = clampRpcTimeoutMs(env?.PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS, 60_000, 120_000);
     return Math.max(base, configured);
 }
 
 export function readCodexAppServerResumeRecoveryTimeoutMs(env?: NodeJS.ProcessEnv): number {
     const startupTimeoutMs = readCodexAppServerStartupRpcTimeoutMs(env);
     const configured = clampRpcTimeoutMs(
-        env?.HAPPIER_CODEX_APP_SERVER_RESUME_RECOVERY_TIMEOUT_MS,
+        env?.PIGGERCODE_CODEX_APP_SERVER_RESUME_RECOVERY_TIMEOUT_MS,
         120_000,
         10 * 60_000,
     );

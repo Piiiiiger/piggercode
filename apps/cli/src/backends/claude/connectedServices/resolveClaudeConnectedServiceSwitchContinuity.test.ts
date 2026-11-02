@@ -10,13 +10,13 @@ import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { resolveClaudeConnectedServiceSwitchContinuity } from './resolveClaudeConnectedServiceSwitchContinuity';
 import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from './nativeAuth/claudeCodeCredentialScopes';
 
-const CLAUDE_ROLLBACK_ENV = 'HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME';
+const CLAUDE_ROLLBACK_ENV = 'PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME';
 const CREDENTIAL_REVISION = 'csr_abcdefghijklmnopqrstuv';
 
 const claudeEnvKeys = [
   CLAUDE_ROLLBACK_ENV,
   'CLAUDE_CONFIG_DIR',
-  'HAPPIER_CLAUDE_CONFIG_DIR',
+  'PIGGERCODE_CLAUDE_CONFIG_DIR',
   'HOME',
   'USERPROFILE',
 ] as const;

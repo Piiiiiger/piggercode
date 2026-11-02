@@ -50,16 +50,16 @@ function restartCommandFor(channel: PublicReleaseRingId): string {
  * restart names its own service instead (a `--server` or a daemon's env must not redirect it).
  */
 const INHERITED_SERVICE_SELECTOR_ENV_KEYS = [
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
-  'HAPPIER_LOCAL_SERVER_URL',
-  'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
-  'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-  'HAPPIER_DAEMON_SERVICE_MANAGED_BY',
-  'HAPPIER_DAEMON_SERVICE_BUNDLE_ID',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_LOCAL_SERVER_URL',
+  'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
+  'PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID',
 ] as const;
 
 async function listUserServicesOfThisHomeAndRing(
@@ -98,7 +98,7 @@ async function observeServiceBeforeUpdate(
   if (observed?.presence === 'unverified') {
     throw new Error(`Daemon presence is unverified for service relay ${target.lifecycleServerId}; retry the update when authenticated control is available`);
   }
-  // The label the service hands its daemon (`HAPPIER_DAEMON_SERVICE_LABEL`), which the daemon records.
+  // The label the service hands its daemon (`PIGGERCODE_DAEMON_SERVICE_LABEL`), which the daemon records.
   const label = resolveDaemonServiceLaunchdLabel(entry.serverId, entry.releaseChannel, entry.targetMode);
   return {
     label,
@@ -214,12 +214,12 @@ async function restartServiceDaemonOntoInstalledCli(params: Readonly<{
     windowsHide: true,
     env: {
       ...env,
-      HAPPIER_DAEMON_SERVICE_CHANNEL: channel,
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: getReleaseRingCatalogEntry(channel).publicLabel,
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: target.targetMode,
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: target.instanceId,
+      PIGGERCODE_DAEMON_SERVICE_CHANNEL: channel,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: getReleaseRingCatalogEntry(channel).publicLabel,
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: target.targetMode,
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: target.instanceId,
       // A pinned service's relay profile; the default-following one reads the persisted selection.
-      ...(target.targetMode === 'pinned' ? { HAPPIER_ACTIVE_SERVER_ID: target.lifecycleServerId } : {}),
+      ...(target.targetMode === 'pinned' ? { PIGGERCODE_ACTIVE_SERVER_ID: target.lifecycleServerId } : {}),
     },
   });
   if (result.status !== 0) {

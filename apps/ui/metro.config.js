@@ -18,7 +18,7 @@ function parseBooleanEnv(name, defaultValue) {
   return defaultValue;
 }
 
-const workletsBundleModeEnabled = parseBooleanEnv("HAPPIER_UI_WORKLETS_BUNDLE_MODE", false);
+const workletsBundleModeEnabled = parseBooleanEnv("PIGGERCODE_UI_WORKLETS_BUNDLE_MODE", false);
 let workletsPackageRoot = null;
 try {
   workletsPackageRoot = path.dirname(require.resolve(`${workletsPackageName}/package.json`));
@@ -62,7 +62,7 @@ function resolveGeneratedWorkletModule(moduleName) {
     throw new Error(
       `[Worklets] Generated Worklets Bundle Mode module "${moduleName}" does not exist at "${filePath}". `
       + "This usually means Metro is serving stale worklet transforms or Bundle Mode was toggled without clearing the cache; clear Metro cache before restarting. "
-      + "Restart Metro with a cleared cache and keep HAPPIER_UI_WORKLETS_BUNDLE_MODE consistent between Babel and Metro.",
+      + "Restart Metro with a cleared cache and keep PIGGERCODE_UI_WORKLETS_BUNDLE_MODE consistent between Babel and Metro.",
     );
   }
   return {
@@ -163,9 +163,9 @@ config.serializer = {
 // - the native `find` path can exceed Node's max string length and crash
 //
 // In CI/e2e and stack builds, prefer Metro's Node filesystem crawler (slower but deterministic).
-const isStackRun = Boolean((process.env.HAPPIER_STACK_STACK ?? '').toString().trim());
+const isStackRun = Boolean((process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim());
 const isWatchmanDisabledForLocalRun = /^(1|true|yes|on)$/i.test(
-  (process.env.HAPPIER_UI_METRO_DISABLE_WATCHMAN ?? '').toString().trim(),
+  (process.env.PIGGERCODE_UI_METRO_DISABLE_WATCHMAN ?? '').toString().trim(),
 );
 
 if (process.env.CI || isStackRun || isWatchmanDisabledForLocalRun) {

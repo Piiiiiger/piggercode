@@ -19,14 +19,14 @@ import {
  * so that a token refresh for the same account does not change the fingerprint (and therefore does
  * not churn the managed server). See `resolveOpenCodeManagedServerLaunchFingerprint`.
  */
-export const OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY_ENV = 'HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY';
+export const OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY_ENV = 'PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY';
 
 /**
  * Optional env var carrying an explicit opencode binary identity (e.g. `version|path`) for the
- * launch fingerprint. When unset, the fingerprint folds in `HAPPIER_OPENCODE_PATH` (an explicit
+ * launch fingerprint. When unset, the fingerprint folds in `PIGGERCODE_OPENCODE_PATH` (an explicit
  * binary override) so changing the binary path yields a new fingerprint.
  */
-export const OPENCODE_BINARY_IDENTITY_ENV = 'HAPPIER_OPENCODE_BINARY_IDENTITY';
+export const OPENCODE_BINARY_IDENTITY_ENV = 'PIGGERCODE_OPENCODE_BINARY_IDENTITY';
 
 /** The existing launch identity is a SHA-256 hex digest, never a filesystem path. */
 export function isOpenCodeManagedServerLaunchFingerprint(value: string): boolean {
@@ -131,9 +131,9 @@ export function resolveOpenCodeManagedServerChildEnv(params: Readonly<{
  *   fingerprint falls back to hashing `OPENCODE_AUTH_CONTENT` so distinct stored credentials never
  *   collide. Native sessions have no `OPENCODE_AUTH_CONTENT`, so their auth-identity class is empty
  *   and never collides with connected sessions.
- * - `openCodeBinaryIdentity` (or `OPENCODE_BINARY_IDENTITY_ENV`, else `HAPPIER_OPENCODE_PATH`):
+ * - `openCodeBinaryIdentity` (or `OPENCODE_BINARY_IDENTITY_ENV`, else `PIGGERCODE_OPENCODE_PATH`):
  *   changing the opencode binary yields a new fingerprint.
- * - `HAPPIER_OPENCODE_CLI_GENERATION`: Stable and V2 are distinct process contracts even when
+ * - `PIGGERCODE_OPENCODE_CLI_GENERATION`: Stable and V2 are distinct process contracts even when
  *   both resolve to the released `opencode` executable name.
  *
  * NOTE: the runtime "generation key" (see `openCodeManagedServerIdentity.ts`, which changes on every
@@ -174,14 +174,14 @@ export function resolveOpenCodeManagedServerLaunchFingerprint(params: Readonly<{
   const openCodeBinaryIdentity = normalizeIdentityValue(
     params.openCodeBinaryIdentity
     ?? env[OPENCODE_BINARY_IDENTITY_ENV]
-    ?? env.HAPPIER_OPENCODE_PATH,
+    ?? env.PIGGERCODE_OPENCODE_PATH,
   );
-  const requestedCliGeneration = normalizeOpenCodeCliGeneration(env.HAPPIER_OPENCODE_CLI_GENERATION);
+  const requestedCliGeneration = normalizeOpenCodeCliGeneration(env.PIGGERCODE_OPENCODE_CLI_GENERATION);
 
   const relevant = {
     HOME: typeof env.HOME === 'string' ? env.HOME : '',
     USERPROFILE: typeof env.USERPROFILE === 'string' ? env.USERPROFILE : '',
-    HAPPIER_HOME_DIR: typeof env.HAPPIER_HOME_DIR === 'string' ? env.HAPPIER_HOME_DIR : '',
+    PIGGERCODE_HOME_DIR: typeof env.PIGGERCODE_HOME_DIR === 'string' ? env.PIGGERCODE_HOME_DIR : '',
     XDG_CONFIG_HOME: typeof env.XDG_CONFIG_HOME === 'string' ? env.XDG_CONFIG_HOME : '',
     XDG_DATA_HOME: typeof env.XDG_DATA_HOME === 'string' ? env.XDG_DATA_HOME : '',
     XDG_STATE_HOME: typeof env.XDG_STATE_HOME === 'string' ? env.XDG_STATE_HOME : '',

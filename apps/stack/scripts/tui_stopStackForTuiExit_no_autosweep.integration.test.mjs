@@ -17,17 +17,17 @@ test('a superseded TUI exit cannot stop a replacement runtime owner', async () =
   const baseDir = join(storageDir, stackName);
   const envPath = join(baseDir, 'env');
   const runtimeStatePath = join(baseDir, 'stack.runtime.json');
-  const env = { ...process.env, HAPPIER_STACK_STORAGE_DIR: storageDir };
+  const env = { ...process.env, PIGGERCODE_STACK_STORAGE_DIR: storageDir };
 
   try {
     await mkdir(baseDir, { recursive: true });
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${dirname(rootDir)}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${dirname(rootDir)}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
         '',
       ].join('\n'),
       'utf-8',
@@ -71,7 +71,7 @@ test('stopStackForTuiExit auto-sweeps infra when stack.runtime.json is missing (
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-tui-exit-stop-'));
   const storageDir = join(tmp, 'storage');
   await mkdir(storageDir, { recursive: true });
-  const env = { ...process.env, HAPPIER_STACK_STORAGE_DIR: storageDir };
+  const env = { ...process.env, PIGGERCODE_STACK_STORAGE_DIR: storageDir };
 
   /** @type {ReturnType<typeof spawnOwnedSleep> | null} */
   let infra = null;
@@ -87,10 +87,10 @@ test('stopStackForTuiExit auto-sweeps infra when stack.runtime.json is missing (
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoDir}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -99,9 +99,9 @@ test('stopStackForTuiExit auto-sweeps infra when stack.runtime.json is missing (
     infra = spawnOwnedSleep({
       env: {
         ...env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
       },
     });
     assert.ok(Number(infra.pid) > 1, 'expected infra child pid');
@@ -110,9 +110,9 @@ test('stopStackForTuiExit auto-sweeps infra when stack.runtime.json is missing (
     sessionLike = spawnOwnedSleep({
       env: {
         ...env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_PROCESS_KIND: 'session',
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_PROCESS_KIND: 'session',
       },
     });
     assert.ok(Number(sessionLike.pid) > 1, 'expected session-like child pid');

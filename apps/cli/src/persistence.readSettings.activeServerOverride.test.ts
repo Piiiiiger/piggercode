@@ -7,10 +7,10 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('readSettings (active server override)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_ACTIVE_SERVER_ID',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -20,14 +20,14 @@ describe('readSettings (active server override)', () => {
     vi.resetModules();
   });
 
-  it('derives machineId from configuration.activeServerId when HAPPIER_SERVER_URL is set', async () => {
+  it('derives machineId from configuration.activeServerId when PIGGERCODE_SERVER_URL is set', async () => {
     await withTempDir('happier-cli-settings-active-server-', async (homeDir) => {
       const serverUrl = 'http://127.0.0.1:12345';
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: serverUrl,
-        HAPPIER_WEBAPP_URL: serverUrl,
-        HAPPIER_ACTIVE_SERVER_ID: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: serverUrl,
+        PIGGERCODE_WEBAPP_URL: serverUrl,
+        PIGGERCODE_ACTIVE_SERVER_ID: undefined,
       });
       writeFileSync(
         join(homeDir, 'settings.json'),
@@ -80,10 +80,10 @@ describe('readSettings (active server override)', () => {
     await withTempDir('happier-cli-clear-machine-id-', async (homeDir) => {
       const serverUrl = 'http://127.0.0.1:23456';
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: serverUrl,
-        HAPPIER_WEBAPP_URL: serverUrl,
-        HAPPIER_ACTIVE_SERVER_ID: undefined,
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: serverUrl,
+        PIGGERCODE_WEBAPP_URL: serverUrl,
+        PIGGERCODE_ACTIVE_SERVER_ID: undefined,
       });
       const settingsPath = join(homeDir, 'settings.json');
       writeFileSync(
@@ -147,13 +147,13 @@ describe('readSettings (active server override)', () => {
     });
   }, 15_000);
 
-  it('uses HAPPIER_ACTIVE_SERVER_ID for machineId scope selection', async () => {
+  it('uses PIGGERCODE_ACTIVE_SERVER_ID for machineId scope selection', async () => {
     await withTempDir('happier-cli-active-server-id-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:23456',
-        HAPPIER_WEBAPP_URL: 'http://127.0.0.1:23456',
-        HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:23456',
+        PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:23456',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default',
       });
       writeFileSync(
         join(homeDir, 'settings.json'),
@@ -193,13 +193,13 @@ describe('readSettings (active server override)', () => {
     });
   });
 
-  it('uses HAPPIER_ACTIVE_SERVER_ID machineId when the env URL also matches the persisted active profile', async () => {
+  it('uses PIGGERCODE_ACTIVE_SERVER_ID machineId when the env URL also matches the persisted active profile', async () => {
     await withTempDir('happier-cli-active-server-id-duplicate-url-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:52753',
-        HAPPIER_WEBAPP_URL: 'http://localhost:52753',
-        HAPPIER_ACTIVE_SERVER_ID: 'android-keyboard-qa',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753',
+        PIGGERCODE_WEBAPP_URL: 'http://localhost:52753',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'android-keyboard-qa',
       });
       writeFileSync(
         join(homeDir, 'settings.json'),
@@ -253,8 +253,8 @@ describe('readSettings (active server override)', () => {
   it('does not fall back to a server-scoped machine id when account-scoped bindings exist but the account scope is missing', async () => {
     await withTempDir('happier-cli-active-server-id-no-account-scope-', async (homeDir) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: homeDir,
-        HAPPIER_ACTIVE_SERVER_ID: 'cloud',
+        PIGGERCODE_HOME_DIR: homeDir,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
       });
 
       writeFileSync(

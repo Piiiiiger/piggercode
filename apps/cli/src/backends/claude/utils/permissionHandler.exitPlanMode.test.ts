@@ -42,9 +42,9 @@ async function expectResolvesWithin<T>(promise: Promise<T>, ms = 250): Promise<T
 describe('PermissionHandler (ExitPlanMode)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_DIR;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR;
   });
 
   it('allows ExitPlanMode when approved', async () => {

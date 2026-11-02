@@ -141,7 +141,7 @@ export type ResolveClaudeModelCatalogParams = Readonly<{
 function isClaudeDynamicModelProbeEnabled(params: ResolveClaudeModelCatalogParams): boolean {
   if (params.accountSettings?.claudeDynamicModelProbeEnabled === false) return false;
   const processEnv = params.processEnv ?? process.env;
-  return parseBooleanEnv(processEnv.HAPPIER_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED, true);
+  return parseBooleanEnv(processEnv.PIGGERCODE_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED, true);
 }
 
 /**

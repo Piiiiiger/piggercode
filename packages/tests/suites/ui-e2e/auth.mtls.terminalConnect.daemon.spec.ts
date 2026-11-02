@@ -53,10 +53,10 @@ test.describe('ui e2e: mTLS login + terminal connect', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: proxyBaseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
-      HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -65,29 +65,29 @@ test.describe('ui e2e: mTLS login + terminal connect', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
 
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '0',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '0',
         AUTH_ANONYMOUS_SIGNUP_ENABLED: '0',
         AUTH_SIGNUP_PROVIDERS: '',
 
-        HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
+        PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
 
-        HAPPIER_FEATURE_AUTH_MTLS__ENABLED: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__MODE: 'forwarded',
-        HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: '1',
-        HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: 'san_email',
-        HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: 'example.com',
-        HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: 'CN=Example Root CA',
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: 'x-happier-client-cert-email',
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: 'x-happier-client-cert-issuer',
-        HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: 'x-happier-client-cert-sha256',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__MODE: 'forwarded',
+        PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: '1',
+        PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: 'san_email',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: 'example.com',
+        PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: 'CN=Example Root CA',
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: 'x-happier-client-cert-email',
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: 'x-happier-client-cert-issuer',
+        PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: 'x-happier-client-cert-sha256',
 
-        HAPPIER_FEATURE_AUTH_UI__AUTO_REDIRECT_ENABLED: '1',
-        HAPPIER_FEATURE_AUTH_UI__AUTO_REDIRECT_PROVIDER_ID: 'mtls',
+        PIGGERCODE_FEATURE_AUTH_UI__AUTO_REDIRECT_ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_UI__AUTO_REDIRECT_PROVIDER_ID: 'mtls',
 
       },
     });
@@ -151,9 +151,9 @@ test.describe('ui e2e: mTLS login + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_VARIANT: 'dev',
         },
       });
 
@@ -172,18 +172,18 @@ test.describe('ui e2e: mTLS login + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_HOME_DIR: cliHomeDir,
+          PIGGERCODE_HOME_DIR: cliHomeDir,
           // Use the same server URL the CLI authenticated against so the daemon can find credentials.
           // This is the forwarded-header proxy; it forwards to the real server.
-          HAPPIER_SERVER_URL: proxyBaseUrl,
-          HAPPIER_WEBAPP_URL: uiBaseUrl,
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_SERVER_URL: proxyBaseUrl,
+          PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
 

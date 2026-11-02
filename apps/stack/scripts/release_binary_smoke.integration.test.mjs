@@ -137,7 +137,7 @@ test('compiled happier and server binaries execute from isolated cwd', async (t)
   const cliVersion = runWithHardTimeout(cliExtract.binaryPath, ['--version'], {
     cwd: '/tmp',
     encoding: 'utf-8',
-    env: createSmokeCommandEnv({ HAPPIER_NONINTERACTIVE: '1' }),
+    env: createSmokeCommandEnv({ PIGGERCODE_NONINTERACTIVE: '1' }),
     timeout: 20_000,
   });
   assert.equal(cliVersion.status, 0, formatSpawnSyncResult(cliVersion));
@@ -184,12 +184,12 @@ test('compiled happier and server binaries execute from isolated cwd', async (t)
       env: {
         ...process.env,
         PORT: '3905',
-        HAPPIER_SERVER_HOST: '127.0.0.1',
+        PIGGERCODE_SERVER_HOST: '127.0.0.1',
         HAPPY_DB_PROVIDER: 'sqlite',
-        HAPPIER_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
         DATABASE_URL: `file:${serverDataDir}/happier-server-light.sqlite`,
         HAPPY_SERVER_LIGHT_DATA_DIR: serverDataDir,
-        HAPPIER_SERVER_LIGHT_DATA_DIR: serverDataDir,
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: serverDataDir,
       },
       timeout: 7000,
     });

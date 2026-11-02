@@ -27,7 +27,7 @@ export type GitlabCliAuthDetectionResult =
 const DEFAULT_GITLAB_CLI_TIMEOUT_MS = 10_000;
 
 function resolveGitlabCliTimeoutMs(): number {
-    const parsed = Number(String(process.env.HAPPIER_GITLAB_CLI_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
+    const parsed = Number(String(process.env.PIGGERCODE_GITLAB_CLI_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
     return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : DEFAULT_GITLAB_CLI_TIMEOUT_MS;
 }
 

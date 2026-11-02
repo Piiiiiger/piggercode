@@ -142,7 +142,7 @@ async function runInstall(extraArgs: readonly string[] = []): Promise<string[]> 
 describe('happier relay background service reconciliation', () => {
     let home = '';
     let preparedPayloadRoot = '';
-    let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
     beforeAll(async () => {
         await import('../commandRegistry');
@@ -156,13 +156,13 @@ describe('happier relay background service reconciliation', () => {
         promptedQuestions = [];
         installedServices = [];
         spawnedCliActions = [];
-        envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         home = await createTempDir('happier-relay-service-followup-home-');
         preparedPayloadRoot = await createTempDir('happier-relay-service-followup-prepared-');
         writeFileSync(join(preparedPayloadRoot, 'happier-server'), '#!/usr/bin/env bash\nexit 0\n', 'utf8');
         chmodSync(join(preparedPayloadRoot, 'happier-server'), 0o755);
         mockedPreparedPayloadRoot = preparedPayloadRoot;
-        envScope.patch({ HAPPIER_HOME_DIR: home });
+        envScope.patch({ PIGGERCODE_HOME_DIR: home });
         reloadConfiguration();
     });
 

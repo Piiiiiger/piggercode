@@ -43,23 +43,23 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("auto-provisions a keyless account and returns a bearer token (forwarded mode)", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
         expect(readAuthMtlsFeatureEnv(process.env).allowedIssuers).toEqual(["cn=example root ca"]);
 
@@ -97,23 +97,23 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("returns restore-required when the mTLS identity maps to an e2ee account", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "0",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "0",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
 
         const account = await db.account.create({
@@ -156,22 +156,22 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("rejects a forwarded identity when an issuer allowlist is configured and the issuer does not match", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=trusted ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=trusted ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
 
         const app = createTestApp();
@@ -195,22 +195,22 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("accepts an issuer allowlist match when the forwarded issuer is a full DN (CN extracted)", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "Example Root CA",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "Example Root CA",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
 
         const app = createTestApp();
@@ -233,23 +233,23 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("rejects issuer allowlist entries that are full DNs when the forwarded issuer has the same CN but a different DN", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
             // Full DN allowlist entry (intended to be exact-match, not just CN-match).
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "C=US, O=Example Corp, CN=Example Root CA",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "C=US, O=Example Corp, CN=Example Root CA",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
 
         const app = createTestApp();
@@ -274,23 +274,23 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("enforces allowed email domains when identitySource=san_upn", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_upn",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_UPN_HEADER: "x-happier-client-cert-upn",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_upn",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_UPN_HEADER: "x-happier-client-cert-upn",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
         });
 
         const app = createTestApp();
@@ -314,25 +314,25 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("supports browser handoff via /start -> /complete -> /claim (forwarded mode)", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
-            HAPPIER_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
         });
 
         const app = createTestApp();
@@ -388,24 +388,24 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("allows only one successful /claim even under concurrent attempts", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
-            HAPPIER_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
+            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
         });
 
         const app = createTestApp();
@@ -445,25 +445,25 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("rejects returnTo values that only match by string prefix but do not match the allowed origin", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
 
             // A common operator config: "only allow returnTo into the webapp origin".
-            HAPPIER_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "https://app.happier.dev",
+            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "https://app.happier.dev",
         });
 
         const app = createTestApp();
@@ -484,22 +484,22 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("does not register mTLS routes when server storagePolicy=required_e2ee", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "1",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
         });
 
         const app = createTestApp();
@@ -522,22 +522,22 @@ describe("authRoutes (mTLS) (integration)", () => {
 
     it("rejects identities that do not match allowed email domains", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
 
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
 
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__MODE: "forwarded",
-            HAPPIER_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
-            HAPPIER_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
-            HAPPIER_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
-            HAPPIER_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__MODE: "forwarded",
+            PIGGERCODE_FEATURE_AUTH_MTLS__AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__TRUST_FORWARDED_HEADERS: "1",
+            PIGGERCODE_FEATURE_AUTH_MTLS__IDENTITY_SOURCE: "san_email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_EMAIL_DOMAINS: "example.com",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
+            PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
         });
 
         const app = createTestApp();

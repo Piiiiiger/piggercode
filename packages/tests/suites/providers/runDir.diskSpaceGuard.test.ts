@@ -15,10 +15,10 @@ function makeTempRoot(): string {
 }
 
 describe('createRunDirs free-disk preflight guard', () => {
-  const originalMinFreeMb = process.env.HAPPIER_E2E_MIN_FREE_DISK_MB;
+  const originalMinFreeMb = process.env.PIGGERCODE_E2E_MIN_FREE_DISK_MB;
 
   afterEach(() => {
-    process.env.HAPPIER_E2E_MIN_FREE_DISK_MB = originalMinFreeMb;
+    process.env.PIGGERCODE_E2E_MIN_FREE_DISK_MB = originalMinFreeMb;
     for (const root of createdRoots.splice(0)) {
       rmSync(root, { recursive: true, force: true });
     }
@@ -26,7 +26,7 @@ describe('createRunDirs free-disk preflight guard', () => {
 
   it('fails early when available disk is below configured threshold', () => {
     const root = makeTempRoot();
-    process.env.HAPPIER_E2E_MIN_FREE_DISK_MB = '999999999';
+    process.env.PIGGERCODE_E2E_MIN_FREE_DISK_MB = '999999999';
 
     expect(() => createRunDirs({ runLabel: 'providers', logsDir: root })).toThrow(
       /insufficient disk space/i,

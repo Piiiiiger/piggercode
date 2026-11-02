@@ -96,8 +96,8 @@ async function buildStackEnv() {
   return {
     ...process.env,
     ...stackEnv,
-    ...(stackName ? { HAPPIER_STACK_STACK: stackName } : {}),
-    ...(envPath ? { HAPPIER_STACK_ENV_FILE: envPath } : {}),
+    ...(stackName ? { PIGGERCODE_STACK_STACK: stackName } : {}),
+    ...(envPath ? { PIGGERCODE_STACK_ENV_FILE: envPath } : {}),
   };
 }
 

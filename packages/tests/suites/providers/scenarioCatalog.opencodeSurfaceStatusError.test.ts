@@ -6,7 +6,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function opencodeProvider(): ProviderUnderTest {
   return {
     id: 'opencode',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_OPENCODE',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_OPENCODE',
     protocol: 'acp',
     traceProvider: 'opencode',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: ['opencode_surface_status_error'] } },

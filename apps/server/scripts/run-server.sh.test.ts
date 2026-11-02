@@ -13,7 +13,7 @@ async function writeFakeYarn(params: Readonly<{ dir: string; logPath: string }>)
   const content = `#!/bin/sh
 set -e
 echo "YARN $@" >> "${params.logPath}"
-echo "ENV DATABASE_URL=$DATABASE_URL SQLITE_AUTO=$HAPPIER_SQLITE_AUTO_MIGRATE SQLITE_MIGRATIONS_DIR=$HAPPIER_SQLITE_MIGRATIONS_DIR" >> "${params.logPath}"
+echo "ENV DATABASE_URL=$DATABASE_URL SQLITE_AUTO=$PIGGERCODE_SQLITE_AUTO_MIGRATE SQLITE_MIGRATIONS_DIR=$PIGGERCODE_SQLITE_MIGRATIONS_DIR" >> "${params.logPath}"
 if echo "$*" | grep -q "migrate:deploy"; then
   echo "migrated"
   exit 0
@@ -30,7 +30,7 @@ async function writeFakePackagedRuntime(params: Readonly<{ dir: string; logPath:
   const migrationPath = join(params.dir, 'happier-server-migrate');
   await writeFile(
     serverPath,
-    `#!/bin/sh\nset -e\nif [ "\${1:-}" = "--migrate-only" ]; then\n  echo "SQLITE_MIGRATE provider=$HAPPIER_DB_PROVIDER url=$DATABASE_URL" >> "${params.logPath}"\n  exit 0\nfi\necho "SERVER flavor=$HAPPIER_SERVER_FLAVOR provider=$HAPPIER_DB_PROVIDER url=$DATABASE_URL sqlite_auto=$HAPPIER_SQLITE_AUTO_MIGRATE args=$*" >> "${params.logPath}"\n`,
+    `#!/bin/sh\nset -e\nif [ "\${1:-}" = "--migrate-only" ]; then\n  echo "SQLITE_MIGRATE provider=$PIGGERCODE_DB_PROVIDER url=$DATABASE_URL" >> "${params.logPath}"\n  exit 0\nfi\necho "SERVER flavor=$PIGGERCODE_SERVER_FLAVOR provider=$PIGGERCODE_DB_PROVIDER url=$DATABASE_URL sqlite_auto=$PIGGERCODE_SQLITE_AUTO_MIGRATE args=$*" >> "${params.logPath}"\n`,
     { mode: 0o755 },
   );
   await writeFile(
@@ -42,7 +42,7 @@ if [ -n "\${MIGRATION_FAIL_ONCE_FILE:-}" ] && [ ! -f "$MIGRATION_FAIL_ONCE_FILE"
   echo "P1001: Can't reach database server"
   exit 1
 fi
-echo "MIGRATE provider=$HAPPIER_DB_PROVIDER url=$DATABASE_URL" >> "${params.logPath}"
+echo "MIGRATE provider=$PIGGERCODE_DB_PROVIDER url=$DATABASE_URL" >> "${params.logPath}"
 `,
     { mode: 0o755 },
   );
@@ -78,13 +78,13 @@ describe('run-server.sh', () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
 
-  it('starts the light flavor when HAPPIER_SERVER_FLAVOR=light', async () => {
+  it('starts the light flavor when PIGGERCODE_SERVER_FLAVOR=light', async () => {
     const res = spawnSync('sh', [getScriptPath()], {
       env: {
         ...process.env,
         PATH: `${binDir}:${process.env.PATH ?? ''}`,
-        HAPPIER_SERVER_FLAVOR: 'light',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_SERVER_FLAVOR: 'light',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         RUN_MIGRATIONS: '0',
       },
       stdio: 'pipe',
@@ -101,7 +101,7 @@ describe('run-server.sh', () => {
       env: {
         ...process.env,
         PATH: `${binDir}:${process.env.PATH ?? ''}`,
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '1',
         MIGRATIONS_RETRY_DELAY_SECONDS: '0',
@@ -116,12 +116,12 @@ describe('run-server.sh', () => {
     expect(yarnLines[yarnLines.length - 1]).toContain('YARN --cwd apps/server start');
   });
 
-  it('runs migrate deploy with the mysql schema when HAPPIER_DB_PROVIDER=mysql', async () => {
+  it('runs migrate deploy with the mysql schema when PIGGERCODE_DB_PROVIDER=mysql', async () => {
     const res = spawnSync('sh', [getScriptPath()], {
       env: {
         ...process.env,
         PATH: `${binDir}:${process.env.PATH ?? ''}`,
-        HAPPIER_DB_PROVIDER: 'mysql',
+        PIGGERCODE_DB_PROVIDER: 'mysql',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '1',
         MIGRATIONS_RETRY_DELAY_SECONDS: '0',
@@ -140,10 +140,10 @@ describe('run-server.sh', () => {
       env: {
         ...process.env,
         PATH: `${binDir}:${process.env.PATH ?? ''}`,
-        HAPPIER_SERVER_FLAVOR: 'light',
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: '/data/server-light',
-        HAPPIER_SQLITE_AUTO_MIGRATE: '0',
+        PIGGERCODE_SERVER_FLAVOR: 'light',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/data/server-light',
+        PIGGERCODE_SQLITE_AUTO_MIGRATE: '0',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '1',
         MIGRATIONS_RETRY_DELAY_SECONDS: '0',
@@ -167,8 +167,8 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'full',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_SERVER_FLAVOR: 'full',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://postgres@db/happier',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '1',
@@ -190,8 +190,8 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), '--migrate-only', serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'full',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_SERVER_FLAVOR: 'full',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://postgres@db/happier',
         RUN_MIGRATIONS: '0',
         MIGRATIONS_MAX_ATTEMPTS: '1',
@@ -212,8 +212,8 @@ describe('run-server.sh', () => {
       env: {
         ...process.env,
         PATH: `${binDir}:${process.env.PATH ?? ''}`,
-        HAPPIER_SERVER_FLAVOR: 'full',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_SERVER_FLAVOR: 'full',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://postgres@db/happier',
         RUN_MIGRATIONS: '0',
         MIGRATIONS_MAX_ATTEMPTS: '1',
@@ -233,8 +233,8 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), '--migrate-only', serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'light',
-        HAPPIER_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_FLAVOR: 'light',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
         RUN_MIGRATIONS: '0',
       },
       stdio: 'pipe',
@@ -251,9 +251,9 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'light',
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: '/data/server-light',
+        PIGGERCODE_SERVER_FLAVOR: 'light',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/data/server-light',
         RUN_MIGRATIONS: '1',
       },
       stdio: 'pipe',
@@ -272,7 +272,7 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://postgres@db/happier',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '2',
@@ -296,9 +296,9 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'full',
-        HAPPIER_DB_PROVIDER: 'pglite',
-        HAPPIER_SERVER_LIGHT_DB_DIR: '/data/pglite',
+        PIGGERCODE_SERVER_FLAVOR: 'full',
+        PIGGERCODE_DB_PROVIDER: 'pglite',
+        PIGGERCODE_SERVER_LIGHT_DB_DIR: '/data/pglite',
         RUN_MIGRATIONS: '1',
         MIGRATIONS_MAX_ATTEMPTS: '1',
       },
@@ -318,10 +318,10 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'light',
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: '/data/server-light',
-        HAPPIER_SQLITE_AUTO_MIGRATE: '1',
+        PIGGERCODE_SERVER_FLAVOR: 'light',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: '/data/server-light',
+        PIGGERCODE_SQLITE_AUTO_MIGRATE: '1',
         RUN_MIGRATIONS: '0',
       },
       stdio: 'pipe',
@@ -339,8 +339,8 @@ describe('run-server.sh', () => {
     const res = spawnSync('sh', [getScriptPath(), serverPath], {
       env: {
         ...process.env,
-        HAPPIER_SERVER_FLAVOR: 'full',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_SERVER_FLAVOR: 'full',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://postgres@db/happier',
         RUN_MIGRATIONS: '0',
       },

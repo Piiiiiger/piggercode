@@ -11,8 +11,8 @@ test('hstack auth --help surfaces dev-auth seed stack command', async () => {
   const env = {
     ...process.env,
     // Prevent env.mjs from auto-loading a real machine stack env file (keeps the test hermetic).
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'auth', '--help'], { cwd: rootDir, env });

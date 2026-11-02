@@ -44,8 +44,8 @@ test('perf audit URL and dev-key defaults come only from explicit environment va
   assert.deepEqual(resolvePerfAuditEnvironmentDefaults({}), { url: null, devKey: null });
   assert.deepEqual(
     resolvePerfAuditEnvironmentDefaults({
-      HAPPIER_UI_PERF_APP_URL: 'http://localhost:1234/?happier_hmr=0',
-      HAPPIER_UI_PERF_DEV_KEY: 'test-dev-key',
+      PIGGERCODE_UI_PERF_APP_URL: 'http://localhost:1234/?happier_hmr=0',
+      PIGGERCODE_UI_PERF_DEV_KEY: 'test-dev-key',
     }),
     { url: 'http://localhost:1234/?happier_hmr=0', devKey: 'test-dev-key' },
   );
@@ -56,8 +56,8 @@ test('perf audit usage names required environment variables without embedding lo
 
   const text = buildAgentBrowserPerfAuditUsage();
 
-  assert.match(text, /HAPPIER_UI_PERF_APP_URL/);
-  assert.match(text, /HAPPIER_UI_PERF_DEV_KEY/);
+  assert.match(text, /PIGGERCODE_UI_PERF_APP_URL/);
+  assert.match(text, /PIGGERCODE_UI_PERF_DEV_KEY/);
   assert.doesNotMatch(text, /happier-repo-[a-z0-9-]+\.localhost/i);
   assert.doesNotMatch(text, /[A-Z0-9]{5}(?:-[A-Z0-9]{5}){9}/);
 });
@@ -67,11 +67,11 @@ test('perf audit runtime validation fails clearly without URL or needed dev key'
 
   assert.throws(
     () => validatePerfAuditRuntimeArgs({ url: null, devKey: 'test-dev-key', skipAuth: false }, { scenarios: [] }),
-    /HAPPIER_UI_PERF_APP_URL|--url/,
+    /PIGGERCODE_UI_PERF_APP_URL|--url/,
   );
   assert.throws(
     () => validatePerfAuditRuntimeArgs({ url: 'http://localhost:1234', devKey: null, skipAuth: false }, { scenarios: [] }),
-    /HAPPIER_UI_PERF_DEV_KEY|--dev-key/,
+    /PIGGERCODE_UI_PERF_DEV_KEY|--dev-key/,
   );
   assert.doesNotThrow(() => validatePerfAuditRuntimeArgs(
     { url: 'http://localhost:1234', devKey: null, skipAuth: true },
@@ -82,7 +82,7 @@ test('perf audit runtime validation fails clearly without URL or needed dev key'
       { url: 'http://localhost:1234', devKey: null, skipAuth: true },
       { scenarios: [{ requiresColdAuth: true }] },
     ),
-    /HAPPIER_UI_PERF_DEV_KEY|--dev-key/,
+    /PIGGERCODE_UI_PERF_DEV_KEY|--dev-key/,
   );
 });
 
@@ -158,7 +158,7 @@ test('live telemetry configure script enables sync telemetry without reloading t
   const calls = [];
   const context = {
     window: {
-      __HAPPIER_SYNC_PERFORMANCE__: {
+      __PIGGERCODE_SYNC_PERFORMANCE__: {
         configure(options) { calls.push(options); },
       },
     },
@@ -587,7 +587,7 @@ test('browser storage clear script removes warm auth/cache state while preservin
   const deletedCaches = [];
   const unregisteredWorkers = [];
   const localEntries = new Map([
-    ['HAPPIER_SYNC_TUNING_JSON', '{"syncPerformanceTelemetryEnabled":true}'],
+    ['PIGGERCODE_SYNC_TUNING_JSON', '{"syncPerformanceTelemetryEnabled":true}'],
     ['auth-token', 'secret'],
   ]);
   const context = {
@@ -626,7 +626,7 @@ test('browser storage clear script removes warm auth/cache state while preservin
   };
 
   const result = await vm.runInNewContext(
-    buildClearBrowserStorageScript({ preserveLocalStorageKeys: ['HAPPIER_SYNC_TUNING_JSON'] }),
+    buildClearBrowserStorageScript({ preserveLocalStorageKeys: ['PIGGERCODE_SYNC_TUNING_JSON'] }),
     context,
   );
 
@@ -639,7 +639,7 @@ test('browser storage clear script removes warm auth/cache state while preservin
     serviceWorkersUnregistered: 1,
     errors: [],
   });
-  assert.deepEqual([...localEntries.entries()], [['HAPPIER_SYNC_TUNING_JSON', '{"syncPerformanceTelemetryEnabled":true}']]);
+  assert.deepEqual([...localEntries.entries()], [['PIGGERCODE_SYNC_TUNING_JSON', '{"syncPerformanceTelemetryEnabled":true}']]);
   assert.deepEqual(deletedCaches, ['app-cache', 'image-cache']);
   assert.deepEqual(deletedDatabases, ['warm-cache', 'auth-cache']);
   assert.deepEqual(unregisteredWorkers, ['worker-a']);
@@ -690,7 +690,7 @@ test('installed browser probe reset drops capture setup artifacts from later sna
 
   const installed = vm.runInNewContext(buildInstallProbeScript(), context);
   assert.equal(installed, true);
-  context.window.__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__ = () => ({
+  context.window.__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__ = () => ({
     droppedCount: 1,
     events: [{ type: 'scroll-observed', sessionId: 'redacted-session' }],
   });
@@ -698,7 +698,7 @@ test('installed browser probe reset drops capture setup artifacts from later sna
     getEntries: () => [{ name: 'self', startTime: 101, duration: 2150 }],
   });
   now = 150;
-  context.window.__HAPPIER_AGENT_BROWSER_PERF_AUDIT__.reset();
+  context.window.__PIGGERCODE_AGENT_BROWSER_PERF_AUDIT__.reset();
   observerCallback({
     getEntries: () => [
       { name: 'self', startTime: 101, duration: 2150 },
@@ -707,7 +707,7 @@ test('installed browser probe reset drops capture setup artifacts from later sna
   });
   now = 250;
 
-  const snapshot = context.window.__HAPPIER_AGENT_BROWSER_PERF_AUDIT__.snapshot();
+  const snapshot = context.window.__PIGGERCODE_AGENT_BROWSER_PERF_AUDIT__.snapshot();
 
   assert.equal(snapshot.startedAtMs, 150);
   assert.deepEqual(JSON.parse(JSON.stringify(snapshot.longTasks)), [{ name: 'self', startTime: 151, duration: 75 }]);
@@ -745,15 +745,15 @@ test('fallback scenario snapshot script preserves sync telemetry when the audit 
   const { buildFallbackScenarioSnapshotScript } = await loadModule();
   const context = {
     window: {
-      __HAPPIER_SYNC_PERFORMANCE__: {
+      __PIGGERCODE_SYNC_PERFORMANCE__: {
         snapshot: () => ({
           events: [{ name: 'sync.store.sessions.apply', count: 2, totalMs: 10, maxMs: 7 }],
         }),
       },
-      __HAPPIER_SYNC_RELIABILITY__: {
+      __PIGGERCODE_SYNC_RELIABILITY__: {
         snapshot: () => ({ droppedEvents: 0 }),
       },
-      __HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__: () => ({ droppedCount: 0, events: [] }),
+      __PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__: () => ({ droppedCount: 0, events: [] }),
     },
     location: { href: 'http://app.local/session/session-1' },
     performance: {

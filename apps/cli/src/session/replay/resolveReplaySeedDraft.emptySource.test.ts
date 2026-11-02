@@ -36,11 +36,11 @@ describe('resolveReplaySeedDraft — empty source vs failed retrieval', () => {
   let server: Server | null = null;
   let happyHomeDir = '';
   let sourceMode: SourceMode = 'empty';
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR']);
 
   beforeEach(async () => {
     sourceMode = 'empty';
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR']);
     happyHomeDir = await createTempDir('happier-cli-replay-empty-source-');
     const session = {
       id: SESSION_ID,
@@ -90,9 +90,9 @@ describe('resolveReplaySeedDraft — empty source vs failed retrieval', () => {
     const address = server.address();
     if (!address || typeof address === 'string') throw new Error('Failed to resolve server address');
     envScope.patch({
-      HAPPIER_SERVER_URL: `http://127.0.0.1:${address.port}`,
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000',
-      HAPPIER_HOME_DIR: happyHomeDir,
+      PIGGERCODE_SERVER_URL: `http://127.0.0.1:${address.port}`,
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000',
+      PIGGERCODE_HOME_DIR: happyHomeDir,
     });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();

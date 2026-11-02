@@ -42,21 +42,21 @@ describe('shouldAutoStartDaemonAfterAuth', () => {
   it('starts only when flagged and not in daemon process', () => {
     expect(
       shouldAutoStartDaemonAfterAuth({
-        env: { HAPPIER_SESSION_AUTOSTART_DAEMON: '1' },
+        env: { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '1' },
         isDaemonProcess: false,
         startedBy: 'terminal',
       }),
     ).toBe(true);
     expect(
       shouldAutoStartDaemonAfterAuth({
-        env: { HAPPIER_SESSION_AUTOSTART_DAEMON: '0' },
+        env: { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0' },
         isDaemonProcess: false,
         startedBy: 'terminal',
       }),
     ).toBe(false);
     expect(
       shouldAutoStartDaemonAfterAuth({
-        env: { HAPPIER_SESSION_AUTOSTART_DAEMON: '1' },
+        env: { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '1' },
         isDaemonProcess: true,
         startedBy: 'terminal',
       }),
@@ -66,7 +66,7 @@ describe('shouldAutoStartDaemonAfterAuth', () => {
   it('does not auto-start for daemon-started child sessions', () => {
     expect(
       shouldAutoStartDaemonAfterAuth({
-        env: { HAPPIER_SESSION_AUTOSTART_DAEMON: '1' },
+        env: { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '1' },
         isDaemonProcess: false,
         startedBy: 'daemon',
       }),
@@ -76,7 +76,7 @@ describe('shouldAutoStartDaemonAfterAuth', () => {
   it('does not auto-start when guided setup owns the post-auth service reconciliation', () => {
     expect(
       shouldAutoStartDaemonAfterAuth({
-        env: { HAPPIER_SESSION_AUTOSTART_DAEMON: '1' },
+        env: { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '1' },
         isDaemonProcess: false,
         startedBy: 'terminal',
         callerIntent: 'setup-managed',
@@ -86,33 +86,33 @@ describe('shouldAutoStartDaemonAfterAuth', () => {
 });
 
 describe('applyDaemonAutostartEnvForInvocation', () => {
-  it('sets HAPPIER_SESSION_AUTOSTART_DAEMON=1 for session commands when unset', () => {
+  it('sets PIGGERCODE_SESSION_AUTOSTART_DAEMON=1 for session commands when unset', () => {
     const env: NodeJS.ProcessEnv = {};
     applyDaemonAutostartEnvForInvocation({ args: ['codex'], env });
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBe('1');
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBe('1');
   });
 
-  it('does not set HAPPIER_SESSION_AUTOSTART_DAEMON for daemon-started session commands', () => {
+  it('does not set PIGGERCODE_SESSION_AUTOSTART_DAEMON for daemon-started session commands', () => {
     const env: NodeJS.ProcessEnv = {};
     applyDaemonAutostartEnvForInvocation({ args: ['claude', '--started-by', 'daemon'], env });
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBeUndefined();
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBeUndefined();
   });
 
-  it('does not override an explicit HAPPIER_SESSION_AUTOSTART_DAEMON=0', () => {
-    const env: NodeJS.ProcessEnv = { HAPPIER_SESSION_AUTOSTART_DAEMON: '0' };
+  it('does not override an explicit PIGGERCODE_SESSION_AUTOSTART_DAEMON=0', () => {
+    const env: NodeJS.ProcessEnv = { PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0' };
     applyDaemonAutostartEnvForInvocation({ args: ['codex'], env });
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBe('0');
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBe('0');
   });
 
-  it('does not set HAPPIER_SESSION_AUTOSTART_DAEMON for non-session commands', () => {
+  it('does not set PIGGERCODE_SESSION_AUTOSTART_DAEMON for non-session commands', () => {
     const env: NodeJS.ProcessEnv = {};
     applyDaemonAutostartEnvForInvocation({ args: ['capabilities', '--json'], env });
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBeUndefined();
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBeUndefined();
   });
 
-  it('does not set HAPPIER_SESSION_AUTOSTART_DAEMON for the plural sessions command alias', () => {
+  it('does not set PIGGERCODE_SESSION_AUTOSTART_DAEMON for the plural sessions command alias', () => {
     const env: NodeJS.ProcessEnv = {};
     applyDaemonAutostartEnvForInvocation({ args: ['sessions', 'list', '--json'], env });
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBeUndefined();
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBeUndefined();
   });
 });

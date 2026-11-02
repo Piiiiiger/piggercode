@@ -13,7 +13,7 @@ test('0.2 remote bootstrap installs without lifecycle scripts before loading the
   const calls = [];
   await bootstrapRemoteDependencies({
     repoDir: '/remote/0.2',
-    env: { HAPPIER_STACK_PM_CACHE_BASE_DIR: '/remote/cache' },
+    env: { PIGGERCODE_STACK_PM_CACHE_BASE_DIR: '/remote/cache' },
     packageExists: () => false,
     withDependencyRefresh: async (_options, refresh) => await refresh(),
     installInitialDependencies: async () => calls.push('install'),

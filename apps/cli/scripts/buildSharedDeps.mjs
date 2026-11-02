@@ -20,7 +20,7 @@ export async function withBuildSharedDepsLock(fn, options = {}) {
     lockPath,
     heldLockValue: options.heldLockValue
       ?? options.heldLockPath
-      ?? (options.env ?? process.env)?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD,
+      ?? (options.env ?? process.env)?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD,
   });
 }
 

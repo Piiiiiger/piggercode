@@ -34,8 +34,8 @@ type ActiveViewingSessionResetState = {
     listeners: Set<() => void>;
 };
 
-const activeViewingSessionStateKey = '__HAPPIER_ACTIVE_VIEWING_SESSION_STATE__';
-const activeViewingSessionResetStateKey = '__HAPPIER_ACTIVE_VIEWING_SESSION_RESET_STATE__';
+const activeViewingSessionStateKey = '__PIGGERCODE_ACTIVE_VIEWING_SESSION_STATE__';
+const activeViewingSessionResetStateKey = '__PIGGERCODE_ACTIVE_VIEWING_SESSION_RESET_STATE__';
 
 function createActiveViewingSessionState(): ActiveViewingSessionState {
     return {

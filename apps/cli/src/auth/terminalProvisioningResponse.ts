@@ -15,7 +15,7 @@ export type TerminalPairingAuthentication = Readonly<{
 
 export type TerminalPairingRequirement = 'v3';
 
-export const TERMINAL_PAIRING_REQUIRE_ENV = 'HAPPIER_TERMINAL_PAIRING_REQUIRE';
+export const TERMINAL_PAIRING_REQUIRE_ENV = 'PIGGERCODE_TERMINAL_PAIRING_REQUIRE';
 
 export type OpenTerminalProvisioningResponseResult = Readonly<{
   type: 'legacy' | 'dataKey';

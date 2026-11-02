@@ -23,7 +23,7 @@ function normalizeNonEmptyString(value: unknown): string | null {
 }
 
 function readMachineRpcDirectRouteProbeTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS ?? '').trim();
     if (!raw) return DEFAULT_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return DEFAULT_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS;

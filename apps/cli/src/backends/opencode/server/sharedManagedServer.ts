@@ -712,8 +712,8 @@ function tryReadLaunchFingerprintFromSessionMarker(marker: unknown): string | nu
   return (
     readOpenCodeSessionAffinityFromMetadata(metadata).managedServerLaunchFingerprint
     ?? tryReadNonEmptyString(metadata?.launchEnvFingerprint)
-    ?? tryReadNonEmptyString(respawnEnv?.HAPPIER_OPENCODE_MANAGED_SERVER_LAUNCH_FINGERPRINT)
-    ?? tryReadLaunchFingerprintFromStatePath(tryReadNonEmptyString(respawnEnv?.HAPPIER_OPENCODE_SERVER_STATE_PATH))
+    ?? tryReadNonEmptyString(respawnEnv?.PIGGERCODE_OPENCODE_MANAGED_SERVER_LAUNCH_FINGERPRINT)
+    ?? tryReadLaunchFingerprintFromStatePath(tryReadNonEmptyString(respawnEnv?.PIGGERCODE_OPENCODE_SERVER_STATE_PATH))
   );
 }
 
@@ -1076,8 +1076,8 @@ export function resolveSharedManagedOpenCodeServerStatePathForEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   const raw = expandHomeDirPath(
-    typeof env.HAPPIER_OPENCODE_SERVER_STATE_PATH === 'string'
-      ? env.HAPPIER_OPENCODE_SERVER_STATE_PATH.trim()
+    typeof env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH === 'string'
+      ? env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH.trim()
       : '',
     env,
   );
@@ -1098,8 +1098,8 @@ function resolveStatePathFromEnv(): string {
 
 function resolveXdgRootDirFromEnv(env: NodeJS.ProcessEnv = process.env): string | null {
   const raw = expandHomeDirPath(
-    typeof env.HAPPIER_OPENCODE_SERVER_XDG_ROOT_DIR === 'string'
-      ? env.HAPPIER_OPENCODE_SERVER_XDG_ROOT_DIR.trim()
+    typeof env.PIGGERCODE_OPENCODE_SERVER_XDG_ROOT_DIR === 'string'
+      ? env.PIGGERCODE_OPENCODE_SERVER_XDG_ROOT_DIR.trim()
       : '',
     env,
   );
@@ -1363,7 +1363,7 @@ export async function releaseForAuthSwitch(
   }
   const statePath = resolveManagedServerStatePathByFingerprint(normalizedFingerprint);
   const lockFile = `${statePath}.lock`;
-  const drainMs = readPositiveIntEnv('HAPPIER_OPENCODE_AUTH_SWITCH_DRAIN_MS') ?? 10_000;
+  const drainMs = readPositiveIntEnv('PIGGERCODE_OPENCODE_AUTH_SWITCH_DRAIN_MS') ?? 10_000;
   const trackedClaims = await readTrackedOpenCodeLaunchFingerprintClaimsBestEffort();
   return await releaseForAuthSwitchFromState({
     withLock: async (fn) => await withOpenCodeServerFileLock(lockFile, fn),
@@ -1412,7 +1412,7 @@ export async function ensureSharedManagedOpenCodeServerBaseUrl(params: Readonly<
   void (async () => {
     const managedServersDir = resolveManagedServersDirectory();
     const trackedClaims = await readTrackedOpenCodeLaunchFingerprintClaimsBestEffort();
-    const drainMs = readPositiveIntEnv('HAPPIER_OPENCODE_AUTH_SWITCH_DRAIN_MS') ?? 10_000;
+    const drainMs = readPositiveIntEnv('PIGGERCODE_OPENCODE_AUTH_SWITCH_DRAIN_MS') ?? 10_000;
     let entries: readonly string[] = [];
     try {
       entries = (await readdir(managedServersDir))
@@ -1472,12 +1472,12 @@ export async function ensureSharedManagedOpenCodeServerBaseUrl(params: Readonly<
 
   // By default, preserve the user's HOME/USERPROFILE and XDG config directory for OpenCode so the
   // managed server sees the same provider plugins and auth config as the user's normal OpenCode CLI.
-  // Happier's stack home remains in HAPPIER_HOME_DIR for Happier state only; it is not an OpenCode
+  // Happier's stack home remains in PIGGERCODE_HOME_DIR for Happier state only; it is not an OpenCode
   // config home. The optional root below isolates only runtime data/state/cache unless explicitly
   // passed with isolateConfig by a test or future controlled flow.
   //
   // If you need to isolate OpenCode’s XDG dirs (e.g. multi-user shared hosts), set:
-  // `HAPPIER_OPENCODE_SERVER_XDG_ROOT_DIR=/path`.
+  // `PIGGERCODE_OPENCODE_SERVER_XDG_ROOT_DIR=/path`.
   const xdgRootDir = resolveXdgRootDirFromEnv();
 
   const resolved = await resolveSharedManagedOpenCodeServerBaseUrl({

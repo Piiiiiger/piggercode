@@ -8,7 +8,7 @@ import { createStopSession } from './sessions/stopSession';
 import { waitForTrackedRunnerProcessesExit } from './sessions/waitForTrackedRunnerProcessesExit';
 import { buildSessionRunnerRespawnDescriptorV1FromSpawnOptions } from './processSupervision/sessionRunnerRespawnDescriptor';
 import { logger } from '@/ui/logger';
-import { HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
+import { PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 
 import { buildTrackedSpawnOptions, resolveDaemonTerminalPresentation, resolveDefaultDaemonTerminalPresentation } from './spawnHooks';
 
@@ -53,7 +53,7 @@ describe('tracked spawn topology', () => {
     const hooks = await requireCatalogEntry('claude').getDaemonSpawnHooks!();
     const terminalPresentation = hooks.resolveTerminalPresentation!({
       host: 'herdr', accountSettings: null, runtimeSelection: {},
-      processEnv: { [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery' },
+      processEnv: { [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery' },
     });
     expect(terminalPresentation.kind).toBe('provider');
     const options: SpawnSessionOptions = { directory: process.cwd(), terminal: { mode: 'herdr', herdr: { sessionName: 'selected' } } };
@@ -77,7 +77,7 @@ describe('tracked spawn topology', () => {
     const presentationInput = {
       host: 'herdr' as const, accountSettings: null,
       runtimeSelection: { codexBackendMode: 'acp' as const },
-      processEnv: { HAPPIER_CODEX_BACKEND_MODE: 'mcp' },
+      processEnv: { PIGGERCODE_CODEX_BACKEND_MODE: 'mcp' },
     };
     const terminalPresentation = hooks.resolveTerminalPresentation!(presentationInput);
     expect(terminalPresentation.kind).toBe('none');
@@ -107,11 +107,11 @@ describe('tracked spawn topology', () => {
 
       const hostedInput = {
         options: { ...options, backendTarget: { kind: 'builtInAgent' as const, agentId: 'claude' }, environmentVariables: {
-          [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery',
+          [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery',
         } },
         terminalPresentation: (await requireCatalogEntry('claude').getDaemonSpawnHooks!()).resolveTerminalPresentation!({
           host: 'herdr', accountSettings: null, runtimeSelection: {}, processEnv: {
-            [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery',
+            [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'test-endpoint-recovery',
           },
         }),
       };

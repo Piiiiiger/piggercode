@@ -8,7 +8,7 @@ import type {
 } from '@/api/connectedServices/connectedServiceCredentialApi';
 import type { ConnectedServiceCredentialLifecycleDescriptor } from './connectedServices/credentials/lifecycleTypes';
 import type { ConnectedServiceRuntimeRegistry as ConnectedServiceRuntimeRegistryType } from './connectedServices/runtimeRegistry/registry';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from './connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from './connectedServices/connectedServiceChildEnvironment';
 import { DEFAULT_CONNECTED_SERVICE_AUTH_GROUP_POLICY_V1 } from './connectedServices/accountGroups/selection/selectConnectedServiceAuthGroupCandidate';
 import type { TrackedSession } from './types';
 import { PI_BROKER_SELECTION_IDENTITY_ENV } from '@/backends/pi/brokerExtension';
@@ -838,7 +838,7 @@ function createDaemonGroupBoundClaudeTrackedSession(pid: number): TrackedSession
         },
       },
       environmentVariables: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'claude-subscription',
           groupId: 'team',
@@ -892,7 +892,7 @@ function createDaemonGroupBoundPiTrackedSession(pid: number, selectionIdentity: 
       },
       environmentVariables: {
         [PI_BROKER_SELECTION_IDENTITY_ENV]: selectionIdentity,
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'happier',
@@ -1306,14 +1306,14 @@ describe('startDaemon automation wiring (integration)', () => {
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
 
-    const retryBaseDelayOriginal = process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
-    const retryDelayOriginal = process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS;
-    const retryMaxDelayOriginal = process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS;
-    const retryJitterOriginal = process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS;
-    delete process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
-    process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS = '100';
-    process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS = '1000';
-    process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS = '0';
+    const retryBaseDelayOriginal = process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
+    const retryDelayOriginal = process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS;
+    const retryMaxDelayOriginal = process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS;
+    const retryJitterOriginal = process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS;
+    delete process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
+    process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS = '100';
+    process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS = '1000';
+    process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS = '0';
 
     let run: Promise<void> | null = null;
     try {
@@ -1372,24 +1372,24 @@ describe('startDaemon automation wiring (integration)', () => {
         await run;
       }
       if (retryBaseDelayOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
+        delete process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS;
       } else {
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS = retryBaseDelayOriginal;
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_BASE_DELAY_MS = retryBaseDelayOriginal;
       }
       if (retryDelayOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS;
+        delete process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS;
       } else {
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS = retryDelayOriginal;
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_DELAY_MS = retryDelayOriginal;
       }
       if (retryMaxDelayOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS;
+        delete process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS;
       } else {
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS = retryMaxDelayOriginal;
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_MAX_DELAY_MS = retryMaxDelayOriginal;
       }
       if (retryJitterOriginal === undefined) {
-        delete process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS;
+        delete process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS;
       } else {
-        process.env.HAPPIER_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS = retryJitterOriginal;
+        process.env.PIGGERCODE_DAEMON_MACHINE_REGISTRATION_RETRY_JITTER_MS = retryJitterOriginal;
       }
       vi.useRealTimers();
       exitSpy.mockRestore();
@@ -1404,15 +1404,15 @@ describe('startDaemon automation wiring (integration)', () => {
     const registration = createDeferred<Awaited<ReturnType<
       typeof import('@/api/machine/ensureMachineRegistered').ensureMachineRegistered
     >>>();
-    const startupSourceOriginal = process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    const selfRestartCorrelationIdOriginal = process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID;
-    const selfRestartDeadlineMsOriginal = process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS;
+    const startupSourceOriginal = process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    const selfRestartCorrelationIdOriginal = process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID;
+    const selfRestartDeadlineMsOriginal = process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS;
     let run: Promise<void> | null = null;
 
     try {
-      process.env.HAPPIER_DAEMON_STARTUP_SOURCE = 'self-restart';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID = 'self-restart-delayed-machine-registration';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
+      process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = 'self-restart';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID = 'self-restart-delayed-machine-registration';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
 
       const { ensureMachineRegistered } = await import('@/api/machine/ensureMachineRegistered');
       vi.mocked(ensureMachineRegistered).mockImplementationOnce(() => registration.promise);
@@ -1445,9 +1445,9 @@ describe('startDaemon automation wiring (integration)', () => {
     } finally {
       harness.requestShutdown('happier-cli');
       if (run) await run;
-      restoreProcessEnvValue('HAPPIER_DAEMON_STARTUP_SOURCE', startupSourceOriginal);
-      restoreProcessEnvValue('HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID', selfRestartCorrelationIdOriginal);
-      restoreProcessEnvValue('HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS', selfRestartDeadlineMsOriginal);
+      restoreProcessEnvValue('PIGGERCODE_DAEMON_STARTUP_SOURCE', startupSourceOriginal);
+      restoreProcessEnvValue('PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID', selfRestartCorrelationIdOriginal);
+      restoreProcessEnvValue('PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS', selfRestartDeadlineMsOriginal);
       exitSpy.mockRestore();
     }
   });
@@ -1556,15 +1556,15 @@ describe('startDaemon automation wiring (integration)', () => {
       sources: [];
       hydration: { hydratedRecordIds: []; dispositions: []; refreshSources: [] };
     }>();
-    const startupSourceOriginal = process.env.HAPPIER_DAEMON_STARTUP_SOURCE;
-    const selfRestartCorrelationIdOriginal = process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID;
-    const selfRestartDeadlineMsOriginal = process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS;
+    const startupSourceOriginal = process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE;
+    const selfRestartCorrelationIdOriginal = process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID;
+    const selfRestartDeadlineMsOriginal = process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS;
     let run: Promise<void> | null = null;
 
     try {
-      process.env.HAPPIER_DAEMON_STARTUP_SOURCE = 'self-restart';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID = 'self-restart-automation-hydration';
-      process.env.HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
+      process.env.PIGGERCODE_DAEMON_STARTUP_SOURCE = 'self-restart';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID = 'self-restart-automation-hydration';
+      process.env.PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS = String(Date.now() + 60_000);
       const { hydrateProviderAccountUsageStoreFromConnectedServiceInventory } = await import('./connectedServices/accountUsage/currentSourceHydration');
       vi.mocked(hydrateProviderAccountUsageStoreFromConnectedServiceInventory).mockImplementationOnce(async () => hydration.promise);
 
@@ -1593,9 +1593,9 @@ describe('startDaemon automation wiring (integration)', () => {
       try {
         if (run) await run;
       } finally {
-        restoreProcessEnvValue('HAPPIER_DAEMON_STARTUP_SOURCE', startupSourceOriginal);
-        restoreProcessEnvValue('HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID', selfRestartCorrelationIdOriginal);
-        restoreProcessEnvValue('HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS', selfRestartDeadlineMsOriginal);
+        restoreProcessEnvValue('PIGGERCODE_DAEMON_STARTUP_SOURCE', startupSourceOriginal);
+        restoreProcessEnvValue('PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID', selfRestartCorrelationIdOriginal);
+        restoreProcessEnvValue('PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS', selfRestartDeadlineMsOriginal);
         exitSpy.mockRestore();
       }
     }
@@ -1705,8 +1705,8 @@ describe('startDaemon automation wiring (integration)', () => {
 
   it('registers durable connected-services reconciliation before the machine transport connects', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const previousReconciliationTimeoutMs = process.env.HAPPIER_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS;
-    process.env.HAPPIER_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS = '100';
+    const previousReconciliationTimeoutMs = process.env.PIGGERCODE_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS;
+    process.env.PIGGERCODE_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS = '100';
     harness.setAutoShutdownAfterAutomationStart(false);
     try {
       const { startDaemon } = await import('./startDaemon');
@@ -1775,9 +1775,9 @@ describe('startDaemon automation wiring (integration)', () => {
       await run;
     } finally {
       if (previousReconciliationTimeoutMs === undefined) {
-        delete process.env.HAPPIER_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS = previousReconciliationTimeoutMs;
+        process.env.PIGGERCODE_PROVIDER_INPUT_GENERATION_RECONCILIATION_TIMEOUT_MS = previousReconciliationTimeoutMs;
       }
       exitSpy.mockRestore();
     }
@@ -2071,7 +2071,7 @@ describe('startDaemon automation wiring (integration)', () => {
             },
           },
           connectedServiceSelectionsEnv: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'profile',
               serviceId: 'openai-codex',
               profileId: 'direct',
@@ -2221,7 +2221,7 @@ describe('startDaemon automation wiring (integration)', () => {
       tracked.spawnOptions = {
         ...tracked.spawnOptions,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -2633,7 +2633,7 @@ describe('startDaemon automation wiring (integration)', () => {
         },
         environmentVariables: {
           CLAUDE_CONFIG_DIR: sharedHome,
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'team',
@@ -2711,7 +2711,7 @@ describe('startDaemon automation wiring (integration)', () => {
           },
         },
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'claude-subscription',
             groupId: 'replacement',
@@ -2799,7 +2799,7 @@ describe('startDaemon automation wiring (integration)', () => {
     const credentialRevisionA = 'csr_aaaaaaaaaaaaaaaaaaaaaa';
     const credentialRevisionB = 'csr_bbbbbbbbbbbbbbbbbbbbbb';
     try {
-      const { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
+      const { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
         './connectedServices/connectedServiceChildEnvironment'
       );
       const { ConnectedServiceRuntimeRegistry } = await import('./connectedServices/runtimeRegistry/registry');
@@ -2823,7 +2823,7 @@ describe('startDaemon automation wiring (integration)', () => {
             },
           },
           connectedServiceSelectionsEnv: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'profile',
               serviceId: 'openai-codex',
               profileId: 'direct',
@@ -2965,7 +2965,7 @@ describe('startDaemon automation wiring (integration)', () => {
           },
           connectedServiceSelectionsEnv: {
             CLAUDE_CONFIG_DIR: sharedHome,
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group',
               serviceId: 'claude-subscription',
               groupId: 'team',
@@ -3094,7 +3094,7 @@ describe('startDaemon automation wiring (integration)', () => {
           },
         connectedServiceSelectionsEnv: {
           CLAUDE_CONFIG_DIR: sharedHome,
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group',
               serviceId: 'claude-subscription',
               groupId: 'team',
@@ -3127,7 +3127,7 @@ describe('startDaemon automation wiring (integration)', () => {
               },
             },
             connectedServiceSelectionsEnv: {
-              [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+              [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
                 kind: 'profile',
                 serviceId: 'openai-codex',
                 profileId: 'direct',
@@ -3559,7 +3559,7 @@ describe('startDaemon automation wiring (integration)', () => {
     const credentialRevisionA = 'csr_aaaaaaaaaaaaaaaaaaaaaa';
     const credentialRevisionB = 'csr_bbbbbbbbbbbbbbbbbbbbbb';
     try {
-      const { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
+      const { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
         './connectedServices/connectedServiceChildEnvironment'
       );
       const { ConnectedServiceRuntimeRegistry } = await import('./connectedServices/runtimeRegistry/registry');
@@ -3612,7 +3612,7 @@ describe('startDaemon automation wiring (integration)', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'profile',
             serviceId: 'openai-codex',
             profileId: 'direct',
@@ -3654,7 +3654,7 @@ describe('startDaemon automation wiring (integration)', () => {
     const lateSessionId = 'late-direct-retry-target';
     let daemonTrackedSessionsByPid: Map<number, TrackedSession> | null = null;
     try {
-      const { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
+      const { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } = await import(
         './connectedServices/connectedServiceChildEnvironment'
       );
       const { ConnectedServiceRuntimeRegistry } = await import('./connectedServices/runtimeRegistry/registry');
@@ -3733,7 +3733,7 @@ describe('startDaemon automation wiring (integration)', () => {
           },
         },
         connectedServiceSelectionsEnv: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'profile', serviceId: 'openai-codex', profileId: 'direct', credentialRevision: credentialRevisionA,
           }]),
         },

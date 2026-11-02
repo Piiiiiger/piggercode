@@ -34,8 +34,8 @@ test.describe('ui e2e: new-session agent picker testIDs', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -79,8 +79,8 @@ test.describe('ui e2e: new-session agent picker testIDs', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
       },
     });
 
@@ -106,11 +106,11 @@ test.describe('ui e2e: new-session agent picker testIDs', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
       },
     });
 

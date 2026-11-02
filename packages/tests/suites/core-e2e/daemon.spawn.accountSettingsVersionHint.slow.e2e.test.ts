@@ -161,15 +161,15 @@ describe('core e2e: daemon spawn account settings version hints', () => {
     const daemonEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     daemon = await startTestDaemon({
@@ -212,15 +212,15 @@ describe('core e2e: daemon spawn account settings version hints', () => {
     const daemonEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_DAEMON_CLI_SNAPSHOT_MODE: 'testdir',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     daemon = await startTestDaemon({

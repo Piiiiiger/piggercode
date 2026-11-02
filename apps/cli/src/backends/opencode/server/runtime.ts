@@ -1738,57 +1738,57 @@ export function createOpenCodeServerRuntime(params: {
   const { pollSleepMs, turnActivePollSleepMs } = resolveOpenCodeServerControlPollIntervals(env);
 
   const turnPreexistingSnapshotLimit = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_TURN_PREEXISTING_SNAPSHOT_LIMIT ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_TURN_PREEXISTING_SNAPSHOT_LIMIT ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 200;
     return Math.max(10, Math.min(2_000, configured));
   })();
 
   const abortTimeoutMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_ABORT_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_ABORT_TIMEOUT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 2_500;
     // Keep abort responsive but allow slow local servers a moment to drain.
     return Math.max(25, Math.min(30_000, configured));
   })();
 
   const nativeSessionDiffTimeoutMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_SESSION_DIFF_TIMEOUT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 2_500;
     return Math.max(25, Math.min(30_000, configured));
   })();
 
   const idlePendingToolForwardingTimeoutMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_IDLE_PENDING_TOOL_FORWARDING_TIMEOUT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 2_500;
     return Math.max(25, Math.min(30_000, configured));
   })();
 
   const turnInactivityTimeoutMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 240_000;
     return Math.max(10_000, Math.min(1_800_000, configured));
   })();
 
   const retryMaxWaitMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_RETRY_MAX_WAIT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_RETRY_MAX_WAIT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 600_000;
     return Math.max(60_000, Math.min(3_600_000, configured));
   })();
 
   const statusPollEnabled = (() => {
-    const raw = normalizeEnvVar(env.HAPPIER_OPENCODE_SERVER_STATUS_POLL_ENABLED);
+    const raw = normalizeEnvVar(env.PIGGERCODE_OPENCODE_SERVER_STATUS_POLL_ENABLED);
     if (!raw) return true;
     if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
     return true;
   })();
 
   const activeKeepAliveIntervalMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_ACTIVE_KEEPALIVE_INTERVAL_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 60_000;
     return Math.max(25, Math.min(300_000, configured));
   })();
 
   const idleWithoutTerminalAssistantTimeoutMs = (() => {
-    const raw = Number.parseInt(String(env.HAPPIER_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS ?? ''), 10);
+    const raw = Number.parseInt(String(env.PIGGERCODE_OPENCODE_SERVER_IDLE_WITHOUT_TERMINAL_ASSISTANT_TIMEOUT_MS ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 15_000;
     return Math.max(25, Math.min(300_000, configured));
   })();

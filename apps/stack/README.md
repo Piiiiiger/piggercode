@@ -306,7 +306,7 @@ Details: `[docs/worktrees-and-forks.md](docs/worktrees-and-forks.md)`.
 - Use `happier-server-light` for local, no-Docker topology defaults: SQLite, local files, and UI serving from the server.
 - Use `happier-server` for production-like topology defaults: managed Postgres + Redis + S3-compatible storage and the UI gateway.
   - hstack can **manage the required infra automatically per stack** (via Docker Compose) and runs a **UI gateway** so you still get a single `https://...ts.net` URL that serves the UI + proxies API/websockets/files.
-- The database is an independent choice. Set `HAPPIER_DB_PROVIDER=postgres|mysql|pglite|sqlite`; the preset supplies only the default (`sqlite` for light, `postgres` for full).
+- The database is an independent choice. Set `PIGGERCODE_DB_PROVIDER=postgres|mysql|pglite|sqlite`; the preset supplies only the default (`sqlite` for light, `postgres` for full).
 
 Switch globally:
 
@@ -344,7 +344,7 @@ Details: `[docs/stacks.md](docs/stacks.md)`.
 
 Non-main stacks use a stack-specific localhost hostname (no `/etc/hosts` changes required):
 
-- `http://happier-<stack>.localhost:<uiPort>` (default; set `HAPPIER_STACK_LOCALHOST_SUBDOMAIN_PREFIX=happy` for legacy)
+- `http://happier-<stack>.localhost:<uiPort>` (default; set `PIGGERCODE_STACK_LOCALHOST_SUBDOMAIN_PREFIX=happy` for legacy)
 
 This avoids browser auth/session collisions between stacks (separate origin per stack).
 
@@ -435,7 +435,7 @@ Where config lives by default:
 
 Notes:
 
-- Canonical env prefix is `HAPPIER_STACK_*` (no legacy aliases).
+- Canonical env prefix is `PIGGERCODE_STACK_*` (no legacy aliases).
 - Canonical stack storage is `~/.happier/stacks`.
 - To edit per-stack environment variables (including provider keys like `OPENAI_API_KEY`), use:
 
@@ -453,7 +453,7 @@ Notes:
 ### Breaking changes (vs “Happy Stacks”)
 
 - No compatibility/migration for previous installs: uninstall old setups and run `hstack setup-from-source` again.
-- Env prefix is now `HAPPIER_STACK_*` (no legacy aliases like `HAPPY_STACKS_*` / `HAPPY_LOCAL_*`).
+- Env prefix is now `PIGGERCODE_STACK_*` (no legacy aliases like `HAPPY_STACKS_*` / `HAPPY_LOCAL_*`).
 - Workspace/worktrees are monorepo-first (default workspace: `~/.happier-stack/workspace`, with `main/`, `dev/`, `pr/`, `local/`, `tmp/`).
 - Yarn-only (no pnpm support).
 
@@ -476,7 +476,7 @@ rm -rf "$SANDBOX"
 Notes:
 
 - Sandbox mode disables global OS side effects (**PATH edits**, **SwiftBar plugin install**, **LaunchAgents/systemd services**, **Tailscale Serve enable/disable**) by default.
-- To explicitly allow those for testing, set `HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1` (still recommended to clean up after).
+- To explicitly allow those for testing, set `PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1` (still recommended to clean up after).
 
 For contributor/LLM workflow expectations: `[AGENTS.md](AGENTS.md)`.
 
@@ -495,7 +495,7 @@ Notes:
 - To make the installed `~/.happier-stack/bin/hstack` shim (LaunchAgents / SwiftBar) run your local checkout without publishing to npm, set:
 
 ```bash
-echo 'HAPPIER_STACK_CLI_ROOT_DIR=/path/to/your/happier-dev-checkout' >> ~/.happier-stack/.env
+echo 'PIGGERCODE_STACK_CLI_ROOT_DIR=/path/to/your/happier-dev-checkout' >> ~/.happier-stack/.env
 ```
 
 Or (recommended) persist it via init:

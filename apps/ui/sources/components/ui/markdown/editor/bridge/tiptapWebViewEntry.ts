@@ -4,7 +4,7 @@
  * This module is bundled (iife, browser, es2020, minified) by
  * `apps/ui/tools/tiptap/buildTiptapWebViewBundle.mjs` into
  * `bridge/tiptapWebViewBundle.generated.ts` as `TIPTAP_WEBVIEW_BUNDLE_JS`. It runs
- * INSIDE the WebView and assigns `globalThis.HAPPIER_TIPTAP_WEBVIEW`, the boot
+ * INSIDE the WebView and assigns `globalThis.PIGGERCODE_TIPTAP_WEBVIEW`, the boot
  * API the inline HTML script (`tiptapWebViewHtml.ts`) calls after the bundle is
  * inlined.
  *
@@ -402,9 +402,9 @@ const api: TiptapWebViewApi = { createRuntime };
 
 declare global {
     // eslint-disable-next-line no-var
-    var HAPPIER_TIPTAP_WEBVIEW: TiptapWebViewApi | undefined;
+    var PIGGERCODE_TIPTAP_WEBVIEW: TiptapWebViewApi | undefined;
 }
 
-globalThis.HAPPIER_TIPTAP_WEBVIEW = api;
+globalThis.PIGGERCODE_TIPTAP_WEBVIEW = api;
 
 export { api as tiptapWebViewApi };

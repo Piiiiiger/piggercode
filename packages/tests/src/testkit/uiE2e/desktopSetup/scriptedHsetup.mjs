@@ -2,7 +2,7 @@
 /**
  * A scripted stand-in for the bundled `hsetup system-tasks run`, for visual QA of the desktop setup
  * surface. It speaks the same one-line-in / JSON-lines-out contract `desktopSystemTaskHost.ts`
- * relays, and answers from the scenario file named by `HAPPIER_E2E_SETUP_SCENARIO_FILE`, which the
+ * relays, and answers from the scenario file named by `PIGGERCODE_E2E_SETUP_SCENARIO_FILE`, which the
  * spec rewrites between states:
  *
  *   { "relayUrl": string, "status": "hold" | "unconfigured" | "otherAccount", "setup": "hold" | "fail" }
@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 
 const PROTOCOL_VERSION = 1;
-const scenario = JSON.parse(readFileSync(process.env.HAPPIER_E2E_SETUP_SCENARIO_FILE, 'utf8'));
+const scenario = JSON.parse(readFileSync(process.env.PIGGERCODE_E2E_SETUP_SCENARIO_FILE, 'utf8'));
 const write = (value) => process.stdout.write(`${JSON.stringify(value)}\n`);
 const event = (type, stepId, message, data) => write({
     protocolVersion: PROTOCOL_VERSION, taskId: 'scripted', tsMs: Date.now(), type, stepId, message, ...(data ? { data } : {}),

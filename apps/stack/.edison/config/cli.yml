@@ -7,7 +7,7 @@ cli:
   # - agents don’t accidentally run outside the enforced stack/worktree context
   wrapper:
     enabled: true
-    env_var: HAPPIER_STACK_EDISON_WRAPPER
+    env_var: PIGGERCODE_STACK_EDISON_WRAPPER
     value: "1"
     message: |
       hstack: do not run `edison ...` directly in this repo.

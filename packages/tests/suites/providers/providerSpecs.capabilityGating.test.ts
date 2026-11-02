@@ -99,7 +99,7 @@ describe('providers: scenario capability gating', () => {
     const gemini = providers.find((provider) => provider.id === 'gemini');
     expect(gemini).toBeTruthy();
 
-    const timeoutRaw = gemini!.cli?.env?.HAPPIER_ACP_PROBE_TIMEOUT_GEMINI_MS;
+    const timeoutRaw = gemini!.cli?.env?.PIGGERCODE_ACP_PROBE_TIMEOUT_GEMINI_MS;
     expect(timeoutRaw).toBeUndefined();
   });
 
@@ -121,7 +121,7 @@ describe('providers: scenario capability gating', () => {
     });
     expect(codex!.scenarioRegistry.tiers.smoke).toContain('acp_probe_capabilities');
     expect(allScenarioIds.some((scenarioId) => /app(?:-|_)?server/i.test(scenarioId))).toBe(false);
-    expect(codex!.cli?.env?.HAPPIER_CODEX_BACKEND_MODE).toBe('acp');
+    expect(codex!.cli?.env?.PIGGERCODE_CODEX_BACKEND_MODE).toBe('acp');
   });
 
   it('wires Cursor scenarios through the existing ACP verification gates', async () => {
@@ -143,6 +143,6 @@ describe('providers: scenario capability gating', () => {
     ]));
     expect(cursor!.auth?.mode).toBe('auto');
     expect(cursor!.auth?.env?.requiredAnyOf).toEqual([['CURSOR_API_KEY']]);
-    expect(cursor!.cli.envFrom?.HAPPIER_CURSOR_PATH).toBe('HAPPIER_E2E_PROVIDER_CURSOR_BIN');
+    expect(cursor!.cli.envFrom?.PIGGERCODE_CURSOR_PATH).toBe('PIGGERCODE_E2E_PROVIDER_CURSOR_BIN');
   });
 });

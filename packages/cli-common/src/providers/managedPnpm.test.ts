@@ -120,9 +120,9 @@ describe('managedPnpm bootstrap race protection', () => {
     
     testEnv = {
       ...process.env,
-      HAPPIER_HOME_DIR: testHomeDir,
+      PIGGERCODE_HOME_DIR: testHomeDir,
       // Ensure no override or system pnpm interferes
-      HAPPIER_PNPM_BIN: undefined,
+      PIGGERCODE_PNPM_BIN: undefined,
       PATH: '',
     };
   });
@@ -309,10 +309,10 @@ describe('managedPnpm bootstrap race protection', () => {
     expect(existsSync(managedPnpmBinPath(testEnv))).toBe(false);
   });
 
-  it('does not bootstrap managed pnpm when HAPPIER_MANAGED_PNPM_BOOTSTRAP is disabled', async () => {
+  it('does not bootstrap managed pnpm when PIGGERCODE_MANAGED_PNPM_BOOTSTRAP is disabled', async () => {
     testEnv = {
       ...testEnv,
-      HAPPIER_MANAGED_PNPM_BOOTSTRAP: '0',
+      PIGGERCODE_MANAGED_PNPM_BOOTSTRAP: '0',
     };
 
     const command = await ensureManagedPnpmCommand(testEnv);

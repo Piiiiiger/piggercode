@@ -91,7 +91,7 @@ function buildExpoFixtureEnv(extraEnv = {}) {
     },
     stripStackEnv: true,
     extraEnv: {
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
       TEST_EXPO_LISTENER_DIR: join(listenerFixtureRoot, 'listeners'),
       ...extraEnv,
     },
@@ -107,7 +107,7 @@ async function spawnReadyFixture(extraEnv = {}) {
     "process.stdout.write('ready\\n'); setInterval(() => {}, 1000)",
     {
       stdio: ['ignore', 'pipe', 'ignore'],
-      env: buildExpoFixtureEnv({ HAPPIER_STACK_PROCESS_KIND: 'infra', ...extraEnv }),
+      env: buildExpoFixtureEnv({ PIGGERCODE_STACK_PROCESS_KIND: 'infra', ...extraEnv }),
     },
   );
   const ready = once(child.stdout, 'data');
@@ -254,10 +254,10 @@ test('ensureDevExpoServer reselects after a foreign Metro collision and publishe
         uiDir,
         autostart: { baseDir: tmp },
         baseEnv: buildExpoFixtureEnv({
-          HAPPIER_STACK_EXPO_DEV_PORT: String(priorPort),
-          HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
-          HAPPIER_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '15000',
-          HAPPIER_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
+          PIGGERCODE_STACK_EXPO_DEV_PORT: String(priorPort),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+          PIGGERCODE_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '15000',
+          PIGGERCODE_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
           FAKE_EXPO_RUN_COUNT_PATH: join(tmp, 'expo-runs.txt'),
         }),
         apiServerUrl: 'http://127.0.0.1:1',
@@ -332,7 +332,7 @@ test('ensureDevExpoServer cleans a same-group descendant when the Expo wrapper e
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
       }),
       apiServerUrl: 'http://127.0.0.1:1',
       restart: false,
@@ -412,8 +412,8 @@ test('ensureDevExpoServer restarts when running Expo state targets a different A
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_STACK_EXPO_DEV_PORT: String(priorPort),
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: String(priorPort),
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
       }),
       apiServerUrl: 'http://localhost:3014',
       restart: false,
@@ -474,9 +474,9 @@ test('ensureDevExpoServer restarts mobile dev-client when running Expo state tar
     await mkdir(cliHomeDir, { recursive: true });
     previousExpo = await spawnReadyFixture({
         __UNSAFE_EXPO_HOME_DIRECTORY: paths.expoHomeDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
     });
     const previousExpoPid = previousExpo.pid;
 
@@ -499,9 +499,9 @@ test('ensureDevExpoServer restarts mobile dev-client when running Expo state tar
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_STACK_EXPO_DEV_PORT: String(priorPort),
-        HAPPIER_STACK_MOBILE_SCHEME: 'happier-dev',
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_EXPO_DEV_PORT: String(priorPort),
+        PIGGERCODE_STACK_MOBILE_SCHEME: 'happier-dev',
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
       }),
       apiServerUrl: 'http://192.168.1.20:3014',
       restart: false,
@@ -592,9 +592,9 @@ test('ensureDevExpoServer stops prior stack-owned Expo process for automatic Tai
     await mkdir(cliHomeDir, { recursive: true });
     previousExpo = await spawnReadyFixture({
         __UNSAFE_EXPO_HOME_DIRECTORY: paths.expoHomeDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
     });
     const previousExpoPid = previousExpo.pid;
 
@@ -619,11 +619,11 @@ test('ensureDevExpoServer stops prior stack-owned Expo process for automatic Tai
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_TAILSCALE_BIN: tailscaleBin,
-        HAPPIER_STACK_EXPO_DEV_PORT: String(priorPort),
-        HAPPIER_STACK_EXPO_HOST: 'localhost',
-        HAPPIER_STACK_MOBILE_SCHEME: 'happier-dev',
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+        PIGGERCODE_STACK_EXPO_DEV_PORT: String(priorPort),
+        PIGGERCODE_STACK_EXPO_HOST: 'localhost',
+        PIGGERCODE_STACK_MOBILE_SCHEME: 'happier-dev',
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
       }),
       apiServerUrl: 'http://localhost:3016',
       restart: false,
@@ -713,8 +713,8 @@ test('ensureDevExpoServer in stack mode does not adopt port-only fallback as alr
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_STACK_EXPO_DEV_PORT: String(priorPort),
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: String(priorPort),
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
       }),
       apiServerUrl: 'http://localhost:3014',
       restart: false,
@@ -759,7 +759,7 @@ test('ensureDevExpoServer fails closed in stable port mode when forced expo port
     const occupiedPort = status.port;
 
     const envPath = join(tmp, 'stack.env');
-    await writeFile(envPath, `CUSTOM_KEY=1\nHAPPIER_STACK_EXPO_DEV_PORT=${occupiedPort}\n`, 'utf-8');
+    await writeFile(envPath, `CUSTOM_KEY=1\nPIGGERCODE_STACK_EXPO_DEV_PORT=${occupiedPort}\n`, 'utf-8');
 
     await assert.rejects(
       () =>
@@ -769,10 +769,10 @@ test('ensureDevExpoServer fails closed in stable port mode when forced expo port
           uiDir,
           autostart: { baseDir: tmp },
           baseEnv: buildExpoFixtureEnv({
-            HAPPIER_STACK_EXPO_DEV_PORT: String(occupiedPort),
-            HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-            HAPPIER_STACK_EXPO_DEV_PORT_BASE: '51000',
-            HAPPIER_STACK_EXPO_DEV_PORT_RANGE: '2000',
+            PIGGERCODE_STACK_EXPO_DEV_PORT: String(occupiedPort),
+            PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+            PIGGERCODE_STACK_EXPO_DEV_PORT_BASE: '51000',
+            PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE: '2000',
           }),
           apiServerUrl: 'http://127.0.0.1:1',
           restart: false,
@@ -788,7 +788,7 @@ test('ensureDevExpoServer fails closed in stable port mode when forced expo port
 
     const updated = await readFile(envPath, 'utf-8');
     assert.match(updated, /\bCUSTOM_KEY=1\b/);
-    assert.match(updated, new RegExp(`\\bHAPPIER_STACK_EXPO_DEV_PORT=${occupiedPort}\\b`));
+    assert.match(updated, new RegExp(`\\bPIGGERCODE_STACK_EXPO_DEV_PORT=${occupiedPort}\\b`));
   } finally {
     await cleanupChildProcesses(children);
     await new Promise((resolve) => metro?.close(() => resolve())).catch(() => {});
@@ -856,9 +856,9 @@ test('ensureDevExpoServer in stable port mode stops stack-owned leftover Expo pr
         env: buildExpoFixtureEnv({
           TEST_PORT: String(occupiedPort),
           __UNSAFE_EXPO_HOME_DIRECTORY: paths.expoHomeDir,
-          HAPPIER_STACK_STACK: stackName,
-          HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-          HAPPIER_STACK_PROCESS_KIND: 'infra',
+          PIGGERCODE_STACK_STACK: stackName,
+          PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+          PIGGERCODE_STACK_PROCESS_KIND: 'infra',
         }),
       }
     );
@@ -867,7 +867,7 @@ test('ensureDevExpoServer in stable port mode stops stack-owned leftover Expo pr
     await holderReady;
 
     const envPath = join(tmp, 'stack.env');
-    await writeFile(envPath, `HAPPIER_STACK_EXPO_DEV_PORT=${occupiedPort}\n`, 'utf-8');
+    await writeFile(envPath, `PIGGERCODE_STACK_EXPO_DEV_PORT=${occupiedPort}\n`, 'utf-8');
 
     const result = await ensureDevExpoServer({
       startUi: true,
@@ -875,11 +875,11 @@ test('ensureDevExpoServer in stable port mode stops stack-owned leftover Expo pr
       uiDir,
       autostart: { baseDir: tmp },
       baseEnv: buildExpoFixtureEnv({
-        HAPPIER_STACK_EXPO_DEV_PORT: String(occupiedPort),
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-        HAPPIER_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '15000',
-        HAPPIER_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: String(occupiedPort),
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '15000',
+        PIGGERCODE_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
         TEST_EXPO_LISTENER_MARKERS_ONLY: '1',
       }),
       apiServerUrl: 'http://127.0.0.1:1',
@@ -891,7 +891,7 @@ test('ensureDevExpoServer in stable port mode stops stack-owned leftover Expo pr
       children,
       quiet: true,
       getProcessIdentityLine: async (pid) => pid === holder.pid
-        ? `node __UNSAFE_EXPO_HOME_DIRECTORY=${paths.expoHomeDir} HAPPIER_STACK_STACK=${stackName}`
+        ? `node __UNSAFE_EXPO_HOME_DIRECTORY=${paths.expoHomeDir} PIGGERCODE_STACK_STACK=${stackName}`
         : null,
       getProcessGroupIdForCleanup: async (pid) => Number(pid),
     });

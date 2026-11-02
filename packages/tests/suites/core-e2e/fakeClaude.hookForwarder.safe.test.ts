@@ -41,7 +41,7 @@ describe('fake Claude CLI fixture', () => {
         cwd: dir,
         env: {
           ...process.env,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
         },
         encoding: 'utf8',
       });

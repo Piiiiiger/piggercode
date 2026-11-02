@@ -34,7 +34,7 @@ it('forces discovery through a warm cache, shares refresh work, and retains the 
 it('publishes the cached catalog observation time rather than session publication time', async () => {
   const { resolveClaudeSessionModelsState } = await import('../sessionControls/resolveClaudeSessionModelsState');
   vi.stubEnv('ANTHROPIC_API_KEY', 'test-observation-key');
-  vi.stubEnv('HAPPIER_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED', '1');
+  vi.stubEnv('PIGGERCODE_CLAUDE_DYNAMIC_MODEL_PROBE_ENABLED', '1');
   vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({ data: [{ id: 'observed' }] }))));
   await resolveClaudeModelCatalogResolution({ timeoutMs: 1_000, nowMs: () => 1_000 });
   const state = await resolveClaudeSessionModelsState({

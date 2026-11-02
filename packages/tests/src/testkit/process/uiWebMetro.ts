@@ -31,20 +31,20 @@ export function resolveUiWebMetroOwnershipLeasesDir(rootDir: string = repoRootDi
 }
 
 export function resolveUiWebBaseUrlTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS, 180_000);
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS, 180_000);
 }
 
 export function resolveUiWebMetroStatusTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_METRO_STATUS_TIMEOUT_MS, 120_000);
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_METRO_STATUS_TIMEOUT_MS, 120_000);
 }
 
 export function resolveUiWebScriptFetchTotalTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS, 420_000);
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS, 420_000);
 }
 
 export function resolveUiWebMetroBeforeAllTimeoutMs(env: NodeJS.ProcessEnv): number {
-  const minTimeoutMs = readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS, 900_000);
-  const headroomMs = readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_BEFORE_ALL_HEADROOM_MS, 60_000);
+  const minTimeoutMs = readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS, 900_000);
+  const headroomMs = readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_BEFORE_ALL_HEADROOM_MS, 60_000);
   const requiredBudgetMs =
     resolveUiWebBaseUrlTimeoutMs(env)
     + resolveUiWebMetroStatusTimeoutMs(env)
@@ -166,11 +166,11 @@ async function isMetroPackagerReady(baseUrl: string, signal: AbortSignal): Promi
 }
 
 export function resolveUiWebScriptFetchAttemptTimeoutMs(env: NodeJS.ProcessEnv, totalTimeoutMs: number): number {
-  return Math.min(totalTimeoutMs, readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS, 15_000));
+  return Math.min(totalTimeoutMs, readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS, 15_000));
 }
 
 export function resolveUiWebScriptHtmlRefreshRetryCount(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT, 3);
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_SCRIPT_HTML_REFRESH_RETRY_COUNT, 3);
 }
 
 type ScriptReadyProbe = 'ready' | 'retry' | 'refresh-html';
@@ -257,9 +257,9 @@ export async function startUiWebMetro(params: {
   const stdoutPath = resolvePath(params.testDir, 'ui.web.stdout.log');
   const stderrPath = resolvePath(params.testDir, 'ui.web.stderr.log');
 
-  const clearRaw = (params.env.HAPPIER_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
+  const clearRaw = (params.env.PIGGERCODE_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
   const clearCache = clearRaw === '1' || clearRaw === 'true' || clearRaw === 'yes' || clearRaw === 'y';
-  const noDevRaw = (params.env.HAPPIER_E2E_UI_WEB_NO_DEV ?? '1').toString().trim().toLowerCase();
+  const noDevRaw = (params.env.PIGGERCODE_E2E_UI_WEB_NO_DEV ?? '1').toString().trim().toLowerCase();
   const noDev = noDevRaw === '1' || noDevRaw === 'true' || noDevRaw === 'yes' || noDevRaw === 'y';
 
   const expoCliPath = resolvePath(repoRootDir(), 'node_modules', 'expo', 'bin', 'cli');

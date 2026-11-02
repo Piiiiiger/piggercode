@@ -27,8 +27,8 @@ export function resolveEffectiveDbProvider({ serverComponentName, env = {} } = {
     };
   }
 
-  const source = env.HAPPIER_DB_PROVIDER != null
-    ? 'HAPPIER_DB_PROVIDER'
+  const source = env.PIGGERCODE_DB_PROVIDER != null
+    ? 'PIGGERCODE_DB_PROVIDER'
     : env.HAPPY_DB_PROVIDER != null
       ? 'HAPPY_DB_PROVIDER'
       : 'default';
@@ -108,10 +108,10 @@ export function resolveDbProviderDatabaseUrl({ provider, databaseUrl } = {}) {
 }
 
 export function isCanonicalManagedPostgresAuthority({ databaseUrl, env = {} } = {}) {
-  const pgPort = Number(String(env.HAPPIER_STACK_PG_PORT ?? '').trim());
-  const pgUser = String(env.HAPPIER_STACK_PG_USER ?? '').trim();
-  const pgPassword = String(env.HAPPIER_STACK_PG_PASSWORD ?? '').trim();
-  const pgDb = String(env.HAPPIER_STACK_PG_DATABASE ?? '').trim();
+  const pgPort = Number(String(env.PIGGERCODE_STACK_PG_PORT ?? '').trim());
+  const pgUser = String(env.PIGGERCODE_STACK_PG_USER ?? '').trim();
+  const pgPassword = String(env.PIGGERCODE_STACK_PG_PASSWORD ?? '').trim();
+  const pgDb = String(env.PIGGERCODE_STACK_PG_DATABASE ?? '').trim();
   if (!Number.isInteger(pgPort) || pgPort < 1 || pgPort > 65535 || !pgUser || !pgPassword || !pgDb) return false;
   const canonicalUrl = `postgresql://${encodeURIComponent(pgUser)}:${encodeURIComponent(pgPassword)}@127.0.0.1:${pgPort}/${encodeURIComponent(pgDb)}`;
   return String(databaseUrl ?? '').trim() === canonicalUrl;
@@ -132,7 +132,7 @@ export function applyEffectiveDbProviderEnv({ serverComponentName, env = {}, tar
     );
   }
 
-  targetEnv.HAPPIER_DB_PROVIDER = effective.provider;
+  targetEnv.PIGGERCODE_DB_PROVIDER = effective.provider;
   targetEnv.HAPPY_DB_PROVIDER = effective.provider;
   return effective.provider;
 }

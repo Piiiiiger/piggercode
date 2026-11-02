@@ -18,10 +18,10 @@
 # ============================================================================
 
 # SwiftBar runs with a minimal environment, so users often won't have
-# HAPPIER_STACK_HOME_DIR / HAPPIER_STACK_WORKSPACE_DIR exported.
+# PIGGERCODE_STACK_HOME_DIR / PIGGERCODE_STACK_WORKSPACE_DIR exported.
 # Treat <canonicalHomeDir>/.env as the canonical pointer file (written by `hstack init`).
 # Default: ~/.happier-stack/.env
-CANONICAL_HOME_DIR="${HAPPIER_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
+CANONICAL_HOME_DIR="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
 CANONICAL_ENV_FILE="$CANONICAL_HOME_DIR/.env"
 
 _dotenv_get_quick() {
@@ -51,12 +51,12 @@ _expand_home_quick() {
 
 _home_from_canonical=""
 if [[ -f "$CANONICAL_ENV_FILE" ]]; then
-  _home_from_canonical="$(_dotenv_get_quick "$CANONICAL_ENV_FILE" "HAPPIER_STACK_HOME_DIR")"
+  _home_from_canonical="$(_dotenv_get_quick "$CANONICAL_ENV_FILE" "PIGGERCODE_STACK_HOME_DIR")"
 fi
 _home_from_canonical="$(_expand_home_quick "${_home_from_canonical:-}")"
 
-export HAPPIER_STACK_HOME_DIR="${HAPPIER_STACK_HOME_DIR:-${_home_from_canonical:-$CANONICAL_HOME_DIR}}"
-export HAPPIER_STACK_CANONICAL_HOME_DIR="$CANONICAL_HOME_DIR"
+export PIGGERCODE_STACK_HOME_DIR="${PIGGERCODE_STACK_HOME_DIR:-${_home_from_canonical:-$CANONICAL_HOME_DIR}}"
+export PIGGERCODE_STACK_CANONICAL_HOME_DIR="$CANONICAL_HOME_DIR"
 
 # Colors
 GREEN="#34C759"
@@ -69,7 +69,7 @@ BLUE="#007AFF"
 # Load libs
 # ============================================================================
 
-hstack_ROOT_DIR="${HAPPIER_STACK_CLI_ROOT_DIR:-$HAPPIER_STACK_HOME_DIR}"
+hstack_ROOT_DIR="${PIGGERCODE_STACK_CLI_ROOT_DIR:-$PIGGERCODE_STACK_HOME_DIR}"
 LIB_DIR="$hstack_ROOT_DIR/extras/swiftbar/lib"
 if [[ ! -f "$LIB_DIR/utils.sh" ]]; then
   echo "hstack"
@@ -96,7 +96,7 @@ source "$LIB_DIR/render.sh"
 # Menu
 # ============================================================================
 
-PRIMARY_STACK_RAW="${HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK:-${HAPPIER_STACK_STACK:-main}}"
+PRIMARY_STACK_RAW="${PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK:-${PIGGERCODE_STACK_STACK:-main}}"
 PRIMARY_STACK="${PRIMARY_STACK_RAW:-main}"
 
 hstack_BIN="$(resolve_hstack_bin)"
@@ -114,8 +114,8 @@ ensure_launchctl_cache
 if [[ -z "$MAIN_ENV_FILE" ]]; then
   MAIN_ENV_FILE="$(resolve_stack_env_file "$PRIMARY_STACK")"
 fi
-if [[ -z "${HAPPIER_STACK_ENV_FILE:-}" ]] && [[ -n "$MAIN_ENV_FILE" ]]; then
-  export HAPPIER_STACK_ENV_FILE="$MAIN_ENV_FILE"
+if [[ -z "${PIGGERCODE_STACK_ENV_FILE:-}" ]] && [[ -n "$MAIN_ENV_FILE" ]]; then
+  export PIGGERCODE_STACK_ENV_FILE="$MAIN_ENV_FILE"
 fi
 MAIN_SERVER_COMPONENT="$(resolve_main_server_component)"
 if [[ "$PRIMARY_STACK" == "main" ]]; then
@@ -124,12 +124,12 @@ else
   MAIN_PORT="$(resolve_stack_server_port "$PRIMARY_STACK" "$MAIN_ENV_FILE")"
 fi
 
-HAPPIER_HOME_DIR="$(resolve_stack_base_dir "$PRIMARY_STACK" "$MAIN_ENV_FILE")"
+PIGGERCODE_HOME_DIR="$(resolve_stack_base_dir "$PRIMARY_STACK" "$MAIN_ENV_FILE")"
 CLI_HOME_DIR="$(resolve_stack_cli_home_dir "$PRIMARY_STACK" "$MAIN_ENV_FILE")"
-LOGS_DIR="$HAPPIER_HOME_DIR/logs"
+LOGS_DIR="$PIGGERCODE_HOME_DIR/logs"
 MAIN_LABEL="$(resolve_stack_label "$PRIMARY_STACK")"
 
-MAIN_COLLECT="$(collect_stack_status "$MAIN_PORT" "$CLI_HOME_DIR" "$MAIN_LABEL" "$HAPPIER_HOME_DIR")"
+MAIN_COLLECT="$(collect_stack_status "$MAIN_PORT" "$CLI_HOME_DIR" "$MAIN_LABEL" "$PIGGERCODE_HOME_DIR")"
 IFS=$'\t' read -r MAIN_LEVEL MAIN_SERVER_STATUS MAIN_SERVER_PID MAIN_SERVER_METRICS MAIN_DAEMON_STATUS MAIN_DAEMON_PID MAIN_DAEMON_METRICS MAIN_DAEMON_UPTIME MAIN_LAST_HEARTBEAT MAIN_LAUNCHAGENT_STATUS MAIN_AUTOSTART_PID MAIN_AUTOSTART_METRICS <<<"$MAIN_COLLECT"
 MAIN_DAEMON_STATE_FILE="$(resolve_preferred_daemon_state_pair "$CLI_HOME_DIR" | cut -d'|' -f1)"
 for v in MAIN_SERVER_PID MAIN_SERVER_METRICS MAIN_DAEMON_PID MAIN_DAEMON_METRICS MAIN_DAEMON_UPTIME MAIN_LAST_HEARTBEAT MAIN_AUTOSTART_PID MAIN_AUTOSTART_METRICS; do
@@ -175,7 +175,7 @@ echo "---"
 if [[ "$PRIMARY_STACK" == "main" ]]; then
   # If the main env file points at a named stack (common in wrapper installs),
   # render the concrete stack name to avoid ambiguity.
-  DECLARED_MAIN_STACK_NAME="$(dotenv_get "$MAIN_ENV_FILE" "HAPPIER_STACK_STACK")"
+  DECLARED_MAIN_STACK_NAME="$(dotenv_get "$MAIN_ENV_FILE" "PIGGERCODE_STACK_STACK")"
   if [[ -n "$DECLARED_MAIN_STACK_NAME" && "$DECLARED_MAIN_STACK_NAME" != "main" ]]; then
     echo "Stack: $DECLARED_MAIN_STACK_NAME"
   else
@@ -186,7 +186,7 @@ else
 fi
 echo "---"
 export MAIN_LEVEL="$MAIN_LEVEL"
-render_stack_info "" "$PRIMARY_STACK" "$MAIN_PORT" "$MAIN_SERVER_COMPONENT" "$HAPPIER_HOME_DIR" "$CLI_HOME_DIR" "$MAIN_LABEL" "$MAIN_ENV_FILE" "$TAILSCALE_URL" "$MAIN_SERVER_METRICS" "$MAIN_DAEMON_METRICS" "$MAIN_AUTOSTART_METRICS"
+render_stack_info "" "$PRIMARY_STACK" "$MAIN_PORT" "$MAIN_SERVER_COMPONENT" "$PIGGERCODE_HOME_DIR" "$CLI_HOME_DIR" "$MAIN_LABEL" "$MAIN_ENV_FILE" "$TAILSCALE_URL" "$MAIN_SERVER_METRICS" "$MAIN_DAEMON_METRICS" "$MAIN_AUTOSTART_METRICS"
 render_component_server "" "$PRIMARY_STACK" "$MAIN_PORT" "$MAIN_SERVER_COMPONENT" "$MAIN_SERVER_STATUS" "$MAIN_SERVER_PID" "$MAIN_SERVER_METRICS" "$TAILSCALE_URL" "$MAIN_LABEL"
 render_component_daemon "" "$MAIN_DAEMON_STATUS" "$MAIN_DAEMON_PID" "$MAIN_DAEMON_METRICS" "$MAIN_DAEMON_UPTIME" "$MAIN_LAST_HEARTBEAT" "$MAIN_DAEMON_STATE_FILE" "$PRIMARY_STACK"
 render_component_autostart "" "$PRIMARY_STACK" "$MAIN_LABEL" "$MAIN_LAUNCHAGENT_STATUS" "$MAIN_AUTOSTART_PID" "$MAIN_AUTOSTART_METRICS" "$LOGS_DIR"
@@ -243,7 +243,7 @@ else
       # Ports may be ephemeral (runtime-only). Do not skip stacks if the env file does not pin a port.
       port="$(resolve_stack_server_port "$s" "$env_file")"
 
-      server_component="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_COMPONENT")"
+      server_component="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_COMPONENT")"
       [[ -n "$server_component" ]] || server_component="happier-server-light"
 
       base_dir="$(resolve_stack_base_dir "$s" "$env_file")"

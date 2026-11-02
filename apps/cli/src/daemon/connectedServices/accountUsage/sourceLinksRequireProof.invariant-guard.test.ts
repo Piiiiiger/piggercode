@@ -6,7 +6,7 @@ import {
 } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { recordProviderAccountUsageSnapshotForSession } from './record';
 
 const mockNotifyDaemonConnectedServiceQuotaSnapshot = vi.hoisted(() => vi.fn(async () => ({ ok: true })));
@@ -40,8 +40,8 @@ function createSnapshot(accountSubjectId = 'acct_live'): ProviderAccountUsageSna
 }
 
 function installSelectionEnv(serviceId: 'claude-subscription' | 'openai-codex'): string | undefined {
-  const previous = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-  process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+  const previous = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+  process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
     kind: 'group',
     serviceId,
     groupId: 'team',
@@ -54,10 +54,10 @@ function installSelectionEnv(serviceId: 'claude-subscription' | 'openai-codex'):
 
 function restoreSelectionEnv(previous: string | undefined): void {
   if (previous === undefined) {
-    delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
     return;
   }
-  process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previous;
+  process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previous;
 }
 
 describe('provider account usage source-link proof invariant guard', () => {
@@ -154,7 +154,7 @@ describe('provider account usage source-link proof invariant guard', () => {
       const { reportCodexRateLimitSnapshotToDaemon } = await import('../../../backends/codex/connectedServices/reportCodexRateLimitSnapshotToDaemon');
       await reportCodexRateLimitSnapshotToDaemon({
         env: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY],
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY],
         },
         sessionId: 'sess_codex_source_link_guard',
         rawSnapshot: { primary: { used_percent: 88 } },

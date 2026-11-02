@@ -22,14 +22,14 @@ import { z } from 'zod';
  * it did not carry, so every WRITER — the settings screen, the account catalog,
  * the UI clamp, the daemon env clamp — refuses to produce a smaller number.
  */
-export const HAPPIER_REPLAY_SEED_MIN_CHARS = 1_024;
+export const PIGGERCODE_REPLAY_SEED_MIN_CHARS = 1_024;
 
 /** Upper bound on a seed budget, shared by every owner that states one. */
-export const HAPPIER_REPLAY_SEED_MAX_CHARS = 200_000;
+export const PIGGERCODE_REPLAY_SEED_MAX_CHARS = 200_000;
 
 /**
  * The floor a READER accepts off the wire, which is deliberately lower than
- * {@link HAPPIER_REPLAY_SEED_MIN_CHARS}.
+ * {@link PIGGERCODE_REPLAY_SEED_MIN_CHARS}.
  *
  * `maxSeedChars` is caller-supplied, and released clients clamp it against
  * their own older floor of 500 before sending. Narrowing the accepted range to
@@ -39,29 +39,29 @@ export const HAPPIER_REPLAY_SEED_MAX_CHARS = 200_000;
  * below the configured floor" block in the agents spec), so accepting them
  * stays safe. New writers must not emit a value below the writer floor.
  */
-export const HAPPIER_REPLAY_SEED_ACCEPTED_MIN_CHARS = 200;
+export const PIGGERCODE_REPLAY_SEED_ACCEPTED_MIN_CHARS = 200;
 
 /** Bounds on the legacy `recentMessagesCount` window. */
-export const HAPPIER_REPLAY_RECENT_MESSAGES_MIN_COUNT = 1;
-export const HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT = 500;
+export const PIGGERCODE_REPLAY_RECENT_MESSAGES_MIN_COUNT = 1;
+export const PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT = 500;
 
 /** The budget an owner may WRITE: settings catalog, settings screen, env clamp. */
 export const HappierReplayWritableMaxSeedCharsSchema = z
   .number()
   .int()
-  .min(HAPPIER_REPLAY_SEED_MIN_CHARS)
-  .max(HAPPIER_REPLAY_SEED_MAX_CHARS);
+  .min(PIGGERCODE_REPLAY_SEED_MIN_CHARS)
+  .max(PIGGERCODE_REPLAY_SEED_MAX_CHARS);
 
 /** The budget a wire READER accepts, including from released older clients. */
 export const HappierReplayWireMaxSeedCharsSchema = z
   .number()
   .int()
-  .min(HAPPIER_REPLAY_SEED_ACCEPTED_MIN_CHARS)
-  .max(HAPPIER_REPLAY_SEED_MAX_CHARS);
+  .min(PIGGERCODE_REPLAY_SEED_ACCEPTED_MIN_CHARS)
+  .max(PIGGERCODE_REPLAY_SEED_MAX_CHARS);
 
 /** The `recentMessagesCount` window, identical for writers and the wire. */
 export const HappierReplayRecentMessagesCountSchema = z
   .number()
   .int()
-  .min(HAPPIER_REPLAY_RECENT_MESSAGES_MIN_COUNT)
-  .max(HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT);
+  .min(PIGGERCODE_REPLAY_RECENT_MESSAGES_MIN_COUNT)
+  .max(PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT);

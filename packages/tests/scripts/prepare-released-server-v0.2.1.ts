@@ -1,9 +1,9 @@
 import { prepareReleasedServerV021Artifact } from '../src/testkit/process/releasedServerLight';
 
-const artifactDir = process.env.HAPPIER_E2E_RELEASED_SERVER_V0_2_1_DIR?.trim();
+const artifactDir = process.env.PIGGERCODE_E2E_RELEASED_SERVER_V0_2_1_DIR?.trim();
 if (!artifactDir) {
   throw new Error(
-    'HAPPIER_E2E_RELEASED_SERVER_V0_2_1_DIR is required for the exact server-v0.2.1 compatibility gate',
+    'PIGGERCODE_E2E_RELEASED_SERVER_V0_2_1_DIR is required for the exact server-v0.2.1 compatibility gate',
   );
 }
 

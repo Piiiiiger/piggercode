@@ -39,10 +39,10 @@ test('hstack wt status defaults to active repo dir when no worktree spec is prov
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_REPO_DIR: repoDir,
-    HAPPIER_STACK_OWNER: 'test',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_REPO_DIR: repoDir,
+    PIGGERCODE_STACK_OWNER: 'test',
   };
 
   const res = await runNodeCapture([join(rootDir, 'scripts', 'worktrees.mjs'), 'status', '--json'], {

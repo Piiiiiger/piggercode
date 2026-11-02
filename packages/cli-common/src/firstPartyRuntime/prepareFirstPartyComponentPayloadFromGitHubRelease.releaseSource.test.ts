@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { prepareFirstPartyComponentPayloadFromGitHubRelease, resolveFirstPartyComponentRelease } from './prepareFirstPartyComponentPayloadFromGitHubRelease.js';
 
-const override = 'HAPPIER_FIRST_PARTY_RELEASE_API_BASE_URL';
+const override = 'PIGGERCODE_FIRST_PARTY_RELEASE_API_BASE_URL';
 const params = { componentId: 'happier-cli', channel: 'stable', os: 'darwin', arch: 'arm64' } as const;
 const cleanups: Array<() => Promise<void>> = [];
 

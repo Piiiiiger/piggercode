@@ -26,7 +26,7 @@ describe('readManagedPnpmMinimumReleaseAgeMs', () => {
 
   beforeEach(async () => {
     home = await mkdtemp(join(tmpdir(), 'happier-managed-pnpm-release-age-'));
-    env = { HAPPIER_HOME_DIR: home, PATH: '' };
+    env = { PIGGERCODE_HOME_DIR: home, PATH: '' };
     const bin = managedPnpmBinPath(env);
     await mkdir(dirname(bin), { recursive: true });
     await writeFile(bin, '#!/bin/sh\n', { mode: 0o755 });
@@ -51,7 +51,7 @@ describe('readManagedPnpmMinimumReleaseAgeMs', () => {
 
   it('reports no policy when there is no managed pnpm to ask', async () => {
     const runCommand = fakePnpm({ configured: '60', version: '11.24.0' });
-    await expect(readManagedPnpmMinimumReleaseAgeMs({ HAPPIER_HOME_DIR: join(home, 'empty'), PATH: '' }, { runCommand }))
+    await expect(readManagedPnpmMinimumReleaseAgeMs({ PIGGERCODE_HOME_DIR: join(home, 'empty'), PATH: '' }, { runCommand }))
       .resolves.toBeNull();
     expect(runCommand).not.toHaveBeenCalled();
   });

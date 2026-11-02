@@ -8,7 +8,7 @@ import type { ConnectedServiceRuntimeAuthSelectionMaterializer } from '@/daemon/
 import type { ConnectedServiceResolvedSelection } from '@/daemon/connectedServices/materialize/materializeConnectedServicesForSpawn';
 import { resolveExistingSessionAttachContext } from '@/daemon/sessionEncryption/resolveExistingSessionAttachContext';
 import { resolveTrackedConnectedServiceSwitchContinuityContext } from '@/daemon/connectedServices/sessionAuthSwitch/resolveTrackedConnectedServiceSwitchContinuityContext';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import type { Credentials } from '@/persistence';
 
 import { materializeClaudeConnectedServiceSelection } from './materializeClaudeConnectedServiceSelection';
@@ -46,7 +46,7 @@ function trackedRuntimeTargetsClaudeSharedGroupConfig(
 ): boolean {
   return samePath(trackedEnv?.CLAUDE_CONFIG_DIR, runtimeClaudeConfigDir)
     || samePath(
-      trackedEnv?.[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
+      trackedEnv?.[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY],
       runtimeClaudeConfigDir,
     );
 }

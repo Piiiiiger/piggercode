@@ -11,13 +11,13 @@ describe('resolveDaemonSessionConnectedServiceAuthSwitchTimeoutMs', () => {
 
   it('honors the operation-specific override within daemon-control bounds', () => {
     expect(resolveDaemonSessionConnectedServiceAuthSwitchTimeoutMs({
-      HAPPIER_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '90000',
+      PIGGERCODE_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '90000',
     })).toBe(90_000);
     expect(resolveDaemonSessionConnectedServiceAuthSwitchTimeoutMs({
-      HAPPIER_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '1',
+      PIGGERCODE_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '1',
     })).toBe(1_000);
     expect(resolveDaemonSessionConnectedServiceAuthSwitchTimeoutMs({
-      HAPPIER_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '99999999',
+      PIGGERCODE_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS: '99999999',
     })).toBe(300_000);
   });
 });

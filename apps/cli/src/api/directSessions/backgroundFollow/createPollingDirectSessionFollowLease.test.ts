@@ -20,7 +20,7 @@ describe('createPollingDirectSessionFollowLease', () => {
       })
       .mockRejectedValueOnce(laterError)
       .mockResolvedValue({ items: [], nextCursor: 'recovered-tail', truncated: false });
-    const lease = await createPollingDirectSessionFollowLease({ readAfterTranscript, env: { HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS: '10' } });
+    const lease = await createPollingDirectSessionFollowLease({ readAfterTranscript, env: { PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS: '10' } });
     onTestFinished(() => lease.release());
     const listener = vi.fn();
     lease.subscribeToTranscriptUpdates?.(listener);
@@ -55,7 +55,7 @@ describe('createPollingDirectSessionFollowLease', () => {
 
     const lease = await createPollingDirectSessionFollowLease({
       readAfterTranscript,
-      env: { HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS: '1000' },
+      env: { PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS: '1000' },
     });
     onTestFinished(() => lease.release());
     expect(lease.subscribeToTranscriptUpdates).toEqual(expect.any(Function));
@@ -91,7 +91,7 @@ describe('createPollingDirectSessionFollowLease', () => {
     const listener = vi.fn();
     const lease = await createPollingDirectSessionFollowLease({
       readAfterTranscript,
-      env: { HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS: '1000' },
+      env: { PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS: '1000' },
     });
     onTestFinished(() => lease.release());
     lease.subscribeToTranscriptUpdates?.(listener);

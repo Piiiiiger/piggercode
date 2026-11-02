@@ -22,7 +22,7 @@ import {
   classifyConnectedServiceMaterializationDiagnosticForCredentialRefresh,
   ConnectedServiceRefreshCoordinator,
 } from './ConnectedServiceRefreshCoordinator';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { normalizeMaterializationKeyForPath } from '../materialize/normalizeMaterializationKeyForPath';
 import { resolveConnectedServiceSelectionHomeDir, type ConnectedServiceHomeSelection } from '../homes/resolveConnectedServiceHomeDir';
 import { buildDefaultConnectedServiceCredentialLifecycleDescriptor } from '../credentials/lifecycleTypes';
@@ -1856,7 +1856,7 @@ afterEach(() => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selectionA]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selectionA]),
       },
       materializationKey: 'session-claude-group-owner-a',
     });
@@ -1887,7 +1887,7 @@ afterEach(() => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selectionB]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selectionB]),
       },
       materializationKey: 'session-claude-group-owner-b',
     });
@@ -2892,7 +2892,7 @@ afterEach(() => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selection]),
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([selection]),
       },
       materializationKey: 'openai-codex-refresh-backup',
     });
@@ -6115,7 +6115,7 @@ afterEach(() => {
       },
       materializationKey: 'session-1',
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'main',

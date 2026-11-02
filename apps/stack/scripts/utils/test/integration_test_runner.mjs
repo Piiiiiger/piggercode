@@ -1,7 +1,7 @@
 import { readBooleanEnvFlag } from './test_env.mjs';
 import { isIntegrationTestFile, isRealIntegrationTestFile } from './test_paths.mjs';
 
-export const RUN_REAL_INTEGRATION_ENV_VAR = 'HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS';
+export const RUN_REAL_INTEGRATION_ENV_VAR = 'PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS';
 
 export function shouldRunRealIntegrationTests(env) {
   return readBooleanEnvFlag(env, RUN_REAL_INTEGRATION_ENV_VAR, false);

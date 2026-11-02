@@ -69,8 +69,8 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
   const fromEnv = await readEnvObject(from.envPath);
   const toEnv = await readEnvObject(to.envPath);
 
-  const fromFlavor = getEnvValue(fromEnv, 'HAPPIER_STACK_SERVER_COMPONENT') || 'happier-server-light';
-  const toFlavor = getEnvValue(toEnv, 'HAPPIER_STACK_SERVER_COMPONENT') || 'happier-server-light';
+  const fromFlavor = getEnvValue(fromEnv, 'PIGGERCODE_STACK_SERVER_COMPONENT') || 'happier-server-light';
+  const toFlavor = getEnvValue(toEnv, 'PIGGERCODE_STACK_SERVER_COMPONENT') || 'happier-server-light';
 
   if (fromFlavor !== 'happier-server-light') {
     throw new Error(`[migrate] from-stack must use happier-server-light (got: ${fromFlavor})`);
@@ -93,11 +93,11 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
     );
   }
 
-  const fromDataDir = getEnvValue(fromEnv, 'HAPPIER_SERVER_LIGHT_DATA_DIR') || join(from.baseDir, 'server-light');
-  const fromFilesDir = getEnvValue(fromEnv, 'HAPPIER_SERVER_LIGHT_FILES_DIR') || join(fromDataDir, 'files');
-  const fromDbDir = getEnvValue(fromEnv, 'HAPPIER_SERVER_LIGHT_DB_DIR') || join(fromDataDir, 'pglite');
+  const fromDataDir = getEnvValue(fromEnv, 'PIGGERCODE_SERVER_LIGHT_DATA_DIR') || join(from.baseDir, 'server-light');
+  const fromFilesDir = getEnvValue(fromEnv, 'PIGGERCODE_SERVER_LIGHT_FILES_DIR') || join(fromDataDir, 'files');
+  const fromDbDir = getEnvValue(fromEnv, 'PIGGERCODE_SERVER_LIGHT_DB_DIR') || join(fromDataDir, 'pglite');
 
-  const toPortRaw = getEnvValue(toEnv, 'HAPPIER_STACK_SERVER_PORT');
+  const toPortRaw = getEnvValue(toEnv, 'PIGGERCODE_STACK_SERVER_PORT');
   let toPort = toPortRaw ? Number(toPortRaw) : NaN;
   const toEphemeral = !toPortRaw;
   if (!Number.isFinite(toPort) || toPort <= 0) {
@@ -111,11 +111,11 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
 
   // Ensure target secret is the same as source so auth tokens remain valid after migration.
   const sourceSecretPath = join(fromDataDir, 'handy-master-secret.txt');
-  const targetSecretPath = getEnvValue(toEnv, 'HAPPIER_STACK_HANDY_MASTER_SECRET_FILE') || join(to.baseDir, 'happier-server', 'handy-master-secret.txt');
+  const targetSecretPath = getEnvValue(toEnv, 'PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE') || join(to.baseDir, 'happier-server', 'handy-master-secret.txt');
   await ensureTargetSecretMatchesSource({ sourceSecretPath, targetSecretPath });
   await ensureEnvFileUpdated({
     envPath: to.envPath,
-    updates: [{ key: 'HAPPIER_STACK_HANDY_MASTER_SECRET_FILE', value: targetSecretPath }],
+    updates: [{ key: 'PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE', value: targetSecretPath }],
   });
 
   // Resolve component dirs (prefer stack-pinned dirs).
@@ -135,7 +135,7 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
     env: {
       ...process.env,
       ...toEnv,
-      ...(toEphemeral ? { HAPPIER_STACK_EPHEMERAL_PORTS: '1' } : {}),
+      ...(toEphemeral ? { PIGGERCODE_STACK_EPHEMERAL_PORTS: '1' } : {}),
     },
     dbProvider: toProvider.provider,
   });
@@ -157,9 +157,9 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
     dbProvider: 'pglite',
     env: {
       ...process.env,
-      HAPPIER_SERVER_LIGHT_DATA_DIR: fromDataDir,
-      HAPPIER_SERVER_LIGHT_FILES_DIR: fromFilesDir,
-      HAPPIER_SERVER_LIGHT_DB_DIR: snapshotDbDir,
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: fromDataDir,
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: fromFilesDir,
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: snapshotDbDir,
     },
     quiet: true,
   });
@@ -239,7 +239,7 @@ async function migrateLightToServer({ rootDir, fromStack, toStack, includeFiles,
 
     if (includeFiles) {
       // Mirror server-light local files (public/*) into Minio bucket root.
-      // This assumes server-light stored public files under HAPPIER_SERVER_LIGHT_FILES_DIR/public/...
+      // This assumes server-light stored public files under PIGGERCODE_SERVER_LIGHT_FILES_DIR/public/...
       // (Matches happier-server Minio object keys).
       const { composePath, projectName } = infra;
       await runCapture('docker', [

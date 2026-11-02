@@ -38,7 +38,7 @@ type NormalizedSidechainRequest = Readonly<{
 const DEFAULT_SIDECHAIN_DEMAND_HYDRATION_CONCURRENCY_LIMIT = 2;
 
 function readEnsureSidechainRetryDelayMsFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS ?? '').trim();
     if (!raw) return 250;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 250;
@@ -46,7 +46,7 @@ function readEnsureSidechainRetryDelayMsFromEnv(): number {
 }
 
 function readEnsureSidechainMaxRetriesFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_MAX_RETRIES ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_MAX_RETRIES ?? '').trim();
     if (!raw) return 6;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 6;

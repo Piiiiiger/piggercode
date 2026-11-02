@@ -1,27 +1,27 @@
 import { createHash } from 'node:crypto';
 
-import { HAPPIER_BUILT_IN_TOOL_NAMES } from '@/agent/tools/happierTools/catalog';
+import { PIGGERCODE_BUILT_IN_TOOL_NAMES } from '@/agent/tools/happierTools/catalog';
 
 import type { McpServerConfig } from '@/agent';
 import type { PermissionMode } from '@/api/types';
 import {
   buildOpenCodeSessionPermissionRuleset,
-  OPENCODE_HAPPIER_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES,
+  OPENCODE_PIGGERCODE_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES,
   resolveOpenCodeFamilyPermissionConfig,
   type OpenCodePermissionValue,
 } from '@/backends/openCodeFamily/permission/openCodeFamilyPermissionPolicy';
 
-const OPEN_CODE_HAPPIER_SESSION_MCP_PREFIX = 'happier-session-';
+const OPEN_CODE_PIGGERCODE_SESSION_MCP_PREFIX = 'happier-session-';
 const OPEN_CODE_MCP_NAMESPACE_MAX_LENGTH = 64;
 const OPEN_CODE_MODEL_TOOL_NAME_MAX_LENGTH = 64;
 // Reserve the complete built-in catalog, including manual tools and tools enabled by session policy.
 // OpenCode exposes each tool to the model as `${clientName}_${toolName}`.
-const OPEN_CODE_HAPPIER_MCP_TOOL_NAME_RESERVE = Math.max(
-  ...HAPPIER_BUILT_IN_TOOL_NAMES.map((name) => name.length),
+const OPEN_CODE_PIGGERCODE_MCP_TOOL_NAME_RESERVE = Math.max(
+  ...PIGGERCODE_BUILT_IN_TOOL_NAMES.map((name) => name.length),
 );
 const OPEN_CODE_MCP_CLIENT_NAME_MAX_LENGTH = Math.min(
   OPEN_CODE_MCP_NAMESPACE_MAX_LENGTH,
-  OPEN_CODE_MODEL_TOOL_NAME_MAX_LENGTH - 1 - OPEN_CODE_HAPPIER_MCP_TOOL_NAME_RESERVE,
+  OPEN_CODE_MODEL_TOOL_NAME_MAX_LENGTH - 1 - OPEN_CODE_PIGGERCODE_MCP_TOOL_NAME_RESERVE,
 );
 const OPEN_CODE_MCP_NAMESPACE_DIGEST_LENGTH = 7;
 
@@ -31,7 +31,7 @@ function sanitizeOpenCodeMcpClientName(name: string): string {
 
 function projectOpenCodeMcpClientName(sessionId: string, originalName: string): string {
   const candidate = sanitizeOpenCodeMcpClientName(
-    `${OPEN_CODE_HAPPIER_SESSION_MCP_PREFIX}${sessionId}--${originalName}`,
+    `${OPEN_CODE_PIGGERCODE_SESSION_MCP_PREFIX}${sessionId}--${originalName}`,
   );
   if (candidate.length <= OPEN_CODE_MCP_CLIENT_NAME_MAX_LENGTH) return candidate;
 
@@ -96,7 +96,7 @@ export function buildOpenCodeSessionScopedPermissionRuleset(
     ? sanitizeOpenCodeMcpClientName(projection.requiredHappierServerName)
     : null;
   const safeHappierRules = requiredHappierAlias
-    ? OPENCODE_HAPPIER_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES.map((suffix) => ({
+    ? OPENCODE_PIGGERCODE_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES.map((suffix) => ({
         permission: `${requiredHappierAlias}_${suffix}`,
         pattern: '*',
         action: 'allow' as const,
@@ -104,7 +104,7 @@ export function buildOpenCodeSessionScopedPermissionRuleset(
     : [];
   return Object.freeze([
     ...baseRules,
-    { permission: `${OPEN_CODE_HAPPIER_SESSION_MCP_PREFIX}*`, pattern: '*', action: 'deny' as const },
+    { permission: `${OPEN_CODE_PIGGERCODE_SESSION_MCP_PREFIX}*`, pattern: '*', action: 'deny' as const },
     ...ownNamespaceRules,
     ...safeHappierRules,
   ]);

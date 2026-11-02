@@ -15,7 +15,7 @@ import { openTerminalProvisioningResponse } from './terminalProvisioningResponse
 
 const origin = 'http://happier-approval.test';
 const accountId = 'account-retained-credentials';
-const envScope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL']);
+const envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL']);
 const tokenForAccount = (revision: number) => createAccountTokenFixture(accountId, { revision });
 const currentSecret = new Uint8Array(32).fill(12);
 const currentMachineKey = deriveAccountMachineKeyFromRecoverySecret(currentSecret);
@@ -31,7 +31,7 @@ async function withApprovalServer(
   run: (boundary: Readonly<{ responses: unknown[]; profileReads: string[] }>) => Promise<void>,
 ): Promise<void> {
   await withTempDir('happier-terminal-approval-', async (home) => {
-    envScope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_SERVER_URL: origin, HAPPIER_PUBLIC_SERVER_URL: origin });
+    envScope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_SERVER_URL: origin, PIGGERCODE_PUBLIC_SERVER_URL: origin });
     reloadConfiguration();
     const app = fastify({ logger: false });
     const responses: unknown[] = [];

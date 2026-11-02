@@ -61,8 +61,8 @@ test.describe('ui e2e: SCM partial staging + commit + discard', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -73,7 +73,7 @@ test.describe('ui e2e: SCM partial staging + commit + discard', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '420000',
+        PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '420000',
       },
     });
 
@@ -116,11 +116,11 @@ test.describe('ui e2e: SCM partial staging + commit + discard', () => {
         extraEnv: {
           HOME: cliHomeDir,
           // Machine-scoped RPC must be allowed to read the repo fixture directory.
-          HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: testDir,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: testDir,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
       daemon = runDaemon;

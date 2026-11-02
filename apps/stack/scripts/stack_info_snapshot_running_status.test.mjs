@@ -231,7 +231,7 @@ test('readStackInfoSnapshot reports running when owner pid is stale but an infra
   const baseDir = join(storageDir, stackName);
 
   await mkdir(baseDir, { recursive: true });
-  await writeFile(join(baseDir, 'env'), 'HAPPIER_STACK_SERVER_PORT=3009\n', 'utf-8');
+  await writeFile(join(baseDir, 'env'), 'PIGGERCODE_STACK_SERVER_PORT=3009\n', 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -244,7 +244,7 @@ test('readStackInfoSnapshot reports running when owner pid is stale but an infra
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -286,7 +286,7 @@ test('readStackInfoSnapshot resolves listener child owned by recorded runtime pr
     });
     await waitForListenPid(listener.port, listener.listenerPid);
 
-    await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${listener.port}\n`, 'utf-8');
+    await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${listener.port}\n`, 'utf-8');
     await writeFile(
       join(baseDir, 'stack.runtime.json'),
       JSON.stringify({
@@ -299,7 +299,7 @@ test('readStackInfoSnapshot resolves listener child owned by recorded runtime pr
       'utf-8',
     );
 
-    const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+    const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
     try {
       const out = await readStackInfoSnapshot({
         rootDir: process.cwd(),
@@ -330,7 +330,7 @@ test('readStackInfoSnapshot falls back to live recorded pid and reachable port w
   const port = await reserveUnusedPort();
 
   await mkdir(baseDir, { recursive: true });
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${port}\nHAPPIER_STACK_DAEMON=0\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${port}\nPIGGERCODE_STACK_DAEMON=0\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -343,7 +343,7 @@ test('readStackInfoSnapshot falls back to live recorded pid and reachable port w
     'utf-8',
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -374,7 +374,7 @@ test('readStackInfoSnapshot reports ownership_unknown instead of server_down whe
   const port = await reserveUnusedPort();
 
   await mkdir(baseDir, { recursive: true });
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${port}\nHAPPIER_STACK_DAEMON=0\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${port}\nPIGGERCODE_STACK_DAEMON=0\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -387,7 +387,7 @@ test('readStackInfoSnapshot reports ownership_unknown instead of server_down whe
     'utf-8',
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -419,7 +419,7 @@ test('readStackInfoSnapshot shares one listener deadline across server, backend,
   await mkdir(baseDir, { recursive: true });
   await writeFile(
     join(baseDir, 'env'),
-    'HAPPIER_STACK_SERVER_PORT=4101\nHAPPIER_STACK_UI_PORT=4103\nHAPPIER_STACK_DAEMON=0\n',
+    'PIGGERCODE_STACK_SERVER_PORT=4101\nPIGGERCODE_STACK_UI_PORT=4103\nPIGGERCODE_STACK_DAEMON=0\n',
     'utf-8',
   );
   await writeFile(
@@ -436,7 +436,7 @@ test('readStackInfoSnapshot shares one listener deadline across server, backend,
     'utf-8',
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   const attemptBudgetsMs = [];
   try {
     const out = await readStackInfoSnapshot({
@@ -471,7 +471,7 @@ test('readStackInfoSnapshot reports proxy and active backend separately in proxy
   const baseDir = join(storageDir, stackName);
 
   await mkdir(baseDir, { recursive: true });
-  await writeFile(join(baseDir, 'env'), 'HAPPIER_STACK_SERVER_PORT=4101\nHAPPIER_STACK_DAEMON=0\n', 'utf-8');
+  await writeFile(join(baseDir, 'env'), 'PIGGERCODE_STACK_SERVER_PORT=4101\nPIGGERCODE_STACK_DAEMON=0\n', 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -503,7 +503,7 @@ test('readStackInfoSnapshot reports proxy and active backend separately in proxy
     'utf-8',
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -550,7 +550,7 @@ test('readStackInfoSnapshot does not report running when stale metadata points a
   await mkdir(baseDir, { recursive: true });
 
   const listener = await withListeningServer();
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${listener.port}\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${listener.port}\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -563,7 +563,7 @@ test('readStackInfoSnapshot does not report running when stale metadata points a
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -610,9 +610,9 @@ test('readStackInfoSnapshot resolves stale server and UI pids from stack-owned l
 
   try {
     const ownedEnv = baseListenerEnv({
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     });
     serverListener = await spawnTcpListener({ readyPath: serverReadyPath, env: ownedEnv });
     uiListener = await spawnTcpListener({ readyPath: uiReadyPath, env: ownedEnv });
@@ -620,8 +620,8 @@ test('readStackInfoSnapshot resolves stale server and UI pids from stack-owned l
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_SERVER_PORT=${serverListener.port}`,
-        'HAPPIER_STACK_DAEMON=0',
+        `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}`,
+        'PIGGERCODE_STACK_DAEMON=0',
         '',
       ].join('\n'),
       'utf-8',
@@ -639,7 +639,7 @@ test('readStackInfoSnapshot resolves stale server and UI pids from stack-owned l
       'utf-8',
     );
 
-    const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+    const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
     try {
       const ownedPids = new Set([serverListener.pid, uiListener.pid]);
       const out = await readStackInfoSnapshot({
@@ -691,7 +691,7 @@ test('readStackInfoSnapshot projects a runtime-backed static UI through the serv
   const staleUiPort = await reserveUnusedPort();
   await writeFile(
     join(baseDir, 'env'),
-    `HAPPIER_STACK_SERVER_PORT=${serverListener.port}\nHAPPIER_STACK_RUNTIME_MODE=require\nHAPPIER_STACK_DAEMON=0\n`,
+    `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}\nPIGGERCODE_STACK_RUNTIME_MODE=require\nPIGGERCODE_STACK_DAEMON=0\n`,
     'utf-8',
   );
   await writeFile(
@@ -708,7 +708,7 @@ test('readStackInfoSnapshot projects a runtime-backed static UI through the serv
     'utf-8',
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -739,7 +739,7 @@ test('readStackInfoSnapshot projects a runtime-backed static UI through the serv
 for (const scenario of [
   {
     name: 'environment-disabled',
-    envLine: 'HAPPIER_STACK_SERVE_UI=0',
+    envLine: 'PIGGERCODE_STACK_SERVE_UI=0',
     runtimeServeUi: undefined,
   },
   {
@@ -760,9 +760,9 @@ for (const scenario of [
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_SERVER_PORT=${serverListener.port}`,
-        'HAPPIER_STACK_RUNTIME_MODE=require',
-        'HAPPIER_STACK_DAEMON=0',
+        `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}`,
+        'PIGGERCODE_STACK_RUNTIME_MODE=require',
+        'PIGGERCODE_STACK_DAEMON=0',
         scenario.envLine,
         '',
       ].filter((line) => line !== '').join('\n') + '\n',
@@ -783,7 +783,7 @@ for (const scenario of [
       'utf-8',
     );
 
-    const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+    const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
     try {
       const out = await readStackInfoSnapshot({
         rootDir: process.cwd(),
@@ -820,7 +820,7 @@ test('readStackInfoSnapshot marks UI as down when expo runtime metadata is stale
 
   const serverListener = await withListeningServer();
   const staleUiPort = await reserveUnusedPort();
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -834,7 +834,7 @@ test('readStackInfoSnapshot marks UI as down when expo runtime metadata is stale
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -868,7 +868,7 @@ test('readStackInfoSnapshot requires UI port reachability even when expo pid is 
 
   const serverListener = await withListeningServer();
   const staleUiPort = await reserveUnusedPort();
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -882,7 +882,7 @@ test('readStackInfoSnapshot requires UI port reachability even when expo pid is 
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -913,13 +913,13 @@ test('readStackInfoSnapshot reports runtime daemonPids without treating them as 
   const baseDir = join(storageDir, stackName);
   const envPath = join(baseDir, 'env');
   await mkdir(baseDir, { recursive: true });
-  await writeFile(envPath, 'HAPPIER_STACK_DAEMON=1\n', 'utf-8');
+  await writeFile(envPath, 'PIGGERCODE_STACK_DAEMON=1\n', 'utf-8');
   const daemonProcess = spawnDetachedInlineNodeTestProcess('setInterval(() => {}, 1000)', {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'daemon',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'daemon',
     },
   });
   t.after(() => {
@@ -942,7 +942,7 @@ test('readStackInfoSnapshot reports runtime daemonPids without treating them as 
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),
@@ -973,7 +973,7 @@ test('readStackInfoSnapshot marks daemon as down when stack runtime is otherwise
   await mkdir(baseDir, { recursive: true });
 
   const serverListener = await withListeningServer();
-  await writeFile(join(baseDir, 'env'), `HAPPIER_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
+  await writeFile(join(baseDir, 'env'), `PIGGERCODE_STACK_SERVER_PORT=${serverListener.port}\n`, 'utf-8');
   await writeFile(
     join(baseDir, 'stack.runtime.json'),
     JSON.stringify({
@@ -986,7 +986,7 @@ test('readStackInfoSnapshot marks daemon as down when stack runtime is otherwise
     'utf-8'
   );
 
-  const restore = withPatchedProcessEnv(t, { HAPPIER_STACK_STORAGE_DIR: storageDir });
+  const restore = withPatchedProcessEnv(t, { PIGGERCODE_STACK_STORAGE_DIR: storageDir });
   try {
     const out = await readStackInfoSnapshot({
       rootDir: process.cwd(),

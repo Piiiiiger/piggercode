@@ -26,7 +26,7 @@ async function main() {
     '  hstack env path',
     '',
     'defaults:',
-    '  - If running under a stack wrapper (HAPPIER_STACK_ENV_FILE is set), edits that stack env file.',
+    '  - If running under a stack wrapper (PIGGERCODE_STACK_ENV_FILE is set), edits that stack env file.',
     '  - Otherwise, edits the main stack env file (~/.happier/stacks/main/env).',
     '',
     'notes:',

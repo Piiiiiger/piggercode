@@ -35,13 +35,13 @@ async function readReqBody(req: http.IncomingMessage): Promise<string> {
 }
 
 describe('daemon control client: restartDaemonHttp', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
   let tmpHomeDir: string | null = null;
 
   afterEach(async () => {
     await clearDaemonStateForTests();
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
     reloadConfiguration();
     if (tmpHomeDir) {
       await removeTempDir(tmpHomeDir);
@@ -71,7 +71,7 @@ describe('daemon control client: restartDaemonHttp', () => {
       const { port } = await listen(server);
 
       tmpHomeDir = await createTempDir('happier-daemon-client-restart-test-');
-      envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
       reloadConfiguration();
       writeDaemonState({
         pid: process.pid,

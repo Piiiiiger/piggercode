@@ -59,10 +59,10 @@ describe('scripts/run-maestro-with-heartbeat.mjs', () => {
                 cwd: scratch,
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MAESTRO_BIN: maestroStubPath,
-                    HAPPIER_E2E_ANDROID_ADB_REVERSE: '0',
+                    PIGGERCODE_E2E_MAESTRO_BIN: maestroStubPath,
+                    PIGGERCODE_E2E_ANDROID_ADB_REVERSE: '0',
                     // Keep this unit test self-contained (do not spawn Expo/Metro).
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
                     MAESTRO_CLI_NO_ANALYTICS: '1',
                     MAESTRO_ARGS_LOG_PATH: argsLogPath,
                 },
@@ -70,7 +70,7 @@ describe('scripts/run-maestro-with-heartbeat.mjs', () => {
         );
 
         const maestroArgs = await readFile(argsLogPath, 'utf8');
-        expect(maestroArgs).toContain('HAPPIER_E2E_DEV_CLIENT_METRO_URL=');
+        expect(maestroArgs).toContain('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=');
 
         const logsDir = join(scratch, '.project', 'logs', 'e2e', 'mobile-maestro');
         const entries = (await readdir(logsDir, { withFileTypes: true }))
@@ -150,12 +150,12 @@ describe('scripts/run-maestro-with-heartbeat.mjs', () => {
                     ...process.env,
                     // Some CI lanes set a device-host override for real device runs; this unit test
                     // must remain self-contained and validate the adb-reverse loopback behavior.
-                    HAPPIER_E2E_MOBILE_DEVICE_HOST: '',
-                    HAPPIER_E2E_MAESTRO_BIN: maestroStubPath,
-                    HAPPIER_E2E_ADB_BIN: adbStubPath,
-                    HAPPIER_E2E_ANDROID_ADB_REVERSE: '1',
+                    PIGGERCODE_E2E_MOBILE_DEVICE_HOST: '',
+                    PIGGERCODE_E2E_MAESTRO_BIN: maestroStubPath,
+                    PIGGERCODE_E2E_ADB_BIN: adbStubPath,
+                    PIGGERCODE_E2E_ANDROID_ADB_REVERSE: '1',
                     // Keep this unit test self-contained (do not spawn Expo/Metro).
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
                     MAESTRO_ARGS_LOG_PATH: maestroArgsLogPath,
                     ADB_ARGS_LOG_PATH: adbArgsLogPath,
                 },
@@ -163,12 +163,12 @@ describe('scripts/run-maestro-with-heartbeat.mjs', () => {
         );
 
         const maestroArgs = await readFile(maestroArgsLogPath, 'utf8');
-        expect(maestroArgs).toContain('HAPPIER_E2E_SERVER_URL=http://127.0.0.1:26050');
+        expect(maestroArgs).toContain('PIGGERCODE_E2E_SERVER_URL=http://127.0.0.1:26050');
         const metroUrlLine = maestroArgs
             .split('\n')
             .map((line) => line.trim())
-            .find((line) => line.startsWith('HAPPIER_E2E_DEV_CLIENT_METRO_URL='));
-        expect(metroUrlLine).toMatch(/^HAPPIER_E2E_DEV_CLIENT_METRO_URL=http:\/\/(127\.0\.0\.1|localhost):8081$/);
+            .find((line) => line.startsWith('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL='));
+        expect(metroUrlLine).toMatch(/^PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=http:\/\/(127\.0\.0\.1|localhost):8081$/);
 
         const adbArgs = await readFile(adbArgsLogPath, 'utf8');
         expect(adbArgs).toContain('reverse');
@@ -322,11 +322,11 @@ describe('scripts/run-maestro-with-heartbeat.mjs', () => {
                 cwd: scratch,
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MAESTRO_BIN: maestroStubPath,
+                    PIGGERCODE_E2E_MAESTRO_BIN: maestroStubPath,
                     // Avoid requiring a real Android toolchain in this unit test.
-                    HAPPIER_E2E_ANDROID_ADB_REVERSE: '0',
+                    PIGGERCODE_E2E_ANDROID_ADB_REVERSE: '0',
                     // Keep this unit test self-contained (do not spawn Expo/Metro).
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
                     MAESTRO_CLI_NO_ANALYTICS: '1',
                     MAESTRO_STUB_MARKER: maestroMarkerPath,
                 },

@@ -253,7 +253,7 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
             }),
             commandProbe: (command) => command === 'bun' || command === 'yarn',
             runCommand: (_command, _args, options) => {
-                buildVersions.push(String(options?.env?.HAPPIER_CLI_BUILD_VERSION ?? ''));
+                buildVersions.push(String(options?.env?.PIGGERCODE_CLI_BUILD_VERSION ?? ''));
                 mkdirSync(dirname(cliDistEntrypoint), { recursive: true });
                 writeFileSync(cliDistEntrypoint, 'export default "release-cli-entrypoint";\n', 'utf8');
                 cliDistBuildManifest.writeCliDistBuildManifest(cliDistEntrypoint, {

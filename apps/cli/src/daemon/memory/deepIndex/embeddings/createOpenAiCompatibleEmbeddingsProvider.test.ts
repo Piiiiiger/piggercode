@@ -20,7 +20,7 @@ function createEncryptedApiKeySecret(key: Uint8Array) {
 describe('createOpenAiCompatibleEmbeddingsProvider', () => {
   afterEach(() => {
     vi.resetModules();
-    delete process.env.HAPPIER_MEMORY_EMBEDDINGS_REMOTE_REQUEST_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_MEMORY_EMBEDDINGS_REMOTE_REQUEST_TIMEOUT_MS;
   });
 
   it('sends trimmed inputs, auth, model, and dimensions to the embeddings endpoint', async () => {
@@ -125,7 +125,7 @@ describe('createOpenAiCompatibleEmbeddingsProvider', () => {
   });
 
   it('times out hanging remote requests using the configured timeout', async () => {
-    process.env.HAPPIER_MEMORY_EMBEDDINGS_REMOTE_REQUEST_TIMEOUT_MS = '1000';
+    process.env.PIGGERCODE_MEMORY_EMBEDDINGS_REMOTE_REQUEST_TIMEOUT_MS = '1000';
     const { createOpenAiCompatibleEmbeddingsProvider } = await import('./createOpenAiCompatibleEmbeddingsProvider');
     vi.stubGlobal('fetch', vi.fn((_input: unknown, init?: RequestInit) => {
       return new Promise((_resolve, reject) => {

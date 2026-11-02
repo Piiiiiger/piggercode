@@ -17,7 +17,7 @@ function resolvePathSafe(filePath) {
 }
 
 function shouldLogClaudeDetection() {
-    const raw = ((process.env.HAPPIER_DEBUG_CLAUDE_LAUNCHER ?? process.env.DEBUG) || '').toString().trim();
+    const raw = ((process.env.PIGGERCODE_DEBUG_CLAUDE_LAUNCHER ?? process.env.DEBUG) || '').toString().trim();
     if (!raw) return false;
     const lower = raw.toLowerCase();
     if (lower === '0' || lower === 'false' || lower === 'off' || lower === 'no') return false;
@@ -25,14 +25,14 @@ function shouldLogClaudeDetection() {
 }
 
 function getClaudeCliPath() {
-    const happierOverrideRaw = (process.env.HAPPIER_CLAUDE_PATH || '').trim();
+    const happierOverrideRaw = (process.env.PIGGERCODE_CLAUDE_PATH || '').trim();
     const happyOverrideRaw = (process.env.HAPPY_CLAUDE_PATH || '').trim();
-    const envVarName = happierOverrideRaw ? 'HAPPIER_CLAUDE_PATH' : happyOverrideRaw ? 'HAPPY_CLAUDE_PATH' : null;
+    const envVarName = happierOverrideRaw ? 'PIGGERCODE_CLAUDE_PATH' : happyOverrideRaw ? 'HAPPY_CLAUDE_PATH' : null;
     const overrideRaw = (happierOverrideRaw || happyOverrideRaw || '').trim();
     if (overrideRaw) {
         if (overrideRaw === 'claude') {
             if (shouldLogClaudeDetection()) {
-                console.error(`\x1b[90mUsing Claude Code from ${envVarName ?? 'HAPPIER_CLAUDE_PATH'}=claude\x1b[0m`);
+                console.error(`\x1b[90mUsing Claude Code from ${envVarName ?? 'PIGGERCODE_CLAUDE_PATH'}=claude\x1b[0m`);
             }
             return 'claude';
         }
@@ -41,12 +41,12 @@ function getClaudeCliPath() {
         const resolvedOverride = resolvePathSafe(expandedOverride) || expandedOverride;
         if (!fs.existsSync(resolvedOverride)) {
             console.error(`\n\x1b[1m\x1b[33mClaude Code path not found\x1b[0m\n`);
-            console.error(`${envVarName ?? 'HAPPIER_CLAUDE_PATH'} points to a missing file: ${overrideRaw}\n`);
+            console.error(`${envVarName ?? 'PIGGERCODE_CLAUDE_PATH'} points to a missing file: ${overrideRaw}\n`);
             process.exit(1);
         }
 
         if (shouldLogClaudeDetection()) {
-            console.error(`\x1b[90mUsing Claude Code from ${envVarName ?? 'HAPPIER_CLAUDE_PATH'} (${resolvedOverride})\x1b[0m`);
+            console.error(`\x1b[90mUsing Claude Code from ${envVarName ?? 'PIGGERCODE_CLAUDE_PATH'} (${resolvedOverride})\x1b[0m`);
         }
         return resolvedOverride;
     }
@@ -68,7 +68,7 @@ function buildClaudeBinarySpawnInvocation(params) {
     const args = Array.isArray(params.args) ? params.args : [];
 
     if (platform === 'win32') {
-        const forceViaComspecRaw = (process.env.HAPPIER_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC || '').toString().trim().toLowerCase();
+        const forceViaComspecRaw = (process.env.PIGGERCODE_WINDOWS_CLAUDE_SPAWN_VIA_CMDSPEC || '').toString().trim().toLowerCase();
         const forceViaComspec =
             forceViaComspecRaw.length > 0 &&
             forceViaComspecRaw !== '0' &&

@@ -6,7 +6,7 @@ import { createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('sessionControl.sessionsHttp in-flight session detail coalescing', () => {
-  const envKeys = ['HAPPIER_SERVER_URL'] as const;
+  const envKeys = ['PIGGERCODE_SERVER_URL'] as const;
   let envScope = createEnvKeyScope(envKeys);
 
   afterEach(() => {
@@ -17,7 +17,7 @@ describe('sessionControl.sessionsHttp in-flight session detail coalescing', () =
   });
 
   it('shares concurrent fetchSessionById requests for the same token and session', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
 
     vi.resetModules();
     const { fetchSessionById } = await import('./sessionsHttp');

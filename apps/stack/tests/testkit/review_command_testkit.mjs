@@ -99,12 +99,12 @@ export async function createReviewCommandFixture(
     baseEnv: buildStackFixtureEnv({
       extraEnv: {
         HOME: homeDir,
-        HAPPIER_STACK_REPO_DIR: repoDir,
-        HAPPIER_STACK_UPDATE_CHECK: '0',
-        HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-        HAPPIER_STACK_CODERABBIT_HOME_DIR: join(homeDir, 'coderabbit'),
-        HAPPIER_STACK_CODEX_HOME_DIR: join(homeDir, 'codex'),
-        HAPPIER_STACK_AUGMENT_CACHE_DIR: join(homeDir, 'augment'),
+        PIGGERCODE_STACK_REPO_DIR: repoDir,
+        PIGGERCODE_STACK_UPDATE_CHECK: '0',
+        PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+        PIGGERCODE_STACK_CODERABBIT_HOME_DIR: join(homeDir, 'coderabbit'),
+        PIGGERCODE_STACK_CODEX_HOME_DIR: join(homeDir, 'codex'),
+        PIGGERCODE_STACK_AUGMENT_CACHE_DIR: join(homeDir, 'augment'),
       },
     }),
     binDirs: [join(fixture.root, 'bin')],

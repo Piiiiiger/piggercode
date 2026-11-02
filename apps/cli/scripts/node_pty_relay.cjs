@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const relayWriteFramePrefix = '\u001eHAPPIER_PTY_WRITE ';
+const relayWriteFramePrefix = '\u001ePIGGERCODE_PTY_WRITE ';
 const ptyBackendIds = ['node-pty', '@homebridge/node-pty-prebuilt-multiarch'];
 
 function describeError(error) {
@@ -49,8 +49,8 @@ if (!file) {
 }
 const childArgs = argsKind === 'string' ? (argv[0] || '') : argv;
 
-const cols = Number.parseInt(process.env.HAPPIER_NODE_PTY_RELAY_COLS || '', 10);
-const rows = Number.parseInt(process.env.HAPPIER_NODE_PTY_RELAY_ROWS || '', 10);
+const cols = Number.parseInt(process.env.PIGGERCODE_NODE_PTY_RELAY_COLS || '', 10);
+const rows = Number.parseInt(process.env.PIGGERCODE_NODE_PTY_RELAY_ROWS || '', 10);
 
 const ptyOptions = {
   name: process.env.TERM || 'xterm-256color',

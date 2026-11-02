@@ -66,7 +66,7 @@ vi.mock('@modelcontextprotocol/sdk/client/index.js', () => {
     return { Client };
 });
 
-const envKeys = ['PATH', 'HAPPIER_CODEX_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_CODEX_PATH'] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -83,7 +83,7 @@ async function createFakeCodexBinary(): Promise<string> {
 
 beforeEach(async () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CODEX_PATH = await createFakeCodexBinary();
+    process.env.PIGGERCODE_CODEX_PATH = await createFakeCodexBinary();
 });
 
 afterEach(async () => {
@@ -194,13 +194,13 @@ describe('CodexMcpClient command detection', () => {
         await expect(client.connect()).resolves.toBeUndefined();
 
         expect(transportInstances).toHaveLength(1);
-        expect(transportInstances[0]?.command).toBe(process.env.HAPPIER_CODEX_PATH);
+        expect(transportInstances[0]?.command).toBe(process.env.PIGGERCODE_CODEX_PATH);
         expect(transportInstances[0]?.args).toEqual(['mcp-server']);
     });
 
     it('fails closed when no Codex CLI source is available', async () => {
         vi.resetModules();
-        delete process.env.HAPPIER_CODEX_PATH;
+        delete process.env.PIGGERCODE_CODEX_PATH;
         process.env.PATH = '';
 
         const mod = await import('./codexMcpClient');

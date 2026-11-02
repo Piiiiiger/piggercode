@@ -18,7 +18,7 @@ vi.mock('socket.io-client', () => ({ io }));
 vi.mock('axios');
 
 describe('ApiSessionClient observed transcript custody', () => {
-  const previousHome = process.env.HAPPIER_HOME_DIR;
+  const previousHome = process.env.PIGGERCODE_HOME_DIR;
   let directory: string;
   let client: ApiSessionClient | null = null;
   let recovered: boolean;
@@ -26,7 +26,7 @@ describe('ApiSessionClient observed transcript custody', () => {
 
   beforeEach(async () => {
     directory = await mkdtemp(join(tmpdir(), 'session-observed-custody-'));
-    process.env.HAPPIER_HOME_DIR = directory;
+    process.env.PIGGERCODE_HOME_DIR = directory;
     reloadConfiguration();
     recovered = false;
     observed = [];
@@ -57,8 +57,8 @@ describe('ApiSessionClient observed transcript custody', () => {
   afterEach(async () => {
     await client?.close();
     client = null;
-    if (previousHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHome;
+    if (previousHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHome;
     reloadConfiguration();
     await rm(directory, { recursive: true, force: true });
   });

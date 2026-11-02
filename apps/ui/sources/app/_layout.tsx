@@ -115,8 +115,8 @@ function shouldCrashOnRnwUnexpectedTextNode(): boolean {
 function installRnwUnexpectedTextNodeStackCaptureOnce() {
     if (typeof globalThis === 'undefined') return;
     const g = globalThis as any;
-    if (g.__HAPPIER_RNW_TEXTNODE_STACK_CAPTURE_INSTALLED__) return;
-    g.__HAPPIER_RNW_TEXTNODE_STACK_CAPTURE_INSTALLED__ = true;
+    if (g.__PIGGERCODE_RNW_TEXTNODE_STACK_CAPTURE_INSTALLED__) return;
+    g.__PIGGERCODE_RNW_TEXTNODE_STACK_CAPTURE_INSTALLED__ = true;
 
     const original = console.error;
     const seen = new Set<string>();
@@ -155,8 +155,8 @@ function installRnwUnexpectedTextNodeStackCaptureOnce() {
 function installReactCreateElementUnexpectedTextNodeCaptureOnce() {
     if (typeof globalThis === 'undefined') return;
     const g = globalThis as any;
-    if (g.__HAPPIER_REACT_CREATE_ELEMENT_TEXTNODE_CAPTURE_INSTALLED__) return;
-    g.__HAPPIER_REACT_CREATE_ELEMENT_TEXTNODE_CAPTURE_INSTALLED__ = true;
+    if (g.__PIGGERCODE_REACT_CREATE_ELEMENT_TEXTNODE_CAPTURE_INSTALLED__) return;
+    g.__PIGGERCODE_REACT_CREATE_ELEMENT_TEXTNODE_CAPTURE_INSTALLED__ = true;
 
     const original = React.createElement;
     const seen = new Set<string>();
@@ -194,8 +194,8 @@ function installReactJsxRuntimeUnexpectedTextNodeCaptureOnce() {
     // catch problematic primitives passed into <View>. In dev-only debug mode, patch jsx/jsxs.
     if (typeof globalThis === 'undefined') return;
     const g = globalThis as any;
-    if (g.__HAPPIER_REACT_JSX_RUNTIME_TEXTNODE_CAPTURE_INSTALLED__) return;
-    g.__HAPPIER_REACT_JSX_RUNTIME_TEXTNODE_CAPTURE_INSTALLED__ = true;
+    if (g.__PIGGERCODE_REACT_JSX_RUNTIME_TEXTNODE_CAPTURE_INSTALLED__) return;
+    g.__PIGGERCODE_REACT_JSX_RUNTIME_TEXTNODE_CAPTURE_INSTALLED__ = true;
 
     try {
         const seen = new Set<string>();
@@ -254,8 +254,8 @@ function installReactJsxRuntimeUnexpectedTextNodeCaptureOnce() {
 function installReactNativeViewRenderUnexpectedTextNodeCaptureOnce() {
     if (typeof globalThis === 'undefined') return;
     const g = globalThis as any;
-    if (g.__HAPPIER_RNW_VIEW_RENDER_TEXTNODE_CAPTURE_INSTALLED__) return;
-    g.__HAPPIER_RNW_VIEW_RENDER_TEXTNODE_CAPTURE_INSTALLED__ = true;
+    if (g.__PIGGERCODE_RNW_VIEW_RENDER_TEXTNODE_CAPTURE_INSTALLED__) return;
+    g.__PIGGERCODE_RNW_VIEW_RENDER_TEXTNODE_CAPTURE_INSTALLED__ = true;
 
     try {
         // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -82,7 +82,7 @@ export async function seedCliAuthForServer(params: {
   const credentials = `${JSON.stringify({ token: params.token, secret: encodeBase64(params.secret) }, null, 2)}\n`;
 
   // Write both legacy (~/.happier/access.key) and per-server (~/.happier/servers/<id>/access.key) credentials.
-  // The CLI prefers the per-server file when HAPPIER_SERVER_URL is set (env override selection).
+  // The CLI prefers the per-server file when PIGGERCODE_SERVER_URL is set (env override selection).
   const perServerDir = join(params.cliHome, 'servers', serverId);
   await mkdir(perServerDir, { recursive: true, mode: CLI_HOME_DIR_MODE });
   await writeFile(join(params.cliHome, 'access.key'), credentials, { encoding: 'utf8', mode: CLI_HOME_FILE_MODE });

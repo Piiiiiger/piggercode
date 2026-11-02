@@ -37,17 +37,17 @@ const CREDENTIALS = {
 } as const;
 
 describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it('commits a provider-quota-wait transcript event per blocked group-bound session with the known reset timing', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -83,7 +83,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('uses a reset-scoped local id for repeated quota lifecycle edges', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -119,7 +119,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('buckets reset timing in the local id so daemon re-observations do not append duplicate rows', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -155,7 +155,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('reuses the same local id when the same quota lifecycle incident is retried', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -183,7 +183,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('skips the wait transcript event when the blocked transition has no reset timing', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -209,7 +209,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('commits a provider-quota-recovered transcript event per session on the recovered edge', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -243,7 +243,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('buckets recovered cycle ids when reset timing is only available through cycleId', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 
@@ -278,7 +278,7 @@ describe('commitConnectedServiceQuotaLifecycleSessionEvents', () => {
   });
 
   it('keeps committing remaining sessions when one session commit fails', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitConnectedServiceQuotaLifecycleSessionEvents } = await import('./commitConnectedServiceQuotaLifecycleSessionEvents');
 

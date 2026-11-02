@@ -53,12 +53,12 @@ test('uses explicit server and public URLs while keeping the server local to its
   assert.equal(out.source, 'cli-arg');
 });
 
-test('uses HAPPIER_SERVER_URL when --no-server is set', () => {
+test('uses PIGGERCODE_SERVER_URL when --no-server is set', () => {
   const { flags, kv } = makeArgs({ flags: ['--no-server'] });
   const out = resolveDevServerConnection({
     flags,
     kv,
-    env: { HAPPIER_SERVER_URL: 'http://remote.example.com:4000/' },
+    env: { PIGGERCODE_SERVER_URL: 'http://remote.example.com:4000/' },
     resolvedLocalUrls: localUrls,
   });
   assert.equal(out.startServer, false);

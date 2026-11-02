@@ -126,7 +126,7 @@ export async function resolve(specifier, context, defaultResolve) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
     HSTACK_REVIEW_PR_MARKER: markerPath,
   };
 
@@ -141,5 +141,5 @@ export async function resolve(specifier, context, defaultResolve) {
   assert.ok(yarnRun, `expected a yarn install run call\n${JSON.stringify(calls, null, 2)}`);
   assert.equal(resolve(String(yarnRun.options.cwd)), resolve(mainDir));
   const pmCacheBase = join(homeDir, 'cache', 'sandbox', 'pm');
-  assert.equal(resolve(String(yarnRun.options.env.HAPPIER_STACK_PM_CACHE_BASE_DIR)), resolve(pmCacheBase));
+  assert.equal(resolve(String(yarnRun.options.env.PIGGERCODE_STACK_PM_CACHE_BASE_DIR)), resolve(pmCacheBase));
 });

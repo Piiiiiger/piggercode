@@ -27,7 +27,7 @@ import { fail } from '@piggercode/cli-common/output';
 async function main() {
   applyStackSessionPriority();
   // Best-effort Windows console hardening for Unicode output (workaround for upstream reports of mojibake when
-  // launching via npm-generated wrappers). Opt-out via HAPPIER_WINDOWS_UTF8_CODEPAGE=0.
+  // launching via npm-generated wrappers). Opt-out via PIGGERCODE_WINDOWS_UTF8_CODEPAGE=0.
   ensureWindowsUtf8CodePage();
   if (shouldInstallConsoleWriteErrorGuards({ processVersions: process.versions })) {
     installConsoleWriteErrorGuards();
@@ -37,7 +37,7 @@ async function main() {
   const cliRootDir = dirname(dirname(fileURLToPath(import.meta.url)));
   const normalizedArgv = readCliProcessArgs();
   const updatePackageName = resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_CLI_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_CLI_UPDATE_PACKAGE_NAME,
     fallback: packageJson.name,
   });
   await maybeReexecToRuntime({
@@ -60,7 +60,7 @@ async function main() {
   await dispatchCli({ args, terminalRuntime, rawArgv: process.argv });
 }
 
-if (process.env.HAPPIER_CLI_DIST_INTEGRITY_PROBE !== '1') {
+if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE !== '1') {
   void main().catch((error) => {
     logger.fatal(error);
     console.error(fail(error instanceof Error ? error.message : 'Unknown error'));

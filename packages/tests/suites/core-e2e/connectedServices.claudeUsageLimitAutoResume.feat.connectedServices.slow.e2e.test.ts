@@ -78,13 +78,13 @@ describe('core e2e: Claude due usage-limit continuation', () => {
           customResumePrompt: 'Continue the interrupted Claude work carefully.',
         },
       },
-      serverExtraEnv: { HAPPIER_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1' },
+      serverExtraEnv: { PIGGERCODE_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1' },
       extraEnv: {
-        HAPPIER_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
-        HAPPIER_E2E_FAKE_CLAUDE_ALLOW_ACCESS_ONLY_NATIVE_OAUTH: '1',
-        HAPPIER_E2E_FAKE_CLAUDE_RESET_DELAY_MS: String(options.resetDelayMs ?? 10000),
-        HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL: resolve(testDir, 'fake-claude.jsonl.accept'),
-        HAPPIER_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS: String(providerAcceptTimeoutMs),
+        PIGGERCODE_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
+        PIGGERCODE_E2E_FAKE_CLAUDE_ALLOW_ACCESS_ONLY_NATIVE_OAUTH: '1',
+        PIGGERCODE_E2E_FAKE_CLAUDE_RESET_DELAY_MS: String(options.resetDelayMs ?? 10000),
+        PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_SIGNAL: resolve(testDir, 'fake-claude.jsonl.accept'),
+        PIGGERCODE_E2E_FAKE_CLAUDE_CONTINUATION_ACCEPT_TIMEOUT_MS: String(providerAcceptTimeoutMs),
       },
     });
     await createConnectedServiceProfile({
@@ -177,9 +177,9 @@ describe('core e2e: Claude due usage-limit continuation', () => {
   async function checkNowThroughCli(sessionId: string, resumePromptMode: 'custom' | 'off', label: string): Promise<unknown> {
     const current = fixture!;
     const testDir = dirname(current.fakeClaudeLogPath);
-    const env = { ...process.env, CI: '1', HAPPIER_HOME_DIR: current.daemonHomeDir,
-      HAPPIER_SERVER_URL: current.serverBaseUrl, HAPPIER_WEBAPP_URL: current.serverBaseUrl,
-      HAPPIER_ACTIVE_SERVER_ID: current.serverId };
+    const env = { ...process.env, CI: '1', PIGGERCODE_HOME_DIR: current.daemonHomeDir,
+      PIGGERCODE_SERVER_URL: current.serverBaseUrl, PIGGERCODE_WEBAPP_URL: current.serverBaseUrl,
+      PIGGERCODE_ACTIVE_SERVER_ID: current.serverId };
     const launch = await resolveCliTestLaunchSpec({ testDir, env }, { snapshotDir: resolve(testDir, 'cli-source'), preferSourceEntrypoint: true });
     const stdoutPath = resolve(testDir, `${label}.stdout.log`);
     await runLoggedCommand({ command: launch.command,

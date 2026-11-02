@@ -21,7 +21,7 @@ vi.mock('node:child_process', async (importOriginal) => {
 });
 
 vi.mock('@/daemon/platform/linux/daemonSpawnedSessionCgroupSelfMigration', () => ({
-  HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY: 'HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP',
+  PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY: 'PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP',
   selfMigrateDaemonSpawnedSessionProcessOutOfDaemonServiceCgroup,
 }));
 
@@ -38,10 +38,10 @@ afterEach(() => {
   vi.restoreAllMocks();
   spawnSyncSpy.mockReset();
   selfMigrateDaemonSpawnedSessionProcessOutOfDaemonServiceCgroup.mockReset();
-  delete process.env.HAPPIER_CODEX_PATH;
-  delete process.env.HAPPIER_CODEX_BACKEND_MODE;
-  delete process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
-  delete process.env.HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP;
+  delete process.env.PIGGERCODE_CODEX_PATH;
+  delete process.env.PIGGERCODE_CODEX_BACKEND_MODE;
+  delete process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
+  delete process.env.PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP;
   delete process.env.CONNECTED_SERVICE_TEST_TOKEN;
 });
 
@@ -298,7 +298,7 @@ describe('runBackendSessionCliCommand', () => {
   it('self-migrates daemon-spawned linux session runners out of the daemon service cgroup before continuing startup', async () => {
     const credentials = { token: 'x' } as any;
 
-    process.env.HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP = '1';
+    process.env.PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP = '1';
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(credentials);
     vi.spyOn(persistenceModule, 'readSettings').mockResolvedValue({ machineId: 'machine-1' } as any);
     vi.spyOn(accountSettingsModule, 'bootstrapAccountSettingsContext').mockResolvedValue({
@@ -388,8 +388,8 @@ describe('runBackendSessionCliCommand', () => {
   it('passes provider spawn extras from account settings into the backend run', async () => {
     const credentials = { token: 'x' } as any;
 
-    delete process.env.HAPPIER_CODEX_BACKEND_MODE;
-    delete process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
+    delete process.env.PIGGERCODE_CODEX_BACKEND_MODE;
+    delete process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(credentials);
     vi.spyOn(authModule, 'ensureMachineIdForCredentials').mockResolvedValue({ machineId: 'machine-1' } as any);
     vi.spyOn(accountSettingsModule, 'bootstrapAccountSettingsContext').mockResolvedValue({
@@ -528,8 +528,8 @@ describe('runBackendSessionCliCommand', () => {
   });
 
   it('lets an explicit Codex ACP env override win over account settings for direct CLI runs', async () => {
-    const previous = process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
-    process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = '0';
+    const previous = process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
+    process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = '0';
 
     try {
       const credentials = { token: 'x' } as any;
@@ -556,9 +556,9 @@ describe('runBackendSessionCliCommand', () => {
       expect(run).toHaveBeenCalledWith(expect.not.objectContaining({ experimentalCodexAcp: true }));
     } finally {
       if (previous === undefined) {
-        delete process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP;
+        delete process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
       } else {
-        process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = previous;
+        process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = previous;
       }
     }
   });
@@ -603,8 +603,8 @@ describe('runBackendSessionCliCommand', () => {
     }));
   });
 
-  it('applies --profile env overlay and exposes profile id via HAPPIER_SESSION_PROFILE_ID', async () => {
-    const priorProfileId = process.env.HAPPIER_SESSION_PROFILE_ID;
+  it('applies --profile env overlay and exposes profile id via PIGGERCODE_SESSION_PROFILE_ID', async () => {
+    const priorProfileId = process.env.PIGGERCODE_SESSION_PROFILE_ID;
     const priorFoo = process.env.FOO;
 
     const credentials: Credentials = {
@@ -637,7 +637,7 @@ describe('runBackendSessionCliCommand', () => {
     } as any);
 
     const run = vi.fn(async () => {
-      expect(process.env.HAPPIER_SESSION_PROFILE_ID).toBe('work');
+      expect(process.env.PIGGERCODE_SESSION_PROFILE_ID).toBe('work');
       expect(process.env.FOO).toBe('bar');
     });
     const loadRun = vi.fn().mockResolvedValue(run);
@@ -650,9 +650,9 @@ describe('runBackendSessionCliCommand', () => {
       });
     } finally {
       if (typeof priorProfileId === 'string') {
-        process.env.HAPPIER_SESSION_PROFILE_ID = priorProfileId;
+        process.env.PIGGERCODE_SESSION_PROFILE_ID = priorProfileId;
       } else {
-        delete process.env.HAPPIER_SESSION_PROFILE_ID;
+        delete process.env.PIGGERCODE_SESSION_PROFILE_ID;
       }
       if (typeof priorFoo === 'string') {
         process.env.FOO = priorFoo;
@@ -668,7 +668,7 @@ describe('runBackendSessionCliCommand', () => {
     mkdirSync(root, { recursive: true });
     writeFileSync(codexPath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(codexPath, 0o755);
-    process.env.HAPPIER_CODEX_PATH = codexPath;
+    process.env.PIGGERCODE_CODEX_PATH = codexPath;
     spawnSyncSpy.mockReturnValue({ status: 0, signal: null, error: undefined } as any);
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
@@ -707,7 +707,7 @@ describe('runBackendSessionCliCommand', () => {
     mkdirSync(root, { recursive: true });
     writeFileSync(codexPath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(codexPath, 0o755);
-    process.env.HAPPIER_CODEX_PATH = codexPath;
+    process.env.PIGGERCODE_CODEX_PATH = codexPath;
     spawnSyncSpy.mockReturnValue({ status: 0, signal: null, error: undefined } as any);
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const loadRun = vi.fn();
@@ -740,7 +740,7 @@ describe('runBackendSessionCliCommand', () => {
     mkdirSync(root, { recursive: true });
     writeFileSync(codexPath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(codexPath, 0o755);
-    process.env.HAPPIER_CODEX_PATH = codexPath;
+    process.env.PIGGERCODE_CODEX_PATH = codexPath;
     spawnSyncSpy.mockReturnValue({ status: 0, signal: null, error: undefined } as any);
 
     const readCredentialsSpy = vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({ token: 'x' } as any);
@@ -776,7 +776,7 @@ describe('runBackendSessionCliCommand', () => {
     mkdirSync(root, { recursive: true });
     writeFileSync(codexPath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(codexPath, 0o755);
-    process.env.HAPPIER_CODEX_PATH = codexPath;
+    process.env.PIGGERCODE_CODEX_PATH = codexPath;
     spawnSyncSpy.mockReturnValue({ status: 0, signal: null, error: undefined } as any);
 
     const readCredentialsSpy = vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({ token: 'x' } as any);

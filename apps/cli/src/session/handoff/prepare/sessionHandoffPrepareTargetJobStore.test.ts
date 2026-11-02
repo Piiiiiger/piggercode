@@ -89,11 +89,11 @@ async function runTransitionWorker(input: Readonly<{
       import { join } from 'node:path';
       import { createSessionHandoffPrepareTargetJobStore } from ${JSON.stringify(new URL('./sessionHandoffPrepareTargetJobStore.ts', import.meta.url).href)};
 
-      const activeServerDir = process.env.HAPPIER_TEST_ACTIVE_SERVER_DIR;
-      const barrierPath = process.env.HAPPIER_TEST_BARRIER_PATH;
-      const jobId = process.env.HAPPIER_TEST_JOB_ID;
-      const workerId = process.env.HAPPIER_TEST_WORKER_ID;
-      const transitions = Number(process.env.HAPPIER_TEST_TRANSITIONS);
+      const activeServerDir = process.env.PIGGERCODE_TEST_ACTIVE_SERVER_DIR;
+      const barrierPath = process.env.PIGGERCODE_TEST_BARRIER_PATH;
+      const jobId = process.env.PIGGERCODE_TEST_JOB_ID;
+      const workerId = process.env.PIGGERCODE_TEST_WORKER_ID;
+      const transitions = Number(process.env.PIGGERCODE_TEST_TRANSITIONS);
       if (!activeServerDir || !barrierPath || !jobId || !workerId || !Number.isSafeInteger(transitions)) {
         throw new Error('Missing transition-worker input');
       }
@@ -127,11 +127,11 @@ async function runTransitionWorker(input: Readonly<{
     cwd: process.cwd(),
     env: {
       ...process.env,
-      HAPPIER_TEST_ACTIVE_SERVER_DIR: input.activeServerDir,
-      HAPPIER_TEST_BARRIER_PATH: input.barrierPath,
-      HAPPIER_TEST_JOB_ID: input.jobId,
-      HAPPIER_TEST_WORKER_ID: input.workerId,
-      HAPPIER_TEST_TRANSITIONS: String(input.transitions),
+      PIGGERCODE_TEST_ACTIVE_SERVER_DIR: input.activeServerDir,
+      PIGGERCODE_TEST_BARRIER_PATH: input.barrierPath,
+      PIGGERCODE_TEST_JOB_ID: input.jobId,
+      PIGGERCODE_TEST_WORKER_ID: input.workerId,
+      PIGGERCODE_TEST_TRANSITIONS: String(input.transitions),
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });

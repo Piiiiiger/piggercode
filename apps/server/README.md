@@ -52,7 +52,7 @@ Happier Server supports two flavors that share the same API + internal logic. Fl
 - **full** (default, recommended for production): defaults to Postgres, Redis-capable realtime, and S3/Minio-compatible public file storage.
 - **light** (recommended for self-hosting/testing): defaults to SQLite, in-memory realtime, and local public file storage served under `GET /files/*`.
 
-The database provider is independent of these presets. `HAPPIER_DB_PROVIDER=postgres|mysql|pglite|sqlite` is supported under either preset; PostgreSQL and MySQL require `DATABASE_URL`, while PGlite and SQLite use the local data-directory settings by default.
+The database provider is independent of these presets. `PIGGERCODE_DB_PROVIDER=postgres|mysql|pglite|sqlite` is supported under either preset; PostgreSQL and MySQL require `DATABASE_URL`, while PGlite and SQLite use the local data-directory settings by default.
 
 ## Required environment (full flavor)
 
@@ -62,18 +62,18 @@ For the complete runtime environment-variable reference (including advanced/inte
 
 The full flavor expects these env vars to be set:
 
-- `HAPPIER_DB_PROVIDER` (optional, defaults to `postgres`). Supported: `postgres`, `mysql`, `pglite`, `sqlite`.
+- `PIGGERCODE_DB_PROVIDER` (optional, defaults to `postgres`). Supported: `postgres`, `mysql`, `pglite`, `sqlite`.
 - `DATABASE_URL`, for example:
   - Postgres: `postgresql://user:pass@db.example.com:5432/happy?sslmode=require`
   - MySQL 8.0.16+: `mysql://user:pass@db.example.com:3306/happy`
 - `HANDY_MASTER_SECRET` (used to derive auth/encryption secrets)
 - Public file storage:
-  - Choose a backend via `HAPPIER_FILES_BACKEND=local|s3` (default: `s3` in full flavor, `local` in light flavor)
-  - If `HAPPIER_FILES_BACKEND=local` (filesystem-backed public files), the server stores files under `~/.happier/server-light/files` by default.
-    - Override the directory with `HAPPIER_SERVER_LIGHT_FILES_DIR=/absolute/path`.
+  - Choose a backend via `PIGGERCODE_FILES_BACKEND=local|s3` (default: `s3` in full flavor, `local` in light flavor)
+  - If `PIGGERCODE_FILES_BACKEND=local` (filesystem-backed public files), the server stores files under `~/.happier/server-light/files` by default.
+    - Override the directory with `PIGGERCODE_SERVER_LIGHT_FILES_DIR=/absolute/path`.
     - Files are served by the API under `GET /files/*` (same public route used by light flavor).
     - Ensure the server process has read/write permissions for the selected directory.
-  - If `HAPPIER_FILES_BACKEND=s3` (S3/Minio), configure:
+  - If `PIGGERCODE_FILES_BACKEND=s3` (S3/Minio), configure:
     - `S3_HOST`
     - `S3_PORT` (optional)
     - `S3_USE_SSL` (`true`/`false`, defaults to `true`)
@@ -86,55 +86,55 @@ The full flavor expects these env vars to be set:
 
 Optional (recommended for multi-core / multi-replica):
 
-- `REDIS_URL` + `HAPPIER_SOCKET_ADAPTER=redis-streams`
+- `REDIS_URL` + `PIGGERCODE_SOCKET_ADAPTER=redis-streams`
 
 ### Bug report feature controls
 
 Happier clients read bug-report settings from `GET /v1/features`. Configure these env vars to control behavior:
 
-- `HAPPIER_FEATURE_BUG_REPORTS__ENABLED` (default `1`)
-- `HAPPIER_FEATURE_BUG_REPORTS__PROVIDER_URL` (default `https://reports.happier.dev`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED` (default `1`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL` (default `https://reports.happier.dev`)
   - If set to an invalid URL, provider submission is disabled (`providerUrl=null`) instead of failing open.
-- `HAPPIER_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS` (default `1`)
-- `HAPPIER_FEATURE_BUG_REPORTS__MAX_ARTIFACT_BYTES` (default `10485760`)
-- `HAPPIER_FEATURE_BUG_REPORTS__UPLOAD_TIMEOUT_MS` (default `120000`)
-- `HAPPIER_FEATURE_BUG_REPORTS__CONTEXT_WINDOW_MS` (default `1800000`; min `1000`, max `86400000`)
-- `HAPPIER_FEATURE_BUG_REPORTS__ACCEPTED_ARTIFACT_KINDS` (comma-separated allowlist)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS` (default `1`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__MAX_ARTIFACT_BYTES` (default `10485760`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__UPLOAD_TIMEOUT_MS` (default `120000`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__CONTEXT_WINDOW_MS` (default `1800000`; min `1000`, max `86400000`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__ACCEPTED_ARTIFACT_KINDS` (comma-separated allowlist)
 
 Server diagnostics (used by bug reports when enabled):
 
-- `HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED` (default `0`)
-- `HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE` (default `owner`, allowed: `authenticated`, `owner`)
-- `HAPPIER_SERVER_OWNER_USER_IDS` (comma-separated account ids allowed for owner-only server features)
-- `HAPPIER_BUG_REPORTS_SERVER_LOG_PATH` (optional explicit path; fallback uses `HAPPIER_SELF_HOST_LOG_DIR/server.log`)
-- `HAPPIER_BUG_REPORTS_SERVER_LOG_MAX_BYTES` (default `262144`, max tail bytes read per snapshot request)
-- `HAPPIER_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_MAX` (default `30`)
-- `HAPPIER_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_WINDOW` (default `1 minute`)
+- `PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED` (default `0`)
+- `PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE` (default `owner`, allowed: `authenticated`, `owner`)
+- `PIGGERCODE_SERVER_OWNER_USER_IDS` (comma-separated account ids allowed for owner-only server features)
+- `PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH` (optional explicit path; fallback uses `PIGGERCODE_SELF_HOST_LOG_DIR/server.log`)
+- `PIGGERCODE_BUG_REPORTS_SERVER_LOG_MAX_BYTES` (default `262144`, max tail bytes read per snapshot request)
+- `PIGGERCODE_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_MAX` (default `30`)
+- `PIGGERCODE_DIAGNOSTICS_BUG_REPORT_SNAPSHOT_RATE_LIMIT_WINDOW` (default `1 minute`)
 
 To fully disable server log exfiltration for self-hosted deployments:
 
-1. Keep `HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED=0`.
-2. Remove `server` from `HAPPIER_FEATURE_BUG_REPORTS__ACCEPTED_ARTIFACT_KINDS`.
+1. Keep `PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED=0`.
+2. Remove `server` from `PIGGERCODE_FEATURE_BUG_REPORTS__ACCEPTED_ARTIFACT_KINDS`.
 
 For shared multi-user servers, keep diagnostics enabled with owner-only access (default):
 
-1. Keep `HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE=owner` (or leave unset).
-2. Set `HAPPIER_SERVER_OWNER_USER_IDS=<owner-id-1>,<owner-id-2>`.
+1. Keep `PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE=owner` (or leave unset).
+2. Set `PIGGERCODE_SERVER_OWNER_USER_IDS=<owner-id-1>,<owner-id-2>`.
 
-If `HAPPIER_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE=owner` and `HAPPIER_SERVER_OWNER_USER_IDS` is not set, the diagnostics endpoint returns `403` by design.
+If `PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE=owner` and `PIGGERCODE_SERVER_OWNER_USER_IDS` is not set, the diagnostics endpoint returns `403` by design.
 
-`HAPPIER_SERVER_OWNER_USER_IDS` uses Happier account ids (owners can copy theirs from Settings → Account in the app).
+`PIGGERCODE_SERVER_OWNER_USER_IDS` uses Happier account ids (owners can copy theirs from Settings → Account in the app).
 
 ### Example `.env` (full flavor, production)
 
 ```bash
 # Required: DB
-# HAPPIER_DB_PROVIDER=postgres  # default
+# PIGGERCODE_DB_PROVIDER=postgres  # default
 DATABASE_URL=postgresql://happy:happy@127.0.0.1:5432/happy?sslmode=require
 HANDY_MASTER_SECRET=change-me-to-a-long-random-string
 
 # Required: public file storage (S3 / Minio)
-HAPPIER_FILES_BACKEND=s3
+PIGGERCODE_FILES_BACKEND=s3
 S3_HOST=127.0.0.1
 S3_PORT=9000
 S3_USE_SSL=false
@@ -146,7 +146,7 @@ S3_SECRET_KEY=minioadmin
 # Optional: enable multi-replica Socket.IO fanout + cluster RPC routing
 # (required if you run more than one API replica)
 REDIS_URL=redis://127.0.0.1:6379
-HAPPIER_SOCKET_ADAPTER=redis-streams
+PIGGERCODE_SOCKET_ADAPTER=redis-streams
 
 # Optional: process role when scaling (unset => "all")
 # SERVER_ROLE=api
@@ -158,7 +158,7 @@ METRICS_ENABLED=true
 METRICS_PORT=9090
 
 # Optional: instance id for logs/registry
-# HAPPIER_INSTANCE_ID=api-1
+# PIGGERCODE_INSTANCE_ID=api-1
 ```
 
 ### Example `.env` (light flavor, self-hosting)
@@ -166,11 +166,11 @@ METRICS_PORT=9090
 ```bash
 # Optional: where light flavor stores its local data (DB + files + secrets).
 # If unset, defaults to ~/.happy/server-light
-HAPPIER_SERVER_LIGHT_DATA_DIR=/var/lib/happy/server-light
+PIGGERCODE_SERVER_LIGHT_DATA_DIR=/var/lib/happy/server-light
 
 # Optional: DB provider for light flavor (defaults to SQLite)
-# HAPPIER_DB_PROVIDER=sqlite
-# HAPPIER_DB_PROVIDER=pglite
+# PIGGERCODE_DB_PROVIDER=sqlite
+# PIGGERCODE_DB_PROVIDER=pglite
 
 # Optional: ports
 PORT=3005
@@ -213,11 +213,11 @@ Recommended production topology:
 When running more than one API process/replica, enable the Socket.IO Redis Streams adapter:
 
 - `REDIS_URL=redis://...`
-- `HAPPIER_SOCKET_ADAPTER=redis-streams`
+- `PIGGERCODE_SOCKET_ADAPTER=redis-streams`
 
 To explicitly disable it (single-process mode), leave it unset or set:
 
-- `HAPPIER_SOCKET_ADAPTER=memory`
+- `PIGGERCODE_SOCKET_ADAPTER=memory`
 
 This enables:
 
@@ -240,11 +240,11 @@ For a quick local production-like test (requires Redis):
 
 ```bash
 # Worker (no HTTP server; publishes events via Redis adapter; runs background loops)
-SERVER_ROLE=worker HAPPIER_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 METRICS_PORT=0 yarn start
+SERVER_ROLE=worker PIGGERCODE_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 METRICS_PORT=0 yarn start
 
 # API replicas (different PORTs on the same host; put a load balancer in front in real deployments)
-SERVER_ROLE=api HAPPIER_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 PORT=3005 METRICS_PORT=0 yarn start
-SERVER_ROLE=api HAPPIER_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 PORT=3006 METRICS_PORT=0 yarn start
+SERVER_ROLE=api PIGGERCODE_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 PORT=3005 METRICS_PORT=0 yarn start
+SERVER_ROLE=api PIGGERCODE_SOCKET_ADAPTER=redis-streams REDIS_URL=redis://127.0.0.1:6379 PORT=3006 METRICS_PORT=0 yarn start
 ```
 
 ### Sticky sessions (required for websocket load balancing)
@@ -267,7 +267,7 @@ Prisma pooling is typically configured via the database connection string / driv
 
 ### Operational tips
 
-- Set `HAPPIER_INSTANCE_ID` to something stable per process/pod for debugging (for example, Kubernetes `metadata.uid`). If unset, it is generated automatically at runtime.
+- Set `PIGGERCODE_INSTANCE_ID` to something stable per process/pod for debugging (for example, Kubernetes `metadata.uid`). If unset, it is generated automatically at runtime.
 - If you run API + worker processes on the same host, ensure their `PORT`/`METRICS_PORT` values do not conflict.
 - To disable the metrics server (for example in some local multi-process setups), set `METRICS_ENABLED=false`. To avoid conflicts while keeping it enabled, set `METRICS_PORT=0` (random free port) or choose distinct ports per process.
 
@@ -330,7 +330,7 @@ yarn install
 PORT=3005 yarn dev:light
 
 # Optional: run the light flavor against embedded Postgres (PGlite):
-HAPPIER_DB_PROVIDER=pglite PORT=3005 yarn dev:light
+PIGGERCODE_DB_PROVIDER=pglite PORT=3005 yarn dev:light
 ```
 
 Verify:
@@ -343,7 +343,7 @@ curl http://127.0.0.1:3005/ready
 Notes:
 
 - `yarn dev:light` runs migrations for the selected light DB provider before starting.
-- If you want a clean slate for local dev/testing, delete the light data dir (default: `~/.happy/server-light`) or point the light flavor at a fresh dir via `HAPPIER_SERVER_LIGHT_DATA_DIR=/tmp/happy-server-light`.
+- If you want a clean slate for local dev/testing, delete the light data dir (default: `~/.happy/server-light`) or point the light flavor at a fresh dir via `PIGGERCODE_SERVER_LIGHT_DATA_DIR=/tmp/happy-server-light`.
 
 ### Prisma schema (providers)
 
@@ -372,13 +372,13 @@ DB portability contract suite:
     - Postgres: `yarn test:server:db-contract:postgres:docker` (repo root)
     - MySQL: `yarn test:server:db-contract:mysql:docker` (repo root)
   - Direct package command (existing DB URL):
-    - Postgres: `HAPPIER_DB_PROVIDER=postgres DATABASE_URL=postgresql://... yarn test:server:db-contract`
-    - MySQL: `HAPPIER_DB_PROVIDER=mysql DATABASE_URL=mysql://... yarn test:server:db-contract`
+    - Postgres: `PIGGERCODE_DB_PROVIDER=postgres DATABASE_URL=postgresql://... yarn test:server:db-contract`
+    - MySQL: `PIGGERCODE_DB_PROVIDER=mysql DATABASE_URL=mysql://... yarn test:server:db-contract`
 
 Light flavor note (SQLite vs PGlite):
 
 - The default light DB is SQLite for maximum stability in local/self-host environments.
-- Embedded Postgres (PGlite) is supported by setting `HAPPIER_DB_PROVIDER=pglite`.
+- Embedded Postgres (PGlite) is supported by setting `PIGGERCODE_DB_PROVIDER=pglite`.
 - There is no built-in automatic migration between SQLite and PGlite databases; treat them as separate backends and migrate data explicitly if needed.
 
 ### Schema changes (developer workflow)
@@ -401,7 +401,7 @@ Light defaults (when env vars are missing):
 
 - data dir: `~/.happy/server-light`
 - sqlite db file: `~/.happy/server-light/happier-server-light.sqlite`
-- pglite db dir (when `HAPPIER_DB_PROVIDER=pglite`): `~/.happy/server-light/pglite`
+- pglite db dir (when `PIGGERCODE_DB_PROVIDER=pglite`): `~/.happy/server-light/pglite`
 - public files: `~/.happy/server-light/files/*`
 - `HANDY_MASTER_SECRET` is generated (once) and persisted to `~/.happy/server-light/handy-master-secret.txt`
 

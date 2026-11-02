@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HAPPIER_RUNTIME_CONTEXT_ENV_KEYS,
+  PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS,
   resolveHappierRuntimeContextEnv,
 } from './resolveHappierRuntimeContextEnv';
 
 describe('resolveHappierRuntimeContextEnv', () => {
-  it('returns only HAPPIER_HOME_DIR when given just a home dir', () => {
+  it('returns only PIGGERCODE_HOME_DIR when given just a home dir', () => {
     expect(resolveHappierRuntimeContextEnv({ homeDir: '/home/.happier' })).toEqual({
-      HAPPIER_HOME_DIR: '/home/.happier',
+      PIGGERCODE_HOME_DIR: '/home/.happier',
     });
   });
 
-  it('sets a single HAPPIER_SERVER_URL for a non-split stack (api === canonical) and omits local/public', () => {
+  it('sets a single PIGGERCODE_SERVER_URL for a non-split stack (api === canonical) and omits local/public', () => {
     const env = resolveHappierRuntimeContextEnv({
       homeDir: '/home/.happier',
       server: {
@@ -24,13 +24,13 @@ describe('resolveHappierRuntimeContextEnv', () => {
     });
 
     expect(env).toEqual({
-      HAPPIER_HOME_DIR: '/home/.happier',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: '/home/.happier',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
-    expect(env).not.toHaveProperty('HAPPIER_LOCAL_SERVER_URL');
-    expect(env).not.toHaveProperty('HAPPIER_PUBLIC_SERVER_URL');
+    expect(env).not.toHaveProperty('PIGGERCODE_LOCAL_SERVER_URL');
+    expect(env).not.toHaveProperty('PIGGERCODE_PUBLIC_SERVER_URL');
   });
 
   it('expresses a split local/public stack: SERVER=local, LOCAL=local, PUBLIC=canonical', () => {
@@ -46,13 +46,13 @@ describe('resolveHappierRuntimeContextEnv', () => {
     });
 
     expect(env).toEqual({
-      HAPPIER_HOME_DIR: '/home/.happier',
-      HAPPIER_ACTIVE_SERVER_ID: 'android-keyboard-qa',
-      HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-      HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
-      HAPPIER_PUBLIC_SERVER_URL: 'http://127.0.0.1:13155',
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:13155',
+      PIGGERCODE_HOME_DIR: '/home/.happier',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'android-keyboard-qa',
+      PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+      PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
+      PIGGERCODE_PUBLIC_SERVER_URL: 'http://127.0.0.1:13155',
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:13155',
     });
   });
 
@@ -69,11 +69,11 @@ describe('resolveHappierRuntimeContextEnv', () => {
         },
       }),
     ).toEqual({
-      HAPPIER_ACTIVE_SERVER_ID: 'stack-a',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-      HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
-      HAPPIER_PUBLIC_SERVER_URL: 'http://127.0.0.1:13155',
-      HAPPIER_WEBAPP_URL: 'http://127.0.0.1:13155',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'stack-a',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+      PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
+      PIGGERCODE_PUBLIC_SERVER_URL: 'http://127.0.0.1:13155',
+      PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:13155',
     });
   });
 
@@ -90,10 +90,10 @@ describe('resolveHappierRuntimeContextEnv', () => {
           webappUrl: '',
         },
       }),
-    ).toEqual({ HAPPIER_HOME_DIR: '/home/.happier' });
+    ).toEqual({ PIGGERCODE_HOME_DIR: '/home/.happier' });
   });
 
-  it('falls back to the api URL for HAPPIER_SERVER_URL when only the api URL is known', () => {
+  it('falls back to the api URL for PIGGERCODE_SERVER_URL when only the api URL is known', () => {
     const env = resolveHappierRuntimeContextEnv({
       server: {
         activeServerId: 'cloud',
@@ -103,8 +103,8 @@ describe('resolveHappierRuntimeContextEnv', () => {
       },
     });
     expect(env).toEqual({
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
     });
   });
 
@@ -119,8 +119,8 @@ describe('resolveHappierRuntimeContextEnv', () => {
       },
     });
     for (const key of Object.keys(env)) {
-      expect(HAPPIER_RUNTIME_CONTEXT_ENV_KEYS).toContain(key);
+      expect(PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS).toContain(key);
     }
-    expect(env).not.toHaveProperty('HAPPIER_ACCESS_TOKEN');
+    expect(env).not.toHaveProperty('PIGGERCODE_ACCESS_TOKEN');
   });
 });

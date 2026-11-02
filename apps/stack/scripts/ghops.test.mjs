@@ -132,7 +132,7 @@ if (process.env.GHOPS_TEST_SSH_FAIL === '1') {
 process.stdout.write(JSON.stringify({
   version: 1,
   ok: true,
-  credential: { HAPPIER_GITHUB_BOT_TOKEN: process.env.GHOPS_TEST_MAC_HOST_TOKEN },
+  credential: { PIGGERCODE_GITHUB_BOT_TOKEN: process.env.GHOPS_TEST_MAC_HOST_TOKEN },
 }) + '\\n');
 });
 `,
@@ -142,8 +142,8 @@ process.stdout.write(JSON.stringify({
   return {
     env: {
       PATH: `${dir}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
       GHOPS_TEST_MAC_HOST_TOKEN: token,
       GHOPS_TEST_SSH_LOG: sshLog,
     },
@@ -155,12 +155,12 @@ process.stdout.write(JSON.stringify({
 
 test('prints help without requiring a token', () => {
   const res = runGhop(['--help'], {
-    HAPPIER_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
     GH_TOKEN: '',
     GITHUB_TOKEN: '',
   });
   assert.equal(res.status, 0);
-  assert.match(res.stdout, /HAPPIER_GITHUB_BOT_TOKEN/);
+  assert.match(res.stdout, /PIGGERCODE_GITHUB_BOT_TOKEN/);
   assert.doesNotMatch(res.stdout, /\.project\//);
   assert.match(res.stdout, /\.happier\/local\/ghops\/gh/);
 });
@@ -170,8 +170,8 @@ test('forwards nested subcommand help to gh', () => {
   const { fakeGh } = createFakeBotAuthTools(dir);
 
   const res = runGhop(['issue', 'edit', '--help'], {
-    HAPPIER_GITHUB_BOT_TOKEN: 'nested-help-secret',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: 'nested-help-secret',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GHOPS_TEST_LOGIN: 'happier-bot',
   });
 
@@ -196,9 +196,9 @@ test('supports an explicitly selected bot-authenticated branch push without expo
     '--target',
     'refs/heads/pr-123',
   ], {
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
-    HAPPIER_GHOPS_GIT_PATH: fakeGit,
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GHOPS_GIT_PATH: fakeGit,
     GHOPS_TEST_GIT_LOG: gitLog,
     GHOPS_TEST_LOCAL_SHA: localSha,
   });
@@ -241,9 +241,9 @@ test('uses an exact force-with-lease when a bot rebase push is explicitly author
     '--force-with-lease',
     expectedRemoteSha,
   ], {
-    HAPPIER_GITHUB_BOT_TOKEN: 'rebase-push-secret',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
-    HAPPIER_GHOPS_GIT_PATH: fakeGit,
+    PIGGERCODE_GITHUB_BOT_TOKEN: 'rebase-push-secret',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GHOPS_GIT_PATH: fakeGit,
     GHOPS_TEST_GIT_LOG: gitLog,
     GHOPS_TEST_LOCAL_SHA: localSha,
   });
@@ -276,9 +276,9 @@ test('fails closed when an explicit bot push does not publish the intended commi
     '--target',
     'refs/heads/pr-123',
   ], {
-    HAPPIER_GITHUB_BOT_TOKEN: 'verification-secret',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
-    HAPPIER_GHOPS_GIT_PATH: fakeGit,
+    PIGGERCODE_GITHUB_BOT_TOKEN: 'verification-secret',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GHOPS_GIT_PATH: fakeGit,
     GHOPS_TEST_GIT_LOG: gitLog,
     GHOPS_TEST_LOCAL_SHA: intendedSha,
     GHOPS_TEST_REMOTE_SHA: observedSha,
@@ -295,14 +295,14 @@ test('fails closed when token is missing', () => {
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_STACK_STORAGE_DIR: join(dir, 'empty-stacks'),
-    HAPPIER_STACK_STACK: 'ghops-no-targets',
-    HAPPIER_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_STACK_STORAGE_DIR: join(dir, 'empty-stacks'),
+    PIGGERCODE_STACK_STACK: 'ghops-no-targets',
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
     GH_TOKEN: '',
     GITHUB_TOKEN: '',
   });
   assert.notEqual(res.status, 0);
-  assert.match(res.stderr, /HAPPIER_GITHUB_BOT_TOKEN/);
+  assert.match(res.stderr, /PIGGERCODE_GITHUB_BOT_TOKEN/);
 });
 
 test('uses the execution-host credential broker when the VM has no environment token', () => {
@@ -312,8 +312,8 @@ test('uses the execution-host credential broker when the VM has no environment t
 
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
     ...fixture.env,
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GH_TOKEN: 'personal-token-should-not-be-used',
     GITHUB_TOKEN: 'personal-token-should-not-be-used',
   });
@@ -346,9 +346,9 @@ test('keeps an explicit bot push on the authoritative checkout when the credenti
     'refs/heads/pr-123',
   ], {
     ...fixture.env,
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
-    HAPPIER_GHOPS_GIT_PATH: fakeGit,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GHOPS_GIT_PATH: fakeGit,
     GHOPS_TEST_GIT_LOG: gitLog,
     GHOPS_TEST_LOCAL_SHA: localSha,
   });
@@ -367,8 +367,8 @@ test('fails closed when the configured mac-host credential route is unavailable'
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
     ...fixture.env,
     GHOPS_TEST_SSH_FAIL: '1',
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GH_TOKEN: 'personal-token-should-not-be-used',
   });
 
@@ -383,8 +383,8 @@ test('rejects an ordinary command when the token belongs to a different GitHub i
   const token = 'wrong-command-user-secret';
 
   const res = runGhop(['issue', 'list'], {
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GHOPS_TEST_LOGIN: 'not-happier-bot',
   });
 
@@ -393,7 +393,7 @@ test('rejects an ordinary command when the token belongs to a different GitHub i
   assert.doesNotMatch(`${res.stdout}\n${res.stderr}`, new RegExp(token));
 });
 
-test('forwards args and forces gh auth via HAPPIER_GITHUB_BOT_TOKEN', () => {
+test('forwards args and forces gh auth via PIGGERCODE_GITHUB_BOT_TOKEN', () => {
   const dir = mkdtempSync(join(tmpdir(), 'ghops-test-'));
   const fakeGh = join(dir, 'fake-gh');
   const configDir = join(dir, 'gh-config');
@@ -423,9 +423,9 @@ process.stdout.write(JSON.stringify(payload));
 
   const token = 'test-bot-token';
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
-    HAPPIER_GHOPS_CONFIG_DIR: configDir,
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GHOPS_CONFIG_DIR: configDir,
     GH_TOKEN: 'personal-token-should-not-be-used',
     GH_HOST: 'attacker.invalid',
   });
@@ -472,9 +472,9 @@ process.stdout.write(JSON.stringify(payload));
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
     HOME: homeDir,
     USERPROFILE: homeDir,
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: '~/bin/fake-gh',
-    HAPPIER_GHOPS_CONFIG_DIR: '~/gh-config',
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: '~/bin/fake-gh',
+    PIGGERCODE_GHOPS_CONFIG_DIR: '~/gh-config',
   });
 
   assert.equal(res.status, 0, res.stderr);
@@ -491,13 +491,13 @@ test('falls back to the happier-bot macOS Keychain token when the environment ov
   const dir = mkdtempSync(join(tmpdir(), 'ghops-keychain-test-'));
   const { fakeGh, keychainStore } = createFakeBotAuthTools(dir);
   const keychainToken = 'keychain-bot-token';
-  writeFileSync(keychainStore, JSON.stringify({ HAPPIER_GITHUB_BOT_TOKEN: keychainToken }), 'utf8');
+  writeFileSync(keychainStore, JSON.stringify({ PIGGERCODE_GITHUB_BOT_TOKEN: keychainToken }), 'utf8');
 
   const res = runGhop(['api', 'repos/happier-dev/happier'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GH_TOKEN: 'personal-token-should-not-be-used',
     GITHUB_TOKEN: 'personal-token-should-not-be-used',
   });
@@ -517,13 +517,13 @@ test('auth store validates happier-bot before persisting and never prints the to
   const res = runGhop(['auth', 'store'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GHOPS_TEST_LOGIN: 'happier-bot',
   });
 
   assert.equal(res.status, 0, res.stderr);
-  assert.equal(JSON.parse(readFileSync(keychainStore, 'utf8')).HAPPIER_GITHUB_BOT_TOKEN, token);
+  assert.equal(JSON.parse(readFileSync(keychainStore, 'utf8')).PIGGERCODE_GITHUB_BOT_TOKEN, token);
   assert.doesNotMatch(`${res.stdout}\n${res.stderr}`, new RegExp(token));
   assert.match(res.stdout, /happier-bot/);
 });
@@ -538,8 +538,8 @@ test('auth store rejects a token for a different GitHub identity without persist
   const res = runGhop(['auth', 'store'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_GITHUB_BOT_TOKEN: token,
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: token,
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
     GHOPS_TEST_LOGIN: 'not-happier-bot',
   });
 
@@ -555,13 +555,13 @@ test('auth status reports the validated identity and credential source without p
   const dir = mkdtempSync(join(tmpdir(), 'ghops-status-test-'));
   const { fakeGh, keychainStore } = createFakeBotAuthTools(dir);
   const token = 'status-secret';
-  writeFileSync(keychainStore, JSON.stringify({ HAPPIER_GITHUB_BOT_TOKEN: token }), 'utf8');
+  writeFileSync(keychainStore, JSON.stringify({ PIGGERCODE_GITHUB_BOT_TOKEN: token }), 'utf8');
 
   const res = runGhop(['auth', 'status'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
   });
 
   assert.equal(res.status, 0, res.stderr);
@@ -575,13 +575,13 @@ test('auth clear removes only the stored Keychain token', {
 }, () => {
   const dir = mkdtempSync(join(tmpdir(), 'ghops-clear-test-'));
   const { fakeGh, keychainStore } = createFakeBotAuthTools(dir);
-  writeFileSync(keychainStore, JSON.stringify({ HAPPIER_GITHUB_BOT_TOKEN: 'clear-secret' }), 'utf8');
+  writeFileSync(keychainStore, JSON.stringify({ PIGGERCODE_GITHUB_BOT_TOKEN: 'clear-secret' }), 'utf8');
 
   const res = runGhop(['auth', 'clear'], {
     PATH: `${dir}:${process.env.PATH ?? ''}`,
     GHOPS_TEST_KEYCHAIN_STORE: keychainStore,
-    HAPPIER_GITHUB_BOT_TOKEN: '',
-    HAPPIER_GHOPS_GH_PATH: fakeGh,
+    PIGGERCODE_GITHUB_BOT_TOKEN: '',
+    PIGGERCODE_GHOPS_GH_PATH: fakeGh,
   });
 
   assert.equal(res.status, 0, res.stderr);

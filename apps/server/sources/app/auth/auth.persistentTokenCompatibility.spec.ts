@@ -27,7 +27,7 @@ describe("auth persistent token compatibility", () => {
             HANDY_MASTER_SECRET: MASTER_SECRET,
             AUTH_TOKEN_CACHE_MAX_ENTRIES: "0",
             // This retired setting must not be able to disable the read path.
-            HAPPIER_AUTH_SEED_COMPAT_ATTEMPTS: "1",
+            PIGGERCODE_AUTH_SEED_COMPAT_ATTEMPTS: "1",
         });
 
         const [{ auth }, privacyKit] = await Promise.all([

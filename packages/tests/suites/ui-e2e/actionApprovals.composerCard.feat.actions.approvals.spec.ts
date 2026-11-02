@@ -84,10 +84,10 @@ test.describe('ui e2e: action approvals (composer card)', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-action-approvals-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
-      HAPPIER_E2E_UI_WEB_NO_DEV: '0',
-      HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_BASE_URL_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_NO_DEV: '0',
+      PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_BASE_URL_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -96,8 +96,8 @@ test.describe('ui e2e: action approvals (composer card)', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -140,11 +140,11 @@ test.describe('ui e2e: action approvals (composer card)', () => {
         uiBaseUrl,
         extraEnv: {
           HOME: cliHomeDir,
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'permission-prompt-write',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(testDir, 'fake-claude.jsonl')),
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'permission-prompt-write',
         },
       });
 

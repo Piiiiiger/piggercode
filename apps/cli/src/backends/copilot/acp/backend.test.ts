@@ -5,8 +5,8 @@ import { join } from 'node:path';
 
 describe('copilot/acp/backend', () => {
   it('fails closed when the Copilot CLI is unavailable', async () => {
-    vi.stubEnv('HAPPIER_COPILOT_PATH', undefined);
-    vi.stubEnv('HAPPIER_HOME_DIR', await mkdtemp(join(tmpdir(), 'happier-copilot-home-')));
+    vi.stubEnv('PIGGERCODE_COPILOT_PATH', undefined);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', await mkdtemp(join(tmpdir(), 'happier-copilot-home-')));
     vi.stubEnv('PATH', '');
 
     const mod = await import('./backend');
@@ -24,8 +24,8 @@ describe('copilot/acp/backend', () => {
     const fake = join(dir, 'copilot');
     await writeFile(fake, '#!/bin/sh\necho hi\n', 'utf8');
     await chmod(fake, 0o755);
-    vi.stubEnv('HAPPIER_COPILOT_PATH', fake);
-    vi.stubEnv('HAPPIER_HOME_DIR', await mkdtemp(join(tmpdir(), 'happier-copilot-home-')));
+    vi.stubEnv('PIGGERCODE_COPILOT_PATH', fake);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', await mkdtemp(join(tmpdir(), 'happier-copilot-home-')));
     vi.stubEnv('PATH', '');
 
     const mod = await import('./backend');
@@ -53,13 +53,13 @@ describe('copilot/acp/backend', () => {
     });
   });
 
-  it('uses HAPPIER_COPILOT_PATH when it points to an executable', async () => {
+  it('uses PIGGERCODE_COPILOT_PATH when it points to an executable', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'happier-copilot-path-'));
     const fake = join(dir, 'copilot');
     try {
       await writeFile(fake, '#!/bin/sh\necho hi\n', 'utf8');
       await chmod(fake, 0o755);
-      vi.stubEnv('HAPPIER_COPILOT_PATH', fake);
+      vi.stubEnv('PIGGERCODE_COPILOT_PATH', fake);
 
       const mod = await import('./backend');
       const opts = mod.buildCopilotAcpBackendOptions({ cwd: dir, env: {} });
@@ -75,7 +75,7 @@ describe('copilot/acp/backend', () => {
     try {
       await writeFile(fake, '#!/bin/sh\necho hi\n', 'utf8');
       await chmod(fake, 0o755);
-      vi.stubEnv('HAPPIER_COPILOT_PATH', undefined);
+      vi.stubEnv('PIGGERCODE_COPILOT_PATH', undefined);
       vi.stubEnv('PATH', '');
 
       const mod = await import('./backend');

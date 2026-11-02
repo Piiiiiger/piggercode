@@ -26,12 +26,12 @@ if [[ -z "$PLUGIN_DIR" ]]; then
 fi
 mkdir -p "$PLUGIN_DIR"
 
-PLUGIN_BASENAME="${HAPPIER_STACK_SWIFTBAR_PLUGIN_BASENAME:-hstack}"
+PLUGIN_BASENAME="${PIGGERCODE_STACK_SWIFTBAR_PLUGIN_BASENAME:-hstack}"
 TARGET="$PLUGIN_DIR/${PLUGIN_BASENAME}.${INTERVAL}.sh"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-hstack_ROOT_DIR="${HAPPIER_STACK_CLI_ROOT_DIR:-$DEFAULT_ROOT_DIR}"
+hstack_ROOT_DIR="${PIGGERCODE_STACK_CLI_ROOT_DIR:-$DEFAULT_ROOT_DIR}"
 SOURCE="${hstack_ROOT_DIR}/extras/swiftbar/hstack.5s.sh"
 
 # If a plugin already exists, rename it into place; otherwise copy from repo source.

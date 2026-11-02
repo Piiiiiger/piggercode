@@ -13,7 +13,7 @@ test('resolveServerShutdownGraceMs gives the server deadline plus bounded proces
   assert.equal(resolveServerShutdownGraceMs({}), 5_250);
 
   assert.equal(
-    resolveServerShutdownGraceMs({ HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: ' 1200ms ' }),
+    resolveServerShutdownGraceMs({ PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: ' 1200ms ' }),
     1_450,
   );
 });
@@ -22,7 +22,7 @@ test('resolveServerShutdownGraceMs falls back for absent, invalid, and nonpositi
   for (const configured of [undefined, '', '   ', 'not-a-number', '0', '-20']) {
     const env = configured === undefined
       ? {}
-      : { HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: configured };
+      : { PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: configured };
 
     assert.equal(resolveServerShutdownGraceMs(env), 5_250, `configured=${String(configured)}`);
   }

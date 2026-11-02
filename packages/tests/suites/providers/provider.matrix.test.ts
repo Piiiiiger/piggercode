@@ -6,33 +6,33 @@ describe('providers: contract matrix (harness)', () => {
   const providerEnvVars = [
     // Extended provider matrix runs can exceed 20 minutes under parallel load for large ACP suites.
     // Keep timeouts realistic so we fail on real regressions, not harness wall-clock limits.
-    { id: 'opencode', envVar: 'HAPPIER_E2E_PROVIDER_OPENCODE', timeoutMs: 2_400_000 },
-    { id: 'opencode_server', envVar: 'HAPPIER_E2E_PROVIDER_OPENCODE_SERVER', timeoutMs: 2_400_000 },
-    { id: 'claude', envVar: 'HAPPIER_E2E_PROVIDER_CLAUDE', timeoutMs: 1_800_000 },
+    { id: 'opencode', envVar: 'PIGGERCODE_E2E_PROVIDER_OPENCODE', timeoutMs: 2_400_000 },
+    { id: 'opencode_server', envVar: 'PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER', timeoutMs: 2_400_000 },
+    { id: 'claude', envVar: 'PIGGERCODE_E2E_PROVIDER_CLAUDE', timeoutMs: 1_800_000 },
     // Codex extended runs include many ACP scenarios and can legitimately exceed 40 minutes on
     // loaded developer machines; keep this higher to avoid false timeout failures.
-    { id: 'codex', envVar: 'HAPPIER_E2E_PROVIDER_CODEX', timeoutMs: 4_800_000 },
+    { id: 'codex', envVar: 'PIGGERCODE_E2E_PROVIDER_CODEX', timeoutMs: 4_800_000 },
     // Deterministic ACP stub for exercising in-flight steer without real credentials.
-    { id: 'codex_acp_stub', envVar: 'HAPPIER_E2E_PROVIDER_CODEX_ACP_STUB', timeoutMs: 900_000 },
+    { id: 'codex_acp_stub', envVar: 'PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB', timeoutMs: 900_000 },
     // Deterministic Cursor ACP stub for Cursor-only config alias and extension UX parity.
-    { id: 'cursor_acp_stub', envVar: 'HAPPIER_E2E_PROVIDER_CURSOR_ACP_STUB', timeoutMs: 900_000 },
-    { id: 'grok_acp_stub', envVar: 'HAPPIER_E2E_PROVIDER_GROK_ACP_STUB', timeoutMs: 900_000 },
-    { id: 'kilo', envVar: 'HAPPIER_E2E_PROVIDER_KILO', timeoutMs: 2_400_000 },
-    { id: 'gemini', envVar: 'HAPPIER_E2E_PROVIDER_GEMINI', timeoutMs: 2_400_000 },
-    { id: 'qwen', envVar: 'HAPPIER_E2E_PROVIDER_QWEN', timeoutMs: 1_200_000 },
-    { id: 'kimi', envVar: 'HAPPIER_E2E_PROVIDER_KIMI', timeoutMs: 1_200_000 },
-    { id: 'devin', envVar: 'HAPPIER_E2E_PROVIDER_DEVIN', timeoutMs: 1_200_000 },
-    { id: 'auggie', envVar: 'HAPPIER_E2E_PROVIDER_AUGGIE', timeoutMs: 1_200_000 },
-    { id: 'pi', envVar: 'HAPPIER_E2E_PROVIDER_PI', timeoutMs: 1_200_000 },
-    { id: 'cursor', envVar: 'HAPPIER_E2E_PROVIDER_CURSOR', timeoutMs: 2_400_000 },
-    { id: 'grok', envVar: 'HAPPIER_E2E_PROVIDER_GROK', timeoutMs: 2_400_000 },
-    { id: 'agy', envVar: 'HAPPIER_E2E_PROVIDER_AGY', timeoutMs: 1_200_000 },
-    { id: 'fx', envVar: 'HAPPIER_E2E_PROVIDER_FX', timeoutMs: 1_200_000 },
-    { id: 'droid', envVar: 'HAPPIER_E2E_PROVIDER_DROID', timeoutMs: 1_200_000 },
-    { id: 'codebuddy', envVar: 'HAPPIER_E2E_PROVIDER_CODEBUDDY', timeoutMs: 1_200_000 },
+    { id: 'cursor_acp_stub', envVar: 'PIGGERCODE_E2E_PROVIDER_CURSOR_ACP_STUB', timeoutMs: 900_000 },
+    { id: 'grok_acp_stub', envVar: 'PIGGERCODE_E2E_PROVIDER_GROK_ACP_STUB', timeoutMs: 900_000 },
+    { id: 'kilo', envVar: 'PIGGERCODE_E2E_PROVIDER_KILO', timeoutMs: 2_400_000 },
+    { id: 'gemini', envVar: 'PIGGERCODE_E2E_PROVIDER_GEMINI', timeoutMs: 2_400_000 },
+    { id: 'qwen', envVar: 'PIGGERCODE_E2E_PROVIDER_QWEN', timeoutMs: 1_200_000 },
+    { id: 'kimi', envVar: 'PIGGERCODE_E2E_PROVIDER_KIMI', timeoutMs: 1_200_000 },
+    { id: 'devin', envVar: 'PIGGERCODE_E2E_PROVIDER_DEVIN', timeoutMs: 1_200_000 },
+    { id: 'auggie', envVar: 'PIGGERCODE_E2E_PROVIDER_AUGGIE', timeoutMs: 1_200_000 },
+    { id: 'pi', envVar: 'PIGGERCODE_E2E_PROVIDER_PI', timeoutMs: 1_200_000 },
+    { id: 'cursor', envVar: 'PIGGERCODE_E2E_PROVIDER_CURSOR', timeoutMs: 2_400_000 },
+    { id: 'grok', envVar: 'PIGGERCODE_E2E_PROVIDER_GROK', timeoutMs: 2_400_000 },
+    { id: 'agy', envVar: 'PIGGERCODE_E2E_PROVIDER_AGY', timeoutMs: 1_200_000 },
+    { id: 'fx', envVar: 'PIGGERCODE_E2E_PROVIDER_FX', timeoutMs: 1_200_000 },
+    { id: 'droid', envVar: 'PIGGERCODE_E2E_PROVIDER_DROID', timeoutMs: 1_200_000 },
+    { id: 'codebuddy', envVar: 'PIGGERCODE_E2E_PROVIDER_CODEBUDDY', timeoutMs: 1_200_000 },
   ] as const;
 
-  const providersEnabled = (process.env.HAPPIER_E2E_PROVIDERS ?? '').toString().trim() === '1';
+  const providersEnabled = (process.env.PIGGERCODE_E2E_PROVIDERS ?? '').toString().trim() === '1';
   const disabledTimeoutMs = Math.max(...providerEnvVars.map((p) => p.timeoutMs));
 
   it('includes provider-specific ACP integrations in the opt-in provider matrix', () => {

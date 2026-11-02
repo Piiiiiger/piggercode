@@ -19,7 +19,7 @@ test('withCliDistBuildLock passes its current owner lease to the real buildShare
           async () => 'nested',
           {
             lockPath,
-            env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
+            env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
             timeoutMs: 60,
             pollIntervalMs: 10,
             staleAfterMs: 1_000,
@@ -50,7 +50,7 @@ test('the real buildSharedDeps lock owner rejects a path-only inherited marker',
             async () => 'nested',
             {
               lockPath,
-              env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: lockPath },
+              env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: lockPath },
               timeoutMs: 60,
               pollIntervalMs: 10,
               staleAfterMs: 1_000,
@@ -83,7 +83,7 @@ test('the real buildSharedDeps lock owner rejects a foreign token for the curren
             async () => 'nested',
             {
               lockPath,
-              env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: foreignLease },
+              env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: foreignLease },
               timeoutMs: 60,
               pollIntervalMs: 10,
               staleAfterMs: 1_000,
@@ -120,7 +120,7 @@ test('the real buildSharedDeps lock owner rejects a stale lease after a successo
             async () => 'nested',
             {
               lockPath,
-              env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: staleLease },
+              env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: staleLease },
               timeoutMs: 60,
               pollIntervalMs: 10,
               staleAfterMs: 1_000,

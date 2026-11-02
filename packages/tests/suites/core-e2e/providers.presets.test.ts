@@ -10,14 +10,14 @@ describe('providers: run presets', () => {
 
   it('enables expected provider env toggles per preset and tier', () => {
     const providerFlags = [
-      'HAPPIER_E2E_PROVIDER_CLAUDE',
-      'HAPPIER_E2E_PROVIDER_OPENCODE',
-      'HAPPIER_E2E_PROVIDER_CODEX',
-      'HAPPIER_E2E_PROVIDER_KILO',
-      'HAPPIER_E2E_PROVIDER_GEMINI',
-      'HAPPIER_E2E_PROVIDER_QWEN',
-      'HAPPIER_E2E_PROVIDER_KIMI',
-      'HAPPIER_E2E_PROVIDER_AUGGIE',
+      'PIGGERCODE_E2E_PROVIDER_CLAUDE',
+      'PIGGERCODE_E2E_PROVIDER_OPENCODE',
+      'PIGGERCODE_E2E_PROVIDER_CODEX',
+      'PIGGERCODE_E2E_PROVIDER_KILO',
+      'PIGGERCODE_E2E_PROVIDER_GEMINI',
+      'PIGGERCODE_E2E_PROVIDER_QWEN',
+      'PIGGERCODE_E2E_PROVIDER_KIMI',
+      'PIGGERCODE_E2E_PROVIDER_AUGGIE',
     ] as const;
 
     const cases: Array<{
@@ -25,26 +25,26 @@ describe('providers: run presets', () => {
       tier: Parameters<typeof resolveProviderRunPreset>[1];
       enabledFlags: readonly (typeof providerFlags)[number][];
     }> = [
-      { provider: 'opencode', tier: 'smoke', enabledFlags: ['HAPPIER_E2E_PROVIDER_OPENCODE'] },
-      { provider: 'claude', tier: 'extended', enabledFlags: ['HAPPIER_E2E_PROVIDER_CLAUDE'] },
-      { provider: 'codex', tier: 'extended', enabledFlags: ['HAPPIER_E2E_PROVIDER_CODEX'] },
-      { provider: 'kilo', tier: 'extended', enabledFlags: ['HAPPIER_E2E_PROVIDER_KILO'] },
-      { provider: 'gemini', tier: 'extended', enabledFlags: ['HAPPIER_E2E_PROVIDER_GEMINI'] },
-      { provider: 'qwen', tier: 'smoke', enabledFlags: ['HAPPIER_E2E_PROVIDER_QWEN'] },
-      { provider: 'kimi', tier: 'extended', enabledFlags: ['HAPPIER_E2E_PROVIDER_KIMI'] },
-      { provider: 'auggie', tier: 'smoke', enabledFlags: ['HAPPIER_E2E_PROVIDER_AUGGIE'] },
+      { provider: 'opencode', tier: 'smoke', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_OPENCODE'] },
+      { provider: 'claude', tier: 'extended', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_CLAUDE'] },
+      { provider: 'codex', tier: 'extended', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_CODEX'] },
+      { provider: 'kilo', tier: 'extended', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_KILO'] },
+      { provider: 'gemini', tier: 'extended', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_GEMINI'] },
+      { provider: 'qwen', tier: 'smoke', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_QWEN'] },
+      { provider: 'kimi', tier: 'extended', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_KIMI'] },
+      { provider: 'auggie', tier: 'smoke', enabledFlags: ['PIGGERCODE_E2E_PROVIDER_AUGGIE'] },
       {
         provider: 'all',
         tier: 'smoke',
         enabledFlags: [
-          'HAPPIER_E2E_PROVIDER_CLAUDE',
-          'HAPPIER_E2E_PROVIDER_OPENCODE',
-          'HAPPIER_E2E_PROVIDER_CODEX',
-          'HAPPIER_E2E_PROVIDER_KILO',
-          'HAPPIER_E2E_PROVIDER_GEMINI',
-          'HAPPIER_E2E_PROVIDER_QWEN',
-          'HAPPIER_E2E_PROVIDER_KIMI',
-          'HAPPIER_E2E_PROVIDER_AUGGIE',
+          'PIGGERCODE_E2E_PROVIDER_CLAUDE',
+          'PIGGERCODE_E2E_PROVIDER_OPENCODE',
+          'PIGGERCODE_E2E_PROVIDER_CODEX',
+          'PIGGERCODE_E2E_PROVIDER_KILO',
+          'PIGGERCODE_E2E_PROVIDER_GEMINI',
+          'PIGGERCODE_E2E_PROVIDER_QWEN',
+          'PIGGERCODE_E2E_PROVIDER_KIMI',
+          'PIGGERCODE_E2E_PROVIDER_AUGGIE',
         ],
       },
     ];
@@ -53,8 +53,8 @@ describe('providers: run presets', () => {
       const preset = resolveProviderRunPreset(testCase.provider, testCase.tier);
       expect(preset).not.toBeNull();
       if (!preset) continue;
-      expect(preset.env.HAPPIER_E2E_PROVIDERS).toBe('1');
-      expect(preset.env.HAPPIER_E2E_PROVIDER_SCENARIO_TIER).toBe(testCase.tier);
+      expect(preset.env.PIGGERCODE_E2E_PROVIDERS).toBe('1');
+      expect(preset.env.PIGGERCODE_E2E_PROVIDER_SCENARIO_TIER).toBe(testCase.tier);
       for (const flag of providerFlags) {
         if (testCase.enabledFlags.includes(flag)) {
           expect(preset.env[flag]).toBe('1');

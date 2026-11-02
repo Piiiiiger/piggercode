@@ -15,14 +15,14 @@ function parsePositiveInt(raw) {
 }
 
 export function resolveVitestShardCount(env, configPath = null) {
-  const override = parsePositiveInt(env?.HAPPIER_CLI_VITEST_SHARDS);
+  const override = parsePositiveInt(env?.PIGGERCODE_CLI_VITEST_SHARDS);
   if (override !== null) return override;
   return typeof configPath === 'string' && basename(configPath) === 'vitest.config.ts' ? 64 : 8;
 }
 
 export function resolveVitestMaxWorkers(env, configPath = null) {
   if (typeof configPath !== 'string' || basename(configPath) !== 'vitest.config.ts') return null;
-  return parsePositiveInt(env?.HAPPIER_CLI_VITEST_MAX_WORKERS) ?? 2;
+  return parsePositiveInt(env?.PIGGERCODE_CLI_VITEST_MAX_WORKERS) ?? 2;
 }
 
 export function resolveVitestWorkerArgs(env, configPath = null) {
@@ -31,8 +31,8 @@ export function resolveVitestWorkerArgs(env, configPath = null) {
 }
 
 export function resolveVitestShardRange(env, shardCount) {
-  const part = parsePositiveInt(env?.HAPPIER_CLI_VITEST_PART);
-  const parts = parsePositiveInt(env?.HAPPIER_CLI_VITEST_PARTS);
+  const part = parsePositiveInt(env?.PIGGERCODE_CLI_VITEST_PART);
+  const parts = parsePositiveInt(env?.PIGGERCODE_CLI_VITEST_PARTS);
   if (part === null || parts === null || part > parts || parts > shardCount) {
     return { start: 1, end: shardCount, part: 1, parts: 1 };
   }
@@ -134,7 +134,7 @@ function spawnVitest({ args, nodeOptions }) {
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
   });
 }
 

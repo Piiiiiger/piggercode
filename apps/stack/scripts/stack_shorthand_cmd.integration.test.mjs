@@ -25,9 +25,9 @@ test('hstack <stack> <cmd> ... rewrites to hstack stack <cmd> <stack> ... when s
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
   };
 
   const res = await runNodeCapture([join(rootDir, 'bin', 'hstack.mjs'), stackName, 'env', 'path', '--json'], {
@@ -60,9 +60,9 @@ test('hstack does not rewrite shorthand when stack does not exist', async (t) =>
 
   const baseEnv = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
   };
 
   const res = await runNodeCapture([join(rootDir, 'bin', 'hstack.mjs'), 'missing-stack', 'env', 'path', '--json'], {

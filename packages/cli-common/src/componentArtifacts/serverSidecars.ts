@@ -92,7 +92,7 @@ export async function resolveServerBinarySidecarEntries({
   repoRoot,
   target,
   serverComponent = 'happier-server-light',
-  buildDbProviders = String(process.env.HAPPIER_BUILD_DB_PROVIDERS ?? process.env.HAPPY_BUILD_DB_PROVIDERS ?? 'all').trim() || 'all',
+  buildDbProviders = String(process.env.PIGGERCODE_BUILD_DB_PROVIDERS ?? process.env.HAPPY_BUILD_DB_PROVIDERS ?? 'all').trim() || 'all',
   env = process.env,
   runCommand = execOrThrow,
   commandProbe = commandExists,
@@ -114,7 +114,7 @@ export async function resolveServerBinarySidecarEntries({
       cwd: repoRoot,
       env: {
         ...env,
-        HAPPIER_BUILD_DB_PROVIDERS: requestedBuildDbProviders,
+        PIGGERCODE_BUILD_DB_PROVIDERS: requestedBuildDbProviders,
         HAPPY_BUILD_DB_PROVIDERS: requestedBuildDbProviders,
       },
     },

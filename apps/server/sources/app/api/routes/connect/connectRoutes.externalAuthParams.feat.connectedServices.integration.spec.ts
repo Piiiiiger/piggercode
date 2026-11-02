@@ -132,10 +132,10 @@ describe("connectRoutes (external auth params)", () => {
 
     it("rejects keyless auth params when server storagePolicy=required_e2ee", async () => {
         applyGithubExternalAuthParamsEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
             AUTH_SIGNUP_PROVIDERS: undefined,
         });
 
@@ -156,11 +156,11 @@ describe("connectRoutes (external auth params)", () => {
 
     it("rejects keyless auth params when proofHash is not a sha256 hex string", async () => {
         applyGithubExternalAuthParamsEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
             AUTH_SIGNUP_PROVIDERS: undefined,
         });
 

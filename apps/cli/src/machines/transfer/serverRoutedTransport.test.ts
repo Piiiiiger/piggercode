@@ -88,10 +88,10 @@ function createLoopbackChannels(options?: Readonly<{
 
 describe('server routed machine transfer', () => {
   afterEach(() => {
-    delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES;
-    delete process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES;
-    delete process.env.HAPPIER_FILES_READ_MAX_BYTES;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES;
+    delete process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES;
+    delete process.env.PIGGERCODE_FILES_READ_MAX_BYTES;
   });
 
   it('keeps the request surface file-backed (no whole-buffer requestServerRoutedTransferPayload export)', async () => {
@@ -106,7 +106,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed for oversized/unserializable request openBody without JSON.stringify and does not leak .part files', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '32';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '32';
 
     const openBody: any = {};
     openBody.self = openBody; // circular
@@ -136,7 +136,7 @@ describe('server routed machine transfer', () => {
     } finally {
       stringifySpy.mockRestore();
       await rm(tempDir, { recursive: true, force: true }).catch(() => undefined);
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES;
     }
   });
 
@@ -175,7 +175,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('hard-clamps the server routed open payload limit even when the env override is huge', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '1048576';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '1048576';
 
     const openBody = {
       payload: 'x'.repeat(80_000),
@@ -200,14 +200,14 @@ describe('server routed machine transfer', () => {
       expect(sentEnvelopes).toHaveLength(0);
     } finally {
       await rm(tempDir, { recursive: true, force: true }).catch(() => undefined);
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES;
     }
   });
 
   it('hard-clamps the server routed chunk-bytes env override to a bounded ceiling', async () => {
     // Intentionally larger than the hard max. This must be clamped to avoid huge per-chunk allocations.
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '10000000';
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '50000000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '10000000';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '50000000';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-server-routed-transfer-chunk-bytes-'));
     const sourcePath = join(tempDir, 'payload.bin');
@@ -278,12 +278,12 @@ describe('server routed machine transfer', () => {
 
     expect(resolveInMemoryTransferMaxBytes({
       ...process.env,
-      HAPPIER_FILES_READ_MAX_BYTES: String(IN_MEMORY_TRANSFER_HARD_MAX_BYTES * 10),
+      PIGGERCODE_FILES_READ_MAX_BYTES: String(IN_MEMORY_TRANSFER_HARD_MAX_BYTES * 10),
     })).toBe(IN_MEMORY_TRANSFER_HARD_MAX_BYTES);
   });
 
   it('drops responder state and disposes payload sources when the recipient never acks (responder timeout)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
 
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const payload = Buffer.from('timeout-dispose-payload', 'utf8');
@@ -343,8 +343,8 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed before loading a payload source when the server-routed responder active-transfer budget is exceeded', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '100';
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS = '1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '100';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS = '1';
 
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const payload = Buffer.from('payload', 'utf8');
@@ -402,8 +402,8 @@ describe('server routed machine transfer', () => {
       expect(loadSpy.mock.calls.map((call) => call[0]?.transferId)).toEqual(['transfer_1']);
     } finally {
       unregister();
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_MAX_ACTIVE_TRANSFERS;
     }
   });
 
@@ -452,7 +452,7 @@ describe('server routed machine transfer', () => {
   });
 
 	  it('fails closed before streaming when an oversized in-memory buffer payload source is served via server-routed responder', async () => {
-	    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+	    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
 	    const { source, target, sentEnvelopes } = createLoopbackChannels();
 	    const payload = Buffer.from('handoff-payload-buffer-'.repeat(16), 'utf8');
@@ -610,7 +610,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed before loading the payload when the open envelope includes an oversized open payload', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
     const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
@@ -658,7 +658,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed before decoding when a sender pads openPayloadBase64 beyond the encoded envelope bound', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
     const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
@@ -707,9 +707,9 @@ describe('server routed machine transfer', () => {
   });
 
   it('decodes openPayloadBase64 and passes it to loadTransferPayloadSource', async () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '1024';
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '1000';
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '1024';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '1024';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '1000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '1024';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
     const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
@@ -882,7 +882,7 @@ describe('server routed machine transfer', () => {
 
   it('streams a payload directly to a destination file with verified manifest metadata', async () => {
     // File-backed transfers must not be constrained by the small-only in-memory transfer cap.
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
     const { source, target } = createLoopbackChannels();
     const payload = Buffer.from('handoff-payload-file-'.repeat(64), 'utf8');
@@ -928,9 +928,9 @@ describe('server routed machine transfer', () => {
   });
 
   it('streams file-backed transfers when the configured chunk-bytes value is smaller than the encrypted data-key envelope', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
     // Keep the in-memory max-bytes cap tiny to ensure we do not rely on whole-buffer paths.
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
     const { source, target } = createLoopbackChannels();
     const payload = Buffer.from('handoff-payload-tiny-chunks-'.repeat(4), 'utf8');
@@ -976,7 +976,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed before decrypting when a file-backed server-routed transfer chunk envelope exceeds the configured per-chunk envelope bound', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
 
     const { source, target } = createLoopbackChannels();
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-server-routed-transfer-oversized-chunk-'));
@@ -1044,7 +1044,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('uses the configured transfer timeout while waiting for a source payload', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
     const { target } = createLoopbackChannels();
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-server-routed-transfer-timeout-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -1064,10 +1064,10 @@ describe('server routed machine transfer', () => {
   });
 
   it('respects timeout env overrides above the default (within the hard clamp)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '300000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '300000';
     const { resolveServerRoutedTransferTimeoutMs } = await import('./serverRoutedTransport');
     expect(resolveServerRoutedTransferTimeoutMs()).toBe(300_000);
-    delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
   });
 
   it('hard-clamps oversized timeout env overrides and still cleans up responder state on timeout', async () => {
@@ -1087,7 +1087,7 @@ describe('server routed machine transfer', () => {
     }) as typeof setTimeout);
 
     try {
-      process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = String(Number.MAX_SAFE_INTEGER);
+      process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = String(Number.MAX_SAFE_INTEGER);
 
       const { source, target, sentEnvelopes } = createLoopbackChannels();
       const payload = Buffer.from('timeout-clamp-payload', 'utf8');
@@ -1144,12 +1144,12 @@ describe('server routed machine transfer', () => {
       }
     } finally {
       setTimeoutSpy.mockRestore();
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
     }
   });
 
   it('closes and cleans up file-backed sinks when a server-routed transfer times out', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '5';
     const { target } = createLoopbackChannels();
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-server-routed-transfer-timeout-sink-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -1214,7 +1214,7 @@ describe('server routed machine transfer', () => {
   it('treats the configured timeout as inactivity rather than absolute wall-clock duration while chunks keep flowing', async () => {
     // Keep this comfortably above typical CI/dev event-loop jitter; the contract we care about is
     // that chunk activity keeps the transfer alive, not that timers fire at exact millisecond marks.
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '120';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '120';
     const { source, target } = createLoopbackChannels({
       sourceToTargetDeliveryDelayMs: 20,
     });
@@ -1260,7 +1260,7 @@ describe('server routed machine transfer', () => {
 
     // Simulate a config/version mismatch: the responder captures the max-bytes policy at registration
     // time, while the recipient can enforce a stricter bound mid-transfer.
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = String(payload.length * 10);
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = String(payload.length * 10);
     const unregister = registerServerRoutedTransferResponder({
       machineTransferChannel: source,
       loadTransferPayloadSource: ({ transferId }) => (
@@ -1272,7 +1272,7 @@ describe('server routed machine transfer', () => {
     });
 
     // Make the recipient reject the first chunk after the responder has already accepted the transfer.
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '1';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '1';
 
     try {
       await expect(
@@ -1327,7 +1327,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed when the server-routed transfer exceeds the configured max-bytes policy', async () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
     const { source, target } = createLoopbackChannels();
     const payload = Buffer.from('handoff-payload', 'utf8');
 
@@ -1362,7 +1362,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed when the transfer payload exceeds the in-memory max-bytes limit', async () => {
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
     const { source, target } = createLoopbackChannels();
     const payload = Buffer.from('handoff-payload', 'utf8'); // > 8 bytes
 
@@ -1397,7 +1397,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed and cleans up file-backed sinks before finalizing when a file-backed request exceeds the configured max-bytes policy', async () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
     const { source, target } = createLoopbackChannels();
     const fullPayload = Buffer.from('payload-too-large', 'utf8');
 
@@ -1493,8 +1493,8 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed on server max-bytes before decrypting a chunk that would exceed the limit (prevents crypto work on guaranteed-oversize payloads)', async () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '256';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '256';
 
     type Listener = (payload: MachineTransferReceiveEnvelope) => void;
     const listeners = new Set<Listener>();
@@ -1554,12 +1554,12 @@ describe('server routed machine transfer', () => {
       await expect(readdir(tempDir)).resolves.toEqual([]);
     } finally {
       await rm(tempDir, { recursive: true, force: true }).catch(() => undefined);
-      delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES;
+      delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES;
     }
   });
 
   it('fails closed before decrypting when a source sends an oversized data-key envelope for a server-routed transfer request', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
 
     type Listener = (payload: MachineTransferReceiveEnvelope) => void;
     const listeners = new Set<Listener>();
@@ -1611,7 +1611,7 @@ describe('server routed machine transfer', () => {
   });
 
   it('fails closed before decrypting when a source pads payloadBase64 beyond the encoded envelope bound', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_CHUNK_BYTES = '8';
 
     type Listener = (payload: MachineTransferReceiveEnvelope) => void;
     const listeners = new Set<Listener>();

@@ -3,7 +3,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 describe('configuration socket transports', () => {
-  const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SOCKET_FORCE_WEBSOCKET', 'HAPPIER_SOCKET_TRANSPORTS'] as const;
+  const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SOCKET_FORCE_WEBSOCKET', 'PIGGERCODE_SOCKET_TRANSPORTS'] as const;
   let envScope = createEnvKeyScope(envKeys);
   const tempDirs: string[] = [];
 
@@ -20,33 +20,33 @@ describe('configuration socket transports', () => {
   it('defaults to polling-first transports (upgrade to websocket when available)', async () => {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_SOCKET_FORCE_WEBSOCKET;
-    delete process.env.HAPPIER_SOCKET_TRANSPORTS;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_SOCKET_FORCE_WEBSOCKET;
+    delete process.env.PIGGERCODE_SOCKET_TRANSPORTS;
 
     const configMod = await import('./configuration');
     configMod.reloadConfiguration();
     expect(configMod.configuration.socketIoTransports).toEqual(['polling', 'websocket']);
   });
 
-  it('forces websocket-only when HAPPIER_SOCKET_FORCE_WEBSOCKET is enabled', async () => {
+  it('forces websocket-only when PIGGERCODE_SOCKET_FORCE_WEBSOCKET is enabled', async () => {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SOCKET_FORCE_WEBSOCKET = '1';
-    delete process.env.HAPPIER_SOCKET_TRANSPORTS;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SOCKET_FORCE_WEBSOCKET = '1';
+    delete process.env.PIGGERCODE_SOCKET_TRANSPORTS;
 
     const configMod = await import('./configuration');
     configMod.reloadConfiguration();
     expect(configMod.configuration.socketIoTransports).toEqual(['websocket']);
   });
 
-  it('respects explicit HAPPIER_SOCKET_TRANSPORTS ordering and filters invalid values', async () => {
+  it('respects explicit PIGGERCODE_SOCKET_TRANSPORTS ordering and filters invalid values', async () => {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SOCKET_TRANSPORTS = 'polling, websocket, nope, polling';
-    delete process.env.HAPPIER_SOCKET_FORCE_WEBSOCKET;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SOCKET_TRANSPORTS = 'polling, websocket, nope, polling';
+    delete process.env.PIGGERCODE_SOCKET_FORCE_WEBSOCKET;
 
     const configMod = await import('./configuration');
     configMod.reloadConfiguration();

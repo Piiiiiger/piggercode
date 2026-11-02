@@ -343,7 +343,7 @@ describe('core e2e: cli dist build', () => {
     const { resolveCliTestLaunchSpec } = await import('../../src/testkit/process/cliLaunchSpec');
 
     const launchSpec = await resolveCliTestLaunchSpec(
-      { testDir: repoRoot, env: { ...process.env, CI: '1', HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1' } },
+      { testDir: repoRoot, env: { ...process.env, CI: '1', PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1' } },
       {
         repoRoot,
         runCommand,

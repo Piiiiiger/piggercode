@@ -18,8 +18,8 @@ describe('configuration pending queue', () => {
   it('does not expose a periodic Pending wake poll even when the obsolete env is set', async () => {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_PENDING_QUEUE_IDLE_WAKE_POLL_INTERVAL_MS = '60000';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_PENDING_QUEUE_IDLE_WAKE_POLL_INTERVAL_MS = '60000';
 
     const configMod = await import('./configuration');
     configMod.reloadConfiguration();

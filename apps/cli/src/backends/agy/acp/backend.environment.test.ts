@@ -30,7 +30,7 @@ describe('Antigravity ACP selected-account process environment', () => {
         AGY_TEST_CAPTURE_PATH: capturePath, AGY_TEST_SHELL_CONFIG: 'preserved', GOOGLE_CLOUD_PROJECT: 'unrelated-project',
         // Explicit environment overlays must not restore the selected account's inherited override.
         AGY_ACP_CCPA_BASE_URL: 'https://overlay.invalid', AGY_ACP_CCPA_PROJECT: 'overlay-project',
-        HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify(selected ? [{ kind: 'profile', serviceId: 'antigravity', profileId: 'selected' }] : []),
+        PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify(selected ? [{ kind: 'profile', serviceId: 'antigravity', profileId: 'selected' }] : []),
       } });
       try {
         await backend.startSession();

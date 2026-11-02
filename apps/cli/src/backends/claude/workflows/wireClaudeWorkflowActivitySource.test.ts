@@ -27,9 +27,9 @@ function workflowToolUse(id: string, name: string) {
 describe('wireClaudeWorkflowActivitySource', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', '500');
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', '30000');
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS', '0');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', '500');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', '30000');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS', '0');
   });
   afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); });
 
@@ -774,7 +774,7 @@ describe('wireClaudeWorkflowActivitySource', () => {
      * because the evidence was missing rather than because there was nothing to reconcile, the 30 s
      * window becomes permanent — `armStartupReconciliation` returns immediately and no timer is ever
      * scheduled. That has to be reported on a signal that is on by default: `logger.debug` is OFF in
-     * a session process (`resolveFileLogLevel` -> `info` unless `DEBUG`/`HAPPIER_LOG_LEVEL`), so a
+     * a session process (`resolveFileLogLevel` -> `info` unless `DEBUG`/`PIGGERCODE_LOG_LEVEL`), so a
      * debug line here is an unobservable fallback, which is itself a defect.
      */
     function wireWithMetadata(snapshot: Metadata | null) {

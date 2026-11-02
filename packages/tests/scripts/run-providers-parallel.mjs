@@ -112,7 +112,7 @@ function signalExitCode(signal) {
 }
 
 function resolveDbProviderForServerGenerate(baseEnv) {
-  const raw = (baseEnv.HAPPIER_E2E_DB_PROVIDER ?? baseEnv.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim().toLowerCase();
+  const raw = (baseEnv.PIGGERCODE_E2E_DB_PROVIDER ?? baseEnv.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim().toLowerCase();
   if (raw === 'postgres' || raw === 'postgresql') return 'postgres';
   if (raw === 'mysql') return 'mysql';
   if (raw === 'sqlite') return 'sqlite';
@@ -229,23 +229,23 @@ export function buildProviderChildEnv(params) {
   const tokenLedgerPath = typeof params.tokenLedgerPath === 'string' ? params.tokenLedgerPath.trim() : '';
   return {
     ...params.baseEnv,
-    HAPPIER_E2E_PROVIDER_FAILURE_REPORT_PATH: params.reportPath,
+    PIGGERCODE_E2E_PROVIDER_FAILURE_REPORT_PATH: params.reportPath,
     HAPPY_E2E_PROVIDER_FAILURE_REPORT_PATH: params.reportPath,
     ...(tokenLedgerPath.length > 0
       ? {
-          HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH: tokenLedgerPath,
+          PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH: tokenLedgerPath,
           HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH: tokenLedgerPath,
         }
       : null),
     // Parallel workers should not trigger preflight rebuilds independently. Use one shared dist snapshot.
-    HAPPIER_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD: '0',
+    PIGGERCODE_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD: '0',
     HAPPY_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD: '0',
     // Prisma provider generation writes into a shared generated directory. Run it once in parent process.
-    HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
+    PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
     HAPPY_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
     ...(scenarioSelection.length > 0
       ? {
-          HAPPIER_E2E_PROVIDER_SCENARIOS: scenarioSelection,
+          PIGGERCODE_E2E_PROVIDER_SCENARIOS: scenarioSelection,
           HAPPY_E2E_PROVIDER_SCENARIOS: scenarioSelection,
         }
       : null),
@@ -318,7 +318,7 @@ async function prewarmServerGenerateProviders(state) {
     PORT: '0',
     PUBLIC_URL: 'http://127.0.0.1:0',
     DATABASE_URL: 'postgresql://postgres@127.0.0.1:5432/postgres?sslmode=disable',
-    HAPPIER_BUILD_DB_PROVIDERS: resolveDbProviderForServerGenerate(process.env),
+    PIGGERCODE_BUILD_DB_PROVIDERS: resolveDbProviderForServerGenerate(process.env),
   };
 
   const serverWorkspace = await resolveServerAppWorkspaceName();
@@ -383,7 +383,7 @@ async function runWithConcurrency(params, state) {
 
 async function loadOrderedScenarioIdsForRetry(params) {
   const explicitSelectionRaw = (
-    process.env.HAPPIER_E2E_PROVIDER_SCENARIOS ??
+    process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS ??
     process.env.HAPPY_E2E_PROVIDER_SCENARIOS ??
     ''
   ).trim();
@@ -529,13 +529,13 @@ export async function main(argv = process.argv) {
 
   const providerIdsPre = filterProviderIdsForScenarioSelection(
     resolvedProviderIds,
-    process.env.HAPPIER_E2E_PROVIDER_SCENARIOS,
+    process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS,
   );
   const providerIds = await filterProviderIdsByScenarioRegistry({
     providerIds: providerIdsPre,
     tier: parsed.tier,
     scenarioSelectionRaw:
-      process.env.HAPPIER_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS ?? '',
+      process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS ?? '',
   });
   if (providerIds.length === 0) return usage(2);
 

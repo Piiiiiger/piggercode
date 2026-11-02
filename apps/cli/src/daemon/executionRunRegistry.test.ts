@@ -7,17 +7,17 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('executionRunRegistry', () => {
   const releaseEnvScope = createEnvKeyScope(STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS);
-  const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
-  const originalReleaseRing = process.env.HAPPIER_RELEASE_RING;
+  const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const originalReleaseRing = process.env.PIGGERCODE_RELEASE_RING;
   let happyHomeDir: string;
 
   beforeEach(() => {
     happyHomeDir = join(tmpdir(), `happier-cli-exec-run-registry-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     releaseEnvScope.patch({
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-      HAPPIER_RELEASE_RING: undefined,
-      HAPPIER_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_RELEASE_RING: undefined,
+      PIGGERCODE_RELEASE_CHANNEL: undefined,
     });
     vi.resetModules();
   });
@@ -27,15 +27,15 @@ describe('executionRunRegistry', () => {
       rmSync(happyHomeDir, { recursive: true, force: true });
     }
     if (originalHappyHomeDir === undefined) {
-      delete process.env.HAPPIER_HOME_DIR;
+      delete process.env.PIGGERCODE_HOME_DIR;
     } else {
-      process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+      process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     }
     releaseEnvScope.restore();
     if (originalReleaseRing === undefined) {
-      delete process.env.HAPPIER_RELEASE_RING;
+      delete process.env.PIGGERCODE_RELEASE_RING;
     } else {
-      process.env.HAPPIER_RELEASE_RING = originalReleaseRing;
+      process.env.PIGGERCODE_RELEASE_RING = originalReleaseRing;
     }
   });
 
@@ -76,7 +76,7 @@ describe('executionRunRegistry', () => {
   });
 
   it('writes markers into a channel-scoped tmp dir for the dev public ring', async () => {
-    process.env.HAPPIER_RELEASE_RING = 'dev';
+    process.env.PIGGERCODE_RELEASE_RING = 'dev';
     vi.resetModules();
 
     const { configuration } = await import('@/configuration');

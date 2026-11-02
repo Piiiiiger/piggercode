@@ -233,7 +233,7 @@ describe('runOpenCodeProviderAttach', () => {
       },
       env: {
         ...process.env,
-        HAPPIER_OPENCODE_PATH: '/tmp/custom-opencode',
+        PIGGERCODE_OPENCODE_PATH: '/tmp/custom-opencode',
       },
       spawnProcess: spawnProcess as any,
       resolveDialectFn: () => 'v1',

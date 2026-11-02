@@ -183,8 +183,8 @@ test('readDaemonControlState rejects a live daemon pid that is not owned by the 
 
   const serverUrl = 'http://127.0.0.1:3009';
   const env = {
-    HAPPIER_STACK_STACK: 'remote-dev',
-    HAPPIER_STACK_ENV_FILE: join(home, 'env'),
+    PIGGERCODE_STACK_STACK: 'remote-dev',
+    PIGGERCODE_STACK_ENV_FILE: join(home, 'env'),
   };
   const ownershipCalls = [];
   await writeDaemonState({
@@ -213,7 +213,7 @@ test('readDaemonControlState rejects a live daemon pid that is not owned by the 
     pid: process.pid,
     context: {
       stackName: 'remote-dev',
-      envPath: env.HAPPIER_STACK_ENV_FILE,
+      envPath: env.PIGGERCODE_STACK_ENV_FILE,
       cliHomeDir: home,
     },
   }]);
@@ -228,8 +228,8 @@ test('readDaemonControlState resolves the exact named-stack lifecycle scope inst
   const serverUrl = 'http://127.0.0.1:3009';
   const stackName = 'target-stack';
   const env = {
-    HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_ambient__id_default',
-    HAPPIER_STACK_CLI_IDENTITY: 'account-b',
+    PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_ambient__id_default',
+    PIGGERCODE_STACK_CLI_IDENTITY: 'account-b',
   };
   const targetEnv = applyStackDaemonLifecycleScopeEnv({
     env,
@@ -473,8 +473,8 @@ test('restartDaemonViaControlServer passes stack identity to initial and replace
   const observedContexts = [];
   let readCount = 0;
   const env = {
-    HAPPIER_STACK_STACK: 'remote-dev',
-    HAPPIER_STACK_ENV_FILE: '/tmp/remote-dev-env',
+    PIGGERCODE_STACK_STACK: 'remote-dev',
+    PIGGERCODE_STACK_ENV_FILE: '/tmp/remote-dev-env',
   };
 
   await restartDaemonViaControlServer({
@@ -521,7 +521,7 @@ test('restartDaemonViaControlServer keeps daemon control posts bounded but long 
   await restartDaemonViaControlServer({
     cliHomeDir: '/tmp/hstack-home',
     internalServerUrl: 'http://127.0.0.1:3009',
-    env: { HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS: '45000' },
+    env: { PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS: '45000' },
     pollMs: 1,
     delayImpl: async () => {},
     readDaemonControlStateImpl: async () => {
@@ -553,11 +553,11 @@ test('restartDaemonViaControlServer keeps daemon control posts bounded but long 
 test('resolveDaemonRestartConfirmTimeoutMs shares the daemon restart verification budget', () => {
   assert.equal(resolveDaemonRestartConfirmTimeoutMs({}), 60_000);
   assert.equal(
-    resolveDaemonRestartConfirmTimeoutMs({ HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS: '45000' }),
+    resolveDaemonRestartConfirmTimeoutMs({ PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS: '45000' }),
     45_000,
   );
   assert.equal(
-    resolveDaemonRestartConfirmTimeoutMs({ HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS: 'not-a-number' }),
+    resolveDaemonRestartConfirmTimeoutMs({ PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS: 'not-a-number' }),
     60_000,
   );
   assert.equal(

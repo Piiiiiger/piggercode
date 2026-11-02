@@ -72,7 +72,7 @@ describe("connectRoutes (OIDC) refresh token storage (integration)", () => {
                     scopes: "openid profile email offline_access",
                 },
             ]),
-            HAPPIER_WEBAPP_URL: "https://app.example.test",
+            PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         });
 
         const seed = new Uint8Array(32).fill(1);

@@ -28,11 +28,11 @@ vi.mock('@/daemon/machine/metadata', async (importOriginal) => ({
 import { createActionToolExecutorBridge } from './createActionToolExecutorBridge';
 
 describe('createActionToolExecutorBridge', () => {
-  const envScope = createEnvKeyScope(['HAPPIER_ACTIONS_SETTINGS_V1']);
+  const envScope = createEnvKeyScope(['PIGGERCODE_ACTIONS_SETTINGS_V1']);
   const cleanups: Array<() => Promise<void>> = [];
 
   beforeEach(() => {
-    envScope.patch({ HAPPIER_ACTIONS_SETTINGS_V1: undefined });
+    envScope.patch({ PIGGERCODE_ACTIONS_SETTINGS_V1: undefined });
     nativeRpc.mockReset();
   });
 
@@ -182,7 +182,7 @@ describe('createActionToolExecutorBridge', () => {
   });
 
   it.each(['approve', 'reject'] as const)('waits for %s before settling a policy-gated goal clear', async (decision) => {
-    envScope.patch({ HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify({
+    envScope.patch({ PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify({
       v: 1, actions: { 'session.goal.clear': { approvalRequiredSurfaces: ['session_agent'] } },
     }) });
     const { executor, deps, approvalCreated } = await createGoalHarness();

@@ -138,7 +138,7 @@ test('happier wrapper skips bundled workspace preflight when disabled', async ()
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_SYNC_BUNDLED_WORKSPACES: '0',
+        PIGGERCODE_STACK_SYNC_BUNDLED_WORKSPACES: '0',
         NODE_OPTIONS: `--experimental-loader=${loaderPath}`,
       },
     });

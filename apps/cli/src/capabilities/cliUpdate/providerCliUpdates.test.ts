@@ -61,7 +61,7 @@ describe.skipIf(process.platform === 'win32')('withProviderCliUpdates', () => {
 
   function deps(overrides: Partial<Parameters<typeof withProviderCliUpdates>[2]> = {}) {
     return {
-      env: { HOME: home, HAPPIER_HOME_DIR: home, PATH: '' },
+      env: { HOME: home, PIGGERCODE_HOME_DIR: home, PATH: '' },
       nodePlatform: 'linux',
       latestVersionTtlMs: 60_000,
       buildContext: async () => ({ cliSnapshot: null }),
@@ -181,7 +181,7 @@ describe.skipIf(process.platform === 'win32')('withProviderCliUpdates', () => {
       createInstalledCliCapability({ resolvedPath: launcher, version: () => readFileSync(versionFile, 'utf8') }),
       'claude',
       deps({
-        env: { ...process.env, HOME: home, HAPPIER_HOME_DIR: home },
+        env: { ...process.env, HOME: home, PIGGERCODE_HOME_DIR: home },
         installProviderCli: (params) => installProviderCli({ ...params, logDir: join(root, 'logs') }),
       }),
     );

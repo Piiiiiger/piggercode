@@ -48,9 +48,9 @@ test('getDaemonEnv keeps machine identity and lifecycle state on the stable stac
     cliIdentity: 'default',
   });
 
-  assert.equal(env.HAPPIER_ACTIVE_SERVER_ID, stableScopeId);
-  assert.equal(env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID, stableScopeId);
-  assert.equal(env.HAPPIER_DAEMON_STARTUP_SOURCE, 'manual');
+  assert.equal(env.PIGGERCODE_ACTIVE_SERVER_ID, stableScopeId);
+  assert.equal(env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID, stableScopeId);
+  assert.equal(env.PIGGERCODE_DAEMON_STARTUP_SOURCE, 'manual');
 });
 
 test('getDaemonEnv seeds stack ownership env from the resolved stack name', async () => {
@@ -58,7 +58,7 @@ test('getDaemonEnv seeds stack ownership env from the resolved stack name', asyn
 
   const env = getDaemonEnv({
     baseEnv: {
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
     cliHomeDir: dir,
     internalServerUrl: 'http://127.0.0.1:3009',
@@ -67,8 +67,8 @@ test('getDaemonEnv seeds stack ownership env from the resolved stack name', asyn
     cliIdentity: 'default',
   });
 
-  assert.equal(env.HAPPIER_STACK_STACK, 'dev');
-  assert.equal(env.HAPPIER_STACK_PROCESS_KIND, 'daemon');
+  assert.equal(env.PIGGERCODE_STACK_STACK, 'dev');
+  assert.equal(env.PIGGERCODE_STACK_PROCESS_KIND, 'daemon');
 });
 
 test('getDaemonEnv preserves a matching explicit active server id when settings profiles share the URL', async () => {
@@ -113,13 +113,13 @@ test('getDaemonEnv preserves a matching explicit active server id when settings 
   );
 
   const env = getDaemonEnv({
-    baseEnv: { HAPPIER_ACTIVE_SERVER_ID: explicitServerId },
+    baseEnv: { PIGGERCODE_ACTIVE_SERVER_ID: explicitServerId },
     cliHomeDir: dir,
     internalServerUrl: serverUrl,
     publicServerUrl: 'http://localhost:52753',
   });
 
-  assert.equal(env.HAPPIER_ACTIVE_SERVER_ID, explicitServerId);
+  assert.equal(env.PIGGERCODE_ACTIVE_SERVER_ID, explicitServerId);
 });
 
 test('getDaemonEnv marks service-mode starts as background-service', async () => {
@@ -127,7 +127,7 @@ test('getDaemonEnv marks service-mode starts as background-service', async () =>
 
   const env = getDaemonEnv({
     baseEnv: {
-      HAPPIER_STACK_SERVICE_MODE: '1',
+      PIGGERCODE_STACK_SERVICE_MODE: '1',
     },
     cliHomeDir: dir,
     internalServerUrl: 'http://127.0.0.1:3009',
@@ -136,7 +136,7 @@ test('getDaemonEnv marks service-mode starts as background-service', async () =>
     cliIdentity: 'default',
   });
 
-  assert.equal(env.HAPPIER_DAEMON_STARTUP_SOURCE, 'background-service');
+  assert.equal(env.PIGGERCODE_DAEMON_STARTUP_SOURCE, 'background-service');
 });
 
 test('getDaemonEnv preserves an explicit daemon service label', async () => {
@@ -144,7 +144,7 @@ test('getDaemonEnv preserves an explicit daemon service label', async () => {
 
   const env = getDaemonEnv({
     baseEnv: {
-      HAPPIER_DAEMON_SERVICE_LABEL: 'happier-daemon.preview.example.service',
+      PIGGERCODE_DAEMON_SERVICE_LABEL: 'happier-daemon.preview.example.service',
     },
     cliHomeDir: dir,
     internalServerUrl: 'http://127.0.0.1:3009',
@@ -153,5 +153,5 @@ test('getDaemonEnv preserves an explicit daemon service label', async () => {
     cliIdentity: 'default',
   });
 
-  assert.equal(env.HAPPIER_DAEMON_SERVICE_LABEL, 'happier-daemon.preview.example.service');
+  assert.equal(env.PIGGERCODE_DAEMON_SERVICE_LABEL, 'happier-daemon.preview.example.service');
 });

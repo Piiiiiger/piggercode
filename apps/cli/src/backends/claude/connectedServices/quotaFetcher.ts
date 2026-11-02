@@ -38,13 +38,13 @@ function parseDisableQuotaEndpointEnv(raw: string | undefined): boolean {
 export const claudeSubscriptionQuotaFetcherDescriptor: ConnectedServiceQuotaFetcherDescriptor = {
   loadQuota: ({ env, staleAfterMs }) => createClaudeSubscriptionQuotaFetcher({
     usageUrl: parseNonEmptyStringEnv(
-      env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL
-        ?? env.HAPPIER_CONNECTED_SERVICES_ANTHROPIC_USAGE_URL,
+      env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL
+        ?? env.PIGGERCODE_CONNECTED_SERVICES_ANTHROPIC_USAGE_URL,
     ),
     staleAfterMs,
-    userAgent: parseNonEmptyStringEnv(env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USER_AGENT),
+    userAgent: parseNonEmptyStringEnv(env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USER_AGENT),
     disablePrivateEndpoint: parseDisableQuotaEndpointEnv(
-      env.HAPPIER_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT,
+      env.PIGGERCODE_CONNECTED_SERVICES_DISABLE_CLAUDE_SUBSCRIPTION_QUOTA_ENDPOINT,
     ),
   }),
 };

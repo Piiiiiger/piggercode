@@ -385,7 +385,7 @@ export async function claudeLocalLauncher(
 
         if (remoteSwitchingEnabled && entry === 'switch') {
             const autoConfirmDiscardForE2e =
-                process.env.HAPPIER_E2E_PROVIDERS === '1' || process.env.HAPPY_E2E_PROVIDERS === '1';
+                process.env.PIGGERCODE_E2E_PROVIDERS === '1' || process.env.HAPPY_E2E_PROVIDERS === '1';
             const pendingGateStartMs = configuration.startupTimingEnabled ? Date.now() : null;
             const discardResult = await discardQueuedAndPendingForLocalSwitch({
                 signal: processAbortController.signal,

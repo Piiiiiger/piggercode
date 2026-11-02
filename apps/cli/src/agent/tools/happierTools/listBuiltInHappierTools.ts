@@ -1,4 +1,4 @@
-import { HAPPIER_BUILT_IN_TOOLS } from './catalog';
+import { PIGGERCODE_BUILT_IN_TOOLS } from './catalog';
 import { filterBuiltInToolsForSurface } from './actionToolCatalog';
 import { isActionEnabledByEnv, readActionsSettingsFromEnv } from '@/settings/actionsSettings';
 import type { ActionId, ActionsSettingsV1 } from '@piggercode/protocol';
@@ -16,7 +16,7 @@ export function listBuiltInHappierTools(params?: Readonly<{
   const isActionEnabled = params?.isActionEnabled ?? ((id: ActionId) => isActionEnabledByEnv(id, { surface }));
   return [
     ...filterBuiltInToolsForSurface(
-      HAPPIER_BUILT_IN_TOOLS,
+      PIGGERCODE_BUILT_IN_TOOLS,
       {
         surface,
         isActionEnabled,

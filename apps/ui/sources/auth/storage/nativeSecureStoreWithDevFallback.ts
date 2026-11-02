@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 import { parseOptionalBooleanEnv } from '@piggercode/protocol';
 import { readStorageScopeFromEnv, scopedStorageId } from '@/utils/system/storageScope';
 
-const EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK = 'EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK';
+const EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK = 'EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK';
 const DEV_FALLBACK_STORAGE_ID = 'auth-secure-store-dev-fallback';
 
 type FallbackStorage = Readonly<{
@@ -16,7 +16,7 @@ type FallbackStorage = Readonly<{
 
 function shouldAllowDevFallback(): boolean {
     if (Platform.OS === 'web') return false;
-    const parsed = parseOptionalBooleanEnv(process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK]);
+    const parsed = parseOptionalBooleanEnv(process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK]);
     if (parsed !== null) return parsed;
     return typeof __DEV__ !== 'undefined' ? __DEV__ : false;
 }

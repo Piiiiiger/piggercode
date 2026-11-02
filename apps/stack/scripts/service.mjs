@@ -85,10 +85,10 @@ function getAutostartEnv({ mode, systemUserHomeDir } = {}) {
   });
 
   return {
-    HAPPIER_STACK_ENV_FILE: envFile,
+    PIGGERCODE_STACK_ENV_FILE: envFile,
     // Service-mode behavior: keep server/UI up and start the daemon only once auth exists.
-    HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH: '1',
-    HAPPIER_STACK_SERVICE_MODE: '1',
+    PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH: '1',
+    PIGGERCODE_STACK_SERVICE_MODE: '1',
   };
 }
 
@@ -160,7 +160,7 @@ export async function installService({ mode = 'user', systemUser = null } = {}) 
     throw new Error(
       '[local] service install is disabled in sandbox mode.\n' +
         'Reason: services are global OS state (launchd/systemd) and can affect your real installation.\n' +
-        'If you really want this, set: HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1'
+        'If you really want this, set: PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1'
     );
   }
   ensureLinuxSystemModeSupported({ mode });
@@ -170,7 +170,7 @@ export async function installService({ mode = 'user', systemUser = null } = {}) 
   const env = getAutostartEnv({ mode, systemUserHomeDir });
   const { baseDir, stdoutPath, stderrPath } = resolveAutostartLogPaths({
     mode,
-    hasStorageDirOverride: Boolean((process.env.HAPPIER_STACK_STORAGE_DIR ?? '').trim()),
+    hasStorageDirOverride: Boolean((process.env.PIGGERCODE_STACK_STORAGE_DIR ?? '').trim()),
     systemUserHomeDir,
     stackName: defaults.stackName,
     defaultBaseDir: defaults.baseDir,
@@ -180,7 +180,7 @@ export async function installService({ mode = 'user', systemUser = null } = {}) 
   const { label } = defaults;
   // Ensure the env file exists so the service never points at a missing path.
   try {
-    const envFile = env.HAPPIER_STACK_ENV_FILE;
+    const envFile = env.PIGGERCODE_STACK_ENV_FILE;
     // systemd specifier paths like %h/... are resolved at runtime; don't try to create them here.
     if (!envFile.includes('%')) {
       await mkdir(dirname(envFile), { recursive: true });
@@ -356,7 +356,7 @@ export async function postStartDiagnostics() {
   const rootDir = getRootDir(import.meta.url);
   const defaults = getDefaultAutostartPaths();
   const stackName = defaults.stackName;
-  const cliIdentity = String(process.env.HAPPIER_STACK_CLI_IDENTITY ?? '').trim() || 'default';
+  const cliIdentity = String(process.env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').trim() || 'default';
   const scopedEnv = applyStackDaemonLifecycleScopeEnv({
     env: process.env,
     stackName,
@@ -364,8 +364,8 @@ export async function postStartDiagnostics() {
   });
   const internalUrl = getInternalServerUrl({ env: scopedEnv, defaultPort: 3005 }).internalServerUrl;
 
-  const cliHomeDir = scopedEnv.HAPPIER_STACK_CLI_HOME_DIR?.trim()
-    ? expandHome(scopedEnv.HAPPIER_STACK_CLI_HOME_DIR.trim())
+  const cliHomeDir = scopedEnv.PIGGERCODE_STACK_CLI_HOME_DIR?.trim()
+    ? expandHome(scopedEnv.PIGGERCODE_STACK_CLI_HOME_DIR.trim())
     : join(defaults.baseDir, 'cli');
 
   let port = 3005;
@@ -469,7 +469,7 @@ export async function postStartDiagnostics() {
   const authGuidance = buildServiceAuthGuidance({
     stackName,
     publicServerUrl: publicUrl,
-    tailscaleServeEnabled: (scopedEnv.HAPPIER_STACK_TAILSCALE_SERVE ?? '0') === '1',
+    tailscaleServeEnabled: (scopedEnv.PIGGERCODE_STACK_TAILSCALE_SERVE ?? '0') === '1',
     publicServerUrlSource,
   });
 
@@ -938,7 +938,7 @@ async function main() {
       if (process.platform === 'darwin') {
         await showLogs();
       } else {
-        const lines = Number(process.env.HAPPIER_STACK_LOG_LINES ?? 120) || 120;
+        const lines = Number(process.env.PIGGERCODE_STACK_LOG_LINES ?? 120) || 120;
         if (mode === 'system') {
           const { unitName, journalctlArgsPrefix } = getSystemdUnitInfo({ mode });
           await run('journalctl', [...journalctlArgsPrefix, '-u', unitName, '-n', String(lines), '--no-pager']);

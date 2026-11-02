@@ -23,7 +23,7 @@ describe('core e2e: durable request settlement recovery', () => {
 
   it.each(['legacy', 'tokenOnly'] as const)('replays an admitted %s settlement after runtime restart without clearing background or newer requests', async (credentialMode) => {
     const testDir = run.testDir(`request-settlement-${randomUUID()}`);
-    const extraEnv = { HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only' };
+    const extraEnv = { PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only' };
     server = await startServerLight({ testDir, dbProvider: 'sqlite', extraEnv });
     const baseUrl = server.baseUrl;
     const auth = await createTestAuth(baseUrl);
@@ -51,7 +51,7 @@ describe('core e2e: durable request settlement recovery', () => {
       if (!hook) throw new Error('Missing canonical tsx import hook');
       await runLoggedCommand({
         command: process.execPath, args: ['--import', hook, join(repoRootDir(), 'packages/tests/fixtures/request-settlement-runtime.ts'), inputPath],
-        cwd: repoRootDir(), env: { ...process.env, HAPPIER_HOME_DIR: homeDir, HAPPIER_SERVER_URL: baseUrl, TSX_TSCONFIG_PATH: join(repoRootDir(), 'apps/cli/tsconfig.json') },
+        cwd: repoRootDir(), env: { ...process.env, PIGGERCODE_HOME_DIR: homeDir, PIGGERCODE_SERVER_URL: baseUrl, TSX_TSCONFIG_PATH: join(repoRootDir(), 'apps/cli/tsconfig.json') },
         stdoutPath: join(testDir, `${phase}.stdout.log`), stderrPath: join(testDir, `${phase}.stderr.log`), timeoutMs: 90_000,
       });
     };

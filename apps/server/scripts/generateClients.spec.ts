@@ -9,7 +9,7 @@ describe("resolveBuildDbProvidersFromEnv", () => {
     });
 
     it("treats empty as default", () => {
-        expect([...resolveBuildDbProvidersFromEnv({ HAPPIER_BUILD_DB_PROVIDERS: "   " })].sort()).toEqual([
+        expect([...resolveBuildDbProvidersFromEnv({ PIGGERCODE_BUILD_DB_PROVIDERS: "   " })].sort()).toEqual([
             "mysql",
             "postgres",
             "sqlite",
@@ -17,21 +17,21 @@ describe("resolveBuildDbProvidersFromEnv", () => {
     });
 
     it("always includes postgres (required for @prisma/client runtime import)", () => {
-        expect([...resolveBuildDbProvidersFromEnv({ HAPPIER_BUILD_DB_PROVIDERS: "mysql" })].sort()).toEqual([
+        expect([...resolveBuildDbProvidersFromEnv({ PIGGERCODE_BUILD_DB_PROVIDERS: "mysql" })].sort()).toEqual([
             "mysql",
             "postgres",
         ]);
     });
 
     it("maps pglite to postgres", () => {
-        expect([...resolveBuildDbProvidersFromEnv({ HAPPIER_BUILD_DB_PROVIDERS: "pglite|sqlite" })].sort()).toEqual([
+        expect([...resolveBuildDbProvidersFromEnv({ PIGGERCODE_BUILD_DB_PROVIDERS: "pglite|sqlite" })].sort()).toEqual([
             "postgres",
             "sqlite",
         ]);
     });
 
     it("supports all", () => {
-        expect([...resolveBuildDbProvidersFromEnv({ HAPPIER_BUILD_DB_PROVIDERS: "all" })].sort()).toEqual([
+        expect([...resolveBuildDbProvidersFromEnv({ PIGGERCODE_BUILD_DB_PROVIDERS: "all" })].sort()).toEqual([
             "mysql",
             "postgres",
             "sqlite",
@@ -39,7 +39,7 @@ describe("resolveBuildDbProvidersFromEnv", () => {
     });
 
     it("rejects unknown tokens", () => {
-        expect(() => resolveBuildDbProvidersFromEnv({ HAPPIER_BUILD_DB_PROVIDERS: "nope" })).toThrow(/Unsupported/);
+        expect(() => resolveBuildDbProvidersFromEnv({ PIGGERCODE_BUILD_DB_PROVIDERS: "nope" })).toThrow(/Unsupported/);
     });
 });
 

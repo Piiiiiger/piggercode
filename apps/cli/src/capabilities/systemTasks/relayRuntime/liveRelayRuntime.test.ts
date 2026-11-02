@@ -8,10 +8,10 @@ const trackedEnvKeys = [
   'HOME',
   'USERPROFILE',
   'PATH',
-  'HAPPIER_SELF_HOST_INSTALL_ROOT',
-  'HAPPIER_SELF_HOST_CONFIG_DIR',
-  'HAPPIER_SELF_HOST_DATA_DIR',
-  'HAPPIER_SELF_HOST_LOG_DIR',
+  'PIGGERCODE_SELF_HOST_INSTALL_ROOT',
+  'PIGGERCODE_SELF_HOST_CONFIG_DIR',
+  'PIGGERCODE_SELF_HOST_DATA_DIR',
+  'PIGGERCODE_SELF_HOST_LOG_DIR',
 ] as const;
 
 const previousEnv = new Map<string, string | undefined>();
@@ -57,10 +57,10 @@ describe('readLiveRelayRuntimeStatus', () => {
         HOME: scopedHomeDir,
         USERPROFILE: scopedHomeDir,
         PATH: 'C:\\Windows\\System32',
-        HAPPIER_SELF_HOST_INSTALL_ROOT: '~/self-host/install',
-        HAPPIER_SELF_HOST_CONFIG_DIR: '~/self-host/config',
-        HAPPIER_SELF_HOST_DATA_DIR: '~/self-host/data',
-        HAPPIER_SELF_HOST_LOG_DIR: '~/self-host/logs',
+        PIGGERCODE_SELF_HOST_INSTALL_ROOT: '~/self-host/install',
+        PIGGERCODE_SELF_HOST_CONFIG_DIR: '~/self-host/config',
+        PIGGERCODE_SELF_HOST_DATA_DIR: '~/self-host/data',
+        PIGGERCODE_SELF_HOST_LOG_DIR: '~/self-host/logs',
       });
 
       await mkdir(installRoot, { recursive: true });
@@ -164,10 +164,10 @@ describe('readLiveRelayRuntimeStatus', () => {
         HOME: scopedHomeDir,
         USERPROFILE: scopedHomeDir,
         PATH: '',
-        HAPPIER_SELF_HOST_INSTALL_ROOT: '~/self-host/install',
-        HAPPIER_SELF_HOST_CONFIG_DIR: '~/self-host/config',
-        HAPPIER_SELF_HOST_DATA_DIR: '~/self-host/data',
-        HAPPIER_SELF_HOST_LOG_DIR: '~/self-host/logs',
+        PIGGERCODE_SELF_HOST_INSTALL_ROOT: '~/self-host/install',
+        PIGGERCODE_SELF_HOST_CONFIG_DIR: '~/self-host/config',
+        PIGGERCODE_SELF_HOST_DATA_DIR: '~/self-host/data',
+        PIGGERCODE_SELF_HOST_LOG_DIR: '~/self-host/logs',
       });
 
       await mkdir(installRoot, { recursive: true });

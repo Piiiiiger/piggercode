@@ -10,7 +10,7 @@ afterEach(() => vi.unstubAllEnvs());
 describe.skipIf(process.platform === 'win32')('Kimi CLI readiness', () => {
   it.each(['current', 'legacy', 'malformed'] as const)('classifies %s through its real ACP process', async (kind) => {
     await withTempDir('happier-kimi-readiness-', async (dir) => {
-      vi.stubEnv('HAPPIER_KIMI_PATH', writeKimiFixture(dir, kind));
+      vi.stubEnv('PIGGERCODE_KIMI_PATH', writeKimiFixture(dir, kind));
       // Snapshot is the daemon boundary; populate every known provider explicitly.
       const clis = Object.fromEntries(AGENT_IDS.map((id) => [id, { available: false }])) as DetectCliSnapshot['clis'];
       clis.kimi = { available: true, resolvedPath: '/old/kimi', resolvedCommand: '/old/kimi', version: '1.49.0', isLoggedIn: true };

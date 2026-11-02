@@ -140,7 +140,7 @@ describe('syncPackageDist', () => {
       const result = syncPackageDist({
         packageRoot,
         distDir: stagedDistDir,
-        env: { HAPPIER_CLI_SKIP_PACKAGE_DIST_SYNC: '1' },
+        env: { PIGGERCODE_CLI_SKIP_PACKAGE_DIST_SYNC: '1' },
       });
 
       expect(result.skipped).toBe(true);

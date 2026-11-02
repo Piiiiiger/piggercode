@@ -22,7 +22,7 @@ const MIN_LEASE_TTL_MS = 5_000;
 const MAX_LEASE_TTL_MS = 60 * 60 * 1000;
 
 export function resolveWorkspaceReplicationJobLeaseTtlMs(): number {
-  const raw = process.env.HAPPIER_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
+  const raw = process.env.PIGGERCODE_WORKSPACE_REPLICATION_JOB_LEASE_TTL_MS;
   if (!raw) {
     return DEFAULT_LEASE_TTL_MS;
   }

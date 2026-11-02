@@ -12,9 +12,9 @@ test('hstack stack stop sweeps owned processes when stack.runtime.json is missin
   const owned = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   }));
   assert.ok(Number(owned.pid) > 1, 'expected child pid');
@@ -24,9 +24,9 @@ test('hstack stack stop sweeps owned processes when stack.runtime.json is missin
   const sessionLike = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   }));
   assert.ok(Number(sessionLike.pid) > 1, 'expected session-like child pid');

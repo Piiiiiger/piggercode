@@ -29,22 +29,22 @@ describe('featureDecisionInputs', () => {
     const inputs = createCliFeatureDecisionInputs({
       featureId: 'automations',
       env: {
-        HAPPIER_BUILD_FEATURES_DENY: 'automations',
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '0',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'automations',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '0',
       } as NodeJS.ProcessEnv,
     });
 
     expect(inputs.buildPolicy).toBe('deny');
     expect(inputs.localPolicyEnabled).toBe(false);
     expect(inputs.serverSnapshot).toBeUndefined();
-    expect(inputs.env.HAPPIER_FEATURE_AUTOMATIONS__ENABLED).toBe('0');
+    expect(inputs.env.PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED).toBe('0');
   });
 
   it('derives local policy for execution.runs from env', () => {
     const inputs = createCliFeatureDecisionInputs({
       featureId: 'execution.runs',
       env: {
-        HAPPIER_FEATURE_EXECUTION_RUNS__ENABLED: '0',
+        PIGGERCODE_FEATURE_EXECUTION_RUNS__ENABLED: '0',
       } as NodeJS.ProcessEnv,
     });
 
@@ -81,7 +81,7 @@ describe('featureDecisionInputs', () => {
     const inputs = await loadCliFeatureDecisionInputsForServer({
       featureId: 'bugReports',
       env: {
-        HAPPIER_BUILD_FEATURES_DENY: 'bugReports',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'bugReports',
       } as NodeJS.ProcessEnv,
       serverUrl: 'https://api.example.test',
       timeoutMs: 300,

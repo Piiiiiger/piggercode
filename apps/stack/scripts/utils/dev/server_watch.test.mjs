@@ -56,9 +56,9 @@ test('startDevServer normalizes providers independently of the full preset', asy
           serverDir,
           autostart: { stackName: 'watch-test', baseDir: serverDir },
           baseEnv: {
-            HAPPIER_DB_PROVIDER: 'sqlite',
-            HAPPIER_STACK_MANAGED_INFRA: '0',
-            HAPPIER_STACK_PRISMA_MIGRATE: '0',
+            PIGGERCODE_DB_PROVIDER: 'sqlite',
+            PIGGERCODE_STACK_MANAGED_INFRA: '0',
+            PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
           },
           serverPort: 34567,
           internalServerUrl: 'http://127.0.0.1:34567',
@@ -83,9 +83,9 @@ test('startDevServer normalizes providers independently of the full preset', asy
           recordStackRuntimeUpdateImpl: async () => {},
         },
       );
-    assert.equal(sqliteOut.serverEnv.HAPPIER_DB_PROVIDER, 'sqlite');
-    assert.equal(sqliteOut.serverEnv.HAPPIER_SERVER_FLAVOR, 'full');
-    assert.equal(sqliteOut.serverEnv.HAPPIER_SERVER_LIGHT_DATA_DIR, join(serverDir, 'server-light'));
+    assert.equal(sqliteOut.serverEnv.PIGGERCODE_DB_PROVIDER, 'sqlite');
+    assert.equal(sqliteOut.serverEnv.PIGGERCODE_SERVER_FLAVOR, 'full');
+    assert.equal(sqliteOut.serverEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR, join(serverDir, 'server-light'));
     assert.deepEqual(sideEffects, ['deps']);
 
     const out = await startDevServer(
@@ -94,11 +94,11 @@ test('startDevServer normalizes providers independently of the full preset', asy
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_SERVER_FLAVOR: 'light',
+          PIGGERCODE_SERVER_FLAVOR: 'light',
           HAPPY_SERVER_FLAVOR: 'light',
           DATABASE_URL: 'postgresql://operator:secret@db.example.test/happier',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -113,8 +113,8 @@ test('startDevServer normalizes providers independently of the full preset', asy
       },
       { ensureDepsInstalledImpl: async () => {} },
     );
-    assert.equal(out.serverEnv.HAPPIER_DB_PROVIDER, 'postgres');
-    assert.equal(out.serverEnv.HAPPIER_SERVER_FLAVOR, 'full');
+    assert.equal(out.serverEnv.PIGGERCODE_DB_PROVIDER, 'postgres');
+    assert.equal(out.serverEnv.PIGGERCODE_SERVER_FLAVOR, 'full');
     assert.equal(out.serverEnv.HAPPY_SERVER_FLAVOR, 'full');
   });
 });
@@ -128,8 +128,8 @@ test('startDevServer prepares dependencies before full-server infrastructure and
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_STACK_MANAGED_INFRA: '1',
-          HAPPIER_STACK_PRISMA_MIGRATE: '1',
+          PIGGERCODE_STACK_MANAGED_INFRA: '1',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '1',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -166,9 +166,9 @@ test('startDevServer keeps explicit mysql database authority through managed inf
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_DB_PROVIDER: 'mysql',
+          PIGGERCODE_DB_PROVIDER: 'mysql',
           DATABASE_URL: mysqlUrl,
-          HAPPIER_STACK_MANAGED_INFRA: '1',
+          PIGGERCODE_STACK_MANAGED_INFRA: '1',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -195,7 +195,7 @@ test('startDevServer keeps explicit mysql database authority through managed inf
       },
     );
 
-    assert.equal(out.serverEnv.HAPPIER_DB_PROVIDER, 'mysql');
+    assert.equal(out.serverEnv.PIGGERCODE_DB_PROVIDER, 'mysql');
     assert.equal(out.serverEnv.DATABASE_URL, mysqlUrl);
     assert.equal(out.serverEnv.REDIS_URL, 'redis://managed-sidecar');
     assert.equal(migrationInput.dbProvider, 'mysql');
@@ -213,9 +213,9 @@ test('startDevServer applies provider migrations under the light preset without 
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_DB_PROVIDER: 'postgres',
+          PIGGERCODE_DB_PROVIDER: 'postgres',
           DATABASE_URL: postgresUrl,
-          HAPPIER_STACK_PRISMA_MIGRATE: '1',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '1',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -249,12 +249,12 @@ test('startDevServer clears an inherited DATABASE_URL for a light server', async
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_SERVER_FLAVOR: 'full',
+          PIGGERCODE_SERVER_FLAVOR: 'full',
           HAPPY_SERVER_FLAVOR: 'full',
-          HAPPIER_DB_PROVIDER: 'sqlite',
+          PIGGERCODE_DB_PROVIDER: 'sqlite',
           DATABASE_URL: 'mysql://exported-shell/db',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -270,7 +270,7 @@ test('startDevServer clears an inherited DATABASE_URL for a light server', async
       { ensureDepsInstalledImpl: async () => {} },
     );
     assert.equal(Object.hasOwn(out.serverEnv, 'DATABASE_URL'), false);
-    assert.equal(out.serverEnv.HAPPIER_SERVER_FLAVOR, 'light');
+    assert.equal(out.serverEnv.PIGGERCODE_SERVER_FLAVOR, 'light');
     assert.equal(out.serverEnv.HAPPY_SERVER_FLAVOR, 'light');
   });
 });
@@ -329,7 +329,7 @@ test('server restart preflight validates runtime sources without using the test-
     assert.equal(packageManagerCalls[0].bin, 'typecheck:runtime');
     assert.deepEqual(packageManagerCalls[0].args, []);
     assert.equal(packageManagerCalls[0].quiet, false);
-    assert.equal(packageManagerCalls[0].env.HAPPIER_STACK_SKIP_REFRESH_DEPS, '1');
+    assert.equal(packageManagerCalls[0].env.PIGGERCODE_STACK_SKIP_REFRESH_DEPS, '1');
 
     await writeFile(join(serverDir, 'package.json'), JSON.stringify({
       private: true,
@@ -410,7 +410,7 @@ test('server restart preflight consumes the parent-start marker once before watc
       private: true,
       scripts: { 'typecheck:runtime': 'runtime-only-typecheck' },
     }));
-    const serverEnv = { HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1' };
+    const serverEnv = { PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1' };
     const packageManagerCalls = [];
     const boundary = { pmExecBinImpl: async (input) => packageManagerCalls.push(input) };
 
@@ -418,7 +418,7 @@ test('server restart preflight consumes the parent-start marker once before watc
       await preflightDevServerRestart({ serverDir, serverEnv, logger: { log() {} } }, boundary),
       { ran: false, reason: 'already-done' },
     );
-    assert.equal(serverEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(serverEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
     assert.deepEqual(
       await preflightDevServerRestart({ serverDir, serverEnv, logger: { log() {} } }, boundary),
       { ran: true, reason: 'runtime-typecheck-ok' },
@@ -430,8 +430,8 @@ test('server restart preflight consumes the parent-start marker once before watc
 test('disabled server restart preflight consumes the parent marker without invoking the package boundary', async (t) => {
   await withTempServerDir(t, async (serverDir) => {
     const serverEnv = {
-      HAPPIER_STACK_SERVER_RESTART_PREFLIGHT: '0',
-      HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
+      PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT: '0',
+      PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
     };
     let packageManagerCalls = 0;
 
@@ -442,7 +442,7 @@ test('disabled server restart preflight consumes the parent marker without invok
       ),
       { ran: false, reason: 'disabled' },
     );
-    assert.equal(serverEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(serverEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
     assert.equal(packageManagerCalls, 0);
   });
 });
@@ -570,11 +570,11 @@ test('startDevServer cleans up a spawned child when ownership proof fails', asyn
             serverDir,
             autostart: { stackName: 'watch-test', baseDir: serverDir },
             baseEnv: {
-              HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-              HAPPIER_STACK_PRISMA_PUSH: '0',
-              HAPPIER_STACK_MANAGED_INFRA: '0',
-              HAPPIER_STACK_PRISMA_MIGRATE: '0',
-              HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
+              PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+              PIGGERCODE_STACK_PRISMA_PUSH: '0',
+              PIGGERCODE_STACK_MANAGED_INFRA: '0',
+              PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+              PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
             },
             serverPort: 34567,
             internalServerUrl: 'http://127.0.0.1:34567',
@@ -633,10 +633,10 @@ test('startDevServer surfaces typed cleanup-incomplete truth when provisional te
           serverDir,
           autostart: { stackName: 'watch-test', baseDir: serverDir },
           baseEnv: {
-            HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-            HAPPIER_STACK_PRISMA_PUSH: '0',
-            HAPPIER_STACK_MANAGED_INFRA: '0',
-            HAPPIER_STACK_PRISMA_MIGRATE: '0',
+            PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+            PIGGERCODE_STACK_PRISMA_PUSH: '0',
+            PIGGERCODE_STACK_MANAGED_INFRA: '0',
+            PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
           },
           serverPort: 34567,
           internalServerUrl: 'http://127.0.0.1:34567',
@@ -684,10 +684,10 @@ for (const observation of [
             serverDir,
             autostart: { stackName: 'watch-test', baseDir: serverDir },
             baseEnv: {
-              HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-              HAPPIER_STACK_PRISMA_PUSH: '0',
-              HAPPIER_STACK_MANAGED_INFRA: '0',
-              HAPPIER_STACK_PRISMA_MIGRATE: '0',
+              PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+              PIGGERCODE_STACK_PRISMA_PUSH: '0',
+              PIGGERCODE_STACK_MANAGED_INFRA: '0',
+              PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
             },
             serverPort: 34567,
             internalServerUrl: 'http://127.0.0.1:34567',
@@ -742,10 +742,10 @@ test('startDevServer accepts process-group-scoped listener proof when broad disc
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_PRISMA_PUSH: '0',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_PRISMA_PUSH: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -805,10 +805,10 @@ test('startDevServer retries transient process-group listener discovery before r
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_PRISMA_PUSH: '0',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_PRISMA_PUSH: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -862,10 +862,10 @@ test('startDevServer directly terminates a spawned child when marker cleanup ref
             serverDir,
             autostart: { stackName: 'watch-test', baseDir: serverDir },
             baseEnv: {
-              HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-              HAPPIER_STACK_PRISMA_PUSH: '0',
-              HAPPIER_STACK_MANAGED_INFRA: '0',
-              HAPPIER_STACK_PRISMA_MIGRATE: '0',
+              PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+              PIGGERCODE_STACK_PRISMA_PUSH: '0',
+              PIGGERCODE_STACK_MANAGED_INFRA: '0',
+              PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
             },
             serverPort: 34567,
             internalServerUrl: 'http://127.0.0.1:34567',
@@ -909,7 +909,7 @@ test('spawned-child cleanup delegates to the canonical async tree terminator', a
   const treeSignals = [];
 
   const terminated = await terminateSpawnedChildForCleanup(child, {
-    env: { HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200' },
+    env: { PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200' },
     async killSpawnedChildImpl(_child, signal, options) {
       treeSignals.push([signal, options]);
       child.exitCode = 0;
@@ -933,11 +933,11 @@ test('startDevServer skips stack restart cleanup when existing server health che
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_PRISMA_PUSH: '0',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
-          HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_PRISMA_PUSH: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -993,11 +993,11 @@ test('stack restart consumes the parent preflight marker from server and long-li
       scripts: { 'typecheck:runtime': 'runtime-only-typecheck' },
     }));
     const baseEnv = {
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-      HAPPIER_STACK_PRISMA_PUSH: '0',
-      HAPPIER_STACK_MANAGED_INFRA: '0',
-      HAPPIER_STACK_PRISMA_MIGRATE: '0',
-      HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_PRISMA_PUSH: '0',
+      PIGGERCODE_STACK_MANAGED_INFRA: '0',
+      PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+      PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
     };
     let workspaceAdmissions = 0;
     let spawnedEnv;
@@ -1035,8 +1035,8 @@ test('stack restart consumes the parent preflight marker from server and long-li
       },
     );
 
-    assert.equal(spawnedEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
-    assert.equal(baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(spawnedEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
     assert.equal(workspaceAdmissions, 1, 'already-completed preflight must fall back to source declaration admission');
   });
 });
@@ -1044,12 +1044,12 @@ test('stack restart consumes the parent preflight marker from server and long-li
 test('disabled stack restart cannot preserve the parent preflight marker', async (t) => {
   await withTempServerDir(t, async (serverDir) => {
     const baseEnv = {
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-      HAPPIER_STACK_PRISMA_PUSH: '0',
-      HAPPIER_STACK_MANAGED_INFRA: '0',
-      HAPPIER_STACK_PRISMA_MIGRATE: '0',
-      HAPPIER_STACK_SERVER_RESTART_PREFLIGHT: '0',
-      HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_PRISMA_PUSH: '0',
+      PIGGERCODE_STACK_MANAGED_INFRA: '0',
+      PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+      PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT: '0',
+      PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE: '1',
     };
     let workspaceAdmissions = 0;
     let spawnedEnv;
@@ -1087,8 +1087,8 @@ test('disabled stack restart cannot preserve the parent preflight marker', async
       },
     );
 
-    assert.equal(spawnedEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
-    assert.equal(baseEnv.HAPPIER_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(spawnedEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
+    assert.equal(baseEnv.PIGGERCODE_STACK_SERVER_RESTART_PREFLIGHT_ALREADY_DONE, undefined);
     assert.equal(workspaceAdmissions, 1, 'disabled preflight must fall back to source declaration admission');
   });
 });
@@ -1102,7 +1102,7 @@ test('stack restart admits source declarations once when runtime preflight has n
         serverComponentName: 'happier-server-light',
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
-        baseEnv: { HAPPIER_STACK_PRISMA_PUSH: '0', HAPPIER_STACK_PRISMA_MIGRATE: '0' },
+        baseEnv: { PIGGERCODE_STACK_PRISMA_PUSH: '0', PIGGERCODE_STACK_PRISMA_MIGRATE: '0' },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
         publicServerUrl: 'http://127.0.0.1:34567',
@@ -1149,10 +1149,10 @@ test('startDevServer records the listener pid separately from the spawned wrappe
         serverDir,
         autostart: { stackName: 'watch-test', baseDir: serverDir },
         baseEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_PRISMA_PUSH: '0',
-          HAPPIER_STACK_MANAGED_INFRA: '0',
-          HAPPIER_STACK_PRISMA_MIGRATE: '0',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_PRISMA_PUSH: '0',
+          PIGGERCODE_STACK_MANAGED_INFRA: '0',
+          PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
         },
         serverPort: 34567,
         internalServerUrl: 'http://127.0.0.1:34567',
@@ -1204,10 +1204,10 @@ for (const mode of ['direct', 'proxy', 'directFallback']) {
             serverDir,
             autostart: { stackName: 'watch-test', baseDir: serverDir },
             baseEnv: {
-              HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-              HAPPIER_STACK_PRISMA_PUSH: '0',
-              HAPPIER_STACK_MANAGED_INFRA: '0',
-              HAPPIER_STACK_PRISMA_MIGRATE: '0',
+              PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+              PIGGERCODE_STACK_PRISMA_PUSH: '0',
+              PIGGERCODE_STACK_MANAGED_INFRA: '0',
+              PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
             },
             serverPort: 34567,
             serverBindPort: mode === 'proxy' ? 34568 : 34567,

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { planDaemonServiceInstall } from './plan';
 
 describe('daemon service plan release ring env', () => {
-  it('writes HAPPIER_PUBLIC_RELEASE_CHANNEL=dev into systemd unit env for the public dev lane', () => {
+  it('writes PIGGERCODE_PUBLIC_RELEASE_CHANNEL=dev into systemd unit env for the public dev lane', () => {
     const plan = planDaemonServiceInstall({
       platform: 'linux',
       mode: 'user',
@@ -19,6 +19,6 @@ describe('daemon service plan release ring env', () => {
       entryPath: '/opt/happier/package-dist/index.mjs',
     });
 
-    expect(plan.files[0]?.content ?? '').toContain('HAPPIER_PUBLIC_RELEASE_CHANNEL=dev');
+    expect(plan.files[0]?.content ?? '').toContain('PIGGERCODE_PUBLIC_RELEASE_CHANNEL=dev');
   });
 });

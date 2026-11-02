@@ -71,10 +71,10 @@ function buildSuccessfulAuthBinScript() {
   return [
     `import { mkdirSync, writeFileSync } from 'node:fs';`,
     `import { dirname } from 'node:path';`,
-    `const credentialPath = process.env.HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH || '';`,
+    `const credentialPath = process.env.PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH || '';`,
     `if (credentialPath) {`,
     `  mkdirSync(dirname(credentialPath), { recursive: true });`,
-    `  writeFileSync(credentialPath, \`\${process.env.HAPPIER_TEST_AUTH_SUCCESS_TOKEN || 'test-token'}\\n\`, 'utf-8');`,
+    `  writeFileSync(credentialPath, \`\${process.env.PIGGERCODE_TEST_AUTH_SUCCESS_TOKEN || 'test-token'}\\n\`, 'utf-8');`,
     `}`,
     `process.exit(0);`,
     '',
@@ -86,9 +86,9 @@ function wrapSuccessfulAuthRuntimeCliScript(runtimeCliScript) {
   const normalizedBody = raw.startsWith('#!') ? raw.replace(/^#![^\n]*\n?/, '') : raw;
   return [
     '#!/bin/sh',
-    'if [ -n "${HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH-}" ]; then',
-    '  mkdir -p "$(dirname "$HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH")"',
-    '  printf "%s\\n" "${HAPPIER_TEST_AUTH_SUCCESS_TOKEN-test-token}" > "$HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH"',
+    'if [ -n "${PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH-}" ]; then',
+    '  mkdir -p "$(dirname "$PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH")"',
+    '  printf "%s\\n" "${PIGGERCODE_TEST_AUTH_SUCCESS_TOKEN-test-token}" > "$PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH"',
     'fi',
     normalizedBody,
   ].join('\n');
@@ -121,8 +121,8 @@ async function buildGuidedNoExpoFixture({
   const serverUrl = `http://127.0.0.1:${port}`;
   const authEnv = {
     ...process.env,
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
   };
   const credentialPaths = resolveStackCredentialPaths({
     cliHomeDir,
@@ -142,12 +142,12 @@ async function buildGuidedNoExpoFixture({
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-      `HAPPIER_STACK_SERVER_PORT=${port}`,
-      ...(publicServerUrl ? [`HAPPIER_STACK_SERVER_URL=${publicServerUrl}`] : []),
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+      `PIGGERCODE_STACK_SERVER_PORT=${port}`,
+      ...(publicServerUrl ? [`PIGGERCODE_STACK_SERVER_URL=${publicServerUrl}`] : []),
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
       '',
     ].join('\n'),
     'utf-8'
@@ -193,18 +193,18 @@ async function buildGuidedNoExpoFixture({
     port,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_TEST_TTY: '1',
-      HAPPIER_STACK_AUTH_FLOW: '0',
-      HAPPIER_STACK_AUTH_UI_READY_TIMEOUT_MS: '1',
-      HAPPIER_STACK_AUTH_EXPO_SOFT_TIMEOUT_MS: '1',
-      HAPPIER_NO_BROWSER_OPEN: '1',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_TEST_TTY: '1',
+      PIGGERCODE_STACK_AUTH_FLOW: '0',
+      PIGGERCODE_STACK_AUTH_UI_READY_TIMEOUT_MS: '1',
+      PIGGERCODE_STACK_AUTH_EXPO_SOFT_TIMEOUT_MS: '1',
+      PIGGERCODE_NO_BROWSER_OPEN: '1',
       ...(successfulLoginWritesCredentials
         ? {
-            HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH: credentialPaths.serverScopedPath,
-            HAPPIER_TEST_AUTH_SUCCESS_TOKEN: 'test-token',
+            PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH: credentialPaths.serverScopedPath,
+            PIGGERCODE_TEST_AUTH_SUCCESS_TOKEN: 'test-token',
           }
         : {}),
     },
@@ -321,7 +321,7 @@ test('hstack auth login (auto) prefers the runtime-backed stack UI over Expo whe
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_RUNTIME_MODE: 'prefer',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
       },
       input: '\n\n',
     });
@@ -367,7 +367,7 @@ test('hstack auth login uses the active runtime snapshot cli for the actual logi
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_RUNTIME_MODE: 'prefer',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
         RUNTIME_AUTH_MARKER: fixture.markerPath,
       },
       input: '\n\n',
@@ -420,8 +420,8 @@ test('hstack auth login --force fails closed when guided login exits without usa
     const serverUrl = `http://127.0.0.1:${fixture.port}`;
     const env = {
       ...fixture.env,
-      HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-      HAPPIER_ACTIVE_SERVER_ID: `stack_${fixture.stackName}__id_default`,
+      PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+      PIGGERCODE_ACTIVE_SERVER_ID: `stack_${fixture.stackName}__id_default`,
     };
     const credentialPaths = resolveStackCredentialPaths({
       cliHomeDir,
@@ -519,9 +519,9 @@ test('hstack auth login --force fails closed when credential validation cannot r
         cwd: rootDir,
         env: {
           ...fixture.env,
-          HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '2',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
+          PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '2',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
         },
         input: '\n\n',
       },
@@ -604,9 +604,9 @@ test('hstack auth login --force retries transient credential validation request 
         cwd: rootDir,
         env: {
           ...fixture.env,
-          HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
+          PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
         },
         input: '\n\n',
       },
@@ -682,9 +682,9 @@ test('hstack auth login --force retries a transient 401 credential validation re
         cwd: rootDir,
         env: {
           ...fixture.env,
-          HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
+          PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
         },
         input: '\n\n',
       },
@@ -760,9 +760,9 @@ test('hstack auth login --force retries a transient 503 credential validation re
         cwd: rootDir,
         env: {
           ...fixture.env,
-          HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
-          HAPPIER_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
+          PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_ATTEMPTS: '3',
+          PIGGERCODE_STACK_AUTH_CREDENTIAL_VALIDATION_RETRY_DELAY_MS: '1',
         },
         input: '\n\n',
       },
@@ -803,8 +803,8 @@ test('hstack auth login suggests runtime-backed start when a runtime-backed stac
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-        HAPPIER_STACK_AUTH_SERVER_READY_TIMEOUT_MS: '1000',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+        PIGGERCODE_STACK_AUTH_SERVER_READY_TIMEOUT_MS: '1000',
       },
       input: '\n\n',
     });
@@ -839,7 +839,7 @@ test('hstack auth login falls back to mobile when a runtime-backed stack stays u
           '#!/bin/sh\n' +
           'set -eu\n' +
           'printf "%s\\n" "$@" >> "$RUNTIME_AUTH_MARKER"\n' +
-          'printf "method=%s\\n" "${HAPPIER_AUTH_METHOD-}" >> "$RUNTIME_AUTH_MARKER"\n' +
+          'printf "method=%s\\n" "${PIGGERCODE_AUTH_METHOD-}" >> "$RUNTIME_AUTH_MARKER"\n' +
           'printf "%s\\n" "--" >> "$RUNTIME_AUTH_MARKER"\n' +
           'exit 0\n',
       });
@@ -848,7 +848,7 @@ test('hstack auth login falls back to mobile when a runtime-backed stack stays u
       const envFileRaw = await readFile(envFilePath, 'utf-8');
       await writeFile(
         envFilePath,
-        `${envFileRaw}HAPPIER_STACK_SERVICE_MODE=1\nHAPPIER_STACK_AUTH_SERVER_READY_TIMEOUT_MS=1000\n`,
+        `${envFileRaw}PIGGERCODE_STACK_SERVICE_MODE=1\nPIGGERCODE_STACK_AUTH_SERVER_READY_TIMEOUT_MS=1000\n`,
         'utf-8'
       );
     } catch (e) {
@@ -862,8 +862,8 @@ test('hstack auth login falls back to mobile when a runtime-backed stack stays u
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_SERVICE_MODE: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'prefer',
+        PIGGERCODE_STACK_SERVICE_MODE: '1',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
         RUNTIME_AUTH_MARKER: fixture.markerPath,
       },
       input: '\n\n',
@@ -906,7 +906,7 @@ test('hstack auth login suggests stack start for non-Expo guided login when the 
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_AUTH_SERVER_READY_TIMEOUT_MS: '1000',
+        PIGGERCODE_STACK_AUTH_SERVER_READY_TIMEOUT_MS: '1000',
       },
       input: '\n\n',
     });
@@ -964,7 +964,7 @@ test('hstack auth login (auto) does not attempt Expo in service mode', async (t)
     }
     const res = await runNodeCapture([authScriptPath(rootDir), 'login', '--method', 'web'], {
       cwd: rootDir,
-      env: { ...fixture.env, HAPPIER_STACK_SERVICE_MODE: '1' },
+      env: { ...fixture.env, PIGGERCODE_STACK_SERVICE_MODE: '1' },
       input: '\n\n',
     });
     assert.equal(res.code, 0, `expected exit 0 for auto auth in service mode without Expo\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
@@ -1025,7 +1025,7 @@ test('hstack auth login --method=mobile succeeds even when Expo web UI is not ru
       env: {
         ...fixture.env,
         // Guard against shell-env leakage from other stack sessions.
-        HAPPIER_HOME_DIR: leakedCliHomeDir,
+        PIGGERCODE_HOME_DIR: leakedCliHomeDir,
       },
       input: '\n\n',
     });
@@ -1056,9 +1056,9 @@ test('hstack auth login --webapp=expo prints progress messages while waiting for
       cwd: rootDir,
       env: {
         ...fixture.env,
-        HAPPIER_STACK_AUTH_UI_READY_TIMEOUT_MS: '50',
-        HAPPIER_STACK_AUTH_EXPO_PROGRESS_INTERVAL_MS: '1',
-        HAPPIER_STACK_AUTH_UI_START_TIMEOUT_MS: '10',
+        PIGGERCODE_STACK_AUTH_UI_READY_TIMEOUT_MS: '50',
+        PIGGERCODE_STACK_AUTH_EXPO_PROGRESS_INTERVAL_MS: '1',
+        PIGGERCODE_STACK_AUTH_UI_START_TIMEOUT_MS: '10',
       },
       input: '\n\n',
     });

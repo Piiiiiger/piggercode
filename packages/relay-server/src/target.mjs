@@ -30,8 +30,8 @@ export function resolveRunnerCacheRoot({ platform, homedir, env }) {
   const home = String(homedir ?? '').trim();
   const e = env && typeof env === 'object' ? env : {};
 
-  if (String(e.HAPPIER_CACHE_DIR ?? '').trim()) {
-    return String(e.HAPPIER_CACHE_DIR).trim();
+  if (String(e.PIGGERCODE_CACHE_DIR ?? '').trim()) {
+    return String(e.PIGGERCODE_CACHE_DIR).trim();
   }
 
   if (p === 'win32') {

@@ -68,8 +68,8 @@ vi.mock('./manifestRuntime', () => ({
 
 describe('useReleaseNotesLauncher', () => {
     beforeEach(() => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = 'app.ui.releaseNotes';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = '';
         setLastSeenReleaseId('v0.9.0');
         modalState.lastConfig = null;
         modalState.lastProps = null;
@@ -156,7 +156,7 @@ describe('useReleaseNotesLauncher', () => {
     });
 
     it('does not open the release story when the release-notes feature is denied', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.releaseNotes';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.releaseNotes';
         const hook = await renderLauncherAndUnread();
 
         expect(hook.getCurrent().unread.hasUnread).toBe(false);
@@ -167,7 +167,7 @@ describe('useReleaseNotesLauncher', () => {
     });
 
     it('does not open the release story without an explicit story allow', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = '';
         const hook = await renderLauncherAndUnread();
 
         expect(hook.getCurrent().unread.hasUnread).toBe(true);

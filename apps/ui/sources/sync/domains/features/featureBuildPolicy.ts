@@ -11,9 +11,9 @@ let cachedBuildPolicy: FeatureBuildPolicy | null = null;
 let cachedBuildPolicyKey: string | null = null;
 
 function resolveBuildPolicyFromEnv(): FeatureBuildPolicy {
-    const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(process.env.EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV) ?? undefined;
-    const allowRaw = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW;
-    const denyRaw = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV) ?? undefined;
+    const allowRaw = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW;
+    const denyRaw = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
     const key = `${embeddedEnv ?? ''}::${allowRaw ?? ''}::${denyRaw ?? ''}`;
 
     if (cachedBuildPolicy && cachedBuildPolicyKey === key) {

@@ -4,19 +4,19 @@ import { resolveMachineTransferRuntimeConfig } from './transferRuntimeConfig';
 
 describe('resolveMachineTransferRuntimeConfig', () => {
   afterEach(() => {
-    delete process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS;
   });
 
   it('reads direct-peer and server-routed runtime env from one canonical resolver', () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED = 'true';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED = 'false';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT = '46001';
-    process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '12345';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED = 'true';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED = 'false';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT = '46001';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_SERVER_ROUTED_TIMEOUT_MS = '12345';
 
     const resolved = resolveMachineTransferRuntimeConfig({
       networkInterfacesFn: () => ({
@@ -38,8 +38,8 @@ describe('resolveMachineTransferRuntimeConfig', () => {
   });
 
   it('keeps direct-peer server disabled when the feature gate is disabled even if the server env is enabled', () => {
-    process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED = 'false';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED = 'true';
+    process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED = 'false';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED = 'true';
 
     const resolved = resolveMachineTransferRuntimeConfig({
       networkInterfacesFn: () => ({}),

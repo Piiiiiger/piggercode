@@ -6,10 +6,10 @@ import { createAuthStackFixture, getStackRootFromMeta, hstackBinPath, runNodeCap
 import { resolveStackCredentialPaths } from './utils/auth/credentials_paths.mjs';
 
 const BASE_ENV_LINES = [
-  'HAPPIER_STACK_STACK=main',
-  'HAPPIER_STACK_SERVER_PORT=4102',
-  'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-  'HAPPIER_STACK_TAILSCALE_SERVE=0',
+  'PIGGERCODE_STACK_STACK=main',
+  'PIGGERCODE_STACK_SERVER_PORT=4102',
+  'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+  'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
 ];
 
 async function runLoginPrintJson({ rootDir, fixture, args = [] }) {
@@ -59,7 +59,7 @@ test('hstack auth login prints stable active server scope env by default', async
     const parsed = await runLoginPrintJson({ rootDir, fixture });
     assert.match(
       parsed.cmd,
-      /HAPPIER_ACTIVE_SERVER_ID="stack_main__id_default"/,
+      /PIGGERCODE_ACTIVE_SERVER_ID="stack_main__id_default"/,
       `expected printed command to include stable scope env\n${parsed.cmd}`
     );
   } finally {
@@ -90,8 +90,8 @@ test('hstack auth login --force keeps credentials when guided startup is decline
       {
         cwd: rootDir,
         env: fixture.buildEnv({
-          HAPPIER_HOME_DIR: cliHomeDir,
-          HAPPIER_STACK_TEST_TTY: '1',
+          PIGGERCODE_HOME_DIR: cliHomeDir,
+          PIGGERCODE_STACK_TEST_TTY: '1',
         }),
         input: 'n\n',
       },

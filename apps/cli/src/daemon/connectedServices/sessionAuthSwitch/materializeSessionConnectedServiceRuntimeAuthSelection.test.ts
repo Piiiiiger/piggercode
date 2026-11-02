@@ -10,7 +10,7 @@ import { buildConnectedServiceCredentialRecord, type ConnectedServiceBindingsV1 
 import type { ApiClient } from '@/api/api';
 import type { TrackedSession } from '@/daemon/types';
 import type { Credentials } from '@/persistence';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialScopes';
 import { materializeSessionConnectedServiceRuntimeAuthSelection } from './materializeSessionConnectedServiceRuntimeAuthSelection';
 
@@ -103,7 +103,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         connectedServices: previousBindings,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             {
               kind: 'group',
               serviceId: 'anthropic',
@@ -290,7 +290,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         connectedServices: previousBindings,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             {
               kind: 'group',
               serviceId: 'anthropic',
@@ -383,7 +383,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         connectedServices: previousBindings,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             {
               kind: 'group',
               serviceId: 'anthropic',
@@ -688,7 +688,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         connectedServices: previousBindings,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             {
               kind: 'group',
               serviceId: 'claude-subscription',

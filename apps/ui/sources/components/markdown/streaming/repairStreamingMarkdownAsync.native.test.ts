@@ -19,7 +19,7 @@ describe('repairStreamingMarkdownAsync native', () => {
     beforeEach(() => {
         vi.resetModules();
         vi.useRealTimers();
-        delete process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON;
         workletsMock.createWorkletRuntime.mockReset();
         workletsMock.runOnRuntime.mockReset();
         workletsMock.scheduleOnRN.mockReset();
@@ -101,7 +101,7 @@ describe('repairStreamingMarkdownAsync native', () => {
 
     it('falls back to JS preprocessing when the Worklets callback does not complete', async () => {
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON = JSON.stringify({
+        process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON = JSON.stringify({
             streamingMarkdownRepairWorkletTimeoutMs: 1,
         });
         workletsMock.runOnRuntime.mockImplementationOnce(() => () => {});

@@ -46,8 +46,8 @@ process.stdout.write('ok\\n\\n===FINDINGS_JSON===\\n[]\\n');
     // Keep the real Node bin available without letting its real auggie binary shadow our stub.
     PATH: buildToolStubPath(binDir),
     // Keep Augment cache writes out of the repo.
-    HAPPIER_STACK_AUGMENT_CACHE_DIR: path.join(tmp, 'augment-home'),
-    HAPPIER_STACK_REPO_DIR: repoRoot,
+    PIGGERCODE_STACK_AUGMENT_CACHE_DIR: path.join(tmp, 'augment-home'),
+    PIGGERCODE_STACK_REPO_DIR: repoRoot,
   };
 
   const res = spawnSync(
@@ -86,8 +86,8 @@ process.stdout.write('ok\\n\\n===FINDINGS_JSON===\\n[]\\n');
   const env = {
     ...process.env,
     PATH: buildToolStubPath(binDir),
-    HAPPIER_STACK_AUGMENT_CACHE_DIR: path.join(tmp, 'augment-home'),
-    // Do NOT set HAPPIER_STACK_REPO_DIR here; we want it inferred from cwd.
+    PIGGERCODE_STACK_AUGMENT_CACHE_DIR: path.join(tmp, 'augment-home'),
+    // Do NOT set PIGGERCODE_STACK_REPO_DIR here; we want it inferred from cwd.
   };
 
   const res = spawnSync(

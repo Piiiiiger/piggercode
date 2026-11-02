@@ -39,9 +39,9 @@ export async function importOpenCodeTaskSidechainBestEffort(params: Readonly<{
     return Math.min(bounds.max, Math.max(bounds.min, Math.trunc(parsed)));
   };
 
-  const maxWaitMs = resolvePositiveIntEnv(process.env.HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS, 25_000, { min: 0, max: 120_000 });
-  const retryBaseDelayMs = resolvePositiveIntEnv(process.env.HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS, 250, { min: 0, max: 10_000 });
-  const retryMaxDelayMs = resolvePositiveIntEnv(process.env.HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS, 2_000, { min: 0, max: 30_000 });
+  const maxWaitMs = resolvePositiveIntEnv(process.env.PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS, 25_000, { min: 0, max: 120_000 });
+  const retryBaseDelayMs = resolvePositiveIntEnv(process.env.PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS, 250, { min: 0, max: 10_000 });
+  const retryMaxDelayMs = resolvePositiveIntEnv(process.env.PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS, 2_000, { min: 0, max: 30_000 });
 
   let delayMs = retryBaseDelayMs;
   const startMs = Date.now();

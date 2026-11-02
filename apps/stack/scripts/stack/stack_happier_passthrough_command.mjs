@@ -45,7 +45,7 @@ export async function runStackHappierPassthroughCommand({ rootDir, stackName, pa
   await withStackEnv({
     stackName,
     fn: async ({ env }) => {
-      const baseCliHomeDir = (env.HAPPIER_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString();
+      const baseCliHomeDir = (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString();
       const cliHomeDirForIdentity = identity
         ? resolveCliHomeDirForIdentity({ cliHomeDir: baseCliHomeDir, identity })
         : baseCliHomeDir;
@@ -53,16 +53,16 @@ export async function runStackHappierPassthroughCommand({ rootDir, stackName, pa
       let envForHappy = identity
         ? {
             ...env,
-            HAPPIER_STACK_CLI_IDENTITY: identity,
-            HAPPIER_HOME_DIR: cliHomeDirForIdentity,
-            HAPPIER_STACK_CLI_HOME_DIR: cliHomeDirForIdentity,
+            PIGGERCODE_STACK_CLI_IDENTITY: identity,
+            PIGGERCODE_HOME_DIR: cliHomeDirForIdentity,
+            PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDirForIdentity,
           }
         : env;
 
       envForHappy = applyStackActiveServerScopeEnv({
         env: envForHappy,
         stackName,
-        cliIdentity: identity || (envForHappy.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
+        cliIdentity: identity || (envForHappy.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
       });
 
       const child = spawn(process.execPath, [join(rootDir, 'scripts', 'happier.mjs'), ...childArgs], {

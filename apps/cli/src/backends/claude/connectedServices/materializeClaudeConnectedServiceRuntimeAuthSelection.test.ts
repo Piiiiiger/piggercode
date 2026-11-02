@@ -12,7 +12,7 @@ import {
 } from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { verifyResumeReachableClaude } from '@/backends/claude/connectedServices/verifyResumeReachableClaude';
 import type { TrackedSession } from '@/daemon/types';
 import type { Credentials } from '@/persistence';
@@ -366,7 +366,7 @@ describe('materializeClaudeConnectedServiceRuntimeAuthSelection', () => {
         connectedServices: previousBindings,
         environmentVariables: {
           CLAUDE_CONFIG_DIR: groupClaudeConfigDir,
-          [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: groupClaudeConfigDir,
+          [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: groupClaudeConfigDir,
         },
       },
     };
@@ -656,7 +656,7 @@ describe('materializeClaudeConnectedServiceRuntimeAuthSelection', () => {
         connectedServices: previousBindings,
         environmentVariables: {
           CLAUDE_CONFIG_DIR: groupClaudeConfigDir,
-          [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: groupClaudeConfigDir,
+          [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: groupClaudeConfigDir,
         },
       },
     };

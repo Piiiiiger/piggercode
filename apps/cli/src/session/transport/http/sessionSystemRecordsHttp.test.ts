@@ -5,17 +5,17 @@ import axios from 'axios';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('sessionControl.sessionSystemRecordsHttp', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it('upserts a system record through the dedicated session system-record route', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { upsertSessionSystemRecord } = await import('./sessionSystemRecordsHttp');
 
@@ -99,7 +99,7 @@ describe('sessionControl.sessionSystemRecordsHttp', () => {
   });
 
   it('fetches paginated, latest, and single memory system records with query params', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const {
       fetchLatestSessionSystemRecord,
@@ -198,7 +198,7 @@ describe('sessionControl.sessionSystemRecordsHttp', () => {
   });
 
   it('normalizes auth failures for system-record requests', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchLatestSessionSystemRecord } = await import('./sessionSystemRecordsHttp');
 
@@ -220,7 +220,7 @@ describe('sessionControl.sessionSystemRecordsHttp', () => {
     // A server released before a record kind existed answers 400 to every attempt at it. A writer
     // that cannot read the status has no way to stop, and retries the same rejected bytes forever;
     // the same is true of a session that has been deleted (404). Both must carry their status.
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { upsertSessionSystemRecord } = await import('./sessionSystemRecordsHttp');
     const { isPermanentRequestError } = await import('@/api/client/httpStatusError');
@@ -273,7 +273,7 @@ describe('sessionControl.sessionSystemRecordsHttp', () => {
   });
 
   it('surfaces required compatibility rejection as a typed terminal error', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchSessionSystemRecordsPage } = await import('./sessionSystemRecordsHttp');
 

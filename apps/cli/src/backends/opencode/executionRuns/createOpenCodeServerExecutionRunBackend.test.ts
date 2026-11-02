@@ -94,7 +94,7 @@ describe('createOpenCodeServerExecutionRunBackend', () => {
     const backend = createOpenCodeServerExecutionRunBackend({
       cwd: '/tmp/opencode-run',
       env: {
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
       },
       permissionHandler: {
         handleToolCall: vi.fn(async () => ({ decision: 'approved_for_session' as const })),
@@ -115,7 +115,7 @@ describe('createOpenCodeServerExecutionRunBackend', () => {
 
     expect(createOpenCodeServerRuntimeMock).toHaveBeenCalledWith(expect.objectContaining({
       directory: '/tmp/opencode-run',
-      env: { HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096' },
+      env: { PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096' },
       mcpServers: {},
       happierMcpAdmission: { kind: 'not_available_for_execution_run' },
     }));

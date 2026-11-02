@@ -5,9 +5,9 @@ import { getFirstPartyComponentCatalogEntry } from '@piggercode/cli-common/first
 import { resolveRuntimeManifestEntrypoint } from '../shared/runtime_manifest.mjs';
 
 const RUNTIME_PROVENANCE_ENV_KEYS = [
-  'HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED',
-  'HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT',
-  'HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT',
+  'PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED',
+  'PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT',
+  'PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT',
 ];
 
 export function resolveCliRuntimeLaunchProvenance(cliLaunchSpec) {
@@ -43,9 +43,9 @@ export function applyCliRuntimeLaunchProvenanceEnv({ env = {}, cliLaunchSpec = n
   for (const key of RUNTIME_PROVENANCE_ENV_KEYS) delete projected[key];
   const provenance = resolveCliRuntimeLaunchProvenance(cliLaunchSpec);
   if (!provenance.runtimeBacked) return projected;
-  projected.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED = '1';
-  projected.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT = provenance.distEntrypoint;
-  projected.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = provenance.admittedDistClosureFingerprint;
+  projected.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED = '1';
+  projected.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT = provenance.distEntrypoint;
+  projected.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = provenance.admittedDistClosureFingerprint;
   return projected;
 }
 

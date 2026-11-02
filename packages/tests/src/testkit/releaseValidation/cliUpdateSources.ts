@@ -22,10 +22,10 @@ export type CliUpdateSourcePair = Readonly<{
 const DEFAULT_LOCAL_BUILD_SOURCE: CliUpdateSource = { kind: 'local-build', ref: 'HEAD' };
 
 const CLI_UPDATE_ENV_KEYS = [
-    'HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_KIND',
-    'HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_REF',
-    'HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_TO_SOURCE_KIND',
-    'HAPPIER_RELEASE_VALIDATION_CLI_UPDATE_TO_SOURCE_REF',
+    'PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_KIND',
+    'PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_FROM_SOURCE_REF',
+    'PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_TO_SOURCE_KIND',
+    'PIGGERCODE_RELEASE_VALIDATION_CLI_UPDATE_TO_SOURCE_REF',
 ] as const;
 
 function normalizeCliUpdateSourceKind(raw: unknown): CliUpdateSourceKind | null {
@@ -152,7 +152,7 @@ export function resolveCliUpdatePublishedReleasePlan(
 
 export function resolveCliUpdateValidationLaunchEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
     const next = { ...env };
-    delete next.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT;
+    delete next.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT;
     delete next.HAPPY_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT;
     return next;
 }
@@ -215,16 +215,16 @@ async function preparePublishedCliSourceSnapshot(params: {
         cwd: repoRootDir(),
         env: {
             ...params.env,
-            HAPPIER_CHANNEL: plan.releaseChannel,
-            HAPPIER_PRODUCT: 'cli',
-            HAPPIER_INSTALL_DIR: installDir,
-            HAPPIER_BIN_DIR: binDir,
-            HAPPIER_WITH_DAEMON: '0',
-            HAPPIER_NO_PATH_UPDATE: '1',
-            HAPPIER_NONINTERACTIVE: '1',
-            HAPPIER_RELEASE_ASSETS_DIR: assetsDir,
-            HAPPIER_INSTALL_VERSION: plan.version ?? '',
-            HAPPIER_GITHUB_REPO: repo,
+            PIGGERCODE_CHANNEL: plan.releaseChannel,
+            PIGGERCODE_PRODUCT: 'cli',
+            PIGGERCODE_INSTALL_DIR: installDir,
+            PIGGERCODE_BIN_DIR: binDir,
+            PIGGERCODE_WITH_DAEMON: '0',
+            PIGGERCODE_NO_PATH_UPDATE: '1',
+            PIGGERCODE_NONINTERACTIVE: '1',
+            PIGGERCODE_RELEASE_ASSETS_DIR: assetsDir,
+            PIGGERCODE_INSTALL_VERSION: plan.version ?? '',
+            PIGGERCODE_GITHUB_REPO: repo,
         },
         stdoutPath: resolve(params.testDir, `cli-update.${params.role}.release-install.stdout.log`),
         stderrPath: resolve(params.testDir, `cli-update.${params.role}.release-install.stderr.log`),
@@ -313,8 +313,8 @@ async function prepareLocalBuildCliSourceSnapshot(params: {
             testDir: params.testDir,
             env: resolveCliUpdateValidationLaunchEnv({
                 ...params.env,
-                HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE:
-                    params.env.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? 'symlink',
+                PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE:
+                    params.env.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? 'symlink',
             }),
         },
         {

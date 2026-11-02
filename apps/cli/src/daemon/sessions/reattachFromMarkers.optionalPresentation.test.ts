@@ -35,7 +35,7 @@ describe('recovered optional terminal presentation', () => {
   });
   it('recovers the admitted runtime selection from the real dead-runner marker, not changed defaults', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'optional-marker-', env: {
-      HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED: 'false', HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
+      PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED: 'false', PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
     } }, async ({ homeDir }) => {
       const runner = spawn(process.execPath, ['-e', ''], { stdio: 'ignore' });
       await once(runner, 'spawn');
@@ -46,7 +46,7 @@ describe('recovered optional terminal presentation', () => {
       const credentials = { token: 'synthetic-token', encryption: { type: 'legacy' as const, secret: new Uint8Array(32) } };
       const spawnOptions: SpawnSessionOptions = {
         directory: homeDir, backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
-        terminal: { mode: 'tmux' }, environmentVariables: { HAPPIER_OPENCODE_BACKEND_MODE: 'server' },
+        terminal: { mode: 'tmux' }, environmentVariables: { PIGGERCODE_OPENCODE_BACKEND_MODE: 'server' },
       };
       const respawn = buildSessionRunnerRespawnDescriptorV1FromSpawnOptions(spawnOptions, { encryptionMaterial: credentials.encryption });
       if (!respawn) throw new Error('Synthetic runtime selection was not persisted');

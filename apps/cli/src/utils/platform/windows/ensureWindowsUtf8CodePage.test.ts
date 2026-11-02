@@ -33,7 +33,7 @@ describe('ensureWindowsUtf8CodePage', () => {
     const execSync = vi.fn();
     const attempted = ensureWindowsUtf8CodePage({
       platform: 'win32',
-      env: { HAPPIER_WINDOWS_UTF8_CODEPAGE: '0' },
+      env: { PIGGERCODE_WINDOWS_UTF8_CODEPAGE: '0' },
       isTTY: true,
       execSync,
     });

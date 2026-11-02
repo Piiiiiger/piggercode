@@ -27,10 +27,10 @@ function assertExitOk(res, context) {
 function buildBaseEnv({ homeDir, storageDir, workspaceDir }) {
   return {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
   };
 }
 
@@ -95,9 +95,9 @@ import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) {
-  console.error('missing HAPPIER_HOME_DIR');
+  console.error('missing PIGGERCODE_HOME_DIR');
   process.exit(2);
 }
 const log = join(home, 'stub-daemon.log');
@@ -130,12 +130,12 @@ if (sub === 'stop') {
 if (sub === 'start') {
   append('start');
   // Capture resolved target server so integration tests can assert correct stack port selection.
-  append('server_url=' + String(process.env.HAPPIER_SERVER_URL || ''));
-  append('webapp_url=' + String(process.env.HAPPIER_WEBAPP_URL || ''));
-  append('direct_peer_bind_port=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT || ''));
-  append('direct_peer_advertised_hosts=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS || ''));
-  append('direct_peer_feature_enabled=' + String(process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED || ''));
-  append('direct_peer_server_enabled=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED || ''));
+  append('server_url=' + String(process.env.PIGGERCODE_SERVER_URL || ''));
+  append('webapp_url=' + String(process.env.PIGGERCODE_WEBAPP_URL || ''));
+  append('direct_peer_bind_port=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT || ''));
+  append('direct_peer_advertised_hosts=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS || ''));
+  append('direct_peer_feature_enabled=' + String(process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED || ''));
+  append('direct_peer_server_enabled=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED || ''));
   const child = spawn(process.execPath, ['-e', ${JSON.stringify(daemonChildSource)}, state], { detached: true, stdio: 'ignore' });
   child.unref();
   process.exit(0);
@@ -390,7 +390,7 @@ test('hstack stack daemon <name> start with --identity accepts stack-stable serv
   const identityHome = join(fixture.storageDir, fixture.stackName, 'cli-identities', identity);
   const scopedEnv = {
     ...fixture.baseEnv,
-    HAPPIER_ACTIVE_SERVER_ID: buildStackStableScopeId({ stackName: fixture.stackName, cliIdentity: identity }),
+    PIGGERCODE_ACTIVE_SERVER_ID: buildStackStableScopeId({ stackName: fixture.stackName, cliIdentity: identity }),
   };
   await writeServerScopedAuth({
     cliHomeDir: identityHome,
@@ -473,7 +473,7 @@ test('hstack stack daemon <name> status falls back when cli dist entrypoint is m
   const startRes = await runHstack(['stack', 'daemon', fixture.stackName, 'start', '--json'], { env: fixture.baseEnv });
   assertExitOk(startRes, 'stack daemon start for fallback status');
 
-  const distEntrypoint = join(fixture.baseEnv.HAPPIER_STACK_WORKSPACE_DIR, 'happier', 'apps', 'cli', 'dist', 'index.mjs');
+  const distEntrypoint = join(fixture.baseEnv.PIGGERCODE_STACK_WORKSPACE_DIR, 'happier', 'apps', 'cli', 'dist', 'index.mjs');
   await rm(distEntrypoint, { force: true });
 
   const statusRes = await runHstack(['stack', 'daemon', fixture.stackName, 'status', '--json'], { env: fixture.baseEnv });
@@ -505,7 +505,7 @@ test('hstack stack daemon <name> status falls back when cli dist entrypoint impo
   const startRes = await runHstack(['stack', 'daemon', fixture.stackName, 'start', '--json'], { env: fixture.baseEnv });
   assertExitOk(startRes, 'stack daemon start for incomplete-import fallback status');
 
-  const distDir = join(fixture.baseEnv.HAPPIER_STACK_WORKSPACE_DIR, 'happier', 'apps', 'cli', 'dist');
+  const distDir = join(fixture.baseEnv.PIGGERCODE_STACK_WORKSPACE_DIR, 'happier', 'apps', 'cli', 'dist');
   await writeFile(join(distDir, 'broken-export.mjs'), 'export const present = true;\n', 'utf-8');
   await writeFile(
     join(distDir, 'index.mjs'),
@@ -537,7 +537,7 @@ test('hstack stack daemon <name> start uses runtime server port when env port is
 
   await writeDummyAuth({ cliHomeDir: fixture.stackCliHome });
 
-  // Write a stack env *without* HAPPIER_STACK_SERVER_PORT so the command must fall back to runtime state.
+  // Write a stack env *without* PIGGERCODE_STACK_SERVER_PORT so the command must fall back to runtime state.
   await fixture.writeStackEnv({ port: '' });
 
   // Create a runtime state file that indicates the stack server is running on fixture.serverPort.
@@ -580,7 +580,7 @@ test('hstack stack daemon <name> start uses runtime server port when env port is
   );
 });
 
-test('hstack stack daemon <name> start uses explicit HAPPIER_SERVER_URL when env port and runtime port are missing', async (t) => {
+test('hstack stack daemon <name> start uses explicit PIGGERCODE_SERVER_URL when env port and runtime port are missing', async (t) => {
   const fixture = await createDaemonFixture(t, {
     prefix: 'happy-stacks-stack-daemon-explicit-server-url-',
     stackName: 'exp-test',
@@ -595,10 +595,10 @@ test('hstack stack daemon <name> start uses explicit HAPPIER_SERVER_URL when env
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_REPO_DIR=${fixture.baseEnv.HAPPIER_STACK_WORKSPACE_DIR}/happier`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${fixture.stackCliHome}`,
-      `HAPPIER_SERVER_URL=http://127.0.0.1:${explicitPort}`,
-      `HAPPIER_WEBAPP_URL=http://happier-exp-test.localhost:${explicitPort}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fixture.baseEnv.PIGGERCODE_STACK_WORKSPACE_DIR}/happier`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${fixture.stackCliHome}`,
+      `PIGGERCODE_SERVER_URL=http://127.0.0.1:${explicitPort}`,
+      `PIGGERCODE_WEBAPP_URL=http://happier-exp-test.localhost:${explicitPort}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -607,13 +607,13 @@ test('hstack stack daemon <name> start uses explicit HAPPIER_SERVER_URL when env
   registerDaemonCleanup(t, { env: fixture.baseEnv, stackName: fixture.stackName });
 
   const startRes = await runHstack(['stack', 'daemon', fixture.stackName, 'start', '--json'], { env: fixture.baseEnv });
-  assertExitOk(startRes, 'stack daemon start uses explicit HAPPIER_SERVER_URL');
+  assertExitOk(startRes, 'stack daemon start uses explicit PIGGERCODE_SERVER_URL');
 
   const logPath = join(fixture.stackCliHome, 'stub-daemon.log');
   const logText = await readLogText(logPath);
   assert.ok(
     logText.includes(`server_url=http://127.0.0.1:${explicitPort}`),
-    `expected daemon env to target explicit HAPPIER_SERVER_URL port ${explicitPort}\n${logText}`
+    `expected daemon env to target explicit PIGGERCODE_SERVER_URL port ${explicitPort}\n${logText}`
   );
 });
 
@@ -630,10 +630,10 @@ test('hstack stack daemon <name> restart reuses persisted direct-peer topology e
 
   const topologyEnv = {
     ...fixture.baseEnv,
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: 'host.lima.internal',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '13378',
-    HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: 'true',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: 'true',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: 'host.lima.internal',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '13378',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: 'true',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: 'true',
   };
 
   const startRes = await runHstack(['stack', 'daemon', fixture.stackName, 'start', '--json'], { env: topologyEnv });
@@ -641,10 +641,10 @@ test('hstack stack daemon <name> restart reuses persisted direct-peer topology e
 
   const envPath = join(fixture.storageDir, fixture.stackName, 'env');
   const envTextAfterStart = await readFile(envPath, 'utf-8');
-  assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=host\.lima\.internal/);
-  assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=13378/);
-  assert.match(envTextAfterStart, /HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=true/);
-  assert.match(envTextAfterStart, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=true/);
+  assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=host\.lima\.internal/);
+  assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=13378/);
+  assert.match(envTextAfterStart, /PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=true/);
+  assert.match(envTextAfterStart, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=true/);
 
   const logPath = join(fixture.stackCliHome, 'stub-daemon.log');
   const logTextAfterStart = await readLogText(logPath);
@@ -664,7 +664,7 @@ test('hstack stack daemon <name> restart reuses persisted direct-peer topology e
   assert.match(appendedLog, /direct_peer_server_enabled=true/);
 });
 
-test('hstack stack auth <name> login --identity=<name> --print prints identity-scoped HAPPIER_HOME_DIR', async (t) => {
+test('hstack stack auth <name> login --identity=<name> --print prints identity-scoped PIGGERCODE_HOME_DIR', async (t) => {
   const fixture = await createDaemonFixture(t, {
     prefix: 'happier-stack-auth-identity-',
     stackName: 'exp-test',
@@ -693,7 +693,7 @@ test('hstack stack auth <name> login --identity=<name> --print prints identity-s
   const parsed = JSON.parse(res.stdout.trim());
   assert.equal(parsed?.cliIdentity, identity);
   assert.ok(
-    parsed?.cmd?.includes(`HAPPIER_HOME_DIR="${join(fixture.storageDir, fixture.stackName, 'cli-identities', identity)}"`),
+    parsed?.cmd?.includes(`PIGGERCODE_HOME_DIR="${join(fixture.storageDir, fixture.stackName, 'cli-identities', identity)}"`),
     `expected printed cmd to include identity home dir\n${parsed?.cmd}`
   );
   assert.ok(parsed?.cmd?.includes('--no-open'), `expected printed cmd to include --no-open\n${parsed?.cmd}`);

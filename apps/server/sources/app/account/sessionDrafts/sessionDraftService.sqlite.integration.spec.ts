@@ -217,7 +217,7 @@ describe('sessionDraftService (SQLite integration)', () => {
         const typed = app.withTypeProvider<ZodTypeProvider>() as any;
         typed.decorate('authenticate', async (request: any) => { request.userId = 'account-not-used'; });
         registerSessionDraftRoutes(createServerFeatureGatedRouteApp(typed, 'sessions.drafts', {
-            HAPPIER_FEATURE_SESSIONS_DRAFTS__ENABLED: '0',
+            PIGGERCODE_FEATURE_SESSIONS_DRAFTS__ENABLED: '0',
         }));
         await app.ready();
 
@@ -232,8 +232,8 @@ describe('sessionDraftService (SQLite integration)', () => {
 
     it('requires capable Account-mode migration coverage when live new-session drafts exist', async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
         });
         const account = await db.account.create({ data: { publicKey: `pk-${randomUUID()}`, encryptionMode: 'plain' } });
         const address = { kind: 'newSession' as const, draftId: randomUUID() };
@@ -264,8 +264,8 @@ describe('sessionDraftService (SQLite integration)', () => {
 
     it('atomically migrates complete new-session draft coverage with the Account mode request', async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
         });
         const account = await db.account.create({ data: { publicKey: `pk-${randomUUID()}`, encryptionMode: 'plain' } });
         const address = { kind: 'newSession' as const, draftId: randomUUID() };
@@ -319,8 +319,8 @@ describe('sessionDraftService (SQLite integration)', () => {
 
     it('rejects incomplete and stale draft migration coverage without changing Account or draft revisions', async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
         });
         const account = await db.account.create({ data: { publicKey: `pk-${randomUUID()}`, encryptionMode: 'plain' } });
         const addressA = { kind: 'newSession' as const, draftId: randomUUID() };
@@ -366,8 +366,8 @@ describe('sessionDraftService (SQLite integration)', () => {
 
     it('rejects Account migration content bound to a different draft address without changing revisions', async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
         });
         const account = await db.account.create({ data: { publicKey: `pk-${randomUUID()}`, encryptionMode: 'plain' } });
         const address = { kind: 'newSession' as const, draftId: randomUUID() };

@@ -7,24 +7,24 @@ import { describe, expect, it } from 'vitest';
 import { createBoundedTextFileAppender, createSubprocessStderrAppender } from './subprocessArtifacts';
 
 describe('subprocessArtifacts', () => {
-  it('returns null when HAPPIER_SUBPROCESS_STDERR_MAX_BYTES=0', async () => {
+  it('returns null when PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES=0', async () => {
     const artifactsRoot = mkdtempSync(join(tmpdir(), 'happier-debug-artifacts-'));
 
-    const prevRoot = process.env.HAPPIER_DEBUG_ARTIFACTS_DIR;
-    const prevMax = process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES;
+    const prevRoot = process.env.PIGGERCODE_DEBUG_ARTIFACTS_DIR;
+    const prevMax = process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES;
 
     try {
-      process.env.HAPPIER_DEBUG_ARTIFACTS_DIR = artifactsRoot;
-      process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES = '0';
+      process.env.PIGGERCODE_DEBUG_ARTIFACTS_DIR = artifactsRoot;
+      process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES = '0';
 
       const appender = await createSubprocessStderrAppender({ agentName: 'test', pid: 123, label: 'acp' });
       expect(appender).toBeNull();
     } finally {
-      if (prevRoot === undefined) delete process.env.HAPPIER_DEBUG_ARTIFACTS_DIR;
-      else process.env.HAPPIER_DEBUG_ARTIFACTS_DIR = prevRoot;
+      if (prevRoot === undefined) delete process.env.PIGGERCODE_DEBUG_ARTIFACTS_DIR;
+      else process.env.PIGGERCODE_DEBUG_ARTIFACTS_DIR = prevRoot;
 
-      if (prevMax === undefined) delete process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES;
-      else process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES = prevMax;
+      if (prevMax === undefined) delete process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES;
+      else process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES = prevMax;
 
       rmSync(artifactsRoot, { recursive: true, force: true });
     }

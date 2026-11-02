@@ -36,16 +36,16 @@ export function maybeAutoUpdateNotice({
   spawnDetached = spawnDetachedNode,
   log = console.error,
 }) {
-  const enabled = parseEnabledFlag(env.HAPPIER_STACK_UPDATE_CHECK, { defaultValue: true });
+  const enabled = parseEnabledFlag(env.PIGGERCODE_STACK_UPDATE_CHECK, { defaultValue: true });
   if (!enabled) return;
   if (!isTTY) return;
-  if (env.HAPPIER_STACK_UPDATE_CHECK_SPAWNED === '1') return;
+  if (env.PIGGERCODE_STACK_UPDATE_CHECK_SPAWNED === '1') return;
   if (cmd === 'self' || cmd === 'help' || cmd === '--help' || cmd === '-h') return;
 
   const cachePath = join(homeDir, 'cache', 'update.json');
 
-  const intervalMs = parsePositiveMs(env.HAPPIER_STACK_UPDATE_CHECK_INTERVAL_MS, DEFAULT_INTERVAL_MS);
-  const notifyIntervalMs = parsePositiveMs(env.HAPPIER_STACK_UPDATE_NOTIFY_INTERVAL_MS, DEFAULT_INTERVAL_MS);
+  const intervalMs = parsePositiveMs(env.PIGGERCODE_STACK_UPDATE_CHECK_INTERVAL_MS, DEFAULT_INTERVAL_MS);
+  const notifyIntervalMs = parsePositiveMs(env.PIGGERCODE_STACK_UPDATE_NOTIFY_INTERVAL_MS, DEFAULT_INTERVAL_MS);
 
   const cached = readUpdateCache(cachePath);
 
@@ -80,7 +80,7 @@ export function maybeAutoUpdateNotice({
 
   if (!shouldCheck) return;
 
-  const lockTtlMs = parsePositiveMs(env.HAPPIER_STACK_UPDATE_CHECK_LOCK_TTL_MS, DEFAULT_CHECK_LOCK_TTL_MS);
+  const lockTtlMs = parsePositiveMs(env.PIGGERCODE_STACK_UPDATE_CHECK_LOCK_TTL_MS, DEFAULT_CHECK_LOCK_TTL_MS);
   const lockPath = join(homeDir, 'cache', 'update.check.lock.json');
   if (!acquireSingleFlightLock({ lockPath, nowMs: now, ttlMs: lockTtlMs, pid: process.pid })) return;
 
@@ -88,6 +88,6 @@ export function maybeAutoUpdateNotice({
     script: join(cliRootDir, 'scripts', 'self.mjs'),
     args: ['check', '--quiet'],
     cwd: cliRootDir,
-    env: { ...env, HAPPIER_STACK_UPDATE_CHECK_SPAWNED: '1' },
+    env: { ...env, PIGGERCODE_STACK_UPDATE_CHECK_SPAWNED: '1' },
   });
 }

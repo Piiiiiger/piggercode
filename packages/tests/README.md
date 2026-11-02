@@ -115,10 +115,10 @@ Common artifacts:
 
 Artifacts are written on failure by default. You can force keeping artifacts even on success:
 
-- `HAPPIER_E2E_SAVE_ARTIFACTS=1 yarn workspace @piggercode/tests test`
+- `PIGGERCODE_E2E_SAVE_ARTIFACTS=1 yarn workspace @piggercode/tests test`
 
 UI E2E (Playwright) notes:
-- Expo web is started via `expo start --web`; if you suspect stale Metro transforms, you can opt into cache clearing with `HAPPIER_E2E_EXPO_CLEAR=1` (default is off because `--clear` can occasionally crash Metro).
+- Expo web is started via `expo start --web`; if you suspect stale Metro transforms, you can opt into cache clearing with `PIGGERCODE_E2E_EXPO_CLEAR=1` (default is off because `--clear` can occasionally crash Metro).
 - UI E2E artifacts live under `.project/logs/e2e/ui-playwright/...` and include screenshots + videos on failure.
 - WSREPL Lima matrix artifacts live under `apps/stack/output/wsrepl-lima-matrix/...`; the lane entrypoint, raw harness, and Lima bootstrap helper now live in `packages/tests` (`packages/tests/scripts/run-wsrepl-lima-matrix.mjs`, `packages/tests/scripts/wsrepl-lima-matrix.sh`, `packages/tests/scripts/lima-vm.sh`). The stack copies are compatibility shims only and are excluded from the published stack package.
 - Harness self-tests run via `yarn workspace @piggercode/tests test:ui:e2e:wsrepl:lima:self`. Their environment and fake guest shell are owned by the stack testkit’s `apps/stack/scripts/testkit/core/lima_guest_harness.mjs`: fixtures explicitly supply stack/provider settings and run guest scripts without loading host login profiles. Keep fake `limactl shell` execution on that boundary; executing guest login shells directly on the host can reach the real CLI and restart a live daemon.
@@ -129,13 +129,13 @@ These tests always boot a real local server (local files backend) and use real s
 
 By default, core e2e runs against embedded Postgres via `pglite`, but you can opt into other providers:
 
-- `HAPPIER_E2E_DB_PROVIDER=pglite yarn workspace @piggercode/tests test`
-- `HAPPIER_E2E_DB_PROVIDER=sqlite yarn workspace @piggercode/tests test`
+- `PIGGERCODE_E2E_DB_PROVIDER=pglite yarn workspace @piggercode/tests test`
+- `PIGGERCODE_E2E_DB_PROVIDER=sqlite yarn workspace @piggercode/tests test`
 
 Extended (requires an external DB URL):
 
-- `HAPPIER_E2E_DB_PROVIDER=postgres DATABASE_URL='postgresql://...' yarn workspace @piggercode/tests test`
-- `HAPPIER_E2E_DB_PROVIDER=mysql DATABASE_URL='mysql://...' yarn workspace @piggercode/tests test`
+- `PIGGERCODE_E2E_DB_PROVIDER=postgres DATABASE_URL='postgresql://...' yarn workspace @piggercode/tests test`
+- `PIGGERCODE_E2E_DB_PROVIDER=mysql DATABASE_URL='mysql://...' yarn workspace @piggercode/tests test`
 
 Local convenience (auto-provision Docker DB):
 
@@ -179,13 +179,13 @@ Provider drift detection (unit-level, no server):
 
 These are intentionally slower and are meant for nightly/on-demand runs.
 
-- `suites/stress/reconnect.repeat.test.ts`: repeats a multi-device offline/reconnect pattern `HAPPIER_E2E_REPEAT` times.
+- `suites/stress/reconnect.repeat.test.ts`: repeats a multi-device offline/reconnect pattern `PIGGERCODE_E2E_REPEAT` times.
 - `suites/stress/reconnect.chaos.test.ts`: seeded chaos runner that injects disconnect patterns and occasionally resends the same `localId` to simulate client retry noise.
 
 Recommended knobs:
-- `HAPPIER_E2E_REPEAT=...` (repetitions)
-- `HAPPIER_E2E_SEED=...` (deterministic repro)
-- `HAPPIER_E2E_FLAKE_RETRY=1` (retry once to classify flaky vs deterministic failure)
+- `PIGGERCODE_E2E_REPEAT=...` (repetitions)
+- `PIGGERCODE_E2E_SEED=...` (deterministic repro)
+- `PIGGERCODE_E2E_FLAKE_RETRY=1` (retry once to classify flaky vs deterministic failure)
 
 ## Providers suite (opt-in)
 
@@ -194,7 +194,7 @@ Recommended knobs:
 Provider tests are **contract drift** detectors:
 - they run a real provider CLI through the Happier CLI
 - they drive the agent by sending real session messages
-- they capture a **tool-trace JSONL** file from the running agent (`HAPPIER_STACK_TOOL_TRACE_FILE`)
+- they capture a **tool-trace JSONL** file from the running agent (`PIGGERCODE_STACK_TOOL_TRACE_FILE`)
 - they extract small “fixture” samples from that tool trace using the same code path used for curated allowlists
 - they validate:
   1) invariants for the scenario (required tool calls / permission requests / side effects)
@@ -206,7 +206,7 @@ The goal is to fail loudly when a provider changes its tool formats or our norma
 By default, `test:providers` is a fast no-op. Enable explicitly:
 
 ```bash
-HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers
+PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers
 ```
 
 ### Provider matrix runner
@@ -221,27 +221,27 @@ The entrypoint is `suites/providers/provider.matrix.test.ts`, backed by:
 - `src/testkit/providers/scenarios/scenarios.opencode.ts`
 
 Current Codex scope note:
-- `HAPPIER_E2E_PROVIDER_CODEX=1` exercises the Codex ACP provider lane only.
+- `PIGGERCODE_E2E_PROVIDER_CODEX=1` exercises the Codex ACP provider lane only.
 - Codex app-server behavior is covered outside the provider lane in targeted CLI/backend tests (for example `apps/cli/src/capabilities/probes/agentModesProbe.codexAppServer.test.ts`, `apps/cli/src/capabilities/probes/agentModelsProbe.codexAppServer.test.ts`, and `apps/cli/src/backends/codex/runCodex.acpResumePreflight.integration.test.ts`).
 
 ### Environment flags
 
-- `HAPPIER_E2E_PROVIDERS=1`: enable provider contract matrix
-- `HAPPIER_E2E_PROVIDER_CLAUDE=1`: enable Claude scenarios (requires a working Claude auth/config)
-- `HAPPIER_E2E_PROVIDER_OPENCODE=1`: enable OpenCode scenarios
-- `HAPPIER_E2E_PROVIDER_CODEX=1`: enable Codex scenarios
-- `HAPPIER_E2E_PROVIDER_KILO=1`: enable Kilo scenarios
-- `HAPPIER_E2E_PROVIDER_QWEN=1`: enable Qwen scenarios
-- `HAPPIER_E2E_PROVIDER_KIMI=1`: enable Kimi scenarios
-- `HAPPIER_E2E_PROVIDER_AUGGIE=1`: enable Auggie scenarios
-- `HAPPIER_E2E_PROVIDER_WAIT_MS=...`: scenario timeout (default: 240000)
-- `HAPPIER_E2E_PROVIDER_FLAKE_RETRY=1`: retry once and fail as `FLAKY` if it passes on retry
-- `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1`: write/update baseline snapshots under `packages/tests/baselines/providers/*`
-- `HAPPIER_E2E_PROVIDER_STRICT_KEYS=1`: fail if scenarios observe unexpected fixture keys (default: allow extra keys for forward-compat)
-- `HAPPIER_E2E_PROVIDER_YOLO_DEFAULT=1|0`: default whether provider CLI is started with `--yolo` (default: `1`)
+- `PIGGERCODE_E2E_PROVIDERS=1`: enable provider contract matrix
+- `PIGGERCODE_E2E_PROVIDER_CLAUDE=1`: enable Claude scenarios (requires a working Claude auth/config)
+- `PIGGERCODE_E2E_PROVIDER_OPENCODE=1`: enable OpenCode scenarios
+- `PIGGERCODE_E2E_PROVIDER_CODEX=1`: enable Codex scenarios
+- `PIGGERCODE_E2E_PROVIDER_KILO=1`: enable Kilo scenarios
+- `PIGGERCODE_E2E_PROVIDER_QWEN=1`: enable Qwen scenarios
+- `PIGGERCODE_E2E_PROVIDER_KIMI=1`: enable Kimi scenarios
+- `PIGGERCODE_E2E_PROVIDER_AUGGIE=1`: enable Auggie scenarios
+- `PIGGERCODE_E2E_PROVIDER_WAIT_MS=...`: scenario timeout (default: 240000)
+- `PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY=1`: retry once and fail as `FLAKY` if it passes on retry
+- `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1`: write/update baseline snapshots under `packages/tests/baselines/providers/*`
+- `PIGGERCODE_E2E_PROVIDER_STRICT_KEYS=1`: fail if scenarios observe unexpected fixture keys (default: allow extra keys for forward-compat)
+- `PIGGERCODE_E2E_PROVIDER_YOLO_DEFAULT=1|0`: default whether provider CLI is started with `--yolo` (default: `1`)
 - Scenario selection:
-  - `HAPPIER_E2E_PROVIDER_SCENARIOS=execute_trace_ok,execute_error_exit_2`
-  - `HAPPIER_E2E_PROVIDER_SCENARIO_TIER=smoke` (or `extended`)
+  - `PIGGERCODE_E2E_PROVIDER_SCENARIOS=execute_trace_ok,execute_error_exit_2`
+  - `PIGGERCODE_E2E_PROVIDER_SCENARIO_TIER=smoke` (or `extended`)
 
 Scenario IDs are source-of-truth in provider registries:
 - `apps/cli/src/backends/opencode/e2e/providerScenarios.json`
@@ -263,7 +263,7 @@ Two quick examples (current at time of writing):
 - Creates a session with legacy encryption and writes a session-attach file
 - Spawns `yarn workspace @piggercode/cli dev <provider> --existing-session <id> ...`
 - Sends encrypted prompts to `/v2/sessions/:id/messages`
-- Waits for tool trace (`HAPPIER_STACK_TOOL_TRACE_FILE`)
+- Waits for tool trace (`PIGGERCODE_STACK_TOOL_TRACE_FILE`)
 - Extracts fixtures using `@piggercode/cli tool:trace:extract`
 - Asserts scenario invariants (fixture keys + optional workspace file checks)
 - Optionally compares extracted fixture keys + payload shapes against committed baselines
@@ -328,16 +328,16 @@ Baselines should be updated when:
 - we intentionally adjust the normalization pipeline (schema changes, canonical names, etc.)
 
 To update baselines:
-- run the scenario(s) with `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1`
+- run the scenario(s) with `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1`
   - easiest: `yarn workspace @piggercode/tests providers:opencode:smoke:update-baselines`
-  - or: `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1 HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers`
+  - or: `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1 PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers`
 
 After updating:
 - review the baseline JSON diff (keys and shapes)
 - commit baseline updates alongside the corresponding code change
 
 Optional strictness:
-- set `HAPPIER_E2E_PROVIDER_STRICT_KEYS=1` to fail when **new** fixture keys appear (default allows extra keys for forward-compat).
+- set `PIGGERCODE_E2E_PROVIDER_STRICT_KEYS=1` to fail when **new** fixture keys appear (default allows extra keys for forward-compat).
 
 ## Adding a new provider
 

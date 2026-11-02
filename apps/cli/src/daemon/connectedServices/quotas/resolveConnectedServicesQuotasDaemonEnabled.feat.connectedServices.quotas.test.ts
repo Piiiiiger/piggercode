@@ -27,7 +27,7 @@ describe('resolveConnectedServicesQuotasDaemonEnabled', () => {
     );
 
     const enabled = await resolveConnectedServicesQuotasDaemonEnabled({
-      env: { HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1' },
+      env: { PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1' },
       serverUrl: 'https://api.example.test',
       timeoutMs: 100,
     });
@@ -53,8 +53,8 @@ describe('resolveConnectedServicesQuotasDaemonEnabled', () => {
 
     const enabled = await resolveConnectedServicesQuotasDaemonEnabled({
       env: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
       },
       serverUrl: 'https://api.example.test',
       timeoutMs: 100,
@@ -79,9 +79,9 @@ describe('resolveConnectedServicesQuotasDaemonEnabled', () => {
 
     const enabled = await resolveConnectedServicesQuotasDaemonEnabled({
       env: {
-        HAPPIER_BUILD_FEATURES_DENY: 'connectedServices.quotas',
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'connectedServices.quotas',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
       },
       serverUrl: 'https://api.example.test',
       timeoutMs: 100,

@@ -47,7 +47,7 @@ describe('startHappySessionInVisibleWindowsConsole', () => {
   });
 
   it('uses the provided launch env as the complete PowerShell environment', async () => {
-    vi.stubEnv('HAPPIER_TEST_AMBIENT_WINDOWS_SPAWN', 'ambient-only');
+    vi.stubEnv('PIGGERCODE_TEST_AMBIENT_WINDOWS_SPAWN', 'ambient-only');
     const child = createFakeChildProcess();
     vi.mocked(spawn).mockReturnValue(child as unknown as ReturnType<typeof spawn>);
     const launchEnv = { PATH: 'C:\\canonical', FOO: 'bar' };
@@ -65,7 +65,7 @@ describe('startHappySessionInVisibleWindowsConsole', () => {
       expect.objectContaining({ env: launchEnv }),
     );
     expect(vi.mocked(spawn).mock.calls[0]?.[2]?.env).not.toHaveProperty(
-      'HAPPIER_TEST_AMBIENT_WINDOWS_SPAWN',
+      'PIGGERCODE_TEST_AMBIENT_WINDOWS_SPAWN',
     );
 
     child.stdout.emit('data', Buffer.from('12345\r\n'));

@@ -27,11 +27,11 @@ async function readLauncherConfig(configPath: string): Promise<StdioMcpServerLau
 }
 
 export async function runStdioMcpServerLauncher(): Promise<void> {
-  const configPath = typeof process.env.HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE === 'string'
-    ? process.env.HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE
+  const configPath = typeof process.env.PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE === 'string'
+    ? process.env.PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE
     : '';
   if (!configPath) {
-    writeStderr('[happier-mcp-stdio-launcher] Missing HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE');
+    writeStderr('[happier-mcp-stdio-launcher] Missing PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE');
     process.exit(2);
   }
 
@@ -98,7 +98,7 @@ export async function runStdioMcpServerLauncher(): Promise<void> {
   });
 }
 
-if (process.env.HAPPIER_CLI_DIST_INTEGRITY_PROBE !== '1') {
+if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE !== '1') {
   runStdioMcpServerLauncher().catch((err) => {
     writeStderr(`[happier-mcp-stdio-launcher] Fatal: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);

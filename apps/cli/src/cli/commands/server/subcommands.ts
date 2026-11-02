@@ -102,13 +102,13 @@ function summarizeProfile(p: any): ServerProfileSummary {
 }
 
 function shouldAutoInferPublicServerUrl(): boolean {
-  const raw = String(process.env.HAPPIER_TAILSCALE_AUTO_PUBLIC_URL ?? '').trim().toLowerCase();
+  const raw = String(process.env.PIGGERCODE_TAILSCALE_AUTO_PUBLIC_URL ?? '').trim().toLowerCase();
   if (!raw) return true;
   return ['1', 'true', 'yes', 'on'].includes(raw);
 }
 
 function resolveTailscaleServeStatusTimeoutMs(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_TAILSCALE_SERVE_STATUS_TIMEOUT_MS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_TAILSCALE_SERVE_STATUS_TIMEOUT_MS ?? ''), 10);
   return Number.isFinite(raw) && raw > 0 ? raw : 750;
 }
 

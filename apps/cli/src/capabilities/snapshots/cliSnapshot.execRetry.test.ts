@@ -17,8 +17,8 @@ describe('detectCliSnapshotOnDaemonPath (version retry)', () => {
     const fixture = await createProbeTempDir('happier-cliSnapshot-retry');
     const envScope = createEnvKeyScope([
       'PATH',
-      'HAPPIER_CODEX_PATH',
-      'HAPPIER_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE',
+      'PIGGERCODE_CODEX_PATH',
+      'PIGGERCODE_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE',
     ]);
 
     try {
@@ -28,7 +28,7 @@ describe('detectCliSnapshotOnDaemonPath (version retry)', () => {
         codexPath,
         `
 const fs = require('node:fs');
-const state = process.env.HAPPIER_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE;
+const state = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE;
 const arg = process.argv[2] ?? '';
 if (arg === '--version') {
   if (state && !fs.existsSync(state)) {
@@ -45,8 +45,8 @@ process.exit(0);
       );
 
       envScope.patch({
-        HAPPIER_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE: stateFile,
-        HAPPIER_CODEX_PATH: codexPath,
+        PIGGERCODE_TEST_CLI_SNAPSHOT_RETRY_STATE_FILE: stateFile,
+        PIGGERCODE_CODEX_PATH: codexPath,
       });
 
       const { detectCliSnapshotOnDaemonPath } = await import('./cliSnapshot');

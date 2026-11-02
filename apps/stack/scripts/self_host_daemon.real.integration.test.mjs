@@ -192,19 +192,19 @@ test(
     const serverUrl = `http://127.0.0.1:${serverPort}`;
     const commonEnv = {
       PATH: process.env.PATH ?? '',
-      HAPPIER_SELF_HOST_INSTALL_ROOT: installRoot,
-      HAPPIER_SELF_HOST_BIN_DIR: binDir,
-      HAPPIER_SELF_HOST_CONFIG_DIR: configDir,
-      HAPPIER_SELF_HOST_DATA_DIR: dataDir,
-      HAPPIER_SELF_HOST_LOG_DIR: logDir,
-      HAPPIER_SELF_HOST_SERVICE_NAME: serviceName,
-      HAPPIER_SELF_HOST_SERVER_BINARY: extractedServer.binaryPath,
-      HAPPIER_SELF_HOST_AUTO_UPDATE: '0',
-      HAPPIER_SELF_HOST_HEALTH_TIMEOUT_MS: '240000',
-      HAPPIER_NONINTERACTIVE: '1',
-      HAPPIER_WITH_CLI: '0',
-      HAPPIER_SERVER_PORT: String(serverPort),
-      HAPPIER_SERVER_HOST: '127.0.0.1',
+      PIGGERCODE_SELF_HOST_INSTALL_ROOT: installRoot,
+      PIGGERCODE_SELF_HOST_BIN_DIR: binDir,
+      PIGGERCODE_SELF_HOST_CONFIG_DIR: configDir,
+      PIGGERCODE_SELF_HOST_DATA_DIR: dataDir,
+      PIGGERCODE_SELF_HOST_LOG_DIR: logDir,
+      PIGGERCODE_SELF_HOST_SERVICE_NAME: serviceName,
+      PIGGERCODE_SELF_HOST_SERVER_BINARY: extractedServer.binaryPath,
+      PIGGERCODE_SELF_HOST_AUTO_UPDATE: '0',
+      PIGGERCODE_SELF_HOST_HEALTH_TIMEOUT_MS: '240000',
+      PIGGERCODE_NONINTERACTIVE: '1',
+      PIGGERCODE_WITH_CLI: '0',
+      PIGGERCODE_SERVER_PORT: String(serverPort),
+      PIGGERCODE_SERVER_HOST: '127.0.0.1',
     };
 
     let installSucceeded = false;
@@ -256,13 +256,13 @@ test(
 
     const daemonEnv = {
       ...process.env,
-      HAPPIER_HOME_DIR: cliHomeDir,
-      HAPPIER_ACTIVE_SERVER_ID: serverId,
-      HAPPIER_SERVER_URL: serverUrl,
-      HAPPIER_WEBAPP_URL: serverUrl,
-      HAPPIER_PUBLIC_SERVER_URL: serverUrl,
-      HAPPIER_NO_BROWSER_OPEN: '1',
-      HAPPIER_NONINTERACTIVE: '1',
+      PIGGERCODE_HOME_DIR: cliHomeDir,
+      PIGGERCODE_ACTIVE_SERVER_ID: serverId,
+      PIGGERCODE_SERVER_URL: serverUrl,
+      PIGGERCODE_WEBAPP_URL: serverUrl,
+      PIGGERCODE_PUBLIC_SERVER_URL: serverUrl,
+      PIGGERCODE_NO_BROWSER_OPEN: '1',
+      PIGGERCODE_NONINTERACTIVE: '1',
     };
 
     // The daemon suite is unix-only (signals/ps); fail closed on unsupported.

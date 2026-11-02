@@ -4,7 +4,7 @@ export function resolveMobileExpoConfig({ env = process.env } = {}) {
   const user = sanitizeBundleIdSegment(env.USER ?? env.USERNAME ?? 'user');
   const defaultLocalBundleId = `com.happier.local.${user}.dev`;
 
-  const appEnv = env.APP_ENV ?? env.HAPPIER_STACK_APP_ENV ?? 'development';
+  const appEnv = env.APP_ENV ?? env.PIGGERCODE_STACK_APP_ENV ?? 'development';
   const androidPackagesByAppEnv = {
     development: 'dev.happier.app.internaldev',
     internaldev: 'dev.happier.app.internaldev',
@@ -14,15 +14,15 @@ export function resolveMobileExpoConfig({ env = process.env } = {}) {
     production: 'dev.happier.app',
   };
   const androidPackage =
-    env.HAPPIER_STACK_ANDROID_PACKAGE ??
+    env.PIGGERCODE_STACK_ANDROID_PACKAGE ??
     env.EXPO_ANDROID_PACKAGE ??
     androidPackagesByAppEnv[String(appEnv).trim().toLowerCase()] ??
     androidPackagesByAppEnv.development;
   // Prefer stack-scoped config, but also support generic Expo build env vars so users can
   // drive mobile identity purely via stack env files without learning hstack-specific keys.
-  const iosAppName = (env.HAPPIER_STACK_IOS_APP_NAME ?? env.EXPO_APP_NAME ?? '').toString();
+  const iosAppName = (env.PIGGERCODE_STACK_IOS_APP_NAME ?? env.EXPO_APP_NAME ?? '').toString();
   const iosBundleId = (
-    env.HAPPIER_STACK_IOS_BUNDLE_ID ??
+    env.PIGGERCODE_STACK_IOS_BUNDLE_ID ??
     env.EXPO_APP_BUNDLE_ID ??
     defaultLocalBundleId
   ).toString();
@@ -30,13 +30,13 @@ export function resolveMobileExpoConfig({ env = process.env } = {}) {
   // - dev-client QR should open a dedicated "hstack Dev" app (not a per-stack release build)
   // - so default to a stable happy-stacks-specific scheme unless explicitly overridden.
   const scheme = sanitizeUrlScheme(
-    (env.HAPPIER_STACK_MOBILE_SCHEME ??
-      env.HAPPIER_STACK_DEV_CLIENT_SCHEME ??
+    (env.PIGGERCODE_STACK_MOBILE_SCHEME ??
+      env.PIGGERCODE_STACK_DEV_CLIENT_SCHEME ??
       env.EXPO_APP_SCHEME ??
       'happier-dev')
       .toString()
   );
-  const host = (env.HAPPIER_STACK_MOBILE_HOST ?? 'lan').toString();
+  const host = (env.PIGGERCODE_STACK_MOBILE_HOST ?? 'lan').toString();
 
   return {
     appEnv,

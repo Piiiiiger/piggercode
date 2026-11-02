@@ -61,7 +61,7 @@ describe('mobile Dev Client flow contracts', () => {
   it('rewrites the manual-entry Metro field from the env-provided URL before submit', () => {
     const flow = readFileSync(manualEntryFlowUrl, 'utf8');
     const inputTapIndex = flow.indexOf('tapOn: "(http://localhost:8081|exp://)"');
-    const clipboardIndex = flow.indexOf('setClipboard: ${HAPPIER_E2E_DEV_CLIENT_METRO_URL}');
+    const clipboardIndex = flow.indexOf('setClipboard: ${PIGGERCODE_E2E_DEV_CLIENT_METRO_URL}');
     const pasteIndex = flow.indexOf('pasteText');
 
     expect(inputTapIndex).toBeGreaterThanOrEqual(0);
@@ -133,12 +133,12 @@ describe('mobile Dev Client flow contracts', () => {
   it('restores populated relay accounts from an environment-provided secret beyond the original 64-character limit', () => {
     const flow = readFileSync(populatedRelayRestoreAndOpenUrl, 'utf8');
 
-    const firstChunkIndex = flow.indexOf('inputText: ${HAPPIER_E2E_RESTORE_KEY_CHUNK_01}');
-    const ninthChunkIndex = flow.indexOf('inputText: ${HAPPIER_E2E_RESTORE_KEY_CHUNK_09}');
+    const firstChunkIndex = flow.indexOf('inputText: ${PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01}');
+    const ninthChunkIndex = flow.indexOf('inputText: ${PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09}');
 
     expect(firstChunkIndex).toBeGreaterThan(flow.indexOf('id: restore-manual-secret-input'));
     expect(ninthChunkIndex).toBeGreaterThan(firstChunkIndex);
-    expect(flow).not.toContain('setClipboard: ${HAPPIER_E2E_RESTORE_KEY}');
+    expect(flow).not.toContain('setClipboard: ${PIGGERCODE_E2E_RESTORE_KEY}');
     expect(flow).not.toContain('pasteText');
     expect(flow).toContain('id: restore-manual-submit');
     expect(ninthChunkIndex).toBeLessThan(flow.indexOf('id: "session-list-item-.*"'));
@@ -158,7 +158,7 @@ describe('mobile Dev Client flow contracts', () => {
   it('waits for the populated relay server URL before restoring', () => {
     const flow = readFileSync(populatedRelayRestoreAndOpenUrl, 'utf8');
     const serverSelectionIndex = flow.indexOf(':///settings/server?auto=1');
-    const serverUrlWaitIndex = flow.indexOf('visible: ".*${HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"', serverSelectionIndex);
+    const serverUrlWaitIndex = flow.indexOf('visible: ".*${PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"', serverSelectionIndex);
     const restoreIndex = flow.indexOf(':///restore/manual');
 
     expect(serverSelectionIndex).toBeGreaterThanOrEqual(0);
@@ -173,7 +173,7 @@ describe('mobile Dev Client flow contracts', () => {
     const serverSelectionIndex = flow.indexOf(':///settings/server?auto=1');
     const serverChooserIndex = flow.indexOf(androidChooserFlow, serverSelectionIndex);
     const serverUrlWaitIndex = flow.indexOf(
-      'visible: ".*${HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"',
+      'visible: ".*${PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"',
       serverSelectionIndex,
     );
 

@@ -55,8 +55,8 @@ describe('exchangeGeminiAuthorizationCodeForTokens', () => {
 
     expect(typeof exchange).toBe('function');
 
-    const previous = process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL;
-    process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL = 'https://oauth.example.test/token';
+    const previous = process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL = 'https://oauth.example.test/token';
 
     try {
       const fetchMock = vi.fn(async (_url: string, _init?: any) => ({
@@ -82,7 +82,7 @@ describe('exchangeGeminiAuthorizationCodeForTokens', () => {
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(String(fetchMock.mock.calls[0]?.[0] ?? '')).toBe('https://oauth.example.test/token');
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL = previous;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL = previous;
     }
   });
 

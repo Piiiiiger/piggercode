@@ -62,12 +62,12 @@ describe('parseHappierToolsShellBridgeCommand', () => {
   it('parses env preludes when quoted values contain spaces', () => {
     expect(
       parseHappierToolsShellBridgeCommand(
-        'HAPPIER_SPAWN_HOOK=\'/Applications/Test Hook/hook.js\' NODE_OPTIONS=\'--require /Applications/Test Hook/register.js\' happier tools list --session-id "sess-1" --directory "/tmp/workspace" --json',
+        'PIGGERCODE_SPAWN_HOOK=\'/Applications/Test Hook/hook.js\' NODE_OPTIONS=\'--require /Applications/Test Hook/register.js\' happier tools list --session-id "sess-1" --directory "/tmp/workspace" --json',
       ),
     ).toEqual({
       kind: 'list',
       rawCommand:
-        'HAPPIER_SPAWN_HOOK=\'/Applications/Test Hook/hook.js\' NODE_OPTIONS=\'--require /Applications/Test Hook/register.js\' happier tools list --session-id "sess-1" --directory "/tmp/workspace" --json',
+        'PIGGERCODE_SPAWN_HOOK=\'/Applications/Test Hook/hook.js\' NODE_OPTIONS=\'--require /Applications/Test Hook/register.js\' happier tools list --session-id "sess-1" --directory "/tmp/workspace" --json',
       sessionId: 'sess-1',
       directory: '/tmp/workspace',
       json: true,

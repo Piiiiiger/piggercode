@@ -53,7 +53,7 @@ function setSocket(io: Server, socketId: string, connected: boolean): Socket {
 
 describe("createMachineSocketOwnershipRegistry", () => {
     beforeEach(() => {
-        delete process.env.HAPPIER_MACHINE_SOCKET_OWNER_TTL_SECONDS;
+        delete process.env.PIGGERCODE_MACHINE_SOCKET_OWNER_TTL_SECONDS;
         redisEvalMock.mockReset();
         redisHmgetMock.mockReset();
     });

@@ -169,7 +169,7 @@ async function withFakeClaudeBackend(
     const entry = join(dir, 'fake-claude.cjs');
     await writeFile(entry, createFakeClaudeEntrypointSource(), 'utf8');
 
-    process.env.HAPPIER_CLAUDE_PATH = entry;
+    process.env.PIGGERCODE_CLAUDE_PATH = entry;
     if (params.includeLogPath === false) {
       delete process.env.FAKE_CLAUDE_LOG_PATH;
     } else {
@@ -224,15 +224,15 @@ async function withFakeClaudeBackend(
 }
 
 describe('ClaudeSdkAgentBackend', () => {
-  const originalClaudePath = process.env.HAPPIER_CLAUDE_PATH;
+  const originalClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
   const originalDebug = process.env.DEBUG;
 
   afterEach(() => {
     vi.useRealTimers();
     if (originalClaudePath === undefined) {
-      delete process.env.HAPPIER_CLAUDE_PATH;
+      delete process.env.PIGGERCODE_CLAUDE_PATH;
     } else {
-      process.env.HAPPIER_CLAUDE_PATH = originalClaudePath;
+      process.env.PIGGERCODE_CLAUDE_PATH = originalClaudePath;
     }
     delete process.env.FAKE_CLAUDE_LOG_PATH;
     delete process.env.FAKE_CLAUDE_TOOL_NAME;
@@ -977,7 +977,7 @@ describe('ClaudeSdkAgentBackend', () => {
       async ({ backend, dir }) => {
         const crashingEntry = join(dir, 'fake-claude-crash.cjs');
         await writeFile(crashingEntry, "process.exit(17);\n", 'utf8');
-        process.env.HAPPIER_CLAUDE_PATH = crashingEntry;
+        process.env.PIGGERCODE_CLAUDE_PATH = crashingEntry;
 
         const { sessionId } = await backend.startSession();
         await backend.sendPrompt(sessionId, 'hi');

@@ -1,8 +1,8 @@
 import {
-  HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
-  HAPPIER_REPLAY_RECENT_MESSAGES_MIN_COUNT,
-  HAPPIER_REPLAY_SEED_MAX_CHARS,
-  HAPPIER_REPLAY_SEED_MIN_CHARS,
+  PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT,
+  PIGGERCODE_REPLAY_RECENT_MESSAGES_MIN_COUNT,
+  PIGGERCODE_REPLAY_SEED_MAX_CHARS,
+  PIGGERCODE_REPLAY_SEED_MIN_CHARS,
 } from '@piggercode/protocol';
 
 import { settingsDefaults, type Settings } from '@/sync/domains/settings/settings';
@@ -41,15 +41,15 @@ export function resolveHappierReplayConfig(settings: HappierReplayConfigSource):
   const enabled = settings.sessionReplayEnabled === true;
   const strategy = normalizeStrategy(settings.sessionReplayStrategy);
   const recentMessagesCount = normalizePositiveInt(settings.sessionReplayRecentMessagesCount, settingsDefaults.sessionReplayRecentMessagesCount, {
-    min: HAPPIER_REPLAY_RECENT_MESSAGES_MIN_COUNT,
-    max: HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
+    min: PIGGERCODE_REPLAY_RECENT_MESSAGES_MIN_COUNT,
+    max: PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT,
   });
   // This clamp is the last writer before a fork request, so it LIFTS a stored
   // budget below the floor rather than forwarding it. Forwarding is what
   // produced a request the daemon accepted and answered with no seed at all.
   const maxSeedChars = normalizePositiveInt(settings.sessionReplayMaxSeedChars, settingsDefaults.sessionReplayMaxSeedChars, {
-    min: HAPPIER_REPLAY_SEED_MIN_CHARS,
-    max: HAPPIER_REPLAY_SEED_MAX_CHARS,
+    min: PIGGERCODE_REPLAY_SEED_MIN_CHARS,
+    max: PIGGERCODE_REPLAY_SEED_MAX_CHARS,
   });
   return { enabled, strategy, recentMessagesCount, maxSeedChars };
 }

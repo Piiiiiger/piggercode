@@ -27,13 +27,13 @@ export async function resolveHandyMasterSecretFromStack({
     return { secret: inline, source: `${sourceEnvPath} (HANDY_MASTER_SECRET)` };
   }
 
-  const secretFile = getEnvValue(env, 'HAPPIER_STACK_HANDY_MASTER_SECRET_FILE');
+  const secretFile = getEnvValue(env, 'PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE');
   if (secretFile) {
     const secret = await readTextIfExists(secretFile);
     if (secret) return { secret, source: secretFile };
   }
 
-  const dataDir = getEnvValue(env, 'HAPPIER_SERVER_LIGHT_DATA_DIR') || join(sourceBaseDir, 'server-light');
+  const dataDir = getEnvValue(env, 'PIGGERCODE_SERVER_LIGHT_DATA_DIR') || join(sourceBaseDir, 'server-light');
   const secretPath = join(dataDir, 'handy-master-secret.txt');
   const secret = await readTextIfExists(secretPath);
   if (secret) return { secret, source: secretPath };

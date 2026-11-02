@@ -21,18 +21,18 @@ function buildStubHappyCliScript({ message, ignoreServerSet = false }) {
       `console.log(JSON.stringify({`,
       `  message: ${JSON.stringify(message)},`,
       `  args,`,
-      `  stack: process.env.HAPPIER_STACK_STACK || null,`,
-      `  envFile: process.env.HAPPIER_STACK_ENV_FILE || null,`,
-      `  homeDir: process.env.HAPPIER_HOME_DIR || null,`,
-      `  serverUrl: process.env.HAPPIER_SERVER_URL || null,`,
-      `  webappUrl: process.env.HAPPIER_WEBAPP_URL || null,`,
-      `  activeServerId: process.env.HAPPIER_ACTIVE_SERVER_ID || null,`,
+      `  stack: process.env.PIGGERCODE_STACK_STACK || null,`,
+      `  envFile: process.env.PIGGERCODE_STACK_ENV_FILE || null,`,
+      `  homeDir: process.env.PIGGERCODE_HOME_DIR || null,`,
+      `  serverUrl: process.env.PIGGERCODE_SERVER_URL || null,`,
+      `  webappUrl: process.env.PIGGERCODE_WEBAPP_URL || null,`,
+      `  activeServerId: process.env.PIGGERCODE_ACTIVE_SERVER_ID || null,`,
       `}));`,
     ].join('\n');
 }
 
 function buildFailingStubHappyCliScript({ errorMessage }) {
-  return `if (process.env.HAPPIER_CLI_DIST_INTEGRITY_PROBE === 'daemon-command') process.exit(0);\nconsole.error(${JSON.stringify(errorMessage)});\nprocess.exit(1);\n`;
+  return `if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE === 'daemon-command') process.exit(0);\nconsole.error(${JSON.stringify(errorMessage)});\nprocess.exit(1);\n`;
 }
 
 async function createHappyStackFixture(
@@ -125,7 +125,7 @@ test('hstack stack happier <name> runs CLI under that stack env', async (t) => {
   assert.equal(out.serverUrl, `http://127.0.0.1:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> overrides pre-set HAPPIER_* env vars with stack-scoped values', async (t) => {
+test('hstack stack happier <name> overrides pre-set PIGGERCODE_* env vars with stack-scoped values', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-override-',
     message: 'override',
@@ -135,9 +135,9 @@ test('hstack stack happier <name> overrides pre-set HAPPIER_* env vars with stac
     cwd: rootDir,
     env: {
       ...fixture.baseEnv,
-      HAPPIER_HOME_DIR: join(fixture.storageDir, 'wrong', 'cli'),
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:3005',
-      HAPPIER_WEBAPP_URL: 'http://wrong-webapp.example.test',
+      PIGGERCODE_HOME_DIR: join(fixture.storageDir, 'wrong', 'cli'),
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
+      PIGGERCODE_WEBAPP_URL: 'http://wrong-webapp.example.test',
     },
   });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
@@ -218,7 +218,7 @@ test('hstack stack happier <name> delegates stack profile reconciliation to the 
 
   const out = JSON.parse(res.stdout.trim());
   assert.equal(out.message, 'seed-settings');
-  assert.ok(out.activeServerId, 'expected wrapper to export HAPPIER_ACTIVE_SERVER_ID');
+  assert.ok(out.activeServerId, 'expected wrapper to export PIGGERCODE_ACTIVE_SERVER_ID');
 
   const serverSetCalls = (await readFile(serverSetCallsPath, 'utf-8')).trim().split('\n').map((line) => JSON.parse(line));
   assert.deepEqual(serverSetCalls, [[
@@ -277,7 +277,7 @@ test('hstack stack happier <name> rejects a CLI that exits successfully without 
   assert.doesNotMatch(res.stdout, /must-not-run/);
 });
 
-test('hstack stack happier <name> uses stack.runtime.json ports when env file does not pin HAPPIER_STACK_SERVER_PORT', async (t) => {
+test('hstack stack happier <name> uses stack.runtime.json ports when env file does not pin PIGGERCODE_STACK_SERVER_PORT', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-runtime-ports-',
     message: 'runtime-ports',
@@ -312,9 +312,9 @@ test('hstack stack happier <name> forwards wrapper runtime flags to happier.mjs'
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-        HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-        HAPPIER_STACK_REPO_DIR: fixture.root,
+        PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+        PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+        PIGGERCODE_STACK_REPO_DIR: fixture.root,
       },
     },
   );
@@ -323,7 +323,7 @@ test('hstack stack happier <name> forwards wrapper runtime flags to happier.mjs'
   assert.match(res.stdout, /SNAPSHOT WRAPPER HELP/);
 });
 
-test('hstack happier (HAPPIER_STACK_STACK set) uses stack.runtime.json ports when env file does not pin HAPPIER_STACK_SERVER_PORT', async (t) => {
+test('hstack happier (PIGGERCODE_STACK_STACK set) uses stack.runtime.json ports when env file does not pin PIGGERCODE_STACK_SERVER_PORT', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-happy-runtime-ports-',
     message: 'runtime-ports-env',
@@ -335,12 +335,12 @@ test('hstack happier (HAPPIER_STACK_STACK set) uses stack.runtime.json ports whe
 
   const env = {
     ...fixture.baseEnv,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.storageDir, fixture.stackName, 'env'),
-    HAPPIER_STACK_RUNTIME_MODE: 'source',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.storageDir, fixture.stackName, 'env'),
+    PIGGERCODE_STACK_RUNTIME_MODE: 'source',
   };
-  delete env.HAPPIER_STACK_SERVER_PORT_BASE;
-  delete env.HAPPIER_STACK_SERVER_PORT_RANGE;
+  delete env.PIGGERCODE_STACK_SERVER_PORT_BASE;
+  delete env.PIGGERCODE_STACK_SERVER_PORT_RANGE;
 
   const res = await runNodeCapture([join(rootDir, 'bin', 'happier.mjs')], {
     cwd: rootDir,
@@ -379,10 +379,10 @@ test('hstack happier keeps the stable scope when another settings profile matche
 
   const env = {
     ...fixture.baseEnv,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_RUNTIME_MODE: 'source',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'source',
   };
-  delete env.HAPPIER_STACK_ENV_FILE;
+  delete env.PIGGERCODE_STACK_ENV_FILE;
 
   const res = await runNodeCapture([join(rootDir, 'bin', 'happier.mjs')], {
     cwd: rootDir,
@@ -403,7 +403,7 @@ test('hstack happier keeps the stable scope when another settings profile matche
   );
 });
 
-test('hstack stack happier <name> --identity=<name> uses identity-scoped HAPPIER_HOME_DIR', async (t) => {
+test('hstack stack happier <name> --identity=<name> uses identity-scoped PIGGERCODE_HOME_DIR', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-identity-',
     message: 'identity',

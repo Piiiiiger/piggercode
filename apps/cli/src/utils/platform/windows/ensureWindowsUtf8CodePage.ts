@@ -20,7 +20,7 @@ export function ensureWindowsUtf8CodePage(params?: {
   const isTTY = params?.isTTY ?? Boolean(process.stdout.isTTY || process.stderr.isTTY);
 
   // Allow disabling, since changing the code page can be surprising in some environments.
-  if (isDisabled(env.HAPPIER_WINDOWS_UTF8_CODEPAGE)) return false;
+  if (isDisabled(env.PIGGERCODE_WINDOWS_UTF8_CODEPAGE)) return false;
 
   // Only attempt when attached to a terminal; avoid touching code page in non-interactive contexts.
   if (!isTTY) return false;

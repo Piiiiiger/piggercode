@@ -16,10 +16,10 @@ export function resolveWindowsRemoteSessionLaunchMode(params: {
   const requested = normalizeWindowsRemoteSessionLaunchMode(params.requested);
   if (requested) return requested;
 
-  const envLaunchMode = normalizeWindowsRemoteSessionLaunchMode(params.env.HAPPIER_WINDOWS_REMOTE_SESSION_LAUNCH_MODE);
+  const envLaunchMode = normalizeWindowsRemoteSessionLaunchMode(params.env.PIGGERCODE_WINDOWS_REMOTE_SESSION_LAUNCH_MODE);
   if (envLaunchMode) return envLaunchMode;
 
-  const legacyEnvMode = normalizeWindowsRemoteSessionLaunchMode(params.env.HAPPIER_WINDOWS_REMOTE_SESSION_CONSOLE);
+  const legacyEnvMode = normalizeWindowsRemoteSessionLaunchMode(params.env.PIGGERCODE_WINDOWS_REMOTE_SESSION_CONSOLE);
   if (legacyEnvMode) return legacyEnvMode;
 
   return 'hidden';

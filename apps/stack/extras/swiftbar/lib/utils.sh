@@ -127,11 +127,11 @@ swiftbar_repo_key_from_path() {
 }
 
 swiftbar_is_sandboxed() {
-  [[ -n "${HAPPIER_STACK_SANDBOX_DIR:-}" ]]
+  [[ -n "${PIGGERCODE_STACK_SANDBOX_DIR:-}" ]]
 }
 
 swiftbar_profile_enabled() {
-  [[ "${HAPPIER_STACK_SWIFTBAR_PROFILE:-}" == "1" ]]
+  [[ "${PIGGERCODE_STACK_SWIFTBAR_PROFILE:-}" == "1" ]]
 }
 
 swiftbar_now_ms() {
@@ -309,12 +309,12 @@ expand_home_path() {
 }
 
 resolve_canonical_home_dir() {
-  local canonical="${HAPPIER_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
+  local canonical="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
   echo "$(expand_home_path "$canonical")"
 }
 
 resolve_home_dir() {
-  local from_env="${HAPPIER_STACK_HOME_DIR:-}"
+  local from_env="${PIGGERCODE_STACK_HOME_DIR:-}"
   if [[ -n "$from_env" ]]; then
     echo "$(expand_home_path "$from_env")"
     return
@@ -325,7 +325,7 @@ resolve_home_dir() {
   local env_file="${canonical}/.env"
   if [[ -f "$env_file" ]]; then
     local p
-    p="$(dotenv_get "$env_file" "HAPPIER_STACK_HOME_DIR")"
+    p="$(dotenv_get "$env_file" "PIGGERCODE_STACK_HOME_DIR")"
     if [[ -n "$p" ]]; then
       echo "$(expand_home_path "$p")"
       return
@@ -337,7 +337,7 @@ resolve_home_dir() {
 
 resolve_hstack_root_dir() {
   # Prefer the repo root if explicitly provided (dev); otherwise use the home install root.
-  local cli_root="${HAPPIER_STACK_CLI_ROOT_DIR:-}"
+  local cli_root="${PIGGERCODE_STACK_CLI_ROOT_DIR:-}"
   if [[ -n "$cli_root" ]] && [[ -f "$cli_root/extras/swiftbar/lib/utils.sh" ]]; then
     echo "$cli_root"
     return
@@ -351,8 +351,8 @@ resolve_stacks_storage_root() {
   # 2) home env.local
   # 3) home .env (canonical pointer file, written by `hstack init`)
   # 4) default to ~/.happier/stacks
-  if [[ -n "${HAPPIER_STACK_STORAGE_DIR:-}" ]]; then
-    echo "$(expand_home_path "$HAPPIER_STACK_STORAGE_DIR")"
+  if [[ -n "${PIGGERCODE_STACK_STORAGE_DIR:-}" ]]; then
+    echo "$(expand_home_path "$PIGGERCODE_STACK_STORAGE_DIR")"
     return
   fi
 
@@ -360,8 +360,8 @@ resolve_stacks_storage_root() {
   root="$(resolve_hstack_root_dir)"
 
   local p
-  p="$(dotenv_get "$root/env.local" "HAPPIER_STACK_STORAGE_DIR")"
-  [[ -z "$p" ]] && p="$(dotenv_get "$root/.env" "HAPPIER_STACK_STORAGE_DIR")"
+  p="$(dotenv_get "$root/env.local" "PIGGERCODE_STACK_STORAGE_DIR")"
+  [[ -z "$p" ]] && p="$(dotenv_get "$root/.env" "PIGGERCODE_STACK_STORAGE_DIR")"
   if [[ -n "$p" ]]; then
     echo "$(expand_home_path "$p")"
     return
@@ -369,7 +369,7 @@ resolve_stacks_storage_root() {
 
   # In sandbox mode, avoid falling back to the user's real ~/.happier/stacks.
   if swiftbar_is_sandboxed; then
-    echo "${HAPPIER_STACK_STORAGE_DIR:-${HAPPIER_STACK_SANDBOX_DIR%/}/storage}"
+    echo "${PIGGERCODE_STACK_STORAGE_DIR:-${PIGGERCODE_STACK_SANDBOX_DIR%/}/storage}"
     return
   fi
 
@@ -414,7 +414,7 @@ resolve_stack_cli_home_dir() {
   fi
   local cli_home=""
   if [[ -n "$env_file" ]] && [[ -f "$env_file" ]]; then
-    cli_home="$(dotenv_get "$env_file" "HAPPIER_STACK_CLI_HOME_DIR")"
+    cli_home="$(dotenv_get "$env_file" "PIGGERCODE_STACK_CLI_HOME_DIR")"
   fi
   if [[ -n "$cli_home" ]]; then
     echo "$(expand_home_path "$cli_home")"
@@ -468,8 +468,8 @@ resolve_hstack_bin() {
 
 resolve_node_bin() {
   # Prefer explicit env vars first.
-  if [[ -n "${HAPPIER_STACK_NODE:-}" ]] && [[ -x "${HAPPIER_STACK_NODE:-}" ]]; then
-    echo "$HAPPIER_STACK_NODE"
+  if [[ -n "${PIGGERCODE_STACK_NODE:-}" ]] && [[ -x "${PIGGERCODE_STACK_NODE:-}" ]]; then
+    echo "$PIGGERCODE_STACK_NODE"
     return
   fi
 
@@ -479,7 +479,7 @@ resolve_node_bin() {
   local env_file="$home/.env"
   if [[ -f "$env_file" ]]; then
     local v
-    v="$(dotenv_get "$env_file" "HAPPIER_STACK_NODE")"
+    v="$(dotenv_get "$env_file" "PIGGERCODE_STACK_NODE")"
     if [[ -n "$v" ]] && [[ -x "$v" ]]; then
       echo "$v"
       return
@@ -490,15 +490,15 @@ resolve_node_bin() {
 }
 
 resolve_workspace_dir() {
-  if [[ -n "${HAPPIER_STACK_WORKSPACE_DIR:-}" ]]; then
-    echo "$HAPPIER_STACK_WORKSPACE_DIR"
+  if [[ -n "${PIGGERCODE_STACK_WORKSPACE_DIR:-}" ]]; then
+    echo "$PIGGERCODE_STACK_WORKSPACE_DIR"
     return
   fi
   local root
   root="$(resolve_hstack_root_dir)"
   local p
-  p="$(dotenv_get "$root/.env" "HAPPIER_STACK_WORKSPACE_DIR")"
-  [[ -z "$p" ]] && p="$(dotenv_get "$root/env.local" "HAPPIER_STACK_WORKSPACE_DIR")"
+  p="$(dotenv_get "$root/.env" "PIGGERCODE_STACK_WORKSPACE_DIR")"
+  [[ -z "$p" ]] && p="$(dotenv_get "$root/env.local" "PIGGERCODE_STACK_WORKSPACE_DIR")"
   if [[ -n "$p" ]]; then
     echo "$p"
     return
@@ -511,7 +511,7 @@ resolve_components_dir() {
 }
 
 resolve_main_env_file() {
-  local explicit="${HAPPIER_STACK_ENV_FILE:-}"
+  local explicit="${PIGGERCODE_STACK_ENV_FILE:-}"
   if [[ -n "$explicit" ]] && [[ -f "$explicit" ]]; then
     echo "$explicit"
     return
@@ -535,8 +535,8 @@ resolve_main_port() {
   # 4) home .env
   # 5) runtime state (ephemeral stacks)
   # 6) fallback to 3005
-  if [[ -n "${HAPPIER_STACK_SERVER_PORT:-}" ]]; then
-    echo "$HAPPIER_STACK_SERVER_PORT"
+  if [[ -n "${PIGGERCODE_STACK_SERVER_PORT:-}" ]]; then
+    echo "$PIGGERCODE_STACK_SERVER_PORT"
     return
   fi
 
@@ -544,7 +544,7 @@ resolve_main_port() {
   local env_file
   env_file="$(resolve_main_env_file)"
   if [[ -n "$env_file" ]]; then
-    p="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_PORT")"
+    p="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_PORT")"
   fi
   if [[ -n "$p" ]]; then
     echo "$p"
@@ -553,13 +553,13 @@ resolve_main_port() {
 
   local root
   root="$(resolve_hstack_root_dir)"
-  p="$(dotenv_get "$root/env.local" "HAPPIER_STACK_SERVER_PORT")"
+  p="$(dotenv_get "$root/env.local" "PIGGERCODE_STACK_SERVER_PORT")"
   if [[ -n "$p" ]]; then
     echo "$p"
     return
   fi
 
-  p="$(dotenv_get "$root/.env" "HAPPIER_STACK_SERVER_PORT")"
+  p="$(dotenv_get "$root/.env" "PIGGERCODE_STACK_SERVER_PORT")"
   if [[ -n "$p" ]]; then
     echo "$p"
     return
@@ -642,7 +642,7 @@ resolve_stack_server_port() {
 
   local p=""
   if [[ -n "$env_file" && -f "$env_file" ]]; then
-    p="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_PORT")"
+    p="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_PORT")"
   fi
   if [[ -n "$p" ]]; then
     echo "$p"
@@ -657,8 +657,8 @@ resolve_stack_server_port() {
 }
 
 resolve_main_server_component() {
-  if [[ -n "${HAPPIER_STACK_SERVER_COMPONENT:-}" ]]; then
-    echo "$HAPPIER_STACK_SERVER_COMPONENT"
+  if [[ -n "${PIGGERCODE_STACK_SERVER_COMPONENT:-}" ]]; then
+    echo "$PIGGERCODE_STACK_SERVER_COMPONENT"
     return
   fi
 
@@ -666,7 +666,7 @@ resolve_main_server_component() {
   local env_file
   env_file="$(resolve_main_env_file)"
   if [[ -n "$env_file" ]]; then
-    c="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_COMPONENT")"
+    c="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_COMPONENT")"
   fi
   if [[ -n "$c" ]]; then
     echo "$c"
@@ -675,13 +675,13 @@ resolve_main_server_component() {
 
   local root
   root="$(resolve_hstack_root_dir)"
-  c="$(dotenv_get "$root/env.local" "HAPPIER_STACK_SERVER_COMPONENT")"
+  c="$(dotenv_get "$root/env.local" "PIGGERCODE_STACK_SERVER_COMPONENT")"
   if [[ -n "$c" ]]; then
     echo "$c"
     return
   fi
 
-  c="$(dotenv_get "$root/.env" "HAPPIER_STACK_SERVER_COMPONENT")"
+  c="$(dotenv_get "$root/.env" "PIGGERCODE_STACK_SERVER_COMPONENT")"
   if [[ -n "$c" ]]; then
     echo "$c"
     return
@@ -692,21 +692,21 @@ resolve_main_server_component() {
 
 resolve_menubar_mode() {
   # selfhost | dev (default: dev)
-  local raw="${HAPPIER_STACK_MENUBAR_MODE:-}"
+  local raw="${PIGGERCODE_STACK_MENUBAR_MODE:-}"
 
   local env_file
   env_file="$(resolve_main_env_file)"
   if [[ -z "$raw" && -n "$env_file" ]]; then
-    raw="$(dotenv_get "$env_file" "HAPPIER_STACK_MENUBAR_MODE")"
+    raw="$(dotenv_get "$env_file" "PIGGERCODE_STACK_MENUBAR_MODE")"
   fi
 
   if [[ -z "$raw" ]]; then
     local root
     root="$(resolve_hstack_root_dir)"
-    raw="$(dotenv_get "$root/env.local" "HAPPIER_STACK_MENUBAR_MODE")"
+    raw="$(dotenv_get "$root/env.local" "PIGGERCODE_STACK_MENUBAR_MODE")"
   fi
   if [[ -z "$raw" ]]; then
-    raw="$(dotenv_get "$root/.env" "HAPPIER_STACK_MENUBAR_MODE")"
+    raw="$(dotenv_get "$root/.env" "PIGGERCODE_STACK_MENUBAR_MODE")"
   fi
 
   raw="$(echo "${raw:-}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"

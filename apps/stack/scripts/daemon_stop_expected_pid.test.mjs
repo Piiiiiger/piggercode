@@ -55,10 +55,10 @@ async function spawnDaemonLikeProcess({ cliHomeDir, internalServerUrl, stackName
       env: {
         ...process.env,
         DAEMON_OWNED_LOG_PATH: ownedLogPath,
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: internalServerUrl,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_PROCESS_KIND: 'daemon',
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: internalServerUrl,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_PROCESS_KIND: 'daemon',
       },
     },
   );
@@ -130,8 +130,8 @@ setInterval(() => {}, 1000);
       ...sanitizeStackTestRunnerEnv(process.env),
       // Exercise post-readiness group termination without making fresh Node startup itself
       // race a two-second timer on a contended host.
-      HAPPIER_STACK_DAEMON_STOP_TIMEOUT_MS: '10000',
-      HAPPIER_STACK_DAEMON_STOP_TERMINATE_GRACE_MS: '50',
+      PIGGERCODE_STACK_DAEMON_STOP_TIMEOUT_MS: '10000',
+      PIGGERCODE_STACK_DAEMON_STOP_TERMINATE_GRACE_MS: '50',
       STOP_DESCENDANT_PID_PATH: join(tmp, 'stop-descendant.pid'),
     };
     daemonPid = await spawnDaemonLikeProcess({ cliHomeDir, internalServerUrl });

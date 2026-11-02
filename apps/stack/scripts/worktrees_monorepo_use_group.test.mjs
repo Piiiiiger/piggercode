@@ -20,8 +20,8 @@ test('hstack wt use switches all monorepo group components when target is a mono
     workspaceDir,
     sandboxDir,
     extraEnv: {
-      HAPPIER_STACK_STACK: 'exp',
-      HAPPIER_STACK_ENV_FILE: envFile,
+      PIGGERCODE_STACK_STACK: 'exp',
+      PIGGERCODE_STACK_ENV_FILE: envFile,
     },
   });
 
@@ -36,6 +36,6 @@ test('hstack wt use switches all monorepo group components when target is a mono
   assert.equal(parsed.activeDir, monoRoot);
 
   const contents = await readFile(envFile, 'utf-8');
-  assert.ok(contents.includes(`HAPPIER_STACK_REPO_DIR=${monoRoot}\n`), contents);
-  assert.ok(!contents.includes('HAPPIER_STACK_COMPONENT_DIR_'), contents);
+  assert.ok(contents.includes(`PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`), contents);
+  assert.ok(!contents.includes('PIGGERCODE_STACK_COMPONENT_DIR_'), contents);
 });

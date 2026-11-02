@@ -159,7 +159,7 @@ describe('prepareRuntimeEntrypoint', () => {
             'export async function buildCliDist(options) {',
             '  mkdirSync(dirname(eventsPath), { recursive: true });',
             "  appendFileSync(eventsPath, `build:${existsSync(lockPath)}\\n`, 'utf8');",
-            '  const heldLockValue = options.env?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD;',
+            '  const heldLockValue = options.env?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD;',
             '  const heldLock = JSON.parse(heldLockValue);',
             "  appendFileSync(eventsPath, `lease:${heldLock.path === lockPath}:${typeof heldLock.token === 'string' && heldLock.token.length > 0}\\n`, 'utf8');",
             "  appendFileSync(eventsPath, `explicit:${options.heldLockValue === heldLockValue}\\n`, 'utf8');",

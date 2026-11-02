@@ -43,9 +43,9 @@ test('hstack remote server setup forwards env overrides to self-host install', (
     'dev@host',
     '--preview',
     '--env',
-    'HAPPIER_SERVER_PORT=3999',
+    'PIGGERCODE_SERVER_PORT=3999',
     '--env',
-    'HAPPIER_DB_PROVIDER=sqlite',
+    'PIGGERCODE_DB_PROVIDER=sqlite',
     '--json',
   ]);
   assert.equal(res.status, 0, res.stderr);
@@ -54,8 +54,8 @@ test('hstack remote server setup forwards env overrides to self-host install', (
   assert.ok(log.includes('"bin":"happier"'), `expected delegation to happier\n${log}`);
   assert.ok(log.includes('--channel=preview'), `expected preview channel\n${log}`);
   assert.ok(log.includes('--env'), `expected env args\n${log}`);
-  assert.ok(log.includes('HAPPIER_SERVER_PORT=3999'), `expected forwarded port override\n${log}`);
-  assert.ok(log.includes('HAPPIER_DB_PROVIDER=sqlite'), `expected forwarded db provider override\n${log}`);
+  assert.ok(log.includes('PIGGERCODE_SERVER_PORT=3999'), `expected forwarded port override\n${log}`);
+  assert.ok(log.includes('PIGGERCODE_DB_PROVIDER=sqlite'), `expected forwarded db provider override\n${log}`);
 });
 
 test('hstack remote server setup forwards --server-binary for local candidate installs over ssh', (t) => {

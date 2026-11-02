@@ -40,10 +40,10 @@ async function probeAccountCount({ serverDir, env, dbProvider = 'sqlite' }) {
 	    const { PGlite } = await import('@electric-sql/pglite');
 	    const { PGLiteSocketServer } = await import('@electric-sql/pglite-socket');
 	    const { PrismaClient } = await import('@prisma/client');
-	    const dbDirPrimary = (process.env.HAPPIER_SERVER_LIGHT_DB_DIR ?? '').toString().trim();
+	    const dbDirPrimary = (process.env.PIGGERCODE_SERVER_LIGHT_DB_DIR ?? '').toString().trim();
 	    const dbDirLegacy = (process.env.HAPPY_SERVER_LIGHT_DB_DIR ?? '').toString().trim();
 	    const dbDir = dbDirPrimary || dbDirLegacy;
-	    if (!dbDir) throw new Error('Missing HAPPIER_SERVER_LIGHT_DB_DIR or HAPPY_SERVER_LIGHT_DB_DIR for pglite probe');
+	    if (!dbDir) throw new Error('Missing PIGGERCODE_SERVER_LIGHT_DB_DIR or HAPPY_SERVER_LIGHT_DB_DIR for pglite probe');
 	    pglite = new PGlite(dbDir);
 	    await pglite.waitReady;
 	    server = new PGLiteSocketServer({ db: pglite, host: '127.0.0.1', port: 0 });
@@ -92,11 +92,11 @@ async function probeAccountCount({ serverDir, env, dbProvider = 'sqlite' }) {
 		  const { PrismaClient } = await import(${JSON.stringify(
         resolvePrismaClientImportForDbProvider({ serverDir, provider: 'sqlite' })
       )});
-      const dataDirPrimary = (process.env.HAPPIER_SERVER_LIGHT_DATA_DIR ?? '').toString().trim();
+      const dataDirPrimary = (process.env.PIGGERCODE_SERVER_LIGHT_DATA_DIR ?? '').toString().trim();
       const dataDirLegacy = (process.env.HAPPY_SERVER_LIGHT_DATA_DIR ?? '').toString().trim();
       const dataDir = dataDirPrimary || dataDirLegacy;
       const url = (process.env.DATABASE_URL ?? '').toString().trim();
-      if (!url) throw new Error('Missing DATABASE_URL and HAPPIER_SERVER_LIGHT_DATA_DIR or HAPPY_SERVER_LIGHT_DATA_DIR for sqlite probe');
+      if (!url) throw new Error('Missing DATABASE_URL and PIGGERCODE_SERVER_LIGHT_DATA_DIR or HAPPY_SERVER_LIGHT_DATA_DIR for sqlite probe');
       process.env.DATABASE_URL = url;
 		  db = new PrismaClient();
 		  const accountCount = await db.account.count();
@@ -162,7 +162,7 @@ function resolveSqliteDatabaseUrlEnvForProbe(env) {
   if ((env?.DATABASE_URL ?? '').toString().trim()) {
     return env;
   }
-  const dataDir = firstNonEmptyEnv(env?.HAPPIER_SERVER_LIGHT_DATA_DIR, env?.HAPPY_SERVER_LIGHT_DATA_DIR);
+  const dataDir = firstNonEmptyEnv(env?.PIGGERCODE_SERVER_LIGHT_DATA_DIR, env?.HAPPY_SERVER_LIGHT_DATA_DIR);
   if (!dataDir) {
     return env;
   }
@@ -205,7 +205,7 @@ export function resolveAutoCopyFromMainEnabled({ env, stackName, isInteractive }
   if (isSandboxed() && !sandboxAllowsGlobalSideEffects()) {
     return false;
   }
-  const raw = (env.HAPPIER_STACK_AUTO_AUTH_SEED ?? '').toString().trim();
+  const raw = (env.PIGGERCODE_STACK_AUTO_AUTH_SEED ?? '').toString().trim();
   if (raw) return raw !== '0';
 
   if (stackName === 'main') return false;
@@ -215,12 +215,12 @@ export function resolveAutoCopyFromMainEnabled({ env, stackName, isInteractive }
   // - in interactive shells, auto-seed only when the user explicitly configured a non-main seed stack
   //   (this avoids silently spreading main identity for users who haven't opted in yet).
   if (!isInteractive) return true;
-  const seed = (env.HAPPIER_STACK_AUTH_SEED_FROM ?? '').toString().trim();
+  const seed = (env.PIGGERCODE_STACK_AUTH_SEED_FROM ?? '').toString().trim();
   return Boolean(seed && seed !== 'main');
 }
 
 export function resolveAuthSeedFromEnv(env) {
-  const seed = (env.HAPPIER_STACK_AUTH_SEED_FROM ?? '').toString().trim();
+  const seed = (env.PIGGERCODE_STACK_AUTH_SEED_FROM ?? '').toString().trim();
   return seed || 'main';
 }
 
@@ -233,9 +233,9 @@ export async function ensureServerSchemaReady({ serverComponentName, serverDir, 
   await ensureWorkspacePackagesBuiltForComponent(serverDir, { env });
   await ensureDepsInstalled(serverDir, serverComponentName, { env });
 
-  const dataDir = firstNonEmptyEnv(env?.HAPPIER_SERVER_LIGHT_DATA_DIR, env?.HAPPY_SERVER_LIGHT_DATA_DIR);
-  const filesDir = firstNonEmptyEnv(env?.HAPPIER_SERVER_LIGHT_FILES_DIR, dataDir ? join(dataDir, 'files') : '');
-  const dbDir = firstNonEmptyEnv(env?.HAPPIER_SERVER_LIGHT_DB_DIR, env?.HAPPY_SERVER_LIGHT_DB_DIR, dataDir ? join(dataDir, 'pglite') : '');
+  const dataDir = firstNonEmptyEnv(env?.PIGGERCODE_SERVER_LIGHT_DATA_DIR, env?.HAPPY_SERVER_LIGHT_DATA_DIR);
+  const filesDir = firstNonEmptyEnv(env?.PIGGERCODE_SERVER_LIGHT_FILES_DIR, dataDir ? join(dataDir, 'files') : '');
+  const dbDir = firstNonEmptyEnv(env?.PIGGERCODE_SERVER_LIGHT_DB_DIR, env?.HAPPY_SERVER_LIGHT_DB_DIR, dataDir ? join(dataDir, 'pglite') : '');
   if (dataDir) {
     try {
       await mkdir(dataDir, { recursive: true });
@@ -253,7 +253,7 @@ export async function ensureServerSchemaReady({ serverComponentName, serverDir, 
   if (dbDir) {
     try {
       await mkdir(dbDir, { recursive: true });
-      env.HAPPIER_SERVER_LIGHT_DB_DIR = env.HAPPIER_SERVER_LIGHT_DB_DIR ?? dbDir;
+      env.PIGGERCODE_SERVER_LIGHT_DB_DIR = env.PIGGERCODE_SERVER_LIGHT_DB_DIR ?? dbDir;
       env.HAPPY_SERVER_LIGHT_DB_DIR = env.HAPPY_SERVER_LIGHT_DB_DIR ?? dbDir;
     } catch {
       // best-effort
@@ -337,8 +337,8 @@ export async function maybeAutoCopyAuthFromMainIfNeeded({
   const reason = !hasAccessKey ? 'missing_credentials' : 'no_accounts';
   const fromStackName = resolveAuthSeedFromEnv(env);
   const linkAuth =
-    (env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
-    (env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
+    (env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
+    (env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim() === 'link';
   if (!quiet) {
     console.log(`[local] auth: auto seed from ${fromStackName} for ${stackName} (${reason})`);
   }

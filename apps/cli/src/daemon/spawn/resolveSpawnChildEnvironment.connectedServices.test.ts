@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { resolveSpawnChildEnvironment } from './resolveSpawnChildEnvironment';
 import { SPAWN_SESSION_ERROR_CODES } from '@/rpc/handlers/registerSessionHandlers';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
-import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
 
-const HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
-  'HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON';
+const PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
+  'PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON';
 
 describe('resolveSpawnChildEnvironment (connected services)', () => {
   it('injects connected service materialization env when provided', async () => {
@@ -69,7 +69,7 @@ describe('resolveSpawnChildEnvironment (connected services)', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(JSON.parse(result.extraEnvForChild[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]!)).toEqual(
+      expect(JSON.parse(result.extraEnvForChild[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]!)).toEqual(
         options.connectedServices,
       );
     }
@@ -106,7 +106,7 @@ describe('resolveSpawnChildEnvironment (connected services)', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(JSON.parse(result.extraEnvForChild[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]!))
+      expect(JSON.parse(result.extraEnvForChild[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY]!))
         .toEqual(identity);
     }
   });

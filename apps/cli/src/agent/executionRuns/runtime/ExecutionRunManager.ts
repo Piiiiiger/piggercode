@@ -62,7 +62,7 @@ import { disposeExecutionRunBackendController } from './settleExecutionRunContro
 import type { ResumedExecutionRunBackend } from './resumeBackendController';
 
 function readBoundedExternalSendAckTimeoutMs(): number {
-  const raw = process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
+  const raw = process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
   if (typeof raw !== 'string' || raw.trim().length === 0) return 20_000;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed < 1) return 20_000;

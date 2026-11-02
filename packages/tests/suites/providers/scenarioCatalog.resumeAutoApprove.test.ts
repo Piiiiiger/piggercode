@@ -7,7 +7,7 @@ describe('providers: resume scenario permission auto-approve policy', () => {
   const kimiProvider = {
     id: 'kimi',
     protocol: 'acp',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_KIMI',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_KIMI',
     traceProvider: 'kimi',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: [] } },
     cli: { subcommand: 'kimi' },
@@ -23,7 +23,7 @@ describe('providers: resume scenario permission auto-approve policy', () => {
     const scenario = scenarioCatalog.acp_resume_fresh_session_imports_history({
       ...kimiProvider,
       id: 'opencode',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_OPENCODE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_OPENCODE',
       traceProvider: 'opencode',
       cli: { subcommand: 'opencode' },
     });

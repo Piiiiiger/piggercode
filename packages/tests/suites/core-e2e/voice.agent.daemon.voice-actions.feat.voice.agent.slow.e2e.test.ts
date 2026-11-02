@@ -47,13 +47,13 @@ describe('core e2e: voice agent daemon emits parsed voice actions from a real ba
     const daemonEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     await ensureCliSharedDepsBuilt({ testDir, env: daemonEnv }, { skipSourceFreshnessCheck: true });
@@ -73,13 +73,13 @@ describe('core e2e: voice agent daemon emits parsed voice actions from a real ba
         directory: workspaceDir,
         terminal: { mode: 'plain' },
         environmentVariables: {
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: serverBaseUrl,
-          HAPPIER_WEBAPP_URL: serverBaseUrl,
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'voice-actions-send-session-message',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: serverBaseUrl,
+          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'voice-actions-send-session-message',
         },
       },
     });

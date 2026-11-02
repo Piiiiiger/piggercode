@@ -13,8 +13,8 @@ vi.mock('@/capabilities/probes/acpProbe', () => ({
 
 describe.sequential('probeCodexAcpLoadSessionSupport', () => {
   const originalEnv = {
-    HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR,
-    HAPPIER_CODEX_ACP_ALLOW_NPX: process.env.HAPPIER_CODEX_ACP_ALLOW_NPX,
+    PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR,
+    PIGGERCODE_CODEX_ACP_ALLOW_NPX: process.env.PIGGERCODE_CODEX_ACP_ALLOW_NPX,
     CODEX_HOME: process.env.CODEX_HOME,
     PATH: process.env.PATH,
   };
@@ -27,8 +27,8 @@ describe.sequential('probeCodexAcpLoadSessionSupport', () => {
     probeAcpAgentCapabilitiesMock.mockReset();
     homeDir = mkdtempSync(resolve(tmpdir(), 'happier-codex-acp-probe-'));
     pathDir = mkdtempSync(resolve(tmpdir(), 'happier-codex-acp-probe-path-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_CODEX_ACP_ALLOW_NPX;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_CODEX_ACP_ALLOW_NPX;
     process.env.PATH = pathDir;
     codexHomeDir = mkdtempSync(resolve(tmpdir(), 'happier-codex-acp-config-'));
     process.env.CODEX_HOME = codexHomeDir;
@@ -40,10 +40,10 @@ describe.sequential('probeCodexAcpLoadSessionSupport', () => {
   });
 
   afterEach(() => {
-    if (originalEnv.HAPPIER_HOME_DIR === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = originalEnv.HAPPIER_HOME_DIR;
-    if (originalEnv.HAPPIER_CODEX_ACP_ALLOW_NPX === undefined) delete process.env.HAPPIER_CODEX_ACP_ALLOW_NPX;
-    else process.env.HAPPIER_CODEX_ACP_ALLOW_NPX = originalEnv.HAPPIER_CODEX_ACP_ALLOW_NPX;
+    if (originalEnv.PIGGERCODE_HOME_DIR === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = originalEnv.PIGGERCODE_HOME_DIR;
+    if (originalEnv.PIGGERCODE_CODEX_ACP_ALLOW_NPX === undefined) delete process.env.PIGGERCODE_CODEX_ACP_ALLOW_NPX;
+    else process.env.PIGGERCODE_CODEX_ACP_ALLOW_NPX = originalEnv.PIGGERCODE_CODEX_ACP_ALLOW_NPX;
     if (originalEnv.CODEX_HOME === undefined) delete process.env.CODEX_HOME;
     else process.env.CODEX_HOME = originalEnv.CODEX_HOME;
     if (originalEnv.PATH === undefined) delete process.env.PATH;

@@ -19,15 +19,15 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import type { Credentials } from '@/persistence';
 
 const envKeys = [
-  'HAPPIER_CODEX_APP_SERVER_BIN',
-  'HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS',
-  'HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE',
-  'HAPPIER_HOME_DIR',
+  'PIGGERCODE_CODEX_APP_SERVER_BIN',
+  'PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS',
+  'PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE',
+  'PIGGERCODE_HOME_DIR',
   'OPENAI_API_KEY',
   'CODEX_API_KEY',
   'CODEX_HOME',
   'CODEX_SQLITE_HOME',
-  'HAPPIER_FAKE_PROFILE_MARKER',
+  'PIGGERCODE_FAKE_PROFILE_MARKER',
 ] as const;
 
 let envScope = createEnvKeyScope(envKeys);
@@ -51,8 +51,8 @@ describe('capabilities.invoke connected-service preflight', () => {
   it('probes native Codex auth without requiring a connected-service credential', async () => {
     vi.resetModules();
     tempDir = mkdtempSync(join(tmpdir(), 'happier-capability-native-preflight-'));
-    process.env.HAPPIER_HOME_DIR = tempDir;
-    process.env.HAPPIER_CODEX_APP_SERVER_BIN = fileURLToPath(
+    process.env.PIGGERCODE_HOME_DIR = tempDir;
+    process.env.PIGGERCODE_CODEX_APP_SERVER_BIN = fileURLToPath(
       new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url),
     );
     vi.doMock('@/persistence', async (importOriginal) => ({
@@ -83,20 +83,20 @@ describe('capabilities.invoke connected-service preflight', () => {
   it('resolves the selected backend profile environment and encrypted Saved Secret before probing controls', async () => {
     vi.resetModules();
     tempDir = mkdtempSync(join(tmpdir(), 'happier-capability-profile-preflight-'));
-    process.env.HAPPIER_HOME_DIR = tempDir;
-    process.env.HAPPIER_CODEX_APP_SERVER_BIN = fileURLToPath(
+    process.env.PIGGERCODE_HOME_DIR = tempDir;
+    process.env.PIGGERCODE_CODEX_APP_SERVER_BIN = fileURLToPath(
       new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url),
     );
-    process.env.HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
+    process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
     const captureFile = join(tempDir, 'captured-profile-env.json');
-    process.env.HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
+    process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
     const baseCodexHome = join(tempDir, 'base-codex-home');
     const profileCodexHome = join(tempDir, 'profile-codex-home');
     process.env.CODEX_HOME = baseCodexHome;
     delete process.env.OPENAI_API_KEY;
     delete process.env.CODEX_API_KEY;
     delete process.env.CODEX_SQLITE_HOME;
-    delete process.env.HAPPIER_FAKE_PROFILE_MARKER;
+    delete process.env.PIGGERCODE_FAKE_PROFILE_MARKER;
 
     const recoverySecret = new Uint8Array(32).fill(7);
     const credentials: Credentials = {
@@ -124,7 +124,7 @@ describe('capabilities.invoke connected-service preflight', () => {
             name: 'Work',
             environmentVariables: [
               { name: 'CODEX_HOME', value: profileCodexHome },
-              { name: 'HAPPIER_FAKE_PROFILE_MARKER', value: 'selected-profile' },
+              { name: 'PIGGERCODE_FAKE_PROFILE_MARKER', value: 'selected-profile' },
               { name: 'OPENAI_API_KEY', value: '${PROFILE_OPENAI_API_KEY}' },
             ],
             envVarRequirements: [{ name: 'PROFILE_OPENAI_API_KEY', kind: 'secret', required: true }],
@@ -165,7 +165,7 @@ describe('capabilities.invoke connected-service preflight', () => {
     expect(response).toMatchObject({ ok: true, result: { source: 'dynamic' } });
     expect(JSON.parse(readFileSync(captureFile, 'utf8'))).toMatchObject({
       CODEX_HOME: profileCodexHome,
-      HAPPIER_FAKE_PROFILE_MARKER: 'selected-profile',
+      PIGGERCODE_FAKE_PROFILE_MARKER: 'selected-profile',
       OPENAI_API_KEY: 'profile-api-key',
     });
   }, 90_000);
@@ -173,13 +173,13 @@ describe('capabilities.invoke connected-service preflight', () => {
   it('materializes a selected Codex auth group through the canonical spawn resolver without a legacy stable home', async () => {
     vi.resetModules();
     tempDir = mkdtempSync(join(tmpdir(), 'happier-capability-connected-preflight-'));
-    process.env.HAPPIER_HOME_DIR = tempDir;
-    process.env.HAPPIER_CODEX_APP_SERVER_BIN = fileURLToPath(
+    process.env.PIGGERCODE_HOME_DIR = tempDir;
+    process.env.PIGGERCODE_CODEX_APP_SERVER_BIN = fileURLToPath(
       new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url),
     );
-    process.env.HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
+    process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
     const captureFile = join(tempDir, 'captured-env.json');
-    process.env.HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
+    process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
     delete process.env.OPENAI_API_KEY;
     delete process.env.CODEX_API_KEY;
     // Keep real native-state sharing inside this fixture rather than the user's ambient home.
@@ -306,7 +306,7 @@ describe('capabilities.invoke connected-service preflight', () => {
   it('fails closed instead of probing ambient auth when selected connected-service credentials are unavailable', async () => {
     vi.resetModules();
     tempDir = mkdtempSync(join(tmpdir(), 'happier-capability-connected-preflight-no-credentials-'));
-    process.env.HAPPIER_HOME_DIR = tempDir;
+    process.env.PIGGERCODE_HOME_DIR = tempDir;
     process.env.OPENAI_API_KEY = 'ambient-key-must-not-be-used';
 
     vi.doMock('@/persistence', async (importOriginal) => ({

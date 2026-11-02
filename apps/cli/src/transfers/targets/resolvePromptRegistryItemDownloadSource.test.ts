@@ -7,8 +7,8 @@ import { reloadConfiguration } from '@/configuration';
 
 describe('resolvePromptRegistryItemDownloadSource', () => {
   it('fails closed when the prompt registry transfer payload exceeds the prompt transfer size limit', async () => {
-    const previous = process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
-    process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = '32';
+    const previous = process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
+    process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = '32';
     reloadConfiguration();
 
     try {
@@ -48,9 +48,9 @@ describe('resolvePromptRegistryItemDownloadSource', () => {
       });
     } finally {
       if (previous === undefined) {
-        delete process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
+        delete process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
       } else {
-        process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
+        process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
       }
       reloadConfiguration();
     }

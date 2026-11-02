@@ -57,8 +57,8 @@ async function withAxiosGetMock<T>(
 }
 
 function configureServerUrl() {
-  process.env.HAPPIER_SERVER_URL = 'http://adapter.test';
-  process.env.HAPPIER_TRANSCRIPT_RECOVERY_DELAY_MS = '0';
+  process.env.PIGGERCODE_SERVER_URL = 'http://adapter.test';
+  process.env.PIGGERCODE_TRANSCRIPT_RECOVERY_DELAY_MS = '0';
   reloadConfiguration();
 }
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Credentials } from '@/persistence';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 const { loggerInfoMock, loggerWarnMock, loggerDebugMock } = vi.hoisted(() => ({
   loggerInfoMock: vi.fn(),
@@ -73,7 +73,7 @@ describe('prepareExecutionRunConnectedServices', () => {
     const materialize = vi.fn(async (input: unknown) => {
       const base = materialized(input, {
         CODEX_HOME: '/run/root/codex/codex-home',
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson,
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: connectedServiceSelectionsJson,
       });
       return {
         ...base,

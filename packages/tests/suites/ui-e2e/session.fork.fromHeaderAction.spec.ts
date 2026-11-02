@@ -50,8 +50,8 @@ test.describe('ui e2e: session fork from header action menu', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -98,11 +98,11 @@ test.describe('ui e2e: session fork from header action menu', () => {
       extraEnv: {
         ...process.env,
         HOME: cliHomeDir,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'transcript-activity-feed',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'transcript-activity-feed',
       },
     });
 

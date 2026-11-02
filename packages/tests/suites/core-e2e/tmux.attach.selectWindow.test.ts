@@ -86,8 +86,8 @@ describe('core e2e: tmux attach selects the correct window (isolated tmux server
       const envForAttach: NodeJS.ProcessEnv = {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_HOME_DIR: happyHomeDir,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: happyHomeDir,
         TMUX_TMPDIR: tmuxTmpDir,
         // Emulate being inside *this* isolated tmux server. This avoids `attach-session` and keeps the test non-interactive.
         TMUX: `${socketPath},0,0`,

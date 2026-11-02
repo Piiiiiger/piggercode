@@ -7,7 +7,7 @@ import { buildHappierShikiThemeKey } from '@/components/ui/code/highlighting/shi
 type HappierThemeLike = typeof lightTheme;
 type HappierThemeColorsLike = HappierThemeLike['colors'] | Record<string, unknown>;
 
-export const HAPPIER_TEXTMATE_THEME_IDS = Object.freeze({
+export const PIGGERCODE_TEXTMATE_THEME_IDS = Object.freeze({
     light: 'happier-light',
     dark: 'happier-dark',
 } as const);
@@ -28,7 +28,7 @@ function touchCachedRegistration(id: string, registration: ThemeRegistration): T
 
 export function resolveHappierTextMateThemeId(params: Readonly<{ isDark: boolean; colors?: HappierThemeColorsLike | null }>): string {
     const type = params.isDark ? 'dark' : 'light';
-    if (!params.colors) return params.isDark ? HAPPIER_TEXTMATE_THEME_IDS.dark : HAPPIER_TEXTMATE_THEME_IDS.light;
+    if (!params.colors) return params.isDark ? PIGGERCODE_TEXTMATE_THEME_IDS.dark : PIGGERCODE_TEXTMATE_THEME_IDS.light;
     return buildHappierShikiThemeKey({ type, colors: params.colors as Record<string, unknown> });
 }
 

@@ -23,7 +23,7 @@
   - Do **not** run `edison ...` directly in this repo:
     - Use `hstack edison -- <edison args...>`
     - Use `hstack edison --stack=<stack> -- <edison args...>` for task/evidence/validation
-    - See: `.edison/guidelines/agents/HAPPIER_STACK_EDISON_WRAPPER.md`
+    - See: `.edison/guidelines/agents/PIGGERCODE_STACK_EDISON_WRAPPER.md`
   - If any core Edison docs mention “worktree confinement” or `edison exec` workflows:
     - Treat them as **not applicable** to happier-dev (Edison worktrees are disabled here).
     - hstack rules override.
@@ -45,7 +45,7 @@
     - `hstack edison -- read START_hstack_NEW_SESSION --type start`
 
 - **Auth failures: prefer copy-from your configured seed stack** (non-interactive, safe).
-  - Recommended seed: `dev-auth` (set by developers via `HAPPIER_STACK_AUTH_SEED_FROM=dev-auth`).
+  - Recommended seed: `dev-auth` (set by developers via `PIGGERCODE_STACK_AUTH_SEED_FROM=dev-auth`).
   - `hstack stack auth <stack> copy-from dev-auth`
   - If you don't know the seed stack, fall back to: `hstack stack auth <stack> copy-from main`
 

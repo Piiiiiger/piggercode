@@ -151,7 +151,7 @@ describe('claudeRemote', () => {
     await claudeRemote(createBaseOptions({ happySessionId: 'managed-session-1' }));
 
     const call = mockQuery.mock.calls[0]?.[0] as QueryCall | undefined;
-    expect(call?.options?.env).toMatchObject({ HAPPIER_SESSION_ID: 'managed-session-1' });
+    expect(call?.options?.env).toMatchObject({ PIGGERCODE_SESSION_ID: 'managed-session-1' });
   });
 
   it('arms workflow startup reconciliation after the legacy query observer installs', async () => {
@@ -289,7 +289,7 @@ describe('claudeRemote', () => {
     await claudeRemote(createBaseOptions());
 
     const call = mockQuery.mock.calls[0]?.[0] as QueryCall | undefined;
-    expect(call?.options?.env?.HAPPIER_CLAUDE_PATH).toBe('/resolved/claude-cli.js');
+    expect(call?.options?.env?.PIGGERCODE_CLAUDE_PATH).toBe('/resolved/claude-cli.js');
   });
 
   it('emits structured compaction events for manual compact commands', async () => {
@@ -326,7 +326,7 @@ describe('claudeRemote', () => {
 
   it('forwards the resolved Claude config dir override into the remote launcher env', async () => {
     mockQuery.mockReturnValue(messageStream(resultMessage()));
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp/happier-claude-config');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp/happier-claude-config');
     vi.unstubAllGlobals();
 
     try {
@@ -336,7 +336,7 @@ describe('claudeRemote', () => {
 
       const call = mockQuery.mock.calls[0]?.[0] as QueryCall | undefined;
       expect(call?.options?.env?.CLAUDE_CONFIG_DIR).toBe('/tmp/happier-claude-config');
-      expect(call?.options?.env?.HAPPIER_CLAUDE_PATH).toBe('/resolved/claude-cli.js');
+      expect(call?.options?.env?.PIGGERCODE_CLAUDE_PATH).toBe('/resolved/claude-cli.js');
     } finally {
       vi.unstubAllEnvs();
     }

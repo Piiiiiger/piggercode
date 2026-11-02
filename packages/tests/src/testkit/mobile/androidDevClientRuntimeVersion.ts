@@ -60,7 +60,7 @@ export function resolveInstalledAndroidDevClientRuntimeVersion(params: Readonly<
   const appId = params.appId.trim();
   if (!appId) return null;
 
-  const adb = commandFromEnv(params.env, 'HAPPIER_E2E_ADB_BIN', 'adb');
+  const adb = commandFromEnv(params.env, 'PIGGERCODE_E2E_ADB_BIN', 'adb');
   const pmPathOutput = runTextCommand({
     command: adb,
     args: ['shell', 'pm', 'path', appId],
@@ -82,7 +82,7 @@ export function resolveInstalledAndroidDevClientRuntimeVersion(params: Readonly<
   });
   if (!pulled) return null;
 
-  const unzip = commandFromEnv(params.env, 'HAPPIER_E2E_UNZIP_BIN', 'unzip');
+  const unzip = commandFromEnv(params.env, 'PIGGERCODE_E2E_UNZIP_BIN', 'unzip');
   const fingerprint = runTextCommand({
     command: unzip,
     args: ['-p', localApkPath, 'assets/fingerprint'],

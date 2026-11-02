@@ -13,17 +13,17 @@ const SCOPED_ENV_KEYS = [
   'USERPROFILE',
   'LOCALAPPDATA',
   'PATH',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
-  'HAPPIER_CLAUDE_PATH',
-  'HAPPIER_CODEX_PATH',
-  'HAPPIER_OPENCODE_PATH',
-  'HAPPIER_PI_PATH',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
+  'PIGGERCODE_CLAUDE_PATH',
+  'PIGGERCODE_CODEX_PATH',
+  'PIGGERCODE_OPENCODE_PATH',
+  'PIGGERCODE_PI_PATH',
   'PI_CODING_AGENT_DIR',
-  'HAPPIER_PNPM_BIN',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_PNPM_BIN',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
   'ANTHROPIC_API_KEY',
   'OPENAI_API_KEY',
 ] as const;
@@ -65,14 +65,14 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     setEnv('HOME', homeDir);
     setEnv('USERPROFILE', homeDir);
     setEnv('LOCALAPPDATA', join(homeDir, 'AppData', 'Local'));
-    setEnv('HAPPIER_HOME_DIR', homeDir);
+    setEnv('PIGGERCODE_HOME_DIR', homeDir);
     setEnv('PATH', join(workDir, 'empty-path'));
     mkdirSync(process.env.PATH!, { recursive: true });
-    setEnv('HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON', undefined);
-    setEnv('HAPPIER_CLAUDE_PATH', undefined);
-    setEnv('HAPPIER_CODEX_PATH', undefined);
-    setEnv('HAPPIER_OPENCODE_PATH', undefined);
-    setEnv('HAPPIER_PI_PATH', undefined);
+    setEnv('PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON', undefined);
+    setEnv('PIGGERCODE_CLAUDE_PATH', undefined);
+    setEnv('PIGGERCODE_CODEX_PATH', undefined);
+    setEnv('PIGGERCODE_OPENCODE_PATH', undefined);
+    setEnv('PIGGERCODE_PI_PATH', undefined);
     setEnv('PI_CODING_AGENT_DIR', undefined);
   });
 
@@ -130,7 +130,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     },
   );
 
-  it('detects Claude when HAPPIER_CLAUDE_PATH is set even when it is not on PATH', async () => {
+  it('detects Claude when PIGGERCODE_CLAUDE_PATH is set even when it is not on PATH', async () => {
     const binDir = join(workDir, 'bin');
     mkdirSync(binDir, { recursive: true });
     const claudePath = makeExecutableShim({
@@ -139,7 +139,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       stdout: 'echo "2.0.70 (Claude Code)"',
     });
 
-    setEnv('HAPPIER_CLAUDE_PATH', claudePath);
+    setEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
 
     const snapshot = await detectCliSnapshotOnDaemonPath({});
     expect(snapshot.clis.claude.available).toBe(true);
@@ -147,7 +147,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     expect(snapshot.clis.claude.version).toBe('2.0.70');
   });
 
-  it('detects Claude when HAPPIER_CLAUDE_PATH points to a JavaScript entrypoint file', async () => {
+  it('detects Claude when PIGGERCODE_CLAUDE_PATH points to a JavaScript entrypoint file', async () => {
     const entryDir = join(workDir, 'claude-js');
     mkdirSync(entryDir, { recursive: true });
     const claudePath = join(entryDir, 'claude.js');
@@ -165,8 +165,8 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       chmodSync(claudePath, 0o644);
     }
 
-    setEnv('HAPPIER_CLAUDE_PATH', claudePath);
-    setEnv('HAPPIER_JS_RUNTIME_PATH', resolveSystemJavaScriptRuntimeBinary(envBaseline.PATH));
+    setEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
+    setEnv('PIGGERCODE_JS_RUNTIME_PATH', resolveSystemJavaScriptRuntimeBinary(envBaseline.PATH));
 
     const snapshot = await detectCliSnapshotOnDaemonPath({});
     expect(snapshot.clis.claude.available).toBe(true);
@@ -175,7 +175,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
   });
 
   it.skipIf(process.platform === 'win32')(
-    'fails closed when HAPPIER_CLAUDE_PATH is set but invalid even if a common install location exists',
+    'fails closed when PIGGERCODE_CLAUDE_PATH is set but invalid even if a common install location exists',
     async () => {
       const localBin = join(homeDir, '.local', 'bin');
       mkdirSync(localBin, { recursive: true });
@@ -185,7 +185,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
         stdout: 'echo "2.0.70 (Claude Code)"',
       });
 
-      setEnv('HAPPIER_CLAUDE_PATH', join(workDir, 'missing-claude'));
+      setEnv('PIGGERCODE_CLAUDE_PATH', join(workDir, 'missing-claude'));
 
       const snapshot = await detectCliSnapshotOnDaemonPath({});
       expect(snapshot.clis.claude.available).toBe(false);
@@ -193,7 +193,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     },
   );
 
-  it('detects OpenCode when HAPPIER_OPENCODE_PATH is set even when it is not on PATH', async () => {
+  it('detects OpenCode when PIGGERCODE_OPENCODE_PATH is set even when it is not on PATH', async () => {
     const binDir = join(workDir, 'bin');
     mkdirSync(binDir, { recursive: true });
     const opencodePath = makeExecutableShim({
@@ -202,7 +202,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       stdout: 'echo "0.0.0-test (OpenCode)"',
     });
 
-    setEnv('HAPPIER_OPENCODE_PATH', opencodePath);
+    setEnv('PIGGERCODE_OPENCODE_PATH', opencodePath);
 
     const snapshot = await detectCliSnapshotOnDaemonPath({});
     expect(snapshot.clis.opencode.available).toBe(true);
@@ -223,7 +223,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       );
       chmodSync(geminiPath, 0o755);
       setEnv('PATH', systemBin);
-      setEnv('HAPPIER_JS_RUNTIME_PATH', join(workDir, 'missing-node'));
+      setEnv('PIGGERCODE_JS_RUNTIME_PATH', join(workDir, 'missing-node'));
 
       const snapshot = await detectCliSnapshotOnDaemonPath({});
       expect(snapshot.clis.gemini.available).toBe(false);
@@ -273,7 +273,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     expect(snapshot.clis.codex.version).toBe('0.112.0');
   });
 
-  it('prefers HAPPIER_CODEX_PATH over a managed Codex install', async () => {
+  it('prefers PIGGERCODE_CODEX_PATH over a managed Codex install', async () => {
     const overrideBin = join(workDir, 'override-bin');
     mkdirSync(overrideBin, { recursive: true });
     const overrideCodexPath = makeExecutableShim({
@@ -281,7 +281,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       name: 'codex',
       stdout: 'echo "0.113.0"',
     });
-    setEnv('HAPPIER_CODEX_PATH', overrideCodexPath);
+    setEnv('PIGGERCODE_CODEX_PATH', overrideCodexPath);
 
     const managedPath = resolveProviderCliManagedCommandPath('codex', { happyHomeDir: homeDir });
     mkdirSync(join(managedPath, '..'), { recursive: true });
@@ -299,7 +299,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     expect(snapshot.clis.codex.version).toBe('0.113.0');
   });
 
-  it('prefers HAPPIER_CODEX_PATH over a system Codex install on PATH', async () => {
+  it('prefers PIGGERCODE_CODEX_PATH over a system Codex install on PATH', async () => {
     const systemBin = join(workDir, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     const systemCodexPath = makeExecutableShim({
@@ -316,7 +316,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       name: 'codex',
       stdout: 'echo "0.113.0"',
     });
-    setEnv('HAPPIER_CODEX_PATH', overrideCodexPath);
+    setEnv('PIGGERCODE_CODEX_PATH', overrideCodexPath);
 
     const snapshot = await detectCliSnapshotOnDaemonPath({});
     expect(snapshot.clis.codex.available).toBe(true);
@@ -326,7 +326,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     expect(snapshot.clis.codex.resolvedPath).not.toBe(systemCodexPath);
   });
 
-  it('fails closed when HAPPIER_CODEX_PATH is set but invalid even if PATH has codex', async () => {
+  it('fails closed when PIGGERCODE_CODEX_PATH is set but invalid even if PATH has codex', async () => {
     const systemBin = join(workDir, 'system-bin');
     mkdirSync(systemBin, { recursive: true });
     makeExecutableShim({
@@ -335,7 +335,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       stdout: 'echo "0.112.0"',
     });
     setEnv('PATH', systemBin);
-    setEnv('HAPPIER_CODEX_PATH', join(workDir, 'missing-codex'));
+    setEnv('PIGGERCODE_CODEX_PATH', join(workDir, 'missing-codex'));
 
     const snapshot = await detectCliSnapshotOnDaemonPath({});
     expect(snapshot.clis.codex.available).toBe(false);
@@ -366,9 +366,9 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       chmodSync(codexPath, 0o755);
 
       setEnv('PATH', '');
-      setEnv('HAPPIER_CODEX_PATH', codexPath);
+      setEnv('PIGGERCODE_CODEX_PATH', codexPath);
       const runtimeBinary = resolveSystemJavaScriptRuntimeBinary(envBaseline.PATH);
-      setEnv('HAPPIER_JS_RUNTIME_PATH', runtimeBinary);
+      setEnv('PIGGERCODE_JS_RUNTIME_PATH', runtimeBinary);
 
       const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true, bypassCache: true });
       expect(snapshot.clis.codex.available).toBe(true);
@@ -454,8 +454,8 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       );
       chmodSync(claudePath, 0o644);
 
-      setEnv('HAPPIER_CLAUDE_PATH', claudePath);
-      setEnv('HAPPIER_JS_RUNTIME_PATH', join(workDir, 'missing-runtime', 'node'));
+      setEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
+      setEnv('PIGGERCODE_JS_RUNTIME_PATH', join(workDir, 'missing-runtime', 'node'));
 
       const snapshot = await detectCliSnapshotOnDaemonPath({ bypassCache: true });
       expect(snapshot.clis.claude.available).toBe(false);
@@ -653,11 +653,11 @@ describe('detectCliSnapshotOnDaemonPath', () => {
         'utf8',
       );
 
-      const previousProbeTimeout = process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
-      const previousLoginStatusProbeTimeout = process.env.HAPPIER_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
+      const previousProbeTimeout = process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
+      const previousLoginStatusProbeTimeout = process.env.PIGGERCODE_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
       setEnv('PATH', binDir);
-      process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = '25';
-      process.env.HAPPIER_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS = '25';
+      process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = '25';
+      process.env.PIGGERCODE_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS = '25';
 
       try {
         const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true, bypassCache: true });
@@ -673,14 +673,14 @@ describe('detectCliSnapshotOnDaemonPath', () => {
         });
       } finally {
         if (typeof previousProbeTimeout === 'string') {
-          process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = previousProbeTimeout;
+          process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS = previousProbeTimeout;
         } else {
-          delete process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
+          delete process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
         }
         if (typeof previousLoginStatusProbeTimeout === 'string') {
-          process.env.HAPPIER_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS = previousLoginStatusProbeTimeout;
+          process.env.PIGGERCODE_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS = previousLoginStatusProbeTimeout;
         } else {
-          delete process.env.HAPPIER_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
+          delete process.env.PIGGERCODE_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
         }
       }
     },

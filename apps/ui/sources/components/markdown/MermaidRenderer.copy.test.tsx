@@ -55,8 +55,8 @@ installMarkdownCommonModuleMocks({
 
 vi.mock('./mermaidWebViewBundle.generated', () => ({
   MERMAID_WEBVIEW_BUNDLE_JS: [
-    'globalThis.HAPPIER_MERMAID = {};',
-    'globalThis.HAPPIER_MERMAID_REMOVE_NAVIGATION = () => {};',
+    'globalThis.PIGGERCODE_MERMAID = {};',
+    'globalThis.PIGGERCODE_MERMAID_REMOVE_NAVIGATION = () => {};',
   ].join('\n'),
 }));
 
@@ -121,8 +121,8 @@ describe('MermaidRenderer', () => {
     try {
       screen = await renderScreen(<MermaidRenderer content={'graph TD\\nA-->B'} />);
 
-      expect(lastWebViewHtml).toContain('HAPPIER_MERMAID');
-      expect(lastWebViewHtml).toContain('HAPPIER_MERMAID_REMOVE_NAVIGATION');
+      expect(lastWebViewHtml).toContain('PIGGERCODE_MERMAID');
+      expect(lastWebViewHtml).toContain('PIGGERCODE_MERMAID_REMOVE_NAVIGATION');
       expect(lastWebViewHtml).not.toMatch(/https?:\/\//);
       expect(lastWebViewHtml).toContain("default-src 'none'");
       expect(lastWebViewProps).toMatchObject({

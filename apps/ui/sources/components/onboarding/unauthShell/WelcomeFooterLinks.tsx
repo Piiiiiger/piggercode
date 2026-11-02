@@ -5,14 +5,14 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
-import { HAPPIER_CLOUD_SERVER_URL } from '@/sync/domains/server/serverProfiles';
+import { PIGGERCODE_CLOUD_SERVER_URL } from '@/sync/domains/server/serverProfiles';
 import { createServerUrlComparableKey } from '@/sync/domains/server/url/serverUrlCanonical';
 import { derivePresentableRelayHost } from '@/sync/domains/server/url/serverUrlDisplay';
 import { t } from '@/text';
 import { Icon } from '@/components/ui/icons/Icon';
 
 
-const HAPPIER_CLOUD_COMPARABLE_KEY = createServerUrlComparableKey(HAPPIER_CLOUD_SERVER_URL);
+const PIGGERCODE_CLOUD_COMPARABLE_KEY = createServerUrlComparableKey(PIGGERCODE_CLOUD_SERVER_URL);
 
 export type WelcomeFooterLinksProps = Readonly<{
     variant: 'desktop' | 'mobile';
@@ -49,7 +49,7 @@ export const WelcomeFooterLinks = React.memo(function WelcomeFooterLinks(props: 
     // doesn't flicker into the custom layout for a single render.
     const activeServer = useActiveServerSnapshot();
     const isCustomRelay = activeServer.serverUrl.length > 0
-        && createServerUrlComparableKey(activeServer.serverUrl) !== HAPPIER_CLOUD_COMPARABLE_KEY;
+        && createServerUrlComparableKey(activeServer.serverUrl) !== PIGGERCODE_CLOUD_COMPARABLE_KEY;
     const customRelayHost = isCustomRelay
         ? (derivePresentableRelayHost(activeServer.serverUrl) ?? activeServer.serverUrl)
         : null;

@@ -110,7 +110,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 const attemptsPath = join(home, 'start-attempt.txt');
@@ -202,35 +202,35 @@ test('invalid-auth auto-reseed uses resolved stack name instead of null placehol
       storageDir,
       stackName: 'dev',
       env: {
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_SERVER_PORT: '4101',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: targetCliHome,
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_SERVER_PORT: '4101',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: targetCliHome,
       },
     });
     await writeStackEnv({
       storageDir,
       stackName: 'dev-auth',
       env: {
-        HAPPIER_STACK_STACK: 'dev-auth',
-        HAPPIER_STACK_SERVER_PORT: '4102',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: sourceCliHome,
+        PIGGERCODE_STACK_STACK: 'dev-auth',
+        PIGGERCODE_STACK_SERVER_PORT: '4102',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: sourceCliHome,
       },
     });
 
     const env = {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTH_SEED_FROM: 'dev-auth',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '1',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTH_SEED_FROM: 'dev-auth',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '1',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
 
     profileServer = await startProfileAuthServer({ port: 4101, allowToken: seedToken });
@@ -306,35 +306,35 @@ test('invalid-auth auto-reseed overwrites stale target credentials', async () =>
       storageDir,
       stackName: 'dev',
       env: {
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_SERVER_PORT: '4201',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: targetCliHome,
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_SERVER_PORT: '4201',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: targetCliHome,
       },
     });
     await writeStackEnv({
       storageDir,
       stackName: 'dev-auth',
       env: {
-        HAPPIER_STACK_STACK: 'dev-auth',
-        HAPPIER_STACK_SERVER_PORT: '4202',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: sourceCliHome,
+        PIGGERCODE_STACK_STACK: 'dev-auth',
+        PIGGERCODE_STACK_SERVER_PORT: '4202',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: sourceCliHome,
       },
     });
 
     const env = {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTH_SEED_FROM: 'dev-auth',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '1',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTH_SEED_FROM: 'dev-auth',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '1',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
 
     profileServer = await startProfileAuthServer({ port: 4201, allowToken: seedToken });
@@ -391,7 +391,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 const attemptsPath = join(home, 'start-attempt.txt');
@@ -502,44 +502,44 @@ if (sub === 'start') {
       storageDir,
       stackName: 'dev',
       env: {
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_SERVER_PORT: '4301',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: targetCliHome,
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_SERVER_PORT: '4301',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: targetCliHome,
       },
     });
     await writeStackEnv({
       storageDir,
       stackName: 'dev-auth',
       env: {
-        HAPPIER_STACK_STACK: 'dev-auth',
-        HAPPIER_STACK_SERVER_PORT: '4302',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: devAuthCliHome,
+        PIGGERCODE_STACK_STACK: 'dev-auth',
+        PIGGERCODE_STACK_SERVER_PORT: '4302',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: devAuthCliHome,
       },
     });
     await writeStackEnv({
       storageDir,
       stackName: 'main',
       env: {
-        HAPPIER_STACK_STACK: 'main',
-        HAPPIER_STACK_SERVER_PORT: '4303',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: mainCliHome,
+        PIGGERCODE_STACK_STACK: 'main',
+        PIGGERCODE_STACK_SERVER_PORT: '4303',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: mainCliHome,
       },
     });
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTH_SEED_FROM: 'dev-auth',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '1',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTH_SEED_FROM: 'dev-auth',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '1',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
 
     // Server is reachable but rejects the configured seed token. This should fail closed and must not fall back to main.
@@ -610,7 +610,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
-const home = process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR;
+const home = process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR;
 if (!home) process.exit(2);
 
 const statePath = join(home, 'daemon.state.json');
@@ -692,34 +692,34 @@ if (sub === 'start') {
       storageDir,
       stackName: 'dev',
       env: {
-        HAPPIER_STACK_STACK: 'dev',
-        HAPPIER_STACK_SERVER_PORT: '4401',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: targetCliHome,
+        PIGGERCODE_STACK_STACK: 'dev',
+        PIGGERCODE_STACK_SERVER_PORT: '4401',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: targetCliHome,
       },
     });
     await writeStackEnv({
       storageDir,
       stackName: 'dev-auth',
       env: {
-        HAPPIER_STACK_STACK: 'dev-auth',
-        HAPPIER_STACK_SERVER_PORT: '4402',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_CLI_HOME_DIR: seedCliHome,
+        PIGGERCODE_STACK_STACK: 'dev-auth',
+        PIGGERCODE_STACK_SERVER_PORT: '4402',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_CLI_HOME_DIR: seedCliHome,
       },
     });
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_AUTH_SEED_FROM: 'dev-auth',
-      HAPPIER_STACK_AUTO_AUTH_SEED: '1',
-      HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-      HAPPIER_STACK_CLI_BUILD: '0',
-      HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
-      HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
-      HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_AUTH_SEED_FROM: 'dev-auth',
+      PIGGERCODE_STACK_AUTO_AUTH_SEED: '1',
+      PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+      PIGGERCODE_STACK_CLI_BUILD: '0',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '500',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '10',
+      PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
     };
 
     await assert.rejects(

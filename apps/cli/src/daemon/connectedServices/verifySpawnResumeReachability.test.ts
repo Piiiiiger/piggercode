@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from './connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from './connectedServiceChildEnvironment';
 import { verifySpawnResumeReachability } from './verifySpawnResumeReachability';
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';
 
@@ -17,7 +17,7 @@ import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFil
  * `verifySpawnResumeReachability` are directly observable:
  *
  *   (a) target-root derivation — the explicit env key
- *       (`HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT`) is preferred; when absent the root
+ *       (`PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT`) is preferred; when absent the root
  *       is derived from the parent of the sole absolute env value (legacy fallback).
  *   (b) dispatch ok — the provider probe is invoked with the resolved root, a real file resolves ok.
  *   (c) dispatch miss — a session id with no matching file on any search root resolves not-ok.
@@ -30,13 +30,13 @@ const CWD = '/tmp/vssrr-test-project';
 
 function makeEnvWithExplicitRoot(root: string): Readonly<Record<string, string>> {
   return {
-    [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: root,
+    [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: root,
     PI_CODING_AGENT_DIR: join(root, 'pi-agent-dir'),
   };
 }
 
 function makeEnvWithLegacyFallbackOnly(singleAbsoluteValue: string): Readonly<Record<string, string>> {
-  // No HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT key → root must be derived from
+  // No PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT key → root must be derived from
   // the parent of the single absolute env value.
   return { PI_CODING_AGENT_DIR: singleAbsoluteValue };
 }

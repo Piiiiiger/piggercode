@@ -6,10 +6,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { withToolTraceFile } from './toolTraceFile';
 
 const TOOL_TRACE_ENV_KEYS = [
-    'HAPPIER_STACK_TOOL_TRACE',
-    'HAPPIER_STACK_TOOL_TRACE_FILE',
-    'HAPPIER_STACK_TOOL_TRACE_DIR',
-    'HAPPIER_E2E_ACP_TRACE_MARKERS',
+    'PIGGERCODE_STACK_TOOL_TRACE',
+    'PIGGERCODE_STACK_TOOL_TRACE_FILE',
+    'PIGGERCODE_STACK_TOOL_TRACE_DIR',
+    'PIGGERCODE_E2E_ACP_TRACE_MARKERS',
 ] as const;
 
 afterEach(() => {
@@ -20,10 +20,10 @@ afterEach(() => {
 
 describe('withToolTraceFile', () => {
     it('patches and restores tool-trace env including extra ACP trace-marker keys', async () => {
-        process.env.HAPPIER_STACK_TOOL_TRACE = 'baseline-trace';
-        process.env.HAPPIER_STACK_TOOL_TRACE_FILE = '/tmp/baseline-trace.jsonl';
-        process.env.HAPPIER_STACK_TOOL_TRACE_DIR = '/tmp/baseline-trace-dir';
-        process.env.HAPPIER_E2E_ACP_TRACE_MARKERS = 'baseline-markers';
+        process.env.PIGGERCODE_STACK_TOOL_TRACE = 'baseline-trace';
+        process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE = '/tmp/baseline-trace.jsonl';
+        process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR = '/tmp/baseline-trace-dir';
+        process.env.PIGGERCODE_E2E_ACP_TRACE_MARKERS = 'baseline-markers';
 
         let traceFile = '';
         let traceDir = '';
@@ -34,18 +34,18 @@ describe('withToolTraceFile', () => {
                 traceFile = filePath;
                 traceDir = dirname(filePath);
 
-                expect(process.env.HAPPIER_STACK_TOOL_TRACE).toBe('1');
-                expect(process.env.HAPPIER_STACK_TOOL_TRACE_FILE).toBe(filePath);
-                expect(process.env.HAPPIER_STACK_TOOL_TRACE_DIR).toBeUndefined();
-                expect(process.env.HAPPIER_E2E_ACP_TRACE_MARKERS).toBe('1');
+                expect(process.env.PIGGERCODE_STACK_TOOL_TRACE).toBe('1');
+                expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE).toBe(filePath);
+                expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR).toBeUndefined();
+                expect(process.env.PIGGERCODE_E2E_ACP_TRACE_MARKERS).toBe('1');
             },
-            { env: { HAPPIER_E2E_ACP_TRACE_MARKERS: '1' } },
+            { env: { PIGGERCODE_E2E_ACP_TRACE_MARKERS: '1' } },
         );
 
-        expect(process.env.HAPPIER_STACK_TOOL_TRACE).toBe('baseline-trace');
-        expect(process.env.HAPPIER_STACK_TOOL_TRACE_FILE).toBe('/tmp/baseline-trace.jsonl');
-        expect(process.env.HAPPIER_STACK_TOOL_TRACE_DIR).toBe('/tmp/baseline-trace-dir');
-        expect(process.env.HAPPIER_E2E_ACP_TRACE_MARKERS).toBe('baseline-markers');
+        expect(process.env.PIGGERCODE_STACK_TOOL_TRACE).toBe('baseline-trace');
+        expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE).toBe('/tmp/baseline-trace.jsonl');
+        expect(process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR).toBe('/tmp/baseline-trace-dir');
+        expect(process.env.PIGGERCODE_E2E_ACP_TRACE_MARKERS).toBe('baseline-markers');
         expect(existsSync(traceFile)).toBe(false);
         expect(existsSync(traceDir)).toBe(false);
     });

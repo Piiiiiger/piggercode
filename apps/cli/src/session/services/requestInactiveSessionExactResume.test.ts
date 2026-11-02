@@ -134,9 +134,9 @@ describe('requestInactiveSessionResume', () => {
 
   it('waits for a 1231ms accepted resume to become ready without submitting the resume twice', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_SPAWN_SESSION_ID_RESOLVE_TIMEOUT_MS', '5000');
-    vi.stubEnv('HAPPIER_SPAWN_SESSION_ID_RESOLVE_POLL_INTERVAL_MS', '25');
-    vi.stubEnv('HAPPIER_SPAWN_SESSION_ID_RESOLVE_NOT_FOUND_GRACE_MS', '5000');
+    vi.stubEnv('PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_TIMEOUT_MS', '5000');
+    vi.stubEnv('PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_POLL_INTERVAL_MS', '25');
+    vi.stubEnv('PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_NOT_FOUND_GRACE_MS', '5000');
     const startedAt = Date.now();
     callMachineRpc.mockImplementation(async (params: Readonly<{ method: string }>) => {
       if (params.method === 'spawn-happy-session') {

@@ -63,7 +63,7 @@ function coerceNonNegativeInt(v) {
 }
 
 function parseExpoExportMaxWorkers(env) {
-  const raw = (env?.HAPPIER_STACK_EXPO_EXPORT_MAX_WORKERS ?? '').toString().trim();
+  const raw = (env?.PIGGERCODE_STACK_EXPO_EXPORT_MAX_WORKERS ?? '').toString().trim();
   if (!raw) return { explicit: false, value: null };
   if (raw === '0') return { explicit: true, value: 0 };
   const n = coerceNonNegativeInt(raw);
@@ -141,7 +141,7 @@ export async function expoExec({
   });
   const expoBin = await resolveExpoBin(runnerDir);
   const effectiveEnv = applyExpoNodeHeapEnv(env, {
-    envKey: 'HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB',
+    envKey: 'PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB',
   });
   effectiveEnv.EXPO_UNSTABLE_WEB_MODAL = '1';
   const effectiveArgs = applyExpoExportMaxWorkersArgs(args, effectiveEnv);
@@ -167,7 +167,7 @@ export async function expoSpawn({
   });
   const expoBin = await resolveExpoBin(runnerDir);
   const effectiveEnv = applyExpoNodeHeapEnv(env, {
-    envKey: 'HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB',
+    envKey: 'PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB',
   });
   effectiveEnv.EXPO_UNSTABLE_WEB_MODAL = '1';
   const effectiveArgs = applyExpoExportMaxWorkersArgs(args, effectiveEnv);

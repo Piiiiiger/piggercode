@@ -24,7 +24,7 @@ function detectShell() {
 
 function parseShellArg({ argv, kv }) {
   const fromKv = (kv.get('--shell') ?? '').trim();
-  const fromEnv = (process.env.HAPPIER_STACK_SHELL ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_SHELL ?? '').trim();
   const raw = fromKv || fromEnv || detectShell();
   const v = raw.toLowerCase();
   if (v === 'zsh' || v === 'bash' || v === 'fish') return v;
@@ -236,9 +236,9 @@ async function ensureShellInstall({ homeDir, shell }) {
   const shBlock = [
     '',
     markerStart,
-    `export HAPPIER_STACK_COMPLETIONS_DIR="${completionsDir}"`,
-    `if [[ -d "$HAPPIER_STACK_COMPLETIONS_DIR" ]]; then`,
-    `  fpath=("$HAPPIER_STACK_COMPLETIONS_DIR" $fpath)`,
+    `export PIGGERCODE_STACK_COMPLETIONS_DIR="${completionsDir}"`,
+    `if [[ -d "$PIGGERCODE_STACK_COMPLETIONS_DIR" ]]; then`,
+    `  fpath=("$PIGGERCODE_STACK_COMPLETIONS_DIR" $fpath)`,
     `  autoload -Uz compinit && compinit`,
     'fi',
     markerEnd,
@@ -274,7 +274,7 @@ async function ensureShellInstall({ homeDir, shell }) {
     const res = await writeIfMissing(fishConf, [
       '',
       markerStart,
-      `set -gx HAPPIER_STACK_COMPLETIONS_DIR "${completionsDir}"`,
+      `set -gx PIGGERCODE_STACK_COMPLETIONS_DIR "${completionsDir}"`,
       markerEnd,
       '',
     ].join('\n'));
@@ -376,7 +376,7 @@ async function main() {
         `[completion] installed: ${file}`,
         hook?.path ? (hook.updated ? `[completion] enabled via: ${hook.path}` : `[completion] already enabled in: ${hook.path}`) : null,
         hook?.skipped === 'sandbox'
-          ? `[completion] note: skipped editing shell rc files (sandbox mode). To enable this, re-run with ${cyan('HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1')}`
+          ? `[completion] note: skipped editing shell rc files (sandbox mode). To enable this, re-run with ${cyan('PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1')}`
           : null,
         `[completion] note: restart your terminal (or source your shell config) to pick it up.`,
       ]

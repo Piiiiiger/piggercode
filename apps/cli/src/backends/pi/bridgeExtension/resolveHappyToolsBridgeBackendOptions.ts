@@ -108,7 +108,7 @@ export async function resolveHappyToolsBridgeBackendOptions(params: Readonly<{
       argPrefix: launchArgPrefix,
       env: {
         ...(launchSpec.env ?? {}),
-        HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify(actionsSettings),
+        PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify(actionsSettings),
       },
     },
   });

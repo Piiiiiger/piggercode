@@ -65,7 +65,7 @@ export function resolveDaemonRestartConfirmTimeoutMs(env = process.env, explicit
   const explicit = Number(explicitTimeoutMs);
   if (Number.isFinite(explicit) && explicit > 0) return Math.trunc(explicit);
 
-  const raw = String(env?.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS ?? '').trim();
   if (raw) {
     const parsed = Number(raw);
     if (Number.isFinite(parsed) && parsed > 0) return Math.trunc(parsed);
@@ -79,13 +79,13 @@ function resolveDaemonControlOwnershipContext({ cliHomeDir, stackName, env } = {
   if (!resolvedStackName) return null;
   return {
     stackName: resolvedStackName,
-    envPath: String(env?.HAPPIER_STACK_ENV_FILE ?? '').trim(),
-    cliHomeDir: String(cliHomeDir ?? env?.HAPPIER_STACK_CLI_HOME_DIR ?? env?.HAPPIER_HOME_DIR ?? '').trim(),
+    envPath: String(env?.PIGGERCODE_STACK_ENV_FILE ?? '').trim(),
+    cliHomeDir: String(cliHomeDir ?? env?.PIGGERCODE_STACK_CLI_HOME_DIR ?? env?.PIGGERCODE_HOME_DIR ?? '').trim(),
   };
 }
 
 async function readDaemonProcessInstanceFingerprint({ pid, cliHomeDir, env } = {}) {
-  const envPath = String(env?.HAPPIER_STACK_ENV_FILE ?? '').trim();
+  const envPath = String(env?.PIGGERCODE_STACK_ENV_FILE ?? '').trim();
   const baseDir = envPath ? dirname(envPath) : dirname(String(cliHomeDir ?? '').trim());
   if (!baseDir) return null;
   const runtime = await readStackRuntimeStateFile(join(baseDir, 'stack.runtime.json')).catch(() => null);
@@ -112,7 +112,7 @@ export async function readDaemonControlState({
     ? applyStackDaemonLifecycleScopeEnv({
         env,
         stackName: resolvedStackName,
-        cliIdentity: String(env?.HAPPIER_STACK_CLI_IDENTITY ?? '').trim() || 'default',
+        cliIdentity: String(env?.PIGGERCODE_STACK_CLI_IDENTITY ?? '').trim() || 'default',
       })
     : env;
   const { statePath } = resolvePreferredStackDaemonStatePaths({ cliHomeDir, serverUrl, env: stateEnv });

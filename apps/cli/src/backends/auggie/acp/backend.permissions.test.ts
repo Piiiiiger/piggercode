@@ -9,7 +9,7 @@ import { createAuggieBackend } from './backend';
 
 type BackendWithArgs = AgentBackend & { options: { args: string[] } };
 
-const envKeys = ['PATH', 'HAPPIER_AUGGIE_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_AUGGIE_PATH'] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -33,7 +33,7 @@ afterEach(() => {
 
 function getBackendArgs(permissionMode: 'read-only' | 'safe-yolo' | 'yolo'): string[] {
   process.env.PATH = '';
-  process.env.HAPPIER_AUGGIE_PATH = createFakeBin('auggie');
+  process.env.PIGGERCODE_AUGGIE_PATH = createFakeBin('auggie');
   const backend = createAuggieBackend({
     cwd: '/tmp',
     env: {},
@@ -55,7 +55,7 @@ function getPermissionRules(args: string[]): string[] {
 describe('Auggie ACP backend permissions', () => {
   it('fails closed when the Auggie CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_AUGGIE_PATH;
+    delete process.env.PIGGERCODE_AUGGIE_PATH;
 
     expect(() => createAuggieBackend({ cwd: '/tmp', env: {} })).toThrow(/system install/i);
   });
@@ -67,7 +67,7 @@ describe('Auggie ACP backend permissions', () => {
 
   it('resolves the CLI from options.env PATH when process PATH is empty', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_AUGGIE_PATH;
+    delete process.env.PIGGERCODE_AUGGIE_PATH;
     const binPath = createFakeBin('auggie');
 
     const backend = createAuggieBackend({

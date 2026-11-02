@@ -18,7 +18,7 @@ async function createHappierHomeWithManagedShim(): Promise<Readonly<{ processEnv
   const shimPath = join(happierHomeDir, 'bin', process.platform === 'win32' ? 'happier.exe' : 'happier');
   await mkdir(join(happierHomeDir, 'bin'), { recursive: true });
   await writeFile(shimPath, '#!/bin/sh\n', 'utf8');
-  return { processEnv: { HAPPIER_HOME_DIR: happierHomeDir }, shimPath };
+  return { processEnv: { PIGGERCODE_HOME_DIR: happierHomeDir }, shimPath };
 }
 
 afterEach(async () => {
@@ -64,7 +64,7 @@ describe('the runtime a background service records for a Homebrew CLI', () => {
     const happierHomeDir = join(root, 'home');
     await mkdir(happierHomeDir, { recursive: true });
     // A JS runtime is available, so the only question is which launcher the service records.
-    const processEnv = { HAPPIER_HOME_DIR: happierHomeDir, HAPPIER_JS_RUNTIME_PATH: process.execPath };
+    const processEnv = { PIGGERCODE_HOME_DIR: happierHomeDir, PIGGERCODE_JS_RUNTIME_PATH: process.execPath };
     const stableLauncher = join(prefix, 'opt', 'happier', 'libexec', 'happier');
 
     // Bun reports `execPath` as the resolved file inside the versioned keg.
@@ -108,7 +108,7 @@ describe('the runtime a background service records for a Homebrew CLI', () => {
     const happierHomeDir = join(root, 'home');
     await mkdir(happierHomeDir, { recursive: true });
     const jsRuntime = process.execPath;
-    const processEnv = { HAPPIER_HOME_DIR: happierHomeDir, HAPPIER_JS_RUNTIME_PATH: jsRuntime };
+    const processEnv = { PIGGERCODE_HOME_DIR: happierHomeDir, PIGGERCODE_JS_RUNTIME_PATH: jsRuntime };
 
     const originalExecPath = process.execPath;
     Object.defineProperty(process, 'execPath', { value: nodeKeg, configurable: true, writable: true });

@@ -17,12 +17,12 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
  */
 
 const ENV_KEYS = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_PLATFORM',
-  'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-  'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+  'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
 ] as const;
 
 function writeInstalledUnit(declaredTargetMode: string | null): string {
@@ -31,11 +31,11 @@ function writeInstalledUnit(declaredTargetMode: string | null): string {
   writeFileSync(snapshot.installedPath, [
     '[Service]',
     'ExecStart=/opt/happier/happier daemon start-sync',
-    'Environment=HAPPIER_DAEMON_STARTUP_SOURCE=background-service',
-    `Environment=HAPPIER_HOME_DIR=${process.env.HAPPIER_HOME_DIR}`,
+    'Environment=PIGGERCODE_DAEMON_STARTUP_SOURCE=background-service',
+    `Environment=PIGGERCODE_HOME_DIR=${process.env.PIGGERCODE_HOME_DIR}`,
     ...(declaredTargetMode === null
       ? []
-      : [`Environment=HAPPIER_DAEMON_SERVICE_TARGET_MODE=${declaredTargetMode}`]),
+      : [`Environment=PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=${declaredTargetMode}`]),
     '',
   ].join('\n'));
   return snapshot.installedPath;
@@ -48,10 +48,10 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
   beforeEach(async () => {
     tmpHomeDir = await createTempDir('happier-status-service-target-mode-');
     envScope.patch({
-      HAPPIER_HOME_DIR: tmpHomeDir,
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-      HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: tmpHomeDir,
-      HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: tmpHomeDir,
+      PIGGERCODE_HOME_DIR: tmpHomeDir,
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+      PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmpHomeDir,
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: tmpHomeDir,
     });
     reloadConfiguration();
   });
@@ -78,8 +78,8 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
 
   it('reports pinned for an installed service pinned to one relay profile', async () => {
     envScope.patch({
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'company',
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'company',
     });
     reloadConfiguration();
     const installedPath = writeInstalledUnit('pinned');
@@ -99,8 +99,8 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
    */
   it('reports pinned when the definition declares pinned on the default-segment path', async () => {
     envScope.patch({
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'default',
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'default',
     });
     reloadConfiguration();
     const installedPath = writeInstalledUnit('pinned');

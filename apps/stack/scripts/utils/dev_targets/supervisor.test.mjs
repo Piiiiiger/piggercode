@@ -23,7 +23,7 @@ test('predecessor Stack borrows the sibling sync owner without creating or relea
   const { resolveDevTargetMutagenRuntime } = await import(new URL('mutagen_runtime.mjs', sibling));
   const { renderMutagenProject: renderSharedProject, resolveMutagenSessionName } = await import(new URL('mutagen_project.mjs', sibling));
   const root = await mkdtemp(join(tmpdir(), 'hstack-predecessor-sync-'));
-  const env = { HAPPIER_STACK_STORAGE_DIR: root, PATH: root + ':' + process.env.PATH };
+  const env = { PIGGERCODE_STACK_STORAGE_DIR: root, PATH: root + ':' + process.env.PATH };
   const stackBaseDir = join(root, 'predecessor-stack');
   const target = { name: 'mac-host', platform: 'posix', ssh: 'mac-ssh', repoDir: '/mirror/0.2', cliHomeDir: '/remote/home' };
   const runtime = resolveDevTargetMutagenRuntime({ stackBaseDir, sourceDir, env });
@@ -159,7 +159,7 @@ test('default remote tunnel port varies by Stack process instance', () => {
 test('remote server readiness covers the remote package-roll startup budget', () => {
   assert.equal(resolveRemoteServerReadyTimeoutMs({}), 1_800_000);
   assert.equal(
-    resolveRemoteServerReadyTimeoutMs({ HAPPIER_STACK_SERVER_READY_TIMEOUT_MS: '90000' }),
+    resolveRemoteServerReadyTimeoutMs({ PIGGERCODE_STACK_SERVER_READY_TIMEOUT_MS: '90000' }),
     90_000,
   );
 });
@@ -209,15 +209,15 @@ test('authoritative remote server retires the prior target owner and becomes run
         serverComponentName: 'happier-server-light',
         dbProvider: 'sqlite',
         environment: {
-          HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-          HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+          PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+          PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
         },
       },
       onTargetStateChange: (state) => {
         states.push(state);
         if (state.status === 'running') resolveRunningState();
       },
-      env: { HAPPIER_STACK_TUI: '1' },
+      env: { PIGGERCODE_STACK_TUI: '1' },
       instanceId: 100,
     }, {
       runProcess: async ({ label, command, args, env }) => {
@@ -252,7 +252,7 @@ test('authoritative remote server retires the prior target owner and becomes run
       && call.command === 'ssh'
       && call.args.at(-1)?.includes('stack dev')
     ));
-    assert.match(worker?.args.at(-1) ?? '', /export HAPPIER_STACK_TUI=1/);
+    assert.match(worker?.args.at(-1) ?? '', /export PIGGERCODE_STACK_TUI=1/);
     assert.deepEqual(calls.find((call) => call.kind === 'server-ready'), {
       kind: 'server-ready',
       url: 'http://127.0.0.1:52753',
@@ -313,8 +313,8 @@ test('authoritative Mac server forwards its target-owned Expo through the guest 
         serverComponentName: 'happier-server-light',
         dbProvider: 'sqlite',
         environment: {
-          HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-          HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+          PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+          PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
         },
       },
       env: {},
@@ -345,10 +345,10 @@ test('authoritative Mac server forwards its target-owned Expo through the guest 
     );
     assert.ok(tunnel?.args.some((arg) => String(arg).startsWith('*:18081:localhost:')));
     const worker = calls.find((call) => call.kind === 'spawn' && call.command === 'ssh' && !call.args.includes('-N'));
-    assert.match(worker?.args.at(-1) ?? '', /HAPPIER_STACK_EXPO_DEV_PORT=/);
+    assert.match(worker?.args.at(-1) ?? '', /PIGGERCODE_STACK_EXPO_DEV_PORT=/);
     assert.match(
       worker?.args.at(-1) ?? '',
-      /HAPPIER_STACK_EXPO_PUBLIC_PORT=18081/,
+      /PIGGERCODE_STACK_EXPO_PUBLIC_PORT=18081/,
       'the target must publish the stable outer port while resolving its own reachable host',
     );
     assert.doesNotMatch(
@@ -402,8 +402,8 @@ test('a co-located server stays available when deferred Expo or daemon preparati
             serverComponentName: 'happier-server-light',
             dbProvider: 'sqlite',
             environment: {
-              HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-              HAPPIER_SQLITE_CONNECTION_LIMIT: '1',
+              PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+              PIGGERCODE_SQLITE_CONNECTION_LIMIT: '1',
             },
           },
           onTargetStateChange: (state) => states.push(state),
@@ -454,7 +454,7 @@ test('a co-located server stays available when deferred Expo or daemon preparati
           'companion preparation retries must retain the existing target worker',
         );
         const worker = calls.find((call) => call.kind === 'spawn' && call.command === 'ssh' && !call.args.includes('-N'));
-        assert.match(worker?.args.at(-1) ?? '', /HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH=1/);
+        assert.match(worker?.args.at(-1) ?? '', /PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH=1/);
         assert.equal(
           calls.some((call) => call.kind === 'stop' && call.child === worker.child),
           false,
@@ -1012,7 +1012,7 @@ test('dev target processes are tagged as Stack-owned infrastructure for owner-de
           repoDir: 'C:/happier',
           cliHomeDir: 'C:/Users/test/.happier/windows',
         }],
-        env: { HAPPIER_STACK_STACK: 'repo-test' },
+        env: { PIGGERCODE_STACK_STACK: 'repo-test' },
       },
       {
         runProcess: async ({ command, env }) => {
@@ -1032,12 +1032,12 @@ test('dev target processes are tagged as Stack-owned infrastructure for owner-de
 
     assert.ok(spawned.length >= 3, 'expected Mutagen monitor, reverse tunnel, and remote worker');
     for (const child of spawned) {
-      assert.equal(child.env.HAPPIER_STACK_PROCESS_KIND, 'infra', `${child.label} must be owner-death sweepable`);
+      assert.equal(child.env.PIGGERCODE_STACK_PROCESS_KIND, 'infra', `${child.label} must be owner-death sweepable`);
     }
     assert.ok(mutagenControlEnvs.length > 0, 'expected Mutagen control commands');
     for (const controlEnv of mutagenControlEnvs) {
       assert.notEqual(
-        controlEnv.HAPPIER_STACK_PROCESS_KIND,
+        controlEnv.PIGGERCODE_STACK_PROCESS_KIND,
         'infra',
         'Mutagen control commands may auto-start the persistent per-stack daemon',
       );

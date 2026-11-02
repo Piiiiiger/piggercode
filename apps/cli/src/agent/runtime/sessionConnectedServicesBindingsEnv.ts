@@ -3,8 +3,8 @@ import {
     type ConnectedServiceBindingsV1,
 } from '@piggercode/protocol';
 
-export const HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY =
-    'HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON' as const;
+export const PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY =
+    'PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON' as const;
 
 export function serializeSessionConnectedServicesBindingsForEnv(value: unknown): string | null {
     const parsed = ConnectedServiceBindingsV1Schema.safeParse(value);

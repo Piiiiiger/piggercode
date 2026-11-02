@@ -10,7 +10,7 @@ describe('providers: scenario selection (auth-mode overrides)', () => {
     try {
       const provider = {
         id: 'codex',
-        enableEnvVar: 'HAPPIER_E2E_PROVIDER_CODEX',
+        enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_CODEX',
         protocol: 'acp',
         traceProvider: 'codex',
         requiredEnv: undefined,

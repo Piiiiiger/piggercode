@@ -213,8 +213,8 @@ describe('happier setup — choosing a relay', () => {
 
     expect(commandsRun()[0]).toBe('server add --server-url https://relay.example.com --name relay.example.com --use');
     expect(commandsRun()[1]).toMatch(/^auth login/);
-    expect(spawnedEnvs[0]?.HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP).toBe('1');
-    expect(spawnedEnvs[1]?.HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP).toBeUndefined();
+    expect(spawnedEnvs[0]?.PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP).toBe('1');
+    expect(spawnedEnvs[1]?.PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP).toBeUndefined();
   });
 
   it('installs a relay on this computer and lets the install own relay selection', async () => {
@@ -225,7 +225,7 @@ describe('happier setup — choosing a relay', () => {
     expect(commandsRun()[0]).toBe('relay host install');
     expect(commandsRun().filter((command) => command.startsWith('server add'))).toEqual([]);
     expect(commandsRun()[1]).toMatch(/^auth login/);
-    expect(spawnedEnvs[0]?.HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP).toBe('1');
+    expect(spawnedEnvs[0]?.PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP).toBe('1');
   });
 });
 
@@ -459,7 +459,7 @@ describe('happier setup — unattended runs (--yes)', () => {
 
     expect(spawnedEnvs).not.toEqual([]);
     for (const env of spawnedEnvs) {
-      expect(env?.HAPPIER_NONINTERACTIVE).toBe('1');
+      expect(env?.PIGGERCODE_NONINTERACTIVE).toBe('1');
       // Handing a child a bare environment is how a spawned CLI loses its PATH
       // and fails for a reason that has nothing to do with setup.
       expect(env?.PATH ?? env?.Path).toBe(process.env.PATH ?? process.env.Path);
@@ -470,7 +470,7 @@ describe('happier setup — unattended runs (--yes)', () => {
     await handleSetupCliCommand(context(['--relay', 'https://relay.example.com']));
 
     for (const env of spawnedEnvs) {
-      expect(env?.HAPPIER_NONINTERACTIVE).not.toBe('1');
+      expect(env?.PIGGERCODE_NONINTERACTIVE).not.toBe('1');
     }
   });
 

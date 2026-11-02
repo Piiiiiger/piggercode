@@ -19,7 +19,7 @@ export function upsertMaxOldSpaceSize(nodeOptions, sizeMb) {
 }
 
 export function resolveMaxOldSpaceSizeMb(env) {
-  const raw = String(env?.HAPPIER_CLI_TEST_MAX_OLD_SPACE_SIZE_MB ?? '').trim();
+  const raw = String(env?.PIGGERCODE_CLI_TEST_MAX_OLD_SPACE_SIZE_MB ?? '').trim();
   const parsed = Number.parseInt(raw, 10);
   if (Number.isFinite(parsed) && parsed > 0) return parsed;
   return DEFAULT_CLI_NODE_HEAP_MB;
@@ -51,7 +51,7 @@ async function main(argv) {
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
   });
 
   if (!result.ok) {

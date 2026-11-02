@@ -3,7 +3,7 @@
  * `localStorage['happier.debug.viewportWrites'] = '1'` and reloads — same pattern as
  * `happier.debug.messageDecrypt` — or, on a native build, sets
  * `transcriptViewportDiagnosticsEnabled: true` inside the
- * `EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON` object).
+ * `EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON` object).
  *
  * Two rare defect classes need a writer identified from a SINGLE in-the-wild
  * occurrence, because they do not reproduce on demand:
@@ -250,7 +250,7 @@ let armedObserverElement: TranscriptViewportObservableElement | null = null;
 let armedObserverDispose: (() => void) | null = null;
 
 /**
- * Native override channel. `EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON` is the only build-time
+ * Native override channel. `EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON` is the only build-time
  * JSON bag that reaches a native binary; `sync/runtime/syncTuning.ts` owns the sync knobs
  * inside it and ignores unknown keys, so this debug switch travels on the same transport
  * without joining that schema.
@@ -259,7 +259,7 @@ function isSyncTuningDiagnosticsFlagSet(): boolean {
     // Expo only inlines EXPO_PUBLIC_* variables when they are read with dot notation.
     const raw = typeof process === 'undefined'
         ? undefined
-        : process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON;
+        : process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON;
     if (typeof raw !== 'string' || raw.trim() === '') return false;
     try {
         const parsed = JSON.parse(raw) as unknown;

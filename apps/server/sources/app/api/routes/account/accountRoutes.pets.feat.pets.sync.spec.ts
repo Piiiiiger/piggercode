@@ -37,8 +37,8 @@ describe("accountRoutes pets.sync routes", () => {
 
     beforeEach(() => {
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: undefined,
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: join(harness.baseDir, "private-files"),
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: undefined,
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: join(harness.baseDir, "private-files"),
         });
     });
 
@@ -123,7 +123,7 @@ describe("accountRoutes pets.sync routes", () => {
 
     it("registers account pet library routes under /v1/account/pets", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
         });
         const { accountRoutes } = await import("./accountRoutes");
         const route = createRouteTestBuilder({
@@ -139,7 +139,7 @@ describe("accountRoutes pets.sync routes", () => {
 
     it("returns the canonical disabled-route shape when pets.sync is denied", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "0",
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "0",
         });
         const { accountRoutes } = await import("./accountRoutes");
         const route = createRouteTestBuilder({
@@ -162,9 +162,9 @@ describe("accountRoutes pets.sync routes", () => {
         const privateFilesDir = await mkdtemp(join(tmpdir(), "happier-account-pets-routes-"));
         tempDirs.push(privateFilesDir);
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
         });
         await createAccount("account-1");
         const { accountRoutes } = await import("./accountRoutes");
@@ -223,9 +223,9 @@ describe("accountRoutes pets.sync routes", () => {
         const privateFilesDir = await mkdtemp(join(tmpdir(), "happier-account-pets-routes-"));
         tempDirs.push(privateFilesDir);
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
         });
         const spritesheet = await createSpritesheetPng();
 
@@ -292,9 +292,9 @@ describe("accountRoutes pets.sync routes", () => {
         const spritesheet = await createSpritesheetPng();
 
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: firstPrivateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: firstPrivateFilesDir,
         });
 
         const firstModule = await import("./accountRoutes");
@@ -333,9 +333,9 @@ describe("accountRoutes pets.sync routes", () => {
         }
 
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: secondPrivateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: secondPrivateFilesDir,
         });
 
         const secondModule = await import("./accountRoutes");
@@ -379,9 +379,9 @@ describe("accountRoutes pets.sync routes", () => {
         const privateFilesDir = await mkdtemp(join(tmpdir(), "happier-account-pets-routes-"));
         tempDirs.push(privateFilesDir);
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
         });
         await createAccount("account-1", "e2ee");
         const { accountRoutes } = await import("./accountRoutes");
@@ -432,9 +432,9 @@ describe("accountRoutes pets.sync routes", () => {
         const privateFilesDir = await mkdtemp(join(tmpdir(), "happier-account-pets-routes-"));
         tempDirs.push(privateFilesDir);
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
         });
         await createAccount("account-1", "plain");
         const { accountRoutes } = await import("./accountRoutes");
@@ -485,9 +485,9 @@ describe("accountRoutes pets.sync routes", () => {
         const privateFilesDir = await mkdtemp(join(tmpdir(), "happier-account-pets-routes-"));
         tempDirs.push(privateFilesDir);
         harness.resetEnv({
-            HAPPIER_FEATURE_PETS_SYNC__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
+            PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR: privateFilesDir,
         });
         await createAccount("account-1");
         const { accountRoutes } = await import("./accountRoutes");

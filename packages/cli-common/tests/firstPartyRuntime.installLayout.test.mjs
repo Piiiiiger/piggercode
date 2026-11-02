@@ -23,7 +23,7 @@ function withPlatform(platform, fn) {
 test('cli and daemon resolve to the same install root and current payload paths', () => {
   const env = {
     HOME: '/Users/tester',
-    HAPPIER_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
   };
 
   const cliLayout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv: env });
@@ -38,7 +38,7 @@ test('cli and daemon resolve to the same install root and current payload paths'
 test('installed component paths resolve binary, shim, and node entrypoint locations', () => {
   const env = {
     HOME: '/Users/tester',
-    HAPPIER_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
   };
 
   const paths = resolveInstalledFirstPartyComponentPaths({
@@ -54,7 +54,7 @@ test('installed component paths resolve binary, shim, and node entrypoint locati
 test('public release rings resolve to distinct install roots and public shims', () => {
   const env = {
     HOME: '/Users/tester',
-    HAPPIER_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
   };
 
   const previewLayout = resolveFirstPartyInstallLayout({
@@ -90,7 +90,7 @@ test('public release rings resolve to distinct install roots and public shims', 
 test('publicdev install layout resolves a side-by-side cli root and shim', () => {
   const env = {
     HOME: '/Users/tester',
-    HAPPIER_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
   };
 
   const cliLayout = resolveFirstPartyInstallLayout({
@@ -115,7 +115,7 @@ test('installed component paths use .exe suffixes for Windows binaries and shims
   withPlatform('win32', () => {
     const env = {
       HOME: 'C:\\Users\\tester',
-      HAPPIER_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+      PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
     };
 
     const stablePaths = resolveInstalledFirstPartyComponentPaths({

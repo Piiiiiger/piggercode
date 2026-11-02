@@ -79,7 +79,7 @@ describe('RelayHostEngine (local health)', () => {
 
       await mkdir(defaults.configDir, { recursive: true });
       await mkdir(defaults.installRoot, { recursive: true });
-      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nHAPPIER_SERVER_HOST=127.0.0.1\n`, 'utf8');
+      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nPIGGERCODE_SERVER_HOST=127.0.0.1\n`, 'utf8');
       await writeFile(join(defaults.installRoot, 'self-host-state.json'), JSON.stringify({ version: '0.1.2' }), 'utf8');
 
       Object.defineProperty(process, 'platform', { value: 'linux' });
@@ -137,7 +137,7 @@ describe('RelayHostEngine (local health)', () => {
       await mkdir(join(defaults.installRoot, 'data'), { recursive: true });
       await mkdir(join(legacyInstallRoot, 'data'), { recursive: true });
       await mkdir(unitDir, { recursive: true });
-      await writeFile(join(defaults.configDir, 'server.env'), 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', 'utf8');
+      await writeFile(join(defaults.configDir, 'server.env'), 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', 'utf8');
       await writeFile(join(defaults.installRoot, 'self-host-state.json'), JSON.stringify({ version: '0.2.4' }), 'utf8');
       await writeFile(join(defaults.installRoot, 'data', 'handy-master-secret.txt'), 'preview-secret\n', 'utf8');
       await writeFile(join(legacyInstallRoot, 'data', 'handy-master-secret.txt'), 'legacy-secret\n', 'utf8');
@@ -151,7 +151,7 @@ describe('RelayHostEngine (local health)', () => {
           '[Service]',
           `WorkingDirectory=${legacyInstallRoot}`,
           'Environment=PORT=3005',
-          'Environment=HAPPIER_SERVER_HOST=127.0.0.1',
+          'Environment=PIGGERCODE_SERVER_HOST=127.0.0.1',
           `ExecStart=${legacyInstallRoot}/bin/happier-server`,
           '',
         ].join('\n'),
@@ -165,7 +165,7 @@ describe('RelayHostEngine (local health)', () => {
           '[Service]',
           `WorkingDirectory=${defaults.installRoot}`,
           'Environment=PORT=3005',
-          'Environment=HAPPIER_SERVER_HOST=127.0.0.1',
+          'Environment=PIGGERCODE_SERVER_HOST=127.0.0.1',
           `ExecStart=${defaults.installRoot}/bin/happier-server`,
           '',
         ].join('\n'),
@@ -232,7 +232,7 @@ describe('RelayHostEngine (local health)', () => {
 
       await mkdir(defaults.configDir, { recursive: true });
       await mkdir(defaults.logDir, { recursive: true });
-      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nHAPPIER_SERVER_HOST=127.0.0.1\n`, 'utf8');
+      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nPIGGERCODE_SERVER_HOST=127.0.0.1\n`, 'utf8');
 
       let server: Server | null = null;
       let healthServerStarted = false;
@@ -298,7 +298,7 @@ describe('RelayHostEngine (local health)', () => {
 
       await mkdir(defaults.configDir, { recursive: true });
       await mkdir(defaults.logDir, { recursive: true });
-      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nHAPPIER_SERVER_HOST=127.0.0.1\n`, 'utf8');
+      await writeFile(join(defaults.configDir, 'server.env'), `PORT=${port}\nPIGGERCODE_SERVER_HOST=127.0.0.1\n`, 'utf8');
 
       let server: Server | null = null;
       let healthServerStarted = false;
@@ -368,7 +368,7 @@ describe('RelayHostEngine (local health)', () => {
 
       await mkdir(stableDefaults.configDir, { recursive: true });
       await mkdir(stableDefaults.installRoot, { recursive: true });
-      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', 'utf8');
+      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', 'utf8');
       await writeFile(join(stableDefaults.installRoot, 'self-host-state.json'), JSON.stringify({ version: '0.1.2' }), 'utf8');
 
       const payloadRoot = join(homeDir, 'payload');
@@ -419,7 +419,7 @@ describe('RelayHostEngine (local health)', () => {
 
       await mkdir(stableDefaults.configDir, { recursive: true });
       await mkdir(stableDefaults.installRoot, { recursive: true });
-      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', 'utf8');
+      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', 'utf8');
       await writeFile(join(stableDefaults.installRoot, 'self-host-state.json'), JSON.stringify({ version: '0.1.2' }), 'utf8');
 
       const payloadRoot = join(homeDir, 'payload');
@@ -490,7 +490,7 @@ describe('RelayHostEngine (local health)', () => {
           '[Service]',
           `WorkingDirectory=${legacyInstallRoot}`,
           `Environment=PORT=${port}`,
-          'Environment=HAPPIER_SERVER_HOST=127.0.0.1',
+          'Environment=PIGGERCODE_SERVER_HOST=127.0.0.1',
           `ExecStart=${legacyInstallRoot}/bin/happier-server`,
           '',
         ].join('\n'),
@@ -543,7 +543,7 @@ describe('RelayHostEngine (local health)', () => {
         channel: 'preview',
         mode: 'user',
         selfHostRelayBinaryOverride: previewBinaryPath,
-        env: { PORT: String(port), HAPPIER_SERVER_HOST: '127.0.0.1' },
+        env: { PORT: String(port), PIGGERCODE_SERVER_HOST: '127.0.0.1' },
       })).resolves.toEqual({
         relayUrl: expect.stringContaining('http://'),
         mode: 'user',
@@ -571,7 +571,7 @@ describe('RelayHostEngine (local health)', () => {
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
 
       await mkdir(stableDefaults.configDir, { recursive: true });
-      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', 'utf8');
+      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', 'utf8');
       await mkdir(unitDir, { recursive: true });
       await mkdir(stableDefaults.installRoot, { recursive: true });
       await mkdir(join(stableDefaults.installRoot, 'data'), { recursive: true });
@@ -584,7 +584,7 @@ describe('RelayHostEngine (local health)', () => {
           '[Service]',
           `WorkingDirectory=${stableDefaults.installRoot}`,
           'Environment=PORT=3005',
-          'Environment=HAPPIER_SERVER_HOST=127.0.0.1',
+          'Environment=PIGGERCODE_SERVER_HOST=127.0.0.1',
           `ExecStart=${stableDefaults.installRoot}/bin/happier-server`,
           '',
         ].join('\n'),
@@ -662,7 +662,7 @@ describe('RelayHostEngine (local health)', () => {
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
 
       await mkdir(stableDefaults.configDir, { recursive: true });
-      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', 'utf8');
+      await writeFile(join(stableDefaults.configDir, 'server.env'), 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', 'utf8');
       await mkdir(unitDir, { recursive: true });
       await mkdir(stableDefaults.installRoot, { recursive: true });
       await mkdir(join(stableDefaults.installRoot, 'data'), { recursive: true });
@@ -680,7 +680,7 @@ describe('RelayHostEngine (local health)', () => {
           '[Service]',
           `WorkingDirectory=${stableDefaults.installRoot}`,
           'Environment=PORT=3005',
-          'Environment=HAPPIER_SERVER_HOST=127.0.0.1',
+          'Environment=PIGGERCODE_SERVER_HOST=127.0.0.1',
           `ExecStart=${stableDefaults.installRoot}/bin/happier-server`,
           '',
         ].join('\n'),

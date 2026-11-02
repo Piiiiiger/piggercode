@@ -4190,8 +4190,8 @@ describe('SessionView (direct sessions)', () => {
   });
 
   it('polls direct session status and transcript refreshes using the active cadence while the session view is open', async () => {
-    const previousActivePollMs = process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE;
-    process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE = '50';
+    const previousActivePollMs = process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE;
+    process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE = '50';
 
     try {
       await renderSessionView();
@@ -4209,9 +4209,9 @@ describe('SessionView (direct sessions)', () => {
       expect(syncRefreshSessionMessagesSpy.mock.calls.length).toBeGreaterThanOrEqual(initialRefreshCallCount + 1);
     } finally {
       if (previousActivePollMs === undefined) {
-        delete process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE;
       } else {
-        process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE = previousActivePollMs;
+        process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE = previousActivePollMs;
       }
     }
   });

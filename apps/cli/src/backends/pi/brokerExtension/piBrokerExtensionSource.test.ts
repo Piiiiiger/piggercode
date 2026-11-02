@@ -60,7 +60,7 @@ describe('piBrokerExtensionSource (generated artifact, exercised live)', () => {
     delete process.env[PI_BROKER_SELECTIONS_ENV];
     delete process.env[PI_BROKER_STATE_PATH_ENV];
     delete process.env[PI_BROKER_SELECTION_IDENTITY_ENV];
-    delete process.env.HAPPIER_PI_BROKER_LOAD_NONCE;
+    delete process.env.PIGGERCODE_PI_BROKER_LOAD_NONCE;
   };
 
   beforeEach(clearEnv);
@@ -174,7 +174,7 @@ describe('piBrokerExtensionSource (generated artifact, exercised live)', () => {
     });
     const selectionIdentity = `pi|connected|broker:${PI_BROKER_EXTENSION_VERSION}|anthropic:claude-pro:`;
     process.env[PI_BROKER_SELECTION_IDENTITY_ENV] = selectionIdentity;
-    process.env.HAPPIER_PI_BROKER_LOAD_NONCE = 'pi-spawn-1';
+    process.env.PIGGERCODE_PI_BROKER_LOAD_NONCE = 'pi-spawn-1';
     const calls: Array<{ url: string; headers: Headers; body: string }> = [];
     globalThis.fetch = vi.fn(async (input: unknown, init: unknown) => {
       const reqInit = (init ?? {}) as RequestInit;
@@ -204,7 +204,7 @@ describe('piBrokerExtensionSource (generated artifact, exercised live)', () => {
     });
     process.env[PI_BROKER_SELECTION_IDENTITY_ENV] =
       `pi|connected|broker:${PI_BROKER_EXTENSION_VERSION}|openai-codex:p:`;
-    process.env.HAPPIER_PI_BROKER_LOAD_NONCE = 'pi-spawn-retry';
+    process.env.PIGGERCODE_PI_BROKER_LOAD_NONCE = 'pi-spawn-retry';
     let handshakeCalls = 0;
     globalThis.fetch = vi.fn(async (input: unknown) => {
       if (String(input).includes('/connected-service-auth/broker/loaded')) {

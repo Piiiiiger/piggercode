@@ -57,11 +57,11 @@ test('runtime start proves its spawned listener after a loaded group-filtered di
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '1000',
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '1000',
     ...fixture.listenerDiscoveryEnv,
   };
   const args = [
@@ -95,11 +95,11 @@ test('runtime start fails closed and cleans up when spawned and broad listener d
   });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '1000',
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '1000',
     ...fixture.listenerDiscoveryEnv,
   };
   const args = [

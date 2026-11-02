@@ -25,19 +25,19 @@ type DirectSessionPollingFollowLeaseParams = Readonly<{
 }>;
 
 function resolvePollIntervalMs(env: NodeJS.ProcessEnv): number {
-  const raw = Number.parseInt(String(env.HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS ?? ''), 10);
+  const raw = Number.parseInt(String(env.PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 250;
   return Math.max(10, Math.min(60_000, configured));
 }
 
 function resolveMaxBytes(env: NodeJS.ProcessEnv): number {
-  const raw = Number.parseInt(String(env.HAPPIER_DIRECT_SESSIONS_FOLLOW_MAX_BYTES ?? ''), 10);
+  const raw = Number.parseInt(String(env.PIGGERCODE_DIRECT_SESSIONS_FOLLOW_MAX_BYTES ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 512_000;
   return Math.max(1024, Math.min(10 * 1024 * 1024, configured));
 }
 
 function resolveMaxItems(env: NodeJS.ProcessEnv): number {
-  const raw = Number.parseInt(String(env.HAPPIER_DIRECT_SESSIONS_FOLLOW_MAX_ITEMS ?? ''), 10);
+  const raw = Number.parseInt(String(env.PIGGERCODE_DIRECT_SESSIONS_FOLLOW_MAX_ITEMS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 200;
   return Math.max(1, Math.min(5000, configured));
 }

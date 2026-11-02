@@ -40,7 +40,7 @@ function applyReactNativeArchitecturesToGradleProperties(props, archs) {
  */
 const withAndroidReactNativeArchitectures = (config) => {
   return withGradleProperties(config, (propsConfig) => {
-    const archs = readCsvEnv('HAPPIER_ANDROID_BUILD_ARCHS');
+    const archs = readCsvEnv('PIGGERCODE_ANDROID_BUILD_ARCHS');
     if (archs.length === 0) {
       return propsConfig;
     }

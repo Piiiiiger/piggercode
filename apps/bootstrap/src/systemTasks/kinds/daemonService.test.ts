@@ -82,10 +82,10 @@ async function collectResult(
 describe('daemonService system task handlers', () => {
   beforeEach(async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-daemon-service-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', home);
-    vi.stubEnv('HAPPIER_BOOTSTRAP_CLI_PATH', '');
-    vi.stubEnv('HAPPIER_BOOTSTRAP_HAPPIER_PATH', '');
-    vi.stubEnv('HAPPIER_STACK_REPO_DIR', join(home, 'elsewhere'));
+    vi.stubEnv('PIGGERCODE_HOME_DIR', home);
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_CLI_PATH', '');
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', '');
+    vi.stubEnv('PIGGERCODE_STACK_REPO_DIR', join(home, 'elsewhere'));
     vi.stubEnv('PATH', '');
     cliVersionResponseMock.mockReturnValue('0.2.13');
     await installManagedCliFixture({ processEnv: process.env });
@@ -102,7 +102,7 @@ describe('daemonService system task handlers', () => {
   it('reports acquisition explicitly and carries every ambient daemon fact the CLI emitted', async () => {
     // No stable CLI to adopt: only the app's preview channel is installed.
     const emptyHome = mkdtempSync(join(tmpdir(), 'hsetup-status-channel-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', emptyHome);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', emptyHome);
     vi.stubEnv('PATH', '');
     const cli = await installManagedCliFixture({ processEnv: process.env, releaseRing: 'preview' });
     onTestFinished(() => {
@@ -122,7 +122,7 @@ describe('daemonService system task handlers', () => {
     expect(cliJsonResponseMock.mock.calls[0]?.[0]).toMatchObject({
       args: ['daemon', 'status', '--json'],
       command: cli.command,
-      env: { HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview' },
+      env: { PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview' },
     });
     expect(result).toEqual({
       serviceInstalled: true,
@@ -185,7 +185,7 @@ describe('daemonService system task handlers', () => {
     chmodSync(join(packageRoot, 'bin', 'happier.mjs'), 0o755);
     mkdirSync(npmBin, { recursive: true });
     symlinkSync(join(packageRoot, 'bin', 'happier.mjs'), join(npmBin, 'happier'));
-    vi.stubEnv('HAPPIER_HOME_DIR', join(home, 'happier'));
+    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'happier'));
     vi.stubEnv('PATH', npmBin);
     await installManagedCliFixture({ processEnv: process.env });
     onTestFinished(() => {
@@ -226,7 +226,7 @@ describe('daemonService system task handlers', () => {
       cli: { update: { currentVersion: '0.2.13', latestVersion: '0.2.14', updateAvailable: true, managed: true } },
     });
 
-    vi.stubEnv('HAPPIER_BOOTSTRAP_CLI_PATH', join(process.env.HAPPIER_HOME_DIR!, 'override-happier'));
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_CLI_PATH', join(process.env.PIGGERCODE_HOME_DIR!, 'override-happier'));
     cliJsonResponseMock.mockResolvedValueOnce({
       ...AMBIENT_STATUS_JSON,
       cliUpdate: { currentVersion: '0.2.13', latestVersion: null, updateAvailable: false },
@@ -247,10 +247,10 @@ describe('daemonService system task handlers', () => {
     mkdirSync(npmBin, { recursive: true });
     writeFileSync(join(npmBin, 'happier'), '#!/bin/sh\n', 'utf8');
     chmodSync(join(npmBin, 'happier'), 0o755);
-    vi.stubEnv('HAPPIER_HOME_DIR', join(home, 'happier'));
-    vi.stubEnv('HAPPIER_STACK_REPO_DIR', join(home, 'elsewhere'));
-    vi.stubEnv('HAPPIER_BOOTSTRAP_CLI_PATH', '');
-    vi.stubEnv('HAPPIER_BOOTSTRAP_HAPPIER_PATH', '');
+    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'happier'));
+    vi.stubEnv('PIGGERCODE_STACK_REPO_DIR', join(home, 'elsewhere'));
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_CLI_PATH', '');
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', '');
     vi.stubEnv('PATH', npmBin);
     onTestFinished(() => {
       vi.unstubAllEnvs();
@@ -410,12 +410,12 @@ describe('daemonService system task handlers', () => {
    */
   it('reports each pinned service of this Happier home and ring with its own daemon status', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-status-pinned-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', home);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', home);
     await installManagedCliFixture({ processEnv: process.env });
     vi.stubEnv('PATH', '');
     // A stack launch pins a service target of its own; it must never leak into these reads.
-    vi.stubEnv('HAPPIER_DAEMON_SERVICE_TARGET_MODE', 'pinned');
-    vi.stubEnv('HAPPIER_DAEMON_SERVICE_INSTANCE_ID', 'stack-instance');
+    vi.stubEnv('PIGGERCODE_DAEMON_SERVICE_TARGET_MODE', 'pinned');
+    vi.stubEnv('PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID', 'stack-instance');
     onTestFinished(() => {
       vi.unstubAllEnvs();
       cliJsonResponseMock.mockReset();
@@ -442,14 +442,14 @@ describe('daemonService system task handlers', () => {
           ],
         };
       }
-      if (params.env?.HAPPIER_DAEMON_SERVICE_TARGET_MODE === 'pinned') {
+      if (params.env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE === 'pinned') {
         return {
           ...AMBIENT_STATUS_JSON,
           server: {
             ...AMBIENT_STATUS_JSON.server,
-            activeServerId: params.env.HAPPIER_ACTIVE_SERVER_ID,
-            serverUrl: params.env.HAPPIER_SERVER_URL,
-            publicServerUrl: params.env.HAPPIER_SERVER_URL,
+            activeServerId: params.env.PIGGERCODE_ACTIVE_SERVER_ID,
+            serverUrl: params.env.PIGGERCODE_SERVER_URL,
+            publicServerUrl: params.env.PIGGERCODE_SERVER_URL,
             comparableKey: 'relay-b.example.test',
           },
           service: { installed: true, running: true, targetMode: 'pinned' },
@@ -463,12 +463,12 @@ describe('daemonService system task handlers', () => {
 
     const pinnedStatusCalls = cliJsonResponseMock.mock.calls
       .map(([params]) => params as { args: readonly string[]; env?: NodeJS.ProcessEnv })
-      .filter((params) => params.args.join(' ') === 'daemon status --json' && params.env?.HAPPIER_DAEMON_SERVICE_TARGET_MODE === 'pinned');
+      .filter((params) => params.args.join(' ') === 'daemon status --json' && params.env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE === 'pinned');
     expect(pinnedStatusCalls).toHaveLength(1);
     expect(pinnedStatusCalls[0]?.env).toMatchObject({
-      HAPPIER_ACTIVE_SERVER_ID: 'relay-b',
-      HAPPIER_SERVER_URL: 'https://relay-b.example.test',
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'relay-b',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'relay-b',
+      PIGGERCODE_SERVER_URL: 'https://relay-b.example.test',
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'relay-b',
     });
     expect(result).toMatchObject({
       // The default-following service's facts stay where they always were.
@@ -507,7 +507,7 @@ describe('daemonService system task handlers', () => {
 
   it('keeps every readable pinned service and names the unreadable one instead of erasing the list (M6)', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-status-pinned-partial-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', home);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', home);
     await installManagedCliFixture({ processEnv: process.env });
     onTestFinished(() => {
       vi.unstubAllEnvs();
@@ -519,7 +519,7 @@ describe('daemonService system task handlers', () => {
       if (params.args.join(' ') === 'daemon service list --json') {
         return { capabilities: { pinnedServiceCoexistence: true }, entries: [entry('relay-b'), entry('relay-c')] };
       }
-      const instance = params.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID;
+      const instance = params.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID;
       if (instance === 'relay-c') return { ...AMBIENT_STATUS_JSON, daemon: { running: 'unreadable' } };
       if (instance === 'relay-b') return { ...AMBIENT_STATUS_JSON, server: { ...AMBIENT_STATUS_JSON.server, serverUrl: 'https://relay-b.example.test' } };
       return AMBIENT_STATUS_JSON;
@@ -585,7 +585,7 @@ describe('daemonService system task handlers', () => {
       surface: 'desktop.ui',
     });
     expect(result).toMatchObject({ serviceInstalled: true });
-    expect(cliJsonResponseMock.mock.calls[0]?.[0]).toMatchObject({ env: { HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable' } });
+    expect(cliJsonResponseMock.mock.calls[0]?.[0]).toMatchObject({ env: { PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable' } });
   });
 
   it('rejects daemon service start params that target a non-local machine', async () => {

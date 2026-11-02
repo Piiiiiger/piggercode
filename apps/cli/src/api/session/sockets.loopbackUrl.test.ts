@@ -13,22 +13,22 @@ vi.mock('socket.io-client', () => ({
 }));
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
 ]);
 
 describe('session sockets loopback url resolution', () => {
   beforeEach(() => {
     bindApiSessionSocketMock(mockIo, createApiSessionSocketStub());
     envScope.patch({
-      HAPPIER_HOME_DIR: '/tmp/happier-cli-test-loopback-sockets',
-      HAPPIER_SERVER_URL: 'http://localhost:3005',
-      HAPPIER_WEBAPP_URL: 'http://localhost:8080',
-      HAPPIER_ACTIVE_SERVER_ID: undefined,
-      HAPPIER_PUBLIC_SERVER_URL: undefined,
+      PIGGERCODE_HOME_DIR: '/tmp/happier-cli-test-loopback-sockets',
+      PIGGERCODE_SERVER_URL: 'http://localhost:3005',
+      PIGGERCODE_WEBAPP_URL: 'http://localhost:8080',
+      PIGGERCODE_ACTIVE_SERVER_ID: undefined,
+      PIGGERCODE_PUBLIC_SERVER_URL: undefined,
     });
     reloadConfiguration();
   });

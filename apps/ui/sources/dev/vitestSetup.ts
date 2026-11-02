@@ -14,7 +14,7 @@ import { resetReactNativeMmkvStub } from './reactNativeMmkvStub';
 
 // UI tests should not inherit embedded build-policy gating (set in CI).
 // Clear it by default so feature tests can opt-in explicitly per case.
-process.env.HAPPIER_FEATURE_POLICY_ENV = '';
+process.env.PIGGERCODE_FEATURE_POLICY_ENV = '';
 
 // Some browser-oriented libraries (e.g. xterm add-ons) ship UMD bundles that expect a `self` global.
 // Define it up-front so Vitest can import those modules in Node without crashing during module eval.
@@ -132,8 +132,8 @@ console.error = (...args: unknown[]) => {
 };
 
 function maybeLogActiveHandles(tag: string): void {
-    if (process.env.HAPPIER_VITEST_DEBUG_ACTIVE_HANDLES !== '1') return;
-    dumpActiveHandlesAlways(tag, process.env.HAPPIER_VITEST_DEBUG_ACTIVE_HANDLES_VERBOSE === '1');
+    if (process.env.PIGGERCODE_VITEST_DEBUG_ACTIVE_HANDLES !== '1') return;
+    dumpActiveHandlesAlways(tag, process.env.PIGGERCODE_VITEST_DEBUG_ACTIVE_HANDLES_VERBOSE === '1');
 }
 
 function dumpActiveHandlesAlways(tag: string, verbose: boolean): void {
@@ -227,7 +227,7 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
 }
 
 async function dumpWhyIsNodeRunning(tag: string): Promise<void> {
-    if (process.env.HAPPIER_VITEST_DEBUG_WHY_NODE_RUNNING !== '1') return;
+    if (process.env.PIGGERCODE_VITEST_DEBUG_WHY_NODE_RUNNING !== '1') return;
     try {
         const mod = await import('why-is-node-running');
         const whyIsNodeRunning = (mod as unknown as { default?: unknown }).default ?? mod;
@@ -254,7 +254,7 @@ async function closeUndiciGlobalDispatcherForTests(): Promise<void> {
     }
 }
 
-if (process.env.HAPPIER_VITEST_ENABLE_SIGNAL_DUMP === '1') {
+if (process.env.PIGGERCODE_VITEST_ENABLE_SIGNAL_DUMP === '1') {
     // NOTE: Node uses SIGUSR1 to toggle the inspector, so use SIGUSR2 for our own dumps.
     process.on('SIGUSR2', () => {
         dumpActiveHandlesAlways('SIGUSR2', true);
@@ -301,7 +301,7 @@ beforeEach(() => {
     // compare-and-swap baseline; owner tests clear the records they materialize.
     vi.stubGlobal('indexedDB', indexedDbForTests);
 
-    if (process.env.HAPPIER_VITEST_FORBID_FETCH === '1') {
+    if (process.env.PIGGERCODE_VITEST_FORBID_FETCH === '1') {
         vi.stubGlobal('fetch', (async (input: RequestInfo | URL, init?: RequestInit) => {
             const url =
                 typeof input === 'string'
@@ -342,9 +342,9 @@ afterEach(() => {
 afterAll(async () => {
     maybeLogActiveHandles('before afterAll cleanup');
 
-    const cleanupTimeoutMsRaw = Number.parseInt(process.env.HAPPIER_VITEST_AFTERALL_CLEANUP_TIMEOUT_MS ?? '', 10);
+    const cleanupTimeoutMsRaw = Number.parseInt(process.env.PIGGERCODE_VITEST_AFTERALL_CLEANUP_TIMEOUT_MS ?? '', 10);
     const cleanupTimeoutMs = Number.isFinite(cleanupTimeoutMsRaw) && cleanupTimeoutMsRaw > 0 ? cleanupTimeoutMsRaw : 30_000;
-    const debugCleanup = process.env.HAPPIER_VITEST_DEBUG_AFTERALL_CLEANUP === '1';
+    const debugCleanup = process.env.PIGGERCODE_VITEST_DEBUG_AFTERALL_CLEANUP === '1';
 
     // Endpoint supervisors can start background timers and keep the Vitest fork alive even after all tests finish.
     // Stop them before resetting reachability supervisors so the process can exit cleanly.

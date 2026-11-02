@@ -26,9 +26,9 @@ type CursorSessionControlsBackend = AgentBackend & Partial<{
 function buildCursorProbeEnv(accountSettings: Readonly<Record<string, unknown>> | null | undefined): NodeJS.ProcessEnv {
   const extras = resolveCursorSpawnExtrasFromSettings(accountSettings ?? {});
   return {
-    ...(extras.cursorBinaryPath ? { HAPPIER_CURSOR_PATH: extras.cursorBinaryPath } : {}),
-    ...(extras.cursorAgentFallbackEnabled === false ? { HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0' } : {}),
-    ...(extras.cursorApiEndpoint ? { HAPPIER_CURSOR_API_ENDPOINT: extras.cursorApiEndpoint } : {}),
+    ...(extras.cursorBinaryPath ? { PIGGERCODE_CURSOR_PATH: extras.cursorBinaryPath } : {}),
+    ...(extras.cursorAgentFallbackEnabled === false ? { PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0' } : {}),
+    ...(extras.cursorApiEndpoint ? { PIGGERCODE_CURSOR_API_ENDPOINT: extras.cursorApiEndpoint } : {}),
   };
 }
 

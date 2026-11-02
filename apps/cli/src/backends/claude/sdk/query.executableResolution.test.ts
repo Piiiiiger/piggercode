@@ -11,14 +11,14 @@ describe('claude sdk query executable resolution', () => {
   const originalVersionsDescriptor = Object.getOwnPropertyDescriptor(process.versions, 'bun');
   const envKeys = [
     'DEBUG',
-    'HAPPIER_MANAGED_NODE_BIN',
-    'HAPPIER_JS_RUNTIME_PATH',
-    'HAPPIER_NODE_PATH',
-    'HAPPIER_HOME_DIR',
+    'PIGGERCODE_MANAGED_NODE_BIN',
+    'PIGGERCODE_JS_RUNTIME_PATH',
+    'PIGGERCODE_NODE_PATH',
+    'PIGGERCODE_HOME_DIR',
     'PATH',
     'CLAUDECODE',
     'CLAUDE_CODE_ENTRYPOINT',
-    'HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON',
+    'PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -152,7 +152,7 @@ describe('claude sdk query executable resolution', () => {
         fileName: process.platform === 'win32' ? 'managed-node.cmd' : 'managed-node',
         contents: process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n',
       });
-      envScope.patch({ HAPPIER_MANAGED_NODE_BIN: overridePath });
+      envScope.patch({ PIGGERCODE_MANAGED_NODE_BIN: overridePath });
 
       const spawnMock = vi.fn((..._args: any[]) => {
         throw new Error('spawn invoked');
@@ -192,7 +192,7 @@ describe('claude sdk query executable resolution', () => {
         fileName: process.platform === 'win32' ? 'managed-node.cmd' : 'managed-node',
         contents: process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n',
       });
-      envScope.patch({ HAPPIER_MANAGED_NODE_BIN: overridePath });
+      envScope.patch({ PIGGERCODE_MANAGED_NODE_BIN: overridePath });
       setBunRuntime(true);
       expect(process.versions.bun).toBe('1.0.0');
 
@@ -240,11 +240,11 @@ describe('claude sdk query executable resolution', () => {
         process.platform === 'win32' ? 'happier-js-runtime.cmd' : 'happier-js-runtime',
       );
       envScope.patch({
-        HAPPIER_MANAGED_NODE_BIN: undefined,
-        HAPPIER_JS_RUNTIME_PATH: undefined,
-        HAPPIER_NODE_PATH: undefined,
+        PIGGERCODE_MANAGED_NODE_BIN: undefined,
+        PIGGERCODE_JS_RUNTIME_PATH: undefined,
+        PIGGERCODE_NODE_PATH: undefined,
         PATH: '',
-        HAPPIER_HOME_DIR: happyHomeDir,
+        PIGGERCODE_HOME_DIR: happyHomeDir,
       });
       setBunRuntime(true);
       expect(process.versions.bun).toBe('1.0.0');
@@ -278,7 +278,7 @@ describe('claude sdk query executable resolution', () => {
             pathToClaudeCodeExecutable: '/tmp/fake-claude.cjs',
           },
         }),
-      ).toThrow(/HAPPIER_MANAGED_NODE_BIN/);
+      ).toThrow(/PIGGERCODE_MANAGED_NODE_BIN/);
 
       expect(spawnMock).not.toHaveBeenCalled();
     });
@@ -397,9 +397,9 @@ describe('claude sdk query executable resolution', () => {
     expect(spawnOpts?.env?.CLAUDE_CODE_ENTRYPOINT).toBe(entrypoint);
   });
 
-  it('does not forward HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON into the spawned Claude process environment', async () => {
+  it('does not forward PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON into the spawned Claude process environment', async () => {
     envScope.patch({
-      HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON: JSON.stringify(['GITHUB_TOKEN']),
+      PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON: JSON.stringify(['GITHUB_TOKEN']),
     });
 
     const spawnMock = vi.fn((..._args: any[]) => {
@@ -430,7 +430,7 @@ describe('claude sdk query executable resolution', () => {
 
     expect(spawnMock).toHaveBeenCalled();
     const spawnOpts = spawnMock.mock.calls[0]?.[2] as Record<string, any> | undefined;
-    expect(spawnOpts?.env?.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
+    expect(spawnOpts?.env?.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
   });
 
   it('does not forward Claude OAuth refresh material into the spawned Claude process environment', async () => {

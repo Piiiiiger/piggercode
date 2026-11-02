@@ -18,28 +18,28 @@ vi.mock('@/persistence', () => ({
 }));
 
 describe('startDaemonHeartbeatLoop workspace replication gc', () => {
-    const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+    const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
     let happyHomeDir: string;
 
     beforeEach(() => {
         happyHomeDir = join(tmpdir(), `happier-cli-heartbeat-workspace-replication-gc-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-        process.env.HAPPIER_HOME_DIR = happyHomeDir;
-        process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL = '1';
-        process.env.HAPPIER_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS = '1';
+        process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
+        process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL = '1';
+        process.env.PIGGERCODE_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS = '1';
         vi.useFakeTimers();
         vi.resetModules();
     });
 
     afterEach(() => {
-        delete process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL;
-        delete process.env.HAPPIER_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS;
+        delete process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL;
+        delete process.env.PIGGERCODE_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS;
         if (existsSync(happyHomeDir)) {
             rmSync(happyHomeDir, { recursive: true, force: true });
         }
         if (originalHappyHomeDir === undefined) {
-            delete process.env.HAPPIER_HOME_DIR;
+            delete process.env.PIGGERCODE_HOME_DIR;
         } else {
-            process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+            process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
         }
         vi.useRealTimers();
         vi.restoreAllMocks();

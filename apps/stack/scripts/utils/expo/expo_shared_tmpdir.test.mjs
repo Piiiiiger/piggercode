@@ -30,8 +30,8 @@ test('resolveExpoTmpDir uses shared base dir + key when configured', () => {
   const expected = join(base, 'tmp', kind, sha1_12(key));
   const got = resolveExpoTmpDir({
     env: {
-      HAPPIER_STACK_EXPO_SHARED_TMPDIR_BASE_DIR: base,
-      HAPPIER_STACK_EXPO_SHARED_TMPDIR_KEY: key,
+      PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_BASE_DIR: base,
+      PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_KEY: key,
     },
     defaultTmpDir: '/tmp/default',
     kind,

@@ -29,7 +29,7 @@ async function prepareTauriSidecarForBuild({ env }) {
  * Build a lightweight static web UI bundle (no Expo dev server).
  *
  * Output directory default: ~/.happier/stacks/main/ui (legacy: ~/.happier/local/ui)
- * Server will serve it at / when HAPPIER_SERVER_UI_DIR is set.
+ * Server will serve it at / when PIGGERCODE_SERVER_UI_DIR is set.
  * (Legacy /ui paths are redirected to /.)
  */
 
@@ -65,8 +65,8 @@ async function main() {
     components: ['happier-ui', 'happy'],
   });
   if (inferred?.component === 'happier-ui' || inferred?.component === 'happy') {
-    if (!(process.env.HAPPIER_STACK_REPO_DIR ?? '').toString().trim()) {
-      process.env.HAPPIER_STACK_REPO_DIR = inferred.repoDir;
+    if (!(process.env.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim()) {
+      process.env.PIGGERCODE_STACK_REPO_DIR = inferred.repoDir;
     }
   }
 
@@ -99,8 +99,8 @@ async function main() {
   // For Tauri builds we embed an explicit API base URL (tauri:// origins cannot use window.location.origin).
   const internalServerUrl = `http://127.0.0.1:${serverPort}`;
 
-  const outDir = process.env.HAPPIER_STACK_UI_BUILD_DIR?.trim()
-    ? process.env.HAPPIER_STACK_UI_BUILD_DIR.trim()
+  const outDir = process.env.PIGGERCODE_STACK_UI_BUILD_DIR?.trim()
+    ? process.env.PIGGERCODE_STACK_UI_BUILD_DIR.trim()
     : join(getDefaultAutostartPaths().baseDir, 'ui');
 
   // UI is served at root; /ui redirects to /.
@@ -165,8 +165,8 @@ async function main() {
   // Default: do NOT build Tauri (it's slow and requires extra toolchain).
   // Enable explicitly with:
   // - `hstack build -- --tauri`, or
-  // - `HAPPIER_STACK_BUILD_TAURI=1`
-  const envBuildTauri = (process.env.HAPPIER_STACK_BUILD_TAURI ?? '').trim();
+  // - `PIGGERCODE_STACK_BUILD_TAURI=1`
+  const envBuildTauri = (process.env.PIGGERCODE_STACK_BUILD_TAURI ?? '').trim();
   const buildTauriFromEnv = envBuildTauri !== '' ? envBuildTauri !== '0' : false;
   const buildTauri = !flags.has('--no-tauri') && (flags.has('--tauri') || buildTauriFromEnv);
   if (!buildTauri) {
@@ -174,23 +174,23 @@ async function main() {
   }
 
   // Default to debug builds for local development so devtools are available.
-  const tauriDebug = (process.env.HAPPIER_STACK_TAURI_DEBUG ?? '1') === '1';
+  const tauriDebug = (process.env.PIGGERCODE_STACK_TAURI_DEBUG ?? '1') === '1';
 
   // Choose the API endpoint the Tauri app should use.
   //
   // Priority:
-  // 1) HAPPIER_STACK_TAURI_SERVER_URL (explicit override)
+  // 1) PIGGERCODE_STACK_TAURI_SERVER_URL (explicit override)
   // 2) If available, a Tailscale Serve https://*.ts.net URL (portable across machines on the same tailnet)
   // 3) Fallback to internal loopback (same-machine)
-  const tauriServerUrlOverride = process.env.HAPPIER_STACK_TAURI_SERVER_URL?.trim()
-    ? process.env.HAPPIER_STACK_TAURI_SERVER_URL.trim()
+  const tauriServerUrlOverride = process.env.PIGGERCODE_STACK_TAURI_SERVER_URL?.trim()
+    ? process.env.PIGGERCODE_STACK_TAURI_SERVER_URL.trim()
     : '';
-  const preferTailscale = (process.env.HAPPIER_STACK_TAURI_PREFER_TAILSCALE ?? '1') !== '0';
+  const preferTailscale = (process.env.PIGGERCODE_STACK_TAURI_PREFER_TAILSCALE ?? '1') !== '0';
   const tailscaleUrl = preferTailscale ? await tailscaleServeHttpsUrl() : null;
   const tauriServerUrl = tauriServerUrlOverride || tailscaleUrl || internalServerUrl;
 
-  const tauriDistDir = process.env.HAPPIER_STACK_TAURI_UI_DIR?.trim()
-    ? process.env.HAPPIER_STACK_TAURI_UI_DIR.trim()
+  const tauriDistDir = process.env.PIGGERCODE_STACK_TAURI_UI_DIR?.trim()
+    ? process.env.PIGGERCODE_STACK_TAURI_UI_DIR.trim()
     : join(uiDir, 'dist');
 
   await prepareTauriSidecarForBuild({ env: process.env });

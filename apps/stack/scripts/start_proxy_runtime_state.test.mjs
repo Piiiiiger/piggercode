@@ -80,7 +80,7 @@ case "$*" in
   *"pgid="*) printf "%s\\n" "$FAKE_LISTEN_PID" ;;
   *"eww -p"*)
     printf "PID COMMAND\\n"
-    printf "%s node HAPPIER_STACK_STACK=%s HAPPIER_STACK_ENV_FILE=%s HAPPIER_STACK_PROCESS_KIND=server\\n" \
+    printf "%s node PIGGERCODE_STACK_STACK=%s PIGGERCODE_STACK_ENV_FILE=%s PIGGERCODE_STACK_PROCESS_KIND=server\\n" \
       "$FAKE_LISTEN_PID" "$FAKE_STACK_NAME" "$FAKE_STACK_ENV_FILE"
     ;;
   *) exec /bin/ps "$@" ;;
@@ -156,9 +156,9 @@ async function spawnStackOwnedHealthServer({ stackName, envPath, healthStatus = 
   `], {
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'server',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'server',
     },
     stdio: ['ignore', 'pipe', 'ignore'],
     detached: true,
@@ -206,10 +206,10 @@ for (const proxyProjection of ['current', 'missing']) {
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-        `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+        `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
         '',
       ].join('\n'),
       'utf-8',
@@ -252,15 +252,15 @@ for (const proxyProjection of ['current', 'missing']) {
         ...process.env,
         ...ownershipBoundaryEnv,
         CI: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-        HAPPIER_STACK_SERVER_PORT: String(port),
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+        PIGGERCODE_STACK_SERVER_PORT: String(port),
       },
     });
 
@@ -309,10 +309,10 @@ test('hstack start uses one topology ownership observation for adoption and runt
     await writeFile(join(binDir, 'lsof'), '#!/bin/sh\nprintf x >> "$FAKE_LSOF_COUNT"\nprintf "%s\\n" "$FAKE_LISTEN_PID"\n', 'utf-8');
     await chmod(join(binDir, 'lsof'), 0o755);
     await writeFile(envPath, [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
       '',
     ].join('\n'), 'utf-8');
     server = await spawnStackOwnedHealthServer({ stackName, envPath });
@@ -341,15 +341,15 @@ test('hstack start uses one topology ownership observation for adoption and runt
         FAKE_LSOF_COUNT: countPath,
         FAKE_LISTEN_PID: String(server.child.pid),
         CI: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-        HAPPIER_STACK_SERVER_PORT: String(server.port),
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+        PIGGERCODE_STACK_SERVER_PORT: String(server.port),
       },
     });
 
@@ -397,10 +397,10 @@ test('already-running reconciliation fails closed on inconclusive listener owner
     );
     await Promise.all(['lsof', 'yarn', 'docker'].map((name) => chmod(join(binDir, name), 0o755)));
     await writeFile(envPath, [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
       '',
     ].join('\n'), 'utf-8');
     server = await spawnStackOwnedHealthServer({ stackName, envPath });
@@ -423,15 +423,15 @@ test('already-running reconciliation fails closed on inconclusive listener owner
         FAKE_LSOF_COUNT: countPath,
         STARTUP_SIDE_EFFECT_PATH: sideEffectPath,
         CI: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '0',
-        HAPPIER_STACK_SERVER_PORT: String(server.port),
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '0',
+        PIGGERCODE_STACK_SERVER_PORT: String(server.port),
       },
     });
 
@@ -477,10 +477,10 @@ test('hstack start claims ownership before spawn and publishes activation only a
       'utf-8',
     );
     await writeFile(envPath, [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
       '',
     ].join('\n'), 'utf-8');
     await writeFile(runtimeStatePath, JSON.stringify({
@@ -499,15 +499,15 @@ test('hstack start claims ownership before spawn and publishes activation only a
         ...process.env,
         CI: '1',
         SPAWN_MARKER_PATH: spawnMarkerPath,
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-        HAPPIER_STACK_SERVER_PORT: String(port),
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+        PIGGERCODE_STACK_SERVER_PORT: String(port),
       },
     });
 
@@ -562,10 +562,10 @@ exit 1
     await chmod(join(binDir, 'docker'), 0o755);
     await chmod(join(binDir, 'yarn'), 0o755);
     await writeFile(envPath, [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server',
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
       '',
     ].join('\n'), 'utf-8');
 
@@ -577,26 +577,26 @@ exit 1
         PATH: `${binDir}:${process.env.PATH}`,
         REAL_NODE: process.execPath,
         CI: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_DB_PROVIDER: 'postgres',
-        HAPPIER_STACK_RUNTIME_DIR: join(tempRoot, 'runtime'),
-        HAPPIER_STACK_LOG_TEE_DIR: join(tempRoot, 'logs'),
-        HAPPIER_STACK_SERVER_PORT: String(port),
-        HAPPIER_STACK_SERVER_BACKEND_PORT: String(port + 10),
-        HAPPIER_STACK_PRISMA_MIGRATE: '0',
-        HAPPIER_STACK_PG_PORT: String(port + 20),
-        HAPPIER_STACK_REDIS_PORT: String(port + 21),
-        HAPPIER_STACK_MINIO_PORT: String(port + 22),
-        HAPPIER_STACK_MINIO_CONSOLE_PORT: String(port + 23),
-        HAPPIER_STACK_DOCKER_AUTOSTART: '0',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
+        PIGGERCODE_STACK_RUNTIME_DIR: join(tempRoot, 'runtime'),
+        PIGGERCODE_STACK_LOG_TEE_DIR: join(tempRoot, 'logs'),
+        PIGGERCODE_STACK_SERVER_PORT: String(port),
+        PIGGERCODE_STACK_SERVER_BACKEND_PORT: String(port + 10),
+        PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
+        PIGGERCODE_STACK_PG_PORT: String(port + 20),
+        PIGGERCODE_STACK_REDIS_PORT: String(port + 21),
+        PIGGERCODE_STACK_MINIO_PORT: String(port + 22),
+        PIGGERCODE_STACK_MINIO_CONSOLE_PORT: String(port + 23),
+        PIGGERCODE_STACK_DOCKER_AUTOSTART: '0',
       },
     });
 
@@ -642,10 +642,10 @@ exit 1
 `, 'utf-8');
     await chmod(join(binDir, 'yarn'), 0o755);
     await writeFile(envPath, [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server',
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${fakeRepo}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${fakeRepo}`,
       '',
     ].join('\n'), 'utf-8');
 
@@ -657,20 +657,20 @@ exit 1
         PATH: `${binDir}:${process.env.PATH}`,
         REAL_NODE: process.execPath,
         CI: '1',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
-        HAPPIER_STACK_REPO_DIR: fakeRepo,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-        HAPPIER_STACK_CLI_BUILD: '0',
-        HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-        HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-        HAPPIER_STACK_MANAGED_INFRA: '0',
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_STACK_RUNTIME_DIR: join(tempRoot, 'runtime'),
-        HAPPIER_STACK_LOG_TEE_DIR: join(tempRoot, 'logs'),
-        HAPPIER_STACK_SERVER_PORT: String(port),
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_REPO_DIR: fakeRepo,
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+        PIGGERCODE_STACK_CLI_BUILD: '0',
+        PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+        PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+        PIGGERCODE_STACK_MANAGED_INFRA: '0',
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_STACK_RUNTIME_DIR: join(tempRoot, 'runtime'),
+        PIGGERCODE_STACK_LOG_TEE_DIR: join(tempRoot, 'logs'),
+        PIGGERCODE_STACK_SERVER_PORT: String(port),
       },
     });
 

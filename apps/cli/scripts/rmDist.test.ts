@@ -20,7 +20,7 @@ describe('rmDist', () => {
   });
 
   it('uses an explicit build output directory from env when no arg is provided', () => {
-    expect(resolveDistDir(['node', 'rmDist.mjs'], { HAPPIER_CLI_BUILD_OUTPUT_DIR: '.tmp.cli-dist-build' })).toBe(
+    expect(resolveDistDir(['node', 'rmDist.mjs'], { PIGGERCODE_CLI_BUILD_OUTPUT_DIR: '.tmp.cli-dist-build' })).toBe(
       '.tmp.cli-dist-build',
     );
   });

@@ -15,21 +15,21 @@ describe("createLightSqliteHarness", () => {
             initEncrypt: false,
             initFiles: false,
             env: {
-                HAPPIER_LIGHT_HARNESS_SPEC_FLAG: "configured",
+                PIGGERCODE_LIGHT_HARNESS_SPEC_FLAG: "configured",
             },
         });
 
         try {
-            expect(process.env.HAPPIER_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
+            expect(process.env.PIGGERCODE_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
 
-            process.env.HAPPIER_LIGHT_HARNESS_SPEC_FLAG = "mutated";
+            process.env.PIGGERCODE_LIGHT_HARNESS_SPEC_FLAG = "mutated";
             harness.resetEnv({
-                HAPPIER_LIGHT_HARNESS_SECOND_SPEC_FLAG: "second-configured",
+                PIGGERCODE_LIGHT_HARNESS_SECOND_SPEC_FLAG: "second-configured",
             });
 
-            expect(process.env.HAPPIER_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
-            expect(process.env.HAPPIER_LIGHT_HARNESS_SECOND_SPEC_FLAG).toBe("second-configured");
-            expect(harness.envBase.HAPPIER_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
+            expect(process.env.PIGGERCODE_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
+            expect(process.env.PIGGERCODE_LIGHT_HARNESS_SECOND_SPEC_FLAG).toBe("second-configured");
+            expect(harness.envBase.PIGGERCODE_LIGHT_HARNESS_SPEC_FLAG).toBe("configured");
             expect(harness.envBase.DATABASE_URL).toContain("?socket_timeout=30");
             expect(harness.envBase.DATABASE_URL).toContain("connection_limit=1");
         } finally {
@@ -43,8 +43,8 @@ describe("createLightSqliteHarness", () => {
         const envSnapshot = snapshotEnvValues([
             "PATH",
             "npm_execpath",
-            "HAPPIER_DB_PROVIDER",
-            "HAPPIER_SERVER_LIGHT_DATA_DIR",
+            "PIGGERCODE_DB_PROVIDER",
+            "PIGGERCODE_SERVER_LIGHT_DATA_DIR",
         ]);
 
         const listHarnessDirs = async () => {
@@ -75,8 +75,8 @@ describe("createLightSqliteHarness", () => {
         const after = await listHarnessDirs();
 
         expect(after).toEqual(before);
-        expect(process.env.HAPPIER_DB_PROVIDER).toBe(envSnapshot.HAPPIER_DB_PROVIDER);
-        expect(process.env.HAPPIER_SERVER_LIGHT_DATA_DIR).toBe(envSnapshot.HAPPIER_SERVER_LIGHT_DATA_DIR);
+        expect(process.env.PIGGERCODE_DB_PROVIDER).toBe(envSnapshot.PIGGERCODE_DB_PROVIDER);
+        expect(process.env.PIGGERCODE_SERVER_LIGHT_DATA_DIR).toBe(envSnapshot.PIGGERCODE_SERVER_LIGHT_DATA_DIR);
 
         await rm(rootDir, { recursive: true, force: true });
     });

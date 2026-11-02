@@ -78,7 +78,7 @@ export function restoreProcessEnv(snapshot: NodeJS.ProcessEnv): void {
 }
 
 function resolveHappierHappyAlias(name: string): string | null {
-  if (name.startsWith('HAPPIER_')) return `HAPPY_${name.slice('HAPPIER_'.length)}`;
-  if (name.startsWith('HAPPY_')) return `HAPPIER_${name.slice('HAPPY_'.length)}`;
+  if (name.startsWith('PIGGERCODE_')) return `HAPPY_${name.slice('PIGGERCODE_'.length)}`;
+  if (name.startsWith('HAPPY_')) return `PIGGERCODE_${name.slice('HAPPY_'.length)}`;
   return null;
 }

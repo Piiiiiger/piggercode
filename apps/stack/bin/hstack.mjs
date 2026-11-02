@@ -40,8 +40,8 @@ function dotenvGetQuick(envPath, key) {
 
 function resolveCliRootDir() {
   const fromEnv = (
-    process.env.HAPPIER_STACK_CLI_ROOT_DIR ??
-    process.env.HAPPIER_STACK_DEV_CLI_ROOT_DIR ??
+    process.env.PIGGERCODE_STACK_CLI_ROOT_DIR ??
+    process.env.PIGGERCODE_STACK_DEV_CLI_ROOT_DIR ??
     ''
   ).trim();
   if (fromEnv) return expandHome(fromEnv);
@@ -49,15 +49,15 @@ function resolveCliRootDir() {
   // Stable pointer file: even if the real home dir is elsewhere, `hstack init` writes the pointer here.
   const canonicalEnv = getCanonicalHomeEnvPathFromEnv(process.env);
   const v =
-    dotenvGetQuick(canonicalEnv, 'HAPPIER_STACK_CLI_ROOT_DIR') ||
-    dotenvGetQuick(canonicalEnv, 'HAPPIER_STACK_DEV_CLI_ROOT_DIR') ||
+    dotenvGetQuick(canonicalEnv, 'PIGGERCODE_STACK_CLI_ROOT_DIR') ||
+    dotenvGetQuick(canonicalEnv, 'PIGGERCODE_STACK_DEV_CLI_ROOT_DIR') ||
     '';
   return v ? expandHome(v) : '';
 }
 
 function maybeReexecToCliRoot(cliRootDir) {
-  if ((process.env.HAPPIER_STACK_CLI_REEXEC ?? process.env.HAPPIER_STACK_DEV_REEXEC ?? '') === '1') return;
-  if ((process.env.HAPPIER_STACK_CLI_ROOT_DISABLE ?? process.env.HAPPIER_STACK_DEV_CLI_DISABLE ?? '') === '1') return;
+  if ((process.env.PIGGERCODE_STACK_CLI_REEXEC ?? process.env.PIGGERCODE_STACK_DEV_REEXEC ?? '') === '1') return;
+  if ((process.env.PIGGERCODE_STACK_CLI_ROOT_DISABLE ?? process.env.PIGGERCODE_STACK_DEV_CLI_DISABLE ?? '') === '1') return;
 
   const cliRoot = resolveCliRootDir();
   if (!cliRoot) return;
@@ -72,20 +72,20 @@ function maybeReexecToCliRoot(cliRootDir) {
     cwd: cliRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_REEXEC: '1',
-      HAPPIER_STACK_CLI_ROOT_DIR: cliRoot,
+      PIGGERCODE_STACK_CLI_REEXEC: '1',
+      PIGGERCODE_STACK_CLI_ROOT_DIR: cliRoot,
     },
   });
   process.exit(res.status ?? 1);
 }
 
 function resolveHomeDir() {
-  const fromEnv = (process.env.HAPPIER_STACK_HOME_DIR ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim();
   if (fromEnv) return expandHome(fromEnv);
 
   // Stable pointer file: even if the real home dir is elsewhere, `hstack init` writes the pointer here.
   const canonicalEnv = getCanonicalHomeEnvPathFromEnv(process.env);
-  const v = dotenvGetQuick(canonicalEnv, 'HAPPIER_STACK_HOME_DIR') || '';
+  const v = dotenvGetQuick(canonicalEnv, 'PIGGERCODE_STACK_HOME_DIR') || '';
   return v ? expandHome(v) : join(homedir(), '.happier-stack');
 }
 
@@ -114,8 +114,8 @@ function applyVerbosityIfRequested(argv) {
   // - supports -v/-vv/-vvv anywhere before/after the command
   // - supports --verbose and --verbose=N
   //
-  // We set HAPPIER_STACK_VERBOSE (0-3) and strip these args so downstream scripts don't need to support them.
-  let level = Number.isFinite(Number(process.env.HAPPIER_STACK_VERBOSE)) ? Number(process.env.HAPPIER_STACK_VERBOSE) : null;
+  // We set PIGGERCODE_STACK_VERBOSE (0-3) and strip these args so downstream scripts don't need to support them.
+  let level = Number.isFinite(Number(process.env.PIGGERCODE_STACK_VERBOSE)) ? Number(process.env.PIGGERCODE_STACK_VERBOSE) : null;
   let next = [];
   for (const a of argv) {
     if (a === '-v' || a === '-vv' || a === '-vvv') {
@@ -140,24 +140,24 @@ function applyVerbosityIfRequested(argv) {
     next.push(a);
   }
   if (level != null) {
-    process.env.HAPPIER_STACK_VERBOSE = String(Math.max(0, Math.min(3, Math.floor(level))));
+    process.env.PIGGERCODE_STACK_VERBOSE = String(Math.max(0, Math.min(3, Math.floor(level))));
   }
   return next;
 }
 
 function applySandboxDirIfRequested(argv) {
-  const explicit = (process.env.HAPPIER_STACK_SANDBOX_DIR ?? '').trim();
+  const explicit = (process.env.PIGGERCODE_STACK_SANDBOX_DIR ?? '').trim();
   const { value, argv: nextArgv } = stripGlobalOpt(argv, { name: '--sandbox-dir', aliases: ['--sandbox'] });
   const raw = value || explicit;
   if (!raw) return { argv: nextArgv, enabled: false };
 
   const sandboxDir = expandHome(raw);
-  const allowGlobalRaw = (process.env.HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL ?? '').trim().toLowerCase();
+  const allowGlobalRaw = (process.env.PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL ?? '').trim().toLowerCase();
   const allowGlobal = allowGlobalRaw === '1' || allowGlobalRaw === 'true' || allowGlobalRaw === 'yes' || allowGlobalRaw === 'y';
   // Keep all state under one folder that can be deleted to reset completely.
   const canonicalHomeDir = join(sandboxDir, 'canonical');
   const homeDir = join(sandboxDir, 'home');
-  const workspaceOverrideRaw = (process.env.HAPPIER_STACK_SANDBOX_WORKSPACE_DIR ?? '').trim();
+  const workspaceOverrideRaw = (process.env.PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR ?? '').trim();
   const workspaceOverrideExpanded = workspaceOverrideRaw ? expandHome(workspaceOverrideRaw) : '';
   const workspaceOverride = workspaceOverrideExpanded
     ? isAbsolute(workspaceOverrideExpanded)
@@ -181,7 +181,7 @@ function applySandboxDirIfRequested(argv) {
   }
   const scrubbed = scrubHappierStackEnv(process.env, {
     keepHappierStackKeys: Array.from(preserved.keys()),
-    clearUnprefixedKeys: ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL'],
+    clearUnprefixedKeys: ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL'],
   });
   for (const k of Object.keys(process.env)) {
     if (!(k in scrubbed)) delete process.env[k];
@@ -190,25 +190,25 @@ function applySandboxDirIfRequested(argv) {
     process.env[k] = v;
   }
 
-  process.env.HAPPIER_STACK_SANDBOX_DIR = sandboxDir;
-  process.env.HAPPIER_STACK_CLI_ROOT_DISABLE = '1'; // never re-exec into a user's "real" install when sandboxing
+  process.env.PIGGERCODE_STACK_SANDBOX_DIR = sandboxDir;
+  process.env.PIGGERCODE_STACK_CLI_ROOT_DISABLE = '1'; // never re-exec into a user's "real" install when sandboxing
 
   // In sandbox mode, we MUST force all state directories into the sandbox, even if the user
-  // exported HAPPIER_STACK_* in their shell. Otherwise sandbox runs can accidentally read/write
+  // exported PIGGERCODE_STACK_* in their shell. Otherwise sandbox runs can accidentally read/write
   // "real" machine state (breaking isolation).
-  process.env.HAPPIER_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
+  process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
 
-  process.env.HAPPIER_STACK_HOME_DIR = homeDir;
+  process.env.PIGGERCODE_STACK_HOME_DIR = homeDir;
 
-    process.env.HAPPIER_STACK_WORKSPACE_DIR = workspaceDir;
+    process.env.PIGGERCODE_STACK_WORKSPACE_DIR = workspaceDir;
 
-    process.env.HAPPIER_STACK_RUNTIME_DIR = runtimeDir;
+    process.env.PIGGERCODE_STACK_RUNTIME_DIR = runtimeDir;
 
-    process.env.HAPPIER_STACK_STORAGE_DIR = storageDir;
+    process.env.PIGGERCODE_STACK_STORAGE_DIR = storageDir;
 
     // When sandboxing with a shared (non-temporary) workspace, keep package-manager caches stable
     // across runs. This makes `yarn install` much faster and avoids re-downloading toolchains.
-    const pmCacheBaseRaw = (process.env.HAPPIER_STACK_PM_CACHE_BASE_DIR ?? '').trim();
+    const pmCacheBaseRaw = (process.env.PIGGERCODE_STACK_PM_CACHE_BASE_DIR ?? '').trim();
     const sandboxAbs = resolve(sandboxDir);
     const wsAbs = resolve(workspaceDir);
     const isSharedWorkspace = wsAbs !== sandboxAbs && !wsAbs.startsWith(sandboxAbs + '/');
@@ -216,35 +216,35 @@ function applySandboxDirIfRequested(argv) {
       const base = basename(wsAbs) === 'workspace'
         ? join(dirname(wsAbs), 'pm')
         : join(wsAbs, '.hstack-cache', 'pm');
-      process.env.HAPPIER_STACK_PM_CACHE_BASE_DIR = base;
+      process.env.PIGGERCODE_STACK_PM_CACHE_BASE_DIR = base;
     }
 
     // When sandboxing with a shared workspace, keep Expo/Metro transform caches stable across runs.
     // This dramatically speeds up repeated `expo start` for review-pr flows.
-    const expoTmpBaseRaw = (process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').trim();
+    const expoTmpBaseRaw = (process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').trim();
     if (!expoTmpBaseRaw && isSharedWorkspace) {
       const base = basename(wsAbs) === 'workspace'
         ? join(dirname(wsAbs), 'expo')
         : join(wsAbs, '.hstack-cache', 'expo');
-      process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_BASE_DIR = base;
+      process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_BASE_DIR = base;
     }
-    const expoTmpKeyRaw = (process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').trim();
+    const expoTmpKeyRaw = (process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').trim();
     if (!expoTmpKeyRaw && isSharedWorkspace) {
-      process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_KEY = wsAbs;
+      process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_KEY = wsAbs;
     }
 
     // Sandbox default: disallow global side effects unless explicitly opted in.
     // This keeps sandbox runs fast, deterministic, and isolated.
     if (!allowGlobal) {
       // Network-y UX (background update checks) are not useful in a temporary sandbox.
-      process.env.HAPPIER_STACK_UPDATE_CHECK = '0';
-    process.env.HAPPIER_STACK_UPDATE_CHECK_INTERVAL_MS = '0';
-    process.env.HAPPIER_STACK_UPDATE_NOTIFY_INTERVAL_MS = '0';
+      process.env.PIGGERCODE_STACK_UPDATE_CHECK = '0';
+    process.env.PIGGERCODE_STACK_UPDATE_CHECK_INTERVAL_MS = '0';
+    process.env.PIGGERCODE_STACK_UPDATE_NOTIFY_INTERVAL_MS = '0';
 
     // Never auto-enable or reset Tailscale Serve in sandbox.
     // (Tailscale is global machine state; sandbox runs must not touch it.)
-    process.env.HAPPIER_STACK_TAILSCALE_SERVE = '0';
-    process.env.HAPPIER_STACK_TAILSCALE_RESET_ON_EXIT = '0';
+    process.env.PIGGERCODE_STACK_TAILSCALE_SERVE = '0';
+    process.env.PIGGERCODE_STACK_TAILSCALE_RESET_ON_EXIT = '0';
   }
 
   return { argv: nextArgv, enabled: true };
@@ -312,7 +312,7 @@ function handleMissingExplicitStackEnvBeforePreflight(argv) {
   if (!envPath || existsSync(envPath)) return false;
 
   if (isHelpInvocation(argv)) return false;
-  const serviceMode = (process.env.HAPPIER_STACK_SERVICE_MODE ?? '').trim() === '1';
+  const serviceMode = (process.env.PIGGERCODE_STACK_SERVICE_MODE ?? '').trim() === '1';
 
   console.error(`[hstack] configured stack env file is missing: ${envPath}`);
   if (serviceMode && isInstalledServiceStartInvocation(argv)) {
@@ -321,8 +321,8 @@ function handleMissingExplicitStackEnvBeforePreflight(argv) {
   }
 
   throw new Error(
-    `Configured HAPPIER_STACK_ENV_FILE does not exist: ${envPath}\n` +
-      'Fix the path, unset HAPPIER_STACK_ENV_FILE, or recreate the stack.',
+    `Configured PIGGERCODE_STACK_ENV_FILE does not exist: ${envPath}\n` +
+      'Fix the path, unset PIGGERCODE_STACK_ENV_FILE, or recreate the stack.',
   );
 }
 
@@ -335,8 +335,8 @@ async function main() {
 
   // Preserve the original working directory across re-exec to the CLI root so commands can infer
   // component/worktree context even when the actual scripts run with cwd=cliRootDir.
-  if (!(process.env.HAPPIER_STACK_INVOKED_CWD ?? '').trim()) {
-    process.env.HAPPIER_STACK_INVOKED_CWD = process.cwd();
+  if (!(process.env.PIGGERCODE_STACK_INVOKED_CWD ?? '').trim()) {
+    process.env.PIGGERCODE_STACK_INVOKED_CWD = process.cwd();
   }
 
   if (handleMissingExplicitStackEnvBeforePreflight(argv)) return;

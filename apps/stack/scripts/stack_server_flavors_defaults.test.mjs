@@ -18,18 +18,18 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
       stackName: 'exp-flavors-light-default',
       args: ['--json'],
       assertEnv(contents) {
-        assert.ok(contents.includes('HAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n'), contents);
-        assert.ok(contents.includes('HAPPIER_DB_PROVIDER=sqlite\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_DB_PROVIDER=sqlite\n'), contents);
         assert.ok(
-          contents.includes(`HAPPIER_SERVER_LIGHT_DATA_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light')}\n`),
+          contents.includes(`PIGGERCODE_SERVER_LIGHT_DATA_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light')}\n`),
           contents
         );
         assert.ok(
-          contents.includes(`HAPPIER_SERVER_LIGHT_FILES_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light', 'files')}\n`),
+          contents.includes(`PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light', 'files')}\n`),
           contents
         );
         assert.equal(
-          contents.includes(`HAPPIER_SERVER_LIGHT_DB_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light', 'pglite')}\n`),
+          contents.includes(`PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(fixture.storageDir, 'exp-flavors-light-default', 'server-light', 'pglite')}\n`),
           false,
           contents
         );
@@ -40,10 +40,10 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
       stackName: 'exp-flavors-full-explicit',
       args: ['--server=happier-server', '--no-copy-auth', '--json'],
       assertEnv(contents) {
-        assert.ok(contents.includes('HAPPIER_STACK_SERVER_COMPONENT=happier-server\n'), contents);
-        assert.ok(contents.includes('HAPPIER_DB_PROVIDER=postgres\n'), contents);
-        assert.ok(contents.includes('HAPPIER_STACK_MANAGED_INFRA=1\n'), contents);
-        assert.ok(!contents.includes('HAPPIER_SERVER_LIGHT_DATA_DIR='), contents);
+        assert.ok(contents.includes('PIGGERCODE_STACK_SERVER_COMPONENT=happier-server\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_DB_PROVIDER=postgres\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_STACK_MANAGED_INFRA=1\n'), contents);
+        assert.ok(!contents.includes('PIGGERCODE_SERVER_LIGHT_DATA_DIR='), contents);
       },
     },
     {
@@ -57,11 +57,11 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
         '--json',
       ],
       assertEnv(contents) {
-        assert.ok(contents.includes('HAPPIER_STACK_SERVER_COMPONENT=happier-server\n'), contents);
-        assert.ok(contents.includes('HAPPIER_DB_PROVIDER=mysql\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_STACK_SERVER_COMPONENT=happier-server\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_DB_PROVIDER=mysql\n'), contents);
         assert.ok(contents.includes('DATABASE_URL=mysql://operator:secret@db.example.test:3306/happier\n'), contents);
-        assert.ok(contents.includes('HAPPIER_STACK_MANAGED_INFRA=1\n'), contents);
-        assert.doesNotMatch(contents, /^HAPPIER_STACK_PG_/m);
+        assert.ok(contents.includes('PIGGERCODE_STACK_MANAGED_INFRA=1\n'), contents);
+        assert.doesNotMatch(contents, /^PIGGERCODE_STACK_PG_/m);
       },
     },
     {
@@ -75,14 +75,14 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
         '--json',
       ],
       assertEnv(contents) {
-        assert.ok(contents.includes('HAPPIER_STACK_SERVER_COMPONENT=happier-server\n'), contents);
-        assert.ok(contents.includes('HAPPIER_DB_PROVIDER=postgres\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_STACK_SERVER_COMPONENT=happier-server\n'), contents);
+        assert.ok(contents.includes('PIGGERCODE_DB_PROVIDER=postgres\n'), contents);
         assert.ok(
           contents.includes('DATABASE_URL=postgresql://operator:secret@db.example.test:5432/happier?sslmode=require\n'),
           contents,
         );
-        assert.ok(contents.includes('HAPPIER_STACK_MANAGED_INFRA=1\n'), contents);
-        assert.doesNotMatch(contents, /^HAPPIER_STACK_PG_/m);
+        assert.ok(contents.includes('PIGGERCODE_STACK_MANAGED_INFRA=1\n'), contents);
+        assert.doesNotMatch(contents, /^PIGGERCODE_STACK_PG_/m);
       },
     },
     {
@@ -96,10 +96,10 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
         '--json',
       ],
       assertEnv(contents) {
-        assert.match(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server-light$/m);
-        assert.match(contents, /^HAPPIER_DB_PROVIDER=postgres$/m);
+        assert.match(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light$/m);
+        assert.match(contents, /^PIGGERCODE_DB_PROVIDER=postgres$/m);
         assert.match(contents, /^DATABASE_URL=postgresql:\/\/operator:secret@db\.example\.test:5432\/happier$/m);
-        assert.doesNotMatch(contents, /^HAPPIER_STACK_MANAGED_INFRA=/m);
+        assert.doesNotMatch(contents, /^PIGGERCODE_STACK_MANAGED_INFRA=/m);
       },
     },
     {
@@ -112,11 +112,11 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
         '--json',
       ],
       assertEnv(contents) {
-        assert.match(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server$/m);
-        assert.match(contents, /^HAPPIER_DB_PROVIDER=sqlite$/m);
-        assert.match(contents, /^HAPPIER_STACK_MANAGED_INFRA=1$/m);
-        assert.match(contents, /^HAPPIER_SERVER_LIGHT_DATA_DIR=/m);
-        assert.doesNotMatch(contents, /^HAPPIER_STACK_PG_/m);
+        assert.match(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server$/m);
+        assert.match(contents, /^PIGGERCODE_DB_PROVIDER=sqlite$/m);
+        assert.match(contents, /^PIGGERCODE_STACK_MANAGED_INFRA=1$/m);
+        assert.match(contents, /^PIGGERCODE_SERVER_LIGHT_DATA_DIR=/m);
+        assert.doesNotMatch(contents, /^PIGGERCODE_STACK_PG_/m);
       },
     },
     {
@@ -129,13 +129,13 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
         '--json',
       ],
       assertEnv(contents) {
-        assert.match(contents, /^HAPPIER_STACK_SERVER_COMPONENT=happier-server$/m);
-        assert.match(contents, /^HAPPIER_DB_PROVIDER=pglite$/m);
-        assert.match(contents, /^HAPPIER_STACK_MANAGED_INFRA=1$/m);
-        assert.match(contents, /^HAPPIER_SERVER_LIGHT_DATA_DIR=/m);
-        assert.match(contents, /^HAPPIER_SERVER_LIGHT_DB_DIR=/m);
+        assert.match(contents, /^PIGGERCODE_STACK_SERVER_COMPONENT=happier-server$/m);
+        assert.match(contents, /^PIGGERCODE_DB_PROVIDER=pglite$/m);
+        assert.match(contents, /^PIGGERCODE_STACK_MANAGED_INFRA=1$/m);
+        assert.match(contents, /^PIGGERCODE_SERVER_LIGHT_DATA_DIR=/m);
+        assert.match(contents, /^PIGGERCODE_SERVER_LIGHT_DB_DIR=/m);
         assert.doesNotMatch(contents, /^DATABASE_URL=/m);
-        assert.doesNotMatch(contents, /^HAPPIER_STACK_PG_/m);
+        assert.doesNotMatch(contents, /^PIGGERCODE_STACK_PG_/m);
       },
     },
   ];
@@ -149,8 +149,8 @@ test('hstack stack new server flavor defaults and explicit full flavor pin coher
     );
 
     const contents = await fixture.readStackEnv(testCase.stackName);
-    assert.ok(contents.includes(`HAPPIER_STACK_REPO_DIR=${monoRoot}\n`), `${testCase.name}\n${contents}`);
-    assert.ok(!contents.includes('HAPPIER_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
+    assert.ok(contents.includes(`PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`), `${testCase.name}\n${contents}`);
+    assert.ok(!contents.includes('PIGGERCODE_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
     testCase.assertEnv(contents);
   }
 });

@@ -16,10 +16,10 @@ test('hstack start --json --runtime reports runtime-backed launch paths', async 
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: rootDir,
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: rootDir,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'run.mjs'), '--json', '--runtime'], { cwd: rootDir, env });

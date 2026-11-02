@@ -45,9 +45,9 @@ it('delivers the caller-selected local id and waits with options after a literal
     return reply.code(404).send({ error: 'unexpected_fixture_route', path });
   });
   const restoreHttp = installAxiosFastifyAdapter({ app, origin: 'http://relay.test' });
-  vi.stubEnv('HAPPIER_SERVER_URL', 'http://relay.test');
-  vi.stubEnv('HAPPIER_LOCAL_SERVER_URL', 'http://relay.test');
-  vi.stubEnv('HAPPIER_SESSION_ID', '');
+  vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://relay.test');
+  vi.stubEnv('PIGGERCODE_LOCAL_SERVER_URL', 'http://relay.test');
+  vi.stubEnv('PIGGERCODE_SESSION_ID', '');
   bindApiSessionSocketMock(mockIo, createApiSessionSocketStub({ emit: (_event, args) => {
     const acknowledge = args[1];
     if (typeof acknowledge === 'function') acknowledge({ ok: true, result: { ok: true } });

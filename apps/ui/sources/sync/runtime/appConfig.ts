@@ -38,7 +38,7 @@ function parseOptionalPositiveIntEnv(value: string | undefined): number | undefi
 
 function readConfiguredFilesPreviewMaxBytesEnv(): number | undefined {
     return (
-        parseOptionalPositiveIntEnv(process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES)
+        parseOptionalPositiveIntEnv(process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveIntEnv(process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveIntEnv(process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES)
     );
@@ -122,7 +122,7 @@ export function loadAppConfig(): AppConfig {
     }
     const configuredServerUrl = readConfiguredServerUrlEnv();
     if (configuredServerUrl && config.serverUrl !== configuredServerUrl) {
-        if (__DEV__) console.log('[loadAppConfig] Override serverUrl from EXPO_PUBLIC_HAPPIER_SERVER_URL/EXPO_PUBLIC_HAPPY_SERVER_URL/EXPO_PUBLIC_SERVER_URL');
+        if (__DEV__) console.log('[loadAppConfig] Override serverUrl from EXPO_PUBLIC_PIGGERCODE_SERVER_URL/EXPO_PUBLIC_HAPPY_SERVER_URL/EXPO_PUBLIC_SERVER_URL');
         config.serverUrl = configuredServerUrl;
     }
 
@@ -132,9 +132,9 @@ export function loadAppConfig(): AppConfig {
         config.enableDevPushTokenRegistration = enableDevPushFromEnv;
     }
 
-    const forceWebsocketFromEnv = parseBooleanEnv(process.env.EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET);
+    const forceWebsocketFromEnv = parseBooleanEnv(process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET);
     if (forceWebsocketFromEnv !== undefined && config.socketForceWebsocketOnly !== forceWebsocketFromEnv) {
-        if (__DEV__) console.log('[loadAppConfig] Override socketForceWebsocketOnly from EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET');
+        if (__DEV__) console.log('[loadAppConfig] Override socketForceWebsocketOnly from EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET');
         config.socketForceWebsocketOnly = forceWebsocketFromEnv;
     }
 

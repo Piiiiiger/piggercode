@@ -18,13 +18,13 @@ vi.mock('axios');
 
 let tempHomeDir: string | null = null;
 let persistenceMockInstalled = false;
-const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
-const originalMaxAttempts = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
-const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-const originalAckTimeoutMs = process.env.HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS;
-const originalTranscriptFlushBatchLimit = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT;
-const originalDeliveryConcurrency = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY;
+const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
+const originalMaxAttempts = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
+const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+const originalAckTimeoutMs = process.env.PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS;
+const originalTranscriptFlushBatchLimit = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT;
+const originalDeliveryConcurrency = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY;
 
 function serverContract(mode: SessionSyncPendingInputServerContractMode) {
     return {
@@ -49,7 +49,7 @@ function installPersistenceMock(factory: PersistenceMockFactory): void {
 
 async function useTempHappyHome(): Promise<void> {
     tempHomeDir = await mkdtemp(join(tmpdir(), 'happier-cli-session-outbox-unit-'));
-    process.env.HAPPIER_HOME_DIR = tempHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = tempHomeDir;
 }
 
 async function createRuntimePersistenceContext(sessionId: string) {
@@ -140,9 +140,9 @@ describe('createSessionMutationOutbox', () => {
     beforeEach(async () => {
         vi.mocked(axios.post).mockReset();
         vi.mocked(axios.get).mockReset();
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '2';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '2';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
         await useTempHappyHome();
         // Rebind the cached real consumers without rebuilding the entire source module graph.
         const { reloadConfiguration } = await import('@/configuration');
@@ -598,7 +598,7 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('automatically retries restored Activity custody across a detached retry rejection', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '1';
         let rejectedEmptySavesRemaining = 2;
         installPersistenceMock(async (importOriginal) => {
             const actual = await importOriginal<typeof import('./sessionMutationPersistence')>();
@@ -943,36 +943,36 @@ describe('createSessionMutationOutbox', () => {
             persistenceMockInstalled = false;
         }
         vi.unstubAllEnvs();
-        process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+        process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
         if (originalMaxAttempts === undefined) {
-            delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
+            delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
         } else {
-            process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = originalMaxAttempts;
+            process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = originalMaxAttempts;
         }
         if (originalBaseRetryMs === undefined) {
-            delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+            delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
         } else {
-            process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+            process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
         }
         if (originalJitterMs === undefined) {
-            delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+            delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
         } else {
-            process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+            process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
         }
         if (originalAckTimeoutMs === undefined) {
-            delete process.env.HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS;
+            delete process.env.PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS;
         } else {
-            process.env.HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS = originalAckTimeoutMs;
+            process.env.PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS = originalAckTimeoutMs;
         }
         if (originalTranscriptFlushBatchLimit === undefined) {
-            delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT;
+            delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT;
         } else {
-            process.env.HAPPIER_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT = originalTranscriptFlushBatchLimit;
+            process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT = originalTranscriptFlushBatchLimit;
         }
         if (originalDeliveryConcurrency === undefined) {
-            delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY;
+            delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY;
         } else {
-            process.env.HAPPIER_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY = originalDeliveryConcurrency;
+            process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY = originalDeliveryConcurrency;
         }
         if (tempHomeDir) {
             await rm(tempHomeDir, { recursive: true, force: true });
@@ -1145,8 +1145,8 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('retries authoritative turn mutations beyond max attempts and delivers after reconnect', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '0';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '0';
         let shouldFail = true;
         vi.mocked(axios.post).mockImplementation(async () => {
             if (shouldFail) {
@@ -1386,14 +1386,14 @@ describe('createSessionMutationOutbox', () => {
 
     it('re-resolves the live server URL and retries a terminal turn mutation after a local endpoint refusal', async () => {
         const attemptedUrls: string[] = [];
-        vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:41001');
-        vi.stubEnv('HAPPIER_LOCAL_SERVER_URL', '');
+        vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:41001');
+        vi.stubEnv('PIGGERCODE_LOCAL_SERVER_URL', '');
         const { reloadConfiguration } = await import('@/configuration');
         reloadConfiguration();
         vi.mocked(axios.post).mockImplementation(async (url) => {
             attemptedUrls.push(String(url));
             if (attemptedUrls.length === 1) {
-                vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:52002');
+                vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:52002');
                 throw Object.assign(new Error('connect ECONNREFUSED 127.0.0.1:41001'), {
                     isAxiosError: true,
                     code: 'ECONNREFUSED',
@@ -1577,7 +1577,7 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('keeps unsupported session turn mutations queued after retry exhaustion', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
         vi.mocked(axios.post).mockRejectedValue({ response: { status: 404 } });
         const socket = createApiSessionSocketStub({
             connected: true,
@@ -2232,7 +2232,7 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('flushes only the latest coalesced transcript snapshot after reconnect', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '0';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '0';
         const deliveredObservations: unknown[] = [];
         const socket = createObservationSocket({
             connected: false,
@@ -2651,7 +2651,7 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('keeps socket ACK timeouts queued and requests reconnect for transcript snapshots', async () => {
-        process.env.HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS = '1';
+        process.env.PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS = '1';
         vi.mocked(axios.post).mockRejectedValue(new Error('server unavailable'));
         const requestReconnect = vi.fn();
         const socket = createApiSessionSocketStub({
@@ -2815,8 +2815,8 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('caps transcript deliveries per reconnect flush without blocking other mutation kinds', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT = '1';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_TRANSCRIPT_FLUSH_BATCH_LIMIT = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
         const deliveredUrls: string[] = [];
         const deliveredTranscriptLocalIds: string[] = [];
         vi.mocked(axios.post).mockImplementation(async (url) => {
@@ -2907,7 +2907,7 @@ describe('createSessionMutationOutbox', () => {
     });
 
     it('limits durable deliveries globally across reattached session outboxes', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY = '1';
         const startedUrls: string[] = [];
         const releases: Array<() => void> = [];
         let activeDeliveries = 0;

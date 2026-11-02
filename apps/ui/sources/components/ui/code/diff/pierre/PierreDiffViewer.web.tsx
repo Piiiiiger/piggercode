@@ -20,7 +20,7 @@ import { buildPierreDiffOptionsBase } from './buildPierreDiffOptionsBase.web';
 import { resolvePierreLanguageOverride } from './resolvePierreLanguageOverride.web';
 import { buildCodeLinesFromUnifiedDiff } from '@/components/ui/code/model/buildCodeLinesFromUnifiedDiff';
 import type { CodeLine } from '@/components/ui/code/model/codeLineTypes';
-import { HAPPIER_UI_FONT_SCALE_CSS_VAR } from '@/components/ui/text/webUnistylesFontOverrides';
+import { PIGGERCODE_UI_FONT_SCALE_CSS_VAR } from '@/components/ui/text/webUnistylesFontOverrides';
 import {
     REVIEW_COMMENT_LINE_AFFORDANCE_ICON_NAME,
     REVIEW_COMMENT_LINE_AFFORDANCE_ICON_TEST_ID,
@@ -355,8 +355,8 @@ function extractUnifiedPreludeDiffForSingleFile(params: Readonly<{ patch: string
 
 export function resolvePierreTypographyStyle(): React.CSSProperties {
     return {
-        ['--diffs-font-size' as any]: `calc(12px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}, 1))`,
-        ['--diffs-line-height' as any]: `calc(22px * var(${HAPPIER_UI_FONT_SCALE_CSS_VAR}, 1))`,
+        ['--diffs-font-size' as any]: `calc(12px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}, 1))`,
+        ['--diffs-line-height' as any]: `calc(22px * var(${PIGGERCODE_UI_FONT_SCALE_CSS_VAR}, 1))`,
     };
 }
 

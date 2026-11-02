@@ -208,7 +208,7 @@ export async function preflightCodeRabbitReviewScope(params: Readonly<{
     return {
       ok: false,
       error:
-        `Too many reviewable files found in the current session scope for CodeRabbit (${eligibleFileCount} > ${maxEligibleFiles}). Narrow the review scope, choose another change type, or increase HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES if the provider limit has changed.`,
+        `Too many reviewable files found in the current session scope for CodeRabbit (${eligibleFileCount} > ${maxEligibleFiles}). Narrow the review scope, choose another change type, or increase PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES if the provider limit has changed.`,
     };
   }
 

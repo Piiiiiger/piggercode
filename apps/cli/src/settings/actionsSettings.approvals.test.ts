@@ -6,9 +6,9 @@ import { isActionApprovalRequiredByEnv } from './actionsSettings';
 
 describe('isActionApprovalRequiredByEnv', () => {
   it('returns true when ActionsSettingsV1 marks the surface as approval-required', () => {
-    const env = createEnvKeyScope(['HAPPIER_ACTIONS_SETTINGS_V1']);
+    const env = createEnvKeyScope(['PIGGERCODE_ACTIONS_SETTINGS_V1']);
     env.patch({
-      HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify({
+      PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify({
         v: 1,
         actions: {
           'session.message.send': {
@@ -23,9 +23,9 @@ describe('isActionApprovalRequiredByEnv', () => {
   });
 
   it('returns false when the surface is not configured', () => {
-    const env = createEnvKeyScope(['HAPPIER_ACTIONS_SETTINGS_V1']);
+    const env = createEnvKeyScope(['PIGGERCODE_ACTIONS_SETTINGS_V1']);
     env.patch({
-      HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify({
+      PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify({
         v: 1,
         actions: {
           'session.message.send': {
@@ -40,9 +40,9 @@ describe('isActionApprovalRequiredByEnv', () => {
   });
 
   it('returns true for session.title.set when the surface is configured', () => {
-    const env = createEnvKeyScope(['HAPPIER_ACTIONS_SETTINGS_V1']);
+    const env = createEnvKeyScope(['PIGGERCODE_ACTIONS_SETTINGS_V1']);
     env.patch({
-      HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify({
+      PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify({
         v: 1,
         actions: {
           'session.title.set': {

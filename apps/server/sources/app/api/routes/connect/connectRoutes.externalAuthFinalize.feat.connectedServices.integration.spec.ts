@@ -561,7 +561,7 @@ describe("connectRoutes (external auth finalize) (integration)", () => {
 
     it("resets the account and migrates social relationships when reset=true and the provider identity is already linked", async () => {
         applyGithubExternalAuthFinalizeEnv(harness, {
-            HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
             GITHUB_CLIENT_ID: "cid",
             GITHUB_CLIENT_SECRET: "secret",
             GITHUB_REDIRECT_URL: "https://server.example.test/v1/oauth/github/callback",
@@ -717,7 +717,7 @@ describe("connectRoutes (external auth finalize) (integration)", () => {
 
     it("does not migrate social data when provider reset disableAccount fails (restores old identity, keeps pending)", async () => {
         applyGithubExternalAuthFinalizeEnv(harness, {
-            HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
             GITHUB_CLIENT_ID: "cid",
             GITHUB_CLIENT_SECRET: "secret",
             GITHUB_REDIRECT_URL: "https://server.example.test/v1/oauth/github/callback",
@@ -890,7 +890,7 @@ describe("connectRoutes (external auth finalize) (integration)", () => {
 
     it("deletes the newly created account when identity detach fails during provider reset", async () => {
         applyGithubExternalAuthFinalizeEnv(harness, {
-            HAPPIER_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_RECOVERY__PROVIDER_RESET_ENABLED: "1",
             GITHUB_CLIENT_ID: "cid",
             GITHUB_CLIENT_SECRET: "secret",
             GITHUB_REDIRECT_URL: "https://server.example.test/v1/oauth/github/callback",

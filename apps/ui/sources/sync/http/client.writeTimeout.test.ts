@@ -21,8 +21,8 @@ afterEach(async () => {
     vi.unstubAllGlobals();
     vi.resetModules();
     vi.clearAllMocks();
-    delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_WRITE_TIMEOUT_MS;
-    delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_WRITE_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
 });
 
 function installDefaultActiveServerMocks() {
@@ -49,7 +49,7 @@ describe('serverFetch write timeout', () => {
     it('aborts a mutating request that never responds and rejects with a retryable ServerFetchWriteTimeoutError', async () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_WRITE_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_WRITE_TIMEOUT_MS = '50';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();
@@ -107,7 +107,7 @@ describe('serverFetch write timeout', () => {
     it('does not bound GET reads with the write timeout', async () => {
         installDefaultActiveServerMocks();
         installTokenStorageMock();
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_WRITE_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_WRITE_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = typeof input === 'string' ? input : String(input);

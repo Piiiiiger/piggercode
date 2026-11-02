@@ -129,7 +129,7 @@ describe('createCursorAcpRuntime', () => {
       const runtime = createCursorAcpRuntime({
         directory: dir, machineId: 'machine-1', session, messageBuffer: new MessageBuffer(),
         mcpServers: {}, permissionHandler: createApprovedPermissionHandler(), onThinkingChange: () => {},
-        env: { HAPPIER_CURSOR_PATH: cursorPath },
+        env: { PIGGERCODE_CURSOR_PATH: cursorPath },
         providerInputConsumer: createSessionProviderInputConsumerFixture(),
       });
       try {
@@ -174,7 +174,7 @@ describe('createCursorAcpRuntime', () => {
         permissionHandler: createApprovedPermissionHandler(),
         onThinkingChange: () => {},
         env: {
-          HAPPIER_CURSOR_PATH: cursorPath,
+          PIGGERCODE_CURSOR_PATH: cursorPath,
         },
         startupOverrides: {
           model: {

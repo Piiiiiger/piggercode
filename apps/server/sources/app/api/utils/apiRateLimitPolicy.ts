@@ -19,7 +19,7 @@ function resolveApiRateLimitKeyStrategy(
     env: Record<string, string | undefined>,
     opts: { scope: "route" | "global" },
 ): ApiRateLimitKeyStrategy {
-    const key = opts.scope === "global" ? "HAPPIER_API_RATE_LIMITS_GLOBAL_KEY_STRATEGY" : "HAPPIER_API_RATE_LIMITS_ROUTE_KEY_STRATEGY";
+    const key = opts.scope === "global" ? "PIGGERCODE_API_RATE_LIMITS_GLOBAL_KEY_STRATEGY" : "PIGGERCODE_API_RATE_LIMITS_ROUTE_KEY_STRATEGY";
     const raw = String(env[key] ?? "").trim().toLowerCase();
     if (!raw || raw === "default") {
         return opts.scope === "global" ? "ip-only" : "user-or-ip";
@@ -88,7 +88,7 @@ export function gateRateLimitConfig(
     env: Record<string, string | undefined>,
     rateLimit: ApiRouteRateLimitConfig,
 ): ApiRouteRateLimitConfig {
-    const enabled = parseBooleanEnv(env.HAPPIER_API_RATE_LIMITS_ENABLED, true);
+    const enabled = parseBooleanEnv(env.PIGGERCODE_API_RATE_LIMITS_ENABLED, true);
     if (!enabled) return false;
     return rateLimit;
 }
@@ -96,13 +96,13 @@ export function gateRateLimitConfig(
 export function resolveApiRateLimitPluginOptions(
     env: Record<string, string | undefined>,
 ): Readonly<{ global: boolean; max?: number; timeWindow?: string; keyGenerator?: (request: any) => string | Promise<string> }> {
-    const enabled = parseBooleanEnv(env.HAPPIER_API_RATE_LIMITS_ENABLED, true);
+    const enabled = parseBooleanEnv(env.PIGGERCODE_API_RATE_LIMITS_ENABLED, true);
     if (!enabled) {
         return { global: false };
     }
 
-    const globalMax = parseIntEnv(env.HAPPIER_API_RATE_LIMITS_GLOBAL_MAX, 0, { min: 0 });
-    const windowRaw = (env.HAPPIER_API_RATE_LIMITS_GLOBAL_WINDOW ?? "").trim();
+    const globalMax = parseIntEnv(env.PIGGERCODE_API_RATE_LIMITS_GLOBAL_MAX, 0, { min: 0 });
+    const windowRaw = (env.PIGGERCODE_API_RATE_LIMITS_GLOBAL_WINDOW ?? "").trim();
     const timeWindow = windowRaw.length > 0 ? windowRaw : "1 minute";
 
     const keyGenerator = createApiRateLimitKeyGenerator(env, { scope: "global" });
@@ -123,7 +123,7 @@ export function resolveRouteRateLimit(
         keyGenerator?: (request: any) => string | Promise<string>;
     }>,
 ): ApiRouteRateLimitConfig {
-    const enabled = parseBooleanEnv(env.HAPPIER_API_RATE_LIMITS_ENABLED, true);
+    const enabled = parseBooleanEnv(env.PIGGERCODE_API_RATE_LIMITS_ENABLED, true);
     if (!enabled) return false;
 
     const maxRaw = env[params.maxEnvKey];
@@ -141,21 +141,21 @@ export function resolveRouteRateLimit(
 }
 
 /**
- * Resolves fastify's `trustProxy` from HAPPIER_SERVER_TRUST_PROXY: a boolean keyword, or the
+ * Resolves fastify's `trustProxy` from PIGGERCODE_SERVER_TRUST_PROXY: a boolean keyword, or the
  * proxies' addresses/CIDRs as a comma-separated list that fastify compiles with proxy-addr
  * (which also throws on an invalid entry). Hop counts are refused: they trust forwarded headers
  * without checking the connecting peer, and fastify >= 5.12.1 silently trusts nothing for them
  * (GHSA-3m5p-2c4r-xxw2).
  */
 export function resolveApiTrustProxy(env: Record<string, string | undefined>): boolean | string | undefined {
-    const value = (env.HAPPIER_SERVER_TRUST_PROXY ?? "").trim();
+    const value = (env.PIGGERCODE_SERVER_TRUST_PROXY ?? "").trim();
     if (!value) return undefined;
     const keyword = value.toLowerCase();
     if (["true", "yes", "on"].includes(keyword)) return true;
     if (["false", "no", "off"].includes(keyword)) return false;
     if (/^\d+$/.test(value)) {
         throw new Error(
-            `Invalid HAPPIER_SERVER_TRUST_PROXY: ${value}. Hop counts are not supported; ` +
+            `Invalid PIGGERCODE_SERVER_TRUST_PROXY: ${value}. Hop counts are not supported; ` +
                 "list your proxies' addresses or CIDRs instead, comma-separated (for example 127.0.0.1 or 10.0.0.0/8).",
         );
     }

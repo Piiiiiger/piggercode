@@ -10,7 +10,7 @@ function readPositiveTimeoutMs(raw: unknown, fallbackMs: number): number {
 
 export function resolveOpenCodeManagedServerStartTimeoutMsFromEnv(env: NodeJS.ProcessEnv): number {
   return readPositiveTimeoutMs(
-    env.HAPPIER_OPENCODE_SERVER_START_TIMEOUT_MS,
+    env.PIGGERCODE_OPENCODE_SERVER_START_TIMEOUT_MS,
     DEFAULT_MANAGED_SERVER_START_TIMEOUT_MS,
   );
 }
@@ -18,7 +18,7 @@ export function resolveOpenCodeManagedServerStartTimeoutMsFromEnv(env: NodeJS.Pr
 export function resolveOpenCodeManagedServerLockTimeoutMsFromEnv(env: NodeJS.ProcessEnv): number {
   const startTimeoutMs = resolveOpenCodeManagedServerStartTimeoutMsFromEnv(env);
   return readPositiveTimeoutMs(
-    env.HAPPIER_OPENCODE_SERVER_LOCK_TIMEOUT_MS,
+    env.PIGGERCODE_OPENCODE_SERVER_LOCK_TIMEOUT_MS,
     Math.min(startTimeoutMs + LOCK_COMPLETION_MARGIN_MS, MAX_MANAGED_SERVER_TIMEOUT_MS),
   );
 }

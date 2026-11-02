@@ -1014,7 +1014,7 @@ describe("pendingMessageService (shared sessions)", () => {
     });
 
     it("does not advance ready projection when a queued ready event is only claimed for provider delivery", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
         const owner = await createAccount("owner");
         const session = await createSession(owner.id);
 
@@ -1231,7 +1231,7 @@ describe("pendingMessageService (shared sessions)", () => {
             },
         },
     ])("preserves the $mode envelope through provider custody and exact settlement", async ({ mode, content }) => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
         const owner = await createAccount(`provider-envelope-${mode}`);
         const session = await createSession(owner.id);
         if (mode === "plain") {
@@ -2944,7 +2944,7 @@ describe("pendingMessageService (shared sessions)", () => {
     });
 
     it("does not advance ready projection when a shared editor marks provider delivery handled", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional" });
         const owner = await createAccount("owner");
         const collaborator = await createAccount("collab");
         const session = await createSession(owner.id);

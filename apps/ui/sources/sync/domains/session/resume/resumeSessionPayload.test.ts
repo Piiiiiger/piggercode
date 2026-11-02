@@ -77,8 +77,8 @@ describe('buildResumeHappySessionRpcParams', () => {
             directory: '/tmp',
             backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
             },
         })).toEqual({
             type: 'resume-session',
@@ -86,8 +86,8 @@ describe('buildResumeHappySessionRpcParams', () => {
             directory: '/tmp',
             backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
             environmentVariables: {
-                HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-                HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
             },
         });
     });

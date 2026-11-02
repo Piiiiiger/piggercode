@@ -18,28 +18,28 @@ const DEFAULT_SESSION_ARCHIVE_METADATA_TIMEOUT_MS = 3_000;
 const DEFAULT_SESSION_CRITICAL_METADATA_DRAIN_TIMEOUT_MS = 3_000;
 
 export function resolveSessionControlSocketConnectTimeoutMs(): number {
-  return readPositiveIntEnvMs('HAPPIER_SESSION_SOCKET_CONNECT_TIMEOUT_MS', DEFAULT_SOCKET_CONNECT_TIMEOUT_MS, { min: 1, max: 60_000 });
+  return readPositiveIntEnvMs('PIGGERCODE_SESSION_SOCKET_CONNECT_TIMEOUT_MS', DEFAULT_SOCKET_CONNECT_TIMEOUT_MS, { min: 1, max: 60_000 });
 }
 
 export function resolveSessionControlSocketAckTimeoutMs(): number {
-  return readPositiveIntEnvMs('HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS', DEFAULT_SOCKET_ACK_TIMEOUT_MS, { min: 1, max: 60_000 });
+  return readPositiveIntEnvMs('PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS', DEFAULT_SOCKET_ACK_TIMEOUT_MS, { min: 1, max: 60_000 });
 }
 
 export function resolveSessionControlWaitIdleConfirmMs(): number {
   return readPositiveIntEnvMs(
-    'HAPPIER_SESSION_WAIT_IDLE_CONFIRM_MS',
+    'PIGGERCODE_SESSION_WAIT_IDLE_CONFIRM_MS',
     DEFAULT_SESSION_WAIT_IDLE_CONFIRM_MS,
     { min: 1, max: 5_000 },
   );
 }
 
 export function resolveSessionControlStopTimeoutMs(): number {
-  return readPositiveIntEnvMs('HAPPIER_SESSION_STOP_TIMEOUT_MS', DEFAULT_SESSION_STOP_TIMEOUT_MS, { min: 1, max: 60_000 });
+  return readPositiveIntEnvMs('PIGGERCODE_SESSION_STOP_TIMEOUT_MS', DEFAULT_SESSION_STOP_TIMEOUT_MS, { min: 1, max: 60_000 });
 }
 
 export function resolveSessionControlStopPollIntervalMs(): number {
   return readPositiveIntEnvMs(
-    'HAPPIER_SESSION_STOP_POLL_INTERVAL_MS',
+    'PIGGERCODE_SESSION_STOP_POLL_INTERVAL_MS',
     DEFAULT_SESSION_STOP_POLL_INTERVAL_MS,
     { min: 1, max: 5_000 },
   );
@@ -47,7 +47,7 @@ export function resolveSessionControlStopPollIntervalMs(): number {
 
 export function resolveSessionArchiveMetadataTimeoutMs(): number {
   return readPositiveIntEnvMs(
-    'HAPPIER_SESSION_ARCHIVE_METADATA_TIMEOUT_MS',
+    'PIGGERCODE_SESSION_ARCHIVE_METADATA_TIMEOUT_MS',
     DEFAULT_SESSION_ARCHIVE_METADATA_TIMEOUT_MS,
     { min: 1, max: 30_000 },
   );
@@ -55,7 +55,7 @@ export function resolveSessionArchiveMetadataTimeoutMs(): number {
 
 export function resolveSessionCriticalMetadataDrainTimeoutMs(): number {
   return readPositiveIntEnvMs(
-    'HAPPIER_SESSION_CRITICAL_METADATA_DRAIN_TIMEOUT_MS',
+    'PIGGERCODE_SESSION_CRITICAL_METADATA_DRAIN_TIMEOUT_MS',
     DEFAULT_SESSION_CRITICAL_METADATA_DRAIN_TIMEOUT_MS,
     { min: 1, max: 30_000 },
   );

@@ -44,7 +44,7 @@ vi.mock('./pierreThemeRegistry.web', () => ({
     ensureHappierPierreThemesRegistered: () => {},
     ensureHappierPierreThemeRegistered: () => {},
     resolveHappierPierreThemeIds: () => ({ light: 'light', dark: 'dark' }),
-    HAPPIER_PIERRE_THEME_IDS: { light: 'light', dark: 'dark' },
+    PIGGERCODE_PIERRE_THEME_IDS: { light: 'light', dark: 'dark' },
 }));
 
 vi.mock('./pierreWorkerPool.web', () => ({

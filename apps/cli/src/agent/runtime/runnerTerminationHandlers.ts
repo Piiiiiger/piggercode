@@ -23,7 +23,7 @@ function clampTerminationTimeoutMs(rawValue: unknown, fallbackMs: number, maxMs:
 }
 
 function readRunnerTerminationTimeoutMs(env?: NodeJS.ProcessEnv): number {
-  return clampTerminationTimeoutMs(env?.HAPPIER_RUNNER_TERMINATION_TIMEOUT_MS, 10_000, 60_000);
+  return clampTerminationTimeoutMs(env?.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS, 10_000, 60_000);
 }
 
 export type RunnerTerminationHandlerRegistration = Readonly<{

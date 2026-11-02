@@ -69,13 +69,13 @@ describe('providers: server-light retry policy', () => {
 
   it('supports explicit server generate skip flags in worker env', () => {
     expect(shouldSkipServerGenerateProviders({})).toBe(false);
-    expect(shouldSkipServerGenerateProviders({ HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1' })).toBe(true);
+    expect(shouldSkipServerGenerateProviders({ PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1' })).toBe(true);
     expect(shouldSkipServerGenerateProviders({ HAPPY_E2E_PROVIDER_SKIP_SERVER_GENERATE: 'yes' })).toBe(true);
   });
 
   it('supports explicit shared-deps build skip flags in worker env', () => {
     expect(shouldSkipServerSharedDepsBuild({})).toBe(false);
-    expect(shouldSkipServerSharedDepsBuild({ HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1' })).toBe(true);
+    expect(shouldSkipServerSharedDepsBuild({ PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1' })).toBe(true);
     expect(shouldSkipServerSharedDepsBuild({ HAPPY_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: 'yes' })).toBe(true);
   });
 });

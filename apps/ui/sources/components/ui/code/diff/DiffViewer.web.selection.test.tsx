@@ -34,14 +34,14 @@ vi.mock('./happier/HappierTextDiffViewer', () => ({
 }));
 
 describe('DiffViewer (web renderer selection)', () => {
-    const previousEnv = process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED;
+    const previousEnv = process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED;
     const previousWindow = (globalThis as any).window;
     const previousDocument = (globalThis as any).document;
     const previousWorker = (globalThis as any).Worker;
 
     beforeEach(() => {
         rendererMode = 'pierre';
-        process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED = previousEnv;
+        process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED = previousEnv;
 
         (globalThis as any).Worker = function Worker() {} as any;
         (globalThis as any).window = {};
@@ -52,8 +52,8 @@ describe('DiffViewer (web renderer selection)', () => {
     });
 
     afterAll(() => {
-        if (previousEnv === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED;
-        else process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED = previousEnv;
+        if (previousEnv === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED = previousEnv;
 
         (globalThis as any).window = previousWindow;
         (globalThis as any).document = previousDocument;
@@ -80,7 +80,7 @@ describe('DiffViewer (web renderer selection)', () => {
     });
 
     it('falls back to Happier renderer when the env kill-switch disables pierre', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_PIERRE_DIFFS__ENABLED = '0';
+        process.env.EXPO_PUBLIC_PIGGERCODE_PIERRE_DIFFS__ENABLED = '0';
         const { DiffViewer } = await import('./DiffViewer.web');
 
         const screen = await renderScreen(<DiffViewer mode="unified" unifiedDiff={'diff --git a/a.ts b/a.ts'} filePath="a.ts" />);

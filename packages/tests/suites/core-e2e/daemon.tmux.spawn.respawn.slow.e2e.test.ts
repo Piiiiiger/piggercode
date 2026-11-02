@@ -120,9 +120,9 @@ describe('core e2e: daemon tmux spawn respawn supervision', () => {
 	        sessionIds: [],
 	        env: {
 	          CI: process.env.CI,
-	          HAPPIER_HOME_DIR: daemonHomeDir,
-	          HAPPIER_SERVER_URL: serverBaseUrl,
-	          HAPPIER_WEBAPP_URL: serverBaseUrl,
+	          PIGGERCODE_HOME_DIR: daemonHomeDir,
+	          PIGGERCODE_SERVER_URL: serverBaseUrl,
+	          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
 	        },
 	      });
 
@@ -133,17 +133,17 @@ describe('core e2e: daemon tmux spawn respawn supervision', () => {
 	          env: {
 	            ...process.env,
 	            CI: '1',
-	            HAPPIER_VARIANT: 'dev',
-	            HAPPIER_DISABLE_CAFFEINATE: '1',
-	            HAPPIER_HOME_DIR: daemonHomeDir,
-	            HAPPIER_SERVER_URL: server.baseUrl,
-	            HAPPIER_WEBAPP_URL: server.baseUrl,
-	            HAPPIER_CLAUDE_PATH: fakeClaudePath,
-	            HAPPIER_DAEMON_HEARTBEAT_INTERVAL: '5000',
-	            HAPPIER_DAEMON_SESSION_RESPAWN_ENABLED: '1',
-	            HAPPIER_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS: '50',
-	            HAPPIER_DAEMON_SESSION_RESPAWN_MAX_DELAY_MS: '250',
-	            HAPPIER_DAEMON_SESSION_RESPAWN_JITTER_MS: '0',
+	            PIGGERCODE_VARIANT: 'dev',
+	            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+	            PIGGERCODE_HOME_DIR: daemonHomeDir,
+	            PIGGERCODE_SERVER_URL: server.baseUrl,
+	            PIGGERCODE_WEBAPP_URL: server.baseUrl,
+	            PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+	            PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL: '5000',
+	            PIGGERCODE_DAEMON_SESSION_RESPAWN_ENABLED: '1',
+	            PIGGERCODE_DAEMON_SESSION_RESPAWN_BASE_DELAY_MS: '50',
+	            PIGGERCODE_DAEMON_SESSION_RESPAWN_MAX_DELAY_MS: '250',
+	            PIGGERCODE_DAEMON_SESSION_RESPAWN_JITTER_MS: '0',
 	          },
 	        });
         daemonPort = daemon.state.httpPort;
@@ -169,11 +169,11 @@ describe('core e2e: daemon tmux spawn respawn supervision', () => {
               tmux: { sessionName: tmuxSessionName, isolated: true, tmpDir: tmuxTmpDir },
             },
             environmentVariables: {
-              HAPPIER_HOME_DIR: daemonHomeDir,
-              HAPPIER_SERVER_URL: server.baseUrl,
-              HAPPIER_WEBAPP_URL: server.baseUrl,
-              HAPPIER_VARIANT: 'dev',
-              HAPPIER_DISABLE_CAFFEINATE: '1',
+              PIGGERCODE_HOME_DIR: daemonHomeDir,
+              PIGGERCODE_SERVER_URL: server.baseUrl,
+              PIGGERCODE_WEBAPP_URL: server.baseUrl,
+              PIGGERCODE_VARIANT: 'dev',
+              PIGGERCODE_DISABLE_CAFFEINATE: '1',
             },
           },
         });

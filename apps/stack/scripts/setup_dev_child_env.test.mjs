@@ -62,8 +62,8 @@ export async function run(_cmd, args, { env } = {}) {
   mark(JSON.stringify({
     type: 'run',
     args,
-    workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-    setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+    workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+    setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
   }));
   return { status: 0, stdout: '', stderr: '' };
 }
@@ -72,8 +72,8 @@ export async function runCapture(_cmd, args, { env } = {}) {
   mark(JSON.stringify({
     type: 'runCapture',
     args,
-    workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-    setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+    workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+    setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
   }));
   return '';
 }
@@ -97,8 +97,8 @@ export function stackExistsSync(name) {
   mark(JSON.stringify({
     type: 'stackExistsSync',
     name: String(name),
-    workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-    setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+    workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+    setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
     gotEnvArg: arguments.length > 1,
   }));
   return false;
@@ -117,8 +117,8 @@ export async function ensureDevCheckout({ env }) {
   mark(
     JSON.stringify({
       type: 'ensureDevCheckout',
-      workspace: String(env?.HAPPIER_STACK_WORKSPACE_DIR ?? ''),
-      setupChild: String(env?.HAPPIER_STACK_SETUP_CHILD ?? ''),
+      workspace: String(env?.PIGGERCODE_STACK_WORKSPACE_DIR ?? ''),
+      setupChild: String(env?.PIGGERCODE_STACK_SETUP_CHILD ?? ''),
     })
   );
 }
@@ -176,14 +176,14 @@ export async function resolve(specifier, context, defaultResolve) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
-    HAPPIER_DB_PROVIDER: 'mysql',
+    PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
+    PIGGERCODE_DB_PROVIDER: 'mysql',
     DATABASE_URL: 'mysql://operator:secret@db.example.test:3306/happier',
-    HAPPIER_STACK_ENV_FILE: '',
-    HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
-    HAPPIER_STACK_TEST_TTY: '1',
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-    HAPPIER_STACK_STORAGE_DIR: join(tmp, 'storage'),
+    PIGGERCODE_STACK_ENV_FILE: '',
+    PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+    PIGGERCODE_STACK_TEST_TTY: '1',
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_STORAGE_DIR: join(tmp, 'storage'),
   };
 
   try {
@@ -246,16 +246,16 @@ export async function resolve(specifier, context, defaultResolve) {
 
     const setupConfigWrite = records.find((record) =>
       record.type === 'ensureEnvLocalUpdated' &&
-      (record.updates ?? []).some((update) => update.key === 'HAPPIER_STACK_SERVER_COMPONENT')
+      (record.updates ?? []).some((update) => update.key === 'PIGGERCODE_STACK_SERVER_COMPONENT')
     );
     assert.ok(setupConfigWrite, 'expected setup config persistence call');
     assert.deepEqual(
       (setupConfigWrite.updates ?? []).filter((update) =>
-        update.key === 'HAPPIER_STACK_SERVER_COMPONENT' || update.key === 'HAPPIER_DB_PROVIDER'
+        update.key === 'PIGGERCODE_STACK_SERVER_COMPONENT' || update.key === 'PIGGERCODE_DB_PROVIDER'
       ),
       [
-        { key: 'HAPPIER_STACK_SERVER_COMPONENT', value: 'happier-server-light' },
-        { key: 'HAPPIER_DB_PROVIDER', value: 'mysql' },
+        { key: 'PIGGERCODE_STACK_SERVER_COMPONENT', value: 'happier-server-light' },
+        { key: 'PIGGERCODE_DB_PROVIDER', value: 'mysql' },
       ],
     );
     assert.deepEqual(setupConfigWrite.removeKeys, []);

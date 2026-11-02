@@ -117,8 +117,8 @@ describe('core e2e: server-light SQLite atomic blue-green overlap', () => {
   it('cuts every stable client from old to replacement without split ownership or SQLite regression', async () => {
     const testDir = run.testDir('server-light-sqlite-overlap-blue-green');
     const commonEnv = {
-      HAPPIER_API_RATE_LIMITS_ENABLED: '0',
-      HAPPIER_PRESENCE_TIMEOUT_ENABLED: '0',
+      PIGGERCODE_API_RATE_LIMITS_ENABLED: '0',
+      PIGGERCODE_PRESENCE_TIMEOUT_ENABLED: '0',
     };
 
     oldServer = await startServerLight({
@@ -176,7 +176,7 @@ describe('core e2e: server-light SQLite atomic blue-green overlap', () => {
       instanceLabel: 'replacement',
       preserveExistingDataDir: true,
       useDevLightMigrationOwner: true,
-      extraEnv: { ...commonEnv, HAPPIER_STACK_MIGRATE_MODE: 'skip' },
+      extraEnv: { ...commonEnv, PIGGERCODE_STACK_MIGRATE_MODE: 'skip' },
     });
     expect(await health(oldServer.baseUrl)).toBe(200);
     expect(await health(replacement.baseUrl)).toBe(200);

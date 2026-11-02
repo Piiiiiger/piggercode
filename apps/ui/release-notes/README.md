@@ -80,7 +80,7 @@ Overrides replace only the source group they provide. For example, a video
 
 `scripts/release-notes/serve-local-assets.mjs` serves the `assets/` directory at
 `http://127.0.0.1:4173`. Set
-`EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL=http://127.0.0.1:4173/`
+`EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL=http://127.0.0.1:4173/`
 in your local environment to preview without uploading to GitHub.
 
 The local server accepts the same flat file names used in production:

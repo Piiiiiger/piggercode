@@ -40,7 +40,7 @@ function normalizeOs(platform = process.platform) {
 }
 
 function resolveMinisignPublicKeyText(env = process.env) {
-  const inline = String(env?.HAPPIER_MINISIGN_PUBKEY ?? '').trim();
+  const inline = String(env?.PIGGERCODE_MINISIGN_PUBKEY ?? '').trim();
   return inline || DEFAULT_MINISIGN_PUBLIC_KEY;
 }
 

@@ -68,7 +68,7 @@ function existingFile(path) {
 function resolveStackLogPaths({ env, stackName }) {
   const { baseDir } = resolveStackBaseDir(stackName, env);
   const logsDir = join(baseDir, 'logs');
-  const cliHomeDir = (env.HAPPIER_STACK_CLI_HOME_DIR ?? '').toString().trim() || join(baseDir, 'cli');
+  const cliHomeDir = (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').toString().trim() || join(baseDir, 'cli');
   const cliLogsDir = join(cliHomeDir, 'logs');
 
   const service = getDefaultAutostartPaths(env);
@@ -88,7 +88,7 @@ function resolveStackLogPaths({ env, stackName }) {
     daemon: resolveLatestFileBySuffix(cliLogsDir, '-daemon.log'),
     serviceOut: service.stdoutPath,
     serviceErr: service.stderrPath,
-    systemd: getSystemdUnitInfo({ env, mode: (env.HAPPIER_STACK_SERVICE_MODE ?? '').toString().trim() || 'user' }),
+    systemd: getSystemdUnitInfo({ env, mode: (env.PIGGERCODE_STACK_SERVICE_MODE ?? '').toString().trim() || 'user' }),
   };
 }
 
@@ -198,7 +198,7 @@ async function main() {
     argKv.get('--kind') ??
     '';
   const component = coerceComponent(componentRaw);
-  const lines = coerceInt(argKv.get('--lines') ?? process.env.HAPPIER_STACK_LOG_LINES ?? '', 120);
+  const lines = coerceInt(argKv.get('--lines') ?? process.env.PIGGERCODE_STACK_LOG_LINES ?? '', 120);
 
   const env = process.env;
   const stackName = getStackName(env);

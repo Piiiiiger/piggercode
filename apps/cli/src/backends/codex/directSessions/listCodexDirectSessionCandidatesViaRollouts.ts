@@ -112,7 +112,7 @@ function resolveRolloutSearchCandidateLimit(params: Readonly<{ env: NodeJS.Proce
   if (params.searchMode === 'fast') {
     return parsePositiveIntEnv({
       env: params.env,
-      key: 'HAPPIER_CODEX_DIRECT_SESSIONS_FAST_SEARCH_CANDIDATE_LIMIT',
+      key: 'PIGGERCODE_CODEX_DIRECT_SESSIONS_FAST_SEARCH_CANDIDATE_LIMIT',
       defaultValue: 200,
       min: 1,
       max: 5000,
@@ -120,7 +120,7 @@ function resolveRolloutSearchCandidateLimit(params: Readonly<{ env: NodeJS.Proce
   }
   return parsePositiveIntEnv({
     env: params.env,
-    key: 'HAPPIER_CODEX_DIRECT_SESSIONS_FULL_SEARCH_CANDIDATE_LIMIT',
+    key: 'PIGGERCODE_CODEX_DIRECT_SESSIONS_FULL_SEARCH_CANDIDATE_LIMIT',
     defaultValue: 1000,
     min: 1,
     max: 25_000,
@@ -130,7 +130,7 @@ function resolveRolloutSearchCandidateLimit(params: Readonly<{ env: NodeJS.Proce
 function resolveRolloutSearchBuildConcurrency(env: NodeJS.ProcessEnv): number {
   return parsePositiveIntEnv({
     env,
-    key: 'HAPPIER_CODEX_DIRECT_SESSIONS_SEARCH_BUILD_CONCURRENCY',
+    key: 'PIGGERCODE_CODEX_DIRECT_SESSIONS_SEARCH_BUILD_CONCURRENCY',
     defaultValue: 8,
     min: 1,
     max: 64,

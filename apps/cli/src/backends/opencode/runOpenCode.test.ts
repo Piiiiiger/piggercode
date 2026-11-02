@@ -106,8 +106,8 @@ describe('runOpenCode', () => {
     createOpenCodeSharedLocalControlMock.mockClear();
     readSharedManagedOpenCodeServerStateBestEffortMock.mockReset();
     resetLatestLocalControlParams();
-    delete process.env.HAPPIER_OPENCODE_BACKEND_MODE;
-    delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_OPENCODE_BACKEND_MODE;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
   });
 
   afterEach(() => {
@@ -125,7 +125,7 @@ describe('runOpenCode', () => {
   ] as const)(
     'activates %s mode as Runtime Activity not-applicable without an OpenCode producer',
     async (_mode, backendMode, expectedRuntimeFactory) => {
-      if (backendMode) process.env.HAPPIER_OPENCODE_BACKEND_MODE = backendMode;
+      if (backendMode) process.env.PIGGERCODE_OPENCODE_BACKEND_MODE = backendMode;
 
       const forbiddenOpenCodeActivityProducer = { report: vi.fn() };
       runStandardAcpProviderMock.mockImplementationOnce(async (_opts: unknown, config: unknown) => {
@@ -221,7 +221,7 @@ describe('runOpenCode', () => {
   });
 
   it('does not publish askUserQuestionAnswersInPermission capability seed in acp mode', async () => {
-    process.env.HAPPIER_OPENCODE_BACKEND_MODE = 'acp';
+    process.env.PIGGERCODE_OPENCODE_BACKEND_MODE = 'acp';
 
     runStandardAcpProviderMock.mockImplementationOnce(async (_opts: unknown, config: unknown) => {
       if (!config || typeof config !== 'object') {
@@ -312,7 +312,7 @@ describe('runOpenCode', () => {
   });
 
   it('uses ACP runtime when backend mode is explicitly set to acp', async () => {
-    process.env.HAPPIER_OPENCODE_BACKEND_MODE = 'acp';
+    process.env.PIGGERCODE_OPENCODE_BACKEND_MODE = 'acp';
 
     runStandardAcpProviderMock.mockImplementationOnce(async (_opts: unknown, config: unknown) => {
       if (!config || typeof config !== 'object') {
@@ -390,7 +390,7 @@ describe('runOpenCode', () => {
   });
 
   it('does not eagerly start the runtime in acp mode', async () => {
-    process.env.HAPPIER_OPENCODE_BACKEND_MODE = 'acp';
+    process.env.PIGGERCODE_OPENCODE_BACKEND_MODE = 'acp';
     let startRuntimeBeforeFirstPrompt: boolean | undefined;
 
     runStandardAcpProviderMock.mockImplementationOnce(async (_opts: unknown, config: unknown) => {

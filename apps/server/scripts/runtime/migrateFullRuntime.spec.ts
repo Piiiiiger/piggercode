@@ -56,9 +56,9 @@ describe('runFullRuntimeMigration', () => {
         const exitCode = await runFullRuntimeMigration({
             executablePath,
             env: {
-                HAPPIER_DB_PROVIDER: provider,
+                PIGGERCODE_DB_PROVIDER: provider,
                 DATABASE_URL: `${provider}://artifact-test/database`,
-                HAPPIER_STACK_PRISMA_MIGRATE: '0',
+                PIGGERCODE_STACK_PRISMA_MIGRATE: '0',
             },
             processBoundary: {
                 spawn(command, args, options) {
@@ -87,7 +87,7 @@ describe('runFullRuntimeMigration', () => {
         let closed = false;
         const exitCode = await runFullRuntimeMigration({
             executablePath,
-            env: { HAPPIER_DB_PROVIDER: 'pglite', HAPPIER_SERVER_LIGHT_DB_DIR: '/data/pglite' },
+            env: { PIGGERCODE_DB_PROVIDER: 'pglite', PIGGERCODE_SERVER_LIGHT_DB_DIR: '/data/pglite' },
             pgliteBoundary: {
                 async open() {
                     return {
@@ -112,8 +112,8 @@ describe('runFullRuntimeMigration', () => {
 
     it.each([
         [{ DATABASE_URL: 'postgres://artifact-test/database' }, 'provider'],
-        [{ HAPPIER_DB_PROVIDER: 'sqlite', DATABASE_URL: 'sqlite://artifact-test/database' }, 'provider'],
-        [{ HAPPIER_DB_PROVIDER: 'postgres' }, 'DATABASE_URL'],
+        [{ PIGGERCODE_DB_PROVIDER: 'sqlite', DATABASE_URL: 'sqlite://artifact-test/database' }, 'provider'],
+        [{ PIGGERCODE_DB_PROVIDER: 'postgres' }, 'DATABASE_URL'],
     ])('fails closed before spawning for invalid environment %#', async (env, expectedError) => {
         const { executablePath } = await createArtifactFixture();
         let spawnCount = 0;
@@ -138,7 +138,7 @@ describe('runFullRuntimeMigration', () => {
         const { executablePath } = await createArtifactFixture();
         const exitCode = await runFullRuntimeMigration({
             executablePath,
-            env: { HAPPIER_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgres://artifact-test/database' },
+            env: { PIGGERCODE_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgres://artifact-test/database' },
             processBoundary: {
                 spawn() {
                     return { pid: 123, output: [], stdout: null, stderr: null, ...completion };
@@ -154,7 +154,7 @@ describe('runFullRuntimeMigration', () => {
         let spawnCount = 0;
         await expect(runFullRuntimeMigration({
             executablePath,
-            env: { HAPPIER_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgres://artifact-test/database' },
+            env: { PIGGERCODE_DB_PROVIDER: 'postgres', DATABASE_URL: 'postgres://artifact-test/database' },
             processBoundary: { spawn() {
                 spawnCount += 1;
                 return { status: 0, signal: null };

@@ -7,9 +7,9 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
-    HAPPIER_DESKTOP_PATH_MARKER_LINE,
-    HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
-    HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
+    PIGGERCODE_DESKTOP_PATH_MARKER_LINE,
+    PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
+    PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
     ensureHappierCliPathExposure,
     planWindowsUserPathExposure,
     planWindowsUserPathRemoval,
@@ -84,8 +84,8 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
         const expectedLine = renderHappierCliPathExportLine(binDir);
         const afterFirst = await readFile(zshrcPath, 'utf8');
-        expect(afterFirst).toBe(`alias ll="ls -l"\n\n${HAPPIER_DESKTOP_PATH_MARKER_LINE}\n${expectedLine}\n`);
-        expect(await readFile(join(homeDir, '.zprofile'), 'utf8')).toBe(`\n${HAPPIER_DESKTOP_PATH_MARKER_LINE}\n${expectedLine}\n`);
+        expect(afterFirst).toBe(`alias ll="ls -l"\n\n${PIGGERCODE_DESKTOP_PATH_MARKER_LINE}\n${expectedLine}\n`);
+        expect(await readFile(join(homeDir, '.zprofile'), 'utf8')).toBe(`\n${PIGGERCODE_DESKTOP_PATH_MARKER_LINE}\n${expectedLine}\n`);
 
         const second = await ensureHappierCliPathExposure({ binDir, processEnv });
         expect(second).toEqual({ changed: false, shellReloadHint: null, failure: null, existingCommand: null });
@@ -185,7 +185,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
             existingCommand: userHappier,
         });
         expect(await readFile(join(homeDir, '.zshrc'), 'utf8'))
-            .toBe(`\n${HAPPIER_DESKTOP_PATH_MARKER_LINE}\n${renderHappierCliPathExportLine(binDir)}\n`);
+            .toBe(`\n${PIGGERCODE_DESKTOP_PATH_MARKER_LINE}\n${renderHappierCliPathExportLine(binDir)}\n`);
     });
 
     it('writes no line once this computer chose "Keep my own" (R12/INV5)', async () => {
@@ -250,10 +250,10 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         expect(await readOptional(join(homeDir, '.zshrc'))).toBeNull();
     });
 
-    it('honours HAPPIER_NO_PATH_UPDATE=1 without writing anything', async () => {
+    it('honours PIGGERCODE_NO_PATH_UPDATE=1 without writing anything', async () => {
         const homeDir = await createHome();
         const binDir = join(homeDir, '.happier', 'bin');
-        const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', HAPPIER_NO_PATH_UPDATE: '1' };
+        const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PIGGERCODE_NO_PATH_UPDATE: '1' };
 
         const result = await ensureHappierCliPathExposure({ binDir, processEnv });
 
@@ -322,7 +322,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         expect(result.changed).toBe(true);
         expect((await stat(join(homeDir, '.profile'))).isFile()).toBe(true);
         expect(await readFile(join(homeDir, '.profile'), 'utf8')).toBe(
-            `\n${HAPPIER_DESKTOP_PATH_MARKER_LINE}\n${renderHappierCliPathExportLine(binDir)}\n`,
+            `\n${PIGGERCODE_DESKTOP_PATH_MARKER_LINE}\n${renderHappierCliPathExportLine(binDir)}\n`,
         );
     });
 });
@@ -460,20 +460,20 @@ describe('Windows user PATH transport', () => {
             const script = args[args.length - 1] ?? '';
             expect(script).not.toContain('param(');
             // Every value handed over must actually be read back inside the script.
-            for (const name of Object.keys(options.env ?? {}).filter((key) => key.startsWith('HAPPIER_PATH_'))) {
+            for (const name of Object.keys(options.env ?? {}).filter((key) => key.startsWith('PIGGERCODE_PATH_'))) {
                 expect(script).toContain(`$env:${name}`);
             }
         }
 
         const [, , readOptions] = execFileMock.mock.calls[0] ?? [];
-        expect(readOptions?.env?.HAPPIER_PATH_PROVENANCE_NAME).toBe(HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE);
+        expect(readOptions?.env?.PIGGERCODE_PATH_PROVENANCE_NAME).toBe(PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE);
         const [, , writeOptions] = execFileMock.mock.calls[1] ?? [];
         expect(writeOptions?.env).toEqual(expect.objectContaining({
             SystemRoot: 'C:\\Windows',
-            HAPPIER_PATH_USER_PATH: `${binDir};${userPath}`,
-            HAPPIER_PATH_VALUE_KIND: 'ExpandString',
-            HAPPIER_PATH_PROVENANCE_NAME: HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
-            HAPPIER_PATH_PROVENANCE_VALUE: binDir,
+            PIGGERCODE_PATH_USER_PATH: `${binDir};${userPath}`,
+            PIGGERCODE_PATH_VALUE_KIND: 'ExpandString',
+            PIGGERCODE_PATH_PROVENANCE_NAME: PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
+            PIGGERCODE_PATH_PROVENANCE_VALUE: binDir,
         }));
     });
 
@@ -499,14 +499,14 @@ describe('Windows user PATH transport', () => {
         const [, writeArgs, writeOptions] = execFileMock.mock.calls[1] ?? [];
         for (const [args, options] of [[readArgs, readOptions], [writeArgs, writeOptions]] as const) {
             const script = args?.[args.length - 1] ?? '';
-            for (const name of Object.keys(options?.env ?? {}).filter((key) => key.startsWith('HAPPIER_PATH_'))) {
+            for (const name of Object.keys(options?.env ?? {}).filter((key) => key.startsWith('PIGGERCODE_PATH_'))) {
                 expect(script).toContain(`$env:${name}`);
             }
         }
         expect(writeOptions?.env).toEqual(expect.objectContaining({
-            HAPPIER_PATH_USER_PATH: `${npmDir};${binDir}`,
-            HAPPIER_PATH_MOVES_NAME: HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
-            HAPPIER_PATH_MOVES_VALUE: '',
+            PIGGERCODE_PATH_USER_PATH: `${npmDir};${binDir}`,
+            PIGGERCODE_PATH_MOVES_NAME: PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
+            PIGGERCODE_PATH_MOVES_VALUE: '',
         }));
     });
 });

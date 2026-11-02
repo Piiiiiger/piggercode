@@ -140,8 +140,8 @@ describe('apps/ui/metro.config.js (Expo resolution fallbacks)', () => {
         expect(fs.existsSync(expectedShimPath)).toBe(true);
     });
 
-    it('disables Watchman in stack builds (HAPPIER_STACK_STACK set)', () => {
-        process.env.HAPPIER_STACK_STACK = 'qa-test';
+    it('disables Watchman in stack builds (PIGGERCODE_STACK_STACK set)', () => {
+        process.env.PIGGERCODE_STACK_STACK = 'qa-test';
         delete process.env.CI;
 
         const config = requireFreshMetroConfig();
@@ -149,7 +149,7 @@ describe('apps/ui/metro.config.js (Expo resolution fallbacks)', () => {
     });
 
     it('resolves editable internal workspace packages and their explicit .js imports from source', () => {
-        process.env.HAPPIER_STACK_STACK = 'qa-test';
+        process.env.PIGGERCODE_STACK_STACK = 'qa-test';
         delete process.env.CI;
 
         const config = requireFreshMetroConfig();
@@ -170,7 +170,7 @@ describe('apps/ui/metro.config.js (Expo resolution fallbacks)', () => {
     });
 
     it('blocks generated workspace artifacts while retaining canonical source paths', () => {
-        process.env.HAPPIER_STACK_STACK = 'qa-test';
+        process.env.PIGGERCODE_STACK_STACK = 'qa-test';
         delete process.env.CI;
 
         const config = requireFreshMetroConfig();

@@ -101,7 +101,7 @@ function withOutputCompilerArgs(args, outputDir, tsBuildInfoFile) {
 export async function buildTypeScriptPackageDist({
   packageDir = process.cwd(),
   args = process.argv.slice(2),
-  outputDir = process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR,
+  outputDir = process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR,
   env = process.env,
   stdio = 'inherit',
   platform = process.platform,
@@ -159,14 +159,14 @@ export async function buildTypeScriptPackageDist({
           distDir,
           (stagedDistDir) => compileAndValidate(stagedDistDir, {
             ...commandEnv,
-            HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+            PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
           }),
         );
         return { outputDir: distDir, promoted: true };
       },
       {
         lockPath,
-        heldLockValue: commandEnv.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD,
+        heldLockValue: commandEnv.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD,
         errorLabel: `${packageJson?.name ?? resolvedPackageDir} workspace dist build lock`,
       },
     );

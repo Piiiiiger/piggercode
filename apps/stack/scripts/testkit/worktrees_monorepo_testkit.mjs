@@ -19,7 +19,7 @@ export function createMonorepoWorktreeEnv({ homeDir, workspaceDir, sandboxDir, e
     workspaceDir,
     sandboxDir,
     extraEnv: {
-      HAPPIER_STACK_OWNER: 'test',
+      PIGGERCODE_STACK_OWNER: 'test',
       ...extraEnv,
     },
   });

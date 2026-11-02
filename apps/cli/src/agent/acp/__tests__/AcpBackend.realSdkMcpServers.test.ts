@@ -22,7 +22,7 @@ describe('AcpBackend with real ACP SDK stub provider', () => {
         happier: {
           command: process.execPath,
           args: ['-e', 'process.exit(0)'],
-          env: { HAPPIER_MCP_TEST: '1' },
+          env: { PIGGERCODE_MCP_TEST: '1' },
         },
       },
     });
@@ -33,7 +33,7 @@ describe('AcpBackend with real ACP SDK stub provider', () => {
         name: 'happier',
         command: process.execPath,
         args: ['-e', 'process.exit(0)'],
-        env: [{ name: 'HAPPIER_MCP_TEST', value: '1' }],
+        env: [{ name: 'PIGGERCODE_MCP_TEST', value: '1' }],
       },
     ]);
   });
@@ -49,7 +49,7 @@ describe('AcpBackend with real ACP SDK stub provider', () => {
           happier: {
             command: process.execPath,
             args: ['-e', 'process.exit(0)'],
-            env: { HAPPIER_MCP_TEST: '1' },
+            env: { PIGGERCODE_MCP_TEST: '1' },
           },
         },
         transportHandler: createAcpTestTransportHandler({ initTimeoutMs: 1_000 }),

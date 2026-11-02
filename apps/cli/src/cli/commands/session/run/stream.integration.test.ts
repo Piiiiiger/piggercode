@@ -18,7 +18,7 @@ vi.mock('socket.io-client', () => ({
 }));
 
 describe('happier session run stream-* (integration)', () => {
-  const envKeys = ['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR'] as const;
+  const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
   let happyHomeDir = '';
@@ -104,9 +104,9 @@ describe('happier session run stream-* (integration)', () => {
     const address = server.address();
     if (!address || typeof address === 'string') throw new Error('Failed to resolve integration server address');
 
-    process.env.HAPPIER_SERVER_URL = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = `http://127.0.0.1:${address.port}`;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();

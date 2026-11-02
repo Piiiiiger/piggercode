@@ -48,9 +48,9 @@ describe('happier server add reachable URL flow', () => {
 
   it('offers detected reachable relay addresses when the interactive server URL is local-only', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-guided-reachable-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const restoreTty = setStdioTtyForTest({ stdin: true, stdout: true });
     promptAnswers = [
       'http://127.0.0.1:53545',
@@ -69,9 +69,9 @@ describe('happier server add reachable URL flow', () => {
     );
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      delete process.env.HAPPIER_SERVER_URL;
-      delete process.env.HAPPIER_WEBAPP_URL;
+      process.env.PIGGERCODE_HOME_DIR = home;
+      delete process.env.PIGGERCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_WEBAPP_URL;
       reloadConfiguration();
 
       const output = captureConsoleLogAndMuteStdout();
@@ -87,12 +87,12 @@ describe('happier server add reachable URL flow', () => {
       expect(promptQuestions.join('\n')).toContain('reach this computer');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
     }

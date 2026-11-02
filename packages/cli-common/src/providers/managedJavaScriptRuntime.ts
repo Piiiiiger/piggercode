@@ -102,9 +102,9 @@ export function resolveExplicitJavaScriptRuntimeCommand(processEnv: NodeJS.Proce
 
 export function readExplicitJavaScriptRuntimeCommand(processEnv: NodeJS.ProcessEnv = process.env): string | null {
   const override = [
-    processEnv.HAPPIER_JS_RUNTIME_PATH,
-    processEnv.HAPPIER_MANAGED_NODE_BIN,
-    processEnv.HAPPIER_NODE_PATH,
+    processEnv.PIGGERCODE_JS_RUNTIME_PATH,
+    processEnv.PIGGERCODE_MANAGED_NODE_BIN,
+    processEnv.PIGGERCODE_NODE_PATH,
   ]
     .map((value) => expandHomeDirPath(String(value ?? '').trim(), processEnv))
     .find((value) => value.length > 0);

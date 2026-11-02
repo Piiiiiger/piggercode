@@ -59,9 +59,9 @@ exit 1
     binDirs: [binDir],
     extraEnv: {
       TEST_EXPO_LISTENER_DIR: root,
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-      HAPPIER_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '3000',
-      HAPPIER_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_EXPO_METRO_WAIT_TIMEOUT_MS: '3000',
+      PIGGERCODE_STACK_EXPO_METRO_WAIT_INTERVAL_MS: '25',
       ...extraEnv,
     },
   });
@@ -144,7 +144,7 @@ test('ensureDevExpoServer exports the Tailscale proxy URL before spawning Expo',
       `#!${process.execPath}
 console.log('test-expo-env:' + JSON.stringify({
   EXPO_PACKAGER_PROXY_URL: process.env.EXPO_PACKAGER_PROXY_URL ?? '',
-  EXPO_PUBLIC_HAPPIER_SERVER_URL: process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL ?? ''
+  EXPO_PUBLIC_PIGGERCODE_SERVER_URL: process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL ?? ''
 }));
 const http = require('node:http');
 const port = Number(process.env.RCT_METRO_PORT);
@@ -174,10 +174,10 @@ http.createServer((req, res) => res.end(req.url === '/status' ? 'packager-status
         baseEnv: buildListenerDiscoveryFixtureEnv(t, {
           root: tmp,
           extraEnv: {
-            HAPPIER_TAILSCALE_BIN: tailscaleBin,
-            HAPPIER_STACK_EXPO_DEV_PORT: String(metroPort),
-            HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-            HAPPIER_STACK_EXPO_HOST: 'localhost',
+            PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+            PIGGERCODE_STACK_EXPO_DEV_PORT: String(metroPort),
+            PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+            PIGGERCODE_STACK_EXPO_HOST: 'localhost',
           },
         }),
         apiServerUrl: 'http://localhost:3005',
@@ -196,7 +196,7 @@ http.createServer((req, res) => res.end(req.url === '/status' ? 'packager-status
       const envSnapshotRaw = await expoEnvSignal.promise;
       const envSnapshot = JSON.parse(envSnapshotRaw);
       assert.equal(envSnapshot.EXPO_PACKAGER_PROXY_URL, `http://${bindableForwarderIp}:${metroPort}`);
-      assert.equal(envSnapshot.EXPO_PUBLIC_HAPPIER_SERVER_URL, `http://${bindableForwarderIp}:3005`);
+      assert.equal(envSnapshot.EXPO_PUBLIC_PIGGERCODE_SERVER_URL, `http://${bindableForwarderIp}:3005`);
     } finally {
       expoEnvSignal.cancel();
     }
@@ -303,11 +303,11 @@ setInterval(() => {}, 1000);
       baseEnv: buildListenerDiscoveryFixtureEnv(t, {
         root: tmp,
         extraEnv: {
-          HAPPIER_TAILSCALE_BIN: tailscaleBin,
-          HAPPIER_STACK_LAN_IP: '192.0.2.1',
-          HAPPIER_STACK_EXPO_DEV_PORT: String(metroPort),
-          HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-          HAPPIER_STACK_EXPO_HOST: 'localhost',
+          PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+          PIGGERCODE_STACK_LAN_IP: '192.0.2.1',
+          PIGGERCODE_STACK_EXPO_DEV_PORT: String(metroPort),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+          PIGGERCODE_STACK_EXPO_HOST: 'localhost',
           TEST_EXPO_SPAWN_OUT: spawnOut,
         },
       }),
@@ -377,10 +377,10 @@ http.createServer((req, res) => res.end(req.url === '/status' ? 'packager-status
       baseEnv: buildListenerDiscoveryFixtureEnv(t, {
         root: tmp,
         extraEnv: {
-          HAPPIER_TAILSCALE_BIN: tailscaleBin,
-          HAPPIER_STACK_EXPO_DEV_PORT: String(metroPort),
-          HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-          HAPPIER_STACK_EXPO_HOST: 'localhost',
+          PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+          PIGGERCODE_STACK_EXPO_DEV_PORT: String(metroPort),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+          PIGGERCODE_STACK_EXPO_HOST: 'localhost',
         },
       }),
       apiServerUrl: 'http://localhost:3005',

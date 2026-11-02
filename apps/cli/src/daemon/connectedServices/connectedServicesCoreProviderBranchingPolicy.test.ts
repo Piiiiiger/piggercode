@@ -17,7 +17,7 @@ const providerBackendImportPattern =
 const providerPersistedSessionMetadataPattern =
   /\b(codex|claude|opencode|gemini|pi)SessionFile\b/gu;
 const providerQuotaEndpointLiteralPattern =
-  /(chatgpt\.com\/backend-api\/wham|api\.anthropic\.com\/api\/oauth|HAPPIER_CONNECTED_SERVICES_(?:OPENAI_CODEX|CLAUDE_SUBSCRIPTION|ANTHROPIC)_[A-Z0-9_]*(?:USAGE_URL|RESET_CREDITS_URL|QUOTA_ENDPOINT|USER_AGENT))/gu;
+  /(chatgpt\.com\/backend-api\/wham|api\.anthropic\.com\/api\/oauth|PIGGERCODE_CONNECTED_SERVICES_(?:OPENAI_CODEX|CLAUDE_SUBSCRIPTION|ANTHROPIC)_[A-Z0-9_]*(?:USAGE_URL|RESET_CREDITS_URL|QUOTA_ENDPOINT|USER_AGENT))/gu;
 const providerQuotaLeafImportPattern =
   /from\s+(['"]).*\/(?:claudeSubscriptionQuotaFetcher|geminiQuotaFetcher|openAiCodexQuotaFetcher|quotaFetcher)\1/gu;
 

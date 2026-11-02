@@ -10,7 +10,7 @@ import { createStartServerHarness } from "@/testkit/startServerHarness";
 
 const startServerDbMocks = createStartServerDbMocks({
     getDbProviderFromEnv: (env: any, fallback: any) => {
-        const raw = (env?.HAPPIER_DB_PROVIDER ?? env?.HAPPY_DB_PROVIDER)?.toString().trim().toLowerCase();
+        const raw = (env?.PIGGERCODE_DB_PROVIDER ?? env?.HAPPY_DB_PROVIDER)?.toString().trim().toLowerCase();
         if (!raw) return fallback;
         if (raw === "postgresql" || raw === "postgres") return "postgres";
         if (raw === "pglite") return "pglite";
@@ -39,10 +39,10 @@ vi.mock("@/utils/process/shutdown", async () => {
 describe("startServer DB provider selection", () => {
     const startServerHarness = createStartServerHarness({
         HAPPY_DB_PROVIDER: undefined,
-        HAPPIER_DB_PROVIDER: undefined,
+        PIGGERCODE_DB_PROVIDER: undefined,
         SERVER_ROLE: undefined,
         HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-        HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
         DATABASE_URL: undefined,
     });
 
@@ -56,10 +56,10 @@ describe("startServer DB provider selection", () => {
         startServerHarness.restore();
     });
 
-    it("uses MySQL when HAPPIER_DB_PROVIDER=mysql (full flavor)", async () => {
+    it("uses MySQL when PIGGERCODE_DB_PROVIDER=mysql (full flavor)", async () => {
         await startServerHarness.start("full", {
             SERVER_ROLE: "api",
-            HAPPIER_DB_PROVIDER: "mysql",
+            PIGGERCODE_DB_PROVIDER: "mysql",
         });
 
         expect(initDbMysql).toHaveBeenCalledTimes(1);
@@ -90,7 +90,7 @@ describe("startServer DB provider selection", () => {
     it("initializes the server identity cache after connecting to the database", async () => {
         await startServerHarness.start("full", {
             SERVER_ROLE: "api",
-            HAPPIER_DB_PROVIDER: "mysql",
+            PIGGERCODE_DB_PROVIDER: "mysql",
         });
 
         expect(initializeServerIdentityCache).toHaveBeenCalledTimes(1);

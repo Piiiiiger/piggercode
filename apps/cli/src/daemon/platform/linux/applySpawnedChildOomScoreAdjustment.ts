@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 
-const SPAWNED_CHILD_OOM_SCORE_ADJ_ENV_KEY = 'HAPPIER_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ';
+const SPAWNED_CHILD_OOM_SCORE_ADJ_ENV_KEY = 'PIGGERCODE_DAEMON_SPAWNED_CHILD_OOM_SCORE_ADJ';
 
 function clampOomScoreAdjustment(value: number): number {
   return Math.min(1000, Math.max(-1000, Math.trunc(value)));

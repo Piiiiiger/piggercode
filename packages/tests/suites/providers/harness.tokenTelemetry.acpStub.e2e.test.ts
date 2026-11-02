@@ -14,8 +14,8 @@ type LedgerEntry = {
 };
 
 describe('providers harness: token telemetry (acp stub provider)', () => {
-  const providersEnabled = (process.env.HAPPIER_E2E_PROVIDERS ?? '').toString().trim() === '1';
-  const stubEnabled = (process.env.HAPPIER_E2E_PROVIDER_CODEX_ACP_STUB ?? '').toString().trim() === '1';
+  const providersEnabled = (process.env.PIGGERCODE_E2E_PROVIDERS ?? '').toString().trim() === '1';
+  const stubEnabled = (process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB ?? '').toString().trim() === '1';
 
   it.skipIf(!(providersEnabled && stubEnabled))(
     'captures token telemetry entries with tokens for an ACP provider',
@@ -25,36 +25,36 @@ describe('providers harness: token telemetry (acp stub provider)', () => {
       await rm(ledgerPath, { force: true }).catch(() => undefined);
 
       const envVars = [
-        'HAPPIER_E2E_PROVIDER_CODEX_ACP_STUB',
-        'HAPPIER_E2E_PROVIDER_OPENCODE',
-        'HAPPIER_E2E_PROVIDER_CLAUDE',
-        'HAPPIER_E2E_PROVIDER_CODEX',
-        'HAPPIER_E2E_PROVIDER_KILO',
-        'HAPPIER_E2E_PROVIDER_GEMINI',
-        'HAPPIER_E2E_PROVIDER_QWEN',
-        'HAPPIER_E2E_PROVIDER_KIMI',
-        'HAPPIER_E2E_PROVIDER_AUGGIE',
-        'HAPPIER_E2E_PROVIDER_PI',
-        'HAPPIER_E2E_PROVIDER_SCENARIOS',
-        'HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH',
+        'PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB',
+        'PIGGERCODE_E2E_PROVIDER_OPENCODE',
+        'PIGGERCODE_E2E_PROVIDER_CLAUDE',
+        'PIGGERCODE_E2E_PROVIDER_CODEX',
+        'PIGGERCODE_E2E_PROVIDER_KILO',
+        'PIGGERCODE_E2E_PROVIDER_GEMINI',
+        'PIGGERCODE_E2E_PROVIDER_QWEN',
+        'PIGGERCODE_E2E_PROVIDER_KIMI',
+        'PIGGERCODE_E2E_PROVIDER_AUGGIE',
+        'PIGGERCODE_E2E_PROVIDER_PI',
+        'PIGGERCODE_E2E_PROVIDER_SCENARIOS',
+        'PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH',
       ] as const;
 
       const saved: Record<string, string | undefined> = {};
       for (const key of envVars) saved[key] = process.env[key];
 
       try {
-        process.env.HAPPIER_E2E_PROVIDER_CODEX_ACP_STUB = '1';
-        process.env.HAPPIER_E2E_PROVIDER_OPENCODE = '0';
-        process.env.HAPPIER_E2E_PROVIDER_CLAUDE = '0';
-        process.env.HAPPIER_E2E_PROVIDER_CODEX = '0';
-        process.env.HAPPIER_E2E_PROVIDER_KILO = '0';
-        process.env.HAPPIER_E2E_PROVIDER_GEMINI = '0';
-        process.env.HAPPIER_E2E_PROVIDER_QWEN = '0';
-        process.env.HAPPIER_E2E_PROVIDER_KIMI = '0';
-        process.env.HAPPIER_E2E_PROVIDER_AUGGIE = '0';
-        process.env.HAPPIER_E2E_PROVIDER_PI = '0';
-        process.env.HAPPIER_E2E_PROVIDER_SCENARIOS = 'acp_stub_usage_update';
-        process.env.HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH = ledgerPath;
+        process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB = '1';
+        process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_CLAUDE = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_CODEX = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_KILO = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_GEMINI = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_QWEN = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_KIMI = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_AUGGIE = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_PI = '0';
+        process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS = 'acp_stub_usage_update';
+        process.env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH = ledgerPath;
 
         const res = await runProviderContractMatrix();
         if (!res.ok) throw new Error(res.error);

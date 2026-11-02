@@ -27,11 +27,11 @@ console.log('🔧 Setting up Happier CLI development environment...\n');
 
 // Create .envrc for direnv users (optional)
 const envrcContent = `# Happier CLI environment (for direnv users)
-# Automatically sets HAPPIER_HOME_DIR based on directory
+# Automatically sets PIGGERCODE_HOME_DIR based on directory
 #
 # To use: cd to happier-cli-dev directory, run: direnv allow
-export HAPPIER_HOME_DIR="$HOME/.happier-dev"
-export HAPPIER_VARIANT="dev"
+export PIGGERCODE_HOME_DIR="$HOME/.happier-dev"
+export PIGGERCODE_VARIANT="dev"
 `;
 
 const envrcPath = path.join(__dirname, '..', '.envrc.example');

@@ -10,7 +10,7 @@ test('listWorktreeSpecs does not recurse into worktree roots', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'happier-stack-list-wt-specs-'));
   try {
     const workspaceDir = join(tmp, 'workspace');
-    const env = { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: workspaceDir, HAPPIER_STACK_OWNER: 'test' };
+    const env = { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir, PIGGERCODE_STACK_OWNER: 'test' };
     const rootDir = tmp;
 
     const wtRoot = join(workspaceDir, 'tmp', 'test', 'mono-wt');

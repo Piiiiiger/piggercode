@@ -126,8 +126,8 @@ vi.mock('@/sync/api/capabilities/serverFeaturesClient', () => ({
 
 describe('useServerSettingsScreenController (server validation timeout)', () => {
     it('passes an AbortSignal and installs a probe timeout when validating /v1/version', async () => {
-        const prev = process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS;
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = '1234';
+        const prev = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = '1234';
 
         const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
 
@@ -159,7 +159,7 @@ describe('useServerSettingsScreenController (server validation timeout)', () => 
             expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1234);
         } finally {
             setTimeoutSpy.mockRestore();
-            process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = prev;
+            process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS = prev;
         }
     });
 });

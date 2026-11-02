@@ -87,7 +87,7 @@ describe('createOpenCodeTuiSupervisor', () => {
     const commandPath = await createFakeExecutable('opencode');
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
-      env: { HAPPIER_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
+      env: { PIGGERCODE_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v2',
       readManagedServerStateFn: async () => ({
         baseUrl: 'http://127.0.0.1:4096',
@@ -121,7 +121,7 @@ describe('createOpenCodeTuiSupervisor', () => {
     const commandPath = await createFakeExecutable('opencode');
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
-      env: { HAPPIER_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
+      env: { PIGGERCODE_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v1',
       readManagedServerStateFn: async () => null,
     });
@@ -152,7 +152,7 @@ describe('createOpenCodeTuiSupervisor', () => {
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
       onExit,
-      env: { HAPPIER_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
+      env: { PIGGERCODE_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v1',
       readManagedServerStateFn: async () => null,
     });
@@ -183,7 +183,7 @@ describe('createOpenCodeTuiSupervisor', () => {
     const commandPath = await createFakeExecutable('opencode');
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
-      env: { HAPPIER_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
+      env: { PIGGERCODE_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v1',
       readManagedServerStateFn: async () => null,
     });
@@ -205,7 +205,7 @@ describe('createOpenCodeTuiSupervisor', () => {
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
       onExit,
-      env: { HAPPIER_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
+      env: { PIGGERCODE_OPENCODE_PATH: commandPath } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v1',
       readManagedServerStateFn: async () => null,
     });
@@ -230,8 +230,8 @@ describe('createOpenCodeTuiSupervisor', () => {
     const supervisor = createOpenCodeTuiSupervisor({
       spawnProcess: spawnProcess as unknown as typeof import('node:child_process').spawn,
       env: {
-        HAPPIER_OPENCODE_PATH: commandPath,
-        HAPPIER_JS_RUNTIME_PATH: runtimePath,
+        PIGGERCODE_OPENCODE_PATH: commandPath,
+        PIGGERCODE_JS_RUNTIME_PATH: runtimePath,
       } as NodeJS.ProcessEnv,
       resolveDialectFn: async () => 'v1',
       readManagedServerStateFn: async () => null,

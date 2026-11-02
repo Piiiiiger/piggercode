@@ -253,7 +253,7 @@ describe.skipIf(!redisUrl)("session-scoped killSession relayed to a runner on an
         await Promise.all(adapterRedisClients.map(async (client) => await client.quit()));
         await getRedisClient().quit();
     });
-    beforeEach(() => harness.resetEnv({ HAPPIER_SOCKET_ADAPTER: "redis-streams", REDIS_URL: redisUrl }));
+    beforeEach(() => harness.resetEnv({ PIGGERCODE_SOCKET_ADAPTER: "redis-streams", REDIS_URL: redisUrl }));
 
     it("closes the publisher on its owning instance through the runner's acknowledged clean-close event", async () => {
         const seeded = await seedRunnerSession();

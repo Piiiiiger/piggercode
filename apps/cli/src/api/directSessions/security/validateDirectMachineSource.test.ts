@@ -74,7 +74,7 @@ describe('validateDirectMachineSource', () => {
         },
         env: {
           HOME: '/Users/tester',
-          HAPPIER_CLAUDE_CONFIG_DIR: '~/.claude',
+          PIGGERCODE_CLAUDE_CONFIG_DIR: '~/.claude',
         },
       }),
     ).toEqual({

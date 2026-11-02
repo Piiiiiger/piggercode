@@ -6,12 +6,12 @@ import { homedir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const APP_URL_ENV_NAME = 'HAPPIER_UI_PERF_APP_URL';
-const DEV_KEY_ENV_NAME = 'HAPPIER_UI_PERF_DEV_KEY';
+const APP_URL_ENV_NAME = 'PIGGERCODE_UI_PERF_APP_URL';
+const DEV_KEY_ENV_NAME = 'PIGGERCODE_UI_PERF_DEV_KEY';
 const DEFAULT_AGENT_BROWSER_SESSION = 'happier-ui-perf';
-export const SYNC_TUNING_STORAGE_KEY = 'HAPPIER_SYNC_TUNING_JSON';
-const AUDIT_GLOBAL = '__HAPPIER_AGENT_BROWSER_PERF_AUDIT__';
-const SCROLL_GLOBAL = '__HAPPIER_AGENT_BROWSER_PERF_SCROLL__';
+export const SYNC_TUNING_STORAGE_KEY = 'PIGGERCODE_SYNC_TUNING_JSON';
+const AUDIT_GLOBAL = '__PIGGERCODE_AGENT_BROWSER_PERF_AUDIT__';
+const SCROLL_GLOBAL = '__PIGGERCODE_AGENT_BROWSER_PERF_SCROLL__';
 
 const DEFAULT_STRESS_TEST_PROMPT = `STRESS TOOLS TESTS
 
@@ -90,7 +90,7 @@ export function buildSyncTuningOverride(options = {}) {
 export function buildLiveTelemetryConfigureScript(options = {}) {
   const flushIntervalMs = normalizePositiveInt(options.flushIntervalMs, 30000);
   return `(() => {
-    const target = window.__HAPPIER_SYNC_PERFORMANCE__;
+    const target = window.__PIGGERCODE_SYNC_PERFORMANCE__;
     if (!target || typeof target.configure !== 'function') return false;
     target.configure({ enabled: true, slowThresholdMs: 16, flushIntervalMs: ${JSON.stringify(flushIntervalMs)} });
     return true;
@@ -403,7 +403,7 @@ export function buildFallbackScenarioSnapshotScript(probeError = 'Browser perf p
     }
     function readTranscriptViewportTelemetry() {
       return snapshotOrNull(() => {
-        const telemetry = window.__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__;
+        const telemetry = window.__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__;
         if (typeof telemetry === 'function') return telemetry();
         if (telemetry && typeof telemetry.snapshot === 'function') return telemetry.snapshot();
         return null;
@@ -426,8 +426,8 @@ export function buildFallbackScenarioSnapshotScript(probeError = 'Browser perf p
       memory,
       errors,
       url: typeof location === 'object' && location ? String(location.href ?? '') : '',
-      syncPerformance: snapshotOrNull(() => window.__HAPPIER_SYNC_PERFORMANCE__?.snapshot?.() ?? null),
-      syncReliability: snapshotOrNull(() => window.__HAPPIER_SYNC_RELIABILITY__?.snapshot?.() ?? null),
+      syncPerformance: snapshotOrNull(() => window.__PIGGERCODE_SYNC_PERFORMANCE__?.snapshot?.() ?? null),
+      syncReliability: snapshotOrNull(() => window.__PIGGERCODE_SYNC_RELIABILITY__?.snapshot?.() ?? null),
       transcriptViewport: readTranscriptViewportTelemetry(),
     };
   })()`;
@@ -516,7 +516,7 @@ export function parsePerfAuditArgs(argv, env = process.env) {
 }
 
 export function buildAgentBrowserPerfAuditUsage() {
-  return `Usage: node apps/ui/scripts/perf/agentBrowserUiPerfAudit.mjs [options]\n\nEnvironment defaults:\n  ${APP_URL_ENV_NAME}                 Web app URL when --url is omitted\n  ${DEV_KEY_ENV_NAME}                 Dev restore key when --dev-key is omitted\n\nOptions:\n  --url <url>                         Web app URL (or ${APP_URL_ENV_NAME})\n  --session <name>                    agent-browser session name\n  --dev-key <key>                     dev restore key for login (or ${DEV_KEY_ENV_NAME})\n  --out-dir <dir>                     artifact directory\n  --duration-ms <ms>                  per-scenario duration\n  --plan <full|smoke|multi-stream|mobile-hidden|cold-hydration|scenario-id>    scenario subset\n  --target-session-title <title>      session title to open for session-view scenarios\n  --target-session-url <url>          direct /session/... URL for session-view scenarios\n  --directory <path>                  directory seed for /new stress sessions (default: current working directory)\n  --stress-sessions <n>               create n safe long-running stress sessions before measurement\n  --stress-prompt-file <path>         custom base stress prompt\n  --sync-tuning-json <json>           merge extra HAPPIER_SYNC_TUNING_JSON keys for perf experiments\n  --skip-auth                         assume already logged in\n  --skip-trace                        do not capture Chrome traces\n  --skip-profiler                     do not capture CPU profiles\n  --v8-profile                        capture valid direct-CDP V8 CPU profiles instead of agent-browser profiler output\n  --skip-telemetry-reload             keep an already-configured warm app instead of reloading telemetry setup\n  --keep-browser-session              leave this script-owned agent-browser session open for explicit warm reuse\n  --print-plan                        print plan JSON and exit\n  --dry-run                           write plan only, no browser work\n`;
+  return `Usage: node apps/ui/scripts/perf/agentBrowserUiPerfAudit.mjs [options]\n\nEnvironment defaults:\n  ${APP_URL_ENV_NAME}                 Web app URL when --url is omitted\n  ${DEV_KEY_ENV_NAME}                 Dev restore key when --dev-key is omitted\n\nOptions:\n  --url <url>                         Web app URL (or ${APP_URL_ENV_NAME})\n  --session <name>                    agent-browser session name\n  --dev-key <key>                     dev restore key for login (or ${DEV_KEY_ENV_NAME})\n  --out-dir <dir>                     artifact directory\n  --duration-ms <ms>                  per-scenario duration\n  --plan <full|smoke|multi-stream|mobile-hidden|cold-hydration|scenario-id>    scenario subset\n  --target-session-title <title>      session title to open for session-view scenarios\n  --target-session-url <url>          direct /session/... URL for session-view scenarios\n  --directory <path>                  directory seed for /new stress sessions (default: current working directory)\n  --stress-sessions <n>               create n safe long-running stress sessions before measurement\n  --stress-prompt-file <path>         custom base stress prompt\n  --sync-tuning-json <json>           merge extra PIGGERCODE_SYNC_TUNING_JSON keys for perf experiments\n  --skip-auth                         assume already logged in\n  --skip-trace                        do not capture Chrome traces\n  --skip-profiler                     do not capture CPU profiles\n  --v8-profile                        capture valid direct-CDP V8 CPU profiles instead of agent-browser profiler output\n  --skip-telemetry-reload             keep an already-configured warm app instead of reloading telemetry setup\n  --keep-browser-session              leave this script-owned agent-browser session open for explicit warm reuse\n  --print-plan                        print plan JSON and exit\n  --dry-run                           write plan only, no browser work\n`;
 }
 
 function usage() {
@@ -954,7 +954,7 @@ export function buildInstallProbeScript() {
     }
     function readTranscriptViewportTelemetry() {
       try {
-        const telemetry = window.__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__;
+        const telemetry = window.__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__;
         if (typeof telemetry === 'function') return telemetry();
         if (telemetry && typeof telemetry.snapshot === 'function') return telemetry.snapshot();
       } catch (error) {
@@ -1005,8 +1005,8 @@ export function buildInstallProbeScript() {
           memory,
           errors: state.errors.slice(),
           url: location.href,
-          syncPerformance: window.__HAPPIER_SYNC_PERFORMANCE__?.snapshot?.() ?? null,
-          syncReliability: window.__HAPPIER_SYNC_RELIABILITY__?.snapshot?.() ?? null,
+          syncPerformance: window.__PIGGERCODE_SYNC_PERFORMANCE__?.snapshot?.() ?? null,
+          syncReliability: window.__PIGGERCODE_SYNC_RELIABILITY__?.snapshot?.() ?? null,
           transcriptViewport: readTranscriptViewportTelemetry(),
         };
       },
@@ -1753,7 +1753,7 @@ async function runColdAuthHydrationScenario(ctx, scenario) {
     throw new Error('Cold auth scenario expected cleared browser storage to reach the restore screen');
   }
   await browserEval(ctx.session, buildInstallProbeScript(), { timeout: 30000 });
-  await browserEval(ctx.session, 'window.__HAPPIER_SYNC_PERFORMANCE__?.reset?.(); true;', { timeout: 30000 });
+  await browserEval(ctx.session, 'window.__PIGGERCODE_SYNC_PERFORMANCE__?.reset?.(); true;', { timeout: 30000 });
   await submitDevKeyRestore(ctx, authSurface);
   await waitMs(ctx.session, scenario.durationMs);
 }
@@ -1855,7 +1855,7 @@ async function runScenario(ctx, scenario) {
   await waitForTranscriptScrollerReady(ctx, scenario);
   if (ctx.skipTelemetryReload) await configureLiveTelemetry(ctx);
   await browserEval(ctx.session, buildInstallProbeScript(), { timeout: 30000 });
-  await browserEval(ctx.session, 'window.__HAPPIER_SYNC_PERFORMANCE__?.reset?.(); true;', { timeout: 30000 });
+  await browserEval(ctx.session, 'window.__PIGGERCODE_SYNC_PERFORMANCE__?.reset?.(); true;', { timeout: 30000 });
 
   const shouldTrace = scenario.trace && !ctx.skipTrace;
   const shouldV8Profile = scenario.profiler && !ctx.skipProfiler && ctx.v8Profile === true;
@@ -1867,7 +1867,7 @@ async function runScenario(ctx, scenario) {
   await stopActiveBrowserCaptures(ctx, `${safeId}-preflight`);
   if (shouldTrace) await startBrowserCapture(ctx, 'trace');
   if (shouldProfile) await startBrowserCapture(ctx, 'profiler');
-  await browserEval(ctx.session, `window.${AUDIT_GLOBAL}?.reset?.(); window.__HAPPIER_SYNC_PERFORMANCE__?.reset?.(); true;`, { timeout: 30000 });
+  await browserEval(ctx.session, `window.${AUDIT_GLOBAL}?.reset?.(); window.__PIGGERCODE_SYNC_PERFORMANCE__?.reset?.(); true;`, { timeout: 30000 });
 
   const startedAt = new Date().toISOString();
   let error = null;

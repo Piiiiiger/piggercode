@@ -34,7 +34,7 @@ export function resolveStackToolTraceDir(params: {
   const stack = assertFilesystemSafeStackName(params.stack);
   const env = params.env ?? process.env;
 
-  const storageOverride = normalizeEnvPath(env.HAPPIER_STACK_STORAGE_DIR, env);
+  const storageOverride = normalizeEnvPath(env.PIGGERCODE_STACK_STORAGE_DIR, env);
   const stacksRoot = storageOverride ?? path.join(resolveHappyHomeDirFromEnvironment(env) || os.homedir(), 'stacks');
 
   return path.join(stacksRoot, stack, 'cli', 'tool-traces');

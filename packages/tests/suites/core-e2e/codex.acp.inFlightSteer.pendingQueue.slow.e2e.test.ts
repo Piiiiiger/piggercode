@@ -83,14 +83,14 @@ import { appendFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
-const sdkEntry = process.env.HAPPIER_E2E_ACP_SDK_ENTRY;
-if (!sdkEntry) throw new Error("Missing HAPPIER_E2E_ACP_SDK_ENTRY");
+const sdkEntry = process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY;
+if (!sdkEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_SDK_ENTRY");
 const acp = await import(pathToFileURL(sdkEntry).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
-const promptLogPath = process.env.HAPPIER_E2E_PROMPT_LOG;
+const promptLogPath = process.env.PIGGERCODE_E2E_PROMPT_LOG;
 let primary = "";
 let steer = "";
 let promptCount = 0;
@@ -117,7 +117,7 @@ class FakeAgent {
       log({ kind: "primary_prompt_received", text });
       // Keep this prompt request in-flight so a steer prompt can arrive concurrently.
       // Wait for the steer message (best-effort) before emitting output so the transcript proves steering.
-      const maxMsRaw = Number(process.env.HAPPIER_E2E_PRIMARY_MAX_MS || "8000");
+      const maxMsRaw = Number(process.env.PIGGERCODE_E2E_PRIMARY_MAX_MS || "8000");
       const maxMs = Number.isFinite(maxMsRaw) ? maxMsRaw : 8000;
       const startedAt = Date.now();
       while (!steer && Date.now() - startedAt < maxMs) {
@@ -160,22 +160,22 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CODEX_BACKEND_MODE: 'acp',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_E2E_PROVIDERS: '1',
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CODEX_BACKEND_MODE: 'acp',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_E2E_PROVIDERS: '1',
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
       // Prefer PATH stub to avoid relying on npx / installs.
-      HAPPIER_CODEX_ACP_BIN: fakeAgentPath,
-      HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
-      HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
-      HAPPIER_E2E_PROMPT_LOG: promptLogPath,
-      HAPPIER_E2E_PRIMARY_MAX_MS: '8000',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_CODEX_ACP_BIN: fakeAgentPath,
+      PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
+      PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
+      PIGGERCODE_E2E_PROMPT_LOG: promptLogPath,
+      PIGGERCODE_E2E_PRIMARY_MAX_MS: '8000',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       PATH: `${fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
     };
 

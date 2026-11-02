@@ -11,17 +11,17 @@ function readUrlEnv(name: string, fallback: string): string {
 }
 
 export function readSkillsShBaseUrl(): string {
-  return readUrlEnv('HAPPIER_SKILLS_SH_BASE_URL', 'https://skills.sh');
+  return readUrlEnv('PIGGERCODE_SKILLS_SH_BASE_URL', 'https://skills.sh');
 }
 
 export function readSkillsShGitHubBaseUrl(): string {
-  return readUrlEnv('HAPPIER_SKILLS_SH_GITHUB_BASE_URL', 'https://github.com');
+  return readUrlEnv('PIGGERCODE_SKILLS_SH_GITHUB_BASE_URL', 'https://github.com');
 }
 
 export function readSkillsShFeaturedLimit(): number {
-  return readPositiveIntegerEnv('HAPPIER_SKILLS_SH_FEATURED_LIMIT', 100);
+  return readPositiveIntegerEnv('PIGGERCODE_SKILLS_SH_FEATURED_LIMIT', 100);
 }
 
 export function readSkillsShSearchLimit(): number {
-  return readPositiveIntegerEnv('HAPPIER_SKILLS_SH_SEARCH_LIMIT', 25);
+  return readPositiveIntegerEnv('PIGGERCODE_SKILLS_SH_SEARCH_LIMIT', 25);
 }

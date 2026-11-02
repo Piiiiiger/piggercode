@@ -20,7 +20,7 @@ export type RunDirs = {
 
 function resolveRunLogsKeepCount(): number {
   const raw = (
-    process.env.HAPPIER_E2E_RUN_LOG_KEEP_COUNT ??
+    process.env.PIGGERCODE_E2E_RUN_LOG_KEEP_COUNT ??
     process.env.HAPPY_E2E_RUN_LOG_KEEP_COUNT ??
     ''
   ).trim();
@@ -33,7 +33,7 @@ function resolveRunLogsKeepCount(): number {
 
 function resolveMinFreeDiskMb(): number {
   const raw = (
-    process.env.HAPPIER_E2E_MIN_FREE_DISK_MB ??
+    process.env.PIGGERCODE_E2E_MIN_FREE_DISK_MB ??
     process.env.HAPPY_E2E_MIN_FREE_DISK_MB ??
     ''
   ).trim();
@@ -60,7 +60,7 @@ function assertRunLogsFreeDisk(params: { logsDir: string }): void {
 
   const freeMb = Number(freeBytes / (1024n * 1024n));
   throw new Error(
-    `Insufficient disk space for provider run logs: have ~${freeMb} MiB, require at least ${minFreeMb} MiB (set HAPPIER_E2E_MIN_FREE_DISK_MB to adjust).`,
+    `Insufficient disk space for provider run logs: have ~${freeMb} MiB, require at least ${minFreeMb} MiB (set PIGGERCODE_E2E_MIN_FREE_DISK_MB to adjust).`,
   );
 }
 

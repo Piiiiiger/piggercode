@@ -64,7 +64,7 @@ test('swiftbar: monorepo stacks use repo-scoped worktree actions (no component a
   await writeFile(
     envFile,
     [
-      `HAPPIER_STACK_REPO_DIR=${monorepoRoot}`,
+      `PIGGERCODE_STACK_REPO_DIR=${monorepoRoot}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -72,9 +72,9 @@ test('swiftbar: monorepo stacks use repo-scoped worktree actions (no component a
 
   const bashScript = [
     `set -euo pipefail`,
-    `export HAPPIER_STACK_SWIFTBAR_GIT_MODE=live`,
-    `export HAPPIER_STACK_WORKSPACE_DIR="${workspaceDir}"`,
-    `export HAPPIER_STACK_CLI_ROOT_DIR="${rootDir}"`,
+    `export PIGGERCODE_STACK_SWIFTBAR_GIT_MODE=live`,
+    `export PIGGERCODE_STACK_WORKSPACE_DIR="${workspaceDir}"`,
+    `export PIGGERCODE_STACK_CLI_ROOT_DIR="${rootDir}"`,
     `export hstack_BIN="/bin/echo"`,
     `export hstack_TERM="/bin/echo"`,
     `export hstack_ROOT_DIR="${rootDir}"`,

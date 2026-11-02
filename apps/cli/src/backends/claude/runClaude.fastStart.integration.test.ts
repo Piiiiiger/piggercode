@@ -9,7 +9,7 @@ import * as childProcess from 'node:child_process';
 
 import type { Credentials } from '@/persistence';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
-import { HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY } from '@/daemon/spawn/pendingFirstInput';
+import { PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY } from '@/daemon/spawn/pendingFirstInput';
 import { configuration } from '@/configuration';
 import type { registerRunnerTerminationHandlers as registerRunnerTerminationHandlersFn } from '@/agent/runtime/runnerTerminationHandlers';
 import type { RunnerTerminationEvent, RunnerTerminationOutcome } from '@/agent/runtime/runnerTerminationOutcome';
@@ -403,25 +403,25 @@ vi.mock('@/api/session/sessionWritesBestEffort', () => ({
 }));
 
 describe('runClaude fast-start', () => {
-  const launchEnvScope = createEnvKeyScope([HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]);
+  const launchEnvScope = createEnvKeyScope([PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]);
   const loopStartWaitMs = 30_000;
-  const prevTiming = process.env.HAPPIER_STARTUP_TIMING_ENABLED;
+  const prevTiming = process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
   const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
     void code;
     return undefined as never;
   }) as any);
 
   beforeAll(async () => {
-    launchEnvScope.patch({ [HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: undefined });
-    process.env.HAPPIER_STARTUP_TIMING_ENABLED = '1';
+    launchEnvScope.patch({ [PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: undefined });
+    process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = '1';
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
   });
 
   afterAll(async () => {
     launchEnvScope.restore();
-    if (prevTiming === undefined) delete process.env.HAPPIER_STARTUP_TIMING_ENABLED;
-    else process.env.HAPPIER_STARTUP_TIMING_ENABLED = prevTiming;
+    if (prevTiming === undefined) delete process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
+    else process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = prevTiming;
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     exitSpy.mockRestore();
@@ -439,9 +439,9 @@ describe('runClaude fast-start', () => {
     const fakeProcess = new EventEmitter();
     let providerWorkStarted = false;
     let terminationAccepted = false;
-    const environment = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
+    const environment = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
     const root = await mkdtemp(join(tmpdir(), 'happier-claude-startup-stop-'));
-    environment.patch({ HAPPIER_CLAUDE_PATH: process.execPath, CLAUDE_CONFIG_DIR: root });
+    environment.patch({ PIGGERCODE_CLAUDE_PATH: process.execPath, CLAUDE_CONFIG_DIR: root });
     const originalServer = startHappyServerSpy.getMockImplementation();
     if (!originalServer) throw new Error('MCP server boundary fixture is missing');
     startHappyServerSpy.mockImplementationOnce(async (client) => {
@@ -1319,8 +1319,8 @@ describe('runClaude fast-start', () => {
       },
     });
     await writeFile(hooksJsonPath, originalHooksJson, 'utf8');
-    const endpointEnvOriginal = process.env.HAPPIER_CLAUDE_ENDPOINT_STATE;
-    process.env.HAPPIER_CLAUDE_ENDPOINT_STATE = JSON.stringify({
+    const endpointEnvOriginal = process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE;
+    process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE = JSON.stringify({
       v: 2,
       attachmentId: 'attachment-refresh-failure',
       hookServerPort,
@@ -1344,8 +1344,8 @@ describe('runClaude fast-start', () => {
       expect(startHookServerCalls).toBe(0);
       expect(loopCalls).toBe(0);
     } finally {
-      if (endpointEnvOriginal === undefined) delete process.env.HAPPIER_CLAUDE_ENDPOINT_STATE;
-      else process.env.HAPPIER_CLAUDE_ENDPOINT_STATE = endpointEnvOriginal;
+      if (endpointEnvOriginal === undefined) delete process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE;
+      else process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE = endpointEnvOriginal;
       refreshRetainedClaudeHookPluginSpy.mockReset();
       refreshRetainedClaudeHookPluginSpy.mockImplementation(() => {});
       await rm(root, { recursive: true, force: true });
@@ -1396,8 +1396,8 @@ describe('runClaude fast-start', () => {
       },
     }), 'utf8');
 
-    const endpointEnvOriginal = process.env.HAPPIER_CLAUDE_ENDPOINT_STATE;
-    process.env.HAPPIER_CLAUDE_ENDPOINT_STATE = JSON.stringify({
+    const endpointEnvOriginal = process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE;
+    process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE = JSON.stringify({
       v: 2,
       attachmentId: 'attachment-adopted-endpoint-signal',
       hookServerPort,
@@ -1457,8 +1457,8 @@ describe('runClaude fast-start', () => {
       await expect(readFile(hooksJsonPath, 'utf8')).resolves.toContain('UserPromptSubmit');
     } finally {
       loopExit.resolve(0);
-      if (endpointEnvOriginal === undefined) delete process.env.HAPPIER_CLAUDE_ENDPOINT_STATE;
-      else process.env.HAPPIER_CLAUDE_ENDPOINT_STATE = endpointEnvOriginal;
+      if (endpointEnvOriginal === undefined) delete process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE;
+      else process.env.PIGGERCODE_CLAUDE_ENDPOINT_STATE = endpointEnvOriginal;
       vi.mocked(cleanupHookSettingsFile).mockReset();
       vi.mocked(cleanupHookPluginDir).mockReset();
       await rm(root, { recursive: true, force: true });
@@ -1837,7 +1837,7 @@ describe('runClaude fast-start', () => {
     backendInitDelayMs = 200;
     getOrCreateSessionSpy.mockImplementation(async () => ({ id: 'sess_attach', metadataVersion: 1 }));
 
-    const previousAttachFile = process.env.HAPPIER_SESSION_ATTACH_FILE;
+    const previousAttachFile = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
     const previousHome = process.env.HOME;
     const previousUserProfile = process.env.USERPROFILE;
     const homeDir = join(configuration.happyHomeDir, 'fast-start-home');
@@ -1856,7 +1856,7 @@ describe('runClaude fast-start', () => {
     await chmod(attachPath, 0o600);
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
-    process.env.HAPPIER_SESSION_ATTACH_FILE = '~/.happier-attach/fast-start-attach.json';
+    process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.happier-attach/fast-start-attach.json';
 
     const { runClaude } = await import('./runClaude');
     const credentials = createLegacyCredentials();
@@ -1881,8 +1881,8 @@ describe('runClaude fast-start', () => {
     } finally {
       loopExit.resolve(0);
       await runPromise;
-      if (previousAttachFile === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-      else process.env.HAPPIER_SESSION_ATTACH_FILE = previousAttachFile;
+      if (previousAttachFile === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+      else process.env.PIGGERCODE_SESSION_ATTACH_FILE = previousAttachFile;
       if (previousHome === undefined) delete process.env.HOME;
       else process.env.HOME = previousHome;
       if (previousUserProfile === undefined) delete process.env.USERPROFILE;

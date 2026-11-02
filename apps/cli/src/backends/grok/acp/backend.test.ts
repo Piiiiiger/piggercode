@@ -12,17 +12,17 @@ describe('Grok ACP backend options', () => {
   let originalOverride: string | undefined;
 
   beforeEach(() => {
-    originalOverride = process.env.HAPPIER_GROK_PATH;
+    originalOverride = process.env.PIGGERCODE_GROK_PATH;
     root = mkdtempSync(join(tmpdir(), 'happier-grok-backend-'));
     executable = join(root, process.platform === 'win32' ? 'grok.exe' : 'grok');
     writeFileSync(executable, process.platform === 'win32' ? '' : '#!/bin/sh\nexit 0\n', 'utf8');
     if (process.platform !== 'win32') chmodSync(executable, 0o755);
-    process.env.HAPPIER_GROK_PATH = executable;
+    process.env.PIGGERCODE_GROK_PATH = executable;
   });
 
   afterEach(() => {
-    if (originalOverride === undefined) delete process.env.HAPPIER_GROK_PATH;
-    else process.env.HAPPIER_GROK_PATH = originalOverride;
+    if (originalOverride === undefined) delete process.env.PIGGERCODE_GROK_PATH;
+    else process.env.PIGGERCODE_GROK_PATH = originalOverride;
     rmSync(root, { recursive: true, force: true });
   });
 

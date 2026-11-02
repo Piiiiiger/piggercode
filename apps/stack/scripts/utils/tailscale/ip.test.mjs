@@ -25,8 +25,8 @@ test('resolveTailscaleCmd prefers the unified Tailscale env override', async () 
       env: {
         PATH: join(tempRoot, 'missing-path'),
         HOME: tempRoot,
-        HAPPIER_TAILSCALE_BIN: tailscaleBin,
-        HAPPIER_STACK_TAILSCALE_BIN: '/legacy/ignored-tail-scale',
+        PIGGERCODE_TAILSCALE_BIN: tailscaleBin,
+        PIGGERCODE_STACK_TAILSCALE_BIN: '/legacy/ignored-tail-scale',
       },
     });
 

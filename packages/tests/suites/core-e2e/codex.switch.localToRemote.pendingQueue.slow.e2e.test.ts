@@ -140,13 +140,13 @@ async function runLocalToRemotePendingSwitchScenario(params: Readonly<{
 const fs = require('node:fs');
 const path = require('node:path');
 
-const sessionsRoot = process.env.HAPPIER_CODEX_SESSIONS_DIR;
-if (!sessionsRoot) throw new Error('Missing HAPPIER_CODEX_SESSIONS_DIR');
+const sessionsRoot = process.env.PIGGERCODE_CODEX_SESSIONS_DIR;
+if (!sessionsRoot) throw new Error('Missing PIGGERCODE_CODEX_SESSIONS_DIR');
 fs.mkdirSync(sessionsRoot, { recursive: true });
 
 const filePath = path.join(sessionsRoot, ${JSON.stringify('rollout-test.jsonl')});
-const id = process.env.HAPPIER_E2E_CODEX_SESSION_ID;
-if (!id) throw new Error('Missing HAPPIER_E2E_CODEX_SESSION_ID');
+const id = process.env.PIGGERCODE_E2E_CODEX_SESSION_ID;
+if (!id) throw new Error('Missing PIGGERCODE_E2E_CODEX_SESSION_ID');
 
 function write(line) {
   fs.appendFileSync(filePath, line + '\\n', 'utf8');
@@ -154,9 +154,9 @@ function write(line) {
 
 write(JSON.stringify({ type: 'session_meta', payload: { id, timestamp: new Date().toISOString(), cwd: process.cwd() } }));
 
-if (process.env.HAPPIER_E2E_CODEX_LOCAL_TASK_ACTIVE === '1') {
+if (process.env.PIGGERCODE_E2E_CODEX_LOCAL_TASK_ACTIVE === '1') {
   write(JSON.stringify({ type: 'event_msg', payload: { type: 'task_started', turn_id: id } }));
-  const completeSignalPath = process.env.HAPPIER_E2E_CODEX_LOCAL_TASK_COMPLETE_PATH;
+  const completeSignalPath = process.env.PIGGERCODE_E2E_CODEX_LOCAL_TASK_COMPLETE_PATH;
   const completePoll = setInterval(() => {
     if (!completeSignalPath || !fs.existsSync(completeSignalPath)) return;
     write(JSON.stringify({ type: 'event_msg', payload: { type: 'task_complete', turn_id: id } }));
@@ -198,33 +198,33 @@ setInterval(() => {}, 1000);
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CODEX_BACKEND_MODE: params.remoteBackend,
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_PUBLIC_SERVER_URL: '',
-      HAPPIER_LOCAL_SERVER_URL: '',
-      HAPPIER_ACTIVE_SERVER_ID: '',
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_CODEX_TUI_BIN: fakeCodexPath,
-      HAPPIER_CODEX_SESSIONS_DIR: codexSessionsDir,
-      HAPPIER_E2E_CODEX_SESSION_ID: codexSessionId,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CODEX_BACKEND_MODE: params.remoteBackend,
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_PUBLIC_SERVER_URL: '',
+      PIGGERCODE_LOCAL_SERVER_URL: '',
+      PIGGERCODE_ACTIVE_SERVER_ID: '',
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_CODEX_TUI_BIN: fakeCodexPath,
+      PIGGERCODE_CODEX_SESSIONS_DIR: codexSessionsDir,
+      PIGGERCODE_E2E_CODEX_SESSION_ID: codexSessionId,
       ...(activeLocalTurn
         ? {
-            HAPPIER_E2E_CODEX_LOCAL_TASK_ACTIVE: '1',
-            HAPPIER_E2E_CODEX_LOCAL_TASK_COMPLETE_PATH: taskCompleteSignalPath,
+            PIGGERCODE_E2E_CODEX_LOCAL_TASK_ACTIVE: '1',
+            PIGGERCODE_E2E_CODEX_LOCAL_TASK_COMPLETE_PATH: taskCompleteSignalPath,
           }
         : {}),
       ...(params.remoteBackend === 'acp'
         ? {
-            HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-            HAPPIER_CODEX_ACP_BIN: acpStubProviderPath,
-            HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
+            PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+            PIGGERCODE_CODEX_ACP_BIN: acpStubProviderPath,
+            PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
           }
         : {
-            HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServerPath ?? '',
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServerPath ?? '',
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '2000',
           }),
       PATH: `${fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
     };

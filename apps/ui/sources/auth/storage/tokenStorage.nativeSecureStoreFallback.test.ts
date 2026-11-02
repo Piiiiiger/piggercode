@@ -31,7 +31,7 @@ type DevGlobal = typeof globalThis & {
     __DEV__?: boolean;
 };
 
-const EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK = 'EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK';
+const EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK = 'EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK';
 
 function createIosSecureStoreEntitlementError(): Error {
     return new Error("Calling the 'setValueWithKeyAsync' function has failed\n→ Caused by: A required entitlement isn't present.");
@@ -90,8 +90,8 @@ describe('TokenStorage (native secure-store entitlement fallback)', () => {
         secureStoreState.deleteItemAsync.mockRejectedValue(createIosSecureStoreEntitlementError());
         installServerProfilesMock();
         originalDev = devGlobal.__DEV__;
-        originalFallbackEnv = process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK];
-        delete process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK];
+        originalFallbackEnv = process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK];
+        delete process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK];
         devGlobal.__DEV__ = true;
     });
 
@@ -106,9 +106,9 @@ describe('TokenStorage (native secure-store entitlement fallback)', () => {
             devGlobal.__DEV__ = originalDev;
         }
         if (originalFallbackEnv === undefined) {
-            delete process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK];
+            delete process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK];
         } else {
-            process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK] = originalFallbackEnv;
+            process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK] = originalFallbackEnv;
         }
     });
 
@@ -138,7 +138,7 @@ describe('TokenStorage (native secure-store entitlement fallback)', () => {
     });
 
     it('does not fall back to MMKV outside dev mode', async () => {
-        process.env[EXPO_PUBLIC_HAPPIER_NATIVE_SECURE_STORE_DEV_FALLBACK] = '0';
+        process.env[EXPO_PUBLIC_PIGGERCODE_NATIVE_SECURE_STORE_DEV_FALLBACK] = '0';
         devGlobal.__DEV__ = false;
 
         const { Platform } = await import('react-native');

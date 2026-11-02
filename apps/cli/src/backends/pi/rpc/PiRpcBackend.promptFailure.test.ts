@@ -4,7 +4,7 @@ import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { logger } from '@/ui/logger';
 import type { AgentMessage } from '@/agent/core';
 import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
@@ -1798,7 +1798,7 @@ describe('PiRpcBackend prompt error handling', () => {
       cwd: workDir,
       command: process.execPath,
       args: [fakeScript],
-      env: { HAPPIER_PI_RPC_FAILURE_TRACE: '1' },
+      env: { PIGGERCODE_PI_RPC_FAILURE_TRACE: '1' },
     });
 
     try {
@@ -1927,7 +1927,7 @@ describe('PiRpcBackend prompt error handling', () => {
       command: process.execPath,
       args: [fakeScript],
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10',
       },
     });
 
@@ -1967,7 +1967,7 @@ describe('PiRpcBackend prompt error handling', () => {
       command: process.execPath,
       args: [fakeScript],
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10',
       },
     });
 
@@ -2001,7 +2001,7 @@ describe('PiRpcBackend prompt error handling', () => {
       command: process.execPath,
       args: [fakeScript],
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '10',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '10',
       },
     });
 
@@ -2145,7 +2145,7 @@ describe('PiRpcBackend prompt error handling', () => {
       sessionId: happierSessionId, createId: () => `canonical-pi-turn-${++turnCount}`,
       enqueueSessionTurn: async (mutation) => { mutations.push(mutation); },
     });
-    const env = { HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10', [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+    const env = { PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10', [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
       { kind: 'group', serviceId: input.serviceId, groupId: input.groupId, activeProfileId: input.profileId, fallbackProfileId: 'fallback', generation: 4 },
       { kind: 'profile', serviceId: input.serviceId === 'openai-codex' ? 'claude-subscription' : 'openai-codex', profileId: 'other-provider' },
     ]) };
@@ -2202,7 +2202,7 @@ describe('PiRpcBackend prompt error handling', () => {
       args: [fakeScript],
       happierSessionId: 'happy-session-usage-limit',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'claude-subscription',
@@ -2245,8 +2245,8 @@ describe('PiRpcBackend prompt error handling', () => {
       args: [fakeScript],
       happierSessionId: 'happy-session-compaction-dependency',
       env: {
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10',
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10',
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'openai-codex',
@@ -2288,8 +2288,8 @@ describe('PiRpcBackend prompt error handling', () => {
       args: [fakeScript],
       happierSessionId: 'happy-session-post-final-compaction',
       env: {
-        HAPPIER_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10',
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        PIGGERCODE_PI_RPC_COMPACTION_RESUME_GRACE_MS: '10',
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'openai-codex',
@@ -2416,7 +2416,7 @@ describe('PiRpcBackend prompt error handling', () => {
       command: process.execPath,
       args: [fakeScript],
       env: {
-        HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
+        PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
         PI_RPC_COMMAND_LOG: commandLogPath,
       },
     });
@@ -2459,8 +2459,8 @@ describe('PiRpcBackend prompt error handling', () => {
         // A short collision idle-wait would, under the old wall-clock behavior, time out and throw
         // while Pi is still legitimately working (the first turn runs ~90ms). The colliding prompt
         // must NOT be failed/lost just because Pi is busy — it should wait for idle then send.
-        HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS: '40',
-        HAPPIER_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
+        PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_WAIT_MS: '40',
+        PIGGERCODE_PI_RPC_PROMPT_COLLISION_IDLE_POLL_MS: '10',
         PI_RPC_COMMAND_LOG: commandLogPath,
       },
     });

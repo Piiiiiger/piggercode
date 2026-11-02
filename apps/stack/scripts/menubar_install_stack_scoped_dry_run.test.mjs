@@ -16,8 +16,8 @@ function runHstack(args, { env } = {}) {
     cwd: repoRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
       ...env,
     },
     encoding: 'utf8',
@@ -35,13 +35,13 @@ test('hstack menubar install --dry-run derives a unique plugin basename for non-
   const stackDir = join(storageDir, stackName);
   await mkdir(stackDir, { recursive: true });
   const envFile = join(stackDir, 'env');
-  await writeFile(envFile, 'HAPPIER_STACK_STACK=repo-foo-1234567890\n', 'utf8');
+  await writeFile(envFile, 'PIGGERCODE_STACK_STACK=repo-foo-1234567890\n', 'utf8');
 
   const res = runHstack(['menubar', 'install', '--dry-run', '--json'], {
     env: {
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envFile,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envFile,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     },
   });
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
@@ -58,7 +58,7 @@ test('hstack menubar install --dry-run derives a unique plugin basename for non-
 test('hstack menubar install --dry-run keeps the default plugin basename for main', () => {
   const res = runHstack(['menubar', 'install', '--dry-run', '--json'], {
     env: {
-      HAPPIER_STACK_STACK: 'main',
+      PIGGERCODE_STACK_STACK: 'main',
     },
   });
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
@@ -85,14 +85,14 @@ test('hstack menubar install --dry-run uses the explicit stack env file instead 
 
   const mainEnvFile = join(mainDir, 'env');
   const devBuiltEnvFile = join(devBuiltDir, 'env');
-  await writeFile(mainEnvFile, 'HAPPIER_STACK_STACK=main\n', 'utf8');
-  await writeFile(devBuiltEnvFile, 'HAPPIER_STACK_STACK=dev-built\n', 'utf8');
+  await writeFile(mainEnvFile, 'PIGGERCODE_STACK_STACK=main\n', 'utf8');
+  await writeFile(devBuiltEnvFile, 'PIGGERCODE_STACK_STACK=dev-built\n', 'utf8');
 
   const res = runHstack(['menubar', 'install', '--stack=dev-built', '--dry-run', '--json'], {
     env: {
-      HAPPIER_STACK_STACK: 'main',
-      HAPPIER_STACK_ENV_FILE: mainEnvFile,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'main',
+      PIGGERCODE_STACK_ENV_FILE: mainEnvFile,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     },
   });
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
@@ -106,7 +106,7 @@ test('hstack menubar install --dry-run uses the explicit stack env file instead 
 test('hstack menubar install --dry-run honors an explicit mode flag', () => {
   const res = runHstack(['menubar', 'install', '--stack=dev-built', '--mode=selfhost', '--dry-run', '--json'], {
     env: {
-      HAPPIER_STACK_STACK: 'main',
+      PIGGERCODE_STACK_STACK: 'main',
     },
   });
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);

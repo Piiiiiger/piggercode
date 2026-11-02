@@ -31,7 +31,7 @@ describe('core e2e: pending queue v2 daemon materializes into transcript', () =>
 
   it('drains pending queue items into the transcript for a daemon-spawned session', async () => {
     const testDir = run.testDir('pending-queue-v2-daemon-materialize');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({ testDir });
@@ -55,9 +55,9 @@ describe('core e2e: pending queue v2 daemon materializes into transcript', () =>
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
       },
     });
 
@@ -87,12 +87,12 @@ describe('core e2e: pending queue v2 daemon materializes into transcript', () =>
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
     const controlToken = (daemon.state as any)?.controlToken as string | undefined;
@@ -105,12 +105,12 @@ describe('core e2e: pending queue v2 daemon materializes into transcript', () =>
       directory: workspaceDir,
       terminal: { mode: 'plain' },
       environmentVariables: {
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
       },
     });

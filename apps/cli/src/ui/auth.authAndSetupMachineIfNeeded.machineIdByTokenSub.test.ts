@@ -29,26 +29,26 @@ function makeJwtWithSub(sub: string): string {
 }
 
 describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
-  const previousServerUrl = process.env.HAPPIER_SERVER_URL;
-  const previousWebappUrl = process.env.HAPPIER_WEBAPP_URL;
-  const previousPublicServerUrl = process.env.HAPPIER_PUBLIC_SERVER_URL;
-  const previousAutostart = process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+  const previousServerUrl = process.env.PIGGERCODE_SERVER_URL;
+  const previousWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
+  const previousPublicServerUrl = process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+  const previousAutostart = process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
-    if (previousServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = previousServerUrl;
-    if (previousWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = previousWebappUrl;
-    if (previousPublicServerUrl === undefined) delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-    else process.env.HAPPIER_PUBLIC_SERVER_URL = previousPublicServerUrl;
-    if (previousAutostart === undefined) delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
-    else process.env.HAPPIER_SESSION_AUTOSTART_DAEMON = previousAutostart;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
+    if (previousServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = previousServerUrl;
+    if (previousWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = previousWebappUrl;
+    if (previousPublicServerUrl === undefined) delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+    else process.env.PIGGERCODE_PUBLIC_SERVER_URL = previousPublicServerUrl;
+    if (previousAutostart === undefined) delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
+    else process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = previousAutostart;
     vi.clearAllMocks();
     vi.doUnmock('@/persistence');
     vi.resetModules();
@@ -56,9 +56,9 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
   it('selects machine id based on decoded token sub', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-auth-machine-id-sub-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
-    delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
+    delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -120,11 +120,11 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
   it('rehydrates relay scope env from the active relay profile before any post-auth daemon autostart', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-auth-relay-scope-env-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = 'http://127.0.0.1:24541';
-    process.env.HAPPIER_WEBAPP_URL = 'http://happier-stack.localhost:24541';
-    process.env.HAPPIER_SESSION_AUTOSTART_DAEMON = '1';
-    delete process.env.HAPPIER_ACTIVE_SERVER_ID;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_SERVER_URL = 'http://127.0.0.1:24541';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://happier-stack.localhost:24541';
+    process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = '1';
+    delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -176,9 +176,9 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
       });
 
       ensureDaemonRunningForSessionCommandMock.mockImplementationOnce(() => {
-        expect(process.env.HAPPIER_ACTIVE_SERVER_ID).toBe('stack_main__id_default');
-        expect(process.env.HAPPIER_SERVER_URL).toBe('http://127.0.0.1:24541');
-        expect(process.env.HAPPIER_WEBAPP_URL).toBe('http://happier-stack.localhost:24541');
+        expect(process.env.PIGGERCODE_ACTIVE_SERVER_ID).toBe('stack_main__id_default');
+        expect(process.env.PIGGERCODE_SERVER_URL).toBe('http://127.0.0.1:24541');
+        expect(process.env.PIGGERCODE_WEBAPP_URL).toBe('http://happier-stack.localhost:24541');
         return Promise.resolve(undefined);
       });
 
@@ -188,9 +188,9 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
       expect(result.machineId).toEqual(expect.any(String));
       expect(ensureDaemonRunningForSessionCommandMock).toHaveBeenCalledTimes(1);
-      expect(process.env.HAPPIER_ACTIVE_SERVER_ID).toBe('stack_main__id_default');
-      expect(process.env.HAPPIER_SERVER_URL).toBe('http://127.0.0.1:24541');
-      expect(process.env.HAPPIER_WEBAPP_URL).toBe('http://happier-stack.localhost:24541');
+      expect(process.env.PIGGERCODE_ACTIVE_SERVER_ID).toBe('stack_main__id_default');
+      expect(process.env.PIGGERCODE_SERVER_URL).toBe('http://127.0.0.1:24541');
+      expect(process.env.PIGGERCODE_WEBAPP_URL).toBe('http://happier-stack.localhost:24541');
     } finally {
       rmSync(homeDir, { recursive: true, force: true });
     }
@@ -198,9 +198,9 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
   it('falls back to server-scoped machine ids when the token payload cannot be decoded', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-auth-machine-id-invalid-token-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
-    delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
+    delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -256,9 +256,9 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
   it('rotates the machine id when credentials are freshly issued but the token is opaque', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-auth-machine-id-new-opaque-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
-    delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
+    delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
 
     try {
       const settingsPath = join(homeDir, 'settings.json');
@@ -310,8 +310,8 @@ describe('authAndSetupMachineIfNeeded (machine id binding)', () => {
 
   it('clears machine confirmation when the account changes without changing the machine id', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-auth-machine-id-confirmation-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       const settingsPath = join(homeDir, 'settings.json');

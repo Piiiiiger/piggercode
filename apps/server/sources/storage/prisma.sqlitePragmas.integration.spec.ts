@@ -54,13 +54,13 @@ describe("storage/prisma sqlite pragmas", () => {
 
     it("accepts negative journal_size_limit values as SQLite no-limit opt-out", () => {
         expect(resolveSqliteRuntimePragmasFromEnv({
-            HAPPIER_SQLITE_JOURNAL_SIZE_LIMIT_BYTES: "-1",
+            PIGGERCODE_SQLITE_JOURNAL_SIZE_LIMIT_BYTES: "-1",
         }).journalSizeLimitBytes).toBe(-1);
     });
 
     it("treats zero journal_size_limit as an explicit minimum-size limit", () => {
         expect(resolveSqliteRuntimePragmasFromEnv({
-            HAPPIER_SQLITE_JOURNAL_SIZE_LIMIT_BYTES: "0",
+            PIGGERCODE_SQLITE_JOURNAL_SIZE_LIMIT_BYTES: "0",
         }).journalSizeLimitBytes).toBe(0);
     });
 
@@ -104,9 +104,9 @@ describe("storage/prisma sqlite pragmas", () => {
     it("reports sanitized sqlite startup diagnostics", () => {
         const diagnostics = resolveSqliteStartupDiagnosticsFromEnv({
             DATABASE_URL: "file:/tmp/happier-secret-path/test.sqlite?socket_timeout=45&connection_limit=1&pool_timeout=60",
-            HAPPIER_SQLITE_BUSY_TIMEOUT_MS: "45000",
-            HAPPIER_SQLITE_JOURNAL_MODE: "DELETE",
-            HAPPIER_SQLITE_SYNCHRONOUS: "FULL",
+            PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: "45000",
+            PIGGERCODE_SQLITE_JOURNAL_MODE: "DELETE",
+            PIGGERCODE_SQLITE_SYNCHRONOUS: "FULL",
         });
 
         expect(diagnostics).toEqual({

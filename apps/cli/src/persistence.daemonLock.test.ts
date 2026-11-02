@@ -6,14 +6,14 @@ import { applyEnvValues, restoreEnvValues, snapshotEnvValues } from '@/testkit/e
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 describe('acquireDaemonLock', () => {
-  const envBackup = snapshotEnvValues(['HAPPIER_HOME_DIR']);
+  const envBackup = snapshotEnvValues(['PIGGERCODE_HOME_DIR']);
   let homeDir: string;
 
   beforeEach(async () => {
     vi.doUnmock('@/daemon/doctor');
     vi.doUnmock('node:fs/promises');
     homeDir = await createTempDir('happier-cli-daemon-lock-');
-    applyEnvValues({ HAPPIER_HOME_DIR: homeDir });
+    applyEnvValues({ PIGGERCODE_HOME_DIR: homeDir });
     vi.resetModules();
   });
 

@@ -17,7 +17,7 @@ describe('requestDaemonSelfRestart', () => {
   it('spawns a takeover replacement with the inherited runtime id and exits only after confirmation', async () => {
     let spawnedCorrelationId = '';
     const spawnDetachedDaemonStartSync = vi.fn(async (options?: { env?: Record<string, string | undefined> }) => {
-      spawnedCorrelationId = String(options?.env?.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
+      spawnedCorrelationId = String(options?.env?.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
       return { unref: vi.fn() };
     });
     const readDaemonState = vi.fn(async () => makeState({
@@ -41,7 +41,7 @@ describe('requestDaemonSelfRestart', () => {
       exitProcess,
       env: {
         KEEP_ME: '1',
-        HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
+        PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
       },
     });
 
@@ -49,9 +49,9 @@ describe('requestDaemonSelfRestart', () => {
       startupSource: 'self-restart',
       env: expect.objectContaining({
         KEEP_ME: '1',
-        HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
-        HAPPIER_DAEMON_RUNTIME_ID: 'runtime-1',
-        HAPPIER_DAEMON_TAKEOVER: '1',
+        PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
+        PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-1',
+        PIGGERCODE_DAEMON_TAKEOVER: '1',
       }),
     }));
     expect(exitProcess).toHaveBeenCalledWith(0);
@@ -76,13 +76,13 @@ describe('requestDaemonSelfRestart', () => {
       readDaemonStateImpl: readDaemonState,
       confirmReplacementStateImpl: confirmReplacementState,
       exitProcess,
-      env: { HAPPIER_DAEMON_STARTUP_SOURCE: 'manual' },
+      env: { PIGGERCODE_DAEMON_STARTUP_SOURCE: 'manual' },
     });
 
     expect(spawnDetachedDaemonStartSync).toHaveBeenCalledWith(expect.objectContaining({
       startupSource: 'self-restart',
       env: expect.objectContaining({
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
       }),
     }));
   });
@@ -170,7 +170,7 @@ describe('requestDaemonSelfRestart', () => {
   it('can confirm a matching runtime replacement without requiring a predicted CLI version', async () => {
     let spawnedCorrelationId = '';
     const spawnDetachedDaemonStartSync = vi.fn(async (options?: { env?: Record<string, string | undefined> }) => {
-      spawnedCorrelationId = String(options?.env?.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
+      spawnedCorrelationId = String(options?.env?.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
       return { unref: vi.fn() };
     });
     const readDaemonState = vi.fn(async () => makeState({
@@ -204,7 +204,7 @@ describe('requestDaemonSelfRestart', () => {
   it('does not confirm a replacement from stale daemon state alone', async () => {
     let spawnedCorrelationId = '';
     const spawnDetachedDaemonStartSync = vi.fn(async (options?: { env?: Record<string, string | undefined> }) => {
-      spawnedCorrelationId = String(options?.env?.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
+      spawnedCorrelationId = String(options?.env?.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
       return { unref: vi.fn() };
     });
     const readDaemonState = vi.fn(async () => makeState({
@@ -274,7 +274,7 @@ describe('requestDaemonSelfRestart', () => {
     let resolveSpawn!: () => void;
     let spawnedCorrelationId = '';
     const spawnDetachedDaemonStartSync = vi.fn(async (options?: { env?: Record<string, string | undefined> }) => {
-      spawnedCorrelationId = String(options?.env?.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
+      spawnedCorrelationId = String(options?.env?.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID ?? '');
       await new Promise<void>((resolve) => {
         resolveSpawn = resolve;
       });
@@ -323,7 +323,7 @@ describe('requestDaemonSelfRestart', () => {
       { env?: Record<string, string | undefined> },
     ];
     const env = firstSpawnOptions.env ?? {};
-    expect(env.HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID).toMatch(/^self-restart-/);
+    expect(env.PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID).toMatch(/^self-restart-/);
     expect(exitProcess).toHaveBeenCalledTimes(1);
   });
 });

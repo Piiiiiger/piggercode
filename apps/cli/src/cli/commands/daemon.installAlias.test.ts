@@ -9,20 +9,20 @@ import { handleDaemonCliCommand } from './daemon';
 describe('happier daemon install/uninstall', () => {
   it('aliases daemon install to daemon service install (supports --dry-run --json)', async () => {
     const envScope = createEnvKeyScope([
-      'HAPPIER_DAEMON_SERVICE_PLATFORM',
-      'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-      'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-      'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
+      'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+      'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+      'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
       'HOME',
       'PATH',
     ]);
 
     await withTempDir('happier-daemon-install-alias-', async (tmp) => {
       envScope.patch({
-        HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(tmp, '.happier'),
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
+        PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
         HOME: tmp,
         PATH: join(tmp, 'bin'),
       });
@@ -47,20 +47,20 @@ describe('happier daemon install/uninstall', () => {
 
   it('aliases daemon uninstall to daemon service uninstall (supports --dry-run --json)', async () => {
     const envScope = createEnvKeyScope([
-      'HAPPIER_DAEMON_SERVICE_PLATFORM',
-      'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-      'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-      'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
+      'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+      'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+      'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+      'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
       'HOME',
       'PATH',
     ]);
 
     await withTempDir('happier-daemon-uninstall-alias-', async (tmp) => {
       envScope.patch({
-        HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-        HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(tmp, '.happier'),
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
+        PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+        PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
         HOME: tmp,
         PATH: join(tmp, 'bin'),
       });

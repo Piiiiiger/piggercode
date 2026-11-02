@@ -8,14 +8,14 @@ import { applyEnvValues, restoreEnvValues, snapshotEnvValues } from '@/testkit/e
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 describe('updateSettings', () => {
-  const envBackup = snapshotEnvValues(['HAPPIER_HOME_DIR']);
+  const envBackup = snapshotEnvValues(['PIGGERCODE_HOME_DIR']);
   let tempRootDir: string | undefined;
   let homeDir: string | undefined;
 
   beforeEach(async () => {
     tempRootDir = await createTempDir('happier-cli-update-settings-');
     homeDir = join(tempRootDir, 'missing-home');
-    applyEnvValues({ HAPPIER_HOME_DIR: homeDir });
+    applyEnvValues({ PIGGERCODE_HOME_DIR: homeDir });
     vi.doUnmock('node:fs/promises');
     vi.resetModules();
   });

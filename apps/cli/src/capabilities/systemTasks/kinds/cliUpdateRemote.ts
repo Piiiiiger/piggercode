@@ -103,7 +103,7 @@ export function createCliUpdateRemoteTaskKind(deps: Readonly<{
         script: deps.script,
         args: ['self', 'update', ...selfUpdateChannelArgs(deps.publicReleaseRing)],
         cwd: deps.cwd,
-        env: { ...process.env, HAPPIER_CLI_UPDATE_CHECK: '0' },
+        env: { ...process.env, PIGGERCODE_CLI_UPDATE_CHECK: '0' },
         logPath,
         admissionFdEnvName: UPDATER_ADMISSION_FD_ENV,
       });

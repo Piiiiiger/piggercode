@@ -103,7 +103,7 @@ export async function installOrUpdateRelayRuntimeDefault(
     : (await ensureLocalFirstPartyComponentCommand({
         componentId: 'happier-server',
         processEnv: process.env,
-        envVarNames: ['HAPPIER_BOOTSTRAP_SELF_HOST_SERVER_PATH'],
+        envVarNames: ['PIGGERCODE_BOOTSTRAP_SELF_HOST_SERVER_PATH'],
         releaseRing,
       })).command;
 

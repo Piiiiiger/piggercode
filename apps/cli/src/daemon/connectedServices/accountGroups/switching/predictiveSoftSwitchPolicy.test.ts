@@ -329,7 +329,7 @@ describe('evaluatePredictiveSoftSwitchLiveSessionRequirement', () => {
       activeProfileId: 'primary',
       env: {
         CLAUDE_CONFIG_DIR: sharedConfigDir,
-        HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+        PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
           kind: 'group',
           serviceId: 'claude-subscription',
           groupId: 'main',
@@ -352,7 +352,7 @@ describe('evaluatePredictiveSoftSwitchLiveSessionRequirement', () => {
       activeProfileId: 'primary',
       env: {
         CLAUDE_CONFIG_DIR: '/tmp/happier-server/daemon/connected-services/homes/claude-subscription/primary/claude/claude-config',
-        HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+        PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
           kind: 'profile',
           serviceId: 'claude-subscription',
           profileId: 'primary',

@@ -33,9 +33,9 @@ async function createLightAuditFixture(t, { stackName = 'exp1', envLines }) {
     envPath,
     env: {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
     },
   };
 }
@@ -51,13 +51,13 @@ test('hstack stack audit --fix-paths preserves explicit SQLite DATABASE_URL auth
     envLines: (() => {
       const dataDir = join(join(join(tmpdir(), 'unused'), stackName), 'server-light');
       return [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_UI_BUILD_DIR=${join(join(tmpdir(), 'unused'), stackName, 'ui')}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${join(join(tmpdir(), 'unused'), stackName, 'cli')}`,
-        `HAPPIER_STACK_REPO_DIR=${join(tmpdir(), 'unused', 'main')}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_UI_BUILD_DIR=${join(join(tmpdir(), 'unused'), stackName, 'ui')}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${join(join(tmpdir(), 'unused'), stackName, 'cli')}`,
+        `PIGGERCODE_STACK_REPO_DIR=${join(tmpdir(), 'unused', 'main')}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
         `DATABASE_URL=file:${join(dataDir, 'happier-server-light.sqlite')}`,
       ];
     })(),
@@ -67,8 +67,8 @@ test('hstack stack audit --fix-paths preserves explicit SQLite DATABASE_URL auth
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const raw = await readFile(fixture.envPath, 'utf-8');
-  assert.ok(raw.includes('HAPPIER_DB_PROVIDER=sqlite\n'), `expected the effective light provider to be pinned\n${raw}`);
-  assert.ok(!raw.includes('HAPPIER_SERVER_LIGHT_DB_DIR='), `expected SQLite to omit the PGlite-only db dir\n${raw}`);
+  assert.ok(raw.includes('PIGGERCODE_DB_PROVIDER=sqlite\n'), `expected the effective light provider to be pinned\n${raw}`);
+  assert.ok(!raw.includes('PIGGERCODE_SERVER_LIGHT_DB_DIR='), `expected SQLite to omit the PGlite-only db dir\n${raw}`);
   assert.match(raw, /^DATABASE_URL=file:.*happier-server-light\.sqlite$/m);
 });
 
@@ -77,13 +77,13 @@ test('hstack stack audit --fix-paths normalizes preset paths without rewriting S
   const fixture = await createLightAuditFixture(t, {
     stackName,
     envLines: [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_UI_BUILD_DIR=${join(fixturePathPlaceholder(), 'ui')}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(fixturePathPlaceholder(), 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${join(fixturePathPlaceholder(), 'repo')}`,
-      `HAPPIER_SERVER_LIGHT_DATA_DIR=${join(fixturePathPlaceholder(), 'legacy-light')}`,
-      `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(fixturePathPlaceholder(), 'legacy-light', 'files-old')}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_UI_BUILD_DIR=${join(fixturePathPlaceholder(), 'ui')}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(fixturePathPlaceholder(), 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${join(fixturePathPlaceholder(), 'repo')}`,
+      `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${join(fixturePathPlaceholder(), 'legacy-light')}`,
+      `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(fixturePathPlaceholder(), 'legacy-light', 'files-old')}`,
       `DATABASE_URL=file:${join(fixturePathPlaceholder(), 'legacy-light', 'legacy.sqlite')}`,
     ],
   });
@@ -95,9 +95,9 @@ test('hstack stack audit --fix-paths normalizes preset paths without rewriting S
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const raw = await readFile(fixture.envPath, 'utf-8');
-  assert.ok(raw.includes(`HAPPIER_SERVER_LIGHT_DATA_DIR=${expectedDataDir}`), `expected normalized data dir\n${raw}`);
-  assert.ok(raw.includes(`HAPPIER_SERVER_LIGHT_FILES_DIR=${expectedFilesDir}`), `expected normalized files dir\n${raw}`);
-  assert.ok(!raw.includes('HAPPIER_SERVER_LIGHT_DB_DIR='), `expected SQLite to omit the PGlite-only db dir\n${raw}`);
+  assert.ok(raw.includes(`PIGGERCODE_SERVER_LIGHT_DATA_DIR=${expectedDataDir}`), `expected normalized data dir\n${raw}`);
+  assert.ok(raw.includes(`PIGGERCODE_SERVER_LIGHT_FILES_DIR=${expectedFilesDir}`), `expected normalized files dir\n${raw}`);
+  assert.ok(!raw.includes('PIGGERCODE_SERVER_LIGHT_DB_DIR='), `expected SQLite to omit the PGlite-only db dir\n${raw}`);
   assert.ok(
     raw.includes(`DATABASE_URL=file:${join(fixturePathPlaceholder(), 'legacy-light', 'legacy.sqlite')}`),
     `expected SQLite authority to be preserved\n${raw}`,
@@ -109,9 +109,9 @@ test('hstack stack audit --fix-paths is idempotent for migrated light env files'
   const fixture = await createLightAuditFixture(t, {
     stackName,
     envLines: [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_REPO_DIR=${join(fixturePathPlaceholder(), 'repo')}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_REPO_DIR=${join(fixturePathPlaceholder(), 'repo')}`,
       `DATABASE_URL=file:${join(fixturePathPlaceholder(), 'legacy.sqlite')}`,
     ],
   });

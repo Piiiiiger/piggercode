@@ -12,7 +12,7 @@ function stackEnvExplicitlySetsPublicUrl({ env, stackName }) {
       resolveActiveStackEnvFilePath(stackName, env);
     if (!envPath || !existsSync(envPath)) return false;
     const raw = readFileSync(envPath, 'utf-8');
-    return /^HAPPIER_PUBLIC_SERVER_URL=/m.test(raw) || /^HAPPIER_STACK_SERVER_URL=/m.test(raw);
+    return /^PIGGERCODE_PUBLIC_SERVER_URL=/m.test(raw) || /^PIGGERCODE_STACK_SERVER_URL=/m.test(raw);
   } catch {
     return false;
   }
@@ -24,7 +24,7 @@ function stackEnvExplicitlySetsWebappUrl({ env, stackName }) {
       resolveActiveStackEnvFilePath(stackName, env);
     if (!envPath || !existsSync(envPath)) return false;
     const raw = readFileSync(envPath, 'utf-8');
-    return /^HAPPIER_WEBAPP_URL=/m.test(raw);
+    return /^PIGGERCODE_WEBAPP_URL=/m.test(raw);
   } catch {
     return false;
   }
@@ -33,13 +33,13 @@ function stackEnvExplicitlySetsWebappUrl({ env, stackName }) {
 export function getPublicServerUrlEnvOverride({ env = process.env, serverPort, stackName = null } = {}) {
   const name =
     (stackName ?? '').toString().trim() ||
-    (env.HAPPIER_STACK_STACK ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_STACK ?? '').toString().trim() ||
     getStackName(env);
   const defaultPublicUrl = `http://localhost:${serverPort}`;
 
   let envPublicUrl =
-    (env.HAPPIER_PUBLIC_SERVER_URL ?? '').toString().trim() ||
-    (env.HAPPIER_STACK_SERVER_URL ?? '').toString().trim() ||
+    (env.PIGGERCODE_PUBLIC_SERVER_URL ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_SERVER_URL ?? '').toString().trim() ||
     '';
   envPublicUrl = normalizeUrlNoTrailingSlash(envPublicUrl);
 
@@ -54,12 +54,12 @@ export function getPublicServerUrlEnvOverride({ env = process.env, serverPort, s
 export function getWebappUrlEnvOverride({ env = process.env, stackName = null } = {}) {
   const name =
     (stackName ?? '').toString().trim() ||
-    (env.HAPPIER_STACK_STACK ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_STACK ?? '').toString().trim() ||
     getStackName(env);
 
-  let envWebappUrl = (env.HAPPIER_WEBAPP_URL ?? '').toString().trim() || '';
+  let envWebappUrl = (env.PIGGERCODE_WEBAPP_URL ?? '').toString().trim() || '';
 
-  // Safety: ignore a global HAPPIER_WEBAPP_URL unless it was explicitly set in the stack env file.
+  // Safety: ignore a global PIGGERCODE_WEBAPP_URL unless it was explicitly set in the stack env file.
   // This prevents surprising launches of the hosted app due to shell env leakage.
   if (envWebappUrl && !stackEnvExplicitlySetsWebappUrl({ env, stackName: name })) {
     envWebappUrl = '';
@@ -71,7 +71,7 @@ export function getWebappUrlEnvOverride({ env = process.env, stackName = null } 
 export async function resolveServerUrls({ env = process.env, serverPort, allowEnable = true } = {}) {
   const internalServerUrl = `http://127.0.0.1:${serverPort}`;
   const stackName =
-    (env.HAPPIER_STACK_STACK ?? '').toString().trim() ||
+    (env.PIGGERCODE_STACK_STACK ?? '').toString().trim() ||
     getStackName(env);
   const { defaultPublicUrl, envPublicUrl } = getPublicServerUrlEnvOverride({ env, serverPort });
   const resolved = await resolvePublicServerUrl({

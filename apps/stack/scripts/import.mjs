@@ -431,7 +431,7 @@ async function pinStackComponentDirs({ stackName, pins }) {
         `\nFix: pass paths/URLs that all resolve to the same Happier monorepo checkout/worktree.`
     );
   }
-  await ensureEnvFileUpdated({ envPath, updates: [{ key: 'HAPPIER_STACK_REPO_DIR', value: unique[0] }] });
+  await ensureEnvFileUpdated({ envPath, updates: [{ key: 'PIGGERCODE_STACK_REPO_DIR', value: unique[0] }] });
   return envPath;
 }
 
@@ -505,7 +505,7 @@ function summarizePins(pins) {
 
 function readPinnedComponentDirFromEnvObject(envObj, component) {
   void component;
-  const raw = (envObj?.HAPPIER_STACK_REPO_DIR ?? '').toString().trim();
+  const raw = (envObj?.PIGGERCODE_STACK_REPO_DIR ?? '').toString().trim();
   return raw || '';
 }
 

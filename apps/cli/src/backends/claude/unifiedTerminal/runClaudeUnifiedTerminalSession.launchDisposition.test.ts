@@ -234,7 +234,7 @@ describe('runClaudeUnifiedTerminalSession launch disposition', () => {
   it.each(['expected-exit', 'confirmed-death', 'inconclusive'] as const)(
     'retains provider tasks when host exit cannot prove native provider exit (%s)',
     async (outcome) => {
-      vi.stubEnv('HAPPIER_CLAUDE_UNIFIED_TERMINAL_HOST_LIVENESS_POLL_MS', '1000');
+      vi.stubEnv('PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_HOST_LIVENESS_POLL_MS', '1000');
       reloadConfiguration();
       const abortController = new AbortController();
       const ledger = createClaudeProviderActivityLedger();

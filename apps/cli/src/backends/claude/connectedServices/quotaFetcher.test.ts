@@ -86,9 +86,9 @@ describe('createClaudeSubscriptionQuotaFetcher', () => {
 
     const fetcher = descriptor!.loadQuota({
       env: {
-        HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL: usageUrl,
-        HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USER_AGENT: 'claude-code/descriptor',
-        HAPPIER_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-only-agent/1.0',
+        PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USAGE_URL: usageUrl,
+        PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_USER_AGENT: 'claude-code/descriptor',
+        PIGGERCODE_CONNECTED_SERVICES_QUOTAS_USER_AGENT: 'codex-only-agent/1.0',
       },
       staleAfterMs: 321_000,
     });

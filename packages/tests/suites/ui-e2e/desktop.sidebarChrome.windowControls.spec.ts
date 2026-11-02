@@ -83,8 +83,8 @@ test.describe('ui e2e: desktop sidebar chrome window controls', () => {
       ...process.env,
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: storageScope,
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
 
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
@@ -94,7 +94,7 @@ test.describe('ui e2e: desktop sidebar chrome window controls', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 

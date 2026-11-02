@@ -12,10 +12,10 @@ import {
 test('spawned listener ownership timeout defaults for load and accepts a bounded Stack override', () => {
   assert.equal(resolveSpawnedListenerOwnershipTimeoutMs({}), 60_000);
   assert.equal(resolveSpawnedListenerOwnershipTimeoutMs({
-    HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '90000',
+    PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: '90000',
   }), 90_000);
   assert.equal(resolveSpawnedListenerOwnershipTimeoutMs({
-    HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: 'invalid',
+    PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS: 'invalid',
   }), 60_000);
 });
 

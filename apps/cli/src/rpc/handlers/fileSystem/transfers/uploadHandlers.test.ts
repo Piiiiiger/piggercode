@@ -339,7 +339,7 @@ describe('file transfers (upload)', () => {
   });
 
   it('rejects uploads that exceed the advertised server-routed size limit when registered via registerFileSystemHandlers (no bypass)', async () => {
-    vi.stubEnv('HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES', '4');
+    vi.stubEnv('PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES', '4');
 
     const workspace = mkdtempSync(join(tmpdir(), 'happier-files-upload-'));
     const mgr = createRpcHandlerManager();

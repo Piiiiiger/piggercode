@@ -48,10 +48,10 @@ describe('resolveCodexCliInvocation', () => {
                 args,
                 processEnv: {
                     ...process.env,
-                    HAPPIER_CODEX_APP_SERVER_BIN: executable,
-                    HAPPIER_JS_RUNTIME_PATH: process.execPath,
+                    PIGGERCODE_CODEX_APP_SERVER_BIN: executable,
+                    PIGGERCODE_JS_RUNTIME_PATH: process.execPath,
                 },
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
             });
 
             expect(invocation).toEqual(needsRuntime
@@ -75,12 +75,12 @@ describe('resolveCodexCliInvocation', () => {
 
         const originalPath = process.env.PATH ?? '';
         vi.stubEnv('PATH', `${binDir}:${originalPath}`);
-        vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', join(root, 'missing-codex-app-server'));
+        vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', join(root, 'missing-codex-app-server'));
 
         const invocation = await resolveCodexCliInvocation({
             args: ['app-server', '--listen', 'stdio://'],
             processEnv: process.env,
-            overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+            overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
             targetLabel: 'Codex app-server',
         });
 
@@ -101,12 +101,12 @@ describe('resolveCodexCliInvocation', () => {
 
             vi.stubEnv('HOME', root);
             const override = '~/fixture/bin/codex-app-server';
-            vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', override);
+            vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', override);
 
             const invocation = await resolveCodexCliInvocation({
                 args: ['app-server', '--listen', 'stdio://'],
                 processEnv: process.env,
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
                 targetLabel: 'Codex app-server',
             });
 
@@ -132,9 +132,9 @@ describe('resolveCodexCliInvocation', () => {
                 processEnv: {
                     ...process.env,
                     HOME: scopedHome,
-                    HAPPIER_CODEX_APP_SERVER_BIN: '~/bin/codex-app-server',
+                    PIGGERCODE_CODEX_APP_SERVER_BIN: '~/bin/codex-app-server',
                 },
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
                 targetLabel: 'Codex app-server',
             });
 
@@ -156,7 +156,7 @@ describe('resolveCodexCliInvocation', () => {
             const homeBinDir = join(homeTmp, 'bin');
             mkdirSync(homeBinDir, { recursive: true });
             vi.stubEnv('HOME', root);
-            vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', '~/home-fixture/bin');
+            vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', '~/home-fixture/bin');
 
             const binDir = join(root, 'bin');
             const codexPath = await createExecutable({ dir: binDir, name: 'codex' });
@@ -166,7 +166,7 @@ describe('resolveCodexCliInvocation', () => {
             const invocation = await resolveCodexCliInvocation({
                 args: ['app-server', '--listen', 'stdio://'],
                 processEnv: process.env,
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
                 targetLabel: 'Codex app-server',
             });
 
@@ -186,13 +186,13 @@ describe('resolveCodexCliInvocation', () => {
             const cwd = join(root, 'project');
             const binDir = join(cwd, 'bin');
             const codexPath = await createExecutable({ dir: binDir, name: 'codex-app-server' });
-            vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', './bin/codex-app-server');
+            vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', './bin/codex-app-server');
 
             const invocation = await resolveCodexCliInvocation({
                 args: ['app-server', '--listen', 'stdio://'],
                 cwd,
                 processEnv: process.env,
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
                 targetLabel: 'Codex app-server',
             });
 
@@ -219,14 +219,14 @@ describe('resolveCodexCliInvocation', () => {
             const cmdShimPath = join(binDir, 'codex-app-server.cmd');
             writeFileSync(cmdShimPath, '@echo off\r\necho codex\r\n', 'utf8');
 
-            vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', './bin/codex-app-server');
+            vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', './bin/codex-app-server');
             vi.stubEnv('PATHEXT', '.CMD;.EXE');
 
             const invocation = await resolveCodexCliInvocation({
                 args: ['app-server', '--listen', 'stdio://'],
                 cwd,
                 processEnv: process.env,
-                overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN'],
+                overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN'],
                 targetLabel: 'Codex app-server',
             });
 

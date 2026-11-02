@@ -15,18 +15,18 @@ function createLegacyCredentials() {
 }
 
 describe('sessionControl.sessionsHttp authentication status handling', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
     vi.doUnmock('@/api/session/resolveSessionCreateEncryptionMode');
   });
 
   it('throws a stable auth status error for fetchSessionById', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchSessionById } = await import('./sessionsHttp');
 
@@ -40,7 +40,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('throws a stable auth status error for fetchSessionsPage', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchSessionsPage } = await import('./sessionsHttp');
 
@@ -54,7 +54,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('preserves retryable non-auth http statuses for fetchSessionByIdCompat', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchSessionByIdCompat } = await import('./sessionsHttp');
 
@@ -67,7 +67,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('preserves retryable non-auth http statuses for fetchSessionById', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { fetchSessionById } = await import('./sessionsHttp');
 
@@ -80,7 +80,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('throws a stable auth status error for commitSessionStoredMessage without losing session-not-found semantics', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitSessionStoredMessage } = await import('./sessionsHttp');
 
@@ -118,7 +118,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('throws a stable auth status error for getOrCreateSessionByTag', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.doMock('@/api/session/resolveSessionCreateEncryptionMode', () => ({
       resolveSessionCreateEncryptionMode: vi.fn(async () => ({
         desiredSessionEncryptionMode: 'plain',
@@ -145,7 +145,7 @@ describe('sessionControl.sessionsHttp authentication status handling', () => {
   });
 
   it('keeps archive domain errors distinct while normalizing auth failures', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { archiveSession } = await import('./sessionsHttp');
 

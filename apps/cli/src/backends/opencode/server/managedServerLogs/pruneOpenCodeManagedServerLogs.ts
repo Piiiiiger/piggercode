@@ -4,7 +4,7 @@ import { readPositiveIntEnv } from '@/utils/readPositiveIntEnv';
 
 import { resolveOpenCodeManagedServersLogDir } from './resolveOpenCodeManagedServerLogPath';
 
-export const OPENCODE_MANAGED_SERVER_LOG_KEEP_COUNT_ENV = 'HAPPIER_OPENCODE_MANAGED_SERVER_LOG_KEEP_COUNT';
+export const OPENCODE_MANAGED_SERVER_LOG_KEEP_COUNT_ENV = 'PIGGERCODE_OPENCODE_MANAGED_SERVER_LOG_KEEP_COUNT';
 const DEFAULT_KEEP_COUNT = 50;
 
 function resolveKeepCount(explicit: number | undefined): number {

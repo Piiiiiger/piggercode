@@ -2,7 +2,7 @@ import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers
 import { readSessionNativeEnvironment } from '@/agent/runtime/sessionNativeEnvironment';
 import { resolveCanonicalCodexBackendMode } from '@/rpc/handlers/codexBackendMode';
 import type { TerminalMode, TerminalSpawnOptions } from '@/terminal/runtime/terminalConfig';
-import { HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
 import { CODEX_APP_SERVER_TRANSPORT_ENV_KEY } from '@/backends/codex/appServer/daemon/codexAppServerDaemonTransport';
 import {
   AgentRuntimeDescriptorV1Schema,
@@ -18,7 +18,7 @@ import * as z from 'zod';
 
 const TERMINAL_MODES = ['plain', 'tmux', 'zellij', 'herdr', 'windows_terminal', 'windows_console'] as const satisfies readonly TerminalMode[];
 const SAFE_RESPAWN_ENVIRONMENT_VARIABLE_KEYS = [
-  HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
 ] as const;
 const NON_RESPAWN_ENVIRONMENT_VARIABLE_KEYS = new Set<string>([
   CODEX_APP_SERVER_TRANSPORT_ENV_KEY,

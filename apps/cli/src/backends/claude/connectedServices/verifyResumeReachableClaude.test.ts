@@ -6,12 +6,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { verifyResumeReachableClaude } from './verifyResumeReachableClaude';
 
-const CLAUDE_ROLLBACK_ENV = 'HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME';
+const CLAUDE_ROLLBACK_ENV = 'PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME';
 
 const claudeEnvKeys = [
   CLAUDE_ROLLBACK_ENV,
   'CLAUDE_CONFIG_DIR',
-  'HAPPIER_CLAUDE_CONFIG_DIR',
+  'PIGGERCODE_CLAUDE_CONFIG_DIR',
   'HOME',
   'USERPROFILE',
 ] as const;

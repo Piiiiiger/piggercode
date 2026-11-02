@@ -76,7 +76,7 @@ describe('existing-state session handoff through the catalog', () => {
       await expect(catalog.resolveExistingSessionHandoffStateThroughCatalog({
         metadata: { flavor: 'claude', machineId: 'source-machine', claudeSessionId: 'claude-thread', claudeTranscriptPath: sourceTranscript },
         targetPath: join(root, 'target-workspace'),
-        env: { ...env, HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1' },
+        env: { ...env, PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1' },
       })).rejects.toMatchObject({ errorCode: 'existing_session_state_unavailable' });
     });
   });

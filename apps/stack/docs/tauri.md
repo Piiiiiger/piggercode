@@ -53,9 +53,9 @@ Requirements:
 
 ## Configuration (high-signal)
 
-- `HAPPIER_STACK_TAURI_IDENTIFIER` (default `com.happier.stack`)
-- `HAPPIER_STACK_TAURI_PRODUCT_NAME` (default `Happier`)
-- `HAPPIER_STACK_TAURI_DEBUG=0` (build release-like without devtools)
-- `HAPPIER_STACK_TAURI_SERVER_URL` (force the embedded API URL)
-- `HAPPIER_STACK_TAURI_PREFER_TAILSCALE=0` (disable Tailscale detection; always embed `127.0.0.1`)
-- `HAPPIER_STACK_TAURI_CREATE_UPDATER_ARTIFACTS=1` (force generating updater artifacts; requires `TAURI_SIGNING_PRIVATE_KEY` — otherwise it defaults to off)
+- `PIGGERCODE_STACK_TAURI_IDENTIFIER` (default `com.happier.stack`)
+- `PIGGERCODE_STACK_TAURI_PRODUCT_NAME` (default `Happier`)
+- `PIGGERCODE_STACK_TAURI_DEBUG=0` (build release-like without devtools)
+- `PIGGERCODE_STACK_TAURI_SERVER_URL` (force the embedded API URL)
+- `PIGGERCODE_STACK_TAURI_PREFER_TAILSCALE=0` (disable Tailscale detection; always embed `127.0.0.1`)
+- `PIGGERCODE_STACK_TAURI_CREATE_UPDATER_ARTIFACTS=1` (force generating updater artifacts; requires `TAURI_SIGNING_PRIVATE_KEY` — otherwise it defaults to off)

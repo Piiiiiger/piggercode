@@ -40,7 +40,7 @@ describe('mobileMaestroRunner', () => {
           env: {
             ...process.env,
             MAESTRO_CLI_NO_ANALYTICS: '1',
-            HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+            PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
           },
         },
         {
@@ -84,7 +84,7 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
         },
       },
       {
@@ -126,9 +126,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-          HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_ATTEMPTS: '3',
-          HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_RETRY_DELAY_MS: '1',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_ATTEMPTS: '3',
+          PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_RETRY_DELAY_MS: '1',
         },
       },
       {
@@ -178,7 +178,7 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
         },
       },
       {
@@ -204,12 +204,12 @@ describe('mobileMaestroRunner', () => {
     let debugOutputDir = '';
     const runMaestro = vi.fn(async (params: { args: string[]; env: NodeJS.ProcessEnv }) => {
       const joinedArgs = params.args.join('\n');
-      expect(joinedArgs).not.toContain(`HAPPIER_E2E_RESTORE_KEY=${restoreKey}`);
-      expect(joinedArgs).toContain(`HAPPIER_E2E_RESTORE_KEY_CHUNK_01=${restoreKey.slice(0, 8)}`);
-      expect(joinedArgs).toContain(`HAPPIER_E2E_RESTORE_KEY_CHUNK_09=${restoreKey.slice(64, 72)}`);
-      expect(params.env.HAPPIER_E2E_RESTORE_KEY).toBeUndefined();
-      expect(params.env.HAPPIER_E2E_RESTORE_KEY_CHUNK_01).toBe(restoreKey.slice(0, 8));
-      expect(params.env.HAPPIER_E2E_RESTORE_KEY_CHUNK_09).toBe(restoreKey.slice(64, 72));
+      expect(joinedArgs).not.toContain(`PIGGERCODE_E2E_RESTORE_KEY=${restoreKey}`);
+      expect(joinedArgs).toContain(`PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01=${restoreKey.slice(0, 8)}`);
+      expect(joinedArgs).toContain(`PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09=${restoreKey.slice(64, 72)}`);
+      expect(params.env.PIGGERCODE_E2E_RESTORE_KEY).toBeUndefined();
+      expect(params.env.PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01).toBe(restoreKey.slice(0, 8));
+      expect(params.env.PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09).toBe(restoreKey.slice(64, 72));
 
       const debugOutputIndex = params.args.indexOf('--debug-output');
       debugOutputDir = params.args[debugOutputIndex + 1] ?? '';
@@ -224,7 +224,7 @@ describe('mobileMaestroRunner', () => {
       const resolvedFlowPath = existsSync(resolve(process.cwd(), flowPath))
         ? resolve(process.cwd(), flowPath)
         : resolve(process.cwd(), 'packages/tests', flowPath);
-      expect(readFileSync(resolvedFlowPath, 'utf8')).toContain('inputText: ${HAPPIER_E2E_RESTORE_KEY_CHUNK_09}');
+      expect(readFileSync(resolvedFlowPath, 'utf8')).toContain('inputText: ${PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09}');
       return { exitCode: 0 };
     });
 
@@ -247,8 +247,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-          HAPPIER_E2E_RESTORE_KEY: restoreKey,
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_RESTORE_KEY: restoreKey,
         },
       },
       {
@@ -264,9 +264,9 @@ describe('mobileMaestroRunner', () => {
     expect(redactedLog).not.toContain(restoreKey);
     expect(redactedLog).not.toContain(restoreKey.slice(0, 8));
     expect(redactedLog).not.toContain(restoreKey.slice(64, 72));
-    expect(redactedLog).toContain('[redacted:HAPPIER_E2E_RESTORE_KEY]');
-    expect(redactedLog).toContain('[redacted:HAPPIER_E2E_RESTORE_KEY_CHUNK_01]');
-    expect(redactedLog).toContain('[redacted:HAPPIER_E2E_RESTORE_KEY_CHUNK_09]');
+    expect(redactedLog).toContain('[redacted:PIGGERCODE_E2E_RESTORE_KEY]');
+    expect(redactedLog).toContain('[redacted:PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01]');
+    expect(redactedLog).toContain('[redacted:PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09]');
   });
 
   it('redacts terminal connect deep links from logged Maestro command arguments', async () => {
@@ -278,14 +278,14 @@ describe('mobileMaestroRunner', () => {
         'test',
         'flow.yaml',
         '-e',
-        `HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK=${terminalConnectDeepLink}`,
+        `PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK=${terminalConnectDeepLink}`,
       ],
-      { HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
+      { PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
     );
 
     expect(loggedArgs.join(' ')).not.toContain(terminalConnectDeepLink);
     expect(loggedArgs.join(' ')).toContain(
-      'HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK=[redacted:HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK]',
+      'PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK=[redacted:PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK]',
     );
   });
 
@@ -298,17 +298,17 @@ describe('mobileMaestroRunner', () => {
         'test',
         'flow.yaml',
         '-e',
-        `HAPPIER_E2E_RESTORE_KEY=${restoreKey}`,
+        `PIGGERCODE_E2E_RESTORE_KEY=${restoreKey}`,
         '-e',
-        `HAPPIER_E2E_RESTORE_KEY_CHUNK_01=${restoreKey.slice(0, 8)}`,
+        `PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01=${restoreKey.slice(0, 8)}`,
       ],
-      { HAPPIER_E2E_RESTORE_KEY: restoreKey },
+      { PIGGERCODE_E2E_RESTORE_KEY: restoreKey },
     );
 
     expect(loggedArgs.join(' ')).not.toContain(restoreKey);
     expect(loggedArgs.join(' ')).not.toContain(restoreKey.slice(0, 8));
-    expect(loggedArgs.join(' ')).toContain('HAPPIER_E2E_RESTORE_KEY=[redacted:HAPPIER_E2E_RESTORE_KEY]');
-    expect(loggedArgs.join(' ')).toContain('HAPPIER_E2E_RESTORE_KEY_CHUNK_01=[redacted:HAPPIER_E2E_RESTORE_KEY_CHUNK_01]');
+    expect(loggedArgs.join(' ')).toContain('PIGGERCODE_E2E_RESTORE_KEY=[redacted:PIGGERCODE_E2E_RESTORE_KEY]');
+    expect(loggedArgs.join(' ')).toContain('PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01=[redacted:PIGGERCODE_E2E_RESTORE_KEY_CHUNK_01]');
   });
 
   it('uses explicit serverUrl and does not start server-light', async () => {
@@ -338,7 +338,7 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
         },
       },
       {
@@ -383,8 +383,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
         },
       },
       {
@@ -398,7 +398,7 @@ describe('mobileMaestroRunner', () => {
     expect(startDevClientMetro).toHaveBeenCalledWith(
       expect.objectContaining({
         extraEnv: expect.objectContaining({
-          HAPPIER_E2E_EXPO_CLEAR: '1',
+          PIGGERCODE_E2E_EXPO_CLEAR: '1',
         }),
       }),
     );
@@ -431,9 +431,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
-          HAPPIER_E2E_EXPO_CLEAR: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
+          PIGGERCODE_E2E_EXPO_CLEAR: '0',
         },
       },
       {
@@ -447,7 +447,7 @@ describe('mobileMaestroRunner', () => {
     expect(startDevClientMetro).toHaveBeenCalledWith(
       expect.objectContaining({
         extraEnv: expect.objectContaining({
-          HAPPIER_E2E_EXPO_CLEAR: '0',
+          PIGGERCODE_E2E_EXPO_CLEAR: '0',
         }),
       }),
     );
@@ -490,7 +490,7 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
         },
       },
       deps,
@@ -531,8 +531,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-          HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
         },
       },
       deps,
@@ -580,8 +580,8 @@ describe('mobileMaestroRunner', () => {
     }));
 
     const runMaestro = vi.fn(async (params: { env: NodeJS.ProcessEnv }) => {
-      expect(params.env.HAPPIER_E2E_SERVER_URL).toBe('http://10.0.2.2:43210');
-      expect(params.env.HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN).toBe('10\\.0\\.2\\.2:43210');
+      expect(params.env.PIGGERCODE_E2E_SERVER_URL).toBe('http://10.0.2.2:43210');
+      expect(params.env.PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN).toBe('10\\.0\\.2\\.2:43210');
       return { exitCode: 0 };
     });
 
@@ -608,8 +608,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
         },
       },
       {
@@ -626,7 +626,7 @@ describe('mobileMaestroRunner', () => {
     expect(startServerLight).toHaveBeenCalledWith(
       expect.objectContaining({
         extraEnv: expect.objectContaining({
-          HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
         }),
       }),
     );
@@ -689,7 +689,7 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
         },
       },
       deps,
@@ -703,7 +703,7 @@ describe('mobileMaestroRunner', () => {
     expect(startDevClientMetro).toHaveBeenCalledWith(
       expect.objectContaining({
         extraEnv: expect.objectContaining({
-          HAPPIER_EXPO_RUNTIME_VERSION: 'native-runtime-fingerprint',
+          PIGGERCODE_EXPO_RUNTIME_VERSION: 'native-runtime-fingerprint',
         }),
       }),
     );
@@ -779,9 +779,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS: '2000',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS: '2000',
         },
       },
       {
@@ -820,7 +820,7 @@ describe('mobileMaestroRunner', () => {
 
     const runMaestro = vi.fn(async (params: { args: string[] }) => {
       expect(params.args.join(' ')).toContain(
-        `HAPPIER_E2E_DEV_CLIENT_LAUNCH_URL=${`dev.happier.app.publicdev.devclient://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8085')}&disableOnboarding=1`}`,
+        `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${`dev.happier.app.publicdev.devclient://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8085')}&disableOnboarding=1`}`,
       );
       return { exitCode: 0 };
     });
@@ -841,8 +841,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
         },
       },
       {
@@ -858,7 +858,7 @@ describe('mobileMaestroRunner', () => {
     expect(startDevClientMetro).toHaveBeenCalledWith(
       expect.objectContaining({
         extraEnv: expect.not.objectContaining({
-          EXPO_PUBLIC_HAPPIER_E2E_NATIVE_CRYPTO_WORKER_PROBE: '1',
+          EXPO_PUBLIC_PIGGERCODE_E2E_NATIVE_CRYPTO_WORKER_PROBE: '1',
         }),
       }),
     );
@@ -896,11 +896,11 @@ describe('mobileMaestroRunner', () => {
     const runMaestro = vi.fn(async (params: { env: NodeJS.ProcessEnv; args: string[] }) => {
       const flowsArgIndex = params.args.findIndex((arg) => arg === 'test') + 1;
       events.push(`maestro:${params.args[flowsArgIndex] ?? 'unknown'}`);
-      expect(params.env.HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK).toBe(
+      expect(params.env.PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK).toBe(
         'happier://terminal?key=test-key&server=http%3A%2F%2F10.0.2.2%3A43210',
       );
       expect(
-        params.args.filter((arg) => arg.startsWith('HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK=')),
+        params.args.filter((arg) => arg.startsWith('PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK=')),
       ).toHaveLength(1);
       return { exitCode: 0 };
     });
@@ -921,8 +921,8 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-          HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
         },
       },
       {
@@ -948,8 +948,8 @@ describe('mobileMaestroRunner', () => {
     expect(startTestDaemon).toHaveBeenCalledWith(
       expect.objectContaining({
         env: expect.objectContaining({
-          HAPPIER_SERVER_URL: 'http://127.0.0.1:43210',
-          HAPPIER_WEBAPP_URL: 'http://127.0.0.1:43210',
+          PIGGERCODE_SERVER_URL: 'http://127.0.0.1:43210',
+          PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:43210',
         }),
       }),
     );
@@ -989,10 +989,10 @@ describe('mobileMaestroRunner', () => {
           env: {
             ...process.env,
             MAESTRO_CLI_NO_ANALYTICS: '1',
-            HAPPIER_E2E_ANDROID_LOGCAT_CAPTURE: '0',
-            HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
-            HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-            HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
+            PIGGERCODE_E2E_ANDROID_LOGCAT_CAPTURE: '0',
+            PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+            PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+            PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
           },
         },
         {
@@ -1061,9 +1061,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '0',
         },
       },
       {
@@ -1126,15 +1126,15 @@ describe('mobileMaestroRunner', () => {
 
     const runMaestro = vi.fn(async (params: { args: string[] }) => {
       const joined = params.args.join(' ');
-      expect(joined).toContain('HAPPIER_E2E_SERVER_URL=http://127.0.0.1:26050');
-      expect(joined).toContain('HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN=127\\.0\\.0\\.1:26050');
-      expect(joined).toContain('HAPPIER_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081');
-      expect(joined).toContain('HAPPIER_E2E_MOBILE_APP_SCHEME=happier-internaldev');
+      expect(joined).toContain('PIGGERCODE_E2E_SERVER_URL=http://127.0.0.1:26050');
+      expect(joined).toContain('PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN=127\\.0\\.0\\.1:26050');
+      expect(joined).toContain('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081');
+      expect(joined).toContain('PIGGERCODE_E2E_MOBILE_APP_SCHEME=happier-internaldev');
       expect(joined).toContain(
-        `HAPPIER_E2E_DEV_CLIENT_LAUNCH_URL=${`happier-internaldev://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
+        `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${`happier-internaldev://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
       );
-      expect(joined).not.toContain('HAPPIER_E2E_DEV_CLIENT_NATIVE_CRYPTO_WORKER_LAUNCH_URL');
-      expect(joined).not.toContain('HAPPIER_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081/');
+      expect(joined).not.toContain('PIGGERCODE_E2E_DEV_CLIENT_NATIVE_CRYPTO_WORKER_LAUNCH_URL');
+      expect(joined).not.toContain('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081/');
       return { exitCode: 0 };
     });
 
@@ -1154,10 +1154,10 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_APP_SCHEME: 'happier-internaldev',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_APP_SCHEME: 'happier-internaldev',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
         },
       },
       {
@@ -1229,9 +1229,9 @@ describe('mobileMaestroRunner', () => {
 
     const runMaestro = vi.fn(async (params: { args: string[] }) => {
       const joined = params.args.join(' ');
-      expect(joined).toContain('HAPPIER_E2E_MOBILE_APP_SCHEME=happier-dev-devclient');
+      expect(joined).toContain('PIGGERCODE_E2E_MOBILE_APP_SCHEME=happier-dev-devclient');
       expect(joined).toContain(
-        `HAPPIER_E2E_DEV_CLIENT_LAUNCH_URL=${`happier-dev-devclient://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
+        `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${`happier-dev-devclient://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
       );
       return { exitCode: 0 };
     });
@@ -1254,9 +1254,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
         },
       },
       {
@@ -1308,9 +1308,9 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
         },
       },
       {
@@ -1363,10 +1363,10 @@ describe('mobileMaestroRunner', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
-          HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS: '10',
+          PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME: '0',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE: '1',
+          PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS: '10',
         },
       },
       {

@@ -22,7 +22,7 @@ export type DaemonServiceTargetMode = 'pinned' | 'default-following';
 export type DaemonServiceAutostartMode = 'at-login' | 'on-demand';
 
 /** Definition-embedded record of the mode, so an installed service reports it back. */
-export const DAEMON_SERVICE_AUTOSTART_ENV_KEY = 'HAPPIER_DAEMON_SERVICE_AUTOSTART';
+export const DAEMON_SERVICE_AUTOSTART_ENV_KEY = 'PIGGERCODE_DAEMON_SERVICE_AUTOSTART';
 
 /**
  * Who manages an installed service. `desktop`: the desktop app created it (for example "connect to
@@ -31,7 +31,7 @@ export const DAEMON_SERVICE_AUTOSTART_ENV_KEY = 'HAPPIER_DAEMON_SERVICE_AUTOSTAR
  * in the definition itself, so every later rewrite keeps it.
  */
 export type DaemonServiceManagedBy = 'desktop';
-export const DAEMON_SERVICE_MANAGED_BY_ENV_KEY = 'HAPPIER_DAEMON_SERVICE_MANAGED_BY';
+export const DAEMON_SERVICE_MANAGED_BY_ENV_KEY = 'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY';
 
 /** `null` for an absent value; throws for anything but `desktop`, so a typo never installs a user-owned service silently. */
 export function parseDaemonServiceManagedBy(raw: string | null | undefined): DaemonServiceManagedBy | null {
@@ -48,7 +48,7 @@ export function parseDaemonServiceManagedBy(raw: string | null | undefined): Dae
  * reads it, a terminal install without it names no app, and it is recorded in the definition so
  * every later rewrite keeps it. It never changes who manages the service (`managedBy`).
  */
-export const DAEMON_SERVICE_BUNDLE_ID_ENV_KEY = 'HAPPIER_DAEMON_SERVICE_BUNDLE_ID';
+export const DAEMON_SERVICE_BUNDLE_ID_ENV_KEY = 'PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID';
 
 const BUNDLE_ID_PATTERN = /^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/;
 
@@ -346,11 +346,11 @@ export function planDaemonServiceInstall(params: Readonly<{
   // never names an app. Independent of `managedBy`, which scopes the desktop's lifecycle control.
   const bundleId = params.bundleId ?? null;
   const baseEnv: Record<string, string> = {
-    HAPPIER_HOME_DIR: params.happierHomeDir,
-    HAPPIER_PUBLIC_RELEASE_CHANNEL: publicReleaseChannel,
-    HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-    HAPPIER_DAEMON_SERVICE_LABEL: label,
-    HAPPIER_DAEMON_SERVICE_TARGET_MODE: targetMode,
+    PIGGERCODE_HOME_DIR: params.happierHomeDir,
+    PIGGERCODE_PUBLIC_RELEASE_CHANNEL: publicReleaseChannel,
+    PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+    PIGGERCODE_DAEMON_SERVICE_LABEL: label,
+    PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: targetMode,
     // Recorded in the definition itself so the installed service reports which
     // mode it was installed with. Without it a mode switch on an already
     // installed service is invisible to the definition-convergence check in
@@ -360,17 +360,17 @@ export function planDaemonServiceInstall(params: Readonly<{
     [DAEMON_SERVICE_AUTOSTART_ENV_KEY]: autostart,
     ...(params.managedBy ? { [DAEMON_SERVICE_MANAGED_BY_ENV_KEY]: params.managedBy } : {}),
     ...(bundleId ? { [DAEMON_SERVICE_BUNDLE_ID_ENV_KEY]: bundleId } : {}),
-    HAPPIER_NO_BROWSER_OPEN: '1',
-    HAPPIER_DAEMON_WAIT_FOR_AUTH: '1',
-    HAPPIER_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '0',
+    PIGGERCODE_NO_BROWSER_OPEN: '1',
+    PIGGERCODE_DAEMON_WAIT_FOR_AUTH: '1',
+    PIGGERCODE_DAEMON_WAIT_FOR_AUTH_TIMEOUT_MS: '0',
   };
   const pinnedTargetEnv: Record<string, string> = targetMode === 'default-following'
     ? {}
     : {
-        HAPPIER_ACTIVE_SERVER_ID: activeServerId!,
-        HAPPIER_SERVER_URL: params.serverUrl,
-        HAPPIER_WEBAPP_URL: params.webappUrl,
-        HAPPIER_PUBLIC_SERVER_URL: params.publicServerUrl,
+        PIGGERCODE_ACTIVE_SERVER_ID: activeServerId!,
+        PIGGERCODE_SERVER_URL: params.serverUrl,
+        PIGGERCODE_WEBAPP_URL: params.webappUrl,
+        PIGGERCODE_PUBLIC_SERVER_URL: params.publicServerUrl,
       };
 
   if (params.platform === 'darwin') {

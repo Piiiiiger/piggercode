@@ -40,20 +40,20 @@ async function reserveFreeTcpPort(): Promise<number> {
 
 describe('direct peer machine transfer', () => {
   afterEach(() => {
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS;
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES;
-    delete process.env.HAPPIER_FILES_READ_MAX_BYTES;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES;
+    delete process.env.PIGGERCODE_FILES_READ_MAX_BYTES;
   });
 
   it('rejects publish when the published transfer registry max-entries cap is exceeded', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES = '1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES = '1';
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -74,9 +74,9 @@ describe('direct peer machine transfer', () => {
   });
 
   it('prunes expired published transfers on publish so max-entries caps do not stall after TTL', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES = '1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_PUBLISHED_TRANSFER_REGISTRY_MAX_ENTRIES = '1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '1';
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -100,9 +100,9 @@ describe('direct peer machine transfer', () => {
   });
 
   it('hard-clamps the direct peer chunk-bytes env override to a bounded ceiling', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
     // Intentionally larger than the hard max. This must be clamped to avoid huge per-chunk allocations.
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '10000000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '10000000';
 
     const {
       createDirectPeerTransferApp,
@@ -156,7 +156,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('serves a published payload as an encrypted chunk session only when the transfer token matches', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferApp,
@@ -235,7 +235,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed when a transfer token is supplied only via query params (no query-token auth)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
@@ -290,7 +290,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed when the direct-peer transfer path key is not base64url encoded (no legacy raw transferId in URL)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
@@ -347,8 +347,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('reuses an open file handle across chunk requests for large file-backed transfers (avoids per-chunk open/close)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '64';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '64';
 
     const {
       createDirectPeerTransferApp,
@@ -424,7 +424,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fetches a live published payload from the advertised endpoint candidates', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferRegistry,
@@ -466,7 +466,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('honors caller-supplied timeoutMs for both open and chunk direct-peer fetches', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-timeout-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -556,7 +556,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('skips endpoint candidates that are not direct-peer endpoints (no outbound fetch for non-matching paths)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-ssrf-skip-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -636,8 +636,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed when a peer advertises an oversized chunk response body before JSON parsing', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-oversized-body-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -687,8 +687,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed when a peer streams an oversized chunk response body without content-length (bounded incremental read)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-streamed-oversized-body-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -747,8 +747,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before parsing when a direct-peer /open request body exceeds the configured body-limit', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '32';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '32';
 
     const {
       createDirectPeerTransferApp,
@@ -794,7 +794,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed without hashing when a direct-peer request omits the auth token (does not call published/on-demand resolvers)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferApp,
@@ -844,7 +844,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed without hashing when a direct-peer request uses an oversized auth token (does not call published/on-demand resolvers)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferApp,
@@ -897,7 +897,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before resolving on-demand transfers when the recipient public key is invalid (avoids wasted work)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferApp,
@@ -933,9 +933,9 @@ describe('direct peer machine transfer', () => {
   });
 
   it('does not extend direct-peer transfer TTL via expiry skew (skew is requester-only)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '10';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS = '1000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '10';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_EXPIRY_SKEW_MS = '1000';
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -1259,7 +1259,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before serializing an oversized direct-peer /open request body (avoids whole-buffer JSON assembly)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '32';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '32';
 
     const openBody = {
       payload: 'x'.repeat(256),
@@ -1313,7 +1313,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('honors a larger direct-peer /open request body limit when configured (streams instead of failing pre-fetch)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '1048576';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '1048576';
 
     const openBody = {
       payload: 'x'.repeat(80_000),
@@ -1353,7 +1353,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('hard-clamps the direct-peer /open request body limit to a bounded ceiling even when the env override is absurd', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '999999999';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '999999999';
 
     const openBody = {
       payload: 'x'.repeat(1_100_000),
@@ -1390,8 +1390,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before fetch when openBody toJSON inflates beyond the configured body-limit (no large-buffer assembly)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '1024';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '1024';
 
     const { requestDirectPeerTransferToFile } = await import('./directPeerTransport');
 
@@ -1435,7 +1435,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed when a streamed openBody toJSON inflates beyond the configured body-limit', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '20000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_OPEN_BODY_MAX_BYTES = '20000';
 
     const { requestDirectPeerTransferToFile } = await import('./directPeerTransport');
 
@@ -1502,7 +1502,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('sends direct-peer /open request bodies as bytes rather than re-encoding a JSON string for fetch', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const { requestDirectPeerTransferToFile } = await import('./directPeerTransport');
     const { createEncryptedTransferChunkEnvelope, createTransferManifestHash } = await import('./transferChunkEncryption');
@@ -1580,7 +1580,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('supports on-demand transfers authorized by a scoped token and open-request body', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferRegistry,
@@ -2156,7 +2156,7 @@ describe('direct peer machine transfer', () => {
     const { createEncryptedTransferChunkEnvelope, createTransferManifestHash } = await import('./transferChunkEncryption');
     const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = String(512 * 1024);
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = String(512 * 1024);
 
     const payload = Buffer.alloc(400 * 1024, 7);
     const recipientSecretKeySeed = new Uint8Array(32).fill(7);
@@ -2259,8 +2259,8 @@ describe('direct peer machine transfer', () => {
   });
 
   it('rejects publishing buffer-backed payloads larger than the in-memory max-bytes limit', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -2276,9 +2276,9 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fetches a live published payload directly into a destination file with verified manifest metadata', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
     // File-backed transfers must not be constrained by the small-only in-memory transfer cap.
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
     const {
       createDirectPeerTransferRegistry,
@@ -2329,10 +2329,10 @@ describe('direct peer machine transfer', () => {
   });
 
   it('streams file-backed transfers when the configured chunk-bytes value is smaller than the encrypted data-key envelope', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
     // Keep the in-memory max-bytes cap tiny to ensure we do not rely on whole-buffer paths.
-    process.env.HAPPIER_FILES_READ_MAX_BYTES = '8';
+    process.env.PIGGERCODE_FILES_READ_MAX_BYTES = '8';
 
     const {
       createDirectPeerTransferRegistry,
@@ -2383,7 +2383,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before decrypting when a file-backed direct peer transfer chunk response exceeds the configured per-chunk envelope bound', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
 
     const { requestDirectPeerTransferToFile } = await import('./directPeerTransport');
 
@@ -2439,7 +2439,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('caches expensive /open metadata resolution across repeated opens for the same transfer token', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const payloadSourceModule = await import('./transferPayloadSource');
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
@@ -2505,7 +2505,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('caches direct-peer bearer token hashing across repeated opens for the same transfer token', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     await vi.resetModules();
     const actualCrypto = await vi.importActual<typeof import('node:crypto')>('node:crypto');
@@ -2569,7 +2569,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('includes IPv6 hosts discovered from network interfaces when no explicit advertised-host override exists', async () => {
-    delete process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
+    delete process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS;
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -2598,7 +2598,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('merges configured advertised hosts with discovered NIC addresses', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const { createDirectPeerTransferRegistry } = await import('./directPeerTransport');
 
@@ -2628,9 +2628,9 @@ describe('direct peer machine transfer', () => {
   });
 
   it('publishes advertised http candidates for loading', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
     // Keep this test stable even if the default TTL changes for long-running transfers.
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '30000';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_TTL_MS = '30000';
 
     const {
       createDirectPeerTransferRegistry,
@@ -2681,9 +2681,9 @@ describe('direct peer machine transfer', () => {
     }
   });
 
-  it('honors HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT when starting the direct-peer server', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT = String(await reserveFreeTcpPort());
+  it('honors PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT when starting the direct-peer server', async () => {
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT = String(await reserveFreeTcpPort());
 
     const {
       createDirectPeerTransferRegistry,
@@ -2701,7 +2701,7 @@ describe('direct peer machine transfer', () => {
     });
 
     try {
-      const expectedPort = Number(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT);
+      const expectedPort = Number(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT);
       expect(server.port).toBe(expectedPort);
 
       const published = registry.publishTransfer({
@@ -2723,7 +2723,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('keeps published transfers available beyond 30s by default (handoff-sized transfers)', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS = '127.0.0.1';
 
     const {
       createDirectPeerTransferRegistry,
@@ -3169,7 +3169,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before requesting chunks when a peer returns an absurd totalChunks value', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS = '3';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_MAX_TOTAL_CHUNKS = '3';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-open-too-many-chunks-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -3211,7 +3211,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before decrypting when a peer returns an oversized chunk envelope for a direct-peer transfer request', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-chunk-oversized-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');
@@ -3260,7 +3260,7 @@ describe('direct peer machine transfer', () => {
   });
 
   it('fails closed before decrypting when a peer returns an oversized data-key envelope for a direct-peer transfer request', async () => {
-    process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
+    process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = '8';
 
     const tempDir = await mkdtemp(join(tmpdir(), 'happier-direct-peer-transfer-key-envelope-oversized-'));
     const destinationPath = join(tempDir, 'payload-destination.bin');

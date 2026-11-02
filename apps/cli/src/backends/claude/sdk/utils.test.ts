@@ -16,9 +16,9 @@ const envKeys = [
   'HOME',
   'PATH',
   'USERPROFILE',
-  'HAPPIER_CLAUDE_PATH',
-  'HAPPIER_USE_BUNDLED_CLAUDE',
-  'HAPPIER_USE_GLOBAL_CLAUDE',
+  'PIGGERCODE_CLAUDE_PATH',
+  'PIGGERCODE_USE_BUNDLED_CLAUDE',
+  'PIGGERCODE_USE_GLOBAL_CLAUDE',
 ] as const;
 const TEMP_DIRS = new Set<string>();
 const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
@@ -87,9 +87,9 @@ describe('Claude SDK utils - getDefaultClaudeCodePath', () => {
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
     process.env.PATH = binDir;
-    delete process.env.HAPPIER_CLAUDE_PATH;
-    delete process.env.HAPPIER_USE_BUNDLED_CLAUDE;
-    delete process.env.HAPPIER_USE_GLOBAL_CLAUDE;
+    delete process.env.PIGGERCODE_CLAUDE_PATH;
+    delete process.env.PIGGERCODE_USE_BUNDLED_CLAUDE;
+    delete process.env.PIGGERCODE_USE_GLOBAL_CLAUDE;
   });
 
   it('returns ~/.local/bin/claude when installed via native installer but not on PATH', () => {
@@ -141,7 +141,7 @@ describe('Claude SDK utils - getDefaultClaudeCodePath', () => {
     );
     expect(() => getDefaultClaudeCodePath()).toThrowError(
       expect.objectContaining({
-        message: expect.stringContaining('HAPPIER_CLAUDE_PATH'),
+        message: expect.stringContaining('PIGGERCODE_CLAUDE_PATH'),
       }),
     );
 
@@ -183,10 +183,10 @@ describe('Claude SDK utils - getDefaultClaudeCodePath', () => {
     expect(getDefaultClaudeCodePath()).toBe(nativeClaudePath);
   });
 
-  it('prefers HAPPIER_CLAUDE_PATH when set', () => {
+  it('prefers PIGGERCODE_CLAUDE_PATH when set', () => {
     if (process.platform === 'win32') {
       const cmdPath = createWindowsCommand({ dir: binDir, name: 'claude', stdout: '2.0.0 (Claude Code)' });
-      process.env.HAPPIER_CLAUDE_PATH = cmdPath;
+      process.env.PIGGERCODE_CLAUDE_PATH = cmdPath;
       expect(getDefaultClaudeCodePath()).toBe(cmdPath);
       return;
     }
@@ -196,11 +196,11 @@ describe('Claude SDK utils - getDefaultClaudeCodePath', () => {
       name: 'explicit-claude',
       body: 'echo "2.0.0 (Claude Code)"',
     });
-    process.env.HAPPIER_CLAUDE_PATH = explicitPath;
+    process.env.PIGGERCODE_CLAUDE_PATH = explicitPath;
     expect(getDefaultClaudeCodePath()).toBe(explicitPath);
   });
 
-  it('expands ~/ in HAPPIER_CLAUDE_PATH for the default Claude Code path', () => {
+  it('expands ~/ in PIGGERCODE_CLAUDE_PATH for the default Claude Code path', () => {
     if (process.platform === 'win32') {
       return;
     }
@@ -213,7 +213,7 @@ describe('Claude SDK utils - getDefaultClaudeCodePath', () => {
       body: 'echo "2.0.0 (Claude Code)"',
     });
 
-    process.env.HAPPIER_CLAUDE_PATH = '~/.local/bin/claude';
+    process.env.PIGGERCODE_CLAUDE_PATH = '~/.local/bin/claude';
 
     expect(getDefaultClaudeCodePath()).toBe(explicitPath);
   });
@@ -236,7 +236,7 @@ describe('Claude SDK utils - getDefaultClaudeCodePathForAgentSdk', () => {
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
     process.env.PATH = binDir;
-    delete process.env.HAPPIER_CLAUDE_PATH;
+    delete process.env.PIGGERCODE_CLAUDE_PATH;
   });
 
   it('returns the absolute path to the claude executable (not the literal command name)', () => {
@@ -278,12 +278,12 @@ describe('Claude SDK utils - getDefaultClaudeCodePathForAgentSdk', () => {
 
     const cjsPath = join(binDir, 'fake-claude.cjs');
     writeTextFileSync(cjsPath, 'console.log("hello")\n');
-    process.env.HAPPIER_CLAUDE_PATH = cjsPath;
+    process.env.PIGGERCODE_CLAUDE_PATH = cjsPath;
 
     expect(() => getDefaultClaudeCodePathForAgentSdk()).toThrow(/unsupported/i);
   });
 
-  it('expands ~/ in HAPPIER_CLAUDE_PATH for the Agent SDK Claude entrypoint', () => {
+  it('expands ~/ in PIGGERCODE_CLAUDE_PATH for the Agent SDK Claude entrypoint', () => {
     if (process.platform === 'win32') {
       return;
     }
@@ -296,7 +296,7 @@ describe('Claude SDK utils - getDefaultClaudeCodePathForAgentSdk', () => {
       body: 'echo "2.0.0 (Claude Code)"',
     });
 
-    process.env.HAPPIER_CLAUDE_PATH = '~/.local/bin/claude';
+    process.env.PIGGERCODE_CLAUDE_PATH = '~/.local/bin/claude';
 
     expect(getDefaultClaudeCodePathForAgentSdk()).toBe(explicitPath);
   });

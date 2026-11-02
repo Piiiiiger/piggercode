@@ -12,13 +12,13 @@ afterEach(() => {
 });
 
 describe('handleCodexCliCommand', () => {
-  const prevAccountSettingsMode = process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
+  const prevAccountSettingsMode = process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
 
   afterEach(() => {
     if (typeof prevAccountSettingsMode === 'string') {
-      process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = prevAccountSettingsMode;
+      process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = prevAccountSettingsMode;
     } else {
-      delete process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
+      delete process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
     }
   });
 
@@ -43,7 +43,7 @@ describe('handleCodexCliCommand', () => {
   });
 
   it('passes valid starting mode and resume/session flags to runCodex', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     const authSpy = vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);
@@ -64,7 +64,7 @@ describe('handleCodexCliCommand', () => {
   });
 
   it('ignores missing values for existing-session/resume flags', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);
@@ -83,7 +83,7 @@ describe('handleCodexCliCommand', () => {
   });
 
   it('forwards explicit working directory aliases to runCodex', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);
@@ -101,7 +101,7 @@ describe('handleCodexCliCommand', () => {
   });
 
   it('preserves Codex-native args while consuming Happier session flags', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);
@@ -120,7 +120,7 @@ describe('handleCodexCliCommand', () => {
   });
 
   it('passes lowercase -v through as a Codex-native argument', async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials } as any);

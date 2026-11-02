@@ -10,7 +10,7 @@ function readTextOrEmpty(path) {
   return readFile(path, 'utf-8').catch(() => '');
 }
 
-test('openUrlInBrowser respects HAPPIER_NO_BROWSER_OPEN and does not invoke OS opener', async (t) => {
+test('openUrlInBrowser respects PIGGERCODE_NO_BROWSER_OPEN and does not invoke OS opener', async (t) => {
   if (process.platform === 'win32') {
     t.skip('uses shell shims tailored for POSIX openers');
     return;
@@ -39,7 +39,7 @@ test('openUrlInBrowser respects HAPPIER_NO_BROWSER_OPEN and does not invoke OS o
           ...process.env,
           PATH: `${tmp}${pathSep}${process.env.PATH ?? ''}`,
           OPEN_LOG: openLogPath,
-          HAPPIER_NO_BROWSER_OPEN: '1',
+          PIGGERCODE_NO_BROWSER_OPEN: '1',
         },
       },
     );

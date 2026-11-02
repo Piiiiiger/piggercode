@@ -106,7 +106,7 @@ export function getRootDir(importMetaUrl) {
 }
 
 export function getHappyStacksHomeDir(env = process.env) {
-  const fromEnv = (env.HAPPIER_STACK_HOME_DIR ?? '').trim();
+  const fromEnv = (env.PIGGERCODE_STACK_HOME_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv, env);
   }
@@ -114,7 +114,7 @@ export function getHappyStacksHomeDir(env = process.env) {
 }
 
 export function getWorkspaceDir(cliRootDir = null, env = process.env) {
-  const fromEnv = (env.HAPPIER_STACK_WORKSPACE_DIR ?? '').trim();
+  const fromEnv = (env.PIGGERCODE_STACK_WORKSPACE_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv, env);
   }
@@ -123,9 +123,9 @@ export function getWorkspaceDir(cliRootDir = null, env = process.env) {
 }
 
 export function getRepoDir(rootDir, env = process.env) {
-  const fromEnv = normalizePathForEnv(rootDir, env.HAPPIER_STACK_REPO_DIR, env);
+  const fromEnv = normalizePathForEnv(rootDir, env.PIGGERCODE_STACK_REPO_DIR, env);
   const workspaceDir = getWorkspaceDir(rootDir, env);
-  const sandboxed = Boolean((env.HAPPIER_STACK_SANDBOX_DIR ?? '').trim());
+  const sandboxed = Boolean((env.PIGGERCODE_STACK_SANDBOX_DIR ?? '').trim());
 
   // Prefer explicitly configured repo dir (if set).
   // Otherwise:
@@ -233,7 +233,7 @@ export function getComponentDir(rootDir, name, env = process.env) {
 }
 
 export function getStackName(env = process.env) {
-  return env.HAPPIER_STACK_STACK?.trim() ? env.HAPPIER_STACK_STACK.trim() : 'main';
+  return env.PIGGERCODE_STACK_STACK?.trim() ? env.PIGGERCODE_STACK_STACK.trim() : 'main';
 }
 
 export function getStackLabel(stackName = null, env = process.env) {
@@ -242,7 +242,7 @@ export function getStackLabel(stackName = null, env = process.env) {
 }
 
 export function getStacksStorageRoot(env = process.env) {
-  const fromEnv = (env.HAPPIER_STACK_STORAGE_DIR ?? '').trim();
+  const fromEnv = (env.PIGGERCODE_STACK_STORAGE_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv, env);
   }
@@ -250,7 +250,7 @@ export function getStacksStorageRoot(env = process.env) {
 }
 
 export function resolveExplicitStackEnvFilePath(env = process.env) {
-  const explicit = (env.HAPPIER_STACK_ENV_FILE ?? '').toString().trim();
+  const explicit = (env.PIGGERCODE_STACK_ENV_FILE ?? '').toString().trim();
   if (!explicit) {
     return '';
   }

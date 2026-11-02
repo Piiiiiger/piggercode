@@ -130,23 +130,23 @@ export function startDaemonHeartbeatLoop(params: Readonly<{
   // 2. Check if daemon needs update
   // 3. If outdated, restart with latest version
   // 4. Write heartbeat
-  const heartbeatIntervalMs = parsePositiveInt(process.env.HAPPIER_DAEMON_HEARTBEAT_INTERVAL, 60000);
+  const heartbeatIntervalMs = parsePositiveInt(process.env.PIGGERCODE_DAEMON_HEARTBEAT_INTERVAL, 60000);
   const restartVerifyTimeoutMs = readDaemonRestartVerifyTimeoutMs();
   const restartVerifyPollMs = readDaemonRestartVerifyPollMs();
   const executionRunTerminalTtlMs = parseNonNegativeInt(
-    process.env.HAPPIER_DAEMON_EXECUTION_RUN_TERMINAL_TTL_MS,
+    process.env.PIGGERCODE_DAEMON_EXECUTION_RUN_TERMINAL_TTL_MS,
     6 * 60 * 60 * 1000,
   );
   const workspaceReplicationJobTerminalTtlMs = parseNonNegativeInt(
-    process.env.HAPPIER_DAEMON_WORKSPACE_REPLICATION_JOB_TERMINAL_TTL_MS,
+    process.env.PIGGERCODE_DAEMON_WORKSPACE_REPLICATION_JOB_TERMINAL_TTL_MS,
     14 * 24 * 60 * 60 * 1000,
   );
   const workspaceReplicationCasUnreferencedTtlMs = parseNonNegativeInt(
-    process.env.HAPPIER_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS,
+    process.env.PIGGERCODE_DAEMON_WORKSPACE_REPLICATION_CAS_UNREFERENCED_TTL_MS,
     14 * 24 * 60 * 60 * 1000,
   );
   const workspaceReplicationCasMaxBytes = parseNonNegativeInt(
-    process.env.HAPPIER_DAEMON_WORKSPACE_REPLICATION_CAS_MAX_BYTES,
+    process.env.PIGGERCODE_DAEMON_WORKSPACE_REPLICATION_CAS_MAX_BYTES,
     0,
   );
   let heartbeatRunning = false;

@@ -5,7 +5,7 @@ import { resolveWebAppOAuthReturnUrlFromEnv, resolveWebAppOAuthReturnUrlFromRequ
 describe('resolveWebAppOAuthReturnUrlFromEnv', () => {
   it('allows the bundled Tauri return URL by default through the shared redirect validator', () => {
     expect(resolveWebAppOAuthReturnUrlFromEnv({
-      HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: 'tauri://localhost/oauth',
+      PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: 'tauri://localhost/oauth',
     }, 'okta')).toBe('tauri://localhost/oauth/okta');
   });
 
@@ -16,8 +16,8 @@ describe('resolveWebAppOAuthReturnUrlFromEnv', () => {
     'tauri://user:pass@localhost/oauth',
   ])('does not trust a different Tauri authority by default: %s', (returnBase) => {
     expect(resolveWebAppOAuthReturnUrlFromEnv({
-      HAPPIER_WEBAPP_OAUTH_RETURN_URL_BASE: returnBase,
-      HAPPIER_WEBAPP_URL: 'https://app.example.test',
+      PIGGERCODE_WEBAPP_OAUTH_RETURN_URL_BASE: returnBase,
+      PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
     }, 'okta')).toBe('https://app.example.test/oauth/okta');
   });
   it('uses the preferred hosted client when no web app URL is configured', () => {
@@ -25,11 +25,11 @@ describe('resolveWebAppOAuthReturnUrlFromEnv', () => {
       .toBe('https://cloud.happier.dev/oauth/github');
   });
 
-  it('derives the web app base URL from the canonical public server URL when local UI is served and HAPPIER_WEBAPP_URL is unset', () => {
+  it('derives the web app base URL from the canonical public server URL when local UI is served and PIGGERCODE_WEBAPP_URL is unset', () => {
     expect(resolveWebAppOAuthReturnUrlFromEnv({
-      HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-      HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-      HAPPIER_SERVER_UI_PREFIX: '/ui/',
+      PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+      PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+      PIGGERCODE_SERVER_UI_PREFIX: '/ui/',
     }, 'github')).toBe('https://stack.example.test/base/ui/oauth/github');
   });
 });
@@ -38,8 +38,8 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('preserves the UI base path when the loopback referer is nested under a reverse-proxy base', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/ui',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/ui',
       },
       providerId: 'github',
       headers: {
@@ -52,8 +52,8 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('uses the configured UI prefix for loopback origins without a referer path', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/ui',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/ui',
       },
       providerId: 'github',
       headers: {
@@ -66,9 +66,9 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('preserves the configured reverse-proxy base path for loopback origins without a referer path', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/ui',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/ui',
       },
       providerId: 'github',
       headers: {
@@ -81,9 +81,9 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('preserves the configured reverse-proxy base path when the UI is root-mounted', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/',
       },
       providerId: 'github',
       headers: {
@@ -96,9 +96,9 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('preserves the configured reverse-proxy base path for root-mounted UI when only the loopback origin is available', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/',
       },
       providerId: 'github',
       headers: {
@@ -111,9 +111,9 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('returns into the Tauri desktop webview origin when its scheme is an allowed return scheme', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test',
-        HAPPIER_WEBAPP_URL: 'https://stack.example.test',
-        HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: 'happier,tauri',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://stack.example.test',
+        PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: 'happier,tauri',
       },
       providerId: 'okta',
       headers: {
@@ -126,10 +126,10 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('returns the Tauri desktop webview to its root oauth route regardless of the relay UI prefix', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/ui',
-        HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: 'tauri',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/ui',
+        PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: 'tauri',
       },
       providerId: 'okta',
       headers: {
@@ -142,8 +142,8 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it.each([undefined, '', 'happier'])('returns to the bundled Tauri origin without scheme opt-in (%s)', (allowedSchemes) => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_WEBAPP_URL: 'https://stack.example.test',
-        HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: allowedSchemes,
+        PIGGERCODE_WEBAPP_URL: 'https://stack.example.test',
+        PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: allowedSchemes,
       },
       providerId: 'okta',
       headers: {
@@ -156,7 +156,7 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it('ignores a non-loopback host on the Tauri scheme', () => {
     const resolved = resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_OAUTH_RETURN_ALLOWED_SCHEMES: 'tauri',
+        PIGGERCODE_OAUTH_RETURN_ALLOWED_SCHEMES: 'tauri',
       },
       providerId: 'okta',
       headers: {
@@ -169,9 +169,9 @@ describe('resolveWebAppOAuthReturnUrlFromRequestHeaders', () => {
   it.each(['http:', 'https:'])('returns the Windows desktop webview on %s to its bundle root instead of the relay UI prefix', (protocol) => {
     expect(resolveWebAppOAuthReturnUrlFromRequestHeaders({
       env: {
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
-        HAPPIER_SERVER_UI_DIR: '/tmp/ui',
-        HAPPIER_SERVER_UI_PREFIX: '/ui',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stack.example.test/base/',
+        PIGGERCODE_SERVER_UI_DIR: '/tmp/ui',
+        PIGGERCODE_SERVER_UI_PREFIX: '/ui',
       },
       providerId: 'okta',
       headers: { origin: `${protocol}//tauri.localhost` },

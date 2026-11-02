@@ -185,8 +185,8 @@ test.describe('ui e2e: transcript reconnect catch-up', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -198,7 +198,7 @@ test.describe('ui e2e: transcript reconnect catch-up', () => {
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
         // Make catch-up thresholds small so we can trigger "large gap" behavior with only a handful of missed messages.
-        EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: JSON.stringify({
+        EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: JSON.stringify({
           messageLargeGapSeq: 2,
           messageMaxIncrementalPagesOnResume: 2,
           transcriptForwardPrefetchThresholdPx: 120,
@@ -243,8 +243,8 @@ test.describe('ui e2e: transcript reconnect catch-up', () => {
         ...process.env,
         HOME: cliHomeDir,
         CI: '1',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
       },
     });
 
@@ -264,16 +264,16 @@ test.describe('ui e2e: transcript reconnect catch-up', () => {
         ...process.env,
         HOME: cliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'echo-user-text',
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
       },
     });
 

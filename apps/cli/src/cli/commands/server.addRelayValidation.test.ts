@@ -75,22 +75,22 @@ function setTtyMode(isTty: boolean): () => void {
 
 async function withHome(run: (home: string) => Promise<void>): Promise<void> {
   const home = await mkdtemp(join(tmpdir(), 'happier-server-add-validate-'));
-  const prevHome = process.env.HAPPIER_HOME_DIR;
-  const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-  const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+  const prevHome = process.env.PIGGERCODE_HOME_DIR;
+  const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+  const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
   try {
-    process.env.HAPPIER_HOME_DIR = home;
-    delete process.env.HAPPIER_SERVER_URL;
-    delete process.env.HAPPIER_WEBAPP_URL;
+    process.env.PIGGERCODE_HOME_DIR = home;
+    delete process.env.PIGGERCODE_SERVER_URL;
+    delete process.env.PIGGERCODE_WEBAPP_URL;
     reloadConfiguration();
     await run(home);
   } finally {
-    if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = prevHome;
-    if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-    if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+    if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = prevHome;
+    if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+    if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
     reloadConfiguration();
     await rm(home, { recursive: true, force: true });
   }

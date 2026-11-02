@@ -87,7 +87,7 @@ async function writeNamedStackDaemonState({ cliHomeDir, stackName, env, state })
   const scopedEnv = applyStackDaemonLifecycleScopeEnv({
     env,
     stackName,
-    cliIdentity: String(env?.HAPPIER_STACK_CLI_IDENTITY ?? '').trim() || 'default',
+    cliIdentity: String(env?.PIGGERCODE_STACK_CLI_IDENTITY ?? '').trim() || 'default',
   });
   const { statePath } = resolvePreferredStackDaemonStatePaths({
     cliHomeDir,
@@ -101,10 +101,10 @@ async function spawnOwnedDaemonMarker(t, { env, stackName, cliHomeDir }) {
   const child = spawnOwnedSleep({
     env: {
       ...env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-      HAPPIER_HOME_DIR: cliHomeDir,
-      HAPPIER_STACK_PROCESS_KIND: 'daemon',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+      PIGGERCODE_HOME_DIR: cliHomeDir,
+      PIGGERCODE_STACK_PROCESS_KIND: 'daemon',
     },
   });
   t.after(() => {
@@ -150,10 +150,10 @@ test('stopStackWithEnv aggressive mode passes x-happier-daemon-token to daemon c
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_CLI_IDENTITY: 'default',
-    HAPPIER_STACK_REPO_DIR: repoRoot,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_SERVER_PORT: '4101',
+    PIGGERCODE_STACK_CLI_IDENTITY: 'default',
+    PIGGERCODE_STACK_REPO_DIR: repoRoot,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_SERVER_PORT: '4101',
   };
   const daemonMarker = await spawnOwnedDaemonMarker(t, {
     env,
@@ -224,10 +224,10 @@ test('stopStackWithEnv preserveDaemon skips daemon shutdown and keeps daemon con
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_CLI_IDENTITY: 'default',
-    HAPPIER_STACK_REPO_DIR: repoRoot,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_SERVER_PORT: '4101',
+    PIGGERCODE_STACK_CLI_IDENTITY: 'default',
+    PIGGERCODE_STACK_REPO_DIR: repoRoot,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_SERVER_PORT: '4101',
   };
   const daemonMarker = await spawnOwnedDaemonMarker(t, {
     env,

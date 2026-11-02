@@ -62,8 +62,8 @@ async function settledState<T>(promise: Promise<T>): Promise<'pending' | 'fulfil
 
 describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () => {
   afterEach(() => {
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
     __resetToolTraceForTests();
   });
 
@@ -468,8 +468,8 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
     const dir = mkdtempSync(join(tmpdir(), 'happy-tool-trace-provider-enforced-'));
     try {
       const filePath = join(dir, 'tool-trace.jsonl');
-      process.env.HAPPIER_STACK_TOOL_TRACE = '1';
-      process.env.HAPPIER_STACK_TOOL_TRACE_FILE = filePath;
+      process.env.PIGGERCODE_STACK_TOOL_TRACE = '1';
+      process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE = filePath;
 
       const session = new FakeSession();
       const handler = new ProviderEnforcedPermissionHandler(session as any, {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HAPPIER_REPLAY_SEED_MAX_CHARS, HAPPIER_REPLAY_SEED_MIN_CHARS } from '@piggercode/protocol';
+import { PIGGERCODE_REPLAY_SEED_MAX_CHARS, PIGGERCODE_REPLAY_SEED_MIN_CHARS } from '@piggercode/protocol';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -133,15 +133,15 @@ describe('SessionResumeSettingsView', () => {
             input.props.onBlur?.();
         });
 
-        expect(settingsState.values.sessionReplayMaxSeedChars).toBe(HAPPIER_REPLAY_SEED_MIN_CHARS);
-        expect(input.props.value).toBe(String(HAPPIER_REPLAY_SEED_MIN_CHARS));
+        expect(settingsState.values.sessionReplayMaxSeedChars).toBe(PIGGERCODE_REPLAY_SEED_MIN_CHARS);
+        expect(input.props.value).toBe(String(PIGGERCODE_REPLAY_SEED_MIN_CHARS));
     });
 
     it.each([
-        { typed: '500', stored: HAPPIER_REPLAY_SEED_MIN_CHARS },
-        { typed: String(HAPPIER_REPLAY_SEED_MIN_CHARS - 1), stored: HAPPIER_REPLAY_SEED_MIN_CHARS },
-        { typed: String(HAPPIER_REPLAY_SEED_MIN_CHARS), stored: HAPPIER_REPLAY_SEED_MIN_CHARS },
-        { typed: '999999', stored: HAPPIER_REPLAY_SEED_MAX_CHARS },
+        { typed: '500', stored: PIGGERCODE_REPLAY_SEED_MIN_CHARS },
+        { typed: String(PIGGERCODE_REPLAY_SEED_MIN_CHARS - 1), stored: PIGGERCODE_REPLAY_SEED_MIN_CHARS },
+        { typed: String(PIGGERCODE_REPLAY_SEED_MIN_CHARS), stored: PIGGERCODE_REPLAY_SEED_MIN_CHARS },
+        { typed: '999999', stored: PIGGERCODE_REPLAY_SEED_MAX_CHARS },
     ])('commits a typed budget of $typed as $stored', async ({ typed, stored }) => {
         const mod = await import('./SessionResumeSettingsView');
         const screen = await renderSettingsView(React.createElement(mod.default));
@@ -165,7 +165,7 @@ describe('SessionResumeSettingsView', () => {
         const screen = await renderSettingsView(React.createElement(mod.default));
 
         const expectedRange =
-            `settingsSession.replayResume.maxSeedCharsRange(min=${HAPPIER_REPLAY_SEED_MIN_CHARS},max=${HAPPIER_REPLAY_SEED_MAX_CHARS})`;
+            `settingsSession.replayResume.maxSeedCharsRange(min=${PIGGERCODE_REPLAY_SEED_MIN_CHARS},max=${PIGGERCODE_REPLAY_SEED_MAX_CHARS})`;
         const input = screen.findByTestId('settings-session-replay-maxSeedChars-input');
         // A field that silently moves an out-of-range number to the nearest
         // limit has to name its bounds, and the visible label is not attached

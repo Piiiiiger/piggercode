@@ -96,7 +96,7 @@ async function createDevCheckoutFixture(t, { forkWorkflow }) {
 
 test('ensureDevCheckout prefers upstream/dev when upstream is pushable', async (t) => {
   const fixture = await createDevCheckoutFixture(t, { forkWorkflow: false });
-  const env = { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: fixture.workspaceDir };
+  const env = { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: fixture.workspaceDir };
   const res = await ensureDevCheckout({ rootDir: fixture.stackRootDir, env });
   assert.equal(res.ok, true);
   assert.equal(res.trackingRemote, 'upstream');
@@ -104,7 +104,7 @@ test('ensureDevCheckout prefers upstream/dev when upstream is pushable', async (
 
 test('ensureDevCheckout uses origin/dev when upstream is not pushable (fork workflow)', async (t) => {
   const fixture = await createDevCheckoutFixture(t, { forkWorkflow: true });
-  const env = { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: fixture.workspaceDir };
+  const env = { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: fixture.workspaceDir };
   const res = await ensureDevCheckout({ rootDir: fixture.stackRootDir, env });
   assert.equal(res.ok, true);
   assert.equal(res.trackingRemote, 'origin');

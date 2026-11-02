@@ -28,7 +28,7 @@ describe("voiceRoutes (session complete)", () => {
         vi.clearAllMocks();
         dbMocks.reset();
         resetVoiceEnv({
-            HAPPIER_FEATURE_VOICE__ENABLED: "1",
+            PIGGERCODE_FEATURE_VOICE__ENABLED: "1",
             ELEVENLABS_API_KEY: "el_key",
             ELEVENLABS_AGENT_ID: "agent_dev",
         });
@@ -88,7 +88,7 @@ describe("voiceRoutes (session complete)", () => {
     });
 
     it("returns 404 when Happier Voice is disabled", async () => {
-        resetVoiceEnv({ HAPPIER_FEATURE_VOICE__ENABLED: "0" });
+        resetVoiceEnv({ PIGGERCODE_FEATURE_VOICE__ENABLED: "0" });
 
         const { voiceRoutes } = await import("./voiceRoutes");
         const route = createRouteTestBuilder({

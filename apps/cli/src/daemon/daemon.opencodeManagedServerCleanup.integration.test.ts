@@ -25,8 +25,8 @@ async function prepareIsolatedHome(): Promise<void> {
   preparedDaemonHome = await prepareIsolatedDaemonTestHome({
     prefix: 'happier-daemon-opencode-cleanup-',
     extraEnv: ({ homeDir }) => ({
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: join(homeDir, 'opencode', `managed-server-${process.pid}.json`),
-      HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED: '0',
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: join(homeDir, 'opencode', `managed-server-${process.pid}.json`),
+      PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED: '0',
     }),
   });
 

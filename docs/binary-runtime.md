@@ -59,7 +59,7 @@ upgrade guidance while keeping raw diagnostics behind View log.
 
 In current development source, Pi's vendor-managed launcher is a system-install candidate
 in the shared provider resolver: `PI_CODING_AGENT_DIR/bin/pi`, then `~/.pi/agent/bin/pi`,
-when `PATH` has no matching executable. Explicit `HAPPIER_PI_PATH` remains exclusive and
+when `PATH` has no matching executable. Explicit `PIGGERCODE_PI_PATH` remains exclusive and
 the existing Happier-managed source preference remains authoritative. Detection, version
 probing and launch all consume that resolution; the launcher owns its pinned Pi release.
 An unresolved required CLI throws `ProviderCliNotFoundError` at the shared command/launch
@@ -70,7 +70,7 @@ mistaking runner turn allocation for provider prompt acceptance.
 ## Installer GitHub authentication
 
 In current development source, the standalone Bash and PowerShell installers prefer
-`HAPPIER_GITHUB_TOKEN` over `GITHUB_TOKEN`. A token rejected with HTTP 401 triggers
+`PIGGERCODE_GITHUB_TOKEN` over `GITHUB_TOKEN`. A token rejected with HTTP 401 triggers
 an anonymous retry and a visible warning, including outside verbose mode. Other
 failures retain authentication for the existing retry policy. Bash buffers metadata
 responses so a failed transfer cannot contaminate a later successful response.
@@ -79,19 +79,19 @@ The canonical request helpers live in `scripts/release/installers/install.sh` an
 
 ## Installer state home
 
-Both shell installers resolve the data home from an explicit `HAPPIER_HOME_DIR`,
-otherwise following `HAPPIER_INSTALL_DIR` or the default `.happier` directory.
+Both shell installers resolve the data home from an explicit `PIGGERCODE_HOME_DIR`,
+otherwise following `PIGGERCODE_INSTALL_DIR` or the default `.happier` directory.
 In current development source, the POSIX installer uses that same resolved home
 for daemon commands and shell startup-file exports, preserving an explicit data
 home when the binary install directory differs.
 
 In current development source, `install.ps1` persists its resolved state home as
-the user-scoped `HAPPIER_HOME_DIR` and applies it to the installer process before
+the user-scoped `PIGGERCODE_HOME_DIR` and applies it to the installer process before
 post-install CLI commands. The background service and new terminals therefore
-read the same credentials. An explicit `HAPPIER_HOME_DIR` selects the data home;
-otherwise it follows `HAPPIER_INSTALL_DIR`, falling back to `%USERPROFILE%\.happier`.
+read the same credentials. An explicit `PIGGERCODE_HOME_DIR` selects the data home;
+otherwise it follows `PIGGERCODE_INSTALL_DIR`, falling back to `%USERPROFILE%\.happier`.
 The binary install directory can remain separate from an explicit data home.
-On Windows, `HAPPIER_NO_PATH_UPDATE` skips PATH changes only, not state-home persistence.
+On Windows, `PIGGERCODE_NO_PATH_UPDATE` skips PATH changes only, not state-home persistence.
 This does not copy or migrate credentials from a previous data home.
 
 ## Desktop executable identity
@@ -168,7 +168,7 @@ The setup ring still advances only at its existing milestones, and readiness sti
 runtime-convergence and machine-RPC proof.
 
 Acquisition failures carry their phase and cause; diagnostics strip URL credentials and queries.
-In current development source, QA can set `HAPPIER_FIRST_PARTY_RELEASE_API_BASE_URL` to an
+In current development source, QA can set `PIGGERCODE_FIRST_PARTY_RELEASE_API_BASE_URL` to an
 HTTP(S) origin on `127.0.0.1` or `[::1]` when `NODE_ENV=development`. The existing first-party
 release resolver uses that origin for GitHub-shaped tag metadata; metadata supplies the asset URLs.
 Paths, URL credentials, queries, fragments, malformed values and non-loopback hosts are rejected
@@ -187,7 +187,7 @@ Resolution order and provenance (`systemTasks/localFirstPartyCommand.ts`):
 
 | Source | Provenance | Notes |
 | --- | --- | --- |
-| `HAPPIER_BOOTSTRAP_CLI_PATH` / `HAPPIER_BOOTSTRAP_HAPPIER_PATH` | `override` | Development only. |
+| `PIGGERCODE_BOOTSTRAP_CLI_PATH` / `PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH` | `override` | Development only. |
 | This computer chose **Keep my own** (`<happier home>/cli-choice.json` `{ mode: 'own', command }`) and that CLI exists | `override` | Wins over a managed copy still on disk (plan R12). |
 | **Keep my own** is recorded but that CLI is gone | — | Fails `cli_choice_required`: no leftover managed copy and no acquisition stands in for it; setup asks first (R13 b). |
 | Installed managed payload for the caller's release ring | `managed` | The desktop-managed install layout recorded it. |
@@ -214,7 +214,7 @@ change action, which therefore survive **Manage** putting the managed CLI first)
 question: a terminal that already runs the managed CLI has nothing to decide (RV3-1). When Settings'
 change asks about such a copy and the managed CLI answers first through something Desktop did not
 create — the official installer's `~/.local/bin` link, or on Windows a `Path` entry Desktop's records
-(`HAPPIER_DESKTOP_PATH_ENTRIES`/`_MOVES`) do not name — keeping it could not make the terminal run it,
+(`PIGGERCODE_DESKTOP_PATH_ENTRIES`/`_MOVES`) do not name — keeping it could not make the terminal run it,
 so the prompt carries `keepBlockedBy` (that path), **Keep my own** is not offered, and the dialog says
 that path would have to be removed first.
 
@@ -265,7 +265,7 @@ CLI cannot serve (below). Settings › This computer › Command line offers the
 - On Windows, **manage** also moves the managed bin dir to the front of the user `Path` when it is
   already present behind another `happier` (an npm global dir) — moved, never duplicated, and its
   added-entry provenance unchanged. The move is recorded in the user environment variable
-  `HAPPIER_DESKTOP_PATH_MOVES` (`<entry>|<entries it was moved ahead of>`), so **Keep my own**
+  `PIGGERCODE_DESKTOP_PATH_MOVES` (`<entry>|<entries it was moved ahead of>`), so **Keep my own**
   (`removeHappierCliPathExposure`) puts it back behind exactly those entries — only while the move
   still holds (the entry is still ahead of every one of them that remains); an entry the person added
   since stays where it is, and a move they already undid is left alone. Either way the record is
@@ -317,12 +317,12 @@ stable release's real assets and its signed `checksums-*.txt`.
 - The generator refuses CLI releases before `HOMEBREW_FORMULA_MIN_CLI_VERSION` (0.2.13), the first
   whose `self update` and service launcher are correct under Homebrew. The 0.2.12 rendering is kept
   only as a test fixture.
-- Happier requires macOS 13 (Ventura), from one owner: `HAPPIER_MIN_MACOS` in the generator
+- Happier requires macOS 13 (Ventura), from one owner: `PIGGERCODE_MIN_MACOS` in the generator
   renders `depends_on macos: :ventura` for the formula (inside `on_macos`) and the cask alike.
   The darwin CLI binaries (Bun) declare LC_BUILD_VERSION minos 13.0, and the desktop app installs
   that CLI, so `apps/ui/src-tauri/tauri.conf.json` declares
   `bundle.macOS.minimumSystemVersion: "13.0"` too (decided 2026-09-26). A generator test binds the
-  Tauri value to `HAPPIER_MIN_MACOS`. The preview and publicdev configs merge over it without
+  Tauri value to `PIGGERCODE_MIN_MACOS`. The preview and publicdev configs merge over it without
   overriding `bundle.macOS`.
 - The cask submission candidate is `packaging/homebrew/Casks/happier.rb`. Submit it for the first
   desktop release built with that minimum. Earlier DMGs declare `LSMinimumSystemVersion` 10.13,
@@ -429,15 +429,15 @@ What it guarantees:
   the PATH check above, not line equality, is what keeps the desktop from adding a second one.
 - **Provenance, in both directions.** A Desktop-written POSIX line is preceded by
   `# Added by Happier Desktop`; on Windows the entries Desktop added are listed in the user
-  environment variable `HAPPIER_DESKTOP_PATH_ENTRIES`. Removal
+  environment variable `PIGGERCODE_DESKTOP_PATH_ENTRIES`. Removal
   (`removeHappierCliPathExposure`, exposed as the `cli.pathExposure.remove.v1` task and a settings
   action) strips only Desktop-created entries; a pre-existing installer-owned line is never
   marked, re-added, or deleted. Exposure writes the profiles of the shell the user runs today;
   removal scans every profile file in that same table (`.zshrc`, `.zprofile`, `.bashrc`,
   `.bash_profile`, `.profile`), so switching shells after setup cannot strand a marked line.
-  Windows needs no equivalent: the user `Path` and `HAPPIER_DESKTOP_PATH_ENTRIES` live in
+  Windows needs no equivalent: the user `Path` and `PIGGERCODE_DESKTOP_PATH_ENTRIES` live in
   `HKCU\Environment` and are shell-independent. A reorder Desktop made there after **Let Happier
-  manage it** is recorded in `HAPPIER_DESKTOP_PATH_MOVES` and undone by the same removal, only while
+  manage it** is recorded in `PIGGERCODE_DESKTOP_PATH_MOVES` and undone by the same removal, only while
   it still holds (see [One CLI per computer](#one-cli-per-computer-plan-r12)).
 - **Never gating.** The setup executor starts PATH exposure alongside the remaining service work
   and never waits for it: the app begins its readiness proof from the task result, so a
@@ -448,7 +448,7 @@ What it guarantees:
   settled by then (the desktop bridge stops reading hsetup's stdout at the result line), and machine
   settings › Terminal reports the current state and repairs it through the `cli.pathExposure.*`
   tasks — the surface that owns it whether or not the run got to say anything.
-- **`HAPPIER_NO_PATH_UPDATE=1` suppresses writes** (`changed: false`, no failure). It is read from
+- **`PIGGERCODE_NO_PATH_UPDATE=1` suppresses writes** (`changed: false`, no failure). It is read from
   the environment of the process that performs the write — the desktop app / `hsetup` — not from
   your shell rc files, so an `export` in `~/.zshrc` is invisible to an app launched from Finder,
   the Dock or a desktop launcher (macOS needs `launchctl setenv`, Linux `~/.profile` or
@@ -477,7 +477,7 @@ Limits, stated so they are not assumed away:
   users invoke the CLI by path or add `<happier home>/bin` to `fish_user_paths` themselves.
 - On Windows the two PowerShell helpers receive their inputs (the new `Path` value, its registry
   value kind, the provenance variable name and value) through the child process environment, read
-  back as `$env:HAPPIER_PATH_*`. Nothing is passed as an argument after `-Command`: PowerShell
+  back as `$env:PIGGERCODE_PATH_*`. Nothing is passed as an argument after `-Command`: PowerShell
   folds later arguments into the command text it parses, and a `Path` value contains `;`.
 
 ## Internal workspace packages

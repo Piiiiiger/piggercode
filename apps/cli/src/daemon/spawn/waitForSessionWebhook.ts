@@ -8,7 +8,7 @@ export type SessionWebhookCompletion = Promise<SpawnSessionResult> & Readonly<{
   getCurrentPid: () => number;
   promotePid: (pid: number) => void;
 }>;
-const SESSION_WEBHOOK_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_SESSION_WEBHOOK_TIMEOUT_MS';
+const SESSION_WEBHOOK_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_SESSION_WEBHOOK_TIMEOUT_MS';
 
 type WaitForSessionWebhookParams = {
   pid: number;

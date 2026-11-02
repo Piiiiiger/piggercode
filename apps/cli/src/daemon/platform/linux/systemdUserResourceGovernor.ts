@@ -1,19 +1,19 @@
 import { execFile } from 'node:child_process';
 import { getPriority } from 'node:os';
 
-export const HAPPIER_JOBS_SLICE_NAME = 'happier-jobs.slice';
-export const HAPPIER_CRITICAL_SLICE_NAME = 'happier-critical.slice';
-export const HAPPIER_CRITICAL_SLICE_MEMORY_LOW_BYTES = 4 * 1024 * 1024 * 1024;
+export const PIGGERCODE_JOBS_SLICE_NAME = 'happier-jobs.slice';
+export const PIGGERCODE_CRITICAL_SLICE_NAME = 'happier-critical.slice';
+export const PIGGERCODE_CRITICAL_SLICE_MEMORY_LOW_BYTES = 4 * 1024 * 1024 * 1024;
 
-const HAPPIER_JOBS_SLICE_CPU_WEIGHT = '50';
-const HAPPIER_JOBS_SLICE_IO_WEIGHT = '50';
+const PIGGERCODE_JOBS_SLICE_CPU_WEIGHT = '50';
+const PIGGERCODE_JOBS_SLICE_IO_WEIGHT = '50';
 const SYSTEMD_USER_RESOURCE_GOVERNOR_PROBE_TIMEOUT_MS = 1_000;
-const HAPPIER_JOBS_SLICE_EXPECTED_PROPERTIES: readonly (readonly [string, string])[] = [
-  ['CPUWeight', HAPPIER_JOBS_SLICE_CPU_WEIGHT],
-  ['IOWeight', HAPPIER_JOBS_SLICE_IO_WEIGHT],
+const PIGGERCODE_JOBS_SLICE_EXPECTED_PROPERTIES: readonly (readonly [string, string])[] = [
+  ['CPUWeight', PIGGERCODE_JOBS_SLICE_CPU_WEIGHT],
+  ['IOWeight', PIGGERCODE_JOBS_SLICE_IO_WEIGHT],
 ];
-const HAPPIER_CRITICAL_SLICE_EXPECTED_PROPERTIES: readonly (readonly [string, string])[] = [
-  ['MemoryLow', String(HAPPIER_CRITICAL_SLICE_MEMORY_LOW_BYTES)],
+const PIGGERCODE_CRITICAL_SLICE_EXPECTED_PROPERTIES: readonly (readonly [string, string])[] = [
+  ['MemoryLow', String(PIGGERCODE_CRITICAL_SLICE_MEMORY_LOW_BYTES)],
 ];
 
 export type SystemdUserScopedLaunchSpec = Readonly<{
@@ -153,8 +153,8 @@ export async function isSystemdUserResourceGovernorReady(params: Readonly<{
   execFile?: SystemdUserResourceGovernorExecFile;
 }> = {}): Promise<boolean> {
   return await isSystemdUserSliceReady(params, {
-    sliceName: HAPPIER_JOBS_SLICE_NAME,
-    expectedProperties: HAPPIER_JOBS_SLICE_EXPECTED_PROPERTIES,
+    sliceName: PIGGERCODE_JOBS_SLICE_NAME,
+    expectedProperties: PIGGERCODE_JOBS_SLICE_EXPECTED_PROPERTIES,
     requiredFiniteProperties: ['MemoryHigh'],
   });
 }
@@ -164,7 +164,7 @@ export function buildSystemdUserScopedLaunchSpec(params: Readonly<{
 }>): SystemdUserScopedLaunchSpec {
   // Raising an inherited nice value requires privileges that agent runners may not have.
   const niceValue = Math.max(10, getPriority());
-  return buildSystemdUserScopedLaunchSpecForSlice(params, HAPPIER_JOBS_SLICE_NAME, [`--nice=${niceValue}`]);
+  return buildSystemdUserScopedLaunchSpecForSlice(params, PIGGERCODE_JOBS_SLICE_NAME, [`--nice=${niceValue}`]);
 }
 
 /**
@@ -178,13 +178,13 @@ export async function isSystemdUserCriticalResourceGovernorReady(params: Readonl
   execFile?: SystemdUserResourceGovernorExecFile;
 }> = {}): Promise<boolean> {
   return await isSystemdUserSliceReady(params, {
-    sliceName: HAPPIER_CRITICAL_SLICE_NAME,
-    expectedProperties: HAPPIER_CRITICAL_SLICE_EXPECTED_PROPERTIES,
+    sliceName: PIGGERCODE_CRITICAL_SLICE_NAME,
+    expectedProperties: PIGGERCODE_CRITICAL_SLICE_EXPECTED_PROPERTIES,
   });
 }
 
 export function buildSystemdUserCriticalScopedLaunchSpec(params: Readonly<{
   launchSpec: SystemdUserScopedLaunchSpec;
 }>): SystemdUserScopedLaunchSpec {
-  return buildSystemdUserScopedLaunchSpecForSlice(params, HAPPIER_CRITICAL_SLICE_NAME, []);
+  return buildSystemdUserScopedLaunchSpecForSlice(params, PIGGERCODE_CRITICAL_SLICE_NAME, []);
 }

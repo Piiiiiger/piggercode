@@ -17,7 +17,7 @@ function withDefaultChannelMarker<T>(releaseChannel: string, run: (env: NodeJS.P
       `${JSON.stringify({ releaseChannel })}\n`,
       'utf8',
     );
-    return run({ HAPPIER_HOME_DIR: homeDir });
+    return run({ PIGGERCODE_HOME_DIR: homeDir });
   } finally {
     rmSync(homeDir, { recursive: true, force: true });
   }
@@ -34,7 +34,7 @@ async function withDefaultChannelMarkerAsync<T>(
       `${JSON.stringify({ releaseChannel })}\n`,
       'utf8',
     );
-    return await run({ HAPPIER_HOME_DIR: homeDir });
+    return await run({ PIGGERCODE_HOME_DIR: homeDir });
   } finally {
     rmSync(homeDir, { recursive: true, force: true });
   }
@@ -45,7 +45,7 @@ describe('resolveManagedCliReleaseChannelSync', () => {
     const resolved = resolveManagedCliReleaseChannelSync({
       args: ['--dev'],
       argv: ['hprev', 'self', 'update'],
-      processEnv: { HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview' },
+      processEnv: { PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview' },
     });
 
     expect(resolved).toMatchObject({

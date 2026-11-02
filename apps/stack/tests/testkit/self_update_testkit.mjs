@@ -61,7 +61,7 @@ export function createSelfUpdateHarness(
     runSelfCommand(args, { extraEnv = {} } = {}) {
       return harness.runCommand(args, {
         extraEnv: {
-          HAPPIER_STACK_HOME_DIR: join(harness.tmp, 'home'),
+          PIGGERCODE_STACK_HOME_DIR: join(harness.tmp, 'home'),
           ...extraEnv,
         },
       });

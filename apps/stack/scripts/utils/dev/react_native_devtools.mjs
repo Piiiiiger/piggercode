@@ -18,7 +18,7 @@ export function resolveReactNativeDevtoolsUrl({
     return null;
   }
 
-  const path = normalizePath(env.HAPPIER_STACK_RN_DEVTOOLS_PATH) ?? '/debugger-ui';
+  const path = normalizePath(env.PIGGERCODE_STACK_RN_DEVTOOLS_PATH) ?? '/debugger-ui';
   u.pathname = path;
   u.search = '';
   u.hash = '';

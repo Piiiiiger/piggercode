@@ -20,7 +20,7 @@ const LEGACY_VENDOR_SKILL_BACKENDS = {
   pi_native: 'pi',
 } as const;
 
-const LEGACY_HAPPIER_SKILL_ORIGINS = ['happier_projected', 'text_fallback_only'] as const;
+const LEGACY_PIGGERCODE_SKILL_ORIGINS = ['happier_projected', 'text_fallback_only'] as const;
 
 /**
  * The legacy origin vocabulary, declared ONCE. The catalog wire schema derives its legacy
@@ -29,7 +29,7 @@ const LEGACY_HAPPIER_SKILL_ORIGINS = ['happier_projected', 'text_fallback_only']
  */
 export const LEGACY_SKILL_CATALOG_ORIGINS_V1 = [
   ...Object.keys(LEGACY_VENDOR_SKILL_BACKENDS),
-  ...LEGACY_HAPPIER_SKILL_ORIGINS,
+  ...LEGACY_PIGGERCODE_SKILL_ORIGINS,
 ] as readonly string[] as readonly [string, ...string[]];
 
 export type SkillCatalogOriginV1 = 'vendor' | 'happier';
@@ -72,7 +72,7 @@ export function resolveSkillCatalogItemIdentityV1(value: unknown): SkillCatalogI
     ? rawOrigin
     : legacyBackendId
       ? 'vendor'
-      : (LEGACY_HAPPIER_SKILL_ORIGINS as readonly string[]).includes(rawOrigin)
+      : (LEGACY_PIGGERCODE_SKILL_ORIGINS as readonly string[]).includes(rawOrigin)
         ? 'happier'
         : null;
   if (!origin) return null;

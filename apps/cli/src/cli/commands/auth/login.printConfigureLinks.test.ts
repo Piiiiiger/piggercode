@@ -60,11 +60,11 @@ vi.mock('@/ui/logger', () => ({
 
 describe('happier auth login', () => {
   const envScope = createEnvKeyScope([
-    'HAPPIER_ACTIVE_SERVER_ID',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_PRINT_CONFIGURE_LINKS',
-    'HAPPIER_AUTH_WAIT_TIMEOUT_MS',
-    'HAPPIER_SERVER_URL',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS',
+    'PIGGERCODE_AUTH_WAIT_TIMEOUT_MS',
+    'PIGGERCODE_SERVER_URL',
   ]);
 
   beforeEach(() => {
@@ -96,8 +96,8 @@ describe('happier auth login', () => {
     vi.resetModules();
   });
 
-  it('sets HAPPIER_AUTH_METHOD before running the auth flow', async () => {
-    delete process.env.HAPPIER_AUTH_METHOD;
+  it('sets PIGGERCODE_AUTH_METHOD before running the auth flow', async () => {
+    delete process.env.PIGGERCODE_AUTH_METHOD;
     readCredentialsMock.mockResolvedValue({
       token: 'valid-token',
       encryption: { type: 'legacy', secret: new Uint8Array(32) },
@@ -105,7 +105,7 @@ describe('happier auth login', () => {
     readSettingsMock.mockResolvedValue({ machineId: 'machine-1' });
     let authMethodAtFlowStart: string | undefined;
     validateStoredAuthTokenAgainstActiveServerMock.mockImplementationOnce(async () => {
-      authMethodAtFlowStart = process.env.HAPPIER_AUTH_METHOD;
+      authMethodAtFlowStart = process.env.PIGGERCODE_AUTH_METHOD;
       return { state: 'valid', httpStatus: 200, accountId: 'acct_test', accountLabel: null };
     });
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -114,7 +114,7 @@ describe('happier auth login', () => {
       await handleAuthLogin(['--method', 'web']);
 
       expect(authMethodAtFlowStart).toBe('web');
-      expect(process.env.HAPPIER_AUTH_METHOD).toBe('web');
+      expect(process.env.PIGGERCODE_AUTH_METHOD).toBe('web');
       expect(authAndSetupMachineIfNeededMock).not.toHaveBeenCalled();
     } finally {
       consoleSpy.mockRestore();
@@ -122,7 +122,7 @@ describe('happier auth login', () => {
   });
 
   it('prints a friendly error and exits before auth when --method is invalid', async () => {
-    delete process.env.HAPPIER_AUTH_METHOD;
+    delete process.env.PIGGERCODE_AUTH_METHOD;
 
     class ExitError extends Error {
       readonly code: number;
@@ -158,26 +158,26 @@ describe('happier auth login', () => {
     }
   });
 
-  it('sets HAPPIER_AUTH_PRINT_CONFIGURE_LINKS=1 when flag is present', async () => {
-    delete process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS;
+  it('sets PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS=1 when flag is present', async () => {
+    delete process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin(['--print-configure-links']);
-      expect(process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS).toBe('1');
+      expect(process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS).toBe('1');
       expect(authAndSetupMachineIfNeededMock).toHaveBeenCalled();
     } finally {
       consoleSpy.mockRestore();
     }
   });
 
-  it('does not set HAPPIER_AUTH_PRINT_CONFIGURE_LINKS when flag is absent', async () => {
-    delete process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS;
+  it('does not set PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS when flag is absent', async () => {
+    delete process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin([]);
-      expect(process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS).toBeUndefined();
+      expect(process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS).toBeUndefined();
     } finally {
       consoleSpy.mockRestore();
     }
@@ -198,26 +198,26 @@ describe('happier auth login', () => {
   it('hands --wait-timeout to the wait the auth flow performs', async () => {
     // The bound only exists if both files agree on this key; a rename on either
     // side leaves `happier setup` holding the terminal forever and says nothing.
-    delete process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin(['--wait-timeout', '300']);
 
-      expect(process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS).toBe('300000');
+      expect(process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS).toBe('300000');
     } finally {
       consoleSpy.mockRestore();
     }
   });
 
   it('leaves the wait unbounded when no bound was asked for', async () => {
-    delete process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin([]);
 
-      expect(process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS).toBeUndefined();
+      expect(process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS).toBeUndefined();
     } finally {
       consoleSpy.mockRestore();
     }
@@ -321,20 +321,20 @@ describe('happier auth login', () => {
   it('selects same-machine web auth for a new login to a loopback relay and names the target', async () => {
     readCredentialsMock.mockResolvedValue(null);
     envScope.patch({
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:52753',
-      HAPPIER_ACTIVE_SERVER_ID: '127.0.0.1-52753',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753',
+      PIGGERCODE_ACTIVE_SERVER_ID: '127.0.0.1-52753',
     });
-    delete process.env.HAPPIER_AUTH_METHOD;
+    delete process.env.PIGGERCODE_AUTH_METHOD;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin([]);
 
-      expect(process.env.HAPPIER_AUTH_METHOD).toBe('web');
+      expect(process.env.PIGGERCODE_AUTH_METHOD).toBe('web');
       expect(consoleSpy.mock.calls.flat().join('\n')).toContain('http://127.0.0.1:52753');
     } finally {
       consoleSpy.mockRestore();
-      delete process.env.HAPPIER_AUTH_METHOD;
+      delete process.env.PIGGERCODE_AUTH_METHOD;
     }
   });
 
@@ -344,15 +344,15 @@ describe('happier auth login', () => {
       encryption: { type: 'legacy', secret: new Uint8Array(32) },
     });
     readSettingsMock.mockResolvedValue({});
-    envScope.patch({ HAPPIER_SERVER_URL: 'http://127.0.0.1:52753' });
-    delete process.env.HAPPIER_AUTH_METHOD;
+    envScope.patch({ PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753' });
+    delete process.env.PIGGERCODE_AUTH_METHOD;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const { handleAuthLogin } = await import('./login');
       await handleAuthLogin([]);
 
       const text = consoleSpy.mock.calls.flat().join('\n').toLowerCase();
-      expect(process.env.HAPPIER_AUTH_METHOD).toBeUndefined();
+      expect(process.env.PIGGERCODE_AUTH_METHOD).toBeUndefined();
       expect(text).not.toContain('browser');
       expect(text).not.toContain('phone cannot');
     } finally {

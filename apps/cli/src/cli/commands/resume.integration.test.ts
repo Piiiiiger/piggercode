@@ -11,11 +11,11 @@ import {
 import type { SessionAttachSecret } from '@/agent/runtime/sessionAttach';
 
 describe('happier resume command (integration)', () => {
-  const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-  const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
-  const originalHomeDir = process.env.HAPPIER_HOME_DIR;
-  const originalAttachFile = process.env.HAPPIER_SESSION_ATTACH_FILE;
-  const originalAccountSettingsMode = process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
+  const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+  const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
+  const originalHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const originalAttachFile = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+  const originalAccountSettingsMode = process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
   let server: Server | null = null;
   let serverUrl = '';
   let happyHomeDir = '';
@@ -26,7 +26,7 @@ describe('happier resume command (integration)', () => {
     requestCount = 0;
     lastAuthHeader = null;
     happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-cli-resume-'));
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
 
     const sessionId = 'sess_integration_123';
     const dek = new Uint8Array(32).fill(3);
@@ -97,9 +97,9 @@ describe('happier resume command (integration)', () => {
     }
 
     serverUrl = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_SERVER_URL = serverUrl;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = serverUrl;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
@@ -117,16 +117,16 @@ describe('happier resume command (integration)', () => {
       await rm(happyHomeDir, { recursive: true, force: true });
     }
 
-    if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-    if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-    else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
-    if (originalHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = originalHomeDir;
-    if (originalAttachFile === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-    else process.env.HAPPIER_SESSION_ATTACH_FILE = originalAttachFile;
-    if (originalAccountSettingsMode === undefined) delete process.env.HAPPIER_ACCOUNT_SETTINGS_MODE;
-    else process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = originalAccountSettingsMode;
+    if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+    if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+    else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
+    if (originalHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = originalHomeDir;
+    if (originalAttachFile === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+    else process.env.PIGGERCODE_SESSION_ATTACH_FILE = originalAttachFile;
+    if (originalAccountSettingsMode === undefined) delete process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE;
+    else process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = originalAccountSettingsMode;
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
@@ -184,6 +184,6 @@ describe('happier resume command (integration)', () => {
       throw new Error('Expected attach payload to be present');
     }
     expect(observedAttach).toEqual({ encryptionMode: 'e2ee', encryptionVariant: 'dataKey', encryptionKey: new Uint8Array(32).fill(3) });
-    expect(process.env.HAPPIER_SESSION_ATTACH_FILE).toBeUndefined();
+    expect(process.env.PIGGERCODE_SESSION_ATTACH_FILE).toBeUndefined();
   });
 });

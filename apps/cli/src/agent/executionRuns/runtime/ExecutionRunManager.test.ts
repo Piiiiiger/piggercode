@@ -2194,8 +2194,8 @@ describe('ExecutionRunManager (bounded external send)', () => {
   });
 
   it('applies the ACK timeout only while a bounded external send remains queued', async () => {
-    const previousAckTimeout = process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
-    process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = '20';
+    const previousAckTimeout = process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
+    process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = '20';
     vi.useFakeTimers();
     try {
       let resolveTurnComplete!: () => void;
@@ -2287,9 +2287,9 @@ describe('ExecutionRunManager (bounded external send)', () => {
     } finally {
       vi.useRealTimers();
       if (previousAckTimeout === undefined) {
-        delete process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS;
       } else {
-        process.env.HAPPIER_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = previousAckTimeout;
+        process.env.PIGGERCODE_EXECUTION_RUN_BOUNDED_SEND_ACK_TIMEOUT_MS = previousAckTimeout;
       }
     }
   });

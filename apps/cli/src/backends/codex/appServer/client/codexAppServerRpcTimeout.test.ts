@@ -12,16 +12,16 @@ describe('codexAppServerRpcTimeout', () => {
     });
 
     it('clamps base RPC timeout to the configured value when set', () => {
-        expect(readCodexAppServerRpcTimeoutMs({ HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200' } as NodeJS.ProcessEnv)).toBe(1200);
-        expect(readCodexAppServerRpcTimeoutMs({ HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '0' } as NodeJS.ProcessEnv)).toBe(60_000);
-        expect(readCodexAppServerRpcTimeoutMs({ HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '-5' } as NodeJS.ProcessEnv)).toBe(60_000);
-        expect(readCodexAppServerRpcTimeoutMs({ HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '9999999' } as NodeJS.ProcessEnv)).toBe(600_000);
+        expect(readCodexAppServerRpcTimeoutMs({ PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200' } as NodeJS.ProcessEnv)).toBe(1200);
+        expect(readCodexAppServerRpcTimeoutMs({ PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '0' } as NodeJS.ProcessEnv)).toBe(60_000);
+        expect(readCodexAppServerRpcTimeoutMs({ PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '-5' } as NodeJS.ProcessEnv)).toBe(60_000);
+        expect(readCodexAppServerRpcTimeoutMs({ PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '9999999' } as NodeJS.ProcessEnv)).toBe(600_000);
     });
 
     it('keeps provider side-effecting thread, turn, and resume admission lifecycle-owned', () => {
         const env = {
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200',
-            HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '20000',
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200',
+            PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '20000',
         } as NodeJS.ProcessEnv;
 
         expect(readCodexAppServerRequestTimeoutMs('initialize', env)).toBe(20_000);
@@ -40,7 +40,7 @@ describe('codexAppServerRpcTimeout', () => {
 
     it('keeps provider-native fork requests alive without inflating ordinary RPCs', () => {
         const env = {
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200',
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '1200',
         } as NodeJS.ProcessEnv;
 
         expect(readCodexAppServerRequestTimeoutMs('thread/fork', env)).toBeNull();
@@ -50,8 +50,8 @@ describe('codexAppServerRpcTimeout', () => {
 
     it('ensures startup timeout is never lower than the base timeout', () => {
         const env = {
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '25000',
-            HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '20000',
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '25000',
+            PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '20000',
         } as NodeJS.ProcessEnv;
 
         expect(readCodexAppServerStartupRpcTimeoutMs(env)).toBe(25_000);

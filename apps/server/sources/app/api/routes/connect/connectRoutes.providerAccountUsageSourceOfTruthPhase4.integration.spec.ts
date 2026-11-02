@@ -91,10 +91,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("does not treat alias-only provider-account usage rows as authority for v3 connected-service quota GET", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_canonical_v3_source" });
@@ -124,10 +124,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("links source context from canonical v3 provider-account usage writes and exposes it as a connected-service quota view", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_canonical_v3_source" });
@@ -215,10 +215,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("resolves exact source metadata from the v3 owner for both storage modes without exposing payload bytes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: "e2ee-public-key", encryptionMode: "e2ee" }, select: { id: true } });
         const other = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
@@ -280,10 +280,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("resolves an exact group-member source when HTTP query parsing receives its numeric generation as text", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({
             data: { publicKey: "e2ee-group-member-key", encryptionMode: "e2ee" },
@@ -353,7 +353,7 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
         ["empty generation", "groupId=team&groupGeneration="],
     ])("rejects a group-member source with %s at the HTTP query boundary", async (_label, query) => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
         });
         const user = await db.account.create({
             data: { publicKey: "query-validation-key", encryptionMode: "e2ee" },
@@ -377,7 +377,7 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
         ["groupGeneration", "groupGeneration=4"],
     ])("rejects a profile source carrying group-only field %s", async (_label, query) => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
         });
         const user = await db.account.create({
             data: { publicKey: "profile-query-validation-key", encryptionMode: "e2ee" },
@@ -401,7 +401,7 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
         ["maximum safe integer", "9007199254740991"],
     ])("accepts canonical decimal %s as a group generation", async (_label, groupGeneration) => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
         });
         const user = await db.account.create({
             data: { publicKey: "canonical-query-validation-key", encryptionMode: "e2ee" },
@@ -423,10 +423,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("reports a skipped v3 source link when the trusted profile binding is unavailable", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const snapshot = createUsageSnapshot({
@@ -482,10 +482,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects same-account v3 source links when the provider usage record is incompatible with the connected service", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_delete_preserves_record" });
@@ -543,10 +543,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects same-service v3 source links when the provider account identity does not match the connected profile", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_connected_profile" });
@@ -604,10 +604,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("does not create provider-account refresh placeholders from profile bindings without a linked source-backed record", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_delete_preserves_record" });
@@ -643,10 +643,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("preserves the provider-account usage record when deleting a connected-service quota view", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_delete_preserves_record" });
@@ -714,10 +714,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects v3 connected-service quota writes so clients cannot mint provider-account usage from quota payloads", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id);
@@ -755,9 +755,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects client-authored aliases on v2 sealed provider-account usage writes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "public-key", encryptionMode: "e2ee" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now() });
@@ -808,9 +808,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("creates sealed provider-account usage records from canonical v2 writes with recordKey and source context", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-v2-canonical-source", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_canonical_v2_source" });
@@ -894,9 +894,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("reports a skipped v2 source link when the trusted profile binding is unavailable", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-v2-source-skip", encryptionMode: "e2ee" }, select: { id: true } });
         const recordKey = createProviderAccountUsageRecordKey({ accountSubjectId: "acct_v2_source_skip" });
@@ -960,9 +960,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects same-account v2 source links when the provider usage record is incompatible with the connected service", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-v2-wrong-source", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id);
@@ -1027,9 +1027,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects same-service v2 source links when the provider account identity does not match the connected profile", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-v2-wrong-account-source", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_connected_profile" });
@@ -1094,10 +1094,10 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("unlinks a source-backed connected-service quota view when the credential is deleted", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_deleted_credential_source" });
@@ -1160,9 +1160,9 @@ describe("connectRoutes provider-account usage source-of-truth phase 4 contract"
 
     it("rejects v2 connected-service quota writes so clients cannot mint fallback provider-account usage records", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-v2-adapter", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id);

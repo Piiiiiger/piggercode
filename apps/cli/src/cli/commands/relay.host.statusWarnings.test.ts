@@ -29,14 +29,14 @@ vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
 
 describe('happier relay host status warnings', () => {
     let home = '';
-    let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
     beforeEach(async () => {
         vi.resetModules();
-        envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         home = await createTempDir('happier-relay-status-warning-home-');
         envScope.patch({
-            HAPPIER_HOME_DIR: home,
+            PIGGERCODE_HOME_DIR: home,
         });
         reloadConfiguration();
     });

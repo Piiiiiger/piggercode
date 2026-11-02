@@ -7,7 +7,7 @@ function makeJsonl(lines: any[]): string {
 describe('ClaudeTaskOutputSidechainImporter (limits)', () => {
   it('bounds pending TaskOutput records per agent when configured', async () => {
     vi.resetModules();
-    process.env.HAPPIER_CLAUDE_TASKOUTPUT_MAX_PENDING_PER_AGENT = '1';
+    process.env.PIGGERCODE_CLAUDE_TASKOUTPUT_MAX_PENDING_PER_AGENT = '1';
 
     const { ClaudeTaskOutputSidechainImporter } = await import('./claudeTaskOutputSidechainImporter');
     const importer = new ClaudeTaskOutputSidechainImporter();

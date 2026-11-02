@@ -97,7 +97,7 @@ test('buildStackTauriDevProcessInvocation scopes the cargo target directory to t
     rootDir: stackRootDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
+      PIGGERCODE_STACK_STACK: stackName,
     },
     configPath: 'src-tauri/tauri.publicdev.conf.json',
     configOverride: {
@@ -111,7 +111,7 @@ test('buildStackTauriDevProcessInvocation scopes the cargo target directory to t
 
   assert.equal(
     invocation.env?.CARGO_TARGET_DIR,
-    `${getDefaultAutostartPaths({ ...process.env, HAPPIER_STACK_STACK: stackName }).baseDir}/tauri-target`
+    `${getDefaultAutostartPaths({ ...process.env, PIGGERCODE_STACK_STACK: stackName }).baseDir}/tauri-target`
   );
 });
 
@@ -127,7 +127,7 @@ test('buildStackTauriDevProcessInvocation uses the explicitly resolved UI dir ev
     uiDir: explicitUiDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_REPO_DIR: fakeRepo,
+      PIGGERCODE_STACK_REPO_DIR: fakeRepo,
     },
     configPath: 'src-tauri/tauri.publicdev.conf.json',
     configOverride: {

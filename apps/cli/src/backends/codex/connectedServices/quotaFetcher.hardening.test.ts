@@ -1,7 +1,7 @@
 /**
  * X2 — Richer Codex quota error classification
  * X8 — Stale-but-usable quota (kill-switch path returns quota_unknown)
- * Kill-switch — HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1
+ * Kill-switch — PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1
  *
  * These tests assert on STABLE machine codes, not free-text messages.
  */
@@ -157,7 +157,7 @@ describe('createOpenAiCodexQuotaFetcher — X2: richer error classification', ()
   });
 });
 
-describe('createOpenAiCodexQuotaFetcher — kill-switch: HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT', () => {
+describe('createOpenAiCodexQuotaFetcher — kill-switch: PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT', () => {
   it('returns quota_unknown snapshot without calling fetch when kill-switch is active', async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);

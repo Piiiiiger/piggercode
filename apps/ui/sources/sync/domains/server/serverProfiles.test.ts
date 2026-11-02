@@ -33,7 +33,7 @@ async function importFresh(options: Readonly<{ resetModules?: boolean }> = {}) {
 describe('serverProfiles', () => {
     const previousScope = process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE;
     const previousServerContext = process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT;
-    const previousCanonicalServerUrl = process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+    const previousCanonicalServerUrl = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
     const previousServerUrl = process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
     const previousLegacyGenericServerUrl = process.env.EXPO_PUBLIC_SERVER_URL;
     const previousPreconfigured = process.env.EXPO_PUBLIC_HAPPY_PRECONFIGURED_SERVERS;
@@ -44,8 +44,8 @@ describe('serverProfiles', () => {
         else process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = previousScope;
         if (previousServerContext === undefined) delete process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT;
         else process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT = previousServerContext;
-        if (previousCanonicalServerUrl === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
-        else process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL = previousCanonicalServerUrl;
+        if (previousCanonicalServerUrl === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = previousCanonicalServerUrl;
         if (previousServerUrl === undefined) delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         else process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = previousServerUrl;
         if (previousLegacyGenericServerUrl === undefined) delete process.env.EXPO_PUBLIC_SERVER_URL;
@@ -527,7 +527,7 @@ describe('serverProfiles', () => {
     it('seeds a preconfigured server from EXPO_PUBLIC_HAPPY_SERVER_URL', async () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_SERVER_URL;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'http://localhost:3999';
 
@@ -542,7 +542,7 @@ describe('serverProfiles', () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT = 'stack';
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_SERVER_URL;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'http://172.20.10.4:53288';
         stubWebRuntime('http://happier-dev.localhost:19364');
@@ -558,7 +558,7 @@ describe('serverProfiles', () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT = 'stack';
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_SERVER_URL;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'http://172.20.10.4:53288';
 
@@ -575,10 +575,10 @@ describe('serverProfiles', () => {
         expect(updated.getActiveServerUrl()).toBe('http://happier-dev.localhost:53288');
     });
 
-    it('seeds from EXPO_PUBLIC_HAPPIER_SERVER_URL and prefers it over legacy aliases', async () => {
+    it('seeds from EXPO_PUBLIC_PIGGERCODE_SERVER_URL and prefers it over legacy aliases', async () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL = 'https://canonical.example.test';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://canonical.example.test';
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'https://legacy-happy.example.test';
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
 
@@ -594,7 +594,7 @@ describe('serverProfiles', () => {
     it('uses EXPO_PUBLIC_SERVER_URL as a final alias when canonical and happy aliases are unset', async () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
 

@@ -156,20 +156,20 @@ export async function pickExpoDevMetroPort({
   reservedPorts = new Set(),
   host = '127.0.0.1',
 } = {}) {
-  const forcedPort = (env.HAPPIER_STACK_EXPO_DEV_PORT ?? '').toString().trim() || '';
+  const forcedPort = (env.PIGGERCODE_STACK_EXPO_DEV_PORT ?? '').toString().trim() || '';
 
   const stable =
     stackMode &&
     wantsStablePortStrategy({
       env,
-      strategyKey: 'HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY',
+      strategyKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY',
     });
   const startPort = stable
     ? resolveStablePortStart({
         env,
         stackName,
-        baseKey: 'HAPPIER_STACK_EXPO_DEV_PORT_BASE',
-        rangeKey: 'HAPPIER_STACK_EXPO_DEV_PORT_RANGE',
+        baseKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_BASE',
+        rangeKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE',
         defaultBase: 8081,
         defaultRange: 1000,
       })
@@ -192,14 +192,14 @@ export async function selectExpoDevMetroPort({
   nowImpl = Date.now,
   delayImpl = delay,
 } = {}) {
-  const forcedPort = (env.HAPPIER_STACK_EXPO_DEV_PORT ?? '').toString().trim() || '';
-  const stable = stackMode && wantsStablePortStrategy({ env, strategyKey: 'HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY' });
+  const forcedPort = (env.PIGGERCODE_STACK_EXPO_DEV_PORT ?? '').toString().trim() || '';
+  const stable = stackMode && wantsStablePortStrategy({ env, strategyKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY' });
   const startPort = stable
     ? resolveStablePortStart({
         env,
         stackName,
-        baseKey: 'HAPPIER_STACK_EXPO_DEV_PORT_BASE',
-        rangeKey: 'HAPPIER_STACK_EXPO_DEV_PORT_RANGE',
+        baseKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_BASE',
+        rangeKey: 'PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE',
         defaultBase: 8081,
         defaultRange: 1000,
       })

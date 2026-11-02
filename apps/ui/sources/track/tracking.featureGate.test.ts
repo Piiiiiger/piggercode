@@ -15,17 +15,17 @@ vi.mock('@/config', () => ({
 }));
 
 describe('tracking (feature gate)', () => {
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         vi.resetModules();
         posthogConstructorSpy.mockClear();
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.analytics';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.analytics';
     });
 
     afterEach(() => {
-        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
     });
 
     it('does not initialize PostHog when analytics are disabled by build policy', async () => {
@@ -35,7 +35,7 @@ describe('tracking (feature gate)', () => {
     });
 
     it('initializes PostHog with the configured host when analytics are allowed', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = '';
         vi.resetModules();
 
         await import('./tracking');

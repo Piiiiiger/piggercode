@@ -26,7 +26,7 @@ describe("automation daemon routes (integration)", () => {
 
     afterEach(async () => {
         harness.resetEnv();
-        harness.resetEnv({ HAPPIER_FEATURE_AUTOMATIONS__ENABLED: "1" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: "1" });
         await harness.resetDbTables([
             () => db.accountChange.deleteMany(),
             () => db.automationRun.deleteMany(),

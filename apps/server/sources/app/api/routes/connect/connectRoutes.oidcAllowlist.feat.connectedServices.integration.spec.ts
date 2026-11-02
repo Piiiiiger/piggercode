@@ -71,7 +71,7 @@ describe("connectRoutes (OIDC allowlists) external auth finalize (integration)",
                     allow: { usersAllowlist: ["someone_else"] },
                 },
             ]),
-            HAPPIER_WEBAPP_URL: "https://app.example.test",
+            PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         });
 
         const seed = new Uint8Array(32).fill(1);

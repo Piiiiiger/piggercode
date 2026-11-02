@@ -162,25 +162,25 @@ describe('core e2e: Claude TaskOutput sidechains are imported with sidechainId +
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-        HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'taskoutput-sidechain',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'taskoutput-sidechain',
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLog,
-      HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'taskoutput-sidechain',
-      HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLog,
+      PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'taskoutput-sidechain',
+      PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${randomUUID()}`,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
 
     const cliDistEntrypoint = await ensureCliDistBuilt({ testDir, env: cliEnv });

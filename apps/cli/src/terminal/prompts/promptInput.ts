@@ -90,7 +90,7 @@ export function isInteractiveTerminal(): boolean {
     stdoutIsTty: Boolean(process.stdout.isTTY),
     platform: process.platform,
     hasControllingTty,
-    unattended: String(process.env.HAPPIER_NONINTERACTIVE ?? '') === '1',
+    unattended: String(process.env.PIGGERCODE_NONINTERACTIVE ?? '') === '1',
   });
 }
 

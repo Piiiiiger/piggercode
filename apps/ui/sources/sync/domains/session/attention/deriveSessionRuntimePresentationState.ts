@@ -112,7 +112,7 @@ export function isLiveSessionRuntime(
  * gate exists to close.
  *
  * The session keep-alive is the signal that genuinely repeats: the CLI pings every
- * `HAPPIER_SESSION_KEEPALIVE_IDLE_MS` (15 s by default, faster while a turn is in flight), which is
+ * `PIGGERCODE_SESSION_KEEPALIVE_IDLE_MS` (15 s by default, faster while a turn is in flight), which is
  * what advances `activeAt`. Either instant being recent means the claim is still witnessed.
  */
 export function readSessionRuntimeObservationTimestamps(

@@ -216,7 +216,7 @@ export function buildXtermWebViewHtml(params: Readonly<{
       }
 
       function resolveXtermExports() {
-        const embedded = globalThis.HAPPIER_XTERM_WEBVIEW;
+        const embedded = globalThis.PIGGERCODE_XTERM_WEBVIEW;
         if (embedded && embedded.Terminal && embedded.FitAddon) {
           return embedded;
         }
@@ -230,7 +230,7 @@ export function buildXtermWebViewHtml(params: Readonly<{
         const cdnImports = ${cdnModuleImports || 'null'};
         if (cdnImports) {
           const [xterm, fit, links] = await Promise.all(cdnImports);
-          globalThis.HAPPIER_XTERM_WEBVIEW = {
+          globalThis.PIGGERCODE_XTERM_WEBVIEW = {
             Terminal: xterm.Terminal,
             FitAddon: fit.FitAddon,
             WebLinksAddon: links.WebLinksAddon,

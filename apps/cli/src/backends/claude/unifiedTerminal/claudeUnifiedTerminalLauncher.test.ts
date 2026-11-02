@@ -8,7 +8,7 @@ import { TerminalHostStartupError } from '@/integrations/terminalHost/errors';
 import { ZellijActionTimeoutError } from '@/integrations/zellij/actions';
 import type { TerminalAttachmentInfo } from '@/terminal/attachment/terminalAttachmentInfo';
 import type { AccountSettings } from '@piggercode/protocol';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import type { Session } from '../session';
 import type { EnhancedMode } from '../loop';
@@ -2354,8 +2354,8 @@ describe('claudeUnifiedTerminalLauncher', () => {
 
   it('surfaces unified transcript auth failures through the session runtime issue path', async () => {
     setProcessTty(false);
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'claude-subscription',
       groupId: 'claude',
@@ -2388,9 +2388,9 @@ describe('claudeUnifiedTerminalLauncher', () => {
       });
     } finally {
       if (previousSelectionEnv === undefined) {
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
       } else {
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
       }
     }
 
@@ -2409,8 +2409,8 @@ describe('claudeUnifiedTerminalLauncher', () => {
 
   it('keeps provider auth evidence primary and parks when terminal host death follows in the same failure window', async () => {
     setProcessTty(false);
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'claude-subscription',
       groupId: 'claude',
@@ -2467,9 +2467,9 @@ describe('claudeUnifiedTerminalLauncher', () => {
       })).resolves.toEqual({ type: 'exit', code: 0 });
     } finally {
       if (previousSelectionEnv === undefined) {
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
       } else {
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
       }
     }
 
@@ -2501,8 +2501,8 @@ describe('claudeUnifiedTerminalLauncher', () => {
 
   it('relaunches once while runtime auth recovery continues without consuming the park failure latch', async () => {
     setProcessTty(false);
-    const previousSelectionEnv = process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-    process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
+    const previousSelectionEnv = process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify([{
       kind: 'group',
       serviceId: 'claude-subscription',
       groupId: 'claude',
@@ -2551,9 +2551,9 @@ describe('claudeUnifiedTerminalLauncher', () => {
       })).resolves.toEqual({ type: 'exit', code: 0 });
     } finally {
       if (previousSelectionEnv === undefined) {
-        delete process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+        delete process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
       } else {
-        process.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
+        process.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = previousSelectionEnv;
       }
     }
 
@@ -4733,8 +4733,8 @@ describe('claudeUnifiedTerminalLauncher', () => {
   // standalone launcher must surface the same legacy notices as the daemon launcher.
   it('gate OFF: surfaces the legacy requires_restart notice when a batch mode changes (B6)', async () => {
     setProcessTty(false);
-    const previousGateEnv = process.env.HAPPIER_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED;
-    process.env.HAPPIER_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED = '0';
+    const previousGateEnv = process.env.PIGGERCODE_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED;
+    process.env.PIGGERCODE_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED = '0';
     try {
       const session = createSession();
       let queueSize = 2;
@@ -4765,8 +4765,8 @@ describe('claudeUnifiedTerminalLauncher', () => {
       const outcomeEvents = events.filter((event) => event.type !== 'message');
       expect(JSON.stringify(outcomeEvents)).toContain('requires_restart');
     } finally {
-      if (previousGateEnv === undefined) delete process.env.HAPPIER_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED;
-      else process.env.HAPPIER_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED = previousGateEnv;
+      if (previousGateEnv === undefined) delete process.env.PIGGERCODE_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED;
+      else process.env.PIGGERCODE_FEATURE_CLAUDE_UNIFIED_TUI_RUNTIME_CONTROL__ENABLED = previousGateEnv;
     }
   });
 

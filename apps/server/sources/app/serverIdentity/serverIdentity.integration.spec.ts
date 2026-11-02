@@ -44,7 +44,7 @@ describe("serverIdentity", () => {
         await db.simpleCache.deleteMany({ where: { key: "server.identity.v1" } });
 
         const identity = await getOrCreateServerIdentityId({
-            HAPPIER_SERVER_IDENTITY_ID: "srv_envPinned123",
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv_envPinned123",
         } as NodeJS.ProcessEnv);
 
         expect(identity).toBe("srv_envPinned123");
@@ -63,16 +63,16 @@ describe("serverIdentity", () => {
         expect(typeof identityModule.readCachedServerIdentityIdForHotPath).toBe("function");
 
         const initialized = await identityModule.initializeServerIdentityCache!({
-            HAPPIER_SERVER_IDENTITY_ID: "srv_startupPinned123",
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv_startupPinned123",
         } as NodeJS.ProcessEnv);
         const second = await identityModule.initializeServerIdentityCache!({
-            HAPPIER_SERVER_IDENTITY_ID: "srv_secondPinned123",
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv_secondPinned123",
         } as NodeJS.ProcessEnv);
 
         expect(initialized).toBe("srv_startupPinned123");
         expect(second).toBe("srv_startupPinned123");
         expect(identityModule.readCachedServerIdentityIdForHotPath!({
-            HAPPIER_SERVER_IDENTITY_ID: "srv_secondPinned123",
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv_secondPinned123",
         } as NodeJS.ProcessEnv)).toBe("srv_startupPinned123");
         await expect(
             db.simpleCache.findUnique({
@@ -83,20 +83,20 @@ describe("serverIdentity", () => {
 
         await db.simpleCache.deleteMany({ where: { key: "server.identity.v1" } });
         expect(identityModule.readCachedServerIdentityIdForHotPath!({
-            HAPPIER_SERVER_IDENTITY_ID: "srv_thirdPinned123",
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv_thirdPinned123",
         } as NodeJS.ProcessEnv)).toBe("srv_startupPinned123");
     });
 
     it("rejects env-pinned identities that are unsafe for storage keys", async () => {
         await expect(getOrCreateServerIdentityId({
-            HAPPIER_SERVER_IDENTITY_ID: "srv/unsafe",
-        } as NodeJS.ProcessEnv)).rejects.toThrow("HAPPIER_SERVER_IDENTITY_ID");
+            PIGGERCODE_SERVER_IDENTITY_ID: "srv/unsafe",
+        } as NodeJS.ProcessEnv)).rejects.toThrow("PIGGERCODE_SERVER_IDENTITY_ID");
     });
 
     it("rejects env-pinned identities that do not use the server-issued prefix", async () => {
         await expect(getOrCreateServerIdentityId({
-            HAPPIER_SERVER_IDENTITY_ID: "envPinned123",
-        } as NodeJS.ProcessEnv)).rejects.toThrow("HAPPIER_SERVER_IDENTITY_ID");
+            PIGGERCODE_SERVER_IDENTITY_ID: "envPinned123",
+        } as NodeJS.ProcessEnv)).rejects.toThrow("PIGGERCODE_SERVER_IDENTITY_ID");
     });
 
     it("rejects persisted identities that do not use the server-issued prefix", async () => {

@@ -49,8 +49,8 @@ export async function maybeReexecToRuntime(params: Readonly<{
   ensureRuntimeExecutable?: typeof ensureJavaScriptRuntimeExecutable;
 }>): Promise<void> {
   const env = params.env;
-  if (String(env.HAPPIER_CLI_RUNTIME_DISABLE ?? '').trim() === '1') return;
-  if (String(env.HAPPIER_CLI_RUNTIME_REEXEC ?? '').trim() === '1') return;
+  if (String(env.PIGGERCODE_CLI_RUNTIME_DISABLE ?? '').trim() === '1') return;
+  if (String(env.PIGGERCODE_CLI_RUNTIME_REEXEC ?? '').trim() === '1') return;
 
   const publicReleaseRing = params.publicReleaseRing ?? 'stable';
   const runtimeDir = resolveScopedRuntimeDir({ homeDir: params.homeDir, publicReleaseRing });
@@ -83,9 +83,9 @@ export async function maybeReexecToRuntime(params: Readonly<{
   const ensureRuntimeExecutable = params.ensureRuntimeExecutable ?? ensureJavaScriptRuntimeExecutable;
   const runtimeExecutable = await ensureRuntimeExecutable({ isBunRuntime: params.isBunRuntime ?? isBun() });
   if (!runtimeExecutable) return;
-  const childEnv: NodeJS.ProcessEnv = { ...env, HAPPIER_CLI_RUNTIME_REEXEC: '1' };
-  if (!String(childEnv.HAPPIER_PUBLIC_RELEASE_CHANNEL ?? '').trim()) {
-    childEnv.HAPPIER_PUBLIC_RELEASE_CHANNEL = getReleaseRingCatalogEntry(publicReleaseRing).publicLabel;
+  const childEnv: NodeJS.ProcessEnv = { ...env, PIGGERCODE_CLI_RUNTIME_REEXEC: '1' };
+  if (!String(childEnv.PIGGERCODE_PUBLIC_RELEASE_CHANNEL ?? '').trim()) {
+    childEnv.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = getReleaseRingCatalogEntry(publicReleaseRing).publicLabel;
   }
   const opts: ExecFileSyncOptions = { stdio: 'inherit', env: childEnv };
   const exitImpl = params.exit ?? process.exit;

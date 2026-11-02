@@ -96,17 +96,17 @@ describe('daemon control server: /continue-with-replay (integration)', () => {
         const serverUrl = address.replace(/\/+$/, '');
 
         const envScope = createEnvKeyScope([
-            'HAPPIER_HOME_DIR',
-            'HAPPIER_SERVER_URL',
-            'HAPPIER_LOCAL_SERVER_URL',
-            'HAPPIER_PUBLIC_SERVER_URL',
+            'PIGGERCODE_HOME_DIR',
+            'PIGGERCODE_SERVER_URL',
+            'PIGGERCODE_LOCAL_SERVER_URL',
+            'PIGGERCODE_PUBLIC_SERVER_URL',
         ]);
         const homeDir = await createTempDir('happier-cli-daemon-control-replay-integration-');
         envScope.patch({
-            HAPPIER_HOME_DIR: homeDir,
-            HAPPIER_SERVER_URL: serverUrl,
-            HAPPIER_LOCAL_SERVER_URL: serverUrl,
-            HAPPIER_PUBLIC_SERVER_URL: '',
+            PIGGERCODE_HOME_DIR: homeDir,
+            PIGGERCODE_SERVER_URL: serverUrl,
+            PIGGERCODE_LOCAL_SERVER_URL: serverUrl,
+            PIGGERCODE_PUBLIC_SERVER_URL: '',
         });
         reloadConfiguration();
 
@@ -246,17 +246,17 @@ describe('daemon control server: /continue-with-replay (integration)', () => {
         const serverUrl = address.replace(/\/+$/, '');
 
         const envScope = createEnvKeyScope([
-            'HAPPIER_HOME_DIR',
-            'HAPPIER_SERVER_URL',
-            'HAPPIER_LOCAL_SERVER_URL',
-            'HAPPIER_PUBLIC_SERVER_URL',
+            'PIGGERCODE_HOME_DIR',
+            'PIGGERCODE_SERVER_URL',
+            'PIGGERCODE_LOCAL_SERVER_URL',
+            'PIGGERCODE_PUBLIC_SERVER_URL',
         ]);
         const homeDir = await createTempDir('happier-cli-daemon-control-replay-auth-');
         envScope.patch({
-            HAPPIER_HOME_DIR: homeDir,
-            HAPPIER_SERVER_URL: serverUrl,
-            HAPPIER_LOCAL_SERVER_URL: serverUrl,
-            HAPPIER_PUBLIC_SERVER_URL: '',
+            PIGGERCODE_HOME_DIR: homeDir,
+            PIGGERCODE_SERVER_URL: serverUrl,
+            PIGGERCODE_LOCAL_SERVER_URL: serverUrl,
+            PIGGERCODE_PUBLIC_SERVER_URL: '',
         });
         reloadConfiguration();
 

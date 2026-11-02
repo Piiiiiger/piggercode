@@ -135,8 +135,8 @@ describe('probeServerVersion', () => {
   it('returns network failure details for unreachable endpoints', async () => {
     // Ensure this test stays well below Vitest's default 5s timeout. The production helper's
     // default timeout is also 5s, which can race with Vitest when a connect attempt hangs.
-    const prevTimeout = process.env.HAPPIER_SERVER_TEST_TIMEOUT_MS;
-    process.env.HAPPIER_SERVER_TEST_TIMEOUT_MS = '250';
+    const prevTimeout = process.env.PIGGERCODE_SERVER_TEST_TIMEOUT_MS;
+    process.env.PIGGERCODE_SERVER_TEST_TIMEOUT_MS = '250';
     const blackholeServer = net.createServer((socket) => {
       socket.destroy();
     });
@@ -164,7 +164,7 @@ describe('probeServerVersion', () => {
       await new Promise<void>((resolve, reject) => {
         blackholeServer.close((error) => (error ? reject(error) : resolve()));
       });
-      process.env.HAPPIER_SERVER_TEST_TIMEOUT_MS = prevTimeout;
+      process.env.PIGGERCODE_SERVER_TEST_TIMEOUT_MS = prevTimeout;
     }
   });
 });

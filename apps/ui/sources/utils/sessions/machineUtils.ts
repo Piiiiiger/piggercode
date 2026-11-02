@@ -8,7 +8,7 @@ let cachedGraceEnvRaw: string | null = null;
 let cachedGraceEnvMs: number = DEFAULT_MACHINE_ONLINE_GRACE_MS;
 
 function readMachineOnlineGraceMsFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS ?? '').trim();
     if (raw === cachedGraceEnvRaw) return cachedGraceEnvMs;
 
     // Must exceed the daemon keep-alive interval to avoid presence flicker.

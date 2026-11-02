@@ -41,7 +41,7 @@ test('swiftbar utils: derives worktree spec from path', async () => {
   const rootDir = dirname(scriptsDir);
   const bashScript = [
     `set -euo pipefail`,
-    `export HAPPIER_STACK_WORKSPACE_DIR="/x"`,
+    `export PIGGERCODE_STACK_WORKSPACE_DIR="/x"`,
     `source "${rootDir}/extras/swiftbar/lib/utils.sh"`,
     `echo "$(swiftbar_worktree_spec_from_path "/x/main" "happier")"`,
     `echo "$(swiftbar_worktree_spec_from_path "/x/pr/foo" "happier")"`,
@@ -80,7 +80,7 @@ test('swiftbar utils: derives repo key from component dir path', async () => {
   const rootDir = dirname(scriptsDir);
   const bashScript = [
     `set -euo pipefail`,
-    `export HAPPIER_STACK_WORKSPACE_DIR="/x"`,
+    `export PIGGERCODE_STACK_WORKSPACE_DIR="/x"`,
     `source "${rootDir}/extras/swiftbar/lib/utils.sh"`,
     `echo "$(swiftbar_repo_key_from_path "/x/main/apps/ui")"`,
     `echo "$(swiftbar_repo_key_from_path "/x/pr/foo/apps/ui")"`,

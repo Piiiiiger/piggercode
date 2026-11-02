@@ -26,8 +26,8 @@ async function createStackEnvFixture(t, { stackName = 'exp-test', initialEnv = '
     stackName,
     baseEnv: {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     },
   };
 }

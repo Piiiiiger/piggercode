@@ -50,18 +50,18 @@ export async function handleAuthLogin(args: string[]): Promise<void> {
     console.error(fail(error instanceof Error ? error.message : 'Invalid --method flag'));
     process.exit(1);
   }
-  if (method) process.env.HAPPIER_AUTH_METHOD = method;
+  if (method) process.env.PIGGERCODE_AUTH_METHOD = method;
 
   if (noOpen) {
-    process.env.HAPPIER_NO_BROWSER_OPEN = '1';
+    process.env.PIGGERCODE_NO_BROWSER_OPEN = '1';
   }
 
   if (printConfigureLinks) {
-    process.env.HAPPIER_AUTH_PRINT_CONFIGURE_LINKS = '1';
+    process.env.PIGGERCODE_AUTH_PRINT_CONFIGURE_LINKS = '1';
   }
 
   if (waitTimeoutSeconds !== null) {
-    process.env.HAPPIER_AUTH_WAIT_TIMEOUT_MS = String(waitTimeoutSeconds * 1000);
+    process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS = String(waitTimeoutSeconds * 1000);
   }
 
   if (forceAuth) {
@@ -129,12 +129,12 @@ export async function handleAuthLogin(args: string[]): Promise<void> {
     }
 
     if (!existingCreds && !method && isLoopbackServerHost(configuration.serverUrl)) {
-      process.env.HAPPIER_AUTH_METHOD = 'web';
+      process.env.PIGGERCODE_AUTH_METHOD = 'web';
       console.log(warn(`The selected relay (${configuration.serverUrl}) is only reachable from this computer.`));
       console.log(chalk.gray("Using this computer's browser for the new sign-in request.\n"));
     }
   } else if (!method && isLoopbackServerHost(configuration.serverUrl)) {
-    process.env.HAPPIER_AUTH_METHOD = 'web';
+    process.env.PIGGERCODE_AUTH_METHOD = 'web';
     console.log(warn(`The selected relay (${configuration.serverUrl}) is only reachable from this computer.`));
     console.log(chalk.gray("Using this computer's browser for the new sign-in request.\n"));
   }

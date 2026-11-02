@@ -48,7 +48,7 @@ if (process.argv.includes('rpc')) process.exit(1);
     try {
       const params = {
         agentId: 'pi' as const, cwd: fixture.dir, timeoutMs: 5_000,
-        processEnv: { ...process.env, HAPPIER_PI_PATH: command, PI_OFFLINE: undefined },
+        processEnv: { ...process.env, PIGGERCODE_PI_PATH: command, PI_OFFLINE: undefined },
       };
       await writeFile(outcomePath, 'models');
       const fresh = await probeAgentModelsBestEffort(params);

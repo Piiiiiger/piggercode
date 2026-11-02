@@ -38,17 +38,17 @@ describe('resolveExecutionRunConnectedServiceMaterializeTimeoutMs (A1)', () => {
 
   it('honors the env override within bounds', () => {
     expect(resolveExecutionRunConnectedServiceMaterializeTimeoutMs({
-      HAPPIER_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '30000',
+      PIGGERCODE_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '30000',
     })).toBe(30_000);
     // Clamped to sane bounds; garbage falls back to the default.
     expect(resolveExecutionRunConnectedServiceMaterializeTimeoutMs({
-      HAPPIER_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '1',
+      PIGGERCODE_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '1',
     })).toBe(1_000);
     expect(resolveExecutionRunConnectedServiceMaterializeTimeoutMs({
-      HAPPIER_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '99999999',
+      PIGGERCODE_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: '99999999',
     })).toBe(600_000);
     expect(resolveExecutionRunConnectedServiceMaterializeTimeoutMs({
-      HAPPIER_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: 'garbage',
+      PIGGERCODE_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS: 'garbage',
     })).toBe(600_000);
   });
 

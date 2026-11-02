@@ -1,4 +1,4 @@
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - launchApp:
     clearState: true
@@ -30,13 +30,13 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
     commands:
       # Use the bundle-id URL scheme on iOS to avoid collisions with other
       # installed Dev Clients that also register the shared app scheme.
-      - openLink: ${HAPPIER_E2E_MOBILE_APP_ID}:///dev/native-crypto-worker
+      - openLink: ${PIGGERCODE_E2E_MOBILE_APP_ID}:///dev/native-crypto-worker
 
 - runFlow:
     when:
       platform: ANDROID
     commands:
-      - openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///dev/native-crypto-worker
+      - openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///dev/native-crypto-worker
 
 - extendedWaitUntil:
     visible:

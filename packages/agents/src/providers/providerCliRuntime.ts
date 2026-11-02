@@ -431,7 +431,7 @@ export const PROVIDER_CLI_RUNTIME_SPECS: Readonly<Record<AgentId, ProviderCliRun
     title: 'Cursor Agent CLI',
     binaryName: 'cursor-agent',
     alternativeBinaryNames: ['agent'],
-    alternativeBinaryFallbackEnabledEnvVar: 'HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED',
+    alternativeBinaryFallbackEnabledEnvVar: 'PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED',
     alternativeBinaryIdentityProbe: {
       args: ['about', '--format', 'json'],
       timeoutMs: 2000,

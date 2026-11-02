@@ -122,9 +122,9 @@ test('expoExec defaults Expo heap limit to 8192MB (unless overridden)', async (t
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
     EXPECT_MAX_OLD_SPACE_SIZE: '8192',
-    HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
+    PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
     NODE_OPTIONS: null,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({
@@ -140,7 +140,7 @@ test('expoExec defaults Expo heap limit to 8192MB (unless overridden)', async (t
   assert.match(logged, /^EXPO_UNSTABLE_WEB_MODAL=1$/m);
 });
 
-test('expoExec honors HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB override', async (t) => {
+test('expoExec honors PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB override', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'hs-expo-heap-exec-override-'));
   t.after(async () => {
     await rm(root, { recursive: true, force: true });
@@ -161,9 +161,9 @@ test('expoExec honors HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB override', async 
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
     EXPECT_MAX_OLD_SPACE_SIZE: '4096',
-    HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: '4096',
+    PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: '4096',
     NODE_OPTIONS: null,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({
@@ -178,7 +178,7 @@ test('expoExec honors HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB override', async 
   assert.match(logged, /--max-old-space-size=4096/);
 });
 
-test('expoExec overrides NODE_OPTIONS --max-old-space-size unless explicitly overridden via HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB', async (t) => {
+test('expoExec overrides NODE_OPTIONS --max-old-space-size unless explicitly overridden via PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'hs-expo-heap-exec-preserve-'));
   t.after(async () => {
     await rm(root, { recursive: true, force: true });
@@ -199,9 +199,9 @@ test('expoExec overrides NODE_OPTIONS --max-old-space-size unless explicitly ove
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
     EXPECT_MAX_OLD_SPACE_SIZE: '8192',
-    HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
+    PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
     NODE_OPTIONS: '--trace-warnings --max-old-space-size=2048',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({
@@ -238,9 +238,9 @@ test('expoSpawn applies the same heap limit behavior', async (t) => {
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
     EXPECT_MAX_OLD_SPACE_SIZE: '8192',
-    HAPPIER_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
+    PIGGERCODE_STACK_EXPO_MAX_OLD_SPACE_SIZE_MB: null,
     NODE_OPTIONS: null,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const child = await expoSpawn({
@@ -285,8 +285,8 @@ test('expoExec prefers the Windows cmd shim when both Expo shims exist', async (
   withPatchedProcessEnv(t, {
     PATH: `${binDir}${delimiter}${process.env.PATH ?? ''}`,
     OUTPUT_PATH: null,
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await expoExec({

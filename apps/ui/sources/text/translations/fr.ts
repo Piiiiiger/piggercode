@@ -8733,7 +8733,7 @@ settingsSession: {
                 manifest: {
                     title: 'Manifeste des packs de modèles',
                     subtitle:
-                        'Utilise par défaut les packs de modèles Happier (remplace via EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).',
+                        'Utilise par défaut les packs de modèles Happier (remplace via EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).',
                     detailResolved: 'Résolu',
                     detailMissing: 'Manquant',
                 },
@@ -8775,7 +8775,7 @@ settingsSession: {
                     },
                     missingManifest: {
                         title: 'URL du manifeste manquante',
-                        body: 'Impossible de résoudre l’URL du manifeste des packs de modèles. Vérifie EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (ou les anciennes variables d’environnement Kokoro).',
+                        body: 'Impossible de résoudre l’URL du manifeste des packs de modèles. Vérifie EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (ou les anciennes variables d’environnement Kokoro).',
                     },
                     notInstalledTitle: 'Non installé',
                     notInstalledBody: 'Télécharge d’abord le pack de modèles pour activer la recherche de mises à jour.',

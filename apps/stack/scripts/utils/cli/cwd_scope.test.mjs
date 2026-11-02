@@ -15,7 +15,7 @@ async function createMonorepoCheckout({ rootDir, checkoutPath }) {
 }
 
 function workspaceEnv(rootDir) {
-  return { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  return { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
 }
 
 function withMockedProcessCwd(t, value) {

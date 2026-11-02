@@ -26,7 +26,7 @@ export type StopSessionAndMaybeArchiveParams = Readonly<{
 }>;
 
 function readSessionArchiveAfterStopRetryDelayMsFromEnv(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_RETRY_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_RETRY_MS ?? '').trim();
     if (!raw) return 200;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 200;

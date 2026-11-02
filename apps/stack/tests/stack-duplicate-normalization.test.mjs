@@ -16,8 +16,8 @@ function runHstack(args, { cwd, env }) {
     cwd: cwd ?? repoRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
       ...env,
     },
     encoding: 'utf8',
@@ -32,7 +32,7 @@ test('hstack stack duplicate normalizes the destination stack name', (t) => {
   const fromStack = 'from';
   const fromEnvPath = join(sandbox, 'storage', fromStack, 'env');
   mkdirSync(dirname(fromEnvPath), { recursive: true });
-  writeFileSync(fromEnvPath, `HAPPIER_STACK_REPO_DIR=${monoRoot}\n`, 'utf8');
+  writeFileSync(fromEnvPath, `PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`, 'utf8');
 
   const res = runHstack(
     ['--sandbox-dir', sandbox, 'stack', 'duplicate', fromStack, 'MyStack', '--json'],
@@ -63,7 +63,7 @@ test('hstack stack duplicate collapses punctuation and separators in destination
   const fromStack = 'from';
   const fromEnvPath = join(sandbox, 'storage', fromStack, 'env');
   mkdirSync(dirname(fromEnvPath), { recursive: true });
-  writeFileSync(fromEnvPath, `HAPPIER_STACK_REPO_DIR=${monoRoot}\n`, 'utf8');
+  writeFileSync(fromEnvPath, `PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`, 'utf8');
 
   const res = runHstack(
     ['--sandbox-dir', sandbox, 'stack', 'duplicate', fromStack, '...My__Stack 2026!!!', '--json'],

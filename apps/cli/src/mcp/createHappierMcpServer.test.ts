@@ -11,7 +11,7 @@ describe('createHappierMcpServer', () => {
     vi.resetModules();
     callMachineRpc.mockReset();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
   afterEach(() => {
@@ -63,7 +63,7 @@ describe('createHappierMcpServer', () => {
   });
 
   it('returns toolNames aligned with current MCP action settings', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['session_agent'], disabledPlacements: [] },
@@ -86,7 +86,7 @@ describe('createHappierMcpServer', () => {
   });
 
   it('uses account action settings for the in-session MCP tool registry when provided', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.list': { enabled: true, disabledSurfaces: ['session_agent'], disabledPlacements: [] },
@@ -120,7 +120,7 @@ describe('createHappierMcpServer', () => {
   });
 
   it('uses account action settings for in-session MCP approval policy when provided', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.list': { disabledSurfaces: [] },

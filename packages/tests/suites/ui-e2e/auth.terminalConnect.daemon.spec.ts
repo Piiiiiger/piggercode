@@ -120,10 +120,10 @@ test.describe('ui e2e: auth + terminal connect', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
-      HAPPIER_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_FALLBACK_TO_METRO: '0',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -136,11 +136,11 @@ test.describe('ui e2e: auth + terminal connect', () => {
           // UI web E2E currently relies on anonymous create-account, which is blocked when
           // content-keys binding is enabled but web crypto can't produce the binding signature reliably.
           // Keep this test focused on the auth + terminal-connect + daemon flow first.
-          HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-          HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+          PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+          PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
           // This scenario explicitly waits for machine expiry before daemon reconnect.
-          HAPPIER_PRESENCE_MACHINE_TIMEOUT_MS: '60000',
-          HAPPIER_PRESENCE_TIMEOUT_TICK_MS: '1000',
+          PIGGERCODE_PRESENCE_MACHINE_TIMEOUT_MS: '60000',
+          PIGGERCODE_PRESENCE_TIMEOUT_TICK_MS: '1000',
         },
       });
       ui = await startUiWeb({
@@ -187,9 +187,9 @@ test.describe('ui e2e: auth + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_VARIANT: 'dev',
         },
       });
 
@@ -210,16 +210,16 @@ test.describe('ui e2e: auth + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_HOME_DIR: cliHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: uiBaseUrl,
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_HOME_DIR: cliHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
 
@@ -331,16 +331,16 @@ test.describe('ui e2e: auth + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_HOME_DIR: cliHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: uiBaseUrl,
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_HOME_DIR: cliHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
 
@@ -442,8 +442,8 @@ test.describe('ui e2e: auth + terminal connect', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_VARIANT: 'dev',
         },
       });
 

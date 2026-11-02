@@ -23,8 +23,8 @@ export function hasStackCredentials({ cliHomeDir, serverUrl = '', env = process.
 }
 
 export function isAuthFlowEnabled(env) {
-  const v = (env?.HAPPIER_STACK_AUTH_FLOW ?? '').toString().trim();
-  const wait = (env?.HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim();
+  const v = (env?.PIGGERCODE_STACK_AUTH_FLOW ?? '').toString().trim();
+  const wait = (env?.PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH ?? '').toString().trim();
   const isTrue = (s) => s === '1' || String(s).toLowerCase() === 'true';
   return isTrue(v) || isTrue(wait);
 }
@@ -37,7 +37,7 @@ export function isAuthFlowEnabled(env) {
  * - fail closed in non-interactive contexts.
  */
 export function daemonStartGate({ env, cliHomeDir, serverUrl = '' }) {
-  const resolvedServerUrl = String(serverUrl ?? '').trim() || String(env?.HAPPIER_SERVER_URL ?? '').trim();
+  const resolvedServerUrl = String(serverUrl ?? '').trim() || String(env?.PIGGERCODE_SERVER_URL ?? '').trim();
   if (hasStackCredentials({ cliHomeDir, serverUrl: resolvedServerUrl, env })) {
     return { ok: true, reason: 'credentials_present' };
   }

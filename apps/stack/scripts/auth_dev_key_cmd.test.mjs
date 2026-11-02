@@ -14,9 +14,9 @@ test('hstack auth dev-key --set stores key and exits successfully', async () => 
   try {
     const env = {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STACK: 'test-stack',
-      HAPPIER_STACK_ENV_FILE: join(homeDir, 'missing.env'),
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STACK: 'test-stack',
+      PIGGERCODE_STACK_ENV_FILE: join(homeDir, 'missing.env'),
     };
 
     const res = await runNodeCapture([authScriptPath(rootDir), 'dev-key', `--set=${key}`], { cwd: rootDir, env });

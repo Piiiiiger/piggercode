@@ -174,7 +174,7 @@ describe('flash-list offset-correction hook patch (N1.1 evidence)', () => {
     // Marker + the global slot stay present for the burn-in fallback patch, even though the
     // transcript no longer subscribes to this signal.
     expect(distController).toContain('HAPPIER PATCH(flash-list-offset-correction-hook)');
-    expect(distController).toContain('__HAPPIER_FLASHLIST_OFFSET_CORRECTION_HOOK__');
+    expect(distController).toContain('__PIGGERCODE_FLASHLIST_OFFSET_CORRECTION_HOOK__');
 
     // Every pauseOffsetCorrection transition and every nonzero correction decision must notify:
     // pause-set/pause-cleared from both imperative-scroll sites, and the applied/skipped split

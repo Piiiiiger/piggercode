@@ -1256,7 +1256,7 @@ describe('Session', () => {
     }
   });
 
-  it.runIf(Boolean(process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH))('publishes the actual native SDK identity after a completed first turn for inactive resume', async () => {
+  it.runIf(Boolean(process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH))('publishes the actual native SDK identity after a completed first turn for inactive resume', async () => {
     const root = mkdtempSync(join(tmpdir(), 'happier-native-session-identity-'));
     const boundary = await startAnthropicSseBoundary();
     vi.stubEnv('CLAUDE_CONFIG_DIR', root);
@@ -1276,7 +1276,7 @@ describe('Session', () => {
     try {
       await claudeRemoteAgentSdk({
         sessionId: null, transcriptPath: null, path: '/tmp',
-        claudeExecutablePath: process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH,
+        claudeExecutablePath: process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH,
         nextMessage: async () => {
           if (sent) return done;
           sent = true;
@@ -1409,7 +1409,7 @@ describe('Session', () => {
 
   it('publishes direct-session metadata when transcript storage is direct', async () => {
     const transcript = createTempClaudeTranscript('sess_1', { projectId: 'proj-a' });
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
     vi.stubEnv('CLAUDE_CONFIG_DIR', transcript.configDir);
     let metadata: Metadata = createMetadataStub({ machineId: 'machine-1' } as Partial<Metadata>);
 

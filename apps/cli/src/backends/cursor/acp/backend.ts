@@ -112,7 +112,7 @@ function buildCursorAcpArgs(
   processEnv: NodeJS.ProcessEnv,
   permissionMode: PermissionMode | undefined,
 ): string[] {
-  const cursorApiEndpoint = normalizeCursorApiEndpoint(processEnv.HAPPIER_CURSOR_API_ENDPOINT);
+  const cursorApiEndpoint = normalizeCursorApiEndpoint(processEnv.PIGGERCODE_CURSOR_API_ENDPOINT);
   return [
     ...baseArgs,
     ...(cursorApiEndpoint ? ['-e', cursorApiEndpoint] : []),

@@ -11,8 +11,8 @@ function applyAccountUsernameFriendsEnv(
     overrides: Record<string, string | undefined> = {},
 ): void {
     harness.resetEnv({
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
         ...overrides,
     });
 }
@@ -130,8 +130,8 @@ describe("Account username update (integration)", () => {
 
     it("POST /v1/account/username returns 400 username-disabled when username updates are disabled", async () => {
         applyAccountUsernameFriendsEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
             GITHUB_CLIENT_ID: "test_client_id",
             GITHUB_CLIENT_SECRET: "test_client_secret",
             GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
@@ -163,8 +163,8 @@ describe("Account username update (integration)", () => {
 
     it("POST /v1/account/username returns 400 friends-disabled when Friends requires GitHub but GitHub OAuth is not configured", async () => {
         applyAccountUsernameFriendsEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
             GITHUB_CLIENT_ID: undefined,
             GITHUB_CLIENT_SECRET: undefined,
             GITHUB_REDIRECT_URL: undefined,
@@ -211,8 +211,8 @@ describe("Account username update (integration)", () => {
 
     it("POST /v1/account/username allows setting a username when Friends requires GitHub and the user has GitHub connected", async () => {
         applyAccountUsernameFriendsEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
             GITHUB_CLIENT_ID: "test_client_id",
             GITHUB_CLIENT_SECRET: "test_client_secret",
             GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
@@ -261,8 +261,8 @@ describe("Account username update (integration)", () => {
 
     it("POST /v1/account/username returns 400 friends-disabled when Friends requires an unregistered identity provider", async () => {
         applyAccountUsernameFriendsEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__IDENTITY_PROVIDER: "custom",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__IDENTITY_PROVIDER: "custom",
         });
 
         await withAuthenticatedTestApp(
@@ -303,7 +303,7 @@ describe("Account username update (integration)", () => {
 
     it("POST /v1/account/username returns 400 friends-disabled when friends feature is off", async () => {
         applyAccountUsernameFriendsEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
         });
 
         await withAuthenticatedTestApp(

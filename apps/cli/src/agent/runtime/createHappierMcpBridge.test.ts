@@ -38,11 +38,11 @@ vi.mock('@/mcp/startHappyServer', () => ({
   startHappyServer: startHappyServerMock,
 }))
 
-const originalActionSettingsEnv = process.env.HAPPIER_ACTIONS_SETTINGS_V1
+const originalActionSettingsEnv = process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
 
 describe('createHappierMcpBridge', () => {
   beforeEach(() => {
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
     vi.mocked(existsSync).mockReset()
     vi.mocked(existsSync).mockReturnValue(false)
     requireJavaScriptRuntimeExecutableMock.mockReset()
@@ -56,9 +56,9 @@ describe('createHappierMcpBridge', () => {
 
   afterAll(() => {
     if (originalActionSettingsEnv === undefined) {
-      delete process.env.HAPPIER_ACTIONS_SETTINGS_V1
+      delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
     } else {
-      process.env.HAPPIER_ACTIONS_SETTINGS_V1 = originalActionSettingsEnv
+      process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = originalActionSettingsEnv
     }
   })
 
@@ -105,8 +105,8 @@ describe('createHappierMcpBridge', () => {
   })
 
   it('passes the action settings snapshot to the bridge stdio process', async () => {
-    const previousActionSettings = process.env.HAPPIER_ACTIONS_SETTINGS_V1
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    const previousActionSettings = process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.list': { disabledSurfaces: [] },
@@ -123,13 +123,13 @@ describe('createHappierMcpBridge', () => {
       const { mcpServers } = await createHappierMcpBridge(session)
 
       expect(mcpServers.happier.env).toEqual({
-        HAPPIER_ACTIONS_SETTINGS_V1: process.env.HAPPIER_ACTIONS_SETTINGS_V1,
+        PIGGERCODE_ACTIONS_SETTINGS_V1: process.env.PIGGERCODE_ACTIONS_SETTINGS_V1,
       })
     } finally {
       if (previousActionSettings === undefined) {
-        delete process.env.HAPPIER_ACTIONS_SETTINGS_V1
+        delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1
       } else {
-        process.env.HAPPIER_ACTIONS_SETTINGS_V1 = previousActionSettings
+        process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = previousActionSettings
       }
     }
   })
@@ -157,13 +157,13 @@ describe('createHappierMcpBridge', () => {
       accountSettings,
     })
     expect(mcpServers.happier.env).toEqual({
-      HAPPIER_ACTIONS_SETTINGS_V1: JSON.stringify(accountSettings.actionsSettingsV1),
+      PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify(accountSettings.actionsSettingsV1),
     })
   })
 
   it('prefers the source entrypoint when the CLI source-entrypoint e2e flag is enabled', async () => {
-    const previousFlag = process.env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT
-    process.env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT = '1'
+    const previousFlag = process.env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT
+    process.env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT = '1'
     try {
       vi.mocked(existsSync).mockImplementation((pathLike) => {
         const path = String(pathLike)
@@ -190,9 +190,9 @@ describe('createHappierMcpBridge', () => {
       })
     } finally {
       if (previousFlag === undefined) {
-        delete process.env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT
+        delete process.env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT
       } else {
-        process.env.HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT = previousFlag
+        process.env.PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT = previousFlag
       }
     }
   })
@@ -246,7 +246,7 @@ describe('createHappierMcpBridge', () => {
   })
 
   it('fails closed when the bundled bridge script cannot resolve a JavaScript runtime', async () => {
-    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set HAPPIER_JS_RUNTIME_PATH'))
+    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set PIGGERCODE_JS_RUNTIME_PATH'))
     vi.mocked(existsSync).mockImplementation((pathLike) => {
       const path = String(pathLike)
       if (path.endsWith('/dist/backends/codex/happyMcpStdioBridge.mjs')) return true
@@ -255,7 +255,7 @@ describe('createHappierMcpBridge', () => {
 
     const session = {} as any
 
-    await expect(createHappierMcpBridge(session)).rejects.toThrow(/HAPPIER_JS_RUNTIME_PATH/)
+    await expect(createHappierMcpBridge(session)).rejects.toThrow(/PIGGERCODE_JS_RUNTIME_PATH/)
   })
 
   it('forwards credentials to the in-session Happier MCP server when provided', async () => {

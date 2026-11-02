@@ -357,9 +357,9 @@ describe('probeAgentModelsBestEffort', () => {
 	    );
 
     const prevPath = process.env.PATH;
-    const prevOverride = process.env.HAPPIER_OPENCODE_PATH;
+    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    delete process.env.HAPPIER_OPENCODE_PATH;
+    delete process.env.PIGGERCODE_OPENCODE_PATH;
     try {
       const res = await probeAgentModelsBestEffort({
         agentId: 'opencode',
@@ -377,9 +377,9 @@ describe('probeAgentModelsBestEffort', () => {
 	    } finally {
 	      process.env.PATH = prevPath;
 	      if (typeof prevOverride === 'string') {
-        process.env.HAPPIER_OPENCODE_PATH = prevOverride;
+        process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
       } else {
-        delete process.env.HAPPIER_OPENCODE_PATH;
+        delete process.env.PIGGERCODE_OPENCODE_PATH;
       }
       await fixture.cleanup();
     }
@@ -480,10 +480,10 @@ child.on('error', (error) => {
 
     const prevPath = process.env.PATH;
     const prevPathext = process.env.PATHEXT;
-    const prevOverride = process.env.HAPPIER_OPENCODE_PATH;
+    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
     process.env.PATH = `${binDir}${delimiter}${dirname(process.execPath)}`;
     process.env.PATHEXT = '.CMD';
-    delete process.env.HAPPIER_OPENCODE_PATH;
+    delete process.env.PIGGERCODE_OPENCODE_PATH;
     try {
       await withPlatform('win32', async () => {
         const res = await probeAgentModelsBestEffort({
@@ -501,9 +501,9 @@ child.on('error', (error) => {
       if (typeof prevPathext === 'string') process.env.PATHEXT = prevPathext;
       else delete process.env.PATHEXT;
       if (typeof prevOverride === 'string') {
-        process.env.HAPPIER_OPENCODE_PATH = prevOverride;
+        process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
       } else {
-        delete process.env.HAPPIER_OPENCODE_PATH;
+        delete process.env.PIGGERCODE_OPENCODE_PATH;
       }
       await fixture.cleanup();
     }
@@ -534,9 +534,9 @@ process.exit(1);
     );
 
     const prevPath = process.env.PATH;
-    const prevOverride = process.env.HAPPIER_AUGGIE_PATH;
+    const prevOverride = process.env.PIGGERCODE_AUGGIE_PATH;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    delete process.env.HAPPIER_AUGGIE_PATH;
+    delete process.env.PIGGERCODE_AUGGIE_PATH;
     try {
       const res = await probeAgentModelsBestEffort({
         agentId: 'auggie',
@@ -550,9 +550,9 @@ process.exit(1);
     } finally {
       process.env.PATH = prevPath;
       if (typeof prevOverride === 'string') {
-        process.env.HAPPIER_AUGGIE_PATH = prevOverride;
+        process.env.PIGGERCODE_AUGGIE_PATH = prevOverride;
       } else {
-        delete process.env.HAPPIER_AUGGIE_PATH;
+        delete process.env.PIGGERCODE_AUGGIE_PATH;
       }
       await fixture.cleanup();
     }
@@ -582,9 +582,9 @@ process.exit(1);
     );
 
     const prevPath = process.env.PATH;
-    const prevOverride = process.env.HAPPIER_CURSOR_PATH;
+    const prevOverride = process.env.PIGGERCODE_CURSOR_PATH;
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.HAPPIER_CURSOR_PATH = cursorAgentPath;
+    process.env.PIGGERCODE_CURSOR_PATH = cursorAgentPath;
     try {
       const res = await probeAgentModelsBestEffort({
         agentId: 'cursor',
@@ -605,9 +605,9 @@ process.exit(1);
     } finally {
       process.env.PATH = prevPath;
       if (typeof prevOverride === 'string') {
-        process.env.HAPPIER_CURSOR_PATH = prevOverride;
+        process.env.PIGGERCODE_CURSOR_PATH = prevOverride;
       } else {
-        delete process.env.HAPPIER_CURSOR_PATH;
+        delete process.env.PIGGERCODE_CURSOR_PATH;
       }
       await fixture.cleanup();
     }
@@ -615,9 +615,9 @@ process.exit(1);
 
   it('falls back only to the default Codex model when dynamic probing is unavailable', async () => {
     const prevPath = process.env.PATH;
-    const prevOverride = process.env.HAPPIER_CODEX_ACP_BIN;
+    const prevOverride = process.env.PIGGERCODE_CODEX_ACP_BIN;
     process.env.PATH = '';
-    delete process.env.HAPPIER_CODEX_ACP_BIN;
+    delete process.env.PIGGERCODE_CODEX_ACP_BIN;
     try {
       const res = await probeAgentModelsBestEffort({
         agentId: 'codex',
@@ -629,9 +629,9 @@ process.exit(1);
     } finally {
       process.env.PATH = prevPath;
       if (typeof prevOverride === 'string') {
-        process.env.HAPPIER_CODEX_ACP_BIN = prevOverride;
+        process.env.PIGGERCODE_CODEX_ACP_BIN = prevOverride;
       } else {
-        delete process.env.HAPPIER_CODEX_ACP_BIN;
+        delete process.env.PIGGERCODE_CODEX_ACP_BIN;
       }
     }
   });

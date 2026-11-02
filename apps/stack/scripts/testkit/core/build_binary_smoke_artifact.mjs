@@ -1,7 +1,7 @@
 import { access } from 'node:fs/promises';
 
 export function usesPreparedBinarySmokeArtifacts(env = process.env) {
-  return ['1', 'true', 'yes'].includes(String(env.HAPPIER_CLI_TEST_SKIP_BUILD ?? '').trim().toLowerCase());
+  return ['1', 'true', 'yes'].includes(String(env.PIGGERCODE_CLI_TEST_SKIP_BUILD ?? '').trim().toLowerCase());
 }
 
 export async function prepareBinarySmokeArtifact({ artifactPath, build, env = process.env }) {

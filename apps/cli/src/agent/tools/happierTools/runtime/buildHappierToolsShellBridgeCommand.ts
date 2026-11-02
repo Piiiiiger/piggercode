@@ -11,7 +11,7 @@ import { resolveHappierToolsShellBridgeContextEnv } from './resolveHappierToolsS
  * `happier tools ...`.
  *
  * By default this command stays clean and relies on the provider shell's inherited
- * environment. Set HAPPIER_SHELL_BRIDGE_CONTEXT_ENV=home or full to inline the
+ * environment. Set PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV=home or full to inline the
  * non-secret Happier runtime context for environments whose shell startup files
  * clobber the inherited Happier home/server selection.
  *

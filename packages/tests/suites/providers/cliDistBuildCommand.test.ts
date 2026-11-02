@@ -144,7 +144,7 @@ describe('providers: CLI dist build invocation', () => {
     const launchSpec = await resolveCliTestLaunchSpec(
       {
         testDir: resolve(repoRoot, 'logs'),
-        env: { HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1' },
+        env: { PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1' },
       },
       {
         repoRoot,
@@ -799,7 +799,7 @@ describe('providers: CLI dist build lock discipline', () => {
         buildTimeoutMs: 600_000,
         runCommand: async (params) => {
           observedTimeoutMs = params.timeoutMs;
-          observedLease = parseWorkspaceLockLeaseValue(params.env?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD);
+          observedLease = parseWorkspaceLockLeaseValue(params.env?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD);
           observedOwnerToken = JSON.parse(readFileSync(lockPath, 'utf8')).token;
           writeFileSync(entrypoint, 'export {};\n', 'utf8');
         },

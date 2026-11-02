@@ -12,7 +12,7 @@ import { withJsonOwnerFileLock } from '../proc/jsonOwnerFileLock.mjs';
 export { isPidAlive };
 
 function resolveMetroStatusTimeoutMsFromEnv(env = process.env) {
-  const raw = (env.HAPPIER_STACK_EXPO_METRO_STATUS_TIMEOUT_MS ?? '').toString().trim();
+  const raw = (env.PIGGERCODE_STACK_EXPO_METRO_STATUS_TIMEOUT_MS ?? '').toString().trim();
   const n = raw ? Number(raw) : null;
   if (Number.isFinite(n) && n > 0) return n;
   return 800;
@@ -39,14 +39,14 @@ export async function looksLikeExpoMetro({ port, timeoutMs = null, env = process
 }
 
 function resolveMetroWaitTimeoutMsFromEnv(env = process.env) {
-  const raw = (env.HAPPIER_STACK_EXPO_METRO_WAIT_TIMEOUT_MS ?? '').toString().trim();
+  const raw = (env.PIGGERCODE_STACK_EXPO_METRO_WAIT_TIMEOUT_MS ?? '').toString().trim();
   const n = raw ? Number(raw) : null;
   if (Number.isFinite(n) && n > 0) return Math.floor(n);
   return 120_000;
 }
 
 function resolveMetroWaitIntervalMsFromEnv(env = process.env) {
-  const raw = (env.HAPPIER_STACK_EXPO_METRO_WAIT_INTERVAL_MS ?? '').toString().trim();
+  const raw = (env.PIGGERCODE_STACK_EXPO_METRO_WAIT_INTERVAL_MS ?? '').toString().trim();
   const n = raw ? Number(raw) : null;
   if (Number.isFinite(n) && n > 0) return Math.floor(n);
   return 500;
@@ -190,7 +190,7 @@ export async function waitForExpoMetroRunning(
       return { ok: false, reason: 'owner_process_exited', probes };
     }
     if (nowMsImpl() - checkpointStartMs > resolvedTimeoutMs) {
-      const attendedOwnerAlive = env?.HAPPIER_STACK_TUI === '1'
+      const attendedOwnerAlive = env?.PIGGERCODE_STACK_TUI === '1'
         && ownerProc
         && ownerProc.exitCode == null
         && ownerProc.signalCode == null;
@@ -298,10 +298,10 @@ export function getExpoStatePaths({ baseDir, kind, projectDir, stateFileName = '
 
 export function resolveExpoTmpDir({ env = process.env, defaultTmpDir, kind, projectDir } = {}) {
   const def = String(defaultTmpDir ?? '').trim();
-  const base = (env?.HAPPIER_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').toString().trim();
+  const base = (env?.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').toString().trim();
   if (!base) return def;
 
-  const keyRaw = (env?.HAPPIER_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').toString().trim();
+  const keyRaw = (env?.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').toString().trim();
   const keySource = keyRaw || String(projectDir ?? '').trim() || def;
   if (!keySource) return def;
 
@@ -353,7 +353,7 @@ export async function ensureExpoIsolationEnv({
 }
 
 export function wantsExpoClearCache({ env }) {
-  const raw = (env.HAPPIER_STACK_EXPO_CLEAR_CACHE ?? '').trim();
+  const raw = (env.PIGGERCODE_STACK_EXPO_CLEAR_CACHE ?? '').trim();
   if (raw) {
     return raw !== '0';
   }

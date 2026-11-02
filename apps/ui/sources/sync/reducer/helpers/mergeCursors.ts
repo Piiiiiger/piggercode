@@ -15,7 +15,7 @@ type MergeCursorDebugEvent = Readonly<{
 
 export function isMergeCursorDebugEnabled(): boolean {
     return isDebugFlagEnabled({
-        globalKey: '__HAPPIER_DEBUG_MERGE_CURSORS__',
+        globalKey: '__PIGGERCODE_DEBUG_MERGE_CURSORS__',
         localStorageKey: 'happier.debug.mergeCursors',
     });
 }

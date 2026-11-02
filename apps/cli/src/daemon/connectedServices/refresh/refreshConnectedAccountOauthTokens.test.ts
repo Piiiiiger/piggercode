@@ -28,9 +28,9 @@ describe('refreshConnectedAccountOauthTokens', () => {
   });
   it.each([false, true])('refreshes Antigravity using its registered issuer and keeps the unrotated refresh token (legacy-looking overrides: %s)', async (withOverrides) => {
     if (withOverrides) {
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
     }
     const { refreshConnectedAccountOauthTokens } = await import('./serviceRefreshers');
     let tokenRequest: Readonly<{ url: string; body: URLSearchParams }> | undefined;
@@ -55,10 +55,10 @@ describe('refreshConnectedAccountOauthTokens', () => {
     const mod = await import('./serviceRefreshers');
     expect(mod.refreshConnectedAccountOauthTokens).toEqual(expect.any(Function));
 
-    const previousTokenUrl = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
-    const previousClientId = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID;
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = 'client-123';
+    const previousTokenUrl = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
+    const previousClientId = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = 'client-123';
 
     const fetchMock = vi.fn(async (_input: Parameters<typeof fetch>[0], _init?: RequestInit) => ({
       ok: true,
@@ -83,15 +83,15 @@ describe('refreshConnectedAccountOauthTokens', () => {
       expect(String(init?.body)).toContain('"client_id":"client-123"');
       expect(String(init?.body)).toContain('"refresh_token":"old-refresh"');
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = previousClientId;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = previousClientId;
     }
   });
 
   it('rejects a Claude refresh when the provider profile endpoint rejects the new access token', async () => {
     const mod = await import('./serviceRefreshers');
-    const previousTokenUrl = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
+    const previousTokenUrl = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
 
     const fetchMock = vi.fn(async (input: Parameters<typeof fetch>[0]) => {
       if (String(input) === 'https://example.test/anthropic/token') {
@@ -126,15 +126,15 @@ describe('refreshConnectedAccountOauthTokens', () => {
       });
       expect(fetchMock).toHaveBeenCalledTimes(2);
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
       vi.unstubAllGlobals();
     }
   });
 
   it('does not reject a Claude refresh only because optional profile evidence is temporarily unavailable', async () => {
     const mod = await import('./serviceRefreshers');
-    const previousTokenUrl = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
+    const previousTokenUrl = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
 
     const fetchMock = vi.fn(async (input: Parameters<typeof fetch>[0]) => {
       if (String(input) === 'https://example.test/anthropic/token') {
@@ -169,7 +169,7 @@ describe('refreshConnectedAccountOauthTokens', () => {
       });
       expect(fetchMock).toHaveBeenCalledTimes(2);
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
       vi.unstubAllGlobals();
     }
   });

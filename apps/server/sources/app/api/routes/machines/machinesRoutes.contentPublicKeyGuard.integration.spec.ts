@@ -138,7 +138,7 @@ describe("machinesRoutes (contentPublicKey guard)", () => {
     });
 
     it("returns 400 when strict mode is enabled and contentPublicKey is missing", async () => {
-        resetContentPublicKeyGuardEnv({ HAPPIER_MACHINES_REQUIRE_CONTENT_PUBLIC_KEY_FOR_DEK: "1" });
+        resetContentPublicKeyGuardEnv({ PIGGERCODE_MACHINES_REQUIRE_CONTENT_PUBLIC_KEY_FOR_DEK: "1" });
 
         const route = await createMachinesRoute();
         const { response, reply } = await route.invoke({

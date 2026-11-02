@@ -48,9 +48,9 @@ describe('restartDaemonAndWait', () => {
     inspectDaemonRunningStateMock.mockReset();
     spawnDetachedDaemonStartSyncMock.mockReset();
     vi.restoreAllMocks();
-    delete process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS;
-    delete process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS;
-    delete process.env.HAPPIER_DAEMON_RESTART_STABILITY_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS;
+    delete process.env.PIGGERCODE_DAEMON_RESTART_STABILITY_TIMEOUT_MS;
   });
 
   async function importSubject() {
@@ -108,9 +108,9 @@ describe('restartDaemonAndWait', () => {
       },
     }));
     spawnDetachedDaemonStartSyncMock.mockImplementation(async () => ({ unref: vi.fn() }));
-    process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS = '1';
-    process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS = '1';
-    process.env.HAPPIER_DAEMON_RESTART_STABILITY_TIMEOUT_MS = '1';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS = '1';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS = '1';
+    process.env.PIGGERCODE_DAEMON_RESTART_STABILITY_TIMEOUT_MS = '1';
 
     const subject = await import('./restartDaemonAndWait');
     // Arm the clock boundary after module loading so a 1ms lifecycle budget
@@ -137,7 +137,7 @@ describe('restartDaemonAndWait', () => {
     expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledWith(expect.objectContaining({
       startupSource: 'self-restart',
       env: expect.objectContaining({
-        HAPPIER_DAEMON_TAKEOVER: '1',
+        PIGGERCODE_DAEMON_TAKEOVER: '1',
       }),
     }));
   });
@@ -169,7 +169,7 @@ describe('restartDaemonAndWait', () => {
     expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledWith(expect.objectContaining({
       startupSource: 'self-restart',
       env: expect.objectContaining({
-        HAPPIER_DAEMON_TAKEOVER: '1',
+        PIGGERCODE_DAEMON_TAKEOVER: '1',
       }),
     }));
   });
@@ -205,8 +205,8 @@ describe('restartDaemonAndWait', () => {
 
   it('reports starting when final proof times out but the replacement child is still alive', async () => {
     const { restartDaemonAndWait } = await importSubject();
-    process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS = '1';
-    process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS = '1';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS = '1';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS = '1';
     inspectDaemonRunningStateMock.mockReset();
     inspectDaemonRunningStateMock
       .mockResolvedValue({
@@ -249,8 +249,8 @@ describe('restartDaemonAndWait', () => {
 
   it('waits for final proof snapshots until a new daemon is running within the start budget', async () => {
     const { restartDaemonAndWait } = await importSubject();
-    process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS = '5';
-    process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS = '1';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS = '5';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS = '1';
     const stableReplacementInspection: DaemonRunningInspection = {
       status: 'running',
       state: {
@@ -296,7 +296,7 @@ describe('restartDaemonAndWait', () => {
 
   it('does not report success when the proven replacement exits during the stability window', async () => {
     const { restartDaemonAndWait } = await importSubject();
-    process.env.HAPPIER_DAEMON_RESTART_STABILITY_TIMEOUT_MS = '1';
+    process.env.PIGGERCODE_DAEMON_RESTART_STABILITY_TIMEOUT_MS = '1';
     inspectDaemonRunningStateMock.mockReset();
     inspectDaemonRunningStateMock
       .mockResolvedValueOnce({

@@ -104,7 +104,7 @@ describe('maybeAutoUpdateNotice', () => {
         isTTY: true,
         homeDir: '/tmp/nowhere',
         cliRootDir: '/repo/apps/cli',
-        env: { HAPPIER_CLI_UPDATE_CHECK: '0' },
+        env: { PIGGERCODE_CLI_UPDATE_CHECK: '0' },
         publicReleaseRing: 'stable',
         nowMs: 100_000,
         spawnDetached,
@@ -149,7 +149,7 @@ describe('maybeAutoUpdateNotice', () => {
           script: join(cliRootDir, 'package-dist', 'index.mjs'),
           args: ['self', 'check', '--quiet'],
           cwd: cliRootDir,
-          env: expect.objectContaining({ HAPPIER_CLI_UPDATE_CHECK_SPAWNED: '1' }),
+          env: expect.objectContaining({ PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED: '1' }),
         });
         expect(output.lines).toHaveLength(0);
       } finally {
@@ -212,7 +212,7 @@ describe('maybeAutoUpdateNotice', () => {
 
   it.each([
     ['existing flag', ['--config', '/path/to/config']],
-    ['runtime context', ['--runtime-context', Buffer.from(JSON.stringify({ HAPPIER_HOME_DIR: '/sentinel/home' })).toString('base64url')]],
+    ['runtime context', ['--runtime-context', Buffer.from(JSON.stringify({ PIGGERCODE_HOME_DIR: '/sentinel/home' })).toString('base64url')]],
   ] as const)('does not print an update notice for self commands after a %s prefix', (_kind, prefix) => {
     withUpdateHomeDir((homeDir) => {
       const output = captureConsoleText();
@@ -355,7 +355,7 @@ describe('maybeAutoUpdateNotice', () => {
         isTTY: true,
         homeDir,
         cliRootDir: '/repo/apps/cli',
-        env: { HAPPIER_CLI_UPDATE_CHECK_LOCK_TTL_MS: '60000' },
+        env: { PIGGERCODE_CLI_UPDATE_CHECK_LOCK_TTL_MS: '60000' },
         publicReleaseRing: 'stable',
         nowMs: 100_000,
         spawnDetached,
@@ -367,7 +367,7 @@ describe('maybeAutoUpdateNotice', () => {
         isTTY: true,
         homeDir,
         cliRootDir: '/repo/apps/cli',
-        env: { HAPPIER_CLI_UPDATE_CHECK_LOCK_TTL_MS: '60000' },
+        env: { PIGGERCODE_CLI_UPDATE_CHECK_LOCK_TTL_MS: '60000' },
         publicReleaseRing: 'stable',
         nowMs: 100_001,
         spawnDetached,

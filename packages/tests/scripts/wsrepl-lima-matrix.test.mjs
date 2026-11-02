@@ -226,7 +226,7 @@ function buildPlaywrightHarnessNodeScript(options = {}) {
   const nodeLogPath = options.nodeLogPath ? String(options.nodeLogPath) : '';
   const daemonLogPath = options.daemonLogPath ? String(options.daemonLogPath) : '';
   const sessionId = String(options.sessionId ?? 'sess_created_1');
-  const sessionPathExpr = String(options.sessionPathExpr ?? '${HAPPIER_QA_SESSION_PATH:-}');
+  const sessionPathExpr = String(options.sessionPathExpr ?? '${PIGGERCODE_QA_SESSION_PATH:-}');
   const createSessionId = options.createSessionId !== false;
   const includeDaemonControl = options.includeDaemonControl !== false;
   const daemonStatedPath = String(options.stoppedMarker ?? '${HOME}/.host-daemon-stopped');
@@ -257,9 +257,9 @@ function buildPlaywrightHarnessNodeScript(options = {}) {
 
   if (includeVmPayloadBuilder) {
     lines.push('if [[ "${1:-}" == "-" || ( "${1:-}" == "--input-type=module" && "${2:-}" == "-" ) || ( "${1:-}" == "--input-type" && "${2:-}" == "module" && "${3:-}" == "-" ) ]]; then');
-    lines.push('  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"');
+    lines.push('  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"');
     lines.push('  if [[ -z "$payload" ]]; then');
-    lines.push('    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2');
+    lines.push('    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2');
     lines.push('    exit 2');
     lines.push('  fi');
     lines.push('  mkdir -p "$payload"');
@@ -331,31 +331,31 @@ function buildPlaywrightHarnessNodeScript(options = {}) {
   lines.push('script="${1:-}"');
   lines.push('shift || true');
   lines.push('if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then');
-  lines.push('  out="${HAPPIER_QA_OUTDIR:-}"');
+  lines.push('  out="${PIGGERCODE_QA_OUTDIR:-}"');
   lines.push('  if [[ -z "$out" ]]; then');
-  lines.push('    echo "missing HAPPIER_QA_OUTDIR" >&2');
+  lines.push('    echo "missing PIGGERCODE_QA_OUTDIR" >&2');
   lines.push('    exit 2');
   lines.push('  fi');
-  lines.push('  steps="${HAPPIER_QA_STEPS_JSON:-}"');
+  lines.push('  steps="${PIGGERCODE_QA_STEPS_JSON:-}"');
   lines.push('  if [[ -z "$steps" ]]; then');
-  lines.push('    echo "missing HAPPIER_QA_STEPS_JSON" >&2');
+  lines.push('    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2');
   lines.push('    exit 3');
   lines.push('  fi');
   lines.push(`  sid="${sessionId}"`);
-  lines.push('  if [[ "${HAPPIER_QA_TEST_STUB_OMIT_SESSION_ID:-0}" == "1" ]]; then sid=""; fi');
+  lines.push('  if [[ "${PIGGERCODE_QA_TEST_STUB_OMIT_SESSION_ID:-0}" == "1" ]]; then sid=""; fi');
   if (playwrightScriptLines.length > 0) {
     lines.push(...playwrightScriptLines);
   } else {
     lines.push('  mkdir -p "$out/steps/step-01"');
     lines.push('  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"');
-    lines.push(`  printf "%s\\n" "HAPPIER_QA_STACK_NAME=${'${HAPPIER_QA_STACK_NAME:-}'}" > "$out/env.txt"`);
-    lines.push(`  printf "%s\\n" "HAPPIER_QA_HEADLESS=${'${HAPPIER_QA_HEADLESS:-}'}" >> "$out/env.txt"`);
+    lines.push(`  printf "%s\\n" "PIGGERCODE_QA_STACK_NAME=${'${PIGGERCODE_QA_STACK_NAME:-}'}" > "$out/env.txt"`);
+    lines.push(`  printf "%s\\n" "PIGGERCODE_QA_HEADLESS=${'${PIGGERCODE_QA_HEADLESS:-}'}" >> "$out/env.txt"`);
     lines.push(`  printf "%s\\n" "EXPO_PUBLIC_HAPPY_STORAGE_SCOPE=${'${EXPO_PUBLIC_HAPPY_STORAGE_SCOPE:-}'}" >> "$out/env.txt"`);
     lines.push(`  printf "%s\\n" "EXPO_PUBLIC_HAPPY_SERVER_CONTEXT=${'${EXPO_PUBLIC_HAPPY_SERVER_CONTEXT:-}'}" >> "$out/env.txt"`);
-    lines.push(`  printf "%s\\n" "EXPO_PUBLIC_HAPPIER_SERVER_URL=${'${EXPO_PUBLIC_HAPPIER_SERVER_URL:-}'}" >> "$out/env.txt"`);
-    lines.push(`  printf "%s\\n" "HAPPIER_QA_SESSION_PATH=${sessionPathExpr}" >> "$out/env.txt"`);
-    lines.push(`  printf "%s\\n" "HAPPIER_QA_PREFERRED_AGENT_ENGINES=${'${HAPPIER_QA_PREFERRED_AGENT_ENGINES:-}'}" >> "$out/env.txt"`);
-    lines.push('  python3 - "$out" "$steps" "${HAPPIER_QA_SESSION_PATH:-}" "$sid" <<\'PY\'');
+    lines.push(`  printf "%s\\n" "EXPO_PUBLIC_PIGGERCODE_SERVER_URL=${'${EXPO_PUBLIC_PIGGERCODE_SERVER_URL:-}'}" >> "$out/env.txt"`);
+    lines.push(`  printf "%s\\n" "PIGGERCODE_QA_SESSION_PATH=${sessionPathExpr}" >> "$out/env.txt"`);
+    lines.push(`  printf "%s\\n" "PIGGERCODE_QA_PREFERRED_AGENT_ENGINES=${'${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES:-}'}" >> "$out/env.txt"`);
+    lines.push('  python3 - "$out" "$steps" "${PIGGERCODE_QA_SESSION_PATH:-}" "$sid" <<\'PY\'');
     lines.push('import json');
     lines.push('import sys');
     lines.push('from pathlib import Path');
@@ -471,7 +471,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
-	      '  echo "start-env direct-peer-bind-port=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' +
+	      '  echo "start-env direct-peer-bind-port=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' +
 	        JSON.stringify(happierLog),
 	      'fi',
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "stop" ]]; then',
@@ -528,12 +528,12 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
       `echo "guest happier $*" >> ${JSON.stringify(guestDaemonLog)}`,
       `runtime_log=${JSON.stringify(join(logDir, 'guest-daemon-runtime.log'))}`,
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
-      '  printf \'%s\\n\' "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' + JSON.stringify(guestDaemonLog),
-      '  printf \'%s\\n\' "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-}" >> ' + JSON.stringify(guestDaemonLog),
-      '  printf \'%s\\n\' "HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES=${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}" >> ' + JSON.stringify(guestDaemonLog),
-      '  printf \'%s\\n\' "HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
-      '  printf \'%s\\n\' "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
-      '  printf \'%s\\n\' "START_ENV MAX_BYTES=${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-} BIND_PORT=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
+      '  printf \'%s\\n\' "START_ENV MAX_BYTES=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-} BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' + JSON.stringify(guestDaemonLog),
       '  printf "%s\\n" "guest daemon started" > "$runtime_log"',
       '  echo "Daemon is running"',
       '  exit 0',
@@ -607,31 +607,31 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 	      'script="${1:-}"',
 	      'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
-      '  if [[ "${HAPPIER_QA_TEST_STUB_OMIT_SESSION_ID:-0}" == "1" ]]; then',
+      '  if [[ "${PIGGERCODE_QA_TEST_STUB_OMIT_SESSION_ID:-0}" == "1" ]]; then',
       '    sid=""',
       '  else',
       '    sid="sess_created_1"',
       '  fi',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  printf "%s\\n" "HAPPIER_QA_STACK_NAME=${HAPPIER_QA_STACK_NAME:-}" > "$out/env.txt"',
-      '  printf "%s\\n" "HAPPIER_QA_HEADLESS=${HAPPIER_QA_HEADLESS:-}" >> "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_STACK_NAME=${PIGGERCODE_QA_STACK_NAME:-}" > "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_HEADLESS=${PIGGERCODE_QA_HEADLESS:-}" >> "$out/env.txt"',
       '  printf "%s\\n" "EXPO_PUBLIC_HAPPY_STORAGE_SCOPE=${EXPO_PUBLIC_HAPPY_STORAGE_SCOPE:-}" >> "$out/env.txt"',
       '  printf "%s\\n" "EXPO_PUBLIC_HAPPY_SERVER_CONTEXT=${EXPO_PUBLIC_HAPPY_SERVER_CONTEXT:-}" >> "$out/env.txt"',
-      '  printf "%s\\n" "EXPO_PUBLIC_HAPPIER_SERVER_URL=${EXPO_PUBLIC_HAPPIER_SERVER_URL:-}" >> "$out/env.txt"',
-      '  printf "%s\\n" "HAPPIER_QA_SESSION_PATH=${HAPPIER_QA_SESSION_PATH:-}" >> "$out/env.txt"',
-      '  printf "%s\\n" "HAPPIER_QA_PREFERRED_AGENT_ENGINES=${HAPPIER_QA_PREFERRED_AGENT_ENGINES:-}" >> "$out/env.txt"',
-      '  python3 - "$out" "$steps" "${HAPPIER_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
+      '  printf "%s\\n" "EXPO_PUBLIC_PIGGERCODE_SERVER_URL=${EXPO_PUBLIC_PIGGERCODE_SERVER_URL:-}" >> "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_SESSION_PATH=${PIGGERCODE_QA_SESSION_PATH:-}" >> "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_PREFERRED_AGENT_ENGINES=${PIGGERCODE_QA_PREFERRED_AGENT_ENGINES:-}" >> "$out/env.txt"',
+      '  python3 - "$out" "$steps" "${PIGGERCODE_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -743,25 +743,25 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
   const env = {
     ...testEnv,
     // Ensure the runner forces headless-by-default even if the caller has an ambient override.
-    HAPPIER_QA_HEADLESS: '0',
-    HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES: '4096',
-    HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
+    PIGGERCODE_QA_HEADLESS: '0',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES: '4096',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
     HOME: homeDir,
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
     WSREPL_QA_SKIP_HOST_PROVIDER_INSTALL: '',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
     WSREPL_QA_VM_DIRECT_PEER_BIND_PORT: '48888',
     WSREPL_QA_VM_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
     WSREPL_QA_HOST_DIRECT_PEER_BIND_PORT: String(hostDirectPeerPort),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
   };
@@ -796,21 +796,21 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 
   const expectedSessionPath = join(homeDir, 'wsrepl-qa-fixtures', 'large-repo-k8s');
   const runnerEnv = await readFile(join(playwrightDir, 'env.txt'), 'utf8');
-  assert.match(runnerEnv, /HAPPIER_QA_STACK_NAME=stack-test/);
-  assert.match(runnerEnv, /HAPPIER_QA_HEADLESS=1/);
+  assert.match(runnerEnv, /PIGGERCODE_QA_STACK_NAME=stack-test/);
+  assert.match(runnerEnv, /PIGGERCODE_QA_HEADLESS=1/);
   assert.match(runnerEnv, /EXPO_PUBLIC_HAPPY_STORAGE_SCOPE=stack-test/);
   assert.match(runnerEnv, /EXPO_PUBLIC_HAPPY_SERVER_CONTEXT=stack/);
   assert.ok(
-    runnerEnv.includes('EXPO_PUBLIC_HAPPIER_SERVER_URL=http://localhost:53288'),
-    `expected runner env to include EXPO_PUBLIC_HAPPIER_SERVER_URL (got: ${runnerEnv})`,
+    runnerEnv.includes('EXPO_PUBLIC_PIGGERCODE_SERVER_URL=http://localhost:53288'),
+    `expected runner env to include EXPO_PUBLIC_PIGGERCODE_SERVER_URL (got: ${runnerEnv})`,
   );
   assert.ok(
-    runnerEnv.includes(`HAPPIER_QA_SESSION_PATH=${expectedSessionPath}`),
-    `expected runner env to include default HAPPIER_QA_SESSION_PATH (got: ${runnerEnv})`,
+    runnerEnv.includes(`PIGGERCODE_QA_SESSION_PATH=${expectedSessionPath}`),
+    `expected runner env to include default PIGGERCODE_QA_SESSION_PATH (got: ${runnerEnv})`,
   );
   assert.ok(
-    runnerEnv.includes('HAPPIER_QA_PREFERRED_AGENT_ENGINES=claude'),
-    `expected runner env to include default HAPPIER_QA_PREFERRED_AGENT_ENGINES=claude (got: ${runnerEnv})`,
+    runnerEnv.includes('PIGGERCODE_QA_PREFERRED_AGENT_ENGINES=claude'),
+    `expected runner env to include default PIGGERCODE_QA_PREFERRED_AGENT_ENGINES=claude (got: ${runnerEnv})`,
   );
 
   assert.equal(await fileExists(join(reportDir, 'summary.json')), true, 'expected summary.json to be written by wrapper');
@@ -835,9 +835,9 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 
   const guestDaemonOut = await readFile(guestDaemonLog, 'utf8');
   assert.match(guestDaemonOut, /guest happier daemon start/);
-  assert.match(guestDaemonOut, /HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES=4096/);
-  assert.match(guestDaemonOut, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=48888/);
-  assert.match(guestDaemonOut, /HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=127.0.0.1/);
+  assert.match(guestDaemonOut, /PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES=4096/);
+  assert.match(guestDaemonOut, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=48888/);
+  assert.match(guestDaemonOut, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=127.0.0.1/);
   assert.match(
     guestDaemonOut,
     /START_ENV MAX_BYTES=4096 BIND_PORT=48888 ADVERTISED_HOSTS=127\.0\.0\.1 FEATURE_ENABLED=true SERVER_ENABLED=true/,
@@ -873,7 +873,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 
   const headedPlaywrightDir = join(reportDirHeaded, 'playwright', 'attempt-01');
   const headedRunnerEnv = await readFile(join(headedPlaywrightDir, 'env.txt'), 'utf8');
-  assert.match(headedRunnerEnv, /HAPPIER_QA_HEADLESS=0/);
+  assert.match(headedRunnerEnv, /PIGGERCODE_QA_HEADLESS=0/);
 
   // If the Playwright harness writes a fully green summary but exits nonzero (cleanup/interrupt noise),
   // the wrapper should still treat the run as successful and produce summary.json.status=0.
@@ -927,21 +927,21 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  sid="sess_created_1"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"wsrepl_handoff_matrix_summary\\",\\"ok\\":true,\\"sessionId\\":\\"sess_created_1\\",\\"steps\\":[{\\"stepId\\":\\"step-01\\",\\"ok\\":true}]}" > "$out/summary.json"',
-      '  python3 - "$out" "$steps" "${HAPPIER_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
+      '  python3 - "$out" "$steps" "${PIGGERCODE_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -1094,15 +1094,15 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: '',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: '',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_DAEMON_STOP_POLL_RETRIES: '2',
     WSREPL_QA_HOST_DAEMON_STOP_POLL_DELAY_MS: '10',
   };
@@ -1192,7 +1192,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
       'set -euo pipefail',
       `echo "guest happier $*" >> ${JSON.stringify(guestDaemonLog)}`,
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
-      '  printf \'%s\\n\' "START_ENV BIND_PORT=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' +
+      '  printf \'%s\\n\' "START_ENV BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' +
         JSON.stringify(guestDaemonLog),
       '  echo "Daemon is running"',
       '  exit 0',
@@ -1232,9 +1232,9 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
       '  mkdir -p "$out/steps/step-01"',
       '  echo "stub ok" > "$out/runner.log"',
       '  exit 0',
@@ -1278,21 +1278,21 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   const scriptPath = resolve(join(__dirname, 'wsrepl-lima-matrix.sh'));
   const env = {
     ...testEnv,
-    HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
     HOME: homeDir,
     LIMA_HOME: limaHome,
     PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
     WSREPL_QA_VM_DIRECT_PEER_BIND_PORT_DEFAULT: '13377',
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -1399,7 +1399,7 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
       'log_path="${log_dir}/${safe_instance}.log"',
       'echo "guest happier ${instance} $*" >> "$log_path"',
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
-      '  printf \'%s\\n\' "START_ENV BIND_PORT=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> "$log_path"',
+      '  printf \'%s\\n\' "START_ENV BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> "$log_path"',
       '  echo "Daemon is running"',
       '  exit 0',
       'fi',
@@ -1437,9 +1437,9 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
       '  mkdir -p "$out/steps/step-01"',
       '  echo "stub ok" > "$out/runner.log"',
       '  exit 0',
@@ -1485,22 +1485,22 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
   const scriptPath = resolve(join(__dirname, 'wsrepl-lima-matrix.sh'));
   const env = {
     ...testEnv,
-    HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
+    PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED: '',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED: '',
     HOME: homeDir,
     LIMA_HOME: limaHome,
     PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
     WSREPL_QA_VM_DIRECT_PEER_BIND_PORT_DEFAULT: '13377',
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
     WSREPL_QA_HOST_DIRECT_PEER_BIND_PORT: String(hostDirectPeerPort),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, primaryVm, extraVm], {
@@ -1642,11 +1642,11 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright does not pro
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       // Intentionally omit sessionId in meta.json.
-      '  python3 - "$out" "${HAPPIER_QA_SESSION_PATH:-}" <<\'PY\'',
+      '  python3 - "$out" "${PIGGERCODE_QA_SESSION_PATH:-}" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -1722,15 +1722,15 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright does not pro
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -1857,10 +1857,10 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  python3 - "$out" "${HAPPIER_QA_SESSION_PATH:-}" <<\'PY\'',
+      '  python3 - "$out" "${PIGGERCODE_QA_SESSION_PATH:-}" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -1948,15 +1948,15 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -2020,11 +2020,11 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  session_id="${HAPPIER_QA_SESSION_ID:-sess_default_source_1}"',
-      '  session_path="${HAPPIER_QA_SESSION_PATH:-}"',
+      '  session_id="${PIGGERCODE_QA_SESSION_ID:-sess_default_source_1}"',
+      '  session_path="${PIGGERCODE_QA_SESSION_PATH:-}"',
       '  python3 - "$out" "$session_id" "$session_path" <<\'PY\'',
       'import json',
       'import sys',
@@ -2186,12 +2186,12 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
     LIMA_HOME: limaHome,
     PATH: [binDir, '/usr/bin', '/bin', '/usr/sbin', '/sbin'].join(delimiter),
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_SESSION_ID: 'sess_default_source_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_SESSION_ID: 'sess_default_source_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_DIRECT_PEER_VM_CONNECTIVITY_CHECK: '0',
   };
 
@@ -2266,7 +2266,7 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
 	      '  printf "1" > "$stopped_marker"',
 	      '  exit 0',
 	      'fi',
-	      // When the daemon is managed under a stack-scoped HAPPIER_HOME_DIR, status probes must
+	      // When the daemon is managed under a stack-scoped PIGGERCODE_HOME_DIR, status probes must
 	      // use that same home and active server id. Otherwise the watchdog will see "not running"
 	      // and restart the daemon continuously, corrupting matrix results.
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "status" ]]; then',
@@ -2276,7 +2276,7 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
 	      '  fi',
 	      `  expected_home=${JSON.stringify(stackCliRoot)}`,
 	      `  expected_id=${JSON.stringify(stackServerId)}`,
-	      '  if [[ "${HAPPIER_HOME_DIR:-}" == "$expected_home" && "${HAPPIER_ACTIVE_SERVER_ID:-}" == "$expected_id" ]]; then',
+	      '  if [[ "${PIGGERCODE_HOME_DIR:-}" == "$expected_home" && "${PIGGERCODE_ACTIVE_SERVER_ID:-}" == "$expected_id" ]]; then',
 	      '    echo "Daemon is running"',
 	      '    exit 0',
       '  fi',
@@ -2357,20 +2357,20 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
 	      'script="${1:-}"',
 	      'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "stub ok" > "$out/runner.log"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
       `  printf "1" > ${JSON.stringify(join(homeDir, '.playwright-running'))}`,
       '  # Give the wrapper background watchdog time to probe the daemon at least once.',
       '  sleep 0.25',
@@ -2444,15 +2444,15 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_ACCESS_KEY_PATH: accessKeyPath,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_ACCESS_KEY_PATH: accessKeyPath,
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
   };
@@ -2588,15 +2588,15 @@ test('macos wsrepl lima matrix watchdog ignores transient "Daemon is not running
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
       `  printf "1" > ${JSON.stringify(join(homeDir, '.playwright-running'))}`,
       '  sleep 0.25',
       '  exit 0',
@@ -2659,14 +2659,14 @@ test('macos wsrepl lima matrix watchdog ignores transient "Daemon is not running
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
   };
@@ -2779,9 +2779,9 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright harness writ
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$out/steps"',
@@ -2849,13 +2849,13 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright harness writ
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -2995,9 +2995,9 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright runner does 
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$out/steps/step-01"',
@@ -3073,13 +3073,13 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright runner does 
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -3210,14 +3210,14 @@ test('macos wsrepl lima matrix wrapper can derive host server url from stack.run
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  printf "%s\\n" "EXPO_PUBLIC_HAPPIER_SERVER_URL=${EXPO_PUBLIC_HAPPIER_SERVER_URL:-}" > "$out/env.txt"',
+      '  printf "%s\\n" "EXPO_PUBLIC_PIGGERCODE_SERVER_URL=${EXPO_PUBLIC_PIGGERCODE_SERVER_URL:-}" > "$out/env.txt"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\"}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -3289,13 +3289,13 @@ test('macos wsrepl lima matrix wrapper can derive host server url from stack.run
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -3401,7 +3401,7 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\"}" > "$out/meta.json"',
@@ -3475,12 +3475,12 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl-1', 'happy-wsrepl-2'], {
@@ -3498,7 +3498,7 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
   assert.match(limactlOut, /limactl create --name happy-wsrepl-2/);
 });
 
-test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for HAPPIER_QA_SESSION_PATH', async () => {
+test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for PIGGERCODE_QA_SESSION_PATH', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-large-repo-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -3562,10 +3562,10 @@ test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for HAP
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  printf "%s\\n" "HAPPIER_QA_SESSION_PATH=${HAPPIER_QA_SESSION_PATH:-}" > "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_SESSION_PATH=${PIGGERCODE_QA_SESSION_PATH:-}" > "$out/env.txt"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\"}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -3628,13 +3628,13 @@ test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for HAP
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
     WSREPL_QA_LARGE_REPO_PATH: largeRepoDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -3647,7 +3647,7 @@ test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for HAP
 
   const playwrightEnvPath = join(reportDir, 'playwright', 'attempt-01', 'env.txt');
   const runnerEnv = await readFile(playwrightEnvPath, 'utf8');
-  assert.match(runnerEnv, new RegExp(`HAPPIER_QA_SESSION_PATH=${largeRepoDir.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`));
+  assert.match(runnerEnv, new RegExp(`PIGGERCODE_QA_SESSION_PATH=${largeRepoDir.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`));
 
   const summary = JSON.parse(await readFile(join(reportDir, 'summary.json'), 'utf8'));
   assert.equal(summary.kind, 'wsrepl_lima_matrix_wrapper');
@@ -3729,9 +3729,9 @@ test('macos wsrepl lima matrix wrapper retries Playwright once when fatal.json r
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
       `  if [[ ! -f ${JSON.stringify(attemptMarker)} ]]; then`,
@@ -3806,15 +3806,15 @@ test('macos wsrepl lima matrix wrapper retries Playwright once when fatal.json r
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -3882,7 +3882,7 @@ test('macos wsrepl lima matrix wrapper prefers the stack runtime CLI inferred fr
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\"}" > "$out/meta.json"',
@@ -3994,14 +3994,14 @@ test('macos wsrepl lima matrix wrapper prefers the stack runtime CLI inferred fr
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_2',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_2', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_2',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_2', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_2',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_2',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4019,7 +4019,7 @@ test('macos wsrepl lima matrix wrapper prefers the stack runtime CLI inferred fr
   assert.equal(await fileExists(yarnLog), false, 'did not expect yarn to be invoked');
 });
 
-test('macos wsrepl lima matrix wrapper restarts the guest daemon with HAPPIER_SERVER_URL rewritten for Lima (host.lima.internal)', async () => {
+test('macos wsrepl lima matrix wrapper restarts the guest daemon with PIGGERCODE_SERVER_URL rewritten for Lima (host.lima.internal)', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-guest-server-url-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -4049,7 +4049,7 @@ test('macos wsrepl lima matrix wrapper restarts the guest daemon with HAPPIER_SE
 	      'sub="${2:-}"',
 	      'if [[ "$cmd" == "daemon" && "$sub" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
-	      '  echo "HAPPIER_SERVER_URL=${HAPPIER_SERVER_URL-}" >> ' + JSON.stringify(guestEnvLog),
+	      '  echo "PIGGERCODE_SERVER_URL=${PIGGERCODE_SERVER_URL-}" >> ' + JSON.stringify(guestEnvLog),
 	      '  exit 0',
 	      'fi',
 	      'if [[ "$cmd" == "daemon" && "$sub" == "stop" ]]; then',
@@ -4125,7 +4125,7 @@ test('macos wsrepl lima matrix wrapper restarts the guest daemon with HAPPIER_SE
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\"}" > "$out/meta.json"',
@@ -4188,15 +4188,15 @@ test('macos wsrepl lima matrix wrapper restarts the guest daemon with HAPPIER_SE
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
     WSREPL_QA_HOST_HOME_REL: '',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4209,7 +4209,7 @@ test('macos wsrepl lima matrix wrapper restarts the guest daemon with HAPPIER_SE
 
   const logged = await readFile(guestEnvLog, 'utf8').catch(() => '');
   assert.ok(
-    logged.includes('HAPPIER_SERVER_URL=http://host.lima.internal:53288'),
+    logged.includes('PIGGERCODE_SERVER_URL=http://host.lima.internal:53288'),
     `expected guest daemon to be restarted with host.lima.internal server url; got:\n${logged}`,
   );
 });
@@ -4254,8 +4254,8 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
     buildStopAwareDaemonScript({
       stoppedMarker: join(homeDir, '.host-daemon-stopped'),
       startExtraLines: [
-        'echo "HAPPIER_HOME_DIR=${HAPPIER_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
-        'echo "HAPPIER_ACTIVE_SERVER_ID=${HAPPIER_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_HOME_DIR=${PIGGERCODE_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_ACTIVE_SERVER_ID=${PIGGERCODE_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
       ],
       startSuccessLines: [],
     }),
@@ -4276,7 +4276,7 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\"}" > "$out/meta.json"',
@@ -4337,15 +4337,15 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4358,11 +4358,11 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
 
   const logged = await readFile(hostEnvLog, 'utf8').catch(() => '');
   assert.ok(
-    logged.includes(`HAPPIER_HOME_DIR=${join(stackRoot, 'cli')}`),
+    logged.includes(`PIGGERCODE_HOME_DIR=${join(stackRoot, 'cli')}`),
     `expected wrapper to run host daemon with stack cli home dir; got:\n${logged}`,
   );
   assert.ok(
-    logged.includes(`HAPPIER_ACTIVE_SERVER_ID=${stackServerId}`),
+    logged.includes(`PIGGERCODE_ACTIVE_SERVER_ID=${stackServerId}`),
     `expected wrapper to run host daemon with stack active server id; got:\n${logged}`,
   );
 });
@@ -4412,8 +4412,8 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
     buildStopAwareDaemonScript({
       stoppedMarker: join(homeDir, '.host-daemon-stopped'),
       startExtraLines: [
-        'echo "HAPPIER_HOME_DIR=${HAPPIER_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
-        'echo "HAPPIER_ACTIVE_SERVER_ID=${HAPPIER_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_HOME_DIR=${PIGGERCODE_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_ACTIVE_SERVER_ID=${PIGGERCODE_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
       ],
       startSuccessLines: [],
     }),
@@ -4434,7 +4434,7 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\"}" > "$out/meta.json"',
@@ -4495,15 +4495,15 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4516,11 +4516,11 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
 
   const logged = await readFile(hostEnvLog, 'utf8').catch(() => '');
   assert.ok(
-    logged.includes(`HAPPIER_HOME_DIR=${join(stackRoot, 'cli')}`),
+    logged.includes(`PIGGERCODE_HOME_DIR=${join(stackRoot, 'cli')}`),
     `expected wrapper to keep using stack cli home dir even when legacy cli/access.key is newer; got:\n${logged}`,
   );
   assert.ok(
-    logged.includes(`HAPPIER_ACTIVE_SERVER_ID=${stackServerId}`),
+    logged.includes(`PIGGERCODE_ACTIVE_SERVER_ID=${stackServerId}`),
     `expected wrapper to keep using the server-scoped active server id even when legacy cli/access.key is newer; got:\n${logged}`,
   );
 });
@@ -4562,8 +4562,8 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
     buildStopAwareDaemonScript({
       stoppedMarker: join(homeDir, '.host-daemon-stopped'),
       startExtraLines: [
-        'echo "HAPPIER_HOME_DIR=${HAPPIER_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
-        'echo "HAPPIER_ACTIVE_SERVER_ID=${HAPPIER_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_HOME_DIR=${PIGGERCODE_HOME_DIR-}" >> ' + JSON.stringify(hostEnvLog),
+        'echo "PIGGERCODE_ACTIVE_SERVER_ID=${PIGGERCODE_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(hostEnvLog),
       ],
       startSuccessLines: [],
     }),
@@ -4584,7 +4584,7 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\"}" > "$out/meta.json"',
@@ -4645,16 +4645,16 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: missingAccessKeyPath,
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: missingAccessKeyPath,
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4667,11 +4667,11 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
 
   const logged = await readFile(hostEnvLog, 'utf8').catch(() => '');
   assert.ok(
-    logged.includes(`HAPPIER_HOME_DIR=${join(stackRoot, 'cli')}`),
+    logged.includes(`PIGGERCODE_HOME_DIR=${join(stackRoot, 'cli')}`),
     `expected wrapper to keep using stack cli home dir when only the active server dir is known; got:\n${logged}`,
   );
   assert.ok(
-    logged.includes(`HAPPIER_ACTIVE_SERVER_ID=${stackServerId}`),
+    logged.includes(`PIGGERCODE_ACTIVE_SERVER_ID=${stackServerId}`),
     `expected wrapper to keep using stack active server id when only the active server dir is known; got:\n${logged}`,
   );
 });
@@ -4787,15 +4787,15 @@ test('macos wsrepl lima matrix wrapper seeds host daemon access.key from stack c
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: accessKeyPath,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: accessKeyPath,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -4868,16 +4868,16 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
     buildStopAwareDaemonScript({
       startExtraLines: [
         'echo "daemon started"',
-        `echo "HAPPIER_HOME_DIR=${'${HAPPIER_HOME_DIR:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
-        `echo "HAPPIER_ACTIVE_SERVER_ID=${'${HAPPIER_ACTIVE_SERVER_ID:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
+        `echo "PIGGERCODE_HOME_DIR=${'${PIGGERCODE_HOME_DIR:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
+        `echo "PIGGERCODE_ACTIVE_SERVER_ID=${'${PIGGERCODE_ACTIVE_SERVER_ID:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
       ],
       statusRunningLines: [
         'echo "🤖 Daemon Status"',
         'echo "✓ Daemon is running"',
         'echo "📄 Daemon State:"',
-        'settings_path="${HAPPIER_HOME_DIR:-$HOME}/settings.json"',
+        'settings_path="${PIGGERCODE_HOME_DIR:-$HOME}/settings.json"',
         'if [[ -f "$settings_path" ]]; then',
-        '  machine_id="$(python3 - "$settings_path" "${HAPPIER_ACTIVE_SERVER_ID:-}" <<\'PY\'',
+        '  machine_id="$(python3 - "$settings_path" "${PIGGERCODE_ACTIVE_SERVER_ID:-}" <<\'PY\'',
         'import json',
         'import sys',
         'from pathlib import Path',
@@ -4919,11 +4919,11 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
     buildPlaywrightHarnessNodeScript({
       passthroughMode: 'silent',
       playwrightScriptLines: [
-        '  out="${HAPPIER_QA_OUTDIR:-}"',
-        '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-        '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
-        '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-        '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+        '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+        '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+        '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
+        '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+        '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
         '  mkdir -p "$out/steps/step-01"',
         '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
         '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
@@ -4987,14 +4987,14 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
     WSREPL_QA_HOST_HOME_REL: hostHomeRel,
   };
 
@@ -5025,7 +5025,7 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
 
   const hostEnv = await readFile(hostEnvLog, 'utf8').catch(() => '');
   assert.ok(
-    hostEnv.includes(`HAPPIER_HOME_DIR=${join(homeDir, hostHomeRel)}`),
+    hostEnv.includes(`PIGGERCODE_HOME_DIR=${join(homeDir, hostHomeRel)}`),
     `expected wrapper to run host daemon in the isolated home; got:\n${hostEnv}`,
   );
 });
@@ -5129,12 +5129,12 @@ test('macos wsrepl lima matrix wrapper fails closed when WSREPL_QA_HOST_HOME_REL
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_HOME_REL: 'isolated-host-home',
   };
 
@@ -5199,7 +5199,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     buildStopAwareDaemonScript({
       startExtraLines: [
         `echo "PATH=${'${PATH}'}" >> ${JSON.stringify(hostEnvLog)}`,
-        `echo "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
+        `echo "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
       ],
       statusRunningLines: [
         'echo "🤖 Daemon Status"',
@@ -5220,11 +5220,11 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     buildPlaywrightHarnessNodeScript({
       passthroughMode: 'silent',
       playwrightScriptLines: [
-        '  out="${HAPPIER_QA_OUTDIR:-}"',
-        '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-        '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
-        '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-        '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+        '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+        '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+        '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
+        '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+        '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
         '  mkdir -p "$out/steps/step-01"',
         '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
         '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
@@ -5298,14 +5298,14 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
     WSREPL_QA_HOST_HOME_REL: 'occupied-host-home',
     WSREPL_QA_HOST_DIRECT_PEER_BIND_PORT: '13381',
   };
@@ -5322,7 +5322,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     hostEnv.includes('PATH=/usr/sbin:/sbin:'),
     `expected wrapper to prepend system bins so lsof is discoverable even when PATH omits them; got:\n${hostEnv}`,
   );
-  const bindPortMatch = hostEnv.match(/HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
+  const bindPortMatch = hostEnv.match(/PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
   assert.ok(bindPortMatch, `expected wrapper to log the resolved host direct-peer port; got:\n${hostEnv}`);
   assert.notEqual(bindPortMatch?.[1], '13381', `expected wrapper to skip the occupied host direct-peer port; got:\n${hostEnv}`);
   assert.ok(Number(bindPortMatch?.[1] ?? 0) > 13381, `expected wrapper to advance past the occupied host direct-peer port; got:\n${hostEnv}`);
@@ -5362,7 +5362,7 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
     happierPath,
     buildStopAwareDaemonScript({
       startExtraLines: [
-        `echo "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
+        `echo "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
       ],
       statusRunningLines: [
         'echo "🤖 Daemon Status"',
@@ -5383,11 +5383,11 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
     buildPlaywrightHarnessNodeScript({
       passthroughMode: 'silent',
       playwrightScriptLines: [
-        '  out="${HAPPIER_QA_OUTDIR:-}"',
-        '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-        '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
-        '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-        '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+        '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+        '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+        '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
+        '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+        '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
         '  mkdir -p "$out/steps/step-01"',
         '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
         '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
@@ -5461,16 +5461,16 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
     WSREPL_QA_HOST_DIRECT_PEER_BIND_PORT: '49381',
-    HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '49382',
+    PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT: '49382',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -5481,7 +5481,7 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
 
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   const hostEnv = await readFile(hostEnvLog, 'utf8').catch(() => '');
-  const bindPortMatch = hostEnv.match(/HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
+  const bindPortMatch = hostEnv.match(/PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
   assert.ok(bindPortMatch, `expected wrapper to log the effective host direct-peer bind port; got:\n${hostEnv}`);
   assert.equal(
     bindPortMatch?.[1],
@@ -5524,7 +5524,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     happierPath,
     buildStopAwareDaemonScript({
       startExtraLines: [
-        `echo "HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
+        `echo "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${'${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}'}" >> ${JSON.stringify(hostEnvLog)}`,
       ],
       statusRunningLines: [
         'echo "🤖 Daemon Status"',
@@ -5545,11 +5545,11 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     buildPlaywrightHarnessNodeScript({
       passthroughMode: 'silent',
       playwrightScriptLines: [
-        '  out="${HAPPIER_QA_OUTDIR:-}"',
-        '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-        '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
-        '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-        '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+        '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+        '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+        '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
+        '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+        '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
         '  mkdir -p "$out/steps/step-01"',
         '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
         '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
@@ -5622,14 +5622,14 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
     LIMA_HOME: limaHome,
     PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_STACK_NAME: stackName,
-    HAPPIER_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_UI_URL: 'http://127.0.0.1:19000/?server=http%3A%2F%2F127.0.0.1%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_STACK_NAME: stackName,
+    PIGGERCODE_QA_ACCESS_KEY_PATH: join(stackRoot, 'cli', 'servers', stackServerId, 'access.key'),
     WSREPL_QA_HOST_HOME_REL: 'occupied-host-home',
     WSREPL_QA_HOST_DIRECT_PEER_BIND_PORT: '13381',
   };
@@ -5642,7 +5642,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
 
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   const hostEnv = await readFile(hostEnvLog, 'utf8').catch(() => '');
-  const bindPortMatch = hostEnv.match(/HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
+  const bindPortMatch = hostEnv.match(/PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=(\d+)/);
   assert.ok(bindPortMatch, `expected wrapper to log the resolved host direct-peer port; got:\n${hostEnv}`);
   assert.notEqual(bindPortMatch?.[1], '13381', `expected wrapper to skip the occupied host direct-peer port without lsof in PATH; got:\n${hostEnv}`);
   assert.ok(Number(bindPortMatch?.[1] ?? 0) > 13381, `expected wrapper to advance past the occupied host direct-peer port without lsof in PATH; got:\n${hostEnv}`);
@@ -5751,14 +5751,14 @@ test('macos wsrepl lima matrix wrapper surfaces playwright fatal hint in summary
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  mkdir -p "$out"',
@@ -5827,14 +5827,14 @@ test('macos wsrepl lima matrix wrapper surfaces playwright fatal hint in summary
     HOME: homeDir,
     LIMA_HOME: limaHome,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'stack_runtime',
-    HAPPIER_QA_SESSION_ID: 'sess_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'stack_runtime',
+    PIGGERCODE_QA_SESSION_ID: 'sess_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -5920,21 +5920,21 @@ test('macos wsrepl lima matrix wrapper does not require a source machine id for 
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-      '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+      '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+      '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
       '  printf "%s\\n" "{\\"kind\\\":\\"stub\\\",\\\"stepsJson\\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\\"sourceMachineId\\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\\"sessionId\\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\\"sessionPath\\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -5994,15 +5994,15 @@ test('macos wsrepl lima matrix wrapper does not require a source machine id for 
 	    LIMA_HOME: limaHome,
 	    PATH: `${binDir}:${testEnv.PATH}`,
 	    WSREPL_QA_OUTPUT_DIR: reportDir,
-	    HAPPIER_QA_STACK_NAME: 'stack-test',
-	    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-	    HAPPIER_QA_SESSION_PATH: root,
-	    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-	    // Intentionally omit WSREPL_QA_HOST_MACHINE_ID + HAPPIER_QA_SOURCE_MACHINE_ID.
+	    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+	    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+	    PIGGERCODE_QA_SESSION_PATH: root,
+	    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+	    // Intentionally omit WSREPL_QA_HOST_MACHINE_ID + PIGGERCODE_QA_SOURCE_MACHINE_ID.
 	    WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -6120,13 +6120,13 @@ test('macos wsrepl lima matrix wrapper polls daemon status until host machine id
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-      '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+      '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+      '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -6186,14 +6186,14 @@ test('macos wsrepl lima matrix wrapper polls daemon status until host machine id
 	    LIMA_HOME: limaHome,
 	    PATH: `${binDir}:${testEnv.PATH}`,
 	    WSREPL_QA_OUTPUT_DIR: reportDir,
-	    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-	    HAPPIER_QA_SESSION_PATH: root,
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    // Intentionally omit WSREPL_QA_HOST_MACHINE_ID + HAPPIER_QA_SOURCE_MACHINE_ID; wrapper must poll and export.
+	    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+	    PIGGERCODE_QA_SESSION_PATH: root,
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    // Intentionally omit WSREPL_QA_HOST_MACHINE_ID + PIGGERCODE_QA_SOURCE_MACHINE_ID; wrapper must poll and export.
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_MACHINE_ID_POLL_RETRIES: '3',
     WSREPL_QA_MACHINE_ID_POLL_DELAY_MS: '0',
   };
@@ -6309,13 +6309,13 @@ test('macos wsrepl lima matrix wrapper skips host machineId polling when WSREPL_
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  sid="${HAPPIER_QA_SESSION_ID:-sess_created_1}"',
-      '  spath="${HAPPIER_QA_SESSION_PATH:-}"',
+      '  sid="${PIGGERCODE_QA_SESSION_ID:-sess_created_1}"',
+      '  spath="${PIGGERCODE_QA_SESSION_PATH:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\"),\\"sessionId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$sid\"),\\"sessionPath\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$spath\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -6375,14 +6375,14 @@ test('macos wsrepl lima matrix wrapper skips host machineId polling when WSREPL_
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_PATH: root,
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_PATH: root,
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_MACHINE_ID_POLL_RETRIES: '3',
     WSREPL_QA_MACHINE_ID_POLL_DELAY_MS: '0',
   };
@@ -6403,7 +6403,7 @@ test('macos wsrepl lima matrix wrapper skips host machineId polling when WSREPL_
   );
 });
 
-test('macos wsrepl lima matrix wrapper can discover stack credentials from the most-recent stack.runtime.json when HAPPIER_QA_STACK_NAME and HAPPIER_UI_URL are unset', async () => {
+test('macos wsrepl lima matrix wrapper can discover stack credentials from the most-recent stack.runtime.json when PIGGERCODE_QA_STACK_NAME and PIGGERCODE_UI_URL are unset', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-seed-host-auto-stack-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -6520,15 +6520,15 @@ test('macos wsrepl lima matrix wrapper can discover stack credentials from the m
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    // Intentionally omit HAPPIER_QA_STACK_NAME and HAPPIER_UI_URL.
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    // Intentionally omit PIGGERCODE_QA_STACK_NAME and PIGGERCODE_UI_URL.
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -6541,7 +6541,7 @@ test('macos wsrepl lima matrix wrapper can discover stack credentials from the m
   assert.equal(await fileExists(expectedDaemonAccessKeyPath), true, 'expected wrapper to seed host daemon access.key via autodetected stack credentials');
 });
 
-test('macos wsrepl lima matrix wrapper derives host server url from the most-recent stack.runtime.json when HAPPIER_UI_URL is unset', async () => {
+test('macos wsrepl lima matrix wrapper derives host server url from the most-recent stack.runtime.json when PIGGERCODE_UI_URL is unset', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-host-server-url-autodetect-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -6593,9 +6593,9 @@ test('macos wsrepl lima matrix wrapper derives host server url from the most-rec
 	      '        ;;',
 	      '      start|start-sync)',
 	      '        rm -f "$stopped_marker" >/dev/null 2>&1 || true',
-	      '        echo "HAPPIER_SERVER_URL=${HAPPIER_SERVER_URL-}" >> ' + JSON.stringify(envLog),
-	      '        echo "HAPPIER_HOME_DIR=${HAPPIER_HOME_DIR-}" >> ' + JSON.stringify(envLog),
-	      '        echo "HAPPIER_ACTIVE_SERVER_ID=${HAPPIER_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(envLog),
+	      '        echo "PIGGERCODE_SERVER_URL=${PIGGERCODE_SERVER_URL-}" >> ' + JSON.stringify(envLog),
+	      '        echo "PIGGERCODE_HOME_DIR=${PIGGERCODE_HOME_DIR-}" >> ' + JSON.stringify(envLog),
+	      '        echo "PIGGERCODE_ACTIVE_SERVER_ID=${PIGGERCODE_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(envLog),
       '        echo "daemon started"',
 	      '        exit 0',
 	      '        ;;',
@@ -6640,7 +6640,7 @@ test('macos wsrepl lima matrix wrapper derives host server url from the most-rec
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\\":\\"stub\\"}" > "$out/meta.json"',
@@ -6701,16 +6701,16 @@ test('macos wsrepl lima matrix wrapper derives host server url from the most-rec
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
-    HAPPIER_QA_ACCESS_KEY_PATH: accessKeyPath,
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    PIGGERCODE_QA_ACCESS_KEY_PATH: accessKeyPath,
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    // Intentionally omit HAPPIER_UI_URL and HAPPIER_SERVER_URL.
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    // Intentionally omit PIGGERCODE_UI_URL and PIGGERCODE_SERVER_URL.
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -6722,12 +6722,12 @@ test('macos wsrepl lima matrix wrapper derives host server url from the most-rec
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   const logged = await readFile(envLog, 'utf8');
   assert.ok(
-    logged.includes(`HAPPIER_SERVER_URL=http://127.0.0.1:${serverPort}`),
-    `expected host HAPPIER_SERVER_URL derived from stack.runtime.json\nlogged:\n${logged}`,
+    logged.includes(`PIGGERCODE_SERVER_URL=http://127.0.0.1:${serverPort}`),
+    `expected host PIGGERCODE_SERVER_URL derived from stack.runtime.json\nlogged:\n${logged}`,
   );
 });
 
-test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit HAPPIER_SERVER_URL even when the newest stack is unrelated', async () => {
+test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit PIGGERCODE_SERVER_URL even when the newest stack is unrelated', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-server-url-stack-home-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -6796,9 +6796,9 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit HAP
       '        ;;',
       '      start|start-sync)',
       '        rm -f "$stopped_marker" >/dev/null 2>&1 || true',
-      '        echo "HAPPIER_SERVER_URL=${HAPPIER_SERVER_URL-}" >> ' + JSON.stringify(envLog),
-      '        echo "HAPPIER_HOME_DIR=${HAPPIER_HOME_DIR-}" >> ' + JSON.stringify(envLog),
-      '        echo "HAPPIER_ACTIVE_SERVER_ID=${HAPPIER_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(envLog),
+      '        echo "PIGGERCODE_SERVER_URL=${PIGGERCODE_SERVER_URL-}" >> ' + JSON.stringify(envLog),
+      '        echo "PIGGERCODE_HOME_DIR=${PIGGERCODE_HOME_DIR-}" >> ' + JSON.stringify(envLog),
+      '        echo "PIGGERCODE_ACTIVE_SERVER_ID=${PIGGERCODE_ACTIVE_SERVER_ID-}" >> ' + JSON.stringify(envLog),
       '        echo "daemon started"',
       '        exit 0',
       '        ;;',
@@ -6843,7 +6843,7 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit HAP
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\\":\\"stub\\"}" > "$out/meta.json"',
@@ -6904,14 +6904,14 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit HAP
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_SERVER_URL: `http://127.0.0.1:${desiredServerPort}`,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_SERVER_URL: `http://127.0.0.1:${desiredServerPort}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'transfer_snapshot' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -6923,16 +6923,16 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit HAP
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   const logged = await readFile(envLog, 'utf8');
   assert.ok(
-    logged.includes(`HAPPIER_SERVER_URL=http://127.0.0.1:${desiredServerPort}`),
-    `expected wrapper to preserve explicit HAPPIER_SERVER_URL\nlogged:\n${logged}`,
+    logged.includes(`PIGGERCODE_SERVER_URL=http://127.0.0.1:${desiredServerPort}`),
+    `expected wrapper to preserve explicit PIGGERCODE_SERVER_URL\nlogged:\n${logged}`,
   );
   assert.ok(
-    logged.includes(`HAPPIER_HOME_DIR=${join(desiredStackRoot, 'cli')}`),
-    `expected wrapper to resolve the desired stack cli home from HAPPIER_SERVER_URL\nlogged:\n${logged}`,
+    logged.includes(`PIGGERCODE_HOME_DIR=${join(desiredStackRoot, 'cli')}`),
+    `expected wrapper to resolve the desired stack cli home from PIGGERCODE_SERVER_URL\nlogged:\n${logged}`,
   );
   assert.ok(
-    logged.includes(`HAPPIER_ACTIVE_SERVER_ID=${desiredServerId}`),
-    `expected wrapper to resolve the desired active server id from HAPPIER_SERVER_URL\nlogged:\n${logged}`,
+    logged.includes(`PIGGERCODE_ACTIVE_SERVER_ID=${desiredServerId}`),
+    `expected wrapper to resolve the desired active server id from PIGGERCODE_SERVER_URL\nlogged:\n${logged}`,
   );
 });
 
@@ -7027,13 +7027,13 @@ test('macos wsrepl lima matrix wrapper enforces a hard timeout for the playwrigh
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_timeout_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
-    HAPPIER_QA_TIMEOUT_MS: '50',
+    PIGGERCODE_QA_SESSION_ID: 'sess_timeout_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
+    PIGGERCODE_QA_TIMEOUT_MS: '50',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -7126,9 +7126,9 @@ test('macos wsrepl lima matrix wrapper runs the autoupdate payload builder from 
       'fi',
       // Autoupdate payload builder (`node --input-type=module - ...`).
       'if [[ "${1:-}" == "-" || ( "${1:-}" == "--input-type=module" && "${2:-}" == "-" ) || ( "${1:-}" == "--input-type" && "${2:-}" == "module" && "${3:-}" == "-" ) ]]; then',
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
-      '    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2',
+      '    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$payload"',
@@ -7140,7 +7140,7 @@ test('macos wsrepl lima matrix wrapper runs the autoupdate payload builder from 
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"sessionId\\":\\"sess_autoupdate_cwd_1\\"}" > "$out/meta.json"',
@@ -7230,12 +7230,12 @@ test('macos wsrepl lima matrix wrapper runs the autoupdate payload builder from 
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_autoupdate_cwd_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_autoupdate_cwd_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
     WSREPL_QA_HOST_DIRECT_PEER_VM_CONNECTIVITY_CHECK: '0',
   };
@@ -7383,11 +7383,11 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'require',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'require',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -7515,7 +7515,7 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       '  exit 0',
       'fi',
       'if [[ "${1:-}" == "-" || ( "${1:-}" == "--input-type=module" && "${2:-}" == "-" ) || ( "${1:-}" == "--input-type" && "${2:-}" == "module" && "${3:-}" == "-" ) ]]; then',
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
       '    cat >/dev/null || true',
       '    exit 0',
@@ -7531,11 +7531,11 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -7624,12 +7624,12 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_auto',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_auto',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -7729,7 +7729,7 @@ test('macos wsrepl lima matrix writes vm-happier build log when guest autoupdate
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      'if [[ -n "${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}" ]]; then',
+      'if [[ -n "${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}" ]]; then',
       '  echo "stub build blew up" >&2',
       '  exit 33',
       'fi',
@@ -7740,11 +7740,11 @@ test('macos wsrepl lima matrix writes vm-happier build log when guest autoupdate
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -7812,12 +7812,12 @@ test('macos wsrepl lima matrix writes vm-happier build log when guest autoupdate
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_test_autoupdate_build_fail',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_autoupdate_build_fail',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -7937,9 +7937,9 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
       'if [[ "${1:-}" == "-" || ( "${1:-}" == "--input-type=module" && "${2:-}" == "-" ) || ( "${1:-}" == "--input-type" && "${2:-}" == "module" && "${3:-}" == "-" ) ]]; then',
       `  printf "%s" "1" > ${JSON.stringify(buildMarker)}`,
       '  sleep 0.25',
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
-      '    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2',
+      '    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$payload"',
@@ -7950,11 +7950,11 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       '  sleep 0.25',
       '  echo "stub ok"',
@@ -8043,12 +8043,12 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_autoupdate_watchdog_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_autoupdate_watchdog_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
@@ -8200,9 +8200,9 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
       '    fi',
       '    sleep 0.05',
       '  done',
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
-      '    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2',
+      '    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$payload"',
@@ -8213,11 +8213,11 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       `  printf "%s" "1" > ${JSON.stringify(playwrightRunningMarker)}`,
       '  for _attempt in $(seq 1 40); do',
@@ -8312,12 +8312,12 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_watchdog_dead_pid_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_watchdog_dead_pid_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
@@ -8445,9 +8445,9 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not fail closed when
       `  echo "===stdin-begin===" >> ${JSON.stringify(stdinLog)}`,
       `  cat >> ${JSON.stringify(stdinLog)} || true`,
       `  echo "\\n===stdin-end===\\n" >> ${JSON.stringify(stdinLog)}`,
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
-      '    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2',
+      '    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$payload"',
@@ -8465,7 +8465,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not fail closed when
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\"}" > "$out/meta.json"',
@@ -8550,11 +8550,11 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not fail closed when
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: `explicit:${happierPath}`,
-    HAPPIER_QA_SESSION_ID: 'sess_test_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: `explicit:${happierPath}`,
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -8671,9 +8671,9 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
       `  echo "===stdin-begin===" >> ${JSON.stringify(join(logDir, 'node.stdin.log'))}`,
       `  cat >> ${JSON.stringify(join(logDir, 'node.stdin.log'))} || true`,
       `  echo "\\n===stdin-end===\\n" >> ${JSON.stringify(join(logDir, 'node.stdin.log'))}`,
-      '  payload="${WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR:-}"',
+      '  payload="${WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR:-}"',
       '  if [[ -z "$payload" ]]; then',
-      '    echo "missing WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR" >&2',
+      '    echo "missing WSREPL_QA_VM_PIGGERCODE_PAYLOAD_DIR" >&2',
       '    exit 2',
       '  fi',
       '  mkdir -p "$payload"',
@@ -8684,11 +8684,11 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -8776,11 +8776,11 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_auto_always',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_auto_always',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -8916,12 +8916,12 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not require a preins
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_auto_no_happier',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_auto_no_happier',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -9053,12 +9053,12 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs the current payl
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_auto_multi_vm',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_auto_multi_vm',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     WSREPL_QA_VM_BUN_TARGET: 'bun-linux-arm64',
   };
 
@@ -9086,7 +9086,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs the current payl
   assert.match(limactlOut, new RegExp(`limactl copy .* ${extraVm}:`));
 });
 
-test('macos wsrepl lima matrix wrapper can derive HAPPIER_QA_STEPS_JSON from host/vm machine ids when omitted', async () => {
+test('macos wsrepl lima matrix wrapper can derive PIGGERCODE_QA_STEPS_JSON from host/vm machine ids when omitted', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-steps-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -9153,11 +9153,11 @@ test('macos wsrepl lima matrix wrapper can derive HAPPIER_QA_STEPS_JSON from hos
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
-      '  src="${HAPPIER_QA_SOURCE_MACHINE_ID:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
+      '  src="${PIGGERCODE_QA_SOURCE_MACHINE_ID:-}"',
       '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\"),\\"sourceMachineId\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$src\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
@@ -9219,18 +9219,18 @@ test('macos wsrepl lima matrix wrapper can derive HAPPIER_QA_STEPS_JSON from hos
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_2',
-    // Intentionally omit HAPPIER_QA_STEPS_JSON; wrapper should derive it from these ids.
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_2',
+    // Intentionally omit PIGGERCODE_QA_STEPS_JSON; wrapper should derive it from these ids.
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    // Name-based selection is supported (via explicit HAPPIER_QA_STEPS_JSON), but the wrapper's
+    // Name-based selection is supported (via explicit PIGGERCODE_QA_STEPS_JSON), but the wrapper's
     // derived default must be deterministic: prefer explicit ids to avoid ambiguous glob matches
     // when multiple VMs are registered in the same account.
     WSREPL_QA_HOST_MACHINE_NAME_PATTERN: 'host-machine-name-1',
     WSREPL_QA_VM_MACHINE_NAME_PATTERN: 'vm-machine-name-1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -9338,15 +9338,15 @@ test('macos wsrepl lima matrix wrapper default vm machine name pattern is substr
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_3',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_3',
     // Intentionally omit WSREPL_QA_VM_MACHINE_NAME_PATTERN; wrapper should derive it from VM name.
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
     WSREPL_QA_HOST_MACHINE_NAME_PATTERN: 'host-machine-name-1',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -9474,7 +9474,7 @@ test('macos wsrepl lima matrix wrapper retries host daemon start on transient fa
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\\":\\"stub\\"}" > "$out/meta.json"',
@@ -9530,12 +9530,12 @@ test('macos wsrepl lima matrix wrapper retries host daemon start on transient fa
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_host_retry_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_host_retry_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_DAEMON_START_RETRIES: '2',
     WSREPL_QA_DAEMON_START_RETRY_DELAY_MS: '1',
   };
@@ -9606,15 +9606,15 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
       '          ;;',
       '        start|start-sync)',
       '          rm -f "$stopped_marker" >/dev/null 2>&1 || true',
-      '          echo "start-env direct-peer-enabled=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}" >> ' +
+      '          echo "start-env direct-peer-enabled=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}" >> ' +
         JSON.stringify(hostLog),
-      '          echo "start-env direct-peer-bind-port=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' +
+      '          echo "start-env direct-peer-bind-port=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' +
         JSON.stringify(hostLog),
-      '          echo "start-env direct-peer-hosts=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-}" >> ' +
+      '          echo "start-env direct-peer-hosts=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-}" >> ' +
         JSON.stringify(hostLog),
-      '          echo "start-env direct-peer-server=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' +
+      '          echo "start-env direct-peer-server=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' +
         JSON.stringify(hostLog),
-      '          echo "start-env cli-subprocess-tsx-fallback=${HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK:-}" >> ' +
+      '          echo "start-env cli-subprocess-tsx-fallback=${PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK:-}" >> ' +
         JSON.stringify(hostLog),
       '          exit 0',
       '          ;;',
@@ -9662,7 +9662,7 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
       '  esac',
       'fi',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\\":true}" > "$out/steps/step-01/result.json"',
       '  printf "%s\\n" "{\\"kind\\\":\\"stub\\"}" > "$out/meta.json"',
@@ -9737,16 +9737,16 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
 	    // while still providing core system tools like `python3`.
 	    PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_missing_dist_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_SESSION_ID: 'sess_missing_dist_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
     WSREPL_QA_VM_DIRECT_PEER_BIND_PORT: '13377',
     WSREPL_QA_VM_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -9916,13 +9916,13 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon status stay
     LIMA_HOME: limaHome,
     PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -10002,9 +10002,9 @@ test('macos wsrepl lima matrix wrapper seeds server-routed max-bytes env for the
       '      shift || true',
       '      case "$sub" in',
       '        start|start-sync)',
-      '          echo "MAX_BYTES=${HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}"',
-      '          echo "DIRECT_PEER_SERVER_ENABLED=${HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}"',
-      '          echo "DIRECT_PEER_FEATURE_ENABLED=${HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}"',
+      '          echo "MAX_BYTES=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES:-}"',
+      '          echo "DIRECT_PEER_SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}"',
+      '          echo "DIRECT_PEER_FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-}"',
       '          echo "Daemon is not running" >&2',
       '          exit 1',
       '          ;;',
@@ -10082,13 +10082,13 @@ test('macos wsrepl lima matrix wrapper seeds server-routed max-bytes env for the
     LIMA_HOME: limaHome,
     PATH: `${binDir}:/usr/bin:/bin`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -10221,12 +10221,12 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'auto',
-    HAPPIER_QA_SESSION_ID: 'sess_marker_mismatch_1',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'require',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'auto',
+    PIGGERCODE_QA_SESSION_ID: 'sess_marker_mismatch_1',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'require',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -10239,7 +10239,7 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
   assert.match(`${res.stdout}\n${res.stderr}`, /build marker does not match|guest wsrepl build marker/i);
 });
 
-test('macos wsrepl lima matrix wrapper fails fast when HAPPIER_QA_SESSION_PATH is missing', async () => {
+test('macos wsrepl lima matrix wrapper fails fast when PIGGERCODE_QA_SESSION_PATH is missing', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-missing-path-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -10270,12 +10270,12 @@ test('macos wsrepl lima matrix wrapper fails fast when HAPPIER_QA_SESSION_PATH i
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_SESSION_ID: 'sess_test_3',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_SESSION_PATH: missingPath,
-    HAPPIER_QA_HEADLESS: '1',
+    PIGGERCODE_QA_SESSION_ID: 'sess_test_3',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_SESSION_PATH: missingPath,
+    PIGGERCODE_QA_HEADLESS: '1',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -10285,7 +10285,7 @@ test('macos wsrepl lima matrix wrapper fails fast when HAPPIER_QA_SESSION_PATH i
   });
 
   assert.equal(res.status, 2, `expected exit 2\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
-  assert.match(res.stderr, /HAPPIER_QA_SESSION_PATH/i);
+  assert.match(res.stderr, /PIGGERCODE_QA_SESSION_PATH/i);
   assert.match(res.stderr, /does not exist/i);
 });
 
@@ -10394,21 +10394,21 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  printf "%s\\n" "HAPPIER_QA_SESSION_PATH=${HAPPIER_QA_SESSION_PATH:-}" > "$out/env.txt"',
+      '  printf "%s\\n" "PIGGERCODE_QA_SESSION_PATH=${PIGGERCODE_QA_SESSION_PATH:-}" > "$out/env.txt"',
       '  printf "%s\\n" "stub ok" > "$out/runner.log"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\":$(python3 -c \"import json,sys; print(json.dumps(sys.argv[1]))\" \"$steps\")}" > "$out/meta.json"',
       '  echo "stub ok"',
       '  exit 0',
       'fi',
@@ -10472,13 +10472,13 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -10491,8 +10491,8 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
 
   const envTxt = await readFile(join(reportDir, 'playwright', 'attempt-01', 'env.txt'), 'utf8');
   assert.ok(
-    envTxt.includes(`HAPPIER_QA_SESSION_PATH=${safeLargeRepoPath}`),
-    `expected wrapper to default HAPPIER_QA_SESSION_PATH to ${safeLargeRepoPath} (got: ${envTxt})`,
+    envTxt.includes(`PIGGERCODE_QA_SESSION_PATH=${safeLargeRepoPath}`),
+    `expected wrapper to default PIGGERCODE_QA_SESSION_PATH to ${safeLargeRepoPath} (got: ${envTxt})`,
   );
 });
 
@@ -10570,9 +10570,9 @@ test('macos wsrepl lima matrix wrapper writes a nonzero summary status when term
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
       '  # Keep the process alive so the wrapper receives SIGTERM mid-run.',
       '  sleep 5',
       '  exit 0',
@@ -10636,10 +10636,10 @@ test('macos wsrepl lima matrix wrapper writes a nonzero summary status when term
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_DAEMON_WATCHDOG: '1',
     WSREPL_QA_HOST_DAEMON_WATCHDOG_INTERVAL_MS: '50',
   };
@@ -10740,9 +10740,9 @@ test('macos wsrepl lima matrix wrapper leaves a top-level summary.json even when
       'script="${1:-}"',
       'shift || true',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  mkdir -p "$out"',
-      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${HAPPIER_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
+      '  printf "%s\\n" "{\\"kind\\":\\"stub\\",\\"outDir\\":\\"$out\\",\\"sessionId\\":\\"sess_created_1\\",\\"sessionPath\\":\\"${PIGGERCODE_QA_SESSION_PATH:-}\\",\\"stepsJson\\\":\\"[]\\"}" > "$out/meta.json"',
       '  # Keep the process alive so the wrapper can be SIGKILLed mid-run (untrappable).',
       '  sleep 2',
       '  exit 0',
@@ -10806,11 +10806,11 @@ test('macos wsrepl lima matrix wrapper leaves a top-level summary.json even when
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
-    HAPPIER_QA_SESSION_PATH: sessionDir,
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_SESSION_PATH: sessionDir,
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
   };
@@ -10990,20 +10990,20 @@ test('macos wsrepl lima matrix wrapper can force host happier source to worktree
       '  exit 0',
       'fi',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  sid="sess_created_1"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  python3 - "$out" "$steps" "${HAPPIER_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
+      '  python3 - "$out" "$steps" "${PIGGERCODE_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -11089,15 +11089,15 @@ test('macos wsrepl lima matrix wrapper can force host happier source to worktree
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_SKIP_HOST_PROVIDER_INSTALL: '1',
-    WSREPL_QA_HOST_HAPPIER_SOURCE: 'worktree_node',
+    WSREPL_QA_HOST_PIGGERCODE_SOURCE: 'worktree_node',
   };
 
   const res = spawnSync('bash', [scriptPath, 'happy-wsrepl'], {
@@ -11251,20 +11251,20 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to PATH when
       '  exit 0',
       'fi',
       'if [[ "$script" == *playwright-session-handoff-wsrepl-matrix.mjs ]]; then',
-      '  out="${HAPPIER_QA_OUTDIR:-}"',
+      '  out="${PIGGERCODE_QA_OUTDIR:-}"',
       '  if [[ -z "$out" ]]; then',
-      '    echo "missing HAPPIER_QA_OUTDIR" >&2',
+      '    echo "missing PIGGERCODE_QA_OUTDIR" >&2',
       '    exit 2',
       '  fi',
-      '  steps="${HAPPIER_QA_STEPS_JSON:-}"',
+      '  steps="${PIGGERCODE_QA_STEPS_JSON:-}"',
       '  if [[ -z "$steps" ]]; then',
-      '    echo "missing HAPPIER_QA_STEPS_JSON" >&2',
+      '    echo "missing PIGGERCODE_QA_STEPS_JSON" >&2',
       '    exit 3',
       '  fi',
       '  sid="sess_created_1"',
       '  mkdir -p "$out/steps/step-01"',
       '  printf "%s\\n" "{\\"ok\\":true}" > "$out/steps/step-01/result.json"',
-      '  python3 - "$out" "$steps" "${HAPPIER_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
+      '  python3 - "$out" "$steps" "${PIGGERCODE_QA_SESSION_PATH:-}" "$sid" <<\'PY\'',
       'import json',
       'import sys',
       'from pathlib import Path',
@@ -11350,13 +11350,13 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to PATH when
     LIMA_HOME: limaHome,
     PATH: `${binDir}:${testEnv.PATH}`,
     WSREPL_QA_OUTPUT_DIR: reportDir,
-    HAPPIER_QA_STACK_NAME: 'stack-test',
-    HAPPIER_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
+    PIGGERCODE_QA_STACK_NAME: 'stack-test',
+    PIGGERCODE_QA_STEPS_JSON: JSON.stringify([{ targetMachineId: 'machine_target_1', strategy: 'sync_changes' }]),
     WSREPL_QA_HOST_MACHINE_ID: 'machine_host_1',
     WSREPL_QA_VM_MACHINE_ID: 'machine_vm_1',
-    HAPPIER_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
-    HAPPIER_QA_HEADLESS: '1',
-    WSREPL_QA_VM_HAPPIER_MODE: 'skip',
+    PIGGERCODE_UI_URL: 'http://localhost:19000/?server=http%3A%2F%2Flocalhost%3A53288',
+    PIGGERCODE_QA_HEADLESS: '1',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'skip',
     WSREPL_QA_SKIP_HOST_PROVIDER_INSTALL: '1',
   };
 

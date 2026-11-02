@@ -30,7 +30,7 @@ describe('mobile installed-app populated relay flow contracts', () => {
   it('restores populated relay accounts without Expo Dev Client bootstrap beyond the original 64-character limit', () => {
     const flow = readFlow(installedAppRestoreAndOpenUrl);
     const serverSelectionIndex = flow.indexOf(':///settings/server?auto=1');
-    const serverUrlWaitIndex = flow.indexOf('visible: ".*${HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"', serverSelectionIndex);
+    const serverUrlWaitIndex = flow.indexOf('visible: ".*${PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"', serverSelectionIndex);
     const restoreIndex = flow.indexOf(':///restore/manual');
 
     expect(flow).not.toContain('connectUsingLaunchUrl');
@@ -39,7 +39,7 @@ describe('mobile installed-app populated relay flow contracts', () => {
     expect(serverUrlWaitIndex).toBeGreaterThan(serverSelectionIndex);
     expect(serverUrlWaitIndex).toBeLessThan(restoreIndex);
     expect(flow).toContain('id: restore-manual-secret-input');
-    expect(flow).toContain('inputText: ${HAPPIER_E2E_RESTORE_KEY_CHUNK_09}');
+    expect(flow).toContain('inputText: ${PIGGERCODE_E2E_RESTORE_KEY_CHUNK_09}');
     expect(flow).toContain('id: "session-cockpit-tabbar-.*"');
   });
 });

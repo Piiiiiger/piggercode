@@ -660,8 +660,8 @@ export async function createSpawnedSession(
   }
   const sessionId = settledSpawn.sessionId;
 
-  const fetchTimeoutMs = resolvePositiveIntFromEnv('HAPPIER_SESSION_SPAWN_FETCH_TIMEOUT_MS', DEFAULT_SPAWNED_SESSION_FETCH_TIMEOUT_MS);
-  const pollIntervalMs = resolvePositiveIntFromEnv('HAPPIER_SESSION_SPAWN_FETCH_POLL_INTERVAL_MS', DEFAULT_SPAWNED_SESSION_FETCH_POLL_INTERVAL_MS);
+  const fetchTimeoutMs = resolvePositiveIntFromEnv('PIGGERCODE_SESSION_SPAWN_FETCH_TIMEOUT_MS', DEFAULT_SPAWNED_SESSION_FETCH_TIMEOUT_MS);
+  const pollIntervalMs = resolvePositiveIntFromEnv('PIGGERCODE_SESSION_SPAWN_FETCH_POLL_INTERVAL_MS', DEFAULT_SPAWNED_SESSION_FETCH_POLL_INTERVAL_MS);
   let rawSession = await waitForSpawnedSessionVisibility({
     token: params.credentials.token,
     sessionId,

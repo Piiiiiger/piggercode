@@ -10,7 +10,7 @@ test('binary smoke consumes the producer archive without compiling again', async
   await writeFile(artifactPath, 'producer bytes');
   await prepareBinarySmokeArtifact({
     artifactPath,
-    env: { HAPPIER_CLI_TEST_SKIP_BUILD: '1' },
+    env: { PIGGERCODE_CLI_TEST_SKIP_BUILD: '1' },
     // Build is the OS compiler process boundary, not mocked domain logic.
     build: () => { throw new Error('unexpected compilation'); },
   });
@@ -21,7 +21,7 @@ test('missing downloaded archives fail instead of hiding a producer defect', asy
   const fixture = await createTempFixture(t);
   await assert.rejects(prepareBinarySmokeArtifact({
     artifactPath: fixture.path('absent.tar.gz'),
-    env: { HAPPIER_CLI_TEST_SKIP_BUILD: '1' },
+    env: { PIGGERCODE_CLI_TEST_SKIP_BUILD: '1' },
     build: () => { throw new Error('unexpected compilation'); },
   }), { code: 'ENOENT' });
 });

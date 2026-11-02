@@ -85,7 +85,7 @@ describe('scripts/run-wsrepl-lima-matrix.mjs', () => {
                 'set -euo pipefail',
                 'python3 - <<\'PY\' "$@"',
                 'import json, os, sys',
-                'capture_path = os.environ["HAPPIER_WSREPL_CAPTURE_PATH"]',
+                'capture_path = os.environ["PIGGERCODE_WSREPL_CAPTURE_PATH"]',
                 'with open(capture_path, "w", encoding="utf-8") as handle:',
                 '    json.dump({',
                 '        "argv": sys.argv[1:],',
@@ -106,9 +106,9 @@ describe('scripts/run-wsrepl-lima-matrix.mjs', () => {
                 cwd: scratch,
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_WSREPL_LIMA_SCRIPT: overridePath,
-                    HAPPIER_WSREPL_CAPTURE_PATH: capturePath,
-                    HAPPIER_TEST_HEARTBEAT_MS: '1000',
+                    PIGGERCODE_E2E_WSREPL_LIMA_SCRIPT: overridePath,
+                    PIGGERCODE_WSREPL_CAPTURE_PATH: capturePath,
+                    PIGGERCODE_TEST_HEARTBEAT_MS: '1000',
                 },
             },
         );

@@ -7,8 +7,8 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_SESSION_ATTACH_FILE',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_SESSION_ATTACH_FILE',
 ]);
 
 describe('createBaseSessionForAttach', () => {
@@ -16,8 +16,8 @@ describe('createBaseSessionForAttach', () => {
     const dir = await createTempDir('happy-base-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
       vi.resetModules();
 
@@ -36,7 +36,7 @@ describe('createBaseSessionForAttach', () => {
         }),
         { mode: 0o600 },
       );
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const session = await createBaseSessionForAttach({
         existingSessionId: 'session-attach',
@@ -56,8 +56,8 @@ describe('createBaseSessionForAttach', () => {
     const dir = await createTempDir('happy-base-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
       vi.resetModules();
 
@@ -75,7 +75,7 @@ describe('createBaseSessionForAttach', () => {
         }),
         { mode: 0o600 },
       );
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const session = await createBaseSessionForAttach({
         existingSessionId: 'session-attach',
@@ -95,8 +95,8 @@ describe('createBaseSessionForAttach', () => {
     const dir = await createTempDir('happy-base-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
       vi.resetModules();
 
@@ -115,7 +115,7 @@ describe('createBaseSessionForAttach', () => {
         }),
         { mode: 0o600 },
       );
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const session = await createBaseSessionForAttach({
         existingSessionId: 'session-attach',
@@ -135,8 +135,8 @@ describe('createBaseSessionForAttach', () => {
     const dir = await createTempDir('happy-base-attach-');
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: dir,
-        HAPPIER_SESSION_ATTACH_FILE: undefined,
+        PIGGERCODE_HOME_DIR: dir,
+        PIGGERCODE_SESSION_ATTACH_FILE: undefined,
       });
       vi.resetModules();
 
@@ -155,7 +155,7 @@ describe('createBaseSessionForAttach', () => {
         }),
         { mode: 0o600 },
       );
-      process.env.HAPPIER_SESSION_ATTACH_FILE = filePath;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = filePath;
 
       const session = await createBaseSessionForAttach({
         existingSessionId: 'session-attach',

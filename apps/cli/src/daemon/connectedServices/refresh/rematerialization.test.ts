@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   serializeConnectedServiceChildSelections,
 } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
@@ -38,7 +38,7 @@ describe('canonicalizeTargetSelectionsForRematerialization', () => {
         },
       },
       connectedServiceSelectionsEnv: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serializedSelection,
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serializedSelection,
       },
       materializationKey: 'csm_test',
     });

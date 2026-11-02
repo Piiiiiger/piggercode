@@ -45,9 +45,9 @@ test.describe('ui e2e: provider settings auth status', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-provider-auth-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(cliHomeDir, { recursive: true });
@@ -55,8 +55,8 @@ test.describe('ui e2e: provider settings auth status', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
     ui = await startUiWeb({
@@ -105,9 +105,9 @@ test.describe('ui e2e: provider settings auth status', () => {
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
       });
 
@@ -123,13 +123,13 @@ test.describe('ui e2e: provider settings auth status', () => {
           ...process.env,
           CI: '1',
           HOME: cliHomeDir,
-          HAPPIER_HOME_DIR: cliHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: uiBaseUrl,
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_CODEX_PATH: fakeCodexExecutablePath,
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_HOME_DIR: cliHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_CODEX_PATH: fakeCodexExecutablePath,
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
       });
 

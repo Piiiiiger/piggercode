@@ -4,20 +4,20 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('configuration shell bridge context env mode', () => {
   let envScope = createEnvKeyScope([
-    'HAPPIER_SHELL_BRIDGE_CONTEXT_ENV',
+    'PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV',
   ] as const);
 
   afterEach(() => {
     envScope.restore();
     envScope = createEnvKeyScope([
-      'HAPPIER_SHELL_BRIDGE_CONTEXT_ENV',
+      'PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV',
     ] as const);
     vi.resetModules();
   });
 
   it('defaults shell bridge context env mode to off', async () => {
     envScope.patch({
-      HAPPIER_SHELL_BRIDGE_CONTEXT_ENV: undefined,
+      PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV: undefined,
     });
     vi.resetModules();
 
@@ -29,7 +29,7 @@ describe('configuration shell bridge context env mode', () => {
 
   it('accepts home and full shell bridge context env modes', async () => {
     envScope.patch({
-      HAPPIER_SHELL_BRIDGE_CONTEXT_ENV: 'home',
+      PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV: 'home',
     });
     vi.resetModules();
 
@@ -39,7 +39,7 @@ describe('configuration shell bridge context env mode', () => {
     expect(configMod.configuration.shellBridgeContextEnvMode).toBe('home');
 
     envScope.patch({
-      HAPPIER_SHELL_BRIDGE_CONTEXT_ENV: 'full',
+      PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV: 'full',
     });
     configMod.reloadConfiguration();
 
@@ -48,7 +48,7 @@ describe('configuration shell bridge context env mode', () => {
 
   it('normalizes invalid shell bridge context env modes to off', async () => {
     envScope.patch({
-      HAPPIER_SHELL_BRIDGE_CONTEXT_ENV: 'yes',
+      PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV: 'yes',
     });
     vi.resetModules();
 

@@ -3,7 +3,7 @@
 # The sheet may appear with a delay after launching a dev build. This flow waits
 # briefly for it and dismisses it if present.
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     # Avoid failing/warning when the onboarding sheet isn't present; only

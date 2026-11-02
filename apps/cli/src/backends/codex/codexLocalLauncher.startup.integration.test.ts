@@ -54,10 +54,10 @@ describe('managed Codex TUI startup', () => {
           : `#!/bin/sh\nexec "${process.execPath}" "${script}" "$@"\n`,
       });
       vi.stubEnv('CODEX_HOME', home);
-      vi.stubEnv('HAPPIER_CODEX_TUI_BIN', executable);
+      vi.stubEnv('PIGGERCODE_CODEX_TUI_BIN', executable);
       // A TUI launch must warm its own executable, not an unrelated app-server override.
-      vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', process.execPath);
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON', serializeConnectedServiceChildSelections(new Map([
+      vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', process.execPath);
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON', serializeConnectedServiceChildSelections(new Map([
         ['openai-codex', { kind: 'profile', serviceId: 'openai-codex', profileId: 'primary' }],
       ])) ?? '');
       try {

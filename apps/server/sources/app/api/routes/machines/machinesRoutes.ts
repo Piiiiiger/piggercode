@@ -180,7 +180,7 @@ export function machinesRoutes(app: Fastify) {
         // can create machine rows that permanently fail DEK decryption for the actual account key.
         if (typeof dataEncryptionKey === "string" && !plainRegistration) {
             const requireContentPublicKeyForDek = parseBooleanEnv(
-                process.env.HAPPIER_MACHINES_REQUIRE_CONTENT_PUBLIC_KEY_FOR_DEK,
+                process.env.PIGGERCODE_MACHINES_REQUIRE_CONTENT_PUBLIC_KEY_FOR_DEK,
                 false,
             );
 

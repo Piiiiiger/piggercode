@@ -5,8 +5,8 @@ import {
     resolveTurnDiffTurnBudgetBytes,
 } from './turnDiffPayloadBudget';
 
-const FILE_BUDGET_ENV = 'HAPPIER_TURN_DIFF_FILE_BUDGET_BYTES';
-const TURN_BUDGET_ENV = 'HAPPIER_TURN_DIFF_TURN_BUDGET_BYTES';
+const FILE_BUDGET_ENV = 'PIGGERCODE_TURN_DIFF_FILE_BUDGET_BYTES';
+const TURN_BUDGET_ENV = 'PIGGERCODE_TURN_DIFF_TURN_BUDGET_BYTES';
 
 describe('turnDiffPayloadBudget', () => {
     afterEach(() => {

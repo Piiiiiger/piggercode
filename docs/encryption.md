@@ -643,7 +643,7 @@ Canonical concepts:
 - **Server storage policy:** `required_e2ee | optional | plaintext_only`, surfaced through `/v1/features`.
 - **Account encryption mode:** `e2ee | plain`, used as the default for new sessions.
 - **Session encryption mode:** `e2ee | plain`, fixed at session creation so a transcript does not mix modes.
-- **Client encryption requirement:** `follow_account | require_e2ee`, resolved strongest-wins from the synced Account preference, a UI device-local pin, and the daemon's `HAPPIER_ENCRYPTION_REQUIREMENT` override.
+- **Client encryption requirement:** `follow_account | require_e2ee`, resolved strongest-wins from the synced Account preference, a UI device-local pin, and the daemon's `PIGGERCODE_ENCRYPTION_REQUIREMENT` override.
 - **Content envelope:**
   - encrypted content: `{ t: 'encrypted', c: string }`
   - plaintext content: `{ t: 'plain', v: unknown }`
@@ -692,7 +692,7 @@ Users who want to opt into enforcement during the expansion phase can require th
 authenticated protocol locally:
 
 ```bash
-HAPPIER_TERMINAL_PAIRING_REQUIRE=v3 happier auth login
+PIGGERCODE_TERMINAL_PAIRING_REQUIRE=v3 happier auth login
 ```
 
 `v3` is a minimum accepted pairing-protocol requirement: legacy v1/v2 responses are rejected, and

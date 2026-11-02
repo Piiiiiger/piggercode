@@ -18,11 +18,11 @@ const webUnistylesFontMetricsCache = new Map<string, UnistylesFontMetric>();
 function scheduleSync() {
     if (typeof document === 'undefined') return;
     const g = globalThis as any;
-    if (g.__HAPPIER_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__) return;
-    g.__HAPPIER_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__ = true;
+    if (g.__PIGGERCODE_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__) return;
+    g.__PIGGERCODE_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__ = true;
 
     const run = () => {
-        g.__HAPPIER_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__ = false;
+        g.__PIGGERCODE_WEB_UI_FONT_SCALE_SYNC_SCHEDULED__ = false;
         try {
             const added = scanDocumentForUnistylesFontMetrics(document, webUnistylesFontMetricsCache);
             if (added <= 0) return;
@@ -50,11 +50,11 @@ function installObserverOnce() {
         // Some CSS-in-JS engines (including Unistyles) add new rules via `CSSStyleSheet.insertRule`,
         // which does not mutate DOM nodes. Patch insertRule to schedule a rescan when new rules land.
         const g = globalThis as any;
-        if (!g.__HAPPIER_WEB_UI_FONT_SCALE_INSERT_RULE_PATCHED__ && typeof CSSStyleSheet !== 'undefined') {
+        if (!g.__PIGGERCODE_WEB_UI_FONT_SCALE_INSERT_RULE_PATCHED__ && typeof CSSStyleSheet !== 'undefined') {
             const proto = (CSSStyleSheet as any)?.prototype;
             const original = proto?.insertRule;
             if (typeof original === 'function') {
-                g.__HAPPIER_WEB_UI_FONT_SCALE_INSERT_RULE_PATCHED__ = true;
+                g.__PIGGERCODE_WEB_UI_FONT_SCALE_INSERT_RULE_PATCHED__ = true;
                 proto.insertRule = function patchedInsertRule(this: CSSStyleSheet, ...args: any[]) {
                     const result = original.apply(this, args);
                     scheduleSync();

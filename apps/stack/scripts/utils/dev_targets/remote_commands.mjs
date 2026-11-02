@@ -75,7 +75,7 @@ export function buildRemoteBootstrapCommand(target) {
         `Set-Location -LiteralPath ${powershellQuote(target.repoDir)}`,
         'if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "Node.js is required on the remote target" }',
         'if (-not (Get-Command corepack -ErrorAction SilentlyContinue)) { throw "Corepack is required on the remote target" }',
-        `$env:HAPPIER_STACK_PM_CACHE_BASE_DIR = Join-Path $env:USERPROFILE '.cache'`,
+        `$env:PIGGERCODE_STACK_PM_CACHE_BASE_DIR = Join-Path $env:USERPROFILE '.cache'`,
         'corepack yarn node ./apps/stack/scripts/utils/dev_targets/remote_dependency_bootstrap.mjs',
         'if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',
       ].join('; '),
@@ -88,7 +88,7 @@ export function buildRemoteBootstrapCommand(target) {
       `cd -- ${posixQuote(target.repoDir)}`,
       'command -v node >/dev/null || { echo "Node.js is required on the remote target" >&2; exit 127; }',
       'command -v corepack >/dev/null || { echo "Corepack is required on the remote target" >&2; exit 127; }',
-      'export HAPPIER_STACK_PM_CACHE_BASE_DIR="$HOME/.cache"',
+      'export PIGGERCODE_STACK_PM_CACHE_BASE_DIR="$HOME/.cache"',
       'corepack yarn node ./apps/stack/scripts/utils/dev_targets/remote_dependency_bootstrap.mjs',
     ].join('; '),
   );
@@ -154,11 +154,11 @@ function requireServicePort(value, label, { optional = false } = {}) {
 }
 
 const REMOTE_SERVER_LIGHT_SEMANTIC_ENV_KEYS = new Set([
-  'HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY',
-  'HAPPIER_SQLITE_BUSY_TIMEOUT_MS',
-  'HAPPIER_SQLITE_CONNECTION_LIMIT',
+  'PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY',
+  'PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS',
+  'PIGGERCODE_SQLITE_CONNECTION_LIMIT',
 ]);
-const REMOTE_SERVER_LIGHT_SEMANTIC_ENV_PREFIXES = ['HAPPIER_SERVER_RETENTION__'];
+const REMOTE_SERVER_LIGHT_SEMANTIC_ENV_PREFIXES = ['PIGGERCODE_SERVER_RETENTION__'];
 
 function projectRemoteServerLightSemanticEnvironment(env) {
   const projected = {};
@@ -188,10 +188,10 @@ export function resolveRemoteServerRuntimeConfig({ serverComponentName, env = {}
     throw new Error('[dev-targets] remote server placement only supports SQLite');
   }
   const environment = projectRemoteServerLightSemanticEnvironment(env);
-  if (environment.HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY !== 'optional') {
+  if (environment.PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY !== 'optional') {
     throw new Error('[dev-targets] remote server encryption storage policy must be optional');
   }
-  if (environment.HAPPIER_SQLITE_CONNECTION_LIMIT !== '1') {
+  if (environment.PIGGERCODE_SQLITE_CONNECTION_LIMIT !== '1') {
     throw new Error('[dev-targets] remote server SQLite connection limit must be 1');
   }
   return {
@@ -209,7 +209,7 @@ function normalizeRemoteServerRuntimeConfig(config) {
     serverComponentName: config.serverComponentName,
     env: {
       ...(config.environment ?? {}),
-      HAPPIER_DB_PROVIDER: config.dbProvider,
+      PIGGERCODE_DB_PROVIDER: config.dbProvider,
     },
   });
 }
@@ -290,23 +290,23 @@ function resolveRemoteStackInvocation(target, {
   const stackBaseDir = `${stackStorageDir}/${stackName}`;
   const stackEnvPath = `${stackBaseDir}/env`;
   const stackEnvLines = [
-    `HAPPIER_STACK_REPO_DIR=${target.repoDir}`,
-    `HAPPIER_STACK_CLI_HOME_DIR=${target.cliHomeDir}`,
-    `HAPPIER_STACK_SERVER_COMPONENT=${serverRuntimeConfig?.serverComponentName ?? 'happier-server-light'}`,
-    ...(serverPort == null ? [] : [`HAPPIER_STACK_SERVER_PORT=${serverPort}`]),
+    `PIGGERCODE_STACK_REPO_DIR=${target.repoDir}`,
+    `PIGGERCODE_STACK_CLI_HOME_DIR=${target.cliHomeDir}`,
+    `PIGGERCODE_STACK_SERVER_COMPONENT=${serverRuntimeConfig?.serverComponentName ?? 'happier-server-light'}`,
+    ...(serverPort == null ? [] : [`PIGGERCODE_STACK_SERVER_PORT=${serverPort}`]),
     ...(expoPort == null ? [] : [
-      `HAPPIER_STACK_EXPO_DEV_PORT=${expoPort}`,
-      'HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY=stable',
-      'HAPPIER_STACK_EXPO_HOST=localhost',
+      `PIGGERCODE_STACK_EXPO_DEV_PORT=${expoPort}`,
+      'PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY=stable',
+      'PIGGERCODE_STACK_EXPO_HOST=localhost',
     ]),
-    ...(stablePublicExpoPort == null ? [] : [`HAPPIER_STACK_EXPO_PUBLIC_PORT=${stablePublicExpoPort}`]),
+    ...(stablePublicExpoPort == null ? [] : [`PIGGERCODE_STACK_EXPO_PUBLIC_PORT=${stablePublicExpoPort}`]),
     ...(expoPublicUrl && !resolveExpoPublicUrlOnTarget ? [`EXPO_PACKAGER_PROXY_URL=${expoPublicUrl}`] : []),
-    `HAPPIER_CLI_PKGROLL_TIMEOUT_MS=${DEFAULT_REMOTE_STACK_STARTUP_TIMEOUT_MS}`,
+    `PIGGERCODE_CLI_PKGROLL_TIMEOUT_MS=${DEFAULT_REMOTE_STACK_STARTUP_TIMEOUT_MS}`,
     ...(normalizedServices.daemon && deferDaemonStartUntilCredentials
-      ? ['HAPPIER_STACK_DAEMON_WAIT_FOR_AUTH=1']
+      ? ['PIGGERCODE_STACK_DAEMON_WAIT_FOR_AUTH=1']
       : []),
     ...(serverRuntimeConfig ? [
-      `HAPPIER_DB_PROVIDER=${serverRuntimeConfig.dbProvider}`,
+      `PIGGERCODE_DB_PROVIDER=${serverRuntimeConfig.dbProvider}`,
       ...Object.entries(serverRuntimeConfig.environment).map(([key, value]) => `${key}=${value}`),
     ] : []),
   ];
@@ -345,15 +345,15 @@ export function buildRemoteStackCommand(target, options) {
       target,
       [
         '$ErrorActionPreference = "Stop"',
-        `$env:HAPPIER_HOME_DIR = ${powershellQuote(target.cliHomeDir)}`,
-        `$env:HAPPIER_STACK_CLI_HOME_DIR = ${powershellQuote(target.cliHomeDir)}`,
-        "$env:HAPPIER_STACK_CLI_ROOT_DISABLE = '1'",
-        ...(options?.attended === true ? ["$env:HAPPIER_STACK_TUI = '1'"] : []),
-        `$env:HAPPIER_STACK_STORAGE_DIR = ${powershellQuote(invocation.stackStorageDir)}`,
-        `$env:HAPPIER_STACK_PM_CACHE_BASE_DIR = Join-Path $env:USERPROFILE '.cache'`,
-        `$env:HAPPIER_STACK_STACK = ${powershellQuote(invocation.stackName)}`,
-        `$env:HAPPIER_ACTIVE_SERVER_ID = ${powershellQuote(invocation.activeServerId)}`,
-        `$env:HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID = ${powershellQuote(invocation.activeServerId)}`,
+        `$env:PIGGERCODE_HOME_DIR = ${powershellQuote(target.cliHomeDir)}`,
+        `$env:PIGGERCODE_STACK_CLI_HOME_DIR = ${powershellQuote(target.cliHomeDir)}`,
+        "$env:PIGGERCODE_STACK_CLI_ROOT_DISABLE = '1'",
+        ...(options?.attended === true ? ["$env:PIGGERCODE_STACK_TUI = '1'"] : []),
+        `$env:PIGGERCODE_STACK_STORAGE_DIR = ${powershellQuote(invocation.stackStorageDir)}`,
+        `$env:PIGGERCODE_STACK_PM_CACHE_BASE_DIR = Join-Path $env:USERPROFILE '.cache'`,
+        `$env:PIGGERCODE_STACK_STACK = ${powershellQuote(invocation.stackName)}`,
+        `$env:PIGGERCODE_ACTIVE_SERVER_ID = ${powershellQuote(invocation.activeServerId)}`,
+        `$env:PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID = ${powershellQuote(invocation.activeServerId)}`,
         `New-Item -ItemType Directory -Force -Path ${powershellQuote(invocation.stackBaseDir)} | Out-Null`,
         `$stackEnvPath = ${powershellQuote(invocation.stackEnvPath)}`,
         `@(${invocation.stackEnvLines.map(powershellQuote).join(', ')}) | Set-Content -LiteralPath $stackEnvPath -Encoding Ascii`,
@@ -367,15 +367,15 @@ export function buildRemoteStackCommand(target, options) {
     target,
     [
       'set -euo pipefail',
-      `export HAPPIER_HOME_DIR=${posixQuote(target.cliHomeDir)}`,
-      `export HAPPIER_STACK_CLI_HOME_DIR=${posixQuote(target.cliHomeDir)}`,
-      'export HAPPIER_STACK_CLI_ROOT_DISABLE=1',
-      ...(options?.attended === true ? ['export HAPPIER_STACK_TUI=1'] : []),
-      `export HAPPIER_STACK_STORAGE_DIR=${posixQuote(invocation.stackStorageDir)}`,
-      'export HAPPIER_STACK_PM_CACHE_BASE_DIR="$HOME/.cache"',
-      `export HAPPIER_STACK_STACK=${posixQuote(invocation.stackName)}`,
-      `export HAPPIER_ACTIVE_SERVER_ID=${posixQuote(invocation.activeServerId)}`,
-      `export HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID=${posixQuote(invocation.activeServerId)}`,
+      `export PIGGERCODE_HOME_DIR=${posixQuote(target.cliHomeDir)}`,
+      `export PIGGERCODE_STACK_CLI_HOME_DIR=${posixQuote(target.cliHomeDir)}`,
+      'export PIGGERCODE_STACK_CLI_ROOT_DISABLE=1',
+      ...(options?.attended === true ? ['export PIGGERCODE_STACK_TUI=1'] : []),
+      `export PIGGERCODE_STACK_STORAGE_DIR=${posixQuote(invocation.stackStorageDir)}`,
+      'export PIGGERCODE_STACK_PM_CACHE_BASE_DIR="$HOME/.cache"',
+      `export PIGGERCODE_STACK_STACK=${posixQuote(invocation.stackName)}`,
+      `export PIGGERCODE_ACTIVE_SERVER_ID=${posixQuote(invocation.activeServerId)}`,
+      `export PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID=${posixQuote(invocation.activeServerId)}`,
       `install -d -m 700 -- ${posixQuote(invocation.stackBaseDir)}`,
       `printf '%s\\n' ${invocation.stackEnvLines.map(posixQuote).join(' ')} > ${posixQuote(invocation.stackEnvPath)}`,
       `cd -- ${posixQuote(target.repoDir)}`,
@@ -392,8 +392,8 @@ export function buildRemoteStackStopCommand(target, options) {
   if (target.platform === 'windows') {
     return wrapRemoteScript(target, [
       '$ErrorActionPreference = "Stop"',
-      "$env:HAPPIER_STACK_CLI_ROOT_DISABLE = '1'",
-      `$env:HAPPIER_STACK_STORAGE_DIR = ${powershellQuote(invocation.stackStorageDir)}`,
+      "$env:PIGGERCODE_STACK_CLI_ROOT_DISABLE = '1'",
+      `$env:PIGGERCODE_STACK_STORAGE_DIR = ${powershellQuote(invocation.stackStorageDir)}`,
       `Set-Location -LiteralPath ${powershellQuote(target.repoDir)}`,
       command,
       'exit $LASTEXITCODE',
@@ -401,8 +401,8 @@ export function buildRemoteStackStopCommand(target, options) {
   }
   return wrapRemoteScript(target, [
     'set -euo pipefail',
-    'export HAPPIER_STACK_CLI_ROOT_DISABLE=1',
-    `export HAPPIER_STACK_STORAGE_DIR=${posixQuote(invocation.stackStorageDir)}`,
+    'export PIGGERCODE_STACK_CLI_ROOT_DISABLE=1',
+    `export PIGGERCODE_STACK_STORAGE_DIR=${posixQuote(invocation.stackStorageDir)}`,
     `cd -- ${posixQuote(target.repoDir)}`,
     command,
   ].join('; '));

@@ -32,7 +32,7 @@ if [[ ! -x "$hstack_BIN" ]]; then
 fi
 
 restart_main_service_best_effort() {
-  if [[ -n "${HAPPIER_STACK_SANDBOX_DIR:-}" ]]; then
+  if [[ -n "${PIGGERCODE_STACK_SANDBOX_DIR:-}" ]]; then
     return 0
   fi
   "$hstack_BIN" service:restart >/dev/null 2>&1 || true
@@ -42,7 +42,7 @@ restart_main_service_best_effort() {
 
 restart_stack_service_best_effort() {
   local name="$1"
-  if [[ -n "${HAPPIER_STACK_SANDBOX_DIR:-}" ]]; then
+  if [[ -n "${PIGGERCODE_STACK_SANDBOX_DIR:-}" ]]; then
     return 0
   fi
   "$hstack_BIN" stack service:restart "$name" >/dev/null 2>&1 || true

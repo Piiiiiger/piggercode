@@ -17,8 +17,8 @@ export function applyStackSessionPriority({
   platform?: NodeJS.Platform;
   setPriority?: (pid: number, priority: number) => void;
 } = {}): boolean {
-  const isRescueSession = env.HAPPIER_STACK_RESCUE === '1'
-    && env.HAPPIER_STACK_PROCESS_KIND === 'session';
+  const isRescueSession = env.PIGGERCODE_STACK_RESCUE === '1'
+    && env.PIGGERCODE_STACK_PROCESS_KIND === 'session';
   if (!isRescueSession || (platform !== 'darwin' && platform !== 'linux')) return false;
 
   try {

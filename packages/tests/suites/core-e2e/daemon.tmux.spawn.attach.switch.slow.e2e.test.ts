@@ -114,9 +114,9 @@ describe('core e2e: daemon tmux spawn → attach → Claude remote↔local switc
       sessionIds: [],
       env: {
         CI: process.env.CI,
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
       },
     });
 
@@ -141,13 +141,13 @@ describe('core e2e: daemon tmux spawn → attach → Claude remote↔local switc
         env: {
           ...process.env,
           CI: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: server.baseUrl,
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: server.baseUrl,
           // Ensure both local + remote Claude runners use the fake CLI.
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
         },
       });
       daemonPort = daemon.state.httpPort;
@@ -176,13 +176,13 @@ describe('core e2e: daemon tmux spawn → attach → Claude remote↔local switc
           },
           environmentVariables: {
             // Prove env propagation into the tmux window (fake Claude writes logs only when this is set).
-            HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+            PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
             // Keep the spawned session isolated from the developer machine.
-            HAPPIER_HOME_DIR: daemonHomeDir,
-            HAPPIER_SERVER_URL: server.baseUrl,
-            HAPPIER_WEBAPP_URL: server.baseUrl,
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_HOME_DIR: daemonHomeDir,
+            PIGGERCODE_SERVER_URL: server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: server.baseUrl,
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
           },
         },
       });
@@ -213,8 +213,8 @@ describe('core e2e: daemon tmux spawn → attach → Claude remote↔local switc
           env: {
             ...process.env,
             CI: '1',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_HOME_DIR: daemonHomeDir,
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_HOME_DIR: daemonHomeDir,
             // "Inside tmux" (this isolated server) to avoid interactive attach-session.
             TMUX: `${socketPath},0,0`,
             TMUX_PANE: '%0',

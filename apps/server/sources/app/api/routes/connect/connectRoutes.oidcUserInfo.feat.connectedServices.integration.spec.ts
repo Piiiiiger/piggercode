@@ -77,7 +77,7 @@ describe("connectRoutes (OIDC userinfo) external auth flow (integration)", () =>
                     fetchUserInfo: true,
                 },
             ]),
-            HAPPIER_WEBAPP_URL: "https://app.example.test",
+            PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         });
 
         const seed = new Uint8Array(32).fill(1);

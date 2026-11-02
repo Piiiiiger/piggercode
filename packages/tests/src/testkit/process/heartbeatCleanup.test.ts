@@ -60,7 +60,7 @@ const WRAPPER_CASES: WrapperCase[] = [
     configName: 'vitest.config.ts',
     buildArgs: (configPath) => ['--config', configPath],
     extraEnv: {
-      HAPPIER_UI_VITEST_SHARDS: '1',
+      PIGGERCODE_UI_VITEST_SHARDS: '1',
     },
   },
   {
@@ -77,7 +77,7 @@ const WRAPPER_CASES: WrapperCase[] = [
     configName: 'vitest.config.ts',
     buildArgs: (configPath) => ['--config', configPath],
     extraEnv: {
-      HAPPIER_CLI_VITEST_SHARDS: '1',
+      PIGGERCODE_CLI_VITEST_SHARDS: '1',
     },
   },
 ];
@@ -106,8 +106,8 @@ async function createFakeToolchain(
       "'use strict';",
       "const { spawn } = require('node:child_process');",
       "const { writeFileSync } = require('node:fs');",
-      "const markerPath = process.env.HAPPIER_HEARTBEAT_MARKER;",
-      "if (!markerPath) throw new Error('Missing HAPPIER_HEARTBEAT_MARKER');",
+      "const markerPath = process.env.PIGGERCODE_HEARTBEAT_MARKER;",
+      "if (!markerPath) throw new Error('Missing PIGGERCODE_HEARTBEAT_MARKER');",
       "const grandchild = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' });",
       "if (!grandchild.pid) throw new Error('Failed to spawn descendant process');",
       "writeFileSync(markerPath, JSON.stringify({ childPid: process.pid, grandchildPid: grandchild.pid }), 'utf8');",
@@ -157,7 +157,7 @@ function createWrapperEnv(
     env.npm_execpath = fakeToolchain.sharedScriptPath;
   }
   if (caseItem.name === 'run-vitest-with-heartbeat') {
-    env.HAPPIER_TEST_VITEST_ENTRYPOINT = fakeToolchain.sharedScriptPath;
+    env.PIGGERCODE_TEST_VITEST_ENTRYPOINT = fakeToolchain.sharedScriptPath;
   }
   return env;
 }
@@ -176,10 +176,10 @@ async function runWrapperCleanupScenario(
     const fakeToolchain = await createFakeToolchain(toolDir, caseItem.toolCommandName, markerPath, opts);
     const env = createWrapperEnv({
       ...tempPathBin.env,
-      HAPPIER_HEARTBEAT_MARKER: markerPath,
-      HAPPIER_CI_DIAGNOSTIC_PATH: join(toolDir, 'heartbeat-diagnostic.ndjson'),
-      HAPPIER_TEST_HEARTBEAT_MS: '1000',
-      HAPPIER_HEARTBEAT_EXIT_AFTER_SPAWN: opts?.exitAfterSpawn === true ? '1' : '',
+      PIGGERCODE_HEARTBEAT_MARKER: markerPath,
+      PIGGERCODE_CI_DIAGNOSTIC_PATH: join(toolDir, 'heartbeat-diagnostic.ndjson'),
+      PIGGERCODE_TEST_HEARTBEAT_MS: '1000',
+      PIGGERCODE_HEARTBEAT_EXIT_AFTER_SPAWN: opts?.exitAfterSpawn === true ? '1' : '',
       ...caseItem.extraEnv,
     }, caseItem, fakeToolchain);
 
@@ -249,10 +249,10 @@ async function runWrapperParentExitCleanupScenario(caseItem: WrapperCase): Promi
     const fakeToolchain = await createFakeToolchain(toolDir, caseItem.toolCommandName, markerPath);
     const env = createWrapperEnv({
       ...tempPathBin.env,
-      HAPPIER_HEARTBEAT_MARKER: markerPath,
-      HAPPIER_CI_DIAGNOSTIC_PATH: join(toolDir, 'heartbeat-diagnostic.ndjson'),
-      HAPPIER_TEST_HEARTBEAT_MS: '1000',
-      HAPPIER_WRAPPER_PID_PATH: wrapperPidPath,
+      PIGGERCODE_HEARTBEAT_MARKER: markerPath,
+      PIGGERCODE_CI_DIAGNOSTIC_PATH: join(toolDir, 'heartbeat-diagnostic.ndjson'),
+      PIGGERCODE_TEST_HEARTBEAT_MS: '1000',
+      PIGGERCODE_WRAPPER_PID_PATH: wrapperPidPath,
       ...caseItem.extraEnv,
     }, caseItem, fakeToolchain);
     await writeFile(
@@ -261,10 +261,10 @@ async function runWrapperParentExitCleanupScenario(caseItem: WrapperCase): Promi
         "'use strict';",
         "const { spawn } = require('node:child_process');",
         "const { existsSync, writeFileSync } = require('node:fs');",
-        "const wrapperPath = process.env.HAPPIER_WRAPPER_PATH;",
-        "const wrapperPidPath = process.env.HAPPIER_WRAPPER_PID_PATH;",
-        "const configPath = process.env.HAPPIER_WRAPPER_CONFIG;",
-        "const rawWrapperArgs = process.env.HAPPIER_WRAPPER_ARGS_JSON;",
+        "const wrapperPath = process.env.PIGGERCODE_WRAPPER_PATH;",
+        "const wrapperPidPath = process.env.PIGGERCODE_WRAPPER_PID_PATH;",
+        "const configPath = process.env.PIGGERCODE_WRAPPER_CONFIG;",
+        "const rawWrapperArgs = process.env.PIGGERCODE_WRAPPER_ARGS_JSON;",
         "if (!wrapperPath || !wrapperPidPath || !configPath) throw new Error('Missing wrapper launcher env');",
         "const wrapperArgs = Array.isArray(JSON.parse(rawWrapperArgs || '[]')) ? JSON.parse(rawWrapperArgs || '[]') : [];",
         "const child = spawn(process.execPath, [wrapperPath, ...wrapperArgs], {",
@@ -275,7 +275,7 @@ async function runWrapperParentExitCleanupScenario(caseItem: WrapperCase): Promi
         "writeFileSync(wrapperPidPath, JSON.stringify({ wrapperPid: child.pid }), 'utf8');",
         "const deadline = Date.now() + 10000;",
         "const poll = () => {",
-        "  if (existsSync(process.env.HAPPIER_HEARTBEAT_MARKER)) {",
+        "  if (existsSync(process.env.PIGGERCODE_HEARTBEAT_MARKER)) {",
         "    process.exit(0);",
         "    return;",
         "  }",
@@ -294,9 +294,9 @@ async function runWrapperParentExitCleanupScenario(caseItem: WrapperCase): Promi
     const launcher = spawn(process.execPath, [launcherPath], {
       env: {
         ...env,
-        HAPPIER_WRAPPER_PATH: wrapperPath,
-        HAPPIER_WRAPPER_CONFIG: configPath,
-        HAPPIER_WRAPPER_ARGS_JSON: JSON.stringify(caseItem.buildArgs(configPath)),
+        PIGGERCODE_WRAPPER_PATH: wrapperPath,
+        PIGGERCODE_WRAPPER_CONFIG: configPath,
+        PIGGERCODE_WRAPPER_ARGS_JSON: JSON.stringify(caseItem.buildArgs(configPath)),
       },
       stdio: ['ignore', 'ignore', 'ignore'],
     });
@@ -403,7 +403,7 @@ describe('run-vitest-with-heartbeat diagnostics', () => {
       const child = spawn(process.execPath, [wrapperPath, '--config', configPath], {
         env: {
           ...tempPathBin.env,
-          HAPPIER_CI_DIAGNOSTIC_PATH: diagnosticPath,
+          PIGGERCODE_CI_DIAGNOSTIC_PATH: diagnosticPath,
         },
         stdio: ['ignore', 'ignore', 'ignore'],
       });
@@ -446,8 +446,8 @@ describe('run-vitest-with-heartbeat diagnostics', () => {
         env: {
           ...tempPathBin.env,
           npm_execpath: yarnShimPath,
-          HAPPIER_TEST_VITEST_ENTRYPOINT: killedEntrypointPath,
-          HAPPIER_CI_DIAGNOSTIC_PATH: diagnosticPath,
+          PIGGERCODE_TEST_VITEST_ENTRYPOINT: killedEntrypointPath,
+          PIGGERCODE_CI_DIAGNOSTIC_PATH: diagnosticPath,
         },
         stdio: ['ignore', 'pipe', 'pipe'],
       });

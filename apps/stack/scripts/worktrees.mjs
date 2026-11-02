@@ -45,10 +45,10 @@ import { bold, cyan, dim, green } from './utils/ui/ansi.mjs';
 import { getTodayYmd } from './utils/time/get_today_ymd.mjs';
 
 const DEFAULT_REPO_COMPONENT = 'happier-ui';
-const REPO_DIR_ENV_KEY = 'HAPPIER_STACK_REPO_DIR';
+const REPO_DIR_ENV_KEY = 'PIGGERCODE_STACK_REPO_DIR';
 
 function getActiveStackName() {
-  return (process.env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  return (process.env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
 }
 
 function isMainStack() {
@@ -424,8 +424,8 @@ async function installDependencies({ dir }) {
 function allowNodeModulesSymlinkForRepo() {
   // Expo/Metro commonly breaks with symlinked node_modules. Avoid symlinks by default.
   // Override if you *really* want to experiment:
-  //   HAPPIER_STACK_WT_ALLOW_NODE_MODULES_SYMLINK=1
-  return (process.env.HAPPIER_STACK_WT_ALLOW_NODE_MODULES_SYMLINK ?? '').toString().trim() === '1';
+  //   PIGGERCODE_STACK_WT_ALLOW_NODE_MODULES_SYMLINK=1
+  return (process.env.PIGGERCODE_STACK_WT_ALLOW_NODE_MODULES_SYMLINK ?? '').toString().trim() === '1';
 }
 
 async function maybeSetupDeps({ repoRoot, baseDir, worktreeDir, depsMode, component }) {
@@ -441,7 +441,7 @@ async function maybeSetupDeps({ repoRoot, baseDir, worktreeDir, depsMode, compon
     if (!allowSymlink) {
       const msg =
         `[wt] refusing to symlink node_modules by default (Expo/Metro is often broken by symlinks).\n` +
-        `[wt] Fix: use --deps=install (recommended). To override: set HAPPIER_STACK_WT_ALLOW_NODE_MODULES_SYMLINK=1`;
+        `[wt] Fix: use --deps=install (recommended). To override: set PIGGERCODE_STACK_WT_ALLOW_NODE_MODULES_SYMLINK=1`;
       if (depsMode === 'link') {
         return { mode: depsMode, linked: false, installed: false, message: msg };
       }
@@ -738,7 +738,7 @@ async function cmdNew({ rootDir, argv }) {
   const remoteOverride = (kv.get('--remote') ?? '').trim();
   const from = (kv.get('--from') ?? '').trim().toLowerCase() || 'upstream';
   const remoteName = remoteOverride || (from === 'origin' ? 'origin' : 'upstream');
-  const baseBranch = (kv.get('--base-branch') ?? process.env.HAPPIER_STACK_DEV_BRANCH ?? 'dev').toString().trim() || 'dev';
+  const baseBranch = (kv.get('--base-branch') ?? process.env.PIGGERCODE_STACK_DEV_BRANCH ?? 'dev').toString().trim() || 'dev';
 
   const baseOverride = (kv.get('--base') ?? '').trim();
   const baseWorktreeSpec = (kv.get('--base-worktree') ?? kv.get('--from-worktree') ?? '').trim();
@@ -761,7 +761,7 @@ async function cmdNew({ rootDir, argv }) {
 
   const workspaceDir = getWorkspaceDir(rootDir);
   const localOwner =
-    (process.env.HAPPIER_STACK_OWNER ?? '').toString().trim() ||
+    (process.env.PIGGERCODE_STACK_OWNER ?? '').toString().trim() ||
     (process.env.USER ?? process.env.LOGNAME ?? '').toString().trim() ||
     'unknown';
   const destWorktreeRoot = join(workspaceDir, category, localOwner, ...slug.split('/'));
@@ -874,7 +874,7 @@ async function cmdPr({ rootDir, argv }) {
     throw new Error(`[wt] unable to resolve base repo owner for PR fetch (remote=${remoteName || 'url'})`);
   }
 
-  const canonicalRaw = (process.env.HAPPIER_STACK_CANONICAL_REPO ?? '').toString().trim();
+  const canonicalRaw = (process.env.PIGGERCODE_STACK_CANONICAL_REPO ?? '').toString().trim();
   const canonical = (() => {
     const m = canonicalRaw.match(/^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)$/);
     if (m) return { owner: m[1], repo: m[2] };
@@ -1349,7 +1349,7 @@ async function fileExists(path) {
 
 async function pickBestShell({ kv, prefer = null } = {}) {
   const fromFlag = (kv?.get('--shell') ?? '').trim();
-  const fromEnv = (process.env.HAPPIER_STACK_WT_SHELL ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_WT_SHELL ?? '').trim();
   const fromShellEnv = (process.env.SHELL ?? '').trim();
   const want = (fromFlag || fromEnv || prefer || fromShellEnv).trim();
   if (want) {
@@ -1374,7 +1374,7 @@ function escapeForShellDoubleQuotes(s) {
 }
 
 async function openTerminalAuto({ dir, shell }) {
-  const termPref = (process.env.HAPPIER_STACK_WT_TERMINAL ?? '').trim().toLowerCase();
+  const termPref = (process.env.PIGGERCODE_STACK_WT_TERMINAL ?? '').trim().toLowerCase();
   const order = termPref ? [termPref] : ['ghostty', 'iterm', 'terminal', 'current'];
 
   for (const t of order) {
@@ -1474,7 +1474,7 @@ async function cmdShell({ rootDir, argv }) {
   }
 
   // Explicit terminal selection (best-effort).
-  process.env.HAPPIER_STACK_WT_TERMINAL = wantTerminal;
+  process.env.PIGGERCODE_STACK_WT_TERMINAL = wantTerminal;
   const chosen = await openTerminalAuto({ dir, shell });
   if (chosen.kind === 'current') {
     await run(shell, args, { cwd: dir, env: process.env, stdio: 'inherit' });

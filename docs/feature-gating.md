@@ -43,10 +43,10 @@ Global allow/deny policy lives in protocol:
 
 Inputs come from:
 
-- `HAPPIER_BUILD_FEATURES_ALLOW`
-- `HAPPIER_BUILD_FEATURES_DENY`
-- `HAPPIER_FEATURE_POLICY_ENV`
-- `HAPPIER_EMBEDDED_POLICY_ENV`
+- `PIGGERCODE_BUILD_FEATURES_ALLOW`
+- `PIGGERCODE_BUILD_FEATURES_DENY`
+- `PIGGERCODE_FEATURE_POLICY_ENV`
+- `PIGGERCODE_EMBEDDED_POLICY_ENV`
 
 Server assembly of `/v1/features` applies build-policy denies centrally in `apps/server/sources/app/features/catalog/resolveServerFeaturePayload.ts`. Route handlers must not re-evaluate build policy ad hoc.
 
@@ -88,4 +88,4 @@ Feature-scoped tests include `.feat.<featureId>.` in the filename, for example:
 something.feat.connectedServices.quotas.slow.e2e.test.ts
 ```
 
-Vitest excludes denied feature tests using `scripts/testing/featureTestGating.ts` with dependency closure. Use `HAPPIER_TEST_FEATURES_DENY` in addition to `HAPPIER_BUILD_FEATURES_DENY` when a feature's tests must be disabled in CI without changing embedded policy.
+Vitest excludes denied feature tests using `scripts/testing/featureTestGating.ts` with dependency closure. Use `PIGGERCODE_TEST_FEATURES_DENY` in addition to `PIGGERCODE_BUILD_FEATURES_DENY` when a feature's tests must be disabled in CI without changing embedded policy.

@@ -1,6 +1,6 @@
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   findConnectedServiceChildSelection,
   readConnectedServiceMaterializedEnvKeysFromEnv,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
@@ -33,8 +33,8 @@ function resolveAllowedConnectedAuthEnvKeys(
 }
 
 function stripInternalConnectedServiceEnv(env: NodeJS.ProcessEnv): void {
-  delete env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
-  delete env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY];
+  delete env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+  delete env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY];
 }
 
 export function isolateClaudeRuntimeAuthEnv<T extends NodeJS.ProcessEnv>(env: T): T {

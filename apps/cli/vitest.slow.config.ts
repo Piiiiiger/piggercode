@@ -39,7 +39,7 @@ export default defineConfig({
     env: {
       ...process.env,
       ...testEnv,
-      HAPPIER_FEATURE_POLICY_ENV: '',
+      PIGGERCODE_FEATURE_POLICY_ENV: '',
     },
   },
   resolve: {

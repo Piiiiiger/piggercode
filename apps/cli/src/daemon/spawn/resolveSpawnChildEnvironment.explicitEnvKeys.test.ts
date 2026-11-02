@@ -25,7 +25,7 @@ describe('resolveSpawnChildEnvironment (explicit env keys marker)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    const raw = result.extraEnvForChild.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+    const raw = result.extraEnvForChild.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
     expect(typeof raw).toBe('string');
     const parsed = JSON.parse(String(raw));
     expect(Array.isArray(parsed)).toBe(true);
@@ -42,12 +42,12 @@ describe('resolveSpawnChildEnvironment (explicit env keys marker)', () => {
     const result = await resolveSpawnChildEnvironment({
       options,
       profileEnvironmentVariables: {
-        HAPPIER_HOME_DIR: '/tmp/foreign-home',
-        HAPPIER_ACTIVE_SERVER_ID: 'foreign-server',
-        HAPPIER_SERVER_URL: 'https://foreign-api.example.test',
-        HAPPIER_WEBAPP_URL: 'https://foreign-app.example.test',
-        HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:65531',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://foreign-public.example.test',
+        PIGGERCODE_HOME_DIR: '/tmp/foreign-home',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'foreign-server',
+        PIGGERCODE_SERVER_URL: 'https://foreign-api.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://foreign-app.example.test',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:65531',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://foreign-public.example.test',
         OPENAI_API_KEY: 'sk-test',
       },
       daemonSpawnHooks: null,
@@ -61,25 +61,25 @@ describe('resolveSpawnChildEnvironment (explicit env keys marker)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.expandedEnvironmentVariables.HAPPIER_HOME_DIR).toBeUndefined();
-    expect(result.expandedEnvironmentVariables.HAPPIER_ACTIVE_SERVER_ID).toBeUndefined();
-    expect(result.expandedEnvironmentVariables.HAPPIER_SERVER_URL).toBeUndefined();
-    expect(result.expandedEnvironmentVariables.HAPPIER_WEBAPP_URL).toBeUndefined();
-    expect(result.expandedEnvironmentVariables.HAPPIER_LOCAL_SERVER_URL).toBeUndefined();
-    expect(result.expandedEnvironmentVariables.HAPPIER_PUBLIC_SERVER_URL).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_HOME_DIR).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_ACTIVE_SERVER_ID).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_SERVER_URL).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_WEBAPP_URL).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_LOCAL_SERVER_URL).toBeUndefined();
+    expect(result.expandedEnvironmentVariables.PIGGERCODE_PUBLIC_SERVER_URL).toBeUndefined();
     expect(result.expandedEnvironmentVariables.OPENAI_API_KEY).toBe('sk-test');
 
-    const raw = result.extraEnvForChild.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+    const raw = result.extraEnvForChild.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
     const parsed = JSON.parse(String(raw));
     expect(parsed).toEqual(expect.arrayContaining(['OPENAI_API_KEY']));
     expect(parsed).not.toEqual(
       expect.arrayContaining([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_SERVER_URL',
-        'HAPPIER_WEBAPP_URL',
-        'HAPPIER_LOCAL_SERVER_URL',
-        'HAPPIER_PUBLIC_SERVER_URL',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_SERVER_URL',
+        'PIGGERCODE_WEBAPP_URL',
+        'PIGGERCODE_LOCAL_SERVER_URL',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
       ]),
     );
   });
@@ -107,6 +107,6 @@ describe('resolveSpawnChildEnvironment (explicit env keys marker)', () => {
 
     expect(Object.values(result.expandedEnvironmentVariables)).not.toContain('spawn-nonce-daemon-only');
     expect(Object.values(result.extraEnvForChild)).not.toContain('spawn-nonce-daemon-only');
-    expect(result.extraEnvForChild).not.toHaveProperty('HAPPIER_SPAWN_NONCE');
+    expect(result.extraEnvForChild).not.toHaveProperty('PIGGERCODE_SPAWN_NONCE');
   });
 });

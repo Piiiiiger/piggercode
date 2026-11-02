@@ -13,7 +13,7 @@ vi.mock('@/utils/spawnHappyCLI', () => {
           env: options.runtimeDecision.env,
         };
       }
-      const runtime = process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME === 'bun' ? 'bun' : 'node';
+      const runtime = process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME === 'bun' ? 'bun' : 'node';
       if (runtime === 'bun') {
         return {
           runtime,
@@ -34,14 +34,14 @@ vi.mock('@/utils/spawnHappyCLI', () => {
 import { buildTmuxSpawnConfig } from './platform/tmux/spawnConfig';
 
 describe('daemon tmux spawn config', () => {
-  const originalRuntimeOverride = process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME;
+  const originalRuntimeOverride = process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME;
   const originalPath = process.env.PATH;
 
   afterEach(() => {
     if (originalRuntimeOverride === undefined) {
-      delete process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME;
+      delete process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME;
     } else {
-      process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME = originalRuntimeOverride;
+      process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME = originalRuntimeOverride;
     }
     if (originalPath === undefined) {
       delete process.env.PATH;
@@ -52,7 +52,7 @@ describe('daemon tmux spawn config', () => {
   });
 
   it('uses merged env and bun runtime when configured', async () => {
-    process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME = 'bun';
+    process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME = 'bun';
     process.env.PATH = '/bin';
 
     const cfg = await buildTmuxSpawnConfig({
@@ -85,7 +85,7 @@ describe('daemon tmux spawn config', () => {
         runtimeDecision: {
           runtime: 'node',
           argvPrefix: ['--no-warnings', '--no-deprecation', immutableEntrypoint],
-          env: { HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
+          env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
         },
       },
     });
@@ -96,7 +96,7 @@ describe('daemon tmux spawn config', () => {
       '--happy-terminal-mode',
       'tmux',
     ]));
-    expect(cfg.tmuxEnv.HAPPIER_TEST_ADMITTED_CLOSURE).toBe('0123456789abcdef');
+    expect(cfg.tmuxEnv.PIGGERCODE_TEST_ADMITTED_CLOSURE).toBe('0123456789abcdef');
   });
 
 });

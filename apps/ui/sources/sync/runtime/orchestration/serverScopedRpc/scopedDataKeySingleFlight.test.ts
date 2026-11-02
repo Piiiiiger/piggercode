@@ -51,8 +51,8 @@ function countCalls(match: string): number {
 
 describe('scoped data-key resolution coalesces concurrent callers', () => {
     afterEach(async () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX;
-        delete process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_SESSION_KEY_CACHE_MAX;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_SESSION_KEY_CACHE_MAX;
         runtimeFetchMock.mockReset();
         resetScopedMachineDataKeyCacheForTests();
         resetScopedSessionDataKeyCacheForTests();
@@ -241,8 +241,8 @@ describe('scoped data-key resolution coalesces concurrent callers', () => {
     });
 
     it('keeps machine token eviction from invalidating the session cache identity', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_MACHINE_KEY_CACHE_MAX = '1';
-        process.env.EXPO_PUBLIC_HAPPIER_SCOPED_RPC_SESSION_KEY_CACHE_MAX = '2';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_MACHINE_KEY_CACHE_MAX = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SCOPED_RPC_SESSION_KEY_CACHE_MAX = '2';
         runtimeFetchMock.mockImplementation(async (input: unknown, init?: RequestInit) => {
             if (isReachabilityProbe(input)) return reachabilityOk();
             if (String(input).includes('/v2/sessions/')) {

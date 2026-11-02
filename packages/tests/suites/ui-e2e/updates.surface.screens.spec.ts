@@ -20,11 +20,11 @@ import { ensureAccountReadyForConnect } from '../../src/testkit/uiE2e/ensureAcco
 /**
  * R13 (e) visual QA of the Updates surface: the live desktop entry (fake Tauri updater through the
  * real store) and the developer preview of every row state, light and dark, desktop and phone
- * widths. Screenshots land in `HAPPIER_E2E_UPDATES_SCREENS_DIR` (default: the run dir).
+ * widths. Screenshots land in `PIGGERCODE_E2E_UPDATES_SCREENS_DIR` (default: the run dir).
  */
 const run = createRunDirs({ runLabel: 'ui-e2e' });
 const storageScope = `e2e-updates-screens-${run.runId}`;
-const screensDir = resolve(process.env.HAPPIER_E2E_UPDATES_SCREENS_DIR ?? run.testDir('updates-screens'));
+const screensDir = resolve(process.env.PIGGERCODE_E2E_UPDATES_SCREENS_DIR ?? run.testDir('updates-screens'));
 
 type Theme = 'light' | 'dark';
 
@@ -58,9 +58,9 @@ test.describe('ui e2e: Updates surface screens (R13 e)', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: storageScope,
       // A metro bundle is a development bundle; the desktop updater is off there unless asked.
-      EXPO_PUBLIC_HAPPIER_DESKTOP_UPDATES_ENABLED: '1',
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      EXPO_PUBLIC_PIGGERCODE_DESKTOP_UPDATES_ENABLED: '1',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(suiteDir, { recursive: true });
@@ -68,7 +68,7 @@ test.describe('ui e2e: Updates surface screens (R13 e)', () => {
     server = await startServerLight({
       testDir: suiteDir,
       dbProvider: 'sqlite',
-      extraEnv: { HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1' },
+      extraEnv: { PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1' },
     });
     ui = await startUiWeb({
       testDir: suiteDir,

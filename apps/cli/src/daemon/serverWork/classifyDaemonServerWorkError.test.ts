@@ -170,7 +170,7 @@ describe('classifyDaemonServerWorkError', () => {
     const classify = mod.classifyDaemonServerWorkError!;
 
     expect(classify({
-      code: 'HAPPIER_ACCOUNT_MODE_UNKNOWN',
+      code: 'PIGGERCODE_ACCOUNT_MODE_UNKNOWN',
       retryAfterMs: 30_000,
       message: 'account mode temporarily unavailable',
     })).toMatchObject({

@@ -57,7 +57,7 @@ export function installShippedNativeFrameScheduler(): void {
 
 export type ShippedNativePlatformOS = 'ios' | 'android';
 
-const SHIPPED_NATIVE_PLATFORM_ENV_VAR = 'HAPPIER_LEGEND_NATIVE_OS';
+const SHIPPED_NATIVE_PLATFORM_ENV_VAR = 'PIGGERCODE_LEGEND_NATIVE_OS';
 const DEFAULT_SHIPPED_NATIVE_PLATFORM: ShippedNativePlatformOS = 'ios';
 
 /**
@@ -72,7 +72,7 @@ export function installShippedNativeArchitecture(): void {
 /**
  * Resolves which mobile OS this run pretends to be.
  *
- * Android is selected for a WHOLE RUN with `HAPPIER_LEGEND_NATIVE_OS=android`, never per test file:
+ * Android is selected for a WHOLE RUN with `PIGGERCODE_LEGEND_NATIVE_OS=android`, never per test file:
  * the Legend build evaluates `PlatformAdjustBreaksScroll = Platform.OS === 'android'` at its own
  * module scope, so by the time a test body could ask for Android the answer is already frozen.
  */

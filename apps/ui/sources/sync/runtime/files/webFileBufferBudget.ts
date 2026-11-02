@@ -9,10 +9,10 @@ function parseOptionalPositiveInt(value: unknown): number | undefined {
 
 export function resolveWebFileBufferMaxBytes(): number {
     return (
-        parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES)
+        parseOptionalPositiveInt(process.env.EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPY_FILES_DOWNLOAD_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_FILES_DOWNLOAD_MAX_BYTES)
-        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES)
+        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES)
         // Conservative default to prevent unbounded buffering on web.

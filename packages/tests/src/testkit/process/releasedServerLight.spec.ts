@@ -74,7 +74,7 @@ describe('released server-light artifact lifecycle', () => {
   it('fails an explicitly configured exact-release gate when its immutable artifact is absent', () => {
     expect(() => resolveReleasedServerV021ArtifactPrerequisite({
       defaultArtifactDir: '/unused/default',
-      env: { HAPPIER_E2E_RELEASED_SERVER_V0_2_1_DIR: '/configured/v0.2.1' },
+      env: { PIGGERCODE_E2E_RELEASED_SERVER_V0_2_1_DIR: '/configured/v0.2.1' },
       platform: 'darwin',
       arch: 'arm64',
       fileExists: () => false,
@@ -250,16 +250,16 @@ describe('released server-light artifact lifecycle', () => {
     expect(spawnParams?.env).toMatchObject({
       PORT: '43123',
       PUBLIC_URL: 'http://127.0.0.1:43123',
-      HAPPIER_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
       HAPPY_DB_PROVIDER: 'sqlite',
-      HAPPIER_SQLITE_AUTO_MIGRATE: '1',
-      HAPPIER_SQLITE_MIGRATIONS_DIR: resolve(started.runtimeRoot, 'prisma/sqlite/migrations'),
+      PIGGERCODE_SQLITE_AUTO_MIGRATE: '1',
+      PIGGERCODE_SQLITE_MIGRATIONS_DIR: resolve(started.runtimeRoot, 'prisma/sqlite/migrations'),
       PRISMA_QUERY_ENGINE_LIBRARY: resolve(
         started.runtimeRoot,
         'generated/sqlite-client/libquery_engine-darwin-arm64.dylib.node',
       ),
       DATABASE_URL: `file:${resolve(testDir, 'released-server-v0.2.1-data/happier-server-light.sqlite')}`,
-      HAPPIER_SERVER_LIGHT_FILES_DIR: resolve(testDir, 'released-server-v0.2.1-data/files'),
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: resolve(testDir, 'released-server-v0.2.1-data/files'),
       HOME: resolve(testDir, 'released-server-v0.2.1-auth/home'),
     });
     expect(resolve(started.runtimeRoot).startsWith(`${resolve(testDir)}/`)).toBe(true);

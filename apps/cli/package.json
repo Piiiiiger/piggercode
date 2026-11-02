@@ -111,7 +111,7 @@
     "prepare:declarations": "node scripts/buildSharedDeps.mjs --declarations",
     "pretypecheck": "yarn -s prepare:declarations",
     "prebuild": "yarn -s build:shared",
-    "postinstall": "node -e \"const fs=require('fs');const cp=require('child_process');try{const gate=require('../../scripts/postinstall/shouldRunPostinstall.cjs');if(!gate.shouldRunPostinstall({workspace:'cli',scope:process.env.HAPPIER_INSTALL_SCOPE||''}))process.exit(0);}catch{}if(!fs.existsSync('scripts/unpack-tools.cjs'))process.exit(0);const r=cp.spawnSync(process.execPath,['scripts/unpack-tools.cjs'],{stdio:'inherit'});if((r.status??1)!==0)process.exit(r.status??1);if(fs.existsSync('scripts/postinstall/fix-node-pty-spawn-helper-permissions.cjs')){cp.spawnSync(process.execPath,['scripts/postinstall/fix-node-pty-spawn-helper-permissions.cjs'],{stdio:'inherit'});}process.exit(0);\"",
+    "postinstall": "node -e \"const fs=require('fs');const cp=require('child_process');try{const gate=require('../../scripts/postinstall/shouldRunPostinstall.cjs');if(!gate.shouldRunPostinstall({workspace:'cli',scope:process.env.PIGGERCODE_INSTALL_SCOPE||''}))process.exit(0);}catch{}if(!fs.existsSync('scripts/unpack-tools.cjs'))process.exit(0);const r=cp.spawnSync(process.execPath,['scripts/unpack-tools.cjs'],{stdio:'inherit'});if((r.status??1)!==0)process.exit(r.status??1);if(fs.existsSync('scripts/postinstall/fix-node-pty-spawn-helper-permissions.cjs')){cp.spawnSync(process.execPath,['scripts/postinstall/fix-node-pty-spawn-helper-permissions.cjs'],{stdio:'inherit'});}process.exit(0);\"",
     "tool:trace:extract": "tsx scripts/tool-trace-extract.ts",
     "tool:trace:fixtures:v1": "tsx scripts/tool-trace-fixtures-v1.ts",
     "// ==== Dev/Stable Variant Management ====": "",

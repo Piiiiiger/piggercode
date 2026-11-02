@@ -21,8 +21,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
       daemonSpawnHooks: {
         validateSpawn,
         buildExtraEnvForChild: ({ codexBackendMode, experimentalCodexAcp }) => ({
-          ...(experimentalCodexAcp === true ? { HAPPIER_LEGACY_CODEX_ACP_SHADOW: '1' } : {}),
-          ...(codexBackendMode === 'acp' ? { HAPPIER_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
+          ...(experimentalCodexAcp === true ? { PIGGERCODE_LEGACY_CODEX_ACP_SHADOW: '1' } : {}),
+          ...(codexBackendMode === 'acp' ? { PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
         }),
       },
       processEnv: {},
@@ -36,8 +36,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     if (!result.ok) return;
 
     expect(validateSpawn).toHaveBeenCalledTimes(1);
-    expect(result.extraEnvForChild.HAPPIER_LEGACY_CODEX_ACP_SHADOW).toBeUndefined();
-    expect(result.extraEnvForChild.HAPPIER_EXPERIMENTAL_CODEX_ACP).toBe('1');
+    expect(result.extraEnvForChild.PIGGERCODE_LEGACY_CODEX_ACP_SHADOW).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_EXPERIMENTAL_CODEX_ACP).toBe('1');
   });
 
   it('falls back from explicit codexBackendMode=acp to MCP without reintroducing the legacy flag', async () => {
@@ -66,8 +66,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
       daemonSpawnHooks: {
         validateSpawn,
         buildExtraEnvForChild: ({ codexBackendMode, experimentalCodexAcp }) => ({
-          ...(codexBackendMode === 'mcp' ? { HAPPIER_CODEX_BACKEND_MODE_AFTER_FALLBACK: 'mcp' } : {}),
-          ...(experimentalCodexAcp === true ? { HAPPIER_LEGACY_CODEX_ACP_SHADOW: '1' } : {}),
+          ...(codexBackendMode === 'mcp' ? { PIGGERCODE_CODEX_BACKEND_MODE_AFTER_FALLBACK: 'mcp' } : {}),
+          ...(experimentalCodexAcp === true ? { PIGGERCODE_LEGACY_CODEX_ACP_SHADOW: '1' } : {}),
         }),
       },
       processEnv: {},
@@ -81,9 +81,9 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     if (!result.ok) return;
 
     expect(validateSpawn).toHaveBeenCalledTimes(2);
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE).toBe('mcp');
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE_AFTER_FALLBACK).toBe('mcp');
-    expect(result.extraEnvForChild.HAPPIER_LEGACY_CODEX_ACP_SHADOW).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE).toBe('mcp');
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE_AFTER_FALLBACK).toBe('mcp');
+    expect(result.extraEnvForChild.PIGGERCODE_LEGACY_CODEX_ACP_SHADOW).toBeUndefined();
   });
 
   it('prefers explicit codexBackendMode=appServer over the legacy ACP experiment flag', async () => {
@@ -104,8 +104,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
       daemonSpawnHooks: {
         validateSpawn,
         buildExtraEnvForChild: ({ codexBackendMode, experimentalCodexAcp }) => ({
-          ...(codexBackendMode === 'appServer' ? { HAPPIER_CODEX_BACKEND_MODE: 'appServer' } : {}),
-          ...(experimentalCodexAcp === true ? { HAPPIER_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
+          ...(codexBackendMode === 'appServer' ? { PIGGERCODE_CODEX_BACKEND_MODE: 'appServer' } : {}),
+          ...(experimentalCodexAcp === true ? { PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
         }),
       },
       processEnv: {},
@@ -119,8 +119,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     if (!result.ok) return;
 
     expect(validateSpawn).toHaveBeenCalledTimes(1);
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE).toBe('appServer');
-    expect(result.extraEnvForChild.HAPPIER_EXPERIMENTAL_CODEX_ACP).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE).toBe('appServer');
+    expect(result.extraEnvForChild.PIGGERCODE_EXPERIMENTAL_CODEX_ACP).toBeUndefined();
   });
 
   it('derives codex backend mode from agentRuntimeDescriptorV1 when legacy fields are absent', async () => {
@@ -157,7 +157,7 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE).toBe('appServer');
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE).toBe('appServer');
   });
 
   it('publishes explicit Codex backend mode into child env without workspace linkage metadata', async () => {
@@ -183,8 +183,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE).toBe('appServer');
-    expect(result.extraEnvForChild.HAPPIER_SESSION_WORKSPACE_CONTEXT_JSON).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE).toBe('appServer');
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_WORKSPACE_CONTEXT_JSON).toBeUndefined();
   });
 
   it('falls back to MCP for new Codex sessions when ACP validation fails', async () => {
@@ -207,7 +207,7 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
           return { ok: true };
         },
         buildExtraEnvForChild: ({ experimentalCodexAcp }) => ({
-          ...(experimentalCodexAcp === true ? { HAPPIER_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
+          ...(experimentalCodexAcp === true ? { PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1' } : {}),
         }),
       },
       processEnv: {},
@@ -220,8 +220,8 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_EXPERIMENTAL_CODEX_ACP).toBeUndefined();
-    expect(result.extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE).toBe('mcp');
+    expect(result.extraEnvForChild.PIGGERCODE_EXPERIMENTAL_CODEX_ACP).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE).toBe('mcp');
     expect(logWarn).toHaveBeenCalled();
   });
 
@@ -288,7 +288,7 @@ describe('resolveSpawnChildEnvironment (codex ACP fallback)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    const fallbackMessage = result.extraEnvForChild.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+    const fallbackMessage = result.extraEnvForChild.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
     expect(fallbackMessage).toContain('Codex ACP could not start');
     expect(fallbackMessage).not.toContain('\n');
     expect(fallbackMessage).not.toContain('\r');

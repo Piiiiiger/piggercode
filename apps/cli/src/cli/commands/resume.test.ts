@@ -134,9 +134,9 @@ describe('happier resume', () => {
     'uses real local runner custody for a restored Herdr resume with stale active metadata (%s)',
     async (runner) => {
       await withTempDir('happier-herdr-resume-', async (home) => {
-        const env = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_SESSION_ATTACH_FILE', 'HERDR_BIN_PATH']);
+        const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SESSION_ATTACH_FILE', 'HERDR_BIN_PATH']);
         env.patch({
-          HAPPIER_HOME_DIR: home, HAPPIER_SESSION_ATTACH_FILE: undefined,
+          PIGGERCODE_HOME_DIR: home, PIGGERCODE_SESSION_ATTACH_FILE: undefined,
           HERDR_BIN_PATH: join(home, 'isolated-unavailable-herdr'),
         });
         reloadConfiguration();
@@ -213,8 +213,8 @@ describe('happier resume', () => {
     await withTempDir('happier-herdr-cold-resume-', async (home) => {
       await withHerdrApi(async (api) => {
         api.panes.add('managed');
-        const env = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HERDR_BIN_PATH', 'HERDR_PANE_ID', 'HERDR_SOCKET_PATH']);
-        env.patch({ HAPPIER_HOME_DIR: home, HERDR_BIN_PATH: join(home, 'isolated-herdr'), HERDR_PANE_ID: undefined, HERDR_SOCKET_PATH: undefined });
+        const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'HERDR_BIN_PATH', 'HERDR_PANE_ID', 'HERDR_SOCKET_PATH']);
+        env.patch({ PIGGERCODE_HOME_DIR: home, HERDR_BIN_PATH: join(home, 'isolated-herdr'), HERDR_PANE_ID: undefined, HERDR_SOCKET_PATH: undefined });
         reloadConfiguration();
         nativeBoundary.supportedHerdr = true;
         nativeBoundary.interceptForeground = true;
@@ -370,12 +370,12 @@ describe('happier resume', () => {
   it('creates an attach file and dispatches to the agent handler with --resume', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-resume-'));
     const directory = await mkdtemp(join(tmpdir(), 'happier-resume-dir-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevAttach = process.env.HAPPIER_SESSION_ATTACH_FILE;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevAttach = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
     const prevCwd = process.cwd();
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       const machineKey = new Uint8Array(32).fill(11);
@@ -434,7 +434,7 @@ describe('happier resume', () => {
       expect(dispatched[0]?.args).toContain('sid_1');
       expect(dispatched[0]?.args).toContain('--resume');
       expect(dispatched[0]?.args).toContain(vendorResumeId);
-      expect(process.env.HAPPIER_SESSION_ATTACH_FILE ?? '').toBe('');
+      expect(process.env.PIGGERCODE_SESSION_ATTACH_FILE ?? '').toBe('');
 
       const attachDir = join(home, 'tmp', 'session-attach');
       const attachFiles = await readdir(attachDir).catch(() => []);
@@ -445,10 +445,10 @@ describe('happier resume', () => {
       } catch {
         // ignore
       }
-      if (prevAttach === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-      else process.env.HAPPIER_SESSION_ATTACH_FILE = prevAttach;
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevAttach === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+      else process.env.PIGGERCODE_SESSION_ATTACH_FILE = prevAttach;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       await rm(directory, { recursive: true, force: true });
@@ -458,12 +458,12 @@ describe('happier resume', () => {
   it('supports plaintext sessions by creating an attach payload without a data encryption key', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-resume-plain-'));
     const directory = await mkdtemp(join(tmpdir(), 'happier-resume-plain-dir-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevAttach = process.env.HAPPIER_SESSION_ATTACH_FILE;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevAttach = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
     const prevCwd = process.cwd();
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       const credentials: Credentials = {
@@ -521,10 +521,10 @@ describe('happier resume', () => {
       } catch {
         // ignore
       }
-      if (prevAttach === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-      else process.env.HAPPIER_SESSION_ATTACH_FILE = prevAttach;
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevAttach === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+      else process.env.PIGGERCODE_SESSION_ATTACH_FILE = prevAttach;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       await rm(directory, { recursive: true, force: true });
@@ -534,17 +534,17 @@ describe('happier resume', () => {
   it('materializes connected-service auth from persisted Codex metadata before direct terminal resume dispatch', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-resume-connected-home-'));
     const directory = await mkdtemp(join(tmpdir(), 'happier-resume-connected-dir-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevAttach = process.env.HAPPIER_SESSION_ATTACH_FILE;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevAttach = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const prevCodexHome = process.env.CODEX_HOME;
     const prevCodexSqliteHome = process.env.CODEX_SQLITE_HOME;
-    const prevBindingsEnv = process.env.HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON;
-    const prevIdentityEnv = process.env.HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON;
-    const prevSelectionsEnv = process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON;
-    const prevMaterializedKeysEnv = process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON;
-    const prevTargetRootEnv = process.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT;
+    const prevBindingsEnv = process.env.PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON;
+    const prevIdentityEnv = process.env.PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON;
+    const prevSelectionsEnv = process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON;
+    const prevMaterializedKeysEnv = process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON;
+    const prevTargetRootEnv = process.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT;
     const prevCwd = process.cwd();
 
     const now = Date.now();
@@ -624,9 +624,9 @@ describe('happier resume', () => {
     const serverUrl = `http://127.0.0.1:${address.port}`;
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      process.env.HAPPIER_SERVER_URL = serverUrl;
-      process.env.HAPPIER_WEBAPP_URL = serverUrl;
+      process.env.PIGGERCODE_HOME_DIR = home;
+      process.env.PIGGERCODE_SERVER_URL = serverUrl;
+      process.env.PIGGERCODE_WEBAPP_URL = serverUrl;
       reloadConfiguration();
 
       const connectedServices = {
@@ -668,9 +668,9 @@ describe('happier resume', () => {
         const codexHome = process.env.CODEX_HOME;
         expect(codexHome).toBeTypeOf('string');
         expect(process.env.CODEX_SQLITE_HOME).toBe(codexHome);
-        expect(JSON.parse(process.env.HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON ?? 'null')).toEqual(connectedServices);
-        expect(JSON.parse(process.env.HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON ?? 'null')).toEqual(materializationIdentity);
-        expect(JSON.parse(process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON ?? '[]')).toEqual([
+        expect(JSON.parse(process.env.PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON ?? 'null')).toEqual(connectedServices);
+        expect(JSON.parse(process.env.PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON ?? 'null')).toEqual(materializationIdentity);
+        expect(JSON.parse(process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON ?? '[]')).toEqual([
           {
             kind: 'profile',
             serviceId: 'openai-codex',
@@ -678,7 +678,7 @@ describe('happier resume', () => {
             credentialRevision: null,
           },
         ]);
-        expect(JSON.parse(process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON ?? '[]')).toEqual([
+        expect(JSON.parse(process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON ?? '[]')).toEqual([
           'CODEX_HOME',
           'CODEX_SQLITE_HOME',
         ]);
@@ -721,8 +721,8 @@ describe('happier resume', () => {
       expect(agentHandler).toHaveBeenCalledTimes(1);
       expect(process.env.CODEX_HOME).toBe(prevCodexHome);
       expect(process.env.CODEX_SQLITE_HOME).toBe(prevCodexSqliteHome);
-      expect(process.env.HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON).toBe(prevBindingsEnv);
-      expect(process.env.HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON).toBe(prevIdentityEnv);
+      expect(process.env.PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON).toBe(prevBindingsEnv);
+      expect(process.env.PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON).toBe(prevIdentityEnv);
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => (error ? reject(error) : resolve()));
@@ -732,28 +732,28 @@ describe('happier resume', () => {
       } catch {
         // ignore
       }
-      if (prevAttach === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-      else process.env.HAPPIER_SESSION_ATTACH_FILE = prevAttach;
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+      if (prevAttach === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+      else process.env.PIGGERCODE_SESSION_ATTACH_FILE = prevAttach;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
       if (prevCodexHome === undefined) delete process.env.CODEX_HOME;
       else process.env.CODEX_HOME = prevCodexHome;
       if (prevCodexSqliteHome === undefined) delete process.env.CODEX_SQLITE_HOME;
       else process.env.CODEX_SQLITE_HOME = prevCodexSqliteHome;
-      if (prevBindingsEnv === undefined) delete process.env.HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON;
-      else process.env.HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON = prevBindingsEnv;
-      if (prevIdentityEnv === undefined) delete process.env.HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON;
-      else process.env.HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON = prevIdentityEnv;
-      if (prevSelectionsEnv === undefined) delete process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON;
-      else process.env.HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON = prevSelectionsEnv;
-      if (prevMaterializedKeysEnv === undefined) delete process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON;
-      else process.env.HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON = prevMaterializedKeysEnv;
-      if (prevTargetRootEnv === undefined) delete process.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT;
-      else process.env.HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT = prevTargetRootEnv;
+      if (prevBindingsEnv === undefined) delete process.env.PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON;
+      else process.env.PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_JSON = prevBindingsEnv;
+      if (prevIdentityEnv === undefined) delete process.env.PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON;
+      else process.env.PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON = prevIdentityEnv;
+      if (prevSelectionsEnv === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON;
+      else process.env.PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON = prevSelectionsEnv;
+      if (prevMaterializedKeysEnv === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON;
+      else process.env.PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON = prevMaterializedKeysEnv;
+      if (prevTargetRootEnv === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT;
+      else process.env.PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT = prevTargetRootEnv;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       await rm(directory, { recursive: true, force: true });
@@ -763,12 +763,12 @@ describe('happier resume', () => {
   it('cleans up connected-service materialization when direct resume fails before handler dispatch', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-resume-connected-cleanup-home-'));
     const directory = await mkdtemp(join(tmpdir(), 'happier-resume-connected-cleanup-dir-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
-    const prevCodexBackendMode = process.env.HAPPIER_CODEX_BACKEND_MODE;
-    const prevCodexAcpBin = process.env.HAPPIER_CODEX_ACP_BIN;
-    const prevAttach = process.env.HAPPIER_SESSION_ATTACH_FILE;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
+    const prevCodexBackendMode = process.env.PIGGERCODE_CODEX_BACKEND_MODE;
+    const prevCodexAcpBin = process.env.PIGGERCODE_CODEX_ACP_BIN;
+    const prevAttach = process.env.PIGGERCODE_SESSION_ATTACH_FILE;
     const prevCwd = process.cwd();
 
     const now = Date.now();
@@ -889,11 +889,11 @@ describe('happier resume', () => {
     const agentHandler: CommandHandler = vi.fn(async () => {});
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      process.env.HAPPIER_SERVER_URL = serverUrl;
-      process.env.HAPPIER_WEBAPP_URL = serverUrl;
-      process.env.HAPPIER_CODEX_BACKEND_MODE = 'acp';
-      process.env.HAPPIER_CODEX_ACP_BIN = join(home, 'missing-codex-acp');
+      process.env.PIGGERCODE_HOME_DIR = home;
+      process.env.PIGGERCODE_SERVER_URL = serverUrl;
+      process.env.PIGGERCODE_WEBAPP_URL = serverUrl;
+      process.env.PIGGERCODE_CODEX_BACKEND_MODE = 'acp';
+      process.env.PIGGERCODE_CODEX_ACP_BIN = join(home, 'missing-codex-acp');
       reloadConfiguration();
 
       await expect(handleResumeCommand(['sid_connected_cleanup_1'], {
@@ -924,18 +924,18 @@ describe('happier resume', () => {
       } catch {
         // ignore
       }
-      if (prevAttach === undefined) delete process.env.HAPPIER_SESSION_ATTACH_FILE;
-      else process.env.HAPPIER_SESSION_ATTACH_FILE = prevAttach;
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
-      if (prevCodexBackendMode === undefined) delete process.env.HAPPIER_CODEX_BACKEND_MODE;
-      else process.env.HAPPIER_CODEX_BACKEND_MODE = prevCodexBackendMode;
-      if (prevCodexAcpBin === undefined) delete process.env.HAPPIER_CODEX_ACP_BIN;
-      else process.env.HAPPIER_CODEX_ACP_BIN = prevCodexAcpBin;
+      if (prevAttach === undefined) delete process.env.PIGGERCODE_SESSION_ATTACH_FILE;
+      else process.env.PIGGERCODE_SESSION_ATTACH_FILE = prevAttach;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
+      if (prevCodexBackendMode === undefined) delete process.env.PIGGERCODE_CODEX_BACKEND_MODE;
+      else process.env.PIGGERCODE_CODEX_BACKEND_MODE = prevCodexBackendMode;
+      if (prevCodexAcpBin === undefined) delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+      else process.env.PIGGERCODE_CODEX_ACP_BIN = prevCodexAcpBin;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       await rm(directory, { recursive: true, force: true });

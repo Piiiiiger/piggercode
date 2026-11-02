@@ -65,8 +65,8 @@ export function spawnStackOwnerDeathWatchdog({
     {
       env: {
         ...env,
-        ...(stackNameValue ? { HAPPIER_STACK_STACK: stackNameValue } : {}),
-        ...(envPathValue ? { HAPPIER_STACK_ENV_FILE: envPathValue } : {}),
+        ...(stackNameValue ? { PIGGERCODE_STACK_STACK: stackNameValue } : {}),
+        ...(envPathValue ? { PIGGERCODE_STACK_ENV_FILE: envPathValue } : {}),
       },
       stdio: 'ignore',
       shell: false,

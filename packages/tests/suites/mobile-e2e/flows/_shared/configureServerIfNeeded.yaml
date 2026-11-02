@@ -1,9 +1,9 @@
 # Configures the server URL via deep-linking to the Server settings screen.
 #
 # Preconditions:
-# - `HAPPIER_E2E_SERVER_URL` is set (passed via Maestro `-e`).
+# - `PIGGERCODE_E2E_SERVER_URL` is set (passed via Maestro `-e`).
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 # Configure the server as early as possible so the Welcome screen doesn't get
 # stuck in a perpetual loading state while trying to reach the default server.
@@ -34,7 +34,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
       notVisible:
         id: welcome-create-account
     commands:
-      - openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///server?auto=1&url=${HAPPIER_E2E_SERVER_URL}
+      - openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///server?auto=1&url=${PIGGERCODE_E2E_SERVER_URL}
       - runFlow:
           file: acceptAndroidOpenWithPromptMaybe.yaml
 

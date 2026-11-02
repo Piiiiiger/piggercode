@@ -34,10 +34,10 @@ test('hstack happier --help passes through to the CLI (not wrapper help)', async
   const env = {
     ...process.env,
     // Keep the test hermetic: do not load a real stack env file.
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
-    HAPPIER_STACK_REPO_DIR: fixture.dir,
-    HAPPIER_HOME_DIR: join(fixture.dir, '.happy-home'),
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.dir,
+    PIGGERCODE_HOME_DIR: join(fixture.dir, '.happy-home'),
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'happier', '--help'], { cwd: rootDir, env });

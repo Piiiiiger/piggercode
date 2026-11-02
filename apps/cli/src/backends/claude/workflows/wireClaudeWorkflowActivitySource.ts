@@ -89,7 +89,7 @@ export type WiredClaudeWorkflowActivitySource = ClaudeWorkflowActivitySource & R
  * - **Fault** — no snapshot at all, or a headline value that will not parse. Rare, unrecoverable,
  *   and reported on a signal that is on by default. `logger.debug` would NOT be: a session process
  *   resolves its file log level to `info` (`resolveFileLogLevel`), so debug entries are opt-in via
- *   `DEBUG`/`HAPPIER_LOG_LEVEL` and this would be an unobserved fallback in production. The console
+ *   `DEBUG`/`PIGGERCODE_LOG_LEVEL` and this would be an unobserved fallback in production. The console
  *   line `warn` also writes is acceptable here and only here: wiring happens before the provider
  *   terminal UI starts, so it cannot land inside a running TUI.
  * - **Normal** — a readable snapshot with no non-terminal run. That is what a fresh session and a

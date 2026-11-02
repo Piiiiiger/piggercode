@@ -165,7 +165,7 @@ export async function maybeRunVersionGatedRuntimeMigration(params: Readonly<{
     ? false
     : isInteractiveTerminal();
 
-  // HAPPIER_INSTALLER_MIGRATION tells the repair handler it was invoked from
+  // PIGGERCODE_INSTALLER_MIGRATION tells the repair handler it was invoked from
   // the 0.2.3 migration hook; the handler broadens `autoApplyWithoutPrompt` so
   // lane-switches and legacy-pinned-converge-to-default-following run without
   // prompting during the migration. In interactive mode we pass the explicit
@@ -174,9 +174,9 @@ export async function maybeRunVersionGatedRuntimeMigration(params: Readonly<{
   // var, and the env var is only needed for older CLI binaries that don't yet
   // parse the flag — we keep setting it in non-interactive mode for that
   // backwards-compat case).
-  const previousMigrationEnv = process.env.HAPPIER_INSTALLER_MIGRATION;
+  const previousMigrationEnv = process.env.PIGGERCODE_INSTALLER_MIGRATION;
   if (!interactive) {
-    process.env.HAPPIER_INSTALLER_MIGRATION = '1';
+    process.env.PIGGERCODE_INSTALLER_MIGRATION = '1';
   }
   try {
     await handleServiceRepairCliCommand({
@@ -190,9 +190,9 @@ export async function maybeRunVersionGatedRuntimeMigration(params: Readonly<{
     });
   } finally {
     if (previousMigrationEnv === undefined) {
-      delete process.env.HAPPIER_INSTALLER_MIGRATION;
+      delete process.env.PIGGERCODE_INSTALLER_MIGRATION;
     } else {
-      process.env.HAPPIER_INSTALLER_MIGRATION = previousMigrationEnv;
+      process.env.PIGGERCODE_INSTALLER_MIGRATION = previousMigrationEnv;
     }
   }
   return true;

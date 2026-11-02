@@ -25,7 +25,7 @@ export type RelayBindSignupNotice = Readonly<{
 const AUTH_DOCS_URL = 'https://docs.happier.dev/self-hosting/auth';
 
 export function describeRelayBindSignupExposure(
-  /** The relay's `HAPPIER_SERVER_HOST` override, or null to keep its default. */
+  /** The relay's `PIGGERCODE_SERVER_HOST` override, or null to keep its default. */
   bindHost: string | null,
 ): RelayBindSignupNotice | null {
   const host = String(bindHost ?? '').trim();

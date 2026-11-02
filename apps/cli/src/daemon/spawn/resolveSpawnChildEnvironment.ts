@@ -10,14 +10,14 @@ import { resolveCodexBackendModeForRun } from '@/backends/codex/utils/resolveCod
 import { SESSION_REQUESTED_DIRECTORY_ENV } from '@/agent/runtime/resolveRequestedSessionDirectory';
 import { SESSION_MACHINE_WORKSPACE_PATH_ENV } from '@/agent/runtime/sessionWorkspaceLocation';
 import {
-  HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY,
   serializeSessionConnectedServicesBindingsForEnv,
 } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
 import {
-  HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
+  PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
   serializeSessionConnectedServiceMaterializationIdentityForEnv,
 } from '@/agent/runtime/sessionConnectedServiceMaterializationIdentityEnv';
-import { HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from './spawnExplicitEnvKeysMarker';
+import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from './spawnExplicitEnvKeysMarker';
 import { stripDaemonOwnedChildEnvOverrides } from './stripDaemonOwnedChildEnvOverrides';
 import type { ConnectedServicesMaterializationDiagnostic } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
 import { resolveExistingSessionHandoffStateThroughCatalog } from '@/backends/catalog';
@@ -122,7 +122,7 @@ export async function resolveSpawnChildEnvironment(params: {
 
   const sessionProfileEnv: Record<string, string> = {};
   if (params.options.profileId !== undefined) {
-    sessionProfileEnv.HAPPIER_SESSION_PROFILE_ID = params.options.profileId;
+    sessionProfileEnv.PIGGERCODE_SESSION_PROFILE_ID = params.options.profileId;
   }
 
   const expandedProfileEnv = expandEnvironmentVariables(
@@ -211,7 +211,7 @@ export async function resolveSpawnChildEnvironment(params: {
   delete extraEnvForChild.TMUX_SESSION_NAME;
   delete extraEnvForChild.TMUX_TMPDIR;
   if (explicitEnvKeysForChild.length > 0) {
-    extraEnvForChild[HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR] = JSON.stringify(explicitEnvKeysForChild);
+    extraEnvForChild[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR] = JSON.stringify(explicitEnvKeysForChild);
   }
   if (params.daemonSpawnHooks?.buildExtraEnvForChild) {
     const hookExtraEnvForChild = params.daemonSpawnHooks.buildExtraEnvForChild({
@@ -224,27 +224,27 @@ export async function resolveSpawnChildEnvironment(params: {
     }
   }
   if (params.options.transcriptStorage === 'direct') {
-    extraEnvForChild.HAPPIER_TRANSCRIPT_STORAGE = 'direct';
+    extraEnvForChild.PIGGERCODE_TRANSCRIPT_STORAGE = 'direct';
   }
   if (params.options.attachMetadataIdentityPolicy) {
-    extraEnvForChild.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY = params.options.attachMetadataIdentityPolicy;
+    extraEnvForChild.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY = params.options.attachMetadataIdentityPolicy;
   }
   if (params.options.mcpSelection) {
-    extraEnvForChild.HAPPIER_SESSION_MCP_SELECTION_JSON = JSON.stringify(params.options.mcpSelection);
+    extraEnvForChild.PIGGERCODE_SESSION_MCP_SELECTION_JSON = JSON.stringify(params.options.mcpSelection);
   }
   if (params.options.sessionConfigOptionOverrides) {
-    extraEnvForChild.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify(params.options.sessionConfigOptionOverrides);
+    extraEnvForChild.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON = JSON.stringify(params.options.sessionConfigOptionOverrides);
   }
   const connectedServicesBindingsJson = serializeSessionConnectedServicesBindingsForEnv(params.options.connectedServices);
   if (connectedServicesBindingsJson) {
-    extraEnvForChild[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = connectedServicesBindingsJson;
+    extraEnvForChild[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY] = connectedServicesBindingsJson;
   }
   const connectedServiceMaterializationIdentityJson =
     serializeSessionConnectedServiceMaterializationIdentityForEnv(
       params.options.connectedServiceMaterializationIdentityV1,
     );
   if (connectedServiceMaterializationIdentityJson) {
-    extraEnvForChild[HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] =
+    extraEnvForChild[PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY] =
       connectedServiceMaterializationIdentityJson;
   }
   extraEnvForChild[SESSION_REQUESTED_DIRECTORY_ENV] = params.options.directory;
@@ -254,10 +254,10 @@ export async function resolveSpawnChildEnvironment(params: {
     || effectiveCodexBackendMode === 'acp'
     || effectiveCodexBackendMode === 'appServer'
   ) {
-    extraEnvForChild.HAPPIER_CODEX_BACKEND_MODE = effectiveCodexBackendMode;
+    extraEnvForChild.PIGGERCODE_CODEX_BACKEND_MODE = effectiveCodexBackendMode;
   }
   if (codexAcpFallbackMessage) {
-    extraEnvForChild.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = codexAcpFallbackMessage;
+    extraEnvForChild.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = codexAcpFallbackMessage;
   }
 
   if (params.options.handoffStateTransfer === 'existing') {

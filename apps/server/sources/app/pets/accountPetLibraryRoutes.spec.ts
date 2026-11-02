@@ -56,25 +56,25 @@ function registerRoutesForTest(
 }
 
 describe("accountPetLibraryRoutes", () => {
-    const originalBuildFeaturesDeny = process.env.HAPPIER_BUILD_FEATURES_DENY;
-    const originalPetsSyncEnabled = process.env.HAPPIER_FEATURE_PETS_SYNC__ENABLED;
+    const originalBuildFeaturesDeny = process.env.PIGGERCODE_BUILD_FEATURES_DENY;
+    const originalPetsSyncEnabled = process.env.PIGGERCODE_FEATURE_PETS_SYNC__ENABLED;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        delete process.env.HAPPIER_BUILD_FEATURES_DENY;
-        process.env.HAPPIER_FEATURE_PETS_SYNC__ENABLED = "true";
+        delete process.env.PIGGERCODE_BUILD_FEATURES_DENY;
+        process.env.PIGGERCODE_FEATURE_PETS_SYNC__ENABLED = "true";
     });
 
     afterEach(() => {
         if (originalBuildFeaturesDeny === undefined) {
-            delete process.env.HAPPIER_BUILD_FEATURES_DENY;
+            delete process.env.PIGGERCODE_BUILD_FEATURES_DENY;
         } else {
-            process.env.HAPPIER_BUILD_FEATURES_DENY = originalBuildFeaturesDeny;
+            process.env.PIGGERCODE_BUILD_FEATURES_DENY = originalBuildFeaturesDeny;
         }
         if (originalPetsSyncEnabled === undefined) {
-            delete process.env.HAPPIER_FEATURE_PETS_SYNC__ENABLED;
+            delete process.env.PIGGERCODE_FEATURE_PETS_SYNC__ENABLED;
         } else {
-            process.env.HAPPIER_FEATURE_PETS_SYNC__ENABLED = originalPetsSyncEnabled;
+            process.env.PIGGERCODE_FEATURE_PETS_SYNC__ENABLED = originalPetsSyncEnabled;
         }
     });
 
@@ -110,7 +110,7 @@ describe("accountPetLibraryRoutes", () => {
     });
 
     it("canonical-feature-gates account pet library routes behind pets.sync", async () => {
-        process.env.HAPPIER_BUILD_FEATURES_DENY = "pets.sync";
+        process.env.PIGGERCODE_BUILD_FEATURES_DENY = "pets.sync";
         listAccountPetsForAccount.mockResolvedValue([petMetadata()]);
         const { registerAccountPetLibraryRoutes } = await import("./accountPetLibraryRoutes");
         const route = createRouteTestBuilder({
@@ -130,7 +130,7 @@ describe("accountPetLibraryRoutes", () => {
     });
 
     it("canonical-feature-gates account pet asset routes behind pets.companion", async () => {
-        process.env.HAPPIER_BUILD_FEATURES_DENY = "pets.companion";
+        process.env.PIGGERCODE_BUILD_FEATURES_DENY = "pets.companion";
         readAccountPetAssetForAccount.mockResolvedValue({
             mediaType: "image/webp",
             bytes: Uint8Array.from([1, 2, 3]),

@@ -27,9 +27,9 @@ export async function createStackArchiveFixture(
   const baseEnv = buildGitIdentityEnv({
     extraEnv: {
       GIT_TERMINAL_PROMPT: '0',
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
     },
   });
 
@@ -48,7 +48,7 @@ export async function createStackArchiveFixture(
   if (attachStack) {
     const envPath = join(storageDir, stackName, 'env');
     await mkdir(dirname(envPath), { recursive: true });
-    await writeFile(envPath, [`HAPPIER_STACK_STACK=${stackName}`, `HAPPIER_STACK_REPO_DIR=${worktreeDir}`, ''].join('\n'), 'utf-8');
+    await writeFile(envPath, [`PIGGERCODE_STACK_STACK=${stackName}`, `PIGGERCODE_STACK_REPO_DIR=${worktreeDir}`, ''].join('\n'), 'utf-8');
   }
 
   return {

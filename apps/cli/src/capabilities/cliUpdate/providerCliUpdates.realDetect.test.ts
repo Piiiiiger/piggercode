@@ -12,7 +12,7 @@ import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 import { withProviderCliUpdates } from './providerCliUpdates';
 
-const SCOPED_ENV_KEYS = ['HOME', 'USERPROFILE', 'PATH', 'HAPPIER_HOME_DIR', 'HAPPIER_CLAUDE_PATH'] as const;
+const SCOPED_ENV_KEYS = ['HOME', 'USERPROFILE', 'PATH', 'PIGGERCODE_HOME_DIR', 'PIGGERCODE_CLAUDE_PATH'] as const;
 
 function writeClaudeVersion(dir: string, version: string, options: { startupSeconds?: number } = {}): string {
   const path = join(dir, version);
@@ -46,9 +46,9 @@ describe.skipIf(process.platform === 'win32')('withProviderCliUpdates with the r
     applyEnvValues({
       HOME: home,
       USERPROFILE: home,
-      HAPPIER_HOME_DIR: home,
+      PIGGERCODE_HOME_DIR: home,
       PATH: `${binDir}:/usr/bin:/bin`,
-      HAPPIER_CLAUDE_PATH: undefined,
+      PIGGERCODE_CLAUDE_PATH: undefined,
     });
   });
 

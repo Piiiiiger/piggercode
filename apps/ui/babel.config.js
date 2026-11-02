@@ -10,8 +10,8 @@ module.exports = function (api) {
   if (api && typeof api.cache === 'function') {
     if (typeof api.cache.using === 'function') {
       api.cache.using(() => [
-        parseBooleanEnv('HAPPIER_UI_WORKLETS_BUNDLE_MODE', false) ? '1' : '0',
-        parseBooleanEnv('HAPPIER_UI_KEEP_CONSOLE_IN_RELEASE', false) ? '1' : '0',
+        parseBooleanEnv('PIGGERCODE_UI_WORKLETS_BUNDLE_MODE', false) ? '1' : '0',
+        parseBooleanEnv('PIGGERCODE_UI_KEEP_CONSOLE_IN_RELEASE', false) ? '1' : '0',
       ].join('|'));
     } else {
       api.cache(true);
@@ -35,8 +35,8 @@ module.exports = function (api) {
     // This won't cause issues since the plugin won't be needed anyway
   }
 
-  const workletsBundleMode = parseBooleanEnv('HAPPIER_UI_WORKLETS_BUNDLE_MODE', false);
-  const keepConsoleInRelease = parseBooleanEnv('HAPPIER_UI_KEEP_CONSOLE_IN_RELEASE', false);
+  const workletsBundleMode = parseBooleanEnv('PIGGERCODE_UI_WORKLETS_BUNDLE_MODE', false);
+  const keepConsoleInRelease = parseBooleanEnv('PIGGERCODE_UI_KEEP_CONSOLE_IN_RELEASE', false);
   const workletsPluginConfig = workletsPlugin === 'react-native-worklets/plugin'
     ? [
       workletsPlugin,

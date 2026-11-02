@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useRouter } from 'expo-router';
-import { HAPPIER_REPLAY_SEED_MAX_CHARS, HAPPIER_REPLAY_SEED_MIN_CHARS } from '@piggercode/protocol';
+import { PIGGERCODE_REPLAY_SEED_MAX_CHARS, PIGGERCODE_REPLAY_SEED_MIN_CHARS } from '@piggercode/protocol';
 import { Platform, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
@@ -22,8 +22,8 @@ import { Icon } from '@/components/ui/icons/Icon';
  * the seed builder correctly produces nothing, so a screen that let a smaller
  * number be typed was offering a setting that silently turned Replay off.
  */
-const SESSION_REPLAY_MAX_SEED_CHARS_MIN = HAPPIER_REPLAY_SEED_MIN_CHARS;
-const SESSION_REPLAY_MAX_SEED_CHARS_MAX = HAPPIER_REPLAY_SEED_MAX_CHARS;
+const SESSION_REPLAY_MAX_SEED_CHARS_MIN = PIGGERCODE_REPLAY_SEED_MIN_CHARS;
+const SESSION_REPLAY_MAX_SEED_CHARS_MAX = PIGGERCODE_REPLAY_SEED_MAX_CHARS;
 
 function sanitizeNumericInput(value: string): string {
     return String(value).replace(/[^0-9]/g, '');

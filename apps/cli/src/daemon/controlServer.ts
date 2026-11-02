@@ -127,7 +127,7 @@ import { buildRuntimeAuthRecoveryKey } from './connectedServices/runtimeAuth/rec
 import { buildRuntimeAuthRecoveryAttemptTransitionLocalId } from './connectedServices/runtimeAuth/commitConnectedServiceRuntimeAuthRecoverySessionEvent';
 
 const DEFAULT_DAEMON_CONTROL_BODY_LIMIT_BYTES = 8 * 1024 * 1024;
-const DAEMON_CONTROL_BODY_LIMIT_BYTES_ENV_KEY = 'HAPPIER_DAEMON_CONTROL_BODY_LIMIT_BYTES';
+const DAEMON_CONTROL_BODY_LIMIT_BYTES_ENV_KEY = 'PIGGERCODE_DAEMON_CONTROL_BODY_LIMIT_BYTES';
 const DAEMON_DIST_CLOSURE_FINGERPRINT_PATTERN = /^[a-f0-9]{16}$/;
 const DaemonDistClosureFingerprintSchema = z.string().regex(DAEMON_DIST_CLOSURE_FINGERPRINT_PATTERN);
 
@@ -631,7 +631,7 @@ export function createDaemonControlApp({
     preHandler: requireAuth,
   }, async () => {
     const distClosureFingerprint = String(
-      process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? '',
+      process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? '',
     ).trim();
     return {
       status: 'ok' as const,

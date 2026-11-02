@@ -13,7 +13,7 @@ export function resolveMobileAppScheme(
   options?: Readonly<{ appId?: string | null }>,
 ): string {
   const configured = String(
-    env.HAPPIER_E2E_MOBILE_APP_SCHEME ??
+    env.PIGGERCODE_E2E_MOBILE_APP_SCHEME ??
     env.EXPO_APP_SCHEME ??
     '',
   ).trim();

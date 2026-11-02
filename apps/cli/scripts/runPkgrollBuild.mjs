@@ -16,7 +16,7 @@ function resolvePkgrollTimeoutMs(env, explicitTimeoutMs) {
   if (typeof explicitTimeoutMs === 'number' && Number.isFinite(explicitTimeoutMs)) {
     return Math.min(1_800_000, Math.max(60_000, Math.trunc(explicitTimeoutMs)));
   }
-  const raw = String(env?.HAPPIER_CLI_PKGROLL_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_CLI_PKGROLL_TIMEOUT_MS ?? '').trim();
   if (!raw) return DEFAULT_PKGROLL_TIMEOUT_MS;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return DEFAULT_PKGROLL_TIMEOUT_MS;
@@ -212,7 +212,7 @@ function runPkgrollBuildStage(options = {}) {
   const env = options.env ?? process.env;
   const timeoutMs = resolvePkgrollTimeoutMs(env, options.timeoutMs);
   const outputDir = resolveRequiredPkgrollOutputDir(
-    options.outputDir ?? env?.HAPPIER_CLI_BUILD_OUTPUT_DIR,
+    options.outputDir ?? env?.PIGGERCODE_CLI_BUILD_OUTPUT_DIR,
   );
   const stagingDir = resolve(packageRoot, outputDir);
   const sourceDir = resolve(packageRoot, 'src');

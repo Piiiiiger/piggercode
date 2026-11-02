@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { resolveClaudeRuntimeAuthEnvDiagnostic } from './resolveClaudeRuntimeAuthEnvDiagnostic';
@@ -17,7 +17,7 @@ describe('resolveClaudeRuntimeAuthEnvDiagnostic', () => {
             CLAUDE_CODE_OAUTH_REFRESH_TOKEN: 'refresh-secret',
             CLAUDE_CODE_OAUTH_SCOPES: 'user:inference',
             CLAUDE_CONFIG_DIR: '/Users/test/.claude',
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: '[{"kind":"profile"}]',
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: '[{"kind":"profile"}]',
         });
 
         expect(diagnostic).toEqual({

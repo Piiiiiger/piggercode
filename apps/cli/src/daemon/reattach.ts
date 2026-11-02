@@ -80,7 +80,7 @@ function resolveOwnedLiveDaemonSessionRuntimeRoots(): string[] {
   const ownedRoots = new Set<string>();
 
   const subprocessEntrypointRoot = resolveCliRuntimeRootFromEntrypoint(
-    normalizeOptionalString(process.env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT),
+    normalizeOptionalString(process.env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT),
   );
   if (subprocessEntrypointRoot) {
     ownedRoots.add(subprocessEntrypointRoot);

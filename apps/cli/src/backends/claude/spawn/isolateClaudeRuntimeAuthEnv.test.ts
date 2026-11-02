@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { isolateClaudeRuntimeAuthEnv } from './isolateClaudeRuntimeAuthEnv';
 
@@ -16,10 +16,10 @@ describe('isolateClaudeRuntimeAuthEnv', () => {
       CLAUDE_CODE_OAUTH_REFRESH_TOKEN: 'refresh-token',
       CLAUDE_CODE_OAUTH_SCOPES: 'scopes',
       CLAUDE_CONFIG_DIR: '/tmp/connected-claude',
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
         { kind: 'profile', serviceId: 'claude-subscription', profileId: 'work' },
       ]),
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
         'CLAUDE_CONFIG_DIR',
       ]),
     });
@@ -31,8 +31,8 @@ describe('isolateClaudeRuntimeAuthEnv', () => {
     expect(env.CLAUDE_CODE_SETUP_TOKEN).toBeUndefined();
     expect(env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN).toBeUndefined();
     expect(env.CLAUDE_CODE_OAUTH_SCOPES).toBeUndefined();
-    expect(env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
-    expect(env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
+    expect(env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
+    expect(env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
   });
 
   it('preserves the connected Anthropic API key but strips stale Claude subscription auth', () => {
@@ -40,10 +40,10 @@ describe('isolateClaudeRuntimeAuthEnv', () => {
       ANTHROPIC_API_KEY: 'selected-api-key',
       CLAUDE_CODE_OAUTH_TOKEN: 'ambient-oauth-token',
       CLAUDE_CODE_SETUP_TOKEN: 'ambient-setup-token',
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
         { kind: 'profile', serviceId: 'anthropic', profileId: 'api-profile' },
       ]),
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
         'ANTHROPIC_API_KEY',
       ]),
     });

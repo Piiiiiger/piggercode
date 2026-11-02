@@ -20,23 +20,23 @@ describe('apps/ui runVitestShards', () => {
         expect(resolveVitestShardCount({})).toBe(32);
     });
 
-    it('uses HAPPIER_UI_VITEST_SHARDS override when valid', () => {
-        expect(resolveVitestShardCount({ HAPPIER_UI_VITEST_SHARDS: '6' })).toBe(6);
+    it('uses PIGGERCODE_UI_VITEST_SHARDS override when valid', () => {
+        expect(resolveVitestShardCount({ PIGGERCODE_UI_VITEST_SHARDS: '6' })).toBe(6);
     });
 
     it('ignores invalid shard overrides', () => {
-        expect(resolveVitestShardCount({ HAPPIER_UI_VITEST_SHARDS: '0' })).toBe(32);
-        expect(resolveVitestShardCount({ HAPPIER_UI_VITEST_SHARDS: 'nope' })).toBe(32);
+        expect(resolveVitestShardCount({ PIGGERCODE_UI_VITEST_SHARDS: '0' })).toBe(32);
+        expect(resolveVitestShardCount({ PIGGERCODE_UI_VITEST_SHARDS: 'nope' })).toBe(32);
     });
 
     it('partitions the configured shard count into balanced CI parts', () => {
-        expect(resolveVitestShardRange({ HAPPIER_UI_VITEST_PART: '1', HAPPIER_UI_VITEST_PARTS: '4' }, 32)).toEqual({
+        expect(resolveVitestShardRange({ PIGGERCODE_UI_VITEST_PART: '1', PIGGERCODE_UI_VITEST_PARTS: '4' }, 32)).toEqual({
             start: 1,
             end: 8,
             part: 1,
             parts: 4,
         });
-        expect(resolveVitestShardRange({ HAPPIER_UI_VITEST_PART: '4', HAPPIER_UI_VITEST_PARTS: '4' }, 32)).toEqual({
+        expect(resolveVitestShardRange({ PIGGERCODE_UI_VITEST_PART: '4', PIGGERCODE_UI_VITEST_PARTS: '4' }, 32)).toEqual({
             start: 25,
             end: 32,
             part: 4,
@@ -46,7 +46,7 @@ describe('apps/ui runVitestShards', () => {
 
     it('runs the full shard range when partition inputs are absent or invalid', () => {
         expect(resolveVitestShardRange({}, 24)).toEqual({ start: 1, end: 24, part: 1, parts: 1 });
-        expect(resolveVitestShardRange({ HAPPIER_UI_VITEST_PART: '5', HAPPIER_UI_VITEST_PARTS: '4' }, 24)).toEqual({
+        expect(resolveVitestShardRange({ PIGGERCODE_UI_VITEST_PART: '5', PIGGERCODE_UI_VITEST_PARTS: '4' }, 24)).toEqual({
             start: 1,
             end: 24,
             part: 1,
@@ -56,8 +56,8 @@ describe('apps/ui runVitestShards', () => {
 
     it('bounds each shard independently so one wedged process cannot hide later shards', () => {
         expect(resolveVitestShardTimeoutMs({})).toBe(900_000);
-        expect(resolveVitestShardTimeoutMs({ HAPPIER_UI_VITEST_SHARD_TIMEOUT_MS: '120000' })).toBe(120_000);
-        expect(resolveVitestShardTimeoutMs({ HAPPIER_UI_VITEST_SHARD_TIMEOUT_MS: '0' })).toBe(900_000);
+        expect(resolveVitestShardTimeoutMs({ PIGGERCODE_UI_VITEST_SHARD_TIMEOUT_MS: '120000' })).toBe(120_000);
+        expect(resolveVitestShardTimeoutMs({ PIGGERCODE_UI_VITEST_SHARD_TIMEOUT_MS: '0' })).toBe(900_000);
         expect(classifyVitestShardTermination({ code: null, signal: 'SIGTERM', timedOut: true })).toEqual({
             outcome: 'failed',
             exitCode: 124,

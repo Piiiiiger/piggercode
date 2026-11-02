@@ -28,10 +28,10 @@ test('stopStackWithEnv kills runtime-tracked pids for ephemeral stacks even when
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -58,21 +58,21 @@ test('stopStackWithEnv kills runtime-tracked pids for ephemeral stacks even when
   child = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: undefined,
-      HAPPIER_STACK_CLI_HOME_DIR: undefined,
-      HAPPIER_STACK_ENV_FILE: undefined,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_HOME_DIR: undefined,
+      PIGGERCODE_STACK_CLI_HOME_DIR: undefined,
+      PIGGERCODE_STACK_ENV_FILE: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   });
   drainingChild = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: undefined,
-      HAPPIER_STACK_CLI_HOME_DIR: undefined,
-      HAPPIER_STACK_ENV_FILE: undefined,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_HOME_DIR: undefined,
+      PIGGERCODE_STACK_CLI_HOME_DIR: undefined,
+      PIGGERCODE_STACK_ENV_FILE: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   });
   assert.ok(Number(child.pid) > 1, 'expected child pid');
@@ -126,10 +126,10 @@ test('stopStackWithEnv kills runtime-tracked pids for ephemeral stacks even when
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
     },
     json: true,
     noDocker: true,
@@ -176,10 +176,10 @@ test('stopStackWithEnv preserves runtime-tracked session pids after canonical ow
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -200,11 +200,11 @@ test('stopStackWithEnv preserves runtime-tracked session pids after canonical ow
   child = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: undefined,
-      HAPPIER_STACK_CLI_HOME_DIR: undefined,
-      HAPPIER_STACK_ENV_FILE: undefined,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_HOME_DIR: undefined,
+      PIGGERCODE_STACK_CLI_HOME_DIR: undefined,
+      PIGGERCODE_STACK_ENV_FILE: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   });
   assert.ok(Number(child.pid) > 1, 'expected child pid');
@@ -236,10 +236,10 @@ test('stopStackWithEnv preserves runtime-tracked session pids after canonical ow
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
     },
     json: true,
     noDocker: true,
@@ -268,10 +268,10 @@ test('stopStackWithEnv preserves marker-light runtime pids without an infra/serv
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -292,11 +292,11 @@ test('stopStackWithEnv preserves marker-light runtime pids without an infra/serv
   child = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: undefined,
-      HAPPIER_STACK_CLI_HOME_DIR: undefined,
-      HAPPIER_STACK_ENV_FILE: undefined,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_PROCESS_KIND: '',
+      PIGGERCODE_HOME_DIR: undefined,
+      PIGGERCODE_STACK_CLI_HOME_DIR: undefined,
+      PIGGERCODE_STACK_ENV_FILE: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_PROCESS_KIND: '',
     },
   });
   assert.ok(Number(child.pid) > 1, 'expected child pid');
@@ -328,10 +328,10 @@ test('stopStackWithEnv preserves marker-light runtime pids without an infra/serv
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
     },
     json: true,
     noDocker: true,
@@ -360,10 +360,10 @@ test('stopStackWithEnv rejects stack-name prefix matches in ephemeral runtime fa
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -384,11 +384,11 @@ test('stopStackWithEnv rejects stack-name prefix matches in ephemeral runtime fa
   child = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_HOME_DIR: undefined,
-      HAPPIER_STACK_CLI_HOME_DIR: undefined,
-      HAPPIER_STACK_ENV_FILE: undefined,
-      HAPPIER_STACK_STACK: `${stackName}-other`,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_HOME_DIR: undefined,
+      PIGGERCODE_STACK_CLI_HOME_DIR: undefined,
+      PIGGERCODE_STACK_ENV_FILE: undefined,
+      PIGGERCODE_STACK_STACK: `${stackName}-other`,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   });
   assert.ok(Number(child.pid) > 1, 'expected child pid');
@@ -420,10 +420,10 @@ test('stopStackWithEnv rejects stack-name prefix matches in ephemeral runtime fa
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
     },
     json: true,
     noDocker: true,

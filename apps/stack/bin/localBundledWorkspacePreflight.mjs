@@ -12,7 +12,7 @@ function resolveWorkspaceBundleLockPath(repoRoot) {
 export async function refreshLocalBundledWorkspacePackages(cliRootDir) {
   const cliRoot = String(cliRootDir ?? '').trim();
   if (!cliRoot) return;
-  const disabled = String(process.env.HAPPIER_STACK_SYNC_BUNDLED_WORKSPACES ?? '').trim().toLowerCase();
+  const disabled = String(process.env.PIGGERCODE_STACK_SYNC_BUNDLED_WORKSPACES ?? '').trim().toLowerCase();
   if (disabled === '0' || disabled === 'false' || disabled === 'no') return;
 
   const repoRoot = coerceHappyMonorepoRootFromPath(cliRoot);

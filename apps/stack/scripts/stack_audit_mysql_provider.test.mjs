@@ -28,9 +28,9 @@ async function createAuditFixture(t) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
   };
 
   async function writeStack(stackName, {
@@ -45,16 +45,16 @@ async function createAuditFixture(t) {
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=${serverComponent}`,
-        `HAPPIER_DB_PROVIDER=${dbProvider}`,
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=${serverComponent}`,
+        `PIGGERCODE_DB_PROVIDER=${dbProvider}`,
         ...(serverPort == null ? [] : [
-          `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
-          `HAPPIER_STACK_PG_PORT=${serverPort + 1000}`,
+          `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
+          `PIGGERCODE_STACK_PG_PORT=${serverPort + 1000}`,
         ]),
-        `HAPPIER_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-        `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+        `PIGGERCODE_STACK_UI_BUILD_DIR=${join(baseDir, 'ui')}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
         ...(databaseUrl == null ? [] : [`DATABASE_URL=${databaseUrl}`]),
         '',
       ].join('\n'),
@@ -109,7 +109,7 @@ test('hstack stack audit --unpin-ports preserves explicit MySQL DATABASE_URL aut
 
   const raw = await readFile(envPath, 'utf-8');
   assert.match(raw, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
-  assert.doesNotMatch(raw, /^HAPPIER_STACK_SERVER_PORT=/m);
+  assert.doesNotMatch(raw, /^PIGGERCODE_STACK_SERVER_PORT=/m);
 });
 
 test('hstack stack audit --fix-ports preserves explicit MySQL DATABASE_URL authority', async (t) => {
@@ -127,8 +127,8 @@ test('hstack stack audit --fix-ports preserves explicit MySQL DATABASE_URL autho
 
   const raw = await readFile(repairedEnvPath, 'utf-8');
   assert.match(raw, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
-  assert.match(raw, /^HAPPIER_DB_PROVIDER=mysql$/m);
-  assert.doesNotMatch(raw, new RegExp(`^HAPPIER_STACK_SERVER_PORT=${sharedPort}$`, 'm'));
+  assert.match(raw, /^PIGGERCODE_DB_PROVIDER=mysql$/m);
+  assert.doesNotMatch(raw, new RegExp(`^PIGGERCODE_STACK_SERVER_PORT=${sharedPort}$`, 'm'));
 });
 
 test('hstack stack audit port repair preserves external Postgres authority', async (t) => {
@@ -188,7 +188,7 @@ test('hstack stack edit preserves MySQL provider and DATABASE_URL for an ephemer
   assert.equal(result.code, 0, `stdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
 
   const raw = await readFile(envPath, 'utf-8');
-  assert.match(raw, /^HAPPIER_DB_PROVIDER=mysql$/m);
+  assert.match(raw, /^PIGGERCODE_DB_PROVIDER=mysql$/m);
   assert.match(raw, new RegExp(`^DATABASE_URL=${databaseUrl}$`, 'm'));
-  assert.doesNotMatch(raw, /^HAPPIER_STACK_PG_/m);
+  assert.doesNotMatch(raw, /^PIGGERCODE_STACK_PG_/m);
 });

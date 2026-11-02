@@ -12,7 +12,7 @@ import {
 
 import { cursorPreflightSessionControlsProbeAdapter } from './cursorPreflightSessionControlsProbeAdapter';
 
-const envKeys = ['HAPPIER_CURSOR_PATH', 'PATH'] as const;
+const envKeys = ['PIGGERCODE_CURSOR_PATH', 'PATH'] as const;
 let envScope = createEnvKeyScope(envKeys);
 
 afterEach(() => {
@@ -179,7 +179,7 @@ if (process.argv.includes('models')) {
       const result = await cursorPreflightSessionControlsProbeAdapter.probeModelsRaw?.({
         cwd: fixture.dir, timeoutMs: 5_000,
         accountSettings: { cursorBinaryPath: command, cursorAgentFallbackEnabled: false },
-        processEnv: { ...process.env, HAPPIER_CURSOR_PATH: '/unused/account-setting-wins' },
+        processEnv: { ...process.env, PIGGERCODE_CURSOR_PATH: '/unused/account-setting-wins' },
       });
       expect(result).toEqual([{ id: 'gpt-5.5', name: 'GPT-5.5' }]);
       expect((await readFile(invocations, 'utf8')).trim().split('\n')).toEqual(['acp', 'models']);
@@ -194,14 +194,14 @@ if (process.argv.includes('models')) {
         dir: fixture.dir,
         sdkEntry: resolveAcpSdkEntryFromCwd(process.cwd()),
       });
-      delete process.env.HAPPIER_CURSOR_PATH;
+      delete process.env.PIGGERCODE_CURSOR_PATH;
 
       const raw = await cursorPreflightSessionControlsProbeAdapter.probeModelsRaw?.({
         cwd: fixture.dir,
         timeoutMs: 5_000,
         backendTarget: undefined,
         accountSettings: null,
-        processEnv: { ...process.env, HAPPIER_CURSOR_PATH: cursorPath },
+        processEnv: { ...process.env, PIGGERCODE_CURSOR_PATH: cursorPath },
       });
 
       const models = Array.isArray(raw) ? raw : [];

@@ -136,7 +136,7 @@ describe('capabilities.invoke pre-session catalogs', () => {
           cwd, timeoutMs: 10_000, runtimeKindOverride: 'appServer',
           connectedServices: { v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'profile', profileId: 'work' } } },
           environmentVariables: {
-            HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
           },
         } });
         expect(warm, JSON.stringify({ warm, requests })).toMatchObject({ ok: true });
@@ -145,8 +145,8 @@ describe('capabilities.invoke pre-session catalogs', () => {
           cwd, timeoutMs: 1_000, runtimeKindOverride: 'appServer',
           connectedServices: { v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'profile', profileId: 'work' } } },
           environmentVariables: {
-            HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-            HAPPIER_TEST_CATALOG_START_FILE: startupPath,
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+            PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
           },
         } }).then((value) => { response = value; return value; });
         await vi.waitFor(() => expect(held).toBe(true), { timeout: 5_000 });
@@ -167,8 +167,8 @@ describe('capabilities.invoke pre-session catalogs', () => {
           cwd, timeoutMs: 5_000, runtimeKindOverride: 'appServer',
           connectedServices: { v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'profile', profileId: 'work' } } },
           environmentVariables: {
-            HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-            HAPPIER_TEST_CATALOG_START_FILE: startupPath,
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+            PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
           },
         } })).resolves.toMatchObject({ ok: true });
         const pid = Number((await readFile(startupPath, 'utf8')).trim());
@@ -230,7 +230,7 @@ describe('capabilities.invoke pre-session catalogs', () => {
                 ? { source, selection: 'profile', profileId: 'selected-fixture' }
                 : { source },
             } },
-            environmentVariables: { HAPPIER_CURSOR_PATH: executable },
+            environmentVariables: { PIGGERCODE_CURSOR_PATH: executable },
           },
         });
         if (source === 'connected') {
@@ -259,10 +259,10 @@ describe('capabilities.invoke pre-session catalogs', () => {
         id: 'cli.codex', method: 'probeCatalogs', params: {
           cwd, timeoutMs: 5_000, runtimeKindOverride: 'appServer',
           environmentVariables: {
-            HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-            HAPPIER_TEST_CATALOG_START_FILE: startupPath,
-            HAPPIER_TEST_CATALOG_DELAY_MS: '1000',
-            HAPPIER_TEST_CATALOG_SHUTDOWN_DELAY_MS: '250',
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+            PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
+            PIGGERCODE_TEST_CATALOG_DELAY_MS: '1000',
+            PIGGERCODE_TEST_CATALOG_SHUTDOWN_DELAY_MS: '250',
           },
         },
       };
@@ -339,9 +339,9 @@ describe('capabilities.invoke pre-session catalogs', () => {
           id: 'cli.codex', method: 'probeCatalogs', params: {
             cwd, timeoutMs: 500, runtimeKindOverride: 'appServer',
             environmentVariables: {
-              HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-              HAPPIER_TEST_CATALOG_START_FILE: startupPath,
-              HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH: rpcLogPath,
+              PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+              PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
+              PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH: rpcLogPath,
             },
           },
         };
@@ -386,8 +386,8 @@ describe('capabilities.invoke pre-session catalogs', () => {
             cwd, timeoutMs: 5_000, runtimeKindOverride: 'appServer',
             connectedServices: { v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'profile' } } },
             environmentVariables: {
-              HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-              HAPPIER_TEST_CATALOG_START_FILE: startupPath,
+              PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+              PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
             },
           },
         });
@@ -405,7 +405,7 @@ describe('capabilities.invoke pre-session catalogs', () => {
       const response = await call(RPC_METHODS.CAPABILITIES_INVOKE, {
         id: 'cli.gemini', method: 'probeCatalogs', params: {
           cwd, timeoutMs: 5_000,
-          environmentVariables: { HAPPIER_GEMINI_PATH: join(cwd, 'missing-native-cli') },
+          environmentVariables: { PIGGERCODE_GEMINI_PATH: join(cwd, 'missing-native-cli') },
           connectedServices: { v: 1, bindingsByServiceId: {
             'gemini': { source: 'connected', selection: 'group', groupId: 'fixture', profileId: 'fixture' },
           } },
@@ -429,10 +429,10 @@ describe('capabilities.invoke pre-session catalogs', () => {
         id: 'cli.codex', method: 'probeCatalogs', params: {
           cwd, timeoutMs: 5_000, runtimeKindOverride: 'appServer', profileId: 'gui-materialized-fixture',
           environmentVariables: {
-            HAPPIER_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
-            HAPPIER_TEST_CATALOG_START_FILE: startupPath,
-            HAPPIER_TEST_CATALOG_ENV_FILE: environmentPath,
-            HAPPIER_HOME_DIR: join(cwd, 'caller-controlled-daemon-home'),
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fileURLToPath(new URL('../../backends/codex/preflight/__fixtures__/fakeCodexAppServer.mjs', import.meta.url)),
+            PIGGERCODE_TEST_CATALOG_START_FILE: startupPath,
+            PIGGERCODE_TEST_CATALOG_ENV_FILE: environmentPath,
+            PIGGERCODE_HOME_DIR: join(cwd, 'caller-controlled-daemon-home'),
           },
         },
       };
@@ -445,7 +445,7 @@ describe('capabilities.invoke pre-session catalogs', () => {
       expect(results[1]).toEqual(result);
       expect(results[2]).toEqual(result);
       expect((await readFile(startupPath, 'utf8')).trim().split('\n')).toHaveLength(1);
-      expect(JSON.parse(await readFile(environmentPath, 'utf8'))).toMatchObject({ HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR });
+      expect(JSON.parse(await readFile(environmentPath, 'utf8'))).toMatchObject({ PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR });
       const fresh = await call(RPC_METHODS.CAPABILITIES_INVOKE, request);
       expect(fresh).toEqual(result);
       expect((await readFile(startupPath, 'utf8')).trim().split('\n')).toHaveLength(2);

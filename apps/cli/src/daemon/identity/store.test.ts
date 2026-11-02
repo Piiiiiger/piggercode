@@ -26,18 +26,18 @@ function createTestIdentity(params: Readonly<{
 }
 
 describe('installation identity store', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
     vi.resetModules();
     vi.doUnmock('node:fs/promises');
   });
 
   it('mints one local installation identity and persists it with private file permissions', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -64,7 +64,7 @@ describe('installation identity store', () => {
 
   it('fails clearly instead of silently replacing a corrupt identity file', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-corrupt-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -82,7 +82,7 @@ describe('installation identity store', () => {
 
   it('fails clearly when persisted key material is malformed', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-bad-key-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -106,7 +106,7 @@ describe('installation identity store', () => {
 
   it('reads the identity that won a concurrent first-use create race', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-race-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -127,7 +127,7 @@ describe('installation identity store', () => {
 
   it('waits for an in-progress first-use create to publish the completed identity', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-publish-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -165,7 +165,7 @@ describe('installation identity store', () => {
 
   it('recovers a stale first-use creation lock without exposing a partial identity file', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-stale-lock-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -189,7 +189,7 @@ describe('installation identity store', () => {
 
   it('does not let a stalled stale-lock creator overwrite the published winner', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-stale-publish-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -269,7 +269,7 @@ describe('installation identity store', () => {
 
   it('sync creation reads the published winner when another process wins final publish', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-sync-publish-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -307,7 +307,7 @@ describe('installation identity store', () => {
 
   it('survives credential and machine-id clearing', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-clear-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();
@@ -326,7 +326,7 @@ describe('installation identity store', () => {
 
   it('can read an existing identity without minting one when absent', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-installation-identity-read-existing-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     try {
       vi.resetModules();

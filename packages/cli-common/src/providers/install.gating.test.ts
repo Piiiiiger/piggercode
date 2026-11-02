@@ -50,7 +50,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
       Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'win32' });
       const result = await installProviderCli({
         providerId: 'droid', platform: 'win32',
-        env: { Path: homeDir, HAPPIER_HOME_DIR: homeDir },
+        env: { Path: homeDir, PIGGERCODE_HOME_DIR: homeDir },
         logDir: homeDir, skipIfInstalled: false, allowVendorRecipeExecution: true,
       });
       expect(result.ok, result.ok ? undefined : result.errorMessage).toBe(true);
@@ -122,7 +122,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           PATH: '',
         },
         skipIfInstalled: false,
@@ -212,7 +212,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           PATH: '',
           PATHEXT: '.EXE;.CMD;.BAT;.COM',
           COMSPEC: 'C:\\WINDOWS\\system32\\cmd.exe',
@@ -339,7 +339,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           PATH: '',
         },
         skipIfInstalled: false,
@@ -410,7 +410,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           PATH: '',
         },
         skipIfInstalled: false,
@@ -469,7 +469,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           PATH: '',
         },
         skipIfInstalled: false,
@@ -531,7 +531,7 @@ describe('installProviderCli vendor_recipe execution gating', () => {
         logDir,
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
           HOME: homeDir,
           PATH: `${binDir}:/bin`,
         },

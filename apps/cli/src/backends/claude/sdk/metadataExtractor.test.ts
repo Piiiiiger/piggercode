@@ -78,8 +78,8 @@ describe('extractSDKMetadata', () => {
     if (process.platform !== 'win32') chmodSync(claudePath, 0o755);
 
     vi.stubEnv('HOME', homeDir);
-    vi.stubEnv('HAPPIER_HOME_DIR', happierHomeDir);
-    vi.stubEnv('HAPPIER_CLAUDE_PATH', claudePath);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', happierHomeDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
     vi.stubEnv('CLAUDE_CONFIG_DIR', claudeConfigDir);
     process.chdir(projectDir);
 
@@ -192,7 +192,7 @@ describe('extractSDKMetadata', () => {
     await firstModule.extractSDKMetadata();
     expect(queryMock).toHaveBeenCalledTimes(1);
 
-    vi.stubEnv('HAPPIER_CLAUDE_SDK_METADATA_CACHE_INVALIDATE', '1');
+    vi.stubEnv('PIGGERCODE_CLAUDE_SDK_METADATA_CACHE_INVALIDATE', '1');
     queryMock.mockClear();
     queryMock.mockReturnValue(createQueryResult({ tools: ['read', 'search'], slashCommands: ['/invalidated'] }));
 

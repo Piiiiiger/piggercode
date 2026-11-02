@@ -5,7 +5,7 @@ import axios from 'axios';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('sessionControl.sessionsHttp URL encoding', () => {
-  const envKeys = ['HAPPIER_SERVER_URL'] as const;
+  const envKeys = ['PIGGERCODE_SERVER_URL'] as const;
   let envScope = createEnvKeyScope(envKeys);
 
   afterEach(() => {
@@ -16,7 +16,7 @@ describe('sessionControl.sessionsHttp URL encoding', () => {
   });
 
   it('encodes sessionId path segments for fetchSessionById', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
 
     vi.resetModules();
     const { fetchSessionById } = await import('./sessionsHttp');
@@ -34,7 +34,7 @@ describe('sessionControl.sessionsHttp URL encoding', () => {
   });
 
   it('encodes sessionId path segments for commitSessionStoredMessage', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
 
     vi.resetModules();
     const { commitSessionStoredMessage } = await import('./sessionsHttp');

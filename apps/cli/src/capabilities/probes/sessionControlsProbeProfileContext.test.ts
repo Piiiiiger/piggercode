@@ -37,7 +37,7 @@ describe('preflight session controls profile context', () => {
       cwd: '/profile-mode-probe',
       accountSettings: { profiles: [] },
       credentials,
-      processEnv: { HAPPIER_FAKE_PROFILE_MARKER: 'profile-env' },
+      processEnv: { PIGGERCODE_FAKE_PROFILE_MARKER: 'profile-env' },
     };
 
     const first = await probeAgentModesBestEffort({ ...shared, profileId: 'profile-a' });
@@ -59,7 +59,7 @@ describe('preflight session controls profile context', () => {
       cwd: '/profile-config-probe',
       accountSettings: { profiles: [] },
       credentials,
-      processEnv: { HAPPIER_FAKE_PROFILE_MARKER: 'profile-env' },
+      processEnv: { PIGGERCODE_FAKE_PROFILE_MARKER: 'profile-env' },
     };
 
     const first = await probeAgentConfigOptionsBestEffort({ ...shared, profileId: 'profile-a' });

@@ -162,7 +162,7 @@ describe("accountRoutes (/v2/account/settings) (integration)", () => {
 
     it("POST /v2/account/settings roundtrips provider gauge and quota notification settings", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
         });
         const account = await db.account.create({
             data: {

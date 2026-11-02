@@ -40,7 +40,7 @@ describe('callBuiltInHappierTool', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
     resolveSessionTransportContext.mockResolvedValue({
       ok: true,
       sessionId: 'sess-1',
@@ -290,7 +290,7 @@ describe('callBuiltInHappierTool', () => {
   });
 
   it('rejects action_execute when the action is disabled on the CLI surface', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'subagents.plan.start': { enabled: true, disabledSurfaces: ['cli'], disabledPlacements: [] },
@@ -349,7 +349,7 @@ describe('callBuiltInHappierTool', () => {
   });
 
   it('rejects action-backed CLI direct calls when tool exposure is discoverable-only', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': {

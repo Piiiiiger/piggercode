@@ -27,7 +27,7 @@ const GITHUB_PR_JSON_FIELDS = 'number,title,url,state,baseRefName,headRefName,me
 const GITHUB_REPOSITORY_JSON_FIELDS = 'nameWithOwner,url,sshUrl,defaultBranchRef,visibility';
 
 function resolveGithubCliPrTimeoutMs(): number {
-    const parsed = Number(String(process.env.HAPPIER_GITHUB_CLI_PR_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
+    const parsed = Number(String(process.env.PIGGERCODE_GITHUB_CLI_PR_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
     return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : DEFAULT_GITHUB_CLI_PR_TIMEOUT_MS;
 }
 

@@ -215,7 +215,7 @@ export async function buildCliBinaryArtifactPayload({
       env: {
         ...process.env,
         ...(options.env ?? {}),
-        HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+        PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
       },
     });
     let snapshotDistDir: string | null = null;
@@ -253,7 +253,7 @@ export async function buildCliBinaryArtifactPayload({
         try {
           await runCommandWithHeldDistLock(yarn.cmd, [...yarn.args, '--cwd', 'apps/cli', 'build'], {
             cwd: repoRoot,
-            ...(releaseVersion ? { env: { HAPPIER_CLI_BUILD_VERSION: releaseVersion } } : {}),
+            ...(releaseVersion ? { env: { PIGGERCODE_CLI_BUILD_VERSION: releaseVersion } } : {}),
           });
           await ensureFileExists(entrypoint);
           if (hadDistBeforeBuild) {

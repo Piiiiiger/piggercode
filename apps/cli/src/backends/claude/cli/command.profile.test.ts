@@ -123,7 +123,7 @@ describe('handleClaudeCliCommand --profile', () => {
 
   it('applies profile env overlay and does not pass --profile through to Claude', async () => {
     const prevToken = process.env.TEST_PROFILE_TOKEN;
-    const prevProfileId = process.env.HAPPIER_SESSION_PROFILE_ID;
+    const prevProfileId = process.env.PIGGERCODE_SESSION_PROFILE_ID;
 
     try {
       vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({
@@ -157,7 +157,7 @@ describe('handleClaudeCliCommand --profile', () => {
         terminalRuntime: null,
       } as any);
 
-      expect(process.env.HAPPIER_SESSION_PROFILE_ID).toBe('work');
+      expect(process.env.PIGGERCODE_SESSION_PROFILE_ID).toBe('work');
       expect(process.env.TEST_PROFILE_TOKEN).toBe('shh');
 
       const passedOptions = runSpy.mock.calls[0]?.[1] as any;
@@ -172,9 +172,9 @@ describe('handleClaudeCliCommand --profile', () => {
       }
 
       if (typeof prevProfileId === 'string') {
-        process.env.HAPPIER_SESSION_PROFILE_ID = prevProfileId;
+        process.env.PIGGERCODE_SESSION_PROFILE_ID = prevProfileId;
       } else {
-        delete process.env.HAPPIER_SESSION_PROFILE_ID;
+        delete process.env.PIGGERCODE_SESSION_PROFILE_ID;
       }
     }
   });

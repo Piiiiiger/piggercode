@@ -30,7 +30,7 @@ export async function copyAuthFromStackIntoNewStack({
 
   if (secret) {
     if (serverComponent === 'happier-server-light') {
-      const dataDir = stackEnv.HAPPIER_SERVER_LIGHT_DATA_DIR;
+      const dataDir = stackEnv.PIGGERCODE_SERVER_LIGHT_DATA_DIR;
       const target = join(dataDir, 'handy-master-secret.txt');
       const sourcePath = source && !String(source).includes('(HANDY_MASTER_SECRET)') ? String(source) : '';
       copied.secret =
@@ -38,7 +38,7 @@ export async function copyAuthFromStackIntoNewStack({
           ? await linkFileIfMissing({ from: sourcePath, to: target })
           : await writeSecretFileIfMissing({ path: target, secret });
     } else if (serverComponent === 'happier-server') {
-      const target = stackEnv.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE;
+      const target = stackEnv.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE;
       if (target) {
         const sourcePath = source && !String(source).includes('(HANDY_MASTER_SECRET)') ? String(source) : '';
         copied.secret =
@@ -53,7 +53,7 @@ export async function copyAuthFromStackIntoNewStack({
   const sourceEnvRaw = await readExistingEnv(sourceEnvPath);
   const sourceEnv = parseEnvToObject(sourceEnvRaw);
   const sourceCli = getCliHomeDirFromEnvOrDefault({ stackBaseDir: sourceBaseDir, env: sourceEnv });
-  const targetCli = stackEnv.HAPPIER_STACK_CLI_HOME_DIR;
+  const targetCli = stackEnv.PIGGERCODE_STACK_CLI_HOME_DIR;
   const sourceInternalServerUrl = `http://127.0.0.1:${resolveServerPortFromEnv({ env: sourceEnv, defaultPort: 3005 })}`;
   const targetInternalServerUrl = `http://127.0.0.1:${resolveServerPortFromEnv({ env: stackEnv, defaultPort: 3005 })}`;
   const sourceEnvScoped = applyStackActiveServerScopeEnv({ env: sourceEnv, stackName: fromStackName, cliIdentity: 'default' });

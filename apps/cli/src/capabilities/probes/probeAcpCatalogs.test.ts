@@ -138,7 +138,7 @@ describe('probeAcpCatalogs with a real ACP SDK subprocess', () => {
       const result = await cursorPreflightSessionControlsProbeAdapter.probeCatalogsRaw?.({
         cwd: dir, timeoutMs: 60_000,
         accountSettings: { cursorBinaryPath: executable },
-        processEnv: { ...process.env, HAPPIER_CURSOR_PATH: join(dir, 'ambient-missing-cursor') },
+        processEnv: { ...process.env, PIGGERCODE_CURSOR_PATH: join(dir, 'ambient-missing-cursor') },
       });
       expect(result).toEqual({ commands, skills: null });
     });

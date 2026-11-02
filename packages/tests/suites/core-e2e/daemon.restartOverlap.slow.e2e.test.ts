@@ -150,18 +150,18 @@ describe('core e2e: daemon overlap self-restart', () => {
     const daemonEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
-      HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS: '25',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+      PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS: '25',
       // Source-mode replacement startup can take several seconds under E2E lane load.
-      HAPPIER_DAEMON_RESTART_OVERLAP_EXIT_GRACE_MS: '5000',
+      PIGGERCODE_DAEMON_RESTART_OVERLAP_EXIT_GRACE_MS: '5000',
     };
 
     daemon = await startTestDaemon({

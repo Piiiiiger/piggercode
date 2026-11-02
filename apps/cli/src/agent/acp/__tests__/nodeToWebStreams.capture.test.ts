@@ -11,13 +11,13 @@ import {
 import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('nodeToWebStreams (ACP IO capture)', () => {
-  it('captures stdin/stdout bytes when HAPPIER_ACP_CAPTURE_IO is enabled', async () => {
+  it('captures stdin/stdout bytes when PIGGERCODE_ACP_CAPTURE_IO is enabled', async () => {
     await withTempDir('happier-acp-io-', async (dir) => {
       const traceFile = join(dir, 'tooltrace.jsonl');
       const envScope = createAcpSubprocessEnvScope();
       envScope.patch({
-        HAPPIER_ACP_CAPTURE_IO: '1',
-        HAPPIER_STACK_TOOL_TRACE_FILE: traceFile,
+        PIGGERCODE_ACP_CAPTURE_IO: '1',
+        PIGGERCODE_STACK_TOOL_TRACE_FILE: traceFile,
       });
 
       try {

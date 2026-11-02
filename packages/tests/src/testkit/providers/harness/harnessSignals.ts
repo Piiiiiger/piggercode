@@ -361,7 +361,7 @@ export function resolvePendingDrainTimeoutMs(params: {
 }
 
 export function shouldAssertPendingDrain(params: { assertPendingDrain?: boolean }): boolean {
-  const enabledByEnv = envFlag(['HAPPIER_E2E_PROVIDER_ASSERT_PENDING_EMPTY', 'HAPPY_E2E_PROVIDER_ASSERT_PENDING_EMPTY'], true);
+  const enabledByEnv = envFlag(['PIGGERCODE_E2E_PROVIDER_ASSERT_PENDING_EMPTY', 'HAPPY_E2E_PROVIDER_ASSERT_PENDING_EMPTY'], true);
   if (!enabledByEnv) return false;
   return params.assertPendingDrain !== false;
 }
@@ -378,7 +378,7 @@ export function resolveCliDistBuildTimeoutMs(raw: string | undefined): number {
 
 export function resolveCliDistPreflightAllowRebuild(): boolean {
   return envFlag(
-    ['HAPPIER_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD', 'HAPPY_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD'],
+    ['PIGGERCODE_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD', 'HAPPY_E2E_PROVIDER_ALLOW_CLI_PREBUILD_REBUILD'],
     true,
   );
 }

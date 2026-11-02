@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HAPPIER_BUILT_IN_TOOL_NAMES } from '@/agent/tools/happierTools/catalog';
+import { PIGGERCODE_BUILT_IN_TOOL_NAMES } from '@/agent/tools/happierTools/catalog';
 
 import {
   buildOpenCodeSessionScopedPermissionRuleset,
@@ -13,7 +13,7 @@ const REAL_SESSION_ID = 'cmexample0000000000000000';
 const MODEL_TOOL_NAME_MAX_LENGTH = 64;
 
 function happierMcpToolNames(): string[] {
-  return [...HAPPIER_BUILT_IN_TOOL_NAMES];
+  return [...PIGGERCODE_BUILT_IN_TOOL_NAMES];
 }
 
 function projectedNameOf(

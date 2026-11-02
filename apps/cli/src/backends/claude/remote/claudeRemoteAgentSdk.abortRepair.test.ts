@@ -816,10 +816,10 @@ describe('claudeRemoteAgentSdk abort repair', () => {
     });
 
     it('repairs only after the query is closed when the transcript is still being written until close()', async () => {
-        const previousTimeout = process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS;
-        const previousPoll = process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS;
-        process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS = '50';
-        process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS = '10';
+        const previousTimeout = process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS;
+        const previousPoll = process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS;
+        process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS = '50';
+        process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS = '10';
 
         const baseDir = await mkdtemp(join(tmpdir(), 'happier-claude-abort-repair-close-first-'));
         const claudeConfigDir = join(baseDir, 'claude-config');
@@ -953,14 +953,14 @@ describe('claudeRemoteAgentSdk abort repair', () => {
                 process.env.CLAUDE_CONFIG_DIR = previousClaudeConfigDir;
             }
             if (previousTimeout === undefined) {
-                delete process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS;
+                delete process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS;
             } else {
-                process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS = previousTimeout;
+                process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_TIMEOUT_MS = previousTimeout;
             }
             if (previousPoll === undefined) {
-                delete process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS;
+                delete process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS;
             } else {
-                process.env.HAPPIER_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS = previousPoll;
+                process.env.PIGGERCODE_CLAUDE_TRANSCRIPT_REPAIR_WAIT_TOOL_USE_IDS_POLL_INTERVAL_MS = previousPoll;
             }
         }
     });

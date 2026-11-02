@@ -191,9 +191,9 @@ test.describe('ui e2e: Files upload + rename/delete + download (+ zip)', () => {
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS:
-        process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS
-        ?? process.env.HAPPIER_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS:
+        process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS
+        ?? process.env.PIGGERCODE_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS
         ?? '900000',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
@@ -204,11 +204,11 @@ test.describe('ui e2e: Files upload + rename/delete + download (+ zip)', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
-        HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
       },
     });
 
@@ -253,9 +253,9 @@ test.describe('ui e2e: Files upload + rename/delete + download (+ zip)', () => {
           ...process.env,
           HOME: cliHomeDir,
           CI: '1',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
       });
 
@@ -268,7 +268,7 @@ test.describe('ui e2e: Files upload + rename/delete + download (+ zip)', () => {
       const fakeClaudeLogPath = resolve(join(testDir, 'fake-claude.jsonl'));
       const fakeClaudePath = fakeClaudeFixturePath();
 
-      // Keep HAPPIER_MACHINE_RPC_WORKING_DIRECTORY unset: workspaceDir is outside cliHomeDir,
+      // Keep PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY unset: workspaceDir is outside cliHomeDir,
       // so this exercises the default OS-user filesystem access policy end to end.
       runDaemon = await startTestDaemon({
         testDir,
@@ -277,16 +277,16 @@ test.describe('ui e2e: Files upload + rename/delete + download (+ zip)', () => {
           ...process.env,
           HOME: cliHomeDir,
           CI: '1',
-          HAPPIER_HOME_DIR: cliHomeDir,
-          HAPPIER_SERVER_URL: server.baseUrl,
-          HAPPIER_WEBAPP_URL: uiBaseUrl,
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+          PIGGERCODE_HOME_DIR: cliHomeDir,
+          PIGGERCODE_SERVER_URL: server.baseUrl,
+          PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
         },
       });
       daemon = runDaemon;

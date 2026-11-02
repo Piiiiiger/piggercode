@@ -17,7 +17,7 @@ async function gitHasRemote({ repoDir, remote }) {
 }
 
 export function resolveDevBranchName(env = process.env) {
-  return String(env.HAPPIER_STACK_DEV_BRANCH ?? '').trim() || 'dev';
+  return String(env.PIGGERCODE_STACK_DEV_BRANCH ?? '').trim() || 'dev';
 }
 
 async function getRemoteUrl({ repoDir, remoteName }) {
@@ -53,7 +53,7 @@ export async function resolveDevPushRemote({ repoDir, env = process.env, preferr
 }
 
 export async function ensureDevCheckout({ rootDir, env = process.env, remote = '' } = {}) {
-  const workspaceDir = getWorkspaceDir(rootDir, { ...env, HAPPIER_STACK_REPO_DIR: '' });
+  const workspaceDir = getWorkspaceDir(rootDir, { ...env, PIGGERCODE_STACK_REPO_DIR: '' });
   const mainDir = join(workspaceDir, 'main');
   const devDir = getDevRepoDir(rootDir, env);
   const devBranch = resolveDevBranchName(env);

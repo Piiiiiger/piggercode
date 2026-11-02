@@ -100,7 +100,7 @@ else console.log(JSON.stringify(${JSON.stringify(daemonStatus)}));
   });
   if (useReleaseSourceOverride) {
     vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('HAPPIER_FIRST_PARTY_RELEASE_API_BASE_URL', baseUrl);
+    vi.stubEnv('PIGGERCODE_FIRST_PARTY_RELEASE_API_BASE_URL', baseUrl);
   } else {
     // Redirect only the network boundary. GitHub parsing, download, verification and extraction run normally.
     vi.spyOn(https, 'request').mockImplementation((url, options, callback) => {
@@ -110,9 +110,9 @@ else console.log(JSON.stringify(${JSON.stringify(daemonStatus)}));
     });
     syncBuiltinESMExports();
   }
-  const processEnv: NodeJS.ProcessEnv = { ...process.env, HAPPIER_HOME_DIR: join(root, 'home'), HAPPIER_STACK_REPO_DIR: root, PATH: '' };
-  delete processEnv.HAPPIER_BOOTSTRAP_CLI_PATH;
-  delete processEnv.HAPPIER_BOOTSTRAP_HAPPIER_PATH;
+  const processEnv: NodeJS.ProcessEnv = { ...process.env, PIGGERCODE_HOME_DIR: join(root, 'home'), PIGGERCODE_STACK_REPO_DIR: root, PATH: '' };
+  delete processEnv.PIGGERCODE_BOOTSTRAP_CLI_PATH;
+  delete processEnv.PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH;
   return {
     root, archive, minisignPubkeyFile, processEnv,
     failDownload: () => { downloadStatus = 403; },
@@ -123,7 +123,7 @@ else console.log(JSON.stringify(${JSON.stringify(daemonStatus)}));
 }
 
 function useFixtureEnvironment(env: NodeJS.ProcessEnv) {
-  for (const name of ['HAPPIER_HOME_DIR', 'HAPPIER_STACK_REPO_DIR', 'HAPPIER_BOOTSTRAP_CLI_PATH', 'HAPPIER_BOOTSTRAP_HAPPIER_PATH', 'PATH']) {
+  for (const name of ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_STACK_REPO_DIR', 'PIGGERCODE_BOOTSTRAP_CLI_PATH', 'PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', 'PATH']) {
     vi.stubEnv(name, env[name]);
   }
 }

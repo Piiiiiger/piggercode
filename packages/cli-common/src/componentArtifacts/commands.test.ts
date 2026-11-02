@@ -29,7 +29,7 @@ describe('resolveBunCommand', () => {
                 processEnv: {
                     HOME: homeDir,
                     USERPROFILE: homeDir,
-                    HAPPIER_BUN_PATH: `~/custom-tools/bun/${process.platform === 'win32' ? 'bun.exe' : 'bun'}`,
+                    PIGGERCODE_BUN_PATH: `~/custom-tools/bun/${process.platform === 'win32' ? 'bun.exe' : 'bun'}`,
                 },
                 commandProbe: () => false,
             })).toBe(bunPath);

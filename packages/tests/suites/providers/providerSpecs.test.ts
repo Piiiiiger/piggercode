@@ -23,7 +23,7 @@ describe('providers: cli provider specs', () => {
 
     for (const spec of specs) {
       expect(typeof spec.enableEnvVar).toBe('string');
-      expect(spec.enableEnvVar).toMatch(/^HAPPIER_/);
+      expect(spec.enableEnvVar).toMatch(/^PIGGERCODE_/);
       expect(['acp', 'codex', 'claude']).toContain(spec.protocol);
       expect(typeof spec.traceProvider).toBe('string');
       expect(spec.traceProvider.length).toBeGreaterThan(0);

@@ -77,8 +77,8 @@ function createWaitingIntent() {
 function createAdapter() {
   return createBackoffSessionUsageLimitRecoveryControlAdapter({
     providerId: 'codex',
-    fallbackBackoffEnvKey: 'HAPPIER_TEST_FALLBACK_BACKOFF_MS',
-    maxAttemptsEnvKey: 'HAPPIER_TEST_MAX_ATTEMPTS',
+    fallbackBackoffEnvKey: 'PIGGERCODE_TEST_FALLBACK_BACKOFF_MS',
+    maxAttemptsEnvKey: 'PIGGERCODE_TEST_MAX_ATTEMPTS',
     defaultFallbackBackoffMs: 60_000,
     defaultMaxAttempts: 3,
     defaultNativeServiceId: 'openai-codex',
@@ -109,8 +109,8 @@ describe('createBackoffSessionUsageLimitRecoveryControlAdapter', () => {
     params.rawSession.lastRuntimeIssue!.usageLimit!.resetAtMs = null;
     const adapter = createBackoffSessionUsageLimitRecoveryControlAdapter({
       providerId: 'codex',
-      fallbackBackoffEnvKey: 'HAPPIER_TEST_FALLBACK_BACKOFF_MS',
-      maxAttemptsEnvKey: 'HAPPIER_TEST_MAX_ATTEMPTS',
+      fallbackBackoffEnvKey: 'PIGGERCODE_TEST_FALLBACK_BACKOFF_MS',
+      maxAttemptsEnvKey: 'PIGGERCODE_TEST_MAX_ATTEMPTS',
       nowMs: () => 1_700_000_000_000,
       processEnv: {},
     });
@@ -187,8 +187,8 @@ describe('createBackoffSessionUsageLimitRecoveryControlAdapter', () => {
   it('preserves group identity when the latest issue omits profileId', async () => {
     const adapter = createBackoffSessionUsageLimitRecoveryControlAdapter({
       providerId: 'codex',
-      fallbackBackoffEnvKey: 'HAPPIER_TEST_FALLBACK_BACKOFF_MS',
-      maxAttemptsEnvKey: 'HAPPIER_TEST_MAX_ATTEMPTS',
+      fallbackBackoffEnvKey: 'PIGGERCODE_TEST_FALLBACK_BACKOFF_MS',
+      maxAttemptsEnvKey: 'PIGGERCODE_TEST_MAX_ATTEMPTS',
       defaultFallbackBackoffMs: 60_000,
       defaultMaxAttempts: 3,
       defaultNativeServiceId: 'openai-codex',

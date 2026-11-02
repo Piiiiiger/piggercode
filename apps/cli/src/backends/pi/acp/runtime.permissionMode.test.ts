@@ -55,8 +55,8 @@ describe('Pi ACP runtime permission mode wiring', () => {
   });
 
   it('passes the process env to the Pi backend factory for connected-service launch decisions', async () => {
-    const previousSelections = process.env.HAPPIER_PI_BROKER_SELECTIONS;
-    process.env.HAPPIER_PI_BROKER_SELECTIONS = '{"openai":{"serviceId":"openai-codex","profileId":"codex-work","accountId":"acct_1","planType":"pro"}}';
+    const previousSelections = process.env.PIGGERCODE_PI_BROKER_SELECTIONS;
+    process.env.PIGGERCODE_PI_BROKER_SELECTIONS = '{"openai":{"serviceId":"openai-codex","profileId":"codex-work","accountId":"acct_1","planType":"pro"}}';
 
     try {
       const createCalls: CatalogAcpRuntimeCreateCall[] = [];
@@ -77,12 +77,12 @@ describe('Pi ACP runtime permission mode wiring', () => {
 
       await runtime.startOrLoad({});
 
-      expect(createCalls[0].env?.HAPPIER_PI_BROKER_SELECTIONS).toBe(process.env.HAPPIER_PI_BROKER_SELECTIONS);
+      expect(createCalls[0].env?.PIGGERCODE_PI_BROKER_SELECTIONS).toBe(process.env.PIGGERCODE_PI_BROKER_SELECTIONS);
     } finally {
       if (previousSelections === undefined) {
-        delete process.env.HAPPIER_PI_BROKER_SELECTIONS;
+        delete process.env.PIGGERCODE_PI_BROKER_SELECTIONS;
       } else {
-        process.env.HAPPIER_PI_BROKER_SELECTIONS = previousSelections;
+        process.env.PIGGERCODE_PI_BROKER_SELECTIONS = previousSelections;
       }
     }
   });

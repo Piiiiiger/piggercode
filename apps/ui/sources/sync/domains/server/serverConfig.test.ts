@@ -37,7 +37,7 @@ function restoreEnvVar(key: string, value: string | undefined): void {
 }
 
 function clearServerEnv(): void {
-    delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
     delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
     delete process.env.EXPO_PUBLIC_SERVER_URL;
     delete process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT;
@@ -46,7 +46,7 @@ function clearServerEnv(): void {
 }
 
 describe('getServerUrl', () => {
-    const previousCanonicalEnv = process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+    const previousCanonicalEnv = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
     const previousEnv = process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
     const previousLegacyGenericEnv = process.env.EXPO_PUBLIC_SERVER_URL;
     const previousContext = process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT;
@@ -60,7 +60,7 @@ describe('getServerUrl', () => {
 
     afterEach(() => {
         vi.unstubAllGlobals();
-        restoreEnvVar('EXPO_PUBLIC_HAPPIER_SERVER_URL', previousCanonicalEnv);
+        restoreEnvVar('EXPO_PUBLIC_PIGGERCODE_SERVER_URL', previousCanonicalEnv);
         restoreEnvVar('EXPO_PUBLIC_HAPPY_SERVER_URL', previousEnv);
         restoreEnvVar('EXPO_PUBLIC_SERVER_URL', previousLegacyGenericEnv);
         restoreEnvVar('EXPO_PUBLIC_HAPPY_SERVER_CONTEXT', previousContext);
@@ -82,7 +82,7 @@ describe('getServerUrl', () => {
         stubWebRuntime('https://stack.example.test');
         vi.stubGlobal('window', {
             location: { origin: 'https://stack.example.test', hostname: 'stack.example.test' },
-            __HAPPIER_WEB_RUNTIME_CONFIG__: { serverUrl: 'https://server-override.example.test' },
+            __PIGGERCODE_WEB_RUNTIME_CONFIG__: { serverUrl: 'https://server-override.example.test' },
         });
 
         const { getServerUrl } = await importFreshServerConfig();
@@ -108,8 +108,8 @@ describe('getServerUrl', () => {
         expect(getServerUrl()).toBe('https://stack.example.test');
     });
 
-    it('uses EXPO_PUBLIC_HAPPIER_SERVER_URL as the canonical default server env var', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL = 'https://canonical.example.test';
+    it('uses EXPO_PUBLIC_PIGGERCODE_SERVER_URL as the canonical default server env var', async () => {
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://canonical.example.test';
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'https://legacy-happy.example.test';
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
 
@@ -119,7 +119,7 @@ describe('getServerUrl', () => {
     });
 
     it('uses EXPO_PUBLIC_HAPPY_SERVER_URL as a legacy alias when canonical env is unset', async () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'https://legacy-happy.example.test';
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
 
@@ -129,7 +129,7 @@ describe('getServerUrl', () => {
     });
 
     it('uses EXPO_PUBLIC_SERVER_URL as a last-resort alias when canonical and happy env vars are unset', async () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
 
@@ -139,7 +139,7 @@ describe('getServerUrl', () => {
     });
 
     it('defaults to the built-in Pigger relay on native when no server is configured', async () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         delete process.env.EXPO_PUBLIC_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_PRECONFIGURED_SERVERS;

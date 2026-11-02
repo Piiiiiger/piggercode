@@ -62,7 +62,7 @@ function resolveRepoSource({ flags }) {
   if (flags.has('--upstream')) {
     return 'upstream';
   }
-  const fromEnv = (process.env.HAPPIER_STACK_REPO_SOURCE ?? '').trim().toLowerCase();
+  const fromEnv = (process.env.PIGGERCODE_STACK_REPO_SOURCE ?? '').trim().toLowerCase();
   if (fromEnv === 'fork' || fromEnv === 'forks') {
     return 'forks';
   }
@@ -76,7 +76,7 @@ function resolveRepoSource({ flags }) {
 function getRepoUrls({ repoSource }) {
   const defaults = repoSource === 'upstream' ? DEFAULT_UPSTREAM_REPOS : DEFAULT_FORK_REPOS;
   const monorepo =
-    process.env.HAPPIER_STACK_REPO_URL?.trim() ||
+    process.env.PIGGERCODE_STACK_REPO_URL?.trim() ||
     defaults.monorepo;
 
   return { monorepo };
@@ -132,12 +132,12 @@ async function ensureComponentPresent({ dir, label, repoUrl, allowClone, quiet =
     return;
   }
   if (!allowClone) {
-    throw new Error(`[local] missing ${label} at ${dir} (run with --clone or set HAPPIER_STACK_REPO_URL and re-run hstack bootstrap)`);
+    throw new Error(`[local] missing ${label} at ${dir} (run with --clone or set PIGGERCODE_STACK_REPO_URL and re-run hstack bootstrap)`);
   }
   if (!repoUrl) {
     throw new Error(
       `[local] missing ${label} at ${dir} and no repo URL configured.\n` +
-        `Set HAPPIER_STACK_REPO_URL, or run: hstack bootstrap --interactive`
+        `Set PIGGERCODE_STACK_REPO_URL, or run: hstack bootstrap --interactive`
     );
   }
   await mkdir(dirname(dir), { recursive: true });
@@ -363,8 +363,8 @@ async function main() {
     forkOwner: process.env.GITHUB_USER || process.env.USER || 'your-github-username',
     upstreamOwner: 'happier-dev',
     serverComponentName: getServerComponentName({ kv }),
-    allowClone: !flags.has('--no-clone') && ((process.env.HAPPIER_STACK_CLONE_MISSING ?? '1') !== '0' || flags.has('--clone')),
-    enableAutostart: (!sandboxed || allowGlobal) && (flags.has('--autostart') || (process.env.HAPPIER_STACK_AUTOSTART ?? '0') === '1'),
+    allowClone: !flags.has('--no-clone') && ((process.env.PIGGERCODE_STACK_CLONE_MISSING ?? '1') !== '0' || flags.has('--clone')),
+    enableAutostart: (!sandboxed || allowGlobal) && (flags.has('--autostart') || (process.env.PIGGERCODE_STACK_AUTOSTART ?? '0') === '1'),
     buildTauri: flags.has('--tauri') && !flags.has('--no-tauri'),
   };
 
@@ -380,8 +380,8 @@ async function main() {
     await ensureEnvLocalUpdated({
       rootDir,
       updates: [
-        { key: 'HAPPIER_STACK_REPO_SOURCE', value: repoSource },
-        { key: 'HAPPIER_STACK_REPO_URL', value: chosen.monorepo },
+        { key: 'PIGGERCODE_STACK_REPO_SOURCE', value: repoSource },
+        { key: 'PIGGERCODE_STACK_REPO_URL', value: chosen.monorepo },
       ],
     });
   }
@@ -389,11 +389,11 @@ async function main() {
   const repos = getRepoUrls({ repoSource });
 
   // Default: clone missing components (fresh checkouts "just work").
-  // Disable with --no-clone or HAPPIER_STACK_CLONE_MISSING=0.
-  const cloneMissingDefault = (process.env.HAPPIER_STACK_CLONE_MISSING ?? '1') !== '0';
+  // Disable with --no-clone or PIGGERCODE_STACK_CLONE_MISSING=0.
+  const cloneMissingDefault = (process.env.PIGGERCODE_STACK_CLONE_MISSING ?? '1') !== '0';
   const allowClone =
     wizard?.allowClone ?? (!flags.has('--no-clone') && (flags.has('--clone') || cloneMissingDefault));
-  const enableAutostartRaw = wizard?.enableAutostart ?? (flags.has('--autostart') || (process.env.HAPPIER_STACK_AUTOSTART ?? '0') === '1');
+  const enableAutostartRaw = wizard?.enableAutostart ?? (flags.has('--autostart') || (process.env.PIGGERCODE_STACK_AUTOSTART ?? '0') === '1');
   const enableAutostart = sandboxed && !allowGlobal ? false : enableAutostartRaw;
   const disableAutostart = flags.has('--no-autostart');
 
@@ -414,7 +414,7 @@ async function main() {
   });
   // IMPORTANT: the workspace "main" checkout must always be on the stable branch,
   // even if the GitHub default branch becomes "dev".
-  const stableBranch = (process.env.HAPPIER_STACK_STABLE_BRANCH ?? '').trim() || 'main';
+  const stableBranch = (process.env.PIGGERCODE_STACK_STABLE_BRANCH ?? '').trim() || 'main';
   await ensureGitBranchCheckedOut({ repoDir: uiRepoDir, branch: stableBranch, label: 'monorepo' });
 
   // Package dirs (where we run installs/builds). Recompute after cloning UI.
@@ -427,7 +427,7 @@ async function main() {
   if (!isHappyMonorepoRoot(uiRepoDir)) {
     throw new Error(
       `[bootstrap] expected a Happier monorepo checkout at ${uiRepoDir}, but it does not look like a supported layout.\n` +
-        `Fix: set HAPPIER_STACK_REPO_URL to a Happier monorepo repo (must contain apps/ui, apps/cli, apps/server).`
+        `Fix: set PIGGERCODE_STACK_REPO_URL to a Happier monorepo repo (must contain apps/ui, apps/cli, apps/server).`
     );
   }
   if (!(await pathExists(serverFullDir))) {
@@ -441,8 +441,8 @@ async function main() {
   const uiDirFinal = uiDir;
 
   // Install deps
-  const skipUiDeps = flags.has('--no-ui-deps') || (process.env.HAPPIER_STACK_INSTALL_NO_UI_DEPS ?? '').trim() === '1';
-  const skipCliDeps = flags.has('--no-cli-deps') || (process.env.HAPPIER_STACK_INSTALL_NO_CLI_DEPS ?? '').trim() === '1';
+  const skipUiDeps = flags.has('--no-ui-deps') || (process.env.PIGGERCODE_STACK_INSTALL_NO_UI_DEPS ?? '').trim() === '1';
+  const skipCliDeps = flags.has('--no-cli-deps') || (process.env.PIGGERCODE_STACK_INSTALL_NO_CLI_DEPS ?? '').trim() === '1';
   if (serverComponentName === 'both' || serverComponentName === 'happier-server-light' || serverComponentName === 'happier-server') {
     await ensureDepsInstalledMaybeVerbose(serverFullDir, 'happier-server');
   }
@@ -454,16 +454,16 @@ async function main() {
   }
 
   // CLI build + link
-  const skipCliBuild = flags.has('--no-cli-build') || (process.env.HAPPIER_STACK_INSTALL_NO_CLI_BUILD ?? '').trim() === '1';
+  const skipCliBuild = flags.has('--no-cli-build') || (process.env.PIGGERCODE_STACK_INSTALL_NO_CLI_BUILD ?? '').trim() === '1';
   if (!skipCliBuild) {
-    const buildCli = (process.env.HAPPIER_STACK_CLI_BUILD ?? '1') !== '0';
-    const npmLinkCli = (process.env.HAPPIER_STACK_NPM_LINK ?? '1') !== '0';
+    const buildCli = (process.env.PIGGERCODE_STACK_CLI_BUILD ?? '1') !== '0';
+    const npmLinkCli = (process.env.PIGGERCODE_STACK_NPM_LINK ?? '1') !== '0';
     await ensureCliBuiltMaybeVerbose(cliDirFinal, { buildCli });
     await ensureHappyCliLocalNpmLinked(rootDir, { npmLinkCli, quiet: quietUi });
   }
 
   // Build UI (so run works without expo dev server)
-  const skipUiBuild = flags.has('--no-ui-build') || (process.env.HAPPIER_STACK_INSTALL_NO_UI_BUILD ?? '').trim() === '1';
+  const skipUiBuild = flags.has('--no-ui-build') || (process.env.PIGGERCODE_STACK_INSTALL_NO_UI_BUILD ?? '').trim() === '1';
   const buildArgs = [join(rootDir, 'scripts', 'build.mjs')];
   // Tauri builds are opt-in (slow + requires additional toolchain).
   const buildTauri = wizard?.buildTauri ?? (flags.has('--tauri') && !flags.has('--no-tauri'));

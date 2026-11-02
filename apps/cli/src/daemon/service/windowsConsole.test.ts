@@ -65,7 +65,7 @@ describe('Windows background CLI process consoles', () => {
 
   it('hides background CLI children while retaining an explicit interactive visibility choice', async () => {
     await withTempHappyCliEntrypoint(async (entrypoint) => {
-      envScope.patch({ HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node', HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint });
+      envScope.patch({ PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node', PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint });
       spawnHappyCLI(['daemon', 'start-sync'], { stdio: 'ignore' });
       expect(spawnMock.mock.calls[0]?.[2].windowsHide).toBe(true);
       spawnHappyCLI(['daemon', 'start-sync'], { stdio: 'ignore', windowsHide: undefined });
@@ -77,7 +77,7 @@ describe('Windows background CLI process consoles', () => {
 
   it('keeps repeated desktop service status commands hidden when this computer has no daemon', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'happier-status-console-', env: {
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'win32', HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'win32', PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       for (const name of ['schtasks.exe', 'powershell.exe']) writeFileSync(join(homeDir, name), '');

@@ -195,8 +195,8 @@ describe('buildHappierReplayPromptFromDialog total budget', () => {
      *
      * MEASURED, not chosen. Every WRITER now clamps to at least 1024 — the
      * settings screen, the account settings catalog, the UI clamp, and the
-     * `HAPPIER_REPLAY_MAX_SEED_CHARS` env clamp all derive that floor from
-     * `HAPPIER_REPLAY_SEED_MIN_CHARS` in packages/protocol — and this constant
+     * `PIGGERCODE_REPLAY_MAX_SEED_CHARS` env clamp all derive that floor from
+     * `PIGGERCODE_REPLAY_SEED_MIN_CHARS` in packages/protocol — and this constant
      * is what that floor has to clear. Below the floor the builder returns
      * nothing, which is the contract: a frame announcing replayed context it did
      * not carry is the one output that loses the reader's trust in every other
@@ -754,7 +754,7 @@ describe('the range claim never outlives the lines it names', () => {
    * dispatch fit only ever deletes whole lines, and by the time it runs the
    * claim and the fragment agree with each other.
    *
-   * At the SHIPPED default, not at a synthetic floor. `HAPPIER_REPLAY_MAX_SEED_CHARS`
+   * At the SHIPPED default, not at a synthetic floor. `PIGGERCODE_REPLAY_MAX_SEED_CHARS`
    * defaults to 120_000 (apps/cli/src/configuration.ts) and one large assistant
    * turn — a file dump, a long diff — is the whole reproduction.
    */

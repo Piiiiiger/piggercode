@@ -91,11 +91,11 @@ describe('ripgrep runtime resolution', () => {
   });
 
   it('fails closed when no JavaScript runtime is available', async () => {
-    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set HAPPIER_JS_RUNTIME_PATH'));
+    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set PIGGERCODE_JS_RUNTIME_PATH'));
 
     const { run } = await import('./index');
 
-    await expect(run(['describe', 'needle'])).rejects.toThrow(/HAPPIER_JS_RUNTIME_PATH/);
+    await expect(run(['describe', 'needle'])).rejects.toThrow(/PIGGERCODE_JS_RUNTIME_PATH/);
     expect(spawnMock).not.toHaveBeenCalled();
   });
 });

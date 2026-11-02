@@ -5,7 +5,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('serverProfiles localServerUrl safety', () => {
-  const envKeys = ['HAPPIER_HOME_DIR'] as const;
+  const envKeys = ['PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
 
   afterEach(() => {
@@ -16,7 +16,7 @@ describe('serverProfiles localServerUrl safety', () => {
 
   it('does not treat remote http URL as localServerUrl when legacy publicServerUrl exists', async () => {
     await withTempDir('happier-cli-serverProfiles-local-safety-', async (homeDir) => {
-      envScope.patch({ HAPPIER_HOME_DIR: homeDir });
+      envScope.patch({ PIGGERCODE_HOME_DIR: homeDir });
 
       writeFileSync(
         join(homeDir, 'settings.json'),

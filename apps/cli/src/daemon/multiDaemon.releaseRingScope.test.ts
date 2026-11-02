@@ -16,20 +16,20 @@ vi.mock('node:fs', async (importOriginal) => ({
 }));
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_RELEASE_RING',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_DAEMON_SERVICE_PLATFORM',
-  'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_CHANNEL',
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-  'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_RELEASE_RING',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+  'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
   // An inherited dev-stack lifecycle scope would move the reaped/read state to the stack's directory.
-  'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
-  'HAPPIER_DAEMON_SERVICE_MANAGED_BY',
+  'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
 ]);
 
 describe('multiDaemon release ring scoping', () => {
@@ -39,7 +39,7 @@ describe('multiDaemon release ring scoping', () => {
     const fs = await vi.importActual<typeof import('node:fs')>('node:fs');
     readFileSyncMock.mockReset();
     readFileSyncMock.mockImplementation(fs.readFileSync);
-    envScope.patch({ HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: undefined, HAPPIER_DAEMON_SERVICE_MANAGED_BY: undefined });
+    envScope.patch({ PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: undefined, PIGGERCODE_DAEMON_SERVICE_MANAGED_BY: undefined });
   });
 
   afterEach(() => {
@@ -57,11 +57,11 @@ describe('multiDaemon release ring scoping', () => {
   it('prefers the canonical daemon state file and still reports a legacy ring-scoped daemon state path when only that legacy file exists', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-ring-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
 
     // Seed a minimal settings file with a cloud server profile so the list is deterministic.
@@ -113,11 +113,11 @@ describe('multiDaemon release ring scoping', () => {
   it('falls back to a valid legacy ring-scoped daemon state when the canonical file is unreadable', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-canonical-invalid-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
 
     mkdirSync(homeDir, { recursive: true });
@@ -171,11 +171,11 @@ describe('multiDaemon release ring scoping', () => {
   it('skips a stale canonical daemon state and uses a later live legacy ring-scoped state', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-stale-canonical-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
 
     mkdirSync(homeDir, { recursive: true });
@@ -251,11 +251,11 @@ describe('multiDaemon release ring scoping', () => {
   it('reaps a live orphan in the starting daemon lifecycle scope while daemons of other relays keep running', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-orphan-reap-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
 
     mkdirSync(homeDir, { recursive: true });
@@ -386,11 +386,11 @@ describe('multiDaemon release ring scoping', () => {
   it('does not stop a live same-scope orphan when authenticated control is unavailable', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-tokenless-orphan-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_RELEASE_RING: 'dev',
-      HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-      HAPPIER_SERVER_URL: 'https://api.happier.dev',
-      HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_RELEASE_RING: 'dev',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+      PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+      PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
     });
 
     mkdirSync(homeDir, { recursive: true });
@@ -458,16 +458,16 @@ describe('multiDaemon release ring scoping', () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-service-per-relay-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     const happierHomeDir = join(homeDir, '.happier');
     envScope.patch({
-      HAPPIER_HOME_DIR: happierHomeDir,
-      HAPPIER_ACTIVE_SERVER_ID: undefined,
-      HAPPIER_SERVER_URL: undefined,
-      HAPPIER_WEBAPP_URL: undefined,
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-      HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: happierHomeDir,
-      HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: undefined,
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: undefined,
+      PIGGERCODE_HOME_DIR: happierHomeDir,
+      PIGGERCODE_ACTIVE_SERVER_ID: undefined,
+      PIGGERCODE_SERVER_URL: undefined,
+      PIGGERCODE_WEBAPP_URL: undefined,
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+      PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: happierHomeDir,
+      PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: undefined,
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: undefined,
     });
     mkdirSync(happierHomeDir, { recursive: true });
     const profile = (id: string, url: string) => ({ id, name: id, serverUrl: url, webappUrl: url, createdAt: 1, updatedAt: 1, lastUsedAt: 1 });
@@ -523,12 +523,12 @@ describe('multiDaemon release ring scoping', () => {
   it.each(['EACCES', 'EIO'])('preserves %s from service-definition reads instead of reporting not installed', async (code) => {
     homeDir = join(tmpdir(), `happier-multi-daemon-read-error-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-      HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: undefined,
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: undefined,
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+      PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: undefined,
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: undefined,
     });
     mkdirSync(homeDir, { recursive: true });
     writeFileSync(join(homeDir, 'settings.json'), JSON.stringify({

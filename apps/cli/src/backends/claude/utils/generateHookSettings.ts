@@ -20,7 +20,7 @@
  *   claude --plugin-dir <pluginDir> --settings <settingsFile> ...
  * and have hooks register reliably.
  *
- * Set `HAPPIER_CLAUDE_HOOKS_DISABLED=1` in the environment to suppress plugin-dir
+ * Set `PIGGERCODE_CLAUDE_HOOKS_DISABLED=1` in the environment to suppress plugin-dir
  * generation entirely (for debugging Happier-spawned Claude without hook mirroring).
  * The non-hook settings file is still written in that mode.
  */
@@ -74,7 +74,7 @@ type ClaudeSettingsOverlay = Readonly<{
     }>;
 }>;
 
-const HOOKS_DISABLED_ENV_VAR = 'HAPPIER_CLAUDE_HOOKS_DISABLED';
+const HOOKS_DISABLED_ENV_VAR = 'PIGGERCODE_CLAUDE_HOOKS_DISABLED';
 const RETAINED_HOOK_PLUGIN_MARKER_FILE = '.happier-hook-plugin.json';
 const HOOK_RUNTIME_ASSETS_DIR = 'runtime-assets';
 const SESSION_HOOK_FORWARDER_BASENAME = 'session_hook_forwarder.cjs';
@@ -346,7 +346,7 @@ export function generateHookSettingsFile(_port: number, _options: GenerateHookSe
  * Claude is launched with `--plugin-dir <returned path>` so the session registers
  * these hooks as an additive, session-only plugin.
  *
- * Returns `null` when `HAPPIER_CLAUDE_HOOKS_DISABLED=1` is set — callers should
+ * Returns `null` when `PIGGERCODE_CLAUDE_HOOKS_DISABLED=1` is set — callers should
  * then skip passing `--plugin-dir` and proceed without hook mirroring.
  */
 export function generateHookPluginDir(port: number, options: GenerateHookSettingsOptions = {}): string | null {

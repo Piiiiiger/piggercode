@@ -32,15 +32,15 @@ function createRegistrar(): { handlers: Map<string, Handler>; registrar: RpcHand
 }
 
 async function withMachineWorkingDirectoryEnv<T>(value: string, run: () => Promise<T>): Promise<T> {
-  const previous = process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY;
-  process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = value;
+  const previous = process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY;
+  process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = value;
   try {
     return await run();
   } finally {
     if (previous === undefined) {
-      delete process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY;
+      delete process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY;
     } else {
-      process.env.HAPPIER_MACHINE_RPC_WORKING_DIRECTORY = previous;
+      process.env.PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY = previous;
     }
   }
 }
@@ -204,7 +204,7 @@ describe('registerMachineFileBrowserHandlers', () => {
     });
   });
 
-  it('derives restricted roots from comma-delimited HAPPIER_MACHINE_RPC_WORKING_DIRECTORY when no policy is injected', async () => {
+  it('derives restricted roots from comma-delimited PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY when no policy is injected', async () => {
     const rootA = createTempDirectory();
     const rootB = createTempDirectory();
     const resolvedRootA = realpathSync(rootA);

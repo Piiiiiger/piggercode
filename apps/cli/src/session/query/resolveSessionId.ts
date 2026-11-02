@@ -36,7 +36,7 @@ export async function resolveSessionIdOrPrefix(params: Readonly<{
       }
     }
 
-    const maxPagesRaw = (process.env.HAPPIER_SESSION_ID_PREFIX_SCAN_MAX_PAGES ?? '').trim();
+    const maxPagesRaw = (process.env.PIGGERCODE_SESSION_ID_PREFIX_SCAN_MAX_PAGES ?? '').trim();
     const maxPagesParsed = maxPagesRaw ? Number.parseInt(maxPagesRaw, 10) : NaN;
     const maxPages = Number.isFinite(maxPagesParsed) && maxPagesParsed > 0 ? Math.min(50, maxPagesParsed) : 10;
 

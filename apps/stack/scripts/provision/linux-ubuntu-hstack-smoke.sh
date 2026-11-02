@@ -89,7 +89,7 @@ WHERE_JSON="$(hstack --sandbox-dir "$SANDBOX_DIR" where --json | tee "$LOG_DIR/w
 echo "$WHERE_JSON" | jq -e '.sandbox.enabled == true' >/dev/null || fail "expected sandbox.enabled=true"
 
 say "selfhost setup (no auth/tailscale/autostart/menubar)"
-export HAPPIER_STACK_UPDATE_CHECK=0
+export PIGGERCODE_STACK_UPDATE_CHECK=0
 hstack --sandbox-dir "$SANDBOX_DIR" setup \
   --profile=selfhost \
   --no-auth \

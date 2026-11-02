@@ -5,7 +5,7 @@
  * - Streamable HTTP (`transport: http`)
  * - SSE (`transport: sse`)
  *
- * Bridge config is provided via env var `HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE`.
+ * Bridge config is provided via env var `PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE`.
  *
  * SECURITY: never print secrets to stdout (stdout is reserved for MCP stdio).
  */
@@ -71,11 +71,11 @@ async function connectRemoteClient(config: RemoteBridgeConfig): Promise<Client> 
 }
 
 async function main(): Promise<void> {
-  const configPath = typeof process.env.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE === 'string'
-    ? process.env.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE
+  const configPath = typeof process.env.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE === 'string'
+    ? process.env.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE
     : '';
   if (!configPath) {
-    writeStderr('[happier-mcp-remote-bridge] Missing HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE');
+    writeStderr('[happier-mcp-remote-bridge] Missing PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE');
     process.exit(2);
   }
 
@@ -130,7 +130,7 @@ async function main(): Promise<void> {
   });
 }
 
-if (process.env.HAPPIER_CLI_DIST_INTEGRITY_PROBE !== '1') {
+if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE !== '1') {
   main().catch((err) => {
     writeStderr(`[happier-mcp-remote-bridge] Fatal: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);

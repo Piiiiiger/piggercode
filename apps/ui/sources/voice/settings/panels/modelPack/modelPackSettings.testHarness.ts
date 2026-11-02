@@ -149,10 +149,10 @@ export function useModelPackDeviceBoundary() {
   });
 }
 
-/** Names each pack's manifest the way a build does (EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS). */
+/** Names each pack's manifest the way a build does (EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS). */
 export function useModelPackManifests(manifestUrlByPackId: Record<string, string>) {
   beforeEach(() => {
-    vi.stubEnv('EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS', JSON.stringify(manifestUrlByPackId));
+    vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS', JSON.stringify(manifestUrlByPackId));
   });
   afterEach(() => {
     vi.unstubAllEnvs();

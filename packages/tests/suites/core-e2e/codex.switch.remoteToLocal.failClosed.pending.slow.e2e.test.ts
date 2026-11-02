@@ -52,7 +52,7 @@ async function createLocalSwitchBlockerCodexStub(params: Readonly<{
     `#!/usr/bin/env node
 const fs = require('node:fs');
 const path = require('node:path');
-const sessionsRoot = process.env.HAPPIER_CODEX_SESSIONS_DIR;
+const sessionsRoot = process.env.PIGGERCODE_CODEX_SESSIONS_DIR;
 fs.mkdirSync(sessionsRoot, { recursive: true });
 fs.appendFileSync(path.join(sessionsRoot, ${JSON.stringify('rollout-test.jsonl')}), JSON.stringify({ type: 'session_meta', payload: { id: 'should-not-run' } }) + '\\n', 'utf8');
 setInterval(() => {}, 1000);
@@ -163,16 +163,16 @@ async function runRemoteToLocalFailClosedPendingScenario(): Promise<void> {
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_CODEX_BACKEND_MODE: 'acp',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-      HAPPIER_CODEX_TUI_BIN: localCodex.fakeCodexPath,
-      HAPPIER_CODEX_SESSIONS_DIR: localCodex.codexSessionsDir,
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_CODEX_BACKEND_MODE: 'acp',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_CODEX_TUI_BIN: localCodex.fakeCodexPath,
+      PIGGERCODE_CODEX_SESSIONS_DIR: localCodex.codexSessionsDir,
     };
 
     await ensureCliDistBuilt({ testDir, env: cliEnv }, { skipSourceFreshnessCheck: true });

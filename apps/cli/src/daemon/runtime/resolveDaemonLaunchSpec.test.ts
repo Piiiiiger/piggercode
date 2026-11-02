@@ -71,17 +71,17 @@ describe('resolveDaemonLaunchSpec', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.resetModules();
-    delete process.env.HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME;
-    delete process.env.HAPPIER_CLI_SUBPROCESS_PREFER_TSX;
-    delete process.env.HAPPIER_STACK_REPO_DIR;
-    delete process.env.HAPPIER_STACK_CLI_ROOT_DIR;
-    delete process.env.HAPPIER_STACK_STACK;
-    delete process.env.HAPPIER_VARIANT;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME;
+    delete process.env.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX;
+    delete process.env.PIGGERCODE_STACK_REPO_DIR;
+    delete process.env.PIGGERCODE_STACK_CLI_ROOT_DIR;
+    delete process.env.PIGGERCODE_STACK_STACK;
+    delete process.env.PIGGERCODE_VARIANT;
   });
 
   it('reuses the current self-contained binary when running from a bundled Windows executable', async () => {
@@ -196,7 +196,7 @@ describe('resolveDaemonLaunchSpec', () => {
   });
 
   it('does not launch detached daemons from an embedded bun virtual packaged entrypoint on Windows', async () => {
-    process.env.HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK = '1';
+    process.env.PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK = '1';
     resolvePackagedRuntimeEntrypointMock.mockReturnValueOnce('B:/~BUN/root/package-dist/index.mjs');
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
@@ -319,7 +319,7 @@ describe('resolveDaemonLaunchSpec', () => {
   });
 
   it('prefers the source entrypoint in stack context even when a packaged entrypoint exists', async () => {
-    process.env.HAPPIER_STACK_REPO_DIR = '/repo';
+    process.env.PIGGERCODE_STACK_REPO_DIR = '/repo';
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
       return {
@@ -354,14 +354,14 @@ describe('resolveDaemonLaunchSpec', () => {
   it('launches the exact admitted stack dist generation instead of switching the detached child to source', async () => {
     await withTempDir('happier-daemon-launch-admitted-', async (root) => {
       const closure = writeAdmittedDaemonStartupClosure(root);
-      process.env.HAPPIER_STACK_REPO_DIR = '/repo';
-      process.env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT = closure.entrypoint;
-      process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = '1111111111111111';
-      process.env.HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH = closure.runtimeStatePath;
-      process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME = 'node';
+      process.env.PIGGERCODE_STACK_REPO_DIR = '/repo';
+      process.env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT = closure.entrypoint;
+      process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT = '1111111111111111';
+      process.env.PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH = closure.runtimeStatePath;
+      process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME = 'node';
       const successorEnv = {
         ...process.env,
-        HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: closure.fingerprint,
+        PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: closure.fingerprint,
       };
 
       const mod = await import('./resolveDaemonLaunchSpec');
@@ -378,7 +378,7 @@ describe('resolveDaemonLaunchSpec', () => {
   });
 
   it('does not reuse the current packaged entrypoint when stack context prefers source launch', async () => {
-    process.env.HAPPIER_STACK_REPO_DIR = '/repo';
+    process.env.PIGGERCODE_STACK_REPO_DIR = '/repo';
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
       return {
@@ -433,7 +433,7 @@ describe('resolveDaemonLaunchSpec', () => {
   });
 
   it('falls back to tsx source entrypoint only when explicitly allowed', async () => {
-    process.env.HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK = '1';
+    process.env.PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK = '1';
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
       return {

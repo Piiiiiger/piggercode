@@ -22,9 +22,9 @@ const COMPONENTS = ['happy', 'happy-cli', 'happy-server-light', 'happy-server'];
 function cleanHappyStacksEnv(baseEnv) {
   const cleaned = { ...baseEnv };
   for (const k of Object.keys(cleaned)) {
-    if (k === 'HAPPIER_STACK_ENV_FILE') continue;
-    if (k === 'HAPPIER_STACK_STACK') continue;
-    if (k.startsWith('HAPPIER_STACK_')) {
+    if (k === 'PIGGERCODE_STACK_ENV_FILE') continue;
+    if (k === 'PIGGERCODE_STACK_STACK') continue;
+    if (k.startsWith('PIGGERCODE_STACK_')) {
       delete cleaned[k];
     }
   }
@@ -171,14 +171,14 @@ async function enforceQaRunPreflightPolicy({ rootDir, env, edisonArgs }) {
   throw new Error(
     `[edison] Refusing to run qa run without validation-only evidence (preset=${preset}).\n\n` +
       `Fix:\n` +
-      `  hstack edison --stack=$HAPPIER_STACK_STACK -- evidence capture ${taskId} --preset ${preset}${missingHint}\n\n` +
+      `  hstack edison --stack=$PIGGERCODE_STACK_STACK -- evidence capture ${taskId} --preset ${preset}${missingHint}\n\n` +
       `Rationale:\n` +
       `  This keeps CodeRabbit evidence mandatory for validation while ensuring it never runs automatically.\n`
   );
 }
 
 async function ensureStackServerPortForWebServerValidation({ rootDir, stackName, env, edisonArgs, json }) {
-  const currentPort = (env.HAPPIER_STACK_SERVER_PORT ?? '').toString().trim();
+  const currentPort = (env.PIGGERCODE_STACK_SERVER_PORT ?? '').toString().trim();
   if (currentPort) return;
   if (!isQaValidateCommand(edisonArgs)) return;
 
@@ -189,7 +189,7 @@ async function ensureStackServerPortForWebServerValidation({ rootDir, stackName,
   const existingPort = inferServerPortFromRuntimeState(existing);
   const existingAlive = existingPort && isRuntimeStateAlive(existing);
   if (existingPort && existingAlive) {
-    env.HAPPIER_STACK_SERVER_PORT = String(existingPort);
+    env.PIGGERCODE_STACK_SERVER_PORT = String(existingPort);
     return;
   }
 
@@ -221,7 +221,7 @@ async function ensureStackServerPortForWebServerValidation({ rootDir, stackName,
     const st = await readJsonIfExists(runtimePath);
     const port = inferServerPortFromRuntimeState(st);
     if (port) {
-      env.HAPPIER_STACK_SERVER_PORT = String(port);
+      env.PIGGERCODE_STACK_SERVER_PORT = String(port);
       return;
     }
     // eslint-disable-next-line no-await-in-loop
@@ -1356,7 +1356,7 @@ async function cmdTrackCoherence({ rootDir, argv, json }) {
   const maxLines = maxLinesRaw ? Number(maxLinesRaw) : 120;
   const failOnExtra = flags.has('--fail-on-extra');
   const enforce =
-    flags.has('--enforce') || (process.env.HAPPIER_STACK_TRACK_COHERENCE_ENFORCE ?? '').toString().trim() === '1';
+    flags.has('--enforce') || (process.env.PIGGERCODE_STACK_TRACK_COHERENCE_ENFORCE ?? '').toString().trim() === '1';
   const includeDiff = !flags.has('--no-diff');
 
   const mdPath = await resolveTaskFilePath({ rootDir, taskId });
@@ -1684,7 +1684,7 @@ async function main() {
         '',
         'notes:',
         '- When --stack is provided, this wrapper:',
-        '  - exports HAPPIER_STACK_ENV_FILE + HAPPIER_STACK_STACK for stack-scoped commands',
+        '  - exports PIGGERCODE_STACK_ENV_FILE + PIGGERCODE_STACK_STACK for stack-scoped commands',
         '  - configures Edison evidence fingerprinting to include the stack’s resolved component repos',
         '',
         'happy-stacks task model (MANDATORY):',
@@ -1714,7 +1714,7 @@ async function main() {
   const stackFlag = (kv.get('--stack') ?? '').toString().trim();
   // Back-compat: older parseArgs implementations used `kv.stack`; keep it if present.
   const legacyStackFlag = (kv.stack ?? '').toString().trim();
-  let stackName = stackFlag || legacyStackFlag || (process.env.HAPPIER_STACK_STACK ?? '').toString().trim();
+  let stackName = stackFlag || legacyStackFlag || (process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim();
 
   let env = { ...process.env };
   // If no stack was provided, best-effort infer it from a task/QA id passed to the command.
@@ -1741,10 +1741,10 @@ async function main() {
       // IMPORTANT: stack env file must be authoritative.
       // Export its full contents so Edison/guards/evidence runs are fail-closed and stack-scoped.
       ...stackEnv,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
       // Marker for Edison-core wrapper enforcement in this repo.
-      HAPPIER_STACK_EDISON_WRAPPER: '1',
+      PIGGERCODE_STACK_EDISON_WRAPPER: '1',
     };
 
     // We intentionally DO NOT include the stack package root in evidence fingerprints by default.
@@ -1773,13 +1773,13 @@ async function main() {
     }
   }
   // Marker for Edison-core wrapper enforcement in this repo (ensure it survives any env merges).
-  env.HAPPIER_STACK_EDISON_WRAPPER = '1';
+  env.PIGGERCODE_STACK_EDISON_WRAPPER = '1';
   // Provide a stack-scoped localhost hostname for validators and browser flows.
   // This ensures origin isolation even if ports are reused later (common with ephemeral ports).
   const localhostHost = Boolean(stackName)
     ? await preferStackLocalhostHost({ stackName })
     : resolveLocalhostHost({ stackMode: false, stackName: 'main' });
-  env.HAPPIER_STACK_LOCALHOST_HOST = localhostHost;
+  env.PIGGERCODE_STACK_LOCALHOST_HOST = localhostHost;
 
   // Forward all args to `edison`.
   //

@@ -25,10 +25,10 @@ export function resolveExecutionHostController({
   platform = process.platform,
   fileOps = defaultFileOps,
 } = {}) {
-  if (platform !== 'darwin' || String(env.HAPPIER_STACK_EXECUTION_HOST_ADAPTER_REENTRY ?? '').trim() === '1') {
+  if (platform !== 'darwin' || String(env.PIGGERCODE_STACK_EXECUTION_HOST_ADAPTER_REENTRY ?? '').trim() === '1') {
     return null;
   }
-  const stackHome = String(env.HAPPIER_STACK_HOME_DIR ?? '').trim() || join(homedir(), '.happier-stack');
+  const stackHome = String(env.PIGGERCODE_STACK_HOME_DIR ?? '').trim() || join(homedir(), '.happier-stack');
   const profilePath = join(stackHome, 'execution-host.json');
   if (!fileOps.existsSync(profilePath)) return null;
   try {
@@ -65,7 +65,7 @@ export async function runExecutionHostAdapter({
     ...argv,
   ], {
     cwd,
-    env: selectedStack ? { ...env, HAPPIER_STACK_STACK: selectedStack } : env,
+    env: selectedStack ? { ...env, PIGGERCODE_STACK_STACK: selectedStack } : env,
     stdio: 'inherit',
     shell: false,
   });

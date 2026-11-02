@@ -127,7 +127,7 @@ export async function prepareTauriSidecar({
   const bunTarget = resolveBunTargetForTauriBuildEnv(env);
   const nextEnv = {
     ...env,
-    ...(bunTarget ? { HAPPIER_BUN_TARGET: bunTarget } : {}),
+    ...(bunTarget ? { PIGGERCODE_BUN_TARGET: bunTarget } : {}),
   };
 
   const result = spawnSyncImpl(

@@ -66,18 +66,18 @@ vi.mock('@/components/ui/layout/layout', () => ({
 }));
 
 describe('ChangelogScreen (feature gate)', () => {
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         vi.resetModules();
         mmkvAccess.getNumber.mockClear();
         mmkvAccess.set.mockClear();
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.changelog';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.changelog';
     });
 
     afterEach(() => {
-        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
     });
 
     it('returns null when disabled by build policy', async () => {

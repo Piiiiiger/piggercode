@@ -49,14 +49,14 @@ import { killDetachedProcessGroup, spawnDaemonLikeProcess } from ${JSON.stringif
 import { resolveStackDaemonStatePaths } from ${JSON.stringify(DAEMON_STATE_PATHS_HELPER_PATH)};
 
 const args = process.argv.slice(2);
-const home = String(process.env.HAPPIER_HOME_DIR || process.env.HAPPIER_STACK_CLI_HOME_DIR || '').trim();
+const home = String(process.env.PIGGERCODE_HOME_DIR || process.env.PIGGERCODE_STACK_CLI_HOME_DIR || '').trim();
 if (!home) {
-  console.error('missing HAPPIER_HOME_DIR');
+  console.error('missing PIGGERCODE_HOME_DIR');
   process.exit(2);
 }
 const resolvedStatePaths = resolveStackDaemonStatePaths({
   cliHomeDir: home,
-  serverUrl: String(process.env.HAPPIER_SERVER_URL || ''),
+  serverUrl: String(process.env.PIGGERCODE_SERVER_URL || ''),
   env: process.env,
 });
 const statePaths = [...new Set(resolvedStatePaths.pairs.map((pair) => pair.statePath).filter(Boolean))];
@@ -73,18 +73,18 @@ if (args[0] !== 'daemon') process.exit(0);
 const sub = args[1] || '';
 if (sub === 'start') {
   ${includeServerUrlInStartLog
-    ? "append('start:' + String(process.env.HAPPIER_SERVER_URL || ''));"
+    ? "append('start:' + String(process.env.PIGGERCODE_SERVER_URL || ''));"
     : `append(${JSON.stringify(startLogLine)});`}
-  append('direct_peer_bind_port=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT || ''));
-  append('direct_peer_advertised_hosts=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS || ''));
-  append('direct_peer_feature_enabled=' + String(process.env.HAPPIER_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED || ''));
-  append('direct_peer_server_enabled=' + String(process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED || ''));
+  append('direct_peer_bind_port=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT || ''));
+  append('direct_peer_advertised_hosts=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS || ''));
+  append('direct_peer_feature_enabled=' + String(process.env.PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED || ''));
+  append('direct_peer_server_enabled=' + String(process.env.PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED || ''));
   spawnDaemonLikeProcess({
     cliHomeDir: home,
     statePaths,
-    internalServerUrl: String(process.env.HAPPIER_SERVER_URL || ''),
-    publicServerUrl: String(process.env.HAPPIER_WEBAPP_URL || ''),
-    distClosureFingerprint: process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT,
+    internalServerUrl: String(process.env.PIGGERCODE_SERVER_URL || ''),
+    publicServerUrl: String(process.env.PIGGERCODE_WEBAPP_URL || ''),
+    distClosureFingerprint: process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT,
   });
   const readyDeadline = Date.now() + 5_000;
   while (!statePaths.every((path) => existsSync(path)) && Date.now() < readyDeadline) {
@@ -130,7 +130,7 @@ export async function createStartableRuntimeSnapshotFixture(t, {
   dbProvider = serverComponent === 'happier-server' ? 'postgres' : 'sqlite',
   runtimeMigration = 'success',
 } = {}) {
-  const preserveFixture = (process.env.HAPPIER_TEST_PRESERVE_RUNTIME_FIXTURE ?? '').toString().trim() === '1';
+  const preserveFixture = (process.env.PIGGERCODE_TEST_PRESERVE_RUNTIME_FIXTURE ?? '').toString().trim() === '1';
   const fixture = await createTempFixture(t, {
     prefix: 'hstack-runtime-start-fixture-',
     registerCleanup: !preserveFixture,
@@ -158,25 +158,25 @@ import { createServer } from 'node:http';
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const port = Number(process.env.PORT || process.env.HAPPIER_SERVER_PORT || 0);
+const port = Number(process.env.PORT || process.env.PIGGERCODE_SERVER_PORT || 0);
 if (!Number.isFinite(port) || port <= 0) {
-  console.error('missing HAPPIER_SERVER_PORT');
+  console.error('missing PIGGERCODE_SERVER_PORT');
   process.exit(2);
 }
-const uiDir = String(process.env.HAPPIER_SERVER_UI_DIR || '').trim();
-const marker = String(process.env.HAPPIER_RUNTIME_SNAPSHOT_MARKER || 'runtime-snapshot');
-const envCapturePath = String(process.env.HAPPIER_RUNTIME_SERVER_ENV_CAPTURE_PATH || '').trim();
-const pidCapturePath = String(process.env.HAPPIER_TEST_SERVER_PID_CAPTURE_PATH || '').trim();
-const eventLogPath = String(process.env.HAPPIER_TEST_RUNTIME_SERVER_EVENT_LOG || '').trim();
+const uiDir = String(process.env.PIGGERCODE_SERVER_UI_DIR || '').trim();
+const marker = String(process.env.PIGGERCODE_RUNTIME_SNAPSHOT_MARKER || 'runtime-snapshot');
+const envCapturePath = String(process.env.PIGGERCODE_RUNTIME_SERVER_ENV_CAPTURE_PATH || '').trim();
+const pidCapturePath = String(process.env.PIGGERCODE_TEST_SERVER_PID_CAPTURE_PATH || '').trim();
+const eventLogPath = String(process.env.PIGGERCODE_TEST_RUNTIME_SERVER_EVENT_LOG || '').trim();
 if (eventLogPath) appendFileSync(eventLogPath, 'server\\n', 'utf8');
 if (envCapturePath) {
   writeFileSync(envCapturePath, JSON.stringify({
     DATABASE_URL: process.env.DATABASE_URL ?? null,
-    HAPPIER_SERVER_FLAVOR: process.env.HAPPIER_SERVER_FLAVOR ?? null,
+    PIGGERCODE_SERVER_FLAVOR: process.env.PIGGERCODE_SERVER_FLAVOR ?? null,
     HAPPY_SERVER_FLAVOR: process.env.HAPPY_SERVER_FLAVOR ?? null,
-    HAPPIER_SQLITE_AUTO_MIGRATE: process.env.HAPPIER_SQLITE_AUTO_MIGRATE ?? null,
-    HAPPIER_SQLITE_MIGRATIONS_DIR: process.env.HAPPIER_SQLITE_MIGRATIONS_DIR ?? null,
-    HAPPIER_SERVER_LIGHT_DATA_DIR: process.env.HAPPIER_SERVER_LIGHT_DATA_DIR ?? null,
+    PIGGERCODE_SQLITE_AUTO_MIGRATE: process.env.PIGGERCODE_SQLITE_AUTO_MIGRATE ?? null,
+    PIGGERCODE_SQLITE_MIGRATIONS_DIR: process.env.PIGGERCODE_SQLITE_MIGRATIONS_DIR ?? null,
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: process.env.PIGGERCODE_SERVER_LIGHT_DATA_DIR ?? null,
   }, null, 2) + '\\n', 'utf8');
 }
 const server = createServer((req, res) => {
@@ -263,7 +263,7 @@ process.on('SIGINT', shutdown);
   if (['postgres', 'mysql', 'pglite'].includes(dbProvider) && runtimeMigration !== 'missing') {
     const migrationScript = `#!/usr/bin/env node
 import { appendFileSync } from 'node:fs';
-appendFileSync(${JSON.stringify(runtimeServerEventLogPath)}, 'migration:' + process.cwd() + ':' + process.env.HAPPIER_DB_PROVIDER + ':' + process.env.DATABASE_URL + '\\n', 'utf8');
+appendFileSync(${JSON.stringify(runtimeServerEventLogPath)}, 'migration:' + process.cwd() + ':' + process.env.PIGGERCODE_DB_PROVIDER + ':' + process.env.DATABASE_URL + '\\n', 'utf8');
 `;
     const migrationPath = join(snapshotDir, 'server', 'happier-server-migrate');
     await writeFile(migrationPath, migrationScript, 'utf8');
@@ -282,20 +282,20 @@ appendFileSync(${JSON.stringify(runtimeServerEventLogPath)}, 'migration:' + proc
   await writeFile(
     join(stackDir, 'env'),
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_REPO_DIR=${root}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=${serverComponent}`,
-      `HAPPIER_STACK_SERVER_PORT=${resolvedServerPort}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-      'HAPPIER_STACK_RUNTIME_MODE=require',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_SERVICE_MODE=0',
-      'HAPPIER_RUNTIME_SNAPSHOT_MARKER=snap-startable',
-      `HAPPIER_RUNTIME_SERVER_ENV_CAPTURE_PATH=${serverEnvCapturePath}`,
-      `HAPPIER_TEST_RUNTIME_SERVER_EVENT_LOG=${runtimeServerEventLogPath}`,
-      `HAPPIER_DB_PROVIDER=${dbProvider}`,
-      ...(serverComponent === 'happier-server' ? ['HAPPIER_STACK_MANAGED_INFRA=0'] : []),
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_REPO_DIR=${root}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=${serverComponent}`,
+      `PIGGERCODE_STACK_SERVER_PORT=${resolvedServerPort}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+      'PIGGERCODE_STACK_RUNTIME_MODE=require',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_SERVICE_MODE=0',
+      'PIGGERCODE_RUNTIME_SNAPSHOT_MARKER=snap-startable',
+      `PIGGERCODE_RUNTIME_SERVER_ENV_CAPTURE_PATH=${serverEnvCapturePath}`,
+      `PIGGERCODE_TEST_RUNTIME_SERVER_EVENT_LOG=${runtimeServerEventLogPath}`,
+      `PIGGERCODE_DB_PROVIDER=${dbProvider}`,
+      ...(serverComponent === 'happier-server' ? ['PIGGERCODE_STACK_MANAGED_INFRA=0'] : []),
       ...(['postgres', 'mysql'].includes(dbProvider)
         ? [`DATABASE_URL=${dbProvider}://runtime-fixture.invalid/happier`]
         : []),
@@ -308,7 +308,7 @@ appendFileSync(${JSON.stringify(runtimeServerEventLogPath)}, 'migration:' + proc
   const credentialPaths = resolveStackCredentialPaths({
     cliHomeDir,
     serverUrl: `http://127.0.0.1:${resolvedServerPort}`,
-    env: { HAPPIER_ACTIVE_SERVER_ID: activeServerId },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: activeServerId },
   });
   await mkdir(dirname(credentialPaths.serverScopedPath), { recursive: true });
   await writeFile(credentialPaths.serverScopedPath, 'dummy\n', 'utf8');
@@ -337,25 +337,25 @@ while [ "$#" -gt 0 ]; do
   fi
   shift
 done
-if [ ! -f "$HAPPIER_TEST_SERVER_PID_CAPTURE_PATH" ]; then
-  printf '%s\\n' 'empty' >> "$HAPPIER_TEST_LISTENER_DISCOVERY_LOG_PATH"
+if [ ! -f "$PIGGERCODE_TEST_SERVER_PID_CAPTURE_PATH" ]; then
+  printf '%s\\n' 'empty' >> "$PIGGERCODE_TEST_LISTENER_DISCOVERY_LOG_PATH"
   exit 1
 fi
-if [ "$HAPPIER_TEST_LISTENER_DISCOVERY_MODE" = "delayed-group-proof" ] && [ -n "$group" ]; then
-  printf 'group:%s\\n' "$group" >> "$HAPPIER_TEST_LISTENER_DISCOVERY_LOG_PATH"
+if [ "$PIGGERCODE_TEST_LISTENER_DISCOVERY_MODE" = "delayed-group-proof" ] && [ -n "$group" ]; then
+  printf 'group:%s\\n' "$group" >> "$PIGGERCODE_TEST_LISTENER_DISCOVERY_LOG_PATH"
   sleep 0.3
-  sed -n '1p' "$HAPPIER_TEST_SERVER_PID_CAPTURE_PATH"
+  sed -n '1p' "$PIGGERCODE_TEST_SERVER_PID_CAPTURE_PATH"
   exit 0
 fi
-printf '%s\\n' 'inconclusive' >> "$HAPPIER_TEST_LISTENER_DISCOVERY_LOG_PATH"
+printf '%s\\n' 'inconclusive' >> "$PIGGERCODE_TEST_LISTENER_DISCOVERY_LOG_PATH"
 sleep 5
 `, 'utf8');
     await chmod(lsofPath, 0o755);
     listenerDiscoveryEnv = {
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_TEST_LISTENER_DISCOVERY_MODE: listenerDiscoveryMode,
-      HAPPIER_TEST_LISTENER_DISCOVERY_LOG_PATH: listenerDiscoveryLogPath,
-      HAPPIER_TEST_SERVER_PID_CAPTURE_PATH: serverPidCapturePath,
+      PIGGERCODE_TEST_LISTENER_DISCOVERY_MODE: listenerDiscoveryMode,
+      PIGGERCODE_TEST_LISTENER_DISCOVERY_LOG_PATH: listenerDiscoveryLogPath,
+      PIGGERCODE_TEST_SERVER_PID_CAPTURE_PATH: serverPidCapturePath,
     };
   }
 

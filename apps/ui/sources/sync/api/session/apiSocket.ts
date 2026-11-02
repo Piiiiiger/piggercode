@@ -29,12 +29,12 @@ import { isSocketIoAckTimeoutError, raceSocketIoAckTimeout } from '@/sync/runtim
 import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 import { t } from '@/text';
 
-const STATIC_EXPO_PUBLIC_HAPPIER_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS =
-    process.env.EXPO_PUBLIC_HAPPIER_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS;
+const STATIC_EXPO_PUBLIC_PIGGERCODE_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS =
+    process.env.EXPO_PUBLIC_PIGGERCODE_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS;
 const SOCKET_PLANNED_RESTART_PROBE_DELAY_MS = 250;
 
 function readSocketAckAuthSettleTimeoutMs(): number {
-    const raw = String(STATIC_EXPO_PUBLIC_HAPPIER_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS ?? '').trim();
+    const raw = String(STATIC_EXPO_PUBLIC_PIGGERCODE_SOCKET_ACK_AUTH_SETTLE_TIMEOUT_MS ?? '').trim();
     if (!raw) return 250;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 250;
@@ -66,8 +66,8 @@ function readSessionEncryptionModeFromLocalState(sessionId: string): 'plain' | '
     }
 }
 
-const GLOBAL_IN_FLIGHT_HTTP_REQUESTS_KEY = '__HAPPIER_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
-const GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN_KEY = '__HAPPIER_GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN__';
+const GLOBAL_IN_FLIGHT_HTTP_REQUESTS_KEY = '__PIGGERCODE_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
+const GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN_KEY = '__PIGGERCODE_GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN__';
 const GLOBAL_TOKEN_CACHE_KEY_MAX_ENTRIES = 512;
 
 function getInFlightHttpRequestsHost(): Record<string, unknown> {
@@ -343,7 +343,7 @@ class ApiSocket {
         if (!usePlaintextParams && !sessionEncryption) throw new Error(`Session encryption not found for ${sessionId}`);
         const scmDebug =
             __DEV__
-            && process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SCM_RPC === 'true'
+            && process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SCM_RPC === 'true'
             && method.startsWith('scm.');
         if (scmDebug) {
             // eslint-disable-next-line no-console

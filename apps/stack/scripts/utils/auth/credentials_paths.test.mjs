@@ -15,9 +15,9 @@ import {
 
 function neutralStackEnv(overrides = {}) {
   const {
-    HAPPIER_ACTIVE_SERVER_ID,
+    PIGGERCODE_ACTIVE_SERVER_ID,
     HAPPY_ACTIVE_SERVER_ID,
-    HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID,
+    PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID,
     ...baseEnv
   } = process.env;
   return { ...baseEnv, ...overrides };
@@ -86,7 +86,7 @@ test('findExistingStackCredentialPath keeps server-url isolation and falls back 
   const out = resolveStackCredentialPaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
 
   const otherServerScoped = join(dir, 'servers', 'stack_dev-auth__id_default', 'access.key');
@@ -97,7 +97,7 @@ test('findExistingStackCredentialPath keeps server-url isolation and falls back 
   const found = findExistingStackCredentialPath({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
   assert.equal(found, out.legacyPath);
 });
@@ -115,13 +115,13 @@ test('findAnyCredentialPathInCliHome prefers server-scoped credentials over lega
   assert.equal(found, serverScopedPath);
 });
 
-test('resolveStackCredentialPaths uses HAPPIER_ACTIVE_SERVER_ID when provided', async () => {
+test('resolveStackCredentialPaths uses PIGGERCODE_ACTIVE_SERVER_ID when provided', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'happy-stacks-cred-paths-'));
   const serverUrl = 'http://127.0.0.1:3009';
   const out = resolveStackCredentialPaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
   assert.equal(out.activeServerId, 'stack_main__id_default');
   assert.ok(out.serverScopedPath.endsWith('/servers/stack_main__id_default/access.key'));
@@ -160,7 +160,7 @@ test('resolveStackCredentialPaths keeps the stable runtime scope and treats a ma
   const out = resolveStackCredentialPaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_dev__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_dev__id_default' },
   });
 
   assert.equal(out.activeServerId, 'stack_dev__id_default');
@@ -194,7 +194,7 @@ test('findExistingStackCredentialPath accepts the stable scope alias when settin
     }),
     'utf-8',
   );
-  const env = { HAPPIER_ACTIVE_SERVER_ID: stableServerId };
+  const env = { PIGGERCODE_ACTIVE_SERVER_ID: stableServerId };
   const out = resolveStackCredentialPaths({ cliHomeDir: dir, serverUrl, env });
   const stableCredentialPath = join(dir, 'servers', stableServerId, 'access.key');
   await mkdir(join(dir, 'servers', stableServerId), { recursive: true });
@@ -246,8 +246,8 @@ test('findExistingStackCredentialPath migrates from another matching profile whe
   await writeFile(historicalCredentialPath, 'historical-stack-credential\n', 'utf-8');
 
   const env = {
-    HAPPIER_ACTIVE_SERVER_ID: stableServerId,
-    HAPPIER_STACK_STACK: 'repo-remote-dev',
+    PIGGERCODE_ACTIVE_SERVER_ID: stableServerId,
+    PIGGERCODE_STACK_STACK: 'repo-remote-dev',
   };
   const resolved = resolveStackCredentialPaths({ cliHomeDir: dir, serverUrl, env });
 
@@ -304,7 +304,7 @@ test('resolveStackCredentialPaths prefers a matching explicit active server id w
   const out = resolveStackCredentialPaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: explicitServerId },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: explicitServerId },
   });
 
   assert.equal(out.activeServerId, explicitServerId);
@@ -345,7 +345,7 @@ test('resolveStackDaemonStatePaths ignores matching cli settings profiles and ke
   const out = resolveStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: lifecycleScopeId },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: lifecycleScopeId },
   });
 
   assert.equal(out.activeServerId, lifecycleScopeId);
@@ -381,8 +381,8 @@ test('resolveStackDaemonStatePaths uses the daemon lifecycle scope without chang
     'utf-8',
   );
   const env = {
-    HAPPIER_ACTIVE_SERVER_ID: settingsServerId,
-    HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId,
+    PIGGERCODE_ACTIVE_SERVER_ID: settingsServerId,
+    PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId,
   };
 
   const credentialPaths = resolveStackCredentialPaths({ cliHomeDir: dir, serverUrl, env });
@@ -406,8 +406,8 @@ test('resolveStackDaemonStatePaths rejects an unsafe daemon lifecycle scope inst
     cliHomeDir: dir,
     serverUrl: 'http://127.0.0.1:3014',
     env: {
-      HAPPIER_ACTIVE_SERVER_ID: 'safe-profile',
-      HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: '../../escape',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'safe-profile',
+      PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: '../../escape',
     },
   });
 
@@ -422,7 +422,7 @@ test('findExistingStackCredentialPath falls back to url-hash path when stable sc
   const out = resolveStackCredentialPaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
 
   await mkdir(join(dir, 'servers', out.urlHashServerId), { recursive: true });
@@ -431,7 +431,7 @@ test('findExistingStackCredentialPath falls back to url-hash path when stable sc
   const found = findExistingStackCredentialPath({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
   assert.equal(found, out.urlHashServerScopedPath);
 });
@@ -518,7 +518,7 @@ test('resolvePreferredStackDaemonStatePaths does not fall back to another server
   const paths = resolveStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_dev2__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_dev2__id_default' },
   });
   const otherServerDir = join(dir, 'servers', 'stack_dev__id_default');
   await mkdir(otherServerDir, { recursive: true });
@@ -527,7 +527,7 @@ test('resolvePreferredStackDaemonStatePaths does not fall back to another server
   const preferred = resolvePreferredStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_dev2__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_dev2__id_default' },
   });
 
   assert.equal(preferred.statePath, paths.serverScopedStatePath);
@@ -540,7 +540,7 @@ test('resolvePreferredStackDaemonStatePaths does not scan other server scopes wh
   const paths = resolveStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl: '',
-    env: { HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId },
+    env: { PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId },
   });
   const otherServerDir = join(dir, 'servers', 'stack_other__id_account-a');
   await mkdir(otherServerDir, { recursive: true });
@@ -549,7 +549,7 @@ test('resolvePreferredStackDaemonStatePaths does not scan other server scopes wh
   const preferred = resolvePreferredStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl: '',
-    env: { HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId },
+    env: { PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: lifecycleScopeId },
   });
 
   assert.equal(preferred.statePath, paths.serverScopedStatePath);
@@ -562,7 +562,7 @@ test('resolvePreferredStackDaemonStatePaths falls back to url-hash server-scoped
   const out = resolveStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
 
   await mkdir(join(dir, 'servers', out.urlHashServerId), { recursive: true });
@@ -571,7 +571,7 @@ test('resolvePreferredStackDaemonStatePaths falls back to url-hash server-scoped
   const preferred = resolvePreferredStackDaemonStatePaths({
     cliHomeDir: dir,
     serverUrl,
-    env: { HAPPIER_ACTIVE_SERVER_ID: 'stack_main__id_default' },
+    env: { PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default' },
   });
   assert.equal(preferred.statePath, out.urlHashServerScopedStatePath);
   assert.equal(preferred.lockPath, out.urlHashServerScopedLockPath);

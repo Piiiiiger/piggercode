@@ -20,34 +20,34 @@ function jsonResponse(payload: unknown): Response {
 
 describe('createOpenCodeServerRuntimeClient sessionMessagesList managed retry', () => {
     const originalFetch = globalThis.fetch;
-    const originalServerUrl = process.env.HAPPIER_OPENCODE_SERVER_URL;
-    const originalHttpTimeoutMs = process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
+    const originalServerUrl = process.env.PIGGERCODE_OPENCODE_SERVER_URL;
+    const originalHttpTimeoutMs = process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
 
     beforeEach(() => {
         vi.restoreAllMocks();
         vi.unstubAllGlobals();
         vi.useRealTimers();
-        delete process.env.HAPPIER_OPENCODE_SERVER_URL;
-        delete process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
     });
 
     afterEach(() => {
         globalThis.fetch = originalFetch;
         if (typeof originalServerUrl === 'string') {
-            process.env.HAPPIER_OPENCODE_SERVER_URL = originalServerUrl;
+            process.env.PIGGERCODE_OPENCODE_SERVER_URL = originalServerUrl;
         } else {
-            delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+            delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
         }
         if (typeof originalHttpTimeoutMs === 'string') {
-            process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS = originalHttpTimeoutMs;
+            process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS = originalHttpTimeoutMs;
         } else {
-            delete process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
+            delete process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS;
         }
     });
 
     it('aborts hung HTTP requests within the configured timeout so probes and prompts do not hang forever', async () => {
-        process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
-        process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS = '1000';
+        process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+        process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS = '1000';
 
         vi.useFakeTimers();
 
@@ -93,8 +93,8 @@ describe('createOpenCodeServerRuntimeClient sessionMessagesList managed retry', 
     });
 
     it('honors a positive subsecond timeout instead of renewing the remaining request budget', async () => {
-        process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
-        process.env.HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS = '25';
+        process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+        process.env.PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS = '25';
 
         vi.useFakeTimers();
 
@@ -198,7 +198,7 @@ describe('createOpenCodeServerRuntimeClient sessionMessagesList managed retry', 
     });
 
     it('preserves a malformed raw history envelope for fail-closed foreground reconciliation', async () => {
-        process.env.HAPPIER_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
+        process.env.PIGGERCODE_OPENCODE_SERVER_URL = 'http://127.0.0.1:9999';
         globalThis.fetch = vi.fn(async (input) => {
             const url = typeof input === 'string' ? input : String((input as Request)?.url ?? '');
             if (url.includes('/global/health')) {

@@ -9,7 +9,7 @@ import { readTerminalAttachmentInfo } from '@/terminal/attachment/terminalAttach
 import { createDefaultTerminalHostRegistry } from '@/integrations/terminalHost/defaultRegistry';
 import { evaluateTerminalHostLivenessForRecovery } from '@/integrations/terminalHost/livenessPolicy';
 import {
-  HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+  PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
   type AttachmentBoundClaudeEndpointState,
   parseAttachmentBoundClaudeEndpointState,
   readClaudeEndpointDescriptor,
@@ -27,7 +27,7 @@ function readPositiveInteger(value: unknown): number | null {
 }
 
 function parseClaudeEndpointStateFromEnv(env: NodeJS.ProcessEnv = process.env): AttachmentBoundClaudeEndpointState | null {
-  const raw = env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+  const raw = env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
   if (typeof raw !== 'string' || raw.trim().length === 0) return null;
   try {
     return parseAttachmentBoundClaudeEndpointState(JSON.parse(raw));
@@ -37,7 +37,7 @@ function parseClaudeEndpointStateFromEnv(env: NodeJS.ProcessEnv = process.env): 
 }
 
 export function hasClaudeEndpointRecoveryRequest(env: NodeJS.ProcessEnv = process.env): boolean {
-  const raw = env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+  const raw = env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
   return typeof raw === 'string' && raw.trim().length > 0;
 }
 

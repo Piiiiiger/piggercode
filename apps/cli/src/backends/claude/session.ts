@@ -87,7 +87,7 @@ function buildClaudeDirectSessionMetadata(params: Readonly<{
     sessionId: string;
     transcriptPath: string | null;
 }>): Metadata {
-    if (process.env.HAPPIER_TRANSCRIPT_STORAGE !== 'direct') return params.metadata;
+    if (process.env.PIGGERCODE_TRANSCRIPT_STORAGE !== 'direct') return params.metadata;
 
     const machineId = typeof params.metadata.machineId === 'string' ? params.metadata.machineId.trim() : '';
     if (!machineId) return params.metadata;

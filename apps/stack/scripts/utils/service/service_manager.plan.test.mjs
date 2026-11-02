@@ -27,14 +27,14 @@ test('stopService passes the launchd definition path for persistent macOS servic
   const binDir = join(tempRoot, 'bin');
   const logPath = join(tempRoot, 'launchctl.log');
   const previousPath = process.env.PATH;
-  const previousLogPath = process.env.HAPPIER_TEST_LAUNCHCTL_LOG_PATH;
+  const previousLogPath = process.env.PIGGERCODE_TEST_LAUNCHCTL_LOG_PATH;
 
   t.after(async () => {
     process.env.PATH = previousPath;
     if (previousLogPath == null) {
-      delete process.env.HAPPIER_TEST_LAUNCHCTL_LOG_PATH;
+      delete process.env.PIGGERCODE_TEST_LAUNCHCTL_LOG_PATH;
     } else {
-      process.env.HAPPIER_TEST_LAUNCHCTL_LOG_PATH = previousLogPath;
+      process.env.PIGGERCODE_TEST_LAUNCHCTL_LOG_PATH = previousLogPath;
     }
     await rm(tempRoot, { recursive: true, force: true });
   });
@@ -46,7 +46,7 @@ test('stopService passes the launchd definition path for persistent macOS servic
     [
       '#!/usr/bin/env node',
       "const fs = require('node:fs');",
-      "const logPath = process.env.HAPPIER_TEST_LAUNCHCTL_LOG_PATH;",
+      "const logPath = process.env.PIGGERCODE_TEST_LAUNCHCTL_LOG_PATH;",
       "if (logPath) fs.appendFileSync(logPath, `${JSON.stringify(process.argv.slice(2))}\\n`, 'utf8');",
     ].join('\n'),
     'utf8',
@@ -54,7 +54,7 @@ test('stopService passes the launchd definition path for persistent macOS servic
   await chmod(launchctlPath, 0o755);
 
   process.env.PATH = `${binDir}${process.platform === 'win32' ? ';' : ':'}${previousPath ?? ''}`;
-  process.env.HAPPIER_TEST_LAUNCHCTL_LOG_PATH = logPath;
+  process.env.PIGGERCODE_TEST_LAUNCHCTL_LOG_PATH = logPath;
 
   await assert.doesNotReject(
     stopService({
@@ -99,7 +99,7 @@ test('uninstallService removes definitions only after backend-confirmed teardown
         const binDir = join(tempRoot, 'bin');
         const logPath = join(tempRoot, 'service-command.log');
         const previousPath = process.env.PATH;
-        const previousLogPath = process.env.HAPPIER_TEST_SERVICE_LOG;
+        const previousLogPath = process.env.PIGGERCODE_TEST_SERVICE_LOG;
         try {
           await mkdir(binDir, { recursive: true });
           const commandPath = join(binDir, command);
@@ -110,11 +110,11 @@ test('uninstallService removes definitions only after backend-confirmed teardown
               : command === 'launchctl'
                 ? '#!/bin/sh\necho "Could not find specified service" >&2\nexit 1\n'
                 : '#!/bin/sh\necho \'{"exists":false,"state":null,"lastTaskResult":null}\'\nexit 0\n';
-          const script = behavior.replace('#!/bin/sh\n', '#!/bin/sh\necho "$*" >> "$HAPPIER_TEST_SERVICE_LOG"\n');
+          const script = behavior.replace('#!/bin/sh\n', '#!/bin/sh\necho "$*" >> "$PIGGERCODE_TEST_SERVICE_LOG"\n');
           await writeFile(commandPath, script, 'utf8');
           await chmod(commandPath, 0o755);
           process.env.PATH = `${binDir}:${previousPath ?? ''}`;
-          process.env.HAPPIER_TEST_SERVICE_LOG = logPath;
+          process.env.PIGGERCODE_TEST_SERVICE_LOG = logPath;
 
           const spec = { label: 'dev.happier.stack.test', programArgs: ['/tmp/hstack', 'start', '--restart'] };
           const backend = platform === 'linux' ? 'systemd-user' : platform === 'darwin' ? 'launchd-user' : 'schtasks-user';
@@ -143,8 +143,8 @@ test('uninstallService removes definitions only after backend-confirmed teardown
           }
         } finally {
           process.env.PATH = previousPath;
-          if (previousLogPath == null) delete process.env.HAPPIER_TEST_SERVICE_LOG;
-          else process.env.HAPPIER_TEST_SERVICE_LOG = previousLogPath;
+          if (previousLogPath == null) delete process.env.PIGGERCODE_TEST_SERVICE_LOG;
+          else process.env.PIGGERCODE_TEST_SERVICE_LOG = previousLogPath;
           await rm(tempRoot, { recursive: true, force: true });
         }
       });
@@ -157,19 +157,19 @@ test('uninstallService tears down a registered launchd orphan by label when its 
   const binDir = join(tempRoot, 'bin');
   const logPath = join(tempRoot, 'launchctl.log');
   const previousPath = process.env.PATH;
-  const previousLogPath = process.env.HAPPIER_TEST_SERVICE_LOG;
+  const previousLogPath = process.env.PIGGERCODE_TEST_SERVICE_LOG;
   t.after(async () => {
     process.env.PATH = previousPath;
-    if (previousLogPath == null) delete process.env.HAPPIER_TEST_SERVICE_LOG;
-    else process.env.HAPPIER_TEST_SERVICE_LOG = previousLogPath;
+    if (previousLogPath == null) delete process.env.PIGGERCODE_TEST_SERVICE_LOG;
+    else process.env.PIGGERCODE_TEST_SERVICE_LOG = previousLogPath;
     await rm(tempRoot, { recursive: true, force: true });
   });
   await mkdir(binDir, { recursive: true });
   const launchctlPath = join(binDir, 'launchctl');
-  await writeFile(launchctlPath, '#!/bin/sh\necho "$*" >> "$HAPPIER_TEST_SERVICE_LOG"\nexit 0\n', 'utf8');
+  await writeFile(launchctlPath, '#!/bin/sh\necho "$*" >> "$PIGGERCODE_TEST_SERVICE_LOG"\nexit 0\n', 'utf8');
   await chmod(launchctlPath, 0o755);
   process.env.PATH = `${binDir}:${previousPath ?? ''}`;
-  process.env.HAPPIER_TEST_SERVICE_LOG = logPath;
+  process.env.PIGGERCODE_TEST_SERVICE_LOG = logPath;
 
   const spec = { label: 'dev.happier.stack.orphan', programArgs: ['/tmp/hstack', 'start', '--restart'] };
   await uninstallService({ platform: 'darwin', mode: 'user', homeDir: tempRoot, spec, uid: 501 });

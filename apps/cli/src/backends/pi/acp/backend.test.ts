@@ -5,14 +5,14 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { writeExecutableShimSync } from '@/testkit/fs/executableShim';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 import { buildPiRpcArgs, buildPiToolsForPermissionMode, createPiBackend, resolveHappyBridgeExtensionArgs } from './backend';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
   PI_BROKER_SELECTIONS_ENV,
   resolvePiBrokerExtensionPath,
   serializePiBrokerSelections,
 } from '@/backends/pi/brokerExtension';
 
-const envKeys = ['PATH', 'HAPPIER_PI_PATH', HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] as const;
+const envKeys = ['PATH', 'PIGGERCODE_PI_PATH', PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -37,17 +37,17 @@ afterEach(() => {
 describe('pi backend argv', () => {
   it('fails closed when the Pi CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_PI_PATH;
+    delete process.env.PIGGERCODE_PI_PATH;
 
     expect(() => createPiBackend({ cwd: '/tmp', env: {} })).toThrow(/system install/i);
   });
 
-  it('adds --thinking when HAPPIER_PI_THINKING_LEVEL is set', () => {
+  it('adds --thinking when PIGGERCODE_PI_THINKING_LEVEL is set', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
     const backend = createPiBackend({
       cwd: '/tmp',
-      env: { HAPPIER_PI_THINKING_LEVEL: 'high' },
+      env: { PIGGERCODE_PI_THINKING_LEVEL: 'high' },
       permissionMode: 'default',
     });
 
@@ -59,10 +59,10 @@ describe('pi backend argv', () => {
 
   it('ignores invalid thinking levels', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
     const backend = createPiBackend({
       cwd: '/tmp',
-      env: { HAPPIER_PI_THINKING_LEVEL: 'definitely-not-valid' },
+      env: { PIGGERCODE_PI_THINKING_LEVEL: 'definitely-not-valid' },
       permissionMode: 'default',
     });
 
@@ -73,7 +73,7 @@ describe('pi backend argv', () => {
 
   it('passes the Happier session id into the Pi RPC backend options', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',
@@ -87,7 +87,7 @@ describe('pi backend argv', () => {
 
   it('resolves the CLI from options.env PATH when process PATH is empty', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_PI_PATH;
+    delete process.env.PIGGERCODE_PI_PATH;
     const binPath = createFakeBin('pi');
 
     const backend = createPiBackend({
@@ -101,12 +101,12 @@ describe('pi backend argv', () => {
 
   it('uses the active connected-service provider with a concrete Pi startup model and scoped model cycle', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',
       env: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           { kind: 'profile', serviceId: 'openai-codex', profileId: 'codex-work' },
         ]),
       },
@@ -128,7 +128,7 @@ describe('pi backend argv', () => {
 
   it('passes the broker extension path when launching a brokered connected-service provider', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
     const agentDir = createTempDirSync('happier-pi-agent-dir-');
     TEMP_DIRS.add(agentDir);
 
@@ -136,7 +136,7 @@ describe('pi backend argv', () => {
       cwd: '/tmp',
       env: {
         PI_CODING_AGENT_DIR: agentDir,
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           { kind: 'profile', serviceId: 'openai-codex', profileId: 'codex-work' },
         ]),
         [PI_BROKER_SELECTIONS_ENV]: serializePiBrokerSelections({
@@ -159,7 +159,7 @@ describe('pi backend argv', () => {
 
   it('forwards appendSystemPromptText via spawn options, never as literal argv', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',
@@ -180,7 +180,7 @@ describe('pi backend argv', () => {
 
   it('treats blank appendSystemPromptText as null', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',
@@ -228,7 +228,7 @@ describe('happy tools bridge extension args', () => {
 
   it('keeps session policy in protected config text rather than argv or env', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',
@@ -244,7 +244,7 @@ describe('happy tools bridge extension args', () => {
     ]));
     expect(backend.options?.args).not.toContain('TITLE_GUIDANCE');
     expect(backend.options?.args).not.toContain('happy-session-1');
-    expect(backend.options?.env).not.toHaveProperty('HAPPIER_PI_BRIDGE_CONFIG');
+    expect(backend.options?.env).not.toHaveProperty('PIGGERCODE_PI_BRIDGE_CONFIG');
     expect(JSON.parse(backend.options?.toolsBridgeConfigText ?? '{}')).toEqual(baseBridge.sessionConfig);
   });
 
@@ -252,7 +252,7 @@ describe('happy tools bridge extension args', () => {
     'keeps native bridge tools available when %s restricts Pi tools',
     (permissionMode) => {
       process.env.PATH = '';
-      process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+      process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
       const backend = createPiBackend({
         cwd: '/tmp',
@@ -270,7 +270,7 @@ describe('happy tools bridge extension args', () => {
 
   it('leaves Pi native and extension tools unfiltered in Auto mode', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_PI_PATH = createFakeBin('pi');
+    process.env.PIGGERCODE_PI_PATH = createFakeBin('pi');
 
     const backend = createPiBackend({
       cwd: '/tmp',

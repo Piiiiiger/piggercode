@@ -44,7 +44,7 @@ function resolveInheritedWorkspaceBundleLockValue(options) {
   return String(
     options.heldLockValue
       ?? options.heldLockPath
-      ?? env?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD
+      ?? env?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD
       ?? '',
   ).trim();
 }

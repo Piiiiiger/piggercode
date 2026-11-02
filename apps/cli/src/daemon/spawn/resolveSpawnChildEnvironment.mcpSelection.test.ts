@@ -29,7 +29,7 @@ describe('resolveSpawnChildEnvironment (mcp selection)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_SESSION_MCP_SELECTION_JSON).toBe(JSON.stringify(options.mcpSelection));
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_MCP_SELECTION_JSON).toBe(JSON.stringify(options.mcpSelection));
   });
 
   it('does not export removed session workspace linkage metadata into child env', async () => {
@@ -54,7 +54,7 @@ describe('resolveSpawnChildEnvironment (mcp selection)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_SESSION_WORKSPACE_CONTEXT_JSON).toBeUndefined();
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_WORKSPACE_CONTEXT_JSON).toBeUndefined();
   });
 
   it('exports session config option overrides JSON for the spawned runner metadata seed', async () => {
@@ -83,7 +83,7 @@ describe('resolveSpawnChildEnvironment (mcp selection)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_SESSION_CONFIG_OPTION_OVERRIDES_JSON).toBe(JSON.stringify(options.sessionConfigOptionOverrides));
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_CONFIG_OPTION_OVERRIDES_JSON).toBe(JSON.stringify(options.sessionConfigOptionOverrides));
   });
 
   it('exports the requested session directory for runner metadata seeding', async () => {
@@ -105,7 +105,7 @@ describe('resolveSpawnChildEnvironment (mcp selection)', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.extraEnvForChild.HAPPIER_SESSION_REQUESTED_DIRECTORY).toBe('/tmp/requested-session-directory');
-    expect(result.extraEnvForChild.HAPPIER_SESSION_MACHINE_WORKSPACE_PATH).toBe('/tmp/requested-session-directory');
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_REQUESTED_DIRECTORY).toBe('/tmp/requested-session-directory');
+    expect(result.extraEnvForChild.PIGGERCODE_SESSION_MACHINE_WORKSPACE_PATH).toBe('/tmp/requested-session-directory');
   });
 });

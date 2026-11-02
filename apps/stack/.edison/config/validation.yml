@@ -148,20 +148,20 @@ validation:
   #
   # IMPORTANT:
   # - These profiles rely on running Edison via `hstack edison --stack=<name> -- ...`
-  #   so the stack env (including HAPPIER_STACK_SERVER_PORT) is loaded.
+  #   so the stack env (including PIGGERCODE_STACK_SERVER_PORT) is loaded.
   web_servers:
     happy-stack: &happy_stack
       # Use stack-scoped *.localhost hostnames for origin isolation (prevents browser state leakage
       # across stacks even if ports are reused later).
-      url: "http://${HAPPIER_STACK_LOCALHOST_HOST}:${HAPPIER_STACK_SERVER_PORT}"
+      url: "http://${PIGGERCODE_STACK_LOCALHOST_HOST}:${PIGGERCODE_STACK_SERVER_PORT}"
       # IMPORTANT:
       # Use 127.0.0.1 for health probing to avoid hostname-specific resolver/IPv6 edge cases.
       # The browser validator still navigates to `url` (stack-scoped hostname) for origin isolation.
-      healthcheck_url: "http://127.0.0.1:${HAPPIER_STACK_SERVER_PORT}/health"
+      healthcheck_url: "http://127.0.0.1:${PIGGERCODE_STACK_SERVER_PORT}/health"
       ensure_running: true
       stop_after: true
       start:
-        command: "node ./bin/hstack.mjs stack start \"$HAPPIER_STACK_STACK\""
+        command: "node ./bin/hstack.mjs stack start \"$PIGGERCODE_STACK_STACK\""
       stop:
         # Stop only when Edison started the stack.
         #
@@ -169,7 +169,7 @@ validation:
         # `hstack stack start` may exit after launching background processes; we still
         # want to run stop when `started_by_us=true`.
         run_even_if_no_process: true
-        command: "node ./bin/hstack.mjs stack stop \"$HAPPIER_STACK_STACK\" --yes"
+        command: "node ./bin/hstack.mjs stack stop \"$PIGGERCODE_STACK_STACK\" --yes"
 
     # Alias for the `e2e-web` pack's expected profile name.
     browser-e2e:

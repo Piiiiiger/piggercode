@@ -18,26 +18,26 @@ export function daemonProcessMatchesCurrentScope(
   const required = options.requireScopeIdentity === true;
   const env = processInfo.daemonOwnershipEnvironmentVariables;
   if (!env) return !required;
-  const home = resolveHappierHomeDirComparableKey(env.HAPPIER_HOME_DIR);
+  const home = resolveHappierHomeDirComparableKey(env.PIGGERCODE_HOME_DIR);
   const currentHome = resolveHappierHomeDirComparableKey(configuration.happyHomeDir);
   if (required && (!home || !currentHome)) return false;
   if (home && currentHome && home !== currentHome) return false;
 
-  const lifecycle = normalizeScopeValue(env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID);
+  const lifecycle = normalizeScopeValue(env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID);
   // A standalone daemon has no explicit lifecycle env, but its children receive the
   // resolved active-server id as their lifecycle identity from the spawn owner.
-  const currentLifecycle = normalizeScopeValue(process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID)
+  const currentLifecycle = normalizeScopeValue(process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID)
     || normalizeScopeValue(configuration.activeServerId);
   if (lifecycle) {
     // The explicit lifecycle identity survives endpoint/profile changes.
     return Boolean(currentLifecycle) && lifecycle === currentLifecycle;
   }
   // Released runners may predate explicit lifecycle scope; retain their recorded relay identity.
-  const active = normalizeScopeValue(env.HAPPIER_ACTIVE_SERVER_ID);
+  const active = normalizeScopeValue(env.PIGGERCODE_ACTIVE_SERVER_ID);
   const currentActive = currentLifecycle;
   if (required && (!active || !currentActive)) return false;
   if (active && currentActive && active !== currentActive) return false;
-  const server = normalizeServerUrl(env.HAPPIER_SERVER_URL);
+  const server = normalizeServerUrl(env.PIGGERCODE_SERVER_URL);
   if (!server) return !required;
   const currentServers = new Set([
     configuration.serverUrl, configuration.apiServerUrl, configuration.publicServerUrl,

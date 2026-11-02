@@ -10,7 +10,7 @@ export function resolveDevReloadPollIntervalMs(
   const fallback = Number.isFinite(Number(defaultMs)) && Number(defaultMs) >= 0
     ? Math.floor(Number(defaultMs))
     : DEFAULT_DEV_RELOAD_POLL_INTERVAL_MS;
-  const raw = String(env?.HAPPIER_STACK_DEV_RELOAD_POLL_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_DEV_RELOAD_POLL_MS ?? '').trim();
   if (!raw) return fallback;
   const parsed = Number(raw);
   if (!Number.isFinite(parsed) || parsed < 0) return fallback;

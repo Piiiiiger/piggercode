@@ -98,8 +98,8 @@ function createFakeHappierCli(scenario: Readonly<{
   writeFileSync(cliPath, `#!/usr/bin/env node
 const { appendFileSync, readFileSync, writeFileSync } = require('node:fs');
 
-const statePath = process.env.HAPPIER_FAKE_CLI_STATE_PATH;
-const logPath = process.env.HAPPIER_FAKE_CLI_LOG_PATH;
+const statePath = process.env.PIGGERCODE_FAKE_CLI_STATE_PATH;
+const logPath = process.env.PIGGERCODE_FAKE_CLI_LOG_PATH;
 const argv = process.argv.slice(2);
 appendFileSync(logPath, JSON.stringify(argv) + '\\n');
 
@@ -285,8 +285,8 @@ function createFakeTailscaleCli(scenario: Readonly<{
   writeFileSync(cliPath, `#!/usr/bin/env node
 const { appendFileSync, readFileSync, writeFileSync } = require('node:fs');
 
-const statePath = process.env.HAPPIER_FAKE_TAILSCALE_STATE_PATH;
-const logPath = process.env.HAPPIER_FAKE_TAILSCALE_LOG_PATH;
+const statePath = process.env.PIGGERCODE_FAKE_TAILSCALE_STATE_PATH;
+const logPath = process.env.PIGGERCODE_FAKE_TAILSCALE_LOG_PATH;
 const argv = process.argv.slice(2);
 appendFileSync(logPath, JSON.stringify(argv) + '\\n');
 
@@ -418,13 +418,13 @@ describe('createHsetupSystemTaskRegistry', () => {
         },
       ],
     });
-    const previousCliPath = process.env.HAPPIER_BOOTSTRAP_CLI_PATH;
-    const previousStatePath = process.env.HAPPIER_FAKE_CLI_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_CLI_LOG_PATH;
+    const previousCliPath = process.env.PIGGERCODE_BOOTSTRAP_CLI_PATH;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_CLI_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_CLI_LOG_PATH;
     try {
-      process.env.HAPPIER_BOOTSTRAP_CLI_PATH = fakeCli.cliPath;
-      process.env.HAPPIER_FAKE_CLI_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
-      process.env.HAPPIER_FAKE_CLI_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
+      process.env.PIGGERCODE_BOOTSTRAP_CLI_PATH = fakeCli.cliPath;
+      process.env.PIGGERCODE_FAKE_CLI_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
+      process.env.PIGGERCODE_FAKE_CLI_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
 
       const result = await executeSystemTask({
         spec: {
@@ -461,9 +461,9 @@ describe('createHsetupSystemTaskRegistry', () => {
       });
       expect(fakeCli.readInvocations()).toContainEqual(['daemon', 'status', '--json']);
     } finally {
-      restoreEnvVar('HAPPIER_BOOTSTRAP_CLI_PATH', previousCliPath);
-      restoreEnvVar('HAPPIER_FAKE_CLI_STATE_PATH', previousStatePath);
-      restoreEnvVar('HAPPIER_FAKE_CLI_LOG_PATH', previousLogPath);
+      restoreEnvVar('PIGGERCODE_BOOTSTRAP_CLI_PATH', previousCliPath);
+      restoreEnvVar('PIGGERCODE_FAKE_CLI_STATE_PATH', previousStatePath);
+      restoreEnvVar('PIGGERCODE_FAKE_CLI_LOG_PATH', previousLogPath);
       fakeCli.cleanup();
     }
   });
@@ -529,13 +529,13 @@ describe('createHsetupSystemTaskRegistry', () => {
         },
       ],
     });
-    const previousCliPath = process.env.HAPPIER_BOOTSTRAP_CLI_PATH;
-    const previousStatePath = process.env.HAPPIER_FAKE_CLI_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_CLI_LOG_PATH;
+    const previousCliPath = process.env.PIGGERCODE_BOOTSTRAP_CLI_PATH;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_CLI_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_CLI_LOG_PATH;
     try {
-      process.env.HAPPIER_BOOTSTRAP_CLI_PATH = fakeCli.cliPath;
-      process.env.HAPPIER_FAKE_CLI_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
-      process.env.HAPPIER_FAKE_CLI_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
+      process.env.PIGGERCODE_BOOTSTRAP_CLI_PATH = fakeCli.cliPath;
+      process.env.PIGGERCODE_FAKE_CLI_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
+      process.env.PIGGERCODE_FAKE_CLI_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
 
       const result = await executeSystemTask({
         spec: {
@@ -575,9 +575,9 @@ describe('createHsetupSystemTaskRegistry', () => {
         ['daemon', 'status', '--json'],
       ]);
     } finally {
-      restoreEnvVar('HAPPIER_BOOTSTRAP_CLI_PATH', previousCliPath);
-      restoreEnvVar('HAPPIER_FAKE_CLI_STATE_PATH', previousStatePath);
-      restoreEnvVar('HAPPIER_FAKE_CLI_LOG_PATH', previousLogPath);
+      restoreEnvVar('PIGGERCODE_BOOTSTRAP_CLI_PATH', previousCliPath);
+      restoreEnvVar('PIGGERCODE_FAKE_CLI_STATE_PATH', previousStatePath);
+      restoreEnvVar('PIGGERCODE_FAKE_CLI_LOG_PATH', previousLogPath);
       fakeCli.cleanup();
     }
   });
@@ -699,14 +699,14 @@ describe('createHsetupSystemTaskRegistry', () => {
         ].join('\n'),
       ],
     });
-    const previousTailscaleBin = process.env.HAPPIER_TAILSCALE_BIN;
-    const previousStatePath = process.env.HAPPIER_FAKE_TAILSCALE_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_TAILSCALE_LOG_PATH;
+    const previousTailscaleBin = process.env.PIGGERCODE_TAILSCALE_BIN;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_TAILSCALE_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_TAILSCALE_LOG_PATH;
     const events: unknown[] = [];
     try {
-      process.env.HAPPIER_TAILSCALE_BIN = fakeCli.cliPath;
-      process.env.HAPPIER_FAKE_TAILSCALE_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
-      process.env.HAPPIER_FAKE_TAILSCALE_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
+      process.env.PIGGERCODE_TAILSCALE_BIN = fakeCli.cliPath;
+      process.env.PIGGERCODE_FAKE_TAILSCALE_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
+      process.env.PIGGERCODE_FAKE_TAILSCALE_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
 
       const result = await executeSystemTask({
         spec: {
@@ -745,9 +745,9 @@ describe('createHsetupSystemTaskRegistry', () => {
         ['serve', 'status'],
       ]);
     } finally {
-      restoreEnvVar('HAPPIER_TAILSCALE_BIN', previousTailscaleBin);
-      restoreEnvVar('HAPPIER_FAKE_TAILSCALE_STATE_PATH', previousStatePath);
-      restoreEnvVar('HAPPIER_FAKE_TAILSCALE_LOG_PATH', previousLogPath);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_BIN', previousTailscaleBin);
+      restoreEnvVar('PIGGERCODE_FAKE_TAILSCALE_STATE_PATH', previousStatePath);
+      restoreEnvVar('PIGGERCODE_FAKE_TAILSCALE_LOG_PATH', previousLogPath);
       fakeCli.cleanup();
     }
   });
@@ -787,20 +787,20 @@ describe('createHsetupSystemTaskRegistry', () => {
         },
       ],
     });
-    const previousTailscaleBin = process.env.HAPPIER_TAILSCALE_BIN;
-    const previousStatePath = process.env.HAPPIER_FAKE_TAILSCALE_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_TAILSCALE_LOG_PATH;
-    const previousPollTimeout = process.env.HAPPIER_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS;
-    const previousPollInterval = process.env.HAPPIER_TAILSCALE_APPROVAL_POLL_INTERVAL_MS;
+    const previousTailscaleBin = process.env.PIGGERCODE_TAILSCALE_BIN;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_TAILSCALE_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_TAILSCALE_LOG_PATH;
+    const previousPollTimeout = process.env.PIGGERCODE_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS;
+    const previousPollInterval = process.env.PIGGERCODE_TAILSCALE_APPROVAL_POLL_INTERVAL_MS;
     const events: unknown[] = [];
     try {
-      process.env.HAPPIER_TAILSCALE_BIN = fakeCli.cliPath;
-      process.env.HAPPIER_FAKE_TAILSCALE_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
-      process.env.HAPPIER_FAKE_TAILSCALE_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
+      process.env.PIGGERCODE_TAILSCALE_BIN = fakeCli.cliPath;
+      process.env.PIGGERCODE_FAKE_TAILSCALE_STATE_PATH = join(fakeCli.cliPath, '..', 'scenario.json');
+      process.env.PIGGERCODE_FAKE_TAILSCALE_LOG_PATH = join(fakeCli.cliPath, '..', 'invocations.log');
       // Avoid long approval polling in this registry integration test. The handler still returns the approval URL,
       // and the UX layer can re-run or poll separately if desired.
-      process.env.HAPPIER_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS = '0';
-      process.env.HAPPIER_TAILSCALE_APPROVAL_POLL_INTERVAL_MS = '0';
+      process.env.PIGGERCODE_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS = '0';
+      process.env.PIGGERCODE_TAILSCALE_APPROVAL_POLL_INTERVAL_MS = '0';
 
       const result = await executeSystemTask({
         spec: {
@@ -865,22 +865,22 @@ describe('createHsetupSystemTaskRegistry', () => {
         ['serve', '--bg', 'http://127.0.0.1:3005'],
       ]);
     } finally {
-      restoreEnvVar('HAPPIER_TAILSCALE_BIN', previousTailscaleBin);
-      restoreEnvVar('HAPPIER_FAKE_TAILSCALE_STATE_PATH', previousStatePath);
-      restoreEnvVar('HAPPIER_FAKE_TAILSCALE_LOG_PATH', previousLogPath);
-      restoreEnvVar('HAPPIER_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS', previousPollTimeout);
-      restoreEnvVar('HAPPIER_TAILSCALE_APPROVAL_POLL_INTERVAL_MS', previousPollInterval);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_BIN', previousTailscaleBin);
+      restoreEnvVar('PIGGERCODE_FAKE_TAILSCALE_STATE_PATH', previousStatePath);
+      restoreEnvVar('PIGGERCODE_FAKE_TAILSCALE_LOG_PATH', previousLogPath);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_APPROVAL_POLL_TIMEOUT_MS', previousPollTimeout);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_APPROVAL_POLL_INTERVAL_MS', previousPollInterval);
       fakeCli.cleanup();
     }
   });
 
   it('returns prompt_required with a structured install prompt when installIfMissing is requested but tailscale is unavailable', async () => {
-    const previousTailscaleBin = process.env.HAPPIER_TAILSCALE_BIN;
-    const previousInstallMode = process.env.HAPPIER_TAILSCALE_INSTALL_MODE;
+    const previousTailscaleBin = process.env.PIGGERCODE_TAILSCALE_BIN;
+    const previousInstallMode = process.env.PIGGERCODE_TAILSCALE_INSTALL_MODE;
     const events: unknown[] = [];
     try {
-      process.env.HAPPIER_TAILSCALE_BIN = join(tmpdir(), `missing-tailscale-${Date.now()}`);
-      process.env.HAPPIER_TAILSCALE_INSTALL_MODE = 'manual';
+      process.env.PIGGERCODE_TAILSCALE_BIN = join(tmpdir(), `missing-tailscale-${Date.now()}`);
+      process.env.PIGGERCODE_TAILSCALE_INSTALL_MODE = 'manual';
 
       const result = await executeSystemTask({
         spec: {
@@ -925,8 +925,8 @@ describe('createHsetupSystemTaskRegistry', () => {
         }),
       ]);
     } finally {
-      restoreEnvVar('HAPPIER_TAILSCALE_BIN', previousTailscaleBin);
-      restoreEnvVar('HAPPIER_TAILSCALE_INSTALL_MODE', previousInstallMode);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_BIN', previousTailscaleBin);
+      restoreEnvVar('PIGGERCODE_TAILSCALE_INSTALL_MODE', previousInstallMode);
       vi.unstubAllGlobals();
     }
   });
@@ -939,17 +939,17 @@ posixDescribe('createHsetupSystemTaskRegistry cli.pathExposure kinds', () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'hsetup-registry-cli-path-'));
     const previousHome = process.env.HOME;
     const previousShell = process.env.SHELL;
-    const previousHappierHome = process.env.HAPPIER_HOME_DIR;
-    const previousNoPathUpdate = process.env.HAPPIER_NO_PATH_UPDATE;
+    const previousHappierHome = process.env.PIGGERCODE_HOME_DIR;
+    const previousNoPathUpdate = process.env.PIGGERCODE_NO_PATH_UPDATE;
     const previousPath = process.env.PATH;
     const zshrcPath = join(homeDir, '.zshrc');
     writeFileSync(zshrcPath, '# mine\n', 'utf8');
     try {
       process.env.HOME = homeDir;
       process.env.SHELL = '/bin/zsh';
-      process.env.HAPPIER_HOME_DIR = join(homeDir, '.happier');
+      process.env.PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
       process.env.PATH = '';
-      delete process.env.HAPPIER_NO_PATH_UPDATE;
+      delete process.env.PIGGERCODE_NO_PATH_UPDATE;
       const registry = createHsetupSystemTaskRegistry();
       const params = { surface: 'desktop.ui', target: { kind: 'local' }, mode: 'user' };
 
@@ -985,8 +985,8 @@ posixDescribe('createHsetupSystemTaskRegistry cli.pathExposure kinds', () => {
     } finally {
       restoreEnvVar('HOME', previousHome);
       restoreEnvVar('SHELL', previousShell);
-      restoreEnvVar('HAPPIER_HOME_DIR', previousHappierHome);
-      restoreEnvVar('HAPPIER_NO_PATH_UPDATE', previousNoPathUpdate);
+      restoreEnvVar('PIGGERCODE_HOME_DIR', previousHappierHome);
+      restoreEnvVar('PIGGERCODE_NO_PATH_UPDATE', previousNoPathUpdate);
       restoreEnvVar('PATH', previousPath);
       rmSync(homeDir, { recursive: true, force: true });
     }

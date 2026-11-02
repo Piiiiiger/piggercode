@@ -20,7 +20,7 @@ import { spawnSessionFromDaemon } from '../../src/testkit/uiE2e/spawnSessionFrom
 import { ensureAccountReadyForConnect } from '../../src/testkit/uiE2e/ensureAccountReadyForConnect';
 
 const run = createRunDirs({ runLabel: 'ui-e2e' });
-const uiWebExportTimeoutMs = process.env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000';
+const uiWebExportTimeoutMs = process.env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000';
 
 async function readMachineIdsFromServer(params: { cliHomeDir: string; serverBaseUrl: string }): Promise<string[]> {
   const accessKey = await readCliAccessKey(params.cliHomeDir);
@@ -171,9 +171,9 @@ async function connectTerminalForHome(params: {
       ...process.env,
       HOME: params.cliHomeDir,
       CI: '1',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     },
   });
 
@@ -236,12 +236,12 @@ test.describe('ui e2e: session handoff from header action menu via direct peer',
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-direct-peer`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
-        process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
+        process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(sourceCliHomeDir, { recursive: true });
@@ -253,9 +253,9 @@ test.describe('ui e2e: session handoff from header action menu via direct peer',
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
 
@@ -309,18 +309,18 @@ test.describe('ui e2e: session handoff from header action menu via direct peer',
         ...process.env,
         HOME: sourceCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: sourceCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}`,
-        HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
-        HAPPIER_SESSION_HANDOFF_DIRECT_PEER_BIND_HOST: '127.0.0.1',
+        PIGGERCODE_HOME_DIR: sourceCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}`,
+        PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
+        PIGGERCODE_SESSION_HANDOFF_DIRECT_PEER_BIND_HOST: '127.0.0.1',
       },
     });
 
@@ -356,18 +356,18 @@ test.describe('ui e2e: session handoff from header action menu via direct peer',
         ...process.env,
         HOME: targetCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: targetCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: targetFakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-target-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-target-invocation-${run.runId}`,
-        HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
-        HAPPIER_SESSION_HANDOFF_DIRECT_PEER_BIND_HOST: '127.0.0.1',
+        PIGGERCODE_HOME_DIR: targetCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: targetFakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-target-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-target-invocation-${run.runId}`,
+        PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS: '127.0.0.1',
+        PIGGERCODE_SESSION_HANDOFF_DIRECT_PEER_BIND_HOST: '127.0.0.1',
       },
     });
 
@@ -433,12 +433,12 @@ test.describe('ui e2e: session handoff from header action menu via forced server
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-server-routed`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
-        process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
+        process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(sourceCliHomeDir, { recursive: true });
@@ -450,9 +450,9 @@ test.describe('ui e2e: session handoff from header action menu via forced server
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,machines.transfer.directPeer,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,machines.transfer.directPeer,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
 
@@ -506,16 +506,16 @@ test.describe('ui e2e: session handoff from header action menu via forced server
         ...process.env,
         HOME: sourceCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: sourceCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}-server-routed`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}-server-routed`,
+        PIGGERCODE_HOME_DIR: sourceCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}-server-routed`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}-server-routed`,
       },
     });
 
@@ -551,16 +551,16 @@ test.describe('ui e2e: session handoff from header action menu via forced server
         ...process.env,
         HOME: targetCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: targetCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: targetFakeClaudeLogPath,
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-target-${run.runId}-server-routed`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-target-invocation-${run.runId}-server-routed`,
+        PIGGERCODE_HOME_DIR: targetCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: targetFakeClaudeLogPath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-target-${run.runId}-server-routed`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-target-invocation-${run.runId}-server-routed`,
       },
     });
 
@@ -626,12 +626,12 @@ test.describe('ui e2e: session handoff pre-acceptance failure from header action
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_SERVER_URL: server?.baseUrl ?? '',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-recovery`,
-      HAPPIER_E2E_UI_WEB_MODE: 'export',
-      HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
-        process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
-      HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'export',
+      PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebExportTimeoutMs,
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS:
+        process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_ATTEMPT_TIMEOUT_MS ?? '15000',
+      PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
     await mkdir(sourceCliHomeDir, { recursive: true });
@@ -643,9 +643,9 @@ test.describe('ui e2e: session handoff pre-acceptance failure from header action
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys,machines.transfer.directPeer,providers.claude.unifiedTerminal',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys,machines.transfer.directPeer,providers.claude.unifiedTerminal',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
 
@@ -698,16 +698,16 @@ test.describe('ui e2e: session handoff pre-acceptance failure from header action
         ...process.env,
         HOME: sourceCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: sourceCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}-recovery`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}-recovery`,
+        PIGGERCODE_HOME_DIR: sourceCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: resolve(join(sourceDir, 'fake-claude-source.jsonl')),
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-source-${run.runId}-recovery`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-source-invocation-${run.runId}-recovery`,
       },
     });
 
@@ -746,12 +746,12 @@ test.describe('ui e2e: session handoff pre-acceptance failure from header action
         ...process.env,
         HOME: targetCliHomeDir,
         CI: '1',
-        HAPPIER_HOME_DIR: targetCliHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: uiBaseUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_CLAUDE_PATH: resolve(join(targetDir, 'missing-claude-binary')),
+        PIGGERCODE_HOME_DIR: targetCliHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: uiBaseUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_CLAUDE_PATH: resolve(join(targetDir, 'missing-claude-binary')),
       },
     });
 

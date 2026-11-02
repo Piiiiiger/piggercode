@@ -242,7 +242,7 @@ describe('/ (welcome) auto redirect', () => {
 
     it('retries one transient server features failure before surfacing unavailable state', async () => {
         vi.resetModules();
-        process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_RETRY_DELAY_MS = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_RETRY_DELAY_MS = '1';
 
         getServerFeaturesSnapshotMock
             .mockResolvedValueOnce({ status: 'error', reason: 'network' })
@@ -268,7 +268,7 @@ describe('/ (welcome) auto redirect', () => {
 
             expect(shared.openURL).toHaveBeenCalledWith('https://server.test/v1/auth/mtls/start?returnTo=happier%3A%2F%2F%2Fmtls');
         } finally {
-            delete process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;
         }
     }, testTimeoutMs);
 

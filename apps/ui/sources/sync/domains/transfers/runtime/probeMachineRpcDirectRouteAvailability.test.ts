@@ -11,9 +11,9 @@ describe('probeMachineRpcDirectRouteAvailability', () => {
     beforeEach(() => {
         vi.resetModules();
         machineRpcWithServerScopeMock.mockReset();
-        delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
-        delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
-        delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_RPC_DIRECT_ROUTE_PROBE_TIMEOUT_MS;
     });
 
     it('returns viable when the runtime probe succeeds even if the shared direct-route cache remains unknown', async () => {

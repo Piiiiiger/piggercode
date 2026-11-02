@@ -35,7 +35,7 @@ export type ClaudeConnectedServiceSelectionMaterialization = Readonly<{
 function withoutClaudeConfigDirOverrides(processEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const nextEnv = { ...processEnv };
   delete nextEnv.CLAUDE_CONFIG_DIR;
-  delete nextEnv.HAPPIER_CLAUDE_CONFIG_DIR;
+  delete nextEnv.PIGGERCODE_CLAUDE_CONFIG_DIR;
   return nextEnv;
 }
 

@@ -323,9 +323,9 @@ async function connectDaemonWithFakeCodexAppServer(params: Readonly<{
             HOME: cliHomeDir,
             CI: '1',
             CODEX_HOME: codexHomeDir,
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_VARIANT: 'dev',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_VARIANT: 'dev',
         },
     });
 
@@ -343,15 +343,15 @@ async function connectDaemonWithFakeCodexAppServer(params: Readonly<{
             HOME: cliHomeDir,
             CI: '1',
             CODEX_HOME: codexHomeDir,
-            HAPPIER_HOME_DIR: cliHomeDir,
-            HAPPIER_SERVER_URL: params.server.baseUrl,
-            HAPPIER_WEBAPP_URL: params.uiBaseUrl,
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_CODEX_PATH: fakeCodexAppServerPath,
-            HAPPIER_CODEX_APP_SERVER_BIN: fakeCodexAppServerPath,
-            HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
+            PIGGERCODE_HOME_DIR: cliHomeDir,
+            PIGGERCODE_SERVER_URL: params.server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: params.uiBaseUrl,
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_CODEX_PATH: fakeCodexAppServerPath,
+            PIGGERCODE_CODEX_APP_SERVER_BIN: fakeCodexAppServerPath,
+            PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '10000',
         },
     });
 
@@ -743,13 +743,13 @@ test.describe('ui e2e: Codex app-server dynamic controls', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
                 // UI e2e runs after workspace typechecks/builds in the pipeline runner; avoid
                 // expensive shared-deps/provider-generation work here to reduce beforeAll flake.
-                HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-                HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+                PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 
@@ -757,9 +757,9 @@ test.describe('ui e2e: Codex app-server dynamic controls', () => {
             testDir: suiteDir,
             env: {
                 ...uiWebEnv,
-                HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebEnv.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
+                PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS: uiWebEnv.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS ?? '900000',
                 EXPO_PUBLIC_DEBUG: '1',
-                EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS: uiWebEnv.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS ?? '300000',
+                EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS: uiWebEnv.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS ?? '300000',
                 EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
                 EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-codex-app-server-dynamic-controls`,
             },

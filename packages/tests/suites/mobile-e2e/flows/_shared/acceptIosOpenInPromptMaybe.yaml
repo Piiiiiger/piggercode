@@ -5,7 +5,7 @@
 # Dev Client processes the launch URL. The bootstrap must accept it or the flow
 # stays pinned on the Dev Client home screen.
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     when:

@@ -186,13 +186,13 @@ export async function awaitSpawnedSessionId(params: Readonly<{
   const timeoutMs = params.timeoutMs === null
     ? null
     : params.timeoutMs
-      ?? resolveBoundedIntEnv(process.env.HAPPIER_SPAWN_SESSION_ID_RESOLVE_TIMEOUT_MS, DEFAULT_TIMEOUT_MS, { min: 100, max: 10 * 60_000 });
+      ?? resolveBoundedIntEnv(process.env.PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_TIMEOUT_MS, DEFAULT_TIMEOUT_MS, { min: 100, max: 10 * 60_000 });
   const pollIntervalMs = params.pollIntervalMs
-    ?? resolveBoundedIntEnv(process.env.HAPPIER_SPAWN_SESSION_ID_RESOLVE_POLL_INTERVAL_MS, DEFAULT_POLL_INTERVAL_MS, { min: 25, max: 10_000 });
+    ?? resolveBoundedIntEnv(process.env.PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_POLL_INTERVAL_MS, DEFAULT_POLL_INTERVAL_MS, { min: 25, max: 10_000 });
   const notFoundGraceMs = timeoutMs === null
     ? null
     : resolveBoundedIntEnv(
-      process.env.HAPPIER_SPAWN_SESSION_ID_RESOLVE_NOT_FOUND_GRACE_MS,
+      process.env.PIGGERCODE_SPAWN_SESSION_ID_RESOLVE_NOT_FOUND_GRACE_MS,
       Math.min(timeoutMs, 15_000),
       { min: 100, max: 10 * 60_000 },
     );
@@ -289,9 +289,9 @@ export function abandonSpawnedSessionBestEffort(params: Readonly<{
   pollIntervalMs?: number;
 }>): void {
   const timeoutMs = params.timeoutMs
-    ?? resolveBoundedIntEnv(process.env.HAPPIER_SPAWN_ABANDON_TIMEOUT_MS, DEFAULT_ABANDON_TIMEOUT_MS, { min: 1_000, max: 60 * 60_000 });
+    ?? resolveBoundedIntEnv(process.env.PIGGERCODE_SPAWN_ABANDON_TIMEOUT_MS, DEFAULT_ABANDON_TIMEOUT_MS, { min: 1_000, max: 60 * 60_000 });
   const pollIntervalMs = params.pollIntervalMs
-    ?? resolveBoundedIntEnv(process.env.HAPPIER_SPAWN_ABANDON_POLL_INTERVAL_MS, DEFAULT_ABANDON_POLL_INTERVAL_MS, { min: 100, max: 60_000 });
+    ?? resolveBoundedIntEnv(process.env.PIGGERCODE_SPAWN_ABANDON_POLL_INTERVAL_MS, DEFAULT_ABANDON_POLL_INTERVAL_MS, { min: 100, max: 60_000 });
 
   logger.debug('[awaitSpawnedSessionId] Abandoning accepted spawn; will clean up the child when it registers', {
     spawnNonce: params.spawnNonce,

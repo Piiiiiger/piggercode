@@ -558,7 +558,7 @@ describe('stateUpdates (plaintext sessions)', () => {
 
   it('does not leave metadata updates pending forever when the socket ack never settles', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_SESSION_SOCKET_ACK_TIMEOUT_MS', '5');
+    vi.stubEnv('PIGGERCODE_SESSION_SOCKET_ACK_TIMEOUT_MS', '5');
 
     const emitWithAck = vi.fn(() => new Promise<never>(() => {}));
     const timeout = vi.fn(() => ({ emitWithAck }));

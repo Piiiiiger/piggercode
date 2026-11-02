@@ -9,7 +9,7 @@ test('renderWindowsScheduledTaskWrapperPs1 emits a wrapper that sets env and run
     programArgs: ['C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server.exe'],
     env: {
       PORT: '3005',
-      HAPPIER_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
     },
     stdoutPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.out.log',
     stderrPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.err.log',
@@ -17,7 +17,7 @@ test('renderWindowsScheduledTaskWrapperPs1 emits a wrapper that sets env and run
 
   assert.match(ps1, /Set-Location -LiteralPath/);
   assert.match(ps1, /\$env:PORT = "3005"/);
-  assert.match(ps1, /\$env:HAPPIER_DB_PROVIDER = "sqlite"/);
+  assert.match(ps1, /\$env:PIGGERCODE_DB_PROVIDER = "sqlite"/);
   assert.match(ps1, /& "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server\.exe"/);
   assert.match(ps1, /1>> "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server\.out\.log"/);
   assert.match(ps1, /2>> "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server\.err\.log"/);

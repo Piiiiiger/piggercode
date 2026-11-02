@@ -15,23 +15,23 @@
  */
 
 /** JSON map of brokered bridge tags → their refresh selection + account identity (NO tokens). */
-export const PI_BROKER_SELECTIONS_ENV = 'HAPPIER_PI_BROKER_SELECTIONS';
+export const PI_BROKER_SELECTIONS_ENV = 'PIGGERCODE_PI_BROKER_SELECTIONS';
 
 /** Absolute path to the Happier broker-state file. The path itself is not secret. */
-export const PI_BROKER_STATE_PATH_ENV = 'HAPPIER_PI_BROKER_STATE_PATH';
+export const PI_BROKER_STATE_PATH_ENV = 'PIGGERCODE_PI_BROKER_STATE_PATH';
 
 /** Broker extension version (for the bridge sessionId + drift diagnostics). */
-export const PI_BROKER_EXTENSION_VERSION_ENV = 'HAPPIER_PI_BROKER_EXTENSION_VERSION';
+export const PI_BROKER_EXTENSION_VERSION_ENV = 'PIGGERCODE_PI_BROKER_EXTENSION_VERSION';
 
 /**
  * Stable connected-service selection identity. The broker reads it to key its load handshake so the
  * preflight (which has the same env) can match the registration. Pi-scoped name; the daemon handshake
  * registry is provider-agnostic (keyed by this identity string).
  */
-export const PI_BROKER_SELECTION_IDENTITY_ENV = 'HAPPIER_PI_CONNECTED_SERVICE_SELECTION_IDENTITY';
+export const PI_BROKER_SELECTION_IDENTITY_ENV = 'PIGGERCODE_PI_CONNECTED_SERVICE_SELECTION_IDENTITY';
 
 /** Per-Pi-process nonce that correlates the broker load handshake to the current spawn. */
-export const PI_BROKER_LOAD_NONCE_ENV = 'HAPPIER_PI_BROKER_LOAD_NONCE';
+export const PI_BROKER_LOAD_NONCE_ENV = 'PIGGERCODE_PI_BROKER_LOAD_NONCE';
 
 /**
  * Stable, non-secret marker stored as the `refresh` value of the brokered Pi OAuth credential in

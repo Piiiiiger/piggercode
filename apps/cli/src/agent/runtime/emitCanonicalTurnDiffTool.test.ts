@@ -6,8 +6,8 @@ import { emitCanonicalTurnDiffTool } from './emitCanonicalTurnDiffTool';
 
 describe('emitCanonicalTurnDiffTool', () => {
     afterEach(() => {
-        delete process.env.HAPPIER_TURN_DIFF_FILE_BUDGET_BYTES;
-        delete process.env.HAPPIER_TURN_DIFF_TURN_BUDGET_BYTES;
+        delete process.env.PIGGERCODE_TURN_DIFF_FILE_BUDGET_BYTES;
+        delete process.env.PIGGERCODE_TURN_DIFF_TURN_BUDGET_BYTES;
     });
 
     it('emits one canonical Diff tool call/result pair with turn metadata', () => {
@@ -75,8 +75,8 @@ describe('emitCanonicalTurnDiffTool', () => {
     });
 
     it('derives the canonical call id from the bounded emitted input', () => {
-        process.env.HAPPIER_TURN_DIFF_FILE_BUDGET_BYTES = '512';
-        process.env.HAPPIER_TURN_DIFF_TURN_BUDGET_BYTES = '512';
+        process.env.PIGGERCODE_TURN_DIFF_FILE_BUDGET_BYTES = '512';
+        process.env.PIGGERCODE_TURN_DIFF_TURN_BUDGET_BYTES = '512';
 
         const emittedCallIds: string[] = [];
         const emit = (oldText: string, newText: string): void => {

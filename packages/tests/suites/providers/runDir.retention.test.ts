@@ -22,10 +22,10 @@ function listRunDirs(root: string): string[] {
 }
 
 describe('createRunDirs retention', () => {
-  const originalKeepCount = process.env.HAPPIER_E2E_RUN_LOG_KEEP_COUNT;
+  const originalKeepCount = process.env.PIGGERCODE_E2E_RUN_LOG_KEEP_COUNT;
 
   afterEach(() => {
-    process.env.HAPPIER_E2E_RUN_LOG_KEEP_COUNT = originalKeepCount;
+    process.env.PIGGERCODE_E2E_RUN_LOG_KEEP_COUNT = originalKeepCount;
     for (const root of createdRoots.splice(0)) {
       rmSync(root, { recursive: true, force: true });
     }
@@ -37,7 +37,7 @@ describe('createRunDirs retention', () => {
     mkdirSync(join(root, '2026-02-01T00-00-00-000Z-providers-aaaa1111'), { recursive: true });
     mkdirSync(join(root, '2026-02-01T00-00-00-001Z-providers-bbbb2222'), { recursive: true });
     mkdirSync(join(root, '2026-02-01T00-00-00-002Z-providers-cccc3333'), { recursive: true });
-    process.env.HAPPIER_E2E_RUN_LOG_KEEP_COUNT = '2';
+    process.env.PIGGERCODE_E2E_RUN_LOG_KEEP_COUNT = '2';
 
     createRunDirs({ runLabel: 'providers', logsDir: root });
 
@@ -52,7 +52,7 @@ describe('createRunDirs retention', () => {
     mkdirSync(join(root, '2026-02-01T00-00-00-000Z-providers-aaaa1111'), { recursive: true });
     mkdirSync(join(root, '2026-02-01T00-00-00-001Z-providers-bbbb2222'), { recursive: true });
     mkdirSync(join(root, '2026-02-01T00-00-00-002Z-smoke-cccc3333'), { recursive: true });
-    process.env.HAPPIER_E2E_RUN_LOG_KEEP_COUNT = '2';
+    process.env.PIGGERCODE_E2E_RUN_LOG_KEEP_COUNT = '2';
 
     createRunDirs({ runLabel: 'providers', logsDir: root });
 

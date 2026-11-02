@@ -55,8 +55,8 @@ async function connectExternalMcp(params: Readonly<{
     env: {
       ...process.env,
       CI: '1',
-      HAPPIER_HOME_DIR: params.cliHome,
-      HAPPIER_SERVER_URL: params.serverBaseUrl,
+      PIGGERCODE_HOME_DIR: params.cliHome,
+      PIGGERCODE_SERVER_URL: params.serverBaseUrl,
     },
     stderr: 'pipe',
   }) as ExternalMcpTransport;

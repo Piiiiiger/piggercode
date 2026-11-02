@@ -84,7 +84,7 @@ export function registerScmHandlers(
     const statusSnapshotInFlight = new Map<string, Promise<ScmStatusSnapshotResponse>>();
     const statusSnapshotCache = new Map<string, { value: ScmStatusSnapshotResponse; expiresAtMs: number }>();
     const statusSnapshotCacheTtlMs = (() => {
-        const raw = (process.env.HAPPIER_SCM_STATUS_SNAPSHOT_CACHE_TTL_MS ?? '').trim();
+        const raw = (process.env.PIGGERCODE_SCM_STATUS_SNAPSHOT_CACHE_TTL_MS ?? '').trim();
         if (!raw) return 1_000;
         const parsed = Number.parseInt(raw, 10);
         return Number.isFinite(parsed) && parsed >= 0 ? parsed : 1_000;

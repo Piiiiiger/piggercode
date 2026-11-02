@@ -60,7 +60,7 @@ describe('registerMachineTerminalRpcHandlers Windows paths', () => {
       rpcHandlerManager,
       deps: {
         env: {
-          HAPPIER_DAEMON_TERMINAL_ENABLED: '1',
+          PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1',
           USERPROFILE: 'C:\\Users\\alice',
           HOME: '/home/alice',
         },

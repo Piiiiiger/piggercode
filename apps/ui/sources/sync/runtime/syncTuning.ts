@@ -157,11 +157,11 @@ export type SyncTuning = Readonly<{
     jsThreadLagTelemetryMaxSamples: number;
 }>;
 
-const WEB_STORAGE_KEY = 'HAPPIER_SYNC_TUNING_JSON';
-const ENV_KEY = 'EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON';
+const WEB_STORAGE_KEY = 'PIGGERCODE_SYNC_TUNING_JSON';
+const ENV_KEY = 'EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON';
 // IMPORTANT: Expo only inlines EXPO_PUBLIC_* variables when accessed via dot notation.
 // Avoid dynamic `process.env[key]` reads in production code paths.
-const STATIC_EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON = process.env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON;
+const STATIC_EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON = process.env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON;
 
 type ExpoConfigLike = Readonly<{
     extra?: Readonly<{
@@ -412,7 +412,7 @@ export function loadSyncTuning(opts?: {
 
     const webObj = parseJsonObject(readWebStorageValue(opts?.readWebStorage));
     const expoConfigObj = parseJsonObject(readExpoConfigValue(opts?.readExpoConfig));
-    const envObj = parseJsonObject(opts?.env ? opts.env[ENV_KEY] : STATIC_EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON);
+    const envObj = parseJsonObject(opts?.env ? opts.env[ENV_KEY] : STATIC_EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON);
 
     const merged: Record<string, unknown> = {
         ...defaults,

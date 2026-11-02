@@ -28,7 +28,7 @@ describe('resolveDeviceVisibleBaseUrl', () => {
       resolveDeviceVisibleBaseUrl({
         platform: 'android',
         baseUrl: 'http://127.0.0.1:24580',
-        env: { HAPPIER_E2E_MOBILE_DEVICE_HOST: '192.168.0.10' } as any,
+        env: { PIGGERCODE_E2E_MOBILE_DEVICE_HOST: '192.168.0.10' } as any,
       }),
     ).toBe('http://192.168.0.10:24580');
   });
@@ -48,7 +48,7 @@ describe('resolveDeviceVisibleBaseUrl', () => {
       resolveDeviceVisibleHostPattern({
         platform: 'android',
         baseUrl: 'http://127.0.0.1:24580',
-        env: { HAPPIER_E2E_MOBILE_DEVICE_HOST: '192.168.0.10' } as any,
+        env: { PIGGERCODE_E2E_MOBILE_DEVICE_HOST: '192.168.0.10' } as any,
       }),
     ).toBe('192\\.168\\.0\\.10');
   });

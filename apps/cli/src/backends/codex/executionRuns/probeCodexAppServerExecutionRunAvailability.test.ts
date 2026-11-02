@@ -23,7 +23,7 @@ describe('probeCodexAppServerExecutionRunAvailability', () => {
   it('rejects a directory override path', () => {
     const dir = join(tmpdir(), `happier-codex-appserver-probe-dir-${Date.now()}`);
     mkdirSync(dir, { recursive: true });
-    expect(probeCodexAppServerExecutionRunAvailability({ env: { HAPPIER_CODEX_APP_SERVER_BIN: dir } as NodeJS.ProcessEnv })).toBe(false);
+    expect(probeCodexAppServerExecutionRunAvailability({ env: { PIGGERCODE_CODEX_APP_SERVER_BIN: dir } as NodeJS.ProcessEnv })).toBe(false);
   });
 
   it('rejects a non-executable file override path', () => {
@@ -31,7 +31,7 @@ describe('probeCodexAppServerExecutionRunAvailability', () => {
     writeFileSync(file, '#!/bin/sh\nexit 0\n', 'utf8');
     chmodSync(file, 0o644);
     tempPaths.push(file);
-    expect(probeCodexAppServerExecutionRunAvailability({ env: { HAPPIER_CODEX_APP_SERVER_BIN: file } as NodeJS.ProcessEnv })).toBe(false);
+    expect(probeCodexAppServerExecutionRunAvailability({ env: { PIGGERCODE_CODEX_APP_SERVER_BIN: file } as NodeJS.ProcessEnv })).toBe(false);
   });
 
   it('rejects a codex CLI that exists but does not support the app-server subcommand', () => {
@@ -86,7 +86,7 @@ describe('probeCodexAppServerExecutionRunAvailability', () => {
     tempPaths.push(codex);
 
     expect(probeCodexAppServerExecutionRunAvailability({
-      env: { PATH: dir, HAPPIER_CODEX_PATH: codex } as NodeJS.ProcessEnv,
+      env: { PATH: dir, PIGGERCODE_CODEX_PATH: codex } as NodeJS.ProcessEnv,
     })).toBe(true);
   });
 
@@ -118,8 +118,8 @@ describe('probeCodexAppServerExecutionRunAvailability', () => {
       expect(probeCodexAppServerExecutionRunAvailability({
         env: {
           HOME: homeDir,
-          HAPPIER_CODEX_APP_SERVER_BIN: '~/bin/codex-app-server',
-          HAPPIER_CODEX_APP_SERVER_PROBE_TIMEOUT_MS: '5000',
+          PIGGERCODE_CODEX_APP_SERVER_BIN: '~/bin/codex-app-server',
+          PIGGERCODE_CODEX_APP_SERVER_PROBE_TIMEOUT_MS: '5000',
         } as NodeJS.ProcessEnv,
       })).toBe(true);
     } finally {
@@ -155,7 +155,7 @@ describe('probeCodexAppServerExecutionRunAvailability', () => {
       expect(probeCodexAppServerExecutionRunAvailability({
         cwd,
         env: {
-          HAPPIER_CODEX_APP_SERVER_BIN: './bin/codex-app-server',
+          PIGGERCODE_CODEX_APP_SERVER_BIN: './bin/codex-app-server',
         } as NodeJS.ProcessEnv,
       })).toBe(true);
     } finally {

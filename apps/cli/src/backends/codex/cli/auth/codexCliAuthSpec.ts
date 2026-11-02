@@ -7,7 +7,7 @@ import { readCodexEnvironmentAuthState } from './readCodexEnvironmentAuthState';
 const DEFAULT_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS = 6_000;
 
 function resolveCodexCliAuthProbeTimeoutMs(): number {
-  const raw = process.env.HAPPIER_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS;
+  const raw = process.env.PIGGERCODE_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS;
   const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;

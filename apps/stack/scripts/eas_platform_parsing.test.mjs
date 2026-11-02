@@ -32,9 +32,9 @@ test('hstack eas build honors space-separated --platform android', async () => {
   const env = {
     ...process.env,
     // Avoid cloning/bootstrapping/stack assumptions; we only want argument wiring.
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_UI: join(rootDir, '..', 'ui'),
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_CLI: join(rootDir, '..', 'cli'),
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_SERVER: join(rootDir, '..', 'server'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_UI: join(rootDir, '..', 'ui'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_CLI: join(rootDir, '..', 'cli'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_SERVER: join(rootDir, '..', 'server'),
     // Prevent npx/eas from running: use our test stub instead.
     HSTACK_EAS_TEST_STUB: '1',
   };
@@ -55,9 +55,9 @@ test('hstack eas build falls back to ios for invalid --platform value', async ()
 
   const env = {
     ...process.env,
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_UI: join(rootDir, '..', 'ui'),
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_CLI: join(rootDir, '..', 'cli'),
-    HAPPIER_STACKS_COMPONENT_DIR_HAPPIER_SERVER: join(rootDir, '..', 'server'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_UI: join(rootDir, '..', 'ui'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_CLI: join(rootDir, '..', 'cli'),
+    PIGGERCODE_STACKS_COMPONENT_DIR_PIGGERCODE_SERVER: join(rootDir, '..', 'server'),
     HSTACK_EAS_TEST_STUB: '1',
   };
 

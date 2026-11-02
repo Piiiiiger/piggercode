@@ -92,7 +92,7 @@ function sessionRunnerLocksDir(happyHomeDir: string): string {
 }
 
 function resolveMaxLockBasenameChars(): number {
-  const raw = (process.env.HAPPIER_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS ?? '').trim();
+  const raw = (process.env.PIGGERCODE_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS ?? '').trim();
   if (!raw) return 120;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return 120;

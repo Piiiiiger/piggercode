@@ -45,19 +45,19 @@ test('direct dev and run JSON dry-runs do not recover or mutate a stale cleanup 
     },
   };
   await mkdir(baseDir, { recursive: true });
-  await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\nHAPPIER_STACK_SERVER_COMPONENT=happier-server-light\n`, 'utf8');
+  await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\nPIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light\n`, 'utf8');
 
   for (const script of ['dev.mjs', 'run.mjs']) {
     await writeFile(runtimeStatePath, `${JSON.stringify(marker)}\n`, 'utf8');
     const result = await runNode(script, {
       ...process.env,
       CI: '1',
-      HAPPIER_STACK_STORAGE_DIR: root,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-      HAPPIER_STACK_REPO_DIR: repoRoot,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
+      PIGGERCODE_STACK_STORAGE_DIR: root,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+      PIGGERCODE_STACK_REPO_DIR: repoRoot,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
     });
     assert.equal(result.code, 0, `${script} stderr:\n${result.stderr}`);
     assert.deepEqual(JSON.parse(await readFile(runtimeStatePath, 'utf8')), marker);

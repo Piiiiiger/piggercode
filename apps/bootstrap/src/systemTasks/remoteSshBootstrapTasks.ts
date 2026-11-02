@@ -133,7 +133,7 @@ export async function approveLocalRemoteAuthRequestDefault(params: Readonly<{
   ];
   // R13 (a): the approval releases this computer's credentials for exactly the relay the task
   // names, so it runs in that relay's explicit target scope — an inherited launch pin
-  // (`HAPPIER_ACTIVE_SERVER_ID`, …) would otherwise outrank the flags in the CLI's configuration.
+  // (`PIGGERCODE_ACTIVE_SERVER_ID`, …) would otherwise outrank the flags in the CLI's configuration.
   const { relayUrl, publicRelayUrl } = params.parsed.relay;
   await (deps.runLocalHappierJsonCommand ?? runLocalHappierJsonCommand)({
     args: ['auth', 'approve', '--public-key', params.publicKey, '--json', '--persist', ...relayArgs],

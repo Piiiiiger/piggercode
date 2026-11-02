@@ -14,19 +14,19 @@ export function readPositiveIntegerEnv(name: string, fallback: number): number {
 }
 
 export function resolveTmuxCommandTimeoutMs(): number {
-  return readPositiveIntegerEnv('HAPPIER_CLI_TMUX_COMMAND_TIMEOUT_MS', 15_000);
+  return readPositiveIntegerEnv('PIGGERCODE_CLI_TMUX_COMMAND_TIMEOUT_MS', 15_000);
 }
 
 export function resolveTmuxPromptSubmitDelayMs(): number {
-  const explicit = process.env.HAPPIER_CLI_TMUX_PROMPT_SUBMIT_DELAY_MS;
+  const explicit = process.env.PIGGERCODE_CLI_TMUX_PROMPT_SUBMIT_DELAY_MS;
   if (explicit !== undefined && explicit.length > 0) {
-    return readNonNegativeIntegerEnv('HAPPIER_CLI_TMUX_PROMPT_SUBMIT_DELAY_MS', 50);
+    return readNonNegativeIntegerEnv('PIGGERCODE_CLI_TMUX_PROMPT_SUBMIT_DELAY_MS', 50);
   }
-  return readNonNegativeIntegerEnv('HAPPIER_CLI_TMUX_PASTE_SUBMIT_DELAY_MS', 50);
+  return readNonNegativeIntegerEnv('PIGGERCODE_CLI_TMUX_PASTE_SUBMIT_DELAY_MS', 50);
 }
 
 export function resolveTmuxSendKeysChunkSize(): number {
-  return readPositiveIntegerEnv('HAPPIER_CLI_TMUX_SEND_KEYS_CHUNK_SIZE', 512);
+  return readPositiveIntegerEnv('PIGGERCODE_CLI_TMUX_SEND_KEYS_CHUNK_SIZE', 512);
 }
 
 export function isTmuxWindowIndexConflict(stderr: string | undefined): boolean {

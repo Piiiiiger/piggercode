@@ -15,10 +15,10 @@ const BULK_TRANSFER_JSON_HARD_MAX_BYTES = 10_000_000;
 export function resolveBulkTransferJsonMaxBytes(maxBytes?: number | null): number {
     const resolved = (
         parseOptionalPositiveInt(maxBytes)
-        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES)
+        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPY_BULK_TRANSFER_JSON_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_BULK_TRANSFER_JSON_MAX_BYTES)
-        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES)
+        ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES)
         ?? parseOptionalPositiveInt(process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES)
         ?? DEFAULT_BULK_TRANSFER_JSON_MAX_BYTES

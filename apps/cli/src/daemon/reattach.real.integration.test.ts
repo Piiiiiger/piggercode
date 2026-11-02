@@ -3,7 +3,7 @@
  *
  * These tests spawn real processes and rely on `ps-list` classification.
  *
- * Enable with: `HAPPIER_CLI_DAEMON_REATTACH_INTEGRATION=1`
+ * Enable with: `PIGGERCODE_CLI_DAEMON_REATTACH_INTEGRATION=1`
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -29,10 +29,10 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
     let reattachTrackedSessionsFromMarkers: typeof import('./sessions/reattachFromMarkers').reattachTrackedSessionsFromMarkers;
 
     beforeEach(async () => {
-      envScope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID']);
+      envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID']);
       const home = createTempDirSync('happier-cli-daemon-reattach-test-');
       tempHomes.push(home);
-      envScope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'reattach-test' });
+      envScope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'reattach-test' });
       vi.resetModules();
       ({ reattachTrackedSessionsFromMarkers } = await import('./sessions/reattachFromMarkers'));
     });
@@ -62,7 +62,7 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
         path: '/tmp',
         host: 'test-host',
         homeDir: '/tmp',
-        happyHomeDir: process.env.HAPPIER_HOME_DIR!,
+        happyHomeDir: process.env.PIGGERCODE_HOME_DIR!,
         happyLibDir: '/tmp',
         happyToolsDir: '/tmp',
         hostPid: p.pid,
@@ -96,11 +96,11 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
       const { hashProcessCommand, listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
       const child = spawnTestProcess(process.execPath, [
         '-e', `/* ${projectPath()}/bin/happier.mjs --started-by daemon --existing-session foreign-home */ setInterval(() => {}, 1000000)`,
-      ], { env: { ...process.env, HAPPIER_HOME_DIR: `${process.env.HAPPIER_HOME_DIR}-foreign` } });
+      ], { env: { ...process.env, PIGGERCODE_HOME_DIR: `${process.env.PIGGERCODE_HOME_DIR}-foreign` } });
       spawned.push(() => { child.kill('SIGTERM'); });
       expect(child.pid).toBeDefined();
       const proc = await waitForPidInspection(findHappyProcessByPid, child.pid!);
-      expect(proc?.daemonOwnershipEnvironmentVariables?.HAPPIER_HOME_DIR).toBe(`${process.env.HAPPIER_HOME_DIR}-foreign`);
+      expect(proc?.daemonOwnershipEnvironmentVariables?.PIGGERCODE_HOME_DIR).toBe(`${process.env.PIGGERCODE_HOME_DIR}-foreign`);
       const tracked = new Map<number, TrackedSession>();
       await reattachTrackedSessionsFromMarkers({ pidToTrackedSession: tracked });
       expect(tracked.has(child.pid!)).toBe(false);
@@ -146,19 +146,19 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
       const { clearProcessSnapshotCacheForTests } = await import('./processSnapshotCache');
       const { configuration } = await import('@/configuration');
       for (const scenario of [
-        { name: 'same-scope', scope: 'reattach-test', home: process.env.HAPPIER_HOME_DIR, expected: true },
-        { name: 'foreign-scope', scope: 'foreign', home: process.env.HAPPIER_HOME_DIR, expected: false },
+        { name: 'same-scope', scope: 'reattach-test', home: process.env.PIGGERCODE_HOME_DIR, expected: true },
+        { name: 'foreign-scope', scope: 'foreign', home: process.env.PIGGERCODE_HOME_DIR, expected: false },
         { name: 'unknown-scope', scope: undefined, home: undefined, expected: false },
-        { name: 'legacy-scope', scope: undefined, home: process.env.HAPPIER_HOME_DIR, expected: true },
+        { name: 'legacy-scope', scope: undefined, home: process.env.PIGGERCODE_HOME_DIR, expected: true },
       ]) {
         const legacy = scenario.name === 'legacy-scope';
-        if (legacy) envScope.patch({ HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: undefined });
+        if (legacy) envScope.patch({ PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: undefined });
         const child = spawnTestProcess(process.execPath, [
           '-e', `/* ${projectPath()}/bin/happier.mjs --started-by daemon --existing-session ${scenario.name} */ setInterval(() => {}, 1000000)`,
-        ], { env: { ...process.env, HAPPIER_HOME_DIR: scenario.home,
-          HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: scenario.scope,
-          HAPPIER_ACTIVE_SERVER_ID: configuration.activeServerId,
-          HAPPIER_SERVER_URL: legacy ? configuration.serverUrl : 'https://old-endpoint.example' } });
+        ], { env: { ...process.env, PIGGERCODE_HOME_DIR: scenario.home,
+          PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: scenario.scope,
+          PIGGERCODE_ACTIVE_SERVER_ID: configuration.activeServerId,
+          PIGGERCODE_SERVER_URL: legacy ? configuration.serverUrl : 'https://old-endpoint.example' } });
         spawned.push(() => { child.kill('SIGTERM'); });
         expect(child.pid).toBeDefined();
         await waitForPidInspection(findHappyProcessByPid, child.pid!);

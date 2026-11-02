@@ -21,8 +21,8 @@ describe('Claude Settings', () => {
     // Set environment variable to point to test directory
     originalClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
     process.env.CLAUDE_CONFIG_DIR = testClaudeDir;
-    originalIncludeCoauthoredByEnv = process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY;
-    delete process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY;
+    originalIncludeCoauthoredByEnv = process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY;
+    delete process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY;
   });
 
   afterEach(() => {
@@ -33,9 +33,9 @@ describe('Claude Settings', () => {
       delete process.env.CLAUDE_CONFIG_DIR;
     }
     if (originalIncludeCoauthoredByEnv !== undefined) {
-      process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY = originalIncludeCoauthoredByEnv;
+      process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY = originalIncludeCoauthoredByEnv;
     } else {
-      delete process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY;
+      delete process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY;
     }
     
     // Clean up test directory
@@ -49,18 +49,18 @@ describe('Claude Settings', () => {
       expect(shouldIncludeCoAuthoredBy()).toBe(false);
     });
 
-    it('honors HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY=1 even when file says false', () => {
+    it('honors PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY=1 even when file says false', () => {
       const settingsPath = join(testClaudeDir, 'settings.json');
       writeFileSync(settingsPath, JSON.stringify({ includeCoAuthoredBy: false }));
-      process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY = '1';
+      process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY = '1';
 
       expect(shouldIncludeCoAuthoredBy()).toBe(true);
     });
 
-    it('honors HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY=0 even when file says true', () => {
+    it('honors PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY=0 even when file says true', () => {
       const settingsPath = join(testClaudeDir, 'settings.json');
       writeFileSync(settingsPath, JSON.stringify({ includeCoAuthoredBy: true }));
-      process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY = '0';
+      process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY = '0';
 
       expect(shouldIncludeCoAuthoredBy()).toBe(false);
     });

@@ -26,11 +26,11 @@ function buildDefaultStackTauriEnv(env, stackName) {
     return nextEnv;
   }
 
-  if (!String(nextEnv.HAPPIER_STACK_TAURI_IDENTIFIER ?? '').trim()) {
-    nextEnv.HAPPIER_STACK_TAURI_IDENTIFIER = `com.happier.stack.${normalizedStack}`;
+  if (!String(nextEnv.PIGGERCODE_STACK_TAURI_IDENTIFIER ?? '').trim()) {
+    nextEnv.PIGGERCODE_STACK_TAURI_IDENTIFIER = `com.happier.stack.${normalizedStack}`;
   }
-  if (!String(nextEnv.HAPPIER_STACK_TAURI_PRODUCT_NAME ?? '').trim()) {
-    nextEnv.HAPPIER_STACK_TAURI_PRODUCT_NAME = `Happier (${normalizedStack})`;
+  if (!String(nextEnv.PIGGERCODE_STACK_TAURI_PRODUCT_NAME ?? '').trim()) {
+    nextEnv.PIGGERCODE_STACK_TAURI_PRODUCT_NAME = `Happier (${normalizedStack})`;
   }
   return nextEnv;
 }
@@ -40,7 +40,7 @@ async function readJsonFile(path) {
 }
 
 function wantsTauriWaitForExpo(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_TAURI_WAIT_FOR_EXPO ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO ?? '').trim();
   if (raw) return raw !== '0';
   return true;
 }
@@ -59,7 +59,7 @@ async function maybeReadStackEnvFileObject({ stackName, env = process.env } = {}
   const name = String(stackName ?? '').trim();
   if (!name) return {};
 
-  const explicitEnvFilePath = String(env?.HAPPIER_STACK_ENV_FILE ?? '').trim();
+  const explicitEnvFilePath = String(env?.PIGGERCODE_STACK_ENV_FILE ?? '').trim();
   if (explicitEnvFilePath && existsSync(explicitEnvFilePath)) {
     try {
       const raw = await readFile(explicitEnvFilePath, 'utf-8');
@@ -87,8 +87,8 @@ function resolveTauriUiDirForDev({ rootDir, env = process.env } = {}) {
   }
 
   const fallbackRepoDir = String(
-    inputEnv.HAPPIER_STACK_CLI_ROOT_DIR ??
-      inputEnv.HAPPIER_STACK_INVOKED_CWD ??
+    inputEnv.PIGGERCODE_STACK_CLI_ROOT_DIR ??
+      inputEnv.PIGGERCODE_STACK_INVOKED_CWD ??
       ''
   ).trim();
   if (!fallbackRepoDir) {
@@ -97,7 +97,7 @@ function resolveTauriUiDirForDev({ rootDir, env = process.env } = {}) {
 
   const fallback = getComponentDir(rootDir, 'happier-ui', {
     ...inputEnv,
-    HAPPIER_STACK_REPO_DIR: fallbackRepoDir,
+    PIGGERCODE_STACK_REPO_DIR: fallbackRepoDir,
   });
   if (existsSync(join(fallback, 'src-tauri', 'tauri.conf.json'))) {
     return fallback;
@@ -127,7 +127,7 @@ function assertTauriUiDirForDev(uiDir) {
     [
       '[tauri-dev] expected a Happier repo checkout containing apps/ui/src-tauri, but required files were missing.',
       `Resolved UI dir: ${dir || '(empty)'}.`,
-      'Fix: run the command from your repo checkout (or set HAPPIER_STACK_REPO_DIR to it) and retry.',
+      'Fix: run the command from your repo checkout (or set PIGGERCODE_STACK_REPO_DIR to it) and retry.',
     ].join(' ')
   );
 }
@@ -153,13 +153,13 @@ async function main() {
   }
 
   const rootDir = getRootDir(import.meta.url);
-  const envWithStackDefaults = buildDefaultStackTauriEnv(process.env, process.env.HAPPIER_STACK_STACK);
+  const envWithStackDefaults = buildDefaultStackTauriEnv(process.env, process.env.PIGGERCODE_STACK_STACK);
   const uiDir = resolveTauriUiDirForDev({ rootDir, env: envWithStackDefaults });
   const uiLayout = assertTauriUiDirForDev(uiDir);
   const repoRootDir = dirname(dirname(uiDir));
-  const stackName = String(envWithStackDefaults.HAPPIER_STACK_STACK ?? '').trim();
+  const stackName = String(envWithStackDefaults.PIGGERCODE_STACK_STACK ?? '').trim();
   const stackEnvFile = stackName ? await maybeReadStackEnvFileObject({ stackName, env: envWithStackDefaults }) : {};
-  const stackEnvExpoPort = Number(stackEnvFile.HAPPIER_STACK_EXPO_DEV_PORT ?? '');
+  const stackEnvExpoPort = Number(stackEnvFile.PIGGERCODE_STACK_EXPO_DEV_PORT ?? '');
   const hasStackEnvExpoPort = Number.isFinite(stackEnvExpoPort) && stackEnvExpoPort > 0;
   const runtimeState = stackName
     ? await readStackRuntimeStateFile(getStackRuntimeStatePath(stackName))
@@ -169,7 +169,7 @@ async function main() {
     if (Number.isFinite(runtimeExpoPort) && runtimeExpoPort > 0) {
       return resolveStackTauriDevUrl({ runtimeState, defaultPort: runtimeExpoPort });
     }
-    const envExpoPort = Number(envWithStackDefaults.HAPPIER_STACK_EXPO_DEV_PORT ?? '');
+    const envExpoPort = Number(envWithStackDefaults.PIGGERCODE_STACK_EXPO_DEV_PORT ?? '');
     if (Number.isFinite(envExpoPort) && envExpoPort > 0) {
       return `http://localhost:${Math.floor(envExpoPort)}`;
     }
@@ -178,7 +178,7 @@ async function main() {
     }
     return resolveStackTauriDevUrl({
       runtimeState,
-      defaultPort: Number(process.env.HAPPIER_STACK_TAURI_DEV_PORT ?? 8081),
+      defaultPort: Number(process.env.PIGGERCODE_STACK_TAURI_DEV_PORT ?? 8081),
     });
   })();
   const resolveUserHomeDir = () => {
@@ -193,7 +193,7 @@ async function main() {
     resolveUserHomeDir,
   });
   assertCargoAvailableForTauri({ env: runtimeEnv, resolveUserHomeDir });
-  if (String(runtimeEnv.HAPPIER_STACK_TUI ?? '').trim() === '1') {
+  if (String(runtimeEnv.PIGGERCODE_STACK_TUI ?? '').trim() === '1') {
     const pathEntries = String(runtimeEnv.PATH ?? '')
       .split(process.platform === 'win32' ? ';' : ':')
       .map((entry) => String(entry ?? '').trim())
@@ -288,7 +288,7 @@ async function main() {
   }
 
   if (wantsTauriWaitForExpo(envWithStackDefaults)) {
-    const defaultPort = Number(envWithStackDefaults.HAPPIER_STACK_TAURI_DEV_PORT ?? 8081);
+    const defaultPort = Number(envWithStackDefaults.PIGGERCODE_STACK_TAURI_DEV_PORT ?? 8081);
     const expoPort = parsePortFromUrl(devUrl, Number.isFinite(defaultPort) && defaultPort > 0 ? defaultPort : 8081);
     const metro = await waitForExpoMetroRunning({ port: expoPort, env: envWithStackDefaults });
     if (!metro.ok) {

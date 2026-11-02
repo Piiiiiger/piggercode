@@ -79,8 +79,8 @@ describe('sessionScanner', () => {
     expect(collectedMessages.some(message => message.uuid === 'ordinary-queued' || message.uuid === 'foreign-sidechain')).toBe(false)
     expect(collectedMessages.find(message => message.uuid === 'copied-xml')).toMatchObject({ message: { content: expect.any(String) } })
     // Optional artifact connects the real scanner output to the UI's real reducer in the composed check.
-    if (process.env.HAPPIER_TASK_PROJECTION_TEST_OUTPUT) {
-      await writeFile(`${process.env.HAPPIER_TASK_PROJECTION_TEST_OUTPUT}.${status}.json`, JSON.stringify(collectedMessages))
+    if (process.env.PIGGERCODE_TASK_PROJECTION_TEST_OUTPUT) {
+      await writeFile(`${process.env.PIGGERCODE_TASK_PROJECTION_TEST_OUTPUT}.${status}.json`, JSON.stringify(collectedMessages))
     }
   })
 

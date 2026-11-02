@@ -89,5 +89,5 @@ runExpoAsyncRequireSetupShim({
         (typeof __DEV__ !== 'undefined' ? __DEV__ : false) &&
         typeof window !== 'undefined'
             ? installWebHmrOptOutForCurrentWebTab()
-            : globalThis.__HAPPIER_WEB_HMR_OPT_OUT__ === true,
+            : globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__ === true,
 });

@@ -280,7 +280,7 @@ test('monorepo port guide can wait for conflict resolution and finish the port',
     [scriptPath, 'port', 'guide'],
     {
       cwd: process.cwd(),
-      env: { ...gitEnv(), HAPPIER_STACK_TEST_TTY: '1', HAPPIER_STACK_DISABLE_LLM_AUTOEXEC: '1' },
+      env: { ...gitEnv(), PIGGERCODE_STACK_TEST_TTY: '1', PIGGERCODE_STACK_DISABLE_LLM_AUTOEXEC: '1' },
       stdio: ['pipe', 'pipe', 'pipe'],
     }
   );
@@ -383,7 +383,7 @@ test('monorepo port guide quit leaves a plan; port continue resumes and complete
     [scriptPath, 'port', 'guide'],
     {
       cwd: process.cwd(),
-      env: { ...gitEnv(), HAPPIER_STACK_TEST_TTY: '1', HAPPIER_STACK_DISABLE_LLM_AUTOEXEC: '1' },
+      env: { ...gitEnv(), PIGGERCODE_STACK_TEST_TTY: '1', PIGGERCODE_STACK_DISABLE_LLM_AUTOEXEC: '1' },
       stdio: ['pipe', 'pipe', 'pipe'],
     }
   );

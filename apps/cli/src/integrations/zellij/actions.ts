@@ -115,7 +115,7 @@ function buildZellijProcessEnv(env: Readonly<Record<string, string>>): NodeJS.Pr
 }
 
 function readZellijActionMaxConcurrency(): number {
-  const parsed = Number.parseInt(process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY ?? '', 10);
+  const parsed = Number.parseInt(process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_ZELLIJ_ACTION_MAX_CONCURRENCY;
 }
 

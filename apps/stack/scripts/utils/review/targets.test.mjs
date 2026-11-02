@@ -5,8 +5,8 @@ import { resolveDefaultStackReviewComponents } from './targets.mjs';
 test('resolveDefaultStackReviewComponents returns only non-default pinned components', () => {
   const rootDir = '/tmp/hs-root';
   const env = {
-    HAPPIER_STACK_WORKSPACE_DIR: '/tmp/hs-root',
-    HAPPIER_STACK_REPO_DIR: '/tmp/custom/happier',
+    PIGGERCODE_STACK_WORKSPACE_DIR: '/tmp/hs-root',
+    PIGGERCODE_STACK_REPO_DIR: '/tmp/custom/happier',
   };
   const comps = resolveDefaultStackReviewComponents({
     rootDir,
@@ -19,8 +19,8 @@ test('resolveDefaultStackReviewComponents returns only non-default pinned compon
 test('resolveDefaultStackReviewComponents returns empty list for default repo checkout', () => {
   const rootDir = '/tmp/hs-root';
   const env = {
-    HAPPIER_STACK_WORKSPACE_DIR: '/tmp/hs-root',
-    HAPPIER_STACK_REPO_DIR: '',
+    PIGGERCODE_STACK_WORKSPACE_DIR: '/tmp/hs-root',
+    PIGGERCODE_STACK_REPO_DIR: '',
   };
   const comps = resolveDefaultStackReviewComponents({
     rootDir,

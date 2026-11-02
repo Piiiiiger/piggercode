@@ -37,10 +37,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("stores and returns a plaintext provider-account usage envelope for plaintext accounts", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now(), planLabel: "team" });
@@ -90,9 +90,9 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("preserves independently fresh subscription observations without changing the legacy snapshot envelope", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: 1000 });
@@ -135,9 +135,9 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("returns recovery details alongside the ordinary plaintext quota envelope", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const recoveryCredits = {
@@ -170,10 +170,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("rejects recovery detail authoring when disabled while accepting ordinary plaintext quota writes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_BUILD_FEATURES_DENY: "connectedServices.quotaRecoveryCreditDetails",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_BUILD_FEATURES_DENY: "connectedServices.quotaRecoveryCreditDetails",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const base = createUsageSnapshot({ fetchedAt: 1000 });
@@ -199,10 +199,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("does not create plaintext provider-account usage rows from refresh requests for missing records", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now() });
@@ -231,10 +231,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("rejects stale plaintext writes without a fingerprint from overwriting newer stored material", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const fetchedAt = Date.now();
@@ -282,9 +282,9 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("returns 409 for sealed provider-account usage writes that lack an existing trusted record key", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "public-key", encryptionMode: "e2ee" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now() });
@@ -313,9 +313,9 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("returns a 400 instead of a response serialization error for malformed sealed usage writes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "public-key", encryptionMode: "e2ee" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now() });
@@ -343,9 +343,9 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("reads, refreshes, and deletes sealed provider-account usage when a trusted record already exists", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "public-key", encryptionMode: "e2ee" }, select: { id: true } });
         const recordKey = createProviderAccountUsageRecordKey();
@@ -438,10 +438,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("rejects canonical usage diagnostics with token-like headers", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const validSnapshot = createUsageSnapshot({ fetchedAt: Date.now() });
@@ -469,10 +469,10 @@ describe("connectRoutes (provider account usage canonical routes)", () => {
 
     it("returns safe machine-readable reasons for invalid plaintext provider-account usage writes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "true",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" }, select: { id: true } });
         const snapshot = createUsageSnapshot({ fetchedAt: Date.now() });

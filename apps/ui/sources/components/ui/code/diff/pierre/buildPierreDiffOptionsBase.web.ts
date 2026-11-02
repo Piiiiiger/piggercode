@@ -1,6 +1,6 @@
 import type { FileDiffOptions } from '@pierre/diffs';
 
-import { HAPPIER_PIERRE_THEME_IDS } from './pierreThemeRegistry.web';
+import { PIGGERCODE_PIERRE_THEME_IDS } from './pierreThemeRegistry.web';
 import { countTextLinesUpTo } from '@/utils/strings/countTextLinesUpTo';
 
 export type PierreDiffOptionsBaseParams = Readonly<{
@@ -25,7 +25,7 @@ export type PierreDiffOptionsBaseParams = Readonly<{
 export function buildPierreDiffOptionsBase<TAnnotation = unknown>(params: PierreDiffOptionsBaseParams): FileDiffOptions<TAnnotation> {
     const patchLineCount = countTextLinesUpTo(params.patchText, params.intraLineDiff.maxPatchLines + 1);
     const disableIntraLineDiff = params.intraLineDiff.enabled !== true || patchLineCount > params.intraLineDiff.maxPatchLines;
-    const themeIds = params.themeIds ?? HAPPIER_PIERRE_THEME_IDS;
+    const themeIds = params.themeIds ?? PIGGERCODE_PIERRE_THEME_IDS;
 
     return {
         theme: {

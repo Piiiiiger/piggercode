@@ -1,9 +1,9 @@
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
-  HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR,
+  PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR,
   parseExplicitSpawnEnvKeysFromProcessEnv,
 } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { isValidEnvVarKey } from '@/terminal/runtime/envVarSanitization';
@@ -22,7 +22,7 @@ export function prepareClaudeSubprocessEnv(params: Readonly<{
   if (typeof params.envOverlay?.CLAUDE_CODE_ENTRYPOINT === 'string') {
     env.CLAUDE_CODE_ENTRYPOINT = params.envOverlay.CLAUDE_CODE_ENTRYPOINT;
   }
-  delete env[HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
+  delete env[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
   return isolateClaudeRuntimeAuthEnv(env);
 }
 
@@ -52,12 +52,12 @@ export function buildClaudeSubprocessEnv(params?: Readonly<{
     'SSL_CERT_FILE',
     'SSL_CERT_DIR',
     '__CF_USER_TEXT_ENCODING',
-    'HAPPIER_E2E_FAKE_CLAUDE_LOG',
-    'HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID',
+    'PIGGERCODE_E2E_FAKE_CLAUDE_LOG',
+    'PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID',
     'HAPPY_E2E_FAKE_CLAUDE_LOG',
     'HAPPY_E2E_FAKE_CLAUDE_SESSION_ID',
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
-    HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
   ]);
 
   if (process.platform === 'win32') {
@@ -74,7 +74,7 @@ export function buildClaudeSubprocessEnv(params?: Readonly<{
     'NO_COLOR',
     'COLORTERM',
     'TERM_',
-    'HAPPIER_E2E_',
+    'PIGGERCODE_E2E_',
     'HAPPY_E2E_',
   ];
 
@@ -93,7 +93,7 @@ export function buildClaudeSubprocessEnv(params?: Readonly<{
     }
   }
 
-  delete out[HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
+  delete out[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
   const env = prepareClaudeSubprocessEnv({
     baseEnv: out,
     envOverlay: {

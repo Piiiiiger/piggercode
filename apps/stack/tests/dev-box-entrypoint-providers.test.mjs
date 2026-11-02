@@ -10,7 +10,7 @@ import { buildStackHarnessEnv, writeFakeBin } from '../scripts/testkit/core/fake
 
 const repoRoot = fileURLToPath(new URL('../../..', import.meta.url));
 
-test('dev-box entrypoint installs provider CLIs via happier when HAPPIER_PROVIDER_CLIS is set', (t) => {
+test('dev-box entrypoint installs provider CLIs via happier when PIGGERCODE_PROVIDER_CLIS is set', (t) => {
   const tmp = mkdtempSync(join(tmpdir(), 'happier-dev-box-entrypoint-'));
   t.after(() => rmSync(tmp, { recursive: true, force: true }));
 
@@ -31,7 +31,7 @@ exit 0
   const res = spawnSync('sh', [entrypoint, 'sh', '-lc', 'echo ok'], {
     env: buildStackHarnessEnv({
       binDirs: [binDir],
-      extraEnv: { HAPPIER_PROVIDER_CLIS: 'codex, Gemini ' },
+      extraEnv: { PIGGERCODE_PROVIDER_CLIS: 'codex, Gemini ' },
     }),
     encoding: 'utf-8',
     timeout: 15000,

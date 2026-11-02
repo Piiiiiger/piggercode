@@ -170,16 +170,16 @@ export async function applyEphemeralServerSelectionFromPrefixArgs(argsRaw: strin
     const local = params.localServerUrl ? normalizeUrlOrThrow(params.localServerUrl, '--local-server-url') : '';
 
     if (local && local !== canonical) {
-      process.env.HAPPIER_PUBLIC_SERVER_URL = canonical;
-      process.env.HAPPIER_LOCAL_SERVER_URL = local;
-      process.env.HAPPIER_SERVER_URL = local;
+      process.env.PIGGERCODE_PUBLIC_SERVER_URL = canonical;
+      process.env.PIGGERCODE_LOCAL_SERVER_URL = local;
+      process.env.PIGGERCODE_SERVER_URL = local;
     } else {
-      delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-      delete process.env.HAPPIER_LOCAL_SERVER_URL;
-      process.env.HAPPIER_SERVER_URL = canonical;
+      delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+      delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
+      process.env.PIGGERCODE_SERVER_URL = canonical;
     }
-    process.env.HAPPIER_WEBAPP_URL = normalizeUrlOrThrow(params.webappUrl, '--webapp-url');
-    process.env.HAPPIER_ACTIVE_SERVER_ID = params.activeServerId;
+    process.env.PIGGERCODE_WEBAPP_URL = normalizeUrlOrThrow(params.webappUrl, '--webapp-url');
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = params.activeServerId;
   };
 
   if (server) {
@@ -278,16 +278,16 @@ export async function applyServerSelectionFromArgs(argsRaw: string[]): Promise<s
       const profile = await getServerProfile(server.value);
       const local = (profile as any).localServerUrl ? String((profile as any).localServerUrl).trim() : '';
       if (local && local !== profile.serverUrl) {
-        process.env.HAPPIER_PUBLIC_SERVER_URL = profile.serverUrl;
-          process.env.HAPPIER_LOCAL_SERVER_URL = local;
-          process.env.HAPPIER_SERVER_URL = local;
+        process.env.PIGGERCODE_PUBLIC_SERVER_URL = profile.serverUrl;
+          process.env.PIGGERCODE_LOCAL_SERVER_URL = local;
+          process.env.PIGGERCODE_SERVER_URL = local;
         } else {
-        delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-        delete process.env.HAPPIER_LOCAL_SERVER_URL;
-        process.env.HAPPIER_SERVER_URL = profile.serverUrl;
+        delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+        delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
+        process.env.PIGGERCODE_SERVER_URL = profile.serverUrl;
         }
-        process.env.HAPPIER_WEBAPP_URL = profile.webappUrl;
-        process.env.HAPPIER_ACTIVE_SERVER_ID = profile.id;
+        process.env.PIGGERCODE_WEBAPP_URL = profile.webappUrl;
+        process.env.PIGGERCODE_ACTIVE_SERVER_ID = profile.id;
       } else {
       await useServerProfile(server.value);
     }
@@ -303,16 +303,16 @@ export async function applyServerSelectionFromArgs(argsRaw: string[]): Promise<s
       : null;
     if (!shouldPersistServerUrlSelection) {
       if (normalizedLocalServerUrl && normalizedLocalServerUrl !== normalizedServerUrl) {
-        process.env.HAPPIER_PUBLIC_SERVER_URL = normalizedServerUrl;
-        process.env.HAPPIER_LOCAL_SERVER_URL = normalizedLocalServerUrl;
-        process.env.HAPPIER_SERVER_URL = normalizedLocalServerUrl;
+        process.env.PIGGERCODE_PUBLIC_SERVER_URL = normalizedServerUrl;
+        process.env.PIGGERCODE_LOCAL_SERVER_URL = normalizedLocalServerUrl;
+        process.env.PIGGERCODE_SERVER_URL = normalizedLocalServerUrl;
       } else {
-        delete process.env.HAPPIER_PUBLIC_SERVER_URL;
-        delete process.env.HAPPIER_LOCAL_SERVER_URL;
-        process.env.HAPPIER_SERVER_URL = normalizedServerUrl;
+        delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
+        delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
+        process.env.PIGGERCODE_SERVER_URL = normalizedServerUrl;
       }
-      process.env.HAPPIER_WEBAPP_URL = normalizedWebappUrl ?? deriveDefaultWebappUrl(normalizedServerUrl);
-      process.env.HAPPIER_ACTIVE_SERVER_ID = deriveServerIdFromUrl(normalizedServerUrl);
+      process.env.PIGGERCODE_WEBAPP_URL = normalizedWebappUrl ?? deriveDefaultWebappUrl(normalizedServerUrl);
+      process.env.PIGGERCODE_ACTIVE_SERVER_ID = deriveServerIdFromUrl(normalizedServerUrl);
       reloadConfiguration();
       return args;
     }

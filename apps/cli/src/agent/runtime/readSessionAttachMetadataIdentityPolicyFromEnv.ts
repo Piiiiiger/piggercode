@@ -4,10 +4,10 @@ import {
 } from '@piggercode/protocol';
 
 export function readSessionAttachMetadataIdentityPolicyFromEnv(): SessionAttachMetadataIdentityPolicy | null {
-    const raw = typeof process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY === 'string'
-        ? process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY.trim()
+    const raw = typeof process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY === 'string'
+        ? process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY.trim()
         : '';
-    delete process.env.HAPPIER_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
+    delete process.env.PIGGERCODE_SESSION_ATTACH_METADATA_IDENTITY_POLICY;
     if (!raw) {
         return null;
     }

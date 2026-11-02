@@ -58,7 +58,7 @@ function addTokenMaps(base: Record<string, number>, delta: Record<string, number
 }
 
 export function resolveProviderTokenLedgerPath(defaultRunDir: string, env: NodeJS.ProcessEnv = process.env): string {
-  const raw = (env.HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? '').trim();
+  const raw = (env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? '').trim();
   if (raw.length > 0) return resolve(raw);
   return resolve(join(defaultRunDir, 'provider-token-ledger.v1.json'));
 }

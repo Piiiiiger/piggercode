@@ -25,7 +25,7 @@ test('shouldBuildStackArtifacts routes --web to artifact builds for named stacks
       forceRebuild: false,
     },
     argv: ['--web'],
-    env: { HAPPIER_STACK_STACK: 'exp1' },
+    env: { PIGGERCODE_STACK_STACK: 'exp1' },
   });
 
   assert.equal(result, true);

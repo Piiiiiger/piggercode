@@ -48,7 +48,7 @@ describe('core e2e: session turn reconnect', () => {
       runId: run.runId,
       testName: 'session-turn-reconnect',
       cliEnvOverrides: {
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '2000',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '2000',
       },
     });
 
@@ -74,7 +74,7 @@ describe('core e2e: session turn reconnect', () => {
       dbProvider: 'sqlite',
       preserveExistingDataDir: true,
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
       __portAllocator: async () => server.port,
     });

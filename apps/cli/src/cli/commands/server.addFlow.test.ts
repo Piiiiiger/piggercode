@@ -87,12 +87,12 @@ afterEach(() => {
 });
 
 function installDefaultFollowingServiceFixture(homeDir: string): void {
-  process.env.HAPPIER_DAEMON_SERVICE_PLATFORM = process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
+  process.env.PIGGERCODE_DAEMON_SERVICE_PLATFORM = process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
     ? process.platform
     : 'linux';
-  process.env.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
-  process.env.HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR = join(homeDir, '.happier');
-  process.env.HAPPIER_DAEMON_SERVICE_TARGET_MODE = 'default-following';
+  process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
+  process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+  process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE = 'default-following';
   reloadConfiguration();
 
   const runtime = resolveDaemonServiceCliRuntimeFromEnv({ processEnv: process.env });
@@ -106,10 +106,10 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         label: paths.label,
         programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
         env: {
-          HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-          HAPPIER_PUBLIC_RELEASE_CHANNEL: runtime.channel,
-          HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-          HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+          PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+          PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
+          PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+          PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
         },
         stdoutPath: paths.stdoutPath,
         stderrPath: paths.stderrPath,
@@ -127,10 +127,10 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         description: 'Happier Daemon',
         execStart: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
         env: {
-          HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-          HAPPIER_PUBLIC_RELEASE_CHANNEL: runtime.channel,
-          HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-          HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+          PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+          PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
+          PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+          PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
         },
         wantedBy: 'default.target',
       }),
@@ -144,10 +144,10 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
     renderWindowsScheduledTaskWrapperPs1({
       programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
       env: {
-        HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: runtime.channel,
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+        PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
       },
     }),
     'utf8',
@@ -157,9 +157,9 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
 describe('happier server add guided flow', () => {
   it('guides for missing required values in interactive mode', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-guided-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const restoreTty = setTtyMode(true, true);
     promptAnswers = [
       'https://company.example.test', // server URL
@@ -169,9 +169,9 @@ describe('happier server add guided flow', () => {
     promptQuestions = [];
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      delete process.env.HAPPIER_SERVER_URL;
-      delete process.env.HAPPIER_WEBAPP_URL;
+      process.env.PIGGERCODE_HOME_DIR = home;
+      delete process.env.PIGGERCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_WEBAPP_URL;
       reloadConfiguration();
 
       const output = captureConsoleLogAndMuteStdout();
@@ -188,12 +188,12 @@ describe('happier server add guided flow', () => {
       expect(spawnHappyCLIMock).not.toHaveBeenCalled();
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       promptAnswers = [];
@@ -204,9 +204,9 @@ describe('happier server add guided flow', () => {
 
   it('prompts for a canonical share URL when the interactive --server-url looks local-only', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-guided-local-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const restoreTty = setTtyMode(true, true);
     promptAnswers = [
       'http://127.0.0.1:53545', // local server URL
@@ -218,9 +218,9 @@ describe('happier server add guided flow', () => {
     promptQuestions = [];
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      delete process.env.HAPPIER_SERVER_URL;
-      delete process.env.HAPPIER_WEBAPP_URL;
+      process.env.PIGGERCODE_HOME_DIR = home;
+      delete process.env.PIGGERCODE_SERVER_URL;
+      delete process.env.PIGGERCODE_WEBAPP_URL;
       reloadConfiguration();
 
       const output = captureConsoleLogAndMuteStdout();
@@ -237,12 +237,12 @@ describe('happier server add guided flow', () => {
       expect(settings.servers?.Local?.webappUrl).toBe('https://company.example.test');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       promptAnswers = [];
@@ -253,19 +253,19 @@ describe('happier server add guided flow', () => {
 
   it('fails fast with instructions in non-interactive mode when required args are missing', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-noninteractive-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await expect(runServerSubcommand('add', ['add'])).rejects.toThrow('Non-interactive mode');
       expect(spawnHappyCLIMock).not.toHaveBeenCalled();
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -274,15 +274,15 @@ describe('happier server add guided flow', () => {
 
   it('defaults webapp URL from --server-url in non-interactive mode when --webapp-url is omitted', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-default-webapp-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-    const prevWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const prevWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const restoreTty = setTtyMode(false, false);
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
-      process.env.HAPPIER_SERVER_URL = 'https://active-server.example.test';
-      process.env.HAPPIER_WEBAPP_URL = 'https://active-webapp.example.test';
+      process.env.PIGGERCODE_HOME_DIR = home;
+      process.env.PIGGERCODE_SERVER_URL = 'https://active-server.example.test';
+      process.env.PIGGERCODE_WEBAPP_URL = 'https://active-webapp.example.test';
       reloadConfiguration();
 
       await handleServerCommand([
@@ -299,12 +299,12 @@ describe('happier server add guided flow', () => {
       expect(settings.servers?.Company?.webappUrl).toBe('https://company.example.test');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = prevServerUrl;
-      if (prevWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = prevWebappUrl;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
+      if (prevWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = prevWebappUrl;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -313,13 +313,13 @@ describe('happier server add guided flow', () => {
 
   it('does not prompt when --name/--server-url/--use are provided in interactive mode', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-no-prompts-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(true, true);
     promptAnswers = [];
     promptQuestions = [];
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -335,8 +335,8 @@ describe('happier server add guided flow', () => {
       expect(promptQuestions).toEqual([]);
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       promptAnswers = [];
@@ -347,11 +347,11 @@ describe('happier server add guided flow', () => {
 
   it('defaults webapp URL to Happier Cloud webapp when --server-url points at the cloud API', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-cloud-webapp-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -368,8 +368,8 @@ describe('happier server add guided flow', () => {
       expect(settings.servers?.CloudCopy?.webappUrl).toBe('https://cloud.happier.dev');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -378,11 +378,11 @@ describe('happier server add guided flow', () => {
 
   it('runs daemon action commands when explicit flags are passed', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-actions-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       spawnHappyCLIMock.mockImplementation((argv: string[]) => {
@@ -414,8 +414,8 @@ describe('happier server add guided flow', () => {
       );
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -424,11 +424,11 @@ describe('happier server add guided flow', () => {
 
   it('treats legacy --public-server-url as canonical serverUrl and legacy --server-url as localServerUrl', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-public-url-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -450,8 +450,8 @@ describe('happier server add guided flow', () => {
       expect(raw?.servers?.Company?.localServerUrl).toBe('http://127.0.0.1:53545');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -460,7 +460,7 @@ describe('happier server add guided flow', () => {
 
   it('auto-detects public URL from Tailscale Serve when serverUrl is loopback and --public-server-url is omitted', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-auto-public-url-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     runTailscaleServeStatusMock.mockResolvedValueOnce(
@@ -472,7 +472,7 @@ describe('happier server add guided flow', () => {
     );
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -492,8 +492,8 @@ describe('happier server add guided flow', () => {
       expect(raw?.servers?.Local?.localServerUrl).toBe('http://127.0.0.1:53545');
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       runTailscaleServeStatusMock.mockReset();
@@ -503,12 +503,12 @@ describe('happier server add guided flow', () => {
 
   it('refreshes the Stack-selected server profile by its stable id', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-set-stack-profile-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
     const stackServerId = 'stack_agent-qa-api-sdk-0824__id_default';
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -549,8 +549,8 @@ describe('happier server add guided flow', () => {
       });
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -559,13 +559,13 @@ describe('happier server add guided flow', () => {
 
   it('migrates missing profile-scoped state from an equivalent Stack profile when explicitly requested', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-set-stack-profile-migrate-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
     const restoreTty = setTtyMode(false, false);
     const stackServerId = 'stack_agent-qa-api-sdk-0824__id_default';
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -606,7 +606,7 @@ describe('happier server add guided flow', () => {
           [previousProfileId!]: { 'account-1': 17 },
         },
       }));
-      process.env.HAPPIER_ACTIVE_SERVER_ID = stackServerId;
+      process.env.PIGGERCODE_ACTIVE_SERVER_ID = stackServerId;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -639,10 +639,10 @@ describe('happier server add guided flow', () => {
       expect(settings.lastChangesCursorByServerIdByAccountId?.[stackServerId]?.['account-1']).toBe(17);
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-      else process.env.HAPPIER_ACTIVE_SERVER_ID = prevActiveServerId;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+      else process.env.PIGGERCODE_ACTIVE_SERVER_ID = prevActiveServerId;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       spawnHappyCLIMock.mockReset();
@@ -651,7 +651,7 @@ describe('happier server add guided flow', () => {
 
   it('adopts canonical URL from server capabilities without persisting remote http as localServerUrl', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-adopt-canonical-safe-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
     const restoreTty = setTtyMode(false, false);
 
     fetchServerFeaturesSnapshotMock.mockResolvedValueOnce({
@@ -667,7 +667,7 @@ describe('happier server add guided flow', () => {
     });
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -685,8 +685,8 @@ describe('happier server add guided flow', () => {
       expect(raw?.servers?.Selfhost?.localServerUrl).toBeUndefined();
     } finally {
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
       fetchServerFeaturesSnapshotMock.mockReset();
@@ -697,16 +697,16 @@ describe('happier server add guided flow', () => {
 
   it('guides to restart a default-following background service after adding and using a new server', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-use-followup-'));
-    const prevHome = process.env.HAPPIER_HOME_DIR;
-    const prevDaemonPlatform = process.env.HAPPIER_DAEMON_SERVICE_PLATFORM;
-    const prevDaemonUserHomeDir = process.env.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR;
-    const prevDaemonHappierHomeDir = process.env.HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR;
-    const prevDaemonTargetMode = process.env.HAPPIER_DAEMON_SERVICE_TARGET_MODE;
+    const prevHome = process.env.PIGGERCODE_HOME_DIR;
+    const prevDaemonPlatform = process.env.PIGGERCODE_DAEMON_SERVICE_PLATFORM;
+    const prevDaemonUserHomeDir = process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR;
+    const prevDaemonHappierHomeDir = process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR;
+    const prevDaemonTargetMode = process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE;
     const restoreTty = setTtyMode(false, false);
     const output = captureConsoleLogAndMuteStdout();
 
     try {
-      process.env.HAPPIER_HOME_DIR = home;
+      process.env.PIGGERCODE_HOME_DIR = home;
       reloadConfiguration();
 
       await handleServerCommand([
@@ -765,16 +765,16 @@ describe('happier server add guided flow', () => {
     } finally {
       output.restore();
       restoreTty();
-      if (prevHome === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = prevHome;
-      if (prevDaemonPlatform === undefined) delete process.env.HAPPIER_DAEMON_SERVICE_PLATFORM;
-      else process.env.HAPPIER_DAEMON_SERVICE_PLATFORM = prevDaemonPlatform;
-      if (prevDaemonUserHomeDir === undefined) delete process.env.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR;
-      else process.env.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR = prevDaemonUserHomeDir;
-      if (prevDaemonHappierHomeDir === undefined) delete process.env.HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR = prevDaemonHappierHomeDir;
-      if (prevDaemonTargetMode === undefined) delete process.env.HAPPIER_DAEMON_SERVICE_TARGET_MODE;
-      else process.env.HAPPIER_DAEMON_SERVICE_TARGET_MODE = prevDaemonTargetMode;
+      if (prevHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = prevHome;
+      if (prevDaemonPlatform === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_PLATFORM;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_PLATFORM = prevDaemonPlatform;
+      if (prevDaemonUserHomeDir === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = prevDaemonUserHomeDir;
+      if (prevDaemonHappierHomeDir === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = prevDaemonHappierHomeDir;
+      if (prevDaemonTargetMode === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE = prevDaemonTargetMode;
       reloadConfiguration();
       await rm(home, { recursive: true, force: true });
     }

@@ -116,26 +116,26 @@ describe('createTmuxSession', () => {
 });
 
 describe('TmuxUtilities.spawnInTmux', () => {
-    const originalRetryDelay = process.env.HAPPIER_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS;
-    const originalInlineSpawnMaxChars = process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
+    const originalRetryDelay = process.env.PIGGERCODE_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS;
+    const originalInlineSpawnMaxChars = process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
 
     beforeEach(() => {
-        process.env.HAPPIER_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS = '0';
-        delete process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
+        process.env.PIGGERCODE_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS = '0';
+        delete process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
     });
 
     afterEach(() => {
         if (originalRetryDelay === undefined) {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete process.env.HAPPIER_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS;
+            delete process.env.PIGGERCODE_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS;
         } else {
-            process.env.HAPPIER_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS = originalRetryDelay;
+            process.env.PIGGERCODE_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS = originalRetryDelay;
         }
         if (originalInlineSpawnMaxChars === undefined) {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
+            delete process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS;
         } else {
-            process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = originalInlineSpawnMaxChars;
+            process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = originalInlineSpawnMaxChars;
         }
     });
 
@@ -306,7 +306,7 @@ describe('TmuxUtilities.spawnInTmux', () => {
     });
 
     it('externalizes oversized spawn command and env payloads before calling tmux new-window', async () => {
-        process.env.HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = '120';
+        process.env.PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS = '120';
         const tmux = new FakeTmuxUtilities();
         const largePrompt = 'prompt '.repeat(80);
         const largeEnvValue = 'secret '.repeat(80);

@@ -99,7 +99,7 @@ describe('opencode session handoff bundle', () => {
       },
       remoteSessionId: 'op_sess_1',
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(execFile).toHaveBeenCalledWith(commandPath, ['export', 'op_sess_1'], undefined);
@@ -126,7 +126,7 @@ describe('opencode session handoff bundle', () => {
     const result = await exportOpenCodeSessionBundle({
       metadata: {},
       remoteSessionId,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(result.providerId).toBe('opencode');
@@ -166,7 +166,7 @@ describe('opencode session handoff bundle', () => {
       },
       targetPath,
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(execFile).toHaveBeenCalledWith(commandPath, ['import', expect.stringContaining('handoff-opencode-')], undefined);
@@ -205,9 +205,9 @@ describe('opencode session handoff bundle', () => {
       agent: 'opencode',
       resume: 'op_sess_1',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
-        HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
       },
       approvedNewDirectoryCreation: true,
       transcriptStorage: 'direct',
@@ -236,7 +236,7 @@ describe('opencode session handoff bundle', () => {
       },
       targetPath,
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(result.directSource).toEqual({
@@ -251,7 +251,7 @@ describe('opencode session handoff bundle', () => {
     expect(result.agentRuntimeDescriptorV1?.provider).not.toHaveProperty('serverBaseUrl');
     expect(result.agentRuntimeDescriptorV1?.provider).not.toHaveProperty('serverBaseUrlExplicit');
     expect(result.resume.environmentVariables).toEqual({
-      HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+      PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
     });
   });
 
@@ -282,7 +282,7 @@ describe('opencode session handoff bundle', () => {
       },
       targetPath,
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(execFile).toHaveBeenCalledWith(commandPath, ['import', expect.stringContaining('handoff-opencode-')], undefined);
@@ -297,7 +297,7 @@ describe('opencode session handoff bundle', () => {
     // Direct sessions currently only support the server transport; "acp" affinity is treated as a requested mode
     // and normalized to server in the imported runtime envelope.
     expect(result.agentRuntimeDescriptorV1?.provider?.backendMode).toBe('server');
-    expect(result.resume.environmentVariables?.HAPPIER_OPENCODE_BACKEND_MODE).toBe('server');
+    expect(result.resume.environmentVariables?.PIGGERCODE_OPENCODE_BACKEND_MODE).toBe('server');
   });
 
   it('does not invent a server runtime descriptor when imported affinity is unknown', async () => {
@@ -322,7 +322,7 @@ describe('opencode session handoff bundle', () => {
       },
       targetPath,
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     });
 
     expect(result).not.toHaveProperty('agentRuntimeDescriptorV1');
@@ -351,7 +351,7 @@ describe('opencode session handoff bundle', () => {
       },
       targetPath: join(root, 'workspace'),
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath },
     })).rejects.toThrow('import failed');
 
     await expect(access(importPath)).rejects.toThrow();
@@ -448,7 +448,7 @@ describe('opencode session handoff bundle', () => {
       metadata: {},
       remoteSessionId: 'op_sess_1',
       execFile,
-      processEnv: { HAPPIER_OPENCODE_PATH: commandPath, HAPPIER_JS_RUNTIME_PATH: runtimePath },
+      processEnv: { PIGGERCODE_OPENCODE_PATH: commandPath, PIGGERCODE_JS_RUNTIME_PATH: runtimePath },
     });
 
     expect(execFile).toHaveBeenCalledWith(runtimePath, [commandPath, 'export', 'op_sess_1'], undefined);
@@ -482,8 +482,8 @@ describe('opencode session handoff bundle', () => {
       targetPath,
       execFile,
       processEnv: {
-        HAPPIER_OPENCODE_PATH: commandPath,
-        HAPPIER_JS_RUNTIME_PATH: runtimePath,
+        PIGGERCODE_OPENCODE_PATH: commandPath,
+        PIGGERCODE_JS_RUNTIME_PATH: runtimePath,
       },
     });
 
@@ -546,7 +546,7 @@ describe('opencode session handoff bundle', () => {
       remoteSessionId: 'op_sess_win_export',
       execFile,
       processEnv: {
-        HAPPIER_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
+        PIGGERCODE_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
         ComSpec: 'C:\\Windows\\System32\\cmd.exe',
       },
     });
@@ -594,7 +594,7 @@ describe('opencode session handoff bundle', () => {
       targetPath: join(root, 'workspace'),
       execFile,
       processEnv: {
-        HAPPIER_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
+        PIGGERCODE_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
         ComSpec: 'C:\\Windows\\System32\\cmd.exe',
       },
     });

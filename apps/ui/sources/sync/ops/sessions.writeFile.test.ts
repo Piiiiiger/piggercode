@@ -73,7 +73,7 @@ vi.mock('@/sync/ops/sessionMachineTarget', () => ({
 
 beforeEach(() => {
     policyConsulted = false;
-    delete process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES;
 
     machineRPCSpy.mockReset();
     machineRpcWithServerScopeSpy.mockReset();
@@ -116,7 +116,7 @@ describe('sessionWriteFile', () => {
     });
 
     it('uses the bulk transfer pipeline for writes larger than the inline limit (no WRITE_FILE)', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES = '8';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES = '8';
         const { sessionWriteFile } = await import('./sessionFileSystem');
 
         const calls: Array<{ method: string; payload: unknown }> = [];
@@ -169,7 +169,7 @@ describe('sessionWriteFile', () => {
     });
 
     it('fails closed for guarded writes larger than the inline limit (no bulk upload fallback)', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES = '8';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES = '8';
         const { sessionWriteFile } = await import('./sessionFileSystem');
 
         const res = await sessionWriteFile('s1', 'src/a.ts', 'hello world', 'expectedHash');

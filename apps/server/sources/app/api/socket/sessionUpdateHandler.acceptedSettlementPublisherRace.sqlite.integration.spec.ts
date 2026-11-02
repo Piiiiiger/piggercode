@@ -133,9 +133,9 @@ describe("accepted Pending settlement publisher replacement race on SQLite", () 
 
     it("returns typed overload without killing the socket event loop when publisher authority cannot acquire a transaction", async () => {
         harness.resetEnv({
-            HAPPIER_DB_TX_MAX_RETRIES: "0",
-            HAPPIER_DB_TX_MAX_WAIT_MS: "1000",
-            HAPPIER_DB_TX_TIMEOUT_MS: "30000",
+            PIGGERCODE_DB_TX_MAX_RETRIES: "0",
+            PIGGERCODE_DB_TX_MAX_WAIT_MS: "1000",
+            PIGGERCODE_DB_TX_TIMEOUT_MS: "30000",
         });
         const owner = await db.account.create({
             data: { publicKey: `pk-${randomUUID()}` },

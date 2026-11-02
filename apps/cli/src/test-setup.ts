@@ -168,7 +168,7 @@ async function ensureDistBuiltOnce(projectRoot: string): Promise<void> {
 }
 
 function readSkipBuildOverride(): boolean {
-  const raw = process.env.HAPPIER_CLI_TEST_SKIP_BUILD
+  const raw = process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD
   if (typeof raw !== 'string') return false
   return ['1', 'true', 'yes'].includes(raw.trim().toLowerCase())
 }

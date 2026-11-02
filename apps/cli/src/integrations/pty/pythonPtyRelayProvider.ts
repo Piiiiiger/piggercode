@@ -37,8 +37,8 @@ def _read_dimension_env(name):
 master_fd, slave_fd = pty.openpty()
 
 def _apply_initial_window_size():
-    cols = _read_dimension_env('HAPPIER_PYTHON_PTY_RELAY_COLS')
-    rows = _read_dimension_env('HAPPIER_PYTHON_PTY_RELAY_ROWS')
+    cols = _read_dimension_env('PIGGERCODE_PYTHON_PTY_RELAY_COLS')
+    rows = _read_dimension_env('PIGGERCODE_PYTHON_PTY_RELAY_ROWS')
     if cols is None and rows is None:
         return
     try:
@@ -186,8 +186,8 @@ function buildPythonRelayEnv(params: Readonly<{
   const env: NodeJS.ProcessEnv = { ...(params.baseEnv ?? {}) };
   const cols = normalizeDimensionEnvValue(params.cols);
   const rows = normalizeDimensionEnvValue(params.rows);
-  if (cols !== undefined) env.HAPPIER_PYTHON_PTY_RELAY_COLS = cols;
-  if (rows !== undefined) env.HAPPIER_PYTHON_PTY_RELAY_ROWS = rows;
+  if (cols !== undefined) env.PIGGERCODE_PYTHON_PTY_RELAY_COLS = cols;
+  if (rows !== undefined) env.PIGGERCODE_PYTHON_PTY_RELAY_ROWS = rows;
   return env;
 }
 
@@ -345,7 +345,7 @@ export function resolvePythonPtyRelayExecutable(params?: Readonly<{
   if (platform === 'win32') return null;
 
   const explicitExecutable = normalizeNonEmptyString(params?.explicitExecutable)
-    ?? normalizeNonEmptyString(params?.env?.HAPPIER_DAEMON_TERMINAL_PYTHON);
+    ?? normalizeNonEmptyString(params?.env?.PIGGERCODE_DAEMON_TERMINAL_PYTHON);
   if (explicitExecutable) {
     return explicitExecutable;
   }

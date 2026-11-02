@@ -44,8 +44,8 @@ test('hstack logs --json resolves stack-scoped sources and auto-selects runner w
       cwd: process.cwd(),
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: root,
-        HAPPIER_STACK_STACK: stackName,
+        PIGGERCODE_STACK_STORAGE_DIR: root,
+        PIGGERCODE_STACK_STACK: stackName,
       },
     }
   );
@@ -74,8 +74,8 @@ test('hstack logs --component=server --json selects server log path when present
       cwd: process.cwd(),
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: root,
-        HAPPIER_STACK_STACK: stackName,
+        PIGGERCODE_STACK_STORAGE_DIR: root,
+        PIGGERCODE_STACK_STACK: stackName,
       },
     }
   );
@@ -102,8 +102,8 @@ test('hstack logs --component=server prints metadata in text mode', async () => 
       cwd: process.cwd(),
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: root,
-        HAPPIER_STACK_STACK: stackName,
+        PIGGERCODE_STACK_STORAGE_DIR: root,
+        PIGGERCODE_STACK_STACK: stackName,
       },
     }
   );

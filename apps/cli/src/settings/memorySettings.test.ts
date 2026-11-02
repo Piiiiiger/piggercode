@@ -3,15 +3,15 @@ import { applyEnvValues, restoreEnvValues, snapshotEnvValues } from '@/testkit/e
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 describe('memorySettings', () => {
-  const envBackup = snapshotEnvValues(['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL']);
+  const envBackup = snapshotEnvValues(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL']);
   let homeDir: string | undefined;
 
   beforeEach(async () => {
     homeDir = await createTempDir('happier-memory-settings-');
     applyEnvValues({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_SERVER_URL: 'https://api.example.test',
-      HAPPIER_WEBAPP_URL: 'https://app.example.test',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_SERVER_URL: 'https://api.example.test',
+      PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
     });
     vi.resetModules();
   });

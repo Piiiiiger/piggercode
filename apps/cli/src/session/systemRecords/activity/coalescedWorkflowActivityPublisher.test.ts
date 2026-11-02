@@ -31,9 +31,9 @@ function runSnapshot(runId: string, status: SessionWorkflowRunSnapshotV1['status
 describe('createCoalescedWorkflowActivityPublisher', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', '500');
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', '30000');
-    vi.stubEnv('HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS', '0');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS', '500');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_RETRY_MS', '30000');
+    vi.stubEnv('PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS', '0');
   });
   afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); vi.unstubAllEnvs(); });
 

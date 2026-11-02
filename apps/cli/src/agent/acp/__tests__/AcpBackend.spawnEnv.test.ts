@@ -11,7 +11,7 @@ import { AcpBackend } from '../AcpBackend';
 import { writeAcpTestAgentScript } from '../testkit/subprocessHarness';
 
 const envScope = createEnvKeyScope(['GEMINI_MODEL', 'Gemini_Model', 'gemini_model']);
-const preservedEnvKey = 'HAPPIER_ACP_ENV_PRESERVED_KEY';
+const preservedEnvKey = 'PIGGERCODE_ACP_ENV_PRESERVED_KEY';
 
 afterEach(() => {
   envScope.restore();
@@ -31,7 +31,7 @@ function writeEnvCapturingAcpAgentScript(params: { dir: string }): string {
       send({ jsonrpc: '2.0', id, result });
     }
 
-    const capturePath = process.env.HAPPIER_ACP_ENV_CAPTURE_PATH;
+    const capturePath = process.env.PIGGERCODE_ACP_ENV_CAPTURE_PATH;
     if (capturePath) {
       writeFileSync(capturePath, JSON.stringify({
         GEMINI_MODEL: Object.prototype.hasOwnProperty.call(process.env, 'GEMINI_MODEL')
@@ -123,7 +123,7 @@ function writeHangingNewSessionAcpAgentScript(params: { dir: string }): string {
           return;
         }
         if (request.method === 'session/new') {
-          appendFileSync(process.env.HAPPIER_ACP_NEW_SESSION_ATTEMPTS_PATH, 'attempt\\n');
+          appendFileSync(process.env.PIGGERCODE_ACP_NEW_SESSION_ATTEMPTS_PATH, 'attempt\\n');
         }
       });
     `,
@@ -167,7 +167,7 @@ describe('AcpBackend spawn environment', () => {
         cwd: dir,
         command: process.execPath,
         args: [scriptPath],
-        env: { HAPPIER_ACP_ENV_CAPTURE_PATH: capturePath },
+        env: { PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath },
         prepareProcessLaunch,
       });
 
@@ -216,7 +216,7 @@ describe('AcpBackend spawn environment', () => {
         cwd: dir,
         command: process.execPath,
         args: [scriptPath],
-        env: { HAPPIER_ACP_NEW_SESSION_ATTEMPTS_PATH: attemptsPath },
+        env: { PIGGERCODE_ACP_NEW_SESSION_ATTEMPTS_PATH: attemptsPath },
         transportHandler: {
           agentName: 'test',
           getInitTimeout: () => 1_000,
@@ -272,7 +272,7 @@ describe('AcpBackend spawn environment', () => {
         cwd: dir,
         command: process.execPath,
         args: [scriptPath],
-        env: { HAPPIER_ACP_ENV_CAPTURE_PATH: capturePath },
+        env: { PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath },
         unsetEnv: ['GEMINI_MODEL'],
       });
 
@@ -307,7 +307,7 @@ describe('AcpBackend spawn environment', () => {
         command: process.execPath,
         args: [scriptPath],
         env: {
-          HAPPIER_ACP_ENV_CAPTURE_PATH: capturePath,
+          PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath,
           GEMINI_MODEL: 'scoped-exact-model',
           Gemini_Model: 'scoped-mixed-case-model',
           gemini_model: 'scoped-lowercase-model',

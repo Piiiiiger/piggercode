@@ -16,28 +16,28 @@ import { checkDaemonStatePingAware } from '../daemon.mjs';
 const readExistingEnv = readTextOrEmpty;
 
 const STACK_WRAPPER_CLEAR_UNPREFIXED_KEYS = [
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_HOME_DIR',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_HOME_DIR',
   'APP_ENV',
   'EXPO_UPDATES_CHANNEL',
-  'EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV',
-  'EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW',
-  'EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY',
+  'EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV',
+  'EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW',
+  'EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY',
   // Runtime feature policy knobs should be stack-local; stale values from a prior stack can
   // silently bleed into a newly selected stack and override expected defaults.
-  'HAPPIER_FEATURE_POLICY_ENV',
-  'HAPPIER_EMBEDDED_POLICY_ENV',
-  'HAPPIER_BUILD_FEATURES_ALLOW',
-  'HAPPIER_BUILD_FEATURES_DENY',
+  'PIGGERCODE_FEATURE_POLICY_ENV',
+  'PIGGERCODE_EMBEDDED_POLICY_ENV',
+  'PIGGERCODE_BUILD_FEATURES_ALLOW',
+  'PIGGERCODE_BUILD_FEATURES_DENY',
 ];
 
 const STACK_SCOPED_EXPO_PORT_KEYS = [
-  'HAPPIER_STACK_EXPO_DEV_PORT',
-  'HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY',
-  'HAPPIER_STACK_EXPO_DEV_PORT_BASE',
-  'HAPPIER_STACK_EXPO_DEV_PORT_RANGE',
+  'PIGGERCODE_STACK_EXPO_DEV_PORT',
+  'PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY',
+  'PIGGERCODE_STACK_EXPO_DEV_PORT_BASE',
+  'PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE',
 ];
 
 function stringifyEnv(env) {
@@ -57,9 +57,9 @@ export function resolveDefaultRepoEnv({ rootDir }) {
   //
   // Default: use the workspace clone (<workspace>/happier), regardless of any current
   // one-off repo/worktree selection in the user's environment.
-  const workspaceDir = getWorkspaceDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+  const workspaceDir = getWorkspaceDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
   const repoDir = join(workspaceDir, 'main');
-  return { HAPPIER_STACK_REPO_DIR: repoDir };
+  return { PIGGERCODE_STACK_REPO_DIR: repoDir };
 }
 
 export async function writeStackEnv({ stackName, env }) {
@@ -94,14 +94,14 @@ export async function withStackEnv({
       `  hstack stack new ${stackName} --interactive\n`
     );
   }
-  // IMPORTANT: stack env file should be authoritative. If the user has HAPPIER_STACK_*
+  // IMPORTANT: stack env file should be authoritative. If the user has PIGGERCODE_STACK_*
   // exported in their shell, it would otherwise "win" because utils/env.mjs only sets
   // env vars if they are missing/empty.
   const cleaned = scrubHappierStackEnv(process.env, {
     keepHappierStackKeys: STACK_WRAPPER_PRESERVE_KEYS,
     clearUnprefixedKeys: STACK_WRAPPER_CLEAR_UNPREFIXED_KEYS,
   });
-  const callerStackName = (process.env.HAPPIER_STACK_STACK ?? '').toString().trim();
+  const callerStackName = (process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim();
   if (callerStackName && callerStackName !== stackName) {
     for (const key of STACK_SCOPED_EXPO_PORT_KEYS) {
       delete cleaned[key];
@@ -115,10 +115,10 @@ export async function withStackEnv({
 
   let env = {
     ...cleaned,
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
     // Expose runtime state path so scripts can find it if needed.
-    HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+    PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
     // Stack env is authoritative by default.
     ...stackEnv,
     // One-shot overrides (e.g. --repo=...) win over stack env file.
@@ -127,12 +127,12 @@ export async function withStackEnv({
   env = applyStackActiveServerScopeEnv({
     env,
     stackName,
-    cliIdentity: (env.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
+    cliIdentity: (env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
   });
   env = applyStackDaemonLifecycleScopeEnv({
     env,
     stackName,
-    cliIdentity: (env.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
+    cliIdentity: (env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
   });
 
   if (typeof beforeRuntimeReconcile === 'function') {
@@ -141,15 +141,15 @@ export async function withStackEnv({
   const refreshedRuntimeState = await readStackRuntimeStateFile(runtimeStatePath);
 
   const runtimePortCandidate =
-    Number(env.HAPPIER_STACK_SERVER_PORT) > 0
-      ? Number(env.HAPPIER_STACK_SERVER_PORT)
+    Number(env.PIGGERCODE_STACK_SERVER_PORT) > 0
+      ? Number(env.PIGGERCODE_STACK_SERVER_PORT)
       : Number(refreshedRuntimeState?.ports?.server) > 0
         ? Number(refreshedRuntimeState?.ports?.server)
         : null;
   const runtimeState = reconcileDaemonRuntimeState
     ? await readStackRuntimeStateWithDaemonSync({
         runtimeStatePath,
-        cliHomeDir: (env.HAPPIER_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString(),
+        cliHomeDir: (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString(),
         internalServerUrl:
           Number.isFinite(runtimePortCandidate) && runtimePortCandidate > 0 ? `http://127.0.0.1:${runtimePortCandidate}` : '',
         env,
@@ -176,7 +176,7 @@ export async function withStackEnv({
     const applyPort = (suffix, value) => {
       const n = Number(value);
       if (!Number.isFinite(n) || n <= 0) return;
-      env[`HAPPIER_STACK_${suffix}`] = String(n);
+      env[`PIGGERCODE_STACK_${suffix}`] = String(n);
     };
     applyPort('SERVER_PORT', ports.server);
     applyPort('SERVER_BACKEND_PORT', ports.backend);
@@ -187,7 +187,7 @@ export async function withStackEnv({
 
     // Mark ephemeral mode for downstream helpers (e.g. infra should not persist ports).
     if (runtimeState?.ephemeral) {
-      env.HAPPIER_STACK_EPHEMERAL_PORTS = '1';
+      env.PIGGERCODE_STACK_EPHEMERAL_PORTS = '1';
     }
   }
 
@@ -195,7 +195,7 @@ export async function withStackEnv({
 }
 
 export function parseServerComponentFromEnv(env) {
-  const v = (env.HAPPIER_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
+  const v = (env.PIGGERCODE_STACK_SERVER_COMPONENT ?? '').toString().trim() || 'happier-server-light';
   return v === 'happier-server' ? 'happier-server' : 'happier-server-light';
 }
 
@@ -214,7 +214,7 @@ export async function getRuntimePortExtraEnv(stackName) {
     ? {
         // Ephemeral stacks (PR stacks) store their chosen ports in stack.runtime.json, not the env file.
         // Ensure stack-scoped commands that compute URLs don't fall back to 3005 (main default).
-        HAPPIER_STACK_SERVER_PORT: String(runtimePort),
+        PIGGERCODE_STACK_SERVER_PORT: String(runtimePort),
       }
     : null;
 }

@@ -20,7 +20,7 @@ async function writeHappyMonorepoStubAt({ monoRoot }) {
 test('getComponentDir derives monorepo component package dirs from workspace/main', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-paths-monorepo-' });
   const rootDir = fixture.root;
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
 
   const monoRoot = await writeHappyMonorepoStub({ rootDir });
   assert.equal(getComponentDir(rootDir, 'happier-ui', env), join(monoRoot, 'apps', 'ui'));
@@ -32,7 +32,7 @@ test('getComponentDir derives monorepo component package dirs from workspace/mai
 test('getComponentRepoDir returns the shared monorepo root for monorepo components', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-paths-monorepo-' });
   const rootDir = fixture.root;
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
 
   const monoRoot = await writeHappyMonorepoStub({ rootDir });
   assert.equal(getComponentRepoDir(rootDir, 'happier-ui', env), monoRoot);
@@ -41,18 +41,18 @@ test('getComponentRepoDir returns the shared monorepo root for monorepo componen
   assert.equal(getComponentRepoDir(rootDir, 'happier-server-light', env), monoRoot);
 });
 
-test('getComponentDir normalizes HAPPIER_STACK_REPO_DIR that points inside the monorepo', async (t) => {
+test('getComponentDir normalizes PIGGERCODE_STACK_REPO_DIR that points inside the monorepo', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-paths-monorepo-' });
   const rootDir = fixture.root;
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
 
   const monoRoot = await writeHappyMonorepoStub({ rootDir });
 
-  env.HAPPIER_STACK_REPO_DIR = join(monoRoot, 'apps', 'cli', 'src');
+  env.PIGGERCODE_STACK_REPO_DIR = join(monoRoot, 'apps', 'cli', 'src');
   assert.equal(getComponentDir(rootDir, 'happier-cli', env), join(monoRoot, 'apps', 'cli'));
 });
 
-test('getRepoDir falls back to the monorepo containing the CLI root when HAPPIER_STACK_REPO_DIR is unset', async (t) => {
+test('getRepoDir falls back to the monorepo containing the CLI root when PIGGERCODE_STACK_REPO_DIR is unset', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-paths-monorepo-' });
   const tmpRoot = fixture.root;
 
@@ -63,7 +63,7 @@ test('getRepoDir falls back to the monorepo containing the CLI root when HAPPIER
   // Simulate running hstack from an activated local clone:
   // rootDir is inside the monorepo, but there is no workspace/main checkout.
   const rootDir = join(monoRoot, 'apps', 'stack');
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: workspaceDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir };
 
   assert.equal(getRepoDir(rootDir, env), monoRoot);
 });
@@ -79,8 +79,8 @@ test('getRepoDir ignores the monorepo containing the CLI root in sandbox mode', 
   // Sandbox runs must be isolated: no implicit repo-local checkouts.
   const rootDir = join(monoRoot, 'apps', 'stack');
   const env = {
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_SANDBOX_DIR: join(tmpRoot, 'sandbox'),
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_SANDBOX_DIR: join(tmpRoot, 'sandbox'),
   };
 
   assert.equal(getRepoDir(rootDir, env), join(workspaceDir, 'main'));

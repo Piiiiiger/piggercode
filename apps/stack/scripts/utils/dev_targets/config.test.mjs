@@ -11,7 +11,7 @@ test('resolveDevTargetsConfigPath keeps dev target state inside the selected sta
   assert.equal(
     resolveDevTargetsConfigPath({
       stackName: 'repo-remote-dev-123',
-      env: { HAPPIER_STACK_STORAGE_DIR: '/tmp/happier-stacks' },
+      env: { PIGGERCODE_STACK_STORAGE_DIR: '/tmp/happier-stacks' },
     }),
     '/tmp/happier-stacks/repo-remote-dev-123/dev-targets.json',
   );
@@ -22,8 +22,8 @@ test('resolveDevTargetsConfigPath keeps repo-local target state inside its selec
     resolveDevTargetsConfigPath({
       stackName: 'repo-remote-dev-123',
       env: {
-        HAPPIER_STACK_STORAGE_DIR: '/tmp/happier-stacks',
-        HAPPIER_STACK_REPO_DIR: '/workspace/happier',
+        PIGGERCODE_STACK_STORAGE_DIR: '/tmp/happier-stacks',
+        PIGGERCODE_STACK_REPO_DIR: '/workspace/happier',
       },
     }),
     '/tmp/happier-stacks/repo-remote-dev-123/dev-targets.json',

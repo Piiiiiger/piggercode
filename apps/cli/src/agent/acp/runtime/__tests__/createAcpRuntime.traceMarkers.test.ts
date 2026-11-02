@@ -18,7 +18,7 @@ async function withTraceMarkerCapture(
 ): Promise<void> {
   await withToolTraceFile(prefix, fn, {
     env: {
-      HAPPIER_E2E_ACP_TRACE_MARKERS: traceMarkersEnabled ? '1' : undefined,
+      PIGGERCODE_E2E_ACP_TRACE_MARKERS: traceMarkersEnabled ? '1' : undefined,
     },
   });
 }

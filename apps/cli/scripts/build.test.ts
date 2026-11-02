@@ -158,7 +158,7 @@ describe('buildCliDist', () => {
       await expect(buildCliDist({
         packageRoot,
         skipLock: true,
-        env: { ...process.env, HAPPIER_CLI_BUILD_OUTPUT_DIR: '' },
+        env: { ...process.env, PIGGERCODE_CLI_BUILD_OUTPUT_DIR: '' },
       })).resolves.toEqual({ outputDir: join(realpathSync.native(packageRoot), 'dist'), promoted: true });
       expect(() => probeDistRuntimeImport(join(packageRoot, 'dist', 'index.mjs'), { cwd: packageRoot })).not.toThrow();
     } finally {
@@ -312,7 +312,7 @@ describe('buildCliDist', () => {
         skipLock: true,
         env: {
           ...process.env,
-          HAPPIER_CLI_BUILD_VERSION: '0.2.10-dev.61',
+          PIGGERCODE_CLI_BUILD_VERSION: '0.2.10-dev.61',
         },
         rmDistImpl: async () => {},
         resolveTypeScriptCliPathImpl: () => '/repo/node_modules/@typescript/native/bin/tsc',
@@ -427,7 +427,7 @@ describe('buildCliDist', () => {
             lockStaleAfterMs: 1_000,
             env: {
               ...process.env,
-              HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+              PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
             },
             rmDistImpl: async () => { events.push('rm'); },
             resolveTypeScriptCliPathImpl: () => '/repo/node_modules/@typescript/native/bin/tsc',
@@ -631,7 +631,7 @@ describe('buildCliDist', () => {
         skipLock: true,
         env: {
           ...process.env,
-          HAPPIER_CLI_BUILD_OUTPUT_DIR: callerOutput,
+          PIGGERCODE_CLI_BUILD_OUTPUT_DIR: callerOutput,
         },
         rmDistImpl: async () => {},
         resolveTypeScriptCliPathImpl: () => '/repo/node_modules/@typescript/native/bin/tsc',

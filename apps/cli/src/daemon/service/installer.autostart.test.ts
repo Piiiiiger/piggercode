@@ -30,11 +30,11 @@ function writeInstalledDefaultUnit(params: Readonly<{
       description: 'Happier CLI daemon (default)',
       execStart: ['/usr/local/bin/happier', 'daemon', 'start-sync', '--takeover'],
       env: {
-        HAPPIER_HOME_DIR: params.happierHomeDir,
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-        ...(params.autostart ? { HAPPIER_DAEMON_SERVICE_AUTOSTART: params.autostart } : {}),
+        PIGGERCODE_HOME_DIR: params.happierHomeDir,
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+        ...(params.autostart ? { PIGGERCODE_DAEMON_SERVICE_AUTOSTART: params.autostart } : {}),
       },
       wantedBy: 'default.target',
     }),
@@ -125,16 +125,16 @@ describe('daemon service install — autostart selection', () => {
       // whether installDaemonService returns early — so the definition itself
       // carries the declaration, and it must differ from the installed one.
       expect(toOnDemand.plan.files[0]?.content ?? '')
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=on-demand');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=on-demand');
       expect(readFileSync(unitPath, 'utf-8'))
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=at-login');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=at-login');
 
       writeInstalledDefaultUnit({ unitPath, happierHomeDir: `${homeDir}/.happier`, autostart: 'on-demand' });
       const backToLogin = await previewDefaultInstall({ homeDir, autostart: 'at-login' });
       expect(backToLogin.autostart).toBe('at-login');
       expect(commandText(backToLogin)).toContain('systemctl --user enable happier-daemon.default.service');
       expect(backToLogin.plan.files[0]?.content ?? '')
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=at-login');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=at-login');
     });
   });
 
@@ -158,7 +158,7 @@ describe('daemon service install — autostart selection', () => {
       expect(commandText(switched)).not.toContain('systemctl --user restart happier-daemon.default.service');
       // The new declaration still reaches the unit file, so the mode is reported back correctly.
       expect(switched.plan.files[0]?.content ?? '')
-        .toContain('Environment=HAPPIER_DAEMON_SERVICE_AUTOSTART=on-demand');
+        .toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=on-demand');
     });
   });
 

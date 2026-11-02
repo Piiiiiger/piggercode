@@ -8917,7 +8917,7 @@ settingsSession: {
         manifest: {
           title: "模型包清单",
           subtitle:
-            "默认使用 Happier 模型包（可通过 EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS 覆盖）。",
+            "默认使用 Happier 模型包（可通过 EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS 覆盖）。",
           detailResolved: "已解析",
           detailMissing: "缺失",
         },
@@ -8959,7 +8959,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "清单 URL 缺失",
-            body: "无法解析模型包清单 URL。请检查 EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS（或旧版 Kokoro 环境变量）。",
+            body: "无法解析模型包清单 URL。请检查 EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS（或旧版 Kokoro 环境变量）。",
           },
           notInstalledTitle: "未安装",
           notInstalledBody: "请先下载模型包以启用更新检查。",

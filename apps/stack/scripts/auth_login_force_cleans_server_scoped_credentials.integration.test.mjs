@@ -56,9 +56,9 @@ async function writeRuntimeCliSnapshot({ fixture, snapshotId, script }) {
         '#!/bin/sh',
         'set -eu',
         normalizedBody,
-        'if [ -n "${HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH-}" ]; then',
-        '  mkdir -p "$(dirname "$HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH")"',
-        '  printf "%s\\n" "${HAPPIER_TEST_AUTH_SUCCESS_TOKEN-test-token}" > "$HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH"',
+        'if [ -n "${PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH-}" ]; then',
+        '  mkdir -p "$(dirname "$PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH")"',
+        '  printf "%s\\n" "${PIGGERCODE_TEST_AUTH_SUCCESS_TOKEN-test-token}" > "$PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH"',
         'fi',
       ].join('\n'),
       artifactFingerprint: `cli-${snapshotId}`,
@@ -92,11 +92,11 @@ test('hstack stack auth login --force clears stale stack credential aliases whil
       prefix: 'hstack-auth-force-cleanup-',
       stackName,
       stackEnvLines: [
-        `HAPPIER_STACK_STACK=${stackName}`,
-        `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
-        'HAPPIER_STACK_RUNTIME_MODE=prefer',
+        `PIGGERCODE_STACK_STACK=${stackName}`,
+        `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
+        'PIGGERCODE_STACK_RUNTIME_MODE=prefer',
       ],
     });
     fixture.stackName = stackName;
@@ -104,8 +104,8 @@ test('hstack stack auth login --force clears stale stack credential aliases whil
     const internalServerUrl = `http://127.0.0.1:${serverPort}`;
     const cliHomeDir = join(fixture.storageDir, stackName, 'cli');
     const env = fixture.buildEnv({
-      HAPPIER_STACK_RUNTIME_MODE: 'prefer',
-      HAPPIER_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
+      PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
+      PIGGERCODE_ACTIVE_SERVER_ID: `stack_${stackName}__id_default`,
     });
     const canonicalServerId = 'stack-dev-profile';
     const historicalServerId = `127.0.0.1-${serverPort}`;
@@ -193,8 +193,8 @@ PY
           TEST_LEGACY_PATH: paths.legacyPath,
           TEST_UNRELATED_CREDENTIAL_PATH: unrelatedCredentialPath,
           TEST_CAPTURE_PATH: capturePath,
-          HAPPIER_TEST_AUTH_SUCCESS_CREDENTIAL_PATH: paths.serverScopedPath,
-          HAPPIER_TEST_AUTH_SUCCESS_TOKEN: 'token-fresh',
+          PIGGERCODE_TEST_AUTH_SUCCESS_CREDENTIAL_PATH: paths.serverScopedPath,
+          PIGGERCODE_TEST_AUTH_SUCCESS_TOKEN: 'token-fresh',
         },
       },
     );

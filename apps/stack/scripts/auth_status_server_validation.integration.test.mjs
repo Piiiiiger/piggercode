@@ -84,10 +84,10 @@ test('hstack stack auth status marks credentials invalid when server rejects tok
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'dev',
-    HAPPIER_STACK_ENV_FILE: join(tmp, 'missing.env'),
-    HAPPIER_STACK_SERVER_PORT: String(stub.port),
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_STACK: 'dev',
+    PIGGERCODE_STACK_ENV_FILE: join(tmp, 'missing.env'),
+    PIGGERCODE_STACK_SERVER_PORT: String(stub.port),
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'status', '--json'], { cwd: rootDir, env });
@@ -123,10 +123,10 @@ test('hstack stack auth status marks credentials valid when profile endpoint acc
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'dev',
-    HAPPIER_STACK_ENV_FILE: join(tmp, 'missing.env'),
-    HAPPIER_STACK_SERVER_PORT: String(stub.port),
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_STACK: 'dev',
+    PIGGERCODE_STACK_ENV_FILE: join(tmp, 'missing.env'),
+    PIGGERCODE_STACK_SERVER_PORT: String(stub.port),
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'status', '--json'], { cwd: rootDir, env });

@@ -73,7 +73,7 @@ function readMessagePayloads(socket: ApiSessionSocketStub): CommitPayload[] {
 describe('ApiSessionClient transcript revision retry ordering', () => {
   afterEach(() => {
     vi.useRealTimers();
-    delete process.env.HAPPIER_TRANSCRIPT_STORAGE;
+    delete process.env.PIGGERCODE_TRANSCRIPT_STORAGE;
   });
 
   it.each([
@@ -231,7 +231,7 @@ describe('ApiSessionClient transcript revision retry ordering', () => {
 
   it('clears retry state when an unconfirmed required direct commit throws without scheduling recovery', async () => {
     vi.resetModules();
-    process.env.HAPPIER_TRANSCRIPT_STORAGE = 'direct';
+    process.env.PIGGERCODE_TRANSCRIPT_STORAGE = 'direct';
     sessionSocketStub = createApiSessionSocketStub({
       connected: true,
       emitWithAck: async (event: string) => event === 'message' ? null : { ok: true },

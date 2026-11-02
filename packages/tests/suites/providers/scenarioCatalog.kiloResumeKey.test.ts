@@ -7,7 +7,7 @@ function providerStub(id: string): ProviderUnderTest {
   const envSuffix = id.toUpperCase().replace(/[^A-Z0-9]/g, '_');
   return {
     id,
-    enableEnvVar: `HAPPIER_E2E_PROVIDER_${envSuffix}`,
+    enableEnvVar: `PIGGERCODE_E2E_PROVIDER_${envSuffix}`,
     protocol: 'acp',
     traceProvider: id,
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: [] } },

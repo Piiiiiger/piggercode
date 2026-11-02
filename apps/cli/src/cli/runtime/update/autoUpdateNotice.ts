@@ -28,7 +28,7 @@ function envNumber(env: NodeJS.ProcessEnv, key: string): number | null {
 }
 
 function updateChecksEnabled(env: NodeJS.ProcessEnv): boolean {
-  return String(env.HAPPIER_CLI_UPDATE_CHECK ?? '1').trim() !== '0';
+  return String(env.PIGGERCODE_CLI_UPDATE_CHECK ?? '1').trim() !== '0';
 }
 
 function resolveSelfChannelArgs(ring: PublicReleaseRingId): string[] {
@@ -112,20 +112,20 @@ export function maybeRefreshCliUpdateCacheInBackground(params: Readonly<{
 }>): void {
   const env = params.env;
   if (!updateChecksEnabled(env)) return;
-  if (String(env.HAPPIER_CLI_UPDATE_CHECK_SPAWNED ?? '').trim() === '1') return;
+  if (String(env.PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED ?? '').trim() === '1') return;
   const now = params.nowMs ?? Date.now();
   const cached = readUpdateCache(resolveCliUpdateCachePath({ homeDir: params.homeDir, publicReleaseRing: params.publicReleaseRing }));
   const checkedAt = typeof cached?.checkedAt === 'number' ? cached.checkedAt : 0;
   const checkInterval =
     params.checkIntervalMs ??
-    envNumber(env, 'HAPPIER_CLI_UPDATE_CHECK_INTERVAL_MS') ??
+    envNumber(env, 'PIGGERCODE_CLI_UPDATE_CHECK_INTERVAL_MS') ??
     DEFAULT_INTERVAL_MS;
   const shouldCheck = !checkedAt || (Number.isFinite(checkInterval) && now - checkedAt > checkInterval);
   if (!shouldCheck) return;
 
   const entry = resolveUpdateCheckEntrypoint(params.cliRootDir);
   const spawnImpl = params.spawnDetached ?? spawnDetachedNode;
-  const lockTtlMs = envNumber(env, 'HAPPIER_CLI_UPDATE_CHECK_LOCK_TTL_MS') ?? DEFAULT_CHECK_LOCK_TTL_MS;
+  const lockTtlMs = envNumber(env, 'PIGGERCODE_CLI_UPDATE_CHECK_LOCK_TTL_MS') ?? DEFAULT_CHECK_LOCK_TTL_MS;
   const lockPath = resolveCliUpdateCheckLockPath({ homeDir: params.homeDir, publicReleaseRing: params.publicReleaseRing });
   if (!acquireSingleFlightLock({ lockPath, nowMs: now, ttlMs: lockTtlMs, pid: process.pid })) return;
   try {
@@ -133,7 +133,7 @@ export function maybeRefreshCliUpdateCacheInBackground(params: Readonly<{
       script: entry,
       args: ['self', 'check', '--quiet', ...resolveSelfChannelArgs(params.publicReleaseRing)],
       cwd: params.cliRootDir,
-      env: { ...env, HAPPIER_CLI_UPDATE_CHECK_SPAWNED: '1' },
+      env: { ...env, PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED: '1' },
     });
   } catch {
     // Best-effort: update checks must never crash the CLI.
@@ -155,7 +155,7 @@ export function maybeAutoUpdateNotice(params: Readonly<{
   const env = params.env;
   if (!updateChecksEnabled(env)) return;
   if (!params.isTTY) return;
-  if (String(env.HAPPIER_CLI_UPDATE_CHECK_SPAWNED ?? '').trim() === '1') return;
+  if (String(env.PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED ?? '').trim() === '1') return;
   if (isVersionInvocation(params.argv)) return;
 
   const cmd = getCmdFromArgv(params.argv);
@@ -168,11 +168,11 @@ export function maybeAutoUpdateNotice(params: Readonly<{
 
   const checkInterval =
     params.checkIntervalMs ??
-    envNumber(env, 'HAPPIER_CLI_UPDATE_CHECK_INTERVAL_MS') ??
+    envNumber(env, 'PIGGERCODE_CLI_UPDATE_CHECK_INTERVAL_MS') ??
     DEFAULT_INTERVAL_MS;
   const notifyInterval =
     params.notifyIntervalMs ??
-    envNumber(env, 'HAPPIER_CLI_UPDATE_NOTIFY_INTERVAL_MS') ??
+    envNumber(env, 'PIGGERCODE_CLI_UPDATE_NOTIFY_INTERVAL_MS') ??
     DEFAULT_INTERVAL_MS;
 
   const shouldCheck = !checkedAt || (Number.isFinite(checkInterval) && now - checkedAt > checkInterval);

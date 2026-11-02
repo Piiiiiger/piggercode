@@ -8,7 +8,7 @@ import { resolveCliPathOverride } from './resolveCliPathOverride';
 
 describe('resolveCliPathOverride', () => {
   const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
-  const originalOverride = process.env.HAPPIER_OPENCODE_PATH;
+  const originalOverride = process.env.PIGGERCODE_OPENCODE_PATH;
   const tempDirs = new Set<string>();
 
   afterEach(() => {
@@ -16,9 +16,9 @@ describe('resolveCliPathOverride', () => {
       Object.defineProperty(process, 'platform', originalPlatformDescriptor);
     }
     if (originalOverride === undefined) {
-      delete process.env.HAPPIER_OPENCODE_PATH;
+      delete process.env.PIGGERCODE_OPENCODE_PATH;
     } else {
-      process.env.HAPPIER_OPENCODE_PATH = originalOverride;
+      process.env.PIGGERCODE_OPENCODE_PATH = originalOverride;
     }
     for (const dir of tempDirs) {
       rmSync(dir, { recursive: true, force: true });
@@ -40,7 +40,7 @@ describe('resolveCliPathOverride', () => {
     const cmdShimPath = join(root, 'opencode.cmd');
     writeFileSync(cmdShimPath, '@echo off\r\necho ok\r\n', 'utf8');
 
-    process.env.HAPPIER_OPENCODE_PATH = extensionlessPath;
+    process.env.PIGGERCODE_OPENCODE_PATH = extensionlessPath;
     process.env.PATHEXT = '.CMD;.EXE';
 
     expect(resolveCliPathOverride({ agentId: 'opencode' })?.toLowerCase()).toBe(cmdShimPath.toLowerCase());
@@ -61,7 +61,7 @@ describe('resolveCliPathOverride', () => {
 
     const previousHome = process.env.HOME;
     process.env.HOME = homeDir;
-    process.env.HAPPIER_OPENCODE_PATH = '~/.local/bin/opencode';
+    process.env.PIGGERCODE_OPENCODE_PATH = '~/.local/bin/opencode';
 
     try {
       expect(resolveCliPathOverride({ agentId: 'opencode' })).toBe(cliPath);

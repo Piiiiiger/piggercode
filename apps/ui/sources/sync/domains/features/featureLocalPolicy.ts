@@ -13,11 +13,11 @@ const LOCAL_POLICY_BY_FEATURE: Readonly<Partial<Record<FeatureId, FeatureLocalPo
     voice: (settings) => resolveUiFeatureToggleEnabled(settings, 'voice'),
     'voice.agent': (settings) => resolveUiFeatureToggleEnabled(settings, 'voice.agent'),
     connectedServices: (settings) =>
-        parseBooleanEnv(process.env.EXPO_PUBLIC_HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED, true)
+        parseBooleanEnv(process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED, true)
         && resolveUiFeatureToggleEnabled(settings, 'connectedServices'),
     'connectedServices.quotas': (settings) => resolveUiFeatureToggleEnabled(settings, 'connectedServices.quotas'),
     channelBridges: (settings) => resolveUiFeatureToggleEnabled(settings, 'channelBridges'),
-    'updates.ota': () => parseBooleanEnv(process.env.EXPO_PUBLIC_HAPPIER_FEATURE_UPDATES_OTA__ENABLED, true),
+    'updates.ota': () => parseBooleanEnv(process.env.EXPO_PUBLIC_PIGGERCODE_FEATURE_UPDATES_OTA__ENABLED, true),
     'attachments.uploads': (settings) => resolveUiFeatureToggleEnabled(settings, 'attachments.uploads'),
     'social.friends': (settings) => resolveUiFeatureToggleEnabled(settings, 'social.friends'),
     'auth.recovery.providerReset': () => true,

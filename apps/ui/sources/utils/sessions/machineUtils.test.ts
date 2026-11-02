@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { isMachineOnline } from './machineUtils';
 
 function withGraceMs(graceMs: string, fn: () => void): void {
-  const previous = process.env.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS;
-  process.env.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS = graceMs;
+  const previous = process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS;
+  process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS = graceMs;
   try {
     fn();
   } finally {
-    if (previous === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS;
-    else process.env.EXPO_PUBLIC_HAPPIER_MACHINE_ONLINE_GRACE_MS = previous;
+    if (previous === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS;
+    else process.env.EXPO_PUBLIC_PIGGERCODE_MACHINE_ONLINE_GRACE_MS = previous;
   }
 }
 

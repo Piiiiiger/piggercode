@@ -154,12 +154,12 @@ describe('core e2e: machine RPC session.continueWithReplay hydrates transcript i
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
       },
     });
 

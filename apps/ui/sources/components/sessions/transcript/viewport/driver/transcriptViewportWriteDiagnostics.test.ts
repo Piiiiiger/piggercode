@@ -299,7 +299,7 @@ describe('transcriptViewportWriteDiagnostics', () => {
         // every native capture empty and made native A/B comparisons unfalsifiable.
         vi.stubGlobal('localStorage', undefined);
         vi.stubEnv(
-            'EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON',
+            'EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON',
             JSON.stringify({ transcriptViewportDiagnosticsEnabled: true }),
         );
         resetTranscriptViewportDiagnosticsForTests();
@@ -322,7 +322,7 @@ describe('transcriptViewportWriteDiagnostics', () => {
     it('stays closed on a native runtime when the sync-tuning env channel does not enable it', () => {
         vi.stubGlobal('localStorage', undefined);
         vi.stubEnv(
-            'EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON',
+            'EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON',
             JSON.stringify({ transcriptNativeHotTailItemCount: 4 }),
         );
         resetTranscriptViewportDiagnosticsForTests();

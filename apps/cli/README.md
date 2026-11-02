@@ -234,16 +234,16 @@ For the full user guide (UI behavior, defaults, apply timing), see the app docs:
 
 ### Happier Configuration
 
-- `HAPPIER_PUBLIC_SERVER_URL` - Canonical/share server URL (used in QR/deep links; should work from your phone)
-- `HAPPIER_LOCAL_SERVER_URL` - Optional local API URL optimization (only used for API calls, never embedded in links)
-- `HAPPIER_SERVER_URL` - Legacy/compat server URL
-  - If `HAPPIER_PUBLIC_SERVER_URL` is unset: treated as the canonical/share URL
-  - If `HAPPIER_PUBLIC_SERVER_URL` is set: treated as a local API URL override
-- `HAPPIER_WEBAPP_URL` - Custom web app URL (default: https://cloud.happier.dev)
-- `HAPPIER_HOME_DIR` - Custom home directory for Happier data (default: ~/.happier)
-- `HAPPIER_DISABLE_CAFFEINATE` - Disable macOS sleep prevention (set to `true`, `1`, or `yes`)
-- `HAPPIER_EXPERIMENTAL` - Enable experimental features (set to `true`, `1`, or `yes`)
-- `HAPPIER_ENCRYPTION_REQUIREMENT` - Set to `require_e2ee` to make the CLI/daemon refuse plaintext Account settings and sessions regardless of the server-advertised mode. The default is `follow_account`; invalid non-empty values stop startup.
+- `PIGGERCODE_PUBLIC_SERVER_URL` - Canonical/share server URL (used in QR/deep links; should work from your phone)
+- `PIGGERCODE_LOCAL_SERVER_URL` - Optional local API URL optimization (only used for API calls, never embedded in links)
+- `PIGGERCODE_SERVER_URL` - Legacy/compat server URL
+  - If `PIGGERCODE_PUBLIC_SERVER_URL` is unset: treated as the canonical/share URL
+  - If `PIGGERCODE_PUBLIC_SERVER_URL` is set: treated as a local API URL override
+- `PIGGERCODE_WEBAPP_URL` - Custom web app URL (default: https://cloud.happier.dev)
+- `PIGGERCODE_HOME_DIR` - Custom home directory for Happier data (default: ~/.happier)
+- `PIGGERCODE_DISABLE_CAFFEINATE` - Disable macOS sleep prevention (set to `true`, `1`, or `yes`)
+- `PIGGERCODE_EXPERIMENTAL` - Enable experimental features (set to `true`, `1`, or `yes`)
+- `PIGGERCODE_ENCRYPTION_REQUIREMENT` - Set to `require_e2ee` to make the CLI/daemon refuse plaintext Account settings and sessions regardless of the server-advertised mode. The default is `follow_account`; invalid non-empty values stop startup.
 
 ### Gemini Configuration
 

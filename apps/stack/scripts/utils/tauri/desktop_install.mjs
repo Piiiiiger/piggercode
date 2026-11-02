@@ -15,7 +15,7 @@ export function resolveMacOsDesktopInstallPlan({
   homeDir = homedir(),
 } = {}) {
   const resolvedInstallDir =
-    String(installDir || env.HAPPIER_STACK_DESKTOP_INSTALL_DIR || '').trim() ||
+    String(installDir || env.PIGGERCODE_STACK_DESKTOP_INSTALL_DIR || '').trim() ||
     join(homeDir, 'Applications');
   const appName = `${sanitizeMacAppName(productName)}.app`;
   return {

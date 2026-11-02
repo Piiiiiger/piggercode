@@ -10,9 +10,9 @@ describe('importOpenCodeTaskSidechainBestEffort', () => {
 
   it('retries listing messages until sidechain transcript becomes available', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS', '80');
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS', '10');
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS', '20');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS', '80');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS', '10');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS', '20');
 
     const rawMessages = [
       {
@@ -60,9 +60,9 @@ describe('importOpenCodeTaskSidechainBestEffort', () => {
 
   it('times out when retryBaseDelayMs=0 and the sidechain transcript never appears', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS', '5');
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS', '0');
-    vi.stubEnv('HAPPIER_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS', '0');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_WAIT_MS', '5');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_BASE_DELAY_MS', '0');
+    vi.stubEnv('PIGGERCODE_OPENCODE_TASK_SIDECHAIN_IMPORT_RETRY_MAX_DELAY_MS', '0');
 
     let callCount = 0;
     const sessionMessagesList = vi.fn((): Promise<unknown[]> => {

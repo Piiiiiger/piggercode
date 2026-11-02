@@ -41,10 +41,10 @@ function buildOpenCodeEnvironmentVariables(opts: {
     const sessionAffinity = readOpenCodeSessionAffinityFromMetadata(metadata);
     const backendMode = sessionAffinity.backendMode
         ?? normalizeOpenCodeBackendMode(opts.settings?.opencodeBackendMode);
-    base.HAPPIER_OPENCODE_BACKEND_MODE = backendMode;
+    base.PIGGERCODE_OPENCODE_BACKEND_MODE = backendMode;
     const cliGeneration = normalizeOpenCodeCliGeneration(opts.settings?.opencodeCliGeneration);
     if (cliGeneration !== 'auto') {
-        base.HAPPIER_OPENCODE_CLI_GENERATION = cliGeneration;
+        base.PIGGERCODE_OPENCODE_CLI_GENERATION = cliGeneration;
     }
 
     const sessionServerBaseUrl = sessionAffinity.serverBaseUrlExplicit ? sessionAffinity.serverBaseUrl : null;
@@ -62,8 +62,8 @@ function buildOpenCodeEnvironmentVariables(opts: {
     const settingsServerBaseUrl = activeServerOverride ?? legacyServerBaseUrl;
     const serverBaseUrl = sessionServerBaseUrl ?? settingsServerBaseUrl;
     if (serverBaseUrl) {
-        base.HAPPIER_OPENCODE_SERVER_URL = serverBaseUrl;
-        base.HAPPIER_OPENCODE_SERVER_URL_EXPLICIT = '1';
+        base.PIGGERCODE_OPENCODE_SERVER_URL = serverBaseUrl;
+        base.PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT = '1';
     }
 
     return base;

@@ -12,7 +12,7 @@ import type { StartedUiWeb } from './uiWebTypes';
 
 export function resolveUiWebExportRootDir(env: NodeJS.ProcessEnv = process.env): string {
   const rootDir = resolvePath(repoRootDir(), '.project', 'tmp', 'ui-web-export');
-  const namespace = String(env.HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE ?? '').trim();
+  const namespace = String(env.PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE ?? '').trim();
   return namespace ? resolvePath(rootDir, namespace) : rootDir;
 }
 
@@ -125,22 +125,22 @@ async function withUiWebExportLock<T>(
 }
 
 export function resolveUiWebExportBuildTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_EXPORT_TIMEOUT_MS, 240_000);
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_EXPORT_TIMEOUT_MS, 240_000);
 }
 
 export function resolveUiWebExportLockTimeoutMs(env: NodeJS.ProcessEnv): number {
-  return readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_EXPORT_LOCK_TIMEOUT_MS, resolveUiWebExportBeforeAllTimeoutMs(env));
+  return readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_EXPORT_LOCK_TIMEOUT_MS, resolveUiWebExportBeforeAllTimeoutMs(env));
 }
 
 export function resolveUiWebExportBeforeAllTimeoutMs(env: NodeJS.ProcessEnv): number {
-  const minTimeoutMs = readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS, 900_000);
-  const headroomMs = readPositiveEnvInt(env.HAPPIER_E2E_UI_WEB_BEFORE_ALL_HEADROOM_MS, 60_000);
+  const minTimeoutMs = readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_BEFORE_ALL_MIN_TIMEOUT_MS, 900_000);
+  const headroomMs = readPositiveEnvInt(env.PIGGERCODE_E2E_UI_WEB_BEFORE_ALL_HEADROOM_MS, 60_000);
   return Math.max(minTimeoutMs, resolveUiWebExportBuildTimeoutMs(env) + headroomMs);
 }
 
 function readServerUrlFromEnv(env: NodeJS.ProcessEnv): string {
   return String(
-    env.EXPO_PUBLIC_HAPPIER_SERVER_URL
+    env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL
     ?? env.EXPO_PUBLIC_HAPPY_SERVER_URL
     ?? env.EXPO_PUBLIC_SERVER_URL
     ?? '',
@@ -148,7 +148,7 @@ function readServerUrlFromEnv(env: NodeJS.ProcessEnv): string {
 }
 
 function readSyncTuningJsonFromEnv(env: NodeJS.ProcessEnv): string {
-  return String(env.EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON ?? '').trim();
+  return String(env.EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON ?? '').trim();
 }
 
 function buildRuntimeConfig(env: NodeJS.ProcessEnv): UiWebRuntimeConfig {
@@ -169,11 +169,11 @@ function buildExportEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
     EXPO_UNSTABLE_WEB_MODAL: '1',
     EXPO_PUBLIC_DEBUG: debug,
     EXPO_PUBLIC_POSTHOG_KEY: String(env.EXPO_PUBLIC_POSTHOG_KEY ?? 'phc-clear-export').trim() || 'phc-clear-export',
-    EXPO_PUBLIC_HAPPIER_SERVER_URL: '',
+    EXPO_PUBLIC_PIGGERCODE_SERVER_URL: '',
     EXPO_PUBLIC_HAPPY_SERVER_URL: '',
     EXPO_PUBLIC_SERVER_URL: '',
     EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: '',
-    EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON: '',
+    EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON: '',
   };
 }
 
@@ -231,7 +231,7 @@ function buildUiWebExportCacheKey(env: NodeJS.ProcessEnv): string {
       key.startsWith('EXPO_PUBLIC_')
       || key === 'APP_ENV'
       || key === 'APP_VARIANT'
-      || key === 'HAPPIER_APP_VARIANT_OVERRIDE'
+      || key === 'PIGGERCODE_APP_VARIANT_OVERRIDE'
       || key === 'EAS_BUILD_PROFILE'
       || key === 'EXPO_UPDATES_CHANNEL'
       || key === 'EXPO_UNSTABLE_WEB_MODAL'
@@ -291,7 +291,7 @@ function canReusePersistedUiWebExport(
 
 async function ensureUiWebExportBuilt(params: { testDir: string; env: NodeJS.ProcessEnv }): Promise<string> {
   const cacheKey = buildUiWebExportCacheKey(params.env);
-  const clearRaw = (params.env.HAPPIER_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
+  const clearRaw = (params.env.PIGGERCODE_E2E_EXPO_CLEAR ?? '').toString().trim().toLowerCase();
   const clearCache = clearRaw === '1' || clearRaw === 'true' || clearRaw === 'yes' || clearRaw === 'y';
   const exportedDistParent = resolveUiWebExportRootDir(params.env);
   const exportedDistDir = resolvePath(exportedDistParent, 'dist');
@@ -422,11 +422,11 @@ function buildBootstrapScript(config: UiWebRuntimeConfig): string {
   return [
     '<script>',
     '(function(){',
-    `window.__HAPPIER_WEB_RUNTIME_CONFIG__=${runtimeConfigJson};`,
+    `window.__PIGGERCODE_WEB_RUNTIME_CONFIG__=${runtimeConfigJson};`,
     `var syncTuningJson=${syncTuningJsonLiteral};`,
     "try {",
-    "  if (syncTuningJson) window.localStorage.setItem('HAPPIER_SYNC_TUNING_JSON', syncTuningJson);",
-    "  else window.localStorage.removeItem('HAPPIER_SYNC_TUNING_JSON');",
+    "  if (syncTuningJson) window.localStorage.setItem('PIGGERCODE_SYNC_TUNING_JSON', syncTuningJson);",
+    "  else window.localStorage.removeItem('PIGGERCODE_SYNC_TUNING_JSON');",
     '} catch {}',
     '})();',
     '</script>',

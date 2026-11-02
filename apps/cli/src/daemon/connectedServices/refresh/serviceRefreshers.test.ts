@@ -160,10 +160,10 @@ describe('serviceRefreshers', () => {
   });
 
   it('refreshes Claude subscription tokens via refresh_token grant', async () => {
-    const previousTokenUrl = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
-    const previousClientId = process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID;
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
-    process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = 'client-123';
+    const previousTokenUrl = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL;
+    const previousClientId = process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = 'https://example.test/anthropic/token';
+    process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = 'client-123';
 
     const fetchMock = vi.fn(async (input: unknown, _init?: unknown) => {
       if (String(input).endsWith('/api/oauth/profile')) {
@@ -221,8 +221,8 @@ describe('serviceRefreshers', () => {
         },
       });
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
-      process.env.HAPPIER_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = previousClientId;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_TOKEN_URL = previousTokenUrl;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_CLAUDE_SUBSCRIPTION_OAUTH_CLIENT_ID = previousClientId;
     }
   });
 
@@ -243,8 +243,8 @@ describe('serviceRefreshers', () => {
   });
 
   it('refreshes Gemini tokens via refresh_token grant', async () => {
-    const previousClientSecret = process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET;
-    process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = 'secret-123';
+    const previousClientSecret = process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = 'secret-123';
 
     const fetchMock = vi.fn(async (_input: unknown, _init?: unknown) => ({
       ok: true,
@@ -282,7 +282,7 @@ describe('serviceRefreshers', () => {
       expect(refreshed.scope).toBe('scope');
       expect(refreshed.tokenType).toBe('Bearer');
     } finally {
-      process.env.HAPPIER_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = previousClientSecret;
+      process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = previousClientSecret;
     }
   });
 

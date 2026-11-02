@@ -71,13 +71,13 @@ process.exit(0);
       ...process.env,
       // Ensure our xcrun stub wins over /usr/bin/xcrun even after env.mjs normalizes PATH.
       PATH: `${binDir}:/usr/bin:/bin`,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'main',
-      HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL: '0',
-      HAPPIER_STACK_TAILSCALE_SERVE: '0',
-      HAPPIER_STACK_ENV_FILE: join(tmp, 'nonexistent-env'),
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'main',
+      PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL: '0',
+      PIGGERCODE_STACK_TAILSCALE_SERVE: '0',
+      PIGGERCODE_STACK_ENV_FILE: join(tmp, 'nonexistent-env'),
     };
 
     const res = await runNodeCapture([mobileScript, '--run-ios', '--no-metro', '--port=14362'], { cwd: rootDir, env });

@@ -95,8 +95,8 @@ describe('useWorkspaceFileTransfers web download cleanup', () => {
     });
 
     it('fails when downloaded bytes exceed the configured web max bytes (even if init under-reports)', async () => {
-        const priorLimit = process.env.EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES = '3';
+        const priorLimit = process.env.EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES = '3';
 
         const createObjectURL = vi.fn(() => 'blob:should-not-be-used');
         const revokeObjectURL = vi.fn();
@@ -157,6 +157,6 @@ describe('useWorkspaceFileTransfers web download cleanup', () => {
         expect(createObjectURL).toHaveBeenCalledTimes(0);
         expect(revokeObjectURL).toHaveBeenCalledTimes(0);
 
-        process.env.EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES = priorLimit;
+        process.env.EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES = priorLimit;
     });
 });

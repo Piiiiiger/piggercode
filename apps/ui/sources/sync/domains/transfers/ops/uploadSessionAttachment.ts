@@ -35,7 +35,7 @@ function parseOptionalPositiveInt(value: unknown): number | undefined {
 }
 
 function resolveUploadPreflightSizeTimeoutMs(): number {
-    const raw = parseOptionalPositiveInt(process.env.EXPO_PUBLIC_HAPPIER_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS);
+    const raw = parseOptionalPositiveInt(process.env.EXPO_PUBLIC_PIGGERCODE_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS);
     const fallback = 2_000;
     const resolved = raw ?? fallback;
     return Math.min(20_000, Math.max(100, resolved));

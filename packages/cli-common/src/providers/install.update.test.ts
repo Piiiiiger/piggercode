@@ -72,7 +72,7 @@ describe.skipIf(process.platform === 'win32')('installProviderCli update intent'
       platform: 'linux' as const,
       intent: 'update' as const,
       updateTarget: { command: launcher, source: 'system' as const },
-      env: { HOME: home, HAPPIER_HOME_DIR: home, PATH: '' },
+      env: { HOME: home, PIGGERCODE_HOME_DIR: home, PATH: '' },
       logDir,
       deps: { runCommand: runCommandFrom(spawnSyncMock) },
     };
@@ -101,7 +101,7 @@ describe.skipIf(process.platform === 'win32')('installProviderCli update intent'
       intent: 'update',
       updateTarget: { command: shim, source: 'system' },
       allowVendorRecipeExecution: true,
-      env: { HOME: home, HAPPIER_HOME_DIR: home, PATH: '' },
+      env: { HOME: home, PIGGERCODE_HOME_DIR: home, PATH: '' },
       logDir,
       deps: { runCommand: runCommandFrom(spawnSyncMock) },
     });
@@ -113,7 +113,7 @@ describe.skipIf(process.platform === 'win32')('installProviderCli update intent'
   });
 
   it('reinstalls a Happier-managed CLI through the managed owner even though it is already installed', async () => {
-    const env = { HOME: home, HAPPIER_HOME_DIR: home, PATH: '' };
+    const env = { HOME: home, PIGGERCODE_HOME_DIR: home, PATH: '' };
     const managedCommand = writeExecutable(resolveProviderCliManagedCommandPath('gemini', { processEnv: env }));
     const spawnSyncMock = vi.fn<SpawnSyncMockFn>(() => succeededSpawn());
 

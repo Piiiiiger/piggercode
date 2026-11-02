@@ -24,7 +24,7 @@ type BackgroundUpdateDeps = Readonly<{
 }>;
 
 function hasExplicitCodexAcpOverride(env: NodeJS.ProcessEnv): boolean {
-  return typeof env.HAPPIER_CODEX_ACP_BIN === 'string' && env.HAPPIER_CODEX_ACP_BIN.trim().length > 0;
+  return typeof env.PIGGERCODE_CODEX_ACP_BIN === 'string' && env.PIGGERCODE_CODEX_ACP_BIN.trim().length > 0;
 }
 
 export async function detectCodexAcpLaunchResolution(

@@ -22,9 +22,9 @@ vi.mock('node:child_process', async (importOriginal) => {
 describe('service manager availability before mutation', () => {
   it('returns a structured missing-manager error from the real JSON start command', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-start-json-', env: {
-      PATH: '', HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux', HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_SERVICE_UID: '123', HAPPIER_DAEMON_SERVICE_NODE_PATH: process.execPath,
-      HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
+      PATH: '', PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux', PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_UID: '123', PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.execPath,
+      PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       const plan = planDaemonServiceInstall({
@@ -73,9 +73,9 @@ describe('service manager availability before mutation', () => {
   });
   it.each(['start', 'restart'] as const)('preserves a drifted definition before %s with no manager', async (action) => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-drift-', env: {
-      PATH: '', HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux', HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_SERVICE_UID: '123', HAPPIER_DAEMON_SERVICE_NODE_PATH: process.execPath,
-      HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
+      PATH: '', PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux', PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_UID: '123', PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.execPath,
+      PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       const plan = planDaemonServiceInstall({
@@ -102,7 +102,7 @@ describe('service manager availability before mutation', () => {
   });
   it('still rejects manual takeover of a live service-owned daemon without systemctl', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-live-owner-', env: {
-      PATH: '', HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux', HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
+      PATH: '', PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux', PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       const port = await reserveEphemeralPort();
@@ -132,8 +132,8 @@ describe('service manager availability before mutation', () => {
   });
   it('preflights installation before stopping a live manual owner for takeover', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-takeover-', env: {
-      PATH: '', HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux', HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_SERVICE_NODE_PATH: process.execPath, HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
+      PATH: '', PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux', PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.execPath, PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       const port = await reserveEphemeralPort();
@@ -157,8 +157,8 @@ describe('service manager availability before mutation', () => {
   });
   it('returns a structured missing-manager error from the real JSON install command', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-json-', env: {
-      PATH: '', HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux', HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_DAEMON_SERVICE_NODE_PATH: process.execPath, HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
+      PATH: '', PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux', PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.execPath, PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.argv[1],
     } }, async ({ homeDir }) => {
       await writeDaemonSettingsFixture(homeDir);
       const output = captureStdoutJsonOutput<{ ok: boolean; error: string }>();

@@ -6,14 +6,14 @@ import { requireConnectedServiceOauthCredentialRecord } from '@/daemon/connected
 import { computeConnectedServiceAccessTokenFingerprint } from '@/daemon/connectedServices/refresh/credentialFreshness/tokenFingerprint';
 import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';
 
-export const GEMINI_ACP_AUTH_METHOD_ENV = 'HAPPIER_GEMINI_ACP_AUTH_METHOD';
-export const GEMINI_ACP_AUTH_META_ENV = 'HAPPIER_GEMINI_ACP_AUTH_META';
+export const GEMINI_ACP_AUTH_METHOD_ENV = 'PIGGERCODE_GEMINI_ACP_AUTH_METHOD';
+export const GEMINI_ACP_AUTH_META_ENV = 'PIGGERCODE_GEMINI_ACP_AUTH_META';
 export const GEMINI_CONNECTED_SERVICE_PROVIDER_ACCOUNT_ID_ENV =
-  'HAPPIER_GEMINI_CONNECTED_SERVICE_PROVIDER_ACCOUNT_ID';
+  'PIGGERCODE_GEMINI_CONNECTED_SERVICE_PROVIDER_ACCOUNT_ID';
 export const GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL_ENV =
-  'HAPPIER_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL';
+  'PIGGERCODE_GEMINI_CONNECTED_SERVICE_PROVIDER_EMAIL';
 export const GEMINI_CONNECTED_SERVICE_CREDENTIAL_FINGERPRINT_ENV =
-  'HAPPIER_GEMINI_CONNECTED_SERVICE_CREDENTIAL_FINGERPRINT';
+  'PIGGERCODE_GEMINI_CONNECTED_SERVICE_CREDENTIAL_FINGERPRINT';
 
 function readRecord(value: unknown): Record<string, unknown> | null {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null;

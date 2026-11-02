@@ -8,7 +8,7 @@ import type { AcpPermissionHandler } from '../AcpBackend';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
 
-const envScope = createEnvKeyScope(['HAPPIER_ACP_FS']);
+const envScope = createEnvKeyScope(['PIGGERCODE_ACP_FS']);
 
 describe('AcpBackend ACP FS capability experiment', () => {
   afterEach(() => {
@@ -19,8 +19,8 @@ describe('AcpBackend ACP FS capability experiment', () => {
     expect(typeof buildInitializeRequest).toBe('function');
   });
 
-  it('advertises fs.readTextFile/fs.writeTextFile when HAPPIER_ACP_FS is enabled', () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+  it('advertises fs.readTextFile/fs.writeTextFile when PIGGERCODE_ACP_FS is enabled', () => {
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     const req = buildInitializeRequest({ clientName: 'test', clientVersion: '0.0.0' });
     expect(req.clientCapabilities?.fs?.readTextFile).toBe(true);
@@ -28,7 +28,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('advertises ACP fs capabilities by default', () => {
-    envScope.patch({ HAPPIER_ACP_FS: undefined });
+    envScope.patch({ PIGGERCODE_ACP_FS: undefined });
 
     const req = buildInitializeRequest({ clientName: 'test', clientVersion: '0.0.0' });
     expect(req.clientCapabilities?.fs?.readTextFile).toBe(true);
@@ -51,7 +51,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('writeTextFile is permission-gated when ACP fs is enabled', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-', async (workspace) => {
       const targetPath = join(workspace, 'a.txt');
@@ -73,7 +73,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('readTextFile reads file content when ACP fs is enabled', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-', async (workspace) => {
       const targetPath = join(workspace, 'b.txt');
@@ -87,7 +87,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('does not treat missing files under a symlinked cwd as path traversal (reports ENOENT instead)', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-root-', async (root) => {
       const workspaceReal = join(root, 'workspace-real');
@@ -103,7 +103,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('readTextFile rejects paths that escape cwd', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-root-', async (root) => {
       const workspace = join(root, 'workspace');
@@ -121,7 +121,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('writeTextFile rejects paths that escape cwd even when approved', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-root-', async (root) => {
       const workspace = join(root, 'workspace');
@@ -147,7 +147,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('writeTextFile rejects writes through symlinks that point outside cwd', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-root-', async (root) => {
       const workspace = join(root, 'workspace');
@@ -174,7 +174,7 @@ describe('AcpBackend ACP FS capability experiment', () => {
   });
 
   it('writeTextFile rejects writes when a missing child is nested under a symlinked ancestor outside cwd', async () => {
-    envScope.patch({ HAPPIER_ACP_FS: '1' });
+    envScope.patch({ PIGGERCODE_ACP_FS: '1' });
 
     await withTempDir('happier-acp-fs-root-', async (root) => {
       const workspace = join(root, 'workspace');

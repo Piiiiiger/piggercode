@@ -21,7 +21,7 @@ test('expandHome leaves non-home-prefixed paths unchanged', () => {
 
 test('getCanonicalHomeDirFromEnv expands override and defaults to ~/.happier-stack', () => {
   assert.equal(
-    getCanonicalHomeDirFromEnv({ HOME: '/scoped/home', HAPPIER_STACK_CANONICAL_HOME_DIR: '~/custom-home' }),
+    getCanonicalHomeDirFromEnv({ HOME: '/scoped/home', PIGGERCODE_STACK_CANONICAL_HOME_DIR: '~/custom-home' }),
     '/scoped/home/custom-home'
   );
   assert.equal(getCanonicalHomeDirFromEnv({}), `${homedir()}/.happier-stack`);
@@ -30,7 +30,7 @@ test('getCanonicalHomeDirFromEnv expands override and defaults to ~/.happier-sta
 test('getCanonicalHomeEnvPathFromEnv resolves .env under canonical home', () => {
   const envPath = getCanonicalHomeEnvPathFromEnv({
     HOME: '/scoped/home',
-    HAPPIER_STACK_CANONICAL_HOME_DIR: '~/custom-home',
+    PIGGERCODE_STACK_CANONICAL_HOME_DIR: '~/custom-home',
   });
   assert.equal(envPath, '/scoped/home/custom-home/.env');
 });

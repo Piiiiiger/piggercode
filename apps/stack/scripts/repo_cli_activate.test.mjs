@@ -31,7 +31,7 @@ test('repo cli activate configures init with cli-root-dir pointing at this check
     const expectedCliRootDir = resolve(join(repoRoot, 'apps', 'stack'));
     assert.match(
       homeEnv,
-      new RegExp(`^HAPPIER_STACK_CLI_ROOT_DIR=${expectedCliRootDir.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}$`, 'm'),
+      new RegExp(`^PIGGERCODE_STACK_CLI_ROOT_DIR=${expectedCliRootDir.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}$`, 'm'),
       `expected init to persist cli root dir override in ${homeEnvPath}\n${homeEnv}`
     );
   } finally {

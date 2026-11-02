@@ -394,7 +394,7 @@ describe('apiSocket reachability supervision', () => {
     });
 
     it('gates apiSocket.request when server reachability cannot be established', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         vi.doMock('@/sync/domains/server/serverRuntime', () => ({
             getActiveServerSnapshot: () => ({

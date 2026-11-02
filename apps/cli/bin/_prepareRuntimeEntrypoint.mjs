@@ -28,7 +28,7 @@ async function buildLocalRuntimeSnapshot(projectRoot, repoRoot, opts, heldLockVa
     ...(opts.env ?? process.env),
   };
   if (heldLockValue) {
-    buildEnv.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD = heldLockValue;
+    buildEnv.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD = heldLockValue;
   }
 
   const [{ main: buildSharedDeps }, { buildCliDist }] = await Promise.all([

@@ -21,14 +21,14 @@ describe('loadAppConfig (server env aliases)', () => {
     });
 
     const previous = {
-        canonical: process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL,
+        canonical: process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL,
         legacyHappy: process.env.EXPO_PUBLIC_HAPPY_SERVER_URL,
         legacyGeneric: process.env.EXPO_PUBLIC_SERVER_URL,
     };
 
     const restore = () => {
-        if (previous.canonical === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
-        else process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL = previous.canonical;
+        if (previous.canonical === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = previous.canonical;
 
         if (previous.legacyHappy === undefined) delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         else process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = previous.legacyHappy;
@@ -37,8 +37,8 @@ describe('loadAppConfig (server env aliases)', () => {
         else process.env.EXPO_PUBLIC_SERVER_URL = previous.legacyGeneric;
     };
 
-    it('prefers EXPO_PUBLIC_HAPPIER_SERVER_URL over legacy aliases', () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL = 'https://canonical.example.test';
+    it('prefers EXPO_PUBLIC_PIGGERCODE_SERVER_URL over legacy aliases', () => {
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://canonical.example.test';
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'https://legacy-happy.example.test';
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
         try {
@@ -49,7 +49,7 @@ describe('loadAppConfig (server env aliases)', () => {
     });
 
     it('uses EXPO_PUBLIC_HAPPY_SERVER_URL when canonical env is missing', () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         process.env.EXPO_PUBLIC_HAPPY_SERVER_URL = 'https://legacy-happy.example.test';
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
         try {
@@ -60,7 +60,7 @@ describe('loadAppConfig (server env aliases)', () => {
     });
 
     it('uses EXPO_PUBLIC_SERVER_URL when both happier and happy aliases are missing', () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_URL;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';
         try {

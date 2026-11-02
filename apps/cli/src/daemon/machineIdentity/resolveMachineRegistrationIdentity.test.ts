@@ -45,21 +45,21 @@ function seedSettings(homeDir: string): void {
 }
 
 describe('resolveMachineRegistrationIdentity', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
-  const previousActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const previousActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
-    if (previousActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousActiveServerId;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
+    if (previousActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousActiveServerId;
     vi.resetModules();
   });
 
   it('builds registration identity with explicit replacement intent and content key fingerprint', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-registration-identity-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       seedSettings(homeDir);
@@ -97,8 +97,8 @@ describe('resolveMachineRegistrationIdentity', () => {
 
   it('does not reuse a replacement candidate from a different account', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-machine-registration-identity-account-swap-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'cloud';
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'cloud';
 
     try {
       seedSettings(homeDir);

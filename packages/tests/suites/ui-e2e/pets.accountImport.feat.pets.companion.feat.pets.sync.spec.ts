@@ -37,10 +37,10 @@ test.describe('ui e2e: pets account import', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '1',
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: 'plain',
       },
     });
 
@@ -51,7 +51,7 @@ test.describe('ui e2e: pets account import', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-pets-account-import-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'export',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'export',
       },
     });
 
@@ -86,7 +86,7 @@ test.describe('ui e2e: pets account import', () => {
       uiBaseUrl,
       extraEnv: {
         CODEX_HOME: codexHomeDir,
-        HAPPIER_FEATURE_PETS_SYNC__ENABLED: '1',
+        PIGGERCODE_FEATURE_PETS_SYNC__ENABLED: '1',
       },
     });
 

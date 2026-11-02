@@ -14,7 +14,7 @@ export function resolveProviderRunYarnInvocation(args, options = {}) {
 export function resolveProvidersRunTimeoutFallbackMs({ presetId, tier }) {
   // Provider suites can take a long time, especially when running multiple providers sequentially.
   // Keep the defaults bounded so smoke runs always terminalize in practical time, while still
-  // allowing explicit overrides via HAPPIER_E2E_PROVIDER_RUN_TIMEOUT_MS / HAPPY_E2E_PROVIDER_RUN_TIMEOUT_MS.
+  // allowing explicit overrides via PIGGERCODE_E2E_PROVIDER_RUN_TIMEOUT_MS / HAPPY_E2E_PROVIDER_RUN_TIMEOUT_MS.
   const normalizedTier = tier === 'extended' ? 'extended' : 'smoke';
   const isAll = presetId === 'all';
 
@@ -107,25 +107,25 @@ export async function main(argv = process.argv) {
   if (!preset) return usage(2);
 
   // Provider suites validate provider contracts (tooltrace + normalization), not DB engine behavior.
-  // Prefer sqlite for stability; allow overrides via HAPPIER_E2E_DB_PROVIDER / HAPPY_E2E_DB_PROVIDER.
-  const dbProviderRaw = (process.env.HAPPIER_E2E_DB_PROVIDER ?? process.env.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim();
+  // Prefer sqlite for stability; allow overrides via PIGGERCODE_E2E_DB_PROVIDER / HAPPY_E2E_DB_PROVIDER.
+  const dbProviderRaw = (process.env.PIGGERCODE_E2E_DB_PROVIDER ?? process.env.HAPPY_E2E_DB_PROVIDER ?? '').toString().trim();
 
   const env = {
     ...process.env,
     ...preset.env,
-    ...(dbProviderRaw ? null : { HAPPIER_E2E_DB_PROVIDER: 'sqlite', HAPPY_E2E_DB_PROVIDER: 'sqlite' }),
-    ...(parsed.updateBaselines ? { HAPPIER_E2E_PROVIDER_UPDATE_BASELINES: '1' } : null),
-    ...(parsed.strictKeys ? { HAPPIER_E2E_PROVIDER_STRICT_KEYS: '1' } : null),
-    ...(parsed.flakeRetry ? { HAPPIER_E2E_PROVIDER_FLAKE_RETRY: '1' } : null),
+    ...(dbProviderRaw ? null : { PIGGERCODE_E2E_DB_PROVIDER: 'sqlite', HAPPY_E2E_DB_PROVIDER: 'sqlite' }),
+    ...(parsed.updateBaselines ? { PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES: '1' } : null),
+    ...(parsed.strictKeys ? { PIGGERCODE_E2E_PROVIDER_STRICT_KEYS: '1' } : null),
+    ...(parsed.flakeRetry ? { PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY: '1' } : null),
   };
 
   const fallbackTimeoutMs = resolveProvidersRunTimeoutFallbackMs({ presetId: parsed.presetId, tier: parsed.tier });
   const timeoutMs = resolveProvidersRunTimeoutMs(
-    process.env.HAPPIER_E2E_PROVIDER_RUN_TIMEOUT_MS ?? process.env.HAPPY_E2E_PROVIDER_RUN_TIMEOUT_MS,
+    process.env.PIGGERCODE_E2E_PROVIDER_RUN_TIMEOUT_MS ?? process.env.HAPPY_E2E_PROVIDER_RUN_TIMEOUT_MS,
     fallbackTimeoutMs,
   );
-  if (!(env.HAPPIER_TEST_WRAPPER_TIMEOUT_MS ?? '').trim() && !(env.HAPPY_TEST_WRAPPER_TIMEOUT_MS ?? '').trim()) {
-    env.HAPPIER_TEST_WRAPPER_TIMEOUT_MS = String(timeoutMs);
+  if (!(env.PIGGERCODE_TEST_WRAPPER_TIMEOUT_MS ?? '').trim() && !(env.HAPPY_TEST_WRAPPER_TIMEOUT_MS ?? '').trim()) {
+    env.PIGGERCODE_TEST_WRAPPER_TIMEOUT_MS = String(timeoutMs);
   }
   const activeChildren = new Set();
   let shuttingDown = false;
@@ -185,7 +185,7 @@ export async function main(argv = process.argv) {
       console.error(
         `[providers] timed out after ${timeoutMs}ms while running test:providers ` +
           `(preset=${parsed.presetId}, tier=${parsed.tier}). ` +
-          'Set HAPPIER_E2E_PROVIDER_RUN_TIMEOUT_MS to override.',
+          'Set PIGGERCODE_E2E_PROVIDER_RUN_TIMEOUT_MS to override.',
       );
       if (!pid) {
         done(124);

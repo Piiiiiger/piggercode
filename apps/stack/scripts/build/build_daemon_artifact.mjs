@@ -16,7 +16,7 @@ export async function buildDaemonArtifact({
   }
 
   const target = resolveCurrentBinaryTarget({ availableTargets: CLI_BINARY_TARGETS });
-  const externals = String(process.env.HAPPIER_CLI_BUN_EXTERNALS ?? '')
+  const externals = String(process.env.PIGGERCODE_CLI_BUN_EXTERNALS ?? '')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean);

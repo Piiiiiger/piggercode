@@ -148,7 +148,7 @@ describe('ApiClient connected service auth groups v3', () => {
   });
 
   it('honors a bounded connected-services server API timeout override', async () => {
-    vi.stubEnv('HAPPIER_CONNECTED_SERVICES_API_TIMEOUT_MS', '45000');
+    vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_API_TIMEOUT_MS', '45000');
     mockGet.mockResolvedValue({ status: 200, data: authGroupResponse('primary', 1) });
     const api = await ApiClient.create({
       token: 'happy-token',

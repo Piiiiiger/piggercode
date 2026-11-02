@@ -28,7 +28,7 @@ export function installTauriMcpBridgeOnce(options?: Readonly<{
     if (!g) {
         return;
     }
-    const key = '__HAPPIER_TAURI_MCP_BRIDGE_INSTALLED__';
+    const key = '__PIGGERCODE_TAURI_MCP_BRIDGE_INSTALLED__';
     if (g[key] === true) {
         return;
     }

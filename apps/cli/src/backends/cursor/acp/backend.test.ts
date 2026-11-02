@@ -10,7 +10,7 @@ import { buildInitializeRequest } from '@/agent/acp/AcpBackend';
 import { buildCursorAcpBackendOptions } from './backend';
 import { cursorTransport } from './transport';
 
-const envKeys = ['PATH', 'HAPPIER_CURSOR_PATH', 'HAPPIER_CURSOR_API_ENDPOINT'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_CURSOR_PATH', 'PIGGERCODE_CURSOR_API_ENDPOINT'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -34,7 +34,7 @@ afterEach(() => {
 describe('buildCursorAcpBackendOptions', () => {
   it('authenticates ACP sessions with the Cursor login method advertised by the real CLI', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
 
     const options = buildCursorAcpBackendOptions({ cwd: '/tmp', env: {} });
 
@@ -43,7 +43,7 @@ describe('buildCursorAcpBackendOptions', () => {
 
   it('negotiates Cursor model parameters for every ACP session', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
 
     const options = buildCursorAcpBackendOptions({ cwd: '/tmp', env: {} });
     const request = buildInitializeRequest({
@@ -59,11 +59,11 @@ describe('buildCursorAcpBackendOptions', () => {
 
   it('passes a configured Cursor API endpoint before the ACP subcommand', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
 
     const options = buildCursorAcpBackendOptions({
       cwd: '/tmp',
-      env: { HAPPIER_CURSOR_API_ENDPOINT: '  https://cursor.example.test  ' },
+      env: { PIGGERCODE_CURSOR_API_ENDPOINT: '  https://cursor.example.test  ' },
     });
 
     expect((options.args ?? []).slice(-3)).toEqual(['-e', 'https://cursor.example.test', 'acp']);
@@ -71,16 +71,16 @@ describe('buildCursorAcpBackendOptions', () => {
 
   it('passes Cursor full-access permission modes as the ACP-honored force launch flag', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
 
     const yoloOptions = buildCursorAcpBackendOptions({
       cwd: '/tmp',
-      env: { HAPPIER_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
+      env: { PIGGERCODE_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
       permissionMode: 'yolo',
     });
     const bypassOptions = buildCursorAcpBackendOptions({
       cwd: '/tmp',
-      env: { HAPPIER_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
+      env: { PIGGERCODE_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
       permissionMode: 'bypassPermissions',
     });
 
@@ -90,11 +90,11 @@ describe('buildCursorAcpBackendOptions', () => {
 
   it('passes safe-yolo as force with Cursor sandbox enabled before the ACP subcommand', () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
 
     const options = buildCursorAcpBackendOptions({
       cwd: '/tmp',
-      env: { HAPPIER_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
+      env: { PIGGERCODE_CURSOR_API_ENDPOINT: 'https://cursor.example.test' },
       permissionMode: 'safe-yolo',
     });
 
@@ -107,7 +107,7 @@ describe('buildCursorAcpBackendOptions', () => {
 
   it('relays generated-media extension messages through the provider backend event seam', async () => {
     process.env.PATH = '';
-    process.env.HAPPIER_CURSOR_PATH = createFakeCursorAgent();
+    process.env.PIGGERCODE_CURSOR_PATH = createFakeCursorAgent();
     const emitted: AgentMessage[] = [];
     const options = buildCursorAcpBackendOptions({
       cwd: '/tmp',

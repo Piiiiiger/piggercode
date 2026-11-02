@@ -35,9 +35,9 @@ function parsePositiveInt(raw) {
 }
 
 function resolveClaudeKeepaliveMs(env) {
-  const specific = parsePositiveInt(env?.HAPPIER_STACK_REVIEW_CLAUDE_KEEPALIVE_MS);
+  const specific = parsePositiveInt(env?.PIGGERCODE_STACK_REVIEW_CLAUDE_KEEPALIVE_MS);
   if (specific !== null) return specific;
-  const global = parsePositiveInt(env?.HAPPIER_STACK_REVIEW_KEEPALIVE_MS);
+  const global = parsePositiveInt(env?.PIGGERCODE_STACK_REVIEW_KEEPALIVE_MS);
   if (global !== null) return global;
   return 30_000;
 }

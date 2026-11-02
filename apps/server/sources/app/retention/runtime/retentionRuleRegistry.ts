@@ -57,8 +57,8 @@ type RetentionDomainDefinition = Readonly<{
 function ageConfig(envName: string): RetentionDomainPolicyConfig {
     return {
         kind: 'age',
-        modeKey: `HAPPIER_SERVER_RETENTION__${envName}__MODE`,
-        durationKey: `HAPPIER_SERVER_RETENTION__${envName}__DAYS`,
+        modeKey: `PIGGERCODE_SERVER_RETENTION__${envName}__MODE`,
+        durationKey: `PIGGERCODE_SERVER_RETENTION__${envName}__DAYS`,
     };
 }
 
@@ -67,8 +67,8 @@ const RETENTION_DOMAIN_DEFINITIONS = Object.freeze({
         id: 'sessions',
         policyConfig: {
             kind: 'inactive',
-            modeKey: 'HAPPIER_SERVER_RETENTION__SESSIONS__MODE',
-            durationKey: 'HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS',
+            modeKey: 'PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE',
+            durationKey: 'PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS',
         },
         createRule: () => {
             let afterSessionId: string | undefined;

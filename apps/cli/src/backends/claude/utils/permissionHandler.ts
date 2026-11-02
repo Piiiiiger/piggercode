@@ -249,7 +249,7 @@ export class PermissionHandler {
     private isToolTraceEnabled(): boolean {
         const isTruthy = (value: string | undefined): boolean =>
             typeof value === 'string' && ['1', 'true', 'yes', 'on'].includes(value.toLowerCase());
-        return isTruthy(process.env.HAPPIER_STACK_TOOL_TRACE);
+        return isTruthy(process.env.PIGGERCODE_STACK_TOOL_TRACE);
     }
 
     private redactToolTraceValue(value: unknown, key?: string): unknown {

@@ -10,7 +10,7 @@ import {
 import { readPositiveIntegerEnv } from './env';
 
 const DEFAULT_INLINE_SPAWN_MAX_CHARS = 24_000;
-const INLINE_SPAWN_MAX_CHARS_ENV = 'HAPPIER_CLI_TMUX_INLINE_SPAWN_MAX_CHARS';
+const INLINE_SPAWN_MAX_CHARS_ENV = 'PIGGERCODE_CLI_TMUX_INLINE_SPAWN_MAX_CHARS';
 
 export function resolveTmuxInlineSpawnMaxChars(): number {
   return readPositiveIntegerEnv(INLINE_SPAWN_MAX_CHARS_ENV, DEFAULT_INLINE_SPAWN_MAX_CHARS);

@@ -76,7 +76,7 @@ describe('MCP runtime config hardening', () => {
       env: {
         ...resolveEnvRecord(),
         ...(bridgeInvocation.env ?? {}),
-        HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: safeConfigPath,
+        PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: safeConfigPath,
       },
       stdio: ['ignore', 'ignore', 'pipe'],
     });
@@ -101,7 +101,7 @@ describe('MCP runtime config hardening', () => {
         env: {
           ...resolveEnvRecord(),
           ...(bridgeInvocation.env ?? {}),
-          HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: outsideConfigPath,
+          PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: outsideConfigPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });

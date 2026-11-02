@@ -21,7 +21,7 @@ afterEach(async () => {
     vi.unstubAllGlobals();
     vi.resetModules();
     vi.clearAllMocks();
-    delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
 });
 
 function installDefaultActiveServerMocks() {
@@ -77,7 +77,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();
@@ -99,7 +99,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();
@@ -119,7 +119,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock({ failGetCredentials: true });
@@ -145,7 +145,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock({ failGetCredentials: true });
@@ -215,7 +215,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '25';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '25';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();
@@ -245,7 +245,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();
@@ -269,7 +269,7 @@ describe('serverFetch connectivity supervision', () => {
         vi.useFakeTimers();
         vi.setSystemTime(0);
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         installDefaultActiveServerMocks();
         installTokenStorageMock();

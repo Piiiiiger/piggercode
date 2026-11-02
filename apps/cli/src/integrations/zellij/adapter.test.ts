@@ -78,7 +78,7 @@ describe('createZellijTerminalHostAdapter', () => {
           params.sessionName,
           params.env.ZELLIJ_SOCKET_DIR ?? '',
           params.env.ZELLIJ_SESSION_NAME ?? '',
-          params.env.HAPPIER_CLAUDE_PATH ?? '',
+          params.env.PIGGERCODE_CLAUDE_PATH ?? '',
           params.env.CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION ?? '',
         ].join(':'));
         return { exitCode: 0, stdout: '', stderr: '' };
@@ -90,7 +90,7 @@ describe('createZellijTerminalHostAdapter', () => {
           params.env.ZELLIJ_SOCKET_DIR ?? '',
           params.env.ZELLIJ_SESSION_NAME ?? '',
           params.command.join('|'),
-          params.env.HAPPIER_CLAUDE_PATH ?? '',
+          params.env.PIGGERCODE_CLAUDE_PATH ?? '',
           params.env.CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION ?? '',
         ].join(':'));
         return { exitCode: 0, stdout: 'terminal_42\n', stderr: '' };
@@ -135,7 +135,7 @@ describe('createZellijTerminalHostAdapter', () => {
       workingDirectory: '/workspace/project',
       spawnArgv: ['/managed/node', 'claude_local_launcher.cjs', '--model', 'sonnet'],
       spawnEnv: {
-        HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js',
+        PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js',
         CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION: 'false',
       },
       isolatedEnv: true,

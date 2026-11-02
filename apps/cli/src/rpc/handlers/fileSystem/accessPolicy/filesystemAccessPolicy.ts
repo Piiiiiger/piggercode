@@ -3,7 +3,7 @@ import { posix, win32 } from 'node:path';
 
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
-export const MACHINE_RPC_WORKING_DIRECTORY_ENV = 'HAPPIER_MACHINE_RPC_WORKING_DIRECTORY';
+export const MACHINE_RPC_WORKING_DIRECTORY_ENV = 'PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY';
 
 export type FilesystemAccessPolicy =
   | Readonly<{ kind: 'osUser' }>

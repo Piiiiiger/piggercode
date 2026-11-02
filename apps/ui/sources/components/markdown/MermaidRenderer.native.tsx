@@ -113,8 +113,8 @@ export const MermaidRenderer = React.memo((props: {
                     const container = document.getElementById('mermaid-container');
 
                     try {
-                        const mermaid = globalThis.HAPPIER_MERMAID;
-                        const removeNavigation = globalThis.HAPPIER_MERMAID_REMOVE_NAVIGATION;
+                        const mermaid = globalThis.PIGGERCODE_MERMAID;
+                        const removeNavigation = globalThis.PIGGERCODE_MERMAID_REMOVE_NAVIGATION;
                         if (!mermaid || typeof mermaid.initialize !== 'function' || typeof mermaid.render !== 'function') {
                             throw new Error('Bundled Mermaid runtime is unavailable');
                         }

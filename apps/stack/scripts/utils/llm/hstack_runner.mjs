@@ -46,7 +46,7 @@ export function buildhstackRunnerShellSnippet({ preferLocalBin = true } = {}) {
     '  # Fallback: npx. Work around broken ~/.npm perms by using a fresh writable cache dir.',
     '  if command -v npx >/dev/null 2>&1; then',
     '    local cache_dir',
-    '    cache_dir="${HAPPIER_STACK_NPX_CACHE_DIR:-$(mktemp -d)}"',
+    '    cache_dir="${PIGGERCODE_STACK_NPX_CACHE_DIR:-$(mktemp -d)}"',
     '    npm_config_cache="$cache_dir" npm_config_update_notifier=false npx --yes -p @piggercode/stack@latest hstack "$@"',
     '    return $?',
     '  fi',

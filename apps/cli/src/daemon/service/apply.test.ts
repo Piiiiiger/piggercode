@@ -26,7 +26,7 @@ describe('runDaemonServiceCommands', () => {
   afterEach(async () => {
     spawnSyncMock.mockReset();
     vi.unstubAllEnvs();
-    delete process.env.HAPPIER_DAEMON_SERVICE_COMMAND_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_SERVICE_COMMAND_TIMEOUT_MS;
     await removeTempDir(commandsDir);
   });
 
@@ -201,7 +201,7 @@ describe('runDaemonServiceCommands', () => {
   it('bounds background service command execution time', async () => {
     const { runDaemonServiceCommands } = await import('./apply');
 
-    process.env.HAPPIER_DAEMON_SERVICE_COMMAND_TIMEOUT_MS = '42000';
+    process.env.PIGGERCODE_DAEMON_SERVICE_COMMAND_TIMEOUT_MS = '42000';
     spawnSyncMock.mockReturnValue({ status: 0, stdout: Buffer.from(''), stderr: Buffer.from('') });
 
     runDaemonServiceCommands([

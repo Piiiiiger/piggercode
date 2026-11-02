@@ -9,6 +9,6 @@ export function resolveAuthForceFlag({ flags, kv } = {}) {
 export function applyAuthForceEnv(env, force) {
   const base = env && typeof env === 'object' ? env : {};
   if (!force) return base;
-  return { ...base, HAPPIER_AUTH_FORCE: '1' };
+  return { ...base, PIGGERCODE_AUTH_FORCE: '1' };
 }
 

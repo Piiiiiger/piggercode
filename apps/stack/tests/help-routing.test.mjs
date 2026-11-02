@@ -17,8 +17,8 @@ function runHstack(args) {
     cwd: repoRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
     },
     encoding: 'utf8',
   });

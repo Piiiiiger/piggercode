@@ -3,8 +3,8 @@ import {
     type ConnectedServiceMaterializationIdentityV1,
 } from '@piggercode/protocol';
 
-export const HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
-    'HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON' as const;
+export const PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
+    'PIGGERCODE_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON' as const;
 
 export function serializeSessionConnectedServiceMaterializationIdentityForEnv(value: unknown): string | null {
     const parsed = ConnectedServiceMaterializationIdentityV1Schema.safeParse(value);

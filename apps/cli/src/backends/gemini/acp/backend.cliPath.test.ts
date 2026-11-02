@@ -11,9 +11,9 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 const envKeys = [
   'HOME',
   'PATH',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_GEMINI_PATH',
-  'HAPPIER_JS_RUNTIME_PATH',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_GEMINI_PATH',
+  'PIGGERCODE_JS_RUNTIME_PATH',
   'USERPROFILE',
 ] as const;
 
@@ -61,7 +61,7 @@ type AcpBackendLike = {
 
 describe('Gemini ACP backend CLI path resolution', () => {
   it('uses bare gemini command when gemini is on PATH', async () => {
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
     const { dir } = await createFakeBin('gemini');
     process.env.PATH = dir;
 
@@ -77,10 +77,10 @@ describe('Gemini ACP backend CLI path resolution', () => {
     expect(backend.options.command).not.toBe('gemini');
   });
 
-  it('uses override path when HAPPIER_GEMINI_PATH is set', async () => {
+  it('uses override path when PIGGERCODE_GEMINI_PATH is set', async () => {
     process.env.PATH = '';
     const { binPath } = await createFakeBin('gemini-custom');
-    process.env.HAPPIER_GEMINI_PATH = binPath;
+    process.env.PIGGERCODE_GEMINI_PATH = binPath;
 
     const result = createGeminiBackend({
       cwd: '/tmp',
@@ -93,7 +93,7 @@ describe('Gemini ACP backend CLI path resolution', () => {
   });
 
   it('wraps node-shebang system CLIs with the configured JS runtime', async () => {
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
     const dir = await createTempDir('happier-gemini-path-');
     tempDirs.add(dir);
     const runtimeDir = await createTempDir('happier-gemini-runtime-');
@@ -103,7 +103,7 @@ describe('Gemini ACP backend CLI path resolution', () => {
     await writeTextFile(fake, '#!/usr/bin/env node\nprocess.stdout.write(\"hi\\n\")\n', { mode: 0o755 });
     await writeTextFile(runtimePath, '#!/bin/sh\nexit 0\n', { mode: 0o755 });
     process.env.PATH = dir;
-    process.env.HAPPIER_JS_RUNTIME_PATH = runtimePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = runtimePath;
 
     const result = createGeminiBackend({
       cwd: '/tmp',
@@ -136,7 +136,7 @@ describe('Gemini ACP backend CLI path resolution', () => {
       ].join('\n'),
       { mode: 0o755 },
     );
-    process.env.HAPPIER_GEMINI_PATH = fake;
+    process.env.PIGGERCODE_GEMINI_PATH = fake;
 
     const result = createGeminiBackend({
       cwd: '/tmp',
@@ -151,11 +151,11 @@ describe('Gemini ACP backend CLI path resolution', () => {
 
   it('uses managed install path when available', async () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     const homeDir = await createTempDir('happier-gemini-managed-home-');
     tempDirs.add(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     const { resolveProviderCliManagedCommandPath } = await import('@/runtime/managedTools/providerCliResolution');
     const binPath = resolveProviderCliManagedCommandPath('gemini', { happyHomeDir: homeDir });
@@ -174,8 +174,8 @@ describe('Gemini ACP backend CLI path resolution', () => {
 
   it('fails closed when no gemini CLI resolution is available', async () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
-    delete process.env.HAPPIER_HOME_DIR;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
+    delete process.env.PIGGERCODE_HOME_DIR;
 
     expect(() =>
       createGeminiBackend({

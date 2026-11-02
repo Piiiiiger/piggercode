@@ -19,7 +19,7 @@ function parsePositiveInt(raw) {
 }
 
 export function resolveVitestShardCount(env) {
-  const override = parsePositiveInt(env?.HAPPIER_UI_VITEST_SHARDS);
+  const override = parsePositiveInt(env?.PIGGERCODE_UI_VITEST_SHARDS);
   // The UI suite has a large module graph (React Native stubs + Expo/web shims).
   // Running too many files in a single Vitest process can cause heap growth over time,
   // even with `isolate: true`. More shards keeps each process smaller and avoids OOMs.
@@ -27,8 +27,8 @@ export function resolveVitestShardCount(env) {
 }
 
 export function resolveVitestShardRange(env, shardCount) {
-  const part = parsePositiveInt(env?.HAPPIER_UI_VITEST_PART);
-  const parts = parsePositiveInt(env?.HAPPIER_UI_VITEST_PARTS);
+  const part = parsePositiveInt(env?.PIGGERCODE_UI_VITEST_PART);
+  const parts = parsePositiveInt(env?.PIGGERCODE_UI_VITEST_PARTS);
   if (part === null || parts === null || part > parts || parts > shardCount) {
     return { start: 1, end: shardCount, part: 1, parts: 1 };
   }
@@ -38,7 +38,7 @@ export function resolveVitestShardRange(env, shardCount) {
 }
 
 export function resolveVitestShardTimeoutMs(env) {
-  return parsePositiveInt(env?.HAPPIER_UI_VITEST_SHARD_TIMEOUT_MS) ?? 900_000;
+  return parsePositiveInt(env?.PIGGERCODE_UI_VITEST_SHARD_TIMEOUT_MS) ?? 900_000;
 }
 
 export function resolveVitestConfigPath(argv) {
@@ -181,7 +181,7 @@ async function resolveVitestTestFiles({ configPath, nodeOptions, passthroughArgs
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
   });
 
   if (!result.ok) {
@@ -221,7 +221,7 @@ function spawnVitestRun({ configPath, nodeOptions, passthroughArgs, positionalFi
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
     timeoutMs,
     timeoutCleanupGraceMs: 5_000,
   });

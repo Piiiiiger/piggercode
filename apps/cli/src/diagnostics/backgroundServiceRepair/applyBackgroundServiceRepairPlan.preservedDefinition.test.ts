@@ -105,7 +105,7 @@ function runtime(platform: 'darwin' | 'linux' | 'win32', homeDir: string) {
     }
   }
   vi.stubEnv('PATH', commandDir);
-  vi.stubEnv('HAPPIER_HOME_DIR', `${homeDir}/.happier`);
+  vi.stubEnv('PIGGERCODE_HOME_DIR', `${homeDir}/.happier`);
   reloadConfiguration();
   return { platform, systemUser: '', uid: 501, userHomeDir: homeDir, happierHomeDir: `${homeDir}/.happier` };
 }

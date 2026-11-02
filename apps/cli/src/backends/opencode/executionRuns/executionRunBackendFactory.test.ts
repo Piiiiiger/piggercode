@@ -34,7 +34,7 @@ describe('executionRunBackendFactory (opencode)', () => {
       },
       isolation: {
         env: {
-          HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+          PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
         },
       },
     } as any);
@@ -42,7 +42,7 @@ describe('executionRunBackendFactory (opencode)', () => {
     expect(createOpenCodeServerExecutionRunBackendMock).toHaveBeenCalledTimes(1);
     expect(createOpenCodeServerExecutionRunBackendMock).toHaveBeenCalledWith(expect.objectContaining({
       cwd: '/tmp/opencode-worktree',
-      env: { HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096' },
+      env: { PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096' },
       permissionMode: 'read-only',
     }));
     expect(createOpenCodeBackendMock).not.toHaveBeenCalled();
@@ -61,8 +61,8 @@ describe('executionRunBackendFactory (opencode)', () => {
       permissionHandler,
       isolation: {
         env: {
-          HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-          HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+          PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+          PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
         },
       },
     } as any);
@@ -71,8 +71,8 @@ describe('executionRunBackendFactory (opencode)', () => {
     expect(createOpenCodeBackendMock).toHaveBeenCalledWith(expect.objectContaining({
       cwd: '/tmp/opencode-worktree',
       env: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
       },
       permissionHandler,
       permissionMode: 'read-only',
@@ -96,7 +96,7 @@ describe('executionRunBackendFactory (opencode)', () => {
       },
       isolation: {
         env: {
-          HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
+          PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096',
         },
       },
     } as any);

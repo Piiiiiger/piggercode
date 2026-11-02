@@ -9,7 +9,7 @@ describe('daemon service (darwin) plist', () => {
       programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
       env: {
         PATH: '/usr/bin:/bin',
-        HAPPIER_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
       },
       stdoutPath: '/Users/test/.happier/logs/daemon-service.out.log',
       stderrPath: '/Users/test/.happier/logs/daemon-service.err.log',
@@ -27,7 +27,7 @@ describe('daemon service (darwin) plist', () => {
     expect(xml).toContain('<key>KeepAlive</key>');
     expect(xml).toContain('<key>AbandonProcessGroup</key>');
     expect(xml).toContain('<true/>');
-    expect(xml).toContain('<key>HAPPIER_NO_BROWSER_OPEN</key>');
+    expect(xml).toContain('<key>PIGGERCODE_NO_BROWSER_OPEN</key>');
   });
 
   it('preserves intentionally empty environment variable values', () => {

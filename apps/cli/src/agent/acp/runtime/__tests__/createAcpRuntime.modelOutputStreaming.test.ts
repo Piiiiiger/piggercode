@@ -280,10 +280,10 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
   });
 
   it('can emit each durable checkpoint immediately when stream checkpoint buffering is disabled', async () => {
-    const previousCheckpointMs = process.env.HAPPIER_STREAM_CHECKPOINT_MS;
-    const previousCheckpointMinChars = process.env.HAPPIER_STREAM_CHECKPOINT_MIN_CHARS;
-    process.env.HAPPIER_STREAM_CHECKPOINT_MS = '0';
-    process.env.HAPPIER_STREAM_CHECKPOINT_MIN_CHARS = '1';
+    const previousCheckpointMs = process.env.PIGGERCODE_STREAM_CHECKPOINT_MS;
+    const previousCheckpointMinChars = process.env.PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS;
+    process.env.PIGGERCODE_STREAM_CHECKPOINT_MS = '0';
+    process.env.PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS = '1';
 
     const backend = createFakeAcpRuntimeBackend({ sessionId: 'sess_main' });
     const durableCalls: Array<{ body: ACPMessageData; meta?: Record<string, unknown> }> = [];
@@ -325,14 +325,14 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       ]);
     } finally {
       if (previousCheckpointMs === undefined) {
-        delete process.env.HAPPIER_STREAM_CHECKPOINT_MS;
+        delete process.env.PIGGERCODE_STREAM_CHECKPOINT_MS;
       } else {
-        process.env.HAPPIER_STREAM_CHECKPOINT_MS = previousCheckpointMs;
+        process.env.PIGGERCODE_STREAM_CHECKPOINT_MS = previousCheckpointMs;
       }
       if (previousCheckpointMinChars === undefined) {
-        delete process.env.HAPPIER_STREAM_CHECKPOINT_MIN_CHARS;
+        delete process.env.PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS;
       } else {
-        process.env.HAPPIER_STREAM_CHECKPOINT_MIN_CHARS = previousCheckpointMinChars;
+        process.env.PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS = previousCheckpointMinChars;
       }
     }
   });

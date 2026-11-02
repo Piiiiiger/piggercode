@@ -12,16 +12,16 @@ describe('resolveFileLogLevel', () => {
     expect(resolveFileLogLevel({ env: { DEBUG: '1' }, isDaemonProcess: false })).toBe('debug');
   });
 
-  it('honors HAPPIER_LOG_LEVEL over defaults and DEBUG', () => {
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'debug' }, isDaemonProcess: false })).toBe('debug');
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'warn', DEBUG: '1' }, isDaemonProcess: false })).toBe('warn');
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'silent' }, isDaemonProcess: true })).toBe('silent');
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'INFO' }, isDaemonProcess: true })).toBe('info');
+  it('honors PIGGERCODE_LOG_LEVEL over defaults and DEBUG', () => {
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'debug' }, isDaemonProcess: false })).toBe('debug');
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'warn', DEBUG: '1' }, isDaemonProcess: false })).toBe('warn');
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'silent' }, isDaemonProcess: true })).toBe('silent');
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'INFO' }, isDaemonProcess: true })).toBe('info');
   });
 
-  it('ignores invalid HAPPIER_LOG_LEVEL values', () => {
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'verbose' }, isDaemonProcess: false })).toBe('info');
-    expect(resolveFileLogLevel({ env: { HAPPIER_LOG_LEVEL: 'verbose' }, isDaemonProcess: true })).toBe('debug');
+  it('ignores invalid PIGGERCODE_LOG_LEVEL values', () => {
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'verbose' }, isDaemonProcess: false })).toBe('info');
+    expect(resolveFileLogLevel({ env: { PIGGERCODE_LOG_LEVEL: 'verbose' }, isDaemonProcess: true })).toBe('debug');
   });
 });
 

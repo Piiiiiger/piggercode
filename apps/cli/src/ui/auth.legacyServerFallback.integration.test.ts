@@ -62,13 +62,13 @@ function installLegacyAuthRequestRoute(params: Readonly<{
 
 describe('authAndSetupMachineIfNeeded (legacy server fallback) (integration)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
     'DEBUG',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
   ] as const;
 
   let restoreTty: (() => void) | null = null;
@@ -80,13 +80,13 @@ describe('authAndSetupMachineIfNeeded (legacy server fallback) (integration)', (
     envScope = createEnvKeyScope(envKeys);
     homeDir = await createTempDir('happier-cli-auth-legacy-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_NO_BROWSER_OPEN: '1',
-      HAPPIER_AUTH_METHOD: 'web',
-      HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_NO_BROWSER_OPEN: '1',
+      PIGGERCODE_AUTH_METHOD: 'web',
+      PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
       DEBUG: '0',
-      HAPPIER_SERVER_URL: 'http://happier-legacy.test',
-      HAPPIER_WEBAPP_URL: 'http://example.test',
+      PIGGERCODE_SERVER_URL: 'http://happier-legacy.test',
+      PIGGERCODE_WEBAPP_URL: 'http://example.test',
     });
     restoreTty = setStdioTtyForTest({ stdin: false, stdout: false });
   });
@@ -130,7 +130,7 @@ describe('authAndSetupMachineIfNeeded (legacy server fallback) (integration)', (
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { authAndSetupMachineIfNeeded } = await import('./auth');
@@ -159,7 +159,7 @@ describe('authAndSetupMachineIfNeeded (legacy server fallback) (integration)', (
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { authAndSetupMachineIfNeeded } = await import('./auth');
@@ -189,7 +189,7 @@ describe('authAndSetupMachineIfNeeded (legacy server fallback) (integration)', (
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { authAndSetupMachineIfNeeded } = await import('./auth');

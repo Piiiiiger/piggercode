@@ -58,7 +58,7 @@ Notes:
 
 - **LAN requirement**: for physical iPhones, Metro must be reachable over LAN.
   - hstack defaults to `lan` for mobile, and will print a QR code + deep link.
-  - For simulators you can usually use `localhost` (see `HAPPIER_STACK_MOBILE_HOST` below).
+  - For simulators you can usually use `localhost` (see `PIGGERCODE_STACK_MOBILE_HOST` below).
 - **If Expo is already running in web-only mode**: re-run with `--restart` and include `--mobile`.
 
 ## Per-stack app install (isolated)
@@ -121,7 +121,7 @@ hstack mobile --prebuild --run-ios --configuration=Release --no-metro
 ## Notes / troubleshooting
 
 - **QR opens the wrong app**:
-  - The dev-client QR uses the `HAPPIER_STACK_DEV_CLIENT_SCHEME` (default: `hstack-dev`).
+  - The dev-client QR uses the `PIGGERCODE_STACK_DEV_CLIENT_SCHEME` (default: `hstack-dev`).
   - Per-stack installs use a different per-stack scheme, so they should not intercept dev-client QR scans.
 
 - **List connected devices** (for `--device=`):
@@ -140,16 +140,16 @@ hstack mobile:devices
 If you want the built app to default to your hstack server URL, set this **when building**:
 
 ```bash
-HAPPIER_STACK_SERVER_URL="https://<your-machine>.<tailnet>.ts.net" hstack mobile-dev-client --install
+PIGGERCODE_STACK_SERVER_URL="https://<your-machine>.<tailnet>.ts.net" hstack mobile-dev-client --install
 ```
 
-Note: changing `HAPPIER_STACK_SERVER_URL` requires rebuilding/reinstalling the app you care about.
+Note: changing `PIGGERCODE_STACK_SERVER_URL` requires rebuilding/reinstalling the app you care about.
 
-Tip: mobile builds prefer `HAPPIER_PUBLIC_SERVER_URL` when it is set for the stack, and fall back to `HAPPIER_STACK_SERVER_URL`. Use `HAPPIER_PUBLIC_SERVER_URL` for the canonical/share URL your phone can reach, and reserve `HAPPIER_STACK_SERVER_URL` for stack-specific overrides when needed.
+Tip: mobile builds prefer `PIGGERCODE_PUBLIC_SERVER_URL` when it is set for the stack, and fall back to `PIGGERCODE_STACK_SERVER_URL`. Use `PIGGERCODE_PUBLIC_SERVER_URL` for the canonical/share URL your phone can reach, and reserve `PIGGERCODE_STACK_SERVER_URL` for stack-specific overrides when needed.
 
 Important:
 
-- For **non-main stacks**, `HAPPIER_STACK_SERVER_URL` is only respected if it’s set **in that stack’s env file**
+- For **non-main stacks**, `PIGGERCODE_STACK_SERVER_URL` is only respected if it’s set **in that stack’s env file**
   (safety: we ignore “global” URLs for non-main stacks to avoid accidentally repointing other stacks).
 
 ## Customizing the app identity (optional / advanced)
@@ -165,13 +165,13 @@ If you want to build/install *manually* (instead of `mobile-dev-client` / `stack
   - You may need this if the bundle id you’re using isn’t available/owned by your Apple team.
 
 ```bash
-HAPPIER_STACK_IOS_BUNDLE_ID="com.yourname.hstack.dev" hstack mobile --prebuild --run-ios --no-metro
+PIGGERCODE_STACK_IOS_BUNDLE_ID="com.yourname.hstack.dev" hstack mobile --prebuild --run-ios --no-metro
 ```
 
 - **App name (what shows on the home screen)**:
 
 ```bash
-HAPPIER_STACK_IOS_APP_NAME="hstack" hstack mobile --prebuild --run-ios --no-metro
+PIGGERCODE_STACK_IOS_APP_NAME="hstack" hstack mobile --prebuild --run-ios --no-metro
 ```
 
 ## Suggested env (recommended)
@@ -182,17 +182,17 @@ Add these to your main stack env file (`~/.happier/stacks/main/env`) (or `~/.hap
 # How the phone reaches Metro:
 # - lan: recommended for real devices
 # - localhost: OK for simulators
-HAPPIER_STACK_MOBILE_HOST="lan"
+PIGGERCODE_STACK_MOBILE_HOST="lan"
 
 # (optional) default scheme used in the dev-client QR / deep link
 # (must match your installed dev-client app):
-HAPPIER_STACK_DEV_CLIENT_SCHEME="hstack-dev"
+PIGGERCODE_STACK_DEV_CLIENT_SCHEME="hstack-dev"
 
 # Default public server URL for the stack (baked into the Expo app config):
-HAPPIER_STACK_SERVER_URL="https://<your-machine>.<tailnet>.ts.net"
+PIGGERCODE_STACK_SERVER_URL="https://<your-machine>.<tailnet>.ts.net"
 
 # Optional: home screen name:
-HAPPIER_STACK_IOS_APP_NAME="Happier"
+PIGGERCODE_STACK_IOS_APP_NAME="Happier"
 ```
 
 ## EAS builds per stack (production / App Store-like)

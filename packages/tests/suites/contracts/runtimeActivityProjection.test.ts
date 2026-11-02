@@ -166,7 +166,7 @@ function readPrismaRuntimeActivityFingerprint(schemaPath: string): PrismaFieldFi
 }
 
 function resolveSiblingCheckout(): string | null {
-  const explicit = process.env.HAPPIER_RUNTIME_ACTIVITY_PARITY_SIBLING;
+  const explicit = process.env.PIGGERCODE_RUNTIME_ACTIVITY_PARITY_SIBLING;
   if (explicit) return resolve(explicit);
   const siblingName = basename(repoRoot) === 'remote-dev' ? 'dev' : 'remote-dev';
   const candidate = resolve(repoRoot, '..', siblingName);

@@ -267,11 +267,11 @@ describe('core e2e: connected-service quota switch and recovery contracts', () =
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
-        HAPPIER_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+        PIGGERCODE_FEATURE_SESSIONS_USAGE_LIMIT_RECOVERY__ENABLED: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -368,9 +368,9 @@ describe('core e2e: connected-service quota switch and recovery contracts', () =
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -445,10 +445,10 @@ describe('core e2e: connected-service quota switch and recovery contracts', () =
   it('persists auth-group runtime exhaustion across restart and blocks selection until reset', async () => {
     const testDir = run.testDir(`connected-service-auth-group-runtime-state-${randomUUID()}`);
     const restartEnv = {
-      HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-      HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
-      HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
-      HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
+      PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+      PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: '1',
+      PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+      PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: '1',
     };
     const reauth = createReusableKeyChallengeAuth();
     server = await startServerLight({

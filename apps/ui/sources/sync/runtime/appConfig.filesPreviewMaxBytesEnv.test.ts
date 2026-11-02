@@ -21,14 +21,14 @@ describe('loadAppConfig (filesPreviewMaxBytes env)', () => {
     });
 
     const previous = {
-        canonical: process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES,
+        canonical: process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES,
         legacyHappy: process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES,
         legacyGeneric: process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES,
     };
 
     const restore = () => {
-        if (previous.canonical === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES;
-        else process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES = previous.canonical;
+        if (previous.canonical === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES = previous.canonical;
 
         if (previous.legacyHappy === undefined) delete process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES;
         else process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES = previous.legacyHappy;
@@ -37,8 +37,8 @@ describe('loadAppConfig (filesPreviewMaxBytes env)', () => {
         else process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES = previous.legacyGeneric;
     };
 
-    it('uses EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES when set', () => {
-        process.env.EXPO_PUBLIC_HAPPIER_FILES_PREVIEW_MAX_BYTES = '123';
+    it('uses EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES when set', () => {
+        process.env.EXPO_PUBLIC_PIGGERCODE_FILES_PREVIEW_MAX_BYTES = '123';
         delete process.env.EXPO_PUBLIC_HAPPY_FILES_PREVIEW_MAX_BYTES;
         delete process.env.EXPO_PUBLIC_FILES_PREVIEW_MAX_BYTES;
         try {

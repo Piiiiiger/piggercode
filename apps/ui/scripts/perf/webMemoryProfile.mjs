@@ -11,8 +11,8 @@ import {
   SYNC_TUNING_STORAGE_KEY,
 } from './agentBrowserUiPerfAudit.mjs';
 
-const CDP_URL_ENV_NAME = 'HAPPIER_WEB_MEMORY_CDP_URL';
-const AGENT_BROWSER_SESSION_ENV_NAME = 'HAPPIER_WEB_MEMORY_AGENT_BROWSER_SESSION';
+const CDP_URL_ENV_NAME = 'PIGGERCODE_WEB_MEMORY_CDP_URL';
+const AGENT_BROWSER_SESSION_ENV_NAME = 'PIGGERCODE_WEB_MEMORY_AGENT_BROWSER_SESSION';
 const DEFAULT_AGENT_BROWSER_SESSION = 'happier-ui-perf';
 
 const SYNC_EVENT_ALLOWLIST = new Set([
@@ -328,7 +328,7 @@ async function collectCheckpoint({ page, cdp, label, outDir, snapshotHeap }) {
     cdp.send('Performance.getMetrics').catch((error) => ({ error: String(error?.message ?? error), metrics: [] })),
     cdp.send('Memory.getDOMCounters').catch((error) => ({ error: String(error?.message ?? error) })),
     page.evaluate(async () => {
-      const syncSnapshot = window.__HAPPIER_SYNC_PERFORMANCE__?.snapshot?.() ?? null;
+      const syncSnapshot = window.__PIGGERCODE_SYNC_PERFORMANCE__?.snapshot?.() ?? null;
       const memory = performance.memory
         ? {
             usedJSHeapSize: performance.memory.usedJSHeapSize,
@@ -394,7 +394,7 @@ export async function configureAppTelemetry(page, options = {}) {
   const resetTelemetry = options.reset !== false;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const configured = await page.evaluate((shouldReset) => {
-      const telemetry = window.__HAPPIER_SYNC_PERFORMANCE__;
+      const telemetry = window.__PIGGERCODE_SYNC_PERFORMANCE__;
       if (!telemetry?.snapshot) return false;
       telemetry.configure?.({
         enabled: true,

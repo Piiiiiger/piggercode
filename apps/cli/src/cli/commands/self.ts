@@ -61,10 +61,10 @@ function usage(): string {
     `  dev     → npm dist-tag ${cmd('next')} (${chalk.gray('dev rolling binaries')})`,
     '',
     `${chalk.bold('Environment:')}`,
-    `  HAPPIER_CLI_UPDATE_CHECK=0                 Disable update notice + background check`,
-    `  HAPPIER_CLI_UPDATE_PACKAGE_NAME=@scope/pkg Override the npm package name checked/installed`,
-    `  HAPPIER_GITHUB_REPO=happier-dev/happier    Override GitHub repo for binary updates`,
-    `  HAPPIER_GITHUB_TOKEN=...                   GitHub token for release API (optional)`,
+    `  PIGGERCODE_CLI_UPDATE_CHECK=0                 Disable update notice + background check`,
+    `  PIGGERCODE_CLI_UPDATE_PACKAGE_NAME=@scope/pkg Override the npm package name checked/installed`,
+    `  PIGGERCODE_GITHUB_REPO=happier-dev/happier    Override GitHub repo for binary updates`,
+    `  PIGGERCODE_GITHUB_TOKEN=...                   GitHub token for release API (optional)`,
     '',
   ].join('\n');
 }
@@ -151,12 +151,12 @@ export function detectInstallSource(path: string): 'npm' | 'binary' {
 }
 
 function resolveBinaryUpdateRepo(env: NodeJS.ProcessEnv): string {
-  const raw = String(env.HAPPIER_GITHUB_REPO ?? '').trim();
+  const raw = String(env.PIGGERCODE_GITHUB_REPO ?? '').trim();
   return raw || 'happier-dev/happier';
 }
 
 function resolveBinaryUpdateToken(env: NodeJS.ProcessEnv): string {
-  return String(env.HAPPIER_GITHUB_TOKEN ?? env.GITHUB_TOKEN ?? '').trim();
+  return String(env.PIGGERCODE_GITHUB_TOKEN ?? env.GITHUB_TOKEN ?? '').trim();
 }
 
 function npmUpgradeCommand(params: Readonly<{ packageName: string; channel: SelfChannel; to: string }>): string {
@@ -175,7 +175,7 @@ function runtimeDir(channel: SelfChannel): string {
 
 function resolveUpdatePackageName(): string {
   return resolveNpmPackageNameOverride({
-    envValue: process.env.HAPPIER_CLI_UPDATE_PACKAGE_NAME,
+    envValue: process.env.PIGGERCODE_CLI_UPDATE_PACKAGE_NAME,
     fallback: String(packageJson.name ?? '').trim(),
   });
 }
@@ -301,7 +301,7 @@ async function cmdUpdate(argv: string[], rawArgv: readonly string[] = process.ar
     const v = raw.startsWith('v') ? raw.slice(1) : raw;
     return { channel, targetVersion: v || undefined };
   })();
-  const processEnv = { ...process.env, HAPPIER_HOME_DIR: configuration.happyHomeDir };
+  const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: configuration.happyHomeDir };
 
   // Observed before anything changes: on Windows the update stops the payload's processes (every
   // relay's daemon), and only this observation still knows which service daemons must come back.
@@ -322,7 +322,7 @@ async function cmdUpdate(argv: string[], rawArgv: readonly string[] = process.ar
       githubRepo: resolveBinaryUpdateRepo(process.env),
       githubToken: resolveBinaryUpdateToken(process.env),
       userAgent: 'happier-cli',
-      minisignPubkeyFile: String(process.env.HAPPIER_MINISIGN_PUBKEY ?? '').trim() || undefined,
+      minisignPubkeyFile: String(process.env.PIGGERCODE_MINISIGN_PUBKEY ?? '').trim() || undefined,
     }),
     readVersion: async (command) => resolveCliVersionFromBinary({
       binaryPath: command,
@@ -390,7 +390,7 @@ function parseFirstPartyComponentId(value: string): FirstPartyComponentId {
 }
 
 function shouldSkipInstallPayloadMigration(processEnv: NodeJS.ProcessEnv): boolean {
-  return processEnv.HAPPIER_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION === '1';
+  return processEnv.PIGGERCODE_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION === '1';
 }
 
 async function withInstalledCliMigrationRuntime<T>(params: Readonly<{
@@ -403,10 +403,10 @@ async function withInstalledCliMigrationRuntime<T>(params: Readonly<{
     processEnv: process.env,
   });
   const scopedEnvUpdates = {
-    HAPPIER_DAEMON_SERVICE_CHANNEL: params.channel,
-    HAPPIER_PUBLIC_RELEASE_CHANNEL: getReleaseRingCatalogEntry(params.channel).publicLabel,
-    HAPPIER_DAEMON_SERVICE_NODE_PATH: installedCliPaths.binaryPath,
-    HAPPIER_DAEMON_SERVICE_ENTRY_PATH: '',
+    PIGGERCODE_DAEMON_SERVICE_CHANNEL: params.channel,
+    PIGGERCODE_PUBLIC_RELEASE_CHANNEL: getReleaseRingCatalogEntry(params.channel).publicLabel,
+    PIGGERCODE_DAEMON_SERVICE_NODE_PATH: installedCliPaths.binaryPath,
+    PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '',
   } as const;
   const previousEnv = new Map<string, string | undefined>();
   for (const [key, value] of Object.entries(scopedEnvUpdates)) {

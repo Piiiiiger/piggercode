@@ -36,12 +36,12 @@ export const OPENCODE_SERVER_RESTARTED_DURING_TURN_ISSUE_CODE = 'opencode_server
 
 // Env vars consumed by the fixture. Keep these in sync with
 // `packages/tests/src/fixtures/fake-opencode-server-cli.cjs`.
-export const FAKE_OPENCODE_STATE_PATH_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_STATE_PATH' as const;
-export const FAKE_OPENCODE_LOG_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_LOG' as const;
-export const FAKE_OPENCODE_TEARDOWN_MODE_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_TEARDOWN_MODE' as const;
-export const FAKE_OPENCODE_EXIT_DELAY_MS_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_EXIT_DELAY_MS' as const;
-export const FAKE_OPENCODE_TOOL_NAME_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_TOOL_NAME' as const;
-export const FAKE_OPENCODE_SESSION_ID_ENV = 'HAPPIER_E2E_FAKE_OPENCODE_SESSION_ID' as const;
+export const FAKE_OPENCODE_STATE_PATH_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_STATE_PATH' as const;
+export const FAKE_OPENCODE_LOG_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_LOG' as const;
+export const FAKE_OPENCODE_TEARDOWN_MODE_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_TEARDOWN_MODE' as const;
+export const FAKE_OPENCODE_EXIT_DELAY_MS_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_EXIT_DELAY_MS' as const;
+export const FAKE_OPENCODE_TOOL_NAME_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_TOOL_NAME' as const;
+export const FAKE_OPENCODE_SESSION_ID_ENV = 'PIGGERCODE_E2E_FAKE_OPENCODE_SESSION_ID' as const;
 
 export type FakeOpenCodeTeardownMode = 'crash' | 'stay_alive';
 
@@ -131,15 +131,15 @@ export function buildFakeOpenCodeServerEnv(params: Readonly<{
   sessionId?: string;
 }>): Record<string, string> {
   const env: Record<string, string> = {
-    HAPPIER_OPENCODE_PATH: fakeOpenCodeServerFixturePath(),
-    HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+    PIGGERCODE_OPENCODE_PATH: fakeOpenCodeServerFixturePath(),
+    PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
     [FAKE_OPENCODE_STATE_PATH_ENV]: params.statePath,
     [FAKE_OPENCODE_TEARDOWN_MODE_ENV]: params.teardownMode ?? 'crash',
     // Deterministic, snappy reconnect/health behavior for the e2e.
-    HAPPIER_OPENCODE_SERVER_START_TIMEOUT_MS: '15000',
-    HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS: '5000',
-    HAPPIER_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS: '50',
-    HAPPIER_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS: '500',
+    PIGGERCODE_OPENCODE_SERVER_START_TIMEOUT_MS: '15000',
+    PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS: '5000',
+    PIGGERCODE_OPENCODE_SSE_RECONNECT_BASE_DELAY_MS: '50',
+    PIGGERCODE_OPENCODE_SSE_RECONNECT_MAX_DELAY_MS: '500',
   };
   if (typeof params.logPath === 'string' && params.logPath.length > 0) {
     env[FAKE_OPENCODE_LOG_ENV] = params.logPath;

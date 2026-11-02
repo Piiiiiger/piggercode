@@ -39,12 +39,12 @@ export function resolveProviderSpawnExtras(params: Readonly<{
 }
 
 function hasExplicitCodexAcpEnvOverride(processEnv: NodeJS.ProcessEnv): boolean {
-  const raw = processEnv.HAPPIER_EXPERIMENTAL_CODEX_ACP;
+  const raw = processEnv.PIGGERCODE_EXPERIMENTAL_CODEX_ACP;
   return typeof raw === 'string' && raw.trim().length > 0;
 }
 
 function readExplicitCodexBackendModeFromEnv(processEnv: NodeJS.ProcessEnv): CodexBackendMode | null {
-  return normalizeCodexBackendMode(processEnv.HAPPIER_CODEX_BACKEND_MODE);
+  return normalizeCodexBackendMode(processEnv.PIGGERCODE_CODEX_BACKEND_MODE);
 }
 
 export function resolveProviderSpawnExtrasForRuntime(params: Readonly<{

@@ -12,8 +12,8 @@ import {
 
 describe('resolveMcpToolCallRequestOptions', () => {
   const envKeys = [
-    'HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS',
-    'HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS',
+    'PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS',
+    'PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -23,8 +23,8 @@ describe('resolveMcpToolCallRequestOptions', () => {
   });
 
   it('uses a long default timeout instead of the MCP SDK 60s default', async () => {
-    delete process.env.HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS;
-    delete process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS;
+    delete process.env.PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS;
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestOptions({ toolName: 'get_status', args: {} })).toEqual({
@@ -34,7 +34,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
   });
 
   it('lets configuration env override the general MCP tool call timeout', async () => {
-    process.env.HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS = '240000';
+    process.env.PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS = '240000';
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
@@ -44,7 +44,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
   });
 
   it('keeps action-approval-capable MCP tools on the configurable general timeout', async () => {
-    process.env.HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS = '360000';
+    process.env.PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS = '360000';
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
@@ -54,7 +54,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
   });
 
   it('aligns execution_run_wait timeout with timeoutSeconds plus configured grace', async () => {
-    process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
+    process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
@@ -64,7 +64,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
   });
 
   it('also recognizes provider-prefixed execution_run_wait tool names', async () => {
-    process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
+    process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
@@ -75,7 +75,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
 });
 
 describe('callMcpToolWithResolvedTimeout', () => {
-  const envKeys = ['HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS'] as const;
+  const envKeys = ['PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS'] as const;
   let envScope = createEnvKeyScope(envKeys);
 
   afterEach(() => {
@@ -84,7 +84,7 @@ describe('callMcpToolWithResolvedTimeout', () => {
   });
 
   it('passes SDK request options when calling the MCP client', async () => {
-    process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
+    process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
     reloadConfiguration();
 
     const callTool = vi.fn().mockResolvedValue({ content: [] });

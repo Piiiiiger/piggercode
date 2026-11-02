@@ -333,7 +333,7 @@ describe('buildSharedDeps', () => {
           timeoutMs: 50,
           pollIntervalMs: 10,
           staleAfterMs: 1_000,
-          env: { HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
+          env: { PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue },
         });
         events.push('parent:end');
       }, {

@@ -14,7 +14,7 @@ import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
  * timeout and acknowledges `{ ok: false, error: 'operation has timed out' }`). Nothing else is
  * altered; every other frame passes through unchanged in both directions.
  *
- * Socket.IO over a WebSocket only: the app must be built with `EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET=1`
+ * Socket.IO over a WebSocket only: the app must be built with `EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET=1`
  * so no call travels over the HTTP long-polling transport this route cannot see.
  */
 

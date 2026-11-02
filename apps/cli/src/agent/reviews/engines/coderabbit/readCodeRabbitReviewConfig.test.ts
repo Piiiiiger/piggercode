@@ -10,21 +10,21 @@ describe('readCodeRabbitReviewConfigFromEnv', () => {
     expect(cfg.maxEligibleFiles).toBe(300);
   });
 
-  it('uses HAPPIER_CODERABBIT_REVIEW_CMD override when provided', () => {
-    const cfg = readCodeRabbitReviewConfigFromEnv({ HAPPIER_CODERABBIT_REVIEW_CMD: '/tmp/coderabbit' } as any);
+  it('uses PIGGERCODE_CODERABBIT_REVIEW_CMD override when provided', () => {
+    const cfg = readCodeRabbitReviewConfigFromEnv({ PIGGERCODE_CODERABBIT_REVIEW_CMD: '/tmp/coderabbit' } as any);
     expect(cfg.command).toBe('/tmp/coderabbit');
   });
 
-  it('uses HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES override when provided', () => {
+  it('uses PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES override when provided', () => {
     const cfg = readCodeRabbitReviewConfigFromEnv({
-      HAPPIER_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES: '42',
+      PIGGERCODE_CODERABBIT_REVIEW_MAX_ELIGIBLE_FILES: '42',
     } as any);
     expect(cfg.maxEligibleFiles).toBe(42);
   });
 
-  it('uses HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS override when provided', () => {
+  it('uses PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS override when provided', () => {
     const cfg = readCodeRabbitReviewConfigFromEnv({
-      HAPPIER_CODERABBIT_REVIEW_TIMEOUT_MS: '180000',
+      PIGGERCODE_CODERABBIT_REVIEW_TIMEOUT_MS: '180000',
     } as any);
     expect(cfg.timeoutMs).toBe(180000);
   });

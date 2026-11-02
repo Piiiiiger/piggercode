@@ -4,7 +4,7 @@
  * STDIO MCP server that forwards tools to an existing Happier HTTP MCP server
  * using the StreamableHTTPClientTransport.
  *
- * Configure the target HTTP MCP URL via env var `HAPPIER_HTTP_MCP_URL` or
+ * Configure the target HTTP MCP URL via env var `PIGGERCODE_HTTP_MCP_URL` or
  * via CLI flag `--url <http://127.0.0.1:PORT>`.
  *
  * Note: This process must not print to stdout as it would break MCP STDIO.
@@ -40,12 +40,12 @@ function parseArgs(argv: string[]): { url: string | null } {
 async function main() {
   // Resolve target HTTP MCP URL
   const { url: urlFromArgs } = parseArgs(process.argv.slice(2));
-  const baseUrl = urlFromArgs || process.env.HAPPIER_HTTP_MCP_URL || '';
+  const baseUrl = urlFromArgs || process.env.PIGGERCODE_HTTP_MCP_URL || '';
 
   if (!baseUrl) {
     // Write to stderr; never stdout.
     process.stderr.write(
-      '[happier-mcp] Missing target URL. Set HAPPIER_HTTP_MCP_URL or pass --url <http://127.0.0.1:PORT>\n'
+      '[happier-mcp] Missing target URL. Set PIGGERCODE_HTTP_MCP_URL or pass --url <http://127.0.0.1:PORT>\n'
     );
     process.exit(2);
   }
@@ -124,7 +124,7 @@ async function main() {
 }
 
 // Import-only candidate validation must not start the stdio runtime.
-if (process.env.HAPPIER_CLI_DIST_INTEGRITY_PROBE !== '1') {
+if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE !== '1') {
   main().catch((err) => {
     try {
       process.stderr.write(`[happier-mcp] Fatal: ${err instanceof Error ? err.message : String(err)}\n`);

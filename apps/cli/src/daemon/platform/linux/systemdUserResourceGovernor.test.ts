@@ -39,7 +39,7 @@ describe('systemd user resource governor', () => {
           '--happy-starting-mode',
           'remote',
         ],
-        env: { HAPPIER_TEST_ADMITTED_CLOSURE: 'immutable' },
+        env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: 'immutable' },
       },
     });
 
@@ -59,7 +59,7 @@ describe('systemd user resource governor', () => {
         '--happy-starting-mode',
         'remote',
       ],
-      env: { HAPPIER_TEST_ADMITTED_CLOSURE: 'immutable' },
+      env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: 'immutable' },
     });
     expect(spec.args.join(' ')).not.toMatch(/CPUQuota|MemoryMax|MemoryHigh|TasksMax/u);
   });

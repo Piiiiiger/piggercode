@@ -9,7 +9,7 @@ import { scenarioCatalog } from '../../src/testkit/providers/scenarios/scenarioC
 function opencodeServerProvider(): ProviderUnderTest {
   return {
     id: 'opencode_server',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_OPENCODE_SERVER',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER',
     protocol: 'acp',
     // Keep trace provider aligned with OpenCode so existing fixtures and schemas apply.
     traceProvider: 'opencode',

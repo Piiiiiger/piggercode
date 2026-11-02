@@ -37,9 +37,9 @@ describe('createOpenCodeServerRuntimeClient managed generation authority', () =>
   const servers = new Set<StartedServer>();
   const tempDirs = new Set<string>();
   let envScope = createEnvKeyScope([
-    'HAPPIER_OPENCODE_SERVER_STATE_PATH',
-    'HAPPIER_OPENCODE_CLI_GENERATION',
-    'HAPPIER_OPENCODE_SERVER_URL',
+    'PIGGERCODE_OPENCODE_SERVER_STATE_PATH',
+    'PIGGERCODE_OPENCODE_CLI_GENERATION',
+    'PIGGERCODE_OPENCODE_SERVER_URL',
     'OPENCODE_PASSWORD',
     'OPENCODE_SERVER_PASSWORD',
     'OPENCODE_SERVER_USERNAME',
@@ -48,9 +48,9 @@ describe('createOpenCodeServerRuntimeClient managed generation authority', () =>
   afterEach(async () => {
     envScope.restore();
     envScope = createEnvKeyScope([
-      'HAPPIER_OPENCODE_SERVER_STATE_PATH',
-      'HAPPIER_OPENCODE_CLI_GENERATION',
-      'HAPPIER_OPENCODE_SERVER_URL',
+      'PIGGERCODE_OPENCODE_SERVER_STATE_PATH',
+      'PIGGERCODE_OPENCODE_CLI_GENERATION',
+      'PIGGERCODE_OPENCODE_SERVER_URL',
       'OPENCODE_PASSWORD',
       'OPENCODE_SERVER_PASSWORD',
       'OPENCODE_SERVER_USERNAME',
@@ -103,9 +103,9 @@ describe('createOpenCodeServerRuntimeClient managed generation authority', () =>
     tempDirs.add(dir);
     const statePath = join(dir, 'managed-server.json');
     envScope.patch({
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: statePath,
-      HAPPIER_OPENCODE_CLI_GENERATION: serverGeneration === 'v1' ? 'stable' : apiGeneration,
-      HAPPIER_OPENCODE_SERVER_URL: undefined,
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: statePath,
+      PIGGERCODE_OPENCODE_CLI_GENERATION: serverGeneration === 'v1' ? 'stable' : apiGeneration,
+      PIGGERCODE_OPENCODE_SERVER_URL: undefined,
     });
     writeFileSync(statePath, JSON.stringify({
       baseUrl: server.baseUrl,
@@ -167,9 +167,9 @@ describe('createOpenCodeServerRuntimeClient managed generation authority', () =>
     tempDirs.add(dir);
     const statePath = join(dir, 'managed-server.json');
     envScope.patch({
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: statePath,
-      HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
-      HAPPIER_OPENCODE_SERVER_URL: undefined,
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: statePath,
+      PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
+      PIGGERCODE_OPENCODE_SERVER_URL: undefined,
       OPENCODE_PASSWORD: undefined,
       OPENCODE_SERVER_PASSWORD: undefined,
       OPENCODE_SERVER_USERNAME: undefined,
@@ -259,9 +259,9 @@ describe('createOpenCodeServerRuntimeClient managed generation authority', () =>
     tempDirs.add(dir);
     const statePath = join(dir, 'managed-server.json');
     envScope.patch({
-      HAPPIER_OPENCODE_SERVER_STATE_PATH: statePath,
-      HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
-      HAPPIER_OPENCODE_SERVER_URL: undefined,
+      PIGGERCODE_OPENCODE_SERVER_STATE_PATH: statePath,
+      PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
+      PIGGERCODE_OPENCODE_SERVER_URL: undefined,
       OPENCODE_PASSWORD: undefined,
       OPENCODE_SERVER_PASSWORD: undefined,
       OPENCODE_SERVER_USERNAME: undefined,

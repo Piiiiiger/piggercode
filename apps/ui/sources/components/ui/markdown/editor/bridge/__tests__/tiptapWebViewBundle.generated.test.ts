@@ -20,9 +20,9 @@ describe('TIPTAP_WEBVIEW_BUNDLE_JS', () => {
     });
 
     it('embeds the headless WebView runtime global assignment', () => {
-        // The esbuild entry assigns `globalThis.HAPPIER_TIPTAP_WEBVIEW`; a real
+        // The esbuild entry assigns `globalThis.PIGGERCODE_TIPTAP_WEBVIEW`; a real
         // build contains that identifier (a placeholder would not).
-        expect(TIPTAP_WEBVIEW_BUNDLE_JS).toContain('HAPPIER_TIPTAP_WEBVIEW');
+        expect(TIPTAP_WEBVIEW_BUNDLE_JS).toContain('PIGGERCODE_TIPTAP_WEBVIEW');
     });
 
     it('does not dispatch raw bridge command names by spreading arbitrary args', () => {

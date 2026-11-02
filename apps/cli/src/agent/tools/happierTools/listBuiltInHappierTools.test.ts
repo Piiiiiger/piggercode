@@ -7,11 +7,11 @@ describe('listBuiltInHappierTools', () => {
   beforeEach(() => {
     vi.resetModules();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
   it('filters action-backed tools dynamically using current CLI action settings', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['cli'], disabledPlacements: [] },
@@ -84,7 +84,7 @@ describe('listBuiltInHappierTools', () => {
   });
 
   it('allows action settings to explicitly expose a discoverable-only action as a direct session-agent tool', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'subagents.delegate.start': {

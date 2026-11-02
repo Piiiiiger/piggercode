@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isAlive, setupStackStopSweepFixture, spawnOwnedSleep, waitForProcessAlive, waitForProcessExit } from './testkit/stack_stop_sweeps_testkit.mjs';
 
-test('hstack stack stop sweeps legacy infra without HAPPIER_STACK_PROCESS_KIND=infra', async (t) => {
+test('hstack stack stop sweeps legacy infra without PIGGERCODE_STACK_PROCESS_KIND=infra', async (t) => {
   const fixture = await setupStackStopSweepFixture({
     importMetaUrl: import.meta.url,
     t,
@@ -11,9 +11,9 @@ test('hstack stack stop sweeps legacy infra without HAPPIER_STACK_PROCESS_KIND=i
   const legacyInfra = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: undefined,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: undefined,
       // Simulate a yarn/npm-managed infra process from older stacks (no kind tag).
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
@@ -26,9 +26,9 @@ test('hstack stack stop sweeps legacy infra without HAPPIER_STACK_PROCESS_KIND=i
   const sessionLike = fixture.trackChild(spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_PROCESS_KIND: undefined,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: undefined,
       // Deliberately no npm_lifecycle_event and no process kind tag.
     },
   }));

@@ -101,7 +101,7 @@ import {
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
 import { createSessionMediaTurnState, type SessionMediaTurnState } from '@/agent/acp/runtime/sessionMediaTurnState';
 
-const ACP_FAILURE_TRACE_ENV = 'HAPPIER_ACP_FAILURE_TRACE';
+const ACP_FAILURE_TRACE_ENV = 'PIGGERCODE_ACP_FAILURE_TRACE';
 
 type RuntimeSessionMediaMessage = Extract<AgentMessage, { type: 'session-media' }>;
 type RuntimeSessionMediaSource = RuntimeSessionMediaMessage['media'][number];
@@ -679,7 +679,7 @@ export function createAcpRuntime(params: {
   publishInFlightSteerCapabilities(false);
   const acpTraceMarkersEnabled = (() => {
     const raw = (
-      process.env.HAPPIER_E2E_ACP_TRACE_MARKERS ??
+      process.env.PIGGERCODE_E2E_ACP_TRACE_MARKERS ??
       process.env.HAPPY_E2E_ACP_TRACE_MARKERS ??
       ''
     )

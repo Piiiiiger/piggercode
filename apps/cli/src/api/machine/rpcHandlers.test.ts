@@ -637,16 +637,16 @@ describe('registerMachineRpcHandlers', () => {
       sessionId: 'sess_old',
       backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
       },
     });
 
     expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({
       existingSessionId: 'sess_old',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
       },
     }));
   });
@@ -1593,8 +1593,8 @@ describe('registerMachineRpcHandlers', () => {
   });
 
   it('registers daemon terminal handlers (disabled when explicitly configured off)', async () => {
-    const prev = process.env.HAPPIER_DAEMON_TERMINAL_ENABLED;
-    process.env.HAPPIER_DAEMON_TERMINAL_ENABLED = '0';
+    const prev = process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED;
+    process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED = '0';
 
     try {
       const registered = new Map<string, (params: any) => Promise<any>>();
@@ -1640,9 +1640,9 @@ describe('registerMachineRpcHandlers', () => {
       });
     } finally {
       if (typeof prev === 'string') {
-        process.env.HAPPIER_DAEMON_TERMINAL_ENABLED = prev;
+        process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED = prev;
       } else {
-        delete process.env.HAPPIER_DAEMON_TERMINAL_ENABLED;
+        delete process.env.PIGGERCODE_DAEMON_TERMINAL_ENABLED;
       }
     }
   });
@@ -4497,9 +4497,9 @@ describe('registerMachineRpcHandlers', () => {
         approvedNewDirectoryCreation: true,
         resume: 'op_forked',
         environmentVariables: {
-          HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-          HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-          HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+          PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+          PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+          PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
         },
       }),
     );
@@ -5076,9 +5076,9 @@ describe('registerMachineRpcHandlers', () => {
       backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
       resume: 'op_ses_forked',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-        HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
       },
     }));
     expect((spawnSession as any).mock.calls[0]?.[0]).not.toHaveProperty(
@@ -6770,9 +6770,9 @@ describe('registerMachineRpcHandlers', () => {
       backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
       existingSessionId: 'sess_child',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-        HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
       },
       permissionMode: 'yolo',
       permissionModeUpdatedAt: 123,
@@ -6949,7 +6949,7 @@ describe('registerMachineRpcHandlers', () => {
       backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
       existingSessionId: 'sess_child',
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
       },
     }));
     const posted = (postSpy as any).mock.calls[0][1] as any;
@@ -7129,7 +7129,7 @@ describe('registerMachineRpcHandlers', () => {
     const runnerLogPath = join(stackLogsDir, 'dev.log');
 
     await mkdir(stackLogsDir, { recursive: true });
-    await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`, 'utf8');
+    await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`, 'utf8');
     await writeFile(
       runtimePath,
       JSON.stringify({
@@ -7149,12 +7149,12 @@ describe('registerMachineRpcHandlers', () => {
       },
     } as any;
 
-    const previousStackName = process.env.HAPPIER_STACK_STACK;
-    const previousEnvPath = process.env.HAPPIER_STACK_ENV_FILE;
-    const previousRuntimePath = process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
-    process.env.HAPPIER_STACK_STACK = stackName;
-    process.env.HAPPIER_STACK_ENV_FILE = envPath;
-    process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = runtimePath;
+    const previousStackName = process.env.PIGGERCODE_STACK_STACK;
+    const previousEnvPath = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const previousRuntimePath = process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
+    process.env.PIGGERCODE_STACK_STACK = stackName;
+    process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
+    process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = runtimePath;
 
     try {
       registerMachineRpcHandlers({
@@ -7175,19 +7175,19 @@ describe('registerMachineRpcHandlers', () => {
       expect(diagnostics.doctorSnapshot).toBeDefined();
     } finally {
       if (previousStackName === undefined) {
-        delete process.env.HAPPIER_STACK_STACK;
+        delete process.env.PIGGERCODE_STACK_STACK;
       } else {
-        process.env.HAPPIER_STACK_STACK = previousStackName;
+        process.env.PIGGERCODE_STACK_STACK = previousStackName;
       }
       if (previousEnvPath === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = previousEnvPath;
+        process.env.PIGGERCODE_STACK_ENV_FILE = previousEnvPath;
       }
       if (previousRuntimePath === undefined) {
-        delete process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
+        delete process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
       } else {
-        process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
+        process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
       }
     }
   });
@@ -7236,7 +7236,7 @@ describe('registerMachineRpcHandlers', () => {
     const runnerLogPath = join(stackLogsDir, 'runner.log');
 
     await mkdir(stackLogsDir, { recursive: true });
-    await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`, 'utf8');
+    await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`, 'utf8');
     await writeFile(
       runtimePath,
       JSON.stringify({
@@ -7256,12 +7256,12 @@ describe('registerMachineRpcHandlers', () => {
       },
     } as any;
 
-    const previousStackName = process.env.HAPPIER_STACK_STACK;
-    const previousEnvPath = process.env.HAPPIER_STACK_ENV_FILE;
-    const previousRuntimePath = process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
-    process.env.HAPPIER_STACK_STACK = stackName;
-    process.env.HAPPIER_STACK_ENV_FILE = envPath;
-    process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = runtimePath;
+    const previousStackName = process.env.PIGGERCODE_STACK_STACK;
+    const previousEnvPath = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const previousRuntimePath = process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
+    process.env.PIGGERCODE_STACK_STACK = stackName;
+    process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
+    process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = runtimePath;
 
     try {
       registerMachineRpcHandlers({
@@ -7288,19 +7288,19 @@ describe('registerMachineRpcHandlers', () => {
       expect(String(result.tail ?? '')).toContain('END');
     } finally {
       if (previousStackName === undefined) {
-        delete process.env.HAPPIER_STACK_STACK;
+        delete process.env.PIGGERCODE_STACK_STACK;
       } else {
-        process.env.HAPPIER_STACK_STACK = previousStackName;
+        process.env.PIGGERCODE_STACK_STACK = previousStackName;
       }
       if (previousEnvPath === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = previousEnvPath;
+        process.env.PIGGERCODE_STACK_ENV_FILE = previousEnvPath;
       }
       if (previousRuntimePath === undefined) {
-        delete process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
+        delete process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
       } else {
-        process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
+        process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
       }
     }
   });
@@ -7316,7 +7316,7 @@ describe('registerMachineRpcHandlers', () => {
     const outsideRunnerPath = join(stackHome, 'outside-runner.log');
 
     await mkdir(stackLogsDir, { recursive: true });
-    await writeFile(envPath, `HAPPIER_STACK_STACK=${stackName}\n`, 'utf8');
+    await writeFile(envPath, `PIGGERCODE_STACK_STACK=${stackName}\n`, 'utf8');
     await writeFile(
       runtimePath,
       JSON.stringify({
@@ -7337,12 +7337,12 @@ describe('registerMachineRpcHandlers', () => {
       },
     } as any;
 
-    const previousStackName = process.env.HAPPIER_STACK_STACK;
-    const previousEnvPath = process.env.HAPPIER_STACK_ENV_FILE;
-    const previousRuntimePath = process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
-    process.env.HAPPIER_STACK_STACK = stackName;
-    process.env.HAPPIER_STACK_ENV_FILE = envPath;
-    process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = runtimePath;
+    const previousStackName = process.env.PIGGERCODE_STACK_STACK;
+    const previousEnvPath = process.env.PIGGERCODE_STACK_ENV_FILE;
+    const previousRuntimePath = process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
+    process.env.PIGGERCODE_STACK_STACK = stackName;
+    process.env.PIGGERCODE_STACK_ENV_FILE = envPath;
+    process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = runtimePath;
 
     try {
       registerMachineRpcHandlers({
@@ -7362,19 +7362,19 @@ describe('registerMachineRpcHandlers', () => {
       expect(diagnostics.stackContext?.logCandidates).not.toContain(outsideRunnerPath);
     } finally {
       if (previousStackName === undefined) {
-        delete process.env.HAPPIER_STACK_STACK;
+        delete process.env.PIGGERCODE_STACK_STACK;
       } else {
-        process.env.HAPPIER_STACK_STACK = previousStackName;
+        process.env.PIGGERCODE_STACK_STACK = previousStackName;
       }
       if (previousEnvPath === undefined) {
-        delete process.env.HAPPIER_STACK_ENV_FILE;
+        delete process.env.PIGGERCODE_STACK_ENV_FILE;
       } else {
-        process.env.HAPPIER_STACK_ENV_FILE = previousEnvPath;
+        process.env.PIGGERCODE_STACK_ENV_FILE = previousEnvPath;
       }
       if (previousRuntimePath === undefined) {
-        delete process.env.HAPPIER_STACK_RUNTIME_STATE_PATH;
+        delete process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH;
       } else {
-        process.env.HAPPIER_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
+        process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH = previousRuntimePath;
       }
     }
   });

@@ -20,51 +20,51 @@ function restoreEnv(key: string, prev: string | undefined): void {
 }
 
 describe('envFlag', () => {
-  it('accepts HAPPIER_* flags', () => {
-    const prev = process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
-    process.env.HAPPIER_E2E_SAVE_ARTIFACTS = '1';
+  it('accepts PIGGERCODE_* flags', () => {
+    const prev = process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
+    process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS = '1';
     try {
-      expect(envFlag('HAPPIER_E2E_SAVE_ARTIFACTS', false)).toBe(true);
+      expect(envFlag('PIGGERCODE_E2E_SAVE_ARTIFACTS', false)).toBe(true);
     } finally {
-      restoreEnv('HAPPIER_E2E_SAVE_ARTIFACTS', prev);
+      restoreEnv('PIGGERCODE_E2E_SAVE_ARTIFACTS', prev);
     }
   });
 
-  it('falls back from HAPPIER_* to HAPPY_* when unset', () => {
-    const prevHappier = process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
+  it('falls back from PIGGERCODE_* to HAPPY_* when unset', () => {
+    const prevHappier = process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
     const prevHappy = process.env.HAPPY_E2E_SAVE_ARTIFACTS;
-    delete process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
+    delete process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
     process.env.HAPPY_E2E_SAVE_ARTIFACTS = '1';
     try {
-      expect(envFlag('HAPPIER_E2E_SAVE_ARTIFACTS', false)).toBe(true);
+      expect(envFlag('PIGGERCODE_E2E_SAVE_ARTIFACTS', false)).toBe(true);
     } finally {
-      restoreEnv('HAPPIER_E2E_SAVE_ARTIFACTS', prevHappier);
+      restoreEnv('PIGGERCODE_E2E_SAVE_ARTIFACTS', prevHappier);
       restoreEnv('HAPPY_E2E_SAVE_ARTIFACTS', prevHappy);
     }
   });
 
-  it('falls back from HAPPY_* to HAPPIER_* when unset', () => {
-    const prevHappier = process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
+  it('falls back from HAPPY_* to PIGGERCODE_* when unset', () => {
+    const prevHappier = process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
     const prevHappy = process.env.HAPPY_E2E_SAVE_ARTIFACTS;
     delete process.env.HAPPY_E2E_SAVE_ARTIFACTS;
-    process.env.HAPPIER_E2E_SAVE_ARTIFACTS = '1';
+    process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS = '1';
     try {
       expect(envFlag('HAPPY_E2E_SAVE_ARTIFACTS', false)).toBe(true);
     } finally {
-      restoreEnv('HAPPIER_E2E_SAVE_ARTIFACTS', prevHappier);
+      restoreEnv('PIGGERCODE_E2E_SAVE_ARTIFACTS', prevHappier);
       restoreEnv('HAPPY_E2E_SAVE_ARTIFACTS', prevHappy);
     }
   });
 
   it('accepts multiple keys and returns the first match', () => {
-    const prevHappier = process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
+    const prevHappier = process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
     const prevHappy = process.env.HAPPY_E2E_SAVE_ARTIFACTS;
-    delete process.env.HAPPIER_E2E_SAVE_ARTIFACTS;
+    delete process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS;
     process.env.HAPPY_E2E_SAVE_ARTIFACTS = '1';
     try {
-      expect(envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false)).toBe(true);
+      expect(envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false)).toBe(true);
     } finally {
-      restoreEnv('HAPPIER_E2E_SAVE_ARTIFACTS', prevHappier);
+      restoreEnv('PIGGERCODE_E2E_SAVE_ARTIFACTS', prevHappier);
       restoreEnv('HAPPY_E2E_SAVE_ARTIFACTS', prevHappy);
     }
   });
@@ -72,90 +72,90 @@ describe('envFlag', () => {
 
 describe('applyEnvOverrides', () => {
   it('restores previous values after applying overrides', () => {
-    const prevEnabled = process.env.HAPPIER_TEST_ENABLED;
-    const prevRemoved = process.env.HAPPIER_TEST_REMOVED;
-    process.env.HAPPIER_TEST_ENABLED = 'before';
-    process.env.HAPPIER_TEST_REMOVED = 'remove-me';
+    const prevEnabled = process.env.PIGGERCODE_TEST_ENABLED;
+    const prevRemoved = process.env.PIGGERCODE_TEST_REMOVED;
+    process.env.PIGGERCODE_TEST_ENABLED = 'before';
+    process.env.PIGGERCODE_TEST_REMOVED = 'remove-me';
 
     const restore = applyEnvOverrides({
-      HAPPIER_TEST_ENABLED: 'after',
-      HAPPIER_TEST_REMOVED: undefined,
-      HAPPIER_TEST_CREATED: 'created',
+      PIGGERCODE_TEST_ENABLED: 'after',
+      PIGGERCODE_TEST_REMOVED: undefined,
+      PIGGERCODE_TEST_CREATED: 'created',
     });
 
-    expect(process.env.HAPPIER_TEST_ENABLED).toBe('after');
-    expect(process.env.HAPPIER_TEST_REMOVED).toBeUndefined();
-    expect(process.env.HAPPIER_TEST_CREATED).toBe('created');
+    expect(process.env.PIGGERCODE_TEST_ENABLED).toBe('after');
+    expect(process.env.PIGGERCODE_TEST_REMOVED).toBeUndefined();
+    expect(process.env.PIGGERCODE_TEST_CREATED).toBe('created');
 
     restore();
 
-    expect(process.env.HAPPIER_TEST_ENABLED).toBe('before');
-    expect(process.env.HAPPIER_TEST_REMOVED).toBe('remove-me');
-    expect(process.env.HAPPIER_TEST_CREATED).toBeUndefined();
+    expect(process.env.PIGGERCODE_TEST_ENABLED).toBe('before');
+    expect(process.env.PIGGERCODE_TEST_REMOVED).toBe('remove-me');
+    expect(process.env.PIGGERCODE_TEST_CREATED).toBeUndefined();
 
-    restoreEnv('HAPPIER_TEST_ENABLED', prevEnabled);
-    restoreEnv('HAPPIER_TEST_REMOVED', prevRemoved);
+    restoreEnv('PIGGERCODE_TEST_ENABLED', prevEnabled);
+    restoreEnv('PIGGERCODE_TEST_REMOVED', prevRemoved);
   });
 });
 
 describe('withEnvOverrides', () => {
   it('restores env after a successful callback', async () => {
-    const prev = process.env.HAPPIER_TEST_SCOPED;
-    process.env.HAPPIER_TEST_SCOPED = 'before';
+    const prev = process.env.PIGGERCODE_TEST_SCOPED;
+    process.env.PIGGERCODE_TEST_SCOPED = 'before';
 
-    await withEnvOverrides({ HAPPIER_TEST_SCOPED: 'during' }, async () => {
-      expect(process.env.HAPPIER_TEST_SCOPED).toBe('during');
+    await withEnvOverrides({ PIGGERCODE_TEST_SCOPED: 'during' }, async () => {
+      expect(process.env.PIGGERCODE_TEST_SCOPED).toBe('during');
     });
 
-    expect(process.env.HAPPIER_TEST_SCOPED).toBe('before');
-    restoreEnv('HAPPIER_TEST_SCOPED', prev);
+    expect(process.env.PIGGERCODE_TEST_SCOPED).toBe('before');
+    restoreEnv('PIGGERCODE_TEST_SCOPED', prev);
   });
 
   it('restores env after a failing callback', async () => {
-    const prev = process.env.HAPPIER_TEST_FAILING_SCOPE;
-    delete process.env.HAPPIER_TEST_FAILING_SCOPE;
+    const prev = process.env.PIGGERCODE_TEST_FAILING_SCOPE;
+    delete process.env.PIGGERCODE_TEST_FAILING_SCOPE;
 
     await expect(
-      withEnvOverrides({ HAPPIER_TEST_FAILING_SCOPE: 'during' }, async () => {
-        expect(process.env.HAPPIER_TEST_FAILING_SCOPE).toBe('during');
+      withEnvOverrides({ PIGGERCODE_TEST_FAILING_SCOPE: 'during' }, async () => {
+        expect(process.env.PIGGERCODE_TEST_FAILING_SCOPE).toBe('during');
         throw new Error('boom');
       }),
     ).rejects.toThrow('boom');
 
-    expect(process.env.HAPPIER_TEST_FAILING_SCOPE).toBeUndefined();
-    restoreEnv('HAPPIER_TEST_FAILING_SCOPE', prev);
+    expect(process.env.PIGGERCODE_TEST_FAILING_SCOPE).toBeUndefined();
+    restoreEnv('PIGGERCODE_TEST_FAILING_SCOPE', prev);
   });
 });
 
 describe('env snapshots', () => {
   it('captures and restores selected values', () => {
-    const prevAlpha = process.env.HAPPIER_TEST_ALPHA;
-    const prevBeta = process.env.HAPPIER_TEST_BETA;
+    const prevAlpha = process.env.PIGGERCODE_TEST_ALPHA;
+    const prevBeta = process.env.PIGGERCODE_TEST_BETA;
 
-    process.env.HAPPIER_TEST_ALPHA = 'before-alpha';
-    delete process.env.HAPPIER_TEST_BETA;
+    process.env.PIGGERCODE_TEST_ALPHA = 'before-alpha';
+    delete process.env.PIGGERCODE_TEST_BETA;
 
-    const snapshot = snapshotEnvValues(['HAPPIER_TEST_ALPHA', 'HAPPIER_TEST_BETA']);
+    const snapshot = snapshotEnvValues(['PIGGERCODE_TEST_ALPHA', 'PIGGERCODE_TEST_BETA']);
     applyEnvValues({
-      HAPPIER_TEST_ALPHA: 'after-alpha',
-      HAPPIER_TEST_BETA: 'after-beta',
+      PIGGERCODE_TEST_ALPHA: 'after-alpha',
+      PIGGERCODE_TEST_BETA: 'after-beta',
     });
 
-    expect(process.env.HAPPIER_TEST_ALPHA).toBe('after-alpha');
-    expect(process.env.HAPPIER_TEST_BETA).toBe('after-beta');
+    expect(process.env.PIGGERCODE_TEST_ALPHA).toBe('after-alpha');
+    expect(process.env.PIGGERCODE_TEST_BETA).toBe('after-beta');
 
     restoreEnvValues(snapshot);
 
-    expect(process.env.HAPPIER_TEST_ALPHA).toBe('before-alpha');
-    expect(process.env.HAPPIER_TEST_BETA).toBeUndefined();
+    expect(process.env.PIGGERCODE_TEST_ALPHA).toBe('before-alpha');
+    expect(process.env.PIGGERCODE_TEST_BETA).toBeUndefined();
 
-    restoreEnv('HAPPIER_TEST_ALPHA', prevAlpha);
-    restoreEnv('HAPPIER_TEST_BETA', prevBeta);
+    restoreEnv('PIGGERCODE_TEST_ALPHA', prevAlpha);
+    restoreEnv('PIGGERCODE_TEST_BETA', prevBeta);
   });
 
   it('captures and restores the full process env', () => {
     const snapshot = snapshotProcessEnv();
-    const injectedKey = 'HAPPIER_TEST_FULL_RESTORE';
+    const injectedKey = 'PIGGERCODE_TEST_FULL_RESTORE';
     const originalPath = process.env.PATH;
 
     process.env[injectedKey] = 'temporary';

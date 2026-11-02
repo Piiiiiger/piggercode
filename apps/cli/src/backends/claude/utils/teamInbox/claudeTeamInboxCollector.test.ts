@@ -196,18 +196,18 @@ describe('createClaudeTeamInboxCollector', () => {
     }
   });
 
-  it('uses HAPPIER_CLAUDE_CONFIG_DIR from process env when no explicit config dir is provided', async () => {
+  it('uses PIGGERCODE_CLAUDE_CONFIG_DIR from process env when no explicit config dir is provided', async () => {
     const root = await mkdtemp(join(tmpdir(), 'happier-claude-team-env-'));
     const fakeHome = join(root, 'home');
     const claudeConfigDir = join(fakeHome, 'shared-claude');
     const previousHome = process.env.HOME;
     const previousClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
-    const previousHappierClaudeConfigDir = process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+    const previousHappierClaudeConfigDir = process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
 
     try {
       process.env.HOME = fakeHome;
       delete process.env.CLAUDE_CONFIG_DIR;
-      process.env.HAPPIER_CLAUDE_CONFIG_DIR = '~/shared-claude';
+      process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = '~/shared-claude';
 
       const leadInboxPath = join(claudeConfigDir, 'teams', 'probe', 'inboxes', 'team-lead.json');
       await mkdir(join(claudeConfigDir, 'teams', 'probe', 'inboxes'), { recursive: true });
@@ -238,8 +238,8 @@ describe('createClaudeTeamInboxCollector', () => {
       else process.env.HOME = previousHome;
       if (previousClaudeConfigDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
       else process.env.CLAUDE_CONFIG_DIR = previousClaudeConfigDir;
-      if (previousHappierClaudeConfigDir === undefined) delete process.env.HAPPIER_CLAUDE_CONFIG_DIR;
-      else process.env.HAPPIER_CLAUDE_CONFIG_DIR = previousHappierClaudeConfigDir;
+      if (previousHappierClaudeConfigDir === undefined) delete process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
+      else process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = previousHappierClaudeConfigDir;
       await rm(root, { recursive: true, force: true });
     }
   });

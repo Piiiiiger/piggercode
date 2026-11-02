@@ -1007,8 +1007,8 @@ export class ApiSessionClient extends EventEmitter {
 	            this.encryptionVariant = session.encryptionVariant;
 	        }
 	        this.transcriptStorage = (() => {
-	            const raw = typeof process.env.HAPPIER_TRANSCRIPT_STORAGE === 'string'
-	                ? process.env.HAPPIER_TRANSCRIPT_STORAGE.trim().toLowerCase()
+	            const raw = typeof process.env.PIGGERCODE_TRANSCRIPT_STORAGE === 'string'
+	                ? process.env.PIGGERCODE_TRANSCRIPT_STORAGE.trim().toLowerCase()
 	                : '';
 	            return raw === 'direct' ? 'direct' : 'persisted';
 	        })();

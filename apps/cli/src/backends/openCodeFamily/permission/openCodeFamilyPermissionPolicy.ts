@@ -6,7 +6,7 @@ export type OpenCodePermissionValue = 'allow' | 'deny' | 'ask';
 
 const OPENCODE_READ_PERMISSIONS = ['read', 'glob', 'grep', 'list', 'ls'] as const;
 const OPENCODE_EDIT_PERMISSIONS = ['edit', 'write'] as const;
-export const OPENCODE_HAPPIER_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES = [
+export const OPENCODE_PIGGERCODE_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES = [
   'change_title',
   'session_title_set',
   'action_execute',
@@ -15,7 +15,7 @@ export const OPENCODE_HAPPIER_MCP_ALWAYS_ALLOWED_TOOL_SUFFIXES = [
   'action_options_resolve',
 ] as const;
 
-const OPENCODE_HAPPIER_ACTION_TOOL_NAME_ALIASES = [
+const OPENCODE_PIGGERCODE_ACTION_TOOL_NAME_ALIASES = [
   'action_execute',
   'happier_action_execute',
   'happier__action_execute',
@@ -35,7 +35,7 @@ const OPENCODE_HAPPIER_ACTION_TOOL_NAME_ALIASES = [
 ] as const;
 const OPENCODE_ALWAYS_ALLOW_PERMISSIONS = [
   ...CHANGE_TITLE_TOOL_NAME_ALIASES,
-  ...OPENCODE_HAPPIER_ACTION_TOOL_NAME_ALIASES,
+  ...OPENCODE_PIGGERCODE_ACTION_TOOL_NAME_ALIASES,
   'save_memory',
   'think',
 ] as const;

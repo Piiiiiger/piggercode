@@ -30,7 +30,7 @@ export type VitestRnShimOptions = Readonly<{
     traceFile?: string | null;
 }>;
 
-const SHIM_INSTALLED_KEY = '__HAPPIER_VITEST_RN_SHIM_INSTALLED__';
+const SHIM_INSTALLED_KEY = '__PIGGERCODE_VITEST_RN_SHIM_INSTALLED__';
 const ASSET_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ttf', '.otf']);
 const ALIAS_REQUIRE_ALLOWLIST = ['agents/providers/auggie/AuggieIndexingChip'];
 

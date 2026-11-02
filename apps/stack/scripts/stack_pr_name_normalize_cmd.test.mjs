@@ -31,10 +31,10 @@ test('hstack stack pr rejects stack names that normalize to reserved main', asyn
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_SANDBOX_DIR: sandboxDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir,
     };
 
     const res = await runNode([join(rootDir, 'scripts', 'stack.mjs'), 'pr', 'Main'], { cwd: rootDir, env });
@@ -61,14 +61,14 @@ test('hstack stack pr rejects names that normalize to an existing stack', async 
     const sandboxDir = join(tmp, 'sandbox');
 
     await mkdir(join(storageDir, 'dev-auth'), { recursive: true });
-    await writeFile(join(storageDir, 'dev-auth', 'env'), 'HAPPIER_STACK_STACK=dev-auth\n', 'utf8');
+    await writeFile(join(storageDir, 'dev-auth', 'env'), 'PIGGERCODE_STACK_STACK=dev-auth\n', 'utf8');
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_SANDBOX_DIR: sandboxDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_SANDBOX_DIR: sandboxDir,
     };
 
     const res = await runNode([join(rootDir, 'scripts', 'stack.mjs'), 'pr', 'Dev-Auth'], { cwd: rootDir, env });

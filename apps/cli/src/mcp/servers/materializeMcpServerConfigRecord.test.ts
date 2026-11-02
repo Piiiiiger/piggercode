@@ -226,12 +226,12 @@ describe('materializeMcpServerConfigRecord', () => {
       const cfg = out.mcpServers.alpha;
       expect(cfg.command).toBe('node');
       expect(cfg.args).toEqual(['bridge.js']);
-      expect(cfg.env?.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE).toBeTruthy();
+      expect(cfg.env?.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE).toBeTruthy();
 
       const argvJoined = (cfg.args ?? []).join(' ');
       expect(argvJoined).not.toContain('SECRET');
 
-      const configPath = String(cfg.env?.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE ?? '');
+      const configPath = String(cfg.env?.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE ?? '');
       const raw = await readFile(configPath, 'utf8');
       expect(raw).toContain('mcp.example.com');
       expect(raw).toContain('Bearer SECRET');
@@ -273,13 +273,13 @@ describe('materializeMcpServerConfigRecord', () => {
         resolved,
         settingsSecretsKey: null,
         savedSecretsById: new Map(),
-        processEnv: { HOME: '/safe-home', TOKEN: 'sk-test', HAPPIER_PNPM_BIN: fakePnpmPath },
+        processEnv: { HOME: '/safe-home', TOKEN: 'sk-test', PIGGERCODE_PNPM_BIN: fakePnpmPath },
         tmpDir: dir,
       });
 
       const cfg = out.mcpServers.alpha;
       expect(cfg.command).toBe(process.execPath);
-      expect(cfg.env?.HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE).toBeTruthy();
+      expect(cfg.env?.PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE).toBeTruthy();
       expect(cfg.env?.API_KEY).toBeUndefined();
 
       const distEntrypoint = join(projectPath(), 'dist', 'mcp', 'launchers', 'stdioMcpServerLauncher.mjs');
@@ -303,7 +303,7 @@ describe('materializeMcpServerConfigRecord', () => {
         expect(cfg.env?.TSX_TSCONFIG_PATH).toBeUndefined();
       }
 
-      const configPath = String(cfg.env?.HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE ?? '');
+      const configPath = String(cfg.env?.PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE ?? '');
       const raw = await readFile(configPath, 'utf8');
       expect(raw).toContain(`"command":"${fakePnpmPath}"`);
       expect(raw).toContain('"args":["dlx","@modelcontextprotocol/server-sequential-thinking"]');
@@ -345,11 +345,11 @@ describe('materializeMcpServerConfigRecord', () => {
         resolved,
         settingsSecretsKey: null,
         savedSecretsById: new Map(),
-        processEnv: { HOME: '/safe-home', HAPPIER_PNPM_BIN: fakePnpmPath },
+        processEnv: { HOME: '/safe-home', PIGGERCODE_PNPM_BIN: fakePnpmPath },
         tmpDir: dir,
       });
 
-      const configPath = String(out.mcpServers.alpha.env?.HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE ?? '');
+      const configPath = String(out.mcpServers.alpha.env?.PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE ?? '');
       const raw = await readFile(configPath, 'utf8');
       expect(raw).toContain(`"command":"${fakePnpmPath}"`);
       expect(raw).toContain('"args":["exec","tsx","server.ts"]');
@@ -389,7 +389,7 @@ describe('materializeMcpServerConfigRecord', () => {
         resolved,
         settingsSecretsKey: null,
         savedSecretsById: new Map(),
-        processEnv: { PATH: '', HAPPIER_HOME_DIR: join(dir, 'home'), HAPPIER_MANAGED_PNPM_BOOTSTRAP: '0' },
+        processEnv: { PATH: '', PIGGERCODE_HOME_DIR: join(dir, 'home'), PIGGERCODE_MANAGED_PNPM_BOOTSTRAP: '0' },
         tmpDir: null,
         strictMode: false,
       });
@@ -438,7 +438,7 @@ describe('materializeMcpServerConfigRecord', () => {
           resolved,
           settingsSecretsKey: null,
           savedSecretsById: new Map(),
-          processEnv: { PATH: '', HAPPIER_HOME_DIR: join(dir, 'home'), HAPPIER_MANAGED_PNPM_BOOTSTRAP: '0' },
+          processEnv: { PATH: '', PIGGERCODE_HOME_DIR: join(dir, 'home'), PIGGERCODE_MANAGED_PNPM_BOOTSTRAP: '0' },
           tmpDir: null,
           strictMode: true,
         }),

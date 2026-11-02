@@ -90,7 +90,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       ].join(''),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     readCredentialsMock.mockResolvedValueOnce({
       token: 'token-direct',
@@ -267,7 +267,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
   });
 
   it('requires forceStop before taking over when a trusted local runner still owns the provider session', async () => {
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp/claude-direct');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp/claude-direct');
     readCredentialsMock.mockResolvedValueOnce({
       token: 'token-direct',
       encryption: { type: 'legacy', secret: new Uint8Array([1, 2, 3]) },
@@ -371,7 +371,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       ].join(''),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const metadata = {
       path: '',
@@ -478,7 +478,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       ].join(''),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const metadata = {
       path: '',
@@ -547,7 +547,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
     const sessionFile = join(configDir, 'projects', 'proj-a', 'sess-1.jsonl');
     await mkdir(join(configDir, 'projects', 'proj-a'), { recursive: true });
     await writeFile(sessionFile, jsonlLine({ type: 'assistant', uuid: 'a1', message: { model: 'm', content: [] } }), 'utf8');
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -607,7 +607,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       [jsonlLine({ type: 'user', uuid: 'u1', message: { content: 'hello' } }), jsonlLine({ type: 'assistant', uuid: 'a1', message: { model: 'm', content: [] } })].join(''),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -668,7 +668,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
 
   it('rejects claude source overrides outside the configured config dir', async () => {
     vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/safe/.claude');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/safe/.claude');
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -696,7 +696,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
 
   it('rejects taking over a linked claude direct session when metadata points at an unconfigured config dir', async () => {
     vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/safe/.claude');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/safe/.claude');
 
     const root = await mkdtemp(join(tmpdir(), 'happier-directSessions-rpc-takeover-rogue-'));
     const rogueConfigDir = join(root, '.claude-rogue');
@@ -767,7 +767,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
   });
 
   it('reports canTakeOverPersist=false when a linked direct session cannot be resumed safely', async () => {
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp/claude-direct-status');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp/claude-direct-status');
     readCredentialsMock.mockResolvedValueOnce({
       token: 'token-direct',
       encryption: { type: 'legacy', secret: new Uint8Array([1, 2, 3]) },
@@ -823,7 +823,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
     await mkdir(join(configDir, 'projects', 'proj-a'), { recursive: true });
     await writeFile(sessionFile, jsonlLine({ type: 'user', uuid: 'u1', message: { content: 'hello' } }), 'utf8');
     const expectedMtimeMs = Math.trunc((await stat(sessionFile)).mtimeMs);
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -900,7 +900,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       }],
     });
     vi.stubEnv('CODEX_HOME', codexHome);
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServerPath);
+    vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', fakeAppServerPath);
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -959,7 +959,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
         throw new Error('Failed to resolve test server address');
       }
       const baseUrl = `http://127.0.0.1:${addr.port}`;
-      vi.stubEnv('HAPPIER_OPENCODE_SERVER_URL', baseUrl);
+      vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_URL', baseUrl);
 
       const registered = new Map<string, (params: any) => Promise<any>>();
       const rpcHandlerManager = {
@@ -992,7 +992,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
 
   it('rejects opencode baseUrl overrides outside the configured server url', async () => {
     vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('HAPPIER_OPENCODE_SERVER_URL', 'http://127.0.0.1:4010');
+    vi.stubEnv('PIGGERCODE_OPENCODE_SERVER_URL', 'http://127.0.0.1:4010');
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
@@ -1030,8 +1030,8 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       jsonlLine({ type: 'assistant', uuid: 'a1', message: { model: 'm', content: [] } }),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
-    vi.stubEnv('HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS', '10');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS', '10');
 
     const emitDirectSessionTranscriptUpdate = vi.fn();
     const registered = new Map<string, (params: any) => Promise<any>>();
@@ -1117,8 +1117,8 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       jsonlLine({ type: 'assistant', uuid: 'b1', message: { model: 'm', content: [] } }),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
-    vi.stubEnv('HAPPIER_DIRECT_SESSIONS_FOLLOW_POLL_MS', '10');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_DIRECT_SESSIONS_FOLLOW_POLL_MS', '10');
 
     const metadata = {
       directSessionV1: {
@@ -1237,7 +1237,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       jsonlLine({ type: 'assistant', uuid: 'p1', message: { model: 'm', content: [] } }),
       'utf8',
     );
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', configDir);
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', configDir);
 
     const metadata = {
       directSessionV1: {
@@ -1303,7 +1303,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
   });
 
   it('persists attached-only policy metadata before disabling follow policy', async () => {
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp');
     const metadata = {
       directSessionV1: {
         v: 1,
@@ -1373,7 +1373,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
   });
 
   it('sets runnerActive=true and activity=running when a happy session runner is active', async () => {
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp');
     const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');
     const markerPath = join(markerDir, `pid-${process.pid}.json`);
     await mkdir(markerDir, { recursive: true });
@@ -1418,7 +1418,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
   });
 
   it('sets canForceStop=true when a trusted happy runner pid matches the provider session id', async () => {
-    vi.stubEnv('HAPPIER_CLAUDE_CONFIG_DIR', '/tmp');
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp');
     const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');
     const markerPath = join(markerDir, `pid-${process.pid}.json`);
     await mkdir(markerDir, { recursive: true });
@@ -1474,7 +1474,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       requestsPath,
     });
     vi.stubEnv('CODEX_HOME', codexHome);
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServerPath);
+    vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', fakeAppServerPath);
 
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {

@@ -45,10 +45,10 @@ async function listen(server: Server): Promise<string> {
 describe('resolveReplaySeedDraft auth propagation', () => {
   let server: Server | null = null;
   let homeDir = '';
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR']);
 
   beforeEach(async () => {
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR']);
     homeDir = await createTempDir('happier-cli-replay-seed-auth-');
   });
 
@@ -82,7 +82,7 @@ describe('resolveReplaySeedDraft auth propagation', () => {
     });
 
     const serverUrl = await listen(server);
-    envScope.patch({ HAPPIER_SERVER_URL: serverUrl, HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000', HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000', PIGGERCODE_HOME_DIR: homeDir });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { resolveReplaySeedDraft } = await import('./resolveReplaySeedDraft');
@@ -125,7 +125,7 @@ describe('resolveReplaySeedDraft auth propagation', () => {
     });
 
     const serverUrl = await listen(server);
-    envScope.patch({ HAPPIER_SERVER_URL: serverUrl, HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000', HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000', PIGGERCODE_HOME_DIR: homeDir });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { resolveReplaySeedDraft } = await import('./resolveReplaySeedDraft');
@@ -168,7 +168,7 @@ describe('resolveReplaySeedDraft auth propagation', () => {
     });
 
     const serverUrl = await listen(server);
-    envScope.patch({ HAPPIER_SERVER_URL: serverUrl, HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000', HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000', PIGGERCODE_HOME_DIR: homeDir });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { resolveReplaySeedDraft } = await import('./resolveReplaySeedDraft');
@@ -199,7 +199,7 @@ describe('resolveReplaySeedDraft auth propagation', () => {
     });
 
     const serverUrl = await listen(server);
-    envScope.patch({ HAPPIER_SERVER_URL: serverUrl, HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000', HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000', PIGGERCODE_HOME_DIR: homeDir });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { resolveReplaySeedDraft } = await import('./resolveReplaySeedDraft');
@@ -238,7 +238,7 @@ describe('resolveReplaySeedDraft auth propagation', () => {
     });
 
     const serverUrl = await listen(server);
-    envScope.patch({ HAPPIER_SERVER_URL: serverUrl, HAPPIER_WEBAPP_URL: 'http://127.0.0.1:3000', HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_SERVER_URL: serverUrl, PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:3000', PIGGERCODE_HOME_DIR: homeDir });
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
     const { resolveReplaySeedDraft } = await import('./resolveReplaySeedDraft');

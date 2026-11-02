@@ -66,8 +66,8 @@ describe('Session keepAlive scheduling', () => {
     });
 
     const session = await createSessionWithEnv(client, {
-      HAPPIER_SESSION_KEEPALIVE_IDLE_MS: '10000',
-      HAPPIER_SESSION_KEEPALIVE_THINKING_MS: '2000',
+      PIGGERCODE_SESSION_KEEPALIVE_IDLE_MS: '10000',
+      PIGGERCODE_SESSION_KEEPALIVE_THINKING_MS: '2000',
     });
 
     try {

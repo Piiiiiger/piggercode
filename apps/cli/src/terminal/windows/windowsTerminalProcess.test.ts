@@ -72,7 +72,7 @@ describe('startProcessInWindowsTerminal', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_WINDOWS_TERMINAL_SECRET_PROBE;
+    delete process.env.PIGGERCODE_WINDOWS_TERMINAL_SECRET_PROBE;
     if (originalPath === undefined) {
       delete process.env.Path;
     } else {
@@ -81,7 +81,7 @@ describe('startProcessInWindowsTerminal', () => {
   });
 
   it('can launch with a minimal Windows host environment plus explicit child env', async () => {
-    process.env.HAPPIER_WINDOWS_TERMINAL_SECRET_PROBE = 'must-not-leak';
+    process.env.PIGGERCODE_WINDOWS_TERMINAL_SECRET_PROBE = 'must-not-leak';
     process.env.Path = 'C:\\Windows\\System32;C:\\Tools';
     const child = createFakeChildProcess();
     vi.mocked(spawn).mockReturnValueOnce(child as unknown as ReturnType<typeof spawn>);
@@ -105,6 +105,6 @@ describe('startProcessInWindowsTerminal', () => {
     const options = vi.mocked(spawn).mock.calls[0]?.[2] as SpawnOptions | undefined;
     expect(options?.env?.ZELLIJ_SOCKET_DIR).toBe('C:\\Temp\\zellij');
     expect(options?.env?.Path ?? options?.env?.PATH).toBe('C:\\Windows\\System32;C:\\Tools');
-    expect(options?.env?.HAPPIER_WINDOWS_TERMINAL_SECRET_PROBE).toBeUndefined();
+    expect(options?.env?.PIGGERCODE_WINDOWS_TERMINAL_SECRET_PROBE).toBeUndefined();
   });
 });

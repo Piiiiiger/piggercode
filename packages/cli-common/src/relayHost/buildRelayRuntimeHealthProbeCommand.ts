@@ -3,7 +3,7 @@ function quoteShellArg(value: string): string {
   return `'${text.replace(/'/gu, `'\"'\"'`)}'`;
 }
 
-export const RELAY_RUNTIME_HEALTH_OK_TOKEN = 'HAPPIER_RELAY_HEALTH_OK';
+export const RELAY_RUNTIME_HEALTH_OK_TOKEN = 'PIGGERCODE_RELAY_HEALTH_OK';
 
 export function buildRelayRuntimeHealthProbeCommand(params: Readonly<{
   baseUrl: string;

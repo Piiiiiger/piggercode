@@ -102,10 +102,10 @@ test('ensureDevExpoServer in stack mode starts managed Expo instead of adopting 
         baseEnv: process.env,
         stripStackEnv: true,
         extraEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-          HAPPIER_STACK_EXPO_DEV_PORT_BASE: '40000',
-          HAPPIER_STACK_EXPO_DEV_PORT_RANGE: '10000',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+          PIGGERCODE_STACK_EXPO_DEV_PORT_BASE: '40000',
+          PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE: '10000',
         },
       }),
       apiServerUrl: 'http://127.0.0.1:3009',
@@ -133,8 +133,8 @@ test('ensureDevExpoServer in stack mode starts managed Expo instead of adopting 
     await writeFile(
       envPath,
       (await readFile(envPath, 'utf-8')).replace(
-        /^HAPPIER_STACK_EXPO_DEV_PORT=.*$/m,
-        'HAPPIER_STACK_EXPO_DEV_PORT=49998',
+        /^PIGGERCODE_STACK_EXPO_DEV_PORT=.*$/m,
+        'PIGGERCODE_STACK_EXPO_DEV_PORT=49998',
       ),
       'utf-8',
     );
@@ -150,10 +150,10 @@ test('ensureDevExpoServer in stack mode starts managed Expo instead of adopting 
           baseEnv: process.env,
           stripStackEnv: true,
           extraEnv: {
-            HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-            HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
-            HAPPIER_STACK_EXPO_DEV_PORT_BASE: '40000',
-            HAPPIER_STACK_EXPO_DEV_PORT_RANGE: '10000',
+            PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+            PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+            PIGGERCODE_STACK_EXPO_DEV_PORT_BASE: '40000',
+            PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE: '10000',
           },
         }),
         apiServerUrl: 'http://127.0.0.1:3009',
@@ -189,8 +189,8 @@ test('ensureDevExpoServer in stack mode starts managed Expo instead of adopting 
     assert.equal(runtimeAfterSupersede?.processes?.serverPid, 777777);
     const envAfterSupersede = await readFile(envPath, 'utf-8');
     assert.match(envAfterSupersede, /CONCURRENT_KEY=preserved/);
-    assert.match(envBeforeSupersede, /HAPPIER_STACK_EXPO_DEV_PORT=49998/);
-    assert.match(envAfterSupersede, /HAPPIER_STACK_EXPO_DEV_PORT=49998/);
+    assert.match(envBeforeSupersede, /PIGGERCODE_STACK_EXPO_DEV_PORT=49998/);
+    assert.match(envAfterSupersede, /PIGGERCODE_STACK_EXPO_DEV_PORT=49998/);
   } finally {
     for (const child of children) {
       killProcessTreeByPid(child?.pid);
@@ -225,7 +225,7 @@ test('failed non-pinning publication does not roll back an equal-value env succe
     await close(portServer);
     portServer = null;
     await writeFile(envPath, 'ORIGINAL=1\n', 'utf-8');
-    const successorEnv = `HAPPIER_STACK_EXPO_DEV_PORT=${selectedPort}\nSUCCESSOR=same-value\n`;
+    const successorEnv = `PIGGERCODE_STACK_EXPO_DEV_PORT=${selectedPort}\nSUCCESSOR=same-value\n`;
 
     await assert.rejects(() => ensureDevExpoServer({
       startUi: true,
@@ -237,8 +237,8 @@ test('failed non-pinning publication does not roll back an equal-value env succe
         baseEnv: process.env,
         stripStackEnv: true,
         extraEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-          HAPPIER_STACK_EXPO_DEV_PORT: String(selectedPort),
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_EXPO_DEV_PORT: String(selectedPort),
         },
       }),
       apiServerUrl: 'http://127.0.0.1:3009',

@@ -18,21 +18,21 @@ const credentials: Credentials = {
   encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
 };
 
-const previousManagedServerStatePath = process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+const previousManagedServerStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
 
 afterEach(() => {
   if (previousManagedServerStatePath === undefined) {
-    delete process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH;
+    delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
     return;
   }
-  process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
+  process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
 });
 
 describe('evaluateCliSessionAttachEligibility', () => {
   it.each(['live', 'unknown'] as const)('retains native provider admission for an active recorded Herdr pane with %s runner custody', async (runner) => {
     await withTempDir('happier-herdr-active-attach-', async (home) => {
-      const env = createEnvKeyScope(['HAPPIER_HOME_DIR']);
-      env.patch({ HAPPIER_HOME_DIR: home });
+      const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
+      env.patch({ PIGGERCODE_HOME_DIR: home });
       reloadConfiguration();
       const sessionId = 'sid_active_recorded_herdr';
       const lock = runner === 'live' ? await acquireSessionRunnerLock({ sessionId, happyHomeDir: home }) : null;
@@ -442,8 +442,8 @@ describe('evaluateCliSessionAttachEligibility', () => {
 
   it('accepts same-machine OpenCode sessions when the managed server state provides the local server URL', async () => {
     const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-attach-'));
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
+    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
       baseUrl: 'http://127.0.0.1:4096/',
       pid: 12345,
       startedAtMs: Date.now(),
@@ -479,8 +479,8 @@ describe('evaluateCliSessionAttachEligibility', () => {
 
   it('uses an existing local terminal host for an OpenCode session', async () => {
     const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-attach-local-marker-'));
-    process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
+    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
+    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
       baseUrl: 'http://127.0.0.1:4096/',
       pid: 12345,
       startedAtMs: Date.now(),

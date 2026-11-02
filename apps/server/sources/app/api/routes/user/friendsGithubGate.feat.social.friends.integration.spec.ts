@@ -31,8 +31,8 @@ function applyFriendsRouteEnv(
     overrides: Record<string, string | undefined> = {},
 ): void {
     harness.resetEnv({
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "1",
         ...overrides,
     });
 }
@@ -60,7 +60,7 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("POST /v1/friends/add returns 404 not_found when friends feature is off", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
         });
 
         const app = createTestApp();
@@ -93,7 +93,7 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("GET /v1/user/search returns 404 not_found when friends feature is off", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
         });
 
         const app = createTestApp();
@@ -118,7 +118,7 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("GET /v1/friends returns 404 not_found when friends feature is off", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
         });
 
         const app = createTestApp();
@@ -143,7 +143,7 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("POST /v1/friends/remove returns 404 not_found when friends feature is off", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "0",
         });
 
         const app = createTestApp();
@@ -176,8 +176,8 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("POST /v1/friends/add returns 400 provider-required when either user lacks the required identity provider", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: "1",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
             GITHUB_CLIENT_ID: "test_client_id",
             GITHUB_CLIENT_SECRET: "test_client_secret",
             GITHUB_REDIRECT_URL: "https://app.example.test/oauth/github/callback",
@@ -244,7 +244,7 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("GET /v1/user/search returns only users connected to the required identity provider", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
+            PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: "0",
             GITHUB_CLIENT_ID: "test_client_id",
             GITHUB_CLIENT_SECRET: "test_client_secret",
             GITHUB_REDIRECT_URL: "https://app.example.test/oauth/github/callback",
@@ -339,9 +339,9 @@ describe("Friends + GitHub gating (integration)", () => {
 
     it("GET /v1/user/search succeeds for light flavor when DB provider env is unset", async () => {
         applyFriendsRouteEnv(harness, {
-            HAPPIER_SERVER_FLAVOR: "light",
+            PIGGERCODE_SERVER_FLAVOR: "light",
             HAPPY_SERVER_FLAVOR: "light",
-            HAPPIER_DB_PROVIDER: undefined,
+            PIGGERCODE_DB_PROVIDER: undefined,
             HAPPY_DB_PROVIDER: undefined,
         });
 

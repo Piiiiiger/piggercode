@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 export const claudeCatalogProcessFixture = String.raw`
 const fs = require('node:fs');
 const readline = require('node:readline');
-const log = (event) => fs.appendFileSync(process.env.HAPPIER_E2E_FAKE_CLAUDE_LOG, JSON.stringify(event) + '\n');
+const log = (event) => fs.appendFileSync(process.env.PIGGERCODE_E2E_FAKE_CLAUDE_LOG, JSON.stringify(event) + '\n');
 log({ type: 'spawn', pid: process.pid, argv: process.argv.slice(2), cwd: process.cwd(), configDir: process.env.CLAUDE_CONFIG_DIR,
   nestedSession: process.env.CLAUDECODE, refreshToken: process.env.CLAUDE_CODE_OAUTH_REFRESH_TOKEN });
 process.on('SIGTERM', () => process.exit(0));
@@ -12,8 +12,8 @@ process.on('exit', () => log({ type: 'closed' }));
 readline.createInterface({ input: process.stdin }).on('line', (line) => {
   const message = JSON.parse(line);
   log(message);
-  if (message.type === 'control_request' && message.request.subtype === 'initialize' && !process.env.HAPPIER_E2E_CATALOG_HANG) {
-    const commands = JSON.parse(process.env.HAPPIER_E2E_CATALOG_COMMANDS);
+  if (message.type === 'control_request' && message.request.subtype === 'initialize' && !process.env.PIGGERCODE_E2E_CATALOG_HANG) {
+    const commands = JSON.parse(process.env.PIGGERCODE_E2E_CATALOG_COMMANDS);
     process.stdout.write(JSON.stringify({ type: 'control_response', response: {
       subtype: 'success', request_id: message.request_id,
       response: { commands, models: [], agents: [] }

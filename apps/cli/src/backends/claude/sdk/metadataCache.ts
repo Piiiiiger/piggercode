@@ -283,8 +283,8 @@ function selectedEnvironmentFingerprint(): Record<string, string | null> {
     const keys = [
         'CLAUDE_CONFIG_DIR',
         'CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS',
-        'HAPPIER_CLAUDE_CONFIG_DIR',
-        'HAPPIER_CLAUDE_PATH',
+        'PIGGERCODE_CLAUDE_CONFIG_DIR',
+        'PIGGERCODE_CLAUDE_PATH',
     ]
     const out: Record<string, string | null> = {}
     for (const key of keys) {
@@ -348,7 +348,7 @@ export function resolveSDKMetadataCacheKey(params: Readonly<{
 }
 
 function shouldBypassSDKMetadataCache(): boolean {
-    const raw = String(process.env.HAPPIER_CLAUDE_SDK_METADATA_CACHE_INVALIDATE ?? '').trim().toLowerCase()
+    const raw = String(process.env.PIGGERCODE_CLAUDE_SDK_METADATA_CACHE_INVALIDATE ?? '').trim().toLowerCase()
     return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on'
 }
 

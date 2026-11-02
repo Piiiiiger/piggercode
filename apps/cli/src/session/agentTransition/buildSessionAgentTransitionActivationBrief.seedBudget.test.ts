@@ -28,10 +28,10 @@ const { reloadConfiguration } = await import('@/configuration');
  * set in Settings simply does not apply to switching Agent in place.
  */
 describe('buildSessionAgentTransitionActivationBrief — replay seed budget', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_REPLAY_MAX_SEED_CHARS']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_REPLAY_MAX_SEED_CHARS']);
 
   beforeEach(() => {
-    envScope = createEnvKeyScope(['HAPPIER_REPLAY_MAX_SEED_CHARS']);
+    envScope = createEnvKeyScope(['PIGGERCODE_REPLAY_MAX_SEED_CHARS']);
     resetActiveAccountSettingsSnapshotForTests();
     mocks.resolveReplaySeedDraft.mockReset();
     mocks.resolveReplaySeedDraft.mockResolvedValue({ status: 'no_source_dialog' });
@@ -67,7 +67,7 @@ describe('buildSessionAgentTransitionActivationBrief — replay seed budget', ()
   }
 
   it('bounds the seed by the Account preference when it is smaller than the daemon default', async () => {
-    envScope.patch({ HAPPIER_REPLAY_MAX_SEED_CHARS: '96000' });
+    envScope.patch({ PIGGERCODE_REPLAY_MAX_SEED_CHARS: '96000' });
     reloadConfiguration();
     publishAccountReplayBudget(8_192);
 
@@ -75,7 +75,7 @@ describe('buildSessionAgentTransitionActivationBrief — replay seed budget', ()
   });
 
   it('falls back to the daemon budget when no Account snapshot states one', async () => {
-    envScope.patch({ HAPPIER_REPLAY_MAX_SEED_CHARS: '96000' });
+    envScope.patch({ PIGGERCODE_REPLAY_MAX_SEED_CHARS: '96000' });
     reloadConfiguration();
 
     expect(await buildAndReadSeedBudget()).toBe(96_000);
@@ -87,7 +87,7 @@ describe('buildSessionAgentTransitionActivationBrief — replay seed budget', ()
    * under it must not reach the builder as if the user had asked for a tiny seed.
    */
   it('ignores an out-of-range Account value rather than passing it through', async () => {
-    envScope.patch({ HAPPIER_REPLAY_MAX_SEED_CHARS: '96000' });
+    envScope.patch({ PIGGERCODE_REPLAY_MAX_SEED_CHARS: '96000' });
     reloadConfiguration();
     publishAccountReplayBudget(12);
 

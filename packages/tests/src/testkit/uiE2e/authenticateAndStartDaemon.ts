@@ -70,9 +70,9 @@ export async function authenticateAndStartDaemon(params: Readonly<{
       ...process.env,
       ...(params.extraEnv ?? {}),
       CI: '1',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     },
   });
 
@@ -93,12 +93,12 @@ export async function authenticateAndStartDaemon(params: Readonly<{
       ...process.env,
       ...(params.extraEnv ?? {}),
       CI: '1',
-      HAPPIER_HOME_DIR: params.cliHomeDir,
-      HAPPIER_SERVER_URL: cliServerUrl,
-      HAPPIER_WEBAPP_URL: params.uiBaseUrl,
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_HOME_DIR: params.cliHomeDir,
+      PIGGERCODE_SERVER_URL: cliServerUrl,
+      PIGGERCODE_WEBAPP_URL: params.uiBaseUrl,
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
     },
   });
 }

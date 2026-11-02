@@ -8,8 +8,8 @@ import { cursorCliAuthSpec } from './cursorCliAuthSpec';
 
 const envKeys = [
   'CURSOR_API_KEY',
-  'HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED',
-  'HAPPIER_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS',
+  'PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED',
+  'PIGGERCODE_CURSOR_CLI_AUTH_PROBE_TIMEOUT_MS',
 ] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
@@ -34,13 +34,13 @@ afterEach(() => {
 describe('cursorCliAuthSpec', () => {
   it('honors the Cursor agent fallback toggle when resolving auth binary names', () => {
     envScope.patch({
-      HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '0',
+      PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '0',
     });
 
     expect(cursorCliAuthSpec.binaryNames).toEqual(['cursor-agent']);
 
     envScope.patch({
-      HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED: '1',
+      PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED: '1',
     });
 
     expect(cursorCliAuthSpec.binaryNames).toEqual(['cursor-agent', 'agent']);

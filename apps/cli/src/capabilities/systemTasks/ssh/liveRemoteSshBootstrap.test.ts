@@ -362,7 +362,7 @@ describe('createLiveRemoteSshBootstrapTaskKind', () => {
     expect(sshRemoteCommands).not.toContain("--component 'hstack'");
     expect(sshRemoteCommands).not.toContain('/Users/leeroy/Documents/Development/happier/dev');
     // Guardrail: relay runtime install must use the shared relay host engine, not the bespoke heredoc/prisma probe flow.
-    expect(sshRemoteCommands).not.toContain('HAPPIER_EOF');
+    expect(sshRemoteCommands).not.toContain('PIGGERCODE_EOF');
     expect(sshRemoteCommands).not.toContain('prismaEnginePath');
   });
 

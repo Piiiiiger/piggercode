@@ -6,23 +6,23 @@ import { HttpStatusError } from '@/api/client/httpStatusError';
 import type { Credentials } from '@/persistence';
 
 describe('resolveForkCutoffSeqInclusive timeouts', () => {
-  const prevServerUrl = process.env.HAPPIER_SERVER_URL;
-  const prevTimeout = process.env.HAPPIER_SESSION_CONTROL_HTTP_TIMEOUT_MS;
+  const prevServerUrl = process.env.PIGGERCODE_SERVER_URL;
+  const prevTimeout = process.env.PIGGERCODE_SESSION_CONTROL_HTTP_TIMEOUT_MS;
 
   afterEach(() => {
-    if (prevServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-    else process.env.HAPPIER_SERVER_URL = prevServerUrl;
+    if (prevServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+    else process.env.PIGGERCODE_SERVER_URL = prevServerUrl;
 
-    if (prevTimeout === undefined) delete process.env.HAPPIER_SESSION_CONTROL_HTTP_TIMEOUT_MS;
-    else process.env.HAPPIER_SESSION_CONTROL_HTTP_TIMEOUT_MS = prevTimeout;
+    if (prevTimeout === undefined) delete process.env.PIGGERCODE_SESSION_CONTROL_HTTP_TIMEOUT_MS;
+    else process.env.PIGGERCODE_SESSION_CONTROL_HTTP_TIMEOUT_MS = prevTimeout;
 
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it('uses configuration.sessionControlHttpTimeoutMs for session message fetches', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
-    process.env.HAPPIER_SESSION_CONTROL_HTTP_TIMEOUT_MS = '54321';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SESSION_CONTROL_HTTP_TIMEOUT_MS = '54321';
 
     vi.resetModules();
     const { resolveForkCutoffSeqInclusive } = await import('./resolveForkCutoffSeqInclusive');
@@ -57,13 +57,13 @@ describe('resolveForkCutoffSeqInclusive timeouts', () => {
   });
 
   it('uses the canonical endpoint selected by loaded configuration', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://127.0.0.1:41001';
-    process.env.HAPPIER_SESSION_CONTROL_HTTP_TIMEOUT_MS = '54321';
+    process.env.PIGGERCODE_SERVER_URL = 'http://127.0.0.1:41001';
+    process.env.PIGGERCODE_SESSION_CONTROL_HTTP_TIMEOUT_MS = '54321';
 
     vi.resetModules();
     const { resolveForkCutoffSeqInclusive } = await import('./resolveForkCutoffSeqInclusive');
 
-    process.env.HAPPIER_SERVER_URL = 'http://127.0.0.1:52002';
+    process.env.PIGGERCODE_SERVER_URL = 'http://127.0.0.1:52002';
     const getSpy = vi.spyOn(axios, 'get').mockResolvedValueOnce({
       status: 200,
       data: {
@@ -93,7 +93,7 @@ describe('resolveForkCutoffSeqInclusive timeouts', () => {
   });
 
   it('throws a stable auth status error for terminal auth failures', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
 
     vi.resetModules();
     const { resolveForkCutoffSeqInclusive } = await import('./resolveForkCutoffSeqInclusive');

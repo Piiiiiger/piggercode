@@ -46,7 +46,7 @@ describe('runManagedCliUpdate after commit', () => {
   });
 
   it('records a proven update as succeeded when pruning an old version fails, and reports the prune as a warning', async () => {
-    const env = { HAPPIER_HOME_DIR: homeDir };
+    const env = { PIGGERCODE_HOME_DIR: homeDir };
     for (const versionId of ['0.9.0', '1.0.0']) {
       await installVersionedPayload({ componentId: 'happier-cli', versionId, processEnv: env, payloadRoot: await createPayload(homeDir, versionId) });
     }
@@ -73,7 +73,7 @@ describe('runManagedCliUpdate after commit', () => {
   });
 
   it('keeps a proven update succeeded when releasing the install lock fails, and reports the release as a diagnostic', async () => {
-    const env = { HAPPIER_HOME_DIR: homeDir };
+    const env = { PIGGERCODE_HOME_DIR: homeDir };
     await installVersionedPayload({ componentId: 'happier-cli', versionId: '1.0.0', processEnv: env, payloadRoot: await createPayload(homeDir, '1.0.0') });
     const warnings: string[] = [];
 

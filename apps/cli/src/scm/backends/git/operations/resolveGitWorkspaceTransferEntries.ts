@@ -17,7 +17,7 @@ function normalizeRelativePath(value: string): string {
 const DEFAULT_GIT_LS_FILES_MAX_OUTPUT_BYTES = 128 * 1024 * 1024;
 
 function resolveGitLsFilesMaxOutputBytes(): number {
-    const rawEnv = process.env.HAPPIER_SCM_GIT_LS_FILES_MAX_OUTPUT_BYTES;
+    const rawEnv = process.env.PIGGERCODE_SCM_GIT_LS_FILES_MAX_OUTPUT_BYTES;
     if (!rawEnv) return DEFAULT_GIT_LS_FILES_MAX_OUTPUT_BYTES;
     const parsed = Number(rawEnv);
     if (!Number.isFinite(parsed) || parsed <= 0) {

@@ -7,7 +7,7 @@ import { resolveModelPackManifestUrl } from '@/voice/modelPacks/manifests';
 describe('modelPacks manifests', () => {
   it('uses static process.env access so Expo can inline EXPO_PUBLIC_* vars', () => {
     const source = fs.readFileSync(new URL('./manifests.ts', import.meta.url), 'utf8');
-    expect(source).toContain('process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS');
+    expect(source).toContain('process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS');
     expect(source).toContain('process.env.EXPO_PUBLIC_KOKORO_NATIVE_MANIFESTS');
     expect(source).toContain('process.env.EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL');
   });
@@ -21,7 +21,7 @@ describe('modelPacks manifests', () => {
       resolveModelPackManifestUrl({
         packId: 'kokoro-tts-en-v1',
         env: {
-          EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS: JSON.stringify({
+          EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS: JSON.stringify({
             'kokoro-tts-en-v1': 'https://example.com/manifest.json',
           }),
         },

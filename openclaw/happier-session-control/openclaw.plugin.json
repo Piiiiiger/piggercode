@@ -7,7 +7,7 @@
     "properties": {
       "happierHomeDir": {
         "type": "string",
-        "description": "If set, exported as HAPPIER_HOME_DIR for the happier process."
+        "description": "If set, exported as PIGGERCODE_HOME_DIR for the happier process."
       },
       "happierServer": {
         "type": "string",

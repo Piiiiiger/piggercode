@@ -6,8 +6,8 @@ import { expect, it, vi } from 'vitest';
 
 import { startAnthropicSseBoundary } from './anthropicSseBoundary.testkit';
 
-it.runIf(Boolean(process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH))('does not persist cache-miss metadata probes with native history enabled or disabled', async () => {
-    const nativePath = process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH!;
+it.runIf(Boolean(process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH))('does not persist cache-miss metadata probes with native history enabled or disabled', async () => {
+    const nativePath = process.env.PIGGERCODE_TEST_NATIVE_CLAUDE_PATH!;
     const root = await mkdtemp(join(tmpdir(), 'happier-native-metadata-'));
     const configDir = join(root, 'claude');
     const projectDir = join(root, 'project');
@@ -17,9 +17,9 @@ it.runIf(Boolean(process.env.HAPPIER_TEST_NATIVE_CLAUDE_PATH))('does not persist
     const originalCwd = process.cwd();
     try {
         process.chdir(projectDir);
-        vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier'));
+        vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier'));
         vi.stubEnv('CLAUDE_CONFIG_DIR', configDir);
-        vi.stubEnv('HAPPIER_CLAUDE_PATH', nativePath);
+        vi.stubEnv('PIGGERCODE_CLAUDE_PATH', nativePath);
         vi.stubEnv('CLAUDECODE', undefined);
         vi.stubEnv('ANTHROPIC_BASE_URL', boundary.url);
         vi.stubEnv('ANTHROPIC_API_KEY', 'local-test-key');

@@ -86,7 +86,7 @@ test('ensureDepsInstalled auto-answers Corepack-style prompts for yarn readiness
     env: {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
     },
   });
 });

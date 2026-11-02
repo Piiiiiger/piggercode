@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from '@/daemon/platform/linux/daemonSpawnedSessionCgroupSelfMigration';
+import { PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from '@/daemon/platform/linux/daemonSpawnedSessionCgroupSelfMigration';
 import { resolveFileLogLevel } from '@/ui/logFileLevel';
 import { buildSpawnChildProcessEnv } from './buildSpawnChildProcessEnv';
 
@@ -8,11 +8,11 @@ describe('buildSpawnChildProcessEnv', () => {
   it('publishes the resolved daemon home even when the parent did not export it', () => {
     for (const inheritedHome of [undefined, '/tmp/stale-home']) {
       const params = {
-        processEnv: { HAPPIER_HOME_DIR: inheritedHome },
+        processEnv: { PIGGERCODE_HOME_DIR: inheritedHome },
         extraEnv: {},
         homeDir: '/tmp/resolved-daemon-home',
       };
-      expect(buildSpawnChildProcessEnv(params).HAPPIER_HOME_DIR).toBe('/tmp/resolved-daemon-home');
+      expect(buildSpawnChildProcessEnv(params).PIGGERCODE_HOME_DIR).toBe('/tmp/resolved-daemon-home');
     }
   });
 
@@ -31,7 +31,7 @@ describe('buildSpawnChildProcessEnv', () => {
         PATH: '/bin',
         CLAUDECODE: '1',
         CLAUDE_CODE_ENTRYPOINT: 'parent',
-        HAPPIER_SESSION_AUTOSTART_DAEMON: '1',
+        PIGGERCODE_SESSION_AUTOSTART_DAEMON: '1',
       },
       extraEnv: { CUSTOM: 'x' },
     });
@@ -40,7 +40,7 @@ describe('buildSpawnChildProcessEnv', () => {
     expect(env.CUSTOM).toBe('x');
     expect(env.CLAUDECODE).toBeUndefined();
     expect(env.CLAUDE_CODE_ENTRYPOINT).toBeUndefined();
-    expect(env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBeUndefined();
+    expect(env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBeUndefined();
   });
 
   it('preserves inherited provider auth/config env and still lets explicit session env override it', () => {
@@ -74,12 +74,12 @@ describe('buildSpawnChildProcessEnv', () => {
     const params = {
       processEnv: {
         PATH: '/bin',
-        HAPPIER_ACTIVE_SERVER_ID: 'stale-server',
-        HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
-        HAPPIER_SERVER_URL: 'https://stale.example.test',
-        HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:4999',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://stale-public.example.test',
-        HAPPIER_WEBAPP_URL: 'https://stale-app.example.test',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stale-server',
+        PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
+        PIGGERCODE_SERVER_URL: 'https://stale.example.test',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:4999',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://stale-public.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://stale-app.example.test',
       },
       extraEnv: {},
       serverSelectionEnv: {
@@ -92,21 +92,21 @@ describe('buildSpawnChildProcessEnv', () => {
     const env = buildSpawnChildProcessEnv(params);
 
     expect(env.PATH).toBe('/bin');
-    expect(env.HAPPIER_ACTIVE_SERVER_ID).toBe('stack-a');
-    expect(env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
+    expect(env.PIGGERCODE_ACTIVE_SERVER_ID).toBe('stack-a');
+    expect(env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
       'stack_repo-remote-dev-d72117acdb__id_default',
     );
-    expect(env.HAPPIER_SERVER_URL).toBe('http://127.0.0.1:3005');
-    expect(env.HAPPIER_LOCAL_SERVER_URL).toBe('http://127.0.0.1:3005');
-    expect(env.HAPPIER_PUBLIC_SERVER_URL).toBe('http://127.0.0.1:13155');
-    expect(env.HAPPIER_WEBAPP_URL).toBe('http://127.0.0.1:13155');
+    expect(env.PIGGERCODE_SERVER_URL).toBe('http://127.0.0.1:3005');
+    expect(env.PIGGERCODE_LOCAL_SERVER_URL).toBe('http://127.0.0.1:3005');
+    expect(env.PIGGERCODE_PUBLIC_SERVER_URL).toBe('http://127.0.0.1:13155');
+    expect(env.PIGGERCODE_WEBAPP_URL).toBe('http://127.0.0.1:13155');
   });
 
   it('promotes an old stack daemon active scope into the child lifecycle scope', () => {
     const env = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_ACTIVE_SERVER_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
       },
       extraEnv: {},
       serverSelectionEnv: {
@@ -117,7 +117,7 @@ describe('buildSpawnChildProcessEnv', () => {
       },
     });
 
-    expect(env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
+    expect(env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID).toBe(
       'stack_repo-remote-dev-d72117acdb__id_default',
     );
   });
@@ -126,70 +126,70 @@ describe('buildSpawnChildProcessEnv', () => {
     const env = buildOnLinux({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
       },
       extraEnv: {},
     });
 
-    expect(env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
+    expect(env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
   });
 
   it('keeps self-migration enabled across an authorized daemon self-restart', () => {
     const env = buildOnLinux({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
       },
       extraEnv: {},
     });
 
-    expect(env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
+    expect(env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
   });
 
   it('enables Linux self-migration for child runners spawned by a manual stack daemon', () => {
     const env = buildOnLinux({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'manual',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'manual',
       },
       extraEnv: {},
     });
 
-    expect(env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
+    expect(env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]).toBe('1');
   });
 
   it('does not leak daemon lifecycle ownership env into child runners', () => {
     const env = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_DAEMON_RUNTIME_ID: 'runtime-parent',
-        HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
-        HAPPIER_DAEMON_TAKEOVER: '1',
+        PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-parent',
+        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
+        PIGGERCODE_DAEMON_TAKEOVER: '1',
         // Baked into a desktop-managed service definition; a session must not carry it into a service install.
-        HAPPIER_DAEMON_SERVICE_MANAGED_BY: 'desktop',
+        PIGGERCODE_DAEMON_SERVICE_MANAGED_BY: 'desktop',
       },
       extraEnv: {},
     });
 
     expect(env.PATH).toBe('/bin');
-    expect(env.HAPPIER_DAEMON_RUNTIME_ID).toBeUndefined();
-    expect(env.HAPPIER_DAEMON_STARTUP_SOURCE).toBeUndefined();
-    expect(env.HAPPIER_DAEMON_TAKEOVER).toBeUndefined();
-    expect(env.HAPPIER_DAEMON_SERVICE_MANAGED_BY).toBeUndefined();
+    expect(env.PIGGERCODE_DAEMON_RUNTIME_ID).toBeUndefined();
+    expect(env.PIGGERCODE_DAEMON_STARTUP_SOURCE).toBeUndefined();
+    expect(env.PIGGERCODE_DAEMON_TAKEOVER).toBeUndefined();
+    expect(env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY).toBeUndefined();
   });
 
   it('strips obsolete daemon-generation authority from parent and session overrides', () => {
     const env = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_DAEMON_EXECUTION_GENERATION_V1: 'spawning-daemon',
+        PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1: 'spawning-daemon',
       },
       extraEnv: {
-        HAPPIER_DAEMON_EXECUTION_GENERATION_V1: 'untrusted-session-override',
+        PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1: 'untrusted-session-override',
       },
     });
 
-    expect(env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1).toBeUndefined();
+    expect(env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1).toBeUndefined();
   });
 
   it('does not force debug file logging for prod-shaped daemon-spawned runners', () => {
@@ -198,7 +198,7 @@ describe('buildSpawnChildProcessEnv', () => {
       extraEnv: {},
     });
 
-    expect(env.HAPPIER_LOG_LEVEL).toBeUndefined();
+    expect(env.PIGGERCODE_LOG_LEVEL).toBeUndefined();
     expect(resolveFileLogLevel({ env, isDaemonProcess: false })).toBe('info');
   });
 
@@ -206,52 +206,52 @@ describe('buildSpawnChildProcessEnv', () => {
     const env = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
       },
       extraEnv: {},
     });
 
-    expect(env.HAPPIER_LOG_LEVEL).toBe('debug');
+    expect(env.PIGGERCODE_LOG_LEVEL).toBe('debug');
   });
 
   it('honors an explicit file log level override instead of forcing debug on daemon children or stack children', () => {
     const inherited = buildSpawnChildProcessEnv({
-      processEnv: { PATH: '/bin', HAPPIER_LOG_LEVEL: 'silent' },
+      processEnv: { PATH: '/bin', PIGGERCODE_LOG_LEVEL: 'silent' },
       extraEnv: {},
     });
-    expect(inherited.HAPPIER_LOG_LEVEL).toBe('silent');
+    expect(inherited.PIGGERCODE_LOG_LEVEL).toBe('silent');
 
     const explicit = buildSpawnChildProcessEnv({
       processEnv: { PATH: '/bin' },
-      extraEnv: { HAPPIER_LOG_LEVEL: 'warn' },
+      extraEnv: { PIGGERCODE_LOG_LEVEL: 'warn' },
     });
-    expect(explicit.HAPPIER_LOG_LEVEL).toBe('warn');
+    expect(explicit.PIGGERCODE_LOG_LEVEL).toBe('warn');
 
     const stackExplicit = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
-        HAPPIER_LOG_LEVEL: 'info',
+        PIGGERCODE_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
+        PIGGERCODE_LOG_LEVEL: 'info',
       },
       extraEnv: {},
     });
-    expect(stackExplicit.HAPPIER_LOG_LEVEL).toBe('info');
+    expect(stackExplicit.PIGGERCODE_LOG_LEVEL).toBe('info');
   });
 
   it('marks daemon-spawned stack child runners as session processes', () => {
     const env = buildSpawnChildProcessEnv({
       processEnv: {
         PATH: '/bin',
-        HAPPIER_STACK_STACK: 'repo-remote-dev',
-        HAPPIER_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_STACK_STACK: 'repo-remote-dev',
+        PIGGERCODE_STACK_ENV_FILE: '/tmp/repo-remote-dev/env',
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
       },
       extraEnv: {},
     });
 
-    expect(env.HAPPIER_STACK_STACK).toBe('repo-remote-dev');
-    expect(env.HAPPIER_STACK_ENV_FILE).toBe('/tmp/repo-remote-dev/env');
-    expect(env.HAPPIER_STACK_PROCESS_KIND).toBe('session');
+    expect(env.PIGGERCODE_STACK_STACK).toBe('repo-remote-dev');
+    expect(env.PIGGERCODE_STACK_ENV_FILE).toBe('/tmp/repo-remote-dev/env');
+    expect(env.PIGGERCODE_STACK_PROCESS_KIND).toBe('session');
   });
 });

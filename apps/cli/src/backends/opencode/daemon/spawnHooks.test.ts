@@ -5,7 +5,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createExecutableShim, writeExecutableShim } from '@/testkit/fs/executableShim';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
-const envKeys = ['PATH', 'HAPPIER_OPENCODE_PATH', 'HAPPIER_OPENCODE_CLI_GENERATION', 'HAPPIER_HOME_DIR'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_OPENCODE_PATH', 'PIGGERCODE_OPENCODE_CLI_GENERATION', 'PIGGERCODE_HOME_DIR'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -44,18 +44,18 @@ describe('opencodeDaemonSpawnHooks.validateSpawn', () => {
         ...selection, processEnv: {},
       })).toEqual({ kind: 'provider_attach', startingMode: 'local' });
       expect(opencodeDaemonSpawnHooks.resolveTerminalPresentation?.({
-        ...selection, processEnv: { HAPPIER_OPENCODE_BACKEND_MODE: 'acp' },
+        ...selection, processEnv: { PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp' },
       })).toEqual({ kind: 'none' });
     }
   });
 
-  it('rejects spawn when HAPPIER_OPENCODE_PATH points to an invalid executable', async () => {
+  it('rejects spawn when PIGGERCODE_OPENCODE_PATH points to an invalid executable', async () => {
     const homeDir = await createTempDir('happier-opencode-spawnhooks-home-');
     tempDirs.add(homeDir);
     envScope.patch({
       PATH: '',
-      HAPPIER_OPENCODE_PATH: join(homeDir, 'missing-opencode'),
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_OPENCODE_PATH: join(homeDir, 'missing-opencode'),
+      PIGGERCODE_HOME_DIR: homeDir,
     });
 
     const { opencodeDaemonSpawnHooks } = await import('./spawnHooks');
@@ -63,13 +63,13 @@ describe('opencodeDaemonSpawnHooks.validateSpawn', () => {
     expect(res.ok).toBe(false);
     if (res.ok) throw new Error('expected validation to fail');
     expect(res.errorMessage.toLowerCase()).toContain('opencode');
-    expect(res.errorMessage).toContain('HAPPIER_OPENCODE_PATH');
+    expect(res.errorMessage).toContain('PIGGERCODE_OPENCODE_PATH');
   });
 
   it('allows spawn when opencode is on PATH', async () => {
     const { dir } = await createFakeBin('opencode');
     envScope.patch({
-      HAPPIER_OPENCODE_PATH: undefined,
+      PIGGERCODE_OPENCODE_PATH: undefined,
       PATH: dir,
     });
 
@@ -89,7 +89,7 @@ describe('opencodeDaemonSpawnHooks.validateSpawn', () => {
     const environmentVariables = {
       HOME: homeDir,
       PATH: '',
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_HOME_DIR: homeDir,
     };
 
     const { opencodeDaemonSpawnHooks } = await import('./spawnHooks');
@@ -103,8 +103,8 @@ describe('opencodeDaemonSpawnHooks.validateSpawn', () => {
   it('allows the released opencode command when V2 is selected', async () => {
     const { dir } = await createFakeBin('opencode');
     envScope.patch({
-      HAPPIER_OPENCODE_PATH: undefined,
-      HAPPIER_OPENCODE_CLI_GENERATION: 'v2',
+      PIGGERCODE_OPENCODE_PATH: undefined,
+      PIGGERCODE_OPENCODE_CLI_GENERATION: 'v2',
       PATH: dir,
     });
 
@@ -113,11 +113,11 @@ describe('opencodeDaemonSpawnHooks.validateSpawn', () => {
     expect(res.ok).toBe(true);
   });
 
-  it('allows spawn when HAPPIER_OPENCODE_PATH points to an executable', async () => {
+  it('allows spawn when PIGGERCODE_OPENCODE_PATH points to an executable', async () => {
     const { binPath } = await createFakeBin('opencode-custom');
     envScope.patch({
       PATH: '',
-      HAPPIER_OPENCODE_PATH: binPath,
+      PIGGERCODE_OPENCODE_PATH: binPath,
     });
 
     const { opencodeDaemonSpawnHooks } = await import('./spawnHooks');

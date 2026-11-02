@@ -64,13 +64,13 @@ async function runStackTestWrapperScenario({ expectedTarget, expectedTestOutput,
 
   const stackEnvPath = join(sandbox, 'storage', 'main', 'env');
   await mkdir(dirname(stackEnvPath), { recursive: true });
-  await writeFile(stackEnvPath, `HAPPIER_STACK_REPO_DIR=${monoRoot}\n`, 'utf-8');
+  await writeFile(stackEnvPath, `PIGGERCODE_STACK_REPO_DIR=${monoRoot}\n`, 'utf-8');
 
   const env = buildStackHarnessEnv({
     binDirs: [fakeYarn.binDir],
     extraEnv: {
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
       HSTACK_FAKE_YARN_LOG: fakeYarn.logPath,
     },
   });

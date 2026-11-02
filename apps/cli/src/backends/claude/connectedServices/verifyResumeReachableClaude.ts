@@ -5,7 +5,7 @@ import type { VerifyResumeReachableResult } from '@/backends/connectedServices/v
 import { resolveConfiguredClaudeConfigDir } from '@/backends/claude/utils/resolveConfiguredClaudeConfigDir';
 
 export const CLAUDE_CONNECTED_SERVICES_LEGACY_RESTART_SAME_HOME_ENV =
-  'HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME' as const;
+  'PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME' as const;
 
 function isLegacyClaudeConnectedServicesRollbackEnabled(env: NodeJS.ProcessEnv): boolean {
   return env[CLAUDE_CONNECTED_SERVICES_LEGACY_RESTART_SAME_HOME_ENV] === '1';

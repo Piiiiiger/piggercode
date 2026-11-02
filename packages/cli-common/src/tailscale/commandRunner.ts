@@ -86,7 +86,7 @@ export type RunTailscaleLoginResult = Readonly<{
   actionUrl: string | null;
 }>;
 
-const TAILSCALE_CLI_ENV_KEYS = ['HAPPIER_TAILSCALE_BIN', 'HAPPIER_STACK_TAILSCALE_BIN'] as const;
+const TAILSCALE_CLI_ENV_KEYS = ['PIGGERCODE_TAILSCALE_BIN', 'PIGGERCODE_STACK_TAILSCALE_BIN'] as const;
 const MACOS_TAILSCALE_CLI_PATHS = [
   '/Applications/Tailscale.app/Contents/MacOS/tailscale',
   '/Applications/Tailscale.app/Contents/MacOS/Tailscale',

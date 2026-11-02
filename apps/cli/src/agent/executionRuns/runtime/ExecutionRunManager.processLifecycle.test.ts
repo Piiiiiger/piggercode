@@ -49,7 +49,7 @@ async function writeLifecycleExecutable(root: string, holdResumeAck = false): Pr
     importLines: ['import { appendFileSync, existsSync, writeFileSync } from "node:fs";'],
     setupLines: [
       'if (process.argv.includes("--help")) process.exit(0);',
-      `const pidPath = process.env.HAPPIER_TEST_PID_PATH ?? ${JSON.stringify(join(root, 'session-child.pid'))};`,
+      `const pidPath = process.env.PIGGERCODE_TEST_PID_PATH ?? ${JSON.stringify(join(root, 'session-child.pid'))};`,
       'writeFileSync(pidPath, String(process.pid));',
       'appendFileSync(pidPath + ".requests", process.pid + " spawn\\n");',
       'let turnCount = 0;',
@@ -93,7 +93,7 @@ function createProcessBackend(root: string, executable: string, name: string) {
     cwd: root,
     env: createCodexAppServerProcessEnv(executable, {
       CODEX_HOME: join(root, `${name}-codex-home`),
-      HAPPIER_TEST_PID_PATH: pidPath,
+      PIGGERCODE_TEST_PID_PATH: pidPath,
     }),
     permissionMode: 'read-only',
   });
@@ -127,11 +127,11 @@ describe('ExecutionRunManager process lifecycle', () => {
         }
         return { data: { didWrite: true }, status: 200, statusText: 'OK', headers: {}, config };
       };
-      vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier-home'));
-      vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:1');
-      vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', executable);
-      vi.stubEnv('HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
-      vi.stubEnv('HAPPIER_FEATURE_EXECUTION__RUNS__ENABLED', '1');
+      vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier-home'));
+      vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:1');
+      vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', executable);
+      vi.stubEnv('PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
+      vi.stubEnv('PIGGERCODE_FEATURE_EXECUTION__RUNS__ENABLED', '1');
       reloadConfiguration();
       sockets.session = createApiSessionSocketStub({ id: 'session-parent-delivery', connected: true });
       sockets.user = createApiSessionSocketStub({ id: 'user-parent-delivery', connected: false });
@@ -281,11 +281,11 @@ describe('ExecutionRunManager process lifecycle', () => {
   it.each(['close', 'termination'] as const)('releases retained child processes through Session %s', async (operation) => {
     await withTempDir('happier-session-execution-run-process-', async (root) => {
       const executable = await writeLifecycleExecutable(root);
-      vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier-home'));
-      vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:1');
-      vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', executable);
-      vi.stubEnv('HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
-      vi.stubEnv('HAPPIER_FEATURE_EXECUTION__RUNS__ENABLED', '1');
+      vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier-home'));
+      vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:1');
+      vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', executable);
+      vi.stubEnv('PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
+      vi.stubEnv('PIGGERCODE_FEATURE_EXECUTION__RUNS__ENABLED', '1');
       reloadConfiguration();
       sockets.session = createApiSessionSocketStub({ id: `session-${operation}`, connected: true });
       sockets.user = createApiSessionSocketStub({ id: `user-${operation}`, connected: false });
@@ -341,11 +341,11 @@ describe('ExecutionRunManager process lifecycle', () => {
   it('releases a resumed child before its native load acknowledgement during Session termination', async () => {
     await withTempDir('happier-resuming-child-session-shutdown-', async (root) => {
       const executable = await writeLifecycleExecutable(root, true);
-      vi.stubEnv('HAPPIER_HOME_DIR', join(root, 'happier-home'));
-      vi.stubEnv('HAPPIER_SERVER_URL', 'http://127.0.0.1:1');
-      vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', executable);
-      vi.stubEnv('HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
-      vi.stubEnv('HAPPIER_FEATURE_EXECUTION__RUNS__ENABLED', '1');
+      vi.stubEnv('PIGGERCODE_HOME_DIR', join(root, 'happier-home'));
+      vi.stubEnv('PIGGERCODE_SERVER_URL', 'http://127.0.0.1:1');
+      vi.stubEnv('PIGGERCODE_CODEX_APP_SERVER_BIN', executable);
+      vi.stubEnv('PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT', 'appServer');
+      vi.stubEnv('PIGGERCODE_FEATURE_EXECUTION__RUNS__ENABLED', '1');
       reloadConfiguration();
       sockets.session = createApiSessionSocketStub({ id: 'session-resume-held', connected: true });
       sockets.user = createApiSessionSocketStub({ id: 'user-resume-held', connected: false });

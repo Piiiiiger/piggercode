@@ -31,7 +31,7 @@ export function parseHeartbeatArgs(argv) {
 }
 
 function resolveUiWebExportNamespace(env) {
-  const explicitNamespace = String(env?.HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE ?? '').trim();
+  const explicitNamespace = String(env?.PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE ?? '').trim();
   if (explicitNamespace) return explicitNamespace;
   return `playwright-ui-${process.pid}-${Date.now()}`;
 }
@@ -39,7 +39,7 @@ function resolveUiWebExportNamespace(env) {
 export function createPlaywrightSpawnOptions(env) {
   const nextEnv = {
     ...env,
-    HAPPIER_E2E_UI_WEB_EXPORT_NAMESPACE: resolveUiWebExportNamespace(env),
+    PIGGERCODE_E2E_UI_WEB_EXPORT_NAMESPACE: resolveUiWebExportNamespace(env),
   };
   return {
     stdio: 'inherit',
@@ -69,7 +69,7 @@ export async function runHeartbeatWrappedCommand(params) {
   // eslint-disable-next-line no-console
   console.log(`[tests] starting: ${params.command} ${params.args.join(' ')}`);
 
-  const heartbeatMs = Number.parseInt(process.env.HAPPIER_TEST_HEARTBEAT_MS ?? '30000', 10);
+  const heartbeatMs = Number.parseInt(process.env.PIGGERCODE_TEST_HEARTBEAT_MS ?? '30000', 10);
   const safeHeartbeatMs = Number.isFinite(heartbeatMs) && heartbeatMs >= 1000 ? heartbeatMs : 30000;
 
   const heartbeat = setInterval(() => {
@@ -91,7 +91,7 @@ export async function runHeartbeatWrappedCommand(params) {
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
     onProcessSignal: () => {
       clearHeartbeat();
     },

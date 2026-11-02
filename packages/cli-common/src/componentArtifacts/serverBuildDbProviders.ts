@@ -24,7 +24,7 @@ export function resolveServerBuildDbProviders(rawInput: string | null | undefine
       continue;
     }
     throw new Error(
-      `Unsupported HAPPIER_BUILD_DB_PROVIDERS token: ${token}. Supported: postgres|pglite|mysql|sqlite|all`,
+      `Unsupported PIGGERCODE_BUILD_DB_PROVIDERS token: ${token}. Supported: postgres|pglite|mysql|sqlite|all`,
     );
   }
 
@@ -35,6 +35,6 @@ export function resolveServerBuildDbProviders(rawInput: string | null | undefine
 
 export function resolveServerBuildDbProvidersFromEnv(env: NodeJS.ProcessEnv): Set<ServerBuildDbProvider> {
   return resolveServerBuildDbProviders(
-    env.HAPPIER_BUILD_DB_PROVIDERS ?? env.HAPPY_BUILD_DB_PROVIDERS,
+    env.PIGGERCODE_BUILD_DB_PROVIDERS ?? env.HAPPY_BUILD_DB_PROVIDERS,
   );
 }

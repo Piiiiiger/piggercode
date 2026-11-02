@@ -210,13 +210,13 @@ diff --git a/node_modules/@legendapp/list/react-native.js b/node_modules/@legend
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -358,7 +358,7 @@ diff --git a/node_modules/@legendapp/list/react-native.js b/node_modules/@legend
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      if (PlatformAdjustBreaksScroll) {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -752,7 +752,7 @@ diff --git a/node_modules/@legendapp/list/react-native.js b/node_modules/@legend
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -763,13 +763,13 @@ diff --git a/node_modules/@legendapp/list/react-native.js b/node_modules/@legend
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }
@@ -1362,13 +1362,13 @@ diff --git a/node_modules/@legendapp/list/react-native.mjs b/node_modules/@legen
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -1510,7 +1510,7 @@ diff --git a/node_modules/@legendapp/list/react-native.mjs b/node_modules/@legen
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      if (PlatformAdjustBreaksScroll) {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -1904,7 +1904,7 @@ diff --git a/node_modules/@legendapp/list/react-native.mjs b/node_modules/@legen
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -1915,13 +1915,13 @@ diff --git a/node_modules/@legendapp/list/react-native.mjs b/node_modules/@legen
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }
@@ -2564,13 +2564,13 @@ diff --git a/node_modules/@legendapp/list/react-native.web.js b/node_modules/@le
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -2742,7 +2742,7 @@ diff --git a/node_modules/@legendapp/list/react-native.web.js b/node_modules/@le
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -3034,7 +3034,7 @@ diff --git a/node_modules/@legendapp/list/react-native.web.js b/node_modules/@le
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -3045,13 +3045,13 @@ diff --git a/node_modules/@legendapp/list/react-native.web.js b/node_modules/@le
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }
@@ -3673,13 +3673,13 @@ diff --git a/node_modules/@legendapp/list/react-native.web.mjs b/node_modules/@l
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -3851,7 +3851,7 @@ diff --git a/node_modules/@legendapp/list/react-native.web.mjs b/node_modules/@l
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -4143,7 +4143,7 @@ diff --git a/node_modules/@legendapp/list/react-native.web.mjs b/node_modules/@l
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -4154,13 +4154,13 @@ diff --git a/node_modules/@legendapp/list/react-native.web.mjs b/node_modules/@l
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }
@@ -4827,13 +4827,13 @@ diff --git a/node_modules/@legendapp/list/react.js b/node_modules/@legendapp/lis
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -5005,7 +5005,7 @@ diff --git a/node_modules/@legendapp/list/react.js b/node_modules/@legendapp/lis
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -5297,7 +5297,7 @@ diff --git a/node_modules/@legendapp/list/react.js b/node_modules/@legendapp/lis
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -5308,13 +5308,13 @@ diff --git a/node_modules/@legendapp/list/react.js b/node_modules/@legendapp/lis
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }
@@ -5936,13 +5936,13 @@ diff --git a/node_modules/@legendapp/list/react.mjs b/node_modules/@legendapp/li
 +// pixel) and UIScrollView clamping contentOffset to that one-viewport content.
 +// The sentinel is given a private value no item key can ever take, so the invalid state stops being
 +// representable rather than being guarded against at one caller.
-+var HAPPIER_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
++var PIGGERCODE_TOTAL_SIZE_ABSOLUTE = { happierTotalSizeAbsolute: true };
  function addTotalSize(ctx, key, add, notifyTotalSize = true) {
    const state = ctx.state;
    const prevTotalSize = state.totalSize;
    let totalSize = state.totalSize;
 -  if (key === null) {
-+  if (key === HAPPIER_TOTAL_SIZE_ABSOLUTE) {
++  if (key === PIGGERCODE_TOTAL_SIZE_ABSOLUTE) {
      totalSize = add;
      if (state.timeoutSetPaddingTop) {
        clearTimeout(state.timeoutSetPaddingTop);
@@ -6114,7 +6114,7 @@ diff --git a/node_modules/@legendapp/list/react.mjs b/node_modules/@legendapp/li
      state.scrollTargetPinnedRange = void 0;
      if (state.pendingTotalSize !== void 0) {
 -      addTotalSize(ctx, null, state.pendingTotalSize);
-+      addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
++      addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, state.pendingTotalSize);
      }
      {
        state.scrollAdjustHandler.commitPendingAdjust(scrollingTo);
@@ -6406,7 +6406,7 @@ diff --git a/node_modules/@legendapp/list/react.mjs b/node_modules/@legendapp/li
    const numColumns = (_a3 = peek$(ctx, "numColumns")) != null ? _a3 : 1;
    if (data.length === 0) {
 -    addTotalSize(ctx, null, 0);
-+    addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, 0);
++    addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, 0);
    } else {
      const lastIndex = data.length - 1;
      const lastId = getId(state, lastIndex);
@@ -6417,13 +6417,13 @@ diff --git a/node_modules/@legendapp/list/react.mjs b/node_modules/@legendapp/li
            }
          }
 -        addTotalSize(ctx, null, lastPosition + maxSize);
-+        addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
++        addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, lastPosition + maxSize);
        } else {
          const lastSize = getItemSize(ctx, lastId, lastIndex, data[lastIndex]);
          if (lastSize !== void 0) {
            const totalSize = lastPosition + lastSize;
 -          addTotalSize(ctx, null, totalSize);
-+          addTotalSize(ctx, HAPPIER_TOTAL_SIZE_ABSOLUTE, totalSize);
++          addTotalSize(ctx, PIGGERCODE_TOTAL_SIZE_ABSOLUTE, totalSize);
          }
        }
      }

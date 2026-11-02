@@ -5,15 +5,15 @@ import { join } from 'node:path';
 
 import { createAuthStackFixture, getStackRootFromMeta, hstackBinPath, runNodeCapture } from './testkit/auth_testkit.mjs';
 
-test('hstack auth login --print --json uses stack.runtime.json server port when HAPPIER_STACK_SERVER_PORT is missing', async () => {
+test('hstack auth login --print --json uses stack.runtime.json server port when PIGGERCODE_STACK_SERVER_PORT is missing', async () => {
   const rootDir = getStackRootFromMeta(import.meta.url);
   const fixture = await createAuthStackFixture({
     prefix: 'hstack-auth-runtime-port-',
     stackName: 'dev-auth',
     stackEnvLines: [
-      'HAPPIER_STACK_STACK=dev-auth',
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
+      'PIGGERCODE_STACK_STACK=dev-auth',
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
     ],
   });
   try {
@@ -29,8 +29,8 @@ test('hstack auth login --print --json uses stack.runtime.json server port when 
       {
         cwd: rootDir,
         env: fixture.buildEnv({
-          HAPPIER_SERVER_URL: '',
-          HAPPIER_STACK_SERVER_PORT: '',
+          PIGGERCODE_SERVER_URL: '',
+          PIGGERCODE_STACK_SERVER_PORT: '',
         }),
       }
     );

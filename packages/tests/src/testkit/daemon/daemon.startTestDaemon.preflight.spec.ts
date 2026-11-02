@@ -44,8 +44,8 @@ async function writeHoldingDaemonScript(scriptPath: string, opts: { writesState:
   const contents = [
     "import { writeFileSync } from 'node:fs';",
     "import { resolve } from 'node:path';",
-    "const homeDir = process.env.HAPPIER_HOME_DIR;",
-    "if (!homeDir) throw new Error('Missing HAPPIER_HOME_DIR');",
+    "const homeDir = process.env.PIGGERCODE_HOME_DIR;",
+    "if (!homeDir) throw new Error('Missing PIGGERCODE_HOME_DIR');",
     opts.writesState
       ? `writeFileSync(resolve(homeDir, 'daemon.state.json'), JSON.stringify({ pid: process.pid, httpPort: ${opts.httpPort ?? 32_222}, controlToken: 'fresh-control-token' }), 'utf8');`
       : '',
@@ -103,8 +103,8 @@ async function writeExitAfterStateDaemonScript(scriptPath: string, opts: { homeD
   const contents = [
     "import { mkdirSync, writeFileSync } from 'node:fs';",
     "import { resolve } from 'node:path';",
-    "const homeDir = process.env.HAPPIER_HOME_DIR;",
-    "if (!homeDir) throw new Error('Missing HAPPIER_HOME_DIR');",
+    "const homeDir = process.env.PIGGERCODE_HOME_DIR;",
+    "if (!homeDir) throw new Error('Missing PIGGERCODE_HOME_DIR');",
     `const stateDir = resolve(homeDir, 'servers', ${JSON.stringify(opts.serverId)});`,
     "mkdirSync(stateDir, { recursive: true });",
     `writeFileSync(resolve(stateDir, 'daemon.state.json'), JSON.stringify({ pid: process.pid, httpPort: ${opts.httpPort}, controlToken: 'fresh-control-token' }), 'utf8');`,
@@ -118,8 +118,8 @@ async function writeReplacementDaemonScript(scriptPath: string, opts: { serverId
   const contents = [
     "import { mkdirSync, writeFileSync } from 'node:fs';",
     "import { resolve } from 'node:path';",
-    "const homeDir = process.env.HAPPIER_HOME_DIR;",
-    "if (!homeDir) throw new Error('Missing HAPPIER_HOME_DIR');",
+    "const homeDir = process.env.PIGGERCODE_HOME_DIR;",
+    "if (!homeDir) throw new Error('Missing PIGGERCODE_HOME_DIR');",
     "const args = process.argv.slice(2).join(' ');",
     "if (args !== 'daemon start-sync --takeover') process.exit(7);",
     opts.stateWriteDelayMs ? `await new Promise((resolve) => setTimeout(resolve, ${opts.stateWriteDelayMs}));` : '',
@@ -258,17 +258,17 @@ describe('startTestDaemon', () => {
 
   it('forces source subprocesses for source-entrypoint daemon tests', () => {
     const sanitized = sanitizeDaemonEnvForSpawn({
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      HAPPIER_CLI_SUBPROCESS_PREFER_TSX: undefined,
-      HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stack/cli/dist/index.mjs',
-      HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '1111111111111111',
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: undefined,
+      PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stack/cli/dist/index.mjs',
+      PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: '1111111111111111',
     });
 
     expect(sanitized).toMatchObject({
-      HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '1',
+      PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '1',
     });
-    expect(sanitized.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT).toBeUndefined();
-    expect(sanitized.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT).toBeUndefined();
+    expect(sanitized.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT).toBeUndefined();
+    expect(sanitized.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT).toBeUndefined();
   });
 
   it('defaults source-entrypoint daemon snapshots to copy-mode node_modules when unset', async () => {
@@ -292,7 +292,7 @@ describe('startTestDaemon', () => {
         testDir,
         happyHomeDir: homeDir,
         env: {
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
         },
         startupTimeoutMs: 15_000,
       });
@@ -300,7 +300,7 @@ describe('startTestDaemon', () => {
       const launchCall = cliLaunchSpecMock.resolveCliTestLaunchSpec.mock.calls.at(0)?.[0] as
         | { env?: NodeJS.ProcessEnv }
         | undefined;
-      expect(launchCall?.env?.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE).toBe('copy');
+      expect(launchCall?.env?.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE).toBe('copy');
       const launchOptions = cliLaunchSpecMock.resolveCliTestLaunchSpec.mock.calls.at(0)?.[1] as
         | { snapshotDir?: string }
         | undefined;
@@ -333,8 +333,8 @@ describe('startTestDaemon', () => {
         testDir,
         happyHomeDir: homeDir,
         env: {
-          HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-          HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+          PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+          PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
         },
         startupTimeoutMs: 15_000,
       });
@@ -342,7 +342,7 @@ describe('startTestDaemon', () => {
       const launchCall = cliLaunchSpecMock.resolveCliTestLaunchSpec.mock.calls.at(0)?.[0] as
         | { env?: NodeJS.ProcessEnv }
         | undefined;
-      expect(launchCall?.env?.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE).toBe('symlink');
+      expect(launchCall?.env?.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE).toBe('symlink');
 
       await daemon.stop();
     } finally {
@@ -407,7 +407,7 @@ describe('startTestDaemon', () => {
           testDir,
           happyHomeDir: homeDir,
           env: {
-            HAPPIER_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS: '250',
+            PIGGERCODE_E2E_DAEMON_STARTUP_PHASE_TIMEOUT_MS: '250',
           },
         }).then(
           () => 'started',
@@ -530,7 +530,7 @@ describe('startTestDaemon', () => {
         args: [resolve(freshScriptDir, 'index.mjs')],
         cwd: testDir,
         env: {
-          HAPPIER_FAKE_DAEMON_HTTP_PORT: '32_224',
+          PIGGERCODE_FAKE_DAEMON_HTTP_PORT: '32_224',
         },
       });
 
@@ -578,7 +578,7 @@ describe('startTestDaemon', () => {
         stdio: 'ignore',
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
         },
       });
       stalePid = staleProc.pid ?? null;
@@ -600,7 +600,7 @@ describe('startTestDaemon', () => {
         args: [resolve(freshScriptDir, 'index.mjs')],
         cwd: testDir,
         env: {
-          HAPPIER_FAKE_DAEMON_HTTP_PORT: '32_223',
+          PIGGERCODE_FAKE_DAEMON_HTTP_PORT: '32_223',
         },
       });
 
@@ -715,7 +715,7 @@ describe('startTestDaemon', () => {
         stdio: 'ignore',
         env: {
           ...process.env,
-          HAPPIER_HOME_DIR: homeDir,
+          PIGGERCODE_HOME_DIR: homeDir,
         },
       });
       originalPid = original.pid ?? null;

@@ -182,18 +182,18 @@ describe('installDaemonService runtime resolution', () => {
 
   it('uses the persisted default release channel when daemon service install has no explicit channel', async () => {
     const previousEnv = {
-      HAPPIER_HOME_DIR: process.env.HAPPIER_HOME_DIR,
-      HAPPIER_DAEMON_SERVICE_CHANNEL: process.env.HAPPIER_DAEMON_SERVICE_CHANNEL,
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL,
-      HAPPIER_RELEASE_RING: process.env.HAPPIER_RELEASE_RING,
-      HAPPIER_RELEASE_CHANNEL: process.env.HAPPIER_RELEASE_CHANNEL,
+      PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR,
+      PIGGERCODE_DAEMON_SERVICE_CHANNEL: process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL,
+      PIGGERCODE_RELEASE_RING: process.env.PIGGERCODE_RELEASE_RING,
+      PIGGERCODE_RELEASE_CHANNEL: process.env.PIGGERCODE_RELEASE_CHANNEL,
     };
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-service-default-channel-'));
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    delete process.env.HAPPIER_DAEMON_SERVICE_CHANNEL;
-    delete process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL;
-    delete process.env.HAPPIER_RELEASE_RING;
-    delete process.env.HAPPIER_RELEASE_CHANNEL;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    delete process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL;
+    delete process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL;
+    delete process.env.PIGGERCODE_RELEASE_RING;
+    delete process.env.PIGGERCODE_RELEASE_CHANNEL;
     writeFileSync(
       join(homeDir, 'default-cli-release-channel.json'),
       `${JSON.stringify({ releaseChannel: 'publicdev' })}\n`,

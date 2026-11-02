@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
-  HAPPIER_REPLAY_SEED_MIN_CHARS,
+  PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT,
+  PIGGERCODE_REPLAY_SEED_MIN_CHARS,
 } from '@piggercode/protocol';
 
 import { settingsDefaults } from '@/sync/domains/settings/settings';
@@ -19,20 +19,20 @@ describe('resolveHappierReplayConfig', () => {
     });
 
     expect(cfg.enabled).toBe(true);
-    expect(cfg.recentMessagesCount).toBe(HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT);
-    expect(cfg.maxSeedChars).toBe(HAPPIER_REPLAY_SEED_MIN_CHARS);
+    expect(cfg.recentMessagesCount).toBe(PIGGERCODE_REPLAY_RECENT_MESSAGES_MAX_COUNT);
+    expect(cfg.maxSeedChars).toBe(PIGGERCODE_REPLAY_SEED_MIN_CHARS);
   });
 
   // The forwarding half of the defect: a stored budget the old clamp passed
   // through verbatim reached the wire and produced no seed at all. The clamp is
   // the last writer before the request, so it must lift, never forward.
   it('lifts a stored budget below the floor instead of forwarding it', () => {
-    for (const stored of [1, 200, 500, HAPPIER_REPLAY_SEED_MIN_CHARS - 1]) {
+    for (const stored of [1, 200, 500, PIGGERCODE_REPLAY_SEED_MIN_CHARS - 1]) {
       expect(resolveHappierReplayConfig({
         ...settingsDefaults,
         sessionReplayEnabled: true,
         sessionReplayMaxSeedChars: stored,
-      }).maxSeedChars).toBe(HAPPIER_REPLAY_SEED_MIN_CHARS);
+      }).maxSeedChars).toBe(PIGGERCODE_REPLAY_SEED_MIN_CHARS);
     }
   });
 
@@ -40,8 +40,8 @@ describe('resolveHappierReplayConfig', () => {
     expect(resolveHappierReplayConfig({
       ...settingsDefaults,
       sessionReplayEnabled: true,
-      sessionReplayMaxSeedChars: HAPPIER_REPLAY_SEED_MIN_CHARS,
-    }).maxSeedChars).toBe(HAPPIER_REPLAY_SEED_MIN_CHARS);
+      sessionReplayMaxSeedChars: PIGGERCODE_REPLAY_SEED_MIN_CHARS,
+    }).maxSeedChars).toBe(PIGGERCODE_REPLAY_SEED_MIN_CHARS);
   });
 });
 

@@ -17,7 +17,7 @@ import { createConfiguredAcpRuntime } from '../catalog/configured/createConfigur
 import type { CatalogDefinedAcpBackendOptions } from '../catalog/createCatalogDefinedAcpBackend';
 import { createCatalogProviderAcpRuntime } from './createCatalogProviderAcpRuntime';
 
-const envScope = createEnvKeyScope(['HAPPIER_SESSION_ID', 'HAPPIER_KIRO_PATH']);
+const envScope = createEnvKeyScope(['PIGGERCODE_SESSION_ID', 'PIGGERCODE_KIRO_PATH']);
 afterEach(() => envScope.restore());
 
 describe('catalog ACP process environment', () => {
@@ -28,13 +28,13 @@ describe('catalog ACP process environment', () => {
     { kind: 'configured', sessionId: 'offline-unresolved' },
   ] as const)('binds $kind primary and replay processes to $sessionId', async ({ kind, sessionId }) => {
     await withTempDir('happier-catalog-acp-env-', async (dir) => {
-      envScope.patch({ HAPPIER_SESSION_ID: 'ambient-stale-session' });
+      envScope.patch({ PIGGERCODE_SESSION_ID: 'ambient-stale-session' });
       const capturePath = join(dir, 'spawn-environments.jsonl');
       const scriptPath = writeAcpTestAgentScript({ dir, fileName: 'catalog-env.cjs', source: `#!/usr/bin/env node
         const { appendFileSync } = require('node:fs');
         const readline = require('node:readline');
         appendFileSync(${JSON.stringify(capturePath)}, JSON.stringify({
-          sessionId: process.env.HAPPIER_SESSION_ID ?? null,
+          sessionId: process.env.PIGGERCODE_SESSION_ID ?? null,
           configuredValue: process.env.CONFIGURED_VALUE,
           runtimeValue: process.env.RUNTIME_VALUE,
         }) + '\\n');
@@ -89,7 +89,7 @@ describe('catalog ACP process environment', () => {
       const providerPath = process.platform === 'win32'
         ? await writeExecutableShim({ dir, fileName: 'kiro.cmd', contents: `@echo off\r\n"${process.execPath}" "${scriptPath}" %*\r\n` })
         : await writeExecutableShim({ dir, fileName: 'kiro.cjs', contents: readFileSync(scriptPath, 'utf8') });
-      envScope.patch({ HAPPIER_KIRO_PATH: providerPath });
+      envScope.patch({ PIGGERCODE_KIRO_PATH: providerPath });
       const common = {
         loggerLabel: 'CatalogEnv', directory: dir, session,
         messageBuffer: new MessageBuffer(), mcpServers: {}, permissionHandler,
@@ -108,7 +108,7 @@ describe('catalog ACP process environment', () => {
             command: process.execPath, args: [scriptPath], env: {}, transportProfile: 'generic',
             capabilities: { supportsLoadSession: true, supportsModes: 'unknown', supportsModels: 'unknown', supportsConfigOptions: 'unknown', promptImageSupport: 'unknown' },
           },
-          launchEnv: { HAPPIER_SESSION_ID: 'configured-stale-session', CONFIGURED_VALUE: 'preserved' },
+          launchEnv: { PIGGERCODE_SESSION_ID: 'configured-stale-session', CONFIGURED_VALUE: 'preserved' },
         });
       const environments = () => existsSync(capturePath)
         ? readFileSync(capturePath, 'utf8').trim().split('\n').map((line) => JSON.parse(line))

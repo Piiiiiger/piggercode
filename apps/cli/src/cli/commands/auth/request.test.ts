@@ -6,7 +6,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
 import { captureConsoleLogAndMuteStdout } from '@/testkit/logger/captureOutput';
 
-const envKeys = ['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL', 'HAPPIER_WEBAPP_URL'] as const;
+const envKeys = ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL', 'PIGGERCODE_WEBAPP_URL'] as const;
 const envScope = createEnvKeyScope(envKeys);
 
 afterEach(() => {
@@ -18,10 +18,10 @@ describe('auth request compatibility', () => {
   it('preserves relay expiry and negotiates token-only pairing through legacy-compatible JSON requests', async () => {
     await withTempDir('happier-compatible-token-only-', async (home) => {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
       });
       vi.resetModules();
       const app = fastify({ logger: false });

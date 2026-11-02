@@ -39,7 +39,7 @@ test('hstack setup does not print the warning in --json mode', async () => {
       '--no-menubar',
       '--no-start-now',
     ],
-    { cwd: rootDir, env: { ...process.env, HAPPIER_STACK_TEST_TTY: '0' } }
+    { cwd: rootDir, env: { ...process.env, PIGGERCODE_STACK_TEST_TTY: '0' } }
   );
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   assert.doesNotMatch(res.stderr, /deprecated/i);

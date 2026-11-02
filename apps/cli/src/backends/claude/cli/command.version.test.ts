@@ -24,8 +24,8 @@ afterEach(() => {
 
 describe('handleClaudeCliCommand --version', () => {
   it('passes explicit Claude version requests through without auth or session startup', async () => {
-    const previousClaudePath = process.env.HAPPIER_CLAUDE_PATH;
-    process.env.HAPPIER_CLAUDE_PATH = process.execPath;
+    const previousClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
+    process.env.PIGGERCODE_CLAUDE_PATH = process.execPath;
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     const authSpy = vi.spyOn(authModule, 'authAndSetupMachineIfNeeded').mockResolvedValue({ credentials: { token: 'x' } as any } as any);
     const runSpy = vi.spyOn(runClaudeModule, 'runClaude').mockResolvedValue(undefined);
@@ -51,9 +51,9 @@ describe('handleClaudeCliCommand --version', () => {
       expect(runSpy).not.toHaveBeenCalled();
     } finally {
       if (previousClaudePath === undefined) {
-        delete process.env.HAPPIER_CLAUDE_PATH;
+        delete process.env.PIGGERCODE_CLAUDE_PATH;
       } else {
-        process.env.HAPPIER_CLAUDE_PATH = previousClaudePath;
+        process.env.PIGGERCODE_CLAUDE_PATH = previousClaudePath;
       }
     }
   });

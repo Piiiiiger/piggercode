@@ -78,10 +78,10 @@ test.describe('ui e2e: voice settings hydration', () => {
       ...process.env,
       EXPO_PUBLIC_DEBUG: '1',
       EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-voice-hydration-${run.runId}`,
-      HAPPIER_E2E_UI_WEB_MODE: 'metro',
+      PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
       // Registry access is read-only observability; production WebKit covers
       // the same behavior independently without development React.
-      HAPPIER_E2E_UI_WEB_NO_DEV: '0',
+      PIGGERCODE_E2E_UI_WEB_NO_DEV: '0',
     };
     test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiEnv));
     await mkdir(suiteDir, { recursive: true });
@@ -89,8 +89,8 @@ test.describe('ui e2e: voice settings hydration', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'voice.happierVoice',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'voice.happierVoice',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
     ui = await startUiWeb({ testDir: suiteDir, env: { ...uiEnv, EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl } });

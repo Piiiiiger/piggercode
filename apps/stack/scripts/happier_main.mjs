@@ -38,11 +38,11 @@ function isNodeRuntimeEntrypoint(entrypoint) {
 
 function runCliProfileReconciliation({ resolvedCli, env, cliHomeDir, internalServerUrl, publicServerUrl }) {
   if (!existsSync(join(cliHomeDir, 'settings.json'))) return;
-  const serverId = String(env.HAPPIER_ACTIVE_SERVER_ID ?? '').trim();
+  const serverId = String(env.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim();
   if (!serverId) return;
   const args = buildStackServerProfileSetArgs({ serverId, internalServerUrl, publicServerUrl });
   const verifyPersistedProfile = shouldVerifyStackServerProfileReconciliation(cliHomeDir);
-  const reconciliationEnv = { ...env, HAPPIER_DEFER_SERVER_SELECTION_FOLLOW_UP: '1' };
+  const reconciliationEnv = { ...env, PIGGERCODE_DEFER_SERVER_SELECTION_FOLLOW_UP: '1' };
   const result =
     resolvedCli.kind === 'runtime'
       ? spawnSync(resolvedCli.command, [...resolvedCli.args, ...args], { stdio: 'ignore', env: reconciliationEnv })
@@ -74,7 +74,7 @@ function printHstackHappierHelp({ json }) {
       '',
       'notes:',
       '  - This runs the monorepo CLI component (apps/cli) with stack env defaults.',
-      '  - It auto-fills HAPPIER_HOME_DIR / HAPPIER_SERVER_URL / HAPPIER_WEBAPP_URL when missing.',
+      '  - It auto-fills PIGGERCODE_HOME_DIR / PIGGERCODE_SERVER_URL / PIGGERCODE_WEBAPP_URL when missing.',
       '',
       'stack wrapper options:',
       '  --stack-help  Show this wrapper help (use -h/--help for CLI help)',
@@ -182,8 +182,8 @@ function resolveStackScopedWrapperEnv({ env = process.env, stackName }) {
   const next = {
     ...base,
     ...parsed,
-    HAPPIER_STACK_STACK: name,
-    HAPPIER_STACK_ENV_FILE: stackEnvPath,
+    PIGGERCODE_STACK_STACK: name,
+    PIGGERCODE_STACK_ENV_FILE: stackEnvPath,
   };
   for (const key of STACK_RESERVED_PORT_KEYS) {
     if (!Object.prototype.hasOwnProperty.call(parsed, key)) {
@@ -242,10 +242,10 @@ async function main() {
 
   const rootDir = getRootDir(import.meta.url);
 
-  const initialStackName = (process.env.HAPPIER_STACK_STACK ?? '').toString().trim() || getStackName();
+  const initialStackName = (process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim() || getStackName();
   const stackEnvContext = resolveStackScopedWrapperEnv({ env: process.env, stackName: initialStackName });
   const baseProcessEnv = stackEnvContext.env;
-  const stackName = (baseProcessEnv.HAPPIER_STACK_STACK ?? '').toString().trim() || initialStackName;
+  const stackName = (baseProcessEnv.PIGGERCODE_STACK_STACK ?? '').toString().trim() || initialStackName;
   const stackBaseDir = stackEnvContext.stackEnvPath
     ? dirname(stackEnvContext.stackEnvPath)
     : resolveStackEnvPath(stackName, baseProcessEnv).baseDir;
@@ -315,56 +315,56 @@ async function main() {
   // reuse the user's CLI settings even when stack helper env vars are present in test/dev harnesses.
   const stackEnvFilePath = stackEnvContext.stackEnvPath || resolveExplicitStackEnvFilePath(env);
   const isStackScopedInvocation =
-    Boolean(String(env.HAPPIER_STACK_CLI_HOME_DIR ?? '').trim()) ||
+    Boolean(String(env.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').trim()) ||
     Boolean(stackEnvFilePath && existsSync(stackEnvFilePath));
-  const explicitHomeDir = String(env.HAPPIER_HOME_DIR ?? '').trim();
+  const explicitHomeDir = String(env.PIGGERCODE_HOME_DIR ?? '').trim();
   const stackScopedCliHomeDir =
     (isIdentityScopedCliHomeDir(explicitHomeDir)
       ? explicitHomeDir
-      : (String(env.HAPPIER_STACK_CLI_HOME_DIR ?? '').trim() ||
+      : (String(env.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').trim() ||
         join(stackBaseDir, 'cli')));
   const cliHomeDir = isStackScopedInvocation
     ? resolveCliHomeDir(
         {
           ...process.env,
-          HAPPIER_STACK_CLI_HOME_DIR: stackScopedCliHomeDir,
+          PIGGERCODE_STACK_CLI_HOME_DIR: stackScopedCliHomeDir,
         },
         { preferStackCliHomeDir: true },
       )
     : resolveCliHomeDir(process.env);
 
   if (isStackScopedInvocation) {
-    env.HAPPIER_HOME_DIR = cliHomeDir;
+    env.PIGGERCODE_HOME_DIR = cliHomeDir;
   } else {
-    env.HAPPIER_HOME_DIR = env.HAPPIER_HOME_DIR || cliHomeDir;
+    env.PIGGERCODE_HOME_DIR = env.PIGGERCODE_HOME_DIR || cliHomeDir;
   }
 
   const settingsDefaults =
     !isStackScopedInvocation && !prefixServerSelection.hasExplicitSelection
-      ? readActiveServerUrlsFromCliSettings(env.HAPPIER_HOME_DIR)
+      ? readActiveServerUrlsFromCliSettings(env.PIGGERCODE_HOME_DIR)
       : null;
   if (settingsDefaults) {
     if (settingsDefaults.localServerUrl && settingsDefaults.localServerUrl !== settingsDefaults.serverUrl) {
-      env.HAPPIER_PUBLIC_SERVER_URL = settingsDefaults.serverUrl;
-      env.HAPPIER_LOCAL_SERVER_URL = settingsDefaults.localServerUrl;
-      env.HAPPIER_SERVER_URL = settingsDefaults.localServerUrl;
+      env.PIGGERCODE_PUBLIC_SERVER_URL = settingsDefaults.serverUrl;
+      env.PIGGERCODE_LOCAL_SERVER_URL = settingsDefaults.localServerUrl;
+      env.PIGGERCODE_SERVER_URL = settingsDefaults.localServerUrl;
     } else {
-      delete env.HAPPIER_PUBLIC_SERVER_URL;
-      delete env.HAPPIER_LOCAL_SERVER_URL;
-      env.HAPPIER_SERVER_URL = settingsDefaults.serverUrl;
+      delete env.PIGGERCODE_PUBLIC_SERVER_URL;
+      delete env.PIGGERCODE_LOCAL_SERVER_URL;
+      env.PIGGERCODE_SERVER_URL = settingsDefaults.serverUrl;
     }
-    env.HAPPIER_WEBAPP_URL = settingsDefaults.webappUrl;
-    delete env.HAPPIER_ACTIVE_SERVER_ID;
-    delete env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
+    env.PIGGERCODE_WEBAPP_URL = settingsDefaults.webappUrl;
+    delete env.PIGGERCODE_ACTIVE_SERVER_ID;
+    delete env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
   }
   // Only set default env vars when no explicit server selection flags are present
   if (!prefixServerSelection.hasExplicitSelection && !settingsDefaults) {
     if (isStackScopedInvocation) {
-      env.HAPPIER_SERVER_URL = internalServerUrl;
-      env.HAPPIER_WEBAPP_URL = publicServerUrl;
+      env.PIGGERCODE_SERVER_URL = internalServerUrl;
+      env.PIGGERCODE_WEBAPP_URL = publicServerUrl;
     } else {
-      env.HAPPIER_SERVER_URL = env.HAPPIER_SERVER_URL || internalServerUrl;
-      env.HAPPIER_WEBAPP_URL = env.HAPPIER_WEBAPP_URL || publicServerUrl;
+      env.PIGGERCODE_SERVER_URL = env.PIGGERCODE_SERVER_URL || internalServerUrl;
+      env.PIGGERCODE_WEBAPP_URL = env.PIGGERCODE_WEBAPP_URL || publicServerUrl;
     }
   }
   if (resolvedCli.kind === 'tsx') {
@@ -380,20 +380,20 @@ async function main() {
       ? deriveEnvServerIdFromUrl(prefixServerSelection.explicitServerUrl)
       : null;
     if (derived) {
-      env.HAPPIER_ACTIVE_SERVER_ID = derived;
+      env.PIGGERCODE_ACTIVE_SERVER_ID = derived;
     } else {
-      delete env.HAPPIER_ACTIVE_SERVER_ID;
+      delete env.PIGGERCODE_ACTIVE_SERVER_ID;
     }
-    delete env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
+    delete env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
   } else if (!settingsDefaults) {
     env = applyStackDaemonLifecycleScopeEnv({
       env: applyStackActiveServerScopeEnv({
         env,
         stackName,
-        cliIdentity: (env.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
+        cliIdentity: (env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
       }),
       stackName,
-      cliIdentity: (env.HAPPIER_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
+      cliIdentity: (env.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
     });
   }
 
@@ -404,8 +404,8 @@ async function main() {
       currentExecPath: cliLaunchSpec.command || '',
     });
     if (runtimeCommand) {
-      env.HAPPIER_DAEMON_SERVICE_NODE_PATH = runtimeCommand;
-      env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH = cliLaunchSpec.nodeEntrypoint;
+      env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH = runtimeCommand;
+      env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH = cliLaunchSpec.nodeEntrypoint;
     }
   }
 

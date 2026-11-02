@@ -10,7 +10,7 @@ import type { ProviderUnderTest } from '../../src/testkit/providers/types';
 function claudeProviderStub(): ProviderUnderTest {
   return {
     id: 'claude',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_CLAUDE',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_CLAUDE',
     protocol: 'claude',
     traceProvider: 'claude',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: [] } },

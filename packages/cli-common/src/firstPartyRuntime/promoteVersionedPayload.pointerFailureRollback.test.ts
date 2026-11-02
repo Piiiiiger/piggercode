@@ -56,7 +56,7 @@ describe('promoteVersionedPayload pointer swap atomicity', () => {
     it('fails closed without breaking the existing current pointer when symlink creation fails', async () => {
         await withPlatform('linux', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-pointer-failure-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 const { promoteVersionedPayload, resolveInstalledFirstPartyComponentPaths } = await import('./index.js');

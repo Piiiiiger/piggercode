@@ -73,16 +73,16 @@ async function runSelfUpdate(params: Readonly<{ invokedPath: string; rawArgv: st
 }
 
 describe('happier self update for binary installs', () => {
-  const envScope = createEnvKeyScope([...STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS, 'HAPPIER_HOME_DIR']);
+  const envScope = createEnvKeyScope([...STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS, 'PIGGERCODE_HOME_DIR']);
   let homeDir = '';
 
   beforeEach(() => {
     homeDir = mkdtempSync(join(tmpdir(), 'happier-self-update-'));
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-      HAPPIER_RELEASE_RING: undefined,
-      HAPPIER_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+      PIGGERCODE_RELEASE_RING: undefined,
+      PIGGERCODE_RELEASE_CHANNEL: undefined,
     });
   });
 
@@ -103,7 +103,7 @@ describe('happier self update for binary installs', () => {
     expect(runManagedCliUpdateMock).toHaveBeenCalledTimes(1);
     const params = runManagedCliUpdateMock.mock.calls[0]![0];
     expect(params).toMatchObject({ channel: 'stable', targetVersion: undefined, restartServiceDaemon: null });
-    expect(params.processEnv?.HAPPIER_HOME_DIR).toBe(homeDir);
+    expect(params.processEnv?.PIGGERCODE_HOME_DIR).toBe(homeDir);
     // The Windows quiesce is a pre-activation step only on Windows.
     expect(params.beforeActivate === undefined).toBe(process.platform !== 'win32');
     expect(logs).toContain('Updated happier to 9.9.10');

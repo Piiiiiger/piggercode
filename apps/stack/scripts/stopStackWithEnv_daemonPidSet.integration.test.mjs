@@ -35,10 +35,10 @@ async function createStopFixture(t, { stackName = 'test-stack' } = {}) {
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      'HAPPIER_STACK_SERVER_COMPONENT=happier-server-light',
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-      `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      'PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light',
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
       '',
     ].join('\n'),
     'utf8',
@@ -62,12 +62,12 @@ async function createStopFixture(t, { stackName = 'test-stack' } = {}) {
     const child = spawnOwnedSleep({
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
-        HAPPIER_TEST_LABEL: label,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_TEST_LABEL: label,
       },
     });
     children.push(child);
@@ -82,13 +82,13 @@ async function createStopFixture(t, { stackName = 'test-stack' } = {}) {
       stdio: 'ignore',
       env: owned ? {
         ...process.env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-        HAPPIER_HOME_DIR: cliHomeDir,
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
-        HAPPIER_TEST_LABEL: label,
-      } : { PATH: process.env.PATH, HAPPIER_TEST_LABEL: label },
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_TEST_LABEL: label,
+      } : { PATH: process.env.PATH, PIGGERCODE_TEST_LABEL: label },
     });
     children.push(child);
     await waitForProcessAlive({ pid: child.pid, timeoutMs: 2_000, intervalMs: 25, label });
@@ -159,10 +159,10 @@ test('explicit-stop fallback applies canonical grace only to persisted server pr
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200',
     },
     json: true,
     noDocker: true,
@@ -203,9 +203,9 @@ test('stop cleanup attempts a runtime-recorded Expo pid only once when Expo stat
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
     },
     json: true,
     noDocker: true,
@@ -235,7 +235,7 @@ test('stale Expo state pointing at a definitively unowned reused pid does not bl
 
   const result = await stopStackWithEnv({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath },
     json: true, noDocker: true, autoSweep: false,
   }, {
     killProcessGroupOwnedByStackImpl: async () => ({ killed: false, reason: 'not_owned' }),
@@ -260,7 +260,7 @@ test('startup waits for active canonical cleanup and does not execute cleanup tw
   let cleanupCalls = 0;
   const stopPromise = stopStackWithEnv({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_SERVER_COMPONENT: 'happier-server' },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server' },
     json: true, noDocker: false, autoSweep: false,
     expectedOwnerPid: ownerPid, expectedOwnerStartedAt: ownerStartedAt,
   }, {
@@ -276,7 +276,7 @@ test('startup waits for active canonical cleanup and does not execute cleanup tw
   let startupCompleted = false;
   const startupPromise = completeInterruptedStackStopBeforeStart({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_SERVER_COMPONENT: 'happier-server' },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server' },
     json: true, noDocker: false, autoSweep: false,
   }, {
     stopHappyServerManagedInfraImpl: async () => {
@@ -311,7 +311,7 @@ test('startup reclaims an abandoned cleanup executor and finalizes before ordina
   let cleanupCalls = 0;
   const result = await completeInterruptedStackStopBeforeStart({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_SERVER_COMPONENT: 'happier-server' },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server' },
     json: true, noDocker: false, autoSweep: false,
   }, {
     stopHappyServerManagedInfraImpl: async () => { cleanupCalls += 1; return { ok: true }; },
@@ -352,9 +352,9 @@ test('startup completes an interrupted ownerless stop transaction without mistak
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
     },
     json: true,
     noDocker: false,
@@ -382,7 +382,7 @@ test('startup leaves failed or inconclusive canonical cleanup fenced', async (t)
     await assert.rejects(
       () => completeInterruptedStackStopBeforeStart({
         rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-        env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_SERVER_COMPONENT: 'happier-server' },
+        env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server' },
         json: true, noDocker: false, autoSweep: false,
       }, {
         stopHappyServerManagedInfraImpl: async () => ({ ok: false, reason }),
@@ -405,7 +405,7 @@ test('ordinary startup without a stop marker does not acquire the cleanup execut
 
   const result = await completeInterruptedStackStopBeforeStart({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath },
     json: true, noDocker: true,
   }, { cleanupExecutorLockOptions: { timeoutMs: 30, pollIntervalMs: 5 } });
   assert.deepEqual(result, { completed: false, reason: 'no_stop_request' });
@@ -419,7 +419,7 @@ test('service termination and canonical cleanup share one cleanup executor', asy
   let serviceStops = 0;
   const result = await stopStackServiceWithEnv({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath },
     json: true, noDocker: true, autoSweep: false,
     stopAttribution: { requestedBy: 'service stop', reason: 'test service stop' },
   }, async () => {
@@ -452,10 +452,10 @@ test('watchdog stop fails successor admission closed during cleanup and permits 
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
     },
     json: true,
     autoSweep: true,
@@ -534,10 +534,10 @@ test('watchdog stale preserveDaemon false cannot downgrade a fresher true stop r
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
     },
     json: true,
     preserveDaemon: false,
@@ -586,10 +586,10 @@ test('watchdog cleanup failure retains exact owner-death attribution', async (t)
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
     },
     json: true,
     expectedOwnerPid: staleOwnerPid,
@@ -629,10 +629,10 @@ test('stopStackWithEnv stops every recorded daemon pid in daemonPids', async (t)
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_REPO_DIR: fixture.repoRoot,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_REPO_DIR: fixture.repoRoot,
     },
     json: true,
     noDocker: true,
@@ -676,7 +676,7 @@ test('stopStackWithEnv requests the lifecycle owner before fallback child termin
     rootDir: fixture.repoRoot,
     stackName: fixture.stackName,
     baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir },
     json: true,
     noDocker: true,
   });
@@ -700,9 +700,9 @@ test('stopStackWithEnv retains runtime state and reports cleanup_incomplete when
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
     },
     json: true,
     noDocker: true,
@@ -734,9 +734,9 @@ test('stopStackWithEnv finalizes when a reused lifecycle-owner pid is definitive
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
     },
     json: true,
     noDocker: true,
@@ -766,9 +766,9 @@ test('stopStackWithEnv finalizes past definitively unowned reused runtime member
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
     },
     json: true,
     noDocker: true,
@@ -798,9 +798,9 @@ test('stopStackWithEnv keeps inconclusive runtime member ownership fenced', asyn
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
     },
     json: true,
     noDocker: true,
@@ -822,7 +822,7 @@ test('stopStackWithEnv keeps an inconclusive lifecycle-owner cleanup fenced', as
   });
   const result = await stopStackWithEnv({
     rootDir: fixture.repoRoot, stackName: fixture.stackName, baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath },
     json: true, noDocker: true, autoSweep: false,
   }, {
     requestLifecycleOwnerShutdownImpl: async () => ({ killed: false, reason: 'ownership_inconclusive' }),
@@ -848,10 +848,10 @@ test('stopStackWithEnv finalizes only after managed-infra and owned-sweep cleanu
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server',
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server',
     },
     json: true,
     autoSweep: true,
@@ -882,7 +882,7 @@ test('stopStackWithEnv deletes state when owned sweep confirms a previously time
     rootDir: fixture.repoRoot,
     stackName: fixture.stackName,
     baseDir: fixture.baseDir,
-    env: { ...process.env, HAPPIER_STACK_STACK: fixture.stackName, HAPPIER_STACK_ENV_FILE: fixture.envPath, HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir },
+    env: { ...process.env, PIGGERCODE_STACK_STACK: fixture.stackName, PIGGERCODE_STACK_ENV_FILE: fixture.envPath, PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir },
     json: true,
     noDocker: true,
     autoSweep: true,
@@ -923,10 +923,10 @@ test('stopStackWithEnv preserveDaemon preserves daemonPids and keeps runtime sta
     baseDir: fixture.baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: fixture.stackName,
-      HAPPIER_STACK_ENV_FILE: fixture.envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-      HAPPIER_STACK_REPO_DIR: fixture.repoRoot,
+      PIGGERCODE_STACK_STACK: fixture.stackName,
+      PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+      PIGGERCODE_STACK_REPO_DIR: fixture.repoRoot,
     },
     json: true,
     noDocker: true,
@@ -953,23 +953,23 @@ test('stopStackWithEnv stops the exact named-stack daemon lifecycle scope', asyn
     distIndexScript: `
 import { writeFileSync } from 'node:fs';
 writeFileSync(process.env.DAEMON_STOP_ENV_MARKER, JSON.stringify({
-  lifecycleScopeId: process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID ?? null,
-  stackName: process.env.HAPPIER_STACK_STACK ?? null,
-  cliIdentity: process.env.HAPPIER_STACK_CLI_IDENTITY ?? null,
+  lifecycleScopeId: process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID ?? null,
+  stackName: process.env.PIGGERCODE_STACK_STACK ?? null,
+  cliIdentity: process.env.PIGGERCODE_STACK_CLI_IDENTITY ?? null,
 }), 'utf8');
 process.exit(0);
 `.trimStart(),
     binHappierScript: 'process.exit(0);\n',
   });
 
-  const previousAmbientStack = process.env.HAPPIER_STACK_STACK;
-  const previousAmbientActiveServerId = process.env.HAPPIER_ACTIVE_SERVER_ID;
-  const previousAmbientLifecycleScopeId = process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
+  const previousAmbientStack = process.env.PIGGERCODE_STACK_STACK;
+  const previousAmbientActiveServerId = process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+  const previousAmbientLifecycleScopeId = process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
   const previousAmbientMarker = process.env.DAEMON_STOP_ENV_MARKER;
   try {
-    delete process.env.HAPPIER_STACK_STACK;
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'ambient-endpoint-profile';
-    delete process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
+    delete process.env.PIGGERCODE_STACK_STACK;
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'ambient-endpoint-profile';
+    delete process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
     process.env.DAEMON_STOP_ENV_MARKER = markerPath;
 
     const result = await stopStackWithEnv({
@@ -978,11 +978,11 @@ process.exit(0);
       baseDir: fixture.baseDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: stackName,
-        HAPPIER_STACK_CLI_IDENTITY: cliIdentity,
-        HAPPIER_STACK_ENV_FILE: fixture.envPath,
-        HAPPIER_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
-        HAPPIER_STACK_REPO_DIR: fixture.repoRoot,
+        PIGGERCODE_STACK_STACK: stackName,
+        PIGGERCODE_STACK_CLI_IDENTITY: cliIdentity,
+        PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+        PIGGERCODE_STACK_CLI_HOME_DIR: fixture.cliHomeDir,
+        PIGGERCODE_STACK_REPO_DIR: fixture.repoRoot,
         DAEMON_STOP_ENV_MARKER: markerPath,
       },
       json: true,
@@ -996,12 +996,12 @@ process.exit(0);
       cliIdentity,
     });
   } finally {
-    if (previousAmbientStack === undefined) delete process.env.HAPPIER_STACK_STACK;
-    else process.env.HAPPIER_STACK_STACK = previousAmbientStack;
-    if (previousAmbientActiveServerId === undefined) delete process.env.HAPPIER_ACTIVE_SERVER_ID;
-    else process.env.HAPPIER_ACTIVE_SERVER_ID = previousAmbientActiveServerId;
-    if (previousAmbientLifecycleScopeId === undefined) delete process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID;
-    else process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID = previousAmbientLifecycleScopeId;
+    if (previousAmbientStack === undefined) delete process.env.PIGGERCODE_STACK_STACK;
+    else process.env.PIGGERCODE_STACK_STACK = previousAmbientStack;
+    if (previousAmbientActiveServerId === undefined) delete process.env.PIGGERCODE_ACTIVE_SERVER_ID;
+    else process.env.PIGGERCODE_ACTIVE_SERVER_ID = previousAmbientActiveServerId;
+    if (previousAmbientLifecycleScopeId === undefined) delete process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID;
+    else process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID = previousAmbientLifecycleScopeId;
     if (previousAmbientMarker === undefined) delete process.env.DAEMON_STOP_ENV_MARKER;
     else process.env.DAEMON_STOP_ENV_MARKER = previousAmbientMarker;
   }

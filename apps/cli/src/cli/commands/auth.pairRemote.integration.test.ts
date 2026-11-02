@@ -23,14 +23,14 @@ vi.mock('cross-spawn', () => {
 
 describe('auth pair-remote (ssh)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_VARIANT',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_VARIANT',
   ] as const;
 
   let restoreTty: (() => void) | null = null;
@@ -75,11 +75,11 @@ describe('auth pair-remote (ssh)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
@@ -186,11 +186,11 @@ describe('auth pair-remote (ssh)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
@@ -268,11 +268,11 @@ describe('auth pair-remote (ssh)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_WEBAPP_URL: 'http://webapp.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_WEBAPP_URL: 'http://webapp.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsDataKey } = await import('@/persistence');

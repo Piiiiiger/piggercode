@@ -156,7 +156,7 @@ describe('openCodeUsageLimitRecoveryControlAdapter', () => {
     };
     const adapter = createOpenCodeUsageLimitRecoveryControlAdapter({
       nowMs: () => 5_000,
-      processEnv: { HAPPIER_OPENCODE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS: '3000' },
+      processEnv: { PIGGERCODE_OPENCODE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS: '3000' },
     });
 
     await expect(adapter.checkNow?.(createParams({
@@ -179,8 +179,8 @@ describe('openCodeUsageLimitRecoveryControlAdapter', () => {
     const adapter = createOpenCodeUsageLimitRecoveryControlAdapter({
       nowMs: () => 1_700_000_000_000,
       processEnv: {
-        HAPPIER_OPENCODE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS: '3000',
-        HAPPIER_OPENCODE_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS: '7',
+        PIGGERCODE_OPENCODE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS: '3000',
+        PIGGERCODE_OPENCODE_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS: '7',
       },
     });
 

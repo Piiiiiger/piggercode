@@ -31,10 +31,10 @@ describe('Claude native executable catalog discovery', () => {
       });
       const result = await probeClaudeCatalogs({ cwd, timeoutMs: 5_000, processEnv: {
         ...process.env,
-        HAPPIER_CLAUDE_PATH: executable,
-        HAPPIER_MANAGED_NODE_BIN: join(cwd, 'unavailable-runtime'),
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
-        HAPPIER_E2E_CATALOG_COMMANDS: '[{"name":"review","description":"Review changes","argumentHint":""}]',
+        PIGGERCODE_CLAUDE_PATH: executable,
+        PIGGERCODE_MANAGED_NODE_BIN: join(cwd, 'unavailable-runtime'),
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
+        PIGGERCODE_E2E_CATALOG_COMMANDS: '[{"name":"review","description":"Review changes","argumentHint":""}]',
       } });
       expect(result.commands).toEqual([{ name: 'review', description: 'Review changes', argumentHint: '' }]);
       expect(result.skills).toBeNull();

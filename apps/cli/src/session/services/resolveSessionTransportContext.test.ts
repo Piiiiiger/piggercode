@@ -17,27 +17,27 @@ vi.mock('@/session/transport/http/sessionsHttp', () => ({
 }));
 
 describe('resolveSessionTransportContext', () => {
-    const prevRetryAttempts = process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS;
-    const prevRetryDelayMs = process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS;
+    const prevRetryAttempts = process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS;
+    const prevRetryDelayMs = process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS;
 
     beforeEach(() => {
         resolveSessionIdOrPrefix.mockReset();
         fetchSessionById.mockReset();
-        process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS = '2';
-        process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS = '1';
+        process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS = '2';
+        process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS = '1';
     });
 
     afterEach(() => {
         if (prevRetryAttempts === undefined) {
-            delete process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS;
+            delete process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS;
         } else {
-            process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS = prevRetryAttempts;
+            process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_ATTEMPTS = prevRetryAttempts;
         }
 
         if (prevRetryDelayMs === undefined) {
-            delete process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS;
+            delete process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS;
         } else {
-            process.env.HAPPIER_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS = prevRetryDelayMs;
+            process.env.PIGGERCODE_SESSION_E2EE_DEK_FETCH_RETRY_DELAY_MS = prevRetryDelayMs;
         }
     });
 

@@ -28,10 +28,10 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   await writeFile(
     envPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -53,13 +53,13 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   });
 
   // No runtime file (simulates a stale/orphan stackless run), and legacy infra omitted
-  // HAPPIER_STACK_ENV_FILE / HAPPIER_STACK_PROCESS_KIND while still advertising stack+repo.
+  // PIGGERCODE_STACK_ENV_FILE / PIGGERCODE_STACK_PROCESS_KIND while still advertising stack+repo.
   const legacyInfra = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_PROCESS_KIND: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -79,9 +79,9 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const sessionLike = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   });
   children.push(sessionLike);
@@ -97,10 +97,10 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const sessionWithLegacyServerMarkers = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -118,9 +118,9 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const identityUnavailableInfra = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_PROCESS_KIND: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -136,8 +136,8 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const identityTimedOutInfra = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -153,8 +153,8 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const identityMismatchInfra = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -170,9 +170,9 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
   const incarnationMismatchInfra = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_PROCESS_KIND: undefined,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
       npm_package_name: '@piggercode/server',
     },
@@ -191,10 +191,10 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
     baseDir,
     env: {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
     },
     json: true,
     noDocker: true,
@@ -212,7 +212,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
     if (pid === identityMismatchInfra.pid) {
       return {
         status: 'ok',
-        line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
+        line: `${pid} node PIGGERCODE_STACK_STACK=foreign PIGGERCODE_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
         reason: 'ps',
       };
     }
@@ -314,7 +314,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       if (pid === identityTimedOutInfra.pid || pid === identityMismatchInfra.pid) {
         return {
           status: 'ok',
-          line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
+          line: `${pid} node PIGGERCODE_STACK_STACK=foreign PIGGERCODE_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
           reason: 'ps',
         };
       }

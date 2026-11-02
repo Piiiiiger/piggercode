@@ -16,12 +16,12 @@ function resolveInvokerPackageName(cliRootDir) {
 }
 
 export function getRuntimeDir() {
-  const fromEnv = (process.env.HAPPIER_STACK_RUNTIME_DIR ?? '').trim();
+  const fromEnv = (process.env.PIGGERCODE_STACK_RUNTIME_DIR ?? '').trim();
   if (fromEnv) {
     return expandHome(fromEnv);
   }
-  const homeDir = (process.env.HAPPIER_STACK_HOME_DIR ?? '').trim()
-    ? expandHome(process.env.HAPPIER_STACK_HOME_DIR.trim())
+  const homeDir = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
+    ? expandHome(process.env.PIGGERCODE_STACK_HOME_DIR.trim())
     : join(homedir(), '.happier-stack');
   return join(homeDir, 'runtime');
 }

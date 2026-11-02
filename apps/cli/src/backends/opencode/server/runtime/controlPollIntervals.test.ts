@@ -12,8 +12,8 @@ describe('resolveOpenCodeServerControlPollIntervals', () => {
 
   it('honors bounded control-plane polling overrides', () => {
     expect(resolveOpenCodeServerControlPollIntervals({
-      HAPPIER_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
-      HAPPIER_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '40',
+      PIGGERCODE_OPENCODE_SERVER_CONTROL_POLL_INTERVAL_MS: '25',
+      PIGGERCODE_OPENCODE_SERVER_ACTIVE_CONTROL_POLL_INTERVAL_MS: '40',
     })).toEqual({
       pollSleepMs: 25,
       turnActivePollSleepMs: 40,

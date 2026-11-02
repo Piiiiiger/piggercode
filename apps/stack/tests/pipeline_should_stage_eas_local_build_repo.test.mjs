@@ -8,7 +8,7 @@ test('shouldStageRepoForEasLocalBuild returns false on dryRun', () => {
 });
 
 test('shouldStageRepoForEasLocalBuild returns false when pipeline runtime is dagger', () => {
-  assert.equal(shouldStageRepoForEasLocalBuild({ env: { HAPPIER_PIPELINE_LOCAL_RUNTIME: 'dagger' }, dryRun: false }), false);
+  assert.equal(shouldStageRepoForEasLocalBuild({ env: { PIGGERCODE_PIPELINE_LOCAL_RUNTIME: 'dagger' }, dryRun: false }), false);
 });
 
 test('shouldStageRepoForEasLocalBuild returns false when DAGGER_SESSION_TOKEN is set', () => {
@@ -25,7 +25,7 @@ test('shouldStageRepoForEasLocalBuild returns false on host runs by default (opt
 
 test('shouldStageRepoForEasLocalBuild returns true when explicitly enabled', () => {
   assert.equal(
-    shouldStageRepoForEasLocalBuild({ env: { HAPPIER_PIPELINE_STAGE_EAS_LOCAL_BUILD: '1' }, dryRun: false }),
+    shouldStageRepoForEasLocalBuild({ env: { PIGGERCODE_PIPELINE_STAGE_EAS_LOCAL_BUILD: '1' }, dryRun: false }),
     true,
   );
 });

@@ -78,7 +78,7 @@ const REFRESH_DEBOUNCE_MS = 600;
 const DEFAULT_REFRESH_INTERVAL_MS = 5 * 60_000;
 
 function readRefreshIntervalMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_CONCURRENT_CACHE_REFRESH_INTERVAL_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_CONCURRENT_CACHE_REFRESH_INTERVAL_MS ?? '').trim();
     if (!raw) return DEFAULT_REFRESH_INTERVAL_MS;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return DEFAULT_REFRESH_INTERVAL_MS;

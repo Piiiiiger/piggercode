@@ -4,14 +4,14 @@ import { tmpdir } from 'node:os';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
 import { createClaudeModelEffortLevelsTracker } from '../models/claudeModelEffortLevelsTracker';
 import { prepareClaudeUnifiedTerminalInitialMode } from '../startup/prepareUnifiedTerminalInitialMode';
 import type { EnhancedMode } from '../loop';
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import {
@@ -206,7 +206,7 @@ describe('buildClaudeUnifiedTerminalSpawn', () => {
     });
 
     const launchSpec = await readLaunchSpecFromSpawn(spawn);
-    expect(launchSpec.env).toMatchObject({ HAPPIER_SESSION_ID: 'happy-session-id' });
+    expect(launchSpec.env).toMatchObject({ PIGGERCODE_SESSION_ID: 'happy-session-id' });
     expect(launchSpec.diagnostics).toMatchObject({
       sessionId: 'happy-session-id',
     });
@@ -218,8 +218,8 @@ describe('buildClaudeUnifiedTerminalSpawn', () => {
     'removes an inherited managed session id when the supplied id is unusable (%j)',
     async (happySessionId: string) => {
       await withPatchedEnv({
-        HAPPIER_SESSION_ID: 'outer-session',
-        [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(['HAPPIER_SESSION_ID']),
+        PIGGERCODE_SESSION_ID: 'outer-session',
+        [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(['PIGGERCODE_SESSION_ID']),
       }, async () => {
         const spawn = await buildClaudeUnifiedTerminalSpawn({
           path: '/workspace/project',
@@ -241,7 +241,7 @@ describe('buildClaudeUnifiedTerminalSpawn', () => {
         });
 
         const launchSpec = await readLaunchSpecFromSpawn(spawn);
-        expect(launchSpec.env?.HAPPIER_SESSION_ID).toBeUndefined();
+        expect(launchSpec.env?.PIGGERCODE_SESSION_ID).toBeUndefined();
       });
     },
   );
@@ -405,7 +405,7 @@ describe('buildClaudeUnifiedTerminalSpawn', () => {
     expect(launchSpec.args).toContain('--permission-mode');
     expect(launchSpec.args).toContain('dontAsk');
     expect(launchSpec.args).not.toContain('bypassPermissions');
-    expect(launchSpec.env?.HAPPIER_CLAUDE_PATH).toBe('/opt/claude/cli.js');
+    expect(launchSpec.env?.PIGGERCODE_CLAUDE_PATH).toBe('/opt/claude/cli.js');
     expect(launchSpec.env?.DISABLE_AUTOUPDATER).toBe('1');
   });
 
@@ -924,7 +924,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       HERDR_PANE_ID: 'w1:p2',
       HUGE_UNRELATED_ENV: 'y'.repeat(200_000),
       MY_EXPLICIT_CHILD_ENV: 'kept',
-      [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(['MY_EXPLICIT_CHILD_ENV']),
+      [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(['MY_EXPLICIT_CHILD_ENV']),
     }, async () => {
       const spawn = await buildClaudeUnifiedTerminalSpawn({
         path: '/workspace/project',
@@ -960,9 +960,9 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       expect(spawn.spawnEnv.ANTHROPIC_API_KEY).toBe('sk-ant-test');
       expect(spawn.spawnEnv.CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION).toBe('false');
       expect(spawn.spawnEnv.HUGE_UNRELATED_ENV).toBeUndefined();
-      expect(spawn.spawnEnv[HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]).toBeUndefined();
+      expect(spawn.spawnEnv[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]).toBeUndefined();
       expect(launchSpec.env?.HUGE_UNRELATED_ENV).toBeUndefined();
-      expect(launchSpec.env?.[HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]).toBeUndefined();
+      expect(launchSpec.env?.[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]).toBeUndefined();
       expect(launchSpec.env?.HERDR_ENV).toBeUndefined();
       expect(launchSpec.envPassthroughKeys ?? []).not.toContain('HERDR_ENV');
       expect(spawn.spawnEnv.HERDR_ENV).toBeUndefined();
@@ -973,10 +973,10 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     await withPatchedEnv({
       CLAUDE_CODE_OAUTH_TOKEN: 'ambient-oauth-token',
       CLAUDE_CODE_SETUP_TOKEN: 'selected-setup-token',
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
         { kind: 'profile', serviceId: 'claude-subscription', profileId: 'setup-profile' },
       ]),
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
         'CLAUDE_CODE_SETUP_TOKEN',
       ]),
     }, async () => {
@@ -1003,8 +1003,8 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       expect(launchSpec.envPassthroughKeys ?? []).not.toContain('CLAUDE_CODE_SETUP_TOKEN');
       expect(spawn.spawnEnv.CLAUDE_CODE_OAUTH_TOKEN).toBeUndefined();
       expect(spawn.spawnEnv.CLAUDE_CODE_SETUP_TOKEN).toBeUndefined();
-      expect(spawn.spawnEnv[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
-      expect(spawn.spawnEnv[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
+      expect(spawn.spawnEnv[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
+      expect(spawn.spawnEnv[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
     });
   });
 
@@ -1013,10 +1013,10 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       CLAUDE_CODE_OAUTH_TOKEN: 'ambient-oauth-token',
       CLAUDE_CONFIG_DIR: '/tmp/connected-claude-config',
       CLAUDE_CODE_SETUP_TOKEN: undefined,
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
         { kind: 'group', serviceId: 'claude-subscription', groupId: 'claude', activeProfileId: 'oauth-profile', fallbackProfileId: 'oauth-profile', generation: 1 },
       ]),
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
         'CLAUDE_CONFIG_DIR',
       ]),
     }, async () => {
@@ -1045,8 +1045,8 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       expect(launchSpec.envPassthroughKeys ?? []).not.toContain('CLAUDE_CODE_SETUP_TOKEN');
       expect(spawn.spawnEnv.CLAUDE_CODE_OAUTH_TOKEN).toBeUndefined();
       expect(spawn.spawnEnv.CLAUDE_CODE_SETUP_TOKEN).toBeUndefined();
-      expect(spawn.spawnEnv[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
-      expect(spawn.spawnEnv[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
+      expect(spawn.spawnEnv[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]).toBeUndefined();
+      expect(spawn.spawnEnv[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]).toBeUndefined();
       const launchArgs = launchSpec.args ?? [];
       const settingsIndex = launchArgs.indexOf('--settings');
       expect(JSON.parse(launchArgs[settingsIndex + 1]!)).toMatchObject({

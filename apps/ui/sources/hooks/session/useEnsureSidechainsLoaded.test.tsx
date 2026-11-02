@@ -41,8 +41,8 @@ describe('useEnsureSidechainsLoaded', () => {
     beforeEach(() => {
         ensureSidechainMessagesLoadedSpy.mockReset();
         syncTuningState.sidechainDemandHydrationConcurrencyLimit = 2;
-        delete process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS;
-        delete process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_MAX_RETRIES;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_MAX_RETRIES;
     });
 
     async function waitForRetryCycle() {
@@ -123,8 +123,8 @@ describe('useEnsureSidechainsLoaded', () => {
     });
 
     it('continues polling in_flight sidechains beyond the not_ready retry cap', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS = '10';
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_MAX_RETRIES = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS = '10';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_MAX_RETRIES = '1';
         ensureSidechainMessagesLoadedSpy
             .mockResolvedValueOnce('in_flight')
             .mockResolvedValueOnce('in_flight')
@@ -149,8 +149,8 @@ describe('useEnsureSidechainsLoaded', () => {
     });
 
     it('does not let in_flight polling consume the not_ready retry budget', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS = '10';
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_MAX_RETRIES = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS = '10';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_MAX_RETRIES = '1';
         ensureSidechainMessagesLoadedSpy
             .mockResolvedValueOnce('in_flight')
             .mockResolvedValueOnce('in_flight')
@@ -177,7 +177,7 @@ describe('useEnsureSidechainsLoaded', () => {
     });
 
     it('reports retrying while a transient not_ready result is scheduled for retry', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS = '10';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS = '10';
         ensureSidechainMessagesLoadedSpy
             .mockResolvedValueOnce('not_ready')
             .mockResolvedValueOnce('loaded');
@@ -200,7 +200,7 @@ describe('useEnsureSidechainsLoaded', () => {
     });
 
     it('retries the same sidechain automatically after a transient not_ready result', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS = '10';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS = '10';
         ensureSidechainMessagesLoadedSpy
             .mockResolvedValueOnce('not_ready')
             .mockResolvedValueOnce('loaded');
@@ -215,8 +215,8 @@ describe('useEnsureSidechainsLoaded', () => {
     });
 
     it('stops retrying after the configured max retry count', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_RETRY_MS = '1';
-        process.env.EXPO_PUBLIC_HAPPIER_ENSURE_SIDECHAIN_MAX_RETRIES = '2';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_RETRY_MS = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_ENSURE_SIDECHAIN_MAX_RETRIES = '2';
         ensureSidechainMessagesLoadedSpy.mockResolvedValue('not_ready');
 
         await renderScreen(<Harness enabled sessionId="session-1" sidechainIds={['sidechain-1']} />);

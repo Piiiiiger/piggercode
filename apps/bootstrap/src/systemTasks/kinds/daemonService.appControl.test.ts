@@ -82,10 +82,10 @@ function commandArgs(callIndex: number): readonly string[] {
 describe('desktop control of the background service', () => {
   beforeEach(async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-app-control-'));
-    vi.stubEnv('HAPPIER_HOME_DIR', home);
-    vi.stubEnv('HAPPIER_BOOTSTRAP_CLI_PATH', '');
-    vi.stubEnv('HAPPIER_BOOTSTRAP_HAPPIER_PATH', '');
-    vi.stubEnv('HAPPIER_STACK_REPO_DIR', join(home, 'elsewhere'));
+    vi.stubEnv('PIGGERCODE_HOME_DIR', home);
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_CLI_PATH', '');
+    vi.stubEnv('PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', '');
+    vi.stubEnv('PIGGERCODE_STACK_REPO_DIR', join(home, 'elsewhere'));
     vi.stubEnv('PATH', '');
     cliVersionResponseMock.mockReturnValue('0.2.13');
     await installManagedCliFixture({ processEnv: process.env });
@@ -231,7 +231,7 @@ describe('desktop control of the background service', () => {
       mutationErrorsAfterApply?: readonly string[];
       pinnedNeedsAuth?: boolean;
     }>) {
-      const home = process.env.HAPPIER_HOME_DIR;
+      const home = process.env.PIGGERCODE_HOME_DIR;
       const services: Record<string, { running: boolean; autostart: 'at-login' | 'on-demand' | null }> = {
         default: { running: initial.defaultRunning, autostart: initial.autostart },
         'relay-b': { running: initial.pinnedRunning, autostart: initial.autostart },
@@ -239,7 +239,7 @@ describe('desktop control of the background service', () => {
       };
       cliJsonResponseMock.mockImplementation(async (call: CliCall) => {
         const command = call.args.join(' ');
-        const instance = call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? 'default';
+        const instance = call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? 'default';
         const service = services[instance]!;
         if (command === 'daemon service list --json') {
           return {
@@ -282,7 +282,7 @@ describe('desktop control of the background service', () => {
     function commandsFor(instance: string): string[] {
       return cliJsonResponseMock.mock.calls
         .map(([call]) => call as CliCall)
-        .filter((call) => (call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? 'default') === instance)
+        .filter((call) => (call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? 'default') === instance)
         .map((call) => call.args.join(' '));
     }
 
@@ -309,7 +309,7 @@ describe('desktop control of the background service', () => {
       const services = answerCli({ defaultRunning: false, pinnedRunning: true, autostart: 'at-login', defaultMissing: true });
       const answer = cliJsonResponseMock.getMockImplementation()!;
       cliJsonResponseMock.mockImplementation(async (call: CliCall) => {
-        if (!call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID && call.args[2] === 'install') throw new Error('default service absent');
+        if (!call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID && call.args[2] === 'install') throw new Error('default service absent');
         return answer(call);
       });
       await collectResult(createDaemonServiceAutostartSetHandler(), { ...PARAMS, autostart: 'on-demand' });
@@ -328,7 +328,7 @@ describe('desktop control of the background service', () => {
       const services = answerCli({ defaultRunning: true, pinnedRunning: true, autostart: 'on-demand' });
       const answer = cliJsonResponseMock.getMockImplementation()!;
       cliJsonResponseMock.mockImplementation(async (call: CliCall) => {
-        if (!call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID && call.args[1] === 'status') throw new Error('default status unavailable');
+        if (!call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID && call.args[1] === 'status') throw new Error('default status unavailable');
         return answer(call);
       });
       await expect(collectResult(createDaemonServiceStopHandler(), PARAMS)).rejects.toMatchObject({ message: expect.stringContaining('default-following: default status unavailable') });
@@ -419,7 +419,7 @@ describe('desktop control of the background service', () => {
 
     it('never acquires a CLI to disconnect: with none installed there is nothing the app set up to remove (R10-1)', async () => {
       const emptyHome = mkdtempSync(join(tmpdir(), 'hsetup-disconnect-no-cli-'));
-      vi.stubEnv('HAPPIER_HOME_DIR', emptyHome);
+      vi.stubEnv('PIGGERCODE_HOME_DIR', emptyHome);
       onTestFinished(() => rmSync(emptyHome, { recursive: true, force: true }));
 
       const { result } = await collectResult(createDaemonServiceRelayDisconnectHandler(), { ...PARAMS, relayUrl: 'https://relay-b.example.test' });

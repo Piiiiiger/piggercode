@@ -48,7 +48,7 @@ export type SetupStep =
  * - `interactive` — a person is here. Ask the questions setup owns.
  * - `unattended` — `--yes`. Nobody is watching, but they asked for the work.
  *   Run every step that needs no answer and stop at the one that does.
- * - `createNothing` — `--non-interactive`, `HAPPIER_NONINTERACTIVE=1`, or no
+ * - `createNothing` — `--non-interactive`, `PIGGERCODE_NONINTERACTIVE=1`, or no
  *   terminal at all. Say what would be needed and write nothing.
  */
 export type SetupAutonomy = 'interactive' | 'unattended' | 'createNothing';

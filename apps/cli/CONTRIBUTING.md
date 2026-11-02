@@ -162,7 +162,7 @@ For automatic environment switching when entering directories:
    direnv allow
    ```
 
-3. Now `cd` into the directory automatically sets `HAPPIER_VARIANT=dev`!
+3. Now `cd` into the directory automatically sets `PIGGERCODE_VARIANT=dev`!
 
 ## Troubleshooting
 
@@ -243,12 +243,12 @@ npm run stable:daemon:start
 
 ## How It Works
 
-The system uses the built-in `HAPPIER_HOME_DIR` environment variable to separate data:
+The system uses the built-in `PIGGERCODE_HOME_DIR` environment variable to separate data:
 
-- **Stable scripts** set: `HAPPIER_HOME_DIR=~/.happier`
-- **Dev scripts** set: `HAPPIER_HOME_DIR=~/.happier-dev`
+- **Stable scripts** set: `PIGGERCODE_HOME_DIR=~/.happier`
+- **Dev scripts** set: `PIGGERCODE_HOME_DIR=~/.happier-dev`
 
-Everything else (auth, sessions, logs, daemon) automatically follows the `HAPPIER_HOME_DIR` setting.
+Everything else (auth, sessions, logs, daemon) automatically follows the `PIGGERCODE_HOME_DIR` setting.
 
 Cross-platform via Node.js - works identically on Windows, macOS, and Linux!
 

@@ -24,21 +24,21 @@ import { resolveServerAppWorkspaceName } from "./serverWorkspaceName";
 const normalizeForPathAssertions = (value: string): string => value.replace(/\\/g, "/");
 
 describe("startServerLight planning helpers", () => {
-  it("defaults to pglite when HAPPIER_E2E_DB_PROVIDER is unset", () => {
+  it("defaults to pglite when PIGGERCODE_E2E_DB_PROVIDER is unset", () => {
     expect(resolveTestDbProvider({})).toBe("pglite");
   });
 
-  it("accepts sqlite via HAPPIER_E2E_DB_PROVIDER", () => {
-    expect(resolveTestDbProvider({ HAPPIER_E2E_DB_PROVIDER: "sqlite" })).toBe("sqlite");
+  it("accepts sqlite via PIGGERCODE_E2E_DB_PROVIDER", () => {
+    expect(resolveTestDbProvider({ PIGGERCODE_E2E_DB_PROVIDER: "sqlite" })).toBe("sqlite");
   });
 
-  it("accepts postgres via HAPPIER_E2E_DB_PROVIDER", () => {
-    expect(resolveTestDbProvider({ HAPPIER_E2E_DB_PROVIDER: "postgres" })).toBe("postgres");
-    expect(resolveTestDbProvider({ HAPPIER_E2E_DB_PROVIDER: "postgresql" })).toBe("postgres");
+  it("accepts postgres via PIGGERCODE_E2E_DB_PROVIDER", () => {
+    expect(resolveTestDbProvider({ PIGGERCODE_E2E_DB_PROVIDER: "postgres" })).toBe("postgres");
+    expect(resolveTestDbProvider({ PIGGERCODE_E2E_DB_PROVIDER: "postgresql" })).toBe("postgres");
   });
 
-  it("accepts mysql via HAPPIER_E2E_DB_PROVIDER", () => {
-    expect(resolveTestDbProvider({ HAPPIER_E2E_DB_PROVIDER: "mysql" })).toBe("mysql");
+  it("accepts mysql via PIGGERCODE_E2E_DB_PROVIDER", () => {
+    expect(resolveTestDbProvider({ PIGGERCODE_E2E_DB_PROVIDER: "mysql" })).toBe("mysql");
   });
 
   it.each<[TestDbProvider, string]>([
@@ -70,7 +70,7 @@ describe("startServerLight planning helpers", () => {
   it("launches through the production light migration-plan owner when requested", () => {
     const launch = resolveServerStartLaunchSpec({
       provider: "sqlite",
-      env: { HAPPIER_STACK_MIGRATE_MODE: "skip" },
+      env: { PIGGERCODE_STACK_MIGRATE_MODE: "skip" },
       useDevLightMigrationOwner: true,
     });
 
@@ -285,7 +285,7 @@ describe("startServerLight planning helpers", () => {
 
   it("supports explicit server source-entrypoint mode flags", () => {
     expect(shouldUseServerSourceEntrypoint({})).toBe(false);
-    expect(shouldUseServerSourceEntrypoint({ HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: "1" })).toBe(true);
+    expect(shouldUseServerSourceEntrypoint({ PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: "1" })).toBe(true);
     expect(shouldUseServerSourceEntrypoint({ HAPPY_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: "yes" })).toBe(true);
   });
 
@@ -299,7 +299,7 @@ describe("startServerLight planning helpers", () => {
   ])("uses the direct server source entrypoint for %s when enabled", (provider, expectedEntrypoint) => {
     const launch = resolveServerStartLaunchSpec({
       provider,
-      env: { HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: "1" },
+      env: { PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: "1" },
     });
 
     expect(launch.command).toBe(process.execPath);

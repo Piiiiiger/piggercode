@@ -238,7 +238,7 @@ async function runCliServerTestFromSnapshot(params: {
             ...params.env,
             ...(cliLaunchSpec.env ?? {}),
             CI: '1',
-            HAPPIER_HOME_DIR: params.happyHomeDir,
+            PIGGERCODE_HOME_DIR: params.happyHomeDir,
         },
         stdoutPath: resolve(params.testDir, 'cli-update.server-test.stdout.log'),
         stderrPath: resolve(params.testDir, 'cli-update.server-test.stderr.log'),
@@ -278,7 +278,7 @@ async function runCliJsonCommandFromSnapshot<T>(params: {
                 ...params.env,
                 ...(cliLaunchSpec.env ?? {}),
                 CI: '1',
-                HAPPIER_HOME_DIR: params.happyHomeDir,
+                PIGGERCODE_HOME_DIR: params.happyHomeDir,
             },
             stdoutPath,
             stderrPath,
@@ -373,14 +373,14 @@ describe('core e2e: CLI update continuity reattaches the existing fake Claude se
         const daemonEnv = {
             ...process.env,
             CI: '1',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_HOME_DIR: daemonHomeDir,
-            HAPPIER_SERVER_URL: server.baseUrl,
-            HAPPIER_WEBAPP_URL: server.baseUrl,
-            HAPPIER_CLAUDE_PATH: fakeClaudePath,
-            HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-            HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_HOME_DIR: daemonHomeDir,
+            PIGGERCODE_SERVER_URL: server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: server.baseUrl,
+            PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+            PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+            PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
         };
         const updateSources = resolveCliUpdateSourcePairFromEnv(process.env);
         const fromSnapshotDir = await prepareCliUpdateSourceSnapshot({
@@ -573,14 +573,14 @@ describe('core e2e: CLI update continuity reattaches the existing fake Claude se
         const daemonEnv = {
             ...process.env,
             CI: '1',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_HOME_DIR: daemonHomeDir,
-            HAPPIER_SERVER_URL: server.baseUrl,
-            HAPPIER_WEBAPP_URL: server.baseUrl,
-            HAPPIER_CLAUDE_PATH: fakeClaudePath,
-            HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-            HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_HOME_DIR: daemonHomeDir,
+            PIGGERCODE_SERVER_URL: server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: server.baseUrl,
+            PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+            PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+            PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
         };
         const updateSources = resolveCliUpdateSourcePairFromEnv(process.env);
         const fromSnapshotDir = await prepareCliUpdateSourceSnapshot({

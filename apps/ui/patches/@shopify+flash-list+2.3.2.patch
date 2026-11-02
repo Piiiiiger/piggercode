@@ -146,7 +146,7 @@ index 08724d1..3cfa37b 100644
 +// the scroll path.
 +const notifyHappierOffsetCorrectionHook = (event) => {
 +    try {
-+        const hook = globalThis.__HAPPIER_FLASHLIST_OFFSET_CORRECTION_HOOK__;
++        const hook = globalThis.__PIGGERCODE_FLASHLIST_OFFSET_CORRECTION_HOOK__;
 +        if (typeof hook === "function") {
 +            hook(event);
 +        }
@@ -433,9 +433,9 @@ index 3689830..06f52f4 100644
 +  try {
 +    const hook = (
 +      globalThis as {
-+        __HAPPIER_FLASHLIST_OFFSET_CORRECTION_HOOK__?: (event: unknown) => void;
++        __PIGGERCODE_FLASHLIST_OFFSET_CORRECTION_HOOK__?: (event: unknown) => void;
 +      }
-+    ).__HAPPIER_FLASHLIST_OFFSET_CORRECTION_HOOK__;
++    ).__PIGGERCODE_FLASHLIST_OFFSET_CORRECTION_HOOK__;
 +    if (typeof hook === "function") {
 +      hook(event);
 +    }

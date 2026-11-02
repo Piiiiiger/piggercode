@@ -43,7 +43,7 @@ function openSwiftbarPluginsDir() {
 }
 
 function sandboxPluginBasename() {
-  const sandboxDir = (process.env.HAPPIER_STACK_SANDBOX_DIR ?? '').trim();
+  const sandboxDir = (process.env.PIGGERCODE_STACK_SANDBOX_DIR ?? '').trim();
   if (!sandboxDir) return '';
   const hash = createHash('sha256').update(sandboxDir).digest('hex').slice(0, 10);
   return `hstack.sandbox-${hash}`;
@@ -105,7 +105,7 @@ async function main() {
         sectionTitle('notes:'),
         `- ${dim('Installs the SwiftBar plugin into the active SwiftBar plugin folder')}`,
         `- ${dim('Keeps plugin source under <homeDir>/extras/swiftbar for stability')}`,
-        `- ${dim('Sandbox mode: install/uninstall are disabled by default (set HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1 to override)')}`,
+        `- ${dim('Sandbox mode: install/uninstall are disabled by default (set PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1 to override)')}`,
       ].join('\n'),
     });
     return;
@@ -143,7 +143,7 @@ async function main() {
   }
 
   if (cmd === 'status') {
-    const mode = (process.env.HAPPIER_STACK_MENUBAR_MODE ?? 'dev').trim() || 'dev';
+    const mode = (process.env.PIGGERCODE_STACK_MENUBAR_MODE ?? 'dev').trim() || 'dev';
     const swift = await detectSwiftbarPluginInstalled();
     printResult({
       json,
@@ -168,7 +168,7 @@ async function main() {
     await ensureEnvLocalUpdated({
       rootDir: cliRootDir,
       updates: [
-        { key: 'HAPPIER_STACK_MENUBAR_MODE', value: mode },
+        { key: 'PIGGERCODE_STACK_MENUBAR_MODE', value: mode },
       ],
     });
     printResult({ json, data: { ok: true, mode }, text: `[menubar] mode set: ${mode}` });
@@ -180,7 +180,7 @@ async function main() {
       throw new Error(
         '[menubar] install is disabled in sandbox mode.\n' +
           'Reason: SwiftBar plugin installation writes to a global user folder.\n' +
-          'If you really want this, set: HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1'
+          'If you really want this, set: PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1'
       );
     }
     const { destDir } = await ensureSwiftbarAssets({ cliRootDir });
@@ -196,16 +196,16 @@ async function main() {
     if (explicitModeRaw && !explicitMode) {
       throw new Error('[menubar] invalid --mode (expected selfhost or dev)');
     }
-    const effectiveMode = explicitMode || String(process.env.HAPPIER_STACK_MENUBAR_MODE ?? 'dev').trim() || 'dev';
-    const stackName = explicitStack || String((process.env.HAPPIER_STACK_STACK ?? '').trim() || 'main');
+    const effectiveMode = explicitMode || String(process.env.PIGGERCODE_STACK_MENUBAR_MODE ?? 'dev').trim() || 'dev';
+    const stackName = explicitStack || String((process.env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main');
     const normalizedStack = sanitizeStackName(stackName, { fallback: 'main', maxLen: 64 });
     const stackScoped = normalizedStack !== 'main';
 
-    const interval = String(process.env.HAPPIER_STACK_SWIFTBAR_INTERVAL ?? '').trim() || '5m';
+    const interval = String(process.env.PIGGERCODE_STACK_SWIFTBAR_INTERVAL ?? '').trim() || '5m';
     const defaultBasename = isSandboxed()
       ? sandboxPluginBasename()
       : (stackScoped ? stackPluginBasename(normalizedStack) : 'hstack');
-    const pluginBasename = String(process.env.HAPPIER_STACK_SWIFTBAR_PLUGIN_BASENAME ?? '').trim() || defaultBasename;
+    const pluginBasename = String(process.env.PIGGERCODE_STACK_SWIFTBAR_PLUGIN_BASENAME ?? '').trim() || defaultBasename;
     const pluginFile = `${pluginBasename}.${interval}.sh`;
 
     const defaultEnvFile = resolveExplicitStackEnvFilePath(process.env);
@@ -215,16 +215,16 @@ async function main() {
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: getHappyStacksHomeDir(),
-      HAPPIER_STACK_MENUBAR_MODE: effectiveMode,
-      ...(pluginBasename ? { HAPPIER_STACK_SWIFTBAR_PLUGIN_BASENAME: pluginBasename } : {}),
+      PIGGERCODE_STACK_HOME_DIR: getHappyStacksHomeDir(),
+      PIGGERCODE_STACK_MENUBAR_MODE: effectiveMode,
+      ...(pluginBasename ? { PIGGERCODE_STACK_SWIFTBAR_PLUGIN_BASENAME: pluginBasename } : {}),
       ...((isSandboxed() || stackScoped)
         ? {
-            HAPPIER_STACK_SWIFTBAR_PLUGIN_WRAPPER: '1',
+            PIGGERCODE_STACK_SWIFTBAR_PLUGIN_WRAPPER: '1',
             ...(stackScoped
               ? {
-                  HAPPIER_STACK_SWIFTBAR_PRIMARY_STACK: normalizedStack,
-                  HAPPIER_STACK_SWIFTBAR_PRIMARY_ENV_FILE: resolvedEnvFile,
+                  PIGGERCODE_STACK_SWIFTBAR_PRIMARY_STACK: normalizedStack,
+                  PIGGERCODE_STACK_SWIFTBAR_PRIMARY_ENV_FILE: resolvedEnvFile,
                 }
               : {}),
           }
@@ -268,7 +268,7 @@ async function main() {
     if (explicitMode) {
       await ensureEnvLocalUpdated({
         rootDir: cliRootDir,
-        updates: [{ key: 'HAPPIER_STACK_MENUBAR_MODE', value: explicitMode }],
+        updates: [{ key: 'PIGGERCODE_STACK_MENUBAR_MODE', value: explicitMode }],
       });
     }
 

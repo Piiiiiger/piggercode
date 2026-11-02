@@ -93,7 +93,7 @@ async function runInstall(extraArgs: readonly string[] = []): Promise<string[]> 
 describe('happier relay host install open-signup notice', () => {
     let home = '';
     let preparedPayloadRoot = '';
-    let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
     // Loading the command registry transforms a large module graph. Pay that
     // once here rather than inside the first test's timeout budget.
@@ -104,13 +104,13 @@ describe('happier relay host install open-signup notice', () => {
     beforeEach(async () => {
         vi.resetModules();
         mockedRelayUrl = 'http://127.0.0.1:3005';
-        envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         home = await createTempDir('happier-relay-signup-home-');
         preparedPayloadRoot = await createTempDir('happier-relay-signup-prepared-');
         writeFileSync(join(preparedPayloadRoot, 'happier-server'), '#!/usr/bin/env bash\nexit 0\n', 'utf8');
         chmodSync(join(preparedPayloadRoot, 'happier-server'), 0o755);
         mockedPreparedPayloadRoot = preparedPayloadRoot;
-        envScope.patch({ HAPPIER_HOME_DIR: home });
+        envScope.patch({ PIGGERCODE_HOME_DIR: home });
         reloadConfiguration();
     });
 

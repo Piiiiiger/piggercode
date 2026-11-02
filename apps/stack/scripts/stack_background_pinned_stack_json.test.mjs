@@ -49,12 +49,12 @@ test('hstack stack dev <pinned> --background --json does not fail fast (prints d
     await writeFile(
       envPath,
       [
-        'HAPPIER_STACK_STACK=main',
-        `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-        'HAPPIER_STACK_SERVER_PORT=4101',
+        'PIGGERCODE_STACK_STACK=main',
+        `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+        'PIGGERCODE_STACK_SERVER_PORT=4101',
         // Avoid external probes (tailscale) so --json stays hermetic.
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
         '',
       ].join('\n'),
       'utf-8'
@@ -62,9 +62,9 @@ test('hstack stack dev <pinned> --background --json does not fail fast (prints d
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'main',
-      HAPPIER_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'main',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
     };
 
     const res = await runNode(
@@ -92,9 +92,9 @@ test('second background partial dev cannot spawn or delete a live owner runtime 
     await mkdir(stackDir, { recursive: true });
     const envPath = join(stackDir, 'env');
     await writeFile(envPath, [
-      'HAPPIER_STACK_STACK=main',
-      `HAPPIER_STACK_REPO_DIR=${monoRoot}`,
-      'HAPPIER_STACK_SERVER_PORT=4101',
+      'PIGGERCODE_STACK_STACK=main',
+      `PIGGERCODE_STACK_REPO_DIR=${monoRoot}`,
+      'PIGGERCODE_STACK_SERVER_PORT=4101',
       '',
     ].join('\n'), 'utf-8');
 
@@ -116,10 +116,10 @@ test('second background partial dev cannot spawn or delete a live owner runtime 
         cwd: rootDir,
         env: {
           ...process.env,
-          HAPPIER_STACK_STORAGE_DIR: storageDir,
-          HAPPIER_STACK_STACK: 'main',
-          HAPPIER_STACK_ENV_FILE: envPath,
-          HAPPIER_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS: '1000',
+          PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+          PIGGERCODE_STACK_STACK: 'main',
+          PIGGERCODE_STACK_ENV_FILE: envPath,
+          PIGGERCODE_STACK_STACK_BACKGROUND_READY_TIMEOUT_MS: '1000',
         },
       },
     );

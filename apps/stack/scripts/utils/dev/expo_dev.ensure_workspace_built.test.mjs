@@ -62,8 +62,8 @@ exit 1
         baseEnv: buildStackFixtureEnv({ baseEnv: process.env, stripStackEnv: true }),
         binDirs: [binDir],
         extraEnv: {
-          HAPPIER_STACK_VERBOSE: '1',
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_VERBOSE: '1',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
           TEST_EXPO_LISTENER_DIR: tmp,
         },
       }),
@@ -210,7 +210,7 @@ exit 1
         baseEnv: buildStackFixtureEnv({ baseEnv: process.env, stripStackEnv: true }),
         binDirs: [binDir],
         extraEnv: {
-          HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+          PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
           TEST_EXPO_LISTENER_DIR: tmp,
         },
       }),

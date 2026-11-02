@@ -111,7 +111,7 @@ test.describe('ui e2e: /new worktree picker (Phase 5 SelectionList migration)', 
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
             },
         });
         ui = await startUiWeb({

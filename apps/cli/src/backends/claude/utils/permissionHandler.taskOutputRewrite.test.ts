@@ -47,10 +47,10 @@ const defaultMode = { permissionMode: 'default' } as EnhancedMode;
 describe('PermissionHandler (TaskOutput rewrite)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_DIR;
-    delete process.env.HAPPIER_CLAUDE_TASK_ALLOW_RUN_IN_BACKGROUND;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR;
+    delete process.env.PIGGERCODE_CLAUDE_TASK_ALLOW_RUN_IN_BACKGROUND;
     reloadConfiguration();
   });
 

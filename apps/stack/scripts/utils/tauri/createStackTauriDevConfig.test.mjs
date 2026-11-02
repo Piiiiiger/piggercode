@@ -21,8 +21,8 @@ test('createStackTauriDevConfig points Tauri dev at the existing Expo server and
       },
     },
     env: {
-      HAPPIER_STACK_TAURI_PRODUCT_NAME: 'Happier (Stack)',
-      HAPPIER_STACK_TAURI_IDENTIFIER: 'dev.happier.stack',
+      PIGGERCODE_STACK_TAURI_PRODUCT_NAME: 'Happier (Stack)',
+      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'dev.happier.stack',
     },
     devUrl: 'http://127.0.0.1:4173',
     enableDevtools: true,

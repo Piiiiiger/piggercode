@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { resolveConnectedServiceTargetMaterializedRoot } from './resolveConnectedServiceTargetMaterializedRoot';
 
 describe('resolveConnectedServiceTargetMaterializedRoot', () => {
@@ -60,7 +60,7 @@ describe('resolveConnectedServiceTargetMaterializedRoot', () => {
     expect(resolveConnectedServiceTargetMaterializedRoot({
       agentId: 'opencode',
       targetMaterializedEnv: {
-        [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: '/tmp/materialized/opencode',
+        [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: '/tmp/materialized/opencode',
       },
     })).toBe('/tmp/materialized/opencode');
   });

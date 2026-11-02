@@ -111,7 +111,7 @@ function createScenario(scenario: Scenario = {}) {
     // The run's scope addresses the target through the CLI's env server selection only on the
     // reads made before it may select that relay (`target`); every other read is `selected`.
     readAuthStatus: vi.fn(async (_ring, cli) => {
-      const targetUrl = cli.processEnv?.HAPPIER_SERVER_URL;
+      const targetUrl = cli.processEnv?.PIGGERCODE_SERVER_URL;
       if (targetUrl) {
         record(`readTargetAuthStatus:${targetUrl}`);
         return scenario.targetAuthStatus ?? authStatus;
@@ -133,7 +133,7 @@ function createScenario(scenario: Scenario = {}) {
       return { machineId: 'machine-paired' };
     }),
     readDaemonStatus: vi.fn(async (_ring, cli) => {
-      if (scenario.defaultServiceStatus && !cli.processEnv?.HAPPIER_DAEMON_SERVICE_TARGET_MODE) {
+      if (scenario.defaultServiceStatus && !cli.processEnv?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE) {
         record('readDefaultServiceStatus');
         return scenario.defaultServiceStatus;
       }
@@ -240,9 +240,9 @@ describe('setup.thisComputer.v1 (interactive executor)', () => {
       provenance: 'managed',
       version: '0.2.13',
       processEnv: expect.objectContaining({
-        HAPPIER_SERVER_URL: APP_RELAY,
-        HAPPIER_WEBAPP_URL: 'https://app.example.test',
-        HAPPIER_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
+        PIGGERCODE_SERVER_URL: APP_RELAY,
+        PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://127.0.0.1:3005',
       }),
     }));
   });
@@ -1053,8 +1053,8 @@ describe('setup.thisComputer.v1 with a pinned service for the app relay', () => 
     expect(calls.some((call) => call.startsWith('configureRelay'))).toBe(false);
     // The one read that is not the target's: the default-following service's login-start mode.
     const statusReads = (deps.readDaemonStatus as ReturnType<typeof vi.fn>).mock.calls.map((call) => readEnv(call[1]));
-    expect(statusReads[0]).toMatchObject({ HAPPIER_SERVER_URL: APP_RELAY, HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned' });
-    expect(statusReads.slice(1).every((env) => env.HAPPIER_SERVER_URL === undefined && env.HAPPIER_DAEMON_SERVICE_TARGET_MODE === undefined)).toBe(true);
+    expect(statusReads[0]).toMatchObject({ PIGGERCODE_SERVER_URL: APP_RELAY, PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned' });
+    expect(statusReads.slice(1).every((env) => env.PIGGERCODE_SERVER_URL === undefined && env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE === undefined)).toBe(true);
     // F1 — the relay gets one saved CLI profile (never selected) after consent, before anything is
     // written for it, and every command from there on is pinned to that profile's id: `--all`
     // paths, the lifecycle lock and a later `server use` of the URL all see the same identity.
@@ -1062,7 +1062,7 @@ describe('setup.thisComputer.v1 with a pinned service for the app relay', () => 
     expect(calls.indexOf(`registerRelayProfile:${APP_RELAY}`)).toBeLessThan(calls.indexOf('requestAuthPairing'));
     for (const dep of [deps.requestAuthPairing, deps.waitForAuthPairing, deps.installService, deps.startService]) {
       for (const call of (dep as ReturnType<typeof vi.fn>).mock.calls) {
-        expect(readEnv(call[call.length - 1]).HAPPIER_ACTIVE_SERVER_ID).toBe('relay-app-profile');
+        expect(readEnv(call[call.length - 1]).PIGGERCODE_ACTIVE_SERVER_ID).toBe('relay-app-profile');
       }
     }
     for (const dep of [deps.previewServiceInstall, deps.requestAuthPairing, deps.waitForAuthPairing, deps.installService, deps.startService]) {
@@ -1070,9 +1070,9 @@ describe('setup.thisComputer.v1 with a pinned service for the app relay', () => 
       expect(invocations.length).toBeGreaterThan(0);
       for (const invocation of invocations) {
         expect(readEnv(invocation)).toMatchObject({
-          HAPPIER_SERVER_URL: APP_RELAY,
-          HAPPIER_WEBAPP_URL: 'https://app.example.test',
-          HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+          PIGGERCODE_SERVER_URL: APP_RELAY,
+          PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
+          PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
         });
       }
     }
@@ -1080,9 +1080,9 @@ describe('setup.thisComputer.v1 with a pinned service for the app relay', () => 
     expect(calls).toContain('startService');
     // H2 — only the install that creates the service stamps it as the desktop's.
     const installEnv = readEnv((deps.installService as ReturnType<typeof vi.fn>).mock.calls[0]?.[2]);
-    expect(installEnv.HAPPIER_DAEMON_SERVICE_MANAGED_BY).toBe('desktop');
+    expect(installEnv.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY).toBe('desktop');
     const startEnv = readEnv((deps.startService as ReturnType<typeof vi.fn>).mock.calls[0]?.[2]);
-    expect(startEnv.HAPPIER_DAEMON_SERVICE_MANAGED_BY).toBeUndefined();
+    expect(startEnv.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY).toBeUndefined();
     // The pairing names the relay the pinned service answers for, read from that service's status.
     const pairing = parseSetupPairingPromptData(prompts.find((prompt) => prompt.kind === SETUP_PAIRING_PROMPT_KIND)?.data);
     expect(pairing?.serverIdentityKey).toBe(APP_RELAY_KEY);

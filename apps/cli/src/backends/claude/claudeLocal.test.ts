@@ -375,7 +375,7 @@ describe('claudeLocal --continue handling', () => {
             mcpServers: { inline: { command: 'node', env: { INLINE_TOKEN: 'inline-secret-token' } } },
         });
         const happierMcp = JSON.stringify({
-            mcpServers: { happier: { command: 'node', env: { HAPPIER_TOKEN: 'happier-secret-token' } } },
+            mcpServers: { happier: { command: 'node', env: { PIGGERCODE_TOKEN: 'happier-secret-token' } } },
         });
 
         await claudeLocal({
@@ -533,12 +533,12 @@ describe('claudeLocal --continue handling', () => {
     });
 
     it('should prefer the managed node override for JS launchers when configured', async () => {
-        const previousManagedNode = process.env.HAPPIER_MANAGED_NODE_BIN;
+        const previousManagedNode = process.env.PIGGERCODE_MANAGED_NODE_BIN;
         const overrideDir = mkdtempSync(join(tmpdir(), 'happier-claude-local-managed-node-'));
         const overridePath = join(overrideDir, process.platform === 'win32' ? 'managed-node.cmd' : 'managed-node');
         writeFileSync(overridePath, process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n', 'utf8');
         if (process.platform !== 'win32') chmodSync(overridePath, 0o755);
-        process.env.HAPPIER_MANAGED_NODE_BIN = overridePath;
+        process.env.PIGGERCODE_MANAGED_NODE_BIN = overridePath;
         mockClaudeFindLastSession.mockReturnValue(null);
 
         try {
@@ -554,8 +554,8 @@ describe('claudeLocal --continue handling', () => {
             expect(mockSpawn.mock.calls[0]?.[0]).toBe(overridePath);
         } finally {
             rmSync(overrideDir, { recursive: true, force: true });
-            if (typeof previousManagedNode === 'string') process.env.HAPPIER_MANAGED_NODE_BIN = previousManagedNode;
-            else delete process.env.HAPPIER_MANAGED_NODE_BIN;
+            if (typeof previousManagedNode === 'string') process.env.PIGGERCODE_MANAGED_NODE_BIN = previousManagedNode;
+            else delete process.env.PIGGERCODE_MANAGED_NODE_BIN;
         }
     });
 
@@ -1134,9 +1134,9 @@ describe('claudeLocal launcher selection', () => {
         mockResolveClaudeCliPath.mockReturnValue('/usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js');
         mockIsClaudeCliJavaScriptFile.mockReturnValue(true);
 
-        const originalHappierClaudePath = process.env.HAPPIER_CLAUDE_PATH;
+        const originalHappierClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
         const originalHappyClaudePath = process.env.HAPPY_CLAUDE_PATH;
-        delete process.env.HAPPIER_CLAUDE_PATH;
+        delete process.env.PIGGERCODE_CLAUDE_PATH;
         delete process.env.HAPPY_CLAUDE_PATH;
 
         try {
@@ -1149,9 +1149,9 @@ describe('claudeLocal launcher selection', () => {
             });
         } finally {
             if (typeof originalHappierClaudePath === 'string') {
-                process.env.HAPPIER_CLAUDE_PATH = originalHappierClaudePath;
+                process.env.PIGGERCODE_CLAUDE_PATH = originalHappierClaudePath;
             } else {
-                delete process.env.HAPPIER_CLAUDE_PATH;
+                delete process.env.PIGGERCODE_CLAUDE_PATH;
             }
             if (typeof originalHappyClaudePath === 'string') {
                 process.env.HAPPY_CLAUDE_PATH = originalHappyClaudePath;
@@ -1166,7 +1166,7 @@ describe('claudeLocal launcher selection', () => {
         expect(spawnArgs[0]).toMatch(/claude_local_launcher\.cjs$/);
 
         const spawnOpts = mockSpawn.mock.calls[0][2];
-        expect(spawnOpts?.env?.HAPPIER_CLAUDE_PATH).toBe('/usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js');
+        expect(spawnOpts?.env?.PIGGERCODE_CLAUDE_PATH).toBe('/usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js');
         expect(spawnOpts?.env?.DISABLE_AUTOUPDATER).toBe('1');
     });
 
@@ -1198,9 +1198,9 @@ describe('claudeLocal launcher selection', () => {
         }
     });
 
-    it('does not forward HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON into the spawned Claude process environment', async () => {
-        const prev = process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
-        process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['GITHUB_TOKEN']);
+    it('does not forward PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON into the spawned Claude process environment', async () => {
+        const prev = process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+        process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = JSON.stringify(['GITHUB_TOKEN']);
 
         try {
             await claudeLocal({
@@ -1213,10 +1213,10 @@ describe('claudeLocal launcher selection', () => {
 
             expect(mockSpawn).toHaveBeenCalled();
             const spawnOpts = mockSpawn.mock.calls[0][2];
-            expect(spawnOpts?.env?.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
+            expect(spawnOpts?.env?.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON).toBeUndefined();
         } finally {
-            if (typeof prev === 'string') process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON = prev;
-            else delete process.env.HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON;
+            if (typeof prev === 'string') process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON = prev;
+            else delete process.env.PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON;
         }
     });
 
@@ -1275,8 +1275,8 @@ describe('claudeLocal launcher selection', () => {
     });
 
     it.each(['', 'offline-local-session'])('does not inherit an outer Happier session id for unusable managed id %j', async (happierSessionId: string) => {
-        const previousSessionId = process.env.HAPPIER_SESSION_ID;
-        process.env.HAPPIER_SESSION_ID = 'outer-session';
+        const previousSessionId = process.env.PIGGERCODE_SESSION_ID;
+        process.env.PIGGERCODE_SESSION_ID = 'outer-session';
 
         try {
             await claudeLocal({
@@ -1286,17 +1286,17 @@ describe('claudeLocal launcher selection', () => {
                 onSessionFound,
                 claudeArgs: [],
                 happierSessionId,
-                envOverlay: { HAPPIER_SESSION_ID: 'overlay-session' },
+                envOverlay: { PIGGERCODE_SESSION_ID: 'overlay-session' },
             });
 
             expect(mockSpawn).toHaveBeenCalled();
             const spawnOpts = mockSpawn.mock.calls[0][2];
-            expect(spawnOpts?.env).not.toHaveProperty('HAPPIER_SESSION_ID');
+            expect(spawnOpts?.env).not.toHaveProperty('PIGGERCODE_SESSION_ID');
         } finally {
             if (previousSessionId === undefined) {
-                delete process.env.HAPPIER_SESSION_ID;
+                delete process.env.PIGGERCODE_SESSION_ID;
             } else {
-                process.env.HAPPIER_SESSION_ID = previousSessionId;
+                process.env.PIGGERCODE_SESSION_ID = previousSessionId;
             }
         }
     });
@@ -1309,21 +1309,21 @@ describe('claudeLocal launcher selection', () => {
             onSessionFound,
             claudeArgs: [],
             happierSessionId: 'managed-session-1',
-            envOverlay: { HAPPIER_SESSION_ID: 'overlay-session' },
+            envOverlay: { PIGGERCODE_SESSION_ID: 'overlay-session' },
         });
 
         expect(mockSpawn).toHaveBeenCalled();
         const spawnOpts = mockSpawn.mock.calls[0][2];
-        expect(spawnOpts?.env?.HAPPIER_SESSION_ID).toBe('managed-session-1');
+        expect(spawnOpts?.env?.PIGGERCODE_SESSION_ID).toBe('managed-session-1');
     });
 
     it('publishes the resolved Claude config dir override to spawned Claude processes', async () => {
         const previousClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
-        const previousHappierClaudeConfigDir = process.env.HAPPIER_CLAUDE_CONFIG_DIR;
+        const previousHappierClaudeConfigDir = process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
         const claudeConfigDir = join(mkdtempSync(join(tmpdir(), 'happier-claude-local-config-')), '.claude');
 
         delete process.env.CLAUDE_CONFIG_DIR;
-        process.env.HAPPIER_CLAUDE_CONFIG_DIR = claudeConfigDir;
+        process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = claudeConfigDir;
 
         try {
             await claudeLocal({
@@ -1337,12 +1337,12 @@ describe('claudeLocal launcher selection', () => {
             expect(mockSpawn).toHaveBeenCalled();
             const spawnOpts = mockSpawn.mock.calls[0][2];
             expect(spawnOpts?.env?.CLAUDE_CONFIG_DIR).toBe(claudeConfigDir);
-            expect(spawnOpts?.env?.HAPPIER_CLAUDE_CONFIG_DIR).toBe(claudeConfigDir);
+            expect(spawnOpts?.env?.PIGGERCODE_CLAUDE_CONFIG_DIR).toBe(claudeConfigDir);
         } finally {
             if (previousClaudeConfigDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
             else process.env.CLAUDE_CONFIG_DIR = previousClaudeConfigDir;
-            if (previousHappierClaudeConfigDir === undefined) delete process.env.HAPPIER_CLAUDE_CONFIG_DIR;
-            else process.env.HAPPIER_CLAUDE_CONFIG_DIR = previousHappierClaudeConfigDir;
+            if (previousHappierClaudeConfigDir === undefined) delete process.env.PIGGERCODE_CLAUDE_CONFIG_DIR;
+            else process.env.PIGGERCODE_CLAUDE_CONFIG_DIR = previousHappierClaudeConfigDir;
             rmSync(dirname(claudeConfigDir), { recursive: true, force: true });
         }
     });

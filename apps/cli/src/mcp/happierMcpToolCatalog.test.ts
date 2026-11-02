@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { getActionSpec, listActionSpecs } from '@piggercode/protocol';
 
-import { HAPPIER_MCP_TOOL_CATALOG, HAPPIER_MCP_TOOL_CATALOG_NAMES } from './happierMcpToolCatalog';
+import { PIGGERCODE_MCP_TOOL_CATALOG, PIGGERCODE_MCP_TOOL_CATALOG_NAMES } from './happierMcpToolCatalog';
 
-describe('HAPPIER_MCP_TOOL_CATALOG_NAMES', () => {
+describe('PIGGERCODE_MCP_TOOL_CATALOG_NAMES', () => {
   it('deduplicates overlapping manual and action-backed MCP tool names', () => {
-    expect(new Set(HAPPIER_MCP_TOOL_CATALOG_NAMES).size).toBe(HAPPIER_MCP_TOOL_CATALOG_NAMES.length);
+    expect(new Set(PIGGERCODE_MCP_TOOL_CATALOG_NAMES).size).toBe(PIGGERCODE_MCP_TOOL_CATALOG_NAMES.length);
   });
 
   it('keeps every ActionSpec mcpToolName in the raw catalog before exposure filtering', () => {
@@ -15,12 +15,12 @@ describe('HAPPIER_MCP_TOOL_CATALOG_NAMES', () => {
       .filter((name) => name.length > 0);
 
     for (const name of expected) {
-      expect(HAPPIER_MCP_TOOL_CATALOG_NAMES).toContain(name);
+      expect(PIGGERCODE_MCP_TOOL_CATALOG_NAMES).toContain(name);
     }
   });
 
   it('reuses ActionSpec inputSchema objects for mcp start actions (no schema drift)', () => {
-    const byName = new Map(HAPPIER_MCP_TOOL_CATALOG.map((t) => [t.name, t]));
+    const byName = new Map(PIGGERCODE_MCP_TOOL_CATALOG.map((t) => [t.name, t]));
 
     expect(byName.get('review_start')?.inputSchema).toBe(getActionSpec('review.start').inputSchema);
     expect(byName.get('subagents_plan_start')?.inputSchema).toBe(getActionSpec('subagents.plan.start').inputSchema);
@@ -29,7 +29,7 @@ describe('HAPPIER_MCP_TOOL_CATALOG_NAMES', () => {
   });
 
   it('reuses ActionSpec inputSchema objects for execution run tools (no schema drift)', () => {
-    const byName = new Map(HAPPIER_MCP_TOOL_CATALOG.map((t) => [t.name, t]));
+    const byName = new Map(PIGGERCODE_MCP_TOOL_CATALOG.map((t) => [t.name, t]));
 
     expect(byName.get('action_spec_search')?.inputSchema).toBe(getActionSpec('action.spec.search').inputSchema);
     expect(byName.get('action_spec_get')?.inputSchema).toBe(getActionSpec('action.spec.get').inputSchema);

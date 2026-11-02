@@ -32,19 +32,19 @@ function runStartup(entrypoint, port, extraArgs = []) {
   return new Promise((resolve, reject) => {
     const env = { ...process.env };
     for (const key of [
-      'HAPPIER_STACK_STACK',
-      'HAPPIER_STACK_ENV_FILE',
-      'HAPPIER_STACK_RUNTIME_STATE_PATH',
-      'HAPPIER_STACK_STORAGE_DIR',
-      'HAPPIER_STACK_REPO_DIR',
+      'PIGGERCODE_STACK_STACK',
+      'PIGGERCODE_STACK_ENV_FILE',
+      'PIGGERCODE_STACK_RUNTIME_STATE_PATH',
+      'PIGGERCODE_STACK_STORAGE_DIR',
+      'PIGGERCODE_STACK_REPO_DIR',
     ]) delete env[key];
     Object.assign(env, {
       CI: '1',
-      HAPPIER_STACK_HOME_DIR: join('/tmp', `hstack-stackless-topology-${process.pid}`),
-      HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
-      HAPPIER_STACK_SERVER_PORT: String(port),
-      HAPPIER_STACK_TAILSCALE_SERVE: '0',
-      HAPPIER_STACK_NO_BROWSER: '1',
+      PIGGERCODE_STACK_HOME_DIR: join('/tmp', `hstack-stackless-topology-${process.pid}`),
+      PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+      PIGGERCODE_STACK_SERVER_PORT: String(port),
+      PIGGERCODE_STACK_TAILSCALE_SERVE: '0',
+      PIGGERCODE_STACK_NO_BROWSER: '1',
     });
     const child = spawn(process.execPath, [entrypoint.script, ...entrypoint.args, ...extraArgs], {
       cwd: repoRoot,

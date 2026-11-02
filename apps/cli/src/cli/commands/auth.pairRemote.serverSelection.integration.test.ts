@@ -21,12 +21,12 @@ vi.mock('cross-spawn', () => {
 
 describe('auth pair-remote server selection', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_LOCAL_SERVER_URL',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_VARIANT',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_LOCAL_SERVER_URL',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_VARIANT',
   ] as const;
 
   let restoreTty: (() => void) | null = null;
@@ -74,12 +74,12 @@ describe('auth pair-remote server selection', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_LOCAL_SERVER_URL: 'http://happier-auth.test',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://relay.example.test',
-        HAPPIER_WEBAPP_URL: 'https://app.example.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_LOCAL_SERVER_URL: 'http://happier-auth.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://relay.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
@@ -164,10 +164,10 @@ describe('auth pair-remote server selection', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:52753',
-        HAPPIER_WEBAPP_URL: 'http://127.0.0.1:52753',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753',
+        PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:52753',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');
@@ -236,10 +236,10 @@ describe('auth pair-remote server selection', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:52753',
-        HAPPIER_WEBAPP_URL: 'http://127.0.0.1:52753',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753',
+        PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:52753',
+        PIGGERCODE_VARIANT: 'stable',
       });
       spawnSyncMock.mockImplementationOnce(() => ({
         status: 0,
@@ -283,10 +283,10 @@ describe('auth pair-remote server selection', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: localHomeDir,
-        HAPPIER_SERVER_URL: 'https://relay.example.test',
-        HAPPIER_WEBAPP_URL: 'https://app.example.test',
-        HAPPIER_VARIANT: 'stable',
+        PIGGERCODE_HOME_DIR: localHomeDir,
+        PIGGERCODE_SERVER_URL: 'https://relay.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://app.example.test',
+        PIGGERCODE_VARIANT: 'stable',
       });
       vi.resetModules();
       const { writeCredentialsLegacy } = await import('@/persistence');

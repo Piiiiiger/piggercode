@@ -21,10 +21,10 @@ describe('core e2e: plaintext direct share roundtrip', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-        HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+        PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
       },
     });
 

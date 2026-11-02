@@ -5,7 +5,7 @@ import { useSetting } from '@/sync/domains/state/storage';
 import { getPierreDiffWorkerPool } from './pierreWorkerPool.web';
 import { isPierreDiffKillSwitchEnabled, supportsPierreRuntime } from './pierreRuntimeSupport.web';
 
-const PREWARM_MARKER = '__HAPPIER_PIERRE_DIFF_WORKER_PREWARMED__';
+const PREWARM_MARKER = '__PIGGERCODE_PIERRE_DIFF_WORKER_PREWARMED__';
 
 function hasPrewarmed(): boolean {
     return Boolean((globalThis as any)?.[PREWARM_MARKER]);

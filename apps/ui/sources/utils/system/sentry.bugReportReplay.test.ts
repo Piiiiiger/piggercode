@@ -64,9 +64,9 @@ describe('utils/system/sentry (bug report replay)', () => {
         platformState.os = 'ios';
         platformState.version = '25.0';
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_SENTRY_INIT__;
+        delete (globalThis as any).__PIGGERCODE_SENTRY_INIT__;
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_CRASH_REPORTS_OPTOUT__;
+        delete (globalThis as any).__PIGGERCODE_CRASH_REPORTS_OPTOUT__;
         process.env.EXPO_PUBLIC_SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
         process.env.EXPO_PUBLIC_SENTRY_ENABLE_REPLAY = '1';
         delete process.env.EXPO_PUBLIC_SENTRY_ALLOW_REPLAY_ON_IOS_26;

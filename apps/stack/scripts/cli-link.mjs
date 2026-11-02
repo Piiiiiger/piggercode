@@ -14,8 +14,8 @@ import { printResult, wantsHelp, wantsJson } from './utils/cli/cli.mjs';
  * - installs `happier`/`hstack` shims under `<homeDir>/bin` (default: `~/.happier-stack/bin`) (recommended over `npm link`)
  *
  * Env:
- * - HAPPIER_STACK_CLI_BUILD=0 to skip building happier-cli
- * - HAPPIER_STACK_NPM_LINK=0 to skip shim installation
+ * - PIGGERCODE_STACK_CLI_BUILD=0 to skip building happier-cli
+ * - PIGGERCODE_STACK_NPM_LINK=0 to skip shim installation
  *
  * Flags:
  * - --no-build: skip building happier-cli
@@ -42,8 +42,8 @@ async function main() {
   const rootDir = getRootDir(import.meta.url);
   const cliDir = getComponentDir(rootDir, 'happier-cli');
 
-  const buildCli = !flags.has('--no-build') && (process.env.HAPPIER_STACK_CLI_BUILD ?? '1') !== '0';
-  const npmLinkCli = !flags.has('--no-link') && (process.env.HAPPIER_STACK_NPM_LINK ?? '1') !== '0';
+  const buildCli = !flags.has('--no-build') && (process.env.PIGGERCODE_STACK_CLI_BUILD ?? '1') !== '0';
+  const npmLinkCli = !flags.has('--no-link') && (process.env.PIGGERCODE_STACK_NPM_LINK ?? '1') !== '0';
 
   await ensureCliBuilt(cliDir, { buildCli });
   await ensureHappyCliLocalNpmLinked(rootDir, { npmLinkCli });

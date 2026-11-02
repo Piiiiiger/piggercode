@@ -1,4 +1,4 @@
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - launchApp:
     clearState: true
@@ -12,7 +12,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 - runFlow:
     file: ../_shared/loginCreateAccount.yaml
 
-- openLink: ${HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK}
+- openLink: ${PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK}
 
 - extendedWaitUntil:
     visible:

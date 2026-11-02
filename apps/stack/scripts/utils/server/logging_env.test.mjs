@@ -8,22 +8,22 @@ test('applyStackServerLoggingDefaults defaults stack-managed servers to warn log
 
   applyStackServerLoggingDefaults({ baseEnv: {}, serverEnv });
 
-  assert.equal(serverEnv.HAPPIER_SERVER_LOG_LEVEL, 'warn');
+  assert.equal(serverEnv.PIGGERCODE_SERVER_LOG_LEVEL, 'warn');
 });
 
 test('applyStackServerLoggingDefaults honors explicit server logging env', () => {
   const serverEnv = {};
 
-  applyStackServerLoggingDefaults({ baseEnv: { HAPPIER_SERVER_LOG_LEVEL: 'debug' }, serverEnv });
+  applyStackServerLoggingDefaults({ baseEnv: { PIGGERCODE_SERVER_LOG_LEVEL: 'debug' }, serverEnv });
 
-  assert.equal(serverEnv.HAPPIER_SERVER_LOG_LEVEL, 'debug');
+  assert.equal(serverEnv.PIGGERCODE_SERVER_LOG_LEVEL, 'debug');
 });
 
 test('applyStackServerLoggingDefaults supports a stack-specific override without mutating generic log level', () => {
   const serverEnv = { LOG_LEVEL: 'trace' };
 
-  applyStackServerLoggingDefaults({ baseEnv: { HAPPIER_STACK_SERVER_LOG_LEVEL: 'error', LOG_LEVEL: 'trace' }, serverEnv });
+  applyStackServerLoggingDefaults({ baseEnv: { PIGGERCODE_STACK_SERVER_LOG_LEVEL: 'error', LOG_LEVEL: 'trace' }, serverEnv });
 
   assert.equal(serverEnv.LOG_LEVEL, 'trace');
-  assert.equal(serverEnv.HAPPIER_SERVER_LOG_LEVEL, 'error');
+  assert.equal(serverEnv.PIGGERCODE_SERVER_LOG_LEVEL, 'error');
 });

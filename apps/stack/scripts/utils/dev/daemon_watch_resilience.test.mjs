@@ -343,7 +343,7 @@ test('reload executor restarts from an already-current dist and preserves the st
   await writeFile(distIndexPath, 'export const daemon = true;\n', 'utf-8');
   await writeDistBuildManifest(distIndexPath, 'abcdef1234567890');
 
-  const env = { HAPPIER_STACK_CLI_BUILD_MODE: 'auto', STACK_TOKEN: 'preserved' };
+  const env = { PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto', STACK_TOKEN: 'preserved' };
   let capturedBuildOptions = null;
   let restartCalls = 0;
   const executor = createHappyCliReloadExecutor(
@@ -389,7 +389,7 @@ test('reload executor coalesces consecutive current and superseded generations a
   await writeFile(distIndexPath, 'export const daemon = true;\n', 'utf-8');
   await writeDistBuildManifest(distIndexPath, 'abcdef1234567890');
 
-  const env = { HAPPIER_STACK_CLI_BUILD_MODE: 'auto', STACK_TOKEN: 'preserved' };
+  const env = { PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto', STACK_TOKEN: 'preserved' };
   const buildResults = [
     { built: false, current: true, reason: 'cache_hit' },
     { built: true, current: false, reason: 'inputs_changed_during_build' },
@@ -868,7 +868,7 @@ test('reload executor cold-start carries the admitted build fingerprint into dae
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
       isShuttingDown: () => false,
-      env: { HAPPIER_STACK_CLI_BUILD_MODE: 'always' },
+      env: { PIGGERCODE_STACK_CLI_BUILD_MODE: 'always' },
       stackName: 'dev',
     },
     {

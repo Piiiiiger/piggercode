@@ -12,8 +12,8 @@ test('service stop, restart-stop, and disable execute OS destruction inside cano
   ]) {
     const events = [];
     const env = {
-      HAPPIER_STACK_STACK: 'service-owner-test',
-      HAPPIER_STACK_STORAGE_DIR: '/tmp/happier-service-owner-test',
+      PIGGERCODE_STACK_STACK: 'service-owner-test',
+      PIGGERCODE_STACK_STORAGE_DIR: '/tmp/happier-service-owner-test',
     };
     await stopServiceWithCanonicalCleanup({
       rootDir: '/repo',

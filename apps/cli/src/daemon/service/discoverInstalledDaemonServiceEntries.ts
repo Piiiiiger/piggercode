@@ -231,7 +231,7 @@ function parseWindowsScheduledTaskWrapperPathFromTaskToRun(taskToRunText: string
 }
 
 function readWindowsSchtasksTimeoutMs(): number {
-  return readPositiveIntEnv('HAPPIER_WINDOWS_SCHTASKS_TIMEOUT_MS', 15_000);
+  return readPositiveIntEnv('PIGGERCODE_WINDOWS_SCHTASKS_TIMEOUT_MS', 15_000);
 }
 
 function runWindowsSchtasksCommand(args: readonly string[]): ReturnType<typeof spawnBackgroundSync> {
@@ -324,18 +324,18 @@ function hasDarwinDaemonStartSyncCommand(contents: string): boolean {
 }
 
 function hasLegacyManagedLinuxServiceEnv(path: string): boolean {
-  return readInstalledDaemonServiceEnvValue({ platform: 'linux', path, key: 'HAPPIER_HOME_DIR' }) !== null
-    || readInstalledDaemonServiceEnvValue({ platform: 'linux', path, key: 'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR' }) !== null;
+  return readInstalledDaemonServiceEnvValue({ platform: 'linux', path, key: 'PIGGERCODE_HOME_DIR' }) !== null
+    || readInstalledDaemonServiceEnvValue({ platform: 'linux', path, key: 'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR' }) !== null;
 }
 
 function hasLegacyManagedDarwinServiceEnv(path: string): boolean {
-  return readInstalledDaemonServiceEnvValue({ platform: 'darwin', path, key: 'HAPPIER_HOME_DIR' }) !== null
-    || readInstalledDaemonServiceEnvValue({ platform: 'darwin', path, key: 'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR' }) !== null;
+  return readInstalledDaemonServiceEnvValue({ platform: 'darwin', path, key: 'PIGGERCODE_HOME_DIR' }) !== null
+    || readInstalledDaemonServiceEnvValue({ platform: 'darwin', path, key: 'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR' }) !== null;
 }
 
 function hasLegacyManagedWindowsServiceEnv(path: string): boolean {
-  return readInstalledDaemonServiceEnvValue({ platform: 'win32', path, key: 'HAPPIER_HOME_DIR' }) !== null
-    || readInstalledDaemonServiceEnvValue({ platform: 'win32', path, key: 'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR' }) !== null;
+  return readInstalledDaemonServiceEnvValue({ platform: 'win32', path, key: 'PIGGERCODE_HOME_DIR' }) !== null
+    || readInstalledDaemonServiceEnvValue({ platform: 'win32', path, key: 'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR' }) !== null;
 }
 
 export function readInstalledDaemonServiceEnvValue(params: Readonly<{
@@ -380,8 +380,8 @@ export function resolveInstalledDaemonServiceDefinitionPath(params: Readonly<{
 export function readInstalledDaemonServiceHomeDir(params: Readonly<{
   platform: 'darwin' | 'linux' | 'win32'; path: string;
 }>): string | null {
-  return readInstalledDaemonServiceEnvValue({ ...params, key: 'HAPPIER_HOME_DIR' })
-    ?? readInstalledDaemonServiceEnvValue({ ...params, key: 'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR' });
+  return readInstalledDaemonServiceEnvValue({ ...params, key: 'PIGGERCODE_HOME_DIR' })
+    ?? readInstalledDaemonServiceEnvValue({ ...params, key: 'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR' });
 }
 
 export function isInstalledDaemonServiceForHappierHome(params: Readonly<{
@@ -400,7 +400,7 @@ function isValidInstalledDaemonServiceDefinition(params: Readonly<{
     return parseDarwinPlistValue(contents, 'Label') === params.expectedLabel
       && hasDarwinDaemonStartSyncCommand(contents)
       && (
-        parseDarwinPlistValue(contents, 'HAPPIER_DAEMON_STARTUP_SOURCE') === 'background-service'
+        parseDarwinPlistValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
         || hasLegacyManagedDarwinServiceEnv(params.path)
       );
   }
@@ -409,14 +409,14 @@ function isValidInstalledDaemonServiceDefinition(params: Readonly<{
     return /(^|\n)ExecStart=/.test(contents)
       && hasDaemonStartSyncCommand(contents)
       && (
-        parseLinuxUnitValue(contents, 'HAPPIER_DAEMON_STARTUP_SOURCE') === 'background-service'
+        parseLinuxUnitValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
         || hasLegacyManagedLinuxServiceEnv(params.path)
       );
   }
 
   return hasDaemonStartSyncCommand(contents)
     && (
-      parseWindowsWrapperValue(contents, 'HAPPIER_DAEMON_STARTUP_SOURCE') === 'background-service'
+      parseWindowsWrapperValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
       || hasLegacyManagedWindowsServiceEnv(params.path)
     );
 }
@@ -437,7 +437,7 @@ function resolveInstalledDaemonServiceTargetMode(params: Readonly<{
   const declared = readInstalledDaemonServiceEnvValue({
     platform: params.platform,
     path: params.path,
-    key: 'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
+    key: 'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
   });
   if (declared === 'default-following' || declared === 'pinned') {
     return declared;
@@ -564,10 +564,10 @@ function parseInstalledServiceMetadata(params: Readonly<{
     key,
   });
 
-  const parsedServerId = readValue('HAPPIER_ACTIVE_SERVER_ID');
+  const parsedServerId = readValue('PIGGERCODE_ACTIVE_SERVER_ID');
   const parsedHappierHomeDir = readInstalledDaemonServiceHomeDir(params);
-  const parsedRelayUrl = readValue('HAPPIER_PUBLIC_SERVER_URL') ?? readValue('HAPPIER_SERVER_URL');
-  const parsedReleaseChannel = normalizeParsedReleaseChannel(readValue('HAPPIER_PUBLIC_RELEASE_CHANNEL'));
+  const parsedRelayUrl = readValue('PIGGERCODE_PUBLIC_SERVER_URL') ?? readValue('PIGGERCODE_SERVER_URL');
+  const parsedReleaseChannel = normalizeParsedReleaseChannel(readValue('PIGGERCODE_PUBLIC_RELEASE_CHANNEL'));
   return {
     activeServerId: parsedServerId,
     happierHomeDir: parsedHappierHomeDir,

@@ -7,8 +7,8 @@ describe('applyStackSessionPriority', () => {
     const setPriority = vi.fn();
     expect(applyStackSessionPriority({
       env: {
-        HAPPIER_STACK_RESCUE: '1',
-        HAPPIER_STACK_PROCESS_KIND: 'session',
+        PIGGERCODE_STACK_RESCUE: '1',
+        PIGGERCODE_STACK_PROCESS_KIND: 'session',
       },
       platform: 'darwin',
       setPriority,
@@ -19,7 +19,7 @@ describe('applyStackSessionPriority', () => {
   it('does not alter ordinary CLI or control-plane processes', () => {
     const setPriority = vi.fn();
     expect(applyStackSessionPriority({
-      env: { HAPPIER_STACK_RESCUE: '1', HAPPIER_STACK_PROCESS_KIND: 'infra' },
+      env: { PIGGERCODE_STACK_RESCUE: '1', PIGGERCODE_STACK_PROCESS_KIND: 'infra' },
       platform: 'darwin',
       setPriority,
     })).toBe(false);
@@ -33,8 +33,8 @@ describe('applyStackSessionPriority', () => {
     });
     expect(applyStackSessionPriority({
       env: {
-        HAPPIER_STACK_RESCUE: '1',
-        HAPPIER_STACK_PROCESS_KIND: 'session',
+        PIGGERCODE_STACK_RESCUE: '1',
+        PIGGERCODE_STACK_PROCESS_KIND: 'session',
       },
       platform: 'linux',
       setPriority: () => { throw denial; },
@@ -45,8 +45,8 @@ describe('applyStackSessionPriority', () => {
     const failure = new Error('unexpected priority failure');
     expect(() => applyStackSessionPriority({
       env: {
-        HAPPIER_STACK_RESCUE: '1',
-        HAPPIER_STACK_PROCESS_KIND: 'session',
+        PIGGERCODE_STACK_RESCUE: '1',
+        PIGGERCODE_STACK_PROCESS_KIND: 'session',
       },
       platform: 'linux',
       setPriority: () => { throw failure; },

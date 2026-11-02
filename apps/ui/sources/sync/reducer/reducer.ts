@@ -323,14 +323,14 @@ export function reducer(
     context?: ReducerSessionContext,
 ): ReducerResult {
 	    const DEBUG_SIDECHAINS = isDebugFlagEnabled({
-	        // Enable in browser devtools via: `window.__HAPPIER_DEBUG_SIDECHAINS__ = true`
+	        // Enable in browser devtools via: `window.__PIGGERCODE_DEBUG_SIDECHAINS__ = true`
 	        // (kept off by default to avoid noisy logs for users).
-	        globalKey: '__HAPPIER_DEBUG_SIDECHAINS__',
+	        globalKey: '__PIGGERCODE_DEBUG_SIDECHAINS__',
 	        localStorageKey: 'happier.debug.sidechains',
 	    });
 
 	    const DEBUG_MESSAGE_DECRYPT = isDebugFlagEnabled({
-	        globalKey: '__HAPPIER_DEBUG_MESSAGE_DECRYPT__',
+	        globalKey: '__PIGGERCODE_DEBUG_MESSAGE_DECRYPT__',
 	        localStorageKey: 'happier.debug.messageDecrypt',
 	    });
 

@@ -71,7 +71,7 @@ export async function createMermaidWebViewBundleSource({ expoAppDir }) {
     });
     const js = result.outputFiles?.[0]?.text ?? '';
     const bundleBytes = Buffer.byteLength(js, 'utf8');
-    if (!js.trim() || !js.includes('HAPPIER_MERMAID')) {
+    if (!js.trim() || !js.includes('PIGGERCODE_MERMAID')) {
         throw new Error('esbuild produced an invalid Mermaid WebView bundle');
     }
     if (bundleBytes > MAX_BUNDLE_BYTES) {

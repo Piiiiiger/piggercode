@@ -21,16 +21,16 @@ vi.mock('@/config', () => ({
 
 describe('utils/system/sentry (crash reports opt-out)', () => {
     const previousDsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
-    const previousFeatureDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousFeatureDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         sentryInitSpy.mockClear();
         sentryCloseSpy.mockClear();
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_SENTRY_INIT__;
+        delete (globalThis as any).__PIGGERCODE_SENTRY_INIT__;
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_CRASH_REPORTS_OPTOUT__;
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+        delete (globalThis as any).__PIGGERCODE_CRASH_REPORTS_OPTOUT__;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
         process.env.EXPO_PUBLIC_SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
         vi.resetModules();
     });
@@ -38,12 +38,12 @@ describe('utils/system/sentry (crash reports opt-out)', () => {
     afterEach(() => {
         if (previousDsn === undefined) delete process.env.EXPO_PUBLIC_SENTRY_DSN;
         else process.env.EXPO_PUBLIC_SENTRY_DSN = previousDsn;
-        if (previousFeatureDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousFeatureDeny;
+        if (previousFeatureDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousFeatureDeny;
     });
 
     it('skips Sentry.init when crash reports are denied by build policy', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.crashReports';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.crashReports';
         const { initializeSentryOnce } = await import('./sentry');
         initializeSentryOnce();
         expect(sentryInitSpy).toHaveBeenCalledTimes(0);

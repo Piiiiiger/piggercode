@@ -74,13 +74,13 @@ describe('core e2e: plaintext transcript stream segment ephemeral updates', () =
 
   it('rebroadcasts plain stream segment envelopes without durable persistence', async () => {
     const testDir = run.testDir('messages-socket-transcript-stream-segment-plain');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
 
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -102,8 +102,8 @@ describe('core e2e: plaintext transcript stream segment ephemeral updates', () =
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
-        HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'plaintext_only',
       },
     });
 

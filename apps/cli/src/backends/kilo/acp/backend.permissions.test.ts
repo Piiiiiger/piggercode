@@ -12,7 +12,7 @@ type AcpBackendLike = {
   };
 };
 
-const envKeys = ['PATH', 'HAPPIER_KILO_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_KILO_PATH'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -36,7 +36,7 @@ afterEach(() => {
 
 function readPermissionConfig(permissionMode: PermissionMode | undefined): Record<string, string> {
   process.env.PATH = '';
-  process.env.HAPPIER_KILO_PATH = createFakeBin('kilo');
+  process.env.PIGGERCODE_KILO_PATH = createFakeBin('kilo');
   const backend = createKiloBackend({
     cwd: '/tmp',
     env: {},
@@ -51,7 +51,7 @@ function readPermissionConfig(permissionMode: PermissionMode | undefined): Recor
 describe('Kilo ACP backend permissions', () => {
   it('fails closed when the Kilo CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_KILO_PATH;
+    delete process.env.PIGGERCODE_KILO_PATH;
 
     expect(() => createKiloBackend({ cwd: '/tmp', env: {} })).toThrow(/Kilo CLI \(kilo\).*available/i);
   });

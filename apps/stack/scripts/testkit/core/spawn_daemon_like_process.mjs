@@ -6,11 +6,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnDetachedTestProcess } from './spawn_test_process.mjs';
 
 const DEFAULT_CONTROL_TOKEN = 'happier-test-daemon-control';
-const STATE_PATHS_ENV = 'HAPPIER_TEST_DAEMON_STATE_PATHS_JSON';
-const START_DELAY_ENV = 'HAPPIER_TEST_DAEMON_START_DELAY_MS';
-const HTTP_PORT_ENV = 'HAPPIER_TEST_DAEMON_HTTP_PORT';
-const CLI_VERSION_ENV = 'HAPPIER_TEST_DAEMON_CLI_VERSION';
-const DIST_CLOSURE_FINGERPRINT_ENV = 'HAPPIER_TEST_DAEMON_DIST_CLOSURE_FINGERPRINT';
+const STATE_PATHS_ENV = 'PIGGERCODE_TEST_DAEMON_STATE_PATHS_JSON';
+const START_DELAY_ENV = 'PIGGERCODE_TEST_DAEMON_START_DELAY_MS';
+const HTTP_PORT_ENV = 'PIGGERCODE_TEST_DAEMON_HTTP_PORT';
+const CLI_VERSION_ENV = 'PIGGERCODE_TEST_DAEMON_CLI_VERSION';
+const DIST_CLOSURE_FINGERPRINT_ENV = 'PIGGERCODE_TEST_DAEMON_DIST_CLOSURE_FINGERPRINT';
 
 function normalizeStatePaths(statePaths) {
   if (!Array.isArray(statePaths) || statePaths.length === 0) {
@@ -68,10 +68,10 @@ export async function startDaemonLikeProcess({
         let body = {};
         try { body = rawBody ? JSON.parse(rawBody) : {}; } catch {}
         spawnDaemonLikeProcess({
-          cliHomeDir: process.env.HAPPIER_HOME_DIR,
+          cliHomeDir: process.env.PIGGERCODE_HOME_DIR,
           statePaths: paths,
-          internalServerUrl: process.env.HAPPIER_SERVER_URL,
-          publicServerUrl: process.env.HAPPIER_WEBAPP_URL,
+          internalServerUrl: process.env.PIGGERCODE_SERVER_URL,
+          publicServerUrl: process.env.PIGGERCODE_WEBAPP_URL,
           startedWithCliVersion,
           distClosureFingerprint: body.successorDistClosureFingerprint ?? admittedFingerprint,
         });
@@ -132,14 +132,14 @@ export function spawnDaemonLikeProcess({
       env: {
         ...process.env,
         ...env,
-        HAPPIER_HOME_DIR: cliHomeDir,
+        PIGGERCODE_HOME_DIR: cliHomeDir,
         [STATE_PATHS_ENV]: JSON.stringify(paths),
         [START_DELAY_ENV]: String(normalizeNonNegativeNumber(startDelayMs)),
         [HTTP_PORT_ENV]: String(normalizeNonNegativeNumber(httpPort)),
         [CLI_VERSION_ENV]: String(startedWithCliVersion ?? 'test'),
         [DIST_CLOSURE_FINGERPRINT_ENV]: String(distClosureFingerprint ?? ''),
-        ...(internalServerUrl ? { HAPPIER_SERVER_URL: internalServerUrl } : {}),
-        ...(publicServerUrl ? { HAPPIER_WEBAPP_URL: publicServerUrl } : {}),
+        ...(internalServerUrl ? { PIGGERCODE_SERVER_URL: internalServerUrl } : {}),
+        ...(publicServerUrl ? { PIGGERCODE_WEBAPP_URL: publicServerUrl } : {}),
       },
     },
   );

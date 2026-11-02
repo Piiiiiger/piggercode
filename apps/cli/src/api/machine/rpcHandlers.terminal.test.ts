@@ -58,13 +58,13 @@ describe('registerMachineTerminalRpcHandlers', () => {
       runtime: 'binary' as const,
       filePath: '/opt/happier/bin/happier',
       args: ['agy', 'auth', 'login'],
-      env: { HAPPIER_CLI_TEST: '1' },
+      env: { PIGGERCODE_CLI_TEST: '1' },
     }));
 
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: suiteDir,
         sessionManager,
         buildHappyCliSubprocessLaunchSpecFn: buildLaunchSpec,
@@ -83,7 +83,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
       file: '/opt/happier/bin/happier',
       args: ['agy', 'auth', 'login'],
       options: expect.objectContaining({
-        env: expect.objectContaining({ HAPPIER_CLI_TEST: '1' }),
+        env: expect.objectContaining({ PIGGERCODE_CLI_TEST: '1' }),
       }),
     }));
   });
@@ -115,13 +115,13 @@ describe('registerMachineTerminalRpcHandlers', () => {
       runtime: 'binary' as const,
       filePath: '/opt/happier/bin/happier',
       args: ['attach', 'session-1'],
-      env: { HAPPIER_ATTACH_TEST: '1' },
+      env: { PIGGERCODE_ATTACH_TEST: '1' },
     }));
 
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: suiteDir,
         sessionManager,
         buildHappyCliSubprocessLaunchSpecFn: buildLaunchSpec,
@@ -151,7 +151,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
       file: '/opt/happier/bin/happier',
       args: ['attach', 'session-1'],
       options: expect.objectContaining({
-        env: expect.objectContaining({ HAPPIER_ATTACH_TEST: '1' }),
+        env: expect.objectContaining({ PIGGERCODE_ATTACH_TEST: '1' }),
       }),
     }));
   });
@@ -165,7 +165,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '0' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '0' },
         workingDirectory: process.cwd(),
       },
     });
@@ -263,7 +263,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: defaultDir,
         sessionManager,
       },
@@ -313,7 +313,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: defaultDir,
         accessPolicy: {
           kind: 'restrictedRoots',
@@ -334,7 +334,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     expect(provider.spawned).toHaveLength(0);
   });
 
-  it('uses comma-delimited HAPPIER_MACHINE_RPC_WORKING_DIRECTORY as restricted roots', async () => {
+  it('uses comma-delimited PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY as restricted roots', async () => {
     const suiteDir = await mkdtemp(join(tmpdir(), 'happier-terminal-'));
     const rootA = join(suiteDir, 'allowed-a');
     const rootB = join(suiteDir, 'allowed-b');
@@ -371,8 +371,8 @@ describe('registerMachineTerminalRpcHandlers', () => {
       rpcHandlerManager,
       deps: {
         env: {
-          HAPPIER_DAEMON_TERMINAL_ENABLED: '1',
-          HAPPIER_MACHINE_RPC_WORKING_DIRECTORY: `${rootA}, ${rootB}`,
+          PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1',
+          PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY: `${rootA}, ${rootB}`,
         },
         sessionManager,
       },
@@ -424,7 +424,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: rootDir,
         accessPolicy: {
           kind: 'restrictedRoots',
@@ -476,7 +476,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     registerMachineTerminalRpcHandlers({
       rpcHandlerManager,
       deps: {
-        env: { HOME: homeDir, HAPPIER_DAEMON_TERMINAL_ENABLED: '1' },
+        env: { HOME: homeDir, PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
         workingDirectory: rootDir,
         sessionManager,
       },

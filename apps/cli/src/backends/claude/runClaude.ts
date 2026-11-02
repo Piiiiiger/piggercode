@@ -306,8 +306,8 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
             ? options.existingSessionId.trim()
             : null;
     const attachEnvPath =
-        typeof process.env.HAPPIER_SESSION_ATTACH_FILE === 'string' && process.env.HAPPIER_SESSION_ATTACH_FILE.trim().length > 0
-            ? process.env.HAPPIER_SESSION_ATTACH_FILE.trim()
+        typeof process.env.PIGGERCODE_SESSION_ATTACH_FILE === 'string' && process.env.PIGGERCODE_SESSION_ATTACH_FILE.trim().length > 0
+            ? process.env.PIGGERCODE_SESSION_ATTACH_FILE.trim()
             : null;
     const inferredPermissionMode = inferPermissionIntentFromClaudeArgs(options.claudeArgs);
     const canFastStartAttach = Boolean(
@@ -713,7 +713,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     let currentSession: import('./session').Session | null = null;
     let didPublishSessionModelsMetadata = false;
     const resolveClaudeHelpProbeTimeoutMs = (): number => {
-        const raw = process.env.HAPPIER_CLAUDE_HELP_PROBE_TIMEOUT_MS;
+        const raw = process.env.PIGGERCODE_CLAUDE_HELP_PROBE_TIMEOUT_MS;
         const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
         if (Number.isFinite(parsed) && parsed > 0) return parsed;
         return process.env.CI ? 3_000 : 1_500;
@@ -837,7 +837,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     if (hookPluginDir) {
         logger.debug(`[START] Generated hook plugin dir: ${hookPluginDir}`);
     } else {
-        logger.debug('[START] Hook plugin dir generation skipped (HAPPIER_CLAUDE_HOOKS_DISABLED)');
+        logger.debug('[START] Hook plugin dir generation skipped (PIGGERCODE_CLAUDE_HOOKS_DISABLED)');
     }
     let userMessageHandlerReady = false;
 
@@ -1577,7 +1577,7 @@ async function runClaudeLocalFastStart(credentials: Credentials, options: StartO
         currentAppendSystemPromptSeeded = true;
     };
     const resolveClaudeHelpProbeTimeoutMs = (): number => {
-        const raw = process.env.HAPPIER_CLAUDE_HELP_PROBE_TIMEOUT_MS;
+        const raw = process.env.PIGGERCODE_CLAUDE_HELP_PROBE_TIMEOUT_MS;
         const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
         if (Number.isFinite(parsed) && parsed > 0) return parsed;
         return process.env.CI ? 3_000 : 1_500;

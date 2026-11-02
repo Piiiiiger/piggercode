@@ -9,11 +9,11 @@ function isStartExecutionRun(value: unknown): value is (sessionId: string, reque
 describe('createExternalMcpServer', () => {
   beforeEach(() => {
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
   it('returns toolNames aligned with per-surface action settings', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['mcp'], disabledPlacements: [] },

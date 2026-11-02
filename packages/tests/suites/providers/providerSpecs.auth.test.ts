@@ -7,7 +7,7 @@ describe('providers: providerSpec auth', () => {
     const parsed = E2eCliProviderSpecV1Schema.safeParse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       cli: { subcommand: 'example' },
@@ -36,7 +36,7 @@ describe('providers: providerSpec auth', () => {
     const parsed = E2eCliProviderSpecV1Schema.safeParse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       auth: {
@@ -58,7 +58,7 @@ describe('providers: providerSpec auth', () => {
     const parsed = E2eCliProviderSpecV1Schema.safeParse({
       v: 1,
       id: 'example',
-      enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+      enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
       protocol: 'acp',
       traceProvider: 'example',
       auth: {

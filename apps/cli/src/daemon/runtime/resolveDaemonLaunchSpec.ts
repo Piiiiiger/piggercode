@@ -43,22 +43,22 @@ function isPackagedEntrypointPath(pathLike: string): boolean {
 
 function hasDaemonStackContext(env: Readonly<NodeJS.ProcessEnv>): boolean {
   return Boolean(
-    env.HAPPIER_STACK_REPO_DIR ||
-    env.HAPPIER_STACK_CLI_ROOT_DIR ||
-    env.HAPPIER_STACK_STACK
+    env.PIGGERCODE_STACK_REPO_DIR ||
+    env.PIGGERCODE_STACK_CLI_ROOT_DIR ||
+    env.PIGGERCODE_STACK_STACK
   );
 }
 
 function shouldPreferDaemonTsxSourceEntrypoint(env: Readonly<NodeJS.ProcessEnv>): boolean {
   if (
-    typeof env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT === 'string'
-    && env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT.trim().length > 0
+    typeof env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT === 'string'
+    && env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT.trim().length > 0
   ) {
     return false;
   }
-  const explicitPreference = parseOptionalBooleanEnv(env.HAPPIER_CLI_SUBPROCESS_PREFER_TSX);
+  const explicitPreference = parseOptionalBooleanEnv(env.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX);
   if (explicitPreference !== null) return explicitPreference;
-  return env.HAPPIER_VARIANT === 'dev' || hasDaemonStackContext(env);
+  return env.PIGGERCODE_VARIANT === 'dev' || hasDaemonStackContext(env);
 }
 
 function resolveBundledCurrentProcessLaunchSpec(
@@ -110,9 +110,9 @@ function resolveBundledCurrentProcessLaunchSpec(
 }
 
 function shouldAllowDaemonTsxFallback(env: Readonly<NodeJS.ProcessEnv>): boolean {
-  const explicit = parseOptionalBooleanEnv(env.HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK);
+  const explicit = parseOptionalBooleanEnv(env.PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK);
   if (explicit !== null) return explicit;
-  return env.HAPPIER_VARIANT === 'dev' || hasDaemonStackContext(env);
+  return env.PIGGERCODE_VARIANT === 'dev' || hasDaemonStackContext(env);
 }
 
 function resolveSourceEntrypoint(): string {
@@ -206,12 +206,12 @@ export async function resolveDaemonLaunchSpec(
   }
 
   const admittedStackDistConfigured = Boolean(
-    String(env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT ?? '').trim()
-    || String(env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? '').trim()
+    String(env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT ?? '').trim()
+    || String(env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? '').trim()
   );
   if (
     admittedStackDistConfigured
-    && parseOptionalBooleanEnv(env.HAPPIER_CLI_SUBPROCESS_PREFER_TSX) !== true
+    && parseOptionalBooleanEnv(env.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX) !== true
   ) {
     const launchSpec = buildHappyCliSubprocessLaunchSpec([...cliArgs], {
       allowAdmittedDaemonStartupClosure: true,

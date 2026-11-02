@@ -379,7 +379,7 @@ await server.connect(new StdioServerTransport());
   agent_teams_participant_routing_broadcast: (provider) => {
     assertProviderId(provider, 'claude');
     const teamId = 'probe';
-    const broadcastSentinel = 'HAPPIER_E2E_AGENT_TEAMS_BROADCAST_SENTINEL_123';
+    const broadcastSentinel = 'PIGGERCODE_E2E_AGENT_TEAMS_BROADCAST_SENTINEL_123';
     return {
       id: 'agent_teams_participant_routing_broadcast',
       title: 'agent teams: participant routing (broadcast) triggers SendMessage tool call',
@@ -507,7 +507,7 @@ await server.connect(new StdioServerTransport());
     const teamId = 'probe';
     const memberLabel = 'Alpha';
     const memberId = '@Alpha';
-    const directSentinel = 'HAPPIER_E2E_AGENT_TEAMS_DIRECT_SENTINEL_123';
+    const directSentinel = 'PIGGERCODE_E2E_AGENT_TEAMS_DIRECT_SENTINEL_123';
     return {
       id: 'agent_teams_participant_routing_member',
       title: 'agent teams: participant routing (member) triggers SendMessage tool call',
@@ -698,7 +698,7 @@ await server.connect(new StdioServerTransport());
       // the second step while the turn is still running, then assert the runtime routed step2 via steer.
       const id = randomUUID();
       const sleepMs = 8_000;
-      const command = `node -e 'console.log(\"HAPPIER_E2E_STEER_PRIMARY_BEGIN ${id}\"); setTimeout(() => { console.log(\"HAPPIER_E2E_STEER_PRIMARY_END ${id}\"); }, ${sleepMs});'`;
+      const command = `node -e 'console.log(\"PIGGERCODE_E2E_STEER_PRIMARY_BEGIN ${id}\"); setTimeout(() => { console.log(\"PIGGERCODE_E2E_STEER_PRIMARY_END ${id}\"); }, ${sleepMs});'`;
       return {
         id: 'acp_in_flight_steer',
         title: 'acp: codex in-flight steer routes second message without interrupt (requires creds)',
@@ -2009,8 +2009,8 @@ await server.connect(new StdioServerTransport());
 
 	switch_to_local_during_inflight_turn: (provider) => {
 	  assertProviderId(provider, 'claude');
-	  const inFlightSentinel = `HAPPIER_E2E_SWITCH_LOCAL_${randomUUID().slice(0, 8)}`;
-	  const followupSentinel = `HAPPIER_E2E_SWITCH_LOCAL_OK_${randomUUID()}`;
+	  const inFlightSentinel = `PIGGERCODE_E2E_SWITCH_LOCAL_${randomUUID().slice(0, 8)}`;
+	  const followupSentinel = `PIGGERCODE_E2E_SWITCH_LOCAL_OK_${randomUUID()}`;
 
 	  return {
 	    id: 'switch_to_local_during_inflight_turn',
@@ -2102,8 +2102,8 @@ await server.connect(new StdioServerTransport());
 	    throw new Error(`switch_to_remote_during_inflight_turn unsupported for provider ${provider.id}`);
 	  }
 
-	  const inFlightSentinel = `HAPPIER_E2E_SWITCH_REMOTE_${randomUUID().slice(0, 8)}`;
-	  const followupSentinel = `HAPPIER_E2E_SWITCH_REMOTE_OK_${randomUUID()}`;
+	  const inFlightSentinel = `PIGGERCODE_E2E_SWITCH_REMOTE_${randomUUID().slice(0, 8)}`;
+	  const followupSentinel = `PIGGERCODE_E2E_SWITCH_REMOTE_OK_${randomUUID()}`;
 
 	  return {
 	    id: 'switch_to_remote_during_inflight_turn',

@@ -26,7 +26,7 @@ import { mapGitlabMergeRequest } from './gitlabMergeRequestMapping';
 const DEFAULT_GITLAB_CLI_MR_TIMEOUT_MS = 30_000;
 
 function resolveGitlabCliMrTimeoutMs(): number {
-    const parsed = Number(String(process.env.HAPPIER_GITLAB_CLI_MR_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
+    const parsed = Number(String(process.env.PIGGERCODE_GITLAB_CLI_MR_TIMEOUT_MS ?? '').replaceAll('_', '').trim());
     return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : DEFAULT_GITLAB_CLI_MR_TIMEOUT_MS;
 }
 

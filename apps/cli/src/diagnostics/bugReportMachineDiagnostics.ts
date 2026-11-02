@@ -86,10 +86,10 @@ async function collectStackBugReportContext(input: {
   stackLogLimit: number;
   stackRuntimeMaxChars: number;
 }): Promise<BugReportMachineDiagnosticsSnapshot['stackContext']> {
-  const stackName = (process.env.HAPPIER_STACK_STACK ?? '').toString().trim() || null;
+  const stackName = (process.env.PIGGERCODE_STACK_STACK ?? '').toString().trim() || null;
   const stackEnvPath =
-    expandHomeDirPath((process.env.HAPPIER_STACK_ENV_FILE ?? '').toString().trim(), process.env) || null;
-  const runtimeFromEnv = expandHomeDirPath((process.env.HAPPIER_STACK_RUNTIME_STATE_PATH ?? '').toString().trim(), process.env);
+    expandHomeDirPath((process.env.PIGGERCODE_STACK_ENV_FILE ?? '').toString().trim(), process.env) || null;
+  const runtimeFromEnv = expandHomeDirPath((process.env.PIGGERCODE_STACK_RUNTIME_STATE_PATH ?? '').toString().trim(), process.env);
   const stackBaseDir = stackEnvPath ? dirname(stackEnvPath) : null;
   const runtimeStatePath = (runtimeFromEnv || (stackBaseDir ? join(stackBaseDir, 'stack.runtime.json') : '')).trim() || null;
   const logsDir = stackBaseDir ? join(stackBaseDir, 'logs') : null;

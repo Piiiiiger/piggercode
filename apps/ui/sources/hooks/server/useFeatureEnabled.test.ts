@@ -50,8 +50,8 @@ describe('useFeatureEnabled', () => {
     it('does not probe server features when build policy denies a server-required feature', async () => {
         vi.resetModules();
 
-        const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'voice';
+        const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'voice';
 
         const payload = buildServerFeaturesResponse({ voiceEnabled: true });
         const fetchMock = vi.fn(async () => ({
@@ -68,8 +68,8 @@ describe('useFeatureEnabled', () => {
             expect(seen.at(-1)).toBe(false);
             expect(fetchMock).not.toHaveBeenCalled();
         } finally {
-            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-            else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+            else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
         }
     });
 

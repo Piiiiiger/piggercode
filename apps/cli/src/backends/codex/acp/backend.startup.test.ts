@@ -43,7 +43,7 @@ describe('Codex ACP native startup', () => {
       });
       const backends = [0, 1].map(() => createCodexAcpBackend({
         cwd: root,
-        env: { HAPPIER_CODEX_ACP_BIN: wrapper, CODEX_HOME: join(root, 'shared-home'), OPENAI_API_KEY: undefined, CODEX_API_KEY: undefined },
+        env: { PIGGERCODE_CODEX_ACP_BIN: wrapper, CODEX_HOME: join(root, 'shared-home'), OPENAI_API_KEY: undefined, CODEX_API_KEY: undefined },
       }).backend);
       try {
         const outcomes = await Promise.allSettled(backends.map(backend => backend.startSession()));

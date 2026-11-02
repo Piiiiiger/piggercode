@@ -45,12 +45,12 @@ export type FakeTauriDesktopCommandResult = Readonly<{
 }>;
 
 type MutableFakeTauriDesktopWindow = Window & {
-  __HAPPIER_FAKE_TAURI_DESKTOP__?: FakeTauriDesktopState;
-  __HAPPIER_FAKE_TAURI_EVENT_LISTENERS__?: Record<string, number[]>;
+  __PIGGERCODE_FAKE_TAURI_DESKTOP__?: FakeTauriDesktopState;
+  __PIGGERCODE_FAKE_TAURI_EVENT_LISTENERS__?: Record<string, number[]>;
   /** Delivers a Tauri event to the page's listeners, as the Rust side's `app.emit` does. */
-  __HAPPIER_FAKE_TAURI_EMIT__?: (event: string, payload: unknown) => void;
+  __PIGGERCODE_FAKE_TAURI_EMIT__?: (event: string, payload: unknown) => void;
   /** Settles a held `desktop_download_update` (`true` → downloaded, `false` → the download fails). */
-  __HAPPIER_FAKE_TAURI_RELEASE_DOWNLOAD__?: (ok: boolean) => void;
+  __PIGGERCODE_FAKE_TAURI_RELEASE_DOWNLOAD__?: (ok: boolean) => void;
   __TAURI__?: { core?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } };
   __TAURI_EVENT_PLUGIN_INTERNALS__?: { unregisterListener: (event: string, id: number) => void };
   __TAURI_INTERNALS__?: {
@@ -236,7 +236,7 @@ export async function installFakeTauriDesktopBridge(
     const windowMovedEvent = 'tauri://move';
     const windowResizedEvent = 'tauri://resize';
     const win = window as MutableFakeTauriDesktopWindow;
-    const systemTaskHostBinding = '__HAPPIER_FAKE_TAURI_SYSTEM_TASK_HOST__';
+    const systemTaskHostBinding = '__PIGGERCODE_FAKE_TAURI_SYSTEM_TASK_HOST__';
     const systemTaskCommands = [
       'start_system_task',
       'get_system_task_snapshot',
@@ -283,7 +283,7 @@ export async function installFakeTauriDesktopBridge(
           args ?? null,
         );
       }
-      const current = win.__HAPPIER_FAKE_TAURI_DESKTOP__ ?? serializedState;
+      const current = win.__PIGGERCODE_FAKE_TAURI_DESKTOP__ ?? serializedState;
       const base = {
         ...current,
         controls: { ...current.controls },
@@ -299,7 +299,7 @@ export async function installFakeTauriDesktopBridge(
       } else if (command === 'desktop_fetch_update') {
         result = base.updateAvailable;
       } else if (command === 'desktop_download_update') {
-        win.__HAPPIER_FAKE_TAURI_DESKTOP__ = base;
+        win.__PIGGERCODE_FAKE_TAURI_DESKTOP__ = base;
         const offered = base.updateAvailable;
         if (!offered) return false;
         if (base.updateDownload === 'fail') throw new Error('error sending request for url');
@@ -310,8 +310,8 @@ export async function installFakeTauriDesktopBridge(
             totalBytes: 100,
           });
           return await new Promise<boolean>((resolve, reject) => {
-            win.__HAPPIER_FAKE_TAURI_RELEASE_DOWNLOAD__ = (ok) => {
-              win.__HAPPIER_FAKE_TAURI_RELEASE_DOWNLOAD__ = undefined;
+            win.__PIGGERCODE_FAKE_TAURI_RELEASE_DOWNLOAD__ = (ok) => {
+              win.__PIGGERCODE_FAKE_TAURI_RELEASE_DOWNLOAD__ = undefined;
               if (ok) resolve(true);
               else reject(new Error('error sending request for url'));
             };
@@ -361,7 +361,7 @@ export async function installFakeTauriDesktopBridge(
         result = true;
       }
 
-      win.__HAPPIER_FAKE_TAURI_DESKTOP__ = nextState;
+      win.__PIGGERCODE_FAKE_TAURI_DESKTOP__ = nextState;
 
       if (command === 'plugin:event|listen') {
         const event = String(args?.event ?? '').trim();
@@ -392,8 +392,8 @@ export async function installFakeTauriDesktopBridge(
       return result;
     };
 
-    win.__HAPPIER_FAKE_TAURI_DESKTOP__ = serializedState;
-    win.__HAPPIER_FAKE_TAURI_EVENT_LISTENERS__ = listenersByEvent;
+    win.__PIGGERCODE_FAKE_TAURI_DESKTOP__ = serializedState;
+    win.__PIGGERCODE_FAKE_TAURI_EVENT_LISTENERS__ = listenersByEvent;
     win.__TAURI_INTERNALS__ = {
       callbacks,
       invoke: apply,
@@ -409,7 +409,7 @@ export async function installFakeTauriDesktopBridge(
       unregisterCallback: (id) => callbacks.delete(id),
     };
     win.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener };
-    win.__HAPPIER_FAKE_TAURI_EMIT__ = emitEvent;
+    win.__PIGGERCODE_FAKE_TAURI_EMIT__ = emitEvent;
     win.__TAURI__ = { core: { invoke: apply } };
   };
 
@@ -422,10 +422,10 @@ export async function installFakeTauriDesktopBridge(
 export async function readFakeTauriDesktopState(page: Page): Promise<FakeTauriDesktopState> {
   return page.evaluate(() => {
     const win = window as MutableFakeTauriDesktopWindow;
-    if (!win.__HAPPIER_FAKE_TAURI_DESKTOP__) {
+    if (!win.__PIGGERCODE_FAKE_TAURI_DESKTOP__) {
       throw new Error('Fake Tauri desktop bridge is not installed.');
     }
-    return win.__HAPPIER_FAKE_TAURI_DESKTOP__;
+    return win.__PIGGERCODE_FAKE_TAURI_DESKTOP__;
   });
 }
 
@@ -457,6 +457,6 @@ export async function navigateSpa(page: Page, path: string): Promise<void> {
 export async function releaseFakeTauriDesktopDownload(page: Page, ok: boolean): Promise<void> {
   await page.evaluate((resolvedOk) => {
     const win = window as MutableFakeTauriDesktopWindow;
-    win.__HAPPIER_FAKE_TAURI_RELEASE_DOWNLOAD__?.(resolvedOk);
+    win.__PIGGERCODE_FAKE_TAURI_RELEASE_DOWNLOAD__?.(resolvedOk);
   }, ok);
 }

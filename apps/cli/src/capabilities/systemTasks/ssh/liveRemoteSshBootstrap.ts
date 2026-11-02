@@ -330,7 +330,7 @@ function applyRelayRuntimeUrlOverrides(params: Readonly<{
   relayUrl: string;
   envOverrides?: Record<string, string>;
 }>): string {
-  const rawHost = String(params.envOverrides?.HAPPIER_SERVER_HOST ?? '').trim();
+  const rawHost = String(params.envOverrides?.PIGGERCODE_SERVER_HOST ?? '').trim();
   const rawPort = String(params.envOverrides?.PORT ?? '').trim();
   try {
     const url = new URL(params.relayUrl);

@@ -17,7 +17,7 @@ describe('unread terminal launch artifacts', () => {
     const output = join(directory, 'native-env.json');
     const prepared = await prepareOwnedTerminalSpawn({ command: process.execPath,
       args: ['-e', `require('node:fs').writeFileSync(${JSON.stringify(output)},JSON.stringify({hook:process.env.HERDR_ENV,socket:process.env.HERDR_SOCKET_PATH,exact:process.env.SYNTHETIC_EXACT_SERVER}));`],
-      cwd: directory, env: { PATH: process.env.PATH, HAPPIER_HOME_DIR: directory,
+      cwd: directory, env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: directory,
         HERDR_ENV: '1', HERDR_SOCKET_PATH: 'synthetic-socket', SYNTHETIC_EXACT_SERVER: 'synthetic-endpoint' } });
     try {
       const child = await launchOwnedTerminalProcess({ spawn: prepared, cwd: directory });

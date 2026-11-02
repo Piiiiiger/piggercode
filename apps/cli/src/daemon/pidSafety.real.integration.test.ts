@@ -3,7 +3,7 @@
  *
  * These tests spawn real processes and rely on `ps-list` classification.
  *
- * Enable with: `HAPPIER_CLI_DAEMON_REATTACH_INTEGRATION=1`
+ * Enable with: `PIGGERCODE_CLI_DAEMON_REATTACH_INTEGRATION=1`
  */
 
 import { afterEach, describe, expect, it } from 'vitest';

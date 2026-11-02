@@ -56,7 +56,7 @@ describe('withFirstPartyPayloadMutationLock', () => {
   });
 
   it('lets exactly one of two concurrent reclaimers of a dead holder\'s lock mutate', async () => {
-    const layout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv: { HAPPIER_HOME_DIR: homeDir } });
+    const layout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv: { PIGGERCODE_HOME_DIR: homeDir } });
     const lockfilePath = `${layout.installRoot}.mutation.lock`;
     await writeFile(lockfilePath, JSON.stringify({ pid: DEAD_PID, acquiredAt: 1 }));
 

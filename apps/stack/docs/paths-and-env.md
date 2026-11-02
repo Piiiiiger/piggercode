@@ -19,15 +19,15 @@ hstack where
     - a cloned repo checkout (e.g. `/Users/<you>/.../happier-dev`), or
     - the installed runtime package under `~/.happier-stack/runtime/node_modules/@piggercode/stack` (see “Runtime dir”).
 
-- **Home dir** (`HAPPIER_STACK_HOME_DIR`)
+- **Home dir** (`PIGGERCODE_STACK_HOME_DIR`)
   - Default: `~/.happier-stack`
   - Stores **global user config** + caches, and may include a runtime install.
 
-- **Runtime dir** (`HAPPIER_STACK_RUNTIME_DIR`)
+- **Runtime dir** (`PIGGERCODE_STACK_RUNTIME_DIR`)
   - Default: `~/.happier-stack/runtime`
   - Used by `hstack self update` to install/upgrade a pinned `@piggercode/stack` runtime package.
 
-- **Workspace dir** (`HAPPIER_STACK_WORKSPACE_DIR`)
+- **Workspace dir** (`PIGGERCODE_STACK_WORKSPACE_DIR`)
   - Default: `~/.happier-stack/workspace` (when it exists).
   - This is the **storage workspace for the Happier monorepo checkout + worktrees** used by hstack.
   - It typically contains:
@@ -37,7 +37,7 @@ hstack where
     - `<workspace>/local/<owner>/...` (local worktrees)
     - `<workspace>/tmp/<owner>/...` (temporary worktrees)
 
-- **Repo dir** (`HAPPIER_STACK_REPO_DIR`)
+- **Repo dir** (`PIGGERCODE_STACK_REPO_DIR`)
   - Default: `<workspace>/main`
   - This is the active Happier monorepo checkout (either `main`, `dev`, or a worktree).
   - `hstack wt use ...` and `hstack stack wt <stack> -- use ...` update this value.
@@ -81,23 +81,23 @@ hstack loads env in `scripts/utils/env.mjs`.
 
 ### 0) “Canonical pointer” env (discovery)
 
-If `HAPPIER_STACK_HOME_DIR` is *not* set, we first try to read the **canonical pointer** env file to discover the intended home dir (useful for LaunchAgents / SwiftBar / minimal shells).
+If `PIGGERCODE_STACK_HOME_DIR` is *not* set, we first try to read the **canonical pointer** env file to discover the intended home dir (useful for LaunchAgents / SwiftBar / minimal shells).
 
 - Default canonical pointer path: `~/.happier-stack/.env`
 - Override canonical pointer location:
-  - `HAPPIER_STACK_CANONICAL_HOME_DIR=/some/dir` (pointer becomes `<dir>/.env`)
+  - `PIGGERCODE_STACK_CANONICAL_HOME_DIR=/some/dir` (pointer becomes `<dir>/.env`)
 
 ### 1) Global defaults (home config) OR cloned-repo defaults
 
 If home config exists, we load:
 
 - `~/.happier-stack/.env` (**defaults**)
-- `~/.happier-stack/env.local` (**overrides**, prefix-aware for `HAPPIER_STACK_*`)
+- `~/.happier-stack/env.local` (**overrides**, prefix-aware for `PIGGERCODE_STACK_*`)
 
 If home config does *not* exist (cloned repo usage before `hstack init`), we load:
 
 - `<cliRootDir>/.env`
-- `<cliRootDir>/env.local` (prefix-aware for `HAPPIER_STACK_*`)
+- `<cliRootDir>/env.local` (prefix-aware for `PIGGERCODE_STACK_*`)
 
 ### 2) Repo `.env` fallback (dev convenience)
 
@@ -105,7 +105,7 @@ Even when home config exists, we also load:
 
 - `<cliRootDir>/.env` (non-overriding fallback)
 
-This exists so repo-local dev settings (example: `HAPPIER_CODEX_ACP_BIN`) can work without forcing everyone to duplicate them into `~/.happier-stack/env.local`.
+This exists so repo-local dev settings (example: `PIGGERCODE_CODEX_ACP_BIN`) can work without forcing everyone to duplicate them into `~/.happier-stack/env.local`.
 
 Notes:
 - This is a **fallback only** (`override: false`): it won’t stomp on values already provided by the environment or home config.
@@ -115,7 +115,7 @@ Notes:
 
 Finally, we load the active stack env file (override = true):
 
-- `HAPPIER_STACK_ENV_FILE`
+- `PIGGERCODE_STACK_ENV_FILE`
 - if neither is set, we auto-select the env file for the current stack (defaults to `main`) if it exists
 
 Stack env files are allowed to contain **non-prefixed keys** (like `DATABASE_URL`) because that’s required for per-stack isolation.
@@ -144,7 +144,7 @@ In sandbox mode, hstack redirects **home/workspace/runtime/storage** under the s
 Global OS side effects (PATH edits, SwiftBar plugin install, LaunchAgents/systemd services) are **disabled by default** in sandbox mode.
 To explicitly allow them for testing, set:
 
-- `HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1`
+- `PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1`
 
 ---
 

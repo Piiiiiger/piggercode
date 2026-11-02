@@ -77,10 +77,10 @@ import {
 } from './pinnedRunnerSnapshotPrune';
 import { renameForPublicationSync } from './fs/renameForPublicationSync';
 
-const STACK_RUNTIME_STATE_PATH_ENV = 'HAPPIER_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH';
-const STACK_DIST_ENTRYPOINT_ENV = 'HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT';
-const DAEMON_DIST_CLOSURE_FINGERPRINT_ENV = 'HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT';
-const RUNTIME_BACKED_SUBPROCESS_ENV = 'HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED';
+const STACK_RUNTIME_STATE_PATH_ENV = 'PIGGERCODE_CLI_SUBPROCESS_STACK_RUNTIME_STATE_PATH';
+const STACK_DIST_ENTRYPOINT_ENV = 'PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT';
+const DAEMON_DIST_CLOSURE_FINGERPRINT_ENV = 'PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT';
+const RUNTIME_BACKED_SUBPROCESS_ENV = 'PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED';
 const CLI_DIST_BUILD_MANIFEST = '.build-manifest.json';
 const PINNED_RUNNER_DIST_DIR = '.runner-snapshots';
 export const PINNED_RUNNER_REQUIRED_ASSET_RELATIVE_PATHS = [
@@ -96,7 +96,7 @@ export const PINNED_RUNNER_REQUIRED_ASSET_RELATIVE_PATHS = [
 ] as const;
 
 function getSubprocessRuntime(): 'node' | 'bun' {
-  const override = process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME;
+  const override = process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME;
   if (override === 'node' || override === 'bun') return override;
   return isBun() ? 'bun' : 'node';
 }
@@ -134,7 +134,7 @@ export function resolveTsxImportHookSpecifier(platform: NodeJS.Platform = proces
 }
 
 function resolveSubprocessEntrypoint(): string {
-  const override = process.env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT;
+  const override = process.env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT;
   if (typeof override === 'string' && override.trim().length > 0) {
     return override.trim();
   }
@@ -161,9 +161,9 @@ export function resolveCliTsxTsconfigPath(): string {
 }
 
 function shouldAllowDevTsxFallback(): boolean {
-  const explicit = parseOptionalBooleanEnv(process.env.HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK);
+  const explicit = parseOptionalBooleanEnv(process.env.PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK);
   if (explicit !== null) return explicit;
-  const isDevVariant = process.env.HAPPIER_VARIANT === 'dev';
+  const isDevVariant = process.env.PIGGERCODE_VARIANT === 'dev';
   const hasStackContext = hasStackSubprocessContext();
   const hasDevSourceEntrypoint = existsSync(join(projectPath(), 'src', 'index.ts'));
   if (!isDevVariant && !hasStackContext && !hasDevSourceEntrypoint) return false;
@@ -172,19 +172,19 @@ function shouldAllowDevTsxFallback(): boolean {
 
 function hasStackSubprocessContext(env: Readonly<NodeJS.ProcessEnv> = process.env): boolean {
   return Boolean(
-    env.HAPPIER_STACK_REPO_DIR ||
-      env.HAPPIER_STACK_CLI_ROOT_DIR ||
-      env.HAPPIER_STACK_STACK
+    env.PIGGERCODE_STACK_REPO_DIR ||
+      env.PIGGERCODE_STACK_CLI_ROOT_DIR ||
+      env.PIGGERCODE_STACK_STACK
   );
 }
 
 function shouldPreferDevTsxSubprocess(): boolean {
-  if (typeof process.env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT === 'string' && process.env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT.trim().length > 0) {
+  if (typeof process.env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT === 'string' && process.env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT.trim().length > 0) {
     return false;
   }
-  const explicitPreference = parseOptionalBooleanEnv(process.env.HAPPIER_CLI_SUBPROCESS_PREFER_TSX);
+  const explicitPreference = parseOptionalBooleanEnv(process.env.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX);
   if (explicitPreference !== null) return explicitPreference;
-  return process.env.HAPPIER_VARIANT === 'dev' || hasStackSubprocessContext();
+  return process.env.PIGGERCODE_VARIANT === 'dev' || hasStackSubprocessContext();
 }
 
 export type HappyCliSubprocessRuntime = 'node' | 'bun' | 'binary';
@@ -286,7 +286,7 @@ function resolveSiblingWindowsPackagedBinary(entrypoint: string): string | null 
 function shouldUseWindowsPackagedBinary(options: HappyCliSubprocessLaunchOptions | undefined): boolean {
   if (!options?.preferWindowsPackagedBinary) return false;
   if (process.platform !== 'win32') return false;
-  const enabled = parseOptionalBooleanEnv(process.env.HAPPIER_WINDOWS_SESSION_RUNNER_BINARY);
+  const enabled = parseOptionalBooleanEnv(process.env.PIGGERCODE_WINDOWS_SESSION_RUNNER_BINARY);
   return enabled !== false;
 }
 
@@ -413,16 +413,16 @@ function resolveStackRuntimeStatePath(
   const explicit = readNonEmptyEnv(STACK_RUNTIME_STATE_PATH_ENV, env);
   if (explicit) return explicit;
 
-  const stackEnvFile = readNonEmptyEnv('HAPPIER_STACK_ENV_FILE', env);
+  const stackEnvFile = readNonEmptyEnv('PIGGERCODE_STACK_ENV_FILE', env);
   if (stackEnvFile) return join(dirname(stackEnvFile), 'stack.runtime.json');
 
-  const homeDir = readNonEmptyEnv('HAPPIER_HOME_DIR', env) ?? readNonEmptyEnv('HAPPIER_STACK_CLI_HOME_DIR', env);
+  const homeDir = readNonEmptyEnv('PIGGERCODE_HOME_DIR', env) ?? readNonEmptyEnv('PIGGERCODE_STACK_CLI_HOME_DIR', env);
   if (homeDir && basename(homeDir) === 'cli') {
     return join(dirname(homeDir), 'stack.runtime.json');
   }
 
-  const storageDir = readNonEmptyEnv('HAPPIER_STACK_STORAGE_DIR', env);
-  const stackName = readNonEmptyEnv('HAPPIER_STACK_STACK', env);
+  const storageDir = readNonEmptyEnv('PIGGERCODE_STACK_STORAGE_DIR', env);
+  const stackName = readNonEmptyEnv('PIGGERCODE_STACK_STACK', env);
   if (storageDir && stackName) return join(storageDir, stackName, 'stack.runtime.json');
 
   return null;
@@ -770,7 +770,7 @@ export function buildHappyCliSubprocessInvocation(
 
   if (runtime === 'node' && shouldPreferDevTsxSubprocess()) {
     const environment = options?.environment ?? process.env;
-    const explicitTsxPreference = parseOptionalBooleanEnv(environment.HAPPIER_CLI_SUBPROCESS_PREFER_TSX);
+    const explicitTsxPreference = parseOptionalBooleanEnv(environment.PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX);
     if (explicitTsxPreference !== true) {
       const currentStackDistInvocation = buildCurrentStackDistSubprocessInvocation(args, entrypoint, options);
       if (currentStackDistInvocation) return currentStackDistInvocation;

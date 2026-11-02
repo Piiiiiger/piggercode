@@ -38,7 +38,7 @@ import { waitFor } from '../../src/testkit/timing';
 
 const run = createRunDirs({
   runLabel: 'core',
-  ...(process.env.HAPPIER_E2E_LOGS_DIR ? { logsDir: process.env.HAPPIER_E2E_LOGS_DIR } : {}),
+  ...(process.env.PIGGERCODE_E2E_LOGS_DIR ? { logsDir: process.env.PIGGERCODE_E2E_LOGS_DIR } : {}),
 });
 
 const SERVICE_ID = 'openai-codex' satisfies ConnectedServiceId;
@@ -112,8 +112,8 @@ async function startFixture(testName: string): Promise<Readonly<{
     idToken: null,
     expiresAt: Date.now() + 60 * 60_000,
     daemonExtraEnv: {
-      HAPPIER_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED: '0',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
     },
   });
   activeStops.push(async () => {
@@ -180,12 +180,12 @@ async function spawnGroupAppServerSession(params: Readonly<{
     groupId: params.groupId,
     fakeAppServerPath: params.appServer.fakeAppServerPath,
     environmentVariables: {
-      HAPPIER_E2E_FAKE_CODEX_APP_SERVER_ACCOUNT_EMAILS_JSON: JSON.stringify(ACCOUNT_EMAILS),
+      PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_ACCOUNT_EMAILS_JSON: JSON.stringify(ACCOUNT_EMAILS),
       ...(typeof params.turnDelayMs === 'number'
-        ? { HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: String(params.turnDelayMs) }
+        ? { PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: String(params.turnDelayMs) }
         : {}),
       ...(params.loginFailureAccountIds && params.loginFailureAccountIds.length > 0
-        ? { HAPPIER_E2E_FAKE_CODEX_APP_SERVER_LOGIN_FAIL_ACCOUNT_IDS: params.loginFailureAccountIds.join(',') }
+        ? { PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_LOGIN_FAIL_ACCOUNT_IDS: params.loginFailureAccountIds.join(',') }
         : {}),
     },
   });

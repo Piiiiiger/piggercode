@@ -7,7 +7,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 describe('daemon control client startup lock inspection', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
   const spawnedChildren: ChildProcess[] = [];
 
   afterEach(() => {
@@ -21,7 +21,7 @@ describe('daemon control client startup lock inspection', () => {
       }
     }
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+    envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
     vi.resetModules();
     vi.doUnmock('@/daemon/doctor');
   });
@@ -29,7 +29,7 @@ describe('daemon control client startup lock inspection', () => {
   it('reports startup in progress when a live daemon lock exists before state is written', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-starting-lock-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_HOME_DIR: homeDir,
     });
 
     try {
@@ -63,7 +63,7 @@ describe('daemon control client startup lock inspection', () => {
   it('treats a fresh live unclassified lock holder as startup in progress', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-starting-lock-unclassified-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_HOME_DIR: homeDir,
     });
 
     const killSpy = vi.spyOn(process, 'kill').mockImplementation(() => true as any);
@@ -95,7 +95,7 @@ describe('daemon control client startup lock inspection', () => {
   it('does not report startup forever for a stale live unclassified lock holder', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-stale-live-lock-unclassified-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_HOME_DIR: homeDir,
     });
 
     const killSpy = vi.spyOn(process, 'kill').mockImplementation(() => true as any);
@@ -127,7 +127,7 @@ describe('daemon control client startup lock inspection', () => {
 
   it('keeps a previously classified live startup after the freshness window', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-slow-classified-lock-');
-    envScope.patch({ HAPPIER_HOME_DIR: homeDir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: homeDir });
     const killSpy = vi.spyOn(process, 'kill').mockImplementation(() => true as any);
     const classifyDaemonLifecycleProcessByPid = vi.fn()
       .mockResolvedValueOnce({
@@ -170,7 +170,7 @@ describe('daemon control client startup lock inspection', () => {
   it('does not stop a fresh live daemon startup lock before state is written', async () => {
     const homeDir = createTempDirSync('happier-cli-daemon-stop-starting-lock-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
+      PIGGERCODE_HOME_DIR: homeDir,
     });
 
     const killCalls: Array<{ pid: number; signal?: NodeJS.Signals | 0 }> = [];

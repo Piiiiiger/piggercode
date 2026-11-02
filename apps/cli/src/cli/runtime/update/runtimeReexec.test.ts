@@ -103,8 +103,8 @@ describe('maybeReexecToRuntime', () => {
       expect.arrayContaining(['/home/x/.happier/runtime.preview/node_modules/@piggercode/cli/dist/index.mjs', 'service', 'install']),
       expect.objectContaining({
         env: expect.objectContaining({
-          HAPPIER_CLI_RUNTIME_REEXEC: '1',
-          HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
+          PIGGERCODE_CLI_RUNTIME_REEXEC: '1',
+          PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
         }),
       }),
     );

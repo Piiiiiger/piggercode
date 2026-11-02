@@ -30,8 +30,8 @@ describe('apps/ui withNodeHeapLimit', () => {
         const highMemoryMachineBytes = 128 * 1024 * 1024 * 1024;
 
         expect(resolveMaxOldSpaceSizeMb({}, highMemoryMachineBytes)).toBe(24_576);
-        expect(resolveMaxOldSpaceSizeMb({ HAPPIER_UI_TEST_MAX_OLD_SPACE_SIZE_MB: 'nope' }, highMemoryMachineBytes)).toBe(24_576);
-        expect(resolveMaxOldSpaceSizeMb({ HAPPIER_UI_TEST_MAX_OLD_SPACE_SIZE_MB: '0' }, highMemoryMachineBytes)).toBe(24_576);
+        expect(resolveMaxOldSpaceSizeMb({ PIGGERCODE_UI_TEST_MAX_OLD_SPACE_SIZE_MB: 'nope' }, highMemoryMachineBytes)).toBe(24_576);
+        expect(resolveMaxOldSpaceSizeMb({ PIGGERCODE_UI_TEST_MAX_OLD_SPACE_SIZE_MB: '0' }, highMemoryMachineBytes)).toBe(24_576);
     });
 
     it('keeps the baseline heap on smaller machines when the UI env override is missing', () => {
@@ -39,7 +39,7 @@ describe('apps/ui withNodeHeapLimit', () => {
         expect(resolveMaxOldSpaceSizeMb({}, smallerMachineBytes)).toBe(8192);
     });
 
-    it('respects HAPPIER_UI_TEST_MAX_OLD_SPACE_SIZE_MB when valid', () => {
-        expect(resolveMaxOldSpaceSizeMb({ HAPPIER_UI_TEST_MAX_OLD_SPACE_SIZE_MB: '6144' })).toBe(6144);
+    it('respects PIGGERCODE_UI_TEST_MAX_OLD_SPACE_SIZE_MB when valid', () => {
+        expect(resolveMaxOldSpaceSizeMb({ PIGGERCODE_UI_TEST_MAX_OLD_SPACE_SIZE_MB: '6144' })).toBe(6144);
     });
 });

@@ -9188,7 +9188,7 @@ settingsSession: {
         manifest: {
           title: "Manifest pakietu modelu",
           subtitle:
-            "Domyślnie używa pakietów modeli Happier (nadpisz przez EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS).",
+            "Domyślnie używa pakietów modeli Happier (nadpisz przez EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS).",
           detailResolved: "Ustalono",
           detailMissing: "Brak",
         },
@@ -9232,7 +9232,7 @@ settingsSession: {
           },
           missingManifest: {
             title: "Brak URL manifestu",
-            body: "Nie można ustalić URL manifestu pakietu modelu. Sprawdź EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS (lub starsze zmienne środowiskowe Kokoro).",
+            body: "Nie można ustalić URL manifestu pakietu modelu. Sprawdź EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS (lub starsze zmienne środowiskowe Kokoro).",
           },
           notInstalledTitle: "Nie zainstalowano",
           notInstalledBody:

@@ -24,7 +24,7 @@ const MAX_STDOUT_LINE_BYTES: usize = 16 * 1024;
 
 /// R16 — tells hsetup which desktop app launched it (the bundle identifier), so the services it
 /// installs for that app name it and macOS Login Items attributes them to Happier.
-const DESKTOP_BUNDLE_ID_ENV: &str = "HAPPIER_DESKTOP_BUNDLE_ID";
+const DESKTOP_BUNDLE_ID_ENV: &str = "PIGGERCODE_DESKTOP_BUNDLE_ID";
 static DESKTOP_BUNDLE_ID: std::sync::OnceLock<String> = std::sync::OnceLock::new();
 
 /// Called once at app start with the app's identifier (`tauri.conf.json` `identifier`, which is

@@ -78,7 +78,7 @@ test('promptWorktreeSource falls back to default when pick has no available repo
     component: 'happier-ui',
     stackName: 'exp1',
     createRemote: 'upstream',
-    env: { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: workspaceDir },
+    env: { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir },
     deps: {
       listWorktreeSpecs: async () => [],
       promptSelect: async (_rl, { title }) => {
@@ -124,7 +124,7 @@ test('promptWorktreeSource offers dev when dev checkout exists (even with no cat
     component: 'happier-ui',
     stackName: 'exp1',
     createRemote: 'upstream',
-    env: { ...process.env, HAPPIER_STACK_WORKSPACE_DIR: workspaceDir },
+    env: { ...process.env, PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir },
     deps: { listWorktreeSpecs, promptSelect, prompt },
   });
 

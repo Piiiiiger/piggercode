@@ -294,7 +294,7 @@ describe('getForkedTranscriptSnapshotCached', () => {
 
   it('honors the configured forked snapshot cache working set', async () => {
     vi.resetModules();
-    vi.stubEnv('EXPO_PUBLIC_HAPPIER_SYNC_TUNING_JSON', JSON.stringify({
+    vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_SYNC_TUNING_JSON', JSON.stringify({
       transcriptForkedSnapshotCacheMaxSessions: 4,
     }));
     const {

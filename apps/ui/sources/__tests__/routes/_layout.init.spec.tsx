@@ -429,7 +429,7 @@ describe('app/_layout init resilience', () => {
         authContextState.liveIsAuthenticated = null;
         notificationNativeState.unavailable = false;
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_SENTRY_INIT__;
+        delete (globalThis as any).__PIGGERCODE_SENTRY_INIT__;
         // Clean up any navigator overrides from tests.
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete (globalThis as any).navigator;

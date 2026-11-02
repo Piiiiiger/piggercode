@@ -16,10 +16,10 @@ import { ensureAccountReadyForConnect } from '../../src/testkit/uiE2e/ensureAcco
  * R11 visual QA of the desktop setup surface: the real app on the fake Tauri shell, its system
  * tasks answered by a scripted hsetup (`scriptedHsetup.mjs`, driven by a scenario file), so every
  * state is the real lifecycle presenting real facts over the real Home. Desktop width, light and
- * dark. Screenshots land in `HAPPIER_E2E_SETUP_SCREENS_DIR` (default: the run dir).
+ * dark. Screenshots land in `PIGGERCODE_E2E_SETUP_SCREENS_DIR` (default: the run dir).
  */
 const run = createRunDirs({ runLabel: 'ui-e2e' });
-const screensDir = resolve(process.env.HAPPIER_E2E_SETUP_SCREENS_DIR ?? run.testDir('setup-screens'));
+const screensDir = resolve(process.env.PIGGERCODE_E2E_SETUP_SCREENS_DIR ?? run.testDir('setup-screens'));
 const scriptedHsetup = join(dirname(fileURLToPath(import.meta.url)), '../../src/testkit/uiE2e/desktopSetup/scriptedHsetup.mjs');
 
 type Scenario = Readonly<{ relayUrl: string; status: 'hold' | 'unconfigured' | 'otherAccount'; setup: 'hold' | 'fail' }>;
@@ -43,8 +43,8 @@ test.describe('ui e2e: desktop setup veil screens (R11)', () => {
             ...process.env,
             EXPO_PUBLIC_DEBUG: '1',
             EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-setup-screens-${run.runId}`,
-            HAPPIER_E2E_UI_WEB_MODE: process.env.HAPPIER_E2E_UI_WEB_MODE ?? 'metro',
-            HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.HAPPIER_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
+            PIGGERCODE_E2E_UI_WEB_MODE: process.env.PIGGERCODE_E2E_UI_WEB_MODE ?? 'metro',
+            PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS: process.env.PIGGERCODE_E2E_UI_WEB_SCRIPT_FETCH_TIMEOUT_MS ?? '480000',
         };
         test.setTimeout(resolveUiWebBeforeAllTimeoutMs(uiWebEnv));
         await mkdir(suiteDir, { recursive: true });
@@ -65,7 +65,7 @@ test.describe('ui e2e: desktop setup veil screens (R11)', () => {
         const page = await context.newPage();
         await installFakeTauriDesktopBridge(page, { state: { platform: 'linux', strategy: 'custom-controls' } });
         await attachDesktopSystemTaskHost(page, (emit) => createDesktopSystemTaskHost({
-            launch: { command: process.execPath, args: [scriptedHsetup], env: { ...process.env, HAPPIER_E2E_SETUP_SCENARIO_FILE: scenarioFile } },
+            launch: { command: process.execPath, args: [scriptedHsetup], env: { ...process.env, PIGGERCODE_E2E_SETUP_SCENARIO_FILE: scenarioFile } },
             emit,
             logPath: join(suiteDir, `system-tasks-${theme}.log`),
         }));

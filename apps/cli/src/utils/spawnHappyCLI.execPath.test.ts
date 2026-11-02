@@ -38,8 +38,8 @@ describe('spawnHappyCLI runtime executable selection', () => {
 
     await withTempHappyCliEntrypoint(async (entrypoint) => {
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -59,8 +59,8 @@ describe('spawnHappyCLI runtime executable selection', () => {
 
     await withTempHappyCliEntrypoint(async (entrypoint) => {
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: 'bun',
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'bun',
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -90,9 +90,9 @@ describe('spawnHappyCLI runtime executable selection', () => {
       (globalThis as typeof globalThis & { Bun?: unknown }).Bun = {};
       await withTempHappyCliEntrypoint(async (entrypoint) => {
         envScope.patch({
-          HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-          HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-          HAPPIER_MANAGED_NODE_BIN: runtimePath,
+          PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+          PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+          PIGGERCODE_MANAGED_NODE_BIN: runtimePath,
         });
 
         const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -108,9 +108,9 @@ describe('spawnHappyCLI runtime executable selection', () => {
     (globalThis as typeof globalThis & { Bun?: unknown }).Bun = {};
     await withTempHappyCliEntrypoint(async (entrypoint) => {
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-        HAPPIER_MANAGED_NODE_BIN: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+        PIGGERCODE_MANAGED_NODE_BIN: undefined,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -134,10 +134,10 @@ describe('spawnHappyCLI runtime executable selection', () => {
 
       Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'win32' });
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-        HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+        PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -162,11 +162,11 @@ describe('spawnHappyCLI runtime executable selection', () => {
 
       Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'win32' });
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-        HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-        HAPPIER_WINDOWS_SESSION_RUNNER_BINARY: '0',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+        PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+        PIGGERCODE_WINDOWS_SESSION_RUNNER_BINARY: '0',
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -192,14 +192,14 @@ describe('spawnHappyCLI runtime executable selection', () => {
       });
 
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: '/$bunfs/dist/index.mjs',
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: undefined,
-        HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-        HAPPIER_VARIANT: undefined,
-        HAPPIER_STACK_REPO_DIR: undefined,
-        HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-        HAPPIER_STACK_STACK: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: '/$bunfs/dist/index.mjs',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+        PIGGERCODE_VARIANT: undefined,
+        PIGGERCODE_STACK_REPO_DIR: undefined,
+        PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+        PIGGERCODE_STACK_STACK: undefined,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -221,11 +221,11 @@ describe('spawnHappyCLI runtime executable selection', () => {
     const originalArgv = [...process.argv];
     const originalExecPath = process.execPath;
     const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
-    const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+    const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
 
     try {
       Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
-      process.env.HAPPIER_HOME_DIR = '/tmp/happier-cli-test-home';
+      process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-cli-test-home';
       process.argv = ['bun', '/$bunfs/root/happier-linux-arm64', 'daemon', 'start'];
       Object.defineProperty(process, 'execPath', {
         value: '/usr/bin/bun',
@@ -233,14 +233,14 @@ describe('spawnHappyCLI runtime executable selection', () => {
       });
 
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: '/$bunfs/dist/index.mjs',
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: undefined,
-        HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-        HAPPIER_VARIANT: undefined,
-        HAPPIER_STACK_REPO_DIR: undefined,
-        HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-        HAPPIER_STACK_STACK: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: '/$bunfs/dist/index.mjs',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+        PIGGERCODE_VARIANT: undefined,
+        PIGGERCODE_STACK_REPO_DIR: undefined,
+        PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+        PIGGERCODE_STACK_STACK: undefined,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -259,9 +259,9 @@ describe('spawnHappyCLI runtime executable selection', () => {
         Object.defineProperty(process, 'platform', originalPlatformDescriptor);
       }
       if (originalHappyHomeDir === undefined) {
-        delete process.env.HAPPIER_HOME_DIR;
+        delete process.env.PIGGERCODE_HOME_DIR;
       } else {
-        process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+        process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
       }
     }
   });
@@ -280,14 +280,14 @@ describe('spawnHappyCLI runtime executable selection', () => {
       Object.defineProperty(process, 'platform', { ...originalPlatformDescriptorInner, value: 'win32' });
 
       envScope.patch({
-        HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: 'B:/~BUN/dist/index.mjs',
-        HAPPIER_CLI_SUBPROCESS_RUNTIME: undefined,
-        HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-        HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-        HAPPIER_VARIANT: undefined,
-        HAPPIER_STACK_REPO_DIR: undefined,
-        HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-        HAPPIER_STACK_STACK: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: 'B:/~BUN/dist/index.mjs',
+        PIGGERCODE_CLI_SUBPROCESS_RUNTIME: undefined,
+        PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+        PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+        PIGGERCODE_VARIANT: undefined,
+        PIGGERCODE_STACK_REPO_DIR: undefined,
+        PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+        PIGGERCODE_STACK_STACK: undefined,
       });
 
       const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');

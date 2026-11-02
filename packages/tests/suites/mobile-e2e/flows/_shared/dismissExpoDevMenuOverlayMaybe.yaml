@@ -4,7 +4,7 @@
 # blocks the app UI. Close it only when the close affordance is visible because
 # Expo can leave "Go home" in the accessibility tree while the app is bundling.
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     when:

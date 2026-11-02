@@ -26,7 +26,7 @@ export function applyServerComponentFlavorEnv({ serverComponentName, targetEnv }
     throw new Error(`Unsupported server component: ${String(serverComponentName ?? '')}`);
   }
 
-  targetEnv.HAPPIER_SERVER_FLAVOR = flavor;
+  targetEnv.PIGGERCODE_SERVER_FLAVOR = flavor;
   targetEnv.HAPPY_SERVER_FLAVOR = flavor;
   return flavor;
 }

@@ -10,7 +10,7 @@ import { WebSocketServer, type RawData, type WebSocket } from 'ws-node';
 
 import { withTempDir } from '@/testkit/fs/tempDir';
 
-const bunExecutable = process.env.HAPPIER_TEST_BUN_EXECUTABLE?.trim() || 'bun';
+const bunExecutable = process.env.PIGGERCODE_TEST_BUN_EXECUTABLE?.trim() || 'bun';
 const bunAvailable = spawnSync(bunExecutable, ['--version'], { encoding: 'utf8' }).status === 0;
 const execFileAsync = promisify(execFile);
 

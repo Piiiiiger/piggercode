@@ -112,7 +112,7 @@ export type ProviderScenario = {
   id: string;
   title: string;
   // Optional per-scenario max wait for trace satisfaction loop.
-  // Falls back to global HAPPIER_E2E_PROVIDER_WAIT_MS when undefined.
+  // Falls back to global PIGGERCODE_E2E_PROVIDER_WAIT_MS when undefined.
   waitMs?: number;
   // Optional per-scenario inactivity timeout for provider activity polling.
   // Falls back to resolveProviderInactivityTimeoutMs defaults when undefined.
@@ -162,7 +162,7 @@ export type ProviderScenario = {
   // Optional grouping for selective runs.
   tier?: 'smoke' | 'extended';
   // Optional override for whether the CLI should be started in YOLO mode for this scenario.
-  // When undefined, falls back to `HAPPIER_E2E_PROVIDER_YOLO_DEFAULT` (default: true).
+  // When undefined, falls back to `PIGGERCODE_E2E_PROVIDER_YOLO_DEFAULT` (default: true).
   yolo?: boolean;
   // Optional caps for the amount of provider activity allowed (helps catch accidental extra tool calls).
   // These are enforced on the raw trace events (not fixtures) because fixtures are capped per key.

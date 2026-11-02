@@ -54,7 +54,7 @@ def _require_stack_context(ctx: Mapping[str, Any], fm: Mapping[str, Any]) -> boo
     if hs_kind == "parent":
         return True
 
-    stack_env = str(os.environ.get("HAPPIER_STACK_STACK") or "").strip()
+    stack_env = str(os.environ.get("PIGGERCODE_STACK_STACK") or "").strip()
     stack_task = str(fm.get("stack") or "").strip()
     if not stack_task:
         raise ValueError(
@@ -66,7 +66,7 @@ def _require_stack_context(ctx: Mapping[str, Any], fm: Mapping[str, Any]) -> boo
         )
     if not stack_env:
         raise ValueError(
-            "hstack: missing stack context (HAPPIER_STACK_STACK).\n"
+            "hstack: missing stack context (PIGGERCODE_STACK_STACK).\n"
             "Fix: run Edison through the stack wrapper:\n"
             f"  hstack edison --stack={stack_task} -- <edison ...>"
         )
@@ -143,10 +143,10 @@ def _require_worktree_repo_dir(fm: Mapping[str, Any]) -> bool:
             "  - set `hs_kind: component` on each component implementation task"
         )
 
-    repo_dir = str(os.environ.get("HAPPIER_STACK_REPO_DIR") or "").strip()
+    repo_dir = str(os.environ.get("PIGGERCODE_STACK_REPO_DIR") or "").strip()
     if not repo_dir:
         raise ValueError(
-            "hstack: missing stack repo dir override (HAPPIER_STACK_REPO_DIR).\n"
+            "hstack: missing stack repo dir override (PIGGERCODE_STACK_REPO_DIR).\n"
             "Fix (recommended):\n"
             "  hstack edison task:scaffold <task-id> --yes\n"
             "Or manually:\n"

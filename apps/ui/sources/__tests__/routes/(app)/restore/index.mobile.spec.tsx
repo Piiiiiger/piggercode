@@ -122,7 +122,7 @@ vi.mock('@/sync/http/client', () => ({
 }));
 
 vi.mock('@/sync/domains/server/serverProfiles', () => ({
-    HAPPIER_CLOUD_SERVER_URL: 'https://api.happier.dev',
+    PIGGERCODE_CLOUD_SERVER_URL: 'https://api.happier.dev',
     getActiveServerUrl: () => 'https://stack.example.test',
     getActiveServerSnapshot: () => ({ serverId: 'srv', serverUrl: 'https://stack.example.test', generation: 0 }),
     subscribeActiveServer: () => () => {},

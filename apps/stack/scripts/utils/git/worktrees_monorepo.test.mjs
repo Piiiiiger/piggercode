@@ -16,7 +16,7 @@ async function writeHappyMonorepoStub({ rootDir, worktreeRoot }) {
 test('worktreeSpecFromDir normalizes monorepo package dirs to the worktree spec', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stack-worktrees-monorepo-' });
   const rootDir = fixture.root;
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
 
   const wtRoot = join(rootDir, 'pr', '123-fix-monorepo');
   await mkdir(wtRoot, { recursive: true });
@@ -39,7 +39,7 @@ test('worktreeSpecFromDir normalizes monorepo package dirs to the worktree spec'
 test('worktreeSpecFromDir resolves the same spec from the monorepo root and nested unknown dirs', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stack-worktrees-monorepo-' });
   const rootDir = fixture.root;
-  const env = { HAPPIER_STACK_WORKSPACE_DIR: rootDir };
+  const env = { PIGGERCODE_STACK_WORKSPACE_DIR: rootDir };
   const wtRoot = join(rootDir, 'pr', '456-pathstyle');
   await mkdir(join(wtRoot, 'docs', 'guides'), { recursive: true });
   await writeHappyMonorepoStub({ rootDir, worktreeRoot: wtRoot });

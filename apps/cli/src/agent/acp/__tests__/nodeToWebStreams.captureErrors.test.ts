@@ -35,8 +35,8 @@ describe('nodeToWebStreams (capture stream errors)', () => {
       return stream as any;
     });
     envScope.patch({
-      HAPPIER_ACP_CAPTURE_IO: '1',
-      HAPPIER_STACK_TOOL_TRACE_FILE: '/tmp/happier-nodeToWebStreams-capture-errors.trace',
+      PIGGERCODE_ACP_CAPTURE_IO: '1',
+      PIGGERCODE_STACK_TOOL_TRACE_FILE: '/tmp/happier-nodeToWebStreams-capture-errors.trace',
     });
   });
 

@@ -104,7 +104,7 @@ export async function resolve(specifier, context, defaultResolve) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
     HSTACK_REVIEW_PR_MARKER: markerPath,
   };
 
@@ -124,7 +124,7 @@ export async function resolve(specifier, context, defaultResolve) {
   const setupPr = findSetupPrCall(calls);
   assert.ok(setupPr, `expected a setup-pr spawn call\n${JSON.stringify(calls, null, 2)}`);
 
-  const got = setupPr?.options?.env?.HAPPIER_STACK_SANDBOX_WORKSPACE_DIR ?? '';
+  const got = setupPr?.options?.env?.PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR ?? '';
   assert.equal(resolve(String(got)), expectedWorkspace);
 });
 
@@ -188,7 +188,7 @@ export async function resolve(specifier, context, defaultResolve) {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: join(tmp, 'home'),
+    PIGGERCODE_STACK_HOME_DIR: join(tmp, 'home'),
     HSTACK_REVIEW_PR_MARKER: markerPath,
   };
 
@@ -209,5 +209,5 @@ export async function resolve(specifier, context, defaultResolve) {
   const setupPr = findSetupPrCall(calls);
   assert.ok(setupPr, `expected a setup-pr spawn call\n${JSON.stringify(calls, null, 2)}`);
 
-  assert.equal(Boolean(setupPr?.options?.env?.HAPPIER_STACK_SANDBOX_WORKSPACE_DIR), false);
+  assert.equal(Boolean(setupPr?.options?.env?.PIGGERCODE_STACK_SANDBOX_WORKSPACE_DIR), false);
 });

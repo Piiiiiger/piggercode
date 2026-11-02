@@ -43,8 +43,8 @@ function pinnedPortOccupiedError({ stackName, port }) {
   return new Error(
     `[stack] ${stackName}: pinned server port ${port} is not available (in use by another process).\n` +
       `[stack] Fix: stop the process using it, or reallocate by unsetting the pin:\n` +
-      `  yarn env unset HAPPIER_STACK_SERVER_PORT\n` +
-      `  # (or) hstack env unset HAPPIER_STACK_SERVER_PORT`
+      `  yarn env unset PIGGERCODE_STACK_SERVER_PORT\n` +
+      `  # (or) hstack env unset PIGGERCODE_STACK_SERVER_PORT`
   );
 }
 
@@ -102,7 +102,7 @@ async function selectLocalServerPortCandidate({
 } = {}) {
   const name = String(stackName ?? '').trim() || 'main';
   const inStackMode = Boolean(stackMode);
-  const explicitPort = coercePort(env.HAPPIER_STACK_SERVER_PORT);
+  const explicitPort = coercePort(env.PIGGERCODE_STACK_SERVER_PORT);
   if (explicitPort) return { port: explicitPort, source: 'pinned', name, inStackMode };
 
   if (!inStackMode || name === 'main') {
@@ -111,8 +111,8 @@ async function selectLocalServerPortCandidate({
 
   const runtime = runtimeStatePath ? await readStackRuntimeStateFile(runtimeStatePath) : null;
   const runtimePort = coercePort(runtime?.ports?.server);
-  const baseRaw = (env.HAPPIER_STACK_SERVER_PORT_BASE ?? '').toString().trim();
-  const rangeRaw = (env.HAPPIER_STACK_SERVER_PORT_RANGE ?? '').toString().trim();
+  const baseRaw = (env.PIGGERCODE_STACK_SERVER_PORT_BASE ?? '').toString().trim();
+  const rangeRaw = (env.PIGGERCODE_STACK_SERVER_PORT_RANGE ?? '').toString().trim();
   const hasExplicitStableRange = Boolean(baseRaw || rangeRaw);
   const stableBase = coercePositiveInt(baseRaw) ?? 4101;
   const stableRange = coercePositiveInt(rangeRaw) ?? 1000;
@@ -122,12 +122,12 @@ async function selectLocalServerPortCandidate({
   const startPort = resolveStablePortStart({
     env: {
       ...env,
-      HAPPIER_STACK_SERVER_PORT_BASE: (env.HAPPIER_STACK_SERVER_PORT_BASE ?? '4101').toString(),
-      HAPPIER_STACK_SERVER_PORT_RANGE: (env.HAPPIER_STACK_SERVER_PORT_RANGE ?? '1000').toString(),
+      PIGGERCODE_STACK_SERVER_PORT_BASE: (env.PIGGERCODE_STACK_SERVER_PORT_BASE ?? '4101').toString(),
+      PIGGERCODE_STACK_SERVER_PORT_RANGE: (env.PIGGERCODE_STACK_SERVER_PORT_RANGE ?? '1000').toString(),
     },
     stackName: name,
-    baseKey: 'HAPPIER_STACK_SERVER_PORT_BASE',
-    rangeKey: 'HAPPIER_STACK_SERVER_PORT_RANGE',
+    baseKey: 'PIGGERCODE_STACK_SERVER_PORT_BASE',
+    rangeKey: 'PIGGERCODE_STACK_SERVER_PORT_RANGE',
     defaultBase: 4101,
     defaultRange: 1000,
   });

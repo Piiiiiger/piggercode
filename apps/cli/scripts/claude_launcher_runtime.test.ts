@@ -65,10 +65,10 @@ describe('claude_launcher_runtime getClaudeCliPath', () => {
   });
 
   it('returns claude when no override is set', () => {
-    delete process.env.HAPPIER_CLAUDE_PATH;
+    delete process.env.PIGGERCODE_CLAUDE_PATH;
     delete process.env.HAPPY_CLAUDE_PATH;
     delete process.env.DEBUG;
-    delete process.env.HAPPIER_DEBUG_CLAUDE_LAUNCHER;
+    delete process.env.PIGGERCODE_DEBUG_CLAUDE_LAUNCHER;
 
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -76,7 +76,7 @@ describe('claude_launcher_runtime getClaudeCliPath', () => {
     expect(errSpy).not.toHaveBeenCalled();
   });
 
-  it('expands ~/ in HAPPIER_CLAUDE_PATH', () => {
+  it('expands ~/ in PIGGERCODE_CLAUDE_PATH', () => {
     const homeDir = fs.mkdtempSync('/tmp/happier-claude-home-');
     const localBinDir = `${homeDir}/.local/bin`;
     fs.mkdirSync(localBinDir, { recursive: true });
@@ -88,9 +88,9 @@ describe('claude_launcher_runtime getClaudeCliPath', () => {
 
     try {
       process.env.HOME = homeDir;
-      process.env.HAPPIER_CLAUDE_PATH = '~/.local/bin/claude';
+      process.env.PIGGERCODE_CLAUDE_PATH = '~/.local/bin/claude';
       delete process.env.DEBUG;
-      delete process.env.HAPPIER_DEBUG_CLAUDE_LAUNCHER;
+      delete process.env.PIGGERCODE_DEBUG_CLAUDE_LAUNCHER;
 
       expect(fs.realpathSync(getClaudeCliPath())).toBe(fs.realpathSync(homeClaudePath));
       expect(errSpy).not.toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('claude_launcher_runtime getClaudeCliPath', () => {
   });
 
   it('exits when the override points to a missing file', () => {
-    process.env.HAPPIER_CLAUDE_PATH = '/nonexistent/path/claude';
+    process.env.PIGGERCODE_CLAUDE_PATH = '/nonexistent/path/claude';
 
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: string | number | null) => {
@@ -118,7 +118,7 @@ describe('claude_launcher_runtime getClaudeCliPath', () => {
   });
 
   it('logs the resolved source when debug is enabled', () => {
-    process.env.HAPPIER_CLAUDE_PATH = 'claude';
+    process.env.PIGGERCODE_CLAUDE_PATH = 'claude';
     process.env.DEBUG = '1';
 
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

@@ -16,13 +16,13 @@ export function resolveWindowsTerminalWindowName(params: {
   requested?: string | null | undefined;
   env: NodeJS.ProcessEnv;
 }): string {
-  const envName = normalizeWindowsTerminalWindowName(params.env.HAPPIER_WINDOWS_TERMINAL_WINDOW_NAME);
-  if (envName !== DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME || typeof params.env.HAPPIER_WINDOWS_TERMINAL_WINDOW_NAME === 'string') {
+  const envName = normalizeWindowsTerminalWindowName(params.env.PIGGERCODE_WINDOWS_TERMINAL_WINDOW_NAME);
+  if (envName !== DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME || typeof params.env.PIGGERCODE_WINDOWS_TERMINAL_WINDOW_NAME === 'string') {
     return envName;
   }
 
-  const legacyEnvName = normalizeWindowsTerminalWindowName(params.env.HAPPIER_WINDOWS_TERMINAL_WINDOW_ID);
-  if (legacyEnvName !== DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME || typeof params.env.HAPPIER_WINDOWS_TERMINAL_WINDOW_ID === 'string') {
+  const legacyEnvName = normalizeWindowsTerminalWindowName(params.env.PIGGERCODE_WINDOWS_TERMINAL_WINDOW_ID);
+  if (legacyEnvName !== DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME || typeof params.env.PIGGERCODE_WINDOWS_TERMINAL_WINDOW_ID === 'string') {
     return legacyEnvName;
   }
 

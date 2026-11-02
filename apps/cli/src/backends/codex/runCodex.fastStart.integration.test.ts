@@ -133,8 +133,8 @@ describe('runCodex fast-start', () => {
   }) as any);
 
   it('forwards Codex ACP fallback messages to the session', async () => {
-    const prev = process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
-    process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = 'codex-acp missing; falling back to mcp';
+    const prev = process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+    process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = 'codex-acp missing; falling back to mcp';
 
     const credentials = { token: 'test' } as Credentials;
 
@@ -155,8 +155,8 @@ describe('runCodex fast-start', () => {
     } finally {
       localExit.resolve({ type: 'exit', code: 0 });
       await runPromise;
-      if (prev === undefined) delete process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
-      else process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = prev;
+      if (prev === undefined) delete process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+      else process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = prev;
     }
 
     expect(sessionRef?.sendSessionEvent).toHaveBeenCalledWith({
@@ -166,11 +166,11 @@ describe('runCodex fast-start', () => {
   });
 
   it('falls back to MCP when Codex ACP is enabled but the configured binary is missing on disk', async () => {
-    const prevAcpBin = process.env.HAPPIER_CODEX_ACP_BIN;
-    const prevFallbackMessage = process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
-    delete process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+    const prevAcpBin = process.env.PIGGERCODE_CODEX_ACP_BIN;
+    const prevFallbackMessage = process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+    delete process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
 
-    process.env.HAPPIER_CODEX_ACP_BIN = join(tmpdir(), `happier-missing-codex-acp-${randomUUID()}`);
+    process.env.PIGGERCODE_CODEX_ACP_BIN = join(tmpdir(), `happier-missing-codex-acp-${randomUUID()}`);
 
     const credentials = { token: 'test' } as Credentials;
 
@@ -192,11 +192,11 @@ describe('runCodex fast-start', () => {
       localExit.resolve({ type: 'exit', code: 0 });
       await runPromise;
 
-      if (prevAcpBin === undefined) delete process.env.HAPPIER_CODEX_ACP_BIN;
-      else process.env.HAPPIER_CODEX_ACP_BIN = prevAcpBin;
+      if (prevAcpBin === undefined) delete process.env.PIGGERCODE_CODEX_ACP_BIN;
+      else process.env.PIGGERCODE_CODEX_ACP_BIN = prevAcpBin;
 
-      if (prevFallbackMessage === undefined) delete process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
-      else process.env.HAPPIER_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = prevFallbackMessage;
+      if (prevFallbackMessage === undefined) delete process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE;
+      else process.env.PIGGERCODE_CODEX_ACP_FALLBACK_TO_MCP_MESSAGE = prevFallbackMessage;
     }
 
     const messageCalls = (sessionRef?.sendSessionEvent as any)?.mock?.calls ?? [];
@@ -207,7 +207,7 @@ describe('runCodex fast-start', () => {
       .filter((message: unknown) => typeof message === 'string') as string[];
 
     expect(messages.join('\n')).toContain('Falling back to MCP');
-    expect(messages.join('\n')).toContain('HAPPIER_CODEX_ACP_BIN');
+    expect(messages.join('\n')).toContain('PIGGERCODE_CODEX_ACP_BIN');
   });
 
   it('seeds the Happy session path from an explicit directory override', async () => {
@@ -246,7 +246,7 @@ describe('runCodex fast-start', () => {
     codexLocalLauncherSpy.mockClear();
     initializeBackendRunSessionSpy.mockClear();
     initializeBackendRunSessionImpl = null;
-    executableEnv = createEnvKeyScope(['HAPPIER_CODEX_ACP_BIN', 'HAPPIER_CODEX_APP_SERVER_BIN']);
+    executableEnv = createEnvKeyScope(['PIGGERCODE_CODEX_ACP_BIN', 'PIGGERCODE_CODEX_APP_SERVER_BIN']);
     executableFixtureDir = await createTempDir('happier-codex-fast-start-');
     // The OS executable boundary is available, with exclusive-local capability;
     // no ambient provider install or shared-control runtime belongs to these cases.
@@ -261,7 +261,7 @@ if (process.argv.includes('--version')) {
 throw new Error('Unexpected vendor launch in fast-start fixture');
 `,
     });
-    executableEnv.patch({ HAPPIER_CODEX_ACP_BIN: executable, HAPPIER_CODEX_APP_SERVER_BIN: executable });
+    executableEnv.patch({ PIGGERCODE_CODEX_ACP_BIN: executable, PIGGERCODE_CODEX_APP_SERVER_BIN: executable });
   });
 
   afterEach(async () => {
@@ -276,8 +276,8 @@ throw new Error('Unexpected vendor launch in fast-start fixture');
   });
 
   it('invokes local TUI spawn without waiting for backend API initialization', async () => {
-    const prevTiming = process.env.HAPPIER_STARTUP_TIMING_ENABLED;
-    process.env.HAPPIER_STARTUP_TIMING_ENABLED = '1';
+    const prevTiming = process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
+    process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = '1';
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
 
@@ -304,8 +304,8 @@ throw new Error('Unexpected vendor launch in fast-start fixture');
       localExit.resolve({ type: 'exit', code: 0 });
       await runPromise;
 
-      if (prevTiming === undefined) delete process.env.HAPPIER_STARTUP_TIMING_ENABLED;
-      else process.env.HAPPIER_STARTUP_TIMING_ENABLED = prevTiming;
+      if (prevTiming === undefined) delete process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
+      else process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = prevTiming;
       reloadConfiguration();
     }
 
@@ -462,8 +462,8 @@ throw new Error('Unexpected vendor launch in fast-start fixture');
   });
 
   it('does not attach the deferred session to an offline stub; flushes buffered writes only after reconnection swap', async () => {
-    const prevTiming = process.env.HAPPIER_STARTUP_TIMING_ENABLED;
-    process.env.HAPPIER_STARTUP_TIMING_ENABLED = '1';
+    const prevTiming = process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
+    process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = '1';
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
 
@@ -593,8 +593,8 @@ throw new Error('Unexpected vendor launch in fast-start fixture');
     } finally {
       localExit.resolve({ type: 'exit', code: 0 });
       await runPromise;
-      if (prevTiming === undefined) delete process.env.HAPPIER_STARTUP_TIMING_ENABLED;
-      else process.env.HAPPIER_STARTUP_TIMING_ENABLED = prevTiming;
+      if (prevTiming === undefined) delete process.env.PIGGERCODE_STARTUP_TIMING_ENABLED;
+      else process.env.PIGGERCODE_STARTUP_TIMING_ENABLED = prevTiming;
       reloadConfiguration();
     }
 

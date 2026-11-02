@@ -1,4 +1,4 @@
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - launchApp:
     clearState: false
@@ -7,15 +7,15 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 - runFlow:
     file: _shared/dismissAndroidSystemNotRespondingDialogMaybe.yaml
 
-- openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///settings/server?auto=1&url=${HAPPIER_E2E_SERVER_URL}
+- openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///settings/server?auto=1&url=${PIGGERCODE_E2E_SERVER_URL}
 - runFlow:
     file: _shared/acceptAndroidOpenWithPromptMaybe.yaml
 
 - extendedWaitUntil:
-    visible: ".*${HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"
+    visible: ".*${PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN}.*"
     timeout: 240000
 
-- openLink: ${HAPPIER_E2E_MOBILE_APP_SCHEME}:///
+- openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///
 - runFlow:
     file: _shared/acceptAndroidOpenWithPromptMaybe.yaml
 

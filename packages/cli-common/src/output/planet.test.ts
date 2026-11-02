@@ -12,9 +12,9 @@ afterEach(() => {
 describe('setup welcome handoff', () => {
   it('keeps setup context without repeating installer artwork or the brand heading', () => {
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
     expect(renderSetupWelcome({ machineName: 'preview-machine', subtitle: 'Choose your connection' }).split('\n')).toContain('Happier');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '1');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '1');
     const output = renderSetupWelcome({ machineName: 'preview-machine', subtitle: 'Choose your connection', columns: 80 });
     expect(output).toContain('preview-machine');
     expect(output).toContain('Choose your connection');
@@ -25,7 +25,7 @@ describe('setup welcome handoff', () => {
   it('places the static planet beside the complete first setup choice on a wide terminal', () => {
     vi.stubEnv('TERM', 'xterm-256color');
     vi.stubEnv('NO_COLOR', '1');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
     const output = renderSetupChoice({
       machineName: 'preview-machine',
       subtitle: 'Connect your devices. Your coding agents run here.',
@@ -50,7 +50,7 @@ describe('setup welcome handoff', () => {
   it('breaks a word too long for the column beside the planet instead of letting the terminal wrap it', () => {
     vi.stubEnv('TERM', 'xterm-256color');
     vi.stubEnv('NO_COLOR', '1');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
     const machineName = `build-agent-${'x'.repeat(70)}-end`;
     const output = renderSetupChoice({
       machineName,
@@ -69,7 +69,7 @@ describe('setup welcome handoff', () => {
 
   it('uses compact complete text without the planet on narrow terminals', () => {
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
     const options = {
       machineName: 'preview-machine',
       subtitle: 'Choose your connection',
@@ -84,7 +84,7 @@ describe('setup welcome handoff', () => {
     expect(narrow.replace(/\n\s*/gu, ' ')).toContain('A deliberately long option whose meaning must wrap instead of being cropped');
     expect(narrow).not.toMatch(PLANET_DOT);
 
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '1');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '1');
     const handedOff = renderSetupChoice({ ...options, columns: 100 });
     expect(handedOff).not.toContain('Happier');
     expect(handedOff).toMatch(PLANET_DOT);
@@ -94,7 +94,7 @@ describe('setup welcome handoff', () => {
 
   it('offers idle frames only for a wide capable terminal', () => {
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     const base = {
       machineName: 'preview-machine',
       subtitle: 'Choose your connection',
@@ -106,9 +106,9 @@ describe('setup welcome handoff', () => {
     } as const;
     const animated = createSetupChoicePrompt(base);
     expect(animated.renderMessage?.(1)).not.toBe(animated.message);
-    vi.stubEnv('HAPPIER_NO_ANIMATION', ' TRUE ');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', ' TRUE ');
     expect(createSetupChoicePrompt(base)).toMatchObject({ animate: false, renderMessage: expect.any(Function) });
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     expect(createSetupChoicePrompt({ ...base, columns: 44 })).toMatchObject({ animate: false, renderMessage: expect.any(Function) });
     expect(createSetupChoicePrompt({ ...base, isTTY: false }).renderMessage).toBeUndefined();
   });
@@ -179,18 +179,18 @@ describe('setup planet', () => {
   it('rises out of an eclipse on a fresh welcome, but continues lit after the installer already welcomed', () => {
     vi.stubEnv('TERM', 'xterm-256color');
     vi.stubEnv('NO_COLOR', '1');
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
     const fresh = renderSetupChoice({ ...choiceOptions, seconds: 0.25 });
     const settled = renderSetupChoice({ ...choiceOptions, seconds: 8 });
     expect(planetDots(fresh)).toBeLessThan(planetDots(settled) * 0.45);
-    vi.stubEnv('HAPPIER_INSTALLER_WELCOME_SHOWN', '1');
+    vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '1');
     expect(planetDots(renderSetupChoice({ ...choiceOptions, seconds: 0.25 }))).toBeGreaterThan(planetDots(settled) * 0.8);
   });
 
   it('keeps breathing but steps back once the user starts choosing', () => {
     vi.stubEnv('TERM', 'xterm-256color');
     vi.stubEnv('NO_COLOR', '');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     const level = chalk.level;
     chalk.level = 3;
     try {
@@ -211,7 +211,7 @@ describe('setup planet', () => {
 
   it('redraws smoothly while it steps back, then returns to a calm breath', () => {
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     const level = chalk.level;
     chalk.level = 3;
     try {

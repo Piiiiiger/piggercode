@@ -33,14 +33,14 @@ function setStderrTtyForTest(isTTY: boolean): () => void {
 
 describe('terminal auth wait bound', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
-    'HAPPIER_AUTH_WAIT_TIMEOUT_MS',
-    'HAPPIER_NO_ANIMATION',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_AUTH_WAIT_TIMEOUT_MS',
+    'PIGGERCODE_NO_ANIMATION',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
     'NO_COLOR',
     'TERM',
   ] as const;
@@ -55,12 +55,12 @@ describe('terminal auth wait bound', () => {
     envScope = createEnvKeyScope(envKeys);
     homeDir = await createTempDir('happier-cli-auth-bounded-wait-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_NO_BROWSER_OPEN: '1',
-      HAPPIER_AUTH_METHOD: 'web',
-      HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-      HAPPIER_SERVER_URL: 'http://happier-auth-bounded.test',
-      HAPPIER_WEBAPP_URL: 'http://example.test',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_NO_BROWSER_OPEN: '1',
+      PIGGERCODE_AUTH_METHOD: 'web',
+      PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+      PIGGERCODE_SERVER_URL: 'http://happier-auth-bounded.test',
+      PIGGERCODE_WEBAPP_URL: 'http://example.test',
     });
     restoreTty = setStdioTtyForTest({ stdin: false, stdout: false });
   });
@@ -77,11 +77,11 @@ describe('terminal auth wait bound', () => {
   });
 
   it('stops waiting once the caller-set bound elapses and names the way back in', async () => {
-    envScope.patch({ HAPPIER_AUTH_WAIT_TIMEOUT_MS: '200' });
+    envScope.patch({ PIGGERCODE_AUTH_WAIT_TIMEOUT_MS: '200' });
 
     const app = pendingRelay();
     await app.ready();
-    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.HAPPIER_SERVER_URL ?? '' });
+    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.PIGGERCODE_SERVER_URL ?? '' });
     vi.resetModules();
     const { doAuth } = await import('./auth');
 
@@ -107,9 +107,9 @@ describe('terminal auth wait bound', () => {
 
   it('keeps QR approval on compact progress so the code stays visible', async () => {
     envScope.patch({
-      HAPPIER_AUTH_METHOD: undefined,
-      HAPPIER_AUTH_WAIT_TIMEOUT_MS: '200',
-      HAPPIER_NO_ANIMATION: '',
+      PIGGERCODE_AUTH_METHOD: undefined,
+      PIGGERCODE_AUTH_WAIT_TIMEOUT_MS: '200',
+      PIGGERCODE_NO_ANIMATION: '',
       NO_COLOR: '1',
       TERM: 'xterm-256color',
     });
@@ -119,7 +119,7 @@ describe('terminal auth wait bound', () => {
 
     const app = pendingRelay();
     await app.ready();
-    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.HAPPIER_SERVER_URL ?? '' });
+    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.PIGGERCODE_SERVER_URL ?? '' });
     vi.resetModules();
     const { doAuth } = await import('./auth');
 
@@ -147,7 +147,7 @@ describe('terminal auth wait bound', () => {
     // `happier auth login` performs.
     const app = pendingRelay();
     await app.ready();
-    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.HAPPIER_SERVER_URL ?? '' });
+    const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.PIGGERCODE_SERVER_URL ?? '' });
     vi.resetModules();
     const { doAuth } = await import('./auth');
 

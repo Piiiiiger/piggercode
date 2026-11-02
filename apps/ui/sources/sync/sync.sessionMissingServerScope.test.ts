@@ -2622,7 +2622,7 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
         savePendingAccountSettings(scope!, { viewInline: false });
 
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-        const previousDebugFlag = process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC;
+        const previousDebugFlag = process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC;
 
         try {
             const { sync } = await import('./sync');
@@ -2631,7 +2631,7 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
                 secret: encodeBase64(new Uint8Array(32).fill(3), 'base64url'),
             });
 
-            process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC = '1';
+            process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC = '1';
             expect((sync as any).activateAccountSettingsScopeForCredentials({
                 token: 'not-a-token',
                 secret: encodeBase64(new Uint8Array(32).fill(4), 'base64url'),
@@ -2649,9 +2649,9 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
             );
         } finally {
             if (previousDebugFlag === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC = previousDebugFlag;
+                process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC = previousDebugFlag;
             }
             warnSpy.mockRestore();
         }
@@ -2666,7 +2666,7 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
         savePendingAccountSettings(scope!, { viewInline: false });
 
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-        const previousDebugFlag = process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC;
+        const previousDebugFlag = process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC;
 
         try {
             const { sync } = await import('./sync');
@@ -2696,7 +2696,7 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
                 origin: { kind: 'manualImport' },
             });
 
-            process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC = '1';
+            process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC = '1';
             await expect(sync.create({
                 token: buildTokenWithSub(''),
                 secret: encodeBase64(new Uint8Array(32).fill(4), 'base64url'),
@@ -2717,9 +2717,9 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
             );
         } finally {
             if (previousDebugFlag === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_DEBUG_SETTINGS_SYNC = previousDebugFlag;
+                process.env.EXPO_PUBLIC_PIGGERCODE_DEBUG_SETTINGS_SYNC = previousDebugFlag;
             }
             warnSpy.mockRestore();
         }

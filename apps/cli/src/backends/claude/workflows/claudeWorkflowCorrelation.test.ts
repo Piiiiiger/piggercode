@@ -888,7 +888,7 @@ describe('parseClaudeWorkflowFact — the undeclared workflow_progress shape', (
 
   it('reports an unreadable shape on a signal that is on by default, and only once per shape', () => {
     // `logger.debug` is OFF in a session process (`resolveFileLogLevel` -> `info` unless
-    // `DEBUG`/`HAPPIER_LOG_LEVEL`), so a debug line here would be an unobservable fallback — which
+    // `DEBUG`/`PIGGERCODE_LOG_LEVEL`), so a debug line here would be an unobservable fallback — which
     // is the same class of silent degradation this whole corridor exists to remove.
     const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
 

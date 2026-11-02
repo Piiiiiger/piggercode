@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
     'HEADER_SEARCH_PATHS' => '$(inherited) "$(PODS_TARGET_SRCROOT)/../common/cpp"'
   }
 
-  sherpa_version = ENV['HAPPIER_SHERPA_ONNX_VERSION'] || 'v1.12.25'
+  sherpa_version = ENV['PIGGERCODE_SHERPA_ONNX_VERSION'] || 'v1.12.25'
   sherpa_archive = "sherpa-onnx-#{sherpa_version}-ios.tar.bz2"
   sherpa_base_url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/#{sherpa_version}"
   sherpa_vendor_dir = File.join(__dir__, 'vendor', 'sherpa-onnx', sherpa_version)

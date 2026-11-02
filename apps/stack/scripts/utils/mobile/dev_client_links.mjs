@@ -13,7 +13,7 @@ function normalizeHostMode(raw) {
 export function resolveMobileHostMode(env = process.env) {
   // Prefer explicit host vars (so TUI/setup-pr match the same knobs Expo uses).
   const raw =
-    getEnvValueAny(env, ['HAPPIER_STACK_MOBILE_HOST']) ||
+    getEnvValueAny(env, ['PIGGERCODE_STACK_MOBILE_HOST']) ||
     resolveMobileExpoConfig({ env }).host ||
     'lan';
   return normalizeHostMode(raw);

@@ -415,17 +415,17 @@ test('resolveServerReadyTimeoutMs prefers an explicit override and otherwise giv
   assert.equal(
     resolveServerReadyTimeoutMs({
       serverComponentName: 'happier-server-light',
-      env: { HAPPIER_STACK_SERVER_READY_TIMEOUT_MS: '90000' },
+      env: { PIGGERCODE_STACK_SERVER_READY_TIMEOUT_MS: '90000' },
     }),
     90_000,
   );
   assert.equal(resolveServerMigrationTimeoutMs({ env: {} }), 30 * 60_000);
   assert.equal(
-    resolveServerMigrationTimeoutMs({ env: { HAPPIER_STACK_SERVER_MIGRATION_TIMEOUT_MS: '240000' } }),
+    resolveServerMigrationTimeoutMs({ env: { PIGGERCODE_STACK_SERVER_MIGRATION_TIMEOUT_MS: '240000' } }),
     240_000,
   );
   assert.equal(
-    resolveServerMigrationTimeoutMs({ env: { HAPPIER_STACK_SERVER_MIGRATION_TIMEOUT_MS: '86400001' } }),
+    resolveServerMigrationTimeoutMs({ env: { PIGGERCODE_STACK_SERVER_MIGRATION_TIMEOUT_MS: '86400001' } }),
     30 * 60_000,
   );
 });

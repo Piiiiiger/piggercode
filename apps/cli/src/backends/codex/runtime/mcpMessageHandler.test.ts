@@ -238,8 +238,8 @@ describe('createCodexMcpMessageHandler', () => {
   });
 
   it('streams agent_message text through transcript-vNext instead of creating standalone Codex rows', () => {
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
 
       let thinking = false;
       let currentTaskId: string | null = null;
@@ -291,8 +291,8 @@ describe('createCodexMcpMessageHandler', () => {
   });
 
   it('streams agent_reasoning deltas as ACP thinking messages (not tool calls)', () => {
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MS', '1000000');
-    vi.stubEnv('HAPPIER_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MS', '1000000');
+    vi.stubEnv('PIGGERCODE_STREAM_CHECKPOINT_MIN_CHARS', '1000000');
 
       let thinking = false;
       let currentTaskId: string | null = null;

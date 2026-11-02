@@ -57,14 +57,14 @@ describe('the daemon republishes its CLI update facts when the update record cha
       }),
       onError: () => {},
     });
-    publisher.watch({ channel: 'stable', processEnv: { HAPPIER_HOME_DIR: homeDir } });
+    publisher.watch({ channel: 'stable', processEnv: { PIGGERCODE_HOME_DIR: homeDir } });
     return { publisher, published };
   }
 
   async function recordFailedAttempt(message: string): Promise<void> {
     await runManagedCliUpdate({
       channel: 'stable',
-      processEnv: { HAPPIER_HOME_DIR: homeDir },
+      processEnv: { PIGGERCODE_HOME_DIR: homeDir },
       preparePayload: async () => { throw new Error(message); },
       readVersion: async () => null,
       restartServiceDaemon: null,

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
 
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from './connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from './connectedServices/connectedServiceChildEnvironment';
 import { ConnectedServiceRuntimeRegistry } from './connectedServices/runtimeRegistry/registry';
 import {
   registerConnectedServiceTrackedSessionTargetsForDaemon,
@@ -13,7 +13,7 @@ import type { TrackedSession } from './types';
 describe('registerConnectedServiceTrackedSessionTargetsForDaemon', () => {
   function createClaudeTrackedSession(metadata: Record<string, unknown> = {}): TrackedSession {
     const connectedServiceSelectionsEnv = {
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'profile',
         serviceId: 'claude-subscription',
         profileId: 'claude-primary',
@@ -195,7 +195,7 @@ describe('registerConnectedServiceTrackedSessionTargetsForDaemon', () => {
         },
       },
       environmentVariables: {
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
           kind: 'group',
           serviceId: 'openai-codex',
           groupId: 'team',
@@ -224,7 +224,7 @@ describe('registerConnectedServiceTrackedSessionTargetsForDaemon', () => {
     });
 
     tracked.spawnOptions.environmentVariables = {
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'team',
@@ -253,7 +253,7 @@ describe('registerConnectedServiceTrackedSessionTargetsForDaemon', () => {
 
   it('registers a reattached connected-service session directly with the runtime registry', () => {
     const connectedServiceSelectionsEnv = {
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'team',
@@ -324,8 +324,8 @@ describe('registerConnectedServiceTrackedSessionTargetsForDaemon', () => {
 
 describe('commitRuntimeAuthRecoveryDiagnosticForDaemon', () => {
   it('forwards the durable attempt and transition identity through the production commit adapter', async () => {
-    const previousServerUrl = process.env.HAPPIER_SERVER_URL;
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    const previousServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     try {
       vi.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
@@ -398,8 +398,8 @@ describe('commitRuntimeAuthRecoveryDiagnosticForDaemon', () => {
         expect.anything(),
       );
     } finally {
-      if (previousServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = previousServerUrl;
+      if (previousServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = previousServerUrl;
       vi.restoreAllMocks();
     }
   });

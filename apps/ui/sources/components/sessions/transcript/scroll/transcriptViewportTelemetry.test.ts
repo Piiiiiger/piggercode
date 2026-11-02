@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__';
-const OVERRIDE_GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__';
+const GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__';
+const OVERRIDE_GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__';
 
 type UnknownModule = Record<string, unknown>;
 
@@ -306,7 +306,7 @@ describe('transcript viewport telemetry', () => {
         }));
 
         expect(consoleLog).toHaveBeenCalledWith(
-            'HAPPIER_TRANSCRIPT_VIEWPORT_EVENT',
+            'PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENT',
             expect.stringContaining('"type":"scroll-write"'),
         );
         const loggedPayload = consoleLog.mock.calls[0]?.[1];

@@ -42,9 +42,9 @@ describe('generateHookSettingsFile', () => {
   const createdPluginDirs: string[] = [];
   const envKeys = [
     'CLAUDE_CONFIG_DIR',
-    'HAPPIER_MANAGED_NODE_BIN',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_CLAUDE_HOOKS_DISABLED',
+    'PIGGERCODE_MANAGED_NODE_BIN',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_CLAUDE_HOOKS_DISABLED',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -116,10 +116,10 @@ describe('generateHookPluginDir', () => {
   const createdPluginDirs: string[] = [];
   const envKeys = [
     'CLAUDE_CONFIG_DIR',
-    'HAPPIER_MANAGED_NODE_BIN',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_CLAUDE_HOOKS_DISABLED',
-    'HAPPIER_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS',
+    'PIGGERCODE_MANAGED_NODE_BIN',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_CLAUDE_HOOKS_DISABLED',
+    'PIGGERCODE_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -185,7 +185,7 @@ describe('generateHookPluginDir', () => {
       fileName: 'node.exe',
       contents: '#!/bin/sh\n',
     });
-    envScope.patch({ HAPPIER_MANAGED_NODE_BIN: nodeExecutable });
+    envScope.patch({ PIGGERCODE_MANAGED_NODE_BIN: nodeExecutable });
 
     const pluginDir = generateHookPluginDir(43123, {
       enableLocalPermissionBridge: true,
@@ -404,8 +404,8 @@ describe('generateHookPluginDir', () => {
     expect(parsed.hooks?.SessionStart?.[0]?.hooks?.[0]?.timeout).toBeUndefined();
   });
 
-  it('reads HAPPIER_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS as the default when no explicit option is given', () => {
-    envScope.patch({ HAPPIER_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: '120' });
+  it('reads PIGGERCODE_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS as the default when no explicit option is given', () => {
+    envScope.patch({ PIGGERCODE_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: '120' });
     const pluginDir = generateHookPluginDir(43142, {
       enableLocalPermissionBridge: true,
       permissionHookSecret: 'test-secret-env',
@@ -420,7 +420,7 @@ describe('generateHookPluginDir', () => {
   });
 
   it('prefers an explicit permissionHookTimeoutSeconds over the env override', () => {
-    envScope.patch({ HAPPIER_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: '120' });
+    envScope.patch({ PIGGERCODE_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: '120' });
     const pluginDir = generateHookPluginDir(43143, {
       enableLocalPermissionBridge: true,
       permissionHookSecret: 'test-secret-env-explicit',
@@ -435,7 +435,7 @@ describe('generateHookPluginDir', () => {
   });
 
   it('ignores a non-positive or non-numeric env override and falls back to the default', () => {
-    envScope.patch({ HAPPIER_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: 'not-a-number' });
+    envScope.patch({ PIGGERCODE_CLAUDE_PERMISSION_HOOK_TIMEOUT_SECONDS: 'not-a-number' });
     const pluginDir = generateHookPluginDir(43144, {
       enableLocalPermissionBridge: true,
       permissionHookSecret: 'test-secret-env-bad',
@@ -482,16 +482,16 @@ describe('generateHookPluginDir', () => {
     expect(preToolUseCommand).not.toContain('test-secret-ask');
   });
 
-  it('returns null when HAPPIER_CLAUDE_HOOKS_DISABLED is set (debug escape hatch)', () => {
-    envScope.patch({ HAPPIER_CLAUDE_HOOKS_DISABLED: '1' });
+  it('returns null when PIGGERCODE_CLAUDE_HOOKS_DISABLED is set (debug escape hatch)', () => {
+    envScope.patch({ PIGGERCODE_CLAUDE_HOOKS_DISABLED: '1' });
     const pluginDir = generateHookPluginDir(43128);
     expect(pluginDir).toBeNull();
   });
 
-  it('treats "true" and "yes" as enabled values for HAPPIER_CLAUDE_HOOKS_DISABLED', () => {
-    envScope.patch({ HAPPIER_CLAUDE_HOOKS_DISABLED: 'true' });
+  it('treats "true" and "yes" as enabled values for PIGGERCODE_CLAUDE_HOOKS_DISABLED', () => {
+    envScope.patch({ PIGGERCODE_CLAUDE_HOOKS_DISABLED: 'true' });
     expect(generateHookPluginDir(43129)).toBeNull();
-    envScope.patch({ HAPPIER_CLAUDE_HOOKS_DISABLED: 'YES' });
+    envScope.patch({ PIGGERCODE_CLAUDE_HOOKS_DISABLED: 'YES' });
     expect(generateHookPluginDir(43130)).toBeNull();
   });
 
@@ -503,7 +503,7 @@ describe('generateHookPluginDir', () => {
       fileName: process.platform === 'win32' ? 'managed-node.cmd' : 'managed-node',
       contents: process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n',
     });
-    envScope.patch({ HAPPIER_MANAGED_NODE_BIN: overridePath });
+    envScope.patch({ PIGGERCODE_MANAGED_NODE_BIN: overridePath });
 
     const pluginDir = generateHookPluginDir(43126);
     expect(pluginDir).toBeTruthy();
@@ -518,7 +518,7 @@ describe('generateHookPluginDir', () => {
   it('fails closed when no JavaScript runtime is available for hook forwarders', async () => {
     const happyHomeDir = mkdtempSync(join(tmpdir(), 'happier-hook-plugin-no-runtime-'));
     createdDirs.push(happyHomeDir);
-    envScope.patch({ HAPPIER_HOME_DIR: happyHomeDir });
+    envScope.patch({ PIGGERCODE_HOME_DIR: happyHomeDir });
 
     vi.resetModules();
     vi.doMock('@/runtime/js/resolveJavaScriptRuntimeExecutable', () => ({

@@ -55,7 +55,7 @@ describe('verifyResumeReachabilityByAgent dispatch', () => {
       verifyResumeReachabilityByAgent({
         agentId: 'claude',
         input: baseInput({
-          targetMaterializedEnv: { HAPPIER_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1' },
+          targetMaterializedEnv: { PIGGERCODE_CONNECTED_SERVICES_LEGACY_CLAUDE_RESTART_SAME_HOME: '1' },
         }),
       }),
     ).resolves.toEqual({ ok: true, resolvedPath: null });

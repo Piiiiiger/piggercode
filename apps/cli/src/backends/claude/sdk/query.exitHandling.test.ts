@@ -83,7 +83,7 @@ describe('claude sdk query exit handling', () => {
       cwd: tmpRoot, executable: process.execPath,
       executableArgs: outcome === 'wrapper-operation-error' ? ['--require', preload] : [],
       pathToClaudeCodeExecutable: resolveCliRuntimeAssetPath('scripts', 'claude_remote_launcher.cjs'),
-      env: { HAPPIER_CLAUDE_PATH: provider },
+      env: { PIGGERCODE_CLAUDE_PATH: provider },
     }, onProcessExited: async ({ nativeExited, processTreeStopped }) => {
       const providerStopped = nativeExited || processTreeStopped;
       await adapter.handleRuntimeLoss('claude_process_exit', { providerStopped });
@@ -251,8 +251,8 @@ describe('claude sdk query exit handling', () => {
       process.stdin.once('data', () => console.log(JSON.stringify({ type: 'result', subtype: 'success' })));
       setInterval(() => {}, 1000);
     `);
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'HAPPIER_JS_RUNTIME_PATH']);
-    env.patch({ HAPPIER_CLAUDE_PATH: script, HAPPIER_JS_RUNTIME_PATH: process.execPath });
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'PIGGERCODE_JS_RUNTIME_PATH']);
+    env.patch({ PIGGERCODE_CLAUDE_PATH: script, PIGGERCODE_JS_RUNTIME_PATH: process.execPath });
     const ledger = createClaudeProviderActivityLedger();
     ledger.apply({ type: 'started', sessionId: 'owned-session', taskId: 'background-child' });
     const runtimeActivity = createSessionRuntimeActivity('supported');
@@ -319,8 +319,8 @@ describe('claude sdk query exit handling', () => {
       });
     `, { mode: 0o755 });
     symlinkSync(script, cliPath);
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'HAPPIER_JS_RUNTIME_PATH']);
-    env.patch({ HAPPIER_CLAUDE_PATH: cliPath, HAPPIER_JS_RUNTIME_PATH: process.execPath });
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'PIGGERCODE_JS_RUNTIME_PATH']);
+    env.patch({ PIGGERCODE_CLAUDE_PATH: cliPath, PIGGERCODE_JS_RUNTIME_PATH: process.execPath });
     const runtimeActivity = createSessionRuntimeActivity('supported');
     const reports: SessionRuntimeActivityContribution[] = [];
     await runtimeActivity.bindPublisher({ publish: async snapshot => { reports.push(snapshot); }, close: async () => {} });
@@ -370,8 +370,8 @@ describe('claude sdk query exit handling', () => {
       process.stdin.once('data', () => console.log(JSON.stringify({ type: 'result', subtype: 'success' })));
       setInterval(() => {}, 1000);
     `);
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'HAPPIER_JS_RUNTIME_PATH']);
-    env.patch({ HAPPIER_CLAUDE_PATH: script, HAPPIER_JS_RUNTIME_PATH: process.execPath });
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'PIGGERCODE_JS_RUNTIME_PATH']);
+    env.patch({ PIGGERCODE_CLAUDE_PATH: script, PIGGERCODE_JS_RUNTIME_PATH: process.execPath });
     const ledger = createClaudeProviderActivityLedger();
     ledger.apply({ type: 'started', sessionId: 'owned-session', taskId: 'old-child' });
     const adapter = createClaudeProviderRuntimeActivityAdapter({ providerActivityLedger: ledger,
@@ -433,8 +433,8 @@ describe('claude sdk query exit handling', () => {
     writeFileSync(hookSettingsPath, '{}');
     const cliPath = launchPathKind === 'retargeted-symlink' ? join(tmpRoot, 'claude') : script;
     if (cliPath !== script) symlinkSync(script, cliPath);
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'HAPPIER_JS_RUNTIME_PATH']);
-    env.patch({ HAPPIER_CLAUDE_PATH: cliPath, HAPPIER_JS_RUNTIME_PATH: process.execPath });
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'PIGGERCODE_JS_RUNTIME_PATH']);
+    env.patch({ PIGGERCODE_CLAUDE_PATH: cliPath, PIGGERCODE_JS_RUNTIME_PATH: process.execPath });
     const ledger = createClaudeProviderActivityLedger();
     ledger.apply({ type: 'started', sessionId: 'owned-session', taskId: 'native-child' });
     const terminalObservation = createDeferred<void>();
@@ -507,8 +507,8 @@ describe('claude sdk query exit handling', () => {
     ` });
     const hookSettingsPath = join(tmpRoot, 'hooks.json');
     writeFileSync(hookSettingsPath, '{}');
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'HAPPIER_JS_RUNTIME_PATH']);
-    env.patch({ HAPPIER_CLAUDE_PATH: script, HAPPIER_JS_RUNTIME_PATH: process.execPath });
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'PIGGERCODE_JS_RUNTIME_PATH']);
+    env.patch({ PIGGERCODE_CLAUDE_PATH: script, PIGGERCODE_JS_RUNTIME_PATH: process.execPath });
     const ledger = createClaudeProviderActivityLedger();
     ledger.apply({ type: 'started', sessionId: 'owned-session', taskId: 'native-child' });
     const adapter = createClaudeProviderRuntimeActivityAdapter({ providerActivityLedger: ledger,

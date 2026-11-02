@@ -12,8 +12,8 @@ import {
 test('stack path overrides expand ~/ against the provided HOME env', () => {
   const env = {
     HOME: '/scoped/home',
-    HAPPIER_STACK_HOME_DIR: '~/.happier-stack-custom',
-    HAPPIER_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
+    PIGGERCODE_STACK_HOME_DIR: '~/.happier-stack-custom',
+    PIGGERCODE_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
   };
 
   assert.equal(getHappyStacksHomeDir(env), '/scoped/home/.happier-stack-custom');
@@ -24,7 +24,7 @@ test('stack path overrides expand ~/ against the provided HOME env', () => {
 test('resolveActiveStackEnvFilePath expands ~/ explicit overrides against the provided HOME env', () => {
   const env = {
     HOME: '/scoped/home',
-    HAPPIER_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
   };
 
   assert.equal(resolveActiveStackEnvFilePath('dev', env), '/scoped/home/.happier/stacks/dev/env');
@@ -33,7 +33,7 @@ test('resolveActiveStackEnvFilePath expands ~/ explicit overrides against the pr
 test('resolveActiveStackEnvFilePath falls back to the resolved stack env file when no explicit override is set', () => {
   const env = {
     HOME: '/scoped/home',
-    HAPPIER_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
+    PIGGERCODE_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
   };
 
   assert.equal(

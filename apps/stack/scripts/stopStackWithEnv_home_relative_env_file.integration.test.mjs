@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { stopStackWithEnv } from './utils/stack/stop.mjs';
 import { isAlive, spawnOwnedSleep, waitForProcessAlive, waitForProcessExit } from './testkit/stack_stop_sweeps_testkit.mjs';
 
-test('stopStackWithEnv sweeps infra tagged processes when HAPPIER_STACK_ENV_FILE uses a ~/ override', async (t) => {
+test('stopStackWithEnv sweeps infra tagged processes when PIGGERCODE_STACK_ENV_FILE uses a ~/ override', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
 
@@ -32,10 +32,10 @@ test('stopStackWithEnv sweeps infra tagged processes when HAPPIER_STACK_ENV_FILE
   await writeFile(
     expandedEnvPath,
     [
-      `HAPPIER_STACK_STACK=${stackName}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
-      `HAPPIER_STACK_REPO_DIR=${repoDir}`,
+      `PIGGERCODE_STACK_STACK=${stackName}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${join(baseDir, 'cli')}`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
       '',
     ].join('\n'),
     'utf-8'
@@ -58,9 +58,9 @@ test('stopStackWithEnv sweeps infra tagged processes when HAPPIER_STACK_ENV_FILE
   child = spawnOwnedSleep({
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: expandedEnvPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: expandedEnvPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   });
   assert.ok(Number(child.pid) > 1, 'expected child pid');
@@ -74,12 +74,12 @@ test('stopStackWithEnv sweeps infra tagged processes when HAPPIER_STACK_ENV_FILE
     env: {
       ...process.env,
       HOME: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: rawEnvPath,
-      HAPPIER_STACK_REPO_DIR: repoDir,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: rawEnvPath,
+      PIGGERCODE_STACK_REPO_DIR: repoDir,
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
     },
     json: true,
     noDocker: true,

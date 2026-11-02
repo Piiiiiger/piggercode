@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "qwen",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_QWEN",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_QWEN",
   "protocol": "acp",
   "traceProvider": "qwen",
   "requiredBinaries": [
     {
       "bin": "qwen",
-      "envOverride": "HAPPIER_E2E_PROVIDER_QWEN_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_QWEN_BIN",
       "requireExists": true
     }
   ],
@@ -50,10 +50,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_QWEN_PATH": "HAPPIER_E2E_PROVIDER_QWEN_BIN"
+      "PIGGERCODE_QWEN_PATH": "PIGGERCODE_E2E_PROVIDER_QWEN_BIN"
     }
   }
 }

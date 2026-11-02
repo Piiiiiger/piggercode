@@ -101,7 +101,7 @@ describe("sharpRuntime", () => {
             const png = await loadSharp()({ create: { width: 1, height: 1, channels: 4, background: '#ff0000' } }).png().toBuffer();
             program = [
                 `import { defaultPetImageInfoDecoder } from ${JSON.stringify(join(repoRoot, "apps/cli/src/pets/validation/validatePetAtlas.ts"))};`,
-                "if (process.env.HAPPIER_SHARP_AMBIENT_TRAP) throw new Error('Project dotenv was loaded');",
+                "if (process.env.PIGGERCODE_SHARP_AMBIENT_TRAP) throw new Error('Project dotenv was loaded');",
                 `const info = await defaultPetImageInfoDecoder({ bytes: Buffer.from(${JSON.stringify(png.toString("base64"))}, 'base64'), filename: 'probe.png', strict: true });`,
                 "if (info?.contentInspected !== true || info.width !== 1) throw new Error('Sharp content inspection did not run');",
                 "process.stdout.write(`sharp-ok:${info.width}`);",
@@ -124,7 +124,7 @@ describe("sharpRuntime", () => {
         }
         await mkdir(unrelatedWorkingDirectory);
         await writeFile(join(unrelatedWorkingDirectory, "package.json"), JSON.stringify({ name: "untrusted-cwd", type: "module" }));
-        if (role === "cli") await writeFile(join(unrelatedWorkingDirectory, ".env"), "HAPPIER_SHARP_AMBIENT_TRAP=1\n");
+        if (role === "cli") await writeFile(join(unrelatedWorkingDirectory, ".env"), "PIGGERCODE_SHARP_AMBIENT_TRAP=1\n");
         await writeFile(join(unrelatedWorkingDirectory, "bunfig.toml"), 'preload = ["./preload.cjs"]\n');
         await writeFile(join(unrelatedWorkingDirectory, "preload.cjs"), "throw new Error('Project bunfig preload was executed');\n");
         const platform = target.os === "windows" ? "win32" : target.os;

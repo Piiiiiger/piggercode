@@ -64,7 +64,7 @@ function defaultDependencies(): SharedServerDependencies {
       args,
       cwd,
       processEnv,
-      overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN', 'HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
+      overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN', 'PIGGERCODE_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
       targetLabel: 'Codex app-server',
     }),
     spawnProcess: spawn,

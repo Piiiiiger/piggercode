@@ -7,9 +7,9 @@ import { logger as cleanupLogger } from '@/ui/logger';
 import { createSessionAttachFile as createCleanupFixture } from './sessionAttachFile';
 
 describe('createSessionAttachFile', () => {
-  const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
-  const originalAttachMaxAgeMs = process.env.HAPPIER_SESSION_ATTACH_FILE_MAX_AGE_MS;
-  const originalPublicReleaseChannel = process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL;
+  const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
+  const originalAttachMaxAgeMs = process.env.PIGGERCODE_SESSION_ATTACH_FILE_MAX_AGE_MS;
+  const originalPublicReleaseChannel = process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL;
   const tempDirs: string[] = [];
 
   afterEach(async () => {
@@ -17,19 +17,19 @@ describe('createSessionAttachFile', () => {
       await rm(dir, { recursive: true, force: true });
     }
     if (originalHappyHomeDir === undefined) {
-      delete process.env.HAPPIER_HOME_DIR;
+      delete process.env.PIGGERCODE_HOME_DIR;
     } else {
-      process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+      process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     }
     if (originalAttachMaxAgeMs === undefined) {
-      delete process.env.HAPPIER_SESSION_ATTACH_FILE_MAX_AGE_MS;
+      delete process.env.PIGGERCODE_SESSION_ATTACH_FILE_MAX_AGE_MS;
     } else {
-      process.env.HAPPIER_SESSION_ATTACH_FILE_MAX_AGE_MS = originalAttachMaxAgeMs;
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE_MAX_AGE_MS = originalAttachMaxAgeMs;
     }
     if (originalPublicReleaseChannel === undefined) {
-      delete process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL;
+      delete process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL;
     } else {
-      process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL = originalPublicReleaseChannel;
+      process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = originalPublicReleaseChannel;
     }
     vi.resetModules();
   });
@@ -37,14 +37,14 @@ describe('createSessionAttachFile', () => {
   async function createHappyHomeFixture(): Promise<{ dir: string; baseDir: string }> {
     const dir = await mkdtemp(join(tmpdir(), 'happy-home-'));
     tempDirs.push(dir);
-    process.env.HAPPIER_HOME_DIR = dir;
+    process.env.PIGGERCODE_HOME_DIR = dir;
     return {
       dir,
       baseDir: resolve(join(dir, 'tmp', 'session-attach')),
     };
   }
 
-  test('writes a 0600 attach file under HAPPIER_HOME_DIR and cleanup deletes it', async () => {
+  test('writes a 0600 attach file under PIGGERCODE_HOME_DIR and cleanup deletes it', async () => {
     const { baseDir } = await createHappyHomeFixture();
 
     vi.resetModules();
@@ -101,7 +101,7 @@ describe('createSessionAttachFile', () => {
 
   test('scopes session attach files by public release ring (dev lane)', async () => {
     const { baseDir } = await createHappyHomeFixture();
-    process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL = 'dev';
+    process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = 'dev';
 
     vi.resetModules();
 
@@ -146,7 +146,7 @@ describe('createSessionAttachFile', () => {
 
   test('prunes stale attach files in the base dir (best-effort)', async () => {
     const { dir, baseDir } = await createHappyHomeFixture();
-    process.env.HAPPIER_SESSION_ATTACH_FILE_MAX_AGE_MS = '1';
+    process.env.PIGGERCODE_SESSION_ATTACH_FILE_MAX_AGE_MS = '1';
 
     vi.resetModules();
 

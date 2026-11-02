@@ -15,7 +15,7 @@ async function readControls(params: Readonly<{
     const processEnv = {
         ...(params.processEnv ?? process.env),
         // Ensure slow `model/list` does not silently downgrade the UI to static models (which have no model options).
-        HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(Math.max(250, Math.min(60_000, Math.trunc(params.timeoutMs)))),
+        PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: String(Math.max(250, Math.min(60_000, Math.trunc(params.timeoutMs)))),
     };
     const authMethod = readCodexEnvironmentAuthState(processEnv).method;
     const result = await withCodexAppServerControlClient({

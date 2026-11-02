@@ -11,7 +11,7 @@ export default defineConfig({
         globals: false,
         environment: 'node',
         env: {
-            HAPPIER_FEATURE_POLICY_ENV: '',
+            PIGGERCODE_FEATURE_POLICY_ENV: '',
         },
         exclude: [
             '**/.project/**',

@@ -75,14 +75,14 @@ function resolveStackIdentityForDaemonPidOwnership({ runtimeStatePath, runtimeSt
   const runtimeDir = statePath ? dirname(statePath) : '';
   const stackName =
     String(runtimeState?.stackName ?? '').trim() ||
-    String(env?.HAPPIER_STACK_STACK ?? '').trim();
+    String(env?.PIGGERCODE_STACK_STACK ?? '').trim();
   const envPath =
-    String(env?.HAPPIER_STACK_ENV_FILE ?? '').trim() ||
+    String(env?.PIGGERCODE_STACK_ENV_FILE ?? '').trim() ||
     (runtimeDir ? join(runtimeDir, 'env') : '');
   const resolvedCliHomeDir =
     String(cliHomeDir ?? '').trim() ||
-    String(env?.HAPPIER_STACK_CLI_HOME_DIR ?? '').trim() ||
-    String(env?.HAPPIER_HOME_DIR ?? '').trim();
+    String(env?.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').trim() ||
+    String(env?.PIGGERCODE_HOME_DIR ?? '').trim();
 
   return { stackName, envPath, cliHomeDir: resolvedCliHomeDir };
 }
@@ -438,7 +438,7 @@ export async function syncStackRuntimeDaemonPidFromDaemonState(
     : normalizeDaemonPidList(runtimeState?.processes?.daemonPids);
   const stackName =
     String(runtimeState?.stackName ?? '').trim()
-    || String(env?.HAPPIER_STACK_STACK ?? '').trim()
+    || String(env?.PIGGERCODE_STACK_STACK ?? '').trim()
     || null;
   const observed = await getObservedStackDaemonAsync(
     {

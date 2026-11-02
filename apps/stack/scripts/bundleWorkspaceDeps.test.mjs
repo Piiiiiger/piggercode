@@ -412,7 +412,7 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
     await bundleWorkspaceDeps({
       repoRoot,
       stackDir,
-      env: { HAPPIER_WORKSPACE_DIST_OUTPUT_DIR: '/parent-stage' },
+      env: { PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR: '/parent-stage' },
       ensureWorkspacePackagesBuiltByName: async (_root, packageNames, options) => {
         admittedPackageNames = packageNames;
         admissionEnv = options?.env;
@@ -435,8 +435,8 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
       '@piggercode/protocol',
       '@piggercode/release-runtime',
     ]);
-    assert.match(String(admissionEnv?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD ?? ''), /"path"/);
-    assert.equal(admissionEnv?.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR, undefined);
+    assert.match(String(admissionEnv?.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD ?? ''), /"path"/);
+    assert.equal(admissionEnv?.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR, undefined);
   } finally {
     rmSync(repoRoot, { recursive: true, force: true });
   }

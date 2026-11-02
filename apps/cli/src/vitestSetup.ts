@@ -2,17 +2,17 @@ import { mkdirSync, writeFileSync, chmodSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// Many CLI tests touch persistence under `HAPPIER_HOME_DIR`. Our `.env.integration-test`
+// Many CLI tests touch persistence under `PIGGERCODE_HOME_DIR`. Our `.env.integration-test`
 // sets a shared value, which can cause cross-process races when Vitest runs with multiple
 // workers. Provide a per-process default home directory instead; individual tests may
-// still override `process.env.HAPPIER_HOME_DIR` and call `vi.resetModules()` as needed.
+// still override `process.env.PIGGERCODE_HOME_DIR` and call `vi.resetModules()` as needed.
 const defaultHomeDir = join(tmpdir(), `happier-dev-test-${process.pid}`);
-process.env.HAPPIER_HOME_DIR = defaultHomeDir;
+process.env.PIGGERCODE_HOME_DIR = defaultHomeDir;
 mkdirSync(defaultHomeDir, { recursive: true });
 
 // CLI unit tests should be machine-agnostic: provider CLIs are not expected to be installed
 // on CI runners. Provide a default OpenCode CLI stub unless a test explicitly overrides it.
-const opencodePath = String(process.env.HAPPIER_OPENCODE_PATH ?? '').trim();
+const opencodePath = String(process.env.PIGGERCODE_OPENCODE_PATH ?? '').trim();
 if (!opencodePath) {
   const binDir = join(tmpdir(), `happier-dev-test-bin-${process.pid}`);
   mkdirSync(binDir, { recursive: true });
@@ -23,15 +23,15 @@ if (!opencodePath) {
     writeFileSync(stubPath, '#!/bin/sh\nexit 0\n', 'utf8');
     chmodSync(stubPath, 0o755);
   }
-  process.env.HAPPIER_OPENCODE_PATH = stubPath;
+  process.env.PIGGERCODE_OPENCODE_PATH = stubPath;
 }
 
 // Status reads refresh the CLI update cache in the background (a detached `self check`, which
 // reaches the network). Tests exercise that path through explicit params, never by spawning it.
-if (!String(process.env.HAPPIER_CLI_UPDATE_CHECK ?? '').trim()) {
-  process.env.HAPPIER_CLI_UPDATE_CHECK = '0';
+if (!String(process.env.PIGGERCODE_CLI_UPDATE_CHECK ?? '').trim()) {
+  process.env.PIGGERCODE_CLI_UPDATE_CHECK = '0';
 }
 
 // CLI tests should not inherit embedded build-policy gating (set in CI).
 // Clear it by default so feature tests can opt-in explicitly per case.
-process.env.HAPPIER_FEATURE_POLICY_ENV = '';
+process.env.PIGGERCODE_FEATURE_POLICY_ENV = '';

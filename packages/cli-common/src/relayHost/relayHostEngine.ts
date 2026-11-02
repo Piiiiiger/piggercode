@@ -1967,7 +1967,7 @@ export function createRelayHostEngine(deps: RelayHostEngineDeps): RelayHostEngin
             return;
           }
           const resolveRelayStartHealthcheckTimeoutMs = (): number => {
-            const raw = process.env.HAPPIER_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
+            const raw = process.env.PIGGERCODE_RELAY_HOST_LOCAL_HEALTHCHECK_TIMEOUT_MS;
             if (typeof raw !== 'string' || raw.trim().length === 0) return 120_000;
             const parsedTimeout = Number.parseInt(raw, 10);
             if (!Number.isFinite(parsedTimeout)) return 120_000;

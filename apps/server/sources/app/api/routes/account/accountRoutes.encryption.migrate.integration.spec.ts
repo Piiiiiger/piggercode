@@ -96,7 +96,7 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
         harness = await createLightSqliteHarness({
             tempDirPrefix: "happier-account-encryption-migrate-",
             initEncrypt: true,
-            env: { HAPPIER_SQLITE_CONNECTION_LIMIT: "2" },
+            env: { PIGGERCODE_SQLITE_CONNECTION_LIMIT: "2" },
         });
     }, 120_000);
 
@@ -115,7 +115,7 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
     });
 
     it("requires complete Machine conversion before enabling e2ee and commits content with the Account mode", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1" });
         const kp = tweetnacl.sign.keyPair();
         const challenge = new Uint8Array([1, 2, 3]);
         const account = await db.account.create({ data: { publicKey: privacyKit.encodeHex(new Uint8Array(kp.publicKey)), encryptionMode: "plain", settingsVersion: 0 } });
@@ -164,7 +164,7 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
     });
 
     it("does not create plain Machines through migration when plaintextMachine is denied", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1", HAPPIER_BUILD_FEATURES_DENY: "encryption.plaintextMachine" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1", PIGGERCODE_BUILD_FEATURES_DENY: "encryption.plaintextMachine" });
         const account = await db.account.create({ data: { publicKey: "machine-disabled-account", encryptionMode: "e2ee" } });
         const machine = await db.machine.create({ data: { id: "machine-disabled", accountId: account.id, metadata: "opaque", daemonState: null } });
         const app = createTestApp();
@@ -183,7 +183,7 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
     });
 
     it("converts encrypted Machines to plain while retaining released omitted-directive behavior", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1" });
         const account = await db.account.create({ data: { publicKey: "machine-legacy-account", encryptionMode: "e2ee" } });
         const machine = await db.machine.create({ data: { id: "machine-legacy-history", accountId: account.id, metadata: "opaque", daemonState: null, revokedAt: new Date() } });
         const app = createTestApp();
@@ -202,9 +202,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("migrates e2ee -> plain atomically and stores v2 settings in plaintext", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
         });
 
         const account = await db.account.create({
@@ -273,10 +273,10 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("removes connected-service usage source links when connected services are cleared during migration", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
 
         const account = await db.account.create({
@@ -346,9 +346,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("retains mode-compatible provider usage records and sources during a same-mode credential rewrite", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const account = await db.account.create({
             data: { publicKey: null, encryptionMode: "plain", settings: null, settingsVersion: 0 },
@@ -422,9 +422,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("rejects a plaintext migration item whose embedded credential binding differs from its outer key", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const account = await db.account.create({
             data: { publicKey: "pk-misbound-migration", encryptionMode: "e2ee", settings: "ciphertext", settingsVersion: 0 },
@@ -484,9 +484,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("rejects provider identity changes during credential migration and rolls back account/settings writes", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const account = await db.account.create({
             data: { publicKey: "pk-identity-migration", encryptionMode: "e2ee", settings: "ciphertext", settingsVersion: 0 },
@@ -549,8 +549,8 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("does not emit a settings version hint when migration preconditions fail", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({
@@ -583,9 +583,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("snapshots settings rewritten by an encryption mode migration", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "none",
         });
 
         const account = await db.account.create({
@@ -660,9 +660,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("stores v2 settings sealed at rest for plain accounts when configured", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "server_sealed",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_SETTINGS_AT_REST: "server_sealed",
         });
 
         const kp = tweetnacl.sign.keyPair();
@@ -721,8 +721,8 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("does not allow rotating the account signing key across encryption-mode toggles", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const kp1 = tweetnacl.sign.keyPair();
@@ -818,8 +818,8 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("migrates plain -> e2ee atomically and requires keyProof", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({
@@ -979,8 +979,8 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("rejects a stale plain automation template update after a plain-to-e2ee migration commits", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
         const kp = tweetnacl.sign.keyPair();
         const publicKey = Uint8Array.from(kp.publicKey);
@@ -1081,9 +1081,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("rolls back credential rewrites when a later automation migration fails", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
 
         const account = await db.account.create({
@@ -1172,9 +1172,9 @@ describe("registerAccountEncryptionMigrateRoutes (integration)", () => {
 
     it("does not rewrite an earlier credential when a later credential has the wrong target mode", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none",
         });
         const account = await db.account.create({
             data: { publicKey: "pk-credential-mode-rollback", encryptionMode: "e2ee", settings: "ciphertext", settingsVersion: 0 },

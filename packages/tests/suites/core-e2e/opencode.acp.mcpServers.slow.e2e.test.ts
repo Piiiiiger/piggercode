@@ -197,19 +197,19 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
-const sdkPath = process.env.HAPPIER_E2E_ACP_SDK_ENTRY;
-if (!sdkPath) throw new Error("Missing HAPPIER_E2E_ACP_SDK_ENTRY");
+const sdkPath = process.env.PIGGERCODE_E2E_ACP_SDK_ENTRY;
+if (!sdkPath) throw new Error("Missing PIGGERCODE_E2E_ACP_SDK_ENTRY");
 const acp = await import(pathToFileURL(sdkPath).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
-const newSessionLog = process.env.HAPPIER_E2E_NEW_SESSION_LOG;
+const newSessionLog = process.env.PIGGERCODE_E2E_NEW_SESSION_LOG;
 
 function normalizeServer(server) {
   const envEntries = Array.isArray(server?.env) ? server.env : [];
   const env = Object.fromEntries(envEntries.map((entry) => [String(entry?.name ?? ""), String(entry?.value ?? "")]));
-  const configPath = typeof env.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE === "string" ? env.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE : null;
+  const configPath = typeof env.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE === "string" ? env.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE : null;
   let bridgeConfig = null;
   if (configPath) {
     try {
@@ -275,15 +275,15 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_OPENCODE_BACKEND_MODE: 'acp',
-      HAPPIER_E2E_ACP_SDK_ENTRY: sdkEntry,
-      HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
-      HAPPIER_E2E_NEW_SESSION_LOG: newSessionLogPath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_OPENCODE_BACKEND_MODE: 'acp',
+      PIGGERCODE_E2E_ACP_SDK_ENTRY: sdkEntry,
+      PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY: agentAppAdapterEntry,
+      PIGGERCODE_E2E_NEW_SESSION_LOG: newSessionLogPath,
       PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
     };
 
@@ -359,7 +359,7 @@ await connection.closed;
       const remoteServer = byName.get('remote_global');
       expect(remoteServer?.command).toBe(process.execPath);
       expect(remoteServer?.env.REMOTE_LABEL).toBe('global-remote');
-      expect(remoteServer?.env.HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE).toBeTruthy();
+      expect(remoteServer?.env.PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE).toBeTruthy();
       expect(remoteServer?.args.join(' ')).not.toContain('remote-mcp-secret');
       expect(remoteServer?.args.join(' ')).not.toContain('https://mcp.example.test/stream');
       expect(remoteServer?.bridgeConfig).toEqual({

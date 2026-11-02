@@ -29,7 +29,7 @@ import { resolveAgentProbeVariant } from '@/capabilities/probes/resolveAgentProb
 import { createHash } from 'node:crypto';
 import { validateEnvVarRecordStrict } from '@/terminal/runtime/envVarSanitization';
 import { expandEnvironmentVariables } from '@/utils/expandEnvVars';
-import { HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR, parseExplicitSpawnEnvKeysFromProcessEnv } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR, parseExplicitSpawnEnvKeysFromProcessEnv } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { logger } from '@/ui/logger';
 import { stripDaemonOwnedChildEnvOverrides } from '@/daemon/spawn/stripDaemonOwnedChildEnvOverrides';
 import { readCredentials } from '@/persistence';
@@ -51,7 +51,7 @@ import { rm } from 'node:fs/promises';
 import { configuration } from '@/configuration';
 import { createConnectedServiceMaterializationIdentity } from '@/daemon/connectedServices/materialize/createConnectedServiceMaterializationIdentity';
 import { resolveConnectedServiceAuthForSpawn } from '@/daemon/connectedServices/resolveConnectedServiceAuthForSpawn';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { buildProfileEnvOverlay } from '@/settings/profiles/buildProfileEnvOverlay';
 import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfilesFromAccountSettings';
 import { resolveProfileForAgent } from '@/settings/profiles/resolveProfileForAgent';
@@ -253,7 +253,7 @@ async function resolveProfileProbeEnvironment(params: Readonly<{
     return {
         ...params.processEnv,
         ...envOverlay,
-        [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(Array.from(new Set([
+        [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(Array.from(new Set([
             ...parseExplicitSpawnEnvKeysFromProcessEnv(params.processEnv),
             ...Object.keys(envOverlay),
         ]))),
@@ -311,7 +311,7 @@ async function resolveConnectedServiceProbeEnvironment(params: Readonly<{
     return {
         processEnv: { ...params.processEnv, ...resolved.env },
         connectedServiceSelectionCacheKey:
-            resolved.env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] ?? null,
+            resolved.env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] ?? null,
         cleanup: async () => {
             resolved.cleanupOnExit?.();
             resolved.cleanupOnFailure?.();
@@ -475,7 +475,7 @@ async function prepareAndInvokeCliProbeMethod(
     profileProcessEnv = {
         ...profileProcessEnv,
         ...expandEnvironmentVariables(selectedEnvOverlay, { ...profileProcessEnv, ...selectedEnvOverlay }),
-        [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(Array.from(new Set([
+        [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: JSON.stringify(Array.from(new Set([
             ...parseExplicitSpawnEnvKeysFromProcessEnv(profileProcessEnv),
             ...Object.keys(selectedEnvOverlay),
         ]))),

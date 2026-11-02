@@ -9,7 +9,7 @@ import {
 import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';
 import {
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   type ConnectedServiceChildSelection,
 } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
@@ -20,7 +20,7 @@ const refreshedRevision = ConnectedServiceCredentialRevisionV1Schema.parse('csr_
 
 function selectionEnv(selections: ReadonlyArray<ConnectedServiceChildSelection>): Readonly<Record<string, string>> {
   return {
-    [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify(selections),
+    [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify(selections),
   };
 }
 

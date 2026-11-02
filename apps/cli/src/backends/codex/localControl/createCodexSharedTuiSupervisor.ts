@@ -19,7 +19,7 @@ export function createCodexSharedTuiSupervisor(params: Readonly<{
       args: createCodexSharedAttachArgs(target),
       cwd: target.directory,
       processEnv,
-      overrideEnvVarKeys: ['HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
+      overrideEnvVarKeys: ['PIGGERCODE_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
       targetLabel: 'Codex CLI',
     }),
   });

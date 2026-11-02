@@ -12,9 +12,9 @@ const { ensureJavaScriptRuntimeExecutableMock } = vi.hoisted(() => ({
 
 describe('resolveDaemonServiceListEntries', () => {
   const envScope = createEnvKeyScope([
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_ACTIVE_SERVER_ID',
-    'HAPPIER_PUBLIC_RELEASE_CHANNEL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_ACTIVE_SERVER_ID',
+    'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
   ]);
 
   afterEach(() => {
@@ -38,9 +38,9 @@ describe('resolveDaemonServiceListEntries', () => {
       writeFileSync(join(happierHomeDir, 'default-cli-release-channel.json'), '{"releaseChannel":"preview"}\n', 'utf8');
 
       envScope.patch({
-        HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
+        PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
       });
       vi.resetModules();
 
@@ -98,9 +98,9 @@ describe('resolveDaemonServiceListEntries', () => {
       mkdirSync(happierHomeDir, { recursive: true });
 
       envScope.patch({
-        HAPPIER_HOME_DIR: happierHomeDir,
-        HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+        PIGGERCODE_HOME_DIR: happierHomeDir,
+        PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
       });
       vi.resetModules();
 
@@ -168,9 +168,9 @@ describe('resolveDaemonServiceListEntries', () => {
       const expectedWrapperPath = 'C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1';
 
       envScope.patch({
-        HAPPIER_HOME_DIR: join(hostHomeDir, '.happier'),
-        HAPPIER_ACTIVE_SERVER_ID: 'default',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
+        PIGGERCODE_HOME_DIR: join(hostHomeDir, '.happier'),
+        PIGGERCODE_ACTIVE_SERVER_ID: 'default',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
       });
       vi.resetModules();
       vi.doMock('@/runtime/js/ensureJavaScriptRuntimeExecutable', () => ({

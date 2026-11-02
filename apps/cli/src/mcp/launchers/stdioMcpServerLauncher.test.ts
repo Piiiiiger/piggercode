@@ -60,7 +60,7 @@ describe('stdioMcpServerLauncher', () => {
         env: {
           ...resolveEnvRecord(),
           ...(launcherInvocation.env ?? {}),
-          HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });
@@ -93,7 +93,7 @@ describe('stdioMcpServerLauncher', () => {
         env: {
           ...resolveEnvRecord(),
           ...(launcherInvocation.env ?? {}),
-          HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });
@@ -125,7 +125,7 @@ describe('stdioMcpServerLauncher', () => {
         env: {
           ...resolveEnvRecord(),
           ...(launcherInvocation.env ?? {}),
-          HAPPIER_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_STDIO_LAUNCHER_CONFIG_FILE: configPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });

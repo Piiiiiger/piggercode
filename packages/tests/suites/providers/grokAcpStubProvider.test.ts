@@ -33,7 +33,7 @@ async function createClient(recordPath: string, extensionResult: JsonRecord = {
     stdio: ['pipe', 'pipe', 'pipe'],
     env: {
       ...process.env,
-      HAPPIER_GROK_STUB_RECORD_PATH: recordPath,
+      PIGGERCODE_GROK_STUB_RECORD_PATH: recordPath,
       XAI_API_KEY: 'fixture-super-secret-value',
     },
   });
@@ -94,7 +94,7 @@ describe('Grok ACP deterministic boundary fake', () => {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,
-        HAPPIER_GROK_STUB_RECORD_PATH: join(dir, 'requests.jsonl'),
+        PIGGERCODE_GROK_STUB_RECORD_PATH: join(dir, 'requests.jsonl'),
       },
     });
     children.add(child);

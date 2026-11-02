@@ -156,7 +156,7 @@ export function createTracer(): TracerState {
 
 function isTracerDebugEnabled(): boolean {
     return isDebugFlagEnabled({
-        globalKey: '__HAPPIER_DEBUG_TRACER__',
+        globalKey: '__PIGGERCODE_DEBUG_TRACER__',
         localStorageKey: 'happier.debug.tracer',
     });
 }

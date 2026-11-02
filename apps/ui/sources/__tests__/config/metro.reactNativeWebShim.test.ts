@@ -189,7 +189,7 @@ describe('metro.config.js (web)', () => {
 
     it('leaves generated Worklets Bundle Mode imports on the default resolver when the flag is off', () => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '0' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '0' });
         const defaultResolution = {
             type: 'sourceFile',
             filePath: join(uiDir, 'default-worklets-resolution.js'),
@@ -215,7 +215,7 @@ describe('metro.config.js (web)', () => {
         writeFileSync(generatedWorkletPath, 'export default null;\n');
 
         try {
-            const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+            const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
 
             expect(existsSync(generatedWorkletPath)).toBe(true);
 
@@ -241,7 +241,7 @@ describe('metro.config.js (web)', () => {
 
     it('reports stale Metro cache when a generated Worklets Bundle Mode import points at a missing file', () => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
 
         expect(() => config.resolver.resolveRequest(
             {
@@ -260,7 +260,7 @@ describe('metro.config.js (web)', () => {
         ['0.8 generated worklets', 'react-native-worklets/.worklets/123.js'],
     ])('assigns numeric module ids to absolute generated worklet paths for %s', (_label, moduleName) => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
         const createModuleId = config.serializer.createModuleIdFactory();
 
         expect(createModuleId(join(uiDir, 'node_modules', moduleName))).toBe(123);
@@ -270,7 +270,7 @@ describe('metro.config.js (web)', () => {
         const uiDir = getUiDir();
         const config = await loadMetroConfigWithSentryFactory(
             () => (moduleName) => moduleName.endsWith('ordinary-collision.js') ? 123 : 7,
-            { HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' },
+            { PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' },
         );
         const createModuleId = config.serializer.createModuleIdFactory();
         const generatedId = createModuleId(join(uiDir, 'node_modules/react-native-worklets/.worklets/123.js'));
@@ -283,7 +283,7 @@ describe('metro.config.js (web)', () => {
 
     it('does not watch generated Worklets Bundle Mode modules by default', () => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '0' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '0' });
 
         expect(config.watchFolders).toEqual(expect.not.arrayContaining([
             join(uiDir, 'node_modules/react-native-worklets/__generatedWorklets'),
@@ -293,7 +293,7 @@ describe('metro.config.js (web)', () => {
 
     it('watches generated Worklets Bundle Mode modules when explicitly enabled', () => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
 
         expect(config.watchFolders).toEqual(expect.arrayContaining([
             join(uiDir, 'node_modules/react-native-worklets/__generatedWorklets'),
@@ -303,7 +303,7 @@ describe('metro.config.js (web)', () => {
 
     it('watches the resolved react-native-worklets package root when bundle-mode runtime entrypoints are configured', () => {
         const uiDir = getUiDir();
-        const config = loadMetroConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+        const config = loadMetroConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
         const workletsPackageRoot = dirname(require.resolve('react-native-worklets/package.json', { paths: [uiDir] }));
 
         expect(config.serializer.getModulesRunBeforeMainModule(uiDir)).toEqual(expect.arrayContaining([
@@ -316,8 +316,8 @@ describe('metro.config.js (web)', () => {
     it('allows local native profiling runs to disable Watchman without CI mode', () => {
         const config = loadMetroConfig({
             CI: undefined,
-            HAPPIER_STACK_STACK: undefined,
-            HAPPIER_UI_METRO_DISABLE_WATCHMAN: '1',
+            PIGGERCODE_STACK_STACK: undefined,
+            PIGGERCODE_UI_METRO_DISABLE_WATCHMAN: '1',
         });
 
         expect(config.resolver.useWatchman).toBe(false);

@@ -42,7 +42,7 @@ test('buildServiceAuthGuidance warns when public URL is loopback and Tailscale i
   });
   assert.equal(g.warnings.length, 1);
   assert.match(g.warnings[0], /Mobile authentication will not work yet/i);
-  assert.match(g.warnings[0], /HAPPIER_STACK_SERVER_URL/i);
+  assert.match(g.warnings[0], /PIGGERCODE_STACK_SERVER_URL/i);
 });
 
 test('buildServiceAuthGuidance does not warn when public URL is non-local', () => {

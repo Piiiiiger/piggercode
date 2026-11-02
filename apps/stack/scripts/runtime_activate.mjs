@@ -25,7 +25,7 @@ function resolveSelectedComponents(flags) {
 }
 
 function assertNamedStack(env) {
-  const stackName = String(env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  const stackName = String(env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
   if (stackName === 'main') {
     throw new Error('[runtime] partial runtime activation is supported for named stacks only in v1.');
   }

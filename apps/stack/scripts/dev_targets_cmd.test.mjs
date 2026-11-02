@@ -13,11 +13,11 @@ async function run(args, storageDir, extraEnv = {}) {
   const result = await execFileAsync(process.execPath, [script, ...args, '--json'], {
     env: {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: join(storageDir, 'home'),
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_REPO_DIR: '',
-      HAPPIER_STACK_ENV_FILE: '',
-      HAPPIER_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
+      PIGGERCODE_STACK_HOME_DIR: join(storageDir, 'home'),
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_REPO_DIR: '',
+      PIGGERCODE_STACK_ENV_FILE: '',
+      PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD: '1',
       ...extraEnv,
     },
   });

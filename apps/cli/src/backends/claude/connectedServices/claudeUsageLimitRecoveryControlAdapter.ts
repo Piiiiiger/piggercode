@@ -3,9 +3,9 @@ import type { SessionUsageLimitRecoveryControlAdapter } from '@/session/usageLim
 
 const CLAUDE_SUBSCRIPTION_CONNECTED_SERVICE_ID = 'claude-subscription' as const;
 const CLAUDE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_ENV =
-  'HAPPIER_CLAUDE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS' as const;
+  'PIGGERCODE_CLAUDE_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS' as const;
 const CLAUDE_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS_ENV =
-  'HAPPIER_CLAUDE_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS' as const;
+  'PIGGERCODE_CLAUDE_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS' as const;
 
 export function createClaudeUsageLimitRecoveryControlAdapter(deps: Readonly<{
   nowMs?: () => number;

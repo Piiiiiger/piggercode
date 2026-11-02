@@ -32,8 +32,8 @@ export function nodeToWebStreams(
     };
 
     const capture = (() => {
-        if (!isTruthyEnv(process.env.HAPPIER_ACP_CAPTURE_IO)) return null;
-        const traceFile = (process.env.HAPPIER_STACK_TOOL_TRACE_FILE ?? '').toString().trim();
+        if (!isTruthyEnv(process.env.PIGGERCODE_ACP_CAPTURE_IO)) return null;
+        const traceFile = (process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE ?? '').toString().trim();
         const baseDir = traceFile ? dirname(traceFile) : process.cwd();
         const withCaptureErrorHandler = (stream: WriteStream, streamLabel: 'stdin' | 'stdout'): WriteStream => {
             stream.on('error', (error) => {

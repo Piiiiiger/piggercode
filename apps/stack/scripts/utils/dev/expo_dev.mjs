@@ -293,7 +293,7 @@ async function ensureWorkspacePackagesBuiltForExpoProject({ projectDir, env, qui
 
 export function resolveExpoDevHost({ env = process.env } = {}) {
   // Always prefer LAN by default so phones can reach Metro.
-  const raw = (env.HAPPIER_STACK_EXPO_HOST ?? '').toString();
+  const raw = (env.PIGGERCODE_STACK_EXPO_HOST ?? '').toString();
   return normalizeExpoHost(raw || 'lan');
 }
 
@@ -355,7 +355,7 @@ export function buildExpoDevEnv({
   // Expo app config: this is what both web + native app use to reach the Happy server.
   // When dev-client is enabled, `localhost` / `*.localhost` are not reachable from the phone,
   // so rewrite to LAN IP here (centralized) to avoid relying on call sites.
-  const serverPortFromEnvRaw = (env.HAPPIER_STACK_SERVER_PORT ?? '').toString().trim();
+  const serverPortFromEnvRaw = (env.PIGGERCODE_STACK_SERVER_PORT ?? '').toString().trim();
   const serverPortFromEnv = serverPortFromEnvRaw ? Number(serverPortFromEnvRaw) : null;
   const effectiveApiServerUrl = wantDevClient
     ? resolveMobileReachableServerUrl({
@@ -366,12 +366,12 @@ export function buildExpoDevEnv({
       })
     : apiServerUrl;
 
-  // The UI prefers EXPO_PUBLIC_HAPPIER_SERVER_URL. Keep legacy aliases in sync to avoid
+  // The UI prefers EXPO_PUBLIC_PIGGERCODE_SERVER_URL. Keep legacy aliases in sync to avoid
   // accidental precedence from a leaked shell env var (or from older tooling).
-  env.EXPO_PUBLIC_HAPPIER_SERVER_URL = effectiveApiServerUrl;
+  env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = effectiveApiServerUrl;
   env.EXPO_PUBLIC_HAPPY_SERVER_URL = effectiveApiServerUrl;
   env.EXPO_PUBLIC_SERVER_URL = effectiveApiServerUrl;
-  const publicExpoPort = Number(env.HAPPIER_STACK_EXPO_PUBLIC_PORT);
+  const publicExpoPort = Number(env.PIGGERCODE_STACK_EXPO_PUBLIC_PORT);
   if (
     wantDevClient
     && !String(env.EXPO_PACKAGER_PROXY_URL ?? '').trim()
@@ -401,7 +401,7 @@ export function buildExpoDevEnv({
   // env var is explicitly set. hstack sets it automatically for stack-mode dev-client.
   if (wantDevClient) {
     const explicitScope = (
-      env.HAPPIER_STACK_STORAGE_SCOPE ??
+      env.PIGGERCODE_STACK_STORAGE_SCOPE ??
       env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE ??
       ''
     )
@@ -452,7 +452,7 @@ export async function ensureDevExpoServer({
   }
 
   const wantTailscale = resolveExpoTailscaleEnabled({ env: baseEnv, expoTailscale });
-  const publicExpoPort = Number(baseEnv?.HAPPIER_STACK_EXPO_PUBLIC_PORT);
+  const publicExpoPort = Number(baseEnv?.PIGGERCODE_STACK_EXPO_PUBLIC_PORT);
   const needsPublicExpoHost = wantDevClient && Number.isInteger(publicExpoPort) && publicExpoPort > 0;
   const tailscaleStatus = wantTailscale || needsPublicExpoHost
     ? await getTailscaleStatus({ env: baseEnv })
@@ -496,8 +496,8 @@ export async function ensureDevExpoServer({
       : undefined,
   );
   const alreadyRunning = Boolean(running.running);
-  let desiredApiServerUrl = normalizeApiServerUrl(env.EXPO_PUBLIC_HAPPIER_SERVER_URL || apiServerUrl);
-  const cliHomeDir = (baseEnv?.HAPPIER_STACK_CLI_HOME_DIR ?? '').toString().trim();
+  let desiredApiServerUrl = normalizeApiServerUrl(env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL || apiServerUrl);
+  const cliHomeDir = (baseEnv?.PIGGERCODE_STACK_CLI_HOME_DIR ?? '').toString().trim();
   // Always publish runtime metadata when we can.
   const publishRuntime = async ({
     generation,
@@ -654,7 +654,7 @@ export async function ensureDevExpoServer({
         // eslint-disable-next-line no-await-in-loop
         const line = await getProcessIdentityLine(pid);
         if (!line?.includes(needle)) continue;
-        if (stackName && !line.includes(`HAPPIER_STACK_STACK=${stackName}`)) continue;
+        if (stackName && !line.includes(`PIGGERCODE_STACK_STACK=${stackName}`)) continue;
         // eslint-disable-next-line no-await-in-loop
         const pgid = await getProcessGroupIdForCleanup(pid);
         if (!pgid) continue;
@@ -676,7 +676,7 @@ export async function ensureDevExpoServer({
 
   const applyMetroPortToEnv = () => {
     env.RCT_METRO_PORT = String(metroPort);
-    env.HAPPIER_STACK_EXPO_DEV_PORT = String(metroPort);
+    env.PIGGERCODE_STACK_EXPO_DEV_PORT = String(metroPort);
     if (wantTailscale && tailscaleStatus?.available && tailscaleStatus?.ip) {
       env.EXPO_PACKAGER_PROXY_URL = `http://${tailscaleStatus.ip}:${metroPort}`;
     }
@@ -699,7 +699,7 @@ export async function ensureDevExpoServer({
 
   let tailscaleResult = null;
   if (wantTailscale && tailscaleStatus?.available && tailscaleStatus?.ip) {
-    desiredApiServerUrl = normalizeApiServerUrl(env.EXPO_PUBLIC_HAPPIER_SERVER_URL || apiServerUrl);
+    desiredApiServerUrl = normalizeApiServerUrl(env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL || apiServerUrl);
   }
 
   // Some auth flows historically passed `stdio: ['ignore','ignore','ignore']` which drops Expo output entirely.
@@ -949,8 +949,8 @@ export async function ensureDevExpoServer({
   };
 
   const stableStrategy = stackMode &&
-    ((baseEnv?.HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY ?? 'ephemeral').toString().trim() || 'ephemeral') === 'stable';
-  const maxSpawnAttemptsRaw = Number(baseEnv?.HAPPIER_STACK_EXPO_EPHEMERAL_SPAWN_ATTEMPTS ?? 20);
+    ((baseEnv?.PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY ?? 'ephemeral').toString().trim() || 'ephemeral') === 'stable';
+  const maxSpawnAttemptsRaw = Number(baseEnv?.PIGGERCODE_STACK_EXPO_EPHEMERAL_SPAWN_ATTEMPTS ?? 20);
   const maxSpawnAttempts = Number.isFinite(maxSpawnAttemptsRaw) && maxSpawnAttemptsRaw > 0
     ? Math.min(50, Math.floor(maxSpawnAttemptsRaw))
     : 20;
@@ -1002,7 +1002,7 @@ export async function ensureDevExpoServer({
       const priorRuntime = runtimeStatePath ? await readStackRuntimeStateFile(runtimeStatePath).catch(() => null) : null;
       const priorPidState = await readPidState(paths.statePath);
       const priorEnvRaw = envPath ? await readFile(envPath, 'utf-8').catch(() => null) : null;
-      const priorPin = String(priorEnvRaw ?? '').split('\n').find((line) => line.trim().startsWith('HAPPIER_STACK_EXPO_DEV_PORT='));
+      const priorPin = String(priorEnvRaw ?? '').split('\n').find((line) => line.trim().startsWith('PIGGERCODE_STACK_EXPO_DEV_PORT='));
       const priorPinValue = priorPin?.slice(priorPin.indexOf('=') + 1) ?? null;
       let envCommitted = false;
       try {
@@ -1014,7 +1014,7 @@ export async function ensureDevExpoServer({
           await runPublicationBarrier('env', certificate);
           const committed = await compareAndSetEnvFileValue({
             envPath,
-            key: 'HAPPIER_STACK_EXPO_DEV_PORT',
+            key: 'PIGGERCODE_STACK_EXPO_DEV_PORT',
             expectedValue: priorPinValue,
             nextValue: String(metroPort),
           });
@@ -1061,7 +1061,7 @@ export async function ensureDevExpoServer({
           }),
           ...(envPath && envCommitted ? [compareAndSetEnvFileValue({
             envPath,
-            key: 'HAPPIER_STACK_EXPO_DEV_PORT',
+            key: 'PIGGERCODE_STACK_EXPO_DEV_PORT',
             expectedValue: String(metroPort),
             nextValue: priorPinValue,
           })] : []),

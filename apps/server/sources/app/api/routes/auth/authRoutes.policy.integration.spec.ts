@@ -88,7 +88,7 @@ describe("authRoutes (auth policy) (integration)", () => {
         // With key-challenge disabled, the server must still have at least one other
         // viable login method configured to avoid a hard lockout.
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "github",
             GITHUB_CLIENT_ID: "id",
             GITHUB_CLIENT_SECRET: "secret",
@@ -114,7 +114,7 @@ describe("authRoutes (auth policy) (integration)", () => {
 
     it("fails fast when key-challenge login is disabled and no other login methods are available", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
         });
@@ -126,13 +126,13 @@ describe("authRoutes (auth policy) (integration)", () => {
 
     it("does not fail fast when key-challenge login is disabled and a keyless OAuth login method is configured", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
+            PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: "0",
             AUTH_SIGNUP_PROVIDERS: "",
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "0",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
             GITHUB_CLIENT_ID: "id",
             GITHUB_CLIENT_SECRET: "secret",
             GITHUB_REDIRECT_URL: "https://example.com/oauth/github/callback",
@@ -206,8 +206,8 @@ describe("authRoutes (auth policy) (integration)", () => {
     it("creates new accounts with encryptionMode=plain when plaintext storage is optional and defaultAccountMode=plain", async () => {
         harness.resetEnv({
             AUTH_ANONYMOUS_SIGNUP_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const { body, publicKeyHex } = createAuthBody();

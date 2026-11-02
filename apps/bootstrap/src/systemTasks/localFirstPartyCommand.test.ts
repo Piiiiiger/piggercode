@@ -24,8 +24,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
                 componentId: 'happier-server',
                 releaseRing: 'stable',
                 processEnv: {
-                    HAPPIER_HOME_DIR: join(rootDir, 'home'),
-                    HAPPIER_STACK_REPO_DIR: join(rootDir, 'elsewhere'),
+                    PIGGERCODE_HOME_DIR: join(rootDir, 'home'),
+                    PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere'),
                     PATH: '',
                 },
             }, {
@@ -57,8 +57,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
                 componentId: 'hstack',
                 releaseRing: 'stable',
                 processEnv: {
-                    HAPPIER_HOME_DIR: join(rootDir, 'home'),
-                    HAPPIER_STACK_REPO_DIR: repoRoot,
+                    PIGGERCODE_HOME_DIR: join(rootDir, 'home'),
+                    PIGGERCODE_STACK_REPO_DIR: repoRoot,
                     PATH: '',
                 },
             }, {
@@ -93,8 +93,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
                 componentId: 'happier-cli',
                 releaseRing: 'stable',
                 processEnv: {
-                    HAPPIER_HOME_DIR: join(rootDir, 'home'),
-                    HAPPIER_STACK_REPO_DIR: repoRoot,
+                    PIGGERCODE_HOME_DIR: join(rootDir, 'home'),
+                    PIGGERCODE_STACK_REPO_DIR: repoRoot,
                     PATH: '',
                 },
             }, {
@@ -125,7 +125,7 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
             expect(resolveExplicitOrInstalledLocalFirstPartyCommand({
                 componentId: 'happier-cli',
                 releaseRing: 'stable',
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: join(rootDir, 'elsewhere') },
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere') },
             })).toEqual({ command: plantedPath, provenance: 'override' });
         } finally {
             rmSync(rootDir, { recursive: true, force: true });
@@ -158,21 +158,21 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
                 versionId: '0.2.13',
                 payloadRoot: stagedPayloadRoot,
                 releaseRing: 'stable',
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir },
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir },
             });
 
             expect(resolveExplicitOrInstalledLocalFirstPartyCommand({
                 componentId: 'happier-cli',
                 releaseRing: 'stable',
-                envVarNames: ['HAPPIER_BOOTSTRAP_CLI_PATH'],
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: repoRoot, HAPPIER_BOOTSTRAP_CLI_PATH: envPath },
+                envVarNames: ['PIGGERCODE_BOOTSTRAP_CLI_PATH'],
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: repoRoot, PIGGERCODE_BOOTSTRAP_CLI_PATH: envPath },
             })).toEqual({ command: envPath, provenance: 'override' });
 
             expect(resolveExplicitOrInstalledLocalFirstPartyCommand({
                 componentId: 'happier-cli',
                 releaseRing: 'stable',
-                envVarNames: ['HAPPIER_BOOTSTRAP_CLI_PATH'],
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: repoRoot },
+                envVarNames: ['PIGGERCODE_BOOTSTRAP_CLI_PATH'],
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: repoRoot },
             })).toEqual({ command: managedPath, provenance: 'managed' });
 
             rmSync(join(happyHomeDir, 'cli', 'versions'), { recursive: true, force: true });
@@ -180,13 +180,13 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
             expect(resolveExplicitOrInstalledLocalFirstPartyCommand({
                 componentId: 'happier-cli',
                 releaseRing: 'stable',
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: repoRoot },
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: repoRoot },
             })).toEqual({ command: repoPath, provenance: 'override' });
 
             expect(resolveExplicitOrInstalledLocalFirstPartyCommand({
                 componentId: 'happier-cli',
                 releaseRing: 'preview',
-                processEnv: { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: join(rootDir, 'elsewhere') },
+                processEnv: { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere') },
             })).toBeNull();
         } finally {
             rmSync(rootDir, { recursive: true, force: true });
@@ -200,7 +200,7 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
         const npmHappier = join(npmBin, 'happier');
         const managedPath = join(happyHomeDir, 'cli', 'current', 'happier');
         const stagedPayloadRoot = join(rootDir, 'staged');
-        const processEnv = { HAPPIER_HOME_DIR: happyHomeDir, HAPPIER_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin };
+        const processEnv = { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin };
         const resolve = () => resolveExplicitOrInstalledLocalFirstPartyCommand({ componentId: 'happier-cli', releaseRing: 'stable', processEnv });
 
         try {

@@ -14,10 +14,10 @@ import {
 
 describe('daemon startup wait defaults', () => {
   afterEach(() => {
-    delete process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS;
-    delete process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS;
-    delete process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS;
-    delete process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS;
+    delete process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS;
+    delete process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS;
   });
 
   it('uses a source-runtime-safe default startup timeout', () => {
@@ -26,8 +26,8 @@ describe('daemon startup wait defaults', () => {
   });
 
   it('keeps explicit startup wait overrides for tests and diagnostics', () => {
-    process.env.HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS = '1234';
-    process.env.HAPPIER_DAEMON_START_WAIT_POLL_MS = '7';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS = '1234';
+    process.env.PIGGERCODE_DAEMON_START_WAIT_POLL_MS = '7';
 
     expect(readDaemonStartWaitTimeoutMs()).toBe(1234);
     expect(readDaemonStartWaitPollMs()).toBe(7);
@@ -46,8 +46,8 @@ describe('daemon startup wait defaults', () => {
     expect(readDaemonRestartVerifyTimeoutMs()).toBe(60_000);
     expect(readDaemonRestartVerifyPollMs()).toBe(250);
 
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '45000';
-    process.env.HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS = '11';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS = '45000';
+    process.env.PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS = '11';
 
     expect(readDaemonRestartVerifyTimeoutMs()).toBe(45_000);
     expect(readDaemonRestartVerifyPollMs()).toBe(11);

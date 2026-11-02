@@ -13,11 +13,11 @@ import { resolveProviderCliManagedCommandPath } from './providerCliResolution';
 
 const envKeys = [
   'PATH',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_GEMINI_PATH',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_GEMINI_PATH',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
 ] as const;
 
 const tempDirs = new Set<string>();
@@ -66,7 +66,7 @@ describe('requireProviderCliLaunchSpec', () => {
     const runtimePath = await createExecutable(runtimeDir, 'node', '#!/bin/sh\nexit 0\n');
 
     process.env.PATH = pathDir;
-    process.env.HAPPIER_JS_RUNTIME_PATH = runtimePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = runtimePath;
 
     expect(requireProviderCliLaunchSpec('gemini')).toEqual({
       source: 'system',
@@ -84,7 +84,7 @@ describe('requireProviderCliLaunchSpec', () => {
 
     const providerPath = await createExecutable(pathDir, 'gemini', '#!/bin/sh\necho ok\n');
     process.env.PATH = pathDir;
-    delete process.env.HAPPIER_JS_RUNTIME_PATH;
+    delete process.env.PIGGERCODE_JS_RUNTIME_PATH;
 
     expect(requireProviderCliLaunchSpec('gemini')).toEqual({
       source: 'system',
@@ -97,9 +97,9 @@ describe('requireProviderCliLaunchSpec', () => {
   it('keeps managed wrappers as direct commands', async () => {
     const homeDir = await createTempDir('happier-provider-launch-managed-', tmpdir());
     tempDirs.add(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     const binPath = resolveProviderCliManagedCommandPath('gemini', { happyHomeDir: homeDir });
     await writeManagedExecutable(binPath, '#!/bin/sh\necho ok\n');

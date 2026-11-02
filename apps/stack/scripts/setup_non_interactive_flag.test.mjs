@@ -27,7 +27,7 @@ test('hstack setup --non-interactive forces interactive=false', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
 
-  const env = { ...process.env, HAPPIER_STACK_TEST_TTY: '1' };
+  const env = { ...process.env, PIGGERCODE_STACK_TEST_TTY: '1' };
   const res = await runSetupJson({ rootDir, env, extraArgs: ['--non-interactive'] });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
@@ -35,11 +35,11 @@ test('hstack setup --non-interactive forces interactive=false', async () => {
   assert.equal(data.interactive, false);
 });
 
-test('HAPPIER_STACK_NON_INTERACTIVE=1 forces interactive=false', async () => {
+test('PIGGERCODE_STACK_NON_INTERACTIVE=1 forces interactive=false', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
 
-  const env = { ...process.env, HAPPIER_STACK_TEST_TTY: '1', HAPPIER_STACK_NON_INTERACTIVE: '1' };
+  const env = { ...process.env, PIGGERCODE_STACK_TEST_TTY: '1', PIGGERCODE_STACK_NON_INTERACTIVE: '1' };
   const res = await runSetupJson({ rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
@@ -47,11 +47,11 @@ test('HAPPIER_STACK_NON_INTERACTIVE=1 forces interactive=false', async () => {
   assert.equal(data.interactive, false);
 });
 
-test('--interactive does not override HAPPIER_STACK_NON_INTERACTIVE=1', async () => {
+test('--interactive does not override PIGGERCODE_STACK_NON_INTERACTIVE=1', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
 
-  const env = { ...process.env, HAPPIER_STACK_TEST_TTY: '1', HAPPIER_STACK_NON_INTERACTIVE: '1' };
+  const env = { ...process.env, PIGGERCODE_STACK_TEST_TTY: '1', PIGGERCODE_STACK_NON_INTERACTIVE: '1' };
   const res = await runSetupJson({ rootDir, env, extraArgs: ['--interactive'] });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 

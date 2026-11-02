@@ -104,7 +104,7 @@ describe('executionRunBackendFactory (codex) — per-run model + effort across t
       modelId: 'gpt-5.5',
       sessionConfigOptionOverrides: OVERRIDES,
       start: { intent: 'delegate', retentionPolicy: 'resumable' },
-      isolation: { env: { PATH: '/usr/bin', HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'acp' } },
+      isolation: { env: { PATH: '/usr/bin', PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'acp' } },
     } as any);
 
     await backend.startSession();
@@ -132,7 +132,7 @@ describe('executionRunBackendFactory (codex) — per-run model + effort across t
         overrides: { reasoning_effort: { updatedAt: 1, value: ' high\t' } },
       },
       start: { intent: 'delegate', retentionPolicy: 'resumable' },
-      isolation: { env: { PATH: '/usr/bin', HAPPIER_CODEX_EXECUTION_RUN_TRANSPORT: 'mcp' } },
+      isolation: { env: { PATH: '/usr/bin', PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'mcp' } },
     } as any);
 
     expect(mcpCalls).toHaveLength(1);

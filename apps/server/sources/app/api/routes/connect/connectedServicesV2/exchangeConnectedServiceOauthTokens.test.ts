@@ -38,9 +38,9 @@ describe("exchangeConnectedServiceOauthTokens", () => {
 
     it.each([false, true])("seals Antigravity tokens and selected-token identity using its registered issuer (legacy-looking overrides: %s)", async (withOverrides) => {
         if (withOverrides) {
-            vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
-            vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
-            vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
+            vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
+            vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
+            vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
         }
         const recipient = buildRecipientKeyPair();
         let tokenRequest: Readonly<{ url: string; body: URLSearchParams }> | undefined;
@@ -415,7 +415,7 @@ describe("exchangeConnectedServiceOauthTokens", () => {
     });
 
     it("passes an AbortSignal to token exchange fetch requests", async () => {
-        resetOauthExchangeEnv({ HAPPIER_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "5000" });
+        resetOauthExchangeEnv({ PIGGERCODE_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "5000" });
         const fetchMock = vi.fn(async (_url: any, init: any) => ({
             ok: true,
             status: 200,
@@ -447,7 +447,7 @@ describe("exchangeConnectedServiceOauthTokens", () => {
     });
 
     it("aborts token exchange when the timeout elapses", async () => {
-        resetOauthExchangeEnv({ HAPPIER_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "1000" });
+        resetOauthExchangeEnv({ PIGGERCODE_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "1000" });
         vi.useFakeTimers();
         try {
             const fetchMock = vi.fn(async (_url: any, init: any) => {

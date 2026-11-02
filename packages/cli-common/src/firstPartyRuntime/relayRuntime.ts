@@ -114,16 +114,16 @@ export function resolveConfiguredRelayRuntimePaths(params: Readonly<{
   const env = params.env ?? process.env;
 
   return {
-    installRoot: readExpandedOverride(env, 'HAPPIER_SELF_HOST_INSTALL_ROOT') || params.defaults.installRoot,
-    binDir: readExpandedOverride(env, 'HAPPIER_SELF_HOST_BIN_DIR') || params.defaults.binDir,
-    configDir: readExpandedOverride(env, 'HAPPIER_SELF_HOST_CONFIG_DIR') || params.defaults.configDir,
-    dataDir: readExpandedOverride(env, 'HAPPIER_SELF_HOST_DATA_DIR') || params.defaults.dataDir,
-    logDir: readExpandedOverride(env, 'HAPPIER_SELF_HOST_LOG_DIR') || params.defaults.logDir,
+    installRoot: readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_INSTALL_ROOT') || params.defaults.installRoot,
+    binDir: readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_BIN_DIR') || params.defaults.binDir,
+    configDir: readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_CONFIG_DIR') || params.defaults.configDir,
+    dataDir: readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_DATA_DIR') || params.defaults.dataDir,
+    logDir: readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_LOG_DIR') || params.defaults.logDir,
   };
 }
 
 export function resolveConfiguredRelayRuntimeBinaryOverride(env: NodeJS.ProcessEnv = process.env): string {
-  return readExpandedOverride(env, 'HAPPIER_SELF_HOST_SERVER_BINARY');
+  return readExpandedOverride(env, 'PIGGERCODE_SELF_HOST_SERVER_BINARY');
 }
 
 function buildRelayRuntimeUrl(params: Readonly<{

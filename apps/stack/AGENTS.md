@@ -79,7 +79,7 @@ Preserve these unless the task explicitly redesigns stack behavior:
 - Keep stack tests on native `node --test`; do not migrate stack tests to Vitest or Playwright.
 - Unit tests use `*.test.mjs`.
 - Integration tests use `*.integration.test.mjs` and remain serial.
-- Real integration tests use `*.real.integration.test.mjs`, remain serial, and require `HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS=1`.
+- Real integration tests use `*.real.integration.test.mjs`, remain serial, and require `PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS=1`.
 - Canonical runner/discovery helpers live under `scripts/utils/test/**`.
 - Canonical stack-local testkit primitives live under `scripts/testkit/core/**`.
 - Prefer existing helpers over ad hoc tempdir/env/spawn wrappers.

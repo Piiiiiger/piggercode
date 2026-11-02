@@ -7,18 +7,18 @@ describe('env scope helpers', () => {
     expect(envScope).not.toBeNull();
     expect(envScope?.createEnvKeyScope).toBeTypeOf('function');
 
-    const previous = process.env.HAPPIER_TESTKIT_ENV_SCOPE;
-    const scope = envScope!.createEnvKeyScope(['HAPPIER_TESTKIT_ENV_SCOPE']);
+    const previous = process.env.PIGGERCODE_TESTKIT_ENV_SCOPE;
+    const scope = envScope!.createEnvKeyScope(['PIGGERCODE_TESTKIT_ENV_SCOPE']);
 
     try {
-      scope.patch({ HAPPIER_TESTKIT_ENV_SCOPE: 'patched' });
-      expect(process.env.HAPPIER_TESTKIT_ENV_SCOPE).toBe('patched');
+      scope.patch({ PIGGERCODE_TESTKIT_ENV_SCOPE: 'patched' });
+      expect(process.env.PIGGERCODE_TESTKIT_ENV_SCOPE).toBe('patched');
     } finally {
       scope.restore();
       if (previous === undefined) {
-        expect(process.env.HAPPIER_TESTKIT_ENV_SCOPE).toBeUndefined();
+        expect(process.env.PIGGERCODE_TESTKIT_ENV_SCOPE).toBeUndefined();
       } else {
-        expect(process.env.HAPPIER_TESTKIT_ENV_SCOPE).toBe(previous);
+        expect(process.env.PIGGERCODE_TESTKIT_ENV_SCOPE).toBe(previous);
       }
     }
   });

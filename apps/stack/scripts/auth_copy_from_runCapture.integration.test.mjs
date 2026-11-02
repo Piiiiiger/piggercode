@@ -44,12 +44,12 @@ test('hstack stack auth copy-from does not hit ReferenceError: runCapture is not
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -62,11 +62,11 @@ test('hstack stack auth copy-from does not hit ReferenceError: runCapture is not
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: 'dev',
-    HAPPIER_STACK_ENV_FILE: join(storageDir, 'dev', 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: 'dev',
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, 'dev', 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', 'dev-auth'], { cwd: rootDir, env });
@@ -120,14 +120,14 @@ test('hstack stack auth copy-from prefers source server-scoped credential over u
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -140,7 +140,7 @@ test('hstack stack auth copy-from prefers source server-scoped credential over u
   const sourceCred = resolveStackCredentialPaths({
     cliHomeDir: sourceCliHome,
     serverUrl,
-    env: { ...process.env, HAPPIER_ACTIVE_SERVER_ID: '' },
+    env: { ...process.env, PIGGERCODE_ACTIVE_SERVER_ID: '' },
   });
   await mkdir(dirname(sourceCred.serverScopedPath), { recursive: true });
   await writeFile(join(sourceCliHome, 'access.key'), 'legacy-wrong\n', 'utf-8');
@@ -149,11 +149,11 @@ test('hstack stack auth copy-from prefers source server-scoped credential over u
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack, '--offline-ok'], { cwd: rootDir, env });
@@ -201,14 +201,14 @@ test('hstack stack auth copy-from prefers source stable-scope credential when so
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        // IMPORTANT: no HAPPIER_STACK_SERVER_PORT here (ephemeral stack behavior)
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        // IMPORTANT: no PIGGERCODE_STACK_SERVER_PORT here (ephemeral stack behavior)
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -244,12 +244,12 @@ test('hstack stack auth copy-from prefers source stable-scope credential when so
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     // Simulate leaked rollback env in caller shell; copy-from should still prefer source stack stable credential.
-    HAPPIER_STACK_DISABLE_STABLE_SCOPE: '1',
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_DISABLE_STABLE_SCOPE: '1',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack, '--offline-ok'], { cwd: rootDir, env });
@@ -307,13 +307,13 @@ test('hstack stack auth copy-from fails closed when source token subject is miss
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -336,11 +336,11 @@ test('hstack stack auth copy-from fails closed when source token subject is miss
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack, '--offline-ok'], { cwd: rootDir, env });
@@ -393,13 +393,13 @@ test('hstack stack auth copy-from accepts source auth when source server validat
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -443,11 +443,11 @@ test('hstack stack auth copy-from accepts source auth when source server validat
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack], { cwd: rootDir, env });
@@ -499,14 +499,14 @@ test('hstack stack auth copy-from fails closed when source stack is not running 
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -524,11 +524,11 @@ test('hstack stack auth copy-from fails closed when source stack is not running 
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack], { cwd: rootDir, env });
@@ -576,14 +576,14 @@ test('hstack stack auth copy-from --no-secret does not overwrite target master s
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        `HAPPIER_STACK_SERVER_PORT=${serverPort}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        `PIGGERCODE_STACK_SERVER_PORT=${serverPort}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -607,11 +607,11 @@ test('hstack stack auth copy-from --no-secret does not overwrite target master s
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(storageDir, targetStack, 'env'),
   };
 
   const res = await runNodeCapture(
@@ -657,15 +657,15 @@ test('hstack stack auth copy-from reads source light sqlite db from the source s
     await mkdir(cliHomeDir, { recursive: true });
     await mkdir(dataDir, { recursive: true });
     const lines = [
-      `HAPPIER_STACK_STACK=${name}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+      `PIGGERCODE_STACK_STACK=${name}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
     ];
     if (includeLightDirs) {
-      lines.push(`HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`);
-      lines.push(`HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`);
-      lines.push(`HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`);
+      lines.push(`PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`);
+      lines.push(`PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`);
+      lines.push(`PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`);
     }
     await writeFile(join(baseDir, 'env'), `${lines.join('\n')}\n`, 'utf-8');
   };
@@ -689,10 +689,10 @@ test('hstack stack auth copy-from reads source light sqlite db from the source s
     const { spawnSync } = await import('node:child_process');
     const env = {
       ...process.env,
-      HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-      HAPPIER_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
-      HAPPIER_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
-      HAPPIER_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
     };
     const invocation = resolveYarnCommandInvocation(['-s', 'migrate:deploy'], {
       npmExecPath: env.npm_execpath,
@@ -764,14 +764,14 @@ console.log('ok');
 
   const env = {
     ...process.env,
-    HAPPIER_SERVER_LIGHT_DATA_DIR: targetDataDir,
-    HAPPIER_SERVER_LIGHT_FILES_DIR: join(targetDataDir, 'files'),
-    HAPPIER_SERVER_LIGHT_DB_DIR: join(targetDataDir, 'pglite'),
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(targetBaseDir, 'env'),
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: targetDataDir,
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(targetDataDir, 'files'),
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: join(targetDataDir, 'pglite'),
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(targetBaseDir, 'env'),
   };
 
   const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', sourceStack, '--offline-ok', '--force'], {
@@ -828,18 +828,18 @@ test('hstack stack auth copy-from does not require source sqlite migrations when
     await mkdir(cliHomeDir, { recursive: true });
     await mkdir(dataDir, { recursive: true });
     const lines = [
-      `HAPPIER_STACK_STACK=${name}`,
-      `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-      `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-      `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+      `PIGGERCODE_STACK_STACK=${name}`,
+      `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+      `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+      `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
     ];
     if (dbProvider) {
-      lines.push(`HAPPIER_DB_PROVIDER=${dbProvider}`);
+      lines.push(`PIGGERCODE_DB_PROVIDER=${dbProvider}`);
     }
     lines.push(
-      `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-      `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-      `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+      `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+      `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+      `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
       '',
     );
     await writeFile(
@@ -862,10 +862,10 @@ test('hstack stack auth copy-from does not require source sqlite migrations when
     const { spawnSync } = await import('node:child_process');
     const env = {
       ...process.env,
-      HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-      HAPPIER_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
-      HAPPIER_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
-      HAPPIER_DB_PROVIDER: 'sqlite',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+      PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(dataDir, 'files'),
+      PIGGERCODE_SERVER_LIGHT_DB_DIR: join(dataDir, 'pglite'),
+      PIGGERCODE_DB_PROVIDER: 'sqlite',
     };
     const invocation = resolveYarnCommandInvocation(['-s', 'migrate:deploy'], {
       npmExecPath: env.npm_execpath,
@@ -929,25 +929,25 @@ console.log('ok');
   await writeFile(join(sourceCliHome, 'access.key'), JSON.stringify({ token: sourceToken }) + '\n', 'utf-8');
 
   const sourceEnv = {
-    HAPPIER_STACK_STACK: sourceStack,
-    HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-    HAPPIER_STACK_REPO_DIR: repoRoot,
-    HAPPIER_SERVER_LIGHT_DATA_DIR: sourceDataDir,
-    HAPPIER_SERVER_LIGHT_FILES_DIR: join(sourceDataDir, 'files'),
-    HAPPIER_SERVER_LIGHT_DB_DIR: join(sourceDataDir, 'pglite'),
+    PIGGERCODE_STACK_STACK: sourceStack,
+    PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+    PIGGERCODE_STACK_REPO_DIR: repoRoot,
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: sourceDataDir,
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: join(sourceDataDir, 'files'),
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: join(sourceDataDir, 'pglite'),
   };
   const leakedLightEnv = buildEmbeddedMigrationBaseEnv(
     {
       ...process.env,
-      HAPPIER_DB_PROVIDER: 'pglite',
+      PIGGERCODE_DB_PROVIDER: 'pglite',
       HAPPY_DB_PROVIDER: 'pglite',
     },
     sourceEnv
   );
   assert.equal(
-    leakedLightEnv.HAPPIER_DB_PROVIDER,
+    leakedLightEnv.PIGGERCODE_DB_PROVIDER,
     undefined,
-    'expected leaked HAPPIER_DB_PROVIDER to be stripped before light migration resolution'
+    'expected leaked PIGGERCODE_DB_PROVIDER to be stripped before light migration resolution'
   );
   assert.equal(
     leakedLightEnv.HAPPY_DB_PROVIDER,
@@ -962,12 +962,12 @@ console.log('ok');
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_HOME_DIR: homeDir,
-    HAPPIER_STACK_STORAGE_DIR: storageDir,
-    HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-    HAPPIER_STACK_STACK: targetStack,
-    HAPPIER_STACK_ENV_FILE: join(targetBaseDir, 'env'),
-    HAPPIER_DB_PROVIDER: 'pglite',
+    PIGGERCODE_STACK_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+    PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+    PIGGERCODE_STACK_STACK: targetStack,
+    PIGGERCODE_STACK_ENV_FILE: join(targetBaseDir, 'env'),
+    PIGGERCODE_DB_PROVIDER: 'pglite',
     HAPPY_DB_PROVIDER: 'pglite',
   };
 

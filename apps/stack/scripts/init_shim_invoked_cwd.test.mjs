@@ -30,7 +30,7 @@ function runExecutable(command, args, { cwd, env }) {
   });
 }
 
-test('hstack init shim preserves HAPPIER_STACK_INVOKED_CWD before changing directories', async () => {
+test('hstack init shim preserves PIGGERCODE_STACK_INVOKED_CWD before changing directories', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-init-shim-'));
@@ -55,10 +55,10 @@ test('hstack init shim preserves HAPPIER_STACK_INVOKED_CWD before changing direc
 
     const shimPath = join(homeDir, 'bin', 'hstack');
     const shim = await readFile(shimPath, 'utf-8');
-    assert.match(shim, /HAPPIER_STACK_INVOKED_CWD/, 'expected shim to reference HAPPIER_STACK_INVOKED_CWD');
+    assert.match(shim, /PIGGERCODE_STACK_INVOKED_CWD/, 'expected shim to reference PIGGERCODE_STACK_INVOKED_CWD');
     assert.match(
       shim,
-      /HAPPIER_STACK_INVOKED_CWD:-\$\{PWD:-\$HOME\}/,
+      /PIGGERCODE_STACK_INVOKED_CWD:-\$\{PWD:-\$HOME\}/,
       'expected shim to tolerate launchd environments where PWD is unset'
     );
   } finally {
@@ -66,7 +66,7 @@ test('hstack init shim preserves HAPPIER_STACK_INVOKED_CWD before changing direc
   }
 });
 
-test('hstack init shim prefers the current PATH node for repo CLI launches when HAPPIER_STACK_CLI_ROOT_DIR is set', async () => {
+test('hstack init shim prefers the current PATH node for repo CLI launches when PIGGERCODE_STACK_CLI_ROOT_DIR is set', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-init-shim-node-'));
@@ -127,7 +127,7 @@ test('hstack init shim prefers the current PATH node for repo CLI launches when 
         env: {
           ...process.env,
           PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
-          HAPPIER_STACK_NODE: join(tmp, 'missing-node'),
+          PIGGERCODE_STACK_NODE: join(tmp, 'missing-node'),
         },
       }
     );
@@ -164,7 +164,7 @@ test('hstack init shim prefers the current PATH node for service-mode repo CLI l
         'process.stdout.write(JSON.stringify({',
         '  fakeNodeUsed: process.env.FAKE_NODE_USED === "1",',
         '  pinnedNodeUsed: process.env.PINNED_NODE_USED === "1",',
-        '  serviceMode: process.env.HAPPIER_STACK_SERVICE_MODE === "1",',
+        '  serviceMode: process.env.PIGGERCODE_STACK_SERVICE_MODE === "1",',
         '}));',
         '',
       ].join('\n'),
@@ -210,8 +210,8 @@ test('hstack init shim prefers the current PATH node for service-mode repo CLI l
         env: {
           ...process.env,
           PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
-          HAPPIER_STACK_NODE: pinnedNodePath,
-          HAPPIER_STACK_SERVICE_MODE: '1',
+          PIGGERCODE_STACK_NODE: pinnedNodePath,
+          PIGGERCODE_STACK_SERVICE_MODE: '1',
         },
       }
     );
@@ -226,7 +226,7 @@ test('hstack init shim prefers the current PATH node for service-mode repo CLI l
   }
 });
 
-test('hstack init shim falls back to HAPPIER_STACK_NODE when PATH has no node', async () => {
+test('hstack init shim falls back to PIGGERCODE_STACK_NODE when PATH has no node', async () => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-init-shim-node-fallback-'));
@@ -284,12 +284,12 @@ test('hstack init shim falls back to HAPPIER_STACK_NODE when PATH has no node', 
         env: {
           ...process.env,
           PATH: join(tmp, 'empty-bin'),
-          HAPPIER_STACK_HOME_DIR: homeDir,
-          HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-          HAPPIER_STACK_RUNTIME_DIR: join(tmp, 'missing-runtime'),
-          HAPPIER_STACK_CLI_ROOT_DIR: fakeCliRoot,
-          HAPPIER_STACK_NODE: pinnedNodePath,
-          HAPPIER_STACK_SERVICE_MODE: '1',
+          PIGGERCODE_STACK_HOME_DIR: homeDir,
+          PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+          PIGGERCODE_STACK_RUNTIME_DIR: join(tmp, 'missing-runtime'),
+          PIGGERCODE_STACK_CLI_ROOT_DIR: fakeCliRoot,
+          PIGGERCODE_STACK_NODE: pinnedNodePath,
+          PIGGERCODE_STACK_SERVICE_MODE: '1',
         },
       }
     );
@@ -339,17 +339,17 @@ test('hstack init shim fails clearly when repo CLI mode has no node available', 
         env: {
           ...process.env,
           PATH: join(tmp, 'empty-bin'),
-          HAPPIER_STACK_HOME_DIR: homeDir,
-          HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-          HAPPIER_STACK_RUNTIME_DIR: join(tmp, 'missing-runtime'),
-          HAPPIER_STACK_CLI_ROOT_DIR: fakeCliRoot,
-          HAPPIER_STACK_NODE: join(tmp, 'missing-node'),
+          PIGGERCODE_STACK_HOME_DIR: homeDir,
+          PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+          PIGGERCODE_STACK_RUNTIME_DIR: join(tmp, 'missing-runtime'),
+          PIGGERCODE_STACK_CLI_ROOT_DIR: fakeCliRoot,
+          PIGGERCODE_STACK_NODE: join(tmp, 'missing-node'),
         },
       }
     );
 
     assert.notEqual(runRes.code, 0, 'expected shim to fail when no usable node is available');
-    assert.match(runRes.stderr, /missing node runtime|install node|HAPPIER_STACK_NODE/i);
+    assert.match(runRes.stderr, /missing node runtime|install node|PIGGERCODE_STACK_NODE/i);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -387,7 +387,7 @@ test('hstack init shim still reports a missing runtime install when no runtime e
         env: {
           ...process.env,
           PATH: '/usr/bin:/bin:/usr/sbin:/sbin',
-          HAPPIER_STACK_NODE: join(tmp, 'missing-node'),
+          PIGGERCODE_STACK_NODE: join(tmp, 'missing-node'),
         },
       }
     );

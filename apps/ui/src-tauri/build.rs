@@ -26,10 +26,10 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=build_support.rs");
     println!("cargo:rerun-if-env-changed=TARGET");
-    println!("cargo:rerun-if-env-changed=HAPPIER_HSETUP_SIDECAR_SOURCE");
-    println!("cargo:rerun-if-env-changed=HAPPIER_SKIP_HSETUP_SIDECAR_BUILD");
+    println!("cargo:rerun-if-env-changed=PIGGERCODE_HSETUP_SIDECAR_SOURCE");
+    println!("cargo:rerun-if-env-changed=PIGGERCODE_SKIP_HSETUP_SIDECAR_BUILD");
 
-    if is_truthy_env("HAPPIER_SKIP_HSETUP_SIDECAR_BUILD") {
+    if is_truthy_env("PIGGERCODE_SKIP_HSETUP_SIDECAR_BUILD") {
         // `tauri-build` validates that sidecar/resource paths exist even when running `cargo test`.
         // Provide a tiny stub so local test runs don't require the real bootstrap binary to be built.
         // Real builds must not use this flag.
@@ -37,7 +37,7 @@ fn main() {
             panic!("failed to create bundled hsetup sidecar stub: {error}");
         }
         println!(
-            "cargo:warning=Skipping hsetup sidecar bundling (HAPPIER_SKIP_HSETUP_SIDECAR_BUILD=1)."
+            "cargo:warning=Skipping hsetup sidecar bundling (PIGGERCODE_SKIP_HSETUP_SIDECAR_BUILD=1)."
         );
     } else {
         build_hsetup_sidecar().expect("failed to build bundled hsetup sidecar");
@@ -77,7 +77,7 @@ fn ensure_hsetup_sidecar_stub() -> Result<(), String> {
     }
 
     // Keep the runtime lookup contract stable.
-    println!("cargo:rustc-env=HAPPIER_HSETUP_SIDECAR_FILENAME={filename}");
+    println!("cargo:rustc-env=PIGGERCODE_HSETUP_SIDECAR_FILENAME={filename}");
     Ok(())
 }
 
@@ -109,7 +109,7 @@ fn build_hsetup_sidecar() -> Result<(), String> {
             .join("bin")
             .join("hsetup")
     };
-    let source_path = env::var("HAPPIER_HSETUP_SIDECAR_SOURCE")
+    let source_path = env::var("PIGGERCODE_HSETUP_SIDECAR_SOURCE")
         .map(PathBuf::from)
         .unwrap_or(default_source_path);
 
@@ -158,7 +158,7 @@ fn build_hsetup_sidecar() -> Result<(), String> {
         }
     }
 
-    println!("cargo:rustc-env=HAPPIER_HSETUP_SIDECAR_FILENAME={filename}");
+    println!("cargo:rustc-env=PIGGERCODE_HSETUP_SIDECAR_FILENAME={filename}");
 
     // Linux AppImage bundling can abort when linuxdeploy runs `ldd` on our sidecar binary.
     // Build a gzip archive so we can ship the archive as a resource and materialize it at runtime.

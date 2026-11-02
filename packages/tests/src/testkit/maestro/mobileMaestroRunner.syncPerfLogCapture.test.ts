@@ -67,7 +67,7 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 '--appId', 'dev.happier.app.internaldev', '--serverUrl', 'http://127.0.0.1:52753',
                 '--skip-app-install-check'],
             cwd: process.cwd(),
-            env: { ...process.env, HAPPIER_E2E_MOBILE_MANAGE_METRO: '0' },
+            env: { ...process.env, PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0' },
         }, {
             runMaestro: async () => {
                 // Node reports failed spawn asynchronously; an immediate flow can enter cleanup first.
@@ -117,8 +117,8 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
                 },
             },
             {
@@ -181,8 +181,8 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
                 },
             },
             {
@@ -225,9 +225,9 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
-                    HAPPIER_E2E_ANDROID_LOGCAT_STOP_TIMEOUT_MS: '1',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+                    PIGGERCODE_E2E_ANDROID_LOGCAT_STOP_TIMEOUT_MS: '1',
                 },
             },
             {
@@ -269,9 +269,9 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
-                    HAPPIER_E2E_RESTORE_KEY: 'RESTORE-KEY-THAT-MUST-NOT-REACH-LOGCAT',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+                    PIGGERCODE_E2E_RESTORE_KEY: 'RESTORE-KEY-THAT-MUST-NOT-REACH-LOGCAT',
                 },
             },
             {
@@ -282,7 +282,7 @@ describe('mobileMaestroRunner sync performance log capture', () => {
         );
 
         const spawnOptions = spawnMock.mock.calls[0]?.[2] as { env?: NodeJS.ProcessEnv } | undefined;
-        expect(spawnOptions?.env?.HAPPIER_E2E_RESTORE_KEY).toBeUndefined();
+        expect(spawnOptions?.env?.PIGGERCODE_E2E_RESTORE_KEY).toBeUndefined();
     });
 
     it('captures iOS simulator logs into the run manifest for sync-perf parser discovery', async () => {
@@ -318,7 +318,7 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
                 },
             },
             {
@@ -374,8 +374,8 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_IOS_SIMULATOR_LOG_STOP_TIMEOUT_MS: '1',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_IOS_SIMULATOR_LOG_STOP_TIMEOUT_MS: '1',
                 },
             },
             {
@@ -399,7 +399,7 @@ describe('mobileMaestroRunner sync performance log capture', () => {
         const { runMobileMaestro } = await import('./mobileMaestroRunner');
 
         const runMaestro = vi.fn(async (params: { env: NodeJS.ProcessEnv }) => {
-            const deepLink = String(params.env.HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK ?? '');
+            const deepLink = String(params.env.PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK ?? '');
             if (deepLink) {
                 logcatProcess.stdout.write(`ReactNativeJS: opening ${deepLink}\n`);
             }
@@ -422,9 +422,9 @@ describe('mobileMaestroRunner sync performance log capture', () => {
                 cwd: process.cwd(),
                 env: {
                     ...process.env,
-                    HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
-                    HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
-                    HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
+                    PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
+                    PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+                    PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE: 'cli-terminal-daemon',
                 },
             },
             {
@@ -449,6 +449,6 @@ describe('mobileMaestroRunner sync performance log capture', () => {
 
         const logText = readFileSync(`${result.runDir}/android-logcat.log`, 'utf8');
         expect(logText).not.toContain('test-key');
-        expect(logText).toContain('[redacted:HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK]');
+        expect(logText).toContain('[redacted:PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK]');
     });
 });

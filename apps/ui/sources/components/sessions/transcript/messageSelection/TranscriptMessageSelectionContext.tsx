@@ -33,7 +33,7 @@ type MutableSelectionState = {
     snapshot: TranscriptMessageSelectionSnapshot;
 };
 
-const TRANSCRIPT_MESSAGE_SELECTION_CONTEXT_GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_MESSAGE_SELECTION_CONTEXT__';
+const TRANSCRIPT_MESSAGE_SELECTION_CONTEXT_GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_MESSAGE_SELECTION_CONTEXT__';
 
 type TranscriptMessageSelectionContextGlobal = typeof globalThis & {
     [TRANSCRIPT_MESSAGE_SELECTION_CONTEXT_GLOBAL_KEY]?: React.Context<TranscriptMessageSelectionStore | null>;

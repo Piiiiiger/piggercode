@@ -154,8 +154,8 @@ function relayProfileConnectionIdentity(profile: ServerProfile | null): string {
   ].join('|');
 }
 
-const TEST_FIRST_PARTY_PAYLOAD_ROOT_ENV = 'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT';
-const TEST_FIRST_PARTY_PAYLOAD_VERSION_ID_ENV = 'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID';
+const TEST_FIRST_PARTY_PAYLOAD_ROOT_ENV = 'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT';
+const TEST_FIRST_PARTY_PAYLOAD_VERSION_ID_ENV = 'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID';
 
 function takeFlag(args: string[], name: string): { present: boolean; rest: string[] } {
   const rest: string[] = [];
@@ -727,7 +727,7 @@ export async function runRelayHostSubcommand(args: string[]): Promise<void> {
       bindHost = hostFlag.value.trim();
     }
 
-    const bindEnv: Record<string, string> = bindHost ? { HAPPIER_SERVER_HOST: bindHost } : {};
+    const bindEnv: Record<string, string> = bindHost ? { PIGGERCODE_SERVER_HOST: bindHost } : {};
     const mergedEnv = (env !== null || Object.keys(bindEnv).length > 0) ? { ...(env ?? {}), ...bindEnv } : null;
 
     const localServerPayloadOverride = selfHostRelayBinaryOverride
@@ -872,10 +872,10 @@ export async function runRelayHostSubcommand(args: string[]): Promise<void> {
       // and anonymous signup is on by default. Say so once, here, where the bind
       // was just chosen. Information only: no prompt, no policy, no changed env.
       // Read from the emitted env rather than `bindHost` so `--env
-      // HAPPIER_SERVER_HOST=...` — the other way to move this bind — is not a
+      // PIGGERCODE_SERVER_HOST=...` — the other way to move this bind — is not a
       // silent gap. Skipped for `--ssh`, which cannot carry a bind flag and
       // whose relay is not on "this computer" anyway.
-      const signupExposure = ssh ? null : describeRelayBindSignupExposure(mergedEnv?.HAPPIER_SERVER_HOST ?? null);
+      const signupExposure = ssh ? null : describeRelayBindSignupExposure(mergedEnv?.PIGGERCODE_SERVER_HOST ?? null);
       if (signupExposure) {
         console.log('');
         console.log(`  ${warn(signupExposure.headline)}`);

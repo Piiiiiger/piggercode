@@ -6,7 +6,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createExecutableShim, writeExecutableShim } from '@/testkit/fs/executableShim';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
-const envKeys = ['PATH', 'HAPPIER_HOME_DIR', 'HAPPIER_GEMINI_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_HOME_DIR', 'PIGGERCODE_GEMINI_PATH'] as const;
 const tempDirs = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -34,7 +34,7 @@ afterEach(async () => {
 describe('geminiDaemonSpawnHooks.validateSpawn', () => {
   it('rejects spawn when gemini is not resolvable', async () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     const { geminiDaemonSpawnHooks } = await import('./spawnHooks');
     const res = await geminiDaemonSpawnHooks.validateSpawn!({});
@@ -46,7 +46,7 @@ describe('geminiDaemonSpawnHooks.validateSpawn', () => {
   });
 
   it('allows spawn when gemini is on PATH', async () => {
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
     const { dir } = await createFakeBin('gemini');
     process.env.PATH = dir;
 
@@ -55,10 +55,10 @@ describe('geminiDaemonSpawnHooks.validateSpawn', () => {
     expect(res.ok).toBe(true);
   });
 
-  it('allows spawn when HAPPIER_GEMINI_PATH points to an executable', async () => {
+  it('allows spawn when PIGGERCODE_GEMINI_PATH points to an executable', async () => {
     process.env.PATH = '';
     const { binPath } = await createFakeBin('gemini-custom');
-    process.env.HAPPIER_GEMINI_PATH = binPath;
+    process.env.PIGGERCODE_GEMINI_PATH = binPath;
 
     const { geminiDaemonSpawnHooks } = await import('./spawnHooks');
     const res = await geminiDaemonSpawnHooks.validateSpawn!({});
@@ -67,11 +67,11 @@ describe('geminiDaemonSpawnHooks.validateSpawn', () => {
 
   it('allows spawn when a managed gemini install exists', async () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_GEMINI_PATH;
+    delete process.env.PIGGERCODE_GEMINI_PATH;
 
     const homeDir = await createTempDir('happier-gemini-managed-home-');
     tempDirs.add(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     const { resolveProviderCliManagedCommandPath } = await import('@/runtime/managedTools/providerCliResolution');
     const binPath = resolveProviderCliManagedCommandPath('gemini', { happyHomeDir: homeDir });

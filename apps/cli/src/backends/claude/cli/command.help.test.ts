@@ -18,11 +18,11 @@ const { execFileSyncSpy, runtimeState } = vi.hoisted(() => ({
 const envKeys = [
   'HOME',
   'PATH',
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_CLAUDE_PATH',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_CLAUDE_PATH',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
 ] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
@@ -106,7 +106,7 @@ describe('happier (default claude) help output', () => {
       process.platform === 'win32' ? 'claude.cmd' : 'claude',
       process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n',
     );
-    process.env.HAPPIER_CLAUDE_PATH = claudePath;
+    process.env.PIGGERCODE_CLAUDE_PATH = claudePath;
 
     const exitSpy = createExitSpy();
     const output = captureConsoleLogAndMuteStdout();
@@ -144,7 +144,7 @@ describe('happier (default claude) help output', () => {
       process.platform === 'win32' ? 'claude.cmd' : 'claude',
       process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n',
     );
-    process.env.HAPPIER_CLAUDE_PATH = claudePath;
+    process.env.PIGGERCODE_CLAUDE_PATH = claudePath;
 
     const exitSpy = createExitSpy();
     const output = captureConsoleLogAndMuteStdout();
@@ -174,7 +174,7 @@ describe('happier (default claude) help output', () => {
     Object.defineProperty(process, 'platform', { ...descriptor, value: 'win32' });
 
     const root = createTempRoot('happier-claude-help-win32-');
-    process.env.HAPPIER_CLAUDE_PATH = createExecutable(root, 'claude.cmd', '@echo off\r\n');
+    process.env.PIGGERCODE_CLAUDE_PATH = createExecutable(root, 'claude.cmd', '@echo off\r\n');
 
     const exitSpy = createExitSpy();
     const output = captureConsoleLogAndMuteStdout();
@@ -204,8 +204,8 @@ describe('happier (default claude) help output', () => {
     Object.defineProperty(process, 'platform', { ...descriptor, value: 'win32' });
 
     const root = createTempRoot('happier-claude-help-win32-js-runtime-');
-    process.env.HAPPIER_JS_RUNTIME_PATH = createExecutable(root, 'node.cmd', '@echo off\r\n');
-    process.env.HAPPIER_CLAUDE_PATH = createClaudeJsEntry(root);
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = createExecutable(root, 'node.cmd', '@echo off\r\n');
+    process.env.PIGGERCODE_CLAUDE_PATH = createClaudeJsEntry(root);
     runtimeState.isBun = true;
 
     const exitSpy = createExitSpy();
@@ -234,8 +234,8 @@ describe('happier (default claude) help output', () => {
     const root = createTempRoot('happier-claude-help-runtime-');
     const runtimePath = createRuntimeExecutable(root);
     const claudePath = createClaudeJsEntry(root);
-    process.env.HAPPIER_JS_RUNTIME_PATH = runtimePath;
-    process.env.HAPPIER_CLAUDE_PATH = claudePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = runtimePath;
+    process.env.PIGGERCODE_CLAUDE_PATH = claudePath;
     runtimeState.isBun = true;
 
     const exitSpy = createExitSpy();
@@ -259,8 +259,8 @@ describe('happier (default claude) help output', () => {
     const root = createTempRoot('happier-claude-help-node-runtime-');
     const runtimePath = createRuntimeExecutable(root);
     const claudePath = createClaudeJsEntry(root);
-    process.env.HAPPIER_JS_RUNTIME_PATH = runtimePath;
-    process.env.HAPPIER_CLAUDE_PATH = claudePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = runtimePath;
+    process.env.PIGGERCODE_CLAUDE_PATH = claudePath;
     runtimeState.isBun = false;
 
     const exitSpy = createExitSpy();
@@ -283,8 +283,8 @@ describe('happier (default claude) help output', () => {
   it('fails closed when a JS Claude CLI override has no valid JS runtime under bun', async () => {
     runtimeState.isBun = true;
     const root = createTempRoot('happier-claude-help-missing-runtime-');
-    process.env.HAPPIER_CLAUDE_PATH = createClaudeJsEntry(root);
-    process.env.HAPPIER_JS_RUNTIME_PATH = join(root, 'missing-node');
+    process.env.PIGGERCODE_CLAUDE_PATH = createClaudeJsEntry(root);
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = join(root, 'missing-node');
 
     const exitSpy = createExitSpy();
     const output = captureConsoleLogAndMuteStdout();
@@ -293,7 +293,7 @@ describe('happier (default claude) help output', () => {
       await expect(handleClaudeCliCommand(createHelpContext())).rejects.toThrow('exit:1');
 
       expect(execFileSyncSpy).not.toHaveBeenCalled();
-      expect(output.logs.join('\n')).toContain('HAPPIER_CLAUDE_PATH');
+      expect(output.logs.join('\n')).toContain('PIGGERCODE_CLAUDE_PATH');
     } finally {
       output.restore();
       exitSpy.mockRestore();
@@ -302,7 +302,7 @@ describe('happier (default claude) help output', () => {
 
   it('surfaces centralized missing-cli guidance without invoking legacy npm detection when Claude is unavailable', async () => {
     const root = createTempRoot('happier-claude-help-missing-cli-');
-    process.env.HAPPIER_JS_RUNTIME_PATH = createRuntimeExecutable(root);
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = createRuntimeExecutable(root);
     process.env.PATH = root;
     process.env.HOME = root;
     runtimeState.isBun = true;
@@ -322,10 +322,10 @@ describe('happier (default claude) help output', () => {
     }
   });
 
-  it('fails closed for an invalid explicit HAPPIER_CLAUDE_PATH override on --help', async () => {
+  it('fails closed for an invalid explicit PIGGERCODE_CLAUDE_PATH override on --help', async () => {
     const root = createTempRoot('happier-claude-help-invalid-override-');
-    process.env.HAPPIER_JS_RUNTIME_PATH = createRuntimeExecutable(root);
-    process.env.HAPPIER_CLAUDE_PATH = join(root, 'missing-claude');
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = createRuntimeExecutable(root);
+    process.env.PIGGERCODE_CLAUDE_PATH = join(root, 'missing-claude');
     process.env.PATH = root;
     process.env.HOME = root;
     runtimeState.isBun = true;
@@ -337,7 +337,7 @@ describe('happier (default claude) help output', () => {
       await expect(handleClaudeCliCommand(createHelpContext())).rejects.toThrow('exit:1');
 
       expect(execFileSyncSpy).not.toHaveBeenCalled();
-      expect(output.logs.join('\n')).toContain('HAPPIER_CLAUDE_PATH');
+      expect(output.logs.join('\n')).toContain('PIGGERCODE_CLAUDE_PATH');
     } finally {
       output.restore();
       exitSpy.mockRestore();

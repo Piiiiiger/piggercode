@@ -15,10 +15,10 @@ it.each(['before-start', 'during-setup'] as const)('does not spawn local Claude 
     vi.resetModules();
     const directory = mkdtempSync(join(tmpdir(), 'happier-claude-local-cancel-'));
     const executable = join(directory, 'provider.cjs');
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
     const stdinWasPaused = process.stdin.isPaused();
     writeFileSync(executable, 'process.exit(0);\n');
-    env.patch({ HAPPIER_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
+    env.patch({ PIGGERCODE_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
     const abort = new AbortController();
     if (phase === 'before-start') abort.abort();
     try {
@@ -43,10 +43,10 @@ it.each([
     vi.resetModules();
     const directory = mkdtempSync(join(tmpdir(), 'happier-claude-local-exit-'));
     const executable = join(directory, kind === 'javascript' ? 'provider.cjs' : 'provider');
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR']);
     const stdinWasPaused = process.stdin.isPaused();
     writeFileSync(executable, `${kind === 'native' ? `#!${process.execPath}\n` : ''}process.exit(0);\n`, { mode: 0o700 });
-    env.patch({ HAPPIER_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
+    env.patch({ PIGGERCODE_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config') });
     const exits: Array<Readonly<{ providerStopped: boolean }>> = [];
     try {
         const { claudeLocal } = await import('./claudeLocal');
@@ -69,12 +69,12 @@ it('reports an actual command-wrapper exit without claiming native provider stop
     const directory = mkdtempSync(join(tmpdir(), 'happier-claude-local-wrapper-'));
     const executable = join(directory, 'claude.cmd');
     const shell = join(directory, 'cmd.exe');
-    const env = createEnvKeyScope(['HAPPIER_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR', 'COMSPEC']);
+    const env = createEnvKeyScope(['PIGGERCODE_CLAUDE_PATH', 'CLAUDE_CONFIG_DIR', 'COMSPEC']);
     const platform = Object.getOwnPropertyDescriptor(process, 'platform')!;
     const stdinWasPaused = process.stdin.isPaused();
     writeFileSync(executable, '@echo off\r\n');
     writeFileSync(shell, `#!${process.execPath}\nprocess.exit(0);\n`, { mode: 0o700 });
-    env.patch({ HAPPIER_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config'), COMSPEC: shell });
+    env.patch({ PIGGERCODE_CLAUDE_PATH: executable, CLAUDE_CONFIG_DIR: join(directory, 'config'), COMSPEC: shell });
     const exits: Array<Readonly<{ providerStopped: boolean }>> = [];
     try {
         const { claudeLocal } = await import('./claudeLocal');

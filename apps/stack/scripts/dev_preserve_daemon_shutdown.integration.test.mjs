@@ -55,7 +55,7 @@ function createDaemonCliSource() {
 const { createServer } = require('node:http');
 const { mkdirSync, writeFileSync } = require('node:fs');
 const { dirname } = require('node:path');
-const statePath = process.env.HAPPIER_TEST_DAEMON_STATE_PATH;
+const statePath = process.env.PIGGERCODE_TEST_DAEMON_STATE_PATH;
 const token = 'dev-preserve-daemon-control';
 const server = createServer((req, res) => {
   const authenticated = req.headers['x-happier-daemon-token'] === token;
@@ -91,8 +91,8 @@ import { spawn } from 'node:child_process';
 import { appendFileSync, readFileSync } from 'node:fs';
 
 const [command, subcommand] = process.argv.slice(2);
-const statePath = process.env.HAPPIER_TEST_DAEMON_STATE_PATH;
-const stopMarkerPath = process.env.HAPPIER_TEST_DAEMON_STOP_MARKER_PATH;
+const statePath = process.env.PIGGERCODE_TEST_DAEMON_STATE_PATH;
+const stopMarkerPath = process.env.PIGGERCODE_TEST_DAEMON_STOP_MARKER_PATH;
 
 if (command !== 'daemon') process.exit(0);
 if (subcommand === 'status') process.exit(0);
@@ -155,19 +155,19 @@ test('dev lifecycle-owner shutdown consumes a fresh preserveDaemon request', { t
 
   const baseEnv = {
     ...sanitizeStackTestRunnerEnv(process.env, { isolatedStackRoot: fixture.root, repoDir }),
-    HAPPIER_STACK_STACK: stackName,
-    HAPPIER_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
-    HAPPIER_STACK_CLI_HOME_DIR: cliHomeDir,
-    HAPPIER_STACK_CLI_BUILD: '1',
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
-    HAPPIER_STACK_MIGRATE_CREDENTIALS: '0',
-    HAPPIER_STACK_AUTO_AUTH_SEED: '0',
-    HAPPIER_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1000',
-    HAPPIER_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '5000',
-    HAPPIER_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
-    HAPPIER_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
-    HAPPIER_STACK_NO_BROWSER: '1',
-    HAPPIER_TEST_DAEMON_STOP_MARKER_PATH: stopMarkerPath,
+    PIGGERCODE_STACK_STACK: stackName,
+    PIGGERCODE_STACK_RUNTIME_STATE_PATH: runtimeStatePath,
+    PIGGERCODE_STACK_CLI_HOME_DIR: cliHomeDir,
+    PIGGERCODE_STACK_CLI_BUILD: '1',
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0',
+    PIGGERCODE_STACK_AUTO_AUTH_SEED: '0',
+    PIGGERCODE_STACK_CREDENTIAL_VALIDATE_TIMEOUT_MS: '1000',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_TIMEOUT_MS: '5000',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_POLL_MS: '25',
+    PIGGERCODE_STACK_DAEMON_START_VERIFY_STABLE_MS: '0',
+    PIGGERCODE_STACK_NO_BROWSER: '1',
+    PIGGERCODE_TEST_DAEMON_STOP_MARKER_PATH: stopMarkerPath,
   };
   const daemonEnv = applyStackActiveServerScopeEnv({ env: baseEnv, stackName, cliIdentity: 'default' });
   const { statePath: daemonStatePath } = resolvePreferredStackDaemonStatePaths({
@@ -175,7 +175,7 @@ test('dev lifecycle-owner shutdown consumes a fresh preserveDaemon request', { t
     serverUrl,
     env: daemonEnv,
   });
-  baseEnv.HAPPIER_TEST_DAEMON_STATE_PATH = daemonStatePath;
+  baseEnv.PIGGERCODE_TEST_DAEMON_STATE_PATH = daemonStatePath;
 
   const owner = spawn(process.execPath, [
     join(stackRootDir, 'scripts', 'dev.mjs'),

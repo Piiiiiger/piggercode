@@ -4,17 +4,17 @@ import axios from 'axios';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 describe('sessionControl.sessionsHttp message commits', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   it('posts plaintext stored content for commitSessionStoredMessage', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitSessionStoredMessage } = await import('./sessionsHttp');
 
@@ -51,7 +51,7 @@ describe('sessionControl.sessionsHttp message commits', () => {
   });
 
   it('wraps ciphertext commits as encrypted stored content', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     const { commitSessionEncryptedMessage } = await import('./sessionsHttp');
 

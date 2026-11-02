@@ -36,8 +36,8 @@ describe('daemon service plan active server identity', () => {
     const file = plan.files[0];
 
     expect(file?.path).toContain('happier-daemon.service-instance.service');
-    expect(file?.content).toContain('HAPPIER_ACTIVE_SERVER_ID=company-profile');
-    expect(file?.content).not.toContain('HAPPIER_ACTIVE_SERVER_ID=service-instance');
+    expect(file?.content).toContain('PIGGERCODE_ACTIVE_SERVER_ID=company-profile');
+    expect(file?.content).not.toContain('PIGGERCODE_ACTIVE_SERVER_ID=service-instance');
   });
 
   it('allows default-following installs to omit active server id and pinned server env', () => {
@@ -47,7 +47,7 @@ describe('daemon service plan active server identity', () => {
       instanceId: 'service-instance',
     });
 
-    expect(plan.files[0]?.content).not.toContain('HAPPIER_ACTIVE_SERVER_ID=');
+    expect(plan.files[0]?.content).not.toContain('PIGGERCODE_ACTIVE_SERVER_ID=');
     expect(plan.files[0]?.path).toContain('happier-daemon.default.service');
   });
 });

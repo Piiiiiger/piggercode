@@ -48,12 +48,12 @@ yarn -s test:e2e:mobile:android
 ```
 
 By default the runner starts an ephemeral **server-light** instance (and stops it at the end of the run). To use an existing server instead, set:
-- `HAPPIER_E2E_SERVER_URL` (or pass `--serverUrl` through `packages/tests/scripts/run-maestro-with-heartbeat.mjs`)
+- `PIGGERCODE_E2E_SERVER_URL` (or pass `--serverUrl` through `packages/tests/scripts/run-maestro-with-heartbeat.mjs`)
 
 Optional overrides:
-- `HAPPIER_E2E_DEV_CLIENT_METRO_URL` (defaults to `http://127.0.0.1:8081`, translated for Android emulator to `http://10.0.2.2:8081`)
-- `HAPPIER_E2E_MOBILE_DEVICE_HOST` (force device-visible host when running on real devices)
-- `HAPPIER_E2E_ANDROID_ADB_REVERSE=1` (best-effort `adb reverse` for host Metro/server ports; recommended for local Android emulator runs)
+- `PIGGERCODE_E2E_DEV_CLIENT_METRO_URL` (defaults to `http://127.0.0.1:8081`, translated for Android emulator to `http://10.0.2.2:8081`)
+- `PIGGERCODE_E2E_MOBILE_DEVICE_HOST` (force device-visible host when running on real devices)
+- `PIGGERCODE_E2E_ANDROID_ADB_REVERSE=1` (best-effort `adb reverse` for host Metro/server ports; recommended for local Android emulator runs)
 
 Artifacts are written under:
 - `packages/tests/.project/logs/e2e/mobile-maestro/`
@@ -77,14 +77,14 @@ Artifacts are written under:
 
 ```bash
 # iOS simulator
-HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
+PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
   node scripts/run-maestro-with-heartbeat.mjs \
     --platform ios \
     --flows suites/mobile-e2e/flows/transcriptScroll.smoke.yaml \
     --appId dev.happier.app.dev.internal
 
 # Android emulator/device
-HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
+PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
   node scripts/run-maestro-with-heartbeat.mjs \
     --platform android \
     --flows suites/mobile-e2e/flows/transcriptScroll.smoke.yaml \

@@ -102,9 +102,9 @@ describe('PiRpcBackend', () => {
       command: process.execPath,
       args: [fakeScript],
       env: {
-        HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1',
-        HAPPIER_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '5',
-        HAPPIER_PI_RPC_MAX_SILENT_PROBES: '1',
+        PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1',
+        PIGGERCODE_PI_RPC_LIVENESS_PROBE_TIMEOUT_MS: '5',
+        PIGGERCODE_PI_RPC_MAX_SILENT_PROBES: '1',
       },
     });
     backend.onMessage((message) => {

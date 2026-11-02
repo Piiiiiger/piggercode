@@ -24,7 +24,7 @@ export function resolveDevServerConnection({
   const noServer = flags.has('--no-server');
   const serverUrlFromArg = parseHttpUrl(kv.get('--server-url') ?? '', { label: '--server-url' });
   const publicServerUrlFromArg = parseHttpUrl(kv.get('--server-public-url') ?? '', { label: '--server-public-url' });
-  const serverUrlFromEnv = parseHttpUrl(env.HAPPIER_SERVER_URL ?? '', { label: 'HAPPIER_SERVER_URL' });
+  const serverUrlFromEnv = parseHttpUrl(env.PIGGERCODE_SERVER_URL ?? '', { label: 'PIGGERCODE_SERVER_URL' });
   const externalServerUrl = serverUrlFromArg || serverUrlFromEnv;
   const useExternalServer = noServer || Boolean(serverUrlFromArg);
 
@@ -34,7 +34,7 @@ export function resolveDevServerConnection({
 
   if (noServer && !externalServerUrl) {
     throw new Error(
-      '[dev] --no-server requires an external server URL via --server-url=<http(s)://...> or HAPPIER_SERVER_URL'
+      '[dev] --no-server requires an external server URL via --server-url=<http(s)://...> or PIGGERCODE_SERVER_URL'
     );
   }
 

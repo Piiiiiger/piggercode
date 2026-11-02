@@ -10,8 +10,8 @@ import {
 import type { ConnectedServiceResolvedSelection } from './materialize/materializeConnectedServicesForSpawn';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   readConnectedServiceMaterializedEnvKeysFromEnv,
   resolveConnectedServiceRuntimeAuthContextFromEnv,
   resolveConnectedServiceRuntimeAuthContextFromSessionMetadata,
@@ -52,7 +52,7 @@ describe('connectedServiceChildEnvironment runtime auth context', () => {
 
   it('resolves selections from child process env', () => {
     expect(resolveConnectedServiceRuntimeAuthContextFromEnv({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group',
         serviceId: 'openai-codex',
         groupId: 'happier',
@@ -82,7 +82,7 @@ describe('connectedServiceChildEnvironment runtime auth context', () => {
     const serialized = serializeConnectedServiceChildSelections(selections);
 
     expect(readConnectedServiceChildSelectionsFromEnv({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized ?? undefined,
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized ?? undefined,
     })).toEqual([expect.objectContaining({
       serviceId: 'gemini',
       groupId: 'main',
@@ -122,7 +122,7 @@ describe('connectedServiceChildEnvironment runtime auth context', () => {
 
     expect(serialized).not.toContain('secret-token');
     expect(readConnectedServiceMaterializedEnvKeysFromEnv({
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: serialized ?? undefined,
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: serialized ?? undefined,
     })).toEqual(['CLAUDE_CODE_OAUTH_TOKEN', 'CLAUDE_CONFIG_DIR']);
   });
 
@@ -132,12 +132,12 @@ describe('connectedServiceChildEnvironment runtime auth context', () => {
       OPENAI_API_KEY: 'connected-secret',
       CODEX_HOME: '/tmp/connected-codex',
       NATIVE_RUNTIME_TOKEN: 'native-secret',
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: inheritedSelections,
-      [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: inheritedSelections,
+      [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: JSON.stringify([
         'OPENAI_API_KEY',
         'CODEX_HOME',
       ]),
-      HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: '/tmp/connected-root',
+      PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT: '/tmp/connected-root',
     });
 
     expect(stripped).toEqual({

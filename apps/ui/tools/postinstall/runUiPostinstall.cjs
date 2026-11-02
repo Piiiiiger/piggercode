@@ -33,7 +33,7 @@ function runUiPostinstall({
     const gatePath = path.resolve(physicalCwd, '../../scripts/postinstall/shouldRunPostinstall.cjs');
     try {
         const gate = require(gatePath);
-        if (!gate.shouldRunPostinstall({ workspace: 'ui', scope: env.HAPPIER_INSTALL_SCOPE || '' })) return 0;
+        if (!gate.shouldRunPostinstall({ workspace: 'ui', scope: env.PIGGERCODE_INSTALL_SCOPE || '' })) return 0;
     } catch {
         // The repository gate is absent when the app package is consumed outside this monorepo.
     }

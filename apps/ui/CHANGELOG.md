@@ -71,16 +71,16 @@ Happier 0.2.17 adds Antigravity and CodeBuddy Code, automatic Claude resume afte
 
 ### For self-hosters and operators
 
-- `HAPPIER_SERVER_TRUST_PROXY` now takes a comma-separated list of proxy addresses, CIDRs or `loopback`, `linklocal`, `uniquelocal`.
+- `PIGGERCODE_SERVER_TRUST_PROXY` now takes a comma-separated list of proxy addresses, CIDRs or `loopback`, `linklocal`, `uniquelocal`.
 - OIDC providers can exchange an access token for a Happier token without a browser at `POST /v1/auth/external/:provider/token-exchange`, once `tokenExchange.allowedClientIds` is configured. Provider config can read its client secret from a named environment variable with `clientSecretEnv`.
 - The S3 files backend supports AWS web-identity credentials (IRSA) when no static keys are set.
-- `HAPPIER_SERVER_LOG_FORMAT=json` emits newline-delimited JSON logs.
+- `PIGGERCODE_SERVER_LOG_FORMAT=json` emits newline-delimited JSON logs.
 - Kubernetes examples are corrected.
 - New opt-in `happier daemon restart-session-runners --on-update on` restarts stale session runners after a CLI update.
 
 ### Compatibility and operator notes
 
-- **Action required if you set `HAPPIER_SERVER_TRUST_PROXY` to a number (for example `1`):** the server now refuses to start. Replace it with the proxy address form, such as `10.0.0.0/8` or `loopback`.
+- **Action required if you set `PIGGERCODE_SERVER_TRUST_PROXY` to a number (for example `1`):** the server now refuses to start. Replace it with the proxy address form, such as `10.0.0.0/8` or `loopback`.
 - **Database:** the server adds a migration with two additive columns for pairing and credential support. It runs automatically; older clients are unaffected.
 - **Native app:** the app runtime moves from `0.2.8-native` to `0.2.9-native` (Unistyles and Nitro upgrades). Install the new native app to receive this release; an OTA update does not reach older native builds.
 - **Update the machine's CLI and daemon** to use Antigravity, handoff from existing state and automatic Claude resume. Older daemons keep their previous behavior.

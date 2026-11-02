@@ -1,7 +1,7 @@
 import {
   buildHappierReplayPromptFromDialog,
   planHappierReplayTranscriptCharBudget,
-  HAPPIER_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
+  PIGGERCODE_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
   type HappierReplayContinuity,
   type HappierReplayRetrievalPointerV1,
   type HappierReplayStrategy,
@@ -205,7 +205,7 @@ export async function resolveReplaySeedDraft(params: Readonly<{
             // to prevent. Same value the builder is handed below.
             returningAgentLastSeenSeq,
             maxPromptChars: params.maxSeedChars,
-            reservedChars: HAPPIER_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
+            reservedChars: PIGGERCODE_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
           }),
           ...(typeof params.source.upToSeqInclusive === 'number' ? { upToSeqInclusive: params.source.upToSeqInclusive } : {}),
           ...(returningAgentLastSeenSeq === null ? {} : { afterSeqExclusive: returningAgentLastSeenSeq }),
@@ -282,7 +282,7 @@ export async function resolveReplaySeedDraft(params: Readonly<{
     sourceAgentLabel: params.sourceAgentLabel ?? null,
     lastUserInstruction: readHydratedLastUserDialogItem(hydrated),
     maxPromptChars: params.maxSeedChars,
-    reservedChars: HAPPIER_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
+    reservedChars: PIGGERCODE_REPLAY_SEED_DISPATCH_RESERVED_CHARS,
     // The retrieval owner is the only one that can see a hole; carrying the fact
     // here is what stops the seed from presenting partial history as the whole
     // conversation. A retrieval that cannot report it says nothing rather than

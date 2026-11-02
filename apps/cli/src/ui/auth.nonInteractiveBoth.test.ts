@@ -85,14 +85,14 @@ vi.mock('axios', async () => {
 
 describe.sequential('doAuth (non-interactive)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_PUBLIC_SERVER_URL',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_TAILSCALE_AUTO_PUBLIC_URL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_PUBLIC_SERVER_URL',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_TAILSCALE_AUTO_PUBLIC_URL',
   ] as const;
 
   it.each([240_000, null])('prints both web + mobile instructions with server expiry %s when method is not specified', async (remainingMs) => {
@@ -105,12 +105,12 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'https://server.example.test',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: undefined,
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'https://server.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: undefined,
       });
 
       reloadConfiguration();
@@ -162,13 +162,13 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:53545',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: undefined,
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:53545',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: undefined,
       });
 
       reloadConfiguration();
@@ -198,12 +198,12 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://192.168.1.10:3005',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: undefined,
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://192.168.1.10:3005',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: undefined,
       });
 
       reloadConfiguration();
@@ -231,14 +231,14 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:53545',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_TAILSCALE_AUTO_PUBLIC_URL: '0',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: undefined,
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:53545',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_TAILSCALE_AUTO_PUBLIC_URL: '0',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: undefined,
       });
 
       reloadConfiguration();
@@ -266,14 +266,14 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://localhost:3010',
-        HAPPIER_WEBAPP_URL: 'http://happier-dev-auth.localhost:8082',
-        HAPPIER_PUBLIC_SERVER_URL: undefined,
-        HAPPIER_TAILSCALE_AUTO_PUBLIC_URL: '0',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: 'web',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://localhost:3010',
+        PIGGERCODE_WEBAPP_URL: 'http://happier-dev-auth.localhost:8082',
+        PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+        PIGGERCODE_TAILSCALE_AUTO_PUBLIC_URL: '0',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
       });
 
       reloadConfiguration();
@@ -294,7 +294,7 @@ describe.sequential('doAuth (non-interactive)', () => {
     }
   }, 15_000);
 
-  it('uses apiServerUrl for auth API calls when HAPPIER_PUBLIC_SERVER_URL is set', async () => {
+  it('uses apiServerUrl for auth API calls when PIGGERCODE_PUBLIC_SERVER_URL is set', async () => {
     const home = await createTempDir('happier-cli-auth-noninteractive-apiServerUrl-');
     const envScope = createEnvKeyScope(envKeys);
     const restoreTty = setStdioTtyForTest({ stdin: false, stdout: false });
@@ -303,13 +303,13 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'http://127.0.0.1:53545',
-        HAPPIER_PUBLIC_SERVER_URL: 'https://my-stack.example.test',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: 'web',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'http://127.0.0.1:53545',
+        PIGGERCODE_PUBLIC_SERVER_URL: 'https://my-stack.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
       });
 
       reloadConfiguration();
@@ -371,12 +371,12 @@ describe.sequential('doAuth (non-interactive)', () => {
       }) as AxiosLike['post'];
 
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'https://server.example.test',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_NO_BROWSER_OPEN: '1',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: undefined,
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'https://server.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_NO_BROWSER_OPEN: '1',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: undefined,
       });
 
       reloadConfiguration();
@@ -404,11 +404,11 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'https://server.example.test',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: 'mobile',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'https://server.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: 'mobile',
       });
       reloadConfiguration();
 
@@ -435,12 +435,12 @@ describe.sequential('doAuth (non-interactive)', () => {
 
     try {
       envScope.patch({
-        HAPPIER_HOME_DIR: home,
-        HAPPIER_SERVER_URL: 'https://server.example.test',
-        HAPPIER_WEBAPP_URL: 'https://webapp.example.test',
-        HAPPIER_NO_BROWSER_OPEN: undefined,
-        HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-        HAPPIER_AUTH_METHOD: 'web',
+        PIGGERCODE_HOME_DIR: home,
+        PIGGERCODE_SERVER_URL: 'https://server.example.test',
+        PIGGERCODE_WEBAPP_URL: 'https://webapp.example.test',
+        PIGGERCODE_NO_BROWSER_OPEN: undefined,
+        PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+        PIGGERCODE_AUTH_METHOD: 'web',
       });
 
       reloadConfiguration();

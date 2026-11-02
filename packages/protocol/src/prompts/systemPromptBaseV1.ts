@@ -4,7 +4,7 @@ import {
   resolveCodingPromptSessionTitleUpdatesModeV1,
 } from './codingPromptBehaviorV1.js';
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1 = trimIdent(`
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1 = trimIdent(`
   # Session title
 
   At the start of the session (before you respond to the first user message), you MUST call the change_title tool once to set a short, descriptive session title based on the user's message.
@@ -14,15 +14,15 @@ export const HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1 = trimIdent(`
   The tool may be exposed under different names depending on the provider. Prefer "mcp__happier__change_title" when available; otherwise use an equivalent alias (for example: change_title).
 `);
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1 = trimIdent(`
-  ${HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1}
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1 = trimIdent(`
+  ${PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1}
 
   Call the title tool again if the task changes significantly.
 `);
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_V1 = HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1;
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_V1 = PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1;
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_OPTIONS_V1 = trimIdent(`
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_OPTIONS_V1 = trimIdent(`
   # Options
 
   You have a way to give a user a easy way to answer your questions if you know possible answers. To provide this, you need to output in your final response an XML:
@@ -41,7 +41,7 @@ export const HAPPIER_BASE_SYSTEM_PROMPT_OPTIONS_V1 = trimIdent(`
   When you are in the plan mode, you must use the options mode to give the user a easy way to answer your questions if you know possible answers. Do not assume what is needed, when there is discrepancy between what you need and what you have, you must use the options mode.
 `);
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_ATTACHMENTS_V1 = trimIdent(`
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_ATTACHMENTS_V1 = trimIdent(`
   # Attachments
 
   A user message may include an attachments block:
@@ -53,7 +53,7 @@ export const HAPPIER_BASE_SYSTEM_PROMPT_ATTACHMENTS_V1 = trimIdent(`
   When present, open and analyze the referenced file paths before answering. If a file cannot be opened, explain the error and ask the user how to proceed.
 `);
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_LINKED_WORKSPACE_FILES_V1 = trimIdent(`
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_LINKED_WORKSPACE_FILES_V1 = trimIdent(`
   # Linked workspace files
 
   A user may also reference project/workspace files inline using \`@path\` (for example: \`@src/app.ts\` or \`@README.md\`).
@@ -68,18 +68,18 @@ export function buildHappierBaseSystemPromptV1(args?: Readonly<{
   const blocks: string[] = [];
   const sessionTitleUpdatesMode = resolveCodingPromptSessionTitleUpdatesModeV1(args?.settings);
   if (args?.sessionTitleToolAvailable !== false && sessionTitleUpdatesMode === 'initial') {
-    blocks.push(HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1);
+    blocks.push(PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_INITIAL_V1);
   } else if (args?.sessionTitleToolAvailable !== false && sessionTitleUpdatesMode === 'ongoing') {
-    blocks.push(HAPPIER_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1);
+    blocks.push(PIGGERCODE_BASE_SYSTEM_PROMPT_SESSION_TITLE_ONGOING_V1);
   }
   if (isCodingPromptResponseOptionsEnabled(args?.settings)) {
-    blocks.push(HAPPIER_BASE_SYSTEM_PROMPT_OPTIONS_V1);
+    blocks.push(PIGGERCODE_BASE_SYSTEM_PROMPT_OPTIONS_V1);
   }
   blocks.push(
-    HAPPIER_BASE_SYSTEM_PROMPT_ATTACHMENTS_V1,
-    HAPPIER_BASE_SYSTEM_PROMPT_LINKED_WORKSPACE_FILES_V1,
+    PIGGERCODE_BASE_SYSTEM_PROMPT_ATTACHMENTS_V1,
+    PIGGERCODE_BASE_SYSTEM_PROMPT_LINKED_WORKSPACE_FILES_V1,
   );
   return blocks.join('\n\n').trim();
 }
 
-export const HAPPIER_BASE_SYSTEM_PROMPT_V1 = buildHappierBaseSystemPromptV1();
+export const PIGGERCODE_BASE_SYSTEM_PROMPT_V1 = buildHappierBaseSystemPromptV1();

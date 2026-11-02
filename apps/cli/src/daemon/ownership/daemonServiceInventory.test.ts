@@ -10,17 +10,17 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 
 describe('daemonServiceInventory', () => {
     const envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_SERVER_URL',
-        'HAPPIER_WEBAPP_URL',
-        'HAPPIER_PUBLIC_SERVER_URL',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-        'HAPPIER_DAEMON_SERVICE_PLATFORM',
-        'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_CHANNEL',
-        'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_SERVER_URL',
+        'PIGGERCODE_WEBAPP_URL',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+        'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+        'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
         'PATH',
     ]);
 
@@ -45,17 +45,17 @@ describe('daemonServiceInventory', () => {
     it('does not treat a default-following background service as belonging to an ephemeral non-default relay selection', async () => {
         await withTempDir('happier-daemon-service-inventory-default-following-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'company',
-                HAPPIER_SERVER_URL: 'https://relay.company.test',
-                HAPPIER_WEBAPP_URL: 'https://app.company.test',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://relay.company.test',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'company',
+                PIGGERCODE_SERVER_URL: 'https://relay.company.test',
+                PIGGERCODE_WEBAPP_URL: 'https://app.company.test',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'https://relay.company.test',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
             vi.resetModules();
 
@@ -105,9 +105,9 @@ describe('daemonServiceInventory', () => {
                     description: 'Happier Daemon',
                     execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
-                        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-                        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-                        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+                        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                     },
                     wantedBy: 'default.target',
                 }),
@@ -123,16 +123,16 @@ describe('daemonServiceInventory', () => {
     it('includes a default-following background service for the current default relay selection', async () => {
         await withTempDir('happier-daemon-service-inventory-current-default-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_SERVER_URL: 'https://relay.example.test',
-                HAPPIER_WEBAPP_URL: 'https://relay.example.test',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://relay.example.test',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_SERVER_URL: 'https://relay.example.test',
+                PIGGERCODE_WEBAPP_URL: 'https://relay.example.test',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'https://relay.example.test',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -150,9 +150,9 @@ describe('daemonServiceInventory', () => {
                     description: 'Happier Daemon',
                     execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
-                        HAPPIER_HOME_DIR: runtime.happierHomeDir,
-                        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-                        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                        PIGGERCODE_HOME_DIR: runtime.happierHomeDir,
+                        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+                        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                     },
                     wantedBy: 'default.target',
                 }),
@@ -177,16 +177,16 @@ describe('daemonServiceInventory', () => {
         await withTempDir('happier-daemon-service-inventory-foreign-home-', async (homeDir) => {
             const foreignHomeDir = join(homeDir, 'foreign-home');
             envScope.patch({
-                HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -240,10 +240,10 @@ describe('daemonServiceInventory', () => {
                     description: 'Happier Daemon',
                     execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
-                        HAPPIER_HOME_DIR: foreignHomeDir,
-                        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-                        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-                        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                        PIGGERCODE_HOME_DIR: foreignHomeDir,
+                        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+                        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                     },
                     wantedBy: 'default.target',
                 }),
@@ -262,17 +262,17 @@ describe('daemonServiceInventory', () => {
             const userHomeDir = join(homeDir, 'user-home');
 
             envScope.patch({
-                HAPPIER_HOME_DIR: currentCliHomeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'stack_repo-dev-a1cc5e0671__id_default',
-                HAPPIER_SERVER_URL: 'http://127.0.0.1:53288',
-                HAPPIER_WEBAPP_URL: 'http://localhost:53288',
-                HAPPIER_PUBLIC_SERVER_URL: 'http://127.0.0.1:53288',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'darwin',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: userHomeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: currentCliHomeDir,
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                PIGGERCODE_HOME_DIR: currentCliHomeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'stack_repo-dev-a1cc5e0671__id_default',
+                PIGGERCODE_SERVER_URL: 'http://127.0.0.1:53288',
+                PIGGERCODE_WEBAPP_URL: 'http://localhost:53288',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'http://127.0.0.1:53288',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: userHomeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: currentCliHomeDir,
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
             vi.resetModules();
 
@@ -323,13 +323,13 @@ describe('daemonServiceInventory', () => {
     </array>
     <key>EnvironmentVariables</key>
     <dict>
-      <key>HAPPIER_DAEMON_STARTUP_SOURCE</key>
+      <key>PIGGERCODE_DAEMON_STARTUP_SOURCE</key>
       <string>background-service</string>
-      <key>HAPPIER_DAEMON_SERVICE_TARGET_MODE</key>
+      <key>PIGGERCODE_DAEMON_SERVICE_TARGET_MODE</key>
       <string>default-following</string>
-      <key>HAPPIER_PUBLIC_RELEASE_CHANNEL</key>
+      <key>PIGGERCODE_PUBLIC_RELEASE_CHANNEL</key>
       <string>stable</string>
-      <key>HAPPIER_HOME_DIR</key>
+      <key>PIGGERCODE_HOME_DIR</key>
       <string>${missingServiceCliHomeDir}</string>
     </dict>
   </dict>
@@ -353,25 +353,25 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 foreignServicePath,
                 [
-                    '$env:HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR = "' + runtimeHomeDir.replaceAll('\\', '\\\\') + '"',
-                    '$env:HAPPIER_DAEMON_STARTUP_SOURCE = "background-service"',
+                    '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + runtimeHomeDir.replaceAll('\\', '\\\\') + '"',
+                    '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
                     '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',
             );
 
             envScope.patch({
-                HAPPIER_HOME_DIR: runtimeHomeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'win32',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: runtimeHomeDir,
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'preview',
-                HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                PIGGERCODE_HOME_DIR: runtimeHomeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'win32',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: runtimeHomeDir,
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'preview',
+                PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
             vi.resetModules();
 
@@ -411,25 +411,25 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 foreignServicePath,
                 [
-                    '$env:HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR = "' + foreignHomeDir.replaceAll('\\', '\\\\') + '"',
-                    '$env:HAPPIER_DAEMON_STARTUP_SOURCE = "background-service"',
+                    '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + foreignHomeDir.replaceAll('\\', '\\\\') + '"',
+                    '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
                     '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',
             );
 
             envScope.patch({
-                HAPPIER_HOME_DIR: runtimeHomeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'win32',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: runtimeHomeDir,
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'preview',
-                HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                PIGGERCODE_HOME_DIR: runtimeHomeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
+                PIGGERCODE_PUBLIC_SERVER_URL: 'https://api.happier.dev',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'win32',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: runtimeHomeDir,
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'preview',
+                PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
             vi.resetModules();
 
@@ -469,8 +469,8 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 foreignServicePath,
                 [
-                    '$env:HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR = "' + serviceHomeDir.replaceAll('\\', '\\\\') + '"',
-                    '$env:HAPPIER_DAEMON_STARTUP_SOURCE = "background-service"',
+                    '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + serviceHomeDir.replaceAll('\\', '\\\\') + '"',
+                    '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
                     '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',

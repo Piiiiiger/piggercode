@@ -67,7 +67,7 @@ function answerCli(params: Readonly<{
           relayUrl: service.relayUrl,
           targetMode: 'pinned',
           releaseChannel: 'stable',
-          happierHomeDir: process.env.HAPPIER_HOME_DIR,
+          happierHomeDir: process.env.PIGGERCODE_HOME_DIR,
           managedBy: service.managedBy ?? null,
         })),
       };
@@ -76,7 +76,7 @@ function answerCli(params: Readonly<{
     if (command !== 'daemon status --json') {
       return { status: 0, stdout: JSON.stringify({ ok: true }), stderr: '' };
     }
-    const instance = call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? 'default';
+    const instance = call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? 'default';
     if (instance !== 'default' && params.pinned?.[instance]?.unreadable) {
       throw new Error('unreadable service definition');
     }
@@ -89,7 +89,7 @@ function answerCli(params: Readonly<{
 
 function commandLog(): string[] {
   return runCommandCaptureMock.mock.calls
-    .map(([call]) => `${(call as CliCall).args.join(' ')}@${(call as CliCall).env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? 'default'}`)
+    .map(([call]) => `${(call as CliCall).args.join(' ')}@${(call as CliCall).env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? 'default'}`)
     .filter((entry) => !entry.startsWith('daemon service list'));
 }
 
@@ -110,7 +110,7 @@ describe('CLI update service restart owner', () => {
 
   it('restarts a running service daemon through the service\'s own relay selection and proves the new version', async () => {
     // A stack-pinned launch: the restart and its proof must not follow the pinned profile.
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'stack-pinned';
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'stack-pinned';
     answerCli({ defaultStatuses: [
       statusJson({ running: true, serviceManaged: true, version: '0.2.13' }),
       statusJson({ running: true, serviceManaged: true, version: '0.2.14' }),
@@ -125,7 +125,7 @@ describe('CLI update service restart owner', () => {
     ]);
     for (const [call] of runCommandCaptureMock.mock.calls) {
       expect(call.command).toBe(CURRENT_CLI.command);
-      expect(call.env.HAPPIER_ACTIVE_SERVER_ID).toBeUndefined();
+      expect(call.env.PIGGERCODE_ACTIVE_SERVER_ID).toBeUndefined();
     }
     expect(result).toEqual({ restarted: true });
   });
@@ -152,7 +152,7 @@ describe('CLI update service restart owner', () => {
    */
   it('restarts each running pinned service daemon of this home too, and proves each on the new version', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-cli-update-pinned-'));
-    process.env.HAPPIER_HOME_DIR = home;
+    process.env.PIGGERCODE_HOME_DIR = home;
     onTestFinished(() => rmSync(home, { recursive: true, force: true }));
     answerCli({
       defaultStatuses: [
@@ -178,14 +178,14 @@ describe('CLI update service restart owner', () => {
     expect(commandLog()).not.toContain('daemon service restart --json@relay-c');
     const restartB = runCommandCaptureMock.mock.calls
       .map(([call]) => call as CliCall)
-      .find((call) => call.args.join(' ') === 'daemon service restart --json' && call.env?.HAPPIER_DAEMON_SERVICE_INSTANCE_ID === 'relay-b');
-    expect(restartB?.env).toMatchObject({ HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned', HAPPIER_SERVER_URL: 'https://relay-b.example.test' });
+      .find((call) => call.args.join(' ') === 'daemon service restart --json' && call.env?.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID === 'relay-b');
+    expect(restartB?.env).toMatchObject({ PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned', PIGGERCODE_SERVER_URL: 'https://relay-b.example.test' });
     expect(result).toEqual({ restarted: true });
   });
 
   it('fails the proof when a pinned service daemon did not come back on the new version', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-cli-update-pinned-stale-'));
-    process.env.HAPPIER_HOME_DIR = home;
+    process.env.PIGGERCODE_HOME_DIR = home;
     onTestFinished(() => rmSync(home, { recursive: true, force: true }));
     answerCli({
       defaultStatuses: [statusJson({ running: false, serviceManaged: false })],
@@ -197,7 +197,7 @@ describe('CLI update service restart owner', () => {
 
   it('keeps the update when only a pinned service the user installed does not come back, and names it', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-cli-update-user-owned-'));
-    process.env.HAPPIER_HOME_DIR = home;
+    process.env.PIGGERCODE_HOME_DIR = home;
     onTestFinished(() => rmSync(home, { recursive: true, force: true }));
     answerCli({
       defaultStatuses: [
@@ -222,7 +222,7 @@ describe('CLI update service restart owner', () => {
 
   it('restarts every relay\'s service daemon even when one does not come back, then names the one that failed', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-cli-update-attempt-all-'));
-    process.env.HAPPIER_HOME_DIR = home;
+    process.env.PIGGERCODE_HOME_DIR = home;
     onTestFinished(() => rmSync(home, { recursive: true, force: true }));
     answerCli({
       // The default-following daemon does not come back on the new version…
@@ -241,7 +241,7 @@ describe('CLI update service restart owner', () => {
   /** M6 — an unreadable pinned service is not "no daemon to restart": the run says so. */
   it('names a relay service it could not read instead of treating it as having no daemon to restart', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-cli-update-pinned-unreadable-'));
-    process.env.HAPPIER_HOME_DIR = home;
+    process.env.PIGGERCODE_HOME_DIR = home;
     onTestFinished(() => rmSync(home, { recursive: true, force: true }));
     answerCli({
       defaultStatuses: [statusJson({ running: false, serviceManaged: false })],

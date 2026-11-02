@@ -10,7 +10,7 @@ import { closeSync, writeSync } from 'node:fs';
  * The channel is an extra pipe (fd 3) named by `UPDATER_ADMISSION_FD_ENV`; exactly one JSON line is
  * written, then the pipe is closed, so the updater never writes to it after the daemon restarts.
  */
-export const UPDATER_ADMISSION_FD_ENV = 'HAPPIER_CLI_UPDATE_ADMISSION_FD';
+export const UPDATER_ADMISSION_FD_ENV = 'PIGGERCODE_CLI_UPDATE_ADMISSION_FD';
 
 export type UpdaterAdmission =
   | Readonly<{ admitted: true }>

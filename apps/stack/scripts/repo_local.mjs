@@ -145,15 +145,15 @@ function readRuntimeExpoPort(runtimeStatePath) {
 }
 
 async function main() {
-  const autoInstallOverride = String(process.env.HAPPIER_STACK_REPO_LOCAL_AUTO_INSTALL ?? '').trim();
-  const preflightRootOverride = String(process.env.HAPPIER_STACK_REPO_LOCAL_PREFLIGHT_ROOT ?? '').trim();
-  const preflightOnly = String(process.env.HAPPIER_STACK_REPO_LOCAL_PREFLIGHT_ONLY ?? '').trim();
+  const autoInstallOverride = String(process.env.PIGGERCODE_STACK_REPO_LOCAL_AUTO_INSTALL ?? '').trim();
+  const preflightRootOverride = String(process.env.PIGGERCODE_STACK_REPO_LOCAL_PREFLIGHT_ROOT ?? '').trim();
+  const preflightOnly = String(process.env.PIGGERCODE_STACK_REPO_LOCAL_PREFLIGHT_ONLY ?? '').trim();
 
   const argvRaw = process.argv.slice(2);
   const scriptsDir = dirname(fileURLToPath(import.meta.url)); // <repo>/apps/stack/scripts
   const repoRoot = dirname(dirname(dirname(scriptsDir))); // <repo>
   const invokedCwd =
-    (process.env.HAPPIER_STACK_INVOKED_CWD ?? '').toString().trim() ||
+    (process.env.PIGGERCODE_STACK_INVOKED_CWD ?? '').toString().trim() ||
     (process.env.INIT_CWD ?? '').toString().trim() ||
     process.cwd();
   const executionHostController = resolveExecutionHostController({ env: process.env });
@@ -225,8 +225,8 @@ async function main() {
   const stacklessCliHomeDir = join(stacklessBaseDir, 'cli');
   const stacklessLogsDir = join(stacklessBaseDir, 'logs');
   const existingStacklessEnv = readEnvFileObject(stacklessEnvPath);
-  const existingPinnedServerPort = coercePositiveInt(existingStacklessEnv.HAPPIER_STACK_SERVER_PORT);
-  const existingPinnedExpoPort = coercePositiveInt(existingStacklessEnv.HAPPIER_STACK_EXPO_DEV_PORT);
+  const existingPinnedServerPort = coercePositiveInt(existingStacklessEnv.PIGGERCODE_STACK_SERVER_PORT);
+  const existingPinnedExpoPort = coercePositiveInt(existingStacklessEnv.PIGGERCODE_STACK_EXPO_DEV_PORT);
 
   // Convenience:
   // `yarn stop` should stop the repo-local stack without requiring users to know its generated name.
@@ -256,68 +256,68 @@ async function main() {
   const cleaned = scrubHappierStackEnv(process.env, {
     keepHappierStackKeys: STACK_WRAPPER_PRESERVE_KEYS,
     clearUnprefixedKeys: [
-      'HAPPIER_SERVER_URL',
-      'HAPPIER_PUBLIC_SERVER_URL',
-      'HAPPIER_WEBAPP_URL',
-      'HAPPIER_HOME_DIR',
+      'PIGGERCODE_SERVER_URL',
+      'PIGGERCODE_PUBLIC_SERVER_URL',
+      'PIGGERCODE_WEBAPP_URL',
+      'PIGGERCODE_HOME_DIR',
       'APP_ENV',
       'EXPO_UPDATES_CHANNEL',
-      'EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV',
-      'EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW',
-      'EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY',
-      'HAPPIER_FEATURE_POLICY_ENV',
-      'HAPPIER_EMBEDDED_POLICY_ENV',
-      'HAPPIER_BUILD_FEATURES_ALLOW',
-      'HAPPIER_BUILD_FEATURES_DENY',
+      'EXPO_PUBLIC_PIGGERCODE_FEATURE_POLICY_ENV',
+      'EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW',
+      'EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY',
+      'PIGGERCODE_FEATURE_POLICY_ENV',
+      'PIGGERCODE_EMBEDDED_POLICY_ENV',
+      'PIGGERCODE_BUILD_FEATURES_ALLOW',
+      'PIGGERCODE_BUILD_FEATURES_DENY',
       // Prevent accidental credential scoping to the user's "main" stack config.
-      'HAPPIER_ACTIVE_SERVER_ID',
+      'PIGGERCODE_ACTIVE_SERVER_ID',
     ],
   });
 
   const env = {
     ...cleaned,
-    HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-    HAPPIER_STACK_CLI_ROOT_DIR: repoRoot,
-    HAPPIER_STACK_REPO_DIR: repoRoot,
+    PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+    PIGGERCODE_STACK_CLI_ROOT_DIR: repoRoot,
+    PIGGERCODE_STACK_REPO_DIR: repoRoot,
     ...(isStackManagement
-      ? { HAPPIER_STACK_STACK: '' }
+      ? { PIGGERCODE_STACK_STACK: '' }
       : {
           // Treat repo-local runs as an isolated, per-checkout stack by default.
           // This prevents collisions with the user's "main" stack (ports, daemon home, tailscale prefs, etc).
-          HAPPIER_STACK_STACK: stacklessName,
+          PIGGERCODE_STACK_STACK: stacklessName,
           // Make stack-owned processes prove ownership (for stop/cleanup) and enable stack commands like `stack auth`.
-          HAPPIER_STACK_ENV_FILE: stacklessEnvPath,
-          HAPPIER_STACK_CLI_HOME_DIR: stacklessCliHomeDir,
+          PIGGERCODE_STACK_ENV_FILE: stacklessEnvPath,
+          PIGGERCODE_STACK_CLI_HOME_DIR: stacklessCliHomeDir,
           // If set, internal spawns can tee output into stack-scoped log files (server.log/expo.log/ui.log).
-          HAPPIER_STACK_LOG_TEE_DIR: stacklessLogsDir,
+          PIGGERCODE_STACK_LOG_TEE_DIR: stacklessLogsDir,
           // Stackless isolation: keep ports away from main/default stack ports by default.
-          HAPPIER_STACK_SERVER_PORT_BASE: (process.env.HAPPIER_STACK_SERVER_PORT_BASE ?? '52005').toString(),
-          HAPPIER_STACK_SERVER_PORT_RANGE: (process.env.HAPPIER_STACK_SERVER_PORT_RANGE ?? '2000').toString(),
-          HAPPIER_STACK_EXPO_DEV_PORT_BASE: (process.env.HAPPIER_STACK_EXPO_DEV_PORT_BASE ?? '18081').toString(),
-          HAPPIER_STACK_EXPO_DEV_PORT_RANGE: (process.env.HAPPIER_STACK_EXPO_DEV_PORT_RANGE ?? '2000').toString(),
+          PIGGERCODE_STACK_SERVER_PORT_BASE: (process.env.PIGGERCODE_STACK_SERVER_PORT_BASE ?? '52005').toString(),
+          PIGGERCODE_STACK_SERVER_PORT_RANGE: (process.env.PIGGERCODE_STACK_SERVER_PORT_RANGE ?? '2000').toString(),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_BASE: (process.env.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE ?? '18081').toString(),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE: (process.env.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE ?? '2000').toString(),
           // Make Expo's Metro use stable (stack-scoped) port strategy.
-          HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: (process.env.HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY ?? 'stable').toString(),
-          ...(wantsTuiMobile ? { HAPPIER_STACK_CLI_BUILD_MODE: 'always' } : {}),
+          PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: (process.env.PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY ?? 'stable').toString(),
+          ...(wantsTuiMobile ? { PIGGERCODE_STACK_CLI_BUILD_MODE: 'always' } : {}),
           ...(runtimeServerPort &&
           !existingPinnedServerPort &&
           isPortWithinRange(
             runtimeServerPort,
-            process.env.HAPPIER_STACK_SERVER_PORT_BASE ?? '52005',
-            process.env.HAPPIER_STACK_SERVER_PORT_RANGE ?? '2000'
+            process.env.PIGGERCODE_STACK_SERVER_PORT_BASE ?? '52005',
+            process.env.PIGGERCODE_STACK_SERVER_PORT_RANGE ?? '2000'
           )
-            ? { HAPPIER_STACK_SERVER_PORT: String(runtimeServerPort) }
+            ? { PIGGERCODE_STACK_SERVER_PORT: String(runtimeServerPort) }
             : {}),
           ...(runtimeExpoPort &&
           !existingPinnedExpoPort &&
           isPortWithinRange(
             runtimeExpoPort,
-            process.env.HAPPIER_STACK_EXPO_DEV_PORT_BASE ?? '18081',
-            process.env.HAPPIER_STACK_EXPO_DEV_PORT_RANGE ?? '2000'
+            process.env.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE ?? '18081',
+            process.env.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE ?? '2000'
           )
-            ? { HAPPIER_STACK_EXPO_DEV_PORT: String(runtimeExpoPort) }
+            ? { PIGGERCODE_STACK_EXPO_DEV_PORT: String(runtimeExpoPort) }
             : {}),
         }),
-    HAPPIER_STACK_INVOKED_CWD: invokedCwd,
+    PIGGERCODE_STACK_INVOKED_CWD: invokedCwd,
   };
 
   const effectiveEnv = !isStackManagement
@@ -335,10 +335,10 @@ async function main() {
       // ignore (best-effort)
     }
 
-	    const previousServerComponent = (existingStacklessEnv.HAPPIER_STACK_SERVER_COMPONENT ?? 'happier-server-light').toString().trim() || 'happier-server-light';
+	    const previousServerComponent = (existingStacklessEnv.PIGGERCODE_STACK_SERVER_COMPONENT ?? 'happier-server-light').toString().trim() || 'happier-server-light';
 	    const serverComponent = (
-	      effectiveEnv.HAPPIER_STACK_SERVER_COMPONENT ??
-	      existingStacklessEnv.HAPPIER_STACK_SERVER_COMPONENT ??
+	      effectiveEnv.PIGGERCODE_STACK_SERVER_COMPONENT ??
+	      existingStacklessEnv.PIGGERCODE_STACK_SERVER_COMPONENT ??
 	      'happier-server-light'
 	    ).toString().trim() || 'happier-server-light';
 	    const dbTransition = resolveEffectiveDbProviderTransition({
@@ -358,18 +358,18 @@ async function main() {
 	      }
 	      throw new Error(`[repo-local] invalid DB provider for ${serverComponent}: ${dbTransition.input ?? dbTransition.reason}`);
 	    }
-	    effectiveEnv.HAPPIER_STACK_SERVER_COMPONENT = serverComponent;
-	    effectiveEnv.HAPPIER_DB_PROVIDER = dbTransition.provider;
+	    effectiveEnv.PIGGERCODE_STACK_SERVER_COMPONENT = serverComponent;
+	    effectiveEnv.PIGGERCODE_DB_PROVIDER = dbTransition.provider;
 	    effectiveEnv.HAPPY_DB_PROVIDER = dbTransition.provider;
 	    if (dbTransition.databaseUrl) {
 	      effectiveEnv.DATABASE_URL = dbTransition.databaseUrl;
 	    } else {
 	      delete effectiveEnv.DATABASE_URL;
 	    }
-	    const serverBase = effectiveEnv.HAPPIER_STACK_SERVER_PORT_BASE;
-	    const serverRange = effectiveEnv.HAPPIER_STACK_SERVER_PORT_RANGE;
-	    const expoBase = effectiveEnv.HAPPIER_STACK_EXPO_DEV_PORT_BASE;
-	    const expoRange = effectiveEnv.HAPPIER_STACK_EXPO_DEV_PORT_RANGE;
+	    const serverBase = effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_BASE;
+	    const serverRange = effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_RANGE;
+	    const expoBase = effectiveEnv.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE;
+	    const expoRange = effectiveEnv.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE;
 
 	    // Persist a stable pinned server port early so repo-local "global-ish" commands like
 	    // `yarn tailscale enable` and `yarn service install` can resolve the correct internal URL
@@ -382,8 +382,8 @@ async function main() {
 		        persistedServerPort = await selectLocalServerPortCandidateForStack({
 	          env: {
 	            ...effectiveEnv,
-	            HAPPIER_STACK_SERVER_PORT_BASE: (effectiveEnv.HAPPIER_STACK_SERVER_PORT_BASE ?? '52005').toString(),
-	            HAPPIER_STACK_SERVER_PORT_RANGE: (effectiveEnv.HAPPIER_STACK_SERVER_PORT_RANGE ?? '2000').toString(),
+	            PIGGERCODE_STACK_SERVER_PORT_BASE: (effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_BASE ?? '52005').toString(),
+	            PIGGERCODE_STACK_SERVER_PORT_RANGE: (effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_RANGE ?? '2000').toString(),
 	          },
 	          stackMode: true,
 	          stackName: stacklessName,
@@ -405,34 +405,34 @@ async function main() {
       existingPinnedServerPort < 5000 &&
       !isPortWithinRange(existingPinnedServerPort, serverBase, serverRange)
     ) {
-      pruneKeys.push('HAPPIER_STACK_SERVER_PORT');
+      pruneKeys.push('PIGGERCODE_STACK_SERVER_PORT');
     }
 
     // Treat the repo-local stack as managed by the wrapper: keep a small set of stack-owned keys in sync,
     // but preserve any user-defined keys they set via `hstack env` / `yarn env`.
     const managedEnv = {
-      HAPPIER_STACK_STACK: stacklessName,
-      HAPPIER_STACK_REPO_DIR: repoRoot,
-      HAPPIER_STACK_SERVER_COMPONENT: serverComponent,
-      HAPPIER_DB_PROVIDER: dbTransition.provider,
+      PIGGERCODE_STACK_STACK: stacklessName,
+      PIGGERCODE_STACK_REPO_DIR: repoRoot,
+      PIGGERCODE_STACK_SERVER_COMPONENT: serverComponent,
+      PIGGERCODE_DB_PROVIDER: dbTransition.provider,
       ...(dbTransition.provider === 'mysql' ? { DATABASE_URL: dbTransition.databaseUrl } : {}),
-      HAPPIER_STACK_CLI_HOME_DIR: stacklessCliHomeDir,
-      HAPPIER_STACK_SERVER_PORT_BASE: effectiveEnv.HAPPIER_STACK_SERVER_PORT_BASE,
-      HAPPIER_STACK_SERVER_PORT_RANGE: effectiveEnv.HAPPIER_STACK_SERVER_PORT_RANGE,
-      HAPPIER_STACK_EXPO_DEV_PORT_BASE: effectiveEnv.HAPPIER_STACK_EXPO_DEV_PORT_BASE,
-	      HAPPIER_STACK_EXPO_DEV_PORT_RANGE: effectiveEnv.HAPPIER_STACK_EXPO_DEV_PORT_RANGE,
-	      HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: effectiveEnv.HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY,
+      PIGGERCODE_STACK_CLI_HOME_DIR: stacklessCliHomeDir,
+      PIGGERCODE_STACK_SERVER_PORT_BASE: effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_BASE,
+      PIGGERCODE_STACK_SERVER_PORT_RANGE: effectiveEnv.PIGGERCODE_STACK_SERVER_PORT_RANGE,
+      PIGGERCODE_STACK_EXPO_DEV_PORT_BASE: effectiveEnv.PIGGERCODE_STACK_EXPO_DEV_PORT_BASE,
+	      PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE: effectiveEnv.PIGGERCODE_STACK_EXPO_DEV_PORT_RANGE,
+	      PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: effectiveEnv.PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY,
 	      // Keep the stable active server id explicit so daemons/CLI always scope state/credentials per stack.
-	      ...(effectiveEnv.HAPPIER_ACTIVE_SERVER_ID ? { HAPPIER_ACTIVE_SERVER_ID: effectiveEnv.HAPPIER_ACTIVE_SERVER_ID } : {}),
+	      ...(effectiveEnv.PIGGERCODE_ACTIVE_SERVER_ID ? { PIGGERCODE_ACTIVE_SERVER_ID: effectiveEnv.PIGGERCODE_ACTIVE_SERVER_ID } : {}),
 	      ...(persistedServerPort &&
 	      !existingPinnedServerPort &&
 	      isPortWithinRange(persistedServerPort, serverBase, serverRange)
-	        ? { HAPPIER_STACK_SERVER_PORT: String(persistedServerPort) }
+	        ? { PIGGERCODE_STACK_SERVER_PORT: String(persistedServerPort) }
 	        : {}),
 	      ...(runtimeExpoPort &&
 	      !existingPinnedExpoPort &&
 	      isPortWithinRange(runtimeExpoPort, expoBase, expoRange)
-	        ? { HAPPIER_STACK_EXPO_DEV_PORT: String(runtimeExpoPort) }
+	        ? { PIGGERCODE_STACK_EXPO_DEV_PORT: String(runtimeExpoPort) }
         : {}),
     };
     await syncRepoLocalEnvFile({ envPath: stacklessEnvPath, managedEnv, pruneKeys });
@@ -451,17 +451,17 @@ async function main() {
           args,
           cwd,
           env: {
-            HAPPIER_STACK_CLI_ROOT_DISABLE: effectiveEnv.HAPPIER_STACK_CLI_ROOT_DISABLE,
-            HAPPIER_STACK_CLI_ROOT_DIR: effectiveEnv.HAPPIER_STACK_CLI_ROOT_DIR,
-            HAPPIER_STACK_REPO_DIR: effectiveEnv.HAPPIER_STACK_REPO_DIR,
-            HAPPIER_STACK_STACK: effectiveEnv.HAPPIER_STACK_STACK,
-            HAPPIER_STACK_SERVER_PORT: effectiveEnv.HAPPIER_STACK_SERVER_PORT,
-            HAPPIER_STACK_ENV_FILE: effectiveEnv.HAPPIER_STACK_ENV_FILE,
-            HAPPIER_STACK_CLI_HOME_DIR: effectiveEnv.HAPPIER_STACK_CLI_HOME_DIR,
-            HAPPIER_STACK_CLI_BUILD_MODE: effectiveEnv.HAPPIER_STACK_CLI_BUILD_MODE,
-            HAPPIER_STACK_LOG_TEE_DIR: effectiveEnv.HAPPIER_STACK_LOG_TEE_DIR,
-            HAPPIER_ACTIVE_SERVER_ID: effectiveEnv.HAPPIER_ACTIVE_SERVER_ID,
-            HAPPIER_STACK_INVOKED_CWD: effectiveEnv.HAPPIER_STACK_INVOKED_CWD,
+            PIGGERCODE_STACK_CLI_ROOT_DISABLE: effectiveEnv.PIGGERCODE_STACK_CLI_ROOT_DISABLE,
+            PIGGERCODE_STACK_CLI_ROOT_DIR: effectiveEnv.PIGGERCODE_STACK_CLI_ROOT_DIR,
+            PIGGERCODE_STACK_REPO_DIR: effectiveEnv.PIGGERCODE_STACK_REPO_DIR,
+            PIGGERCODE_STACK_STACK: effectiveEnv.PIGGERCODE_STACK_STACK,
+            PIGGERCODE_STACK_SERVER_PORT: effectiveEnv.PIGGERCODE_STACK_SERVER_PORT,
+            PIGGERCODE_STACK_ENV_FILE: effectiveEnv.PIGGERCODE_STACK_ENV_FILE,
+            PIGGERCODE_STACK_CLI_HOME_DIR: effectiveEnv.PIGGERCODE_STACK_CLI_HOME_DIR,
+            PIGGERCODE_STACK_CLI_BUILD_MODE: effectiveEnv.PIGGERCODE_STACK_CLI_BUILD_MODE,
+            PIGGERCODE_STACK_LOG_TEE_DIR: effectiveEnv.PIGGERCODE_STACK_LOG_TEE_DIR,
+            PIGGERCODE_ACTIVE_SERVER_ID: effectiveEnv.PIGGERCODE_ACTIVE_SERVER_ID,
+            PIGGERCODE_STACK_INVOKED_CWD: effectiveEnv.PIGGERCODE_STACK_INVOKED_CWD,
           },
         },
         null,

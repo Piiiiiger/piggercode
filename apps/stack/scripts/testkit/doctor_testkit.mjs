@@ -32,8 +32,8 @@ export async function createDoctorWorkspaceFixture(t, { tmpPrefix = 'happier-sta
 export function doctorEnv({ monoRoot, extraEnv = {} } = {}) {
   return buildStackFixtureEnv({
     extraEnv: {
-      HAPPIER_STACK_REPO_DIR: monoRoot,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_REPO_DIR: monoRoot,
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
       ...extraEnv,
     },
   });

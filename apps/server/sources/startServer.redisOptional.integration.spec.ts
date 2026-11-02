@@ -25,11 +25,11 @@ vi.mock("@/utils/process/shutdown", () => ({
 describe("startServer Redis dependency (full flavor)", () => {
     const startServerHarness = createStartServerHarness({
         HAPPY_SERVER_FLAVOR: undefined,
-        HAPPIER_SERVER_FLAVOR: undefined,
+        PIGGERCODE_SERVER_FLAVOR: undefined,
         HAPPY_SOCKET_REDIS_ADAPTER: undefined,
-        HAPPIER_SOCKET_REDIS_ADAPTER: undefined,
+        PIGGERCODE_SOCKET_REDIS_ADAPTER: undefined,
         HAPPY_SOCKET_ADAPTER: undefined,
-        HAPPIER_SOCKET_ADAPTER: undefined,
+        PIGGERCODE_SOCKET_ADAPTER: undefined,
         REDIS_URL: undefined,
         SERVER_ROLE: undefined,
     });
@@ -55,7 +55,7 @@ describe("startServer Redis dependency (full flavor)", () => {
         await startServerHarness.start("full", {
             SERVER_ROLE: "api",
             REDIS_URL: "redis://localhost:6379",
-            HAPPIER_SOCKET_ADAPTER: "redis-streams",
+            PIGGERCODE_SOCKET_ADAPTER: "redis-streams",
         });
         expect(ping).toHaveBeenCalledTimes(1);
     });

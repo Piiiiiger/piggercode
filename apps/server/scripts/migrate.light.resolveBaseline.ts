@@ -19,7 +19,7 @@ async function main() {
     const env: NodeJS.ProcessEnv = { ...process.env };
     applyLightDefaultEnv(env);
 
-    const dataDir = env.HAPPY_SERVER_LIGHT_DATA_DIR ?? env.HAPPIER_SERVER_LIGHT_DATA_DIR!;
+    const dataDir = env.HAPPY_SERVER_LIGHT_DATA_DIR ?? env.PIGGERCODE_SERVER_LIGHT_DATA_DIR!;
     await mkdir(dataDir, { recursive: true });
 
     await runCommand('yarn', ['-s', 'schema:sync', '--quiet'], env);

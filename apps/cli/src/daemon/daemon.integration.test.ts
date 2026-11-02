@@ -74,7 +74,7 @@ let preparedDaemonHome: PreparedDaemonTestHome | null = null;
 const daemonClaudeCliStubPath = fileURLToPath(new URL('./testkit/claudeCliStub.mjs', import.meta.url));
 
 function debugIntegrationPreflight(message: string): void {
-  if (process.env.HAPPIER_CLI_DAEMON_INTEGRATION_DEBUG === '1') {
+  if (process.env.PIGGERCODE_CLI_DAEMON_INTEGRATION_DEBUG === '1') {
     process.stderr.write(`[daemon.integration preflight] ${message}\n`);
   }
 }
@@ -145,12 +145,12 @@ describe('waitForChildExit helper', () => {
 
 describe('ensureDaemonFullyStoppedBeforeRestart helper', () => {
   it('waits for the previous known daemon PID when state files are already gone', async () => {
-    const previousHomeDir = process.env.HAPPIER_HOME_DIR;
+    const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
     const tempHomeDir = await mkdtemp(join(tmpdir(), 'happier-cli-daemon-stop-helper-'));
     let child: ReturnType<typeof spawn> | null = null;
 
     try {
-      process.env.HAPPIER_HOME_DIR = tempHomeDir;
+      process.env.PIGGERCODE_HOME_DIR = tempHomeDir;
       reloadConfiguration();
       await clearDaemonStateForTests();
 
@@ -182,9 +182,9 @@ describe('ensureDaemonFullyStoppedBeforeRestart helper', () => {
         }
       }
       if (previousHomeDir === undefined) {
-        delete process.env.HAPPIER_HOME_DIR;
+        delete process.env.PIGGERCODE_HOME_DIR;
       } else {
-        process.env.HAPPIER_HOME_DIR = previousHomeDir;
+        process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
       }
       reloadConfiguration();
       await rm(tempHomeDir, { recursive: true, force: true });
@@ -358,7 +358,7 @@ async function isServerHealthy(): Promise<boolean> {
         prefix: 'happier-cli-daemon-int-',
         logCopyPrefix: 'daemon-int',
         extraEnv: {
-          HAPPIER_CLAUDE_PATH: daemonClaudeCliStubPath,
+          PIGGERCODE_CLAUDE_PATH: daemonClaudeCliStubPath,
         },
       });
     }
@@ -373,7 +373,7 @@ async function isServerHealthy(): Promise<boolean> {
       debugIntegrationPreflight(`bootstrapped credentials in ${configuration.happyHomeDir}`);
     }
 
-    const configuredServerUrl = process.env.HAPPIER_SERVER_URL || 'http://localhost:3005';
+    const configuredServerUrl = process.env.PIGGERCODE_SERVER_URL || 'http://localhost:3005';
     const healthUrl = new URL('/health', configuredServerUrl);
     // Avoid IPv6/localhost resolution issues in some CI/container environments.
     if (healthUrl.hostname === 'localhost') healthUrl.hostname = '127.0.0.1';

@@ -5,10 +5,10 @@ import { createEnvKeyScope } from '@/testkit/env/envScope'
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir'
 
 const TOOL_TRACE_ENV_KEYS = [
-  'HAPPIER_STACK_TOOL_TRACE',
-  'HAPPIER_STACK_TOOL_TRACE_FILE',
-  'HAPPIER_STACK_TOOL_TRACE_DIR',
-  'HAPPIER_E2E_ACP_TRACE_MARKERS',
+  'PIGGERCODE_STACK_TOOL_TRACE',
+  'PIGGERCODE_STACK_TOOL_TRACE_FILE',
+  'PIGGERCODE_STACK_TOOL_TRACE_DIR',
+  'PIGGERCODE_E2E_ACP_TRACE_MARKERS',
 ] as const
 
 type ToolTraceEnvKey = (typeof TOOL_TRACE_ENV_KEYS)[number]
@@ -27,9 +27,9 @@ export async function withToolTraceFile(
   const envScope = createEnvKeyScope(TOOL_TRACE_ENV_KEYS)
 
   envScope.patch({
-    HAPPIER_STACK_TOOL_TRACE: '1',
-    HAPPIER_STACK_TOOL_TRACE_FILE: filePath,
-    HAPPIER_STACK_TOOL_TRACE_DIR: undefined,
+    PIGGERCODE_STACK_TOOL_TRACE: '1',
+    PIGGERCODE_STACK_TOOL_TRACE_FILE: filePath,
+    PIGGERCODE_STACK_TOOL_TRACE_DIR: undefined,
     ...options.env,
   })
   __resetToolTraceForTests()

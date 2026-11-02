@@ -61,9 +61,9 @@ export async function createStackHappierCliCommandFixture(
     await writeFile(
       envPath,
       [
-        `HAPPIER_STACK_REPO_DIR=${repoDir}`,
-        `HAPPIER_STACK_CLI_HOME_DIR=${cliHomeDir}`,
-        ...(port === '' ? [] : [`HAPPIER_STACK_SERVER_PORT=${port}`]),
+        `PIGGERCODE_STACK_REPO_DIR=${repoDir}`,
+        `PIGGERCODE_STACK_CLI_HOME_DIR=${cliHomeDir}`,
+        ...(port === '' ? [] : [`PIGGERCODE_STACK_SERVER_PORT=${port}`]),
         '',
       ].join('\n'),
       'utf-8',
@@ -87,11 +87,11 @@ export async function createStackHappierCliCommandFixture(
     writeStackEnv,
     baseEnv: {
       ...process.env,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
     },
   };
 }

@@ -18,12 +18,12 @@ type ChangelogSnapshot = Readonly<{
 
 describe('useChangelog', () => {
     let tree: renderer.ReactTestRenderer | null = null;
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         vi.resetModules();
         new MMKV().clearAll();
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
     });
 
     afterEach(() => {
@@ -35,9 +35,9 @@ describe('useChangelog', () => {
         }
 
         if (previousDeny === undefined) {
-            delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
         } else {
-            process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+            process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
         }
     });
 

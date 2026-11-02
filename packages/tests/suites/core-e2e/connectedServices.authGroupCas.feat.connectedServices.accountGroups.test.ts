@@ -250,8 +250,8 @@ describe('core e2e: connected-service auth group CAS', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -362,8 +362,8 @@ describe('core e2e: connected-service auth group CAS', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
-        HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: '1',
+        PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);

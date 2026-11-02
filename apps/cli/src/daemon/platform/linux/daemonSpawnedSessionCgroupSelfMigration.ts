@@ -1,6 +1,6 @@
 import { moveProcessOutOfDaemonServiceCgroup } from './migrateTrackedSessionProcessesOutOfDaemonServiceCgroup';
 
-export const HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY = 'HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP';
+export const PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY = 'PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP';
 
 function isTruthyEnvFlag(raw: string | undefined): boolean {
     const normalized = (raw ?? '').trim().toLowerCase();
@@ -15,8 +15,8 @@ export async function selfMigrateDaemonSpawnedSessionProcessOutOfDaemonServiceCg
     cgroupRootDir?: string;
 }> = {}): Promise<Awaited<ReturnType<typeof moveProcessOutOfDaemonServiceCgroup>>> {
     const env = params.env ?? process.env;
-    const enabled = isTruthyEnvFlag(env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]);
-    delete env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY];
+    const enabled = isTruthyEnvFlag(env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY]);
+    delete env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY];
 
     if (!enabled) {
         return null;

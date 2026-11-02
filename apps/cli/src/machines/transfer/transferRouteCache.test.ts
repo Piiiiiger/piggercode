@@ -8,13 +8,13 @@ describe('createMachineTransferRouteCache', () => {
     beforeEach(() => {
         now.mockReset();
         now.mockReturnValue(1_000);
-        delete process.env.HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
-        delete process.env.HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
     });
 
     afterEach(() => {
-        delete process.env.HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
-        delete process.env.HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS;
+        delete process.env.PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS;
     });
 
     it('treats a different endpoint set as a different direct-peer cache key', () => {
@@ -47,7 +47,7 @@ describe('createMachineTransferRouteCache', () => {
     });
 
     it('expires negative entries using the configured ttl', () => {
-        process.env.HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS = '25';
+        process.env.PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS = '25';
         const cache = createMachineTransferRouteCache({
             serverId: 'server-1',
             now,

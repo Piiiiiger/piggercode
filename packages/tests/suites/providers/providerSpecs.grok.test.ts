@@ -52,12 +52,12 @@ describe('providers: Grok provider contracts', () => {
     expect(grok?.requiredEnv).toBeUndefined();
     expect(grok?.requiresBinaries).toContainEqual({
       bin: 'grok',
-      envOverride: 'HAPPIER_E2E_PROVIDER_GROK_BIN',
+      envOverride: 'PIGGERCODE_E2E_PROVIDER_GROK_BIN',
       requireExists: true,
     });
     expect(grok?.cli).toMatchObject({
       subcommand: 'grok',
-      envFrom: { HAPPIER_GROK_PATH: 'HAPPIER_E2E_PROVIDER_GROK_BIN' },
+      envFrom: { PIGGERCODE_GROK_PATH: 'PIGGERCODE_E2E_PROVIDER_GROK_BIN' },
     });
     expect(grok?.permissions).toEqual(EXPECTED_GROK_PERMISSIONS);
   });
@@ -70,7 +70,7 @@ describe('providers: Grok provider contracts', () => {
     expect(stub?.protocol).toBe('acp');
     expect(stub?.requiredEnv).toBeUndefined();
     expect(stub?.cli.subcommand).toBe('grok');
-    expect(stub?.cli.env?.HAPPIER_GROK_PATH).toContain('grok-acp-stub-provider.mjs');
+    expect(stub?.cli.env?.PIGGERCODE_GROK_PATH).toContain('grok-acp-stub-provider.mjs');
     expect(stub?.permissions).toEqual(EXPECTED_GROK_PERMISSIONS);
     expect(stub?.scenarioRegistry.tiers.smoke).toEqual(expect.arrayContaining([
       'grok_acp_stub_auth_create_resume',

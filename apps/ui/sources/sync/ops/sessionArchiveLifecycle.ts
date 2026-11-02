@@ -8,7 +8,7 @@ export type SessionArchiveRequestOptions = Readonly<{
 const DEFAULT_ARCHIVE_TIMEOUT_MS = 75_000;
 
 function readArchiveTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SESSION_ARCHIVE_AFTER_STOP_TIMEOUT_MS ?? '').trim();
     if (!raw) return DEFAULT_ARCHIVE_TIMEOUT_MS;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return DEFAULT_ARCHIVE_TIMEOUT_MS;

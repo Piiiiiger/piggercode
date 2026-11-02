@@ -266,10 +266,10 @@ export async function claudeRemote(opts: {
             claudeCodeIncludeInNativeHistory: mode.claudeCodeIncludeInNativeHistory,
         }),
         ...resolveClaudeConfigDirEnvOverlay(process.env),
-        ...(happierSessionId ? { HAPPIER_SESSION_ID: happierSessionId } : {}),
+        ...(happierSessionId ? { PIGGERCODE_SESSION_ID: happierSessionId } : {}),
     };
-    if (!launcherEnv.HAPPIER_CLAUDE_PATH && !launcherEnv.HAPPY_CLAUDE_PATH) {
-        launcherEnv.HAPPIER_CLAUDE_PATH = resolvedClaudeCliPath;
+    if (!launcherEnv.PIGGERCODE_CLAUDE_PATH && !launcherEnv.HAPPY_CLAUDE_PATH) {
+        launcherEnv.PIGGERCODE_CLAUDE_PATH = resolvedClaudeCliPath;
     }
     logClaudeRuntimeAuthEnvDiagnostic({
         logPrefix: 'claudeRemote',

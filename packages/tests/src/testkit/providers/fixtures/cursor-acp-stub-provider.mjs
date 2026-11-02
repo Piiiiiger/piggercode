@@ -24,7 +24,7 @@ function ok(id, result) {
 }
 
 function homeDir() {
-  return process.env.HAPPIER_HOME_DIR || process.env.HOME || process.cwd();
+  return process.env.PIGGERCODE_HOME_DIR || process.env.HOME || process.cwd();
 }
 
 function callsPath() {

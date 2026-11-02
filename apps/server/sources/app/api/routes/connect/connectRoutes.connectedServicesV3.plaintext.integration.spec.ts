@@ -74,7 +74,7 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
     });
 
     it("derives the public organization identity from the plaintext credential at the write boundary", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional", PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "none" });
         const user = await db.account.create({ data: { publicKey: null, encryptionMode: "plain" } });
         const record = buildConnectedServiceCredentialRecord({
             now: 1000, serviceId: "claude-subscription", profileId: "work", kind: "oauth",
@@ -94,9 +94,9 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("stores and returns a plaintext credential envelope for plaintext accounts (server sealed at rest)", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
         });
 
         const user = await db.account.create({
@@ -184,9 +184,9 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("applies the same credential revision CAS to plaintext reconnects", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
-            HAPPIER_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__PLAIN_ACCOUNT_CREDENTIALS_AT_REST: "server_sealed",
         });
         const user = await db.account.create({
             data: { publicKey: null, encryptionMode: "plain" },
@@ -269,8 +269,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("supports protocol-valid profile ids on the canonical v3 refresh lease route", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -327,8 +327,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("reconnects a plaintext credential in place, preserves group membership, and clears health", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -439,8 +439,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("rejects reconnect when the provider identity changes without explicit confirmation", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -505,8 +505,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("rejects reconnect when incoming plaintext credential identity is omitted", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -571,8 +571,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("rejects reconnect when incoming plaintext credential drops the existing provider account id", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -637,8 +637,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("rejects plaintext credential registration when content identity does not match the route", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -694,8 +694,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("does not return a stored plaintext credential whose content identity mismatches the route", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -753,8 +753,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("publishes a profile update when a plaintext credential is deleted", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -825,8 +825,8 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
 
     it("rejects a v2 delete for a plaintext credential and retains the row", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
 
         const user = await db.account.create({
@@ -884,7 +884,7 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
     });
 
     it("rejects plaintext credential content for e2ee accounts", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee" });
 
         const user = await db.account.create({
             data: { publicKey: "pk-v3-e2ee", encryptionMode: "e2ee" },
@@ -928,7 +928,7 @@ describe("connectRoutes (connected services v3) plaintext credential endpoints (
     });
 
     it("does not return v3 plaintext credentials for e2ee accounts (defense-in-depth)", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee" });
 
         const user = await db.account.create({
             data: { publicKey: "pk-v3-e2ee", encryptionMode: "e2ee" },

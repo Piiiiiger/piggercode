@@ -30,7 +30,7 @@ function validateStashRef(stashRef: string): { ok: true; value: string } | { ok:
     return { ok: true, value: normalized };
 }
 
-export const HAPPIER_MANAGED_STASH_MARKERS = {
+export const PIGGERCODE_MANAGED_STASH_MARKERS = {
     branch: '!!Happier<',
     transient: '!!HappierTransient<',
 } as const;
@@ -62,11 +62,11 @@ function parseManagedStashBranchName(message: string, markerPrefix: string): str
 }
 
 function parseManagedStashMarker(message: string): ParsedManagedStashMarker | null {
-    const transientBranch = parseManagedStashBranchName(message, HAPPIER_MANAGED_STASH_MARKERS.transient);
+    const transientBranch = parseManagedStashBranchName(message, PIGGERCODE_MANAGED_STASH_MARKERS.transient);
     if (transientBranch) {
         return { kind: 'transient', branch: transientBranch };
     }
-    const persistentBranch = parseManagedStashBranchName(message, HAPPIER_MANAGED_STASH_MARKERS.branch);
+    const persistentBranch = parseManagedStashBranchName(message, PIGGERCODE_MANAGED_STASH_MARKERS.branch);
     if (persistentBranch) {
         return { kind: 'branch', branch: persistentBranch };
     }

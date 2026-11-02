@@ -118,7 +118,7 @@ describe('resolveOpenCodeSseReadIdleTimeoutMs', () => {
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs).toBeTypeOf('function');
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs?.({})).toBeNull();
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs?.({
-      HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: 'not-a-number',
+      PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: 'not-a-number',
     })).toBeNull();
   });
 
@@ -127,13 +127,13 @@ describe('resolveOpenCodeSseReadIdleTimeoutMs', () => {
 
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs).toBeTypeOf('function');
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs?.({
-      HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '1',
+      PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '1',
     })).toBe(5_000);
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs?.({
-      HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '999999',
+      PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '999999',
     })).toBe(120_000);
     expect(clientModule.resolveOpenCodeSseReadIdleTimeoutMs?.({
-      HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '0',
+      PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '0',
     })).toBeNull();
   });
 });
@@ -180,8 +180,8 @@ describe('createOpenCodeServerRuntimeClient read idle configuration', () => {
       directory: '/tmp',
       messageBuffer: new MessageBuffer(),
       env: {
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:9999',
-        HAPPIER_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '6',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:9999',
+        PIGGERCODE_OPENCODE_SSE_READ_IDLE_TIMEOUT_MS: '6',
       } as NodeJS.ProcessEnv,
     });
 

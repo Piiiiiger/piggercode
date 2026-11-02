@@ -32,10 +32,10 @@ const emptyAdoptResult = {
 
 function currentOwnershipEnvironment() {
   return {
-    HAPPIER_HOME_DIR: configuration.happyHomeDir,
-    HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID,
-    HAPPIER_ACTIVE_SERVER_ID: configuration.activeServerId,
-    HAPPIER_SERVER_URL: configuration.serverUrl,
+    PIGGERCODE_HOME_DIR: configuration.happyHomeDir,
+    PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID,
+    PIGGERCODE_ACTIVE_SERVER_ID: configuration.activeServerId,
+    PIGGERCODE_SERVER_URL: configuration.serverUrl,
   };
 }
 
@@ -99,7 +99,7 @@ vi.mock('@/terminal/attachment/terminalAttachmentInfo', () => ({
 describe('reattachTrackedSessionsFromMarkers', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED;
+    delete process.env.PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED;
     isOwnedLiveDaemonSessionProcessCommandMock.mockReturnValue(true);
     mockTerminalAttachmentState({ status: 'absent' });
   });
@@ -1012,7 +1012,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
   });
 
   it('skips markerless daemon-spawned session recovery when disabled by environment', async () => {
-    process.env.HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED = '0';
+    process.env.PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED = '0';
     const markerlessDaemonSessionProcess = {
       pid: 12345,
       type: 'daemon-spawned-session',
@@ -1672,7 +1672,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
   });
 
   it('uses marker pid lookups without a full process-table scan when markerless recovery is disabled', async () => {
-    process.env.HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED = '0';
+    process.env.PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED = '0';
     isOwnedLiveDaemonSessionProcessCommandMock.mockReturnValue(false);
     vi.mocked(listSessionMarkers).mockResolvedValue([
       {

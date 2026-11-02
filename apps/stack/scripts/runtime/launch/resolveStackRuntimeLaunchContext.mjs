@@ -3,7 +3,7 @@ import { resolveStackRuntimeMode } from '../shared/runtime_mode.mjs';
 import { resolveActiveRuntimeSnapshot } from './resolveActiveRuntimeSnapshot.mjs';
 
 export async function resolveStackRuntimeLaunchContext({ argv = [], env = process.env, activeRuntimeState = null } = {}) {
-  const stackName = (env.HAPPIER_STACK_STACK ?? '').toString().trim() || getStackName(env);
+  const stackName = (env.PIGGERCODE_STACK_STACK ?? '').toString().trim() || getStackName(env);
   const { baseDir: stackBaseDir } = resolveStackBaseDir(stackName, env);
   const runtimeMode = resolveStackRuntimeMode({ argv, env, activeRuntimeState });
   const snapshot = await resolveActiveRuntimeSnapshot({ mode: runtimeMode.mode, stackBaseDir });

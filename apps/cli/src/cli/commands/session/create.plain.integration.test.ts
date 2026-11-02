@@ -19,11 +19,11 @@ vi.mock('socket.io-client', () => ({
 
 describe('happier session create plaintext sessions (integration)', () => {
   const envKeys = [
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_STACK_INVOKED_CWD',
-    'HAPPIER_SESSION_REQUESTED_DIRECTORY',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_STACK_INVOKED_CWD',
+    'PIGGERCODE_SESSION_REQUESTED_DIRECTORY',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
@@ -91,12 +91,12 @@ describe('happier session create plaintext sessions (integration)', () => {
       throw new Error('Failed to resolve session control integration test server address');
     }
 
-    process.env.HAPPIER_SERVER_URL = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = `http://127.0.0.1:${address.port}`;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
     envScope.patch({
-      HAPPIER_STACK_INVOKED_CWD: undefined,
-      HAPPIER_SESSION_REQUESTED_DIRECTORY: undefined,
+      PIGGERCODE_STACK_INVOKED_CWD: undefined,
+      PIGGERCODE_SESSION_REQUESTED_DIRECTORY: undefined,
     });
 
     const { reloadConfiguration } = await import('@/configuration');

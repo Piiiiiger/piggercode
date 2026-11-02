@@ -30,9 +30,9 @@ export function resolveStackRuntimeMode({ argv = [], env = process.env, activeRu
     return { mode: 'source', source: 'active-runtime' };
   }
 
-  if (Object.prototype.hasOwnProperty.call(env ?? {}, 'HAPPIER_STACK_RUNTIME_MODE')) {
+  if (Object.prototype.hasOwnProperty.call(env ?? {}, 'PIGGERCODE_STACK_RUNTIME_MODE')) {
     return {
-      mode: normalizeRuntimeMode(env?.HAPPIER_STACK_RUNTIME_MODE),
+      mode: normalizeRuntimeMode(env?.PIGGERCODE_STACK_RUNTIME_MODE),
       source: 'env',
     };
   }

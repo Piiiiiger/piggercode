@@ -38,9 +38,9 @@ describe('daemon control server: /continue-with-replay', () => {
     });
 
     it('returns a structured error when the daemon is not provisioned with credentials', async () => {
-        const envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+        const envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
         const homeDir = await createTempDir('happier-cli-daemon-control-replay-missing-creds-');
-        envScope.patch({ HAPPIER_HOME_DIR: homeDir });
+        envScope.patch({ PIGGERCODE_HOME_DIR: homeDir });
         reloadConfiguration();
 
         const app = createDaemonControlApp({

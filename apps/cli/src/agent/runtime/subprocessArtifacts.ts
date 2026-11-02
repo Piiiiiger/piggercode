@@ -44,7 +44,7 @@ export function resolveSubprocessArtifactsDir(params: Readonly<{
   const agentName = sanitizePathSegment(params.agentName);
   const upper = sanitizeEnvKeySegment(params.agentName);
 
-  const perAgentKey = `HAPPIER_${upper}_DEBUG_ARTIFACTS_DIR`;
+  const perAgentKey = `PIGGERCODE_${upper}_DEBUG_ARTIFACTS_DIR`;
   const overrideKeys = [perAgentKey, ...(params.envOverrides ?? [])];
   for (const key of overrideKeys) {
     const raw = process.env[key];
@@ -53,7 +53,7 @@ export function resolveSubprocessArtifactsDir(params: Readonly<{
     }
   }
 
-  const globalRoot = process.env.HAPPIER_DEBUG_ARTIFACTS_DIR;
+  const globalRoot = process.env.PIGGERCODE_DEBUG_ARTIFACTS_DIR;
   if (typeof globalRoot === 'string' && globalRoot.trim().length > 0) {
     return join(globalRoot.trim(), 'subprocess', agentName);
   }
@@ -115,12 +115,12 @@ export async function createSubprocessStderrAppender(params: Readonly<{
   label: string;
   envOverrides?: ReadonlyArray<string>;
 }>): Promise<BoundedTextFileAppender | null> {
-  const enabledRaw = process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED;
+  const enabledRaw = process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED;
   if (typeof enabledRaw === 'string' && ['0', 'false', 'no'].includes(enabledRaw.trim().toLowerCase())) {
     return null;
   }
 
-  const maxBytes = parseEnvBoundedInt('HAPPIER_SUBPROCESS_STDERR_MAX_BYTES', { min: 0, max: 10_000_000, fallback: 1_000_000 });
+  const maxBytes = parseEnvBoundedInt('PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES', { min: 0, max: 10_000_000, fallback: 1_000_000 });
   if (maxBytes === 0) return null;
   const dir = resolveSubprocessArtifactsDir({ agentName: params.agentName, envOverrides: params.envOverrides });
   try {

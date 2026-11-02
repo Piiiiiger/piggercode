@@ -476,8 +476,8 @@ export type TranscriptViewportTelemetryTuning = Readonly<{
 }>;
 
 const DEFAULT_TRANSCRIPT_VIEWPORT_TELEMETRY_CAPACITY = 512;
-const TRANSCRIPT_VIEWPORT_TELEMETRY_GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__';
-const TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE_GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__';
+const TRANSCRIPT_VIEWPORT_TELEMETRY_GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__';
+const TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE_GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__';
 
 const SCROLL_WRITERS = new Set<TranscriptViewportTelemetryScrollWriter>([
     'web-dom-bottom',
@@ -1068,7 +1068,7 @@ export class TranscriptViewportTelemetry {
         this.trimToCapacity();
         this.sink?.(sanitized.event);
         if (this.consoleLog) {
-            console.log('HAPPIER_TRANSCRIPT_VIEWPORT_EVENT', JSON.stringify(sanitized.event));
+            console.log('PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENT', JSON.stringify(sanitized.event));
         }
     }
 
@@ -1128,9 +1128,9 @@ let transcriptViewportTelemetryDebugOverride: TranscriptViewportTelemetryOptions
 function readTranscriptViewportTelemetryGlobalDebugOverride(): TranscriptViewportTelemetryOptions | null {
     if (!readDevFlag()) return null;
     const target = globalThis as unknown as {
-        __HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__?: TranscriptViewportTelemetryDebugOverrideOptions;
+        __PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__?: TranscriptViewportTelemetryDebugOverrideOptions;
     };
-    const options = target.__HAPPIER_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__;
+    const options = target.__PIGGERCODE_TRANSCRIPT_VIEWPORT_TELEMETRY_OVERRIDE__;
     if (!options || typeof options !== 'object') return null;
     return {
         consoleLog: options.consoleLog === true,
@@ -1177,14 +1177,14 @@ export function installTranscriptViewportTelemetryGlobal(
     options: InstallTranscriptViewportTelemetryGlobalOptions = {},
 ): void {
     const target = globalThis as unknown as {
-        __HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__?: () => TranscriptViewportTelemetrySnapshot;
+        __PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__?: () => TranscriptViewportTelemetrySnapshot;
     };
     const isDev = options.isDev ?? readDevFlag();
     if (!isDev) {
-        delete target.__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__;
+        delete target.__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__;
         return;
     }
-    target.__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__ = () => telemetry.snapshot();
+    target.__PIGGERCODE_TRANSCRIPT_VIEWPORT_EVENTS__ = () => telemetry.snapshot();
 }
 
 export function configureTranscriptViewportTelemetryFromTuning(

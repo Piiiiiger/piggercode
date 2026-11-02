@@ -36,12 +36,12 @@ describe('concurrentSessionCache teardown ordering', () => {
             // ignore
         }
         delete process.env.EXPO_PUBLIC_HAPPY_MULTI_SERVER_CONCURRENT;
-        delete process.env.EXPO_PUBLIC_HAPPIER_CONCURRENT_CACHE_REFRESH_INTERVAL_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_CONCURRENT_CACHE_REFRESH_INTERVAL_MS;
     });
 
     it('does not report server unreachable during intentional stop teardown', async () => {
         process.env.EXPO_PUBLIC_HAPPY_MULTI_SERVER_CONCURRENT = '1';
-        process.env.EXPO_PUBLIC_HAPPIER_CONCURRENT_CACHE_REFRESH_INTERVAL_MS = '600000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_CONCURRENT_CACHE_REFRESH_INTERVAL_MS = '600000';
 
         vi.doMock('@/sync/runtime/connectivity/serverReachabilitySupervisorPool', () => ({
             setServerReachabilityNetworkAllowed: (_next: boolean) => {},

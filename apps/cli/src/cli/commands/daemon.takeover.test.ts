@@ -29,9 +29,9 @@ vi.mock('@/daemon/controlClient', async (importOriginal) => {
 
 describe('handleDaemonCliCommand takeover handling', () => {
     const envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
     ]);
 
     afterEach(() => {
@@ -49,9 +49,9 @@ describe('handleDaemonCliCommand takeover handling', () => {
     it('takes over a manual daemon when daemon start uses --takeover', async () => {
         await withTempDir('happier-daemon-start-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -93,7 +93,7 @@ describe('handleDaemonCliCommand takeover handling', () => {
             expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledTimes(1);
             expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledWith(expect.objectContaining({
                 env: expect.objectContaining({
-                    HAPPIER_DAEMON_TAKEOVER: '1',
+                    PIGGERCODE_DAEMON_TAKEOVER: '1',
                 }),
             }));
             expect(output.text()).toContain('Taking over the current manual daemon');
@@ -103,9 +103,9 @@ describe('handleDaemonCliCommand takeover handling', () => {
     it('allows a stale manual daemon to be replaced without explicit takeover', async () => {
         await withTempDir('happier-daemon-start-stale-manual-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -153,9 +153,9 @@ describe('handleDaemonCliCommand takeover handling', () => {
     it('takes over a legacy manual daemon without startup metadata when daemon start uses --takeover', async () => {
         await withTempDir('happier-daemon-start-legacy-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -196,7 +196,7 @@ describe('handleDaemonCliCommand takeover handling', () => {
             expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledTimes(1);
             expect(spawnDetachedDaemonStartSyncMock).toHaveBeenCalledWith(expect.objectContaining({
                 env: expect.objectContaining({
-                    HAPPIER_DAEMON_TAKEOVER: '1',
+                    PIGGERCODE_DAEMON_TAKEOVER: '1',
                 }),
             }));
             expect(output.text()).toContain('Taking over the current manual daemon');

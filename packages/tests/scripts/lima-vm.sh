@@ -12,8 +12,8 @@ set -euo pipefail
 # - LIMA_TEMPLATE (default: ubuntu-24.04)
 # - LIMA_MEMORY (default: 8GiB)
 # - LIMA_VM_TYPE (optional: vz|qemu|krunkit)
-# - HAPPIER_LIMA_STACK_PORT_RANGE (default: 13000-13999)
-# - HAPPIER_LIMA_EXPO_PORT_RANGE  (default: 18000-19099)
+# - PIGGERCODE_LIMA_STACK_PORT_RANGE (default: 13000-13999)
+# - PIGGERCODE_LIMA_EXPO_PORT_RANGE  (default: 18000-19099)
 
 usage() {
   cat <<'EOF'
@@ -57,8 +57,8 @@ TEMPLATE="${LIMA_TEMPLATE:-ubuntu-24.04}"
 LIMA_MEMORY="${LIMA_MEMORY:-8GiB}"
 LIMA_VM_TYPE="${LIMA_VM_TYPE:-}" # optional: vz|qemu|krunkit (see: limactl create --list-drivers)
 
-STACK_PORT_RANGE="${HAPPIER_LIMA_STACK_PORT_RANGE:-13000-13999}"
-EXPO_PORT_RANGE="${HAPPIER_LIMA_EXPO_PORT_RANGE:-18000-19099}"
+STACK_PORT_RANGE="${PIGGERCODE_LIMA_STACK_PORT_RANGE:-13000-13999}"
+EXPO_PORT_RANGE="${PIGGERCODE_LIMA_EXPO_PORT_RANGE:-18000-19099}"
 
 TEMPLATE_LOCATOR="${TEMPLATE}"
 if [[ "${TEMPLATE_LOCATOR}" == template://* ]]; then
@@ -253,5 +253,5 @@ Tips:
   - Open printed URLs on your host via http://localhost:<port> or http://*.localhost:<port>.
   - For `npx --yes -p @piggercode/stack hstack tools review-pr ...` inside the VM, pass `--vm-ports` so stack ports land in the forwarded ranges.
   - Override guest provision versions (profile=happier):
-      HAPPIER_PROVISION_NODE_MAJOR=24 HAPPIER_PROVISION_YARN_VERSION=1.22.22 /tmp/linux-ubuntu-provision.sh --profile=happier
+      PIGGERCODE_PROVISION_NODE_MAJOR=24 PIGGERCODE_PROVISION_YARN_VERSION=1.22.22 /tmp/linux-ubuntu-provision.sh --profile=happier
 EOF

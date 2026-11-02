@@ -28,12 +28,12 @@ async function createMonorepoFixture(t, { prefix }) {
       "  }",
       "}",
       "console.log(JSON.stringify({",
-      "  serverUrl: serverUrlFromArg ?? process.env.HAPPIER_SERVER_URL ?? null,",
-      "  publicServerUrl: process.env.HAPPIER_PUBLIC_SERVER_URL ?? null,",
-      "  localServerUrl: process.env.HAPPIER_LOCAL_SERVER_URL ?? null,",
-      "  webappUrl: process.env.HAPPIER_WEBAPP_URL ?? null,",
-      "  activeServerId: process.env.HAPPIER_ACTIVE_SERVER_ID ?? null,",
-      "  homeDir: process.env.HAPPIER_HOME_DIR ?? null,",
+      "  serverUrl: serverUrlFromArg ?? process.env.PIGGERCODE_SERVER_URL ?? null,",
+      "  publicServerUrl: process.env.PIGGERCODE_PUBLIC_SERVER_URL ?? null,",
+      "  localServerUrl: process.env.PIGGERCODE_LOCAL_SERVER_URL ?? null,",
+      "  webappUrl: process.env.PIGGERCODE_WEBAPP_URL ?? null,",
+      "  activeServerId: process.env.PIGGERCODE_ACTIVE_SERVER_ID ?? null,",
+      "  homeDir: process.env.PIGGERCODE_HOME_DIR ?? null,",
       "}));",
       '',
     ].join('\n'),
@@ -72,16 +72,16 @@ function buildHappierFixtureEnv({ rootDir, fixtureDir, homeDir, extra = {} }) {
       isolatedStackRoot: join(fixtureDir, '.stack-root'),
       repoDir: fixtureDir,
     }),
-    HAPPIER_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_STACK: 'test-stack',
     // Storage is already isolated above; leave the explicit pointer unset so this fixture does not
     // model the now-invalid contract of a configured path that does not exist.
-    HAPPIER_STACK_ENV_FILE: '',
-    HAPPIER_STACK_SYNC_BUNDLED_WORKSPACES: '0',
-    HAPPIER_HOME_DIR: homeDir,
+    PIGGERCODE_STACK_ENV_FILE: '',
+    PIGGERCODE_STACK_SYNC_BUNDLED_WORKSPACES: '0',
+    PIGGERCODE_HOME_DIR: homeDir,
     ...extra,
   };
-  delete env.HAPPIER_PUBLIC_SERVER_URL;
-  delete env.HAPPIER_LOCAL_SERVER_URL;
+  delete env.PIGGERCODE_PUBLIC_SERVER_URL;
+  delete env.PIGGERCODE_LOCAL_SERVER_URL;
   return env;
 }
 
@@ -156,7 +156,7 @@ test('hstack happier prefers existing CLI settings over stack defaults even when
     rootDir,
     fixtureDir: fixture.dir,
     homeDir,
-    extra: { HAPPIER_STACK_SERVER_PORT: String(pinnedPortReservation.port) },
+    extra: { PIGGERCODE_STACK_SERVER_PORT: String(pinnedPortReservation.port) },
   });
   await pinnedPortReservation.release();
 

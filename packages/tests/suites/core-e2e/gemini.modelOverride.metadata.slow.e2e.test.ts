@@ -103,7 +103,7 @@ import { pathToFileURL } from "node:url";
 import { Readable, Writable } from "node:stream";
 
 function log(line) {
-  const p = process.env.HAPPIER_E2E_GEMINI_LOG;
+  const p = process.env.PIGGERCODE_E2E_GEMINI_LOG;
   if (!p) return;
   appendFileSync(p, JSON.stringify(line) + "\\n", "utf8");
 }
@@ -112,8 +112,8 @@ log({ kind: "boot", model: process.env.GEMINI_MODEL ?? null });
 
 const sdkEntry = ${JSON.stringify(acpSdkEntry)};
 const acp = await import(pathToFileURL(sdkEntry).href);
-const adapterEntry = process.env.HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing HAPPIER_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
+const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
+if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
 const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
 
 class FakeAgent {
@@ -173,16 +173,16 @@ await connection.closed;
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_GEMINI_PATH: fakeGeminiPath,
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_GEMINI_PATH: fakeGeminiPath,
       GEMINI_API_KEY: 'e2e-fake-gemini-api-key',
       // Ensure the fake gemini CLI is used.
       PATH: `${fakeBinDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_E2E_GEMINI_LOG: fakeGeminiLog,
+      PIGGERCODE_E2E_GEMINI_LOG: fakeGeminiLog,
     };
 
     const cliDistEntrypoint = await ensureCliDistBuilt({ testDir, env: cliEnv });

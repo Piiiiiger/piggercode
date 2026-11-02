@@ -16,7 +16,7 @@ export function formatProviderSkipWarning(params: { providerId: string; reason: 
 
 function providerFailureReportPathFromEnv(): string | null {
   const raw = (
-    process.env.HAPPIER_E2E_PROVIDER_FAILURE_REPORT_PATH ??
+    process.env.PIGGERCODE_E2E_PROVIDER_FAILURE_REPORT_PATH ??
     process.env.HAPPY_E2E_PROVIDER_FAILURE_REPORT_PATH ??
     ''
   ).trim();

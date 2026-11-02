@@ -4,7 +4,7 @@ import type {
 } from '@piggercode/protocol';
 
 import {
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   serializeConnectedServiceChildSelections,
 } from '../connectedServiceChildEnvironment';
 import { readConnectedServiceMaterializationIdentityV1 } from '../materialize/createConnectedServiceMaterializationIdentity';
@@ -113,7 +113,7 @@ function buildCredentialRevisionSelectionEnv(
   if (!serialized) return null;
   return {
     ...target.connectedServiceSelectionsEnv,
-    [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized,
+    [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized,
   };
 }
 
@@ -151,7 +151,7 @@ function buildExactGroupApplicationSelectionEnv(
   if (!serialized) return null;
   return {
     ...target.connectedServiceSelectionsEnv,
-    [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized,
+    [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized,
   };
 }
 

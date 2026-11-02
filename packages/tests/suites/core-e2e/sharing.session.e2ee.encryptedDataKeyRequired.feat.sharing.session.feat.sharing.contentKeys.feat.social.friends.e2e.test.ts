@@ -27,8 +27,8 @@ describe('core e2e: e2ee direct share requires encryptedDataKey', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
       },
     });
 

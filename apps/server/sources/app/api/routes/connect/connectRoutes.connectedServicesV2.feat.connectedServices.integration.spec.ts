@@ -77,8 +77,8 @@ describe("connectRoutes (connected services v2) sealed credential endpoints (int
         await db.account.deleteMany().catch(() => {});
     });
 
-    it("does not register v2 connected service routes when HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED=0", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
+    it("does not register v2 connected service routes when PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED=0", async () => {
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
         const user = await db.account.create({ data: { publicKey: "pk-csv2-disabled" }, select: { id: true } });
 
         const app = createTestApp();
@@ -733,7 +733,7 @@ describe("connectRoutes (connected services v2) sealed credential endpoints (int
     });
 
     it("returns connect_oauth_timeout when token exchange times out", async () => {
-        harness.resetEnv({ HAPPIER_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "1000" });
+        harness.resetEnv({ PIGGERCODE_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "1000" });
         try {
             const user = await db.account.create({ data: { publicKey: "pk-csv2-oauth-timeout" }, select: { id: true } });
 

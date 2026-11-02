@@ -73,7 +73,7 @@ describe("storage/sqliteWalCheckpoint (integration)", () => {
         await Promise.all([reader.$connect(), checkpointer.$connect()]);
         await applySqliteRuntimePragmas(checkpointer, {
             ...process.env,
-            HAPPIER_SQLITE_BUSY_TIMEOUT_MS: "500",
+            PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: "500",
             HAPPY_SQLITE_BUSY_TIMEOUT_MS: "500",
         });
 

@@ -27,12 +27,12 @@ test('mysql managed infra keeps shared services without allocating or waiting fo
   const databaseUrl = 'mysql://operator:secret@db.example/happier';
   const envPath = join(baseDir, 'env');
   await writeFile(envPath, [
-    'HAPPIER_DB_PROVIDER=mysql',
+    'PIGGERCODE_DB_PROVIDER=mysql',
     `DATABASE_URL=${databaseUrl}`,
-    'HAPPIER_STACK_PG_PORT=45432',
-    'HAPPIER_STACK_PG_USER=stale-postgres-user',
-    'HAPPIER_STACK_PG_PASSWORD=stale-postgres-password',
-    'HAPPIER_STACK_PG_DATABASE=stale-postgres-database',
+    'PIGGERCODE_STACK_PG_PORT=45432',
+    'PIGGERCODE_STACK_PG_USER=stale-postgres-user',
+    'PIGGERCODE_STACK_PG_PASSWORD=stale-postgres-password',
+    'PIGGERCODE_STACK_PG_DATABASE=stale-postgres-database',
     '',
   ].join('\n'), 'utf8');
 
@@ -43,7 +43,7 @@ test('mysql managed infra keeps shared services without allocating or waiting fo
       serverPort: 30_05,
       publicServerUrl: 'http://127.0.0.1:3005',
       envPath,
-      env: { HAPPIER_DB_PROVIDER: 'mysql', DATABASE_URL: databaseUrl },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql', DATABASE_URL: databaseUrl },
       quiet: true,
       skipMinioInit: true,
     },
@@ -73,9 +73,9 @@ test('mysql managed infra keeps shared services without allocating or waiting fo
   assert.match(compose, /^  redis:/m);
   assert.match(compose, /^  minio:/m);
   assert.equal(parseEnvText(persistedEnv).DATABASE_URL, databaseUrl);
-  assert.doesNotMatch(persistedEnv, /^HAPPIER_STACK_PG_/m);
-  assert.doesNotMatch(persistedEnv, /^HAPPIER_STACK_REDIS_PORT=/m);
-  assert.match(persistedEnv, /^HAPPIER_STACK_HANDY_MASTER_SECRET_FILE=/m);
+  assert.doesNotMatch(persistedEnv, /^PIGGERCODE_STACK_PG_/m);
+  assert.doesNotMatch(persistedEnv, /^PIGGERCODE_STACK_REDIS_PORT=/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE=/m);
   assert.match(persistedEnv, /^S3_ACCESS_KEY=/m);
   assert.match(persistedEnv, /^S3_SECRET_KEY=/m);
   assert.match(persistedEnv, /^S3_BUCKET=/m);
@@ -88,12 +88,12 @@ test('external postgres authority keeps shared services without managing postgre
   const databaseUrl = 'postgresql://operator:secret@db.example/happier?sslmode=require';
   const envPath = join(baseDir, 'env');
   await writeFile(envPath, [
-    'HAPPIER_DB_PROVIDER=postgres',
+    'PIGGERCODE_DB_PROVIDER=postgres',
     `DATABASE_URL=${databaseUrl}`,
-    'HAPPIER_STACK_PG_PORT=45432',
-    'HAPPIER_STACK_PG_USER=stale-postgres-user',
-    'HAPPIER_STACK_PG_PASSWORD=stale-postgres-password',
-    'HAPPIER_STACK_PG_DATABASE=stale-postgres-database',
+    'PIGGERCODE_STACK_PG_PORT=45432',
+    'PIGGERCODE_STACK_PG_USER=stale-postgres-user',
+    'PIGGERCODE_STACK_PG_PASSWORD=stale-postgres-password',
+    'PIGGERCODE_STACK_PG_DATABASE=stale-postgres-database',
     '',
   ].join('\n'), 'utf8');
 
@@ -110,7 +110,7 @@ test('external postgres authority keeps shared services without managing postgre
       serverPort: 30_05,
       publicServerUrl: 'http://127.0.0.1:3005',
       envPath,
-      env: { HAPPIER_DB_PROVIDER: 'postgres', DATABASE_URL: databaseUrl },
+      env: { PIGGERCODE_DB_PROVIDER: 'postgres', DATABASE_URL: databaseUrl },
       quiet: true,
       skipMinioInit: true,
     },
@@ -140,9 +140,9 @@ test('external postgres authority keeps shared services without managing postgre
   assert.match(compose, /^  redis:/m);
   assert.match(compose, /^  minio:/m);
   assert.equal(parseEnvText(persistedEnv).DATABASE_URL, databaseUrl);
-  assert.doesNotMatch(persistedEnv, /^HAPPIER_STACK_PG_/m);
-  assert.doesNotMatch(persistedEnv, /^HAPPIER_STACK_REDIS_PORT=/m);
-  assert.match(persistedEnv, /^HAPPIER_STACK_HANDY_MASTER_SECRET_FILE=/m);
+  assert.doesNotMatch(persistedEnv, /^PIGGERCODE_STACK_PG_/m);
+  assert.doesNotMatch(persistedEnv, /^PIGGERCODE_STACK_REDIS_PORT=/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE=/m);
   assert.match(persistedEnv, /^S3_ACCESS_KEY=/m);
   assert.match(persistedEnv, /^S3_SECRET_KEY=/m);
   assert.match(persistedEnv, /^S3_BUCKET=/m);
@@ -154,10 +154,10 @@ test('postgres managed infra retains its service, readiness wait, and persisted 
 
   const envPath = join(baseDir, 'env');
   await writeFile(envPath, [
-    'HAPPIER_DB_PROVIDER=postgres',
-    'HAPPIER_STACK_PG_USER=postgres-user',
-    'HAPPIER_STACK_PG_PASSWORD=postgres-password',
-    'HAPPIER_STACK_PG_DATABASE=postgres-database',
+    'PIGGERCODE_DB_PROVIDER=postgres',
+    'PIGGERCODE_STACK_PG_USER=postgres-user',
+    'PIGGERCODE_STACK_PG_PASSWORD=postgres-password',
+    'PIGGERCODE_STACK_PG_DATABASE=postgres-database',
     '',
   ].join('\n'), 'utf8');
 
@@ -173,7 +173,7 @@ test('postgres managed infra retains its service, readiness wait, and persisted 
       serverPort: 30_05,
       publicServerUrl: 'http://127.0.0.1:3005',
       envPath,
-      env: { HAPPIER_DB_PROVIDER: 'postgres' },
+      env: { PIGGERCODE_DB_PROVIDER: 'postgres' },
       quiet: true,
       skipMinioInit: true,
     },
@@ -205,10 +205,10 @@ test('postgres managed infra retains its service, readiness wait, and persisted 
     result.env.DATABASE_URL,
     'postgresql://postgres-user:postgres-password@127.0.0.1:42000/postgres-database',
   );
-  assert.match(persistedEnv, /^HAPPIER_STACK_PG_PORT=42000$/m);
-  assert.match(persistedEnv, /^HAPPIER_STACK_PG_USER=postgres-user$/m);
-  assert.match(persistedEnv, /^HAPPIER_STACK_PG_PASSWORD=postgres-password$/m);
-  assert.match(persistedEnv, /^HAPPIER_STACK_PG_DATABASE=postgres-database$/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_PG_PORT=42000$/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_PG_USER=postgres-user$/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_PG_PASSWORD=postgres-password$/m);
+  assert.match(persistedEnv, /^PIGGERCODE_STACK_PG_DATABASE=postgres-database$/m);
 
   allocatedStarts.length = 0;
   dockerCalls.length = 0;
@@ -248,7 +248,7 @@ test('postgres managed infra retains its service, readiness wait, and persisted 
 
 test('applyServerMigrations delegates mysql to the canonical provider dispatcher', async () => {
   const calls = [];
-  const env = { DATABASE_URL: 'mysql://operator/db', HAPPIER_DB_PROVIDER: 'mysql' };
+  const env = { DATABASE_URL: 'mysql://operator/db', PIGGERCODE_DB_PROVIDER: 'mysql' };
   await applyServerMigrations(
     { serverDir: '/server', env, dbProvider: 'mysql', quiet: true },
     {
@@ -267,7 +267,7 @@ test('applyServerMigrations delegates mysql to the canonical provider dispatcher
 test('applyServerMigrations delegates postgres to the canonical provider dispatcher', async () => {
   const calls = [];
   await applyServerMigrations(
-    { serverDir: '/server', env: { HAPPIER_DB_PROVIDER: 'postgres' }, dbProvider: 'postgres' },
+    { serverDir: '/server', env: { PIGGERCODE_DB_PROVIDER: 'postgres' }, dbProvider: 'postgres' },
     {
       pmExecBinImpl: async (input) => calls.push(input),
     },
@@ -280,7 +280,7 @@ test('applyServerMigrations routes embedded providers through the canonical disp
   for (const dbProvider of ['sqlite', 'pglite']) {
     const calls = [];
     await applyServerMigrations(
-      { serverDir: '/server', env: { HAPPIER_DB_PROVIDER: dbProvider }, dbProvider },
+      { serverDir: '/server', env: { PIGGERCODE_DB_PROVIDER: dbProvider }, dbProvider },
       { pmExecBinImpl: async (input) => calls.push(input) },
     );
     assert.equal(calls.length, 1);

@@ -288,16 +288,16 @@ type BootstrapDeps = Readonly<{
 }>;
 
 function readAccountSettingsModeFromEnv(): 'auto' | 'never' {
-  const raw = typeof process.env.HAPPIER_ACCOUNT_SETTINGS_MODE === 'string'
-    ? process.env.HAPPIER_ACCOUNT_SETTINGS_MODE.trim().toLowerCase()
+  const raw = typeof process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE === 'string'
+    ? process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE.trim().toLowerCase()
     : '';
   if (raw === 'never') return 'never';
   return 'auto';
 }
 
 function readTtlMsFromEnvOrDefault(): number {
-  const raw = typeof process.env.HAPPIER_ACCOUNT_SETTINGS_TTL_MS === 'string'
-    ? process.env.HAPPIER_ACCOUNT_SETTINGS_TTL_MS.trim()
+  const raw = typeof process.env.PIGGERCODE_ACCOUNT_SETTINGS_TTL_MS === 'string'
+    ? process.env.PIGGERCODE_ACCOUNT_SETTINGS_TTL_MS.trim()
     : '';
   const parsed = raw ? Number(raw) : NaN;
   if (Number.isFinite(parsed) && parsed >= 0) return Math.floor(parsed);
@@ -328,7 +328,7 @@ export async function bootstrapAccountSettingsContext(params: Readonly<{
   mode?: AccountSettingsBootstrapMode;
   refresh?: AccountSettingsRefreshMode;
   /**
-   * When false, ignore `HAPPIER_ACCOUNT_SETTINGS_MODE` (defense-in-depth for
+   * When false, ignore `PIGGERCODE_ACCOUNT_SETTINGS_MODE` (defense-in-depth for
    * security-sensitive surfaces like external MCP, where the spawning client
    * may control process env).
    */

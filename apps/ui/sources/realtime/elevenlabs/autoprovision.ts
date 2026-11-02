@@ -8,11 +8,11 @@ import { listElevenLabsVoices } from './elevenLabsVoices';
 import { selectPreferredElevenLabsVoiceId } from './selectPreferredElevenLabsVoiceId';
 import { resolveUiVoicePromptStackBlocks } from '@/voice/agent/resolveUiVoicePromptStackBlocks';
 
-const HAPPIER_ELEVENLABS_AGENT_NAME = 'Happier Voice';
+const PIGGERCODE_ELEVENLABS_AGENT_NAME = 'Happier Voice';
 const DEFAULT_CLIENT_TOOL_RESPONSE_TIMEOUT_SECS = 60;
 const MAX_CLIENT_TOOL_RESPONSE_TIMEOUT_SECS = 120;
 const USER_INTERACTIVE_CLIENT_TOOL_RESPONSE_TIMEOUT_SECS = 120;
-const HAPPIER_ELEVENLABS_CLIENT_EVENTS = [
+const PIGGERCODE_ELEVENLABS_CLIENT_EVENTS = [
   'audio',
   'interruption',
   'agent_response',
@@ -94,7 +94,7 @@ function buildTtsConfig(input?: ElevenLabsTtsConfigInput | null): Record<string,
 
 function buildConversationRuntimeConfig(): Record<string, unknown> {
   return {
-    client_events: [...HAPPIER_ELEVENLABS_CLIENT_EVENTS],
+    client_events: [...PIGGERCODE_ELEVENLABS_CLIENT_EVENTS],
   };
 }
 
@@ -129,7 +129,7 @@ type ElevenLabsAgentSummary = Readonly<{
   Record<string, unknown>;
 
 async function listAgents(apiKey: string): Promise<ElevenLabsAgentSummary[]> {
-  const query = encodeURIComponent(HAPPIER_ELEVENLABS_AGENT_NAME);
+  const query = encodeURIComponent(PIGGERCODE_ELEVENLABS_AGENT_NAME);
   const json = await elevenLabsFetchJson({
     apiKey,
     path: `/convai/agents?search=${query}&page_size=50`,
@@ -146,7 +146,7 @@ export async function findExistingHappierElevenLabsAgents(params: { apiKey: stri
     const agentId = typeof agent?.agent_id === 'string' ? agent.agent_id.trim() : '';
     const name = typeof agent?.name === 'string' ? agent.name.trim() : '';
     if (!agentId || !name) continue;
-    if (name !== HAPPIER_ELEVENLABS_AGENT_NAME) continue;
+    if (name !== PIGGERCODE_ELEVENLABS_AGENT_NAME) continue;
     out.push({ agentId, name });
   }
   return out;
@@ -334,7 +334,7 @@ export async function createHappierElevenLabsAgent(params: { apiKey: string; tts
     init: {
       method: 'POST',
       body: JSON.stringify({
-        name: HAPPIER_ELEVENLABS_AGENT_NAME,
+        name: PIGGERCODE_ELEVENLABS_AGENT_NAME,
         conversation_config: {
           conversation: buildConversationRuntimeConfig(),
           turn: { turn_timeout: -1 },

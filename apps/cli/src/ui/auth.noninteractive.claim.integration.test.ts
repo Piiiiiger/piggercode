@@ -35,12 +35,12 @@ function parseAuthRequestBody(body: unknown): { publicKey: string; claimSecretHa
 
 describe('authAndSetupMachineIfNeeded (non-TTY) (status+claim)', () => {
   const envKeys = [
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_NO_BROWSER_OPEN',
-    'HAPPIER_AUTH_METHOD',
-    'HAPPIER_AUTH_POLL_INTERVAL_MS',
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_NO_BROWSER_OPEN',
+    'PIGGERCODE_AUTH_METHOD',
+    'PIGGERCODE_AUTH_POLL_INTERVAL_MS',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
   ] as const;
 
   let restoreTty: (() => void) | null = null;
@@ -52,12 +52,12 @@ describe('authAndSetupMachineIfNeeded (non-TTY) (status+claim)', () => {
     envScope = createEnvKeyScope(envKeys);
     homeDir = await createTempDir('happier-cli-auth-nontty-');
     envScope.patch({
-      HAPPIER_HOME_DIR: homeDir,
-      HAPPIER_NO_BROWSER_OPEN: '1',
-      HAPPIER_AUTH_METHOD: 'web',
-      HAPPIER_AUTH_POLL_INTERVAL_MS: '1',
-      HAPPIER_SERVER_URL: 'http://happier-auth.test',
-      HAPPIER_WEBAPP_URL: 'http://example.test',
+      PIGGERCODE_HOME_DIR: homeDir,
+      PIGGERCODE_NO_BROWSER_OPEN: '1',
+      PIGGERCODE_AUTH_METHOD: 'web',
+      PIGGERCODE_AUTH_POLL_INTERVAL_MS: '1',
+      PIGGERCODE_SERVER_URL: 'http://happier-auth.test',
+      PIGGERCODE_WEBAPP_URL: 'http://example.test',
     });
     restoreTty = setStdioTtyForTest({ stdin: false, stdout: false });
   });
@@ -124,7 +124,7 @@ describe('authAndSetupMachineIfNeeded (non-TTY) (status+claim)', () => {
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { authAndSetupMachineIfNeeded } = await import('./auth');
@@ -183,7 +183,7 @@ describe('authAndSetupMachineIfNeeded (non-TTY) (status+claim)', () => {
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { doAuth } = await import('./auth');
@@ -288,7 +288,7 @@ describe('authAndSetupMachineIfNeeded (non-TTY) (status+claim)', () => {
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({
       app,
-      origin: process.env.HAPPIER_SERVER_URL ?? '',
+      origin: process.env.PIGGERCODE_SERVER_URL ?? '',
     });
     vi.resetModules();
     const { authAndSetupMachineIfNeeded } = await import('./auth');

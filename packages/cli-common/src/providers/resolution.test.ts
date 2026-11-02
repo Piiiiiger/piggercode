@@ -13,7 +13,7 @@ import {
 describe('readBackendCliSourcePreference', () => {
   it('prefers target-keyed preferences from the env map', () => {
     expect(readBackendCliSourcePreference('codex', {
-      HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({
+      PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({
         'agent:codex': 'managed-first',
         codex: 'system-first',
       }),
@@ -22,7 +22,7 @@ describe('readBackendCliSourcePreference', () => {
 
   it('falls back to legacy id-keyed preferences when target-keyed entries are absent', () => {
     expect(readBackendCliSourcePreference('codex', {
-      HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({
+      PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({
         codex: 'managed-first',
       }),
     } as NodeJS.ProcessEnv)).toBe('managed-first');
@@ -64,7 +64,7 @@ describe('resolveProviderCliCommandCandidates', () => {
     const homeLauncher = join(root, '.pi', 'agent', 'bin', binaryName);
     const configuredLauncher = join(root, 'custom-agent', 'bin', binaryName);
     const pathLauncher = join(root, 'path-bin', binaryName);
-    const env = { HOME: root, USERPROFILE: root, PATH: '', HAPPIER_HOME_DIR: join(root, 'happier') };
+    const env = { HOME: root, USERPROFILE: root, PATH: '', PIGGERCODE_HOME_DIR: join(root, 'happier') };
     try {
       for (const candidate of [homeLauncher, configuredLauncher, pathLauncher]) {
         mkdirSync(dirname(candidate), { recursive: true });
@@ -79,8 +79,8 @@ describe('resolveProviderCliCommandCandidates', () => {
         { source: 'system', command: homeLauncher },
       ]);
       expect(resolveProviderCliCommand('pi', { processEnv: { ...configuredEnv, PATH: join(root, 'path-bin') } })).toEqual({ source: 'system', command: pathLauncher });
-      expect(resolveProviderCliCommand('pi', { processEnv: { ...configuredEnv, HAPPIER_PI_PATH: pathLauncher } })).toEqual({ source: 'override', command: pathLauncher });
-      expect(resolveProviderCliCommand('pi', { processEnv: { ...configuredEnv, HAPPIER_PI_PATH: join(root, 'missing') } })).toBeNull();
+      expect(resolveProviderCliCommand('pi', { processEnv: { ...configuredEnv, PIGGERCODE_PI_PATH: pathLauncher } })).toEqual({ source: 'override', command: pathLauncher });
+      expect(resolveProviderCliCommand('pi', { processEnv: { ...configuredEnv, PIGGERCODE_PI_PATH: join(root, 'missing') } })).toBeNull();
       if (process.platform === 'win32') rmSync(configuredLauncher);
       else chmodSync(configuredLauncher, 0o644);
       expect(resolveProviderCliCommand('pi', { processEnv: configuredEnv })).toEqual({ source: 'system', command: homeLauncher });
@@ -90,7 +90,7 @@ describe('resolveProviderCliCommandCandidates', () => {
       chmodSync(managedLauncher, 0o755);
       expect(resolveProviderCliCommand('pi', { processEnv: {
         ...env,
-        HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({ 'agent:pi': 'managed-first' }),
+        PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON: JSON.stringify({ 'agent:pi': 'managed-first' }),
       } })).toEqual({ source: 'managed', command: managedLauncher });
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -112,7 +112,7 @@ describe('resolveProviderCliCommandCandidates', () => {
         processEnv: { PATH: root, HOME: root },
       })).toEqual({ source: 'system', command: stable });
       expect(resolveProviderCliCommand('opencode', {
-        processEnv: { PATH: root, HOME: root, HAPPIER_OPENCODE_PATH: beta },
+        processEnv: { PATH: root, HOME: root, PIGGERCODE_OPENCODE_PATH: beta },
       })).toEqual({ source: 'override', command: beta });
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -180,7 +180,7 @@ describe('resolveProviderCliCommandCandidates', () => {
       writeFileSync(explicit, '#!/bin/sh\nexit 0\n', 'utf8');
       chmodSync(explicit, 0o755);
       expect(resolveProviderCliCommandCandidates('kimi', {
-        processEnv: { PATH: '', HOME: root, HAPPIER_KIMI_PATH: explicit },
+        processEnv: { PATH: '', HOME: root, PIGGERCODE_KIMI_PATH: explicit },
       })).toEqual([{ source: 'override', command: explicit }]);
     } finally {
       rmSync(root, { recursive: true, force: true });

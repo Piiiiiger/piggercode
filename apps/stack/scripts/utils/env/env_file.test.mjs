@@ -44,7 +44,7 @@ test('createEnvFileExclusive permits exactly one concurrent creator', async (t) 
 test('createEnvFileExclusive preserves an existing env byte-for-byte', async (t) => {
   const dir = await withTempRoot(t);
   const envPath = join(dir, 'env');
-  const existing = 'SENTINEL=preserve-me\nHAPPIER_STACK_RUNTIME_MODE=require\n';
+  const existing = 'SENTINEL=preserve-me\nPIGGERCODE_STACK_RUNTIME_MODE=require\n';
   await writeFile(envPath, existing, 'utf-8');
 
   assert.equal(await createEnvFileExclusive({ envPath, content: 'REPLACEMENT=forbidden\n' }), false);

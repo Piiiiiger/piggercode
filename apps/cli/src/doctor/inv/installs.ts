@@ -151,7 +151,7 @@ function resolveActiveInstallationId(
 }
 
 async function readActiveInvocation(installations: readonly HappierInstallation[]): Promise<HappierActiveInvocation | null> {
-  const envInvokedPath = String(process.env.HAPPIER_CLI_INVOKED_PATH ?? '').trim();
+  const envInvokedPath = String(process.env.PIGGERCODE_CLI_INVOKED_PATH ?? '').trim();
   const path = envInvokedPath || String(process.argv[1] ?? '').trim();
   if (!path) {
     return null;

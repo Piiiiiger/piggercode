@@ -12,7 +12,7 @@ type TranscriptWarmPaintRecord = Readonly<{
 
 type TranscriptWarmPaintStore = Map<string, TranscriptWarmPaintRecord>;
 
-const TRANSCRIPT_WARM_PAINT_CACHE_GLOBAL_KEY = '__HAPPIER_TRANSCRIPT_WARM_PAINT_CACHE__';
+const TRANSCRIPT_WARM_PAINT_CACHE_GLOBAL_KEY = '__PIGGERCODE_TRANSCRIPT_WARM_PAINT_CACHE__';
 /**
  * A record is four scalars and a session id, so the cap exists only to stop unbounded growth —
  * not to ration anything. At 16 it rationed: swiping through a session list evicted the very

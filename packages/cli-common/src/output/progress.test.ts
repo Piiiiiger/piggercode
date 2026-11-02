@@ -66,7 +66,7 @@ describe('createStepPrinter', () => {
     vi.useFakeTimers();
     writeSpy.mockImplementation(() => true);
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     withTerminal(80, () => {
       const printer = createStepPrinter({ enabled: true });
       printer.start('Installing');
@@ -85,7 +85,7 @@ describe('createStepPrinter', () => {
     vi.useFakeTimers();
     writeSpy.mockImplementation(() => true);
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     withTerminal(80, () => {
       const printer = createStepPrinter({ enabled: true });
       printer.start('Codex');
@@ -115,7 +115,7 @@ describe('createStepPrinter', () => {
     vi.useFakeTimers();
     writeSpy.mockImplementation(() => true);
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     withTerminal(80, () => {
       const printer = createStepPrinter({ appearance: 'planet' });
       printer.start('Waiting for authentication');
@@ -140,7 +140,7 @@ describe('createStepPrinter', () => {
     vi.useFakeTimers();
     writeSpy.mockImplementation(() => true);
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     vi.stubEnv('WT_SESSION', '');
     vi.stubEnv('TERM_PROGRAM', '');
     const platform = Object.getOwnPropertyDescriptor(process, 'platform')!;
@@ -164,7 +164,7 @@ describe('createStepPrinter', () => {
     vi.useFakeTimers();
     writeSpy.mockImplementation(() => true);
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
     withTerminal(80, () => {
       const printer = createStepPrinter({ appearance: 'planet' });
       printer.start('Waiting for authentication');
@@ -187,8 +187,8 @@ describe('createStepPrinter', () => {
     Object.defineProperty(process.stderr, 'isTTY', { configurable: true, value: true });
     Object.defineProperty(process.stdout, 'columns', { configurable: true, value: 80 });
     vi.stubEnv('TERM', 'xterm-256color');
-    vi.stubEnv('HAPPIER_NO_ANIMATION', '');
-    if (scenario === 'no-motion') vi.stubEnv('HAPPIER_NO_ANIMATION', '1');
+    vi.stubEnv('PIGGERCODE_NO_ANIMATION', '');
+    if (scenario === 'no-motion') vi.stubEnv('PIGGERCODE_NO_ANIMATION', '1');
     if (scenario === 'dumb') vi.stubEnv('TERM', 'dumb');
     try {
       if (scenario === 'spawn-error') {

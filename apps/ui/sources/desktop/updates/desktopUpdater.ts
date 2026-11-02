@@ -69,7 +69,7 @@ type UpdateMetadata = Readonly<{
 type DownloadProgressPayload = Readonly<{ version?: unknown; downloadedBytes?: unknown; totalBytes?: unknown }>;
 
 const DISMISS_KEY = 'desktop_update_dismissed_version';
-const UPDATE_CHECKS_ENABLED_ENV = 'EXPO_PUBLIC_HAPPIER_DESKTOP_UPDATES_ENABLED';
+const UPDATE_CHECKS_ENABLED_ENV = 'EXPO_PUBLIC_PIGGERCODE_DESKTOP_UPDATES_ENABLED';
 export const DESKTOP_UPDATE_DOWNLOAD_PROGRESS_EVENT = 'desktop_update_download_progress';
 
 const IDLE: DesktopUpdaterSnapshot = {

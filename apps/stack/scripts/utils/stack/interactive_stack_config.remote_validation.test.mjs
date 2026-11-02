@@ -42,9 +42,9 @@ test('interactiveEdit reprompts when createRemote input is invalid', async (t) =
     rl: mkRl([]),
     stackName: 'exp-edit-remote-validate',
     existingEnv: {
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-      HAPPIER_STACK_SERVER_PORT: '4101',
-      HAPPIER_STACK_STACK_REMOTE: 'origin',
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+      PIGGERCODE_STACK_SERVER_PORT: '4101',
+      PIGGERCODE_STACK_STACK_REMOTE: 'origin',
     },
     defaults: {},
     deps: createInteractiveStackConfigDeps({
@@ -71,9 +71,9 @@ test('interactiveEdit keeps current remote when prompt answer is empty', async (
     rl: mkRl([]),
     stackName: 'exp-edit-remote-default',
     existingEnv: {
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-      HAPPIER_STACK_SERVER_PORT: '4101',
-      HAPPIER_STACK_STACK_REMOTE: 'origin',
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+      PIGGERCODE_STACK_SERVER_PORT: '4101',
+      PIGGERCODE_STACK_STACK_REMOTE: 'origin',
     },
     defaults: {},
     deps: createInteractiveStackConfigDeps({

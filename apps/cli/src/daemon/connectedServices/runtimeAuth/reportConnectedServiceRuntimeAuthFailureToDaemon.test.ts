@@ -67,8 +67,8 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
       ok: true,
       result: { status: 'temporary_retry_armed' },
     }));
-    const previousGeneration = process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1;
-    process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-origin';
+    const previousGeneration = process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1;
+    process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-origin';
     try {
       await reportConnectedServiceRuntimeAuthFailureToDaemon({
         sessionId: 'session-generation-bound',
@@ -91,9 +91,9 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
       }), expect.anything());
     } finally {
       if (previousGeneration === undefined) {
-        delete process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1;
+        delete process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1;
       } else {
-        process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1 = previousGeneration;
+        process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1 = previousGeneration;
       }
       await removeTempDir(outboxDir);
     }
@@ -104,7 +104,7 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
       ok: true,
       result: { status: 'temporary_retry_armed' },
     }));
-    process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-old';
+    process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-old';
 
     await reportConnectedServiceRuntimeAuthFailureToDaemon({
       sessionId: 'session-generation-dedupe',
@@ -112,7 +112,7 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
       notify,
       nowMs: () => 1_000,
     });
-    process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-current';
+    process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1 = 'daemon-current';
     await reportConnectedServiceRuntimeAuthFailureToDaemon({
       sessionId: 'session-generation-dedupe',
       classification: classifiedFailure,
@@ -121,7 +121,7 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
     });
 
     expect(notify).toHaveBeenCalledOnce();
-    delete process.env.HAPPIER_DAEMON_EXECUTION_GENERATION_V1;
+    delete process.env.PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1;
   });
 
   it('does not fork durable report identity for a legacy generation field', async () => {

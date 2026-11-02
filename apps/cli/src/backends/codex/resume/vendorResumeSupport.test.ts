@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { supportsCodexVendorResume } from './vendorResumeSupport';
 
 const ENV_KEYS = [
-  'HAPPIER_EXPERIMENTAL_CODEX_ACP',
+  'PIGGERCODE_EXPERIMENTAL_CODEX_ACP',
 ] as const;
 
 type EnvKey = (typeof ENV_KEYS)[number];
@@ -11,7 +11,7 @@ type EnvSnapshot = Record<EnvKey, string | undefined>;
 
 function captureEnv(): EnvSnapshot {
   return {
-    HAPPIER_EXPERIMENTAL_CODEX_ACP: process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP,
+    PIGGERCODE_EXPERIMENTAL_CODEX_ACP: process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP,
   };
 }
 
@@ -29,7 +29,7 @@ describe('supportsCodexVendorResume', () => {
   beforeEach(() => {
     baseline = captureEnv();
     restoreEnv({
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: undefined,
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: undefined,
     });
   });
 
@@ -71,13 +71,13 @@ describe('supportsCodexVendorResume', () => {
     ).toBe(false);
   });
 
-  it('ignores HAPPIER_EXPERIMENTAL_CODEX_ACP env (capability is derived from spawn params)', () => {
-    process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = '1';
+  it('ignores PIGGERCODE_EXPERIMENTAL_CODEX_ACP env (capability is derived from spawn params)', () => {
+    process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = '1';
     expect(supportsCodexVendorResume({})).toBe(true);
   });
 
   it('does not allow when codexBackendMode is explicitly set to mcp', () => {
-    process.env.HAPPIER_EXPERIMENTAL_CODEX_ACP = '1';
+    process.env.PIGGERCODE_EXPERIMENTAL_CODEX_ACP = '1';
     expect(
       supportsCodexVendorResume({
         codexBackendMode: 'mcp',

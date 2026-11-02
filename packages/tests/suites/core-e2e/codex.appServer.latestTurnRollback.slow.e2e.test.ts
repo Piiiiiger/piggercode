@@ -456,7 +456,7 @@ describe('core e2e: Codex app-server latest-turn rollback', () => {
       runId: run.runId,
       testName: 'codex-app-server-steer-turn-boundary-rollback',
       cliEnvOverrides: {
-        HAPPIER_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '2500',
+        PIGGERCODE_E2E_FAKE_CODEX_APP_SERVER_TURN_DELAY_MS: '2500',
       },
     });
     const { auth, requestLogPath, secret, serverBaseUrl, sessionId } = harness;

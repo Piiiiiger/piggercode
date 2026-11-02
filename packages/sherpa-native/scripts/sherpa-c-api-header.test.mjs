@@ -23,7 +23,7 @@ function pinnedVersion(source, pattern, label) {
 
 test("Android vendored sherpa-onnx C API header is the verbatim upstream header of the pinned runtime", () => {
   const gradle = readFileSync(path.join(packageRoot, "android", "build.gradle"), "utf8");
-  const version = pinnedVersion(gradle, /HAPPIER_SHERPA_ONNX_VERSION"\)\s*\?:\s*"(v[\d.]+)"/, "android/build.gradle");
+  const version = pinnedVersion(gradle, /PIGGERCODE_SHERPA_ONNX_VERSION"\)\s*\?:\s*"(v[\d.]+)"/, "android/build.gradle");
   const expected = UPSTREAM_C_API_HEADER_SHA256[version];
   assert.ok(expected, `no upstream c-api.h checksum recorded for ${version}; vendor the upstream header and pin it`);
 
@@ -37,7 +37,7 @@ test("iOS and Android pin the same sherpa-onnx runtime version", () => {
   const gradle = readFileSync(path.join(packageRoot, "android", "build.gradle"), "utf8");
   const podspec = readFileSync(path.join(packageRoot, "ios", "HappierSherpaNative.podspec"), "utf8");
   assert.equal(
-    pinnedVersion(podspec, /HAPPIER_SHERPA_ONNX_VERSION'\]\s*\|\|\s*'(v[\d.]+)'/, "ios/HappierSherpaNative.podspec"),
-    pinnedVersion(gradle, /HAPPIER_SHERPA_ONNX_VERSION"\)\s*\?:\s*"(v[\d.]+)"/, "android/build.gradle"),
+    pinnedVersion(podspec, /PIGGERCODE_SHERPA_ONNX_VERSION'\]\s*\|\|\s*'(v[\d.]+)'/, "ios/HappierSherpaNative.podspec"),
+    pinnedVersion(gradle, /PIGGERCODE_SHERPA_ONNX_VERSION"\)\s*\?:\s*"(v[\d.]+)"/, "android/build.gradle"),
   );
 });

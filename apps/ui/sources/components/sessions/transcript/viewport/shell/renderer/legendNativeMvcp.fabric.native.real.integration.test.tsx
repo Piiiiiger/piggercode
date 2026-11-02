@@ -126,7 +126,7 @@ describe('shipped native Legend lane', () => {
             // every row. A `div` here would mean the web artifact resolved.
             hostTypes: ['Animated.View', 'ScrollView', 'View'],
             isNewArchitecture: true,
-            // Defaults to iOS; `HAPPIER_LEGEND_NATIVE_OS=android` reruns the whole lane as Android.
+            // Defaults to iOS; `PIGGERCODE_LEGEND_NATIVE_OS=android` reruns the whole lane as Android.
             // Not vacuous: the resolver rejects any value other than those two, and the guard above
             // independently fails the run if the library ever sees 'node' or 'web'.
             platformOS: resolveShippedNativeHarnessPlatform(),

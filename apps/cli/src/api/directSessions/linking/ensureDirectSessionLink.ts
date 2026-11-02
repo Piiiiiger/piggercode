@@ -484,7 +484,7 @@ function computeRemotePredecessorDirectSessionTag(params: Readonly<{
 }
 
 function resolveMaxScanPages(): number {
-  const maxPagesRaw = (process.env.HAPPIER_SESSION_ID_PREFIX_SCAN_MAX_PAGES ?? '').trim();
+  const maxPagesRaw = (process.env.PIGGERCODE_SESSION_ID_PREFIX_SCAN_MAX_PAGES ?? '').trim();
   const maxPagesParsed = maxPagesRaw ? Number.parseInt(maxPagesRaw, 10) : NaN;
   const maxPages = Number.isFinite(maxPagesParsed) && maxPagesParsed > 0 ? Math.min(50, maxPagesParsed) : 10;
   return Math.max(1, maxPages);

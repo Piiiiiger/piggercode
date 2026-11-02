@@ -3,12 +3,12 @@ import { networkInterfaces } from 'node:os';
 import { sanitizeDnsLabel } from '../net/dns.mjs';
 
 function resolveBindMode(env) {
-  const raw = (env.HAPPIER_STACK_BIND_MODE ?? '').toString().trim().toLowerCase();
+  const raw = (env.PIGGERCODE_STACK_BIND_MODE ?? '').toString().trim().toLowerCase();
   return raw === 'lan' ? 'lan' : raw === 'loopback' ? 'loopback' : '';
 }
 
 function resolveLocalhostSubdomainPrefix(env) {
-  const raw = (env.HAPPIER_STACK_LOCALHOST_SUBDOMAIN_PREFIX ?? '').toString().trim().toLowerCase();
+  const raw = (env.PIGGERCODE_STACK_LOCALHOST_SUBDOMAIN_PREFIX ?? '').toString().trim().toLowerCase();
   if (!raw) return 'happier';
   // Keep legacy compatibility (older installs used happy-<stack>.localhost).
   if (raw === 'happy') return 'happy';
@@ -17,7 +17,7 @@ function resolveLocalhostSubdomainPrefix(env) {
 }
 
 function detectLanHost({ env = process.env } = {}) {
-  const override = (env.HAPPIER_STACK_LAN_HOST ?? '').toString().trim();
+  const override = (env.PIGGERCODE_STACK_LAN_HOST ?? '').toString().trim();
   if (override) return override;
 
   const nets = networkInterfaces();
@@ -65,7 +65,7 @@ export async function preferStackLocalhostHost({ stackName = null, env = process
   //
   // Since this hostname is primarily used for browser-facing URLs and origin isolation, we
   // prefer a stable `<prefix>-<stack>.localhost` form by default and allow opting out via env.
-  const modeRaw = (env.HAPPIER_STACK_LOCALHOST_SUBDOMAINS ?? '')
+  const modeRaw = (env.PIGGERCODE_STACK_LOCALHOST_SUBDOMAINS ?? '')
     .toString()
     .trim()
     .toLowerCase();

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { withOptionalCliSharedDepsBuildLock } from './optionalWorkspaceBundleLock.mjs';
 
 export function resolveDistDir(argv = process.argv, env = process.env) {
-  const candidate = String(argv?.[2] ?? env?.HAPPIER_CLI_BUILD_OUTPUT_DIR ?? '').trim();
+  const candidate = String(argv?.[2] ?? env?.PIGGERCODE_CLI_BUILD_OUTPUT_DIR ?? '').trim();
   if (!candidate || candidate.startsWith('-')) return 'dist';
   if (isAbsolute(candidate)) return 'dist';
   const segments = candidate.split(/[\\/]+/g).filter(Boolean);

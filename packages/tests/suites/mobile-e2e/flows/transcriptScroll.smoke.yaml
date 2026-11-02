@@ -1,4 +1,4 @@
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 # Transcript scroll smoke (connected-machine lane).
 #
@@ -8,7 +8,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 # down and asserts the composer is still reachable.
 #
 # Requires the connected-machine harness (same as connectedMachine.smoke.yaml):
-#   HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
+#   PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE=cli-terminal-daemon \
 #     node scripts/run-maestro-with-heartbeat.mjs --platform ios \
 #     --flows suites/mobile-e2e/flows/transcriptScroll.smoke.yaml \
 #     --appId dev.happier.app.dev.internal

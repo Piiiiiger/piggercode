@@ -694,7 +694,7 @@ describe('initializeBackendRunSession', () => {
   })
 
   it('commits daemon-carried first input after real session creation and before daemon report', async () => {
-    vi.stubEnv('HAPPIER_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
+    vi.stubEnv('PIGGERCODE_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
       text: 'Commit me through Pending.',
       localId: 'spawn-first:stable-nonce',
       meta: { model: 'opus', profileId: 'profile-work' },
@@ -740,14 +740,14 @@ describe('initializeBackendRunSession', () => {
         requestedAction: { v: 1, kind: 'send_now' },
       })
       expect(events).toEqual(['pending-committed', 'daemon-report'])
-      expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
+      expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
     } finally {
       vi.unstubAllEnvs()
     }
   })
 
   it('defers daemon-carried first input until the provider input consumer is ready', async () => {
-    vi.stubEnv('HAPPIER_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
+    vi.stubEnv('PIGGERCODE_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
       text: 'Commit after runtime readiness.',
       localId: 'spawn-first:runtime-ready',
     }))
@@ -782,7 +782,7 @@ describe('initializeBackendRunSession', () => {
       )
 
       expect(enqueueSessionUserMessage).not.toHaveBeenCalled()
-      expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeDefined()
+      expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeDefined()
       const commit = result.commitPendingFirstInputAfterRuntimeReady
       expect(commit).toBeTypeOf('function')
       await Promise.all([commit!(), commit!()])
@@ -792,14 +792,14 @@ describe('initializeBackendRunSession', () => {
         meta: { source: 'ui', sentFrom: 'cli' },
         requestedAction: { v: 1, kind: 'send_now' },
       })
-      expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
+      expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
     } finally {
       vi.unstubAllEnvs()
     }
   })
 
   it('retains daemon-carried first input for retry when the Pending commit fails', async () => {
-    vi.stubEnv('HAPPIER_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
+    vi.stubEnv('PIGGERCODE_DAEMON_PENDING_FIRST_INPUT', JSON.stringify({
       text: 'Retry this exact turn.',
       localId: 'spawn-first:retry-stable',
     }))
@@ -832,13 +832,13 @@ describe('initializeBackendRunSession', () => {
 
     try {
       await expect(initializeBackendRunSession(options, deps)).rejects.toThrow('temporary Pending failure')
-      expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeDefined()
+      expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeDefined()
 
       await initializeBackendRunSession(options, deps)
 
       expect(enqueueSessionUserMessage).toHaveBeenCalledTimes(2)
       expect(enqueueSessionUserMessage.mock.calls[0]?.[0]).toEqual(enqueueSessionUserMessage.mock.calls[1]?.[0])
-      expect(process.env.HAPPIER_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
+      expect(process.env.PIGGERCODE_DAEMON_PENDING_FIRST_INPUT).toBeUndefined()
     } finally {
       vi.unstubAllEnvs()
     }

@@ -74,8 +74,8 @@ describe('sessionRunnerLock', () => {
   it('uses a hashed lock filename when sessionId is too long', async () => {
     const happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-session-runner-lock-'));
 
-    const old = process.env.HAPPIER_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS;
-    process.env.HAPPIER_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS = '10';
+    const old = process.env.PIGGERCODE_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS;
+    process.env.PIGGERCODE_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS = '10';
     try {
       const sessionId = 'sess_' + 'a'.repeat(100);
       const lockPath = sessionRunnerLockPathForSessionId({ happyHomeDir, sessionId });
@@ -84,9 +84,9 @@ describe('sessionRunnerLock', () => {
       expect(basename(lockPath)).toMatch(/^sha-[a-f0-9]{64}\.json$/);
     } finally {
       if (old === undefined) {
-        delete process.env.HAPPIER_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS;
+        delete process.env.PIGGERCODE_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS;
       } else {
-        process.env.HAPPIER_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS = old;
+        process.env.PIGGERCODE_SESSION_RUNNER_LOCK_MAX_BASENAME_CHARS = old;
       }
     }
   });

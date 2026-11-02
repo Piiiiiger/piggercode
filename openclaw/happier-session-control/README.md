@@ -22,5 +22,5 @@ Precedence (highest wins):
 
 `happierHomeDir` mapping:
 
-- If set, export `HAPPIER_HOME_DIR=<value>` for the `happier` process.
+- If set, export `PIGGERCODE_HOME_DIR=<value>` for the `happier` process.
 

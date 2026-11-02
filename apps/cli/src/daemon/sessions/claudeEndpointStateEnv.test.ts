@@ -17,7 +17,7 @@ import type { TerminalAttachmentInfo } from '@/terminal/attachment/terminalAttac
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import type { DaemonSessionMarker } from '../sessionRegistry';
 import {
-  HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+  PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
   type AttachmentBoundClaudeEndpointState,
 } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 import {
@@ -111,7 +111,7 @@ describe('claude endpoint recovery respawn options', () => {
     })).resolves.toEqual({
       ...defaultOptions,
       environmentVariables: {
-        [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(boundEndpointState),
+        [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(boundEndpointState),
       },
     });
   });
@@ -158,7 +158,7 @@ describe('claude endpoint recovery respawn options', () => {
     })).resolves.toEqual({
       ...defaultOptions,
       environmentVariables: {
-        [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(boundEndpointState),
+        [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(boundEndpointState),
       },
     });
   });
@@ -189,7 +189,7 @@ describe('claude endpoint recovery respawn options', () => {
       backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
       existingSessionId: 'sess-claude',
       environmentVariables: {
-        [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'stale-recovery-proof',
+        [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: 'stale-recovery-proof',
       },
     };
 
@@ -316,7 +316,7 @@ describe('claude endpoint recovery respawn options', () => {
       ...spawnOptions,
       environmentVariables: {
         EXISTING: '1',
-        [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(endpointState),
+        [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify(endpointState),
       },
     });
   });
@@ -361,7 +361,7 @@ describe('claude endpoint recovery respawn options', () => {
     })).resolves.toEqual({
       ...defaultOptions,
       environmentVariables: {
-        [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ ...endpointState, attachmentId: 'attachment-alive-existing' }),
+        [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: JSON.stringify({ ...endpointState, attachmentId: 'attachment-alive-existing' }),
       },
     });
 

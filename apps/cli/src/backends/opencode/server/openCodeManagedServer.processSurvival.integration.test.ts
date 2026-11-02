@@ -30,7 +30,7 @@ async function waitForPidToExit(pid: number, timeoutMs = 1_500): Promise<boolean
 
 describe('startManagedOpenCodeServer', () => {
   it('keeps the managed server alive when it writes to stdout after startup (no SIGPIPE)', async () => {
-    const prevCmd = process.env.HAPPIER_OPENCODE_PATH;
+    const prevCmd = process.env.PIGGERCODE_OPENCODE_PATH;
     const dir = await mkdtemp(join(tmpdir(), 'happier-opencode-managed-'));
     const scriptPath = join(dir, 'fake-opencode');
     try {
@@ -76,7 +76,7 @@ process.on('SIGINT', shutdown);
         'utf8',
       );
       await chmod(scriptPath, 0o755);
-      process.env.HAPPIER_OPENCODE_PATH = scriptPath;
+      process.env.PIGGERCODE_OPENCODE_PATH = scriptPath;
 
       const logsDir = join(dir, 'logs');
       const started = await startManagedOpenCodeServer({ timeoutMs: 5_000, logsDir });
@@ -97,15 +97,15 @@ process.on('SIGINT', shutdown);
       await new Promise((r) => setTimeout(r, 250));
       expect(isPidAlive(started.pid)).toBe(false);
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_OPENCODE_PATH;
-      else process.env.HAPPIER_OPENCODE_PATH = prevCmd;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_OPENCODE_PATH;
+      else process.env.PIGGERCODE_OPENCODE_PATH = prevCmd;
       await rm(dir, { recursive: true, force: true });
     }
   });
 
   it('escalates to SIGKILL when the managed server ignores SIGTERM', async () => {
-    const prevCmd = process.env.HAPPIER_OPENCODE_PATH;
-    const prevGrace = process.env.HAPPIER_OPENCODE_SERVER_STOP_GRACE_MS;
+    const prevCmd = process.env.PIGGERCODE_OPENCODE_PATH;
+    const prevGrace = process.env.PIGGERCODE_OPENCODE_SERVER_STOP_GRACE_MS;
     const dir = await mkdtemp(join(tmpdir(), 'happier-opencode-managed-ignore-term-'));
     const scriptPath = join(dir, 'fake-opencode');
     try {
@@ -139,8 +139,8 @@ process.on('SIGINT', () => {});
         'utf8',
       );
       await chmod(scriptPath, 0o755);
-      process.env.HAPPIER_OPENCODE_PATH = scriptPath;
-      process.env.HAPPIER_OPENCODE_SERVER_STOP_GRACE_MS = '50';
+      process.env.PIGGERCODE_OPENCODE_PATH = scriptPath;
+      process.env.PIGGERCODE_OPENCODE_SERVER_STOP_GRACE_MS = '50';
 
       const started = await startManagedOpenCodeServer({ timeoutMs: 5_000, logsDir: join(dir, 'logs') });
       expect(isPidAlive(started.pid)).toBe(true);
@@ -149,16 +149,16 @@ process.on('SIGINT', () => {});
 
       expect(isPidAlive(started.pid)).toBe(false);
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_OPENCODE_PATH;
-      else process.env.HAPPIER_OPENCODE_PATH = prevCmd;
-      if (prevGrace === undefined) delete process.env.HAPPIER_OPENCODE_SERVER_STOP_GRACE_MS;
-      else process.env.HAPPIER_OPENCODE_SERVER_STOP_GRACE_MS = prevGrace;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_OPENCODE_PATH;
+      else process.env.PIGGERCODE_OPENCODE_PATH = prevCmd;
+      if (prevGrace === undefined) delete process.env.PIGGERCODE_OPENCODE_SERVER_STOP_GRACE_MS;
+      else process.env.PIGGERCODE_OPENCODE_SERVER_STOP_GRACE_MS = prevGrace;
       await rm(dir, { recursive: true, force: true });
     }
   });
 
   it('tears down the child when onSpawned fails after spawn', async () => {
-    const prevCmd = process.env.HAPPIER_OPENCODE_PATH;
+    const prevCmd = process.env.PIGGERCODE_OPENCODE_PATH;
     const dir = await mkdtemp(join(tmpdir(), 'happier-opencode-managed-onspawned-fail-'));
     const scriptPath = join(dir, 'fake-opencode');
     try {
@@ -196,7 +196,7 @@ setInterval(() => {}, 1000).unref?.();
         'utf8',
       );
       await chmod(scriptPath, 0o755);
-      process.env.HAPPIER_OPENCODE_PATH = scriptPath;
+      process.env.PIGGERCODE_OPENCODE_PATH = scriptPath;
 
       let spawnedPid = -1;
       await expect(startManagedOpenCodeServer({
@@ -222,8 +222,8 @@ setInterval(() => {}, 1000).unref?.();
       }
       expect(exited).toBe(true);
     } finally {
-      if (prevCmd === undefined) delete process.env.HAPPIER_OPENCODE_PATH;
-      else process.env.HAPPIER_OPENCODE_PATH = prevCmd;
+      if (prevCmd === undefined) delete process.env.PIGGERCODE_OPENCODE_PATH;
+      else process.env.PIGGERCODE_OPENCODE_PATH = prevCmd;
       await rm(dir, { recursive: true, force: true });
     }
   });

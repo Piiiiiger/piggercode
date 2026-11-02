@@ -93,7 +93,7 @@ function killProcessTree(child, signal = 'SIGTERM') {
 }
 
 function wantsWaitForExpo(env = process.env) {
-  const raw = String(env?.HAPPIER_STACK_TAURI_WAIT_FOR_EXPO ?? '').trim();
+  const raw = String(env?.PIGGERCODE_STACK_TAURI_WAIT_FOR_EXPO ?? '').trim();
   if (raw) return raw !== '0';
   return true;
 }
@@ -146,9 +146,9 @@ export function createTauriMcpQaExitTracker() {
 }
 
 export async function resolveTauriMcpQaPlan({ env = process.env } = {}) {
-  const stackName = String(env.HAPPIER_STACK_STACK ?? '').trim();
+  const stackName = String(env.PIGGERCODE_STACK_STACK ?? '').trim();
   const runtimeState = stackName ? await readStackRuntimeStateFile(getStackRuntimeStatePath(stackName)) : null;
-  const defaultPort = Number(env.HAPPIER_STACK_TAURI_DEV_PORT ?? 8081);
+  const defaultPort = Number(env.PIGGERCODE_STACK_TAURI_DEV_PORT ?? 8081);
   const devUrl = resolveStackTauriDevUrl({ runtimeState, defaultPort });
   const baseConfig = await readJsonFile(join(packageRoot, 'src-tauri', 'tauri.conf.json'));
   const overlayConfig = await readJsonFile(join(packageRoot, 'src-tauri', 'tauri.publicdev.conf.json'));
@@ -221,7 +221,7 @@ async function main(argv = process.argv.slice(2)) {
   }
 
   if (wantsWaitForExpo(process.env)) {
-    const defaultPort = Number(process.env.HAPPIER_STACK_TAURI_DEV_PORT ?? 8081);
+    const defaultPort = Number(process.env.PIGGERCODE_STACK_TAURI_DEV_PORT ?? 8081);
     const fallbackPort = Number.isFinite(defaultPort) && defaultPort > 0 ? defaultPort : 8081;
     const expoPort = parsePortFromUrl(plan.devUrl, fallbackPort);
     const metro = await waitForExpoMetroRunning({ port: expoPort, env: process.env });

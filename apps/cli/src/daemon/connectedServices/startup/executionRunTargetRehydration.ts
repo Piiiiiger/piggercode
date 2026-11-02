@@ -1,7 +1,7 @@
 import type { CatalogAgentId } from '@/backends/types';
 import { ExecutionRunRetentionPolicySchema, type ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import type { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { ExecutionRunConnectedServicesLaunchV1Schema } from '../runsBridge/contract';
 
 type CandidateMarker = Readonly<{
@@ -82,7 +82,7 @@ export async function rehydrateLiveExecutionRunRuntimeTargets(input: Readonly<{
       sessionId: marker.happySessionId,
       connectedServicesBindingsRaw: launch.connectedServicesBindings,
       connectedServiceSelectionsEnv: launch.connectedServiceSelectionsJson
-        ? { [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: launch.connectedServiceSelectionsJson }
+        ? { [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: launch.connectedServiceSelectionsJson }
         : null,
       materializationKey: launch.runKey,
       ...(launch.brokerSelectionIdentity ? { brokerSelectionIdentity: launch.brokerSelectionIdentity } : {}),

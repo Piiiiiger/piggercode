@@ -65,11 +65,11 @@ test('stopExpoProcessTree surfaces a certified Windows listener that survives TE
 
 test('resolveExpoDevHost defaults to lan and normalizes values', () => {
   assert.equal(resolveExpoDevHost({ env: {} }), 'lan');
-  assert.equal(resolveExpoDevHost({ env: { HAPPIER_STACK_EXPO_HOST: 'LAN' } }), 'lan');
-  assert.equal(resolveExpoDevHost({ env: { HAPPIER_STACK_EXPO_HOST: '  TuNnEl  ' } }), 'tunnel');
-  assert.equal(resolveExpoDevHost({ env: { HAPPIER_STACK_EXPO_HOST: 'localhost' } }), 'localhost');
-  assert.equal(resolveExpoDevHost({ env: { HAPPIER_STACK_EXPO_HOST: 'tunnel' } }), 'tunnel');
-  assert.equal(resolveExpoDevHost({ env: { HAPPIER_STACK_EXPO_HOST: 'nope' } }), 'lan');
+  assert.equal(resolveExpoDevHost({ env: { PIGGERCODE_STACK_EXPO_HOST: 'LAN' } }), 'lan');
+  assert.equal(resolveExpoDevHost({ env: { PIGGERCODE_STACK_EXPO_HOST: '  TuNnEl  ' } }), 'tunnel');
+  assert.equal(resolveExpoDevHost({ env: { PIGGERCODE_STACK_EXPO_HOST: 'localhost' } }), 'localhost');
+  assert.equal(resolveExpoDevHost({ env: { PIGGERCODE_STACK_EXPO_HOST: 'tunnel' } }), 'tunnel');
+  assert.equal(resolveExpoDevHost({ env: { PIGGERCODE_STACK_EXPO_HOST: 'nope' } }), 'lan');
 });
 
 test('buildExpoDevEnv enables Expo Router web modal support', () => {

@@ -39,7 +39,7 @@ describe('buildTiptapWebViewHtml (bundle present)', () => {
     it('inlines the generated bundle JS and the ProseMirror CSS', async () => {
         vi.resetModules();
         vi.doMock('../tiptapWebViewBundle.generated', () => ({
-            TIPTAP_WEBVIEW_BUNDLE_JS: '/* bundled-tiptap */ globalThis.HAPPIER_TIPTAP_WEBVIEW = { createRuntime() {} };',
+            TIPTAP_WEBVIEW_BUNDLE_JS: '/* bundled-tiptap */ globalThis.PIGGERCODE_TIPTAP_WEBVIEW = { createRuntime() {} };',
             TIPTAP_WEBVIEW_CSS: '.ProseMirror { color: red; }',
         }));
 
@@ -53,7 +53,7 @@ describe('buildTiptapWebViewHtml (bundle present)', () => {
     it('never references a CDN (no CDN fallback, D9)', async () => {
         vi.resetModules();
         vi.doMock('../tiptapWebViewBundle.generated', () => ({
-            TIPTAP_WEBVIEW_BUNDLE_JS: '/* bundled-tiptap */ globalThis.HAPPIER_TIPTAP_WEBVIEW = {};',
+            TIPTAP_WEBVIEW_BUNDLE_JS: '/* bundled-tiptap */ globalThis.PIGGERCODE_TIPTAP_WEBVIEW = {};',
             TIPTAP_WEBVIEW_CSS: '',
         }));
 
@@ -76,7 +76,7 @@ describe('buildTiptapWebViewHtml (bundle present)', () => {
         const html = buildTiptapWebViewHtml({ theme: createTiptapWebViewTheme(), ...BASE_PARAMS });
 
         expect(html).toContain('const HAS_BUNDLE = true;');
-        expect(html).toContain('HAPPIER_TIPTAP_WEBVIEW');
+        expect(html).toContain('PIGGERCODE_TIPTAP_WEBVIEW');
     });
 
     it('emits an error envelope path so a missing runtime still fails closed', async () => {

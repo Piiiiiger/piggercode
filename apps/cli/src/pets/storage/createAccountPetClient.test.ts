@@ -3,26 +3,26 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { reloadConfiguration } from '@/configuration';
 
 const originalEnv = {
-  HAPPIER_PUBLIC_SERVER_URL: process.env.HAPPIER_PUBLIC_SERVER_URL,
-  HAPPIER_SERVER_URL: process.env.HAPPIER_SERVER_URL,
-  HAPPIER_LOCAL_SERVER_URL: process.env.HAPPIER_LOCAL_SERVER_URL,
+  PIGGERCODE_PUBLIC_SERVER_URL: process.env.PIGGERCODE_PUBLIC_SERVER_URL,
+  PIGGERCODE_SERVER_URL: process.env.PIGGERCODE_SERVER_URL,
+  PIGGERCODE_LOCAL_SERVER_URL: process.env.PIGGERCODE_LOCAL_SERVER_URL,
 };
 
 afterEach(() => {
-  if (originalEnv.HAPPIER_PUBLIC_SERVER_URL === undefined) {
-    delete process.env.HAPPIER_PUBLIC_SERVER_URL;
+  if (originalEnv.PIGGERCODE_PUBLIC_SERVER_URL === undefined) {
+    delete process.env.PIGGERCODE_PUBLIC_SERVER_URL;
   } else {
-    process.env.HAPPIER_PUBLIC_SERVER_URL = originalEnv.HAPPIER_PUBLIC_SERVER_URL;
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = originalEnv.PIGGERCODE_PUBLIC_SERVER_URL;
   }
-  if (originalEnv.HAPPIER_SERVER_URL === undefined) {
-    delete process.env.HAPPIER_SERVER_URL;
+  if (originalEnv.PIGGERCODE_SERVER_URL === undefined) {
+    delete process.env.PIGGERCODE_SERVER_URL;
   } else {
-    process.env.HAPPIER_SERVER_URL = originalEnv.HAPPIER_SERVER_URL;
+    process.env.PIGGERCODE_SERVER_URL = originalEnv.PIGGERCODE_SERVER_URL;
   }
-  if (originalEnv.HAPPIER_LOCAL_SERVER_URL === undefined) {
-    delete process.env.HAPPIER_LOCAL_SERVER_URL;
+  if (originalEnv.PIGGERCODE_LOCAL_SERVER_URL === undefined) {
+    delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
   } else {
-    process.env.HAPPIER_LOCAL_SERVER_URL = originalEnv.HAPPIER_LOCAL_SERVER_URL;
+    process.env.PIGGERCODE_LOCAL_SERVER_URL = originalEnv.PIGGERCODE_LOCAL_SERVER_URL;
   }
   reloadConfiguration();
 });
@@ -98,9 +98,9 @@ describe('createAccountPetViaActiveServer', () => {
   });
 
   it('defaults account pet uploads to the configured api server URL', async () => {
-    process.env.HAPPIER_PUBLIC_SERVER_URL = 'https://app.example.test';
-    process.env.HAPPIER_SERVER_URL = 'https://api.example.test';
-    delete process.env.HAPPIER_LOCAL_SERVER_URL;
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = 'https://app.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
+    delete process.env.PIGGERCODE_LOCAL_SERVER_URL;
     reloadConfiguration();
 
     const requests: Array<Readonly<{ url: string; init: RequestInit }>> = [];

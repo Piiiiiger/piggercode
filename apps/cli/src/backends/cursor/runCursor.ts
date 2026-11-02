@@ -15,14 +15,14 @@ function buildCursorRuntimeEnv(params: Readonly<{
   const env: NodeJS.ProcessEnv = {};
   const cursorBinaryPath = typeof params.cursorBinaryPath === 'string' ? params.cursorBinaryPath.trim() : '';
   if (cursorBinaryPath) {
-    env.HAPPIER_CURSOR_PATH = cursorBinaryPath;
+    env.PIGGERCODE_CURSOR_PATH = cursorBinaryPath;
   }
   if (params.cursorAgentFallbackEnabled === false) {
-    env.HAPPIER_CURSOR_AGENT_FALLBACK_ENABLED = '0';
+    env.PIGGERCODE_CURSOR_AGENT_FALLBACK_ENABLED = '0';
   }
   const cursorApiEndpoint = typeof params.cursorApiEndpoint === 'string' ? params.cursorApiEndpoint.trim() : '';
   if (cursorApiEndpoint) {
-    env.HAPPIER_CURSOR_API_ENDPOINT = cursorApiEndpoint;
+    env.PIGGERCODE_CURSOR_API_ENDPOINT = cursorApiEndpoint;
   }
   return Object.keys(env).length > 0 ? env : undefined;
 }

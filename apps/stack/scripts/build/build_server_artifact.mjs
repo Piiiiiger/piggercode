@@ -22,7 +22,7 @@ export async function buildServerArtifact({
   }
 
   const target = resolveCurrentBinaryTarget({ availableTargets: SERVER_BINARY_TARGETS });
-  const externals = String(process.env.HAPPIER_SERVER_BUN_EXTERNALS ?? 'redis')
+  const externals = String(process.env.PIGGERCODE_SERVER_BUN_EXTERNALS ?? 'redis')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean);

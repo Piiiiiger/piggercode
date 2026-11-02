@@ -92,7 +92,7 @@ async function main() {
     }
 
     const childEnv = { ...process.env };
-    if (withUiWeb && !String(process.env.HAPPIER_SERVER_UI_DIR ?? '').trim() && uiWebTag) {
+    if (withUiWeb && !String(process.env.PIGGERCODE_SERVER_UI_DIR ?? '').trim() && uiWebTag) {
       const uiRelease = await fetchGitHubReleaseByTag({
         githubRepo,
         tag: uiWebTag,
@@ -130,14 +130,14 @@ async function main() {
         fail(`Extracted ui web bundle not found at ${uiIndex}`);
       }
 
-      childEnv.HAPPIER_SERVER_UI_DIR = uiDir;
-    } else if (withUiWeb && !String(process.env.HAPPIER_SERVER_UI_DIR ?? '').trim()) {
+      childEnv.PIGGERCODE_SERVER_UI_DIR = uiDir;
+    } else if (withUiWeb && !String(process.env.PIGGERCODE_SERVER_UI_DIR ?? '').trim()) {
       const embeddedUiDir = join(serverDir, 'ui-web', 'current');
       const embeddedUiIndex = join(embeddedUiDir, 'index.html');
       if (!(await pathExists(embeddedUiIndex))) {
         fail(`Embedded ui web bundle not found at ${embeddedUiIndex}`);
       }
-      childEnv.HAPPIER_SERVER_UI_DIR = embeddedUiDir;
+      childEnv.PIGGERCODE_SERVER_UI_DIR = embeddedUiDir;
     }
 
     const child = spawn(serverBin, positionals, { stdio: 'inherit', env: childEnv });

@@ -11,10 +11,10 @@ import { runCliCommandBestEffort } from './shared';
 
 const envKeys = [
   'PATH',
-  'HAPPIER_PNPM_BIN',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_PNPM_BIN',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
 ] as const;
 
 describe('runCliCommandBestEffort', () => {
@@ -41,7 +41,7 @@ describe('runCliCommandBestEffort', () => {
     await chmod(scriptPath, 0o755);
 
     envScope.patch({ PATH: '' });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const result = await runCliCommandBestEffort({
       resolvedPath: scriptPath,
@@ -67,7 +67,7 @@ describe('runCliCommandBestEffort', () => {
     await chmod(scriptPath, 0o755);
 
     envScope.patch({ PATH: '' });
-    process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+    process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
     const result = await runCliCommandBestEffort({
       resolvedPath: scriptPath,
@@ -95,11 +95,11 @@ describe('runCliCommandBestEffort', () => {
 
       envScope.patch({
         PATH: '',
-        HAPPIER_JS_RUNTIME_PATH: undefined,
-        HAPPIER_MANAGED_NODE_BIN: undefined,
-        HAPPIER_NODE_PATH: undefined,
+        PIGGERCODE_JS_RUNTIME_PATH: undefined,
+        PIGGERCODE_MANAGED_NODE_BIN: undefined,
+        PIGGERCODE_NODE_PATH: undefined,
       });
-      process.env.HAPPIER_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
+      process.env.PIGGERCODE_PNPM_BIN = await writePnpmNodeBridge({ dir, pathLookup: systemPath });
 
       const result = await runCliCommandBestEffort({
         resolvedPath: scriptPath,

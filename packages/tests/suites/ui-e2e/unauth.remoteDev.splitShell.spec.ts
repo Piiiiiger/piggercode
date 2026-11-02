@@ -24,7 +24,7 @@ test.describe('ui e2e: remote-dev unauth split shell', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: '',
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}-unauth-remote-dev`,
-        HAPPIER_E2E_UI_WEB_MODE: 'metro',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
     };
 
     async function gotoApp(
@@ -49,7 +49,7 @@ test.describe('ui e2e: remote-dev unauth split shell', () => {
             dbProvider: 'sqlite',
             extraEnv: {
                 AUTH_ANONYMOUS_SIGNUP_ENABLED: '1',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 

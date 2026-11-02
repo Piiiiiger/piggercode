@@ -5,9 +5,9 @@
 # visible copy to connect to Metro.
 #
 # Preconditions:
-# - `${HAPPIER_E2E_DEV_CLIENT_METRO_URL}` is set (passed via Maestro `-e`).
+# - `${PIGGERCODE_E2E_DEV_CLIENT_METRO_URL}` is set (passed via Maestro `-e`).
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     file: dismissAndroidSystemNotRespondingDialogMaybe.yaml

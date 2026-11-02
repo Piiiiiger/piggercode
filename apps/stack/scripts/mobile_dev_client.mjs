@@ -64,7 +64,7 @@ async function main() {
         `- Installs a dedicated ${cyan('hstack Dev')} Expo dev-client app on your phone.`,
         `- ${cyan('--profile=publicdev')} installs the public dev app identity (${cyan('happier-dev')}).`,
         `- This app is intended to be ${cyan('reused across stacks')} (no per-stack installs).`,
-        `- If you install with a custom ${cyan('--scheme')}, set ${cyan('HAPPIER_STACK_DEV_CLIENT_SCHEME')} to the same value so QR links open the right app.`,
+        `- If you install with a custom ${cyan('--scheme')}, set ${cyan('PIGGERCODE_STACK_DEV_CLIENT_SCHEME')} to the same value so QR links open the right app.`,
         `- iOS requires ${yellow('Xcode')} + ${yellow('CocoaPods')} (macOS).`,
       ].join('\n'),
     });

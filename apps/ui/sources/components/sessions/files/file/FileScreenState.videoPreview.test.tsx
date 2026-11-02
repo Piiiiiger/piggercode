@@ -119,7 +119,7 @@ describe('session video file preview', () => {
     afterEach(() => { standardCleanup(); vi.clearAllMocks(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
     it.each(['video/mp4', 'image/png'])('rejects %s before reading encrypted chunks when the web buffering budget is exceeded', async mimeType => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES', '2');
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES', '2');
         const { createSessionFilePreviewSource } = await import('@/sync/domains/sessionFilePreviews/createSessionFilePreviewSource');
         const result = await createSessionFilePreviewSource({ sessionId: 's1', filePath: 'demo.mp4', mimeType, maxBytes: mimeType === 'video/mp4' ? null : 100 });
         expect(result).toEqual({ ok: false, error: 'File exceeds preview size limit' });
@@ -128,7 +128,7 @@ describe('session video file preview', () => {
     });
 
     it('plays a web video exactly at the existing configured buffering budget', async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES', '3');
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES', '3');
         const { createSessionFilePreviewSource } = await import('@/sync/domains/sessionFilePreviews/createSessionFilePreviewSource');
         const result = await createSessionFilePreviewSource({ sessionId: 's1', filePath: 'demo.mp4', mimeType: 'video/mp4', maxBytes: null });
         expect(result).toMatchObject({ ok: true, source: { uri: 'blob:video-preview', sizeBytes: 3 } });
@@ -137,7 +137,7 @@ describe('session video file preview', () => {
     });
 
     it('keeps native file-backed video admission independent of the web buffering budget', async () => {
-        vi.stubEnv('EXPO_PUBLIC_HAPPIER_FILES_DOWNLOAD_MAX_BYTES', '2');
+        vi.stubEnv('EXPO_PUBLIC_PIGGERCODE_FILES_DOWNLOAD_MAX_BYTES', '2');
         Object.defineProperty(Platform, 'OS', { value: 'android', configurable: true });
         const { createSessionFilePreviewSource } = await import('@/sync/domains/sessionFilePreviews/createSessionFilePreviewSource');
         const result = await createSessionFilePreviewSource({ sessionId: 's1', filePath: 'demo.mp4', mimeType: 'video/mp4', maxBytes: null });

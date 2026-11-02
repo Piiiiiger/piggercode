@@ -46,7 +46,7 @@ export async function cmdSrv({ rootDir, stackName, args }) {
 export async function cmdWt({ rootDir, stackName, args }) {
   // Forward to scripts/worktrees.mjs under the stack env.
   // This makes `hstack stack wt <name> -- ...` behave exactly like `hstack wt ...`,
-  // but read/write the stack env file (HAPPIER_STACK_ENV_FILE) instead of repo env.local.
+  // but read/write the stack env file (PIGGERCODE_STACK_ENV_FILE) instead of repo env.local.
   let forwarded = args[0] === '--' ? args.slice(1) : args;
 
   // Stack users usually want to see what *this stack* is using (active checkout),

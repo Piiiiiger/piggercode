@@ -40,8 +40,8 @@ test('selectExpoDevMetroPort retries transient inconclusive stable-pin observati
   let nowMs = 0;
   const selected = await selectExpoDevMetroPort({
     env: {
-      HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-      HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+      PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
     },
     stackMode: true,
     stackName: 'stable-test',
@@ -66,7 +66,7 @@ test('selectExpoDevMetroPort retries one stable scan candidate instead of drifti
   let nowMs = 0;
   const selected = await selectExpoDevMetroPort({
     env: {
-      HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+      PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
     },
     stackMode: true,
     stackName: 'stable-scan-test',
@@ -93,8 +93,8 @@ test('selectExpoDevMetroPort fails closed after bounded retries of an inconclusi
   await assert.rejects(
     () => selectExpoDevMetroPort({
       env: {
-        HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
       },
       stackMode: true,
       stackName: 'stable-test',
@@ -118,8 +118,8 @@ test('selectExpoDevMetroPort does not retry non-transient unsupported stable-pin
   await assert.rejects(
     () => selectExpoDevMetroPort({
       env: {
-        HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
       },
       stackMode: true,
       stackName: 'stable-test',
@@ -142,8 +142,8 @@ test('selectExpoDevMetroPort never replaces a reserved stable pin', async () => 
   await assert.rejects(
     () => selectExpoDevMetroPort({
       env: {
-        HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-        HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
+        PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+        PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'stable',
       },
       stackMode: true,
       stackName: 'stable-test',
@@ -157,7 +157,7 @@ test('selectExpoDevMetroPort never replaces a reserved stable pin', async () => 
 test('selectExpoDevMetroPort uses the supplied environment for listener discovery', async () => {
   const env = {
     PATH: '/fixture/bin',
-    HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+    PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
   };
   const selected = await selectExpoDevMetroPort({
     env,
@@ -198,8 +198,8 @@ test('selectExpoDevMetroPort permits bind-only fallback only for ephemeral scan 
   const calls = [];
   const selected = await selectExpoDevMetroPort({
     env: {
-      HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-      HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+      PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
     },
     stackMode: true,
     stackName: 'windows-ephemeral-test',
@@ -217,8 +217,8 @@ test('selectExpoDevMetroPort falls back without pinning when ephemeral preferenc
   const observed = [];
   const selected = await selectExpoDevMetroPort({
     env: {
-      HAPPIER_STACK_EXPO_DEV_PORT: '45678',
-      HAPPIER_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
+      PIGGERCODE_STACK_EXPO_DEV_PORT: '45678',
+      PIGGERCODE_STACK_EXPO_DEV_PORT_STRATEGY: 'ephemeral',
     },
     stackMode: true,
     stackName: 'ephemeral-test',

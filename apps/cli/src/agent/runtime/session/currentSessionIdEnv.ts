@@ -1,6 +1,6 @@
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
 
-export const HAPPIER_SESSION_ID_ENV_KEY = 'HAPPIER_SESSION_ID' as const;
+export const PIGGERCODE_SESSION_ID_ENV_KEY = 'PIGGERCODE_SESSION_ID' as const;
 
 /** Returns a usable non-blank managed session id, excluding local `offline-*` placeholders. */
 export function normalizeCurrentHappierSessionId(value: unknown): string | null {
@@ -12,7 +12,7 @@ export function normalizeCurrentHappierSessionId(value: unknown): string | null 
 export function readCurrentHappierSessionIdFromEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): string | null {
-  return normalizeCurrentHappierSessionId(env[HAPPIER_SESSION_ID_ENV_KEY]);
+  return normalizeCurrentHappierSessionId(env[PIGGERCODE_SESSION_ID_ENV_KEY]);
 }
 
 /** Returns a copied environment with the managed session id set, or removed when unusable. */
@@ -31,9 +31,9 @@ export function withCurrentHappierSessionId(
   const resolvedSessionId = normalizeCurrentHappierSessionId(sessionId);
   const nextEnv: NodeJS.ProcessEnv = { ...env };
   if (resolvedSessionId) {
-    nextEnv[HAPPIER_SESSION_ID_ENV_KEY] = resolvedSessionId;
+    nextEnv[PIGGERCODE_SESSION_ID_ENV_KEY] = resolvedSessionId;
   } else {
-    delete nextEnv[HAPPIER_SESSION_ID_ENV_KEY];
+    delete nextEnv[PIGGERCODE_SESSION_ID_ENV_KEY];
   }
   return nextEnv;
 }

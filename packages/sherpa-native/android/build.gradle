@@ -6,7 +6,7 @@ plugins {
 group = 'dev.happier.sherpa'
 version = '0.0.0'
 
-def sherpaVersion = System.getenv("HAPPIER_SHERPA_ONNX_VERSION") ?: "v1.12.25"
+def sherpaVersion = System.getenv("PIGGERCODE_SHERPA_ONNX_VERSION") ?: "v1.12.25"
 def sherpaArchive = "sherpa-onnx-${sherpaVersion}-android.tar.bz2"
 def sherpaBaseUrl = "https://github.com/k2-fsa/sherpa-onnx/releases/download/${sherpaVersion}"
 def sherpaDir = new File(buildDir, "sherpa-onnx/${sherpaVersion}")

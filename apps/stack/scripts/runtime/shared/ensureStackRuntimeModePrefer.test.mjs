@@ -17,19 +17,19 @@ test('ensureStackRuntimeModePrefer writes prefer when missing', async (t) => {
   assert.equal(res.changed, true);
 
   const parsed = parseEnvToObject(await readFile(envPath, 'utf8'));
-  assert.equal(parsed.HAPPIER_STACK_RUNTIME_MODE, 'prefer');
+  assert.equal(parsed.PIGGERCODE_STACK_RUNTIME_MODE, 'prefer');
   assert.equal(parsed.FOO, 'bar');
 });
 
 test('ensureStackRuntimeModePrefer does not override existing runtime mode', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'ensure-runtime-mode-existing-' });
   const envPath = join(fixture.root, 'env');
-  await writeFile(envPath, 'HAPPIER_STACK_RUNTIME_MODE=require\n', 'utf8');
+  await writeFile(envPath, 'PIGGERCODE_STACK_RUNTIME_MODE=require\n', 'utf8');
 
   const res = await ensureStackRuntimeModePrefer({ envPath });
   assert.equal(res.ok, true);
   assert.equal(res.changed, false);
 
   const parsed = parseEnvToObject(await readFile(envPath, 'utf8'));
-  assert.equal(parsed.HAPPIER_STACK_RUNTIME_MODE, 'require');
+  assert.equal(parsed.PIGGERCODE_STACK_RUNTIME_MODE, 'require');
 });

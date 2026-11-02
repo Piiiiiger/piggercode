@@ -11,7 +11,7 @@ type CliActionExecutorDeps = ActionExecutorDeps & Readonly<{
 }>;
 
 function resolveBlockingApprovalPollIntervalMs(): number {
-  const raw = String(process.env.HAPPIER_BLOCKING_APPROVAL_POLL_INTERVAL_MS ?? '').trim();
+  const raw = String(process.env.PIGGERCODE_BLOCKING_APPROVAL_POLL_INTERVAL_MS ?? '').trim();
   const parsed = raw ? Number.parseInt(raw, 10) : NaN;
   return Number.isFinite(parsed) && parsed > 0 ? Math.min(60_000, parsed) : 250;
 }

@@ -5,10 +5,10 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 let tempHome: string | null = null;
-const originalHome = process.env.HAPPIER_HOME_DIR;
+const originalHome = process.env.PIGGERCODE_HOME_DIR;
 
 afterEach(async () => {
-    process.env.HAPPIER_HOME_DIR = originalHome;
+    process.env.PIGGERCODE_HOME_DIR = originalHome;
     if (tempHome) await rm(tempHome, { recursive: true, force: true });
     tempHome = null;
     vi.resetModules();
@@ -17,7 +17,7 @@ afterEach(async () => {
 describe('daemon terminal session mutation outbox', () => {
     it('exposes only exact-turn enqueue, flush, and close', async () => {
         tempHome = await mkdtemp(join(tmpdir(), 'daemon-terminal-outbox-'));
-        process.env.HAPPIER_HOME_DIR = tempHome;
+        process.env.PIGGERCODE_HOME_DIR = tempHome;
         vi.resetModules();
         const { createDaemonTerminalSessionMutationOutbox } = await import('./daemonTerminalSessionMutationOutbox');
         const mutation = { v: 1 as const, sessionId: 's1', mutationId: 'm1', action: 'end_session' as const, turnId: 't1', observedAt: 1 };
@@ -34,7 +34,7 @@ describe('daemon terminal session mutation outbox', () => {
 
     it('rejects exact-turn admission after close instead of reporting volatile success', async () => {
         tempHome = await mkdtemp(join(tmpdir(), 'daemon-terminal-outbox-closed-'));
-        process.env.HAPPIER_HOME_DIR = tempHome;
+        process.env.PIGGERCODE_HOME_DIR = tempHome;
         vi.resetModules();
         const { createDaemonTerminalSessionMutationOutbox } = await import('./daemonTerminalSessionMutationOutbox');
         const mutation = { v: 1 as const, sessionId: 's1', mutationId: 'm1', action: 'end_session' as const, turnId: 't1', observedAt: 1 };
@@ -69,7 +69,7 @@ describe('daemon terminal session mutation outbox', () => {
 
     it('preserves the first exact observed facts when marker retry reuses the deterministic identity', async () => {
         tempHome = await mkdtemp(join(tmpdir(), 'daemon-terminal-outbox-retry-'));
-        process.env.HAPPIER_HOME_DIR = tempHome;
+        process.env.PIGGERCODE_HOME_DIR = tempHome;
         vi.resetModules();
         const { createDaemonTerminalSessionMutationOutbox } = await import('./daemonTerminalSessionMutationOutbox');
         const { configuration } = await import('@/configuration');

@@ -197,9 +197,9 @@ describe('sessionHandoffSourceExportStore', () => {
       expect(persisted.sizeBytes).toBeGreaterThan(content.length);
       expect(persisted.sizeBytes).toBeLessThan(content.length + 64 * 1024);
       const prefix = (await readFile(persisted.filePath)).subarray(0, 48).toString('utf8');
-      expect(prefix).toMatch(/^HAPPIER_SESSION_HANDOFF_BUNDLE_V2\n/u);
+      expect(prefix).toMatch(/^PIGGERCODE_SESSION_HANDOFF_BUNDLE_V2\n/u);
       const artifact = await readFile(persisted.filePath);
-      const magicBytes = Buffer.byteLength('HAPPIER_SESSION_HANDOFF_BUNDLE_V2\n', 'utf8');
+      const magicBytes = Buffer.byteLength('PIGGERCODE_SESSION_HANDOFF_BUNDLE_V2\n', 'utf8');
       const manifestBytes = Number(artifact.readBigUInt64BE(magicBytes));
       const manifest = JSON.parse(
         artifact.subarray(magicBytes + 8, magicBytes + 8 + manifestBytes).toString('utf8'),

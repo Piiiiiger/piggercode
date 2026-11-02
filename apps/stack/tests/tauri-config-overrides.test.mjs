@@ -29,8 +29,8 @@ test('applyStackTauriOverrides respects env overrides', () => {
   const out = applyStackTauriOverrides({
     tauriConfig: structuredClone(base),
     env: {
-      HAPPIER_STACK_TAURI_IDENTIFIER: 'com.example.custom',
-      HAPPIER_STACK_TAURI_PRODUCT_NAME: 'CustomName',
+      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'com.example.custom',
+      PIGGERCODE_STACK_TAURI_PRODUCT_NAME: 'CustomName',
     },
   });
 
@@ -49,8 +49,8 @@ test('applyStackTauriOverrides supports identifier-only override without changin
   const out = applyStackTauriOverrides({
     tauriConfig: structuredClone(base),
     env: {
-      HAPPIER_STACK_TAURI_IDENTIFIER: 'com.example.only-id',
-      HAPPIER_STACK_TAURI_PRODUCT_NAME: '  ',
+      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'com.example.only-id',
+      PIGGERCODE_STACK_TAURI_PRODUCT_NAME: '  ',
     },
   });
 
@@ -111,13 +111,13 @@ test('applyStackTauriOverrides allows explicit updater-artifacts override via en
 
   const outDisabled = applyStackTauriOverrides({
     tauriConfig: structuredClone(base),
-    env: { TAURI_SIGNING_PRIVATE_KEY: 'fake-key-for-test', HAPPIER_STACK_TAURI_CREATE_UPDATER_ARTIFACTS: '0' },
+    env: { TAURI_SIGNING_PRIVATE_KEY: 'fake-key-for-test', PIGGERCODE_STACK_TAURI_CREATE_UPDATER_ARTIFACTS: '0' },
   });
   assert.equal(outDisabled.bundle.createUpdaterArtifacts, false);
 
   const outEnabled = applyStackTauriOverrides({
     tauriConfig: structuredClone(base),
-    env: { HAPPIER_STACK_TAURI_CREATE_UPDATER_ARTIFACTS: '1' },
+    env: { PIGGERCODE_STACK_TAURI_CREATE_UPDATER_ARTIFACTS: '1' },
   });
   assert.equal(outEnabled.bundle.createUpdaterArtifacts, true);
 });

@@ -7,7 +7,7 @@ function providerStub(id: ProviderUnderTest['id'], protocol: ProviderUnderTest['
   return {
     id,
     protocol,
-    enableEnvVar: `HAPPIER_E2E_PROVIDER_${String(id).toUpperCase()}`,
+    enableEnvVar: `PIGGERCODE_E2E_PROVIDER_${String(id).toUpperCase()}`,
     traceProvider: protocol === 'acp' ? String(id) : 'claude',
     scenarioRegistry: { v: 1, tiers: { smoke: [], extended: [] } },
     cli: { subcommand },

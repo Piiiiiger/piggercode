@@ -53,7 +53,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
   });
 
   afterEach(() => {
-    delete process.env.HAPPIER_ACP_FAILURE_TRACE;
+    delete process.env.PIGGERCODE_ACP_FAILURE_TRACE;
     vi.restoreAllMocks();
   });
 
@@ -79,7 +79,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
       onThinkingChange: () => {},
       ensureBackend: async () => createPiBackend({
         cwd: '/tmp',
-        env: { HAPPIER_PI_PATH: '/missing-private-path/sk-proj-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/pi' },
+        env: { PIGGERCODE_PI_PATH: '/missing-private-path/sk-proj-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/pi' },
       }),
     });
     runtime.beginTurn();
@@ -91,7 +91,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
       issue: expect.objectContaining({
         source: 'dependency_failure',
         code: 'provider_cli_not_found',
-        sanitizedPreview: expect.stringContaining('HAPPIER_PI_PATH'),
+        sanitizedPreview: expect.stringContaining('PIGGERCODE_PI_PATH'),
       }),
     }));
     expect(mutations).toContainEqual(expect.objectContaining({
@@ -202,7 +202,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
   });
 
   it('writes opt-in sanitized Pi ACP prompt-failure traces without raw error text', async () => {
-    process.env.HAPPIER_ACP_FAILURE_TRACE = '1';
+    process.env.PIGGERCODE_ACP_FAILURE_TRACE = '1';
     const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => undefined);
     const backend = createFakeAcpRuntimeBackend({ sessionId: 'sess_main' });
     const sent: ACPMessageData[] = [];
@@ -253,7 +253,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
   });
 
   it('normalizes exact generic Pi prompt failures after prompt acceptance to a Pi diagnostic', async () => {
-    process.env.HAPPIER_ACP_FAILURE_TRACE = '1';
+    process.env.PIGGERCODE_ACP_FAILURE_TRACE = '1';
     const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => undefined);
     const backend = createFakeAcpRuntimeBackend({ sessionId: 'sess_main' });
     const sent: ACPMessageData[] = [];
@@ -451,7 +451,7 @@ describe('createAcpRuntime (status error surfacing)', () => {
   });
 
   it('normalizes generic surfaced Pi prompt failures with wrapper raw errors after prompt acceptance', async () => {
-    process.env.HAPPIER_ACP_FAILURE_TRACE = '1';
+    process.env.PIGGERCODE_ACP_FAILURE_TRACE = '1';
     const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => undefined);
     const backend = createFakeAcpRuntimeBackend({ sessionId: 'sess_main' });
     const sent: ACPMessageData[] = [];

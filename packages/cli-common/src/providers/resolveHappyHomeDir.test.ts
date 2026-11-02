@@ -24,24 +24,24 @@ function withPlatform(platform: NodeJS.Platform, fn: () => void): void {
 
 describe('resolveHappyHomeDirFromEnvironment', () => {
   it('returns an absolute override path unchanged', () => {
-    expect(resolveHappyHomeDirFromEnvironment({ HAPPIER_HOME_DIR: '/tmp/happier-home' })).toBe('/tmp/happier-home');
+    expect(resolveHappyHomeDirFromEnvironment({ PIGGERCODE_HOME_DIR: '/tmp/happier-home' })).toBe('/tmp/happier-home');
   });
 
   it('expands ~/ override paths against the configured home directory', () => {
     expect(resolveHappyHomeDirFromEnvironment({
-      HAPPIER_HOME_DIR: '~/custom-happier-home',
+      PIGGERCODE_HOME_DIR: '~/custom-happier-home',
       HOME: '/Users/tester',
     })).toBe('/Users/tester/custom-happier-home');
   });
 
   it('resolves relative override paths to absolute paths', () => {
-    expect(resolveHappyHomeDirFromEnvironment({ HAPPIER_HOME_DIR: 'relative-home' })).toBe(resolvePath('relative-home'));
+    expect(resolveHappyHomeDirFromEnvironment({ PIGGERCODE_HOME_DIR: 'relative-home' })).toBe(resolvePath('relative-home'));
   });
 
   it('preserves Windows-shaped absolute overrides on Windows', () => {
     withPlatform('win32', () => {
       expect(resolveHappyHomeDirFromEnvironment({
-        HAPPIER_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
         USERPROFILE: 'C:\\Users\\tester',
       })).toBe('C:\\Users\\tester\\.happier-custom');
     });
@@ -50,7 +50,7 @@ describe('resolveHappyHomeDirFromEnvironment', () => {
   it('rejects Windows-shaped absolute overrides on non-Windows hosts', () => {
     withPlatform('darwin', () => {
       expect(() => resolveHappyHomeDirFromEnvironment({
-        HAPPIER_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
         HOME: '/Users/tester',
       })).toThrow(/windows/i);
     });

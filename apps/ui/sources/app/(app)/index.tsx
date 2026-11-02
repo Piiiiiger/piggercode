@@ -46,7 +46,7 @@ const DEFAULT_WELCOME_SERVER_CHECK_TIMEOUT_MS = 6_000;
 const DEFAULT_WELCOME_SERVER_CHECK_RETRY_DELAY_MS = 1_000;
 
 function readWelcomeServerCheckTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_TIMEOUT_MS ?? '').trim();
     if (!raw) return DEFAULT_WELCOME_SERVER_CHECK_TIMEOUT_MS;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return DEFAULT_WELCOME_SERVER_CHECK_TIMEOUT_MS;
@@ -54,7 +54,7 @@ function readWelcomeServerCheckTimeoutMs(): number {
 }
 
 function readWelcomeServerCheckRetryDelayMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_RETRY_DELAY_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_RETRY_DELAY_MS ?? '').trim();
     if (!raw) return DEFAULT_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return DEFAULT_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;

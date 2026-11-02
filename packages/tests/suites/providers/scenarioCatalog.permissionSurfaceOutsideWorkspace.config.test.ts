@@ -9,7 +9,7 @@ function providerStub(params: {
 }): ProviderUnderTest {
   return {
     id: params.id,
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_EXAMPLE',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_EXAMPLE',
     protocol: 'acp',
     traceProvider: params.id,
     permissions: params.permissions,

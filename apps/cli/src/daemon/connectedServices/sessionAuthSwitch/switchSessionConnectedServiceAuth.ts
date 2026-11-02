@@ -21,7 +21,7 @@ import type { CatalogAgentId, ConnectedServiceResumeContinuityDiagnostics } from
 import type { TrackedSession } from '@/daemon/types';
 import { resolveTrackedSessionCatalogAgentId } from '@/daemon/sessions/resolveTrackedSessionCatalogAgentId';
 import {
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
   readConnectedServiceChildSelectionsFromEnv,
   type ConnectedServiceChildSelection,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
@@ -711,9 +711,9 @@ function buildTrackedSessionEnvironmentVariables(input: Readonly<{
   }
 
   if (nextSelections.length > 0) {
-    environmentVariables[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify(nextSelections);
+    environmentVariables[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY] = JSON.stringify(nextSelections);
   } else {
-    delete environmentVariables[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+    delete environmentVariables[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
   }
 
   return Object.keys(environmentVariables).length > 0 ? environmentVariables : undefined;

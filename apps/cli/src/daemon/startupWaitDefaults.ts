@@ -8,7 +8,7 @@ export const DEFAULT_DAEMON_RESTART_VERIFY_POLL_MS = 250;
 
 export function readDaemonStartWaitTimeoutMs(): number {
   return readPositiveIntEnv(
-    'HAPPIER_DAEMON_START_WAIT_TIMEOUT_MS',
+    'PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS',
     DEFAULT_DAEMON_START_WAIT_TIMEOUT_MS,
   );
 }
@@ -16,19 +16,19 @@ export function readDaemonStartWaitTimeoutMs(): number {
 export function readDaemonStartWaitPollMs(
   defaultPollMs: number = DEFAULT_DAEMON_START_WAIT_POLL_MS,
 ): number {
-  return readPositiveIntEnv('HAPPIER_DAEMON_START_WAIT_POLL_MS', defaultPollMs);
+  return readPositiveIntEnv('PIGGERCODE_DAEMON_START_WAIT_POLL_MS', defaultPollMs);
 }
 
 export function readDaemonRestartVerifyTimeoutMs(): number {
   return readPositiveIntEnv(
-    'HAPPIER_DAEMON_RESTART_VERIFY_TIMEOUT_MS',
+    'PIGGERCODE_DAEMON_RESTART_VERIFY_TIMEOUT_MS',
     DEFAULT_DAEMON_RESTART_VERIFY_TIMEOUT_MS,
   );
 }
 
 export function readDaemonRestartVerifyPollMs(): number {
   return readPositiveIntEnv(
-    'HAPPIER_DAEMON_RESTART_VERIFY_POLL_MS',
+    'PIGGERCODE_DAEMON_RESTART_VERIFY_POLL_MS',
     DEFAULT_DAEMON_RESTART_VERIFY_POLL_MS,
   );
 }

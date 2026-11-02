@@ -350,7 +350,7 @@ describe('/ (welcome) signup methods', () => {
     it('shows a server unavailable notice and hides auth actions when the server cannot be reached', async () => {
         vi.resetModules();
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_RETRY_DELAY_MS = '1';
+        process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_RETRY_DELAY_MS = '1';
         const { t } = await import('@/text');
         getServerFeaturesSnapshotMock.mockClear();
         getServerFeaturesSnapshotMock
@@ -376,7 +376,7 @@ describe('/ (welcome) signup methods', () => {
             expect(screen.findByTestId('welcome-retry-server')).not.toBeNull();
             expect(screen.findByTestId('welcome-change-relay')).not.toBeNull();
         } finally {
-            delete process.env.EXPO_PUBLIC_HAPPIER_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;
+            delete process.env.EXPO_PUBLIC_PIGGERCODE_WELCOME_SERVER_CHECK_RETRY_DELAY_MS;
             vi.clearAllTimers();
             vi.useRealTimers();
         }

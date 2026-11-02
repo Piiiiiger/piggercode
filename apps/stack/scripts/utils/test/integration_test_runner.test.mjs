@@ -9,13 +9,13 @@ test('shouldRunRealIntegrationTests defaults to false', () => {
 
 test('shouldRunRealIntegrationTests enables real tests when env var is truthy', () => {
   for (const value of ['1', 'true', 'yes', 'y', 'on']) {
-    assert.equal(shouldRunRealIntegrationTests({ HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS: value }), true);
+    assert.equal(shouldRunRealIntegrationTests({ PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS: value }), true);
   }
 });
 
 test('shouldRunRealIntegrationTests disables real tests when env var is falsy', () => {
   for (const value of ['0', 'false', 'no', 'n', 'off', '']) {
-    assert.equal(shouldRunRealIntegrationTests({ HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS: value }), false);
+    assert.equal(shouldRunRealIntegrationTests({ PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS: value }), false);
   }
 });
 
@@ -34,9 +34,9 @@ test('splitRealIntegrationTests splits real integration suffixes', () => {
 });
 
 test('shouldRunRealIntegrationTests trims and lowercases env values', () => {
-  assert.equal(shouldRunRealIntegrationTests({ HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS: '  TrUe  ' }), true);
+  assert.equal(shouldRunRealIntegrationTests({ PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS: '  TrUe  ' }), true);
 });
 
 test('shouldRunRealIntegrationTests falls back on unknown values', () => {
-  assert.equal(shouldRunRealIntegrationTests({ HAPPIER_STACK_RUN_REAL_INTEGRATION_TESTS: 'maybe' }), false);
+  assert.equal(shouldRunRealIntegrationTests({ PIGGERCODE_STACK_RUN_REAL_INTEGRATION_TESTS: 'maybe' }), false);
 });

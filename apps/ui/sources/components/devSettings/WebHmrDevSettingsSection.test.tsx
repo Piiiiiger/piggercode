@@ -61,13 +61,13 @@ describe('WebHmrDevSettingsSection', () => {
             configurable: true,
             value: windowStub,
         });
-        globalThis.__HAPPIER_WEB_HMR_OPT_OUT__ = undefined;
+        globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__ = undefined;
     });
 
     afterEach(() => {
         standardCleanup();
         vi.unstubAllGlobals();
-        globalThis.__HAPPIER_WEB_HMR_OPT_OUT__ = undefined;
+        globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__ = undefined;
         if (originalWindowDescriptor) {
             Object.defineProperty(globalThis, 'window', originalWindowDescriptor);
         } else {
@@ -87,7 +87,7 @@ describe('WebHmrDevSettingsSection', () => {
         });
 
         expect(store.get(WEB_HMR_OPT_OUT_SESSION_STORAGE_KEY)).toBe('disabled');
-        expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+        expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
         expect(reloadSpy).toHaveBeenCalledTimes(1);
     });
 });

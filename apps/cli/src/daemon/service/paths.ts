@@ -55,7 +55,7 @@ export type DaemonServiceInstallationSnapshot = Readonly<{
 
 export type DaemonServiceListEntry = Readonly<{
   serverId: string;
-  /** A pinned definition's baked `HAPPIER_ACTIVE_SERVER_ID` (the profile it serves). */
+  /** A pinned definition's baked `PIGGERCODE_ACTIVE_SERVER_ID` (the profile it serves). */
   activeServerId?: string | null;
   name: string;
   relayUrl?: string | null;

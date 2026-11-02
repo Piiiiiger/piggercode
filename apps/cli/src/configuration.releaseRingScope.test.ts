@@ -3,7 +3,7 @@ import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
-const envScope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_RELEASE_RING', 'HOME', 'SUDO_USER', 'SUDO_UID']);
+const envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_RELEASE_RING', 'HOME', 'SUDO_USER', 'SUDO_UID']);
 
 const argvSnapshot = [...process.argv];
 
@@ -15,8 +15,8 @@ describe('configuration daemon ownership paths', () => {
   });
 
   it('uses the canonical daemon state and lock file when invoked via the public dev shim name', async () => {
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-test-home';
-    delete process.env.HAPPIER_RELEASE_RING;
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-test-home';
+    delete process.env.PIGGERCODE_RELEASE_RING;
     process.argv = ['node', '/Users/alice/.happier/bin/hdev', 'daemon', 'status'];
 
     const { configuration } = await import('./configuration');
@@ -26,8 +26,8 @@ describe('configuration daemon ownership paths', () => {
   });
 
   it('uses the canonical daemon state and lock file when invoked via the preview shim name', async () => {
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-test-home';
-    delete process.env.HAPPIER_RELEASE_RING;
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-test-home';
+    delete process.env.PIGGERCODE_RELEASE_RING;
     process.argv = ['node', '/Users/alice/.happier/bin/hprev', 'daemon', 'status'];
 
     const { configuration } = await import('./configuration');
@@ -37,8 +37,8 @@ describe('configuration daemon ownership paths', () => {
   });
 
   it('uses the same canonical daemon state filename when invoked via the stable shim name', async () => {
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-test-home';
-    delete process.env.HAPPIER_RELEASE_RING;
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-test-home';
+    delete process.env.PIGGERCODE_RELEASE_RING;
     process.argv = ['node', '/Users/alice/.happier/bin/happier', 'daemon', 'status'];
 
     const { configuration } = await import('./configuration');
@@ -47,9 +47,9 @@ describe('configuration daemon ownership paths', () => {
     expect(configuration.daemonLockFile).toBe(`${base}/daemon.state.json.lock`);
   });
 
-  it('keeps daemon ownership paths server-scoped even when HAPPIER_RELEASE_RING=dev is set', async () => {
-    process.env.HAPPIER_HOME_DIR = '/tmp/happier-test-home';
-    process.env.HAPPIER_RELEASE_RING = 'dev';
+  it('keeps daemon ownership paths server-scoped even when PIGGERCODE_RELEASE_RING=dev is set', async () => {
+    process.env.PIGGERCODE_HOME_DIR = '/tmp/happier-test-home';
+    process.env.PIGGERCODE_RELEASE_RING = 'dev';
     process.argv = ['node', '/usr/local/bin/node', 'daemon', 'status'];
 
     const { configuration } = await import('./configuration');
@@ -57,12 +57,12 @@ describe('configuration daemon ownership paths', () => {
     expect(configuration.daemonStateFile).toBe(`${base}/daemon.state.json`);
   });
 
-  it('expands ~/ HAPPIER_HOME_DIR before deriving configuration paths', async () => {
+  it('expands ~/ PIGGERCODE_HOME_DIR before deriving configuration paths', async () => {
     const homeDir = createTempDirSync('happier-config-home-');
     try {
       process.env.HOME = homeDir;
-      process.env.HAPPIER_HOME_DIR = '~/happier-test-home';
-      delete process.env.HAPPIER_RELEASE_RING;
+      process.env.PIGGERCODE_HOME_DIR = '~/happier-test-home';
+      delete process.env.PIGGERCODE_RELEASE_RING;
       process.argv = ['node', '/usr/local/bin/node', 'daemon', 'status'];
 
       const { configuration } = await import('./configuration');
@@ -72,9 +72,9 @@ describe('configuration daemon ownership paths', () => {
     }
   });
 
-  it('rejects a Windows-shaped HAPPIER_HOME_DIR on non-Windows hosts', async () => {
-    process.env.HAPPIER_HOME_DIR = 'C:\\Users\\tester\\.happier';
-    delete process.env.HAPPIER_RELEASE_RING;
+  it('rejects a Windows-shaped PIGGERCODE_HOME_DIR on non-Windows hosts', async () => {
+    process.env.PIGGERCODE_HOME_DIR = 'C:\\Users\\tester\\.happier';
+    delete process.env.PIGGERCODE_RELEASE_RING;
     process.argv = ['node', '/usr/local/bin/node', 'daemon', 'status'];
 
     await expect(import('./configuration')).rejects.toThrow(/windows/i);
@@ -86,8 +86,8 @@ describe('configuration daemon ownership paths', () => {
     const originalGetuid = typeof process.getuid === 'function' ? process.getuid : undefined;
     try {
       process.env.HOME = rootHomeDir;
-      delete process.env.HAPPIER_HOME_DIR;
-      delete process.env.HAPPIER_RELEASE_RING;
+      delete process.env.PIGGERCODE_HOME_DIR;
+      delete process.env.PIGGERCODE_RELEASE_RING;
       process.env.SUDO_USER = 'developer';
       process.env.SUDO_UID = '1000';
       process.argv = ['node', '/usr/local/bin/node', 'service', 'list'];

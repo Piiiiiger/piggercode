@@ -122,13 +122,13 @@ async function main() {
   const internalServerUrl = resolvedUrls.internalServerUrl;
   const publicServerUrl = resolvedUrls.publicServerUrl;
 
-  const cliHomeDir = process.env.HAPPIER_STACK_CLI_HOME_DIR?.trim()
-    ? expandHome(process.env.HAPPIER_STACK_CLI_HOME_DIR.trim())
+  const cliHomeDir = process.env.PIGGERCODE_STACK_CLI_HOME_DIR?.trim()
+    ? expandHome(process.env.PIGGERCODE_STACK_CLI_HOME_DIR.trim())
     : join(autostart.baseDir, 'cli');
 
-  const serveUi = (process.env.HAPPIER_STACK_SERVE_UI ?? '1') !== '0';
-  const sourceUiBuildDir = process.env.HAPPIER_STACK_UI_BUILD_DIR?.trim()
-    ? process.env.HAPPIER_STACK_UI_BUILD_DIR.trim()
+  const serveUi = (process.env.PIGGERCODE_STACK_SERVE_UI ?? '1') !== '0';
+  const sourceUiBuildDir = process.env.PIGGERCODE_STACK_UI_BUILD_DIR?.trim()
+    ? process.env.PIGGERCODE_STACK_UI_BUILD_DIR.trim()
     : join(autostart.baseDir, 'ui');
   const uiBuildDir = runtimeSnapshot
     ? join(runtimeSnapshot.launchPath ?? runtimeSnapshot.snapshotPath, 'ui')
@@ -221,7 +221,7 @@ async function main() {
         if (!json) {
           console.log(`${yellow('!')} fix skipped: refusing to kill unknown port listeners in stack mode.`);
           console.log(
-            `${dim('Tip:')} use stack-safe controls instead: ${cmd(`hstack stack stop ${(process.env.HAPPIER_STACK_STACK ?? 'main').toString()} --aggressive`)}`
+            `${dim('Tip:')} use stack-safe controls instead: ${cmd(`hstack stack stop ${(process.env.PIGGERCODE_STACK_STACK ?? 'main').toString()} --aggressive`)}`
           );
         }
       } else {
@@ -249,8 +249,8 @@ async function main() {
       if (!json) console.log(`${red('x')} ui build dir missing (${uiBuildDir}) → run: ${cmd('hstack build')}`);
     }
   } else {
-    report.checks.uiServing = { ok: false, reason: 'disabled (HAPPIER_STACK_SERVE_UI=0)' };
-    if (!json) console.log(`${dim('ℹ')} ui serving disabled (HAPPIER_STACK_SERVE_UI=0)`);
+    report.checks.uiServing = { ok: false, reason: 'disabled (PIGGERCODE_STACK_SERVE_UI=0)' };
+    if (!json) console.log(`${dim('ℹ')} ui serving disabled (PIGGERCODE_STACK_SERVE_UI=0)`);
   }
 
   // Daemon status
@@ -272,7 +272,7 @@ async function main() {
     if (!json) {
       console.log(`${red('x')} daemon: not running / status failed`);
       if (!hasAccessKey) {
-        const stackName = (process.env.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+        const stackName = (process.env.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
         console.log(`  ${dim('↪ likely cause:')} missing credentials at:`);
         for (const p of credentialPaths.paths) {
           console.log(`    ${p}`);

@@ -15,7 +15,7 @@ pub fn emit_ready<R: Runtime>(app: &AppHandle<R>) {
     if let Err(error) = app.emit(DESKTOP_STARTUP_READY_EVENT, &payload) {
         log::error!("failed to emit {DESKTOP_STARTUP_READY_EVENT}: {error}");
     }
-    if let Some(marker_path) = std::env::var_os("HAPPIER_TAURI_STARTUP_MARKER") {
+    if let Some(marker_path) = std::env::var_os("PIGGERCODE_TAURI_STARTUP_MARKER") {
         if let Err(error) = fs::write(
             marker_path,
             serde_json::to_vec(&payload).unwrap_or_default(),

@@ -8,16 +8,16 @@ describe('env snapshot helpers', () => {
     expect(envSnapshot?.snapshotProcessEnv).toBeTypeOf('function');
     expect(envSnapshot?.restoreProcessEnv).toBeTypeOf('function');
 
-    const original = process.env.HAPPIER_TESTKIT_ENV_SNAPSHOT;
+    const original = process.env.PIGGERCODE_TESTKIT_ENV_SNAPSHOT;
     const snapshot = envSnapshot!.snapshotProcessEnv();
 
-    process.env.HAPPIER_TESTKIT_ENV_SNAPSHOT = 'mutated';
+    process.env.PIGGERCODE_TESTKIT_ENV_SNAPSHOT = 'mutated';
     envSnapshot!.restoreProcessEnv(snapshot);
 
     if (original === undefined) {
-      expect(process.env.HAPPIER_TESTKIT_ENV_SNAPSHOT).toBeUndefined();
+      expect(process.env.PIGGERCODE_TESTKIT_ENV_SNAPSHOT).toBeUndefined();
     } else {
-      expect(process.env.HAPPIER_TESTKIT_ENV_SNAPSHOT).toBe(original);
+      expect(process.env.PIGGERCODE_TESTKIT_ENV_SNAPSHOT).toBe(original);
     }
   });
 });

@@ -11,7 +11,7 @@ export function shouldReportEndpointFailure(params: { init?: RequestInit; error:
 }
 
 function readInitialSettleTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_ENDPOINT_SUPERVISOR_INITIAL_SETTLE_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_ENDPOINT_SUPERVISOR_INITIAL_SETTLE_TIMEOUT_MS ?? '').trim();
     if (!raw) return 250;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 250;

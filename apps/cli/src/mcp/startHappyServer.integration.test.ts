@@ -11,7 +11,7 @@ import type { Metadata } from '@/api/types';
 import type { AgentBackend } from '@/agent/core/AgentBackend';
 import { reloadConfiguration } from '@/configuration';
 import { registerExecutionRunHandlers } from '@/rpc/handlers/executionRuns';
-import { HAPPIER_MCP_ACTION_SPECS_RESOURCE_URI } from '@/mcp/resources/registerHappierMcpResources';
+import { PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI } from '@/mcp/resources/registerHappierMcpResources';
 import { startHappyServer, type HappyMcpSessionClient } from '@/mcp/startHappyServer';
 
 const env = process.env;
@@ -86,8 +86,8 @@ describe('startHappyServer (MCP integration)', () => {
   beforeEach(() => {
     vi.resetModules();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
-    delete process.env.HAPPIER_MCP_SSE_KEEPALIVE_INTERVAL_MS;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_MCP_SSE_KEEPALIVE_INTERVAL_MS;
     reloadConfiguration();
   });
 
@@ -146,8 +146,8 @@ describe('startHappyServer (MCP integration)', () => {
   });
 
   it('emits SSE keepalive comments on the standalone GET stream (prevents idle timeouts)', async () => {
-    const prev = process.env.HAPPIER_MCP_SSE_KEEPALIVE_INTERVAL_MS;
-    process.env.HAPPIER_MCP_SSE_KEEPALIVE_INTERVAL_MS = '25';
+    const prev = process.env.PIGGERCODE_MCP_SSE_KEEPALIVE_INTERVAL_MS;
+    process.env.PIGGERCODE_MCP_SSE_KEEPALIVE_INTERVAL_MS = '25';
     reloadConfiguration();
 
     const rpcHandlerManager = new RpcHandlerManager({
@@ -226,14 +226,14 @@ describe('startHappyServer (MCP integration)', () => {
       expect(firstChunk).toContain(':');
     } finally {
       server.stop();
-      if (prev === undefined) delete process.env.HAPPIER_MCP_SSE_KEEPALIVE_INTERVAL_MS;
-      else process.env.HAPPIER_MCP_SSE_KEEPALIVE_INTERVAL_MS = prev;
+      if (prev === undefined) delete process.env.PIGGERCODE_MCP_SSE_KEEPALIVE_INTERVAL_MS;
+      else process.env.PIGGERCODE_MCP_SSE_KEEPALIVE_INTERVAL_MS = prev;
       reloadConfiguration();
     }
   });
 
   it('snapshots tool names from account action settings when provided', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.list': { enabled: true, disabledSurfaces: ['session_agent'], disabledPlacements: [] },
@@ -659,8 +659,8 @@ describe('startHappyServer (MCP integration)', () => {
   });
 
   it('hides session-agent-disabled action-spec tools and rejects action_spec_get for disabled actions', async () => {
-    const prev = process.env.HAPPIER_ACTIONS_SETTINGS_V1;
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    const prev = process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['session_agent'], disabledPlacements: [] },
@@ -708,8 +708,8 @@ describe('startHappyServer (MCP integration)', () => {
     } finally {
       await (client as any)?.close?.();
       server.stop();
-      if (prev === undefined) delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
-      else process.env.HAPPIER_ACTIONS_SETTINGS_V1 = prev;
+      if (prev === undefined) delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
+      else process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = prev;
     }
   });
 
@@ -743,16 +743,16 @@ describe('startHappyServer (MCP integration)', () => {
 
       const resources = await withTimeout(client.listResources(), 'resources/list');
       const actionSpecsResource = resources.resources.find(
-        (resource: any) => String(resource.uri) === HAPPIER_MCP_ACTION_SPECS_RESOURCE_URI,
+        (resource: any) => String(resource.uri) === PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI,
       );
       expect(actionSpecsResource).toBeDefined();
 
       const read = await withTimeout(
-        client.readResource({ uri: HAPPIER_MCP_ACTION_SPECS_RESOURCE_URI }),
+        client.readResource({ uri: PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI }),
         'resources/read',
       );
       const textContent = read.contents.find(
-        (entry) => isTextResourceContentEntry(entry) && entry.uri === HAPPIER_MCP_ACTION_SPECS_RESOURCE_URI,
+        (entry) => isTextResourceContentEntry(entry) && entry.uri === PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI,
       );
       expect(textContent?.mimeType).toBe('application/json');
       expect(textContent && 'text' in textContent).toBe(true);

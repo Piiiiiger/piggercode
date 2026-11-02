@@ -58,7 +58,7 @@ function createExecutorOptions(serverDir, overrides = {}) {
     serverBindPort: 5101,
     internalServerUrl: 'http://127.0.0.1:5101',
     serverScript: 'dev:light',
-    serverEnv: { HAPPIER_DB_PROVIDER: 'sqlite', PORT: '5101' },
+    serverEnv: { PIGGERCODE_DB_PROVIDER: 'sqlite', PORT: '5101' },
     runtimeStatePath: join(serverDir, 'stack.runtime.json'),
     stackName: 'proxy-test',
     envPath: join(serverDir, 'env'),
@@ -159,8 +159,8 @@ test('planned server termination honors the server shutdown deadline plus bounde
     const executor = createDevServerReloadExecutor(
       createExecutorOptions(serverDir, {
         serverEnv: {
-          HAPPIER_DB_PROVIDER: 'sqlite',
-          HAPPIER_SERVER_SHUTDOWN_DEADLINE_MS: '1200ms',
+          PIGGERCODE_DB_PROVIDER: 'sqlite',
+          PIGGERCODE_SERVER_SHUTDOWN_DEADLINE_MS: '1200ms',
           PORT: '5101',
         },
         proxyController: {
@@ -525,7 +525,7 @@ test('direct reload consumes one canonical plan and projects completed mode and 
       migrationMode: 'skip',
       reason: 'app_only_descriptor_unchanged',
     });
-    assert.equal(spawnEnvs[0].HAPPIER_STACK_MIGRATE_MODE, 'skip');
+    assert.equal(spawnEnvs[0].PIGGERCODE_STACK_MIGRATE_MODE, 'skip');
     assert.equal(updates.at(-1).serverProxy.restartMode, 'exclusiveDb');
     assert.equal(updates.at(-1).serverProxy.reloadGeneration, 21);
     replacement.exitCode = 1;
@@ -750,7 +750,7 @@ test('proxy exclusiveDb restart enters maintenance, replaces backend on an ephem
         pickNextFreeTcpPortImpl: async () => 5102,
         pmSpawnScriptImpl: async ({ env }) => {
           spawnCount += 1;
-          calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+          calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
           return { pid: 202, exitCode: null };
         },
         waitForServerReadyImpl: async (url) => {
@@ -1104,7 +1104,7 @@ test('proxy exclusiveDb restart starts current-code recovery when replacement re
         pickNextFreeTcpPortImpl: async () => 5102,
         pmSpawnScriptImpl: async ({ env, options }) => {
           spawnCount += 1;
-          calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+          calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
           options?.onLine?.({ stream: 'stdout', line: '{"happierStackTransition":"migration_started"}' });
           if (spawnCount > 1) {
             options?.onLine?.({ stream: 'stdout', line: '{"happierStackTransition":"migration_completed"}' });
@@ -1323,7 +1323,7 @@ test('proxy exclusiveDb restart keeps current-code recovery authoritative when i
       pickNextFreeTcpPortImpl: async () => 5102,
       pmSpawnScriptImpl: async ({ env }) => {
         spawnCount += 1;
-        calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+        calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
         return { pid: spawnCount === 1 ? 202 : 203, exitCode: null };
       },
       waitForServerReadyImpl: async (url) => {
@@ -1485,7 +1485,7 @@ test('proxy exclusiveDb restart does not spawn while the old backend port remain
           return { status: 'occupied', reason: 'address-in-use' };
         },
         pmSpawnScriptImpl: async ({ env }) => {
-          calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+          calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
           return { pid: 203, exitCode: null };
         },
         waitForServerReadyImpl: async (url) => {
@@ -1696,7 +1696,7 @@ test('proxy exclusiveDb restart never starts recovery while failed replacement c
         waitForTcpPortFreeImpl: async () => ({ status: 'free' }),
         pickNextFreeTcpPortImpl: async () => 5102,
         pmSpawnScriptImpl: async ({ env }) => {
-          calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+          calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
           return { pid: 202, exitCode: null };
         },
         waitForServerReadyImpl: async () => { throw new Error('replacement not ready'); },
@@ -1764,7 +1764,7 @@ test('proxy exclusiveDb restart never starts recovery after replacement transpor
       pickNextFreeTcpPortImpl: async () => 5102,
       pmSpawnScriptImpl: async ({ env }) => {
         spawnCount += 1;
-        calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+        calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
         return { pid: spawnCount === 1 ? 202 : 203, exitCode: null };
       },
       waitForServerReadyImpl: async () => {},
@@ -1818,7 +1818,7 @@ test('proxy exclusiveDb restart recovers when failed flip observation proves the
       pickNextFreeTcpPortImpl: async () => 5102,
       pmSpawnScriptImpl: async ({ env }) => {
         spawnCount += 1;
-        calls.push(['spawn', Number(env.PORT), env.HAPPIER_STACK_MIGRATE_MODE]);
+        calls.push(['spawn', Number(env.PORT), env.PIGGERCODE_STACK_MIGRATE_MODE]);
         return { pid: 202, exitCode: null };
       },
       waitForServerReadyImpl: async () => {}, listListenPidsImpl: async () => [spawnCount === 0 ? 101 : 302],

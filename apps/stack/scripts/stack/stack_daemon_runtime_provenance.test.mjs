@@ -9,11 +9,11 @@ test('stack daemon command retains admitted runtime provenance in its composed l
   const fixture = await createRuntimeSnapshotFixture(t, { stackName: 'daemon-command-runtime' });
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_SERVER_PORT: '4102',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_SERVER_PORT: '4102',
   };
 
   const context = await resolveStackDaemonCommandContext({
@@ -31,10 +31,10 @@ test('stack daemon command retains admitted runtime provenance in its composed l
   });
   assert.match(context.runtimeProvenance.admittedDistClosureFingerprint, /^[a-f0-9]{16}$/);
   assert.equal(context.cliEntrypoint.startsWith(fixture.snapshotDir), true);
-  assert.equal(context.envForIdentity.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
-  assert.equal(context.envForIdentity.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT, join(fixture.snapshotDir, 'cli', 'package-dist', 'index.mjs'));
+  assert.equal(context.envForIdentity.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED, '1');
+  assert.equal(context.envForIdentity.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT, join(fixture.snapshotDir, 'cli', 'package-dist', 'index.mjs'));
   assert.equal(
-    context.envForIdentity.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT,
+    context.envForIdentity.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT,
     context.runtimeProvenance.admittedDistClosureFingerprint,
   );
 });

@@ -134,7 +134,7 @@ export async function restartDaemonAndWait(params: RestartDaemonAndWaitParams = 
       : {
         env: {
           ...process.env,
-          HAPPIER_DAEMON_TAKEOVER: '1',
+          PIGGERCODE_DAEMON_TAKEOVER: '1',
         },
       }),
   });
@@ -174,7 +174,7 @@ export async function restartDaemonAndWait(params: RestartDaemonAndWaitParams = 
   }
 
   const stabilityTimeoutMs = readPositiveIntEnv(
-    'HAPPIER_DAEMON_RESTART_STABILITY_TIMEOUT_MS',
+    'PIGGERCODE_DAEMON_RESTART_STABILITY_TIMEOUT_MS',
     DEFAULT_DAEMON_RESTART_STABILITY_TIMEOUT_MS,
   );
   if (stabilityTimeoutMs > 0) {

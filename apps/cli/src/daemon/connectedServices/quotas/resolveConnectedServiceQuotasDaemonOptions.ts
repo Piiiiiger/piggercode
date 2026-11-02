@@ -34,29 +34,29 @@ export function resolveConnectedServiceQuotasDaemonOptions(env: NodeJS.ProcessEn
   loopJitterMs: number;
   groupSwitchCheckJitterMs: number;
 }> {
-  const parsed = parseTimeoutMs(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_FETCH_TIMEOUT_MS);
+  const parsed = parseTimeoutMs(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_FETCH_TIMEOUT_MS);
   const timeoutMs = parsed === null ? 15_000 : Math.max(1_000, Math.min(120_000, Math.trunc(parsed)));
 
-  const discoveryEnabled = parseOptionalBooleanEnv(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_DISCOVERY_ENABLED);
-  const discoveryIntervalParsed = parsePositiveInt(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_DISCOVERY_INTERVAL_MS);
+  const discoveryEnabled = parseOptionalBooleanEnv(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_DISCOVERY_ENABLED);
+  const discoveryIntervalParsed = parsePositiveInt(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_DISCOVERY_INTERVAL_MS);
   const discoveryIntervalMs =
     discoveryIntervalParsed === null ? 15 * 60_000 : Math.max(5_000, Math.min(30 * 60_000, Math.trunc(discoveryIntervalParsed)));
 
-  const failureMinParsed = parsePositiveInt(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_MIN_MS);
+  const failureMinParsed = parsePositiveInt(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_MIN_MS);
   const failureBackoffMinMs = failureMinParsed === null ? 30_000 : Math.max(1_000, Math.min(30 * 60_000, Math.trunc(failureMinParsed)));
 
-  const failureMaxParsed = parsePositiveInt(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_MAX_MS);
+  const failureMaxParsed = parsePositiveInt(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_MAX_MS);
   const failureBackoffMaxMsRaw = failureMaxParsed === null ? 10 * 60_000 : Math.max(1_000, Math.min(30 * 60_000, Math.trunc(failureMaxParsed)));
   const failureBackoffMaxMs = Math.max(failureBackoffMinMs, failureBackoffMaxMsRaw);
 
-  const jitterParsed = parseFloatValue(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_JITTER_PCT);
+  const jitterParsed = parseFloatValue(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_FAILURE_BACKOFF_JITTER_PCT);
   const failureBackoffJitterPct = jitterParsed === null ? 0.2 : Math.min(1, Math.max(0, jitterParsed));
 
-  const loopJitterParsed = parsePositiveInt(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_LOOP_JITTER_MS);
+  const loopJitterParsed = parsePositiveInt(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_LOOP_JITTER_MS);
   const loopJitterMs =
     loopJitterParsed === null ? 5_000 : Math.max(0, Math.min(60_000, Math.trunc(loopJitterParsed)));
 
-  const groupSwitchJitterParsed = parsePositiveInt(env.HAPPIER_CONNECTED_SERVICES_QUOTA_GROUP_SWITCH_CHECK_JITTER_MS);
+  const groupSwitchJitterParsed = parsePositiveInt(env.PIGGERCODE_CONNECTED_SERVICES_QUOTA_GROUP_SWITCH_CHECK_JITTER_MS);
   const groupSwitchCheckJitterMs =
     groupSwitchJitterParsed === null ? 30_000 : Math.max(0, Math.min(5 * 60_000, Math.trunc(groupSwitchJitterParsed)));
 

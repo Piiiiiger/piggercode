@@ -35,13 +35,13 @@ test('hstack stack auth copy-from skips pglite DB seed when lock is held by a li
     await writeFile(
       join(baseDir, 'env'),
       [
-        `HAPPIER_STACK_STACK=${name}`,
-        `HAPPIER_STACK_SERVER_COMPONENT=happier-server-light`,
-        `HAPPIER_DB_PROVIDER=pglite`,
-        `HAPPIER_STACK_REPO_DIR=${repoRoot}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
+        `PIGGERCODE_STACK_STACK=${name}`,
+        `PIGGERCODE_STACK_SERVER_COMPONENT=happier-server-light`,
+        `PIGGERCODE_DB_PROVIDER=pglite`,
+        `PIGGERCODE_STACK_REPO_DIR=${repoRoot}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${join(dataDir, 'files')}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${join(dataDir, 'pglite')}`,
         '',
       ].join('\n'),
       'utf-8'
@@ -65,11 +65,11 @@ test('hstack stack auth copy-from skips pglite DB seed when lock is held by a li
     const env = {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
-      HAPPIER_STACK_HOME_DIR: homeDir,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_STACK: 'dev',
-      HAPPIER_STACK_ENV_FILE: join(storageDir, 'dev', 'env'),
+      PIGGERCODE_STACK_HOME_DIR: homeDir,
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_STACK: 'dev',
+      PIGGERCODE_STACK_ENV_FILE: join(storageDir, 'dev', 'env'),
     };
 
     const res = await runNodeCapture([authScriptPath(rootDir), 'copy-from', 'dev-auth'], { cwd: rootDir, env });

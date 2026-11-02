@@ -97,31 +97,31 @@ function requireProviderOp<TOp>(
 }
 
 function resolveDefaultMaxBytes(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_PAGE_MAX_BYTES ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_BYTES ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 512_000;
   return Math.max(1024, Math.min(10 * 1024 * 1024, configured));
 }
 
 function resolveDefaultMaxItems(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 200;
   return Math.max(1, Math.min(5000, configured));
 }
 
 function resolveDefaultCandidatesLimit(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_CANDIDATES_DEFAULT_LIMIT ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_CANDIDATES_DEFAULT_LIMIT ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 50;
   return Math.max(1, Math.min(500, configured));
 }
 
 function resolveRecentActivityWindowMs(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_RECENT_ACTIVITY_WINDOW_MS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_RECENT_ACTIVITY_WINDOW_MS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 15_000;
   return Math.max(1000, Math.min(60 * 60 * 1000, configured));
 }
 
 function resolveDirectSessionAttachLeaseTtlMs(requestedTtlMs: number | undefined): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_ATTACH_LEASE_TTL_MS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_ATTACH_LEASE_TTL_MS ?? ''), 10);
   const defaultTtlMs = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 45_000;
   const configured = typeof requestedTtlMs === 'number' && Number.isFinite(requestedTtlMs) && requestedTtlMs > 0
     ? Math.trunc(requestedTtlMs)

@@ -12,7 +12,7 @@ describe('resolveAssetUrl', () => {
     beforeEach(() => {
         resetAssetIndexForTests();
         resetManifestRuntimeCacheForTests();
-        process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL = '';
     });
 
     afterEach(() => {
@@ -53,7 +53,7 @@ describe('resolveAssetUrl', () => {
 
     it('uses the local base URL in dev mode and exposes a remote fallback', () => {
         // Force "dev" without modifying the global flag.
-        process.env.EXPO_PUBLIC_HAPPIER_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL = 'http://127.0.0.1:4173/';
+        process.env.EXPO_PUBLIC_PIGGERCODE_RELEASE_NOTES_LOCAL_ASSETS_BASE_URL = 'http://127.0.0.1:4173/';
         const isDev = typeof __DEV__ !== 'undefined' && __DEV__ === true;
         const resolved = resolveAssetUrl('v1.0.0/hero.webp');
         if (isDev) {

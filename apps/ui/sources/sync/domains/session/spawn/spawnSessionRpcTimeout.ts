@@ -19,14 +19,14 @@ function readBoundedTimeoutMsFromEnv(raw: string, fallback: number): number {
 
 export function readSpawnSessionRpcTimeoutMsFromEnv(): number {
     return readBoundedTimeoutMsFromEnv(
-        String(process.env.EXPO_PUBLIC_HAPPIER_SPAWN_SESSION_RPC_TIMEOUT_MS ?? ''),
+        String(process.env.EXPO_PUBLIC_PIGGERCODE_SPAWN_SESSION_RPC_TIMEOUT_MS ?? ''),
         DEFAULT_SPAWN_SESSION_RPC_TIMEOUT_MS,
     );
 }
 
 export function readForkSessionRpcTimeoutMsFromEnv(): number {
     return readBoundedTimeoutMsFromEnv(
-        String(process.env.EXPO_PUBLIC_HAPPIER_FORK_SESSION_RPC_TIMEOUT_MS ?? ''),
+        String(process.env.EXPO_PUBLIC_PIGGERCODE_FORK_SESSION_RPC_TIMEOUT_MS ?? ''),
         DEFAULT_FORK_SESSION_RPC_TIMEOUT_MS,
     );
 }

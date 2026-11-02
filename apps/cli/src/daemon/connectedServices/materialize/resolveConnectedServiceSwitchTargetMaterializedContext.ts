@@ -1,7 +1,7 @@
 import type { ConnectedServiceMaterializationIdentityV1 } from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { resolveConnectedServiceMaterializedRootDir } from './resolveConnectedServiceMaterializedRootDir';
 import { resolveConnectedServiceTargetMaterializedRoot } from './resolveConnectedServiceTargetMaterializedRoot';
 
@@ -94,7 +94,7 @@ export function resolveConnectedServiceSwitchTargetMaterializedContext(input: Re
       targetMaterializedEnv: {
         ...(inheritedEnv ?? {}),
         ...(selectionContext.targetMaterializedEnv ?? {}),
-        [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: selectionRoot,
+        [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: selectionRoot,
       },
       targetMaterializedRoot: selectionRoot,
     };
@@ -121,7 +121,7 @@ export function resolveConnectedServiceSwitchTargetMaterializedContext(input: Re
     ? inheritedEnv
     : {
         ...(inheritedEnv ?? {}),
-        [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
+        [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: reconstructedRoot,
       };
 
   return {

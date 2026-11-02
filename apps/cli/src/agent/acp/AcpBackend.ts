@@ -215,7 +215,7 @@ function resolvePostPromptNoUpdatesTimeoutMs(transport: TransportHandler): numbe
   }
 
   const envValue =
-    readPositiveIntEnv('HAPPIER_ACP_POST_PROMPT_NO_UPDATES_TIMEOUT_MS') ??
+    readPositiveIntEnv('PIGGERCODE_ACP_POST_PROMPT_NO_UPDATES_TIMEOUT_MS') ??
     readPositiveIntEnv('HAPPY_ACP_POST_PROMPT_NO_UPDATES_TIMEOUT_MS');
   if (envValue != null) return envValue;
 
@@ -230,7 +230,7 @@ function resolvePromptLivenessTimeoutMs(transport: TransportHandler): number | n
   }
 
   const envValue =
-    readPositiveIntEnv('HAPPIER_ACP_PROMPT_LIVENESS_TIMEOUT_MS') ??
+    readPositiveIntEnv('PIGGERCODE_ACP_PROMPT_LIVENESS_TIMEOUT_MS') ??
     readPositiveIntEnv('HAPPY_ACP_PROMPT_LIVENESS_TIMEOUT_MS');
   if (envValue != null) return envValue;
 
@@ -244,7 +244,7 @@ function resolvePostToolCallIdleTimeoutMs(transport: TransportHandler): number {
   }
 
   const envValue =
-    readPositiveIntEnv('HAPPIER_ACP_POST_TOOL_IDLE_TIMEOUT_MS') ??
+    readPositiveIntEnv('PIGGERCODE_ACP_POST_TOOL_IDLE_TIMEOUT_MS') ??
     readPositiveIntEnv('HAPPY_ACP_POST_TOOL_IDLE_TIMEOUT_MS');
   if (envValue != null) return envValue;
 
@@ -258,7 +258,7 @@ function resolveIdleWithoutAssistantMessageTimeoutMs(transport: TransportHandler
   }
 
   const envValue =
-    readPositiveIntEnv('HAPPIER_ACP_IDLE_WITHOUT_ASSISTANT_MESSAGE_TIMEOUT_MS') ??
+    readPositiveIntEnv('PIGGERCODE_ACP_IDLE_WITHOUT_ASSISTANT_MESSAGE_TIMEOUT_MS') ??
     readPositiveIntEnv('HAPPY_ACP_IDLE_WITHOUT_ASSISTANT_MESSAGE_TIMEOUT_MS');
   if (envValue != null) return envValue;
 
@@ -531,7 +531,7 @@ export function isAcpFsEnabled(): boolean {
   // Default ON: ACP agents that support the `fs` capability will route file reads/writes
   // through the client (Happier). This is the only reliable way for Happier to enforce
   // workspace boundaries for ACP backends.
-  const raw = process.env.HAPPIER_ACP_FS;
+  const raw = process.env.PIGGERCODE_ACP_FS;
   if (raw === undefined) return true;
   return isTruthyEnv(raw);
 }
@@ -1307,12 +1307,12 @@ export class AcpBackend implements AgentBackend {
     const transport = this.transport;
 
     const droppedStdoutCapture = (() => {
-      if (!isTruthyEnv(process.env.HAPPIER_ACP_CAPTURE_IO)) return null;
-      const traceFile = (process.env.HAPPIER_STACK_TOOL_TRACE_FILE ?? '').toString().trim();
+      if (!isTruthyEnv(process.env.PIGGERCODE_ACP_CAPTURE_IO)) return null;
+      const traceFile = (process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE ?? '').toString().trim();
       const baseDir = traceFile ? dirname(traceFile) : null;
       if (!baseDir) return null;
 
-      const maxBytesRaw = (process.env.HAPPIER_ACP_CAPTURE_DROPPED_MAX_BYTES ?? '').toString().trim();
+      const maxBytesRaw = (process.env.PIGGERCODE_ACP_CAPTURE_DROPPED_MAX_BYTES ?? '').toString().trim();
       const maxBytes = (() => {
         const n = Number(maxBytesRaw);
         return Number.isFinite(n) && n > 0 ? Math.trunc(n) : 2_000_000;
@@ -1350,7 +1350,7 @@ export class AcpBackend implements AgentBackend {
       }
     })();
 
-    const maxMultilineBytesRaw = (process.env.HAPPIER_ACP_MULTILINE_JSON_MAX_BYTES ?? '').toString().trim();
+    const maxMultilineBytesRaw = (process.env.PIGGERCODE_ACP_MULTILINE_JSON_MAX_BYTES ?? '').toString().trim();
     const maxMultilineBytes = (() => {
       const n = Number(maxMultilineBytesRaw);
       return Number.isFinite(n) && n > 0 ? Math.trunc(n) : undefined;
@@ -2196,7 +2196,7 @@ export class AcpBackend implements AgentBackend {
 
     const maxUpdatesPerNotification = (() => {
       const rawMax =
-        process.env.HAPPIER_ACP_MAX_UPDATES_PER_NOTIFICATION ??
+        process.env.PIGGERCODE_ACP_MAX_UPDATES_PER_NOTIFICATION ??
         process.env.HAPPY_ACP_MAX_UPDATES_PER_NOTIFICATION ??
         '';
       const parsed = Number.parseInt(String(rawMax).trim(), 10);
@@ -2278,7 +2278,7 @@ export class AcpBackend implements AgentBackend {
     }
 
     const isGeminiAcpDebugEnabled = (() => {
-      const flag = process.env.HAPPIER_STACK_GEMINI_ACP_DEBUG;
+      const flag = process.env.PIGGERCODE_STACK_GEMINI_ACP_DEBUG;
       return flag === '1' || flag === 'true';
     })();
 

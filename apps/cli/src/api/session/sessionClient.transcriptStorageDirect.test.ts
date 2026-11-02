@@ -73,7 +73,7 @@ vi.mock('@piggercode/connection-supervisor', () => ({
   }),
 }));
 
-describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
+describe('ApiSessionClient (PIGGERCODE_TRANSCRIPT_STORAGE=direct)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     sessionTransportParamsHistory.length = 0;
@@ -101,7 +101,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -136,7 +136,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -158,7 +158,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -184,7 +184,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -214,7 +214,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -237,7 +237,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
@@ -294,7 +294,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
@@ -351,7 +351,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
     const session = createPlainSessionFixture({ id: 's1' });
@@ -394,7 +394,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
     const session = createPlainSessionFixture({ id: 's1' });
@@ -427,7 +427,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
     const currentConnectionState = await getCurrentConnectionState();
@@ -448,7 +448,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -477,7 +477,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -504,7 +504,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -533,7 +533,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -562,7 +562,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -595,7 +595,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 
@@ -618,7 +618,7 @@ describe('ApiSessionClient (HAPPIER_TRANSCRIPT_STORAGE=direct)', () => {
     sessionSocketStub = createApiSessionSocketStub({ connected: true });
     userSocketStub = createApiSessionSocketStub({ connected: true });
 
-    vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+    vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
 
     const { ApiSessionClient } = await import('./sessionClient');
 

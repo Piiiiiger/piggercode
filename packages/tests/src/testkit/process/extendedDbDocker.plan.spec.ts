@@ -63,14 +63,14 @@ describe('extended db docker plan', () => {
     expect(e2e[0].kind).toBe('prebuild-cli-shared');
     expect(e2e[1].kind).toBe('prebuild-cli');
     expect(e2e[2].kind).toBe('e2e');
-    expect(e2e[2].env.HAPPIER_E2E_DB_PROVIDER).toBe('postgres');
+    expect(e2e[2].env.PIGGERCODE_E2E_DB_PROVIDER).toBe('postgres');
     expect(e2e[2].env.DATABASE_URL).toBe(databaseUrl);
 
     const contract = buildExtendedDbCommandPlan({ db: 'mysql', mode: 'contract', databaseUrl: 'mysql://root:happier@127.0.0.1:3306/happier' });
     expect(contract).toHaveLength(2);
     expect(contract[0].kind).toBe('migrate');
     expect(contract[1].kind).toBe('contract');
-    expect(contract[1].env.HAPPIER_DB_PROVIDER).toBe('mysql');
+    expect(contract[1].env.PIGGERCODE_DB_PROVIDER).toBe('mysql');
   });
 
   it('plans the correct yarn commands for extended mode (all steps)', () => {
@@ -80,12 +80,12 @@ describe('extended db docker plan', () => {
     expect(extended[0].kind).toBe('prebuild-cli-shared');
     expect(extended[1].kind).toBe('prebuild-cli');
     expect(extended[2].kind).toBe('e2e');
-    expect(extended[2].env.HAPPIER_E2E_DB_PROVIDER).toBe('postgres');
+    expect(extended[2].env.PIGGERCODE_E2E_DB_PROVIDER).toBe('postgres');
     expect(extended[2].env.DATABASE_URL).toBe(databaseUrl);
     expect(extended[3].kind).toBe('migrate');
     expect(extended[3].env.DATABASE_URL).toBe(databaseUrl);
     expect(extended[4].kind).toBe('contract');
-    expect(extended[4].env.HAPPIER_DB_PROVIDER).toBe('postgres');
+    expect(extended[4].env.PIGGERCODE_DB_PROVIDER).toBe('postgres');
     expect(extended[4].env.DATABASE_URL).toBe(databaseUrl);
   });
 

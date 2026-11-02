@@ -24,9 +24,9 @@ vi.mock('axios');
 
 let tempDir: string | null = null;
 let openJournals: SessionMutationJournal[] = [];
-const originalMaxAttempts = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
-const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+const originalMaxAttempts = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
+const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
 
 async function createJournal(sessionId: string, options: Readonly<{
     observationResult?: 'observed' | 'retryable';
@@ -147,21 +147,21 @@ describe('session mutation causal safety V4 RED', () => {
     beforeEach(async () => {
         vi.mocked(axios.post).mockReset();
         tempDir = await mkdtemp(join(tmpdir(), 'happier-session-causal-outbox-red-'));
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '100';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '100';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
     });
 
     afterEach(async () => {
         for (const journal of openJournals.splice(0)) {
             await journal.close().catch(() => {});
         }
-        if (originalMaxAttempts === undefined) delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
-        else process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = originalMaxAttempts;
-        if (originalBaseRetryMs === undefined) delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-        else process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
-        if (originalJitterMs === undefined) delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-        else process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        if (originalMaxAttempts === undefined) delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS;
+        else process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = originalMaxAttempts;
+        if (originalBaseRetryMs === undefined) delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        else process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        if (originalJitterMs === undefined) delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        else process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
         if (tempDir) await rm(tempDir, { recursive: true, force: true });
         tempDir = null;
     });
@@ -242,7 +242,7 @@ describe('session mutation causal safety V4 RED', () => {
     });
 
     it('retains exact provider output content instead of reducing it to an unrecoverable summary after retry exhaustion', async () => {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_MAX_ATTEMPTS = '1';
         vi.mocked(axios.post).mockRejectedValue({ response: { status: 503 } });
         const { journal, queuePath, deadLetterPath } = await createJournal('no-silent-loss', {
             observationResult: 'retryable',

@@ -1,4 +1,4 @@
-export const HAPPIER_AUGGIE_ALLOW_INDEXING_ENV_VAR = 'HAPPIER_AUGGIE_ALLOW_INDEXING' as const;
+export const PIGGERCODE_AUGGIE_ALLOW_INDEXING_ENV_VAR = 'PIGGERCODE_AUGGIE_ALLOW_INDEXING' as const;
 
 export const AUGGIE_ALLOW_INDEXING_METADATA_KEY = 'auggieAllowIndexing' as const;
 
@@ -9,7 +9,7 @@ export function applyAuggieAllowIndexingEnv(
     allowIndexing: boolean,
 ): Record<string, string> | undefined {
     if (allowIndexing !== true) return env;
-    return { ...(env ?? {}), [HAPPIER_AUGGIE_ALLOW_INDEXING_ENV_VAR]: '1' };
+    return { ...(env ?? {}), [PIGGERCODE_AUGGIE_ALLOW_INDEXING_ENV_VAR]: '1' };
 }
 
 export function readAuggieAllowIndexingFromMetadata(metadata: unknown): boolean | null {

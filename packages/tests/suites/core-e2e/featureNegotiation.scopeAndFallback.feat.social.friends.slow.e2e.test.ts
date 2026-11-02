@@ -20,9 +20,9 @@ describe('core e2e: feature negotiation scope and fallback', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '0',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__IDENTITY_PROVIDER: 'github',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '0',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__IDENTITY_PROVIDER: 'github',
       },
     });
 
@@ -46,8 +46,8 @@ describe('core e2e: feature negotiation scope and fallback', () => {
     server = await startServerLight({
       testDir,
       extraEnv: {
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
-        HAPPIER_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ENABLED: '1',
+        PIGGERCODE_FEATURE_SOCIAL_FRIENDS__ALLOW_USERNAME: '1',
       },
     });
 

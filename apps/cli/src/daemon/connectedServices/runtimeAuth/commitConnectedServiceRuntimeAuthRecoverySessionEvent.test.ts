@@ -7,7 +7,7 @@ import * as sessionSockets from '@/api/session/sockets';
 
 describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
   it('persists the scheduler wait before acknowledging its visible event', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     let metadata: Record<string, unknown> = { path: '/project', unrelated: true };
     const socket = createApiSessionSocketStub({
       onConnect: (connected) => connected.trigger('connect'),
@@ -75,16 +75,16 @@ describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
     expect(first).toMatch(/^connected-service-runtime-auth-recovery:/);
     expect(first.length).toBeLessThan(200);
   });
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
   });
 
   it('rejects a missing session snapshot so durable delivery remains pending without an HTTP commit ACK', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     const {
       commitConnectedServiceRuntimeAuthRecoverySessionEvent,
     } = await import('./commitConnectedServiceRuntimeAuthRecoverySessionEvent');
@@ -130,7 +130,7 @@ describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
   });
 
   it('commits typed runtime-auth recovery dead-letter events through the session event outbox owner', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     const {
       commitConnectedServiceRuntimeAuthRecoverySessionEvent,
     } = await import('./commitConnectedServiceRuntimeAuthRecoverySessionEvent');
@@ -238,7 +238,7 @@ describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
   });
 
   it('uses a deterministic local id for repeated runtime-auth recovery events', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     const {
       commitConnectedServiceRuntimeAuthRecoverySessionEvent,
     } = await import('./commitConnectedServiceRuntimeAuthRecoverySessionEvent');
@@ -320,7 +320,7 @@ describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
   });
 
   it('does not treat retry schedule drift as a new runtime-auth recovery event row', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     const {
       commitConnectedServiceRuntimeAuthRecoverySessionEvent,
     } = await import('./commitConnectedServiceRuntimeAuthRecoverySessionEvent');
@@ -417,7 +417,7 @@ describe('commitConnectedServiceRuntimeAuthRecoverySessionEvent', () => {
   });
 
   it('reuses the same local id when the same runtime-auth recovery incident is retried', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     const {
       commitConnectedServiceRuntimeAuthRecoverySessionEvent,
     } = await import('./commitConnectedServiceRuntimeAuthRecoverySessionEvent');

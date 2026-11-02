@@ -4,7 +4,7 @@
 # as the button that opens the form; others render the form already expanded.
 # Only tap a launcher affordance when the Connect form is not already visible.
 #
-appId: ${HAPPIER_E2E_MOBILE_APP_ID}
+appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 ---
 - runFlow:
     when:
@@ -29,7 +29,7 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 - assertVisible: "Connect"
 - tapOn: "(http://localhost:8081|exp://)"
 - eraseText
-- setClipboard: ${HAPPIER_E2E_DEV_CLIENT_METRO_URL}
+- setClipboard: ${PIGGERCODE_E2E_DEV_CLIENT_METRO_URL}
 - pasteText
 - hideKeyboard
 - tapOn: "Connect"

@@ -26,7 +26,7 @@ vi.mock('node:child_process', async (importOriginal) => ({
 
 import { runHerdrAttach } from './herdrAttach';
 
-const envScope = createEnvKeyScope(['HERDR_PANE_ID', 'HERDR_SOCKET_PATH', 'XDG_CONFIG_HOME', 'HAPPIER_CLAUDE_UNIFIED_TERMINAL_HOST_ACTION_TIMEOUT_MS']);
+const envScope = createEnvKeyScope(['HERDR_PANE_ID', 'HERDR_SOCKET_PATH', 'XDG_CONFIG_HOME', 'PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_HOST_ACTION_TIMEOUT_MS']);
 
 beforeEach(() => {
   envScope.patch({ HERDR_PANE_ID: undefined, HERDR_SOCKET_PATH: undefined });
@@ -48,7 +48,7 @@ describe('runHerdrAttach server admission', () => {
       await api.stop();
       api.panes.add('managed');
       envScope.patch({ XDG_CONFIG_HOME: join(root, 'ambient') });
-      if (delayed) { envScope.patch({ HAPPIER_CLAUDE_UNIFIED_TERMINAL_HOST_ACTION_TIMEOUT_MS: '100' }); reloadConfiguration(); }
+      if (delayed) { envScope.patch({ PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_HOST_ACTION_TIMEOUT_MS: '100' }); reloadConfiguration(); }
       let running = false;
       let startup: Promise<void> | null = null;
       boundary.sessionList.mockImplementation((env?: NodeJS.ProcessEnv) => [

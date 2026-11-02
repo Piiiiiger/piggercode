@@ -11,7 +11,7 @@ const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 test('UI manifest declares every local postinstall input through the canonical install freshness owner', async () => {
   const packageJson = JSON.parse(await readFile(join(packageRoot, 'package.json'), 'utf8'));
   const declaredInputs = packageJson?.happier?.installFreshnessInputs;
-  const tasks = resolveUiPostinstallTasks({ env: { HAPPIER_UI_VENDOR_WEB_ASSETS: '1' } });
+  const tasks = resolveUiPostinstallTasks({ env: { PIGGERCODE_UI_VENDOR_WEB_ASSETS: '1' } });
   // Empty task entries consume installed-package bytes only. The canonical owner
   // already snapshots this package manifest and the repository lockfile.
   const localInputsByTask = new Map([

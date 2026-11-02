@@ -20,8 +20,8 @@ export default defineConfig({
     // These suites are process/socket heavy and should run deterministically.
     fileParallelism: false,
     env: {
-      HAPPIER_FEATURE_POLICY_ENV: '',
-      HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_FEATURE_POLICY_ENV: '',
+      PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
     },
   },
 });

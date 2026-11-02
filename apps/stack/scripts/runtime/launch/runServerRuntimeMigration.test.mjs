@@ -31,7 +31,7 @@ test('migration terminal success precedes exactly one normal server spawn and th
   const { spec, command, serverDir } = await fixture(t);
   const events = [];
   const children = [];
-  const env = { HAPPIER_DB_PROVIDER: 'postgresql', DATABASE_URL: 'postgresql://fixture' };
+  const env = { PIGGERCODE_DB_PROVIDER: 'postgresql', DATABASE_URL: 'postgresql://fixture' };
   const server = { pid: 202 };
   const spawnProcImpl = (label, spawnedCommand, args, spawnedEnv, options) => {
     events.push({ label, command: spawnedCommand, args, env: spawnedEnv, cwd: options.cwd });
@@ -54,7 +54,7 @@ test('an explicit in-process migration contract starts the server without requir
 
   assert.equal(await spawnRuntimeServerAfterMigration({
     serverLaunchSpec: inProcessSpec,
-    env: { HAPPIER_DB_PROVIDER: 'sqlite' },
+    env: { PIGGERCODE_DB_PROVIDER: 'sqlite' },
     children: [],
     spawnProcImpl: (label, command, args, env, options) => {
       events.push({ label, command, args, env, cwd: options.cwd });
@@ -65,7 +65,7 @@ test('an explicit in-process migration contract starts the server without requir
     label: 'server',
     command: spec.command,
     args: [],
-    env: { HAPPIER_DB_PROVIDER: 'sqlite' },
+    env: { PIGGERCODE_DB_PROVIDER: 'sqlite' },
     cwd: serverDir,
   }]);
 });
@@ -78,7 +78,7 @@ test('an explicit disabled migration contract starts without resolving a sidecar
 
   assert.equal(await spawnRuntimeServerAfterMigration({
     serverLaunchSpec: disabledSpec,
-    env: { HAPPIER_DB_PROVIDER: 'postgres', RUN_MIGRATIONS: '0' },
+    env: { PIGGERCODE_DB_PROVIDER: 'postgres', RUN_MIGRATIONS: '0' },
     children: [],
     spawnProcImpl: (label) => {
       labels.push(label);

@@ -232,9 +232,9 @@ describe('Antigravity connected-service materialization through the catalog', ()
       const result = await materializeConnectedServicesForSpawn({
         agentId: 'agy', materializationKey: 'issuer', activeServerDir: cwd, baseDir: join(cwd, 'materialized'), sessionDirectory: cwd,
         processEnv: { HOME: cwd,
-          HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID: 'fixture-client',
-          HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET: 'fixture-client-secret',
-          HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL: 'https://issuer.example.test/token',
+          PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID: 'fixture-client',
+          PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET: 'fixture-client-secret',
+          PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL: 'https://issuer.example.test/token',
         }, recordsByServiceId: new Map([['antigravity', record]]),
       });
       expect(JSON.parse(await readFile(join(result!.env.GEMINI_HOME, 'antigravity-acp', 'acp_token.json'), 'utf8'))).toMatchObject({

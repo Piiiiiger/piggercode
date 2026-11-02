@@ -189,7 +189,7 @@ describe("startSocket planned shutdown machine presence", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         socketTestMocks.shutdownHandlers.clear();
-        process.env.HAPPIER_SOCKET_ADAPTER = "memory";
+        process.env.PIGGERCODE_SOCKET_ADAPTER = "memory";
     });
 
     it("broadcasts machine inactive on ordinary machine socket disconnect", async () => {

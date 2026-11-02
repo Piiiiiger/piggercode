@@ -5,7 +5,7 @@ import type { CliAuthSpec } from '@/backends/types';
 const DEFAULT_COPILOT_CLI_AUTH_PROBE_TIMEOUT_MS = 1_500;
 
 function resolveCopilotCliAuthProbeTimeoutMs(): number {
-  const raw = process.env.HAPPIER_COPILOT_CLI_AUTH_PROBE_TIMEOUT_MS;
+  const raw = process.env.PIGGERCODE_COPILOT_CLI_AUTH_PROBE_TIMEOUT_MS;
   const normalized = typeof raw === 'string' ? raw.replaceAll('_', '').trim() : '';
   const parsed = normalized ? Number(normalized) : Number.NaN;
   if (Number.isFinite(parsed) && parsed > 0) {

@@ -21,7 +21,7 @@ test.describe('ui e2e: setup control panel flow', () => {
         EXPO_PUBLIC_DEBUG: '1',
         EXPO_PUBLIC_HAPPY_SERVER_URL: '',
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-${run.runId}`,
-        HAPPIER_E2E_UI_WEB_MODE: 'metro',
+        PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
     };
 
     test.beforeAll(async () => {
@@ -32,7 +32,7 @@ test.describe('ui e2e: setup control panel flow', () => {
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
             },
         });
 

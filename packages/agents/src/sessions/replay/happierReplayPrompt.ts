@@ -607,7 +607,7 @@ const SESSION_TITLE_BUDGET_SHARE = 16;
  * on the way out. Reserving the block's own hard bound up front makes that
  * refit a no-op in the normal case instead of a third, unplanned truncation.
  */
-export const HAPPIER_REPLAY_SEED_DISPATCH_RESERVED_CHARS = MENTION_BOUNDS.maxReferenceBlockChars + 2;
+export const PIGGERCODE_REPLAY_SEED_DISPATCH_RESERVED_CHARS = MENTION_BOUNDS.maxReferenceBlockChars + 2;
 
 /**
  * One rendered transcript line's exact cost, escaping included.

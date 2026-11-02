@@ -1,5 +1,5 @@
 export function readServerReachabilityWaitTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS ?? '').trim();
     if (!raw) return 15_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 15_000;
@@ -7,7 +7,7 @@ export function readServerReachabilityWaitTimeoutMs(): number {
 }
 
 export function readServerReachabilityProbeTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_PROBE_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_PROBE_TIMEOUT_MS ?? '').trim();
     if (!raw) return 5_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 5_000;
@@ -20,7 +20,7 @@ export function readServerReachabilityProbeTimeoutMs(): number {
  * writes must not inherit this policy.
  */
 export function readServerFetchWriteTimeoutMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SERVER_WRITE_TIMEOUT_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_WRITE_TIMEOUT_MS ?? '').trim();
     if (!raw) return 120_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 120_000;
@@ -28,7 +28,7 @@ export function readServerFetchWriteTimeoutMs(): number {
 }
 
 export function readServerReachabilityBackgroundRetryMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_BACKGROUND_RETRY_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_BACKGROUND_RETRY_MS ?? '').trim();
     if (!raw) return 10_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 10_000;

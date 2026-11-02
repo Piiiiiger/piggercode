@@ -13,7 +13,7 @@ type AcpBackendLike = {
   };
 };
 
-const envKeys = ['PATH', 'HAPPIER_QWEN_PATH'] as const;
+const envKeys = ['PATH', 'PIGGERCODE_QWEN_PATH'] as const;
 const TEMP_DIRS = new Set<string>();
 let envScope = createEnvKeyScope(envKeys);
 
@@ -37,7 +37,7 @@ afterEach(() => {
 
 function readArgs(permissionMode: PermissionMode | undefined): string[] {
   process.env.PATH = '';
-  process.env.HAPPIER_QWEN_PATH = createFakeBin('qwen');
+  process.env.PIGGERCODE_QWEN_PATH = createFakeBin('qwen');
   const backend = createQwenBackend({
     cwd: '/tmp',
     env: {},
@@ -49,7 +49,7 @@ function readArgs(permissionMode: PermissionMode | undefined): string[] {
 describe('Qwen ACP backend permissions', () => {
   it('fails closed when the Qwen CLI is unavailable', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_QWEN_PATH;
+    delete process.env.PIGGERCODE_QWEN_PATH;
 
     expect(() => createQwenBackend({ cwd: '/tmp', env: {} })).toThrow(/system install/i);
   });
@@ -73,7 +73,7 @@ describe('Qwen ACP backend permissions', () => {
 
   it('resolves the CLI from options.env PATH when process PATH is empty', () => {
     process.env.PATH = '';
-    delete process.env.HAPPIER_QWEN_PATH;
+    delete process.env.PIGGERCODE_QWEN_PATH;
     const binPath = createFakeBin('qwen');
 
     const backend = createQwenBackend({

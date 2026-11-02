@@ -5,7 +5,7 @@
  * - Captures any emitted tool_use names so we can keep Happier normalization in sync.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.toolNames.realProbe.test.ts
+ *   PIGGERCODE_TEST_REAL_CLAUDE=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.toolNames.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';
@@ -15,12 +15,12 @@ import {
   runRealClaudeCliStreamJsonProbe,
 } from '../../src/testkit/providers/claude/realClaudeCliProbe';
 
-const ENABLED = process.env.HAPPIER_TEST_REAL_CLAUDE === '1';
-const FULL_PROBE = process.env.HAPPIER_TEST_REAL_CLAUDE_FULL === '1';
+const ENABLED = process.env.PIGGERCODE_TEST_REAL_CLAUDE === '1';
+const FULL_PROBE = process.env.PIGGERCODE_TEST_REAL_CLAUDE_FULL === '1';
 
 describe('real Claude Agent Teams tool name probe', () => {
   if (!ENABLED) {
-    it.skip('requires HAPPIER_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
+    it.skip('requires PIGGERCODE_TEST_REAL_CLAUDE=1 (opt-in)', () => {});
     return;
   }
 

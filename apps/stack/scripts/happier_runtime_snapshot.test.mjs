@@ -37,12 +37,12 @@ test('hstack happier uses the active runtime snapshot when runtime mode is requi
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: fixture.root,
-    HAPPIER_HOME_DIR: join(fixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.root,
+    PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
@@ -69,12 +69,12 @@ test('hstack happier uses source CLI for an active source-backed stack even when
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: runtimeFixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: runtimeFixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(runtimeFixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: sourceFixture.repoRoot,
-    HAPPIER_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: runtimeFixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: runtimeFixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(runtimeFixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: sourceFixture.repoRoot,
+    PIGGERCODE_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
@@ -113,12 +113,12 @@ test('hstack happier does not let stale source-backed runtime state weaken requi
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: runtimeFixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: runtimeFixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(runtimeFixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: sourceFixture.repoRoot,
-    HAPPIER_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: runtimeFixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: runtimeFixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(runtimeFixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: sourceFixture.repoRoot,
+    PIGGERCODE_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
@@ -137,12 +137,12 @@ test('hstack happier runs runtime snapshot JS entrypoints through node', async (
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: fixture.root,
-    HAPPIER_HOME_DIR: join(fixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.root,
+    PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
@@ -157,19 +157,19 @@ test('hstack happier projects admitted runtime provenance to the nested runtime 
     cliEntrypoint: 'cli/happier.mjs',
     cliSource: [
       'process.stdout.write(JSON.stringify({',
-      '  runtimeBacked: process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED ?? null,',
-      '  distEntrypoint: process.env.HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT ?? null,',
-      '  fingerprint: process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? null,',
+      '  runtimeBacked: process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED ?? null,',
+      '  distEntrypoint: process.env.PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT ?? null,',
+      '  fingerprint: process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? null,',
       '}) + "\\n");',
     ].join('\n'),
   });
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_HOME_DIR: join(fixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--version'], { cwd: rootDir, env });
@@ -190,11 +190,11 @@ test('hstack happier does not forward --runtime to the wrapped runtime CLI', asy
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: fixture.root,
-    HAPPIER_HOME_DIR: join(fixture.root, '.happy-home'),
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.root,
+    PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--runtime', 'session', 'run', 'list'], { cwd: rootDir, env });
@@ -210,9 +210,9 @@ test('hstack happier forwards snapshot-aware daemon service runtime paths to the
     cliSource: [
       'process.stdout.write(JSON.stringify({',
       '  argv: process.argv.slice(2),',
-      '  homeDir: process.env.HAPPIER_HOME_DIR ?? null,',
-      '  nodePath: process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH ?? null,',
-      '  entryPath: process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH ?? null,',
+      '  homeDir: process.env.PIGGERCODE_HOME_DIR ?? null,',
+      '  nodePath: process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH ?? null,',
+      '  entryPath: process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH ?? null,',
       '}) + "\\n");',
     ].join('\n'),
   });
@@ -223,13 +223,13 @@ test('hstack happier forwards snapshot-aware daemon service runtime paths to the
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'require',
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: fixture.root,
-    HAPPIER_HOME_DIR: join(fixture.root, '.happy-home'),
-    HAPPIER_JS_RUNTIME_PATH: runtimeBinary,
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'require',
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.root,
+    PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
+    PIGGERCODE_JS_RUNTIME_PATH: runtimeBinary,
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), 'service', 'install', '--dry-run', '--json'], { cwd: rootDir, env });
@@ -248,9 +248,9 @@ test('hstack happier does not forward --source to the wrapped source CLI', async
 
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_REPO_DIR: fixture.repoRoot,
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
-    HAPPIER_HOME_DIR: join(fixture.repoRoot, '.happy-home'),
+    PIGGERCODE_STACK_REPO_DIR: fixture.repoRoot,
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_HOME_DIR: join(fixture.repoRoot, '.happy-home'),
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--source', 'session', 'run', 'list'], { cwd: rootDir, env });
@@ -261,16 +261,16 @@ test('hstack happier does not forward --source to the wrapped source CLI', async
 test('hstack happier source mode clears stale inherited runtime provenance', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createSourceCliFixture(t, {
-    cliSource: 'process.stdout.write(JSON.stringify({ runtimeBacked: process.env.HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED ?? null, fingerprint: process.env.HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? null }) + "\\n");\n',
+    cliSource: 'process.stdout.write(JSON.stringify({ runtimeBacked: process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED ?? null, fingerprint: process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? null }) + "\\n");\n',
   });
   const env = {
     ...sanitizeStackTestRunnerEnv(process.env),
-    HAPPIER_STACK_REPO_DIR: fixture.repoRoot,
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
-    HAPPIER_HOME_DIR: join(fixture.repoRoot, '.happy-home'),
-    HAPPIER_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
-    HAPPIER_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stale/runtime/index.mjs',
-    HAPPIER_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
+    PIGGERCODE_STACK_REPO_DIR: fixture.repoRoot,
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_HOME_DIR: join(fixture.repoRoot, '.happy-home'),
+    PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED: '1',
+    PIGGERCODE_CLI_SUBPROCESS_DIST_ENTRYPOINT: '/stale/runtime/index.mjs',
+    PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--source', '--version'], { cwd: rootDir, env });

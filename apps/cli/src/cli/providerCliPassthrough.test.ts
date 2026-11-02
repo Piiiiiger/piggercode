@@ -42,10 +42,10 @@ import { maybePassthroughProviderCliInfoRequest } from './providerCliPassthrough
 
 const envKeys = [
   'PATH',
-  'HAPPIER_GEMINI_PATH',
-  'HAPPIER_JS_RUNTIME_PATH',
-  'HAPPIER_MANAGED_NODE_BIN',
-  'HAPPIER_NODE_PATH',
+  'PIGGERCODE_GEMINI_PATH',
+  'PIGGERCODE_JS_RUNTIME_PATH',
+  'PIGGERCODE_MANAGED_NODE_BIN',
+  'PIGGERCODE_NODE_PATH',
 ] as const;
 
 const tempDirs = new Set<string>();
@@ -138,7 +138,7 @@ describe('maybePassthroughProviderCliInfoRequest', () => {
     );
 
     process.env.PATH = pathDir;
-    process.env.HAPPIER_JS_RUNTIME_PATH = runtimePath;
+    process.env.PIGGERCODE_JS_RUNTIME_PATH = runtimePath;
     if (process.platform === 'win32') {
       spawnSyncMock.mockReturnValueOnce(successfulSpawnResult());
     }
@@ -146,7 +146,7 @@ describe('maybePassthroughProviderCliInfoRequest', () => {
     const handled = maybePassthroughProviderCliInfoRequest({
       agentId: 'gemini',
       args: ['--help'],
-      processEnv: { ...process.env, PATH: pathDir, HAPPIER_JS_RUNTIME_PATH: runtimePath },
+      processEnv: { ...process.env, PATH: pathDir, PIGGERCODE_JS_RUNTIME_PATH: runtimePath },
     });
 
     expect(handled).toBe(true);
@@ -190,7 +190,7 @@ describe('maybePassthroughProviderCliInfoRequest', () => {
       args: ['--help'],
       processEnv: {
         ...process.env,
-        HAPPIER_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
+        PIGGERCODE_OPENCODE_PATH: 'C:\\Users\\natan\\AppData\\Roaming\\npm\\opencode.CMD',
         ComSpec: 'C:\\Windows\\System32\\cmd.exe',
       },
     });

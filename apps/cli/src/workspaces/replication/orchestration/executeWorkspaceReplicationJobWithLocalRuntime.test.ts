@@ -182,9 +182,9 @@ describe('executeWorkspaceReplicationJobWithLocalRuntime', () => {
         const targetWorkspaceRoot = await mkdtemp(join(tmpdir(), 'happier-replication-job-target-workspace-progress-'));
 
         try {
-            const originalBlobPackTargetBytes = process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
+            const originalBlobPackTargetBytes = process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
             // Keep the test fast by forcing small pack boundaries instead of creating hundreds of blobs.
-            process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '1';
+            process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '1';
             const configMod = await import('@/configuration');
             configMod.reloadConfiguration();
 
@@ -340,7 +340,7 @@ describe('executeWorkspaceReplicationJobWithLocalRuntime', () => {
                     transferredBytes: totalBytes,
                 });
             } finally {
-                process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = originalBlobPackTargetBytes;
+                process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = originalBlobPackTargetBytes;
                 configMod.reloadConfiguration();
             }
         } finally {
@@ -643,8 +643,8 @@ describe('executeWorkspaceReplicationJobWithLocalRuntime', () => {
     });
 
     it('aborts when cancellation is requested mid-transfer (between blob packs)', async () => {
-        const previousTargetBytes = process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
-        process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '1';
+        const previousTargetBytes = process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
+        process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = '1';
         vi.resetModules();
 
         const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-replication-job-cancel-target-'));
@@ -786,9 +786,9 @@ describe('executeWorkspaceReplicationJobWithLocalRuntime', () => {
             expect(result.status.status).toBe('aborted');
         } finally {
             if (previousTargetBytes === undefined) {
-                delete process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
+                delete process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES;
             } else {
-                process.env.HAPPIER_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = previousTargetBytes;
+                process.env.PIGGERCODE_WORKSPACE_REPLICATION_BLOB_PACK_TARGET_BYTES = previousTargetBytes;
             }
             await rm(activeServerDir, { recursive: true, force: true }).catch(() => undefined);
             await rm(sourceActiveServerDir, { recursive: true, force: true }).catch(() => undefined);

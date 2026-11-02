@@ -120,7 +120,7 @@ describe('core e2e: direct Codex app-server sessions browse/link/tail', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
     });
     const auth = await createTestAuth(server.baseUrl);
@@ -139,12 +139,12 @@ describe('core e2e: direct Codex app-server sessions browse/link/tail', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: server.baseUrl,
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
         CODEX_HOME: codexHomeDir,
-        HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 

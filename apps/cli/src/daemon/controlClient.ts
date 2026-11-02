@@ -90,11 +90,11 @@ const DEFAULT_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS = 10_000;
 const DAEMON_STATE_FRESHNESS_GRACE_MS = 60_000;
 const DAEMON_LOCK_UNCLASSIFIED_STARTUP_GRACE_MS = 60_000;
 const admittedDaemonStartupLocks = new Map<number, number>();
-const DAEMON_HTTP_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_HTTP_TIMEOUT';
-const DAEMON_SPAWN_HTTP_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_SPAWN_HTTP_TIMEOUT';
-const DAEMON_PING_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_PING_TIMEOUT_MS';
-const DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS';
-const DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_ENV_KEY = 'HAPPIER_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS';
+const DAEMON_HTTP_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_HTTP_TIMEOUT';
+const DAEMON_SPAWN_HTTP_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_SPAWN_HTTP_TIMEOUT';
+const DAEMON_PING_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_PING_TIMEOUT_MS';
+const DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS';
+const DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_ENV_KEY = 'PIGGERCODE_DAEMON_SHUTDOWN_SPAWN_DRAIN_GRACE_MS';
 
 export type OpenAiCodexDaemonRefreshSelection = CodexChatGptAuthTokensRefreshSelection;
 export type OpenAiCodexChatGptAuthTokensRefreshResult = CodexChatGptAuthTokensRefreshResponse;
@@ -486,7 +486,7 @@ export async function notifyDaemonSessionStarted(
 }
 
 const DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_TIMEOUT_ENV_KEY =
-  'HAPPIER_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS';
+  'PIGGERCODE_DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH_HTTP_TIMEOUT_MS';
 // The daemon may consume a 60s safe-boundary wait and a separate 60s bounded
 // application window. The HTTP caller must leave enough transport/materialization
 // margin for that canonical operation to settle before timing out.
@@ -718,7 +718,7 @@ export async function refreshDaemonClaudeSubscriptionAnthropicAuthTokensForBridg
  * run start fail under load even though the daemon can still complete. Keep the client deadline at
  * the existing ten-minute cap so it covers both phases while still bounding a genuinely stuck call.
  */
-const EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_ENV_KEY = 'HAPPIER_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS';
+const EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_ENV_KEY = 'PIGGERCODE_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS';
 const DEFAULT_EXECUTION_RUN_CS_MATERIALIZE_TIMEOUT_MS = 600_000;
 
 export function resolveExecutionRunConnectedServiceMaterializeTimeoutMs(
@@ -895,7 +895,7 @@ export async function resolveDaemonSpawnSessionByNonce(spawnNonce: string): Prom
  * still in flight, so a succeeding restart was reported as a failure. Give it a completion-sized
  * timeout that clears the respawn-completion budget with margin.
  */
-const DAEMON_SESSION_RUNNER_RESTART_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS';
+const DAEMON_SESSION_RUNNER_RESTART_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_SESSION_RUNNER_RESTART_HTTP_TIMEOUT_MS';
 const DEFAULT_DAEMON_SESSION_RUNNER_RESTART_TIMEOUT_MS = 75_000;
 
 export function resolveDaemonSessionRunnerRestartTimeoutMs(

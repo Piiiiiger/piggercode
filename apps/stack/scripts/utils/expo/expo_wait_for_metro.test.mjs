@@ -62,7 +62,7 @@ test('waitForExpoMetroRunning treats attended TUI deadlines as checkpoints while
     ownerProc,
     timeoutMs: 25,
     intervalMs: 10,
-    env: { HAPPIER_STACK_TUI: '1' },
+    env: { PIGGERCODE_STACK_TUI: '1' },
     onTimeoutCheckpoint: () => { checkpoints += 1; },
   }, {
     looksLikeExpoMetroImpl: async () => {

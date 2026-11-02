@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "devin",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_DEVIN",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_DEVIN",
   "protocol": "acp",
   "traceProvider": "devin",
   "requiredBinaries": [
     {
       "bin": "devin",
-      "envOverride": "HAPPIER_E2E_PROVIDER_DEVIN_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_DEVIN_BIN",
       "requireExists": true
     }
   ],
@@ -15,7 +15,7 @@
   "cli": {
     "subcommand": "devin",
     "extraArgs": ["--started-by", "terminal"],
-    "env": { "HEADLESS": "1", "HAPPIER_VARIANT": "dev" },
-    "envFrom": { "HAPPIER_DEVIN_PATH": "HAPPIER_E2E_PROVIDER_DEVIN_BIN" }
+    "env": { "HEADLESS": "1", "PIGGERCODE_VARIANT": "dev" },
+    "envFrom": { "PIGGERCODE_DEVIN_PATH": "PIGGERCODE_E2E_PROVIDER_DEVIN_BIN" }
   }
 }

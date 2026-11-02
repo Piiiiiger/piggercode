@@ -19,7 +19,7 @@ import { hashProcessCommand, writeSessionMarker } from '../sessionRegistry';
 import { buildSessionRunnerRespawnDescriptorV1FromSpawnOptions } from '../processSupervision/sessionRunnerRespawnDescriptor';
 
 const DEFAULT_PARENT_PID_LOOKUP_TIMEOUT_MS = 1000;
-const PARENT_PID_LOOKUP_TIMEOUT_ENV_KEY = 'HAPPIER_DAEMON_PARENT_PID_LOOKUP_TIMEOUT_MS';
+const PARENT_PID_LOOKUP_TIMEOUT_ENV_KEY = 'PIGGERCODE_DAEMON_PARENT_PID_LOOKUP_TIMEOUT_MS';
 
 function isPidPlaceholderSessionId(value: string): boolean {
   return /^PID-\d+$/.test(value);

@@ -70,7 +70,7 @@ test('resolveSwiftbarPluginsDir ignores override on non-darwin unless explicitly
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_SWIFTBAR_PLUGINS_DIR: pluginsDir,
+      PIGGERCODE_STACK_SWIFTBAR_PLUGINS_DIR: pluginsDir,
     };
 
     const resolved = await resolveSwiftbarPluginsDir({ env });

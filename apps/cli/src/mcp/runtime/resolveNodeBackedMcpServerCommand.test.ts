@@ -212,7 +212,7 @@ describe('resolveNodeBackedMcpServerCommand', () => {
   });
 
   it('fails closed when no JavaScript runtime is available for the entrypoint', async () => {
-    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set HAPPIER_JS_RUNTIME_PATH'));
+    requireJavaScriptRuntimeExecutableMock.mockRejectedValue(new ReferenceError('Set PIGGERCODE_JS_RUNTIME_PATH'));
     vi.mocked(existsSync).mockImplementation((pathLike) => {
       const path = String(pathLike);
       if (path.endsWith('/dist/mcp/bridges/remoteMcpStdioBridge.mjs')) return true;
@@ -224,7 +224,7 @@ describe('resolveNodeBackedMcpServerCommand', () => {
         distEntrypointSegments: ['mcp', 'bridges', 'remoteMcpStdioBridge.mjs'],
         sourceEntrypointSegments: ['mcp', 'bridges', 'remoteMcpStdioBridge.ts'],
       }),
-    ).rejects.toThrow(/HAPPIER_JS_RUNTIME_PATH/);
+    ).rejects.toThrow(/PIGGERCODE_JS_RUNTIME_PATH/);
   });
 
   it('fails closed when neither a packaged entrypoint nor a TSX source entrypoint is available', async () => {

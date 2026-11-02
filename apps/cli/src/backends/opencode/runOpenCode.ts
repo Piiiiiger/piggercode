@@ -61,8 +61,8 @@ export async function runOpenCode(opts: StandardAcpProviderRunOptions & {
       const selected = currentRuntime === serverRuntime ? serverRuntime?.getManagedServerIdentity() : null;
       if (selected) return { baseUrl: selected.baseUrl,
         ...(selected.launchEnvFingerprint ? { managedServerLaunchFingerprint: selected.launchEnvFingerprint } : {}) };
-      const raw = typeof process.env.HAPPIER_OPENCODE_SERVER_URL === 'string'
-        ? process.env.HAPPIER_OPENCODE_SERVER_URL.trim()
+      const raw = typeof process.env.PIGGERCODE_OPENCODE_SERVER_URL === 'string'
+        ? process.env.PIGGERCODE_OPENCODE_SERVER_URL.trim()
         : '';
       if (raw) return { baseUrl: raw };
       const managed = await readSharedManagedOpenCodeServerStateBestEffort().catch(() => null);
@@ -189,12 +189,12 @@ export async function runOpenCode(opts: StandardAcpProviderRunOptions & {
         await maybeUpdateOpenCodeSessionIdMetadata({
           getOpenCodeSessionId: () => openCodeSessionId,
           backendMode,
-          serverBaseUrl: process.env.HAPPIER_OPENCODE_SERVER_URL ?? null,
-          serverBaseUrlExplicit: process.env.HAPPIER_OPENCODE_SERVER_URL_EXPLICIT ?? null,
+          serverBaseUrl: process.env.PIGGERCODE_OPENCODE_SERVER_URL ?? null,
+          serverBaseUrlExplicit: process.env.PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT ?? null,
           // Only the actual provider factory's selected client owns managed affinity.
           managedServerLaunchFingerprint: runtime === serverRuntime
             ? serverRuntime?.getManagedServerIdentity()?.launchEnvFingerprint ?? null : null,
-          transcriptStorage: process.env.HAPPIER_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
+          transcriptStorage: process.env.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
           updateHappySessionMetadata: (updater) => session.updateMetadata(updater),
           lastPublished: lastPublishedOpenCodeSessionMetadata,
         });

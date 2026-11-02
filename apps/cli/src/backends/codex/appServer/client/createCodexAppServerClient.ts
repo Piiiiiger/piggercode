@@ -19,10 +19,10 @@ import {
 import { safeJsonStringify } from '@/utils/safeJson';
 import { createCodexAppServerRpcError } from '../appServerCompatibility';
 import {
-    HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
-import { HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 
 type JsonRpcMessage = Readonly<{
@@ -109,8 +109,8 @@ const DEFAULT_MAX_JSON_LINE_CHARS = 128 * 1024 * 1024;
 
 function resolveRpcLogPath(env: NodeJS.ProcessEnv): string | null {
     const raw = expandHomeDirPath(
-        typeof env.HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH === 'string'
-            ? env.HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH.trim()
+        typeof env.PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH === 'string'
+            ? env.PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH.trim()
             : '',
         env,
     );
@@ -125,12 +125,12 @@ function readPositiveIntegerEnv(env: NodeJS.ProcessEnv, key: string, fallback: n
 }
 
 function readRpcLogMaxBytes(env: NodeJS.ProcessEnv): number {
-    return readPositiveIntegerEnv(env, 'HAPPIER_CODEX_APP_SERVER_RPC_LOG_MAX_BYTES', DEFAULT_RPC_LOG_MAX_BYTES);
+    return readPositiveIntegerEnv(env, 'PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_MAX_BYTES', DEFAULT_RPC_LOG_MAX_BYTES);
 }
 
 function readRpcLogRotateCount(env: NodeJS.ProcessEnv): number {
     return Math.min(
-        readPositiveIntegerEnv(env, 'HAPPIER_CODEX_APP_SERVER_RPC_LOG_ROTATE_COUNT', DEFAULT_RPC_LOG_ROTATE_COUNT),
+        readPositiveIntegerEnv(env, 'PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_ROTATE_COUNT', DEFAULT_RPC_LOG_ROTATE_COUNT),
         10,
     );
 }
@@ -138,7 +138,7 @@ function readRpcLogRotateCount(env: NodeJS.ProcessEnv): number {
 function readMaxJsonLineChars(env: NodeJS.ProcessEnv): number {
     return readPositiveIntegerEnv(
         env,
-        'HAPPIER_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS',
+        'PIGGERCODE_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS',
         DEFAULT_MAX_JSON_LINE_CHARS,
     );
 }
@@ -316,12 +316,12 @@ export function sanitizeCodexAppServerEnv(processEnv: NodeJS.ProcessEnv): NodeJS
         ...processEnv,
         CODEX_THREAD_ID: undefined,
         CODEX_INTERNAL_ORIGINATOR_OVERRIDE: undefined,
-        HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH: undefined,
-        HAPPIER_CODEX_APP_SERVER_RPC_LOG_MAX_BYTES: undefined,
-        HAPPIER_CODEX_APP_SERVER_RPC_LOG_ROTATE_COUNT: undefined,
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: undefined,
-        [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: undefined,
-        [HAPPIER_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: undefined,
+        PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH: undefined,
+        PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_MAX_BYTES: undefined,
+        PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_ROTATE_COUNT: undefined,
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: undefined,
+        [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: undefined,
+        [PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR]: undefined,
     };
 }
 
@@ -437,7 +437,7 @@ async function createUnlockedCodexAppServerClient(params: CreateCodexAppServerCl
             args: ['app-server', '--listen', 'stdio://'],
             cwd: params.cwd,
             processEnv,
-            overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN', 'HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
+            overrideEnvVarKeys: ['PIGGERCODE_CODEX_APP_SERVER_BIN', 'PIGGERCODE_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
             targetLabel: 'Codex app-server',
         });
         const invocation = appendCodexCliConfigOverridesArgs(baseInvocation, [...baseOverrides, ...(params.configOverrides ?? [])]);

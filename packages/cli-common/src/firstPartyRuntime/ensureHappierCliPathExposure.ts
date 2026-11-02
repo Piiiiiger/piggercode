@@ -36,17 +36,17 @@ export interface HappierCliPathRemovalResult {
   failure: string | null;
 }
 
-export const HAPPIER_DESKTOP_PATH_MARKER_LINE = '# Added by Happier Desktop';
+export const PIGGERCODE_DESKTOP_PATH_MARKER_LINE = '# Added by Happier Desktop';
 
 /** User-scoped environment variable holding the PATH entries Desktop added on Windows. */
-export const HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE = 'HAPPIER_DESKTOP_PATH_ENTRIES';
+export const PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE = 'PIGGERCODE_DESKTOP_PATH_ENTRIES';
 
 /**
  * User-scoped environment variable holding the moves Desktop made in the user PATH on Windows
  * (R13 b): one record per moved entry, `;`-separated, each `<entry>|<entry it was moved ahead of>|…`.
  * `|` cannot occur in a Windows path, and `;` cannot occur in a PATH entry.
  */
-export const HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE = 'HAPPIER_DESKTOP_PATH_MOVES';
+export const PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE = 'PIGGERCODE_DESKTOP_PATH_MOVES';
 
 const DESKTOP_EXPORT_LINE_PATTERN = /^export PATH="[^"\n]+:\$PATH"$/u;
 
@@ -93,7 +93,7 @@ function resolveHappierCliShellProfileUnion(homeDir: string): readonly string[] 
 }
 
 function isPathUpdateDisabled(processEnv: NodeJS.ProcessEnv): boolean {
-  return String(processEnv.HAPPIER_NO_PATH_UPDATE ?? '').trim() === '1';
+  return String(processEnv.PIGGERCODE_NO_PATH_UPDATE ?? '').trim() === '1';
 }
 
 function describeError(error: unknown): string {
@@ -152,7 +152,7 @@ export function resolveForeignHappierCli(params: Readonly<{
  * home's managed CLI; `desktopExposed` when it got there through what Desktop wrote and "Keep my
  * own" takes back (`removeHappierCliPathExposure`) — the managed bin dir itself on POSIX (the
  * shell installer exposes `~/.local/bin` instead), and on Windows that dir only while Desktop's
- * records (`HAPPIER_DESKTOP_PATH_ENTRIES` / `_MOVES`, user-scoped, so in a launched app's env) name
+ * records (`PIGGERCODE_DESKTOP_PATH_ENTRIES` / `_MOVES`, user-scoped, so in a launched app's env) name
  * it. A managed CLI first by any other route (the installer's link or entry) keeps answering first
  * whatever the person keeps.
  */
@@ -168,8 +168,8 @@ export function resolveTerminalHappierCli(params: Readonly<{
   const shimPath = join(params.binDir, process.platform === 'win32' ? 'happier.exe' : 'happier');
   const direct = process.platform === 'win32' ? sameWindowsPathEntry(command, shimPath) : command === shimPath;
   const recordedByDesktop = process.platform !== 'win32' || [
-    ...splitWindowsPathEntries(readEnvCaseInsensitive(params.processEnv, HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE)),
-    ...parseWindowsPathMoves(readEnvCaseInsensitive(params.processEnv, HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE)).map((move) => move.entry),
+    ...splitWindowsPathEntries(readEnvCaseInsensitive(params.processEnv, PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE)),
+    ...parseWindowsPathMoves(readEnvCaseInsensitive(params.processEnv, PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE)).map((move) => move.entry),
   ].some((entry) => sameWindowsPathEntry(entry, params.binDir));
   return { command, managed: true, desktopExposed: direct && recordedByDesktop };
 }
@@ -284,7 +284,7 @@ async function ensurePosixProfileExposure(params: Readonly<{
         continue;
       }
       // Same shape as the installer's `printf '\n%s\n'`, with the provenance marker directly above.
-      await appendFile(rcFile, `\n${HAPPIER_DESKTOP_PATH_MARKER_LINE}\n${exportLine}\n`, 'utf8');
+      await appendFile(rcFile, `\n${PIGGERCODE_DESKTOP_PATH_MARKER_LINE}\n${exportLine}\n`, 'utf8');
       changed = true;
     } catch (error) {
       failures.push(`${rcFile}: ${describeError(error)}`);
@@ -306,7 +306,7 @@ function stripDesktopCreatedLines(content: string): Readonly<{ content: string; 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index] ?? '';
     const next = lines[index + 1];
-    if (line.trim() === HAPPIER_DESKTOP_PATH_MARKER_LINE && next !== undefined && DESKTOP_EXPORT_LINE_PATTERN.test(next.trim())) {
+    if (line.trim() === PIGGERCODE_DESKTOP_PATH_MARKER_LINE && next !== undefined && DESKTOP_EXPORT_LINE_PATTERN.test(next.trim())) {
       if (kept.length > 0 && kept[kept.length - 1] === '') {
         // Drop the separator blank line the append wrote in front of the marker.
         kept.pop();
@@ -464,12 +464,12 @@ type WindowsUserEnvironmentSnapshot = Readonly<{
  * evaluates the rest as code.
  */
 const WINDOWS_SCRIPT_ENV = {
-  provenanceName: 'HAPPIER_PATH_PROVENANCE_NAME',
-  userPath: 'HAPPIER_PATH_USER_PATH',
-  valueKind: 'HAPPIER_PATH_VALUE_KIND',
-  provenanceValue: 'HAPPIER_PATH_PROVENANCE_VALUE',
-  movesName: 'HAPPIER_PATH_MOVES_NAME',
-  movesValue: 'HAPPIER_PATH_MOVES_VALUE',
+  provenanceName: 'PIGGERCODE_PATH_PROVENANCE_NAME',
+  userPath: 'PIGGERCODE_PATH_USER_PATH',
+  valueKind: 'PIGGERCODE_PATH_VALUE_KIND',
+  provenanceValue: 'PIGGERCODE_PATH_PROVENANCE_VALUE',
+  movesName: 'PIGGERCODE_PATH_MOVES_NAME',
+  movesValue: 'PIGGERCODE_PATH_MOVES_VALUE',
 } as const;
 
 const WINDOWS_READ_USER_ENVIRONMENT_SCRIPT = [
@@ -564,8 +564,8 @@ function runWindowsPowerShell(
 
 async function readWindowsUserEnvironment(processEnv: NodeJS.ProcessEnv): Promise<WindowsUserEnvironmentSnapshot> {
   const stdout = await runWindowsPowerShell(processEnv, WINDOWS_READ_USER_ENVIRONMENT_SCRIPT, {
-    [WINDOWS_SCRIPT_ENV.provenanceName]: HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
-    [WINDOWS_SCRIPT_ENV.movesName]: HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
+    [WINDOWS_SCRIPT_ENV.provenanceName]: PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
+    [WINDOWS_SCRIPT_ENV.movesName]: PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
   });
   return parseWindowsUserEnvironmentSnapshot(stdout);
 }
@@ -579,9 +579,9 @@ async function writeWindowsUserEnvironment(processEnv: NodeJS.ProcessEnv, value:
   await runWindowsPowerShell(processEnv, WINDOWS_WRITE_USER_ENVIRONMENT_SCRIPT, {
     [WINDOWS_SCRIPT_ENV.userPath]: value.userPath,
     [WINDOWS_SCRIPT_ENV.valueKind]: value.userPathKind,
-    [WINDOWS_SCRIPT_ENV.provenanceName]: HAPPIER_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
+    [WINDOWS_SCRIPT_ENV.provenanceName]: PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE,
     [WINDOWS_SCRIPT_ENV.provenanceValue]: value.provenance ?? '',
-    [WINDOWS_SCRIPT_ENV.movesName]: HAPPIER_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
+    [WINDOWS_SCRIPT_ENV.movesName]: PIGGERCODE_DESKTOP_WINDOWS_PATH_MOVES_VARIABLE,
     [WINDOWS_SCRIPT_ENV.movesValue]: value.moves ?? '',
   });
 }

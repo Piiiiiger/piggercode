@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-  HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY,
+  PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY,
   createPendingFirstInput,
   createPendingFirstInputCommitter,
   readPendingFirstInputFromEnv,
@@ -26,7 +26,7 @@ describe('pending first input handoff', () => {
       meta: { model: 'opus' },
     };
     const env = {
-      [HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv(input),
+      [PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv(input),
     };
 
     expect(readPendingFirstInputFromEnv(env)).toEqual(input);
@@ -36,7 +36,7 @@ describe('pending first input handoff', () => {
   });
   it('commits the fresh runtime bootstrap as one urgent durable input', async () => {
     const env: NodeJS.ProcessEnv = {
-      [HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv({
+      [PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]: serializePendingFirstInputForEnv({
         text: 'only once',
         localId: 'spawn-first:concurrent',
       }),
@@ -61,6 +61,6 @@ describe('pending first input handoff', () => {
     await Promise.all([first, duplicate]);
     expect(enqueueSessionUserMessage).toHaveBeenCalledOnce();
     expect(committer.hasPendingInput).toBe(false);
-    expect(env[HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]).toBeUndefined();
+    expect(env[PIGGERCODE_DAEMON_PENDING_FIRST_INPUT_ENV_KEY]).toBeUndefined();
   });
 });

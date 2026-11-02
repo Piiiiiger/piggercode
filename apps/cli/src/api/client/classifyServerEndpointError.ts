@@ -165,7 +165,7 @@ export function classifyServerEndpointError(
       retryAfterMs: readRetryAfterMs(error),
     };
   }
-  if (code === 'HAPPIER_ACCOUNT_MODE_UNKNOWN') {
+  if (code === 'PIGGERCODE_ACCOUNT_MODE_UNKNOWN') {
     return {
       kind: 'dependency_unavailable',
       retryable: true,

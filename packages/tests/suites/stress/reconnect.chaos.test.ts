@@ -32,11 +32,11 @@ describe('stress: seeded reconnection chaos', () => {
   });
 
   it('injects seeded disconnects/reconnects and asserts transcript convergence invariants', async () => {
-    const repeats = parsePositiveInt(process.env.HAPPIER_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT, 10);
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
-    const allowFlakeRetry = envFlag(['HAPPIER_E2E_FLAKE_RETRY', 'HAPPY_E2E_FLAKE_RETRY'], false);
+    const repeats = parsePositiveInt(process.env.PIGGERCODE_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT, 10);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const allowFlakeRetry = envFlag(['PIGGERCODE_E2E_FLAKE_RETRY', 'HAPPY_E2E_FLAKE_RETRY'], false);
 
-    const seedFromEnv = parseOptionalInt(process.env.HAPPIER_E2E_SEED ?? process.env.HAPPY_E2E_SEED);
+    const seedFromEnv = parseOptionalInt(process.env.PIGGERCODE_E2E_SEED ?? process.env.HAPPY_E2E_SEED);
     const globalSeed = seedFromEnv ?? (Date.now() & 0xffffffff);
     const startedAt = new Date().toISOString();
 
@@ -57,10 +57,10 @@ describe('stress: seeded reconnection chaos', () => {
         seed: iterSeed,
         sessionIds: [sessionId],
         env: {
-          HAPPIER_E2E_REPEAT: process.env.HAPPIER_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT,
-          HAPPIER_E2E_SEED: process.env.HAPPIER_E2E_SEED ?? process.env.HAPPY_E2E_SEED,
-          HAPPIER_E2E_FLAKE_RETRY: process.env.HAPPIER_E2E_FLAKE_RETRY ?? process.env.HAPPY_E2E_FLAKE_RETRY,
-          HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+          PIGGERCODE_E2E_REPEAT: process.env.PIGGERCODE_E2E_REPEAT ?? process.env.HAPPY_E2E_REPEAT,
+          PIGGERCODE_E2E_SEED: process.env.PIGGERCODE_E2E_SEED ?? process.env.HAPPY_E2E_SEED,
+          PIGGERCODE_E2E_FLAKE_RETRY: process.env.PIGGERCODE_E2E_FLAKE_RETRY ?? process.env.HAPPY_E2E_FLAKE_RETRY,
+          PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
         },
       });
 

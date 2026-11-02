@@ -9,7 +9,7 @@ import { useDesktopUpdater } from './useDesktopUpdater';
 type TauriInvoke = (command: string, args?: Record<string, unknown>) => unknown | Promise<unknown>;
 type EventHandler = (event: { payload: unknown }) => void;
 
-const UPDATE_CHECKS_ENV = 'EXPO_PUBLIC_HAPPIER_DESKTOP_UPDATES_ENABLED';
+const UPDATE_CHECKS_ENV = 'EXPO_PUBLIC_PIGGERCODE_DESKTOP_UPDATES_ENABLED';
 const originalUpdateChecksEnv = process.env[UPDATE_CHECKS_ENV];
 const originalDevFlag = (globalThis as { __DEV__?: boolean }).__DEV__;
 const HOUR_MS = 60 * 60 * 1000;

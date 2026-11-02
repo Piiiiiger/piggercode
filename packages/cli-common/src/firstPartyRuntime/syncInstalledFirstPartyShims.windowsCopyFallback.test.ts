@@ -72,7 +72,7 @@ describe('syncInstalledFirstPartyShims Windows copy fallback', () => {
     it('falls back to copyFile when Windows hard-link creation fails', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-sync-shims-win32-copy-fallback-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 const { promoteVersionedPayload, syncInstalledFirstPartyShims } = await import('./index.js');

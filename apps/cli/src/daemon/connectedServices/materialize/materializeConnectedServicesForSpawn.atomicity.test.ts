@@ -67,7 +67,7 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
           processEnv?: NodeJS.ProcessEnv;
           cleanupRoot: () => void;
         }) => {
-          const label = String(params.processEnv?.HAPPIER_TEST_MATERIALIZATION_LABEL ?? '');
+          const label = String(params.processEnv?.PIGGERCODE_TEST_MATERIALIZATION_LABEL ?? '');
           if (label === 'A') {
             resolve();
             await firstRelease;
@@ -76,7 +76,7 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
           await writeFile(join(params.rootDir, 'auth.json'), `{"access_token":"${label}"}\n`);
           return {
             env: {
-              HAPPIER_TEST_AUTH_FILE: join(params.rootDir, 'auth.json'),
+              PIGGERCODE_TEST_AUTH_FILE: join(params.rootDir, 'auth.json'),
             },
             cleanupOnFailure: params.cleanupRoot,
             cleanupOnExit: null,
@@ -103,13 +103,13 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
 
     const first = materializeConnectedServicesForSpawn({
       ...common,
-      processEnv: { HAPPIER_TEST_MATERIALIZATION_LABEL: 'A' },
+      processEnv: { PIGGERCODE_TEST_MATERIALIZATION_LABEL: 'A' },
     });
     await firstEntered;
 
     const second = materializeConnectedServicesForSpawn({
       ...common,
-      processEnv: { HAPPIER_TEST_MATERIALIZATION_LABEL: 'B' },
+      processEnv: { PIGGERCODE_TEST_MATERIALIZATION_LABEL: 'B' },
     });
     const observedBeforeRelease = await Promise.race([
       second.then(() => 'resolved' as const),
@@ -120,12 +120,12 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
     releaseFirst();
     await expect(first).resolves.toMatchObject({
       env: expect.objectContaining({
-        HAPPIER_TEST_AUTH_FILE: join(activeRoot, 'auth.json'),
+        PIGGERCODE_TEST_AUTH_FILE: join(activeRoot, 'auth.json'),
       }),
     });
     await expect(second).resolves.toMatchObject({
       env: expect.objectContaining({
-        HAPPIER_TEST_AUTH_FILE: join(activeRoot, 'auth.json'),
+        PIGGERCODE_TEST_AUTH_FILE: join(activeRoot, 'auth.json'),
       }),
     });
     await expect(readFile(join(activeRoot, 'auth.json'), 'utf8')).resolves.toContain('B');
@@ -164,12 +164,12 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
         rootDir: string;
         processEnv?: NodeJS.ProcessEnv;
       }) => {
-        const label = String(params.processEnv?.HAPPIER_TEST_MATERIALIZATION_LABEL ?? '');
+        const label = String(params.processEnv?.PIGGERCODE_TEST_MATERIALIZATION_LABEL ?? '');
         attemptRootByLabel.set(label, params.rootDir);
         await mkdir(params.rootDir, { recursive: true });
         return {
           env: {
-            HAPPIER_TEST_ENV_ONLY_LABEL: label,
+            PIGGERCODE_TEST_ENV_ONLY_LABEL: label,
           },
           cleanupOnFailure: null,
           cleanupOnExit: null,
@@ -188,13 +188,13 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
 
     const first = materializeConnectedServicesForSpawn({
       ...common,
-      processEnv: { HAPPIER_TEST_MATERIALIZATION_LABEL: 'A' },
+      processEnv: { PIGGERCODE_TEST_MATERIALIZATION_LABEL: 'A' },
     });
     await firstReachedPromotion;
 
     const second = materializeConnectedServicesForSpawn({
       ...common,
-      processEnv: { HAPPIER_TEST_MATERIALIZATION_LABEL: 'B' },
+      processEnv: { PIGGERCODE_TEST_MATERIALIZATION_LABEL: 'B' },
     });
     const observedBeforeRelease = await Promise.race([
       second.then(() => 'resolved' as const),
@@ -205,12 +205,12 @@ describe('materializeConnectedServicesForSpawn atomicity', () => {
 
     await expect(first).resolves.toMatchObject({
       env: expect.objectContaining({
-        HAPPIER_TEST_ENV_ONLY_LABEL: 'A',
+        PIGGERCODE_TEST_ENV_ONLY_LABEL: 'A',
       }),
     });
     await expect(second).resolves.toMatchObject({
       env: expect.objectContaining({
-        HAPPIER_TEST_ENV_ONLY_LABEL: 'B',
+        PIGGERCODE_TEST_ENV_ONLY_LABEL: 'B',
       }),
     });
   });

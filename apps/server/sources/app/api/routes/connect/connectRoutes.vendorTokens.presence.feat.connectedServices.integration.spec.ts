@@ -52,7 +52,7 @@ describe("connectRoutes (vendor tokens) presence-only reads (integration)", () =
     });
 
     it("returns 404 not_found when connected services are disabled (and does so before auth)", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES__ENABLED: "0" });
 
         const app = createTestApp();
         connectRoutes(app as any);
@@ -169,8 +169,8 @@ describe("connectRoutes (vendor tokens) presence-only reads (integration)", () =
 
     it("rejects v1 vendor token registration without corrupting a v3 plaintext credential", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "plain",
         });
         const user = await db.account.create({
             data: { publicKey: null, encryptionMode: "plain" },

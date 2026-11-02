@@ -1,5 +1,5 @@
 import {
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { CLAUDE_AUTH_ENV_KEYS, CLAUDE_CONFIG_ENV_KEYS } from '../auth/claudeAuthEnvKeys';
 
@@ -42,6 +42,6 @@ export function resolveClaudeRuntimeAuthEnvDiagnostic(
         hasClaudeCodeOauthRefreshToken: hasNonBlankEnvValue(env, 'CLAUDE_CODE_OAUTH_REFRESH_TOKEN'),
         hasClaudeCodeOauthScopes: hasNonBlankEnvValue(env, 'CLAUDE_CODE_OAUTH_SCOPES'),
         hasClaudeConfigDir: hasNonBlankEnvValue(env, 'CLAUDE_CONFIG_DIR'),
-        hasHappierConnectedServiceSelections: hasNonBlankEnvValue(env, HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY),
+        hasHappierConnectedServiceSelections: hasNonBlankEnvValue(env, PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY),
     };
 }

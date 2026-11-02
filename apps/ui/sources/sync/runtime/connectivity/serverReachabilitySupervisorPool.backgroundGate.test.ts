@@ -11,15 +11,15 @@ import {
 } from './serverReachabilitySupervisorPool';
 
 describe('serverReachabilitySupervisorPool (background gating)', () => {
-    const previousRetryMs = process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_BACKGROUND_RETRY_MS;
+    const previousRetryMs = process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_BACKGROUND_RETRY_MS;
 
     beforeEach(() => {
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_BACKGROUND_RETRY_MS = '1000';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_BACKGROUND_RETRY_MS = '1000';
     });
 
     afterEach(async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_BACKGROUND_RETRY_MS = previousRetryMs;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_BACKGROUND_RETRY_MS = previousRetryMs;
         setServerReachabilityNetworkAllowed(true);
         resetRuntimeFetch();
         await resetServerReachabilitySupervisors();

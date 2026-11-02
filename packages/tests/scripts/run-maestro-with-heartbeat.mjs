@@ -42,7 +42,7 @@ const result = await runManagedChildCommand({
   cleanupPollMs: 25,
   signalCleanupGraceMs: 0,
   exitCleanupGraceMs: 1_000,
-  parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+  parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
   onParentDeath: async () => {
     process.exit(1);
   },

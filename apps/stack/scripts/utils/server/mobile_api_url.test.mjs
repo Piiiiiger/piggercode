@@ -8,14 +8,14 @@ import {
 
 test('hasExplicitMobileReachableHost distinguishes configured host choices from auto-detection', () => {
   assert.equal(hasExplicitMobileReachableHost({ env: {} }), false);
-  assert.equal(hasExplicitMobileReachableHost({ env: { HAPPIER_STACK_LAN_IP: '192.168.0.50' } }), true);
-  assert.equal(hasExplicitMobileReachableHost({ env: { HAPPIER_STACK_LAN_HOST: 'dev-mac.local' } }), true);
+  assert.equal(hasExplicitMobileReachableHost({ env: { PIGGERCODE_STACK_LAN_IP: '192.168.0.50' } }), true);
+  assert.equal(hasExplicitMobileReachableHost({ env: { PIGGERCODE_STACK_LAN_HOST: 'dev-mac.local' } }), true);
   assert.equal(hasExplicitMobileReachableHost({ env: {}, preferredHost: '100.64.0.10' }), true);
 });
 
 test('resolveMobileReachableServerUrl rewrites localhost to LAN IP (env override)', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '192.168.0.50' },
+    env: { PIGGERCODE_STACK_LAN_IP: '192.168.0.50' },
     serverUrl: 'http://localhost:3005',
     serverPort: 3005,
   });
@@ -24,7 +24,7 @@ test('resolveMobileReachableServerUrl rewrites localhost to LAN IP (env override
 
 test('resolveMobileReachableServerUrl prefers explicit reachable host over LAN IP', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '192.168.0.50' },
+    env: { PIGGERCODE_STACK_LAN_IP: '192.168.0.50' },
     serverUrl: 'http://localhost:3005',
     serverPort: 3005,
     preferredHost: '100.64.0.10',
@@ -34,7 +34,7 @@ test('resolveMobileReachableServerUrl prefers explicit reachable host over LAN I
 
 test('resolveMobileReachableServerUrl rewrites *.localhost to LAN IP (env override)', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '10.0.0.12' },
+    env: { PIGGERCODE_STACK_LAN_IP: '10.0.0.12' },
     serverUrl: 'http://happy-exp1.localhost:3009/',
     serverPort: 3009,
   });
@@ -43,7 +43,7 @@ test('resolveMobileReachableServerUrl rewrites *.localhost to LAN IP (env overri
 
 test('resolveMobileReachableServerUrl preserves path and query', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '10.0.0.12' },
+    env: { PIGGERCODE_STACK_LAN_IP: '10.0.0.12' },
     serverUrl: 'http://127.0.0.1:3005/api?x=1',
     serverPort: 3005,
   });
@@ -52,7 +52,7 @@ test('resolveMobileReachableServerUrl preserves path and query', () => {
 
 test('resolveMobileReachableServerUrl does not rewrite non-local URLs', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '192.168.0.50' },
+    env: { PIGGERCODE_STACK_LAN_IP: '192.168.0.50' },
     serverUrl: 'https://my-machine.tailnet.ts.net',
     serverPort: 3005,
   });
@@ -61,7 +61,7 @@ test('resolveMobileReachableServerUrl does not rewrite non-local URLs', () => {
 
 test('resolveMobileReachableServerUrl falls back to LAN IP:port when serverUrl is empty', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '10.1.2.3' },
+    env: { PIGGERCODE_STACK_LAN_IP: '10.1.2.3' },
     serverUrl: '',
     serverPort: 3010,
   });
@@ -70,7 +70,7 @@ test('resolveMobileReachableServerUrl falls back to LAN IP:port when serverUrl i
 
 test('resolveMobileReachableServerUrl preserves invalid URL-like input strings', () => {
   const out = resolveMobileReachableServerUrl({
-    env: { HAPPIER_STACK_LAN_IP: '10.1.2.3' },
+    env: { PIGGERCODE_STACK_LAN_IP: '10.1.2.3' },
     serverUrl: 'localhost:3005',
     serverPort: 3005,
   });

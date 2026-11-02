@@ -19,8 +19,8 @@ function createRpcHandlerManager(): { handlers: Map<string, Handler>; registerHa
 }
 
 describe('filesystem WRITE_FILE handler max-bytes', () => {
-  const envReadKey = 'HAPPIER_FILES_READ_MAX_BYTES';
-  const envChunkKey = 'HAPPIER_FILES_TRANSFER_CHUNK_BYTES';
+  const envReadKey = 'PIGGERCODE_FILES_READ_MAX_BYTES';
+  const envChunkKey = 'PIGGERCODE_FILES_TRANSFER_CHUNK_BYTES';
   const originalRead = process.env[envReadKey];
   const originalChunk = process.env[envChunkKey];
 

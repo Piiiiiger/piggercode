@@ -1,7 +1,7 @@
 import type { SupportedLanguages } from '@pierre/diffs';
 import { WorkerPoolManager } from '@pierre/diffs/worker';
 
-import { ensureHappierPierreThemesRegistered, HAPPIER_PIERRE_THEME_IDS, type HappierPierreThemeIds } from './pierreThemeRegistry.web';
+import { ensureHappierPierreThemesRegistered, PIGGERCODE_PIERRE_THEME_IDS, type HappierPierreThemeIds } from './pierreThemeRegistry.web';
 import { createPierreDiffWorker } from './pierreWorkerFactory.web';
 import type { PierreDiffPresentationStyle } from './resolvePierreWorkerPoolConfig';
 import { resolvePierreWorkerPoolConfig } from './resolvePierreWorkerPoolConfig';
@@ -28,7 +28,7 @@ const poolThemeKeyByStyle: Record<PierreDiffPresentationStyle, string | undefine
 };
 
 function resolveWorkerPoolThemeIds(themeIds: HappierPierreThemeIds | undefined): HappierPierreThemeIds {
-    return themeIds ?? HAPPIER_PIERRE_THEME_IDS;
+    return themeIds ?? PIGGERCODE_PIERRE_THEME_IDS;
 }
 
 function buildWorkerPoolThemeKey(themeIds: HappierPierreThemeIds): string {

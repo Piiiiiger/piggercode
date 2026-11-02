@@ -29,9 +29,9 @@ test('resolveEffectiveDbProvider normalizes provider names and env aliases', () 
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: ' PostgreSQL ' },
+      env: { PIGGERCODE_DB_PROVIDER: ' PostgreSQL ' },
     }),
-    { ok: true, provider: 'postgres', source: 'HAPPIER_DB_PROVIDER' },
+    { ok: true, provider: 'postgres', source: 'PIGGERCODE_DB_PROVIDER' },
   );
 });
 
@@ -39,16 +39,16 @@ test('resolveEffectiveDbProvider accepts every server provider independently of 
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: ' postgres ' },
+      env: { PIGGERCODE_DB_PROVIDER: ' postgres ' },
     }),
-    { ok: true, provider: 'postgres', source: 'HAPPIER_DB_PROVIDER' },
+    { ok: true, provider: 'postgres', source: 'PIGGERCODE_DB_PROVIDER' },
   );
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'sqlite' },
+      env: { PIGGERCODE_DB_PROVIDER: 'sqlite' },
     }),
-    { ok: true, provider: 'sqlite', source: 'HAPPIER_DB_PROVIDER' },
+    { ok: true, provider: 'sqlite', source: 'PIGGERCODE_DB_PROVIDER' },
   );
 });
 
@@ -56,13 +56,13 @@ test('resolveEffectiveDbProvider does not reinterpret an explicitly empty provid
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: '   ' },
+      env: { PIGGERCODE_DB_PROVIDER: '   ' },
     }),
     {
       ok: false,
       reason: 'unsupported_db_provider',
       serverComponentName: 'happier-server-light',
-      source: 'HAPPIER_DB_PROVIDER',
+      source: 'PIGGERCODE_DB_PROVIDER',
       input: '',
       supportedProviders: ['postgres', 'mysql', 'pglite', 'sqlite'],
     },
@@ -86,7 +86,7 @@ test('resolveEffectiveDbProvider gives the primary key precedence even when it i
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server',
       env: {
-        HAPPIER_DB_PROVIDER: '',
+        PIGGERCODE_DB_PROVIDER: '',
         HAPPY_DB_PROVIDER: 'postgresql',
       },
     }),
@@ -94,7 +94,7 @@ test('resolveEffectiveDbProvider gives the primary key precedence even when it i
       ok: false,
       reason: 'unsupported_db_provider',
       serverComponentName: 'happier-server',
-      source: 'HAPPIER_DB_PROVIDER',
+      source: 'PIGGERCODE_DB_PROVIDER',
       input: '',
       supportedProviders: ['postgres', 'mysql', 'pglite', 'sqlite'],
     },
@@ -105,16 +105,16 @@ test('resolveEffectiveDbProvider accepts mysql for either preset', () => {
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: ' MYSQL ' },
+      env: { PIGGERCODE_DB_PROVIDER: ' MYSQL ' },
     }),
-    { ok: true, provider: 'mysql', source: 'HAPPIER_DB_PROVIDER' },
+    { ok: true, provider: 'mysql', source: 'PIGGERCODE_DB_PROVIDER' },
   );
   assert.deepEqual(
     resolveEffectiveDbProvider({
       serverComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: 'mysql' },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql' },
     }),
-    { ok: true, provider: 'mysql', source: 'HAPPIER_DB_PROVIDER' },
+    { ok: true, provider: 'mysql', source: 'PIGGERCODE_DB_PROVIDER' },
   );
 });
 
@@ -124,16 +124,16 @@ test('applyEffectiveDbProviderEnv materializes one canonical provider and reject
     applyEffectiveDbProviderEnv({ serverComponentName: 'happier-server', env: fullEnv }),
     'postgres',
   );
-  assert.equal(fullEnv.HAPPIER_DB_PROVIDER, 'postgres');
+  assert.equal(fullEnv.PIGGERCODE_DB_PROVIDER, 'postgres');
 
   const aliasedEnv = { HAPPY_DB_PROVIDER: ' PostgreSQL ' };
   assert.equal(
     applyEffectiveDbProviderEnv({ serverComponentName: 'happier-server', env: aliasedEnv }),
     'postgres',
   );
-  assert.equal(aliasedEnv.HAPPIER_DB_PROVIDER, 'postgres');
+  assert.equal(aliasedEnv.PIGGERCODE_DB_PROVIDER, 'postgres');
 
-  const crossPresetEnv = { HAPPIER_DB_PROVIDER: 'sqlite' };
+  const crossPresetEnv = { PIGGERCODE_DB_PROVIDER: 'sqlite' };
   assert.equal(
     applyEffectiveDbProviderEnv({ serverComponentName: 'happier-server', env: crossPresetEnv }),
     'sqlite',
@@ -147,7 +147,7 @@ test('provider transition preserves compatible providers and MySQL authority', (
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'mysql', DATABASE_URL: databaseUrl },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql', DATABASE_URL: databaseUrl },
     }),
     { ok: true, provider: 'mysql', databaseUrl, removeDatabaseUrl: false },
   );
@@ -155,7 +155,7 @@ test('provider transition preserves compatible providers and MySQL authority', (
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server-light',
       nextServerComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: 'pglite' },
+      env: { PIGGERCODE_DB_PROVIDER: 'pglite' },
     }),
     { ok: true, provider: 'pglite', databaseUrl: null, removeDatabaseUrl: false },
   );
@@ -166,13 +166,13 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server-light',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: '' },
+      env: { PIGGERCODE_DB_PROVIDER: '' },
     }),
     {
       ok: false,
       reason: 'unsupported_db_provider',
       serverComponentName: 'happier-server',
-      source: 'HAPPIER_DB_PROVIDER',
+      source: 'PIGGERCODE_DB_PROVIDER',
       input: '',
       supportedProviders: ['postgres', 'mysql', 'pglite', 'sqlite'],
     },
@@ -181,13 +181,13 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server-light',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'unknown' },
+      env: { PIGGERCODE_DB_PROVIDER: 'unknown' },
     }),
     {
       ok: false,
       reason: 'unsupported_db_provider',
       serverComponentName: 'happier-server',
-      source: 'HAPPIER_DB_PROVIDER',
+      source: 'PIGGERCODE_DB_PROVIDER',
       input: 'unknown',
       supportedProviders: ['postgres', 'mysql', 'pglite', 'sqlite'],
     },
@@ -196,7 +196,7 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: 'mysql', DATABASE_URL: 'mysql://old/db' },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql', DATABASE_URL: 'mysql://old/db' },
     }),
     { ok: true, provider: 'mysql', databaseUrl: 'mysql://old/db', removeDatabaseUrl: false },
   );
@@ -204,7 +204,7 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'mysql' },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql' },
     }),
     { ok: false, reason: 'missing_mysql_database_url', provider: 'mysql' },
   );
@@ -212,7 +212,7 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'mysql', DATABASE_URL: 'postgresql://wrong/db' },
+      env: { PIGGERCODE_DB_PROVIDER: 'mysql', DATABASE_URL: 'postgresql://wrong/db' },
     }),
     { ok: false, reason: 'invalid_mysql_database_url', provider: 'mysql' },
   );
@@ -220,7 +220,7 @@ test('provider transition rejects invalid values and fails closed for MySQL with
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: 'postgres' },
+      env: { PIGGERCODE_DB_PROVIDER: 'postgres' },
     }),
     { ok: false, reason: 'missing_postgres_database_url', provider: 'postgres' },
   );
@@ -232,7 +232,7 @@ test('provider transition preserves compatible provider-owned URLs across preset
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server',
       nextServerComponentName: 'happier-server-light',
-      env: { HAPPIER_DB_PROVIDER: 'postgres', DATABASE_URL: postgresUrl },
+      env: { PIGGERCODE_DB_PROVIDER: 'postgres', DATABASE_URL: postgresUrl },
     }),
     { ok: true, provider: 'postgres', databaseUrl: postgresUrl, removeDatabaseUrl: false },
   );
@@ -242,7 +242,7 @@ test('provider transition preserves compatible provider-owned URLs across preset
     resolveEffectiveDbProviderTransition({
       previousServerComponentName: 'happier-server-light',
       nextServerComponentName: 'happier-server',
-      env: { HAPPIER_DB_PROVIDER: 'sqlite', DATABASE_URL: sqliteUrl },
+      env: { PIGGERCODE_DB_PROVIDER: 'sqlite', DATABASE_URL: sqliteUrl },
     }),
     { ok: true, provider: 'sqlite', databaseUrl: sqliteUrl, removeDatabaseUrl: false },
   );

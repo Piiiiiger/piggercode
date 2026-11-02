@@ -31,9 +31,9 @@ const defaultMode = { permissionMode: 'default' } as EnhancedMode;
 describe('permission RPC routing', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_DIR;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR;
   });
 
   it('does not break remote approvals when the local permission bridge activates later', async () => {

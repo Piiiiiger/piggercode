@@ -29,13 +29,13 @@ function makeCliSnapshot(overrides: Partial<DetectCliSnapshot['clis']>, path = '
 }
 
 describe('executionRunsCapability', () => {
-  const envScope = createEnvKeyScope(['PATH', 'HAPPIER_CODERABBIT_REVIEW_CMD', 'HAPPIER_CODEX_BACKEND_MODE']);
+  const envScope = createEnvKeyScope(['PATH', 'PIGGERCODE_CODERABBIT_REVIEW_CMD', 'PIGGERCODE_CODEX_BACKEND_MODE']);
 
   beforeEach(() => {
     envScope.restore();
     envScope.patch({
-      HAPPIER_CODERABBIT_REVIEW_CMD: 'coderabbit',
-      HAPPIER_CODEX_BACKEND_MODE: undefined,
+      PIGGERCODE_CODERABBIT_REVIEW_CMD: 'coderabbit',
+      PIGGERCODE_CODEX_BACKEND_MODE: undefined,
     });
   });
 
@@ -75,7 +75,7 @@ describe('executionRunsCapability', () => {
   it('detects native coderabbit availability from process PATH even when cliSnapshot.path is empty', async () => {
     // Ensure we test PATH detection (not the override).
     await withTempDir('happier-coderabbit-path-test-', async (dir) => {
-      envScope.patch({ HAPPIER_CODERABBIT_REVIEW_CMD: undefined });
+      envScope.patch({ PIGGERCODE_CODERABBIT_REVIEW_CMD: undefined });
 
       const bin = join(dir, 'coderabbit');
       await writeFile(
@@ -104,8 +104,8 @@ describe('executionRunsCapability', () => {
     });
   });
 
-  it('reports Codex resume support from the effective runtime mode (HAPPIER_CODEX_BACKEND_MODE)', async () => {
-    process.env.HAPPIER_CODEX_BACKEND_MODE = 'mcp';
+  it('reports Codex resume support from the effective runtime mode (PIGGERCODE_CODEX_BACKEND_MODE)', async () => {
+    process.env.PIGGERCODE_CODEX_BACKEND_MODE = 'mcp';
 
     const res = await executionRunsCapability.detect({
       context: {

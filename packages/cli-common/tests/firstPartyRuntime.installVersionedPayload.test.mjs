@@ -34,7 +34,7 @@ async function createPayload(rootDir, versionId, contents, executableName = 'hap
 
 test('installVersionedPayload promotes payload, syncs shims, and prunes older versions', async () => {
   const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-'));
-  const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+  const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
   try {
     await installVersionedPayload({
@@ -75,7 +75,7 @@ test('installVersionedPayload promotes payload, syncs shims, and prunes older ve
 test('installVersionedPayload resolves Windows .exe payloads and shims', async () => {
   await withPlatform('win32', async () => {
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-install-versioned-payload-win32-'));
-    const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+    const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
     try {
       const result = await installVersionedPayload({

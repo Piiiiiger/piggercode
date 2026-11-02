@@ -51,15 +51,15 @@ async function createLocalCodexStub(params: Readonly<{
 const fs = require('node:fs');
 const path = require('node:path');
 
-const sessionsRoot = process.env.HAPPIER_CODEX_SESSIONS_DIR;
-if (!sessionsRoot) throw new Error('Missing HAPPIER_CODEX_SESSIONS_DIR');
+const sessionsRoot = process.env.PIGGERCODE_CODEX_SESSIONS_DIR;
+if (!sessionsRoot) throw new Error('Missing PIGGERCODE_CODEX_SESSIONS_DIR');
 fs.mkdirSync(sessionsRoot, { recursive: true });
 
 const filePath = path.join(sessionsRoot, ${JSON.stringify('rollout-test.jsonl')});
-const id = process.env.HAPPIER_E2E_CODEX_SESSION_ID;
-if (!id) throw new Error('Missing HAPPIER_E2E_CODEX_SESSION_ID');
+const id = process.env.PIGGERCODE_E2E_CODEX_SESSION_ID;
+if (!id) throw new Error('Missing PIGGERCODE_E2E_CODEX_SESSION_ID');
 
-const logPath = process.env.HAPPIER_E2E_FAKE_CODEX_LOG;
+const logPath = process.env.PIGGERCODE_E2E_FAKE_CODEX_LOG;
 if (logPath) {
   fs.appendFileSync(logPath, JSON.stringify({ argv: process.argv.slice(2) }) + '\\n', 'utf8');
 }
@@ -201,26 +201,26 @@ async function runRemoteToLocalMirroringScenario(): Promise<void> {
       testName,
       sessionIds: [sessionId],
       env: {
-        HAPPIER_STACK_TOOL_TRACE: '1',
+        PIGGERCODE_STACK_TOOL_TRACE: '1',
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: server.baseUrl,
-      HAPPIER_WEBAPP_URL: server.baseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_STACK_TOOL_TRACE: '1',
-      HAPPIER_STACK_TOOL_TRACE_FILE: toolTraceFile,
-      HAPPIER_CODEX_TUI_BIN: localCodex.fakeCodexPath,
-      HAPPIER_CODEX_SESSIONS_DIR: resolve(join(testDir, 'codex-sessions')),
-      HAPPIER_E2E_CODEX_SESSION_ID: localCodex.codexSessionId,
-      HAPPIER_E2E_FAKE_CODEX_LOG: localCodex.fakeCodexLog,
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: server.baseUrl,
+      PIGGERCODE_WEBAPP_URL: server.baseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_STACK_TOOL_TRACE: '1',
+      PIGGERCODE_STACK_TOOL_TRACE_FILE: toolTraceFile,
+      PIGGERCODE_CODEX_TUI_BIN: localCodex.fakeCodexPath,
+      PIGGERCODE_CODEX_SESSIONS_DIR: resolve(join(testDir, 'codex-sessions')),
+      PIGGERCODE_E2E_CODEX_SESSION_ID: localCodex.codexSessionId,
+      PIGGERCODE_E2E_FAKE_CODEX_LOG: localCodex.fakeCodexLog,
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
     };
 
     await ensureCliDistBuilt({ testDir, env: cliEnv }, { skipSourceFreshnessCheck: true });

@@ -35,7 +35,7 @@ test('hstack stack new normalizes stack names across valid and punctuation-heavy
     );
 
     const contents = await fixture.readStackEnv(testCase.normalized);
-    assert.ok(contents.includes(`HAPPIER_STACK_STACK=${testCase.normalized}\n`), `${testCase.rawName}\n${contents}`);
+    assert.ok(contents.includes(`PIGGERCODE_STACK_STACK=${testCase.normalized}\n`), `${testCase.rawName}\n${contents}`);
   }
 });
 
@@ -56,8 +56,8 @@ test('hstack stack new refuses an existing stack without changing its env', asyn
     envPath,
     updates: [
       { key: 'SENTINEL', value: 'preserve-me' },
-      { key: 'HAPPIER_STACK_RUNTIME_MODE', value: 'require' },
-      { key: 'HAPPIER_STACK_EXPO_SOURCE_STACK', value: 'repo-producer' },
+      { key: 'PIGGERCODE_STACK_RUNTIME_MODE', value: 'require' },
+      { key: 'PIGGERCODE_STACK_EXPO_SOURCE_STACK', value: 'repo-producer' },
     ],
   });
   const before = await fixture.readStackEnv(stackName);

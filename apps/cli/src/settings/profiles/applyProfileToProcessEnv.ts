@@ -2,7 +2,7 @@ export function applyProfileToProcessEnv(params: Readonly<{
   profileId: string;
   envOverlayExpanded: Record<string, string>;
 }>): ReadonlyArray<string> {
-  process.env.HAPPIER_SESSION_PROFILE_ID = params.profileId;
+  process.env.PIGGERCODE_SESSION_PROFILE_ID = params.profileId;
 
   const appliedKeys: string[] = [];
   for (const [key, value] of Object.entries(params.envOverlayExpanded)) {

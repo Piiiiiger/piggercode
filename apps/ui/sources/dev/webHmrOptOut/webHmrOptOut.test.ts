@@ -104,7 +104,7 @@ describe('webHmrOptOut', () => {
             removeItem: (k: string) => void store.delete(k),
         };
         const globalTarget: {
-            __HAPPIER_WEB_HMR_OPT_OUT__?: boolean;
+            __PIGGERCODE_WEB_HMR_OPT_OUT__?: boolean;
         } = {};
 
         const disabledState = setWebHmrOptOutDisabledForWebTab({
@@ -116,7 +116,7 @@ describe('webHmrOptOut', () => {
         expect(disabledState.disabled).toBe(true);
         expect(disabledState.enabled).toBe(false);
         expect(store.get('happier.web.hmrOptOut')).toBe('disabled');
-        expect(globalTarget.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+        expect(globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
 
         const enabledState = setWebHmrOptOutDisabledForWebTab({
             disabled: false,
@@ -127,7 +127,7 @@ describe('webHmrOptOut', () => {
         expect(enabledState.disabled).toBe(false);
         expect(enabledState.enabled).toBe(true);
         expect(store.get('happier.web.hmrOptOut') ?? null).toBeNull();
-        expect(globalTarget.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(false);
+        expect(globalTarget.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(false);
     });
 
     test('installWebHmrOptOutForWebTab persists per-tab state and strips query param', () => {
@@ -154,7 +154,7 @@ describe('webHmrOptOut', () => {
             history,
         });
         expect(disabled).toBe(true);
-        expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+        expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
         expect(store.get('happier.web.hmrOptOut')).toBe('disabled');
         expect(replaced.at(-1)).toBe('https://example.com/?x=1');
 
@@ -173,7 +173,7 @@ describe('webHmrOptOut', () => {
             history,
         });
         expect(enabled).toBe(false);
-        expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(false);
+        expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(false);
         expect(store.get('happier.web.hmrOptOut') ?? null).toBeNull();
         expect(replaced.at(-1)).toBe('https://example.com/');
     });
@@ -323,7 +323,7 @@ describe('webHmrOptOut', () => {
             history,
         });
         expect(disabled).toBe(true);
-        expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+        expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
         expect(store.get('happier.web.hmrOptOut')).toBe('disabled');
         expect(replaced.at(-1)).toBe('https://example.com/new?x=1');
     });
@@ -360,9 +360,9 @@ describe('webHmrOptOut', () => {
             });
 
             expect(disabled).toBe(true);
-            expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+            expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
             expect(store.get('happier.web.hmrOptOut')).toBe('disabled');
-            expect(!!globalThis.__HAPPIER_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__).toBe(true);
+            expect(!!globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT_WEBSOCKET_GUARD__).toBe(true);
         } finally {
             (globalThis as any).WebSocket = originalWebSocket;
         }
@@ -396,7 +396,7 @@ describe('webHmrOptOut', () => {
 
             const disabled = installWebHmrOptOutForCurrentWebTab();
             expect(disabled).toBe(true);
-            expect(globalThis.__HAPPIER_WEB_HMR_OPT_OUT__).toBe(true);
+            expect(globalThis.__PIGGERCODE_WEB_HMR_OPT_OUT__).toBe(true);
             expect(store.get('happier.web.hmrOptOut')).toBe('disabled');
             expect(replaced.at(-1)).toBe('https://example.com/new?x=1');
         } finally {

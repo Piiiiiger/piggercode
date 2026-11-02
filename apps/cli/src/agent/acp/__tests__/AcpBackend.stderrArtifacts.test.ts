@@ -86,8 +86,8 @@ describe('AcpBackend subprocess stderr artifacts', () => {
       await withTempDir('happier-debug-artifacts-', async (artifactsRoot) => {
         const envScope = createAcpSubprocessEnvScope();
         envScope.patch({
-          HAPPIER_DEBUG_ARTIFACTS_DIR: artifactsRoot,
-          HAPPIER_SUBPROCESS_STDERR_MAX_BYTES: '10000',
+          PIGGERCODE_DEBUG_ARTIFACTS_DIR: artifactsRoot,
+          PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES: '10000',
         });
 
         const scriptPath = writeAcpTestAgentScript({
@@ -134,8 +134,8 @@ describe('AcpBackend subprocess stderr artifacts', () => {
       await withTempDir('happier-debug-artifacts-', async (artifactsRoot) => {
         const envScope = createAcpSubprocessEnvScope();
         envScope.patch({
-          HAPPIER_DEBUG_ARTIFACTS_DIR: artifactsRoot,
-          HAPPIER_SUBPROCESS_STDERR_MAX_BYTES: '10000',
+          PIGGERCODE_DEBUG_ARTIFACTS_DIR: artifactsRoot,
+          PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES: '10000',
         });
 
         const scriptPath = writeFakeAcpAgentScript({ dir, stderrAfterPromptText: 'boom on stderr' });

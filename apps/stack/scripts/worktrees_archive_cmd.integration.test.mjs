@@ -94,7 +94,7 @@ test('hstack wt archive refuses to break stacks unless --detach-stacks is provid
   assert.equal(ok.code, 0, `expected archive to succeed with --detach-stacks\nstdout:\n${ok.stdout}\nstderr:\n${ok.stderr}`);
 
   const nextEnv = await readFile(envPath, 'utf-8');
-  assert.ok(!nextEnv.includes('HAPPIER_STACK_REPO_DIR='), `expected stack env to detach from worktree\n${nextEnv}`);
+  assert.ok(!nextEnv.includes('PIGGERCODE_STACK_REPO_DIR='), `expected stack env to detach from worktree\n${nextEnv}`);
 
   const archivedDir = join(workspaceDir, 'archive', 'worktrees', date, 'pr', 'linked-to-stack');
   const gitStat = await stat(join(archivedDir, '.git'));

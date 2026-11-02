@@ -5,11 +5,11 @@ import { acquireEndpointSupervisor, getEndpointSupervisorForServer } from '@/syn
 import { createNotAuthenticatedError } from './authErrors';
 import { assertServerReachabilityAuthenticated } from './serverReachabilitySupervisorPool';
 
-const STATIC_EXPO_PUBLIC_HAPPIER_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS =
-    process.env.EXPO_PUBLIC_HAPPIER_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS;
+const STATIC_EXPO_PUBLIC_PIGGERCODE_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS =
+    process.env.EXPO_PUBLIC_PIGGERCODE_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS;
 
 function readEndpointAuthProbeTimeoutMs(): number {
-    const raw = String(STATIC_EXPO_PUBLIC_HAPPIER_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS ?? '').trim();
+    const raw = String(STATIC_EXPO_PUBLIC_PIGGERCODE_USER_SEND_NO_ACK_AUTH_PROBE_TIMEOUT_MS ?? '').trim();
     if (!raw) return 750;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 750;

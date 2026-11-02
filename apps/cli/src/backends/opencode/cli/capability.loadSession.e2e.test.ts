@@ -54,8 +54,8 @@ function makeCliSnapshot(overrides: Partial<DetectCliSnapshot['clis']>): DetectC
 
 describe('cli.opencode capability (ACP)', () => {
   const providersEnabled =
-    (process.env.HAPPIER_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS) === '1'
-    && (process.env.HAPPIER_E2E_PROVIDER_OPENCODE ?? process.env.HAPPY_E2E_PROVIDER_OPENCODE) === '1';
+    (process.env.PIGGERCODE_E2E_PROVIDERS ?? process.env.HAPPY_E2E_PROVIDERS) === '1'
+    && (process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE ?? process.env.HAPPY_E2E_PROVIDER_OPENCODE) === '1';
 
   it('returns deterministic capability results with or without provider probes enabled', async () => {
     const request: DetectArgs['request'] = { id: 'cli.opencode', params: { includeAcpCapabilities: true } };

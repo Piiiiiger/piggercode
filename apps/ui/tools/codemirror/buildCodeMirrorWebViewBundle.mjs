@@ -68,7 +68,7 @@ const legacyDockerfile = StreamLanguage.define(dockerFile);
 const legacyToml = StreamLanguage.define(toml);
 const legacyIni = StreamLanguage.define(properties);
 
-globalThis.HAPPIER_CODEMIRROR_WEBVIEW = {
+globalThis.PIGGERCODE_CODEMIRROR_WEBVIEW = {
   EditorState,
   EditorView,
   lineNumbers,

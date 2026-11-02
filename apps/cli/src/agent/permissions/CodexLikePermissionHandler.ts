@@ -33,7 +33,7 @@ import { parseTrustedHappierToolsShellBridgeCommand } from '@/agent/tools/happie
 
 export type { PermissionResult, PendingRequest };
 
-const AUTO_APPROVE_HAPPIER_SHELL_BRIDGE_TOOLS = new Set(['change_title', 'session_title_set', 'save_memory', 'think']);
+const AUTO_APPROVE_PIGGERCODE_SHELL_BRIDGE_TOOLS = new Set(['change_title', 'session_title_set', 'save_memory', 'think']);
 export { isDefaultWriteLikeToolName };
 
 export class CodexLikePermissionHandler extends BasePermissionHandler {
@@ -181,7 +181,7 @@ export class CodexLikePermissionHandler extends BasePermissionHandler {
     if (!parsed) return false;
     if (parsed.kind === 'list') return true;
     if (parsed.source !== 'happier') return false;
-    if (AUTO_APPROVE_HAPPIER_SHELL_BRIDGE_TOOLS.has(parsed.tool)) return true;
+    if (AUTO_APPROVE_PIGGERCODE_SHELL_BRIDGE_TOOLS.has(parsed.tool)) return true;
     if (parsed.argsJson == null) return false;
     try {
       return isSafeFirstPartyHappierActionToolCall({

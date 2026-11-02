@@ -277,7 +277,7 @@ describe('buildSetupPlan — readiness is more than credential bytes', () => {
 
 describe('buildSetupPlan — no terminal at all', () => {
   it('creates nothing even when the relay was chosen on the command line', () => {
-    // `--non-interactive` (and HAPPIER_NONINTERACTIVE=1, and a missing terminal)
+    // `--non-interactive` (and PIGGERCODE_NONINTERACTIVE=1, and a missing terminal)
     // means "nobody is here": setup reports what it would need and writes
     // nothing. `--yes` is the flag that asks for the work to be done.
     const plan = buildSetupPlan({

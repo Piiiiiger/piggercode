@@ -18,11 +18,11 @@ vi.mock('axios', async () => {
 describe('resolveSessionIdOrPrefix', () => {
   it('returns a missing full session id before the outer tool budget expires', async () => {
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockClear();
@@ -58,10 +58,10 @@ describe('resolveSessionIdOrPrefix', () => {
       expect(mockAxiosGet).toHaveBeenCalledTimes(3);
     } finally {
       if (budgetTimer) clearTimeout(budgetTimer);
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });
@@ -69,11 +69,11 @@ describe('resolveSessionIdOrPrefix', () => {
   it('reports a lookup timeout instead of not-found when a full-id fallback scan cannot complete', async () => {
     vi.useFakeTimers();
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockClear();
@@ -103,22 +103,22 @@ describe('resolveSessionIdOrPrefix', () => {
       expect(mockAxiosGet).toHaveBeenCalledTimes(2);
     } finally {
       vi.useRealTimers();
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });
 
   it('preserves exact tag resolution when the tag is shaped like a full session id', async () => {
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
     const cuidShapedTag = 'c000000000000000000000000';
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockImplementation(async (urlRaw: string) => {
@@ -167,21 +167,21 @@ describe('resolveSessionIdOrPrefix', () => {
         rawSession: { id: 'session-with-cuid-shaped-tag' },
       });
     } finally {
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });
 
   it('falls back to prefix paging when a long id-or-prefix is not an exact session id', async () => {
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockImplementation(async (urlRaw: string) => {
@@ -230,21 +230,21 @@ describe('resolveSessionIdOrPrefix', () => {
         rawSession: { id: 'sess_integration_run_start_123' },
       });
     } finally {
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });
 
   it('includes archived sessions when resolving by prefix', async () => {
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockImplementation(async (urlRaw: string) => {
@@ -293,21 +293,21 @@ describe('resolveSessionIdOrPrefix', () => {
         rawSession: { id: 'sess_integration_archived_123' },
       });
     } finally {
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });
 
   it('does not treat duplicate matches across active + archived scans as ambiguous', async () => {
     const { reloadConfiguration } = await import('@/configuration');
-    const originalServerUrl = process.env.HAPPIER_SERVER_URL;
-    const originalWebappUrl = process.env.HAPPIER_WEBAPP_URL;
+    const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
+    const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
 
-    process.env.HAPPIER_SERVER_URL = 'http://example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://example.test';
     reloadConfiguration();
 
     mockAxiosGet.mockImplementation(async (urlRaw: string) => {
@@ -356,10 +356,10 @@ describe('resolveSessionIdOrPrefix', () => {
         rawSession: { id: 'sess_dup_123' },
       });
     } finally {
-      if (originalServerUrl === undefined) delete process.env.HAPPIER_SERVER_URL;
-      else process.env.HAPPIER_SERVER_URL = originalServerUrl;
-      if (originalWebappUrl === undefined) delete process.env.HAPPIER_WEBAPP_URL;
-      else process.env.HAPPIER_WEBAPP_URL = originalWebappUrl;
+      if (originalServerUrl === undefined) delete process.env.PIGGERCODE_SERVER_URL;
+      else process.env.PIGGERCODE_SERVER_URL = originalServerUrl;
+      if (originalWebappUrl === undefined) delete process.env.PIGGERCODE_WEBAPP_URL;
+      else process.env.PIGGERCODE_WEBAPP_URL = originalWebappUrl;
       reloadConfiguration();
     }
   });

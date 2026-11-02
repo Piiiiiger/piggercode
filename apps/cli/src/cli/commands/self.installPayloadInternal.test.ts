@@ -14,10 +14,10 @@ const {
   })),
   maybeRunVersionGatedRuntimeMigrationMock: vi.fn(async (_params: unknown) => {
     migrationEnvSnapshots.push({
-      HAPPIER_DAEMON_SERVICE_CHANNEL: process.env.HAPPIER_DAEMON_SERVICE_CHANNEL,
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL,
-      HAPPIER_DAEMON_SERVICE_NODE_PATH: process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH,
-      HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH,
+      PIGGERCODE_DAEMON_SERVICE_CHANNEL: process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL,
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL,
+      PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH,
+      PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH,
     });
     return false;
   }),
@@ -56,10 +56,10 @@ describe('happier self __install-payload', () => {
     maybeRunVersionGatedRuntimeMigrationMock.mockReset();
     maybeRunVersionGatedRuntimeMigrationMock.mockImplementation(async (_params: unknown) => {
       migrationEnvSnapshots.push({
-        HAPPIER_DAEMON_SERVICE_CHANNEL: process.env.HAPPIER_DAEMON_SERVICE_CHANNEL,
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL,
-        HAPPIER_DAEMON_SERVICE_NODE_PATH: process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH,
-        HAPPIER_DAEMON_SERVICE_ENTRY_PATH: process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH,
+        PIGGERCODE_DAEMON_SERVICE_CHANNEL: process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL,
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL,
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH,
+        PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH,
       });
       return false;
     });
@@ -149,14 +149,14 @@ describe('happier self __install-payload', () => {
 
   it('runs migration against the installed preview runtime instead of the staged payload context', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const previousChannel = process.env.HAPPIER_DAEMON_SERVICE_CHANNEL;
-    const previousPublicReleaseChannel = process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL;
-    const previousNodePath = process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH;
-    const previousEntryPath = process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH;
-    process.env.HAPPIER_DAEMON_SERVICE_CHANNEL = 'stable';
-    process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL = 'stable';
-    process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH = '/old/runtime';
-    process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH = '/old/entry';
+    const previousChannel = process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL;
+    const previousPublicReleaseChannel = process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL;
+    const previousNodePath = process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH;
+    const previousEntryPath = process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH;
+    process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL = 'stable';
+    process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = 'stable';
+    process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH = '/old/runtime';
+    process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH = '/old/entry';
 
     try {
       const { handleSelfCliCommand } = await import('./self');
@@ -167,35 +167,35 @@ describe('happier self __install-payload', () => {
       });
 
       expect(migrationEnvSnapshots).toContainEqual({
-        HAPPIER_DAEMON_SERVICE_CHANNEL: 'preview',
-        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
-        HAPPIER_DAEMON_SERVICE_NODE_PATH: '/home/test/.happier/cli-preview/current/happier',
-        HAPPIER_DAEMON_SERVICE_ENTRY_PATH: '',
+        PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'preview',
+        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/home/test/.happier/cli-preview/current/happier',
+        PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '',
       });
-      expect(process.env.HAPPIER_DAEMON_SERVICE_CHANNEL).toBe('stable');
-      expect(process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL).toBe('stable');
-      expect(process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH).toBe('/old/runtime');
-      expect(process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH).toBe('/old/entry');
+      expect(process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL).toBe('stable');
+      expect(process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL).toBe('stable');
+      expect(process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH).toBe('/old/runtime');
+      expect(process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH).toBe('/old/entry');
     } finally {
       if (previousChannel === undefined) {
-        delete process.env.HAPPIER_DAEMON_SERVICE_CHANNEL;
+        delete process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL;
       } else {
-        process.env.HAPPIER_DAEMON_SERVICE_CHANNEL = previousChannel;
+        process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL = previousChannel;
       }
       if (previousPublicReleaseChannel === undefined) {
-        delete process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL;
+        delete process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL;
       } else {
-        process.env.HAPPIER_PUBLIC_RELEASE_CHANNEL = previousPublicReleaseChannel;
+        process.env.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = previousPublicReleaseChannel;
       }
       if (previousNodePath === undefined) {
-        delete process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH;
+        delete process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH;
       } else {
-        process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH = previousNodePath;
+        process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH = previousNodePath;
       }
       if (previousEntryPath === undefined) {
-        delete process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH;
+        delete process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH;
       } else {
-        process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH = previousEntryPath;
+        process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH = previousEntryPath;
       }
       logSpy.mockRestore();
     }
@@ -203,8 +203,8 @@ describe('happier self __install-payload', () => {
 
   it('skips post-promotion runtime migration when the installer owns repair', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const previousSkipMigration = process.env.HAPPIER_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION;
-    process.env.HAPPIER_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION = '1';
+    const previousSkipMigration = process.env.PIGGERCODE_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION;
+    process.env.PIGGERCODE_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION = '1';
 
     try {
       const { handleSelfCliCommand } = await import('./self');
@@ -226,9 +226,9 @@ describe('happier self __install-payload', () => {
       expect(maybeRunVersionGatedRuntimeMigrationMock).not.toHaveBeenCalled();
     } finally {
       if (previousSkipMigration === undefined) {
-        delete process.env.HAPPIER_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION;
+        delete process.env.PIGGERCODE_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION;
       } else {
-        process.env.HAPPIER_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION = previousSkipMigration;
+        process.env.PIGGERCODE_CLI_SKIP_INSTALL_PAYLOAD_MIGRATION = previousSkipMigration;
       }
       logSpy.mockRestore();
     }

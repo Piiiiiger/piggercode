@@ -63,8 +63,8 @@ async function resolveCreatedAtOrMtime(targetPath, rawCreatedAt) {
 
 export function resolveRuntimeRetentionPolicy({ env = process.env } = {}) {
   return {
-    runtimeSnapshotKeepCount: resolveKeepCount(env.HAPPIER_STACK_RUNTIME_SNAPSHOT_KEEP_COUNT, DEFAULT_RETENTION_COUNT),
-    artifactKeepCount: resolveKeepCount(env.HAPPIER_STACK_RUNTIME_ARTIFACT_KEEP_COUNT, DEFAULT_RETENTION_COUNT),
+    runtimeSnapshotKeepCount: resolveKeepCount(env.PIGGERCODE_STACK_RUNTIME_SNAPSHOT_KEEP_COUNT, DEFAULT_RETENTION_COUNT),
+    artifactKeepCount: resolveKeepCount(env.PIGGERCODE_STACK_RUNTIME_ARTIFACT_KEEP_COUNT, DEFAULT_RETENTION_COUNT),
   };
 }
 

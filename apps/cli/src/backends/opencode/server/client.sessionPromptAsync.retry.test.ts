@@ -14,20 +14,20 @@ import { createOpenCodeServerRuntimeClient } from './client';
 
 describe('createOpenCodeServerRuntimeClient sessionPromptAsync exact submission', () => {
     const originalFetch = globalThis.fetch;
-    const originalServerUrl = process.env.HAPPIER_OPENCODE_SERVER_URL;
+    const originalServerUrl = process.env.PIGGERCODE_OPENCODE_SERVER_URL;
 
     beforeEach(() => {
         vi.restoreAllMocks();
         vi.unstubAllGlobals();
-        delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+        delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
     });
 
     afterEach(() => {
         globalThis.fetch = originalFetch;
         if (typeof originalServerUrl === 'string') {
-            process.env.HAPPIER_OPENCODE_SERVER_URL = originalServerUrl;
+            process.env.PIGGERCODE_OPENCODE_SERVER_URL = originalServerUrl;
         } else {
-            delete process.env.HAPPIER_OPENCODE_SERVER_URL;
+            delete process.env.PIGGERCODE_OPENCODE_SERVER_URL;
         }
     });
 

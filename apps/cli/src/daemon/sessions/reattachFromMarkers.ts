@@ -57,7 +57,7 @@ function readRuntimeSnapshotMetadata(value: unknown): Record<string, unknown> | 
 }
 
 function shouldRecoverMarkerlessDaemonSpawnedSessions(env: NodeJS.ProcessEnv = process.env): boolean {
-  return parseOptionalBooleanEnv(env.HAPPIER_DAEMON_MARKERLESS_REATTACH_ENABLED) !== false;
+  return parseOptionalBooleanEnv(env.PIGGERCODE_DAEMON_MARKERLESS_REATTACH_ENABLED) !== false;
 }
 
 function indicatesDaemonStartedSessionCommand(command: string): boolean {
@@ -409,7 +409,7 @@ export async function reattachTrackedSessionsFromMarkers(params: Readonly<{
   const orphanedDeadDaemonSessions: OrphanedDeadDaemonSession[] = [];
   const disconnectedTerminalHostCandidates: DisconnectedTerminalHostCandidate[] = [];
   const unresolvedTerminalHostSessionIds: string[] = [];
-  // On daemon restart, reattach to still-running sessions via disk markers (stack-scoped by HAPPIER_HOME_DIR).
+  // On daemon restart, reattach to still-running sessions via disk markers (stack-scoped by PIGGERCODE_HOME_DIR).
   try {
     const markers = await listSessionMarkers();
     logger.debug('[DAEMON RUN] Startup reattach inputs collected', {

@@ -41,7 +41,7 @@ export const openCodePreflightSessionControlsProbeAdapter: PreflightSessionContr
           env: {
             ...processEnv,
             ...(server.authPassword ? resolveOpenCodeManagedServerCredentialChildEnv({ username: 'opencode', password: server.authPassword }) : {}),
-            HAPPIER_OPENCODE_SERVER_HTTP_TIMEOUT_MS: String(remainingCatalogProbeMs(lifecycle)),
+            PIGGERCODE_OPENCODE_SERVER_HTTP_TIMEOUT_MS: String(remainingCatalogProbeMs(lifecycle)),
           },
         });
         params.onNativeCleanup?.(cleanup);

@@ -1,9 +1,9 @@
 import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { stripNestedSessionDetectionEnv } from '@/utils/processEnv/stripNestedSessionDetectionEnv';
-import { HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from '@/daemon/platform/linux/daemonSpawnedSessionCgroupSelfMigration';
+import { PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY } from '@/daemon/platform/linux/daemonSpawnedSessionCgroupSelfMigration';
 import {
-  HAPPIER_RUNTIME_CONTEXT_ENV_KEYS,
+  PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS,
   resolveHappierRuntimeContextEnv,
   type HappierRuntimeServerContext,
 } from '@/utils/env/resolveHappierRuntimeContextEnv';
@@ -13,18 +13,18 @@ import { resolveStackProcessKindOverrideForSessionSpawn } from './resolveStackPr
 type ChildServerSelectionEnv = HappierRuntimeServerContext;
 
 const DAEMON_ONLY_ENV_KEYS = [
-  'HAPPIER_DAEMON_EXECUTION_GENERATION_V1',
-  'HAPPIER_SESSION_AUTOSTART_DAEMON',
-  'HAPPIER_DAEMON_RUNTIME_ID',
-  'HAPPIER_DAEMON_STARTUP_SOURCE',
-  'HAPPIER_DAEMON_TAKEOVER',
+  'PIGGERCODE_DAEMON_EXECUTION_GENERATION_V1',
+  'PIGGERCODE_SESSION_AUTOSTART_DAEMON',
+  'PIGGERCODE_DAEMON_RUNTIME_ID',
+  'PIGGERCODE_DAEMON_STARTUP_SOURCE',
+  'PIGGERCODE_DAEMON_TAKEOVER',
   // The desktop management marker a service definition hands its daemon.
-  'HAPPIER_DAEMON_SERVICE_MANAGED_BY',
-  'HAPPIER_DAEMON_SERVICE_BUNDLE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
+  'PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID',
 ] as const;
 
 export const DAEMON_DECIDED_CHILD_ENV_KEYS = [
-  ...HAPPIER_RUNTIME_CONTEXT_ENV_KEYS,
+  ...PIGGERCODE_RUNTIME_CONTEXT_ENV_KEYS,
   ...STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
   ...DAEMON_ONLY_ENV_KEYS,
 ] as const;
@@ -44,21 +44,21 @@ export function buildSpawnChildProcessEnv(params: {
   // processes retain the logger's default 'info' level; stack context keeps runner forensics.
   // Explicit operator overrides always win.
   if (
-    String(env.HAPPIER_LOG_LEVEL ?? '').trim().length === 0 &&
-    stackProcessKindOverride.HAPPIER_STACK_PROCESS_KIND === 'session'
+    String(env.PIGGERCODE_LOG_LEVEL ?? '').trim().length === 0 &&
+    stackProcessKindOverride.PIGGERCODE_STACK_PROCESS_KIND === 'session'
   ) {
-    env.HAPPIER_LOG_LEVEL = 'debug';
+    env.PIGGERCODE_LOG_LEVEL = 'debug';
   }
 
   if (shouldUseSystemdUserSessionResourceGovernor({
     platform: process.platform,
-    startupSource: String(params.processEnv.HAPPIER_DAEMON_STARTUP_SOURCE ?? '').trim(),
+    startupSource: String(params.processEnv.PIGGERCODE_DAEMON_STARTUP_SOURCE ?? '').trim(),
   })) {
-    env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY] = '1';
+    env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY] = '1';
   } else {
-    delete env[HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY];
+    delete env[PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP_ENV_KEY];
   }
-  delete env.HAPPIER_STACK_PROCESS_KIND;
+  delete env.PIGGERCODE_STACK_PROCESS_KIND;
   Object.assign(env, stackProcessKindOverride);
   Object.assign(env, resolveHappierRuntimeContextEnv({ homeDir: params.homeDir }));
 
@@ -67,14 +67,14 @@ export function buildSpawnChildProcessEnv(params: {
     // via the shared runtime-context resolver (single source of truth shared with
     // the coding-agent spawn seam). For a non-split stack the resolver omits the
     // local/public URLs, so they must be cleared here first.
-    delete env.HAPPIER_PUBLIC_SERVER_URL;
-    delete env.HAPPIER_LOCAL_SERVER_URL;
+    delete env.PIGGERCODE_PUBLIC_SERVER_URL;
+    delete env.PIGGERCODE_LOCAL_SERVER_URL;
     Object.assign(env, resolveHappierRuntimeContextEnv({
       // Older stack daemons used the stable active-server id for both credentials and daemon
       // lifecycle. Promote that already-resolved daemon selection for children when the explicit
       // lifecycle variable is absent; current daemons keep the two scopes independent.
       daemonLifecycleScopeId:
-        String(params.processEnv.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim()
+        String(params.processEnv.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim()
         || params.serverSelectionEnv.activeServerId,
       server: params.serverSelectionEnv,
     }));

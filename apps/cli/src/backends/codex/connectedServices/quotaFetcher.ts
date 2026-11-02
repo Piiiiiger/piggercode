@@ -64,15 +64,15 @@ function parseDisableQuotaEndpointEnv(raw: string | undefined): boolean {
 export const openAiCodexQuotaFetcherDescriptor: ConnectedServiceQuotaFetcherDescriptor = {
   loadSubscription: ({ env, staleAfterMs }) => createOpenAiCodexSubscriptionFetcher({
     staleAfterMs,
-    disablePrivateEndpoint: parseDisableQuotaEndpointEnv(env.HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_SUBSCRIPTION_ENDPOINT),
+    disablePrivateEndpoint: parseDisableQuotaEndpointEnv(env.PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_SUBSCRIPTION_ENDPOINT),
   }),
   loadQuota: ({ env, staleAfterMs }) => createOpenAiCodexQuotaFetcher({
-    usageUrl: parseNonEmptyStringEnv(env.HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL),
-    resetCreditsUrl: parseNonEmptyStringEnv(env.HAPPIER_CONNECTED_SERVICES_OPENAI_CODEX_RESET_CREDITS_URL),
+    usageUrl: parseNonEmptyStringEnv(env.PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_USAGE_URL),
+    resetCreditsUrl: parseNonEmptyStringEnv(env.PIGGERCODE_CONNECTED_SERVICES_OPENAI_CODEX_RESET_CREDITS_URL),
     staleAfterMs,
-    userAgent: parseNonEmptyStringEnv(env.HAPPIER_CONNECTED_SERVICES_QUOTAS_USER_AGENT),
+    userAgent: parseNonEmptyStringEnv(env.PIGGERCODE_CONNECTED_SERVICES_QUOTAS_USER_AGENT),
     disablePrivateEndpoint: parseDisableQuotaEndpointEnv(
-      env.HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT,
+      env.PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT,
     ),
   }),
 };
@@ -84,7 +84,7 @@ export function createOpenAiCodexQuotaFetcher(params?: Readonly<{
   userAgent?: string;
   /**
    * When true, skip the private endpoint entirely and return a quota_unknown
-   * snapshot. Equivalent to setting HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1.
+   * snapshot. Equivalent to setting PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT=1.
    * The per-call usageUrl override (if set) takes precedence over this flag.
    */
   disablePrivateEndpoint?: boolean;

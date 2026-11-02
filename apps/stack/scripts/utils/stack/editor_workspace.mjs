@@ -63,7 +63,7 @@ export async function writeStackCodeWorkspace({
   const stackEnv = await readEnvObjectFromFile(envPath);
 
   const serverComponent =
-    getEnvValueAny(stackEnv, ['HAPPIER_STACK_SERVER_COMPONENT']) || 'happier-server-light';
+    getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_SERVER_COMPONENT']) || 'happier-server-light';
 
   const folders = [];
   if (includeStackDir) {
@@ -73,7 +73,7 @@ export async function writeStackCodeWorkspace({
     const cliHomeDir = getCliHomeDirFromEnvOrDefault({ stackBaseDir: baseDir, env: stackEnv });
     folders.push({ name: `cli:${stackName}`, path: expandHome(cliHomeDir) });
   }
-  // Repo-only model: stacks pin a single monorepo checkout/worktree via HAPPIER_STACK_REPO_DIR.
+  // Repo-only model: stacks pin a single monorepo checkout/worktree via PIGGERCODE_STACK_REPO_DIR.
   const repoRoot = getRepoDir(rootDir, stackEnv);
   folders.push({ name: 'repo', path: repoRoot });
 

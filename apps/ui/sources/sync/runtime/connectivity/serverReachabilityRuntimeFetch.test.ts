@@ -3,7 +3,7 @@ import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 afterEach(async () => {
     vi.unstubAllGlobals();
-    delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
     try {
         const { resetServerReachabilitySupervisors } = await import('./serverReachabilitySupervisorPool');
         await resetServerReachabilitySupervisors();
@@ -16,7 +16,7 @@ afterEach(async () => {
 
 describe('runtimeFetchWithServerReachability', () => {
     it('refuses authenticated cross-origin requests (prevents token leakage)', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         const runtimeFetchMock = vi.fn(async () => {
             throw new Error('Unexpected runtimeFetch call');
@@ -46,7 +46,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('redacts URLs in authenticated request errors (prevents query-string leakage)', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         const runtimeFetchMock = vi.fn(async () => {
             throw new Error('Unexpected runtimeFetch call');
@@ -80,7 +80,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('returns the response once reachability is online', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {
             const url = typeof input === 'string' ? input : String(input);
@@ -121,7 +121,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('uses the Bearer token from Authorization header for reachability probing when token param is null', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = typeof input === 'string' ? input : String(input);
@@ -163,7 +163,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('marks the server offline when the main request fails', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = typeof input === 'string' ? input : String(input);
@@ -207,7 +207,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('marks the server auth_failed when an authenticated main request returns 401', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = typeof input === 'string' ? input : String(input);
@@ -254,7 +254,7 @@ describe('runtimeFetchWithServerReachability', () => {
     });
 
     it('rejects authenticated requests when the request URL origin differs from the serverUrl origin', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '50';
 
         const runtimeFetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = typeof input === 'string' ? input : String(input);

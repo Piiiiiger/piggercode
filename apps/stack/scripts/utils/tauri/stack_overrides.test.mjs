@@ -15,7 +15,7 @@ test('applyStackTauriOverrides derives stack-scoped app identity when no explici
       },
     },
     env: {
-      HAPPIER_STACK_STACK: 'local-prod',
+      PIGGERCODE_STACK_STACK: 'local-prod',
     },
   });
 

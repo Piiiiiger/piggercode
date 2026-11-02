@@ -41,9 +41,9 @@ describe('Google Antigravity CLI connection', () => {
     { withOverrides: false, response: 'code-state' as const },
   ])('authenticates the current PKCE attempt from $response with registered issuer (overrides: $withOverrides)', async ({ withOverrides, response }) => {
     if (withOverrides) {
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
-      vi.stubEnv('HAPPIER_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_ID', 'machine-client');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_CLIENT_SECRET', 'machine-client-secret');
+      vi.stubEnv('PIGGERCODE_CONNECTED_SERVICES_ANTIGRAVITY_OAUTH_TOKEN_URL', 'https://machine-issuer.example.test/token');
     }
     const authorization = mockPastedCallback(response);
     let tokenRequest: Readonly<{ url: string; body: URLSearchParams }> | undefined;

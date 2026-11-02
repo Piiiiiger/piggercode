@@ -2,7 +2,7 @@
  * Design decisions:
  * - Logging should be done only through file for debugging, otherwise we might disturb the claude session when in interactive mode
  * - Use info for logs that are useful to the user - this is our UI
- * - File output location: $HAPPIER_HOME_DIR/logs/<date time in local timezone>.log
+ * - File output location: $PIGGERCODE_HOME_DIR/logs/<date time in local timezone>.log
  * - The file log level is resolved once per process (see logFileLevel.ts) so disabled
  *   debug calls are a near-zero-cost early return (no timestamp, no JSON.stringify).
  * - File writes go through a buffered async appender (see logFileAppender.ts); the buffer
@@ -293,17 +293,17 @@ type LoggerFlushHookState = {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __HAPPIER_LOGGER_FLUSH_HOOK_STATE__: LoggerFlushHookState | undefined
+  var __PIGGERCODE_LOGGER_FLUSH_HOOK_STATE__: LoggerFlushHookState | undefined
 }
 
 function getLoggerFlushHookState(): LoggerFlushHookState {
-  if (!globalThis.__HAPPIER_LOGGER_FLUSH_HOOK_STATE__) {
-    globalThis.__HAPPIER_LOGGER_FLUSH_HOOK_STATE__ = {
+  if (!globalThis.__PIGGERCODE_LOGGER_FLUSH_HOOK_STATE__) {
+    globalThis.__PIGGERCODE_LOGGER_FLUSH_HOOK_STATE__ = {
       registered: false,
       flushers: new Set(),
     }
   }
-  return globalThis.__HAPPIER_LOGGER_FLUSH_HOOK_STATE__
+  return globalThis.__PIGGERCODE_LOGGER_FLUSH_HOOK_STATE__
 }
 
 function registerLoggerFlushHook(flush: () => void): void {
@@ -355,8 +355,8 @@ class Logger {
 
     // Remote logging enabled only when explicitly set with server URL
     if (process.env.DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING
-      && process.env.HAPPIER_SERVER_URL) {
-      this.dangerouslyUnencryptedServerLoggingUrl = process.env.HAPPIER_SERVER_URL
+      && process.env.PIGGERCODE_SERVER_URL) {
+      this.dangerouslyUnencryptedServerLoggingUrl = process.env.PIGGERCODE_SERVER_URL
       writeConsoleLogBestEffort(chalk.yellow('[REMOTE LOGGING] Sending logs to server for AI debugging'))
     }
   }

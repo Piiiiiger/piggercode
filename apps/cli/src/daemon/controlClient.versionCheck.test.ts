@@ -26,7 +26,7 @@ function listen(server: http.Server): Promise<{ port: number }> {
 }
 
 describe('daemon control client version check', () => {
-  const envScope = createEnvKeyScope(['HAPPIER_HOME_DIR']);
+  const envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 
   beforeEach(() => {
     mockCurrentProcessAsDaemonLifecycleOwner();
@@ -55,7 +55,7 @@ describe('daemon control client version check', () => {
       const { port } = await listen(server);
 
       await withTempDir('happier-daemon-version-check-', async (tmpHomeDir) => {
-        envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+        envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
         const [{ configuration }, { writeDaemonState }, { isDaemonRunningCurrentlyInstalledHappyVersion }] = await Promise.all([
           import('@/configuration'),
           import('@/persistence'),
@@ -93,7 +93,7 @@ describe('daemon control client version check', () => {
       const { port } = await listen(server);
 
       await withTempDir('happier-daemon-version-check-', async (tmpHomeDir) => {
-        envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+        envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
         const [{ configuration }, { writeDaemonState }, { isDaemonRunningCurrentlyInstalledHappyVersion }] = await Promise.all([
           import('@/configuration'),
           import('@/persistence'),
@@ -120,7 +120,7 @@ describe('daemon control client version check', () => {
 
     try {
       await withTempDir('happier-daemon-version-check-', async (tmpHomeDir) => {
-        envScope.patch({ HAPPIER_HOME_DIR: tmpHomeDir });
+        envScope.patch({ PIGGERCODE_HOME_DIR: tmpHomeDir });
         const [{ configuration }, { writeDaemonState }, { isDaemonRunningCurrentlyInstalledHappyVersion }] = await Promise.all([
           import('@/configuration'),
           import('@/persistence'),

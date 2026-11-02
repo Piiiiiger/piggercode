@@ -684,8 +684,8 @@ export class TmuxUtilities {
       // into an existing session: a duplicate name belongs to another live/recoverable owner.
       const maxAttempts = requireNewSession
         ? 1
-        : readPositiveIntegerEnv('HAPPIER_CLI_TMUX_CREATE_WINDOW_MAX_ATTEMPTS', 3);
-      const retryDelayMs = readNonNegativeIntegerEnv('HAPPIER_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS', 25);
+        : readPositiveIntegerEnv('PIGGERCODE_CLI_TMUX_CREATE_WINDOW_MAX_ATTEMPTS', 3);
+      const retryDelayMs = readNonNegativeIntegerEnv('PIGGERCODE_CLI_TMUX_CREATE_WINDOW_RETRY_DELAY_MS', 25);
 
       const withExplicitTargetWindowIndex = (args: string[], target: string): string[] => {
         const copy = [...args];

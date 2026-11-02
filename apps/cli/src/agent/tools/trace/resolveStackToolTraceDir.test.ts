@@ -14,25 +14,25 @@ describe('resolveStackToolTraceDir', () => {
     expect(dir).toBe(path.join(os.homedir(), '.happier', 'stacks', stack, 'cli', 'tool-traces'));
   });
 
-  it('defaults to HAPPIER_HOME_DIR/stacks when HAPPIER_HOME_DIR is configured', () => {
+  it('defaults to PIGGERCODE_HOME_DIR/stacks when PIGGERCODE_HOME_DIR is configured', () => {
     const stack = 'unit-test-stack';
     const dir = resolveStackToolTraceDir({
       stack,
       env: {
-        HAPPIER_HOME_DIR: '/scoped/happier-home',
+        PIGGERCODE_HOME_DIR: '/scoped/happier-home',
       },
     });
     expect(dir).toBe(path.join('/scoped/happier-home', 'stacks', stack, 'cli', 'tool-traces'));
   });
 
-  it('respects HAPPIER_STACK_STORAGE_DIR override', () => {
+  it('respects PIGGERCODE_STACK_STORAGE_DIR override', () => {
     const storage = mkdtempSync(path.join(tmpdir(), 'happier-stack-storage-'));
     const stack = 'unit-test-stack';
-    const dir = resolveStackToolTraceDir({ stack, env: { HAPPIER_STACK_STORAGE_DIR: storage } });
+    const dir = resolveStackToolTraceDir({ stack, env: { PIGGERCODE_STACK_STORAGE_DIR: storage } });
     expect(dir).toBe(path.join(storage, stack, 'cli', 'tool-traces'));
   });
 
-  it('expands Windows-style home shorthand in HAPPIER_STACK_STORAGE_DIR overrides', () => {
+  it('expands Windows-style home shorthand in PIGGERCODE_STACK_STORAGE_DIR overrides', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'happier-stack-storage-home-'));
     const homeDir = path.join(root, 'home');
     const stack = 'unit-test-stack';
@@ -41,7 +41,7 @@ describe('resolveStackToolTraceDir', () => {
       env: {
         HOME: homeDir,
         USERPROFILE: homeDir,
-        HAPPIER_STACK_STORAGE_DIR: '~\\stack-root',
+        PIGGERCODE_STACK_STORAGE_DIR: '~\\stack-root',
       },
     });
     expect(dir).toBe(path.join(homeDir, 'stack-root', stack, 'cli', 'tool-traces'));

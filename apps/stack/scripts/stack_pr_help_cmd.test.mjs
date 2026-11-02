@@ -10,8 +10,8 @@ test('hstack stack pr --help surfaces --reuse (supported flag)', async () => {
   const env = {
     ...process.env,
     // Prevent env.mjs from auto-loading a real machine stack env file (keeps the test hermetic).
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'stack', 'pr', '--help'], { cwd: rootDir, env });
@@ -24,8 +24,8 @@ test('hstack stack --help shows --reuse on the stack pr usage line', async () =>
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: 'test-stack',
-    HAPPIER_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
+    PIGGERCODE_STACK_STACK: 'test-stack',
+    PIGGERCODE_STACK_ENV_FILE: join(rootDir, 'scripts', 'nonexistent-env'),
   };
 
   const res = await runNodeCapture([hstackBinPath(rootDir), 'stack', '--help'], { cwd: rootDir, env });

@@ -26,7 +26,7 @@ describe('createGeminiBackend auth method', () => {
     'HOME',
     'CI',
     'NO_BROWSER',
-    'HAPPIER_GEMINI_PATH',
+    'PIGGERCODE_GEMINI_PATH',
     'GEMINI_API_KEY',
     'GOOGLE_API_KEY',
     'GEMINI_MODEL',
@@ -35,8 +35,8 @@ describe('createGeminiBackend auth method', () => {
     'GOOGLE_CLOUD_PROJECT',
     'GOOGLE_CLOUD_PROJECT_ID',
     'GOOGLE_CLOUD_LOCATION',
-    'HAPPIER_GEMINI_ACP_AUTH_METHOD',
-    'HAPPIER_GEMINI_ACP_AUTH_META',
+    'PIGGERCODE_GEMINI_ACP_AUTH_METHOD',
+    'PIGGERCODE_GEMINI_ACP_AUTH_META',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -59,7 +59,7 @@ describe('createGeminiBackend auth method', () => {
         fileName: 'gemini',
         contents: '#!/bin/sh\nexit 0\n',
       });
-      envScope.patch({ HAPPIER_GEMINI_PATH: geminiPath });
+      envScope.patch({ PIGGERCODE_GEMINI_PATH: geminiPath });
       return fn(geminiPath);
     });
   }
@@ -147,14 +147,14 @@ async function main() {
           GEMINI_MODEL: Object.prototype.hasOwnProperty.call(process.env, 'GEMINI_MODEL')
             ? process.env.GEMINI_MODEL
             : null,
-          HAPPIER_SESSION_ID: Object.prototype.hasOwnProperty.call(process.env, 'HAPPIER_SESSION_ID')
-            ? process.env.HAPPIER_SESSION_ID
+          PIGGERCODE_SESSION_ID: Object.prototype.hasOwnProperty.call(process.env, 'PIGGERCODE_SESSION_ID')
+            ? process.env.PIGGERCODE_SESSION_ID
             : null,
-          HAPPIER_GEMINI_ACP_AUTH_METHOD: Object.prototype.hasOwnProperty.call(process.env, 'HAPPIER_GEMINI_ACP_AUTH_METHOD')
-            ? process.env.HAPPIER_GEMINI_ACP_AUTH_METHOD
+          PIGGERCODE_GEMINI_ACP_AUTH_METHOD: Object.prototype.hasOwnProperty.call(process.env, 'PIGGERCODE_GEMINI_ACP_AUTH_METHOD')
+            ? process.env.PIGGERCODE_GEMINI_ACP_AUTH_METHOD
             : null,
-          HAPPIER_GEMINI_ACP_AUTH_META: Object.prototype.hasOwnProperty.call(process.env, 'HAPPIER_GEMINI_ACP_AUTH_META')
-            ? process.env.HAPPIER_GEMINI_ACP_AUTH_META
+          PIGGERCODE_GEMINI_ACP_AUTH_META: Object.prototype.hasOwnProperty.call(process.env, 'PIGGERCODE_GEMINI_ACP_AUTH_META')
+            ? process.env.PIGGERCODE_GEMINI_ACP_AUTH_META
             : null,
         },
       }) + '\\n', 'utf8');
@@ -189,7 +189,7 @@ main().catch((error) => {
 });
 `,
       });
-      envScope.patch({ HAPPIER_GEMINI_PATH: geminiPath });
+      envScope.patch({ PIGGERCODE_GEMINI_PATH: geminiPath });
       return await fn(geminiPath);
     });
   }
@@ -222,16 +222,16 @@ main().catch((error) => {
         await withFakeGeminiAcpCli({ newSessionLogPath }, async () => {
           const result = createGeminiBackend({
             cwd: testDir,
-            env: { HAPPIER_SESSION_ID: 'session-1' },
+            env: { PIGGERCODE_SESSION_ID: 'session-1' },
             model: null,
           });
 
           try {
             await expect(result.backend.startSession()).resolves.toMatchObject({ sessionId: expect.any(String) });
             const payload = JSON.parse(readFileSync(newSessionLogPath, 'utf8').trim()) as {
-              env?: { HAPPIER_SESSION_ID?: string | null };
+              env?: { PIGGERCODE_SESSION_ID?: string | null };
             };
-            expect(payload.env?.HAPPIER_SESSION_ID).toBe('session-1');
+            expect(payload.env?.PIGGERCODE_SESSION_ID).toBe('session-1');
           } finally {
             await result.backend.dispose().catch(() => {});
           }
@@ -469,7 +469,7 @@ main().catch((error) => {
           cwd: '/tmp',
           env: {
             HOME: homeDir,
-            HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
+            PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
               kind: 'profile',
               serviceId: 'gemini',
               profileId: 'selected-b',
@@ -542,8 +542,8 @@ main().catch((error) => {
           const result = createGeminiBackend({
             cwd: testDir,
             env: {
-              HAPPIER_GEMINI_ACP_AUTH_METHOD: 'gateway',
-              HAPPIER_GEMINI_ACP_AUTH_META: JSON.stringify({
+              PIGGERCODE_GEMINI_ACP_AUTH_METHOD: 'gateway',
+              PIGGERCODE_GEMINI_ACP_AUTH_META: JSON.stringify({
                 gateway: {
                   baseUrl: 'https://gateway.example.test/v1',
                   headers: {
@@ -619,8 +619,8 @@ main().catch((error) => {
             HOME: homeDir,
             GEMINI_API_KEY: undefined,
             GOOGLE_API_KEY: undefined,
-            HAPPIER_GEMINI_ACP_AUTH_METHOD: 'gateway',
-            HAPPIER_GEMINI_ACP_AUTH_META: JSON.stringify(gatewayMeta),
+            PIGGERCODE_GEMINI_ACP_AUTH_METHOD: 'gateway',
+            PIGGERCODE_GEMINI_ACP_AUTH_META: JSON.stringify(gatewayMeta),
           });
 
           const result = createGeminiBackend({
@@ -650,8 +650,8 @@ main().catch((error) => {
             expect(newSessionLines).toHaveLength(1);
             expect(JSON.parse(newSessionLines[0] ?? '{}')).toMatchObject({
               env: {
-                HAPPIER_GEMINI_ACP_AUTH_METHOD: null,
-                HAPPIER_GEMINI_ACP_AUTH_META: null,
+                PIGGERCODE_GEMINI_ACP_AUTH_METHOD: null,
+                PIGGERCODE_GEMINI_ACP_AUTH_META: null,
               },
             });
           } finally {
@@ -746,7 +746,7 @@ main().catch((error) => {
       expect(cliHomeDir).toBeTruthy();
       expect(cliHomeDir).not.toBe(homeDir);
       expect(backend.options.env?.HOME).toBe(cliHomeDir);
-      expect(backend.options.env?.HAPPIER_GEMINI_MCP_ENV_QA_STDIO_QA_TOKEN).toBeUndefined();
+      expect(backend.options.env?.PIGGERCODE_GEMINI_MCP_ENV_QA_STDIO_QA_TOKEN).toBeUndefined();
       expect(Object.keys(backend.options.mcpServers ?? {})).toEqual(['qa_stdio']);
 
       const settingsPath = join(String(cliHomeDir), '.gemini', 'settings.json');
@@ -786,7 +786,7 @@ main().catch((error) => {
               happier: {
                 command: process.execPath,
                 args: ['-e', 'process.exit(0)'],
-                env: { HAPPIER_MCP_TEST: '1' },
+                env: { PIGGERCODE_MCP_TEST: '1' },
               },
             },
           });
@@ -810,7 +810,7 @@ main().catch((error) => {
             expect(happierServers[0]).toMatchObject({
               command: process.execPath,
               args: ['-e', 'process.exit(0)'],
-              env: { HAPPIER_MCP_TEST: '1' },
+              env: { PIGGERCODE_MCP_TEST: '1' },
             });
             expect(payload.copiedSettings).toMatchObject({ theme: 'dark' });
             expect(payload.copiedSettings).not.toHaveProperty('mcpServers');

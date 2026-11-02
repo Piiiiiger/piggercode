@@ -39,7 +39,7 @@ describe('getPierreDiffWorkerPool', () => {
         }));
         vi.doMock('./pierreThemeRegistry.web', () => ({
             ensureHappierPierreThemesRegistered: vi.fn(),
-            HAPPIER_PIERRE_THEME_IDS: { light: 'happier-light', dark: 'happier-dark' },
+            PIGGERCODE_PIERRE_THEME_IDS: { light: 'happier-light', dark: 'happier-dark' },
         }));
         vi.doMock('@pierre/diffs/worker', () => ({
             WorkerPoolManager: class WorkerPoolManager {
@@ -79,7 +79,7 @@ describe('getPierreDiffWorkerPool', () => {
         }));
         vi.doMock('./pierreThemeRegistry.web', () => ({
             ensureHappierPierreThemesRegistered: vi.fn(),
-            HAPPIER_PIERRE_THEME_IDS: { light: 'happier-light', dark: 'happier-dark' },
+            PIGGERCODE_PIERRE_THEME_IDS: { light: 'happier-light', dark: 'happier-dark' },
         }));
         vi.doMock('@pierre/diffs/worker', () => ({
             WorkerPoolManager: class WorkerPoolManager {

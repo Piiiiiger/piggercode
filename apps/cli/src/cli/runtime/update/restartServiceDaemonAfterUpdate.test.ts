@@ -17,17 +17,17 @@ vi.mock('@/daemon/doctor', async (importOriginal) => {
 });
 
 const SCOPED_ENV_KEYS = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_PLATFORM',
-  'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-  'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
-  'HAPPIER_DAEMON_SERVICE_CHANNEL',
-  'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+  'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+  'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
 ] as const;
 
 type SpawnCall = Readonly<{ command: string; args: readonly string[]; env: NodeJS.ProcessEnv | undefined }>;
@@ -78,7 +78,7 @@ async function loadWithSpawnRecorder(options: Readonly<{ onRestart?: (env: NodeJ
       targetMode: params.targetMode,
       instanceId: serverId,
       activeServerId: serverId,
-      userHomeDir: String(process.env.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR),
+      userHomeDir: String(process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR),
       happierHomeDir: configuration.happyHomeDir,
       serverUrl: `https://${serverId}.example.test`,
       webappUrl: `https://${serverId}.example.test`,
@@ -128,17 +128,17 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
   function patchHome(homeDir: string): void {
     const happierHomeDir = `${homeDir}/.happier`;
     envScope.patch({
-      HAPPIER_HOME_DIR: happierHomeDir,
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-      HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-      HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: happierHomeDir,
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: undefined,
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: undefined,
-      HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-      HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-      HAPPIER_ACTIVE_SERVER_ID: undefined,
-      HAPPIER_SERVER_URL: undefined,
-      HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: undefined,
+      PIGGERCODE_HOME_DIR: happierHomeDir,
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+      PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: happierHomeDir,
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: undefined,
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: undefined,
+      PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+      PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+      PIGGERCODE_ACTIVE_SERVER_ID: undefined,
+      PIGGERCODE_SERVER_URL: undefined,
+      PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: undefined,
     });
   }
 
@@ -191,7 +191,7 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
       expect(result).toEqual({ kind: 'restarted', labels: [defaultLabel] });
       const restartCall = calls.find((call) => call.args.join(' ') === 'daemon service restart');
       expect(restartCall?.command).toMatch(/[\\/]cli[\\/]current[\\/]happier(?:\.exe)?$/);
-      expect(restartCall?.env?.HAPPIER_DAEMON_SERVICE_TARGET_MODE).toBe('default-following');
+      expect(restartCall?.env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE).toBe('default-following');
     });
   });
 
@@ -201,8 +201,8 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
       const labels = { default: '', company: '' };
       const { calls, restart, writeServerDaemonState, installService } = await loadWithSpawnRecorder({
         onRestart: (env) => {
-          const pinned = env?.HAPPIER_DAEMON_SERVICE_TARGET_MODE === 'pinned';
-          writeServerDaemonState(pinned ? String(env?.HAPPIER_ACTIVE_SERVER_ID) : 'cloud', serviceState('1.1.0', pinned ? labels.company : labels.default));
+          const pinned = env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE === 'pinned';
+          writeServerDaemonState(pinned ? String(env?.PIGGERCODE_ACTIVE_SERVER_ID) : 'cloud', serviceState('1.1.0', pinned ? labels.company : labels.default));
         },
       });
       labels.default = installService({ targetMode: 'default-following' });
@@ -224,11 +224,11 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
       const restartEnvs = calls.filter((call) => call.args.join(' ') === 'daemon service restart').map((call) => call.env);
       expect(restartEnvs).toHaveLength(2);
       expect(restartEnvs[1]).toMatchObject({
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'company',
-        HAPPIER_ACTIVE_SERVER_ID: 'company',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'company',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'company',
       });
-      expect(restartEnvs[0]?.HAPPIER_ACTIVE_SERVER_ID).toBeUndefined();
+      expect(restartEnvs[0]?.PIGGERCODE_ACTIVE_SERVER_ID).toBeUndefined();
     });
   });
 
@@ -240,7 +240,7 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
       const { restart, writeServerDaemonState, installService } = await loadWithSpawnRecorder({
         // Only the default-following daemon comes back; the user's `company` service keeps the old version.
         onRestart: (env) => {
-          if (env?.HAPPIER_DAEMON_SERVICE_TARGET_MODE !== 'pinned') writeServerDaemonState('cloud', serviceState('1.1.0', labels.default));
+          if (env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE !== 'pinned') writeServerDaemonState('cloud', serviceState('1.1.0', labels.default));
         },
       });
       labels.default = installService({ targetMode: 'default-following' });

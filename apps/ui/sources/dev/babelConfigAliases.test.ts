@@ -86,7 +86,7 @@ describe('babel.config.js', () => {
   });
 
   it('allows Worklets Bundle Mode to be enabled explicitly for native experiments', () => {
-    const { config, cacheUsingCalls } = loadBabelConfig({ HAPPIER_UI_WORKLETS_BUNDLE_MODE: '1' });
+    const { config, cacheUsingCalls } = loadBabelConfig({ PIGGERCODE_UI_WORKLETS_BUNDLE_MODE: '1' });
     const plugins = Array.isArray(config?.plugins) ? config.plugins : [];
     const workletsPlugin = plugins.at(-1) as [string, Record<string, unknown>] | undefined;
 
@@ -99,7 +99,7 @@ describe('babel.config.js', () => {
   });
 
   it('allows release perf validation builds to keep console telemetry explicitly', () => {
-    const { config, cacheUsingCalls } = loadBabelConfig({ HAPPIER_UI_KEEP_CONSOLE_IN_RELEASE: '1' });
+    const { config, cacheUsingCalls } = loadBabelConfig({ PIGGERCODE_UI_KEEP_CONSOLE_IN_RELEASE: '1' });
     const productionPlugins = Array.isArray(config?.env?.production?.plugins)
       ? config.env.production.plugins
       : [];

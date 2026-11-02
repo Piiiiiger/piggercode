@@ -7,7 +7,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';
 
 describe('logger', () => {
-    const envKeys = ['DEBUG', 'HAPPIER_HOME_DIR', 'HAPPIER_LOG_LEVEL', 'HAPPIER_SESSION_LOG_KEEP_COUNT', 'HAPPIER_CRASHED_SESSION_LOG_KEEP_COUNT'] as const;
+    const envKeys = ['DEBUG', 'PIGGERCODE_HOME_DIR', 'PIGGERCODE_LOG_LEVEL', 'PIGGERCODE_SESSION_LOG_KEEP_COUNT', 'PIGGERCODE_CRASHED_SESSION_LOG_KEEP_COUNT'] as const;
     let envScope = createEnvKeyScope(envKeys);
     let tempDir: string;
     let originalArgv: string[];
@@ -17,11 +17,11 @@ describe('logger', () => {
         tempDir = createTempDirSync('happier-cli-logger-test-');
         originalArgv = [...process.argv];
         envScope.patch({
-            HAPPIER_HOME_DIR: tempDir,
+            PIGGERCODE_HOME_DIR: tempDir,
             DEBUG: undefined,
-            HAPPIER_LOG_LEVEL: undefined,
-            HAPPIER_SESSION_LOG_KEEP_COUNT: undefined,
-            HAPPIER_CRASHED_SESSION_LOG_KEEP_COUNT: undefined,
+            PIGGERCODE_LOG_LEVEL: undefined,
+            PIGGERCODE_SESSION_LOG_KEEP_COUNT: undefined,
+            PIGGERCODE_CRASHED_SESSION_LOG_KEEP_COUNT: undefined,
         });
         vi.resetModules();
     });
@@ -63,8 +63,8 @@ describe('logger', () => {
         expect(existsSync(logger.getLogPath())).toBe(false);
     });
 
-    it('enables logger.debug via HAPPIER_LOG_LEVEL=debug', async () => {
-        process.env.HAPPIER_LOG_LEVEL = 'debug';
+    it('enables logger.debug via PIGGERCODE_LOG_LEVEL=debug', async () => {
+        process.env.PIGGERCODE_LOG_LEVEL = 'debug';
 
         const { logger } = (await import('@/ui/logger')) as typeof import('@/ui/logger');
 
@@ -334,7 +334,7 @@ describe('logger', () => {
     });
 
     it('prunes session logs best-effort when constructing a session logger, leaving daemon logs alone', async () => {
-        process.env.HAPPIER_SESSION_LOG_KEEP_COUNT = '3';
+        process.env.PIGGERCODE_SESSION_LOG_KEEP_COUNT = '3';
         const logsDir = join(tempDir, 'logs');
         mkdirSync(logsDir, { recursive: true });
         for (let index = 0; index < 6; index += 1) {
@@ -357,8 +357,8 @@ describe('logger', () => {
     });
 
     it('retains bounded non-zero crashed runner session logs outside the normal session log budget', async () => {
-        process.env.HAPPIER_SESSION_LOG_KEEP_COUNT = '3';
-        process.env.HAPPIER_CRASHED_SESSION_LOG_KEEP_COUNT = '1';
+        process.env.PIGGERCODE_SESSION_LOG_KEEP_COUNT = '3';
+        process.env.PIGGERCODE_CRASHED_SESSION_LOG_KEEP_COUNT = '1';
         const logsDir = join(tempDir, 'logs');
         const sessionExitDir = join(logsDir, 'session-exit');
         mkdirSync(sessionExitDir, { recursive: true });
@@ -399,7 +399,7 @@ describe('logger', () => {
     });
 
     it('retains a live runner log outside the normal session log budget', async () => {
-        process.env.HAPPIER_SESSION_LOG_KEEP_COUNT = '3';
+        process.env.PIGGERCODE_SESSION_LOG_KEEP_COUNT = '3';
         const logsDir = join(tempDir, 'logs');
         mkdirSync(logsDir, { recursive: true });
         const liveRunnerLog = `2020-01-01-00-00-00-pid-${process.pid}.log`;

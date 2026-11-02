@@ -66,9 +66,9 @@ async function withProbeFixture(
           id: `cli.${agentId}`, method, params: {
             cwd,
             environmentVariables: {
-              HAPPIER_CODEX_APP_SERVER_BIN: nativeFixture,
-              HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS: '1',
-              HAPPIER_TEST_CONTROL_PROCESS_CAPTURE_FILE: capturePath,
+              PIGGERCODE_CODEX_APP_SERVER_BIN: nativeFixture,
+              PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS: '1',
+              PIGGERCODE_TEST_CONTROL_PROCESS_CAPTURE_FILE: capturePath,
             },
             ...params,
           },

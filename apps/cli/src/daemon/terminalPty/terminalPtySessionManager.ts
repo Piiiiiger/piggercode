@@ -169,7 +169,7 @@ function splitByApproxBytesUtf8(input: string, maxBytes: number): string[] {
 }
 
 function resolveTerminalSpawnEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
-  const configuredPromptEolMark = env.HAPPIER_DAEMON_TERMINAL_PROMPT_EOL_MARK;
+  const configuredPromptEolMark = env.PIGGERCODE_DAEMON_TERMINAL_PROMPT_EOL_MARK;
   return {
     ...env,
     // zsh otherwise paints a '%' marker when prompt-adjacent output lacks a final newline.

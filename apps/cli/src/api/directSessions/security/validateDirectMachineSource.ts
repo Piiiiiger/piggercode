@@ -117,8 +117,8 @@ export function validateDirectMachineSource(params: Readonly<{
       if (source.kind !== 'opencodeServer') return err('provider/source mismatch');
       const requestedBaseUrl = typeof source.baseUrl === 'string' && source.baseUrl.trim().length > 0 ? normalizeUrl(source.baseUrl) : null;
       const configuredBaseUrl =
-        typeof env.HAPPIER_OPENCODE_SERVER_URL === 'string' && env.HAPPIER_OPENCODE_SERVER_URL.trim().length > 0
-          ? normalizeUrl(env.HAPPIER_OPENCODE_SERVER_URL)
+        typeof env.PIGGERCODE_OPENCODE_SERVER_URL === 'string' && env.PIGGERCODE_OPENCODE_SERVER_URL.trim().length > 0
+          ? normalizeUrl(env.PIGGERCODE_OPENCODE_SERVER_URL)
           : null;
 
       if (requestedBaseUrl && !configuredBaseUrl) {

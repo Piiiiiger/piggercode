@@ -2127,7 +2127,7 @@ export function registerMachineSessionHandoffRpcHandlers(params: Readonly<{
 	              persistenceError instanceof Error ? persistenceError.message : String(persistenceError)
 	            }`,
 	            {
-	              code: 'HAPPIER_SESSION_HANDOFF_DEFERRED_FAILURE_PERSISTENCE',
+	              code: 'PIGGERCODE_SESSION_HANDOFF_DEFERRED_FAILURE_PERSISTENCE',
 	            },
 	          );
 	        });

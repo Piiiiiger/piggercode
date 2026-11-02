@@ -4,7 +4,7 @@ import { createUnreadTerminalArtifactsCleanup, writeTerminalLaunchSpec, type Ter
 
 import type { CommandInvocation } from '@piggercode/cli-common/process';
 import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
-import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
+import { PIGGERCODE_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
 
 import { resolveClaudeSdkPermissionModeFromEnhancedMode } from '../utils/permissionMode';
 import { getClaudeSystemPrompt } from '../utils/systemPrompt';
@@ -127,8 +127,8 @@ type ClaudeUnifiedTerminalSpawnInput<Mode extends EnhancedMode = EnhancedMode> =
 function resolveFallbackSystemPrompt(): string {
   const providerBlocks = getClaudeSystemPrompt();
   return providerBlocks.trim().length > 0
-    ? `${HAPPIER_BASE_SYSTEM_PROMPT_V1}\n\n${providerBlocks}`
-    : HAPPIER_BASE_SYSTEM_PROMPT_V1;
+    ? `${PIGGERCODE_BASE_SYSTEM_PROMPT_V1}\n\n${providerBlocks}`
+    : PIGGERCODE_BASE_SYSTEM_PROMPT_V1;
 }
 
 const managedClaudeArgFlagsWithValue = new Set([
@@ -342,7 +342,7 @@ function buildTerminalLauncherProcessEnv(baseEnv: NodeJS.ProcessEnv = process.en
     }
   }
 
-  const allowPrefixes = ['LC_', 'TERM_', 'XDG_', 'HAPPIER_E2E_', 'HAPPY_E2E_'];
+  const allowPrefixes = ['LC_', 'TERM_', 'XDG_', 'PIGGERCODE_E2E_', 'HAPPY_E2E_'];
   const out: Record<string, string> = Object.create(null);
   for (const [key, value] of Object.entries(baseEnv)) {
     if (typeof value !== 'string') continue;
@@ -446,8 +446,8 @@ export async function buildClaudeUnifiedTerminalSpawn<Mode extends EnhancedMode 
       ) {
         throw new Error('Claude local launcher not found. Please ensure CLI runtime assets are present next to the running bundle.');
       }
-      if (!env.HAPPIER_CLAUDE_PATH && !env.HAPPY_CLAUDE_PATH) {
-        env.HAPPIER_CLAUDE_PATH = resolvedClaudeCliPath;
+      if (!env.PIGGERCODE_CLAUDE_PATH && !env.HAPPY_CLAUDE_PATH) {
+        env.PIGGERCODE_CLAUDE_PATH = resolvedClaudeCliPath;
       }
       childInvocation = {
         command: nodeExecutable,

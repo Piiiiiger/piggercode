@@ -263,10 +263,10 @@ describe("connectRoutes connected service auth groups (integration)", () => {
         expect(oldEdit.json().group.policy).not.toHaveProperty("autoUseQuotaResetsWhenExhausted");
         const newRead = await app.inject({ method: "GET", url: `${url}?${readerQuery}`, headers });
         expect(newRead.json().group.policy).toMatchObject({ autoUseQuotaResetsWhenExhausted: true, autoDisablePlanInvalidAccounts: true, quotaLimitSelection: { mode: "selected", providerLimitIds: ["standard"] }, cooldownMs: 1234 });
-        process.env.HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "0";
+        process.env.PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "0";
         const disabledRead = await app.inject({ method: "GET", url: `${url}?${readerQuery}`, headers });
         expect(disabledRead.json().group.policy).not.toHaveProperty("autoUseQuotaResetsWhenExhausted");
-        process.env.HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "1";
+        process.env.PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "1";
         const restoredRead = await app.inject({ method: "GET", url: `${url}?${readerQuery}`, headers });
         expect(restoredRead.json().group.policy.autoUseQuotaResetsWhenExhausted).toBe(true);
 
@@ -283,7 +283,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
         const user = await createAccount(`pk-auto-reset-disabled-${serviceId}`);
         await createConnectedProfile(user.id, serviceId, "work", serviceId === "anthropic" ? "token" : "oauth");
         const app = await createReadyApp();
-        if (serviceId !== "anthropic") process.env.HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "0";
+        if (serviceId !== "anthropic") process.env.PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED = "0";
         const response = await app.inject({ method: "POST", url: `/v3/connect/${serviceId}/groups`, headers: authHeaders(user.id), payload: {
             groupId: "disabled-reset", displayName: null, activeProfileId: "work", members: [{ profileId: "work", priority: 10 }],
             policy: { autoUseQuotaResetsWhenExhausted: true },
@@ -353,7 +353,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
     });
 
     it("fails closed when the account-groups feature gate is disabled", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
         const user = await createAccount("pk-groups-disabled");
         const app = await createReadyApp();
 
@@ -2249,7 +2249,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
             },
         })).statusCode).toBe(200);
 
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
         const res = await app.inject({
             method: "POST",
             url: "/v3/connect/openai-codex/groups/codex-main/active-profile",
@@ -2288,7 +2288,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
             payload: { groupId: "codex-main", members: [{ profileId: "work" }], activeProfileId: "work" },
         })).statusCode).toBe(200);
 
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
         const disabled = await app.inject({
             method: "GET",
             url: "/v3/connect/openai-codex/groups/codex-main",
@@ -2339,7 +2339,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
             },
         })).statusCode).toBe(200);
 
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_GROUPS__ENABLED: "0" });
 
         const firstV2Delete = await app.inject({
             method: "DELETE",
@@ -2450,7 +2450,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
     });
 
     it("gates automatic fallback policy fields on the account-fallback feature", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
         const user = await createAccount("pk-groups-fallback-gate");
         await createConnectedProfile(user.id, "openai-codex", "work");
         const app = await createReadyApp();
@@ -2521,7 +2521,7 @@ describe("connectRoutes connected service auth groups (integration)", () => {
     });
 
     it("keeps autoSwitch false at create when the account-fallback feature is disabled (fail-closed, no 400)", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_ACCOUNT_FALLBACK__ENABLED: "0" });
         const user = await createAccount("pk-groups-autoswitch-default-off");
         await createConnectedProfile(user.id, "openai-codex", "work");
         const app = await createReadyApp();

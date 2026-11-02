@@ -16,8 +16,8 @@
  * @returns true if Co-Authored-By should be included, false otherwise
  */
 export function shouldIncludeCoAuthoredBy(): boolean {
-  const envRaw = typeof process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY === 'string'
-    ? process.env.HAPPIER_SCM_INCLUDE_CO_AUTHORED_BY.trim()
+  const envRaw = typeof process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY === 'string'
+    ? process.env.PIGGERCODE_SCM_INCLUDE_CO_AUTHORED_BY.trim()
     : '';
   if (envRaw === '1') return true;
   if (envRaw === '0') return false;

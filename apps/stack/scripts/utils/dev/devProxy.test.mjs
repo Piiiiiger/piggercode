@@ -63,16 +63,16 @@ function createFakeProxyChild(onCommand) {
 test('stack dev proxy is default-on and supports flag/env opt-out', () => {
   assert.equal(shouldEnableStackDevProxy({ startServer: true, flags: new Set(), env: {} }), true);
   assert.equal(shouldEnableStackDevProxy({ startServer: true, flags: new Set(['--no-proxy']), env: {} }), false);
-  assert.equal(shouldEnableStackDevProxy({ startServer: true, flags: new Set(), env: { HAPPIER_STACK_DEV_PROXY: '0' } }), false);
+  assert.equal(shouldEnableStackDevProxy({ startServer: true, flags: new Set(), env: { PIGGERCODE_STACK_DEV_PROXY: '0' } }), false);
   assert.equal(shouldEnableStackDevProxy({ startServer: false, flags: new Set(), env: {} }), false);
 });
 
 test('stack dev proxy stable host preserves direct server reachability unless loopback is requested', () => {
   assert.equal(resolveDevProxyStableHost({ env: {} }), '0.0.0.0');
-  assert.equal(resolveDevProxyStableHost({ env: { HAPPIER_STACK_BIND_MODE: 'lan' } }), '0.0.0.0');
-  assert.equal(resolveDevProxyStableHost({ env: { HAPPIER_STACK_BIND_MODE: 'loopback' } }), '127.0.0.1');
+  assert.equal(resolveDevProxyStableHost({ env: { PIGGERCODE_STACK_BIND_MODE: 'lan' } }), '0.0.0.0');
+  assert.equal(resolveDevProxyStableHost({ env: { PIGGERCODE_STACK_BIND_MODE: 'loopback' } }), '127.0.0.1');
   assert.equal(resolveDevProxyStableHost({ env: { HOST: '127.0.0.1' } }), '127.0.0.1');
-  assert.equal(resolveDevProxyStableHost({ env: { HAPPIER_STACK_DEV_PROXY_HOST: '100.64.0.10' } }), '100.64.0.10');
+  assert.equal(resolveDevProxyStableHost({ env: { PIGGERCODE_STACK_DEV_PROXY_HOST: '100.64.0.10' } }), '100.64.0.10');
 });
 
 test('startDevProxy owns the stable port and can flip new connections to a new backend', async () => {

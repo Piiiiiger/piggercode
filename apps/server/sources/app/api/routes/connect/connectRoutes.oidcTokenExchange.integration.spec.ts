@@ -30,10 +30,10 @@ describe("connectRoutes (OIDC token exchange) (integration)", () => {
 
     function providerEnv(tokenExchange?: Record<string, unknown>): NodeJS.ProcessEnv {
         return {
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "plaintext_only",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "acme",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "plaintext_only",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "acme",
             AUTH_PROVIDERS_CONFIG_JSON: JSON.stringify([
                 {
                     id: "acme",
@@ -106,7 +106,7 @@ describe("connectRoutes (OIDC token exchange) (integration)", () => {
     it("refuses exchange before UserInfo when build policy denies keyless accounts", async () => {
         harness.resetEnv({
             ...providerEnv({ allowedClientIds: [DEVBOX_CLIENT_ID] }),
-            HAPPIER_BUILD_FEATURES_DENY: "e2ee.keylessAccounts",
+            PIGGERCODE_BUILD_FEATURES_DENY: "e2ee.keylessAccounts",
         });
         await seedLinkedAccount({ providerUserId: "user_1" });
         const accessToken = oidcStub.issueAccessToken({ sub: "user_1", client_id: DEVBOX_CLIENT_ID }, { sub: "user_1" });
@@ -187,7 +187,7 @@ describe("connectRoutes (OIDC token exchange) (integration)", () => {
     it("never creates an account for an identity that is not linked yet", async () => {
         harness.resetEnv({
             ...providerEnv({ allowedClientIds: [DEVBOX_CLIENT_ID] }),
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_AUTO_PROVISION: "1",
         });
         const accessToken = oidcStub.issueAccessToken({ sub: "user_1", client_id: DEVBOX_CLIENT_ID }, { sub: "user_1" });
 
@@ -213,7 +213,7 @@ describe("connectRoutes (OIDC token exchange) (integration)", () => {
     it("is off when keyless login is not enabled for the provider", async () => {
         harness.resetEnv({
             ...providerEnv({ allowedClientIds: [DEVBOX_CLIENT_ID] }),
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
         });
         await seedLinkedAccount({ providerUserId: "user_1" });
         const accessToken = oidcStub.issueAccessToken({ sub: "user_1", client_id: DEVBOX_CLIENT_ID }, { sub: "user_1" });
@@ -239,7 +239,7 @@ describe("connectRoutes (OIDC token exchange) (integration)", () => {
     it("requires a restore for an end-to-end encrypted account", async () => {
         harness.resetEnv({
             ...providerEnv({ allowedClientIds: [DEVBOX_CLIENT_ID] }),
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
         await seedLinkedAccount({ providerUserId: "user_1", encryptionMode: "e2ee" });
         const accessToken = oidcStub.issueAccessToken({ sub: "user_1", client_id: DEVBOX_CLIENT_ID }, { sub: "user_1" });

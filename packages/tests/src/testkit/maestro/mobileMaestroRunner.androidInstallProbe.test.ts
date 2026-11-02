@@ -36,10 +36,10 @@ describe('mobileMaestroRunner Android install probe', () => {
         env: {
           ...process.env,
           MAESTRO_CLI_NO_ANALYTICS: '1',
-          HAPPIER_E2E_ANDROID_LOGCAT_CAPTURE: '0',
-          HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
-          HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_TIMEOUT_MS: '12345',
-          HAPPIER_E2E_MOBILE_MANAGE_METRO: '0',
+          PIGGERCODE_E2E_ANDROID_LOGCAT_CAPTURE: '0',
+          PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH: '0',
+          PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_TIMEOUT_MS: '12345',
+          PIGGERCODE_E2E_MOBILE_MANAGE_METRO: '0',
         },
       },
       {

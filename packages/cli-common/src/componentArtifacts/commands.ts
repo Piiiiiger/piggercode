@@ -95,7 +95,7 @@ export function resolveBunCommand({
   commandProbe?: (cmd: string) => boolean;
   platform?: NodeJS.Platform;
 } = {}): string | null {
-  const explicit = expandHomeDirPath(String(processEnv.HAPPIER_BUN_PATH ?? '').trim(), processEnv);
+  const explicit = expandHomeDirPath(String(processEnv.PIGGERCODE_BUN_PATH ?? '').trim(), processEnv);
   if (isRunnableExecutablePath(explicit, platform)) {
     return explicit;
   }
@@ -239,7 +239,7 @@ export async function compileBunBinary({
       args.push('--external', value);
     }
   }
-  const attempts = resolveBunCompileMaxAttempts(process.env.HAPPIER_BUN_COMPILE_ATTEMPTS, maxAttempts);
+  const attempts = resolveBunCompileMaxAttempts(process.env.PIGGERCODE_BUN_COMPILE_ATTEMPTS, maxAttempts);
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       await runCommand(resolvedBunCommand, args, { cwd });

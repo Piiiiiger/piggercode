@@ -30,7 +30,7 @@ export interface FullRuntimePgliteBoundary {
 }
 
 function normalizeProvider(env: NodeJS.ProcessEnv): 'postgres' | 'mysql' | 'pglite' {
-    const rawProvider = String(env.HAPPIER_DB_PROVIDER ?? env.HAPPY_DB_PROVIDER ?? '').trim().toLowerCase();
+    const rawProvider = String(env.PIGGERCODE_DB_PROVIDER ?? env.HAPPY_DB_PROVIDER ?? '').trim().toLowerCase();
     if (rawProvider === 'postgres' || rawProvider === 'postgresql') return 'postgres';
     if (rawProvider === 'mysql') return 'mysql';
     if (rawProvider === 'pglite') return 'pglite';
@@ -119,7 +119,7 @@ export async function runFullRuntimeMigration({
                 env: {
                     ...env,
                     DATABASE_URL: databaseUrl,
-                    HAPPIER_DB_PROVIDER: provider,
+                    PIGGERCODE_DB_PROVIDER: provider,
                     PRISMA_SCHEMA_ENGINE_BINARY: schemaEnginePath,
                     PRISMA_QUERY_ENGINE_LIBRARY: queryEnginePath,
                 },

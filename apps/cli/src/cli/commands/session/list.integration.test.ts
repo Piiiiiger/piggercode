@@ -11,10 +11,10 @@ import { captureConsoleJsonOutput, captureConsoleLogAndMuteStdout } from '@/test
 
 describe('happier session list (integration)', () => {
   const envKeys = [
-    'HAPPIER_SERVER_URL',
-    'HAPPIER_WEBAPP_URL',
-    'HAPPIER_HOME_DIR',
-    'HAPPIER_ACCOUNT_SETTINGS_MODE',
+    'PIGGERCODE_SERVER_URL',
+    'PIGGERCODE_WEBAPP_URL',
+    'PIGGERCODE_HOME_DIR',
+    'PIGGERCODE_ACCOUNT_SETTINGS_MODE',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
@@ -25,7 +25,7 @@ describe('happier session list (integration)', () => {
   const archivedSessionId = 'sess_integration_archived_999';
 
   beforeEach(async () => {
-    process.env.HAPPIER_ACCOUNT_SETTINGS_MODE = 'never';
+    process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
 
     happyHomeDir = await createTempDir('happier-cli-session-list-');
     const dek = new Uint8Array(32).fill(3);
@@ -175,9 +175,9 @@ describe('happier session list (integration)', () => {
       throw new Error('Failed to resolve session control integration test server address');
     }
 
-    process.env.HAPPIER_SERVER_URL = `http://127.0.0.1:${address.port}`;
-    process.env.HAPPIER_WEBAPP_URL = 'http://127.0.0.1:3000';
-    process.env.HAPPIER_HOME_DIR = happyHomeDir;
+    process.env.PIGGERCODE_SERVER_URL = `http://127.0.0.1:${address.port}`;
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://127.0.0.1:3000';
+    process.env.PIGGERCODE_HOME_DIR = happyHomeDir;
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();

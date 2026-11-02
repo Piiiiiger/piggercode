@@ -48,13 +48,13 @@ export async function terminateManagedOpenCodeServerPidBestEffortWithOptions(
 
   const pollMs = (typeof options.pollMs === 'number' && options.pollMs > 0)
     ? Math.floor(options.pollMs)
-    : (readPositiveIntEnv('HAPPIER_OPENCODE_SERVER_STOP_POLL_MS') ?? 100);
+    : (readPositiveIntEnv('PIGGERCODE_OPENCODE_SERVER_STOP_POLL_MS') ?? 100);
   const graceMs = (typeof options.graceMs === 'number' && options.graceMs > 0)
     ? Math.floor(options.graceMs)
-    : (readPositiveIntEnv('HAPPIER_OPENCODE_SERVER_STOP_GRACE_MS') ?? 1_500);
+    : (readPositiveIntEnv('PIGGERCODE_OPENCODE_SERVER_STOP_GRACE_MS') ?? 1_500);
   const killWaitMs = (typeof options.killWaitMs === 'number' && options.killWaitMs > 0)
     ? Math.floor(options.killWaitMs)
-    : (readPositiveIntEnv('HAPPIER_OPENCODE_SERVER_STOP_KILL_WAIT_MS') ?? 500);
+    : (readPositiveIntEnv('PIGGERCODE_OPENCODE_SERVER_STOP_KILL_WAIT_MS') ?? 500);
 
   if (!trySignalProcessGroup(pid, 'SIGTERM')) {
     trySignalProcess(pid, 'SIGTERM');

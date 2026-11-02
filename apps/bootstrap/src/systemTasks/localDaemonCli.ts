@@ -219,9 +219,9 @@ export type SetupServiceTargetMode = DaemonServiceTargetMode;
  * The one execution context of a setup run (plan R13 a), built once from the target relay the app
  * selected and threaded through every command the run issues.
  *
- * A stack/dev launch exports a server selection of its own — `HAPPIER_ACTIVE_SERVER_ID` (the CLI's
+ * A stack/dev launch exports a server selection of its own — `PIGGERCODE_ACTIVE_SERVER_ID` (the CLI's
  * configuration prefers that persisted profile over a URL it does not match),
- * `HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID` (where daemon state is read) and the URL selectors — so an
+ * `PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID` (where daemon state is read) and the URL selectors — so an
  * inherited selector would let a run judge relay Y and then write to relay X. Both invocations
  * clear every one of them:
  *
@@ -234,7 +234,7 @@ export type SetupServiceTargetMode = DaemonServiceTargetMode;
  *
  * A `pinned` run never selects the target, so the two are one invocation: the target through the
  * env server selection, and the service commands addressed to that relay's own pinned service
- * (`HAPPIER_DAEMON_SERVICE_TARGET_MODE`, the key the CLI's service owner reads — and bakes into the
+ * (`PIGGERCODE_DAEMON_SERVICE_TARGET_MODE`, the key the CLI's service owner reads — and bakes into the
  * definition it installs).
  */
 export type SetupCliScope = Readonly<{
@@ -244,33 +244,33 @@ export type SetupCliScope = Readonly<{
 
 const INHERITED_RELAY_SELECTOR_ENV_KEYS = [
   ...STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_LOCAL_SERVER_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_LOCAL_SERVER_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
   // Which installed service a `daemon service …` / `daemon status` command addresses. A stack
   // launch can export its own; inherited, it would point this home's reads and writes at a
   // service the run never chose.
-  'HAPPIER_DAEMON_SERVICE_TARGET_MODE',
-  'HAPPIER_DAEMON_SERVICE_INSTANCE_ID',
-  'HAPPIER_DAEMON_SERVICE_SERVER_URL',
-  'HAPPIER_DAEMON_SERVICE_WEBAPP_URL',
-  'HAPPIER_DAEMON_SERVICE_PUBLIC_SERVER_URL',
-  'HAPPIER_DAEMON_SERVICE_CHANNEL',
-  'HAPPIER_DAEMON_SERVICE_NODE_PATH',
-  'HAPPIER_DAEMON_SERVICE_ENTRY_PATH',
-  'HAPPIER_DAEMON_SERVICE_PLATFORM',
-  'HAPPIER_DAEMON_SERVICE_UID',
-  'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_MODE',
-  'HAPPIER_DAEMON_SERVICE_SYSTEM_USER',
+  'PIGGERCODE_DAEMON_SERVICE_TARGET_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_SERVER_URL',
+  'PIGGERCODE_DAEMON_SERVICE_WEBAPP_URL',
+  'PIGGERCODE_DAEMON_SERVICE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+  'PIGGERCODE_DAEMON_SERVICE_NODE_PATH',
+  'PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH',
+  'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+  'PIGGERCODE_DAEMON_SERVICE_UID',
+  'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_MODE',
+  'PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER',
   // Stamps a service definition as the desktop's; only the connect-too install sets it.
-  'HAPPIER_DAEMON_SERVICE_MANAGED_BY',
+  'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
   // R16 — the desktop app a service belongs to; set only on the desktop's own installs.
-  'HAPPIER_DAEMON_SERVICE_BUNDLE_ID',
+  'PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID',
 ] as const;
 
 function clearInheritedRelaySelectors(processEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
@@ -302,9 +302,9 @@ export function createSelectedCliInvocation(params: Readonly<{
 export function scopeProcessEnvToTargetRelay(target: RelayProfileTarget, processEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return {
     ...clearInheritedRelaySelectors(processEnv),
-    HAPPIER_SERVER_URL: target.serverUrl,
-    HAPPIER_WEBAPP_URL: target.webappUrl,
-    ...(target.localServerUrl ? { HAPPIER_LOCAL_SERVER_URL: target.localServerUrl } : {}),
+    PIGGERCODE_SERVER_URL: target.serverUrl,
+    PIGGERCODE_WEBAPP_URL: target.webappUrl,
+    ...(target.localServerUrl ? { PIGGERCODE_LOCAL_SERVER_URL: target.localServerUrl } : {}),
   };
 }
 
@@ -321,7 +321,7 @@ export function createSetupCliScope(params: Readonly<{
       ...params.cli,
       processEnv: {
         ...scopeProcessEnvToTargetRelay(params.target, params.processEnv),
-        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
       },
       ...(params.signal ? { signal: params.signal } : {}),
     };
@@ -347,7 +347,7 @@ async function runInvocationJsonCommand(params: Readonly<{
 }>): Promise<unknown> {
   const processEnv = { ...(params.invocation?.processEnv ?? clearInheritedRelaySelectors(process.env)), ...(params.extraEnv ?? {}) };
   for (const key of STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS) delete processEnv[key];
-  processEnv.HAPPIER_PUBLIC_RELEASE_CHANNEL = resolveLocalHappierCliReleaseRing({ appRing: params.releaseRing, processEnv });
+  processEnv.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = resolveLocalHappierCliReleaseRing({ appRing: params.releaseRing, processEnv });
   return await runLocalHappierJsonCommand({
     args: params.args,
     releaseRing: params.releaseRing,
@@ -549,7 +549,7 @@ async function runServiceInstallCommand(params: Readonly<{
   allowJsonFailure?: boolean;
 }>): Promise<unknown> {
   const bundleId = readDesktopBundleId(process.env);
-  return await runInvocationJsonCommand({ ...params, ...(bundleId ? { extraEnv: { HAPPIER_DAEMON_SERVICE_BUNDLE_ID: bundleId } } : {}) });
+  return await runInvocationJsonCommand({ ...params, ...(bundleId ? { extraEnv: { PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID: bundleId } } : {}) });
 }
 
 /**
@@ -859,17 +859,17 @@ function scopeInvocationToPinnedService(cli: LocalHappierCliInvocation, service:
     ...cli,
     processEnv: {
       ...clearInheritedRelaySelectors(cli.processEnv ?? process.env),
-      HAPPIER_ACTIVE_SERVER_ID: service.activeServerId,
-      HAPPIER_SERVER_URL: service.relayUrl,
-      HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'pinned',
-      HAPPIER_DAEMON_SERVICE_INSTANCE_ID: service.instanceId,
+      PIGGERCODE_ACTIVE_SERVER_ID: service.activeServerId,
+      PIGGERCODE_SERVER_URL: service.relayUrl,
+      PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
+      PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: service.instanceId,
     },
   };
 }
 
 /** `invocation` pinned to one saved CLI server profile: the id its lifecycle, credentials and service use. */
 export function pinInvocationToServerProfile(invocation: LocalHappierCliInvocation, profileId: string): LocalHappierCliInvocation {
-  return { ...invocation, processEnv: { ...(invocation.processEnv ?? {}), HAPPIER_ACTIVE_SERVER_ID: profileId } };
+  return { ...invocation, processEnv: { ...(invocation.processEnv ?? {}), PIGGERCODE_ACTIVE_SERVER_ID: profileId } };
 }
 
 /**
@@ -878,12 +878,12 @@ export function pinInvocationToServerProfile(invocation: LocalHappierCliInvocati
  * stop and set login start for it — and only it — later.
  */
 export function markInstallDesktopManaged(invocation: LocalHappierCliInvocation): LocalHappierCliInvocation {
-  return { ...invocation, processEnv: { ...(invocation.processEnv ?? {}), HAPPIER_DAEMON_SERVICE_MANAGED_BY: 'desktop' } };
+  return { ...invocation, processEnv: { ...(invocation.processEnv ?? {}), PIGGERCODE_DAEMON_SERVICE_MANAGED_BY: 'desktop' } };
 }
 
 /** The bundle identifier of the desktop app that launched this executor (set by its Tauri shell). */
 function readDesktopBundleId(env: NodeJS.ProcessEnv): string | null {
-  const value = String(env.HAPPIER_DESKTOP_BUNDLE_ID ?? '').trim();
+  const value = String(env.PIGGERCODE_DESKTOP_BUNDLE_ID ?? '').trim();
   return /^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(value) ? value : null;
 }
 
@@ -1135,12 +1135,12 @@ export async function waitForStartedDaemonService(params: Readonly<{
   signal: AbortSignal;
 }>): Promise<DaemonStatusSnapshot> {
   const timeoutMs = readPositiveIntEnv(
-    'HAPPIER_BOOTSTRAP_SETUP_THIS_COMPUTER_SERVICE_READY_TIMEOUT_MS',
+    'PIGGERCODE_BOOTSTRAP_SETUP_THIS_COMPUTER_SERVICE_READY_TIMEOUT_MS',
     DEFAULT_DAEMON_READY_TIMEOUT_MS,
     { min: 100, max: 120_000 },
   );
   const pollMs = readPositiveIntEnv(
-    'HAPPIER_BOOTSTRAP_SETUP_THIS_COMPUTER_SERVICE_READY_POLL_MS',
+    'PIGGERCODE_BOOTSTRAP_SETUP_THIS_COMPUTER_SERVICE_READY_POLL_MS',
     DEFAULT_DAEMON_READY_POLL_MS,
     { min: 50, max: 5_000 },
   );

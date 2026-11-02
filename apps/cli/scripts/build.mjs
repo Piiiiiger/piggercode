@@ -14,13 +14,13 @@ import { rmDirSafeSync } from './rmDirSafe.mjs';
 import { DEFAULT_CLI_NODE_HEAP_MB, upsertMaxOldSpaceSize } from './withNodeHeapLimit.mjs';
 
 function resolveBuildOutput(env = process.env) {
-  const raw = String(env?.HAPPIER_CLI_BUILD_OUTPUT_DIR ?? '').trim();
+  const raw = String(env?.PIGGERCODE_CLI_BUILD_OUTPUT_DIR ?? '').trim();
   if (raw) return { outputDir: raw, builderOwned: false };
   return { outputDir: `dist.staging.${process.pid}`, builderOwned: true };
 }
 
 function resolveCliBuildVersion(env = process.env) {
-  return normalizeCliBuildVersion(env?.HAPPIER_CLI_BUILD_VERSION);
+  return normalizeCliBuildVersion(env?.PIGGERCODE_CLI_BUILD_VERSION);
 }
 
 async function reclaimAbandonedCliBuildDirs(packageRoot, activeOutputDir) {
@@ -110,7 +110,7 @@ export function probeDistRuntimeImport(entrypoint, options = {}) {
     env: {
       ...process.env,
       ...(options.env ?? {}),
-      HAPPIER_CLI_DIST_INTEGRITY_PROBE: '1',
+      PIGGERCODE_CLI_DIST_INTEGRITY_PROBE: '1',
     },
     encoding: 'utf8',
     stdio: ['ignore', 'ignore', 'pipe'],
@@ -173,9 +173,9 @@ async function buildCliDistUnlocked(options = {}) {
   const { outputDir, builderOwned: builderOwnsOutput } = resolveBuildOutput(env);
   const buildVersion = resolveCliBuildVersion(env);
   if (buildVersion && !builderOwnsOutput) {
-    throw new Error('[cli-build] HAPPIER_CLI_BUILD_VERSION requires the builder-owned immutable source generation');
+    throw new Error('[cli-build] PIGGERCODE_CLI_BUILD_VERSION requires the builder-owned immutable source generation');
   }
-  env.HAPPIER_CLI_BUILD_OUTPUT_DIR = outputDir;
+  env.PIGGERCODE_CLI_BUILD_OUTPUT_DIR = outputDir;
   const expectedCurrentFingerprint = readCliDistBuildManifestFingerprint(join(packageRoot, 'dist'));
   const rmDistImpl = options.rmDistImpl ?? rmDist;
   const resolveTypeScriptCliPathImpl = options.resolveTypeScriptCliPathImpl ?? resolveTypeScriptCliPath;

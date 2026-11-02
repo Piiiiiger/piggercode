@@ -38,7 +38,7 @@ test('startDaemonPostAuth passes webapp URL to daemon env (never internal API UR
     await mkdir(stackDir, { recursive: true });
     await writeFile(
       envPath,
-      ['HAPPIER_STACK_STACK=main', 'HAPPIER_WEBAPP_URL=http://localhost:3010', ''].join('\n'),
+      ['PIGGERCODE_STACK_STACK=main', 'PIGGERCODE_WEBAPP_URL=http://localhost:3010', ''].join('\n'),
       'utf-8'
     );
     await writeFile(
@@ -101,11 +101,11 @@ await startDaemonPostAuth({
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_SERVER_PORT: '4102',
-      HAPPIER_STACK_RUNTIME_MODE: 'source',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_SERVER_PORT: '4102',
+      PIGGERCODE_STACK_RUNTIME_MODE: 'source',
       HSTACK_AUTH_FLOW_DAEMON_MARKER: markerPath,
     };
 
@@ -133,7 +133,7 @@ test('startDaemonPostAuth delegates to a live lifecycle owner without creating a
     const envPath = join(stackDir, 'env');
     const markerPath = join(tmp, 'daemon-created.marker');
     await mkdir(stackDir, { recursive: true });
-    await writeFile(envPath, 'HAPPIER_STACK_STACK=main\n', 'utf-8');
+    await writeFile(envPath, 'PIGGERCODE_STACK_STACK=main\n', 'utf-8');
     await writeFile(join(stackDir, 'stack.runtime.json'), JSON.stringify({
       version: 1,
       stackName,
@@ -171,10 +171,10 @@ process.stdout.write(JSON.stringify(result));
       cwd: rootDir,
       env: {
         ...process.env,
-        HAPPIER_STACK_STORAGE_DIR: storageDir,
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_SERVER_PORT: '4102',
-        HAPPIER_STACK_RUNTIME_MODE: 'source',
+        PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_SERVER_PORT: '4102',
+        PIGGERCODE_STACK_RUNTIME_MODE: 'source',
       },
     });
     assert.equal(res.code, 0, res.stderr);
@@ -200,7 +200,7 @@ test('startDaemonPostAuth uses the active runtime snapshot cli when runtime mode
     await mkdir(stackDir, { recursive: true });
     await writeFile(
       envPath,
-      ['HAPPIER_STACK_STACK=dev-built', 'HAPPIER_STACK_RUNTIME_MODE=prefer', ''].join('\n'),
+      ['PIGGERCODE_STACK_STACK=dev-built', 'PIGGERCODE_STACK_RUNTIME_MODE=prefer', ''].join('\n'),
       'utf-8'
     );
     await writeFile(
@@ -280,10 +280,10 @@ await startDaemonPostAuth({
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_SERVER_PORT: '4102',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_SERVER_PORT: '4102',
       HSTACK_AUTH_FLOW_DAEMON_MARKER: markerPath,
     };
 

@@ -131,7 +131,7 @@ describe('core e2e: socket-first runtime route counts', () => {
 
   it('keeps healthy idle ACP/provider waits at zero repeated session-detail reads after startup', async () => {
     await withTemporaryEnv({
-      HAPPIER_SOCKET_TRANSPORTS: 'polling',
+      PIGGERCODE_SOCKET_TRANSPORTS: 'polling',
     }, async () => {
       const testDir = run.testDir(`socket-first-idle-route-counts-${randomUUID()}`);
       tokenServer = await startFakeTokenServer({
@@ -161,7 +161,7 @@ describe('core e2e: socket-first runtime route counts', () => {
       });
 
       const runnerEnv = {
-        HAPPIER_SOCKET_TRANSPORTS: 'polling',
+        PIGGERCODE_SOCKET_TRANSPORTS: 'polling',
       };
       const spawn = await spawnConnectedCodexSession(connectedFixture, randomUUID(), {
         environmentVariables: runnerEnv,
@@ -228,15 +228,15 @@ describe('core e2e: socket-first runtime route counts', () => {
     const daemonEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_DISABLE_CAFFEINATE: '1',
-      HAPPIER_HOME_DIR: daemonHomeDir,
-      HAPPIER_SERVER_URL: proxy.baseUrl,
-      HAPPIER_WEBAPP_URL: proxy.baseUrl,
-      HAPPIER_CLAUDE_PATH: fakeClaudePath,
-      HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
-      HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      HAPPIER_DAEMON_REATTACH_CATCHUP_CONCURRENCY: '4',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_DISABLE_CAFFEINATE: '1',
+      PIGGERCODE_HOME_DIR: daemonHomeDir,
+      PIGGERCODE_SERVER_URL: proxy.baseUrl,
+      PIGGERCODE_WEBAPP_URL: proxy.baseUrl,
+      PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+      PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+      PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+      PIGGERCODE_DAEMON_REATTACH_CATCHUP_CONCURRENCY: '4',
     };
 
     daemon = await startTestDaemon({

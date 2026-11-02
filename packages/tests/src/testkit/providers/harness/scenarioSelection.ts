@@ -68,8 +68,8 @@ export function selectScenariosFromRegistry(params: {
 
 export function parseScenarioFilter(): { ids: Set<string> | null; tier: 'smoke' | 'extended' | null } {
   const rawIds =
-    typeof (process.env.HAPPIER_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS) === 'string'
-      ? (process.env.HAPPIER_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS)?.trim() ?? ''
+    typeof (process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS) === 'string'
+      ? (process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS ?? process.env.HAPPY_E2E_PROVIDER_SCENARIOS)?.trim() ?? ''
       : '';
   if (rawIds) {
     const ids = new Set(rawIds.split(',').map((value) => value.trim()).filter((value) => value.length > 0));
@@ -77,8 +77,8 @@ export function parseScenarioFilter(): { ids: Set<string> | null; tier: 'smoke' 
   }
 
   const rawTier =
-    typeof (process.env.HAPPIER_E2E_PROVIDER_SCENARIO_TIER ?? process.env.HAPPY_E2E_PROVIDER_SCENARIO_TIER) === 'string'
-      ? (process.env.HAPPIER_E2E_PROVIDER_SCENARIO_TIER ?? process.env.HAPPY_E2E_PROVIDER_SCENARIO_TIER)?.trim() ?? ''
+    typeof (process.env.PIGGERCODE_E2E_PROVIDER_SCENARIO_TIER ?? process.env.HAPPY_E2E_PROVIDER_SCENARIO_TIER) === 'string'
+      ? (process.env.PIGGERCODE_E2E_PROVIDER_SCENARIO_TIER ?? process.env.HAPPY_E2E_PROVIDER_SCENARIO_TIER)?.trim() ?? ''
       : '';
   if (!rawTier) return { ids: null, tier: null };
   const tier = rawTier === 'smoke' || rawTier === 'extended' ? rawTier : null;

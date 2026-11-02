@@ -19,7 +19,7 @@ import { InteractionManager, Platform } from 'react-native';
  * 1. It cannot be starved. There is no interaction queue to wait on, so the "saturated JS thread
  *    starves InteractionManager" hazard the old timeout fallback guarded against is unreachable —
  *    and a timeout could never have won the race against a microtask anyway. That dead fallback and
- *    its `EXPO_PUBLIC_HAPPIER_RUN_AFTER_INTERACTIONS_FALLBACK_MS` knob have been removed. The one
+ *    its `EXPO_PUBLIC_PIGGERCODE_RUN_AFTER_INTERACTIONS_FALLBACK_MS` knob have been removed. The one
  *    observation that would invalidate this: `disableInteractionManager` flipping to `false` (an RN
  *    upgrade or an explicit feature-flag override), which restores the real queue and with it the
  *    starvation hazard — revisit this helper if that changes.

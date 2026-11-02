@@ -106,14 +106,14 @@ const CLI_SNAPSHOT_PROBE_TIMEOUT = Symbol('CLI_SNAPSHOT_PROBE_TIMEOUT');
 
 function resolveCliSnapshotProbeTimeoutMs(slowProbes: boolean): number {
     if (slowProbes) {
-        const rawLoginStatus = process.env.HAPPIER_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
+        const rawLoginStatus = process.env.PIGGERCODE_CLI_SNAPSHOT_LOGIN_STATUS_PROBE_TIMEOUT_MS;
         const parsedLoginStatus = typeof rawLoginStatus === 'string' ? Number(rawLoginStatus) : Number.NaN;
         if (Number.isFinite(parsedLoginStatus) && parsedLoginStatus > 0) {
             return parsedLoginStatus;
         }
     }
 
-    const raw = process.env.HAPPIER_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
+    const raw = process.env.PIGGERCODE_CLI_SNAPSHOT_PROBE_TIMEOUT_MS;
     const parsed = typeof raw === 'string' ? Number(raw) : Number.NaN;
     if (Number.isFinite(parsed) && parsed > 0) {
         return parsed;
@@ -151,15 +151,15 @@ function buildCliSnapshotCacheKey(params: DetectCliRequest, pathEnv: string | nu
     const userProfile = String(process.env.USERPROFILE ?? '');
 
     // Include environment variables that affect CLI resolution and auth.
-    // Provider resolution can fall back to HOME/USERPROFILE when HAPPIER_HOME_DIR is unset,
+    // Provider resolution can fall back to HOME/USERPROFILE when PIGGERCODE_HOME_DIR is unset,
     // and auth probes also read provider files from HOME/USERPROFILE.
-    const happierHomeDir = String(process.env.HAPPIER_HOME_DIR ?? '');
-    const sourcePrefs = String(process.env.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON ?? '');
+    const happierHomeDir = String(process.env.PIGGERCODE_HOME_DIR ?? '');
+    const sourcePrefs = String(process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON ?? '');
     const authEnvFingerprint = params.includeLoginStatus === true
         ? CLI_AUTH_ENV_KEYS.map((key) => `${key}=${String(process.env[key] ?? '')}`).join(':')
         : '';
 
-    // Include all HAPPIER_*_PATH overrides for known agents
+    // Include all PIGGERCODE_*_PATH overrides for known agents
     const agentIds = Object.keys(AGENTS) as DetectCliName[];
     const resolutionEnvKeys = new Set(agentIds.flatMap((id) =>
         (getProviderCliRuntimeSpec(id).knownCommandCandidates ?? [])
@@ -168,7 +168,7 @@ function buildCliSnapshotCacheKey(params: DetectCliRequest, pathEnv: string | nu
     const resolutionEnv = JSON.stringify([...resolutionEnvKeys].map((key) => [key, process.env[key] ?? '']));
     const pathOverrides = agentIds
         .map((id) => {
-            const envKey = `HAPPIER_${id.toUpperCase()}_PATH`;
+            const envKey = `PIGGERCODE_${id.toUpperCase()}_PATH`;
             return String(process.env[envKey] ?? '');
         })
         .join(':');
@@ -205,7 +205,7 @@ async function resolveClaudeOutsidePath(): Promise<string | null> {
     const isWindows = process.platform === 'win32';
     const accessMode = isWindows ? fsConstants.F_OK : fsConstants.X_OK;
 
-    const override = typeof process.env.HAPPIER_CLAUDE_PATH === 'string' ? process.env.HAPPIER_CLAUDE_PATH.trim() : '';
+    const override = typeof process.env.PIGGERCODE_CLAUDE_PATH === 'string' ? process.env.PIGGERCODE_CLAUDE_PATH.trim() : '';
     if (override) {
         const resolvedOverride = await resolveCliOverridePath('claude');
         if (resolvedOverride) return resolvedOverride;
@@ -264,7 +264,7 @@ async function resolveCliOverridePath(name: DetectCliName): Promise<string | nul
 }
 
 function readCliOverridePath(name: DetectCliName): string | null {
-    const envKey = `HAPPIER_${name.toUpperCase()}_PATH`;
+    const envKey = `PIGGERCODE_${name.toUpperCase()}_PATH`;
     const override = typeof process.env[envKey] === 'string' ? String(process.env[envKey]).trim() : '';
     return override || null;
 }

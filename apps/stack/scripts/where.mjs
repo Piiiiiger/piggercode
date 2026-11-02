@@ -56,7 +56,7 @@ async function main() {
   const worktreeCategoryDirs = Object.fromEntries(
     WORKTREE_CATEGORIES.map((c) => [c, getWorktreeCategoryRoot(rootDir, c, process.env)])
   );
-  const mainDir = getRepoDir(rootDir, { ...process.env, HAPPIER_STACK_REPO_DIR: '' });
+  const mainDir = getRepoDir(rootDir, { ...process.env, PIGGERCODE_STACK_REPO_DIR: '' });
   const devDir = getDevRepoDir(rootDir, process.env);
 
   const stackName = getStackName();
@@ -84,9 +84,9 @@ async function main() {
       runtimeDir,
       workspaceDir,
       repoDir,
-      pmCacheBaseDir: (process.env.HAPPIER_STACK_PM_CACHE_BASE_DIR ?? '').trim() || null,
-      expoSharedTmpDirBaseDir: (process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').trim() || null,
-      expoSharedTmpDirKey: (process.env.HAPPIER_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').trim() || null,
+      pmCacheBaseDir: (process.env.PIGGERCODE_STACK_PM_CACHE_BASE_DIR ?? '').trim() || null,
+      expoSharedTmpDirBaseDir: (process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_BASE_DIR ?? '').trim() || null,
+      expoSharedTmpDirKey: (process.env.PIGGERCODE_STACK_EXPO_SHARED_TMPDIR_KEY ?? '').trim() || null,
       checkouts: { main: mainDir, dev: devDir },
       worktrees: worktreeCategoryDirs,
       stack: { name: stackName, label: stackLabel },
@@ -99,7 +99,7 @@ async function main() {
       },
       packages: packageDirs,
       update: {
-        enabled: (process.env.HAPPIER_STACK_UPDATE_CHECK ?? '1') !== '0',
+        enabled: (process.env.PIGGERCODE_STACK_UPDATE_CHECK ?? '1') !== '0',
         cachePath: updateCachePath,
         cacheExists: existsSync(updateCachePath),
       },

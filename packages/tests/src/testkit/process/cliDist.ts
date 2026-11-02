@@ -629,7 +629,7 @@ export async function withCliDistBuildLock<T>(
   const timeoutMs = options.timeoutMs ?? DEFAULT_CLI_DIST_BUILD_TIMEOUT_MS;
   return await withWorkspaceBundleLock(fn, {
     lockPath,
-    heldLockValue: options.heldLockValue ?? process.env.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD,
+    heldLockValue: options.heldLockValue ?? process.env.PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD,
     timeoutMs,
     pollIntervalMs: options.pollIntervalMs ?? 250,
     staleAfterMs: options.staleAfterMs ?? timeoutMs,
@@ -638,7 +638,7 @@ export async function withCliDistBuildLock<T>(
 }
 
 function skipsCliTestBuild(env: NodeJS.ProcessEnv): boolean {
-  return ['1', 'true', 'yes'].includes(String(env.HAPPIER_CLI_TEST_SKIP_BUILD ?? '').trim().toLowerCase());
+  return ['1', 'true', 'yes'].includes(String(env.PIGGERCODE_CLI_TEST_SKIP_BUILD ?? '').trim().toLowerCase());
 }
 
 export async function ensureCliDistBuilt(
@@ -723,7 +723,7 @@ export async function ensureCliDistBuilt(
         env: {
           ...params.env,
           CI: '1',
-          HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
+          PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD: heldLockValue,
         },
         stdoutPath: resolve(params.testDir, 'cli.build.stdout.log'),
         stderrPath: resolve(params.testDir, 'cli.build.stderr.log'),
@@ -864,7 +864,7 @@ export async function ensureCliDistSnapshotEntrypoint(
           };
 
           const ensureSnapshotNodeModules = (): void => {
-            const mode = (params.env.HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? '').toString().trim().toLowerCase();
+            const mode = (params.env.PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE ?? '').toString().trim().toLowerCase();
             if (mode === 'symlink') {
               const snapshotNodeModulesDir = resolve(options.snapshotDir, 'node_modules');
               if (existsSync(snapshotNodeModulesDir)) return;

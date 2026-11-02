@@ -16,8 +16,8 @@ function runHstack(args, { env } = {}) {
     cwd: repoRoot,
     env: {
       ...process.env,
-      HAPPIER_STACK_CLI_ROOT_DISABLE: '1',
-      HAPPIER_STACK_UPDATE_CHECK: '0',
+      PIGGERCODE_STACK_CLI_ROOT_DISABLE: '1',
+      PIGGERCODE_STACK_UPDATE_CHECK: '0',
       ...env,
     },
     encoding: 'utf8',
@@ -43,8 +43,8 @@ test('hstack menubar uninstall removes only hstack plugins', async () => {
 
     const res = runHstack(['menubar', 'uninstall', '--json'], {
       env: {
-        HAPPIER_STACK_SWIFTBAR_PLUGINS_DIR: pluginsDir,
-        HAPPIER_STACK_SWIFTBAR_ALLOW_OVERRIDE_NON_DARWIN: '1',
+        PIGGERCODE_STACK_SWIFTBAR_PLUGINS_DIR: pluginsDir,
+        PIGGERCODE_STACK_SWIFTBAR_ALLOW_OVERRIDE_NON_DARWIN: '1',
       },
     });
     assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);

@@ -126,7 +126,7 @@ export default defineConfig({
         globals: false,
         environment: 'node',
         env: {
-            HAPPIER_FEATURE_POLICY_ENV: '', NODE_ENV: 'test',
+            PIGGERCODE_FEATURE_POLICY_ENV: '', NODE_ENV: 'test',
         },
         server: {
             deps: {

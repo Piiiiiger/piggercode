@@ -345,8 +345,8 @@ function parseDaemonServiceCliInvocation(argv: readonly string[]): Readonly<{
     throw new Error('--replace-existing requires --yes');
   }
   const action = resolveAction(filtered);
-  const mode = modeFromArgs ?? resolveOptionalModeFromText(process.env.HAPPIER_DAEMON_SERVICE_MODE ?? '', 'HAPPIER_DAEMON_SERVICE_MODE') ?? 'user';
-  const systemUser = systemUserFromArgs ?? String(process.env.HAPPIER_DAEMON_SERVICE_SYSTEM_USER ?? '').trim();
+  const mode = modeFromArgs ?? resolveOptionalModeFromText(process.env.PIGGERCODE_DAEMON_SERVICE_MODE ?? '', 'PIGGERCODE_DAEMON_SERVICE_MODE') ?? 'user';
+  const systemUser = systemUserFromArgs ?? String(process.env.PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER ?? '').trim();
 
   return {
     argvFiltered: filtered,
@@ -665,9 +665,9 @@ async function assertExpectedDaemonServiceOwnership(params: Readonly<{
     stderrPath: string;
   }> | null;
 }>): Promise<void> {
-  const waitTimeoutOverrideRaw = String(process.env.HAPPIER_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS ?? '').trim();
+  const waitTimeoutOverrideRaw = String(process.env.PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS ?? '').trim();
   const defaultTimeoutMs = params.platform === 'win32' ? 120_000 : 15_000;
-  const timeoutMs = readPositiveIntEnv('HAPPIER_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS', defaultTimeoutMs);
+  const timeoutMs = readPositiveIntEnv('PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS', defaultTimeoutMs);
   // Task Scheduler can return before the wrapper actually relaunches the managed runtime on Windows.
   // Give Windows an extra default grace window, while still letting explicit env overrides take precedence.
   const defaultActiveGraceTimeoutMs = waitTimeoutOverrideRaw
@@ -676,11 +676,11 @@ async function assertExpectedDaemonServiceOwnership(params: Readonly<{
       ? 60_000
       : timeoutMs;
   const activeGraceTimeoutMs = readPositiveIntEnv(
-    'HAPPIER_DAEMON_SERVICE_OWNERSHIP_ACTIVE_GRACE_TIMEOUT_MS',
+    'PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_ACTIVE_GRACE_TIMEOUT_MS',
     defaultActiveGraceTimeoutMs,
   );
-  const pollMs = readPositiveIntEnv('HAPPIER_DAEMON_SERVICE_OWNERSHIP_WAIT_POLL_MS', 100);
-  const stableMs = readPositiveIntEnv('HAPPIER_DAEMON_SERVICE_OWNERSHIP_STABLE_MS', 1000);
+  const pollMs = readPositiveIntEnv('PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_POLL_MS', 100);
+  const stableMs = readPositiveIntEnv('PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_STABLE_MS', 1000);
   const expectedOwnerObserved = await waitForExpectedDaemonServiceOwnership({
     platform: params.platform,
     expectedServiceLabel: params.expectedServiceLabel,
@@ -775,10 +775,10 @@ function resolveDaemonServiceServerTargets(processEnv: NodeJS.ProcessEnv): Reado
   publicServerUrl: string;
   webappUrl: string;
 }> {
-  const explicitServerUrl = String(processEnv.HAPPIER_SERVER_URL ?? '').trim();
-  const explicitLocalServerUrl = String(processEnv.HAPPIER_LOCAL_SERVER_URL ?? '').trim();
-  const explicitPublicServerUrl = String(processEnv.HAPPIER_PUBLIC_SERVER_URL ?? '').trim();
-  const explicitWebappUrl = String(processEnv.HAPPIER_WEBAPP_URL ?? '').trim();
+  const explicitServerUrl = String(processEnv.PIGGERCODE_SERVER_URL ?? '').trim();
+  const explicitLocalServerUrl = String(processEnv.PIGGERCODE_LOCAL_SERVER_URL ?? '').trim();
+  const explicitPublicServerUrl = String(processEnv.PIGGERCODE_PUBLIC_SERVER_URL ?? '').trim();
+  const explicitWebappUrl = String(processEnv.PIGGERCODE_WEBAPP_URL ?? '').trim();
 
   if (explicitPublicServerUrl || explicitServerUrl) {
     const publicServerUrl = explicitPublicServerUrl || explicitServerUrl;
@@ -807,19 +807,19 @@ export function resolveDaemonServiceCliRuntimeFromEnv(options: Readonly<{
 }> = {}): DaemonServiceCliRuntime {
   const processEnv = options.processEnv ?? process.env;
   const platform =
-    resolveSupportedPlatform(processEnv.HAPPIER_DAEMON_SERVICE_PLATFORM ?? '') ??
+    resolveSupportedPlatform(processEnv.PIGGERCODE_DAEMON_SERVICE_PLATFORM ?? '') ??
     resolvePlatformFromProcess();
   if (!platform) {
     throw new Error('Daemon service is currently only supported on macOS, Linux, and Windows');
   }
 
-  const uidEnvRaw = (processEnv.HAPPIER_DAEMON_SERVICE_UID ?? '').trim();
+  const uidEnvRaw = (processEnv.PIGGERCODE_DAEMON_SERVICE_UID ?? '').trim();
   const uidEnv = uidEnvRaw ? Number(uidEnvRaw) : null;
   const uidFromProc = process.getuid ? process.getuid() : null;
   const uid = uidEnv !== null && Number.isFinite(uidEnv) && uidEnv >= 0 ? uidEnv : uidFromProc;
 
-  const explicitUserHomeDir = expandHomeDirPath((processEnv.HAPPIER_DAEMON_SERVICE_USER_HOME_DIR ?? '').trim(), processEnv);
-  const explicitHappierHomeDir = expandHomeDirPath((processEnv.HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR ?? '').trim(), processEnv);
+  const explicitUserHomeDir = expandHomeDirPath((processEnv.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR ?? '').trim(), processEnv);
+  const explicitHappierHomeDir = expandHomeDirPath((processEnv.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR ?? '').trim(), processEnv);
   const systemUserPaths =
     platform === 'linux' && options.mode === 'system' && String(options.systemUser ?? '').trim()
       ? resolveLinuxSystemUserPaths({
@@ -862,23 +862,23 @@ export function resolveDaemonServiceCliRuntimeFromEnv(options: Readonly<{
     && uid === 0
     && Boolean(sudoInvokerUserPaths?.happierHomeDir)
     && !explicitHappierHomeDir
-    && !String(processEnv.HAPPIER_HOME_DIR ?? '').trim();
+    && !String(processEnv.PIGGERCODE_HOME_DIR ?? '').trim();
   const happierHomeDir = systemUserPaths?.happierHomeDir
     || explicitHappierHomeDir
     || (shouldPreferSudoInvokerHappierHomeDir ? sudoInvokerUserPaths?.happierHomeDir : null)
     || configuration.happyHomeDir;
-  const targetMode = options.targetMode ?? resolveDaemonServiceTargetModeFromText(processEnv.HAPPIER_DAEMON_SERVICE_TARGET_MODE || 'default-following');
-  const envActiveServerId = String(processEnv.HAPPIER_ACTIVE_SERVER_ID ?? '').trim();
+  const targetMode = options.targetMode ?? resolveDaemonServiceTargetModeFromText(processEnv.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE || 'default-following');
+  const envActiveServerId = String(processEnv.PIGGERCODE_ACTIVE_SERVER_ID ?? '').trim();
   const activeServerId = isServerIdFilesystemSafe(envActiveServerId)
     ? envActiveServerId
     : configuration.activeServerId;
-  const instanceId = String(options.instanceId ?? '').trim() || (processEnv.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? '').trim() || activeServerId;
+  const instanceId = String(options.instanceId ?? '').trim() || (processEnv.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? '').trim() || activeServerId;
   const resolvedServerTargets = resolveDaemonServiceServerTargets(processEnv);
-  const serverUrl = (processEnv.HAPPIER_DAEMON_SERVICE_SERVER_URL ?? '').trim() || resolvedServerTargets.serverUrl;
-  const webappUrl = (processEnv.HAPPIER_DAEMON_SERVICE_WEBAPP_URL ?? '').trim() || resolvedServerTargets.webappUrl;
-  const publicServerUrl = (processEnv.HAPPIER_DAEMON_SERVICE_PUBLIC_SERVER_URL ?? '').trim() || resolvedServerTargets.publicServerUrl;
-  const explicitNodePath = (processEnv.HAPPIER_DAEMON_SERVICE_NODE_PATH ?? '').trim();
-  const explicitEntryPath = (processEnv.HAPPIER_DAEMON_SERVICE_ENTRY_PATH ?? '').trim();
+  const serverUrl = (processEnv.PIGGERCODE_DAEMON_SERVICE_SERVER_URL ?? '').trim() || resolvedServerTargets.serverUrl;
+  const webappUrl = (processEnv.PIGGERCODE_DAEMON_SERVICE_WEBAPP_URL ?? '').trim() || resolvedServerTargets.webappUrl;
+  const publicServerUrl = (processEnv.PIGGERCODE_DAEMON_SERVICE_PUBLIC_SERVER_URL ?? '').trim() || resolvedServerTargets.publicServerUrl;
+  const explicitNodePath = (processEnv.PIGGERCODE_DAEMON_SERVICE_NODE_PATH ?? '').trim();
+  const explicitEntryPath = (processEnv.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH ?? '').trim();
   const runtimeTarget = resolveDaemonServiceRuntimeTarget({
     currentExecPath: process.execPath,
     runtimeExecutable: explicitNodePath
@@ -996,7 +996,7 @@ export async function resolveDaemonServiceListEntries(
     targetMode: 'default-following',
     processEnv: {
       ...process.env,
-      HAPPIER_HOME_DIR: runtime.happierHomeDir,
+      PIGGERCODE_HOME_DIR: runtime.happierHomeDir,
     },
   }).catch(() => ({
     nodePath: runtime.nodePath,
@@ -1078,7 +1078,7 @@ function mapDaemonServiceListEntriesToInventory(
   const activeServiceLabel = String(options.activeServiceLabel ?? '').trim();
   const activeOwnerCliVersion = String(options.activeOwnerCliVersion ?? '').trim() || null;
   const configuredCliVersionByBinaryPathCache = new Map<string, string | null>();
-  const runningStateTimeoutMs = readPositiveIntEnv('HAPPIER_DAEMON_SERVICE_LIST_IS_ACTIVE_TIMEOUT_MS', 2000);
+  const runningStateTimeoutMs = readPositiveIntEnv('PIGGERCODE_DAEMON_SERVICE_LIST_IS_ACTIVE_TIMEOUT_MS', 2000);
 
   const resolveInventoryLabelForEntry = (entry: DaemonServiceListEntry): string => {
     const explicitLabel = String(entry.label ?? '').trim();
@@ -1152,7 +1152,7 @@ function mapDaemonServiceListEntriesToInventory(
     if (configuredCliVersionByBinaryPathCache.has(binaryPath)) {
       return configuredCliVersionByBinaryPathCache.get(binaryPath) ?? null;
     }
-    const versionTimeoutMs = readPositiveIntEnv('HAPPIER_DAEMON_SERVICE_VERSION_TIMEOUT_MS', 2000);
+    const versionTimeoutMs = readPositiveIntEnv('PIGGERCODE_DAEMON_SERVICE_VERSION_TIMEOUT_MS', 2000);
     const version = resolveCliVersionFromBinary({
       binaryPath,
       platform: entry.platform,
@@ -1307,7 +1307,7 @@ export async function resolveDaemonServiceInventoryEntries(params: Readonly<{
 /**
  * When `--local-relay` is passed to `service install`, resolve the current
  * channel's local relay URL and ensure it's the active server profile before
- * the install runs (install uses the active profile to bake `HAPPIER_ACTIVE_SERVER_ID`
+ * the install runs (install uses the active profile to bake `PIGGERCODE_ACTIVE_SERVER_ID`
  * for pinned services, or as the default-follow target for default-following).
  *
  * Returns the argv with `--local-relay` stripped.
@@ -1361,7 +1361,7 @@ export async function runDaemonServiceCliCommand(params: Readonly<{
   const targetMode: DaemonServiceTargetMode =
     flags.ring || flags.instanceId
       ? 'pinned'
-      : resolveDaemonServiceTargetModeFromText(process.env.HAPPIER_DAEMON_SERVICE_TARGET_MODE || 'default-following');
+      : resolveDaemonServiceTargetModeFromText(process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE || 'default-following');
   // The env value a process started *by* the background service inherits from its own definition.
   // It is the weakest input on purpose — see `effectiveAutostart` below.
   const inheritedAutostart: DaemonServiceAutostartMode | null = resolveOptionalAutostartFromText(
@@ -1504,8 +1504,8 @@ export async function runDaemonServiceCliCommand(params: Readonly<{
 
     const installRuntimeTarget = await resolveDaemonServiceInstallRuntimeTarget({
       currentExecPath: process.execPath,
-      explicitNodePath: process.env.HAPPIER_DAEMON_SERVICE_NODE_PATH ?? '',
-      explicitEntryPath: process.env.HAPPIER_DAEMON_SERVICE_ENTRY_PATH ?? '',
+      explicitNodePath: process.env.PIGGERCODE_DAEMON_SERVICE_NODE_PATH ?? '',
+      explicitEntryPath: process.env.PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH ?? '',
       targetMode: runtime.targetMode,
       channel: runtime.channel,
       processEnv: process.env,

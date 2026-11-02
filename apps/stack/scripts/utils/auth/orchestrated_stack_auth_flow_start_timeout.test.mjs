@@ -31,10 +31,10 @@ test('prepareGuidedLoginWebapp times out if starting stack UI in background hang
     await writeFile(
       envPath,
       [
-        'HAPPIER_STACK_STACK=main',
-        `HAPPIER_STACK_REPO_DIR=${join(tmp, 'repo')}`,
-        'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-        'HAPPIER_STACK_TAILSCALE_SERVE=0',
+        'PIGGERCODE_STACK_STACK=main',
+        `PIGGERCODE_STACK_REPO_DIR=${join(tmp, 'repo')}`,
+        'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+        'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
         '',
       ].join('\n'),
       'utf-8'
@@ -42,12 +42,12 @@ test('prepareGuidedLoginWebapp times out if starting stack UI in background hang
 
     const env = {
       ...process.env,
-      HAPPIER_STACK_STORAGE_DIR: storageDir,
-      HAPPIER_STACK_STACK: 'main',
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_AUTH_FLOW: '1',
-      HAPPIER_STACK_AUTH_UI_READY_TIMEOUT_MS: '1',
-      HAPPIER_STACK_AUTH_UI_START_TIMEOUT_MS: '10',
+      PIGGERCODE_STACK_STORAGE_DIR: storageDir,
+      PIGGERCODE_STACK_STACK: 'main',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_AUTH_FLOW: '1',
+      PIGGERCODE_STACK_AUTH_UI_READY_TIMEOUT_MS: '1',
+      PIGGERCODE_STACK_AUTH_UI_START_TIMEOUT_MS: '10',
     };
 
     await assert.rejects(

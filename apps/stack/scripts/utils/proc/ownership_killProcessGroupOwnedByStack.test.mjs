@@ -355,9 +355,9 @@ test('killProcessGroupOwnedByStack allows graceful exit before SIGKILL', async (
     exitFile,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: 't',
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'infra',
+      PIGGERCODE_STACK_STACK: 't',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'infra',
     },
   });
 
@@ -426,9 +426,9 @@ test('killProcessGroupOwnedByStack honors requested initial signal when provided
     {
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: 't',
-        HAPPIER_STACK_ENV_FILE: envPath,
-        HAPPIER_STACK_PROCESS_KIND: 'infra',
+        PIGGERCODE_STACK_STACK: 't',
+        PIGGERCODE_STACK_ENV_FILE: envPath,
+        PIGGERCODE_STACK_PROCESS_KIND: 'infra',
       },
       stdio: 'ignore',
     }
@@ -477,9 +477,9 @@ test('killProcessGroupOwnedByStack refuses stack session process kind', async (t
     exitFile,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: 't',
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: 't',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   });
 
@@ -526,9 +526,9 @@ test('killPidOwnedByStack refuses stack session process kind', async (t) => {
     exitFile,
     env: {
       ...process.env,
-      HAPPIER_STACK_STACK: 't',
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_PROCESS_KIND: 'session',
+      PIGGERCODE_STACK_STACK: 't',
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_PROCESS_KIND: 'session',
     },
   });
 
@@ -581,9 +581,9 @@ test('killProcessGroupOwnedByStack does not signal the caller process group when
         const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], {
           env: {
             ...process.env,
-            HAPPIER_STACK_STACK: 't',
-            HAPPIER_STACK_ENV_FILE: envPath,
-            HAPPIER_STACK_PROCESS_KIND: 'infra',
+            PIGGERCODE_STACK_STACK: 't',
+            PIGGERCODE_STACK_ENV_FILE: envPath,
+            PIGGERCODE_STACK_PROCESS_KIND: 'infra',
           },
           stdio: 'ignore',
           detached: false,

@@ -10,7 +10,7 @@ import { run, runCaptureResult } from './utils/proc/proc.mjs';
 
 /**
  * Thin wrapper around EAS CLI that:
- * - runs under stack env (stack wrapper sets HAPPIER_STACK_ENV_FILE)
+ * - runs under stack env (stack wrapper sets PIGGERCODE_STACK_ENV_FILE)
  * - ensures the Happy monorepo deps are installed (so app.config.js can be evaluated)
  * - runs EAS from apps/ui (the mobile app)
  *

@@ -46,13 +46,13 @@ test.describe('ui e2e: server retention visibility', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__INTERVAL_MS: '200',
-        HAPPIER_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
-        HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '30',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '45',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__INTERVAL_MS: '200',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '30',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '45',
       },
     });
 
@@ -60,13 +60,13 @@ test.describe('ui e2e: server retention visibility', () => {
       testDir: resolve(join(suiteDir, 'secondary-server')),
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__INTERVAL_MS: '200',
-        HAPPIER_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
-        HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '60',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
-        HAPPIER_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '90',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__INTERVAL_MS: '200',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '60',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__MODE: 'delete_older_than',
+        PIGGERCODE_SERVER_RETENTION__ACCOUNT_CHANGES__DAYS: '90',
       },
     });
 
@@ -123,9 +123,9 @@ test.describe('ui e2e: server retention visibility', () => {
       uiBaseUrl,
       extraEnv: {
         HOME: cliHomeDir,
-        HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-        HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
-        HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+        PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-session-${run.runId}`,
+        PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-invocation-${run.runId}`,
       },
     });
     await gotoDomContentLoadedWithPathFallback(page, `${uiBaseUrl}/`, '/');
@@ -137,7 +137,7 @@ test.describe('ui e2e: server retention visibility', () => {
       webappUrl: uiBaseUrl,
       env: {
         ...process.env,
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
       label: 'session-create-retention-visibility',
       args: ['session', 'create', '--tag', `retention-visibility-${run.runId}`, '--no-load-existing', '--json'],

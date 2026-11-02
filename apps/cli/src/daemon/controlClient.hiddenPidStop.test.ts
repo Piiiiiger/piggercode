@@ -116,7 +116,7 @@ describe('confirmed stop across a hidden daemon PID namespace', () => {
     });
   });
   it.each(['single', 'all'] as const)('%s stop cannot confirm hidden exit without an observed lifecycle lock', async (mode) => {
-    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-no-lock-', env: { HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '0' } }, async ({ homeDir }) => {
+    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-no-lock-', env: { PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '0' } }, async ({ homeDir }) => {
       const port = await reserveEphemeralPort();
       const child = spawnStoppableHttpDaemon(port, 200, { controlToken: 'owned-token' });
       await writeDaemonStateFixture(homeDir, configuration.activeServerId, { pid: child.pid, httpPort: port, controlToken: 'owned-token' });
@@ -198,7 +198,7 @@ describe('confirmed stop across a hidden daemon PID namespace', () => {
   });
 
   it.each([['single', 200], ['all', 200], ['single', 500], ['all', 500]] as const)('%s stop waits for lifecycle lock release after control closes (ping %s)', async (mode, pingStatus) => {
-    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-lock-retained-', env: { HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '250' } }, async ({ homeDir }) => {
+    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-lock-retained-', env: { PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '250' } }, async ({ homeDir }) => {
       const port = await reserveEphemeralPort();
       const child = spawnStoppableHttpDaemon(port, 200, { controlToken: 'owned-token', lockFile: configuration.daemonLockFile, stateFile: configuration.daemonStateFile, retainLockAfterControlClose: true, pingStatus });
       await writeDaemonStateFixture(homeDir, configuration.activeServerId, { pid: child.pid, httpPort: port, controlToken: 'owned-token' });
@@ -271,7 +271,7 @@ describe('confirmed stop across a hidden daemon PID namespace', () => {
   });
 
   it.each(['single', 'all'] as const)('%s stop fails when an accepted shutdown keeps authenticated control live', async (mode) => {
-    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-unconfirmed-', env: { HAPPIER_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '0' } }, async ({ homeDir }) => {
+    await withConfiguredDaemonTestHome({ prefix: 'daemon-hidden-unconfirmed-', env: { PIGGERCODE_DAEMON_STOP_WAIT_FOR_DEATH_TIMEOUT_MS: '0' } }, async ({ homeDir }) => {
       const port = await reserveEphemeralPort();
       const child = spawnStoppableHttpDaemon(port, 200, { controlToken: 'owned-token', exitOnStop: false, lockFile: configuration.daemonLockFile });
       const statePath = await writeDaemonStateFixture(homeDir, configuration.activeServerId, { pid: child.pid, httpPort: port, controlToken: 'owned-token' });

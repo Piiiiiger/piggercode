@@ -22,7 +22,7 @@ describe('core e2e: rpc permission round-trip + reconnect', () => {
 
   it('routes rpc-call to a different socket; fails closed while agent disconnected; works again after reconnect', async () => {
     const testDir = run.testDir('rpc-permission-roundtrip');
-    const saveArtifactsOnSuccess = envFlag(['HAPPIER_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
+    const saveArtifactsOnSuccess = envFlag(['PIGGERCODE_E2E_SAVE_ARTIFACTS', 'HAPPY_E2E_SAVE_ARTIFACTS'], false);
     const startedAt = new Date().toISOString();
     server = await startServerLight({ testDir });
     const auth = await createTestAuth(server.baseUrl);
@@ -51,7 +51,7 @@ describe('core e2e: rpc permission round-trip + reconnect', () => {
       sessionIds: [sessionId],
       env: {
         CI: process.env.CI,
-        HAPPIER_E2E_SAVE_ARTIFACTS: process.env.HAPPIER_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
+        PIGGERCODE_E2E_SAVE_ARTIFACTS: process.env.PIGGERCODE_E2E_SAVE_ARTIFACTS ?? process.env.HAPPY_E2E_SAVE_ARTIFACTS,
       },
     });
 

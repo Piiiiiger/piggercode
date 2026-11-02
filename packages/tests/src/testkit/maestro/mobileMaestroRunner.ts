@@ -104,15 +104,15 @@ export type MobileMaestroDeps = Readonly<{
 }>;
 
 function maestroCommand(env: NodeJS.ProcessEnv): string {
-  return (String(env.HAPPIER_E2E_MAESTRO_BIN ?? '').trim() || 'maestro');
+  return (String(env.PIGGERCODE_E2E_MAESTRO_BIN ?? '').trim() || 'maestro');
 }
 
 function adbCommand(env: NodeJS.ProcessEnv): string {
-  return (String(env.HAPPIER_E2E_ADB_BIN ?? '').trim() || 'adb');
+  return (String(env.PIGGERCODE_E2E_ADB_BIN ?? '').trim() || 'adb');
 }
 
 function xcrunCommand(env: NodeJS.ProcessEnv): string {
-  return (String(env.HAPPIER_E2E_XCRUN_BIN ?? '').trim() || 'xcrun');
+  return (String(env.PIGGERCODE_E2E_XCRUN_BIN ?? '').trim() || 'xcrun');
 }
 
 function isTruthyEnv(value: unknown): boolean {
@@ -148,7 +148,7 @@ function resolveVisibleHostPatternFromUrl(url: string): string {
 
 type ConnectedMachineMode = 'cli-terminal-daemon' | null;
 
-const SENSITIVE_MAESTRO_ENV_KEYS = ['HAPPIER_E2E_RESTORE_KEY', 'HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK'] as const;
+const SENSITIVE_MAESTRO_ENV_KEYS = ['PIGGERCODE_E2E_RESTORE_KEY', 'PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK'] as const;
 const RESTORE_KEY_CHUNK_SIZE = 8;
 const RESTORE_KEY_CHUNK_COUNT = 32;
 const REDACTABLE_MAESTRO_ARTIFACT_EXTENSIONS = new Set(['.html', '.json', '.log', '.txt', '.yaml', '.yml']);
@@ -205,12 +205,12 @@ async function stopCapturedLogProcess(params: Readonly<{
 }
 
 function resolveConnectedMachineMode(env: NodeJS.ProcessEnv): ConnectedMachineMode {
-  const mode = String(env.HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_MODE ?? '').trim().toLowerCase();
+  const mode = String(env.PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_MODE ?? '').trim().toLowerCase();
   return mode === 'cli-terminal-daemon' ? 'cli-terminal-daemon' : null;
 }
 
 function resolveConnectedMachineBootstrapFlow(env: NodeJS.ProcessEnv): string {
-  const configured = String(env.HAPPIER_E2E_MOBILE_CONNECTED_MACHINE_BOOTSTRAP_FLOW ?? '').trim();
+  const configured = String(env.PIGGERCODE_E2E_MOBILE_CONNECTED_MACHINE_BOOTSTRAP_FLOW ?? '').trim();
   return configured || 'suites/mobile-e2e/flows/_bootstrap/connectedMachineTerminalAuth.yaml';
 }
 
@@ -230,13 +230,13 @@ function readPositiveInteger(value: unknown, fallback: number): number {
 }
 
 function shouldCaptureAndroidLogcat(env: NodeJS.ProcessEnv): boolean {
-  const configured = env.HAPPIER_E2E_ANDROID_LOGCAT_CAPTURE;
+  const configured = env.PIGGERCODE_E2E_ANDROID_LOGCAT_CAPTURE;
   if (configured !== undefined) return isTruthyEnv(configured);
   return true;
 }
 
 function shouldCaptureIosSimulatorLog(env: NodeJS.ProcessEnv): boolean {
-  const configured = env.HAPPIER_E2E_IOS_SIMULATOR_LOG_CAPTURE;
+  const configured = env.PIGGERCODE_E2E_IOS_SIMULATOR_LOG_CAPTURE;
   if (configured !== undefined) return isTruthyEnv(configured);
   return true;
 }
@@ -247,7 +247,7 @@ function startAndroidLogcatCapture(params: Readonly<{
   runDir: string;
 }>): AndroidLogcatCapture {
   const logPath = resolvePath(params.runDir, ANDROID_LOGCAT_ARTIFACT);
-  const serial = String(params.env.HAPPIER_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
+  const serial = String(params.env.PIGGERCODE_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
   const baseArgs = serial ? ['-s', serial] : [];
   const child = spawn(
     adbCommand(params.env),
@@ -284,7 +284,7 @@ function startAndroidLogcatCapture(params: Readonly<{
       if (stopped) return;
       stopped = true;
       const timeoutMs = readPositiveInteger(
-        params.env.HAPPIER_E2E_ANDROID_LOGCAT_STOP_TIMEOUT_MS,
+        params.env.PIGGERCODE_E2E_ANDROID_LOGCAT_STOP_TIMEOUT_MS,
         DEFAULT_ANDROID_LOGCAT_STOP_TIMEOUT_MS,
       );
       await stopCapturedLogProcess({
@@ -352,7 +352,7 @@ function startIosSimulatorLogCapture(params: Readonly<{
       if (stopped) return;
       stopped = true;
       const timeoutMs = readPositiveInteger(
-        params.env.HAPPIER_E2E_IOS_SIMULATOR_LOG_STOP_TIMEOUT_MS,
+        params.env.PIGGERCODE_E2E_IOS_SIMULATOR_LOG_STOP_TIMEOUT_MS,
         DEFAULT_IOS_SIMULATOR_LOG_STOP_TIMEOUT_MS,
       );
       await stopCapturedLogProcess({
@@ -370,19 +370,19 @@ function startIosSimulatorLogCapture(params: Readonly<{
 }
 
 function buildRestoreKeyChunkEnv(env: NodeJS.ProcessEnv): Record<string, string> {
-  const restoreKey = String(env.HAPPIER_E2E_RESTORE_KEY ?? '').trim();
+  const restoreKey = String(env.PIGGERCODE_E2E_RESTORE_KEY ?? '').trim();
   if (!restoreKey) return {};
   return Object.fromEntries(
     Array.from({ length: RESTORE_KEY_CHUNK_COUNT }, (_, index) => {
       const chunkNumber = String(index + 1).padStart(2, '0');
       const start = index * RESTORE_KEY_CHUNK_SIZE;
-      return [`HAPPIER_E2E_RESTORE_KEY_CHUNK_${chunkNumber}`, restoreKey.slice(start, start + RESTORE_KEY_CHUNK_SIZE)];
+      return [`PIGGERCODE_E2E_RESTORE_KEY_CHUNK_${chunkNumber}`, restoreKey.slice(start, start + RESTORE_KEY_CHUNK_SIZE)];
     }),
   );
 }
 
 function isRestoreKeyChunkEnvKey(key: string): boolean {
-  return /^HAPPIER_E2E_RESTORE_KEY_CHUNK_\d+$/.test(key);
+  return /^PIGGERCODE_E2E_RESTORE_KEY_CHUNK_\d+$/.test(key);
 }
 
 function deleteRestoreKeyChunkEnvEntries(env: NodeJS.ProcessEnv): void {
@@ -410,7 +410,7 @@ function collectSensitiveMaestroEnvEntries(env: NodeJS.ProcessEnv): ReadonlyArra
 
 function buildSensitiveMaestroEnvArgs(entries: ReadonlyArray<Readonly<{ key: string; value: string }>>): string[] {
   return entries
-    .filter((entry) => entry.key !== 'HAPPIER_E2E_RESTORE_KEY')
+    .filter((entry) => entry.key !== 'PIGGERCODE_E2E_RESTORE_KEY')
     .flatMap((entry) => ['-e', `${entry.key}=${entry.value}`]);
 }
 
@@ -418,17 +418,17 @@ function buildMaestroProcessEnv(baseEnv: NodeJS.ProcessEnv, extraEnv?: NodeJS.Pr
   const next: NodeJS.ProcessEnv = {
     ...baseEnv,
   };
-  delete next.HAPPIER_E2E_RESTORE_KEY;
+  delete next.PIGGERCODE_E2E_RESTORE_KEY;
   deleteRestoreKeyChunkEnvEntries(next);
   Object.assign(next, buildRestoreKeyChunkEnv(baseEnv), extraEnv ?? {});
-  delete next.HAPPIER_E2E_RESTORE_KEY;
+  delete next.PIGGERCODE_E2E_RESTORE_KEY;
   return next;
 }
 
 function buildNonSecretOrchestrationProcessEnv(baseEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const next: NodeJS.ProcessEnv = { ...baseEnv };
-  delete next.HAPPIER_E2E_RESTORE_KEY;
-  delete next.HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK;
+  delete next.PIGGERCODE_E2E_RESTORE_KEY;
+  delete next.PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK;
   deleteRestoreKeyChunkEnvEntries(next);
   return next;
 }
@@ -492,7 +492,7 @@ function shouldWarmExpoDevClientBundle(params: Readonly<{
   hasWarmableMetro: boolean;
 }>): boolean {
   if (!params.platform || !params.hasWarmableMetro) return false;
-  const configured = params.env.HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE;
+  const configured = params.env.PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE;
   if (configured !== undefined) return isTruthyEnv(configured);
   return params.platform === 'android';
 }
@@ -501,7 +501,7 @@ function resolveWarmExpoDevClientBundleTimeoutMs(params: Readonly<{
   env: NodeJS.ProcessEnv;
   platform: 'android' | 'ios' | null;
 }>): number {
-  const explicit = Number.parseInt(params.env.HAPPIER_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS ?? '', 10);
+  const explicit = Number.parseInt(params.env.PIGGERCODE_E2E_MOBILE_WARM_DEV_CLIENT_BUNDLE_TIMEOUT_MS ?? '', 10);
   if (Number.isFinite(explicit) && explicit > 0) return explicit;
   return params.platform === 'android' ? 300_000 : 60_000;
 }
@@ -601,7 +601,7 @@ async function defaultIsAppInstalled(params: Readonly<{
   appId: string;
 }>): Promise<boolean> {
   const timeoutMs = readPositiveInteger(
-    params.env.HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_TIMEOUT_MS,
+    params.env.PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_TIMEOUT_MS,
     DEFAULT_MOBILE_APP_INSTALL_CHECK_TIMEOUT_MS,
   );
   if (params.platform === 'ios') {
@@ -619,7 +619,7 @@ async function defaultIsAppInstalled(params: Readonly<{
 
   if (params.platform === 'android') {
     try {
-      const serial = String(params.env.HAPPIER_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
+      const serial = String(params.env.PIGGERCODE_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
       const baseArgs = serial ? ['-s', serial] : [];
       const outcome = spawnSync(
         adbCommand(params.env),
@@ -644,7 +644,7 @@ function runAdbReverseIfEnabled(params: Readonly<{
 }>): Readonly<{ enabled: boolean; reversedPorts: number[] }> {
   if (params.platform !== 'android') return { enabled: false, reversedPorts: [] };
 
-  const deviceHostOverride = String(params.env.HAPPIER_E2E_MOBILE_DEVICE_HOST ?? '').trim();
+  const deviceHostOverride = String(params.env.PIGGERCODE_E2E_MOBILE_DEVICE_HOST ?? '').trim();
   if (deviceHostOverride) return { enabled: false, reversedPorts: [] };
 
   // Default to `adb reverse` on Android for local reliability.
@@ -653,11 +653,11 @@ function runAdbReverseIfEnabled(params: Readonly<{
   // the emulator via `10.0.2.2` unless the host is listening on all
   // interfaces. `adb reverse` avoids relying on host network configuration.
   //
-  // Allow explicit opt-out with `HAPPIER_E2E_ANDROID_ADB_REVERSE=0`.
-  const adbReverseSetting = params.env.HAPPIER_E2E_ANDROID_ADB_REVERSE;
+  // Allow explicit opt-out with `PIGGERCODE_E2E_ANDROID_ADB_REVERSE=0`.
+  const adbReverseSetting = params.env.PIGGERCODE_E2E_ANDROID_ADB_REVERSE;
   if (adbReverseSetting !== undefined && !isTruthyEnv(adbReverseSetting)) return { enabled: false, reversedPorts: [] };
 
-  const serial = String(params.env.HAPPIER_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
+  const serial = String(params.env.PIGGERCODE_E2E_ANDROID_SERIAL ?? params.env.ANDROID_SERIAL ?? '').trim();
   const baseArgs = serial ? ['-s', serial] : [];
 
   const ports = new Set<number>();
@@ -684,7 +684,7 @@ function runAdbReverseIfEnabled(params: Readonly<{
 }
 
 const defaultDeps: Pick<MobileMaestroDeps, 'resolveMaestroBin' | 'parseMaestroArgs'> = {
-  resolveMaestroBin: (env) => (String(env.HAPPIER_E2E_MAESTRO_BIN ?? '').trim() || 'maestro'),
+  resolveMaestroBin: (env) => (String(env.PIGGERCODE_E2E_MAESTRO_BIN ?? '').trim() || 'maestro'),
   parseMaestroArgs: (argv) => defaultParseMaestroArgs(argv),
 };
 
@@ -702,22 +702,22 @@ export async function runMobileMaestro(
   const flows = parsed.flows ? parsed.flows.trim() : 'suites/mobile-e2e/flows';
   const appId =
     (parsed.appId ? parsed.appId.trim() : '') ||
-    (String(params.env.HAPPIER_E2E_MOBILE_APP_ID ?? '').trim()) ||
+    (String(params.env.PIGGERCODE_E2E_MOBILE_APP_ID ?? '').trim()) ||
     'dev.happier.app.internaldev';
   const platform = parsed.platform ? parsed.platform.trim() : '';
   const mobilePlatform = platform === 'android' || platform === 'ios' ? platform : null;
   const skipAppInstallCheck =
-    parsed.skipAppInstallCheck === true || isTruthyEnv(params.env.HAPPIER_E2E_SKIP_APP_INSTALL_CHECK ?? '0');
+    parsed.skipAppInstallCheck === true || isTruthyEnv(params.env.PIGGERCODE_E2E_SKIP_APP_INSTALL_CHECK ?? '0');
   const orchestrationEnv = buildNonSecretOrchestrationProcessEnv(params.env);
 
   const isAppInstalled = deps.isAppInstalled ?? defaultIsAppInstalled;
   if (mobilePlatform && !skipAppInstallCheck) {
     const installCheckAttempts = readPositiveInteger(
-      params.env.HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_ATTEMPTS,
+      params.env.PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_ATTEMPTS,
       DEFAULT_MOBILE_APP_INSTALL_CHECK_ATTEMPTS,
     );
     const installCheckRetryDelayMs = readPositiveInteger(
-      params.env.HAPPIER_E2E_MOBILE_APP_INSTALL_CHECK_RETRY_DELAY_MS,
+      params.env.PIGGERCODE_E2E_MOBILE_APP_INSTALL_CHECK_RETRY_DELAY_MS,
       DEFAULT_MOBILE_APP_INSTALL_CHECK_RETRY_DELAY_MS,
     );
     let installed = false;
@@ -743,13 +743,13 @@ export async function runMobileMaestro(
   let androidLogcatCapture: AndroidLogcatCapture | null = null;
   let iosSimulatorLogCapture: AndroidLogcatCapture | null = null;
 
-  const manageMetro = isTruthyEnv(params.env.HAPPIER_E2E_MOBILE_MANAGE_METRO ?? '1');
-  const explicitHostMetroUrl = String(params.env.HAPPIER_E2E_DEV_CLIENT_METRO_URL ?? '').trim();
+  const manageMetro = isTruthyEnv(params.env.PIGGERCODE_E2E_MOBILE_MANAGE_METRO ?? '1');
+  const explicitHostMetroUrl = String(params.env.PIGGERCODE_E2E_DEV_CLIENT_METRO_URL ?? '').trim();
   const hostMetroUrlFromEnv = explicitHostMetroUrl || (manageMetro ? '' : 'http://127.0.0.1:8081');
 
   const explicitServerUrl =
     (parsed.serverUrl ? parsed.serverUrl.trim() : '') ||
-    (String(params.env.HAPPIER_E2E_SERVER_URL ?? '').trim()) ||
+    (String(params.env.PIGGERCODE_E2E_SERVER_URL ?? '').trim()) ||
     '';
 
   let server: StartedServerLike | null = null;
@@ -763,11 +763,11 @@ export async function runMobileMaestro(
     const metroEnv: NodeJS.ProcessEnv = {
       ...orchestrationEnv,
     };
-    metroEnv.HAPPIER_E2E_EXPO_CLEAR ??= '1';
+    metroEnv.PIGGERCODE_E2E_EXPO_CLEAR ??= '1';
     const shouldPinAndroidRuntime =
       platform === 'android' &&
-      !String(metroEnv.HAPPIER_EXPO_RUNTIME_VERSION ?? '').trim() &&
-      isTruthyEnv(params.env.HAPPIER_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME ?? '1');
+      !String(metroEnv.PIGGERCODE_EXPO_RUNTIME_VERSION ?? '').trim() &&
+      isTruthyEnv(params.env.PIGGERCODE_E2E_ANDROID_PIN_DEV_CLIENT_RUNTIME ?? '1');
     if (shouldPinAndroidRuntime) {
       const resolveAndroidDevClientRuntimeVersion =
         deps.resolveAndroidDevClientRuntimeVersion ?? resolveInstalledAndroidDevClientRuntimeVersion;
@@ -777,10 +777,10 @@ export async function runMobileMaestro(
         outputDir: run.testDir('android-dev-client-runtime'),
       });
       if (androidDevClientRuntimeVersion) {
-        metroEnv.HAPPIER_EXPO_RUNTIME_VERSION = androidDevClientRuntimeVersion;
+        metroEnv.PIGGERCODE_EXPO_RUNTIME_VERSION = androidDevClientRuntimeVersion;
       }
     }
-    const metroHost = String(params.env.HAPPIER_E2E_DEV_CLIENT_HOST ?? '').trim() || (platform === 'android' ? 'lan' : 'localhost');
+    const metroHost = String(params.env.PIGGERCODE_E2E_DEV_CLIENT_HOST ?? '').trim() || (platform === 'android' ? 'lan' : 'localhost');
     metro = await deps.startDevClientMetro({
       testDir: run.testDir('expo-metro'),
       extraEnv: metroEnv,
@@ -802,7 +802,7 @@ export async function runMobileMaestro(
       ...orchestrationEnv,
     };
     // Prefer the Node `--import` start path to avoid relying on workspace-local `node_modules/.bin` layout.
-    extraEnv.HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??= '1';
+    extraEnv.PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??= '1';
     extraEnv.HAPPY_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT ??= '1';
     server = await deps.startServerLight({
       testDir: run.testDir('server-light'),
@@ -924,7 +924,7 @@ export async function runMobileMaestro(
   if (
     !skipAppInstallCheck
     && mobilePlatform === 'android'
-    && isTruthyEnv(params.env.HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH ?? '1')
+    && isTruthyEnv(params.env.PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH ?? '1')
   ) {
     await primeAppLaunch({
       env: orchestrationEnv,
@@ -988,13 +988,13 @@ export async function runMobileMaestro(
     ...buildMaestroProcessEnv(params.env, extraEnv),
     // Disable analytics prompts for deterministic local runs.
     MAESTRO_CLI_NO_ANALYTICS: String(params.env.MAESTRO_CLI_NO_ANALYTICS ?? '1'),
-    ...(deviceServerUrl ? { HAPPIER_E2E_SERVER_URL: deviceServerUrl } : {}),
-    ...(deviceServerVisibleHostPattern ? { HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN: deviceServerVisibleHostPattern } : {}),
-    ...(server?.baseUrl ? { HAPPIER_E2E_SERVER_URL_HOST: server.baseUrl } : {}),
-    ...(platform ? { HAPPIER_E2E_MOBILE_PLATFORM: platform } : {}),
-    ...(devClientLaunchUrl ? { HAPPIER_E2E_DEV_CLIENT_LAUNCH_URL: devClientLaunchUrl } : {}),
-    HAPPIER_E2E_MOBILE_APP_SCHEME: mobileAppScheme,
-    HAPPIER_E2E_MOBILE_APP_ID: appId,
+    ...(deviceServerUrl ? { PIGGERCODE_E2E_SERVER_URL: deviceServerUrl } : {}),
+    ...(deviceServerVisibleHostPattern ? { PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN: deviceServerVisibleHostPattern } : {}),
+    ...(server?.baseUrl ? { PIGGERCODE_E2E_SERVER_URL_HOST: server.baseUrl } : {}),
+    ...(platform ? { PIGGERCODE_E2E_MOBILE_PLATFORM: platform } : {}),
+    ...(devClientLaunchUrl ? { PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL: devClientLaunchUrl } : {}),
+    PIGGERCODE_E2E_MOBILE_APP_SCHEME: mobileAppScheme,
+    PIGGERCODE_E2E_MOBILE_APP_ID: appId,
   });
 
   const baseSensitiveMaestroEnvEntries = collectSensitiveMaestroEnvEntries(params.env);
@@ -1011,15 +1011,15 @@ export async function runMobileMaestro(
     '--debug-output',
     debugOutputDir,
     '-e',
-    `HAPPIER_E2E_MOBILE_APP_ID=${appId}`,
-    ...(deviceServerUrl ? ['-e', `HAPPIER_E2E_SERVER_URL=${deviceServerUrl}`] : []),
-    ...(deviceServerVisibleHostPattern ? ['-e', `HAPPIER_E2E_SERVER_VISIBLE_HOST_PATTERN=${deviceServerVisibleHostPattern}`] : []),
-    ...(server?.baseUrl ? ['-e', `HAPPIER_E2E_SERVER_URL_HOST=${server.baseUrl}`] : []),
-    ...(platform ? ['-e', `HAPPIER_E2E_MOBILE_PLATFORM=${platform}`] : []),
+    `PIGGERCODE_E2E_MOBILE_APP_ID=${appId}`,
+    ...(deviceServerUrl ? ['-e', `PIGGERCODE_E2E_SERVER_URL=${deviceServerUrl}`] : []),
+    ...(deviceServerVisibleHostPattern ? ['-e', `PIGGERCODE_E2E_SERVER_VISIBLE_HOST_PATTERN=${deviceServerVisibleHostPattern}`] : []),
+    ...(server?.baseUrl ? ['-e', `PIGGERCODE_E2E_SERVER_URL_HOST=${server.baseUrl}`] : []),
+    ...(platform ? ['-e', `PIGGERCODE_E2E_MOBILE_PLATFORM=${platform}`] : []),
     '-e',
-    `HAPPIER_E2E_MOBILE_APP_SCHEME=${mobileAppScheme}`,
-    ...(deviceMetroUrl ? ['-e', `HAPPIER_E2E_DEV_CLIENT_METRO_URL=${deviceMetroUrl}`] : []),
-    ...(devClientLaunchUrl ? ['-e', `HAPPIER_E2E_DEV_CLIENT_LAUNCH_URL=${devClientLaunchUrl}`] : []),
+    `PIGGERCODE_E2E_MOBILE_APP_SCHEME=${mobileAppScheme}`,
+    ...(deviceMetroUrl ? ['-e', `PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=${deviceMetroUrl}`] : []),
+    ...(devClientLaunchUrl ? ['-e', `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${devClientLaunchUrl}`] : []),
     ...buildSensitiveMaestroEnvArgs(sensitiveMaestroEnvEntries),
     ...(extraArgs ?? []),
     ...(parsed.passThrough ?? []),
@@ -1078,7 +1078,7 @@ export async function runMobileMaestro(
       const bootstrapFlow = resolveConnectedMachineBootstrapFlow(params.env);
       const bootstrapResult = await runMaestroFlow(
         bootstrapFlow,
-        { HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
+        { PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
       );
       if (bootstrapResult.exitCode !== 0) {
         exitCode = bootstrapResult.exitCode;
@@ -1089,13 +1089,13 @@ export async function runMobileMaestro(
           happyHomeDir: cliHomeDir,
           env: {
             ...orchestrationEnv,
-            HAPPIER_SERVER_URL: server.baseUrl,
-            HAPPIER_WEBAPP_URL: server.baseUrl,
+            PIGGERCODE_SERVER_URL: server.baseUrl,
+            PIGGERCODE_WEBAPP_URL: server.baseUrl,
           },
         });
         const result = await runMaestroFlow(
           flows,
-          { HAPPIER_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
+          { PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK: terminalConnectDeepLink },
         );
         exitCode = result.exitCode;
       }

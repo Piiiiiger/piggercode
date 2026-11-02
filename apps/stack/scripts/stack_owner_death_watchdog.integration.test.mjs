@@ -71,9 +71,9 @@ test('owner-death sweep no-ops when a successor publishes after the watched owne
   const watchdogLogPath = join(fixture.baseDir, 'logs', 'owner-death-watchdog.log');
   const ownedEnv = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: fixture.envPath,
-    HAPPIER_STACK_PROCESS_KIND: 'infra',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+    PIGGERCODE_STACK_PROCESS_KIND: 'infra',
   };
   const oldOwner = fixture.trackChild(spawnOwnedSleep({ env: ownedEnv }));
   let successor = null;
@@ -147,9 +147,9 @@ test('owner-death sweep no-ops when a successor reuses the watched pid with a ne
   const watchdogLogPath = join(fixture.baseDir, 'logs', 'owner-death-watchdog.log');
   const ownedEnv = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_ENV_FILE: fixture.envPath,
-    HAPPIER_STACK_PROCESS_KIND: 'infra',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+    PIGGERCODE_STACK_PROCESS_KIND: 'infra',
   };
   const oldOwner = fixture.trackChild(spawnOwnedSleep({ env: ownedEnv }));
   let successor = null;
@@ -233,9 +233,9 @@ test('stack owner-death watchdog reaps stale infra and preserves session process
     spawnOwnedSleep({
       env: {
         ...process.env,
-        HAPPIER_STACK_STACK: fixture.stackName,
-        HAPPIER_STACK_ENV_FILE: fixture.envPath,
-        HAPPIER_STACK_PROCESS_KIND: 'session',
+        PIGGERCODE_STACK_STACK: fixture.stackName,
+        PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+        PIGGERCODE_STACK_PROCESS_KIND: 'session',
       },
     }),
   );
@@ -271,9 +271,9 @@ setInterval(() => {}, 1000);
       `  stdio: 'ignore',`,
       `  env: {`,
       `    ...process.env,`,
-      `    HAPPIER_STACK_STACK: ${JSON.stringify(fixture.stackName)},`,
-      `    HAPPIER_STACK_ENV_FILE: ${JSON.stringify(fixture.envPath)},`,
-      `    HAPPIER_STACK_PROCESS_KIND: 'infra',`,
+      `    PIGGERCODE_STACK_STACK: ${JSON.stringify(fixture.stackName)},`,
+      `    PIGGERCODE_STACK_ENV_FILE: ${JSON.stringify(fixture.envPath)},`,
+      `    PIGGERCODE_STACK_PROCESS_KIND: 'infra',`,
       `  },`,
       `});`,
       `child.unref();`,
@@ -311,10 +311,10 @@ setInterval(() => {}, 1000);
       cwd: fixture.rootDir,
       env: {
         ...fixture.baseEnv,
-        HAPPIER_STACK_STACK: fixture.stackName,
-        HAPPIER_STACK_ENV_FILE: fixture.envPath,
-        HAPPIER_STACK_DAEMON_STOP_TIMEOUT_MS: '100',
-        HAPPIER_STACK_DAEMON_STOP_TERMINATE_GRACE_MS: '50',
+        PIGGERCODE_STACK_STACK: fixture.stackName,
+        PIGGERCODE_STACK_ENV_FILE: fixture.envPath,
+        PIGGERCODE_STACK_DAEMON_STOP_TIMEOUT_MS: '100',
+        PIGGERCODE_STACK_DAEMON_STOP_TERMINATE_GRACE_MS: '50',
       },
     });
     assert.equal(res.code, 0, `expected clean parent exit\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);

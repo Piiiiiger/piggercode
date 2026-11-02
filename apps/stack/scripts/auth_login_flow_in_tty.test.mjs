@@ -6,10 +6,10 @@ async function createTtyFixture(prefix) {
   return await createAuthStackFixture({
     prefix,
     stackEnvLines: [
-      'HAPPIER_STACK_STACK=main',
-      'HAPPIER_STACK_SERVER_PORT=4101',
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
+      'PIGGERCODE_STACK_STACK=main',
+      'PIGGERCODE_STACK_SERVER_PORT=4101',
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
     ],
   });
 }
@@ -27,7 +27,7 @@ test('hstack auth login reports guided flow by default in tty contexts (via --pr
   const fixture = await createTtyFixture('hstack-auth-flow-tty-');
   try {
     const env = fixture.buildEnv({
-      HAPPIER_STACK_TEST_TTY: '1',
+      PIGGERCODE_STACK_TEST_TTY: '1',
     });
 
     const res = await runAuthLoginPrintJson(rootDir, env);
@@ -49,7 +49,7 @@ test('hstack auth login keeps guided flow in tty when --method=mobile is provide
   const fixture = await createTtyFixture('hstack-auth-flow-tty-method-');
   try {
     const env = fixture.buildEnv({
-      HAPPIER_STACK_TEST_TTY: '1',
+      PIGGERCODE_STACK_TEST_TTY: '1',
     });
 
     const res = await runAuthLoginPrintJson(rootDir, env, ['--method=mobile']);
@@ -71,7 +71,7 @@ test('hstack auth login rejects --flow override (guided is always used)', async 
   const fixture = await createTtyFixture('hstack-auth-flow-tty-raw-');
   try {
     const env = fixture.buildEnv({
-      HAPPIER_STACK_TEST_TTY: '1',
+      PIGGERCODE_STACK_TEST_TTY: '1',
     });
 
     const res = await runAuthLoginPrintJson(rootDir, env, ['--flow=raw']);
@@ -88,7 +88,7 @@ test('hstack auth login rejects invalid --flow values', async () => {
   const fixture = await createTtyFixture('hstack-auth-flow-tty-invalid-');
   try {
     const env = fixture.buildEnv({
-      HAPPIER_STACK_TEST_TTY: '1',
+      PIGGERCODE_STACK_TEST_TTY: '1',
     });
 
     const res = await runAuthLoginPrintJson(rootDir, env, ['--flow=weird']);

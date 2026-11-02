@@ -71,11 +71,11 @@ async function setupTestCmdFixture({ importMetaUrl, t, tmpPrefix }) {
   const env = buildStackHarnessEnv({
     binDirs: [binDir],
     extraEnv: {
-      HAPPIER_STACK_REPO_DIR: monoRoot,
+      PIGGERCODE_STACK_REPO_DIR: monoRoot,
       // Prevent env.mjs from auto-discovering and loading a real machine stack env file,
       // which would overwrite our component dir override.
-      HAPPIER_STACK_STACK: 'test-stack',
-      HAPPIER_STACK_ENV_FILE: join(tmp, 'nonexistent-env'),
+      PIGGERCODE_STACK_STACK: 'test-stack',
+      PIGGERCODE_STACK_ENV_FILE: join(tmp, 'nonexistent-env'),
     },
   });
 

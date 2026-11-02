@@ -8,7 +8,7 @@ import {
 } from '../path/pathShape.js';
 
 export function resolveHappyHomeDirFromEnvironment(processEnv: NodeJS.ProcessEnv = process.env): string {
-  const override = typeof processEnv.HAPPIER_HOME_DIR === 'string' ? processEnv.HAPPIER_HOME_DIR.trim() : '';
+  const override = typeof processEnv.PIGGERCODE_HOME_DIR === 'string' ? processEnv.PIGGERCODE_HOME_DIR.trim() : '';
   if (override) {
     const envHome =
       process.platform === 'win32'

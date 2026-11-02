@@ -1,6 +1,6 @@
 export const PI_NEW_SESSION_OPTION_THINKING_LEVEL = 'piThinkingLevel' as const;
 
-export const PI_THINKING_LEVEL_ENV = 'HAPPIER_PI_THINKING_LEVEL' as const;
+export const PI_THINKING_LEVEL_ENV = 'PIGGERCODE_PI_THINKING_LEVEL' as const;
 
 export const PI_THINKING_LEVELS = ['off', 'minimal', 'low', 'medium', 'high', 'xhigh'] as const;
 

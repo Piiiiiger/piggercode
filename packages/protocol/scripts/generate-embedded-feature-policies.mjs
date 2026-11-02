@@ -100,9 +100,9 @@ async function main() {
 
   const policyDir = String(kv.get('--policy-dir') ?? '').trim() || join(repoRoot, '.github', 'feature-policy');
   const outPath = String(kv.get('--out') ?? '').trim() || join(repoRoot, 'packages', 'protocol', 'src', 'features', 'embeddedFeaturePolicies.generated.ts');
-  const requirePolicies = String(process.env.HAPPIER_REQUIRE_FEATURE_POLICY ?? '').trim() === '1';
+  const requirePolicies = String(process.env.PIGGERCODE_REQUIRE_FEATURE_POLICY ?? '').trim() === '1';
 
-  const defaultEnv = normalizePolicyEnv(process.env.HAPPIER_EMBEDDED_POLICY_ENV) ?? 'preview';
+  const defaultEnv = normalizePolicyEnv(process.env.PIGGERCODE_EMBEDDED_POLICY_ENV) ?? 'preview';
 
   const previewPath = join(policyDir, 'preview.json');
   const productionPath = join(policyDir, 'production.json');

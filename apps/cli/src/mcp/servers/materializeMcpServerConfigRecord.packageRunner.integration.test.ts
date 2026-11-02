@@ -103,7 +103,7 @@ describe.runIf(process.platform !== 'win32')('materializeMcpServerConfigRecord p
         resolved,
         settingsSecretsKey: null,
         savedSecretsById: new Map(),
-        processEnv: { HOME: goodHome, HAPPIER_PNPM_BIN: fakePnpmPath },
+        processEnv: { HOME: goodHome, PIGGERCODE_PNPM_BIN: fakePnpmPath },
         tmpDir: root,
         deps: {
           resolveStdioLauncherCommand: () => ({

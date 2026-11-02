@@ -30,7 +30,7 @@ function applyGithubOauthStateAuthEnv(
         GITHUB_CLIENT_ID: "gh_client",
         GITHUB_CLIENT_SECRET: "gh_secret",
         GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
-        HAPPIER_WEBAPP_URL: "https://app.example.test",
+        PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         ...overrides,
     });
 }
@@ -98,10 +98,10 @@ describe("connectRoutes (GitHub callback) oauth-state auth flow", () => {
 
     it("redirects with flow=auth&mode=keyless when the oauth state token indicates a keyless auth flow", async () => {
         applyGithubOauthStateAuthEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
 
         globalThis.fetch = (async (url: any) => {
@@ -139,10 +139,10 @@ describe("connectRoutes (GitHub callback) oauth-state auth flow", () => {
 
     it("redirects with error=e2ee_required when keyless auth becomes unavailable before the callback is handled", async () => {
         applyGithubOauthStateAuthEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
         });
 
         globalThis.fetch = (async (url: any) => {
@@ -168,10 +168,10 @@ describe("connectRoutes (GitHub callback) oauth-state auth flow", () => {
         expect(state).toBeTruthy();
 
         applyGithubOauthStateAuthEnv(harness, {
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
-            HAPPIER_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
-            HAPPIER_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_ENABLED: "1",
+            PIGGERCODE_FEATURE_AUTH_OAUTH__KEYLESS_PROVIDERS: "github",
+            PIGGERCODE_FEATURE_E2EE__KEYLESS_ACCOUNTS_ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
         });
 
         const res = await app.inject({

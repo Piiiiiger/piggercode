@@ -53,7 +53,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
     });
 
     expect(result?.filePath).toBe('/bin/sh');
-    expect(result?.env?.HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR).toBe(
+    expect(result?.env?.PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR).toBe(
       '/sys/fs/cgroup/user.slice/user-501.slice/user@501.service',
     );
     expect(result?.args.join(' ')).toContain('happier-session-$$.scope');
@@ -84,7 +84,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
         runtimeDecision: {
           runtime: 'node',
           argvPrefix: ['--no-warnings', '--no-deprecation', immutableEntrypoint],
-          env: { HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
+          env: { PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef' },
         },
       },
     });
@@ -96,7 +96,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
       'plain',
     ]));
     expect(result?.env).toMatchObject({
-      HAPPIER_TEST_ADMITTED_CLOSURE: '0123456789abcdef',
+      PIGGERCODE_TEST_ADMITTED_CLOSURE: '0123456789abcdef',
     });
   });
 
@@ -133,7 +133,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
         'codex',
       ]));
       expect(result?.args.join(' ')).not.toMatch(/MemoryMax|MemoryHigh|MemoryLimit|OOM/u);
-      expect(result?.env?.HAPPIER_DAEMON_SPAWN_SELF_MIGRATE_CGROUP).toBe('');
+      expect(result?.env?.PIGGERCODE_DAEMON_SPAWN_SELF_MIGRATE_CGROUP).toBe('');
       expect(mocks.systemdResourceGovernorExecFile).toHaveBeenCalledWith(
         'systemctl',
         [
@@ -191,7 +191,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
       });
 
       expect(result?.filePath).toBe('/bin/sh');
-      expect(result?.env?.HAPPIER_DAEMON_SESSION_CGROUP_BASE_DIR).toBe(
+      expect(result?.env?.PIGGERCODE_DAEMON_SESSION_CGROUP_BASE_DIR).toBe(
         '/sys/fs/cgroup/user.slice/user-501.slice/user@501.service',
       );
     } finally {

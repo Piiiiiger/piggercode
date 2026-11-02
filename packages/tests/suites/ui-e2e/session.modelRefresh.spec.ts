@@ -24,24 +24,24 @@ test.describe('UI e2e: inactive session model refresh', () => {
     let daemon: StartedDaemon | null = null;
 
     test.beforeAll(async () => {
-        test.setTimeout(resolveUiWebBeforeAllTimeoutMs({ ...process.env, HAPPIER_E2E_UI_WEB_MODE: 'metro' }));
+        test.setTimeout(resolveUiWebBeforeAllTimeoutMs({ ...process.env, PIGGERCODE_E2E_UI_WEB_MODE: 'metro' }));
         await mkdir(cliHomeDir, { recursive: true });
         server = await startServerLight({
             testDir: suiteDir,
             dbProvider: 'sqlite',
             extraEnv: {
-                HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-                HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
-                HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
-                HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-                HAPPIER_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
-                HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+                PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+                PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+                PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: 'optional',
+                PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+                PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_GENERATE: '1',
+                PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
             },
         });
         ui = await startUiWeb({
             testDir: suiteDir,
             env: {
-                HAPPIER_E2E_UI_WEB_MODE: 'metro',
+                PIGGERCODE_E2E_UI_WEB_MODE: 'metro',
                 NODE_OPTIONS: process.env.NODE_OPTIONS,
                 EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl,
                 EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: run.runId,
@@ -75,10 +75,10 @@ test.describe('UI e2e: inactive session model refresh', () => {
             daemon = await authenticateAndStartDaemon({
                 page, testDir: suiteDir, cliHomeDir, serverUrl: server.baseUrl, uiBaseUrl,
                 extraEnv: {
-                    HAPPIER_CODEX_APP_SERVER_BIN: fakeAppServer,
-                    HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH: join(suiteDir, 'provider.rpc.jsonl'),
-                    HAPPIER_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
-                    HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+                    PIGGERCODE_CODEX_APP_SERVER_BIN: fakeAppServer,
+                    PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH: join(suiteDir, 'provider.rpc.jsonl'),
+                    PIGGERCODE_E2E_CLI_SNAPSHOT_NODE_MODULES_MODE: 'symlink',
+                    PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
                 },
             });
             const credentials = await readCliAccessKey(cliHomeDir);

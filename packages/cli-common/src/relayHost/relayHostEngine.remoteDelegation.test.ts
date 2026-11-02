@@ -66,7 +66,7 @@ describe('RelayHostEngine remote installation ownership', () => {
       runRemoteText: async ({ remoteCommand }) => {
         commands.push(remoteCommand);
         if (remoteCommand.includes('HEALTH_URL=') && remoteCommand.includes('3999')) {
-          return { status: 0, stdout: 'HAPPIER_RELAY_HEALTH_OK\n', stderr: '' };
+          return { status: 0, stdout: 'PIGGERCODE_RELAY_HEALTH_OK\n', stderr: '' };
         }
         if (!remoteCommand.includes('relay host install')) {
           return { status: 0, stdout: '', stderr: '' };
@@ -91,7 +91,7 @@ describe('RelayHostEngine remote installation ownership', () => {
       selfHostRelayBinaryOverride: '/tmp/local/happier-server',
       env: {
         PORT: '3999',
-        HAPPIER_DB_PROVIDER: 'postgres',
+        PIGGERCODE_DB_PROVIDER: 'postgres',
         DATABASE_URL: 'postgresql://happier:secret@postgres/happier',
       },
     })).resolves.toEqual({ relayUrl: 'http://127.0.0.1:3999', mode: 'system' });
@@ -104,7 +104,7 @@ describe('RelayHostEngine remote installation ownership', () => {
     expect(installCommand).not.toContain('--server-binary');
     expect(installCommand).toContain('--mode system');
     expect(installCommand).toMatch(/^sudo -n /u);
-    expect(installCommand).toContain('--env \'HAPPIER_DB_PROVIDER=postgres\'');
+    expect(installCommand).toContain('--env \'PIGGERCODE_DB_PROVIDER=postgres\'');
     expect(installCommand).toContain('--env \'DATABASE_URL=postgresql://happier:secret@postgres/happier\'');
     expect(commands.some((command) => command.includes('happier-server-migrate'))).toBe(false);
   });

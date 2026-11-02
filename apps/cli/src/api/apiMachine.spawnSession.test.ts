@@ -84,8 +84,8 @@ describe('ApiMachineClient spawn-happy-session handler', () => {
       attachMetadataIdentityPolicy: 'replace_with_runtime_identity',
       initialTranscriptAfterSeq: 199,
       environmentVariables: {
-        HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-        HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
       },
     };
     const encrypted = encodeBase64(encrypt(machine.encryptionKey, machine.encryptionVariant, params));
@@ -105,8 +105,8 @@ describe('ApiMachineClient spawn-happy-session handler', () => {
         attachMetadataIdentityPolicy: 'replace_with_runtime_identity',
         initialTranscriptAfterSeq: 199,
         environmentVariables: {
-          HAPPIER_OPENCODE_BACKEND_MODE: 'server',
-          HAPPIER_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+          PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
+          PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
         },
       }),
     );

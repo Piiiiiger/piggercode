@@ -7,11 +7,11 @@ import {
   type ConnectedServiceProfileId,
 } from '@piggercode/protocol';
 
-export const HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY = 'HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON';
-export const HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY =
-  'HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON';
-export const HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY =
-  'HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT';
+export const PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY = 'PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON';
+export const PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY =
+  'PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_JSON';
+export const PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY =
+  'PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT';
 
 export type ConnectedServiceChildSelection =
   | Readonly<{
@@ -107,7 +107,7 @@ export function serializeConnectedServiceChildSelections(
 export function readConnectedServiceChildSelectionsFromEnv(
   env: Pick<NodeJS.ProcessEnv, string>,
 ): ConnectedServiceChildSelection[] {
-  const raw = env[HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
+  const raw = env[PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY];
   if (typeof raw !== 'string' || !raw.trim()) return [];
   let parsed: unknown;
   try {
@@ -165,7 +165,7 @@ export function serializeConnectedServiceMaterializedEnvKeys(
 export function readConnectedServiceMaterializedEnvKeysFromEnv(
   env: Pick<NodeJS.ProcessEnv, string>,
 ): string[] {
-  const raw = env[HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY];
+  const raw = env[PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY];
   if (typeof raw !== 'string' || !raw.trim()) return [];
   let parsed: unknown;
   try {
@@ -196,9 +196,9 @@ export function stripInheritedConnectedServiceEnvironment(
 ): Record<string, string> {
   const inheritedKeys = new Set<string>([
     ...readConnectedServiceMaterializedEnvKeysFromEnv(env),
-    HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
-    HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-    HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+    PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
   ]);
   const sanitized: Record<string, string> = {};
   for (const [key, value] of Object.entries(env)) {

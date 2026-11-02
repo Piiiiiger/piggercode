@@ -42,7 +42,7 @@ export function inferTuiStackName(argv, env = process.env) {
     if (explicitName && !explicitName.startsWith('-')) return explicitName;
   }
 
-  const envStack = (env.HAPPIER_STACK_STACK ?? '').toString().trim();
+  const envStack = (env.PIGGERCODE_STACK_STACK ?? '').toString().trim();
   return envStack || null;
 }
 

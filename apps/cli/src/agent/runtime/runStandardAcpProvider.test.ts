@@ -353,7 +353,7 @@ describe('runStandardAcpProvider', () => {
 
     expect(runtimeOptions).toMatchObject({
       processEnv: {
-        HAPPIER_SESSION_ID: 'session-1',
+        PIGGERCODE_SESSION_ID: 'session-1',
       },
     });
   });

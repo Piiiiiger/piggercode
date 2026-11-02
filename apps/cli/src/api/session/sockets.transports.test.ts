@@ -14,18 +14,18 @@ vi.mock('socket.io-client', () => ({
 }));
 
 const envScope = createEnvKeyScope([
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
-  'HAPPIER_SOCKET_FORCE_WEBSOCKET',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
+  'PIGGERCODE_SOCKET_FORCE_WEBSOCKET',
 ]);
 
 describe('session sockets transports', () => {
   beforeEach(() => {
     bindApiSessionSocketMock(mockIo, createApiSessionSocketStub());
     envScope.patch({
-      HAPPIER_SERVER_URL: 'http://localhost:3005',
-      HAPPIER_WEBAPP_URL: 'http://localhost:8080',
-      HAPPIER_SOCKET_FORCE_WEBSOCKET: undefined,
+      PIGGERCODE_SERVER_URL: 'http://localhost:3005',
+      PIGGERCODE_WEBAPP_URL: 'http://localhost:8080',
+      PIGGERCODE_SOCKET_FORCE_WEBSOCKET: undefined,
     });
     reloadConfiguration();
   });
@@ -48,7 +48,7 @@ describe('session sockets transports', () => {
   });
 
   it('can force websocket-only via config flag', async () => {
-    process.env.HAPPIER_SOCKET_FORCE_WEBSOCKET = '1';
+    process.env.PIGGERCODE_SOCKET_FORCE_WEBSOCKET = '1';
     reloadConfiguration();
 
     const mod = await import('./sockets');

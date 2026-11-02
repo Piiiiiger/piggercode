@@ -44,7 +44,7 @@ async function main() {
       'sources',
       serverComponent === 'happier-server' ? 'main.ts' : 'main.light.ts',
     );
-  const externals = parseCsv(kv.get('--externals') ?? process.env.HAPPIER_SERVER_BUN_EXTERNALS ?? 'redis');
+  const externals = parseCsv(kv.get('--externals') ?? process.env.PIGGERCODE_SERVER_BUN_EXTERNALS ?? 'redis');
   const targets = resolveTargets({
     availableTargets: SERVER_TARGETS,
     requested: kv.get('--targets'),
@@ -54,7 +54,7 @@ async function main() {
   await mkdir(tempDir, { recursive: true });
   await mkdir(outDir, { recursive: true });
   const buildDbProviders = String(
-    process.env.HAPPIER_BUILD_DB_PROVIDERS ?? process.env.HAPPY_BUILD_DB_PROVIDERS ?? 'all',
+    process.env.PIGGERCODE_BUILD_DB_PROVIDERS ?? process.env.HAPPY_BUILD_DB_PROVIDERS ?? 'all',
   ).trim() || 'all';
 
   const artifacts = [];

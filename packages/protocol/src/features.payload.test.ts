@@ -242,7 +242,7 @@ describe('FeaturesResponseSchema', () => {
 
   it('normalizes machine transfer server-routed max-bytes env/config values', () => {
     expect(MACHINE_TRANSFER_SERVER_ROUTED_MAX_BYTES_ENV_KEY).toBe(
-      'HAPPIER_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES',
+      'PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES',
     );
     expect(normalizeMachineTransferServerRoutedMaxBytes(undefined)).toBeNull();
     expect(normalizeMachineTransferServerRoutedMaxBytes('')).toBeNull();

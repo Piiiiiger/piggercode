@@ -4,12 +4,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('settings schema v6 migration', () => {
-  const previousHomeDir = process.env.HAPPIER_HOME_DIR;
+  const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
   const tempDirs: string[] = [];
 
   afterEach(() => {
-    if (previousHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-    else process.env.HAPPIER_HOME_DIR = previousHomeDir;
+    if (previousHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+    else process.env.PIGGERCODE_HOME_DIR = previousHomeDir;
     vi.resetModules();
     for (const tempDir of tempDirs) {
       rmSync(tempDir, { recursive: true, force: true });
@@ -20,7 +20,7 @@ describe('settings schema v6 migration', () => {
   it('migrates v5 publicServerUrl into canonical serverUrl and stores localServerUrl when serverUrl is local-ish', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-settings-v6-migrate-'));
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     writeFileSync(
       join(homeDir, 'settings.json'),
@@ -65,7 +65,7 @@ describe('settings schema v6 migration', () => {
   it('keeps v5 serverUrl as canonical when publicServerUrl is empty or matches', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-settings-v6-migrate-noop-'));
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     writeFileSync(
       join(homeDir, 'settings.json'),
@@ -109,7 +109,7 @@ describe('settings schema v6 migration', () => {
   it('does not store localServerUrl when v5 serverUrl is remote http (avoid https downgrade)', async () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-settings-v6-migrate-no-downgrade-'));
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
 
     writeFileSync(
       join(homeDir, 'settings.json'),

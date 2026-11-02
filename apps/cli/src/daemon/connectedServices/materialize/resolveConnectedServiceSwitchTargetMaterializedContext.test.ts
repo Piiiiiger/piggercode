@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { resolveConnectedServiceSwitchTargetMaterializedContext } from './resolveConnectedServiceSwitchTargetMaterializedContext';
 
 const IDENTITY = { v: 1 as const, id: 'csm_abc', createdAtMs: 123 };
@@ -24,7 +24,7 @@ describe('resolveConnectedServiceSwitchTargetMaterializedContext', () => {
 
     const expectedRoot = join(BASE, 'csm_abc', 'pi');
     expect(result.targetMaterializedRoot).toBe(expectedRoot);
-    expect(result.targetMaterializedEnv?.[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedRoot);
+    expect(result.targetMaterializedEnv?.[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(expectedRoot);
     // The inherited native env values are preserved (only the root key is added).
     expect(result.targetMaterializedEnv?.HOME).toBe('/Users/leeroy');
   });
@@ -38,13 +38,13 @@ describe('resolveConnectedServiceSwitchTargetMaterializedContext', () => {
     });
 
     expect(result.targetMaterializedRoot).toBe(join(BASE, 'csm_abc', 'pi'));
-    expect(result.targetMaterializedEnv?.[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(join(BASE, 'csm_abc', 'pi'));
+    expect(result.targetMaterializedEnv?.[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(join(BASE, 'csm_abc', 'pi'));
   });
 
   it('keeps a tracked CONNECTED session env/root unchanged (already materialized)', () => {
     const existingRoot = join(BASE, 'csm_existing', 'pi');
     const inheritedEnv = {
-      [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: existingRoot,
+      [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: existingRoot,
       PI_CODING_AGENT_DIR: join(existingRoot, 'pi-agent-dir'),
     };
     const result = resolveConnectedServiceSwitchTargetMaterializedContext({
@@ -78,7 +78,7 @@ describe('resolveConnectedServiceSwitchTargetMaterializedContext', () => {
     const oldConfigDir = '/homes/claude-subscription/old-member/claude/claude-config';
     const newConfigDir = '/homes/claude-subscription/new-member/claude/claude-config';
     const inheritedEnv = {
-      [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: oldConfigDir,
+      [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: oldConfigDir,
       CLAUDE_CONFIG_DIR: oldConfigDir,
       EXISTING: '1',
     };
@@ -97,7 +97,7 @@ describe('resolveConnectedServiceSwitchTargetMaterializedContext', () => {
 
     expect(result.targetMaterializedRoot).toBe(newConfigDir);
     expect(result.targetMaterializedEnv?.CLAUDE_CONFIG_DIR).toBe(newConfigDir);
-    expect(result.targetMaterializedEnv?.[HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(newConfigDir);
+    expect(result.targetMaterializedEnv?.[PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]).toBe(newConfigDir);
     // Non-provider inherited entries survive the overlay (the next spawn env is base + materializer env).
     expect(result.targetMaterializedEnv?.EXISTING).toBe('1');
   });
@@ -122,7 +122,7 @@ describe('resolveConnectedServiceSwitchTargetMaterializedContext', () => {
   it('keeps current behavior when the runtime-auth selection carries no materialized context', () => {
     const existingRoot = join(BASE, 'csm_existing', 'codex');
     const inheritedEnv = {
-      [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: existingRoot,
+      [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: existingRoot,
     };
     const result = resolveConnectedServiceSwitchTargetMaterializedContext({
       agentId: 'codex',

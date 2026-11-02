@@ -105,7 +105,7 @@ test('ensureServerSchemaReady builds source server internal workspace deps befor
       'if [[ "${1:-}" == "--version" ]]; then echo "1.22.22"; exit 0; fi',
       'if [[ "${1:-}" == "-s" && "${2:-}" == "build" && "$(pwd)" == */packages/cli-common ]]; then',
       `  printf '%s\\n' 'cli-common build' >> ${JSON.stringify(buildLogPath)}`,
-      '  out="${HAPPIER_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
+      '  out="${PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR:-dist}"',
       '  mkdir -p "$out/firstPartyRuntime"',
       "  printf '%s\\n' 'export const ok = true;' > \"$out/firstPartyRuntime/index.js\"",
       "  printf '%s\\n' 'export declare const ok: boolean;' > \"$out/firstPartyRuntime/index.d.ts\"",

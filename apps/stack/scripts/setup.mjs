@@ -39,7 +39,7 @@ import { parseEnvToObject } from './utils/env/dotenv.mjs';
 import { resolveEffectiveDbProviderTransition } from './utils/server/effective_db_provider.mjs';
 
 function resolveWorkspaceDirDefault() {
-  const explicit = (process.env.HAPPIER_STACK_WORKSPACE_DIR ?? '').toString().trim();
+  const explicit = (process.env.PIGGERCODE_STACK_WORKSPACE_DIR ?? '').toString().trim();
   if (explicit) return expandHome(explicit);
   return join(getHappyStacksHomeDir(process.env), 'workspace');
 }
@@ -67,7 +67,7 @@ async function resolveMainServerPort() {
   // - main stack env file (preferred)
   // - default
   const hasEnvOverride =
-    (process.env.HAPPIER_STACK_SERVER_PORT ?? '').toString().trim() !== '';
+    (process.env.PIGGERCODE_STACK_SERVER_PORT ?? '').toString().trim() !== '';
   if (hasEnvOverride) {
     return resolveServerPortFromEnv({ env: process.env, defaultPort: 3005 });
   }
@@ -134,7 +134,7 @@ async function maybeConfigureForkRemoteForDevProfile({ rootDir, interactive, env
     return;
   }
 
-  const forkUrlFromEnv = String(env.HAPPIER_STACK_FORK_URL ?? '').trim();
+  const forkUrlFromEnv = String(env.PIGGERCODE_STACK_FORK_URL ?? '').trim();
   if (!interactive) {
     if (forkUrlFromEnv) {
       await run('git', ['remote', 'set-url', 'origin', forkUrlFromEnv], { cwd: repoDir });
@@ -143,7 +143,7 @@ async function maybeConfigureForkRemoteForDevProfile({ rootDir, interactive, env
     // eslint-disable-next-line no-console
     console.log(
       `${yellow('!')} Dev setup: origin points to upstream (${upstream.owner}/${upstream.repo}), but you don't have push access.\n` +
-        `${dim('Fix:')} re-run ${cyan('hstack setup-from-source --profile=dev')} in a TTY to configure a fork, or set ${cyan('HAPPIER_STACK_FORK_URL')} to your fork repo URL.`
+        `${dim('Fix:')} re-run ${cyan('hstack setup-from-source --profile=dev')} in a TTY to configure a fork, or set ${cyan('PIGGERCODE_STACK_FORK_URL')} to your fork repo URL.`
     );
     return;
   }
@@ -175,7 +175,7 @@ async function maybeConfigureForkRemoteForDevProfile({ rootDir, interactive, env
   await run('git', ['remote', 'set-url', 'origin', forkUrl], { cwd: repoDir });
 
   // Optional: ensure the fork has a dev branch matching upstream/dev (best-effort).
-  const devBranch = String(env.HAPPIER_STACK_DEV_BRANCH ?? '').trim() || 'dev';
+  const devBranch = String(env.PIGGERCODE_STACK_DEV_BRANCH ?? '').trim() || 'dev';
   let forkHasDev = true;
   try {
     await runCapture('git', ['ls-remote', '--exit-code', '--heads', 'origin', devBranch], { cwd: repoDir });
@@ -220,7 +220,7 @@ function readStackRepoDir({ stackName, env }) {
     if (!existsSync(envPath)) return '';
     const raw = readFileSync(envPath, 'utf-8');
     const parsed = parseEnvToObject(raw);
-    return String(parsed?.HAPPIER_STACK_REPO_DIR ?? '').trim();
+    return String(parsed?.PIGGERCODE_STACK_REPO_DIR ?? '').trim();
   } catch {
     return '';
   }
@@ -306,7 +306,7 @@ async function ensureSetupConfigPersisted({ rootDir, profile, serverComponent, t
   const repoSourceForProfile = profile === 'selfhost' ? 'upstream' : null;
   const monoRepo = String(happierRepoUrl ?? '').trim();
   const stable = String(stableBranch ?? '').trim();
-  const previousServerComponent = process.env.HAPPIER_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
+  const previousServerComponent = process.env.PIGGERCODE_STACK_SERVER_COMPONENT?.trim() || 'happier-server-light';
   const dbTransition = resolveEffectiveDbProviderTransition({
     previousServerComponentName: previousServerComponent,
     nextServerComponentName: serverComponent,
@@ -327,31 +327,31 @@ async function ensureSetupConfigPersisted({ rootDir, profile, serverComponent, t
   const updates = [
     ...(stable
       ? [
-          { key: 'HAPPIER_STACK_STABLE_BRANCH', value: stable },
+          { key: 'PIGGERCODE_STACK_STABLE_BRANCH', value: stable },
         ]
       : []),
-    { key: 'HAPPIER_STACK_SERVER_COMPONENT', value: serverComponent },
-    { key: 'HAPPIER_DB_PROVIDER', value: dbTransition.provider },
+    { key: 'PIGGERCODE_STACK_SERVER_COMPONENT', value: serverComponent },
+    { key: 'PIGGERCODE_DB_PROVIDER', value: dbTransition.provider },
     ...(dbTransition.databaseUrl ? [{ key: 'DATABASE_URL', value: dbTransition.databaseUrl }] : []),
     // Default for selfhost:
     // - monorepo: upstream (Happier)
     // - server-light: fork-only today (handled in bootstrap)
     ...(repoSourceForProfile
       ? [
-          { key: 'HAPPIER_STACK_REPO_SOURCE', value: repoSourceForProfile },
+          { key: 'PIGGERCODE_STACK_REPO_SOURCE', value: repoSourceForProfile },
         ]
       : []),
     ...(monoRepo
       ? [
           // Override the Happier monorepo clone source.
           // This is useful for forks that keep the same monorepo layout under a different repo name.
-          { key: 'HAPPIER_STACK_REPO_URL', value: monoRepo },
+          { key: 'PIGGERCODE_STACK_REPO_URL', value: monoRepo },
         ]
       : []),
-    { key: 'HAPPIER_STACK_MENUBAR_MODE', value: menubarMode },
+    { key: 'PIGGERCODE_STACK_MENUBAR_MODE', value: menubarMode },
     ...(tailscaleWanted
       ? [
-          { key: 'HAPPIER_STACK_TAILSCALE_SERVE', value: '1' },
+          { key: 'PIGGERCODE_STACK_TAILSCALE_SERVE', value: '1' },
         ]
       : []),
   ];
@@ -489,11 +489,11 @@ async function maybeConfigureAuthDefaults({ rootDir, profile, interactive, env =
   if (profile !== 'dev') return;
 
   const sources = detectAuthSources();
-  const autoSeedEnabled = (env.HAPPIER_STACK_AUTO_AUTH_SEED ?? '').toString().trim() === '1';
-  const seedFrom = (env.HAPPIER_STACK_AUTH_SEED_FROM ?? '').toString().trim();
+  const autoSeedEnabled = (env.PIGGERCODE_STACK_AUTO_AUTH_SEED ?? '').toString().trim() === '1';
+  const seedFrom = (env.PIGGERCODE_STACK_AUTH_SEED_FROM ?? '').toString().trim();
   const linkMode =
-    (env.HAPPIER_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
-    (env.HAPPIER_STACK_AUTH_MODE ?? '').toString().trim().toLowerCase() === 'link';
+    (env.PIGGERCODE_STACK_AUTH_LINK ?? '').toString().trim() === '1' ||
+    (env.PIGGERCODE_STACK_AUTH_MODE ?? '').toString().trim().toLowerCase() === 'link';
 
   // If we already have dev-auth seeded and configured, don't ask redundant questions.
   // (User can always re-run setup or use stack/auth commands to change this.)
@@ -568,9 +568,9 @@ async function maybeConfigureAuthDefaults({ rootDir, profile, interactive, env =
   await ensureEnvLocalUpdated({
     rootDir,
     updates: [
-      { key: 'HAPPIER_STACK_AUTO_AUTH_SEED', value: '1' },
-      { key: 'HAPPIER_STACK_AUTH_SEED_FROM', value: seedChoice },
-      { key: 'HAPPIER_STACK_AUTH_LINK', value: linkChoice === 'link' ? '1' : '0' },
+      { key: 'PIGGERCODE_STACK_AUTO_AUTH_SEED', value: '1' },
+      { key: 'PIGGERCODE_STACK_AUTH_SEED_FROM', value: seedChoice },
+      { key: 'PIGGERCODE_STACK_AUTH_LINK', value: linkChoice === 'link' ? '1' : '0' },
     ],
   });
 
@@ -854,7 +854,7 @@ async function cmdSetup({ rootDir, argv }) {
 	  }
 
 	  const serverFromArg = normalizeServerComponent(kv.get('--server'));
-	  let serverComponent = serverFromArg || normalizeServerComponent(process.env.HAPPIER_STACK_SERVER_COMPONENT) || 'happier-server-light';
+	  let serverComponent = serverFromArg || normalizeServerComponent(process.env.PIGGERCODE_STACK_SERVER_COMPONENT) || 'happier-server-light';
   if (profile === 'selfhost' && interactive && !serverFromArg) {
     const docker = await detectDockerSupport();
     if (!docker.installed) {
@@ -927,7 +927,7 @@ async function cmdSetup({ rootDir, argv }) {
   }
 
   // Local-repo profile: resolve the existing repo dir to pin a dedicated stack.
-  const invokedCwd = String(process.env.HAPPIER_STACK_INVOKED_CWD ?? '').trim() || process.cwd();
+  const invokedCwd = String(process.env.PIGGERCODE_STACK_INVOKED_CWD ?? '').trim() || process.cwd();
   const repoDirFlagRaw = (kv.get('--repo-dir') ?? kv.get('--repo') ?? '').toString().trim();
   let localRepoDir = repoDirFlagRaw ? normalizeRepoDirInput(repoDirFlagRaw, { invokedCwd }) : '';
   if (profile === 'local-repo' && !localRepoDir) {
@@ -960,7 +960,7 @@ async function cmdSetup({ rootDir, argv }) {
     if (stableBranchWanted.startsWith('-')) {
       throw new Error('[setup] --stable-branch must not start with "-"');
     }
-    process.env.HAPPIER_STACK_STABLE_BRANCH = stableBranchWanted;
+    process.env.PIGGERCODE_STACK_STABLE_BRANCH = stableBranchWanted;
   }
 
   const setupChildEnv = buildSetupChildEnv({
@@ -1267,7 +1267,7 @@ async function cmdSetup({ rootDir, argv }) {
   // Apply repo override to this process too (so the immediately-following install step sees it),
   // even if env.local was already loaded earlier in this process.
   if (happierRepoUrl) {
-    process.env.HAPPIER_STACK_REPO_URL = happierRepoUrl;
+    process.env.PIGGERCODE_STACK_REPO_URL = happierRepoUrl;
   }
 
   // 3) Bootstrap the monorepo.
@@ -1368,7 +1368,7 @@ async function cmdSetup({ rootDir, argv }) {
   if (autostartWanted) {
     if (isSandboxed() && !sandboxAllowsGlobalSideEffects()) {
       // eslint-disable-next-line no-console
-      console.log(dim(`Autostart skipped in sandbox mode. To allow: ${cyan('HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
+      console.log(dim(`Autostart skipped in sandbox mode. To allow: ${cyan('PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
     } else {
     if (process.platform === 'linux') {
       const ok = await ensureSystemdAvailable();
@@ -1388,7 +1388,7 @@ async function cmdSetup({ rootDir, argv }) {
   if (menubarWanted && process.platform === 'darwin') {
     if (isSandboxed() && !sandboxAllowsGlobalSideEffects()) {
       // eslint-disable-next-line no-console
-      console.log(dim(`Menu bar install skipped in sandbox mode. To allow: ${cyan('HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
+      console.log(dim(`Menu bar install skipped in sandbox mode. To allow: ${cyan('PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
     } else {
       await runNodeScript({ rootDir, rel: 'scripts/menubar.mjs', args: ['install'] });
     }
@@ -1403,7 +1403,7 @@ async function cmdSetup({ rootDir, argv }) {
       await openUrlInBrowser('https://tailscale.com/download').catch(() => {});
     } else if (isSandboxed() && !sandboxAllowsGlobalSideEffects()) {
       // eslint-disable-next-line no-console
-      console.log(dim(`Tailscale enable skipped in sandbox mode. To allow: ${cyan('HAPPIER_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
+      console.log(dim(`Tailscale enable skipped in sandbox mode. To allow: ${cyan('PIGGERCODE_STACK_SANDBOX_ALLOW_GLOBAL=1')}`));
     } else {
     try {
       const internalPort = await resolveMainServerPort();
@@ -1429,10 +1429,10 @@ async function cmdSetup({ rootDir, argv }) {
   if (startNow) {
     // Self-host UX: ensure the prebuilt UI exists so the light server can serve it immediately.
     // (Without this, `hstack start` will refuse to serve UI when the build dir is missing.)
-    const serveUiWanted = (process.env.HAPPIER_STACK_SERVE_UI ?? '1').toString().trim() !== '0';
+    const serveUiWanted = (process.env.PIGGERCODE_STACK_SERVE_UI ?? '1').toString().trim() !== '0';
     if (profile === 'selfhost' && serveUiWanted) {
-      const uiBuildDir = process.env.HAPPIER_STACK_UI_BUILD_DIR?.trim()
-        ? process.env.HAPPIER_STACK_UI_BUILD_DIR.trim()
+      const uiBuildDir = process.env.PIGGERCODE_STACK_UI_BUILD_DIR?.trim()
+        ? process.env.PIGGERCODE_STACK_UI_BUILD_DIR.trim()
         : join(getDefaultAutostartPaths().baseDir, 'ui');
       if (!existsSync(uiBuildDir)) {
         await runNodeScriptMaybeQuiet({ label: 'build-ui', rel: 'scripts/build.mjs', args: ['--no-tauri'] });
@@ -1472,7 +1472,7 @@ async function cmdSetup({ rootDir, argv }) {
       } else {
         const env = {
           ...process.env,
-          HAPPIER_STACK_SERVER_PORT: String(port),
+          PIGGERCODE_STACK_SERVER_PORT: String(port),
         };
         if (interactive) {
           await runOrchestratedGuidedAuthFlow({

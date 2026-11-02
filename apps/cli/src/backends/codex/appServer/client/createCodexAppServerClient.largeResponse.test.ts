@@ -76,8 +76,8 @@ describe('createCodexAppServerClient large responses', () => {
 
             const client = await createCodexAppServerClient({
                 processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                    HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '3000',
-                    HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '3000',
+                    PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '3000',
+                    PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '3000',
                 }),
             });
 
@@ -111,7 +111,7 @@ describe('createCodexAppServerClient large responses', () => {
 
             const client = await createCodexAppServerClient({
                 processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                    HAPPIER_CODEX_APP_SERVER_RPC_LOG_PATH: requestLogPath,
+                    PIGGERCODE_CODEX_APP_SERVER_RPC_LOG_PATH: requestLogPath,
                 }),
             });
 
@@ -167,9 +167,9 @@ describe('createCodexAppServerClient large responses', () => {
 
             const client = await createCodexAppServerClient({
                 processEnv: createCodexAppServerProcessEnv(fakeAppServer, {
-                    HAPPIER_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS: '1024',
-                    HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '3000',
-                    HAPPIER_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '3000',
+                    PIGGERCODE_CODEX_APP_SERVER_MAX_JSON_LINE_CHARS: '1024',
+                    PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS: '3000',
+                    PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '3000',
                 }),
             });
 

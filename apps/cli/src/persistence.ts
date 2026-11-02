@@ -73,7 +73,7 @@ function resolveLegacyDaemonStatePathsForCurrentLifecycle(): string[] {
 }
 
 function hasExplicitDaemonLifecycleScope(): boolean {
-  return isServerIdFilesystemSafe(String(process.env.HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim());
+  return isServerIdFilesystemSafe(String(process.env.PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID ?? '').trim());
 }
 
 function cleanupLegacyDaemonStateFilesBestEffortSync(): void {
@@ -443,7 +443,7 @@ export async function readSettings(): Promise<Settings> {
     const merged: Settings = { ...defaultSettings, ...migrated };
 
     // Derive backwards-compat fields for the *effective* active server (schema v5+).
-    // The configuration layer resolves env overrides (HAPPIER_SERVER_URL/HAPPIER_WEBAPP_URL) into
+    // The configuration layer resolves env overrides (PIGGERCODE_SERVER_URL/PIGGERCODE_WEBAPP_URL) into
     // a deterministic server id; use that id so per-server machine ids/cursors work in hermetic
     // test homes even if settings.json.activeServerId is left at "cloud".
     const activeServerId = sanitizeServerIdForFilesystem(

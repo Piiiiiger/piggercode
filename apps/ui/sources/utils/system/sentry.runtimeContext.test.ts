@@ -61,9 +61,9 @@ describe('utils/system/sentry (runtime context)', () => {
         sentrySetTagSpy.mockClear();
         sentrySetContextSpy.mockClear();
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_SENTRY_INIT__;
+        delete (globalThis as any).__PIGGERCODE_SENTRY_INIT__;
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (globalThis as any).__HAPPIER_CRASH_REPORTS_OPTOUT__;
+        delete (globalThis as any).__PIGGERCODE_CRASH_REPORTS_OPTOUT__;
         process.env.EXPO_PUBLIC_SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
         vi.resetModules();
     });

@@ -2,7 +2,7 @@ import {
     resolveServerProfileScopeIdForIdentifier,
 } from '@/sync/domains/server/serverProfiles';
 
-export const SESSION_REALTIME_TRANSCRIPT_SUPPRESSION_GLOBAL_KEY = '__HAPPIER_QA_REALTIME_TRANSCRIPT_SUPPRESSION__';
+export const SESSION_REALTIME_TRANSCRIPT_SUPPRESSION_GLOBAL_KEY = '__PIGGERCODE_QA_REALTIME_TRANSCRIPT_SUPPRESSION__';
 
 export type SessionRealtimeTranscriptSuppressionEntry = Readonly<{
     sessionId: string;

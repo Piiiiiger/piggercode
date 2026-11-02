@@ -70,11 +70,11 @@ import {
  * `isInteractiveTerminal()` answers from the controlling terminal, and a script
  * that runs `happier setup --yes` from a shell still has one — so a child left
  * to decide for itself will happily prompt for a relay profile name nobody is
- * going to type. `HAPPIER_NONINTERACTIVE=1` is the signal the installers
+ * going to type. `PIGGERCODE_NONINTERACTIVE=1` is the signal the installers
  * already use to mean exactly this, and the CLI's one reader of it is
  * `isInteractiveTerminal()`, so setting it here settles every child at once.
  */
-const UNATTENDED_CHILD_ENV: NodeJS.ProcessEnv = { HAPPIER_NONINTERACTIVE: '1' };
+const UNATTENDED_CHILD_ENV: NodeJS.ProcessEnv = { PIGGERCODE_NONINTERACTIVE: '1' };
 
 const HELP = `happier setup — connect this computer to your Happier account
 
@@ -92,7 +92,7 @@ Options:
                           setup never picks a relay for you. Exits non-zero,
                           because setup is unfinished until you sign in.
   --non-interactive       Change nothing. Setup says what it would need and exits
-                          non-zero. Also how setup reads HAPPIER_NONINTERACTIVE=1
+                          non-zero. Also how setup reads PIGGERCODE_NONINTERACTIVE=1
                           and a run with no terminal at all.
   -h, --help              Show this help
 
@@ -432,7 +432,7 @@ export async function handleSetupCliCommand(context: CommandContext): Promise<vo
     }
 
     // `--yes` is an explicit instruction to go ahead, so it outranks both the
-    // ambient HAPPIER_NONINTERACTIVE=1 and a missing terminal — which is the
+    // ambient PIGGERCODE_NONINTERACTIVE=1 and a missing terminal — which is the
     // whole point of running setup from a script. `isInteractiveTerminal()` is
     // the CLI's one reader of that environment variable; setup does not keep a
     // second copy of the rule.

@@ -13,11 +13,11 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 
 const ENV_KEYS = [
-  'HAPPIER_HOME_DIR',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_DAEMON_SERVICE_PLATFORM',
-  'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-  'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
+  'PIGGERCODE_HOME_DIR',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+  'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+  'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
 ] as const;
 
 function listen(server: http.Server): Promise<{ port: number; url: string }> {
@@ -57,8 +57,8 @@ function installManagedServiceUnit(): string {
   writeFileSync(snapshot.installedPath, [
     '[Service]',
     'ExecStart=/opt/happier/happier daemon start-sync',
-    'Environment=HAPPIER_DAEMON_STARTUP_SOURCE=background-service',
-    `Environment=HAPPIER_HOME_DIR=${configuration.happyHomeDir}`,
+    'Environment=PIGGERCODE_DAEMON_STARTUP_SOURCE=background-service',
+    `Environment=PIGGERCODE_HOME_DIR=${configuration.happyHomeDir}`,
     '',
   ].join('\n'));
   return snapshot.label;
@@ -116,11 +116,11 @@ describe('readDaemonStatusSnapshot runtimeConvergence', () => {
 
   async function seedHome(params: Readonly<{ relayUrl: string; accountId: string; machineId: string }>): Promise<void> {
     envScope.patch({
-      HAPPIER_HOME_DIR: tmpHomeDir!,
-      HAPPIER_SERVER_URL: params.relayUrl,
-      HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-      HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: tmpHomeDir!,
-      HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: tmpHomeDir!,
+      PIGGERCODE_HOME_DIR: tmpHomeDir!,
+      PIGGERCODE_SERVER_URL: params.relayUrl,
+      PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+      PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmpHomeDir!,
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: tmpHomeDir!,
     });
     reloadConfiguration();
     await writeCredentialsLegacy({

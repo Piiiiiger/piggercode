@@ -311,7 +311,7 @@ test.describe('ui e2e: desktop local setup through the real hsetup (hermetic com
         // Socket.IO over WebSocket from the first packet, so every relay RPC crosses the one route
         // the readiness proof is read from (`relayMachineRpcTap`). Transport only: the relay's RPC
         // handler, encryption and the coordinator's proof are unchanged.
-        EXPO_PUBLIC_HAPPIER_SOCKET_FORCE_WEBSOCKET: '1',
+        EXPO_PUBLIC_PIGGERCODE_SOCKET_FORCE_WEBSOCKET: '1',
     };
 
     test.beforeAll(async () => {
@@ -320,7 +320,7 @@ test.describe('ui e2e: desktop local setup through the real hsetup (hermetic com
         server = await startServerLight({
             testDir: suiteDir,
             dbProvider: 'sqlite',
-            extraEnv: { HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys' },
+            extraEnv: { PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys' },
         });
         ui = await startUiWeb({ testDir: suiteDir, env: { ...uiWebEnv, EXPO_PUBLIC_HAPPY_SERVER_URL: server.baseUrl } });
         uiBaseUrl = normalizeLoopbackBaseUrl(ui.baseUrl);
@@ -459,7 +459,7 @@ test.describe('ui e2e: desktop local setup through the real hsetup (hermetic com
         const otherRelay = await startServerLight({
             testDir: run.testDir(`desktop-local-setup-${label}-other-relay`),
             dbProvider: 'sqlite',
-            extraEnv: { HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys' },
+            extraEnv: { PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys' },
         });
         // `localhost` rather than the app relay's 127.0.0.1, so the two hosts read differently.
         const otherRelayUrl = otherRelay.baseUrl.replace('127.0.0.1', 'localhost');
@@ -733,7 +733,7 @@ test.describe('ui e2e: desktop local setup through the real hsetup (hermetic com
                 context,
                 computer,
                 uiBaseUrl,
-                launchEnv: { HAPPIER_ACTIVE_SERVER_ID: otherServerId, HAPPIER_SERVER_URL: otherRelayUrl },
+                launchEnv: { PIGGERCODE_ACTIVE_SERVER_ID: otherServerId, PIGGERCODE_SERVER_URL: otherRelayUrl },
             });
             try {
                 await ensureAccountReadyForConnect({ page: app.page, timeoutMs: 180_000 });

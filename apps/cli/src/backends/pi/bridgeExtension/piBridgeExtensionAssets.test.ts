@@ -58,7 +58,7 @@ describe('pi bridge extension assets', () => {
     await ensurePiBridgeExtensionAsset(agentDir);
     const content = readFileSync(resolvePiBridgeExtensionPath(agentDir), 'utf8');
     expect(content).not.toContain('/usr/bin/node');
-    expect(content).not.toContain('HAPPIER_CLI_FILE_PATH');
+    expect(content).not.toContain('PIGGERCODE_CLI_FILE_PATH');
   });
 
   it('retires the legacy flat asset (which Pi would auto-discover) when ensuring', async () => {

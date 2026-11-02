@@ -439,7 +439,7 @@ export async function handleDaemonCliCommand(context: CommandContext): Promise<v
         ? {
           env: {
             ...process.env,
-            HAPPIER_DAEMON_TAKEOVER: '1',
+            PIGGERCODE_DAEMON_TAKEOVER: '1',
           },
         }
         : {});

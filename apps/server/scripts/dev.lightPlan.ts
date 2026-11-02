@@ -11,7 +11,7 @@ export type LightDevPlan = Readonly<{
 }>;
 
 function resolveMigrateMode(env: NodeJS.ProcessEnv): LightMigrateMode {
-    return String(env.HAPPIER_STACK_MIGRATE_MODE ?? "").trim().toLowerCase() === "skip"
+    return String(env.PIGGERCODE_STACK_MIGRATE_MODE ?? "").trim().toLowerCase() === "skip"
         ? "skip"
         : "always";
 }

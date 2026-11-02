@@ -12,7 +12,7 @@ import type { SessionHandoffFileSlice, SessionHandoffProviderBundle } from './ty
 import { SessionHandoffProviderBundleSchema } from './sessionHandoffProviderBundleSchema';
 
 const SESSION_HANDOFF_PROVIDER_BUNDLE_DIRECTORY = join(tmpdir(), 'happier-session-handoff-provider-bundles');
-const ARTIFACT_MAGIC = Buffer.from('HAPPIER_SESSION_HANDOFF_BUNDLE_V2\n', 'utf8');
+const ARTIFACT_MAGIC = Buffer.from('PIGGERCODE_SESSION_HANDOFF_BUNDLE_V2\n', 'utf8');
 const ARTIFACT_LENGTH_BYTES = 8;
 // Only the structured manifest is memory-resident. Referenced file contents are streamed.
 const MAX_MANIFEST_BYTES = 64 * 1024 * 1024;

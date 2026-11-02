@@ -42,8 +42,8 @@ vi.mock('@modelcontextprotocol/sdk/client/stdio.js', () => ({
 
 describe('callResolvedCustomHappierTool', () => {
   const envKeys = [
-    'HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS',
-    'HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS',
+    'PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS',
+    'PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS',
   ] as const;
   let envScope = createEnvKeyScope(envKeys);
 
@@ -62,8 +62,8 @@ describe('callResolvedCustomHappierTool', () => {
 
   it('pipes and drains child stderr before calling the MCP tool', async () => {
     callToolMock.mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] });
-    delete process.env.HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS;
-    delete process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS;
+    delete process.env.PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS;
+    delete process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS;
     reloadConfiguration();
 
     const { callResolvedCustomHappierTool } = await import('./callResolvedCustomHappierTool');
@@ -97,8 +97,8 @@ describe('callResolvedCustomHappierTool', () => {
 
   it('aligns execution_run_wait MCP request timeout with the requested wait duration', async () => {
     callToolMock.mockResolvedValue({ content: [{ type: 'text', text: 'done' }] });
-    process.env.HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS = '180000';
-    process.env.HAPPIER_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
+    process.env.PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS = '180000';
+    process.env.PIGGERCODE_MCP_EXECUTION_RUN_WAIT_TIMEOUT_GRACE_MS = '45000';
     reloadConfiguration();
 
     const { callResolvedCustomHappierTool } = await import('./callResolvedCustomHappierTool');

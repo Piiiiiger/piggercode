@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
-    HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY,
+    PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY,
     type AttachmentBoundClaudeEndpointState,
 } from './endpointRecovery/claudeEndpointArtifacts';
 import { resolveClaudeAdoptEndpointRecovery } from './endpointRecovery/claudeEndpointRecovery';
@@ -19,7 +19,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { claimSessionRunnerOwnership, withSessionRunnerOwnership } from '@/daemon/sessionRunnerLock';
 import { reloadConfiguration } from '@/configuration';
 
-const originalEndpointStateEnv = process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+const originalEndpointStateEnv = process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
 
 async function reservePort(): Promise<Readonly<{ port: number; close: () => Promise<void> }>> {
     const server = createServer();
@@ -121,9 +121,9 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
 
     afterEach(async () => {
         if (originalEndpointStateEnv === undefined) {
-            delete process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+            delete process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
         } else {
-            process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = originalEndpointStateEnv;
+            process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = originalEndpointStateEnv;
         }
         for (const dir of tempDirs.splice(0)) {
             await rm(dir, { recursive: true, force: true });
@@ -131,7 +131,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
     });
 
     it('returns null when the endpoint marker env is missing', async () => {
-        delete process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY];
+        delete process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY];
 
         await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toBeNull();
     });
@@ -140,8 +140,8 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
         'recovers only exact owned retained endpoint custody after explicit runner admission (%s)', async (custody) => {
             const home = await mkdtemp(join(tmpdir(), 'happier-explicit-endpoint-'));
             tempDirs.push(home);
-            const env = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HERDR_BIN_PATH', HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]);
-            env.patch({ HAPPIER_HOME_DIR: home, [HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY]: undefined });
+            const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'HERDR_BIN_PATH', PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]);
+            env.patch({ PIGGERCODE_HOME_DIR: home, [PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY]: undefined });
             reloadConfiguration();
             try {
                 await withHerdrApi(async (api) => {
@@ -186,7 +186,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
             mcpUrl: `http://127.0.0.1:${await findAvailablePort()}`,
             mcpPort: await findAvailablePort(),
         };
-        process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
+        process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
 
         await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toBeNull();
     });
@@ -199,7 +199,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
             stateHookServerPort: await findAvailablePort(),
             mcpPort: await findAvailablePort(),
         });
-        process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify({
+        process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify({
             ...state,
             v: 1,
             attachmentId: undefined,
@@ -218,7 +218,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
                 stateHookServerPort: occupied.port,
                 mcpPort: await findAvailablePort(),
             });
-            process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
+            process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
 
             await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toBeNull();
         } finally {
@@ -235,7 +235,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
             hooksJsonHookServerPort: await findAvailablePort(),
             mcpPort: await findAvailablePort(),
         });
-        process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
+        process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
 
         await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toBeNull();
     });
@@ -250,7 +250,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
             permissionSecret: 'permission-secret-happy',
             statuslineSecret: 'statusline-secret-happy',
         });
-        process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
+        process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
 
         await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toEqual({
             state,
@@ -300,7 +300,7 @@ describe('resolveClaudeAdoptEndpointRecovery', () => {
         const hooksJsonPath = join(state.hookPluginDir!, 'hooks', 'hooks.json');
         const originalHooksJson = await readFile(hooksJsonPath, 'utf8');
         await writeFile(join(state.hookPluginDir!, 'runtime-assets'), 'blocks runtime asset directory creation', 'utf8');
-        process.env[HAPPIER_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
+        process.env[PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY] = JSON.stringify(state);
 
         await expect(resolveClaudeAdoptEndpointRecovery()).resolves.toBeNull();
         await expect(readFile(hooksJsonPath, 'utf8')).resolves.toBe(originalHooksJson);

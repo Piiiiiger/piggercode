@@ -117,7 +117,7 @@ hstack menubar install
 If you want a different default refresh interval at install time:
 
 ```bash
-HAPPIER_STACK_SWIFTBAR_INTERVAL=15m hstack menubar install
+PIGGERCODE_STACK_SWIFTBAR_INTERVAL=15m hstack menubar install
 ```
 
 ### 3) Open the active SwiftBar plugin folder
@@ -165,9 +165,9 @@ Controls and settings:
   - “Refresh now (main components)”
   - “Refresh now (all stacks/components)”
   - or “Refresh now (this stack)” from a stack’s Components menu
-- **TTL**: `HAPPIER_STACK_SWIFTBAR_GIT_TTL_SEC` (default `21600` seconds = 6 hours)
-- **Mode**: `HAPPIER_STACK_SWIFTBAR_GIT_MODE=cached|live` (default `cached`)
-- (Optional) **Background auto-refresh**: `HAPPIER_STACK_SWIFTBAR_GIT_AUTO_REFRESH_SCOPE=main|all|off` (default `main`)
+- **TTL**: `PIGGERCODE_STACK_SWIFTBAR_GIT_TTL_SEC` (default `21600` seconds = 6 hours)
+- **Mode**: `PIGGERCODE_STACK_SWIFTBAR_GIT_MODE=cached|live` (default `cached`)
+- (Optional) **Background auto-refresh**: `PIGGERCODE_STACK_SWIFTBAR_GIT_AUTO_REFRESH_SCOPE=main|all|off` (default `main`)
 
 Notes:
 
@@ -188,7 +188,7 @@ In **selfhost** mode, the menu includes a **Maintenance** section that can:
 Many menu actions open a terminal (interactive wizards, long-running dev servers, etc).
 The plugin uses helper scripts so these run in your preferred terminal, using the same env var as `wt shell`:
 
-- `HAPPIER_STACK_WT_TERMINAL=auto|ghostty|iterm|terminal|current`
+- `PIGGERCODE_STACK_WT_TERMINAL=auto|ghostty|iterm|terminal|current`
 
 Notes:
 - `auto` tries ghostty → iTerm → Terminal → current.

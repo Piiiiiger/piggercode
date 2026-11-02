@@ -617,8 +617,8 @@ describe('Runtime Activity snapshot socket event on SQLite', () => {
         { sessionTimeoutMs: 60_000, thinkingUntilMs: 0, idleSpacingMs: 15_000 },
         { sessionTimeoutMs: 20_000, thinkingUntilMs: 8_000, idleSpacingMs: 16_000 },
     ])('keeps released heartbeats reachable with a $sessionTimeoutMs ms presence expiry after thinking until $thinkingUntilMs ms', async ({ sessionTimeoutMs, thinkingUntilMs, idleSpacingMs }) => {
-        process.env.HAPPIER_PRESENCE_SESSION_TIMEOUT_MS = String(sessionTimeoutMs);
-        process.env.HAPPIER_PRESENCE_TIMEOUT_TICK_MS = '1000';
+        process.env.PIGGERCODE_PRESENCE_SESSION_TIMEOUT_MS = String(sessionTimeoutMs);
+        process.env.PIGGERCODE_PRESENCE_TIMEOUT_TICK_MS = '1000';
         const timeoutConfig = resolvePresenceTimeoutConfig();
         const seeded = await seed();
         vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
@@ -807,10 +807,10 @@ describe('Runtime Activity snapshot socket event on SQLite', () => {
     });
 
     it('recovers on the next released alive heartbeat after SQLite transaction acquisition is exhausted', async () => {
-        process.env.HAPPIER_DB_TX_MAX_RETRIES = '0';
+        process.env.PIGGERCODE_DB_TX_MAX_RETRIES = '0';
         // Values below the transaction owner's 1000ms minimum fall back to 5000ms.
-        process.env.HAPPIER_DB_TX_MAX_WAIT_MS = '1000';
-        process.env.HAPPIER_DB_TX_TIMEOUT_MS = '2000';
+        process.env.PIGGERCODE_DB_TX_MAX_WAIT_MS = '1000';
+        process.env.PIGGERCODE_DB_TX_TIMEOUT_MS = '2000';
 
         const seeded = await seed();
         const handlers = new Map<string, Handler>();
@@ -884,13 +884,13 @@ describe('Runtime Activity snapshot socket event on SQLite', () => {
         { sessionTimeoutMs: 600_000, retryCeilingMs: 60_000 },
         { sessionTimeoutMs: 35_000, retryCeilingMs: 17_500 },
     ])('bounds released alive retry backoff to $retryCeilingMs ms for a $sessionTimeoutMs ms presence expiry', async ({ sessionTimeoutMs, retryCeilingMs }) => {
-        process.env.HAPPIER_PRESENCE_SESSION_TIMEOUT_MS = String(sessionTimeoutMs);
-        process.env.HAPPIER_DB_TX_MAX_RETRIES = '0';
+        process.env.PIGGERCODE_PRESENCE_SESSION_TIMEOUT_MS = String(sessionTimeoutMs);
+        process.env.PIGGERCODE_DB_TX_MAX_RETRIES = '0';
         // Values below the transaction owner's 1000ms minimum fall back to 5000ms.
-        process.env.HAPPIER_DB_TX_MAX_WAIT_MS = '1000';
+        process.env.PIGGERCODE_DB_TX_MAX_WAIT_MS = '1000';
         // The holder transaction must outlive all failing attempts; an expiring holder would free
         // the connection and let a heartbeat persist for the wrong reason.
-        process.env.HAPPIER_DB_TX_TIMEOUT_MS = '30000';
+        process.env.PIGGERCODE_DB_TX_TIMEOUT_MS = '30000';
 
         const seeded = await seed();
         const handlers = new Map<string, Handler>();
@@ -967,8 +967,8 @@ describe('Runtime Activity snapshot socket event on SQLite', () => {
     });
 
     it('does not let concurrent released alive sockets exhaust the single SQLite transaction connection', async () => {
-        process.env.HAPPIER_DB_TX_MAX_RETRIES = '0';
-        process.env.HAPPIER_DB_TX_MAX_WAIT_MS = '1000';
+        process.env.PIGGERCODE_DB_TX_MAX_RETRIES = '0';
+        process.env.PIGGERCODE_DB_TX_MAX_WAIT_MS = '1000';
 
         const presence = createSessionPublisherPresence();
         const sockets = [] as Array<Readonly<{

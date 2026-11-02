@@ -17,9 +17,9 @@ describe('configuration client encryption requirement', () => {
   async function loadWith(value: string | undefined) {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
-    process.env.HAPPIER_HOME_DIR = homeDir;
-    if (value === undefined) delete process.env.HAPPIER_ENCRYPTION_REQUIREMENT;
-    else process.env.HAPPIER_ENCRYPTION_REQUIREMENT = value;
+    process.env.PIGGERCODE_HOME_DIR = homeDir;
+    if (value === undefined) delete process.env.PIGGERCODE_ENCRYPTION_REQUIREMENT;
+    else process.env.PIGGERCODE_ENCRYPTION_REQUIREMENT = value;
     return await import('./configuration');
   }
 
@@ -36,6 +36,6 @@ describe('configuration client encryption requirement', () => {
   });
 
   it('fails loudly for an invalid non-empty override', async () => {
-    await expect(loadWith('sometimes')).rejects.toThrow(/HAPPIER_ENCRYPTION_REQUIREMENT/);
+    await expect(loadWith('sometimes')).rejects.toThrow(/PIGGERCODE_ENCRYPTION_REQUIREMENT/);
   });
 });

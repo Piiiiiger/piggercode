@@ -4,11 +4,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const SERVER_ENV_KEYS = [
-  'HAPPIER_ACTIVE_SERVER_ID',
-  'HAPPIER_SERVER_URL',
-  'HAPPIER_LOCAL_SERVER_URL',
-  'HAPPIER_PUBLIC_SERVER_URL',
-  'HAPPIER_WEBAPP_URL',
+  'PIGGERCODE_ACTIVE_SERVER_ID',
+  'PIGGERCODE_SERVER_URL',
+  'PIGGERCODE_LOCAL_SERVER_URL',
+  'PIGGERCODE_PUBLIC_SERVER_URL',
+  'PIGGERCODE_WEBAPP_URL',
 ] as const;
 
 function stubServerEnv(values: Partial<Record<typeof SERVER_ENV_KEYS[number], string>>): void {
@@ -31,16 +31,16 @@ describe('resolveServerHttpBaseUrl', () => {
   it('changes endpoints only after the canonical configuration selection is reloaded', async () => {
     vi.resetModules();
     stubServerEnv({
-      HAPPIER_ACTIVE_SERVER_ID: 'stale-stack',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:41001',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'stale-stack',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:41001',
     });
 
     const configurationModule = await import('@/configuration');
     const { resolveServerHttpBaseUrl } = await import('./serverHttpBaseUrl');
 
     stubServerEnv({
-      HAPPIER_ACTIVE_SERVER_ID: 'live-stack',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:52002',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'live-stack',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52002',
     });
 
     expect(resolveServerHttpBaseUrl()).toBe('http://127.0.0.1:41001');
@@ -71,11 +71,11 @@ describe('resolveServerHttpBaseUrl', () => {
         },
       },
     }));
-    vi.stubEnv('HAPPIER_HOME_DIR', homeDir);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', homeDir);
     stubServerEnv({
-      HAPPIER_ACTIVE_SERVER_ID: 'selected-profile',
-      HAPPIER_SERVER_URL: 'http://127.0.0.1:52753',
-      HAPPIER_WEBAPP_URL: 'http://localhost:18829',
+      PIGGERCODE_ACTIVE_SERVER_ID: 'selected-profile',
+      PIGGERCODE_SERVER_URL: 'http://127.0.0.1:52753',
+      PIGGERCODE_WEBAPP_URL: 'http://localhost:18829',
     });
 
     const { configuration } = await import('@/configuration');

@@ -84,7 +84,7 @@ describe('core e2e: execution runs (review) supports triage updates', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
       },
     });
     const serverBaseUrl = server.baseUrl;
@@ -108,15 +108,15 @@ describe('core e2e: execution runs (review) supports triage updates', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: serverBaseUrl,
-        HAPPIER_WEBAPP_URL: serverBaseUrl,
-        HAPPIER_CLAUDE_PATH: fakeClaudePath,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLog,
-        HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'review-json',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: serverBaseUrl,
+        PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLog,
+        PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'review-json',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
     const controlToken = (daemon.state as any)?.controlToken as string | undefined;
@@ -129,14 +129,14 @@ describe('core e2e: execution runs (review) supports triage updates', () => {
         directory: workspaceDir,
         terminal: { mode: 'plain' },
         environmentVariables: {
-          HAPPIER_HOME_DIR: daemonHomeDir,
-          HAPPIER_SERVER_URL: serverBaseUrl,
-          HAPPIER_WEBAPP_URL: serverBaseUrl,
-          HAPPIER_VARIANT: 'dev',
-          HAPPIER_DISABLE_CAFFEINATE: '1',
-          HAPPIER_CLAUDE_PATH: fakeClaudePath,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLog,
-          HAPPIER_E2E_FAKE_CLAUDE_SCENARIO: 'review-json',
+          PIGGERCODE_HOME_DIR: daemonHomeDir,
+          PIGGERCODE_SERVER_URL: serverBaseUrl,
+          PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+          PIGGERCODE_VARIANT: 'dev',
+          PIGGERCODE_DISABLE_CAFFEINATE: '1',
+          PIGGERCODE_CLAUDE_PATH: fakeClaudePath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLog,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SCENARIO: 'review-json',
         },
       },
     });

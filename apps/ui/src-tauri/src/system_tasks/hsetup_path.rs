@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 
-const HSETUP_FILENAME: &str = env!("HAPPIER_HSETUP_SIDECAR_FILENAME");
+const HSETUP_FILENAME: &str = env!("PIGGERCODE_HSETUP_SIDECAR_FILENAME");
 
 fn has_gzip_header(bytes: &[u8]) -> bool {
     bytes.len() >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b

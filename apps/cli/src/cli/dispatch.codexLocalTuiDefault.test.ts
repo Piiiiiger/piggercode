@@ -12,11 +12,11 @@ describe('dispatchCli (codex local TUI default)', () => {
   let prevCodexHandler: unknown;
 
   beforeEach(() => {
-    prevEnv = process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+    prevEnv = process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
     prevInTty = process.stdin.isTTY;
     prevOutTty = process.stdout.isTTY;
     prevCodexHandler = (commandRegistry as any).codex as unknown;
-    delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
+    delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
     Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
     Object.defineProperty(process.stdout, 'isTTY', { value: true, configurable: true });
     (commandRegistry as any).codex = codexHandlerSpy;
@@ -24,8 +24,8 @@ describe('dispatchCli (codex local TUI default)', () => {
   });
 
   afterEach(() => {
-    if (prevEnv === undefined) delete process.env.HAPPIER_SESSION_AUTOSTART_DAEMON;
-    else process.env.HAPPIER_SESSION_AUTOSTART_DAEMON = prevEnv;
+    if (prevEnv === undefined) delete process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON;
+    else process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON = prevEnv;
     Object.defineProperty(process.stdin, 'isTTY', { value: prevInTty, configurable: true });
     Object.defineProperty(process.stdout, 'isTTY', { value: prevOutTty, configurable: true });
     (commandRegistry as any).codex = prevCodexHandler;
@@ -38,7 +38,7 @@ describe('dispatchCli (codex local TUI default)', () => {
       terminalRuntime: null,
     });
 
-    expect(process.env.HAPPIER_SESSION_AUTOSTART_DAEMON).toBe('0');
+    expect(process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).toBe('0');
     expect(codexHandlerSpy).toHaveBeenCalled();
   });
 
@@ -49,7 +49,7 @@ describe('dispatchCli (codex local TUI default)', () => {
       terminalRuntime: null,
     });
 
-    expect(process.env.HAPPIER_SESSION_AUTOSTART_DAEMON).not.toBe('0');
+    expect(process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).not.toBe('0');
     expect(codexHandlerSpy).toHaveBeenCalled();
   });
 
@@ -60,7 +60,7 @@ describe('dispatchCli (codex local TUI default)', () => {
       terminalRuntime: null,
     });
 
-    expect(process.env.HAPPIER_SESSION_AUTOSTART_DAEMON).not.toBe('0');
+    expect(process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON).not.toBe('0');
     expect(codexHandlerSpy).toHaveBeenCalled();
   });
 });

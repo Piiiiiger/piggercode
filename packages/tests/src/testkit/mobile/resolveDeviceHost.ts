@@ -9,7 +9,7 @@ function escapeRegexFragment(value: string): string {
 }
 
 function resolveDeviceHostOverride(env: NodeJS.ProcessEnv): string {
-  const raw = (env.HAPPIER_E2E_MOBILE_DEVICE_HOST ?? '').trim();
+  const raw = (env.PIGGERCODE_E2E_MOBILE_DEVICE_HOST ?? '').trim();
   return raw;
 }
 

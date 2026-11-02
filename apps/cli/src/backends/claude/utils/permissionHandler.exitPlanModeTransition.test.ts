@@ -24,9 +24,9 @@ function exitPlanToolUseMessage(): SDKAssistantMessage {
 describe('PermissionHandler (ExitPlanMode transition)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.HAPPIER_STACK_TOOL_TRACE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_FILE;
-    delete process.env.HAPPIER_STACK_TOOL_TRACE_DIR;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_FILE;
+    delete process.env.PIGGERCODE_STACK_TOOL_TRACE_DIR;
   });
 
   it('allows non-interactive tools after ExitPlanMode approval for the same user-message localId', async () => {

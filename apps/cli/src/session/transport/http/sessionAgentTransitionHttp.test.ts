@@ -28,17 +28,17 @@ function currentView() {
 const divider = { localId: 'agent-transition-divider:local-42', content: { t: 'plain' as const, v: {} } };
 
 describe('commitSessionAgentTransitionCutover wire contract', () => {
-  let envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+  let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
 
   afterEach(() => {
     envScope.restore();
-    envScope = createEnvKeyScope(['HAPPIER_SERVER_URL']);
+    envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL']);
     vi.restoreAllMocks();
     vi.resetModules();
   });
 
   async function importClient() {
-    process.env.HAPPIER_SERVER_URL = 'http://server.example.test';
+    process.env.PIGGERCODE_SERVER_URL = 'http://server.example.test';
     vi.resetModules();
     return (await import('./sessionAgentTransitionHttp')).commitSessionAgentTransitionCutover;
   }

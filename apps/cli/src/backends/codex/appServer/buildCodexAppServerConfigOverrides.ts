@@ -1,9 +1,9 @@
 import type { McpServerConfig } from '@/agent';
 import { normalizeCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';
-import { DEFAULT_CODEX_HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS } from '@/configuration';
+import { DEFAULT_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS } from '@/configuration';
 import { readCodexAppServerStartupRpcTimeoutMs } from './client/codexAppServerRpcTimeout';
 
-const CODEX_HAPPIER_READ_ONLY_MCP_TOOLS = [
+const CODEX_PIGGERCODE_READ_ONLY_MCP_TOOLS = [
     'execution_run_get',
     'execution_run_list',
     'execution_run_wait',
@@ -102,7 +102,7 @@ export function buildCodexAppServerConfigOverrides(
 
     const happierSessionId = normalizeCurrentHappierSessionId(options.happierSessionId);
     if (happierSessionId) {
-        overrides.push(`shell_environment_policy.set.HAPPIER_SESSION_ID=${quoteTomlString(happierSessionId)}`);
+        overrides.push(`shell_environment_policy.set.PIGGERCODE_SESSION_ID=${quoteTomlString(happierSessionId)}`);
     }
 
     for (const serverName of [...serverNames].sort((left, right) => left.localeCompare(right))) {
@@ -121,9 +121,9 @@ export function buildCodexAppServerConfigOverrides(
         if (serverName === 'happier' || serverName === 'happy') {
             overrides.push(`mcp_servers.${injectedKey}.startup_timeout_sec=${happierMcpStartupTimeoutMs / 1_000}`);
             const timeoutMs = options.happierMcpToolCallTimeoutMs
-                ?? DEFAULT_CODEX_HAPPIER_MCP_TOOL_CALL_TIMEOUT_MS;
+                ?? DEFAULT_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS;
             overrides.push(`mcp_servers.${injectedKey}.tool_timeout_sec=${timeoutMs / 1_000}`);
-            for (const toolName of CODEX_HAPPIER_READ_ONLY_MCP_TOOLS) {
+            for (const toolName of CODEX_PIGGERCODE_READ_ONLY_MCP_TOOLS) {
                 overrides.push(
                     `mcp_servers.${injectedKey}.tools.${toolName}.approval_mode=${quoteTomlString('approve')}`,
                 );

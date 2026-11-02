@@ -39,11 +39,11 @@ function createScopedTransferRouteCache(serverId: string | null | undefined) {
         serverId: normalizeServerScopeId(serverId),
         now: Date.now,
         positiveTtlMs: readPositiveIntEnv(
-            'EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS',
+            'EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS',
             DEFAULT_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS,
         ),
         negativeTtlMs: readPositiveIntEnv(
-            'EXPO_PUBLIC_HAPPIER_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS',
+            'EXPO_PUBLIC_PIGGERCODE_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS',
             DEFAULT_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS,
         ),
     });

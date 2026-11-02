@@ -13,12 +13,12 @@ describe('claudeRemoteAgentSdk error artifacts', () => {
         const artifactsDir = join(dir, 'artifacts');
         await mkdir(artifactsDir, { recursive: true });
 
-        const prevArtifactsDir = process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR;
-        const prevArtifactsEnabled = process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED;
-        const prevStderrMaxBytes = process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES;
-        process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR = artifactsDir;
-        process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED = '1';
-        process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES = '1000000';
+        const prevArtifactsDir = process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR;
+        const prevArtifactsEnabled = process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED;
+        const prevStderrMaxBytes = process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES;
+        process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR = artifactsDir;
+        process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED = '1';
+        process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES = '1000000';
 
         try {
             let didSendFirst = false;
@@ -89,12 +89,12 @@ describe('claudeRemoteAgentSdk error artifacts', () => {
             expect(String(artifacts.debugTail)).not.toContain('BEGIN_MARKER');
             expect(String(artifacts.stderrTail)).toContain('STDERR_MARKER');
         } finally {
-            if (prevArtifactsDir === undefined) delete process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR;
-            else process.env.HAPPIER_CLAUDE_DEBUG_ARTIFACTS_DIR = prevArtifactsDir;
-            if (prevArtifactsEnabled === undefined) delete process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED;
-            else process.env.HAPPIER_SUBPROCESS_ARTIFACTS_ENABLED = prevArtifactsEnabled;
-            if (prevStderrMaxBytes === undefined) delete process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES;
-            else process.env.HAPPIER_SUBPROCESS_STDERR_MAX_BYTES = prevStderrMaxBytes;
+            if (prevArtifactsDir === undefined) delete process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR;
+            else process.env.PIGGERCODE_CLAUDE_DEBUG_ARTIFACTS_DIR = prevArtifactsDir;
+            if (prevArtifactsEnabled === undefined) delete process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED;
+            else process.env.PIGGERCODE_SUBPROCESS_ARTIFACTS_ENABLED = prevArtifactsEnabled;
+            if (prevStderrMaxBytes === undefined) delete process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES;
+            else process.env.PIGGERCODE_SUBPROCESS_STDERR_MAX_BYTES = prevStderrMaxBytes;
         }
     }, 30_000);
 });

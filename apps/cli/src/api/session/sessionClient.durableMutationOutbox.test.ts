@@ -42,7 +42,7 @@ let transportCreationCount = 0;
 let sessionConnectionGate: Promise<void> | null = null;
 let disconnectSessionTransport: (() => void) | null = null;
 let tempHomeDir: string | null = null;
-const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
 let pendingConsumerModules: Awaited<ReturnType<typeof loadPendingConsumerModules>> | null = null;
 
 async function loadPendingConsumerModules() {
@@ -161,7 +161,7 @@ vi.mock('@piggercode/connection-supervisor', async (importOriginal) => {
 
 async function useTempHappyHome(): Promise<string> {
   tempHomeDir = await mkdtemp(join(tmpdir(), 'happier-cli-session-outbox-'));
-  process.env.HAPPIER_HOME_DIR = tempHomeDir;
+  process.env.PIGGERCODE_HOME_DIR = tempHomeDir;
   return tempHomeDir;
 }
 
@@ -630,7 +630,7 @@ describe('ApiSessionClient durable mutation outbox', () => {
     if (failure === 'before-handler') {
       useRealSupervisor = true;
       sessionConnectionGate = connectionReady.promise;
-      vi.stubEnv('HAPPIER_SESSION_SOCKET_CONNECT_TIMEOUT_MS', '5');
+      vi.stubEnv('PIGGERCODE_SESSION_SOCKET_CONNECT_TIMEOUT_MS', '5');
     }
     sessionSocketStub = makeSocket();
     sessionSocketStub.connected = failure !== 'before-handler';
@@ -828,7 +828,7 @@ describe('ApiSessionClient durable mutation outbox', () => {
     logger.flushSync();
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
-    process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+    process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
     if (tempHomeDir) {
       await rm(tempHomeDir, { recursive: true, force: true });
       tempHomeDir = null;
@@ -1613,10 +1613,10 @@ describe('ApiSessionClient durable mutation outbox', () => {
   });
 
   it('keeps terminal turn mutations queued behind a failed begin retry', async () => {
-    const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-    const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+    const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+    const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
 
     const httpActions: string[] = [];
     let beginAttempts = 0;
@@ -1710,23 +1710,23 @@ describe('ApiSessionClient durable mutation outbox', () => {
     } finally {
       await outbox?.close().catch(() => {});
       if (originalBaseRetryMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
       }
       if (originalJitterMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
       }
     }
   });
 
   it('keeps disconnected session turn mutations queued when HTTP fallback reports an unsupported route', async () => {
-    const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-    const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+    const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+    const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
     vi.mocked(axios.post).mockRejectedValue({ response: { status: 404 } });
     const { logger } = await import('@/ui/logger');
     const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
@@ -1788,23 +1788,23 @@ describe('ApiSessionClient durable mutation outbox', () => {
       await outbox?.close();
       debugSpy.mockRestore();
       if (originalBaseRetryMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
       }
       if (originalJitterMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
       }
     }
   });
 
   it('keeps durable outbox authentication errors queued without consuming retry attempts', async () => {
-    const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-    const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+    const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+    const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
     const authError = Object.assign(new Error('authentication required'), { response: { status: 401 } });
     vi.mocked(axios.post).mockRejectedValue(authError);
     const socket = createApiSessionSocketStub({
@@ -1860,14 +1860,14 @@ describe('ApiSessionClient durable mutation outbox', () => {
     } finally {
       await outbox?.close();
       if (originalBaseRetryMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
       }
       if (originalJitterMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
       }
     }
   });
@@ -2146,10 +2146,10 @@ describe('ApiSessionClient durable mutation outbox', () => {
   });
 
   it('keeps unsupported old-preview session turn mutations queued without a lifecycle state fallback', async () => {
-    const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-    const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+    const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+    const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
     vi.mocked(axios.post).mockRejectedValue({ response: { status: 404 } });
     const deliveredEvents: string[] = [];
     const agentStateUpdates: unknown[] = [];
@@ -2233,23 +2233,23 @@ describe('ApiSessionClient durable mutation outbox', () => {
       debugSpy.mockRestore();
       await client?.close();
       if (originalBaseRetryMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
       }
       if (originalJitterMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
       }
     }
   });
 
   it('keeps 400 session turn mutation rejections queued without emitting update-state', async () => {
-    const originalBaseRetryMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
-    const originalJitterMs = process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
-    process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
+    const originalBaseRetryMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+    const originalJitterMs = process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = '60000';
+    process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = '0';
     vi.mocked(axios.post).mockRejectedValue({ response: { status: 400 } });
     const deliveredEvents: string[] = [];
     const { logger } = await import('@/ui/logger');
@@ -2332,14 +2332,14 @@ describe('ApiSessionClient durable mutation outbox', () => {
       await outbox?.close();
       debugSpy.mockRestore();
       if (originalBaseRetryMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_BASE_RETRY_MS = originalBaseRetryMs;
       }
       if (originalJitterMs === undefined) {
-        delete process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS;
+        delete process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS;
       } else {
-        process.env.HAPPIER_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
+        process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_JITTER_MS = originalJitterMs;
       }
     }
   });

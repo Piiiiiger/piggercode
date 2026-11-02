@@ -17,7 +17,7 @@ function isFalseEnvValue(value: unknown): boolean {
 
 export function resolveServerMigrationsEnabled(env: Readonly<Record<string, unknown>>): boolean {
     if (isFalseEnvValue(env.RUN_MIGRATIONS)) return false;
-    if (isFalseEnvValue(env.HAPPIER_STACK_PRISMA_MIGRATE)) return false;
+    if (isFalseEnvValue(env.PIGGERCODE_STACK_PRISMA_MIGRATE)) return false;
     return true;
 }
 
@@ -28,14 +28,14 @@ export function resolveSelfHostServerMigrationPlan(params: Readonly<{
 }>): SelfHostServerMigrationPlan | null {
     if (!resolveServerMigrationsEnabled(params.env)) return null;
     const platform = params.platform ?? process.platform;
-    const rawProvider = String(params.env.HAPPIER_DB_PROVIDER ?? params.env.HAPPY_DB_PROVIDER ?? 'sqlite').trim().toLowerCase();
+    const rawProvider = String(params.env.PIGGERCODE_DB_PROVIDER ?? params.env.HAPPY_DB_PROVIDER ?? 'sqlite').trim().toLowerCase();
     const provider = rawProvider === 'postgresql' ? 'postgres' : rawProvider;
     if (!['postgres', 'mysql', 'pglite', 'sqlite'].includes(provider)) {
         throw new Error(`[self-host] unsupported database provider: ${rawProvider || '<empty>'}`);
     }
     if (provider === 'sqlite') {
         const rawAutoMigrate = String(
-            params.env.HAPPIER_SQLITE_AUTO_MIGRATE ?? params.env.HAPPY_SQLITE_AUTO_MIGRATE ?? '1',
+            params.env.PIGGERCODE_SQLITE_AUTO_MIGRATE ?? params.env.HAPPY_SQLITE_AUTO_MIGRATE ?? '1',
         ).trim().toLowerCase();
         if (!isFalseEnvValue(rawAutoMigrate)) return null;
         return { command: params.serverBinaryPath, args: ['--migrate-only'] };
@@ -54,22 +54,22 @@ export function resolveSelfHostServerMigrationPlan(params: Readonly<{
 // relay update. Operator-owned configuration must remain outside this set so a
 // bare `relay host install` is an idempotent update.
 const SELF_HOST_SERVER_ENV_REGENERATED_KEYS = new Set<string>([
-    'HAPPIER_SERVER_UI_DIR',
-    'HAPPIER_SERVER_UI_DEPLOYMENT_ID',
-    'HAPPIER_SQLITE_AUTO_MIGRATE',
-    'HAPPIER_SQLITE_MIGRATIONS_DIR',
-    'HAPPIER_SERVER_LIGHT_DATA_DIR',
-    'HAPPIER_SERVER_LIGHT_FILES_DIR',
-    'HAPPIER_SERVER_LIGHT_DB_DIR',
+    'PIGGERCODE_SERVER_UI_DIR',
+    'PIGGERCODE_SERVER_UI_DEPLOYMENT_ID',
+    'PIGGERCODE_SQLITE_AUTO_MIGRATE',
+    'PIGGERCODE_SQLITE_MIGRATIONS_DIR',
+    'PIGGERCODE_SERVER_LIGHT_DATA_DIR',
+    'PIGGERCODE_SERVER_LIGHT_FILES_DIR',
+    'PIGGERCODE_SERVER_LIGHT_DB_DIR',
     'METRICS_ENABLED',
     'NODE_PATH',
     'PRISMA_CLIENT_ENGINE_TYPE',
     'PRISMA_QUERY_ENGINE_LIBRARY',
 ]);
 const SELF_HOST_SERVER_ENV_INSTALLER_OWNED_OVERRIDE_KEYS = new Set<string>([
-    'HAPPIER_SERVER_UI_DIR',
-    'HAPPIER_SERVER_LIGHT_UI_DIR',
-    'HAPPIER_SERVER_UI_DEPLOYMENT_ID',
+    'PIGGERCODE_SERVER_UI_DIR',
+    'PIGGERCODE_SERVER_LIGHT_UI_DIR',
+    'PIGGERCODE_SERVER_UI_DEPLOYMENT_ID',
 ]);
 
 export function renderSelfHostServerEnvTextFromResolvedValues(params: Readonly<{
@@ -96,13 +96,13 @@ export function renderSelfHostServerEnvTextFromResolvedValues(params: Readonly<{
 
     return [
         `PORT=${params.port}`,
-        `HAPPIER_SERVER_HOST=${params.host}`,
-        ...(uiDir ? [`HAPPIER_SERVER_UI_DIR=${uiDir}`] : []),
-        ...(params.uiDeploymentId ? [`HAPPIER_SERVER_UI_DEPLOYMENT_ID=${params.uiDeploymentId}`] : []),
+        `PIGGERCODE_SERVER_HOST=${params.host}`,
+        ...(uiDir ? [`PIGGERCODE_SERVER_UI_DIR=${uiDir}`] : []),
+        ...(params.uiDeploymentId ? [`PIGGERCODE_SERVER_UI_DEPLOYMENT_ID=${params.uiDeploymentId}`] : []),
         'METRICS_ENABLED=false',
-        'HAPPIER_DB_PROVIDER=sqlite',
+        'PIGGERCODE_DB_PROVIDER=sqlite',
         `DATABASE_URL=${params.databaseUrl}`,
-        'HAPPIER_FILES_BACKEND=local',
+        'PIGGERCODE_FILES_BACKEND=local',
         ...(nodeModulesPath ? [`NODE_PATH=${nodeModulesPath}`] : []),
         ...(prismaEnginePath
             ? [
@@ -110,11 +110,11 @@ export function renderSelfHostServerEnvTextFromResolvedValues(params: Readonly<{
                 `PRISMA_QUERY_ENGINE_LIBRARY=${prismaEnginePath}`,
             ]
             : []),
-        `HAPPIER_SQLITE_AUTO_MIGRATE=${params.sqliteAutoMigrate}`,
-        `HAPPIER_SQLITE_MIGRATIONS_DIR=${params.sqliteMigrationsDir}`,
-        `HAPPIER_SERVER_LIGHT_DATA_DIR=${params.dataDir}`,
-        `HAPPIER_SERVER_LIGHT_FILES_DIR=${params.filesDir}`,
-        `HAPPIER_SERVER_LIGHT_DB_DIR=${params.dbDir}`,
+        `PIGGERCODE_SQLITE_AUTO_MIGRATE=${params.sqliteAutoMigrate}`,
+        `PIGGERCODE_SQLITE_MIGRATIONS_DIR=${params.sqliteMigrationsDir}`,
+        `PIGGERCODE_SERVER_LIGHT_DATA_DIR=${params.dataDir}`,
+        `PIGGERCODE_SERVER_LIGHT_FILES_DIR=${params.filesDir}`,
+        `PIGGERCODE_SERVER_LIGHT_DB_DIR=${params.dbDir}`,
         '',
     ].join('\n');
 }
@@ -261,19 +261,19 @@ export function resolvePrismaSqliteDatabaseUrlOptionsFromEnv(
 ): PrismaSqliteDatabaseUrlOptions {
     const busyTimeoutRaw = firstConfiguredEnvValue(
         env,
-        'HAPPIER_SQLITE_BUSY_TIMEOUT_MS',
+        'PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS',
         'HAPPY_SQLITE_BUSY_TIMEOUT_MS',
     );
     const connectionLimitRaw = firstConfiguredEnvValue(
         env,
-        'HAPPIER_SQLITE_CONNECTION_LIMIT',
+        'PIGGERCODE_SQLITE_CONNECTION_LIMIT',
         'HAPPY_SQLITE_CONNECTION_LIMIT',
     );
     return {
         busyTimeoutMs: busyTimeoutRaw
             ? parsePrismaSqliteIntegerEnv({
                 raw: busyTimeoutRaw,
-                name: 'HAPPIER_SQLITE_BUSY_TIMEOUT_MS/HAPPY_SQLITE_BUSY_TIMEOUT_MS',
+                name: 'PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS/HAPPY_SQLITE_BUSY_TIMEOUT_MS',
                 min: 0,
                 max: PRISMA_SQLITE_BUSY_TIMEOUT_MS_MAX,
             })
@@ -281,7 +281,7 @@ export function resolvePrismaSqliteDatabaseUrlOptionsFromEnv(
         connectionLimit: connectionLimitRaw
             ? parsePrismaSqliteIntegerEnv({
                 raw: connectionLimitRaw,
-                name: 'HAPPIER_SQLITE_CONNECTION_LIMIT/HAPPY_SQLITE_CONNECTION_LIMIT',
+                name: 'PIGGERCODE_SQLITE_CONNECTION_LIMIT/HAPPY_SQLITE_CONNECTION_LIMIT',
                 min: 1,
                 max: PRISMA_SQLITE_CONNECTION_LIMIT_MAX,
             })
@@ -376,7 +376,7 @@ export function resolveConfiguredSelfHostBaseUrl(params: Readonly<{ fallbackBase
         return params.fallbackBaseUrl;
     }
 
-    const hostRaw = typeof parsed.HAPPIER_SERVER_HOST === 'string' ? parsed.HAPPIER_SERVER_HOST.trim() : '';
+    const hostRaw = typeof parsed.PIGGERCODE_SERVER_HOST === 'string' ? parsed.PIGGERCODE_SERVER_HOST.trim() : '';
     const host = hostRaw && hostRaw !== '0.0.0.0' ? hostRaw : '127.0.0.1';
     const authority = host.includes(':') && !host.startsWith('[') && !host.endsWith(']') ? `[${host}]` : host;
     return `http://${authority}:${port}`;

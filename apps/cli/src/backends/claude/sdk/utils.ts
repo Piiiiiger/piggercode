@@ -310,14 +310,14 @@ export function isClaudeAgentSdkJavaScriptEntrypoint(filePath: string): boolean 
  * Agent SDK requires a real on-disk entrypoint (binary or JS) — it does not accept a bare `claude` command name.
  */
 export function getDefaultClaudeCodePathForAgentSdk(processEnv: NodeJS.ProcessEnv = process.env): string {
-    const overrideRaw = processEnv.HAPPIER_CLAUDE_PATH;
+    const overrideRaw = processEnv.PIGGERCODE_CLAUDE_PATH;
     if (typeof overrideRaw === 'string' && overrideRaw.trim().length > 0) {
         const override = expandHomeDirPath(overrideRaw.trim(), processEnv);
         if (!existsSync(override)) {
-            throw new Error(`Claude Code executable not found at HAPPIER_CLAUDE_PATH=${override}`);
+            throw new Error(`Claude Code executable not found at PIGGERCODE_CLAUDE_PATH=${override}`);
         }
         if (!isAgentSdkCompatibleClaudeEntrypoint(override)) {
-            throw new Error(`HAPPIER_CLAUDE_PATH points to an unsupported Claude entrypoint for Agent SDK: ${override}`);
+            throw new Error(`PIGGERCODE_CLAUDE_PATH points to an unsupported Claude entrypoint for Agent SDK: ${override}`);
         }
         return override;
     }
@@ -360,7 +360,7 @@ export function getDefaultClaudeCodePathForAgentSdk(processEnv: NodeJS.ProcessEn
 
     throw new Error(
         buildClaudeCodeInstallHelpMessage(
-            'Then ensure the Claude Code executable is available on your PATH, or set HAPPIER_CLAUDE_PATH to an absolute executable path.',
+            'Then ensure the Claude Code executable is available on your PATH, or set PIGGERCODE_CLAUDE_PATH to an absolute executable path.',
         ),
     );
 }
@@ -370,16 +370,16 @@ export function getDefaultClaudeCodePathForAgentSdk(processEnv: NodeJS.ProcessEn
  * Prefers user-installed Claude Code.
  * 
  * Environment variables:
- * - HAPPIER_CLAUDE_PATH: Force a specific path to claude executable
+ * - PIGGERCODE_CLAUDE_PATH: Force a specific path to claude executable
  */
 export function getDefaultClaudeCodePath(): string {
     // Allow explicit override via env var
-    const overrideRaw = process.env.HAPPIER_CLAUDE_PATH
+    const overrideRaw = process.env.PIGGERCODE_CLAUDE_PATH
     if (typeof overrideRaw === 'string' && overrideRaw.trim().length > 0) {
         const override = expandHomeDirPath(overrideRaw.trim())
-        logger.debug(`[Claude SDK] Using HAPPIER_CLAUDE_PATH: ${override}`)
+        logger.debug(`[Claude SDK] Using PIGGERCODE_CLAUDE_PATH: ${override}`)
         if (existsSync(override)) return override
-        throw new Error(`Claude Code executable not found at HAPPIER_CLAUDE_PATH=${override}`)
+        throw new Error(`Claude Code executable not found at PIGGERCODE_CLAUDE_PATH=${override}`)
     }
 
     return getDefaultClaudeCodePathForAgentSdk()

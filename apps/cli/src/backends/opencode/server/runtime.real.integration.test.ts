@@ -4,7 +4,7 @@
  * These tests start or reuse a managed `opencode serve` process and make real network calls.
  *
  * Enable with:
- *   HAPPIER_CLI_OPENCODE_SERVER_INTEGRATION=1
+ *   PIGGERCODE_CLI_OPENCODE_SERVER_INTEGRATION=1
  */
 
 import { afterAll, describe, expect, it } from 'vitest';
@@ -60,12 +60,12 @@ async function terminatePidBestEffort(pid: number): Promise<void> {
 }
 
 const managedServerStatePath = (() => {
-  const existing = typeof process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH === 'string'
-    ? process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH.trim()
+  const existing = typeof process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH === 'string'
+    ? process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH.trim()
     : '';
   if (existing) return existing;
   const next = join(tmpdir(), `happier-opencode-managed-${process.pid}-${randomUUID()}.json`);
-  process.env.HAPPIER_OPENCODE_SERVER_STATE_PATH = next;
+  process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = next;
   return next;
 })();
 
@@ -96,11 +96,11 @@ afterAll(async () => {
 });
 
 function shouldRunOpenCodeServerIntegration(): boolean {
-  return process.env.HAPPIER_CLI_OPENCODE_SERVER_INTEGRATION === '1' && isOpenCodeInstalled();
+  return process.env.PIGGERCODE_CLI_OPENCODE_SERVER_INTEGRATION === '1' && isOpenCodeInstalled();
 }
 
 function shouldRunOpenCodeServerLlmIntegration(): boolean {
-  return shouldRunOpenCodeServerIntegration() && process.env.HAPPIER_CLI_OPENCODE_SERVER_LLM_INTEGRATION === '1';
+  return shouldRunOpenCodeServerIntegration() && process.env.PIGGERCODE_CLI_OPENCODE_SERVER_LLM_INTEGRATION === '1';
 }
 
 function parseModelRef(raw: string): { providerID: string; modelID: string } | null {
@@ -112,8 +112,8 @@ function parseModelRef(raw: string): { providerID: string; modelID: string } | n
 }
 
 function resolveTestModelHintFromEnv(): { providerID: string; modelID: string } | null {
-  const raw = typeof process.env.HAPPIER_CLI_OPENCODE_SERVER_LLM_MODEL === 'string'
-    ? process.env.HAPPIER_CLI_OPENCODE_SERVER_LLM_MODEL.trim()
+  const raw = typeof process.env.PIGGERCODE_CLI_OPENCODE_SERVER_LLM_MODEL === 'string'
+    ? process.env.PIGGERCODE_CLI_OPENCODE_SERVER_LLM_MODEL.trim()
     : '';
   if (!raw) return null;
   return parseModelRef(raw);
@@ -338,7 +338,7 @@ describe('OpenCode server runtime (real integration)', () => {
       });
       const model = await resolveAvailableToolCallModel(client);
       if (!model) {
-        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set HAPPIER_CLI_OPENCODE_SERVER_LLM_MODEL).');
+        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set PIGGERCODE_CLI_OPENCODE_SERVER_LLM_MODEL).');
       }
 
       const controller = new AbortController();
@@ -392,7 +392,7 @@ describe('OpenCode server runtime (real integration)', () => {
       });
       const model = await resolveAvailableToolCallModel(client);
       if (!model) {
-        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set HAPPIER_CLI_OPENCODE_SERVER_LLM_MODEL).');
+        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set PIGGERCODE_CLI_OPENCODE_SERVER_LLM_MODEL).');
       }
 
       const controller = new AbortController();
@@ -448,7 +448,7 @@ describe('OpenCode server runtime (real integration)', () => {
       });
       const model = await resolveAvailableToolCallModel(client);
       if (!model) {
-        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set HAPPIER_CLI_OPENCODE_SERVER_LLM_MODEL).');
+        throw new Error('No active tool-call-capable model is available in OpenCode. Configure OpenCode (or set PIGGERCODE_CLI_OPENCODE_SERVER_LLM_MODEL).');
       }
 
       const marker = `opencode-tool-read-${randomUUID()}`;

@@ -10,7 +10,7 @@ import {
 import type { TrackedSession } from '@/daemon/types';
 import { createCodexConnectedServiceRuntimeAuthAdapter } from '@/backends/codex/connectedServices/createCodexConnectedServiceRuntimeAuthAdapter';
 import { resolveCodexConnectedServiceSwitchContinuity } from '@/backends/codex/connectedServices/resolveCodexConnectedServiceSwitchContinuity';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { ConnectedServiceSessionAuthSwitchLockRegistry, createConnectedServiceSessionAuthSwitchCore } from '../runtimeAuth/connectedServiceSessionAuthSwitchCore';
 import { createSessionConnectedServiceAuthHotApply } from './sessionConnectedServiceAuthHotApply';
 import { switchSessionConnectedServiceAuth, type SwitchSessionConnectedServiceAuthInput } from './switchSessionConnectedServiceAuth';
@@ -1273,7 +1273,7 @@ describe('switchSessionConnectedServiceAuth', () => {
     expect(tracked.spawnOptions?.connectedServices).toEqual(bindings('new-profile'));
     expect(tracked.spawnOptions?.environmentVariables).toEqual({
       EXISTING: '1',
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
         { kind: 'profile', serviceId: 'anthropic', profileId: 'new-profile', credentialRevision },
       ]),
     });
@@ -1976,7 +1976,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         },
         connectedServiceMaterializationIdentityV1: materializationIdentity,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'anthropic',
             groupId: 'work',
@@ -2077,7 +2077,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         },
         connectedServiceMaterializationIdentityV1: materializationIdentity,
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'codex-team',
@@ -2847,7 +2847,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         connectedServices: bindings('old-profile'),
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             { kind: 'profile', serviceId: 'anthropic', profileId: 'old-profile' },
           ]),
         },
@@ -2990,7 +2990,7 @@ describe('switchSessionConnectedServiceAuth', () => {
     const restartSession = vi.fn(async () => {
       // The child env adopts the CURRENT generation (5), not the caller's stale expectation (4).
       expect(tracked.spawnOptions?.environmentVariables).toEqual({
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'anthropic',
@@ -3106,7 +3106,7 @@ describe('switchSessionConnectedServiceAuth', () => {
     });
     const restartSession = vi.fn(async () => {
       expect(tracked.spawnOptions?.environmentVariables).toEqual({
-        [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+        [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
           {
             kind: 'group',
             serviceId: 'anthropic',
@@ -5212,7 +5212,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         connectedServices: codexBindings('old-codex-profile'),
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             { kind: 'profile', serviceId: 'openai-codex', profileId: 'old-codex-profile' },
           ]),
         },
@@ -5319,7 +5319,7 @@ describe('switchSessionConnectedServiceAuth', () => {
     expect(registerHotApplyTargets).toHaveBeenCalledWith(expect.objectContaining({
       spawnOptions: expect.objectContaining({
         environmentVariables: expect.objectContaining({
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             { kind: 'profile', serviceId: 'openai-codex', profileId: 'new-codex-profile', credentialRevision },
           ]),
         }),
@@ -5390,7 +5390,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         connectedServices: codexBindings('old-codex-profile'),
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
             { kind: 'profile', serviceId: 'openai-codex', profileId: 'old-codex-profile' },
           ]),
         },
@@ -5610,7 +5610,7 @@ describe('switchSessionConnectedServiceAuth', () => {
           },
         },
         environmentVariables: {
-          [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
             kind: 'group',
             serviceId: 'openai-codex',
             groupId: 'codex-team',

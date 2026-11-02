@@ -81,13 +81,13 @@ describe('core e2e: Codex local-control mirroring emits tool trace + session id'
 const fs = require('node:fs');
 const path = require('node:path');
 
-const sessionsRoot = process.env.HAPPIER_CODEX_SESSIONS_DIR;
-if (!sessionsRoot) throw new Error('Missing HAPPIER_CODEX_SESSIONS_DIR');
+const sessionsRoot = process.env.PIGGERCODE_CODEX_SESSIONS_DIR;
+if (!sessionsRoot) throw new Error('Missing PIGGERCODE_CODEX_SESSIONS_DIR');
 fs.mkdirSync(sessionsRoot, { recursive: true });
 
 const filePath = path.join(sessionsRoot, ${JSON.stringify('rollout-test.jsonl')});
-const id = process.env.HAPPIER_E2E_CODEX_SESSION_ID;
-if (!id) throw new Error('Missing HAPPIER_E2E_CODEX_SESSION_ID');
+const id = process.env.PIGGERCODE_E2E_CODEX_SESSION_ID;
+if (!id) throw new Error('Missing PIGGERCODE_E2E_CODEX_SESSION_ID');
 
 function write(line) {
   fs.appendFileSync(filePath, line + '\\n', 'utf8');
@@ -116,26 +116,26 @@ setInterval(() => {}, 1000);
       testName: 'codex-local-control-mirroring',
       sessionIds: [sessionId],
       env: {
-        HAPPIER_STACK_TOOL_TRACE: '1',
+        PIGGERCODE_STACK_TOOL_TRACE: '1',
       },
     });
 
     const cliEnv: NodeJS.ProcessEnv = {
       ...process.env,
       CI: '1',
-      HAPPIER_SESSION_AUTOSTART_DAEMON: '0',
-      HAPPIER_VARIANT: 'dev',
-      HAPPIER_HOME_DIR: cliHome,
-      HAPPIER_SERVER_URL: serverBaseUrl,
-      HAPPIER_WEBAPP_URL: serverBaseUrl,
-      HAPPIER_SESSION_ATTACH_FILE: attachFile,
-      HAPPIER_STACK_TOOL_TRACE: '1',
-      HAPPIER_STACK_TOOL_TRACE_FILE: toolTraceFile,
-      HAPPIER_CODEX_TUI_BIN: fakeCodexPath,
-      HAPPIER_CODEX_SESSIONS_DIR: codexSessionsDir,
-      HAPPIER_E2E_CODEX_SESSION_ID: codexSessionId,
+      PIGGERCODE_SESSION_AUTOSTART_DAEMON: '0',
+      PIGGERCODE_VARIANT: 'dev',
+      PIGGERCODE_HOME_DIR: cliHome,
+      PIGGERCODE_SERVER_URL: serverBaseUrl,
+      PIGGERCODE_WEBAPP_URL: serverBaseUrl,
+      PIGGERCODE_SESSION_ATTACH_FILE: attachFile,
+      PIGGERCODE_STACK_TOOL_TRACE: '1',
+      PIGGERCODE_STACK_TOOL_TRACE_FILE: toolTraceFile,
+      PIGGERCODE_CODEX_TUI_BIN: fakeCodexPath,
+      PIGGERCODE_CODEX_SESSIONS_DIR: codexSessionsDir,
+      PIGGERCODE_E2E_CODEX_SESSION_ID: codexSessionId,
       // Ensure Codex local-control gating doesn't block local-control in dev tests.
-      HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
+      PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
     };
 
     await ensureCliSharedDepsBuilt({ testDir, env: cliEnv });

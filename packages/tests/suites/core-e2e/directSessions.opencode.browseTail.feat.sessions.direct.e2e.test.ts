@@ -141,8 +141,8 @@ describe('core e2e: direct OpenCode sessions browse/link/tail', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
-        HAPPIER_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_SERVER_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_E2E_PROVIDER_USE_SERVER_SOURCE_ENTRYPOINT: '1',
       },
     });
     const auth = await createTestAuth(appServer.baseUrl);
@@ -162,12 +162,12 @@ describe('core e2e: direct OpenCode sessions browse/link/tail', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: daemonHomeDir,
-        HAPPIER_SERVER_URL: appServer.baseUrl,
-        HAPPIER_OPENCODE_SERVER_URL: fakeOpenCodeBaseUrl,
-        HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1',
-        HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_HOME_DIR: daemonHomeDir,
+        PIGGERCODE_SERVER_URL: appServer.baseUrl,
+        PIGGERCODE_OPENCODE_SERVER_URL: fakeOpenCodeBaseUrl,
+        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
+        PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS: '2',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
 

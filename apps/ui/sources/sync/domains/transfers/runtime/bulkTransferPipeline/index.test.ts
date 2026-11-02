@@ -255,8 +255,8 @@ describe('bulkTransferPipeline', () => {
     });
 
     it('fails closed when downloading a JSON payload that exceeds the bulk JSON max bytes', async () => {
-        const previous = process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = '8';
+        const previous = process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = '8';
 
         try {
             let initCalled = 0;
@@ -288,16 +288,16 @@ describe('bulkTransferPipeline', () => {
             expect(readChunkCalled).toBe(0);
         } finally {
             if (previous === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = previous;
+                process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = previous;
             }
         }
     });
 
     it('fails closed when the bulk JSON max bytes env is misconfigured to an unsafe value (hard clamp)', async () => {
-        const previous = process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = '1000000000';
+        const previous = process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = '1000000000';
 
         try {
             let initCalled = 0;
@@ -329,16 +329,16 @@ describe('bulkTransferPipeline', () => {
             expect(readChunkCalled).toBe(0);
         } finally {
             if (previous === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = previous;
+                process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = previous;
             }
         }
     });
 
     it('fails closed and aborts when the received JSON payload bytes exceed the bulk JSON max bytes (even if init.sizeBytes claims it is within budget)', async () => {
-        const previous = process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = '8';
+        const previous = process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = '8';
 
         try {
             let recipientPublicKeyBase64 = '';
@@ -397,16 +397,16 @@ describe('bulkTransferPipeline', () => {
             expect(finalize).not.toHaveBeenCalled();
         } finally {
             if (previous === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = previous;
+                process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = previous;
             }
         }
     });
 
     it('fails closed when uploading a JSON payload that exceeds the bulk JSON max bytes', async () => {
-        const previous = process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = '8';
+        const previous = process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = '8';
 
         try {
             const init = vi.fn(async () => {
@@ -430,16 +430,16 @@ describe('bulkTransferPipeline', () => {
             expect(init).not.toHaveBeenCalled();
         } finally {
             if (previous === undefined) {
-                delete process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
+                delete process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
             } else {
-                process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = previous;
+                process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = previous;
             }
         }
     });
 
     it('rejects oversized JSON payloads without calling JSON.stringify (preflight avoids unbounded memory)', async () => {
-        const previous = process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
-        process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = '1';
+        const previous = process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = '1';
 
             const original = JSON.stringify;
             try {
@@ -472,9 +472,9 @@ describe('bulkTransferPipeline', () => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 JSON.stringify = original as any;
                 if (previous === undefined) {
-                    delete process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES;
+                    delete process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES;
                 } else {
-                process.env.EXPO_PUBLIC_HAPPIER_BULK_TRANSFER_JSON_MAX_BYTES = previous;
+                process.env.EXPO_PUBLIC_PIGGERCODE_BULK_TRANSFER_JSON_MAX_BYTES = previous;
             }
         }
     });

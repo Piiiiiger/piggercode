@@ -1,13 +1,13 @@
 {
   "v": 1,
   "id": "auggie",
-  "enableEnvVar": "HAPPIER_E2E_PROVIDER_AUGGIE",
+  "enableEnvVar": "PIGGERCODE_E2E_PROVIDER_AUGGIE",
   "protocol": "acp",
   "traceProvider": "auggie",
   "requiredBinaries": [
     {
       "bin": "auggie",
-      "envOverride": "HAPPIER_E2E_PROVIDER_AUGGIE_BIN",
+      "envOverride": "PIGGERCODE_E2E_PROVIDER_AUGGIE_BIN",
       "requireExists": true
     }
   ],
@@ -50,10 +50,10 @@
     "extraArgs": ["--started-by", "terminal"],
     "env": {
       "HEADLESS": "1",
-      "HAPPIER_VARIANT": "dev"
+      "PIGGERCODE_VARIANT": "dev"
     },
     "envFrom": {
-      "HAPPIER_AUGGIE_PATH": "HAPPIER_E2E_PROVIDER_AUGGIE_BIN"
+      "PIGGERCODE_AUGGIE_PATH": "PIGGERCODE_E2E_PROVIDER_AUGGIE_BIN"
     }
   }
 }

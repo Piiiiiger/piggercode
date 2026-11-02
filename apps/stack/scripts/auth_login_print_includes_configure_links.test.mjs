@@ -5,10 +5,10 @@ import { join } from 'node:path';
 import { createAuthStackFixture, getStackRootFromMeta, hstackBinPath, runNodeCapture } from './testkit/auth_testkit.mjs';
 
 const BASE_ENV_LINES = [
-  'HAPPIER_STACK_STACK=main',
-  'HAPPIER_STACK_SERVER_PORT=4102',
-  'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-  'HAPPIER_STACK_TAILSCALE_SERVE=0',
+  'PIGGERCODE_STACK_STACK=main',
+  'PIGGERCODE_STACK_SERVER_PORT=4102',
+  'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+  'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
 ];
 
 async function runAuthLoginPrintJson({ rootDir, prefix, stackEnvLines, extraEnv = {}, args = [] }) {
@@ -22,10 +22,10 @@ async function runAuthLoginPrintJson({ rootDir, prefix, stackEnvLines, extraEnv 
       {
         cwd: rootDir,
         env: fixture.buildEnv({
-          HAPPIER_STACK_RUNTIME_MODE: 'source',
-          HAPPIER_SERVER_URL: '',
-          HAPPIER_PUBLIC_SERVER_URL: '',
-          HAPPIER_WEBAPP_URL: '',
+          PIGGERCODE_STACK_RUNTIME_MODE: 'source',
+          PIGGERCODE_SERVER_URL: '',
+          PIGGERCODE_PUBLIC_SERVER_URL: '',
+          PIGGERCODE_WEBAPP_URL: '',
           ...extraEnv,
         }),
       }
@@ -48,7 +48,7 @@ test('hstack auth login --print --json includes configure-server links and publi
   assert.equal(parsed.internalServerUrl, 'http://127.0.0.1:4102');
   assert.equal(parsed.publicServerUrl, 'http://localhost:4102');
   assert.equal(parsed.webappUrl, 'http://localhost:4102');
-  assert.match(parsed.cmd, /HAPPIER_PUBLIC_SERVER_URL="http:\/\/localhost:4102"/);
+  assert.match(parsed.cmd, /PIGGERCODE_PUBLIC_SERVER_URL="http:\/\/localhost:4102"/);
 
   assert.ok(parsed.configureServer, 'expected configureServer field');
   const configureUrl = new URL(parsed.configureServer.webUrl);
@@ -67,10 +67,10 @@ test('hstack stack auth login --print --json keeps the stable stack scope when a
     prefix: 'hstack-auth-canonical-server-id-',
     stackName: 'qa-external-mcp-qa-20260327',
     stackEnvLines: [
-      'HAPPIER_STACK_STACK=qa-external-mcp-qa-20260327',
-      'HAPPIER_STACK_SERVER_PORT=4102',
-      'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
-      'HAPPIER_STACK_TAILSCALE_SERVE=0',
+      'PIGGERCODE_STACK_STACK=qa-external-mcp-qa-20260327',
+      'PIGGERCODE_STACK_SERVER_PORT=4102',
+      'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0',
+      'PIGGERCODE_STACK_TAILSCALE_SERVE=0',
     ],
   });
 
@@ -110,8 +110,8 @@ test('hstack stack auth login --print --json keeps the stable stack scope when a
     assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
 
     const parsed = JSON.parse(res.stdout.trim());
-    assert.match(parsed.cmd, /HAPPIER_ACTIVE_SERVER_ID="stack_qa-external-mcp-qa-20260327__id_default"/);
-    assert.doesNotMatch(parsed.cmd, /HAPPIER_ACTIVE_SERVER_ID="stack-qa-external-mcp"/);
+    assert.match(parsed.cmd, /PIGGERCODE_ACTIVE_SERVER_ID="stack_qa-external-mcp-qa-20260327__id_default"/);
+    assert.doesNotMatch(parsed.cmd, /PIGGERCODE_ACTIVE_SERVER_ID="stack-qa-external-mcp"/);
   } finally {
     await fixture.cleanup();
   }
@@ -127,7 +127,7 @@ test('hstack auth login --print --json webapp precedence variants', async (t) =>
       args: ['--webapp-url=http://example.test:1234'],
       assertParsed(parsed) {
         assert.equal(parsed.webappUrl, 'http://example.test:1234');
-        assert.match(parsed.cmd, /HAPPIER_WEBAPP_URL="http:\/\/example\.test:1234"/);
+        assert.match(parsed.cmd, /PIGGERCODE_WEBAPP_URL="http:\/\/example\.test:1234"/);
       },
     },
     {
@@ -142,17 +142,17 @@ test('hstack auth login --print --json webapp precedence variants', async (t) =>
     {
       name: '--webapp=public overrides stack-env hosted webapp',
       prefix: 'hstack-auth-webapp-public-',
-      stackEnvLines: [...BASE_ENV_LINES, 'HAPPIER_WEBAPP_URL=https://app.happier.dev'],
+      stackEnvLines: [...BASE_ENV_LINES, 'PIGGERCODE_WEBAPP_URL=https://app.happier.dev'],
       args: ['--webapp=public'],
       assertParsed(parsed) {
         assert.equal(parsed.webappUrl, 'http://localhost:4102');
       },
     },
     {
-      name: 'main stack ignores global HAPPIER_WEBAPP_URL when stack env does not define it',
+      name: 'main stack ignores global PIGGERCODE_WEBAPP_URL when stack env does not define it',
       prefix: 'hstack-auth-main-webapp-',
-      stackEnvLines: ['HAPPIER_STACK_STACK=main', 'HAPPIER_STACK_TAILSCALE_PREFER_PUBLIC_URL=0', 'HAPPIER_STACK_TAILSCALE_SERVE=0'],
-      extraEnv: { HAPPIER_WEBAPP_URL: 'https://app.happier.dev' },
+      stackEnvLines: ['PIGGERCODE_STACK_STACK=main', 'PIGGERCODE_STACK_TAILSCALE_PREFER_PUBLIC_URL=0', 'PIGGERCODE_STACK_TAILSCALE_SERVE=0'],
+      extraEnv: { PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev' },
       assertParsed(parsed) {
         assert.ok(parsed.webappUrl, 'expected webappUrl in output');
         assert.notEqual(parsed.webappUrl, 'https://app.happier.dev');
@@ -162,7 +162,7 @@ test('hstack auth login --print --json webapp precedence variants', async (t) =>
       name: 'auto mode in tty falls back to the server webapp when Expo is not running',
       prefix: 'hstack-auth-webapp-auto-tty-server-',
       stackEnvLines: BASE_ENV_LINES,
-      extraEnv: { HAPPIER_STACK_TEST_TTY: '1' },
+      extraEnv: { PIGGERCODE_STACK_TEST_TTY: '1' },
       assertParsed(parsed) {
         assert.equal(parsed.webappUrl, 'http://localhost:4102');
         assert.equal(parsed.webappUrlSource, 'server');

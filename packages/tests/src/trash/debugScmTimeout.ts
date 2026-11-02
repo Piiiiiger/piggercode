@@ -53,11 +53,11 @@ async function main(): Promise<void> {
         env: {
             ...process.env,
             CI: '1',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_DISABLE_CAFFEINATE: '1',
-            HAPPIER_HOME_DIR: daemonHomeDir,
-            HAPPIER_SERVER_URL: serverBaseUrl,
-            HAPPIER_WEBAPP_URL: serverBaseUrl,
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_DISABLE_CAFFEINATE: '1',
+            PIGGERCODE_HOME_DIR: daemonHomeDir,
+            PIGGERCODE_SERVER_URL: serverBaseUrl,
+            PIGGERCODE_WEBAPP_URL: serverBaseUrl,
         },
     });
     console.log('daemon started');

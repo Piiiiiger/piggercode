@@ -334,8 +334,8 @@ describe('happier session create (action executor)', () => {
       },
     });
 
-    const previous = process.env.HAPPIER_STACK_INVOKED_CWD;
-    process.env.HAPPIER_STACK_INVOKED_CWD = '/tmp/hstack-invoked-cwd';
+    const previous = process.env.PIGGERCODE_STACK_INVOKED_CWD;
+    process.env.PIGGERCODE_STACK_INVOKED_CWD = '/tmp/hstack-invoked-cwd';
 
     const { handleSessionCommand } = await import('./handleSessionCommand');
 
@@ -362,9 +362,9 @@ describe('happier session create (action executor)', () => {
     } finally {
       output.restore();
       if (previous === undefined) {
-        delete process.env.HAPPIER_STACK_INVOKED_CWD;
+        delete process.env.PIGGERCODE_STACK_INVOKED_CWD;
       } else {
-        process.env.HAPPIER_STACK_INVOKED_CWD = previous;
+        process.env.PIGGERCODE_STACK_INVOKED_CWD = previous;
       }
     }
   });

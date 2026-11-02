@@ -43,8 +43,8 @@ describe("registerAccountEncryptionRoutes (keyless accounts) (integration)", () 
 
     it("rejects switching to e2ee when the account is keyless (publicKey is null)", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
-            HAPPIER_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "optional",
+            PIGGERCODE_FEATURE_ENCRYPTION__ALLOW_ACCOUNT_OPTOUT: "1",
         });
 
         const account = await db.account.create({

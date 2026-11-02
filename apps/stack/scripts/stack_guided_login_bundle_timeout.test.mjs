@@ -102,7 +102,7 @@ test('assertExpoWebappBundlesOrThrow supports a configurable timeoutMs', async (
 test('assertExpoWebappBundlesOrThrow surfaces the symlink remediation hint for symlinked node_modules', async (t) => {
   const tempRoot = await mkdtemp(join(tmpdir(), 'stack-guided-login-symlink-'));
   let metro;
-  const originalStorageDir = process.env.HAPPIER_STACK_STORAGE_DIR;
+  const originalStorageDir = process.env.PIGGERCODE_STACK_STORAGE_DIR;
   try {
     const fakeRepoRoot = join(tempRoot, 'repo');
     const fakeUiDir = join(fakeRepoRoot, 'apps', 'ui');
@@ -120,11 +120,11 @@ test('assertExpoWebappBundlesOrThrow surfaces the symlink remediation hint for s
       writeFile(join(fakeUiDir, 'package.json'), '{}'),
       writeFile(join(fakeCliDir, 'package.json'), '{}'),
       writeFile(join(fakeServerDir, 'package.json'), '{}'),
-      writeFile(join(stackBaseDir, 'env'), `HAPPIER_STACK_REPO_DIR=${fakeRepoRoot}\n`),
+      writeFile(join(stackBaseDir, 'env'), `PIGGERCODE_STACK_REPO_DIR=${fakeRepoRoot}\n`),
     ]);
     await symlink(realNodeModulesDir, join(fakeUiDir, 'node_modules'));
 
-    process.env.HAPPIER_STACK_STORAGE_DIR = join(tempRoot, 'stack-storage');
+    process.env.PIGGERCODE_STACK_STORAGE_DIR = join(tempRoot, 'stack-storage');
 
     try {
       metro = await createResolverErrorMetroServer();
@@ -154,9 +154,9 @@ test('assertExpoWebappBundlesOrThrow surfaces the symlink remediation hint for s
     );
   } finally {
     if (typeof originalStorageDir === 'string') {
-      process.env.HAPPIER_STACK_STORAGE_DIR = originalStorageDir;
+      process.env.PIGGERCODE_STACK_STORAGE_DIR = originalStorageDir;
     } else {
-      delete process.env.HAPPIER_STACK_STORAGE_DIR;
+      delete process.env.PIGGERCODE_STACK_STORAGE_DIR;
     }
     if (metro?.server) {
       await new Promise((resolvePromise) => metro.server.close(resolvePromise));

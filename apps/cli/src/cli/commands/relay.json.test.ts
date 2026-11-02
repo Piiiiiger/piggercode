@@ -32,8 +32,8 @@ function createFakeSsh(scenario: Readonly<{
         `#!/usr/bin/env node
 const { appendFileSync, readFileSync, writeFileSync } = require('node:fs');
 
-const statePath = process.env.HAPPIER_FAKE_SSH_STATE_PATH;
-const logPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+const statePath = process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
+const logPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
 const argv = process.argv.slice(2);
 appendFileSync(logPath, JSON.stringify(argv) + '\\n');
 
@@ -65,8 +65,8 @@ process.exit(Number(next.status ?? 0));
 const { appendFileSync, cpSync } = require('node:fs');
 const { basename, join } = require('node:path');
 
-const logPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
-const captureDir = process.env.HAPPIER_FAKE_SCP_CAPTURE_DIR;
+const logPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
+const captureDir = process.env.PIGGERCODE_FAKE_SCP_CAPTURE_DIR;
 const argv = process.argv.slice(2);
 appendFileSync(logPath, JSON.stringify(['scp', ...argv]) + '\\n');
 if (captureDir) {
@@ -95,11 +95,11 @@ process.exit(0);
 
 function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
     const previousPath = process.env.PATH;
-    const previousStatePath = process.env.HAPPIER_FAKE_SSH_STATE_PATH;
-    const previousLogPath = process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+    const previousStatePath = process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
+    const previousLogPath = process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
     process.env.PATH = `${binDir}:${previousPath ?? ''}`;
-    process.env.HAPPIER_FAKE_SSH_STATE_PATH = join(binDir, '..', 'scenario.json');
-    process.env.HAPPIER_FAKE_SSH_LOG_PATH = join(binDir, '..', 'invocations.log');
+    process.env.PIGGERCODE_FAKE_SSH_STATE_PATH = join(binDir, '..', 'scenario.json');
+    process.env.PIGGERCODE_FAKE_SSH_LOG_PATH = join(binDir, '..', 'invocations.log');
     return run().finally(() => {
         if (previousPath === undefined) {
             delete process.env.PATH;
@@ -107,14 +107,14 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
             process.env.PATH = previousPath;
         }
         if (previousStatePath === undefined) {
-            delete process.env.HAPPIER_FAKE_SSH_STATE_PATH;
+            delete process.env.PIGGERCODE_FAKE_SSH_STATE_PATH;
         } else {
-            process.env.HAPPIER_FAKE_SSH_STATE_PATH = previousStatePath;
+            process.env.PIGGERCODE_FAKE_SSH_STATE_PATH = previousStatePath;
         }
         if (previousLogPath === undefined) {
-            delete process.env.HAPPIER_FAKE_SSH_LOG_PATH;
+            delete process.env.PIGGERCODE_FAKE_SSH_LOG_PATH;
         } else {
-            process.env.HAPPIER_FAKE_SSH_LOG_PATH = previousLogPath;
+            process.env.PIGGERCODE_FAKE_SSH_LOG_PATH = previousLogPath;
         }
     });
 }
@@ -122,34 +122,34 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
 describe('happier relay --json', () => {
     let home = '';
     let envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_PUBLIC_SERVER_URL',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-        'HAPPIER_SERVER_URL',
-        'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT',
-        'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID',
-        'HAPPIER_WEBAPP_URL',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_SERVER_URL',
+        'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT',
+        'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID',
+        'PIGGERCODE_WEBAPP_URL',
     ]);
 
     beforeEach(async () => {
         envScope = createEnvKeyScope([
-            'HAPPIER_HOME_DIR',
-            'HAPPIER_PUBLIC_SERVER_URL',
-            'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-            'HAPPIER_SERVER_URL',
-            'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT',
-            'HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID',
-            'HAPPIER_WEBAPP_URL',
+            'PIGGERCODE_HOME_DIR',
+            'PIGGERCODE_PUBLIC_SERVER_URL',
+            'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+            'PIGGERCODE_SERVER_URL',
+            'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT',
+            'PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID',
+            'PIGGERCODE_WEBAPP_URL',
         ]);
         home = await createTempDir('happier-relay-json-');
         envScope.patch({
-            HAPPIER_HOME_DIR: home,
-            HAPPIER_PUBLIC_SERVER_URL: undefined,
-            HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-            HAPPIER_SERVER_URL: undefined,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
-            HAPPIER_WEBAPP_URL: undefined,
+            PIGGERCODE_HOME_DIR: home,
+            PIGGERCODE_PUBLIC_SERVER_URL: undefined,
+            PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+            PIGGERCODE_SERVER_URL: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+            PIGGERCODE_WEBAPP_URL: undefined,
         });
         reloadConfiguration();
     });
@@ -348,7 +348,7 @@ describe('happier relay --json', () => {
                 { status: 0, stdout: 'UnitFileState=enabled\nActiveState=active\nSubState=running\nLoadState=loaded\n' },
                 { status: 0, stdout: 'yes\n' },
                 { status: 0, stdout: '' },
-                { status: 0, stdout: 'HAPPIER_RELAY_HEALTH_OK\n' },
+                { status: 0, stdout: 'PIGGERCODE_RELAY_HEALTH_OK\n' },
             ],
         });
 
@@ -425,8 +425,8 @@ describe('happier relay --json', () => {
         writeFileSync(join(payloadRoot, 'happier-server'), '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-1',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -465,8 +465,8 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(payloadRoot);
         }
@@ -479,9 +479,9 @@ describe('happier relay --json', () => {
         writeFileSync(join(payloadRoot, 'happier-server'), '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
         envScope.patch({
-            HAPPIER_PUBLIC_RELEASE_CHANNEL: 'preview',
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-preview-default-1',
+            PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-preview-default-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -518,9 +518,9 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(payloadRoot);
         }
@@ -557,8 +557,8 @@ describe('happier relay --json', () => {
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
 
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
         });
 
         const relayUrl = 'http://127.0.0.1:3005';
@@ -633,8 +633,8 @@ describe('happier relay --json', () => {
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
 
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
         });
 
         const relayUrl = 'http://127.0.0.1:3005';
@@ -700,11 +700,11 @@ describe('happier relay --json', () => {
         const localRelayUrl = 'http://127.0.0.1:3005';
         const publicRelayUrl = 'http://127.0.0.1:43005';
         envScope.patch({
-            HAPPIER_PUBLIC_SERVER_URL: publicRelayUrl,
-            HAPPIER_SERVER_URL: localRelayUrl,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
-            HAPPIER_WEBAPP_URL: publicRelayUrl,
+            PIGGERCODE_PUBLIC_SERVER_URL: publicRelayUrl,
+            PIGGERCODE_SERVER_URL: localRelayUrl,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+            PIGGERCODE_WEBAPP_URL: publicRelayUrl,
         });
 
         vi.resetModules();
@@ -780,8 +780,8 @@ describe('happier relay --json', () => {
         writeFileSync(join(payloadRoot, 'happier-server'), '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-legacy-1',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-legacy-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -819,8 +819,8 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(payloadRoot);
         }
@@ -833,8 +833,8 @@ describe('happier relay --json', () => {
         writeFileSync(join(payloadRoot, 'happier-server'), '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(join(payloadRoot, 'happier-server'), 0o755);
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-env-1',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: payloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-env-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -856,8 +856,8 @@ describe('happier relay --json', () => {
 
             await withPatchedPath(fakeSsh.binDir, async () => {
                 await commandRegistry.relay({
-                    args: ['relay', 'host', 'install', '--ssh', 'dev@example.test', '--env', 'HAPPIER_DB_PROVIDER=sqlite', '--json'],
-                    rawArgv: ['node', 'happier', 'relay', 'host', 'install', '--ssh', 'dev@example.test', '--env', 'HAPPIER_DB_PROVIDER=sqlite', '--json'],
+                    args: ['relay', 'host', 'install', '--ssh', 'dev@example.test', '--env', 'PIGGERCODE_DB_PROVIDER=sqlite', '--json'],
+                    rawArgv: ['node', 'happier', 'relay', 'host', 'install', '--ssh', 'dev@example.test', '--env', 'PIGGERCODE_DB_PROVIDER=sqlite', '--json'],
                     terminalRuntime: null,
                 });
             });
@@ -872,8 +872,8 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(payloadRoot);
         }
@@ -891,8 +891,8 @@ describe('happier relay --json', () => {
         writeFileSync(serverBinaryPath, '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(serverBinaryPath, 0o755);
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: cliPayloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-ssh-server-override-1',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: cliPayloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-ssh-server-override-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -934,8 +934,8 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(cliPayloadRoot);
             await removeTempDir(serverPayloadRoot);
@@ -953,8 +953,8 @@ describe('happier relay --json', () => {
         writeFileSync(serverBinaryPath, '#!/usr/bin/env bash\necho stub\n', 'utf8');
         chmodSync(serverBinaryPath, 0o755);
         envScope.patch({
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: cliPayloadRoot,
-            HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-ssh-server-override-1',
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: cliPayloadRoot,
+            PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: 'test-ssh-server-override-1',
         });
 
         const fakeSsh = createFakeSsh({
@@ -994,8 +994,8 @@ describe('happier relay --json', () => {
             process.exitCode = prevExitCode;
             fakeSsh.cleanup();
             envScope.patch({
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
-                HAPPIER_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_ROOT: undefined,
+                PIGGERCODE_TEST_FIRST_PARTY_PAYLOAD_VERSION_ID: undefined,
             });
             await removeTempDir(cliPayloadRoot);
             await removeTempDir(serverPayloadRoot);

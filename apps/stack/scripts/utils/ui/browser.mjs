@@ -9,7 +9,7 @@ function isTruthyEnvValue(value) {
 export async function openUrlInBrowser(url, { timeoutMs = 5_000 } = {}) {
   const u = String(url ?? '').trim();
   if (!u) return { ok: false, error: 'missing_url' };
-  if (isTruthyEnvValue(process.env.HAPPIER_NO_BROWSER_OPEN) || isTruthyEnvValue(process.env.HAPPIER_STACK_NO_BROWSER)) {
+  if (isTruthyEnvValue(process.env.PIGGERCODE_NO_BROWSER_OPEN) || isTruthyEnvValue(process.env.PIGGERCODE_STACK_NO_BROWSER)) {
     return { ok: false, error: 'browser_open_disabled' };
   }
 

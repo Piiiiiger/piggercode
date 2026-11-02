@@ -24,7 +24,7 @@ describe('resolveDaemonServiceRuntimeTarget', () => {
   });
 
   it('keeps a source wrapper on its own dist even when a managed CLI is installed', () => {
-    vi.stubEnv('HAPPIER_HOME_DIR', '/test-happier-home');
+    vi.stubEnv('PIGGERCODE_HOME_DIR', '/test-happier-home');
     const entryPath = join(projectPath(), 'dist', 'index.mjs');
     vi.mocked(fs.existsSync).mockImplementation((path) => [
       entryPath,

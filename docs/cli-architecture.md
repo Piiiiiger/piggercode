@@ -261,7 +261,7 @@ approve from install ownership. `apps/bootstrap/src/systemTasks/localFirstPartyC
 provenance `managed` when this machine's managed install layout claims the binary: the
 `current.version` marker that `installVersionedPayload` writes under `~/.happier`, plus the payload
 it names under `versions/<versionId>`. Everything else is `override` — an explicit env override
-(`HAPPIER_BOOTSTRAP_CLI_PATH`, `HAPPIER_BOOTSTRAP_HAPPIER_PATH`), a repo-local checkout, or a binary
+(`PIGGERCODE_BOOTSTRAP_CLI_PATH`, `PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH`), a repo-local checkout, or a binary
 that merely exists at `<installRoot>/current` with no install behind it.
 
 **`managed` is an ownership record, not verified publisher provenance.** The marker is a plain text
@@ -322,7 +322,7 @@ that channel's `~/.happier/bin/happier` shim). Two rules keep a second channel f
   compares the running daemon with the CLI its service actually runs, and the install dry-run never
   proposes replacing the default channel's service. With no managed CLI of the default channel, the
   app's own channel is acquired (and, being the first install, becomes the default). An env override
-  (`HAPPIER_BOOTSTRAP_CLI_PATH`) still wins over both.
+  (`PIGGERCODE_BOOTSTRAP_CLI_PATH`) still wins over both.
 
 `daemon.service.status.v1` reports the answering CLI's update state as `cli.update`
 (`{ currentVersion, latestVersion, updateAvailable, managed }` plus the K5 facts below, from
@@ -335,7 +335,7 @@ active unit is a no-op).
 
 A Happier home can run one daemon per relay profile at the same time (`happier daemon status --all`
 lists them), so this computer can serve sessions from several relays at once. A daemon's lifecycle
-scope is its lifecycle directory — `servers/<HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID or active server id>/`,
+scope is its lifecycle directory — `servers/<PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID or active server id>/`,
 holding its `daemon.state.json` and `daemon.state.json.lock` — and only that scope is its to manage:
 
 - **Start-up orphan reap** (`reapCurrentLifecycleDaemonOrphansBeforeStart`, `src/daemon/multiDaemon.ts`)
@@ -353,12 +353,12 @@ holding its `daemon.state.json` and `daemon.state.json.lock` — and only that s
 - **A service per relay is pinned.** `daemon service install` without `--instance`/`--ring` installs
   the single default-following service (an explicit `--server` only scopes that invocation); a relay
   gets its own service with `--server <id> … --instance <id>`, or through desktop setup's `pinned`
-  placement (`HAPPIER_DAEMON_SERVICE_TARGET_MODE=pinned`). For a terminal install, use
+  placement (`PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=pinned`). For a terminal install, use
   `happier --server <profile-id> service install --instance <service-id> --autostart on-demand --json`.
   `--server` is a root prefix flag and selects the relay; `--instance` names the service and does
   not select a profile. The service id may differ from the profile id. Address later service
   status/start/stop/restart commands with the same prefix and instance. If the caller inherits a
-  `HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID` for another relay, clear it first: the root profile selector
+  `PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID` for another relay, clear it first: the root profile selector
   updates endpoint/profile selectors but not the inherited lifecycle scope. `daemon status --all`
   (`listDaemonStatusesForAllKnownServers`) reports for each relay the service that serves it: its
   pinned service, else — for the persisted selection only — the default-following one.
@@ -555,9 +555,9 @@ app persists its own server profiles and the CLI persists its own; pairing is th
 
 Every command a setup run issues goes through one relay context built once from the target
 (`createSetupCliScope`, `apps/bootstrap/src/systemTasks/localDaemonCli.ts`, plan R13 a). Both of its
-invocations clear every server selector the app process inherited (`HAPPIER_SERVER_URL`,
-`HAPPIER_WEBAPP_URL`, `HAPPIER_LOCAL_SERVER_URL`, `HAPPIER_PUBLIC_SERVER_URL`,
-`HAPPIER_ACTIVE_SERVER_ID`, `HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID` — a stack/dev launch exports them,
+invocations clear every server selector the app process inherited (`PIGGERCODE_SERVER_URL`,
+`PIGGERCODE_WEBAPP_URL`, `PIGGERCODE_LOCAL_SERVER_URL`, `PIGGERCODE_PUBLIC_SERVER_URL`,
+`PIGGERCODE_ACTIVE_SERVER_ID`, `PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID` — a stack/dev launch exports them,
 and the CLI prefers an env-selected profile over a URL it does not match), so a launch pinned to one
 relay can never preview another and then write to its own. `target` adds the selected relay through
 the CLI's env server selection for the reads made before the run may select it; `selected` answers
@@ -572,7 +572,7 @@ exposure keeps the process environment (it is not relay-scoped).
 
 The install dry-run that decides consent runs **before** `server set` (no mutation before consent),
 so hsetup scopes it to the relay the app selected through the CLI's env server selection
-(`HAPPIER_SERVER_URL`/`HAPPIER_WEBAPP_URL`/`HAPPIER_LOCAL_SERVER_URL`, nothing persisted): ownership,
+(`PIGGERCODE_SERVER_URL`/`PIGGERCODE_WEBAPP_URL`/`PIGGERCODE_LOCAL_SERVER_URL`, nothing persisted): ownership,
 takeover and conflicts are per-relay facts, and judging them against the CLI's previous relay would
 block on a pinned service that does not conflict or offer to take over a manual daemon the apply can
 never reach. The same dry-run reports an installed service whose definition would switch between a
@@ -639,7 +639,7 @@ The same block carries `autostart` — `at-login` or `on-demand`, the CLI's own
 (`readInstalledDaemonServiceAutostartMode`), and on macOS it reads the **platform's own trigger**:
 the LaunchAgent's `RunAtLoad`, which is what launchd will actually do, so a hand-edited plist
 reports honestly instead of echoing a stale declaration. Linux and Windows keep the declaration the
-installer recorded in the definition (`HAPPIER_DAEMON_SERVICE_AUTOSTART`), because their real
+installer recorded in the definition (`PIGGERCODE_DAEMON_SERVICE_AUTOSTART`), because their real
 trigger is a `systemd` enable symlink / a scheduled-task trigger and reading either needs a
 subprocess this synchronous reader runs on the healthy status fast path. It is `null` when nothing
 proved a mode, and absent from CLIs that predate the field; as with `targetMode`, neither may be
@@ -792,7 +792,7 @@ read or action is said in the menu itself (a `⚠` row, retried on the next poin
 in a log. A second launch (`tauri-plugin-single-instance`, first plugin) opens the running app's window
 through the same path as macOS reopen; the login item firing again (`--menu-bar`) is ignored. A
 service the desktop installs (default-following or pinned) names the app in its launchd plist
-(`AssociatedBundleIdentifiers`, from `HAPPIER_DAEMON_SERVICE_BUNDLE_ID`, which bootstrap passes on
+(`AssociatedBundleIdentifiers`, from `PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID`, which bootstrap passes on
 every desktop `service install`, the CLI reads only on install and keeps on every rewrite, and a
 terminal install never sets) so macOS Login Items shows Happier; it does not change `managedBy`.
 **Open Happier** rebuilds the main window
@@ -836,7 +836,7 @@ A and into C in one run still asks), and it is asked on an explicit "Connect thi
 (`desktopSetupCoordinator.startSetup`). The executor is the enforcement point: **before any write** (before `server set` and
 PATH exposure) it reads `auth status` for the target relay's saved credentials — the ones
 `--replace-existing` would replace — through the same `target` invocation as the dry-run (the CLI resolves
-the persisted profile matching `HAPPIER_SERVER_URL` and its credential directory), and when they are
+the persisted profile matching `PIGGERCODE_SERVER_URL` and its credential directory), and when they are
 validated for another account (`setupReplacesValidatedAccount`,
 `@piggercode/protocol`, the one rule the app's early question also uses) it asks through the
 `setup.accountConsent` prompt, answered by the app's one account question, and stops with
@@ -858,9 +858,9 @@ background service per relay (`happier daemon service list --json` / `daemon sta
 - **Inspection.** The ambient `daemon.service.status.v1` read reports, beside the default-following
   service's facts, `pinnedServices: { complete, coexistence, services[], unreadable[] }`: each pinned service of
   this Happier home and ring, with `managedBy`. Each service is read through the same
-  `daemon status --json` owner, scoped to that service by `HAPPIER_ACTIVE_SERVER_ID`,
-  `HAPPIER_SERVER_URL`, `HAPPIER_DAEMON_SERVICE_TARGET_MODE=pinned` and
-  `HAPPIER_DAEMON_SERVICE_INSTANCE_ID`.
+  `daemon status --json` owner, scoped to that service by `PIGGERCODE_ACTIVE_SERVER_ID`,
+  `PIGGERCODE_SERVER_URL`, `PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=pinned` and
+  `PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID`.
   - Readable services are reported even without `pinnedServiceCoexistence`. `coexistence` exposes
     that capability only for offering/executing Connect too. `complete` is the single inventory
     completeness signal; a failed list returns an incomplete report, never "none".
@@ -916,7 +916,7 @@ background service per relay (`happier daemon service list --json` / `daemon sta
   - After consent, the relay gets one saved CLI profile, reused or added with
     `server add … --no-use`, never selected. Every later command is pinned to that profile id, so
     `--all` paths and a later `server use` of the URL see the same identity.
-  - The install stamps the definition `HAPPIER_DAEMON_SERVICE_MANAGED_BY=desktop`.
+  - The install stamps the definition `PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop`.
   - The persisted selection and the default-following service are untouched.
 - **Only desktop-managed services are driven.** Only `managedBy: desktop` pinned services are
   started, stopped or given a login-start mode by the app. A pinned service the user set up is shown
@@ -1011,18 +1011,18 @@ graph LR
 
     subgraph "Environment Overrides"
         direction TB
-        E1[HAPPIER_HOME_DIR]
-        E2[HAPPIER_SERVER_URL]
-        E3[HAPPIER_WEBAPP_URL]
-        E4[HAPPIER_VARIANT]
-        E5[HAPPIER_EXPERIMENTAL]
-        E6[HAPPIER_DISABLE_CAFFEINATE]
+        E1[PIGGERCODE_HOME_DIR]
+        E2[PIGGERCODE_SERVER_URL]
+        E3[PIGGERCODE_WEBAPP_URL]
+        E4[PIGGERCODE_VARIANT]
+        E5[PIGGERCODE_EXPERIMENTAL]
+        E6[PIGGERCODE_DISABLE_CAFFEINATE]
     end
 
     E1 -.-> settings & access & daemon & logs
 ```
 
-Local state lives under `~/.happier` (or `HAPPIER_HOME_DIR`):
+Local state lives under `~/.happier` (or `PIGGERCODE_HOME_DIR`):
 - `settings.json`: onboarding and profile settings (validated/migrated).
 - `access.key`: local key material for encryption/auth.
 - `daemon.state.json`: daemon PID + control port + version.
@@ -1038,8 +1038,8 @@ Both ACL scripts terminate on errors, and malformed inspection output retains
 bounded stderr diagnostics without including stdout.
 
 Configuration lives in `src/configuration.ts`:
-- `HAPPIER_SERVER_URL` and `HAPPIER_WEBAPP_URL` override defaults.
-- `HAPPIER_VARIANT`, `HAPPIER_EXPERIMENTAL`, `HAPPIER_DISABLE_CAFFEINATE` control behavior.
+- `PIGGERCODE_SERVER_URL` and `PIGGERCODE_WEBAPP_URL` override defaults.
+- `PIGGERCODE_VARIANT`, `PIGGERCODE_EXPERIMENTAL`, `PIGGERCODE_DISABLE_CAFFEINATE` control behavior.
 
 ### Connected Agent storage (0.2 development)
 

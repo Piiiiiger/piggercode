@@ -2,8 +2,8 @@ import { applyClaudeRemoteMetaState, DEFAULT_CLAUDE_REMOTE_META_STATE, type Clau
 
 export function readDaemonClaudeUnifiedTerminalPin(startedBy: 'daemon' | 'terminal' | undefined, env: NodeJS.ProcessEnv): boolean | null {
   if (startedBy !== 'daemon') return null;
-  if (env.HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN === '1') return true;
-  if (env.HAPPIER_CLAUDE_UNIFIED_TERMINAL_PIN === '0') return false;
+  if (env.PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN === '1') return true;
+  if (env.PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN === '0') return false;
   return null;
 }
 

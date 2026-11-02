@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 import { DEFAULT_CLI_RUNTIME_IMPORT_TIMEOUT_MS } from '@piggercode/cli-common/runtimeImportProbePolicy';
 
-export const CLI_DIST_INTEGRITY_PROBE_ENV = 'HAPPIER_CLI_DIST_INTEGRITY_PROBE';
+export const CLI_DIST_INTEGRITY_PROBE_ENV = 'PIGGERCODE_CLI_DIST_INTEGRITY_PROBE';
 export const CLI_DIST_BUILD_MANIFEST = '.build-manifest.json';
 export const DEFAULT_CLI_DIST_RUNTIME_IMPORT_TIMEOUT_MS = DEFAULT_CLI_RUNTIME_IMPORT_TIMEOUT_MS;
 
@@ -114,8 +114,8 @@ export async function probeCliDistRuntimeImport(entrypoint, options = {}) {
     // Run the real daemon command loader rather than suppressing CLI dispatch.
     // This reaches command-owned lazy imports while --help keeps the probe side-effect free.
     [CLI_DIST_INTEGRITY_PROBE_ENV]: 'daemon-command',
-    HAPPIER_CLI_RUNTIME_DISABLE: '1',
-    HAPPIER_CLI_UPDATE_CHECK: '0',
+    PIGGERCODE_CLI_RUNTIME_DISABLE: '1',
+    PIGGERCODE_CLI_UPDATE_CHECK: '0',
   };
 
   await new Promise((resolve, reject) => {

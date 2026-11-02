@@ -64,12 +64,12 @@ test('inferTuiStackName returns explicit stack name for stack command', () => {
 });
 
 test('inferTuiStackName uses env stack only when explicitly set', () => {
-  const stackName = inferTuiStackName(['dev'], { HAPPIER_STACK_STACK: 'main' });
+  const stackName = inferTuiStackName(['dev'], { PIGGERCODE_STACK_STACK: 'main' });
   assert.equal(stackName, 'main');
 });
 
 test('inferTuiStackName stays stackless when no explicit stack context is present', () => {
-  const stackName = inferTuiStackName(['dev'], { HAPPIER_STACK_STACK: '' });
+  const stackName = inferTuiStackName(['dev'], { PIGGERCODE_STACK_STACK: '' });
   assert.equal(stackName, null);
 });
 

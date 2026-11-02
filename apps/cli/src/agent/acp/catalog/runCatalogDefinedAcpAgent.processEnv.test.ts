@@ -17,7 +17,7 @@ import { PendingQueueMaterializationAuthError } from '@/agent/runtime/sessionInp
 import { runCatalogDefinedAcpAgent } from './runCatalogDefinedAcpAgent';
 import { runConfiguredAcpBackend } from './configured/runConfiguredAcpBackend';
 
-const env = createEnvKeyScope(['HAPPIER_KIRO_PATH', 'HAPPIER_SESSION_ID', 'HAPPIER_ACP_ENV_CAPTURE_PATH']);
+const env = createEnvKeyScope(['PIGGERCODE_KIRO_PATH', 'PIGGERCODE_SESSION_ID', 'PIGGERCODE_ACP_ENV_CAPTURE_PATH']);
 afterEach(() => {
   vi.restoreAllMocks();
   env.restore();
@@ -33,8 +33,8 @@ describe('catalog ACP runner process environment', () => {
         source: `#!/usr/bin/env node
           const { writeFileSync } = require('node:fs');
           const readline = require('node:readline');
-          writeFileSync(process.env.HAPPIER_ACP_ENV_CAPTURE_PATH, JSON.stringify({
-            sessionId: process.env.HAPPIER_SESSION_ID,
+          writeFileSync(process.env.PIGGERCODE_ACP_ENV_CAPTURE_PATH, JSON.stringify({
+            sessionId: process.env.PIGGERCODE_SESSION_ID,
             configuredValue: process.env.CONFIGURED_VALUE,
           }));
           const lines = readline.createInterface({ input: process.stdin });
@@ -54,9 +54,9 @@ describe('catalog ACP runner process environment', () => {
         })
         : await writeExecutableShim({ dir, fileName: 'kiro.cjs', contents: readFileSync(scriptPath, 'utf8') });
       env.patch({
-        HAPPIER_KIRO_PATH: providerPath,
-        HAPPIER_SESSION_ID: 'outer-session',
-        HAPPIER_ACP_ENV_CAPTURE_PATH: capturePath,
+        PIGGERCODE_KIRO_PATH: providerPath,
+        PIGGERCODE_SESSION_ID: 'outer-session',
+        PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath,
       });
       let agentState: AgentState = {};
       const session = createMutableApiSessionClientFixture({
@@ -100,7 +100,7 @@ describe('catalog ACP runner process environment', () => {
                   id: 'review-bot', name: 'review-bot', title: 'Review Bot',
                   command: process.execPath, args: [scriptPath],
                   env: {
-                    HAPPIER_SESSION_ID: { t: 'literal', v: 'configured-stale-session' },
+                    PIGGERCODE_SESSION_ID: { t: 'literal', v: 'configured-stale-session' },
                     CONFIGURED_VALUE: { t: 'literal', v: 'preserved' },
                   },
                   transportProfile: 'generic',

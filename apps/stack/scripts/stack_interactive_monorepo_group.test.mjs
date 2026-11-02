@@ -34,8 +34,8 @@ test('interactive stack new in monorepo mode prompts once for shared repo source
   try {
     const workspaceDir = join(tmp, 'workspace');
     const restore = withPatchedProcessEnv(t, {
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_OWNER: 'test',
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_OWNER: 'test',
     });
 
     const monoRoot = join(workspaceDir, 'tmp', 'test', 'mono-wt');
@@ -71,8 +71,8 @@ test('interactive stack new skips worktree prompt when repo is already provided'
   try {
     const workspaceDir = join(tmp, 'workspace');
     const restore = withPatchedProcessEnv(t, {
-      HAPPIER_STACK_WORKSPACE_DIR: workspaceDir,
-      HAPPIER_STACK_OWNER: 'test',
+      PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,
+      PIGGERCODE_STACK_OWNER: 'test',
     });
 
     const monoRoot = join(workspaceDir, 'tmp', 'test', 'mono-wt');

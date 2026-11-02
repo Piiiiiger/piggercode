@@ -113,8 +113,8 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
         await db.account.deleteMany().catch(() => {});
     });
 
-    it("does not register quota snapshot routes when HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED=0", async () => {
-        harness.resetEnv({ HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "0" });
+    it("does not register quota snapshot routes when PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED=0", async () => {
+        harness.resetEnv({ PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "0" });
         const user = await db.account.create({ data: { publicKey: "pk-quota-disabled" }, select: { id: true } });
 
         const app = createTestApp();
@@ -131,9 +131,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("returns sealed connected-service quota views backed by canonical provider-account usage", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-enabled", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v2_projection" });
@@ -232,9 +232,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("rejects source-attached provider-account usage when the source link belongs to another provider account", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-source-mismatch", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_connected_profile_subject" });
@@ -288,9 +288,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("returns a machine-readable provider/source compatibility reason for rejected source links", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-source-incompatible", encryptionMode: "e2ee" }, select: { id: true } });
         const recordKey = createProviderAccountUsageRecordKey({ accountSubjectId: "acct_quota_v2_source_incompatible" });
@@ -325,9 +325,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("keeps sealed quota views readable after a group generation advances when the credential account still matches", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-stale-generation", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceGroupMember({
@@ -391,9 +391,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("refreshes the linked provider-account usage record through the quota route", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-refresh", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v2_refresh" });
@@ -441,9 +441,9 @@ describe("connectRoutes (connected services quotas v2) sealed quota endpoints", 
 
     it("deletes quota access by unlinking the source and preserving the sealed provider-account usage record", async () => {
         harness.resetEnv({
-            HAPPIER_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
-            HAPPIER_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
-            HAPPIER_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
+            PIGGERCODE_FEATURE_CONNECTED_SERVICES_QUOTAS__ENABLED: "1",
+            PIGGERCODE_FEATURE_ENCRYPTION__STORAGE_POLICY: "required_e2ee",
+            PIGGERCODE_FEATURE_ENCRYPTION__DEFAULT_ACCOUNT_MODE: "e2ee",
         });
         const user = await db.account.create({ data: { publicKey: "pk-quota-delete", encryptionMode: "e2ee" }, select: { id: true } });
         await createConnectedServiceProfileBinding(user.id, { providerAccountId: "acct_quota_v2_delete" });

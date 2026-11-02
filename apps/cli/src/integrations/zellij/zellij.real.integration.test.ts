@@ -12,7 +12,7 @@ import { resolveZellijBinary } from './resolveZellijBinary';
 
 // Opt in because this exercises a real terminal server. Every server and artifact belongs to
 // this test's temporary home; no existing user sessions or Zellij configuration are touched.
-describe.skipIf(process.env.HAPPIER_CLI_ZELLIJ_INTEGRATION !== '1' || process.platform === 'win32')('Zellij native launch environment', () => {
+describe.skipIf(process.env.PIGGERCODE_CLI_ZELLIJ_INTEGRATION !== '1' || process.platform === 'win32')('Zellij native launch environment', () => {
   it('passes launch-only values through the server and launch-spec runner to each provider child', async () => {
     const zellijBinary = await resolveZellijBinary({
       toolsDir: resolve('tools/unpacked'), expectedVersion: BUNDLED_ZELLIJ_VERSION,
@@ -25,12 +25,12 @@ describe.skipIf(process.env.HAPPIER_CLI_ZELLIJ_INTEGRATION !== '1' || process.pl
     const specs: string[] = [];
     try {
       const child = join(home, 'observe-env.cjs');
-      await writeFile(child, `require('node:fs').writeFileSync(process.argv[2], JSON.stringify({ suggestion: process.env.CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION, value: process.env.HAPPIER_TEST_LAUNCH_VALUE })); process.stdin.resume();`);
+      await writeFile(child, `require('node:fs').writeFileSync(process.argv[2], JSON.stringify({ suggestion: process.env.CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION, value: process.env.PIGGERCODE_TEST_LAUNCH_VALUE })); process.stdin.resume();`);
       for (const value of ['first value with spaces and $literal', 'second value "quoted"']) {
         const result = join(home, `observed-${handles.length}.json`);
         const spec = await writeTerminalLaunchSpec({
           command: process.execPath, args: [child, result], cwd: home, env: {},
-          envPassthroughKeys: ['CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION', 'HAPPIER_TEST_LAUNCH_VALUE'],
+          envPassthroughKeys: ['CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION', 'PIGGERCODE_TEST_LAUNCH_VALUE'],
         });
         specs.push(spec);
         const handle = await adapter.createOrAttachHost({
@@ -39,7 +39,7 @@ describe.skipIf(process.env.HAPPIER_CLI_ZELLIJ_INTEGRATION !== '1' || process.pl
           spawnArgv: [process.execPath, resolve('scripts/terminal_launch_spec_runner.cjs'), spec],
           spawnEnv: {
             TERM: 'dumb', CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION: 'false',
-            HAPPIER_TEST_LAUNCH_VALUE: value,
+            PIGGERCODE_TEST_LAUNCH_VALUE: value,
             XDG_CONFIG_HOME: home, XDG_DATA_HOME: home, XDG_CACHE_HOME: home,
           },
           isolatedEnv: true,

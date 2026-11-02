@@ -48,8 +48,8 @@ function isCodexAcpOnPath(env: NodeJS.ProcessEnv): boolean {
 
 function readCodexAcpConfigOverrides(env: NodeJS.ProcessEnv): string[] {
   const raw =
-    typeof env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES === 'string'
-      ? env.HAPPIER_CODEX_ACP_CONFIG_OVERRIDES
+    typeof env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES === 'string'
+      ? env.PIGGERCODE_CODEX_ACP_CONFIG_OVERRIDES
       : '';
   return raw
     .split('\n')
@@ -127,8 +127,8 @@ export function resolveCodexAcpCommand(): string {
  * Resolve the Codex ACP spawn spec (command + args).
  *
  * Order:
- * 1) Explicit env override: HAPPIER_CODEX_ACP_BIN
- * 2) Managed codex-acp install under HAPPIER_HOME_DIR/tools/codex-acp/current/bin
+ * 1) Explicit env override: PIGGERCODE_CODEX_ACP_BIN
+ * 2) Managed codex-acp install under PIGGERCODE_HOME_DIR/tools/codex-acp/current/bin
  * 3) PATH fallback (`codex-acp`) when available
  * 4) PATH fallback (`codex-acp`)
  */
@@ -139,17 +139,17 @@ export function resolveCodexAcpSpawn(opts: ResolveCodexAcpSpawnOptions = {}): Sp
 export function resolveCodexAcpSpawnWithOptions(opts: ResolveCodexAcpSpawnOptions = {}): SpawnSpec {
   const env = opts.env ?? process.env;
   const currentWorkingDirectory = opts.currentWorkingDirectory ?? process.cwd();
-  const envOverride = typeof env.HAPPIER_CODEX_ACP_BIN === 'string'
-    ? env.HAPPIER_CODEX_ACP_BIN.trim()
+  const envOverride = typeof env.PIGGERCODE_CODEX_ACP_BIN === 'string'
+    ? env.PIGGERCODE_CODEX_ACP_BIN.trim()
     : '';
   if (envOverride) {
     // Normalize to absolute so spawn works even when the provider changes cwd (e.g. session workspace).
     const resolved = isAbsolute(envOverride) ? envOverride : resolvePath(currentWorkingDirectory, envOverride);
     if (!existsSync(resolved)) {
-      throw new Error(`Codex ACP is enabled but HAPPIER_CODEX_ACP_BIN does not exist: ${resolved}`);
+      throw new Error(`Codex ACP is enabled but PIGGERCODE_CODEX_ACP_BIN does not exist: ${resolved}`);
     }
     if (!isRunnableCodexAcpPath(resolved)) {
-      throw new Error(`Codex ACP is enabled but HAPPIER_CODEX_ACP_BIN is not executable: ${resolved}`);
+      throw new Error(`Codex ACP is enabled but PIGGERCODE_CODEX_ACP_BIN is not executable: ${resolved}`);
     }
     return appendPermissionModeDerivedOverrides(appendConfigOverridesArgs({ command: resolved, args: [] }, opts), opts);
   }

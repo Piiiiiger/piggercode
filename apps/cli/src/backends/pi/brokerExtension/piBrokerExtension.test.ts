@@ -63,7 +63,7 @@ describe('verifyPiBrokerReadyForConnectedSession (fail-closed preflight)', () =>
       anthropic: { serviceId: 'claude-subscription', profileId: 'c', accountId: null, planType: null },
     }),
     [PI_BROKER_LOAD_NONCE_ENV]: 'pi-spawn-ready',
-    HAPPIER_PI_BROKER_STATE_PATH: brokerStatePath,
+    PIGGERCODE_PI_BROKER_STATE_PATH: brokerStatePath,
     ...overrides,
   });
 
@@ -96,7 +96,7 @@ describe('verifyPiBrokerReadyForConnectedSession (fail-closed preflight)', () =>
   it('fails closed when the daemon bridge is unreachable', async () => {
     await ensurePiBrokerExtensionAsset(agentDir);
     const readiness = await verifyPiBrokerReadyForConnectedSession(
-      brokeredEnv({ HAPPIER_PI_BROKER_STATE_PATH: join(agentDir, 'missing.json') }),
+      brokeredEnv({ PIGGERCODE_PI_BROKER_STATE_PATH: join(agentDir, 'missing.json') }),
       { deadlineMs: Date.now() + 60_000, verifyLoadHandshake: async () => true },
     );
     expect(readiness).toEqual({ ready: false, reason: 'broker_daemon_bridge_unreachable' });

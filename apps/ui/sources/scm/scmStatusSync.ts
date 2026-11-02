@@ -30,7 +30,7 @@ const DEFAULT_SCM_AUTO_REFRESH_PROJECT_MIN_INTERVAL_MS = 30_000;
 const MAX_SCM_AUTO_REFRESH_PROJECT_MIN_INTERVAL_MS = 300_000;
 
 function readScmAutoRefreshProjectMinIntervalMs(): number {
-    const raw = String(process.env.EXPO_PUBLIC_HAPPIER_SCM_AUTO_REFRESH_PROJECT_MIN_INTERVAL_MS ?? '').trim();
+    const raw = String(process.env.EXPO_PUBLIC_PIGGERCODE_SCM_AUTO_REFRESH_PROJECT_MIN_INTERVAL_MS ?? '').trim();
     if (raw === '0') return 0;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed) || parsed < 0) {

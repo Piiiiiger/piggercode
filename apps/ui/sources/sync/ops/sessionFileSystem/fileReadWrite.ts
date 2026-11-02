@@ -13,7 +13,7 @@ import { readRpcErrorCode } from '../../runtime/rpcErrors';
 
 const INACTIVE_SESSION_RPC_UNAVAILABLE_ERROR = 'Session RPC unavailable for inactive session';
 
-const SESSION_FILE_INLINE_MAX_BYTES_ENV_KEY = 'EXPO_PUBLIC_HAPPIER_SESSION_FILE_INLINE_MAX_BYTES';
+const SESSION_FILE_INLINE_MAX_BYTES_ENV_KEY = 'EXPO_PUBLIC_PIGGERCODE_SESSION_FILE_INLINE_MAX_BYTES';
 const DEFAULT_SESSION_FILE_INLINE_MAX_BYTES = 256 * 1024;
 // Inline base64 file read/write is intentionally small-only to avoid OOM and to keep the
 // bulk-byte substrate canonical (`bulkTransferPipeline/**` for large payloads).

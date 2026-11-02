@@ -63,27 +63,27 @@ describe('startDaemon ownership preflight', () => {
     ] as const;
     let processListenersBeforeTest = daemonLifecycleProcessEvents.map((event) => [event, process.rawListeners(event)] as const);
     const envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-        'HAPPIER_DAEMON_STARTUP_SOURCE',
-        'HAPPIER_DAEMON_RUNTIME_ID',
-        'HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID',
-        'HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS',
-        'HAPPIER_DAEMON_TAKEOVER',
-        'HAPPIER_DAEMON_PROCESS_INVENTORY_FALLBACK',
-        'HAPPIER_DAEMON_SERVICE_PLATFORM',
-        'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_CHANNEL',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_DAEMON_STARTUP_SOURCE',
+        'PIGGERCODE_DAEMON_RUNTIME_ID',
+        'PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID',
+        'PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS',
+        'PIGGERCODE_DAEMON_TAKEOVER',
+        'PIGGERCODE_DAEMON_PROCESS_INVENTORY_FALLBACK',
+        'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+        'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
         // Inherited from a dev-stack shell it would move this daemon's lifecycle state to the stack's directory.
-        'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID',
+        'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID',
     ]);
     let currentProcessDaemonFixtureAlive = true;
     const fetchMock = vi.fn();
 
     beforeEach(() => {
-        envScope.patch({ HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID: undefined });
+        envScope.patch({ PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: undefined });
         processListenersBeforeTest = daemonLifecycleProcessEvents.map((event) => [event, process.rawListeners(event)] as const);
         currentProcessDaemonFixtureAlive = true;
         fetchMock.mockReset();
@@ -142,9 +142,9 @@ describe('startDaemon ownership preflight', () => {
     it('reaps lifecycle-scope daemon orphans before waiting for auth setup', async () => {
         await withTempDir('happier-start-daemon-orphan-reaper-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -163,9 +163,9 @@ describe('startDaemon ownership preflight', () => {
     it('fails closed before auth setup when a different daemon is already running for the selected relay', async () => {
         await withTempDir('happier-start-daemon-owner-conflict-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -206,10 +206,10 @@ describe('startDaemon ownership preflight', () => {
     it('fails closed before auth setup when daemon state is missing but a same-runtime daemon process is alive', async () => {
         await withTempDir('happier-start-daemon-orphan-process-conflict-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_PROCESS_INVENTORY_FALLBACK: '1',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_PROCESS_INVENTORY_FALLBACK: '1',
             });
             vi.resetModules();
             vi.doMock('@/daemon/doctor', async (importOriginal) => {
@@ -253,11 +253,11 @@ describe('startDaemon ownership preflight', () => {
     it('force-stops a state-less same-runtime daemon process when takeover is requested', async () => {
         await withTempDir('happier-start-daemon-orphan-process-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_TAKEOVER: '1',
-                HAPPIER_DAEMON_PROCESS_INVENTORY_FALLBACK: '1',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_TAKEOVER: '1',
+                PIGGERCODE_DAEMON_PROCESS_INVENTORY_FALLBACK: '1',
             });
             vi.resetModules();
 
@@ -308,14 +308,14 @@ describe('startDaemon ownership preflight', () => {
     it('allows takeover to continue past a manual daemon runtime conflict', async () => {
         await withTempDir('happier-start-daemon-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: `${homeDir}/.happier`,
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_TAKEOVER: '1',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.happier`,
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_TAKEOVER: '1',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);
@@ -346,11 +346,11 @@ describe('startDaemon ownership preflight', () => {
     it('allows a self-restart to overlap the current state-tracked manual daemon runtime without stopping it first', async () => {
         await withTempDir('happier-start-daemon-self-restart-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
-                HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID: 'self-restart-test',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
+                PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID: 'self-restart-test',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);
@@ -360,7 +360,7 @@ describe('startDaemon ownership preflight', () => {
                 import('./startDaemon'),
             ]);
             envScope.patch({
-                HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + 60_000),
+                PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + 60_000),
             });
 
             writeDaemonState({
@@ -384,11 +384,11 @@ describe('startDaemon ownership preflight', () => {
     it('lets self-restart runtime-id intent override a parsed false takeover option', async () => {
         await withTempDir('happier-start-daemon-self-restart-false-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_RUNTIME_ID: 'runtime-manual',
-                HAPPIER_DAEMON_SELF_RESTART_CORRELATION_ID: 'self-restart-runtime-test',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-manual',
+                PIGGERCODE_DAEMON_SELF_RESTART_CORRELATION_ID: 'self-restart-runtime-test',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);
@@ -398,7 +398,7 @@ describe('startDaemon ownership preflight', () => {
                 import('./startDaemon'),
             ]);
             envScope.patch({
-                HAPPIER_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + 60_000),
+                PIGGERCODE_DAEMON_SELF_RESTART_DEADLINE_MS: String(Date.now() + 60_000),
             });
 
             writeDaemonState({
@@ -422,9 +422,9 @@ describe('startDaemon ownership preflight', () => {
     it('allows replacing a stale manual daemon runtime without an explicit takeover flag', async () => {
         await withTempDir('happier-start-daemon-stale-manual-replace-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);
@@ -455,14 +455,14 @@ describe('startDaemon ownership preflight', () => {
     it('allows takeover to continue past a legacy manual daemon runtime conflict when startup source is missing', async () => {
         await withTempDir('happier-start-daemon-legacy-manual-takeover-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: `${homeDir}/.happier`,
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_TAKEOVER: '1',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.happier`,
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_TAKEOVER: '1',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);
@@ -491,10 +491,10 @@ describe('startDaemon ownership preflight', () => {
     it('exits cleanly when automatic startup finds another running daemon for the selected relay', async () => {
         await withTempDir('happier-start-daemon-service-conflict-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
             });
             vi.resetModules();
 
@@ -530,9 +530,9 @@ describe('startDaemon ownership preflight', () => {
     it('fails closed before auth setup when a background service is installed for the active relay', async () => {
         await withTempDir('happier-start-daemon-installed-service-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: homeDir,
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             });
             vi.resetModules();
             vi.stubGlobal('fetch', fetchMock);

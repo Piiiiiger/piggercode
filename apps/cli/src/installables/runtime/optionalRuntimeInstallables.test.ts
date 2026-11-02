@@ -125,7 +125,7 @@ beforeEach(async () => {
   boundary.requests = [];
   boundary.offline = false;
   boundary.releaseWait = null;
-  vi.stubEnv('HAPPIER_HOME_DIR', boundary.home);
+  vi.stubEnv('PIGGERCODE_HOME_DIR', boundary.home);
   await prepareSignedMemoryRelease();
   await writeFile(join(boundary.home, 'settings.json'), JSON.stringify({ schemaVersion: 1, machineId: 'fixture-machine' }));
 });
@@ -241,7 +241,7 @@ describe('optional runtime installation through capabilities', () => {
               componentId: 'happier-memory-runtime',
               versionId: '0.2.13-dev.6',
               channel: 'publicdev',
-              processEnv: { ...process.env, HAPPIER_HOME_DIR: boundary.home },
+              processEnv: { ...process.env, PIGGERCODE_HOME_DIR: boundary.home },
             }),
             'node_modules',
             '@huggingface',

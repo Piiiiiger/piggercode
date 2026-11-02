@@ -53,8 +53,8 @@ describe('openCodeBrokerPluginAssets', () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-broker-assets-prepare-'));
     const prepared = await prepareOpenCodeConnectedAuthAssets({
       env: {
-        HAPPIER_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY: 'opencode|connected|openai-codex:primary:',
-        HAPPIER_OPENCODE_BROKER_SELECTIONS: JSON.stringify({
+        PIGGERCODE_OPENCODE_CONNECTED_SERVICE_SELECTION_IDENTITY: 'opencode|connected|openai-codex:primary:',
+        PIGGERCODE_OPENCODE_BROKER_SELECTIONS: JSON.stringify({
           openai: {
             serviceId: 'openai-codex',
             profileId: 'primary',

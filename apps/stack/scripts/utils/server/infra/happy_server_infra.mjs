@@ -128,7 +128,7 @@ ${postgresService}  redis:
 }
 
 async function ensureDockerCompose() {
-  const waitMsRaw = (process.env.HAPPIER_STACK_DOCKER_WAIT_MS ?? '').trim();
+  const waitMsRaw = (process.env.PIGGERCODE_STACK_DOCKER_WAIT_MS ?? '').trim();
   const waitMs = waitMsRaw ? Number(waitMsRaw) : process.stdout.isTTY ? 0 : 60_000;
   const deadline = waitMs > 0 ? Date.now() + waitMs : Date.now();
 
@@ -143,7 +143,7 @@ async function ensureDockerCompose() {
     );
   }
 
-  const autostartRaw = (process.env.HAPPIER_STACK_DOCKER_AUTOSTART ?? '').trim();
+  const autostartRaw = (process.env.PIGGERCODE_STACK_DOCKER_AUTOSTART ?? '').trim();
   const autostart = autostartRaw ? autostartRaw !== '0' : !process.stdout.isTTY;
 
   // Ensure the Docker daemon is ready (launchd/SwiftBar often runs before Docker Desktop starts).
@@ -160,8 +160,8 @@ async function ensureDockerCompose() {
         const msg = e?.message ? String(e.message) : String(e);
         throw new Error(
           `[infra] docker is installed but the daemon is not ready.\n` +
-            `Fix: start Docker Desktop, or disable managed infra (HAPPIER_STACK_MANAGED_INFRA=0).\n` +
-            `You can also increase wait time with HAPPIER_STACK_DOCKER_WAIT_MS, or disable auto-start with HAPPIER_STACK_DOCKER_AUTOSTART=0.\n` +
+            `Fix: start Docker Desktop, or disable managed infra (PIGGERCODE_STACK_MANAGED_INFRA=0).\n` +
+            `You can also increase wait time with PIGGERCODE_STACK_DOCKER_WAIT_MS, or disable auto-start with PIGGERCODE_STACK_DOCKER_AUTOSTART=0.\n` +
             `Details: ${msg}`
         );
       }
@@ -174,7 +174,7 @@ async function ensureDockerCompose() {
 async function maybeStartDockerDaemon() {
   // Best-effort. This may be a no-op depending on platform/permissions.
   if (process.platform === 'darwin') {
-    const app = (process.env.HAPPIER_STACK_DOCKER_APP ?? '/Applications/Docker.app').trim();
+    const app = (process.env.PIGGERCODE_STACK_DOCKER_APP ?? '/Applications/Docker.app').trim();
     // `open` exits quickly; Docker Desktop will start in the background.
     await runCapture('open', ['-gj', '-a', app], { timeoutMs: 5_000 }).catch(() => {});
     return;
@@ -291,7 +291,7 @@ export async function ensureHappyServerManagedInfra({
 } = {}) {
   const effectiveDbProvider = applyEffectiveDbProviderEnv({
     serverComponentName: 'happier-server',
-    env: dbProvider == null ? env : { HAPPIER_DB_PROVIDER: dbProvider },
+    env: dbProvider == null ? env : { PIGGERCODE_DB_PROVIDER: dbProvider },
     targetEnv: { ...env },
   });
   const infraDir = join(baseDir, 'happier-server', 'infra');
@@ -302,10 +302,10 @@ export async function ensureHappyServerManagedInfra({
   if (effectiveDbProvider === 'mysql' && !normalizedExplicitDatabaseUrl) {
     throw new Error('[infra] mysql requires an explicit DATABASE_URL');
   }
-  const configuredPgPort = coercePort(existingEnv.HAPPIER_STACK_PG_PORT ?? env.HAPPIER_STACK_PG_PORT);
-  const configuredPgUser = (existingEnv.HAPPIER_STACK_PG_USER ?? env.HAPPIER_STACK_PG_USER ?? '').trim();
-  const configuredPgPassword = (existingEnv.HAPPIER_STACK_PG_PASSWORD ?? env.HAPPIER_STACK_PG_PASSWORD ?? '').trim();
-  const configuredPgDb = (existingEnv.HAPPIER_STACK_PG_DATABASE ?? env.HAPPIER_STACK_PG_DATABASE ?? '').trim();
+  const configuredPgPort = coercePort(existingEnv.PIGGERCODE_STACK_PG_PORT ?? env.PIGGERCODE_STACK_PG_PORT);
+  const configuredPgUser = (existingEnv.PIGGERCODE_STACK_PG_USER ?? env.PIGGERCODE_STACK_PG_USER ?? '').trim();
+  const configuredPgPassword = (existingEnv.PIGGERCODE_STACK_PG_PASSWORD ?? env.PIGGERCODE_STACK_PG_PASSWORD ?? '').trim();
+  const configuredPgDb = (existingEnv.PIGGERCODE_STACK_PG_DATABASE ?? env.PIGGERCODE_STACK_PG_DATABASE ?? '').trim();
   const persistedManagedPostgresUrl =
     configuredPgPort && configuredPgUser && configuredPgPassword && configuredPgDb
       ? `postgresql://${encodeURIComponent(configuredPgUser)}:${encodeURIComponent(configuredPgPassword)}@127.0.0.1:${configuredPgPort}/${encodeURIComponent(configuredPgDb)}`
@@ -319,7 +319,7 @@ export async function ensureHappyServerManagedInfra({
 
   // Reserve known ports (if present) to avoid picking duplicates when auto-filling.
   for (const key of INFRA_RESERVED_PORT_KEYS) {
-    if (!usesManagedPostgres && key === 'HAPPIER_STACK_PG_PORT') continue;
+    if (!usesManagedPostgres && key === 'PIGGERCODE_STACK_PG_PORT') continue;
     const p = coercePort(existingEnv[key] ?? env[key]);
     if (p) reservedPorts.add(p);
   }
@@ -331,15 +331,15 @@ export async function ensureHappyServerManagedInfra({
     : null;
   if (pgPort) reservedPorts.add(pgPort);
   const redisPort =
-    coercePort(existingEnv.HAPPIER_STACK_REDIS_PORT ?? env.HAPPIER_STACK_REDIS_PORT) ??
+    coercePort(existingEnv.PIGGERCODE_STACK_REDIS_PORT ?? env.PIGGERCODE_STACK_REDIS_PORT) ??
     (await pickNextFreeTcpPortImpl((pgPort ?? serverPort + 999) + 1, { reservedPorts }));
   reservedPorts.add(redisPort);
   const minioPort =
-    coercePort(existingEnv.HAPPIER_STACK_MINIO_PORT ?? env.HAPPIER_STACK_MINIO_PORT) ??
+    coercePort(existingEnv.PIGGERCODE_STACK_MINIO_PORT ?? env.PIGGERCODE_STACK_MINIO_PORT) ??
     (await pickNextFreeTcpPortImpl(redisPort + 1, { reservedPorts }));
   reservedPorts.add(minioPort);
   const minioConsolePort =
-    coercePort(existingEnv.HAPPIER_STACK_MINIO_CONSOLE_PORT ?? env.HAPPIER_STACK_MINIO_CONSOLE_PORT) ??
+    coercePort(existingEnv.PIGGERCODE_STACK_MINIO_CONSOLE_PORT ?? env.PIGGERCODE_STACK_MINIO_CONSOLE_PORT) ??
     (await pickNextFreeTcpPortImpl(minioPort + 1, { reservedPorts }));
   reservedPorts.add(minioConsolePort);
 
@@ -358,8 +358,8 @@ export async function ensureHappyServerManagedInfra({
   const s3AccessKey = (existingEnv.S3_ACCESS_KEY ?? env.S3_ACCESS_KEY ?? '').trim() || randomToken(12);
   const s3SecretKey = (existingEnv.S3_SECRET_KEY ?? env.S3_SECRET_KEY ?? '').trim() || randomToken(24);
 
-  const secretFile = (existingEnv.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE ?? env.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim()
-    ? (existingEnv.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE ?? env.HAPPIER_STACK_HANDY_MASTER_SECRET_FILE).trim()
+  const secretFile = (existingEnv.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE ?? env.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE ?? '').trim()
+    ? (existingEnv.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE ?? env.PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE).trim()
     : join(baseDir, 'happier-server', 'handy-master-secret.txt');
   const handyMasterSecret = (existingEnv.HANDY_MASTER_SECRET ?? env.HANDY_MASTER_SECRET ?? '').trim()
     ? (existingEnv.HANDY_MASTER_SECRET ?? env.HANDY_MASTER_SECRET).trim()
@@ -380,37 +380,37 @@ export async function ensureHappyServerManagedInfra({
 
   if (envPath) {
     // Ephemeral stacks should not pin ports in env files. In stack runtime, callers set
-    // HAPPIER_STACK_EPHEMERAL_PORTS=1 (via stack.runtime.json overlay) while the stack owner is alive.
+    // PIGGERCODE_STACK_EPHEMERAL_PORTS=1 (via stack.runtime.json overlay) while the stack owner is alive.
     //
     // For offline tooling (e.g. auth seeding) we still want to preserve the invariant:
     // - non-main stacks are ephemeral-by-default unless the user explicitly pinned ports already.
-    const runtimeEphemeral = (env.HAPPIER_STACK_EPHEMERAL_PORTS ?? '').toString().trim() === '1';
+    const runtimeEphemeral = (env.PIGGERCODE_STACK_EPHEMERAL_PORTS ?? '').toString().trim() === '1';
     const alreadyPinnedPorts =
-      (usesManagedPostgres && Boolean((existingEnv.HAPPIER_STACK_PG_PORT ?? '').trim())) ||
-      Boolean((existingEnv.HAPPIER_STACK_REDIS_PORT ?? '').trim()) ||
-      Boolean((existingEnv.HAPPIER_STACK_MINIO_PORT ?? '').trim()) ||
-      Boolean((existingEnv.HAPPIER_STACK_MINIO_CONSOLE_PORT ?? '').trim());
+      (usesManagedPostgres && Boolean((existingEnv.PIGGERCODE_STACK_PG_PORT ?? '').trim())) ||
+      Boolean((existingEnv.PIGGERCODE_STACK_REDIS_PORT ?? '').trim()) ||
+      Boolean((existingEnv.PIGGERCODE_STACK_MINIO_PORT ?? '').trim()) ||
+      Boolean((existingEnv.PIGGERCODE_STACK_MINIO_CONSOLE_PORT ?? '').trim());
     const ephemeralPorts = runtimeEphemeral || (stackName !== 'main' && !alreadyPinnedPorts);
     await ensureEnvFileMutated({
       envPath,
       removeKeys: usesManagedPostgres
         ? []
         : [
-            'HAPPIER_STACK_PG_PORT',
-            'HAPPIER_STACK_PG_USER',
-            'HAPPIER_STACK_PG_PASSWORD',
-            'HAPPIER_STACK_PG_DATABASE',
+            'PIGGERCODE_STACK_PG_PORT',
+            'PIGGERCODE_STACK_PG_USER',
+            'PIGGERCODE_STACK_PG_PASSWORD',
+            'PIGGERCODE_STACK_PG_DATABASE',
           ],
       updates: [
         // Stable credentials/files: persist these so restarts keep the same DB/user and S3 creds.
         ...(usesManagedPostgres
           ? [
-              { key: 'HAPPIER_STACK_PG_USER', value: pgUser },
-              { key: 'HAPPIER_STACK_PG_PASSWORD', value: pgPassword },
-              { key: 'HAPPIER_STACK_PG_DATABASE', value: pgDb },
+              { key: 'PIGGERCODE_STACK_PG_USER', value: pgUser },
+              { key: 'PIGGERCODE_STACK_PG_PASSWORD', value: pgPassword },
+              { key: 'PIGGERCODE_STACK_PG_DATABASE', value: pgDb },
             ]
           : []),
-        { key: 'HAPPIER_STACK_HANDY_MASTER_SECRET_FILE', value: secretFile },
+        { key: 'PIGGERCODE_STACK_HANDY_MASTER_SECRET_FILE', value: secretFile },
         { key: 'S3_ACCESS_KEY', value: s3AccessKey },
         { key: 'S3_SECRET_KEY', value: s3SecretKey },
         { key: 'S3_BUCKET', value: s3Bucket },
@@ -418,10 +418,10 @@ export async function ensureHappyServerManagedInfra({
         ...(ephemeralPorts
           ? []
           : [
-              ...(usesManagedPostgres ? [{ key: 'HAPPIER_STACK_PG_PORT', value: String(pgPort) }] : []),
-              { key: 'HAPPIER_STACK_REDIS_PORT', value: String(redisPort) },
-              { key: 'HAPPIER_STACK_MINIO_PORT', value: String(minioPort) },
-              { key: 'HAPPIER_STACK_MINIO_CONSOLE_PORT', value: String(minioConsolePort) },
+              ...(usesManagedPostgres ? [{ key: 'PIGGERCODE_STACK_PG_PORT', value: String(pgPort) }] : []),
+              { key: 'PIGGERCODE_STACK_REDIS_PORT', value: String(redisPort) },
+              { key: 'PIGGERCODE_STACK_MINIO_PORT', value: String(minioPort) },
+              { key: 'PIGGERCODE_STACK_MINIO_CONSOLE_PORT', value: String(minioConsolePort) },
               // Vars consumed by happier-server:
               ...(databaseUrl ? [{ key: 'DATABASE_URL', value: databaseUrl }] : []),
               { key: 'REDIS_URL', value: redisUrl },

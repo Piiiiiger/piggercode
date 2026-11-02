@@ -11,7 +11,7 @@ test('doctor does not crash in non-json mode (kv helper not shadowed)', async (t
   const env = doctorEnv({
     monoRoot,
     extraEnv: {
-      HAPPIER_STACK_SERVE_UI: '0',
+      PIGGERCODE_STACK_SERVE_UI: '0',
     },
   });
 

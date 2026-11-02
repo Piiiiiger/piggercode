@@ -12,7 +12,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-hstack_ROOT_DIR="${HAPPIER_STACK_CLI_ROOT_DIR:-$DEFAULT_ROOT_DIR}"
+hstack_ROOT_DIR="${PIGGERCODE_STACK_CLI_ROOT_DIR:-$DEFAULT_ROOT_DIR}"
 LIB_DIR="$hstack_ROOT_DIR/extras/swiftbar/lib"
 if [[ ! -f "$LIB_DIR/utils.sh" ]]; then
   echo "missing SwiftBar libs at: $LIB_DIR" >&2

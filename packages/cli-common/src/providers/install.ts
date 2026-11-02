@@ -775,7 +775,7 @@ async function installManagedPackageProviderCli(params: Readonly<{
     const rawPnpmOverride = readRawPnpmOverride(params.env);
     if (rawPnpmOverride) {
       throw new Error(
-        `Managed pnpm is unavailable because HAPPIER_PNPM_BIN is set but does not point to a supported pnpm entrypoint. Fix HAPPIER_PNPM_BIN or unset it, then retry the install.`,
+        `Managed pnpm is unavailable because PIGGERCODE_PNPM_BIN is set but does not point to a supported pnpm entrypoint. Fix PIGGERCODE_PNPM_BIN or unset it, then retry the install.`,
       );
     }
     throw new Error('Managed pnpm is unavailable');
@@ -786,7 +786,7 @@ async function installManagedPackageProviderCli(params: Readonly<{
     const rawRuntimeOverride = readExplicitJavaScriptRuntimeCommand(params.env);
     if (rawRuntimeOverride) {
       throw new Error(
-        'Managed JavaScript runtime is unavailable because HAPPIER_JS_RUNTIME_PATH, HAPPIER_MANAGED_NODE_BIN, or HAPPIER_NODE_PATH is set but does not point to a supported JavaScript runtime entrypoint. Fix the override or unset it, then retry the install.',
+        'Managed JavaScript runtime is unavailable because PIGGERCODE_JS_RUNTIME_PATH, PIGGERCODE_MANAGED_NODE_BIN, or PIGGERCODE_NODE_PATH is set but does not point to a supported JavaScript runtime entrypoint. Fix the override or unset it, then retry the install.',
       );
     }
     throw new Error('Managed JavaScript runtime is unavailable');

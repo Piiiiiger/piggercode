@@ -62,8 +62,8 @@ describe('codexLocalLauncher', () => {
       CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop',
       TEST_CODEX_THREAD_ID_PATH: threadIdPath,
       TEST_CODEX_ENV_DUMP_PATH: envDumpPath,
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -130,8 +130,8 @@ describe('codexLocalLauncher', () => {
       CODEX_SHELL: '1',
       CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop',
       TEST_CODEX_ENV_DUMP_PATH: envDumpPath,
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -139,8 +139,8 @@ describe('codexLocalLauncher', () => {
       CODEX_HOME: undefined,
     });
 
-	    const prevPreserve = process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS;
-	    process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS = 'CODEX_SHELL';
+	    const prevPreserve = process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS;
+	    process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS = 'CODEX_SHELL';
 
     try {
       const launcherPromise = codexLocalLauncher({
@@ -174,8 +174,8 @@ describe('codexLocalLauncher', () => {
       messageQueue.push('hi', { permissionMode: 'default' });
       await expect(launcherPromise).resolves.toEqual({ type: 'switch', resumeId: sessionId });
     } finally {
-      if (prevPreserve === undefined) delete process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS;
-      else process.env.HAPPIER_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS = prevPreserve;
+      if (prevPreserve === undefined) delete process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS;
+      else process.env.PIGGERCODE_CODEX_TUI_PRESERVE_CODEX_ENV_KEYS = prevPreserve;
       restoreEnv();
       await cleanupCodexBinaryFixture(fixture);
     }
@@ -199,8 +199,8 @@ describe('codexLocalLauncher', () => {
     const restoreEnv = applyCodexLauncherEnv({
       CODEX_CI: '1',
       TEST_CODEX_ENV_DUMP_PATH: envDumpPath,
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -243,7 +243,7 @@ describe('codexLocalLauncher', () => {
     }
   });
 
-  it('discovers rollout files under CODEX_HOME/sessions when HAPPIER_CODEX_SESSIONS_DIR is unset', async () => {
+  it('discovers rollout files under CODEX_HOME/sessions when PIGGERCODE_CODEX_SESSIONS_DIR is unset', async () => {
     const fixture = await createCodexBinaryFixture();
     const codexHome = await mkdtemp(join(tmpdir(), 'happier-codex-home-'));
     const sessionsDir = join(codexHome, 'sessions');
@@ -260,9 +260,9 @@ describe('codexLocalLauncher', () => {
     const { session, codexMessages } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: undefined,
+      PIGGERCODE_CODEX_SESSIONS_DIR: undefined,
       CODEX_HOME: codexHome,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -299,7 +299,7 @@ describe('codexLocalLauncher', () => {
     }
   });
 
-  it('discovers rollout files under ~/sessions when HAPPIER_CODEX_SESSIONS_DIR uses HOME', async () => {
+  it('discovers rollout files under ~/sessions when PIGGERCODE_CODEX_SESSIONS_DIR uses HOME', async () => {
     const fixture = await createCodexBinaryFixture();
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-codex-home-'));
     const sessionsDir = join(homeDir, 'sessions');
@@ -318,9 +318,9 @@ describe('codexLocalLauncher', () => {
     const { session, codexMessages } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: '~/sessions',
+      PIGGERCODE_CODEX_SESSIONS_DIR: '~/sessions',
       CODEX_HOME: undefined,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -377,8 +377,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: argsPath,
@@ -426,8 +426,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: argsPath,
@@ -478,8 +478,8 @@ describe('codexLocalLauncher', () => {
     const { session, agentStateUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: argsPath,
@@ -531,8 +531,8 @@ describe('codexLocalLauncher', () => {
     const { session, codexMessages, metadataUpdates, agentStateUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -589,8 +589,8 @@ describe('codexLocalLauncher', () => {
     });
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -672,8 +672,8 @@ describe('codexLocalLauncher', () => {
     const { session, metadataUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: ownSessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -724,8 +724,8 @@ describe('codexLocalLauncher', () => {
     const { session, metadataUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -784,8 +784,8 @@ describe('codexLocalLauncher', () => {
     const { session, metadataUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -832,8 +832,8 @@ describe('codexLocalLauncher', () => {
     const { session, rpcHandlers } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -883,8 +883,8 @@ describe('codexLocalLauncher', () => {
     const { session, metadataUpdates } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -936,8 +936,8 @@ describe('codexLocalLauncher', () => {
     const { session, sessionEvents } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -989,8 +989,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: undefined,
       TEST_CODEX_TIMESTAMP: undefined,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -1033,8 +1033,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: undefined,
       TEST_CODEX_TIMESTAMP: undefined,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -1069,8 +1069,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: join(fixture.binDir, 'missing-codex-binary'),
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: join(fixture.binDir, 'missing-codex-binary'),
       TEST_CODEX_SESSION_ID: undefined,
       TEST_CODEX_TIMESTAMP: undefined,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -1100,19 +1100,19 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: undefined,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: undefined,
       TEST_CODEX_SESSION_ID: undefined,
       TEST_CODEX_TIMESTAMP: undefined,
       TEST_CODEX_ARGV_PATH: undefined,
     });
-    const originalCodexPath = process.env.HAPPIER_CODEX_PATH;
-    const originalHappyHomeDir = process.env.HAPPIER_HOME_DIR;
+    const originalCodexPath = process.env.PIGGERCODE_CODEX_PATH;
+    const originalHappyHomeDir = process.env.PIGGERCODE_HOME_DIR;
     const originalPath = process.env.PATH;
 
     try {
-      delete process.env.HAPPIER_CODEX_PATH;
-      process.env.HAPPIER_HOME_DIR = join(fixture.binDir, 'home');
+      delete process.env.PIGGERCODE_CODEX_PATH;
+      process.env.PIGGERCODE_HOME_DIR = join(fixture.binDir, 'home');
       process.env.PATH = join(fixture.binDir, 'empty-path');
 
       await expect(
@@ -1125,10 +1125,10 @@ describe('codexLocalLauncher', () => {
         }),
       ).resolves.toEqual({ type: 'exit', code: 1 });
     } finally {
-      if (originalCodexPath === undefined) delete process.env.HAPPIER_CODEX_PATH;
-      else process.env.HAPPIER_CODEX_PATH = originalCodexPath;
-      if (originalHappyHomeDir === undefined) delete process.env.HAPPIER_HOME_DIR;
-      else process.env.HAPPIER_HOME_DIR = originalHappyHomeDir;
+      if (originalCodexPath === undefined) delete process.env.PIGGERCODE_CODEX_PATH;
+      else process.env.PIGGERCODE_CODEX_PATH = originalCodexPath;
+      if (originalHappyHomeDir === undefined) delete process.env.PIGGERCODE_HOME_DIR;
+      else process.env.PIGGERCODE_HOME_DIR = originalHappyHomeDir;
       if (originalPath === undefined) delete process.env.PATH;
       else process.env.PATH = originalPath;
       restoreEnv();
@@ -1153,8 +1153,8 @@ describe('codexLocalLauncher', () => {
     const { session } = createLocalSessionHarness();
     const messageQueue = createLocalMessageQueue();
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: fixture.fakeCodex,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: fixture.fakeCodex,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,
@@ -1268,8 +1268,8 @@ child.on('error', (error) => {
     const messageQueue = createLocalMessageQueue();
 
     const restoreEnv = applyCodexLauncherEnv({
-      HAPPIER_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
-      HAPPIER_CODEX_TUI_BIN: undefined,
+      PIGGERCODE_CODEX_SESSIONS_DIR: fixture.sessionsRoot,
+      PIGGERCODE_CODEX_TUI_BIN: undefined,
       TEST_CODEX_SESSION_ID: sessionId,
       TEST_CODEX_TIMESTAMP: nowIso,
       TEST_CODEX_ARGV_PATH: undefined,

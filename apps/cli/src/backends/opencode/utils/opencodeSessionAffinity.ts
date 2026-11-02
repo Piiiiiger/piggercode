@@ -21,9 +21,9 @@ export function buildOpenCodeSessionEnvironmentVariables(params: Readonly<{
   serverBaseUrlExplicit?: boolean;
 }>): Record<string, string> {
   return {
-    ...(params.backendMode ? { HAPPIER_OPENCODE_BACKEND_MODE: params.backendMode } : {}),
-    ...(params.serverBaseUrl ? { HAPPIER_OPENCODE_SERVER_URL: params.serverBaseUrl } : {}),
-    ...(params.serverBaseUrl && params.serverBaseUrlExplicit ? { HAPPIER_OPENCODE_SERVER_URL_EXPLICIT: '1' } : {}),
+    ...(params.backendMode ? { PIGGERCODE_OPENCODE_BACKEND_MODE: params.backendMode } : {}),
+    ...(params.serverBaseUrl ? { PIGGERCODE_OPENCODE_SERVER_URL: params.serverBaseUrl } : {}),
+    ...(params.serverBaseUrl && params.serverBaseUrlExplicit ? { PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1' } : {}),
   };
 }
 

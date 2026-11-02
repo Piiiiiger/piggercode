@@ -261,13 +261,13 @@ describe('resolveInteractiveTerminal', () => {
 });
 
 describe('isInteractiveTerminal — a caller saying nobody is watching', () => {
-    const previousEnv = process.env.HAPPIER_NONINTERACTIVE;
+    const previousEnv = process.env.PIGGERCODE_NONINTERACTIVE;
     const previousStdin = process.stdin.isTTY;
     const previousStdout = process.stdout.isTTY;
 
     afterEach(() => {
-        if (previousEnv === undefined) delete process.env.HAPPIER_NONINTERACTIVE;
-        else process.env.HAPPIER_NONINTERACTIVE = previousEnv;
+        if (previousEnv === undefined) delete process.env.PIGGERCODE_NONINTERACTIVE;
+        else process.env.PIGGERCODE_NONINTERACTIVE = previousEnv;
         process.stdin.isTTY = previousStdin;
         process.stdout.isTTY = previousStdout;
     });
@@ -277,26 +277,26 @@ describe('isInteractiveTerminal — a caller saying nobody is watching', () => {
         process.stdout.isTTY = true;
     }
 
-    it('refuses to prompt under HAPPIER_NONINTERACTIVE=1 even with a terminal on both ends', () => {
+    it('refuses to prompt under PIGGERCODE_NONINTERACTIVE=1 even with a terminal on both ends', () => {
         // The whole point: the terminal is still there. An installer, or
         // `happier setup --yes`, has said that nobody is sitting at it — so a
         // command that asks a question is a command that hangs.
         pretendBothTtys();
-        process.env.HAPPIER_NONINTERACTIVE = '1';
+        process.env.PIGGERCODE_NONINTERACTIVE = '1';
 
         expect(isInteractiveTerminal()).toBe(false);
     });
 
     it('prompts with the same terminal once nothing claims the run is unattended', () => {
         pretendBothTtys();
-        delete process.env.HAPPIER_NONINTERACTIVE;
+        delete process.env.PIGGERCODE_NONINTERACTIVE;
 
         expect(isInteractiveTerminal()).toBe(true);
     });
 
     it('reads only the value the installers set, not any value at all', () => {
         pretendBothTtys();
-        process.env.HAPPIER_NONINTERACTIVE = '0';
+        process.env.PIGGERCODE_NONINTERACTIVE = '0';
 
         expect(isInteractiveTerminal()).toBe(true);
     });

@@ -6,7 +6,7 @@ describe('resolveMobileAppScheme', () => {
   it('prefers an explicit mobile e2e scheme override', () => {
     expect(
       resolveMobileAppScheme(
-        { HAPPIER_E2E_MOBILE_APP_SCHEME: 'happier-custom', EXPO_APP_SCHEME: 'happier-dev' },
+        { PIGGERCODE_E2E_MOBILE_APP_SCHEME: 'happier-custom', EXPO_APP_SCHEME: 'happier-dev' },
         { appId: 'dev.happier.app.publicdev.devclient' },
       ),
     ).toBe('happier-custom');

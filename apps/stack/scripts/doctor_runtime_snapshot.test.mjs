@@ -17,11 +17,11 @@ test('doctor --json reports the active runtime snapshot', async (t) => {
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: rootDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'prefer',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: rootDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'doctor.mjs'), '--json'], { cwd: rootDir, env });
@@ -52,11 +52,11 @@ test('doctor --json reports invalid active runtime snapshots even in prefer mode
 
   const env = {
     ...process.env,
-    HAPPIER_STACK_STACK: fixture.stackName,
-    HAPPIER_STACK_STORAGE_DIR: fixture.storageDir,
-    HAPPIER_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
-    HAPPIER_STACK_REPO_DIR: rootDir,
-    HAPPIER_STACK_RUNTIME_MODE: 'prefer',
+    PIGGERCODE_STACK_STACK: fixture.stackName,
+    PIGGERCODE_STACK_STORAGE_DIR: fixture.storageDir,
+    PIGGERCODE_STACK_ENV_FILE: join(fixture.stackDir, 'env'),
+    PIGGERCODE_STACK_REPO_DIR: rootDir,
+    PIGGERCODE_STACK_RUNTIME_MODE: 'prefer',
   };
 
   const res = await runNode([join(rootDir, 'scripts', 'doctor.mjs'), '--json'], { cwd: rootDir, env });

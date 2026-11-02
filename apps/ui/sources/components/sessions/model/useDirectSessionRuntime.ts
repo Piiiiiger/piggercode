@@ -28,13 +28,13 @@ function normalizeServerId(value: unknown): string | undefined {
 }
 
 function readActivePollMsFromEnv(): number {
-    const raw = Number.parseInt(String(process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE ?? ''), 10);
+    const raw = Number.parseInt(String(process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_ACTIVE ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 250;
     return Math.max(50, Math.min(60_000, configured));
 }
 
 function readIdlePollMsFromEnv(): number {
-    const raw = Number.parseInt(String(process.env.EXPO_PUBLIC_HAPPIER_DIRECT_SESSIONS_TAIL_POLL_MS_IDLE ?? ''), 10);
+    const raw = Number.parseInt(String(process.env.EXPO_PUBLIC_PIGGERCODE_DIRECT_SESSIONS_TAIL_POLL_MS_IDLE ?? ''), 10);
     const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 2_000;
     return Math.max(100, Math.min(120_000, configured));
 }

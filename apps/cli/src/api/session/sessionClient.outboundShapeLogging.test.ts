@@ -54,7 +54,7 @@ vi.mock('./sessionChangesSyncOnConnect', async (importOriginal) => ({
 }));
 
 beforeEach(() => {
-  vi.stubEnv('HAPPIER_TRANSCRIPT_STORAGE', 'direct');
+  vi.stubEnv('PIGGERCODE_TRANSCRIPT_STORAGE', 'direct');
   runSessionChangesSyncOnConnectMock.mockReset();
   runSessionChangesSyncOnConnectMock.mockResolvedValue(undefined);
 });

@@ -31,9 +31,9 @@ describe('resolveUiPostinstallTasks', () => {
         );
     });
 
-    it('skips web-asset tasks when HAPPIER_UI_VENDOR_WEB_ASSETS=0', async () => {
+    it('skips web-asset tasks when PIGGERCODE_UI_VENDOR_WEB_ASSETS=0', async () => {
         const mod: any = await import('../../../tools/resolveUiPostinstallTasks.mjs');
-        const tasks = mod.resolveUiPostinstallTasks({ env: { HAPPIER_UI_VENDOR_WEB_ASSETS: '0' } });
+        const tasks = mod.resolveUiPostinstallTasks({ env: { PIGGERCODE_UI_VENDOR_WEB_ASSETS: '0' } });
         expect(tasks).toContain('verify-expo-router-web-modal-patch');
         expect(tasks).toContain('verify-sentry-react-native-replay-post-init-patch');
         expect(tasks).toContain('install-react-native-enriched-markdown-web-wasm');

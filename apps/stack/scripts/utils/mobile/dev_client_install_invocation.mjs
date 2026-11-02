@@ -62,8 +62,8 @@ export function buildMobileDevClientInstallInvocation({
   const user = (baseEnv.USER ?? baseEnv.USERNAME ?? 'user').toString();
   const profile = String(
     getFlagValue({ argv: a, kv, flag: '--profile' }) ??
-      baseEnv.HAPPIER_STACK_DEV_CLIENT_PROFILE ??
-      baseEnv.HAPPIER_MOBILE_DEV_CLIENT_PROFILE ??
+      baseEnv.PIGGERCODE_STACK_DEV_CLIENT_PROFILE ??
+      baseEnv.PIGGERCODE_MOBILE_DEV_CLIENT_PROFILE ??
       ''
   ).trim();
   const identityBase = defaultDevClientIdentity({ user, profile });
@@ -108,7 +108,7 @@ export function buildMobileDevClientInstallInvocation({
   };
   if (platform === 'android') {
     env.GRADLE_OPTS = resolveAndroidDevClientGradleOpts(baseEnv.GRADLE_OPTS);
-    env.HAPPIER_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE = '1';
+    env.PIGGERCODE_STACK_CLEAR_ANDROID_NATIVE_BUILD_STATE = '1';
   }
   // Keep Expo slug stable so EAS local builds don't fail when `extra.eas.projectId` is configured.
   // Dev/prod isolation should be done via EXPO_APP_SCHEME (and bundle id), not slug.

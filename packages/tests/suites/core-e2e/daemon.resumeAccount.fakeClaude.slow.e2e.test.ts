@@ -44,12 +44,12 @@ it('preserves a terminal-selected Claude account and refuses a second entry for 
     const log = resolve(testDir, 'fake-claude.jsonl');
     const env = sanitizeDaemonEnvForSpawn({
         ...process.env,
-        CI: '1', HAPPIER_VARIANT: 'dev', HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_HOME_DIR: home, HAPPIER_SERVER_URL: server.baseUrl, HAPPIER_WEBAPP_URL: server.baseUrl,
-        HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(), HAPPIER_E2E_FAKE_CLAUDE_LOG: log,
+        CI: '1', PIGGERCODE_VARIANT: 'dev', PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_HOME_DIR: home, PIGGERCODE_SERVER_URL: server.baseUrl, PIGGERCODE_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(), PIGGERCODE_E2E_FAKE_CLAUDE_LOG: log,
         CLAUDE_CONFIG_DIR: accountA,
     });
-    delete env.HAPPIER_CLI_SUBPROCESS_ENTRYPOINT;
+    delete env.PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT;
     const snapshotDir = resolve(testDir, 'cli-dist');
     const cliLaunchSpec = await resolveCliTestLaunchSpec({ testDir, env }, { snapshotDir });
     daemon = await startTestDaemon({ testDir, happyHomeDir: home, env, snapshotDir });

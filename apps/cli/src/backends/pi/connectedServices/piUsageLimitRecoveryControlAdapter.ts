@@ -2,9 +2,9 @@ import { createBackoffSessionUsageLimitRecoveryControlAdapter } from '@/session/
 import type { SessionUsageLimitRecoveryControlAdapter } from '@/session/usageLimitRecoveryControls/sessionUsageLimitRecoveryControlTypes';
 
 const PI_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_ENV =
-  'HAPPIER_PI_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS' as const;
+  'PIGGERCODE_PI_USAGE_LIMIT_RECOVERY_FALLBACK_BACKOFF_MS' as const;
 const PI_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS_ENV =
-  'HAPPIER_PI_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS' as const;
+  'PIGGERCODE_PI_USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS' as const;
 
 export function createPiUsageLimitRecoveryControlAdapter(deps: Readonly<{
   nowMs?: () => number;

@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("accountPetLibraryRuntime", () => {
     afterEach(() => {
-        delete process.env.HAPPIER_SERVER_LIGHT_PRIVATE_FILES_DIR;
-        delete process.env.HAPPIER_FEATURE_PETS_SYNC__MAX_MANIFEST_BYTES;
+        delete process.env.PIGGERCODE_SERVER_LIGHT_PRIVATE_FILES_DIR;
+        delete process.env.PIGGERCODE_FEATURE_PETS_SYNC__MAX_MANIFEST_BYTES;
         vi.restoreAllMocks();
         vi.doUnmock("@/app/features/catalog/readFeatureEnv");
         vi.doUnmock("@/storage/privateFiles/privateFilesLocal");

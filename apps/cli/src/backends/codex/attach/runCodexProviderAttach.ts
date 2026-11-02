@@ -46,7 +46,7 @@ export async function runCodexProviderAttach(params: Readonly<{
         args: [],
         cwd: directory,
         processEnv: env,
-        overrideEnvVarKeys: ['HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
+        overrideEnvVarKeys: ['PIGGERCODE_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],
         targetLabel: 'Codex CLI',
       });
   const prepared = await prepareOwnedTerminalSpawn({

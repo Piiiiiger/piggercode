@@ -56,7 +56,7 @@ describe('createCodexAppServerExecutionRunBackend', () => {
       cwd: '/tmp/happier-worktree',
       env: {
         PATH: '/tmp/isolated-bin:/usr/bin',
-        HAPPIER_CODEX_APP_SERVER_BIN: '/tmp/fake-codex-app-server',
+        PIGGERCODE_CODEX_APP_SERVER_BIN: '/tmp/fake-codex-app-server',
       } as any,
       permissionMode: 'read-only' as any,
       permissionHandler: null,
@@ -64,7 +64,7 @@ describe('createCodexAppServerExecutionRunBackend', () => {
 
     expect(createCodexAppServerRuntimeMock).toHaveBeenCalledTimes(1);
     const params = createCodexAppServerRuntimeMock.mock.calls[0]?.[0] as any;
-    expect(params?.processEnv?.HAPPIER_CODEX_APP_SERVER_BIN).toBe('/tmp/fake-codex-app-server');
+    expect(params?.processEnv?.PIGGERCODE_CODEX_APP_SERVER_BIN).toBe('/tmp/fake-codex-app-server');
     expect(params?.processEnv?.PATH).toBe('/tmp/isolated-bin:/usr/bin');
   });
 

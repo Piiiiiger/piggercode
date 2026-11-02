@@ -132,7 +132,7 @@ describe('TranscriptList (FlashList v2)', () => {
         vi.stubGlobal('window', {
             localStorage: {
                 getItem: (key: string) =>
-                    key === 'HAPPIER_SYNC_TUNING_JSON'
+                    key === 'PIGGERCODE_SYNC_TUNING_JSON'
                         ? JSON.stringify({ transcriptLegendListSpikeSurface: 'flashList' })
                         : null,
             },

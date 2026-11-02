@@ -15,9 +15,9 @@ import { getConnectedServiceMaterializer } from '@/backends/catalog';
 import { replaceDirectoryAtomically } from '@/utils/fs/replaceDirectoryAtomically';
 import { logger } from '@/ui/logger';
 import {
-  HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
-  HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
+  PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY,
   serializeConnectedServiceMaterializedEnvKeys,
   serializeConnectedServiceChildSelections,
 } from '../connectedServiceChildEnvironment';
@@ -413,13 +413,13 @@ export async function materializeConnectedServicesForSpawn(params: Readonly<{
   const buildPromotedEnv = (): Record<string, string> => ({
     ...materializedEnv,
     ...(targetMaterializedRoot
-      ? { [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: targetMaterializedRoot }
+      ? { [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: targetMaterializedRoot }
       : null),
     ...(serializedSelections
-      ? { [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serializedSelections }
+      ? { [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serializedSelections }
       : null),
     ...(serializedMaterializedEnvKeys
-      ? { [HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: serializedMaterializedEnvKeys }
+      ? { [PIGGERCODE_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY]: serializedMaterializedEnvKeys }
       : null),
   });
   // Providers already declare their actual native home. A target outside the owned attempt

@@ -36,7 +36,7 @@ function resolveRecommendedMaxOldSpaceSizeMb(totalMemoryBytes) {
 }
 
 export function resolveMaxOldSpaceSizeMb(env, totalMemoryBytes = os.totalmem()) {
-  const raw = String(env?.HAPPIER_UI_TEST_MAX_OLD_SPACE_SIZE_MB ?? '').trim();
+  const raw = String(env?.PIGGERCODE_UI_TEST_MAX_OLD_SPACE_SIZE_MB ?? '').trim();
   const parsed = Number.parseInt(raw, 10);
   return Number.isFinite(parsed) && parsed > 0
     ? parsed
@@ -69,7 +69,7 @@ async function main(argv) {
     cleanupPollMs: 25,
     signalCleanupGraceMs: 0,
     exitCleanupGraceMs: 1_000,
-    parentWatchdogPollMs: Number.parseInt(process.env.HAPPIER_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
+    parentWatchdogPollMs: Number.parseInt(process.env.PIGGERCODE_TEST_PARENT_WATCHDOG_MS ?? '1000', 10),
   });
 
   if (!result.ok) {

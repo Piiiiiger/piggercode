@@ -72,10 +72,10 @@ describe('core e2e: server retention session pruning', () => {
       testDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_SERVER_RETENTION__ENABLED: '1',
-        HAPPIER_SERVER_RETENTION__INTERVAL_MS: '200',
-        HAPPIER_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
-        HAPPIER_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '1',
+        PIGGERCODE_SERVER_RETENTION__ENABLED: '1',
+        PIGGERCODE_SERVER_RETENTION__INTERVAL_MS: '200',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__MODE: 'delete_inactive',
+        PIGGERCODE_SERVER_RETENTION__SESSIONS__INACTIVITY_DAYS: '1',
       },
     });
 

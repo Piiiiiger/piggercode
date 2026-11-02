@@ -224,7 +224,7 @@ describe('zellij actions', () => {
   });
 
   it('globally caps concurrent zellij action client invocations', async () => {
-    process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
+    process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     const children: Array<EventEmitter & { stdout: EventEmitter; stderr: EventEmitter }> = [];
     spawnMock.mockImplementation(() => {
       const child = new EventEmitter() as EventEmitter & { stdout: EventEmitter; stderr: EventEmitter };
@@ -252,13 +252,13 @@ describe('zellij actions', () => {
       children[1]!.emit('close', 0);
       await second;
     } finally {
-      delete process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY;
+      delete process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY;
     }
   });
 
   it('shares the zellij action cap across independent module instances and jitters contention retries', async () => {
     const socketDir = await mkdtemp(join(tmpdir(), 'happier-zellij-limit-'));
-    process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
+    process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     const random = vi.spyOn(Math, 'random').mockReturnValue(0.5);
     const children: Array<EventEmitter & { stdout: EventEmitter; stderr: EventEmitter }> = [];
     spawnMock.mockImplementation(() => {
@@ -298,7 +298,7 @@ describe('zellij actions', () => {
       await second;
     } finally {
       for (const child of children) child.emit('close', 0);
-      delete process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY;
+      delete process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY;
       random.mockRestore();
       await rm(socketDir, { recursive: true, force: true });
       vi.resetModules();
@@ -306,7 +306,7 @@ describe('zellij actions', () => {
   });
 
   it('includes limiter queue wait in the zellij action timeout deadline', async () => {
-    process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
+    process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     const firstChild = new EventEmitter() as EventEmitter & { stdout: EventEmitter; stderr: EventEmitter };
     firstChild.stdout = new EventEmitter();
     firstChild.stderr = new EventEmitter();
@@ -336,13 +336,13 @@ describe('zellij actions', () => {
       expect(spawnMock).toHaveBeenCalledTimes(1);
     } finally {
       firstChild.emit('close', 0);
-      delete process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY;
+      delete process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY;
       vi.resetModules();
     }
   });
 
   it('counts detached command launchers in the same zellij action limit until they close', async () => {
-    process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
+    process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     const detachedChild = mockHangingChild();
     spawnMock
       .mockImplementationOnce(() => detachedChild)
@@ -369,7 +369,7 @@ describe('zellij actions', () => {
       await list;
     } finally {
       detachedChild.emit('close', 0);
-      delete process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY;
+      delete process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY;
       vi.resetModules();
     }
   });
@@ -377,7 +377,7 @@ describe('zellij actions', () => {
   it('reclaims a shared zellij action slot whose owner process is gone', async () => {
     const socketDir = await mkdtemp(join(tmpdir(), 'happier-zellij-dead-owner-'));
     const slotDir = join(socketDir, '.happier-action-slots', 'slot-0');
-    process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
+    process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     await mkdir(slotDir, { recursive: true });
     await writeFile(join(slotDir, 'owner.json'), JSON.stringify({
       pid: 99_999_999,
@@ -395,7 +395,7 @@ describe('zellij actions', () => {
       })).resolves.toEqual([]);
       expect(spawnMock).toHaveBeenCalledTimes(1);
     } finally {
-      delete process.env.HAPPIER_ZELLIJ_ACTION_MAX_CONCURRENCY;
+      delete process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY;
       await rm(socketDir, { recursive: true, force: true });
       vi.resetModules();
     }
@@ -711,7 +711,7 @@ describe('zellij actions', () => {
     try {
       await runCommand({
         zellijBinary: '/tools/zellij',
-        env: { ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock', HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js' },
+        env: { ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock', PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js' },
         sessionName: 'happy-claude',
         cwd: '/workspace',
         command: ['/managed/node', 'claude_local_launcher.cjs', '--model', 'sonnet'],
@@ -741,7 +741,7 @@ describe('zellij actions', () => {
       expect.objectContaining({
         cwd: '/workspace',
         env: expect.objectContaining({
-          HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js',
+          PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js',
           ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock',
         }),
         shell: false,
@@ -767,7 +767,7 @@ describe('zellij actions', () => {
 
     const handle = await actions.startCommandDetached?.({
       zellijBinary: '/tools/zellij',
-      env: { ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock', HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js' },
+      env: { ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock', PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js' },
       sessionName: 'happy-claude',
       cwd: '/workspace',
       command: ['/managed/node', 'claude_local_launcher.cjs', '--model', 'sonnet'],
@@ -791,7 +791,7 @@ describe('zellij actions', () => {
       expect.objectContaining({
         cwd: '/workspace',
         env: expect.objectContaining({
-          HAPPIER_CLAUDE_PATH: '/opt/claude/cli.js',
+          PIGGERCODE_CLAUDE_PATH: '/opt/claude/cli.js',
           ZELLIJ_SOCKET_DIR: '/tmp/zellij-sock',
         }),
         shell: false,

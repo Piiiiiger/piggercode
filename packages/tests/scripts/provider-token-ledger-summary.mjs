@@ -60,7 +60,7 @@ function usage() {
       '  yarn providers:token-ledger:summary [--file <path>]',
       '',
       'Defaults:',
-      '  --file uses HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH (or HAPPY_*) when set,',
+      '  --file uses PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH (or HAPPY_*) when set,',
       '  otherwise defaults to packages/tests/.project/logs/e2e latest run ledger path when provided explicitly.',
     ].join('\n'),
   );
@@ -68,7 +68,7 @@ function usage() {
 
 function parseArgs(argv) {
   const args = argv.slice(2);
-  let filePath = (process.env.HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? process.env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? '').trim();
+  let filePath = (process.env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? process.env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH ?? '').trim();
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--file') {
@@ -81,7 +81,7 @@ function parseArgs(argv) {
     if (arg === '--help' || arg === '-h') return { help: true, filePath: '' };
     throw new Error(`Unknown arg: ${arg}`);
   }
-  if (!filePath) throw new Error('Missing ledger path. Provide --file or HAPPIER_E2E_PROVIDER_TOKEN_LEDGER_PATH.');
+  if (!filePath) throw new Error('Missing ledger path. Provide --file or PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH.');
   return { help: false, filePath };
 }
 

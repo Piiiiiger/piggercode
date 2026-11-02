@@ -50,8 +50,8 @@ describe('sync reliability telemetry', () => {
         telemetry.record('sync.snapshot.complete');
 
         const globalApi = (globalThis as unknown as {
-            __HAPPIER_SYNC_RELIABILITY__?: { snapshot: () => unknown; reset: () => void };
-        }).__HAPPIER_SYNC_RELIABILITY__;
+            __PIGGERCODE_SYNC_RELIABILITY__?: { snapshot: () => unknown; reset: () => void };
+        }).__PIGGERCODE_SYNC_RELIABILITY__;
 
         expect(globalApi?.snapshot()).toEqual({
             events: [{ id: 'id', name: 'sync.snapshot.complete', atMs: 1, fields: {} }],

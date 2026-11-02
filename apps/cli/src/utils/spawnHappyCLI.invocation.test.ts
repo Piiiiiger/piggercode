@@ -25,17 +25,17 @@ describe('happier-cli subprocess invocation', () => {
         process.execArgv = [...originalExecArgv];
     });
 
-    it('builds a node invocation when HAPPIER_CLI_SUBPROCESS_RUNTIME=node', async () => {
+    it('builds a node invocation when PIGGERCODE_CLI_SUBPROCESS_RUNTIME=node', async () => {
         await withTempHappyCliEntrypoint(async (entrypoint) => {
             envScope.patch({
-                HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-                HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-                HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-                HAPPIER_VARIANT: undefined,
-                HAPPIER_STACK_REPO_DIR: undefined,
-                HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-                HAPPIER_STACK_STACK: undefined,
-                HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
+                PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+                PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+                PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+                PIGGERCODE_VARIANT: undefined,
+                PIGGERCODE_STACK_REPO_DIR: undefined,
+                PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+                PIGGERCODE_STACK_STACK: undefined,
+                PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
             });
             const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
 
@@ -52,17 +52,17 @@ describe('happier-cli subprocess invocation', () => {
         });
     });
 
-    it('builds a bun invocation when HAPPIER_CLI_SUBPROCESS_RUNTIME=bun', async () => {
+    it('builds a bun invocation when PIGGERCODE_CLI_SUBPROCESS_RUNTIME=bun', async () => {
         await withTempHappyCliEntrypoint(async (entrypoint) => {
             envScope.patch({
-                HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-                HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-                HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-                HAPPIER_VARIANT: undefined,
-                HAPPIER_STACK_REPO_DIR: undefined,
-                HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-                HAPPIER_STACK_STACK: undefined,
-                HAPPIER_CLI_SUBPROCESS_RUNTIME: 'bun',
+                PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+                PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+                PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+                PIGGERCODE_VARIANT: undefined,
+                PIGGERCODE_STACK_REPO_DIR: undefined,
+                PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+                PIGGERCODE_STACK_STACK: undefined,
+                PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'bun',
             });
             const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
             const inv = mod.buildHappyCliSubprocessInvocation(['--version']);
@@ -76,14 +76,14 @@ describe('happier-cli subprocess invocation', () => {
     it('uses overridden subprocess entrypoint when provided', async () => {
         await withTempHappyCliEntrypoint(async (entrypoint) => {
             envScope.patch({
-                HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-                HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-                HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-                HAPPIER_VARIANT: undefined,
-                HAPPIER_STACK_REPO_DIR: undefined,
-                HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-                HAPPIER_STACK_STACK: undefined,
-                HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
+                PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+                PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+                PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+                PIGGERCODE_VARIANT: undefined,
+                PIGGERCODE_STACK_REPO_DIR: undefined,
+                PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+                PIGGERCODE_STACK_STACK: undefined,
+                PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
             });
 
             const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -104,14 +104,14 @@ describe('happier-cli subprocess invocation', () => {
 
     it('prefers package-dist entrypoint when dist is absent in a packaged runtime', async () => {
         envScope.patch({
-            HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-            HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-            HAPPIER_VARIANT: undefined,
-            HAPPIER_STACK_REPO_DIR: undefined,
-            HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-            HAPPIER_STACK_STACK: undefined,
-            HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: undefined,
-            HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
+            PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+            PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+            PIGGERCODE_VARIANT: undefined,
+            PIGGERCODE_STACK_REPO_DIR: undefined,
+            PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+            PIGGERCODE_STACK_STACK: undefined,
+            PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: undefined,
+            PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
         });
 
         vi.doMock('node:fs', async () => {
@@ -144,14 +144,14 @@ describe('happier-cli subprocess invocation', () => {
 
     it('falls back to tsx source entrypoint in dev mode when dist entrypoint is missing', async () => {
         envScope.patch({
-            HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-            HAPPIER_STACK_REPO_DIR: undefined,
-            HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-            HAPPIER_STACK_STACK: undefined,
-            HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
-            HAPPIER_VARIANT: 'dev',
-            HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
-            HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: join(process.cwd(), 'missing-entrypoint-synthetic', 'index.mjs'),
+            PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+            PIGGERCODE_STACK_REPO_DIR: undefined,
+            PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+            PIGGERCODE_STACK_STACK: undefined,
+            PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
+            PIGGERCODE_VARIANT: 'dev',
+            PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '1',
+            PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: join(process.cwd(), 'missing-entrypoint-synthetic', 'index.mjs'),
         });
 
         const mod = (await import('@/utils/spawnHappyCLI')) as typeof import('@/utils/spawnHappyCLI');
@@ -171,14 +171,14 @@ describe('happier-cli subprocess invocation', () => {
     it('propagates --preserve-symlinks when the current CLI process was launched with it', async () => {
         await withTempHappyCliEntrypoint(async (entrypoint) => {
             envScope.patch({
-                HAPPIER_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
-                HAPPIER_CLI_SUBPROCESS_PREFER_TSX: '0',
-                HAPPIER_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
-                HAPPIER_VARIANT: undefined,
-                HAPPIER_STACK_REPO_DIR: undefined,
-                HAPPIER_STACK_CLI_ROOT_DIR: undefined,
-                HAPPIER_STACK_STACK: undefined,
-                HAPPIER_CLI_SUBPROCESS_RUNTIME: 'node',
+                PIGGERCODE_CLI_SUBPROCESS_ENTRYPOINT: entrypoint,
+                PIGGERCODE_CLI_SUBPROCESS_PREFER_TSX: '0',
+                PIGGERCODE_CLI_SUBPROCESS_ALLOW_TSX_FALLBACK: '0',
+                PIGGERCODE_VARIANT: undefined,
+                PIGGERCODE_STACK_REPO_DIR: undefined,
+                PIGGERCODE_STACK_CLI_ROOT_DIR: undefined,
+                PIGGERCODE_STACK_STACK: undefined,
+                PIGGERCODE_CLI_SUBPROCESS_RUNTIME: 'node',
             });
             process.execArgv = ['--preserve-symlinks'];
 

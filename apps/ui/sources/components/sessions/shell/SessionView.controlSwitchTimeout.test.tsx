@@ -350,14 +350,14 @@ describe('SessionView (control switch timeout)', () => {
         checkedAt: 1,
       },
     };
-    process.env.EXPO_PUBLIC_HAPPIER_CONTROL_SWITCH_UI_TIMEOUT_MS = String(controlSwitchTimeoutMs);
+    process.env.EXPO_PUBLIC_PIGGERCODE_CONTROL_SWITCH_UI_TIMEOUT_MS = String(controlSwitchTimeoutMs);
   });
 
   afterEach(() => {
     vi.useRealTimers();
     (globalThis as { __DEV__?: boolean }).__DEV__ = previousDev;
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete process.env.EXPO_PUBLIC_HAPPIER_CONTROL_SWITCH_UI_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_CONTROL_SWITCH_UI_TIMEOUT_MS;
   });
 
   it('keeps local-control UI hidden and clears remote switching state after a timeout when controlledByUser never updates', async () => {

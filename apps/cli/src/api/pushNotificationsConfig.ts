@@ -7,14 +7,14 @@ function parseTimeoutMs(raw: string | undefined, fallback: number): number {
 }
 
 export function readPushFetchTokensTimeoutMs(): number {
-  return parseTimeoutMs(process.env.HAPPIER_PUSH_FETCH_TOKENS_TIMEOUT_MS, 15_000);
+  return parseTimeoutMs(process.env.PIGGERCODE_PUSH_FETCH_TOKENS_TIMEOUT_MS, 15_000);
 }
 
 export function readPushFetchTokensFailureCooldownMs(): number {
-  return parseTimeoutMs(process.env.HAPPIER_PUSH_FETCH_TOKENS_FAILURE_COOLDOWN_MS, 30_000);
+  return parseTimeoutMs(process.env.PIGGERCODE_PUSH_FETCH_TOKENS_FAILURE_COOLDOWN_MS, 30_000);
 }
 
 export function isPushDebugEnabled(): boolean {
-  const raw = typeof process.env.HAPPIER_DEBUG_PUSH === 'string' ? process.env.HAPPIER_DEBUG_PUSH.trim().toLowerCase() : '';
+  const raw = typeof process.env.PIGGERCODE_DEBUG_PUSH === 'string' ? process.env.PIGGERCODE_DEBUG_PUSH.trim().toLowerCase() : '';
   return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on';
 }

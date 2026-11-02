@@ -104,8 +104,8 @@ describe('createAcpRuntime (sidechain import)', () => {
 
   it('records replay failure at the default session log level while preserving the fallback', async () => {
     await withTempDir('happier-acp-replay-failure-', async (dir) => {
-      const env = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_LOG_LEVEL', 'DEBUG', 'DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING']);
-      env.patch({ HAPPIER_HOME_DIR: dir, HAPPIER_LOG_LEVEL: undefined, DEBUG: undefined, DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING: undefined });
+      const env = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_LOG_LEVEL', 'DEBUG', 'DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING']);
+      env.patch({ PIGGERCODE_HOME_DIR: dir, PIGGERCODE_LOG_LEVEL: undefined, DEBUG: undefined, DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING: undefined });
       vi.resetModules();
       const { createTestAcpRuntime } = await import('@/testkit/backends/acpRuntime');
       const { logger } = await import('@/ui/logger');

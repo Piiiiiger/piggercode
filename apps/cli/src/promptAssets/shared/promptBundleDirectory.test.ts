@@ -32,8 +32,8 @@ describe('promptBundleDirectory', () => {
   });
 
   it('fails closed when the prompt bundle payload would exceed the configured transfer size limit', async () => {
-    const previous = process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
-    process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = '64';
+    const previous = process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
+    process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = '64';
     reloadConfiguration();
 
     try {
@@ -47,9 +47,9 @@ describe('promptBundleDirectory', () => {
       expect(() => buildPromptBundleBodyFromDirectory({ rootDirectory: root })).toThrow('Prompt transfer payload exceeds size limit');
     } finally {
       if (previous === undefined) {
-        delete process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES;
+        delete process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES;
       } else {
-        process.env.HAPPIER_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
+        process.env.PIGGERCODE_PROMPT_TRANSFER_JSON_MAX_BYTES = previous;
       }
       reloadConfiguration();
     }

@@ -75,11 +75,11 @@ test('shouldRunYarnInstall returns true when patches are newer than integrity', 
 test('dependency refresh marker invalidates on root patch additions and deletions but ignores caller component patches', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-yarn-guard-input-set-'));
   t.after(async () => rm(root, { recursive: true, force: true }));
-  const previousHome = process.env.HAPPIER_STACK_HOME_DIR;
-  process.env.HAPPIER_STACK_HOME_DIR = join(root, '.hstack-home');
+  const previousHome = process.env.PIGGERCODE_STACK_HOME_DIR;
+  process.env.PIGGERCODE_STACK_HOME_DIR = join(root, '.hstack-home');
   t.after(() => {
-    if (previousHome === undefined) delete process.env.HAPPIER_STACK_HOME_DIR;
-    else process.env.HAPPIER_STACK_HOME_DIR = previousHome;
+    if (previousHome === undefined) delete process.env.PIGGERCODE_STACK_HOME_DIR;
+    else process.env.PIGGERCODE_STACK_HOME_DIR = previousHome;
   });
 
   const componentDir = join(root, 'apps', 'server');
@@ -132,11 +132,11 @@ test('dependency refresh marker invalidates on root patch additions and deletion
 test('dependency refresh marker detects content changes when mtimes are preserved', async (t) => {
   const dir = await mkdtemp(join(tmpdir(), 'hstack-yarn-guard-metadata-'));
   t.after(async () => rm(dir, { recursive: true, force: true }));
-  const previousHome = process.env.HAPPIER_STACK_HOME_DIR;
-  process.env.HAPPIER_STACK_HOME_DIR = join(dir, '.hstack-home');
+  const previousHome = process.env.PIGGERCODE_STACK_HOME_DIR;
+  process.env.PIGGERCODE_STACK_HOME_DIR = join(dir, '.hstack-home');
   t.after(() => {
-    if (previousHome === undefined) delete process.env.HAPPIER_STACK_HOME_DIR;
-    else process.env.HAPPIER_STACK_HOME_DIR = previousHome;
+    if (previousHome === undefined) delete process.env.PIGGERCODE_STACK_HOME_DIR;
+    else process.env.PIGGERCODE_STACK_HOME_DIR = previousHome;
   });
 
   const packageJson = join(dir, 'package.json');
@@ -159,11 +159,11 @@ test('dependency refresh marker detects content changes when mtimes are preserve
 test('canonical guard detects declared directory additions, changes, and deletions', async (t) => {
   const dir = await mkdtemp(join(tmpdir(), 'hstack-yarn-guard-declared-'));
   t.after(async () => rm(dir, { recursive: true, force: true }));
-  const previousHome = process.env.HAPPIER_STACK_HOME_DIR;
-  process.env.HAPPIER_STACK_HOME_DIR = join(dir, '.hstack-home');
+  const previousHome = process.env.PIGGERCODE_STACK_HOME_DIR;
+  process.env.PIGGERCODE_STACK_HOME_DIR = join(dir, '.hstack-home');
   t.after(() => {
-    if (previousHome === undefined) delete process.env.HAPPIER_STACK_HOME_DIR;
-    else process.env.HAPPIER_STACK_HOME_DIR = previousHome;
+    if (previousHome === undefined) delete process.env.PIGGERCODE_STACK_HOME_DIR;
+    else process.env.PIGGERCODE_STACK_HOME_DIR = previousHome;
   });
 
   await writeFile(

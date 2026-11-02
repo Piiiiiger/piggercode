@@ -215,8 +215,8 @@ describe('createPythonPtyRelayProvider', () => {
         cwd: '/Users/tester',
         env: {
           PATH: '/usr/bin',
-          HAPPIER_PYTHON_PTY_RELAY_COLS: '132',
-          HAPPIER_PYTHON_PTY_RELAY_ROWS: '48',
+          PIGGERCODE_PYTHON_PTY_RELAY_COLS: '132',
+          PIGGERCODE_PYTHON_PTY_RELAY_ROWS: '48',
         },
         stdio: 'pipe',
       },

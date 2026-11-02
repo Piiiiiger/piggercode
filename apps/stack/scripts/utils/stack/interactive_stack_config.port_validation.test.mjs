@@ -36,9 +36,9 @@ test('interactiveEdit reprompts when port input is invalid and allows empty to k
     rl,
     stackName: 'exp-edit-port-validate',
     existingEnv: {
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-      HAPPIER_STACK_SERVER_PORT: '4101',
-      HAPPIER_STACK_STACK_REMOTE: 'upstream',
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+      PIGGERCODE_STACK_SERVER_PORT: '4101',
+      PIGGERCODE_STACK_STACK_REMOTE: 'upstream',
     },
     defaults: {},
     deps: createInteractiveStackConfigDeps({
@@ -80,9 +80,9 @@ test('interactiveEdit treats malformed existing port as ephemeral when input is 
     rl: mkRl([]),
     stackName: 'exp-edit-port-malformed',
     existingEnv: {
-      HAPPIER_STACK_SERVER_COMPONENT: 'happier-server-light',
-      HAPPIER_STACK_SERVER_PORT: 'not-a-port',
-      HAPPIER_STACK_STACK_REMOTE: 'upstream',
+      PIGGERCODE_STACK_SERVER_COMPONENT: 'happier-server-light',
+      PIGGERCODE_STACK_SERVER_PORT: 'not-a-port',
+      PIGGERCODE_STACK_STACK_REMOTE: 'upstream',
     },
     defaults: {},
     deps: createInteractiveStackConfigDeps({

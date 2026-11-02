@@ -40,7 +40,7 @@ test('probeExistingAccountCountForServerComponent reads account count from a run
       serverComponentName: 'happier-server-light',
       serverDir,
       env: {
-        HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
         DATABASE_URL: `file:${join(dataDir, 'happier-server-light.sqlite')}`,
       },
     });
@@ -70,8 +70,8 @@ test('runtime SQLite probing is provider-driven for the full preset', async () =
       serverComponentName: 'happier-server',
       serverDir,
       env: {
-        HAPPIER_DB_PROVIDER: 'sqlite',
-        HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
+        PIGGERCODE_DB_PROVIDER: 'sqlite',
+        PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
       },
     });
     assert.deepEqual(result, { ok: true, accountCount: 6 });
@@ -106,8 +106,8 @@ test('runtime PGlite probing is provider-driven for the full preset', async () =
       serverComponentName: 'happier-server',
       serverDir,
       env: {
-        HAPPIER_DB_PROVIDER: 'pglite',
-        HAPPIER_SERVER_LIGHT_DB_DIR: dbDir,
+        PIGGERCODE_DB_PROVIDER: 'pglite',
+        PIGGERCODE_SERVER_LIGHT_DB_DIR: dbDir,
       },
     });
     assert.deepEqual(result, { ok: true, accountCount: 7 });
@@ -143,8 +143,8 @@ test('probeExistingAccountCountForServerComponent uses the bounded server-light 
     );
 
     const env = {
-      HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-      HAPPIER_SQLITE_BUSY_TIMEOUT_MS: '500',
+      PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+      PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: '500',
     };
     const result = await probeExistingAccountCountForServerComponent({
       serverComponentName: 'happier-server-light',

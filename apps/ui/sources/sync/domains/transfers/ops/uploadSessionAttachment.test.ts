@@ -204,7 +204,7 @@ afterEach(() => {
             (localUploadSourceReaderActual as any).resolveLocalUploadSourceSizeBytes(source),
         );
     }
-    delete process.env.EXPO_PUBLIC_HAPPIER_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS;
+    delete process.env.EXPO_PUBLIC_PIGGERCODE_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS;
     vi.useRealTimers();
 });
 
@@ -502,7 +502,7 @@ describe('uploadSessionAttachment', () => {
 
     it('fails closed when native attachment size resolution times out', async () => {
         vi.useFakeTimers();
-        process.env.EXPO_PUBLIC_HAPPIER_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS = '50';
+        process.env.EXPO_PUBLIC_PIGGERCODE_FILES_UPLOAD_PREFLIGHT_SIZE_TIMEOUT_MS = '50';
         resolveLocalUploadSourceSizeBytesSpy.mockImplementation(() => new Promise(() => {}));
 
         const { sessionAttachmentsUploadFile } = await import('./uploadSessionAttachment');

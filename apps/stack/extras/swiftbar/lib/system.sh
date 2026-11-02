@@ -37,12 +37,12 @@ get_port_listener_pid() {
 LAUNCHCTL_LIST_CACHE=""
 
 resolve_daemon_state_helper_module() {
-  local repo_root="${HAPPIER_STACK_CLI_ROOT_DIR:-}"
+  local repo_root="${PIGGERCODE_STACK_CLI_ROOT_DIR:-}"
   if [[ -z "$repo_root" ]]; then
-    repo_root="${HAPPIER_STACK_REPO_DIR:-}"
+    repo_root="${PIGGERCODE_STACK_REPO_DIR:-}"
   fi
-  if [[ -z "$repo_root" ]] && [[ -n "${HAPPIER_STACK_ENV_FILE:-}" ]] && [[ -f "${HAPPIER_STACK_ENV_FILE:-}" ]]; then
-    repo_root="$(dotenv_get "${HAPPIER_STACK_ENV_FILE:-}" "HAPPIER_STACK_REPO_DIR")"
+  if [[ -z "$repo_root" ]] && [[ -n "${PIGGERCODE_STACK_ENV_FILE:-}" ]] && [[ -f "${PIGGERCODE_STACK_ENV_FILE:-}" ]]; then
+    repo_root="$(dotenv_get "${PIGGERCODE_STACK_ENV_FILE:-}" "PIGGERCODE_STACK_REPO_DIR")"
   fi
 
   local install_root
@@ -73,12 +73,12 @@ resolve_daemon_state_helper_module() {
 }
 
 resolve_tailscale_status_helper_module() {
-  local repo_root="${HAPPIER_STACK_CLI_ROOT_DIR:-}"
+  local repo_root="${PIGGERCODE_STACK_CLI_ROOT_DIR:-}"
   if [[ -z "$repo_root" ]]; then
-    repo_root="${HAPPIER_STACK_REPO_DIR:-}"
+    repo_root="${PIGGERCODE_STACK_REPO_DIR:-}"
   fi
-  if [[ -z "$repo_root" ]] && [[ -n "${HAPPIER_STACK_ENV_FILE:-}" ]] && [[ -f "${HAPPIER_STACK_ENV_FILE:-}" ]]; then
-    repo_root="$(dotenv_get "${HAPPIER_STACK_ENV_FILE:-}" "HAPPIER_STACK_REPO_DIR")"
+  if [[ -z "$repo_root" ]] && [[ -n "${PIGGERCODE_STACK_ENV_FILE:-}" ]] && [[ -f "${PIGGERCODE_STACK_ENV_FILE:-}" ]]; then
+    repo_root="$(dotenv_get "${PIGGERCODE_STACK_ENV_FILE:-}" "PIGGERCODE_STACK_REPO_DIR")"
   fi
 
   local install_root

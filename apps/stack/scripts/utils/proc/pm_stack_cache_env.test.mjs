@@ -131,7 +131,7 @@ async function writeSlowYarnArgDumpStub({ binDir, outputPath }) {
       'echo "$*" >> "${OUTPUT_PATH:?}"',
       'if [ "${1:-}" = "install" ]; then',
       '  if [ -n "${LOCK_OUTPUT_PATH:-}" ]; then',
-      '    printf "%s\\n" "${HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD:-}" > "$LOCK_OUTPUT_PATH"',
+      '    printf "%s\\n" "${PIGGERCODE_WORKSPACE_DIST_BUILD_LOCK_HELD:-}" > "$LOCK_OUTPUT_PATH"',
       '  fi',
       '  sleep 0.25',
       'fi',
@@ -217,7 +217,7 @@ async function writeYarnBuildCreatesDistStub({ binDir, outputPath, cliDir }) {
       '  exit 0',
       'fi',
       'if [ "${1:-}" = "build" ]; then',
-      '  out_dir="${HAPPIER_CLI_BUILD_OUTPUT_DIR:-dist}"',
+      '  out_dir="${PIGGERCODE_CLI_BUILD_OUTPUT_DIR:-dist}"',
       '  mkdir -p "$out_dir"',
       '  echo "export const built = true;" > "$out_dir/index.mjs"',
       '  printf \'{"fingerprint":"0123456789abcdef","fileCount":1}\\n\' > "$out_dir/.build-manifest.json"',
@@ -348,14 +348,14 @@ async function writeYarnBuildRefreshesAgentsAndPreservesCliDistStub({ binDir, ou
       "appendFileSync(process.env.OUTPUT_PATH, args.join(' ') + '\\n');",
       "if (args[0] === '--version') { console.log('1.22.22'); process.exit(0); }",
       "if (args[0] === '-s' && args[1] === 'build') {",
-      "  const out = process.env.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR || 'dist';",
+      "  const out = process.env.PIGGERCODE_WORKSPACE_DIST_OUTPUT_DIR || 'dist';",
       "  mkdirSync(join(out, 'session', 'state'), { recursive: true });",
       "  writeFileSync(join(out, 'session', 'state', 'index.js'), 'export const state = true;\\n');",
       "  writeFileSync(join(out, 'index.js'), 'export const agentsBuilt = true;\\n');",
       '  process.exit(0);',
       '}',
       "if (args[0] === 'build') {",
-      "  const out = process.env.HAPPIER_CLI_BUILD_OUTPUT_DIR || 'dist';",
+      "  const out = process.env.PIGGERCODE_CLI_BUILD_OUTPUT_DIR || 'dist';",
       '  mkdirSync(out, { recursive: true });',
       "  writeFileSync(join(out, 'index.mjs'), 'export const cliBuilt = true;\\n');",
       "  writeFileSync(join(out, '.build-manifest.json'), '{\"fingerprint\":\"0123456789abcdef\",\"fileCount\":1}\\n');",
@@ -509,7 +509,7 @@ async function createStackCacheFixture(t, prefix) {
   const stackDir = join(root, 'stacks', 'exp1');
   const envPath = join(stackDir, 'env');
   await mkdir(dirname(envPath), { recursive: true });
-  await writeFile(envPath, 'HAPPIER_STACK_STACK=exp1\n', 'utf-8');
+  await writeFile(envPath, 'PIGGERCODE_STACK_STACK=exp1\n', 'utf-8');
 
   const componentDir = join(root, 'component');
   await mkdir(componentDir, { recursive: true });
@@ -530,7 +530,7 @@ test('ensureDepsInstalled sets stack-scoped cache env vars for yarn installs', a
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
     XDG_CACHE_HOME: null,
     YARN_CACHE_FOLDER: null,
     npm_config_cache: null,
@@ -558,8 +558,8 @@ test('ensureDepsInstalled skips dependency refresh in service mode when node_mod
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
-    HAPPIER_STACK_SERVICE_MODE: '1',
+    PIGGERCODE_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_SERVICE_MODE: '1',
   });
 
   await ensureDepsInstalled(componentDir, 'test-component', { quiet: true, env: process.env });
@@ -581,8 +581,8 @@ test('ensureDepsInstalled skips dependency refresh when explicitly disabled in l
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
   });
 
   await ensureDepsInstalled(componentDir, 'test-component', { quiet: true, env: process.env });
@@ -599,7 +599,7 @@ test('ensureDepsInstalled scrubs production-mode env for yarn installs', async (
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
     NODE_ENV: 'production',
     YARN_PRODUCTION: '1',
     npm_config_production: 'true',
@@ -623,7 +623,7 @@ test('ensureDepsInstalled scrubs production-mode env even without a stack env fi
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
     NODE_ENV: 'production',
     YARN_PRODUCTION: '1',
     npm_config_production: 'true',
@@ -647,7 +647,7 @@ test('ensureDepsInstalled disables redis-memory-server postinstall for stack-man
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
   });
 
   await ensureDepsInstalled(componentDir, 'test-component', { quiet: true, env: process.env });
@@ -655,7 +655,7 @@ test('ensureDepsInstalled disables redis-memory-server postinstall for stack-man
   assert.equal(parsed.REDISMS_DISABLE_POSTINSTALL, '1');
 });
 
-test('ensureDepsInstalled honors HAPPIER_STACK_PM_CACHE_BASE_DIR when no stack env file is present', async (t) => {
+test('ensureDepsInstalled honors PIGGERCODE_STACK_PM_CACHE_BASE_DIR when no stack env file is present', async (t) => {
   const fixture = await createStackCacheFixture(t, 'hs-pm-explicit-cache-base-');
   const { root, componentDir, binDir } = fixture;
   const outputPath = join(root, 'env.json');
@@ -666,8 +666,8 @@ test('ensureDepsInstalled honors HAPPIER_STACK_PM_CACHE_BASE_DIR when no stack e
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
-    HAPPIER_STACK_PM_CACHE_BASE_DIR: cacheBase,
+    PIGGERCODE_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_PM_CACHE_BASE_DIR: cacheBase,
     XDG_CACHE_HOME: null,
     YARN_CACHE_FOLDER: null,
     npm_config_cache: null,
@@ -695,7 +695,7 @@ test('ensureDepsInstalled derives stack cache roots from ~/ env file overrides a
     OUTPUT_PATH: outputPath,
     HOME: homeDir,
     USERPROFILE: homeDir,
-    HAPPIER_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
     XDG_CACHE_HOME: null,
     YARN_CACHE_FOLDER: null,
     npm_config_cache: null,
@@ -723,7 +723,7 @@ test('ensureDepsInstalled prefers the .nvmrc node runtime for yarn shebangs when
   applyEnvOverrides(t, {
     PATH: `${binDir}:${dirname(process.execPath)}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
     NVM_DIR: nvmDir,
   });
 
@@ -759,7 +759,7 @@ test('ensureDepsInstalled prefers yarn when component is inside the Happy monore
     // Avoid leaking other package managers into PATH so the test fails loudly when a non-yarn fallback is attempted.
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'happier-server', { quiet: true });
@@ -790,7 +790,7 @@ test('ensureDepsInstalled forces non-production yarn installs', async (t) => {
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'happier-server', { quiet: true });
@@ -834,7 +834,7 @@ test('ensureDepsInstalled regenerates server Prisma provider outputs when sqlite
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'happier-server-light', { quiet: true });
@@ -896,8 +896,8 @@ test('ensureDepsInstalled repairs missing UI postinstall outputs on a warm depen
     ...process.env,
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: '',
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: '',
   };
 
   await ensureDepsInstalled(componentDir, 'happier-ui', { quiet: true, env });
@@ -952,7 +952,7 @@ test('ensureDepsInstalled refreshes monorepo dependencies when root yarn.lock ch
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(join(root, 'apps', 'ui'), 'happier-ui', { quiet: true });
@@ -1010,7 +1010,7 @@ test('ensureDepsInstalled refreshes monorepo dependencies when a workspace packa
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(join(root, 'apps', 'ui'), 'happier-ui', { quiet: true });
@@ -1057,7 +1057,7 @@ test('ensureDepsInstalled does not repeat a successful no-op refresh while depen
     OUTPUT_PATH: outputPath,
     YARN_INSTALL_DELAY_SECONDS: '0.2',
     YARN_INSTALL_FAIL: null,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await Promise.all([
@@ -1118,8 +1118,8 @@ test('ensureDepsInstalled keeps a current dependency tree outside dependency and
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_HOME_DIR: stackHome,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_HOME_DIR: stackHome,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const componentDir = join(root, 'apps', 'ui');
@@ -1183,7 +1183,7 @@ test('ensureDepsInstalled waits for the monorepo CLI bundle lock before deciding
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
     LOCK_OUTPUT_PATH: heldLockOutputPath,
-    HAPPIER_STACK_ENV_FILE: '',
+    PIGGERCODE_STACK_ENV_FILE: '',
   };
 
   let releaseCliLock;
@@ -1243,8 +1243,8 @@ test('ensureDepsInstalled serializes the initial Yarn install and records it thr
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
     YARN_INSTALL_DELAY_SECONDS: '0.2',
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await Promise.all([
@@ -1280,8 +1280,8 @@ test('ensureDepsInstalled performs one marker bootstrap refresh for a legacy Yar
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'component', { quiet: true, env: process.env });
@@ -1307,8 +1307,8 @@ test('ensureDepsInstalled bootstraps the canonical marker when a legacy Yarn ins
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'component', { quiet: true, env: process.env });
@@ -1357,7 +1357,7 @@ test('ensureDepsInstalled bootstraps one canonical snapshot when legacy node_mod
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(join(root, 'apps', 'ui'), 'happier-ui', { quiet: true });
@@ -1384,8 +1384,8 @@ test('ensureDepsInstalled falls back to npm in binary mode when yarn is unavaila
   applyEnvOverrides(t, {
     PATH: binDir,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_BINARY_MODE: '1',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_BINARY_MODE: '1',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureDepsInstalled(componentDir, 'binary-mode-component', { quiet: true });
@@ -1413,9 +1413,9 @@ test('ensureDepsInstalled uses Corepack Yarn when a global Yarn shim is unavaila
       ...process.env,
       PATH: binDir,
       OUTPUT_PATH: outputPath,
-      HAPPIER_STACK_BINARY_MODE: '0',
-      HAPPIER_STACK_ENV_FILE: '',
-      HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+      PIGGERCODE_STACK_BINARY_MODE: '0',
+      PIGGERCODE_STACK_ENV_FILE: '',
+      PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
     },
   });
 
@@ -1440,9 +1440,9 @@ test('ensureDepsInstalled preserves a Windows-style Path key while preparing Cor
     ...process.env,
     Path: binDir,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_BINARY_MODE: '0',
-    HAPPIER_STACK_ENV_FILE: '',
-    HAPPIER_STACK_SKIP_REFRESH_DEPS: '1',
+    PIGGERCODE_STACK_BINARY_MODE: '0',
+    PIGGERCODE_STACK_ENV_FILE: '',
+    PIGGERCODE_STACK_SKIP_REFRESH_DEPS: '1',
   };
   delete env.PATH;
 
@@ -1460,7 +1460,7 @@ test('pmExecBin sets stack-scoped cache env vars for yarn runs', async (t) => {
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_ENV_FILE: envPath,
+    PIGGERCODE_STACK_ENV_FILE: envPath,
     XDG_CACHE_HOME: null,
     YARN_CACHE_FOLDER: null,
     npm_config_cache: null,
@@ -1491,8 +1491,8 @@ test('ensureCliBuilt delegates atomic dist promotion to the CLI build owner', as
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
@@ -1529,8 +1529,8 @@ test('ensureCliBuilt declares its held lock so the CLI build owner cannot self-w
   applyEnvOverrides(t, {
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
@@ -1563,8 +1563,8 @@ test('ensureCliBuilt restores previous dist output when build fails', async (t) 
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
   await assert.rejects(
     () => ensureCliBuilt(cliDir, { buildCli: true, quiet: true }),
@@ -1598,8 +1598,8 @@ test('ensureCliBuilt restores previous dist output when build produces a broken 
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await assert.rejects(() => ensureCliBuilt(cliDir, { buildCli: true, quiet: true }));
@@ -1633,8 +1633,8 @@ test('ensureCliBuilt keeps the previous dist readable while a staged build is in
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
     BUILD_SIGNAL_PATH: buildSignalPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const buildPromise = ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
@@ -1674,8 +1674,8 @@ test('ensureCliBuilt rejects staged ESM link failures before promoting over the 
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await assert.rejects(
@@ -1719,9 +1719,9 @@ test('ensureCliBuilt serializes concurrent rebuilds so a fresh dist is built onc
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await Promise.all([
@@ -1768,7 +1768,7 @@ test('ensureCliBuilt rebuilds an atomic publication when runtime inputs changed 
       "const tracked = readFileSync(join(process.cwd(), 'src', 'tracked.txt'), 'utf8').trim();",
       "appendFileSync(process.env.OUTPUT_PATH, 'captured\\n');",
       'Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1_000);',
-      "const outDir = process.env.HAPPIER_CLI_BUILD_OUTPUT_DIR || 'dist';",
+      "const outDir = process.env.PIGGERCODE_CLI_BUILD_OUTPUT_DIR || 'dist';",
       'mkdirSync(outDir, { recursive: true });',
       "writeFileSync(join(outDir, 'index.mjs'), `export const tracked = ${JSON.stringify(tracked)};\\n`);",
       "writeFileSync(join(outDir, '.build-manifest.json'), '{\"fingerprint\":\"0123456789abcdef\",\"fileCount\":1}\\n');",
@@ -1789,9 +1789,9 @@ test('ensureCliBuilt rebuilds an atomic publication when runtime inputs changed 
   applyEnvOverrides(t, {
     PATH: [binDir, process.env.PATH].filter(Boolean).join(delimiter),
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'auto',
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto',
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const distIndex = join(cliDir, 'dist', 'index.mjs');
@@ -1846,8 +1846,8 @@ test('ensureCliBuilt ignores stale legacy .dist.hstack-backup and rebuilds throu
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'auto',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true });
@@ -1907,7 +1907,7 @@ test('ensureCliBuilt rebuilds only for CLI runtime and build inputs in a nested 
       '  exit 0',
       'fi',
       'if [ "${1:-}" = "build" ]; then',
-      '  out_dir="${HAPPIER_CLI_BUILD_OUTPUT_DIR:-dist}"',
+      '  out_dir="${PIGGERCODE_CLI_BUILD_OUTPUT_DIR:-dist}"',
       '  mkdir -p "$out_dir"',
       '  value="$(tr -d \'\\n\' < src/tracked.txt)"',
       '  printf "export const tracked = \\"%s\\";\\n" "$value" > "$out_dir/index.mjs"',
@@ -1924,9 +1924,9 @@ test('ensureCliBuilt rebuilds only for CLI runtime and build inputs in a nested 
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'auto',
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto',
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await writeFile(join(cliSrcDir, 'tracked.txt'), 'dirty one\n', 'utf-8');
@@ -2057,8 +2057,8 @@ test('ensureCliBuilt refreshes shared workspace deps before trusting a cached cl
   applyEnvOverrides(t, {
     PATH: [binDir, process.env.PATH].filter(Boolean).join(delimiter),
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'never',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'never',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
@@ -2140,8 +2140,8 @@ test('ensureCliBuilt rebuilds an auto-mode cli dist after repairing a stale work
   applyEnvOverrides(t, {
     PATH: [binDir, process.env.PATH].filter(Boolean).join(delimiter),
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_CLI_BUILD_MODE: 'auto',
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'auto',
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
 
   const result = await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
@@ -2190,10 +2190,10 @@ test('ensureCliBuilt defaults to no rebuild in service mode even when runtime in
   applyEnvOverrides(t, {
     PATH: `${binDir}:/usr/bin:/bin`,
     OUTPUT_PATH: outputPath,
-    HAPPIER_STACK_HOME_DIR: join(root, 'home'),
-    HAPPIER_STACK_CLI_BUILD_MODE: 'always',
-    HAPPIER_STACK_SERVICE_MODE: null,
-    HAPPIER_STACK_ENV_FILE: null,
+    PIGGERCODE_STACK_HOME_DIR: join(root, 'home'),
+    PIGGERCODE_STACK_CLI_BUILD_MODE: 'always',
+    PIGGERCODE_STACK_SERVICE_MODE: null,
+    PIGGERCODE_STACK_ENV_FILE: null,
   });
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
   const out1 = await readFile(outputPath, 'utf-8');
@@ -2203,8 +2203,8 @@ test('ensureCliBuilt defaults to no rebuild in service mode even when runtime in
   await writeFile(join(cliDir, 'src', 'dirty.ts'), 'export {};\n', 'utf-8');
   await writeFile(outputPath, '', 'utf-8');
   applyEnvOverrides(t, {
-    HAPPIER_STACK_CLI_BUILD_MODE: null,
-    HAPPIER_STACK_SERVICE_MODE: '1',
+    PIGGERCODE_STACK_CLI_BUILD_MODE: null,
+    PIGGERCODE_STACK_SERVICE_MODE: '1',
   });
   await ensureCliBuilt(cliDir, { buildCli: true, quiet: true, env: process.env });
   const out2 = await readFile(outputPath, 'utf-8');

@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { ReplicationManifestEntrySchema, ReplicationManifestFingerprintSchema } from '../replicationManifestSchema';
 import type { WorkspaceReplicationSourceOffer } from './createWorkspaceReplicationSourceOffer';
 
-export const WORKSPACE_REPLICATION_SOURCE_OFFER_STREAM_MAGIC = 'HAPPIER_WORKSPACE_REPLICATION_SOURCE_OFFER_V1';
+export const WORKSPACE_REPLICATION_SOURCE_OFFER_STREAM_MAGIC = 'PIGGERCODE_WORKSPACE_REPLICATION_SOURCE_OFFER_V1';
 
 const WorkspaceReplicationSourceOfferHeaderSchema = z.object({
   offerId: z.string().min(1),

@@ -183,7 +183,7 @@ function createDataKeyExecutor(extra: Partial<Parameters<typeof createCliActionE
 }
 
 function allowSessionAgentActions(...actionIds: string[]): void {
-  process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+  process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
     v: 1,
     actions: Object.fromEntries(
       actionIds.map((actionId) => [
@@ -244,7 +244,7 @@ describe('createCliActionExecutor', () => {
     mockAxiosGet.mockReset();
     mockAxiosPost.mockReset();
     process.env = { ...env };
-    delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
+    delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
   it('completes public existing-state handoff only after the canonical tracked operation succeeds', async () => {
@@ -413,7 +413,7 @@ describe('createCliActionExecutor', () => {
   });
 
   it('rejects actions disabled on the CLI surface by action settings', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'review.start': { enabled: true, disabledSurfaces: ['cli'], disabledPlacements: [] },
@@ -2224,7 +2224,7 @@ describe('createCliActionExecutor', () => {
   });
 
   it('routes approval-required actions through approvalsCreate when configured for the CLI surface', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.message.send': { enabled: true, disabledSurfaces: [], disabledPlacements: [], approvalRequiredSurfaces: ['cli'] },
@@ -2251,7 +2251,7 @@ describe('createCliActionExecutor', () => {
   });
 
   it('routes approval-required actions through approvalsCreate when CLI surface is implicit', async () => {
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
         'session.message.send': { enabled: true, disabledSurfaces: [], disabledPlacements: [], approvalRequiredSurfaces: ['cli'] },

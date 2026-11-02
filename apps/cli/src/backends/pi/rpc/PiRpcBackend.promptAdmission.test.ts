@@ -169,7 +169,7 @@ describe('PiRpcBackend prompt admission', () => {
       command: process.execPath,
       args: [makeFakePiRpcProcessScript(dir, scenario)],
       env: scenario === 'command-state-unknown-before-turn'
-        ? { HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '25' }
+        ? { PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '25' }
         : {},
     });
     backends.push(backend);

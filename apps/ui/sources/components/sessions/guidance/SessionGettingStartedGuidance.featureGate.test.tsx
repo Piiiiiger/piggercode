@@ -71,16 +71,16 @@ vi.mock('@/config', () => ({
 installSessionGuidanceCommonModuleMocks();
 
 describe('SessionGettingStartedGuidance (feature gate)', () => {
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         vi.resetModules();
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.sessionGettingStartedGuidance';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.sessionGettingStartedGuidance';
     });
 
     afterEach(() => {
-        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
     });
 
     it('returns null when build policy denies session getting started guidance', async () => {

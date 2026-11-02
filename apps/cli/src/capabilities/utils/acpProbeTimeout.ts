@@ -26,10 +26,10 @@ export function resolveAcpProbeTimeoutMs(
           )
         : DEFAULT_ACP_PROBE_TIMEOUT_MS;
 
-    const perAgent = parseTimeoutMs(process.env[`HAPPIER_ACP_PROBE_TIMEOUT_${agentName.toUpperCase()}_MS`]);
+    const perAgent = parseTimeoutMs(process.env[`PIGGERCODE_ACP_PROBE_TIMEOUT_${agentName.toUpperCase()}_MS`]);
     if (typeof perAgent === 'number') return perAgent;
 
-    const global = parseTimeoutMs(process.env.HAPPIER_ACP_PROBE_TIMEOUT_MS);
+    const global = parseTimeoutMs(process.env.PIGGERCODE_ACP_PROBE_TIMEOUT_MS);
     if (typeof global === 'number') return global;
 
     return fallbackDefaultMs;

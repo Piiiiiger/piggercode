@@ -15,12 +15,12 @@ function makeTempDir(prefix: string): string {
 }
 
 const envKeys = [
-    'HAPPIER_CODEX_APP_SERVER_BIN',
-    'HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS',
-    'HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS',
-    'HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE',
-    'HAPPIER_FAKE_PROFILE_MARKER',
-    'HAPPIER_HOME_DIR',
+    'PIGGERCODE_CODEX_APP_SERVER_BIN',
+    'PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS',
+    'PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS',
+    'PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE',
+    'PIGGERCODE_FAKE_PROFILE_MARKER',
+    'PIGGERCODE_HOME_DIR',
     'OPENAI_API_KEY',
     'CODEX_API_KEY',
     'CODEX_HOME',
@@ -50,11 +50,11 @@ describe('codexPreflightSessionControlsProbeAdapter', () => {
             tempDir = makeTempDir('happier-codex-preflight-controls-');
 
             const fakeAppServerPath = fileURLToPath(new URL('./__fixtures__/fakeCodexAppServer.mjs', import.meta.url));
-            process.env.HAPPIER_CODEX_APP_SERVER_BIN = fakeAppServerPath;
-            process.env.HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS = '600';
+            process.env.PIGGERCODE_CODEX_APP_SERVER_BIN = fakeAppServerPath;
+            process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS = '600';
 
             // Set an artificially small RPC timeout so the test proves the adapter overrides it.
-            process.env.HAPPIER_CODEX_APP_SERVER_RPC_TIMEOUT_MS = '250';
+            process.env.PIGGERCODE_CODEX_APP_SERVER_RPC_TIMEOUT_MS = '250';
             // Force Speed to be ineligible (the real gating hides it when auth is API-key based).
             process.env.OPENAI_API_KEY = undefined;
             process.env.CODEX_API_KEY = undefined;
@@ -93,7 +93,7 @@ describe('codexPreflightSessionControlsProbeAdapter', () => {
 
     it('uses the materialized process environment supplied by the connected-service preflight owner', async () => {
         tempDir = makeTempDir('happier-codex-preflight-materialized-home-');
-        process.env.HAPPIER_HOME_DIR = tempDir;
+        process.env.PIGGERCODE_HOME_DIR = tempDir;
         reloadConfiguration();
 
         const codexHome = join(
@@ -108,9 +108,9 @@ describe('codexPreflightSessionControlsProbeAdapter', () => {
         mkdirSync(codexHome, { recursive: true });
 
         const captureFile = join(tempDir, 'captured-env.json');
-        process.env.HAPPIER_CODEX_APP_SERVER_BIN = fileURLToPath(new URL('./__fixtures__/fakeCodexAppServer.mjs', import.meta.url));
-        process.env.HAPPIER_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
-        process.env.HAPPIER_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
+        process.env.PIGGERCODE_CODEX_APP_SERVER_BIN = fileURLToPath(new URL('./__fixtures__/fakeCodexAppServer.mjs', import.meta.url));
+        process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_DELAY_MS = '1';
+        process.env.PIGGERCODE_FAKE_CODEX_APP_SERVER_ENV_CAPTURE_FILE = captureFile;
 
         const raw = await codexPreflightSessionControlsProbeAdapter.probeModelsRaw?.({
             cwd: tempDir,
@@ -129,7 +129,7 @@ describe('codexPreflightSessionControlsProbeAdapter', () => {
         expect(JSON.parse(readFileSync(captureFile, 'utf8'))).toEqual({
             CODEX_HOME: codexHome,
             CODEX_SQLITE_HOME: codexHome,
-            HAPPIER_FAKE_PROFILE_MARKER: null,
+            PIGGERCODE_FAKE_PROFILE_MARKER: null,
             OPENAI_API_KEY: null,
             CODEX_AUTH_FILE_PRESENT: false,
         });

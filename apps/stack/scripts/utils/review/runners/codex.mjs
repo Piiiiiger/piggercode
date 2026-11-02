@@ -8,9 +8,9 @@ function parsePositiveInt(raw) {
 }
 
 function resolveCodexKeepaliveMs(env) {
-  const specific = parsePositiveInt(env?.HAPPIER_STACK_REVIEW_CODEX_KEEPALIVE_MS);
+  const specific = parsePositiveInt(env?.PIGGERCODE_STACK_REVIEW_CODEX_KEEPALIVE_MS);
   if (specific !== null) return specific;
-  const global = parsePositiveInt(env?.HAPPIER_STACK_REVIEW_KEEPALIVE_MS);
+  const global = parsePositiveInt(env?.PIGGERCODE_STACK_REVIEW_KEEPALIVE_MS);
   if (global !== null) return global;
   return 30_000;
 }
@@ -88,7 +88,7 @@ export function buildCodexReviewArgs({ baseRef, jsonMode, prompt, model }) {
 export async function runCodexReview({ repoDir, baseRef, env, jsonMode, streamLabel, teeFile, teeLabel, prompt, model }) {
   const merged = { ...(env ?? {}) };
   const codexHome =
-    (merged.HAPPIER_STACK_CODEX_HOME_DIR ?? merged.CODEX_HOME ?? '').toString().trim();
+    (merged.PIGGERCODE_STACK_CODEX_HOME_DIR ?? merged.CODEX_HOME ?? '').toString().trim();
   if (codexHome) merged.CODEX_HOME = codexHome;
 
   const effectiveModel = isCodexModelKnownUnsupported(model) ? '' : model;

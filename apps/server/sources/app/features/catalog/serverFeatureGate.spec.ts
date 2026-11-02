@@ -10,7 +10,7 @@ describe("serverFeatureGate", () => {
             path: "/v1/test",
             registerRoutes: (app) => {
                 const gated = createServerFeatureGatedRouteApp(app, "bugReports", {
-                    HAPPIER_FEATURE_BUG_REPORTS__ENABLED: "1",
+                    PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED: "1",
                 } as NodeJS.ProcessEnv);
                 gated.get("/v1/test", async () => ({ ok: true }));
             },

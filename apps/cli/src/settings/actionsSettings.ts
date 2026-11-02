@@ -9,7 +9,7 @@ import {
   type ActionUiPlacement,
 } from '@piggercode/protocol';
 
-const ENV_KEY = 'HAPPIER_ACTIONS_SETTINGS_V1';
+const ENV_KEY = 'PIGGERCODE_ACTIONS_SETTINGS_V1';
 const EMPTY_ACTIONS_SETTINGS = ActionsSettingsV1Schema.parse({ v: 1, actions: {} });
 
 export function readActionsSettingsOverrideFromEnv(): ActionsSettingsV1 | null {

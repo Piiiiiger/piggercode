@@ -34,11 +34,11 @@ export async function resolveStackDaemonCommandContext({ rootDir, stackName, env
   const cliCommand = cliLaunchSpec?.command ?? '';
   const cliCommandArgs = cliLaunchSpec?.args ?? [];
   const runtimeProvenance = resolveCliRuntimeLaunchProvenance(cliLaunchSpec);
-  const baseCliHomeDir = (env.HAPPIER_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString();
+  const baseCliHomeDir = (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? join(resolveStackEnvPath(stackName).baseDir, 'cli')).toString();
   const cliHomeDir = resolveCliHomeDirForIdentity({ cliHomeDir: baseCliHomeDir, identity });
 
   let runtimePort = null;
-  const runtimePath = (env.HAPPIER_STACK_RUNTIME_STATE_PATH ?? '').toString().trim();
+  const runtimePath = (env.PIGGERCODE_STACK_RUNTIME_STATE_PATH ?? '').toString().trim();
   if (runtimePath) {
     const state = await readStackRuntimeStateFile(runtimePath).catch(() => null);
     const candidate = Number(state?.ports?.server);
@@ -51,9 +51,9 @@ export async function resolveStackDaemonCommandContext({ rootDir, stackName, env
     cliLaunchSpec,
     env: {
       ...env,
-      HAPPIER_STACK_CLI_IDENTITY: identity,
+      PIGGERCODE_STACK_CLI_IDENTITY: identity,
       ...(identity !== 'default'
-        ? { HAPPIER_STACK_MIGRATE_CREDENTIALS: '0', HAPPIER_STACK_AUTO_AUTH_SEED: '0' }
+        ? { PIGGERCODE_STACK_MIGRATE_CREDENTIALS: '0', PIGGERCODE_STACK_AUTO_AUTH_SEED: '0' }
         : {}),
     },
   });

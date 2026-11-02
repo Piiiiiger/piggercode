@@ -8,7 +8,7 @@ import type {
   SessionRuntimeActivityContributionHandle,
 } from '@/session/runtimeActivity/types';
 
-const PROVISION_TIMEOUT_ENV_KEY = 'HAPPIER_EXECUTION_RUN_BACKEND_PROVISION_TIMEOUT_MS';
+const PROVISION_TIMEOUT_ENV_KEY = 'PIGGERCODE_EXECUTION_RUN_BACKEND_PROVISION_TIMEOUT_MS';
 
 function createNeverProvisioningBackend(): AgentBackend {
   return {

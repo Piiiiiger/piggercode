@@ -29,7 +29,7 @@ async function installPostHogCapture(page: Page, sink: CapturedAnalyticsRequest[
     const analyticsRequests: Array<{ url: string; method: string; body: string }> = [];
     const hosts = configuredPosthogHosts.map((entry) => String(entry));
     const globalTarget = globalThis as typeof globalThis & {
-      __HAPPIER_E2E_POSTHOG_REQUESTS__?: typeof analyticsRequests;
+      __PIGGERCODE_E2E_POSTHOG_REQUESTS__?: typeof analyticsRequests;
       [key: string]: ((request: { url: string; method: string; body: string }) => void | Promise<void>) | Array<{ url: string; method: string; body: string }> | Navigator | typeof fetch | undefined;
       fetch?: typeof fetch;
       navigator: Navigator;
@@ -98,7 +98,7 @@ async function installPostHogCapture(page: Page, sink: CapturedAnalyticsRequest[
       }
     };
 
-    globalTarget.__HAPPIER_E2E_POSTHOG_REQUESTS__ = analyticsRequests;
+    globalTarget.__PIGGERCODE_E2E_POSTHOG_REQUESTS__ = analyticsRequests;
 
     const originalFetch = globalTarget.fetch?.bind(globalTarget);
     if (originalFetch) {
@@ -171,8 +171,8 @@ test.describe('ui e2e: settings analytics', () => {
       testDir: suiteDir,
       dbProvider: 'sqlite',
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
-        HAPPIER_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_FEATURE_AUTH_LOGIN__KEY_CHALLENGE_ENABLED: '1',
       },
     });
 
@@ -228,9 +228,9 @@ test.describe('ui e2e: settings analytics', () => {
     const syncAnalyticsRequests = async () => {
       const requests = await page.evaluate(() => {
         const globalTarget = globalThis as typeof globalThis & {
-          __HAPPIER_E2E_POSTHOG_REQUESTS__?: Array<{ url: string; method: string; body: string }>;
+          __PIGGERCODE_E2E_POSTHOG_REQUESTS__?: Array<{ url: string; method: string; body: string }>;
         };
-        return globalTarget.__HAPPIER_E2E_POSTHOG_REQUESTS__ ?? [];
+        return globalTarget.__PIGGERCODE_E2E_POSTHOG_REQUESTS__ ?? [];
       });
       const existing = new Set(analyticsRequests.map((request) => `${request.method} ${request.url} ${request.body}`));
       for (const request of requests) {

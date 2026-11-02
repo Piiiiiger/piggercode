@@ -11,10 +11,10 @@ test('Lima fixtures exclude ambient stack, provider, shell, and executable selec
   const env = createLimaTestEnv({
     PATH: '/real/user/bin',
     HOME: '/real/user',
-    HAPPIER_HOME_DIR: '/real/stack/cli',
-    HAPPIER_ACTIVE_SERVER_ID: 'live-server',
-    HAPPIER_QA_STACK_NAME: 'live-stack',
-    WSREPL_QA_VM_HAPPIER_MODE: 'autoupdate',
+    PIGGERCODE_HOME_DIR: '/real/stack/cli',
+    PIGGERCODE_ACTIVE_SERVER_ID: 'live-server',
+    PIGGERCODE_QA_STACK_NAME: 'live-stack',
+    WSREPL_QA_VM_PIGGERCODE_MODE: 'autoupdate',
     CLAUDE_CONFIG_DIR: '/real/claude',
     CODEX_HOME: '/real/codex',
     BASH_ENV: '/real/shell-startup',
@@ -22,15 +22,15 @@ test('Lima fixtures exclude ambient stack, provider, shell, and executable selec
     TMPDIR: '/tmp/fixture-parent',
     LANG: 'en_US.UTF-8',
   });
-  assert.equal(env.HAPPIER_HOME_DIR, undefined);
-  assert.equal(env.HAPPIER_ACTIVE_SERVER_ID, undefined);
-  assert.equal(env.HAPPIER_QA_STACK_NAME, undefined);
+  assert.equal(env.PIGGERCODE_HOME_DIR, undefined);
+  assert.equal(env.PIGGERCODE_ACTIVE_SERVER_ID, undefined);
+  assert.equal(env.PIGGERCODE_QA_STACK_NAME, undefined);
   assert.equal(env.HOME, undefined);
   assert.equal(env.CLAUDE_CONFIG_DIR, undefined);
   assert.equal(env.CODEX_HOME, undefined);
   assert.equal(env.BASH_ENV, undefined);
   assert.equal(env.NODE_OPTIONS, undefined);
-  assert.equal(env.WSREPL_QA_VM_HAPPIER_MODE, undefined);
+  assert.equal(env.WSREPL_QA_VM_PIGGERCODE_MODE, undefined);
   assert.ok(!env.PATH.includes('/real/user/bin'));
   assert.equal(env.TMPDIR, '/tmp/fixture-parent');
   assert.equal(env.LANG, 'en_US.UTF-8');

@@ -1,13 +1,13 @@
 import { getRepoDir, resolveExplicitStackEnvFilePath } from '../paths/paths.mjs';
 
 export function isStackMode(env = process.env) {
-  const stack = String(env.HAPPIER_STACK_STACK ?? '').trim();
+  const stack = String(env.PIGGERCODE_STACK_STACK ?? '').trim();
   const envFile = resolveExplicitStackEnvFilePath(env);
   return Boolean(stack && envFile);
 }
 
 export function defaultRepoCheckoutDir(rootDir, env = process.env) {
-  const clean = { ...env, HAPPIER_STACK_REPO_DIR: '' };
+  const clean = { ...env, PIGGERCODE_STACK_REPO_DIR: '' };
   return getRepoDir(rootDir, clean);
 }
 

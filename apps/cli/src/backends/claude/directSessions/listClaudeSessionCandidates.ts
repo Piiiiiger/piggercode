@@ -52,7 +52,7 @@ function parsePositiveIntEnv(params: Readonly<{
 function resolveClaudeSessionDiscoveryConcurrency(env: NodeJS.ProcessEnv): number {
   return parsePositiveIntEnv({
     env,
-    key: 'HAPPIER_DIRECT_SESSIONS_CLAUDE_DISCOVERY_CONCURRENCY',
+    key: 'PIGGERCODE_DIRECT_SESSIONS_CLAUDE_DISCOVERY_CONCURRENCY',
     defaultValue: 64,
     min: 1,
     max: 512,
@@ -62,7 +62,7 @@ function resolveClaudeSessionDiscoveryConcurrency(env: NodeJS.ProcessEnv): numbe
 function resolveClaudeSearchTitleCandidateLimit(env: NodeJS.ProcessEnv): number {
   return parsePositiveIntEnv({
     env,
-    key: 'HAPPIER_DIRECT_SESSIONS_CLAUDE_SEARCH_TITLE_CANDIDATE_LIMIT',
+    key: 'PIGGERCODE_DIRECT_SESSIONS_CLAUDE_SEARCH_TITLE_CANDIDATE_LIMIT',
     defaultValue: 2000,
     min: 1,
     max: 50_000,

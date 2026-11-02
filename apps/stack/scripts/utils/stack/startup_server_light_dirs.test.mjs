@@ -109,9 +109,9 @@ test('ensureServerSchemaReady creates light data dirs before probing', async (t)
   const env = {
     ...process.env,
     PATH: `${binDir}:${process.env.PATH ?? ''}`,
-    HAPPIER_SERVER_LIGHT_DATA_DIR: dataDir,
-    HAPPIER_SERVER_LIGHT_FILES_DIR: filesDir,
-    HAPPIER_SERVER_LIGHT_DB_DIR: dbDir,
+    PIGGERCODE_SERVER_LIGHT_DATA_DIR: dataDir,
+    PIGGERCODE_SERVER_LIGHT_FILES_DIR: filesDir,
+    PIGGERCODE_SERVER_LIGHT_DB_DIR: dbDir,
   };
 
   assert.equal(existsSync(dataDir), false);

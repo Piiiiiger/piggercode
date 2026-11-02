@@ -39,14 +39,14 @@ describe('core e2e: build-policy enforcement', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_HOME_DIR: cliHome,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        HAPPIER_WEBAPP_URL: server.baseUrl,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_HOME_DIR: cliHome,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        PIGGERCODE_WEBAPP_URL: server.baseUrl,
         // Ensure local policy is not the blocking axis.
-        HAPPIER_FEATURE_AUTOMATIONS__ENABLED: '1',
+        PIGGERCODE_FEATURE_AUTOMATIONS__ENABLED: '1',
         // The behavior under test.
-        HAPPIER_BUILD_FEATURES_DENY: 'automations',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'automations',
       },
       run: async (daemon) => {
         const daemonLogPath = daemon.state.daemonLogPath;

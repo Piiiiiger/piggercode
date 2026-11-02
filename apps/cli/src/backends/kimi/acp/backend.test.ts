@@ -14,7 +14,7 @@ describe.skipIf(process.platform === 'win32')('Kimi ACP backend', () => {
       const physicalDir = realpathSync(dir);
       const command = writeKimiFixture(dir, 'current');
       const options = {
-        cwd: dir, env: { HAPPIER_KIMI_PATH: command }, permissionMode: 'yolo' as const,
+        cwd: dir, env: { PIGGERCODE_KIMI_PATH: command }, permissionMode: 'yolo' as const,
         mcpServers: { happier: { command: '/bin/echo', args: ['noop'] } },
       };
       const fresh = createKimiBackend(options);
@@ -47,7 +47,7 @@ describe.skipIf(process.platform === 'win32')('Kimi ACP backend', () => {
       const executionRun = executionRunBackendFactory({
         backendId: 'kimi', cwd: dir, modelId: 'kimi-for-coding', permissionMode: 'default',
         permissionHandler: { handleToolCall: async () => ({ decision: 'denied' }) },
-        isolation: { env: { HAPPIER_KIMI_PATH: command } },
+        isolation: { env: { PIGGERCODE_KIMI_PATH: command } },
       });
       try {
         expect(await executionRun.startSession()).toMatchObject({ sessionId: 'kimi-fixture-session' });

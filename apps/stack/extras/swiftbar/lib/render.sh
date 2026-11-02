@@ -220,7 +220,7 @@ render_component_daemon() {
         local env_file
         env_file="$(resolve_stack_env_file "$stack_name")"
         local port
-        port="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_PORT")"
+        port="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_PORT")"
         [[ -z "$port" ]] && port="$(resolve_main_port)"
         print_item "$p2" "Auth login (opens browser) | bash=$auth_helper param1=$stack_name dir=$hstack_ROOT_DIR terminal=false refresh=false"
       fi
@@ -728,7 +728,7 @@ render_components_menu() {
     print_item "$p2" "Git cache | sfimage=arrow.triangle.2.circlepath"
     local p3="${p2}--"
     print_item "$p3" "Mode: ${mode} (default: cached)"
-    print_item "$p3" "TTL: ${ttl}s (set HAPPIER_STACK_SWIFTBAR_GIT_TTL_SEC)"
+    print_item "$p3" "TTL: ${ttl}s (set PIGGERCODE_STACK_SWIFTBAR_GIT_TTL_SEC)"
     print_sep "$p3"
     if [[ "$context" == "main" ]]; then
       print_item "$p3" "Refresh now (main components) | bash=$refresh param1=main dir=$hstack_ROOT_DIR terminal=false refresh=true"
@@ -870,7 +870,7 @@ render_stack_info() {
   print_item "$p2" "Server component: ${server_component}"
   local pinned_port=""
   if [[ -n "$env_file" && -f "$env_file" ]]; then
-    pinned_port="$(dotenv_get "$env_file" "HAPPIER_STACK_SERVER_PORT")"
+    pinned_port="$(dotenv_get "$env_file" "PIGGERCODE_STACK_SERVER_PORT")"
   fi
   local port_display="$port"
   if [[ -z "$port_display" ]]; then

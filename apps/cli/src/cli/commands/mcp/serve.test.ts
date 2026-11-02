@@ -49,9 +49,9 @@ describe('happier mcp serve (env hardening)', () => {
     }
   });
 
-  it('overrides HAPPIER_ACTIONS_SETTINGS_V1 env var with account settings for mcp serve', async () => {
-    const prev = process.env.HAPPIER_ACTIONS_SETTINGS_V1;
-    process.env.HAPPIER_ACTIONS_SETTINGS_V1 = JSON.stringify({ v: 1, actions: { 'review.start': { enabled: true } } });
+  it('overrides PIGGERCODE_ACTIONS_SETTINGS_V1 env var with account settings for mcp serve', async () => {
+    const prev = process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
+    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({ v: 1, actions: { 'review.start': { enabled: true } } });
 
     const credentials = {
       token: 't',
@@ -89,15 +89,15 @@ describe('happier mcp serve (env hardening)', () => {
     try {
       await runMcpServeCommand(['serve'], deps);
 
-      expect(process.env.HAPPIER_ACTIONS_SETTINGS_V1).toBe(JSON.stringify({
+      expect(process.env.PIGGERCODE_ACTIONS_SETTINGS_V1).toBe(JSON.stringify({
         v: 1,
         actions: {
           'review.start': { enabled: false, disabledSurfaces: [], disabledPlacements: [] },
         },
       }));
     } finally {
-      if (prev === undefined) delete process.env.HAPPIER_ACTIONS_SETTINGS_V1;
-      else process.env.HAPPIER_ACTIONS_SETTINGS_V1 = prev;
+      if (prev === undefined) delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
+      else process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = prev;
       disableMcpStdioConsolePatch();
     }
   });
@@ -132,19 +132,19 @@ describe('happier mcp serve (env hardening)', () => {
   });
 
   it('clears env server-selection overrides before reading credentials', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://attacker.example.test';
-    process.env.HAPPIER_LOCAL_SERVER_URL = 'http://attacker-local.example.test';
-    process.env.HAPPIER_PUBLIC_SERVER_URL = 'http://attacker-public.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://attacker-webapp.example.test';
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'attacker';
+    process.env.PIGGERCODE_SERVER_URL = 'http://attacker.example.test';
+    process.env.PIGGERCODE_LOCAL_SERVER_URL = 'http://attacker-local.example.test';
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = 'http://attacker-public.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://attacker-webapp.example.test';
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'attacker';
 
     const readCredentials = vi.fn(async () => {
       if (
-        process.env.HAPPIER_SERVER_URL
-        || process.env.HAPPIER_LOCAL_SERVER_URL
-        || process.env.HAPPIER_PUBLIC_SERVER_URL
-        || process.env.HAPPIER_WEBAPP_URL
-        || process.env.HAPPIER_ACTIVE_SERVER_ID
+        process.env.PIGGERCODE_SERVER_URL
+        || process.env.PIGGERCODE_LOCAL_SERVER_URL
+        || process.env.PIGGERCODE_PUBLIC_SERVER_URL
+        || process.env.PIGGERCODE_WEBAPP_URL
+        || process.env.PIGGERCODE_ACTIVE_SERVER_ID
       ) {
         throw new Error('server_selection_env_override_not_cleared_before_credentials');
       }
@@ -175,14 +175,14 @@ describe('happier mcp serve (env hardening)', () => {
   });
 
   it('clears env server-selection overrides before fetching account settings', async () => {
-    process.env.HAPPIER_SERVER_URL = 'http://attacker.example.test';
-    process.env.HAPPIER_LOCAL_SERVER_URL = 'http://attacker-local.example.test';
-    process.env.HAPPIER_PUBLIC_SERVER_URL = 'http://attacker-public.example.test';
-    process.env.HAPPIER_WEBAPP_URL = 'http://attacker-webapp.example.test';
-    process.env.HAPPIER_ACTIVE_SERVER_ID = 'attacker';
+    process.env.PIGGERCODE_SERVER_URL = 'http://attacker.example.test';
+    process.env.PIGGERCODE_LOCAL_SERVER_URL = 'http://attacker-local.example.test';
+    process.env.PIGGERCODE_PUBLIC_SERVER_URL = 'http://attacker-public.example.test';
+    process.env.PIGGERCODE_WEBAPP_URL = 'http://attacker-webapp.example.test';
+    process.env.PIGGERCODE_ACTIVE_SERVER_ID = 'attacker';
 
     const bootstrapAccountSettingsContext = vi.fn(async () => {
-      if (process.env.HAPPIER_SERVER_URL || process.env.HAPPIER_PUBLIC_SERVER_URL || process.env.HAPPIER_LOCAL_SERVER_URL) {
+      if (process.env.PIGGERCODE_SERVER_URL || process.env.PIGGERCODE_PUBLIC_SERVER_URL || process.env.PIGGERCODE_LOCAL_SERVER_URL) {
         throw new Error('server_selection_env_override_not_cleared');
       }
 
@@ -208,10 +208,10 @@ describe('happier mcp serve (env hardening)', () => {
       }),
     ).resolves.toBeUndefined();
 
-    expect(process.env.HAPPIER_SERVER_URL).toBeUndefined();
-    expect(process.env.HAPPIER_LOCAL_SERVER_URL).toBeUndefined();
-    expect(process.env.HAPPIER_PUBLIC_SERVER_URL).toBeUndefined();
-    expect(process.env.HAPPIER_WEBAPP_URL).toBeUndefined();
-    expect(process.env.HAPPIER_ACTIVE_SERVER_ID).toBeUndefined();
+    expect(process.env.PIGGERCODE_SERVER_URL).toBeUndefined();
+    expect(process.env.PIGGERCODE_LOCAL_SERVER_URL).toBeUndefined();
+    expect(process.env.PIGGERCODE_PUBLIC_SERVER_URL).toBeUndefined();
+    expect(process.env.PIGGERCODE_WEBAPP_URL).toBeUndefined();
+    expect(process.env.PIGGERCODE_ACTIVE_SERVER_ID).toBeUndefined();
   });
 });

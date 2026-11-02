@@ -7,8 +7,8 @@ import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process'
 import { resolveCodexOverrideCommand } from '@/backends/codex/utils/resolveCodexCliInvocation';
 
 const CODEX_APP_SERVER_OVERRIDE_KEYS = [
-  'HAPPIER_CODEX_APP_SERVER_BIN',
-  'HAPPIER_CODEX_TUI_BIN',
+  'PIGGERCODE_CODEX_APP_SERVER_BIN',
+  'PIGGERCODE_CODEX_TUI_BIN',
   'HAPPY_CODEX_TUI_BIN',
 ] as const;
 
@@ -17,7 +17,7 @@ function looksLikeFilePath(command: string): boolean {
 }
 
 function readProbeTimeoutMs(env: NodeJS.ProcessEnv): number {
-  const parsed = Number.parseInt(String(env.HAPPIER_CODEX_APP_SERVER_PROBE_TIMEOUT_MS ?? ''), 10);
+  const parsed = Number.parseInt(String(env.PIGGERCODE_CODEX_APP_SERVER_PROBE_TIMEOUT_MS ?? ''), 10);
   return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : 1_500;
 }
 

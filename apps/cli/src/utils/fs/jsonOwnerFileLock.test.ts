@@ -99,7 +99,7 @@ async function waitForFile(path: string): Promise<void> {
 function spawnSuccessorGuard(lockPath: string, readyPath: string, releasePath: string): ReturnType<typeof spawn> {
   const source = `
 import { unlink, writeFile, stat } from 'node:fs/promises';
-const guardPath = process.env.HAPPIER_TEST_GUARD_PATH;
+const guardPath = process.env.PIGGERCODE_TEST_GUARD_PATH;
 await unlink(guardPath);
 await writeFile(guardPath, JSON.stringify({
   pid: process.pid,
@@ -108,17 +108,17 @@ await writeFile(guardPath, JSON.stringify({
   createdAtMs: Date.now(),
   updatedAtMs: Date.now(),
 }), { encoding: 'utf8', flag: 'wx', mode: 0o600 });
-await writeFile(process.env.HAPPIER_TEST_READY_PATH, 'ready', 'utf8');
-while (!(await stat(process.env.HAPPIER_TEST_RELEASE_PATH).then(() => true, () => false))) {
+await writeFile(process.env.PIGGERCODE_TEST_READY_PATH, 'ready', 'utf8');
+while (!(await stat(process.env.PIGGERCODE_TEST_RELEASE_PATH).then(() => true, () => false))) {
   await new Promise((resolvePromise) => setTimeout(resolvePromise, 10));
 }
 `;
   return spawn(process.execPath, ['--input-type=module', '-e', source], {
     env: {
       ...process.env,
-      HAPPIER_TEST_GUARD_PATH: `${lockPath}.reclaim`,
-      HAPPIER_TEST_READY_PATH: readyPath,
-      HAPPIER_TEST_RELEASE_PATH: releasePath,
+      PIGGERCODE_TEST_GUARD_PATH: `${lockPath}.reclaim`,
+      PIGGERCODE_TEST_READY_PATH: readyPath,
+      PIGGERCODE_TEST_RELEASE_PATH: releasePath,
     },
     stdio: ['ignore', 'ignore', 'pipe'],
   });
@@ -130,20 +130,20 @@ function spawnContender(lockPath: string, enteredPath: string): ReturnType<typeo
 import { writeFile } from 'node:fs/promises';
 const { withJsonOwnerFileLock } = await import(${JSON.stringify(modulePath)});
 await withJsonOwnerFileLock({
-  lockPath: process.env.HAPPIER_TEST_LOCK_PATH,
+  lockPath: process.env.PIGGERCODE_TEST_LOCK_PATH,
   timeoutMs: 5000,
   staleAfterMs: 1,
   errorCode: 'child_contender_timeout',
   pollIntervalMs: 10,
 }, async () => {
-  await writeFile(process.env.HAPPIER_TEST_ENTERED_PATH, 'entered', 'utf8');
+  await writeFile(process.env.PIGGERCODE_TEST_ENTERED_PATH, 'entered', 'utf8');
 });
 `;
   return spawn(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', source], {
     env: {
       ...process.env,
-      HAPPIER_TEST_LOCK_PATH: lockPath,
-      HAPPIER_TEST_ENTERED_PATH: enteredPath,
+      PIGGERCODE_TEST_LOCK_PATH: lockPath,
+      PIGGERCODE_TEST_ENTERED_PATH: enteredPath,
     },
     stdio: ['ignore', 'ignore', 'pipe'],
   });
@@ -718,13 +718,13 @@ describe('withJsonOwnerFileLock', () => {
 import { writeFile, stat } from 'node:fs/promises';
 const { withJsonOwnerFileLock } = await import(${JSON.stringify(modulePath)});
 await withJsonOwnerFileLock({
-  lockPath: process.env.HAPPIER_TEST_LOCK_PATH,
+  lockPath: process.env.PIGGERCODE_TEST_LOCK_PATH,
   timeoutMs: 5000,
   staleAfterMs: 1,
   errorCode: 'killed_reclaimer_timeout',
   pollIntervalMs: 10,
   readQuarantinedRaw: async (path) => {
-    await writeFile(process.env.HAPPIER_TEST_QUARANTINED_PATH, path, 'utf8');
+    await writeFile(process.env.PIGGERCODE_TEST_QUARANTINED_PATH, path, 'utf8');
     while (true) await new Promise((resolvePromise) => setTimeout(resolvePromise, 100));
   },
 }, async () => undefined);
@@ -735,8 +735,8 @@ await withJsonOwnerFileLock({
       child = spawn(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', source], {
         env: {
           ...process.env,
-          HAPPIER_TEST_LOCK_PATH: lockPath,
-          HAPPIER_TEST_QUARANTINED_PATH: quarantinedPath,
+          PIGGERCODE_TEST_LOCK_PATH: lockPath,
+          PIGGERCODE_TEST_QUARANTINED_PATH: quarantinedPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });

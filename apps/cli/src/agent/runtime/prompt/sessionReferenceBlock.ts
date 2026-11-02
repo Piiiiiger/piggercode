@@ -1,5 +1,5 @@
 import {
-    HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
+    PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1,
     MENTION_BOUNDS,
     MENTION_KIND_V1,
     readMentionRefOpaqueForKindV1,
@@ -36,7 +36,7 @@ type SessionReferenceEntry =
 
 function readSessionReferenceEntries(meta: unknown): readonly SessionReferenceEntry[] {
     if (!meta || typeof meta !== 'object' || Array.isArray(meta)) return [];
-    const envelope = (meta as Record<string, unknown>)[HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1];
+    const envelope = (meta as Record<string, unknown>)[PIGGERCODE_STRUCTURED_INPUT_METADATA_KEY_V1];
     if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return [];
 
     const entries: SessionReferenceEntry[] = [];

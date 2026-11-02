@@ -5,7 +5,7 @@ let activeDeliveries = 0;
 const pendingDeliverySlots: Array<() => void> = [];
 
 function readBoundedDeliveryConcurrency(): number {
-    const raw = String(process.env.HAPPIER_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY ?? '').trim();
+    const raw = String(process.env.PIGGERCODE_SESSION_MUTATION_OUTBOX_DELIVERY_CONCURRENCY ?? '').trim();
     if (!raw) return DEFAULT_DELIVERY_CONCURRENCY;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isSafeInteger(parsed) || parsed < 1) return DEFAULT_DELIVERY_CONCURRENCY;

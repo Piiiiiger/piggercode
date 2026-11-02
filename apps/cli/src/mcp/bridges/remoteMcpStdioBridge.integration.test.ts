@@ -249,7 +249,7 @@ describe('remoteMcpStdioBridge', () => {
         env: {
           ...resolveEnvRecord(),
           ...(bridgeInvocation.env ?? {}),
-          HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
         },
       });
 
@@ -294,7 +294,7 @@ describe('remoteMcpStdioBridge', () => {
         env: {
           ...resolveEnvRecord(),
           ...(bridgeInvocation.env ?? {}),
-          HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
         },
       });
       client = new Client({ name: 'bridge-relaunch-test', version: '1.0.0' }, { capabilities: {} });
@@ -333,7 +333,7 @@ describe('remoteMcpStdioBridge', () => {
         env: {
           ...resolveEnvRecord(),
           ...(bridgeInvocation.env ?? {}),
-          HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
         },
       });
 
@@ -378,7 +378,7 @@ describe('remoteMcpStdioBridge', () => {
         env: {
           ...resolveEnvRecord(),
           ...(bridgeInvocation.env ?? {}),
-          HAPPIER_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
+          PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE: configPath,
         },
         stdio: ['ignore', 'ignore', 'pipe'],
       });

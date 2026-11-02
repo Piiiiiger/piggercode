@@ -22,7 +22,7 @@ export async function runEasPostinstall({
   env = process.env,
   ensureUiWorkspacePackagesBuilt = defaultEnsureUiWorkspacePackagesBuilt,
 } = {}) {
-  const enabled = env.HAPPIER_EAS_ENSURE_UI_WORKSPACES_BUILT === '1' || env.HAPPIER_EAS_ENSURE_UI_WORKSPACES_BUILT === 'true';
+  const enabled = env.PIGGERCODE_EAS_ENSURE_UI_WORKSPACES_BUILT === '1' || env.PIGGERCODE_EAS_ENSURE_UI_WORKSPACES_BUILT === 'true';
   if (!enabled) return;
 
   await ensureUiWorkspacePackagesBuilt({ env });

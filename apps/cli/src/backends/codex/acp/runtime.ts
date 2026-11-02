@@ -40,7 +40,7 @@ export function createCodexAcpRuntime(params: {
   const lastCodexAcpThreadIdPublished: { value: string | null; fingerprint?: string | null } = { value: null };
   let lastCodexIdentityGeneration: number | null = null;
   const drainPendingDuringTurn =
-    (process.env.HAPPIER_E2E_ACP_TRACE_MARKERS ?? '').toString().trim() === '1';
+    (process.env.PIGGERCODE_E2E_ACP_TRACE_MARKERS ?? '').toString().trim() === '1';
   const runtime = createAcpRuntime({
     provider: 'codex',
     directory: params.directory,
@@ -62,7 +62,7 @@ export function createCodexAcpRuntime(params: {
           operation: event.operation,
           getCodexThreadId: () => event.vendorSessionId,
           backendMode: 'acp',
-          transcriptStorage: process.env.HAPPIER_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
+          transcriptStorage: process.env.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct' ? 'direct' : 'persisted',
           codexHome: process.env.CODEX_HOME ?? null,
           activeServerDir: configuration.activeServerDir,
           processEnv: process.env,
@@ -97,7 +97,7 @@ export function createCodexAcpRuntime(params: {
       maxPopPerWake: params.pendingQueueDrainMaxPopPerWake,
       inputConsumer: params.providerInputConsumer,
     },
-    ...(process.env.HAPPIER_TRANSCRIPT_STORAGE === 'direct'
+    ...(process.env.PIGGERCODE_TRANSCRIPT_STORAGE === 'direct'
       ? {}
       : {
           sessionMedia: createAgentSessionMediaPersister({

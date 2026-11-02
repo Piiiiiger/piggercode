@@ -91,8 +91,8 @@ describe('primePlatformAppLaunch', () => {
     await defaultPrimePlatformAppLaunch({
       env: {
         ...process.env,
-        HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '2',
-        HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS: '1',
+        PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '2',
+        PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS: '1',
       },
       platform: 'android',
       appId: 'dev.happier.app.internaldev',
@@ -130,8 +130,8 @@ describe('primePlatformAppLaunch', () => {
     await defaultPrimePlatformAppLaunch({
       env: {
         ...process.env,
-        HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '2',
-        HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS: '1',
+        PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '2',
+        PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_RETRY_DELAY_MS: '1',
       },
       platform: 'android',
       appId: 'dev.happier.app.internaldev',
@@ -159,7 +159,7 @@ describe('primePlatformAppLaunch', () => {
       defaultPrimePlatformAppLaunch({
         env: {
           ...process.env,
-          HAPPIER_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '1',
+          PIGGERCODE_E2E_ANDROID_PRIME_APP_LAUNCH_ATTEMPTS: '1',
         },
         platform: 'android',
         appId: 'dev.happier.app.internaldev',

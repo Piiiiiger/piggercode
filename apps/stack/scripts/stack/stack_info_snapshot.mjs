@@ -148,7 +148,7 @@ export async function readStackInfoSnapshot({
   const envPath = resolveStackEnvPath(stackName).envPath;
   const envRaw = await readExistingEnv(envPath);
   const stackEnv = envRaw ? parseEnvToObject(envRaw) : {};
-  const daemonExpected = String(getEnvValueAny(stackEnv, ['HAPPIER_STACK_DAEMON']) ?? '1').trim() !== '0';
+  const daemonExpected = String(getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_DAEMON']) ?? '1').trim() !== '0';
   const listenerObservationScope = createListenerOwnershipObservationScope({
     totalTimeoutMs: listenerObservationTimeoutMs,
     attemptTimeoutMs: listenerObservationTimeoutMs,
@@ -157,18 +157,18 @@ export async function readStackInfoSnapshot({
   });
   const runtimeStatePath = getStackRuntimeStatePath(stackName);
 
-  const serverComponent = getEnvValueAny(stackEnv, ['HAPPIER_STACK_SERVER_COMPONENT']) || 'happier-server-light';
-  const stackRemote = getEnvValueAny(stackEnv, ['HAPPIER_STACK_STACK_REMOTE']) || 'upstream';
+  const serverComponent = getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_SERVER_COMPONENT']) || 'happier-server-light';
+  const stackRemote = getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_STACK_REMOTE']) || 'upstream';
 
-  const pinnedServerPortRaw = getEnvValueAny(stackEnv, ['HAPPIER_STACK_SERVER_PORT']);
+  const pinnedServerPortRaw = getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_SERVER_PORT']);
   const pinnedServerPort = pinnedServerPortRaw ? Number(pinnedServerPortRaw) : null;
   const stackScopedEnv = applyStackActiveServerScopeEnv({
     env: {
       ...process.env,
       ...stackEnv,
-      HAPPIER_STACK_STACK: stackName,
-      HAPPIER_STACK_ENV_FILE: envPath,
-      HAPPIER_STACK_CLI_HOME_DIR: join(baseDir, 'cli'),
+      PIGGERCODE_STACK_STACK: stackName,
+      PIGGERCODE_STACK_ENV_FILE: envPath,
+      PIGGERCODE_STACK_CLI_HOME_DIR: join(baseDir, 'cli'),
     },
     stackName,
     cliIdentity: 'default',
@@ -205,7 +205,7 @@ export async function readStackInfoSnapshot({
   const serverBackendPort = Number(runtimePorts?.serverBackend) > 0 ? Number(runtimePorts.serverBackend) : null;
   const serveUiWanted = typeof runtimeState?.serveUi === 'boolean'
     ? runtimeState.serveUi
-    : String(getEnvValueAny(stackEnv, ['HAPPIER_STACK_SERVE_UI']) ?? '1').trim() !== '0';
+    : String(getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_SERVE_UI']) ?? '1').trim() !== '0';
   const runtimeSnapshotId = String(runtimeState?.runtimeSnapshotId ?? '').trim();
   const runtimeBackedStart = Boolean(runtimeSnapshotId);
   const expoUiPort =
@@ -354,7 +354,7 @@ export async function readStackInfoSnapshot({
   const uiUrl = uiPort ? `http://${host}:${uiPort}` : null;
   const mobileUrl = mobilePort ? await preferStackLocalhostUrl(`http://localhost:${mobilePort}`, { stackName }) : null;
 
-  const repoDir = getEnvValueAny(stackEnv, ['HAPPIER_STACK_REPO_DIR']) || resolveDefaultRepoEnv({ rootDir }).HAPPIER_STACK_REPO_DIR;
+  const repoDir = getEnvValueAny(stackEnv, ['PIGGERCODE_STACK_REPO_DIR']) || resolveDefaultRepoEnv({ rootDir }).PIGGERCODE_STACK_REPO_DIR;
   const repoWorktreeSpec = repoDir ? worktreeSpecFromDir({ rootDir, component: 'happier-ui', dir: repoDir }) || null : null;
   const runtimeMode = resolveStackRuntimeMode({ argv: [], env: stackEnv }).mode;
   const runtimeInspection = await inspectActiveRuntimeSnapshot({ stackBaseDir: baseDir });

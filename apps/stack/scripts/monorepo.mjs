@@ -1537,7 +1537,7 @@ async function cmdPortGuide({ kv, flags, json }) {
       // If git am is already in progress, jump directly to the conflict loop.
       const inProgress = await isGitAmInProgress(targetRepoRoot);
       const { flags: attemptFlags, kv: attemptKv } = parseArgs(resumeArgv);
-      const allowAutoLlm = String(process.env.HAPPIER_STACK_DISABLE_LLM_AUTOEXEC ?? '').trim() !== '1';
+      const allowAutoLlm = String(process.env.PIGGERCODE_STACK_DISABLE_LLM_AUTOEXEC ?? '').trim() !== '1';
       const canAutoLaunchLlm = allowAutoLlm && (await detectInstalledLlmTools({ onlyAutoExec: true })).length > 0;
       const preferredConflictMode = String(plan.preferredConflictMode ?? '').trim() || 'guided';
 
@@ -1781,7 +1781,7 @@ async function cmdPortGuide({ kv, flags, json }) {
       );
     }
 
-    const allowAutoLlm = String(process.env.HAPPIER_STACK_DISABLE_LLM_AUTOEXEC ?? '').trim() !== '1';
+    const allowAutoLlm = String(process.env.PIGGERCODE_STACK_DISABLE_LLM_AUTOEXEC ?? '').trim() !== '1';
     const canAutoLaunchLlm = allowAutoLlm && (await detectInstalledLlmTools({ onlyAutoExec: true })).length > 0;
     let preferredConflictMode = 'guided';
     if (!preflight.ok) {

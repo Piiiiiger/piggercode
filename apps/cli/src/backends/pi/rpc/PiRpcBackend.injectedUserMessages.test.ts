@@ -87,7 +87,7 @@ readline.createInterface({ input: process.stdin }).on('line', async line => {
 `);
     const backend = new PiRpcBackend({
       cwd: dir, command: process.execPath, args: [scriptPath],
-      env: { HAPPIER_PI_RPC_AGENT_END_SETTLE_MS: '1', ...(trace ? { HAPPIER_PI_RPC_FAILURE_TRACE: '1' } : {}) },
+      env: { PIGGERCODE_PI_RPC_AGENT_END_SETTLE_MS: '1', ...(trace ? { PIGGERCODE_PI_RPC_FAILURE_TRACE: '1' } : {}) },
     });
     backends.push(backend);
     return backend;

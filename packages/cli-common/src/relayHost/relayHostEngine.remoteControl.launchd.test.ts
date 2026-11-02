@@ -12,11 +12,11 @@ describe('RelayHostEngine (remote launchd control)', () => {
         if (remoteCommand.includes('printf') && remoteCommand.includes('$HOME')) {
           return { status: 0, stdout: '/Users/remote-user\n', stderr: '' };
         }
-        if (remoteCommand.includes('HAPPIER_RELAY_HEALTH_OK') || remoteCommand.includes('HEALTH_URL=')) {
-          return { status: 0, stdout: 'HAPPIER_RELAY_HEALTH_OK\n', stderr: '' };
+        if (remoteCommand.includes('PIGGERCODE_RELAY_HEALTH_OK') || remoteCommand.includes('HEALTH_URL=')) {
+          return { status: 0, stdout: 'PIGGERCODE_RELAY_HEALTH_OK\n', stderr: '' };
         }
         if (remoteCommand.includes('server.env')) {
-          return { status: 0, stdout: 'PORT=3005\nHAPPIER_SERVER_HOST=127.0.0.1\n', stderr: '' };
+          return { status: 0, stdout: 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n', stderr: '' };
         }
         if (remoteCommand.includes('if [ -f ')) {
           return { status: 0, stdout: 'yes\n', stderr: '' };

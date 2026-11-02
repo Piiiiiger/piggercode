@@ -1,12 +1,12 @@
 /**
  * OPT-IN real Claude Code TUI runtime-control smoke probe (G6/G7 / P7.3/P7.5).
  *
- * This test is SKIPPED by default. It only runs when `HAPPIER_RUN_REAL_CLAUDE_TUI_PROBES=1` is set AND
+ * This test is SKIPPED by default. It only runs when `PIGGERCODE_RUN_REAL_CLAUDE_TUI_PROBES=1` is set AND
  * a locally installed, already-authenticated `claude` CLI and `tmux` are available. It is intentionally
  * never part of default CI because it spawns a real (paid, interactive) Claude session.
  *
  * Enable locally:
- *   HAPPIER_RUN_REAL_CLAUDE_TUI_PROBES=1 \
+ *   PIGGERCODE_RUN_REAL_CLAUDE_TUI_PROBES=1 \
  *     yarn -s workspace @piggercode/tests test:providers claude.unifiedTuiRuntimeControl.realProbe
  *
  * SETTINGS SAFETY / CLEANUP CONTRACT (G7):
@@ -47,7 +47,7 @@ import {
   parseClaudeScreenState,
 } from '@/backends/claude/unifiedTerminal/tuiControls';
 
-const ENABLED = process.env.HAPPIER_RUN_REAL_CLAUDE_TUI_PROBES === '1';
+const ENABLED = process.env.PIGGERCODE_RUN_REAL_CLAUDE_TUI_PROBES === '1';
 const PROTECTED_FILES = ['settings.json', 'settings.local.json', '.claude.json'] as const;
 const PROBE_SOCKET = 'happier-tui-probe';
 const PROBE_SESSION = 'happier-tui-probe-session';
@@ -94,7 +94,7 @@ function createRealTmuxExecutor(socket: string): TmuxControlCommandExecutor {
 
 describe('Real Claude Unified TUI runtime-control probe (opt-in)', () => {
   if (!ENABLED) {
-    it.skip('requires HAPPIER_RUN_REAL_CLAUDE_TUI_PROBES=1 (opt-in; spawns a paid Claude session)', () => {});
+    it.skip('requires PIGGERCODE_RUN_REAL_CLAUDE_TUI_PROBES=1 (opt-in; spawns a paid Claude session)', () => {});
     return;
   }
 

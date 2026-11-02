@@ -70,8 +70,8 @@ describe('OnboardingShowcaseAutoShowMount', () => {
 
     beforeEach(() => {
         (Constants as { expoConfig?: { version?: string } }).expoConfig = { version: '0.0.0' };
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = 'app.ui.onboardingShowcase';
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = 'app.ui.onboardingShowcase';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = '';
         clearShowcaseSeenVersion();
         clearLastSeenReleaseId();
         clearCachedManifest();
@@ -215,7 +215,7 @@ describe('OnboardingShowcaseAutoShowMount', () => {
     });
 
     it('does not show when the onboarding showcase feature is denied', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.onboardingShowcase';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.onboardingShowcase';
 
         const OnboardingShowcaseAutoShowMount = await getMountComponent();
         await renderScreen(<OnboardingShowcaseAutoShowMount />);
@@ -226,7 +226,7 @@ describe('OnboardingShowcaseAutoShowMount', () => {
     });
 
     it('does not show without an explicit onboarding showcase allow', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_ALLOW = '';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_ALLOW = '';
         authState.isAuthenticated = false;
         authState.credentials = null;
 

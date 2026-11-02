@@ -25,8 +25,8 @@ describe("storage/prisma initDbPglite", () => {
         applyEnvValues({
             HAPPY_SERVER_LIGHT_DB_DIR: undefined,
             HAPPY_SERVER_LIGHT_DATA_DIR: undefined,
-            HAPPIER_SERVER_LIGHT_DB_DIR: undefined,
-            HAPPIER_SERVER_LIGHT_DATA_DIR: undefined,
+            PIGGERCODE_SERVER_LIGHT_DB_DIR: undefined,
+            PIGGERCODE_SERVER_LIGHT_DATA_DIR: undefined,
             HOME: undefined,
         });
         while (createdDirs.length > 0) {
@@ -76,10 +76,10 @@ describe("storage/prisma initDbPglite", () => {
         await expect(shutdownDbPglite()).resolves.toBeUndefined();
     }, 30_000);
 
-    it("accepts HAPPIER_ prefixed light data dir env var", async () => {
+    it("accepts PIGGERCODE_ prefixed light data dir env var", async () => {
         const root = await createHarnessDir();
         const dbDir = join(root, "pglite");
-        applyEnvValues({ HAPPIER_SERVER_LIGHT_DATA_DIR: root });
+        applyEnvValues({ PIGGERCODE_SERVER_LIGHT_DATA_DIR: root });
 
         await expect(initDbPglite()).resolves.toBeUndefined();
         await shutdownDbPglite();

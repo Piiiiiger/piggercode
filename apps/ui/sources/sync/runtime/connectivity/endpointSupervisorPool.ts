@@ -152,8 +152,8 @@ export function getEndpointSupervisorForServer(params: Readonly<{ serverId: stri
 
 function readIdleStopDelayMs(): number {
     const raw =
-        String(process.env.EXPO_PUBLIC_HAPPIER_ENDPOINT_SUPERVISOR_IDLE_TTL_MS ?? '').trim()
-        || String(process.env.EXPO_PUBLIC_HAPPIER_ENDPOINT_SUPERVISOR_IDLE_STOP_DELAY_MS ?? '').trim();
+        String(process.env.EXPO_PUBLIC_PIGGERCODE_ENDPOINT_SUPERVISOR_IDLE_TTL_MS ?? '').trim()
+        || String(process.env.EXPO_PUBLIC_PIGGERCODE_ENDPOINT_SUPERVISOR_IDLE_STOP_DELAY_MS ?? '').trim();
     if (!raw) return 15_000;
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return 15_000;

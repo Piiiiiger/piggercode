@@ -33,7 +33,7 @@ import {
   resolveDirectConnectedServiceEnvironment,
 } from '@/cli/connectedServices/resolveDirectConnectedServiceEnvironment';
 import { resolveDirectCliConnectedServiceBindings } from '@/cli/connectedServices/resolveDirectCliConnectedServiceBindings';
-import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
+import { PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
 import { claimSessionRunnerOwnership, withSessionRunnerOwnership } from '@/daemon/sessionRunnerLock';
 
 import type { CommandContext } from '@/cli/commandRegistry';
@@ -334,7 +334,7 @@ ${chalk.bold.cyan(`Claude Code Options (from \`${providerHelpCommand}\`):`)}
     options.accountSettings = effectiveSnapshot.settings;
     if (
       startedBy !== 'daemon'
-      && !process.env[HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]
+      && !process.env[PIGGERCODE_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY]
     ) {
       const connectedServices = await resolveDirectCliConnectedServiceBindings({
         agentId: 'claude',

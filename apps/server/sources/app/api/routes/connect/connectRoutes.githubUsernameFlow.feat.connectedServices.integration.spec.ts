@@ -39,7 +39,7 @@ function applyGithubUsernameFlowEnv(
         GITHUB_CLIENT_ID: "gh_client",
         GITHUB_CLIENT_SECRET: "gh_secret",
         GITHUB_REDIRECT_URL: "https://api.example.test/v1/oauth/github/callback",
-        HAPPIER_WEBAPP_URL: "https://app.example.test",
+        PIGGERCODE_WEBAPP_URL: "https://app.example.test",
         ...overrides,
     });
 }

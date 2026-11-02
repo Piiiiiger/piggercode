@@ -21,8 +21,8 @@ describe('Claude pre-session native catalogs', () => {
       await writeFile(executable, claudeCatalogProcessFixture);
       const controller = new AbortController();
       const pending = claudePreflightModelsProbeAdapter.probeCatalogsRaw!({ cwd, timeoutMs: 5_000, signal: controller.signal,
-        processEnv: { ...process.env, HAPPIER_CLAUDE_PATH: executable,
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath, HAPPIER_E2E_CATALOG_HANG: '1' } });
+        processEnv: { ...process.env, PIGGERCODE_CLAUDE_PATH: executable,
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath, PIGGERCODE_E2E_CATALOG_HANG: '1' } });
       const rejected = expect(pending).rejects.toThrow(/abort|cancel/i);
       let pid = 0;
       try {
@@ -54,12 +54,12 @@ describe('Claude pre-session native catalogs', () => {
         accountSettings: { claudeRemoteSettingSourcesV2: ['project'] },
         processEnv: {
           ...process.env,
-          HAPPIER_CLAUDE_PATH: executable,
+          PIGGERCODE_CLAUDE_PATH: executable,
           CLAUDE_CONFIG_DIR: join(cwd, 'selected-config'),
           CLAUDECODE: 'parent-session',
           CLAUDE_CODE_OAUTH_REFRESH_TOKEN: 'must-not-forward',
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
-          HAPPIER_E2E_CATALOG_COMMANDS: JSON.stringify([{ name: 'review', description: 'Review changes', argumentHint: '' }]),
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
+          PIGGERCODE_E2E_CATALOG_COMMANDS: JSON.stringify([{ name: 'review', description: 'Review changes', argumentHint: '' }]),
         },
       });
       expect(result).toEqual({ commands: [{ name: 'review', description: 'Review changes', argumentHint: '' }], skills: null });
@@ -80,8 +80,8 @@ describe('Claude pre-session native catalogs', () => {
       const logPath = join(cwd, 'transport.jsonl');
       await writeFile(executable, claudeCatalogProcessFixture);
       const result = await claudePreflightModelsProbeAdapter.probeCatalogsRaw?.({ cwd, timeoutMs: 5_000, processEnv: {
-        ...process.env, HAPPIER_CLAUDE_PATH: executable,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath, HAPPIER_E2E_CATALOG_COMMANDS: '[]',
+        ...process.env, PIGGERCODE_CLAUDE_PATH: executable,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath, PIGGERCODE_E2E_CATALOG_COMMANDS: '[]',
       } });
       expect(result).toEqual({ commands: [], skills: null });
       expect((await waitForClosed(logPath)).some((event) => event.type === 'closed')).toBe(true);
@@ -94,8 +94,8 @@ describe('Claude pre-session native catalogs', () => {
       const logPath = join(cwd, 'transport.jsonl');
       await writeFile(executable, claudeCatalogProcessFixture);
       const pending = claudePreflightModelsProbeAdapter.probeCatalogsRaw?.({ cwd, timeoutMs: 500, processEnv: {
-        ...process.env, HAPPIER_CLAUDE_PATH: executable,
-        HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath, HAPPIER_E2E_CATALOG_HANG: '1',
+        ...process.env, PIGGERCODE_CLAUDE_PATH: executable,
+        PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath, PIGGERCODE_E2E_CATALOG_HANG: '1',
       } });
       await expect(pending).rejects.toThrow(/timed out/i);
       expect((await waitForClosed(logPath)).some((event) => event.type === 'closed')).toBe(true);
@@ -111,9 +111,9 @@ describe('Claude pre-session native catalogs', () => {
       const executable = join(cwd, 'claude.js');
       const logPath = join(cwd, 'transport.jsonl');
       await writeFile(executable, claudeCatalogProcessFixture);
-      const fixtureEnv = createEnvKeyScope(['HAPPIER_E2E_FAKE_CLAUDE_LOG', 'HAPPIER_E2E_CATALOG_COMMANDS']);
-      fixtureEnv.patch({ HAPPIER_E2E_FAKE_CLAUDE_LOG: logPath,
-        HAPPIER_E2E_CATALOG_COMMANDS: JSON.stringify(commands),
+      const fixtureEnv = createEnvKeyScope(['PIGGERCODE_E2E_FAKE_CLAUDE_LOG', 'PIGGERCODE_E2E_CATALOG_COMMANDS']);
+      fixtureEnv.patch({ PIGGERCODE_E2E_FAKE_CLAUDE_LOG: logPath,
+        PIGGERCODE_E2E_CATALOG_COMMANDS: JSON.stringify(commands),
       });
       try {
         let firstInput = true;

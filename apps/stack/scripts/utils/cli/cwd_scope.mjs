@@ -5,7 +5,7 @@ import { WORKTREE_CATEGORIES, getWorktreeCategoryRoot } from '../git/worktrees.m
 import { getDevRepoDir, getRepoDir, getWorkspaceDir, happyMonorepoSubdirForComponent, isHappyMonorepoRoot } from '../paths/paths.mjs';
 
 export function getInvokedCwd(env = process.env) {
-  const explicit = String(env.HAPPIER_STACK_INVOKED_CWD ?? '').trim();
+  const explicit = String(env.PIGGERCODE_STACK_INVOKED_CWD ?? '').trim();
   if (explicit) return explicit;
 
   const actualCwd = String(process.cwd()).trim();

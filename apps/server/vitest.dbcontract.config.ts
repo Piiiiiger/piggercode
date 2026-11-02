@@ -17,7 +17,7 @@ export default defineConfig({
         testTimeout: 60_000,
         hookTimeout: 60_000,
         env: {
-            HAPPIER_FEATURE_POLICY_ENV: "",
+            PIGGERCODE_FEATURE_POLICY_ENV: "",
         },
     },
     // Restrict tsconfig resolution to server only.

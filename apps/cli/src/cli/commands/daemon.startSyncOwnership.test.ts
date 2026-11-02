@@ -42,17 +42,17 @@ vi.mock('@/daemon/ownership/daemonServiceInventory', async (importOriginal) => {
 
 describe('handleDaemonCliCommand: daemon start-sync', () => {
     const envScope = createEnvKeyScope([
-        'HAPPIER_HOME_DIR',
-        'HAPPIER_ACTIVE_SERVER_ID',
-        'HAPPIER_PUBLIC_RELEASE_CHANNEL',
-        'HAPPIER_DAEMON_STARTUP_SOURCE',
-        'HAPPIER_DAEMON_SERVICE_PLATFORM',
-        'HAPPIER_DAEMON_SERVICE_USER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR',
-        'HAPPIER_DAEMON_SERVICE_CHANNEL',
-        'HAPPIER_SERVER_URL',
-        'HAPPIER_PUBLIC_SERVER_URL',
-        'HAPPIER_WEBAPP_URL',
+        'PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_ACTIVE_SERVER_ID',
+        'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+        'PIGGERCODE_DAEMON_STARTUP_SOURCE',
+        'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
+        'PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR',
+        'PIGGERCODE_DAEMON_SERVICE_CHANNEL',
+        'PIGGERCODE_SERVER_URL',
+        'PIGGERCODE_PUBLIC_SERVER_URL',
+        'PIGGERCODE_WEBAPP_URL',
     ]);
 
     afterEach(() => {
@@ -70,10 +70,10 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
 
     it('fails closed when a different daemon is already running for the selected relay', async () => {
         envScope.patch({
-            HAPPIER_DAEMON_STARTUP_SOURCE: 'manual',
-            HAPPIER_SERVER_URL: 'https://cloud.example.test',
-            HAPPIER_PUBLIC_SERVER_URL: 'https://cloud.example.test',
-            HAPPIER_WEBAPP_URL: 'https://cloud.example.test',
+            PIGGERCODE_DAEMON_STARTUP_SOURCE: 'manual',
+            PIGGERCODE_SERVER_URL: 'https://cloud.example.test',
+            PIGGERCODE_PUBLIC_SERVER_URL: 'https://cloud.example.test',
+            PIGGERCODE_WEBAPP_URL: 'https://cloud.example.test',
         });
 
         const conflictInspection: DaemonRunningInspection = {
@@ -157,8 +157,8 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
 
     it('does not short-circuit a self-restart replacement when the current daemon is compatible', async () => {
         envScope.patch({
-            HAPPIER_DAEMON_STARTUP_SOURCE: 'self-restart',
-            HAPPIER_DAEMON_RUNTIME_ID: 'runtime-compatible',
+            PIGGERCODE_DAEMON_STARTUP_SOURCE: 'self-restart',
+            PIGGERCODE_DAEMON_RUNTIME_ID: 'runtime-compatible',
         });
         const compatibleInspection: DaemonRunningInspection = {
             status: 'running',
@@ -209,14 +209,14 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
     it('fails closed when a background service is installed for the active relay', async () => {
         await withTempDir('happier-daemon-start-sync-installed-', async (homeDir) => {
             envScope.patch({
-                HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
-                HAPPIER_DAEMON_STARTUP_SOURCE: '',
-                HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
-                HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                HAPPIER_DAEMON_SERVICE_CHANNEL: 'stable',
+                PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
+                PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
+                PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
 
@@ -257,10 +257,10 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
                     description: 'Happier Daemon',
                     execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
-                        HAPPIER_DAEMON_STARTUP_SOURCE: 'background-service',
-                        HAPPIER_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-                        HAPPIER_DAEMON_SERVICE_HAPPIER_HOME_DIR: join(homeDir, '.happier'),
-                        HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
+                        PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
+                        PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
+                        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                        PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                     },
                     wantedBy: 'default.target',
                 }),

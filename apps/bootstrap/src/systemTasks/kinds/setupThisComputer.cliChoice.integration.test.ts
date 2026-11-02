@@ -117,13 +117,13 @@ async function createComputer(options: Readonly<{ brokenNpmCli?: boolean; userOw
   }));
   await chmod(join(payloadRoot, 'happier'), 0o755);
 
-  for (const name of ['HAPPIER_HOME_DIR', 'HAPPIER_BOOTSTRAP_CLI_PATH', 'HAPPIER_BOOTSTRAP_HAPPIER_PATH', 'HAPPIER_ACTIVE_SERVER_ID', 'HAPPIER_DAEMON_LIFECYCLE_SCOPE_ID', 'HAPPIER_NO_PATH_UPDATE']) {
+  for (const name of ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_BOOTSTRAP_CLI_PATH', 'PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', 'PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID', 'PIGGERCODE_NO_PATH_UPDATE']) {
     vi.stubEnv(name, undefined);
   }
   vi.stubEnv('HOME', home);
   vi.stubEnv('SHELL', '/bin/bash');
   vi.stubEnv('PATH', npmBin);
-  vi.stubEnv('HAPPIER_STACK_REPO_DIR', join(root, 'elsewhere'));
+  vi.stubEnv('PIGGERCODE_STACK_REPO_DIR', join(root, 'elsewhere'));
 
   const preparePayload = vi.fn(async () => ({ versionId: MANAGED_VERSION, payloadRoot, cleanup: async () => undefined }));
   const kind = createSetupThisComputerKind({

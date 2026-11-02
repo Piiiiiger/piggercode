@@ -16,7 +16,7 @@ function resolvePackTarballTimeoutMs(env, explicitTimeoutMs) {
   if (typeof explicitTimeoutMs === 'number' && Number.isFinite(explicitTimeoutMs)) {
     return Math.min(1_800_000, Math.max(30_000, Math.trunc(explicitTimeoutMs)));
   }
-  const raw = String(env?.HAPPIER_CLI_PACK_TARBALL_TIMEOUT_MS ?? '').trim();
+  const raw = String(env?.PIGGERCODE_CLI_PACK_TARBALL_TIMEOUT_MS ?? '').trim();
   if (!raw) return DEFAULT_PACK_TARBALL_TIMEOUT_MS;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return DEFAULT_PACK_TARBALL_TIMEOUT_MS;

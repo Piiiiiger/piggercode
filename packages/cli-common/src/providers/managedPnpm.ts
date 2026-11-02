@@ -23,7 +23,7 @@ function resolveManagedPnpmBinaryName(): string {
 }
 
 const STALE_PNPM_BOOTSTRAP_LOCK_MAX_AGE_MS = 5 * 60 * 1000;
-const MANAGED_PNPM_BOOTSTRAP_ENV_VAR = 'HAPPIER_MANAGED_PNPM_BOOTSTRAP';
+const MANAGED_PNPM_BOOTSTRAP_ENV_VAR = 'PIGGERCODE_MANAGED_PNPM_BOOTSTRAP';
 
 export function managedPnpmInstallDir(processEnv: NodeJS.ProcessEnv = process.env): string {
   return join(resolveHappyHomeDirFromEnvironment(processEnv), 'tools', 'pnpm');
@@ -52,7 +52,7 @@ function resolveExistingManagedOrOverridePnpmCommand(processEnv: NodeJS.ProcessE
 }
 
 export function readRawPnpmOverride(processEnv: NodeJS.ProcessEnv = process.env): string | null {
-  const raw = typeof processEnv.HAPPIER_PNPM_BIN === 'string' ? processEnv.HAPPIER_PNPM_BIN.trim() : '';
+  const raw = typeof processEnv.PIGGERCODE_PNPM_BIN === 'string' ? processEnv.PIGGERCODE_PNPM_BIN.trim() : '';
   return raw || null;
 }
 

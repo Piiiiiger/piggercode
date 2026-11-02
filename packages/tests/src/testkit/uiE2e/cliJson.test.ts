@@ -11,12 +11,12 @@ vi.mock('../process/spawnProcess', () => ({
       ok: true,
       kind: 'environment_probe',
       data: {
-        activeServerId: params.env.HAPPIER_ACTIVE_SERVER_ID ?? null,
-        daemonInstanceId: params.env.HAPPIER_DAEMON_SERVICE_INSTANCE_ID ?? null,
-        daemonServerUrl: params.env.HAPPIER_DAEMON_SERVICE_SERVER_URL ?? null,
-        serverUrl: params.env.HAPPIER_SERVER_URL,
-        homeDir: params.env.HAPPIER_HOME_DIR,
-        probe: params.env.HAPPIER_TEST_ENV_PROBE,
+        activeServerId: params.env.PIGGERCODE_ACTIVE_SERVER_ID ?? null,
+        daemonInstanceId: params.env.PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID ?? null,
+        daemonServerUrl: params.env.PIGGERCODE_DAEMON_SERVICE_SERVER_URL ?? null,
+        serverUrl: params.env.PIGGERCODE_SERVER_URL,
+        homeDir: params.env.PIGGERCODE_HOME_DIR,
+        probe: params.env.PIGGERCODE_TEST_ENV_PROBE,
       },
     }));
   },
@@ -38,12 +38,12 @@ it('uses the fixture credential namespace instead of ambient stack server select
       args: ['auth', 'status', '--json'],
       env: {
         ...process.env,
-        HAPPIER_ACTIVE_SERVER_ID: 'ambient-stack',
-        HAPPIER_DAEMON_SERVICE_INSTANCE_ID: 'ambient-daemon',
-        HAPPIER_DAEMON_SERVICE_SERVER_URL: 'https://ambient.invalid',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-        HAPPIER_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
-        HAPPIER_TEST_ENV_PROBE: 'preserved',
+        PIGGERCODE_ACTIVE_SERVER_ID: 'ambient-stack',
+        PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'ambient-daemon',
+        PIGGERCODE_DAEMON_SERVICE_SERVER_URL: 'https://ambient.invalid',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_E2E_PROVIDER_SKIP_CLI_SHARED_DEPS_BUILD: '1',
+        PIGGERCODE_TEST_ENV_PROBE: 'preserved',
       },
     });
     expect(result).toEqual({

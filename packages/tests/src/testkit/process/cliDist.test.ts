@@ -8,11 +8,11 @@ import { ensureCliDistBuilt, ensureCliDistSnapshotEntrypoint, ensureCliSharedDep
 import { sleep } from '../timing';
 
 const createdDirs: string[] = [];
-const originalSkipBuild = process.env.HAPPIER_CLI_TEST_SKIP_BUILD;
-beforeEach(() => { delete process.env.HAPPIER_CLI_TEST_SKIP_BUILD; });
+const originalSkipBuild = process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD;
+beforeEach(() => { delete process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD; });
 afterEach(() => {
-  if (originalSkipBuild === undefined) delete process.env.HAPPIER_CLI_TEST_SKIP_BUILD;
-  else process.env.HAPPIER_CLI_TEST_SKIP_BUILD = originalSkipBuild;
+  if (originalSkipBuild === undefined) delete process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD;
+  else process.env.PIGGERCODE_CLI_TEST_SKIP_BUILD = originalSkipBuild;
 });
 
 async function createRepoRoot(): Promise<string> {
@@ -79,7 +79,7 @@ describe('ensureCliDistBuilt', () => {
     const repoRoot = await createRepoRoot();
     utimesSync(join(repoRoot, 'apps/cli/src/index.ts'), new Date('2031-01-01'), new Date('2031-01-01'));
     const entrypoint = await ensureCliDistBuilt(
-      { testDir: join(repoRoot, '.project'), env: { ...process.env, HAPPIER_CLI_TEST_SKIP_BUILD: '1' } },
+      { testDir: join(repoRoot, '.project'), env: { ...process.env, PIGGERCODE_CLI_TEST_SKIP_BUILD: '1' } },
       {
         repoRoot,
         waitForAvailabilityMs: 0,
@@ -95,7 +95,7 @@ describe('ensureCliDistBuilt', () => {
     const repoRoot = await createRepoRoot();
     rmSync(join(repoRoot, 'apps/cli/dist/index.mjs'));
     await expect(ensureCliDistBuilt(
-      { testDir: join(repoRoot, '.project'), env: { ...process.env, HAPPIER_CLI_TEST_SKIP_BUILD: '1' } },
+      { testDir: join(repoRoot, '.project'), env: { ...process.env, PIGGERCODE_CLI_TEST_SKIP_BUILD: '1' } },
       {
         repoRoot,
         waitForAvailabilityMs: 0,

@@ -90,7 +90,7 @@ async function loadRequestReview(params: { platformOs: string }) {
 }
 
 describe('requestReview', () => {
-    const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+    const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
 
     beforeEach(() => {
         vi.resetModules();
@@ -99,16 +99,16 @@ describe('requestReview', () => {
         modalConfirmSpy.mockClear();
         syncApplySettingsSpy.mockClear();
         kvStore.clear();
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
     });
 
     afterEach(() => {
-        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
     });
 
     it('does not attempt store review when build policy denies store review prompts', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'app.ui.storeReviewPrompts';
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'app.ui.storeReviewPrompts';
 
         const { requestReview } = await loadRequestReview({ platformOs: 'ios' });
 

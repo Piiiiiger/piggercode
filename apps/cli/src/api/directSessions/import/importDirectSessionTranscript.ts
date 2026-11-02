@@ -25,13 +25,13 @@ function sha256(input: string): string {
 }
 
 function resolvePageMaxBytes(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_PAGE_MAX_BYTES ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_BYTES ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 512_000;
   return Math.max(1024, Math.min(10 * 1024 * 1024, configured));
 }
 
 function resolvePageMaxItems(): number {
-  const raw = Number.parseInt(String(process.env.HAPPIER_DIRECT_SESSIONS_PAGE_MAX_ITEMS ?? ''), 10);
+  const raw = Number.parseInt(String(process.env.PIGGERCODE_DIRECT_SESSIONS_PAGE_MAX_ITEMS ?? ''), 10);
   const configured = Number.isFinite(raw) && raw > 0 ? Math.trunc(raw) : 200;
   return Math.max(1, Math.min(5000, configured));
 }

@@ -81,12 +81,12 @@ async function spawnConnectedCodexGroupSession(params: Readonly<{
       terminal: { mode: 'plain' },
       experimentalCodexAcp: true,
       environmentVariables: {
-        HAPPIER_HOME_DIR: params.fixture.daemonHomeDir,
-        HAPPIER_SERVER_URL: params.fixture.daemonServerBaseUrl,
-        HAPPIER_WEBAPP_URL: params.fixture.daemonServerBaseUrl,
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_EXPERIMENTAL_CODEX_ACP: '1',
-        HAPPIER_CODEX_ACP_BIN: params.fixture.acpStubProvider,
+        PIGGERCODE_HOME_DIR: params.fixture.daemonHomeDir,
+        PIGGERCODE_SERVER_URL: params.fixture.daemonServerBaseUrl,
+        PIGGERCODE_WEBAPP_URL: params.fixture.daemonServerBaseUrl,
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_EXPERIMENTAL_CODEX_ACP: '1',
+        PIGGERCODE_CODEX_ACP_BIN: params.fixture.acpStubProvider,
       },
       connectedServices: {
         v: 1,
@@ -220,11 +220,11 @@ describe('core e2e: connected-service runtime-auth recovery requeue', () => {
     });
 
     fixture = await withTemporaryEnv({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1000',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '2000',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '3',
-      HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1000',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '2000',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '3',
+      PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
     }, async () => await startConnectedServicesCodexDaemon({
       testDir: run.testDir('connected-services-runtime-auth-recovery-requeue'),
       testName: 'connected-services-runtime-auth-recovery-requeue',
@@ -384,11 +384,11 @@ describe('core e2e: connected-service runtime-auth recovery requeue', () => {
 
     const testDir = run.testDir('connected-services-runtime-auth-recovery-restart');
     fixture = await withTemporaryEnv({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1000',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '1500',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '4',
-      HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1000',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '1500',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '4',
+      PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
     }, async () => await startConnectedServicesCodexDaemon({
       testDir,
       testName: 'connected-services-runtime-auth-recovery-restart',
@@ -534,11 +534,11 @@ describe('core e2e: connected-service runtime-auth recovery requeue', () => {
 
     const testDir = run.testDir('connected-services-runtime-auth-recovery-restart-siblings');
     fixture = await withTemporaryEnv({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1500',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '2000',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '3',
-      HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '1500',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '2000',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '3',
+      PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
     }, async () => await startConnectedServicesCodexDaemon({
       testDir,
       testName: 'connected-services-runtime-auth-recovery-restart-siblings',
@@ -682,11 +682,11 @@ describe('core e2e: connected-service runtime-auth recovery requeue', () => {
     });
 
     fixture = await withTemporaryEnv({
-      HAPPIER_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '250',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '1000',
-      HAPPIER_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '1',
-      HAPPIER_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
+      PIGGERCODE_CONNECTED_SERVICES_DISABLE_CODEX_QUOTA_ENDPOINT: '1',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_BASE_BACKOFF_MS: '250',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_BACKOFF_MS: '1000',
+      PIGGERCODE_CONNECTED_SERVICES_RUNTIME_AUTH_RECOVERY_MAX_ATTEMPTS: '1',
+      PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_RESTART_SIGNAL_DELAY_MS: '0',
     }, async () => await startConnectedServicesCodexDaemon({
       testDir: run.testDir('connected-services-runtime-auth-recovery-dead-letter'),
       testName: 'connected-services-runtime-auth-recovery-dead-letter',

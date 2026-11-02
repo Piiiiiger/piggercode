@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';
 import { verifySpawnResumeReachability } from '@/daemon/connectedServices/verifySpawnResumeReachability';
-import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import { createPiConnectedServicesMaterializer } from './createPiConnectedServicesMaterializer';
 
@@ -228,7 +228,7 @@ describe('createPiConnectedServicesMaterializer', () => {
       cwd,
       materializedEnv: {
         ...result!.env,
-        [HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: rootDir,
+        [PIGGERCODE_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY]: rootDir,
       },
       candidatePersistedSessionFile: null,
     });

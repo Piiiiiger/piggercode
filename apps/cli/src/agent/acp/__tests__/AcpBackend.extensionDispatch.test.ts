@@ -213,7 +213,7 @@ describe('AcpBackend ACP extension dispatch', () => {
       };
       const backend = new AcpBackend({
         ...(provider === 'grok' ? buildGrokAcpBackendOptions({
-          cwd: dir, env: { HAPPIER_GROK_PATH: process.execPath },
+          cwd: dir, env: { PIGGERCODE_GROK_PATH: process.execPath },
         }) : { agentName: 'test', cwd: dir }),
         command: process.execPath,
         args: [scriptPath],
@@ -241,7 +241,7 @@ describe('AcpBackend ACP extension dispatch', () => {
       const scriptPath = writeExtensionProbeAgentScript({ dir, resultFile, scenario: 'steer' });
       const backend = new AcpBackend({
         ...(provider === 'grok' ? buildGrokAcpBackendOptions({
-          cwd: dir, env: { HAPPIER_GROK_PATH: process.execPath },
+          cwd: dir, env: { PIGGERCODE_GROK_PATH: process.execPath },
         }) : { agentName: 'test', cwd: dir }),
         command: process.execPath, args: [scriptPath],
       });

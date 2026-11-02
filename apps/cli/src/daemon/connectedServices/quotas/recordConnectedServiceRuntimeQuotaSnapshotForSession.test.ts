@@ -2,7 +2,7 @@ import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapsh
 import { describe, expect, it, vi } from 'vitest';
 
 import { createProviderAccountUsageStore } from '../accountUsage/store';
-import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
+import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../accountGroups/quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
 import { recordConnectedServiceRuntimeQuotaSnapshotForSession } from './recordConnectedServiceRuntimeQuotaSnapshotForSession';
 import { matchesCurrentQuotaObservationCredential, resolveQuotaProbeFreshProof } from './proof/quotaProbeFreshProof';
@@ -75,7 +75,7 @@ function createAccountUsageHarness(options: Readonly<{ persist?: boolean }> = {}
 
 function currentGroupEnv(profileId = 'primary') {
   return {
-    [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+    [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
       kind: 'group',
       serviceId: 'openai-codex',
       groupId: 'main',
@@ -116,7 +116,7 @@ describe('recordConnectedServiceRuntimeQuotaSnapshotForSession', () => {
           connectedServices: { v: 1, bindingsByServiceId: { 'claude-subscription': {
             source: 'connected', selection: 'group', profileId: 'primary', groupId: 'main',
           } } }, environmentVariables: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group', serviceId: 'claude-subscription', groupId: 'main',
               activeProfileId: 'primary', fallbackProfileId: 'backup', generation: 7,
             }]),
@@ -154,7 +154,7 @@ describe('recordConnectedServiceRuntimeQuotaSnapshotForSession', () => {
       source: 'connected', selection: 'group', profileId: 'primary', groupId: 'main',
     } } };
     const selectionEnv = (generation: number) => ({
-      [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
         kind: 'group', serviceId: 'claude-subscription', groupId: 'main',
         activeProfileId: 'primary', fallbackProfileId: 'backup', generation,
       }]),
@@ -1153,7 +1153,7 @@ describe('recordConnectedServiceRuntimeQuotaSnapshotForSession', () => {
             },
           },
           environmentVariables: {
-            [HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
+            [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
               kind: 'group',
               serviceId: 'claude-subscription',
               groupId: 'claude',

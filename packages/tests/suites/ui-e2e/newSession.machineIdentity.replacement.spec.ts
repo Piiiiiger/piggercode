@@ -99,7 +99,7 @@ test.describe('ui e2e: machine identity and replacement surfaces', () => {
     server = await startServerLight({
       testDir: suiteDir,
       extraEnv: {
-        HAPPIER_BUILD_FEATURES_DENY: 'sharing.contentKeys',
+        PIGGERCODE_BUILD_FEATURES_DENY: 'sharing.contentKeys',
       },
     });
     serverBaseUrl = server.baseUrl;
@@ -107,8 +107,8 @@ test.describe('ui e2e: machine identity and replacement surfaces', () => {
       testDir: suiteDir,
       env: {
         ...process.env,
-        HAPPIER_SERVER_URL: server.baseUrl,
-        EXPO_PUBLIC_HAPPIER_SERVER_URL: server.baseUrl,
+        PIGGERCODE_SERVER_URL: server.baseUrl,
+        EXPO_PUBLIC_PIGGERCODE_SERVER_URL: server.baseUrl,
       },
     });
     uiBaseUrl = ui.baseUrl;
@@ -183,12 +183,12 @@ test.describe('ui e2e: machine identity and replacement surfaces', () => {
       env: {
         ...process.env,
         CI: '1',
-        HAPPIER_HOME_DIR: secondHomeDir,
-        HAPPIER_SERVER_URL: serverUrl,
-        HAPPIER_WEBAPP_URL: webUrl,
-        HAPPIER_DISABLE_CAFFEINATE: '1',
-        HAPPIER_VARIANT: 'dev',
-        HAPPIER_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
+        PIGGERCODE_HOME_DIR: secondHomeDir,
+        PIGGERCODE_SERVER_URL: serverUrl,
+        PIGGERCODE_WEBAPP_URL: webUrl,
+        PIGGERCODE_DISABLE_CAFFEINATE: '1',
+        PIGGERCODE_VARIANT: 'dev',
+        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
       },
     });
     const secondMachineId = await waitForDaemonMachineIdFromCliSettings({ cliHomeDir: secondHomeDir });

@@ -25,7 +25,7 @@ describe('happier daemon --all', () => {
         {
           prefix: 'happier-daemon-all-',
           env: {
-            HAPPIER_DAEMON_HTTP_TIMEOUT: '750',
+            PIGGERCODE_DAEMON_HTTP_TIMEOUT: '750',
           },
         },
         async ({ homeDir }) => {

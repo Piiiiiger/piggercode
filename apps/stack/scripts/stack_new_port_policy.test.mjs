@@ -63,7 +63,7 @@ test('stack new --force-port overrides only another stack reservation', async (t
   const ownerResult = parseJsonResult(owner);
   assert.equal(ownerResult.port, port);
   assert.equal(ownerResult.portsMode, 'pinned');
-  assert.match(await fixture.readStackEnv('reserved-owner'), new RegExp(`^HAPPIER_STACK_SERVER_PORT=${port}$`, 'm'));
+  assert.match(await fixture.readStackEnv('reserved-owner'), new RegExp(`^PIGGERCODE_STACK_SERVER_PORT=${port}$`, 'm'));
 
   const rejected = await fixture.runStackNew([
     'reserved-rejected',
@@ -100,7 +100,7 @@ test('stack new --force-port overrides only another stack reservation', async (t
   const forcedResult = parseJsonResult(forced);
   assert.equal(forcedResult.port, port);
   assert.equal(forcedResult.portsMode, 'pinned');
-  assert.match(await fixture.readStackEnv('reserved-forced'), new RegExp(`^HAPPIER_STACK_SERVER_PORT=${port}$`, 'm'));
+  assert.match(await fixture.readStackEnv('reserved-forced'), new RegExp(`^PIGGERCODE_STACK_SERVER_PORT=${port}$`, 'm'));
 });
 
 test('stack new --force-port never overrides a live listener', async (t) => {

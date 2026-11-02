@@ -37,7 +37,7 @@ describe('promoteVersionedPayload Windows junction pointer', () => {
     it('uses a junction for the current payload pointer on Windows when the platform allows it', async () => {
         await withPlatform('win32', async () => {
             const homeDir = await mkdtemp(join(tmpdir(), 'happier-promote-versioned-payload-win32-junction-'));
-            const env = { ...process.env, HAPPIER_HOME_DIR: homeDir };
+            const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
             try {
                 await promoteVersionedPayload({

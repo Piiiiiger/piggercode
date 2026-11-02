@@ -68,10 +68,10 @@ describe('featureDecisionRuntime', () => {
 	    it('ignores non-public build policy env vars in UI bundles', async () => {
 	        vi.resetModules();
 
-        const previousDenyPublic = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        const previousDenyPrivate = process.env.HAPPIER_BUILD_FEATURES_DENY;
-        delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        process.env.HAPPIER_BUILD_FEATURES_DENY = 'voice';
+        const previousDenyPublic = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        const previousDenyPrivate = process.env.PIGGERCODE_BUILD_FEATURES_DENY;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        process.env.PIGGERCODE_BUILD_FEATURES_DENY = 'voice';
 
 	        try {
 	            const { getStorage } = await import('@/sync/domains/state/storage');
@@ -90,18 +90,18 @@ describe('featureDecisionRuntime', () => {
 
             expect(decision).toBeNull();
         } finally {
-            if (previousDenyPublic === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-            else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDenyPublic;
-            if (previousDenyPrivate === undefined) delete process.env.HAPPIER_BUILD_FEATURES_DENY;
-            else process.env.HAPPIER_BUILD_FEATURES_DENY = previousDenyPrivate;
+            if (previousDenyPublic === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+            else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDenyPublic;
+            if (previousDenyPrivate === undefined) delete process.env.PIGGERCODE_BUILD_FEATURES_DENY;
+            else process.env.PIGGERCODE_BUILD_FEATURES_DENY = previousDenyPrivate;
         }
     });
 
 	    it('applies build policy without waiting for server probes in runtime scope', async () => {
 	        vi.resetModules();
 
-        const previousDeny = process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-        process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = 'voice';
+        const previousDeny = process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+        process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = 'voice';
 
 	        try {
 	            const { getStorage } = await import('@/sync/domains/state/storage');
@@ -120,8 +120,8 @@ describe('featureDecisionRuntime', () => {
             expect(decision?.state).toBe('disabled');
             expect(decision?.blockedBy).toBe('build_policy');
         } finally {
-            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
-            else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+            if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY;
+            else process.env.EXPO_PUBLIC_PIGGERCODE_BUILD_FEATURES_DENY = previousDeny;
         }
     });
 

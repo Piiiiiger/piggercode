@@ -11,7 +11,7 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { resolveDoctorRepairAuthContext } from './resolveDoctorRepairAuthContext';
 import { classifyAuth } from './classifyAuth';
 
-const scope = createEnvKeyScope(['HAPPIER_HOME_DIR', 'HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID', 'HAPPIER_LOCAL_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL']);
+const scope = createEnvKeyScope(['PIGGERCODE_HOME_DIR', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_LOCAL_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL']);
 afterEach(() => { scope.restore(); reloadConfiguration(); });
 
 describe('doctor repair auth profile scope', () => {
@@ -29,7 +29,7 @@ describe('doctor repair auth profile scope', () => {
     const localUrl = `http://127.0.0.1:${address.port}`;
     try {
       await withTempDir('doctor-explicit-profile-', async (home) => {
-        scope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_ACTIVE_SERVER_ID: undefined, HAPPIER_SERVER_URL: undefined, HAPPIER_WEBAPP_URL: undefined, HAPPIER_LOCAL_SERVER_URL: undefined, HAPPIER_PUBLIC_SERVER_URL: undefined });
+        scope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_ACTIVE_SERVER_ID: undefined, PIGGERCODE_SERVER_URL: undefined, PIGGERCODE_WEBAPP_URL: undefined, PIGGERCODE_LOCAL_SERVER_URL: undefined, PIGGERCODE_PUBLIC_SERVER_URL: undefined });
         reloadConfiguration();
         await updateSettings((current) => ({ ...current, activeServerId: 'runtime', servers: {
           runtime: { id: 'runtime', name: 'Runtime', serverUrl: 'https://runtime.example.test', webappUrl: 'https://runtime.example.test', createdAt: 1, updatedAt: 1, lastUsedAt: 1 },
@@ -41,14 +41,14 @@ describe('doctor repair auth profile scope', () => {
         const targetPath = join(home, 'servers', 'target', 'access.key');
         await mkdir(join(home, 'servers', 'target'), { recursive: true });
         await writeFile(targetPath, JSON.stringify({ token: 'target-token', secret: Buffer.alloc(32).toString('base64') }));
-        const envBefore = ['HAPPIER_ACTIVE_SERVER_ID', 'HAPPIER_SERVER_URL', 'HAPPIER_LOCAL_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL', 'HAPPIER_WEBAPP_URL'].map((key) => process.env[key]);
+        const envBefore = ['PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_LOCAL_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL', 'PIGGERCODE_WEBAPP_URL'].map((key) => process.env[key]);
         const context = await resolveDoctorRepairAuthContext({ targetServerId: 'target' });
         expect(context.authSignals.find((signal) => signal.serverId === 'target')).toMatchObject({ isActive: true, hasCredentials: true, isExpired: true, reachability: 'verified' });
         expect(classifyAuth({ hasAnyServerProfile: context.hasAnyServerProfile, signals: context.authSignals })).toMatchObject([{ kind: 'auth_expired_for_active_profile', serverId: 'target' }]);
         expect(requests).toEqual(['Bearer target-token']);
         expect(configuration.activeServerId).toBe('runtime');
         expect((await readSettings()).activeServerId).toBe('runtime');
-        expect(['HAPPIER_ACTIVE_SERVER_ID', 'HAPPIER_SERVER_URL', 'HAPPIER_LOCAL_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL', 'HAPPIER_WEBAPP_URL'].map((key) => process.env[key])).toEqual(envBefore);
+        expect(['PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_SERVER_URL', 'PIGGERCODE_LOCAL_SERVER_URL', 'PIGGERCODE_PUBLIC_SERVER_URL', 'PIGGERCODE_WEBAPP_URL'].map((key) => process.env[key])).toEqual(envBefore);
         await unlink(targetPath);
         const missing = await resolveDoctorRepairAuthContext({ targetServerId: 'target' });
         expect(classifyAuth({ hasAnyServerProfile: missing.hasAnyServerProfile, signals: missing.authSignals })).toMatchObject([{ kind: 'auth_missing_for_profile', serverId: 'target' }]);
@@ -60,7 +60,7 @@ describe('doctor repair auth profile scope', () => {
 
   it('reads only a safe explicit scope while retaining cloud legacy fallback', async () => {
     await withTempDir('doctor-scoped-credential-reader-', async (home) => {
-      scope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_ACTIVE_SERVER_ID: 'runtime', HAPPIER_SERVER_URL: 'https://runtime.example.test', HAPPIER_WEBAPP_URL: undefined, HAPPIER_LOCAL_SERVER_URL: undefined, HAPPIER_PUBLIC_SERVER_URL: undefined });
+      scope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_ACTIVE_SERVER_ID: 'runtime', PIGGERCODE_SERVER_URL: 'https://runtime.example.test', PIGGERCODE_WEBAPP_URL: undefined, PIGGERCODE_LOCAL_SERVER_URL: undefined, PIGGERCODE_PUBLIC_SERVER_URL: undefined });
       reloadConfiguration();
       await writeFile(join(home, 'access.key'), JSON.stringify({ token: 'legacy-cloud', secret: Buffer.alloc(32).toString('base64') }));
       expect((await readCredentials({ serverId: 'cloud' }))?.token).toBe('legacy-cloud');
@@ -82,7 +82,7 @@ describe('doctor repair auth profile scope', () => {
     const localUrl = `http://127.0.0.1:${addr.port}`;
     try {
       await withTempDir('doctor-profile-scope-', async (home) => {
-        scope.patch({ HAPPIER_HOME_DIR: home, HAPPIER_SERVER_URL: undefined, HAPPIER_WEBAPP_URL: undefined, HAPPIER_ACTIVE_SERVER_ID: undefined, HAPPIER_PUBLIC_SERVER_URL: undefined, HAPPIER_LOCAL_SERVER_URL: undefined });
+        scope.patch({ PIGGERCODE_HOME_DIR: home, PIGGERCODE_SERVER_URL: undefined, PIGGERCODE_WEBAPP_URL: undefined, PIGGERCODE_ACTIVE_SERVER_ID: undefined, PIGGERCODE_PUBLIC_SERVER_URL: undefined, PIGGERCODE_LOCAL_SERVER_URL: undefined });
         reloadConfiguration();
         await updateSettings((s) => ({ ...s, activeServerId: 'empty', servers: {
           empty: { id: 'empty', name: 'Empty alias', serverUrl: 'https://relay.example.test', webappUrl: 'https://relay.example.test', localServerUrl: localUrl, createdAt: 1, updatedAt: 1, lastUsedAt: 1 },

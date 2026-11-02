@@ -35,8 +35,8 @@ type ResolvedProviderCliSystemCommand = Readonly<{
 }>;
 
 function readBackendCliSourcePreferenceMap(processEnv: NodeJS.ProcessEnv): Partial<Record<AgentId, ProviderCliSourcePreference>> {
-  const raw = typeof processEnv.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON === 'string'
-    ? processEnv.HAPPIER_BACKEND_CLI_SOURCE_PREFERENCES_JSON.trim()
+  const raw = typeof processEnv.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON === 'string'
+    ? processEnv.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON.trim()
     : '';
   if (!raw) return {};
   try {
@@ -73,7 +73,7 @@ export function resolveProviderCliManagedCommandRelativePath(agentId: AgentId): 
 }
 
 export function readProviderCliOverride(agentId: AgentId, processEnv: NodeJS.ProcessEnv = process.env): string | null {
-  const envKey = `HAPPIER_${agentId.toUpperCase()}_PATH`;
+  const envKey = `PIGGERCODE_${agentId.toUpperCase()}_PATH`;
   const override = expandHomeDirPath(
     typeof processEnv[envKey] === 'string' ? String(processEnv[envKey]).trim() : '',
     processEnv,

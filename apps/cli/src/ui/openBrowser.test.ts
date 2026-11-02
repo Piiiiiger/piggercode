@@ -13,7 +13,7 @@ vi.mock('open', () => ({ default: openMock }));
 const envScope = createEnvKeyScope([
   'CI',
   'DISPLAY',
-  'HAPPIER_NO_BROWSER_OPEN',
+  'PIGGERCODE_NO_BROWSER_OPEN',
   'HEADLESS',
   'PATH',
   'WAYLAND_DISPLAY',
@@ -58,7 +58,7 @@ describe('openBrowser', () => {
     envScope.patch({
       CI: undefined,
       DISPLAY: undefined,
-      HAPPIER_NO_BROWSER_OPEN: undefined,
+      PIGGERCODE_NO_BROWSER_OPEN: undefined,
       HEADLESS: undefined,
       WAYLAND_DISPLAY: undefined,
     });
@@ -83,7 +83,7 @@ describe('openBrowser', () => {
     envScope.patch({
       CI: undefined,
       DISPLAY: ':0',
-      HAPPIER_NO_BROWSER_OPEN: undefined,
+      PIGGERCODE_NO_BROWSER_OPEN: undefined,
       HEADLESS: undefined,
       PATH: pathDir,
       WAYLAND_DISPLAY: undefined,
@@ -113,7 +113,7 @@ describe('openBrowser', () => {
     envScope.patch({
       CI: undefined,
       DISPLAY: ':0',
-      HAPPIER_NO_BROWSER_OPEN: undefined,
+      PIGGERCODE_NO_BROWSER_OPEN: undefined,
       HEADLESS: undefined,
       PATH: pathDir,
       WAYLAND_DISPLAY: undefined,
@@ -133,9 +133,9 @@ describe('openBrowser', () => {
     }
   });
 
-  it('returns false when HAPPIER_NO_BROWSER_OPEN is set', async () => {
+  it('returns false when PIGGERCODE_NO_BROWSER_OPEN is set', async () => {
     const restoreTty = trySetStdoutIsTty(true);
-    envScope.patch({ HAPPIER_NO_BROWSER_OPEN: '1' });
+    envScope.patch({ PIGGERCODE_NO_BROWSER_OPEN: '1' });
 
     try {
       const ok = await openBrowser('https://example.com');
@@ -150,7 +150,7 @@ describe('openBrowser', () => {
     const restoreTty = trySetStdoutIsTty(true);
     envScope.patch({
       CI: '1',
-      HAPPIER_NO_BROWSER_OPEN: undefined,
+      PIGGERCODE_NO_BROWSER_OPEN: undefined,
     });
 
     try {
@@ -166,7 +166,7 @@ describe('openBrowser', () => {
     const restoreTty = trySetStdoutIsTty(false);
     envScope.patch({
       CI: undefined,
-      HAPPIER_NO_BROWSER_OPEN: undefined,
+      PIGGERCODE_NO_BROWSER_OPEN: undefined,
     });
 
     try {

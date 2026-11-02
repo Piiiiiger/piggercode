@@ -22,7 +22,7 @@ PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支
 - **命令和目录**：命令 `piggercode`（与 `happier` 等价），服务器上的主目录 `~/.piggercode`。
 - **其它**：Codex 守护进程和空会话的修复、空闲会话不再显示接管横幅。
 
-为了继续兼容官方手机 App 和上游更新，内部名称保持不变：npm 包 `@piggercode/*`、环境变量 `HAPPIER_*`、链接协议 `happier://`、项目内的 `.happier/uploads` 等。
+为了继续兼容官方手机 App 和上游更新，内部名称保持不变：npm 包 `@piggercode/*`、环境变量 `PIGGERCODE_*`、链接协议 `happier://`、项目内的 `.happier/uploads` 等。
 
 只维护 Linux 和 macOS。
 
@@ -44,7 +44,7 @@ yarn install --frozen-lockfile
 
 # 网页端
 cd apps/ui
-APP_ENV=production HAPPIER_EMBEDDED_POLICY_ENV=production EXPO_UNSTABLE_WEB_MODAL=1 \
+APP_ENV=production PIGGERCODE_EMBEDDED_POLICY_ENV=production EXPO_UNSTABLE_WEB_MODAL=1 \
   yarn -s expo export --platform web --output-dir dist
 
 # CLI
@@ -64,7 +64,7 @@ yarn -s typecheck   # 分别在 apps/ui、apps/cli 里运行
 
 1. 在服务器上安装 Happier CLI 和自托管中继，用 systemd 用户服务运行守护进程和中继。
 2. 把构建出的 CLI 文件覆盖到 CLI 的 `package-dist`，重启守护进程；正在运行的会话会自动重新接上。
-3. 把网页端的构建结果交给中继（`HAPPIER_SERVER_UI_DIR`）或前面的反向代理提供静态文件。
+3. 把网页端的构建结果交给中继（`PIGGERCODE_SERVER_UI_DIR`）或前面的反向代理提供静态文件。
 
 ## 分支
 

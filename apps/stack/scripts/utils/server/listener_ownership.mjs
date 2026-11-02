@@ -7,7 +7,7 @@ const MAX_SPAWNED_LISTENER_OWNERSHIP_TIMEOUT_MS = 10 * 60_000;
 
 export function resolveSpawnedListenerOwnershipTimeoutMs(env = process.env) {
   const configured = Number.parseInt(
-    String(env?.HAPPIER_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS ?? '').trim(),
+    String(env?.PIGGERCODE_STACK_LISTENER_OWNERSHIP_TIMEOUT_MS ?? '').trim(),
     10,
   );
   return Number.isFinite(configured) && configured >= 100

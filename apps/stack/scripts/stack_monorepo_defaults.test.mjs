@@ -25,7 +25,7 @@ test('hstack stack new defaults repo token variants to workspace main monorepo c
     );
 
     const contents = await fixture.readStackEnv(testCase.stackName);
-    assert.ok(contents.includes(`HAPPIER_STACK_REPO_DIR=${mainMonorepoRoot}\n`), `${testCase.name}\n${contents}`);
-    assert.ok(!contents.includes('HAPPIER_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
+    assert.ok(contents.includes(`PIGGERCODE_STACK_REPO_DIR=${mainMonorepoRoot}\n`), `${testCase.name}\n${contents}`);
+    assert.ok(!contents.includes('PIGGERCODE_STACK_COMPONENT_DIR_'), `${testCase.name}\n${contents}`);
   }
 });

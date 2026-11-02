@@ -7,7 +7,7 @@ import { db, initDbMysql, initDbPostgres } from "@/storage/db";
 const allowedProviderActions = ["send", "steer", "interrupt_and_send"] as const;
 
 function resolveContractProvider(): "postgres" | "mysql" {
-    const raw = (process.env.HAPPIER_DB_PROVIDER ?? process.env.HAPPY_DB_PROVIDER ?? "postgres")
+    const raw = (process.env.PIGGERCODE_DB_PROVIDER ?? process.env.HAPPY_DB_PROVIDER ?? "postgres")
         .trim()
         .toLowerCase();
     if (raw === "postgres" || raw === "postgresql") return "postgres";

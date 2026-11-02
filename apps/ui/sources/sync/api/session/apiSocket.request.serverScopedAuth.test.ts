@@ -46,8 +46,8 @@ describe('apiSocket.request server-scoped credentials', () => {
             // ignore
         }
 
-        const key = '__HAPPIER_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
-        const tokenKey = '__HAPPIER_GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN__';
+        const key = '__PIGGERCODE_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
+        const tokenKey = '__PIGGERCODE_GLOBAL_TOKEN_CACHE_KEY_BY_TOKEN__';
         const g = globalThis as any;
         const hosts = [
             g,
@@ -74,7 +74,7 @@ describe('apiSocket.request server-scoped credentials', () => {
     });
 
     afterEach(async () => {
-        delete process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS;
         try {
             const { resetServerReachabilitySupervisors } = await import('@/sync/runtime/connectivity/serverReachabilitySupervisorPool');
             await resetServerReachabilitySupervisors();
@@ -256,7 +256,7 @@ describe('apiSocket.request server-scoped credentials', () => {
         // Allow the request to progress past its initial awaits (credentials lookup) so the in-flight key is recorded.
         await Promise.resolve();
 
-        const key = '__HAPPIER_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
+        const key = '__PIGGERCODE_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
         const host = typeof process !== 'undefined' ? (process as any) : (globalThis as any);
         const inFlight = host?.[key] as Map<string, unknown> | undefined;
         expect(inFlight).toBeTruthy();
@@ -319,7 +319,7 @@ describe('apiSocket.request server-scoped credentials', () => {
     });
 
     it('reuses a cross-realm global in-flight request map (vitest module isolation)', async () => {
-        const key = '__HAPPIER_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
+        const key = '__PIGGERCODE_GLOBAL_IN_FLIGHT_HTTP_REQUESTS_BY_KEY__';
         const foreignMap = runInNewContext('new Map()') as unknown as Map<string, Promise<Response>>;
 
         // Cross-realm sanity check: this is the class of bug we want to guard against.
@@ -350,7 +350,7 @@ describe('apiSocket.request server-scoped credentials', () => {
     });
 
     it('gates requests behind server reachability (does not attempt request while unreachable)', async () => {
-        process.env.EXPO_PUBLIC_HAPPIER_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_REACHABILITY_WAIT_TIMEOUT_MS = '5';
 
         const fetchMock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {
             const url = getServerFetchUrl(input).pathname;

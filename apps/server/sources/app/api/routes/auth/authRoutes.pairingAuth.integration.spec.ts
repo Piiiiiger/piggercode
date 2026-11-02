@@ -40,7 +40,7 @@ describe("authRoutes (pairing auth) (integration)", () => {
             initAuth: true,
             initEncrypt: true,
             env: {
-                HAPPIER_FEATURE_AUTH_PAIRING__DESKTOP_QR_MOBILE_SCAN_ENABLED: "1",
+                PIGGERCODE_FEATURE_AUTH_PAIRING__DESKTOP_QR_MOBILE_SCAN_ENABLED: "1",
             },
         });
     }, 120_000);

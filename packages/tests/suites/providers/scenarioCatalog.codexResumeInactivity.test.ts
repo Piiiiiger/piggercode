@@ -6,7 +6,7 @@ import { scenarioCatalog } from '../../src/testkit/providers/scenarios/scenarioC
 describe('providers scenario catalog: codex resume inactivity tuning', () => {
   const codexProvider: ProviderUnderTest = {
     id: 'codex',
-    enableEnvVar: 'HAPPIER_E2E_PROVIDER_CODEX',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_CODEX',
     protocol: 'acp',
     traceProvider: 'codex',
     cli: {

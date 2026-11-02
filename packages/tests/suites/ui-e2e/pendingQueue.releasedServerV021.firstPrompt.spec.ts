@@ -107,7 +107,7 @@ describeReleasedServer(releasedServerSuiteName, () => {
       env: {
         ...process.env,
         EXPO_PUBLIC_DEBUG: '1',
-        EXPO_PUBLIC_HAPPIER_SERVER_URL: server.baseUrl,
+        EXPO_PUBLIC_PIGGERCODE_SERVER_URL: server.baseUrl,
         EXPO_PUBLIC_HAPPY_STORAGE_SCOPE: `e2e-c1-old-server-${run.runId}`,
       },
     });
@@ -162,10 +162,10 @@ describeReleasedServer(releasedServerSuiteName, () => {
         extraEnv: {
           ...process.env,
           HOME: cliHomeDir,
-          HAPPIER_CLAUDE_PATH: fakeClaudeFixturePath(),
-          HAPPIER_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
-          HAPPIER_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-c1-${run.runId}`,
-          HAPPIER_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-c1-${run.runId}`,
+          PIGGERCODE_CLAUDE_PATH: fakeClaudeFixturePath(),
+          PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeClaudeLogPath,
+          PIGGERCODE_E2E_FAKE_CLAUDE_SESSION_ID: `fake-claude-c1-${run.runId}`,
+          PIGGERCODE_E2E_FAKE_CLAUDE_INVOCATION_ID: `fake-claude-c1-${run.runId}`,
         },
       });
     } catch (error) {

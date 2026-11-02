@@ -1,7 +1,7 @@
 import { parseArgs } from '../utils/cli/args.mjs';
 
 function resolveStackName(env) {
-  return String(env?.HAPPIER_STACK_STACK ?? '').trim() || 'main';
+  return String(env?.PIGGERCODE_STACK_STACK ?? '').trim() || 'main';
 }
 
 export function shouldBuildStackArtifacts({ selection, argv = [], env = process.env }) {

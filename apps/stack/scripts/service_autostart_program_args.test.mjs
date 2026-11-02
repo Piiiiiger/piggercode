@@ -19,11 +19,11 @@ test('resolveStackAutostartProgramArgs uses the stable hstack shim with --restar
   await mkdir(join(canonicalHomeDir, 'bin'), { recursive: true });
   await writeFile(shimPath, '#!/bin/sh\nexit 0\n', { mode: 0o755 });
 
-  const previousCanonicalHome = process.env.HAPPIER_STACK_CANONICAL_HOME_DIR;
-  process.env.HAPPIER_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
+  const previousCanonicalHome = process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR;
+  process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
   t.after(async () => {
-    if (previousCanonicalHome == null) delete process.env.HAPPIER_STACK_CANONICAL_HOME_DIR;
-    else process.env.HAPPIER_STACK_CANONICAL_HOME_DIR = previousCanonicalHome;
+    if (previousCanonicalHome == null) delete process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR;
+    else process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR = previousCanonicalHome;
     await rm(tmp, { recursive: true, force: true });
   });
 

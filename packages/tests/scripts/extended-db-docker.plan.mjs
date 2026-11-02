@@ -136,7 +136,7 @@ export function buildExtendedDbCommandPlan({ db, mode, databaseUrl }) {
     command: 'yarn',
     args: ['test:e2e'],
     env: {
-      HAPPIER_E2E_DB_PROVIDER: db,
+      PIGGERCODE_E2E_DB_PROVIDER: db,
       DATABASE_URL: String(databaseUrl),
     },
   };
@@ -161,7 +161,7 @@ export function buildExtendedDbCommandPlan({ db, mode, databaseUrl }) {
     command: 'yarn',
     args: ['workspace', resolveServerAppWorkspaceName(), 'test:db-contract'],
     env: {
-      HAPPIER_DB_PROVIDER: db,
+      PIGGERCODE_DB_PROVIDER: db,
       DATABASE_URL: String(databaseUrl),
     },
   };

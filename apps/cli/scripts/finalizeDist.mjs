@@ -19,7 +19,7 @@ export function readCliDistBuildManifestFingerprint(distDir) {
 
 export function finalizeDist(options = {}) {
   const packageRoot = resolve(String(options.packageRoot ?? resolveCliPackageRoot()));
-  const stagingDir = resolve(String(options.stagingDir ?? join(packageRoot, process.env.HAPPIER_CLI_BUILD_OUTPUT_DIR ?? 'dist.staging')));
+  const stagingDir = resolve(String(options.stagingDir ?? join(packageRoot, process.env.PIGGERCODE_CLI_BUILD_OUTPUT_DIR ?? 'dist.staging')));
   const distDir = resolve(String(options.distDir ?? join(packageRoot, 'dist')));
   const entrypoint = join(stagingDir, 'index.mjs');
   const manifest = buildCliDistManifest(entrypoint, options);

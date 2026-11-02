@@ -94,8 +94,8 @@ export const syncReliabilityTelemetry = createSyncReliabilityTelemetry();
 
 export function installSyncReliabilityTelemetryGlobal(telemetry: SyncReliabilityTelemetry = syncReliabilityTelemetry): void {
     (globalThis as typeof globalThis & {
-        __HAPPIER_SYNC_RELIABILITY__?: { snapshot: () => SyncReliabilityTelemetrySnapshot; reset: () => void };
-    }).__HAPPIER_SYNC_RELIABILITY__ = {
+        __PIGGERCODE_SYNC_RELIABILITY__?: { snapshot: () => SyncReliabilityTelemetrySnapshot; reset: () => void };
+    }).__PIGGERCODE_SYNC_RELIABILITY__ = {
         snapshot: () => telemetry.snapshot(),
         reset: () => telemetry.reset(),
     };

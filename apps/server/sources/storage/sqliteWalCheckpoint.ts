@@ -65,7 +65,7 @@ function parseUnsignedIntegerEnv(params: Readonly<{
 /**
  * Resolve the interval (ms) between active WAL checkpoints.
  *
- * Env: `HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS` / `HAPPY_SQLITE_WAL_CHECKPOINT_INTERVAL_MS`
+ * Env: `PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS` / `HAPPY_SQLITE_WAL_CHECKPOINT_INTERVAL_MS`
  *  - unset            -> default (60s)
  *  - "0"              -> disabled
  *  - positive integer -> that many ms
@@ -73,7 +73,7 @@ function parseUnsignedIntegerEnv(params: Readonly<{
 export function resolveSqliteWalCheckpointIntervalMsFromEnv(env: NodeJS.ProcessEnv): number {
     return parseUnsignedIntegerEnv({
         env,
-        primaryKey: "HAPPIER_SQLITE_WAL_CHECKPOINT_INTERVAL_MS",
+        primaryKey: "PIGGERCODE_SQLITE_WAL_CHECKPOINT_INTERVAL_MS",
         legacyKey: "HAPPY_SQLITE_WAL_CHECKPOINT_INTERVAL_MS",
         defaultValue: DEFAULT_WAL_CHECKPOINT_INTERVAL_MS,
         maxValue: MAX_TIMER_INTERVAL_MS,
@@ -84,7 +84,7 @@ export function resolveSqliteWalCheckpointIntervalMsFromEnv(env: NodeJS.ProcessE
 /**
  * Resolve how long a TRUNCATE checkpoint may wait for reader/writer gaps.
  *
- * Env: `HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS` / `HAPPY_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS`
+ * Env: `PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS` / `HAPPY_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS`
  *  - unset            -> default (5s)
  *  - "0"              -> opportunistic only
  *  - positive integer -> that many ms
@@ -92,7 +92,7 @@ export function resolveSqliteWalCheckpointIntervalMsFromEnv(env: NodeJS.ProcessE
 export function resolveSqliteWalCheckpointBusyTimeoutMsFromEnv(env: NodeJS.ProcessEnv): number {
     return parseUnsignedIntegerEnv({
         env,
-        primaryKey: "HAPPIER_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS",
+        primaryKey: "PIGGERCODE_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS",
         legacyKey: "HAPPY_SQLITE_WAL_CHECKPOINT_BUSY_TIMEOUT_MS",
         defaultValue: DEFAULT_WAL_CHECKPOINT_BUSY_TIMEOUT_MS,
         maxValue: MAX_SQLITE_BUSY_TIMEOUT_MS,
@@ -103,7 +103,7 @@ export function resolveSqliteWalCheckpointBusyTimeoutMsFromEnv(env: NodeJS.Proce
 /**
  * Resolve the interval (ms) between incremental SQLite vacuum batches.
  *
- * Env: `HAPPIER_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS` / `HAPPY_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS`
+ * Env: `PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS` / `HAPPY_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS`
  *  - unset            -> default (6h)
  *  - "0"              -> disabled
  *  - positive integer -> that many ms
@@ -111,7 +111,7 @@ export function resolveSqliteWalCheckpointBusyTimeoutMsFromEnv(env: NodeJS.Proce
 export function resolveSqliteIncrementalVacuumIntervalMsFromEnv(env: NodeJS.ProcessEnv): number {
     return parseUnsignedIntegerEnv({
         env,
-        primaryKey: "HAPPIER_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS",
+        primaryKey: "PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS",
         legacyKey: "HAPPY_SQLITE_INCREMENTAL_VACUUM_INTERVAL_MS",
         defaultValue: DEFAULT_INCREMENTAL_VACUUM_INTERVAL_MS,
         maxValue: MAX_TIMER_INTERVAL_MS,
@@ -122,14 +122,14 @@ export function resolveSqliteIncrementalVacuumIntervalMsFromEnv(env: NodeJS.Proc
 /**
  * Resolve how many free pages one incremental vacuum batch may reclaim.
  *
- * Env: `HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES` / `HAPPY_SQLITE_INCREMENTAL_VACUUM_PAGES`
+ * Env: `PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES` / `HAPPY_SQLITE_INCREMENTAL_VACUUM_PAGES`
  *  - unset            -> default (1000 pages)
  *  - positive integer -> that many pages per batch
  */
 export function resolveSqliteIncrementalVacuumPagesFromEnv(env: NodeJS.ProcessEnv): number {
     return parseUnsignedIntegerEnv({
         env,
-        primaryKey: "HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES",
+        primaryKey: "PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES",
         legacyKey: "HAPPY_SQLITE_INCREMENTAL_VACUUM_PAGES",
         defaultValue: DEFAULT_INCREMENTAL_VACUUM_PAGES,
         maxValue: MAX_SQLITE_INCREMENTAL_VACUUM_PAGES,
@@ -281,8 +281,8 @@ export function startSqliteWalCheckpointWorker(
  */
 export async function incrementalVacuumSqlite(client: PrismaClientType, pages: number): Promise<void> {
     const normalizedPages = parseUnsignedIntegerEnv({
-        env: { HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES: String(pages) },
-        primaryKey: "HAPPIER_SQLITE_INCREMENTAL_VACUUM_PAGES",
+        env: { PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES: String(pages) },
+        primaryKey: "PIGGERCODE_SQLITE_INCREMENTAL_VACUUM_PAGES",
         defaultValue: DEFAULT_INCREMENTAL_VACUUM_PAGES,
         maxValue: MAX_SQLITE_INCREMENTAL_VACUUM_PAGES,
         allowZero: false,
