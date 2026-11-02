@@ -12,8 +12,5 @@ export const SHARED_PACKAGE_TEST_COMMANDS = [
   { id: 'release-runtime', args: ['workspace', '@happier-dev/release-runtime', 'test'] },
   { id: 'connection-supervisor', args: ['workspace', '@happier-dev/connection-supervisor', 'test'] },
   { id: 'bootstrap', args: ['workspace', '@happier-dev/bootstrap', 'test'] },
-  { id: 'docs:test', args: ['workspace', 'docs', 'test'] },
-  { id: 'docs:content', args: ['workspace', 'docs', 'check:content'] },
-  { id: 'website', args: ['workspace', '@happier-dev/website', 'test'] },
   { id: 'relay-server', args: ['--cwd', 'packages/relay-server', 'test'] },
 ] as const satisfies readonly CommandSuiteEntry[];

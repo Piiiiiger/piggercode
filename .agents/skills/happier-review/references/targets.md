@@ -32,7 +32,7 @@ Use when asked to assess architecture or quality without a particular change. Es
 
 ### Release validation or sign-off
 
-Use `.agents/skills/happier-release-validation` only for an explicitly requested release validation and `.agents/skills/happier-release-validation-review` to review its evidence. This skill may audit a release-related change corridor, but it does not replace those operational protocols or create release-archive gates for feature QA.
+This skill may audit a release-related change corridor, but it does not create release-archive gates for feature QA.
 
 ## The affected-corridor rule
 

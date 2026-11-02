@@ -43,7 +43,7 @@ We publish UI Desktop component releases:
 - Preview (rolling prerelease): tag/release `ui-desktop-preview` (assets replaced on each build)
 - Stable update feed (rolling): tag/release `ui-desktop-stable` (hosts `latest.json` pointing at the latest `ui-desktop-vX.Y.Z` assets)
 
-Desktop updater artifacts and feeds are published by `.github/workflows/build-tauri.yml` through the centralized publisher `.github/workflows/publish-ui-release.yml`.
+This fork does not publish desktop updater artifacts or feeds.
 
 ## Implementing auto-updates (recommended approach)
 

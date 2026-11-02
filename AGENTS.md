@@ -38,19 +38,14 @@ Always make the smallest coherent systemic change at the correct canonical owner
    - CLI: `apps/cli/AGENTS.md`
    - Server: `apps/server/AGENTS.md`
    - Stack: `apps/stack/AGENTS.md`
-   - Docs: `apps/docs/AGENTS.md`
    If the relevant instructions are not already present in active context, read them before changing that package. Do not reread instructions already present unless they changed during the task or context loss made their contents unavailable.
 2. Use repository skills when the requested task matches their purpose, not merely a keyword. Reuse unchanged instructions already active in context; after context loss, recover only the missing applicable instructions and task state. Do not reload a skill or its references at every lane, phase, or handoff. Use the existing routing:
    - `.agents/skills/happier-plan` only for an explicit request to create, replace, or materially refine a repository plan; complexity alone is not a trigger.
    - `.agents/skills/happier-implement` for source changes. Add `.agents/skills/happier-implement-plan` when executing an approved plan; it preserves plan authority rather than redesigning it.
    - `.agents/skills/happier-commit-worktree` only for a user-requested large or continuously changing worktree commit campaign, not an ordinary scoped commit.
    - `.agents/skills/happier-review` is the only general Happier review/QA orchestrator. The archived `review-protocol` and `code-reviewer` skills must not be invoked.
-   - `.agents/skills/happier-pr-steward` for user-requested pull-request stewardship; it composes `happier-review` and the mutation authority in `happier-github-ops`.
-   - `.agents/skills/happier-port-0-2-to-0-3` after every coherent validated 0.2 change batch. Validate 0.2 first, then give every intent an evidence-backed 0.3 disposition through the evolved owner; the skill never stages or commits.
    - `.agents/skills/happier-testing` for TDD, test quality, lane selection, and live validation.
-   - `.agents/skills/happier-docs` for internal or published documentation.
    - `.agents/skills/happier-instruction-eval` only for an explicit instruction-variant evaluation or an approved evaluation boundary.
-   - `.agents/skills/happier-issue-triage` for read-only issue retrieval, clustering, and routing; `.agents/skills/happier-issue-diagnose` for deep read-only diagnosis. Issue correction, release follow-up, labels, closure, attribution, and reporter handoff follow `docs/issue-triage.md`. On 0.2, validate the source correction, then complete its 0.3 disposition.
    - `.agents/skills/happier-diagnose` for read-only runtime/support incidents; requested source fixes proceed through `happier-implement`.
    - `.agents/skills/happier-profile-and-optimize` when success is measured performance; implementation still uses `happier-implement`, and UI write-time rules remain in `apps/ui/AGENTS.md`.
    - `.agents/skills/happier-compatibility` for wire, persistence, mixed-version, upgrade, rollback, and 0.2 → 0.3 seams.
@@ -133,7 +128,7 @@ Before changing production behavior:
 ## Documentation ownership
 
 - `docs/**` owns internal technical and product-architecture documentation: protocols, canonical owners, data flows, compatibility, persistence, encryption, deployment internals, and contributor-facing architecture.
-- `apps/docs/content/docs/**` owns published documentation for users, operators, self-hosters, providers, and public contributors.
+- This fork publishes no documentation site; the repository README and `docs/**` are the documentation.
 - A behavior or contract change updates every materially affected canonical documentation page in the same coherent change, or the handoff explains why no documentation change was needed.
 - Search for and update the existing canonical page before creating another. Do not leave similar-but-different explanations of the same concept.
 - Documentation is a claim, not proof of implementation. Verify Happier behavior against the implementing code and the target release/channel before documenting it.
@@ -208,7 +203,7 @@ Before changing production behavior:
 - Never run or emulate destructive cleanup without explicit approval, including `git reset`, `git restore`, `git clean`, `git checkout`, `git switch`, or any command intended to discard work.
 - Use read-only Git commands for inspection unless the user requested a mutation.
 - Never stage (`git add`) or commit except when executing an explicitly requested commit (from the user or an approved plan). When a commit is requested, assemble it by explicit pathspec from current bytes; never trust or wholesale-commit an inherited index.
-- Ordinary commits and Git pushes, including PR-stewardship pushes, use the current machine's Git identity and configured Git credentials. Verify `git config user.name` and `git config user.email` before the first commit, never rewrite them to a GitHub bot or another contributor, and stop rather than inventing a missing identity. GitHub API/UI mutations use `happier-bot` through `.agents/skills/happier-github-ops`. Its isolated `ghops git push` transport remains available only when exact or bounded standing authorization explicitly selects the bot as push actor; never infer that exception from ordinary commit/push authority, PR stewardship, or a machine-credential failure. When rebasing another author's work, preserve every original author while the current machine identity remains the committer and default push actor, and never alter persistent Git identity.
+- Ordinary commits and Git pushes use the current machine's Git identity and configured Git credentials. Verify `git config user.name` and `git config user.email` before the first commit, never rewrite them to a GitHub bot or another contributor, and stop rather than inventing a missing identity. When rebasing another author's work, preserve every original author while the current machine identity remains the committer and default push actor, and never alter persistent Git identity.
 - Add a verified `Co-authored-by:` trailer only when that specific commit materially incorporates another person's code, patch, design, causal diagnosis, decisive reproduction, or substantially adopted fix direction. PR/issue authorship, participation, review ownership, a routine report, generic suggestion, requested log, or confirmation alone does not justify co-authorship. Evaluate attribution commit by commit; acknowledge helpful non-code contributions publicly even when they do not meet the commit-attribution threshold.
 - For shared multi-program work, record one active authority for each conceptual seam. A dependent plan consumes that owner's contract; two plans must not independently design or write the same live seam. Plans that overlap existing work name `Supersedes:`, `Extends:`, and `Consumes:` relationships or stop for adjudication.
 - A long-running multi-program effort maintains one current-status pointer in its existing canonical tracking document (current integration boundary, blockers, and superseded predecessors). This is a section in an existing file, not a new registry, lease system, or mandatory artifact for routine single-agent work.

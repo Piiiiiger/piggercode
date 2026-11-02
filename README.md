@@ -14,6 +14,7 @@ PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支
 - **删除同步**：在网页端删除直连会话，会同时删除服务器上对应的 Codex 会话。
 - **只有 Claude Code 和 Codex**：新建会话、设置里的服务商、欢迎页等只列这两个代理。其它代理的代码还在，在 `apps/ui/appVariantConfig.cjs` 的 `APP_BRAND.agentIds` 里加上就会出现。
 - **没有原版残留**：设置的「关于」只有版本号和本仓库的 GitHub 链接；不收集使用统计和崩溃报告；没有反馈问题、更新日志、评分、原版文档链接和 Happier Voice 订阅；不会提示从 happier.dev 安装或更新原版 CLI，也不从原版仓库下载语音模型。
+- **精简的仓库**：去掉了上游的文档站、官网、发布和 CI 自动化（GitHub 工作流、发布脚本、Docker 镜像）、赞助按钮和议题模板。
 - **共享文件夹**：
   - 发送的附件按原文件名存到服务器上的一个文件夹（默认 `~/Downloads`），同名文件编号为 `名字 (1).扩展名`，不会覆盖；
   - 文件面板里的「共享文件夹」窗口：点文件下载，拖文件或文件夹进去上传；
@@ -33,7 +34,6 @@ PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支
 | `apps/cli` | CLI 和守护进程：在服务器上启动、托管代理会话，处理文件传输 |
 | `apps/server` | 中继服务器 |
 | `packages/*` | 共享的协议、传输和工具代码 |
-| `apps/docs` | 上游的使用文档 |
 
 ## 构建
 

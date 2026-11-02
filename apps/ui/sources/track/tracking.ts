@@ -17,8 +17,7 @@ const ANALYTICS_FEATURE_ID = 'app.analytics' as const satisfies FeatureId;
  * exported into the build, every event from the app went to the wrong continent
  * and was dropped. `EXPO_PUBLIC_POSTHOG_HOST` still overrides this for a fork or
  * a self-hosted PostHog; the difference is that forgetting it is no longer a
- * silent data loss. apps/website/src/analytics/config.ts pins its region the
- * same way, for the same reason.
+ * silent data loss.
  */
 const POSTHOG_DEFAULT_HOST = 'https://eu.i.posthog.com';
 

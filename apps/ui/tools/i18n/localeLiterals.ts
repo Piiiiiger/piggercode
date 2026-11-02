@@ -230,9 +230,8 @@ export function findEscapeNormalisations(literals: readonly LocaleLiteral[]): Ro
  * becomes a command that does not run.
  *
  * This is a HEURISTIC for deciding what to *offer* a translator, never a licence to skip a string
- * silently. It cannot see a code span sitting inside a sentence — for that the marketing site keeps
- * an explicit per-key token list (`apps/website/src/i18n/generated/dnt.json`) and validates against
- * it, which is the right model whenever exact tokens have to survive inside prose.
+ * silently. It cannot see a code span sitting inside a sentence; an explicit per-key token list,
+ * validated against the text, is the right model whenever exact tokens have to survive inside prose.
  */
 export function isDoNotTranslate(text: string): boolean {
     const trimmed = text.trim();

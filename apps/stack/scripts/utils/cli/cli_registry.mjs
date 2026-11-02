@@ -179,13 +179,6 @@ export function gethstackRegistry() {
       description: 'Validate npm pack tarball contents (best-effort)',
     },
     {
-      name: 'ci',
-      kind: 'node',
-      scriptRelPath: 'scripts/ci.mjs',
-      rootUsage: 'hstack ci act [--json]',
-      description: 'CI helpers (e.g. act)',
-    },
-    {
       name: 'edison',
       kind: 'node',
       scriptRelPath: 'scripts/edison.mjs',

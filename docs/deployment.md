@@ -1,6 +1,6 @@
 # Deployment
 
-This document records the server implementation behind deployment. Operator recipes and configuration are owned by the published [self-hosting guide](../apps/docs/content/docs/self-hosting/index.mdx), including [Docker and Kubernetes](../apps/docs/content/docs/self-hosting/docker.mdx#kubernetes).
+This document records the server implementation behind deployment.
 
 ## Runtime overview
 - **App server:** Fastify + Socket.IO. Published `relay-server` images run the packaged server binary and embed the web UI; source-based `server` images use the repository start script.
@@ -100,7 +100,7 @@ Key notes:
 - If the platform cannot block application rollout on a pre-deploy operation, use exactly one API migration owner (`RUN_MIGRATIONS=1`), disable migrations on all workers and other replicas, and configure start-first rollout, rollback on failure, and a health startup grace long enough for the largest expected migration. Separate auto-deploy webhooks are not an ordering mechanism.
 
 ## Kubernetes manifests
-The canonical [Kubernetes recipe](../apps/docs/content/docs/self-hosting/docker.mdx#kubernetes) explains the examples in `apps/server/deploy`:
+The examples in `apps/server/deploy`:
 
 - `config.yaml`: explicit full/Postgres/S3, memory-adapter, single-process configuration.
 - `migrate.yaml`: one pre-deploy Job using the packaged migrator; create and await it before rollout.

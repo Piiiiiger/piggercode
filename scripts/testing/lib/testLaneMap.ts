@@ -4,7 +4,6 @@ export type LaneId =
   | 'test'
   | 'test:integration'
   | 'cli:test:slow'
-  | 'website:test'
   | 'release-runtime:test'
   | 'test:db-contract:docker'
   | 'test:e2e:core:fast'
@@ -21,7 +20,7 @@ export type LaneId =
 
 export interface TestLaneDefinition {
   id: LaneId;
-  category: 'unit' | 'integration' | 'db-contract' | 'e2e' | 'provider' | 'stress' | 'website';
+  category: 'unit' | 'integration' | 'db-contract' | 'e2e' | 'provider' | 'stress';
   rootScriptName: string | null;
   rootCommand: string | null;
   packageLocalOnly: boolean;
@@ -31,7 +30,6 @@ export const TEST_LANE_DEFINITIONS: readonly TestLaneDefinition[] = Object.freez
   { id: 'test', category: 'unit', rootScriptName: 'test', rootCommand: 'yarn test', packageLocalOnly: false },
   { id: 'test:integration', category: 'integration', rootScriptName: 'test:integration', rootCommand: 'yarn test:integration', packageLocalOnly: false },
   { id: 'cli:test:slow', category: 'integration', rootScriptName: 'test:cli:slow', rootCommand: 'yarn test:cli:slow', packageLocalOnly: false },
-  { id: 'website:test', category: 'website', rootScriptName: 'test', rootCommand: 'yarn test', packageLocalOnly: false },
   { id: 'release-runtime:test', category: 'unit', rootScriptName: 'test', rootCommand: 'yarn test', packageLocalOnly: false },
   {
     id: 'test:db-contract:docker',
@@ -91,7 +89,6 @@ const SERVER_INTEGRATION_RE = /\.(?:integration\.(?:test|spec)|real\.integration
 const UNIT_TEST_RE = /\.(?:test|spec)\.[cm]?[jt]sx?$/;
 
 const ROOT_UNIT_PREFIXES = [
-  'apps/docs/',
   'packages/privacy-kit/',
   'packages/protocol/',
   'packages/transfers/',
@@ -124,10 +121,6 @@ export function classifyTestFile(relativePath: string): LaneId | null {
   if (relativePath.startsWith('apps/ui/')) {
     if (UI_INTEGRATION_RE.test(relativePath)) return 'test:integration';
     return UNIT_TEST_RE.test(relativePath) ? 'test' : null;
-  }
-
-  if (relativePath.startsWith('apps/website/')) {
-    return UNIT_TEST_RE.test(relativePath) ? 'website:test' : null;
   }
 
   if (relativePath.startsWith('apps/cli/')) {

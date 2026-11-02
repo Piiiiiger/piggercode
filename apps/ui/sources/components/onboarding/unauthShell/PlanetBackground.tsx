@@ -44,9 +44,8 @@ const PLANET_MOBILE_BG_POSITION = `center ${PLANET_MOBILE_VERTICAL_ANCHOR * 100}
 
 /**
  * The cosmic backdrop behind the unauth shell. Theme-aware: dark planet for
- * dark mode, warm planet for light mode. Reused from the website hero
- * imagery (`apps/website/public/images/background5_*`) and bundled into the
- * app's assets in P1.
+ * dark mode, warm planet for light mode. The imagery is bundled in the app's
+ * assets.
  *
  * Two variants:
  *  - **desktop** — full-bleed cover behind the left brand pane on tablet

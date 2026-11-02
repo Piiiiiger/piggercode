@@ -58,7 +58,6 @@ The database provider is independent of these presets. `HAPPIER_DB_PROVIDER=post
 
 For the complete runtime environment-variable reference (including advanced/internal toggles and legacy aliases), see:
 
-- `apps/docs/content/docs/deployment/env.mdx`
 - canonical template: `apps/server/.env.example`
 
 The full flavor expects these env vars to be set:

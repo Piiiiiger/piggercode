@@ -11,7 +11,7 @@ import { readHappierCliChoiceSync } from './happierCliChoice.js';
 /**
  * PATH exposure for the managed Happier CLI, with provenance.
  *
- * The policy is a transcription of `apps/website/public/install.sh` (`append_path_hint`) and
+ * The policy is a transcription of the shell installers' `install.sh` (`append_path_hint`) and
  * `install.ps1` (user PATH update) so that Desktop and the shell installers deduplicate against
  * the same exact line / entry. Desktop marks only what it created and removes only that.
  * PATH exposure never gates readiness: every failure is returned as a message, never thrown.

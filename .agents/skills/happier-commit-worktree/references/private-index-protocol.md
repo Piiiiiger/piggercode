@@ -22,7 +22,7 @@ git var GIT_AUTHOR_IDENT
 git var GIT_COMMITTER_IDENT
 ```
 
-Both configured fields must be present and the resolved author/committer must be the current local Git user. Do not set `GIT_AUTHOR_*`, `GIT_COMMITTER_*`, `--author`, or temporary `user.*` overrides to impersonate a bot, PR author, issue author, or co-author. Contributor credit belongs in verified `Co-authored-by:` trailers. The foreign-PR rebase exception is owned by `.agents/skills/happier-github-ops` and does not apply to `commit-tree` packets.
+Both configured fields must be present and the resolved author/committer must be the current local Git user. Do not set `GIT_AUTHOR_*`, `GIT_COMMITTER_*`, `--author`, or temporary `user.*` overrides to impersonate a bot, PR author, issue author, or co-author. Contributor credit belongs in verified `Co-authored-by:` trailers.
 
 Capture the basis and inspect inherited staging:
 

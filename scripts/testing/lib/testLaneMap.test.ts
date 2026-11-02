@@ -8,7 +8,6 @@ test('classifies representative lane paths', () => {
   assert.equal(classifyTestFile('apps/ui/sources/screens/home.spec.tsx'), 'test');
   assert.equal(classifyTestFile('apps/ui/sources/screens/home.integration.test.tsx'), 'test:integration');
   assert.equal(classifyTestFile('apps/cli/src/run.slow.test.ts'), 'cli:test:slow');
-  assert.equal(classifyTestFile('apps/website/tests/index.release.test.js'), 'website:test');
   assert.equal(classifyTestFile('apps/server/sources/app/db.dbcontract.spec.ts'), 'test:db-contract:docker');
   assert.equal(classifyTestFile('packages/protocol/src/example.test.ts'), 'test');
   assert.equal(classifyTestFile('packages/release-runtime/tests/http.test.mjs'), 'release-runtime:test');
@@ -26,10 +25,6 @@ test('classifies representative lane paths', () => {
 
 test('classifies package-local unit and contract tests through their existing root lanes', () => {
   const rootUnitTests = [
-    'apps/docs/scripts/build.test.mjs',
-    'apps/docs/scripts/checkContent.test.mjs',
-    'apps/docs/scripts/generateAgentReference.test.mjs',
-    'apps/docs/scripts/generateRateLimitReference.test.mjs',
     'packages/privacy-kit/src/modules/crypto/deriveKey.test.ts',
     'packages/privacy-kit/src/modules/crypto/hmac_sha512.spec.ts',
     'packages/privacy-kit/src/modules/crypto/pbkdf2_sha512.spec.ts',
@@ -82,6 +77,5 @@ test('exposes the WSREPL Lima UI lane as a root script', () => {
 
 test('exposes CLI slow and shared-package workspaces through root-owned lanes', () => {
   assert.equal(LANE_ROOT_SCRIPTS['cli:test:slow'], 'yarn test:cli:slow');
-  assert.equal(LANE_ROOT_SCRIPTS['website:test'], 'yarn test');
   assert.equal(LANE_ROOT_SCRIPTS['release-runtime:test'], 'yarn test');
 });

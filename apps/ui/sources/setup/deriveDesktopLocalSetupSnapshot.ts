@@ -129,7 +129,7 @@ export type DesktopLocalInspection =
         /** The default-following service's daemon: the relay this Happier home's selection names. */
         facts: DesktopLocalReadinessFacts;
         /**
-         * One daemon per relay (`apps/docs/.../accounts/multi-server.mdx`): each pinned service of
+         * One daemon per relay: each pinned service of
          * this home and ring — a relay this computer ALSO serves — with its own facts. `null` or
          * absent is UNKNOWN: the executor that answered (an older hsetup or CLI) could not say, so
          * nothing beyond `facts` is claimed and nothing that needs the list is offered.

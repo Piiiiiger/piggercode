@@ -413,13 +413,6 @@ for (const folder of watchedHoistedNodeModuleRoots) {
 const testsWorkspaceRoot = path.resolve(__dirname, "../../packages/tests");
 config.watchFolders = config.watchFolders.filter((folder) => folder !== testsWorkspaceRoot);
 
-// The UI runtime never imports `apps/docs` or `apps/website`, but those workspaces can contain very large build
-// artifacts (e.g. `.next/**`). When Metro falls back to the native `find` crawler, scanning them can crash with
-// `RangeError: Invalid string length`. Keep them out of the watcher set.
-const docsWorkspaceRoot = path.resolve(__dirname, "../docs");
-const websiteWorkspaceRoot = path.resolve(__dirname, "../website");
-config.watchFolders = config.watchFolders.filter((folder) => folder !== docsWorkspaceRoot && folder !== websiteWorkspaceRoot);
-
 // Kokoro (kokoro-js) ships a `.web.js` prebundle that Metro cannot transform (it contains non-literal dynamic imports).
 // For Expo web, force Metro to resolve the package to its ESM entry and shim Node builtins that the ESM file imports
 // but never uses in browser mode.

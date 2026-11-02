@@ -229,7 +229,6 @@ Model selection behavior:
 - **Gemini (ACP)**: model changes may recreate the underlying ACP process; Happier preserves context via replay/history.
 
 For the full user guide (UI behavior, defaults, apply timing), see the app docs:
-- [Permissions](https://github.com/happier-dev/happier/blob/main/apps/docs/content/docs/features/permissions.mdx)
 
 ## Environment Variables
 

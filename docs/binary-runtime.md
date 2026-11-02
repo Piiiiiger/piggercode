@@ -129,8 +129,7 @@ pipeline. This source change does not establish availability in a published rele
 
 WebKit can migrate IndexedDB when opening an existing desktop profile. An older
 engine may then be unable to open that database; replacing the executable does
-not reverse the migration. Follow the downgrade warning on the
-[downloads page](../apps/docs/content/docs/getting-started/get-the-apps.mdx),
+not reverse the migration. Do not downgrade the desktop app over a newer profile;
 preserve pending drafts and messages, and do not delete the profile to diagnose
 rendering performance. No second storage writer or profile migration is added.
 
@@ -423,7 +422,7 @@ What it guarantees:
   settings › Terminal. The PATH checked is the desktop process's own; a GUI launch whose PATH lacks a shell
   directory can still write a line for a `happier` that shells already resolve.
 - **Byte-identical lines.** The POSIX export line and shell/rc-file selection are a transcription
-  of `apps/website/public/install.sh`, so if the shell installer already wrote that exact line the
+  of the shell installer (`install.sh`), so if it already wrote that exact line the
   desktop writes nothing. Deduplication is exact-line equality, and on Windows a case-insensitive
   entry comparison against the user `Path`. On POSIX the installer writes its line for its own
   `BIN_DIR` (`~/.local/bin`), not `<happier home>/bin`, so the two lines are not byte-identical;

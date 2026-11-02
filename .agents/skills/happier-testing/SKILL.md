@@ -6,7 +6,7 @@ metadata: {"openclaw":{"homepage":"https://github.com/happier-dev/happier"}}
 
 # Happier Testing And TDD
 
-Use this skill whenever work adds, changes, reviews, deletes, or audits tests, fixtures, testkits, lane wiring, or validation behavior. It is the single test-quality owner; CI failure collection remains in `.agents/skills/happier-ci-stabilize`.
+Use this skill whenever work adds, changes, reviews, deletes, or audits tests, fixtures, testkits, lane wiring, or validation behavior. It is the single test-quality owner.
 
 ## Goal
 
