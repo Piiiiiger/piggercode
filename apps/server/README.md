@@ -93,7 +93,7 @@ Optional (recommended for multi-core / multi-replica):
 Happier clients read bug-report settings from `GET /v1/features`. Configure these env vars to control behavior:
 
 - `PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED` (default `1`)
-- `PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL` (default `https://reports.happier.dev`)
+- `PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL` (no default: bug reports stay off until this names a provider)
   - If set to an invalid URL, provider submission is disabled (`providerUrl=null`) instead of failing open.
 - `PIGGERCODE_FEATURE_BUG_REPORTS__DEFAULT_INCLUDE_DIAGNOSTICS` (default `1`)
 - `PIGGERCODE_FEATURE_BUG_REPORTS__MAX_ARTIFACT_BYTES` (default `10485760`)

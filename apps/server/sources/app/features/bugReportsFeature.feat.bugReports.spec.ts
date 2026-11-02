@@ -5,8 +5,8 @@ import { resolveBugReportsFeature } from "./bugReportsFeature";
 describe("features/bugReportsFeature", () => {
     it("returns defaults when env vars are not set", () => {
         const result = resolveBugReportsFeature({} as any);
-        expect(result.features?.bugReports?.enabled).toBe(true);
-        expect(result.capabilities?.bugReports?.providerUrl).toBe("https://reports.happier.dev");
+        expect(result.features?.bugReports?.enabled).toBe(false);
+        expect(result.capabilities?.bugReports?.providerUrl).toBeNull();
         expect(result.capabilities?.bugReports?.defaultIncludeDiagnostics).toBe(true);
         expect(result.capabilities?.bugReports?.maxArtifactBytes).toBe(10 * 1024 * 1024);
         expect(result.capabilities?.bugReports?.uploadTimeoutMs).toBe(120000);

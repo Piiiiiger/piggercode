@@ -478,7 +478,7 @@ describe("featuresRoutes", () => {
     });
 
     describe("bug reports", () => {
-        it("returns bug report capability enabled by default", async () => {
+        it("keeps bug reports off when no report provider is configured", async () => {
             resetEnv({
                 PIGGERCODE_FEATURE_BUG_REPORTS__ENABLED: undefined,
                 PIGGERCODE_FEATURE_BUG_REPORTS__PROVIDER_URL: undefined,
@@ -486,8 +486,8 @@ describe("featuresRoutes", () => {
             });
 
             const payload = await getFeaturesPayload();
-            expect(payload.features.bugReports.enabled).toBe(true);
-            expect(payload.capabilities.bugReports.providerUrl).toBe("https://reports.happier.dev");
+            expect(payload.features.bugReports.enabled).toBe(false);
+            expect(payload.capabilities.bugReports.providerUrl).toBeNull();
             expect(payload.capabilities.bugReports.defaultIncludeDiagnostics).toBe(true);
             expect(payload.capabilities.bugReports.contextWindowMs).toBe(30 * 60 * 1000);
         });

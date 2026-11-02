@@ -2,7 +2,6 @@ import { BUG_REPORT_DEFAULT_ACCEPTED_ARTIFACT_KINDS, normalizeBugReportProviderU
 import type { FeaturesPayloadDelta } from "./types";
 import { readBugReportsFeatureEnv } from "./catalog/readFeatureEnv";
 
-const DEFAULT_PROVIDER_URL = "https://reports.happier.dev";
 const DEFAULT_ACCEPTED_KINDS = [...BUG_REPORT_DEFAULT_ACCEPTED_ARTIFACT_KINDS];
 const DEFAULT_CONTEXT_WINDOW_MS = 30 * 60 * 1000;
 
@@ -22,8 +21,8 @@ function parseAcceptedKinds(raw: string | undefined): string[] {
 
 export function resolveBugReportsFeature(env: NodeJS.ProcessEnv): FeaturesPayloadDelta {
     const config = readBugReportsFeatureEnv(env);
-    const hasExplicitProviderUrl = typeof config.providerUrlRaw === "string";
-    const providerUrlRaw = (hasExplicitProviderUrl ? (config.providerUrlRaw ?? "") : DEFAULT_PROVIDER_URL).trim();
+    // Reports go nowhere unless this relay names a provider: this fork has no hosted report service.
+    const providerUrlRaw = (config.providerUrlRaw ?? "").trim();
     const providerUrl = normalizeBugReportProviderUrl(providerUrlRaw);
 
     const defaultIncludeDiagnostics = config.defaultIncludeDiagnostics;

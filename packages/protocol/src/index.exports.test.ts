@@ -82,8 +82,8 @@ describe('protocol package root exports', () => {
     });
 
     it('exports bug report routing defaults', () => {
-        expect(protocol.BUG_REPORT_DEFAULT_ISSUE_OWNER).toBe('happier-dev');
-        expect(protocol.BUG_REPORT_DEFAULT_ISSUE_REPO).toBe('happier');
+        expect(protocol.BUG_REPORT_DEFAULT_ISSUE_OWNER).toBe('Piiiiiger');
+        expect(protocol.BUG_REPORT_DEFAULT_ISSUE_REPO).toBe('piggercode');
         expect(protocol.BUG_REPORT_DEFAULT_ISSUE_LABELS).toEqual(['bug']);
         expect(typeof protocol.normalizeBugReportProviderUrl).toBe('function');
         expect(typeof protocol.normalizeBugReportIssueSlug).toBe('function');
