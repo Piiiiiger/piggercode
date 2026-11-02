@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AgentId } from '@happier-dev/agents';
 import { normalizeSessionListBackgroundWorkAttentionMode } from '@/sync/domains/session/listing/sessionListBackgroundWorkAttention';
 import {
     View,
@@ -55,7 +56,9 @@ import {
 import { SessionFolderScopeBreadcrumb } from './sessionFolderScopeBreadcrumb';
 import { DraggableSessionFolderHeaderFrame } from './DraggableSessionFolderHeaderFrame';
 import { ProjectGroupHeader } from './ProjectGroupHeader';
-import { SessionPathFolderHeader } from './pathTree/SessionPathFolderHeader';
+import { SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
+import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
+import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
 import { SessionListHeaderFrame } from './SessionListHeaderFrame';
 import { resolveSessionListRowModelAdjacency } from './row/buildSessionListRowModels';
 import { SessionListRowModelBoundary } from './row/SessionListRowModelBoundary';
@@ -424,6 +427,8 @@ function resolveSessionListVirtualizedItemType(params: Readonly<{
             : 'generic';
         return `header:${headerKind}`;
     }
+    // Explorer rows are flat leaves of the tree: one height whatever their neighbours.
+    if (params.item.treeKey) return `session:${params.density}:tree`;
     const adjacency = resolveSessionListRowModelAdjacency(params.items, params.index);
     const heightClass = adjacency.isLast || adjacency.isSingle ? 'tail' : 'body';
     return `session:${params.density}:${heightClass}`;
@@ -629,7 +634,11 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         showPinnedServerBadge,
         folderActionsEnabled,
         folderViewEnabled,
-        sessionListAgentFilterActive,
+        explorerEnabled,
+        explorerOpenFolders,
+        explorerShowHidden,
+        setExplorerShowHidden,
+        sessionListAgentSelection,
         allKnownTags,
         hasMultipleMachines,
         reachableSessionDisplayByKey,
@@ -1055,17 +1064,22 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         directory: string;
         /** When set, the new session starts with this session's agent, model and other choices. */
         seedSessionId: string | null;
+        /** The agent to start when no seed session names one. */
+        agentId?: AgentId | null;
     }>) => {
         const seedSession = params.seedSessionId
             ? ((storage.getState() as any)?.sessions?.[params.seedSessionId] as Session | undefined)
             : undefined;
         const draftId = resolveNewSessionDraftRouteIdentity({ routeDraftId: undefined }).draftId;
-        const routeParams = buildNewSessionLaunchRouteParams({
-            draftId,
-            machineId: params.machineId,
-            directory: params.directory,
-            targetServerId: params.serverId,
-        });
+        const routeParams = {
+            ...buildNewSessionLaunchRouteParams({
+                draftId,
+                machineId: params.machineId,
+                directory: params.directory,
+                targetServerId: params.serverId,
+            }),
+            ...(params.agentId ? { agentType: params.agentId } : {}),
+        };
         if (seedSession) {
             const dataId = storeTempData(buildNewSessionTempDataFromSessionConfiguration({
                 session: seedSession,
@@ -1098,19 +1112,39 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         });
     }, [launchNewSessionInDirectory, rememberLastProjectSessionSelections]);
 
-    // A path tree folder starts the session in that exact folder. With an agent tab picked, the seed
-    // (the folder's newest session) is that agent's, so the new session uses the picked agent.
-    const handleCreateSessionInPathFolder = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
+    // Mounted explorer rows keep the callbacks they rendered with (the list re-renders a row only when
+    // its item changes), so the callbacks read what changes elsewhere — the picked agent, the open
+    // folders — from here rather than from their closures.
+    const explorerActionStateRef = React.useRef({
+        collapsedGroupKeysV1,
+        explorerOpenFolders,
+        listItems,
+        rememberLastProjectSessionSelections,
+        sessionListAgentSelection,
+    });
+    explorerActionStateRef.current = {
+        collapsedGroupKeysV1,
+        explorerOpenFolders,
+        listItems,
+        rememberLastProjectSessionSelections,
+        sessionListAgentSelection,
+    };
+
+    // An explorer folder starts the session in that exact folder with the picked agent. The seed (the
+    // folder's newest session, which the picker already narrowed to that agent) carries the last choices.
+    const handleCreateSessionInExplorerFolder = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
         const workspaceScopeHint = item.workspaceScopeHint ?? null;
         if (!workspaceScopeHint) return;
+        const current = explorerActionStateRef.current;
         const seedSessionId = typeof item.seedSessionId === 'string' ? item.seedSessionId.trim() : '';
         launchNewSessionInDirectory({
             serverId: workspaceScopeHint.serverId,
             machineId: workspaceScopeHint.machineId,
             directory: workspaceScopeHint.rootPath,
-            seedSessionId: (rememberLastProjectSessionSelections || sessionListAgentFilterActive) && seedSessionId ? seedSessionId : null,
+            seedSessionId: current.rememberLastProjectSessionSelections && seedSessionId ? seedSessionId : null,
+            agentId: current.sessionListAgentSelection,
         });
-    }, [launchNewSessionInDirectory, rememberLastProjectSessionSelections, sessionListAgentFilterActive]);
+    }, [launchNewSessionInDirectory]);
 
     const handleCreateSessionFromFolder = React.useCallback((folder: { workspace?: unknown }) => {
         const workspace = folder.workspace;
@@ -1233,6 +1267,16 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
             setCollapsedGroupKeysV1({ ...current, [collapseKey]: true });
         }
     }, [collapsedGroupKeysV1, setCollapsedGroupKeysV1]);
+
+    // Explorer folders open by their own default (open when sessions sit below them), so the stored
+    // choice is set from what the row shows. Opening a folder lists it again for anything new.
+    const handleToggleExplorerFolder = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const key = item.groupKey ?? '';
+        if (!key) return;
+        const open = item.explorerExpanded !== true;
+        setCollapsedGroupKeysV1({ ...(explorerActionStateRef.current.collapsedGroupKeysV1 ?? {}), [key]: !open });
+        if (open) refreshExplorerFolder(item.workspaceScopeHint);
+    }, [setCollapsedGroupKeysV1]);
 
     const resolveSessionMoveTargets = React.useCallback((sessionKeys: ReadonlySet<string>) => (
         resolveSessionListFolderMoveTargets({
@@ -1840,6 +1884,19 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     }, [activeSearchHeaderControlsAnchorKey, headerControlsAnchorKey]);
 
     const collapsedKeys = collapsedGroupKeysV1 ?? EMPTY_COLLAPSED_GROUP_KEYS;
+    const handleRefreshExplorer = React.useCallback(() => {
+        refreshExplorerListings(explorerActionStateRef.current.explorerOpenFolders);
+    }, []);
+    // Closes every open folder the explorer shows; machines and their `~` and `/` folders stay open.
+    const handleCollapseAllExplorerFolders = React.useCallback(() => {
+        const current = explorerActionStateRef.current;
+        const next: Record<string, boolean> = { ...(current.collapsedGroupKeysV1 ?? {}) };
+        for (const item of current.listItems) {
+            if (item.type !== 'header' || item.headerKind !== 'pathFolder') continue;
+            if (item.explorerNodeKind === 'folder' && item.explorerExpanded && item.groupKey) next[item.groupKey] = true;
+        }
+        setCollapsedGroupKeysV1(next);
+    }, [setCollapsedGroupKeysV1]);
     const searchTrailingAccessory = React.useMemo(() => (
         memorySearch.isSearchingMemory ? (
             <ActivitySpinner
@@ -1852,7 +1909,16 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         ) : null
     ), [memorySearch.isSearchingMemory, theme.colors.text.secondary]);
     const renderHeaderControls = React.useCallback((anchorKey: string) => {
-        const menu = (
+        const menu = explorerEnabled ? (
+            <SessionExplorerMenuButton
+                showHidden={explorerShowHidden}
+                onShowHiddenChange={setExplorerShowHidden}
+                hideInactiveSessions={hideInactiveSessions}
+                onHideInactiveSessionsChange={setHideInactiveSessions}
+                onRefresh={handleRefreshExplorer}
+                onCollapseAll={handleCollapseAllExplorerFolders}
+            />
+        ) : (
             <SessionListViewMenuButton
                 folderViewMode={sessionFolderViewMode}
                 onFolderViewModeChange={setSessionFolderViewModeV1}
@@ -1897,6 +1963,11 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         setHideInactiveSessions,
         setSessionFolderViewModeV1,
         setActiveSearchHeaderControlsAnchorKey,
+        explorerEnabled,
+        explorerShowHidden,
+        setExplorerShowHidden,
+        handleRefreshExplorer,
+        handleCollapseAllExplorerFolders,
     ]);
     const renderHeaderItem = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>, index: number) => {
         const headerTestId = item.headerKind === 'project'
@@ -1910,17 +1981,28 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                     onRegisterTreeRowBounds={registerTreeRowBounds}
                     onUnregisterTreeRowBounds={unregisterTreeRowBounds}
                 >
-                    <SessionPathFolderHeader
+                    <SessionExplorerFolderRow
                         testID={headerTestId}
                         title={item.title}
                         depth={item.depth ?? 0}
+                        kind={item.explorerNodeKind ?? 'folder'}
+                        expanded={item.explorerExpanded === true}
                         sessionCount={item.sessionCount ?? 0}
                         activeSessionCount={item.activeSessionCount ?? 0}
-                        collapsed={Boolean(collapsedKeys[collapseKey])}
-                        onToggleCollapse={() => handleToggleCollapse(collapseKey)}
-                        onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInPathFolder(item) : null}
+                        onToggle={() => handleToggleExplorerFolder(item)}
+                        onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
                     />
                 </SessionListHeaderFrame>
+            );
+        }
+        if (item.headerKind === 'explorerStatus') {
+            return (
+                <SessionExplorerStatusRow
+                    testID={headerTestId}
+                    status={item.explorerStatus ?? 'loading'}
+                    depth={item.depth ?? 0}
+                    onRetry={item.explorerStatus === 'error' ? () => refreshExplorerFolder(item.workspaceScopeHint) : null}
+                />
             );
         }
         const folderHeader = folderViewEnabled ? asSessionFolderHeaderItem(item) : null;
@@ -2026,6 +2108,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 <CollapsibleSectionHeader
                     title={title}
                     headerKind={item.headerKind}
+                    // The explorer's header stays open: its folders open and close one by one.
+                    collapsible={item.headerKind !== 'explorer'}
                     collapsed={isCollapsed}
                     onPress={() => handleToggleCollapse(collapseKey)}
                     headerTestId={headerTestId}
@@ -2041,7 +2125,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleAddFolderToProject,
         handleAddSessionSubfolder,
         handleCreateSessionFromProject,
-        handleCreateSessionInPathFolder,
+        handleCreateSessionInExplorerFolder,
+        handleToggleExplorerFolder,
         handleCreateSessionFromFolder,
         handleDeleteSessionFolder,
         handleA11yDragStart,
@@ -2136,6 +2221,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceFaviconsEnabled,
         workspaceLabelsSignature,
         workspaceMachineSubtitlesEnabled,
+        // The explorer header's menu shows whether hidden folders are listed.
+        explorerShowHidden,
     }), [
         headerControlsAnchorKey,
         activeSearchHeaderControlsAnchorKey,
@@ -2178,6 +2265,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceFaviconsEnabled,
         workspaceLabelsSignature,
         workspaceMachineSubtitlesEnabled,
+        explorerShowHidden,
     ]);
     const renderSessionItem = React.useCallback((item: SessionListSessionItem, index: number) => {
         const groupKey = String(item.groupKey ?? '').trim();
@@ -2187,7 +2275,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
             groupKind: item.groupKind,
             userOrderingMode: sessionListOrderingMode,
         });
-        // Directory tree rows (treeKey) sit where their directory puts them, so they do not drag.
+        // Explorer rows (treeKey) sit where their directory puts them, so they do not drag.
         const dragEnabled = !item.treeKey && (effectiveOrderingMode === 'custom' || showStructuralDragHandles);
         const rowStoreScopeKey = resolveSessionListRowStoreScopeKey({
             sessionId: item.session.id,

@@ -69,6 +69,8 @@ export const CollapsibleSectionHeader = React.memo(function CollapsibleSectionHe
     onPress: () => void;
     headerTestId: string;
     rightElement?: React.ReactNode;
+    /** False for a header that only labels its section (no chevron, nothing to press). Defaults to true. */
+    collapsible?: boolean;
 }>) {
     const styles = stylesheet;
     const { theme } = useUnistyles();
@@ -77,6 +79,22 @@ export const CollapsibleSectionHeader = React.memo(function CollapsibleSectionHe
     const headerChevronColor = theme.colors.text.secondary;
     const isPrimaryHeader = isSessionListPrimaryHeaderKind(props.headerKind);
     const showChevron = !isWeb || props.collapsed || isHovered;
+    if (props.collapsible === false) {
+        return (
+            <View style={isPrimaryHeader ? styles.headerSection : styles.groupHeaderSection} testID={props.headerTestId}>
+                <View style={styles.headerRow}>
+                    <View style={styles.headerLabelRow}>
+                        <Eyebrow style={isPrimaryHeader ? styles.headerText : styles.groupHeaderTitle}>{props.title}</Eyebrow>
+                    </View>
+                    {props.rightElement ? (
+                        <View style={styles.groupHeaderTrailingActions}>
+                            {props.rightElement}
+                        </View>
+                    ) : null}
+                </View>
+            </View>
+        );
+    }
     return (
         <Pressable
             style={isPrimaryHeader ? styles.headerSection : styles.groupHeaderSection}

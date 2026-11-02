@@ -196,6 +196,7 @@ function createMetadataPendingRowModel(id: string): SessionListRowModel {
         folder: {
             id: null,
             depth: 0,
+            tree: false,
         },
         adjacency: {
             isFirst: true,

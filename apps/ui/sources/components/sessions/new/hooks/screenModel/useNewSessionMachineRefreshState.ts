@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { CAPABILITIES_REQUEST_NEW_SESSION } from '@/capabilities/requests';
+import { CAPABILITIES_NEW_SESSION_STALE_MS, CAPABILITIES_REQUEST_NEW_SESSION } from '@/capabilities/requests';
 import { useNewSessionCapabilitiesPrefetch } from '@/components/sessions/new/hooks/useNewSessionCapabilitiesPrefetch';
 import type { Machine, Session } from '@/sync/domains/state/storageTypes';
 import { sync } from '@/sync/sync';
@@ -105,7 +105,7 @@ export function useNewSessionMachineRefreshState(params: Readonly<{
         recentMachines,
         selectedMachineId: params.selectedMachineId,
         isMachineOnline,
-        staleMs: 2 * 60 * 1000,
+        staleMs: CAPABILITIES_NEW_SESSION_STALE_MS,
         request: CAPABILITIES_REQUEST_NEW_SESSION,
         prefetchMachineCapabilitiesIfStale,
     });

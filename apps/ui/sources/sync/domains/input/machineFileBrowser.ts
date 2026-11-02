@@ -33,10 +33,40 @@ type CachedDirectoryEntries = Readonly<{
     truncated: boolean;
 }>;
 
+/** A directory as its readers see it: the last listing, whether a listing is running, and the last failure. */
+export type MachineFileBrowserDirectoryState = Readonly<{
+    entries: ReadonlyArray<MachineFileBrowserEntry> | null;
+    truncated: boolean;
+    loading: boolean;
+    error: string | null;
+}>;
+
 const rootsCache = new Map<string, MachineFileBrowserRoot[]>();
 const directoryEntriesCache = new Map<string, CachedDirectoryEntries>();
 const rootsWarmInFlight = new Map<string, Promise<ListMachineFileBrowserRootsResult>>();
 const directoryWarmInFlight = new Map<string, Promise<ListMachineFileBrowserDirectoryEntriesResult>>();
+const directoryLoadingCounts = new Map<string, number>();
+const directoryErrors = new Map<string, string>();
+const directoryListeners = new Set<() => void>();
+let directoriesVersion = 0;
+
+function notifyDirectoryListeners(): void {
+    directoriesVersion += 1;
+    for (const listener of [...directoryListeners]) listener();
+}
+
+/** Changes whenever a subscriber of {@link subscribeMachineFileBrowserDirectories} would be called. */
+export function getMachineFileBrowserDirectoriesVersion(): number {
+    return directoriesVersion;
+}
+
+/** Called whenever a directory starts or finishes listing, fails, or leaves the cache. */
+export function subscribeMachineFileBrowserDirectories(listener: () => void): () => void {
+    directoryListeners.add(listener);
+    return () => {
+        directoryListeners.delete(listener);
+    };
+}
 
 function getRootsCacheKey(machineId: string, serverId?: string | null): string {
     return `${serverId ?? ''}:${machineId}`;
@@ -100,6 +130,21 @@ export function getCachedMachineFileBrowserDirectoryMetadata(input: {
     return cached ? { truncated: cached.truncated } : null;
 }
 
+/** Null until the directory is first listed. */
+export function getMachineFileBrowserDirectoryState(input: {
+    machineId: string;
+    directoryPath: string;
+    includeFiles?: boolean;
+    serverId?: string | null;
+}): MachineFileBrowserDirectoryState | null {
+    const key = getDirectoryCacheKey(input.machineId, input.directoryPath, input.includeFiles !== false, input.serverId);
+    const cached = directoryEntriesCache.get(key) ?? null;
+    const loading = (directoryLoadingCounts.get(key) ?? 0) > 0;
+    const error = directoryErrors.get(key) ?? null;
+    if (!cached && !loading && error === null) return null;
+    return { entries: cached ? cached.entries : null, truncated: cached?.truncated === true, loading, error };
+}
+
 export function clearCachedMachineFileBrowserEntries(input: {
     machineId: string;
     directoryPath?: string | null;
@@ -108,13 +153,15 @@ export function clearCachedMachineFileBrowserEntries(input: {
     const serverPrefix = typeof input.serverId === 'string' || input.serverId === null ? `${input.serverId ?? ''}:${input.machineId}:` : null;
     const directoryPath = typeof input.directoryPath === 'string' ? input.directoryPath : null;
     if (directoryPath != null) {
-        for (const key of [...directoryEntriesCache.keys()]) {
+        for (const key of new Set([...directoryEntriesCache.keys(), ...directoryErrors.keys()])) {
             const matchesScope = serverPrefix ? key.startsWith(serverPrefix) : readMachineIdFromDirectoryCacheKey(key) === input.machineId;
             if (matchesScope && key.endsWith(`:${directoryPath}`)) {
                 directoryEntriesCache.delete(key);
                 directoryWarmInFlight.delete(key);
+                directoryErrors.delete(key);
             }
         }
+        notifyDirectoryListeners();
         return;
     }
 
@@ -130,6 +177,13 @@ export function clearCachedMachineFileBrowserEntries(input: {
             directoryWarmInFlight.delete(key);
         }
     }
+    for (const key of [...directoryErrors.keys()]) {
+        const matchesScope = serverPrefix ? key.startsWith(serverPrefix) : readMachineIdFromDirectoryCacheKey(key) === input.machineId;
+        if (matchesScope) {
+            directoryErrors.delete(key);
+        }
+    }
+    notifyDirectoryListeners();
 }
 
 function setCachedMachineFileBrowserRoots(input: {
@@ -204,40 +258,52 @@ export async function listMachineFileBrowserDirectoryEntries(input: {
         includeFiles: boolean;
         serverId?: string | null;
 }): Promise<ListMachineFileBrowserDirectoryEntriesResult> {
-    const response = await machineFilesystemListDirectory(input.machineId, {
-        path: input.directoryPath,
-        includeFiles: input.includeFiles,
-    }, { serverId: input.serverId });
+    const key = getDirectoryCacheKey(input.machineId, input.directoryPath, input.includeFiles, input.serverId);
+    directoryLoadingCounts.set(key, (directoryLoadingCounts.get(key) ?? 0) + 1);
+    notifyDirectoryListeners();
+    try {
+        const response = await machineFilesystemListDirectory(input.machineId, {
+            path: input.directoryPath,
+            includeFiles: input.includeFiles,
+        }, { serverId: input.serverId });
 
-    if (!response.ok) {
-        const error = typeof response.error === 'string' ? response.error.trim() : '';
-        return { ok: false, error: error || 'unknown_error' };
+        if (!response.ok) {
+            const error = (typeof response.error === 'string' ? response.error.trim() : '') || 'unknown_error';
+            directoryErrors.set(key, error);
+            return { ok: false, error };
+        }
+
+        const entries = sortDirectoryEntries(response.entries.flatMap((entry) => {
+            if (!entry || typeof entry.name !== 'string' || typeof entry.path !== 'string') return [];
+            const rawName = entry.name.trim();
+            const rawPath = entry.path.trim();
+            if (!rawName || !rawPath) return [];
+            if (entry.type !== 'file' && entry.type !== 'directory') return [];
+            return [{
+                name: rawName,
+                path: rawPath,
+                type: entry.type,
+                sizeBytes: typeof entry.size === 'number' && Number.isFinite(entry.size) && entry.size >= 0 ? Math.floor(entry.size) : undefined,
+                modifiedMs: typeof entry.modified === 'number' && Number.isFinite(entry.modified) && entry.modified >= 0 ? Math.floor(entry.modified) : undefined,
+            } satisfies MachineFileBrowserEntry];
+        }));
+
+        setCachedMachineFileBrowserEntries({
+            machineId: input.machineId,
+            serverId: input.serverId,
+            directoryPath: input.directoryPath,
+            includeFiles: input.includeFiles,
+            entries,
+            truncated: response.truncated === true,
+        });
+        directoryErrors.delete(key);
+        return { ok: true, entries, truncated: response.truncated === true };
+    } finally {
+        const remaining = (directoryLoadingCounts.get(key) ?? 1) - 1;
+        if (remaining > 0) directoryLoadingCounts.set(key, remaining);
+        else directoryLoadingCounts.delete(key);
+        notifyDirectoryListeners();
     }
-
-    const entries = sortDirectoryEntries(response.entries.flatMap((entry) => {
-        if (!entry || typeof entry.name !== 'string' || typeof entry.path !== 'string') return [];
-        const rawName = entry.name.trim();
-        const rawPath = entry.path.trim();
-        if (!rawName || !rawPath) return [];
-        if (entry.type !== 'file' && entry.type !== 'directory') return [];
-        return [{
-            name: rawName,
-            path: rawPath,
-            type: entry.type,
-            sizeBytes: typeof entry.size === 'number' && Number.isFinite(entry.size) && entry.size >= 0 ? Math.floor(entry.size) : undefined,
-            modifiedMs: typeof entry.modified === 'number' && Number.isFinite(entry.modified) && entry.modified >= 0 ? Math.floor(entry.modified) : undefined,
-        } satisfies MachineFileBrowserEntry];
-    }));
-
-    setCachedMachineFileBrowserEntries({
-        machineId: input.machineId,
-        serverId: input.serverId,
-        directoryPath: input.directoryPath,
-        includeFiles: input.includeFiles,
-        entries,
-        truncated: response.truncated === true,
-    });
-    return { ok: true, entries, truncated: response.truncated === true };
 }
 
 export async function warmMachineFileBrowserDirectoryCache(input: {

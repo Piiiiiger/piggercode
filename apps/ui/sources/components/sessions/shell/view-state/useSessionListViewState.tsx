@@ -3,20 +3,27 @@ import React from 'react';
 import { useResolvedActiveServerSelection } from '@/hooks/server/useEffectiveServerSelection';
 import { useFeatureDecision } from '@/hooks/server/useFeatureDecision';
 import { useIsTablet } from '@/utils/platform/responsive';
-import { isAgentId } from '@/agents/registry/registryCore';
 import {
     SessionListViewItem,
     useLocalSetting,
     useLocalSettingMutable,
     useMachineDisplayById,
     useProfile,
+    useSessionExplorerMachines,
     useSessionOrganizationProjection,
     useSetting,
     useSettingMutable,
 } from '@/sync/domains/state/storage';
 import { applySessionFoldersToSessionListViewData } from '@/sync/domains/session/listing/sessionListViewData';
-import { filterSessionListViewDataByAgent } from '@/sync/domains/session/listing/sessionListAgentFilter';
-import { applySessionPathTreeToSessionListViewData } from '@/sync/domains/session/listing/sessionListPathTree';
+import {
+    filterSessionListViewDataByAgent,
+    resolveSessionListAgentSelection,
+} from '@/sync/domains/session/listing/sessionListAgentFilter';
+import {
+    buildSessionExplorerItems,
+    type SessionExplorerFolderRef,
+    type SessionExplorerMachine,
+} from '@/sync/domains/session/listing/sessionListExplorer';
 import {
     buildSessionListIndexFromViewData,
     type SessionListIndexItem,
@@ -72,9 +79,11 @@ import {
     type SessionListHeaderFilterInput,
 } from '../sessionListFilters';
 import { useSessionListSnapshotWhenInactive } from '../surface/useSessionListSnapshotWhenInactive';
+import { requestExplorerListings, useExplorerListingReader } from '../explorer/explorerDirectoryListings';
 import { resolveSessionOrganizationMutationScope, type SessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
 
 const EMPTY_SESSION_KEYS: ReadonlyArray<string> = Object.freeze([]);
+const EMPTY_EXPLORER_FOLDERS: ReadonlyArray<SessionExplorerFolderRef> = Object.freeze([]);
 const EMPTY_SESSION_LIST_GROUP_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
 const EMPTY_SESSION_WORKSPACE_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
 
@@ -173,10 +182,11 @@ export function useSessionListViewState({
     const workspaceMachineSubtitlesEnabled = useSetting('workspaceMachineSubtitlesEnabled') !== false;
     const [collapsedGroupKeysV1, setCollapsedGroupKeysV1] = useCollapsedGroupKeysMutable('collapsedGroupKeysV1');
     const sessionListDensity = useSetting('sessionListDensity');
-    const sessionListActiveGrouping = useSetting('sessionListActiveGroupingV1');
-    const sessionListInactiveGrouping = useSetting('sessionListInactiveGroupingV1');
-    const sessionListSectionModeSetting = useSetting('sessionListSectionModeV1');
+    const sessionListLayout = useSetting('sessionListLayoutV1');
     const sessionListAgentFilter = useLocalSetting('sessionListAgentFilterV1');
+    const [explorerShowHidden, setExplorerShowHidden] = useLocalSettingMutable('sessionListExplorerShowHiddenV1');
+    const explorerMachineSummaries = useSessionExplorerMachines();
+    const readExplorerListing = useExplorerListingReader();
     const profile = useProfile();
     const machineDisplayById = useMachineDisplayById();
     const renderMachineDisplayById = useSessionListSnapshotWhenInactive(
@@ -200,17 +210,10 @@ export function useSessionListViewState({
     const showServerBadge = selection.enabled && selection.presentation === 'flat-with-badge' && selectedServerCount > 1;
     const showPinnedServerBadge = selection.enabled && selectedServerCount > 1;
     const selectable = isTablet;
-    // Directory grouping shows sessions in a folder tree of their directories. The one-section list
-    // follows the active grouping.
-    const directoryTreeInActive = sessionListActiveGrouping === 'directory';
-    const directoryTreeInInactive = sessionListSectionModeSetting !== 'single' && sessionListInactiveGrouping === 'directory';
-    const pathTreeSections = React.useMemo(
-        () => ({ active: directoryTreeInActive, inactive: directoryTreeInInactive }),
-        [directoryTreeInActive, directoryTreeInInactive],
-    );
-    const pathTreeEnabled = directoryTreeInActive || directoryTreeInInactive;
-    // User folders nest sessions inside project groups, which the directory tree replaces.
-    const folderActionsEnabled = storageKind !== 'direct' && sessionFoldersDecision?.state === 'enabled' && !pathTreeEnabled;
+    // The explorer shows each machine's folders with every session under the folder it started in.
+    const explorerEnabled = sessionListLayout === 'explorer' && storageKind !== 'direct';
+    // User folders nest sessions inside project groups; in the explorer, a session's folder is its directory.
+    const folderActionsEnabled = storageKind !== 'direct' && sessionFoldersDecision?.state === 'enabled' && !explorerEnabled;
     const sessionFolderViewMode: SessionFolderViewModeV1 = sessionFolderViewModeRaw === 'tree' ? 'tree' : 'off';
     const sessionListSavedFolderSortMode = normalizeSessionListFolderSortMode(sessionListFolderSortModeRaw);
     const sessionListOrderingMode = normalizeSessionListOrderingModeV1(sessionListOrderingModeRaw);
@@ -407,27 +410,63 @@ export function useSessionListViewState({
         });
     }, [getOrganizationMutationContext, runOrganizationMutation, workspaceLabelsV1]);
 
-    // The agent tabs above the list pick one agent's sessions; an agent without sessions shows all,
-    // matching the tab that stays selected (SessionListAgentTabs).
+    // The agent picker above the list (SessionsListStorageChrome) picks the one agent whose sessions the
+    // list shows, and the agent `+` on a folder starts.
+    const sessionListAgentSelection = React.useMemo(
+        () => resolveSessionListAgentSelection(sessionListAgentFilter, data ?? []),
+        [data, sessionListAgentFilter],
+    );
     const agentFilteredData = React.useMemo(() => {
-        if (!data || !sessionListAgentFilter || !isAgentId(sessionListAgentFilter)) return data;
-        const filtered = filterSessionListViewDataByAgent(data, sessionListAgentFilter);
-        return filtered.length > 0 ? filtered : data;
-    }, [data, sessionListAgentFilter]);
-    const sessionListAgentFilterActive = agentFilteredData !== data;
+        if (!data || !sessionListAgentSelection) return data;
+        return filterSessionListViewDataByAgent(data, sessionListAgentSelection);
+    }, [data, sessionListAgentSelection]);
+
+    const headerFiltersActive = hasActiveSessionListHeaderFilters(headerFilters);
+
+    // The machines are the active server's; rows name their server, which is that one in a single-server list.
+    const explorerServerId = React.useMemo(
+        () => activeOrganizationServerId ?? data?.find((item) => item.serverId)?.serverId ?? '',
+        [activeOrganizationServerId, data],
+    );
+    const explorerMachines = React.useMemo((): SessionExplorerMachine[] => explorerMachineSummaries.map((machine) => ({
+        serverId: explorerServerId,
+        machineId: machine.machineId,
+        label: machine.label,
+        homeDir: machine.homeDir,
+        online: machine.online,
+    })), [explorerMachineSummaries, explorerServerId]);
+    const explorerPreviousItemsRef = React.useRef<ReadonlyArray<SessionListViewItem> | null>(null);
+    const explorer = React.useMemo(() => {
+        if (!explorerEnabled || !agentFilteredData) return null;
+        return buildSessionExplorerItems({
+            items: agentFilteredData,
+            machines: explorerMachines,
+            defaultServerId: explorerServerId,
+            getListing: readExplorerListing,
+            collapsedKeys: collapsedGroupKeysV1 ?? {},
+            showHidden: explorerShowHidden === true,
+            // Searching shows only folders with matching sessions, all open.
+            sessionFoldersOnly: headerFiltersActive,
+            title: t('sessionsList.explorerTitle'),
+            previousItems: explorerPreviousItemsRef.current,
+        });
+    }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
+    explorerPreviousItemsRef.current = explorer?.items ?? null;
+    const explorerFoldersToList = explorer?.foldersToList ?? EMPTY_EXPLORER_FOLDERS;
+    React.useEffect(() => {
+        if (explorerFoldersToList.length > 0) requestExplorerListings(explorerFoldersToList);
+    }, [explorerFoldersToList]);
 
     const folderPresentedData = React.useMemo(() => {
+        if (explorer) return explorer.items;
         if (!agentFilteredData) return agentFilteredData;
-        if (pathTreeEnabled) return applySessionPathTreeToSessionListViewData(agentFilteredData, pathTreeSections);
         if (!folderViewEnabled) return agentFilteredData;
         return applySessionFoldersToSessionListViewData(agentFilteredData, {
             enabled: true,
             folders: sessionFoldersV1,
             assignmentsBySessionKey: sessionFolderAssignmentsBySessionKey,
         });
-    }, [agentFilteredData, folderViewEnabled, pathTreeEnabled, pathTreeSections, sessionFolderAssignmentsBySessionKey, sessionFoldersV1]);
-
-    const headerFiltersActive = hasActiveSessionListHeaderFilters(headerFilters);
+    }, [agentFilteredData, explorer, folderViewEnabled, sessionFolderAssignmentsBySessionKey, sessionFoldersV1]);
 
     const collapsedListItems = React.useMemo(() => {
         return measureSessionListRenderDerivation(
@@ -435,11 +474,12 @@ export function useSessionListViewState({
             folderPresentedData,
             () => ({ collapsedGroups: countCollapsedSessionListGroups(collapsedGroupKeysV1) }),
             () => {
-                if (!folderPresentedData || headerFiltersActive) return folderPresentedData;
+                // The explorer leaves closed folders out itself, with its own default for each folder.
+                if (!folderPresentedData || headerFiltersActive || explorerEnabled) return folderPresentedData;
                 return filterCollapsedSessionListItems(folderPresentedData, collapsedGroupKeysV1);
             },
         );
-    }, [folderPresentedData, headerFiltersActive, collapsedGroupKeysV1]);
+    }, [folderPresentedData, headerFiltersActive, collapsedGroupKeysV1, explorerEnabled]);
 
     const focusedFolderState = useSessionListFocusedFolderState({
         canInvalidateFocusedFolder: sessionListSurfaceDataActive,
@@ -569,8 +609,11 @@ export function useSessionListViewState({
         selectable,
         folderActionsEnabled,
         folderViewEnabled,
-        pathTreeEnabled,
-        sessionListAgentFilterActive,
+        explorerEnabled,
+        explorerOpenFolders: explorer?.openFolders ?? EMPTY_EXPLORER_FOLDERS,
+        explorerShowHidden: explorerShowHidden === true,
+        setExplorerShowHidden,
+        sessionListAgentSelection,
         allKnownTags,
         folderPresentedData,
         collapsedListItems,

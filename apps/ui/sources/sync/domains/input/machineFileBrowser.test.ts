@@ -5,8 +5,10 @@ import {
     clearCachedMachineFileBrowserRoots,
     getCachedMachineFileBrowserEntries,
     getCachedMachineFileBrowserRoots,
+    getMachineFileBrowserDirectoryState,
     listMachineFileBrowserDirectoryEntries,
     listMachineFileBrowserRoots,
+    subscribeMachineFileBrowserDirectories,
     warmMachineFileBrowserDirectoryCache,
 } from './machineFileBrowser';
 
@@ -151,4 +153,54 @@ describe('machineFileBrowser domain', () => {
         expect(warmedServerOne).toEqual(serverOne);
         expect(ops.machineFilesystemListDirectory).toHaveBeenCalledTimes(2);
     });
+
+    it('reports each directory as loading, listed or failed, keeps the last listing on failure and notifies subscribers', async () => {
+        const ops = await import('@/sync/ops/machineFileBrowser');
+        (ops.machineFilesystemListDirectory as any).mockReset();
+        clearCachedMachineFileBrowserEntries({ machineId: 'machine-2' });
+        const target = { machineId: 'machine-2', serverId: 'server-1', directoryPath: '/home/u', includeFiles: false };
+        const listener = vi.fn();
+        const unsubscribe = subscribeMachineFileBrowserDirectories(listener);
+
+        expect(getMachineFileBrowserDirectoryState(target)).toBeNull();
+
+        let resolveFirst!: (value: unknown) => void;
+        (ops.machineFilesystemListDirectory as any).mockReturnValueOnce(new Promise((resolve) => {
+            resolveFirst = resolve;
+        }));
+        const first = warmMachineFileBrowserDirectoryCache(target);
+        expect(getMachineFileBrowserDirectoryState(target)).toEqual({ entries: null, truncated: false, loading: true, error: null });
+
+        resolveFirst({
+            ok: true,
+            path: '/home/u',
+            entries: [{ name: 'code', path: '/home/u/code', type: 'directory' }],
+            truncated: false,
+        });
+        await first;
+        expect(getMachineFileBrowserDirectoryState(target)).toEqual({
+            entries: [{ name: 'code', path: '/home/u/code', type: 'directory' }],
+            truncated: false,
+            loading: false,
+            error: null,
+        });
+
+        (ops.machineFilesystemListDirectory as any).mockResolvedValueOnce({ ok: false, error: 'machine offline' });
+        await listMachineFileBrowserDirectoryEntries(target);
+        expect(getMachineFileBrowserDirectoryState(target)).toMatchObject({
+            entries: [{ name: 'code' }],
+            loading: false,
+            error: 'machine offline',
+        });
+        expect(listener).toHaveBeenCalled();
+
+        clearCachedMachineFileBrowserEntries({ machineId: 'machine-2' });
+        expect(getMachineFileBrowserDirectoryState(target)).toBeNull();
+        const notifiedCount = listener.mock.calls.length;
+        unsubscribe();
+        (ops.machineFilesystemListDirectory as any).mockResolvedValueOnce({ ok: true, path: '/home/u', entries: [], truncated: false });
+        await warmMachineFileBrowserDirectoryCache(target);
+        expect(listener.mock.calls.length).toBe(notifiedCount);
+    });
 });
+

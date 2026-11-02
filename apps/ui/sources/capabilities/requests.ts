@@ -18,6 +18,9 @@ export const CAPABILITIES_REQUEST_NEW_SESSION: CapabilitiesDetectRequest = {
     checklistId: CHECKLIST_IDS.NEW_SESSION,
 };
 
+/** How old a cached new-session detect may be before a surface choosing a machine or agent detects again. */
+export const CAPABILITIES_NEW_SESSION_STALE_MS = 2 * 60 * 1000;
+
 export const CAPABILITIES_REQUEST_MACHINE_DETAILS: CapabilitiesDetectRequest = {
     checklistId: CHECKLIST_IDS.MACHINE_DETAILS,
     overrides: buildCliLoginStatusOverrides(),

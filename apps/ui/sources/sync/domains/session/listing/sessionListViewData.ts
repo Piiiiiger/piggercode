@@ -24,15 +24,21 @@ export type SessionListViewItem =
     | {
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder';
+        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus';
         groupKey?: string;
         workspaceKey?: string;
         workspace?: SessionFolderWorkspaceRefV1;
-        /** Path tree: this folder's key and its parent folder's key (see sessionListPathTree). */
+        /** Explorer: this folder's key and its parent folder's key (see sessionListExplorer). */
         treeKey?: string;
         treeParentKey?: string | null;
-        /** Path tree: sessions below this folder that are running. */
+        /** Explorer: sessions below this folder that are running. */
         activeSessionCount?: number;
+        /** Explorer: a machine, its `~` or `/` folder, or a folder inside one. */
+        explorerNodeKind?: 'machine' | 'root' | 'folder';
+        /** Explorer: whether the folder shows what is inside it. */
+        explorerExpanded?: boolean;
+        /** Explorer: why an open folder shows nothing yet, or that its listing was cut short. */
+        explorerStatus?: 'loading' | 'error' | 'empty' | 'truncated' | 'offline';
         renderWorkspaceKey?: string;
         folderId?: string;
         parentFolderId?: string | null;
@@ -60,11 +66,11 @@ export type SessionListViewItem =
         serverId?: string;
         serverName?: string;
         workspace?: SessionFolderWorkspaceRefV1;
-        /** Path tree: the folder this session sits in (see sessionListPathTree). */
+        /** Explorer: the folder this session sits in (see sessionListExplorer). */
         treeKey?: string;
     };
 
-/** `directory` groups like `project`; the list then shows those groups as a folder tree (see sessionListPathTree). */
+/** `directory` was the folder-tree grouping of 0.2.19-pigger.10; it now groups like `project` (the explorer layout replaced it). */
 export type SessionListGroupingV1 = 'project' | 'date' | 'directory';
 
 export type SessionListSectionGroupingInput = Readonly<{

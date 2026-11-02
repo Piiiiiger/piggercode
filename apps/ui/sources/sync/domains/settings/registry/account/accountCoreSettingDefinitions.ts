@@ -292,10 +292,19 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'boolean', privacy: 'safe', identityScope: 'person' },
     },
+    sessionListLayoutV1: {
+        // `explorer` shows each machine's folders with every session under the folder it started in;
+        // `list` is the grouped list that the grouping settings below shape.
+        schema: z.enum(['explorer', 'list']),
+        default: 'explorer',
+        description: 'Whether the sidebar shows sessions in a folder explorer or as a grouped list',
+        storageScope: 'account',
+        analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
+    },
     sessionListActiveGroupingV1: {
-        // `directory` shows sessions as a folder tree of the directories they were started in.
+        // `directory` (the folder tree of 0.2.19-pigger.10, now the explorer layout) groups like `project`.
         schema: z.enum(['project', 'date', 'directory']),
-        default: 'directory',
+        default: 'project',
         description: 'How to group active sessions in the session list',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },

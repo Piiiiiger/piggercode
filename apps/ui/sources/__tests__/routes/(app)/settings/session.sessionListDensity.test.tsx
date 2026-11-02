@@ -18,6 +18,7 @@ const setSessionListWorkingPlacementMode = vi.fn();
 const setSessionListSeparateBackgroundWork = vi.fn();
 const setSessionListFolderSortMode = vi.fn();
 const setSessionListSectionMode = vi.fn();
+const setSessionListLayout = vi.fn();
 const setSessionListOrderingMode = vi.fn();
 
 installSessionSettingsEntryModuleMocks({
@@ -42,6 +43,7 @@ installSessionSettingsEntryModuleMocks({
                     if (key === 'sessionListNarrowWorkingIndicatorStyle') return ['spinner', vi.fn()];
                     if (key === 'hideInactiveSessions') return [false, vi.fn()];
                     if (key === 'sessionListSectionModeV1') return ['activity', setSessionListSectionMode];
+                    if (key === 'sessionListLayoutV1') return ['explorer', setSessionListLayout];
                     if (key === 'sessionListActiveGroupingV1') return ['project', vi.fn()];
                     if (key === 'sessionListInactiveGroupingV1') return ['date', vi.fn()];
                     if (key === 'agentInputActionBarLayout') return ['auto', vi.fn()];
@@ -88,6 +90,7 @@ afterEach(() => {
     setSessionListSeparateBackgroundWork.mockClear();
     setSessionListFolderSortMode.mockClear();
     setSessionListSectionMode.mockClear();
+    setSessionListLayout.mockClear();
     setSessionListOrderingMode.mockClear();
     resetSessionSettingsEntryState();
 });
@@ -264,6 +267,25 @@ describe('Session settings session list density', () => {
         });
 
         expect(setSessionListSectionMode).toHaveBeenCalledWith('single');
+    });
+
+    it('switches the sidebar between the folder explorer and the grouped list, which groups by project or date', async () => {
+        const mod = await import('../../../../app/(app)/settings/session');
+        const screen = await renderSettingsView(React.createElement(mod.default));
+        const dropdowns = screen.findAllByType('DropdownMenu' as any);
+        const layoutDropdown = dropdowns.find((node: any) =>
+            node.props?.itemTrigger?.itemProps?.testID === 'settings-session-sessionListLayout-trigger');
+        expect(layoutDropdown?.props?.selectedId).toBe('explorer');
+        expect(layoutDropdown?.props?.items?.map((item: any) => item.id)).toEqual(['explorer', 'list']);
+
+        await act(async () => {
+            layoutDropdown!.props.onSelect('list');
+        });
+        expect(setSessionListLayout).toHaveBeenCalledWith('list');
+
+        const groupingDropdown = dropdowns.find((node: any) =>
+            node.props?.itemTrigger?.title === 'settingsFeatures.sessionListActiveGrouping');
+        expect(groupingDropdown?.props?.items?.map((item: any) => item.id)).toEqual(['project', 'date']);
     });
 
     it('exposes the folder order selector in session list settings', async () => {

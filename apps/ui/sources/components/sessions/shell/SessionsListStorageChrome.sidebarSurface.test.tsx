@@ -15,7 +15,7 @@ installSessionShellCommonModuleMocks({
     router: async () => ({
         useRouter: () => routerState,
     }),
-    // The agent tabs render translated labels with parameters, which must stay strings.
+    // The agent picker renders translated labels with parameters, which must stay strings.
     text: async () => {
         const { createTextModuleMock } = await import('@/dev/testkit/mocks/text');
         return createTextModuleMock({
@@ -26,6 +26,11 @@ installSessionShellCommonModuleMocks({
 
 vi.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
+}));
+
+// Agent marks are SVG/image leaves the test renderer cannot draw.
+vi.mock('@/agents/registry/AgentIcon', () => ({
+    AgentIcon: (props: Record<string, unknown>) => React.createElement('AgentIcon', props),
 }));
 
 vi.mock('@/components/ui/lists/Item', () => ({
@@ -72,17 +77,18 @@ describe('SessionsListStorageChrome sidebar surface', () => {
         expect(browseSurfaceStyle.elevation).toBe(0);
     });
 
-    it('swaps the browse row for agent tabs with a browse button once the list has sessions', async () => {
+    it('swaps the browse row for the agent picker with a browse button once the list has sessions', async () => {
         const { SessionsListStorageChrome } = await import('./SessionsListStorageChrome');
         const data = [
             { type: 'header', headerKind: 'sessions', title: 'Sessions', groupKey: 'sessions:s1', serverId: 's1' },
-            { type: 'session', serverId: 's1', groupKey: 'g1', section: 'sessions', session: { id: 'a', metadata: { flavor: 'codex' } } },
+            { type: 'session', serverId: 's1', groupKey: 'g1', section: 'sessions', session: { id: 'a', updatedAt: 1, metadata: { flavor: 'codex' } } },
         ] as unknown as SessionListViewItem[];
 
         const screen = await renderScreen(<SessionsListStorageChrome directSessionsEnabled data={data} />);
 
         expect(screen.findAllByType('ItemGroup' as never)).toHaveLength(0);
-        expect(screen.findByTestId('session-list-agent-tabs:codex')).not.toBeNull();
+        expect(screen.findByTestId('session-list-agent-tabs:codex')).toBeNull();
+        expect(screen.findByTestId('session-list-agent-picker')).not.toBeNull();
         await screen.pressByTestIdAsync('session-list-browse-provider-sessions');
         expect(routerState.push).toHaveBeenCalledWith('/direct/browse');
     });

@@ -72,7 +72,7 @@ import { buildSessionFolderAssignmentKey } from '../domains/session/folders';
 import { buildSessionRecentPathEntries } from '../domains/session/listing/sessionRecentPathEntries';
 import { createProjectForSessionResolver, resolveProjectForSession } from '../runtime/orchestration/projectForSessionResolver';
 import type { SessionRecentPathEntry } from '@/utils/sessions/recentPathEntries';
-import { isMachineOnline } from '@/utils/sessions/machineUtils';
+import { getMachineDisplayName, isMachineOnline } from '@/utils/sessions/machineUtils';
 import {
   buildSessionRealtimeScmScopeFromSnapshot,
   getMountedSessionRealtimeScmConsumerScopeResetVersion,
@@ -1261,6 +1261,44 @@ function getStableLaunchSelectionMachines(machines: Machine[]): Machine[] {
 
   launchSelectionMachinesCache = { signature, machines };
   return machines;
+}
+
+/** What the session explorer needs about each visible machine of the active server. */
+export type SessionExplorerMachineSummary = Readonly<{
+  machineId: string;
+  label: string;
+  homeDir: string | null;
+  online: boolean;
+  /** Salts the machine's capability cache, as the new-session flow does. */
+  daemonStateVersion: number;
+}>;
+
+const EMPTY_SESSION_EXPLORER_MACHINES: ReadonlyArray<SessionExplorerMachineSummary> = Object.freeze([]);
+let sessionExplorerMachinesCache: Readonly<{ signature: string; machines: ReadonlyArray<SessionExplorerMachineSummary> }> | null = null;
+
+function selectSessionExplorerMachines(state: StorageState): ReadonlyArray<SessionExplorerMachineSummary> {
+  if (!state.isDataReady) return EMPTY_SESSION_EXPLORER_MACHINES;
+  const machines = resolveVisibleMachinesForActiveServerFromState(state).map((machine): SessionExplorerMachineSummary => ({
+    machineId: machine.id,
+    label: getMachineDisplayName(machine) ?? machine.id,
+    homeDir: typeof machine.metadata?.homeDir === 'string' && machine.metadata.homeDir.trim() ? machine.metadata.homeDir : null,
+    online: isMachineOnline(machine),
+    daemonStateVersion: typeof machine.daemonStateVersion === 'number' ? machine.daemonStateVersion : 0,
+  }));
+  const signature = machines
+    .map((machine) => [machine.machineId, machine.label, machine.homeDir ?? '', machine.online ? '1' : '0', machine.daemonStateVersion].join('\u0000'))
+    .join('\n');
+  if (sessionExplorerMachinesCache?.signature === signature) return sessionExplorerMachinesCache.machines;
+  sessionExplorerMachinesCache = { signature, machines };
+  return machines;
+}
+
+/**
+ * The active server's machines for the session explorer. Presence heartbeats do not re-render it;
+ * a machine appearing, going on- or offline, or changing its name or home folder does.
+ */
+export function useSessionExplorerMachines(): ReadonlyArray<SessionExplorerMachineSummary> {
+  return getStorage()(selectSessionExplorerMachines);
 }
 
 export function useLaunchSelectionMachines(): Machine[] {

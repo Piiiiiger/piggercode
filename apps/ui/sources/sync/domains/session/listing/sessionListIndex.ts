@@ -10,7 +10,7 @@ export type SessionListIndexItem =
     | Readonly<{
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder';
+        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus';
         groupKey?: string;
         workspaceKey?: string;
         seedSessionId?: string | null;

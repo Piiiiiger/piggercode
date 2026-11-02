@@ -88,12 +88,15 @@ import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { canForkConversation } from '@/sync/domains/sessionFork/forkUiSupport';
 import { resolveMachineTargetForSessionFromState } from '@/sync/ops/sessionMachineTarget';
 import { fireAndForget } from '@/utils/system/fireAndForget';
+import { sessionExplorerIconInset } from './explorer/SessionExplorerRows';
 
 const SESSION_LIST_MINIMAL_IDENTITY_GAP = 8;
 const CONTEXT_MENU_PRESS_SUPPRESSION_TIMEOUT_MS = 600;
 const CONTEXT_MENU_PRESS_IN_OPEN_DELAY_MS = 350;
 const SESSION_IDENTITY_SKELETON_ANIMATION_MS = 900;
 const SESSION_FOLDER_ROW_CHROME_INDENT_BASE = 38;
+// From an explorer row's edge to its agent mark: the 2px side border plus this padding.
+const SESSION_TREE_ROW_LEADING_INSET = 6;
 const SESSION_FOLDER_ROW_CHROME_INDENT_STEP = 12;
 const SESSION_FOLDER_ROW_INDENT_CAP = 3;
 const SESSION_DELETE_DRAFT_MENU_ITEM_ID = 'session-draft.delete';
@@ -157,6 +160,8 @@ type SessionItemBaseProps = Readonly<{
     onNativeContextMenuOpenChange?: (next: boolean) => void;
     rowAttentionAnimationEnabled?: boolean;
     folderDepth?: number;
+    /** An explorer row: a flat leaf indented to its folder rather than a card in a group. */
+    treeRow?: boolean;
     onMoveDown?: () => void;
     onMoveToFolder?: () => void;
     onMoveToWorkspaceRoot?: () => void;
@@ -233,6 +238,11 @@ const stylesheet = StyleSheet.create((theme) => ({
         borderRadius: SESSION_LIST_ROW_CORNER_RADIUS,
         marginBottom: 12,
     },
+    sessionItemContainerTree: {
+        marginRight: 4,
+        marginBottom: 0,
+        borderRadius: 6,
+    },
     sessionItem: {
         height: SESSION_LIST_ROW_HEIGHT_DEFAULT,
         flexDirection: 'row',
@@ -267,6 +277,16 @@ const stylesheet = StyleSheet.create((theme) => ({
     },
     sessionItemMinimalNativePhone: {
         height: SESSION_LIST_ROW_HEIGHT_MINIMAL_NATIVE_PHONE,
+    },
+    // Explorer rows sit flat on the sidebar like the folders above them; selection still fills them.
+    sessionItemTree: {
+        paddingLeft: SESSION_TREE_ROW_LEADING_INSET - 2,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderRadius: 6,
+    },
+    sessionItemTreeSelected: {
+        borderColor: theme.colors.surface.selected,
     },
     sessionItemSelected: {
         backgroundColor: theme.colors.surface.selected,
@@ -700,6 +720,7 @@ const SessionItemContent = React.memo(
         nativeContextMenuOpen,
         onNativeContextMenuOpenChange,
         folderDepth,
+        treeRow = false,
         onMoveDown,
         onMoveToFolder,
         onMoveToWorkspaceRoot,
@@ -1324,12 +1345,14 @@ const SessionItemContent = React.memo(
                 onLayout={sourceTagChips.length > 0 ? handleRowLayout : undefined}
                 style={[
                     styles.sessionItem,
-                    isFirst ? styles.sessionItemFirst : null,
-                    isLast ? styles.sessionItemLast : null,
+                    isFirst && !treeRow ? styles.sessionItemFirst : null,
+                    isLast && !treeRow ? styles.sessionItemLast : null,
                     compact ? styles.sessionItemCompact : null,
                     isMinimal ? styles.sessionItemMinimal : null,
                     useReadableNativePhoneMinimalRow ? styles.sessionItemMinimalNativePhone : null,
+                    treeRow ? styles.sessionItemTree : null,
                     selected || rowSelection.isSelected ? styles.sessionItemSelected : null,
+                    treeRow && (selected || rowSelection.isSelected) ? styles.sessionItemTreeSelected : null,
                     embedded && !embeddedIsLast ? styles.embeddedSeparator : null,
                 ]}
                 onPress={handleRowPress}
@@ -1729,10 +1752,12 @@ const SessionItemContent = React.memo(
 
         const containerStyles = [
             embedded ? styles.sessionItemContainerEmbedded : styles.sessionItemContainer,
-            !embedded && normalizedFolderDepth > 0
-                ? { marginLeft: SESSION_FOLDER_ROW_CHROME_INDENT_BASE + normalizedFolderDepth * SESSION_FOLDER_ROW_CHROME_INDENT_STEP }
-                : null,
-            embedded
+            !embedded && treeRow
+                ? [styles.sessionItemContainerTree, { marginLeft: sessionExplorerIconInset(folderDepth ?? 0) - SESSION_TREE_ROW_LEADING_INSET }]
+                : !embedded && normalizedFolderDepth > 0
+                    ? { marginLeft: SESSION_FOLDER_ROW_CHROME_INDENT_BASE + normalizedFolderDepth * SESSION_FOLDER_ROW_CHROME_INDENT_STEP }
+                    : null,
+            embedded || treeRow
                 ? null
                 : isSingle
                     ? styles.sessionItemContainerSingle
@@ -1873,6 +1898,7 @@ function SessionItemFromRowModel(props: SessionItemProps & { rowModel: SessionLi
             compact={itemProps.compact ?? rowModel.compact}
             compactMinimal={itemProps.compactMinimal ?? rowModel.compactMinimal}
             folderDepth={itemProps.folderDepth ?? rowModel.folder.depth}
+            treeRow={itemProps.treeRow ?? rowModel.folder.tree}
             sessionStatus={rowModel.status}
             sessionNameResolved={rowModel.title}
             sessionSubtitle={itemProps.subtitleOverride ?? rowModel.subtitle}

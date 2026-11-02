@@ -11,31 +11,43 @@ see on your phone.
 Folders are on by default. Nothing here needs turning on unless your server
 operator has disabled `sessions.folders`.
 
-## Directory tree
+## Folder explorer
 
-By default the list shows sessions where they were started: a tree of
-directories, the way a file manager shows them. `~` is your home folder and `/`
-holds anything outside it; when sessions come from several machines, each
-machine gets its own top folder.
+By default the sidebar is a folder explorer, like the one in VS Code: each
+machine's folders, starting from `~` (your home folder), with every session
+inside the folder it was started in. Sessions started outside your home folder
+appear under `/`; when sessions come from several machines, each machine gets
+its own top row.
 
-- Folders sort by name. A chain of folders with nothing else in them shows as
-  one row, such as `code/happier`.
-- A folder shows how many sessions sit below it, and a green dot when one of
-  them is running. Sessions that are not running are dimmed.
-- Press **+** on a folder to start a session in that directory.
-- Collapse folders you are not working in. Search and tag filters keep the
-  folders above each match.
+- Press a folder to open or close it. Folders open by default when sessions
+  sit below them; other folders start closed, and open folders also list the
+  machine's other subfolders so you can start a session anywhere.
+- Folders sort by name. A folder shows how many sessions sit below it, and a
+  green dot when one of them is running. Sessions that are not running are
+  dimmed.
+- Press **+** on a folder to start a session in that folder with the agent
+  picked above the list. With a mouse, **+** shows when you hover, focus or
+  open the folder; on touch screens it is always there.
+- The **⋯** menu next to search refreshes the folder listings, closes every
+  open folder, shows hidden folders (names starting with a dot), and hides or
+  shows stopped sessions.
+- Search and tag filters show only the folders above each match.
 
-To go back to flat groups, change **Settings → Sessions → Active sessions
-grouping** to Project or Date. The folders described below appear with those
-groupings; the directory tree takes their place while it is on.
+Listing folders needs the machine to be online. When it is offline, the
+explorer still shows the folders that hold sessions.
 
-## Agent tabs
+To use grouped lists instead, change **Settings → Sessions → Sidebar layout**
+to List; **Active sessions grouping** then picks Project or Date. The folders
+described below appear in the list layout.
 
-Tabs above the list switch between all sessions and one agent's sessions —
-Codex, Claude Code and so on — with the number of sessions on each tab. The tab
-you pick is remembered on that device, and **+** on a folder then starts a
-session with that agent.
+## Agent picker
+
+The select box above the list picks one agent (CLI) — Codex, Claude Code and
+so on — and the list shows that agent's sessions. It offers the agents
+installed on your online machines and any agent that already has sessions, with
+the number of sessions beside each. Until you pick one, it follows the agent of
+your most recently updated session. The pick is remembered on that device, and
+**+** on a folder starts a session with that agent.
 
 ## Folders
 

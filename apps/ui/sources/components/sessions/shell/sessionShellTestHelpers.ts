@@ -136,6 +136,7 @@ export function createSessionItemTestRowModel(
         folder: {
             id: null,
             depth: input.folderDepth ?? 0,
+            tree: false,
         },
         adjacency: {
             isFirst: input.isFirst ?? false,

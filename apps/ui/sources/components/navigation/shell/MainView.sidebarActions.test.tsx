@@ -100,6 +100,11 @@ vi.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
 }));
 
+// The sidebar's agent picker draws agent marks, SVG/image leaves the test renderer cannot draw.
+vi.mock('@/agents/registry/AgentIcon', () => ({
+    AgentIcon: (props: Record<string, unknown>) => React.createElement('AgentIcon', props),
+}));
+
 vi.mock('@/hooks/session/useVisibleSessionListViewData', () => ({
     useVisibleSessionListViewData: (_storageKind?: string, options?: {
         activeSessionId?: string | null;

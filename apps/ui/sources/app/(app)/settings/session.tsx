@@ -64,6 +64,7 @@ export default React.memo(function SessionSettingsScreen() {
     const [hideInactiveSessions, setHideInactiveSessions] = useSettingMutable('hideInactiveSessions');
     const [sessionListSectionModeV1, setSessionListSectionModeV1] = useSettingMutable('sessionListSectionModeV1');
     const [sessionListActiveGroupingV1, setSessionListActiveGroupingV1] = useSettingMutable('sessionListActiveGroupingV1');
+    const [sessionListLayoutV1, setSessionListLayoutV1] = useSettingMutable('sessionListLayoutV1');
     const [sessionListInactiveGroupingV1, setSessionListInactiveGroupingV1] = useSettingMutable('sessionListInactiveGroupingV1');
     const [mobileWorkspaceExperience, setMobileWorkspaceExperience] = useSettingMutable('mobileWorkspaceExperienceV1');
     const [cockpitSwipeNavigationEnabled, setCockpitSwipeNavigationEnabled] = useSettingMutable('sessionCockpitSwipeNavigationEnabled');
@@ -83,6 +84,7 @@ export default React.memo(function SessionSettingsScreen() {
     const [openSessionListOrderingModeMenu, setOpenSessionListOrderingModeMenu] = React.useState(false);
     const [openSessionListFolderSortModeMenu, setOpenSessionListFolderSortModeMenu] = React.useState(false);
     const [openSessionListSectionModeMenu, setOpenSessionListSectionModeMenu] = React.useState(false);
+    const [openSessionListLayoutMenu, setOpenSessionListLayoutMenu] = React.useState(false);
     const [openWorkspacePathDisplayMenu, setOpenWorkspacePathDisplayMenu] = React.useState(false);
     const [openWorkingIndicatorMenu, setOpenWorkingIndicatorMenu] = React.useState(false);
     const [openTitleUpdatesModeMenu, setOpenTitleUpdatesModeMenu] = React.useState(false);
@@ -126,11 +128,6 @@ export default React.memo(function SessionSettingsScreen() {
 
     const groupingMenuItems = React.useMemo(() => [
         {
-            id: 'directory',
-            title: t('settingsFeatures.sessionListGrouping.directoryTitle'),
-            subtitle: t('settingsFeatures.sessionListGrouping.directorySubtitle'),
-        },
-        {
             id: 'project',
             title: t('settingsFeatures.sessionListGrouping.projectTitle'),
             subtitle: t('settingsFeatures.sessionListGrouping.projectSubtitle'),
@@ -143,7 +140,7 @@ export default React.memo(function SessionSettingsScreen() {
     ], []);
 
     const selectGrouping = React.useCallback((itemId: string, section: 'active' | 'inactive') => {
-        if (itemId !== 'directory' && itemId !== 'project' && itemId !== 'date') return;
+        if (itemId !== 'project' && itemId !== 'date') return;
         if (section === 'active') {
             setSessionListActiveGroupingV1(itemId);
             return;
@@ -368,6 +365,24 @@ export default React.memo(function SessionSettingsScreen() {
         const mode = normalizeSessionListFolderSortMode(itemId);
         setSessionListFolderSortModeV1(mode);
     }, [sessionListFolderSortLockedByOrdering, setSessionListFolderSortModeV1]);
+
+    const sessionListLayout = sessionListLayoutV1 === 'list' ? 'list' : 'explorer';
+    const sessionListLayoutItems = React.useMemo(() => [
+        {
+            id: 'explorer',
+            title: t('settingsSession.sessionList.layoutExplorerTitle'),
+            subtitle: t('settingsSession.sessionList.layoutExplorerSubtitle'),
+        },
+        {
+            id: 'list',
+            title: t('settingsSession.sessionList.layoutListTitle'),
+            subtitle: t('settingsSession.sessionList.layoutListSubtitle'),
+        },
+    ], []);
+    const handleSessionListLayoutSelect = React.useCallback((itemId: string) => {
+        if (itemId !== 'explorer' && itemId !== 'list') return;
+        setSessionListLayoutV1(itemId);
+    }, [setSessionListLayoutV1]);
 
     const sessionListSectionMode = sessionListSectionModeV1 === 'single' ? 'single' : 'activity';
     const sessionListSectionModeItems = React.useMemo(() => [
@@ -609,6 +624,29 @@ export default React.memo(function SessionSettingsScreen() {
                     onSelect={handleSessionListFolderSortModeSelect}
                 />
                 <DropdownMenu
+                    open={openSessionListLayoutMenu}
+                    onOpenChange={setOpenSessionListLayoutMenu}
+                    variant="selectable"
+                    search={false}
+                    selectedId={sessionListLayout}
+                    showCategoryTitles={false}
+                    matchTriggerWidth={true}
+                    connectToTrigger={true}
+                    rowKind="item"
+                    popoverBoundaryRef={popoverBoundaryRef}
+                    itemTrigger={{
+                        title: t('settingsSession.sessionList.layoutTitle'),
+                        subtitle: sessionListLayout === 'explorer'
+                            ? t('settingsSession.sessionList.layoutExplorerSubtitle')
+                            : t('settingsSession.sessionList.layoutListSubtitle'),
+                        icon: <Icon name="folder-open" size={29} color={theme.colors.accent.blue} />,
+                        showSelectedSubtitle: false,
+                        itemProps: { testID: 'settings-session-sessionListLayout-trigger' },
+                    }}
+                    items={sessionListLayoutItems}
+                    onSelect={handleSessionListLayoutSelect}
+                />
+                <DropdownMenu
                     open={openSessionListSectionModeMenu}
                     onOpenChange={setOpenSessionListSectionModeMenu}
                     variant="selectable"
@@ -636,7 +674,8 @@ export default React.memo(function SessionSettingsScreen() {
                     onOpenChange={(next) => setOpenGroupingMenu(next ? 'active' : null)}
                     variant="selectable"
                     search={false}
-                    selectedId={sessionListActiveGroupingV1 as any}
+                    // `directory` (pigger.10's folder tree) groups like `project`.
+                    selectedId={sessionListActiveGroupingV1 === 'directory' ? 'project' : sessionListActiveGroupingV1}
                     showCategoryTitles={false}
                     matchTriggerWidth={true}
                     connectToTrigger={true}
@@ -656,7 +695,7 @@ export default React.memo(function SessionSettingsScreen() {
                     onOpenChange={(next) => setOpenGroupingMenu(next ? 'inactive' : null)}
                     variant="selectable"
                     search={false}
-                    selectedId={sessionListInactiveGroupingV1 as any}
+                    selectedId={sessionListInactiveGroupingV1 === 'directory' ? 'project' : sessionListInactiveGroupingV1}
                     showCategoryTitles={false}
                     matchTriggerWidth={true}
                     connectToTrigger={true}

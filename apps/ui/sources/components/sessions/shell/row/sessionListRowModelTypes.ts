@@ -112,7 +112,8 @@ export type SessionListRowModel = Readonly<{
     groupKind: SessionListRowSessionItem['groupKind'] | null;
     section: SessionListRowSessionItem['section'] | 'recent' | 'pinned' | 'archived' | null;
     variant: SessionListRowSessionItem['variant'] | null;
-    folder: Readonly<{ id: string | null; depth: number }>;
+    /** `tree`: an explorer row, drawn as a flat leaf indented to its folder. */
+    folder: Readonly<{ id: string | null; depth: number; tree: boolean }>;
     adjacency: Readonly<{ isFirst: boolean; isLast: boolean; isSingle: boolean }>;
     isSelected: boolean;
     isPinned: boolean;

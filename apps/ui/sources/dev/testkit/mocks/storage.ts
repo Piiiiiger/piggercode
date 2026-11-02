@@ -79,6 +79,7 @@ export function createStorageModuleStub<TOverrides extends object>(overrides: TO
     // (via `useMemo`/`useEffect`) don't thrash in unit tests unless a caller opts in to custom data.
     const allMachines = [] as ReturnType<StorageModule['useAllMachines']>;
     const launchSelectionMachines = [] as ReturnType<StorageModule['useLaunchSelectionMachines']>;
+    const sessionExplorerMachines = [] as ReturnType<StorageModule['useSessionExplorerMachines']>;
     const machineDisplayById = {} as ReturnType<StorageModule['useMachineDisplayById']>;
     const allSessions = [] as ReturnType<StorageModule['useAllSessions']>;
     const allSessionListRenderables = [] as ReturnType<StorageModule['useAllSessionListRenderables']>;
@@ -176,6 +177,7 @@ export function createStorageModuleStub<TOverrides extends object>(overrides: TO
         useAllMachines: () => allMachines,
         useFirstVisibleMachineId: () => null,
         useLaunchSelectionMachines: () => launchSelectionMachines,
+        useSessionExplorerMachines: () => sessionExplorerMachines,
         useMachineDisplayById: () => machineDisplayById,
         useMachineCliDetectionTarget: () => ({
             daemonStateVersion: 0,

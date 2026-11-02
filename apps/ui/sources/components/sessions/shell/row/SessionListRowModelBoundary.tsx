@@ -340,6 +340,7 @@ const SessionListRowModelBoundaryContent = React.memo(function SessionListRowMod
             variant={rowModel.variant ?? undefined}
             activityTimeMode={rowModel.activity.mode === 'updatedAt' ? 'updatedAt' : undefined}
             folderDepth={rowModel.folder.depth}
+            treeRow={rowModel.folder.tree}
             forkActionContext={props.forkActionContext}
             onMoveToFolder={props.folderActionsEnabled ? moveActionHandlers.onMoveToFolder : undefined}
             onMoveToWorkspaceRoot={props.folderActionsEnabled ? moveActionHandlers.onMoveToWorkspaceRoot : undefined}

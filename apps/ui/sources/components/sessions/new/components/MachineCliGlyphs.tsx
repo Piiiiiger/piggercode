@@ -11,7 +11,7 @@ import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { getAgentPickerIconScale } from '@/agents/registry/registryUi';
 import { useEnabledAgentIds } from '@/agents/hooks/useEnabledAgentIds';
 import { Text } from '@/components/ui/text/Text';
-import { buildAgentCliCapabilityId } from '@/capabilities/agentCliCapabilityId';
+import { listAvailableAgentClis } from '@/capabilities/agentCliAvailability';
 import { resolveMachineCliLogoDisplay } from './machineCliLogoDisplay';
 
 
@@ -56,10 +56,6 @@ const stylesheet = StyleSheet.create((theme) => ({
     },
 }));
 
-function readCliAvailable(data: unknown): boolean {
-    return Boolean(data && typeof data === 'object' && !Array.isArray(data) && (data as { available?: unknown }).available === true);
-}
-
 export const MachineCliGlyphs = React.memo(({ machineId, isOnline, serverId, autoDetect = true }: Props) => {
     const { theme } = useUnistyles();
     const styles = stylesheet;
@@ -90,15 +86,7 @@ export const MachineCliGlyphs = React.memo(({ machineId, isOnline, serverId, aut
     // Agents whose CLI is detected as available on this machine, in enabled-agent order.
     const availableAgentIds = React.useMemo<ReadonlyArray<AgentId>>(() => {
         if (state.status !== 'loaded') return [];
-        const ids: AgentId[] = [];
-        const results = state.snapshot.response.results;
-        for (const agentId of enabledAgents) {
-            const result = results[buildAgentCliCapabilityId(agentId)];
-            if (result?.ok === true && readCliAvailable(result.data)) {
-                ids.push(agentId);
-            }
-        }
-        return ids;
+        return listAvailableAgentClis(state.snapshot.response.results, enabledAgents);
     }, [enabledAgents, state]);
 
     const display = React.useMemo(() => resolveMachineCliLogoDisplay(availableAgentIds), [availableAgentIds]);

@@ -828,12 +828,18 @@ describe('settings', () => {
             expect((parsed as any).sessionListInactiveGroupingV1).toBe('project');
         });
 
-        it('defaults the session list to one section shown as a folder tree with attention at the top', () => {
+        it('defaults the sidebar to the folder explorer, also for accounts that saved a list grouping', () => {
             const parsed = settingsParse({});
 
+            expect(parsed.sessionListLayoutV1).toBe('explorer');
+            expect(settingsParse({ sessionListActiveGroupingV1: 'project' } as any).sessionListLayoutV1).toBe('explorer');
+            expect(settingsParse({ sessionListLayoutV1: 'list' } as any).sessionListLayoutV1).toBe('list');
+            // The list layout keeps one section with attention at the top; `directory`, saved by
+            // 0.2.19-pigger.10, still parses and groups like `project`.
             expect((parsed as any).sessionListSectionModeV1).toBe('single');
-            expect((parsed as any).sessionListActiveGroupingV1).toBe('directory');
+            expect((parsed as any).sessionListActiveGroupingV1).toBe('project');
             expect((parsed as any).sessionListAttentionPromotionModeV1).toBe('global');
+            expect(settingsParse({ sessionListActiveGroupingV1: 'directory' } as any).sessionListActiveGroupingV1).toBe('directory');
         });
 
         it('parses the unified session list section mode', () => {

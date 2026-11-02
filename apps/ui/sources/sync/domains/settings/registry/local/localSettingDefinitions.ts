@@ -122,7 +122,13 @@ export const LOCAL_SETTING_DEFINITIONS = defineSettingDefinitions({
     sessionListAgentFilterV1: {
         schema: z.string().nullable(),
         default: null,
-        description: 'The agent (CLI) the session list shows on this device; null shows all',
+        description: 'The agent (CLI) the session list shows on this device; null follows the most recently updated session',
+        storageScope: 'local',
+    },
+    sessionListExplorerShowHiddenV1: {
+        schema: z.boolean(),
+        default: false,
+        description: 'Whether the session explorer lists hidden folders (names starting with a dot) on this device',
         storageScope: 'local',
     },
     collapsedGroupKeysV1: {

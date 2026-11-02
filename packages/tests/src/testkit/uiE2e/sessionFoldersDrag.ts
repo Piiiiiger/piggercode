@@ -254,6 +254,10 @@ export async function createPlainSession(params: Readonly<{
   rootPath: string;
   machineId: string;
   tagPrefix: string;
+  /** The machine's home folder; defaults to the parent of `rootPath`. */
+  homeDir?: string;
+  /** The agent the session runs; defaults to Claude. */
+  flavor?: string;
 }>): Promise<string> {
   const tag = `${params.tagPrefix}-${randomUUID()}`;
   const res = await fetchJson<SessionCreateResponse>(`${params.baseUrl}/v1/sessions`, {
@@ -268,11 +272,11 @@ export async function createPlainSession(params: Readonly<{
         v: 1,
         name: params.title,
         path: params.rootPath,
-        homeDir: params.rootPath.split('/').slice(0, -1).join('/') || '/',
+        homeDir: params.homeDir ?? (params.rootPath.split('/').slice(0, -1).join('/') || '/'),
         host: params.machineId,
         machineId: params.machineId,
         version: '0.0.0',
-        flavor: 'claude',
+        flavor: params.flavor ?? 'claude',
       }),
       agentState: null,
       dataEncryptionKey: null,

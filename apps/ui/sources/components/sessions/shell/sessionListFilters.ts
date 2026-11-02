@@ -110,7 +110,7 @@ function ensureHeaderIncludedInOriginalOrder(
 type ListHeader = Extract<SessionListViewItem, { type: 'header' }>;
 
 /**
- * Path tree folders above a match stay; folders at `depth` or deeper are siblings or cousins of
+ * Explorer folders above a match stay; folders at `depth` or deeper are siblings or cousins of
  * what comes next, so they are dropped while still pending.
  */
 function dropPendingPathFoldersFromDepth(pending: ListHeader[], depth: number): ListHeader[] {

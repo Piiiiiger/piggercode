@@ -269,7 +269,7 @@ function createSessionRowModel(overrides: Partial<SessionListRowModel> = {}): Se
         groupKind: null,
         section: 'recent',
         variant: 'default',
-        folder: { id: null, depth: 0 },
+        folder: { id: null, depth: 0, tree: false },
         adjacency: { isFirst: true, isLast: true, isSingle: true },
         isSelected: true,
         isPinned: true,
@@ -344,7 +344,7 @@ function createSessionRowModelForProps(props: SessionItemForTestProps): SessionL
         subtitle,
         subtitleEllipsizeMode: props.subtitleEllipsizeMode ?? 'head',
         variant: props.variant ?? 'default',
-        folder: { id: null, depth: props.folderDepth ?? 0 },
+        folder: { id: null, depth: props.folderDepth ?? 0, tree: false },
         adjacency: {
             isFirst: props.isFirst ?? false,
             isLast: props.isLast ?? false,

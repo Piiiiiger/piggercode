@@ -433,8 +433,9 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
         variant: item.variant ?? null,
         folder: {
             id: item.folderId ?? null,
-            // User folders and the path tree (rows with a treeKey) both indent rows by folder depth.
+            // User folders and the explorer (rows with a treeKey) both indent rows by folder depth.
             depth: settings.folderViewEnabled || item.treeKey ? Math.max(0, Math.trunc(item.folderDepth ?? 0)) : 0,
+            tree: Boolean(item.treeKey),
         },
         adjacency: {
             isFirst: input.isFirst,
