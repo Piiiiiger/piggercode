@@ -2446,10 +2446,10 @@ describe('ChatList (FlashList v2 inverted pilot)', () => {
             await act(async () => { screen.tree.unmount(); });
         });
 
-        it('engages the carve via the whole-turn floor for legacy/no-segment-meta streaming text (Gemini case, R5)', async () => {
+        it('engages the carve via the whole-turn floor for legacy/no-segment-meta streaming text (legacy case, R5)', async () => {
             const telemetrySink = configureTelemetrySink();
             configureHarness({ syncTuningState: { transcriptNativeHotTailItemCount: 1 } });
-            // Legacy / Gemini path: assistant text carries NO `segmentState` meta (the default
+            // Legacy path: assistant text carries NO `segmentState` meta (the default
             // OLDEST_FIRST_MESSAGES are bare agent-text), so no row is detectably mid-stream. A REAL
             // streaming turn is both `active` AND `thinking` — the whole-turn floor (gated on
             // sessionActive like the streaming-message + running-tool anchors) anchors the carve at the

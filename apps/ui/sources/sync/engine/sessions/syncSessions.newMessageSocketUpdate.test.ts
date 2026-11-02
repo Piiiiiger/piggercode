@@ -654,7 +654,7 @@ describe('handleNewMessageSocketUpdate', () => {
                         role: 'agent',
                         content: {
                             type: 'acp',
-                            provider: 'kimi',
+                            provider: 'codex',
                             data: { type: 'turn_aborted', id: 'task_1' },
                         },
                     },

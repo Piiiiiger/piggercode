@@ -60,7 +60,7 @@ describe('permissionModeOptions', () => {
     it('returns a non-empty badge label for non-default supported modes', () => {
         expect(getPermissionModeBadgeLabelForAgentType('claude', 'safe-yolo' as PermissionMode)).not.toBe('');
         expect(getPermissionModeBadgeLabelForAgentType('codex', 'read-only' as PermissionMode)).not.toBe('');
-        expect(getPermissionModeBadgeLabelForAgentType('gemini', 'safe-yolo' as PermissionMode)).not.toBe('');
+        expect(getPermissionModeBadgeLabelForAgentType('codex', 'safe-yolo' as PermissionMode)).not.toBe('');
     });
 
     it('maps legacy plan badge to the read-only badge', () => {

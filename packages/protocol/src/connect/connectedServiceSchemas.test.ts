@@ -85,16 +85,6 @@ describe('connectedServiceSchemas', () => {
         });
     });
 
-    it('parses connected service ids', () => {
-        expect(ConnectedServiceIdSchema.parse('openai-codex')).toBe('openai-codex');
-        expect(ConnectedServiceIdSchema.parse('openai')).toBe('openai');
-        expect(ConnectedServiceIdSchema.parse('anthropic')).toBe('anthropic');
-        expect(ConnectedServiceIdSchema.parse('claude-subscription')).toBe('claude-subscription');
-        expect(ConnectedServiceIdSchema.parse('gemini')).toBe('gemini');
-        expect(ConnectedServiceIdSchema.parse('antigravity')).toBe('antigravity');
-        expect(ConnectedServiceIdSchema.parse('github')).toBe('github');
-    });
-
     it('parses an oauth credential record', () => {
         const now = Date.now();
         const rec = ConnectedServiceCredentialRecordV1Schema.parse({

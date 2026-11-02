@@ -9,7 +9,7 @@ describe('MetadataSchema providerSessionInfoV1', () => {
       host: 'machine',
       providerSessionInfoV1: {
         v: 1,
-        provider: 'cursor',
+        provider: 'codex',
         sessionId: 'cursor-session-1',
         observedAt: 100,
         title: null,
@@ -17,7 +17,7 @@ describe('MetadataSchema providerSessionInfoV1', () => {
       },
     });
     expect(parsed.providerSessionInfoV1).toMatchObject({
-      provider: 'cursor',
+      provider: 'codex',
       sessionId: 'cursor-session-1',
       title: null,
     });
@@ -30,7 +30,7 @@ describe('MetadataSchema providerSessionInfoV1', () => {
       name: 'Workspace',
       providerSessionInfoV1: {
         v: 1,
-        provider: 'cursor',
+        provider: 'codex',
         sessionId: 'cursor-session-1',
         observedAt: 100,
         title: 'x'.repeat(2_000),

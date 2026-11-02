@@ -11,10 +11,10 @@ import { buildSpawnResumeUnreachableErrorResult } from './buildSpawnResumeUnreac
 
 function makeError() {
   return new ConnectedServiceSpawnResumeUnreachableError({
-    agentId: 'pi',
-    vendorResumeId: 'pi-session-missing',
+    agentId: 'codex',
+    vendorResumeId: 'codex-session-missing',
     cwd: '/tmp/project',
-    targetMaterializedRoot: '/tmp/materialized/pi-agent-dir',
+    targetMaterializedRoot: '/tmp/materialized/codex-home',
     reason: 'no_resumable_session_file',
   });
 }
@@ -30,33 +30,9 @@ describe('buildSpawnResumeUnreachableErrorResult', () => {
     // copy-based surfaces keep working.
     expect(result.errorMessage).toContain('provider_session_state_unavailable_for_resume');
     expect(result.errorMessage).toContain('continuity');
-    expect(result.errorMessage).not.toContain('pi-session-missing');
+    expect(result.errorMessage).not.toContain('codex-session-missing');
     expect(result.errorMessage).not.toContain('/tmp/project');
-    expect(result.errorMessage).not.toContain('/tmp/materialized/pi-agent-dir');
-  });
-
-  it('attaches a UI-safe connected-service resume-unreachable detail', () => {
-    const error = makeError();
-    const result = buildSpawnResumeUnreachableErrorResult(error);
-
-    expect(isConnectedServiceResumeUnreachableSpawnErrorDetail(result.errorDetail)).toBe(true);
-    expect(result.errorDetail).toMatchObject({
-      kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
-      continuityErrorCode: 'provider_session_state_unavailable_for_resume',
-      failurePhase: 'continuity',
-      agentId: 'pi',
-      reason: 'no_resumable_session_file',
-    });
-    expect(result.errorDetail).not.toHaveProperty('vendorResumeId');
-    expect(result.errorDetail).not.toHaveProperty('cwd');
-    expect(result.errorDetail).not.toHaveProperty('targetMaterializedRoot');
-    if (!isConnectedServiceResumeUnreachableSpawnErrorDetail(result.errorDetail)) {
-      throw new Error('expected resume-unreachable detail');
-    }
-    expect(result.errorDetail.uxDiagnostic?.code).toBe('provider_session_state_unavailable_for_resume');
-    expect(result.errorDetail.uxDiagnostic?.diagnostics).toEqual({
-      reason: 'no_resumable_session_file',
-    });
+    expect(result.errorMessage).not.toContain('/tmp/materialized/codex-home');
   });
 
   it('uses the specific resume-inputs diagnostic when the hard gate is missing required inputs', () => {

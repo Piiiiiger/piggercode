@@ -90,7 +90,7 @@ describe('createAcpRuntime (ensureBackend)', () => {
       metadata = updater(metadata) as MetadataWithWorkState;
     });
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClientWithOverrides({ updateMetadata }),
       messageBuffer: new MessageBuffer(),
@@ -103,7 +103,7 @@ describe('createAcpRuntime (ensureBackend)', () => {
     await runtime.startOrLoad({});
     expect(publishPlanState).not.toBeNull();
     const snapshot: NormalizedAcpPlanSnapshot = {
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'proprietary',
       merge: false,
@@ -116,7 +116,7 @@ describe('createAcpRuntime (ensureBackend)', () => {
     expect((metadata.sessionWorkStateV1 as { items: Array<{ id: string; title: string }> }).items).toEqual([
       expect.objectContaining({ id: 'goal:other', title: 'Keep' }),
       expect.objectContaining({
-        id: expect.stringMatching(/^todo:derived:acp\.plan\.cursor:/),
+        id: expect.stringMatching(/^todo:derived:acp\.plan\.codex:/),
         vendorRef: 'todo-1',
         title: 'Implement',
       }),

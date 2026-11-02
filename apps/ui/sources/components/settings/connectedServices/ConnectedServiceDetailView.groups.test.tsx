@@ -627,30 +627,4 @@ describe('ConnectedServiceDetailView pools segment', () => {
         expect(screen.findAllByTestId('connected-services-pool-action:create')).toHaveLength(0);
     });
 
-    it('keeps the create-pool card enabled for a service that can configure pools even without runtime fallback', async () => {
-        // gemini can configure pools (groupConfigurationSupported) but has no runtime fallback.
-        connectedServicesModuleState.searchParams = { serviceId: 'gemini' };
-        profileState.current = {
-            connectedServicesV2: [
-                {
-                    serviceId: 'gemini',
-                    profiles: [{ profileId: 'work', status: 'connected', providerEmail: 'work@example.com' }],
-                    groups: [],
-                },
-            ],
-        };
-        authoritativeGroupState.groups = [];
-
-        const screen = await renderGroupsScreen();
-        await selectPoolsSegment(screen);
-
-        // Read the create `Item` props directly (not the resolved host element).
-        const createCard = screen.tree.root.find(
-            (node) => node.props?.testID === 'connected-services-pool-action:create',
-        );
-        expect(createCard).toBeTruthy();
-        expect(createCard.props.disabled).toBe(false);
-        expect(createCard.props.subtitle).toBe('connectedServices.pools.create.subtitle');
-        expect(typeof createCard.props.onPress).toBe('function');
-    });
 });

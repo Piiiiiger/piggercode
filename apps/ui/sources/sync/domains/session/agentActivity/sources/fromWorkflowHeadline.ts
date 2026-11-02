@@ -12,7 +12,7 @@ import type { AgentActivityHeadlineEntry } from '../types';
  *
  * This is the §5.2 "new client ← old CLI" path, and it is a first-class case rather than a fallback
  * nobody exercises: the unified headline is published by the Claude activity source only, so a
- * Codex, Gemini or OpenCode session — and any session served by a CLI that predates this program —
+ * Codex session — and any session served by a CLI that predates this program —
  * has no `sessionAgentActivityHeadlineV1` at all.
  *
  * What it can contribute is strictly less, and the limit is structural, not an omission here: the

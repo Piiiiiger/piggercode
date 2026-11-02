@@ -304,7 +304,7 @@ describe('useOpenAttachedSessionTerminal', () => {
                 id: 'session-1',
                 active: true,
                 metadata: {
-                    flavor: 'pi',
+                    flavor: 'codex',
                     terminal: {
                         mode: 'zellij',
                         controlServiceabilityV1: {
@@ -331,7 +331,7 @@ describe('useOpenAttachedSessionTerminal', () => {
                 id: 'session-1',
                 active: true,
                 metadata: {
-                    flavor: 'customAcp',
+                    flavor: 'codex',
                     terminal: {
                         mode: 'zellij',
                         controlServiceabilityV1: {

@@ -135,24 +135,4 @@ describe('ProviderAuthenticationTerminalPane', () => {
         });
     });
 
-    it('forwards a first-party Happier CLI auth launch as a typed daemon intent', () => {
-        return providerAuthenticationTerminalPaneModulePromise.then(async (module) => {
-            const { ProviderAuthenticationTerminalPane } = module;
-            const screen = await renderScreen(<ProviderAuthenticationTerminalPane
-                {...createTestProps()}
-                providerId="agy"
-                authLaunch={{
-                    kind: 'primary',
-                    launch: { kind: 'happier_cli', args: ['agy', 'auth', 'login'] },
-                }}
-            />);
-
-            expect(useMachineTerminalSessionMock).toHaveBeenLastCalledWith(expect.objectContaining({
-                launch: { kind: 'happier_cli', args: ['agy', 'auth', 'login'] },
-                initialCommand: null,
-            }));
-
-            await screen.unmount();
-        });
-    });
 });

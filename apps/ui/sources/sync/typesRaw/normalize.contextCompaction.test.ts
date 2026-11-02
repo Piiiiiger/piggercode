@@ -8,7 +8,7 @@ describe('typesRaw context compaction normalization', () => {
             role: 'agent',
             content: {
                 type: 'acp',
-                provider: 'pi',
+                provider: 'codex',
                 data: {
                     type: 'context-compaction',
                     phase: 'completed',
@@ -29,7 +29,7 @@ describe('typesRaw context compaction normalization', () => {
         expect(normalized.content).toMatchObject({
             type: 'context-compaction',
             phase: 'completed',
-            provider: 'pi',
+            provider: 'codex',
             lifecycleId: 'pi:context-compaction',
             source: 'provider-event',
             continuation: 'paused',

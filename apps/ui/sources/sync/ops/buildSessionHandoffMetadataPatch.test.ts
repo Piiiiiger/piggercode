@@ -19,7 +19,7 @@ describe('buildSessionHandoffMetadataPatch', () => {
         const agentsImports = [...sourceText.matchAll(/import\s*\{([^}]*)\}\s*from\s*'@piggercode\/agents'/g)]
             .flatMap((match) => (match[1] ?? '').split(',').map((name) => name.trim()).filter(Boolean));
         expect(agentsImports).toEqual(['projectCurrentAgentSessionView']);
-        expect(sourceText).not.toMatch(/providerId\s*={2,3}\s*['"](?:claude|codex|opencode)['"]/);
+        expect(sourceText).not.toMatch(/providerId\s*={2,3}\s*['"](?:claude|codex|codex)['"]/);
     });
 
     it('stores source/target workspace roots in handoffV1 for handoff-back planning', () => {
@@ -225,133 +225,6 @@ describe('buildSessionHandoffMetadataPatch', () => {
         });
     });
 
-    it('rebuilds opencode runtime descriptor metadata with target server affinity', () => {
-        const updated = buildSessionHandoffMetadataPatch({
-            metadata: {
-                flavor: 'opencode',
-                path: '/repo/source',
-                host: 'source-host',
-                machineId: 'machine_source',
-                opencodeSessionId: 'sess_old',
-                opencodeBackendMode: 'server',
-                opencodeServerBaseUrl: 'http://old.example',
-                opencodeServerBaseUrlExplicit: true,
-            },
-            providerId: 'opencode',
-            sourceMachineId: 'machine_source',
-            targetMachineId: 'machine_target',
-            sessionStorageBefore: 'direct',
-            sessionStorageAfter: 'direct',
-            targetPath: '/repo/target',
-            transportStrategy: 'direct_peer',
-            completedAtMs: 456,
-            targetRemoteSessionId: 'sess_new',
-            targetDirectSource: { kind: 'opencodeServer', baseUrl: 'https://new.example', directory: '/repo/target' },
-        });
-
-        expect(updated.opencodeSessionId).toBe('sess_new');
-        expect(updated.opencodeBackendMode).toBe('server');
-        expect(updated.opencodeServerBaseUrl).toBe('https://new.example');
-        expect(updated.opencodeServerBaseUrlExplicit).toBe(true);
-        expect(updated.agentRuntimeDescriptorV1).toMatchObject({
-            v: 1,
-            providerId: 'opencode',
-            provider: {
-                backendMode: 'server',
-                vendorSessionId: 'sess_new',
-                serverBaseUrl: 'https://new.example',
-                serverBaseUrlExplicit: true,
-                providerExtra: {
-                    owner: 'opencode',
-                    schemaId: 'opencode.agentRuntimeDescriptorExtra',
-                    v: 1,
-                    runtimeHandle: {
-                        backendMode: 'server',
-                        vendorSessionId: 'sess_new',
-                        serverBaseUrl: 'https://new.example/',
-                        serverBaseUrlExplicit: true,
-                    },
-                },
-            },
-        });
-    });
-
-    it('preserves the imported OpenCode runtime descriptor when provided', () => {
-        const updated = buildSessionHandoffMetadataPatch({
-            metadata: {
-                flavor: 'opencode',
-                path: '/repo/source',
-                host: 'source-host',
-                machineId: 'machine_source',
-                opencodeSessionId: 'sess_old',
-                opencodeBackendMode: 'acp',
-            },
-            providerId: 'opencode',
-            sourceMachineId: 'machine_source',
-            targetMachineId: 'machine_target',
-            sessionStorageBefore: 'direct',
-            sessionStorageAfter: 'direct',
-            targetPath: '/repo/target',
-            transportStrategy: 'server_routed_stream',
-            completedAtMs: 456,
-            targetRemoteSessionId: 'sess_new',
-            targetDirectSource: { kind: 'opencodeServer', baseUrl: 'https://new.example', directory: '/repo/target' },
-            targetRuntimeDescriptor: {
-                v: 1,
-                providerId: 'opencode',
-                provider: {
-                    backendMode: 'server',
-                    vendorSessionId: 'sess_new',
-                    serverBaseUrl: 'http://canonical.example',
-                    serverBaseUrlExplicit: true,
-                },
-            },
-        });
-
-        expect(updated.opencodeBackendMode).toBe('server');
-        expect(updated.opencodeServerBaseUrl).toBe('http://canonical.example');
-        expect(updated.agentRuntimeDescriptorV1).toMatchObject({
-            v: 1,
-            providerId: 'opencode',
-            provider: {
-                backendMode: 'server',
-                vendorSessionId: 'sess_new',
-                serverBaseUrl: 'http://canonical.example',
-                serverBaseUrlExplicit: true,
-            },
-        });
-    });
-
-    it('clears stale externalHistoryImportV1 when a later handoff lands in direct mode', () => {
-        const updated = buildSessionHandoffMetadataPatch({
-            metadata: {
-                flavor: 'opencode',
-                host: 'source-host',
-                machineId: 'machine_source',
-                path: '/repo/source',
-                externalHistoryImportV1: {
-                    v: 1,
-                    providerId: 'opencode',
-                    remoteSessionId: 'old_remote',
-                    importedAtMs: 1,
-                    source: { kind: 'opencodeServer', baseUrl: 'http://old.example' },
-                },
-            },
-            providerId: 'opencode',
-            sourceMachineId: 'machine_source',
-            targetMachineId: 'machine_target',
-            sessionStorageBefore: 'persisted',
-            sessionStorageAfter: 'direct',
-            targetPath: '/repo/target',
-            transportStrategy: 'direct_peer',
-            completedAtMs: 10,
-            targetRemoteSessionId: 'sess_direct',
-            targetDirectSource: { kind: 'opencodeServer', baseUrl: 'https://new.example', directory: '/repo/target' },
-        });
-
-        expect(updated).not.toHaveProperty('externalHistoryImportV1');
-    });
-
     it('clears stale runtime descriptors when the target provider has no runtime descriptor', () => {
         const updated = buildSessionHandoffMetadataPatch({
             metadata: {
@@ -435,50 +308,4 @@ describe('buildSessionHandoffMetadataPatch', () => {
         });
     });
 
-    it('prefers target OpenCode server affinity over stale legacy backend metadata when no runtime descriptor is imported', () => {
-        const updated = buildSessionHandoffMetadataPatch({
-            metadata: {
-                flavor: 'opencode',
-                path: '/repo/source',
-                host: 'source-host',
-                machineId: 'machine_source',
-                opencodeSessionId: 'sess_old',
-                opencodeBackendMode: 'acp',
-            },
-            providerId: 'opencode',
-            sourceMachineId: 'machine_source',
-            targetMachineId: 'machine_target',
-            sessionStorageBefore: 'direct',
-            sessionStorageAfter: 'direct',
-            targetPath: '/repo/target',
-            transportStrategy: 'direct_peer',
-            completedAtMs: 456,
-            targetRemoteSessionId: 'sess_new',
-            targetDirectSource: { kind: 'opencodeServer', baseUrl: 'https://new.example', directory: '/repo/target' },
-        });
-
-        expect(updated.opencodeBackendMode).toBe('server');
-        expect(updated.opencodeServerBaseUrl).toBe('https://new.example');
-        expect(updated.agentRuntimeDescriptorV1).toMatchObject({
-            v: 1,
-            providerId: 'opencode',
-            provider: {
-                backendMode: 'server',
-                vendorSessionId: 'sess_new',
-                serverBaseUrl: 'https://new.example',
-                serverBaseUrlExplicit: true,
-                providerExtra: {
-                    owner: 'opencode',
-                    schemaId: 'opencode.agentRuntimeDescriptorExtra',
-                    v: 1,
-                    runtimeHandle: {
-                        backendMode: 'server',
-                        vendorSessionId: 'sess_new',
-                        serverBaseUrl: 'https://new.example/',
-                        serverBaseUrlExplicit: true,
-                    },
-                },
-            },
-        });
-    });
 });

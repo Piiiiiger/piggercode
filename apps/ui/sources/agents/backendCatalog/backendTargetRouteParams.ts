@@ -50,13 +50,8 @@ export function resolveBackendTargetFromRouteParams(params: Readonly<{
     }
 
     const normalizedAgentType = params.agentType.trim();
-    if (!normalizedAgentType || normalizedAgentType === 'customAcp') {
+    if (!normalizedAgentType) {
         return null;
-    }
-
-    if (normalizedAgentType.startsWith('acp:')) {
-        const backendId = normalizedAgentType.slice(4).trim();
-        return backendId ? { kind: 'configuredAcpBackend', backendId } : null;
     }
 
     return { kind: 'builtInAgent', agentId: normalizedAgentType };

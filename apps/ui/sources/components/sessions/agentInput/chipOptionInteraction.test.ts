@@ -6,23 +6,23 @@ describe('chipOptionInteraction', () => {
     it('cycles when selectable options are within the cycle threshold', () => {
         expect(resolveChipOptionInteraction({
             currentOptionId: 'claude',
-            selectableOptionIds: ['claude', 'opencode'],
+            selectableOptionIds: ['claude', 'codex'],
             cycleMaxOptions: 3,
         })).toEqual({
             kind: 'cycle',
-            selectableOptionIds: ['claude', 'opencode'],
-            nextOptionId: 'opencode',
+            selectableOptionIds: ['claude', 'codex'],
+            nextOptionId: 'codex',
         });
     });
 
     it('opens picker when selectable options exceed the cycle threshold', () => {
         expect(resolveChipOptionInteraction({
             currentOptionId: 'claude',
-            selectableOptionIds: ['claude', 'codex', 'opencode', 'gemini'],
-            cycleMaxOptions: 3,
+            selectableOptionIds: ['claude', 'codex'],
+            cycleMaxOptions: 1,
         })).toEqual({
             kind: 'picker',
-            selectableOptionIds: ['claude', 'codex', 'opencode', 'gemini'],
+            selectableOptionIds: ['claude', 'codex'],
         });
     });
 

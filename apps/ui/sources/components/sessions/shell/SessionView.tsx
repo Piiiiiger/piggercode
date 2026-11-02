@@ -2591,7 +2591,7 @@ function SessionViewLoaded({
     const isCliOutdated = cliVersion && !isVersionSupported(cliVersion, MINIMUM_CLI_VERSION);
     const isAcknowledged = machineId && acknowledgedCliVersions[machineId] === cliVersion;
     const shouldShowCliWarning = isCliOutdated && !isAcknowledged;
-    // Get model mode from session object - default is agent-specific (Gemini needs an explicit default)
+    // Get model mode from session object - default is agent-specific
     const agentId = resolveAgentIdFromSessionMetadata(session.metadata) ?? resolveAgentIdFromFlavor(session.metadata?.flavor) ?? DEFAULT_AGENT_ID;
     const liveAuthoringContext = React.useMemo(() => {
         return buildLiveSessionAuthoringContext({
@@ -3907,9 +3907,8 @@ function SessionViewLoaded({
     }, [connectedServiceQuotaAuthGroups.groups, connectedServiceQuotaProfileRef?.groupId]);
     const sessionAgentCatalogEntries = React.useMemo(() => getResolvedBackendCatalogEntries({
         enabledAgentIds,
-        acpCatalogSettingsV1: settings.acpCatalogSettingsV1,
         backendEnabledByTargetKey: settings.backendEnabledByTargetKey,
-    }), [enabledAgentIds, settings.acpCatalogSettingsV1, settings.backendEnabledByTargetKey]);
+    }), [enabledAgentIds, settings.backendEnabledByTargetKey]);
     const sessionAgentCurrentTargetKey = React.useMemo(() => buildBackendTargetKey(
         sessionActionDefaultBackend?.backendTarget
         ?? { kind: 'builtInAgent', agentId: liveComposerState.agentId },

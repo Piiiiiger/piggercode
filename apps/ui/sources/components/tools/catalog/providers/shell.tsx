@@ -89,28 +89,6 @@ export const providerShellTools = {
             return t('tools.names.terminal');
         }
     },
-    'GeminiBash': {
-        title: t('tools.names.terminal'),
-        icon: ICON_TERMINAL,
-        minimal: true,
-        hideDefaultError: true,
-        isMutable: true,
-        input: z.object({
-            command: z.array(z.string()).describe('The command array to execute'),
-            cwd: z.string().optional().describe('Current working directory')
-        }).partial().passthrough(),
-        extractSubtitle: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            if (opts.tool.input?.command && Array.isArray(opts.tool.input.command)) {
-                let cmdArray = opts.tool.input.command;
-                // Remove shell wrapper prefix if present (bash/zsh with -lc flag)
-                if (cmdArray.length >= 3 && (cmdArray[0] === 'bash' || cmdArray[0] === '/bin/bash' || cmdArray[0] === 'zsh' || cmdArray[0] === '/bin/zsh') && cmdArray[1] === '-lc') {
-                    return cmdArray[2];
-                }
-                return cmdArray.join(' ');
-            }
-            return null;
-        }
-    },
     'shell': {
         title: t('tools.names.terminal'),
         icon: ICON_TERMINAL,

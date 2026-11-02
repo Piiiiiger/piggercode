@@ -42,7 +42,6 @@ function isCatalogAgentId(value: string): value is CatalogAgentId {
 
 function readAgentId(tracked: TrackedSession): CatalogAgentId {
   const target = tracked.spawnOptions?.backendTarget;
-  if (target?.kind === 'configuredAcpBackend') return 'customAcp';
   if (target?.kind === 'builtInAgent') {
     return resolveCatalogAgentId(isCatalogAgentId(target.agentId) ? target.agentId : null);
   }

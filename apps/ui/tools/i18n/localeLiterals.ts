@@ -247,7 +247,7 @@ export function isDoNotTranslate(text: string): boolean {
 
 /** Executables this app actually names in user-facing copy. */
 const COMMAND_EXECUTABLE =
-    /^(happier|npx|npm|yarn|pnpm|bunx|node|claude|codex|gemini|opencode|qwen|kimi|kilo|kiro|auggie|cursor-agent|gh|git|tmux|zellij|ssh|scp|curl|brew|winget|choco|docker|systemctl|launchctl)$/;
+    /^(happier|npx|npm|yarn|pnpm|bunx|node|claude|codex|gh|git|tmux|zellij|ssh|scp|curl|brew|winget|choco|docker|systemctl|launchctl)$/;
 
 /** A token no sentence contains: a flag, a <placeholder>, a scoped package. */
 const NOT_PROSE_TOKEN = /^(--?[\w-]+|<[\w-]+>|@[\w.-]+\/[\w.-]+)$/;

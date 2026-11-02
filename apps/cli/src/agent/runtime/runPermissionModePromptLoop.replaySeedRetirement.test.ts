@@ -102,7 +102,7 @@ async function runTwoPromptsWithFirstTurnAborted(params: Readonly<{
 
   await runPermissionModePromptLoop({
     providerName: 'Test ACP',
-    agentMessageType: 'qwen',
+    agentMessageType: 'codex',
     explicitPermissionMode: 'default',
     session: session as any,
     messageQueue: queue,

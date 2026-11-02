@@ -48,7 +48,6 @@ Machine RPCs (`packages/protocol/src/rpc.ts`, registered in
 
 - `session.continuation.inspect` — read-only eligibility for one target.
 - `session.continuation.inspectBatch` — one source read for built-in picker targets.
-- `session.continuation.inspectBackendTargets` — exact configured ACP targets.
 - `session.agentTransition` — the mutation.
 - `session.agentTransition.briefPreview` — read-only rebuild of a divider's brief.
 
@@ -106,36 +105,13 @@ A Session is transitionable when all of these hold:
 
 A target is supported when `resolveSessionContinuationTargetAgent` resolves it:
 the selection carries no `providerConnectionId`, the `agentId` is in
-`CATALOG_AGENT_IDS`. A configured ACP selection additionally carries the existing
-`backendTarget` reference and resolves that exact enabled account definition;
-missing definitions or unavailable environment values fail before source stop.
-Contradictory Agent and target carriers are rejected. A target equal to the
-current backend target is reported as available-but-not-a-transition
-(`sameSessionTransition: false`), not as an error.
-
-Configured source requests carry `expectedCurrentBackendTarget`; the generic
-`customAcp` Agent id alone cannot prove that the source is still configuration A.
-The persisted identity owner rejects a configured flavor that names a different
-configuration, as well as conflicting built-in Agent evidence.
+`CATALOG_AGENT_IDS`. Contradictory Agent and target carriers are rejected. A
+target equal to the current backend target is reported as
+available-but-not-a-transition (`sameSessionTransition: false`), not as an error.
 
 The client adds two Session-level facts before it asks a machine anything
 (`resolveSessionAgentContinuationSessionReason`): no edit access → `read_only`;
-`storageKind === 'direct'` → `external_session`. Configured targets use the same
-inspection and submission lifecycle as built-in targets, retaining the exact
-reference in the armed intent, expected source, current metadata, divider and
-recovery comparison. Two configurations of one executable remain distinct.
-
-In development, configured continuation starts the selected runtime with the
-bounded activation brief. It never transfers an opaque vendor conversation ID
-from another configured target. Built-in native-return behavior is unchanged.
-
-The UI partitions configured inspection onto the dedicated operation. The
-released CLI `0.2.15` / `0.2.15-preview.1` reader at
-`22ac8263cfdbcdb845441b9044ff18199cf7652e` strictly rejects the additive target
-carrier, including the whole legacy batch when one row carries it. A missing
-configured operation therefore disables only configured continuation; built-in
-batch/single inspection keeps its released shape. This adapter may retire once
-those strict peers are unsupported.
+`storageKind === 'direct'` → `external_session`.
 
 ## Flow
 

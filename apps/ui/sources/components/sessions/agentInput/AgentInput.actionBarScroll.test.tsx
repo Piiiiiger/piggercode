@@ -168,7 +168,7 @@ function mockCommonDeps() {
         }),
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
     }));

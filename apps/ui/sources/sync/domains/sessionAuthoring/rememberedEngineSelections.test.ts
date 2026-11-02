@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { readRememberedEngineSelection, upsertRememberedEngineSelection } from './rememberedEngineSelections';
 
 describe('rememberedEngineSelections opaque identifiers', () => {
-    const target = { kind: 'builtInAgent', agentId: 'cursor' } as const;
+    const target = { kind: 'builtInAgent', agentId: 'codex' } as const;
 
     it.each(['default', null] as const)('round-trips native mode %s independently from the default model', (acpSessionModeId) => {
         const stored = upsertRememberedEngineSelection({

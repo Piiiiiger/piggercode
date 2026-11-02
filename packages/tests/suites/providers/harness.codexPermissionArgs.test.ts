@@ -22,16 +22,6 @@ describe('providers harness: codex permission startup args', () => {
     ).toEqual(['--permission-mode', 'yolo', '--permission-mode-updated-at']);
   });
 
-  it('does not add permission mode args for non-codex providers', () => {
-    expect(
-      resolveCodexCliPermissionArgs({
-        providerSubcommand: 'opencode',
-        yolo: true,
-        scenarioMeta: { permissionMode: 'yolo' },
-      }),
-    ).toEqual([]);
-  });
-
   it('does not pass legacy --yolo for codex when permission mode args are present', () => {
     expect(
       resolveYoloCliArgs({
@@ -42,23 +32,4 @@ describe('providers harness: codex permission startup args', () => {
     ).toEqual([]);
   });
 
-  it('passes --yolo for non-codex providers in yolo mode', () => {
-    expect(
-      resolveYoloCliArgs({
-        providerSubcommand: 'opencode',
-        yolo: true,
-        hasExplicitPermissionModeArgs: false,
-      }),
-    ).toEqual(['--yolo']);
-  });
-
-  it('passes --yolo for non-codex ACP providers even when permission mode metadata is explicit', () => {
-    expect(
-      resolveYoloCliArgs({
-        providerSubcommand: 'kilo',
-        yolo: true,
-        hasExplicitPermissionModeArgs: true,
-      }),
-    ).toEqual(['--yolo']);
-  });
 });

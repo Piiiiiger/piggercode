@@ -127,11 +127,6 @@ import type {
   MachineTransferSendEnvelope,
   TransferEndpointCandidate,
 } from '@piggercode/protocol';
-import {
-  applyOpenCodeSessionAffinityMetadata,
-  buildOpenCodeSessionEnvironmentVariables,
-  readOpenCodeSessionAffinityFromMetadata,
-} from '@/backends/opencode/utils/opencodeSessionAffinity';
 import { inferAgentIdFromSessionMetadata, resolveVendorResumeIdFromSessionMetadata } from '@piggercode/agents';
 import { getAcpForkContinuationHandler } from '@/backends/catalog';
 import {
@@ -801,19 +796,13 @@ export function registerMachineRpcHandlers(params: Readonly<{
     const normalizedBackendTarget = (() => {
       const parsed = BackendTargetRefSchema.safeParse(backendTarget);
       if (!parsed.success) return undefined;
-      if (parsed.data.kind === 'builtInAgent') {
-        const agentId = parsed.data.agentId.trim();
-        if (!isKnownAgentId(agentId)) {
-          return null;
-        }
-        return {
-          kind: 'builtInAgent' as const,
-          agentId,
-        };
+      const agentId = parsed.data.agentId.trim();
+      if (!isKnownAgentId(agentId)) {
+        return null;
       }
       return {
-        kind: 'configuredAcpBackend' as const,
-        backendId: parsed.data.backendId.trim(),
+        kind: 'builtInAgent' as const,
+        agentId,
       };
     })();
     if (normalizedBackendTarget === null) {
@@ -1565,10 +1554,6 @@ export function registerMachineRpcHandlers(params: Readonly<{
       };
     }
 
-    const openCodeParentAffinity =
-      agentRaw === 'opencode'
-        ? readOpenCodeSessionAffinityFromMetadata(parentMetadata)
-        : null;
     const inheritedForkOverrides = resolveForkInheritedOverridesFromMetadata(parentMetadata, agentRaw);
     const connectedServiceForkLaunchContext = createConnectedServiceForkLaunchContext({
       inherited: inheritedForkOverrides,
@@ -1588,7 +1573,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
 
     // Branch-and-edit semantics: when the fork target is a user message, the child session should
     // start from the state *before* that user message, while restoring the message as an editable draft.
-    // Providers with native fork support (e.g. OpenCode) still need the original user-message seq
+    // Providers with native fork support still need the original user-message seq
     // to resolve vendor message ids correctly.
     const cutoffSeqInclusive = forkPoint.type === 'seq'
       ? (() => {
@@ -1994,13 +1979,6 @@ export function registerMachineRpcHandlers(params: Readonly<{
         : {}),
       extraMetadata: {
         ...inheritedForkMetadataOverrides,
-        ...(agentRaw === 'opencode'
-          ? applyOpenCodeSessionAffinityMetadata({
-            backendMode: openCodeParentAffinity?.backendMode ?? 'server',
-            serverBaseUrl: openCodeParentAffinity?.serverBaseUrl ?? null,
-            serverBaseUrlExplicit: openCodeParentAffinity?.serverBaseUrlExplicit ?? false,
-          })
-          : {}),
       },
     });
     throwIfTrackedActionAborted(signal);
@@ -2044,15 +2022,6 @@ export function registerMachineRpcHandlers(params: Readonly<{
             approvedNewDirectoryCreation: true,
             spawnNonce: `${baseSpawnNonce}:replay`,
             existingSessionId: request.existingSessionId,
-            ...(agentRaw === 'opencode'
-              ? {
-                environmentVariables: buildOpenCodeSessionEnvironmentVariables({
-                  backendMode: openCodeParentAffinity?.backendMode ?? 'server',
-                  serverBaseUrl: openCodeParentAffinity?.serverBaseUrl ?? null,
-                  serverBaseUrlExplicit: openCodeParentAffinity?.serverBaseUrlExplicit ?? false,
-                }),
-              }
-              : {}),
             ...inheritedForkSpawnOverrides,
           } satisfies SpawnSessionOptions),
         },
@@ -2231,7 +2200,6 @@ export function registerMachineRpcHandlers(params: Readonly<{
     );
   };
   rpcHandlerManager.registerHandler(RPC_METHODS.SESSION_CONTINUATION_INSPECT_BATCH, inspectContinuationBatch);
-  rpcHandlerManager.registerHandler(RPC_METHODS.SESSION_CONTINUATION_INSPECT_BACKEND_TARGETS, inspectContinuationBatch);
 
   rpcHandlerManager.registerHandler(
     RPC_METHODS.SESSION_AGENT_TRANSITION_BRIEF_PREVIEW,

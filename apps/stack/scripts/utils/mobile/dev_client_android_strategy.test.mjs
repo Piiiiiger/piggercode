@@ -27,26 +27,7 @@ test('resolveAndroidDevClientInstallStrategy prefers expo run:android when Andro
   }
 });
 
-test('resolveAndroidDevClientInstallStrategy falls back to EAS local (Dagger) when SDK is missing but dagger+docker exist', async () => {
-  const tmp = await mkdtemp(join(tmpdir(), 'hstack-android-strategy-'));
-  try {
-    const binDir = join(tmp, 'bin');
-    await mkdir(binDir, { recursive: true });
-    writeFakeBin({ root: tmp, name: 'dagger', content: '#!/bin/bash\nexit 0\n' });
-    writeFakeBin({ root: tmp, name: 'docker', content: '#!/bin/bash\nexit 0\n' });
-
-    const env = {
-      PATH: `${binDir}:/usr/bin:/bin`,
-    };
-
-    const res = await resolveAndroidDevClientInstallStrategy({ env });
-    assert.equal(res.kind, 'eas_local_dagger');
-  } finally {
-    await rm(tmp, { recursive: true, force: true });
-  }
-});
-
-test('resolveAndroidDevClientInstallStrategy returns missing prereqs when neither SDK nor pipeline fallback is available', async () => {
+test('resolveAndroidDevClientInstallStrategy returns missing prereqs when the Android SDK is not configured', async () => {
   const env = {
     PATH: `/usr/bin:/bin`,
   };

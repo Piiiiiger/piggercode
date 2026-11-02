@@ -50,7 +50,7 @@ function parseGrepLine(line: string): { filePath: string; line?: number; excerpt
     };
 }
 
-function parseOpenCodeSearch(text: string): { matches: Array<{ filePath: string; line?: number; excerpt?: string }> } | null {
+function parseGroupedSearchMatches(text: string): { matches: Array<{ filePath: string; line?: number; excerpt?: string }> } | null {
     if (!text.includes('matches')) return null;
     const lines = text.replace(/\r\n/g, '\n').split('\n');
     const matches: Array<{ filePath: string; line?: number; excerpt?: string }> = [];
@@ -191,7 +191,7 @@ export function normalizeCodeSearchInput(rawInput: unknown): UnknownRecord {
 
 export function normalizeCodeSearchResult(rawOutput: unknown): UnknownRecord {
     if (typeof rawOutput === 'string') {
-        const parsed = parseOpenCodeSearch(rawOutput);
+        const parsed = parseGroupedSearchMatches(rawOutput);
         if (parsed) return parsed;
 
         const lines = rawOutput
@@ -243,7 +243,7 @@ export function normalizeCodeSearchResult(rawOutput: unknown): UnknownRecord {
                                     : null;
 
     if (typeof textCandidate === 'string' && textCandidate.trim().length > 0) {
-        const parsed = parseOpenCodeSearch(textCandidate);
+        const parsed = parseGroupedSearchMatches(textCandidate);
         if (parsed) return parsed;
         const lines = textCandidate
             .replace(/\r\n/g, '\n')

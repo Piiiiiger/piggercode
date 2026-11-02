@@ -9,9 +9,9 @@ import { installPermissionShellCommonModuleMocks } from './permissionShellTestHe
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 const runtime = vi.hoisted(() => ({
-    flavor: 'opencode' as 'claude' | 'codex' | 'opencode' | 'gemini',
+    flavor: 'codex' as 'claude' | 'codex',
     protocol: 'claude' as 'codexDecision' | 'claude',
-    setProtocol(protocol: 'codexDecision' | 'claude', flavor: 'claude' | 'codex' | 'opencode' | 'gemini') {
+    setProtocol(protocol: 'codexDecision' | 'claude', flavor: 'claude' | 'codex') {
         this.protocol = protocol;
         this.flavor = flavor;
     },
@@ -90,9 +90,9 @@ describe('PermissionFooter deny action', () => {
             toolInput: { filepath: '/etc/hosts' },
         },
         {
-            name: 'codex decision protocol (non-codex agent)',
+            name: 'codex decision protocol',
             protocol: 'codexDecision' as const,
-            flavor: 'opencode' as const,
+            flavor: 'codex' as const,
             toolName: 'execute',
             toolInput: { command: 'pwd' },
         },
@@ -133,7 +133,7 @@ describe('PermissionFooter deny action', () => {
     });
 
     it('dispatches one denial when the same control is activated twice before React commits', async () => {
-        runtime.setProtocol('codexDecision', 'opencode');
+        runtime.setProtocol('codexDecision', 'codex');
         ops.sessionDeny.mockClear();
         ops.sessionAbort.mockClear();
 
@@ -143,7 +143,7 @@ describe('PermissionFooter deny action', () => {
             sessionId: 's1',
             toolName: 'execute',
             toolInput: { command: 'touch /tmp/permission-deny-test' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         const deny = screen.findByProps({ testID: 'permission-footer.deny' });
 

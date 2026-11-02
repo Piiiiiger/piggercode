@@ -4,7 +4,6 @@ export {
   BackendTargetRefSchema,
   buildBackendTargetKey,
   isBuiltInAgentTarget,
-  isConfiguredAcpBackendTarget,
   type BackendTargetKey,
   type BackendTargetKind,
   type BackendTargetRefV1,

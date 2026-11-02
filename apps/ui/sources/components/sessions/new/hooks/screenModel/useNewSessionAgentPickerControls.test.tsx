@@ -899,20 +899,20 @@ describe('useNewSessionAgentPickerControls', () => {
         const setModelMode = vi.fn();
         const setAcpSessionModeId = vi.fn();
         const onRememberEngineSelection = vi.fn();
-        const kimiEntry = {
-            target: { kind: 'builtInAgent', agentId: 'kimi' },
-            targetKey: 'agent:kimi',
-            title: 'Kimi',
+        const noSessionModesEntry = {
+            target: { kind: 'builtInAgent', agentId: 'codex' },
+            targetKey: 'agent:no-session-modes',
+            title: 'No session modes',
             subtitle: null,
-            providerAgentId: 'kimi',
-            builtInAgentId: 'kimi',
-            iconAgentId: 'kimi',
+            providerAgentId: 'codex',
+            builtInAgentId: 'codex',
+            iconAgentId: 'codex',
         } as const;
 
         const hook = await renderHook(() => useNewSessionAgentPickerControls(buildAgentPickerHookParams({
             resolvedBackendEntries: [
                 ...buildAgentPickerHookParams().resolvedBackendEntries,
-                kimiEntry as any,
+                noSessionModesEntry as any,
             ],
             setBackendTarget,
             setModelMode: setModelMode as any,
@@ -921,13 +921,13 @@ describe('useNewSessionAgentPickerControls', () => {
             onRememberEngineSelection,
         })));
 
-        hook.getCurrent().handleAgentPickerSelect('agent:kimi');
+        hook.getCurrent().handleAgentPickerSelect('agent:no-session-modes');
 
-        expect(setBackendTarget).toHaveBeenCalledWith({ kind: 'builtInAgent', agentId: 'kimi' });
+        expect(setBackendTarget).toHaveBeenCalledWith({ kind: 'builtInAgent', agentId: 'codex' });
         expect(setModelMode).toHaveBeenCalledWith('default');
         expect(setAcpSessionModeId).toHaveBeenCalledWith(null);
         expect(onRememberEngineSelection).toHaveBeenCalledWith(
-            { kind: 'builtInAgent', agentId: 'kimi' },
+            { kind: 'builtInAgent', agentId: 'codex' },
             {
                 modelId: 'default',
                 acpSessionModeId: null,

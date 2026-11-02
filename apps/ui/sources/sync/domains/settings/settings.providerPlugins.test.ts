@@ -78,14 +78,14 @@ describe('settingsParse provider plugin defaults', () => {
         const settings = settingsParse({
             backendCliSourcePreferenceById: {
                 codex: 'managed-first',
-                gemini: 'system-first',
+                claude: 'system-first',
                 invalid: 'nope',
             },
         } as any);
 
         expect((settings as any).backendCliSourcePreferenceById).toEqual({
             codex: 'managed-first',
-            gemini: 'system-first',
+            claude: 'system-first',
         });
     });
 });

@@ -54,28 +54,8 @@ const hydrateReadyState = vi.hoisted(() => ({
     ready: true,
 }));
 const stackOptionsCapture = createStackOptionsCapture();
-const configuredAcpAccountSettings = {
-    acpCatalogSettingsV1: {
-        v: 2 as const,
-        backends: [{
-            id: 'review-bot',
-            name: 'review-bot',
-            title: 'Review Bot',
-            command: 'review-bot',
-            args: [],
-            env: {},
-            transportProfile: 'generic' as const,
-            capabilities: {
-                supportsLoadSession: true,
-                supportsModes: 'unknown' as const,
-                supportsModels: 'unknown' as const,
-                supportsConfigOptions: 'unknown' as const,
-                promptImageSupport: 'unknown' as const,
-            },
-            createdAt: 1,
-            updatedAt: 1,
-        }],
-    },
+const resumableCodexAccountSettings = {
+    codexBackendMode: 'appServer' as const,
 };
 
 vi.mock('@expo/vector-icons', () => ({
@@ -186,7 +166,7 @@ installAutomationAppRouteCommonModuleMocks({
         return createStorageModuleStub({
             useAutomation: () => automationState.value,
             useSession: () => sessionState.value,
-            useSettings: () => configuredAcpAccountSettings,
+            useSettings: () => resumableCodexAccountSettings,
             storage: Object.assign(
                 ((selector?: (value: ReturnType<typeof readSnapshot>) => unknown) => {
                     const snapshot = readSnapshot();
@@ -418,14 +398,8 @@ describe('AutomationEditScreen route', () => {
                 machineId: 'm-target',
                 path: '/repo/project',
                 homeDir: '/repo',
-                flavor: 'acp:review-bot',
-                customAcpSessionId: 'review-bot-session-1',
-                acpConfiguredBackendV1: {
-                    v: 1,
-                    updatedAt: 20,
-                    backendId: 'review-bot',
-                    title: 'Review Bot',
-                },
+                flavor: 'codex',
+                codexSessionId: 'codex-session-1',
             },
         };
         getStateSpy.mockImplementation(() => ({
@@ -489,33 +463,6 @@ describe('AutomationEditScreen route', () => {
         expect(latestAgentInputProps.value).toEqual(expect.objectContaining({
             permissionMode: 'readOnly',
             modelMode: 'claude-sonnet-4-6',
-        }));
-    });
-
-    it('preserves configured ACP backend targets when redirecting new-session automations into the shared composer', async () => {
-        const transport = await import('@/sync/domains/automations/automationTemplateTransport');
-        const codec = await import('@/sync/domains/automations/automationTemplateCodec');
-        vi.mocked(transport.tryDecodeAutomationTemplateEnvelope).mockReturnValue({
-            kind: 'happier_automation_template_plain_v1',
-            payload: { prompt: 'Run nightly checks' },
-        } as any);
-        vi.mocked(codec.decodeAutomationTemplate).mockReturnValue({
-            directory: '/repo/project',
-            prompt: 'Run nightly checks',
-            displayText: 'Run nightly checks',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-            transcriptStorage: 'direct',
-            permissionMode: 'acceptEdits',
-            modelId: 'gpt-5',
-        } as any);
-
-        const EditRoute = (await import('@/app/(app)/automations/edit')).default;
-
-        await renderScreen(React.createElement(EditRoute));
-        await settle();
-
-        expect(storeTempDataSpy).toHaveBeenCalledWith(expect.objectContaining({
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
         }));
     });
 
@@ -608,13 +555,6 @@ describe('AutomationEditScreen route', () => {
                 flavor: 'codex',
                 codexSessionId: 'codex-session-1',
                 codexBackendMode: 'acp',
-                acpConfiguredBackendV1: {
-                    v: 1,
-                    updatedAt: 20,
-                    backendId: 'review-bot',
-                    title: 'Review Bot',
-                },
-                customAcpSessionId: 'review-bot-session-1',
             },
         } as any;
 
@@ -644,7 +584,7 @@ describe('AutomationEditScreen route', () => {
                 existingSessionId: 's1',
             }),
             fallbackDraft: expect.objectContaining({
-                backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+                backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
                 profileId: 'profile-1',
                 permissionMode: 'safe-yolo',
                 permissionModeUpdatedAt: 123,
@@ -705,13 +645,6 @@ describe('AutomationEditScreen route', () => {
                 flavor: 'codex',
                 codexSessionId: 'codex-session-1',
                 codexBackendMode: 'acp',
-                acpConfiguredBackendV1: {
-                    v: 1,
-                    updatedAt: 20,
-                    backendId: 'review-bot',
-                    title: 'Review Bot',
-                },
-                customAcpSessionId: 'review-bot-session-1',
             },
         } as any;
 
@@ -788,8 +721,8 @@ describe('AutomationEditScreen route', () => {
             active: true,
             metadata: {
                 machineId: 'm1',
-                flavor: 'pi',
-                piSessionId: 'pi-session-1',
+                flavor: 'codex',
+                codexSessionId: 'pi-session-1',
             },
         };
 

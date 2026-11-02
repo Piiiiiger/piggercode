@@ -162,7 +162,7 @@ export async function cmdSessionRunStart(
   const runPayload = result && typeof result === 'object' && result.ok === true ? result.data : null;
 
   if (json) {
-    const backendId = backendTarget.kind === 'builtInAgent' ? backendTarget.agentId : backendTarget.backendId;
+    const backendId = backendTarget.agentId;
     await printJsonEnvelope({ ok: true, kind: 'session_run_start', data: { sessionId, ...(runPayload as any), intent, backendId, backendTarget } });
     return;
   }

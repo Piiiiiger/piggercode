@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
 
 import { Item } from '@/components/ui/lists/Item';
@@ -769,10 +769,6 @@ export default React.memo(function ProviderSettingsScreen() {
     const params = useLocalSearchParams();
     const rawProviderId = params.providerId;
     const providerId = typeof rawProviderId === 'string' && isAgentId(rawProviderId) ? (rawProviderId as AgentId) : null;
-
-    if (providerId === 'customAcp') {
-        return <Redirect href={'/settings/providers' as any} />;
-    }
 
     const core = providerId ? getAgentCore(providerId) : null;
     const plugin = providerId ? getProviderSettingsPlugin(providerId) : null;

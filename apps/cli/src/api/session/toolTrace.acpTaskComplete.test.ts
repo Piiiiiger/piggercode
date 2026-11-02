@@ -9,7 +9,7 @@ describe('recordAcpToolTraceEventIfNeeded', () => {
     await withToolTraceFile('happy-acp-trace-', async (filePath) => {
       recordAcpToolTraceEventIfNeeded({
         sessionId: 'sess_123',
-        provider: 'opencode',
+        provider: 'codex',
         body: { type: 'task_complete', id: 'tc_1' },
       });
 
@@ -25,7 +25,7 @@ describe('recordAcpToolTraceEventIfNeeded', () => {
         direction: 'outbound',
         sessionId: 'sess_123',
         protocol: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         kind: 'task_complete',
         payload: { type: 'task_complete' },
       });

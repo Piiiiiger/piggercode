@@ -28,9 +28,7 @@ import { SessionUserMessageSendRequestSchema } from './sessionUserMessageRpc.js'
  * catalogs. Every field below is present with the same shape in BOTH catalogs
  * (`agentId`, `modelId`, `acpSessionModeId`, `sessionConfigOptionOverrides`).
  *
- * Built-in legacy requests continue to use the free catalog agent ID. Exact
- * configured 0.2 targets additionally use BackendTargetRef; its configured ID
- * must never be reduced to the generic customAcp transport placeholder.
+ * Built-in legacy requests continue to use the free catalog agent ID.
  * Deliberately NOT used here:
  * - `AgentExecutionTargetV1` / `SessionModelSelectionV1`. Both are dev-only
  *   (zero occurrences in the predecessor tree) and cannot be a shared shape.

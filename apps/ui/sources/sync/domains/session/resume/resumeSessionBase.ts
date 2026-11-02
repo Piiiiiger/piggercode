@@ -3,8 +3,8 @@ import type { ResumeSessionOptions } from '@/sync/ops';
 import type { ResumeCapabilityOptions } from '@/agents/runtime/resumeCapabilities';
 import { canContinueSessionWithFreshSpawn, canResumeSessionWithOptions, getAgentVendorResumeId } from '@/agents/runtime/resumeCapabilities';
 import { getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
-import { resolveAgentIdFromSessionMetadata, resolveConfiguredAcpSessionResume } from '@piggercode/agents';
-import { readAcpConfiguredBackendV1FromMetadata, SessionAuthoringValueV1Schema } from '@piggercode/protocol';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+import { SessionAuthoringValueV1Schema } from '@piggercode/protocol';
 import type { PermissionModeOverrideForSpawn } from '@/sync/domains/permissions/permissionModeOverride';
 import type { ModelOverrideForSpawn } from '@/sync/domains/models/modelOverride';
 import { readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
@@ -48,23 +48,6 @@ export function buildResumeSessionBaseOptionsFromSession(opts: {
         ?? normalizeNonEmptyString(reachableTarget?.basePath);
     const flavor = session.metadata?.flavor;
     if (!machineId || !directory) return null;
-
-    const configuredResume = resolveConfiguredAcpSessionResume({
-        metadata: session.metadata,
-        accountSettings: resumeCapabilityOptions.accountSettings ?? null,
-    });
-    if (configuredResume.eligible) {
-        return {
-            sessionId,
-            machineId,
-            directory,
-            backendTarget: configuredResume.backendTarget,
-            resume: configuredResume.vendorResumeId,
-            ...(permissionOverride ? permissionOverride : {}),
-            ...(modelOverride ? modelOverride : {}),
-        };
-    }
-    if (readAcpConfiguredBackendV1FromMetadata(session.metadata)) return null;
 
     // Note: vendor resume IDs can be missing even for otherwise-resumable sessions.
     // Wake/resume still needs to work (e.g. pending-queue wake) and should attach the vendor id only when present.

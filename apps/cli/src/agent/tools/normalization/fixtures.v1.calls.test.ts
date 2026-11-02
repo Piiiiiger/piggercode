@@ -88,24 +88,12 @@ describe('tool normalization fixtures (v1): tool calls + permissions', () => {
     }
 
     {
-      const norm = normalizeFirstCallEvent(sample('acp/gemini/tool-call/TodoWrite'));
-      expect(norm.canonicalToolName).toBe('TodoWrite');
-      expect(Array.isArray(asRecord(norm.input)?.todos)).toBe(true);
-    }
-
-    {
       const norm = normalizeFirstCallEvent(sample('claude/claude/tool-call/Edit'));
       expect(norm.canonicalToolName).toBe('Edit');
       const input = asRecord(norm.input);
       expect(typeof input?.file_path).toBe('string');
       expect(typeof input?.old_string).toBe('string');
       expect(typeof input?.new_string).toBe('string');
-    }
-
-    {
-      const norm = normalizeFirstCallEvent(sample('acp/opencode/tool-call/search'));
-      expect(norm.canonicalToolName).toBe('CodeSearch');
-      expect(typeof asRecord(norm.input)?.query).toBe('string');
     }
 
     {
@@ -146,31 +134,6 @@ describe('tool normalization fixtures (v1): tool calls + permissions', () => {
       expect(typeof input?.subject).toBe('string');
     }
 
-    {
-      const norm = normalizeFirstCallEvent(sample('acp/auggie/tool-call/search'));
-      expect(norm.canonicalToolName).toBe('CodeSearch');
-      expect(typeof asRecord(norm.input)?.query).toBe('string');
-    }
-
-    {
-      const norm = normalizeFirstCallEvent(sample('acp/auggie/tool-call/fetch'));
-      expect(norm.canonicalToolName).toBe('WebSearch');
-      expect(typeof asRecord(norm.input)?.query).toBe('string');
-    }
-
-    {
-      const norm = normalizeFirstCallEvent(sample('acp/auggie/tool-call/Edit'));
-      expect(norm.canonicalToolName).toBe('Write');
-      const input = asRecord(norm.input);
-      expect(typeof input?.file_path).toBe('string');
-      expect(typeof input?.content).toBe('string');
-    }
-
-    {
-      const norm = normalizeFirstCallEvent(sample('acp/auggie/tool-call/delete'));
-      expect(norm.canonicalToolName).toBe('Delete');
-      expect(asRecord(norm.input)).toMatchObject({ file_paths: ['tool_validation_results.md'] });
-    }
   });
 
   it('normalizes permission-request events without throwing (derives a canonical tool name)', () => {
@@ -200,23 +163,5 @@ describe('tool normalization fixtures (v1): tool calls + permissions', () => {
         expect(asRecord(normalized.input)?._raw).toBeDefined();
       }
     }
-  });
-
-  it('canonicalizes Auggie workspace indexing permission prompts for consistent rendering', () => {
-    const fixtures = loadFixtureV1();
-    const event = firstFixtureEvent(fixtures, 'acp/auggie/permission-request/Unknown tool');
-    expect(event).toBeTruthy();
-
-    const payload = asRecord(event?.payload) ?? {};
-    const rawInput = asRecord(payload.options)?.toolCall ?? asRecord(payload.options)?.input ?? payload.options ?? {};
-    const normalized = normalizeToolCallV2({
-      protocol: 'acp',
-      provider: String(event?.provider ?? 'unknown'),
-      toolName: String(payload.toolName ?? ''),
-      rawInput,
-      callId: typeof payload.permissionId === 'string' ? payload.permissionId : undefined,
-    });
-
-    expect(normalized.canonicalToolName).toBe('WorkspaceIndexingPermission');
   });
 });

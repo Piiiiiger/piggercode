@@ -112,20 +112,6 @@ describe('sessionHandoffCoordinator', () => {
     expect(calls).toEqual([]);
   });
 
-  it('applies actual catalog admission before source mutation for unsupported existing-state Agents', async () => {
-    const harness = createHarness({
-      probeSourceCapability: async () => ({ protocolVersion: 2, atomicTargetResume: true, targetCleanup: true, existingState: true }),
-      probeTargetCapability: async () => ({ protocolVersion: 2, atomicTargetResume: true, targetCleanup: true, existingState: true }),
-      assertExistingStateSupported: async () => {
-        const { resolveExistingSessionHandoffEligibilityThroughCatalog } = await import('@/backends/catalog');
-        const eligibility = resolveExistingSessionHandoffEligibilityThroughCatalog({ flavor: 'opencode', machineId: baseInput.sourceMachineId, opencodeSessionId: 'native-1' });
-        if (!eligibility.eligible) throw new Error(eligibility.reasonCode);
-      },
-    });
-    await expect(harness.coordinator.admit({ ...baseInput, stateTransfer: 'existing' })).rejects.toThrow('existing_state_unsupported');
-    expect(harness.calls).toEqual([]);
-  });
-
   it('refuses existing state before source mutation unless both peers advertise support', async () => {
     for (const [sourceSupports, targetSupports] of [[false, true], [true, false], [undefined, true]]) {
       const harness = createHarness({

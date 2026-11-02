@@ -68,7 +68,7 @@ describe('useNewSessionPreflightConfigOptionsState', () => {
         });
     });
 
-    it('probes config options for non-Codex providers (provider-agnostic)', async () => {
+    it('probes config options through the shared capability invoke', async () => {
         vi.resetModules();
 
         const machineCapabilitiesInvokeMock = vi.fn(async (_machineId: string, _request: unknown) => ({
@@ -83,7 +83,7 @@ describe('useNewSessionPreflightConfigOptionsState', () => {
 
         function Harness() {
             useNewSessionPreflightConfigOptionsState({
-                backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+                backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
                 selectedMachineId: 'machine-1',
                 capabilityServerId: 'server-1',
                 cwd: '/repo',
@@ -101,7 +101,7 @@ describe('useNewSessionPreflightConfigOptionsState', () => {
         expect(machineCapabilitiesInvokeMock).toHaveBeenCalledTimes(1);
         const firstCall = machineCapabilitiesInvokeMock.mock.calls[0] as unknown as [unknown, unknown] | undefined;
         expect(firstCall?.[1]).toMatchObject({
-            id: 'cli.opencode',
+            id: 'cli.codex',
             method: 'probeConfigOptions',
             params: expect.objectContaining({ timeoutMs: NEW_SESSION_CAPABILITY_PROBE_TIMEOUT_MS, cwd: '/repo' }),
         });

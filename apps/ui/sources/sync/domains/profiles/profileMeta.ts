@@ -13,10 +13,7 @@ export type BuiltInProfileId =
     | 'minimax-cn'
     | 'codex'
     | 'openai'
-    | 'azure-openai'
-    | 'gemini'
-    | 'gemini-api-key'
-    | 'gemini-vertex';
+    | 'azure-openai';
 
 export type BuiltInProfileNameKey =
     | 'profiles.builtInNames.anthropic'
@@ -26,10 +23,7 @@ export type BuiltInProfileNameKey =
     | 'profiles.builtInNames.minimaxCn'
     | 'profiles.builtInNames.codex'
     | 'profiles.builtInNames.openai'
-    | 'profiles.builtInNames.azureOpenai'
-    | 'profiles.builtInNames.gemini'
-    | 'profiles.builtInNames.geminiApiKey'
-    | 'profiles.builtInNames.geminiVertex';
+    | 'profiles.builtInNames.azureOpenai';
 
 const ALLOWED_PROFILE_CLIS = new Set<string>(AGENT_IDS as readonly string[]);
 
@@ -98,12 +92,6 @@ export function getBuiltInProfileNameKey(id: string): BuiltInProfileNameKey | nu
             return 'profiles.builtInNames.openai';
         case 'azure-openai':
             return 'profiles.builtInNames.azureOpenai';
-        case 'gemini':
-            return 'profiles.builtInNames.gemini';
-        case 'gemini-api-key':
-            return 'profiles.builtInNames.geminiApiKey';
-        case 'gemini-vertex':
-            return 'profiles.builtInNames.geminiVertex';
         default:
             return null;
     }

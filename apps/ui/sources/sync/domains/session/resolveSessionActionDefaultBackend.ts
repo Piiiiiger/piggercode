@@ -1,4 +1,4 @@
-import { readAcpConfiguredBackendV1FromMetadata, type BackendTargetRefV1 } from '@piggercode/protocol';
+import { type BackendTargetRefV1 } from '@piggercode/protocol';
 import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 import { DEFAULT_AGENT_ID, resolveAgentIdFromFlavor, type AgentId } from '@/agents/catalog/catalog';
@@ -65,7 +65,6 @@ export function resolveSessionActionDefaultBackend(params: Readonly<{
 }>): ResolvedSessionActionDefaultBackend | null {
   const metadata = params.session?.metadata ?? null;
   const enabledAgentIds = normalizeEnabledAgentIds(params.enabledAgentIds);
-  const configuredBackend = readAcpConfiguredBackendV1FromMetadata(metadata);
   const defaultBuiltInAgentId = resolveDefaultBuiltInAgentId({
     metadata,
     enabledAgentIds,
@@ -75,13 +74,6 @@ export function resolveSessionActionDefaultBackend(params: Readonly<{
     metadata,
     defaultBuiltInAgentId,
   });
-
-  if (configuredBackend?.backendId) {
-    return {
-      backendTarget: { kind: 'configuredAcpBackend', backendId: configuredBackend.backendId },
-      defaultBackendId,
-    };
-  }
 
   if (!defaultBuiltInAgentId) return null;
   return {

@@ -13,14 +13,6 @@ import { PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endp
 import { buildTrackedSpawnOptions, resolveDaemonTerminalPresentation, resolveDefaultDaemonTerminalPresentation } from './spawnHooks';
 
 describe('tracked spawn topology', () => {
-  it('recovers an accepted optional-client runtime remotely until an explicit attachment request', async () => {
-    const hooks = await requireCatalogEntry('codex').getDaemonSpawnHooks!();
-    const input = { hooks, host: 'herdr' as const, agentId: 'codex' as const, configuredAcpBackend: false,
-      accountSettings: null, runtimeSelection: { codexBackendMode: 'appServer' as const }, processEnv: {} };
-    expect(resolveDaemonTerminalPresentation(input)).toMatchObject({ kind: 'provider_attach', startingMode: 'local' });
-    const recovery = { existingSessionId: 'accepted-session' };
-    expect(resolveDaemonTerminalPresentation({ ...input, ...recovery })).toMatchObject({ kind: 'provider_attach', startingMode: 'remote' });
-  });
   it.skipIf(process.platform === 'win32')('stops a proven headless controller when its optional native presentation is absent', async () => {
     const hooks = await requireCatalogEntry('codex').getDaemonSpawnHooks!();
     const options: SpawnSessionOptions = { directory: process.cwd(), backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
@@ -131,31 +123,4 @@ describe('tracked spawn topology', () => {
 });
 
 describe('resolveDefaultDaemonTerminalPresentation', () => {
-  it('hosts terminal-capable runners in the selected host without inventing a TUI for ACP', () => {
-    expect(resolveDefaultDaemonTerminalPresentation({
-      host: 'herdr',
-      agentId: 'gemini',
-      configuredAcpBackend: false,
-    })).toEqual({ kind: 'runner', startingMode: 'local' });
-    expect(resolveDefaultDaemonTerminalPresentation({
-      host: 'zellij',
-      agentId: 'pi',
-      configuredAcpBackend: false,
-    })).toEqual({ kind: 'runner', startingMode: 'local' });
-    expect(resolveDefaultDaemonTerminalPresentation({
-      host: 'tmux',
-      agentId: 'gemini',
-      configuredAcpBackend: false,
-    })).toEqual({ kind: 'runner', startingMode: 'remote' });
-    expect(resolveDefaultDaemonTerminalPresentation({
-      host: 'herdr',
-      agentId: 'agy',
-      configuredAcpBackend: false,
-    })).toEqual({ kind: 'none' });
-    expect(resolveDefaultDaemonTerminalPresentation({
-      host: 'herdr',
-      agentId: 'customAcp',
-      configuredAcpBackend: true,
-    })).toEqual({ kind: 'none' });
-  });
 });

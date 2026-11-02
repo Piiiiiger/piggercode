@@ -9,7 +9,7 @@ function makeProfile(reqs: AIBackendProfile['envVarRequirements']): AIBackendPro
         name: 'Profile',
         isBuiltIn: false,
         environmentVariables: [],
-        compatibility: { claude: true, codex: true, gemini: true },
+        compatibility: { claude: true, codex: true },
         envVarRequirements: reqs ?? [],
         createdAt: 0,
         updatedAt: 0,

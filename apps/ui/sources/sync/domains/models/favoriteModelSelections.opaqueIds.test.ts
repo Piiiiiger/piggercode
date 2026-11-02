@@ -26,7 +26,7 @@ describe('favorite model opaque identifiers', () => {
     });
     expect([...availability.keys()]).toEqual(['model-a', ' model-a ']);
 
-    const backend = { backendTargetKey: 'agent:cursor', providerAgentId: 'cursor' };
+    const backend = { backendTargetKey: 'agent:codex', providerAgentId: 'codex' };
     const first = toggleFavoriteModelSelection({ favorites: [], backend, modelId: 'model-a' });
     const second = toggleFavoriteModelSelection({ favorites: first, backend, modelId: ' model-a ' });
     expect(second.map((entry) => entry.modelId)).toEqual(['model-a', ' model-a ']);

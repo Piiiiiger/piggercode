@@ -110,7 +110,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       },
     });
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -148,7 +148,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const backend = createFakeAcpRuntimeBackend({ sessionId: 'sess_main' });
     const tracker = createTurnAssistantPreviewTracker();
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClientWithOverrides(),
       messageBuffer: new MessageBuffer(),
@@ -182,7 +182,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const persisted = new Map<string, ACPMessageData>();
     const messageBuffer = new MessageBuffer();
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -232,7 +232,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -484,10 +484,10 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       name: 'image.png',
       path: '.happier/uploads/generated/image-1/media-image-1.png',
       sizeBytes: 67,
-      origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-1' },
+      origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
     } as const;
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides(),
       messageBuffer: new MessageBuffer(),
@@ -508,11 +508,11 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
 
     backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path,
-        origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-1' },
+        origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
       }],
     } satisfies AgentMessage);
     backend.emit({
@@ -544,10 +544,10 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       path: '.happier/uploads/generated/image-1/media-image-1.png',
       sizeBytes: 67,
       sha256: 'b'.repeat(64),
-      origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-1' },
+      origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
     } as const;
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -585,11 +585,11 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     backend.emit({ type: 'model-output', textDelta: 'Generated image.' } satisfies AgentMessage);
     backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path,
-        origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-1' },
+        origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
       }],
     } satisfies AgentMessage);
     await vi.waitFor(() => expect(persisted).toHaveLength(1));
@@ -621,7 +621,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const durableCalls: Array<{ body: ACPMessageData; meta?: Record<string, unknown> }> = [];
     const persistedSourceIds: string[] = [];
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -660,12 +660,12 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
 
     const emitMedia = (sourceId: string) => backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path: `/workspace/generated/${sourceId}.png`,
         origin: { source: 'provider-generated', providerEventId: sourceId },
-        dedupeKey: `cursor-generate-image:${sourceId}`,
+        dedupeKey: `codex-generate-image:${sourceId}`,
       }],
     } satisfies AgentMessage);
 
@@ -689,10 +689,10 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       .toEqual([expect.objectContaining({ id: 'media-second-turn' })]);
     expect(persistedSourceIds).toHaveLength(257);
     const overflowLogs = logSpy.mock.calls.filter(
-      ([message]) => message === '[cursor] Bounded excess session media sources for the turn',
+      ([message]) => message === '[codex] Bounded excess session media sources for the turn',
     );
     expect(overflowLogs).toEqual([[
-      '[cursor] Bounded excess session media sources for the turn',
+      '[codex] Bounded excess session media sources for the turn',
       { droppedCount: 1, maxEntries: 256 },
     ]]);
   });
@@ -702,7 +702,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const durableCalls: Array<{ body: ACPMessageData; meta?: Record<string, unknown> }> = [];
     const attemptsBySourceId = new Map<string, number>();
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -756,12 +756,12 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
 
     const emitMedia = (sourceId: string) => backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path: `/workspace/generated/${sourceId}.png`,
         origin: { source: 'provider-generated', providerEventId: sourceId },
-        dedupeKey: `cursor-generate-image:${sourceId}`,
+        dedupeKey: `codex-generate-image:${sourceId}`,
       }],
     } satisfies AgentMessage);
 
@@ -793,7 +793,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const durableCalls: Array<{ body: ACPMessageData; meta?: Record<string, unknown> }> = [];
     const attemptsBySourceId = new Map<string, number>();
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -852,12 +852,12 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
 
     const emitMedia = (sourceId: string) => backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path: `/workspace/generated/${sourceId}.png`,
         origin: { source: 'provider-generated', providerEventId: sourceId },
-        dedupeKey: `cursor-generate-image:${sourceId}`,
+        dedupeKey: `codex-generate-image:${sourceId}`,
       }],
     } satisfies AgentMessage);
 
@@ -881,9 +881,9 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     expect(envelope.payload.unavailable).not.toContainEqual(expect.objectContaining({ id: 'unavailable-retry' }));
     expect(attemptsBySourceId.get('retry')).toBe(2);
     expect(logSpy.mock.calls.filter(
-      ([message]) => message === '[cursor] Bounded excess session media sources for the turn',
+      ([message]) => message === '[codex] Bounded excess session media sources for the turn',
     )).toEqual([[
-      '[cursor] Bounded excess session media sources for the turn',
+      '[codex] Bounded excess session media sources for the turn',
       { droppedCount: 13, maxEntries: 256 },
     ]]);
     logSpy.mockRestore();
@@ -900,12 +900,12 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       code: 'provider_file_unavailable',
       origin: {
         source: 'provider-generated',
-        agentId: 'cursor',
+        agentId: 'codex',
         toolCallIdHash: 'e'.repeat(64),
       },
     } as const;
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/workspace',
       session: createBasicSessionClientWithOverrides({
         sendAgentMessageCommitted: async (_provider, body, opts) => {
@@ -926,11 +926,11 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
 
     backend.emit({
       type: 'session-media',
-      source: 'cursor-generate-image',
+      source: 'codex-generate-image',
       media: [{
         kind: 'local-file',
         path: '/workspace/generated/missing-secret-name.png',
-        origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'secret-call-id' },
+        origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'secret-call-id' },
       }],
     } satisfies AgentMessage);
     await runtime.flushTurn();

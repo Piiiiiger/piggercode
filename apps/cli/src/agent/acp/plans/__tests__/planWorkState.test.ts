@@ -7,7 +7,7 @@ import { normalizeAcpPlan } from '../normalizeAcpPlan';
 describe('ACP plan work-state projection', () => {
   it('maps statuses and stable vendor ids into generic todo work state', () => {
     const snapshot = normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'proprietary',
       merge: false,
@@ -19,10 +19,10 @@ describe('ACP plan work-state projection', () => {
       ],
     })!;
     const workState = buildAcpPlanWorkState({ snapshot, updatedAt: 10 });
-    const cursorPrefix = resolveAcpPlanWorkStateItemPrefix('cursor');
+    const codexPrefix = resolveAcpPlanWorkStateItemPrefix('codex');
 
     expect(workState.items.map(({ id, status, vendorRef, order }) => ({
-      hasOwnedPrefix: id.startsWith(cursorPrefix), status, vendorRef, order,
+      hasOwnedPrefix: id.startsWith(codexPrefix), status, vendorRef, order,
     }))).toEqual([
       { hasOwnedPrefix: true, status: 'pending', vendorRef: 'one', order: 0 },
       { hasOwnedPrefix: true, status: 'active', vendorRef: 'two', order: 1 },
@@ -32,7 +32,7 @@ describe('ACP plan work-state projection', () => {
   });
 
   it('clears only ACP-plan-owned items on empty replacement', () => {
-    const cursorPrefix = resolveAcpPlanWorkStateItemPrefix('cursor');
+    const codexPrefix = resolveAcpPlanWorkStateItemPrefix('codex');
     const otherAcpPrefix = resolveAcpPlanWorkStateItemPrefix('other-acp');
     const previous = {
       sessionWorkStateV1: {
@@ -42,14 +42,14 @@ describe('ACP plan work-state projection', () => {
         primaryItemId: 'goal:other',
         items: [
           { id: 'goal:other', kind: 'goal', origin: 'happier', status: 'active', title: 'Keep', updatedAt: 1 },
-          { id: `${cursorPrefix}old`, kind: 'todo', origin: 'vendor', status: 'pending', title: 'Old', updatedAt: 1 },
+          { id: `${codexPrefix}old`, kind: 'todo', origin: 'vendor', status: 'pending', title: 'Old', updatedAt: 1 },
           { id: `${otherAcpPrefix}keep`, kind: 'todo', origin: 'vendor', status: 'pending', title: 'Other ACP', updatedAt: 1 },
         ],
       },
     };
     const empty = buildAcpPlanWorkState({
       snapshot: normalizeAcpPlan({
-        providerId: 'cursor', turnId: 'turn-1', source: 'proprietary', merge: false, items: [],
+        providerId: 'codex', turnId: 'turn-1', source: 'proprietary', merge: false, items: [],
       })!,
       updatedAt: 2,
     });
@@ -57,7 +57,7 @@ describe('ACP plan work-state projection', () => {
     const next = mergeSessionWorkStateMetadataV1({
       metadata: previous,
       nextOwned: empty,
-      ownedItemIdPrefixes: [cursorPrefix],
+      ownedItemIdPrefixes: [codexPrefix],
     });
     expect(next.sessionWorkStateV1.items.map((item) => (item as { id: string }).id)).toEqual([
       'goal:other',
@@ -67,7 +67,7 @@ describe('ACP plan work-state projection', () => {
 
   it('does not collapse distinct exact opaque vendor ids into one work-state identity', () => {
     const snapshot = normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-exact-ids',
       source: 'proprietary',
       merge: false,

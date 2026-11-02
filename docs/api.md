@@ -109,7 +109,7 @@ and [encryption](encryption.md) for the owning wire and privacy boundaries.
 - `DELETE /v1/connect/external/:provider/pending/:pending`
 - `DELETE /v1/connect/external/:provider`
 - `GET /v1/oauth/:provider/callback`
-- `POST /v1/connect/:vendor/register` (`vendor` in `openai | anthropic | gemini`)
+- `POST /v1/connect/:vendor/register` (`vendor` in `openai | anthropic`)
 - `GET /v1/connect/:vendor/token`
 - `DELETE /v1/connect/:vendor`
 - `GET /v1/connect/tokens`

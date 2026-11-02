@@ -253,14 +253,3 @@ export async function refreshClaudeSubscriptionOauthTokens(params: Readonly<{
     now: params.now,
   });
 }
-
-export async function refreshGeminiOauthTokens(params: Readonly<{
-  refreshToken: string;
-  now: number;
-}>): Promise<ConnectedAccountOauthRefreshResult> {
-  return refreshConnectedAccountOauthTokens({
-    serviceId: 'gemini',
-    refreshToken: params.refreshToken,
-    now: params.now,
-  });
-}

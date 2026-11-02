@@ -262,7 +262,7 @@ interface AgentInputProps {
     onPermissionClick?: () => void;
     onAcpSessionModeChange?: (modeId: string) => void;
     /**
-     * Optional override for ACP "session mode" picker options (e.g. OpenCode plan/build).
+     * Optional override for ACP "session mode" picker options (e.g. plan/build).
      *
      * Used by new-session flows to surface ACP modes before a session exists.
      */

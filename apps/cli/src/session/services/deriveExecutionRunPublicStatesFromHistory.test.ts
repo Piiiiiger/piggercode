@@ -143,61 +143,6 @@ describe('listExecutionRunPublicStatesFromHistoryRows', () => {
         ]);
     });
 
-    it('reconstructs backendTarget from a legacy configured ACP backendId when only a tool-result row is available', () => {
-        const runs = listExecutionRunPublicStatesFromHistoryRows([
-            {
-                id: 'result-row',
-                createdAt: 20,
-                role: 'agent',
-                raw: {
-                    role: 'agent',
-                    content: {
-                        type: 'acp',
-                        provider: 'claude',
-                        data: {
-                            type: 'tool-result',
-                            callId: 'call_hist_legacy_acp',
-                            output: {
-                                _happier: {
-                                    canonicalToolName: 'SubAgentRun',
-                                },
-                                runId: 'run_hist_legacy_acp',
-                                callId: 'call_hist_legacy_acp',
-                                sidechainId: 'call_hist_legacy_acp',
-                                intent: 'review',
-                                backendId: 'review-bot',
-                                permissionMode: 'workspace_write',
-                                retentionPolicy: 'ephemeral',
-                                runClass: 'bounded',
-                                ioMode: 'request_response',
-                                status: 'succeeded',
-                                startedAtMs: 10,
-                                finishedAtMs: 20,
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-
-        expect(runs).toEqual([
-            {
-                runId: 'run_hist_legacy_acp',
-                callId: 'call_hist_legacy_acp',
-                sidechainId: 'call_hist_legacy_acp',
-                intent: 'review',
-                backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-                permissionMode: 'workspace_write',
-                retentionPolicy: 'ephemeral',
-                runClass: 'bounded',
-                ioMode: 'request_response',
-                status: 'succeeded',
-                startedAtMs: 10,
-                finishedAtMs: 20,
-            },
-        ]);
-    });
-
     it('never borrows the finish instant for a run whose start was never recorded (D-8)', () => {
         const runs = listExecutionRunPublicStatesFromHistoryRows([
             {

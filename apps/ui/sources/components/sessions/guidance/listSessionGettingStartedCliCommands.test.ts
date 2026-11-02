@@ -9,12 +9,12 @@ describe('listSessionGettingStartedCliCommands', () => {
     });
 
     it('names a command per example agent', () => {
-        expect(listSessionGettingStartedCliCommands('piggercode')).toEqual(['piggercode', 'piggercode codex', 'piggercode opencode']);
+        expect(listSessionGettingStartedCliCommands('piggercode')).toEqual(['piggercode', 'piggercode codex']);
     });
 
     it('leaves out the agents the build does not offer', () => {
-        (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds: ['claude', 'codex'] };
+        (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds: ['claude'] };
 
-        expect(listSessionGettingStartedCliCommands('piggercode')).toEqual(['piggercode', 'piggercode codex']);
+        expect(listSessionGettingStartedCliCommands('piggercode')).toEqual(['piggercode']);
     });
 });

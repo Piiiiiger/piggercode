@@ -82,7 +82,7 @@ describe.skipIf(process.platform === 'win32')('withProviderCliUpdates with the r
   });
 
   it('verifies an update whose new executable needs over a second to print its version', async () => {
-    // Observed: the managed Copilot launcher (node) takes 0.8–1.2 s for `--version` on a warm,
+    // Observed: the managed provider launcher (node) takes 0.8–1.2 s for `--version` on a warm,
     // loaded host; right after an install it is slower still.
     const runCommand: typeof runCommandCapture = async () => {
       const next = writeClaudeVersion(versionsDir, '2.1.283', { startupSeconds: 1.6 });

@@ -11,16 +11,8 @@ describe('providers harness: in-flight steer (codex ACP)', () => {
     async () => {
       const envVars = [
         'PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB',
-        'PIGGERCODE_E2E_PROVIDER_OPENCODE',
-        'PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER',
         'PIGGERCODE_E2E_PROVIDER_CLAUDE',
         'PIGGERCODE_E2E_PROVIDER_CODEX',
-        'PIGGERCODE_E2E_PROVIDER_KILO',
-        'PIGGERCODE_E2E_PROVIDER_GEMINI',
-        'PIGGERCODE_E2E_PROVIDER_QWEN',
-        'PIGGERCODE_E2E_PROVIDER_KIMI',
-        'PIGGERCODE_E2E_PROVIDER_AUGGIE',
-        'PIGGERCODE_E2E_PROVIDER_PI',
         'PIGGERCODE_E2E_PROVIDER_SCENARIOS',
       ] as const;
 
@@ -29,16 +21,8 @@ describe('providers harness: in-flight steer (codex ACP)', () => {
 
       try {
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE_SERVER = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CLAUDE = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX = '1';
-        process.env.PIGGERCODE_E2E_PROVIDER_KILO = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_GEMINI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_QWEN = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_KIMI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_AUGGIE = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_PI = '0';
 
         process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS = 'acp_in_flight_steer';
 

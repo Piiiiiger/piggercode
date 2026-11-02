@@ -3,25 +3,11 @@ import { describe, expect, it } from 'vitest';
 import {
   AgentRuntimeDescriptorV1Schema,
   buildCodexAgentRuntimeDescriptorV1,
-  buildOpenCodeAgentRuntimeDescriptorV1,
-  buildPiAgentRuntimeDescriptorV1,
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
   readAgentRuntimeDescriptorV1ForProvider,
 } from './agentRuntimeDescriptorV1';
 
 describe('agentRuntimeDescriptorV1', () => {
-  it('retains recognized managed affinity and clears it for explicit server and ACP descriptors', () => {
-    const fingerprint = 'a'.repeat(64);
-    const read = (backendMode: 'server' | 'acp', serverBaseUrlExplicit = false) => readCanonicalAgentRuntimeDescriptorV1ForProvider(
-      AgentRuntimeDescriptorV1Schema.parse(buildOpenCodeAgentRuntimeDescriptorV1({
-        backendMode, vendorSessionId: 'native-target', managedServerLaunchFingerprint: fingerprint,
-        ...(serverBaseUrlExplicit ? { serverBaseUrl: 'https://remote.example.test', serverBaseUrlExplicit: true } : {}),
-      })), 'opencode',
-    );
-    expect(read('server')?.managedServerLaunchFingerprint).toBe(fingerprint);
-    expect(read('server', true)?.managedServerLaunchFingerprint).toBeNull();
-    expect(read('acp')?.managedServerLaunchFingerprint).toBeNull();
-  });
   it('parses generic provider envelopes with provider-owned extras', () => {
     expect(AgentRuntimeDescriptorV1Schema.parse({
       v: 1,
@@ -142,119 +128,6 @@ describe('agentRuntimeDescriptorV1', () => {
       provider: { backendMode: 'appServer' },
     }, 'codex')).toMatchObject({
       sqliteHomePath: null,
-    });
-  });
-
-  it('reads provider-specific descriptors safely', () => {
-    const built = buildOpenCodeAgentRuntimeDescriptorV1({
-      backendMode: 'server',
-      vendorSessionId: 'op_sess_1',
-      serverBaseUrl: 'http://127.0.0.1:4096/',
-      serverBaseUrlExplicit: true,
-    });
-    expect(readAgentRuntimeDescriptorV1ForProvider(built, 'opencode')).toMatchObject({
-      provider: {
-        backendMode: 'server',
-        vendorSessionId: 'op_sess_1',
-        serverBaseUrl: 'http://127.0.0.1:4096/',
-        serverBaseUrlExplicit: true,
-        providerExtra: {
-          owner: 'opencode',
-          schemaId: 'opencode.agentRuntimeDescriptorExtra',
-          v: 1,
-          runtimeHandle: {
-            backendMode: 'server',
-            vendorSessionId: 'op_sess_1',
-            serverBaseUrl: 'http://127.0.0.1:4096/',
-            serverBaseUrlExplicit: true,
-          },
-        },
-      },
-    });
-    expect(readAgentRuntimeDescriptorV1ForProvider(built, 'codex')).toBeNull();
-  });
-
-  it('builds and parses a pi descriptor that includes persisted session file metadata', () => {
-    const built = buildPiAgentRuntimeDescriptorV1({
-      resumeStrategy: 'sessionFileAbsolutePreferred',
-      vendorSessionId: 'pi-session-1',
-      sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_pi-session-1.jsonl',
-    });
-
-    expect(AgentRuntimeDescriptorV1Schema.parse(built)).toMatchObject({
-      providerId: 'pi',
-      provider: {
-        resumeStrategy: 'sessionFileAbsolutePreferred',
-        vendorSessionId: 'pi-session-1',
-        sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_pi-session-1.jsonl',
-      },
-    });
-    expect(readCanonicalAgentRuntimeDescriptorV1ForProvider(built, 'pi')).toEqual({
-      providerId: 'pi',
-      resumeStrategy: 'sessionFileAbsolutePreferred',
-      vendorSessionId: 'pi-session-1',
-      sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_pi-session-1.jsonl',
-    });
-  });
-
-  it('prefers providerExtra runtime affinity over stale provider fields', () => {
-    expect(readCanonicalAgentRuntimeDescriptorV1ForProvider({
-      v: 1,
-      providerId: 'codex',
-      provider: {
-        backendMode: 'mcp',
-        vendorSessionId: 'thread_legacy',
-        home: 'user',
-        providerExtra: {
-          owner: 'codex',
-          schemaId: 'codex.agentRuntimeDescriptorExtra',
-          v: 1,
-          runtimeAffinity: {
-            backendMode: 'appServer',
-            vendorSessionId: 'thread_runtime',
-            home: 'connectedService',
-            connectedServiceId: 'openai-codex',
-          },
-        },
-      },
-    }, 'codex')).toEqual({
-      providerId: 'codex',
-      backendMode: 'appServer',
-      vendorSessionId: 'thread_runtime',
-      home: 'connectedService',
-      connectedServiceId: 'openai-codex',
-      connectedServiceProfileId: null,
-      connectedServiceGroupId: null,
-      homePath: null,
-      sqliteHomePath: null,
-    });
-
-    expect(readCanonicalAgentRuntimeDescriptorV1ForProvider({
-      v: 1,
-      providerId: 'opencode',
-      provider: {
-        backendMode: 'acp',
-        vendorSessionId: 'sess_legacy',
-        serverBaseUrl: 'http://legacy.example',
-        providerExtra: {
-          owner: 'opencode',
-          schemaId: 'opencode.agentRuntimeDescriptorExtra',
-          v: 1,
-          runtimeHandle: {
-            backendMode: 'server',
-            vendorSessionId: 'sess_runtime',
-            serverBaseUrl: 'http://canonical.example',
-            serverBaseUrlExplicit: true,
-          },
-        },
-      },
-    }, 'opencode')).toEqual({
-      providerId: 'opencode',
-      backendMode: 'server',
-      vendorSessionId: 'sess_runtime',
-      serverBaseUrl: 'http://canonical.example',
-      serverBaseUrlExplicit: true,
-      managedServerLaunchFingerprint: null,
     });
   });
 

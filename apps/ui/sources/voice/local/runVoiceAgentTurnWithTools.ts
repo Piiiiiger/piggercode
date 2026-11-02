@@ -68,9 +68,7 @@ function compactToolResultsForFollowUp(toolResults: ReadonlyArray<LocalVoiceAgen
       const result = entry.result;
       const items = Array.isArray((result as { items?: unknown })?.items)
         ? ((result as { items: ReadonlyArray<Record<string, unknown>> }).items ?? []).slice(0, FOLLOW_UP_RESULT_MAX_ITEMS).map((item) => {
-            const targetKey = typeof item?.targetKey === 'string' ? item.targetKey : '';
             return {
-              ...(targetKey.startsWith('acpBackend:') ? { targetKey } : {}),
               agentId: typeof item?.agentId === 'string' ? item.agentId : '',
               label: typeof item?.label === 'string' ? item.label : '',
               enabled: item?.enabled !== false,

@@ -59,7 +59,7 @@ describe('createStreamedTranscriptWriter', () => {
   it('freezes producer-supplied causal provenance onto each durable segment', async () => {
     const enqueueAgentMessageCommitted = vi.fn(async () => ({ persisted: true as const, delivered: false }));
     const writer = createStreamedTranscriptWriter({
-      provider: 'gemini',
+      provider: 'codex',
       session: { enqueueAgentMessageCommitted },
       makeLocalId: () => 'assistant-segment-1',
     });
@@ -69,7 +69,7 @@ describe('createStreamedTranscriptWriter', () => {
     await writer.flushAll({ reason: 'turn-end' });
 
     expect(enqueueAgentMessageCommitted).toHaveBeenCalledWith(
-      'gemini',
+      'codex',
       expect.any(Object),
       expect.objectContaining({
         provenance: { kind: 'non_dependent', source: 'external' },
@@ -82,7 +82,7 @@ describe('createStreamedTranscriptWriter', () => {
     const sendAgentMessageCommitted = vi.fn(async () => undefined);
     const enqueueAgentMessageCommitted = vi.fn(async () => ({ persisted: true as const, delivered: false }));
     const writer = createStreamedTranscriptWriter({
-      provider: 'gemini',
+      provider: 'codex',
       session: { sendAgentMessageCommitted, enqueueAgentMessageCommitted },
       makeLocalId: () => `segment-${++localId}`,
       initialCheckpointDelayMs: 10_000,
@@ -98,13 +98,13 @@ describe('createStreamedTranscriptWriter', () => {
     const directCommitCount = sendAgentMessageCommitted.mock.calls.length;
 
     writer.setCommitProvenance({ kind: 'non_dependent', source: 'external' });
-    writer.appendAssistantDelta('causally classified Gemini output');
+    writer.appendAssistantDelta('causally classified Codex output');
     await writer.flushAll({ reason: 'turn-end' });
 
     expect(sendAgentMessageCommitted).toHaveBeenCalledTimes(directCommitCount);
     expect(enqueueAgentMessageCommitted.mock.calls.length).toBeGreaterThan(0);
     expect(enqueueAgentMessageCommitted).toHaveBeenCalledWith(
-      'gemini',
+      'codex',
       expect.any(Object),
       expect.objectContaining({
         provenance: { kind: 'non_dependent', source: 'external' },

@@ -275,52 +275,6 @@ const settingsAppearanceTranslationExtension = {
 } as const;
 
 const jaAcpCatalogSettingsExtension = {
-    acpCatalog: 'ACP バックエンド',
-    acpCatalogSubtitle: '組み込みとカスタムの ACP バックエンドを管理',
-    acpCatalogBuiltIn: '組み込み ACP',
-    acpCatalogBuiltInFooter:
-        '組み込みの汎用 ACP エージェントは共有カタログで定義され、共有 ACP ランタイムで実行されます。',
-    acpCatalogBackends: 'カスタムバックエンド',
-    acpCatalogBackendsFooter:
-        '各カスタムバックエンドは、独自の起動方法・既定値・認証設定を持つ、選択可能な ACP 互換 CLI 定義です。',
-    acpCatalogBackendsEmptyTitle: 'カスタム ACP バックエンドはありません',
-    acpCatalogBackendsEmptySubtitle: 'バックエンドを追加して、選択可能なカスタム ACP バックエンドを作成します。',
-    acpCatalogAddBackend: 'ACP バックエンドを追加',
-    acpCatalogAddBackendSubtitle: 'カスタム ACP バックエンドを作成',
-    acpCatalogBackendEditorTitle: 'ACP バックエンド',
-    acpCatalogBasics: '基本',
-    acpCatalogLauncher: '起動方法',
-    acpCatalogEnv: '環境',
-    acpCatalogAddEnv: '環境変数を追加',
-    acpCatalogAddEnvSubtitle: 'リテラル値を保存するか、保存済みシークレットを紐付けます',
-    acpCatalogEnvEmptyTitle: '環境変数はありません',
-    acpCatalogEnvEmptySubtitle: 'このバックエンドの起動時変数を追加します。',
-    acpCatalogAuth: '認証',
-    acpCatalogAuthSupport: '認証サポート',
-    acpCatalogAuthParser: '状態パーサー',
-    acpCatalogCapabilities: '機能',
-    acpCatalogTransportProfile: '転送プロファイル',
-    acpCatalogSupportsLoadSession: 'セッションの再開をサポート',
-    acpCatalogSupportsModes: 'モードをサポート',
-    acpCatalogSupportsModels: 'モデルをサポート',
-    acpCatalogSupportsConfigOptions: '設定オプションをサポート',
-    acpCatalogPromptImageSupport: 'プロンプト画像サポート',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: '名前',
-    acpCatalogFieldTitle: 'タイトル',
-    acpCatalogFieldDescription: '説明',
-    acpCatalogFieldCommand: 'コマンド',
-    acpCatalogFieldArgs: '引数（1 行に 1 つ）',
-    acpCatalogMachineLoginKey: 'マシンのログインキー',
-    acpCatalogDocsUrl: 'ドキュメント URL',
-    acpCatalogLoginCommand: 'ログインコマンド',
-    acpCatalogLoginArgs: 'ログイン引数（1 行に 1 つ）',
-    acpCatalogStatusCommand: '状態コマンドのトークン（1 行に 1 つ）',
-    acpCatalogDefaultMode: '既定モード',
-    acpCatalogDefaultModel: '既定モデル',
-    acpCatalogDeleteBackendTitle: 'ACP バックエンドを削除しますか？',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `「${name}」を削除しますか？`,
-    acpCatalogValidationFailed: 'ACP カタログ設定が無効です。',
 } as const;
 
 const acpCatalogTranslationExtension = {
@@ -1328,9 +1282,6 @@ export const ja: TranslationStructure = {
       codex: "Codex (Default)",
       openai: "OpenAI (GPT-5)",
       azureOpenai: "Azure OpenAI",
-      gemini: "Gemini (Default)",
-      geminiApiKey: "Gemini (API key)",
-      geminiVertex: "Gemini (Vertex AI)",
     },
     groups: {
       favorites: "お気に入り",
@@ -1369,10 +1320,6 @@ export const ja: TranslationStructure = {
       codex: {
         title: "Codex",
         instructions: "`codex login` を実行してログインしてください。",
-      },
-      geminiCli: {
-        title: "Gemini CLI",
-        instructions: "`gemini auth` を実行してログインしてください。",
       },
     },
     requirements: {
@@ -1489,23 +1436,6 @@ export const ja: TranslationStructure = {
         "少なくとも1つのAIバックエンドを選択してください。",
       claudeSubtitle: "Claude コマンドライン",
       codexSubtitle: "Codex コマンドライン",
-      opencodeSubtitle: "OpenCode コマンドライン",
-      geminiSubtitleExperimental: "Gemini コマンドライン（実験）",
-      auggieSubtitle: "Auggie CLI",
-      qwenSubtitleExperimental: "Qwen Code CLI（実験）",
-      kimiSubtitleExperimental: "Kimi Code CLI（実験）",
-      kiloSubtitleExperimental: "Kilo CLI（実験）",
-      kiroSubtitleExperimental: "Kiro CLI（実験）",
-      devinSubtitleExperimental: "Devin CLI（実験）",
-      agySubtitleExperimental: "Antigravity CLI（実験）",
-      fxSubtitleExperimental: "FX CLI（実験）",
-      droidSubtitleExperimental: "Factory Droid CLI（実験）",
-      codebuddySubtitleExperimental: "CodeBuddy Code CLI（実験）",
-      customAcpSubtitleExperimental: "カスタム ACP CLI（実験）",
-      grokSubtitleExperimental: "Grok Build CLI（実験）",
-      piSubtitleExperimental: "Pi CLI（実験）",
-      copilotSubtitleExperimental: "GitHub Copilot CLI（実験的）",
-      cursorSubtitleExperimental: "Cursor Agent CLI（実験）",
     },
     tmux: {
       title: "Tmux",
@@ -2308,7 +2238,7 @@ localTailscale: {
 			    mcpServersDetectedRefreshSubtitle: "このマシンのプロバイダー設定ファイルをスキャンします",
 			    mcpServersDetectedWarningsTitle: "検出警告",
 			    mcpServersDetectedEmptyTitle: "検出された MCP サーバーはありません",
-			    mcpServersDetectedEmptySubtitle: "更新して Claude/Codex/OpenCode の設定をスキャンしてください。",
+			    mcpServersDetectedEmptySubtitle: "更新して Claude/Codex の設定をスキャンしてください。",
 			    mcpServersImportTitle: "MCP サーバーをインポートしますか？",
 			    mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) =>
 			      `${provider} から「${name}」をインポートしますか？`,
@@ -2682,8 +2612,6 @@ localTailscale: {
       openaiCodex: "OpenAI Codex（OpenAI）",
       openai: "OpenAI API キー",
       anthropic: "Anthropic API キー",
-      gemini: "Google Gemini（Google）",
-      antigravity: 'Google Antigravity',
       github: "GitHub",
     },
     title: "接続済みサービス",
@@ -2968,12 +2896,6 @@ localTailscale: {
       pasteRedirectUrlPromptBody:
         "OAuth を完了したら、ブラウザのアドレスバーに表示されている最終的なリダイレクト URL をコピーして、ここに貼り付けてください。",
       providerOverrides: {
-        antigravity: {
-          connectWebDescription: "次の手順：Google でログインします。Antigravity にコピー用の認証コードが表示されます。",
-          pasteRedirectUrlPromptBody: "1) Google でログインします。2) antigravity.google に表示された認証コードをコピーします。3) このログイン画面を開いたまま、下に貼り付けます。",
-          pasteRedirectUrlPlaceholder: "Antigravity の認証コードを貼り付け",
-          pasteRedirectUrlTitle: "認証コードを貼り付け",
-        },
         claudeSubscription: {
           connectWebDescription:
             "次の手順: 開いたページでサインインしてください。Claude は自動リダイレクトではなくコード文字列を表示する場合があります。",
@@ -4427,110 +4349,6 @@ localTailscale: {
                     }
                 }
             },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "OpenCode のバージョン",
-                        footer: "自動では opencode を優先し、なければ opencode2 を使い、起動後にサーバー API を検出します。安定版は常に opencode を選びますが、V1 または V2 の検出は引き続き行います。V2 は opencode2 を優先し、なければ V2 を選択して opencode を使います。Happier の MCP ツールは V2 の ACP モードで利用できますが、サーバー API は動的 MCP 登録にまだ対応していません。"
-                    },
-                    backendMode: {
-                        title: "バックエンドモード",
-                        footer: "サーバーモードでは質問機能とネイティブフォークが使えます。ACP モードはレガシーなフォールバックです。"
-                    },
-                    server: {
-                        title: "サーバー接続",
-                        footer: "空のままにすると、Happier 管理の OpenCode サーバーライフサイクルを使います。既存の OpenCode サーバーに接続するには絶対 http(s) URL を設定します。"
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "CLI 世代",
-                        subtitle: "Happier が起動するインストール済み OpenCode コマンドを選択します。",
-                        options: {
-                            auto: { title: "自動（推奨）", subtitle: "opencode を優先し、なければ opencode2 を使います。" },
-                            stable: { title: "安定版", subtitle: "常に opencode を起動し、起動後にサーバー API を検出します。" },
-                            v2: { title: "V2", subtitle: "opencode2 を優先し、なければ V2 を選択して opencode を起動します。" }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "OpenCode バックエンドモード",
-                        subtitle: "統合バックエンドを選択します。",
-                        options: {
-                            server: {
-                                title: "サーバー（推奨）",
-                                subtitle: "OpenCode サーバー API を使用し、より豊富な機能と高い信頼性を提供します。"
-                            },
-                            acp: {
-                                title: "ACP（レガシー）",
-                                subtitle: "OpenCode を ACP 経由で利用します。機能は少なめです。"
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "既存の OpenCode サーバー URL",
-                        subtitle: "ユーザー管理の OpenCode サーバー向けの任意の上書きです。"
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "Cursor CLI ツール",
-                        footer: "自動検出だけでは不十分な場合に特定の Cursor バイナリを使用します。Happier は cursor-agent を優先し、有効な場合は agent にフォールバックできます。"
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Cursor バイナリのパス",
-                        subtitle: "cursor-agent または agent への任意の絶対パス。"
-                    },
-                    cursorApiEndpoint: {
-                        title: "Cursor API エンドポイント",
-                        subtitle: "Cursor Agent API エンドポイントの任意の上書き。"
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "agent フォールバックを許可",
-                        subtitle: "cursor-agent が利用できない場合に agent コマンドを使用します。"
-                    }
-                }
-            },
-            customAcp: {
-                title: "カスタム ACP"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            devin: { title: "Devin" },
-            agy: { title: 'Antigravity' },
-            fx: { title: "FX" },
-            droid: { title: "Factory Droid" },
-            codebuddy: { title: "CodeBuddy" },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
-            },
             codex: {
         title: "Codex",
         sections: {
@@ -5069,9 +4887,6 @@ localTailscale: {
       codexAcp: {
         title: "Codex ACP アダプター",
       },
-      agyAcpServer: {
-          title: "Agy ACP サーバー",
-      },
       githubCli: {
         title: "GitHub コマンドライン",
       },
@@ -5286,7 +5101,6 @@ localTailscale: {
       installCliIfAvailable: ({ cli }: { cli: string }) =>
         `${cli} CLI が利用可能ならインストール •`,
       viewInstallationGuide: "インストールガイドを見る →",
-      viewGeminiDocs: "Geminiドキュメントを見る →",
     },
     worktree: {
       creating: ({ name }: { name: string }) =>
@@ -5392,18 +5206,6 @@ localTailscale: {
       reinstallTitle: "Codex ACP を再インストールしますか？",
       description:
         "これはスレッドの読み込み/再開に対応した、Codex 向けの実験的な ACP アダプターをインストールします。",
-    },
-    agyAcpBanner: {
-        title: "Agy ACP サーバー",
-        install: "インストール",
-        update: "更新",
-        reinstall: "再インストール",
-    },
-    agyAcpInstallModal: {
-        installTitle: "Agy ACP サーバーをインストールしますか？",
-        updateTitle: "Agy ACP サーバーを更新しますか？",
-        reinstallTitle: "Agy ACP サーバーを再インストールしますか？",
-        description: "Agy セッションで使用する公式の固定版 Agy ACP サーバーをインストールします。対話型の agy CLI は個別にインストールしたままです。",
     },
         githubCliBanner: {
             title: 'GitHub CLI',
@@ -6731,9 +6533,6 @@ localTailscale: {
     browseSourceCodexUserHome: "自分の Codex ホーム",
     browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
     browseSourceClaudeDefault: "デフォルトの Claude 設定",
-    browseSourceOpenCodeDefault: "デフォルトの OpenCode サーバー",
-    browseSourceAcpAgentSessions: 'エージェントのセッション',
-    browseSourcePiDefault: "デフォルトの Pi エージェントディレクトリ",
     browseCandidates: "利用可能なセッション",
     browseNoMachines: "直接セッションに利用できるマシンはまだありません。",
     browseNoCandidates: "このマシンとプロバイダーに対するセッションは見つかりませんでした。",
@@ -6803,46 +6602,6 @@ localTailscale: {
     codexSessionIdCopied:
       "Codex セッション ID をクリップボードにコピーしました",
     failedToCopyCodexSessionId: "Codex セッション ID のコピーに失敗しました",
-    opencodeSessionId: "OpenCode セッション ID",
-    opencodeSessionIdCopied:
-      "OpenCode セッション ID をクリップボードにコピーしました",
-    auggieSessionId: "Auggie セッション ID",
-    auggieSessionIdCopied:
-      "Auggie セッション ID をクリップボードにコピーしました",
-    geminiSessionId: "Gemini セッション ID",
-    geminiSessionIdCopied:
-      "Gemini セッション ID をクリップボードにコピーしました",
-    qwenSessionId: "Qwen Code セッション ID",
-    qwenSessionIdCopied:
-      "Qwen Code セッション ID をクリップボードにコピーしました",
-    kimiSessionId: "Kimi セッション ID",
-    kimiSessionIdCopied: "Kimi セッション ID をクリップボードにコピーしました",
-    kiloSessionId: "Kilo セッション ID",
-    kiloSessionIdCopied: "Kilo セッション ID をクリップボードにコピーしました",
-    kiroSessionId: "Kiro セッション ID",
-    kiroSessionIdCopied: "Kiro セッション ID をクリップボードにコピーしました",
-    devinSessionId: "Devin セッション ID",
-    devinSessionIdCopied: "Devin セッション ID をクリップボードにコピーしました",
-    agySessionId: "Agy セッション ID",
-    agySessionIdCopied: "Agy セッション ID をクリップボードにコピーしました",
-    fxSessionId: "FX セッション ID",
-    fxSessionIdCopied: "FX セッション ID をクリップボードにコピーしました",
-    droidSessionId: "Factory Droid セッション ID",
-    codebuddySessionId: "CodeBuddy セッション ID",
-    droidSessionIdCopied: "Factory Droid セッション ID をクリップボードにコピーしました",
-    codebuddySessionIdCopied: "CodeBuddy セッション ID をクリップボードにコピーしました",
-    customAcpSessionId: "カスタム ACP セッション ID",
-    grokSessionId: "Grok セッション ID",
-    grokSessionIdCopied: "Grok セッション ID をクリップボードにコピーしました",
-    customAcpSessionIdCopied: "カスタム ACP セッション ID をクリップボードにコピーしました",
-    piSessionId: "Pi セッション ID",
-    piSessionIdCopied: "Pi セッション ID をクリップボードにコピーしました",
-    copilotSessionId: "Copilot セッション ID",
-    copilotSessionIdCopied:
-      "Copilot セッション ID をクリップボードにコピーしました",
-    cursorSessionId: "Cursor セッション ID",
-    cursorSessionIdCopied:
-      "Cursor セッション ID をクリップボードにコピーしました",
     metadataCopied: "メタデータがクリップボードにコピーされました",
     failedToCopyMetadata: "メタデータのコピーに失敗しました",
     failedToKillSession: "セッションの終了に失敗しました",
@@ -7067,27 +6826,6 @@ localTailscale: {
     agent: {
       claude: "Claude",
       codex: "Codex",
-      opencode: "OpenCode",
-      gemini: "Gemini",
-      auggie: "Auggie",
-      qwen: "Qwen Code",
-      kimi: "Kimi",
-      kilo: "Kilo",
-      kiro: "Kiro",
-      devin: "Devin",
-      agy: 'Antigravity',
-      fx: "FX",
-      droid: "Factory Droid",
-      codebuddy: "CodeBuddy",
-      customAcp: "カスタム ACP",
-      pi: "Pi",
-      copilot: "Copilot",
-      cursor: "Cursor",
-      grok: "Grok",
-    },
-    auggieIndexingChip: {
-      on: "インデックス有効",
-      off: "インデックス無効",
     },
     model: {
       title: "モデル",
@@ -7127,31 +6865,6 @@ localTailscale: {
       gpt5Low: "GPT-5 低",
       gpt5Medium: "GPT-5 中",
       gpt5High: "GPT-5 高",
-    },
-    geminiPermissionMode: {
-      title: "GEMINI権限モード",
-      default: "デフォルト",
-      readOnly: "読み取り専用モード",
-      safeYolo: "セーフYOLO",
-      yolo: "YOLO",
-      badgeReadOnly: "読み取り専用モード",
-      badgeSafeYolo: "セーフYOLO",
-      badgeYolo: "YOLO",
-    },
-    geminiModel: {
-      title: "GEMINIモデル",
-      gemini25Pro: {
-        label: "Gemini 2.5 Pro",
-        description: "最高性能",
-      },
-      gemini25Flash: {
-        label: "Gemini 2.5 Flash",
-        description: "高速・効率的",
-      },
-      gemini25FlashLite: {
-        label: "Gemini 2.5 Flash Lite",
-        description: "最速",
-      },
     },
     context: {
       remaining: ({ percent }: { percent: number }) => `残り ${percent}%`,
@@ -7350,13 +7063,6 @@ localTailscale: {
     taskView: {
       moreTools: ({ count }: { count: number }) => `さらに ${count} 個のツール`,
     },
-    workspaceIndexingPermission: {
-      defaultTitle: "ワークスペースのインデックス作成",
-      description:
-        "インデックス作成により、エージェントがコードベースをより速く検索し、より正確な回答を提供できます。ワークスペース内のファイルをスキャンする場合があります。",
-      optionFallback: "オプション",
-      chooseOptionHint: "続行するには、下のオプションを選択してください。",
-    },
     acpHistoryImport: {
       title: "セッション履歴をインポートしますか？",
       defaultNote:
@@ -7444,9 +7150,6 @@ localTailscale: {
       switchMode: "モードを切り替え",
       taskOutput: "タスクの出力",
       taskStop: "タスクを停止",
-    },
-    geminiExecute: {
-      cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
     },
     desc: {
       terminalCmd: ({ cmd }: { cmd: string }) => `ターミナル(cmd: ${cmd})`,
@@ -10168,11 +9871,11 @@ settingsSession: {
                     "welcome": {
                         "title": "Happierへようこそ",
                         "everywhereTitle": "あなたのAIエージェントを、働くすべての場所で",
-                        "everywhereBody": "Claude Code、Codex、OpenCode、Piなどを、スマートフォン、タブレット、ブラウザ、デスクトップで使えます。",
+                        "everywhereBody": "Claude CodeとCodexを、スマートフォン、タブレット、ブラウザ、デスクトップで使えます。",
                         "cockpitTitle": "モバイル cockpit",
                         "cockpitBody": "チャット、ファイル、Git、エディタ、ターミナル。次のプロジェクトを作って出荷するために必要なものが、すべて手元にあります。",
                         "existingTitle": "既存のセッションも、そのまま表示",
-                        "existingBody": "あなたのマシンで動いているClaude、Codex、OpenCodeのセッションを、Happierでライブに開けます。",
+                        "existingBody": "あなたのマシンで動いているClaudeとCodexのセッションを、Happierでライブに開けます。",
                         "voiceTitle": "一緒に考えられる音声アシスタント",
                         "voiceBody": "エージェントが何をしているかを聞き、権限リクエストを承認し、メッセージを送信できます。ハンズフリーで。",
                         "reviewTitle": "diffをレビューしてコメント",
@@ -10180,7 +9883,7 @@ settingsSession: {
                         "subagentsTitle": "プロバイダー横断のsubagents",
                         "subagentsBody": "ClaudeセッションからCodex subagentsを起動できます。作業をエージェント間で分担し、セッション間でメッセージをルーティングできます。",
                         "tuisTitle": "お気に入りのTUIをそのまま使う",
-                        "tuisBody": "Claude Code、Codex、OpenCodeをネイティブなターミナルUIで実行できます。Happierがそれをキャプチャし、すべてのデバイスへ同期します。",
+                        "tuisBody": "Claude CodeとCodexをネイティブなターミナルUIで実行できます。Happierがそれをキャプチャし、すべてのデバイスへ同期します。",
                         "inboxTitle": "1つのinbox。すべてのセッション。",
                         "inboxBody": "保留中の承認、権限リクエスト、レビュー待ちのセッションを、すべてのマシンから1か所に集約します。",
                         "mcpTitle": "1つのMCP設定。すべてのプロバイダー。",
@@ -10207,7 +9910,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "ターミナルが好き？私たちもです！",
                         "wideTitle": "ターミナルが好き？\n私たちもです！",
-                        "body": "Claude Code、Codex、OpenCodeをネイティブなターミナルUIで実行できます。スマートフォンから追跡し、メッセージを送り、権限を承認できます。",
+                        "body": "Claude CodeとCodexをネイティブなターミナルUIで実行できます。スマートフォンから追跡し、メッセージを送り、権限を承認できます。",
                         "alt": "ターミナルTUI同期用の抽象的なプレースホルダー画像。"
                     },
                     "cockpit": {
@@ -10217,8 +9920,8 @@ settingsSession: {
                         "alt": "モバイルcockpit用の抽象的なプレースホルダー画像。"
                     },
                     "existingSessions": {
-                        "title": "既存のClaude、Codex、OpenCodeセッション？もうあります。",
-                        "body": "実行中かどうかに関係なく、Claude、Codex、OpenCodeのセッションを参照できます。",
+                        "title": "既存のClaude、Codexセッション？もうあります。",
+                        "body": "実行中かどうかに関係なく、ClaudeとCodexのセッションを参照できます。",
                         "alt": "既存プロバイダーセッション用の抽象的なプレースホルダー画像。"
                     },
                     "voiceAssistant": {
@@ -10978,7 +10681,7 @@ settingsSession: {
     sessionRunningLocally:
       "このセッションはこのコンピュータでローカル実行されています。アプリから制御するにはリモートに切り替えられます。",
     sessionRunningLocallyAndRemotely:
-      "このセッションは OpenCode にローカル接続されたままで、アプリからも引き続き操作できます。",
+      "このセッションはローカルのターミナルでも開かれており、アプリからも引き続き操作できます。",
     switchingToRemote: "リモートモードに切り替え中…",
     switchToRemote: "リモートに切り替え",
     detachLocalTerminal: "ターミナルを切り離す",

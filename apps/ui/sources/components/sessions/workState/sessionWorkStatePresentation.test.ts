@@ -146,7 +146,7 @@ describe('sessionWorkStatePresentation', () => {
         const snapshot = readSessionWorkStateFromMetadata({
             sessionWorkStateV1: {
                 v: 1,
-                backendId: 'opencode',
+                backendId: 'codex',
                 updatedAt: 10,
                 primaryItemId: 'missing',
                 items: [

@@ -476,7 +476,7 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
         logPrefix: '[Test]',
         // Type-level support for toolTrace is intentionally part of the implementation task.
         // For the RED test, cast to avoid production changes before the failing assertion.
-        toolTrace: { protocol: 'acp', provider: 'opencode' },
+        toolTrace: { protocol: 'acp', provider: 'codex' },
       } as any);
 
       const pending = handler.handleToolCall('perm-1', 'Bash', { command: 'echo hello' });
@@ -488,7 +488,7 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
         direction: 'outbound',
         sessionId: 'test-session-id',
         protocol: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         kind: 'permission-request',
         payload: expect.objectContaining({
           type: 'permission-request',

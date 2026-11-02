@@ -5,8 +5,6 @@ export type ConnectedServiceDisplayNameKey =
     | 'connectedServices.serviceNames.openaiCodex'
     | 'connectedServices.serviceNames.openai'
     | 'connectedServices.serviceNames.anthropic'
-    | 'connectedServices.serviceNames.gemini'
-    | 'connectedServices.serviceNames.antigravity'
     | 'connectedServices.serviceNames.github'
     | 'connectedServices.fallbackName';
 
@@ -20,10 +18,6 @@ export function resolveConnectedServiceDisplayNameKey(serviceId: ConnectedServic
             return 'connectedServices.serviceNames.openai';
         case 'anthropic':
             return 'connectedServices.serviceNames.anthropic';
-        case 'gemini':
-            return 'connectedServices.serviceNames.gemini';
-        case 'antigravity':
-            return 'connectedServices.serviceNames.antigravity';
         case 'github':
             return 'connectedServices.serviceNames.github';
         default:
@@ -51,8 +45,6 @@ const CONNECTED_SERVICE_SHORT_NAME_BY_ID: Partial<Record<ConnectedServiceId, str
     'openai-codex': 'Codex',
     openai: 'OpenAI',
     anthropic: 'Anthropic',
-    gemini: 'Gemini',
-    antigravity: 'Antigravity',
     github: 'GitHub',
 };
 

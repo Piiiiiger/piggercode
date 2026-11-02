@@ -12,15 +12,8 @@ describe('providers harness: in-flight steer (acp stub provider)', () => {
       const envVars = [
         'PIGGERCODE_E2E_PROVIDERS',
         'PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB',
-        'PIGGERCODE_E2E_PROVIDER_OPENCODE',
         'PIGGERCODE_E2E_PROVIDER_CLAUDE',
         'PIGGERCODE_E2E_PROVIDER_CODEX',
-        'PIGGERCODE_E2E_PROVIDER_KILO',
-        'PIGGERCODE_E2E_PROVIDER_GEMINI',
-        'PIGGERCODE_E2E_PROVIDER_QWEN',
-        'PIGGERCODE_E2E_PROVIDER_KIMI',
-        'PIGGERCODE_E2E_PROVIDER_AUGGIE',
-        'PIGGERCODE_E2E_PROVIDER_PI',
         'PIGGERCODE_E2E_PROVIDER_SCENARIOS',
       ] as const;
 
@@ -31,15 +24,8 @@ describe('providers harness: in-flight steer (acp stub provider)', () => {
         process.env.PIGGERCODE_E2E_PROVIDERS = '1';
         // Ensure the matrix only runs the deterministic ACP stub provider.
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB = '1';
-        process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CLAUDE = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_KILO = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_GEMINI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_QWEN = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_KIMI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_AUGGIE = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_PI = '0';
 
         // This scenario is provider-agnostic (ACP) and should be reusable for future ACP providers
         // that publish in-flight steer support.

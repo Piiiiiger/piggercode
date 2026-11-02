@@ -14,18 +14,16 @@ describe('getProfilePrimaryCli', () => {
 describe('getProfileSupportedAgentIds', () => {
     it('returns supported agent ids and ignores unknown keys', () => {
         const profile = {
-            compatibility: { claude: true, codex: false, gemini: true, unknownCli: true },
+            compatibility: { claude: true, codex: false, unknownCli: true },
         } as any;
 
-        expect(getProfileSupportedAgentIds(profile)).toEqual(['claude', 'gemini']);
+        expect(getProfileSupportedAgentIds(profile)).toEqual(['claude']);
     });
 
     it('returns supported built-in agent ids from target-keyed compatibility', () => {
         const profile = {
             compatibilityByTargetKey: {
                 'agent:claude': true,
-                'agent:gemini': false,
-                'acpBackend:custom-backend': true,
             },
         } as any;
 
@@ -51,7 +49,7 @@ describe('isProfileCompatibleWithAnyAgent', () => {
     it('returns false when no enabled agents are compatible', () => {
         const profile = {
             isBuiltIn: true,
-            compatibility: { gemini: true, codex: false, claude: false },
+            compatibility: { codex: false, claude: false },
         } as any;
 
         expect(isProfileCompatibleWithAnyAgent(profile, ['claude', 'codex'])).toBe(false);
@@ -60,10 +58,10 @@ describe('isProfileCompatibleWithAnyAgent', () => {
     it('returns true when at least one enabled agent is compatible', () => {
         const profile = {
             isBuiltIn: true,
-            compatibility: { gemini: true, codex: false, claude: false },
+            compatibility: { codex: true, claude: false },
         } as any;
 
-        expect(isProfileCompatibleWithAnyAgent(profile, ['claude', 'gemini'])).toBe(true);
+        expect(isProfileCompatibleWithAnyAgent(profile, ['claude', 'codex'])).toBe(true);
     });
 
     it('treats custom profiles with no compatibility map as compatible', () => {

@@ -2,11 +2,11 @@
 
 This file is the canonical cross-tool constitution for this repository.
 
-## What Happier is
+## What PiggerCode is
 
-Happier is a cross-device client and companion for coding agents. Think of it as what you would get if Claude Desktop, Codex App, Cursor Glass and Conductor were merged into one open-source app.
+PiggerCode is a personal fork of Happier: a browser companion for two coding agents, Claude Code and Codex. No other agent is supported, and none should be added back.
 
-Agent sessions run on computers, VPSs and dev boxes users control. Happier can connect to one or many of these machines and lets users monitor, steer, approve, review, resume and continue their sessions from a phone, browser or desktop.
+Agent sessions run on machines the user controls. PiggerCode connects to them through the user's own relay and lets the user monitor, steer, approve, review, resume and continue their sessions from a browser.
 
 People drive agents through Happier all day. It should feel warm, fluid, blazing-fast and delightful to use.
 

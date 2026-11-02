@@ -4,7 +4,7 @@ import { createToolCallTranscriptIdentity } from '../toolCallTranscriptIdentity'
 
 describe('createToolCallTranscriptIdentity', () => {
   const base = {
-    provider: 'cursor',
+    provider: 'codex',
     namespace: { type: 'main' as const },
     toolCallId: 'opaque-call-id',
   };
@@ -22,7 +22,7 @@ describe('createToolCallTranscriptIdentity', () => {
   it('separates call/result, provider, and main/sidechain identity domains', () => {
     const call = createToolCallTranscriptIdentity({ ...base, message: 'call' });
     const result = createToolCallTranscriptIdentity({ ...base, message: 'result' });
-    const provider = createToolCallTranscriptIdentity({ ...base, provider: 'gemini', message: 'call' });
+    const provider = createToolCallTranscriptIdentity({ ...base, provider: 'claude', message: 'call' });
     const sidechain = createToolCallTranscriptIdentity({
       ...base,
       namespace: { type: 'sidechain', sidechainId: 'parent-call' },

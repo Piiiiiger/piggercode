@@ -3,7 +3,6 @@ import {
   BackendTargetRefSchema,
   mergeSpawnConfigOptionAliases,
   parseBackendTargetKey,
-  readAcpConfiguredBackendV1FromMetadata,
   readAgentRuntimeDescriptorV1,
   type AcpConfigOptionOverridesV1,
   type ActionSurfaces,
@@ -320,20 +319,6 @@ function resolveBackendTarget(
     return {
       backendTarget: currentSession.backendTarget,
       source: { kind: 'currentSession', key: 'backendTarget' },
-      invalidAgentId: false,
-    };
-  }
-
-  const configuredBackend = parentMetadata
-    ? readAcpConfiguredBackendV1FromMetadata(parentMetadata)
-    : null;
-  if (configuredBackend) {
-    return {
-      backendTarget: {
-        kind: 'configuredAcpBackend',
-        backendId: configuredBackend.backendId,
-      },
-      source: { kind: 'metadata', key: 'acpConfiguredBackendV1' },
       invalidAgentId: false,
     };
   }

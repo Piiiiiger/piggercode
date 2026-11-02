@@ -16,9 +16,6 @@ import {
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import { CATALOG_AGENT_IDS } from '@/backends/types';
-import { resolveConfiguredAcpBackendFromAccountSettings } from '@/agent/acp/catalog/configured/resolveConfiguredAcpBackendFromAccountSettings';
-import { materializeConfiguredAcpEnvironment } from '@/agent/acp/catalog/configured/materializeConfiguredAcpEnvironment';
-import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { resolveSessionPersistedRuntimeIdentity } from '@/daemon/sessions/runtimeSnapshot/buildInactiveSessionResumeSpawnOptions';
 import type { Credentials } from '@/persistence';
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';
@@ -52,8 +49,7 @@ import { fetchSessionByIdCompat } from '@/session/transport/http/sessionsHttp';
  * defect as §1.5b, which made the picker unreachable on every ordinary Session.
  *
  * `transcriptStorage: 'direct'` is retained as a distinct, narrower arm: it is
- * the spawn INTENT recorded before `directSessionV1` is established (see
- * backends/opencode/utils/opencodeSessionIdMetadata.ts), so a Session that is
+ * the spawn INTENT recorded before `directSessionV1` is established, so a Session that is
  * about to become direct also has no hosted transcript to hand over. That is a
  * different question from "what storage kind is this Session", which is why it
  * does not belong in the canonical storage-kind owner.
@@ -88,7 +84,6 @@ export type SessionContinuationTargetResolution =
  */
 export function resolveSessionContinuationTargetAgent(
   selection: SessionAgentTransitionSelectionV1,
-  accountSettings: Readonly<Record<string, unknown>> | null = getActiveAccountSettingsSnapshot()?.settings ?? null,
 ): SessionContinuationTargetResolution {
   if (!SessionAgentTransitionSelectionV1Schema.safeParse(selection).success) return { type: 'unavailable' };
   // `providerConnectionId` has no representation anywhere in this tree. The
@@ -98,21 +93,6 @@ export function resolveSessionContinuationTargetAgent(
 
   const agentId = selection.agentId.trim();
   if (!(CATALOG_AGENT_IDS as readonly string[]).includes(agentId)) return { type: 'unavailable' };
-  if (agentId === 'customAcp') {
-    const backendTarget = selection.backendTarget;
-    if (backendTarget?.kind !== 'configuredAcpBackend' || !accountSettings) return { type: 'unavailable' };
-    const backend = resolveConfiguredAcpBackendFromAccountSettings(accountSettings, backendTarget.backendId);
-    if (!backend
-      || (accountSettings.backendEnabledByTargetKey as Readonly<Record<string, unknown>> | undefined)?.[buildBackendTargetKey(backendTarget)] === false) {
-      return { type: 'unavailable' };
-    }
-    if ((selection.acpSessionModeId != null && backend.capabilities.supportsModes === 'no')
-      || (selection.modelId != null && selection.modelId !== 'default' && backend.capabilities.supportsModels === 'no')
-      || (selection.sessionConfigOptionOverrides != null && backend.capabilities.supportsConfigOptions === 'no')) {
-      return { type: 'unavailable' };
-    }
-    return { type: 'resolved', targetAgentId: 'customAcp', backendTarget };
-  }
   const targetAgentId = agentId as AgentId;
   if (!resolveAgentNativeSpawnDefinitiveRejection({
     agentId: targetAgentId,
@@ -135,7 +115,7 @@ export function evaluateSessionContinuationTargetSupport(params: Readonly<{
   sourceBackendTarget?: BackendTargetRefV1;
   accountSettings?: Readonly<Record<string, unknown>> | null;
 }>): SessionContinuationTargetSupport {
-  const resolved = resolveSessionContinuationTargetAgent(params.selection, params.accountSettings);
+  const resolved = resolveSessionContinuationTargetAgent(params.selection);
   if (resolved.type === 'unavailable') {
     return { type: 'unsupported', code: 'target_unavailable' };
   }
@@ -237,20 +217,10 @@ export async function inspectSessionContinuations(params: Readonly<{
     credentials: params.credentials,
     sourceSessionId: params.request.sourceSessionId,
   });
-  const accountSettings = getActiveAccountSettingsSnapshot()?.settings ?? null;
   return {
     v: 1,
     inspections: params.request.selections.map((selection) => {
       if (source.type === 'unavailable') return source;
-      if (selection.backendTarget?.kind === 'configuredAcpBackend') {
-        const backend = accountSettings && resolveConfiguredAcpBackendFromAccountSettings(accountSettings, selection.backendTarget.backendId);
-        if (!backend || !accountSettings) return { type: 'unavailable', reason: 'target_unavailable' } as const;
-        try {
-          materializeConfiguredAcpEnvironment({ backend, accountSettings, credentials: params.credentials });
-        } catch {
-          return { type: 'unavailable', reason: 'target_unavailable' } as const;
-        }
-      }
       return inspectSessionContinuationSelection({ source, selection });
     }),
   };

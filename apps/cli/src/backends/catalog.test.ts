@@ -93,17 +93,6 @@ describe('AGENTS', () => {
       AGENTS.codex = original;
     }
   });
-  it('includes kilo', () => {
-    expect(Object.prototype.hasOwnProperty.call(AGENTS, 'kilo')).toBe(true);
-  });
-
-  it('includes pi', () => {
-    expect(Object.prototype.hasOwnProperty.call(AGENTS, 'pi')).toBe(true);
-  });
-
-  it('includes cursor', () => {
-    expect(Object.prototype.hasOwnProperty.call(AGENTS, 'cursor')).toBe(true);
-  });
 
   it('has unique cliSubcommand values', () => {
     const values = Object.values(AGENTS).map((entry) => entry.cliSubcommand);
@@ -147,11 +136,6 @@ describe('AGENTS', () => {
       scope: 'per_session_runtime',
       ownerId: 'codex',
     });
-    await expect(resolveConnectedServiceGenerationApplicationScope('openai', 'opencode')).resolves.toEqual({
-      status: 'supported',
-      scope: 'per_session_runtime',
-      ownerId: 'opencode',
-    });
   });
 
   it('keeps cloud connect config in sync with catalog entries', async () => {
@@ -190,48 +174,6 @@ describe('AGENTS', () => {
     expect(requireCatalogEntry('codex').getHeadlessTmuxArgvTransform).toBeUndefined();
   });
 
-  it('registers runnable CLI command handlers for built-in generic ACP agents', () => {
-    expect(requireCatalogEntry('customAcp').getCliCommandHandler).toBeTypeOf('function');
-    expect(requireCatalogEntry('kiro').getCliCommandHandler).toBeTypeOf('function');
-    expect(requireCatalogEntry('devin').getCliCommandHandler).toBeTypeOf('function');
-    expect(requireCatalogEntry('fx' as never).getCliCommandHandler).toBeTypeOf('function');
-    expect(requireCatalogEntry('droid' as never).getCliCommandHandler).toBeTypeOf('function');
-    expect(requireCatalogEntry('codebuddy').getCliCommandHandler).toBeTypeOf('function');
-  });
-
-  it('registers Cursor through provider-owned ACP, auth, detect, and preflight hooks', async () => {
-    const entry = requireCatalogEntry('cursor' as any);
-    expect(entry).toMatchObject({
-      id: 'cursor',
-      cliSubcommand: 'cursor',
-      vendorResumeSupport: 'experimental',
-    });
-    expect(entry.getCliAuthSpec).toBeTypeOf('function');
-    expect(entry.getCliCapabilityOverride).toBeTypeOf('function');
-    expect(entry.getCliDetect).toBeTypeOf('function');
-    expect(entry.getAcpBackendFactory).toBeTypeOf('function');
-    expect(entry.getPreflightSessionControlsProbeAdapter).toBeTypeOf('function');
-    expect(entry.needsAccountSettingsForProbes).toBe(true);
-
-    await expect(entry.getPreflightSessionControlsProbeAdapter!()).resolves.toMatchObject({
-      probeModelsRaw: expect.any(Function),
-      probeModesRaw: expect.any(Function),
-      probeConfigOptionsRaw: expect.any(Function),
-    });
-  });
-
-  it('allows daemon vendor-resume gating for runtime-checked experimental Cursor sessions', async () => {
-    const support = await getVendorResumeSupport('cursor');
-
-    expect(support({})).toBe(true);
-  });
-
-  it('keeps experimental vendor-resume providers without runtime checks disabled by default', async () => {
-    const support = await getVendorResumeSupport('kiro');
-
-    expect(support({})).toBe(false);
-  });
-
   it('loads direct-session provider ops through backend catalog hooks', async () => {
     await expect(getDirectSessionProviderOps('claude')).resolves.toMatchObject({
       listCandidates: expect.any(Function),
@@ -243,29 +185,10 @@ describe('AGENTS', () => {
     await expect(getDirectSessionProviderOps('codex')).resolves.toMatchObject({
       listCandidates: expect.any(Function),
     });
-    await expect(getDirectSessionProviderOps('opencode')).resolves.toMatchObject({
-      listCandidates: expect.any(Function),
-    });
-    await expect(getDirectSessionProviderOps('pi')).resolves.toMatchObject({
-      listCandidates: expect.any(Function),
-      pageTranscript: expect.any(Function),
-      readAfterTranscript: expect.any(Function),
-      getActivity: expect.any(Function),
-      resolveTakeoverSpawnOptions: expect.any(Function),
-    });
-    for (const providerId of ['auggie', 'qwen', 'kilo', 'devin', 'kimi', 'copilot', 'fx'] as const) {
-      await expect(getDirectSessionProviderOps(providerId)).resolves.toMatchObject({
-        listCandidates: expect.any(Function),
-      });
-    }
   });
 
   it('loads provider-attach ops through backend catalog hooks only for supporting providers', async () => {
     await expect(getProviderAttachOps('codex')).resolves.toMatchObject({
-      evaluateEligibility: expect.any(Function),
-      runAttach: expect.any(Function),
-    });
-    await expect(getProviderAttachOps('opencode')).resolves.toMatchObject({
       evaluateEligibility: expect.any(Function),
       runAttach: expect.any(Function),
     });
@@ -281,19 +204,6 @@ describe('AGENTS', () => {
       classifyRuntimeAuthFailure: expect.any(Function),
       canHotApply: expect.any(Function),
     });
-    await expect(getConnectedServiceRuntimeAuthAdapter('opencode')).resolves.toMatchObject({
-      classifyRuntimeAuthFailure: expect.any(Function),
-      canHotApply: expect.any(Function),
-    });
-    await expect(getConnectedServiceRuntimeAuthAdapter('gemini')).resolves.toMatchObject({
-      classifyRuntimeAuthFailure: expect.any(Function),
-      probeQuota: expect.any(Function),
-    });
-    await expect(getConnectedServiceRuntimeAuthAdapter('pi')).resolves.toMatchObject({
-      classifyRuntimeAuthFailure: expect.any(Function),
-      canHotApply: expect.any(Function),
-    });
-    await expect(getConnectedServiceRuntimeAuthAdapter('kilo')).resolves.toBeNull();
   });
 
   it('resolves provider credential lifecycle descriptors through backend catalog hooks with safe defaults', async () => {
@@ -316,42 +226,6 @@ describe('AGENTS', () => {
         noRestartRequiredServiceIds: ['claude-subscription'],
       },
     });
-    await expect(resolveDescriptor('pi')).resolves.toMatchObject({
-      providerId: 'pi',
-      generationApplicationScope: 'per_session_runtime',
-      refreshedCredentialApplication: { mode: 'restart_required' },
-      predictiveSoftSwitch: { mode: 'unsupported' },
-      sameAccountFanoutStrategy: 'shared_group_auth_surface',
-      runtimeAuthApply: {
-        directLiveHotAuth: {
-          supportsInTurnApply: false,
-          requiresExactRuntimeIdentity: false,
-          refreshSelectionResync: 'not_applicable',
-          authMode: {
-            kind: 'provider_owned',
-            name: 'broker_selection_indirection',
-          },
-        },
-      },
-    });
-    await expect(resolveDescriptor('opencode')).resolves.toMatchObject({
-      providerId: 'opencode',
-      generationApplicationScope: 'per_session_runtime',
-      refreshedCredentialApplication: { mode: 'restart_required' },
-      predictiveSoftSwitch: { mode: 'supported' },
-      sameAccountFanoutStrategy: 'shared_group_auth_surface',
-      runtimeAuthApply: {
-        directLiveHotAuth: {
-          supportsInTurnApply: false,
-          requiresExactRuntimeIdentity: false,
-          refreshSelectionResync: 'not_applicable',
-          authMode: {
-            kind: 'provider_owned',
-            name: 'broker_selection_indirection',
-          },
-        },
-      },
-    });
     await expect(resolveDescriptor('codex')).resolves.toMatchObject({
       providerId: 'codex',
       generationApplicationScope: 'per_session_runtime',
@@ -370,40 +244,20 @@ describe('AGENTS', () => {
         },
       },
     });
-    await expect(resolveDescriptor('gemini')).resolves.toEqual({
-      providerId: 'gemini',
-      serviceIds: ['gemini'],
-      spawnPreflightOauthRefresh: { mode: 'expiry_window' },
-      refreshedCredentialApplication: { mode: 'restart_required' },
-      predictiveSoftSwitch: { mode: 'unsupported' },
-      sameAccountFanoutStrategy: 'none',
-      generationApplicationScope: 'per_session_runtime',
-      runtimeAuthApply: { directLiveHotAuth: 'unsupported' },
-    });
-    await expect(resolveDescriptor('kilo')).resolves.toEqual({
-      providerId: 'kilo',
-      serviceIds: [],
-      spawnPreflightOauthRefresh: { mode: 'expiry_window' },
-      refreshedCredentialApplication: { mode: 'no_restart_required' },
-      predictiveSoftSwitch: { mode: 'unsupported', liveSessionRequirement: { kind: 'none' } },
-      sameAccountFanoutStrategy: 'none',
-      generationApplicationScope: 'unsupported',
-      runtimeAuthApply: { directLiveHotAuth: 'unsupported' },
-    });
   });
 
   it('loads connected-service materializers through backend catalog hooks for providers that support connected services', async () => {
     await expect(getConnectedServiceMaterializer('codex')).resolves.toBeTypeOf('function');
     await expect(getConnectedServiceMaterializer('claude')).resolves.toBeTypeOf('function');
-    await expect(getConnectedServiceMaterializer('opencode')).resolves.toBeTypeOf('function');
-    await expect(getConnectedServiceMaterializer('pi')).resolves.toBeTypeOf('function');
-    await expect(getConnectedServiceMaterializer('gemini')).resolves.toBeTypeOf('function');
-    await expect(getConnectedServiceMaterializer('kilo')).resolves.toBeNull();
   });
 
   it('retries a rejected catalog hook load while preserving singleflight and successful caching', async () => {
-    const original = AGENTS.grok;
-    if (!original) throw new Error('Missing grok catalog entry');
+    // The catalog memoises hook loads per module instance; use a fresh instance so earlier
+    // tests that already loaded the real materializers cannot satisfy this case from cache.
+    vi.resetModules();
+    const { AGENTS, getConnectedServiceMaterializer } = await import('./catalog');
+    const original = AGENTS.codex;
+    if (!original) throw new Error('Missing codex catalog entry');
 
     const recoveredMaterializer: ConnectedServicesProviderMaterializer = async () => null;
     let resolveRecovery!: (materializer: ConnectedServicesProviderMaterializer) => void;
@@ -413,16 +267,16 @@ describe('AGENTS', () => {
     const getConnectedServiceMaterializerHook = vi.fn()
       .mockRejectedValueOnce(new Error('transient catalog load failure'))
       .mockImplementationOnce(() => recovery);
-    AGENTS.grok = {
+    AGENTS.codex = {
       ...original,
       getConnectedServiceMaterializer: getConnectedServiceMaterializerHook,
     };
 
     try {
-      await expect(getConnectedServiceMaterializer('grok')).rejects.toThrow('transient catalog load failure');
+      await expect(getConnectedServiceMaterializer('codex')).rejects.toThrow('transient catalog load failure');
 
-      const firstRetry = getConnectedServiceMaterializer('grok');
-      const concurrentRetry = getConnectedServiceMaterializer('grok');
+      const firstRetry = getConnectedServiceMaterializer('codex');
+      const concurrentRetry = getConnectedServiceMaterializer('codex');
       resolveRecovery(recoveredMaterializer);
       const retryResults = await Promise.allSettled([firstRetry, concurrentRetry]);
 
@@ -431,29 +285,33 @@ describe('AGENTS', () => {
         { status: 'fulfilled', value: recoveredMaterializer },
         { status: 'fulfilled', value: recoveredMaterializer },
       ]);
-      await expect(getConnectedServiceMaterializer('grok')).resolves.toBe(recoveredMaterializer);
+      await expect(getConnectedServiceMaterializer('codex')).resolves.toBe(recoveredMaterializer);
       expect(getConnectedServiceMaterializerHook).toHaveBeenCalledTimes(2);
     } finally {
-      AGENTS.grok = original;
+      AGENTS.codex = original;
     }
   });
 
   it('caches a genuine null catalog hook result', async () => {
-    const original = AGENTS.qwen;
-    if (!original) throw new Error('Missing qwen catalog entry');
+    // The catalog memoises hook loads per module instance; use a fresh instance so earlier
+    // tests that already loaded the real materializers cannot satisfy this case from cache.
+    vi.resetModules();
+    const { AGENTS, getConnectedServiceMaterializer } = await import('./catalog');
+    const original = AGENTS.claude;
+    if (!original) throw new Error('Missing claude catalog entry');
 
     const getConnectedServiceMaterializerHook = vi.fn(async () => null);
-    AGENTS.qwen = {
+    AGENTS.claude = {
       ...original,
       getConnectedServiceMaterializer: getConnectedServiceMaterializerHook,
     };
 
     try {
-      await expect(getConnectedServiceMaterializer('qwen')).resolves.toBeNull();
-      await expect(getConnectedServiceMaterializer('qwen')).resolves.toBeNull();
+      await expect(getConnectedServiceMaterializer('claude')).resolves.toBeNull();
+      await expect(getConnectedServiceMaterializer('claude')).resolves.toBeNull();
       expect(getConnectedServiceMaterializerHook).toHaveBeenCalledTimes(1);
     } finally {
-      AGENTS.qwen = original;
+      AGENTS.claude = original;
     }
   });
 
@@ -488,22 +346,6 @@ describe('AGENTS', () => {
         secretEntries: ['auth.json', 'accounts'],
       },
     });
-    await expect(getConnectedServiceStateSharingDescriptor('pi')).resolves.toMatchObject({
-      providerId: 'pi',
-      providerSupportStatus: 'supported',
-      state: {
-        supported: true,
-        modes: ['isolated', 'shared'],
-        entries: expect.arrayContaining([
-          expect.objectContaining({ path: 'sessions', mode: 'linked' }),
-        ]),
-      },
-      authIsolation: {
-        mode: 'materialized_home',
-        secretEntries: expect.arrayContaining(['auth.json']),
-      },
-    });
-    await expect(getConnectedServiceStateSharingDescriptor('kilo')).resolves.toBeNull();
     await expect(getConnectedServiceStateSharingDescriptor('claude')).resolves.toMatchObject({
       providerId: 'claude',
       providerSupportStatus: 'supported',
@@ -526,22 +368,6 @@ describe('AGENTS', () => {
         secretEntries: expect.arrayContaining(['CLAUDE_API_KEY']),
       },
     });
-    await expect(getConnectedServiceStateSharingDescriptor('gemini')).resolves.toMatchObject({
-      providerId: 'gemini',
-      providerSupportStatus: 'unsupported',
-      authIsolation: {
-        mode: 'materialized_home',
-        secretEntries: ['.gemini/oauth_creds.json'],
-      },
-    });
-    await expect(getConnectedServiceStateSharingDescriptor('opencode')).resolves.toMatchObject({
-      providerId: 'opencode',
-      providerSupportStatus: 'unsupported',
-      authIsolation: {
-        mode: 'process_env',
-        secretEntries: expect.arrayContaining(['OPENCODE_AUTH_CONTENT']),
-      },
-    });
   });
 
   it('resolves connected-service switch continuity through optional backend catalog hooks', async () => {
@@ -554,21 +380,6 @@ describe('AGENTS', () => {
       vendorResumeId: 'vendor-session-1',
     } as const;
 
-    await expect(resolveConnectedServiceSwitchContinuity('kilo', {
-      sessionId: 'session-1',
-      agentId: 'kilo',
-      serviceId: 'anthropic',
-      previousBinding: null,
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'anthropic',
-        profileId: 'work',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: {} },
-      toBindings: { v: 1, bindingsByServiceId: {} },
-    })).resolves.toEqual({ mode: 'unsupported', reason: 'provider_unsupported' });
     await expect(resolveConnectedServiceSwitchContinuity('claude', {
       sessionId: 'session-1',
       agentId: 'claude',
@@ -729,320 +540,7 @@ describe('AGENTS', () => {
       },
     })).resolves.toEqual({ mode: 'hot_apply' });
 
-    const piRoot = await mkdtemp(join(tmpdir(), 'happier-pi-catalog-continuity-'));
-    const piSessionFile = join(
-      piRoot,
-      'pi-agent-dir',
-      'sessions',
-      '--tmp-project--',
-      '2026-05-27T00-00-00-000Z_vendor-session-1.jsonl',
-    );
-    await mkdir(join(piRoot, 'pi-agent-dir', 'sessions', '--tmp-project--'), { recursive: true });
-    await writeFile(piSessionFile, '{}\n');
-    const piReachableContext = {
-      ...exactContinuityContext,
-      targetMaterializedRoot: piRoot,
-      targetMaterializedEnv: {
-        PI_CODING_AGENT_DIR: join(piRoot, 'pi-agent-dir'),
-      },
-      cwd: '/tmp/project',
-      candidatePersistedSessionFile: piSessionFile,
-    } as const;
 
-    await expect(resolveConnectedServiceSwitchContinuity('pi', {
-      sessionId: 'session-1',
-      agentId: 'pi',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_shared_state_required',
-      reason: 'pi_exact_connected_service_selection_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('pi', {
-      sessionId: 'session-1',
-      agentId: 'pi',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'group',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: 'team',
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'group',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: 'team',
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'group', profileId: 'old', groupId: 'team' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'group', profileId: 'new', groupId: 'team' } } },
-      ...piReachableContext,
-    })).resolves.toEqual({ mode: 'restart_same_home' });
-    await expect(resolveConnectedServiceSwitchContinuity('pi', {
-      sessionId: 'session-1',
-      agentId: 'pi',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'same',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'same',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'same' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'same' } } },
-      ...piReachableContext,
-    })).resolves.toEqual({ mode: 'restart_same_home' });
-    await expect(resolveConnectedServiceSwitchContinuity('pi', {
-      sessionId: 'session-1',
-      agentId: 'pi',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'native',
-        selection: 'native',
-        serviceId: 'openai',
-        profileId: null,
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'native' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-    })).resolves.toEqual({
-      mode: 'restart_shared_state_required',
-      reason: 'pi_session_state_sharing_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('pi', {
-      sessionId: 'session-1',
-      agentId: 'pi',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'native',
-        selection: 'native',
-        serviceId: 'openai',
-        profileId: null,
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'native' } } },
-    })).resolves.toEqual({
-      mode: 'restart_shared_state_required',
-      reason: 'pi_session_state_sharing_required',
-    });
-    await rm(piRoot, { recursive: true, force: true });
-    await expect(resolveConnectedServiceSwitchContinuity('gemini', {
-      sessionId: 'session-1',
-      agentId: 'gemini',
-      serviceId: 'gemini',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'gemini',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'gemini',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { gemini: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { gemini: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'gemini_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'group',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: 'team',
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'group',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: 'team',
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'group', profileId: 'old', groupId: 'team' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'group', profileId: 'new', groupId: 'team' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'native',
-        selection: 'native',
-        serviceId: 'openai',
-        profileId: null,
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'new',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'native' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'new' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'old',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'native',
-        selection: 'native',
-        serviceId: 'openai',
-        profileId: null,
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'old' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'native' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
-    await expect(resolveConnectedServiceSwitchContinuity('opencode', {
-      sessionId: 'session-1',
-      agentId: 'opencode',
-      serviceId: 'openai',
-      previousBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'same',
-        groupId: null,
-      },
-      nextBinding: {
-        source: 'connected',
-        selection: 'profile',
-        serviceId: 'openai',
-        profileId: 'same',
-        groupId: null,
-      },
-      fromBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'same' } } },
-      toBindings: { v: 1, bindingsByServiceId: { openai: { source: 'connected', selection: 'profile', profileId: 'same' } } },
-      ...exactContinuityContext,
-    })).resolves.toEqual({
-      // Identical re-selection routes through the same restart/rematerialize action as changed
-      // selections: OpenCode session state is global, not home-scoped (RD-OPI-4).
-      mode: 'restart_same_home',
-      reason: 'opencode_restart_rematerialize_required',
-    });
   });
 
   it('loads inactive goal controls through backend catalog hooks for supported providers', async () => {
@@ -1061,29 +559,18 @@ describe('AGENTS', () => {
     await expect(getSessionUsageLimitRecoveryControlAdapter('codex')).resolves.toMatchObject({
       checkNow: expect.any(Function),
     });
-    await expect(getSessionUsageLimitRecoveryControlAdapter('gemini')).resolves.toMatchObject({
-      checkNow: expect.any(Function),
-    });
-    await expect(getSessionUsageLimitRecoveryControlAdapter('opencode')).resolves.toMatchObject({
-      checkNow: expect.any(Function),
-    });
     await expect(getSessionUsageLimitRecoveryControlAdapter('claude')).resolves.toMatchObject({
-      checkNow: expect.any(Function),
-    });
-    await expect(getSessionUsageLimitRecoveryControlAdapter('pi')).resolves.toMatchObject({
       checkNow: expect.any(Function),
     });
   });
 
   it('loads provider-native fork handlers through backend catalog hooks only for supporting providers', async () => {
     await expect(getProviderNativeForkHandler('codex')).resolves.toBeTypeOf('function');
-    await expect(getProviderNativeForkHandler('opencode')).resolves.toBeTypeOf('function');
     await expect(getProviderNativeForkHandler('claude')).resolves.toBeNull();
   });
 
   it('loads ACP fork continuation handlers through backend catalog hooks only for supporting providers', async () => {
     await expect(getAcpForkContinuationHandler('codex')).resolves.toBeTypeOf('function');
-    await expect(getAcpForkContinuationHandler('opencode')).resolves.toBeTypeOf('function');
     await expect(getAcpForkContinuationHandler('claude')).resolves.toBeNull();
   });
 });

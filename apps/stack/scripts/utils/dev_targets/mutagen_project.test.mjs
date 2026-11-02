@@ -61,7 +61,6 @@ test('renderMutagenProject creates one-way source replicas while retaining targe
     '.dev',
     '.clawpatch',
     '.playwright-mcp',
-    '.antigravitycli',
     'evidence',
     'graphify-out',
     '/workspace',

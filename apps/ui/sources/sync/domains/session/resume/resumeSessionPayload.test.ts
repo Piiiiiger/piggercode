@@ -7,7 +7,7 @@ describe('buildResumeHappySessionRpcParams', () => {
         expect(buildResumeHappySessionRpcParams({
             sessionId: 's1',
             directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'cursor' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             modelId: ' model-a ',
             modelUpdatedAt: 123,
         })).toEqual(expect.objectContaining({ modelId: ' model-a ', modelUpdatedAt: 123 }));
@@ -75,19 +75,19 @@ describe('buildResumeHappySessionRpcParams', () => {
         expect(buildResumeHappySessionRpcParams({
             sessionId: 's1',
             directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             environmentVariables: {
-                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                EXAMPLE_ENV_A: 'one',
+                EXAMPLE_ENV_B: 'two',
             },
         })).toEqual({
             type: 'resume-session',
             sessionId: 's1',
             directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             environmentVariables: {
-                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
+                EXAMPLE_ENV_A: 'one',
+                EXAMPLE_ENV_B: 'two',
             },
         });
     });
@@ -196,19 +196,6 @@ describe('buildResumeHappySessionRpcParams', () => {
             directory: '/tmp',
             backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
             attachMetadataIdentityPolicy: 'replace_with_runtime_identity',
-        });
-    });
-
-    test('includes configured ACP backend backend targets when provided', () => {
-        expect(buildResumeHappySessionRpcParams({
-            sessionId: 's1',
-            directory: '/tmp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        } as any)).toEqual({
-            type: 'resume-session',
-            sessionId: 's1',
-            directory: '/tmp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
         });
     });
 

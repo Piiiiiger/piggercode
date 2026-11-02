@@ -21,12 +21,12 @@ describe('buildOutgoingMessageMeta', () => {
         const meta = buildOutgoingMessageMeta({
             sentFrom: 'web',
             permissionMode: 'default',
-            model: 'gemini-2.5-pro',
+            model: 'gpt-5.5',
             appendSystemPrompt: 'PROMPT',
         });
 
         expect(meta.source).toBe('ui');
-        expect(meta.model).toBe('gemini-2.5-pro');
+        expect(meta.model).toBe('gpt-5.5');
         expect('model' in meta).toBe(true);
     });
 
@@ -48,12 +48,12 @@ describe('buildOutgoingMessageMeta', () => {
             sentFrom: 'web',
             permissionMode: 'default',
             appendSystemPrompt: 'PROMPT',
-            fallbackModel: 'gemini-2.5-flash',
+            fallbackModel: 'gpt-5.4',
         });
 
         expect(meta.source).toBe('ui');
         expect('fallbackModel' in meta).toBe(true);
-        expect(meta.fallbackModel).toBe('gemini-2.5-flash');
+        expect(meta.fallbackModel).toBe('gpt-5.4');
     });
 
     it('normalizes legacy provider permission tokens to canonical intents', () => {

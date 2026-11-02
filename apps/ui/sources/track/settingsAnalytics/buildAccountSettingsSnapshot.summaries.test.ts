@@ -326,7 +326,7 @@ describe('buildAccountSettingsSnapshot', () => {
                     },
                 },
                 machine_b: {
-                    gemini: {
+                    claude: {
                         autoInstallWhenNeeded: true,
                         autoUpdateMode: 'off',
                     },

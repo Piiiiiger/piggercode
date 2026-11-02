@@ -11,7 +11,7 @@ describe('sessionWorkStateMetadata', () => {
       metadata: {
         sessionWorkStateV1: {
           v: 1,
-          backendId: 'opencode',
+          backendId: 'claude',
           updatedAt: 10,
           items: [
             {
@@ -37,7 +37,7 @@ describe('sessionWorkStateMetadata', () => {
       },
       nextOwned: {
         v: 1,
-        backendId: 'opencode',
+        backendId: 'claude',
         updatedAt: 20,
         items: [
           {

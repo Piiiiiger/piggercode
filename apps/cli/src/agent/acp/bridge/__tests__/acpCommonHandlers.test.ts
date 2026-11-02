@@ -24,7 +24,7 @@ describe('forwardAcpPermissionRequest', () => {
       },
     } as any;
 
-    forwardAcpPermissionRequest({ msg, session, agent: 'gemini' as any });
+    forwardAcpPermissionRequest({ msg, session, agent: 'codex' as any });
 
     expect(sendAgentMessage).toHaveBeenCalledTimes(1);
     const [, message] = sendAgentMessage.mock.calls[0];
@@ -65,7 +65,7 @@ describe('forwardAcpPermissionRequest', () => {
       },
     } as any;
 
-    forwardAcpPermissionRequest({ msg, session, agent: 'gemini' as any });
+    forwardAcpPermissionRequest({ msg, session, agent: 'codex' as any });
 
     expect(sendAgentMessage).toHaveBeenCalledTimes(1);
     const [, message] = sendAgentMessage.mock.calls[0];
@@ -98,7 +98,7 @@ describe('forwardAcpPermissionRequest', () => {
       },
     } as any;
 
-    forwardAcpPermissionRequest({ msg, session, agent: 'gemini' as any });
+    forwardAcpPermissionRequest({ msg, session, agent: 'codex' as any });
 
     const [, message] = sendAgentMessage.mock.calls[0];
     expect((message as any).options.input).toEqual({ locations: [{ path: '/tmp/x' }] });

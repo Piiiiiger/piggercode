@@ -268,43 +268,6 @@ describe('session.fork replay branch — canonical creation delegation', () => {
     expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({ permissionMode: 'plan' }));
   });
 
-  it('carries OpenCode affinity metadata and environment into the forked child', async () => {
-    primeParent('opencode', {
-      opencodeBackendMode: 'server',
-      opencodeServerBaseUrl: 'http://127.0.0.1:4096',
-      opencodeServerBaseUrlExplicit: true,
-    });
-    const spawnSession = vi.fn(async () => ({ type: 'success', sessionId: 'sess_child' } as const));
-    const handler = registerForkHandler(spawnSession);
-
-    const result = await handler({
-      v: 1,
-      parentSessionId: 'sess_parent',
-      forkPoint: { type: 'latest' },
-      strategy: 'replay',
-    });
-
-    expect(result).toMatchObject({ ok: true, childSessionId: 'sess_child' });
-
-    // The OpenCode affinity overlay is an ingress-specific fact that must reach
-    // both the creation metadata and the launch environment.
-    const creation = getOrCreateSessionByTag.mock.calls[0]![0] as { metadata: Record<string, unknown> };
-    expect(creation.metadata).toMatchObject({
-      forkV1: { providerHint: { providerId: 'opencode' } },
-      opencodeBackendMode: 'server',
-      // The affinity reader normalizes the base URL; the child records that form.
-      opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-      opencodeServerBaseUrlExplicit: true,
-    });
-    expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({
-      environmentVariables: expect.objectContaining({
-        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-        PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
-      }),
-    }));
-  });
-
   it('retains a possibly admitted child and reports the launch envelope when spawn outcome is unexpected', async () => {
     const spawnSession = vi.fn(async () => ({
       type: 'error',

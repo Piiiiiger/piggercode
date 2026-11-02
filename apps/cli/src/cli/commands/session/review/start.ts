@@ -27,7 +27,7 @@ export async function cmdSessionReviewStart(
     startIndex: 2,
     valueFlags: [
       '--engines', '--engine', '--instructions', '--change-type', '--base-branch', '--base-commit',
-      '--coderabbit-config', '--permission-mode',
+      '--permission-mode',
     ],
   });
   if (!idOrPrefix) {
@@ -41,7 +41,6 @@ export async function cmdSessionReviewStart(
   const changeType = readFlagValue(argv, '--change-type') ?? undefined;
   const baseBranch = readFlagValue(argv, '--base-branch') ?? undefined;
   const baseCommit = readFlagValue(argv, '--base-commit') ?? undefined;
-  const coderabbitConfigFiles = splitCsv(readFlagValue(argv, '--coderabbit-config'));
   const permissionMode = readFlagValue(argv, '--permission-mode') ?? undefined;
 
   if (engineIds.length === 0) {
@@ -61,13 +60,6 @@ export async function cmdSessionReviewStart(
     ...(base ? { base } : null),
     ...(permissionMode ? { permissionMode } : null),
   };
-
-  if (coderabbitConfigFiles.length > 0) {
-    input.engines = {
-      ...(input.engines ?? null),
-      coderabbit: { configFiles: coderabbitConfigFiles },
-    };
-  }
 
   const credentials = await deps.readCredentialsFn();
   if (!credentials) {

@@ -6,7 +6,7 @@ import { buildProfileGroups, toggleFavoriteProfileId } from './profileGrouping';
 function buildCustomProfile(params: {
     id: string;
     name: string;
-    compatibility: Record<'claude' | 'codex' | 'gemini', boolean>;
+    compatibility: Record<'claude' | 'codex', boolean>;
 }) {
     return AIBackendProfileSchema.parse({
         id: params.id,
@@ -20,7 +20,6 @@ function buildCustomProfile(params: {
         compatibilityByTargetKey: {
             [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'claude' })]: params.compatibility.claude,
             [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: params.compatibility.codex,
-            [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: params.compatibility.gemini,
         },
         envVarRequirements: [],
         isBuiltIn: false,
@@ -51,7 +50,7 @@ describe('buildProfileGroups', () => {
             buildCustomProfile({
                 id: 'custom-profile',
                 name: 'Custom Profile',
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             }),
         ];
 
@@ -69,23 +68,20 @@ describe('buildProfileGroups', () => {
     it('hides profiles that are incompatible with all enabled agents', () => {
         const customProfiles = [
             buildCustomProfile({
-                id: 'custom-gemini-only',
-                name: 'Gemini Only',
-                compatibility: { claude: false, codex: false, gemini: true },
+                id: 'custom-codex-only',
+                name: 'Codex Only',
+                compatibility: { claude: false, codex: true },
             }),
         ];
 
         const groups = buildProfileGroups({
             customProfiles,
-            favoriteProfileIds: ['gemini', 'custom-gemini-only'],
-            enabledAgentIds: ['claude', 'codex'],
+            favoriteProfileIds: ['custom-codex-only'],
+            enabledAgentIds: ['claude'],
         });
 
-        expect(groups.builtInProfiles.some((p) => p.id === 'gemini')).toBe(false);
-        expect(groups.builtInProfiles.some((p) => p.id === 'gemini-api-key')).toBe(false);
-        expect(groups.builtInProfiles.some((p) => p.id === 'gemini-vertex')).toBe(false);
-        expect(groups.favoriteProfiles.some((p) => p.id === 'custom-gemini-only')).toBe(false);
-        expect(groups.customProfiles.some((p) => p.id === 'custom-gemini-only')).toBe(false);
+        expect(groups.favoriteProfiles.some((p) => p.id === 'custom-codex-only')).toBe(false);
+        expect(groups.customProfiles.some((p) => p.id === 'custom-codex-only')).toBe(false);
     });
 
     it('hides disabled profiles from picker groups', () => {
@@ -93,7 +89,7 @@ describe('buildProfileGroups', () => {
             buildCustomProfile({
                 id: 'custom-profile',
                 name: 'Custom Profile',
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             }),
         ];
 
@@ -118,7 +114,7 @@ describe('buildProfileGroups', () => {
             buildCustomProfile({
                 id: 'custom-profile',
                 name: 'Custom Profile',
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             }),
         ];
 

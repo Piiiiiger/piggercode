@@ -46,8 +46,7 @@ over every file in this folder.
    A trimmed fragment glues two words onto the interpolated value.
 3. **Code stays byte-identical**: CLI invocations, paths, globs, flags, config keys, env vars,
    identifiers and URLs. A localised `happier attach <session-id>` is a command that does not run.
-4. **Product names never translate**: Happier, Claude, Codex, Gemini, Cursor, Copilot, OpenCode,
-   Qwen, Kimi, Pi, GitHub, MCP, tmux, zellij.
+4. **Product names never translate**: Happier, Claude, Codex, Gemini, GitHub, MCP, tmux, zellij.
 5. **Match the shape of the source**: no trailing period if the English has none; ALL CAPS stays
    ALL CAPS; a `\n` count must be preserved.
 6. **Short source, short translation.** A string of ≤12 characters is a control label living in a

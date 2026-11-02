@@ -1803,7 +1803,7 @@ export class ConnectedServiceQuotasCoordinator {
       indexedCandidates: input.indexedCandidates,
       readRuntimeAccountIdentity: this.readRuntimeAccountIdentity,
       readPersistedSessionAccountIdentity: this.readPersistedSessionAccountIdentity,
-      // Capability choke point: broker/shared-group-indirection providers (opencode/pi/claude —
+      // Capability choke point: broker/shared-group-indirection providers (claude —
       // `requiresExactRuntimeIdentity: false`) are DAEMON-authoritative; retain them via the indexed
       // identity instead of demanding a live probe their runtime cannot answer. codex still probes.
       resolveCandidateRequiresLiveIdentityProbe: async (candidate) =>

@@ -41,9 +41,6 @@ describe('providers harness: resolvePendingDrainTimeoutMs', () => {
     })).toBe(300_000);
   });
 
-  it('uses default timeout for other providers', () => {
-    expect(resolvePendingDrainTimeoutMs({ providerId: 'kilo', scenarioMeta: {} })).toBe(60_000);
-  });
 });
 
 describe('providers harness: waitForSessionActiveBestEffort', () => {

@@ -417,12 +417,6 @@ export const AcpHistoryImportInputV2Schema = BaseEnvelopeSchema.extend({
   }).passthrough()).optional(),
 }).passthrough();
 
-export const WorkspaceIndexingPermissionInputV2Schema = BaseEnvelopeSchema.extend({
-  title: z.string().optional(),
-  options: z.unknown().optional(),
-  toolCall: z.unknown().optional(),
-}).passthrough();
-
 // Dynamic Workflow run. The provider-native input carries a workflow `script`; the result
 // carries the canonical tool-use/task ids used to join the transcript card to the durable
 // `activity/workflow_run.v1` snapshot. Kept permissive/passthrough — the workflow detail is
@@ -477,7 +471,6 @@ const TOOL_INPUT_SCHEMAS: Record<KnownCanonicalToolNameV2, z.ZodTypeAny> = {
   ExitPlanMode: ExitPlanModeInputV2Schema,
   AskUserQuestion: AskUserQuestionInputV2Schema,
   AcpHistoryImport: AcpHistoryImportInputV2Schema,
-  WorkspaceIndexingPermission: WorkspaceIndexingPermissionInputV2Schema,
   change_title: ChangeTitleInputV2Schema,
   SubAgentRun: SubAgentRunInputV2Schema,
   AgentTeamCreate: AgentTeamCreateInputV2Schema,
@@ -512,7 +505,6 @@ const TOOL_RESULT_SCHEMAS: Record<KnownCanonicalToolNameV2, z.ZodTypeAny> = {
   ExitPlanMode: BaseEnvelopeSchema.passthrough(),
   AskUserQuestion: AskUserQuestionResultV2Schema,
   AcpHistoryImport: BaseEnvelopeSchema.passthrough(),
-  WorkspaceIndexingPermission: BaseEnvelopeSchema.passthrough(),
   change_title: ChangeTitleResultV2Schema,
   SubAgentRun: SubAgentRunResultV2Schema,
   AgentTeamCreate: AgentTeamCreateResultV2Schema,

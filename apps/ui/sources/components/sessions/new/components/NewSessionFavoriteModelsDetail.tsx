@@ -91,7 +91,6 @@ function buildFavoriteBackendIdentity(entry: ResolvedBackendCatalogEntry): Favor
         backendTargetKey: entry.targetKey,
         providerAgentId: entry.providerAgentId,
         builtInAgentId: entry.builtInAgentId,
-        configuredBackendId: entry.target.kind === 'configuredAcpBackend' ? entry.target.backendId : null,
     };
 }
 
@@ -311,10 +310,7 @@ function FavoriteBackendModelsCollector(props: Readonly<{
         const selectedModelOption = modelOptionByValue.get(selectedValue) ?? null;
         if (!selectedModelOption?.modelOptions?.length) return null;
         return computeSessionConfigOptionControlsForProvider({
-            providerId:
-                props.entry.target.kind === 'configuredAcpBackend'
-                    ? props.entry.target.backendId
-                    : props.entry.target.agentId,
+            providerId: props.entry.target.agentId,
             configOptions: selectedModelOption.modelOptions,
             overrides: Object.fromEntries(
                 Object.entries(props.selectedConfigOverrides ?? {}).map(([optionId, value]) => [optionId, { value }]),
@@ -487,9 +483,7 @@ export function NewSessionFavoriteModelsDetail(props: NewSessionFavoriteModelsDe
                         const snapshot = snapshotByOptionValue.get(value);
                         const model = snapshot?.modelByValue.get(value);
                         if (!snapshot || !model || !availableValues.has(value)) return;
-                        const providerId = snapshot.entry.target.kind === 'configuredAcpBackend'
-                            ? snapshot.entry.target.backendId
-                            : snapshot.entry.target.agentId;
+                        const providerId = snapshot.entry.target.agentId;
                         props.onSelectFavoriteModel(
                             snapshot.entry,
                             model.modelId,

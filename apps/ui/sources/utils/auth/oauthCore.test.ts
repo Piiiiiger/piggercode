@@ -6,24 +6,24 @@ describe('parseOauthCallbackUrl', () => {
   it('recognizes an explicitly permitted raw authorization code without inventing returned state', () => {
     expect(parseOauthCallbackUrl({
       url: '  synthetic-google-code/with+punctuation  ',
-      redirectUri: 'https://antigravity.google/oauth-callback',
+      redirectUri: 'https://auth.example.test/oauth-callback',
       allowRawAuthorizationCode: true,
     })).toEqual({ code: 'synthetic-google-code/with+punctuation', rawAuthorizationCode: true });
     expect(parseOauthCallbackUrl({
       url: 'synthetic-google-code/with+punctuation',
-      redirectUri: 'https://antigravity.google/oauth-callback',
+      redirectUri: 'https://auth.example.test/oauth-callback',
     })).toEqual({});
   });
 
   it.each([
     'https://foreign.example/oauth-callback?code=synthetic-code&state=foreign-state',
-    'https://antigravity.google/other?code=synthetic-code&state=foreign-state',
+    'https://auth.example.test/other?code=synthetic-code&state=foreign-state',
     '?code=synthetic-code',
     'code=synthetic-code',
     'synthetic-code#',
     'paste this synthetic-code',
   ])('never interprets a callback or malformed paste as a raw code: %s', (url) => {
-    expect(parseOauthCallbackUrl({ url, redirectUri: 'https://antigravity.google/oauth-callback', allowRawAuthorizationCode: true })).not.toHaveProperty('rawAuthorizationCode');
+    expect(parseOauthCallbackUrl({ url, redirectUri: 'https://auth.example.test/oauth-callback', allowRawAuthorizationCode: true })).not.toHaveProperty('rawAuthorizationCode');
   });
 
   it('extracts code/state from a matching redirect URL', () => {

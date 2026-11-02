@@ -189,7 +189,7 @@ describe('chooseSubmitMode', () => {
                 agentState: { controlledByUser: false },
                 pendingVersion: 0,
                 pendingCount: 1,
-                metadata: { flavor: 'pi' },
+                metadata: { flavor: 'codex' },
             } as any,
             nowMs: now,
         })).toBe('server_pending');

@@ -10,7 +10,7 @@ describe('agents/resolve', () => {
 
     it('uses canonical flavor when known and ignores tool prefix hints', () => {
         expect(resolveAgentIdForPermissionUi({ flavor: 'claude', toolName: 'CodexBash' })).toBe('claude');
-        expect(resolveAgentIdForPermissionUi({ flavor: 'gemini', toolName: 'CodexBash' })).toBe('gemini');
+        expect(resolveAgentIdForPermissionUi({ flavor: 'codex', toolName: 'CodexBash' })).toBe('codex');
     });
 
     it('prefers Codex tool prefix hints for permission UI', () => {

@@ -27,11 +27,4 @@ describe('assertBackendEnabledByAccountSettings', () => {
     })).toThrow(/disabled/i);
   });
 
-  it('throws when a configured ACP backend target is disabled', () => {
-    const targetKey = buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
-    expect(() => assertBackendEnabledByAccountSettings({
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      settings: { backendEnabledByTargetKey: { [targetKey]: false } },
-    })).toThrow(/review-bot/i);
-  });
 });

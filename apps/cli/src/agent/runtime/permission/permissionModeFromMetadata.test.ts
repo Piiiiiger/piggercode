@@ -89,7 +89,7 @@ describe('resolveSessionModeOverrideFromMetadataSnapshot', () => {
       metadata: {
         sessionModesV1: {
           v: 1,
-          provider: 'opencode',
+          provider: 'codex',
           updatedAt: 1,
           currentModeId: 'build',
           availableModes: [
@@ -184,8 +184,8 @@ describe('resolveModelOverrideFromMetadataSnapshot', () => {
     const fn = (permissionModeFromMetadata as any).resolveModelOverrideFromMetadataSnapshot;
     expect(typeof fn).toBe('function');
 
-    expect(fn({ metadata: { modelOverrideV1: { v: 1, updatedAt: 12, modelId: 'gemini-2.5-pro' } } as any }))
-      .toEqual({ modelId: 'gemini-2.5-pro', updatedAt: 12 });
+    expect(fn({ metadata: { modelOverrideV1: { v: 1, updatedAt: 12, modelId: 'gpt-5.2' } } as any }))
+      .toEqual({ modelId: 'gpt-5.2', updatedAt: 12 });
   });
 
   it('treats modelOverrideV1.modelId="default" as no override', () => {
@@ -203,7 +203,7 @@ describe('computePendingModelOverrideApplication', () => {
     expect(typeof fn).toBe('function');
 
     const res = fn({
-      metadata: { modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gemini-2.5-pro' } } as any,
+      metadata: { modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gpt-5.2' } } as any,
       lastAppliedUpdatedAt: 10,
     });
     expect(res).toBeNull();
@@ -214,10 +214,10 @@ describe('computePendingModelOverrideApplication', () => {
     expect(typeof fn).toBe('function');
 
     const res = fn({
-      metadata: { modelOverrideV1: { v: 1, updatedAt: 11, modelId: 'gemini-2.5-pro' } } as any,
+      metadata: { modelOverrideV1: { v: 1, updatedAt: 11, modelId: 'gpt-5.2' } } as any,
       lastAppliedUpdatedAt: 10,
     });
-    expect(res).toEqual({ modelId: 'gemini-2.5-pro', updatedAt: 11 });
+    expect(res).toEqual({ modelId: 'gpt-5.2', updatedAt: 11 });
   });
 });
 
@@ -225,11 +225,11 @@ describe('@piggercode/agents session metadata helpers', () => {
   it('resolves nested override objects consistently', () => {
     expect(
       resolveMetadataStringOverrideV1(
-        { modelOverrideV1: { v: 1, updatedAt: 12, modelId: 'gemini-2.5-pro' } },
+        { modelOverrideV1: { v: 1, updatedAt: 12, modelId: 'gpt-5.2' } },
         'modelOverrideV1',
         'modelId',
       ),
-    ).toEqual({ value: 'gemini-2.5-pro', updatedAt: 12 });
+    ).toEqual({ value: 'gpt-5.2', updatedAt: 12 });
 
     expect(
       resolveMetadataStringOverrideV1(

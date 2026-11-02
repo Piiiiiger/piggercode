@@ -100,7 +100,7 @@ describe('createAcpNdJsonStream', () => {
       jsonrpc: '2.0' as const,
       id: 2,
       method: 'session/prompt',
-      params: { sessionId: 'cursor-session', prompt: [] },
+      params: { sessionId: 'session-1', prompt: [] },
     };
 
     const write = stream.writable.getWriter().write(message);

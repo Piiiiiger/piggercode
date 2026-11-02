@@ -9,7 +9,6 @@ import {
   getAgentMediaCapabilities,
   isClaudeLocalPermissionBridgeAgentStateRequest,
   isClaudeUnifiedTerminalDialogChoiceAgentStateRequest,
-  KIMI_PROVIDER_FIELDS,
   resolveConnectedServiceDefaultProfileId,
   resolveConnectedServiceProfileLabel,
 } from './index.js';
@@ -69,10 +68,6 @@ describe('agents package exports', () => {
     expect(getAgentMediaCapabilities('codex').nativeImageGeneration).toBe('supported');
   });
 
-  it('does not expose legacy Kimi Python compatibility settings', () => {
-    expect(KIMI_PROVIDER_FIELDS).toEqual({});
-  });
-
   it('re-exports connected-service session option helpers from the package root', () => {
     expect(connectedServiceProfileKey({ serviceId: 'anthropic', profileId: 'work/team' })).toBe(
       'anthropic/work%2Fteam',
@@ -114,12 +109,6 @@ describe('agents package exports', () => {
       'user:file_upload',
     ].join(' '));
     expect(mod.CLAUDE_CODE_SETUP_TOKEN_SCOPES).toEqual(['user:inference']);
-    expect(mod.GEMINI_CLI_OAUTH_CLIENT_ID).toBe(
-      '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com',
-    );
-    expect(mod.GEMINI_CLI_OAUTH_CLIENT_SECRET).toBe(
-      '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',
-    );
     expect(mod.OPENAI_CODEX_OAUTH_CLIENT_ID).toBe('app_EMoamEEZ73f0CkXaXp7hrann');
     expect(mod.OPENAI_CODEX_OAUTH_CALLBACK_URL).toBe(
       'http://localhost:1455/auth/callback',

@@ -3,14 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { filterImportedTraceEvents, isImportedTraceEvent } from '../../src/testkit/providers/satisfaction/traceSatisfaction';
 
 describe('providers: trace satisfaction import filtering', () => {
-  it('identifies ACP imported events by localId prefix', () => {
-    const imported = {
-      kind: 'tool-call',
-      localId: 'acp-import:v1:opencode:abc',
-      payload: { id: 'something' },
-    } as any;
-    expect(isImportedTraceEvent(imported)).toBe(true);
-  });
 
   it('identifies ACP imported events by payload id prefix', () => {
     const imported = {

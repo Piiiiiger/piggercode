@@ -1,4 +1,4 @@
-import { AcpCatalogSettingsV1Schema, BackendTargetRefSchema, LlmTaskRunnerConfigV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
+import { BackendTargetRefSchema, LlmTaskRunnerConfigV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 import { isAgentId } from '@/agents/registry/registryCore';
 
@@ -100,16 +100,6 @@ function buildInstallablesPolicySummaryProperties(value: unknown): Record<string
         autoUpdateOffCount,
         autoUpdateNotifyCount,
         autoUpdateAutoCount,
-    };
-}
-
-function buildAcpCatalogSummaryProperties(value: unknown): Record<string, number> {
-    const record = value && typeof value === 'object' && !Array.isArray(value)
-        ? value as { backends?: unknown }
-        : {};
-
-    return {
-        backendCount: Array.isArray(record.backends) ? record.backends.length : 0,
     };
 }
 
@@ -238,20 +228,6 @@ export const ACCOUNT_RUNTIME_SETTING_DEFINITIONS = defineSettingDefinitions({
             privacy: 'count_only',
             identityScope: 'person',
             serializeCurrentProperties: buildInstallablesPolicySummaryProperties,
-        },
-    },
-    acpCatalogSettingsV1: {
-        schema: AcpCatalogSettingsV1Schema.catch({ v: 2, backends: [] }).default({ v: 2, backends: [] }),
-        default: { v: 2, backends: [] },
-        description: 'Configured ACP backends',
-        storageScope: 'account',
-        analytics: {
-            trackCurrentState: true,
-            trackChanges: true,
-            valueKind: 'count',
-            privacy: 'count_only',
-            identityScope: 'person',
-            serializeCurrentProperties: buildAcpCatalogSummaryProperties,
         },
     },
 });

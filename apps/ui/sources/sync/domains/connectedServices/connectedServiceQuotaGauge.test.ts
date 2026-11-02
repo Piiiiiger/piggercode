@@ -60,27 +60,6 @@ const formatter: ConnectedServiceQuotaGaugeLabelFormatter = {
 };
 
 describe('computeConnectedServiceQuotaGaugeViewModel', () => {
-    it('projects Antigravity quota onto the exact active model without borrowing another version', () => {
-        const usage = { ...snapshot([
-            meter({ meterId: 'model:gemini-2.5-flash', modelId: 'gemini-2.5-flash', utilizationPct: 80, label: 'Gemini 2.5 Flash' }),
-            meter({ meterId: 'model:gemini-3-flash', modelId: 'gemini-3-flash', utilizationPct: 20, label: 'Gemini 3 Flash' }),
-        ]), serviceId: 'antigravity' as const };
-        const params = { snapshot: usage, windowMode: 'most_constrained' as const, activeModelId: 'gemini-3-flash', nowMs: 2000, formatter };
-        expect(computeConnectedServiceQuotaGaugeViewModel(params)?.remainingPct).toBe(80);
-        expect(computeConnectedServiceQuotaGaugeViewModel({ ...params, activeModelId: 'gemini-4-flash' })).toBeNull();
-        expect(computeConnectedServiceQuotaGaugeViewModel({ ...params, activeModelId: null })).toBeNull();
-        expect(usage.meters).toHaveLength(2);
-    });
-    it('retains shared account windows without inferring their membership from model names', () => {
-        const usage = { ...snapshot([
-            meter({ meterId: 'gemini-5h', providerLimitId: 'gemini-5h', utilizationPct: 20, label: 'Gemini' }),
-            meter({ meterId: '3p-5h', providerLimitId: '3p-5h', utilizationPct: 99, label: 'Other models' }),
-        ]), serviceId: 'antigravity' as const };
-        const params = { snapshot: usage, windowMode: 'most_constrained' as const, activeModelId: 'gemini-3-flash', nowMs: 2000, formatter };
-        expect(computeConnectedServiceQuotaGaugeViewModel(params)?.allMeterRows.map(row => row.meterId)).toEqual(['gemini-5h', '3p-5h']);
-        expect(computeConnectedServiceQuotaGaugeViewModel({ ...params, activeModelId: 'unknown-provider-model' })?.allMeterRows.map(row => row.meterId))
-            .toEqual(['gemini-5h', '3p-5h']);
-    });
     it('selects global windows from the pool allowances across raw usage sources', () => {
         const usage = snapshot([
             meter({ meterId: 'daily-other', label: 'Daily other', providerLimitId: 'other', windowDurationMs: 86_400_000, utilizationPct: 99 }),
@@ -701,23 +680,6 @@ describe('computeConnectedServiceQuotaGaugeViewModel', () => {
         expect(source?.snapshot.recoveryCredits).toBe(metadataCredits);
     });
 
-    it('marks Gemini check-now support only for connected-service sources', () => {
-        const quotaSnapshot = snapshot([
-            meter({ meterId: 'daily', label: 'Daily', used: 40, limit: 100 }),
-        ]);
-
-        expect(resolveConnectedServiceQuotaGaugeSource({
-            providerId: 'gemini',
-            sourceKind: 'connected_service_profile',
-            snapshot: quotaSnapshot,
-        })?.checkNowSupported).toBe(true);
-        expect(resolveConnectedServiceQuotaGaugeSource({
-            providerId: 'gemini',
-            sourceKind: 'native_runtime_evidence',
-            snapshot: quotaSnapshot,
-        })?.checkNowSupported).toBe(false);
-    });
-
     it('derives a reliable provider usage projection from runtime quota windows', () => {
         const quotaSnapshot = deriveConnectedServiceQuotaSnapshotFromRuntimeIssue({
             v: 1,
@@ -823,13 +785,6 @@ describe('computeConnectedServiceQuotaGaugeViewModel', () => {
         } as const);
 
         expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('codex'))?.serviceId).toBe('openai-codex');
-        expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('gemini'))?.serviceId).toBe('gemini');
-        // Multi-vendor agents fall back to their first supported service id when
-        // the runtime issue carries no connected-service ref.
-        expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('opencode'))?.serviceId).toBe('openai-codex');
-        expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('pi'))?.serviceId).toBe('openai-codex');
-        // Providers without connected-services support stay gauge-less.
-        expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('auggie'))).toBeNull();
         expect(deriveConnectedServiceQuotaSnapshotFromRuntimeIssue(buildIssue('not-a-real-provider'))).toBeNull();
     });
 

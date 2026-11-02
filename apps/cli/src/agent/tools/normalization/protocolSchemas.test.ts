@@ -19,7 +19,6 @@ describe('protocol tool v2 schemas', () => {
         expect(KNOWN_CANONICAL_TOOL_NAMES_V2).toContain('ExitPlanMode');
         expect(KNOWN_CANONICAL_TOOL_NAMES_V2).toContain('AskUserQuestion');
         expect(KNOWN_CANONICAL_TOOL_NAMES_V2).toContain('AcpHistoryImport');
-        expect(KNOWN_CANONICAL_TOOL_NAMES_V2).toContain('WorkspaceIndexingPermission');
         expect(KNOWN_CANONICAL_TOOL_NAMES_V2).toContain('change_title');
     });
 
@@ -29,7 +28,7 @@ describe('protocol tool v2 schemas', () => {
         const parsed = ToolHappierMetaV2Schema.parse({
             v: 2,
             protocol: 'acp',
-            provider: 'opencode',
+            provider: 'codex',
             rawToolName: 'execute',
             canonicalToolName: 'Bash',
         });

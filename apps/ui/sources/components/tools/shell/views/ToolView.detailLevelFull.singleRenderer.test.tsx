@@ -24,7 +24,7 @@ vi.mock('react-native-device-info', () => ({
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['claude', 'codex', 'gemini', 'opencode'],
+    AGENT_IDS: ['claude', 'codex'],
     DEFAULT_AGENT_ID: 'claude',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({ toolRendering: { hideUnknownToolsByDefault: false } }),

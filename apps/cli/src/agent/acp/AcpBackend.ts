@@ -1700,8 +1700,8 @@ export class AcpBackend implements AgentBackend {
       initializeClientCapabilitiesMeta: this.options.initializeClientCapabilitiesMeta,
     });
 
-    // Some ACP agents (notably Gemini CLI) can swallow early stdin before their ACP
-    // stdio bridge is ready. Waiting briefly avoids poisoning the channel.
+    // Some ACP agents can swallow early stdin before their ACP stdio bridge is
+    // ready. Waiting briefly avoids poisoning the channel.
     const initDelay = (() => {
       const raw = this.transport.getInitDelayMs?.();
       return typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? raw : 0;
@@ -2277,11 +2277,6 @@ export class AcpBackend implements AgentBackend {
       this.bumpResponseCompletionTimeout();
     }
 
-    const isGeminiAcpDebugEnabled = (() => {
-      const flag = process.env.PIGGERCODE_STACK_GEMINI_ACP_DEBUG;
-      return flag === '1' || flag === 'true';
-    })();
-
     const sanitizeForLogs = (value: unknown, depth = 0): unknown => {
       if (depth > 4) return '[truncated depth]';
       if (typeof value === 'string') {
@@ -2346,18 +2341,6 @@ export class AcpBackend implements AgentBackend {
           hasContent: !!update.content,
           hasLocations: !!update.locations,
         }, null, 2));
-      }
-
-      // Gemini ACP deep debug: dump raw terminal tool updates to verify where tool outputs live.
-      if (
-        isGeminiAcpDebugEnabled &&
-        this.transport.agentName === 'gemini' &&
-        (sessionUpdateType === 'tool_call_update' || sessionUpdateType === 'tool_call') &&
-        (update.status === 'completed' || update.status === 'failed' || update.status === 'cancelled')
-      ) {
-        const keys = Object.keys(update);
-        logger.debug('[AcpBackend] [GeminiACP] Terminal tool update keys:', keys);
-        logger.debug('[AcpBackend] [GeminiACP] Terminal tool update payload:', JSON.stringify(sanitizeForLogs(update), null, 2));
       }
 
       const ctx = this.createHandlerContext();
@@ -2583,7 +2566,7 @@ export class AcpBackend implements AgentBackend {
       handleThinkingUpdate(update, ctx);
 
       // Log unhandled session update types for debugging
-      // Cast to string to avoid TypeScript errors (SDK types don't include all Gemini-specific update types)
+      // Cast to string: agents can send update types that the SDK types do not list
       const updateTypeStr = sessionUpdateType as string;
       const handledTypes = [
         'agent_message_chunk',
@@ -3725,10 +3708,6 @@ export class AcpBackend implements AgentBackend {
     this.emit({ type: 'event', name: 'current_model_update', payload: { currentModelId: projectedModelId } });
   }
 
-  /**
-   * Wait for the response to complete (idle status after all chunks received)
-   * Call this after sendPrompt to wait for Gemini to finish responding
-   */
   private clearTrackedToolCall(toolCallId: string, reason: string): void {
     const wasActive = this.toolCalls.cancel(toolCallId);
     if (wasActive) {

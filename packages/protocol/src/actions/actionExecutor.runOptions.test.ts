@@ -73,7 +73,7 @@ describe('createActionExecutor model/effort run-option parity', () => {
       'subagents.delegate.start',
       {
         sessionId: 's1',
-        backendTargetKeys: ['agent:cursor'],
+        backendTargetKeys: ['agent:codex'],
         instructions: 'Do the thing.',
         modelId: ' model-a ',
         configOptions: { ' effort ': ' high ' },

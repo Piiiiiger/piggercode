@@ -11,8 +11,6 @@ import {
     DirectSessionTakeoverResponseSchema,
     DirectSessionsCandidatesListRequestSchema,
     DirectSessionsCandidatesListResponseSchema,
-    DirectSessionsAcpSessionListCapabilityRequestSchema,
-    DirectSessionsAcpSessionListCapabilityResponseSchema,
     DirectTranscriptPageRequestSchema,
     DirectTranscriptPageResponseSchema,
     DirectTranscriptReadAfterRequestSchema,
@@ -83,27 +81,6 @@ export async function machineDirectSessionsCandidatesList(
     input: DirectSessionsCandidatesListRequest,
     opts?: MachineDirectSessionsOpts,
 ): Promise<DirectSessionsCandidatesListResponse> {
-    if (input.source.kind === 'acpSessionList') {
-        try {
-            await callDirectSessionMachineRpc({
-                machineId: input.machineId,
-                method: RPC_METHODS.DAEMON_DIRECT_SESSIONS_ACP_SESSION_LIST_CAPABILITY_GET,
-                input: {},
-                requestSchema: DirectSessionsAcpSessionListCapabilityRequestSchema,
-                responseSchema: DirectSessionsAcpSessionListCapabilityResponseSchema,
-                opts,
-            });
-        } catch (error) {
-            if (!isRpcMethodNotAvailableError(error) && !isRpcMethodNotFoundError(error)) {
-                throw error;
-            }
-            return {
-                ok: false,
-                errorCode: 'provider_unavailable',
-                error: 'acp_session_list_requires_daemon_upgrade',
-            };
-        }
-    }
     return callDirectSessionMachineRpc({
         machineId: input.machineId,
         method: RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST,

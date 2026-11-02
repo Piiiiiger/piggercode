@@ -5,7 +5,7 @@ import { sanitizeNewSessionConfigOverridesForModelSelection } from './newSession
 describe('sanitizeNewSessionConfigOverridesForModelSelection', () => {
     it('preserves exact nonblank config identifiers and selected values', () => {
         expect(sanitizeNewSessionConfigOverridesForModelSelection({
-            providerId: 'cursor',
+            providerId: 'codex',
             configOptions: [{
                 id: ' effort ',
                 name: 'Effort',

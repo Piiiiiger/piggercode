@@ -51,7 +51,7 @@ describe('createSessionMetadata', () => {
 
     it('seeds acpSessionModeOverrideV1 when agentModeId is provided', () => {
         const { metadata } = createSessionMetadata({
-            flavor: 'opencode',
+            flavor: 'codex',
             machineId: 'machine-1',
             startedBy: 'terminal',
             agentModeId: 'plan',
@@ -76,7 +76,7 @@ describe('createSessionMetadata', () => {
 
     it('preserves exact nonblank opaque mode and model identifiers', () => {
         const { metadata } = createSessionMetadata({
-            flavor: 'cursor',
+            flavor: 'codex',
             machineId: 'machine-1',
             startedBy: 'daemon',
             agentModeId: ' plan ',
@@ -296,7 +296,7 @@ describe('createSessionMetadata', () => {
 
         try {
             const { metadata } = createSessionMetadata({
-                flavor: 'opencode',
+                flavor: 'codex',
                 machineId: 'machine-1',
                 startedBy: 'daemon',
             });
@@ -319,17 +319,17 @@ describe('createSessionMetadata', () => {
     it('publishes the broker selection identity needed to authorize terminal-started connected sessions', () => {
         const envKey = 'PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY';
         const previous = process.env[envKey];
-        process.env[envKey] = 'opencode|connected|broker:1|openai-codex:work:acct-1|group:team';
+        process.env[envKey] = 'codex|connected|broker:1|openai-codex:work:acct-1|group:team';
 
         try {
             const { metadata } = createSessionMetadata({
-                flavor: 'opencode',
+                flavor: 'codex',
                 machineId: 'machine-1',
                 startedBy: 'terminal',
             });
 
             expect((metadata as Record<string, unknown>).connectedServiceBrokerSelectionIdentityV1).toBe(
-                'opencode|connected|broker:1|openai-codex:work:acct-1|group:team',
+                'codex|connected|broker:1|openai-codex:work:acct-1|group:team',
             );
             expect(process.env[envKey]).toBeUndefined();
         } finally {
@@ -343,26 +343,16 @@ describe('createSessionMetadata', () => {
 
     it('seeds acpTransportV1 when acpProviderId is provided', () => {
         const { metadata } = createSessionMetadata({
-            flavor: 'opencode',
+            flavor: 'codex',
             machineId: 'machine-1',
             startedBy: 'terminal',
-            acpProviderId: 'opencode',
+            acpProviderId: 'codex',
         } as any);
 
         expect((metadata as any).acpTransportV1).toEqual({
             v: 1,
-            provider: 'opencode',
+            provider: 'codex',
         });
-    });
-
-    it('preserves arbitrary configured ACP flavor ids', () => {
-        const { metadata } = createSessionMetadata({
-            flavor: 'acp:custom-kiro',
-            machineId: 'machine-1',
-            startedBy: 'terminal',
-        } as any);
-
-        expect(metadata.flavor).toBe('acp:custom-kiro');
     });
 
     it('uses the explicit directory for the session path when provided', () => {

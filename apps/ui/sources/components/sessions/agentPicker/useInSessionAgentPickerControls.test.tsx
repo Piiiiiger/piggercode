@@ -165,7 +165,7 @@ describe('useInSessionAgentPickerControls', () => {
             method: string;
             payload: { selections?: readonly unknown[] };
         }) => Promise.resolve(
-            ['session.continuation.inspectBatch', 'session.continuation.inspectBackendTargets'].includes(params.method)
+            params.method === 'session.continuation.inspectBatch'
                 ? { v: 1, inspections: (params.payload.selections ?? []).map(() => AVAILABLE) }
                 : AVAILABLE,
         ));
@@ -294,14 +294,14 @@ describe('useInSessionAgentPickerControls', () => {
     });
 
     it('publishes every target answer from one ordered picker projection', async () => {
-        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('gemini')] });
+        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('otherAgent')] });
         await openPicker(hook);
 
         expect(machineRpcWithServerScope).toHaveBeenCalledTimes(1);
         expect(optionsOf(hook.getCurrent()).map((option) => option.id)).toEqual([
             'engine:claude',
             'builtInAgent:codex',
-            'builtInAgent:gemini',
+            'builtInAgent:otherAgent',
         ]);
     });
 
@@ -374,25 +374,6 @@ describe('useInSessionAgentPickerControls', () => {
         expect(detailModelSummaryRef.current).toBe(t('session.agentContinuation.detailDescriptionEmpty'));
         expect(detailModelSummaryRef.current).not.toContain('carries over');
         expect(detailModelSummaryRef.current).toContain('Nothing is sent');
-    });
-
-    it('arms configured B with exact identity after configured A is excluded as current', async () => {
-        const configured = (id: string) => entry('customAcp', {
-            target: { kind: 'configuredAcpBackend', backendId: id }, targetKey: `acpBackend:${id}`,
-            family: 'configuredAcpBackend', builtInAgentId: null, title: id,
-        });
-        const hook = await renderControls({
-            currentAgentId: 'customAcp',
-            entries: [configured('a'), configured('b'), entry('codex')],
-            source: { ...supportedSource, currentBackendTargetKey: 'acpBackend:a' },
-        });
-        await openPicker(hook);
-        await act(async () => optionsOf(hook.getCurrent()).find((option) => option.id === 'acpBackend:b')?.onSelectImmediate?.());
-        expect(hook.getCurrent().armedContinuation).toMatchObject({
-            sourceBackendTarget: { kind: 'configuredAcpBackend', backendId: 'a' },
-            selection: { agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } },
-        });
-        expect(optionsOf(hook.getCurrent()).some((option) => option.id === 'acpBackend:a')).toBe(false);
     });
 
     it('arms nothing until a row is deliberately selected', async () => {
@@ -626,7 +607,7 @@ describe('useInSessionAgentPickerControls', () => {
         });
 
         await hook.rerender({
-            source: { ...supportedSource, currentBackendTargetKey: 'builtInAgent:gemini' },
+            source: { ...supportedSource, currentBackendTargetKey: 'builtInAgent:otherAgent' },
         });
 
         expect(hook.getCurrent().armedContinuation).toBeNull();
@@ -641,7 +622,7 @@ describe('useInSessionAgentPickerControls', () => {
         });
         expect(hook.getCurrent().agentPickerSelectedOptionId).toBe('builtInAgent:codex');
 
-        await hook.rerender({ entries: [entry('claude'), entry('gemini')] });
+        await hook.rerender({ entries: [entry('claude'), entry('otherAgent')] });
 
         expect(hook.getCurrent().agentPickerSelectedOptionId).toBeNull();
     });
@@ -692,7 +673,7 @@ describe('useInSessionAgentPickerControls', () => {
         // inside a live rail keeps that gesture on screen, so the arm survives and
         // the reader can still take it back.
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex')],
         });
         await openPicker(hook);
 
@@ -704,8 +685,7 @@ describe('useInSessionAgentPickerControls', () => {
         await hook.rerender({
             entries: [
                 entry('claude'),
-                entry('codex', { family: 'configuredAcpBackend' }),
-                entry('gemini'),
+                entry('codex'),
             ],
         });
 
@@ -744,7 +724,7 @@ describe('useInSessionAgentPickerControls', () => {
 
     it('never calls a machine it already knows is offline, and offers no rail', async () => {
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
             source: { ...supportedSource, machinePresence: 'offline' },
         });
         await openPicker(hook);
@@ -762,7 +742,7 @@ describe('useInSessionAgentPickerControls', () => {
             { rpcErrorCode: 'RPC_METHOD_NOT_AVAILABLE' },
         ));
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
         });
 
         // An unanswered question is not a choice, so a rail is never offered on the
@@ -784,7 +764,7 @@ describe('useInSessionAgentPickerControls', () => {
             answers.push(resolve);
         }));
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
         });
 
         await act(async () => {
@@ -882,7 +862,7 @@ describe('useInSessionAgentPickerControls', () => {
         // Agent left to choose, the picker says nothing at all instead.
         machineRpcWithServerScope.mockRejectedValue(new Error('Machine RPC timed out after 30000ms'));
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
         });
         await openPicker(hook);
 
@@ -928,7 +908,7 @@ describe('useInSessionAgentPickerControls', () => {
 
     it('shows no Agent rail at all when nothing in this Session can be switched to', async () => {
         const hook = await renderControls({
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
             source: { ...supportedSource, storageKind: 'direct' },
         });
         await openPicker(hook);

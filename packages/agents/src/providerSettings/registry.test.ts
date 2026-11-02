@@ -37,18 +37,4 @@ describe('provider settings registry', () => {
     expect(codexDefinition?.fields.codexBackendMode?.default).toBe('appServer');
   });
 
-  it('exposes Cursor settings from the canonical provider definition', () => {
-    const cursorDefinition = getProviderSettingsDefinition('cursor' as any);
-    expect(cursorDefinition).not.toBeNull();
-    expect(cursorDefinition?.fields.cursorBinaryPath?.default).toBe('');
-    expect(cursorDefinition?.fields.cursorAgentFallbackEnabled?.default).toBe(true);
-    expect(cursorDefinition?.fields.cursorApiEndpoint?.default).toBe('');
-    expect(cursorDefinition?.fields.cursorApiKeyOverride).toBeUndefined();
-  });
-
-  it('exposes Kimi settings from the canonical provider definition', () => {
-    const kimiDefinition = getProviderSettingsDefinition('kimi' as any);
-    expect(kimiDefinition).not.toBeNull();
-    expect(kimiDefinition?.fields).toEqual({});
-  });
 });

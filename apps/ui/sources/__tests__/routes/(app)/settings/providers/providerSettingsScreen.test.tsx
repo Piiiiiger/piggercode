@@ -348,12 +348,7 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
 
         return {
             id: agentId,
-            displayNameKey:
-                agentId === 'customAcp'
-                    ? 'agentInput.agent.customAcp'
-                    : agentId === 'opencode'
-                        ? 'agentInput.agent.opencode'
-                        : 'Codex',
+            displayNameKey: 'Codex',
             subtitleKey: 'subtitle',
             availability: { experimental: false },
             resume: { supportsVendorResume: false, experimental: false },
@@ -369,24 +364,24 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
                 acpModelConfigOptionId: null,
             },
             cli: {
-                detectKey: agentId === 'cursor' ? 'cursor-agent' : agentId,
+                detectKey: agentId,
                 installBanner: { installKind: 'installer', installCommand: null, guideUrl: null },
             },
             uiConnectedService: {
                 serviceId: null,
-                label: agentId === 'customAcp' ? 'Custom ACP' : 'cloud',
+                label: 'cloud',
                 connectRoute: null,
             },
             connectedServices: {
                 supportedServiceIds: ['openai-codex'],
             },
             localControl: { supported: false },
-            ui: { agentPickerIconName: agentId === 'customAcp' ? 'git-network-outline' : 'code-slash' },
+            ui: { agentPickerIconName: 'code-slash' },
         };
     };
     return {
         ...actual,
-        isAgentId: (v: any) => v === 'codex' || v === 'customAcp' || v === 'opencode' || v === 'claude' || v === 'cursor',
+        isAgentId: (v: any) => v === 'codex' || v === 'claude',
         getAgentCore: (agentId: string) => createMockAgentCore(agentId),
     };
 });
@@ -557,8 +552,6 @@ describe('ProviderSettingsScreen', () => {
         settingsState.sessionDefaultPermissionModeByTargetKey = {};
         settingsState.backendCliSourcePreferenceById = {};
         settingsState.contextSelectionsV1 = undefined;
-        settingsState.opencodeServerBaseUrl = '';
-        settingsState.opencodeServerBaseUrlByServerIdV1 = {};
         machinesState = [
             { id: 'm1', metadata: { displayName: 'Machine One', host: 'm1', homeDir: '/Users/m1' } },
             { id: 'm2', metadata: { displayName: 'Machine Two', host: 'm2', homeDir: '/Users/m2' } },
@@ -605,25 +598,6 @@ describe('ProviderSettingsScreen', () => {
         expect(installer.props.installed).toBe(false);
         expect(installer.props.managedInstalled).toBe(false);
         expect(installer.props.installability).toMatchObject({ kind: 'installable' });
-    });
-
-    it('uses provider capability ids for installability when the CLI detect key differs', async () => {
-        mockProviderId = 'cursor';
-        cliDetectionState.available = { cursor: true };
-        cliDetectionState.login = { cursor: null };
-        cliDetectionState.authStatus = { cursor: null };
-        cliDetectionState.resolvedPath = { cursor: null };
-        cliDetectionState.resolutionSource = { cursor: 'system' };
-
-        const screen = await renderProviderSettingsScreen();
-        const installer = screen.findByType('ProviderCliInstallItem' as any);
-        expect(installer.props.capabilityId).toBe('cli.cursor');
-        expect(useCLIDetectionMock).toHaveBeenLastCalledWith('m1', expect.objectContaining({
-            agentIds: ['cursor'],
-        }));
-        expect(useCapabilityInstallabilityMock).toHaveBeenLastCalledWith(expect.objectContaining({
-            capabilityId: 'cli.cursor',
-        }));
     });
 
     it('keeps provider CLI install available on web while hiding desktop-only auth actions', async () => {
@@ -1000,80 +974,11 @@ describe('ProviderSettingsScreen', () => {
         delete (settingsState as any).codexBackendMode;
     });
 
-    it('redirects the custom ACP provider route back to the providers index', async () => {
-        mockProviderId = 'customAcp';
-        const screen = await renderProviderSettingsScreen();
-        const redirect = screen.findByType('Redirect' as any);
-        expect(redirect.props.href).toBe('/settings/providers');
-    });
-
-    it('reads and writes the OpenCode server url per active server', async () => {
-        mockProviderId = 'opencode';
-        settingsState.opencodeServerBaseUrl = 'http://127.0.0.1:4999/';
-        settingsState.opencodeServerBaseUrlByServerIdV1 = {
-            server1: 'http://127.0.0.1:4096/',
-            server2: 'http://127.0.0.1:4097/',
-        };
-        mockProviderSettingsPlugin.mockReturnValue({
-            providerId: 'opencode',
-            title: 'OpenCode',
-            icon: { ionName: 'code-slash-outline', color: '#5AC8FA' },
-            settings: {},
-            uiSections: [
-                {
-                    id: 'opencodeServer',
-                    title: 'Server connection',
-                    fields: [{
-                        key: 'opencodeServerBaseUrl',
-                        kind: 'text',
-                        title: 'Existing OpenCode server URL',
-                        binding: {
-                            kind: 'perActiveServer',
-                            fallbackSettingKey: 'opencodeServerBaseUrl',
-                            byServerIdSettingKey: 'opencodeServerBaseUrlByServerIdV1',
-                        },
-                    }],
-                },
-            ],
-            buildOutgoingMessageMetaExtras: () => ({}),
-        });
-
-        const screen = await renderProviderSettingsScreen();
-        let textInputs = screen.findAllByType('TextInput' as any);
-        expect(textInputs).toHaveLength(1);
-        expect(textInputs[0]?.props.value).toBe('http://127.0.0.1:4096/');
-
-        await act(async () => {
-            textInputs[0]?.props.onChangeText('http://127.0.0.1:5000/');
-        });
-        await flushHookEffects();
-
-        expect(applySettingsMock).toHaveBeenCalledWith({
-            opencodeServerBaseUrlByServerIdV1: {
-                server1: 'http://127.0.0.1:5000/',
-                server2: 'http://127.0.0.1:4097/',
-            },
-        });
-
-        await act(async () => {
-            activeServerSnapshot = {
-                serverId: 'server2',
-                serverUrl: 'http://localhost:4000',
-                generation: 2,
-            };
-            activeServerSubscriber?.(activeServerSnapshot);
-        });
-        await flushHookEffects();
-
-        textInputs = screen.findAllByType('TextInput' as any);
-        expect(textInputs[0]?.props.value).toBe('http://127.0.0.1:4097/');
-    });
-
     it('renders translated number placeholders for provider settings fields', async () => {
-        mockProviderId = 'opencode';
+        mockProviderId = 'codex';
         mockProviderSettingsPlugin.mockReturnValue({
-            providerId: 'opencode',
-            title: { key: 'settingsProviders.plugins.opencode.title' },
+            providerId: 'codex',
+            title: { key: 'settingsProviders.plugins.codex.title' },
             icon: { ionName: 'code-slash-outline', color: '#5AC8FA' },
             settings: {},
             uiSections: [
@@ -1112,7 +1017,4 @@ const settingsState = {
     sessionDefaultPermissionModeByTargetKey: {},
     backendCliSourcePreferenceById: {},
     contextSelectionsV1: undefined as any,
-    acpCatalogSettingsV1: { v: 2, backends: [] },
-    opencodeServerBaseUrl: '',
-    opencodeServerBaseUrlByServerIdV1: {} as Record<string, string>,
 };

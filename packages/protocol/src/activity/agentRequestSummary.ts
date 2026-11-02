@@ -43,7 +43,7 @@ export function extractFilePathLike(input: unknown): string | null {
     const locPath = extractFirstPath(obj.locations);
     if (locPath) return locPath;
 
-    // Gemini ACP-style nested format: { toolCall: { content: [{ path }] } }
+    // ACP-style nested format: { toolCall: { content: [{ path }] } }
     const toolCall = asRecord(obj.toolCall);
     const toolCallLocPath = extractFirstPath(toolCall?.locations);
     if (toolCallLocPath) return toolCallLocPath;
@@ -54,7 +54,7 @@ export function extractFilePathLike(input: unknown): string | null {
         if (nestedPath) return nestedPath;
     }
 
-    // Gemini ACP-style array format: { input: [{ path }] }
+    // ACP-style array format: { input: [{ path }] }
     const inputArr = Array.isArray(obj.input) ? obj.input : null;
     if (inputArr && inputArr.length > 0) {
         const first = asRecord(inputArr[0]);

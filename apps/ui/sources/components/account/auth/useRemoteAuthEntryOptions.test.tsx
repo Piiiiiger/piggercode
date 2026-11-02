@@ -3,14 +3,21 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderScreen, standardCleanup } from '@/dev/testkit';
 
+import type { FeaturesResponse } from '@piggercode/protocol';
+
 import {
     deriveRemoteAuthEntryOptions,
+    resolveRemoteAuthCapabilityOptions,
     type RemoteAuthEntryOptionsInput,
 } from './useRemoteAuthEntryOptions';
 import { RemoteWelcomeDecisionPanel } from './RemoteWelcomeDecisionPanel';
 import { lightTheme } from '@/theme';
 
 const noop = () => {};
+
+vi.mock('@/auth/context/AuthContext', () => ({
+    useAuth: () => ({ login: vi.fn(async () => {}) }),
+}));
 
 function flattenStyle(style: unknown): Record<string, unknown> {
     if (Array.isArray(style)) {

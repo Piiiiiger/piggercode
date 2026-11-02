@@ -15,7 +15,6 @@ describe('resolveConnectedServiceBrandIconXml', () => {
             'openai-codex',
             'openai',
             'anthropic',
-            'gemini',
             'github',
         ] as const;
 

@@ -2573,7 +2573,7 @@ class Sync {
             // Read permission mode from session state
             const permissionMode = session.permissionMode || 'default';
             
-            // Read model mode - default is agent-specific (Gemini needs an explicit default)
+            // Read model mode - default is agent-specific
             const flavor = session.metadata?.flavor;
             const agentId = resolveAgentIdFromFlavor(flavor);
             const modelMode = session.modelMode || (agentId ? getAgentCore(agentId).model.defaultMode : 'default');

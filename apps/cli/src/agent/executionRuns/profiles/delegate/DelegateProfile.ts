@@ -67,11 +67,8 @@ function normalizeDelegateBoundedCompletion(params: Readonly<{
   }).passthrough();
   const parsedModel = ModelOutputSchema.safeParse(parsedJson);
   if (!parsedModel.success) {
-    const canRecoverLoosely = params.backendId === 'pi' || params.backendId === 'codex';
-    const loose =
-      canRecoverLoosely ?
-        deriveLooseDelegateDeliverables(trimmed) ??
-          (params.backendId === 'codex' ? deriveSingleDeliverableFallback(trimmed) : null)
+    const loose = params.backendId === 'codex'
+      ? deriveLooseDelegateDeliverables(trimmed) ?? deriveSingleDeliverableFallback(trimmed)
       : null;
     if (loose) {
       const payload = DelegateOutputV1Schema.parse({

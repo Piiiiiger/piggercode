@@ -9,13 +9,13 @@ describe('resolveSpawnChildEnvironment provider validation context', () => {
     const result = await resolveSpawnChildEnvironment({
       options: {
         directory: 'C:\\workspace',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       },
       profileEnvironmentVariables: { ProgramFiles: 'C:\\Program Files' },
       daemonSpawnHooks: { validateSpawn },
       processEnv: { PATH: 'C:\\Windows\\System32', USERPROFILE: 'C:\\Users\\alice' },
       connectedServiceAuth: {
-        env: { PI_CODING_AGENT_DIR: 'C:\\happier\\pi-agent' },
+        env: { CODEX_HOME: 'C:\\happier\\codex-home' },
         cleanupOnFailure: null,
         cleanupOnExit: null,
       },
@@ -31,7 +31,7 @@ describe('resolveSpawnChildEnvironment provider validation context', () => {
         PATH: 'C:\\Windows\\System32',
         USERPROFILE: 'C:\\Users\\alice',
         ProgramFiles: 'C:\\Program Files',
-        PI_CODING_AGENT_DIR: 'C:\\happier\\pi-agent',
+        CODEX_HOME: 'C:\\happier\\codex-home',
       }),
     }));
   });

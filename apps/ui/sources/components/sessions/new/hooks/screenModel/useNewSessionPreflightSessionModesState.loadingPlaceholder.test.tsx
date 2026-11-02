@@ -45,7 +45,7 @@ describe('useNewSessionPreflightSessionModesState (loading placeholder)', () => 
     let latest: any = null;
     function Harness() {
       latest = useNewSessionPreflightSessionModesState({
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         selectedMachineId: 'machine-1',
         capabilityServerId: 'server-1',
         cwd: '/repo',

@@ -18,7 +18,6 @@ vi.mock('../web/WebFetchView', () => ({ WebFetchView: () => null }));
 vi.mock('../web/WebSearchView', () => ({ WebSearchView: () => null }));
 vi.mock('../fileOps/CodeSearchView', () => ({ CodeSearchView: () => null }));
 vi.mock('../workflow/ReasoningView', () => ({ ReasoningView: () => null }));
-vi.mock('../system/WorkspaceIndexingPermissionView', () => ({ WorkspaceIndexingPermissionView: () => null }));
 vi.mock('../fileOps/LSView', () => ({ LSView: () => null }));
 vi.mock('../workflow/ChangeTitleView', () => ({ ChangeTitleView: () => null }));
 

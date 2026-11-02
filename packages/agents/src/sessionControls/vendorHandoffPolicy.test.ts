@@ -9,12 +9,6 @@ import {
 } from './vendorHandoffPolicy.js';
 
 describe('vendorHandoffPolicy', () => {
-  it('exposes provider-general session storage support in the manifest', () => {
-    expect(AGENTS_CORE.claude.sessionStorage).toEqual({ direct: true, persisted: true });
-    expect(AGENTS_CORE.opencode.sessionStorage).toEqual({ direct: true, persisted: true });
-    expect(AGENTS_CORE.codex.sessionStorage).toEqual({ direct: true, persisted: true });
-    expect(AGENTS_CORE.pi.sessionStorage).toEqual({ direct: true, persisted: true });
-  });
 
   it('resolves vendor handoff ids from metadata using the vendor resume field', () => {
     expect(resolveVendorHandoffIdFromSessionMetadata('claude', { claudeSessionId: ' c1 ' })).toBe('c1');
@@ -30,26 +24,6 @@ describe('vendorHandoffPolicy', () => {
       },
       codexSessionId: 'legacy_thread',
     })).toBe('runtime_thread');
-  });
-
-  it('rejects unsupported direct handoff when the provider does not support direct session storage', () => {
-    expect(
-      evaluateVendorHandoffEligibility({
-        agentId: 'gemini',
-        storageMode: 'direct',
-        metadata: {},
-      }),
-    ).toEqual({ eligible: false, reasonCode: 'storage_mode_unsupported' });
-  });
-
-  it('rejects providers whose vendor state transfer is unsupported', () => {
-    expect(
-      evaluateVendorHandoffEligibility({
-        agentId: 'pi',
-        storageMode: 'persisted',
-        metadata: { piSessionId: 'p1' },
-      }),
-    ).toEqual({ eligible: false, reasonCode: 'handoff_unsupported' });
   });
 
   it('rejects when the vendor handoff id is missing', () => {

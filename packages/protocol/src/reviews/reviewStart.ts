@@ -4,7 +4,7 @@ import { z } from 'zod';
  * Canonical, cross-surface input contract for starting reviews.
  *
  * This is not a “backend contract”. It is a generalized review intent input that
- * can be interpreted by different review engines (LLM prompt reviews, native CLIs).
+ * is interpreted by the selected agents.
  */
 
 export const ReviewChangeTypeSchema = z.enum(['all', 'committed', 'uncommitted']);
@@ -23,27 +23,6 @@ export type ReviewEngineId = z.infer<typeof ReviewEngineIdSchema>;
 export const ReviewRunLocationSchema = z.enum(['execution_run', 'current_session']);
 export type ReviewRunLocation = z.infer<typeof ReviewRunLocationSchema>;
 
-export const CodeRabbitReviewEngineInputSchema = z
-  .object({
-    configFiles: z.array(z.string().min(1)).optional(),
-    plain: z.boolean().optional(),
-    promptOnly: z.boolean().optional(),
-    maxFiles: z.number().int().min(1).max(5000).optional(),
-  })
-  .strict();
-export type CodeRabbitReviewEngineInput = z.infer<typeof CodeRabbitReviewEngineInputSchema>;
-const DEFAULT_CODERABBIT_REVIEW_ENGINE_INPUT: CodeRabbitReviewEngineInput = CodeRabbitReviewEngineInputSchema.parse({});
-
-export const ReviewEngineInputsSchema = z
-  .object({
-    // Default to `{}` so surfaces don't need to inject an "empty config" object
-    // just to satisfy schema validation when the engine is selected.
-    coderabbit: CodeRabbitReviewEngineInputSchema.optional().default(DEFAULT_CODERABBIT_REVIEW_ENGINE_INPUT),
-  })
-  .passthrough();
-export type ReviewEngineInputs = z.infer<typeof ReviewEngineInputsSchema>;
-const DEFAULT_REVIEW_ENGINE_INPUTS: ReviewEngineInputs = ReviewEngineInputsSchema.parse({});
-
 export const ReviewStartInputSchema = z
   .object({
     sessionId: z.string().min(1).optional(),
@@ -54,11 +33,7 @@ export const ReviewStartInputSchema = z
     // flow should stay narrowly scoped unless the user explicitly broadens it.
     changeType: ReviewChangeTypeSchema.default('uncommitted'),
     base: ReviewBaseSchema.default({ kind: 'none' }),
-    engines: ReviewEngineInputsSchema.prefault(DEFAULT_REVIEW_ENGINE_INPUTS),
     permissionMode: z.string().min(1).default('read_only'),
   })
-  .passthrough()
-  // Intentionally no engine-specific requirements here: this is a generalized,
-  // cross-surface intent input. Engines may interpret optional `engines.*` blocks.
-  ;
+  .passthrough();
 export type ReviewStartInput = z.infer<typeof ReviewStartInputSchema>;

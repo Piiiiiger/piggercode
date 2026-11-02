@@ -6026,7 +6026,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
-    // The opencode/pi runtime cannot answer the identity probe — a live probe would return the
+    // A runtime that cannot answer the identity probe — a live probe would return the
     // stranding `unsupported_session_runtime_method`. The daemon's indexed identity is authoritative.
     const readRuntimeAccountIdentity = vi.fn(async () => ({
       status: 'unavailable' as const,

@@ -35,7 +35,7 @@ function makeDeepSeekProfile() {
       { name: 'API_TIMEOUT_MS', value: '${DEEPSEEK_API_TIMEOUT_MS:-600000}' },
     ],
     defaultPermissionModeByTargetKey: { 'agent:claude': 'default' },
-    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': false, 'agent:gemini': false },
+    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': false },
     isBuiltIn: true,
     createdAt: 0,
     updatedAt: 0,

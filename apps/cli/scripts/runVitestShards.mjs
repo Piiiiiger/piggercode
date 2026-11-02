@@ -54,8 +54,6 @@ export function resolveVitestIsolationPlan(configPath, { part = 1, parts = 1 } =
   const processTreeFile = 'src/agent/runtime/process/killProcessTree.test.ts';
   const acpDisposeProcessTreeFile = 'src/agent/acp/__tests__/AcpBackend.dispose.killsProcessTree.test.ts';
   const acpProbeProcessTreeFile = 'src/capabilities/probes/acpProbe.processTreeCleanup.test.ts';
-  const piBrokerPreflightFile = 'src/backends/pi/rpc/PiRpcBackend.brokerPreflight.test.ts';
-  const piPendingTurnLifecycleFile = 'src/backends/pi/rpc/PiRpcBackend.pendingTurnLifecycle.test.ts';
   const claudeSignalCleanupFile = 'src/backends/claude/sdk/query.signalCleanup.test.ts';
   const codexAppServerClientFile = 'src/backends/codex/appServer/client/createCodexAppServerClient.test.ts';
   const processRunStateFile = 'src/daemon/processRunState.test.ts';
@@ -74,8 +72,6 @@ export function resolveVitestIsolationPlan(configPath, { part = 1, parts = 1 } =
       processTreeFile,
       acpDisposeProcessTreeFile,
       acpProbeProcessTreeFile,
-      piBrokerPreflightFile,
-      piPendingTurnLifecycleFile,
       claudeSignalCleanupFile,
       codexAppServerClientFile,
       processRunStateFile,
@@ -99,8 +95,6 @@ export function resolveVitestIsolationPlan(configPath, { part = 1, parts = 1 } =
       { file: processTreeFile, testNamePattern: '.*' },
       { file: acpDisposeProcessTreeFile, testNamePattern: '.*' },
       { file: acpProbeProcessTreeFile, testNamePattern: '.*' },
-      { file: piBrokerPreflightFile, testNamePattern: '.*' },
-      { file: piPendingTurnLifecycleFile, testNamePattern: '.*' },
       { file: claudeSignalCleanupFile, testNamePattern: '.*' },
       { file: codexAppServerClientFile, testNamePattern: '.*' },
       { file: processRunStateFile, testNamePattern: '.*' },

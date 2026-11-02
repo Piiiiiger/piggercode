@@ -14,9 +14,6 @@ export async function runEphemeralExecutionRunTextPromptWithRunnerConfig(params:
     backendTarget: {
       kind: 'builtInAgent';
       agentId: string;
-    } | {
-      kind: 'configuredAcpBackend';
-      backendId: string;
     };
     modelId?: string;
     permissionMode?: string;
@@ -32,11 +29,11 @@ export async function runEphemeralExecutionRunTextPromptWithRunnerConfig(params:
   const permissionMode = normalizeNonEmptyString(params.runner?.permissionMode) ?? 'no_tools';
   const resolved = params.createBackend
     ? {
-        backendId: backendTarget.kind === 'builtInAgent' ? backendTarget.agentId : 'customAcp',
+        backendId: backendTarget.agentId,
         backend: params.createBackend({
           cwd: params.cwd,
           runId: `${params.intent}_${Date.now()}`,
-          backendId: backendTarget.kind === 'builtInAgent' ? backendTarget.agentId : 'customAcp',
+          backendId: backendTarget.agentId,
           backendTarget,
           modelId,
           permissionMode,

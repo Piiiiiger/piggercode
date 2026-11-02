@@ -29,7 +29,7 @@ export interface SessionUpdate {
   rawOutput?: unknown;
   input?: unknown;
   output?: unknown;
-  // Some ACP providers (notably Gemini CLI) may surface tool outputs in other fields.
+  // Some ACP providers surface tool outputs in other fields.
   result?: unknown;
   liveContent?: unknown;
   live_content?: unknown;

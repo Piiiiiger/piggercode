@@ -32,7 +32,7 @@ describe('normalizeAcpPlan', () => {
 
   it('preserves markdown and phase identity while bounding correlation to explicit facts', () => {
     expect(normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-2',
       correlationId: 'call-2',
       source: 'proprietary',
@@ -40,7 +40,7 @@ describe('normalizeAcpPlan', () => {
       markdown: '# Plan\n\nKeep exact text.',
       items: [{ id: 'todo-1', content: 'Do it', status: 'completed', phaseId: 'phase-a', phaseName: 'Build' }],
     })).toEqual({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-2',
       correlationId: 'call-2',
       source: 'proprietary',
@@ -59,7 +59,7 @@ describe('normalizeAcpPlan', () => {
 
   it('keeps an explicit empty replacement as a valid clearing snapshot', () => {
     expect(normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-clear',
       source: 'proprietary',
       merge: false,
@@ -69,7 +69,7 @@ describe('normalizeAcpPlan', () => {
 
   it('preserves exact opaque correlation and vendor ids while rejecting blank ids', () => {
     const normalized = normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-opaque',
       correlationId: ' plan\n correlation ',
       source: 'proprietary',
@@ -80,7 +80,7 @@ describe('normalizeAcpPlan', () => {
     expect(normalized?.correlationId).toBe(' plan\n correlation ');
     expect(normalized?.items[0]?.vendorRef).toBe(' todo\n id ');
     const blankIds = normalizeAcpPlan({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-blank',
       correlationId: '   ',
       source: 'proprietary',

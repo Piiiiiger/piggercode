@@ -158,7 +158,7 @@ describe('resolveWindowsCommandInvocation', () => {
 
         const invocation = resolveWindowsCommandInvocation({
             command: 'cmd.exe',
-            args: ['/c', 'npm install -g opencode-ai'],
+            args: ['/c', 'npm install -g @openai/codex'],
             env: {
                 PATH: '',
                 PATHEXT: '.EXE;.CMD;.BAT;.COM',
@@ -168,7 +168,7 @@ describe('resolveWindowsCommandInvocation', () => {
 
         expect(invocation).toEqual({
             command: 'C:\\WINDOWS\\system32\\cmd.exe',
-            args: ['/c', 'npm install -g opencode-ai'],
+            args: ['/c', 'npm install -g @openai/codex'],
         });
     });
 });

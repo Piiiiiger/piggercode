@@ -126,63 +126,6 @@ describe('providers parallel retry selection', () => {
   });
 });
 
-describe('providers parallel failure report parsing', () => {
-  it('parses valid report payloads', () => {
-    const parsed = parseFailureReportJson(
-      JSON.stringify({
-        v: 1,
-        providerId: 'kilo',
-        scenarioId: 'read_known_file',
-        error: 'Missing required fixture key: acp/kilo/tool-call/Read',
-        ts: 1770000000000,
-      }),
-    );
-
-    expect(parsed).toEqual({
-      v: 1,
-      providerId: 'kilo',
-      scenarioId: 'read_known_file',
-      error: 'Missing required fixture key: acp/kilo/tool-call/Read',
-      ts: 1770000000000,
-    });
-  });
-
-  it('rejects malformed payloads', () => {
-    expect(parseFailureReportJson('')).toBeNull();
-    expect(parseFailureReportJson('not-json')).toBeNull();
-    expect(
-      parseFailureReportJson(
-        JSON.stringify({
-          providerId: 'kilo',
-          scenarioId: 'read_known_file',
-        }),
-      ),
-    ).toBeNull();
-  });
-});
-
-describe('providers parallel scenario registry filtering', () => {
-  it('keeps only providers that declare the selected scenario in the requested tier', async () => {
-    const filtered = await filterProviderIdsByScenarioRegistry({
-      providerIds: ['qwen', 'kilo', 'codex'],
-      tier: 'extended',
-      scenarioSelectionRaw: 'acp_set_model_dynamic',
-    });
-
-    expect(filtered).toEqual(['kilo', 'codex']);
-  });
-
-  it('returns the original provider list when no scenario filter is provided', async () => {
-    const filtered = await filterProviderIdsByScenarioRegistry({
-      providerIds: ['qwen', 'kilo', 'codex'],
-      tier: 'extended',
-      scenarioSelectionRaw: '',
-    });
-
-    expect(filtered).toEqual(['qwen', 'kilo', 'codex']);
-  });
-});
-
 describe('providers parallel child env defaults', () => {
   it('disables preflight CLI dist rebuilds by default to avoid parallel build churn', () => {
     const env = buildProviderChildEnv({
@@ -215,84 +158,10 @@ describe('providers parallel child env defaults', () => {
       baseEnv: {},
       reportPath: '/tmp/failure-report.json',
       scenarioIds: null,
-      tokenLedgerPath: '/tmp/provider-token-ledger.qwen.json',
+      tokenLedgerPath: '/tmp/provider-token-ledger.codex.json',
     });
 
-    expect(env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.qwen.json');
-    expect(env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.qwen.json');
-  });
-});
-
-describe('providers parallel token ledger merge', () => {
-  it('merges entries and summarizes totals', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'happier-token-ledger-'));
-    const aPath = join(dir, 'a.json');
-    const bPath = join(dir, 'b.json');
-
-    await writeFile(
-      aPath,
-      JSON.stringify(
-        {
-          v: 1,
-          runId: 'r1',
-          generatedAt: 1,
-          entries: [
-            { providerId: 'qwen', modelId: 'qwen-small', tokens: { total: 10, input: 6, output: 4 } },
-            { providerId: 'qwen', modelId: 'qwen-small', tokens: { total: 2 } },
-          ],
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    );
-    await writeFile(
-      bPath,
-      JSON.stringify(
-        {
-          v: 1,
-          runId: 'r2',
-          generatedAt: 2,
-          entries: [{ providerId: 'kilo', modelId: null, tokens: { total: 5 } }],
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    );
-
-    const merged = await mergeTokenLedgersFromPaths({ paths: [aPath, bPath] });
-    expect(merged.entries).toHaveLength(3);
-    expect(merged.totals).toEqual({ entries: 3, tokens: { total: 17, input: 6, output: 4 } });
-    expect(merged.summary).toEqual([
-      { providerId: 'kilo', modelId: null, entries: 1, tokens: { total: 5 } },
-      { providerId: 'qwen', modelId: 'qwen-small', entries: 2, tokens: { total: 12, input: 6, output: 4 } },
-    ]);
-    expect(merged.summaryByProvider).toEqual([
-      { providerId: 'kilo', entries: 1, tokens: { total: 5 } },
-      { providerId: 'qwen', entries: 2, tokens: { total: 12, input: 6, output: 4 } },
-    ]);
-  });
-
-  it('throws when a token ledger file has an unsupported schema version', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'happier-token-ledger-version-'));
-    const badPath = join(dir, 'bad.json');
-
-    await writeFile(
-      badPath,
-      JSON.stringify(
-        {
-          v: 2,
-          runId: 'r3',
-          generatedAt: 3,
-          entries: [{ providerId: 'qwen', modelId: 'qwen-small', tokens: { total: 1 } }],
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    );
-
-    await expect(mergeTokenLedgersFromPaths({ paths: [badPath] })).rejects.toThrow(/unsupported token ledger version/i);
+    expect(env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.codex.json');
+    expect(env.HAPPY_E2E_PROVIDER_TOKEN_LEDGER_PATH).toBe('/tmp/provider-token-ledger.codex.json');
   });
 });

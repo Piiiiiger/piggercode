@@ -87,7 +87,7 @@ function resolveAgentAttachStrategy(
  *   `compareMachineHosts` normalisation) → display-only proxy when machineId
  *   is missing, useful for older sessions and codex/plain sessions where
  *   machineId may not be populated.
- * - agent uses `provider_attach` → opencode-style sessions can be reached
+ * - agent uses `provider_attach` → shared provider sessions can be reached
  *   regardless of host.
  */
 function shouldIncludeRowInSelector(input: Readonly<{

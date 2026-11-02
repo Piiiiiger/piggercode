@@ -25,11 +25,6 @@ const IDENTITY_CASES: ReadonlyArray<Readonly<{ label: string; item: Record<strin
     id: 'vendor:codex:review',
   },
   {
-    label: "OpenCode's legacy origin",
-    item: { name: 'plan', origin: 'opencode_native' },
-    id: 'vendor:opencode:plan',
-  },
-  {
     label: 'a projected happier skill',
     item: { name: 'triage', origin: 'happier_projected' },
     id: 'happier:happier_projected:triage',
@@ -53,9 +48,9 @@ const IDENTITY_CASES: ReadonlyArray<Readonly<{ label: string; item: Record<strin
 
 describe('resolveSkillCatalogItemIdentityV1', () => {
   it.each([' reviewer ', ' reviewer/α+skill= '])('preserves the native opaque ID %j through catalog parsing and identity resolution', (id) => {
-    // OpenCode v2.0.15 derives Skill.ID from an untrimmed directory basename.
+    // A native skill id may derive from an untrimmed directory basename.
     const { skills } = SessionSkillCatalogListResponseV1Schema.parse({
-      catalog: { v: 1, updatedAt: 1, items: [{ id, name: ' reviewer ', origin: 'opencode_native' }] },
+      catalog: { v: 1, updatedAt: 1, items: [{ id, name: ' reviewer ', origin: 'codex_native' }] },
     });
     expect(skills[0]?.id).toBe(id);
     expect(resolveSkillCatalogItemIdentityV1(skills[0])?.id).toBe(id);

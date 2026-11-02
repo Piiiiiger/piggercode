@@ -43,7 +43,7 @@ graph TB
 - **API client:** `src/api` handles HTTP + Socket.IO, encryption, and RPC.
 - **Daemon:** `src/daemon` runs in the background, spawns sessions, and maintains machine state.
 - **Persistence/config:** `src/persistence.ts` + `src/configuration.ts` manage local state in `~/.happy`.
-- **Agents:** `src/claude`, `src/codex`, `src/gemini` provide provider-specific runners.
+- **Agents:** `src/backends/claude` and `src/backends/codex` provide provider-specific runners.
 
 ## Direct-session JSONL read progress (development)
 
@@ -85,16 +85,6 @@ provider-observed input, media-only rows, and lifecycle mutations share that
 owner's durable custody and replay order. Calls without observation provenance
 keep their existing remote-acknowledgement contract.
 
-Pi's existing Happier bridge observes extension-origin text through Pi's `input`
-hook and forwards it using the public RPC notification channel. The Pi adapter
-consumes that observation before diagnostic tracing and sends it through the
-shared ACP transcript path. It records a submitted input, which later extension
-handlers may transform or handle; it does not claim the model received that text.
-Host input keeps its existing recording path, and raw user-message echoes do not
-create another transcript row. The bridge is required for Happier-managed Pi
-launches. Provider-started runs use the same ACP turn state and settlement path as
-host-started runs.
-
 The backend's conclusive response completion seals the captured host turn before
 a provider-started successor can begin; transient idle signals do not seal it.
 The existing flush result carries that captured turn's assistant text into ready
@@ -113,7 +103,7 @@ flowchart TD
     Parse --> Doctor{doctor?}
     Parse --> Auth{auth?}
     Parse --> Connect{connect?}
-    Parse --> Agent{codex/gemini?}
+    Parse --> Agent{codex?}
     Parse --> Default{default}
 
     Doctor --> RunDoctor[Run diagnostics]
@@ -131,7 +121,7 @@ flowchart TD
 ```
 
 `src/index.ts` is the CLI router. It:
-- Parses subcommands (`doctor`, `auth`, `connect`, `codex`, `gemini`, and default run flows).
+- Parses subcommands (`doctor`, `auth`, `connect`, `codex`, and default run flows).
 - Ensures auth and machine setup when needed (`authAndSetupMachineIfNeeded`).
 - Starts the daemon or runs an agent directly based on subcommand/context.
 
@@ -153,9 +143,8 @@ uncertain submissions. A refusal clears uncertain launch recovery; transport err
 after dispatch preserve the launch nonce for recovery on the selected machine.
 
 `--auto` is an alias for `--permission-mode auto` and uses the existing permission
-intent parser. For OpenCode, this allows reads and edits while other tools can still
-require approval. Happier's session permission policy takes precedence over the
-native agent's defaults; `--yolo` requests full access. Permission flags retain their
+intent parser. Happier's session permission policy takes precedence over the native
+agent's defaults; `--yolo` requests full access. Permission flags retain their
 command-line ordering, with the last flag taking effect.
 
 ## Desktop-driven setup
@@ -1045,11 +1034,8 @@ Configuration lives in `src/configuration.ts`:
 
 The connected-services materialization owner resolves durable account or pool
 homes through the existing home resolver and updates their managed files in
-place. Claude and Codex use account/pool homes; Antigravity uses the selected
-member's account home and retains restart-based switching. Shared state uses the
-existing state-sharing descriptor; isolated state stays local to that binding.
-Antigravity's isolated-state policy still refuses continuation across different
-accounts, including a pool rotation; the storage change does not relax it.
+place. Claude and Codex use account/pool homes. Shared state uses the existing
+state-sharing descriptor; isolated state stays local to that binding.
 Configuration inheritance remains a separate policy. Discovery probes and other
 temporary materializers retain disposable roots.
 
@@ -1062,11 +1048,10 @@ their stored shape does not identify a donor, so linking does not blindly remint
 them or move private state.
 
 When isolated history is imported into shared state and the same file already
-exists with different bytes, the existing importer preserves the destination
-and saves the incoming version under a `.happier-import-*` name. This preserves
-both versions but does not merge divergent conversations or make the incoming
-version authoritative at the original path. In particular, switching Antigravity
-to shared state is not conflict resolution for an already-diverged conversation.
+exists with different bytes, the existing importer preserves the destination and
+saves the incoming version under a `.happier-import-*` name. This preserves both
+versions but does not merge divergent conversations or make the incoming version
+authoritative at the original path.
 
 Resume preparation imports declared state from the previous root through the
 existing preservation owner. Legacy per-session roots may contribute their
@@ -1197,9 +1182,9 @@ host selection and retains the draft. Other startup failures keep their existing
 
 The daemon resolves presentation through provider-owned launch hooks before choosing
 a terminal host. Runtimes with a real terminal surface can open in tmux, zellij, or
-Herdr; headless ACP runtimes do not acquire a synthetic TUI. Codex App Server and
-OpenCode server open their native TUI against the existing provider session rather
-than starting another provider conversation. Hosted and ordinary runners share
+Herdr; headless ACP runtimes do not acquire a synthetic TUI. Codex App Server opens
+its native TUI against the existing provider session rather than starting another
+provider conversation. Hosted and ordinary runners share
 daemon registration and webhook completion. The common owner binds the reported
 session before waking its existing pending queue and clears stale Stop state when
 an explicit resume is accepted. Automatic recovery is a new launch attempt, so it
@@ -1266,18 +1251,13 @@ the legacy `controlledByUser` shape. Preserved-host Stop and recovery continue
 to use the terminal-serviceability policy; they are not removed when live
 control is unavailable.
 
-OpenCode V2 applies session-scoped model, reasoning, and agent controls before
-opening its native TUI, including before the first prompt. Controller-local and
-standalone attachment use the same control synchronizer. Standalone attachment
-asks the running session to prepare through the encrypted session RPC; preparation
-checks the native session identity before and after synchronization. The controller
-does not need its own TTY for this operation. Failed preparation does not launch
-the native terminal. V1 keeps its existing attachment path; ACP does not register
-native-attachment preparation. The runner alone publishes managed `localControl`
-attachment and detach custody: an independent `happier attach` client neither
-claims `canDetach` nor clears a runner-owned terminal when it exits. Shared native
-clients and Happier remain simultaneously writable; this projection is not an
-inventory of every external native client.
+Standalone attachment asks the running session to prepare through the encrypted
+session RPC; failed preparation does not launch the native terminal, and ACP
+runtimes do not register native-attachment preparation. The runner alone publishes
+managed `localControl` attachment and detach custody: an independent `happier attach`
+client neither claims `canDetach` nor clears a runner-owned terminal when it exits.
+Shared native clients and Happier remain simultaneously writable; this projection is
+not an inventory of every external native client.
 
 Cold Herdr restoration is a development-source exception to independent attachment.
 When the shared controller survives a server restart, attach from the restored
@@ -1300,23 +1280,6 @@ This orchestration is shared by all host dispatches, rather than implemented in
 Herdr or the native launcher. Exclusive sessions and independent native attach
 clients retain their separate existing paths.
 
-Managed OpenCode affinity records the selected ready client's existing launch fingerprint
-in the provider-owned runtime handle, without publishing its local URL or credential.
-Owned terminal attachment takes its URL and fingerprint together from the ready runtime,
-before background metadata publication. Standalone attachment and native forks carry
-recorded affinity through both target and credential resolution; a newer retained record
-at the same URL cannot substitute its credential. Missing, mismatched, or invalid recorded
-affinity fails rather than selecting the caller's ambient server. A native fork rejected
-before dispatch uses the existing failed-attempt outcome, not unsupported-strategy fallback.
-Explicit server URLs retain their separate authority. Predecessor sessions without
-recorded affinity retain their local-context fallback; this does not make every historical
-unbound managed session attachable from a different launch context.
-Native forks resolve the parent target through the same owner and retain its recognized
-affinity in the child descriptor. Child launches keep the existing connected-service
-inheritance; their actual runtime selection replaces the requested tuple. This does not
-pin an old server across credential/configuration changes or transfer a machine-local
-pool identity through cross-machine handoff.
-
 The shared input consumer carries the prompt loop's metadata callback through each
 idle wait, including when the runner supplies an existing consumer. This lets the
 existing override synchronizers apply idle model, mode, and reasoning changes
@@ -1328,15 +1291,8 @@ starting another message-materialization pass.
 In the development CLI, the standard provider runner owns the pending Stop
 operation and signal replacement. Its prompt loop joins that operation before
 waiting for another input, so an interrupted turn can unwind while provider
-cancellation finishes without repeatedly reading an aborted signal. Gemini's
-runner applies the same rule through its own Stop lifecycle. Neither path uses
-a retry interval to infer cancellation completion.
-
-OpenCode's existing options publisher also refreshes model and mode inventories on
-same-directory catalog update events and connection catch-up. A successful empty
-inventory withdraws its choices; a failed discovery retains the last published
-choices. This accommodates V2's initially empty plugin inventory without polling
-or weakening validation against the server's current model inventory.
+cancellation finishes without repeatedly reading an aborted signal. It uses no
+retry interval to infer cancellation completion.
 
 Herdr-specific transport lives in `integrations/herdr`. The adapter uses direct argv
 launch, styled screen capture, input, process inspection, and terminal attachment.
@@ -1401,9 +1357,6 @@ positive local runner absence permits cold restoration even when relay activity
 is stale. A restored foreground launch retains borrowed-shell disposition unless
 the existing attachment owner independently proves owned custody.
 The saved release-channel executable must be available in the restored shell.
-Its automatic invocation is distinct from manually invoking the current-source
-attach command inside that pane; the latter's managed cold-restoration admission
-and Detach were exercised with a surviving OpenCode controller on Herdr `0.9.3`.
 
 In the development source, daemon startup reattachment uses the same terminal
 serviceability publication owner as live session reports. This retains the exact
@@ -1453,7 +1406,7 @@ requires a service-managed startup in an actual service cgroup; a manually start
 daemon must not transfer unrelated processes from a shared SSH or editor scope.
 
 For child-owned same-pane launches, the shared terminal runtime owns the native
-process. Claude unified, runner-managed Codex/OpenCode TUIs, and standalone native
+process. Claude unified, runner-managed Codex TUIs, and standalone native
 attach commands use this owner rather than spawning an unguarded child. Native
 startup is acknowledged only after the actual executable spawns. Native TUIs keep
 all three inherited terminal streams; Claude retains its existing stderr diagnostic
@@ -1510,14 +1463,6 @@ remain intact. The runner keeps its existing authenticated publisher connection.
 This recovery does not retire or replace that publisher's old Machine identity;
 replacement must wait until its surviving publishers have finished or migrated.
 A handoff that has published another runner's PID is left untouched.
-
-With no tracked runners remaining, daemon shutdown cleans each idle OpenCode
-server in its existing managed pool, not just the ambient launch profile. The
-same locked termination owner verifies daemon, relay-directory and process
-custody. Active session claims and borrowed servers retain their state;
-unreadable custody and unsuccessful termination retain evidence and produce
-diagnostics. The tracked-runner guard
-also covers accepted runners whose durable session marker is not written yet.
 
 ```mermaid
 graph TB

@@ -37,7 +37,7 @@ describe('resolveEffectiveProviderStateMode', () => {
   });
 
   it('clamps a requested shared mode to isolated when the descriptor does not support shared state (RD-OPI-3)', () => {
-    // Gemini/OpenCode shape: the global `defaults.stateMode: 'shared'` setting
+    // Providers without shared-state support: the global `defaults.stateMode: 'shared'` setting
     // applies to every agent, but their reachability verifiers are always-false.
     // Enrolling them in the hard spawn gate bricks every connected resume.
     expect(resolveEffectiveProviderStateMode({

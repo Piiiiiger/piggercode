@@ -39,10 +39,9 @@ describe('isAcpForkEligibleForProvider', () => {
   it('treats generic acpTransportV1 metadata as ACP eligibility for the matching provider', () => {
     expect(
       isAcpForkEligibleForProvider({
-        providerId: 'opencode',
+        providerId: 'codex',
         metadata: {
-          acpTransportV1: { v: 1, provider: 'opencode' },
-          opencodeBackendMode: 'server',
+          acpTransportV1: { v: 1, provider: 'codex' },
         },
       }),
     ).toBe(true);
@@ -51,44 +50,11 @@ describe('isAcpForkEligibleForProvider', () => {
   it('does not treat acpTransportV1 from a different provider as eligible', () => {
     expect(
       isAcpForkEligibleForProvider({
-        providerId: 'opencode',
+        providerId: 'codex',
         metadata: {
-          acpTransportV1: { v: 1, provider: 'codex' },
+          acpTransportV1: { v: 1, provider: 'claude' },
         },
       }),
     ).toBe(false);
-  });
-
-  it('treats canonical Kimi ACP transport metadata as fork eligible', () => {
-    expect(
-      isAcpForkEligibleForProvider({
-        providerId: 'kimi',
-        metadata: {
-          acpTransportV1: { v: 1, provider: 'kimi' },
-        },
-      }),
-    ).toBe(true);
-  });
-
-  it('does not infer ACP fork eligibility from legacy Kimi metadata without ACP evidence', () => {
-    expect(
-      isAcpForkEligibleForProvider({
-        providerId: 'kimi',
-        metadata: {
-          kimiSessionId: 'legacy-kimi-session',
-        },
-      }),
-    ).toBe(false);
-  });
-
-  it('treats legacy opencodeBackendMode=acp metadata as ACP eligibility for opencode', () => {
-    expect(
-      isAcpForkEligibleForProvider({
-        providerId: 'opencode',
-        metadata: {
-          opencodeBackendMode: 'acp',
-        },
-      }),
-    ).toBe(true);
   });
 });

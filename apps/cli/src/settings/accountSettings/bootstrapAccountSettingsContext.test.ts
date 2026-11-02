@@ -71,31 +71,31 @@ describe('bootstrapAccountSettingsContext', () => {
     });
   });
 
-  const resolveOmittedAgySelection = () => normalizeSessionAgentSpawnActionRequest({
+  const resolveOmittedCodexSelection = () => normalizeSessionAgentSpawnActionRequest({
     credentials: createCredentialsStub(),
     surface: 'session_agent',
-    input: { agentId: 'agy', initialMessage: 'Use my saved account' },
+    input: { agentId: 'codex', initialMessage: 'Use my saved account' },
     parentMetadata: null,
     currentSession: { path: '/repo', host: 'machine', machineId: 'machine-1' },
   });
-  const selectedAgyDefaults = { v: 1, bindingsByAgentId: {
-    agy: { v: 1, bindingsByServiceId: {
-      antigravity: { source: 'connected', selection: 'profile', profileId: 'saved-google' },
+  const selectedCodexDefaults = { v: 1, bindingsByAgentId: {
+    codex: { v: 1, bindingsByServiceId: {
+      'openai-codex': { source: 'connected', selection: 'profile', profileId: 'saved-google' },
     } },
   } };
 
   it.each([{ withCache: false, encrypted: false }, { withCache: true, encrypted: false }, { withCache: false, encrypted: true }])('refuses fetched malformed additive defaults with omitted launch selection (cache=$withCache, encrypted=$encrypted)', async ({ withCache, encrypted }) => {
-    const directory = await mkdtemp(join(tmpdir(), 'happier-agy-default-bootstrap-'));
+    const directory = await mkdtemp(join(tmpdir(), 'happier-codex-default-bootstrap-'));
     Object.assign(mutableConfigurationForTest(), { activeServerDir: directory, clientEncryptionRequirement: 'follow_account' });
     try {
       if (withCache) await writeAccountSettingsCacheAtomic(resolveAccountSettingsCachePath(createCredentialsStub()), {
         version: 2, cachedAt: 0, settingsVersion: 1,
-        settingsContent: { t: 'plain', v: { connectedServicesAdditionalDefaultAuthByAgentIdV1: selectedAgyDefaults } },
+        settingsContent: { t: 'plain', v: { connectedServicesAdditionalDefaultAuthByAgentIdV1: selectedCodexDefaults } },
       });
       // HTTP is the system boundary; parsing, bootstrap, disk cache, and launch default resolution are real.
       const malformedSettings = {
         connectedServicesAdditionalDefaultAuthByAgentIdV1: { v: 1, bindingsByAgentId: {
-          agy: { v: 1, bindingsByServiceId: { antigravity: { source: 'connected', selection: 'profile' } } },
+          codex: { v: 1, bindingsByServiceId: { 'openai-codex': { source: 'connected', selection: 'profile' } } },
         } },
       };
       vi.spyOn(axios, 'get').mockResolvedValue({ status: 200, data: {
@@ -103,35 +103,7 @@ describe('bootstrapAccountSettingsContext', () => {
           ? { t: 'encrypted', c: encodeBase64(encrypt(new Uint8Array(32).fill(1), 'legacy', malformedSettings)) }
           : { t: 'plain', v: malformedSettings },
       } });
-      await expect(resolveOmittedAgySelection()).rejects.toThrow('connected_services_default_settings_invalid');
-    } finally {
-      await rm(directory, { recursive: true, force: true });
-    }
-  });
-
-  it.each(['network', 'encrypted network', 'cache'] as const)('keeps valid omitted-selection defaults from %s', async (source) => {
-    const directory = await mkdtemp(join(tmpdir(), 'happier-agy-default-bootstrap-'));
-    Object.assign(mutableConfigurationForTest(), { activeServerDir: directory, clientEncryptionRequirement: 'follow_account' });
-    try {
-      if (source === 'cache') {
-        await writeAccountSettingsCacheAtomic(resolveAccountSettingsCachePath(createCredentialsStub()), {
-          version: 2, cachedAt: 0, settingsVersion: 1,
-          settingsContent: { t: 'plain', v: { connectedServicesAdditionalDefaultAuthByAgentIdV1: selectedAgyDefaults } },
-        });
-        vi.spyOn(axios, 'get').mockRejectedValue(new Error('offline'));
-      } else {
-        vi.spyOn(axios, 'get').mockResolvedValue({ status: 200, data: {
-          version: 2, content: source === 'encrypted network'
-            ? { t: 'encrypted', c: encodeBase64(encrypt(new Uint8Array(32).fill(1), 'legacy', {
-              connectedServicesAdditionalDefaultAuthByAgentIdV1: selectedAgyDefaults,
-            })) }
-            : { t: 'plain', v: { connectedServicesAdditionalDefaultAuthByAgentIdV1: selectedAgyDefaults } },
-        } });
-      }
-      const result = await resolveOmittedAgySelection();
-      expect(result.ok).toBe(true);
-      if (!result.ok) throw new Error('Expected selected saved account');
-      expect(result.createParams.connectedServices).toEqual(selectedAgyDefaults.bindingsByAgentId.agy);
+      await expect(resolveOmittedCodexSelection()).rejects.toThrow('connected_services_default_settings_invalid');
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
@@ -495,103 +467,6 @@ describe('bootstrapAccountSettingsContext', () => {
         settings: expect.objectContaining({ schemaVersion: 6, codexBackendMode: 'acp' }),
       }),
     );
-  });
-
-  it('rejects disabled configured ACP backend targets during bootstrap side effects', async () => {
-    const nowMs = 1_000_000;
-
-    await expect(bootstrapAccountSettingsContext({
-      credentials: createCredentialsStub(),
-      mode: 'blocking',
-      refresh: 'auto',
-      nowMs,
-      ttlMs: 60_000,
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      deps: {
-        resolveCachePath: () => '/tmp/server/account.settings.cache.json',
-        readCache: async () => ({
-          version: 2,
-          cachedAt: nowMs - 1_000,
-          settingsContent: {
-            t: 'plain',
-            v: {
-              backendEnabledByTargetKey: {
-                'acpBackend:review-bot': false,
-              },
-            },
-          },
-          settingsVersion: 123,
-        }),
-        writeCache: async () => {},
-        fetchFromServer: async () => ({ settingsContent: null, settingsVersion: 999 }),
-        decryptCiphertext: async () => null,
-      },
-    })).rejects.toThrow(/review-bot/i);
-  });
-
-  it('re-applies side effects when returning a fresh in-memory context', async () => {
-    const nowMs = 1_000_000;
-    const applySideEffects = vi.fn();
-
-    await bootstrapAccountSettingsContext({
-      credentials: createCredentialsStub(),
-      mode: 'blocking',
-      refresh: 'auto',
-      nowMs,
-      ttlMs: 60_000,
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      deps: {
-        resolveCachePath: () => '/tmp/server/account.settings.cache.json',
-        readCache: async () => ({
-          version: 2,
-          cachedAt: nowMs - 1_000,
-          settingsContent: {
-            t: 'plain',
-            v: {
-              backendEnabledByTargetKey: {
-                'acpBackend:review-bot': false,
-              },
-            },
-          },
-          settingsVersion: 123,
-        }),
-        writeCache: async () => {},
-        fetchFromServer: async () => ({ settingsContent: null, settingsVersion: 999 }),
-        decryptCiphertext: async () => null,
-        applySideEffects,
-      },
-    }).catch(() => undefined);
-
-    const result = await bootstrapAccountSettingsContext({
-      credentials: createCredentialsStub(),
-      mode: 'blocking',
-      refresh: 'auto',
-      nowMs: nowMs + 10,
-      ttlMs: 60_000,
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      deps: {
-        resolveCachePath: () => '/tmp/server/account.settings.cache.json',
-        readCache: async () => {
-          throw new Error('should not read cache when in-memory context is fresh');
-        },
-        writeCache: async () => {},
-        fetchFromServer: async () => ({ settingsContent: null, settingsVersion: 999 }),
-        decryptCiphertext: async () => null,
-        applySideEffects,
-      },
-    });
-
-    expect(result.source).toBe('cache');
-    expect(applySideEffects).toHaveBeenCalledTimes(2);
-    expect(applySideEffects).toHaveBeenLastCalledWith(expect.objectContaining({
-      source: 'cache',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      settings: expect.objectContaining({
-        backendEnabledByTargetKey: {
-          'acpBackend:review-bot': false,
-        },
-      }),
-    }));
   });
 
   it('fetches when cache is stale and refresh=auto (blocking)', async () => {

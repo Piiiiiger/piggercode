@@ -175,7 +175,7 @@ describe('createAcpRuntime (in-flight steer)', () => {
     } as any);
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),

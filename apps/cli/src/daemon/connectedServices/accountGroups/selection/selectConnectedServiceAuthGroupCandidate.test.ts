@@ -491,7 +491,7 @@ describe('selectConnectedServiceAuthGroupCandidate', () => {
 
   it('ranks least-limited candidates by generic effective meter headroom', () => {
     const states = new Map<string, ConnectedServiceAuthGroupMemberRuntimeState>([
-      ['gemini-daily', { quotaSnapshot: { capturedAtMs: 900, effectiveMeterId: 'daily', effectiveRemainingPercent: 30 } }],
+      ['codex-daily', { quotaSnapshot: { capturedAtMs: 900, effectiveMeterId: 'daily', effectiveRemainingPercent: 30 } }],
       ['future-model', { quotaSnapshot: { capturedAtMs: 900, effectiveMeterId: 'model:gpt-6', effectiveRemainingPercent: 65 } }],
       ['weekly', { quotaSnapshot: { capturedAtMs: 900, effectiveMeterId: 'weekly', effectiveRemainingPercent: 5 } }],
     ]);
@@ -503,7 +503,7 @@ describe('selectConnectedServiceAuthGroupCandidate', () => {
       policy: { ...basePolicy, strategy: 'least_limited' },
       members: [
         member('weekly', 1, 1),
-        member('gemini-daily', 1, 2),
+        member('codex-daily', 1, 2),
         member('future-model', 1, 3),
       ],
       memberStatesByProfileId: states,

@@ -25,7 +25,6 @@ export function canHandoffConversation(params: Readonly<{ sessionId?: string | n
     if (!agent) return false;
     const sessionStorageMode = metadata.directSessionV1 ? 'direct' : 'persisted';
     if (!agent.sessionStorage[sessionStorageMode]) return false;
-    if (agent.handoff.vendorStateTransfer === 'unsupported') return false;
 
     // Keep the UI consistent with daemon eligibility: handoff requires a vendor-resumable id so the
     // target can reliably resume the session vendor state (and so QA can fail fast before stopping

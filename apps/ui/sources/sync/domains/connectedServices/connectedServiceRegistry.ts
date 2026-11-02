@@ -49,20 +49,6 @@ export const CONNECTED_SERVICES_REGISTRY: readonly ConnectedServiceRegistryEntry
     tokenKind: 'api-key',
   },
   {
-    serviceId: 'gemini',
-    connectCommand: 'happier connect gemini',
-    supportsOauth: true,
-    oauthAddActionModes: ['paste', 'browser'],
-  },
-  {
-    serviceId: 'antigravity',
-    connectCommand: 'happier connect antigravity',
-    supportsOauth: true,
-    oauthAddActionModes: ['paste'],
-    oauthAddActionTitleKey: 'connectedServices.detail.signInWithGoogle',
-    supportsToken: false,
-  },
-  {
     serviceId: 'github',
     connectCommand: 'happier connect github --token',
     supportsOauth: false,

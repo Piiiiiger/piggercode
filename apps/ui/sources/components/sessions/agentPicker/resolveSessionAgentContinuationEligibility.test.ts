@@ -29,16 +29,6 @@ function builtInEntry(
     };
 }
 
-function configuredAcpEntry(): ResolvedBackendCatalogEntry {
-    return builtInEntry('customAcp', {
-        target: { kind: 'configuredAcpBackend', backendId: 'ultracode' } as ResolvedBackendCatalogEntry['target'],
-        targetKey: 'configuredAcpBackend:ultracode',
-        family: 'configuredAcpBackend',
-        builtInAgentId: null,
-        title: 'Ultracode',
-    });
-}
-
 const eligibleSource: SessionAgentContinuationSourceState = {
     currentBackendTargetKey: 'builtInAgent:claude',
     storageKind: 'persisted',
@@ -199,9 +189,9 @@ describe('resolveSessionAgentContinuationEligibility', () => {
         }
     });
 
-    it('offers a configured ACP backend only when its exact inspection proves support', () => {
+    it('offers a target only when its exact inspection proves support', () => {
         expect(resolveSessionAgentContinuationEligibility({
-            entry: configuredAcpEntry(),
+            entry: builtInEntry('codex'),
             source: eligibleSource,
             inspection: SUPPORTED,
         })).toEqual({ status: 'eligible' });
@@ -212,7 +202,7 @@ describe('resolveSessionAgentContinuationEligibility', () => {
         // whichever target-specific reason happens to apply too. The same order keeps
         // a locally blocked row from flickering through a pointless "checking" state.
         expect(resolveSessionAgentContinuationEligibility({
-            entry: configuredAcpEntry(),
+            entry: builtInEntry('codex'),
             source: { ...eligibleSource, canEditSession: false },
             inspection: { status: 'checking' },
         })).toEqual({ status: 'unavailable', kind: 'local', reason: 'read_only' });

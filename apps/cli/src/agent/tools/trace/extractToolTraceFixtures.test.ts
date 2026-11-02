@@ -9,14 +9,14 @@ describe('extractToolTraceFixturesFromJsonlLines', () => {
         makeTraceEvent({
           ts: 1,
           protocol: 'acp',
-          provider: 'opencode',
+          provider: 'codex',
           kind: 'tool-call',
           payload: { type: 'tool-call', name: 'read', input: { filePath: '/etc/hosts' } },
         }),
         makeTraceEvent({
           ts: 2,
           protocol: 'acp',
-          provider: 'opencode',
+          provider: 'codex',
           kind: 'message',
           payload: { type: 'message', message: 'hello' },
         }),
@@ -31,20 +31,20 @@ describe('extractToolTraceFixturesFromJsonlLines', () => {
     );
 
     expect(fixtures.v).toBe(1);
-    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/opencode/tool-call/read', 'codex/codex/tool-call/CodexBash']));
-    expect(fixtures.examples['acp/opencode/tool-call/read']).toHaveLength(1);
+    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/codex/tool-call/read', 'codex/codex/tool-call/CodexBash']));
+    expect(fixtures.examples['acp/codex/tool-call/read']).toHaveLength(1);
     expect(fixtures.examples['codex/codex/tool-call/CodexBash']).toHaveLength(1);
-    expect(fixtures.examples['acp/opencode/message']).toBeUndefined();
+    expect(fixtures.examples['acp/codex/message']).toBeUndefined();
   });
 
   it('keys tool-result events by tool name even when the tool-call arrives later in the trace', () => {
     const fixtures = extractToolTraceFixturesFromJsonlLines(scenarioToolResultThenToolCall());
-    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/opencode/tool-result/read']));
+    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/codex/tool-result/read']));
   });
 
   it('keys tool-result events by tool name when only a permission-request exists (no tool-call)', () => {
     const fixtures = extractToolTraceFixturesFromJsonlLines(scenarioToolResultThenPermissionRequest());
-    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/gemini/tool-result/read']));
+    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/codex/tool-result/read']));
   });
 
   it('keys tool-result events by normalized canonical tool name when available (without relying on callId index)', () => {
@@ -86,7 +86,7 @@ describe('extractToolTraceFixturesFromJsonlLines', () => {
         makeTraceEvent({
           ts: 1,
           protocol: 'acp',
-          provider: 'opencode',
+          provider: 'codex',
           kind: 'tool-result',
           payload: {
             type: 'tool-result',
@@ -98,7 +98,7 @@ describe('extractToolTraceFixturesFromJsonlLines', () => {
       ]),
     );
 
-    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/opencode/tool-result/Read']));
-    expect(fixtures.examples['acp/opencode/tool-result/Read']).toHaveLength(1);
+    expect(Object.keys(fixtures.examples)).toEqual(expect.arrayContaining(['acp/codex/tool-result/Read']));
+    expect(fixtures.examples['acp/codex/tool-result/Read']).toHaveLength(1);
   });
 });

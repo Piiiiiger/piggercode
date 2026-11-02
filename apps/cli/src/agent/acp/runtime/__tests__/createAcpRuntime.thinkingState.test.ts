@@ -20,7 +20,7 @@ describe('createAcpRuntime (thinking state)', () => {
       keepAlive: (thinking) => { keepAliveThinking.push(thinking); },
     });
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       onThinkingChange: (thinking) => { thinkingChanges.push(thinking); },
       ensureBackend: async () => backend,
@@ -55,7 +55,7 @@ describe('createAcpRuntime (thinking state)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer,
@@ -88,7 +88,7 @@ describe('createAcpRuntime (thinking state)', () => {
     const session = createBasicSessionClientWithOverrides();
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -173,7 +173,7 @@ describe('createAcpRuntime (thinking state)', () => {
     const session = createBasicSessionClientWithOverrides();
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),

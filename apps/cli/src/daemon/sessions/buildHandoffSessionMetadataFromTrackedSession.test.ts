@@ -13,7 +13,6 @@ describe('buildHandoffSessionMetadataFromTrackedSession', () => {
     expect(source).not.toContain('@/backends/claude/');
     expect(source).not.toContain("case 'claude'");
     expect(source).not.toContain("case 'codex'");
-    expect(source).not.toContain("case 'opencode'");
   });
 
   it('builds Claude direct-session runtime-local metadata through the provider handoff hook', () => {
@@ -78,30 +77,6 @@ describe('buildHandoffSessionMetadataFromTrackedSession', () => {
     expect(metadata).toEqual(expect.objectContaining({
       runtimeLocalMetadata: expect.objectContaining({
         codexSessionId: 'codex-vendor-session',
-      }),
-    }));
-  });
-
-  it('builds OpenCode runtime-local resume metadata through the provider handoff hook', () => {
-    const metadata = buildHandoffSessionMetadataFromTrackedSession({
-      trackedSession: {
-        startedBy: 'daemon',
-        pid: 125,
-        happySessionId: 'sess_handoff_opencode',
-        vendorResumeId: 'opencode-vendor-session',
-        happySessionMetadataFromLocalWebhook: {
-          machineId: 'machine-source',
-          path: '/repo-source',
-          homeDir: '/Users/source',
-          flavor: 'opencode',
-        },
-      } as never,
-      machineId: 'machine-source',
-    });
-
-    expect(metadata).toEqual(expect.objectContaining({
-      runtimeLocalMetadata: expect.objectContaining({
-        opencodeSessionId: 'opencode-vendor-session',
       }),
     }));
   });

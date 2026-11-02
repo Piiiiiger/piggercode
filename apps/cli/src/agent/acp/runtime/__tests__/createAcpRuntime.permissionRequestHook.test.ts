@@ -12,7 +12,7 @@ describe('createAcpRuntime (permission-request hook)', () => {
     const onPermissionRequest = vi.fn();
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient() as any,
       messageBuffer: new MessageBuffer(),

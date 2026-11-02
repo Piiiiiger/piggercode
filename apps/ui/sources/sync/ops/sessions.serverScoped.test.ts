@@ -62,22 +62,6 @@ describe('sessions ops server-scoped routing', () => {
         storage.setState({ sessions: {}, sessionListRenderables: {} });
     });
 
-    it('refuses a connected account resume when the target daemon does not declare launch support', async () => {
-        machineRpcWithServerScopeMock.mockImplementation(async (request) => request.method === 'capabilities.invoke'
-            ? { error: 'Method not found', errorCode: 'method_not_found' }
-            : { type: 'success', sessionId: 'session-1' });
-        const { resumeSession } = await sessionsModulePromise;
-        const result = await resumeSession({
-            sessionId: 'session-1',
-            machineId: 'machine-1',
-            directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'agy' },
-            connectedServices: { v: 1, bindingsByServiceId: { antigravity: { source: 'connected', profileId: 'work' } } },
-        });
-        expect(result).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST });
-        expect(machineRpcWithServerScopeMock.mock.calls.some(([request]) => request.method.startsWith('spawn'))).toBe(false);
-    });
-
     it.each([false, true])('does not unarchive or start an archived pending-input consumer (active: %s)', async (active) => {
         storage.setState({
             sessions: { 'session-1': createSessionFixture({ active, archivedAt: 123 }) },
@@ -456,24 +440,6 @@ describe('sessions ops server-scoped routing', () => {
         expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
             payload: expect.objectContaining({
                 codexBackendMode: 'appServer',
-            }),
-        }));
-    });
-
-    it('passes configured ACP backend backend targets through resumeSession when requested', async () => {
-        machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'sess-1' });
-        const { resumeSession } = await sessionsModulePromise;
-        await resumeSession({
-            sessionId: 'session-1',
-            machineId: 'machine-1',
-            directory: '/tmp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-            serverId: 'server-b',
-        } as any);
-
-        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
-            payload: expect.objectContaining({
-                backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
             }),
         }));
     });

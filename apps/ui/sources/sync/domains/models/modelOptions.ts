@@ -252,28 +252,13 @@ function getModelLabel(mode: ModelMode): string {
     switch (mode) {
         case 'default':
             return t('agentInput.model.useCliSettings');
-        case 'gemini-2.5-pro':
-            return t('agentInput.geminiModel.gemini25Pro.label');
-        case 'gemini-2.5-flash':
-            return t('agentInput.geminiModel.gemini25Flash.label');
-        case 'gemini-2.5-flash-lite':
-            return t('agentInput.geminiModel.gemini25FlashLite.label');
         default:
             return mode;
     }
 }
 
-function getModelDescription(mode: ModelMode): string {
-    switch (mode) {
-        case 'gemini-2.5-pro':
-            return t('agentInput.geminiModel.gemini25Pro.description');
-        case 'gemini-2.5-flash':
-            return t('agentInput.geminiModel.gemini25Flash.description');
-        case 'gemini-2.5-flash-lite':
-            return t('agentInput.geminiModel.gemini25FlashLite.description');
-        default:
-            return '';
-    }
+function getModelDescription(_mode: ModelMode): string {
+    return '';
 }
 
 export function getModelOptionsForModes(modes: readonly ModelMode[]): readonly ModelOption[] {

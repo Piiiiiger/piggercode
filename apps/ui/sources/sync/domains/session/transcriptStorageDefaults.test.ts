@@ -4,27 +4,28 @@ import { buildBackendTargetKey } from '@piggercode/protocol';
 import { readAccountTranscriptStorageDefaults, resolveNewSessionDefaultTranscriptStorage } from './transcriptStorageDefaults';
 
 describe('resolveNewSessionDefaultTranscriptStorage', () => {
-    it('prefers configured ACP backend profile defaults over account defaults', () => {
+    it('prefers backend target profile defaults over account defaults', () => {
+        const target = { kind: 'builtInAgent', agentId: 'codex' } as const;
         const accountDefaults = readAccountTranscriptStorageDefaults({
             globalDefault: 'persisted',
             byTargetKey: {
-                [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'review-bot' })]: 'persisted',
+                [buildBackendTargetKey(target)]: 'persisted',
             },
-            enabledBackendTargets: [{ kind: 'configuredAcpBackend', backendId: 'review-bot' }],
+            enabledBackendTargets: [target],
         });
 
         expect(resolveNewSessionDefaultTranscriptStorage({
-            agentType: 'customAcp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            agentType: 'codex',
+            backendTarget: target,
             accountDefaults,
             profileDefaultsByTargetKey: {
-                [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'review-bot' })]: 'direct',
+                [buildBackendTargetKey(target)]: 'direct',
             },
         })).toBe('direct');
     });
 
-    it('uses target-keyed account defaults for configured ACP backends', () => {
-        const target = { kind: 'configuredAcpBackend', backendId: 'review-bot' } as const;
+    it('uses target-keyed account defaults for a backend target', () => {
+        const target = { kind: 'builtInAgent', agentId: 'codex' } as const;
         const accountDefaults = readAccountTranscriptStorageDefaults({
             globalDefault: 'persisted',
             byTargetKey: {
@@ -34,7 +35,7 @@ describe('resolveNewSessionDefaultTranscriptStorage', () => {
         });
 
         expect(resolveNewSessionDefaultTranscriptStorage({
-            agentType: 'customAcp',
+            agentType: 'codex',
             backendTarget: target,
             accountDefaults,
         })).toBe('direct');

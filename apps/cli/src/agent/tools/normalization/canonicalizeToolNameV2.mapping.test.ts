@@ -14,7 +14,6 @@ describe('canonicalizeToolNameV2 mappings', () => {
     'execute_command',
     'exec_command',
     'CodexBash',
-    'GeminiBash',
   ])('normalizes `%s` to Bash', (toolName) => {
     expect(canonicalize(toolName)).toBe('Bash');
   });
@@ -119,15 +118,11 @@ describe('canonicalizeToolNameV2 mappings', () => {
   });
 
   it.each([
-    { toolName: 'read', input: { title: 'web_fetch', url: 'https://kiro.dev/docs/cli/acp/' }, expected: 'WebFetch' },
-    { toolName: 'read', input: { _acp: { title: 'web_fetch' }, url: 'https://kiro.dev/docs/cli/acp/' }, expected: 'WebFetch' },
-    { toolName: 'search', input: { title: 'web_search', query: 'Agent Client Protocol ACP Kiro docs' }, expected: 'WebSearch' },
-    { toolName: 'fetch', input: { _acp: { title: 'web_search' }, query: 'Agent Client Protocol ACP Kiro docs' }, expected: 'WebSearch' },
+    { toolName: 'read', input: { title: 'web_fetch', url: 'https://agentclientprotocol.com/overview/introduction' }, expected: 'WebFetch' },
+    { toolName: 'read', input: { _acp: { title: 'web_fetch' }, url: 'https://agentclientprotocol.com/overview/introduction' }, expected: 'WebFetch' },
+    { toolName: 'search', input: { title: 'web_search', query: 'Agent Client Protocol docs' }, expected: 'WebSearch' },
+    { toolName: 'fetch', input: { _acp: { title: 'web_search' }, query: 'Agent Client Protocol docs' }, expected: 'WebSearch' },
   ])('prefers ACP web wrapper title hints for `$toolName`', ({ toolName, input, expected }) => {
     expect(canonicalize(toolName, input)).toBe(expected);
-  });
-
-  it('detects Workspace Indexing Permission prompts emitted as Unknown tool', () => {
-    expect(canonicalize('Unknown tool', { title: 'Workspace Indexing Permission' })).toBe('WorkspaceIndexingPermission');
   });
 });

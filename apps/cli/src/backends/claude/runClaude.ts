@@ -264,7 +264,6 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         hasExistingSessionId: typeof options.existingSessionId === 'string' && options.existingSessionId.trim().length > 0,
     });
     logger.debug(`[CLAUDE] ===== CLAUDE MODE STARTING =====`);
-    logger.debug(`[CLAUDE] This is the Claude agent, NOT Gemini`);
     
     const workingDirectory = resolveRequestedSessionDirectory();
     const sessionTag = randomUUID();

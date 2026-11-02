@@ -60,7 +60,7 @@ describe('importAcpReplayHistoryV1', () => {
 
     await importAcpReplayHistoryV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'session-123',
       replay: [
         { type: 'message', role: 'user', text: `hi\n\n${CHANGE_TITLE_INSTRUCTION}` },
@@ -90,7 +90,7 @@ describe('importAcpReplayHistoryV1', () => {
 
     await importAcpReplayHistoryV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'session-123',
       replay: [
         {
@@ -257,7 +257,7 @@ describe('importAcpReplayHistoryV1', () => {
 
     await importAcpReplayHistoryV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'session-123',
       replay: [
         { type: 'message', role: 'agent', text: 'hello' },

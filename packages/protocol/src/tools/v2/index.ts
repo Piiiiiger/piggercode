@@ -94,7 +94,6 @@ export {
   AgentTeamSendMessageInputV2Schema,
   AgentTeamSendMessageResultV2Schema,
   AcpHistoryImportInputV2Schema,
-  WorkspaceIndexingPermissionInputV2Schema,
   ChangeTitleInputV2Schema,
   ChangeTitleResultV2Schema,
 } from './schemas.js';

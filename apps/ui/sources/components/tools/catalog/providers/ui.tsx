@@ -14,22 +14,4 @@ export const providerUiTools = {
         }).partial().passthrough(),
         result: z.object({}).partial().passthrough()
     },
-    WorkspaceIndexingPermission: {
-        title: t('tools.workspaceIndexingPermission.defaultTitle'),
-        icon: ICON_EDIT,
-        minimal: true,
-        noStatus: true,
-        input: z.object({
-            toolCall: z.object({
-                title: z.string().optional(),
-                toolCallId: z.string().optional(),
-            }).partial().optional(),
-            options: z.array(z.object({
-                id: z.string().optional(),
-                name: z.string().optional(),
-                kind: z.string().optional(),
-            }).partial()).optional(),
-        }).partial().passthrough(),
-        result: z.object({}).partial().passthrough(),
-    },
 } satisfies Record<string, KnownToolDefinition>;

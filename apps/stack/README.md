@@ -4,7 +4,7 @@ Run [**Happier**](https://cloud.happier.dev) locally and access it remotely and 
 
 ## What is Happier?
 
-Happier is an UI/CLI stack (server + web UI + CLI + daemon) who let you monitor and interact with Claude Code, Codex and Gemini sessions from your mobile, from a web UI and/or from a desktop app.
+Happier is an UI/CLI stack (server + web UI + CLI + daemon) who let you monitor and interact with Claude Code and Codex sessions from your mobile, from a web UI and/or from a desktop app.
 
 ## What is hstack?
 
@@ -409,7 +409,6 @@ Details: `[docs/tauri.md](docs/tauri.md)`.
 - **Tools (maintainer / automation)**:
   - `hstack tools setup-pr --repo=<pr-url|number> [--dev|--start]`
   - `hstack tools review-pr --repo=<pr-url|number> [--dev|--start]`
-  - `hstack tools review` (local diff review)
   - `hstack tools import` (split repos → monorepo porting helpers)
 - **Menu bar (SwiftBar)**:
   - `hstack menubar install`

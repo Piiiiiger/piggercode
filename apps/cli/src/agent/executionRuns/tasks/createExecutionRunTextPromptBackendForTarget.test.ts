@@ -43,22 +43,4 @@ describe('createExecutionRunTextPromptBackendForTarget', () => {
     }));
   });
 
-  it('routes configured ACP targets through the canonical execution-run backend path', async () => {
-    bootstrapAccountSettingsContextMock.mockResolvedValue({ settings: { backendEnabledByTargetKey: { 'acpBackend:review-bot': true } } });
-    readCredentialsMock.mockResolvedValue({ token: 'cred-1' });
-
-    await createExecutionRunTextPromptBackendForTarget({
-      cwd: '/tmp/workspace',
-      sessionId: 'sess-1',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      permissionMode: 'no_tools',
-      intent: 'replay_summary',
-    });
-
-    expect(createExecutionRunBackendMock).toHaveBeenCalledWith(expect.objectContaining({
-      backendId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      accountSettings: { backendEnabledByTargetKey: { 'acpBackend:review-bot': true } },
-    }));
-  });
 });

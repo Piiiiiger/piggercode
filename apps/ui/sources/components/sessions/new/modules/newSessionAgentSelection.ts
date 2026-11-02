@@ -10,7 +10,7 @@ export type NewSessionSelectableBackendEntry = Readonly<{
     target: BackendTargetRefV1;
     targetKey: string;
     builtInAgentId: AgentId | null;
-    family: 'builtInAgent' | 'configuredAcpBackend';
+    family: 'builtInAgent';
 }>;
 type BaseSelectionParams = Readonly<{
     detectionTimestamp: number;
@@ -55,9 +55,6 @@ function resolveBackendEntryUnavailabilityReasonForNewSession(params: Readonly<{
     installableDepKeyCountByAgentId: InstallableDepKeyCountByAgentId;
     selectableWithoutCliByAgentId?: SelectableWithoutCliByAgentId;
 }>): Exclude<NewSessionProfileAvailabilityReason, 'no-supported-cli' | 'cli-not-detected:any' | 'logged-out:any'> | null {
-    if (params.entry.family === 'configuredAcpBackend') {
-        return null;
-    }
     if (!params.entry.builtInAgentId) {
         return null;
     }

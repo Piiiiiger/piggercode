@@ -36,10 +36,10 @@ describe('createProviderEnforcedPermissionHandler', () => {
     const handler = createProviderEnforcedPermissionHandler({
       session: session as any,
       logPrefix: '[TestProvider]',
-      alwaysAutoApproveToolNameIncludes: ['geminireasoning'],
+      alwaysAutoApproveToolNameIncludes: ['safe-extension-tool'],
     });
 
-    await expect(handler.handleToolCall('safe-extension', 'geminireasoning', {}))
+    await expect(handler.handleToolCall('safe-extension', 'safe-extension-tool', {}))
       .resolves.toEqual({ decision: 'approved' });
     await expect(handler.handleToolCall('safe-1', 'think', {})).resolves.toEqual({ decision: 'approved' });
 

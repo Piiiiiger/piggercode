@@ -17,30 +17,7 @@ const machineCapabilitiesInvoke = vi.fn();
 const state: any = {
   settings: {
     backendEnabledByTargetKey: {
-      'agent:gemini': false,
-      'acpBackend:team-review': false,
-    },
-    acpCatalogSettingsV1: {
-      v: 2,
-      backends: [{
-        id: 'team-review',
-        name: 'team-review',
-        title: 'Team review',
-        description: 'Custom team review backend',
-        command: 'kiro-cli',
-        args: ['acp'],
-        env: {},
-        transportProfile: 'kiro',
-        capabilities: {
-          supportsLoadSession: false,
-          supportsModes: 'unknown',
-          supportsModels: 'unknown',
-          supportsConfigOptions: 'unknown',
-          promptImageSupport: 'unknown',
-        },
-        createdAt: 1,
-        updatedAt: 1,
-      }],
+      'agent:codex': false,
     },
   },
 };
@@ -61,37 +38,13 @@ describe('agent catalog voice tools', () => {
   beforeEach(() => {
     machineCapabilitiesInvoke.mockReset();
     state.settings.backendEnabledByTargetKey = {
-      'agent:gemini': false,
-      'acpBackend:team-review': false,
-    };
-    state.settings.acpCatalogSettingsV1 = {
-      v: 2,
-      backends: [{
-        id: 'team-review',
-        name: 'team-review',
-        title: 'Team review',
-        description: 'Custom team review backend',
-        command: 'kiro-cli',
-        args: ['acp'],
-        env: {},
-        transportProfile: 'kiro',
-        capabilities: {
-          supportsLoadSession: false,
-          supportsModes: 'unknown',
-          supportsModels: 'unknown',
-          supportsConfigOptions: 'unknown',
-          promptImageSupport: 'unknown',
-        },
-        createdAt: 1,
-        updatedAt: 1,
-      }],
+      'agent:codex': false,
     };
     storage.setState(initialStorageState, true);
     storage.setState({
       settings: {
         ...settingsDefaults,
         backendEnabledByTargetKey: state.settings.backendEnabledByTargetKey,
-        acpCatalogSettingsV1: state.settings.acpCatalogSettingsV1,
       },
     });
     resetDynamicModelProbeCacheForTests();
@@ -101,25 +54,16 @@ describe('agent catalog voice tools', () => {
     const { listAgentBackendsForVoiceTool } = await import('./agentCatalogList');
     const res: any = await listAgentBackendsForVoiceTool({ includeDisabled: false });
     const targetKeys = (res?.items ?? []).map((i: any) => i.targetKey);
-    expect(targetKeys).not.toContain('agent:gemini');
-    expect(targetKeys).not.toContain('acpBackend:team-review');
+    expect(targetKeys).not.toContain('agent:codex');
+    expect(targetKeys).toContain('agent:claude');
   });
 
   it('includes disabled backends when includeDisabled=true', async () => {
     const { listAgentBackendsForVoiceTool } = await import('./agentCatalogList');
     const res: any = await listAgentBackendsForVoiceTool({ includeDisabled: true });
-    const gemini = (res?.items ?? []).find((i: any) => i.targetKey === 'agent:gemini');
-    expect(gemini).toBeTruthy();
-    expect(gemini.enabled).toBe(false);
-    expect(gemini.uiConnectedService).toEqual({
-      serviceId: 'gemini',
-      label: 'Google Gemini',
-      connectRoute: null,
-    });
-    const configured = (res?.items ?? []).find((i: any) => i.targetKey === 'acpBackend:team-review');
-    expect(configured).toBeTruthy();
-    expect(configured.enabled).toBe(false);
-    expect(configured.uiConnectedService).toBeNull();
+    const codex = (res?.items ?? []).find((i: any) => i.targetKey === 'agent:codex');
+    expect(codex).toBeTruthy();
+    expect(codex.enabled).toBe(false);
   });
 
   it('applies limit to backend and model discovery results', async () => {
@@ -230,70 +174,6 @@ describe('agent catalog voice tools', () => {
     expect(machineCapabilitiesInvoke).toHaveBeenCalledTimes(1);
   });
 
-  it('probes configured ACP backend models through backendTargetKey', async () => {
-    machineCapabilitiesInvoke.mockResolvedValue({
-      supported: true,
-      response: {
-        ok: true,
-        result: {
-          availableModels: [
-            { id: 'default', name: 'Default' },
-            { id: 'model-review', name: 'Review Model' },
-          ],
-          supportsFreeform: true,
-        },
-      },
-    });
-
-    const { listAgentModelsForVoiceTool } = await import('./agentCatalogList');
-    const params: Parameters<typeof listAgentModelsForVoiceTool>[0] & Readonly<{ backendTargetKey: string; limit: number }> = {
-      backendTargetKey: 'acpBackend:team-review',
-      machineId: 'm1',
-      limit: 2,
-    };
-    const res: any = await listAgentModelsForVoiceTool({
-      ...params,
-    });
-
-    expect(machineCapabilitiesInvoke).toHaveBeenCalledWith(
-      'm1',
-      {
-        id: 'cli.customAcp',
-        method: 'probeModels',
-        params: {
-          timeoutMs: 15_000,
-          backendTarget: { kind: 'configuredAcpBackend', backendId: 'team-review' },
-        },
-      },
-      { serverId: 'server-a' },
-    );
-    expect(res).toMatchObject({
-      agentId: 'customAcp',
-      machineId: 'm1',
-      source: 'preflight',
-      supportsFreeform: true,
-      items: [
-        { modelId: 'default', label: 'Default' },
-        { modelId: 'model-review', label: 'Review Model' },
-      ],
-    });
-  });
-
-  it('rejects ambiguous customAcp model lookup without backendTargetKey', async () => {
-    const { listAgentModelsForVoiceTool } = await import('./agentCatalogList');
-
-    const res: any = await listAgentModelsForVoiceTool({
-      agentId: 'customAcp',
-      machineId: 'm1',
-    });
-
-    expect(res).toMatchObject({
-      ok: false,
-      errorCode: 'invalid_parameters',
-      errorMessage: 'invalid_parameters',
-    });
-    expect(machineCapabilitiesInvoke).not.toHaveBeenCalled();
-  });
   it('keeps provider-owned nonpersistent discovery nonpersistent in the shared cache', async () => {
     machineCapabilitiesInvoke.mockResolvedValue({ supported: true, response: { ok: true, result: {
       availableModels: [{ id: 'provider-model', name: 'Provider model' }],

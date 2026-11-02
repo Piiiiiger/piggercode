@@ -5,7 +5,6 @@ const legacyToolNameToCanonical: Record<string, string> = {
     CodexBash: 'Bash',
     CodexPatch: 'Patch',
     CodexDiff: 'Diff',
-    GeminiReasoning: 'Reasoning',
     CodexReasoning: 'Reasoning',
     TaskCreate: 'SubAgent',
     TaskList: 'SubAgent',

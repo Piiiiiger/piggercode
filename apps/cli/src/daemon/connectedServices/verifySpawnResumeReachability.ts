@@ -17,8 +17,8 @@ import { resolveConnectedServiceTargetMaterializedRoot } from './materialize/res
  * from — not the pre-switch source and not "the import will land".
  *
  * It runs in TARGET-STRICT mode (`targetStrict: true`): the provider probe must prove the EXACT final
- * path the vendor reads after materialization (for Pi, the `PI_CODING_AGENT_DIR/sessions/--<cwd>--`
- * symlink → native), excluding pre-materialization source/staging roots. This enforces plan §2
+ * path the vendor reads after materialization (for example a session directory reached through
+ * the shared-state symlink), excluding pre-materialization source/staging roots. This enforces plan §2
  * ("prove the exact final path") and closes the CS-FINDING-6 false-positive where a file present only
  * in `pi-sessions` staging passed the gate while the final path Pi reads was empty.
  */

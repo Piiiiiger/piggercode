@@ -165,7 +165,7 @@ describe('registerConnectedServiceRuntimeTargetForDaemon onRegisteredTarget', ()
 
   it('indexes a terminal-started broker runtime from its durable session metadata', () => {
     const registry = new ConnectedServiceRuntimeRegistry();
-    const brokerSelectionIdentity = 'opencode|connected|broker:1|openai-codex:work:acct-1|group:team';
+    const brokerSelectionIdentity = 'codex|connected|broker:1|openai-codex:work:acct-1|group:team';
 
     registerConnectedServiceTrackedSessionTargetsForDaemon({
       runtimeRegistry: registry,
@@ -181,7 +181,7 @@ describe('registerConnectedServiceRuntimeTargetForDaemon onRegisteredTarget', ()
           happyLibDir: '/tmp/happier/lib',
           happyToolsDir: '/tmp/happier/tools',
           hostPid: 4326,
-          flavor: 'opencode',
+          flavor: 'codex',
           connectedServices: {
             v: 1,
             bindingsByServiceId: {

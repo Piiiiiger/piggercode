@@ -97,7 +97,6 @@ export const SubAgentSettingsView = React.memo(function SubAgentSettingsView() {
     const [notifyParentOnCompletion, setNotifyParentOnCompletion] = useSettingMutable('executionRunsNotifyParentOnCompletionDefault');
     const [maxCharsRaw, setMaxChars] = useSettingMutable('executionRunsGuidanceMaxChars');
     const [entriesRaw, setEntries] = useSettingMutable('executionRunsGuidanceEntries');
-    const acpCatalogSettingsV1 = useSetting('acpCatalogSettingsV1');
 
     const maxChars = clampInt(Number(maxCharsRaw ?? 4_000), { min: 200, max: 50_000 });
     const entries = React.useMemo(
@@ -107,10 +106,9 @@ export const SubAgentSettingsView = React.memo(function SubAgentSettingsView() {
     const resolvedBackendEntries = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1: acpCatalogSettingsV1 as any,
             backendEnabledByTargetKey: backendEnabledByTargetKey as Record<string, boolean> | undefined,
         });
-    }, [acpCatalogSettingsV1, backendEnabledByTargetKey, enabledAgentIds]);
+    }, [backendEnabledByTargetKey, enabledAgentIds]);
     const providerSubagentSections = React.useMemo(() => listProviderSubagentSettingsSections(), []);
 
     const setEntriesNext = React.useCallback((next: readonly ExecutionRunsGuidanceEntry[]) => {

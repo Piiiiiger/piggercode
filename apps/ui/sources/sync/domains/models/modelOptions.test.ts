@@ -48,13 +48,13 @@ describe('modelOptions', () => {
     });
     it('uses refreshed models for both session choices and non-freeform validation', () => {
         const metadata = withMetadata({
-            sessionModelsV1: { v: 1, provider: 'grok', updatedAt: 1, currentModelId: 'old', availableModels: [{ id: 'old', name: 'Old' }] },
+            sessionModelsV1: { v: 1, provider: 'codex', updatedAt: 1, currentModelId: 'old', availableModels: [{ id: 'old', name: 'Old' }] },
         });
         const preflight = { availableModels: [{ id: 'new', name: 'New' }], supportsFreeform: false };
-        expect(getModelOptionsForSession('grok', metadata, { preflight, preflightUpdatedAt: 2 }).map((row) => row.value)).toEqual(['default', 'new']);
-        expect(getSelectableModelIdsForSession('grok', metadata, { preflight, preflightUpdatedAt: 2 })).toEqual(['default', 'new']);
-        expect(isModelSelectableForSession('grok', metadata, 'new', { preflight, preflightUpdatedAt: 2 })).toBe(true);
-        expect(isModelSelectableForSession('grok', metadata, 'old', { preflight, preflightUpdatedAt: 2 })).toBe(false);
+        expect(getModelOptionsForSession('codex', metadata, { preflight, preflightUpdatedAt: 2 }).map((row) => row.value)).toEqual(['default', 'new']);
+        expect(getSelectableModelIdsForSession('codex', metadata, { preflight, preflightUpdatedAt: 2 })).toEqual(['default', 'new']);
+        expect(isModelSelectableForSession('codex', metadata, 'new', { preflight, preflightUpdatedAt: 2 })).toBe(true);
+        expect(isModelSelectableForSession('codex', metadata, 'old', { preflight, preflightUpdatedAt: 2 })).toBe(false);
     });
 
     it('retains an explicit freeform selection without restoring unadvertised static rows', () => {
@@ -63,43 +63,30 @@ describe('modelOptions', () => {
         expect(getModelOptionsForSession('claude', metadata, { preflight }).map((row) => row.value)).toEqual(['default', 'discovered', 'my-model']);
     });
 
-    it('matches configured ACP model metadata to its exact backend', () => {
-        const metadata = withMetadata({
-            flavor: 'acp:custom-one',
-            acpConfiguredBackendV1: { v: 1, backendId: 'custom-one', title: 'Custom', updatedAt: 1 },
-            sessionModelsV1: { v: 1, provider: 'acp:custom-one', updatedAt: 1, currentModelId: 'custom-model', availableModels: [{ id: 'custom-model', name: 'Custom Model' }] },
-        });
-        expect(getModelOptionsForSession('customAcp', metadata).map((row) => row.value)).toEqual(['default', 'custom-model']);
-        expect(hasDynamicModelListForSession('customAcp', metadata)).toBe(true);
-        const otherBackend = withMetadata({ ...metadata, acpConfiguredBackendV1: { v: 1, backendId: 'custom-two', title: 'Other', updatedAt: 2 } });
-        expect(getModelOptionsForSession('customAcp', otherBackend).map((row) => row.value)).toEqual(['default']);
-        expect(hasDynamicModelListForSession('customAcp', otherBackend)).toBe(false);
-    });
-
     it('resolves discovery and session freshness once for choices and validation', () => {
         const metadata = withMetadata({
-            sessionModelsV1: { v: 1, provider: 'grok', updatedAt: 20, currentModelId: 'runtime', availableModels: [{ id: 'runtime', name: 'Runtime' }] },
+            sessionModelsV1: { v: 1, provider: 'codex', updatedAt: 20, currentModelId: 'runtime', availableModels: [{ id: 'runtime', name: 'Runtime' }] },
         });
         const preflight = { availableModels: [{ id: 'discovered', name: 'Discovered' }], supportsFreeform: false };
         const stale = { preflight, preflightUpdatedAt: 10 };
         const fresh = { preflight, preflightUpdatedAt: 30 };
-        expect(getModelOptionsForSession('grok', metadata, { preflight, preflightUpdatedAt: null }).map((row) => row.value)).toEqual(['default', 'runtime']);
-        expect(getModelOptionsForSession('grok', null, { preflight, preflightUpdatedAt: null }).map((row) => row.value)).toEqual(['default', 'discovered']);
-        expect(getModelOptionsForSession('grok', metadata, stale).map((row) => row.value)).toEqual(['default', 'runtime']);
-        expect(isModelSelectableForSession('grok', metadata, 'discovered', stale)).toBe(false);
-        expect(getModelOptionsForSession('grok', metadata, fresh).map((row) => row.value)).toEqual(['default', 'discovered']);
-        expect(isModelSelectableForSession('grok', metadata, 'discovered', fresh)).toBe(true);
+        expect(getModelOptionsForSession('codex', metadata, { preflight, preflightUpdatedAt: null }).map((row) => row.value)).toEqual(['default', 'runtime']);
+        expect(getModelOptionsForSession('codex', null, { preflight, preflightUpdatedAt: null }).map((row) => row.value)).toEqual(['default', 'discovered']);
+        expect(getModelOptionsForSession('codex', metadata, stale).map((row) => row.value)).toEqual(['default', 'runtime']);
+        expect(isModelSelectableForSession('codex', metadata, 'discovered', stale)).toBe(false);
+        expect(getModelOptionsForSession('codex', metadata, fresh).map((row) => row.value)).toEqual(['default', 'discovered']);
+        expect(isModelSelectableForSession('codex', metadata, 'discovered', fresh)).toBe(true);
     });
 
     it('keeps the requested model visible without marking the applied model as requested', () => {
         const metadata = withMetadata({
-            sessionAppliedModelV1: { v: 1, provider: 'grok', updatedAt: 1, modelId: 'applied' },
+            sessionAppliedModelV1: { v: 1, provider: 'codex', updatedAt: 1, modelId: 'applied' },
             modelOverrideV1: { v: 1, updatedAt: 2, modelId: 'requested' },
         });
         const preflight = { availableModels: [], supportsFreeform: false };
-        expect(getModelOptionsForSession('grok', metadata, { preflight }).map((row) => row.value)).toEqual(['default', 'requested']);
-        expect(getModelOptionsForSession('grok', metadata, { preflight, selectedModelId: 'local-choice' }).map((row) => row.value)).toEqual(['default', 'local-choice']);
-        expect(isModelSelectableForSession('grok', metadata, 'unrequested', { preflight })).toBe(false);
+        expect(getModelOptionsForSession('codex', metadata, { preflight }).map((row) => row.value)).toEqual(['default', 'requested']);
+        expect(getModelOptionsForSession('codex', metadata, { preflight, selectedModelId: 'local-choice' }).map((row) => row.value)).toEqual(['default', 'local-choice']);
+        expect(isModelSelectableForSession('codex', metadata, 'unrequested', { preflight })).toBe(false);
     });
 
     it('keeps a newer empty session catalog authoritative over stale discovery', () => {
@@ -115,9 +102,9 @@ describe('modelOptions', () => {
 
     it('uses the selected discovery freeform policy for both entry and validation', () => {
         const context = { preflight: { availableModels: [{ id: 'discovered', name: 'Discovered' }], supportsFreeform: false } };
-        expect(supportsFreeformModelSelectionForSession('pi', null, context)).toBe(false);
-        expect(isModelSelectableForSession('pi', null, 'custom', context)).toBe(false);
-        expect(isModelSelectableForSession('pi', null, 'discovered', context)).toBe(true);
+        expect(supportsFreeformModelSelectionForSession('codex', null, context)).toBe(false);
+        expect(isModelSelectableForSession('codex', null, 'custom', context)).toBe(false);
+        expect(isModelSelectableForSession('codex', null, 'discovered', context)).toBe(true);
     });
 
     it('builds generic options for unknown modes', () => {
@@ -127,33 +114,9 @@ describe('modelOptions', () => {
         expect(out[0].description).toBe('');
     });
 
-    it('returns options for agents with configurable model selection', () => {
-        const options = getModelOptionsForAgentType('gemini');
-        expect(options.map((o) => o.value)).toEqual([
-            'default',
-            'auto',
-            'gemini-2.5-pro',
-            'gemini-2.5-flash',
-            'gemini-2.5-flash-lite',
-            'gemini-3-flash-preview',
-            'gemini-3-pro-preview',
-            'gemini-3.1-pro-preview',
-        ]);
-        expect(options.find((option) => option.value === 'auto')).toMatchObject({
-            value: 'auto',
-            label: 'Auto',
-            description: expect.any(String),
-        });
-        expect(options.find((option) => option.value === 'gemini-3.1-pro-preview')).toMatchObject({
-            value: 'gemini-3.1-pro-preview',
-            label: 'Gemini 3.1 Pro Preview',
-            description: expect.any(String),
-        });
-    });
-
     it('returns a default-only option for selection-capable agents without static lists', () => {
-        expect(getModelOptionsForAgentType('qwen').map((o) => o.value)).toEqual(['default']);
-        expect(getModelOptionsForAgentType('kimi').map((o) => o.value)).toEqual(['default']);
+        expect(getModelOptionsForAgentType('codex').map((o) => o.value)).toEqual(['default']);
+        expect(getModelOptionsForAgentType('codex').map((o) => o.value)).toEqual(['default']);
     });
 
     it('returns default-only static options for codex so preflight can provide account-specific models', () => {
@@ -212,11 +175,11 @@ describe('modelOptions', () => {
 
     it('prefers ACP session models when present', () => {
         const out = getModelOptionsForSession(
-            'opencode',
+            'codex',
             withMetadata({
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'opencode',
+                    provider: 'codex',
                     updatedAt: 1,
                     currentModelId: 'model-a',
                     availableModels: [
@@ -287,27 +250,6 @@ describe('modelOptions', () => {
         });
     });
 
-    it('ignores stale dynamic session model rows for static-only providers and uses the static catalog', () => {
-        const staticKiroValues = getModelOptionsForAgentType('kiro').map((option) => option.value);
-        const out = getModelOptionsForSession(
-            'kiro',
-            withMetadata({
-                sessionModelsV1: {
-                    v: 1,
-                    provider: 'kiro',
-                    updatedAt: 1,
-                    currentModelId: 'kiro-from-session',
-                    availableModels: [
-                        { id: 'kiro-from-session', name: 'Kiro (From Session)' },
-                    ],
-                },
-            }),
-        );
-
-        expect(out.map((option) => option.value)).toEqual(staticKiroValues);
-        expect(out.some((option) => option.value === 'kiro-from-session')).toBe(false);
-    });
-
     it('does not restore an unadvertised extended-context capability from the static catalog', () => {
         const out = getModelOptionsForSession(
             'claude',
@@ -375,30 +317,6 @@ describe('modelOptions', () => {
         });
     });
 
-    it('treats ACP session models as selectable', () => {
-        const metadata = withMetadata({
-            sessionModelsV1: {
-                v: 1,
-                provider: 'opencode',
-                updatedAt: 1,
-                currentModelId: 'model-a',
-                availableModels: [{ id: 'model-a', name: 'Model A' }],
-            },
-        });
-
-        expect(isModelSelectableForSession('opencode', metadata, 'model-a')).toBe(true);
-        expect(isModelSelectableForSession('opencode', metadata, 'default')).toBe(true);
-        // Some providers accept custom model IDs even when a dynamic list is available.
-        expect(isModelSelectableForSession('opencode', metadata, 'not-a-model')).toBe(true);
-    });
-
-    it('treats static Gemini models as selectable', () => {
-        expect(isModelSelectableForSession('gemini', null, 'gemini-2.5-pro')).toBe(true);
-        expect(isModelSelectableForSession('gemini', null, 'default')).toBe(true);
-        expect(isModelSelectableForSession('gemini', null, 'model-a')).toBe(true);
-        expect(isModelSelectableForSession('gemini', null, '   ')).toBe(false);
-    });
-
     it('treats Claude models as freeform-selectable when configured', () => {
         expect(isModelSelectableForSession('claude', null, 'claude-3.5-sonnet')).toBe(true);
         expect(isModelSelectableForSession('claude', null, 'default')).toBe(true);
@@ -416,65 +334,9 @@ describe('modelOptions', () => {
         expect(out.some((option) => option.value === 'claude-custom-model')).toBe(true);
     });
 
-    it('appends custom metadata override models after the static catalog for static-only providers', () => {
-        const staticKiroValues = getModelOptionsForAgentType('kiro').map((option) => option.value);
-        const out = getModelOptionsForSession(
-            'kiro',
-            withMetadata({
-                sessionModelsV1: {
-                    v: 1,
-                    provider: 'kiro',
-                    updatedAt: 1,
-                    currentModelId: 'kiro-from-session',
-                    availableModels: [
-                        { id: 'kiro-from-session', name: 'Kiro (From Session)' },
-                    ],
-                },
-                modelOverrideV1: { v: 1, updatedAt: 100, modelId: 'kiro-custom-model' },
-            }),
-        );
-
-        expect(out.map((option) => option.value)).toEqual([
-            ...staticKiroValues,
-            'kiro-custom-model',
-        ]);
-    });
-
-    it('derives selectable ids from the same static-only session model policy for freeform providers', () => {
-        const staticKiroValues = getModelOptionsForAgentType('kiro').map((option) => option.value);
-        const metadata = withMetadata({
-            sessionModelsV1: {
-                v: 1,
-                provider: 'kiro',
-                updatedAt: 1,
-                currentModelId: 'kiro-from-session',
-                availableModels: [
-                    { id: 'kiro-from-session', name: 'Kiro (From Session)' },
-                ],
-            },
-            modelOverrideV1: { v: 1, updatedAt: 100, modelId: 'kiro-custom-model' },
-        });
-
-        expect(getSelectableModelIdsForSession('kiro', metadata)).toEqual([
-            ...staticKiroValues,
-            'kiro-custom-model',
-        ]);
-    });
-
-    it('adds metadata override model into options for Gemini when freeform is enabled', () => {
-        const out = getModelOptionsForSession(
-            'gemini',
-            withMetadata({
-                modelOverrideV1: { v: 1, updatedAt: 100, modelId: 'gemini-custom-model' },
-            }),
-        );
-
-        expect(out.some((option) => option.value === 'gemini-custom-model')).toBe(true);
-    });
-
     it('falls back to static options when dynamic list provider does not match agent', () => {
         const out = getModelOptionsForSession(
-            'opencode',
+            'codex',
             withMetadata({
                 sessionModelsV1: {
                     v: 1,
@@ -487,55 +349,6 @@ describe('modelOptions', () => {
         );
 
         expect(out.map((option) => option.value)).toEqual(['default']);
-    });
-
-    it('detects dynamic list support only for matching provider metadata', () => {
-        expect(
-            hasDynamicModelListForSession(
-                'opencode',
-                withMetadata({
-                    sessionModelsV1: {
-                        v: 1,
-                        provider: 'opencode',
-                        updatedAt: 1,
-                        currentModelId: 'model-a',
-                        availableModels: [{ id: 'model-a', name: 'Model A' }],
-                    },
-                }),
-            ),
-        ).toBe(true);
-
-        expect(
-            hasDynamicModelListForSession(
-                'opencode',
-                withMetadata({
-                    sessionModelsV1: {
-                        v: 1,
-                        provider: 'gemini',
-                        updatedAt: 1,
-                        currentModelId: 'model-a',
-                        availableModels: [{ id: 'model-a', name: 'Model A' }],
-                    },
-                }),
-            ),
-        ).toBe(false);
-    });
-
-    it('does not treat static-only provider metadata as dynamic list support', () => {
-        expect(
-            hasDynamicModelListForSession(
-                'kiro',
-                withMetadata({
-                    sessionModelsV1: {
-                        v: 1,
-                        provider: 'kiro',
-                        updatedAt: 1,
-                        currentModelId: 'kiro-from-session',
-                        availableModels: [{ id: 'kiro-from-session', name: 'Kiro (From Session)' }],
-                    },
-                }),
-            ),
-        ).toBe(false);
     });
 
     it('treats a published Claude session model list as dynamic list support', () => {
@@ -557,11 +370,11 @@ describe('modelOptions', () => {
 
     it('falls back to legacy ACP session models when canonical key is absent', () => {
         const out = getModelOptionsForSession(
-            'opencode',
+            'codex',
             withMetadata({
                 acpSessionModelsV1: {
                     v: 1,
-                    provider: 'opencode',
+                    provider: 'codex',
                     updatedAt: 1,
                     currentModelId: 'model-a',
                     availableModels: [{ id: 'model-a', name: 'Model A' }],
@@ -574,31 +387,31 @@ describe('modelOptions', () => {
 
     it('uses the newest valid model-state alias when canonical and legacy values diverge', () => {
         const out = getModelOptionsForSession(
-            'grok',
+            'codex',
             withMetadata({
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'codex',
                     updatedAt: 10,
                     currentModelId: 'stale-model',
                     availableModels: [{ id: 'stale-model', name: 'Stale model' }],
                 },
                 acpSessionModelsV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'codex',
                     updatedAt: 20,
-                    currentModelId: 'grok-4.5',
-                    availableModels: [{ id: 'grok-4.5', name: 'Grok 4.5' }],
+                    currentModelId: 'gpt-5.5',
+                    availableModels: [{ id: 'gpt-5.5', name: 'GPT-5.5' }],
                 },
             }),
         );
 
-        expect(out.map((option) => option.value)).toEqual(['default', 'grok-4.5']);
+        expect(out.map((option) => option.value)).toEqual(['default', 'gpt-5.5']);
     });
 
     it('reuses a uniquely matching provider-qualified model for an unqualified persisted selection', () => {
         const out = getModelOptionsForSession(
-            'pi',
+            'codex',
             withMetadata({
                 modelOverrideV1: {
                     v: 1,
@@ -607,7 +420,7 @@ describe('modelOptions', () => {
                 },
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'pi',
+                    provider: 'codex',
                     updatedAt: 10,
                     currentModelId: 'openai-codex/gpt-5.6-luna',
                     availableModels: [{

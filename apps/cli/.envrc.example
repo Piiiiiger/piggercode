@@ -1,4 +1,4 @@
-# Happier CLI Development Environment
+# PiggerCode CLI development environment
 #
 # This file is for direnv users who want automatic environment switching
 # when entering this directory.
@@ -10,8 +10,8 @@
 #
 # The .envrc file is gitignored, so each developer can customize it.
 
-export HAPPY_HOME_DIR="$HOME/.happy-dev"
-export HAPPY_VARIANT="dev"
-export HAPPY_SERVER_URL="${HAPPY_SERVER_URL:-https://api.happier.dev}"
+export PIGGERCODE_HOME_DIR="$HOME/.piggercode-dev"
+export PIGGERCODE_VARIANT="dev"
+export PIGGERCODE_SERVER_URL="${PIGGERCODE_SERVER_URL:-http://localhost:3005}"
 
-echo "🔧 DEV environment activated (data: $HAPPY_HOME_DIR)"
+echo "🔧 DEV environment activated (data: $PIGGERCODE_HOME_DIR)"

@@ -1506,44 +1506,6 @@ async function cmdCode({ rootDir, argv }) {
   return { component, dir, cmd: 'code', resolvedCmd: codePath };
 }
 
-async function cmdCursor({ rootDir, argv }) {
-  const { flags } = parseArgs(argv);
-  const json = wantsJson(argv, { flags });
-  const positionals = argv.filter((a) => !a.startsWith('--'));
-  const legacyComponent = positionals[2] ? positionals[1] : '';
-  const component = DEFAULT_REPO_COMPONENT;
-  const spec = positionals[2] ? positionals[2] : (positionals[1] ?? '');
-  void legacyComponent;
-  const packageDir = resolveComponentWorktreeDir({ rootDir, component, spec });
-  const dir = resolveMonorepoEditorDir({ dir: packageDir, preferPackageDir: flags.has('--package') });
-  if (!(await pathExists(dir))) {
-    throw new Error(`[wt] target does not exist: ${dir}`);
-  }
-
-  const cursorPath = await resolveCommandPath('cursor', { cwd: rootDir, env: process.env });
-  const hasCursorCli = Boolean(cursorPath);
-  if (json) {
-    return {
-      component,
-      dir,
-      cmd: hasCursorCli ? 'cursor' : process.platform === 'darwin' ? 'open -a Cursor' : null,
-      resolvedCmd: cursorPath || null,
-    };
-  }
-
-  if (hasCursorCli) {
-    await run(cursorPath, [dir], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    return { component, dir, cmd: 'cursor', resolvedCmd: cursorPath };
-  }
-
-  if (process.platform === 'darwin') {
-    await run('open', ['-a', 'Cursor', dir], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    return { component, dir, cmd: 'open -a Cursor' };
-  }
-
-  throw new Error("[wt] Cursor CLI 'cursor' not found on PATH (and non-macOS fallback is unavailable).");
-}
-
 async function cmdSyncAll({ rootDir, argv }) {
   const { flags, kv } = parseArgs(argv);
   const json = wantsJson(argv, { flags });
@@ -1924,7 +1886,6 @@ async function main() {
     'hstack wt git [worktreeSpec|active|main|dev|path] -- <git args...> [--json]',
     'hstack wt shell [worktreeSpec|active|main|dev|path] [--shell=/bin/zsh] [--json]',
     'hstack wt code [worktreeSpec|active|main|dev|path] [--json]',
-    'hstack wt cursor [worktreeSpec|active|main|dev|path] [--json]',
     'hstack wt archive <worktreeSpec|active|main|dev|path> [--dry-run] [--date=YYYY-MM-DD] [--no-delete-branch] [--detach-stacks] [--json]',
   ];
   const usageByCmd = (() => {
@@ -1954,7 +1915,7 @@ async function main() {
     printResult({
       json,
       data: {
-        commands: ['sync', 'sync-all', 'list', 'new', 'pr', 'use', 'status', 'update', 'update-all', 'push', 'git', 'shell', 'code', 'cursor', 'archive'],
+        commands: ['sync', 'sync-all', 'list', 'new', 'pr', 'use', 'status', 'update', 'update-all', 'push', 'git', 'shell', 'code', 'archive'],
         interactive: ['new', 'use'],
       },
       text: [
@@ -1991,7 +1952,6 @@ async function main() {
     'git',
     'shell',
     'code',
-    'cursor',
     'archive',
   ]);
   const legacyComponents = new Set(['happier-ui', 'happier-cli', 'happier-server-light', 'happier-server']);
@@ -2143,13 +2103,6 @@ async function main() {
   }
   if (cmd === 'code') {
     const res = await cmdCode({ rootDir, argv: effectiveArgv });
-    if (json) {
-      printResult({ json, data: res });
-    }
-    return;
-  }
-  if (cmd === 'cursor') {
-    const res = await cmdCursor({ rootDir, argv: effectiveArgv });
     if (json) {
       printResult({ json, data: res });
     }

@@ -368,8 +368,8 @@ describe('core e2e: cli dist build', () => {
 
     const cliDistDir = resolve(repoRoot, 'apps', 'cli', 'dist');
     await mkdir(cliDistDir, { recursive: true });
-    await writeFile(resolve(cliDistDir, 'index.mjs'), "export { value } from './copilotCliAuthSpec-hash.mjs';\n", 'utf8');
-    await writeFile(resolve(cliDistDir, 'copilotCliAuthSpec-hash.mjs'), "export const value = 1;\n", 'utf8');
+    await writeFile(resolve(cliDistDir, 'index.mjs'), "export { value } from './codexCliAuthSpec-hash.mjs';\n", 'utf8');
+    await writeFile(resolve(cliDistDir, 'codexCliAuthSpec-hash.mjs'), "export const value = 1;\n", 'utf8');
 
     const runCommand = vi.fn<RunLoggedCommand>(async () => {
       await writeSharedWorkspaceOutputs(repoRoot);
@@ -386,7 +386,7 @@ describe('core e2e: cli dist build', () => {
             shouldFailOnce = false;
             const error = Object.assign(new Error('simulated dist race'), {
               code: 'ENOENT',
-              path: resolve(cliDistDir, 'copilotCliAuthSpec-hash.mjs'),
+              path: resolve(cliDistDir, 'codexCliAuthSpec-hash.mjs'),
             });
             throw error;
           }
@@ -411,7 +411,7 @@ describe('core e2e: cli dist build', () => {
 
       expect(entrypoint).toBe(resolve(snapshotDir, 'dist', 'index.mjs'));
       expect(await exists(entrypoint)).toBe(true);
-      expect(await exists(resolve(snapshotDir, 'dist', 'copilotCliAuthSpec-hash.mjs'))).toBe(true);
+      expect(await exists(resolve(snapshotDir, 'dist', 'codexCliAuthSpec-hash.mjs'))).toBe(true);
     } finally {
       vi.doUnmock('node:fs/promises');
       vi.resetModules();

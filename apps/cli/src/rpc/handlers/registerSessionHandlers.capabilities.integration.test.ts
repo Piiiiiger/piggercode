@@ -80,7 +80,7 @@ describe('registerCommonHandlers capabilities', () => {
 
         expect(result.protocolVersion).toBe(1);
         expect(result.capabilities.map((c) => c.id)).toEqual(
-            expect.arrayContaining(['cli.codex', 'cli.claude', 'cli.gemini', 'cli.opencode', 'tool.tmux', 'tool.windowsTerminal', 'tool.systemTasks', CODEX_ACP_DEP_ID]),
+            expect.arrayContaining(['cli.codex', 'cli.claude', 'tool.tmux', 'tool.windowsTerminal', 'tool.systemTasks', CODEX_ACP_DEP_ID]),
         );
         expect(Object.keys(result.checklists)).toEqual(
             expect.arrayContaining([
@@ -88,8 +88,6 @@ describe('registerCommonHandlers capabilities', () => {
                 CHECKLIST_IDS.MACHINE_DETAILS,
                 resumeChecklistId('claude'),
                 resumeChecklistId('codex'),
-                resumeChecklistId('gemini'),
-                resumeChecklistId('opencode'),
             ]),
         );
         expect(result.checklists[resumeChecklistId('codex')].map((r) => r.id)).toEqual(
@@ -105,8 +103,6 @@ describe('registerCommonHandlers capabilities', () => {
 
             const fakeCodex = join(dir, isWindows ? 'codex.cmd' : 'codex');
             const fakeClaude = join(dir, isWindows ? 'claude.cmd' : 'claude');
-            const fakeGemini = join(dir, isWindows ? 'gemini.cmd' : 'gemini');
-            const fakeOpenCode = join(dir, isWindows ? 'opencode.cmd' : 'opencode');
             const fakeTmux = join(dir, isWindows ? 'tmux.cmd' : 'tmux');
             const fakeWindowsTerminal = join(dir, 'wt.exe');
 
@@ -125,20 +121,6 @@ describe('registerCommonHandlers capabilities', () => {
                 'utf8',
             );
             await writeFile(
-                fakeGemini,
-                isWindows
-                    ? '@echo off\r\nif "%1"=="--version" (echo gemini 9.9.9& exit /b 0)\r\necho ok\r\n'
-                    : '#!/bin/sh\nif [ "$1" = "--version" ]; then echo "gemini 9.9.9"; exit 0; fi\necho ok\n',
-                'utf8',
-            );
-            await writeFile(
-                fakeOpenCode,
-                isWindows
-                    ? '@echo off\r\nif "%1"=="--version" (echo opencode 0.1.48& exit /b 0)\r\necho ok\r\n'
-                    : '#!/bin/sh\nif [ "$1" = "--version" ]; then echo "opencode 0.1.48"; exit 0; fi\necho ok\n',
-                'utf8',
-            );
-            await writeFile(
                 fakeTmux,
                 isWindows
                     ? '@echo off\r\nif "%1"=="-V" (echo tmux 3.3a& exit /b 0)\r\necho ok\r\n'
@@ -154,8 +136,6 @@ describe('registerCommonHandlers capabilities', () => {
             if (!isWindows) {
                 await chmod(fakeCodex, 0o755);
                 await chmod(fakeClaude, 0o755);
-                await chmod(fakeGemini, 0o755);
-                await chmod(fakeOpenCode, 0o755);
                 await chmod(fakeTmux, 0o755);
                 await chmod(fakeWindowsTerminal, 0o755);
             } else {
@@ -177,14 +157,6 @@ describe('registerCommonHandlers capabilities', () => {
             const claudeData = expectCapabilityData(result, 'cli.claude');
             expect(claudeData.available).toBe(true);
             expect(claudeData.resolvedPath).toBe(fakeClaude);
-
-            const geminiData = expectCapabilityData(result, 'cli.gemini');
-            expect(geminiData.available).toBe(true);
-            expect(geminiData.resolvedPath).toBe(fakeGemini);
-
-            const openCodeData = expectCapabilityData(result, 'cli.opencode');
-            expect(openCodeData.available).toBe(true);
-            expect(openCodeData.resolvedPath).toBe(fakeOpenCode);
 
             const tmuxData = expectCapabilityData(result, 'tool.tmux');
             expect(tmuxData.available).toBe(true);
@@ -279,26 +251,6 @@ describe('registerCommonHandlers capabilities', () => {
             expect(result.error.code).toBe('install-failed');
             expect(result.error.message).toContain('Command not found');
             expect(typeof result.logPath).toBe('string');
-        } finally {
-            await rm(dir, { recursive: true, force: true });
-        }
-    });
-
-    it('returns install-not-available when provider has no auto-install recipe for the selected platform', async () => {
-        const dir = await mkdtemp(join(tmpdir(), 'happier-cli-capabilities-provider-install-missing-recipe-'));
-        try {
-            process.env.PATH = `${dir}`;
-
-            const { call } = createTestRpcManager({ scopePrefix: 'machine-test-provider-install-missing-recipe' });
-            const result = await call<CapabilitiesInvokeResponse, CapabilitiesInvokeRequest>(RPC_METHODS.CAPABILITIES_INVOKE, {
-                id: 'cli.kiro',
-                method: 'install',
-                params: { dryRun: true, platform: 'win32' },
-            });
-
-            expect(result.ok).toBe(false);
-            if (result.ok) return;
-            expect(result.error.code).toBe('install-not-available');
         } finally {
             await rm(dir, { recursive: true, force: true });
         }

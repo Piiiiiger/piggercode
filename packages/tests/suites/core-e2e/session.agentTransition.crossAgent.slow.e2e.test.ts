@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { chmod, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { delimiter, join, resolve } from 'node:path';
+import { mkdir, readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -31,9 +31,7 @@ import {
 } from '../../src/testkit/codexAppServerRemoteHarness';
 import { fetchJson } from '../../src/testkit/http';
 import { enqueuePendingQueueV2 } from '../../src/testkit/pendingQueueV2';
-import { repoRootDir } from '../../src/testkit/paths';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
-import { resolveAcpSdkTestRuntime } from '../../src/testkit/providers/acpSdkTestRuntime';
 import { decryptDataKeyBase64, encryptDataKeyBase64 } from '../../src/testkit/rpcCrypto';
 import { createRunDirs } from '../../src/testkit/runDir';
 import { fetchAllMessages, fetchSessionV2, type SessionMessageRow } from '../../src/testkit/sessions';
@@ -47,9 +45,7 @@ import { unwrapSerializedJsonValue } from '../../src/testkit/unwrapSerializedJso
  * server + daemon + CLI loop with FAKE Agents. No stack, no Agent credentials,
  * no paid traffic.
  *
- * The pair is fake-Claude -> fake-Gemini(ACP) because both already run under one
- * daemon from one spawn environment (`wake.firstMessageProcessed` establishes
- * that combination in this tree). The deciding properties are Agent-agnostic:
+ * The pair is fake-Claude -> fake-Codex (app-server). The deciding properties are Agent-agnostic:
  * the same Session row keeps its identity while its runtime Agent is replaced,
  * exactly one divider is appended at the reserved localId, and the submitted
  * localId is admitted exactly once.
@@ -77,35 +73,8 @@ import { unwrapSerializedJsonValue } from '../../src/testkit/unwrapSerializedJso
 
 const run = createRunDirs({ runLabel: 'core' });
 
-type ProviderEnvParams = Readonly<{
-  daemonHomeDir: string;
-  fakeBinDir: string;
-  fakeClaudeLogPath: string;
-  fakeClaudePath: string;
-  fakeGeminiLogPath: string;
-  fakeGeminiPath: string;
-  serverBaseUrl: string;
-}>;
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
-}
-
-function createProviderEnv(params: ProviderEnvParams): Record<string, string> {
-  return {
-    CI: '1',
-    PIGGERCODE_VARIANT: 'dev',
-    PIGGERCODE_DISABLE_CAFFEINATE: '1',
-    PIGGERCODE_HOME_DIR: params.daemonHomeDir,
-    PIGGERCODE_SERVER_URL: params.serverBaseUrl,
-    PIGGERCODE_WEBAPP_URL: params.serverBaseUrl,
-    PIGGERCODE_CLAUDE_PATH: params.fakeClaudePath,
-    PIGGERCODE_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
-    PIGGERCODE_GEMINI_PATH: params.fakeGeminiPath,
-    PIGGERCODE_E2E_GEMINI_LOG: params.fakeGeminiLogPath,
-    GEMINI_API_KEY: 'e2e-fake-gemini-api-key',
-    PATH: `${params.fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
-  };
 }
 
 function createClaudeCodexProviderEnv(params: Readonly<{
@@ -133,89 +102,6 @@ function createClaudeCodexProviderEnv(params: Readonly<{
     PIGGERCODE_CODEX_EXECUTION_RUN_TRANSPORT: 'appServer',
     PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
   };
-}
-
-async function writeFakeGeminiAcpCli(params: Readonly<{ fakeGeminiPath: string }>): Promise<void> {
-  const { sdkEntry: acpSdkEntry, agentAppAdapterEntry } = resolveAcpSdkTestRuntime(repoRootDir());
-  await writeFile(
-    params.fakeGeminiPath,
-    `#!/usr/bin/env node
-import { appendFileSync } from "node:fs";
-import { randomUUID } from "node:crypto";
-import { pathToFileURL } from "node:url";
-import { Readable, Writable } from "node:stream";
-
-if (process.argv.includes("--help")) {
-  process.stdout.write("fake gemini usage --acp\\n");
-  process.exit(0);
-}
-
-function log(line) {
-  const p = process.env.PIGGERCODE_E2E_GEMINI_LOG;
-  if (p) appendFileSync(p, JSON.stringify({ ts: Date.now(), ...line }) + "\\n", "utf8");
-}
-
-function promptText(blocks) {
-  return Array.isArray(blocks)
-    ? blocks.map((b) => b && typeof b === "object" && b.type === "text" ? String(b.text || "") : "").join("\\n")
-    : "";
-}
-
-const acp = await import(pathToFileURL(${JSON.stringify(acpSdkEntry)}).href);
-const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
-const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
-
-class FakeGeminiAgent {
-  connection;
-  constructor(connection) { this.connection = connection; }
-
-  async initialize(_params) {
-    return {
-      protocolVersion: acp.PROTOCOL_VERSION,
-      agentCapabilities: { loadSession: true },
-      authMethods: [{ id: "oauth-personal" }, { id: "gemini-api-key" }],
-    };
-  }
-
-  async authenticate(_params) { return {}; }
-
-  async newSession(_params) {
-    const sessionId = randomUUID();
-    log({ kind: "newSession", sessionId });
-    return { sessionId };
-  }
-
-  async loadSession(params) {
-    const sessionId = String(params?.sessionId || "");
-    log({ kind: "loadSession", sessionId });
-    return {};
-  }
-
-  async prompt(params) {
-    const text = promptText(params.prompt);
-    log({ kind: "prompt", text });
-    await this.connection.sessionUpdate({
-      sessionId: params.sessionId,
-      update: {
-        sessionUpdate: "agent_message_chunk",
-        content: { type: "text", text: "FAKE_GEMINI_OK_" + Date.now() },
-      },
-    });
-    log({ kind: "promptReturn", marker: "FAKE_GEMINI_OK", stopReason: "end_turn" });
-    return { stopReason: "end_turn" };
-  }
-
-  async cancel(_params) {}
-}
-
-const stream = acp.ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin));
-const connection = connectAcpTestAgentApp({ acp, stream, createAgent: (client) => new FakeGeminiAgent(client) });
-await connection.closed;
-`,
-    'utf8',
-  );
-  await chmod(params.fakeGeminiPath, 0o755);
 }
 
 async function readJsonlEvents(path: string): Promise<Record<string, unknown>[]> {
@@ -254,12 +140,6 @@ function readCodexTurnInputText(params: Record<string, unknown> | null | undefin
 function readCodexThreadId(params: Record<string, unknown> | null | undefined): string | null {
   const threadId = params?.threadId;
   return typeof threadId === 'string' && threadId.length > 0 ? threadId : null;
-}
-
-async function readFakeGeminiPromptEvents(path: string): Promise<Record<string, unknown>[]> {
-  return (await readJsonlEvents(path)).filter(
-    (event) => event.kind === 'prompt' && typeof event.text === 'string',
-  );
 }
 
 function decodeRow(row: SessionMessageRow, sessionKey: Uint8Array): unknown {
@@ -368,283 +248,6 @@ describe('core e2e: same-Session cross-Agent transition', () => {
     await server?.stop().catch(() => {});
     server = null;
   });
-
-  it('keeps the Session, appends exactly one divider, and hands the target the admitted input WITH source context', async () => {
-    const testDir = run.testDir(`agent-transition-${randomUUID()}`);
-    server = await startServerLight({ testDir, dbProvider: 'sqlite' });
-    const auth = await createTestAuth(server.baseUrl);
-
-    daemonHomeDir = resolve(join(testDir, 'daemon-home'));
-    const workspaceDir = resolve(join(testDir, 'workspace'));
-    const fakeBinDir = resolve(join(testDir, 'fake-bin'));
-    await mkdir(daemonHomeDir, { recursive: true });
-    await mkdir(workspaceDir, { recursive: true });
-    await mkdir(fakeBinDir, { recursive: true });
-
-    const machineKey = Uint8Array.from(randomBytes(32));
-    const seeded = await seedCliDataKeyAuthForServer({
-      cliHome: daemonHomeDir,
-      serverUrl: server.baseUrl,
-      token: auth.token,
-      machineKey,
-    });
-
-    const fakeClaudePath = fakeClaudeFixturePath();
-    const fakeClaudeLogPath = resolve(join(testDir, 'fake-claude.jsonl'));
-    const fakeGeminiPath = resolve(join(fakeBinDir, 'gemini'));
-    const fakeGeminiLogPath = resolve(join(testDir, 'fake-gemini.jsonl'));
-    await writeFakeGeminiAcpCli({ fakeGeminiPath });
-
-    const providerEnv = createProviderEnv({
-      daemonHomeDir,
-      fakeBinDir,
-      fakeClaudeLogPath,
-      fakeClaudePath,
-      fakeGeminiLogPath,
-      fakeGeminiPath,
-      serverBaseUrl: server.baseUrl,
-    });
-    daemon = await startTestDaemon({
-      testDir,
-      happyHomeDir: daemonHomeDir,
-      env: {
-        ...process.env,
-        ...providerEnv,
-        PIGGERCODE_E2E_PROVIDER_USE_CLI_SOURCE_ENTRYPOINT: '1',
-      },
-      snapshotDir: resolve(join(testDir, 'daemon-cli-snapshot')),
-    });
-
-    const spawnRes = await daemonControlPostJson<{ success: boolean; sessionId?: string }>({
-      port: daemon.state.httpPort,
-      path: '/spawn-session',
-      controlToken: daemon.state.controlToken,
-      body: {
-        directory: workspaceDir,
-        backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-        terminal: { mode: 'plain' },
-        environmentVariables: providerEnv,
-      },
-    });
-    expect(spawnRes.status).toBe(200);
-    expect(spawnRes.data.success).toBe(true);
-    const sessionId = spawnRes.data.sessionId;
-    if (typeof sessionId !== 'string' || sessionId.length === 0) {
-      throw new Error('Missing sessionId from daemon spawn-session');
-    }
-
-    // The daemon owns the Session's data key. Opening its sealed envelope with
-    // the same machine key is how a real client reads this Session, and it is
-    // what lets the assertions below inspect metadata and transcript rows.
-    const sessionKey = await openSessionDataKeyWhenAvailable({
-      baseUrl: server.baseUrl,
-      token: auth.token,
-      sessionId,
-      machineKey,
-    });
-
-    // Drive one real source turn so the transition starts from a Session with
-    // history and a live runtime, not an empty shell. Both halves of that turn
-    // are the material the target must be able to see afterwards.
-    const sourceText = `AGENT_TRANSITION_SOURCE_${randomUUID()}`;
-    await enqueueUiTextMessage({
-      baseUrl: server.baseUrl,
-      token: auth.token,
-      sessionId,
-      sessionKey,
-      text: sourceText,
-    });
-    await waitForFakeClaudeInvocation(fakeClaudeLogPath, (invocation) => invocation.mode === 'sdk', {
-      timeoutMs: 120_000,
-    });
-    await waitForTranscriptTextContaining({
-      baseUrl: server.baseUrl,
-      token: auth.token,
-      sessionId,
-      sessionKey,
-      marker: 'FAKE_CLAUDE_OK_1',
-      timeoutMs: 180_000,
-      context: 'source Agent completed its turn',
-    });
-    await waitFor(async () => {
-      const snap = await fetchSessionV2(server!.baseUrl, auth.token, sessionId).catch(() => null);
-      return snap?.active === true;
-    }, { timeoutMs: 60_000, intervalMs: 250, context: 'source Session active' });
-
-    const beforeTransition = await fetchSessionV2(server.baseUrl, auth.token, sessionId);
-    const messagesBefore = await fetchAllMessages(server.baseUrl, auth.token, sessionId);
-    const metadataBefore = unwrapSerializedJsonValue(
-      decryptDataKeyBase64(beforeTransition.metadata, sessionKey),
-    );
-    if (!isRecord(metadataBefore)) throw new Error('Failed to decrypt source session metadata');
-    // `flavor` is the declared current-Agent identity written by
-    // `projectCurrentAgentSessionView`; the transition replaces exactly it.
-    expect(metadataBefore.flavor).toBe('claude');
-    expect(
-      messagesBefore.filter((row) => isSessionAgentTransitionDividerLocalId(row.localId)),
-    ).toHaveLength(0);
-
-    ui = createUserScopedSocketCollector(server.baseUrl, auth.token);
-    ui.connect();
-    await waitFor(() => ui!.isConnected(), { timeoutMs: 30_000, context: 'user socket connected' });
-    const machineRpc = createDataKeyRpcClient(ui, machineKey);
-
-    const submittedLocalId = `transition-${randomUUID()}`;
-    const transitionText = `AGENT_TRANSITION_TARGET_${randomUUID()}`;
-    const rpc = await machineRpc.call(
-      `${seeded.machineId}:${RPC_METHODS.SESSION_AGENT_TRANSITION}`,
-      {
-        v: 1,
-        sessionId,
-        expectedCurrentAgentId: 'claude',
-        selection: { v: 1, agentId: 'gemini' },
-        input: { text: transitionText, localId: submittedLocalId, meta: {} },
-      },
-      // One budget for both hops: the transition stops the source runtime and
-      // starts the target inside this call.
-      240_000,
-      // The server authorizes this session-write method against the named
-      // Session before forwarding anything to the machine.
-      { kind: SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS.SESSION_WRITE, sessionId },
-    );
-    expect(rpc.ok).toBe(true);
-    if (!rpc.ok) throw new Error(`session.agentTransition failed: ${rpc.errorCode ?? rpc.error}`);
-    expect(SessionAgentTransitionResultV1Schema.parse(rpc.result)).toEqual({
-      type: 'accepted',
-      localId: submittedLocalId,
-    });
-
-    // The Session row itself is untouched: same identity, same creation.
-    const afterTransition = await fetchSessionV2(server.baseUrl, auth.token, sessionId);
-    expect(afterTransition.id).toBe(sessionId);
-    expect(afterTransition.createdAt).toBe(beforeTransition.createdAt);
-
-    const metadataAfter = unwrapSerializedJsonValue(
-      decryptDataKeyBase64(afterTransition.metadata, sessionKey),
-    );
-    if (!isRecord(metadataAfter)) throw new Error('Failed to decrypt target session metadata');
-    expect(metadataAfter.flavor).toBe('gemini');
-
-    // Exactly one divider, at the deterministic reserved localId, carrying the
-    // sidecar — read through the protocol's own canonical stored-record reader
-    // rather than a shape check re-derived here.
-    const messagesAfter = await fetchAllMessages(server.baseUrl, auth.token, sessionId);
-    const dividerLocalId = buildSessionAgentTransitionDividerLocalId(submittedLocalId);
-    const dividers = messagesAfter.filter(
-      (row) => typeof row.localId === 'string'
-        && row.localId.startsWith(SESSION_AGENT_TRANSITION_DIVIDER_LOCAL_ID_PREFIX),
-    );
-    expect(dividers).toHaveLength(1);
-    const divider = dividers[0]!;
-    expect(divider.localId).toBe(dividerLocalId);
-    const dividerSidecar = readSessionAgentTransitionDividerFromStoredRecordV1({
-      localId: divider.localId,
-      record: decodeRow(divider, sessionKey),
-    });
-    expect(dividerSidecar).toEqual({
-        v: 1,
-        fromAgentId: 'claude',
-        toAgentId: 'gemini',
-        // The departure seq is part of the sidecar, not an optional extra: it is the
-        // ONE input that survives the transition, and the bounded away-delta a
-        // returning Agent is seeded with is derived from it. Asserting the payload
-        // without it let a divider that had LOST the bound pass this gate.
-        sourceCutoffSeqInclusive: expect.any(Number),
-    });
-    // …and it is the real head of the source, not the `?? 0` fallback: it covers
-    // everything the departing Agent saw, and stops below the divider itself so
-    // the divider is not inside its own bound.
-    expect(dividerSidecar?.sourceCutoffSeqInclusive)
-        .toBeGreaterThanOrEqual(Math.max(...messagesBefore.map((row) => row.seq)));
-    expect(dividerSidecar?.sourceCutoffSeqInclusive).toBeLessThan(divider.seq);
-
-    // Source history is preserved, not rewritten: every pre-transition row
-    // survives, and the divider lands after all of them.
-    for (const before of messagesBefore) {
-      expect(messagesAfter.some((row) => row.seq === before.seq)).toBe(true);
-    }
-    expect(divider.seq).toBeGreaterThan(Math.max(...messagesBefore.map((row) => row.seq)));
-
-    // The target Agent actually runs the admitted input in the SAME Session.
-    await waitForTranscriptTextContaining({
-      baseUrl: server.baseUrl,
-      token: auth.token,
-      sessionId,
-      sessionKey,
-      marker: 'FAKE_GEMINI_OK_',
-      afterSeq: divider.seq,
-      timeoutMs: 180_000,
-      context: 'target Agent replied after the divider',
-    });
-
-    // ---- What the TARGET actually received, and when.
-
-    const targetPrompts = await readFakeGeminiPromptEvents(fakeGeminiLogPath);
-    expect(targetPrompts.length).toBeGreaterThan(0);
-    const targetPromptText = targetPrompts.map((event) => String(event.text ?? '')).join('\n');
-
-    // The admitted input reaches the AGENT, not just the Session row.
-    expect(targetPromptText).toContain(transitionText);
-
-    // Zero-context guard — the assertion that would have caught `C3`. The target
-    // must be able to see the turn the source Agent already ran in this same
-    // Session. BOTH halves are required and are structural, not incidental: the
-    // coordinator asks the Replay owner with `strategy: 'recent_messages'`, so
-    // the brief is the transcript tail rather than a summary.
-    //
-    // Deliberately NOT asserted by length: the ACP prompt carries the Happier
-    // system preamble, so `length > transitionText.length` holds even with a
-    // zero-context target. Measured, not assumed — under the seed-removal break
-    // that comparison still passed while these two failed.
-    expect(targetPromptText).toContain(sourceText);
-    expect(targetPromptText).toContain('FAKE_CLAUDE_OK_1');
-
-    // The context is a PREFIX seed, not a trailing artifact: the source history
-    // has to reach the Agent before the input it is context for.
-    expect(targetPromptText.indexOf(sourceText)).toBeLessThan(targetPromptText.indexOf(transitionText));
-
-    // Ordering: the source Agent is finished before the target produces its
-    // first effect, so no source activity may be recorded at or after the
-    // target's first prompt.
-    const sourceTimestamps = readEventTimestamps(await readJsonlEvents(fakeClaudeLogPath));
-    const targetPromptTimestamps = readEventTimestamps(targetPrompts);
-    expect(sourceTimestamps.length).toBeGreaterThan(0);
-    expect(targetPromptTimestamps.length).toBeGreaterThan(0);
-    expect(Math.max(...sourceTimestamps)).toBeLessThan(Math.min(...targetPromptTimestamps));
-
-    // The same ordering has to hold in the durable transcript the user reads.
-    const messagesFinal = await fetchAllMessages(server.baseUrl, auth.token, sessionId);
-    const targetReplyRow = messagesFinal.find(
-      (row) => JSON.stringify(decodeRow(row, sessionKey) ?? '').includes('FAKE_GEMINI_OK_'),
-    );
-    expect(targetReplyRow).toBeDefined();
-    expect(targetReplyRow!.seq).toBeGreaterThan(divider.seq);
-
-    // Still exactly one divider once the target has spoken.
-    expect(
-      messagesFinal.filter((row) => isSessionAgentTransitionDividerLocalId(row.localId)),
-    ).toHaveLength(1);
-
-    // The exact submitted localId is admitted ONCE, not duplicated. It is
-    // asserted here rather than at `accepted`: that arm reports canonical
-    // PENDING-QUEUE admission, and the row reaches the transcript only when the
-    // target drains the queue (observed — the row is absent the moment the RPC
-    // returns). It has to land after the boundary the divider drew.
-    const admitted = messagesFinal.filter((row) => row.localId === submittedLocalId);
-    expect(admitted).toHaveLength(1);
-    expect(admitted[0]!.seq).toBeGreaterThan(divider.seq);
-
-    // The source runtime is gone: the daemon tracks only the target child now.
-    await waitFor(async () => {
-      const list = await daemonControlPostJson<{ children?: Array<{ happySessionId?: string }> }>({
-        port: daemon!.state.httpPort,
-        path: '/list',
-        controlToken: daemon!.state.controlToken,
-      });
-      const children = list.data.children ?? [];
-      return children.filter((child) => child.happySessionId === sessionId).length <= 1;
-    }, { timeoutMs: 60_000, context: 'exactly one tracked runtime for the transitioned Session' });
-  }, 900_000);
 
   it('returns through the exact Codex app-server thread without duplicating a retried Claude-to-Codex input', async () => {
     const testDir = run.testDir(`agent-transition-codex-claude-codex-${randomUUID()}`);

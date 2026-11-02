@@ -41,21 +41,17 @@ installSessionSettingsEntryModuleMocks({
     },
 });
 
-vi.mock('@/components/settings/acpCatalog/AcpCatalogSettingsSections', () => ({
-    AcpCatalogSettingsSections: () => React.createElement('AcpCatalogSettingsSections'),
-}));
-
 vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/agents/catalog/catalog')>();
     return {
         ...actual,
-        AGENT_IDS: ['codex', 'customAcp', 'kiro'],
+        AGENT_IDS: ['claude', 'codex'],
         getAgentCore: (agentId: Parameters<typeof actual.getAgentCore>[0]) => {
             const core = actual.getAgentCore(agentId);
             return {
                 ...core,
                 displayNameKey: `agent.${agentId}`,
-                availability: { ...core.availability, experimental: agentId === 'kiro' },
+                availability: { ...core.availability, experimental: agentId === 'codex' },
                 ui: { ...core.ui, agentPickerIconName: 'code-slash-outline' },
             };
         },
@@ -69,16 +65,12 @@ afterEach(() => {
 });
 
 describe('ProviderSettingsIndexScreen', () => {
-    it('renders built-in providers without custom ACP and includes ACP backend sections', async () => {
+    it('renders the built-in providers and opens a provider on press', async () => {
         const Screen = (await import('@/app/(app)/settings/providers')).default;
         const screen = await renderSettingsView(React.createElement(Screen));
 
+        expect(screen.findRowByTitle('agent.claude')).toBeTruthy();
         expect(screen.findRowByTitle('agent.codex')).toBeTruthy();
-        expect(screen.findRowByTitle('agent.kiro')).toBeTruthy();
-        expect(screen.findRowByTitle('agent.customAcp')).toBeFalsy();
-
-        const acpSections = screen.findAllByType('AcpCatalogSettingsSections' as any);
-        expect(acpSections).toHaveLength(1);
 
         await act(async () => {
             screen.pressRowByTitle('agent.codex');
@@ -87,13 +79,12 @@ describe('ProviderSettingsIndexScreen', () => {
         expect(sessionSettingsEntryState.routerPushSpy).toHaveBeenCalledWith('/settings/providers/codex');
     });
 
-    it('lists only the agents the build offers, without the ACP sections when Custom ACP is not offered', async () => {
-        (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds: ['claude', 'codex'] };
+    it('lists only the agents the build offers', async () => {
+        (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds: ['claude'] };
         const Screen = (await import('@/app/(app)/settings/providers')).default;
         const screen = await renderSettingsView(React.createElement(Screen));
 
-        expect(screen.findRowByTitle('agent.codex')).toBeTruthy();
-        expect(screen.findRowByTitle('agent.kiro')).toBeFalsy();
-        expect(screen.findAllByType('AcpCatalogSettingsSections' as any).length).toBe(0);
+        expect(screen.findRowByTitle('agent.claude')).toBeTruthy();
+        expect(screen.findRowByTitle('agent.codex')).toBeFalsy();
     });
 });

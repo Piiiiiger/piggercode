@@ -19,13 +19,13 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
                 kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
                 continuityErrorCode: 'provider_session_state_unavailable_for_resume',
                 failurePhase: 'continuity',
-                agentId: 'pi',
+                agentId: 'codex',
                 reason: 'no_resumable_session_file',
                 uxDiagnostic: {
                     code: 'provider_session_state_unavailable_for_resume',
                     failurePhase: 'continuity',
                     source: 'spawn_resume',
-                    agentId: 'pi',
+                    agentId: 'codex',
                     retryable: false,
                     suggestedActions: ['start_fresh_under_selected_account', 'resume_current_account'],
                     diagnostics: {
@@ -44,7 +44,7 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
         if (!isConnectedServiceResumeUnreachableSpawnErrorDetail(result.errorDetail)) {
             throw new Error('expected resume-unreachable detail');
         }
-        expect(result.errorDetail.agentId).toBe('pi');
+        expect(result.errorDetail.agentId).toBe('codex');
         expect(result.errorDetail.reason).toBe('no_resumable_session_file');
         expect(result.errorDetail).not.toHaveProperty('targetMaterializedRoot');
         expect(result.errorDetail).not.toHaveProperty('vendorResumeId');
@@ -201,7 +201,7 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
                 kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
                 continuityErrorCode: 'provider_session_state_unavailable_for_resume',
                 failurePhase: 'continuity',
-                agentId: 'pi',
+                agentId: 'codex',
                 vendorResumeId: 'pi-session-missing',
                 cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
                 reason: 'no_resumable_session_file',
@@ -219,7 +219,7 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
             code: 'provider_session_state_unavailable_for_resume',
             failurePhase: 'continuity',
             source: 'spawn_resume',
-            agentId: 'pi',
+            agentId: 'codex',
             retryable: false,
             suggestedActions: ['start_fresh_under_selected_account', 'resume_current_account'],
             diagnostics: {

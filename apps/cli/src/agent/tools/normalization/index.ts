@@ -29,7 +29,6 @@ import {
     extractCanonicalInputFromHappierToolsShellBridge,
     resolveCanonicalToolNameFromHappierToolsShellBridge,
 } from './happierToolsShellBridgeCanonicalization';
-import { extractDeferredToolExecutionCall } from './deferredToolExecutionCanonicalization';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -37,7 +36,7 @@ function isShellToolNameAlias(name: string): boolean {
     const lower = name.toLowerCase();
     return lower === 'execute_command' || lower === 'exec_command'
         || lower === 'execute' || lower === 'bash' || lower === 'shell'
-        || name === 'GeminiBash' || name === 'CodexBash';
+        || name === 'CodexBash';
 }
 
 function asRecord(value: unknown): UnknownRecord | null {
@@ -99,10 +98,6 @@ export function canonicalizeToolNameV2(opts: {
     const shellBridgeCanonical = isShellToolNameAlias(name)
         ? resolveCanonicalToolNameFromHappierToolsShellBridge(opts.toolInput) : null;
     if (shellBridgeCanonical) return shellBridgeCanonical;
-    const deferredCall = extractDeferredToolExecutionCall({ ...opts, rawInput: opts.toolInput });
-    if (deferredCall) {
-        return canonicalizeToolNameV2({ ...opts, toolName: deferredCall.toolName, toolInput: deferredCall.params });
-    }
     const record = asRecord(opts.toolInput) ?? {};
     const titleCandidate =
         typeof (record as any).title === 'string'
@@ -130,18 +125,6 @@ export function canonicalizeToolNameV2(opts: {
         }
         return null;
     })();
-
-    // Provider prompts that are represented as permission requests ("Unknown tool" etc.).
-    // Auggie emits a workspace indexing prompt with toolName="Unknown tool". Normalize it so the UI can render it.
-    if (lower === 'unknown tool') {
-        const title =
-            typeof (record as any).title === 'string'
-                ? String((record as any).title)
-                : typeof (record as any)?.toolCall?.title === 'string'
-                    ? String((record as any).toolCall.title)
-                    : null;
-        if (title === 'Workspace Indexing Permission') return 'WorkspaceIndexingPermission';
-    }
 
     // Some providers (notably Codex ACP) may emit tool events with toolName="unknown" but with enough
     // shape to infer the canonical tool. Prefer conservative inference to avoid silently dropping
@@ -213,7 +196,7 @@ export function canonicalizeToolNameV2(opts: {
         const changes = asRecord((record as any).changes);
         if (changes && Object.keys(changes).length > 0) return 'Patch';
         if (hasEdits) return 'MultiEdit';
-        // Some providers (e.g. Auggie/OpenCode ACP) use "Edit" to write a full file's content.
+        // Some ACP providers use "Edit" to write a full file's content.
         if (hasFullFileContent && !hasOldNew) return 'Write';
         return 'Edit';
     }
@@ -303,9 +286,9 @@ export function canonicalizeToolNameV2(opts: {
     if (lower === 'todoread') return 'TodoRead';
 
     // Provider special-cases.
-    if (name === 'CodexPatch' || name === 'GeminiPatch') return 'Patch';
-    if (name === 'CodexDiff' || name === 'GeminiDiff') return 'Diff';
-    if (name === 'GeminiReasoning' || name === 'CodexReasoning' || lower === 'think') return 'Reasoning';
+    if (name === 'CodexPatch') return 'Patch';
+    if (name === 'CodexDiff') return 'Diff';
+    if (name === 'CodexReasoning' || lower === 'think') return 'Reasoning';
     if (lower === 'exit_plan_mode') return 'ExitPlanMode';
     if (lower === 'askuserquestion' || lower === 'ask_user_question') return 'AskUserQuestion';
     if (isChangeTitleToolNameAlias(lower)) return 'change_title';
@@ -319,11 +302,8 @@ export function normalizeToolCallInputV2(opts: {
     canonicalToolName: string;
     rawInput: unknown;
 }): unknown {
-    const deferredCall = extractDeferredToolExecutionCall(opts);
-    const effectiveToolName = deferredCall?.toolName ?? opts.toolName;
-    const unwrappedInput = deferredCall?.params ?? opts.rawInput;
-    const effectiveRawInput = (isShellToolNameAlias(effectiveToolName)
-        ? extractCanonicalInputFromHappierToolsShellBridge(unwrappedInput) : null) ?? unwrappedInput;
+    const effectiveRawInput = (isShellToolNameAlias(opts.toolName)
+        ? extractCanonicalInputFromHappierToolsShellBridge(opts.rawInput) : null) ?? opts.rawInput;
 
     if (opts.canonicalToolName.startsWith('mcp__')) {
         const normalized = normalizeMcpInput(opts.canonicalToolName, effectiveRawInput);
@@ -404,7 +384,7 @@ export function normalizeToolCallInputV2(opts: {
     }
 
     if (opts.canonicalToolName === 'SubAgent' || opts.canonicalToolName === 'Task') {
-        const normalized = normalizeTaskInput(effectiveToolName, effectiveRawInput);
+        const normalized = normalizeTaskInput(opts.toolName, effectiveRawInput);
         const meta: ToolHappierMetaV2 = {
             v: 2,
             protocol: opts.protocol,

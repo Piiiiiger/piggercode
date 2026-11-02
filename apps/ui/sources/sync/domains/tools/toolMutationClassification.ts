@@ -22,8 +22,6 @@ const toolMutationClassificationByName: Readonly<Record<string, ToolMutationClas
     diff: 'read_only',
     exit_plan_mode: 'read_only',
     exitplanmode: 'read_only',
-    geminidiff: 'read_only',
-    geminireasoning: 'read_only',
     glob: 'read_only',
     grep: 'read_only',
     ls: 'read_only',
@@ -36,7 +34,6 @@ const toolMutationClassificationByName: Readonly<Record<string, ToolMutationClas
     todowrite: 'read_only',
     webfetch: 'read_only',
     websearch: 'read_only',
-    workspaceindexingpermission: 'read_only',
 
     create_file: 'single_path',
     delete: 'single_path',
@@ -51,7 +48,6 @@ const toolMutationClassificationByName: Readonly<Record<string, ToolMutationClas
 
     apply_patch: 'patch',
     codexpatch: 'patch',
-    geminipatch: 'patch',
     patch: 'patch',
 
     mkdir: 'path_pair',
@@ -64,7 +60,6 @@ const toolMutationClassificationByName: Readonly<Record<string, ToolMutationClas
     codexbash: 'opaque_executor',
     exec: 'opaque_executor',
     execute: 'opaque_executor',
-    geminibash: 'opaque_executor',
     shell: 'opaque_executor',
 
     subagent: 'container',

@@ -71,26 +71,15 @@ Socket assertion surface:
 
 The provider suite is opt-in, but you can run common presets via yarn scripts:
 
-- `yarn workspace @piggercode/tests providers:opencode:smoke`
 - `yarn workspace @piggercode/tests providers:claude:smoke`
 - `yarn workspace @piggercode/tests providers:codex:smoke`
-- `yarn workspace @piggercode/tests providers:kilo:smoke`
-- `yarn workspace @piggercode/tests providers:qwen:smoke`
-- `yarn workspace @piggercode/tests providers:kimi:smoke`
-- `yarn workspace @piggercode/tests providers:auggie:smoke`
 - `yarn workspace @piggercode/tests providers:all:smoke`
-- `yarn workspace @piggercode/tests providers:opencode:extended`
 - `yarn workspace @piggercode/tests providers:all:extended`
 
 Baseline updates are explicit:
 
-- `yarn workspace @piggercode/tests providers:opencode:smoke:update-baselines`
 - `yarn workspace @piggercode/tests providers:claude:smoke:update-baselines`
 - `yarn workspace @piggercode/tests providers:codex:smoke:update-baselines`
-- `yarn workspace @piggercode/tests providers:kilo:smoke:update-baselines`
-- `yarn workspace @piggercode/tests providers:qwen:smoke:update-baselines`
-- `yarn workspace @piggercode/tests providers:kimi:smoke:update-baselines`
-- `yarn workspace @piggercode/tests providers:auggie:smoke:update-baselines`
 
 ## Suites
 
@@ -206,7 +195,7 @@ The goal is to fail loudly when a provider changes its tool formats or our norma
 By default, `test:providers` is a fast no-op. Enable explicitly:
 
 ```bash
-PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers
+PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_CODEX=1 yarn workspace @piggercode/tests test:providers
 ```
 
 ### Provider matrix runner
@@ -218,7 +207,6 @@ The entrypoint is `suites/providers/provider.matrix.test.ts`, backed by:
 - `src/testkit/providers/scenarios/scenarios.acp.ts`
 - `src/testkit/providers/scenarios/scenarios.claude.ts`
 - `src/testkit/providers/scenarios/scenarios.codex.ts`
-- `src/testkit/providers/scenarios/scenarios.opencode.ts`
 
 Current Codex scope note:
 - `PIGGERCODE_E2E_PROVIDER_CODEX=1` exercises the Codex ACP provider lane only.
@@ -228,12 +216,7 @@ Current Codex scope note:
 
 - `PIGGERCODE_E2E_PROVIDERS=1`: enable provider contract matrix
 - `PIGGERCODE_E2E_PROVIDER_CLAUDE=1`: enable Claude scenarios (requires a working Claude auth/config)
-- `PIGGERCODE_E2E_PROVIDER_OPENCODE=1`: enable OpenCode scenarios
 - `PIGGERCODE_E2E_PROVIDER_CODEX=1`: enable Codex scenarios
-- `PIGGERCODE_E2E_PROVIDER_KILO=1`: enable Kilo scenarios
-- `PIGGERCODE_E2E_PROVIDER_QWEN=1`: enable Qwen scenarios
-- `PIGGERCODE_E2E_PROVIDER_KIMI=1`: enable Kimi scenarios
-- `PIGGERCODE_E2E_PROVIDER_AUGGIE=1`: enable Auggie scenarios
 - `PIGGERCODE_E2E_PROVIDER_WAIT_MS=...`: scenario timeout (default: 240000)
 - `PIGGERCODE_E2E_PROVIDER_FLAKE_RETRY=1`: retry once and fail as `FLAKY` if it passes on retry
 - `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1`: write/update baseline snapshots under `packages/tests/baselines/providers/*`
@@ -244,16 +227,10 @@ Current Codex scope note:
   - `PIGGERCODE_E2E_PROVIDER_SCENARIO_TIER=smoke` (or `extended`)
 
 Scenario IDs are source-of-truth in provider registries:
-- `apps/cli/src/backends/opencode/e2e/providerScenarios.json`
 - `apps/cli/src/backends/claude/e2e/providerScenarios.json`
 - `apps/cli/src/backends/codex/e2e/providerScenarios.json`
-- `apps/cli/src/backends/kilo/e2e/providerScenarios.json`
-- `apps/cli/src/backends/qwen/e2e/providerScenarios.json`
-- `apps/cli/src/backends/kimi/e2e/providerScenarios.json`
-- `apps/cli/src/backends/auggie/e2e/providerScenarios.json`
 
-Two quick examples (current at time of writing):
-- OpenCode smoke: `execute_trace_ok`, `execute_error_exit_2`
+Quick example (current at time of writing):
 - Claude smoke: `bash_echo_trace_ok`
 
 ### What the harness does (high level)
@@ -300,7 +277,7 @@ Provider drift detection uses two layers:
 2) **Baselines**
    - Stored under `packages/tests/baselines/providers/<provider>/<scenario>.json`
    - A baseline contains:
-     - `fixtureKeys`: the expected fixture key set (e.g. `acp/opencode/tool-call/Bash`)
+     - `fixtureKeys`: the expected fixture key set (e.g. `acp/codex/tool-call/Bash`)
      - `shapesByKey`: stable JSON “shape” strings for payload drift detection
    - Shapes are computed from extracted fixture example payloads (first sample per key).
    - `_raw` subtrees are intentionally treated as opaque during baseline comparisons to avoid noise from provider-added raw fields.
@@ -313,9 +290,9 @@ Fixtures are extracted from the tool trace JSONL into a small JSON file:
 
 Keys look like:
 - `<protocol>/<provider>/<kind>/<toolName?>`
-  - `acp/opencode/tool-call/Bash`
-  - `acp/opencode/tool-result/Bash`
-  - `acp/opencode/permission-request/Edit`
+  - `acp/codex/tool-call/Bash`
+  - `acp/codex/tool-result/Bash`
+  - `acp/codex/permission-request/Edit`
   - `claude/claude/tool-call/Read`
 
 The extractor lives in the CLI codebase and is reused here so tests match real production behavior:
@@ -329,8 +306,8 @@ Baselines should be updated when:
 
 To update baselines:
 - run the scenario(s) with `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1`
-  - easiest: `yarn workspace @piggercode/tests providers:opencode:smoke:update-baselines`
-  - or: `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1 PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers`
+  - easiest: `yarn workspace @piggercode/tests providers:codex:smoke:update-baselines`
+  - or: `PIGGERCODE_E2E_PROVIDER_UPDATE_BASELINES=1 PIGGERCODE_E2E_PROVIDERS=1 PIGGERCODE_E2E_PROVIDER_CODEX=1 yarn workspace @piggercode/tests test:providers`
 
 After updating:
 - review the baseline JSON diff (keys and shapes)

@@ -53,9 +53,7 @@ import { waitForAcpSidechainMessages } from '../assertions';
 import { resolveProviderAuthOverlay } from './providerAuthOverlay';
 import { applyCliDevTsxTsconfigEnv, applyHomeIsolationEnv } from './harnessEnv';
 import { resolveAcpToolPermissionPromptExpectation } from '../permissions/acpPermissionPrompts';
-import { stopOpenCodeManagedServerFromHomeDir } from '../opencode/stopOpenCodeManagedServerFromHomeDir';
 import { normalizeDecodedTranscriptValue } from '../normalizeDecodedTranscriptValue';
-import { registerOpenCodeManagedServerHomeForCleanup } from './opencodeManagedServerCleanupRegistry';
 import {
   buildProviderDevCommandArgs,
   resolveAllowPermissionAutoApproveInYolo as resolveAllowPermissionAutoApproveInYoloFromCommandArgs,
@@ -512,10 +510,6 @@ async function runOneScenario(params: {
   const workspaceDir = resolve(join(testDir, 'workspace'));
   await mkdir(cliHome, { recursive: true });
   await mkdir(workspaceDir, { recursive: true });
-
-  const unregisterOpenCodeManagedServerCleanup = provider.id === 'opencode_server'
-    ? registerOpenCodeManagedServerHomeForCleanup(cliHome)
-    : null;
 
   try {
   if (scenario.setup) {
@@ -1016,7 +1010,6 @@ async function runOneScenario(params: {
                   providerId: provider.id,
                   scenarioId: scenario.id,
                   fatal,
-                  env: process.env,
                 }),
               );
             }
@@ -1450,13 +1443,6 @@ async function runOneScenario(params: {
     });
   }
   } finally {
-    // OpenCode server-native backend starts a detached managed `opencode serve` process.
-    // Provider harness runs each scenario with its own isolated happy home; without cleanup,
-    // we'd accumulate one server process per scenario and eventually hit resource exhaustion.
-    if (provider.id === 'opencode_server') {
-      await stopOpenCodeManagedServerFromHomeDir(cliHome).catch(() => {});
-      unregisterOpenCodeManagedServerCleanup?.();
-    }
   }
 }
 

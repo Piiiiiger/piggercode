@@ -93,9 +93,7 @@ vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModel
         backendTarget: BackendTargetRefV1;
         connectedServices?: ConnectedServiceBindingsV1 | null;
     }) => {
-        const targetKey = backendTarget.kind === 'builtInAgent'
-            ? `agent:${backendTarget.agentId}`
-            : `acpBackend:${backendTarget.backendId}`;
+        const targetKey = `agent:${backendTarget.agentId}`;
         preflightModelsHookCalls.value.push({ targetKey, connectedServices });
         return {
             modelOptions: preflightModelsByTargetKey[targetKey]?.modelOptions ?? [],

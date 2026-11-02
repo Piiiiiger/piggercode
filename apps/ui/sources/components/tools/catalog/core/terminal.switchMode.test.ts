@@ -22,7 +22,7 @@ describe('SwitchMode tool presentation', () => {
       metadata: {
         sessionModesV1: {
           v: 1,
-          provider: 'cursor',
+          provider: 'codex',
           updatedAt: 1,
           currentModeId: 'plan',
           availableModes: [{ id: 'plan', name: 'Plan' }],

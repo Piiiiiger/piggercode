@@ -217,7 +217,7 @@ describe('waitForIdleViaSocket', () => {
               role: 'agent',
               content: {
                 type: 'acp',
-                provider: 'opencode',
+                provider: 'codex',
                 data: { type: 'task_complete', id: 'task-1' },
               },
             },

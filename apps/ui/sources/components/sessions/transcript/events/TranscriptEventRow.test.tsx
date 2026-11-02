@@ -137,7 +137,7 @@ describe('TranscriptEventRow', () => {
                     type: 'context-compaction',
                     phase: 'completed',
                     lifecycleId: 'pi:context-compaction',
-                    provider: 'pi',
+                    provider: 'codex',
                     continuation: 'paused',
                     pauseReason: 'provider-idle-after-compaction',
                 }}
@@ -155,7 +155,7 @@ describe('TranscriptEventRow', () => {
                     type: 'context-compaction',
                     phase: 'cancelled',
                     lifecycleId: 'compact_1',
-                    provider: 'pi',
+                    provider: 'codex',
                     source: 'provider-event',
                 }}
             />,

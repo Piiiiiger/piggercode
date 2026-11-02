@@ -123,7 +123,7 @@ describe('dispatchActivityNotificationAsync', () => {
         topic: 'ready',
         sessionId: 'session-2',
         sessionTitle: 'Deploy fix',
-        waitingForCommandLabel: 'Gemini',
+        waitingForCommandLabel: 'Codex',
         assistantPreviewText: 'Deployment is complete.',
       },
     });
@@ -142,7 +142,7 @@ describe('dispatchActivityNotificationAsync', () => {
     const payload = JSON.parse(String(init.body));
     expect(payload.content).toEqual({
       title: 'Deploy fix',
-      body: 'Gemini is waiting for your command',
+      body: 'Codex is waiting for your command',
     });
   });
 

@@ -57,11 +57,6 @@ managed runtime. The shared extractor's `archive-expanded-byte-limit` failure is
 carried through install/update responses so the Updates UI can show localized
 upgrade guidance while keeping raw diagnostics behind View log.
 
-In current development source, Pi's vendor-managed launcher is a system-install candidate
-in the shared provider resolver: `PI_CODING_AGENT_DIR/bin/pi`, then `~/.pi/agent/bin/pi`,
-when `PATH` has no matching executable. Explicit `PIGGERCODE_PI_PATH` remains exclusive and
-the existing Happier-managed source preference remains authoritative. Detection, version
-probing and launch all consume that resolution; the launcher owns its pinned Pi release.
 An unresolved required CLI throws `ProviderCliNotFoundError` at the shared command/launch
 boundary. The primary-session classifier preserves it as `dependency_failure` with code
 `provider_cli_not_found` and the canonical remediation, without exposing raw paths or

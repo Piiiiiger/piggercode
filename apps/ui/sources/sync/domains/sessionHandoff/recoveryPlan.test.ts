@@ -24,9 +24,9 @@ describe('buildSessionHandoffRecoveryPlan', () => {
     });
     it('resolves aliased flavors and vendor resume ids through the agent registry', () => {
         const sourceMetadata = {
-            flavor: 'open-code',
+            flavor: 'gpt',
             path: '/repo',
-            opencodeSessionId: ' remote_opencode_session ',
+            codexSessionId: ' remote_codex_session ',
         } as Metadata;
 
         expect(
@@ -45,8 +45,8 @@ describe('buildSessionHandoffRecoveryPlan', () => {
                 sessionId: 'session_1',
                 machineId: 'machine_source',
                 directory: '/repo',
-                agent: 'opencode',
-                resume: 'remote_opencode_session',
+                agent: 'codex',
+                resume: 'remote_codex_session',
                 transcriptStorage: 'direct',
                 serverId: 'server_1',
             },
@@ -101,39 +101,6 @@ describe('buildSessionHandoffRecoveryPlan', () => {
                 resume: 'thread_runtime',
                 transcriptStorage: 'persisted',
                 agentRuntimeDescriptorV1: sourceMetadata.agentRuntimeDescriptorV1,
-            }),
-        });
-    });
-
-    it('preserves legacy OpenCode server env in the recovery plan when only legacy metadata is present', () => {
-        const sourceMetadata = {
-            flavor: 'opencode',
-            path: '/repo',
-            opencodeSessionId: 'remote_opencode_session',
-            opencodeBackendMode: 'server',
-            opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-            opencodeServerBaseUrlExplicit: true,
-        } as Metadata;
-
-        expect(
-            buildSessionHandoffRecoveryPlan({
-                handoffId: 'handoff_4',
-                sessionId: 'session_4',
-                sourceMachineId: 'machine_source',
-                sourceMetadata,
-                sessionStorageMode: 'persisted',
-            }),
-        ).toEqual({
-            handoffId: 'handoff_4',
-            actions: ['restart_on_source', 'keep_stopped'],
-            sourceResume: expect.objectContaining({
-                agent: 'opencode',
-                resume: 'remote_opencode_session',
-                environmentVariables: {
-                    PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                    PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                    PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
-                },
             }),
         });
     });

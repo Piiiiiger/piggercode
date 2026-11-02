@@ -316,9 +316,9 @@ async function setupUseCreateNewSessionHarness() {
         prefetchMachineCapabilities: prefetchMachineCapabilitiesSpy,
     }));
     vi.doMock('@/agents/catalog/catalog', () => ({
-        AGENT_IDS: ['codex', 'claude', 'opencode'],
+        AGENT_IDS: ['codex', 'claude'],
         getAgentCore: vi.fn((agentType: string) => {
-            if (agentType === 'opencode') {
+            if (agentType === 'claude') {
                 return { model: { supportsSelection: true, nonAcpApplyScope: 'next_prompt' } };
             }
 
@@ -506,7 +506,7 @@ describe('useCreateNewSession permission seeding', () => {
                 selectedProfileId: null,
                 profileMap: new Map(),
                 recentMachinePaths: [],
-                agentType: 'opencode' as any,
+                agentType: 'claude' as any,
                 permissionMode: 'default' as PermissionMode,
                 modelMode: 'default' as ModelMode,
                 promptStore: createNewSessionPromptStore(''),
@@ -579,7 +579,7 @@ describe('useCreateNewSession permission seeding', () => {
                 selectedProfileId: null,
                 profileMap: new Map(),
                 recentMachinePaths: [],
-                agentType: 'opencode' as any,
+                agentType: 'claude' as any,
                 permissionMode: 'default' as PermissionMode,
                 modelMode: 'gpt' as any,
                 promptStore: createNewSessionPromptStore('hello'),
@@ -669,7 +669,7 @@ describe('useCreateNewSession permission seeding', () => {
                 selectedProfileId: null,
                 profileMap: new Map(),
                 recentMachinePaths: [],
-                agentType: 'opencode' as any,
+                agentType: 'claude' as any,
                 permissionMode: 'default' as PermissionMode,
                 modelMode: 'default' as any,
                 promptStore: createNewSessionPromptStore('do not lose me'),
@@ -739,7 +739,7 @@ describe('useCreateNewSession permission seeding', () => {
                 selectedProfileId: null,
                 profileMap: new Map(),
                 recentMachinePaths: [],
-                agentType: 'opencode' as any,
+                agentType: 'claude' as any,
                 permissionMode: 'default' as PermissionMode,
                 modelMode: 'gpt' as any,
                 promptStore: createNewSessionPromptStore('see @session:peer-abc123 $project-check'),
@@ -771,7 +771,7 @@ describe('useCreateNewSession permission seeding', () => {
                 end: 24,
             }, {
                 kind: 'happier.skill',
-                ref: 'skill:vendor:opencode:project-check',
+                ref: 'skill:vendor:codex:project-check',
                 token: '$project-check',
             }],
         };

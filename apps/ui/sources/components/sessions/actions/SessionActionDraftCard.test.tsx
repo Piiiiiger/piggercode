@@ -213,7 +213,7 @@ describe('SessionActionDraftCard', () => {
       createdAt: 1,
       status: 'editing',
       input: {
-        engineIds: ['coderabbit'],
+        engineIds: ['codex'],
         instructions: 'Review this repository.',
         changeType: 'all',
         base: { kind: 'none' },
@@ -401,11 +401,10 @@ describe('SessionActionDraftCard', () => {
     const { resolveSessionActionDraftHeightBearingPaint } = await import('./sessionActionDraftPresentation');
 
     const input = {
-      engineIds: ['coderabbit'],
+      engineIds: ['codex'],
       instructions: 'Review\nthis carefully.',
       changeType: 'committed',
       base: { kind: 'branch', baseBranch: 'release/2026-08-11' },
-      engines: { coderabbit: { configFiles: ['a.yml', 'b.yml'] } },
     };
     const draft = { id: 'd1', sessionId: 's1', actionId: 'review.start', createdAt: 1, status: 'editing', input } as const;
 
@@ -420,11 +419,11 @@ describe('SessionActionDraftCard', () => {
       .map((entry) => entry.textBox)
       .filter((box): box is NonNullable<typeof box> => box !== null);
 
-    // The conditional branch field and the CodeRabbit list are both open here, so this is three.
-    expect(textBoxes.map((box) => box.text)).toEqual(['Review\nthis carefully.', 'release/2026-08-11', 'a.yml, b.yml']);
-    // `instructions` is a textarea and grows; `base.baseBranch` (text) and the comma-separated
-    // `configFiles` (text_list) are one-line inputs whose height cannot move with their value.
-    expect(textBoxes.map((box) => box.maxLines)).toEqual([null, 1, 1]);
+    // The conditional branch field is open here, so this is two.
+    expect(textBoxes.map((box) => box.text)).toEqual(['Review\nthis carefully.', 'release/2026-08-11']);
+    // `instructions` is a textarea and grows; `base.baseBranch` (text) is a one-line input whose
+    // height cannot move with its value.
+    expect(textBoxes.map((box) => box.maxLines)).toEqual([null, 1]);
 
     const inputs = screen.tree.findAllByType('TextInput');
     expect(inputs.map((node: any) => node.props.value)).toEqual(textBoxes.map((box) => box.text));
@@ -474,40 +473,6 @@ describe('SessionActionDraftCard', () => {
 
     expect(describedChipLabels.length).toBeGreaterThan(0);
     expect(describedChipLabels).toEqual(paintedChipLabels);
-  });
-
-  it('parses text_list input into a string array patch', async () => {
-    updateSessionActionDraftInput.mockClear();
-
-    const { SessionActionDraftCard } = await import('./SessionActionDraftCard');
-
-    const draft = {
-      id: 'd1',
-      sessionId: 's1',
-      actionId: 'review.start',
-      createdAt: 1,
-      status: 'editing',
-      input: {
-        engineIds: ['coderabbit'],
-        instructions: 'Review',
-        changeType: 'committed',
-        base: { kind: 'none' },
-        engines: { coderabbit: { configFiles: [] } },
-      },
-    } as const;
-
-    const screen = await renderScreen(React.createElement(SessionActionDraftCard, { sessionId: 's1', draft: draft as any }));
-
-    const inputs = screen.tree.findAllByType('TextInput');
-    // instructions + configFiles list
-    expect(inputs.length).toBe(2);
-
-    const listInput = inputs.find((i: any) => typeof i.props?.onChangeText === 'function' && i.props?.multiline !== true) ?? inputs[1]!;
-    await act(async () => {
-      changeTextTestInstance(listInput, 'a.yml, b.yml');
-    });
-
-    expect(updateSessionActionDraftInput).toHaveBeenCalledWith('s1', 'd1', { engines: { coderabbit: { configFiles: ['a.yml', 'b.yml'] } } });
   });
 
   /**

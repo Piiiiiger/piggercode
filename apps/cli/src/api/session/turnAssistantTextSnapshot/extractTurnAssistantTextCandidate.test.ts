@@ -8,12 +8,12 @@ describe('extractTurnAssistantTextFromSessionContent', () => {
       role: 'agent',
       content: {
         type: 'acp',
-        provider: 'qwen',
+        provider: 'codex',
         data: { type: 'message', message: 'Done.' },
       },
     })).toEqual({
       text: 'Done.',
-      provider: 'qwen',
+      provider: 'codex',
       sidechainId: null,
     });
   });
@@ -38,7 +38,7 @@ describe('extractTurnAssistantTextFromSessionContent', () => {
       role: 'agent',
       content: {
         type: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         data: { type: 'thinking', text: 'Working...' },
       },
     })).toBeNull();
@@ -46,7 +46,7 @@ describe('extractTurnAssistantTextFromSessionContent', () => {
       role: 'agent',
       content: {
         type: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         data: { type: 'tool-call', name: 'read' },
       },
     })).toBeNull();

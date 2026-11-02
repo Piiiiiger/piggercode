@@ -86,7 +86,7 @@ describe('sessions domain: local server/account scope', () => {
         domain.activateSessionLocalStateScope(scopeA);
         domain.applySessions([session('s1') as any]);
         domain.updateSessionPermissionMode('s1', 'yolo');
-        domain.updateSessionModelMode('s1', 'gemini-2.5-pro');
+        domain.updateSessionModelMode('s1', 'gpt-5.5');
         domain.markSessionViewed('s1');
         domain.upsertSessionReviewCommentDraft('s1', {
             id: 'comment-a',
@@ -103,7 +103,7 @@ describe('sessions domain: local server/account scope', () => {
         });
 
         expect(get().sessions.s1?.permissionMode).toBe('yolo');
-        expect(get().sessions.s1?.modelMode).toBe('gemini-2.5-pro');
+        expect(get().sessions.s1?.modelMode).toBe('gpt-5.5');
         expect(get().reviewCommentsDraftsBySessionId.s1?.[0]?.body).toBe('account A review');
         expect(get().actionDraftsBySessionId.s1?.[0]?.id).toBe(actionDraft.id);
         expect(get().sessionLastViewed.s1).toBeTypeOf('number');
@@ -112,7 +112,7 @@ describe('sessions domain: local server/account scope', () => {
         domain.applySessions([session('s1') as any]);
 
         expect(get().sessions.s1?.permissionMode).not.toBe('yolo');
-        expect(get().sessions.s1?.modelMode).not.toBe('gemini-2.5-pro');
+        expect(get().sessions.s1?.modelMode).not.toBe('gpt-5.5');
         expect(get().reviewCommentsDraftsBySessionId.s1 ?? []).toEqual([]);
         expect(get().actionDraftsBySessionId.s1 ?? []).toEqual([]);
         expect(get().sessionLastViewed.s1).toBeUndefined();
@@ -121,7 +121,7 @@ describe('sessions domain: local server/account scope', () => {
         domain.applySessions([session('s1') as any]);
 
         expect(get().sessions.s1?.permissionMode).toBe('yolo');
-        expect(get().sessions.s1?.modelMode).toBe('gemini-2.5-pro');
+        expect(get().sessions.s1?.modelMode).toBe('gpt-5.5');
         expect(get().reviewCommentsDraftsBySessionId.s1?.[0]?.body).toBe('account A review');
         expect(get().actionDraftsBySessionId.s1?.[0]?.id).toBe(actionDraft.id);
         expect(get().sessionLastViewed.s1).toBeTypeOf('number');

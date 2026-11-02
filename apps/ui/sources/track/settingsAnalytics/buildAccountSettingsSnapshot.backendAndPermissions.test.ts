@@ -24,7 +24,6 @@ describe('buildAccountSettingsSnapshot', () => {
         expect(snapshot.properties['acct_setting__backendEnabledByTargetKey__agent:codex']).toBe(true);
         expect(snapshot.properties.acct_setting__backendCliSourcePreferenceById__codex).toBe('managed-first');
         expect(snapshot.properties.acct_setting__backendCliSourcePreferenceById__claude).toBe('system-first');
-        expect(snapshot.properties.acct_setting__backendCliSourcePreferenceById__gemini).toBe('default');
     });
 
     it('tracks default permission modes per agent through structured canonical analytics serializers', () => {
@@ -39,7 +38,6 @@ describe('buildAccountSettingsSnapshot', () => {
 
         expect(snapshot.properties['acct_setting__sessionDefaultPermissionModeByTargetKey__agent:claude']).toBe('safe-yolo');
         expect(snapshot.properties['acct_setting__sessionDefaultPermissionModeByTargetKey__agent:codex']).toBe('read-only');
-        expect(snapshot.properties['acct_setting__sessionDefaultPermissionModeByTargetKey__agent:gemini']).toBe('default');
     });
 });
 

@@ -56,7 +56,7 @@ describe('fetchAndApplyOlderMessages', () => {
           role: 'agent',
           content: {
             type: 'acp',
-            provider: 'kimi',
+            provider: 'codex',
             data: { type: 'task_complete', id: 'task-1' },
           },
         },

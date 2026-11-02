@@ -19,8 +19,8 @@ describe('ConnectedServiceMaterializedHomeCleanupScheduler', () => {
     try {
       const liveHome = join(baseDir, 'csm_live', 'codex');
       const retainedHome = join(baseDir, 'csm_retained', 'claude');
-      const recentHome = join(baseDir, 'csm_recent', 'pi');
-      const orphanHome = join(baseDir, 'csm_orphan', 'opencode');
+      const recentHome = join(baseDir, 'csm_recent', 'codex');
+      const orphanHome = join(baseDir, 'csm_orphan', 'claude');
       await mkdir(liveHome, { recursive: true });
       await mkdir(retainedHome, { recursive: true });
       await mkdir(recentHome, { recursive: true });

@@ -61,7 +61,7 @@ export function handleAgentMessageChunk(
 }
 
 /**
- * Handle agent_thought_chunk update (Gemini's thinking/reasoning).
+ * Handle agent_thought_chunk update (the agent's thinking/reasoning).
  */
 export function handleAgentThoughtChunk(
   update: SessionUpdate,

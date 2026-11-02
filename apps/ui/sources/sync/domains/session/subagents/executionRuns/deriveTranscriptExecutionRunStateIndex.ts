@@ -77,9 +77,6 @@ function readBackendTargetRef(value: unknown): BackendTargetRefV1 | null {
     if (record.kind === 'builtInAgent' && typeof record.agentId === 'string' && record.agentId.trim().length > 0) {
         return { kind: 'builtInAgent', agentId: record.agentId.trim() };
     }
-    if (record.kind === 'configuredAcpBackend' && typeof record.backendId === 'string' && record.backendId.trim().length > 0) {
-        return { kind: 'configuredAcpBackend', backendId: record.backendId.trim() };
-    }
     return null;
 }
 
@@ -110,7 +107,6 @@ function readTranscriptBackendTarget(params: Readonly<{
 
 export function resolveTranscriptBackendLabel(state: TranscriptExecutionRunState): string | null {
     if (state.backendTarget?.kind === 'builtInAgent') return state.backendTarget.agentId;
-    if (state.backendTarget?.kind === 'configuredAcpBackend') return state.backendTarget.backendId;
     return state.backendId ?? null;
 }
 

@@ -112,20 +112,20 @@ describe('buildResumeSelectionModel', () => {
     expect(model.hint.resumableCount).toBe(0);
   });
 
-  it('shows a stopped session whose agent does not support resume as DISABLED with a friendly reason', async () => {
+  it('shows a stopped session without a vendor resume id as DISABLED with a friendly reason', async () => {
     const { credentials, encryptionSecret } = buildLegacyCredentials();
-    // opencode has no vendor resume capability — stopped opencode sessions are
-    // shown disabled with the "agent does not support resume" reason.
+    // A stopped codex session without a vendor session id cannot be resumed and is
+    // shown disabled with a friendly reason.
     const rawSession = buildEncryptedSessionListRow({
-      sessionId: 'sid-opencode',
-      agentId: 'opencode',
+      sessionId: 'sid-codex',
+      agentId: 'codex',
       active: false,
       encryptionSecret,
       metadata: {
         host: 'leeroy-mbp',
         path: '/p',
-        agent: 'opencode',
-        flavor: 'opencode',
+        agent: 'codex',
+        flavor: 'codex',
       },
     });
 
@@ -154,10 +154,10 @@ describe('buildResumeSelectionModel', () => {
     });
     const disabled = buildEncryptedSessionListRow({
       sessionId: 'sid-disabled',
-      agentId: 'opencode',
+      agentId: 'codex',
       active: false,
       encryptionSecret,
-      metadata: { host: 'h', path: '/p', agent: 'opencode', flavor: 'opencode' },
+      metadata: { host: 'h', path: '/p', agent: 'codex', flavor: 'codex' },
     });
     // Make disabled newer so we know ordering follows attachable-first not date-first.
     (disabled as unknown as { updatedAt: number }).updatedAt = (resumable as unknown as { updatedAt: number }).updatedAt + 1000;

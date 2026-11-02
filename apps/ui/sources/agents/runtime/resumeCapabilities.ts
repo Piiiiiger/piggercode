@@ -6,13 +6,11 @@
  * - experimental (requires explicit opt-in).
  */
 
-import { readAcpConfiguredBackendV1FromMetadata } from '@piggercode/protocol';
 import {
     AGENTS_CORE,
     evaluateVendorResumeEligibility,
     resolveAgentIdFromFlavor,
     resolveAgentIdFromSessionMetadata,
-    resolveConfiguredAcpSessionResume,
 } from '@piggercode/agents';
 import type { Settings } from '@/sync/domains/settings/settings';
 export type ResumeCapabilityOptions = {
@@ -57,13 +55,6 @@ export function canResumeSession(metadata: SessionMetadata | null | undefined): 
 
 export function canResumeSessionWithOptions(metadata: SessionMetadata | null | undefined, options?: ResumeCapabilityOptions): boolean {
     if (!metadata) return false;
-    const configuredResume = resolveConfiguredAcpSessionResume({
-        metadata,
-        accountSettings: options?.accountSettings ?? null,
-    });
-    if (configuredResume.eligible) return true;
-    if (readAcpConfiguredBackendV1FromMetadata(metadata)) return false;
-
     const flavor = metadata.flavor;
 
     const agentId = resolveAgentIdFromSessionMetadata(metadata) ?? resolveAgentIdFromFlavor(flavor);
@@ -93,9 +84,6 @@ export function canContinueSessionWithFreshSpawn(
     if (!metadata) return false;
     const flavor = metadata.flavor;
 
-    // Configured ACP backends never fall back from load to a fresh provider session.
-    if (readAcpConfiguredBackendV1FromMetadata(metadata)) return false;
-
     const agentId = resolveAgentIdFromSessionMetadata(metadata) ?? resolveAgentIdFromFlavor(flavor);
     if (!agentId) return false;
 
@@ -118,15 +106,6 @@ export function getAgentVendorResumeId(
     options?: ResumeCapabilityOptions,
 ): string | null {
     if (!metadata) return null;
-
-    const configuredBackend = readAcpConfiguredBackendV1FromMetadata(metadata);
-    if (configuredBackend) {
-        const configuredResume = resolveConfiguredAcpSessionResume({
-            metadata,
-            accountSettings: options?.accountSettings ?? null,
-        });
-        return configuredResume.eligible ? configuredResume.vendorResumeId : null;
-    }
 
     const agentId = resolveAgentIdFromFlavor(agent) ?? resolveAgentIdFromSessionMetadata(metadata);
     if (!agentId) return null;

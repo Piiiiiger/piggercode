@@ -33,7 +33,7 @@ describe('publishAcpSessionModelsState', () => {
     const { session, getMetadata } = createSessionClientWithMetadata();
     for (const currentValue of ['medium', 'high']) {
       publishAcpSessionModelsState({
-        session, provider: 'pi',
+        session, provider: 'codex',
         payload: {
           currentModelId: 'example/model', observedAt: 42,
           availableModels: [{ id: 'example/model', name: 'Model', modelOptions: [{
@@ -53,7 +53,7 @@ describe('publishAcpSessionModelsState', () => {
   it('publishes initial current-model telemetry without claiming a catalog observation', () => {
     const { session, getMetadata } = createSessionClientWithMetadata();
     publishAcpSessionModelsState({
-      session, provider: 'pi', payload: { currentModelId: 'provider/current' },
+      session, provider: 'codex', payload: { currentModelId: 'provider/current' },
       logPrefix: '[test]', reason: 'current_model_update', preservePreviousAvailableModels: true,
     });
     expect(getMetadata().sessionModelsV1).toMatchObject({
@@ -64,19 +64,19 @@ describe('publishAcpSessionModelsState', () => {
 
   it('replaces a prior catalog with successful empty membership while ignoring malformed observations', () => {
     const previous = {
-      v: 1 as const, provider: 'gemini', updatedAt: 20, currentModelId: 'old',
+      v: 1 as const, provider: 'codex', updatedAt: 20, currentModelId: 'old',
       availableModels: [{ id: 'old', name: 'Old' }],
     };
     const { session, getMetadata } = createSessionClientWithMetadata({
       initialMetadata: createTestMetadata({ sessionModelsV1: previous }),
     });
     publishAcpSessionModelsState({
-      session, provider: 'gemini', payload: { currentModelId: 'new', availableModels: 'invalid' },
+      session, provider: 'codex', payload: { currentModelId: 'new', availableModels: 'invalid' },
       logPrefix: '[test]', reason: 'session_models_state', preservePreviousAvailableModels: true,
     });
     expect(getMetadata().sessionModelsV1).toEqual(previous);
     publishAcpSessionModelsState({
-      session, provider: 'gemini', payload: { currentModelId: 'new', availableModels: [] },
+      session, provider: 'codex', payload: { currentModelId: 'new', availableModels: [] },
       logPrefix: '[test]', reason: 'session_models_state', preservePreviousAvailableModels: true,
     });
     expect(getMetadata().sessionModelsV1).toMatchObject({ currentModelId: 'new', availableModels: [] });
@@ -88,25 +88,25 @@ describe('publishAcpSessionModelsState', () => {
       initialMetadata: createTestMetadata({
         sessionModelsV1: {
           v: 1,
-          provider: 'gemini',
+          provider: 'codex',
           updatedAt: 20,
-          currentModelId: 'gemini-new',
-          availableModels: [{ id: 'gemini-new', name: 'Gemini New' }],
+          currentModelId: 'model-new',
+          availableModels: [{ id: 'model-new', name: 'Model New' }],
         },
         acpSessionModelsV1: {
           v: 1,
-          provider: 'gemini',
+          provider: 'codex',
           updatedAt: 10,
-          currentModelId: 'gemini-stale',
-          availableModels: [{ id: 'gemini-stale', name: 'Gemini Stale' }],
+          currentModelId: 'model-stale',
+          availableModels: [{ id: 'model-stale', name: 'Model Stale' }],
         },
       }),
     });
 
     publishAcpSessionModelsState({
       session,
-      provider: 'gemini',
-      payload: { currentModelId: 'gemini-next' },
+      provider: 'codex',
+      payload: { currentModelId: 'model-next' },
       logPrefix: '[test]',
       reason: 'current_model_update',
       preservePreviousAvailableModels: true,
@@ -114,8 +114,8 @@ describe('publishAcpSessionModelsState', () => {
 
     expect(getMetadata().sessionModelsV1).toMatchObject({
       updatedAt: 20,
-      currentModelId: 'gemini-next',
-      availableModels: [{ id: 'gemini-new', name: 'Gemini New' }],
+      currentModelId: 'model-next',
+      availableModels: [{ id: 'model-new', name: 'Model New' }],
     });
     expect(getMetadata().acpSessionModelsV1).toEqual(getMetadata().sessionModelsV1);
   });

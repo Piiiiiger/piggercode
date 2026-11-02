@@ -3,9 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { isChangeTitleToolLikeName, isChangeTitleToolNameAlias } from './aliases.js';
 
 describe('tools/v2 aliases', () => {
-  it('treats opencode-style happier_change_title as a change_title alias', () => {
-    expect(isChangeTitleToolNameAlias('happier_change_title')).toBe(true);
-  });
 
   it('treats session_title_set MCP aliases as change_title aliases', () => {
     expect(isChangeTitleToolNameAlias('session_title_set')).toBe(true);

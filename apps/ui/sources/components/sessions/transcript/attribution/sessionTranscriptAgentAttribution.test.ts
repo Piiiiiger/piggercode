@@ -47,7 +47,7 @@ describe('sessionTranscriptAgentAttribution', () => {
 
     it('walks multiple dividers so a twice-switched Session keeps each span truthful', () => {
         const first = createMixedAgentTranscriptFixture({ sourceAgentId: 'claude', targetAgentId: 'codex' });
-        const second = createMixedAgentTranscriptFixture({ sourceAgentId: 'codex', targetAgentId: 'gemini' });
+        const second = createMixedAgentTranscriptFixture({ sourceAgentId: 'codex', targetAgentId: 'claude' });
         const secondDivider = second.messages.find((message) => message.kind === 'agent-event')!;
         const index = buildSessionTranscriptAgentAttributionIndex([
             ...first.messages,
@@ -57,7 +57,7 @@ describe('sessionTranscriptAgentAttribution', () => {
         expect(index.boundaries.map((boundary) => boundary.seq)).toEqual([15, 35]);
         expect(resolveHistoricalAgentIdAtSeq(index, 10)).toBe('claude');
         expect(resolveHistoricalAgentIdAtSeq(index, 30)).toBe('codex');
-        expect(resolveHistoricalAgentIdAtSeq(index, 40)).toBe('gemini');
+        expect(resolveHistoricalAgentIdAtSeq(index, 40)).toBe('claude');
     });
 
     it('refuses a malformed divider rather than half-attributing the transcript', () => {

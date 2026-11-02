@@ -4,7 +4,7 @@ type MetadataRecord = Record<string, unknown>;
 
 export type SessionHandoffRuntimeLocalMetadata = Readonly<Partial<Pick<
     Metadata,
-    'claudeSessionId' | 'codexSessionId' | 'opencodeSessionId' | 'directSessionV1'
+    'claudeSessionId' | 'codexSessionId' | 'directSessionV1'
 >>>;
 
 export type SessionHandoffMetadataSplit = Readonly<{
@@ -68,7 +68,6 @@ export function pickSessionHandoffRuntimeLocalMetadata(
     const picked: SessionHandoffRuntimeLocalMetadata = {
         ...(typeof metadata.claudeSessionId === 'string' ? { claudeSessionId: metadata.claudeSessionId } : {}),
         ...(typeof metadata.codexSessionId === 'string' ? { codexSessionId: metadata.codexSessionId } : {}),
-        ...(typeof metadata.opencodeSessionId === 'string' ? { opencodeSessionId: metadata.opencodeSessionId } : {}),
         ...(metadata.directSessionV1 && typeof metadata.directSessionV1 === 'object' && !Array.isArray(metadata.directSessionV1)
             ? { directSessionV1: metadata.directSessionV1 as Metadata['directSessionV1'] }
             : {}),

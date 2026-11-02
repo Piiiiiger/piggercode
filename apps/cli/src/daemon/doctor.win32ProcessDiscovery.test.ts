@@ -46,7 +46,7 @@ describe('doctor win32 process discovery', () => {
                     ProcessId: 26316,
                     Name: 'MainThread',
                     CommandLine:
-                        '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon',
+                        '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon',
                 },
             ]),
         );
@@ -62,7 +62,7 @@ describe('doctor win32 process discovery', () => {
             {
                 pid: 26316,
                 command:
-                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon',
+                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon',
                 type: 'daemon-spawned-session',
             },
         ]);
@@ -85,7 +85,7 @@ describe('doctor win32 process discovery', () => {
                         ProcessId: 26316,
                         Name: 'happier.exe',
                         CommandLine:
-                            '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon',
+                            '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon',
                     },
                 ]),
             );
@@ -101,7 +101,7 @@ describe('doctor win32 process discovery', () => {
             {
                 pid: 26316,
                 command:
-                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon',
+                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon',
                 type: 'daemon-spawned-session',
             },
         ]);
@@ -113,7 +113,7 @@ describe('doctor win32 process discovery', () => {
                 ProcessId: 26316,
                 Name: 'MainThread',
                 CommandLine:
-                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+                    '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
             }),
         );
 
@@ -122,7 +122,7 @@ describe('doctor win32 process discovery', () => {
         await expect(findHappyProcessByPid(26316)).resolves.toEqual({
             pid: 26316,
             command:
-                '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+                '"C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe" "C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs" codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
             type: 'daemon-spawned-session',
         });
     });

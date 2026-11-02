@@ -29,14 +29,6 @@ function normalizeString(value: unknown): string | null {
     return trimmed || null;
 }
 
-function readRuntimeDescriptorPiSessionFile(metadata: SessionDebugMetadata): string | null {
-    const record = asRecord(metadata);
-    const descriptor = asRecord(record?.agentRuntimeDescriptorV1);
-    if (descriptor?.providerId !== 'pi') return null;
-    const provider = asRecord(descriptor.provider);
-    return normalizeString(provider?.sessionFile);
-}
-
 function readRuntimeDescriptorVendorSessionId(metadata: SessionDebugMetadata): string | null {
     const record = asRecord(metadata);
     const descriptor = asRecord(record?.agentRuntimeDescriptorV1);
@@ -56,9 +48,7 @@ export function resolveProviderSessionIdForDebug(params: Readonly<{
 
 export function resolveProviderSessionArtifactPath(metadata: SessionDebugMetadata): string | null {
     const record = asRecord(metadata);
-    return normalizeString(record?.claudeTranscriptPath)
-        ?? normalizeString(record?.piSessionFile)
-        ?? readRuntimeDescriptorPiSessionFile(metadata);
+    return normalizeString(record?.claudeTranscriptPath);
 }
 
 export function buildSessionDebugInformation(params: Readonly<{

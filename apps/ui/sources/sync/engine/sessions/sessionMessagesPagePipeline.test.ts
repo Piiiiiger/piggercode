@@ -57,7 +57,7 @@ function buildLifecycleContent(message: ApiMessage) {
             role: 'agent',
             content: {
                 type: 'acp',
-                provider: 'kimi',
+                provider: 'codex',
                 data: { type: 'turn_aborted', id: `task-${message.seq}` },
             },
         },

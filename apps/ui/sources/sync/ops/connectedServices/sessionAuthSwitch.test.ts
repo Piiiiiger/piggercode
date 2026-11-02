@@ -21,20 +21,6 @@ describe('setSessionConnectedServiceAuthBinding', () => {
         prepareAccountSettingsForDaemonSpawnIfNeededMock.mockResolvedValue({});
     });
 
-    it('refuses an Antigravity switch before mutation when the daemon cannot materialize it', async () => {
-        machineRpcWithServerScopeMock.mockImplementation(async ({ method }) => method === RPC_METHODS.CAPABILITIES_INVOKE
-            ? { ok: false, error: { code: 'unsupported-method' } }
-            : { ok: true, action: 'metadata_updated' });
-        const { setSessionConnectedServiceAuthBinding } = await import('./sessionAuthSwitch');
-        await expect(setSessionConnectedServiceAuthBinding({
-            sessionId: 'session-1', agentId: 'agy', machineId: 'old-daemon',
-            bindings: { v: 1, bindingsByServiceId: {
-                antigravity: { source: 'connected', selection: 'profile', profileId: 'work' },
-            } },
-        })).resolves.toMatchObject({ ok: false, errorCode: 'unsupported_service' });
-        expect(machineRpcWithServerScopeMock.mock.calls.some(([call]) => call.method === RPC_METHODS.DAEMON_SESSION_CONNECTED_SERVICE_AUTH_SWITCH)).toBe(false);
-    });
-
     it('routes existing-session auth switches through the L4 daemon switch contract', async () => {
         machineRpcWithServerScopeMock.mockResolvedValueOnce({
             ok: true,

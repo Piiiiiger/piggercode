@@ -32,7 +32,7 @@ describe('provider prompt failure delivery ownership', () => {
     expect(resolveProviderPromptFailureDeliveryReason(
       new ProviderPromptSubmissionRejectedBeforeEffectError(
         'provider_unavailable_before_acceptance',
-        new Error('OpenCode broker preflight failed before prompt_async'),
+        new Error('Codex broker preflight failed before prompt_async'),
       ),
       true,
     )).toBe('provider_unavailable_before_acceptance');

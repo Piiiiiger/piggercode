@@ -19,13 +19,13 @@ function makeResumeUnreachableResult(): Extract<SpawnSessionResult, { type: 'err
             kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
             continuityErrorCode: 'provider_session_state_unavailable_for_resume',
             failurePhase: 'continuity',
-            agentId: 'pi',
+            agentId: 'codex',
             reason: 'no_resumable_session_file',
             uxDiagnostic: {
                 code: CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES.providerSessionStateUnavailableForResume,
                 failurePhase: 'continuity',
                 source: 'spawn_resume',
-                agentId: 'pi',
+                agentId: 'codex',
                 retryable: false,
                 suggestedActions: [
                     CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS.startFreshUnderSelectedAccount,
@@ -126,7 +126,7 @@ describe('resolveConnectedServiceSwitchUnavailablePresentation (D2 recognition +
         );
         expect(presentation.bodyParams).toMatchObject({
             reason: 'no_resumable_session_file',
-            agentId: 'pi',
+            agentId: 'codex',
         });
 
         // It offers a distinct, recognizable "start fresh under the new account" action alongside a

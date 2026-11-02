@@ -35,7 +35,7 @@ describe('readTurnChangeToolMetadata', () => {
                 sessionChangeScope: 'turn',
                 turnId: 'turn_2',
                 sessionId: 'session_2',
-                provider: 'opencode',
+                provider: 'codex',
                 source: 'provider_tool',
                 confidence: 'strong',
                 seqRange: { startSeqInclusive: 3, endSeqInclusive: 4 },
@@ -45,7 +45,7 @@ describe('readTurnChangeToolMetadata', () => {
         expect(readTurnChangeToolMetadataFromToolCall({ input: JSON.stringify(payload) })).toEqual({
             turnId: 'turn_2',
             sessionId: 'session_2',
-            provider: 'opencode',
+            provider: 'codex',
             source: 'provider_tool',
             confidence: 'strong',
             turnStatus: 'completed',

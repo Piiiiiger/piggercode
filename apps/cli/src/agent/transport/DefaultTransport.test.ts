@@ -28,7 +28,7 @@ describe('DefaultTransport handleStderr', () => {
   });
 
   it.each([
-    '[agy-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6',
+    '[provider-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6',
     'error decoding gen_metadata 401',
     'row 401',
     'port 401',

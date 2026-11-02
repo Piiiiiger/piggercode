@@ -124,7 +124,7 @@ vi.mock('@/agents/backendCatalog/getResolvedBackendCatalogEntries', () => ({
             targetKey: 'acpBackend:custom-review',
             family: 'configuredAcpBackend',
             builtInAgentId: null,
-            iconAgentId: 'customAcp',
+            iconAgentId: 'codex',
             title: 'Custom Review Bot',
             subtitle: 'Custom ACP',
         },
@@ -140,14 +140,14 @@ vi.mock('@/platform/randomUUID', () => ({
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['claude', 'customAcp'],
-    DEFAULT_AGENT_ID: 'customAcp',
+    AGENT_IDS: ['claude'],
+    DEFAULT_AGENT_ID: 'codex',
     getAgentCore: () => ({ displayNameKey: 'agent.name' }),
     isAgentId: () => false,
 }));
 
 vi.mock('@/agents/hooks/useEnabledAgentIds', () => ({
-    useEnabledAgentIds: () => ['claude', 'customAcp'],
+    useEnabledAgentIds: () => ['claude'],
 }));
 
 describe('SubAgentSettingsView', () => {
@@ -216,38 +216,6 @@ describe('SubAgentSettingsView', () => {
         screen.pressRowByTitle('subAgentGuidance.settings.related.sessionTitle');
 
         expect(routerPushSpy).toHaveBeenCalledWith('/settings/session');
-    });
-
-    it('routes the related custom ACP backends entry to the providers settings screen', async () => {
-        executionRunsEnabledState = true;
-        const { SubAgentSettingsView } = await import('./SubAgentSettingsView');
-
-        const screen = await renderSettingsView(React.createElement(SubAgentSettingsView));
-        const backendsItem = screen.findRowByTitle('subAgentGuidance.settings.related.backendsTitle');
-        expect(backendsItem).toBeTruthy();
-
-        screen.pressRowByTitle('subAgentGuidance.settings.related.backendsTitle');
-
-        expect(routerPushSpy).toHaveBeenCalledWith('/settings/providers');
-    });
-
-    it('renders configured ACP backend titles in rule subtitles', async () => {
-        executionRunsEnabledState = true;
-        guidanceEnabledState = true;
-        guidanceMaxCharsState = 4000;
-        guidanceEntriesState = [{
-            id: 'rule-1',
-            description: 'Use the custom backend',
-            enabled: true,
-            suggestedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-review' },
-        }];
-
-        const { SubAgentSettingsView } = await import('./SubAgentSettingsView');
-
-        const screen = await renderSettingsView(React.createElement(SubAgentSettingsView));
-        const ruleItem = screen.findRowByTitle('Use the custom backend');
-        expect(ruleItem).toBeTruthy();
-        expect(ruleItem!.props.subtitle).toContain('subAgentGuidance.settings.rules.meta.target: Custom Review Bot');
     });
 
     it('renders provider-contributed subagent settings sections and routes to their target screen', async () => {

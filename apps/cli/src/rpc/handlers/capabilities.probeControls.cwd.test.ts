@@ -137,28 +137,4 @@ describe('capabilities.invoke control probes through the real catalog and native
     });
   });
 
-  it.each(['probeModes', 'probeModels'] as const)('%s launches the selected configured ACP backend from fetched settings', async (method) => {
-    await withProbeFixture(async ({ cwd, invoke, setSettings }) => {
-      const agentPath = await writeFakeAcpAgentScript({
-        dir: cwd, sdkEntry: resolveAcpSdkEntryFromCwd(process.cwd()),
-        sessionPayloadSource: `{
-          sessionId: randomUUID(),
-          modes: { currentModeId: 'review-mode', availableModes: [{ id: 'review-mode', name: 'Review mode' }] },
-          models: { currentModelId: 'review-model', availableModels: [{ id: 'review-model', name: 'Review model' }] },
-        }`,
-      });
-      setSettings({ acpCatalogSettingsV1: { v: 2, backends: [{
-        id: 'review-bot', name: 'review-bot', title: 'Review bot', command: process.execPath,
-        args: [agentPath], env: {}, transportProfile: 'generic',
-        capabilities: { supportsLoadSession: false, supportsModes: 'yes', supportsModels: 'yes', supportsConfigOptions: 'unknown', promptImageSupport: 'unknown' },
-        createdAt: 1, updatedAt: 1,
-      }] } });
-      const response = await invoke(method, { timeoutMs: 10_000, backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' } }, 'customAcp');
-      expect(response).toMatchObject({ ok: true, result: { source: 'dynamic',
-        ...(method === 'probeModes'
-          ? { availableModes: expect.arrayContaining([{ id: 'review-mode', name: 'Review mode' }]) }
-          : { availableModels: expect.arrayContaining([{ id: 'review-model', name: 'Review model' }]) }),
-      } });
-    });
-  });
 });

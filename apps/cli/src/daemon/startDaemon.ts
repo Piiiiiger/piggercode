@@ -309,8 +309,6 @@ import { ConnectedServiceAuthGroupGenerationConsumer } from './connectedServices
 import { createConnectedServiceCurrentGroupTruthNotifier } from './connectedServices/accountGroups/generation/createConnectedServiceCurrentGroupTruthNotifier';
 import {
   getBrokerBridgeEffectiveSelection,
-  isBrokerBridgeCurrentGroupTruthCompatible,
-  markBrokerBridgeEffectiveSelectionUnavailable,
 } from './connectedServices/broker/brokerBridgeEffectiveSelectionRegistry';
 import {
   reconcileConnectedServiceAuthGroupGenerationForRuntimeTarget,
@@ -405,7 +403,6 @@ import { resolveCurrentSessionRunnerLaunchIdentity } from './sessionRunnerRuntim
 import { shouldRefreshSessionRunnerResumeIdentity } from './sessionRunnerRuntime/resolveRestartEligibility';
 import { resolveSessionRunnerRuntimeState } from './sessionRunnerRuntime/resolveRuntimeState';
 import { resolveSessionRunnerActivityDisabledReason as resolveSessionRunnerActivityDisabledReasonFromReaders } from './sessionRunnerRuntime/resolveActivityDisabledReason';
-import { setOpenCodeConnectedServiceInFlightTurnProvider } from './connectedServices/sessionAuthSwitch/openCodeConnectedServiceInFlightTurnRegistry';
 import { requestConnectedServiceSwitchBeforeTurnWithDeferral } from './connectedServices/sessionAuthSwitch/connectedServiceSwitchBeforeTurnDeferral';
 import { logConnectedServiceDaemonRestartDiagnostic } from './connectedServices/sessionAuthSwitch/logConnectedServiceDaemonRestartDiagnostic';
 import { logConnectedServiceAuthSwitchResult } from './connectedServices/sessionAuthSwitch/logConnectedServiceAuthSwitchResult';
@@ -464,7 +461,6 @@ import { refreshAccountSettingsForMinimumVersion } from '@/settings/accountSetti
 import { warmActiveAccountSettingsSnapshotBestEffort } from '@/settings/accountSettings/warmActiveAccountSettingsSnapshot';
 import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { isBackendEnabledByAccountSettings } from '@/settings/backendEnabled';
-import { resolveConfiguredAcpBackendFromAccountSettings } from '@/agent/acp/catalog/configured/resolveConfiguredAcpBackendFromAccountSettings';
 import { fetchSessionByIdCompat, type RawSessionRecord } from '@/session/transport/http/sessionsHttp';
 import { listRetainedConnectedServiceMaterializationIdentityIds } from './connectedServices/materialize/cleanup/listRetainedConnectedServiceMaterializationIdentityIds';
 import { updateSessionMetadataWithRetry } from '@/session/metadata/updateSessionMetadataWithRetry';
@@ -550,16 +546,12 @@ function resolveTrackedSessionNotificationTitle(tracked: TrackedSession | null |
 }
 
 function resolveCatalogAgentIdFromBackendTarget(target: BackendTargetRefV1 | undefined): CatalogAgentId {
-  if (target?.kind === 'configuredAcpBackend') {
-    return 'customAcp';
-  }
   return resolveCatalogAgentId(readBuiltInCatalogAgentIdFromBackendTarget(target));
 }
 
 function resolveTrackedSessionCatalogAgentIdFromMetadataSource(
   tracked: Pick<TrackedSession, 'happySessionMetadataFromLocalWebhook' | 'spawnOptions'>,
 ): CatalogAgentId {
-  if (tracked.spawnOptions?.backendTarget?.kind === 'configuredAcpBackend') return 'customAcp';
   const fromBackendTarget = readBuiltInCatalogAgentIdFromBackendTarget(tracked.spawnOptions?.backendTarget);
   if (fromBackendTarget) return fromBackendTarget;
   return resolveCatalogAgentId(resolveAgentIdFromSessionMetadata(tracked.happySessionMetadataFromLocalWebhook));
@@ -1330,10 +1322,7 @@ function buildMaterializationIdentityMissingSpawnErrorResult(input: Readonly<{
   });
 }
 
-function resolveCliSubcommandFromBackendTarget(target: BackendTargetRefV1 | undefined): CatalogAgentId | 'acp-catalog' {
-  if (target?.kind === 'configuredAcpBackend') {
-    return 'acp-catalog';
-  }
+function resolveCliSubcommandFromBackendTarget(target: BackendTargetRefV1 | undefined): CatalogAgentId {
   return resolveAgentCliSubcommand(readBuiltInCatalogAgentIdFromBackendTarget(target));
 }
 
@@ -3390,10 +3379,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     // Terminal registration can precede its provider-id report.
                     ?? extractResumeIdFromCommand(tracked.processCommand ?? '');
                   if (trackedResume !== effectiveResume) continue;
-                  const trackedTarget = tracked.spawnOptions?.backendTarget;
-                  const sameTarget = backendTarget?.kind === 'configuredAcpBackend'
-                    ? trackedTarget?.kind === 'configuredAcpBackend' && trackedTarget.backendId === backendTarget.backendId
-                    : trackedTarget?.kind !== 'configuredAcpBackend' && resolveTrackedSessionCatalogAgentId(tracked) === catalogAgentId;
+                  const sameTarget = resolveTrackedSessionCatalogAgentId(tracked) === catalogAgentId;
                   if (!sameTarget) continue;
                   const presence = await classifyTrackedSessionRunnerPresence({ tracked });
                   if (presence === 'absent') continue;
@@ -3495,33 +3481,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 };
               }
 
-              // Configured ACP resume is catalog-declared policy plus ACP initialize negotiation.
-              // Never turn an inactive resume into a fresh provider session when either proof is absent.
-              if (backendTarget?.kind === 'configuredAcpBackend' && (effectiveResume || normalizedExistingSessionId)) {
-                const accountSettings = getActiveAccountSettingsSnapshot()?.settings as Record<string, unknown> | undefined;
-                const configuredBackend = accountSettings
-                  ? resolveConfiguredAcpBackendFromAccountSettings(accountSettings, backendTarget.backendId)
-                  : null;
-                const supportsConfiguredResume = Boolean(
-                  configuredBackend?.capabilities.supportsLoadSession
-                  && accountSettings
-                  && isBackendEnabledByAccountSettings({ backendTarget, settings: accountSettings }),
-                );
-                if (!supportsConfiguredResume) {
-                  return {
-                    type: 'error',
-                    errorCode: SPAWN_SESSION_ERROR_CODES.RESUME_NOT_SUPPORTED,
-                    errorMessage: `Resume is not supported for configured ACP backend '${backendTarget.backendId}'.`,
-                  };
-                }
-                if (normalizedExistingSessionId && !effectiveResume) {
-                  return {
-                    type: 'error',
-                    errorCode: SPAWN_SESSION_ERROR_CODES.RESUME_NOT_SUPPORTED,
-                    errorMessage: `Configured ACP backend '${backendTarget.backendId}' cannot resume because its matching provider session ID is missing.`,
-                  };
-                }
-              } else if (effectiveResume) {
+              if (effectiveResume) {
                 const vendorResumeSupport = await getVendorResumeSupport(
                   catalogAgentId,
                 );
@@ -3872,7 +3832,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     hooks: daemonSpawnHooks,
                     host: selectedHost,
                     agentId: catalogAgentId,
-                    configuredAcpBackend: backendTarget?.kind === 'configuredAcpBackend',
                     existingSessionId: normalizedExistingSessionId,
                     accountSettings: getActiveAccountSettingsSnapshot()?.settings ?? null,
                     runtimeSelection: {
@@ -5099,13 +5058,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           },
         });
 
-        // Lane F prevention: expose per-session turn-in-flight state to the OpenCode managed-server
-        // auth-switch release path (a pure module that cannot import the daemon queue directly). The
-        // release refuses to kill a server whose sole claimant is still mid-turn (closes the OQ-2
-        // sole-claimant mid-turn-kill window). Cleared on shutdown (see cleanupAndShutdown).
-        setOpenCodeConnectedServiceInFlightTurnProvider(
-          (sessionId) => connectedServiceTurnDeferralQueue.isTurnInFlight(sessionId),
-        );
         const resolveSessionRunnerActivityDisabledReason = (
           sessionId: string,
         ): SessionRunnerRestartDisabledReason | null => resolveSessionRunnerActivityDisabledReasonFromReaders(sessionId, {
@@ -8227,32 +8179,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
       connectedServiceAuthGroupGenerationConsumer = new ConnectedServiceAuthGroupGenerationConsumer({
         notifyCurrentGroupTruth: createConnectedServiceCurrentGroupTruthNotifier({
-          applyRequestTimeBrokerCurrentTruth: async (input) => {
-            if (input.applicationOwnerId !== 'opencode' && input.applicationOwnerId !== 'pi') return null;
-            const runtimeTarget = connectedServiceRuntimeRegistry.getBySessionId(input.sessionId);
-            const selectionIdentity = runtimeTarget?.brokerSelectionIdentity ?? null;
-            if (!selectionIdentity || input.isCurrent?.() === false) {
-              return { ok: false, errorCode: 'broker_selection_identity_unavailable' };
-            }
-            if (input.currentTruth.kind === 'current_auth_group_unavailable') {
-              markBrokerBridgeEffectiveSelectionUnavailable({
-                selectionIdentity,
-                serviceId: input.serviceId,
-                groupId: input.currentTruth.groupId,
-                unavailableReason: input.currentTruth.unavailableReason,
-              });
-              return { ok: true };
-            }
-            return isBrokerBridgeCurrentGroupTruthCompatible({
-              selectionIdentity,
-              serviceId: input.serviceId,
-              groupId: input.currentTruth.groupId,
-              generation: input.currentTruth.generation,
-              credentialRevision: input.currentTruth.credentialRevision,
-            })
-              ? { ok: true }
-              : { ok: false, errorCode: 'broker_current_truth_not_applied' };
-          },
           resolveTransport: async (sessionId) => {
             const transport = await resolveSessionTransportContext({ credentials, idOrPrefix: sessionId });
             return transport.ok ? transport : null;
@@ -9044,9 +8970,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           shutdownInitiated = true;
           eventLoopStallMonitor.stop();
           connectedServiceTurnDeferralQueue.cancelAll('daemon_shutdown');
-          // Lane F: stop exposing turn-in-flight state once the queue is torn down so a tearing-down
-          // daemon never reports a stale in-flight turn to the managed-server release path.
-          setOpenCodeConnectedServiceInFlightTurnProvider(null);
           // Stop runtime-auth recovery timers so live-daemon recovery work cannot fire a
           // switch/restart into a tearing-down daemon. Daemon restart intentionally drops these
           // in-memory recovery intents.
@@ -9138,22 +9061,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       cliUpdateMetadataPublisher?.stop();
       if (memoryWorker) {
         memoryWorker.stop();
-      }
-
-      // Best-effort cleanup for provider-managed background processes (e.g. shared OpenCode server).
-      // Important: do not tear down shared provider background processes while session runners are still
-      // tracked by this daemon. Runner admission precedes durable marker persistence, so a tracked
-      // startup runner may not yet appear in the managed-server custody scan. Some harnesses also
-      // stop the daemon while externally-started sessions remain live.
-      if (pidToTrackedSession.size === 0) {
-        try {
-          const { stopSharedManagedOpenCodeServerFromEnvBestEffort, resolveManagedOpenCodeDaemonOwnerIdFromState } = await import('@/backends/opencode/server/sharedManagedServer');
-          await stopSharedManagedOpenCodeServerFromEnvBestEffort({
-            daemonInstanceId: resolveManagedOpenCodeDaemonOwnerIdFromState(fileState, configuration.activeServerId),
-          });
-        } catch {
-          logger.warn('[DAEMON RUN] Provider-managed server cleanup failed during shutdown');
-        }
       }
 
       await stopDirectPeerServer();

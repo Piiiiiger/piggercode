@@ -349,7 +349,7 @@ describe('SessionAutomationsScreen', () => {
             metadata: {
                 machineId: 'm1',
                 path: '/tmp/project',
-                flavor: 'pi',
+                flavor: 'codex',
             },
         };
         setStorageStateForSession({

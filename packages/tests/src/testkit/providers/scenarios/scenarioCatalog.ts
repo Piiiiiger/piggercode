@@ -33,9 +33,7 @@ import {
   acpResumeMetadataKey,
   assertProviderId,
   claudeAgentTeamsCreateAndSpawnPrompt,
-  isOpenCodeFamilyProvider,
   tuneResumeScenarioForProvider,
-  withKimiUnknownToolFixtureAliases,
 } from './scenarioCatalogSupport';
 import {
   makeAcpEditResultIncludesDiffScenario,
@@ -46,7 +44,6 @@ import {
   makeAcpPatchIncludesDiffScenario,
   makeAcpPermissionExecuteWritesWorkspaceFileScenario,
   makeAcpPermissionPatchApplyScenario,
-  makeAcpPermissionDenyOutsideWorkspaceReadScenario,
   makeAcpPermissionOutsideWorkspaceScenario,
   makeAcpReadInWorkspaceScenario,
   makeAcpReadMissingFileScenario,
@@ -55,22 +52,7 @@ import {
   makeAcpSearchKnownTokenScenario,
   makeAcpSearchLsEquivalenceScenario,
   makeAcpWriteInWorkspaceScenario,
-  makeAcpWriteThenStreamMarkdownTableScenario,
 } from './scenarios.acp';
-import {
-  makeCursorAcpStubExtensionPlanTodosScenario,
-  makeCursorAcpStubCapturedLifecycleReplayScenario,
-  makeCursorAcpStubModeConfigOptionScenario,
-  makeCursorAcpStubModelConfigAliasScenario,
-} from './scenarios.cursor';
-import {
-  makeGrokAcpStubAuthCreateResumeScenario,
-  makeGrokAcpStubCancelAndCapabilitiesScenario,
-  makeGrokAcpStubFreeformQuestionScenario,
-  makeGrokAcpStubMixedFreeformQuestionScenario,
-  makeGrokAcpStubModelsAndEffortScenario,
-  makeGrokAcpStubStructuredQuestionScenario,
-} from './scenarios.grok';
 import { cleanupOutsideWorkspacePath, makeOutsideWorkspacePath } from '../harness/outsideWorkspacePath';
 
 type ScenarioFactory = (provider: ProviderUnderTest) => ProviderScenario;
@@ -82,18 +64,15 @@ export {
   resolveMachineIdsFromSettings,
 } from './runtimeHelpers';
 
-function capabilityProbePostSatisfyTimeoutMs(providerId: string): number {
-  return providerId === 'gemini' ? 180_000 : 120_000;
+function capabilityProbePostSatisfyTimeoutMs(_providerId: string): number {
+  return 120_000;
 }
 
-function capabilityProbeRpcTimeoutMs(providerId: string): number {
-  return providerId === 'gemini' ? 150_000 : 90_000;
+function capabilityProbeRpcTimeoutMs(_providerId: string): number {
+  return 90_000;
 }
 
-function capabilityProbeRetryOptions(providerId: string): { attempts: number; delayMs: number } {
-  if (providerId === 'gemini') {
-    return { attempts: 1, delayMs: 500 };
-  }
+function capabilityProbeRetryOptions(_providerId: string): { attempts: number; delayMs: number } {
   return { attempts: 3, delayMs: 500 };
 }
 
@@ -156,15 +135,6 @@ function makeAcpPermissionModeOutsideWorkspaceScenario(
     },
     permissionAutoDecision: decision === 'deny' ? 'denied' : 'approved',
   };
-
-  if (
-    (isOpenCodeFamilyProvider(provider) || provider.id === 'kilo') &&
-    mode !== 'yolo' &&
-    decision === 'approve' &&
-    expectPermissionRequest
-  ) {
-    scenario.permissionAutoDecision = 'approved_for_session';
-  }
 
   // Keep YOLO-mode scenarios resilient to occasional provider-side prompt surfacing.
   if (yolo) {
@@ -655,24 +625,7 @@ await server.connect(new StdioServerTransport());
       content: provider.id === 'codex' ? 'CODEX_READ_OK' : 'READ_SENTINEL_123',
       id: provider.id === 'codex' ? 'read_in_workspace' : 'read_known_file',
       title: provider.id === 'codex' ? 'read: read a known small file in workspace' : 'read: read a known file in workspace',
-      useAbsolutePath: provider.id === 'auggie',
-      useExecuteFallbackOnReadFailure: provider.id === 'kimi' || provider.id === 'auggie',
     });
-  },
-
-  pi_read_known_file_smoke: (provider) => {
-    assertProviderId(provider, 'pi');
-    const base = makeAcpReadInWorkspaceScenario({
-      providerId: acpProviderId(provider),
-      content: 'PI_READ_SMOKE_OK',
-      id: 'pi_read_known_file_smoke',
-      title: 'pi smoke: read a known file in workspace',
-    });
-
-    return {
-      ...base,
-      tier: 'smoke',
-    } satisfies ProviderScenario;
   },
 
   // -----------------------------------------
@@ -778,26 +731,6 @@ await server.connect(new StdioServerTransport());
       requiredMessageSubstrings: [`ACP_STUB_USAGE_UPDATE_DONE ${sentinel}`],
     };
   },
-
-  cursor_acp_stub_model_config_alias: makeCursorAcpStubModelConfigAliasScenario,
-
-  cursor_acp_stub_mode_config_option: makeCursorAcpStubModeConfigOptionScenario,
-
-  cursor_acp_stub_extension_plan_todos: makeCursorAcpStubExtensionPlanTodosScenario,
-
-  cursor_acp_stub_captured_lifecycle_replay: makeCursorAcpStubCapturedLifecycleReplayScenario,
-
-  grok_acp_stub_auth_create_resume: makeGrokAcpStubAuthCreateResumeScenario,
-
-  grok_acp_stub_structured_question: makeGrokAcpStubStructuredQuestionScenario,
-
-  grok_acp_stub_freeform_question: makeGrokAcpStubFreeformQuestionScenario,
-
-  grok_acp_stub_mixed_freeform_question: makeGrokAcpStubMixedFreeformQuestionScenario,
-
-  grok_acp_stub_models_and_effort: makeGrokAcpStubModelsAndEffortScenario,
-
-  grok_acp_stub_cancel_and_capabilities: makeGrokAcpStubCancelAndCapabilitiesScenario,
 
   acp_probe_models: (provider) => {
     if (provider.protocol !== 'acp') {
@@ -972,13 +905,6 @@ await server.connect(new StdioServerTransport());
           throw new Error(`acp_probe_capabilities: missing acp snapshot for cli.${provider.id}`);
         }
         if (acp.ok !== true) {
-          if (provider.id === 'gemini') {
-            const message = typeof acp.error?.message === 'string' ? acp.error.message.trim() : '';
-            if (!message) {
-              throw new Error(`acp_probe_capabilities: expected acp.error.message for degraded cli.${provider.id} probe`);
-            }
-            return;
-          }
           throw new Error(`acp_probe_capabilities: expected acp.ok=true for cli.${provider.id}`);
         }
         if (typeof acp.loadSession !== 'boolean') {
@@ -1006,7 +932,7 @@ await server.connect(new StdioServerTransport());
     if (provider.protocol !== 'acp') {
       throw new Error(`acp_set_model_dynamic only supports ACP providers (got ${provider.protocol})`);
     }
-    if (!['opencode', 'kilo', 'auggie', 'codex', 'cursor', 'grok_acp_stub', 'devin', 'fx', 'droid', 'kimi', 'codebuddy'].includes(provider.id)) {
+    if (provider.id !== 'codex') {
       throw new Error(`acp_set_model_dynamic requires dynamic model providers (got ${provider.id})`);
     }
 
@@ -1145,178 +1071,6 @@ await server.connect(new StdioServerTransport());
     } satisfies ProviderScenario;
   },
 
-  opencode_surface_status_error: (provider) => {
-    if (provider.protocol !== 'acp') {
-      throw new Error(`opencode_surface_status_error only supports ACP providers (got ${provider.protocol})`);
-    }
-    if (!isOpenCodeFamilyProvider(provider)) {
-      throw new Error(`opencode_surface_status_error only supports opencode-family providers (got ${provider.id})`);
-    }
-
-    return {
-      id: 'opencode_surface_status_error',
-      title: 'opencode: surfaces model failures as status:error (not silent)',
-      tier: 'extended',
-      // Force a deterministic provider failure without hitting network: OpenCode rejects unknown
-      // model ids locally, and Happier must surface the failure in the session UI.
-      cliArgs: () => ['--model', 'openai/does_not_exist', '--model-updated-at', String(Date.now())],
-      prompt: () => 'hi',
-      requiredMessageSubstrings: ['Model not found'],
-      // Keep wait budget tight; this should fail fast if errors are not surfaced.
-      waitMs: 60_000,
-    } satisfies ProviderScenario;
-  },
-
-  acp_set_model_inventory: (provider) => {
-    if (provider.protocol !== 'acp') {
-      throw new Error(`acp_set_model_inventory only supports ACP providers (got ${provider.protocol})`);
-    }
-    if (provider.id !== 'gemini') {
-      throw new Error(`acp_set_model_inventory only supports gemini provider (got ${provider.id})`);
-    }
-
-    const outputRel = 'e2e-set-model-inventory.json';
-    const base = makeAcpReadInWorkspaceScenario({
-      providerId: acpProviderId(provider),
-      content: `ACP_SET_MODEL_INVENTORY_${randomUUID()}`,
-      id: 'acp_set_model_inventory',
-      title: 'acp: gemini model switch inventory (probe + metadata override)',
-    });
-
-    return {
-      ...base,
-      requiredFixtureKeys: undefined,
-      requiredAnyFixtureKeys: undefined,
-      requiredTraceSubstrings: undefined,
-      postSatisfy: {
-        timeoutMs: 240_000,
-        run: async ({ workspaceDir, baseUrl, token, sessionId, secret, cliHome }) => {
-          await waitForSessionActive({ baseUrl, token, sessionId, timeoutMs: 90_000 });
-
-          const probeParsed = await withCapabilityProbeRetry(
-            () =>
-              invokeCapabilitiesMethod({
-                baseUrl,
-                token,
-                cliHome,
-                secret,
-                rpcMethod: RPC_METHODS.CAPABILITIES_INVOKE,
-                payload: {
-                  id: `cli.${provider.id}`,
-                  method: 'probeModels',
-                  params: { timeoutMs: 30_000 },
-                },
-                timeoutMs: capabilityProbeRpcTimeoutMs(provider.id),
-              }),
-            capabilityProbeRetryOptions(provider.id),
-          );
-          const probeEnvelope = probeParsed && typeof probeParsed === 'object' ? (probeParsed as any) : null;
-          if (!probeEnvelope || probeEnvelope.ok !== true || !probeEnvelope.result || typeof probeEnvelope.result !== 'object') {
-            throw new Error('acp_set_model_inventory: probeModels returned invalid envelope');
-          }
-
-          const models = Array.isArray(probeEnvelope.result.availableModels) ? probeEnvelope.result.availableModels : [];
-          const selectedModel =
-            models.find((m: any) => m && typeof m.id === 'string' && m.id.trim() !== '' && m.id !== 'default')?.id ?? null;
-          if (!selectedModel) {
-            throw new Error('acp_set_model_inventory: no non-default model id found');
-          }
-
-          const snapBefore = await fetchSessionV2(baseUrl, token, sessionId);
-          const metadataBefore = decryptLegacyBase64(snapBefore.metadata, secret) as any;
-          const updatedAt = Date.now();
-          const updatedCiphertext = encryptLegacyBase64(
-            {
-              ...metadataBefore,
-              modelOverrideV1: { v: 1, updatedAt, modelId: selectedModel },
-            },
-            secret,
-          );
-          await patchSessionMetadataWithRetry({
-            baseUrl,
-            token,
-            sessionId,
-            ciphertext: updatedCiphertext,
-            expectedVersion: snapBefore.metadataVersion,
-          });
-
-          let runtimeObservedCurrentModelId: string | null = null;
-          let sessionModelsStatePresent = false;
-          let overridePersisted = false;
-          const deadline = Date.now() + 120_000;
-          while (Date.now() < deadline) {
-            const snap = await fetchSessionV2(baseUrl, token, sessionId);
-            const metadata = decryptLegacyBase64(snap.metadata, secret) as any;
-
-            const overrideModelId =
-              typeof metadata?.modelOverrideV1?.modelId === 'string' ? String(metadata.modelOverrideV1.modelId) : null;
-            if (overrideModelId === selectedModel) {
-              overridePersisted = true;
-            }
-
-            const sessionModels = metadata?.acpSessionModelsV1;
-            if (sessionModels && typeof sessionModels === 'object') {
-              sessionModelsStatePresent = true;
-              const currentModelId =
-                typeof sessionModels.currentModelId === 'string' ? String(sessionModels.currentModelId) : null;
-              if (currentModelId === selectedModel) {
-                runtimeObservedCurrentModelId = currentModelId;
-                break;
-              }
-            }
-
-            await sleep(250);
-          }
-
-          if (!overridePersisted) {
-            throw new Error(`acp_set_model_inventory: model override did not persist (target=${selectedModel})`);
-          }
-
-          await writeFile(
-            join(workspaceDir, outputRel),
-            JSON.stringify(
-              {
-                provider: provider.id,
-                selectedModel,
-                source: probeEnvelope.result.source,
-                supportsFreeform: probeEnvelope.result.supportsFreeform === true,
-                sessionModelsStatePresent,
-                runtimeObservedCurrentModelId,
-                runtimeSwitchObserved: runtimeObservedCurrentModelId === selectedModel,
-              },
-              null,
-              2,
-            ) + '\n',
-            'utf8',
-          );
-          await sleep(50);
-        },
-      },
-      verify: async ({ workspaceDir }) => {
-        const outPath = join(workspaceDir, outputRel);
-        const raw = await readFile(outPath, 'utf8').catch(() => '');
-        if (!raw) throw new Error(`acp_set_model_inventory: missing output file: ${outPath}`);
-
-        const parsed = JSON.parse(raw) as any;
-        if (parsed?.provider !== 'gemini') {
-          throw new Error(`acp_set_model_inventory: expected provider=gemini, got ${String(parsed?.provider)}`);
-        }
-        if (typeof parsed?.selectedModel !== 'string' || parsed.selectedModel.length === 0 || parsed.selectedModel === 'default') {
-          throw new Error('acp_set_model_inventory: selectedModel missing or invalid');
-        }
-        if (parsed?.source !== 'dynamic' && parsed?.source !== 'static') {
-          throw new Error(`acp_set_model_inventory: invalid source=${String(parsed?.source)}`);
-        }
-        if (typeof parsed?.sessionModelsStatePresent !== 'boolean') {
-          throw new Error('acp_set_model_inventory: sessionModelsStatePresent must be boolean');
-        }
-        if (typeof parsed?.runtimeSwitchObserved !== 'boolean') {
-          throw new Error('acp_set_model_inventory: runtimeSwitchObserved must be boolean');
-        }
-      },
-    } satisfies ProviderScenario;
-  },
-
   agent_sdk_read_known_file: (provider) => {
     assertProviderId(provider, 'claude');
     const base = scenarioCatalog.read_known_file(provider);
@@ -1413,25 +1167,6 @@ await server.connect(new StdioServerTransport());
         permissionModeUpdatedAt: Date.now(),
       },
     };
-
-    // OpenCode-family ACP permission prompts have been observed to stall tool completion when the
-    // "allow once" option is selected. Prefer auto-selecting "always allow" in the harness so the
-    // scenario can validate permission surfacing + enforcement deterministically.
-    if (
-      (isOpenCodeFamilyProvider(provider) || provider.id === 'kilo') &&
-      scenarioWithYolo.yolo === false &&
-      scenarioWithYolo.permissionAutoDecision === 'approved' &&
-      expectPermissionRequest
-    ) {
-      return { ...scenarioWithYolo, permissionAutoDecision: 'approved_for_session' };
-    }
-
-    if (
-      (isOpenCodeFamilyProvider(provider) || provider.id === 'kilo') &&
-      scenarioWithYolo.yolo === true
-    ) {
-      return { ...scenarioWithYolo, allowPermissionAutoApproveInYolo: true };
-    }
 
     return scenarioWithYolo;
   },
@@ -1896,15 +1631,13 @@ await server.connect(new StdioServerTransport());
     if (provider.protocol === 'acp') {
       const pid = acpProviderId(provider);
       const sessionMetadataKey = acpResumeMetadataKey(provider.id);
-      const followupTimeoutMs =
-        isOpenCodeFamilyProvider(provider) || provider.id === 'kilo' ? 300_000 : provider.id === 'kimi' ? 240_000 : 180_000;
-      const readyAndMemoryTimeoutMs = provider.id === 'kilo' ? 180_000 : 120_000;
+      const followupTimeoutMs = 180_000;
+      const readyAndMemoryTimeoutMs = 120_000;
       const followupSubstrings = abortContinuationFollowupSubstrings(provider.id, followupSentinel, memorySentinel);
       return {
         id: 'abort_turn_then_continue',
         title: 'abort: interrupt a running turn and continue in the same session',
         tier: 'extended',
-        waitMs: provider.id === 'kimi' ? 600_000 : undefined,
         yolo: true,
         allowPermissionAutoApproveInYolo: true,
         maxTraceEvents: { toolCalls: 4, toolResults: 4, permissionRequests: 2 },
@@ -2169,103 +1902,9 @@ await server.connect(new StdioServerTransport());
 	},
 
   // --------------------
-  // ACP providers (Codex/OpenCode/Kilo)
+  // ACP providers (Codex)
   // --------------------
   execute_trace_ok: (provider) => {
-    if (isOpenCodeFamilyProvider(provider) || provider.id === 'kilo') {
-      const isOpenCodeFamily = isOpenCodeFamilyProvider(provider);
-      const pid = acpProviderId(provider);
-      const expectedRawToolNames = ['execute', 'bash', 'shell', 'execute_command', 'exec_command'];
-      const executeTraceOkTokenFile = '.happier-execute-trace-ok-token.txt';
-      const maxTraceEvents = isOpenCodeFamilyProvider(provider)
-        ? { toolCalls: 2, toolResults: 2 }
-        : { toolCalls: 1, toolResults: 1 };
-      return {
-        id: 'execute_trace_ok',
-        title: 'execute: echo TRACE_OK',
-        tier: 'smoke',
-        yolo: true,
-        setup: isOpenCodeFamily
-          ? async ({ workspaceDir }) => {
-              const token = `TRACE_OK_${randomUUID()}`;
-              await writeFile(join(workspaceDir, executeTraceOkTokenFile), `${token}\n`, 'utf8');
-            }
-          : undefined,
-        // OpenCode may emit an additional `change_title` tool-call/tool-result alongside the single Bash call.
-        maxTraceEvents,
-        prompt: ({ workspaceDir }) => {
-          const command = isOpenCodeFamily
-            ? `cat ${JSON.stringify(join(workspaceDir, executeTraceOkTokenFile))} && echo TRACE_OK`
-            : 'echo TRACE_OK';
-          return [
-            'Run exactly one tool call:',
-            `- Use the execute tool to run: ${command}`,
-            '- Then reply DONE.',
-          ].join('\n');
-        },
-        // OpenCode currently surfaces execute calls as the canonical tool `Bash`, with `_happier.rawToolName="execute"`.
-        requiredFixtureKeys: [`acp/${pid}/tool-call/Bash`, `acp/${pid}/tool-result/Bash`],
-        requiredTraceSubstrings: ['TRACE_OK'],
-        verify: async ({ fixtures, workspaceDir }) => {
-          const examples = fixtures?.examples;
-          if (!examples || typeof examples !== 'object') throw new Error('Invalid fixtures: missing examples');
-          const expectedWorkspaceToken = isOpenCodeFamily
-            ? (
-                await readFile(join(workspaceDir, executeTraceOkTokenFile), 'utf8').catch(() => '')
-              ).trim()
-            : '';
-
-          const calls = (examples[`acp/${pid}/tool-call/Bash`] ?? []) as any[];
-          if (!Array.isArray(calls) || calls.length === 0) throw new Error('Missing execute tool-call fixtures');
-          const hasHappierExecute = calls.some((e) => {
-            const raw = e?.payload?.input?._happier?.rawToolName;
-            return e?.payload?.name === 'Bash' && typeof raw === 'string' && expectedRawToolNames.includes(raw);
-          });
-          if (!hasHappierExecute) {
-            throw new Error(
-              `Expected execute normalization on Bash tool-call (_happier.rawToolName in [${expectedRawToolNames.join(', ')}])`,
-            );
-          }
-
-          const results = (examples[`acp/${pid}/tool-result/Bash`] ?? []) as any[];
-          if (!Array.isArray(results) || results.length === 0) throw new Error('Missing execute tool-result fixtures');
-          const collectStdout = (entry: any): string | null => {
-            const out = entry?.payload?.output;
-            return typeof out === 'string' ? out : typeof out?.stdout === 'string' ? out.stdout : null;
-          };
-          const hasOk = results.some((e) => {
-            const stdout = collectStdout(e);
-            return hasStringSubstring(stdout, 'TRACE_OK');
-          });
-          if (!hasOk) throw new Error('execute tool-result did not include TRACE_OK in output');
-          if (expectedWorkspaceToken.length > 0) {
-            const hasWorkspaceToken = results.some((e) => hasStringSubstring(collectStdout(e), expectedWorkspaceToken));
-            if (!hasWorkspaceToken) {
-              throw new Error('execute tool-result did not include workspace token in output');
-            }
-          }
-          const hasExit0 = results.some((e) => {
-            const out = e?.payload?.output;
-            const exit =
-              typeof out?.exit_code === 'number'
-                ? out.exit_code
-                : typeof out?.metadata?.exit === 'number'
-                  ? out.metadata.exit
-                  : null;
-            return exit === 0;
-          });
-          if (!hasExit0) throw new Error('execute tool-result did not include exit_code=0');
-
-          // Shape pin: ensures key structure doesn’t drift silently.
-          const callShape = stableStringifyShape(shapeOf(calls[0]?.payload));
-          const resultShape = stableStringifyShape(shapeOf(results[0]?.payload));
-          if (!callShape.includes('\"_happier\"') || !callShape.includes('\"rawToolName\"') || !resultShape.includes('\"_happier\"')) {
-            throw new Error('Unexpected execute tool-call/tool-result payload shape');
-          }
-        },
-      };
-    }
-
     const pid = acpProviderId(provider);
     if (provider.id === 'codex') {
       return {
@@ -2301,7 +1940,7 @@ await server.connect(new StdioServerTransport());
       };
     }
 
-    throw new Error(`execute_trace_ok only supports codex, opencode, or kilo providers (got ${provider.id})`);
+    throw new Error(`execute_trace_ok only supports the codex provider (got ${provider.id})`);
   },
 
   permission_surface_execute: (provider) => {
@@ -2410,130 +2049,6 @@ await server.connect(new StdioServerTransport());
     };
   },
 
-  execute_error_exit_2: (provider) => {
-    if (!isOpenCodeFamilyProvider(provider) && provider.id !== 'kilo') {
-      throw new Error(`execute_error_exit_2 only supports opencode-family or kilo providers (got ${provider.id})`);
-    }
-    const pid = acpProviderId(provider);
-    const maxTraceEvents = isOpenCodeFamilyProvider(provider)
-      ? { toolCalls: 2, toolResults: 2 }
-      : { toolCalls: 1, toolResults: 1 };
-    return {
-      id: 'execute_error_exit_2',
-      title: 'execute: echo TRACE_ERR && exit 2',
-      tier: 'smoke',
-      yolo: true,
-      // OpenCode may emit an additional `change_title` tool-call/tool-result alongside the single Bash call.
-      maxTraceEvents,
-      prompt: () =>
-        [
-          'Use the execute tool to run this exact command:',
-          'sh -lc "echo TRACE_ERR && exit 2"',
-          'Then reply DONE.',
-        ].join('\n'),
-      requiredFixtureKeys: [`acp/${pid}/tool-call/Bash`, `acp/${pid}/tool-result/Bash`],
-      requiredTraceSubstrings: ['TRACE_ERR'],
-      verify: async ({ fixtures }) => {
-        const results = (fixtures?.examples?.[`acp/${pid}/tool-result/Bash`] ?? []) as any[];
-        if (!Array.isArray(results) || results.length === 0) throw new Error('Missing execute tool-result fixtures');
-        const hasErr = results.some((e) => {
-          const out = e?.payload?.output;
-          const stdout = typeof out === 'string' ? out : typeof out?.stdout === 'string' ? out.stdout : null;
-          return hasStringSubstring(stdout, 'TRACE_ERR');
-        });
-        if (!hasErr) throw new Error('execute tool-result did not include TRACE_ERR');
-        const hasExit2 = results.some((e) => {
-          const out = e?.payload?.output;
-          const exit =
-            typeof out?.exit_code === 'number'
-              ? out.exit_code
-              : typeof out?.metadata?.exit === 'number'
-                ? out.metadata.exit
-                : null;
-          return exit === 2;
-        });
-        if (!hasExit2) throw new Error('execute tool-result did not include exit_code=2');
-      },
-    };
-  },
-
-  task_subagent_reply: (provider) => {
-    if (provider.id !== 'opencode' && provider.id !== 'opencode_server') {
-      throw new Error(`task_subagent_reply only supports OpenCode-family providers (got ${provider.id})`);
-    }
-    const pid = acpProviderId(provider);
-    const sidechainToolName = provider.id === 'opencode_server' ? 'Task' : 'SubAgent';
-    return {
-      id: 'task_subagent_reply',
-      title: 'subagent: returns a child session id in tool-result metadata',
-      tier: 'extended',
-      yolo: true,
-      // Some ACP providers emit a few "refresh" tool-call updates for the same callId; allow a small buffer.
-      // Also allow a small number of extra tool results in case the provider emits summary/metadata updates.
-      maxTraceEvents: { toolCalls: 25, toolResults: 4 },
-      // Sidechain import is asynchronous; wait for it while the CLI is still alive (pre-stop).
-      postSatisfy: { waitForAcpSidechainFromToolName: sidechainToolName, timeoutMs: 120_000 },
-      prompt: ({ workspaceDir }) =>
-        [
-          'Run exactly one tool call:',
-          '- Use the task tool (not execute) with this exact prompt:',
-          '  Respond with EXACTLY: SUBTASK_OK',
-          '- The subtask must not call any tools.',
-          '- Do not use any other tools.',
-          '- Then reply DONE.',
-          '',
-          `Note: current working directory is ${workspaceDir}`,
-        ].join('\n'),
-      requiredAnyFixtureKeys: [
-        [`acp/${pid}/tool-call/SubAgent`, `acp/${pid}/tool-call/change_title`],
-        [`acp/${pid}/tool-result/SubAgent`, `acp/${pid}/tool-result/change_title`],
-      ],
-      verify: async ({ fixtures, baseUrl, token, sessionId, secret }) => {
-        const results = (
-          ((fixtures?.examples?.[`acp/${pid}/tool-result/SubAgent`] ?? []) as any[])
-            .concat((fixtures?.examples?.[`acp/${pid}/tool-result/change_title`] ?? []) as any[])
-        );
-        if (!Array.isArray(results) || results.length === 0) throw new Error('Missing Task tool-result fixtures');
-        const hasChildSessionId = Array.isArray(results)
-          ? results.some((e) => typeof e?.payload?.output?.metadata?.sessionId === 'string' && e.payload.output.metadata.sessionId.length > 0)
-          : false;
-
-        const calls = (
-          ((fixtures?.examples?.[`acp/${pid}/tool-call/SubAgent`] ?? []) as any[])
-            .concat((fixtures?.examples?.[`acp/${pid}/tool-call/change_title`] ?? []) as any[])
-        );
-        const sidechainId =
-          (Array.isArray(calls) && calls.length > 0 && typeof calls[0]?.payload?.callId === 'string' ? calls[0].payload.callId : null) ??
-          (typeof results[0]?.payload?.callId === 'string' ? results[0].payload.callId : null);
-        if (!sidechainId) throw new Error('Missing Task callId (needed to assert sidechain import)');
-
-        // Sidechain import happens asynchronously after the Task tool-result surfaces the child session id.
-        const sidechain = await waitForAcpSidechainMessages({
-          baseUrl,
-          token,
-          sessionId,
-          secret,
-          sidechainId,
-          timeoutMs: 60_000,
-        });
-        if (sidechain.messages.length === 0) {
-          throw new Error('Expected at least one imported sidechain message, but none were found');
-        }
-        const hasImportedMeta = sidechain.messages.some((m) => m?.meta?.importedFrom === 'acp-sidechain');
-        if (!hasImportedMeta) {
-          throw new Error('Sidechain messages found, but none were tagged with meta.importedFrom="acp-sidechain"');
-        }
-        const hasExpectedReply = sidechain.messages.some((m) => hasStringSubstring(m, 'SUBTASK_OK'));
-        if (!hasExpectedReply) {
-          throw new Error('Expected imported sidechain to include SUBTASK_OK response');
-        }
-        if (!hasChildSessionId && sidechain.messages.length === 0) {
-          throw new Error('Task did not emit child session evidence in tool-result or imported sidechain messages');
-        }
-      },
-    };
-  },
-
   read_in_workspace: (provider) => {
     assertProviderId(provider, 'codex');
     return makeAcpReadInWorkspaceScenario({
@@ -2547,46 +2062,6 @@ await server.connect(new StdioServerTransport());
     const token = provider.id === 'codex' ? 'CODEX_SEARCH_OK' : 'SEARCH_TOKEN_XYZ';
     const scenario = makeAcpSearchKnownTokenScenario({ providerId: pid, token });
 
-    if (isOpenCodeFamilyProvider(provider)) {
-      return {
-        ...scenario,
-        verify: async ({ fixtures }) => {
-          const examples = fixtures?.examples;
-          if (!examples || typeof examples !== 'object') throw new Error('Invalid fixtures: missing examples');
-          const searchResults =
-            ((examples[`acp/${pid}/tool-result/CodeSearch`] ?? []) as any[])
-              .concat((examples[`acp/${pid}/tool-result/Search`] ?? []) as any[])
-              .concat((examples[`acp/${pid}/tool-result/Grep`] ?? []) as any[]);
-          if (searchResults.length > 0) {
-            const hasHappierSearch = searchResults.some((e) => e?.payload?.output?._happier?.rawToolName === 'search');
-            if (!hasHappierSearch) {
-              throw new Error('Expected OpenCode search normalization (_happier.rawToolName="search") on tool-result');
-            }
-            return;
-          }
-
-          const bashResults = ((examples[`acp/${pid}/tool-result/Bash`] ?? []) as any[]);
-          if (bashResults.length === 0) {
-            throw new Error('Missing search tool-result fixtures');
-          }
-
-          const hasTokenInBashOutput = bashResults.some((entry) => {
-            const output = entry?.payload?.output;
-            if (typeof output === 'string') return hasStringSubstring(output, token);
-            if (output && typeof output === 'object') {
-              const candidate = (output as { output?: unknown }).output;
-              return hasStringSubstring(candidate, token);
-            }
-            return false;
-          });
-
-          if (!hasTokenInBashOutput) {
-            throw new Error('Expected bash fallback output to include the search token');
-          }
-        },
-      };
-    }
-
     return scenario;
   },
 
@@ -2596,42 +2071,6 @@ await server.connect(new StdioServerTransport());
       providerId: acpProviderId(provider),
       filename: 'e2e-write.txt',
       content: 'CODEX_WRITE_OK',
-    });
-  },
-
-  write_in_workspace_opencode: (provider) => {
-    assertProviderId(provider, 'opencode');
-    return makeAcpWriteInWorkspaceScenario({
-      providerId: acpProviderId(provider),
-      filename: 'e2e-write.txt',
-      content: 'HELLO_E2E',
-    });
-  },
-
-  edit_write_file_and_cat: (provider) => {
-    if (!isOpenCodeFamilyProvider(provider) && provider.id !== 'kilo') {
-      throw new Error(`edit_write_file_and_cat only supports opencode-family or kilo providers (got ${provider.id})`);
-    }
-    return makeAcpWriteInWorkspaceScenario({
-      providerId: acpProviderId(provider),
-      id: 'edit_write_file_and_cat',
-      title: 'edit: write file and cat it',
-      filename: 'e2e-write.txt',
-      content: 'HELLO_E2E',
-    });
-  },
-
-  write_then_stream_markdown_table: (provider) => {
-    if (!isOpenCodeFamilyProvider(provider) && provider.id !== 'kilo') {
-      throw new Error(`write_then_stream_markdown_table only supports opencode-family or kilo providers (got ${provider.id})`);
-    }
-    return makeAcpWriteThenStreamMarkdownTableScenario({
-      providerId: acpProviderId(provider),
-      id: 'write_then_stream_markdown_table',
-      title: 'streaming: write then stream markdown table',
-      filename: 'e2e-stream-table.txt',
-      fileContent: 'STREAM_TABLE_FILE_E2E',
-      marker: 'STREAM_TABLE_E2E_OK',
     });
   },
 
@@ -2670,7 +2109,6 @@ await server.connect(new StdioServerTransport());
       filename: 'e2e-edit-diff.txt',
       before: provider.id === 'codex' ? 'CODEX_EDIT_DIFF_BEFORE_OK' : 'BEFORE_EDIT_DIFF_E2E',
       after: provider.id === 'codex' ? 'CODEX_EDIT_DIFF_AFTER_OK' : 'AFTER_EDIT_DIFF_E2E',
-      useAbsolutePath: provider.id === 'auggie',
     }),
 
   multi_file_edit_in_workspace: (provider) =>
@@ -2686,7 +2124,6 @@ await server.connect(new StdioServerTransport());
               { filename: 'e2e-multi-a.txt', content: 'MULTI_A_E2E' },
               { filename: 'e2e-multi-b.txt', content: 'MULTI_B_E2E' },
             ],
-      useAbsolutePath: provider.id === 'auggie',
     }),
 
   multi_file_edit_in_workspace_includes_diff: (provider) =>
@@ -2702,21 +2139,17 @@ await server.connect(new StdioServerTransport());
               { filename: 'e2e-multi-diff-a.txt', before: 'MULTI_DIFF_A_BEFORE', after: 'MULTI_DIFF_A_AFTER' },
               { filename: 'e2e-multi-diff-b.txt', before: 'MULTI_DIFF_B_BEFORE', after: 'MULTI_DIFF_B_AFTER' },
             ],
-      useAbsolutePath: provider.id === 'auggie',
     }),
 
   mcp_change_title: (provider) => {
     const pid = acpProviderId(provider);
-    const title = 'KILO_MCP_TITLE_E2E';
+    const title = 'MCP_CHANGE_TITLE_E2E';
     return {
       id: 'mcp_change_title',
       title: 'mcp: change_title via Happier MCP server',
       tier: 'extended',
       yolo: true,
-      // CodeBuddy resolves deferred MCP tools with a `ToolSearch` call before executing them.
-      maxTraceEvents: provider.id === 'codebuddy'
-        ? { toolCalls: 2, toolResults: 2, permissionRequests: 1 }
-        : { toolCalls: 1, toolResults: 1, permissionRequests: 1 },
+      maxTraceEvents: { toolCalls: 1, toolResults: 1, permissionRequests: 1 },
       prompt: ({ workspaceDir }) =>
         [
           'Run exactly one tool call:',
@@ -2733,156 +2166,6 @@ await server.connect(new StdioServerTransport());
       ],
       requiredTraceSubstrings: [title],
     };
-  },
-
-  glob_tool_list_files: (provider) => {
-    assertProviderId(provider, 'kilo');
-    const pid = acpProviderId(provider);
-    const filenames = ['e2e-glob-a.txt', 'e2e-glob-b.txt'];
-    const pattern = 'e2e-glob-*.txt';
-    return {
-      id: 'glob_tool_list_files',
-      title: 'glob: list matching files (Kilo uses search tool for glob)',
-      tier: 'extended',
-      yolo: true,
-      maxTraceEvents: { toolCalls: 1, toolResults: 1, permissionRequests: 1 },
-      setup: async ({ workspaceDir }) => {
-        await writeFile(join(workspaceDir, filenames[0]!), `GLOB_A_${randomUUID()}\n`, 'utf8');
-        await writeFile(join(workspaceDir, filenames[1]!), `GLOB_B_${randomUUID()}\n`, 'utf8');
-      },
-      prompt: ({ workspaceDir }) =>
-        [
-          'Run exactly one tool call:',
-          '- Use the search tool (not execute) to list matching file paths in the current working directory:',
-          `  Pattern: ${pattern}`,
-          '- Do not use any other tool.',
-          '- Then reply DONE.',
-          '',
-          `Note: current working directory is ${workspaceDir}`,
-        ].join('\n'),
-      requiredFixtureKeys: [`acp/${pid}/tool-call/CodeSearch`, `acp/${pid}/tool-result/CodeSearch`],
-      requiredTraceSubstrings: [...filenames],
-    };
-  },
-
-  ls_tool_list_files: (provider) => {
-    assertProviderId(provider, 'kilo');
-    const pid = acpProviderId(provider);
-    const filenames = ['e2e-ls-a.txt', 'e2e-ls-b.txt'];
-    return {
-      id: 'ls_tool_list_files',
-      title: 'ls: list_files tool lists directory entries',
-      tier: 'extended',
-      // Kilo does not always mark sessions active before the first prompt; avoid a YOLO-mode
-      // deadlock where the harness waits for session.active before enqueueing the prompt.
-      yolo: false,
-      maxTraceEvents: { toolCalls: 1, toolResults: 1, permissionRequests: 1 },
-      setup: async ({ workspaceDir }) => {
-        await writeFile(join(workspaceDir, filenames[0]!), `LS_A_${randomUUID()}\n`, 'utf8');
-        await writeFile(join(workspaceDir, filenames[1]!), `LS_B_${randomUUID()}\n`, 'utf8');
-      },
-      prompt: ({ workspaceDir }) =>
-        [
-          'Run exactly one tool call:',
-          '- Use the list_files tool (not execute) to list files in the current working directory.',
-          '- Do not use any other tool.',
-          '- Then reply DONE.',
-          '',
-          `Note: current working directory is ${workspaceDir}`,
-        ].join('\n'),
-      requiredFixtureKeys: [`acp/${pid}/tool-call/LS`, `acp/${pid}/tool-result/LS`],
-      requiredTraceSubstrings: [...filenames],
-    };
-  },
-
-  kilo_task_subagent_reply: (provider) => {
-    assertProviderId(provider, 'kilo');
-    const pid = acpProviderId(provider);
-    return {
-      id: 'kilo_task_subagent_reply',
-      title: 'task: Kilo Task tool returns child session id',
-      tier: 'extended',
-      yolo: true,
-      maxTraceEvents: { toolCalls: 25, toolResults: 4 },
-      prompt: ({ workspaceDir }) =>
-        [
-          'Run exactly one tool call:',
-          '- Use the task tool (not execute) with this exact prompt:',
-          '  Respond with EXACTLY: SUBTASK_OK',
-          '- The subtask must not call any tools.',
-          '- Do not use any other tools.',
-          '- Then reply DONE.',
-          '',
-          `Note: current working directory is ${workspaceDir}`,
-        ].join('\n'),
-      requiredAnyFixtureKeys: [
-        [`acp/${pid}/tool-call/SubAgent`, `acp/${pid}/tool-call/change_title`],
-        [`acp/${pid}/tool-result/SubAgent`, `acp/${pid}/tool-result/change_title`],
-      ],
-      requiredTraceSubstrings: ['SUBTASK_OK'],
-      verify: async ({ fixtures, baseUrl, token, sessionId, secret }) => {
-        const results = (
-          ((fixtures?.examples?.[`acp/${pid}/tool-result/SubAgent`] ?? []) as any[])
-            .concat((fixtures?.examples?.[`acp/${pid}/tool-result/change_title`] ?? []) as any[])
-        );
-        if (!Array.isArray(results) || results.length === 0) throw new Error('Missing task tool-result fixtures');
-        const hasChildSessionId = results.some(
-          (e) => typeof e?.payload?.output?.metadata?.sessionId === 'string' && e.payload.output.metadata.sessionId.length > 0,
-        );
-        if (!hasChildSessionId) throw new Error('task tool-result did not include metadata.sessionId (child session id)');
-      },
-    };
-  },
-
-  delete_file_in_workspace: (provider) => {
-    assertProviderId(provider, 'kilo');
-    const pid = acpProviderId(provider);
-    const filename = 'e2e-delete.txt';
-    const rmSnippet = `rm -f ${filename}`;
-    return {
-      id: 'delete_file_in_workspace',
-      title: 'delete: delete a workspace file (via execute)',
-      tier: 'extended',
-      // Kilo does not always mark sessions active before the first prompt; avoid a YOLO-mode
-      // deadlock where the harness waits for session.active before enqueueing the prompt.
-      yolo: false,
-      maxTraceEvents: { toolCalls: 8, toolResults: 2, permissionRequests: 1 },
-      setup: async ({ workspaceDir }) => {
-        await writeFile(join(workspaceDir, filename), `DELETE_SENTINEL_${randomUUID()}\n`, 'utf8');
-      },
-      prompt: ({ workspaceDir }) =>
-        [
-          'Run exactly one tool call:',
-          `- Use the execute tool to delete this file in the current working directory by running: ${rmSnippet}`,
-          '- Do not use any other tools.',
-          '- Then reply DONE.',
-          '',
-          `Note: current working directory is ${workspaceDir}`,
-        ].join('\n'),
-      requiredFixtureKeys: [`acp/${pid}/tool-call/Bash`, `acp/${pid}/tool-result/Bash`],
-      verify: async ({ fixtures, workspaceDir }) => {
-        const examples = fixtures?.examples;
-        if (!examples || typeof examples !== 'object') throw new Error('Invalid fixtures: missing examples');
-        const calls = (examples[`acp/${pid}/tool-call/Bash`] ?? []) as any[];
-        if (!Array.isArray(calls) || calls.length === 0) throw new Error('Missing execute tool-call fixtures');
-
-        const expectedCommand = rmSnippet;
-        const hasExpectedRm = calls.some((e) => hasStringSubstring(e?.payload?.input, expectedCommand));
-        if (!hasExpectedRm) throw new Error(`execute tool-call did not include expected command substring: ${expectedCommand}`);
-
-        if (existsSync(join(workspaceDir, filename))) {
-          throw new Error('Expected file to be deleted, but it still exists');
-        }
-      },
-    };
-  },
-
-  permission_deny_read_outside_workspace: (provider) => {
-    assertProviderId(provider, 'opencode');
-    return makeAcpPermissionDenyOutsideWorkspaceReadScenario({
-      providerId: acpProviderId(provider),
-      token: 'OUTSIDE_READ_DENIED_E2E',
-    });
   },
 
   acp_resume_load_session: (provider) =>
@@ -2911,7 +2194,3 @@ await server.connect(new StdioServerTransport());
           : 'resume: fresh session imports remote transcript history',
     })),
 };
-
-for (const [id, factory] of Object.entries(scenarioCatalog) as Array<[string, ScenarioFactory]>) {
-  scenarioCatalog[id] = (provider: ProviderUnderTest) => withKimiUnknownToolFixtureAliases(provider, factory(provider));
-}

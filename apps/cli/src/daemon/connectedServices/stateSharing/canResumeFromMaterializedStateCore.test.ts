@@ -11,7 +11,7 @@ describe('canResumeFromMaterializedStateCore', () => {
 
     await expect(canResumeFromMaterializedStateCore({
       targetMaterializedRoot: '/tmp/happier/materialized',
-      targetMaterializedEnv: { PI_CODING_AGENT_DIR: '/tmp/happier/materialized/pi' },
+      targetMaterializedEnv: { CODEX_HOME: '/tmp/happier/materialized/codex' },
       requestedStateMode: 'isolated',
       effectiveStateMode: 'isolated',
       materializationIdentity: { v: 1, id: 'csm_test' },
@@ -38,7 +38,7 @@ describe('canResumeFromMaterializedStateCore', () => {
 
     expect(verifyResumeReachable).toHaveBeenCalledWith({
       targetMaterializedRoot: '/tmp/happier/materialized',
-      targetMaterializedEnv: { PI_CODING_AGENT_DIR: '/tmp/happier/materialized/pi' },
+      targetMaterializedEnv: { CODEX_HOME: '/tmp/happier/materialized/codex' },
       vendorResumeId: 'provider-session-1',
       cwd: '/tmp/project',
       candidatePersistedSessionFile: null,

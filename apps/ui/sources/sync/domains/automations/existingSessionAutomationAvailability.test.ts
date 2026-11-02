@@ -89,32 +89,6 @@ describe('resolveExistingSessionAutomationAvailability', () => {
         });
     });
 
-    it('allows Pi sessions with a persisted resume id', () => {
-        expect(resolveExistingSessionAutomationAvailability({
-            sessionHydrated: true,
-            session: {
-                id: 's1',
-                encryptionMode: 'plain',
-                metadata: {
-                    machineId: 'm1',
-                    flavor: 'pi',
-                    piSessionId: 'pi-session-1',
-                },
-            },
-            machineIdOverride: 'm1',
-            sessionDekBase64: null,
-            accountSettings: {},
-        })).toEqual({
-            kind: 'ready',
-            machineId: 'm1',
-            eligibility: {
-                eligible: true,
-                agentId: 'pi',
-                strategy: 'vendor_resume',
-            },
-        });
-    });
-
     it('blocks encrypted sessions until the resume key is available', () => {
         expect(resolveExistingSessionAutomationAvailability({
             sessionHydrated: true,

@@ -11,7 +11,7 @@ describe('modelOptions i18n', () => {
 });
 
         const { getModelOptionsForAgentType } = await import('./modelOptions');
-        const options = getModelOptionsForAgentType('gemini');
+        const options = getModelOptionsForAgentType('codex');
         const defaultOption = options.find((opt) => opt.value === 'default');
 
         expect(defaultOption?.label).toBe('tx:agentInput.model.useCliSettings');

@@ -160,12 +160,12 @@ describe('SessionWorkStateV1', () => {
 
         const first = buildDeterministicSessionWorkStateItemId({
             kind: 'todo',
-            sourceFamily: 'opencode.todo',
+            sourceFamily: 'codex.todo',
             stableParts: ['Write tests', '0'],
         });
         const second = buildDeterministicSessionWorkStateItemId({
             kind: 'todo',
-            sourceFamily: 'opencode.todo',
+            sourceFamily: 'codex.todo',
             stableParts: ['Write tests', '0'],
         });
 

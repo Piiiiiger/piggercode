@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { normalizeCodexBackendMode, type CodexBackendMode } from '../providers/codex/backendMode.js';
-import { normalizeOpenCodeBackendMode } from '../providers/opencode/backendMode.js';
 
 type AgentRuntimeDescriptorProviderShape = Readonly<Record<string, unknown>>;
 
@@ -42,31 +41,7 @@ type CodexAgentRuntimeDescriptorProvider = Readonly<{
   }>;
 }>;
 
-type OpenCodeAgentRuntimeDescriptorProvider = Readonly<{
-  backendMode: 'server' | 'acp';
-  vendorSessionId?: string;
-  serverBaseUrl?: string;
-  serverBaseUrlExplicit?: true;
-  providerExtra?: Readonly<AgentRuntimeDescriptorProviderExtraV1 & {
-    runtimeHandle?: Readonly<{
-      backendMode?: 'server' | 'acp';
-      vendorSessionId?: string;
-      serverBaseUrl?: string;
-      serverBaseUrlExplicit?: true;
-      managedServerLaunchFingerprint?: string;
-    }>;
-  }>;
-}>;
-
-type PiAgentRuntimeDescriptorProvider = Readonly<{
-  resumeStrategy: 'sessionFileBySessionId' | 'sessionFileAbsolutePreferred';
-  vendorSessionId?: string;
-  sessionFile?: string;
-}>;
-
 export type CodexAgentRuntimeDescriptorV1 = AgentRuntimeDescriptorEnvelopeV1<'codex', CodexAgentRuntimeDescriptorProvider>;
-export type OpenCodeAgentRuntimeDescriptorV1 = AgentRuntimeDescriptorEnvelopeV1<'opencode', OpenCodeAgentRuntimeDescriptorProvider>;
-export type PiAgentRuntimeDescriptorV1 = AgentRuntimeDescriptorEnvelopeV1<'pi', PiAgentRuntimeDescriptorProvider>;
 export type AgentRuntimeDescriptorV1 = AgentRuntimeDescriptorEnvelopeV1;
 
 type CanonicalAgentRuntimeDescriptorByProviderId = {
@@ -80,20 +55,6 @@ type CanonicalAgentRuntimeDescriptorByProviderId = {
     connectedServiceGroupId: string | null;
     homePath: string | null;
     sqliteHomePath: string | null;
-  }>;
-  opencode: Readonly<{
-    providerId: 'opencode';
-    backendMode: 'server' | 'acp' | null;
-    vendorSessionId: string | null;
-    serverBaseUrl: string | null;
-    serverBaseUrlExplicit: boolean;
-    managedServerLaunchFingerprint: string | null;
-  }>;
-  pi: Readonly<{
-    providerId: 'pi';
-    resumeStrategy: 'sessionFileBySessionId' | 'sessionFileAbsolutePreferred' | null;
-    vendorSessionId: string | null;
-    sessionFile: string | null;
   }>;
 };
 
@@ -110,18 +71,6 @@ function normalizeTrimmedString(value: unknown): string | null {
 
 function normalizeCodexHome(value: unknown): CanonicalAgentRuntimeDescriptorByProviderId['codex']['home'] {
   return value === 'user' || value === 'connectedService' ? value : null;
-}
-
-function normalizeOpenCodeServerBaseUrlExplicit(value: unknown): boolean {
-  return value === true;
-}
-
-function normalizePiResumeStrategy(
-  value: unknown,
-): CanonicalAgentRuntimeDescriptorByProviderId['pi']['resumeStrategy'] {
-  return value === 'sessionFileBySessionId' || value === 'sessionFileAbsolutePreferred'
-    ? value
-    : null;
 }
 
 function readCanonicalCodexProviderExtra(value: unknown) {
@@ -145,23 +94,6 @@ function readCanonicalCodexProviderExtra(value: unknown) {
       : null,
     homePath: normalizeTrimmedString(runtimeAffinity.homePath),
     sqliteHomePath: normalizeTrimmedString(runtimeAffinity.sqliteHomePath),
-  };
-}
-
-function readCanonicalOpenCodeProviderExtra(value: unknown) {
-  const extra = asRecord(value);
-  if (!extra || extra.v !== 1) return null;
-
-  const runtimeHandle = asRecord(extra.runtimeHandle);
-  if (!runtimeHandle) return null;
-
-  return {
-    backendMode: normalizeOpenCodeBackendMode(runtimeHandle.backendMode),
-    vendorSessionId: normalizeTrimmedString(runtimeHandle.vendorSessionId),
-    serverBaseUrl: normalizeTrimmedString(runtimeHandle.serverBaseUrl),
-    serverBaseUrlExplicit: normalizeOpenCodeServerBaseUrlExplicit(runtimeHandle.serverBaseUrlExplicit),
-    managedServerLaunchFingerprint: runtimeHandle.managedServerLaunchFingerprint == null ? null
-      : typeof runtimeHandle.managedServerLaunchFingerprint === 'string' ? runtimeHandle.managedServerLaunchFingerprint.trim() : '',
   };
 }
 
@@ -254,64 +186,12 @@ export function buildCodexAgentRuntimeDescriptorV1(params: Readonly<{
   };
 }
 
-export function buildOpenCodeAgentRuntimeDescriptorV1(params: Readonly<{
-  backendMode: 'server' | 'acp';
-  vendorSessionId?: string | null;
-  serverBaseUrl?: string | null;
-  serverBaseUrlExplicit?: boolean;
-  managedServerLaunchFingerprint?: string | null;
-}>): OpenCodeAgentRuntimeDescriptorV1 {
-  const providerExtraRuntimeHandle = {
-    backendMode: params.backendMode,
-    ...(params.vendorSessionId ? { vendorSessionId: params.vendorSessionId } : {}),
-    ...(params.serverBaseUrl ? { serverBaseUrl: params.serverBaseUrl } : {}),
-    ...(params.serverBaseUrlExplicit ? { serverBaseUrlExplicit: true } : {}),
-    ...(params.backendMode === 'server' && !params.serverBaseUrlExplicit && params.managedServerLaunchFingerprint
-      ? { managedServerLaunchFingerprint: params.managedServerLaunchFingerprint } : {}),
-  } satisfies NonNullable<NonNullable<OpenCodeAgentRuntimeDescriptorProvider['providerExtra']>['runtimeHandle']>;
-
-  return {
-    v: 1,
-    providerId: 'opencode',
-    provider: {
-      backendMode: params.backendMode,
-      ...(params.vendorSessionId ? { vendorSessionId: params.vendorSessionId } : {}),
-      ...(params.serverBaseUrl ? { serverBaseUrl: params.serverBaseUrl } : {}),
-      ...(params.serverBaseUrlExplicit ? { serverBaseUrlExplicit: true } : {}),
-      providerExtra: {
-        owner: 'opencode',
-        schemaId: 'opencode.agentRuntimeDescriptorExtra',
-        v: 1,
-        runtimeHandle: providerExtraRuntimeHandle,
-      },
-    },
-  };
-}
-
-export function buildPiAgentRuntimeDescriptorV1(params: Readonly<{
-  resumeStrategy: 'sessionFileBySessionId' | 'sessionFileAbsolutePreferred';
-  vendorSessionId?: string | null;
-  sessionFile?: string | null;
-}>): PiAgentRuntimeDescriptorV1 {
-  return {
-    v: 1,
-    providerId: 'pi',
-    provider: {
-      resumeStrategy: params.resumeStrategy,
-      ...(params.vendorSessionId ? { vendorSessionId: params.vendorSessionId } : {}),
-      ...(params.sessionFile ? { sessionFile: params.sessionFile } : {}),
-    },
-  };
-}
-
 export function readAgentRuntimeDescriptorV1(value: unknown): AgentRuntimeDescriptorV1 | null {
   const parsed = AgentRuntimeDescriptorV1Schema.safeParse(value);
   return parsed.success ? parsed.data : null;
 }
 
 export function readAgentRuntimeDescriptorV1ForProvider(value: unknown, providerId: 'codex'): CodexAgentRuntimeDescriptorV1 | null;
-export function readAgentRuntimeDescriptorV1ForProvider(value: unknown, providerId: 'opencode'): OpenCodeAgentRuntimeDescriptorV1 | null;
-export function readAgentRuntimeDescriptorV1ForProvider(value: unknown, providerId: 'pi'): PiAgentRuntimeDescriptorV1 | null;
 export function readAgentRuntimeDescriptorV1ForProvider<TProviderId extends string>(
   value: unknown,
   providerId: TProviderId,
@@ -330,59 +210,26 @@ export function readCanonicalAgentRuntimeDescriptorV1ForProvider(
 ): CanonicalAgentRuntimeDescriptorByProviderId['codex'] | null;
 export function readCanonicalAgentRuntimeDescriptorV1ForProvider(
   value: unknown,
-  providerId: 'opencode',
-): CanonicalAgentRuntimeDescriptorByProviderId['opencode'] | null;
-export function readCanonicalAgentRuntimeDescriptorV1ForProvider(
-  value: unknown,
-  providerId: 'pi',
-): CanonicalAgentRuntimeDescriptorByProviderId['pi'] | null;
-export function readCanonicalAgentRuntimeDescriptorV1ForProvider(
-  value: unknown,
-  providerId: 'codex' | 'opencode' | 'pi',
+  providerId: 'codex',
 ) {
-  switch (providerId) {
-    case 'codex': {
-      const descriptor = readAgentRuntimeDescriptorV1ForProvider(value, 'codex');
-      if (!descriptor) return null;
-      const providerExtra = readCanonicalCodexProviderExtra(descriptor.provider.providerExtra);
-      const home = providerExtra?.home ?? normalizeCodexHome(descriptor.provider.home);
-      return {
-        providerId: 'codex' as const,
-        backendMode: providerExtra?.backendMode ?? normalizeCodexBackendMode(descriptor.provider.backendMode),
-        vendorSessionId: providerExtra?.vendorSessionId ?? normalizeTrimmedString(descriptor.provider.vendorSessionId),
-        home,
-        connectedServiceId: providerExtra?.connectedServiceId
-          ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceId) : null),
-        connectedServiceProfileId: providerExtra?.connectedServiceProfileId
-          ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceProfileId) : null),
-        connectedServiceGroupId: providerExtra?.connectedServiceGroupId
-          ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceGroupId) : null),
-        homePath: providerExtra?.homePath ?? normalizeTrimmedString(descriptor.provider.homePath),
-        sqliteHomePath: providerExtra?.sqliteHomePath ?? normalizeTrimmedString(descriptor.provider.sqliteHomePath),
-      };
-    }
-    case 'opencode': {
-      const descriptor = readAgentRuntimeDescriptorV1ForProvider(value, 'opencode');
-      if (!descriptor) return null;
-      const providerExtra = readCanonicalOpenCodeProviderExtra(descriptor.provider.providerExtra);
-      return {
-        providerId: 'opencode' as const,
-        backendMode: providerExtra?.backendMode ?? normalizeOpenCodeBackendMode(descriptor.provider.backendMode),
-        vendorSessionId: providerExtra?.vendorSessionId ?? normalizeTrimmedString(descriptor.provider.vendorSessionId),
-        serverBaseUrl: providerExtra?.serverBaseUrl ?? normalizeTrimmedString(descriptor.provider.serverBaseUrl),
-        serverBaseUrlExplicit: providerExtra?.serverBaseUrlExplicit ?? normalizeOpenCodeServerBaseUrlExplicit(descriptor.provider.serverBaseUrlExplicit),
-        managedServerLaunchFingerprint: providerExtra?.managedServerLaunchFingerprint ?? null,
-      };
-    }
-    case 'pi': {
-      const descriptor = readAgentRuntimeDescriptorV1ForProvider(value, 'pi');
-      if (!descriptor) return null;
-      return {
-        providerId: 'pi' as const,
-        resumeStrategy: normalizePiResumeStrategy(descriptor.provider.resumeStrategy),
-        vendorSessionId: normalizeTrimmedString(descriptor.provider.vendorSessionId),
-        sessionFile: normalizeTrimmedString(descriptor.provider.sessionFile),
-      };
-    }
-  }
+  void providerId;
+  const descriptor = readAgentRuntimeDescriptorV1ForProvider(value, 'codex');
+  if (!descriptor) return null;
+  const providerExtra = readCanonicalCodexProviderExtra(descriptor.provider.providerExtra);
+  const home = providerExtra?.home ?? normalizeCodexHome(descriptor.provider.home);
+  return {
+    providerId: 'codex' as const,
+    backendMode: providerExtra?.backendMode ?? normalizeCodexBackendMode(descriptor.provider.backendMode),
+    vendorSessionId: providerExtra?.vendorSessionId ?? normalizeTrimmedString(descriptor.provider.vendorSessionId),
+    home,
+    connectedServiceId: providerExtra?.connectedServiceId
+      ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceId) : null),
+    connectedServiceProfileId: providerExtra?.connectedServiceProfileId
+      ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceProfileId) : null),
+    connectedServiceGroupId: providerExtra?.connectedServiceGroupId
+      ?? (home === 'connectedService' ? normalizeTrimmedString(descriptor.provider.connectedServiceGroupId) : null),
+    homePath: providerExtra?.homePath ?? normalizeTrimmedString(descriptor.provider.homePath),
+    sqliteHomePath: providerExtra?.sqliteHomePath ?? normalizeTrimmedString(descriptor.provider.sqliteHomePath),
+  };
 }
+

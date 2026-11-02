@@ -55,47 +55,31 @@ function resolveBackendCatalogItemsForVoiceTool(params: Readonly<{
 }> {
   const state = storage.getState();
   const backendEnabledByTargetKey = state.settings?.backendEnabledByTargetKey ?? null;
-  const acpCatalogSettingsV1 = state.settings?.acpCatalogSettingsV1 ?? { v: 2, backends: [] };
   const enabledBuiltInAgentIds = params.includeDisabled
     ? AGENT_IDS.filter(isAgentOffered)
     : AGENT_IDS.filter((agentId) => isAgentEnabled({ agentId, backendEnabledByTargetKey }));
 
   return getResolvedBackendCatalogEntries({
     enabledAgentIds: enabledBuiltInAgentIds,
-    acpCatalogSettingsV1,
     backendEnabledByTargetKey: params.includeDisabled ? undefined : backendEnabledByTargetKey,
   })
     .map((entry) => {
       const enabled = backendEnabledByTargetKey?.[entry.targetKey] !== false;
       if (!params.includeDisabled && !enabled) return null;
 
-      if (entry.builtInAgentId) {
-        const core = getAgentCore(entry.builtInAgentId);
-        return {
-          targetKey: entry.targetKey,
-          label: entry.title || titleCaseId(entry.builtInAgentId),
-          subtitle: entry.subtitle,
-          enabled,
-          agentId: entry.builtInAgentId,
-          experimental: core.availability.experimental === true,
-          uiConnectedService: core.uiConnectedService,
-          flavorAliases: core.flavorAliases,
-          supportsModelSelection: core.model.supportsSelection === true,
-          supportsFreeformModels: core.model.supportsFreeform === true,
-        };
-      }
-
+      if (!entry.builtInAgentId) return null;
+      const core = getAgentCore(entry.builtInAgentId);
       return {
         targetKey: entry.targetKey,
-        label: entry.title,
+        label: entry.title || titleCaseId(entry.builtInAgentId),
         subtitle: entry.subtitle,
         enabled,
-        agentId: 'customAcp',
-        experimental: false,
-        uiConnectedService: null,
-        flavorAliases: [],
-        supportsModelSelection: true,
-        supportsFreeformModels: true,
+        agentId: entry.builtInAgentId,
+        experimental: core.availability.experimental === true,
+        uiConnectedService: core.uiConnectedService,
+        flavorAliases: core.flavorAliases,
+        supportsModelSelection: core.model.supportsSelection === true,
+        supportsFreeformModels: core.model.supportsFreeform === true,
       };
     })
     .filter(Boolean) as Array<{
@@ -141,17 +125,11 @@ export async function listAgentModelsForVoiceTool(params: Readonly<{
     }
   }
   const agentIdRaw = normalizeId(params.agentId)
-    || (backendTarget?.kind === 'builtInAgent' ? backendTarget.agentId : backendTarget?.kind === 'configuredAcpBackend' ? 'customAcp' : '');
+    || (backendTarget ? backendTarget.agentId : '');
   if (!agentIdRaw || !isAgentId(agentIdRaw)) {
     return { ok: false, errorCode: 'unknown_agent', errorMessage: 'unknown_agent', agentId: agentIdRaw };
   }
-  if (backendTarget && backendTarget.kind === 'builtInAgent' && agentIdRaw !== backendTarget.agentId) {
-    return { ok: false, errorCode: 'invalid_parameters', errorMessage: 'invalid_parameters', agentId: agentIdRaw };
-  }
-  if (backendTarget && backendTarget.kind === 'configuredAcpBackend' && agentIdRaw !== 'customAcp') {
-    return { ok: false, errorCode: 'invalid_parameters', errorMessage: 'invalid_parameters', agentId: agentIdRaw };
-  }
-  if (agentIdRaw === 'customAcp' && !backendTarget) {
+  if (backendTarget && agentIdRaw !== backendTarget.agentId) {
     return { ok: false, errorCode: 'invalid_parameters', errorMessage: 'invalid_parameters', agentId: agentIdRaw };
   }
   const agentId = agentIdRaw as AgentId;

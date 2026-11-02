@@ -100,12 +100,12 @@ describe('AcpBackend subprocess stderr artifacts', () => {
         });
 
         const backend = new AcpBackend({
-          agentName: 'kimi',
+          agentName: 'codex',
           cwd: dir,
           command: process.execPath,
           args: [scriptPath],
           transportHandler: createAcpTestTransportHandler({
-            agentName: 'kimi',
+            agentName: 'codex',
             initTimeoutMs: 1_000,
           }),
         });

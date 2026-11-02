@@ -475,7 +475,7 @@ describe('useSessionSubagents', () => {
                     _happier: {
                         v: 2,
                         protocol: 'acp',
-                        provider: 'cursor',
+                        provider: 'codex',
                         rawToolName: 'Task',
                         canonicalToolName: 'SubAgent',
                         nativeSubagent: {
@@ -497,7 +497,7 @@ describe('useSessionSubagents', () => {
                 sessionId: 'session-1',
                 session: {
                     id: 'session-1',
-                    metadata: { flavor: 'cursor' },
+                    metadata: { flavor: 'codex' },
                 } as any,
                 messages,
                 directSessionRuntime: directSessionRuntimeState,

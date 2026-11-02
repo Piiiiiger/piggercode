@@ -807,7 +807,7 @@ export class ApiClient {
    * Register a vendor API token with the server
    * The token is sent as a JSON string - server handles encryption
    */
-  async registerVendorToken(vendor: 'openai' | 'anthropic' | 'gemini', apiKey: any): Promise<void> {
+  async registerVendorToken(vendor: 'openai' | 'anthropic', apiKey: any): Promise<void> {
     const serverUrl = resolveServerHttpBaseUrl();
     try {
       const response = await axios.post(

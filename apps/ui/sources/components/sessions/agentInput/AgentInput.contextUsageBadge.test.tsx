@@ -134,7 +134,7 @@ vi.mock('@/agents/catalog/catalog', () => ({
     getAgentIconSvgXml: () => null,
     getAgentIconSource: () => null,
     getAgentIconTintColor: () => undefined,
-    AGENT_IDS: ['codex', 'claude', 'opencode', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'codex',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({
@@ -144,7 +144,7 @@ vi.mock('@/agents/catalog/catalog', () => ({
     }),
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
 }));
@@ -768,33 +768,4 @@ describe('AgentInput (context usage badge)', () => {
         act(() => screen.tree.unmount());
     });
 
-    it('does not render a context usage badge for providers without context support', async () => {
-        captured.last = null;
-        const { AgentInput } = await import('./AgentInput');
-
-        const screen = await renderScreen(
-            <AgentInput
-                value=""
-                placeholder="Type"
-                onChangeText={() => {}}
-                onSend={() => {}}
-                autocompleteKinds={[]}
-                autocompleteSuggestions={async () => []}
-                agentType={"gemini" as any}
-                onAgentClick={() => {}}
-                usageData={{
-                    inputTokens: 120,
-                    outputTokens: 40,
-                    cacheCreation: 0,
-                    cacheRead: 0,
-                    contextSize: 120,
-                }}
-                alwaysShowContextSize={true}
-            />,
-        );
-
-        expect(screen.findByTestId('agent-input-context-usage-badge')).toBeNull();
-
-        act(() => screen.tree.unmount());
-    });
 });

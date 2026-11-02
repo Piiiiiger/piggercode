@@ -103,8 +103,6 @@ Your account lives on the relay you choose, so this is settled before sign-in.
 async function listInstalledAgentIds(): Promise<AgentId[]> {
     const installed: AgentId[] = [];
     for (const agentId of AGENT_IDS) {
-        // `customAcp` is a family, not an installable CLI.
-        if (agentId === 'customAcp') continue;
         try {
             if (resolveProviderCliCommand(agentId, {})) installed.push(agentId);
         } catch {

@@ -153,8 +153,6 @@ export {
   BUILT_IN_ACP_CONFIG,
   getBuiltInAcpConfig,
   hasBuiltInAcpConfig,
-  isBuiltInAcpSessionListingDeclared,
-  isAcpSessionListingDeclared,
   type BuiltInAcpConfig,
   type BuiltInAcpTransportProfile,
   type BuiltInAcpYesNoAuto,
@@ -162,7 +160,6 @@ export {
 export {
   buildBackendTargetKey,
   isBuiltInAgentTarget,
-  isConfiguredAcpBackendTarget,
   type BackendTargetKey,
   type BackendTargetKind,
   type BackendTargetRefV1,
@@ -183,7 +180,6 @@ export {
 export {
   CLAUDE_UNIFIED_TERMINAL_HOSTS,
   CLAUDE_UNIFIED_TERMINAL_RESUME_CHOICES,
-  KIMI_PROVIDER_FIELDS,
   type ClaudeUnifiedTerminalHost,
   type ClaudeUnifiedTerminalResumeChoice,
   type ClaudeUnifiedTerminalWorkspaceTrust,
@@ -282,24 +278,6 @@ export {
   OPENAI_CODEX_OAUTH_SCOPES,
   OPENAI_CODEX_OAUTH_TOKEN_URL,
 } from './providers/codex/oauth.js';
-export {
-  GEMINI_CLI_OAUTH_AUTHORIZE_URL,
-  GEMINI_CLI_OAUTH_CALLBACK_URL,
-  GEMINI_CLI_OAUTH_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET,
-  GEMINI_CLI_OAUTH_SCOPES,
-  GEMINI_CLI_OAUTH_TOKEN_URL,
-} from './providers/gemini/oauth.js';
-export {
-  AGY_OAUTH_AUTHORIZE_URL,
-  AGY_OAUTH_CALLBACK_URL,
-  AGY_OAUTH_CLIENT_ID,
-  AGY_OAUTH_ALLOW_RAW_AUTHORIZATION_CODE,
-  AGY_OAUTH_CLIENT_SECRET,
-  AGY_OAUTH_SCOPES,
-  AGY_OAUTH_TOKEN_URL,
-  AGY_OAUTH_USERINFO_URL,
-} from './providers/agy/oauth.js';
 
 export { computeMonotonicUpdatedAt, type MonotonicUpdatedAtPolicy } from './sessionControls/monotonic.js';
 export {
@@ -324,23 +302,10 @@ export {
 } from './sessionControls/codexRuntimeDescriptorExtra.js';
 export {
   buildCodexAgentRuntimeDescriptor,
-  buildOpenCodeAgentRuntimeDescriptor,
   readSessionMetadataRuntimeDescriptor,
   type SessionMetadataConnectedServiceBinding,
 } from './sessionControls/agentRuntimeDescriptor.js';
 export { readSessionMetadataConnectedServiceBindings } from './providers/readSessionMetadataConnectedServiceBindings.js';
-export {
-  readOpenCodeSessionAffinityFromMetadata,
-  readOpenCodeSessionRuntimeHandleFromMetadata,
-  type OpenCodeSessionAffinity,
-  type OpenCodeSessionRuntimeHandle,
-} from './sessionControls/opencodeSessionRuntimeHandle.js';
-export {
-  buildOpenCodeRuntimeDescriptorProviderExtra,
-  readOpenCodeRuntimeDescriptorProviderExtra,
-  type OpenCodeRuntimeDescriptorProviderExtra,
-  type OpenCodeRuntimeDescriptorProviderExtraRuntimeHandle,
-} from './sessionControls/opencodeRuntimeDescriptorExtra.js';
 export {
   applyAgentRuntimeKindOverrideToAccountSettings,
   normalizeAgentRuntimeKindOverride,
@@ -348,7 +313,6 @@ export {
   resolveAgentRuntimeControlSurfaceForSession,
   resolveAgentRuntimeKindForSession,
   resolveCodexSessionBackendMode,
-  resolveOpenCodeSessionBackendMode,
 } from './sessionControls/providerSessionBackends.js';
 export {
   parseSessionAppliedModelMetadataStateV1,
@@ -398,8 +362,6 @@ export {
 } from './sessionControls/vendorResumePolicy.js';
 export {
   evaluateExistingSessionAutomationEligibility,
-  resolveConfiguredAcpSessionResume,
-  type ConfiguredAcpSessionResumeResolution,
   type ExistingSessionAutomationEligibility,
   type ExistingSessionAutomationEligibilityReasonCode,
 } from './sessionControls/existingSessionAutomationPolicy.js';

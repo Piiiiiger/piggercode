@@ -28,13 +28,4 @@ describe('providers harness: model startup args', () => {
     expect(args).toEqual(['--model', 'global-default', '--model-updated-at', '1700000000001']);
   });
 
-  it('returns no args when no model override is configured', () => {
-    const args = resolveProviderModelCliArgs({
-      providerId: 'gemini',
-      env: {},
-      nowMs: () => 1700000000002,
-    });
-
-    expect(args).toEqual([]);
-  });
 });

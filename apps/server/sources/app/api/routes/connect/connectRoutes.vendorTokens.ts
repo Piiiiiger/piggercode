@@ -24,7 +24,7 @@ export function connectVendorTokenRoutes(app: Fastify) {
         preHandler: app.authenticate,
         schema: {
             body: z.object({ token: z.string().min(1).max(maxTokenLen) }),
-            params: z.object({ vendor: z.enum(["openai", "anthropic", "gemini"]) }),
+            params: z.object({ vendor: z.enum(["openai", "anthropic"]) }),
             response: {
                 200: z.object({ success: z.literal(true) }),
                 409: z.object({ error: z.literal("connect_credential_conflict") }),
@@ -48,7 +48,7 @@ export function connectVendorTokenRoutes(app: Fastify) {
     app.get("/v1/connect/:vendor/token", {
         preHandler: app.authenticate,
         schema: {
-            params: z.object({ vendor: z.enum(["openai", "anthropic", "gemini"]) }),
+            params: z.object({ vendor: z.enum(["openai", "anthropic"]) }),
             response: { 200: z.object({ hasToken: z.boolean() }) },
         },
     }, async (request, reply) => {
@@ -63,7 +63,7 @@ export function connectVendorTokenRoutes(app: Fastify) {
     app.delete("/v1/connect/:vendor", {
         preHandler: app.authenticate,
         schema: {
-            params: z.object({ vendor: z.enum(["openai", "anthropic", "gemini"]) }),
+            params: z.object({ vendor: z.enum(["openai", "anthropic"]) }),
             response: {
                 200: z.object({ success: z.literal(true) }),
                 409: z.object({ error: z.literal("connect_credential_conflict") }),
@@ -89,7 +89,7 @@ export function connectVendorTokenRoutes(app: Fastify) {
                 200: z.object({
                     tokens: z.array(
                         z.object({
-                            vendor: z.enum(["openai", "anthropic", "gemini"]),
+                            vendor: z.enum(["openai", "anthropic"]),
                             hasToken: z.boolean(),
                         }),
                     ),
@@ -99,14 +99,14 @@ export function connectVendorTokenRoutes(app: Fastify) {
     }, async (request, reply) => {
         const userId = request.userId;
         const tokens = await db.serviceAccountToken.findMany({
-            where: { accountId: userId, profileId: "default", vendor: { in: ["openai", "anthropic", "gemini"] } },
+            where: { accountId: userId, profileId: "default", vendor: { in: ["openai", "anthropic"] } },
             select: { vendor: true },
         });
         return reply.send({
             tokens: tokens.flatMap((t) => {
                 const vendor = t.vendor;
-                if (vendor !== "openai" && vendor !== "anthropic" && vendor !== "gemini") return [];
-                return [{ vendor, hasToken: true } satisfies { vendor: "openai" | "anthropic" | "gemini"; hasToken: true }];
+                if (vendor !== "openai" && vendor !== "anthropic") return [];
+                return [{ vendor, hasToken: true } satisfies { vendor: "openai" | "anthropic"; hasToken: true }];
             }),
         });
     });

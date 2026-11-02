@@ -87,7 +87,7 @@ describe('isModelMode', () => {
     it('returns true for non-empty strings', () => {
         expect(isModelMode('default')).toBe(true);
         expect(isModelMode('adaptiveUsage')).toBe(true);
-        expect(isModelMode('gemini-2.5-pro')).toBe(true);
+        expect(isModelMode('gpt-5.5')).toBe(true);
         expect(isModelMode('bogus')).toBe(true);
     });
 

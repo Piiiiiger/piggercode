@@ -16,8 +16,6 @@ const TOOL_SCRIPTS = {
   reviewPR: 'scripts/review_pr.mjs',
 
   import: 'scripts/import.mjs',
-  review: 'scripts/review.mjs',
-  edison: 'scripts/edison.mjs',
   'profile-processes': 'scripts/profile_processes.mjs',
   profileprocesses: 'scripts/profile_processes.mjs',
   profileProcesses: 'scripts/profile_processes.mjs',
@@ -49,14 +47,12 @@ async function main() {
   if (wantsHelp(argv, { flags }) || !cmd || cmd === 'help') {
     printResult({
       json,
-      data: { commands: ['setup-pr', 'review-pr', 'import', 'review', 'edison', 'profile-processes', 'profile-mobile-scenario'] },
+      data: { commands: ['setup-pr', 'review-pr', 'import', 'profile-processes', 'profile-mobile-scenario'] },
       text: [
         '[tools] usage:',
         '  hstack tools setup-pr --repo=<pr-url|number> [--dev|--start] [--json] [-- ...]',
         '  hstack tools review-pr --repo=<pr-url|number> [--dev|--start] [--json] [-- ...]',
         '  hstack tools import [--json]',
-        '  hstack tools review [ui|cli|server|all] [--json]',
-        '  hstack tools edison [--stack=<name>] -- <edison args...>',
         '  hstack tools profile-processes --pid=<pid>|--command-match=<unique substring> [--duration=30s] [--interval=1s] [--stack-sample=10s] [--memory-map] [--json]',
         '  hstack tools profile-mobile-scenario --scenario=<name> --udid=<ios-udid> [--execute-flow] [--profile-process] [--json]',
       ].join('\n'),

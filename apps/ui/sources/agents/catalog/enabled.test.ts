@@ -18,51 +18,17 @@ describe('agents/enabled', () => {
         }
     });
 
-    it('disables agents only when explicitly set to false', () => {
-        const cases = [
-            {
-                agentId: 'gemini' as const,
-                backendEnabledByTargetKey: { [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: false } as Record<string, boolean>,
-                expected: false,
-            },
-            {
-                agentId: 'gemini' as const,
-                backendEnabledByTargetKey: { [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: true } as Record<string, boolean>,
-                expected: true,
-            },
-            {
-                agentId: 'auggie' as const,
-                backendEnabledByTargetKey: { [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'auggie' })]: false } as Record<string, boolean>,
-                expected: false,
-            },
-            {
-                agentId: 'auggie' as const,
-                backendEnabledByTargetKey: { [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'auggie' })]: true } as Record<string, boolean>,
-                expected: true,
-            },
-        ];
-        for (const testCase of cases) {
-            expect(
-                isAgentEnabled({
-                    agentId: testCase.agentId,
-                    backendEnabledByTargetKey: testCase.backendEnabledByTargetKey,
-                }),
-            ).toBe(testCase.expected);
-        }
-    });
-
     it('returns enabled agent ids in display order', () => {
-        expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex', 'opencode', 'gemini', 'auggie', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'fx', 'droid', 'codebuddy', 'agy']);
+        expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex']);
         expect(getEnabledAgentIds({
             backendEnabledByTargetKey: {
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: false,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'auggie' })]: false,
+                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: false,
             },
-        })).toEqual(['claude', 'codex', 'opencode', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'fx', 'droid', 'codebuddy', 'agy']);
+        })).toEqual(['claude']);
     });
 
     it('ignores unknown backend ids in the toggle map', () => {
-        expect(getEnabledAgentIds({ backendEnabledByTargetKey: { unknownAgent: false } })).toEqual(['claude', 'codex', 'opencode', 'gemini', 'auggie', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'fx', 'droid', 'codebuddy', 'agy']);
+        expect(getEnabledAgentIds({ backendEnabledByTargetKey: { unknownAgent: false } })).toEqual(['claude', 'codex']);
     });
 
     describe('agents the build offers', () => {
@@ -71,12 +37,12 @@ describe('agents/enabled', () => {
         });
 
         it('offers only the agents the build names, in catalog order', () => {
-            setBuildAgentIds(['codex', 'claude', 'notAnAgent']);
+            setBuildAgentIds(['claude', 'notAnAgent']);
 
             expect(isAgentOffered('claude')).toBe(true);
-            expect(isAgentOffered('gemini')).toBe(false);
-            expect(isAgentEnabled({ agentId: 'gemini', backendEnabledByTargetKey: {} })).toBe(false);
-            expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex']);
+            expect(isAgentOffered('codex')).toBe(false);
+            expect(isAgentEnabled({ agentId: 'codex', backendEnabledByTargetKey: {} })).toBe(false);
+            expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude']);
         });
 
         it('still lets the user switch an offered agent off', () => {
@@ -90,7 +56,7 @@ describe('agents/enabled', () => {
         it('offers every agent when the build names no known agent', () => {
             setBuildAgentIds(['notAnAgent']);
 
-            expect(isAgentOffered('gemini')).toBe(true);
+            expect(isAgentOffered('codex')).toBe(true);
             expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual([...AGENT_IDS]);
         });
     });

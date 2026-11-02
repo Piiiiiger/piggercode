@@ -29,9 +29,9 @@ describe('provider assertions: durable tool-call multiplicity', () => {
 
   it('reads the real decrypted ACP envelope used by durable session rows', () => {
     const messages = [
-      { content: { type: 'acp', provider: 'cursor', data: { type: 'tool-call', callId: 'call-1', name: 'Edit' } } },
-      { content: { type: 'acp', provider: 'cursor', data: { type: 'tool-call', callId: 'call-1', name: 'Edit' } } },
-      { content: { type: 'acp', provider: 'cursor', data: { type: 'tool-result', callId: 'call-1' } } },
+      { content: { type: 'acp', provider: 'codex', data: { type: 'tool-call', callId: 'call-1', name: 'Edit' } } },
+      { content: { type: 'acp', provider: 'codex', data: { type: 'tool-call', callId: 'call-1', name: 'Edit' } } },
+      { content: { type: 'acp', provider: 'codex', data: { type: 'tool-result', callId: 'call-1' } } },
     ];
 
     expect(summarizeDurableToolRows(messages)).toMatchObject({

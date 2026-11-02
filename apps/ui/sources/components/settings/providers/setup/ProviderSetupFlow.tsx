@@ -31,7 +31,7 @@ import { useProviderCliInstallQueue, type ProviderCliInstallStatus } from './use
 import { Icon } from '@/components/ui/icons/Icon';
 
 function listDefaultProviderIds(): AgentId[] {
-    return AGENT_IDS.filter((agentId) => agentId !== 'customAcp' && isAgentOffered(agentId));
+    return AGENT_IDS.filter((agentId) => isAgentOffered(agentId));
 }
 
 function resolveProviderStepState(params: Readonly<{

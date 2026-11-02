@@ -269,7 +269,7 @@ describe('happier session run list (integration)', () => {
       callId: 'call_marker_visible',
       sidechainId: 'call_marker_visible',
       intent: 'delegate',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'workspace_write',
       runClass: 'long_lived',
       ioMode: 'request_response',
@@ -326,7 +326,7 @@ describe('happier session run list (integration)', () => {
       expect(parsed.kind).toBe('session_run_list');
       expect(parsed.data?.runs).toHaveLength(1);
       expect(parsed.data?.runs?.[0]?.runId).toBe('run_marker_visible');
-      expect(parsed.data?.runs?.[0]?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'opencode' });
+      expect(parsed.data?.runs?.[0]?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'codex' });
     } finally {
       output.restore();
     }

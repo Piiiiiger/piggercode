@@ -24,7 +24,6 @@ let settingsMock: any = {
     executionRunsGuidanceEnabled: false,
     executionRunsGuidanceMaxChars: 4_000,
     executionRunsGuidanceEntries: [],
-    acpCatalogSettingsV1: { v: 2, backends: [] },
 };
 let actionExecutorExecuteResultMock: any = {
     ok: true,
@@ -76,7 +75,6 @@ const sessionServerIdStore = {
 let executionRunsBackendsMock: Record<string, { available?: boolean; intents?: string[] }> | null = {
     claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
     codex: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-    coderabbit: { available: true, intents: ['review'] },
 };
 
 const startRunSpy = vi.fn(async (_sessionId: string, _request: any) => ({
@@ -124,7 +122,6 @@ function translateText(key: string, params?: Record<string, unknown>) {
     if (key === 'executionRuns.newRun.intents.delegate') return 'delegate';
     if (key === 'agentInput.agent.claude') return 'Claude';
     if (key === 'agentInput.agent.codex') return 'Codex';
-    if (key === 'agentInput.agent.pi') return 'Pi';
     if (key === 'agentInput.permissionMode.default') return 'default';
     if (key === 'agentInput.permissionMode.readOnly') return 'read-only';
     if (key === 'agentInput.permissionMode.safeYolo') return 'safe-yolo';
@@ -295,16 +292,12 @@ vi.mock('@/sync/ops/actions/defaultActionExecutor', () => ({
                 : undefined;
             const backendTarget = firstBackendTargetKey?.startsWith('agent:')
                 ? { kind: 'builtInAgent', agentId: firstBackendTargetKey.slice('agent:'.length) }
-                : firstBackendTargetKey?.startsWith('acpBackend:')
-                    ? { kind: 'configuredAcpBackend', backendId: firstBackendTargetKey.slice('acpBackend:'.length) }
-                    : undefined;
+                : undefined;
             const backendId = intent === 'review'
                 ? request?.engineIds?.[0]
                 : backendTarget?.kind === 'builtInAgent'
                     ? backendTarget.agentId
-                    : backendTarget?.kind === 'configuredAcpBackend'
-                        ? backendTarget.backendId
-                        : undefined;
+                    : undefined;
             await startRunSpy(request?.sessionId, {
                 ...request,
                 intent,
@@ -357,7 +350,6 @@ describe('Session New Run Screen', () => {
         executionRunsBackendsMock = {
             claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
             codex: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-            coderabbit: { available: true, intents: ['review'] },
         };
         enabledAgentIdsMock = ['claude', 'codex'];
         sessionMock = { id: 'session-1', metadata: { agent: 'claude', permissionMode: 'default' } };
@@ -368,7 +360,6 @@ describe('Session New Run Screen', () => {
             executionRunsGuidanceEnabled: false,
             executionRunsGuidanceMaxChars: 4_000,
             executionRunsGuidanceEntries: [],
-            acpCatalogSettingsV1: { v: 2, backends: [] },
         };
         sessionExecutionRunsSupportedMock = true;
         sessionMachineReachabilityMock = {
@@ -446,7 +437,6 @@ describe('Session New Run Screen', () => {
         executionRunsBackendsMock = {
             claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
             codex: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-            coderabbit: { available: true, intents: ['review'] },
         };
     });
 
@@ -709,7 +699,6 @@ describe('Session New Run Screen', () => {
         executionRunsBackendsMock = {
             claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
             codex: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-            coderabbit: { available: true, intents: ['review'] },
         };
         localSearchParamsMock = { id: 'session-1', intent: 'review' };
 
@@ -718,25 +707,24 @@ describe('Session New Run Screen', () => {
         expect(screen.getTextContent()).toContain('Change type');
         expect(screen.getTextContent()).toContain('Base selection');
 
-        const selectCoderabbit = screen.findByProps({ accessibilityLabel: 'Toggle backend coderabbit' });
+        const selectClaude = screen.findByProps({ accessibilityLabel: 'Toggle backend claude' });
         const selectAllChanges = findTestInstanceByTypeContainingText(screen, 'Pressable', 'All');
         const selectBaseBranch = findTestInstanceByTypeContainingText(screen, 'Pressable', 'Base branch');
 
-        expect(selectCoderabbit).toBeDefined();
+        expect(selectClaude).toBeDefined();
         expect(selectAllChanges).toBeDefined();
         expect(selectBaseBranch).toBeDefined();
 
-        await pressTestInstanceAsync(selectCoderabbit, 'backend coderabbit');
+        await pressTestInstanceAsync(selectClaude, 'backend claude');
         await pressTestInstanceAsync(selectAllChanges, 'review change type all');
         await pressTestInstanceAsync(selectBaseBranch, 'review base branch');
 
         const textInputs = screen.findAllByType('TextInput');
-        expect(textInputs.length).toBeGreaterThanOrEqual(3);
+        expect(textInputs.length).toBeGreaterThanOrEqual(2);
 
         await act(async () => {
             screen.changeTextByTestId('execution-run-new-instructions-input', 'review everything deeply');
             changeTextTestInstance(textInputs[1], 'main');
-            changeTextTestInstance(textInputs[2], '.coderabbit.yaml, .coderabbit.local.yaml');
         });
 
         findStartButton(screen);
@@ -746,15 +734,10 @@ describe('Session New Run Screen', () => {
             'session-1',
             expect.objectContaining({
                 intent: 'review',
-                backendId: 'coderabbit',
+                backendId: 'claude',
                 instructions: 'review everything deeply',
                 changeType: 'all',
                 base: { kind: 'branch', baseBranch: 'main' },
-                engines: {
-                    coderabbit: {
-                        configFiles: ['.coderabbit.yaml', '.coderabbit.local.yaml'],
-                    },
-                },
             }),
         );
     });
@@ -862,42 +845,6 @@ describe('Session New Run Screen', () => {
         expect(routerPushSpy).not.toHaveBeenCalled();
     });
 
-    it('surfaces CodeRabbit as a backend option when the machine capability reports it available', async () => {
-        sessionMock = { id: 'session-1', metadata: { agent: 'claude', permissionMode: 'default', machineId: 'machine-1' } };
-        enabledAgentIdsMock = ['claude', 'codex'];
-        localSearchParamsMock = { id: 'session-1', intent: 'review' };
-        machineCapabilitiesStateMock = {
-            status: 'loaded',
-            snapshot: {
-                response: {
-                    protocolVersion: 1,
-                    results: {
-                        'tool.executionRuns': {
-                            ok: true,
-                            data: {
-                                available: true,
-                                intents: ['review', 'plan', 'delegate', 'voice_agent'],
-                                backends: {
-                                    claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-                                    coderabbit: { available: true, intents: ['review'] },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        };
-        executionRunsBackendsMock = {
-            claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-            coderabbit: { available: true, intents: ['review'] },
-        };
-
-        const screen = await renderNewRunScreen();
-
-        const toggleCodeRabbit = screen.findByProps({ accessibilityLabel: 'Toggle backend coderabbit' });
-        expect(toggleCodeRabbit).toBeDefined();
-    });
-
     it('allows selecting a different intent before starting', async () => {
         startRunSpy.mockClear();
         enabledAgentIdsMock = ['claude', 'codex'];
@@ -1002,84 +949,24 @@ describe('Session New Run Screen', () => {
     });
 
     it('disables backends that are not execution-run capable for non-review intents', async () => {
-        enabledAgentIdsMock = ['claude', 'pi'];
+        enabledAgentIdsMock = ['claude', 'codex'];
         sessionMock = { id: 'session-1', metadata: { agent: 'claude', permissionMode: 'default', machineId: 'machine-1' } };
         localSearchParamsMock = { id: 'session-1', intent: 'delegate' };
         executionRunsBackendsMock = {
             claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
+            codex: { available: true, intents: ['review'] },
         };
 
         const screen = await renderNewRunScreen();
-        const togglePi = screen.findByProps({ accessibilityLabel: 'Toggle backend Pi' });
-        expect(togglePi).toBeDefined();
-        expect(togglePi!.props.disabled).toBe(true);
-    });
-
-    it('surfaces configured ACP backends as first-class delegate backends and submits their backend target key', async () => {
-        startRunSpy.mockClear();
-        enabledAgentIdsMock = ['claude', 'customAcp'];
-        sessionMock = { id: 'session-1', metadata: { agent: 'claude', permissionMode: 'default', machineId: 'machine-1' } };
-        localSearchParamsMock = { id: 'session-1', intent: 'delegate' };
-        executionRunsBackendsMock = {
-            claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },
-            customAcp: { available: true, intents: ['plan', 'delegate'] },
-        };
-        settingsMock = {
-            ...settingsMock,
-            acpCatalogSettingsV1: {
-                v: 2,
-                backends: [
-                    {
-                        id: 'review-bot',
-                        name: 'review-bot',
-                        title: 'Review Bot',
-                        command: 'acp',
-                        args: [],
-                        env: {},
-                        transportProfile: 'generic',
-                        capabilities: {
-                            supportsLoadSession: false,
-                            supportsModes: 'unknown',
-                            supportsModels: 'unknown',
-                            supportsConfigOptions: 'unknown',
-                            promptImageSupport: 'unknown',
-                        },
-                        createdAt: 1,
-                        updatedAt: 1,
-                    },
-                ],
-            },
-        };
-
-        const screen = await renderNewRunScreen();
-        const togglePreset = screen.findByProps({ accessibilityLabel: 'Toggle backend Review Bot' });
-        expect(togglePreset).toBeDefined();
-
-        await pressTestInstanceAsync(togglePreset, 'backend Review Bot');
-
-        const input = findInstructionsInput(screen);
-        await act(async () => {
-            screen.changeTextByTestId('execution-run-new-instructions-input', 'delegate to the custom ACP backend');
-        });
-
-        findStartButton(screen);
-        await screen.pressByTestIdAsync('execution-run-new-start-button');
-
-        expect(startRunSpy).toHaveBeenCalledWith(
-            'session-1',
-            expect.objectContaining({
-                intent: 'delegate',
-                backendTargetKeys: ['acpBackend:review-bot'],
-                backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-                backendId: 'review-bot',
-            }),
-        );
+        const toggleCodex = screen.findByProps({ accessibilityLabel: 'Toggle backend Codex' });
+        expect(toggleCodex).toBeDefined();
+        expect(toggleCodex!.props.disabled).toBe(true);
     });
 
     it('auto-selects an execution-run capable backend when the session agent is unsupported', async () => {
         startRunSpy.mockClear();
-        enabledAgentIdsMock = ['pi', 'claude'];
-        sessionMock = { id: 'session-1', metadata: { agent: 'pi', permissionMode: 'default', machineId: 'machine-1' } };
+        enabledAgentIdsMock = ['claude'];
+        sessionMock = { id: 'session-1', metadata: { agent: 'codex', permissionMode: 'default', machineId: 'machine-1' } };
         localSearchParamsMock = { id: 'session-1', intent: 'delegate' };
         executionRunsBackendsMock = {
             claude: { available: true, intents: ['review', 'plan', 'delegate', 'voice_agent'] },

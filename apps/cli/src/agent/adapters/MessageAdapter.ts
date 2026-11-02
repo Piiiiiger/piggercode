@@ -47,7 +47,7 @@ export interface MessageAdapterConfig {
  *
  * Usage:
  * ```typescript
- * const adapter = new MessageAdapter({ agentType: 'gemini' });
+ * const adapter = new MessageAdapter({ agentType: 'codex' });
  * const mobileMsg = adapter.toMobile(agentMessage);
  * apiSession.sendAgentMessage(adapter.agentType, mobileMsg.content.data);
  * ```
@@ -278,8 +278,6 @@ export function createMessageAdapter(
  * Pre-configured adapters for common agents
  */
 export const adapters = {
-  gemini: new MessageAdapter({ agentType: 'gemini' }),
   codex: new MessageAdapter({ agentType: 'codex' }),
   claude: new MessageAdapter({ agentType: 'claude' }),
-  opencode: new MessageAdapter({ agentType: 'opencode' }),
 } as const;

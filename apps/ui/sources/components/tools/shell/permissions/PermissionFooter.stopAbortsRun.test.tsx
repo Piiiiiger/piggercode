@@ -8,9 +8,9 @@ import { installPermissionShellCommonModuleMocks } from './permissionShellTestHe
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 const runtime = vi.hoisted(() => ({
-    flavor: 'opencode' as 'claude' | 'codex' | 'opencode' | 'gemini',
+    flavor: 'codex' as 'claude' | 'codex',
     protocol: 'claude' as 'codexDecision' | 'claude',
-    setProtocol(protocol: 'codexDecision' | 'claude', flavor: 'claude' | 'codex' | 'opencode' | 'gemini') {
+    setProtocol(protocol: 'codexDecision' | 'claude', flavor: 'claude' | 'codex') {
         this.protocol = protocol;
         this.flavor = flavor;
     },
@@ -92,16 +92,6 @@ describe('PermissionFooter stop action', () => {
             expectedDecision: 'denied' as const,
         },
         {
-            name: 'codex decision protocol on non-codex agent',
-            protocol: 'codexDecision' as const,
-            flavor: 'opencode' as const,
-            toolName: 'bash',
-            toolInput: { command: 'pwd' },
-            shouldSendFollowupPrompt: false,
-            shouldAbortRun: true,
-            expectedDecision: 'abort' as const,
-        },
-        {
             name: 'non-codex protocol',
             protocol: 'claude' as const,
             flavor: 'claude' as const,
@@ -110,17 +100,6 @@ describe('PermissionFooter stop action', () => {
             shouldSendFollowupPrompt: false,
             shouldAbortRun: true,
             shouldSetReadOnlyMode: true,
-            expectedDecision: 'abort' as const,
-        },
-        {
-            name: 'gemini stop/explain should not force read-only mode',
-            protocol: 'codexDecision' as const,
-            flavor: 'gemini' as const,
-            toolName: 'execute',
-            toolInput: { command: "bash -lc 'echo hi > /tmp/x'" },
-            shouldSendFollowupPrompt: false,
-            shouldAbortRun: true,
-            shouldSetReadOnlyMode: false,
             expectedDecision: 'abort' as const,
         },
     ])('Stop denies permission and handles run control for $name', async ({ protocol, flavor, toolName, toolInput, shouldSendFollowupPrompt, shouldAbortRun, shouldSetReadOnlyMode, expectedDecision }) => {
@@ -173,7 +152,7 @@ describe('PermissionFooter stop action', () => {
     });
 
     it('dispatches one denial and one abort when Stop is activated twice before React commits', async () => {
-        runtime.setProtocol('codexDecision', 'opencode');
+        runtime.setProtocol('claude', 'claude');
         ops.sessionDeny.mockClear();
         ops.sessionAbort.mockClear();
 
@@ -183,7 +162,7 @@ describe('PermissionFooter stop action', () => {
             sessionId: 's1',
             toolName: 'execute',
             toolInput: { command: 'touch /tmp/permission-stop-test' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'claude' },
         }));
         const stop = screen.findByProps({ testID: 'permission-footer.stop' });
 

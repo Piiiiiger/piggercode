@@ -134,7 +134,6 @@ describe('SessionGettingStartedGuidanceView', () => {
     expect(expandedContent).toContain('happier setup --relay "https://api.company.example"');
     expect(expandedContent).not.toContain('happier daemon install');
     expect(expandedContent).toContain('happier codex');
-    expect(expandedContent).toContain('happier opencode');
 
     clipboardMocks.setStringAsync.mockClear();
     modalMocks.alert.mockClear();

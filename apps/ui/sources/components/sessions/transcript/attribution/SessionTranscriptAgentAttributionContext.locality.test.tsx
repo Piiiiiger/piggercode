@@ -56,8 +56,8 @@ describe('SessionTranscriptAgentAttributionContext locality', () => {
         expect(historicalConsumerRenderCount).toBe(1);
 
         const changedDivider = createAgentTransitionDividerMessageFixture({
-            fromAgentId: 'claude',
-            toAgentId: 'gemini',
+            fromAgentId: 'codex',
+            toAgentId: 'claude',
             id: 'msg-15',
             seq: 15,
             createdAt: 1_500,
@@ -70,20 +70,20 @@ describe('SessionTranscriptAgentAttributionContext locality', () => {
             tree.update(<Harness messagesById={changedBoundaryMessagesById} />);
         });
         expect(historicalConsumerRenderCount).toBe(2);
-        expect(observedHistoricalAgentIds).toEqual(['codex', 'gemini']);
+        expect(observedHistoricalAgentIds).toEqual(['codex', 'claude']);
 
         const { 'msg-15': _removedDivider, ...withoutDividerMessagesById } = changedBoundaryMessagesById;
         await act(async () => {
             tree.update(<Harness messagesById={withoutDividerMessagesById} />);
         });
         expect(historicalConsumerRenderCount).toBe(3);
-        expect(observedHistoricalAgentIds).toEqual(['codex', 'gemini', null]);
+        expect(observedHistoricalAgentIds).toEqual(['codex', 'claude', null]);
 
         await act(async () => {
             tree.update(<Harness messagesById={changedBoundaryMessagesById} />);
         });
         expect(historicalConsumerRenderCount).toBe(4);
-        expect(observedHistoricalAgentIds).toEqual(['codex', 'gemini', null, 'gemini']);
+        expect(observedHistoricalAgentIds).toEqual(['codex', 'claude', null, 'claude']);
 
         await act(async () => {
             tree.unmount();

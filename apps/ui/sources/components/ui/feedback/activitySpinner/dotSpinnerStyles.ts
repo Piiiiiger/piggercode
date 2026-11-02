@@ -72,7 +72,7 @@ export const DOT_SPINNER_PAUSE_MS: Readonly<Record<LoadingIndicatorPauseId, numb
 
 export type DotSpinnerTiming = Readonly<{ speed: LoadingIndicatorSpeedId; pause: LoadingIndicatorPauseId }>;
 
-/** Ink on an idle dot. The Grok reference measured 23%; 20% keeps the H legible without competing. */
+/** Ink on an idle dot. The reference measured 23%; 20% keeps the H legible without competing. */
 export const DOT_REST_OPACITY = 0.2;
 
 /**

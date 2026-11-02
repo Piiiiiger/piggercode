@@ -25,17 +25,6 @@ function metadata(overrides: Partial<Metadata>): Metadata {
 }
 
 describe('resolveTrackedSessionCatalogAgentId', () => {
-  it('uses the explicit built-in backend target first', () => {
-    expect(resolveTrackedSessionCatalogAgentId(trackedSession({
-      happySessionMetadataFromLocalWebhook: metadata({
-        codexSessionId: 'codex-session',
-      }),
-      spawnOptions: {
-        directory: '/repo',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
-      } as TrackedSession['spawnOptions'],
-    }))).toBe('opencode');
-  });
 
   it('infers Codex from local webhook metadata when spawn options are not hydrated yet', () => {
     expect(resolveTrackedSessionCatalogAgentId(trackedSession({
@@ -46,15 +35,4 @@ describe('resolveTrackedSessionCatalogAgentId', () => {
     }))).toBe('codex');
   });
 
-  it('keeps configured ACP backend targets on the custom ACP catalog entry', () => {
-    expect(resolveTrackedSessionCatalogAgentId(trackedSession({
-      happySessionMetadataFromLocalWebhook: metadata({
-        codexSessionId: 'codex-session',
-      }),
-      spawnOptions: {
-        directory: '/repo',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      } as TrackedSession['spawnOptions'],
-    }))).toBe('customAcp');
-  });
 });

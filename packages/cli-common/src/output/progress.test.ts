@@ -101,10 +101,10 @@ describe('createStepPrinter', () => {
     const printer = createStepPrinter({ enabled: true });
     await expect(printer.run('Installing Codex', async () => 'npm', (via) => `Installed Codex via ${via}`)).resolves.toBe('npm');
     const failure = new Error('offline');
-    await expect(printer.run('Installing Gemini', async () => { throw failure; })).rejects.toBe(failure);
+    await expect(printer.run('Installing Codex', async () => { throw failure; })).rejects.toBe(failure);
     const output = writeSpy.mock.calls.map((call) => String(call[0])).join('');
     expect(output).toContain('- [..] Installing Codex\n- [✓] Installed Codex via npm\n');
-    expect(output).toContain('- [..] Installing Gemini\n- [x] Installing Gemini\n');
+    expect(output).toContain('- [..] Installing Codex\n- [x] Installing Codex\n');
 
     writeSpy.mockClear();
     await expect(createStepPrinter({ enabled: false }).run('Hidden', async () => 1)).resolves.toBe(1);

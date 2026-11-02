@@ -32,7 +32,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     const published: string[] = [];
     const lifecycle = createSessionTurnLifecycle({ sessionId: 'refused-custody', enqueueSessionTurn: async (mutation) => { mutations.push(mutation); } });
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(), mcpServers: {},
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(), mcpServers: {},
       permissionHandler: createApprovedPermissionHandler(), onThinkingChange: () => {}, ensureBackend: async () => backend,
       session: createBasicSessionClientWithOverrides({
         sessionTurnLifecycle: lifecycle,
@@ -90,7 +90,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     const failure = new Error('Host response rejected');
     const lifecycle = createSessionTurnLifecycle({ sessionId: 'host-handoff', enqueueSessionTurn: async (mutation) => { mutations.push(mutation); } });
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(), mcpServers: {},
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(), mcpServers: {},
       permissionHandler: createApprovedPermissionHandler(), onThinkingChange: (value) => { thinking.push(value); }, ensureBackend: async () => backend,
       session: createBasicSessionClientWithOverrides({
         sessionTurnLifecycle: lifecycle,
@@ -161,7 +161,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
       sessionId: 'cancel-session', enqueueSessionTurn: async () => {},
     });
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       session: createBasicSessionClientWithOverrides({
         sessionTurnLifecycle,
@@ -207,7 +207,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
     let persistStarted = false;
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       session: createBasicSessionClientWithOverrides({
         sessionTurnLifecycle,
@@ -253,7 +253,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     let allowRetry = false;
     let retryStarted = false;
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       session: createBasicSessionClientWithOverrides({
         sendAgentMessage: (_provider, body) => { published.push(body.type); },
@@ -300,7 +300,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
         sessionId: 'provider-user-session', enqueueSessionTurn: async () => {},
       });
       const runtime = createAcpRuntime({
-        provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+        provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
         mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
         session: createBasicSessionClientWithOverrides({
           sessionTurnLifecycle,
@@ -344,7 +344,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     const thinking: boolean[] = [];
     let commitStarted = false;
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       session: createBasicSessionClientWithOverrides({
         sendAgentMessage: (_provider, body) => { sent.push(body); },
@@ -384,7 +384,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     const sent: Array<{ body: ACPMessageData; meta?: Record<string, unknown> }> = [];
     let persistStarted = false;
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       session: createBasicSessionClientWithOverrides({
         sendAgentMessage: (_provider, body) => { sent.push({ body }); },
@@ -455,7 +455,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
         sendUserTextMessageCommitted: async (text) => { publications.push(text); },
       });
       const runtime = createAcpRuntime({
-        provider: 'pi', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
+        provider: 'codex', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
         turnAssistantPreviewTracker: tracker,
         mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
         onThinkingChange: (value) => { thinking.push(value); },
@@ -540,7 +540,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -584,7 +584,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -622,7 +622,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -653,7 +653,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -690,7 +690,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -730,7 +730,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -766,7 +766,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -804,7 +804,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -853,7 +853,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),

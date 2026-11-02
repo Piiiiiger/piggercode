@@ -81,11 +81,11 @@ function writeFakeAcpAgentScript(params: {
                 currentValue: 'default[]',
                 options: [
                   {
-                    group: 'cursor',
-                    name: 'Cursor',
+                    group: 'models',
+                    name: 'Models',
                     options: [
                       { value: 'default[]', name: 'Default' },
-                      { value: 'composer-2.5[fast=true]', name: 'Composer 2.5 Fast' },
+                      { value: 'model-2.5[fast=true]', name: 'Model 2.5 Fast' },
                     ],
                   },
                 ],
@@ -134,7 +134,7 @@ function writeFakeAcpAgentScript(params: {
                     currentValue: 'default[]',
                     options: [
                       { value: 'default[]', name: 'Default' },
-                      { value: 'composer-2.5[fast=true]', name: 'Composer 2.5 Fast' },
+                      { value: 'model-2.5[fast=true]', name: 'Model 2.5 Fast' },
                     ],
                   },
                   {
@@ -264,7 +264,7 @@ describe('AcpBackend session configOptions', () => {
             currentValue: 'default[]',
             options: [
               { value: 'default[]', name: 'Default' },
-              { value: 'composer-2.5[fast=true]', name: 'Composer 2.5 Fast' },
+              { value: 'model-2.5[fast=true]', name: 'Model 2.5 Fast' },
             ],
           }),
           expect.objectContaining({ id: 'mode', type: 'select', currentValue: 'ask' }),
@@ -329,12 +329,12 @@ describe('AcpBackend session configOptions', () => {
         });
 
         const started = await backend.startSession();
-        await backend.setSessionConfigOption(started.sessionId, 'model', 'composer-2.5[fast=true]');
+        await backend.setSessionConfigOption(started.sessionId, 'model', 'model-2.5[fast=true]');
 
         expect(backend.getSessionConfigOptionsState()).toEqual(expect.arrayContaining([
           expect.objectContaining({
             id: 'model',
-            currentValue: 'composer-2.5[fast=true]',
+            currentValue: 'model-2.5[fast=true]',
           }),
         ]));
       } finally {
@@ -359,7 +359,7 @@ describe('AcpBackend session configOptions', () => {
         });
 
         const started = await backend.startSession();
-        await backend.setSessionConfigOption(started.sessionId, configId, configId === 'model' ? 'composer-2.5[fast=true]' : 'high');
+        await backend.setSessionConfigOption(started.sessionId, configId, configId === 'model' ? 'model-2.5[fast=true]' : 'high');
 
         expect(backend.getSessionConfigOptionsState()).toEqual(expect.arrayContaining([
           expect.objectContaining({
@@ -376,7 +376,7 @@ describe('AcpBackend session configOptions', () => {
     });
   });
 
-  it('marks boolean set_config_option payloads with their value type for Cursor-compatible ACP agents', async () => {
+  it('marks boolean set_config_option payloads with their value type for ACP agents', async () => {
     await withTempDir('happier-acp-config-options-typed-', async (dir) => {
       const recordedParamsPath = join(dir, 'set-config-option-params.json');
       const scriptPath = writeFakeAcpAgentScript({ dir, recordedParamsPath });

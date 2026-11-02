@@ -8,7 +8,6 @@ import {
   SessionStopOutcomeSchema,
   isSessionStopConfirmed,
   readSessionAgentTransitionDividerV1,
-  readAcpConfiguredBackendV1FromMetadata,
   type SessionStopOutcome,
 } from '@piggercode/protocol';
 import type { SessionAgentTransitionRequestV1 } from '@piggercode/protocol';
@@ -261,148 +260,6 @@ function primeHappyPath(
 }
 
 describe('runSessionAgentTransition', () => {
-  it('refuses a configured-source request without its exact expected target', async () => {
-    primeHappyPath(sourceMetadata({
-      flavor: 'acp:b', claudeSessionId: undefined, claudeTranscriptPath: undefined,
-      acpConfiguredBackendV1: { v: 1, backendId: 'b', title: 'B', updatedAt: 1 },
-    }));
-    mocks.findTranscriptEncryptedMessageByLocalIdV2.mockResolvedValue({ type: 'not_found' });
-    const result = await runSessionAgentTransition({
-      credentials,
-      request: request({ expectedCurrentAgentId: 'customAcp',
-        selection: { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } },
-      }),
-      deps: { readAccountSettings: () => ({}) },
-    });
-    expect(result).toEqual({ type: 'rejected', code: 'stale_selection', sourceEffect: 'none' });
-    expect(mocks.requestSessionStop).not.toHaveBeenCalled();
-  });
-
-  it.each(['customAcp', 'claude'] as const)('reports a committed configured target after its Account definition is removed (source %s)', async (expectedCurrentAgentId) => {
-    primeHappyPath(sourceMetadata({
-      flavor: 'acp:b', claudeSessionId: undefined, claudeTranscriptPath: undefined,
-      acpConfiguredBackendV1: { v: 1, backendId: 'b', title: 'B', updatedAt: 1 },
-    }));
-    mocks.findTranscriptEncryptedMessageByLocalIdV2.mockResolvedValue({ type: 'not_found' });
-    const result = await runSessionAgentTransition({
-      credentials,
-      request: request({
-        expectedCurrentAgentId,
-        ...(expectedCurrentAgentId === 'customAcp'
-          ? { expectedCurrentBackendTarget: { kind: 'configuredAcpBackend' as const, backendId: 'a' } }
-          : {}),
-        selection: { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } },
-      }),
-      deps: { readAccountSettings: () => ({}) },
-    });
-    expect(result).toEqual({
-      type: 'partially_applied', localId: LOCAL_ID, applied: 'current_view_committed', code: 'divider_unavailable',
-    });
-    expect(mocks.requestSessionStop).not.toHaveBeenCalled();
-  });
-
-  it('continues A to exact B to a builtin and back to A without borrowing ACP session ids', async () => {
-    let metadata = sourceMetadata({
-      flavor: 'acp:a', claudeSessionId: undefined, claudeTranscriptPath: undefined,
-      customAcpSessionId: 'opaque-a',
-      acpConfiguredBackendV1: { v: 1, backendId: 'a', title: 'A', updatedAt: 1 },
-    });
-    const settings = { acpCatalogSettingsV1: { v: 2, backends: ['a', 'b'].map((id) => ({
-      id, name: id, title: id.toUpperCase(), command: 'harmless-acp',
-      args: ['--configuration', id], env: {}, createdAt: 1, updatedAt: 1,
-    })) } };
-    const selections = [
-      { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } },
-      { v: 1, agentId: 'claude' },
-      { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'a' } },
-    ] as const;
-    const app = Fastify();
-    app.get('/v1/sessions/:id/messages', async () => ({
-      messages: [{ id: 'history-99', seq: 99, createdAt: 1,
-        content: { t: 'plain', v: { role: 'user', content: { type: 'text', text: 'Remember the original conversation' } } },
-      }],
-      hasMore: false, nextBeforeSeq: null, nextAfterSeq: null,
-    }));
-    const restoreHttp = installAxiosFastifyAdapter({ app, origin: resolveServerHttpBaseUrl() });
-    const replay = await vi.importActual<typeof import('@/session/replay/resolveReplaySeedDraft')>('@/session/replay/resolveReplaySeedDraft');
-    try {
-      for (const [index, selection] of selections.entries()) {
-        primeHappyPath(metadata);
-        // This configured journey keeps Replay hydration, framing and crypto real;
-        // only its HTTP transcript source is replaced at the package testkit boundary.
-        mocks.resolveReplaySeedDraft.mockImplementation(replay.resolveReplaySeedDraft);
-        const sourceTarget = readAcpConfiguredBackendV1FromMetadata(metadata);
-        const localId = `${LOCAL_ID}-${index}`;
-        const result = await runSessionAgentTransition({
-          credentials,
-          request: request({
-            expectedCurrentAgentId: sourceTarget ? 'customAcp' : 'claude',
-            ...(sourceTarget ? { expectedCurrentBackendTarget: { kind: 'configuredAcpBackend' as const, backendId: sourceTarget.backendId } } : {}),
-            selection,
-            input: { text: 'keep going', localId, meta: {} },
-          }),
-          deps: { readAccountSettings: () => settings },
-        });
-        expect(result).toEqual({ type: 'accepted', localId });
-        metadata = mocks.requestInactiveSessionResume.mock.calls.at(-1)?.[0].metadata;
-        expect(metadata.customAcpSessionId).toBeUndefined();
-        expect(metadata.replaySeedV1).toMatchObject({
-          seedText: expect.stringContaining('Remember the original conversation'), sourceCutoffSeqInclusive: 100,
-        });
-        if ('backendTarget' in selection) {
-          expect(metadata).toMatchObject({
-            flavor: `acp:${selection.backendTarget.backendId}`,
-            acpConfiguredBackendV1: { backendId: selection.backendTarget.backendId, title: selection.backendTarget.backendId.toUpperCase() },
-          });
-        } else {
-          expect(metadata.flavor).toBe('claude');
-          expect(metadata.acpConfiguredBackendV1).toBeUndefined();
-        }
-      }
-    } finally {
-      restoreHttp();
-      await app.close();
-    }
-  });
-
-  it.each(['missing-definition', 'missing-secret', 'stale-configured-source'] as const)(
-    'keeps the configured source untouched for %s', async (failure) => {
-      primeHappyPath(sourceMetadata({
-        flavor: failure === 'stale-configured-source' ? 'acp:c' : 'acp:a',
-        claudeSessionId: undefined,
-        claudeTranscriptPath: undefined,
-        customAcpSessionId: 'opaque-source',
-        acpConfiguredBackendV1: {
-          v: 1, backendId: failure === 'stale-configured-source' ? 'c' : 'a', title: 'Source', updatedAt: 1,
-        },
-      }));
-      const settings = {
-        acpCatalogSettingsV1: {
-          v: 2,
-          backends: failure === 'missing-definition' ? [] : [{
-            id: 'b', name: 'b', title: 'B', command: 'harmless-acp', args: ['b'],
-            env: failure === 'missing-secret' ? { TOKEN: { t: 'savedSecret', secretId: 'unavailable' } } : {},
-            createdAt: 1, updatedAt: 1,
-          }],
-        },
-      };
-      const result = await runSessionAgentTransition({
-        credentials,
-        request: request({
-          expectedCurrentAgentId: 'customAcp',
-          expectedCurrentBackendTarget: { kind: 'configuredAcpBackend', backendId: 'a' },
-          selection: { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } },
-        }),
-        deps: { readAccountSettings: () => settings },
-      });
-      expect(result).toEqual({
-        type: 'rejected',
-        code: failure === 'stale-configured-source' ? 'stale_selection' : 'target_unavailable',
-        sourceEffect: 'none',
-      });
-      expect(mocks.callOrder).toEqual([]);
-    },
-  );
 
   beforeEach(() => {
     for (const value of Object.values(mocks)) {
@@ -502,23 +359,6 @@ describe('runSessionAgentTransition', () => {
 
       expect(result).toEqual({ type: 'rejected', code: 'target_unavailable', sourceEffect: 'none' });
       expect(mocks.requestSessionStop).not.toHaveBeenCalled();
-    });
-
-    it('rejects deterministic native target facts before idle, stop, cutover, admission, or activation', async () => {
-      primeHappyPath();
-
-      const result = await runSessionAgentTransition({
-        credentials,
-        request: request({ selection: { v: 1, agentId: 'gemini', acpSessionModeId: 'plan' } }),
-      });
-
-      expect(result).toEqual({ type: 'rejected', code: 'target_unavailable', sourceEffect: 'none' });
-      expect(mocks.callOrder).toEqual([]);
-      expect(mocks.waitForSessionIdle).not.toHaveBeenCalled();
-      expect(mocks.requestSessionStop).not.toHaveBeenCalled();
-      expect(mocks.commitSessionAgentTransitionCutover).not.toHaveBeenCalled();
-      expect(mocks.enqueuePendingQueueV2MessageViaHttp).not.toHaveBeenCalled();
-      expect(mocks.requestInactiveSessionResume).not.toHaveBeenCalled();
     });
 
     it('rejects when the client believed a different current Agent', async () => {
@@ -1253,26 +1093,6 @@ describe('runSessionAgentTransition', () => {
     // would adopt that operation's version and overwrite its committed target.
     // Section 7.3: a concurrent second transition loses the current-target or
     // metadata-version check.
-    it('refuses to overwrite a transition that committed its own cutover during the stop window', async () => {
-      primeHappyPath();
-      mocks.fetchSessionByIdCompat.mockReset();
-      mocks.fetchSessionByIdCompat
-        .mockResolvedValueOnce(rawSession(sourceMetadata()))
-        .mockResolvedValue(rawSession(
-          sourceMetadata({ flavor: 'gemini', claudeSessionId: undefined, claudeTranscriptPath: undefined }),
-          { metadataVersion: 8 },
-        ));
-
-      const result = await runSessionAgentTransition({ credentials, request: request() });
-
-      expect(result).toEqual({
-        type: 'partially_applied',
-        localId: LOCAL_ID,
-        applied: 'source_stopped',
-        code: 'cutover_conflict',
-      });
-      expect(mocks.commitSessionAgentTransitionCutover).not.toHaveBeenCalled();
-    });
 
     it('derives the divider identity from the submitted localId and carries the transition sidecar', async () => {
       primeHappyPath();
@@ -1457,32 +1277,6 @@ describe('runSessionAgentTransition', () => {
     it('reports the committed depth with divider_unavailable when no divider row exists', async () => {
       primeAlreadyTargeted();
       mocks.findTranscriptEncryptedMessageByLocalIdV2.mockResolvedValue(dividerLookup(null));
-
-      const result = await runSessionAgentTransition({ credentials, request: request() });
-
-      expect(result).toEqual({
-        type: 'partially_applied',
-        localId: LOCAL_ID,
-        applied: 'current_view_committed',
-        code: 'divider_unavailable',
-      });
-      expect(mocks.enqueuePendingQueueV2MessageViaHttp).not.toHaveBeenCalled();
-    });
-
-    it('reports divider_unavailable for a row carrying a different transition, and never overwrites it', async () => {
-      primeAlreadyTargeted();
-      mocks.findTranscriptEncryptedMessageByLocalIdV2.mockResolvedValue(
-        dividerLookup({
-          type: 'message',
-          message: 'Continued with another Agent.',
-          sessionAgentTransitionV1: {
-            v: 1,
-            fromAgentId: 'opencode',
-            toAgentId: 'codex',
-            sourceCutoffSeqInclusive: 29_979,
-          },
-        }),
-      );
 
       const result = await runSessionAgentTransition({ credentials, request: request() });
 

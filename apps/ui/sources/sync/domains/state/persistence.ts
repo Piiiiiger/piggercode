@@ -811,9 +811,6 @@ export function loadNewSessionDraft(scope?: ServerAccountScope | null): NewSessi
         const agentNewSessionOptionStateByAgentId = parseDraftAgentNewSessionOptionStateByAgentId(
             (parsed as any).agentNewSessionOptionStateByAgentId,
         );
-        const legacyAuggieAllowIndexing = typeof (parsed as any).auggieAllowIndexing === 'boolean'
-            ? (parsed as any).auggieAllowIndexing
-            : undefined;
         const automationDraft = sanitizeNewSessionAutomationDraft((parsed as any).automationDraft);
         const codexBackendMode = parseDraftCodexBackendMode((parsed as any).codexBackendMode);
         const updatedAt = typeof parsed.updatedAt === 'number' ? parsed.updatedAt : Date.now();
@@ -821,14 +818,6 @@ export function loadNewSessionDraft(scope?: ServerAccountScope | null): NewSessi
         const migratedAgentOptions: Record<string, Record<string, unknown>> = {
             ...(agentNewSessionOptionStateByAgentId ?? {}),
         };
-        // Legacy migration: older drafts stored `auggieAllowIndexing` at top-level.
-        // Keep reading it so users don't lose their local draft state.
-        if (typeof legacyAuggieAllowIndexing === 'boolean') {
-            migratedAgentOptions.auggie = {
-                ...(migratedAgentOptions.auggie ?? {}),
-                allowIndexing: legacyAuggieAllowIndexing,
-            };
-        }
 
         return {
             input,

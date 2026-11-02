@@ -15,13 +15,6 @@ function providerStub(id: ProviderUnderTest['id'], protocol: ProviderUnderTest['
 }
 
 describe('scenarioCatalog: abort continuation contract', () => {
-  it('maps ACP follow-up assertions by provider reliability profile', () => {
-    expect(abortContinuationFollowupSubstrings('auggie', 'FOLLOWUP', 'MEMORY')).toEqual(['FOLLOWUP']);
-    expect(abortContinuationFollowupSubstrings('kimi', 'FOLLOWUP', 'MEMORY')).toEqual(['FOLLOWUP']);
-    expect(abortContinuationFollowupSubstrings('kilo', 'FOLLOWUP', 'MEMORY')).toEqual(['FOLLOWUP']);
-    expect(abortContinuationFollowupSubstrings('pi', 'FOLLOWUP', 'MEMORY')).toEqual(['FOLLOWUP']);
-    expect(abortContinuationFollowupSubstrings('opencode', 'FOLLOWUP', 'MEMORY')).toEqual(['FOLLOWUP', 'MEMORY']);
-  });
 
   it('builds a claude abort-continue scenario with post-satisfaction runner', () => {
     const scenario = scenarioCatalog.abort_turn_then_continue(providerStub('claude', 'claude', 'claude'));
@@ -34,34 +27,4 @@ describe('scenarioCatalog: abort continuation contract', () => {
     expect(typeof scenario.verify).toBe('function');
   });
 
-  it('builds an ACP abort-continue scenario with yolo auto-approve enabled', () => {
-    const scenario = scenarioCatalog.abort_turn_then_continue(providerStub('opencode', 'acp', 'opencode'));
-    expect(scenario.requiredFixtureKeys).toEqual([]);
-    expect(scenario.requiredAnyFixtureKeys).toBeUndefined();
-    expect(scenario.allowPermissionAutoApproveInYolo).toBe(true);
-    expect(scenario.postSatisfy?.timeoutMs).toBe(300_000);
-    expect(typeof scenario.postSatisfy?.run).toBe('function');
-  });
-
-  it('uses extended post-satisfaction timeout for kilo abort-continue', () => {
-    const scenario = scenarioCatalog.abort_turn_then_continue(providerStub('kilo', 'acp', 'kilo'));
-    expect(scenario.postSatisfy?.timeoutMs).toBe(300_000);
-  });
-
-  it('builds ACP abort-continue scenarios for qwen and auggie', () => {
-    const qwen = scenarioCatalog.abort_turn_then_continue(providerStub('qwen', 'acp', 'qwen'));
-    const auggie = scenarioCatalog.abort_turn_then_continue(providerStub('auggie', 'acp', 'auggie'));
-
-    expect(qwen.id).toBe('abort_turn_then_continue');
-    expect(auggie.id).toBe('abort_turn_then_continue');
-    expect(typeof qwen.postSatisfy?.run).toBe('function');
-    expect(typeof auggie.postSatisfy?.run).toBe('function');
-  });
-
-  it('uses a semantic continuation prompt contract after abort', () => {
-    const kimi = scenarioCatalog.abort_turn_then_continue(providerStub('kimi', 'acp', 'kimi'));
-    const prompt = kimi.prompt?.({ workspaceDir: '/tmp/workspace' } as any) ?? '';
-    expect(prompt).toContain('ABORT_READY_');
-    expect(prompt).not.toContain('sleep 20');
-  });
 });

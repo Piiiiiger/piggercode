@@ -32,16 +32,6 @@ describe('forkUiSupport', () => {
     expect(canForkFromMessage({ session, messageSeq: 5, replayEnabled: true, agentSwitchingEnabled: false })).toBe(true);
   });
 
-  it('allows OpenCode server fork-from-message across the supported server dialects', () => {
-    const session = makeSession({ machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'server' });
-    expect(canForkFromMessage({ session, messageSeq: 5, replayEnabled: false, agentSwitchingEnabled: false })).toBe(true);
-  });
-
-  it('does not allow fork-from-message for OpenCode ACP when replay and switching are both off', () => {
-    const session = makeSession({ machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'acp' });
-    expect(canForkFromMessage({ session, messageSeq: 5, replayEnabled: false, agentSwitchingEnabled: false })).toBe(false);
-  });
-
   it('allows conversation fork for Codex app-server when replay is disabled', () => {
     const session = makeSession({ machineId: 'm1', flavor: 'codex', codexBackendMode: 'appServer' });
     expect(canForkConversation({ session, replayEnabled: false, agentSwitchingEnabled: false })).toBe(true);
@@ -65,11 +55,6 @@ describe('forkUiSupport', () => {
   it('does not allow fork-from-message for Codex app-server when replay and switching are both off', () => {
     const session = makeSession({ machineId: 'm1', flavor: 'codex', codexBackendMode: 'appServer' });
     expect(canForkFromMessage({ session, messageSeq: 5, replayEnabled: false, agentSwitchingEnabled: false })).toBe(false);
-  });
-
-  it('allows fork conversation for OpenCode ACP when replay is disabled (ACP fork-latest)', () => {
-    const session = makeSession({ machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'acp' });
-    expect(canForkConversation({ session, replayEnabled: false, agentSwitchingEnabled: false })).toBe(true);
   });
 
   it('returns false only when no route at all is offerable', () => {
@@ -129,7 +114,7 @@ describe('resolveSessionForkStrategyAvailability', () => {
   });
 
   it('offers both routes when the Agent forks natively and Replay is enabled', () => {
-    const session = makeSession({ machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'acp' });
+    const session = makeSession({ machineId: 'm1', flavor: 'codex' });
     expect(resolveSessionForkStrategyAvailability({
       session,
       forkPoint: { type: 'latest' },
@@ -154,7 +139,7 @@ describe('resolveSessionForkStrategyAvailability', () => {
   });
 
   it('offers nothing for a missing Session or an uncommitted cutoff', () => {
-    const session = makeSession({ machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'server' });
+    const session = makeSession({ machineId: 'm1', flavor: 'codex' });
     expect(resolveSessionForkStrategyAvailability({
       session: null,
       forkPoint: { type: 'latest' },

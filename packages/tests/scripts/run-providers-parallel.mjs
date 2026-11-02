@@ -86,7 +86,7 @@ function usage(exitCode) {
       'Usage:',
       '  yarn providers:run:parallel <preset> <tier> [--max-parallel N] [--update-baselines] [--strict-keys] [--flake-retry|--no-flake-retry] [--no-retry-serial]',
       '',
-      'Presets: opencode | claude | codex | kilo | gemini | qwen | kimi | auggie | pi | cursor | grok | all',
+      'Presets: claude | codex | all',
       'Tiers:   smoke | extended',
       '',
       'Notes:',
@@ -97,7 +97,7 @@ function usage(exitCode) {
       'Examples:',
       '  yarn providers:run:parallel all extended',
       '  yarn providers:run:parallel all extended --max-parallel 5',
-      '  yarn providers:run:parallel opencode extended --strict-keys',
+      '  yarn providers:run:parallel codex extended --strict-keys',
     ].join('\n'),
   );
   return exitCode;

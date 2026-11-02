@@ -123,48 +123,6 @@ describe("eventRouter session room isolation (integration)", () => {
         eventRouter.clearIo();
     });
 
-    it("projects account and runtime issue updates for released readers without losing failure facts or account isolation", async () => {
-        const server = await startTestIoServer();
-        eventRouter.setIo(server.io);
-        const released = connectClient({ url: server.url, userId: "u1", clientType: "user-scoped" });
-        const current = connectClient({ url: server.url, userId: "u1", clientType: "session-scoped", sessionId: "s1", connectedServiceIds: ConnectedServiceIdSchema.options });
-        const other = connectClient({ url: server.url, userId: "u2", clientType: "session-scoped", sessionId: "s1" });
-        try {
-            await Promise.all([waitForConnect(released), waitForConnect(current), waitForConnect(other)]);
-            const releasedUpdates: unknown[] = [];
-            const currentUpdates: unknown[] = [];
-            const otherUpdates: unknown[] = [];
-            released.on("update", (payload) => releasedUpdates.push(payload));
-            current.on("update", (payload) => currentUpdates.push(payload));
-            other.on("update", (payload) => otherUpdates.push(payload));
-            const issue = {
-                v: 1, scope: "primary_session", status: "failed", source: "usage_limit", code: "usage_limit", occurredAt: 12, provider: "agy",
-                usageLimit: { v: 1, resetAtMs: 500, retryAfterMs: 200, quotaScope: "account", recoverability: "switch_account",
-                    connectedService: { serviceId: "antigravity", profileId: "work", groupId: null },
-                    quotaSnapshotRef: { serviceId: "antigravity", profileId: "work" },
-                },
-            };
-            eventRouter.emitUpdate({ userId: "u1", payload: { id: "issue", seq: 1, createdAt: 12, body: { t: "update-session", id: "s1", latestTurnStatus: "failed", lastRuntimeIssue: issue } }, recipientFilter: { type: "all-interested-in-session", sessionId: "s1" } });
-            const account = { connectedServicesV2: [{ serviceId: "antigravity", profiles: [], groups: [] }], connectedServiceCredentialRevisionsV1: [{ serviceId: "antigravity", profileId: "work", credentialRevision: "csr_abcdefghijklmnopqrstuv" }] };
-            eventRouter.emitUpdate({ userId: "u1", payload: { id: "account", seq: 2, createdAt: 12, body: { t: "update-account", ...account } }, recipientFilter: { type: "all-user-authenticated-connections" } });
-            await vi.waitFor(() => {
-                expect(releasedUpdates).toHaveLength(2);
-                expect(currentUpdates).toHaveLength(2);
-            });
-            expect(releasedUpdates[0]).toMatchObject({ body: { latestTurnStatus: "failed", lastRuntimeIssue: { provider: "agy", usageLimit: { resetAtMs: 500, retryAfterMs: 200 } } } });
-            expect(releasedUpdates[0]).not.toHaveProperty("body.lastRuntimeIssue.usageLimit.connectedService");
-            expect(releasedUpdates[0]).not.toHaveProperty("body.lastRuntimeIssue.usageLimit.quotaSnapshotRef");
-            expect(releasedUpdates[1]).toMatchObject({ body: { connectedServicesV2: [], connectedServiceCredentialRevisionsV1: [] } });
-            expect(currentUpdates[0]).toHaveProperty("body.lastRuntimeIssue.usageLimit.connectedService.serviceId", "antigravity");
-            expect(currentUpdates[1]).toMatchObject({ body: account });
-            expect(otherUpdates).toHaveLength(0);
-            expect(issue.usageLimit.connectedService.serviceId).toBe("antigravity");
-        } finally {
-            released.disconnect(); current.disconnect(); other.disconnect();
-            await server.close();
-        }
-    });
-
     it("does not leak recipient-specific updates across users who share a sessionId", async () => {
         const server = await startTestIoServer();
         eventRouter.setIo(server.io as any);

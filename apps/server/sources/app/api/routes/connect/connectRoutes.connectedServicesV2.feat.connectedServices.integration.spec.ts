@@ -732,47 +732,6 @@ describe("connectRoutes (connected services v2) sealed credential endpoints (int
         expect(res.json()).toEqual({ error: "connect_oauth_state_mismatch" });
     });
 
-    it("returns connect_oauth_timeout when token exchange times out", async () => {
-        harness.resetEnv({ PIGGERCODE_CONNECTED_SERVICES_OAUTH_EXCHANGE_TIMEOUT_MS: "1000" });
-        try {
-            const user = await db.account.create({ data: { publicKey: "pk-csv2-oauth-timeout" }, select: { id: true } });
-
-            const keyPair = tweetnacl.box.keyPair();
-            const publicKeyB64Url = Buffer.from(keyPair.publicKey).toString("base64url");
-
-            vi.stubGlobal("fetch", vi.fn(async (_url: any, init: any) => {
-                return await new Promise((_resolve, reject) => {
-                    init?.signal?.addEventListener?.("abort", () => {
-                        const err = new Error("AbortError");
-                        (err as any).name = "AbortError";
-                        reject(err);
-                    });
-                });
-            }));
-
-            const app = createTestApp();
-            connectRoutes(app as any);
-            await app.ready();
-
-            const res = await app.inject({
-                method: "POST",
-                url: "/v2/connect/gemini/oauth/exchange",
-                headers: { "content-type": "application/json", "x-test-user-id": user.id },
-                payload: {
-                    publicKey: publicKeyB64Url,
-                    code: "code_1",
-                    verifier: "verifier_1",
-                    redirectUri: "http://localhost:1455/auth/callback",
-                },
-            });
-
-            expect(res.statusCode).toBe(400);
-            expect(res.json()).toEqual({ error: "connect_oauth_timeout" });
-        } finally {
-            harness.resetEnv();
-        }
-    });
-
     it("lists connected service profiles without returning plaintext secrets", async () => {
         const user = await db.account.create({ data: { publicKey: "pk-csv2-u2" }, select: { id: true } });
 

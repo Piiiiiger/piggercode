@@ -13,18 +13,6 @@ function buildMetadata(overrides: Partial<Metadata> = {}): Metadata {
 }
 
 describe('describeEffectiveModelMode', () => {
-    it('retains the configured backend applied model separately from the requested model', () => {
-        const metadata = buildMetadata({
-            acpConfiguredBackendV1: { v: 1, backendId: 'custom-one', title: 'Custom', updatedAt: 1 },
-            sessionAppliedModelV1: { v: 1, provider: 'acp:custom-one', modelId: 'applied', updatedAt: 1 },
-        });
-        expect(describeEffectiveModelMode({ agentType: 'customAcp', selectedModelId: 'requested', metadata })).toMatchObject({
-            selectedModelId: 'requested', appliedModelId: 'applied',
-        });
-        metadata.acpConfiguredBackendV1 = { v: 1, backendId: 'custom-two', title: 'Other', updatedAt: 2 };
-        expect(describeEffectiveModelMode({ agentType: 'customAcp', selectedModelId: 'requested', metadata }).appliedModelId).toBeNull();
-    });
-
     it('treats Claude model overrides as next-prompt', () => {
         const out = describeEffectiveModelMode({
             agentType: 'claude',
@@ -55,26 +43,14 @@ describe('describeEffectiveModelMode', () => {
         expect(out.applyScope).toBe('live');
     });
 
-    it('adds a restart note for ACP providers that restart sessions on model change (Gemini)', () => {
-        const out = describeEffectiveModelMode({
-            agentType: 'gemini',
-            selectedModelId: 'gemini-2.5-flash',
-            metadata: buildMetadata({
-                sessionModesV1: { v: 1, provider: 'gemini', updatedAt: 1, currentModeId: 'default', availableModes: [] },
-            }),
-        });
-        expect(out.applyScope).toBe('live');
-        expect(out.notes.some((note) => /restart/i.test(note))).toBe(true);
-    });
-
     it('uses the provider default model when no model is selected and does not mark it as custom', () => {
         const out = describeEffectiveModelMode({
-            agentType: 'gemini',
+            agentType: 'codex',
             selectedModelId: '',
             metadata: null,
         });
 
-        expect(out.effectiveModelId).toBe(getAgentCore('gemini').model.defaultMode);
+        expect(out.effectiveModelId).toBe(getAgentCore('codex').model.defaultMode);
         expect(out.notes.join(' ')).not.toMatch(/custom model ids|not validated/i);
     });
 
@@ -135,49 +111,6 @@ describe('describeEffectiveModelMode', () => {
         expect(out.notes.join(' ')).not.toMatch(/custom model ids|not validated/i);
     });
 
-    it('keeps the requested model selected while exposing the last provider-applied model separately', () => {
-        const out = describeEffectiveModelMode({
-            agentType: 'grok',
-            selectedModelId: 'model-b',
-            metadata: buildMetadata({
-                sessionModelsV1: {
-                    v: 1,
-                    provider: 'grok',
-                    updatedAt: 5,
-                    currentModelId: 'model-a',
-                    availableModels: [{ id: 'model-a', name: 'A' }, { id: 'model-b', name: 'B' }],
-                },
-                sessionAppliedModelV1: {
-                    v: 1,
-                    provider: 'grok',
-                    updatedAt: 4,
-                    modelId: 'model-a',
-                },
-            }),
-        });
-        expect(out.selectedModelId).toBe('model-b');
-        expect(out.appliedModelId).toBe('model-a');
-    });
-
-    it('does not treat configured-next model state as proof that a model was applied', () => {
-        const out = describeEffectiveModelMode({
-            agentType: 'grok',
-            selectedModelId: 'pending-model',
-            metadata: buildMetadata({
-                sessionModelsV1: {
-                    v: 1, provider: 'grok', updatedAt: 5, currentModelId: 'model-a',
-                    availableModels: [{ id: 'model-a', name: 'A' }],
-                },
-                acpSessionModelsV1: {
-                    v: 1, provider: 'grok', updatedAt: 6, currentModelId: 'model-b',
-                    availableModels: [{ id: 'model-b', name: 'B' }],
-                },
-            }),
-        });
-        expect(out.selectedModelId).toBe('pending-model');
-        expect(out.appliedModelId).toBeNull();
-    });
-
     it('does not expose another provider applied model as the current model', () => {
         const out = describeEffectiveModelMode({
             agentType: 'codex',
@@ -185,16 +118,16 @@ describe('describeEffectiveModelMode', () => {
             metadata: buildMetadata({
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'claude',
                     updatedAt: 5,
-                    currentModelId: 'grok-build',
-                    availableModels: [{ id: 'grok-build', name: 'Grok Build' }],
+                    currentModelId: 'claude-build',
+                    availableModels: [{ id: 'claude-build', name: 'Claude Build' }],
                 },
                 sessionAppliedModelV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'claude',
                     updatedAt: 6,
-                    modelId: 'grok-build',
+                    modelId: 'claude-build',
                 },
             }),
         });

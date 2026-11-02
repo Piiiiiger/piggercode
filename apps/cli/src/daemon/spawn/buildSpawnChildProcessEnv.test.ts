@@ -52,19 +52,19 @@ describe('buildSpawnChildProcessEnv', () => {
         CLAUDE_CODE_SETUP_TOKEN: 'stale-claude-setup-token',
         CODEX_HOME: '/Users/test/.codex',
         OPENAI_API_KEY: 'stale-openai-key',
-        OPENCODE_CONFIG_CONTENT: '{"model":"stale-host-model"}',
+        CODEX_CONFIG_CONTENT: '{"model":"stale-host-model"}',
       },
       extraEnv: {
         CLAUDE_CONFIG_DIR: '/tmp/explicit-claude-config',
         OPENAI_API_KEY: 'explicit-openai-key',
-        OPENCODE_CONFIG_CONTENT: '{"model":"explicit-session-model"}',
+        CODEX_CONFIG_CONTENT: '{"model":"explicit-session-model"}',
       },
     });
 
     expect(env.PATH).toBe('/bin');
     expect(env.CLAUDE_CONFIG_DIR).toBe('/tmp/explicit-claude-config');
     expect(env.OPENAI_API_KEY).toBe('explicit-openai-key');
-    expect(env.OPENCODE_CONFIG_CONTENT).toBe('{"model":"explicit-session-model"}');
+    expect(env.CODEX_CONFIG_CONTENT).toBe('{"model":"explicit-session-model"}');
     expect(env.CLAUDE_CODE_OAUTH_TOKEN).toBe('stale-claude-token');
     expect(env.CLAUDE_CODE_SETUP_TOKEN).toBe('stale-claude-setup-token');
     expect(env.CODEX_HOME).toBe('/Users/test/.codex');

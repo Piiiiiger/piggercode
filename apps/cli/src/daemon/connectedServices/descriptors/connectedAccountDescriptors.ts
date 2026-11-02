@@ -1,8 +1,4 @@
 import {
-  AGY_OAUTH_CLIENT_ID,
-  AGY_OAUTH_CLIENT_SECRET,
-  AGY_OAUTH_TOKEN_URL,
-  AGY_OAUTH_SCOPES,
   CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE,
   CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPES,
   CLAUDE_CODE_REQUIRED_OAUTH_SCOPES,
@@ -10,10 +6,6 @@ import {
   CLAUDE_OAUTH_PROFILE_URL,
   CLAUDE_OAUTH_CLIENT_ID,
   CLAUDE_OAUTH_TOKEN_URL,
-  GEMINI_CLI_OAUTH_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET,
-  GEMINI_CLI_OAUTH_SCOPES,
-  GEMINI_CLI_OAUTH_TOKEN_URL,
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_TOKEN_URL,
   normalizeClaudeOauthProfileEntitlement,
@@ -228,35 +220,6 @@ export function readConnectedServiceCredentialOrganizationId(record: ConnectedSe
 
 export const CONNECTED_ACCOUNT_DESCRIPTORS = [
   {
-    id: 'antigravity',
-    displayName: 'Google Antigravity',
-    providerDisplayName: 'Antigravity',
-    credentialKind: 'oauth',
-    oauth: {
-      defaultClientId: AGY_OAUTH_CLIENT_ID,
-      defaultClientSecret: AGY_OAUTH_CLIENT_SECRET,
-      defaultTokenUrl: AGY_OAUTH_TOKEN_URL,
-      refreshTokenBody: 'form',
-      scopes: AGY_OAUTH_SCOPES,
-      mapCredentialPayload: ({ now, payload }) => {
-        const data = isRecord(payload) ? payload : {};
-        const projectId = readString(data.project_id);
-        return {
-          accessToken: readRequiredString(data.access_token),
-          refreshToken: readRequiredString(data.refresh_token),
-          idToken: readString(data.id_token),
-          scope: readString(data.scope),
-          tokenType: readString(data.token_type),
-          providerAccountId: readString(data.providerAccountId),
-          providerEmail: readString(data.providerEmail),
-          expiresAt: resolveExpiresAtFromPayload({ now, payload: data }),
-          raw: projectId ? { project_id: projectId } : null,
-        };
-      },
-    },
-    ui: { iconName: 'google', oauthAddActionModes: ['paste'] },
-  },
-  {
     id: 'openai-codex',
     displayName: 'OpenAI Codex',
     providerDisplayName: 'OpenAI',
@@ -352,37 +315,6 @@ export const CONNECTED_ACCOUNT_DESCRIPTORS = [
       };
     },
     ui: { iconName: 'claude', oauthAddActionModes: ['browser'] },
-  },
-  {
-    id: 'gemini',
-    displayName: 'Gemini',
-    providerDisplayName: 'Gemini',
-    credentialKind: 'oauth',
-    oauth: {
-      clientIdEnv: 'PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_ID',
-      defaultClientId: GEMINI_CLI_OAUTH_CLIENT_ID,
-      clientSecretEnv: 'PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET',
-      defaultClientSecret: GEMINI_CLI_OAUTH_CLIENT_SECRET,
-      tokenUrlEnv: 'PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_TOKEN_URL',
-      defaultTokenUrl: GEMINI_CLI_OAUTH_TOKEN_URL,
-      refreshTokenBody: 'form',
-      scopes: GEMINI_CLI_OAUTH_SCOPES,
-      mapCredentialPayload: ({ now, payload }) => {
-        const data = isRecord(payload) ? payload : {};
-        return {
-          accessToken: readRequiredString(data.access_token),
-          refreshToken: readRequiredString(data.refresh_token),
-          idToken: readString(data.id_token),
-          scope: readString(data.scope),
-          tokenType: readString(data.token_type),
-          providerAccountId: null,
-          providerEmail: null,
-          expiresAt: resolveExpiresAtFromPayload({ now, payload: data }),
-          raw: null,
-        };
-      },
-    },
-    ui: { iconName: 'gemini', oauthAddActionModes: ['browser'] },
   },
   {
     id: 'github',

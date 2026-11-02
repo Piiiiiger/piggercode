@@ -22,7 +22,7 @@ describe('createAcpRuntime (token-count forwarding)', () => {
     };
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: session as any,
       messageBuffer: new MessageBuffer(),
@@ -65,7 +65,7 @@ describe('createAcpRuntime (token-count forwarding)', () => {
     };
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: session as any,
       messageBuffer: new MessageBuffer(),
@@ -110,7 +110,7 @@ describe('createAcpRuntime (token-count forwarding)', () => {
     };
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: session as any,
       messageBuffer: new MessageBuffer(),
@@ -142,7 +142,7 @@ describe('createAcpRuntime (token-count forwarding)', () => {
     };
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: session as any,
       messageBuffer: new MessageBuffer(),

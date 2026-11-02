@@ -104,33 +104,6 @@ describe("connectRoutes (vendor tokens) presence-only reads (integration)", () =
         });
     });
 
-    it("preserves released raw v1 register and absent-delete behavior for public-key legacy accounts", async () => {
-        const user = await db.account.create({
-            data: { publicKey: "pk-vendor-v021-compat" },
-            select: { id: true },
-        });
-        const app = createTestApp();
-        connectRoutes(app as any);
-        await app.ready();
-
-        const register = await app.inject({
-            method: "POST",
-            url: "/v1/connect/openai/register",
-            headers: { "content-type": "application/json", "x-test-user-id": user.id },
-            payload: { token: "legacy-token" },
-        });
-        expect(register.statusCode).toBe(200);
-        expect(register.json()).toEqual({ success: true });
-
-        const absentDelete = await app.inject({
-            method: "DELETE",
-            url: "/v1/connect/gemini",
-            headers: { "x-test-user-id": user.id },
-        });
-        expect(absentDelete.statusCode).toBe(200);
-        expect(absentDelete.json()).toEqual({ success: true });
-    });
-
     it("rejects v1 vendor token registration when a v2 connected service credential already exists", async () => {
         const user = await db.account.create({ data: { publicKey: "pk-vendor-tokens-u2" }, select: { id: true } });
 

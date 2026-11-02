@@ -30,7 +30,7 @@ const rows: SessionActionSelectorRow[] = [
   { sessionId: 'enabled', agentId: 'codex', updatedAt: 3, title: 'Enabled', path: '/repo' },
   {
     sessionId: 'remote-probe',
-    agentId: 'opencode',
+    agentId: 'codex',
     updatedAt: 2,
     title: 'Remote',
     path: '/repo',

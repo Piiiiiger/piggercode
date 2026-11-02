@@ -85,8 +85,8 @@ describe('probeModelsFromAcpBackend', () => {
     }
   }, 20_000);
 
-  it('extracts Kimi-style modelId entries from ACP session/new', async () => {
-    const fixture = await createProbeTempDir('happier-acp-kimi-model-probe');
+  it('extracts modelId entries from ACP session/new', async () => {
+    const fixture = await createProbeTempDir('happier-acp-modelid-probe');
     const sdkEntry = resolveAcpSdkEntryFromCwd(process.cwd());
 
     const agentPath = await writeFakeAcpAgentScript({
@@ -95,10 +95,10 @@ describe('probeModelsFromAcpBackend', () => {
       sessionPayloadSource: `{
       sessionId: randomUUID(),
       models: {
-        currentModelId: "kimi-code/kimi-for-coding,thinking",
+        currentModelId: "vendor/model-one,thinking",
         availableModels: [
-          { modelId: "kimi-code/kimi-for-coding", name: "kimi-for-coding" },
-          { modelId: "kimi-code/kimi-for-coding,thinking", name: "kimi-for-coding (thinking)" },
+          { modelId: "vendor/model-one", name: "model-one" },
+          { modelId: "vendor/model-one,thinking", name: "model-one (thinking)" },
         ],
       },
     }`,
@@ -114,8 +114,8 @@ describe('probeModelsFromAcpBackend', () => {
       const models = await probeModelsFromAcpBackend({ backend, timeoutMs: 10_000 });
       expect(models).toEqual([
         { id: 'default', name: 'Default' },
-        { id: 'kimi-code/kimi-for-coding', name: 'kimi-for-coding' },
-        { id: 'kimi-code/kimi-for-coding,thinking', name: 'kimi-for-coding (thinking)' },
+        { id: 'vendor/model-one', name: 'model-one' },
+        { id: 'vendor/model-one,thinking', name: 'model-one (thinking)' },
       ]);
     } finally {
       await backend.dispose().catch(() => {});
@@ -134,8 +134,8 @@ describe('probeModelsFromAcpBackend', () => {
       sessionId: randomUUID(),
       configOptions: [
         {
-          id: "cursor-choice",
-          name: "Cursor Choice",
+          id: "model-choice",
+          name: "Model Choice",
           category: "model",
           type: "enum",
           currentValue: "model-a",
@@ -310,309 +310,6 @@ describe('probeModelsFromAcpBackend', () => {
 });
 
 describe('probeAgentModelsBestEffort', () => {
-  it('returns dynamic model list from `opencode models` when available', async () => {
-    const fixture = await createProbeTempDir('happier-cli-model-probe');
-    const binDir = resolve(join(fixture.dir, 'bin'));
-    await mkdir(binDir, { recursive: true });
-
-	    const opencodePath = resolve(join(binDir, 'opencode'));
-	    await writeExecutableScript(
-	      opencodePath,
-	      `#!/usr/bin/env node
-	const args = process.argv.slice(2);
-	if (args[0] === "models" && args.includes("--verbose")) {
-	  process.stdout.write(
-	    "openai/gpt-4.1\\n"
-	    + "{\\n"
-	    + "  \\"id\\": \\"gpt-4.1\\",\\n"
-	    + "  \\"providerID\\": \\"openai\\",\\n"
-	    + "  \\"name\\": \\"GPT-4.1\\",\\n"
-	    + "  \\"family\\": \\"gpt-4.1\\",\\n"
-	    + "  \\"status\\": \\"active\\",\\n"
-	    + "  \\"capabilities\\": { \\"toolcall\\": true, \\"reasoning\\": true, \\"input\\": { \\"text\\": true } },\\n"
-	    + "  \\"variants\\": {\\n"
-	    + "    \\"low\\": { \\"reasoningEffort\\": \\"low\\" },\\n"
-	    + "    \\"medium\\": { \\"reasoningEffort\\": \\"medium\\" },\\n"
-	    + "    \\"high\\": { \\"reasoningEffort\\": \\"high\\" }\\n"
-	    + "  }\\n"
-	    + "}\\n"
-	    + "openai/gpt-4.1-mini\\n"
-	    + "{\\n"
-	    + "  \\"id\\": \\"gpt-4.1-mini\\",\\n"
-	    + "  \\"providerID\\": \\"openai\\",\\n"
-	    + "  \\"name\\": \\"GPT-4.1 Mini\\",\\n"
-	    + "  \\"family\\": \\"gpt-4.1\\",\\n"
-	    + "  \\"status\\": \\"active\\",\\n"
-	    + "  \\"capabilities\\": { \\"toolcall\\": true, \\"reasoning\\": false, \\"input\\": { \\"text\\": true } }\\n"
-	    + "}\\n"
-	  );
-	  process.exit(0);
-	}
-	if (args[0] === "models") {
-	  process.stdout.write("openai/gpt-4.1\\nopenai/gpt-4.1-mini\\n");
-	  process.exit(0);
-	}
-	process.exit(1);
-	`,
-	    );
-
-    const prevPath = process.env.PATH;
-    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
-    process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    delete process.env.PIGGERCODE_OPENCODE_PATH;
-    try {
-      const res = await probeAgentModelsBestEffort({
-        agentId: 'opencode',
-        cwd: fixture.dir,
-        timeoutMs: CLI_MODELS_PROBE_TEST_TIMEOUT_MS,
-      });
-	      expect(res.source).toBe('dynamic');
-	      expect(res.availableModels[0]).toEqual({ id: 'default', name: 'Default' });
-	      expect(res.availableModels.some((m) => m.id === 'openai/gpt-4.1')).toBe(true);
-	      expect(res.availableModels.some((m) => m.id === 'openai/gpt-4.1-mini')).toBe(true);
-	      expect(res.availableModels).toContainEqual(expect.objectContaining({
-	        id: 'openai/gpt-4.1',
-	        modelOptions: [expect.objectContaining({ id: 'reasoning_effort' })],
-	      }));
-	    } finally {
-	      process.env.PATH = prevPath;
-	      if (typeof prevOverride === 'string') {
-        process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
-      } else {
-        delete process.env.PIGGERCODE_OPENCODE_PATH;
-      }
-      await fixture.cleanup();
-    }
-  }, 20_000);
-
-  it('runs `opencode models` via opencode.CMD on PATH on Windows when only the .CMD shim exists', async () => {
-    const fixture = await createProbeTempDir('happier-cli-model-probe-win32');
-    const binDir = resolve(join(fixture.dir, 'bin'));
-    await mkdir(binDir, { recursive: true });
-
-    const opencodePath = resolve(join(binDir, 'opencode.CMD'));
-    await writeExecutableScript(
-      opencodePath,
-      `#!/usr/bin/env node
-const args = process.argv.slice(2);
-if (args[0] === "models" && args[1] === "--verbose") {
-  process.stdout.write(
-    'openai/gpt-4.1\\n{"id":"gpt-4.1","providerID":"openai","name":"GPT-4.1","capabilities":{"toolcall":true}}\\n' +
-    'openai/gpt-4.1-mini\\n{"id":"gpt-4.1-mini","providerID":"openai","name":"GPT-4.1 Mini","capabilities":{"toolcall":true}}\\n'
-  );
-  process.exit(0);
-}
-process.exit(1);
-`,
-    );
-
-    const cmdExePath = resolve(join(binDir, 'cmd.exe'));
-    await writeExecutableScript(
-      cmdExePath,
-      `#!/usr/bin/env node
-const cp = require('node:child_process');
-
-function splitCommandLine(raw) {
-  const tokens = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < raw.length; i += 1) {
-    let ch = raw[i];
-    if (ch === '^' && i + 1 < raw.length) {
-      const next = raw[i + 1];
-      i += 1;
-      if (next === ' ' || next === '\\t') {
-        current += next;
-        continue;
-      }
-      ch = next;
-    }
-    if (ch === '"') {
-      inQuotes = !inQuotes;
-      continue;
-    }
-    if (!inQuotes && (ch === ' ' || ch === '\\t')) {
-      if (current) tokens.push(current);
-      current = '';
-      continue;
-    }
-    current += ch;
-  }
-  if (current) tokens.push(current);
-  return tokens;
-}
-
-const args = process.argv.slice(2);
-const cIndex = args.findIndex((a) => String(a).toLowerCase() === '/c');
-const rest = cIndex === -1 ? [] : args.slice(cIndex + 1);
-if (rest.length === 0) process.exit(1);
-
-let commandLine = rest.join(' ');
-if (rest.length === 1) commandLine = rest[0];
-if (commandLine.startsWith('"') && commandLine.endsWith('"')) commandLine = commandLine.slice(1, -1);
-
-const tokens = splitCommandLine(commandLine);
-if (tokens.length === 0) process.exit(1);
-
-const command = tokens[0];
-const commandArgs = tokens.slice(1);
-const child = cp.spawn(command, commandArgs, { stdio: 'inherit', env: process.env });
-
-const forward = (signal) => {
-  try { child.kill(signal); } catch {}
-};
-process.on('SIGTERM', () => forward('SIGTERM'));
-process.on('SIGINT', () => forward('SIGINT'));
-
-child.on('exit', (code, signal) => {
-  if (signal) {
-    try { process.kill(process.pid, signal); } catch {}
-  }
-  process.exit(code ?? 1);
-});
-child.on('error', (error) => {
-  const msg = error && error.message ? error.message : String(error);
-  console.error(msg);
-  process.exit(127);
-});
-`,
-    );
-
-    const prevPath = process.env.PATH;
-    const prevPathext = process.env.PATHEXT;
-    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
-    process.env.PATH = `${binDir}${delimiter}${dirname(process.execPath)}`;
-    process.env.PATHEXT = '.CMD';
-    delete process.env.PIGGERCODE_OPENCODE_PATH;
-    try {
-      await withPlatform('win32', async () => {
-        const res = await probeAgentModelsBestEffort({
-          agentId: 'opencode',
-          cwd: fixture.dir,
-          timeoutMs: CLI_MODELS_PROBE_TEST_TIMEOUT_MS,
-        });
-        expect(res.source).toBe('dynamic');
-        expect(res.availableModels[0]).toEqual({ id: 'default', name: 'Default' });
-        expect(res.availableModels.some((m) => m.id === 'openai/gpt-4.1')).toBe(true);
-        expect(res.availableModels.some((m) => m.id === 'openai/gpt-4.1-mini')).toBe(true);
-      });
-    } finally {
-      process.env.PATH = prevPath;
-      if (typeof prevPathext === 'string') process.env.PATHEXT = prevPathext;
-      else delete process.env.PATHEXT;
-      if (typeof prevOverride === 'string') {
-        process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
-      } else {
-        delete process.env.PIGGERCODE_OPENCODE_PATH;
-      }
-      await fixture.cleanup();
-    }
-  }, 20_000);
-
-  it('returns dynamic model list from `auggie model list` output when available', async () => {
-    const fixture = await createProbeTempDir('happier-cli-model-probe-auggie');
-    const binDir = resolve(join(fixture.dir, 'bin'));
-    await mkdir(binDir, { recursive: true });
-
-    const auggiePath = resolve(join(binDir, 'auggie'));
-    await writeExecutableScript(
-      auggiePath,
-      `#!/usr/bin/env node
-const args = process.argv.slice(2);
-if (args[0] === "model" && args[1] === "list") {
-  process.stdout.write(
-    "Available models:\\n" +
-    " - GPT-5 [gpt5]\\n" +
-    "     OpenAI GPT-5 legacy\\n" +
-    " - Claude Opus 4.6 [opus4.6]\\n" +
-    "     Best for complex tasks\\n"
-  );
-  process.exit(0);
-}
-process.exit(1);
-`,
-    );
-
-    const prevPath = process.env.PATH;
-    const prevOverride = process.env.PIGGERCODE_AUGGIE_PATH;
-    process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    delete process.env.PIGGERCODE_AUGGIE_PATH;
-    try {
-      const res = await probeAgentModelsBestEffort({
-        agentId: 'auggie',
-        cwd: fixture.dir,
-        timeoutMs: CLI_MODELS_PROBE_TEST_TIMEOUT_MS,
-      });
-      expect(res.source).toBe('dynamic');
-      expect(res.availableModels[0]).toEqual({ id: 'default', name: 'Default' });
-      expect(res.availableModels.some((m) => m.id === 'gpt5' && m.name === 'GPT-5')).toBe(true);
-      expect(res.availableModels.some((m) => m.id === 'opus4.6' && m.name === 'Claude Opus 4.6')).toBe(true);
-    } finally {
-      process.env.PATH = prevPath;
-      if (typeof prevOverride === 'string') {
-        process.env.PIGGERCODE_AUGGIE_PATH = prevOverride;
-      } else {
-        delete process.env.PIGGERCODE_AUGGIE_PATH;
-      }
-      await fixture.cleanup();
-    }
-  }, 20_000);
-
-  it('returns dynamic model list from Cursor `models` hyphen output when ACP probing falls back to the CLI command', async () => {
-    const fixture = await createProbeTempDir('happier-cli-model-probe-cursor');
-    const binDir = resolve(join(fixture.dir, 'bin'));
-    await mkdir(binDir, { recursive: true });
-
-    const cursorAgentPath = resolve(join(binDir, 'cursor-agent'));
-    await writeExecutableScript(
-      cursorAgentPath,
-      `#!/usr/bin/env node
-const args = process.argv.slice(2);
-if (args[0] === "models") {
-  process.stdout.write(
-    "Available models:\\n" +
-    "composer-2.5 - Composer 2.5 (current) (default)\\n" +
-    "composer-2.5-fast - Composer 2.5 Fast\\n" +
-    "gpt-5.5 - GPT-5.5\\n"
-  );
-  process.exit(0);
-}
-process.exit(1);
-`,
-    );
-
-    const prevPath = process.env.PATH;
-    const prevOverride = process.env.PIGGERCODE_CURSOR_PATH;
-    process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
-    process.env.PIGGERCODE_CURSOR_PATH = cursorAgentPath;
-    try {
-      const res = await probeAgentModelsBestEffort({
-        agentId: 'cursor',
-        cwd: fixture.dir,
-        timeoutMs: CLI_MODELS_PROBE_TEST_TIMEOUT_MS,
-      });
-      expect(res.source).toBe('dynamic');
-      expect(res.availableModels[0]).toEqual({ id: 'default', name: 'Default' });
-      expect(res.availableModels).toEqual(expect.arrayContaining([
-        expect.objectContaining({
-          id: 'composer-2.5',
-          name: 'Composer 2.5',
-          modelOptions: [expect.objectContaining({ id: 'fast' })],
-        }),
-        { id: 'gpt-5.5', name: 'GPT-5.5' },
-      ]));
-      expect(res.availableModels.some((model) => model.id === 'composer-2.5-fast')).toBe(false);
-    } finally {
-      process.env.PATH = prevPath;
-      if (typeof prevOverride === 'string') {
-        process.env.PIGGERCODE_CURSOR_PATH = prevOverride;
-      } else {
-        delete process.env.PIGGERCODE_CURSOR_PATH;
-      }
-      await fixture.cleanup();
-    }
-  }, 20_000);
-
   it('falls back only to the default Codex model when dynamic probing is unavailable', async () => {
     const prevPath = process.env.PATH;
     const prevOverride = process.env.PIGGERCODE_CODEX_ACP_BIN;

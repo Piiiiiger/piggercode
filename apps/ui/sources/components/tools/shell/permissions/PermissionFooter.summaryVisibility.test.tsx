@@ -56,7 +56,7 @@ describe('PermissionFooter summary visibility', () => {
             sessionId: 's1',
             toolName: 'Bash',
             toolInput: { command: 'pwd' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
             canApprovePermissions: true,
             disabledReason: 'inactive',
         }));
@@ -70,7 +70,7 @@ describe('PermissionFooter summary visibility', () => {
             sessionId: 's1',
             toolName: 'Bash',
             toolInput: { command: 'pwd' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
 
         const texts = screen.findAllByType('Text' as any);

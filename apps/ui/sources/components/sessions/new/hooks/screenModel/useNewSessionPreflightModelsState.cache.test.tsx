@@ -144,7 +144,7 @@ describe('useNewSessionPreflightModelsState (cache)', () => {
 
     let latestProbePhase: 'idle' | 'loading' | 'refreshing' = 'idle';
 
-    function Harness(props: { agentId: 'codex' | 'opencode' }) {
+    function Harness(props: { agentId: 'claude' | 'codex' }) {
       latestProbePhase = useNewSessionPreflightModelsState({
         backendTarget: { kind: 'builtInAgent', agentId: props.agentId },
         selectedMachineId: 'machine-1',
@@ -161,7 +161,7 @@ describe('useNewSessionPreflightModelsState (cache)', () => {
 
     agentModelCapabilitiesState.supportsSelection = false;
     await act(async () => {
-      root.update(React.createElement(Harness, { agentId: 'opencode' }));
+      root.update(React.createElement(Harness, { agentId: 'claude' }));
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 

@@ -139,7 +139,7 @@ function supportsDirectLiveHotAuth(
  *   knowing (codex: `requiresExactRuntimeIdentity: true`, external token injection). The fanout MUST
  *   re-probe the live runtime before switching a candidate.
  * - `false` — the account binding is DAEMON-authoritative via broker/shared-group indirection
- *   (opencode/pi/claude: `requiresExactRuntimeIdentity: false`, `provider_owned` broker selection).
+ *   (claude: `requiresExactRuntimeIdentity: false`, `provider_owned` broker selection).
  *   The daemon already owns the effective selection, so the daemon's own indexed identity is
  *   authoritative and a live session-runtime probe is neither needed NOR answerable — demanding one
  *   only strands the candidate on an unsupported RPC.

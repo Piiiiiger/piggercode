@@ -40,7 +40,7 @@ describe('ACP subprocess harness', () => {
 
   it('builds transport handlers with default and override ACP timings', () => {
     const transportHandler = createAcpTestTransportHandler({
-      agentName: 'gemini',
+      agentName: 'codex',
       initDelayMs: 250,
       idleTimeoutMs: 50,
       postToolCallIdleTimeoutMs: 75,
@@ -48,7 +48,7 @@ describe('ACP subprocess harness', () => {
       promptLivenessTimeoutMs: 900,
     })
 
-    expect(transportHandler.agentName).toBe('gemini')
+    expect(transportHandler.agentName).toBe('codex')
     expect(transportHandler.getInitTimeout()).toBe(5_000)
     expect(transportHandler.getInitDelayMs?.()).toBe(250)
     expect(transportHandler.getIdleTimeout?.()).toBe(50)

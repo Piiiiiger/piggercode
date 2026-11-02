@@ -23,7 +23,7 @@ describe.skipIf(process.platform !== 'darwin')('Darwin process discovery with a 
       await mkdir(directory, { recursive: true });
       await writeFile(script, 'setInterval(() => {}, 1000);');
       for (const phase of ['initial', 'replacement']) {
-        const child = spawn(process.execPath, [script, 'opencode', '--started-by', 'daemon'], { stdio: 'ignore' });
+        const child = spawn(process.execPath, [script, 'codex', '--started-by', 'daemon'], { stdio: 'ignore' });
         const closed = new Promise<void>(resolve => child.once('close', () => resolve()));
         try {
           await once(child, 'spawn');

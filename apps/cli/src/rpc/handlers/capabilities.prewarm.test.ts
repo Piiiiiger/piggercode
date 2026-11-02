@@ -72,11 +72,11 @@ describe('registerCapabilitiesHandlers prewarm', () => {
       registerHandlers: (manager) => registerCapabilitiesHandlers(manager),
     });
 
-    agents.cursor = { id: 'cursor' };
+    agents.claude = { id: 'claude' };
 
     const result = await call<CapabilitiesDescribeResponse, Record<string, never>>(RPC_METHODS.CAPABILITIES_DESCRIBE, {});
 
-    expect(result.capabilities.some((entry: { id: string }) => entry.id === 'cli.cursor')).toBe(true);
+    expect(result.capabilities.some((entry: { id: string }) => entry.id === 'cli.claude')).toBe(true);
   });
 
   it('clears a failed prewarm promise so later calls can recover', async () => {

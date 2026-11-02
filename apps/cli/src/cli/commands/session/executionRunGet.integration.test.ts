@@ -251,7 +251,7 @@ describe('happier session execution-run-get (integration)', () => {
       callId: 'call_marker_only',
       sidechainId: 'call_marker_only',
       intent: 'delegate',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'workspace_write',
       runClass: 'long_lived',
       ioMode: 'request_response',
@@ -303,7 +303,7 @@ describe('happier session execution-run-get (integration)', () => {
       expect(parsed.ok).toBe(true);
       expect(parsed.kind).toBe('session_run_get');
       expect(parsed.data?.run?.runId).toBe('run_marker_only');
-      expect(parsed.data?.run?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'opencode' });
+      expect(parsed.data?.run?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'codex' });
       expect(parsed.data?.run?.permissionMode).toBe('workspace_write');
       expect(parsed.data?.run?.status).toBe('running');
     } finally {

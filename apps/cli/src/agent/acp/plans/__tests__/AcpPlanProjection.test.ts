@@ -6,7 +6,7 @@ import type { NormalizedAcpPlanSnapshot } from '../types';
 
 function plan(overrides: Partial<NormalizedAcpPlanSnapshot> = {}): NormalizedAcpPlanSnapshot {
   return normalizeAcpPlan({
-    providerId: 'cursor',
+    providerId: 'codex',
     turnId: 'turn-1',
     correlationId: 'plan-call-1',
     source: 'proprietary',
@@ -312,7 +312,7 @@ describe('AcpPlanProjection', () => {
     const concurrentReset = projection.reset();
     const duringReset = projection.project(plan({ turnId: 'turn-during-reset' }));
     const removalDuringReset = projection.remove({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-before-reset',
       source: 'proprietary',
       correlationId: 'plan-call-1',
@@ -376,7 +376,7 @@ describe('AcpPlanProjection', () => {
     }));
 
     await expect(projection.remove({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'standard',
       correlationId: 'plan-old',
@@ -384,13 +384,13 @@ describe('AcpPlanProjection', () => {
     expect(published).toHaveLength(2);
 
     await expect(projection.remove({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'standard',
       correlationId: ' plan-current ',
     })).resolves.toMatchObject({ kind: 'published' });
     expect(published.at(-1)).toEqual({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       correlationId: ' plan-current ',
       source: 'standard',
@@ -411,7 +411,7 @@ describe('AcpPlanProjection', () => {
     await projection.project(plan({ correlationId: 'proprietary-plan' }));
 
     await expect(projection.remove({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'proprietary',
       correlationId: 'proprietary-plan',
@@ -431,7 +431,7 @@ describe('AcpPlanProjection', () => {
 
     await expect(projection.project(standard)).resolves.toMatchObject({ kind: 'shadowed' });
     await expect(projection.remove({
-      providerId: 'cursor',
+      providerId: 'codex',
       turnId: 'turn-1',
       source: 'proprietary',
       correlationId: 'proprietary-plan',

@@ -8,7 +8,7 @@ import { resolveCliPathOverride } from './resolveCliPathOverride';
 
 describe('resolveCliPathOverride', () => {
   const originalPlatformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
-  const originalOverride = process.env.PIGGERCODE_OPENCODE_PATH;
+  const originalOverride = process.env.PIGGERCODE_CODEX_PATH;
   const tempDirs = new Set<string>();
 
   afterEach(() => {
@@ -16,9 +16,9 @@ describe('resolveCliPathOverride', () => {
       Object.defineProperty(process, 'platform', originalPlatformDescriptor);
     }
     if (originalOverride === undefined) {
-      delete process.env.PIGGERCODE_OPENCODE_PATH;
+      delete process.env.PIGGERCODE_CODEX_PATH;
     } else {
-      process.env.PIGGERCODE_OPENCODE_PATH = originalOverride;
+      process.env.PIGGERCODE_CODEX_PATH = originalOverride;
     }
     for (const dir of tempDirs) {
       rmSync(dir, { recursive: true, force: true });
@@ -35,15 +35,15 @@ describe('resolveCliPathOverride', () => {
     const root = mkdtempSync(join(tmpdir(), 'happier-acp-override-win32-'));
     tempDirs.add(root);
 
-    const extensionlessPath = join(root, 'opencode');
+    const extensionlessPath = join(root, 'codex');
     writeFileSync(extensionlessPath, '', 'utf8');
-    const cmdShimPath = join(root, 'opencode.cmd');
+    const cmdShimPath = join(root, 'codex.cmd');
     writeFileSync(cmdShimPath, '@echo off\r\necho ok\r\n', 'utf8');
 
-    process.env.PIGGERCODE_OPENCODE_PATH = extensionlessPath;
+    process.env.PIGGERCODE_CODEX_PATH = extensionlessPath;
     process.env.PATHEXT = '.CMD;.EXE';
 
-    expect(resolveCliPathOverride({ agentId: 'opencode' })?.toLowerCase()).toBe(cmdShimPath.toLowerCase());
+    expect(resolveCliPathOverride({ agentId: 'codex' })?.toLowerCase()).toBe(cmdShimPath.toLowerCase());
   });
 
   it('expands ~/ in Unix ACP path overrides', () => {
@@ -56,15 +56,15 @@ describe('resolveCliPathOverride', () => {
     const homeDir = join(root, 'home');
     const localBinDir = join(homeDir, '.local', 'bin');
     mkdirSync(localBinDir, { recursive: true });
-    const cliPath = join(localBinDir, 'opencode');
+    const cliPath = join(localBinDir, 'codex');
     writeFileSync(cliPath, '#!/bin/sh\necho ok\n', { mode: 0o755 });
 
     const previousHome = process.env.HOME;
     process.env.HOME = homeDir;
-    process.env.PIGGERCODE_OPENCODE_PATH = '~/.local/bin/opencode';
+    process.env.PIGGERCODE_CODEX_PATH = '~/.local/bin/codex';
 
     try {
-      expect(resolveCliPathOverride({ agentId: 'opencode' })).toBe(cliPath);
+      expect(resolveCliPathOverride({ agentId: 'codex' })).toBe(cliPath);
     } finally {
       if (previousHome === undefined) {
         delete process.env.HOME;

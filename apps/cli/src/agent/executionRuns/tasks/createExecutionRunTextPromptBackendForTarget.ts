@@ -47,9 +47,7 @@ export async function createExecutionRunTextPromptBackendForTarget(params: Reado
     accountSettingsContext: params.accountSettingsContext,
   });
 
-  const backendId = params.backendTarget.kind === 'builtInAgent'
-    ? params.backendTarget.agentId
-    : 'customAcp';
+  const backendId = params.backendTarget.agentId;
 
   return {
     backendId,

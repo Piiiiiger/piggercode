@@ -18,7 +18,7 @@ function createRuntime(params: Readonly<{
   resolveExpectedVendorSessionIdForResume?: (resumeReference: string) => string | null;
 }>) {
   return createAcpRuntime({
-    provider: 'qwen',
+    provider: 'codex',
     directory: '/tmp',
     session: createBasicSessionClient(),
     messageBuffer: new MessageBuffer(),

@@ -67,10 +67,10 @@ describe('resolveToolHeaderTextPresentation (real known tools)', () => {
         const model = resolveToolHeaderTextPresentation({
             tool,
             metadata: {
-                flavor: 'opencode',
+                flavor: 'codex',
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'opencode',
+                    provider: 'codex',
                     updatedAt: 1,
                     currentModelId: 'muse-spark-1.3',
                     availableModels: [{ id: 'muse-spark-1.3', name: 'Muse Spark 1.3' }],
@@ -186,19 +186,6 @@ describe('resolveToolHeaderTextPresentation (real known tools)', () => {
         const model = resolveToolHeaderTextPresentation({ tool, metadata: null });
         expect(model.title).toBe('Question');
         expect(model.subtitle).toBe('Next Tool Stress?');
-    });
-
-    it('renders WorkspaceIndexingPermission with the shared translated default title', () => {
-        const tool = makeToolCall({
-            name: 'WorkspaceIndexingPermission',
-            input: {
-                options: [
-                    { id: 'allow', name: 'Allow indexing' },
-                ],
-            },
-        });
-        const model = resolveToolHeaderTextPresentation({ tool, metadata: null });
-        expect(model.title).toBe('Workspace indexing');
     });
 
     it('names TaskOutput after the background task it reads, not after a subagent', () => {

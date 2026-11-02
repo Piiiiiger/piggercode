@@ -1,9 +1,8 @@
 import {
   buildBackendTargetKey,
-  readAcpConfiguredBackendV1FromMetadata,
   type BackendTargetRefV1,
 } from '@piggercode/protocol';
-import { AGENT_IDS, type AgentId } from '../types.js';
+import { AGENT_IDS, type AgentCore, type AgentId } from '../types.js';
 import { isAbsolutePathLike } from '../path/isAbsolutePathLike.js';
 import { AGENTS_CORE } from '../manifest.js';
 import { isCodexVendorResumeBackendEnabled } from '../providerSettings/definitions/codex.js';
@@ -42,19 +41,6 @@ export function resolveVendorResumeIdFromSessionMetadata(agentId: AgentId, metad
     if (runtimeDescriptor?.vendorSessionId) return runtimeDescriptor.vendorSessionId;
   }
 
-  if (agentId === 'opencode') {
-    const runtimeDescriptor = readSessionMetadataRuntimeDescriptor(record, 'opencode');
-    if (runtimeDescriptor?.vendorSessionId) return runtimeDescriptor.vendorSessionId;
-  }
-
-  if (agentId === 'pi') {
-    const runtimeDescriptor = readSessionMetadataRuntimeDescriptor(record, 'pi');
-    if (runtimeDescriptor?.sessionFile && isAbsolutePathLike(runtimeDescriptor.sessionFile)) {
-      return runtimeDescriptor.sessionFile;
-    }
-    if (runtimeDescriptor?.vendorSessionId) return runtimeDescriptor.vendorSessionId;
-  }
-
   const resume = AGENTS_CORE[agentId]?.resume;
   const field = resume && 'vendorResumeIdField' in resume ? resume.vendorResumeIdField ?? null : null;
   if (!field) return null;
@@ -69,9 +55,8 @@ export function resolveVendorResumeIdFromSessionMetadata(agentId: AgentId, metad
 /**
  * Resolves the provider-owned session identifier for an exact backend target.
  *
- * Configured ACP identifiers are valid only alongside the matching persisted
- * backend identity. Built-in targets likewise reject metadata that resolves to
- * another Agent, preventing a stale flat identifier from crossing runtimes.
+ * Rejects metadata that resolves to another Agent, preventing a stale flat
+ * identifier from crossing runtimes.
  */
 export function resolveProviderSessionIdForBackendTarget(
   target: BackendTargetRefV1,
@@ -80,14 +65,6 @@ export function resolveProviderSessionIdForBackendTarget(
   const record = asRecord(metadata);
   if (!record) return null;
 
-  if (target.kind === 'configuredAcpBackend') {
-    const configuredBackend = readAcpConfiguredBackendV1FromMetadata(record);
-    if (!configuredBackend || configuredBackend.backendId !== target.backendId) return null;
-    const raw = record.customAcpSessionId;
-    return typeof raw === 'string' && raw.trim().length > 0 ? raw.trim() : null;
-  }
-
-  if (readAcpConfiguredBackendV1FromMetadata(record)) return null;
   const resolvedAgentId = resolveAgentIdFromSessionMetadata(record);
   if (resolvedAgentId && resolvedAgentId !== target.agentId) return null;
   if (!(AGENT_IDS as readonly string[]).includes(target.agentId)) return null;
@@ -135,7 +112,7 @@ export function evaluateVendorResumeEligibility(input: Readonly<{
     return { eligible: false, reasonCode: 'backend_disabled_by_account_settings' };
   }
 
-  const resumeConfig = AGENTS_CORE[input.agentId]?.resume;
+  const resumeConfig: AgentCore['resume'] | undefined = AGENTS_CORE[input.agentId]?.resume;
   if (!resumeConfig || resumeConfig.vendorResume === 'unsupported') {
     return { eligible: false, reasonCode: 'agent_unsupported' };
   }

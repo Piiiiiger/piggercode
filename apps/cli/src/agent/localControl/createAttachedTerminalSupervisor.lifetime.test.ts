@@ -1,5 +1,4 @@
 import { spawn } from 'node:child_process';
-import { createServer } from 'node:http';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -50,18 +49,10 @@ describe('native same-pane controller lifetime', () => {
       await rm(directory, { recursive: true, force: true });
     }
   });
-  it.each(['supervisor', 'codex', 'opencode'] as const)('retires only the %s owned native tree after abrupt controller death', async (entrypoint) => {
+  it.each(['supervisor', 'codex'] as const)('retires only the %s owned native tree after abrupt controller death', async (entrypoint) => {
     if (process.platform === 'win32') return; // This real SIGKILL vector is POSIX-specific.
     const directory = await mkdtemp(join(tmpdir(), 'happier-native-lifetime-'));
     const readyPath = join(directory, 'ready.json');
-    const server = createServer((request, response) => {
-      response.writeHead(request.url === '/global/health' ? 200 : 404, { 'content-type': 'application/json' });
-      response.end(JSON.stringify({ healthy: true, version: '1.0.0' }));
-    });
-    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
-    const address = server.address();
-    if (!address || typeof address === 'string') throw new Error('Fixture server did not bind');
-    const baseUrl = `http://127.0.0.1:${address.port}`;
     const descendant = 'process.send(process.pid); setInterval(() => {}, 1000);';
     const provider = `
       const child = require('node:child_process').spawn(process.execPath, ['-e', ${JSON.stringify(descendant)}], { stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
@@ -75,14 +66,11 @@ describe('native same-pane controller lifetime', () => {
       const supervisor = createAttachedTerminalSupervisor({ resolveInvocation: () => (${invocation}) });
       if (!await supervisor.attach(null)) throw new Error('Native startup was refused');
       setInterval(() => {}, 1000);
-    ` : entrypoint === 'codex' ? `
+    ` : `
       const { writeCodexSharedControlEndpoint } = await import(${moduleUrl('src/backends/codex/localControl/codexSharedControlEndpoint.ts')});
       await writeCodexSharedControlEndpoint({ happyHomeDir: ${JSON.stringify(directory)}, sessionId: 'fixture', endpoint: 'unix:///fixture.sock' });
       const { runCodexProviderAttach } = await import(${moduleUrl('src/backends/codex/attach/runCodexProviderAttach.ts')});
       await runCodexProviderAttach({ sessionId: 'fixture', happyHomeDir: ${JSON.stringify(directory)}, metadata: { path: ${JSON.stringify(directory)}, codexSessionId: 'fixture-thread', codexBackendMode: 'appServer' }, command: ${JSON.stringify(process.execPath)}, commandArgs: ['-e', ${JSON.stringify(provider)}, '--'] });
-    ` : `
-      const { runOpenCodeProviderAttach } = await import(${moduleUrl('src/backends/opencode/attach/runOpenCodeProviderAttach.ts')});
-      await runOpenCodeProviderAttach({ sessionId: 'fixture', metadata: { path: ${JSON.stringify(directory)}, opencodeSessionId: 'fixture-session', opencodeBackendMode: 'server', opencodeServerBaseUrl: ${JSON.stringify(baseUrl)}, opencodeServerBaseUrlExplicit: true }, command: ${JSON.stringify(process.execPath)}, commandArgs: ['-e', ${JSON.stringify(provider)}, '--'] });
     `;
     const controller = spawn(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', controllerSource], {
       env: { PATH: process.env.PATH, HOME: directory, PIGGERCODE_HOME_DIR: directory, PIGGERCODE_NATIVE_FIXTURE_VALUE: 'synthetic-native-env' },
@@ -108,7 +96,6 @@ describe('native same-pane controller lifetime', () => {
       if (tree) await killProcessTree({ pid: tree.provider });
       await killProcessTree(controller);
       await killProcessTree(sentinel);
-      await new Promise<void>((resolve) => server.close(() => resolve()));
       await rm(directory, { recursive: true, force: true });
     }
   });

@@ -17,7 +17,7 @@ const PROBED_MODELS = [
 
 function buildSpawnMetadata(): Metadata {
     return {
-        flavor: 'pi',
+        flavor: 'codex',
         path: '/tmp/project',
     } as unknown as Metadata;
 }
@@ -26,7 +26,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
     it('seeds sessionModelsV1 and its legacy alias when the session has no model list', () => {
         const next = computeNextSessionModelsSeedMetadata({
             metadata: buildSpawnMetadata(),
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'lmstudio/hadees/lfm2.5-2.6b@q8_0',
             availableModels: PROBED_MODELS,
             updatedAt: 1234,
@@ -34,14 +34,14 @@ describe('computeNextSessionModelsSeedMetadata', () => {
 
         expect(next.sessionModelsV1).toEqual({
             v: 1,
-            provider: 'pi',
+            provider: 'codex',
             updatedAt: 1234,
             currentModelId: 'lmstudio/hadees/lfm2.5-2.6b@q8_0',
             availableModels: PROBED_MODELS,
         });
         expect(next.acpSessionModelsV1).toEqual(next.sessionModelsV1);
         // Spawn-time metadata the runner owns must survive the seed.
-        expect(next.flavor).toBe('pi');
+        expect(next.flavor).toBe('codex');
         expect(next.path).toBe('/tmp/project');
     });
 
@@ -49,7 +49,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
         const runtimePublished = buildSpawnMetadata();
         (runtimePublished as Record<string, unknown>).sessionModelsV1 = {
             v: 1,
-            provider: 'pi',
+            provider: 'codex',
             updatedAt: 9999,
             currentModelId: 'zai/glm-5.3',
             availableModels: [{ id: 'zai/glm-5.3', name: 'GLM-5.3' }],
@@ -57,7 +57,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
 
         const next = computeNextSessionModelsSeedMetadata({
             metadata: runtimePublished,
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'default',
             availableModels: PROBED_MODELS,
             updatedAt: 1234,
@@ -71,7 +71,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
 
         const next = computeNextSessionModelsSeedMetadata({
             metadata,
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'default',
             availableModels: [],
             updatedAt: 1234,
@@ -83,7 +83,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
     it('drops rows the session-models schema would reject', () => {
         const next = computeNextSessionModelsSeedMetadata({
             metadata: buildSpawnMetadata(),
-            provider: '  pi  ',
+            provider: '  codex  ',
             currentModelId: '  default  ',
             availableModels: [
                 { id: 'zai/glm-5.3', name: 'GLM-5.3', description: '' },
@@ -111,7 +111,7 @@ describe('computeNextSessionModelsSeedMetadata', () => {
             },
         ]);
         expect(next.sessionModelsV1).toMatchObject({
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'default',
         });
     });
@@ -125,12 +125,12 @@ describe('publishSessionModelsSeedToMetadata', () => {
             _options?: Readonly<{ serverId?: string | null }>,
         ) => {
             const seeded = updater(buildSpawnMetadata());
-            expect(readSessionModelsState(seeded)?.provider).toBe('pi');
+            expect(readSessionModelsState(seeded)?.provider).toBe('codex');
         });
 
         await publishSessionModelsSeedToMetadata({
             sessionId: 'session-1',
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'default',
             availableModels: PROBED_MODELS,
             updatedAt: 1234,
@@ -148,13 +148,13 @@ describe('seeded metadata resolves through the in-session model options reader',
     it('surfaces the probed models in getModelOptionsForSession', () => {
         const seeded = computeNextSessionModelsSeedMetadata({
             metadata: buildSpawnMetadata(),
-            provider: 'pi',
+            provider: 'codex',
             currentModelId: 'default',
             availableModels: PROBED_MODELS,
             updatedAt: 1234,
         });
 
-        const options = getModelOptionsForSession('pi', seeded);
+        const options = getModelOptionsForSession('codex', seeded);
         const values = options.map((option) => option.value);
 
         // The picker's localized "Use CLI settings" default plus every probed model.

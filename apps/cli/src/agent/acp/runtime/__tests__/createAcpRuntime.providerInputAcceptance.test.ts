@@ -23,7 +23,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       waitForResponseComplete: vi.fn(async () => ({ kind: 'completed' as const, stopReason: 'end_turn' as const })),
     };
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -67,7 +67,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       })),
     };
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -125,7 +125,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       })),
     };
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -169,7 +169,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       })),
     };
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -201,7 +201,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       }),
     };
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -228,7 +228,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
 
   it('keeps a missing runtime session classified as runtime_disposed_before_delivery', async () => {
     const runtime = createAcpRuntime({
-      provider: 'customAcp',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -243,7 +243,7 @@ describe('createAcpRuntime Standard ACP provider-input acceptance contract', () 
       localId: 'local-missing-session',
     })).rejects.toMatchObject({
       reason: 'runtime_disposed_before_delivery',
-      message: 'customAcp ACP session was not started',
+      message: 'codex ACP session was not started',
     });
   });
 });

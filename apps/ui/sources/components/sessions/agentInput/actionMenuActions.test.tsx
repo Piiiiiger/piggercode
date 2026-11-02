@@ -18,13 +18,13 @@ vi.mock('@/components/ui/theme/haptics', () => ({
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['codex', 'claude', 'opencode', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'codex',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({ displayNameKey: 'agents.codex' }),
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
 }));

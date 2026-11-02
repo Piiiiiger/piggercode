@@ -703,15 +703,15 @@ describe('createHappierMcpServer', () => {
         sendClaudeSessionMessage: () => {},
         updateMetadata: () => {},
         getMetadataSnapshot: () => ({ path: '/repo/current' } as any),
-        getBackendTarget: () => ({ kind: 'configuredAcpBackend', backendId: 'review-bot' }),
+        getBackendTarget: () => ({ kind: 'builtInAgent', agentId: 'codex' }),
       } as any,
       { credentials: null },
     );
 
     expect(captured.params).toBeDefined();
     expect(captured.params.getCurrentSessionBackendTarget()).toEqual({
-      kind: 'configuredAcpBackend',
-      backendId: 'review-bot',
+      kind: 'builtInAgent',
+      agentId: 'codex',
     });
   });
 

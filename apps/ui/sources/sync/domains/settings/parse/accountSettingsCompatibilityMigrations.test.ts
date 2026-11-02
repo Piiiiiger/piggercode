@@ -90,7 +90,7 @@ describe('applyAccountSettingsCompatibilityMigrations', () => {
             input: {
                 backendCliSourcePreferenceById: {
                     codex: 'managed-first',
-                    gemini: 'system-first',
+                    unknownAgent: 'system-first',
                     invalid: 'ignored',
                 },
             },
@@ -104,7 +104,6 @@ describe('applyAccountSettingsCompatibilityMigrations', () => {
 
         expect(migrated.backendCliSourcePreferenceByTargetKey).toEqual({
             [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: 'managed-first',
-            [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: 'system-first',
         });
     });
 

@@ -244,9 +244,7 @@ export function NewSessionEngineOptionDetail(props: NewSessionEngineOptionDetail
         [props.backendTarget],
     );
     const providerCore = React.useMemo(() => getAgentCore(providerAgentId), [providerAgentId]);
-    const providerId = props.backendTarget.kind === 'configuredAcpBackend'
-        ? props.backendTarget.backendId
-        : props.backendTarget.agentId;
+    const providerId = props.backendTarget.agentId;
     const providerSupportsFreeform = providerCore.model.supportsFreeform === true;
     const canEnterCustomModel = preflightModels?.supportsFreeform === true || providerSupportsFreeform;
     const canonicalSelectedModelId = React.useMemo(
@@ -308,7 +306,6 @@ export function NewSessionEngineOptionDetail(props: NewSessionEngineOptionDetail
         backendTargetKey: buildBackendTargetKey(props.backendTarget),
         providerAgentId,
         builtInAgentId: props.backendTarget.kind === 'builtInAgent' ? props.backendTarget.agentId : null,
-        configuredBackendId: props.backendTarget.kind === 'configuredAcpBackend' ? props.backendTarget.backendId : null,
     }), [props.backendTarget, providerAgentId]);
 
     const favoriteModelAvailabilityById = React.useMemo(() => buildFavoriteModelAvailabilityById({

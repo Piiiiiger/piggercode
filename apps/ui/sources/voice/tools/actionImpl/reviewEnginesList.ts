@@ -14,8 +14,7 @@ function normalizeId(raw: unknown): string {
 }
 
 /**
- * The catalog name the app already shows for a backend ("Factory Droid", not "Droid").
- * Native review engines are not catalog agents, so they keep their own protocol title.
+ * The catalog name the app already shows for a backend ("Codex", not "codex").
  */
 function resolveAgentLabel(agentId: string): string {
   return resolveBuiltInAgentTitle(agentId) ?? agentId;

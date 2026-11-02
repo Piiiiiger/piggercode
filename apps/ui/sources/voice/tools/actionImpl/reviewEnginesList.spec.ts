@@ -5,7 +5,6 @@ import { installVoiceToolActionImplCommonModuleMocks } from './voiceToolActionIm
 const state: any = {
   settings: {
     backendEnabledByTargetKey: {
-      [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: false,
     },
   },
   sessions: {
@@ -42,7 +41,6 @@ vi.mock('@/sync/domains/server/serverRuntime', () => ({
 describe('review engine voice tool', () => {
   beforeEach(() => {
     state.settings.backendEnabledByTargetKey = {
-      [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: false,
     };
     getMachineCapabilitiesSnapshot.mockReset();
     getMachineCapabilitiesSnapshot.mockReturnValue({
@@ -53,8 +51,7 @@ describe('review engine voice tool', () => {
             data: {
               backends: {
                 codex: { available: true, intents: ['review'] },
-                gemini: { available: false, intents: ['review'] },
-                coderabbit: { available: true, intents: ['review'] },
+                claude: { available: false, intents: ['review'] },
               },
             },
           },
@@ -67,17 +64,17 @@ describe('review engine voice tool', () => {
     const { listReviewEnginesForVoiceTool } = await import('./reviewEnginesList');
     const res: any = await listReviewEnginesForVoiceTool({ sessionId: 's1' });
 
-    expect(res.items.map((item: any) => item.engineId)).toEqual(expect.arrayContaining(['codex', 'coderabbit']));
-    expect(res.items.map((item: any) => item.engineId)).not.toContain('gemini');
+    expect(res.items.map((item: any) => item.engineId)).toEqual(expect.arrayContaining(['codex']));
+    expect(res.items.map((item: any) => item.engineId)).not.toContain('claude');
   });
 
   it('includes disabled review engines when explicitly requested', async () => {
     const { listReviewEnginesForVoiceTool } = await import('./reviewEnginesList');
     const res: any = await listReviewEnginesForVoiceTool({ sessionId: 's1', includeDisabled: true });
 
-    const gemini = (res.items ?? []).find((item: any) => item.engineId === 'gemini');
-    expect(gemini).toBeTruthy();
-    expect(gemini.enabled).toBe(false);
+    const claude = (res.items ?? []).find((item: any) => item.engineId === 'claude');
+    expect(claude).toBeTruthy();
+    expect(claude.enabled).toBe(false);
   });
 
   it('loads review engine capabilities from the resolved session machine target', async () => {

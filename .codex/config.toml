@@ -24,7 +24,3 @@ developer_instructions = """
 - Keep bulky nested results inside the isolate when possible. Emit one compact decision-relevant projection through `text(...)`, preserving failures, exact evidence pointers, paths, IDs or handles, and output needed for verification. Do not emit complete result objects or raw output unless required or requested.
 - Do not add speculative calls, broaden the investigation, or invoke tools whose results will not affect the decision merely because batching makes more calls cheap.
 """
-
-[mcp_servers.sentry]
-type = "http"
-url = "https://mcp.sentry.dev/mcp"

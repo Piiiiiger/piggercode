@@ -62,9 +62,8 @@ export type DaemonTerminalPresentation = Readonly<{
 export function resolveDefaultDaemonTerminalPresentation(params: Readonly<{
   host: 'tmux' | 'zellij' | 'herdr';
   agentId: AgentId;
-  configuredAcpBackend: boolean;
 }>): DaemonTerminalPresentation {
-  if (params.configuredAcpBackend || hasBuiltInAcpConfig(params.agentId)) {
+  if (hasBuiltInAcpConfig(params.agentId)) {
     return { kind: 'none' };
   }
   return {
@@ -88,7 +87,6 @@ export function resolveDaemonTerminalPresentation(params: Readonly<{
   hooks: DaemonSpawnHooks | null | undefined;
   host: 'tmux' | 'zellij' | 'herdr';
   agentId: AgentId;
-  configuredAcpBackend: boolean;
   accountSettings: AccountSettings | null;
   runtimeSelection: DaemonSpawnRuntimeSelection;
   processEnv: NodeJS.ProcessEnv;

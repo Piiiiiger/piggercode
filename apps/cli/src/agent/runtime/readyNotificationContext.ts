@@ -34,11 +34,6 @@ export function getSessionNotificationAgentDisplayName(getMetadataSnapshot?: (()
     return normalizeNotificationText(getProviderCliRuntimeSpec(agentId).title);
   }
 
-  const configuredAcpTitle = normalizeNotificationText(
-    (metadata as { acpConfiguredBackendV1?: { title?: unknown } } | null)?.acpConfiguredBackendV1?.title,
-  );
-  if (configuredAcpTitle) return configuredAcpTitle;
-
   const acpProvider = normalizeNotificationText(
     (metadata as { acpTransportV1?: { provider?: unknown } } | null)?.acpTransportV1?.provider,
   );

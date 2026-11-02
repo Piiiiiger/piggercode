@@ -74,7 +74,7 @@ vi.mock('@/agents/backendCatalog/getResolvedBackendCatalogEntries', () => ({
             targetKey: 'acpBackend:custom-preset',
             family: 'configuredAcpBackend',
             builtInAgentId: null,
-            iconAgentId: 'customAcp',
+            iconAgentId: 'codex',
             title: 'Custom Review Bot',
             subtitle: 'Custom ACP',
         },
@@ -201,51 +201,4 @@ describe('SubAgentGuidanceRuleEditorModal', () => {
         );
     });
 
-    it('preserves a configured ACP backend target and probes models against it', async () => {
-        const onResolve = vi.fn();
-        const onClose = vi.fn();
-
-        const { useNewSessionPreflightModelsState } = await import('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModelsState');
-        const { SubAgentGuidanceRuleEditorModal } = await import('./subAgentGuidanceRuleEditorModal');
-
-        const screen = await renderScreen(
-            <SubAgentGuidanceRuleEditorModalHarness
-                component={SubAgentGuidanceRuleEditorModal as any}
-                mode="edit"
-                entry={{
-                    id: 'guidance_3',
-                    description: 'Review custom ACP changes',
-                    enabled: true,
-                    suggestedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-preset' },
-                }}
-                onResolve={onResolve}
-                onClose={onClose}
-            />,
-        );
-
-        const dropdowns = screen.findAllByType('DropdownMenu' as any);
-        expect(dropdowns).toHaveLength(3);
-        expect(dropdowns[0]!.props.selectedId).toBe('acpBackend:custom-preset');
-        expect(dropdowns[1]!.props.selectedId).toBe('');
-
-        expect(useNewSessionPreflightModelsState).toHaveBeenCalledWith(
-            expect.objectContaining({
-                backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-preset' },
-            }),
-        );
-
-        const saveButton = findTestInstanceByTypeWithProps(screen.tree, 'RoundButton', { title: 'common.save' });
-        expect(saveButton).toBeTruthy();
-
-        await pressTestInstanceAsync(saveButton, 'common.save');
-
-        expect(onResolve).toHaveBeenCalledWith(
-            expect.objectContaining({
-                kind: 'save',
-                entry: expect.objectContaining({
-                    suggestedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-preset' },
-                }),
-            }),
-        );
-    });
 });

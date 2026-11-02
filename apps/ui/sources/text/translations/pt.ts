@@ -319,52 +319,6 @@ const settingsAppearanceTranslationExtension = {
 } as const;
 
 const ptAcpCatalogSettingsExtension = {
-    acpCatalog: 'Backends ACP',
-    acpCatalogSubtitle: 'Gerencie backends ACP integrados e personalizados',
-    acpCatalogBuiltIn: 'ACP integrado',
-    acpCatalogBuiltInFooter:
-        'Os agentes ACP genéricos integrados são definidos no catálogo compartilhado e executados pelo ambiente de execução ACP compartilhado.',
-    acpCatalogBackends: 'Backends personalizados',
-    acpCatalogBackendsFooter:
-        'Cada backend personalizado é uma definição CLI compatível com ACP que pode ser selecionada, com seu próprio lançador, padrões e configurações de autenticação.',
-    acpCatalogBackendsEmptyTitle: 'Nenhum backend ACP personalizado',
-    acpCatalogBackendsEmptySubtitle: 'Adicione um backend para criar uma opção selecionável de backend ACP personalizado.',
-    acpCatalogAddBackend: 'Adicionar backend ACP',
-    acpCatalogAddBackendSubtitle: 'Criar uma opção de backend ACP personalizado',
-    acpCatalogBackendEditorTitle: 'Backend ACP',
-    acpCatalogBasics: 'Básico',
-    acpCatalogLauncher: 'Lançador',
-    acpCatalogEnv: 'Ambiente',
-    acpCatalogAddEnv: 'Adicionar variável de ambiente',
-    acpCatalogAddEnvSubtitle: 'Armazene valores literais ou vincule Segredos salvos',
-    acpCatalogEnvEmptyTitle: 'Sem variáveis de ambiente',
-    acpCatalogEnvEmptySubtitle: 'Adicione variáveis de inicialização para este backend.',
-    acpCatalogAuth: 'Autenticação',
-    acpCatalogAuthSupport: 'Suporte de autenticação',
-    acpCatalogAuthParser: 'Analisador de status',
-    acpCatalogCapabilities: 'Capacidades',
-    acpCatalogTransportProfile: 'Perfil de transporte',
-    acpCatalogSupportsLoadSession: 'Suporta a retomada de sessões',
-    acpCatalogSupportsModes: 'Suporta modos',
-    acpCatalogSupportsModels: 'Suporta modelos',
-    acpCatalogSupportsConfigOptions: 'Suporta opções de configuração',
-    acpCatalogPromptImageSupport: 'Suporte a imagens em prompts',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: 'Nome',
-    acpCatalogFieldTitle: 'Título',
-    acpCatalogFieldDescription: 'Descrição',
-    acpCatalogFieldCommand: 'Comando',
-    acpCatalogFieldArgs: 'Argumentos (um por linha)',
-    acpCatalogMachineLoginKey: 'Chave de login da máquina',
-    acpCatalogDocsUrl: 'URL da documentação',
-    acpCatalogLoginCommand: 'Comando de login',
-    acpCatalogLoginArgs: 'Argumentos de login (um por linha)',
-    acpCatalogStatusCommand: 'Tokens do comando de status (um por linha)',
-    acpCatalogDefaultMode: 'Modo padrão',
-    acpCatalogDefaultModel: 'Modelo padrão',
-    acpCatalogDeleteBackendTitle: 'Excluir backend ACP?',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `Excluir "${name}"?`,
-    acpCatalogValidationFailed: 'As configurações do catálogo ACP são inválidas.',
 } as const;
 
 const acpCatalogTranslationExtension = {
@@ -2107,7 +2061,7 @@ export const pt: TranslationStructure = {
 		    mcpServersDetectedRefreshSubtitle: "Examinar os arquivos de configuração dos provedores nesta máquina",
 		    mcpServersDetectedWarningsTitle: "Avisos de detecção",
 		    mcpServersDetectedEmptyTitle: "Nenhum servidor MCP detectado",
-		    mcpServersDetectedEmptySubtitle: "Clique em atualizar para examinar as configurações do Claude/Codex/OpenCode.",
+		    mcpServersDetectedEmptySubtitle: "Clique em atualizar para examinar as configurações do Claude/Codex.",
 		    mcpServersImportTitle: "Importar servidor MCP?",
 		    mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) =>
 		      `Importar "${name}" de ${provider}?`,
@@ -2481,8 +2435,6 @@ export const pt: TranslationStructure = {
       openaiCodex: "Codex da OpenAI",
       openai: "Chave de API da OpenAI",
       anthropic: "Chave de API da Anthropic",
-      gemini: "Gemini do Google",
-      antigravity: 'Google Antigravity',
       github: "GitHub",
     },
     title: "Serviços conectados",
@@ -2673,12 +2625,6 @@ export const pt: TranslationStructure = {
       pasteRedirectUrlPromptBody:
         "Após concluir o OAuth, copie a URL final redirecionada da barra de endereços do navegador e cole aqui.",
       providerOverrides: {
-        antigravity: {
-          connectWebDescription: "Próximo passo: entre com o Google. O Antigravity mostra um código de autorização para copiar.",
-          pasteRedirectUrlPromptBody: "1) Entre com o Google. 2) Copie o código de autorização mostrado em antigravity.google. 3) Cole-o abaixo e mantenha este login aberto.",
-          pasteRedirectUrlPlaceholder: "Cole o código de autorização do Antigravity",
-          pasteRedirectUrlTitle: "Colar código de autorização",
-        },
         claudeSubscription: {
           connectWebDescription:
             "Próximo passo: faça login na página que abrir. O Claude pode mostrar uma sequência de código em vez de redirecionar automaticamente.",
@@ -4238,110 +4184,6 @@ export const pt: TranslationStructure = {
                     }
                 }
             },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "Versão do OpenCode",
-                        footer: "Automático prefere opencode, recorre a opencode2 e detecta a API do servidor após a inicialização. Estável sempre seleciona opencode, mas ainda detecta V1 ou V2. V2 prefere opencode2 e, caso contrário, usa opencode com V2 selecionado. As ferramentas MCP do Happier funcionam com V2 no modo ACP; a API de servidor ainda não oferece registro MCP dinâmico."
-                    },
-                    backendMode: {
-                        title: "Modo de backend",
-                        footer: "O modo servidor libera perguntas e fork nativo. O modo ACP e um fallback legado."
-                    },
-                    server: {
-                        title: "Conexao do servidor",
-                        footer: "Deixe vazio para usar o ciclo de vida do servidor OpenCode gerenciado pelo Happier. Defina uma URL http(s) absoluta para se conectar a um servidor OpenCode existente."
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "Geração da CLI",
-                        subtitle: "Escolha qual comando OpenCode instalado o Happier inicia.",
-                        options: {
-                            auto: { title: "Automático (recomendado)", subtitle: "Prefere opencode e recorre a opencode2." },
-                            stable: { title: "Estável", subtitle: "Sempre inicia opencode e detecta a API após a inicialização." },
-                            v2: { title: "V2", subtitle: "Prefere opencode2; caso contrário, inicia opencode com V2 selecionado." }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "Modo de backend do OpenCode",
-                        subtitle: "Escolha o backend de integracao.",
-                        options: {
-                            server: {
-                                title: "Servidor (recomendado)",
-                                subtitle: "Usa as APIs de servidor do OpenCode para mais recursos e confiabilidade."
-                            },
-                            acp: {
-                                title: "ACP (legado)",
-                                subtitle: "Roteia o OpenCode via ACP; com menos recursos."
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "URL de servidor OpenCode existente",
-                        subtitle: "Substituicao opcional para um servidor OpenCode gerenciado pelo usuario."
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "CLI do Cursor",
-                        footer: "Use um binário específico do Cursor quando a detecção automática não for suficiente. O Happier prefere cursor-agent e pode usar agent como alternativa quando ativado."
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Caminho do binário do Cursor",
-                        subtitle: "Caminho absoluto opcional para cursor-agent ou agent."
-                    },
-                    cursorApiEndpoint: {
-                        title: "Endpoint da API do Cursor",
-                        subtitle: "Substituição opcional do endpoint da API do Cursor Agent."
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "Permitir alternativa agent",
-                        subtitle: "Use o comando agent quando cursor-agent não estiver disponível."
-                    }
-                }
-            },
-            customAcp: {
-                title: "ACP personalizado"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            devin: { title: "Devin" },
-            agy: { title: 'Antigravity' },
-            fx: { title: "FX" },
-            droid: { title: "Factory Droid" },
-            codebuddy: { title: "CodeBuddy" },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
-            },
             codex: {
           title: "Codex",
           sections: {
@@ -4895,9 +4737,6 @@ export const pt: TranslationStructure = {
       codexAcp: {
         title: "Adaptador Codex ACP",
       },
-      agyAcpServer: {
-          title: "Servidor ACP do Agy",
-      },
       githubCli: {
         title: "CLI do GitHub",
       },
@@ -5111,7 +4950,6 @@ export const pt: TranslationStructure = {
       installCliIfAvailable: ({ cli }: { cli: string }) =>
         `Instale o CLI do ${cli} se disponível •`,
       viewInstallationGuide: "Ver guia de instalação →",
-      viewGeminiDocs: "Ver docs do Gemini →",
     },
     worktree: {
       creating: ({ name }: { name: string }) => `Criando worktree '${name}'...`,
@@ -5218,18 +5056,6 @@ export const pt: TranslationStructure = {
       reinstallTitle: "Reinstalar Codex ACP?",
       description:
         "Isso instala um adaptador ACP experimental em torno do Codex que oferece suporte a carregar/retomar threads.",
-    },
-    agyAcpBanner: {
-        title: "Servidor ACP do Agy",
-        install: "Instalar",
-        update: "Atualizar",
-        reinstall: "Reinstalar",
-    },
-    agyAcpInstallModal: {
-        installTitle: "Instalar o servidor ACP do Agy?",
-        updateTitle: "Atualizar o servidor ACP do Agy?",
-        reinstallTitle: "Reinstalar o servidor ACP do Agy?",
-        description: "Isso instala o servidor ACP oficial e fixado do Agy usado nas sessões do Agy. A CLI interativa agy continua sendo instalada separadamente.",
     },
         githubCliBanner: {
             title: 'GitHub CLI',
@@ -6565,9 +6391,6 @@ export const pt: TranslationStructure = {
     browseSourceCodexUserHome: "Meu diretório Codex",
     browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
     browseSourceClaudeDefault: "Configuração padrão do Claude",
-    browseSourceOpenCodeDefault: "Servidor padrão do OpenCode",
-    browseSourceAcpAgentSessions: 'Sessões do agente',
-    browseSourcePiDefault: "Diretório padrão do agente Pi",
     browseCandidates: "Sessões disponíveis",
     browseNoMachines: "Ainda não há máquinas disponíveis para sessões diretas.",
     browseNoCandidates: "Nenhuma sessão do provedor foi encontrada para esta máquina e este provedor.",
@@ -6636,50 +6459,6 @@ export const pt: TranslationStructure = {
     codexSessionIdCopied:
       "ID da sessão Codex copiado para a área de transferência",
     failedToCopyCodexSessionId: "Falha ao copiar ID da sessão Codex",
-    opencodeSessionId: "ID da sessão OpenCode",
-    opencodeSessionIdCopied:
-      "ID da sessão OpenCode copiado para a área de transferência",
-    auggieSessionId: "ID da sessão Auggie",
-    auggieSessionIdCopied:
-      "ID da sessão Auggie copiado para a área de transferência",
-    geminiSessionId: "ID da sessão Gemini",
-    geminiSessionIdCopied:
-      "ID da sessão Gemini copiado para a área de transferência",
-    qwenSessionId: "ID da sessão Qwen Code",
-    qwenSessionIdCopied:
-      "ID da sessão Qwen Code copiado para a área de transferência",
-    kimiSessionId: "ID da sessão Kimi",
-    kimiSessionIdCopied:
-      "ID da sessão Kimi copiado para a área de transferência",
-    kiloSessionId: "ID da sessão Kilo",
-    kiloSessionIdCopied:
-      "ID da sessão Kilo copiado para a área de transferência",
-    kiroSessionId: "ID da sessão Kiro",
-    kiroSessionIdCopied:
-      "ID da sessão Kiro copiado para a área de transferência",
-    devinSessionId: "ID da sessão Devin",
-    devinSessionIdCopied: "ID da sessão Devin copiado para a área de transferência",
-    agySessionId: "ID da sessão Agy",
-    agySessionIdCopied: "ID da sessão Agy copiado para a área de transferência",
-    fxSessionId: "ID da sessão FX",
-    fxSessionIdCopied: "ID da sessão FX copiado para a área de transferência",
-    droidSessionId: "ID da sessão Factory Droid",
-    codebuddySessionId: "ID da sessão CodeBuddy",
-    droidSessionIdCopied: "ID da sessão Factory Droid copiado para a área de transferência",
-    codebuddySessionIdCopied: "ID da sessão CodeBuddy copiado para a área de transferência",
-    customAcpSessionId: "ID da sessão ACP personalizada",
-    grokSessionId: "ID da sessão Grok",
-    grokSessionIdCopied: "ID da sessão Grok copiado para a área de transferência",
-    customAcpSessionIdCopied:
-      "ID da sessão ACP personalizada copiado para a área de transferência",
-    piSessionId: "ID da sessão Pi",
-    piSessionIdCopied: "ID da sessão Pi copiado para a área de transferência",
-    copilotSessionId: "ID da sessão do Copilot",
-    copilotSessionIdCopied:
-      "ID da sessão do Copilot copiado para a área de transferência",
-    cursorSessionId: "ID da sessão do Cursor",
-    cursorSessionIdCopied:
-      "ID da sessão do Cursor copiado para a área de transferência",
     metadataCopied: "Metadados copiados para a área de transferência",
     failedToCopyMetadata: "Falha ao copiar metadados",
     failedToKillSession: "Falha ao encerrar sessão",
@@ -6906,27 +6685,6 @@ export const pt: TranslationStructure = {
     agent: {
       claude: "Claude",
       codex: "Codex",
-      opencode: "OpenCode",
-      gemini: "Gemini",
-      auggie: "Auggie",
-      qwen: "Qwen Code",
-      kimi: "Kimi",
-      kilo: "Kilo",
-      kiro: "Kiro",
-      devin: "Devin",
-      agy: 'Antigravity',
-      fx: "FX",
-      droid: "Factory Droid",
-      codebuddy: "CodeBuddy",
-      customAcp: "Custom ACP",
-      pi: "Pi",
-      copilot: "Copilot",
-      cursor: "Cursor",
-      grok: "Grok",
-    },
-    auggieIndexingChip: {
-      on: "Indexação ativada",
-      off: "Indexação desativada",
     },
       model: {
         title: "MODELO",
@@ -6966,31 +6724,6 @@ export const pt: TranslationStructure = {
       gpt5Low: "GPT-5 Baixo",
       gpt5Medium: "GPT-5 Médio",
       gpt5High: "GPT-5 Alto",
-    },
-    geminiPermissionMode: {
-      title: "MODO DE PERMISSÃO GEMINI",
-      default: "Padrão",
-      readOnly: "Somente leitura",
-      safeYolo: "YOLO seguro",
-      yolo: "YOLO",
-      badgeReadOnly: "Somente leitura",
-      badgeSafeYolo: "YOLO seguro",
-      badgeYolo: "YOLO",
-    },
-    geminiModel: {
-      title: "MODELO GEMINI",
-      gemini25Pro: {
-        label: "Gemini 2.5 Pro",
-        description: "Mais capaz",
-      },
-      gemini25Flash: {
-        label: "Gemini 2.5 Flash",
-        description: "Rápido e eficiente",
-      },
-      gemini25FlashLite: {
-        label: "Gemini 2.5 Flash Lite",
-        description: "Mais rápido",
-      },
     },
     context: {
       remaining: ({ percent }: { percent: number }) => `${percent}% restante`,
@@ -7190,13 +6923,6 @@ export const pt: TranslationStructure = {
     taskView: {
       moreTools: ({ count }: { count: number }) => `+${count} ferramentas`,
     },
-    workspaceIndexingPermission: {
-      defaultTitle: "Indexação do workspace",
-      description:
-        "A indexação ajuda o agente a pesquisar sua base de código mais rápido e fornecer respostas mais precisas. Isso pode escanear arquivos no seu workspace.",
-      optionFallback: "Opção",
-      chooseOptionHint: "Escolha uma opção abaixo para continuar.",
-    },
     acpHistoryImport: {
       title: "Importar histórico da sessão?",
       defaultNote:
@@ -7249,9 +6975,6 @@ export const pt: TranslationStructure = {
       switchMode: "Alterar modo",
       taskOutput: "Saída da tarefa",
       taskStop: "Parar tarefa",
-    },
-    geminiExecute: {
-      cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
     },
     desc: {
       terminalCmd: ({ cmd }: { cmd: string }) => `Terminal(cmd: ${cmd})`,
@@ -10033,11 +9756,11 @@ settingsSession: {
                     "welcome": {
                         "title": "Bem-vindo ao Happier",
                         "everywhereTitle": "Seus agentes de IA, em todos os lugares onde você trabalha",
-                        "everywhereBody": "Claude Code, Codex, OpenCode, Pi e muito mais: no celular, tablet, navegador ou desktop.",
+                        "everywhereBody": "Claude Code e Codex: no celular, tablet, navegador ou desktop.",
                         "cockpitTitle": "Seu cockpit móvel",
                         "cockpitBody": "Chat, arquivos, Git, editor, terminal. Tudo o que você precisa para criar e lançar seu próximo projeto, na ponta dos dedos.",
                         "existingTitle": "Sessões existentes, já disponíveis",
-                        "existingBody": "Qualquer sessão Claude, Codex ou OpenCode rodando na sua máquina, abra ao vivo no Happier.",
+                        "existingBody": "Qualquer sessão Claude ou Codex rodando na sua máquina, abra ao vivo no Happier.",
                         "voiceTitle": "Um assistente de voz para pensar junto",
                         "voiceBody": "Pergunte o que seus agentes estão fazendo, aprove solicitações de permissão e envie mensagens. Sem usar as mãos.",
                         "reviewTitle": "Revise diffs e deixe comentários",
@@ -10045,7 +9768,7 @@ settingsSession: {
                         "subagentsTitle": "Subagentes entre provedores",
                         "subagentsBody": "Inicie subagentes Codex a partir de uma sessão Claude. Divida o trabalho entre agentes. Encaminhe mensagens entre sessões.",
                         "tuisTitle": "Use suas TUIs favoritas",
-                        "tuisBody": "Execute Claude Code, Codex ou OpenCode na interface de terminal nativa. O Happier captura e sincroniza tudo em cada dispositivo.",
+                        "tuisBody": "Execute Claude Code ou Codex na interface de terminal nativa. O Happier captura e sincroniza tudo em cada dispositivo.",
                         "inboxTitle": "Uma caixa de entrada. Todas as sessões.",
                         "inboxBody": "Todas as aprovações pendentes, solicitações de permissão e sessões prontas para revisão, de cada máquina, em um só lugar.",
                         "mcpTitle": "Uma configuração MCP. Todos os provedores.",
@@ -10072,7 +9795,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "Você ama o terminal? Nós também!",
                         "wideTitle": "Você ama o terminal?\nNós também!",
-                        "body": "Execute Claude Code, Codex ou OpenCode na interface de terminal nativa. Acompanhe, envie mensagens e aprove permissões pelo celular.",
+                        "body": "Execute Claude Code ou Codex na interface de terminal nativa. Acompanhe, envie mensagens e aprove permissões pelo celular.",
                         "alt": "Imagem abstrata de espaço reservado para sincronização de TUI de terminal."
                     },
                     "cockpit": {
@@ -10082,8 +9805,8 @@ settingsSession: {
                         "alt": "Imagem abstrata de espaço reservado para o cockpit móvel."
                     },
                     "existingSessions": {
-                        "title": "Sessões Claude, Codex, OpenCode existentes? Já estão lá.",
-                        "body": "Navegue por qualquer sessão Claude, Codex ou OpenCode, em execução ou não.",
+                        "title": "Sessões Claude ou Codex existentes? Já estão lá.",
+                        "body": "Navegue por qualquer sessão Claude ou Codex, em execução ou não.",
                         "alt": "Imagem abstrata de espaço reservado para sessões de provedores existentes."
                     },
                     "voiceAssistant": {
@@ -10845,7 +10568,7 @@ settingsSession: {
     sessionRunningLocally:
       "Esta sessão está sendo executada localmente neste computador. Você pode alternar para remoto para controlar pelo app.",
     sessionRunningLocallyAndRemotely:
-      "Esta sessão está conectada localmente no OpenCode e ainda pode ser controlada pelo app.",
+      "Esta sessão também está aberta em um terminal local e ainda pode ser controlada pelo app.",
     switchingToRemote: "Alternando para o modo remoto…",
     switchToRemote: "Alternar para remoto",
     detachLocalTerminal: "Desconectar terminal",
@@ -11154,9 +10877,6 @@ settingsSession: {
       codex: "Codex (Padrão)",
       openai: "OpenAI (GPT-5)",
       azureOpenai: "Azure OpenAI",
-      gemini: "Gemini (Padrão)",
-      geminiApiKey: "Gemini (Chave de API)",
-      geminiVertex: "Gemini (Vertex AI)",
     },
     groups: {
       favorites: "Favoritos",
@@ -11194,10 +10914,6 @@ settingsSession: {
       codex: {
         title: "Codex",
         instructions: "Execute `codex login` para entrar.",
-      },
-      geminiCli: {
-        title: "Gemini CLI",
-        instructions: "Execute `gemini auth` para entrar.",
       },
     },
     requirements: {
@@ -11310,23 +11026,6 @@ settingsSession: {
       selectAtLeastOneError: "Selecione pelo menos um backend de IA.",
       claudeSubtitle: "CLI do Claude",
       codexSubtitle: "CLI do Codex",
-      opencodeSubtitle: "CLI do OpenCode",
-      geminiSubtitleExperimental: "CLI do Gemini (experimental)",
-      auggieSubtitle: "CLI do Auggie",
-      qwenSubtitleExperimental: "CLI do Qwen Code (experimental)",
-      kimiSubtitleExperimental: "CLI do Kimi Code (experimental)",
-      kiloSubtitleExperimental: "CLI do Kilo (experimental)",
-      kiroSubtitleExperimental: "CLI do Kiro (experimental)",
-      devinSubtitleExperimental: "CLI do Devin (experimental)",
-      agySubtitleExperimental: "CLI do Antigravity (experimental)",
-      fxSubtitleExperimental: "CLI do FX (experimental)",
-      droidSubtitleExperimental: "CLI do Factory Droid (experimental)",
-      codebuddySubtitleExperimental: "CLI do CodeBuddy Code (experimental)",
-      customAcpSubtitleExperimental: "CLI de ACP personalizada (experimental)",
-      grokSubtitleExperimental: "CLI do Grok Build (experimental)",
-      piSubtitleExperimental: "CLI do Pi (experimental)",
-      copilotSubtitleExperimental: "GitHub Copilot CLI (em testes)",
-      cursorSubtitleExperimental: "Cursor Agent CLI (em testes)",
     },
     tmux: {
       title: "Tmux",

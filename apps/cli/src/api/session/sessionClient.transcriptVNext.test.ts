@@ -66,7 +66,7 @@ describe('ApiSessionClient transcript vNext transport', () => {
     const { ApiSessionClient } = await import('./sessionClient');
 
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
-    client.sendAgentMessage('opencode' as any, { type: 'message', message: 'hello' } as any, { localId: 'acp-message-1' });
+    client.sendAgentMessage('codex' as any, { type: 'message', message: 'hello' } as any, { localId: 'acp-message-1' });
 
     await flushQueuedCommits(client as unknown as ClientWithQueuedCommits);
 
@@ -87,12 +87,12 @@ describe('ApiSessionClient transcript vNext transport', () => {
     const { ApiSessionClient } = await import('./sessionClient');
 
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
-    client.sendAgentMessage('opencode' as any, { type: 'thinking', text: 'working' } as any, { localId: 'thinking-1' });
-    client.sendAgentMessage('opencode' as any, { type: 'reasoning', message: 'because' } as any, { localId: 'reasoning-1' });
-    client.sendAgentMessage('opencode' as any, { type: 'tool-call', callId: 'call-1', name: 'Read', input: {}, id: 'tool-1' } as any, { localId: 'tool-call-1' });
-    client.sendAgentMessage('opencode' as any, { type: 'tool-result', callId: 'call-1', output: 'ok', id: 'tool-result-1' } as any, { localId: 'tool-result-1' });
-    client.sendAgentMessage('opencode' as any, { type: 'token_count', tokens: { total: 1 } } as any, { localId: 'usage-1' });
-    client.sendAgentMessage('opencode' as any, { type: 'task_complete', id: 'turn-1' } as any, { localId: 'lifecycle-1' });
+    client.sendAgentMessage('codex' as any, { type: 'thinking', text: 'working' } as any, { localId: 'thinking-1' });
+    client.sendAgentMessage('codex' as any, { type: 'reasoning', message: 'because' } as any, { localId: 'reasoning-1' });
+    client.sendAgentMessage('codex' as any, { type: 'tool-call', callId: 'call-1', name: 'Read', input: {}, id: 'tool-1' } as any, { localId: 'tool-call-1' });
+    client.sendAgentMessage('codex' as any, { type: 'tool-result', callId: 'call-1', output: 'ok', id: 'tool-result-1' } as any, { localId: 'tool-result-1' });
+    client.sendAgentMessage('codex' as any, { type: 'token_count', tokens: { total: 1 } } as any, { localId: 'usage-1' });
+    client.sendAgentMessage('codex' as any, { type: 'task_complete', id: 'turn-1' } as any, { localId: 'lifecycle-1' });
 
     await flushQueuedCommits(client as unknown as ClientWithQueuedCommits);
 

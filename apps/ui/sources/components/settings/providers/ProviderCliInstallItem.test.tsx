@@ -147,8 +147,8 @@ describe('ProviderCliInstallItem', () => {
 
         const screen = await renderScreen(React.createElement(ProviderCliInstallItem, {
             machineId: 'm1',
-            capabilityId: 'cli.opencode',
-            providerTitle: 'OpenCode',
+            capabilityId: 'cli.codex',
+            providerTitle: 'Codex',
             installed: false,
             installability: { kind: 'not-installable' },
         }));

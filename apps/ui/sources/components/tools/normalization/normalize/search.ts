@@ -181,7 +181,7 @@ export function normalizeGrepResultForRendering(result: unknown): Record<string,
     return null;
 }
 
-function parseOpenCodeSearch(text: string): { matches: SearchMatch[] } | null {
+function parseGroupedCodeSearch(text: string): { matches: SearchMatch[] } | null {
     if (!text.includes('matches')) return null;
     const lines = text.replace(/\r\n/g, '\n').split('\n');
     const matches: SearchMatch[] = [];
@@ -236,7 +236,7 @@ export function normalizeCodeSearchResultForRendering(result: unknown): Record<s
     }
 
     if (typeof result === 'string') {
-        const parsed = parseOpenCodeSearch(result);
+        const parsed = parseGroupedCodeSearch(result);
         if (parsed) return parsed;
         const lines = normalizeStringLines(result);
         if (lines.length > 0) return { matches: lines.map((line) => ({ excerpt: line })) };

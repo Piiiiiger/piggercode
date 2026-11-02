@@ -60,12 +60,12 @@ describe('AcpBackend stderr suppression', () => {
 
       try {
         const backend = new AcpBackend({
-          agentName: 'kiro',
+          agentName: 'codex',
           cwd: dir,
           command: process.execPath,
           args: [scriptPath],
           transportHandler: createAcpTestTransportHandler({
-            agentName: 'kiro',
+            agentName: 'codex',
             initTimeoutMs: 1_000,
             idleTimeoutMs: 1,
             handleStderr: () => ({ message: null, suppress: true }),

@@ -17,9 +17,6 @@ const SCOPED_ENV_KEYS = [
   'PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
   'PIGGERCODE_CLAUDE_PATH',
   'PIGGERCODE_CODEX_PATH',
-  'PIGGERCODE_OPENCODE_PATH',
-  'PIGGERCODE_PI_PATH',
-  'PI_CODING_AGENT_DIR',
   'PIGGERCODE_PNPM_BIN',
   'PIGGERCODE_JS_RUNTIME_PATH',
   'PIGGERCODE_MANAGED_NODE_BIN',
@@ -71,27 +68,11 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     setEnv('PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON', undefined);
     setEnv('PIGGERCODE_CLAUDE_PATH', undefined);
     setEnv('PIGGERCODE_CODEX_PATH', undefined);
-    setEnv('PIGGERCODE_OPENCODE_PATH', undefined);
-    setEnv('PIGGERCODE_PI_PATH', undefined);
-    setEnv('PI_CODING_AGENT_DIR', undefined);
   });
 
   afterEach(() => {
     restoreEnvValues(envBaseline);
     if (workDir) removeTempDirSync(workDir);
-  });
-
-  it('detects and versions Pi outside PATH and refreshes when its configured install root changes', async () => {
-    const firstDir = join(workDir, 'pi-first');
-    const secondDir = join(workDir, 'pi-second');
-    const firstPath = makeExecutableShim({ dir: join(firstDir, 'bin'), name: 'pi', stdout: 'echo "1.0.2"' });
-    const secondPath = makeExecutableShim({ dir: join(secondDir, 'bin'), name: 'pi', stdout: 'echo "1.0.3"' });
-    setEnv('PI_CODING_AGENT_DIR', firstDir);
-    const first = await detectCliSnapshotOnDaemonPath({ requestedCliNames: ['pi'] });
-    expect(first.clis.pi).toMatchObject({ available: true, resolvedPath: firstPath, version: '1.0.2' });
-    setEnv('PI_CODING_AGENT_DIR', secondDir);
-    const second = await detectCliSnapshotOnDaemonPath({ requestedCliNames: ['pi'] });
-    expect(second.clis.pi).toMatchObject({ available: true, resolvedPath: secondPath, version: '1.0.3' });
   });
 
   it.skipIf(process.platform === 'win32')(
@@ -109,24 +90,6 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       expect(snapshot.clis.claude.available).toBe(true);
       expect(snapshot.clis.claude.resolvedPath).toBe(claudePath);
       expect(snapshot.clis.claude.version).toBe('2.0.69');
-    },
-  );
-
-  it.skipIf(process.platform === 'win32')(
-    'detects OpenCode in ~/.opencode/bin even when it is not on PATH',
-    async () => {
-      const opencodeBinDir = join(homeDir, '.opencode', 'bin');
-      mkdirSync(opencodeBinDir, { recursive: true });
-      const opencodePath = makeExecutableShim({
-        dir: opencodeBinDir,
-        name: 'opencode',
-        stdout: 'echo "0.4.1"',
-      });
-
-      const snapshot = await detectCliSnapshotOnDaemonPath({});
-      expect(snapshot.clis.opencode.available).toBe(true);
-      expect(snapshot.clis.opencode.resolvedPath).toBe(opencodePath);
-      expect(snapshot.clis.opencode.version).toBe('0.4.1');
     },
   );
 
@@ -190,44 +153,6 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       const snapshot = await detectCliSnapshotOnDaemonPath({});
       expect(snapshot.clis.claude.available).toBe(false);
       expect(snapshot.clis.claude.resolvedPath).toBeUndefined();
-    },
-  );
-
-  it('detects OpenCode when PIGGERCODE_OPENCODE_PATH is set even when it is not on PATH', async () => {
-    const binDir = join(workDir, 'bin');
-    mkdirSync(binDir, { recursive: true });
-    const opencodePath = makeExecutableShim({
-      dir: binDir,
-      name: 'opencode',
-      stdout: 'echo "0.0.0-test (OpenCode)"',
-    });
-
-    setEnv('PIGGERCODE_OPENCODE_PATH', opencodePath);
-
-    const snapshot = await detectCliSnapshotOnDaemonPath({});
-    expect(snapshot.clis.opencode.available).toBe(true);
-    expect(snapshot.clis.opencode.resolvedPath).toBe(opencodePath);
-    expect(snapshot.clis.opencode.version).toBe('0.0.0-test');
-  });
-
-  it.skipIf(process.platform === 'win32')(
-    'fails closed for a system node-shebang CLI when the explicit JavaScript runtime override is invalid',
-    async () => {
-      const systemBin = join(workDir, 'bin');
-      mkdirSync(systemBin, { recursive: true });
-      const geminiPath = join(systemBin, 'gemini');
-      writeFileSync(
-        geminiPath,
-        ['#!/usr/bin/env node', 'console.log("1.2.3");', ''].join('\n'),
-        'utf8',
-      );
-      chmodSync(geminiPath, 0o755);
-      setEnv('PATH', systemBin);
-      setEnv('PIGGERCODE_JS_RUNTIME_PATH', join(workDir, 'missing-node'));
-
-      const snapshot = await detectCliSnapshotOnDaemonPath({});
-      expect(snapshot.clis.gemini.available).toBe(false);
-      expect(snapshot.clis.gemini.resolvedPath).toBeUndefined();
     },
   );
 
@@ -520,85 +445,6 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     },
   );
 
-  it.skipIf(process.platform === 'win32')(
-    'does not run `gemini auth status` when probing login status',
-    async () => {
-      const binDir = join(workDir, 'bin');
-      mkdirSync(binDir, { recursive: true });
-
-      const invocationsPath = join(workDir, 'gemini-invocations.txt');
-      const geminiPath = makeExecutableShim({
-        dir: binDir,
-        name: 'gemini',
-        stdout: [
-          `echo "$@" >> "${invocationsPath}"`,
-          'if [ "$1" = "--version" ] || [ "$1" = "version" ] || [ "$1" = "-v" ]; then',
-          '  echo "1.2.3"',
-          '  exit 0',
-          'fi',
-          'if [ "$1" = "auth" ] && [ "$2" = "status" ]; then',
-          '  exit 1',
-          'fi',
-          'exit 0',
-        ].join('\n'),
-      });
-
-      setEnv('PATH', binDir);
-
-      const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true });
-      expect(snapshot.clis.gemini.available).toBe(true);
-      expect(snapshot.clis.gemini.resolvedPath).toBe(geminiPath);
-      expect(snapshot.clis.gemini.isLoggedIn).toBe(false);
-
-      const invocations = readFileSync(invocationsPath, 'utf8');
-      expect(invocations).not.toContain('auth status');
-    },
-  );
-
-  it.skipIf(process.platform === 'win32')(
-    'reports Gemini as logged in when ~/.gemini/oauth_creds.json exists',
-    async () => {
-      const binDir = join(workDir, 'bin');
-      mkdirSync(binDir, { recursive: true });
-
-      const invocationsPath = join(workDir, 'gemini-invocations.txt');
-      makeExecutableShim({
-        dir: binDir,
-        name: 'gemini',
-        stdout: [
-          `echo "$@" >> "${invocationsPath}"`,
-          // Version detection should still work.
-          'if [ "$1" = "--version" ] || [ "$1" = "version" ] || [ "$1" = "-v" ]; then',
-          '  echo "1.2.3"',
-          '  exit 0',
-          'fi',
-          // The old probe (`gemini auth status`) is intentionally non-zero to catch regressions.
-          'if [ "$1" = "auth" ] && [ "$2" = "status" ]; then',
-          '  exit 1',
-          'fi',
-          'exit 0',
-        ].join('\n'),
-      });
-
-      const geminiDir = join(homeDir, '.gemini');
-      mkdirSync(geminiDir, { recursive: true });
-      writeFileSync(
-        join(geminiDir, 'oauth_creds.json'),
-        JSON.stringify({ access_token: 'token', token_type: 'Bearer' }),
-        'utf8',
-      );
-
-      setEnv('PATH', binDir);
-
-      const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true });
-      expect(snapshot.clis.gemini.available).toBe(true);
-      expect(snapshot.clis.gemini.isLoggedIn).toBe(true);
-
-      const invocations = readFileSync(invocationsPath, 'utf8');
-      expect(invocations).not.toContain('auth status');
-    },
-  );
-
   it('reports Claude auth details when ANTHROPIC_API_KEY is set', async () => {
     const binDir = join(workDir, 'bin');
     mkdirSync(binDir, { recursive: true });
@@ -686,77 +532,4 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     },
   );
 
-  it.skipIf(process.platform === 'win32')(
-    'parses OpenCode auth status from `auth list` output',
-    async () => {
-      const binDir = join(workDir, 'bin');
-      mkdirSync(binDir, { recursive: true });
-
-      makeExecutableShim({
-        dir: binDir,
-        name: 'opencode',
-        stdout: [
-          'if [ "$1" = "--version" ] || [ "$1" = "version" ] || [ "$1" = "-v" ]; then',
-          '  echo "0.4.1"',
-          '  exit 0',
-          'fi',
-          'if [ "$1" = "auth" ] && [ "$2" = "list" ]; then',
-          '  echo "openai alice@example.com default"',
-          '  exit 0',
-          'fi',
-          'exit 1',
-        ].join('\n'),
-      });
-
-      setEnv('PATH', binDir);
-
-      const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true });
-      expect(snapshot.clis.opencode.available).toBe(true);
-      expect(snapshot.clis.opencode.isLoggedIn).toBe(true);
-      expect(snapshot.clis.opencode.authStatus).toMatchObject({
-        state: 'logged_in',
-        method: 'oauth_cli',
-        source: 'command',
-        accountLabel: 'alice@example.com',
-      });
-    },
-  );
-
-  it('detects Kilo from the canonical `kilo` binary', async () => {
-    const binDir = join(workDir, 'bin');
-    mkdirSync(binDir, { recursive: true });
-    const kiloPath = makeExecutableShim({
-      dir: binDir,
-      name: 'kilo',
-      stdout: 'echo "1.0.0"',
-    });
-
-    setEnv('PATH', binDir);
-
-    const snapshot = await detectCliSnapshotOnDaemonPath({});
-    expect(snapshot.clis.kilo.available).toBe(true);
-    expect(snapshot.clis.kilo.resolvedPath).toBe(kiloPath);
-  });
-
-  it('reports Pi auth details from OPENAI_API_KEY', async () => {
-    const binDir = join(workDir, 'bin');
-    mkdirSync(binDir, { recursive: true });
-    makeExecutableShim({
-      dir: binDir,
-      name: 'pi',
-      stdout: 'echo "0.1.0"',
-    });
-
-    setEnv('PATH', binDir);
-    setEnv('OPENAI_API_KEY', 'sk-openai-test');
-
-    const snapshot = await detectCliSnapshotOnDaemonPath({ includeLoginStatus: true });
-    expect(snapshot.clis.pi.available).toBe(true);
-    expect(snapshot.clis.pi.isLoggedIn).toBe(true);
-    expect(snapshot.clis.pi.authStatus).toMatchObject({
-      state: 'logged_in',
-      method: 'api_key_env',
-      source: 'env',
-    });
-  });
 });

@@ -362,7 +362,7 @@ export class ConnectedServiceRefreshCoordinator {
   }
 
   /**
-   * Daemon-side handler for the OpenCode Claude broker bridge: deliver a fresh Anthropic ACCESS
+   * Daemon-side handler for the Claude access-token bridge: deliver a fresh Anthropic ACCESS
    * token (never the refresh token). Reuses the canonical per-binding refresh (single-flight,
    * rotation-aware, persists the rotated refresh token) for subscription OAuth; setup-tokens are
    * long-lived access tokens and are returned as-is (nothing to refresh).
@@ -532,8 +532,8 @@ export class ConnectedServiceRefreshCoordinator {
    * - `sessionId`: a per-session provider process (e.g. the Claude SDK callback). A no-restart pool
    *   swap bumps the registry generation; the daemon resolves the current one, so a callback captured
    *   at an older generation still authorizes and refreshes the current profile (R3-3).
-   * - `brokerSelectionIdentity`: a provider whose managed server is SHARED across sessions (OpenCode /
-   *   Pi). The broker cannot present a per-session id, so it presents its stable selection identity;
+   * - `brokerSelectionIdentity`: a provider whose managed server is SHARED across sessions. The
+   *   broker cannot present a per-session id, so it presents its stable selection identity;
    *   the daemon matches a live target carrying that identity (R3-6).
    */
   private resolveAuthorizedBridgeSelectionForBridge(input: Readonly<{
@@ -554,7 +554,7 @@ export class ConnectedServiceRefreshCoordinator {
   /**
    * SEC-F1: resolve the runtime target for a bridge caller by its DISCRIMINATED principal, never by
    * first-success precedence across two identities. The presence of a `brokerSelectionIdentity` is the
-   * caller-mode discriminator: a shared broker (OpenCode/Pi) always presents one alongside a synthetic
+   * caller-mode discriminator: a shared broker always presents one alongside a synthetic
    * sessionId; a per-session callback presents only a real sessionId.
    *
    * Broker mode (identity present): authorize EXCLUSIVELY through the broker selection identity. The

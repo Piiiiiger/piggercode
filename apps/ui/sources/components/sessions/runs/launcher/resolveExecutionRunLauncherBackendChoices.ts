@@ -1,4 +1,4 @@
-import { buildBackendTargetKey, type AcpCatalogSettingsV1, type BackendTargetRefV1 } from '@piggercode/protocol';
+import { buildBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { isAgentId } from '@/agents/catalog/catalog';
 import { getResolvedBackendCatalogEntries, resolveBuiltInAgentIdForBackendTarget, resolveBuiltInAgentTitle } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
@@ -16,7 +16,6 @@ export type ExecutionRunLauncherBackendChoice = Readonly<{
 export function resolveExecutionRunLauncherBackendChoices(params: Readonly<{
     enabledAgentIds: readonly string[];
     executionRunsBackends: Readonly<Record<string, ExecutionRunsBackendSnapshotEntry>> | null | undefined;
-    acpCatalogSettingsV1: AcpCatalogSettingsV1;
     intent: string;
 }>): readonly ExecutionRunLauncherBackendChoice[] {
     const catalogAgentIds = Array.from(
@@ -48,7 +47,6 @@ export function resolveExecutionRunLauncherBackendChoices(params: Readonly<{
 
     return getResolvedBackendCatalogEntries({
         enabledAgentIds: catalogAgentIds,
-        acpCatalogSettingsV1: params.acpCatalogSettingsV1,
     }).map((entry) => {
         const builtInAgentId = resolveBuiltInAgentIdForBackendTarget(entry.target);
         return {

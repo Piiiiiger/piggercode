@@ -34,7 +34,7 @@ describe('ApiSessionClient tool tracing', () => {
     it('records ACP task_complete events to tool trace when tracing is enabled', async () => {
         await withToolTraceFile('happy-acp-task-complete-', async (filePath) => {
             const client = new ApiSessionClient('fake-token', mockSession);
-            client.sendAgentMessage('opencode', { type: 'task_complete', id: 'tc_1' });
+            client.sendAgentMessage('codex', { type: 'task_complete', id: 'tc_1' });
 
             const lines = readFileSync(filePath, 'utf8')
                 .trim()
@@ -47,7 +47,7 @@ describe('ApiSessionClient tool tracing', () => {
                 direction: 'outbound',
                 sessionId: mockSession.id,
                 protocol: 'acp',
-                provider: 'opencode',
+                provider: 'codex',
                 kind: 'task_complete',
                 payload: { type: 'task_complete' },
             });
@@ -82,7 +82,7 @@ describe('ApiSessionClient tool tracing', () => {
     it('sets isError on outbound ACP tool-result messages when output looks like an error', async () => {
         await withToolTraceFile('happy-tool-trace-sessionClient-', async (filePath) => {
             const client = new ApiSessionClient('fake-token', mockSession);
-            client.sendAgentMessage('gemini', {
+            client.sendAgentMessage('codex', {
                 type: 'tool-result',
                 callId: 'call-1',
                 output: { error: 'Tool call failed', status: 'failed' },
@@ -94,7 +94,7 @@ describe('ApiSessionClient tool tracing', () => {
             expect(lines).toHaveLength(1);
             expect(JSON.parse(lines[0] as string)).toMatchObject({
                 protocol: 'acp',
-                provider: 'gemini',
+                provider: 'codex',
                 kind: 'tool-result',
                 payload: expect.objectContaining({
                     type: 'tool-result',

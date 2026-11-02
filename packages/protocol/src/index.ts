@@ -432,7 +432,6 @@ export {
   BackendTargetRefSchema,
   buildBackendTargetKey,
   isBuiltInAgentTarget,
-  isConfiguredAcpBackendTarget,
   parseBackendTargetKey,
   type BackendTargetKey,
   type BackendTargetKind,
@@ -466,27 +465,6 @@ export {
   type ConnectedServiceUxDiagnosticV1,
 } from './connect/connectedServiceUxDiagnostics.js';
 
-export {
-  AcpBackendAuthConfigV1Schema,
-  AcpBackendCapabilitiesV1Schema,
-  AcpBackendDefinitionV1Schema,
-  AcpCatalogAuthParserV1Schema,
-  AcpCatalogAuthSupportV1Schema,
-  AcpCatalogCommandV1Schema,
-  AcpCatalogSettingsV1Schema,
-  AcpCatalogSupportHintV1Schema,
-  AcpCatalogTransportProfileV1Schema,
-  type AcpBackendAuthConfigV1,
-  type AcpBackendCapabilitiesV1,
-  type AcpBackendDefinitionV1,
-  type AcpCatalogAuthParserV1,
-  type AcpCatalogAuthSupportV1,
-  type AcpCatalogCommandV1,
-  type AcpCatalogEnvValueRefV1,
-  type AcpCatalogSettingsV1,
-  type AcpCatalogSupportHintV1,
-  type AcpCatalogTransportProfileV1,
-} from './acpCatalog/settingsV1.js';
 
 export {
   deriveAccountMachineKeyFromRecoverySecret,
@@ -856,16 +834,6 @@ export {
   type CodexAppServerTurnInputItem,
   type CodexAppServerTurnPermissionFields,
 } from './providers/codex/index.js';
-
-export {
-  OpenCodeAppSkillSchema,
-  OpenCodeSessionTodoSchema,
-  OpenCodeSessionTodoStatusSchema,
-  normalizeOpenCodeAppSkills,
-  normalizeOpenCodeSessionTodosToWorkStateItems,
-  type OpenCodeAppSkill,
-  type OpenCodeSessionTodo,
-} from './providers/opencode/index.js';
 
 export {
   ClaudeSdkSkillsOptionSchema,
@@ -1566,8 +1534,6 @@ export {
   GH_BINARY_NAME,
   GH_DEP_ID,
   GH_GITHUB_REPO,
-  AGY_ACP_SERVER_DEP_ID,
-  AGY_ACP_SERVER_VERSION,
   type InstallableAutoUpdateMode,
   type InstallableCatalogEntry,
   type InstallableDefaultPolicy,
@@ -1884,13 +1850,6 @@ export {
   type SetSessionFolderAssignmentResponse,
 } from './sessionFolders/index.js';
 
-export {
-  AcpConfiguredBackendV1Schema,
-  type AcpConfiguredBackendV1,
-  createAcpConfiguredBackendV1Schema,
-  buildAcpConfiguredBackendV1,
-  readAcpConfiguredBackendV1FromMetadata,
-} from './sessionMetadata/acpConfiguredBackendV1.js';
 
 export {
   SessionRollbackRangeV1Schema,
@@ -1908,8 +1867,6 @@ export {
   type AgentRuntimeDescriptorV1,
   createAgentRuntimeDescriptorV1Schema,
   buildCodexAgentRuntimeDescriptorV1,
-  buildOpenCodeAgentRuntimeDescriptorV1,
-  buildPiAgentRuntimeDescriptorV1,
   readAgentRuntimeDescriptorV1,
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
   readAgentRuntimeDescriptorV1ForProvider,
@@ -2573,8 +2530,6 @@ export {
 export {
   DirectSessionsProviderIdSchema,
   DirectSessionsSourceSchema,
-  DirectSessionsAcpSessionListCapabilityRequestSchema,
-  DirectSessionsAcpSessionListCapabilityResponseSchema,
   DirectSessionCandidateV1Schema,
   DirectSessionsCandidatesListRequestSchema,
   DirectSessionsCandidatesListResponseSchema,
@@ -2606,8 +2561,6 @@ export {
   DirectSessionTakeoverPersistStartResponseSchema,
   type DirectSessionsProviderId,
   type DirectSessionsSource,
-  type DirectSessionsAcpSessionListCapabilityRequest,
-  type DirectSessionsAcpSessionListCapabilityResponse,
   type DirectSessionCandidateV1,
   type DirectSessionsCandidatesListRequest,
   type DirectSessionsCandidatesListResponse,
@@ -2849,15 +2802,11 @@ export {
   ReviewBaseSchema,
   ReviewEngineIdSchema,
   ReviewRunLocationSchema,
-  CodeRabbitReviewEngineInputSchema,
-  ReviewEngineInputsSchema,
   ReviewStartInputSchema,
   type ReviewChangeType,
   type ReviewBase,
   type ReviewEngineId,
   type ReviewRunLocation,
-  type CodeRabbitReviewEngineInput,
-  type ReviewEngineInputs,
   type ReviewStartInput,
 } from './reviews/reviewStart.js';
 
@@ -2865,15 +2814,6 @@ export {
   ReviewFollowUpInputSchema,
   type ReviewFollowUpInput,
 } from './reviews/reviewFollowUp.js';
-
-export {
-  NativeReviewEngineIdSchema,
-  NativeReviewEngineSpecSchema,
-  listNativeReviewEngines,
-  getNativeReviewEngine,
-  type NativeReviewEngineId,
-  type NativeReviewEngineSpec,
-} from './reviews/reviewEngines.js';
 
 export {
   HappierMetaEnvelopeSchema,

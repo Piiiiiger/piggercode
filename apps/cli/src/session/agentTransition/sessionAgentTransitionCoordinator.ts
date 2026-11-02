@@ -56,8 +56,6 @@ import { fetchSessionByIdCompat } from '@/session/transport/http/sessionsHttp';
 import { resolveSessionControlStopTimeoutMs } from '@/session/transport/shared/sessionTimeouts';
 import { logger } from '@/ui/logger';
 import { resolveSessionPersistedRuntimeIdentity } from '@/daemon/sessions/runtimeSnapshot/buildInactiveSessionResumeSpawnOptions';
-import { resolveConfiguredAcpBackendFromAccountSettings } from '@/agent/acp/catalog/configured/resolveConfiguredAcpBackendFromAccountSettings';
-import { materializeConfiguredAcpEnvironment } from '@/agent/acp/catalog/configured/materializeConfiguredAcpEnvironment';
 
 import {
   captureDepartingAgentNativeResumeRecord,
@@ -472,10 +470,6 @@ async function reconcileAlreadyTargetedSession(params: Readonly<{
     expected: {
       fromAgentId: request.expectedCurrentAgentId,
       toAgentId: params.targetAgentId,
-      ...(request.expectedCurrentBackendTarget?.kind === 'configuredAcpBackend'
-        ? { fromBackendTarget: request.expectedCurrentBackendTarget } : {}),
-      ...(request.selection.backendTarget?.kind === 'configuredAcpBackend'
-        ? { toBackendTarget: request.selection.backendTarget } : {}),
     },
   });
 
@@ -587,21 +581,13 @@ export async function runSessionAgentTransition(params: Readonly<{
   if (!currentAgentId) return effects.rejected('unsupported_operation');
   const currentIdentity = resolveSessionPersistedRuntimeIdentity(metadata);
   if (!currentIdentity) return effects.rejected('unsupported_operation');
-  if (currentIdentity.backendTarget.kind === 'configuredAcpBackend'
-    && request.expectedCurrentAgentId === 'customAcp' && !request.expectedCurrentBackendTarget) {
-    return effects.rejected('stale_selection');
-  }
   const currentBackendTargetKey = buildBackendTargetKey(currentIdentity.backendTarget);
   const expectedBackendTarget = request.expectedCurrentBackendTarget
     ?? { kind: 'builtInAgent' as const, agentId: request.expectedCurrentAgentId };
 
-  // Currentness is a committed metadata fact. A configured definition removed
-  // after cutover cannot turn a retry into an untouched-source rejection.
-  const accountSettings = readAccountSettings();
-  const resolvedTarget = resolveSessionContinuationTargetAgent(request.selection, accountSettings);
-  const requestedTarget = request.selection.backendTarget?.kind === 'configuredAcpBackend'
-    ? request.selection.backendTarget
-    : resolvedTarget.type === 'resolved' ? resolvedTarget.backendTarget : null;
+  // Currentness is a committed metadata fact.
+  const resolvedTarget = resolveSessionContinuationTargetAgent(request.selection);
+  const requestedTarget = resolvedTarget.type === 'resolved' ? resolvedTarget.backendTarget : null;
   if (requestedTarget && currentBackendTargetKey === buildBackendTargetKey(requestedTarget)) {
     // Only a request that also EXPECTED the target is a genuine no-op.
     if (buildBackendTargetKey(expectedBackendTarget) === currentBackendTargetKey) {
@@ -628,12 +614,6 @@ export async function runSessionAgentTransition(params: Readonly<{
   const sourceAgentId = currentAgentId;
   const targetAgentId: AgentId = resolvedTarget.targetAgentId;
   const targetBackendTarget = resolvedTarget.backendTarget;
-  const configuredBackend = targetBackendTarget.kind === 'configuredAcpBackend' && accountSettings
-    ? resolveConfiguredAcpBackendFromAccountSettings(accountSettings, targetBackendTarget.backendId) : null;
-  if (configuredBackend && accountSettings) {
-    try { materializeConfiguredAcpEnvironment({ backend: configuredBackend, accountSettings, credentials: params.credentials }); }
-    catch { return effects.rejected('target_unavailable'); }
-  }
 
   // Sanitize the exact submitted input through the canonical owner before any
   // effect, so a rejected mention/attachment fails with the source untouched.
@@ -779,7 +759,7 @@ export async function runSessionAgentTransition(params: Readonly<{
   // inversion is a stated risk spot — choosing a narrower context bound and only
   // then discovering that native return is unavailable omits history the fresh
   // target needs, and nothing in the result would say so.
-  const nativeReturn = targetBackendTarget.kind === 'configuredAcpBackend' ? null : await resolveAgentNativeReturnIdentity({
+  const nativeReturn = await resolveAgentNativeReturnIdentity({
     store: localAgentNativeResumeRecordStore,
     sessionId: request.sessionId,
     targetAgentId,
@@ -832,8 +812,6 @@ export async function runSessionAgentTransition(params: Readonly<{
       dividerLocalId,
       fromAgentId: sourceAgentId,
       toAgentId: targetAgentId,
-      ...(currentIdentity.backendTarget.kind === 'configuredAcpBackend' ? { fromBackendTarget: currentIdentity.backendTarget } : {}),
-      ...(targetBackendTarget.kind === 'configuredAcpBackend' ? { toBackendTarget: targetBackendTarget } : {}),
       // The exact post-stop upper bound U that this pass observed. A no-dialog
       // brief leaves the seed absent, but its divider still records U rather
       // than rewriting a non-empty transcript head as zero.
@@ -872,7 +850,6 @@ export async function runSessionAgentTransition(params: Readonly<{
       target: {
         agentId: targetAgentId,
         backendTarget: targetBackendTarget,
-        ...(configuredBackend ? { backendTitle: configuredBackend.title } : {}),
         ...(request.selection.modelId ? { modelId: request.selection.modelId } : {}),
         ...(request.selection.acpSessionModeId ? { sessionModeId: request.selection.acpSessionModeId } : {}),
         ...(request.selection.sessionConfigOptionOverrides

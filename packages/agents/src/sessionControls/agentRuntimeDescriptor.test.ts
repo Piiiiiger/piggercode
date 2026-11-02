@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import {
   buildCodexAgentRuntimeDescriptor,
-  buildOpenCodeAgentRuntimeDescriptor,
   readSessionMetadataRuntimeDescriptor,
 } from './agentRuntimeDescriptor.js';
 
@@ -31,26 +30,6 @@ describe('readSessionMetadataRuntimeDescriptor', () => {
       connectedServiceGroupId: 'main',
       homePath: '/tmp/codex-home',
       sqliteHomePath: '/tmp/codex-state',
-    });
-  });
-
-  it('builds a canonical OpenCode runtime descriptor with provider-owned runtime handle', () => {
-    const descriptor = buildOpenCodeAgentRuntimeDescriptor({
-      backendMode: 'server',
-      vendorSessionId: 'oc_runtime',
-      serverBaseUrl: 'http://127.0.0.1:4096/',
-      serverBaseUrlExplicit: true,
-    });
-
-    expect(readSessionMetadataRuntimeDescriptor({
-      agentRuntimeDescriptorV1: descriptor,
-    }, 'opencode')).toEqual({
-      providerId: 'opencode',
-      backendMode: 'server',
-      vendorSessionId: 'oc_runtime',
-      serverBaseUrl: 'http://127.0.0.1:4096/',
-      serverBaseUrlExplicit: true,
-      managedServerLaunchFingerprint: null,
     });
   });
 
@@ -165,52 +144,4 @@ describe('readSessionMetadataRuntimeDescriptor', () => {
     });
   });
 
-  it('prefers OpenCode providerExtra runtime handle fields over legacy provider fields', () => {
-    expect(readSessionMetadataRuntimeDescriptor({
-      agentRuntimeDescriptorV1: {
-        v: 1,
-        providerId: 'opencode',
-        provider: {
-          backendMode: 'acp',
-          vendorSessionId: 'legacy_oc',
-          serverBaseUrl: 'http://127.0.0.1:4999/',
-          serverBaseUrlExplicit: false,
-          providerExtra: {
-            v: 1,
-            runtimeHandle: {
-              backendMode: 'server',
-              vendorSessionId: 'oc_1',
-              serverBaseUrl: 'http://127.0.0.1:4096/',
-              serverBaseUrlExplicit: true,
-            },
-          },
-        },
-      },
-    }, 'opencode')).toEqual({
-      providerId: 'opencode',
-      backendMode: 'server',
-      vendorSessionId: 'oc_1',
-      serverBaseUrl: 'http://127.0.0.1:4096/',
-      serverBaseUrlExplicit: true,
-      managedServerLaunchFingerprint: null,
-    });
-  });
-
-  it('reads Pi runtime descriptor session-file metadata', () => {
-    expect(readSessionMetadataRuntimeDescriptor({
-      agentRuntimeDescriptorV1: {
-        v: 1,
-        providerId: 'pi',
-        provider: {
-          resumeStrategy: 'sessionFileAbsolutePreferred',
-          vendorSessionId: 'pi-session-1',
-          sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_pi-session-1.jsonl',
-        },
-      },
-    }, 'pi')).toEqual({
-      providerId: 'pi',
-      vendorSessionId: 'pi-session-1',
-      sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_pi-session-1.jsonl',
-    });
-  });
 });

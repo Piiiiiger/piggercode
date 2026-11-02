@@ -10,15 +10,15 @@ import {
 describe('providerDetailsInfo', () => {
     it('builds a de-duplicated catalog model list with default first', () => {
         expect(buildCatalogModelList({
-            defaultMode: 'gemini-2.5-pro',
-            allowedModes: ['gemini-2.5-pro', 'gemini-2.5-flash'],
+            defaultMode: 'gpt-5.5',
+            allowedModes: ['gpt-5.5', 'gpt-5.4'],
             staticModels: [
-                { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro' },
-                { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+                { id: 'gpt-5.5', name: 'GPT-5.5' },
+                { id: 'gpt-5.4', name: 'GPT-5.4' },
             ],
         })).toEqual([
-            'Gemini 2.5 Pro',
-            'Gemini 2.5 Flash',
+            'GPT-5.5',
+            'GPT-5.4',
         ]);
 
         expect(buildCatalogModelList({
@@ -33,9 +33,9 @@ describe('providerDetailsInfo', () => {
             'Sonnet 4.6',
         ]);
 
-        expect(buildCatalogModelList({ defaultMode: 'gemini-2.5-pro', allowedModes: ['gemini-2.5-pro', 'gemini-2.5-flash'] })).toEqual([
-            'gemini-2.5-pro',
-            'gemini-2.5-flash',
+        expect(buildCatalogModelList({ defaultMode: 'gpt-5.5', allowedModes: ['gpt-5.5', 'gpt-5.4'] })).toEqual([
+            'gpt-5.5',
+            'gpt-5.4',
         ]);
 
         expect(buildCatalogModelList({ defaultMode: 'default', allowedModes: ['default'] })).toEqual(['default']);

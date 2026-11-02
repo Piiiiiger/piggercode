@@ -39,7 +39,7 @@ describe('doctor POSIX process discovery', () => {
       '--no-warnings',
       '--no-deprecation',
       '/repo/apps/cli/.runner-snapshots/bee5314ededb46bd/index.mjs',
-      'opencode',
+      'codex',
       '--happy-starting-mode',
       'remote',
       '--started-by',
@@ -68,7 +68,7 @@ describe('doctor POSIX process discovery', () => {
 
   it('forces a UTF-8 locale on every ps invocation so launchd-inherited C locales cannot M-escape command lines', async () => {
     const pid = 28_800;
-    const command = '/Users/alice/项目/.runner-snapshots/bee5314ededb46bd/index.mjs opencode --started-by daemon';
+    const command = '/Users/alice/项目/.runner-snapshots/bee5314ededb46bd/index.mjs codex --started-by daemon';
 
     execFileSyncMock.mockImplementation((_file, args: readonly string[]) => {
       if (args.at(1) === 'stat=,ucomm=,command=') {

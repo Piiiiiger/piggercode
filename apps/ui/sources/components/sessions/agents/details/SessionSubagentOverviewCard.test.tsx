@@ -182,7 +182,7 @@ describe('SessionSubagentOverviewCard', () => {
                 type: 'custom',
                 customType: 'specialist',
                 model: 'cursor-model',
-                agentId: 'cursor-agent-1',
+                agentId: 'agent-1',
                 durationMs: 1_500,
             },
             recipient: null,

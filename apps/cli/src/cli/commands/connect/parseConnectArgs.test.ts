@@ -4,7 +4,7 @@ import { parseConnectArgs } from './parseConnectArgs';
 
 describe('parseConnectArgs', () => {
   it('parses native import and its provider-declared source', () => {
-    expect(parseConnectArgs(['agy', '--import', '--source', 'acp', '--profile', 'personal']).options).toMatchObject({ import: true, source: 'acp', profileId: 'personal' });
+    expect(parseConnectArgs(['codex', '--import', '--source', 'acp', '--profile', 'personal']).options).toMatchObject({ import: true, source: 'acp', profileId: 'personal' });
   });
   it('parses --device and --profile and a subcommand', () => {
     const res = parseConnectArgs(['codex', '--device', '--profile', 'work']);

@@ -10,7 +10,7 @@ import { normalizeRawMessage } from './typesRaw';
  * 3. Unknown fields are preserved (future API compatibility)
  * 4. Unexpected data formats are handled gracefully
  * 5. Backwards compatibility with old CLI messages
- * 6. Cross-agent compatibility (Claude SDK, Codex, Gemini)
+ * 6. Cross-agent compatibility (Claude SDK, Codex)
  */
 
 // Import the actual schemas from typesRaw.ts
@@ -564,7 +564,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                         type: 'output',
                         data: {
                             type: 'assistant',
-                            message: { role: 'assistant', model: 'cursor', content: [] },
+                            message: { role: 'assistant', model: 'gpt-5.5', content: [] },
                         },
                     },
                     meta: {
@@ -590,7 +590,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
         });
     });
 
-    describe('Codex/Gemini messages use native hyphenated schema (no transformation)', () => {
+    describe('Codex messages use native hyphenated schema (no transformation)', () => {
         it('accepts Codex tool-call messages via codex schema path', () => {
             const codexMessage = {
                 role: 'agent',
@@ -1644,63 +1644,6 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
             }
         });
 
-        it('Gemini (uses codex path) works with hyphenated types', () => {
-            // Gemini uses sendCodexMessage() in CLI, so type: 'codex'
-            const geminiMessage = {
-                role: 'agent',
-                content: {
-                    type: 'codex',
-                    data: {
-                        type: 'message',
-                        message: 'Gemini reasoning output'
-                    }
-                }
-            };
-
-              const result = RawRecordSchema.safeParse(geminiMessage);
-
-              expect(result.success).toBe(true);
-              if (result.success && result.data.content.type === 'codex' && result.data.content.data.type === 'message') {
-                  expect((result.data.content.data as any).message).toBe('Gemini reasoning output');
-              }
-          });
-
-        it('handles hypothetical hyphenated types in output path (defensive)', () => {
-            // This tests the defensive nature of the transform
-            // If CLI ever sends hyphenated in output path, it should work
-            const hypotheticalMessage = {
-                role: 'agent',
-                content: {
-                    type: 'output',
-                    data: {
-                        type: 'assistant',
-                        message: {
-                            role: 'assistant',
-                            model: 'future-model',
-                            content: [{
-                                type: 'tool-call',  // Hyphenated in output path
-                                callId: 'defensive_test',
-                                name: 'NewTool',
-                                input: { param: 'value' }
-                            }]
-                        },
-                        uuid: 'defensive-uuid'
-                    }
-                }
-            };
-
-              const result = RawRecordSchema.safeParse(hypotheticalMessage);
-
-              expect(result.success).toBe(true);
-              if (result.success && result.data.content.type === 'output' && result.data.content.data.type === 'assistant') {
-                  // Should transform to tool_use
-                  const item = (result.data.content.data as any).message.content[0];
-                  expect(item.type).toBe('tool_use');
-                  if (item.type === 'tool_use') {
-                      expect(item.id).toBe('defensive_test');
-                  }
-            }
-        });
     });
 
     describe('Regression prevention: Ensure existing behavior unchanged', () => {
@@ -2012,44 +1955,12 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
     });
 
     describe('ACP tool call normalization', () => {
-        it('accepts configured ACP provider ids in raw records', () => {
-            const raw = {
-                role: 'agent' as const,
-                content: {
-                    type: 'acp' as const,
-                    provider: 'acp:live-ui-acp-stub-preset',
-                    data: {
-                        type: 'message' as const,
-                        message: 'ACP_STUB_USAGE_UPDATE_DONE live-ui-manual-qa-20260309-1',
-                    },
-                },
-            };
-
-            const parsed = RawRecordSchema.safeParse(raw);
-            expect(parsed.success).toBe(true);
-
-            if (!parsed.success) {
-                return;
-            }
-
-            const normalized = normalizeRawMessage('msg-acp-configured-provider', null, Date.now(), parsed.data);
-            expect(normalized?.role).toBe('agent');
-            if (normalized && normalized.role === 'agent') {
-                expect(normalized.content[0]).toEqual({
-                    type: 'text',
-                    text: 'ACP_STUB_USAGE_UPDATE_DONE live-ui-manual-qa-20260309-1',
-                    uuid: 'msg-acp-configured-provider',
-                    parentUUID: null,
-                });
-            }
-        });
-
         it('normalizes ACP context compaction records into transcript events', () => {
             const raw = {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'pi' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'context-compaction' as const,
                         phase: 'started' as const,
@@ -2069,7 +1980,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                     type: 'context-compaction',
                     phase: 'started',
                     lifecycleId: 'compact_1',
-                    provider: 'pi',
+                    provider: 'codex',
                     trigger: 'manual',
                     source: 'provider-event',
                     tokenCountBefore: 456,
@@ -2082,7 +1993,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'pi' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'context-compaction' as const,
                         phase: 'detected' as const,
@@ -2101,7 +2012,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 content: {
                     type: 'context-compaction',
                     phase: 'completed',
-                    provider: 'pi',
+                    provider: 'codex',
                     source: 'transcript-inference',
                     tokenCountBefore: 456,
                     tokenCountAfter: 123,
@@ -2146,7 +2057,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'gemini' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'tool-result' as const,
                         callId: 'call_abc123',
@@ -2199,7 +2110,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'gemini' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'tool-call-result' as const,
                         callId: 'call_abc123',
@@ -2225,7 +2136,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'gemini' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'tool-result' as const,
                         callId: 'call_abc123',
@@ -2251,7 +2162,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'gemini' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'tool-result' as const,
                         callId: 'call_abc123',
@@ -2277,7 +2188,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                 role: 'agent' as const,
                 content: {
                     type: 'acp' as const,
-                    provider: 'gemini' as const,
+                    provider: 'codex' as const,
                     data: {
                         type: 'tool-result' as const,
                         callId: 'call_abc123',

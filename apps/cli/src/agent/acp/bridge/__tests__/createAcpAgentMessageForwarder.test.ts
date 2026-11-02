@@ -112,7 +112,7 @@ describe('createAcpAgentMessageForwarder', () => {
     const sent: Array<{ body: ACPMessageData; options?: { localId?: string } }> = [];
     const forwarder = createAcpAgentMessageForwarder({
       sendAcp: (_provider, body, options) => sent.push({ body, options }),
-      provider: 'cursor' as any,
+      provider: 'codex' as any,
       makeId: () => 'random-id-that-must-not-own-tool-identity',
     });
 
@@ -137,7 +137,7 @@ describe('createAcpAgentMessageForwarder', () => {
 
     const forwarder = createAcpAgentMessageForwarder({
       sendAcp,
-      provider: 'opencode' as any,
+      provider: 'codex' as any,
       makeId: () => 'id_1',
     });
 
@@ -151,7 +151,7 @@ describe('createAcpAgentMessageForwarder', () => {
     const sendAcp = vi.fn();
     const forwarder = createAcpAgentMessageForwarder({
       sendAcp,
-      provider: 'cursor' as any,
+      provider: 'codex' as any,
       makeId: () => 'id',
     });
     forwarder.forward({ type: 'tool-call', callId: 'tool-1', toolName: 'read', args: {} } as any);

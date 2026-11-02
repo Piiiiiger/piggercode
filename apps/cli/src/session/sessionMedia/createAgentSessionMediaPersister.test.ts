@@ -29,13 +29,13 @@ describe('createAgentSessionMediaPersister', () => {
 
       await expect(persister.persist({
         type: 'session-media',
-        source: 'cursor-generate-image',
+        source: 'codex-generate-image',
         media: [{
           kind: 'local-file',
           path: sourcePath,
           origin: {
             source: 'provider-generated',
-            agentId: 'cursor',
+            agentId: 'codex',
             toolCallId: 'image-call-io-failure',
           },
         }],
@@ -49,7 +49,7 @@ describe('createAgentSessionMediaPersister', () => {
           code: 'persistence_failed',
           origin: {
             source: 'provider-generated',
-            agentId: 'cursor',
+            agentId: 'codex',
             toolCallIdHash: expect.stringMatching(/^[a-f0-9]{64}$/),
           },
         }],
@@ -57,8 +57,8 @@ describe('createAgentSessionMediaPersister', () => {
 
       expect(diagnostics).toEqual([{
         code: 'persistence_failed',
-        source: 'cursor-generate-image',
-        agentId: 'cursor',
+        source: 'codex-generate-image',
+        agentId: 'codex',
         toolCallIdHash: expect.stringMatching(/^[a-f0-9]{64}$/),
       }]);
       expect(JSON.stringify(diagnostics)).not.toContain(workingDirectory);
@@ -80,13 +80,13 @@ describe('createAgentSessionMediaPersister', () => {
 
       await expect(persister.persist({
         type: 'session-media',
-        source: 'cursor-generate-image',
+        source: 'codex-generate-image',
         media: [{
           kind: 'local-file',
           path: join(workingDirectory, 'missing-secret-name.png'),
           origin: {
             source: 'provider-generated',
-            agentId: 'cursor',
+            agentId: 'codex',
             toolCallId: '/Users/alice/private/image-call-missing',
           },
         }],
@@ -100,7 +100,7 @@ describe('createAgentSessionMediaPersister', () => {
           code: 'invalid_source_file',
           origin: {
             source: 'provider-generated',
-            agentId: 'cursor',
+            agentId: 'codex',
             toolCallIdHash: expect.stringMatching(/^[a-f0-9]{64}$/),
           },
         }],
@@ -108,8 +108,8 @@ describe('createAgentSessionMediaPersister', () => {
 
       expect(diagnostics).toEqual([{
         code: 'invalid_source_file',
-        source: 'cursor-generate-image',
-        agentId: 'cursor',
+        source: 'codex-generate-image',
+        agentId: 'codex',
         toolCallIdHash: expect.stringMatching(/^[a-f0-9]{64}$/),
       }]);
       expect(JSON.stringify(diagnostics)).not.toContain('missing-secret-name.png');
@@ -137,7 +137,7 @@ describe('createAgentSessionMediaPersister', () => {
       });
       const result = await persister.persist({
         type: 'session-media',
-        source: 'cursor-generate-image',
+        source: 'codex-generate-image',
         media: [{
           kind: 'local-file',
           path: outputPath,
@@ -145,7 +145,7 @@ describe('createAgentSessionMediaPersister', () => {
           referenceImagePaths: [referencePath],
           origin: {
             source: 'provider-generated',
-            agentId: 'cursor',
+            agentId: 'codex',
             toolCallId: 'image-call-1',
             generationId: 'image-call-1',
           },
@@ -163,7 +163,7 @@ describe('createAgentSessionMediaPersister', () => {
         }],
         origin: {
           source: 'provider-generated',
-          agentId: 'cursor',
+          agentId: 'codex',
           toolCallId: 'image-call-1',
           generationId: 'image-call-1',
         },

@@ -21,7 +21,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -33,7 +33,7 @@ describe('importAcpReplaySidechainV1', () => {
     });
 
     expect(committed.length).toBe(3);
-    expect(committed[0].provider).toBe('opencode');
+    expect(committed[0].provider).toBe('codex');
     expect(committed[0].body.sidechainId).toBe('tool_task_1');
     expect(committed[0].body.type).toBe('message');
 
@@ -53,7 +53,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -71,7 +71,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -93,7 +93,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'r'.repeat(128),
       sidechainId: `sc_${'x'.repeat(400)}`,
       replay: [{ type: 'message', role: 'agent', text: 'hello' }],
@@ -112,7 +112,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -128,7 +128,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -149,7 +149,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [{ type: 'tool_result', status: 'success', rawOutput: { ok: true } }],
@@ -158,7 +158,7 @@ describe('importAcpReplaySidechainV1', () => {
     expect(warnSpy).toHaveBeenCalledWith(
       '[ACP Sidechain Import] Missing toolCallId on tool_result event with no pending synthetic tool_call id; generated synthetic id',
       expect.objectContaining({
-        provider: 'opencode',
+        provider: 'codex',
         remoteSessionId: 'ses_123',
         sidechainId: 'tool_task_1',
         matchedSyntheticToolCall: false,
@@ -173,7 +173,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay: [
@@ -193,7 +193,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'task / bad',
       replay: [{ type: 'message', role: 'agent', text: 'hello' }],
@@ -207,7 +207,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: ' tool_task_1 ',
       replay: [{ type: 'message', role: 'agent', text: 'hello' }],
@@ -227,7 +227,7 @@ describe('importAcpReplaySidechainV1', () => {
 
     await importAcpReplaySidechainV1({
       session,
-      provider: 'opencode',
+      provider: 'codex',
       remoteSessionId: 'ses_123',
       sidechainId: 'tool_task_1',
       replay,

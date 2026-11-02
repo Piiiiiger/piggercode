@@ -44,7 +44,7 @@ function writePoisonOnEarlyInputAcpAgentScript(params: {
           appendFileSync(${JSON.stringify(params.initializeObservationPath ?? '')}, 'initialize\\n');
         }
 
-        // Simulate Gemini CLI ACP quirk:
+        // Simulate ACP agent quirk:
         // The ACP stdio bridge can swallow an early initialize request before it's "ready",
         // and once that happens the session is effectively poisoned.
         const ready = (Date.now() - start) >= ${params.readyAfterMs};
@@ -138,7 +138,7 @@ describe('AcpBackend.initialize (init delay)', () => {
             // The point of this test is that initDelay prevents "early stdin" poisoning; use
             // a realistic timeout to avoid flakes under load.
             initTimeoutMs: 5_000,
-            // This is the behavior we need for Gemini CLI ACP: don't send initialize immediately.
+            // This is the behavior we need for slow-starting ACP agents: don't send initialize immediately.
             // The delay needs headroom under load so it isn't "consumed" before the agent has
             // actually started reading ACP stdin.
             initDelayMs: 2_500,

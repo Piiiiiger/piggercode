@@ -24,7 +24,7 @@ installProfileEditFormModuleMocks({
             },
             useAllMachines: () => [],
             useMachine: () => null,
-            useSettings: () => ({ opencodeBackendMode: 'server' }),
+            useSettings: () => ({}),
             useSettingMutable: (key: string) => {
                 if (key === 'favoriteMachines') return [[], vi.fn()] as const;
                 if (key === 'secrets') return [[], vi.fn()] as const;
@@ -77,11 +77,10 @@ function buildProfile(overrides: Record<string, unknown> = {}): AIBackendProfile
         defaultPermissionModeByTargetKey: {},
         defaultPersistenceModeByAgent: { codex: 'direct' },
         defaultPersistenceModeByTargetKey: {},
-        compatibility: { codex: true, claude: true, gemini: true },
+        compatibility: { codex: true, claude: true },
         compatibilityByTargetKey: {
             'agent:codex': true,
             'agent:claude': true,
-            'agent:gemini': true,
         },
         envVarRequirements: [],
         isBuiltIn: false,
@@ -142,15 +141,15 @@ describe('ProfileEditForm default persistence mode', () => {
                     profile: buildProfile({
                         defaultPermissionModeByTargetKey: {
                             'agent:codex': 'read-only',
-                            [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: 'safe-yolo',
+                            ['agent:claude']: 'safe-yolo',
                         },
                         defaultPersistenceModeByTargetKey: {
                             'agent:codex': 'direct',
-                            [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: 'persisted',
+                            ['agent:claude']: 'persisted',
                         },
                         compatibilityByTargetKey: {
                             'agent:codex': true,
-                            [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: true,
+                            ['agent:claude']: true,
                         },
                     }),
                     machineId: null,
@@ -165,15 +164,15 @@ describe('ProfileEditForm default persistence mode', () => {
         expect(onSave.mock.calls[0]?.[0]).toEqual(expect.objectContaining({
             compatibilityByTargetKey: {
                 'agent:codex': true,
-                [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: true,
+                ['agent:claude']: true,
             },
             defaultPermissionModeByTargetKey: {
                 'agent:codex': 'read-only',
-                [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: 'safe-yolo',
+                ['agent:claude']: 'safe-yolo',
             },
             defaultPersistenceModeByTargetKey: {
                 'agent:codex': 'direct',
-                [buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'custom-preset' })]: 'persisted',
+                ['agent:claude']: 'persisted',
             },
         }));
     });

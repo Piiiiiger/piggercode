@@ -174,29 +174,6 @@ describe('parseAutomationTemplateExecution', () => {
     expect(parsed.value.prompt).toBe('Hello');
   });
 
-  it('parses configured ACP backend targets from plaintext templates', () => {
-    const parsed = parseAutomationTemplateExecution(
-      buildClaimedRun({
-        automation: {
-          id: 'a1',
-          name: 'ACP backend',
-          enabled: true,
-          targetType: 'new_session',
-          templateCiphertext: buildPlainTemplateCiphertext({
-            directory: '/tmp/project',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-            prompt: 'Use the ACP backend',
-          }),
-        },
-      }),
-      undefined,
-    );
-    expect(parsed.ok).toBe(true);
-    if (!parsed.ok) return;
-    expect(parsed.value.backendTarget).toEqual({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
-    expect(parsed.value.prompt).toBe('Use the ACP backend');
-  });
-
   it('parses mcpSelection from plaintext templates', () => {
     const parsed = parseAutomationTemplateExecution(
       buildClaimedRun({

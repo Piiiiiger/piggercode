@@ -26,7 +26,7 @@ export type ExecutionRunManagerStartParams = Readonly<{
   sessionConfigOptionOverrides?: AcpConfigOptionOverridesV1;
   /**
    * Intent-scoped configuration. The execution-run substrate treats this as opaque,
-   * but backends/engines may interpret it (e.g. native review CLIs like CodeRabbit).
+   * but backends may interpret it.
    */
   intentInput?: unknown;
   display?: ExecutionRunDisplay;

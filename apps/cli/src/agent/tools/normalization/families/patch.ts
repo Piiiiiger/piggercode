@@ -70,7 +70,7 @@ export function normalizePatchInput(rawInput: unknown): UnknownRecord {
 
     const changes = asNonEmptyRecord(record.changes);
     if (!changes) {
-        // Some providers emit a standalone delete tool (e.g. Auggie) with file_paths.
+        // Some ACP providers emit a standalone delete tool with file_paths.
         // Normalize it into a Patch changes map so the UI can reuse the Patch renderer.
         const filePaths = asNonEmptyStringArray((record as any).file_paths);
         if (filePaths) {

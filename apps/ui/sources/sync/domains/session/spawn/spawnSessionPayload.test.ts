@@ -11,7 +11,7 @@ describe('buildSpawnHappySessionRpcParams', () => {
         expect(buildSpawnHappySessionRpcParams({
             machineId: 'machine-1',
             directory: '/tmp/workspace',
-            backendTarget: { kind: 'builtInAgent', agentId: 'cursor' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             modelId: ' model-a ',
             modelUpdatedAt: 123,
         } as any)).toEqual(expect.objectContaining({ modelId: ' model-a ', modelUpdatedAt: 123 }));
@@ -21,30 +21,10 @@ describe('buildSpawnHappySessionRpcParams', () => {
         expect(buildSpawnHappySessionRpcParams({
             machineId: 'machine-1',
             directory: '/tmp/workspace',
-            backendTarget: { kind: 'builtInAgent', agentId: 'cursor' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             agentModeId: ' plan\t',
             agentModeUpdatedAt: 123,
         } as any)).toEqual(expect.objectContaining({ agentModeId: ' plan\t', agentModeUpdatedAt: 123 }));
-    });
-
-    it('includes configured ACP backend targets and omits removed workspace linkage fields', () => {
-        const params = buildSpawnHappySessionRpcParams({
-            machineId: 'machine-1',
-            directory: '/tmp/workspace',
-            workspaceId: 'ws_payments',
-            workspaceLocationId: 'loc_local',
-            workspaceCheckoutId: 'checkout_feature_auth',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        } as any);
-
-        expect(params).toEqual(expect.objectContaining({
-            type: 'spawn-in-directory',
-            directory: '/tmp/workspace',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        }));
-        expect(params).not.toHaveProperty('workspaceId');
-        expect(params).not.toHaveProperty('workspaceLocationId');
-        expect(params).not.toHaveProperty('workspaceCheckoutId');
     });
 
     it('prefers codexBackendMode over legacy experimentalCodexAcp when provided together', () => {

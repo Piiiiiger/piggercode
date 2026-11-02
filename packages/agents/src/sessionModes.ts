@@ -27,33 +27,6 @@ export type AgentSessionModeDescriptor = Readonly<{
 export const AGENT_SESSION_MODE_DESCRIPTORS: Readonly<Record<AgentId, AgentSessionModeDescriptor>> = Object.freeze({
   claude: { source: 'provider-native', semantics: 'agent-modes', runtimeSwitch: 'provider-native' },
   codex: { source: 'acp', semantics: 'policy-presets', runtimeSwitch: 'metadata-gating' },
-  opencode: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  gemini: { source: 'none', semantics: 'none', runtimeSwitch: 'none' },
-  auggie: { source: 'none', semantics: 'none', runtimeSwitch: 'none' },
-  qwen: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  kimi: { source: 'none', semantics: 'none', runtimeSwitch: 'none' },
-  kilo: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  kiro: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  devin: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  customAcp: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  pi: { source: 'none', semantics: 'none', runtimeSwitch: 'none' },
-  copilot: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  cursor: {
-    source: 'acp',
-    semantics: 'agent-modes',
-    runtimeSwitch: 'acp-config-option',
-    acpModeConfigOptionId: 'mode',
-    acpModeSetMethod: 'config_option',
-  },
-  grok: {
-    source: 'none',
-    semantics: 'none',
-    runtimeSwitch: 'none',
-  },
-  agy: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  fx: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  droid: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
-  codebuddy: { source: 'acp', semantics: 'agent-modes', runtimeSwitch: 'acp-setSessionMode' },
 });
 
 function descriptorToSessionModesKind(descriptor: AgentSessionModeDescriptor): AgentSessionModesKind {
@@ -72,23 +45,6 @@ function descriptorToSessionModesKind(descriptor: AgentSessionModeDescriptor): A
 export const AGENT_SESSION_MODES: Readonly<Record<AgentId, AgentSessionModesKind>> = Object.freeze({
   claude: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.claude),
   codex: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.codex),
-  opencode: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.opencode),
-  gemini: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.gemini),
-  auggie: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.auggie),
-  qwen: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.qwen),
-  kimi: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.kimi),
-  kilo: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.kilo),
-  kiro: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.kiro),
-  devin: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.devin),
-  customAcp: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.customAcp),
-  pi: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.pi),
-  copilot: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.copilot),
-  cursor: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.cursor),
-  grok: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.grok),
-  agy: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.agy),
-  fx: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.fx),
-  droid: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.droid),
-  codebuddy: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.codebuddy),
 });
 
 export function getAgentSessionModeDescriptor(agentId: AgentId): AgentSessionModeDescriptor {

@@ -125,24 +125,6 @@ describe('normalizeToolCallForRendering (names)', () => {
         expect(normalized.name).toBe('SubAgent');
     });
 
-    it('maps workspace indexing permission prompts to known tool name', () => {
-        const normalized = normalizeToolCallForRendering(
-            makeTool({
-                name: 'Unknown tool',
-                state: 'running',
-                input: {
-                    toolCall: { title: 'Workspace Indexing Permission', toolCallId: 'workspace-indexing-permission' },
-                    permissionId: 'workspace-indexing-permission',
-                },
-                result: null,
-                completedAt: null,
-                description: 'Unknown tool',
-            }),
-        );
-
-        expect(normalized.name).toBe('WorkspaceIndexingPermission');
-    });
-
     it('prefers explicit canonical tool metadata from _happier/_happy', () => {
         const happier = normalizeToolCallForRendering(
             makeTool({

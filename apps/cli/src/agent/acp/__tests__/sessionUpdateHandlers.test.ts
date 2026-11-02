@@ -7,8 +7,6 @@ import type { HandlerContext, SessionUpdate } from '../sessionUpdateHandlers';
 import { handleToolCall, handleToolCallUpdate, markToolCallRunningAfterPermission } from '../sessionUpdateHandlers';
 import { DefaultTransport, defaultTransport } from '../../transport';
 import { CodexAcpTransport } from '@/backends/codex/acp/transport';
-import { GeminiTransport } from '@/backends/gemini/acp/transport';
-import { KimiTransport } from '@/backends/kimi/acp/transport';
 import { createAcpToolCallLifecycle } from '../updates/toolCalls/createAcpToolCallLifecycle';
 
 function createCtx(opts?: { transport?: HandlerContext['transport'] }): HandlerContext & { emitted: any[] } {
@@ -139,43 +137,6 @@ describe('sessionUpdateHandlers tool call tracking', () => {
     });
   });
 
-  it.each([undefined, null, ''])(
-    'does not promote a user-owned deferred wrapper title when the ACP title is %s',
-    (title) => {
-      const ctx = createCtx();
-      const rawInput = {
-        toolName: 'Bash',
-        params: { command: 'echo user-owned-data' },
-        _acp: { title: 'DeferExecuteTool' },
-      };
-
-      handleToolCall({
-        sessionUpdate: 'tool_call',
-        toolCallId: 'call_user_owned_title',
-        status: 'completed',
-        kind: 'other',
-        title,
-        rawInput,
-      }, ctx);
-
-      const toolCall: AgentMessage | undefined = ctx.emitted.find((message) => message.type === 'tool-call');
-      if (toolCall?.type !== 'tool-call') throw new Error('expected tool-call');
-      const normalized = normalizeToolCallV2({
-        protocol: 'acp',
-        provider: 'codebuddy',
-        toolName: toolCall.toolName,
-        rawInput: toolCall.args,
-      });
-
-      expect(normalized.canonicalToolName).toBe('other');
-      expect(normalized.input).toMatchObject({
-        toolName: 'Bash',
-        params: rawInput.params,
-        _acp: { kind: 'other', rawInput },
-      });
-    },
-  );
-
   it('includes _acp metadata on successful tool results even when output is a primitive', () => {
     const ctx = createCtx();
 
@@ -300,36 +261,6 @@ describe('sessionUpdateHandlers tool call tracking', () => {
 
 	    vi.useRealTimers();
 	  });
-
-  it('infers tool kind/name for terminal tool_call_update events when kind/start are missing (Gemini)', () => {
-    vi.useFakeTimers();
-    const ctx = createCtx({ transport: new GeminiTransport() });
-
-    const failedUpdate: SessionUpdate = {
-      sessionUpdate: 'tool_call_update',
-      toolCallId: 'read_file-1',
-      status: 'failed',
-      title: 'Read /etc/hosts',
-      locations: [{ path: '/etc/hosts' }],
-      content: { filePath: '/etc/hosts' },
-      meta: {},
-    };
-
-    handleToolCallUpdate(failedUpdate, ctx);
-
-    const toolCall = ctx.emitted.find((m) => m.type === 'tool-call' && m.callId === 'read_file-1');
-    expect(toolCall).toBeTruthy();
-    expect(toolCall.toolName).toBe('read');
-
-    const toolResult = ctx.emitted.find((m) => m.type === 'tool-result' && m.callId === 'read_file-1');
-    expect(toolResult).toBeTruthy();
-    expect(toolResult.toolName).toBe('read');
-    expect(toolResult.isError).toBe(true);
-    expect(toolResult.result?._acp?.kind).toBe('read');
-
-    expect(ctx.toolCalls.activeSize).toBe(0);
-    vi.useRealTimers();
-  });
 
   it('emits a terminal tool-result error when an in-progress tool call times out', () => {
     vi.useFakeTimers();
@@ -622,45 +553,6 @@ describe('sessionUpdateHandlers tool call tracking', () => {
 	    expect(ctx.toolCalls.get('call_perm_wait_1')?.snapshot.status).toBe('in_progress');
 
     vi.useRealTimers();
-  });
-
-  it('infers tool name from title when ACP tool kind and id are opaque (Kimi)', () => {
-    const ctx = createCtx({ transport: new KimiTransport() });
-
-    const update: SessionUpdate = {
-      sessionUpdate: 'tool_call',
-      toolCallId: 'opaque-tool-id',
-      status: 'in_progress',
-      title: 'ReadFile',
-      content: {},
-    };
-
-    handleToolCall(update, ctx);
-
-    const toolCall = ctx.emitted.find((m) => m.type === 'tool-call' && m.callId === 'opaque-tool-id');
-    expect(toolCall).toBeTruthy();
-    expect(toolCall.toolName).toBe('read');
-    expect(ctx.toolCalls.get('opaque-tool-id')?.toolName).toBe('read');
-  });
-
-  it('extracts tool output from update.result when output/rawOutput/content are absent', () => {
-    const ctx = createCtx();
-
-    const completedUpdate: SessionUpdate = {
-      sessionUpdate: 'tool_call_update',
-      toolCallId: 'read_file-1',
-      status: 'completed',
-      kind: 'read',
-      title: 'Read /tmp/a.txt',
-      // Gemini-style: result may be carried in a non-standard field.
-      result: { content: 'hello' },
-    };
-
-    handleToolCallUpdate(completedUpdate, ctx);
-
-    const toolResult = ctx.emitted.find((m) => m.type === 'tool-result' && m.callId === 'read_file-1');
-    expect(toolResult).toBeTruthy();
-    expect(toolResult.result).toMatchObject({ content: 'hello' });
   });
 
   it('merges existing _acp metadata when attaching ACP fields', () => {

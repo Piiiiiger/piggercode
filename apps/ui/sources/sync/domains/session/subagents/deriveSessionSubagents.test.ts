@@ -452,92 +452,10 @@ describe('deriveSessionSubagents', () => {
         );
     });
 
-    it('derives provider-native completion-only SubAgent activity without fabricating a child transcript or controls', async () => {
-        const subagents = await deriveSubagents({
-            session: { metadata: { flavor: 'cursor' } },
-            messages: [
-                createToolMessage({
-                    id: 'message_cursor_task',
-                    name: 'SubAgent',
-                    state: 'completed',
-                    input: {
-                        operation: 'run',
-                        description: 'Inspect the integration',
-                        prompt: 'Sanitized private prompt',
-                        subagent_type: 'specialist',
-                        model: 'cursor-model',
-                        agent_id: 'cursor-agent-1',
-                        duration_ms: 42,
-                        _acp: { snapshotUpdatedAt: 10_000 },
-                        _happier: {
-                            v: 2,
-                            protocol: 'acp',
-                            provider: 'cursor',
-                            rawToolName: 'Task',
-                            canonicalToolName: 'SubAgent',
-                            nativeSubagent: {
-                                v: 1,
-                                lifecycle: 'completion_only',
-                                type: 'custom',
-                                customType: 'specialist',
-                                model: 'cursor-model',
-                                agentId: 'cursor-agent-1',
-                                durationMs: 42,
-                            },
-                        },
-                    },
-                    toolExtras: { id: 'opaque\ncursor-task-id ' },
-                    messageExtras: { realID: 'server-cursor-task' },
-                }),
-            ],
-        });
-
-        expect(subagents).toEqual([
-            expect.objectContaining({
-                id: 'subagent_sidechain:opaque\ncursor-task-id ',
-                kind: 'subagent_sidechain',
-                status: 'succeeded',
-                display: expect.objectContaining({
-                    title: 'Inspect the integration',
-                    subtitle: 'specialist · cursor-model',
-                    providerLabel: 'Cursor',
-                }),
-                transcript: {
-                    toolMessageRouteId: 'server:server-cursor-task',
-                    toolId: 'opaque\ncursor-task-id ',
-                },
-                nativeRef: {
-                    lifecycle: 'completion_only',
-                    type: 'custom',
-                    customType: 'specialist',
-                    model: 'cursor-model',
-                    agentId: 'cursor-agent-1',
-                    durationMs: 42,
-                },
-                recipient: null,
-                capabilities: {
-                    canOpen: true,
-                    canSend: false,
-                    canStop: false,
-                    canLaunchChild: false,
-                    canDelete: false,
-                    canOpenAdvancedRun: false,
-                },
-                timestamps: {
-                    startedAtMs: 9_958,
-                    updatedAtMs: 10_000,
-                    finishedAtMs: 10_000,
-                },
-            }),
-        ]);
-        expect(subagents[0]?.transcript.sidechainId).toBeUndefined();
-        expect(subagents[0]?.timestamps.startedAtMs).toBe(9_958);
-    });
-
     it('fails closed on oversized or out-of-contract native task display metadata from durable history', async () => {
         const oversized = 'x'.repeat(513);
         const subagents = await deriveSubagents({
-            session: { metadata: { flavor: 'cursor' } },
+            session: { metadata: { flavor: 'codex' } },
             messages: [
                 createToolMessage({
                     id: 'message_cursor_malformed_native_task',
@@ -581,7 +499,7 @@ describe('deriveSessionSubagents', () => {
             },
         } as const;
         const subagents = await deriveSubagents({
-            session: { metadata: { flavor: 'cursor' } },
+            session: { metadata: { flavor: 'codex' } },
             messages: [
                 createToolMessage({
                     id: 'message_cursor_long_description',
@@ -618,7 +536,7 @@ describe('deriveSessionSubagents', () => {
 
     it('prefers a pending permission tool route for generic subagents until the provider sidechain can proceed', async () => {
         const subagents = await deriveSubagents({
-            session: { metadata: { flavor: 'opencode' } },
+            session: { metadata: { flavor: 'codex' } },
             messages: [
                 createToolMessage({
                     id: 'message_permission_generic',
@@ -674,7 +592,7 @@ describe('deriveSessionSubagents', () => {
 
     it('keeps legacy Task and Agent tool names compatible with generic subagent derivation', async () => {
         const subagents = await deriveSubagents({
-            session: { metadata: { flavor: 'opencode' } },
+            session: { metadata: { flavor: 'codex' } },
             messages: [
                 createToolMessage({
                     id: 'message_task_generic',

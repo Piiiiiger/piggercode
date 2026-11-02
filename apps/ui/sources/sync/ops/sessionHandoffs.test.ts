@@ -216,26 +216,6 @@ describe('sessionHandoffs ops', () => {
         });
     });
 
-    it('refuses an unsupported connected account before stopping the handoff source', async () => {
-        getServerFeaturesSnapshotMock.mockResolvedValue({
-            status: 'ready',
-            features: { features: {
-                sessions: { enabled: true, handoff: { enabled: true, serverRoutedTransfer: { enabled: true } } },
-                machines: { enabled: true, transfer: { enabled: true, directPeer: { enabled: true } } },
-            }, capabilities: {} },
-        });
-        machineRpcWithServerScopeMock.mockResolvedValue({ ok: false, errorCode: 'unsupported', error: 'Unsupported' });
-        await completeConnectedAccountHandoff({
-            sessionId: 'sess-import', sourceMachineId: 'machine_source', targetMachineId: 'machine_target',
-            sessionStorageMode: 'direct', preferredTransportStrategies: ['direct_peer', 'server_routed_stream'],
-            sourceStartRetry: { timeoutMs: 0, intervalMs: 0 },
-            sourceMetadata: { flavor: 'claude', path: '/repo', host: 'source', machineId: 'machine_source', claudeSessionId: 'native-session',
-                connectedServices: { v: 1, bindingsByServiceId: { antigravity: { source: 'connected', profileId: 'work' } } },
-            },
-        });
-        expect(machineRpcWithServerScopeMock.mock.calls.some(([request]) => request.method === 'daemon.sessionHandoff.start')).toBe(false);
-    });
-
     it('routes startSessionHandoff through server-scoped machine rpc with the source machine id', async () => {
         machineRpcWithServerScopeMock.mockResolvedValueOnce({
             handoffId: 'handoff_1',
@@ -6197,10 +6177,6 @@ describe('sessionHandoffs ops', () => {
                             vendorSessionId: 'codex_session_recover',
                         },
                     },
-                    environmentVariables: {
-                        PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                        PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                    },
                 },
             },
             action: 'restart_on_source',
@@ -6226,10 +6202,6 @@ describe('sessionHandoffs ops', () => {
                 },
             },
             codexBackendMode: 'appServer',
-            environmentVariables: {
-                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-            },
         }));
     });
 });

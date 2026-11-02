@@ -2,7 +2,6 @@ import type { ExecutionRunProfileBoundedCompleteResult } from '@/agent/execution
 import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 
 import { normalizeCodexReviewOutput } from '@/agent/reviews/normalize/codex/normalizeCodexReviewOutput';
-import { resolveNativeReviewOutputNormalizer } from '@/agent/reviews/engines/nativeReviewEngines';
 
 export type ReviewOutputNormalizer = (params: Readonly<{
   runId: string;
@@ -19,5 +18,5 @@ export type ReviewOutputNormalizer = (params: Readonly<{
 
 export function resolveReviewOutputNormalizer(backendId: string): ReviewOutputNormalizer | null {
   if (backendId === 'codex') return normalizeCodexReviewOutput;
-  return resolveNativeReviewOutputNormalizer(backendId);
+  return null;
 }

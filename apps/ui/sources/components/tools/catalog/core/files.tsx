@@ -25,7 +25,7 @@ export const coreFileTools = {
                 const path = resolvePath(opts.tool.input.file_path, opts.metadata);
                 return path.trim().length > 0 ? path : null;
             }
-            // Gemini uses 'locations' array with 'path' field
+            // ACP-style tools carry a 'locations' array with 'path' field
             if (Array.isArray(opts.tool.input.locations)) {
                 const maybePath = opts.tool.input.locations[0]?.path;
                 if (typeof maybePath === 'string' && maybePath.length > 0) {
@@ -36,14 +36,14 @@ export const coreFileTools = {
             return null;
         },
     },
-    // Gemini uses lowercase 'read'
+    // ACP-style lowercase 'read'
     'read': {
         title: () => t('tools.names.readFile'),
         minimal: true,
         icon: ICON_READ,
         input: ReadInputV2Schema,
         extractSubtitle: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            // Gemini uses 'locations' array with 'path' field
+            // ACP-style tools carry a 'locations' array with 'path' field
             if (Array.isArray(opts.tool.input.locations)) {
                 const maybePath = opts.tool.input.locations[0]?.path;
                 if (typeof maybePath === 'string' && maybePath.length > 0) {

@@ -35,25 +35,4 @@ describe('provider scenarios outside-workspace policy', () => {
     expect(dirname(outsidePath)).toBe(dirname(workspaceDir));
   });
 
-  it('initializes outside path in setup for ACP outside-workspace scenario', () => {
-    const scenario = makeAcpPermissionOutsideWorkspaceScenario({
-      providerId: 'opencode',
-      content: 'OUTSIDE_POLICY_TEST',
-      decision: 'approve',
-    });
-
-    expect(typeof scenario.setup).toBe('function');
-    const promptBuilder = scenario.prompt;
-    expect(typeof promptBuilder).toBe('function');
-    if (!promptBuilder) throw new Error('Scenario prompt builder is required');
-
-    const workspaceDir = '/tmp/workspace-root';
-    const prompt = promptBuilder({ workspaceDir });
-    const match = prompt.match(/- Absolute path: (.+)/);
-    expect(match).toBeTruthy();
-    const outsidePath = match?.[1]?.trim() ?? '';
-    expect(outsidePath.startsWith(workspaceDir)).toBe(false);
-    // OpenCode-family providers often treat the workspace as a git-rooted project, so we force tmpdir().
-    expect(outsidePath.startsWith(tmpdir())).toBe(true);
-  });
 });

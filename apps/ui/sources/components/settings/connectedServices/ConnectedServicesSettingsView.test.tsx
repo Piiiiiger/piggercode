@@ -177,16 +177,6 @@ describe('ConnectedServicesSettingsView', () => {
         expect(items.length).toBe(0);
     });
 
-    it('omits a new service from the relay connect picker until support is known', async () => {
-        useFeatureEnabledSpy.mockReturnValue(true);
-        useProfileSpy.mockReturnValue({ connectedServicesV2: [] });
-        const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
-        const screen = await renderScreen(<ConnectedServicesSettingsView />);
-        const titles = screen.tree.findAllByType('Item' as never).map((item) => item.props.title);
-        expect(titles).not.toContain('connectedServices.serviceNames.antigravity');
-        expect(titles).toContain('connectedServices.serviceNames.openaiCodex');
-    });
-
     it('opens the service detail flow for default-auth connect recovery actions', async () => {
         useFeatureEnabledSpy.mockReturnValue(true);
         useProfileSpy.mockReturnValue({

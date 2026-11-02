@@ -85,7 +85,7 @@ async function buildCompletionModel({ cliRootDir }) {
   const wt = await helpJsonSubcommands({
     cliRootDir,
     scriptRelPath: 'scripts/worktrees.mjs',
-    fallback: ['migrate', 'sync', 'sync-all', 'list', 'new', 'pr', 'use', 'status', 'update', 'update-all', 'push', 'git', 'shell', 'code', 'cursor'],
+    fallback: ['migrate', 'sync', 'sync-all', 'list', 'new', 'pr', 'use', 'status', 'update', 'update-all', 'push', 'git', 'shell', 'code'],
   });
   const stackRaw = await helpJsonSubcommands({
     cliRootDir,

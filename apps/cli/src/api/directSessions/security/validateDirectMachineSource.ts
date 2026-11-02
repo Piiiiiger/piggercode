@@ -1,14 +1,12 @@
 import { realpathSync } from 'node:fs';
-import { isAbsolute, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
-import { isAcpSessionListingDeclared, type AgentId } from '@piggercode/agents';
 import type { DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
 import { expandHomeDirPath } from '@piggercode/cli-common/providers';
 
 import {
   resolveConfiguredClaudeConfigDir,
 } from '@/backends/claude/directSessions/resolveClaudeConfigDir';
-import { resolvePiAgentDir } from '@/backends/pi/directSessions/resolvePiAgentDir';
 
 type DirectSourceValidationResult =
   | Readonly<{ ok: true; source: DirectSessionsSource }>
@@ -27,14 +25,6 @@ function canonicalizePath(raw: string, env: NodeJS.ProcessEnv): string {
   }
 }
 
-function normalizeUrl(raw: string): string {
-  const url = new URL(raw.trim());
-  url.hash = '';
-  url.search = '';
-  const normalized = url.toString().replace(/\/+$/, '');
-  return normalized || raw.trim();
-}
-
 function isSafeConnectedServiceId(raw: unknown): raw is string {
   if (typeof raw !== 'string') return false;
   const value = raw.trim();
@@ -47,24 +37,6 @@ export function validateDirectMachineSource(params: Readonly<{
   env: NodeJS.ProcessEnv;
 }>): DirectSourceValidationResult {
   const { providerId, source, env } = params;
-
-  // Generic ACP `session/list` source: no provider branch and no daemon-owned filesystem location.
-  // Admission is the leaf capability declaration; the live ACP handshake remains the authority.
-  if (source.kind === 'acpSessionList') {
-    if (!isAcpSessionListingDeclared(providerId as AgentId)) {
-      return err('provider/source mismatch');
-    }
-    const rawCwd = typeof source.cwd === 'string' ? source.cwd.trim() : '';
-    if (!rawCwd) {
-      return { ok: true, source };
-    }
-    // ACP requires an absolute working directory. Resolving a relative filter against the daemon's
-    // own working directory would silently scope the listing to the wrong project.
-    if (!isAbsolute(expandHomeDirPath(rawCwd, env))) {
-      return err('source cwd must be absolute');
-    }
-    return { ok: true, source: { ...source, cwd: canonicalizePath(rawCwd, env) } };
-  }
 
   switch (providerId) {
     case 'codex': {
@@ -90,52 +62,6 @@ export function validateDirectMachineSource(params: Readonly<{
           ...source,
           configDir: configuredConfigDir,
         },
-      };
-    }
-    case 'pi': {
-      if (source.kind !== 'piAgentDir') return err('provider/source mismatch');
-      const requestedAgentDir =
-        typeof source.agentDir === 'string' && source.agentDir.trim().length > 0
-          ? canonicalizePath(source.agentDir, env)
-          : null;
-      // The configured dir is daemon-controlled (env PI_CODING_AGENT_DIR or default ~/.pi/agent).
-      // A client may omit agentDir; if supplied it must match the configured dir (path-traversal guard,
-      // mirroring the claude configDir policy).
-      const configuredAgentDir = canonicalizePath(resolvePiAgentDir({ source: { kind: 'piAgentDir' }, env }), env);
-      if (requestedAgentDir && requestedAgentDir !== configuredAgentDir) {
-        return err('source agentDir override is not allowed');
-      }
-      return {
-        ok: true,
-        source: {
-          ...source,
-          agentDir: configuredAgentDir,
-        },
-      };
-    }
-    case 'opencode': {
-      if (source.kind !== 'opencodeServer') return err('provider/source mismatch');
-      const requestedBaseUrl = typeof source.baseUrl === 'string' && source.baseUrl.trim().length > 0 ? normalizeUrl(source.baseUrl) : null;
-      const configuredBaseUrl =
-        typeof env.PIGGERCODE_OPENCODE_SERVER_URL === 'string' && env.PIGGERCODE_OPENCODE_SERVER_URL.trim().length > 0
-          ? normalizeUrl(env.PIGGERCODE_OPENCODE_SERVER_URL)
-          : null;
-
-      if (requestedBaseUrl && !configuredBaseUrl) {
-        return err('source baseUrl override is not allowed');
-      }
-      if (requestedBaseUrl && configuredBaseUrl && requestedBaseUrl !== configuredBaseUrl) {
-        return err('source baseUrl override is not allowed');
-      }
-
-      return {
-        ok: true,
-        source: configuredBaseUrl
-          ? {
-              ...source,
-              baseUrl: configuredBaseUrl,
-            }
-          : source,
       };
     }
     default: {

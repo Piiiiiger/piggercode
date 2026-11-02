@@ -76,7 +76,7 @@ describe('createSessionModeOverrideSynchronizer', () => {
         getMetadataSnapshot: () => ({
           sessionModesV1: {
             v: 1,
-            provider: 'opencode',
+            provider: 'codex',
             updatedAt: 1,
             currentModeId: 'build',
             availableModes: [

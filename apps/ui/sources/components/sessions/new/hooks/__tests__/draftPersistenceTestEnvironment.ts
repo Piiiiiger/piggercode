@@ -375,10 +375,6 @@ export const settingsState = {
     serverSelectionGroups: [],
     serverSelectionActiveTargetKind: null,
     serverSelectionActiveTargetId: null,
-    acpCatalogSettingsV1: {
-        v: 2 as const,
-        backends: [],
-    },
 };
 
 function getMockStorageState() {
@@ -687,9 +683,7 @@ vi.mock('@/sync/domains/profiles/profileCompatibility', async (importOriginal) =
         ...actual,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         isProfileCompatibleWithBackendTarget: (profile: any, target: any) => {
-            const targetKey = target?.kind === 'configuredAcpBackend'
-                ? `acpBackend:${String(target.backendId ?? '')}`
-                : `agent:${String(target?.agentId ?? '')}`;
+            const targetKey = `agent:${String(target?.agentId ?? '')}`;
             const explicitCompatibility = profile?.compatibilityByTargetKey?.[targetKey];
             if (typeof explicitCompatibility === 'boolean') {
                 return explicitCompatibility;
@@ -1047,10 +1041,6 @@ export async function resetDraftPersistenceState(): Promise<void> {
         overrides: {
             speed: { updatedAt: 123, value: 'fast' },
         },
-    };
-    settingsState.acpCatalogSettingsV1 = {
-        v: 2,
-        backends: [],
     };
     cliDetectionState.value = {
         available: { codex: true, claude: true },

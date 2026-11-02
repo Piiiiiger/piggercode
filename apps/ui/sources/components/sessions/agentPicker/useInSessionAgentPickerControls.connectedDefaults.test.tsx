@@ -51,7 +51,7 @@ describe('continuation target account discovery', () => {
             accountScope: null,
             currentAgentId: 'claude',
             currentAgentLabel: 'Claude',
-            entries: getResolvedBackendCatalogEntries({ enabledAgentIds: ['claude', 'codex'], acpCatalogSettingsV1: settings.acpCatalogSettingsV1 }),
+            entries: getResolvedBackendCatalogEntries({ enabledAgentIds: ['claude', 'codex'] }),
             featureDecision: { state: 'enabled' },
             source: { currentBackendTargetKey: 'builtInAgent:claude', storageKind: 'persisted', canEditSession: true, machinePresence: 'online', hasConversationToCarry: true },
             machine: { machineId: 'machine-1', serverId: 'server-1', connectionGeneration: 1, daemonGeneration: 1 },

@@ -111,7 +111,7 @@ describe('runEphemeralExecutionRunTextPrompt', () => {
     const out = await runEphemeralExecutionRunTextPrompt({
       cwd: '/tmp',
       sessionId: 'sess-123',
-      backendId: 'customAcp',
+      backendId: 'codex',
       permissionMode: 'no_tools',
       intent: 'replay_summary',
       prompt: 'Return OK',

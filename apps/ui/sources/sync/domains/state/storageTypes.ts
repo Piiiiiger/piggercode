@@ -61,18 +61,6 @@ const MetadataObjectSchema = z.object({
     codexSessionId: z.string().optional(), // Codex session/conversation ID (uuid)
     codexBackendMode: z.enum(['mcp', 'acp', 'appServer']).optional(),
     agentRuntimeDescriptorV1: createAgentRuntimeDescriptorV1Schema(z).optional(),
-    geminiSessionId: z.string().optional(), // Gemini ACP session ID (opaque)
-    opencodeSessionId: z.string().optional(), // OpenCode ACP session ID (opaque)
-    opencodeBackendMode: z.enum(['server', 'acp']).optional(),
-    opencodeServerBaseUrl: z.string().optional(),
-    opencodeServerBaseUrlExplicit: z.literal(true).optional(),
-    auggieSessionId: z.string().optional(), // Auggie ACP session ID (opaque)
-    qwenSessionId: z.string().optional(), // Qwen Code ACP session ID (opaque)
-    kimiSessionId: z.string().optional(), // Kimi ACP session ID (opaque)
-    kiloSessionId: z.string().optional(), // Kilo ACP session ID (opaque)
-    piSessionId: z.string().optional(), // Pi RPC session ID (opaque)
-    copilotSessionId: z.string().optional(), // Copilot ACP session ID (opaque)
-    auggieAllowIndexing: z.boolean().optional(), // Auggie indexing enablement (spawn-time)
     tools: z.array(z.string()).optional(),
     slashCommands: z.array(z.string()).optional(),
     slashCommandDetails: z.array(z.object({

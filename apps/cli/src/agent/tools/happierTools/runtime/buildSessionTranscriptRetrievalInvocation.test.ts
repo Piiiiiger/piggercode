@@ -39,19 +39,6 @@ describe('buildSessionTranscriptRetrievalInvocation', () => {
     expect(payload.input.cursor).toBeNull();
   });
 
-  it('renders the CLI bridge form for a shell_bridge Agent, by the tool name the catalog binds', () => {
-    const render = buildSessionTranscriptRetrievalInvocation({ ...base, agentId: 'pi' });
-    expect(render).not.toBeNull();
-    const rendered = render!(4_200);
-    expect(rendered).toContain("'tools' 'call'");
-    expect(rendered).toContain("'--tool' 'session_transcript_get'");
-    expect(rendered).toContain("'--session-id' 'sess_1'");
-    expect(rendered).toContain("'--directory' '/home/u/project'");
-    expect(rendered).toContain('"direction":"before"');
-    expect(rendered).toContain('"cursor":"4200"');
-    expect(rendered.startsWith('action_execute')).toBe(false);
-  });
-
   it('renders nothing for an Agent the catalog does not hand Happier tools', () => {
     expect(buildSessionTranscriptRetrievalInvocation({ ...base, agentId: 'not-an-agent' })).toBeNull();
   });

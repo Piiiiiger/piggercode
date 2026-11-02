@@ -25,7 +25,7 @@ describe('getAgentDropdownMenuItems', () => {
     it('renders provider icons through the canonical AgentIcon path', async () => {
         const { getAgentDropdownMenuItems } = await import('./agentDropdownItems');
         const [item] = getAgentDropdownMenuItems({
-            agentIds: ['cursor' as never],
+            agentIds: ['codex'],
             iconColor: 'currentColor',
         });
 
@@ -34,7 +34,7 @@ describe('getAgentDropdownMenuItems', () => {
         const icon = React.Children.only(frame?.props.children) as React.ReactElement<Record<string, unknown>>;
         expect(typeof icon.type === 'function' ? icon.type.name : icon.type).toBe('AgentIcon');
         expect(icon.props).toMatchObject({
-            agentId: 'cursor',
+            agentId: 'codex',
             color: 'currentColor',
             size: 22,
         });

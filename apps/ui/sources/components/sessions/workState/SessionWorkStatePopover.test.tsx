@@ -126,7 +126,7 @@ describe('SessionWorkStatePopover', () => {
                 anchorRef={anchorRef}
                 snapshot={{
                     v: 1,
-                    backendId: 'opencode',
+                    backendId: 'codex',
                     updatedAt: 10,
                     primaryItemId: 'todo:pending',
                     items: [
@@ -159,7 +159,7 @@ describe('SessionWorkStatePopover', () => {
                 anchorRef={anchorRef}
                 snapshot={{
                     v: 1,
-                    backendId: 'opencode',
+                    backendId: 'codex',
                     updatedAt: 10,
                     primaryItemId: 'todo:active',
                     items: [

@@ -26,35 +26,6 @@ describe('resolvePermissionModeSeedForAgentStart', () => {
     expect(res).toEqual({ mode: 'yolo', source: 'inferred' });
   });
 
-  it('uses account defaults when explicit and inferred are missing', () => {
-    const targetKey = buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'opencode' });
-    const res = resolvePermissionModeSeedForAgentStart({
-      agentId: 'opencode',
-      explicitPermissionMode: undefined,
-      inferredPermissionMode: undefined,
-      accountSettings: { sessionDefaultPermissionModeByTargetKey: { [targetKey]: 'safe-yolo' } },
-    });
-    expect(res).toEqual({ mode: 'safe-yolo', source: 'account_default' });
-  });
-
-  it('prefers configured ACP backend target defaults over built-in family defaults', () => {
-    const presetTargetKey = buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
-    const familyTargetKey = buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'customAcp' });
-    const res = resolvePermissionModeSeedForAgentStart({
-      agentId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      explicitPermissionMode: undefined,
-      inferredPermissionMode: undefined,
-      accountSettings: {
-        sessionDefaultPermissionModeByTargetKey: {
-          [familyTargetKey]: 'read-only',
-          [presetTargetKey]: 'safe-yolo',
-        },
-      },
-    });
-    expect(res).toEqual({ mode: 'safe-yolo', source: 'account_default' });
-  });
-
   it('clamps codex-like plan defaults to read-only (fail-closed)', () => {
     const targetKey = buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' });
     const res = resolvePermissionModeSeedForAgentStart({
@@ -75,17 +46,6 @@ describe('resolvePermissionModeSeedForAgentStart', () => {
       accountSettings: { sessionDefaultPermissionModeByTargetKey: { [targetKey]: 'plan' } },
     });
     expect(res).toEqual({ mode: 'plan', source: 'account_default' });
-  });
-
-  it('falls back to default when no valid candidates are present', () => {
-    const targetKey = buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' });
-    const res = resolvePermissionModeSeedForAgentStart({
-      agentId: 'gemini',
-      explicitPermissionMode: undefined,
-      inferredPermissionMode: undefined,
-      accountSettings: { sessionDefaultPermissionModeByTargetKey: { [targetKey]: 'nope' } },
-    });
-    expect(res).toEqual({ mode: 'default', source: 'fallback' });
   });
 
   it('treats legacy provider tokens as aliases (acceptEdits -> safe-yolo, bypassPermissions -> yolo)', () => {

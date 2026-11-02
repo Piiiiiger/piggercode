@@ -23,17 +23,6 @@ describe('runtime fallback capability', () => {
         })).toBe(false);
     });
 
-    it('admits Gemini same-group runtime fallback through its explicit declaration', () => {
-        const gemini = resolveConnectedServiceRuntimeFallbackCapability('gemini');
-
-        expect(gemini.groupConfigurationSupported).toBe(true);
-        expect(gemini.runtimeFallbackSupported).toBe(true);
-        expect(gemini.groupConfigurationSupportingAgentIds).toEqual(['gemini']);
-        expect(gemini.runtimeFallbackSupportingAgentIds).toEqual(['gemini']);
-        expect(isConnectedServiceAccountGroupConfigurationSupported('gemini')).toBe(true);
-        expect(isConnectedServiceRuntimeFallbackSupported('gemini')).toBe(true);
-    });
-
     it('keeps same-group runtime fallback support distinct from broader group configuration support', () => {
         const codex = resolveConnectedServiceRuntimeFallbackCapability('openai-codex');
 

@@ -35,7 +35,7 @@ describe('createOfflineSessionStub', () => {
         const session = createOfflineSessionStub('tag');
 
         await expect(session.sendAgentMessageCommitted(
-            'gemini',
+            'codex',
             { type: 'message', message: 'retained until attachment' },
             { localId: 'offline-segment-1' },
         )).rejects.toThrow(/offline.*not.*persist/i);

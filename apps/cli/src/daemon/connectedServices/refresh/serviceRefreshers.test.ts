@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   refreshClaudeSubscriptionOauthTokens,
   refreshConnectedAccountOauthTokens,
-  refreshGeminiOauthTokens,
   refreshOpenAiCodexOauthTokens,
 } from './serviceRefreshers';
 
@@ -242,63 +241,4 @@ describe('serviceRefreshers', () => {
     })).rejects.toThrow(/access_token/i);
   });
 
-  it('refreshes Gemini tokens via refresh_token grant', async () => {
-    const previousClientSecret = process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET;
-    process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = 'secret-123';
-
-    const fetchMock = vi.fn(async (_input: unknown, _init?: unknown) => ({
-      ok: true,
-      json: async () => ({
-        access_token: 'new-access',
-        refresh_token: 'new-refresh',
-        expires_in: 60,
-        scope: 'scope',
-        token_type: 'Bearer',
-      }),
-    }));
-    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
-
-    const now = 3000;
-    try {
-      const refreshed = await refreshGeminiOauthTokens({
-        refreshToken: 'old-refresh',
-        now,
-      });
-
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      const init: unknown = fetchMock.mock.calls[0]?.[1];
-      const body: unknown =
-        init && typeof init === 'object' && 'body' in init ? (init as { body?: unknown }).body : undefined;
-      const bodyText =
-        typeof body === 'string'
-          ? body
-          : body && typeof body === 'object' && 'toString' in body && typeof body.toString === 'function'
-            ? String(body.toString())
-            : '';
-      expect(bodyText).toContain('client_secret=secret-123');
-      expect(refreshed.accessToken).toBe('new-access');
-      expect(refreshed.refreshToken).toBe('new-refresh');
-      expect(refreshed.expiresAt).toBe(now + 60 * 1000);
-      expect(refreshed.scope).toBe('scope');
-      expect(refreshed.tokenType).toBe('Bearer');
-    } finally {
-      process.env.PIGGERCODE_CONNECTED_SERVICES_GEMINI_OAUTH_CLIENT_SECRET = previousClientSecret;
-    }
-  });
-
-  it('throws when Gemini refresh response is missing access_token', async () => {
-    const fetchMock = vi.fn(async () => ({
-      ok: true,
-      json: async () => ({
-        refresh_token: 'new-refresh',
-        expires_in: 60,
-      }),
-    }));
-    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
-
-    await expect(refreshGeminiOauthTokens({
-      refreshToken: 'old-refresh',
-      now: 3000,
-    })).rejects.toThrow(/access_token/i);
-  });
 });

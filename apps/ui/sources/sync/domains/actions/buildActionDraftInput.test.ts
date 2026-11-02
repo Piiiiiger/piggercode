@@ -21,20 +21,4 @@ describe('buildActionDraftInput', () => {
     expect(input).not.toHaveProperty('engineIds');
   });
 
-  it('merges explicit extra fields without losing seeded defaults', () => {
-    const input = buildActionDraftInput({
-      actionId: 'subagents.plan.start' as any,
-      sessionId: 's1',
-      defaultBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      instructions: '',
-      extra: { permissionMode: 'read_only' },
-    });
-
-    expect(input).toMatchObject({
-      sessionId: 's1',
-      backendTargetKeys: ['acpBackend:review-bot'],
-      instructions: '',
-      permissionMode: 'read_only',
-    });
-  });
 });

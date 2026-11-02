@@ -28,11 +28,6 @@ export const CHANGE_TITLE_TOOL_NAME_ALIASES = [
   'happy__change_title',
   'happier__session_title_set',
   'happy__session_title_set',
-  // OpenCode MCP client naming (single underscore between server + tool)
-  'happier_change_title',
-  'happy_change_title',
-  'happier_session_title_set',
-  'happy_session_title_set',
 ] as const;
 
 export const ChangeTitleToolNameAliasSchema = z.enum(CHANGE_TITLE_TOOL_NAME_ALIASES);

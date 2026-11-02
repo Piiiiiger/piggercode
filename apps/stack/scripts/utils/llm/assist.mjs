@@ -30,9 +30,7 @@ function buildInteractiveLaunchScript({ toolCmd, cd, title, promptText }) {
   const execLine = (() => {
     // Prefer providing the prompt directly when the CLI supports it.
     // - Claude Code: `claude "query"` starts an interactive session with an initial prompt.
-    // - OpenCode: `opencode --prompt "..."` starts the TUI with an initial prompt.
     if (cmd === 'claude') return 'exec command claude "$HS_PROMPT"';
-    if (cmd === 'opencode') return 'exec command opencode --prompt "$HS_PROMPT"';
     // Fallback: start the tool and ask the user to paste.
     return `exec command ${JSON.stringify(cmd)}`;
   })();
@@ -177,7 +175,7 @@ export async function launchLlmAssistant({
     return { ok: true, launched: true, mode: 'new-terminal', tool: chosenTool.id, permissionMode, terminalSupport };
   }
 
-  // Interactive launch path (Claude/OpenCode/Aider/etc).
+  // Interactive launch path (Claude/Codex).
   // Best-effort: copy prompt to clipboard now; the terminal script will print it too.
   if (await clipboardAvailable()) {
     await copyTextToClipboard(prompt).catch(() => {});
@@ -200,10 +198,6 @@ export async function launchLlmAssistant({
       // Claude Code supports starting interactive mode with an initial prompt:
       // `claude "query"`.
       await run('claude', [prompt], { cwd: cd, env: env ?? process.env, stdio: 'inherit' });
-    } else if (chosenTool.cmd === 'opencode') {
-      // OpenCode supports starting the TUI with an initial prompt:
-      // `opencode --prompt "..."`.
-      await run('opencode', ['--prompt', prompt], { cwd: cd, env: env ?? process.env, stdio: 'inherit' });
     } else {
       await run(chosenTool.cmd, [], { cwd: cd, env: env ?? process.env, stdio: 'inherit' });
     }

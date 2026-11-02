@@ -77,7 +77,7 @@ export function applyDeprecatedSessionStartAliasesForAgent(params: {
   const modelUpdatedAt = params.modelUpdatedAt;
 
   // Back-compat: historically "plan" was treated as a permission mode in some CLIs.
-  // For agents where "plan" is an agent/session mode (e.g. OpenCode plan/build, Claude plan/build), map it to --agent-mode.
+  // For agents where "plan" is an agent/session mode (e.g. Claude plan/build), map it to --agent-mode.
   const sessionModesKind = getAgentSessionModesKind(params.agentId);
   const supportsAgentModeAlias = sessionModesKind === 'acpAgentModes' || sessionModesKind === 'staticAgentModes';
   if (supportsAgentModeAlias && !agentModeId && permissionMode === 'plan') {

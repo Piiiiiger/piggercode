@@ -249,23 +249,6 @@ describe('prepareExecutionRunConnectedServices', () => {
     expect(JSON.stringify(materializedLog)).not.toContain('/run/root/codex/codex-home');
   });
 
-  it('returns null for non-builtInAgent targets without touching the default owner', async () => {
-    const materialize = vi.fn(async (input: unknown) => materialized(input, {}));
-    const resolveSessionSpawnDefaults = vi.fn(async (_input: unknown) => null);
-    const prepared = await prepareExecutionRunConnectedServices({
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      credentials: CREDENTIALS,
-      cwd: '/tmp/workspace',
-      sessionId: 'session-1',
-      materializeViaDaemon: materialize,
-      releaseViaDaemon: vi.fn(async (_input: unknown) => true),
-      resolveSessionSpawnDefaults,
-    });
-    expect(prepared).toBeNull();
-    expect(materialize).not.toHaveBeenCalled();
-    expect(resolveSessionSpawnDefaults).not.toHaveBeenCalled();
-  });
-
   it('proceeds native (logged) when credentials are unavailable for default resolution', async () => {
     loggerInfoMock.mockClear();
     const resolveSessionSpawnDefaults = vi.fn(async (_input: unknown) => null);
@@ -646,33 +629,6 @@ describe('prepareExecutionRunConnectedServices', () => {
     expect(prepared?.selection).toEqual(mergedSelection);
     const materializeInput = materialize.mock.calls.at(0)?.[0] as Record<string, unknown>;
     expect(materializeInput.connectedServicesBindingsRaw).toEqual(mergedSelection);
-  });
-
-  it('treats canonical null as an explicit native opt-out without resolving account defaults', async () => {
-    const resolveSessionSpawnDefaults = vi.fn(async () => ({
-      connectedServices: {
-        v: 1 as const,
-        bindingsByServiceId: {
-          'openai-codex': { source: 'connected' as const, selection: 'profile' as const, profileId: 'team' },
-        },
-      },
-    }));
-    const materializeViaDaemon = vi.fn();
-
-    const prepared = await prepareExecutionRunConnectedServices({
-      backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
-      connectedServices: null,
-      credentials: CREDENTIALS,
-      cwd: '/tmp/workspace',
-      sessionId: 'session-1',
-      materializeViaDaemon,
-      releaseViaDaemon: vi.fn(async () => true),
-      resolveSessionSpawnDefaults,
-    });
-
-    expect(prepared).toBeNull();
-    expect(resolveSessionSpawnDefaults).not.toHaveBeenCalled();
-    expect(materializeViaDaemon).not.toHaveBeenCalled();
   });
 
   it('RO-F5: fails closed (typed) when a bare default token has no stored connected default', async () => {

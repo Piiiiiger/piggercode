@@ -56,7 +56,7 @@ export function gethstackRegistry() {
       kind: 'node',
       scriptRelPath: 'scripts/tools.mjs',
       rootUsage: 'hstack tools <tool> [-- ...]',
-      description: 'Maintainer tools (setup-pr, review-pr, import, review, edison)',
+      description: 'Maintainer tools (setup-pr, review-pr, import, profiling)',
     },
     {
       name: 'setup-pr',
@@ -141,15 +141,6 @@ export function gethstackRegistry() {
       description: 'Build UI bundle',
     },
     {
-      name: 'review',
-      kind: 'node',
-      scriptRelPath: 'scripts/review.mjs',
-      rootUsage:
-        'hstack tools review [ui|cli|server|all] [--reviewers=coderabbit,codex,augment] [--type=committed|uncommitted|all] [--base-remote=<remote>] [--base-branch=<branch>] [--base-ref=<ref>] [--json]',
-      description: 'Run LLM reviews (maintainer tool)',
-      hidden: true,
-    },
-    {
       name: 'lint',
       kind: 'node',
       scriptRelPath: 'scripts/lint.mjs',
@@ -177,14 +168,6 @@ export function gethstackRegistry() {
       scriptRelPath: 'scripts/pack.mjs',
       rootUsage: 'hstack pack cli|server|ui [--dir=/abs/path] [--json]',
       description: 'Validate npm pack tarball contents (best-effort)',
-    },
-    {
-      name: 'edison',
-      kind: 'node',
-      scriptRelPath: 'scripts/edison.mjs',
-      rootUsage: 'hstack edison [--stack=<name>] -- <edison args...>',
-      description: 'Run Edison with hstack integration',
-      hidden: true,
     },
     {
       name: 'migrate',

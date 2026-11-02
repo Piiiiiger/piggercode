@@ -149,7 +149,7 @@ function createPlainClaudeSessionFixture(id: string) {
 }
 
 function createProviderInputOutcomeProducer(
-  overrides?: Readonly<{ providerId?: 'claude' | 'codex' | 'customAcp'; mode?: string; matchesCurrentSession?: boolean }>,
+  overrides?: Readonly<{ providerId?: 'claude' | 'codex'; mode?: string; matchesCurrentSession?: boolean }>,
 ) {
   return {
     providerId: overrides?.providerId ?? 'claude',
@@ -447,35 +447,6 @@ describe('ApiSessionClient session.userMessage.send delivery', () => {
     }));
     expect(client.getMetadataSnapshot()?.sessionModelsV1?.currentModelId).toBe('claude-selected-next');
     expect(resolveAcceptedPendingQueueV2DeliveryMock).not.toHaveBeenCalled();
-  });
-
-  it('binds configured ACP flavor aliases to the canonical custom ACP outcome producer', async () => {
-    sessionSocketStub = createApiSessionSocketStub({ connected: true, emitWithAckResult: { ok: true } });
-    userSocketStub = createApiSessionSocketStub({ connected: true, emitWithAckResult: { ok: true } });
-    const fixture = createPlainClaudeSessionFixture('s1');
-    const client = new ApiSessionClient('tok', {
-      ...fixture,
-      metadata: { ...fixture.metadata, flavor: 'acp:configured-backend' },
-    });
-    (client as any).sessionConnectionSupervisor = null;
-    (client as any).canonicalPendingDeliveryByLocalId.set('configured-acp-local', { mode: 'provider', unresolved: true });
-
-    const observe = client.bindProviderInputOutcomeProducer(createProviderInputOutcomeProducer({
-      providerId: 'customAcp',
-      mode: 'acp',
-    }));
-    observe({
-      kind: 'rejected_before_effect',
-      localId: 'configured-acp-local',
-      reason: 'provider_rejected_before_acceptance',
-    });
-
-    await vi.waitFor(() => expect(blockPendingQueueV2DeliveryMock).toHaveBeenCalledTimes(1));
-    expect(blockPendingQueueV2DeliveryMock).toHaveBeenCalledWith(expect.objectContaining({
-      sessionId: 's1',
-      localId: 'configured-acp-local',
-      reason: 'provider_rejected_before_acceptance',
-    }));
   });
 
   it('rejects an ambiguous blocked reason presented as proven pre-effect rejection', async () => {

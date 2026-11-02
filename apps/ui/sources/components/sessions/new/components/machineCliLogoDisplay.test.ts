@@ -7,14 +7,14 @@ const ids = (...names: string[]) => names as unknown as AgentId[];
 
 describe('resolveMachineCliLogoDisplay', () => {
     it('shows every logo when the count is within the cap', () => {
-        const result = resolveMachineCliLogoDisplay(ids('claude', 'codex', 'gemini', 'cursor'), 4);
-        expect(result.visible).toEqual(ids('claude', 'codex', 'gemini', 'cursor'));
+        const result = resolveMachineCliLogoDisplay(ids('claude', 'codex'), 4);
+        expect(result.visible).toEqual(ids('claude', 'codex'));
         expect(result.overflow).toBe(0);
     });
 
     it('reserves the last slot for a "+N" overflow when over the cap (never exceeds the cap)', () => {
-        const result = resolveMachineCliLogoDisplay(ids('claude', 'codex', 'gemini', 'cursor', 'qwen', 'kilo'), 4);
-        expect(result.visible).toEqual(ids('claude', 'codex', 'gemini'));
+        const result = resolveMachineCliLogoDisplay(ids('claude', 'codex', 'a3', 'a4', 'a5', 'a6'), 4);
+        expect(result.visible).toEqual(ids('claude', 'codex', 'a3'));
         expect(result.overflow).toBe(3);
         // 3 logos + the "+N" badge == 4 rendered items.
         expect(result.visible.length + 1).toBe(4);

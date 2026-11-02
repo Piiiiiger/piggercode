@@ -190,7 +190,7 @@ export function createExecutionRunConnectedServicesBridge(deps: Readonly<{
         });
       }
 
-      // Broker selection identity (NF-1): for a shared-managed-server provider (OpenCode/Pi) the run's
+      // Broker selection identity (NF-1): for a shared-managed-server provider the run's
       // materialized env carries a stable pool identity. Indexing it on the run target lets the broker
       // access-token refresh authorize the run even when no live session shares the pool.
       const brokerSelectionIdentity = readSessionConnectedServiceBrokerSelectionIdentity(

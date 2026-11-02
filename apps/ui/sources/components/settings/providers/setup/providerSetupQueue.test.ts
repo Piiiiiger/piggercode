@@ -10,11 +10,11 @@ import {
 
 describe('providerSetupQueue', () => {
     it('starts with the selected providers in a stable sequential queue', () => {
-        expect(createProviderSetupQueueState(['codex', 'claude', 'gemini'])).toEqual({
+        expect(createProviderSetupQueueState(['codex', 'claude'])).toEqual({
             activeProviderId: 'codex',
             completedProviderIds: [],
             failedProviderIds: [],
-            pendingProviderIds: ['claude', 'gemini'],
+            pendingProviderIds: ['claude'],
         });
     });
 
@@ -30,25 +30,25 @@ describe('providerSetupQueue', () => {
     });
 
     it('can skip a blocked provider without breaking the remaining queue order', () => {
-        const initial = createProviderSetupQueueState(['codex', 'claude', 'gemini']);
+        const initial = createProviderSetupQueueState(['codex', 'claude']);
 
         expect(skipActiveProviderSetupStep(initial)).toEqual({
             activeProviderId: 'claude',
             completedProviderIds: [],
             failedProviderIds: [],
-            pendingProviderIds: ['gemini'],
+            pendingProviderIds: [],
             skippedProviderIds: ['codex'],
         });
     });
 
     it('records a failed provider while keeping the remaining queue order', () => {
-        const initial = createProviderSetupQueueState(['codex', 'claude', 'gemini']);
+        const initial = createProviderSetupQueueState(['codex', 'claude']);
 
         expect(failActiveProviderSetupStep(initial)).toEqual({
             activeProviderId: 'claude',
             completedProviderIds: [],
             failedProviderIds: ['codex'],
-            pendingProviderIds: ['gemini'],
+            pendingProviderIds: [],
         });
     });
 

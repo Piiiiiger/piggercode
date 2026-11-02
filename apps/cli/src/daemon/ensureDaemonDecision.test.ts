@@ -5,9 +5,6 @@ import { applyDaemonAutostartEnvForInvocation, shouldAutoStartDaemonAfterAuth, s
 describe('shouldEnsureDaemonForInvocation', () => {
   it('returns true for agent subcommands that start sessions', () => {
     expect(shouldEnsureDaemonForInvocation({ args: ['codex'] })).toBe(true);
-    expect(shouldEnsureDaemonForInvocation({ args: ['opencode'] })).toBe(true);
-    expect(shouldEnsureDaemonForInvocation({ args: ['qwen'] })).toBe(true);
-    expect(shouldEnsureDaemonForInvocation({ args: ['gemini'] })).toBe(true);
     expect(shouldEnsureDaemonForInvocation({ args: ['claude'] })).toBe(true);
   });
 

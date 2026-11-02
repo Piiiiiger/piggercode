@@ -10,46 +10,14 @@ import { resolveCommandPath } from '../proc/commands.mjs';
 import { run, runCapture } from '../proc/proc.mjs';
 import { getCliHomeDirFromEnvOrDefault } from './dirs.mjs';
 
-export async function isCursorInstalled({ cwd, env } = {}) {
-  if (await resolveCommandPath('cursor', { cwd, env })) return true;
-  if (process.platform !== 'darwin') return false;
-  try {
-    await runCapture('open', ['-Ra', 'Cursor'], { cwd, env });
-    return true;
-  } catch {
-    return false;
+export async function openWorkspaceInEditor({ rootDir, workspacePath }) {
+  const codePath = await resolveCommandPath('code', { cwd: rootDir, env: process.env });
+  if (!codePath) {
+    throw new Error(
+      "[stack] VS Code CLI 'code' not found on PATH. In VS Code: Cmd+Shift+P → 'Shell Command: Install code command in PATH'."
+    );
   }
-}
-
-export async function openWorkspaceInEditor({ rootDir, editor, workspacePath }) {
-  if (editor === 'code') {
-    const codePath = await resolveCommandPath('code', { cwd: rootDir, env: process.env });
-    if (!codePath) {
-      throw new Error(
-        "[stack] VS Code CLI 'code' not found on PATH. In VS Code: Cmd+Shift+P → 'Shell Command: Install code command in PATH'."
-      );
-    }
-    await run(codePath, ['-n', workspacePath], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    return;
-  }
-
-  const cursorPath = await resolveCommandPath('cursor', { cwd: rootDir, env: process.env });
-  if (cursorPath) {
-    try {
-      await run(cursorPath, ['-n', workspacePath], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    } catch {
-      await run(cursorPath, [workspacePath], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    }
-    return;
-  }
-
-  if (process.platform === 'darwin') {
-    // Cursor installed but CLI missing is common on macOS.
-    await run('open', ['-na', 'Cursor', workspacePath], { cwd: rootDir, env: process.env, stdio: 'inherit' });
-    return;
-  }
-
-  throw new Error("[stack] Cursor CLI 'cursor' not found on PATH (and non-macOS fallback is unavailable).");
+  await run(codePath, ['-n', workspacePath], { cwd: rootDir, env: process.env, stdio: 'inherit' });
 }
 
 export async function writeStackCodeWorkspace({

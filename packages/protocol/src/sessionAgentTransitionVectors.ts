@@ -32,8 +32,8 @@ export const SESSION_AGENT_TRANSITION_VECTORS = {
       },
       withModeAndOverrides: {
         v: 1,
-        agentId: 'gemini',
-        modelId: 'gemini-3-pro',
+        agentId: 'codex',
+        modelId: 'gpt-5-codex',
         acpSessionModeId: 'default',
         sessionConfigOptionOverrides: {
           v: 1,

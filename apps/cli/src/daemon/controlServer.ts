@@ -25,14 +25,6 @@ import {
   type ClaudeSubscriptionAuthTokensRefreshSelection,
 } from '@/backends/claude/connectedServices/claudeSubscriptionAuthTokensRefreshBridgeContract';
 import {
-  OPEN_CODE_BROKER_LOADED_HANDSHAKE_PATH,
-  OpenCodeBrokerLoadHandshakeRequestSchema,
-  OpenCodeBrokerLoadHandshakeStatusRequestSchema,
-  persistOpenCodeBrokerLoadHandshakeObservation as persistOpenCodeBrokerLoadHandshakeObservationDefault,
-  recordOpenCodeBrokerLoadHandshake,
-  resolveOpenCodeBrokerLoadHandshakeStatus as resolveOpenCodeBrokerLoadHandshakeStatusDefault,
-} from '@/backends/opencode/brokerPlugin';
-import {
   isValidConnectedServiceBrokerRefreshToken,
   isValidConnectedServiceRunMaterializeToken,
 } from '@/daemon/connectedServices/broker/brokerRefreshCapabilityToken';
@@ -364,8 +356,6 @@ export function createDaemonControlApp({
   handleClaudeSubscriptionAuthTokensRefresh,
   handleExecutionRunConnectedServiceMaterialize,
   handleExecutionRunConnectedServiceRelease,
-  persistOpenCodeBrokerLoadHandshakeObservation = persistOpenCodeBrokerLoadHandshakeObservationDefault,
-  resolveOpenCodeBrokerLoadHandshakeStatus = resolveOpenCodeBrokerLoadHandshakeStatusDefault,
   runtimeAuthRecoveryScheduler,
   isShuttingDown,
   requestSelfRestart,
@@ -399,8 +389,6 @@ export function createDaemonControlApp({
     pid: number;
     materializationKey: string;
   }>) => Promise<Readonly<{ released: boolean }>>;
-  persistOpenCodeBrokerLoadHandshakeObservation?: typeof persistOpenCodeBrokerLoadHandshakeObservationDefault;
-  resolveOpenCodeBrokerLoadHandshakeStatus?: typeof resolveOpenCodeBrokerLoadHandshakeStatusDefault;
   handleConnectedServiceRuntimeAuthFailure?: (input: Readonly<{
     sessionId: string;
     switchesThisTurn: number;
@@ -562,20 +550,9 @@ export function createDaemonControlApp({
     }
   };
 
-  // Least-privilege gate for the broker-only endpoints (F2): they accept ONLY the SCOPED broker-refresh
-  // capability token derived from the master control token, NOT the broad master token itself. The
-  // broker plugin holds only this scoped token, so a leaked broker token cannot reach the broad surface.
-  const requireBrokerRefreshAuth = async (request: { headers: Record<string, unknown> }, reply: any): Promise<void> => {
-    const rawHeader = (request.headers as any)['x-happier-daemon-token'];
-    const provided = typeof rawHeader === 'string' ? rawHeader : Array.isArray(rawHeader) ? rawHeader[0] : null;
-    if (!isValidConnectedServiceBrokerRefreshToken(provided, normalizedControlToken)) {
-      reply.code(401);
-      return reply.send({ success: false as const, error: 'Unauthorized' });
-    }
-  };
   // SEC-F1: the two credential-bridge routes serve TWO principals that must never share an authz
   // path — per-session SDK callbacks (runner processes, which hold the MASTER control token) and
-  // shared OpenCode/Pi brokers (which hold ONLY the scoped broker-refresh token). The credential
+  // shared brokers (which hold ONLY the scoped broker-refresh token). The credential
   // presented picks the caller mode, and the mode constrains which target key the request may
   // authorize through: master token ⇒ session mode (sessionId); scoped token ⇒ broker mode
   // (selectionIdentity REQUIRED). A scoped-token holder must never resolve a target via a
@@ -1618,74 +1595,6 @@ export function createDaemonControlApp({
       materializationKey: request.body.materializationKey,
     });
     return { ok: true as const, result: { released: result.released } };
-  });
-
-  // F4: broker load handshake. The broker plugin pings this on activation (scoped token only) so the
-  // daemon records that the plugin actually loaded; the preflight then verifies it via loaded-status.
-  typed.post(OPEN_CODE_BROKER_LOADED_HANDSHAKE_PATH, {
-    schema: {
-      body: OpenCodeBrokerLoadHandshakeRequestSchema,
-      response: {
-        200: z.object({ ok: z.literal(true), result: z.object({ acknowledged: z.literal(true) }) }),
-        401: authSchema401,
-        503: z.object({
-          ok: z.literal(false),
-          errorCode: z.literal('connected_service_broker_activation_proof_unavailable'),
-        }),
-      },
-    },
-    preHandler: requireBrokerRefreshAuth,
-  }, async (request, reply) => {
-    recordOpenCodeBrokerLoadHandshake({
-      runtimeKind: request.body.runtimeKind,
-      selectionIdentity: request.body.selectionIdentity,
-      loadNonce: request.body.loadNonce,
-      providers: request.body.providers,
-      pluginVersion: request.body.pluginVersion,
-      processPid: request.body.processPid,
-    });
-    if (request.body.runtimeKind === 'opencode_managed_server') {
-      const persisted = await persistOpenCodeBrokerLoadHandshakeObservation({
-        runtimeKind: request.body.runtimeKind,
-        selectionIdentity: request.body.selectionIdentity,
-        loadNonce: request.body.loadNonce,
-        providers: request.body.providers,
-        pluginVersion: request.body.pluginVersion,
-      });
-      if (!persisted) {
-        reply.code(503);
-        return {
-          ok: false as const,
-          errorCode: 'connected_service_broker_activation_proof_unavailable' as const,
-        };
-      }
-    }
-    return { ok: true as const, result: { acknowledged: true as const } };
-  });
-
-  // F4: broker load-handshake status query. Used by the connected-session preflight (Happier's own
-  // trusted query) over the broad control token — distinct from the broker's scoped registration above.
-  typed.post('/connected-service-auth/opencode-broker/loaded-status', {
-    schema: {
-      body: OpenCodeBrokerLoadHandshakeStatusRequestSchema,
-      response: {
-        200: z.object({ ok: z.literal(true), observed: z.boolean() }),
-        401: authSchema401,
-      },
-    },
-    preHandler: requireAuth,
-  }, async (request) => {
-    const expectation = {
-      runtimeKind: request.body.runtimeKind,
-      selectionIdentity: request.body.selectionIdentity,
-      loadNonce: request.body.loadNonce,
-      providers: request.body.providers,
-      pluginVersion: request.body.pluginVersion,
-    };
-    return {
-      ok: true as const,
-      observed: await resolveOpenCodeBrokerLoadHandshakeStatus(expectation),
-    };
   });
 
   // List all tracked sessions

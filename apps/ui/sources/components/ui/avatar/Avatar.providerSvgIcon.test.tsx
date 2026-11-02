@@ -89,7 +89,7 @@ vi.mock('./AvatarBrutalist', () => ({
 
 vi.mock('@/agents/catalog/catalog', () => ({
     DEFAULT_AGENT_ID: 'claude',
-    resolveAgentIdFromFlavor: () => 'qwen',
+    resolveAgentIdFromFlavor: () => 'codex',
     getAgentAvatarOverlaySizes: () => ({ circleSize: 16, iconSize: 12 }),
     getAgentIconSource: () => 1,
     getAgentIconTintColor: () => undefined,
@@ -101,7 +101,7 @@ describe('Avatar provider svg icons', () => {
         const { Avatar } = await import('./Avatar');
 
         let tree!: renderer.ReactTestRenderer;
-        tree = (await renderScreen(<Avatar id="session-1" flavor="qwen" size={48} />)).tree;
+        tree = (await renderScreen(<Avatar id="session-1" flavor="codex" size={48} />)).tree;
 
         expect(tree.findAllByType('SvgXml' as any).length).toBe(1);
     });

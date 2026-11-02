@@ -53,7 +53,7 @@ function createHandlerHarness(params: { streaming?: boolean } = {}) {
   const persisted = new Map<string, ACPMessageData>();
   if (params.streaming) {
     ctrl.streamWriter = createStreamedTranscriptWriter({
-      provider: 'pi',
+      provider: 'codex',
       session: {
         sendAgentMessageCommitted: async (_provider, body, opts) => {
           persisted.set(opts.localId, body);

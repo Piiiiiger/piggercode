@@ -76,10 +76,6 @@ notes/
 /apps/ui/ios
 
 .worktrees/
-.edison/_generated/
-.edison/_locks/
-.edison/config.local/
-.edison/session/
 .project/logs/
 .project/archive/
 .project/.session-id
@@ -112,14 +108,12 @@ _.env.pipeline.production.local
 
 # Local package-manager/runtime artifacts
 /package-lock.json
-/eas.json
 **/.happier/
 
 # Local probe/debug scratch files
 /apps/cli/tmp-*
 /apps/cli/.tmp.hstack-cli-build-source.*/
 /*.trace/
-/.fallow/
 /.reviews/
 /.antigravitycli/
 /subagents/dev-plugin-projection-runtime-closure/
@@ -135,7 +129,6 @@ _.env.pipeline.production.local
 /lane-*-console-warnings.txt
 /markdown-reveal-qa-*.png
 /happier-session-qa.png
-/opencode-auth-picker-*.png
 /permission-refinement-*.png
 /pets-stack-welcome.png
 /runtime-status-session-before-reload.png

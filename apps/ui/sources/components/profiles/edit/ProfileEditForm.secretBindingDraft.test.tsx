@@ -27,7 +27,6 @@ installProfileEditFormModuleMocks({
         return createStorageModuleStub({
             useSetting: () => ({}),
             useSettings: () => ({
-                acpCatalogSettingsV1: { v: 2, backends: [] },
                 backendEnabledByTargetKey: {},
             }),
             useAllMachines: () => [],

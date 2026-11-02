@@ -7,7 +7,6 @@ import {
   ActionOperationGetV1ResponseSchema,
   buildBackendTargetKey,
   getActionSpec,
-  listNativeReviewEngines,
   normalizeSessionMetadataForRead,
   SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
   SessionUsageLimitRecoveryV1Schema,
@@ -527,11 +526,7 @@ export function createCliActionInventoryDeps(params: Readonly<{
   return {
     reviewEnginesList: async ({ sessionId }) => ({
       sessionId,
-      items: listNativeReviewEngines().map((engine) => ({
-        engineId: engine.id,
-        label: engine.title,
-        enabled: true,
-      })),
+      items: [],
     }),
     agentsBackendsList: async (args) => ({
       items: buildAgentBackendItems({ limit: (args as { limit?: unknown }).limit }),

@@ -5,7 +5,6 @@ import {
   type ConnectedServiceBindingsV1,
   type SessionAgentSpawnPolicyV1,
 } from '@piggercode/protocol';
-import { buildOpenCodeAgentRuntimeDescriptor } from '@piggercode/agents';
 import type { Credentials } from '@/persistence';
 
 import {
@@ -134,75 +133,6 @@ describe('normalizeSessionAgentSpawnActionRequest', () => {
     expect(noConnectedServiceDefaults).not.toHaveBeenCalled();
   });
 
-  it('inherits backend target from parent runtime metadata when no explicit target is provided', async () => {
-    const result = await normalizeSessionAgentSpawnActionRequest({
-      credentials,
-      surface: 'session_agent',
-      input: {
-        initialMessage: 'Spawn another session like this one',
-      },
-      parentMetadata: {
-        permissionMode: 'safe-yolo',
-        permissionModeUpdatedAt: 101,
-        agentRuntimeDescriptorV1: buildOpenCodeAgentRuntimeDescriptor({
-          backendMode: 'server',
-          vendorSessionId: 'opencode-parent',
-        }),
-      },
-      currentSession: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        machineId: 'machine-1',
-      },
-      spawnPolicy: policy(),
-      resolveConnectedServicesDefaults: noConnectedServiceDefaults,
-    });
-
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw new Error('expected normalized spawn request');
-
-    expect(result.createParams.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'opencode' });
-    expect(result.sources.backendTarget).toEqual({
-      kind: 'runtimeDescriptorMetadata',
-      key: 'agentRuntimeDescriptorV1',
-    });
-  });
-
-  it('inherits exact parent backend target before runtime metadata fallback', async () => {
-    const result = await normalizeSessionAgentSpawnActionRequest({
-      credentials,
-      surface: 'session_agent',
-      input: {
-        initialMessage: 'Spawn another session like this one',
-      },
-      parentMetadata: {
-        permissionMode: 'safe-yolo',
-        permissionModeUpdatedAt: 101,
-        agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-      },
-      currentSession: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        machineId: 'machine-1',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      },
-      spawnPolicy: policy(),
-      resolveConnectedServicesDefaults: noConnectedServiceDefaults,
-    });
-
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw new Error('expected normalized spawn request');
-
-    expect(result.createParams.backendTarget).toEqual({
-      kind: 'configuredAcpBackend',
-      backendId: 'review-bot',
-    });
-    expect(result.sources.backendTarget).toEqual({
-      kind: 'currentSession',
-      key: 'backendTarget',
-    });
-  });
-
   it('preserves inherited permissionModeUpdatedAt when the live caller mode matches inherited metadata', async () => {
     const result = await normalizeSessionAgentSpawnActionRequest({
       credentials,
@@ -230,46 +160,6 @@ describe('normalizeSessionAgentSpawnActionRequest', () => {
 
     expect(result.createParams.permissionMode).toBe('safe-yolo');
     expect(result.createParams.permissionModeUpdatedAt).toBe(101);
-  });
-
-  it('inherits configured ACP backend metadata before runtime descriptor fallback', async () => {
-    const result = await normalizeSessionAgentSpawnActionRequest({
-      credentials,
-      surface: 'session_agent',
-      input: {
-        initialMessage: 'Spawn another configured backend session like this one',
-      },
-      parentMetadata: {
-        permissionMode: 'safe-yolo',
-        permissionModeUpdatedAt: 101,
-        acpConfiguredBackendV1: {
-          v: 1,
-          backendId: 'review-bot',
-          title: 'Review Bot',
-          updatedAt: 100,
-        },
-        agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-      },
-      currentSession: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        machineId: 'machine-1',
-      },
-      spawnPolicy: policy(),
-      resolveConnectedServicesDefaults: noConnectedServiceDefaults,
-    });
-
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw new Error('expected normalized spawn request');
-
-    expect(result.createParams.backendTarget).toEqual({
-      kind: 'configuredAcpBackend',
-      backendId: 'review-bot',
-    });
-    expect(result.sources.backendTarget).toEqual({
-      kind: 'metadata',
-      key: 'acpConfiguredBackendV1',
-    });
   });
 
   it('merges canonical and shorthand config option overrides when option ids do not conflict', async () => {
@@ -461,40 +351,6 @@ describe('normalizeSessionAgentSpawnActionRequest', () => {
     expect(result.sources.connectedServices).toEqual({
       kind: 'default',
       key: 'connectedServicesDefaults',
-    });
-  });
-
-  it('does not inherit connected services when the target Agent does not support them', async () => {
-    const resolveConnectedServicesDefaults: SessionAgentSpawnActionConnectedServicesDefaultResolver = vi.fn(async () => null);
-
-    const result = await normalizeSessionAgentSpawnActionRequest({
-      credentials,
-      surface: 'cli',
-      input: { backendTargetKey: 'agent:agy' },
-      parentMetadata: {
-        flavor: 'codex',
-        connectedServices: connectedServices('openai-codex'),
-        connectedServicesUpdatedAt: 200,
-      },
-      currentSession: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        machineId: 'machine-1',
-        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-      },
-      resolveConnectedServicesDefaults,
-    });
-
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw new Error('expected normalized spawn request');
-
-    expect(result.createParams.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'agy' });
-    expect(result.createParams).not.toHaveProperty('connectedServices');
-    expect(result.createParams).not.toHaveProperty('connectedServicesUpdatedAt');
-    expect(result.sources.connectedServices).toBeUndefined();
-    expect(resolveConnectedServicesDefaults).toHaveBeenCalledWith({
-      backendTarget: { kind: 'builtInAgent', agentId: 'agy' },
-      credentials,
     });
   });
 

@@ -103,7 +103,6 @@ export async function updateSessionMetadataWithAckResult<TResult>(opts: {
             expectedVersion: opts.getMetadataVersion(),
             hasModeOverride: Boolean((updated as Record<string, unknown> | null)?.acpSessionModeOverrideV1),
             hasModelOverride: Boolean((updated as Record<string, unknown> | null)?.modelOverrideV1),
-            hasOpenCodeSessionId: typeof (updated as Record<string, unknown> | null)?.opencodeSessionId === 'string',
             currentModeId: readLoggedCurrentModeId(updated as Record<string, unknown> | null),
         });
         const metadataPayload =
@@ -129,7 +128,6 @@ export async function updateSessionMetadataWithAckResult<TResult>(opts: {
                 version: answer.version,
                 hasModeOverride: Boolean((next as Record<string, unknown> | null)?.acpSessionModeOverrideV1),
                 hasModelOverride: Boolean((next as Record<string, unknown> | null)?.modelOverrideV1),
-                hasOpenCodeSessionId: typeof (next as Record<string, unknown> | null)?.opencodeSessionId === 'string',
                 currentModeId: readLoggedCurrentModeId(next as Record<string, unknown> | null),
             });
             opts.setMetadata(next);
@@ -148,7 +146,6 @@ export async function updateSessionMetadataWithAckResult<TResult>(opts: {
                     version: answer.version,
                     hasModeOverride: Boolean((next as Record<string, unknown> | null)?.acpSessionModeOverrideV1),
                     hasModelOverride: Boolean((next as Record<string, unknown> | null)?.modelOverrideV1),
-                    hasOpenCodeSessionId: typeof (next as Record<string, unknown> | null)?.opencodeSessionId === 'string',
                     currentModeId: readLoggedCurrentModeId(next as Record<string, unknown> | null),
                 });
                 opts.setMetadata(next);

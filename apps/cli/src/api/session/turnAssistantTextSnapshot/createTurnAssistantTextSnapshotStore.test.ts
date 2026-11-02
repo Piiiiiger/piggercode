@@ -57,7 +57,7 @@ describe('TurnAssistantTextSnapshotStore', () => {
       seq: 8,
       localId: 'sidechain',
       sidechainId: 'task-1',
-      provider: 'opencode',
+      provider: 'codex',
     });
     store.observe({
       turnToken,
@@ -66,7 +66,7 @@ describe('TurnAssistantTextSnapshotStore', () => {
       seq: null,
       localId: 'assistant',
       sidechainId: null,
-      provider: 'opencode',
+      provider: 'codex',
     });
     store.observe({
       turnToken,
@@ -75,7 +75,7 @@ describe('TurnAssistantTextSnapshotStore', () => {
       seq: 9,
       localId: 'assistant',
       sidechainId: null,
-      provider: 'opencode',
+      provider: 'codex',
     });
 
     expect(store.getForTurn({ turnToken, startSeqExclusive: 5 })?.text).toBe('Final answer');

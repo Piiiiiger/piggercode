@@ -26,11 +26,10 @@ describe('settings', () => {
         defaultPermissionModeByTargetKey: {},
         defaultPersistenceModeByAgent: {},
         defaultPersistenceModeByTargetKey: {},
-        compatibility: { claude: true, codex: true, gemini: true },
+        compatibility: { claude: true, codex: true },
         compatibilityByTargetKey: {
             'agent:claude': true,
             'agent:codex': true,
-            'agent:gemini': true,
         },
         envVarRequirements: [],
         isBuiltIn: false,
@@ -107,14 +106,6 @@ describe('settings', () => {
                 strictMode: false,
                 servers: [],
                 bindings: [],
-            });
-        });
-
-        it('includes acpCatalogSettingsV1 by default', () => {
-            const settings = settingsParse({});
-            expect((settings as any).acpCatalogSettingsV1).toEqual({
-                v: 2,
-                backends: [],
             });
         });
 
@@ -551,7 +542,7 @@ describe('settings', () => {
             const parsed = settingsParse({} as any);
             expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'claude' })]).toBe('default');
             expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]).toBe('default');
-            expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]).toBe('default');
+            expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]).toBe('default');
         });
 
         it('defaults source-control commit strategy to atomic', () => {
@@ -1015,7 +1006,7 @@ describe('settings', () => {
             // permission layer when seeding per-agent defaults.
             expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'claude' })]).toBe('read-only');
             expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]).toBe('read-only');
-            expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]).toBe('read-only');
+            expect((parsed as any).sessionDefaultPermissionModeByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]).toBe('read-only');
         });
 
         it('should keep valid secrets when one secret entry is invalid', () => {
@@ -1267,12 +1258,6 @@ describe('settings', () => {
             expect(settingsDefaults.backendEnabledByTargetKey).toMatchObject({
                 [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'claude' })]: true,
                 [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'opencode' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'auggie' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'qwen' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'kimi' })]: true,
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'kilo' })]: true,
             });
             expect((settingsDefaults as any).profileEnabledById).toEqual({});
             expect((settingsDefaults as any).backendCliSourcePreferenceById).toEqual({});
@@ -1285,7 +1270,6 @@ describe('settings', () => {
             expect(settingsDefaults.sessionDefaultPermissionModeByTargetKey).toMatchObject({
                 [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'claude' })]: 'default',
                 [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: 'default',
-                [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'gemini' })]: 'default',
             });
             expect(settingsDefaults.toolViewDetailLevelDefault).toBe('default');
             expect(settingsDefaults.toolViewDetailLevelDefaultLocalControl).toBe('title');
@@ -1357,10 +1341,8 @@ describe('settings', () => {
             expect((settingsDefaults as any).attachmentsUploadsVcsIgnoreStrategy).toBe('git_info_exclude');
             expect((settingsDefaults as any).attachmentsUploadsVcsIgnoreWritesEnabled).toBe(true);
             expect((settingsDefaults as any).attachmentsUploadsMaxFileBytes).toBe(25 * 1024 * 1024);
-            expect((settingsDefaults as any).expGemini).toBeUndefined();
             expect((settingsDefaults as any).sessionDefaultPermissionModeClaude).toBeUndefined();
             expect((settingsDefaults as any).sessionDefaultPermissionModeCodex).toBeUndefined();
-            expect((settingsDefaults as any).sessionDefaultPermissionModeGemini).toBeUndefined();
         });
 
         it('should be a valid Settings object', () => {
@@ -1396,7 +1378,7 @@ describe('settings', () => {
                 environmentVariables: [],
                 defaultPermissionModeByAgent: {},
                 defaultPersistenceModeByAgent: { codex: 'direct', claude: 'persisted' },
-                compatibility: { codex: true, claude: true, gemini: true },
+                compatibility: { codex: true, claude: true },
                 envVarRequirements: [],
                 isBuiltIn: false,
                 createdAt: 1,
@@ -1427,14 +1409,14 @@ describe('settings', () => {
             const parsed = settingsParse({
                 backendCliSourcePreferenceById: {
                     codex: 'managed-first',
-                    gemini: 'system-first',
+                    claude: 'system-first',
                     invalid: 'nope',
                 },
             } as any);
 
             expect((parsed as any).backendCliSourcePreferenceById).toEqual({
                 codex: 'managed-first',
-                gemini: 'system-first',
+                claude: 'system-first',
             });
         });
 
@@ -1544,24 +1526,6 @@ describe('settings', () => {
             expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
         });
 
-        it('validates built-in Gemini profile', () => {
-            const profile = getBuiltInProfile('gemini');
-            expect(profile).not.toBeNull();
-            expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
-        });
-
-        it('validates built-in Gemini API key profile', () => {
-            const profile = getBuiltInProfile('gemini-api-key');
-            expect(profile).not.toBeNull();
-            expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
-        });
-
-        it('validates built-in Gemini Vertex profile', () => {
-            const profile = getBuiltInProfile('gemini-vertex');
-            expect(profile).not.toBeNull();
-            expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
-        });
-
         it('accepts all 7 permission modes', () => {
             const modes = ['default', 'acceptEdits', 'bypassPermissions', 'plan', 'read-only', 'safe-yolo', 'yolo'];
             modes.forEach(mode => {
@@ -1618,7 +1582,7 @@ describe('settings', () => {
                     { name: 'OPENAI_API_KEY', kind: 'secret', required: true },
                     { name: 'ANTHROPIC_AUTH_TOKEN', kind: 'secret', required: true },
                 ],
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             };
             expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
         });
@@ -1630,7 +1594,7 @@ describe('settings', () => {
                 authMode: 'machineLogin',
                 requiresMachineLogin: 'claude-code',
                 envVarRequirements: [{ name: 'OPENAI_API_KEY', kind: 'secret', required: true }],
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             };
             expect(() => AIBackendProfileSchema.parse(profile)).not.toThrow();
         });
@@ -1642,7 +1606,7 @@ describe('settings', () => {
                 authMode: undefined,
                 requiresMachineLogin: 'claude-code',
                 envVarRequirements: [],
-                compatibility: { claude: true, codex: true, gemini: true },
+                compatibility: { claude: true, codex: true },
             };
             expect(() => AIBackendProfileSchema.parse(invalidProfile)).toThrow();
         });
@@ -1840,8 +1804,8 @@ describe('settings', () => {
                 profiles: [makeProfile({
                     id: 'device-b-profile',
                     name: 'Device B Profile',
-                    compatibility: { claude: true, codex: true, gemini: true },
-                    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': true, 'agent:gemini': true },
+                    compatibility: { claude: true, codex: true },
+                    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': true },
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                 })]
@@ -1950,8 +1914,8 @@ describe('settings', () => {
                 profiles: [makeProfile({
                     id: 'server-profile-1',
                     name: 'Server Profile',
-                    compatibility: { claude: true, codex: true, gemini: true },
-                    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': true, 'agent:gemini': true },
+                    compatibility: { claude: true, codex: true },
+                    compatibilityByTargetKey: { 'agent:claude': true, 'agent:codex': true },
                     createdAt: 1000,
                     updatedAt: 1000,
                 })],

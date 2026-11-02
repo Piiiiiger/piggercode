@@ -59,7 +59,7 @@ function buildConnectedVendors(tokens: readonly ServiceAccountTokenProjectionRow
         tokens
             .filter((token) => token.profileId === "default")
             .map((token) => token.vendor)
-            .filter((vendor) => vendor === "openai" || vendor === "anthropic" || vendor === "gemini"),
+            .filter((vendor) => vendor === "openai" || vendor === "anthropic"),
     ));
 }
 

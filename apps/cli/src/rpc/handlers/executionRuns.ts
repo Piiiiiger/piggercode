@@ -40,8 +40,6 @@ import { fetchServerFeaturesSnapshot, type CliServerFeaturesSnapshot } from '@/f
 import { resolveExecutionRunRuntimeBackendId } from '@/agent/executionRuns/runtime/backendTargets';
 import { resolveReviewExecutionRunIntentInput } from '@/agent/reviews/resolveReviewExecutionRunIntentInput';
 import { applyExecutionRunListRequest } from '@/session/services/applyExecutionRunListRequest';
-import { preflightCodeRabbitReviewScope } from '@/agent/reviews/engines/coderabbit/preflightCodeRabbitReviewScope';
-import { readCodeRabbitReviewConfigFromEnv } from '@/agent/reviews/engines/coderabbit/readCodeRabbitReviewConfig';
 import { readCredentials } from '@/persistence';
 import { configuration } from '@/configuration';
 import { resolveReplaySeedDraft, type ReplaySeedDraftResolution } from '@/session/replay/resolveReplaySeedDraft';
@@ -53,14 +51,6 @@ function invalidParams(): { ok: false; error: string; errorCode: string } {
 
 function executionRunsDisabled(): { ok: false; error: string; errorCode: string } {
   return { ok: false, error: 'Execution runs feature disabled', errorCode: 'execution_run_not_allowed' };
-}
-
-function executionRunNotAllowedError(error: unknown): { ok: false; error: string; errorCode: string } {
-  return {
-    ok: false,
-    error: error instanceof Error ? error.message : 'Execution run not allowed',
-    errorCode: 'execution_run_not_allowed',
-  };
 }
 
 export function registerExecutionRunHandlers(
@@ -247,22 +237,6 @@ export function registerExecutionRunHandlers(
     }
     if (!isSafePermissionModeForIntent(parsed.data.intent, parsed.data.permissionMode)) {
       return { ok: false, error: 'Permission denied', errorCode: 'permission_denied' };
-    }
-    if (parsed.data.intent === 'review' && backendId === 'coderabbit') {
-      const codeRabbitConfig = readCodeRabbitReviewConfigFromEnv(process.env);
-      let preflight;
-      try {
-        preflight = await preflightCodeRabbitReviewScope({
-          cwd: resolveCwd(),
-          intentInput: parsed.data.intentInput,
-          maxEligibleFiles: codeRabbitConfig.maxEligibleFiles,
-        });
-      } catch (error) {
-        return executionRunNotAllowedError(error);
-      }
-      if (!preflight.ok) {
-        return { ok: false, error: preflight.error, errorCode: 'execution_run_not_allowed' };
-      }
     }
     if (!policy.allowIoModes.has(parsed.data.ioMode)) {
       return { ok: false, error: 'Unsupported ioMode', errorCode: 'execution_run_not_allowed' };

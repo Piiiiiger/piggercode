@@ -10,7 +10,7 @@ import { logger } from '@/ui/logger';
 import { AcpBackend } from '../AcpBackend';
 import { writeAcpTestAgentScript } from '../testkit/subprocessHarness';
 
-const envScope = createEnvKeyScope(['GEMINI_MODEL', 'Gemini_Model', 'gemini_model']);
+const envScope = createEnvKeyScope(['CODEX_MODEL', 'Codex_Model', 'codex_model']);
 const preservedEnvKey = 'PIGGERCODE_ACP_ENV_PRESERVED_KEY';
 
 afterEach(() => {
@@ -34,14 +34,14 @@ function writeEnvCapturingAcpAgentScript(params: { dir: string }): string {
     const capturePath = process.env.PIGGERCODE_ACP_ENV_CAPTURE_PATH;
     if (capturePath) {
       writeFileSync(capturePath, JSON.stringify({
-        GEMINI_MODEL: Object.prototype.hasOwnProperty.call(process.env, 'GEMINI_MODEL')
-          ? process.env.GEMINI_MODEL
+        CODEX_MODEL: Object.prototype.hasOwnProperty.call(process.env, 'CODEX_MODEL')
+          ? process.env.CODEX_MODEL
           : null,
-        Gemini_Model: Object.prototype.hasOwnProperty.call(process.env, 'Gemini_Model')
-          ? process.env.Gemini_Model
+        Codex_Model: Object.prototype.hasOwnProperty.call(process.env, 'Codex_Model')
+          ? process.env.Codex_Model
           : null,
-        gemini_model: Object.prototype.hasOwnProperty.call(process.env, 'gemini_model')
-          ? process.env.gemini_model
+        codex_model: Object.prototype.hasOwnProperty.call(process.env, 'codex_model')
+          ? process.env.codex_model
           : null,
         [${JSON.stringify(preservedEnvKey)}]: Object.prototype.hasOwnProperty.call(process.env, ${JSON.stringify(preservedEnvKey)})
           ? process.env[${JSON.stringify(preservedEnvKey)}]
@@ -260,9 +260,9 @@ describe('AcpBackend spawn environment', () => {
   it('removes configured inherited environment variables before spawning', async () => {
     await withTempDir('happier-acp-spawn-env-', async (dir) => {
       envScope.patch({
-        GEMINI_MODEL: 'host-model',
-        Gemini_Model: 'mixed-case-host-model',
-        gemini_model: 'lowercase-host-model',
+        CODEX_MODEL: 'host-model',
+        Codex_Model: 'mixed-case-host-model',
+        codex_model: 'lowercase-host-model',
       });
       const capturePath = join(dir, 'spawn-env.json');
       const scriptPath = writeEnvCapturingAcpAgentScript({ dir });
@@ -273,16 +273,16 @@ describe('AcpBackend spawn environment', () => {
         command: process.execPath,
         args: [scriptPath],
         env: { PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath },
-        unsetEnv: ['GEMINI_MODEL'],
+        unsetEnv: ['CODEX_MODEL'],
       });
 
       try {
         await backend.startSession();
 
         expect(JSON.parse(readFileSync(capturePath, 'utf8'))).toEqual({
-          GEMINI_MODEL: null,
-          Gemini_Model: null,
-          gemini_model: null,
+          CODEX_MODEL: null,
+          Codex_Model: null,
+          codex_model: null,
           [preservedEnvKey]: null,
         });
       } finally {
@@ -294,9 +294,9 @@ describe('AcpBackend spawn environment', () => {
   it('preserves explicit environment overrides after removing inherited variants', async () => {
     await withTempDir('happier-acp-spawn-env-', async (dir) => {
       envScope.patch({
-        GEMINI_MODEL: 'host-model',
-        Gemini_Model: 'mixed-case-host-model',
-        gemini_model: 'lowercase-host-model',
+        CODEX_MODEL: 'host-model',
+        Codex_Model: 'mixed-case-host-model',
+        codex_model: 'lowercase-host-model',
       });
       const capturePath = join(dir, 'spawn-env.json');
       const scriptPath = writeEnvCapturingAcpAgentScript({ dir });
@@ -308,21 +308,21 @@ describe('AcpBackend spawn environment', () => {
         args: [scriptPath],
         env: {
           PIGGERCODE_ACP_ENV_CAPTURE_PATH: capturePath,
-          GEMINI_MODEL: 'scoped-exact-model',
-          Gemini_Model: 'scoped-mixed-case-model',
-          gemini_model: 'scoped-lowercase-model',
+          CODEX_MODEL: 'scoped-exact-model',
+          Codex_Model: 'scoped-mixed-case-model',
+          codex_model: 'scoped-lowercase-model',
           [preservedEnvKey]: 'preserved-scoped-value',
         },
-        unsetEnv: ['GEMINI_MODEL'],
+        unsetEnv: ['CODEX_MODEL'],
       });
 
       try {
         await backend.startSession();
 
         expect(JSON.parse(readFileSync(capturePath, 'utf8'))).toEqual({
-          GEMINI_MODEL: 'scoped-exact-model',
-          Gemini_Model: 'scoped-mixed-case-model',
-          gemini_model: 'scoped-lowercase-model',
+          CODEX_MODEL: 'scoped-exact-model',
+          Codex_Model: 'scoped-mixed-case-model',
+          codex_model: 'scoped-lowercase-model',
           [preservedEnvKey]: 'preserved-scoped-value',
         });
       } finally {

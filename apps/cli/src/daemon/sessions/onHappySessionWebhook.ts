@@ -222,7 +222,6 @@ export function createOnHappySessionWebhook(params: Readonly<{
         ? resolveProviderSessionIdForBackendTarget(backendTarget, normalizedMetadata)
         : resolveVendorResumeIdFromSessionMetadata(inferAgentIdFromSessionMetadata(normalizedMetadata), normalizedMetadata);
       if (vendorResumeId) trackedForPid.vendorResumeId = vendorResumeId;
-      else if (backendTarget?.kind === 'configuredAcpBackend') delete trackedForPid.vendorResumeId;
       const custody = trackedForPid.reportMarkerCustody ??= { pending: Promise.resolve(), retiring: false };
       if (custody.retiring) return;
       const work = persistReportMarker().catch(() => {

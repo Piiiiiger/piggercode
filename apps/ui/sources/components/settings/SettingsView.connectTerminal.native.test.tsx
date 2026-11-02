@@ -186,7 +186,7 @@ vi.mock('@/components/sessions/new/components/MachineCliGlyphs', () => ({
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['codex', 'claude', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'agent_default',
     getAgentCore: () => ({ uiConnectedService: { serviceId: 'anthropic', label: 'Anthropic', connectRoute: null } }),
     getAgentIconSource: () => null,

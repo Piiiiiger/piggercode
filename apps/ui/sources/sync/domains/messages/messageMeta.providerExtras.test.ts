@@ -5,23 +5,6 @@ import { settingsParse } from '@/sync/domains/settings/settings';
 import { addProviderMessageMetaExtras } from '@/sync/domains/messages/messageMetaProviders';
 
 describe('addProviderMessageMetaExtras', () => {
-    it('returns the original meta for providers without settings plugins', () => {
-        const base = buildOutgoingMessageMeta({
-            sentFrom: 'e2e',
-            permissionMode: 'default',
-            appendSystemPrompt: 'SYSTEM',
-        });
-
-        const merged = addProviderMessageMetaExtras({
-            meta: base,
-            agentId: 'qwen',
-            settings: {},
-            session: { id: 's1' },
-        });
-
-        expect(merged).toEqual(base);
-    });
-
     it('merges provider plugin meta extras for Claude sessions', () => {
         const settings = settingsParse({
             claudeRemoteAgentSdkEnabled: true,

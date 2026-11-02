@@ -130,12 +130,12 @@ describe('AcpBackend session models', () => {
       const backend = new AcpBackend({ agentName: 'test', cwd: dir, command: process.execPath, args: [scriptPath] });
       const { session, getMetadata } = createSessionClientWithMetadata({ initialMetadata: createTestMetadata({
         sessionModelsV1: {
-          v: 1, provider: 'grok', updatedAt: 1, currentModelId: 'old',
+          v: 1, provider: 'codex', updatedAt: 1, currentModelId: 'old',
           availableModels: [{ id: 'old', name: 'Old' }],
         },
       }) });
       const runtime = createTestAcpRuntime({
-        provider: 'grok', directory: dir, session, messageBuffer: new MessageBuffer(),
+        provider: 'codex', directory: dir, session, messageBuffer: new MessageBuffer(),
         mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
         onThinkingChange: () => {}, ensureBackend: async () => backend,
       });

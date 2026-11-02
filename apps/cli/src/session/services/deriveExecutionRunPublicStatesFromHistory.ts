@@ -97,10 +97,8 @@ function readBackendTarget(input: Record<string, unknown> | null, output: Record
     const fromOutput = asRecord(output?.backendTarget);
     if (fromOutput) return fromOutput;
     const legacyBackendId = readString(input, 'backendId') ?? readString(output, 'backendId');
-    if (legacyBackendId) {
-        return AGENT_IDS.includes(legacyBackendId as (typeof AGENT_IDS)[number])
-            ? { kind: 'builtInAgent', agentId: legacyBackendId }
-            : { kind: 'configuredAcpBackend', backendId: legacyBackendId };
+    if (legacyBackendId && AGENT_IDS.includes(legacyBackendId as (typeof AGENT_IDS)[number])) {
+        return { kind: 'builtInAgent', agentId: legacyBackendId };
     }
     return null;
 }

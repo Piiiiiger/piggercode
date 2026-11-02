@@ -102,7 +102,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
             sessionId: 's1',
             toolName: 'Edit',
             toolInput: { file_path: 'a.ts' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         const allowAllEditsButton = findPermissionFooterButton(screen, 'claude.permissions.yesAllowAllEdits');
         await pressTestInstanceAsync(allowAllEditsButton, 'allow-all-edits button');
@@ -125,7 +125,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
             sessionId: 's1',
             toolName: 'Bash',
             toolInput: { command: 'pwd' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         const allowForToolButton = findPermissionFooterButton(screen, 'claude.permissions.yesForTool');
         await pressTestInstanceAsync(allowForToolButton, 'allow-for-session button');
@@ -159,7 +159,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
             sessionId: 's1',
             toolName: 'Bash',
             toolInput: { command: 'git status' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         const allowForToolButton = findPermissionFooterButton(screen, 'claude.permissions.yesForTool');
         const styleFragments = (allowForToolButton!.props.style as unknown[]).filter(Boolean) as Array<Record<string, unknown>>;
@@ -182,7 +182,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
                 command:
                     'unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN ANTHROPIC_OAUTH_TOKEN CLAUDE_CODE_OAUTH_TOKEN CLAUDE_CODE_SETUP_TOKEN; pwd',
             },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         expect(
             findTestInstanceByTypeContainingText(
@@ -202,7 +202,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
             sessionId: 's1',
             toolName: 'Edit',
             toolInput: { file_path: 'a.ts' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
 
         const allowAllEditsButton = findPermissionFooterButton(editScreen, 'claude.permissions.yesAllowAllEdits');
@@ -215,7 +215,7 @@ describe('PermissionFooter (Claude permission updates)', () => {
             sessionId: 's2',
             toolName: 'Bash',
             toolInput: { command: 'pwd' },
-            metadata: { flavor: 'opencode' },
+            metadata: { flavor: 'codex' },
         }));
         const allowForToolButton = findPermissionFooterButton(shellScreen, 'claude.permissions.yesForTool');
         const allowForToolTextStyle = getTextStyleFragments(allowForToolButton);

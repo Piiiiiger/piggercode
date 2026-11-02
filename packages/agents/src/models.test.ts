@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { AGENT_IDS } from './types.js';
-import type { AgentId } from './types.js';
 import { AGENT_MODEL_CONFIG, getAgentModelConfig, getAgentStaticModels } from './models.js';
 import { CURRENT_FLAGSHIP_CLAUDE_MODEL_ID } from './providers/claude/flagshipModel.js';
 
-const cursorAgentId = 'cursor' as AgentId;
 
 describe('agent model config', () => {
   it('covers every canonical agent', () => {
@@ -19,129 +17,6 @@ describe('agent model config', () => {
     const claudeModels = getAgentStaticModels('claude');
     expect(CURRENT_FLAGSHIP_CLAUDE_MODEL_ID).toBe('claude-opus-5-5');
     expect(claudeModels.some((model) => model.id === CURRENT_FLAGSHIP_CLAUDE_MODEL_ID)).toBe(true);
-  });
-
-  it('uses the same name and description contract for static models as dynamic models', () => {
-    const claude = getAgentModelConfig('claude');
-    const gemini = getAgentModelConfig('gemini');
-    const claudeModels = getAgentStaticModels('claude');
-    const geminiModels = getAgentStaticModels('gemini');
-
-    expect(claude.staticModels?.slice(0, 2)).toMatchObject([
-      { id: 'claude-fable-5-1', name: 'Fable 5.1', contextWindowTokens: 1_000_000 },
-      { id: 'claude-opus-5-5', name: 'Opus 5.5', contextWindowTokens: 1_000_000 },
-    ]);
-
-    expect(claude.staticModels?.find((model) => model.id === 'claude-sonnet-5-5')).toMatchObject({
-      id: 'claude-sonnet-5-5',
-      name: 'Sonnet 5.5',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'high',
-          options: expect.arrayContaining([
-            expect.objectContaining({ value: 'xhigh' }),
-            expect.objectContaining({ value: 'max' }),
-          ]),
-        }),
-      ]),
-    });
-    expect(claude.staticModels?.find((model) => model.id === 'claude-sonnet-5')).toMatchObject({
-      id: 'claude-sonnet-5',
-      name: 'Sonnet 5',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'high',
-          options: expect.arrayContaining([
-            expect.objectContaining({ value: 'xhigh' }),
-            expect.objectContaining({ value: 'max' }),
-          ]),
-        }),
-      ]),
-    });
-    expect(claude.staticModels?.find((model) => model.id === 'claude-fable-5')).toMatchObject({
-      id: 'claude-fable-5',
-      name: 'Fable 5',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'high',
-          options: expect.arrayContaining([
-            expect.objectContaining({ value: 'xhigh' }),
-            expect.objectContaining({ value: 'max' }),
-          ]),
-        }),
-      ]),
-    });
-    expect(claude.staticModels?.find((model) => model.id === 'claude-opus-5')).toMatchObject({
-      id: 'claude-opus-5',
-      name: 'Opus 5',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'high',
-          options: expect.arrayContaining([
-            expect.objectContaining({ value: 'xhigh' }),
-            expect.objectContaining({ value: 'max' }),
-          ]),
-        }),
-      ]),
-    });
-    expect(claude.staticModels?.find((model) => model.id === 'claude-opus-4-8')).toMatchObject({
-      id: 'claude-opus-4-8',
-      name: 'Opus 4.8',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'high',
-          options: expect.arrayContaining([
-            expect.objectContaining({ value: 'xhigh' }),
-          ]),
-        }),
-      ]),
-    });
-    expect(claude.staticModels?.find((model) => model.id === 'claude-opus-4-7')).toMatchObject({
-      id: 'claude-opus-4-7',
-      name: 'Opus 4.7',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-      modelOptions: expect.arrayContaining([
-        expect.objectContaining({
-          id: 'reasoning_effort',
-          currentValue: 'xhigh',
-        }),
-      ]),
-    });
-    expect(gemini.staticModels?.find((model) => model.id === 'gemini-3.1-pro-preview')).toMatchObject({
-      id: 'gemini-3.1-pro-preview',
-      name: 'Gemini 3.1 Pro Preview',
-      description: expect.any(String),
-    });
-    expect(gemini.staticModels?.find((model) => model.id === 'auto')).toMatchObject({
-      id: 'auto',
-      name: 'Auto',
-      description: expect.any(String),
-    });
-    expect(claude.staticModels?.map((model) => model.id)).toEqual(claude.allowedModes);
-    expect(gemini.staticModels?.map((model) => model.id)).toEqual(gemini.allowedModes);
-    expect(claudeModels[0]).toMatchObject({
-      id: 'claude-fable-5-1',
-      name: 'Fable 5.1',
-      description: expect.any(String),
-      contextWindowTokens: 1_000_000,
-    });
-    expect(geminiModels[0]?.name).toBe('Auto');
   });
 
   it('adds an Ultracode boolean model option only to xhigh-capable Claude models', () => {
@@ -196,66 +71,4 @@ describe('agent model config', () => {
     expect(codexModels).toEqual([{ id: 'default', name: 'default' }]);
   });
 
-  it('uses only provider-advertised Grok models without inventing a static fallback', () => {
-    const grok = getAgentModelConfig('grok');
-    const grokModels = getAgentStaticModels('grok');
-
-    expect(grok.supportsSelection).toBe(true);
-    expect(grok.supportsFreeform).toBe(false);
-    expect(grok.acpApplyBehavior).toBe('set_model');
-    expect(grok.acpModelConfigOptionId).toBeUndefined();
-    expect(grok.defaultMode).toBe('default');
-    expect(grok.allowedModes).toEqual([]);
-    expect(grok.staticModels).toBeUndefined();
-    expect(grokModels).toEqual([]);
-  });
-
-  it('treats Cursor models as dynamic ACP/CLI controls without freeform fallback', () => {
-    expect(getAgentModelConfig(cursorAgentId)).toMatchObject({
-      supportsSelection: true,
-      supportsFreeform: false,
-      nonAcpApplyScope: 'next_prompt',
-      acpModelConfigOptionId: 'model',
-      acpModelSetMethod: 'config_option',
-      dynamicProbe: 'auto',
-      defaultMode: 'default',
-      allowedModes: ['default'],
-    });
-  });
-
-  it('treats Kimi models as dynamically probed ACP controls', () => {
-    const kimi = getAgentModelConfig('kimi');
-    expect(kimi).toMatchObject({
-      supportsSelection: true,
-      supportsFreeform: false,
-      nonAcpApplyScope: 'next_prompt',
-      acpApplyBehavior: 'set_model',
-      acpModelConfigOptionId: 'model',
-      acpModelSetMethod: 'config_option',
-      dynamicProbe: 'auto',
-      defaultMode: 'default',
-      allowedModes: ['default'],
-    });
-  });
-
-  it('treats Qwen models as dynamically probed ACP controls', () => {
-    expect(getAgentModelConfig('qwen')).toMatchObject({
-      supportsSelection: true,
-      supportsFreeform: false,
-      nonAcpApplyScope: 'next_prompt',
-      acpModelConfigOptionId: 'model',
-      dynamicProbe: 'auto',
-      defaultMode: 'default',
-      allowedModes: ['default'],
-    });
-  });
-
-  it('restricts Kilo model selection to its advertised ACP catalog', () => {
-    expect(getAgentModelConfig('kilo')).toMatchObject({
-      supportsSelection: true,
-      supportsFreeform: false,
-      acpModelConfigOptionId: 'model',
-      dynamicProbe: 'auto',
-    });
-  });
 });

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { createHash, randomBytes } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { chmod, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { delimiter, join, resolve } from 'node:path';
 
 import { createTestAuth } from '../../src/testkit/auth';
@@ -11,7 +11,6 @@ import { startTestDaemon, type StartedDaemon } from '../../src/testkit/daemon/da
 import { fakeClaudeFixturePath } from '../../src/testkit/fakeClaude';
 import { decryptLegacyBase64 } from '../../src/testkit/messageCrypto';
 import { listPendingQueueV2 } from '../../src/testkit/pendingQueueV2';
-import { repoRootDir } from '../../src/testkit/paths';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
 import { enqueueSessionPromptForScenario, waitForAssistantMessageContaining } from '../../src/testkit/providers/scenarios/sessionRuntime';
 import { createRunDirs } from '../../src/testkit/runDir';
@@ -19,16 +18,14 @@ import { fetchAllMessages, fetchSessionV2, type SessionMessageRow } from '../../
 import { waitFor } from '../../src/testkit/timing';
 import { enqueueEncryptedUiTextMessage } from '../../src/testkit/uiMessages';
 
-import { resolveAcpSdkTestRuntime } from "../../src/testkit/providers/acpSdkTestRuntime";
-
 const run = createRunDirs({ runLabel: 'core' });
 
 type WakeSubmitPath = 'pending_queue' | 'direct_commit';
 type FakeClaudePromptEventType = 'sdk_stdin' | 'local_stdin_turn_completed';
 
 type WakeProviderCase = Readonly<{
-  backend: 'fake-claude' | 'fake-gemini-acp';
-  agentId: 'claude' | 'gemini';
+  backend: 'fake-claude';
+  agentId: 'claude';
   submitPath: WakeSubmitPath;
   supportsServerPending: boolean;
   assistantSubstring: string;
@@ -49,13 +46,6 @@ const WAKE_PROVIDER_CASES = [
     supportsServerPending: false,
     assistantSubstring: 'FAKE_CLAUDE_OK_',
   },
-  {
-    backend: 'fake-gemini-acp',
-    agentId: 'gemini',
-    submitPath: 'pending_queue',
-    supportsServerPending: true,
-    assistantSubstring: 'FAKE_GEMINI_OK_',
-  },
 ] as const satisfies readonly WakeProviderCase[];
 
 // Extension point: add new fake backend adapters here once they can spawn deterministically in core e2e.
@@ -67,8 +57,6 @@ type RunningWakeHarness = Readonly<{
   fakeBinDir: string;
   fakeClaudeLogPath: string;
   fakeClaudePath: string;
-  fakeGeminiLogPath: string;
-  fakeGeminiPath: string;
   secret: Uint8Array;
   server: StartedServer;
   workspaceDir: string;
@@ -80,16 +68,8 @@ type ProviderEnvParams = Readonly<{
   fakeBinDir: string;
   fakeClaudeLogPath: string;
   fakeClaudePath: string;
-  fakeGeminiLogPath: string;
-  fakeGeminiPath: string;
   serverBaseUrl: string;
 }>;
-
-type FakeGeminiEvent =
-  | Readonly<{ kind: 'newSession'; ts: number; sessionId: string }>
-  | Readonly<{ kind: 'loadSession'; ts: number; sessionId: string }>
-  | Readonly<{ kind: 'prompt'; ts: number; text: string }>
-  | Readonly<{ kind: 'promptReturn'; ts: number; marker: string; stopReason: string }>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
@@ -157,48 +137,6 @@ async function waitForFakeClaudeUserTextSha256(
   throw new Error(`Timed out waiting for fake Claude prompt digest in ${logPath}`);
 }
 
-async function readFakeGeminiEvents(path: string): Promise<FakeGeminiEvent[]> {
-  return (await readJsonlEvents(path)).filter((event): event is FakeGeminiEvent => {
-    if (!isRecord(event) || typeof event.kind !== 'string') return false;
-    if (event.kind === 'newSession' || event.kind === 'loadSession') {
-      return typeof event.sessionId === 'string';
-    }
-    if (event.kind === 'prompt') {
-      return typeof event.text === 'string';
-    }
-    if (event.kind === 'promptReturn') {
-      return typeof event.marker === 'string' && typeof event.stopReason === 'string';
-    }
-    return false;
-  });
-}
-
-async function waitForFakeGeminiPromptText(
-  logPath: string,
-  predicate: (text: string) => boolean,
-  opts?: { timeoutMs?: number; pollMs?: number },
-): Promise<string> {
-  const timeoutMs = opts?.timeoutMs ?? 60_000;
-  const pollMs = opts?.pollMs ?? 100;
-  const startedAt = Date.now();
-
-  while (Date.now() - startedAt < timeoutMs) {
-    const events = await readFakeGeminiEvents(logPath);
-    for (const event of events) {
-      if (event.kind !== 'prompt') continue;
-      if (predicate(event.text)) return event.text;
-    }
-    await new Promise((resolve) => setTimeout(resolve, pollMs));
-  }
-
-  throw new Error(`Timed out waiting for fake Gemini prompt text in ${logPath}`);
-}
-
-async function countFakeGeminiPromptTextOccurrences(logPath: string, text: string): Promise<number> {
-  const events = await readFakeGeminiEvents(logPath);
-  return events.filter((event) => event.kind === 'prompt' && event.text.includes(text)).length;
-}
-
 async function readDecryptedMessages(params: {
   baseUrl: string;
   token: string;
@@ -223,92 +161,6 @@ async function readTranscriptUserTextMatches(params: {
   return rows.filter(({ value }) => readUserText(value) === params.text);
 }
 
-async function writeFakeGeminiAcpCli(params: {
-  fakeGeminiLogPath: string;
-  fakeGeminiPath: string;
-}): Promise<void> {
-  const { sdkEntry: acpSdkEntry, agentAppAdapterEntry } = resolveAcpSdkTestRuntime(repoRootDir());
-  await writeFile(
-    params.fakeGeminiPath,
-    `#!/usr/bin/env node
-import { appendFileSync } from "node:fs";
-import { randomUUID } from "node:crypto";
-import { pathToFileURL } from "node:url";
-import { Readable, Writable } from "node:stream";
-
-if (process.argv.includes("--help")) {
-  process.stdout.write("fake gemini usage --acp\\n");
-  process.exit(0);
-}
-
-function log(line) {
-  const p = process.env.PIGGERCODE_E2E_GEMINI_LOG;
-  if (p) appendFileSync(p, JSON.stringify({ ts: Date.now(), ...line }) + "\\n", "utf8");
-}
-
-function promptText(blocks) {
-  return Array.isArray(blocks)
-    ? blocks.map((b) => b && typeof b === "object" && b.type === "text" ? String(b.text || "") : "").join("\\n")
-    : "";
-}
-
-const acp = await import(pathToFileURL(${JSON.stringify(acpSdkEntry)}).href);
-const adapterEntry = process.env.PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY ?? ${JSON.stringify(agentAppAdapterEntry)};
-if (!adapterEntry) throw new Error("Missing PIGGERCODE_E2E_ACP_AGENT_APP_ADAPTER_ENTRY");
-const { connectAcpTestAgentApp } = await import(pathToFileURL(adapterEntry).href);
-
-class FakeGeminiAgent {
-  connection;
-  constructor(connection) { this.connection = connection; }
-
-  async initialize(_params) {
-    return {
-      protocolVersion: acp.PROTOCOL_VERSION,
-      agentCapabilities: { loadSession: true },
-      authMethods: [{ id: "oauth-personal" }, { id: "gemini-api-key" }],
-    };
-  }
-
-  async authenticate(_params) { return {}; }
-
-  async newSession(_params) {
-    const sessionId = randomUUID();
-    log({ kind: "newSession", sessionId });
-    return { sessionId };
-  }
-
-  async loadSession(params) {
-    const sessionId = String(params?.sessionId || "");
-    log({ kind: "loadSession", sessionId });
-    return {};
-  }
-
-  async prompt(params) {
-    const text = promptText(params.prompt);
-    log({ kind: "prompt", text });
-    await this.connection.sessionUpdate({
-      sessionId: params.sessionId,
-      update: {
-        sessionUpdate: "agent_message_chunk",
-        content: { type: "text", text: "FAKE_GEMINI_OK_" + Date.now() },
-      },
-    });
-    log({ kind: "promptReturn", marker: "FAKE_GEMINI_OK", stopReason: "end_turn" });
-    return { stopReason: "end_turn" };
-  }
-
-  async cancel(_params) {}
-}
-
-const stream = acp.ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin));
-const connection = connectAcpTestAgentApp({ acp, stream, createAgent: (client) => new FakeGeminiAgent(client) });
-await connection.closed;
-`,
-    'utf8',
-  );
-  await chmod(params.fakeGeminiPath, 0o755);
-}
-
 function createProviderEnv(params: ProviderEnvParams): Record<string, string> {
   return {
     CI: '1',
@@ -319,9 +171,6 @@ function createProviderEnv(params: ProviderEnvParams): Record<string, string> {
     PIGGERCODE_WEBAPP_URL: params.serverBaseUrl,
     PIGGERCODE_CLAUDE_PATH: params.fakeClaudePath,
     PIGGERCODE_E2E_FAKE_CLAUDE_LOG: params.fakeClaudeLogPath,
-    PIGGERCODE_GEMINI_PATH: params.fakeGeminiPath,
-    PIGGERCODE_E2E_GEMINI_LOG: params.fakeGeminiLogPath,
-    GEMINI_API_KEY: 'e2e-fake-gemini-api-key',
     PATH: `${params.fakeBinDir}${delimiter}${process.env.PATH ?? ''}`,
   };
 }
@@ -350,9 +199,6 @@ async function startWakeHarness(params: { testDir: string }): Promise<RunningWak
 
   const fakeClaudePath = fakeClaudeFixturePath();
   const fakeClaudeLogPath = resolve(join(params.testDir, 'fake-claude.jsonl'));
-  const fakeGeminiPath = resolve(join(fakeBinDir, 'gemini'));
-  const fakeGeminiLogPath = resolve(join(params.testDir, 'fake-gemini.jsonl'));
-  await writeFakeGeminiAcpCli({ fakeGeminiPath, fakeGeminiLogPath });
   const daemon = await startTestDaemon({
     testDir: params.testDir,
     happyHomeDir: daemonHomeDir,
@@ -361,8 +207,6 @@ async function startWakeHarness(params: { testDir: string }): Promise<RunningWak
       fakeBinDir,
       fakeClaudePath,
       fakeClaudeLogPath,
-      fakeGeminiPath,
-      fakeGeminiLogPath,
       serverBaseUrl: server.baseUrl,
     }),
     snapshotDir: resolve(join(params.testDir, 'daemon-cli-snapshot')),
@@ -375,8 +219,6 @@ async function startWakeHarness(params: { testDir: string }): Promise<RunningWak
     fakeBinDir,
     fakeClaudeLogPath,
     fakeClaudePath,
-    fakeGeminiLogPath,
-    fakeGeminiPath,
     secret,
     server,
     workspaceDir,
@@ -407,8 +249,6 @@ async function spawnProviderSession(params: {
         fakeBinDir: harness.fakeBinDir,
         fakeClaudePath: harness.fakeClaudePath,
         fakeClaudeLogPath: harness.fakeClaudeLogPath,
-        fakeGeminiPath: harness.fakeGeminiPath,
-        fakeGeminiLogPath: harness.fakeGeminiLogPath,
         serverBaseUrl: harness.server.baseUrl,
       }),
     },
@@ -445,18 +285,10 @@ async function waitForProviderPromptText(params: {
   timeoutMs: number;
   fakeClaudeEventType?: FakeClaudePromptEventType;
 }): Promise<void> {
-  if (params.providerCase.backend === 'fake-claude') {
-    await waitForFakeClaudeUserTextSha256(params.harness.fakeClaudeLogPath, params.prompt, {
-      timeoutMs: params.timeoutMs,
-      pollMs: 150,
-      eventType: params.fakeClaudeEventType,
-    });
-    return;
-  }
-
-  await waitForFakeGeminiPromptText(params.harness.fakeGeminiLogPath, (text) => text.includes(params.prompt), {
+  await waitForFakeClaudeUserTextSha256(params.harness.fakeClaudeLogPath, params.prompt, {
     timeoutMs: params.timeoutMs,
     pollMs: 150,
+    eventType: params.fakeClaudeEventType,
   });
 }
 
@@ -466,13 +298,9 @@ async function countProviderPromptTextOccurrences(params: {
   prompt: string;
   fakeClaudeEventType?: FakeClaudePromptEventType;
 }): Promise<number> {
-  if (params.providerCase.backend === 'fake-claude') {
-    return await countFakeClaudeUserTextOccurrences(params.harness.fakeClaudeLogPath, params.prompt, {
-      eventType: params.fakeClaudeEventType,
-    });
-  }
-
-  return await countFakeGeminiPromptTextOccurrences(params.harness.fakeGeminiLogPath, params.prompt);
+  return await countFakeClaudeUserTextOccurrences(params.harness.fakeClaudeLogPath, params.prompt, {
+    eventType: params.fakeClaudeEventType,
+  });
 }
 
 async function seedBaselineTurn(params: {

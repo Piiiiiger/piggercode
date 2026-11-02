@@ -9,9 +9,8 @@ import {
 const providerShapes = [
     { questions: [{ header: 'Claude', question: 'Choose?', multiSelect: false, options: [{ label: 'A', description: 'a' }] }] },
     { questions: [{ header: 'Codex', question: 'Choose?', multiSelect: false, options: [{ label: 'A', description: 'a' }], freeform: { placeholder: 'Other' } }] },
-    { questions: [{ id: 'cursor-id', header: 'Cursor', question: 'Choose?', multiSelect: true, options: [{ label: 'A', description: 'a' }] }] },
-    { questions: [{ header: 'OpenCode', question: 'Choose?', multiple: false, options: [{ label: 'A', description: 'a' }], locations: [] }] },
-    { _grokCorrelation: { v: 1, digest: 'a'.repeat(64) }, questions: [{ id: 'grok-id', header: 'Question', question: 'Choose?', multiSelect: false, options: [{ label: 'A', description: 'a' }] }] },
+    { questions: [{ id: 'multi-id', header: 'Multi', question: 'Choose?', multiSelect: true, options: [{ label: 'A', description: 'a' }] }] },
+    { questions: [{ header: 'Codex', question: 'Choose?', multiple: false, options: [{ label: 'A', description: 'a' }], locations: [] }] },
     { questions: [{ id: 'freeform', question: 'Type a value', freeform: true }] },
     { questions: [
         { header: 'Question', question: 'First?', options: [{ label: 'A' }] },

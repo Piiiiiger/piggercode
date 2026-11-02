@@ -19,8 +19,8 @@ describe('applyProviderSessionInfoUpdate', () => {
   it('uses a provider title only to initialize an untitled Happier session', () => {
     const initialized = applyProviderSessionInfoUpdate({
       metadata: createMetadata(),
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 100,
       update: { title: 'Provider title', updatedAt: '2026-07-11T10:00:00.000Z' },
     });
@@ -28,8 +28,8 @@ describe('applyProviderSessionInfoUpdate', () => {
     expect(initialized.summary).toEqual({ text: 'Provider title', updatedAt: 100 });
     expect(initialized.providerSessionInfoV1).toEqual({
       v: 1,
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 100,
       title: 'Provider title',
       updatedAt: '2026-07-11T10:00:00.000Z',
@@ -37,8 +37,8 @@ describe('applyProviderSessionInfoUpdate', () => {
 
     const updated = applyProviderSessionInfoUpdate({
       metadata: initialized,
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 200,
       update: { title: 'Later provider title' },
     });
@@ -52,8 +52,8 @@ describe('applyProviderSessionInfoUpdate', () => {
       metadata: createMetadata({
         summary: { text: 'Explicit Happier title', updatedAt: 50 },
       }),
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 100,
       update: { title: 'Provider title' },
     });
@@ -67,15 +67,15 @@ describe('applyProviderSessionInfoUpdate', () => {
       metadata: createMetadata({
         summary: { text: 'Explicit Happier title', updatedAt: 50 },
       }),
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 100,
       update: { title: 'Provider title', updatedAt: '2026-07-11T10:00:00.000Z' },
     });
     const cleared = applyProviderSessionInfoUpdate({
       metadata: current,
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 200,
       update: { title: null },
     });
@@ -94,22 +94,22 @@ describe('applyProviderSessionInfoUpdate', () => {
         // Deliberately malformed persisted boundary fixture.
         providerSessionInfoV1: {
           v: 1,
-          provider: 'cursor',
-          sessionId: 'cursor-session-1',
+          provider: 'codex',
+          sessionId: 'codex-session-1',
           observedAt: 1,
           title: 'x'.repeat(2_000),
         } as never,
       }),
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 200,
       update: { updatedAt: '2026-07-11T10:00:00.000Z' },
     });
 
     expect(updated.providerSessionInfoV1).toEqual({
       v: 1,
-      provider: 'cursor',
-      sessionId: 'cursor-session-1',
+      provider: 'codex',
+      sessionId: 'codex-session-1',
       observedAt: 200,
       updatedAt: '2026-07-11T10:00:00.000Z',
     });

@@ -57,12 +57,4 @@ describe('resolveConnectedServiceOauthMode', () => {
     })).toBe('embedded');
   });
 
-  it('clamps explicit device mode to paste when the service does not expose device auth', () => {
-    expect(resolveConnectedServiceOauthMode({
-      platformOS: 'ios',
-      serviceId: 'gemini',
-      method: 'device',
-      oauthAddActionModes: ['paste'],
-    })).toBe('paste');
-  });
 });

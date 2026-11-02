@@ -9,7 +9,7 @@ import {
  * resolved `configuration` singleton.
  *
  * This is the value injected into every coding-agent subprocess at the spawn
- * seam (see `createCatalogProviderAcpRuntime`) so that shell-bridge `happier
+ * seam so that shell-bridge `happier
  * tools` invocations — and their child CLI process — read credentials from the
  * correct home dir and talk to the correct server regardless of what the agent's
  * shell tool happens to inherit.

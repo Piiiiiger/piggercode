@@ -67,8 +67,6 @@ const ALLOW_SAME_STRING_VALUES = new Set<string>([
     'Codex',
     'Codex ACP',
     'Claude Code',
-    'Gemini CLI',
-    'Auggie CLI',
     'Tmux',
     'Telegram',
     'Windows',
@@ -85,8 +83,6 @@ const ALLOW_SAME_KEY_PREFIXES: ReadonlyArray<string> = [
     'agentInput.permissionMode.',
     'agentInput.codexPermissionMode.',
     'agentInput.codexModel.',
-    'agentInput.geminiPermissionMode.',
-    'agentInput.geminiModel.',
     'profiles.builtInNames.',
 ];
 

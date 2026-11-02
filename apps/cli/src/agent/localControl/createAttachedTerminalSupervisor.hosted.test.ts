@@ -63,7 +63,6 @@ import { installAxiosFastifyAdapter } from '@/testkit/http/axiosAdapter';
 import { resolveServerHttpBaseUrl } from '@/session/transport/http/serverHttpBaseUrl';
 import { acquireSessionRunnerLock } from '@/daemon/sessionRunnerLock';
 import { logger } from '@/ui/logger';
-import { createOpenCodeTuiSupervisor } from '@/backends/opencode/localControl/openCodeTuiSupervisor';
 import { createCodexSharedLocalControl } from '@/backends/codex/localControl/createCodexSharedLocalControl';
 import { writeCodexSharedControlEndpoint } from '@/backends/codex/localControl/codexSharedControlEndpoint';
 import { resolveSessionStartupTimeoutMs } from '@/daemon/spawn/waitForSessionWebhook';
@@ -572,37 +571,6 @@ describe('shared hosted native presentation', () => {
               { pid: native.pid, argv: [invocation.command, ...invocation.args] }] } };
         } });
       } finally { await child.terminate(); await prepared.cleanupUnreadArtifacts(); await session.close(); }
-    });
-  });
-  it.each(['plain', 'herdr'] as const)('keeps shared remote controls usable after exact native credential preparation fails (%s)', async requested => {
-    await withConfiguredDaemonTestHome({ prefix: 'shared-preparation-' }, async ({ homeDir }) => {
-      const session = await createSharedSession(homeDir, 'missing-managed-credential');
-      // Real managed credential affinity reads this isolated empty home. The
-      // missing exact fingerprint must not fall back to any ambient credential.
-      const target = { baseUrl: 'http://127.0.0.1:41997', directory: homeDir,
-        sessionId: 'same-native-session', managedServerLaunchFingerprint: 'not-created-in-this-home' };
-      const supervisor = createOpenCodeTuiSupervisor({ command: process.execPath,
-        env: { PATH: process.env.PATH, PIGGERCODE_HOME_DIR: homeDir },
-        terminalPresentation: { runtime: { mode: 'plain', requested }, getSession: () => session },
-      });
-      const control = createSharedProviderLocalControl({ supported: true, startingMode: 'local',
-        getSession: () => session, resolveTarget: () => target,
-        isSameTarget: (left, right) => left === right, supervisor });
-      try {
-        await expect(control.onAfterStart()).resolves.toBeUndefined();
-        expect(control.resolveKeepAliveMode()).toBe('remote');
-        expect(control.shouldRenderTerminalDisplay()).toBe(true);
-        await vi.waitFor(() => expect(session.getAgentStateSnapshot()).toMatchObject({ controlledByUser: false,
-          localControl: { topology: 'shared', attached: false, canDetach: false, canAttach: true, remoteWritable: true } }));
-        expect(session.rpcHandlerManager.hasHandler('switch')).toBe(true);
-        expect(await control.switchToLocal()).toBe(false);
-        expect(control.resolveKeepAliveMode()).toBe('remote');
-        expect(supervisor.isAttached()).toBe(false);
-        expect(await readTerminalAttachmentInfo({ happyHomeDir: homeDir, sessionId: session.sessionId })).toBeNull();
-      } finally {
-        await control.dispose();
-        await session.close();
-      }
     });
   });
   it.skipIf(process.platform === 'win32' || !hasSupportedHerdr).each(['normal', 'descriptor_retry'] as const)('keeps the admitted Herdr endpoint after native authentication changes its configuration root (%s)', async ending => {

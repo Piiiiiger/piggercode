@@ -20,13 +20,8 @@ import type { SessionSubagent } from '@/sync/domains/session/subagents/types';
 import type { GoalActionCapabilities } from '@/components/sessions/workState/goalActionVisibility';
 import { CODEX_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/codex/uiBehavior';
 import { CLAUDE_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/claude/uiBehavior';
-import { AUGGIE_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/auggie/uiBehavior';
-import { OPENCODE_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/opencode/uiBehavior';
-import { PI_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/pi/uiBehavior';
-import { AGY_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/agy/uiBehavior';
-import { CUSTOM_ACP_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/customAcp/uiBehavior';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput';
-import { isAcpSessionListingDeclared, resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import type { PendingInputServerWireMode } from '@/sync/engine/pending/pendingInputServerWireContract';
 import { resolveSessionGoalExecutionCapabilities } from '@/sync/domains/session/control/sessionGoalExecutionCapabilities';
 
@@ -351,36 +346,12 @@ function buildDefaultAgentUiBehavior(agentId: AgentId): AgentUiBehavior {
         newSession: {
             supportsTranscriptStorageMode: ({ storageMode }) => getAgentCore(agentId).sessionStorage[storageMode] === true,
         },
-        // Agents whose ACP server declares `session/list` expose their own sessions as resume
-        // candidates through the one generic source; no provider-owned module is needed.
-        ...(isAcpSessionListingDeclared(agentId)
-            ? {
-                directSessions: {
-                    browse: {
-                        resumeOnly: true,
-                        getSourceOptions: ({ directory }) => [{
-                            key: 'acp:sessionList',
-                            label: t('directSessions.browseSourceAcpAgentSessions'),
-                            source: {
-                                kind: 'acpSessionList',
-                                ...(directory ? { cwd: directory } : {}),
-                            },
-                        }],
-                    },
-                },
-            }
-            : {}),
     };
 }
 
 const AGENTS_UI_BEHAVIOR_OVERRIDES: Readonly<Partial<Record<AgentId, AgentUiBehavior>>> = Object.freeze({
     claude: CLAUDE_UI_BEHAVIOR_OVERRIDE,
     codex: CODEX_UI_BEHAVIOR_OVERRIDE,
-    opencode: OPENCODE_UI_BEHAVIOR_OVERRIDE,
-    auggie: AUGGIE_UI_BEHAVIOR_OVERRIDE,
-    pi: PI_UI_BEHAVIOR_OVERRIDE,
-    customAcp: CUSTOM_ACP_UI_BEHAVIOR_OVERRIDE,
-    agy: AGY_UI_BEHAVIOR_OVERRIDE,
 });
 
 export const AGENTS_UI_BEHAVIOR: Readonly<Record<AgentId, AgentUiBehavior>> = Object.freeze(

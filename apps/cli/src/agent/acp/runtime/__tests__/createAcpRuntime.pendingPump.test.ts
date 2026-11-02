@@ -73,7 +73,7 @@ describe('createAcpRuntime pending queue pump', () => {
       dispose: async () => {},
     } satisfies AcpRuntimeBackend;
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -154,7 +154,7 @@ describe('createAcpRuntime pending queue pump', () => {
       });
     });
     const runtime = createAcpRuntime({
-      provider: 'grok',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),

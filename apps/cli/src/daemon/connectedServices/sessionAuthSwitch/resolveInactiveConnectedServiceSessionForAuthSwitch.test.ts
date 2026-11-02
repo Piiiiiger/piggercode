@@ -45,7 +45,7 @@ describe('resolveInactiveConnectedServiceSessionForAuthSwitch', () => {
         path: '/tmp/repo',
         connectedServices,
         connectedServiceMaterializationIdentityV1: materializationIdentity,
-        piSessionFile: '/tmp/repo/.pi/session.jsonl',
+        codexSessionFile: '/tmp/repo/.codex/session.jsonl',
       },
     }));
 
@@ -69,7 +69,7 @@ describe('resolveInactiveConnectedServiceSessionForAuthSwitch', () => {
     });
     // The raw metadata is surfaced so the provider-agnostic catalog helper can derive the persisted
     // session-file hint at the call site (the SAME seam the tracked spawn path uses).
-    expect(resolved?.metadata).toMatchObject({ piSessionFile: '/tmp/repo/.pi/session.jsonl' });
+    expect(resolved?.metadata).toMatchObject({ codexSessionFile: '/tmp/repo/.codex/session.jsonl' });
 
     expect(resolveAttachContext).toHaveBeenCalledWith(expect.objectContaining({
       token: 'token-1',
@@ -106,49 +106,6 @@ describe('resolveInactiveConnectedServiceSessionForAuthSwitch', () => {
       agentId: 'codex',
       connectedServices,
       vendorResumeId: 'vendor-1',
-    });
-  });
-
-  it('derives the vendor resume id from the inferred persisted agent metadata', async () => {
-    const piSessionFile = '/tmp/repo/.pi/sessions/--tmp-repo--/pi-session-1.jsonl';
-    const resolveAttachContext = vi.fn(async () => ({
-      ok: true as const,
-      attachPayload: {
-        v: 2 as const,
-        encryptionMode: 'e2ee' as const,
-        encryptionKeyBase64: 'a2V5',
-        encryptionVariant: 'legacy' as const,
-      },
-      vendorResumeId: null,
-      sessionPath: '/tmp/repo',
-      deliveredUserMessageSeq: null,
-      metadata: {
-        agentId: 'pi',
-        path: '/tmp/repo',
-        connectedServices,
-        connectedServiceMaterializationIdentityV1: materializationIdentity,
-        agentRuntimeDescriptorV1: {
-          v: 1,
-          providerId: 'pi',
-          provider: {
-            resumeStrategy: 'sessionFileAbsolutePreferred',
-            vendorSessionId: 'pi-session-1',
-            sessionFile: piSessionFile,
-          },
-        },
-        piSessionFile,
-      },
-    }));
-
-    await expect(resolveInactiveConnectedServiceSessionForAuthSwitch({
-      credentials: credentials(),
-      sessionId: 'sess_inactive_pi',
-      agentId: 'codex',
-      resolveAttachContext,
-    })).resolves.toMatchObject({
-      agentId: 'pi',
-      vendorResumeId: piSessionFile,
-      cwd: '/tmp/repo',
     });
   });
 });

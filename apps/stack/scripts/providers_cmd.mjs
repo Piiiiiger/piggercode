@@ -14,7 +14,7 @@ function usageText() {
     '  hstack providers install <id1> <id2> [--dry-run] [--force] [--json]',
     '',
     'notes:',
-    '  - Provider CLIs are external binaries used by Happier backends (claude/codex/gemini/etc).',
+    '  - Provider CLIs are external binaries used by PiggerCode backends (claude/codex).',
     '  - This command installs provider CLIs (best-effort). Some providers require manual installation.',
     '  - Claude install uses the upstream native installer by default (not npm).',
     '  - Use --force to re-run the installer even if the binary is already present on PATH.',

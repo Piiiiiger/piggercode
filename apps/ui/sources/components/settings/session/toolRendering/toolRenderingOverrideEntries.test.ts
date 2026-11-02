@@ -12,8 +12,6 @@ installSessionSettingsCommonModuleMocks({
         return createTextModuleMock({
             translate: (key) => {
                 switch (key) {
-                    case 'tools.workspaceIndexingPermission.defaultTitle':
-                        return 'Workspace indexing';
                     case 'tools.names.subAgent':
                         return 'Sub-agent';
                     case 'tools.names.changeTitle':
@@ -33,7 +31,6 @@ describe('TOOL_RENDERING_OVERRIDE_ENTRIES', () => {
         expect(TOOL_RENDERING_OVERRIDE_ENTRIES).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({ toolName: 'Delete', title: 'Delete' }),
-                expect.objectContaining({ toolName: 'WorkspaceIndexingPermission', title: 'Workspace indexing' }),
                 expect.objectContaining({ toolName: 'SubAgent', title: 'Sub-agent' }),
             ]),
         );

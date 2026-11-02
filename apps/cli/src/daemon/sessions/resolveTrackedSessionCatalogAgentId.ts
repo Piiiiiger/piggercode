@@ -12,7 +12,6 @@ function readBuiltInCatalogAgentIdFromBackendTarget(target: BackendTargetRefV1 |
 }
 
 export function resolveTrackedSessionCatalogAgentId(tracked: TrackedSession): CatalogAgentId {
-  if (tracked.spawnOptions?.backendTarget?.kind === 'configuredAcpBackend') return 'customAcp';
   const fromBackendTarget = readBuiltInCatalogAgentIdFromBackendTarget(tracked.spawnOptions?.backendTarget);
   if (fromBackendTarget) return fromBackendTarget;
   return resolveCatalogAgentId(resolveAgentIdFromSessionMetadata(tracked.happySessionMetadataFromLocalWebhook));

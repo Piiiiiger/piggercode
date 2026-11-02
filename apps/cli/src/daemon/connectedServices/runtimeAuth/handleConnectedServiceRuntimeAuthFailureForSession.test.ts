@@ -746,60 +746,6 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
     })).rejects.toThrow('temporarily unavailable');
   });
 
-  it('authorizes a modern non-group report from the registered live binding instead of stale spawn revision', async () => {
-    const tracked = {
-      startedBy: 'daemon' as const,
-      happySessionId: 'sess_non_group_hot_applied',
-      pid: 123,
-      spawnOptions: {
-        directory: '/tmp/project',
-        environmentVariables: {
-          [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
-            kind: 'profile',
-            serviceId: 'gemini',
-            profileId: 'work',
-            credentialRevision: 'csr_aaaaaaaaaaaaaaaaaaaaaa',
-          }]),
-        },
-      },
-    } satisfies TrackedSession;
-    const sourceBinding = {
-      serviceId: 'gemini' as const,
-      groupId: null,
-      profileId: 'work',
-      generation: null,
-      credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
-    };
-    const resolveCurrentRuntimeAuthFailureSource = vi.fn(async () => {
-      throw new Error('registry-only providers must not invoke the exact live verifier');
-    });
-
-    await expect(authorizeConnectedServiceRuntimeAuthFailureSource({
-      getChildren: () => [tracked],
-      sessionId: tracked.happySessionId,
-      classification: {
-        kind: 'auth_expired',
-        serviceId: 'gemini',
-        profileId: 'work',
-        groupId: null,
-        groupGeneration: null,
-        credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
-        resetsAtMs: null,
-        planType: null,
-        rateLimits: null,
-        source: 'structured_provider_error',
-      },
-      resolveRegisteredRuntimeAuthFailureSource: () => sourceBinding,
-      resolveCurrentRuntimeAuthFailureSource,
-      runtimeAuthApply: registryOnlyRuntimeAuthCapability,
-    })).resolves.toEqual({
-      status: 'authorized',
-      tracked,
-      sourceBinding,
-    });
-    expect(resolveCurrentRuntimeAuthFailureSource).not.toHaveBeenCalled();
-  });
-
   it('keeps the registered non-group profile authoritative through action selection', async () => {
     const refreshConnectedServiceCredentialForRuntimeAuthFailure = vi.fn(async (input: Readonly<{
       serviceId: 'claude-subscription';
@@ -1200,40 +1146,6 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
     expect(continueAfterRuntimeAuthSwitch).not.toHaveBeenCalled();
   });
 
-  it('keeps predecessor verification capability-scoped and registry-only providers ungated', async () => {
-    const tracked = {
-      startedBy: 'daemon' as const,
-      happySessionId: 'sess_registry_only_predecessor_shape',
-      pid: 123,
-      reattachedFromDiskMarker: true,
-      spawnOptions: { directory: '/tmp/project' },
-    } satisfies TrackedSession;
-    const resolveCurrentRuntimeAuthFailureSource = vi.fn(async () => {
-      throw new Error('registry-only predecessor shapes must not invoke the verifier');
-    });
-
-    await expect(authorizeConnectedServiceRuntimeAuthFailureSource({
-      getChildren: () => [tracked],
-      sessionId: tracked.happySessionId,
-      classification: {
-        kind: 'usage_limit',
-        serviceId: 'gemini',
-        profileId: 'work',
-        groupId: 'main',
-        groupGeneration: 7,
-        credentialRevision: null,
-        resetsAtMs: null,
-        planType: null,
-        rateLimits: null,
-        source: 'structured_provider_error',
-        recoveryAction: { kind: 'quota_recovery_required' },
-      },
-      resolveCurrentRuntimeAuthFailureSource,
-      runtimeAuthApply: registryOnlyRuntimeAuthCapability,
-    })).resolves.toEqual({ status: 'authorized', tracked });
-    expect(resolveCurrentRuntimeAuthFailureSource).not.toHaveBeenCalled();
-  });
-
   it('attributes a provider-owned broker failure from its effective selection instead of immutable launch metadata', async () => {
     const tracked = {
       startedBy: 'daemon' as const,
@@ -1570,60 +1482,6 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       groupId: 'main',
       observedProfileId: 'work',
     }));
-  });
-  it('supersedes a modern exact report that mismatches the registered live revision before recovery mechanics', async () => {
-    const switchAfterClassifiedFailure = vi.fn();
-    const trackedSession = {
-      startedBy: 'daemon' as const,
-      happySessionId: 'sess_revision',
-      pid: 123,
-      spawnOptions: {
-        directory: '/tmp/project',
-        environmentVariables: {
-          PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_JSON: JSON.stringify([{
-            kind: 'group',
-            serviceId: 'gemini',
-            groupId: 'main',
-            activeProfileId: 'work',
-            fallbackProfileId: 'backup',
-            generation: 2,
-            credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
-          }]),
-        },
-      },
-    };
-
-    await expect(handleConnectedServiceRuntimeAuthFailureForSession({
-      getChildren: () => [trackedSession],
-      switchCoordinator: { switchAfterClassifiedFailure },
-      resolveRegisteredRuntimeAuthFailureSource: () => ({
-        serviceId: 'gemini',
-        groupId: null,
-        profileId: 'work',
-        generation: null,
-        credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
-      }),
-      sessionId: 'sess_revision',
-      switchesThisTurn: 0,
-      classification: {
-        kind: 'usage_limit',
-        serviceId: 'gemini',
-        profileId: 'work',
-        groupId: 'main',
-        groupGeneration: 2,
-        credentialRevision: 'csr_aaaaaaaaaaaaaaaaaaaaaa',
-        resetsAtMs: null,
-        planType: null,
-        rateLimits: null,
-        source: 'stable_provider_message',
-      },
-    })).resolves.toMatchObject({
-      status: 'recovery_superseded',
-      reason: 'source_tuple_mismatch',
-      serviceId: 'gemini',
-      profileId: 'work',
-    });
-    expect(switchAfterClassifiedFailure).not.toHaveBeenCalled();
   });
   it('surfaces a failed runtime group apply as a switch-attempt transcript event', async () => {
     const emitSessionEvent = vi.fn();

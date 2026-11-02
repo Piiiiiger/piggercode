@@ -28,7 +28,6 @@ export function assertBackendEnabledByAccountSettings(params: Readonly<{
     ?? (params.agentId ? ({ kind: 'builtInAgent', agentId: params.agentId } as const satisfies BackendTargetRefV1) : null);
   if (!backendTarget) return;
   if (!isBackendEnabledByAccountSettings(params)) {
-    const label = backendTarget.kind === 'configuredAcpBackend' ? backendTarget.backendId : backendTarget.agentId;
-    throw new Error(`${label} is disabled in your account settings (enable it in the UI provider settings).`);
+    throw new Error(`${backendTarget.agentId} is disabled in your account settings (enable it in the UI provider settings).`);
   }
 }

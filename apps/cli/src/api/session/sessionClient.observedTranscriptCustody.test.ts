@@ -67,7 +67,7 @@ describe('ApiSessionClient observed transcript custody', () => {
     const session = client!;
     const opts = { localId: `observed-${role}`, provenance: { kind: 'non_dependent', source: 'external' } } as const;
     const publication = role === 'agent'
-      ? session.sendAgentMessageCommitted('pi', { type: 'message', message: 'Observed answer' }, opts)
+      ? session.sendAgentMessageCommitted('codex', { type: 'message', message: 'Observed answer' }, opts)
       : session.sendUserTextMessageCommitted('Observed provider prompt', opts);
     await expect(publication).resolves.toBeUndefined();
 
@@ -91,7 +91,7 @@ describe('ApiSessionClient observed transcript custody', () => {
     client = null;
     const opts = { localId: `closed-${role}`, provenance: { kind: 'non_dependent', source: 'external' } } as const;
     const publication = role === 'agent'
-      ? session.sendAgentMessageCommitted('pi', { type: 'message', message: 'Late answer' }, opts)
+      ? session.sendAgentMessageCommitted('codex', { type: 'message', message: 'Late answer' }, opts)
       : session.sendUserTextMessageCommitted('Late provider prompt', opts);
     await expect(publication).rejects.toBeInstanceOf(SessionMutationJournalAdmissionBlockedError);
   });

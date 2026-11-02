@@ -154,7 +154,7 @@ Example `_happier` fields (non-exhaustive):
 
 - `v`: `2`
 - `protocol`: `acp | codex | claude`
-- `provider`: provider id string (e.g. `gemini`, `codex`, `opencode`, `claude`, `auggie`)
+- `provider`: provider id string (e.g. `codex`, `claude`)
 - `rawToolName`: provider tool name
 - `canonicalToolName`: canonical renderer key
 
@@ -350,8 +350,8 @@ In Happier, **tools** and **tasks** are related but not identical concepts:
 Current state:
 
 - Many “task-like” things are represented as **tool-ish structured events** (e.g. `EnterPlanMode`, `AskUserQuestion`).
-- Generic subagent launches, including OpenCode V2’s native `subagent` spelling, normalize to `SubAgent`; `Task` and `Agent` are legacy aliases. ACP result-time child replay import uses this same tool family when a launch result identifies a child session, so transport-resolved `SubAgent` calls retain their child transcript. Disposing the read-only replay attachment releases its transport while preserving the provider child session. The current development UI uses an explicit `input.sidechainId` or `result.sidechainId` as the exact child transcript identity, independently of the per-turn tool call id. Repeated launches sharing a child transcript identity use the newest occurrence for that roster row; per-turn transcript identities retain their separate history. Explicit interrupted, aborted, or cancelled results render as cancelled.
-- ACP turn-scoped permission requests belong to the exact provider session and prompt that admitted them. The backend withdraws requests without current ownership with the protocol `cancelled` outcome and a default-on bounded warning before changing tool state or invoking policy. It rechecks the captured prompt after asynchronous decisions, so old refusals or approvals cannot affect a successor or its reused tool id. Grok declares session-scoped permission requests because its native children share the root permission actor; those requests reach the existing session permission handler between turns and their answers settle the requesting native tool. They never seed, cache, count, terminalize or cancel foreground tools. A missing handler retains the active query's existing default, while an idle attachment cannot authorize a request. Replay attachments borrow no interactive handler, and disposal skips native session cancel/close while still closing their transport and process.
+- Generic subagent launches normalize to `SubAgent`; `Task` and `Agent` are legacy aliases. ACP result-time child replay import uses this same tool family when a launch result identifies a child session, so transport-resolved `SubAgent` calls retain their child transcript. Disposing the read-only replay attachment releases its transport while preserving the provider child session. The current development UI uses an explicit `input.sidechainId` or `result.sidechainId` as the exact child transcript identity, independently of the per-turn tool call id. Repeated launches sharing a child transcript identity use the newest occurrence for that roster row; per-turn transcript identities retain their separate history. Explicit interrupted, aborted, or cancelled results render as cancelled.
+- ACP turn-scoped permission requests belong to the exact provider session and prompt that admitted them. The backend withdraws requests without current ownership with the protocol `cancelled` outcome and a default-on bounded warning before changing tool state or invoking policy. It rechecks the captured prompt after asynchronous decisions, so old refusals or approvals cannot affect a successor or its reused tool id. Replay attachments borrow no interactive handler, and disposal skips native session cancel/close while still closing their transport and process.
 
 This keeps the pipeline coherent (everything renders through one tool registry) while leaving room to introduce a future, universal Task model if needed.
 

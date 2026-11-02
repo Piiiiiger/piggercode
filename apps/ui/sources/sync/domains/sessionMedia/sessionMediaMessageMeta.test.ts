@@ -129,7 +129,7 @@ describe('parseSessionMediaMessageMeta', () => {
             code: 'provider_file_unavailable',
             origin: {
                 source: 'provider-generated',
-                agentId: 'cursor',
+                agentId: 'codex',
                 toolCallIdHash: 'c'.repeat(64),
             },
         } as const;

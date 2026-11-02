@@ -194,32 +194,6 @@ describe('useInSessionAgentPickerControls arm draft', () => {
         ));
     });
 
-    it('restores configured B only while its exact configured source remains A', async () => {
-        const configured = (id: string) => entry('customAcp', {
-            target: { kind: 'configuredAcpBackend', backendId: id }, targetKey: `acpBackend:${id}`,
-            family: 'configuredAcpBackend', builtInAgentId: null, title: id,
-        });
-        const props = {
-            currentAgentId: 'customAcp', entries: [configured('a'), configured('b'), configured('c')],
-            source: { ...supportedSource, currentBackendTargetKey: 'acpBackend:a' },
-        };
-        const first = await renderControls(props);
-        await armTarget(first, 'acpBackend:b');
-        const intent = first.getCurrent().armedContinuation;
-        expect(intent?.selection.backendTarget).toEqual({ kind: 'configuredAcpBackend', backendId: 'b' });
-        await first.unmount();
-        const restored = await renderControls(props);
-        await act(async () => restored.getCurrent().onAgentPickerIntent());
-        await act(async () => { await Promise.resolve(); });
-        expect(restored.getCurrent().armedContinuation).toEqual(intent);
-        await restored.unmount();
-        const stale = await renderControls({ ...props, source: { ...props.source, currentBackendTargetKey: 'acpBackend:c' } });
-        await act(async () => stale.getCurrent().onAgentPickerIntent());
-        await act(async () => { await Promise.resolve(); });
-        expect(stale.getCurrent().armedContinuation).toBeNull();
-        expect(readPersistedArm()).toBeUndefined();
-    });
-
     it('does not re-render the composer owner for draft text keystrokes', async () => {
         const hook = await renderControls();
         await armTarget(hook, 'agent:codex');
@@ -329,7 +303,7 @@ describe('useInSessionAgentPickerControls arm draft', () => {
     });
 
     it('mints a fresh identity when a distinct target is armed after a submission', async () => {
-        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('gemini')] });
+        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('otherAgent')] });
         await armTarget(hook, 'agent:codex');
         const submittedLocalId = hook.getCurrent().armedContinuationLocalId;
         expect(submittedLocalId).toEqual(expect.any(String));
@@ -349,9 +323,9 @@ describe('useInSessionAgentPickerControls arm draft', () => {
             })).toBe(true);
         });
 
-        await armTarget(hook, 'agent:gemini');
+        await armTarget(hook, 'agent:otherAgent');
 
-        expect(hook.getCurrent().armedContinuation).toEqual(armedIntentFor('gemini'));
+        expect(hook.getCurrent().armedContinuation).toEqual(armedIntentFor('otherAgent'));
         expect(hook.getCurrent().armedContinuationLocalId).toEqual(expect.any(String));
         expect(hook.getCurrent().armedContinuationLocalId).not.toBe(submittedLocalId);
     });
@@ -417,7 +391,7 @@ describe('useInSessionAgentPickerControls arm draft', () => {
             })
         ));
 
-        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('gemini')] });
+        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('otherAgent')] });
 
         expect(hook.getCurrent().armedContinuation).toBeNull();
         expect(readPersistedArm()).toBeUndefined();
@@ -427,15 +401,15 @@ describe('useInSessionAgentPickerControls arm draft', () => {
         // The Session was switched to Codex elsewhere; an arm that names Claude as
         // its source is a promise about a departure that already happened.
         existingSessionDraftSemanticValues.write(SCOPE, 'session-1', 'routing.agentContinuation', {
-            backendTargetKey: 'agent:gemini',
-            intent: armedIntentFor('gemini'),
+            backendTargetKey: 'agent:otherAgent',
+            intent: armedIntentFor('otherAgent'),
             modelLabel: null,
         });
 
         const hook = await renderControls({
             currentAgentId: 'codex',
             source: { ...supportedSource, currentBackendTargetKey: 'agent:codex' },
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
         });
 
         expect(hook.getCurrent().armedContinuation).toBeNull();
@@ -469,7 +443,7 @@ describe('useInSessionAgentPickerControls arm draft', () => {
         const hook = await renderControls({
             currentAgentId: 'codex',
             source: { ...supportedSource, currentBackendTargetKey: 'agent:codex' },
-            entries: [entry('claude'), entry('codex'), entry('gemini')],
+            entries: [entry('claude'), entry('codex'), entry('otherAgent')],
         });
 
         expect(hook.getCurrent().armedContinuation).toBeNull();
@@ -531,7 +505,7 @@ describe('useInSessionAgentPickerControls arm draft', () => {
     });
 
     it('leaves a newer arm alone when custody consumes the submission it replaced', async () => {
-        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('gemini')] });
+        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('otherAgent')] });
         await armTarget(hook, 'agent:codex');
         const submittedLocalId = hook.getCurrent().armedContinuationLocalId as string;
         const submission = {
@@ -550,14 +524,14 @@ describe('useInSessionAgentPickerControls arm draft', () => {
         await act(async () => {
             expect(hook.getCurrent().recordArmedContinuationSubmission(submission)).toBe(true);
         });
-        await armTarget(hook, 'agent:gemini');
+        await armTarget(hook, 'agent:otherAgent');
 
         await act(async () => {
             expect(hook.getCurrent().clearArmedContinuationSubmissionIfCurrent(submission)).toBe(false);
         });
 
-        expect(hook.getCurrent().armedContinuation).toEqual(armedIntentFor('gemini'));
-        expect(readPersistedArm()?.backendTargetKey).toBe('agent:gemini');
+        expect(hook.getCurrent().armedContinuation).toEqual(armedIntentFor('otherAgent'));
+        expect(readPersistedArm()?.backendTargetKey).toBe('agent:otherAgent');
     });
 
     it('leaves a persisted arm alone while the feature decision is unresolved', async () => {
@@ -658,7 +632,7 @@ describe('useInSessionAgentPickerControls arm draft', () => {
     });
 
     it('drops the persisted arm with the live one when the rail that could cancel it goes', async () => {
-        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('gemini')] });
+        const hook = await renderControls({ entries: [entry('claude'), entry('codex'), entry('otherAgent')] });
         await armTarget(hook, 'agent:codex');
         expect(readPersistedArm()).toBeDefined();
 

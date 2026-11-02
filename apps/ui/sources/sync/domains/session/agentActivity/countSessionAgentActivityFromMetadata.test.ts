@@ -89,7 +89,7 @@ function unifiedMetadata(
 describe('countSessionAgentActivityFromMetadata', () => {
     /**
      * §5.2's degrade path, and the common one: the unified headline is published by the Claude
-     * activity source only, so a Codex, Gemini or OpenCode session has no headline at all. Zero
+     * activity source only, so a Codex session has no headline at all. Zero
      * renders nothing, which is right — a row must not invent work it cannot see.
      */
     it('counts nothing for a session whose CLI publishes no headline', () => {

@@ -5,7 +5,7 @@ import { buildUsageReportFromAcpTokenCount } from './acpTokenCountUsageReport';
 describe('acp token_count -> usage-report', () => {
   it('uses provided key when present and sets cost.total=0', () => {
     const report = buildUsageReportFromAcpTokenCount({
-      provider: 'qwen',
+      provider: 'codex',
       sessionId: 'sess1',
       body: {
         type: 'token_count',
@@ -25,7 +25,7 @@ describe('acp token_count -> usage-report', () => {
 
   it('includes cost.total when provided on the token_count body', () => {
     const report = buildUsageReportFromAcpTokenCount({
-      provider: 'pi' as any,
+      provider: 'codex' as any,
       sessionId: 'sess4',
       body: {
         type: 'token_count',
@@ -45,13 +45,13 @@ describe('acp token_count -> usage-report', () => {
 
   it('falls back to a per-provider session key when none is present', () => {
     const report = buildUsageReportFromAcpTokenCount({
-      provider: 'gemini',
+      provider: 'codex',
       sessionId: 'sess2',
       body: { type: 'token_count', tokens: { total: 7, input: 4, output: 3 } },
     });
 
     expect(report).toEqual({
-      key: 'gemini-session',
+      key: 'codex-session',
       sessionId: 'sess2',
       tokens: { total: 7, input: 4, output: 3 },
       cost: { total: 0 },
@@ -75,7 +75,7 @@ describe('acp token_count -> usage-report', () => {
 
   it('does not allow __proto__ keys to mutate cost map prototypes', () => {
     const report = buildUsageReportFromAcpTokenCount({
-      provider: 'pi' as any,
+      provider: 'codex' as any,
       sessionId: 'sess5',
       body: {
         type: 'token_count',

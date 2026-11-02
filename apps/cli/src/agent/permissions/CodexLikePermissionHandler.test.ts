@@ -820,7 +820,7 @@ describe('CodexLikePermissionHandler', () => {
         '--tool',
         'change_title',
         '--args-json',
-        '{"title":"Kimi Fresh QA Title"}',
+        '{"title":"Codex Fresh QA Title"}',
         '--json',
       ]),
     });

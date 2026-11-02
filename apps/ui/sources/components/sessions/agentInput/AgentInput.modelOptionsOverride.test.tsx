@@ -129,14 +129,14 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => ({
     ...await importOriginal<typeof import('@/agents/catalog/catalog')>(),
     getAgentIconSource: () => null,
     getAgentIconSvgXml: (agentId: string) => (
-        agentId === 'codex' || agentId === 'pi' || agentId === 'opencode'
+        agentId === 'codex'
             ? '<svg viewBox="0 0 16 16"><path fill="#111111" d="M8 0 16 8 8 16 0 8Z" /></svg>'
             : null
     ),
     getAgentIconTintColor: () => undefined,
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
 }));
@@ -673,7 +673,7 @@ describe('AgentInput (modelOptionsOverride)', () => {
             onSend: () => {},
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
-            agentType: 'opencode',
+            agentType: 'codex',
             permissionMode: 'default',
             onPermissionModeChange: () => {},
             modelMode: 'default',
@@ -696,83 +696,6 @@ describe('AgentInput (modelOptionsOverride)', () => {
         expect(screen.findByTestId('agent-input-selection-list-popover')).toBeNull();
     });
 
-    it.each([null, 'default'] as const)('distinguishes unset permissions from native Default in preflight (%s)', async (selectedModeId) => {
-        const onAcpSessionModeChange = vi.fn();
-        const screen = await renderScreen(React.createElement(AgentInput, {
-            value: '',
-            placeholder: 'placeholder',
-            onChangeText: () => {},
-            onSend: () => {},
-            autocompleteKinds: [],
-            autocompleteSuggestions: async () => [],
-            agentType: 'codebuddy',
-            onAcpSessionModeChange,
-            acpSessionModeOptionsOverride: [
-                { id: 'default', name: 'Native Default' },
-                { id: 'plan', name: 'Plan' },
-                { id: 'auto', name: 'Auto' },
-                { id: 'dontAsk', name: "Don't ask" },
-            ],
-            acpSessionModeSelectedIdOverride: selectedModeId,
-        }));
-
-        await screen.pressByTestIdAsync('agent-input-session-mode-chip');
-        const clearChoice = screen.findByTestId('selection-list:session-mode-root:option-wrapper');
-        const nativeDefaultChoice = screen.findByTestId('selection-list:session-mode-root:option-wrapper:default');
-        expect(clearChoice?.props['aria-selected']).toBe(selectedModeId === null);
-        expect(nativeDefaultChoice?.props['aria-selected']).toBe(selectedModeId === 'default');
-        await screen.pressByTestIdAsync('selection-list:session-mode-root:option');
-        expect(onAcpSessionModeChange).toHaveBeenCalledWith('');
-    });
-
-    it.each([null, 'default'] as const)('checks the active-session override choice independently of its reported mode (%s)', async (modeId) => {
-        const screen = await renderScreen(React.createElement(AgentInput, {
-            value: '', placeholder: 'placeholder', onChangeText: () => {}, onSend: () => {},
-            autocompleteKinds: [], autocompleteSuggestions: async () => [],
-            agentType: 'codebuddy', onAcpSessionModeChange: vi.fn(),
-            metadata: {
-                path: '/tmp', host: 'test-host', flavor: 'codebuddy',
-                sessionModesV1: {
-                    v: 1, provider: 'codebuddy', updatedAt: 1, currentModeId: 'auto',
-                    availableModes: [
-                        { id: 'default', name: 'Native Default' }, { id: 'plan', name: 'Plan' },
-                        { id: 'auto', name: 'Auto' }, { id: 'dontAsk', name: "Don't ask" },
-                    ],
-                },
-                sessionModeOverrideV1: { v: 1, updatedAt: 2, modeId },
-            },
-        }));
-        expect(screen.findByTestId('agent-input-session-mode-chip')?.props.accessibilityLabel)
-            .toContain(modeId === null ? 'Auto' : 'Native Default');
-        await screen.pressByTestIdAsync('agent-input-session-mode-chip');
-        expect(screen.findByTestId('selection-list:session-mode-root:option-wrapper')?.props['aria-selected'])
-            .toBe(modeId === null);
-        expect(screen.findByTestId('selection-list:session-mode-root:option-wrapper:default')?.props['aria-selected'])
-            .toBe(modeId === 'default');
-    });
-
-    it('cycles a small mapped native-mode list back to the permission setting', async () => {
-        const onAcpSessionModeChange = vi.fn();
-        const screen = await renderScreen(React.createElement(AgentInput, {
-            value: '',
-            placeholder: 'placeholder',
-            onChangeText: () => {},
-            onSend: () => {},
-            autocompleteKinds: [],
-            autocompleteSuggestions: async () => [],
-            agentType: 'codebuddy',
-            onAcpSessionModeChange,
-            acpSessionModeOptionsOverride: [
-                { id: 'default', name: 'Native Default' },
-                { id: 'plan', name: 'Plan' },
-            ],
-            acpSessionModeSelectedIdOverride: 'plan',
-        }));
-
-        await screen.pressByTestIdAsync('agent-input-session-mode-chip');
-        expect(onAcpSessionModeChange).toHaveBeenCalledWith('');
-    });
-
     it('calls onAcpSessionModeChange when selecting a preflight ACP mode', async () => {
         const onAcpSessionModeChange = vi.fn();
 
@@ -783,7 +706,7 @@ describe('AgentInput (modelOptionsOverride)', () => {
             onSend: () => {},
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
-            agentType: 'opencode',
+            agentType: 'codex',
             permissionMode: 'default',
             onPermissionModeChange: () => {},
             modelMode: 'default',
@@ -816,7 +739,7 @@ describe('AgentInput (modelOptionsOverride)', () => {
                     onSend: () => {},
                     autocompleteKinds: [],
                     autocompleteSuggestions: async () => [],
-                    agentType: 'opencode',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     onPermissionModeChange: () => {},
                     modelMode: 'default',
@@ -851,7 +774,7 @@ describe('AgentInput (modelOptionsOverride)', () => {
                     onSend: () => {},
                     autocompleteKinds: [],
                     autocompleteSuggestions: async () => [],
-                    agentType: 'opencode',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     onPermissionModeChange: () => {},
                     modelMode: 'default',
@@ -882,7 +805,7 @@ describe('AgentInput (modelOptionsOverride)', () => {
                     onSend: () => {},
                     autocompleteKinds: [],
                     autocompleteSuggestions: async () => [],
-                    agentType: 'opencode',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     onPermissionModeChange: () => {},
                     modelMode: 'default',
@@ -1443,62 +1366,6 @@ describe('AgentInput (modelOptionsOverride)', () => {
         expect(logo?.props.height).toBe(16);
     });
 
-    it('applies the shared provider picker icon scale to the engine chip logo', async () => {
-
-        const screen = await renderScreen(React.createElement(AgentInput, {
-                    value: 'hello',
-                    placeholder: 'placeholder',
-                    onChangeText: () => {},
-                    onSend: () => {},
-                    autocompleteKinds: [],
-                    autocompleteSuggestions: async () => [],
-                    agentType: 'pi',
-                    permissionMode: 'default',
-                    onPermissionModeChange: () => {},
-                    modelMode: 'pi-model',
-                    onModelModeChange: () => {},
-                    modelOptionsOverride: [
-                        { value: 'pi-model', label: 'Pi Model', description: '' },
-                    ],
-                } as any));
-
-        expect(findTestInstanceByTypeContainingText(screen.findByTestId('agent-input-agent-chip')!, 'Text', 'Pi Model')).toBeTruthy();
-
-        const logo = screen.findByTestId('agent-input-agent-chip-logo');
-        expect(logo?.type).toBe('SvgXml');
-        expect(logo?.props.width).toBe(16);
-        expect(logo?.props.height).toBe(16);
-        expect(logo?.props.style.transform).toContainEqual({ scale: 0.9 });
-    });
-
-    it('reuses non-Pi picker-row scaling for the engine chip logo', async () => {
-
-        const screen = await renderScreen(React.createElement(AgentInput, {
-                    value: 'hello',
-                    placeholder: 'placeholder',
-                    onChangeText: () => {},
-                    onSend: () => {},
-                    autocompleteKinds: [],
-                    autocompleteSuggestions: async () => [],
-                    agentType: 'opencode',
-                    permissionMode: 'default',
-                    onPermissionModeChange: () => {},
-                    modelMode: 'open-model',
-                    onModelModeChange: () => {},
-                    modelOptionsOverride: [
-                        { value: 'open-model', label: 'Open Model', description: '' },
-                    ],
-                } as any));
-
-        expect(findTestInstanceByTypeContainingText(screen.findByTestId('agent-input-agent-chip')!, 'Text', 'Open Model')).toBeTruthy();
-
-        const logo = screen.findByTestId('agent-input-agent-chip-logo');
-        expect(logo?.type).toBe('SvgXml');
-        expect(logo?.props.width).toBe(16);
-        expect(logo?.props.height).toBe(16);
-        expect(logo?.props.style.transform).toContainEqual({ scale: 0.9 });
-    });
-
     it('caps the engine popover at 570px when the rail is hidden in stacked layout', async () => {
         mockWindowWidth = 520;
         lastModelPickerOverlayProps = null;
@@ -1676,14 +1543,14 @@ describe('AgentInput (modelOptionsOverride)', () => {
                     onSend: () => {},
                     autocompleteKinds: [],
                     autocompleteSuggestions: async () => [],
-                    agentType: 'opencode',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     onPermissionModeChange: () => {},
                     modelMode: 'default',
                     onModelModeChange: () => {},
                     modelOptionsOverride: [
                         { value: 'default', label: 'Use CLI settings', description: '' },
-                        { value: 'open-code', label: 'OpenCode', description: 'Fast' },
+                        { value: 'fast-model', label: 'Fast model', description: 'Fast' },
                     ],
                     acpSessionModeOptionsOverride: [
                         { id: 'default', name: 'Default' },

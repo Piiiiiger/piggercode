@@ -8,8 +8,8 @@ describe('newSessionModelModePolicy', () => {
         const out = resolveInitialNewSessionModelMode({
             draftModelMode: 'custom-model-id',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: true,
             },
         });
@@ -28,27 +28,27 @@ describe('newSessionModelModePolicy', () => {
         const out = resolveInitialNewSessionModelMode({
             draftModelMode: '   ',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: true,
             },
         });
 
-        expect(out).toBe('gemini-2.5-pro');
+        expect(out).toBe('gpt-5.5');
     });
 
     it('coerces invalid modelMode to defaultMode when freeform is disabled', () => {
         const out = coerceNewSessionModelMode({
             modelMode: 'custom-model-id',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: false,
             },
             preflight: null,
         });
 
-        expect(out).toBe('gemini-2.5-pro');
+        expect(out).toBe('gpt-5.5');
     });
 
     it('keeps a dynamic backend model selection while the dynamic model probe has not returned yet', () => {
@@ -106,8 +106,8 @@ describe('newSessionModelModePolicy', () => {
         const out = coerceNewSessionModelMode({
             modelMode: 'custom-model-id',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: true,
             },
             preflight: null,
@@ -120,8 +120,8 @@ describe('newSessionModelModePolicy', () => {
         const out = coerceNewSessionModelMode({
             modelMode: 'default',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: false,
             },
             preflight: null,
@@ -134,14 +134,14 @@ describe('newSessionModelModePolicy', () => {
         const out = coerceNewSessionModelMode({
             modelMode: 'custom-model-id',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: true,
             },
             preflight: { availableModels: [{ id: 'm1' }, { id: 'm2' }], supportsFreeform: false },
         });
 
-        expect(out).toBe('gemini-2.5-pro');
+        expect(out).toBe('gpt-5.5');
     });
 
     it('ignores preflight results from a different backend target', () => {
@@ -168,8 +168,8 @@ describe('newSessionModelModePolicy', () => {
         const out = coerceNewSessionModelMode({
             modelMode: 'custom-model-id',
             modelConfig: {
-                defaultMode: 'gemini-2.5-pro',
-                allowedModes: ['gemini-2.5-pro'],
+                defaultMode: 'gpt-5.5',
+                allowedModes: ['gpt-5.5'],
                 supportsFreeform: true,
             },
             preflight: { availableModels: [{ id: 'm1' }, { id: 'm2' }], supportsFreeform: true },

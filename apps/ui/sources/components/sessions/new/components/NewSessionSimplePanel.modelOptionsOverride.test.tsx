@@ -609,7 +609,7 @@ describe('NewSessionSimplePanel (modelOptionsOverride)', () => {
                         emptyAutocompleteKinds: [],
                         emptyAutocompleteSuggestions: async () => [],
                         sessionPromptInputMaxHeight: 200,
-                        agentType: 'opencode',
+                        agentType: 'codex',
                         handleAgentClick: () => {},
                         permissionMode: 'default',
                         handlePermissionModeChange: () => {},

@@ -44,16 +44,9 @@ function humanizeAgentType(value: string): string {
 function resolveManagedAgentId(input: Record<string, unknown>): AgentId | null {
     const target = asRecord(input.backendTarget);
     if (target?.kind === 'builtInAgent' && isAgentId(target.agentId)) return target.agentId;
-    if (target?.kind === 'configuredAcpBackend') return 'customAcp';
 
     const legacyBackendId = readNonBlankString(input.backendId);
     return isAgentId(legacyBackendId) ? legacyBackendId : null;
-}
-
-function resolveConfiguredBackendId(input: Record<string, unknown>): string | null {
-    const target = asRecord(input.backendTarget);
-    if (target?.kind === 'configuredAcpBackend') return readNonBlankString(target.backendId);
-    return null;
 }
 
 function resolveModelLabel(params: {
@@ -112,7 +105,7 @@ export function resolveSubagentToolPresentation(params: {
     const modelLabel = resolveModelLabel({ modelId, agentId, metadata: params.metadata });
 
     const targetLabel = isManagedRun
-        ? (resolveConfiguredBackendId(input) ?? (agentId ? resolveBuiltInAgentTitle(agentId) : null))
+        ? (agentId ? resolveBuiltInAgentTitle(agentId) : null)
         : (agentId ? resolveBuiltInAgentTitle(agentId) : null);
     const identity = modelLabel ?? targetLabel;
     const agentType = isManagedRun ? resolveManagedIntent(input) : resolveNativeAgentType(input);

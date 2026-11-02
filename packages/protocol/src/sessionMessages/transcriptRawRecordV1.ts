@@ -76,7 +76,7 @@ const RawUnknownContentSchema = z
   })
   .passthrough();
 
-// Hyphenated tool-call formats seen in some providers (Codex/Gemini variants).
+// Hyphenated tool-call formats seen in some providers (Codex variants).
 const RawHyphenatedToolCallSchema = z
   .object({
     type: z.literal('tool-call'),

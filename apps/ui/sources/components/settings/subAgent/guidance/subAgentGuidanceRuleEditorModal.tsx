@@ -69,7 +69,6 @@ export function SubAgentGuidanceRuleEditorModal(props: Readonly<{
     const canSave = description.trim().length > 0;
     const machines = useAllMachines();
     const recentMachinePaths = useSetting('recentMachinePaths') as any[] | undefined;
-    const acpCatalogSettingsV1 = useSetting('acpCatalogSettingsV1');
     const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey');
     const preflightMachineId = React.useMemo(() => {
         return resolvePreferredMachineId({
@@ -81,10 +80,9 @@ export function SubAgentGuidanceRuleEditorModal(props: Readonly<{
     const backendEntries = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1: acpCatalogSettingsV1 as any,
             backendEnabledByTargetKey: backendEnabledByTargetKey as Record<string, boolean> | undefined,
         });
-    }, [acpCatalogSettingsV1, backendEnabledByTargetKey, enabledAgentIds]);
+    }, [backendEnabledByTargetKey, enabledAgentIds]);
 
     const selectedBackendEntry = React.useMemo(() => {
         if (!backendTarget) return null;

@@ -40,7 +40,7 @@ describe('DirectBrowseCandidateActions', () => {
             <DirectBrowseCandidateActions
                 candidateId="remote-1"
                 candidateTitle="Provider session"
-                providerLabel="Kimi"
+                providerLabel="Codex"
                 deleting={false}
                 onDelete={onDelete}
             />,
@@ -67,7 +67,7 @@ describe('DirectBrowseCandidateActions', () => {
 
         expect(confirmSpy).toHaveBeenCalledWith(
             expect.stringContaining('deleteCandidateConfirmTitle'),
-            expect.stringMatching(/Provider session.*Kimi/),
+            expect.stringMatching(/Provider session.*Codex/),
             expect.objectContaining({ destructive: true }),
         );
         expect(onDelete).toHaveBeenCalledTimes(1);
@@ -81,7 +81,7 @@ describe('DirectBrowseCandidateActions', () => {
             <DirectBrowseCandidateActions
                 candidateId="remote-1"
                 candidateTitle="Provider session"
-                providerLabel="Kimi"
+                providerLabel="Codex"
                 deleting={false}
                 onDelete={onDelete}
             />,

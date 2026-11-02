@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { geminiHandlerSpy, passthroughSpy } = vi.hoisted(() => ({
-  geminiHandlerSpy: vi.fn(async () => {}),
+const { codexHandlerSpy, passthroughSpy } = vi.hoisted(() => ({
+  codexHandlerSpy: vi.fn(async () => {}),
   passthroughSpy: vi.fn(() => false),
 }));
 
 vi.mock('@/cli/commandRegistry', () => ({
   commandRegistry: {
-    gemini: geminiHandlerSpy,
+    codex: codexHandlerSpy,
   },
 }));
 
@@ -20,7 +20,7 @@ vi.mock('@/backends/catalog', async (importOriginal) => {
   return {
     ...actual,
     requireCatalogEntry: vi.fn(() => ({
-      getCliCommandHandler: async () => geminiHandlerSpy,
+      getCliCommandHandler: async () => codexHandlerSpy,
     })),
   };
 });
@@ -29,7 +29,7 @@ import { dispatchCli } from './dispatch';
 
 describe('dispatchCli provider info passthrough', () => {
   beforeEach(() => {
-    geminiHandlerSpy.mockClear();
+    codexHandlerSpy.mockClear();
     passthroughSpy.mockReset();
     passthroughSpy.mockReturnValue(false);
   });
@@ -38,15 +38,15 @@ describe('dispatchCli provider info passthrough', () => {
     passthroughSpy.mockReturnValue(true);
 
     await dispatchCli({
-      args: ['gemini', '--help'],
-      rawArgv: ['happier', 'gemini', '--help'],
+      args: ['codex', '--help'],
+      rawArgv: ['happier', 'codex', '--help'],
       terminalRuntime: null,
     });
 
     expect(passthroughSpy).not.toHaveBeenCalled();
-    expect(geminiHandlerSpy).toHaveBeenCalledWith({
-      args: ['gemini', '--help'],
-      rawArgv: ['happier', 'gemini', '--help'],
+    expect(codexHandlerSpy).toHaveBeenCalledWith({
+      args: ['codex', '--help'],
+      rawArgv: ['happier', 'codex', '--help'],
       terminalRuntime: null,
     });
   });

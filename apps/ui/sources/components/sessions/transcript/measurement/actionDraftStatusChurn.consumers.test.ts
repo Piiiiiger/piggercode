@@ -257,10 +257,6 @@ describe('action-draft paint-blind key — the converse defect', () => {
             .not.toBe(keyFor(reviewDraft({ base: { kind: 'branch', baseBranch: 'main' } })));
     });
 
-    it('re-keys when an engine selection reveals the CodeRabbit config field', () => {
-        expect(keyFor(reviewDraft({ engineIds: ['codex', 'coderabbit'] }))).not.toBe(keyFor(reviewDraft()));
-    });
-
     it('re-keys when a MULTILINE prompt gains a hard line break at the SAME length', () => {
         // `instructions` is `widget: 'textarea'` -> `multiline`, the one box here that grows with its
         // content. Length AND newlines, the rule the pending row has always used.

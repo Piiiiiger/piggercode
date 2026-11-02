@@ -45,11 +45,7 @@ export function doesVoiceAgentRunMetadataMatchBackendTarget(
     return buildBackendTargetKey(metadata.backendTarget) === buildBackendTargetKey(backendTarget);
   }
 
-  if (backendTarget.kind === 'builtInAgent') {
-    return metadata.backendId === backendTarget.agentId;
-  }
-
-  return metadata.backendId === backendTarget.backendId;
+  return metadata.backendId === backendTarget.agentId;
 }
 
 function readVoiceAgentRunMetadata(sessionId: string | null): VoiceAgentRunMetadataV1 | null {

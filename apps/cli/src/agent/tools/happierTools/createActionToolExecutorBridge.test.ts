@@ -667,13 +667,13 @@ describe('createActionToolExecutorBridge', () => {
       sessionId: null,
       limit: null,
       query: null,
-      draftInput: { backendTargetKeys: ['agent:pi'] },
+      draftInput: { backendTargetKeys: ['agent:codex'] },
     }, 'session_current');
 
     expect(calls).toEqual([{ actionId: 'action.options.resolve', input: {
       actionId: 'subagents.delegate.start',
       fieldPath: 'modelId',
-      draftInput: { backendTargetKeys: ['agent:pi'] },
+      draftInput: { backendTargetKeys: ['agent:codex'] },
     } }]);
   });
 });

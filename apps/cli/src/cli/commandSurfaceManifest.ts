@@ -47,18 +47,6 @@ const COMMAND_SURFACE_MANIFEST: readonly CliCommandSurfaceEntry[] = [
     allowTmux: true,
   },
   {
-    command: 'opencode',
-    rootHelpLabel: 'happier opencode',
-    rootHelpDescription: 'Start OpenCode mode (server-native by default)',
-    allowTmux: true,
-  },
-  {
-    command: 'gemini',
-    rootHelpLabel: 'happier gemini',
-    rootHelpDescription: 'Start Gemini mode (ACP)',
-    allowTmux: true,
-  },
-  {
     command: 'connect',
     rootHelpLabel: 'happier connect',
     rootHelpDescription: 'Connect AI vendor API keys',

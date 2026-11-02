@@ -162,6 +162,7 @@ describe('ConnectedServiceOauthPasteView', () => {
     expect(list.props.keyboardShouldPersistTaps).toBe('handled');
   });
 
+
   it('rejects proxy bundles that claim a different serviceId', async () => {
     resetMocks();
     const { ConnectedServiceOauthPasteView } = await import('./ConnectedServiceOauthPasteView');
@@ -169,7 +170,7 @@ describe('ConnectedServiceOauthPasteView', () => {
     exchangeSpy.mockImplementationOnce(async (_credentials: any, params: any) => {
       const recipientPublicKey = decodeBase64(params.publicKey, 'base64url');
       const plaintextJson = JSON.stringify({
-        serviceId: 'gemini',
+        serviceId: 'anthropic',
         accessToken: 'access-1',
         refreshToken: 'refresh-1',
         idToken: 'id-1',

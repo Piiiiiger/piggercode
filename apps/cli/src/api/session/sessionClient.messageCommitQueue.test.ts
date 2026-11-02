@@ -185,38 +185,38 @@ describe('ApiSessionClient message commit queue', () => {
 
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
 
-    client.sendAgentMessage('opencode' as any, { type: 'task_started', id: 'turn-1' } as any);
-    client.sendAgentMessage('opencode' as any, {
+    client.sendAgentMessage('codex' as any, { type: 'task_started', id: 'turn-1' } as any);
+    client.sendAgentMessage('codex' as any, {
       type: 'turn_failed',
       id: 'turn-1',
       issue: {
         v: 1,
         scope: 'primary_session',
         status: 'failed',
-        code: 'opencode_idle_without_terminal_assistant',
+        code: 'codex_idle_without_terminal_assistant',
         source: 'stream_error',
         occurredAt: 123,
-        provider: 'opencode',
+        provider: 'codex',
         providerTurnId: 'turn-1',
-        sanitizedPreview: 'OpenCode became idle without producing a completed assistant message.',
+        sanitizedPreview: 'Codex became idle without producing a completed assistant message.',
       },
     } as any);
 
     await expect.poll(() => runtimeStateUpdates).toEqual([
       expect.objectContaining({
-        provider: 'opencode',
+        provider: 'codex',
         providerTurnId: 'turn-1',
         action: 'begin',
         turnId: expect.any(String),
       }),
       expect.objectContaining({
-        provider: 'opencode',
+        provider: 'codex',
         providerTurnId: 'turn-1',
         action: 'fail',
         turnId: expect.any(String),
         issue: expect.objectContaining({
           status: 'failed',
-          code: 'opencode_idle_without_terminal_assistant',
+          code: 'codex_idle_without_terminal_assistant',
           providerTurnId: 'turn-1',
         }),
       }),
@@ -320,7 +320,7 @@ describe('ApiSessionClient message commit queue', () => {
       const { ApiSessionClient } = await import('./sessionClient');
       const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
 
-      client.sendAgentMessage('opencode' as any, { type: 'token_count', tokens: { total: 1 } } as any, { localId: 'usage-redaction-1' });
+      client.sendAgentMessage('codex' as any, { type: 'token_count', tokens: { total: 1 } } as any, { localId: 'usage-redaction-1' });
 
       await expect.poll(() => debugSpy.mock.calls.some(([message]) =>
         message === '[SOCKET] Failed to send token_count usage report (non-fatal)'
@@ -362,7 +362,7 @@ describe('ApiSessionClient message commit queue', () => {
     const { ApiSessionClient } = await import('./sessionClient');
 
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1' }));
-    client.sendAgentMessage('opencode' as any, { type: 'turn_failed', id: 'turn-1' } as any, { localId: 'queued-event-1' });
+    client.sendAgentMessage('codex' as any, { type: 'turn_failed', id: 'turn-1' } as any, { localId: 'queued-event-1' });
 
     await expect.poll(() => (client as any).queuedDisconnectedSessionMessages.get('queued-event-1')?.messageRole).toBe('event');
 

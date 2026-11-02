@@ -1180,7 +1180,7 @@ describe('ApiSessionClient connection handling', () => {
     it('normalizes outbound ACP tool-call names and inputs to V2 canonical keys', async () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
-        client.sendAgentMessage('opencode', {
+        client.sendAgentMessage('codex', {
             type: 'tool-call',
             callId: 'call-1',
             name: 'execute',
@@ -1193,7 +1193,7 @@ describe('ApiSessionClient connection handling', () => {
         const decrypted = getLastDecryptedOutboundMessage(mockSession);
 
         expect(decrypted.content.type).toBe('acp');
-        expect(decrypted.content.provider).toBe('opencode');
+        expect(decrypted.content.provider).toBe('codex');
         expect(decrypted.content.data).toMatchObject({
             type: 'tool-call',
             name: 'Bash',
@@ -1206,7 +1206,7 @@ describe('ApiSessionClient connection handling', () => {
         const client = createClient('fake-token', mockSession);
 
         for (let index = 0; index < 1_050; index += 1) {
-            client.sendAgentMessage('opencode', {
+            client.sendAgentMessage('codex', {
                 type: 'tool-call',
                 callId: `call-${index}`,
                 name: 'execute',
@@ -1221,10 +1221,10 @@ describe('ApiSessionClient connection handling', () => {
         const toolNames = (client as any).toolCallCanonicalNameByProviderAndId as Map<string, unknown>;
         expect(toolInputs.size).toBeLessThanOrEqual(1_000);
         expect(toolNames.size).toBeLessThanOrEqual(1_000);
-        expect(toolInputs.has('opencode:call-0')).toBe(false);
-        expect(toolNames.has('opencode:call-0')).toBe(false);
-        expect(toolInputs.has('opencode:call-1049')).toBe(true);
-        expect(toolNames.has('opencode:call-1049')).toBe(true);
+        expect(toolInputs.has('codex:call-0')).toBe(false);
+        expect(toolNames.has('codex:call-0')).toBe(false);
+        expect(toolInputs.has('codex:call-1049')).toBe(true);
+        expect(toolNames.has('codex:call-1049')).toBe(true);
     });
 
     it('does not emit metadata-updated after close() when a snapshot sync resolves late', async () => {
@@ -1347,7 +1347,7 @@ describe('ApiSessionClient connection handling', () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
 
-        client.sendAgentMessage('opencode', {
+        client.sendAgentMessage('codex', {
             type: 'permission-request',
             permissionId: 'call-1',
             toolName: 'read',
@@ -1359,7 +1359,7 @@ describe('ApiSessionClient connection handling', () => {
             },
         });
 
-        client.sendAgentMessage('opencode', {
+        client.sendAgentMessage('codex', {
             type: 'tool-call',
             callId: 'call-1',
             name: 'read',
@@ -1917,7 +1917,7 @@ describe('ApiSessionClient connection handling', () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
 
-        client.sendAgentMessage('gemini', {
+        client.sendAgentMessage('codex', {
             type: 'permission-request',
             permissionId: 'write_todos-1',
             toolName: 'write',
@@ -1936,11 +1936,11 @@ describe('ApiSessionClient connection handling', () => {
         });
     });
 
-    it('backfills missing permission-request input details from nested options.toolCall.content (Gemini ACP)', async () => {
+    it('backfills missing permission-request input details from nested options.toolCall.content (Codex ACP)', async () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
 
-        client.sendAgentMessage('gemini', {
+        client.sendAgentMessage('codex', {
             type: 'permission-request',
             permissionId: 'replace-1',
             toolName: 'edit',
@@ -1963,7 +1963,7 @@ describe('ApiSessionClient connection handling', () => {
         const decrypted = getLastDecryptedOutboundMessage(mockSession);
 
         expect(decrypted.content.type).toBe('acp');
-        expect(decrypted.content.provider).toBe('gemini');
+        expect(decrypted.content.provider).toBe('codex');
         expect(decrypted.content.data.type).toBe('permission-request');
         expect(decrypted.content.data.options).toMatchObject({
             options: {
@@ -1978,7 +1978,7 @@ describe('ApiSessionClient connection handling', () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
 
-        client.sendAgentMessage('opencode', {
+        client.sendAgentMessage('codex', {
             type: 'tool-call',
             callId: 'call-1',
             name: 'execute',
@@ -1986,7 +1986,7 @@ describe('ApiSessionClient connection handling', () => {
             id: 'msg-1',
         });
 
-        client.sendAgentMessage('opencode', {
+        client.sendAgentMessage('codex', {
             type: 'tool-result',
             callId: 'call-1',
             output: 'TRACE_OK\n',
@@ -2015,7 +2015,7 @@ describe('ApiSessionClient connection handling', () => {
         connectSessionSocket();
         const client = createClient('fake-token', mockSession);
 
-        client.sendAgentMessage('gemini', {
+        client.sendAgentMessage('codex', {
             type: 'tool-call',
             callId: 'write_todos-1',
             name: 'write',
@@ -2023,7 +2023,7 @@ describe('ApiSessionClient connection handling', () => {
             id: 'msg-1',
         });
 
-        client.sendAgentMessage('gemini', {
+        client.sendAgentMessage('codex', {
             type: 'tool-result',
             callId: 'write_todos-1',
             output: [],
@@ -2037,7 +2037,7 @@ describe('ApiSessionClient connection handling', () => {
         const decrypted = messages[1];
 
         expect(decrypted.content.type).toBe('acp');
-        expect(decrypted.content.provider).toBe('gemini');
+        expect(decrypted.content.provider).toBe('codex');
         expect(decrypted.content.data).toMatchObject({
             type: 'tool-result',
             callId: 'write_todos-1',

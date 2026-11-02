@@ -78,7 +78,7 @@ describe('disconnected terminal-host supervision', () => {
           pid, startedBy: 'daemon', happySessionId: sessionId,
           hostedTerminal: terminal,
           publishedTerminalControlServiceabilityAttachmentId: handle.attachmentId,
-          spawnOptions: { directory: homeDir, backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          spawnOptions: { directory: homeDir, backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             terminal: { mode: 'tmux' } },
         };
         await writeSessionMarker({ pid, happySessionId: sessionId });
@@ -126,7 +126,7 @@ describe('disconnected terminal-host supervision', () => {
           terminal: { mode: 'tmux', tmux: { target: `${handle.sessionName}:${handle.paneId}` } } });
         const candidate = { sessionId, pid: process.pid, happyHomeDir: homeDir, attachmentId: handle.attachmentId, handle,
           controlDescriptorStatus: 'not_applicable' as const, spawnOptions: {
-            directory: homeDir, backendTarget: { kind: 'builtInAgent' as const, agentId: 'opencode' }, terminal: { mode: 'tmux' as const },
+            directory: homeDir, backendTarget: { kind: 'builtInAgent' as const, agentId: 'codex' }, terminal: { mode: 'tmux' as const },
           } } satisfies DisconnectedTerminalHostCandidate;
         await expect(superviseDisconnectedTerminalHostCandidate({ candidate, terminalHostAdapters: { tmux: adapter },
           probeSessionServiceability: async (id) => await probeSessionRunnerServiceability({ sessionId: id, trackedSessions: [],

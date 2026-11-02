@@ -2,10 +2,7 @@ import {
   AGENT_IDS,
   resolveSessionMetadataAgentIdentity,
 } from '@piggercode/agents';
-import {
-  AgentRuntimeDescriptorV1Schema,
-  readAcpConfiguredBackendV1FromMetadata,
-} from '@piggercode/protocol';
+import { AgentRuntimeDescriptorV1Schema } from '@piggercode/protocol';
 
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import type { RawSessionRecord } from '@/session/transport/http/sessionsHttp';
@@ -54,10 +51,6 @@ export function resolveSessionPersistedRuntimeIdentity(
   backendTarget: NonNullable<SpawnSessionOptions['backendTarget']>;
   agentRuntimeDescriptorV1?: SpawnSessionOptions['agentRuntimeDescriptorV1'];
 }> | null {
-  const hasConfiguredBackendMetadata = Object.prototype.hasOwnProperty.call(metadata, 'acpConfiguredBackendV1');
-  const configuredBackend = readAcpConfiguredBackendV1FromMetadata(metadata);
-  if (hasConfiguredBackendMetadata && !configuredBackend) return null;
-
   let agentRuntimeDescriptorV1: SpawnSessionOptions['agentRuntimeDescriptorV1'] | undefined;
   if (metadata.agentRuntimeDescriptorV1 !== undefined) {
     const parsed = AgentRuntimeDescriptorV1Schema.safeParse(metadata.agentRuntimeDescriptorV1);
@@ -66,24 +59,6 @@ export function resolveSessionPersistedRuntimeIdentity(
   }
 
   const identity = resolveSessionMetadataAgentIdentity(metadata);
-
-  if (configuredBackend) {
-    const flavor = readNonEmptyString(metadata.flavor);
-    if (flavor?.startsWith('acp:') && flavor !== `acp:${configuredBackend.backendId}`) return null;
-    // A configured ACP backend must carry no built-in Agent evidence; any is a
-    // contradiction between the persisted target and the identity. Generic ACP
-    // identity is not built-in evidence: a configured backend persists
-    // `flavor: 'acp:<backendId>'`, which reads back as `customAcp`.
-    if (identity.agentId !== null && identity.agentId !== 'customAcp') return null;
-    if (identity.vendorResumeKeyAgentIds.some((agentId) => agentId !== 'customAcp')) return null;
-    if (agentRuntimeDescriptorV1 && agentRuntimeDescriptorV1.providerId !== 'customAcp') return null;
-    return {
-      backendTarget: {
-        kind: 'configuredAcpBackend',
-        backendId: configuredBackend.backendId,
-      },
-    };
-  }
 
   if (!identity.agentId) return null;
   if (agentRuntimeDescriptorV1 && agentRuntimeDescriptorV1.providerId !== identity.agentId) return null;

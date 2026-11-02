@@ -19,9 +19,6 @@ const SCAN_ROOTS = [
   'daemon/connectedServices',
   'backends/claude/connectedServices',
   'backends/codex/connectedServices',
-  'backends/gemini/connectedServices',
-  'backends/opencode/connectedServices',
-  'backends/pi/connectedServices',
 ] as const;
 
 async function listProductionSources(root: string): Promise<string[]> {

@@ -209,9 +209,6 @@ export function useNewSessionAvailabilityState(params: Readonly<{
     }, [cliDetectionSelectionTimestamp, installableDepKeyCountByAgentId, selectableWithoutCliByAgentId, stableCliAvailabilityAuthStatus, stableCliAvailabilityAvailable]);
 
     const isBackendEntrySelectable = React.useCallback((entry: ResolvedBackendCatalogEntry): boolean => {
-        if (entry.family === 'configuredAcpBackend') {
-            return true;
-        }
         return isAgentSelectable(entry.builtInAgentId ?? resolveProviderAgentIdForBackendTarget(entry.target));
     }, [isAgentSelectable]);
 

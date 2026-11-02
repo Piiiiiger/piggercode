@@ -63,7 +63,7 @@ export function buildHandoffSessionMetadataFromTrackedSession(params: Readonly<{
 
     const runtimeLocalMetadata: Partial<Pick<
         Metadata,
-        'claudeSessionId' | 'codexSessionId' | 'opencodeSessionId' | 'directSessionV1'
+        'claudeSessionId' | 'codexSessionId' | 'directSessionV1'
     >> = {
         ...(pickSessionHandoffRuntimeLocalMetadata(metadata) ?? {}),
     };

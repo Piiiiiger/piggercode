@@ -79,7 +79,7 @@ installPickerCommonModuleMocks({
                     id: 'p1',
                     name: 'Test profile',
                     isBuiltIn: false,
-                    compatibility: { claude: true, codex: true, gemini: true },
+                    compatibility: { claude: true, codex: true },
                 }),
             },
             router: {
@@ -129,7 +129,7 @@ vi.mock('@/sync/domains/profiles/profileUtils', () => ({
 
 vi.mock('@/sync/domains/profiles/profileMutations', () => ({
     convertBuiltInProfileToCustom: <T,>(profile: T) => profile,
-    createEmptyCustomProfile: () => ({ id: 'new', name: '', isBuiltIn: false, compatibility: { claude: true, codex: true, gemini: true } }),
+    createEmptyCustomProfile: () => ({ id: 'new', name: '', isBuiltIn: false, compatibility: { claude: true, codex: true } }),
     duplicateProfileForEdit: <T,>(profile: T) => profile,
 }));
 

@@ -13,8 +13,6 @@ describe('CLI command-surface manifest', () => {
       'automation',
       'mcp',
       'codex',
-      'opencode',
-      'gemini',
       'connect',
       'notify',
       'install',

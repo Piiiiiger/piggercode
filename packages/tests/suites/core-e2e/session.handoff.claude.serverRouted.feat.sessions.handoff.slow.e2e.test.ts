@@ -69,7 +69,7 @@ type HandoffPrepareResult = Readonly<{
     }>;
     resume?: Readonly<{
         directory: string;
-        agent: 'claude' | 'codex' | 'opencode';
+        agent: 'claude' | 'codex';
         resume: string;
         transcriptStorage: 'persisted' | 'direct';
         approvedNewDirectoryCreation: true;

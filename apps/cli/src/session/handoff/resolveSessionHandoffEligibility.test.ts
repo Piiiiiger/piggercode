@@ -21,32 +21,6 @@ describe('resolveSessionHandoffEligibility', () => {
     });
   });
 
-  it('allows an eligible direct OpenCode session', () => {
-    expect(
-      resolveSessionHandoffEligibility({
-        metadata: {
-          flavor: 'opencode',
-          machineId: 'machine_source',
-          opencodeSessionId: 'sess_2',
-          directSessionV1: {
-            v: 1,
-            providerId: 'opencode',
-            machineId: 'machine_source',
-            remoteSessionId: 'sess_2',
-            source: { kind: 'opencodeServer', directory: '/repo' },
-            linkedAtMs: 1,
-          },
-        },
-      }),
-    ).toEqual({
-      eligible: true,
-      agentId: 'opencode',
-      storageMode: 'direct',
-      sourceMachineId: 'machine_source',
-      vendorHandoffId: 'sess_2',
-    });
-  });
-
   it('rejects sessions whose provider cannot be inferred', () => {
     expect(resolveSessionHandoffEligibility({ metadata: { machineId: 'm1' } })).toEqual({
       eligible: false,
@@ -62,27 +36,6 @@ describe('resolveSessionHandoffEligibility', () => {
     ).toEqual({
       eligible: false,
       reasonCode: 'source_machine_missing',
-    });
-  });
-
-  it('rejects Pi handoff because vendor state transfer is unsupported', () => {
-    expect(
-      resolveSessionHandoffEligibility({
-        metadata: {
-          flavor: 'pi',
-          machineId: 'machine_source',
-          piSessionId: 'sess_pi',
-          directSessionV1: {
-            v: 1,
-            providerId: 'claude',
-          },
-        },
-      }),
-    ).toEqual({
-      eligible: false,
-      reasonCode: 'handoff_unsupported',
-      agentId: 'pi',
-      storageMode: 'direct',
     });
   });
 

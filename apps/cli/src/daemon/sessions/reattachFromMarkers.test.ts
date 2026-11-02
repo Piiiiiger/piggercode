@@ -433,23 +433,23 @@ describe('reattachTrackedSessionsFromMarkers', () => {
     expect(removeSessionMarker).not.toHaveBeenCalledWith(marker.pid);
   });
 
-  it('treats a dead OpenCode daemon marker as passive orphan cleanup state', async () => {
+  it('treats a dead Codex daemon marker as passive orphan cleanup state', async () => {
     const marker = {
       pid: 43211,
-      happySessionId: 'session-opencode-dead',
+      happySessionId: 'session-codex-dead',
       happyHomeDir: '/tmp/happy',
       createdAt: 1,
       updatedAt: 1,
       startedBy: 'daemon' as const,
       cwd: 'C:\\Users\\alice\\repo',
       metadata: {
-        flavor: 'opencode',
-        opencodeSessionId: 'opencode-thread-from-marker-metadata',
+        flavor: 'codex',
+        codexSessionId: 'codex-thread-from-marker-metadata',
       },
       respawn: {
         version: 1,
         directory: 'C:\\Users\\alice\\repo',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       },
     } satisfies DaemonSessionMarker;
 
@@ -465,7 +465,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
     expect(pidToTrackedSession.size).toBe(0);
     expect(result.orphanedDeadDaemonSessions).toEqual([
       {
-        sessionId: 'session-opencode-dead',
+        sessionId: 'session-codex-dead',
         pid: 43211,
       },
     ]);
@@ -477,23 +477,23 @@ describe('reattachTrackedSessionsFromMarkers', () => {
     });
   });
 
-  it('dedupes duplicate dead OpenCode daemon markers as passive orphan cleanup state', async () => {
+  it('dedupes duplicate dead Codex daemon markers as passive orphan cleanup state', async () => {
     const firstMarker = {
       pid: 43212,
-      happySessionId: 'session-opencode-duplicate-dead',
+      happySessionId: 'session-codex-duplicate-dead',
       happyHomeDir: '/tmp/happy',
       createdAt: 1,
       updatedAt: 1,
       startedBy: 'daemon' as const,
       cwd: 'C:\\Users\\alice\\repo',
       metadata: {
-        flavor: 'opencode',
-        opencodeSessionId: 'opencode-thread-from-first-marker',
+        flavor: 'codex',
+        codexSessionId: 'codex-thread-from-first-marker',
       },
       respawn: {
         version: 1,
         directory: 'C:\\Users\\alice\\repo',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       },
     } satisfies DaemonSessionMarker;
     const secondMarker = {
@@ -501,8 +501,8 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       pid: 43213,
       updatedAt: 2,
       metadata: {
-        flavor: 'opencode',
-        opencodeSessionId: 'opencode-thread-from-second-marker',
+        flavor: 'codex',
+        codexSessionId: 'codex-thread-from-second-marker',
       },
     } satisfies DaemonSessionMarker;
 
@@ -517,7 +517,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
 
     expect(result.orphanedDeadDaemonSessions).toEqual([
       {
-        sessionId: 'session-opencode-duplicate-dead',
+        sessionId: 'session-codex-duplicate-dead',
         pid: 43213,
       },
     ]);
@@ -829,7 +829,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
           CLAUDE_CONFIG_DIR: '/tmp/claude-config',
         },
         command:
-          '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -850,7 +850,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
               CLAUDE_CONFIG_DIR: '/tmp/claude-config',
             },
             command:
-              '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+              '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
           },
         ],
         pidToTrackedSession,
@@ -864,7 +864,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         vendorResumeId: 'vendor-1',
         spawnOptions: {
           directory: '/tmp/project',
-          backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
           resume: 'vendor-1',
           environmentVariables: {
             CLAUDE_CONFIG_DIR: '/tmp/claude-config',
@@ -872,7 +872,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommandHash:
-          'hash:/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -881,13 +881,13 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       processCommand:
-        '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       respawn: {
         version: 1,
         directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         resume: 'vendor-1',
         environmentVariables: {
           CLAUDE_CONFIG_DIR: '/tmp/claude-config',
@@ -1018,7 +1018,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       type: 'daemon-spawned-session',
       cwd: '/tmp/project',
       command:
-        '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
     } satisfies HappyProcessInfo;
 
     vi.mocked(listSessionMarkers).mockResolvedValue([]);
@@ -1050,7 +1050,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1066,14 +1066,14 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         vendorResumeId: 'vendor-1',
         spawnOptions: {
           directory: '/tmp/project',
-          backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
           resume: 'vendor-1',
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
         processCommandHash:
-          'hash:/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1082,13 +1082,13 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       processCommand:
-        '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       respawn: {
         version: 1,
         directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         resume: 'vendor-1',
       },
     });
@@ -1235,7 +1235,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'daemon-spawned-session',
         command:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1250,13 +1250,13 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         spawnOptions: {
           directory: '/tmp/project',
-          backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
         processCommandHash:
-          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon',
+          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1265,13 +1265,13 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon',
+        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       processCommand:
-        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon',
+        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       respawn: {
         version: 1,
         directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       },
     });
   });
@@ -1291,7 +1291,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
           directory: '/tmp/project',
           backendTarget: {
             kind: 'builtInAgent',
-            agentId: 'opencode',
+            agentId: 'codex',
           },
         },
       } as any,
@@ -1331,7 +1331,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
           directory: '/tmp/project',
           backendTarget: {
             kind: 'builtInAgent',
-            agentId: 'opencode',
+            agentId: 'codex',
           },
           sealedEnvironmentVariables: {
             format: 'account_scoped_v1',
@@ -1353,7 +1353,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'user-session',
         command:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1368,7 +1368,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         spawnOptions: {
           directory: '/tmp/project',
-          backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
           environmentVariables: {
             CODEX_HOME: '/tmp/codex-home',
             OPENAI_API_KEY: 'sk-test',
@@ -1377,9 +1377,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
         processCommandHash:
-          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1388,13 +1388,13 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       processCommand:
-        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs opencode --happy-starting-mode remote --started-by daemon --existing-session session-123',
+        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       respawn: expect.objectContaining({
         version: 1,
         directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         environmentVariables: {
           CODEX_HOME: '/tmp/codex-home',
         },
@@ -1423,7 +1423,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'daemon-spawned-session',
         command:
-          '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1445,7 +1445,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/Users/other/happier/remote-dev/apps/cli/src/index.ts opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/Users/other/happier/remote-dev/apps/cli/src/index.ts codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } satisfies HappyProcessInfo,
     ]);
 
@@ -1794,7 +1794,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier opencode --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation((pid: number) => {
@@ -1882,29 +1882,29 @@ describe('reattachTrackedSessionsFromMarkers', () => {
     });
   });
 
-  it('does not return a startup restart intent when the same OpenCode session has a recovered live owner', async () => {
+  it('does not return a startup restart intent when the same Codex session has a recovered live owner', async () => {
     vi.mocked(listSessionMarkers).mockResolvedValue([
       {
         pid: 11113,
-        happySessionId: 'session-opencode-live-owner',
+        happySessionId: 'session-codex-live-owner',
         happyHomeDir: '/tmp/happy',
         createdAt: 1,
         updatedAt: 1,
         startedBy: 'daemon',
         cwd: '/tmp/project',
         metadata: {
-          flavor: 'opencode',
-          opencodeSessionId: 'opencode-live-owner-thread',
+          flavor: 'codex',
+          codexSessionId: 'codex-live-owner-thread',
         },
         respawn: {
           version: 1,
           directory: '/tmp/project',
-          backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         },
       } satisfies DaemonSessionMarker,
       {
         pid: 22223,
-        happySessionId: 'session-opencode-live-owner',
+        happySessionId: 'session-codex-live-owner',
         happyHomeDir: '/tmp/happy',
         createdAt: 1,
         updatedAt: 1,
@@ -1918,14 +1918,14 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 22223,
         type: 'user-session',
         cwd: '/tmp/project',
-        command: 'happy opencode --existing-session session-opencode-live-owner',
+        command: 'happy codex --existing-session session-codex-live-owner',
       } satisfies HappyProcessInfo,
     ]);
     vi.mocked(adoptSessionsFromMarkers).mockImplementationOnce(({ pidToTrackedSession }) => {
       pidToTrackedSession.set(22223, {
         pid: 22223,
         startedBy: 'terminal',
-        happySessionId: 'session-opencode-live-owner',
+        happySessionId: 'session-codex-live-owner',
         reattachedFromDiskMarker: true,
       });
       return {
@@ -1945,12 +1945,12 @@ describe('reattachTrackedSessionsFromMarkers', () => {
     const result = await reattachTrackedSessionsFromMarkers({ pidToTrackedSession });
 
     expect(pidToTrackedSession.get(22223)).toEqual(expect.objectContaining({
-      happySessionId: 'session-opencode-live-owner',
+      happySessionId: 'session-codex-live-owner',
       pid: 22223,
     }));
     expect(result).toEqual({
       orphanedDeadDaemonSessions: [],
-      recoveredLiveSessionIds: ['session-opencode-live-owner'],
+      recoveredLiveSessionIds: ['session-codex-live-owner'],
       connectedServiceRestartIntents: [],
     });
   });

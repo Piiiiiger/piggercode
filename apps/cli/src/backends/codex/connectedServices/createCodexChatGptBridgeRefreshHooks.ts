@@ -48,7 +48,7 @@ export function createCodexChatGptBridgeRefreshHooks(input: Readonly<{
       resolveCodexChatGptAuthTokensRefreshProfileId(toCodexChatGptAuthTokensRefreshSelection(selection)),
     probeCurrentToken: async (binding) => {
       // F6: on a cold broker cache-miss return the CURRENT access token if it is still valid,
-      // instead of rotating the single-use refresh token on every new OpenCode process.
+      // instead of rotating the single-use refresh token on every new runtime process.
       const source = await capabilities.readCredentialSource(binding);
       if (!source || source.record.kind !== 'oauth' || !capabilities.isOauthSourceStillValid(source)) {
         return { kind: 'needs_refresh' };

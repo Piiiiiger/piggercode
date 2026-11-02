@@ -101,15 +101,6 @@ describe('ConnectedServiceDetailView profile id validation', () => {
     connectedServicesModuleState.searchParams = { serviceId: 'openai-codex' };
   });
 
-  it('does not expose OAuth authoring for a new-service deep link until relay support is known', async () => {
-    connectedServicesModuleState.searchParams = { serviceId: 'antigravity' };
-    const { ConnectedServiceDetailView } = await import('./ConnectedServiceDetailView');
-    const screen = await renderScreen(<ConnectedServiceDetailView />);
-    expect(screen.tree.findAll((node) => String(node.props.testID ?? '').startsWith('connected-services-action:add-oauth-profile'))).toHaveLength(0);
-    expect(promptSpy).not.toHaveBeenCalled();
-    expect(connectedServicesModuleState.routerPushSpy).not.toHaveBeenCalled();
-  });
-
   it('rejects invalid profile ids before navigating to oauth connect', async () => {
     const { ConnectedServiceDetailView } = await import('./ConnectedServiceDetailView');
 

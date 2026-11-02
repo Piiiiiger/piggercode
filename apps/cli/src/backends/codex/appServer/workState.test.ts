@@ -94,10 +94,10 @@ describe('workState', () => {
                             updatedAt: 1,
                         },
                         {
-                            id: 'todo:opencode:1',
+                            id: 'todo:claude:1',
                             kind: 'todo',
                             origin: 'vendor',
-                            backendId: 'opencode',
+                            backendId: 'claude',
                             status: 'active',
                             title: 'Other provider todo',
                             updatedAt: 1,
@@ -114,10 +114,10 @@ describe('workState', () => {
         );
 
         expect(next.sessionWorkStateV1.items.map((item) => item.id)).toEqual([
-            'todo:opencode:1',
+            'todo:claude:1',
             'goal:thread-new',
         ]);
-        expect(next.sessionWorkStateV1.primaryItemId).toBe('todo:opencode:1');
+        expect(next.sessionWorkStateV1.primaryItemId).toBe('todo:claude:1');
     });
 
     it('clears only Codex-owned goal items from sessionWorkStateV1', () => {

@@ -62,7 +62,7 @@ describe('registerPermissionModeMessageQueueBinding (in-flight steer)', () => {
         isTurnInFlight: () => true,
         supportsInFlightSteer: () => true,
         isProviderNativeCommand: async (text) => text.startsWith('/project'),
-        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'opencode_native' }] }),
+        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'codex_native' }] }),
         steerText: async (text, options, callbacks) => {
           delivered.push({ text, options });
           callbacks?.onProviderPromptAccepted?.();
@@ -93,7 +93,7 @@ describe('registerPermissionModeMessageQueueBinding (in-flight steer)', () => {
       inFlightSteer: {
         isTurnInFlight: () => true,
         supportsInFlightSteer: () => true,
-        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'opencode_native' }] }),
+        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'codex_native' }] }),
         steerText: async (text, options) => {
           delivered.push({ text, options });
         },

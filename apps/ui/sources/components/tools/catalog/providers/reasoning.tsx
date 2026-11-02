@@ -30,30 +30,6 @@ export const providerReasoningTools = {
             return t('tools.names.reasoning');
         }
     },
-    'GeminiReasoning': {
-        title: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            // Use the title from input if provided
-            if (opts.tool.input?.title && typeof opts.tool.input.title === 'string') {
-                return opts.tool.input.title;
-            }
-            return t('tools.names.reasoning');
-        },
-        icon: ICON_REASONING,
-        minimal: true,
-        input: z.object({
-            title: z.string().describe('The title of the reasoning')
-        }).partial().passthrough(),
-        result: z.object({
-            content: z.string().describe('The reasoning content'),
-            status: z.enum(['completed', 'in_progress', 'canceled']).optional().describe('The status of the reasoning')
-        }).partial().passthrough(),
-        extractDescription: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            if (opts.tool.input?.title && typeof opts.tool.input.title === 'string') {
-                return opts.tool.input.title;
-            }
-            return t('tools.names.reasoning');
-        }
-    },
     'think': {
         title: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
             // Use the title from input if provided

@@ -28,16 +28,6 @@ describe('native login import transport', () => {
         expect(machineRpc.mock.calls[1]?.[0].payload).toEqual({ op: 'import', serviceId: 'claude-subscription', profileId: 'work', source: 'native' });
     });
 
-    it('does not treat credentials or a different profile response as import success', async () => {
-        const request = { op: 'import', serviceId: 'antigravity', profileId: 'work', source: 'acp' } as const;
-        machineRpc.mockResolvedValueOnce({ ok: true, op: 'import', serviceId: 'antigravity', profileId: 'other' });
-        await expect(importConnectedServiceLogin({ ...scope, request })).resolves.toMatchObject({ ok: false, errorCode: 'storage_result_unknown' });
-        machineRpc.mockResolvedValueOnce({ ok: true, op: 'import', serviceId: 'antigravity', profileId: 'work', accessToken: 'unexpected-secret' });
-        const result = await importConnectedServiceLogin({ ...scope, request });
-        expect(result).toMatchObject({ ok: false, errorCode: 'storage_result_unknown' });
-        expect(JSON.stringify(result)).not.toContain('unexpected-secret');
-    });
-
     it('reports unknown storage after an import reply is lost without offering a safe retry', async () => {
         machineRpc.mockRejectedValue(new Error('Transport disconnected'));
         await expect(importConnectedServiceLogin({ ...scope, request: { op: 'import', serviceId: 'openai-codex', profileId: 'work', source: 'native' } }))

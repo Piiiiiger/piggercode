@@ -141,35 +141,6 @@ describe('accountSettings', () => {
     });
   });
 
-  it('lets a per-agent override opt out of shared session state (defaults stay shared)', () => {
-    const parsed = accountSettingsParse({
-      connectedServicesProviderStateSharingSettingsV1: {
-        v: 1,
-        byAgentId: {
-          codex: {
-            stateMode: 'isolated',
-          },
-        },
-      },
-    });
-
-    expect(resolveConnectedServicesProviderStateSharingPolicyV1(
-      parsed.connectedServicesProviderStateSharingSettingsV1,
-      'codex',
-    )).toEqual({
-      configMode: 'linked',
-      stateMode: 'isolated',
-    });
-    // Other agents keep the shared default.
-    expect(resolveConnectedServicesProviderStateSharingPolicyV1(
-      parsed.connectedServicesProviderStateSharingSettingsV1,
-      'pi',
-    )).toEqual({
-      configMode: 'linked',
-      stateMode: 'shared',
-    });
-  });
-
   it('lets the defaults opt out of shared session state for every provider', () => {
     const parsed = accountSettingsParse({
       connectedServicesProviderStateSharingSettingsV1: {
@@ -202,7 +173,7 @@ describe('accountSettings', () => {
           codex: {
             stateMode: 'shared',
           },
-          pi: {
+          claude: {
             configMode: 'isolated',
           },
         },
@@ -224,7 +195,7 @@ describe('accountSettings', () => {
         codex: {
           stateMode: 'shared',
         },
-        pi: {
+        claude: {
           configMode: 'isolated',
         },
       },
@@ -233,48 +204,6 @@ describe('accountSettings', () => {
           sharedStatePrivacy: true,
         },
       },
-    });
-  });
-
-  it('resolves effective connected-service provider state sharing policy by agent id', () => {
-    const settings = accountSettingsParse({
-      connectedServicesProviderStateSharingSettingsV1: {
-        v: 1,
-        defaults: {
-          configMode: 'copied',
-          stateMode: 'isolated',
-        },
-        byAgentId: {
-          codex: {
-            stateMode: 'shared',
-          },
-          pi: {
-            configMode: 'isolated',
-          },
-        },
-      },
-    });
-
-    expect(resolveConnectedServicesProviderStateSharingPolicyV1(
-      settings.connectedServicesProviderStateSharingSettingsV1,
-      'codex',
-    )).toEqual({
-      configMode: 'copied',
-      stateMode: 'shared',
-    });
-    expect(resolveConnectedServicesProviderStateSharingPolicyV1(
-      settings.connectedServicesProviderStateSharingSettingsV1,
-      'pi',
-    )).toEqual({
-      configMode: 'isolated',
-      stateMode: 'isolated',
-    });
-    expect(resolveConnectedServicesProviderStateSharingPolicyV1(
-      settings.connectedServicesProviderStateSharingSettingsV1,
-      'gemini',
-    )).toEqual({
-      configMode: 'copied',
-      stateMode: 'isolated',
     });
   });
 
@@ -568,21 +497,21 @@ describe('accountSettings', () => {
     const parsed = accountSettingsParse({
       backendEnabledByTargetKey: {
         'agent:claude': true,
-        'acpBackend:team-review': false,
+        'agent:codex': false,
       },
       backendCliSourcePreferenceByTargetKey: {
         'agent:claude': 'system-first',
-        'acpBackend:team-review': 'managed-first',
+        'agent:codex': 'managed-first',
       },
     });
 
     expect(parsed.backendEnabledByTargetKey).toEqual({
       'agent:claude': true,
-      'acpBackend:team-review': false,
+      'agent:codex': false,
     });
     expect(parsed.backendCliSourcePreferenceByTargetKey).toEqual({
       'agent:claude': 'system-first',
-      'acpBackend:team-review': 'managed-first',
+      'agent:codex': 'managed-first',
     });
   });
 

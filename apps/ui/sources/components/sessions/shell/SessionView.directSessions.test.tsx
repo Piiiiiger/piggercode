@@ -799,21 +799,6 @@ describe('SessionView (direct sessions)', () => {
       await selectAgent(second, 'codex');
     });
 
-    it('preserves a newer armed Agent and composer when the previous submission reaches custody', async () => {
-      transitionResult = 'outcome_unknown';
-      const screen = await renderSessionViewAndSettle();
-      const previousLocalId = await submitSwitch(screen);
-      await selectAgent(screen, 'gemini');
-      await act(async () => { findAgentInput(screen).props.onChangeText('send this to Gemini'); });
-      const newerArm = readArm();
-      expect(newerArm?.submission).toBeUndefined();
-
-      await publishCustody(previousLocalId);
-
-      expect(readArm()).toEqual(newerArm);
-      expect(findAgentInput(screen).props.agentPickerSelectedOptionId).toBe('agent:gemini');
-      expect(findAgentInput(screen).props.value).toBe('send this to Gemini');
-    });
   });
 
   async function publishStorageFixture() {
@@ -1331,7 +1316,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -1362,7 +1347,7 @@ describe('SessionView (direct sessions)', () => {
     expect(sessionUsageLimitWaitResumeEnableSpy).toHaveBeenCalledWith(
       's1',
       {
-        issueFingerprint: 'usage-limit:opencode:unknown-turn:1:1779039000000',
+        issueFingerprint: 'usage-limit:codex:unknown-turn:1:1779039000000',
         rememberPreference: true,
       },
       expect.objectContaining({ serverId: 'server-route-1' }),
@@ -1855,7 +1840,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -1895,7 +1880,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -1948,7 +1933,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -1976,7 +1961,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 2,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 18, 17, 30, 0),
@@ -2020,7 +2005,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -2061,7 +2046,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),
@@ -2101,7 +2086,7 @@ describe('SessionView (direct sessions)', () => {
         code: 'usage_limit',
         source: 'usage_limit',
         occurredAt: 1,
-        provider: 'opencode',
+        provider: 'codex',
         usageLimit: {
           v: 1,
           resetAtMs: Date.UTC(2026, 4, 17, 17, 30, 0),

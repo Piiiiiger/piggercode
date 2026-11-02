@@ -53,9 +53,9 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
     });
 
     await runPermissionModePromptLoop({
-      providerName: 'Pi',
-      providerId: 'pi',
-      agentMessageType: 'pi',
+      providerName: 'Codex',
+      providerId: 'codex',
+      agentMessageType: 'codex',
       explicitPermissionMode: 'default',
       session: {
         getMetadataSnapshot: () => metadata,
@@ -75,7 +75,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
         beginTurn: vi.fn(),
         startOrLoad: vi.fn(async () => undefined),
         isProviderNativeCommand: vi.fn(async (text: string) => text.startsWith('/goal')),
-        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'opencode_native' }] }),
+        listSkills: async () => ({ supported: true, skills: [{ id: 'review', name: 'review', path: '/skills/review/SKILL.md', origin: 'codex_native' }] }),
         sendPrompt: vi.fn(async () => undefined),
         sendPromptWithMeta,
         flushTurn: vi.fn(async () => undefined),
@@ -122,7 +122,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
       permissionModeUpdatedAt: 0,
       sessionModelsV1: {
         v: 1,
-        provider: 'qwen',
+        provider: 'codex',
         updatedAt: 1,
         currentModelId: 'model-for-this-prompt',
         availableModels: [],
@@ -152,7 +152,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
 
     await runPermissionModePromptLoop({
       providerName: 'Test ACP',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: 'default',
       session: {
         getMetadataSnapshot: () => metadata,
@@ -214,7 +214,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
       title: 'proven provider-unavailable rejection before dispatch',
       error: new ProviderPromptSubmissionRejectedBeforeEffectError(
         'provider_unavailable_before_acceptance',
-        new Error('OpenCode broker preflight failed before prompt_async'),
+        new Error('Codex broker preflight failed before prompt_async'),
       ),
       expectedOutcome: {
         kind: 'rejected_before_effect',
@@ -226,13 +226,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
       title: 'proven provider rejection before acceptance',
       error: new ProviderPromptSubmissionRejectedBeforeEffectError(
         'provider_rejected_before_acceptance',
-        Object.assign(new Error('Pi provider rejected the prompt before acceptance without details'), {
-          piProviderFailure: {
-            classification: 'pi_provider_failure',
-            code: 'pi_provider_session_error',
-            sanitizedPreview: 'Pi provider rejected the prompt before acceptance without details',
-          },
-        }),
+        new Error('Provider rejected the prompt before acceptance without details'),
       ),
       expectedOutcome: {
         kind: 'rejected_before_effect',
@@ -290,7 +284,7 @@ describe('runPermissionModePromptLoop provider submission phase ownership', () =
 
     await runPermissionModePromptLoop({
       providerName: 'Test ACP',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: 'default',
       session: session as any,
       providerInputOutcomeObserver,

@@ -40,7 +40,7 @@ export type ConnectedServiceRuntimeTargetInput = Readonly<{
   sessionId?: string | null;
   /**
    * Stable broker selection identity for provider brokers whose managed server is SHARED across
-   * sessions (OpenCode/Pi). Unlike `sessionId`, it survives the shared-server lifetime and is the
+   * sessions. Unlike `sessionId`, it survives the shared-server lifetime and is the
    * genuine identity a broker plugin presents to the daemon bridge (R3-6). Absent for per-session
    * providers (e.g. the Claude SDK, which authenticates by session id).
    */

@@ -34,8 +34,6 @@ describe('agents/registryCore', () => {
     it('resolves known flavors and aliases to canonical agent ids', () => {
         expect(resolveAgentIdFromFlavor('claude')).toBe('claude');
         expect(resolveAgentIdFromFlavor('codex')).toBe('codex');
-        expect(resolveAgentIdFromFlavor('opencode')).toBe('opencode');
-        expect(resolveAgentIdFromFlavor('gemini')).toBe('gemini');
 
         // Common Codex aliases found in persisted session metadata.
         expect(resolveAgentIdFromFlavor('openai')).toBe('codex');
@@ -53,10 +51,6 @@ describe('agents/registryCore', () => {
         const cases = [
             { detectKey: 'claude', expected: 'claude' },
             { detectKey: 'codex', expected: 'codex' },
-            { detectKey: 'opencode', expected: 'opencode' },
-            { detectKey: 'kiro-cli', expected: 'kiro' },
-            { detectKey: 'devin', expected: 'devin' },
-            { detectKey: 'custom-acp', expected: 'customAcp' },
             { detectKey: '  ', expected: null },
             { detectKey: 'unknown', expected: null },
             { detectKey: null, expected: null },
@@ -83,115 +77,8 @@ describe('agents/registryCore', () => {
         expect(claude.cli.detectKey).toBeTruthy();
     });
 
-    it('provides core config for kilo', () => {
-        const kilo = getAgentCore('kilo');
-        expect(kilo.id).toBe('kilo');
-        expect(kilo.cli.detectKey).toBeTruthy();
-    });
-
-    it('provides core config for pi', () => {
-        const pi = getAgentCore('pi');
-        expect(pi.id).toBe('pi');
-        expect(pi.cli.detectKey).toBeTruthy();
-        expect(Reflect.get(pi, 'runtimeInput')).toBeUndefined();
-    });
-
-    it('provides core config for kiro', () => {
-        const kiro = getAgentCore('kiro');
-        expect(kiro.id).toBe('kiro');
-        expect(kiro.cli.detectKey).toBe('kiro-cli');
-    });
-
-    it('provides core config for custom ACP', () => {
-        const customAcp = getAgentCore('customAcp');
-        expect(customAcp.id).toBe('customAcp');
-        expect(customAcp.cli.detectKey).toBe('custom-acp');
-    });
-
-    it('provides Devin as a resumable catalog ACP provider', () => {
-        expect(getAgentCore('devin')).toMatchObject({
-            id: 'devin',
-            cli: { detectKey: 'devin', machineLoginKey: 'devin' },
-            sessionModes: { kind: 'acpAgentModes' },
-            model: { acpModelConfigOptionId: 'model', acpModelSetMethod: 'config_option' },
-            resume: { vendorResumeIdField: 'devinSessionId', supportsVendorResume: true },
-            tools: { delivery: 'native_mcp', support: 'supported' },
-        });
-    });
-
-    it.each(['devin', 'kimi'] as const)('projects shared tmux-backed local control for %s', (agentId) => {
-        expect(getAgentCore(agentId).localControl).toEqual({
-            supported: true,
-            topology: 'exclusive',
-            attachStrategy: 'tmux',
-        });
-    });
-
-    it('keeps local control unavailable for an unsupported provider', () => {
-        expect(getAgentCore('gemini').localControl).toBeUndefined();
-    });
-
-    it.each([
-        ['fx', 'fx', 'fxSessionId'],
-        ['droid', 'droid', 'droidSessionId'],
-    ] as const)('provides %s as a discoverable resumable ACP Agent', (agentId, detectKey, resumeField) => {
-        expect(getAgentCore(agentId as never)).toMatchObject({
-            id: agentId,
-            cli: { detectKey, machineLoginKey: agentId, spawnAgent: agentId },
-            sessionModes: { kind: 'acpAgentModes' },
-            model: { dynamicProbe: 'auto', acpModelConfigOptionId: 'model' },
-            resume: { vendorResumeIdField: resumeField, supportsVendorResume: true },
-            tools: { delivery: 'native_mcp', support: 'supported' },
-        });
-    });
-
-    it('provides CodeBuddy Code as a resumable ACP agent with persisted transcripts', () => {
-        expect(getAgentCore('codebuddy')).toMatchObject({
-            id: 'codebuddy',
-            cli: { detectKey: 'codebuddy', machineLoginKey: 'codebuddy', spawnAgent: 'codebuddy' },
-            sessionModes: { kind: 'acpAgentModes' },
-            model: { dynamicProbe: 'auto', acpModelConfigOptionId: 'model', acpModelSetMethod: 'config_option' },
-            resume: { vendorResumeIdField: 'codebuddySessionId', supportsVendorResume: true },
-            sessionStorage: { direct: false, persisted: true },
-            tools: { delivery: 'native_mcp', support: 'experimental' },
-        });
-    });
-
-    it('provides Agy as a managed, resumable ACP agent while keeping the interactive CLI distinct', () => {
-        expect(getAgentCore('agy')).toMatchObject({
-            id: 'agy',
-            cli: { detectKey: 'agy', machineLoginKey: 'antigravity-cli', spawnAgent: 'agy' },
-            sessionModes: { kind: 'acpAgentModes' },
-            model: { dynamicProbe: 'auto', acpModelConfigOptionId: 'model' },
-            resume: { vendorResumeIdField: 'agySessionId', supportsVendorResume: true },
-            sessionStorage: { direct: false, persisted: true },
-            tools: { delivery: 'native_mcp', support: 'supported' },
-            ui: { agentPickerIconName: 'rocket-outline' },
-        });
-    });
-
-    it('provides a conservative first-class Grok core config', () => {
-        const grok = getAgentCore('grok');
-        expect(grok).toMatchObject({
-            id: 'grok',
-            displayNameKey: 'agentInput.agent.grok',
-            subtitleKey: 'profiles.aiBackend.grokSubtitleExperimental',
-            availability: { experimental: true },
-            cli: { detectKey: 'grok', machineLoginKey: 'grok', spawnAgent: 'grok' },
-            sessionModes: { kind: 'none' },
-            model: { supportsSelection: true, supportsFreeform: false },
-            resume: {
-                vendorResumeIdField: 'grokSessionId',
-                uiVendorResumeIdLabelKey: 'sessionInfo.grokSessionId',
-                uiVendorResumeIdCopiedKey: 'sessionInfo.grokSessionIdCopied',
-                supportsVendorResume: true,
-                experimental: true,
-            },
-        });
-    });
-
     it('uses generic installer guidance instead of hardcoded package-manager commands', () => {
-        for (const agentId of ['codex', 'opencode', 'qwen', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'grok'] as const) {
+        for (const agentId of ['codex'] as const) {
             const core = getAgentCore(agentId);
             expect(core.cli.installBanner.installKind).toBe('ifAvailable');
             expect(core.cli.installBanner.installCommand).toBeUndefined();
@@ -199,7 +86,7 @@ describe('agents/registryCore', () => {
     });
 
     it('uses centralized setup guide URLs for provider install banners', () => {
-        for (const agentId of ['claude', 'opencode', 'kimi', 'qwen', 'pi'] as const) {
+        for (const agentId of ['claude', 'codex'] as const) {
             expect(getAgentCore(agentId).cli.installBanner.guideUrl).toBe(getProviderCliInstallGuideUrl(agentId));
         }
     });
@@ -224,16 +111,6 @@ describe('agents/registryCore', () => {
             label: 'Claude Code',
             connectRoute: '/settings/connect/claude',
         });
-        expect(getAgentCore('opencode').uiConnectedService).toEqual({
-            serviceId: null,
-            label: 'OpenCode',
-            connectRoute: null,
-        });
-        expect(getAgentCore('agy').uiConnectedService).toEqual({
-            serviceId: 'antigravity',
-            label: 'Google Antigravity',
-            connectRoute: null,
-        });
     });
 
     it('reads model selection config from @piggercode/agents', () => {
@@ -246,26 +123,5 @@ describe('agents/registryCore', () => {
         // ACP backends with supported model probing + overrides
         const codex = getAgentModelConfig('codex');
         expect(codex.supportsSelection).toBe(true);
-
-        const opencode = getAgentModelConfig('opencode');
-        expect(opencode.supportsSelection).toBe(true);
-
-        const kilo = getAgentModelConfig('kilo');
-        expect(kilo.supportsSelection).toBe(true);
-
-        const kiro = getAgentModelConfig('kiro');
-        expect(kiro.supportsSelection).toBe(true);
-
-        const auggie = getAgentModelConfig('auggie');
-        expect(auggie.supportsSelection).toBe(true);
-
-        const qwen = getAgentModelConfig('qwen');
-        expect(qwen.supportsSelection).toBe(true);
-
-        const kimi = getAgentModelConfig('kimi');
-        expect(kimi.supportsSelection).toBe(true);
-
-        const pi = getAgentModelConfig('pi');
-        expect(pi.supportsSelection).toBe(true);
     });
 });

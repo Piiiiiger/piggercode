@@ -97,7 +97,7 @@ describe('createAcpRuntime (session models)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -133,7 +133,7 @@ describe('createAcpRuntime (session models)', () => {
     const metadata: Metadata = getMetadata();
     expect(metadata.acpSessionModelsV1).toMatchObject({
       v: 1,
-      provider: 'opencode',
+      provider: 'codex',
       currentModelId: 'model-a',
       availableModels: [
         { id: 'model-a', name: 'Model A' },
@@ -149,7 +149,7 @@ describe('createAcpRuntime (session models)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -239,7 +239,7 @@ describe('createAcpRuntime (session models)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -304,7 +304,7 @@ describe('createAcpRuntime (session models)', () => {
     const backend = createFakeAcpRuntimeBackend();
     const { session, getMetadata } = createSessionClientWithMetadata({ initialMetadata: createTestMetadata() });
     const runtime = createAcpRuntime({
-      provider: 'copilot', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       onThinkingChange: () => {}, ensureBackend: async () => backend,
     });
@@ -337,7 +337,7 @@ describe('createAcpRuntime (session models)', () => {
     const backend = createFakeAcpRuntimeBackend();
     const { session, getMetadata } = createSessionClientWithMetadata({
       initialMetadata: createTestMetadata({ sessionModelsV1: {
-        v: 1, provider: 'copilot', updatedAt: 1, currentModelId: 'model-a',
+        v: 1, provider: 'codex', updatedAt: 1, currentModelId: 'model-a',
         availableModels: [
           { id: 'model-a', name: 'A', modelOptions: [effort] },
           { id: 'model-b', name: 'B', modelOptions: [otherEffort] },
@@ -346,7 +346,7 @@ describe('createAcpRuntime (session models)', () => {
       } }),
     });
     const runtime = createAcpRuntime({
-      provider: 'copilot', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', session, messageBuffer: new MessageBuffer(),
       mcpServers: {}, permissionHandler: createApprovedPermissionHandler(),
       onThinkingChange: () => {}, ensureBackend: async () => backend,
     });
@@ -417,7 +417,7 @@ describe('createAcpRuntime (session models)', () => {
       },
     });
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -433,101 +433,6 @@ describe('createAcpRuntime (session models)', () => {
     expect(lastSet).toEqual({ sessionId: 'sess_main', modelId: ' model-b ' });
   });
 
-  it('uses the model config option directly for providers that require config-option model switching', async () => {
-    let modelSetCalls = 0;
-    let lastSetConfig: { sessionId: string; configId: string; value: unknown } | null = null;
-    const backend = createFakeAcpRuntimeBackend({
-      async setSessionModel() {
-        modelSetCalls += 1;
-      },
-      async setSessionConfigOption(sessionId: string, configId: string, value: unknown) {
-        lastSetConfig = { sessionId, configId, value };
-      },
-    });
-
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session: createBasicSessionClient(),
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-    });
-
-    await runtime.startOrLoad({ resumeId: null });
-    await runtime.setSessionModel('composer-2.5[fast=true]');
-
-    expect(modelSetCalls).toBe(0);
-    expect(lastSetConfig).toEqual({
-      sessionId: 'sess_main',
-      configId: 'model',
-      value: 'composer-2.5[fast=true]',
-    });
-  });
-
-  it('lets config-option providers resolve CLI model aliases before applying model controls', async () => {
-    const calls: Array<{ configId: string; value: unknown }> = [];
-    const backend = createFakeAcpRuntimeBackend({
-      async setSessionConfigOption(_sessionId: string, configId: string, value: unknown) {
-        calls.push({ configId, value });
-      },
-    });
-    const backendWithConfig = backend as typeof backend & {
-      getSessionConfigOptionsState: () => ReadonlyArray<SessionConfigOption>;
-    };
-    backendWithConfig.getSessionConfigOptionsState = () => [
-      {
-        id: 'model',
-        name: 'Model',
-        type: 'select',
-        currentValue: 'gpt-5.1-codex-max[reasoning=medium,fast=false]',
-        options: [
-          {
-            value: 'gpt-5.1-codex-max[reasoning=medium,fast=false]',
-            name: 'GPT-5.1 Codex Max',
-          },
-        ],
-      },
-      {
-        id: 'fast',
-        name: 'Fast',
-        type: 'boolean',
-        currentValue: 'false',
-      },
-    ];
-
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session: createBasicSessionClient(),
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backendWithConfig,
-      resolveSessionModelConfigUpdate: ({ modelId, configOptions }) => {
-        if (modelId !== 'gpt-5.1-codex-max-medium-fast') {
-          return { modelId };
-        }
-        expect(configOptions).toHaveLength(2);
-        return {
-          modelId: 'gpt-5.1-codex-max[reasoning=medium,fast=false]',
-          configUpdates: [{ configId: 'fast', value: true }],
-        };
-      },
-    });
-
-    await runtime.startOrLoad({ resumeId: null });
-    await runtime.setSessionModel('gpt-5.1-codex-max-medium-fast');
-
-    expect(calls).toEqual([
-      { configId: 'model', value: 'gpt-5.1-codex-max[reasoning=medium,fast=false]' },
-      { configId: 'fast', value: true },
-    ]);
-  });
-
   it('does not apply a model update when the provider resolver rejects it', async () => {
     const calls: Array<{ configId: string; value: unknown }> = [];
     const backend = createFakeAcpRuntimeBackend({
@@ -537,7 +442,7 @@ describe('createAcpRuntime (session models)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -549,108 +454,9 @@ describe('createAcpRuntime (session models)', () => {
     });
 
     await runtime.startOrLoad({ resumeId: null });
-    await runtime.setSessionModel('not-a-cursor-acp-choice');
+    await runtime.setSessionModel('not-a-model-choice');
 
     expect(calls).toEqual([]);
-  });
-
-  it('applies startup metadata model overrides before deferred pending queue drain', async () => {
-    const calls: string[] = [];
-    const backend = createFakeAcpRuntimeBackend({
-      async startSession() {
-        calls.push('start');
-        return { sessionId: 'sess_main' };
-      },
-      async setSessionConfigOption(_sessionId: string, configId: string, value: unknown) {
-        calls.push(`config:${configId}:${String(value)}`);
-      },
-    });
-    const { session, getMetadata } = createSessionClientWithMetadata({
-      initialMetadata: {
-        ...createTestMetadata(),
-        modelOverrideV1: { v: 1, updatedAt: 11, modelId: 'composer-2.5[fast=true]' },
-      } as Metadata,
-    });
-    const sessionWithSnapshot = {
-      ...session,
-      getMetadataSnapshot: getMetadata,
-    };
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session: sessionWithSnapshot,
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-      pendingQueue: {
-        drainAfterStartOrLoad: true,
-        inputConsumer: {
-          drainPending: async () => {
-            calls.push('drain');
-            return { materialized: 0, stoppedReason: 'no_pending' };
-          },
-        },
-      },
-    });
-
-    await runtime.startOrLoad({ deferPendingDrain: true });
-    await runtime.drainPendingAfterStartOrLoad();
-
-    expect(calls).toEqual([
-      'start',
-      'config:model:composer-2.5[fast=true]',
-      'drain',
-    ]);
-  });
-
-  it('applies explicit startup model overrides before deferred pending queue drain', async () => {
-    const calls: string[] = [];
-    const backend = createFakeAcpRuntimeBackend({
-      async startSession() {
-        calls.push('start');
-        return { sessionId: 'sess_main' };
-      },
-      async setSessionConfigOption(_sessionId: string, configId: string, value: unknown) {
-        calls.push(`config:${configId}:${String(value)}`);
-      },
-    });
-    const { session } = createSessionClientWithMetadata({
-      initialMetadata: createTestMetadata(),
-    });
-
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session,
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-      startupOverrides: {
-        model: { modelId: 'composer-2.5[fast=true]' },
-      },
-      pendingQueue: {
-        drainAfterStartOrLoad: true,
-        inputConsumer: {
-          drainPending: async () => {
-            calls.push('drain');
-            return { materialized: 0, stoppedReason: 'no_pending' };
-          },
-        },
-      },
-    });
-
-    await runtime.startOrLoad({ deferPendingDrain: true });
-    await runtime.drainPendingAfterStartOrLoad();
-
-    expect(calls).toEqual([
-      'start',
-      'config:model:composer-2.5[fast=true]',
-      'drain',
-    ]);
   });
 
   it('rejects setSessionModel before the ACP runtime has started', async () => {
@@ -739,31 +545,4 @@ describe('createAcpRuntime (session models)', () => {
     }
   });
 
-  it('surfaces session/set_model errors when the provider declares no config-option fallback', async () => {
-    let lastSetConfig: { sessionId: string; configId: string; value: unknown } | null = null;
-    const backend = createFakeAcpRuntimeBackend({
-      async setSessionConfigOption(sessionId: string, configId: string, value: unknown) {
-        lastSetConfig = { sessionId, configId, value };
-      },
-      async setSessionModel(_sessionId: string, _modelId: string) {
-        throw new Error('ACP SDK does not support session/set_model');
-      },
-    });
-
-    const runtime = createAcpRuntime({
-      provider: 'grok',
-      directory: '/tmp',
-      session: createBasicSessionClient(),
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-    });
-
-    await runtime.startOrLoad({ resumeId: null });
-    await expect(runtime.setSessionModel('model-b')).rejects.toThrow('ACP SDK does not support session/set_model');
-
-    expect(lastSetConfig).toBeNull();
-  });
 });

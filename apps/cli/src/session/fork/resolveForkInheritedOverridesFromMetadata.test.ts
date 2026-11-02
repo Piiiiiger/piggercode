@@ -53,7 +53,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpSessionModesV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 460,
         currentModeId: 'build',
         availableModes: [
@@ -63,7 +63,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpSessionModelsV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 461,
         currentModelId: 'openai/gpt-5.2',
         availableModels: [
@@ -72,7 +72,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpConfigOptionsV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 462,
         configOptions: [
           {
@@ -180,7 +180,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpSessionModesV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 460,
         currentModeId: 'build',
         availableModes: [
@@ -190,7 +190,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpSessionModelsV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 461,
         currentModelId: 'openai/gpt-5.2',
         availableModels: [
@@ -199,7 +199,7 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       },
       acpConfigOptionsV1: {
         v: 1,
-        provider: 'opencode',
+        provider: 'codex',
         updatedAt: 462,
         configOptions: [
           {
@@ -260,8 +260,8 @@ describe('resolveForkInheritedOverridesFromMetadata', () => {
       sessionModeOverrideV1: { v: 1, updatedAt: 457, modeId: 'plan' },
       sessionConfigOptionOverridesV1: { v: 0 },
       acpSessionModesV1: { v: 1, provider: '', updatedAt: 1, currentModeId: 'build', availableModes: [] },
-      acpSessionModelsV1: { v: 1, provider: 'opencode', updatedAt: 'bad', currentModelId: 'm1', availableModels: [] },
-      acpConfigOptionsV1: { v: 1, provider: 'opencode', updatedAt: 2, configOptions: 'bad' },
+      acpSessionModelsV1: { v: 1, provider: 'codex', updatedAt: 'bad', currentModelId: 'm1', availableModels: [] },
+      acpConfigOptionsV1: { v: 1, provider: 'codex', updatedAt: 2, configOptions: 'bad' },
       acpSessionModeOverrideV1: { v: 1, updatedAt: 457, modeId: 'plan' },
       acpConfigOptionOverridesV1: { v: 0 },
     } as any);

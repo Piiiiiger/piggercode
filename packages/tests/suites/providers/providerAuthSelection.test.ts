@@ -48,7 +48,7 @@ describe('providers: auth overlay selection', () => {
     const out = resolveProviderAuthOverlay({
       auth: {
         mode: 'auto',
-        env: { requiredAnyOf: [['KIMI_API_KEY'], ['OPENAI_API_KEY']] },
+        env: { requiredAnyOf: [['CODEX_API_KEY'], ['OPENAI_API_KEY']] },
       },
       baseEnv: {},
     });

@@ -9,10 +9,6 @@ import {
     CONNECTED_SERVICE_ERROR_CODES,
 } from "@piggercode/protocol";
 import {
-    AGY_OAUTH_CALLBACK_URL,
-    AGY_OAUTH_SCOPES,
-    AGY_OAUTH_USERINFO_URL,
-    GEMINI_CLI_OAUTH_SCOPES,
     CLAUDE_OAUTH_PROFILE_BETA_HEADER,
     CLAUDE_OAUTH_PROFILE_URL,
     normalizeClaudeOauthProfileEntitlement,
@@ -25,14 +21,8 @@ import {
     extractOpenAiCodexEmail,
 } from "./openaiCodex/openaiCodexIdTokenClaims";
 import {
-    resolveAgyOauthClientId,
-    resolveAgyOauthClientSecret,
-    resolveAgyOauthTokenUrl,
     resolveClaudeSubscriptionOauthClientId,
     resolveClaudeSubscriptionOauthTokenUrl,
-    resolveGeminiOauthClientId,
-    resolveGeminiOauthClientSecret,
-    resolveGeminiOauthTokenUrl,
     resolveOpenAiCodexOauthClientId,
     resolveOpenAiCodexOauthTokenUrl,
 } from "./oauthConfig";
@@ -172,117 +162,6 @@ async function exchangeOpenAiCodex(params: Readonly<{
     };
 }
 
-async function exchangeGoogleInstalledApp(params: Readonly<{
-    serviceId: 'gemini' | 'antigravity';
-    code: string;
-    verifier: string;
-    redirectUri: string;
-    now: number;
-    fetcher: typeof fetch;
-}>): Promise<OauthExchangePayload> {
-    const isAgy = params.serviceId === 'antigravity';
-    if (isAgy && params.redirectUri !== AGY_OAUTH_CALLBACK_URL) {
-        throw new ConnectedServiceOauthExchangeError(CONNECTED_SERVICE_ERROR_CODES.oauthExchangeFailed, 'Unregistered Antigravity OAuth redirect');
-    }
-    const clientId = isAgy ? resolveAgyOauthClientId() : resolveGeminiOauthClientId(process.env);
-    const clientSecret = isAgy ? resolveAgyOauthClientSecret() : resolveGeminiOauthClientSecret(process.env);
-    const tokenUrl = isAgy ? resolveAgyOauthTokenUrl() : resolveGeminiOauthTokenUrl(process.env);
-    const displayName = isAgy ? 'Antigravity' : 'Gemini';
-
-    const response = await params.fetcher(tokenUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-            grant_type: "authorization_code",
-            client_id: clientId,
-            client_secret: clientSecret,
-            code: params.code,
-            code_verifier: params.verifier,
-            redirect_uri: params.redirectUri,
-        }),
-    });
-    if (!response.ok) {
-        const json: unknown = await response.json().catch(() => null);
-        const data = readRecord(json);
-        const providerError = typeof data.error === 'string' ? data.error : '';
-        const providerDescription = typeof data.error_description === 'string' ? data.error_description : '';
-        if (providerError === "invalid_grant") {
-            throw new ConnectedServiceOauthExchangeError(
-                CONNECTED_SERVICE_ERROR_CODES.oauthInvalidGrant,
-                providerDescription || `${displayName} OAuth code is invalid or expired.`,
-            );
-        }
-        if (providerError === "invalid_client") {
-            throw new ConnectedServiceOauthExchangeError(
-                CONNECTED_SERVICE_ERROR_CODES.oauthInvalidClient,
-                providerDescription || `${displayName} OAuth client credentials are invalid.`,
-            );
-        }
-        throw new ConnectedServiceOauthExchangeError(
-            CONNECTED_SERVICE_ERROR_CODES.oauthExchangeFailed,
-            `Token exchange failed: ${response.status}`,
-        );
-    }
-
-    const json = readRecord(await response.json());
-    const accessToken = assertNonEmptyString(json?.access_token, "access_token");
-    const refreshToken = typeof json?.refresh_token === "string" ? json.refresh_token : "";
-    if (!refreshToken.trim()) {
-        throw new ConnectedServiceOauthExchangeError(
-            CONNECTED_SERVICE_ERROR_CODES.oauthMissingRefreshToken,
-            `${displayName} OAuth did not return a refresh token.`,
-        );
-    }
-    const expiresIn = typeof json.expires_in === 'number' && Number.isFinite(json.expires_in) ? json.expires_in : NaN;
-    const expiresAt = Number.isFinite(expiresIn) && expiresIn > 0 ? params.now + Math.trunc(expiresIn) * 1000 : null;
-
-    const identity = isAgy ? await resolveAgyOauthIdentity({ accessToken, fetcher: params.fetcher }) : { providerEmail: null, providerAccountId: null };
-    return {
-        serviceId: params.serviceId,
-        accessToken,
-        refreshToken,
-        idToken: typeof json?.id_token === "string" ? json.id_token : null,
-        // RFC 6749 §5.1 permits omission when grants equal the requested scopes.
-        scope: typeof json.scope === "string" ? json.scope : json.scope === undefined
-            ? (isAgy ? AGY_OAUTH_SCOPES : GEMINI_CLI_OAUTH_SCOPES).join(' ')
-            : null,
-        tokenType: typeof json?.token_type === "string" ? json.token_type : null,
-        ...identity,
-        expiresAt,
-        raw: json,
-    };
-}
-
-function readRecord(value: unknown): Record<string, unknown> {
-    return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
-}
-
-async function resolveAgyOauthIdentity(params: Readonly<{ accessToken: string; fetcher: typeof fetch }>) {
-    const missing = { providerEmail: null, providerAccountId: null };
-    let response: Response;
-    try {
-        response = await params.fetcher(AGY_OAUTH_USERINFO_URL, { headers: { Authorization: `Bearer ${params.accessToken}` } });
-    } catch {
-        warn({ module: 'oauth', serviceId: 'antigravity' }, 'Optional account identity lookup unavailable');
-        return missing;
-    }
-    if (response.status === 401) {
-        throw new ConnectedServiceOauthExchangeError(CONNECTED_SERVICE_ERROR_CODES.oauthExchangeFailed, 'Antigravity access-token verification failed (401)');
-    }
-    if (response.ok) {
-        const data = readRecord(await response.json().catch(() => null));
-        const identity = {
-            providerEmail: typeof data.email === 'string' && data.email.trim() ? data.email : null,
-            providerAccountId: typeof data.sub === 'string' && data.sub.trim() ? data.sub : null,
-        };
-        if (identity.providerEmail || identity.providerAccountId) return identity;
-    }
-    warn({ module: 'oauth', serviceId: 'antigravity', status: response.status }, 'Optional account identity lookup unavailable');
-    return missing;
-}
-
 async function exchangeClaudeSubscription(params: Readonly<{
     code: string;
     verifier: string;
@@ -390,16 +269,6 @@ export async function exchangeConnectedServiceOauthTokens(params: OauthExchangeI
                 verifier: params.verifier,
                 redirectUri: params.redirectUri,
                 state,
-                now: params.now,
-                fetcher,
-            });
-        }
-        if (params.serviceId === "gemini" || params.serviceId === 'antigravity') {
-            return await exchangeGoogleInstalledApp({
-                serviceId: params.serviceId,
-                code: params.code,
-                verifier: params.verifier,
-                redirectUri: params.redirectUri,
                 now: params.now,
                 fetcher,
             });

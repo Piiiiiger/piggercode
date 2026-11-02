@@ -17,11 +17,11 @@ describe('readSessionControlMetadata', () => {
     it('selects the newest valid model and config aliases and prefers canonical ties', () => {
         const value = metadata({
             sessionModelsV1: {
-                v: 1, provider: 'grok', updatedAt: 10, currentModelId: 'canonical-model',
+                v: 1, provider: 'codex', updatedAt: 10, currentModelId: 'canonical-model',
                 availableModels: [{ id: 'canonical-model', name: 'Canonical model' }],
             },
             acpSessionModelsV1: {
-                v: 1, provider: 'grok', updatedAt: 20, currentModelId: 'legacy-model',
+                v: 1, provider: 'codex', updatedAt: 20, currentModelId: 'legacy-model',
                 availableModels: [{
                     id: 'legacy-model',
                     name: 'Legacy model',
@@ -29,11 +29,11 @@ describe('readSessionControlMetadata', () => {
                 }],
             },
             sessionConfigOptionsV1: {
-                v: 1, provider: 'grok', updatedAt: 30,
+                v: 1, provider: 'codex', updatedAt: 30,
                 configOptions: [{ id: 'effort', name: 'Effort', type: 'select', currentValue: 'high' }],
             },
             acpConfigOptionsV1: {
-                v: 1, provider: 'grok', updatedAt: 30,
+                v: 1, provider: 'codex', updatedAt: 30,
                 configOptions: [{ id: 'effort', name: 'Effort', type: 'select', currentValue: 'low' }],
             },
         });
@@ -60,11 +60,11 @@ describe('readSessionControlMetadata', () => {
     it('selects a newer valid legacy mode state and ignores a malformed canonical state', () => {
         const value = metadata({
             sessionModesV1: {
-                v: 1, provider: 'grok', updatedAt: Number.NaN, currentModeId: 'canonical-mode',
+                v: 1, provider: 'codex', updatedAt: Number.NaN, currentModeId: 'canonical-mode',
                 availableModes: [{ id: 'canonical-mode', name: 'Canonical mode' }],
             },
             acpSessionModesV1: {
-                v: 1, provider: 'grok', updatedAt: 20, currentModeId: 'legacy-mode',
+                v: 1, provider: 'codex', updatedAt: 20, currentModeId: 'legacy-mode',
                 availableModes: [{ id: 'legacy-mode', name: 'Legacy mode' }],
             },
         });

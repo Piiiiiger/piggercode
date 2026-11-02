@@ -59,8 +59,7 @@ type BuildSessionAgentPickerOptionsParams = Readonly<{
 }>;
 
 export function resolveSessionAgentPickerOptionIcon(entry: ResolvedBackendCatalogEntry): React.ReactNode {
-    // Every catalog entry resolves to an Agent mark: configured ACP backends carry the
-    // `customAcp` identity rather than none, so there is no identity-less row to fall back for.
+    // Every catalog entry resolves to an Agent mark, so there is no identity-less row to fall back for.
     return (
         <AgentIcon
             agentId={entry.iconAgentId}

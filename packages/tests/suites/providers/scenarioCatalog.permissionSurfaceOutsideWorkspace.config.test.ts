@@ -36,57 +36,6 @@ function resolveScenarioMessageMeta(scenario: ProviderScenario): Record<string, 
 }
 
 describe('scenarioCatalog (permission_surface_outside_workspace config)', () => {
-  it('applies permission surface and prompt expectations from permissions config', () => {
-    const cases = [
-      {
-        id: 'example',
-        permissions: { v: 1, acp: { permissionSurfaceOutsideWorkspaceYolo: true } },
-        expectedYolo: true,
-        expectPermissionRequestFixture: false,
-        expectedMessageMetaPermissionMode: 'yolo',
-      },
-      {
-        id: 'kilo',
-        permissions: {
-          v: 1,
-          acp: {
-            expectToolPermissionPrompts: true,
-            permissionSurfaceOutsideWorkspaceYolo: false,
-          },
-        },
-        expectedYolo: false,
-        expectPermissionRequestFixture: true,
-        expectedMessageMetaPermissionMode: 'safe-yolo',
-      },
-    ] as const;
-
-    for (const testCase of cases) {
-      const scenario = buildPermissionSurfaceScenario({
-        id: testCase.id,
-        permissions: testCase.permissions,
-      });
-      expect(scenario.yolo).toBe(testCase.expectedYolo);
-      const keys = (scenario.requiredAnyFixtureKeys ?? []).flat();
-      expect(keys.some((key) => key.includes('/permission-request/'))).toBe(testCase.expectPermissionRequestFixture);
-      const meta = resolveScenarioMessageMeta(scenario);
-      expect(meta.permissionMode).toBe(testCase.expectedMessageMetaPermissionMode);
-    }
-  });
-
-  it('uses approved_for_session auto-decision for OpenCode-family prompts', () => {
-    const scenario = buildPermissionSurfaceScenario({
-      id: 'opencode',
-      permissions: {
-        v: 1,
-        acp: {
-          expectToolPermissionPrompts: true,
-          permissionSurfaceOutsideWorkspaceYolo: false,
-        },
-      },
-    });
-
-    expect(scenario.permissionAutoDecision).toBe('approved_for_session');
-  });
 
   it('respects permissions.acp.expectToolPermissionPrompts for codex patch scenarios', () => {
     const provider = providerStub({

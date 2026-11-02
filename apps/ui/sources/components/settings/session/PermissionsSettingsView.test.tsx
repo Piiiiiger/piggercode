@@ -37,7 +37,7 @@ installSessionSettingsCommonModuleMocks({
                     if (name === 'newSessionDefaultPersistenceModeByTargetKeyV1') return [{}, setDefaultPersistenceModeByTargetKey];
                     return [null, vi.fn()];
                 },
-                useSettings: () => ({ schemaVersion: 1, opencodeBackendMode: 'server' } as any),
+                useSettings: () => ({ schemaVersion: 1 } as any),
             },
         });
     },
@@ -56,7 +56,7 @@ vi.mock('@/hooks/server/useFeatureEnabled', () => ({
 }));
 
 vi.mock('@/agents/hooks/useEnabledAgentIds', () => ({
-    useEnabledAgentIds: () => ['codex', 'opencode'],
+    useEnabledAgentIds: () => ['codex'],
 }));
 
 vi.mock('@/agents/catalog/catalog', async (importOriginal) => {

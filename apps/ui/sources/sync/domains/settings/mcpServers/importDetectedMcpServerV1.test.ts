@@ -72,29 +72,6 @@ describe('buildImportedMcpServerFromDetectedV1', () => {
         expect(out.entry.name).toBe('happier_3');
     });
 
-    it('maps detected env keys to machine-env templates by default', () => {
-        const settings = createEmptySettings();
-        const detected: DetectedMcpServerV1 = {
-            provider: 'opencode',
-            name: 'tooling',
-            transport: 'stdio',
-            stdio: { command: 'bash', args: ['-lc', 'echo ok'] },
-            envKeys: ['API_KEY'],
-            enabled: true,
-            source: { kind: 'project', path: '/workspace/.opencode/opencode.json' },
-        };
-
-        const out = buildImportedMcpServerFromDetectedV1({
-            existingSettings: settings,
-            detected,
-            machineId: 'm1',
-            nowMs: 123,
-            generateId: (() => 'id1') as any,
-        });
-
-        expect(out.entry.env).toEqual({ API_KEY: { t: 'literal', v: '${API_KEY}' } });
-    });
-
     it('maps detected remote headers to machine-env templates with stable env var naming', () => {
         const settings = createEmptySettings();
         const detected: DetectedMcpServerV1 = {
@@ -145,29 +122,6 @@ describe('buildImportedMcpServerFromDetectedV1', () => {
         expect(out.binding.enabled).toBe(false);
         expect(out.binding.target).toEqual({ t: 'machine', machineId: 'machine-123' });
         expect(out.binding.serverId).toBe(out.entry.id);
-    });
-
-    it('creates a workspace binding when the detected config is project-scoped', () => {
-        const settings = createEmptySettings();
-        const detected: DetectedMcpServerV1 = {
-            provider: 'opencode',
-            name: 'project-tools',
-            transport: 'stdio',
-            stdio: { command: 'node', args: ['server.js'] },
-            envKeys: [],
-            enabled: true,
-            source: { kind: 'project', path: '/repo/.opencode/opencode.json' },
-        };
-
-        const out = buildImportedMcpServerFromDetectedV1({
-            existingSettings: settings,
-            detected,
-            machineId: 'machine-123',
-            nowMs: 123,
-            generateId: (() => 'id1') as any,
-        });
-
-        expect(out.binding.target).toEqual({ t: 'workspace', machineId: 'machine-123', workspaceRoot: '/repo' });
     });
 
     it('reuses an existing imported server instead of creating a suffixed duplicate', () => {

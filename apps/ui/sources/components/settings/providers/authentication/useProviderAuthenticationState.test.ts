@@ -133,36 +133,4 @@ describe('useProviderAuthenticationState', () => {
         expect(hook.getCurrent().machineHomeDir).toBe(null);
     });
 
-    it('preserves ordered primary and device-code actions from the provider contribution', async () => {
-        const authPlugin: ProviderLocalAuthPlugin = {
-            providerId: 'grok',
-            support: 'login_terminal',
-            buildAuthLaunches: () => [
-                { kind: 'primary', initialCommand: 'grok login' },
-                { kind: 'device_code', initialCommand: 'grok login --device-auth' },
-            ],
-        };
-        const cliAvailability: CLIAvailability = {
-            available: { grok: true } as never,
-            login: { grok: null } as never,
-            authStatus: { grok: null } as never,
-            resolvedPath: { grok: '/opt/grok' } as never,
-            resolvedCommand: { grok: '/opt/grok' } as never,
-            resolutionSource: { grok: 'system' } as never,
-            tmux: null,
-            isDetecting: false,
-            timestamp: 123,
-            refresh: () => {},
-        };
-
-        const hook = await renderHook(() => useProviderAuthenticationState({
-            providerId: 'grok',
-            cliAvailability,
-            authPlugin,
-            primaryMachine: { id: 'm1', metadata: { homeDir: '/home/user' } },
-        }));
-
-        expect(hook.getCurrent().authLaunches.map((launch) => launch.kind)).toEqual(['primary', 'device_code']);
-        expect(hook.getCurrent().canLaunchAuth).toBe(true);
-    });
 });

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 
-import { buildBackendTargetKey, type AcpCatalogSettingsV1, type BackendTargetRefV1, type LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
+import { buildBackendTargetKey, type BackendTargetRefV1, type LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
 import { getResolvedBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { DEFAULT_AGENT_ID } from '@/agents/catalog/catalog';
@@ -39,7 +39,6 @@ export function LlmTaskRunnerConfigV1BackendModelPicker(props: Readonly<{
   const { theme } = useUnistyles();
   const showLabels = props.showLabels !== false;
   const enabledAgentIds = useEnabledAgentIds();
-  const acpCatalogSettings = useSetting('acpCatalogSettingsV1') as AcpCatalogSettingsV1 | undefined;
   const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey') as Record<string, boolean> | undefined;
   const machines = useAllMachines();
   const recentMachinePaths = useSetting('recentMachinePaths') as any[] | undefined;
@@ -49,10 +48,9 @@ export function LlmTaskRunnerConfigV1BackendModelPicker(props: Readonly<{
   const backendEntries = React.useMemo(() => {
     return getResolvedBackendCatalogEntries({
       enabledAgentIds,
-      acpCatalogSettingsV1: acpCatalogSettings ?? { v: 2, backends: [] },
       backendEnabledByTargetKey,
     });
-  }, [acpCatalogSettings, backendEnabledByTargetKey, enabledAgentIds]);
+  }, [backendEnabledByTargetKey, enabledAgentIds]);
   const selectedBackendEntry = React.useMemo(() => {
     const target = props.value?.backendTarget;
     if (!target) return null;

@@ -141,7 +141,6 @@ function buildFavoriteBackendIdentity(entry: ResolvedBackendCatalogEntry): Favor
         backendTargetKey: entry.targetKey,
         providerAgentId: entry.providerAgentId,
         builtInAgentId: entry.builtInAgentId,
-        configuredBackendId: entry.target.kind === 'configuredAcpBackend' ? entry.target.backendId : null,
     };
 }
 
@@ -218,7 +217,6 @@ function buildFavoriteModelSelectionsSignature(favorites: readonly FavoriteModel
             backendTargetKey: favorite.backendTargetKey,
             providerAgentId: favorite.providerAgentId ?? null,
             builtInAgentId: favorite.builtInAgentId ?? null,
-            configuredBackendId: favorite.configuredBackendId ?? null,
             modelId: favorite.modelId,
             backendLabel: favorite.backendLabel ?? null,
             modelLabel: favorite.modelLabel ?? null,

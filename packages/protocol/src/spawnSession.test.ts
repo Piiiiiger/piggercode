@@ -123,43 +123,6 @@ describe('spawn-session error detail contract (D2 structured continuity)', () =>
     expect('errorDetail' in legacy).toBe(false);
   });
 
-  it('carries a structured connected-service resume-unreachable detail alongside SPAWN_VALIDATION_FAILED', () => {
-    const detail: SpawnSessionErrorDetail = {
-      kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
-      continuityErrorCode: 'provider_session_state_unavailable_for_resume',
-      failurePhase: 'continuity',
-      agentId: 'pi',
-      reason: 'no_resumable_session_file',
-      uxDiagnostic: {
-        code: 'provider_session_state_unavailable_for_resume',
-        failurePhase: 'continuity',
-        source: 'spawn_resume',
-        agentId: 'pi',
-        retryable: false,
-        suggestedActions: ['start_fresh_under_selected_account', 'resume_current_account'],
-        diagnostics: {
-          reason: 'no_resumable_session_file',
-        },
-      },
-    };
-
-    const result: SpawnSessionResult = {
-      type: 'error',
-      errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED,
-      errorMessage: 'provider_session_state_unavailable_for_resume (failurePhase=continuity): ...',
-      errorDetail: detail,
-    };
-
-    expect(result.type).toBe('error');
-    if (result.type !== 'error') throw new Error('expected error result');
-    // The existing fields are unchanged: code stays SPAWN_VALIDATION_FAILED so legacy consumers work.
-    expect(result.errorCode).toBe(SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED);
-    expect(result.errorDetail).toBe(detail);
-    expect(result.errorDetail).not.toHaveProperty('vendorResumeId');
-    expect(result.errorDetail).not.toHaveProperty('cwd');
-    expect(result.errorDetail).not.toHaveProperty('targetMaterializedRoot');
-  });
-
   it('recognizes the UI-safe connected-service resume-unreachable detail via the type guard', () => {
     const detail: SpawnSessionErrorDetail = {
       kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
@@ -263,39 +226,6 @@ describe('spawn-session error detail contract (D2 structured continuity)', () =>
       requestedStateMode: 'shared',
       effectiveStateMode: 'shared',
     });
-  });
-
-  it('synthesizes a safe diagnostic for legacy resume-unreachable details without uxDiagnostic', () => {
-    const detail = normalizeSpawnSessionErrorDetail({
-      kind: SPAWN_SESSION_ERROR_DETAIL_KINDS.CONNECTED_SERVICE_RESUME_UNREACHABLE,
-      continuityErrorCode: 'provider_session_state_unavailable_for_resume',
-      failurePhase: 'continuity',
-      agentId: 'pi',
-      vendorResumeId: 'pi-session-missing',
-      cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
-      reason: 'no_resumable_session_file',
-      targetMaterializedRoot: '/Users/leeroy/.happier/materialized/pi',
-    });
-
-    expect(isConnectedServiceResumeUnreachableSpawnErrorDetail(detail)).toBe(true);
-    if (!isConnectedServiceResumeUnreachableSpawnErrorDetail(detail)) {
-      throw new Error('expected sanitized resume-unreachable detail');
-    }
-    expect(detail.reason).toBe('no_resumable_session_file');
-    expect(detail.uxDiagnostic).toMatchObject({
-      code: 'provider_session_state_unavailable_for_resume',
-      failurePhase: 'continuity',
-      source: 'spawn_resume',
-      agentId: 'pi',
-      retryable: false,
-      suggestedActions: ['start_fresh_under_selected_account', 'resume_current_account'],
-      diagnostics: {
-        reason: 'no_resumable_session_file',
-      },
-    });
-    expect(detail).not.toHaveProperty('vendorResumeId');
-    expect(detail).not.toHaveProperty('cwd');
-    expect(detail).not.toHaveProperty('targetMaterializedRoot');
   });
 
   it('rejects unsafe nested diagnostics in public resume-unreachable details', () => {

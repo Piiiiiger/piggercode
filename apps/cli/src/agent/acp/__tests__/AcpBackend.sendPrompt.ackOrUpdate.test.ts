@@ -17,10 +17,8 @@ function delay(ms: number): Promise<void> {
 function writeFakeAcpAgentScript(params: {
   dir: string;
   promptAckDelayMs: number;
-  promptAckMode?: 'ok' | 'gemini_late_empty_response_error';
 }): string {
   const ackDelayMs = Number.isFinite(params.promptAckDelayMs) ? params.promptAckDelayMs : 0;
-  const ackMode = params.promptAckMode ?? 'ok';
   const src = `
     const decoder = new TextDecoder();
     let buf = '';
@@ -31,10 +29,6 @@ function writeFakeAcpAgentScript(params: {
 
     function ok(id, result) {
       send({ jsonrpc: '2.0', id, result });
-    }
-
-    function err(id, code, message, data) {
-      send({ jsonrpc: '2.0', id, error: { code, message, data } });
     }
 
     process.stdin.on('data', (chunk) => {
@@ -79,10 +73,6 @@ function writeFakeAcpAgentScript(params: {
           }, 10);
 
           setTimeout(() => {
-            if (${JSON.stringify(ackMode)} === 'gemini_late_empty_response_error') {
-              err(id, -32603, 'Internal error', { details: 'Model stream ended with empty response text.' });
-              return;
-            }
             ok(id, {});
           }, ${ackDelayMs});
           continue;
@@ -288,52 +278,6 @@ describe('AcpBackend.sendPrompt (prompt ACK vs first session/update)', () => {
         ]);
 
         expect(outcome).toBe('resolved');
-      } finally {
-        await backendForCleanup?.dispose().catch(() => {});
-      }
-    });
-  }, 20_000);
-
-  it('surfaces a late Gemini empty-stream error after sendPrompt returns on generic first-update liveness', async () => {
-    await withTempDir('happier-acp-sendprompt-gemini-late-error-', async (dir) => {
-      const scriptPath = writeFakeAcpAgentScript({
-        dir,
-        promptAckDelayMs: 50,
-        promptAckMode: 'gemini_late_empty_response_error',
-      });
-      let backendForCleanup: AcpBackend | undefined;
-
-      try {
-        const backend = new AcpBackend({
-          agentName: 'gemini',
-          cwd: dir,
-          command: process.execPath,
-          args: [scriptPath],
-          transportHandler: createAcpTestTransportHandler({
-            agentName: 'gemini',
-            idleTimeoutMs: 1,
-          }),
-        });
-        backendForCleanup = backend;
-
-        const emitted: any[] = [];
-        backend.onMessage((msg) => emitted.push(msg));
-
-        const started = await backend.startSession();
-        const sendOutcome = await Promise.race([
-          backend.sendPrompt(started.sessionId, 'hi').then(() => 'resolved' as const),
-          delay(500).then(() => 'timeout' as const),
-        ]);
-        expect(sendOutcome).toBe('resolved');
-
-        await expect(backend.waitForResponseComplete(2_000)).rejects.toThrow(
-          'Model stream ended with empty response text',
-        );
-        await delay(200);
-
-        const errorStatuses = emitted.filter((m) => m?.type === 'status' && m?.status === 'error');
-        expect(errorStatuses).toHaveLength(1);
-        expect((backend as any).responseCompletionError).toBeTruthy();
       } finally {
         await backendForCleanup?.dispose().catch(() => {});
       }

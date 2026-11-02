@@ -5,9 +5,9 @@ import {
 import { z } from 'zod';
 
 /**
- * Daemon access-token bridge for the OpenCode Claude broker plugin. Sibling of the Codex
- * `chatgpt-auth-tokens/refresh` bridge. The broker (running in OpenCode's Bun runtime) POSTs here to
- * obtain a fresh Anthropic ACCESS token; the daemon remains the SOLE refresher and only the access
+ * Daemon access-token bridge for Claude subscription credentials. Sibling of the Codex
+ * `chatgpt-auth-tokens/refresh` bridge. A Claude runtime POSTs here to obtain a fresh
+ * Anthropic ACCESS token; the daemon remains the SOLE refresher and only the access
  * token (never the refresh token) leaves the daemon.
  */
 export const CLAUDE_SUBSCRIPTION_AUTH_TOKENS_REFRESH_PATH =

@@ -3,14 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { extractStdStreams } from './stdStreams';
 
 describe('extractStdStreams', () => {
-    it('unwraps ACP-style content arrays (Pi) into stdout', () => {
-        expect(extractStdStreams({
-            content: [{ type: 'text', text: 'line one\nline two' }],
-            details: { exit_code: 0 },
-            isError: false,
-        })).toEqual({ stdout: 'line one\nline two' });
-    });
-
     it('joins multiple text blocks in a content array', () => {
         expect(extractStdStreams({
             content: [

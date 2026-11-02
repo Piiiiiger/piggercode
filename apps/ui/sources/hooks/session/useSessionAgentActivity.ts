@@ -57,8 +57,8 @@ import { useSessionSubagents } from './useSessionSubagents';
  *   therefore complete on a cold open however little transcript has paged in (R-3);
  * - **local derivation** from the transcript, the only source with detail — the live activity line,
  *   the sidechain, permission state, the terminal instant — and the only source at all for a backend
- *   that publishes no headline (the publisher is composed for Claude only, so a Codex, Gemini or
- *   OpenCode session takes the §5.2 degrade path as a matter of course, not as an edge case).
+ *   that publishes no headline (the publisher is composed for Claude only, so a Codex
+ *   session takes the §5.2 degrade path as a matter of course, not as an edge case).
  *
  * **Two entry points, one merge.** `useSessionAgentActivity` is the narrow one: the subagent-source
  * projection plus the headline, and no subscription that ticks per streamed token. The roster

@@ -35,15 +35,12 @@ const availablePresentation = { disabled: false, muted: false } as const;
 describe('buildSessionAgentPickerOptions', () => {
     it('leads with favorites, then applicable rows, then blocked rows', () => {
         const options = buildSessionAgentPickerOptions({
-            entries: [entry('claude'), entry('codex'), entry('gemini'), entry('kimi')],
-            favoriteBackendTargetKeys: ['builtInAgent:gemini'],
+            entries: [entry('claude'), entry('codex')],
+            favoriteBackendTargetKeys: ['builtInAgent:codex'],
             leadingOptions: [{ id: 'favorite-models', label: 'Favorites' }],
             resolvePresentation: (candidate) => {
-                if (candidate.providerAgentId === 'kimi') {
+                if (candidate.providerAgentId === 'claude') {
                     return { subtitle: 'CLI not detected', disabled: true, muted: true };
-                }
-                if (candidate.providerAgentId === 'codex') {
-                    return { subtitle: 'Not signed in', disabled: false, muted: true };
                 }
                 return availablePresentation;
             },
@@ -52,18 +49,16 @@ describe('buildSessionAgentPickerOptions', () => {
 
         expect(options.map((option) => option.id)).toEqual([
             'favorite-models',
-            'builtInAgent:gemini',
-            'builtInAgent:claude',
             'builtInAgent:codex',
-            'builtInAgent:kimi',
+            'builtInAgent:claude',
         ]);
     });
 
     it('carries the caller-owned explanation, availability, and behavior onto each row', () => {
         const onSelectImmediate = vi.fn();
         const options = buildSessionAgentPickerOptions({
-            entries: [entry('codex'), entry('kimi')],
-            resolvePresentation: (candidate) => (candidate.providerAgentId === 'kimi'
+            entries: [entry('codex'), entry('claude')],
+            resolvePresentation: (candidate) => (candidate.providerAgentId === 'claude'
                 ? { subtitle: 'Update the CLI', disabled: true, muted: true }
                 : availablePresentation),
             resolveBehavior: ({ presentation, entry: candidate }) => (presentation.disabled
@@ -71,7 +66,7 @@ describe('buildSessionAgentPickerOptions', () => {
                 : { closeOnSelectImmediate: false, onSelectImmediate }),
         });
 
-        const [codexOption, kimiOption] = options;
+        const [codexOption, claudeOption] = options;
         expect(codexOption).toMatchObject({
             id: 'builtInAgent:codex',
             label: 'codex',
@@ -79,14 +74,14 @@ describe('buildSessionAgentPickerOptions', () => {
             muted: false,
             closeOnSelectImmediate: false,
         });
-        expect(kimiOption).toMatchObject({
-            id: 'builtInAgent:kimi',
+        expect(claudeOption).toMatchObject({
+            id: 'builtInAgent:claude',
             disabled: true,
             muted: true,
             subtitle: 'Update the CLI',
             detailDescription: 'Update the CLI',
         });
-        expect(kimiOption?.onSelectImmediate).toBeUndefined();
+        expect(claudeOption?.onSelectImmediate).toBeUndefined();
 
         codexOption?.onSelectImmediate?.();
         expect(onSelectImmediate).toHaveBeenCalledTimes(1);
@@ -111,20 +106,4 @@ describe('buildSessionAgentPickerOptions', () => {
         ]);
     });
 
-    it('renders a configured ACP backend through its own catalog icon identity', () => {
-        const [option] = buildSessionAgentPickerOptions({
-            entries: [entry('customAcp', {
-                target: { kind: 'configuredAcpBackend', backendId: 'ultracode' } as ResolvedBackendCatalogEntry['target'],
-                targetKey: 'configuredAcpBackend:ultracode',
-                family: 'configuredAcpBackend',
-                builtInAgentId: null,
-                title: 'Ultracode',
-            })],
-            resolvePresentation: () => availablePresentation,
-            resolveBehavior: () => ({}),
-        });
-
-        expect(option?.id).toBe('configuredAcpBackend:ultracode');
-        expect(React.isValidElement(option?.icon)).toBe(true);
-    });
 });

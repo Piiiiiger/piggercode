@@ -206,7 +206,7 @@ describe('initializeBackendRunSession', () => {
         metadata,
         state,
         existingSessionId: ' session-123 ',
-        uiLogPrefix: '[Qwen]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },
@@ -238,7 +238,7 @@ describe('initializeBackendRunSession', () => {
     expect(daemonReports).toEqual([' session-123 '])
     expect(persisted).toEqual([' session-123 '])
     expect(fallbackCount).toBe(1)
-    expect(primedWithPrefix).toBe('[Qwen]')
+    expect(primedWithPrefix).toBe('[Codex]')
   })
 
   it('does not apply startup metadata update when attach snapshot is unavailable', async () => {
@@ -266,7 +266,7 @@ describe('initializeBackendRunSession', () => {
         metadata,
         state,
         existingSessionId: 'session-456',
-        uiLogPrefix: '[Kilo]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },
@@ -570,7 +570,7 @@ describe('initializeBackendRunSession', () => {
         sessionTag: 'tag-3',
         metadata,
         state,
-        uiLogPrefix: '[OpenCode]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },
@@ -617,7 +617,7 @@ describe('initializeBackendRunSession', () => {
         sessionTag: 'tag-4',
         metadata,
         state,
-        uiLogPrefix: '[OpenCode]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },
@@ -902,7 +902,7 @@ describe('initializeBackendRunSession', () => {
         sessionTag: 'tag-5',
         metadata,
         state,
-        uiLogPrefix: '[Kimi]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },
@@ -931,7 +931,7 @@ describe('initializeBackendRunSession', () => {
         metadata,
         state,
         existingSessionId: 'session-order',
-        uiLogPrefix: '[Gemini]',
+        uiLogPrefix: '[Codex]',
         startupMetadataOverrides: {
           permissionModeOverride: { mode: 'default', updatedAt: 100 },
         },

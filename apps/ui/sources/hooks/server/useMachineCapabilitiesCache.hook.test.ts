@@ -589,7 +589,7 @@ describe('useMachineCapabilitiesCache (hook)', () => {
                         response: {
                             protocolVersion: 1,
                             results: {
-                                'cli.gemini': { ok: true, checkedAt: 1, data: { available: true } },
+                                'cli.claude': { ok: true, checkedAt: 1, data: { available: true } },
                             },
                         },
                     };
@@ -607,7 +607,7 @@ describe('useMachineCapabilitiesCache (hook)', () => {
         });
 
         expect(getMachineCapabilitiesSnapshot('m1')?.response.results).toEqual({
-            'cli.gemini': { ok: true, checkedAt: 1, data: { available: true } },
+            'cli.claude': { ok: true, checkedAt: 1, data: { available: true } },
         });
     });
 

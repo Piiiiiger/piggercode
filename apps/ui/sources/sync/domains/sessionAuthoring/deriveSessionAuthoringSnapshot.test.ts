@@ -21,12 +21,6 @@ describe('deriveSessionAuthoringSnapshot', () => {
                     codexBackendMode: 'acp',
                     permissionMode: 'read-only',
                     permissionModeUpdatedAt: 10,
-                    acpConfiguredBackendV1: {
-                        v: 1,
-                        updatedAt: 20,
-                        backendId: 'review-bot',
-                        title: 'Review Bot',
-                    },
                     sessionModeOverrideV1: {
                         v: 1,
                         updatedAt: 30,
@@ -60,8 +54,8 @@ describe('deriveSessionAuthoringSnapshot', () => {
 
         expect(snapshot).toEqual({
             directory: '/tmp/project',
-            agentId: null,
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            agentId: 'codex',
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             transcriptStorage: null,
             profileId: 'profile-1',
             permissionMode: 'safe-yolo',

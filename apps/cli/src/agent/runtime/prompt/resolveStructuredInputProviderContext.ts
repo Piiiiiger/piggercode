@@ -16,13 +16,12 @@ import {
  * The send-time provider resolver (D-3, INV-9, R-10).
  *
  * `MentionRefV1` carries identity only, but providers need more: Codex drops any skill item
- * that lacks BOTH `name` and `path` (`backends/codex/appServer/turnInput.ts`), and OpenCode
- * uses `vendorPluginRef` verbatim as an agent name. So the provider context is reconstructed
+ * that lacks BOTH `name` and `path` (`backends/codex/appServer/turnInput.ts`). So the provider context is reconstructed
  * here, from the live session catalogs, at dispatch — never from a snapshot frozen into the
  * reference when the composer wrote it, which is what INV-9 forbids.
  *
  * It is agent-neutral on purpose: one resolver produces the resolved envelope and every
- * adapter consumes it unchanged, so Codex and OpenCode can never drift into two policies
+ * adapter consumes it unchanged, so adapters can never drift into separate policies
  * (EU-D0 §4). Provider branching stays in the provider leaves.
  */
 

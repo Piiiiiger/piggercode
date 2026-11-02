@@ -27,16 +27,10 @@ function asNonEmptyStringTuple<T extends string>(values: readonly T[]): [T, ...T
 }
 
 export const SpawnSessionPermissionModeSchema = z.enum(asNonEmptyStringTuple(PERMISSION_MODES));
-const SpawnBackendTargetSchema = z.union([
-  z.object({
-    kind: z.literal('builtInAgent'),
-    agentId: z.enum(asNonEmptyStringTuple(CATALOG_AGENT_IDS as readonly CatalogAgentId[])),
-  }),
-  z.object({
-    kind: z.literal('configuredAcpBackend'),
-    backendId: z.string().trim().min(1),
-  }),
-]);
+const SpawnBackendTargetSchema = z.object({
+  kind: z.literal('builtInAgent'),
+  agentId: z.enum(asNonEmptyStringTuple(CATALOG_AGENT_IDS as readonly CatalogAgentId[])),
+});
 export { SpawnSessionTerminalSchema };
 
 export { SpawnSessionExecutionAuthorizationSchema };

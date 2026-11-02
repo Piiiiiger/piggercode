@@ -3,16 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { ReviewStartInputSchema } from './reviewStart.js';
 
 describe('ReviewStartInputSchema', () => {
-  it('defaults review scope to uncommitted changes and does not require explicit coderabbit engine config', () => {
+  it('defaults review scope to uncommitted changes', () => {
     const parsed = ReviewStartInputSchema.parse({
-      engineIds: ['coderabbit'],
+      engineIds: ['claude'],
       instructions: 'Review.',
       base: { kind: 'none' },
     });
 
     expect(parsed.changeType).toBe('uncommitted');
-    // When coderabbit is selected, surfaces should not need to inject an empty config object.
-    expect(parsed.engines?.coderabbit).toEqual({});
   });
 
   it('defaults missing review instructions to an execution-run review', () => {

@@ -9,7 +9,6 @@ import {
     SessionHandoffStatusSchema,
     SessionHandoffTargetResumeResponseV2Schema,
     SPAWN_SESSION_ERROR_CODES,
-    readAcpConfiguredBackendV1FromMetadata,
 } from '@piggercode/protocol';
 import type {
     AgentRuntimeDescriptorV1,
@@ -945,11 +944,10 @@ export async function completeSessionHandoff(options: CompleteSessionHandoffOpti
     if (!targetV2Capability.ok) return targetV2Capability;
 
     const sourceMetadata = storage.getState().sessions?.[options.sessionId]?.metadata ?? options.sourceMetadata;
-    const configuredBackend = readAcpConfiguredBackendV1FromMetadata(sourceMetadata);
     const sourceAgentId = resolveAgentIdFromSessionMetadata(sourceMetadata);
-    const sourceBackendTarget: BackendTargetRefV1 | null = configuredBackend
-        ? { kind: 'configuredAcpBackend', backendId: configuredBackend.backendId }
-        : sourceAgentId ? { kind: 'builtInAgent', agentId: sourceAgentId } : null;
+    const sourceBackendTarget: BackendTargetRefV1 | null = sourceAgentId
+        ? { kind: 'builtInAgent', agentId: sourceAgentId }
+        : null;
     if (sourceMetadata.connectedServices != null) {
         if (!sourceBackendTarget) return unsupportedError('Cannot determine the connected account launch target for this handoff');
         try {
@@ -1167,9 +1165,7 @@ export async function completeSessionHandoff(options: CompleteSessionHandoffOpti
     const targetAttemptId = `target_${started.response.handoffId}`;
     const resumeResult = await resumeSessionHandoffTargetV2({
         machineId: options.targetMachineId,
-        backendTarget: configuredBackend
-            ? { kind: 'configuredAcpBackend', backendId: configuredBackend.backendId }
-            : { kind: 'builtInAgent', agentId: preparedResponse.resume.agent },
+        backendTarget: { kind: 'builtInAgent', agentId: preparedResponse.resume.agent },
         handoffId: started.response.handoffId,
         sessionId: options.sessionId,
         attemptId: targetAttemptId,
@@ -1508,7 +1504,6 @@ export async function performSessionHandoffRecoveryAction(params: Readonly<{
         backendTarget: { kind: 'builtInAgent', agentId: sourceResume.agent },
         ...(sourceResume.resume ? { resume: sourceResume.resume } : {}),
         ...(sourceAgentRuntimeDescriptor ? { agentRuntimeDescriptorV1: sourceAgentRuntimeDescriptor } : {}),
-        ...(sourceResume.environmentVariables ? { environmentVariables: sourceResume.environmentVariables } : {}),
         transcriptStorage: sourceResume.transcriptStorage,
         ...buildCodexBackendTransportFields({
             codexBackendMode: sourceResume.codexBackendMode,

@@ -11,7 +11,7 @@ export async function resolveTrackedSessionTerminalPresentation(tracked: Tracked
   const agentId = resolveTrackedSessionCatalogAgentId(tracked);
   const hooks = await requireCatalogEntry(agentId).getDaemonSpawnHooks?.();
   return resolveDaemonTerminalPresentation({
-    hooks, host, agentId, configuredAcpBackend: options.backendTarget?.kind === 'configuredAcpBackend',
+    hooks, host, agentId,
     accountSettings: null,
     runtimeSelection: { experimentalCodexAcp: options.experimentalCodexAcp,
       codexBackendMode: options.codexBackendMode, agentRuntimeDescriptorV1: options.agentRuntimeDescriptorV1,

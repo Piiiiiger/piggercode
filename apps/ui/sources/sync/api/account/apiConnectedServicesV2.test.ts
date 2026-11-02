@@ -258,43 +258,6 @@ describe('apiConnectedServicesV2', () => {
     );
   });
 
-  it('does not replay a one-use authorization code after an inconclusive server failure', async () => {
-    mockServerConfig();
-    let exchangeRequests = 0;
-    vi.stubGlobal('fetch', vi.fn(async (input: unknown) => {
-      if (new URL(String(input)).pathname.endsWith('/oauth/exchange')) {
-        exchangeRequests += 1;
-        return exchangeRequests === 1 ? new Response('', { status: 503 }) : Response.json({ bundle: 'replayed-bundle' });
-      }
-      return Response.json({ ok: true });
-    }));
-    const { exchangeConnectedServiceOauthViaProxy } = await import('./apiConnectedServicesV2');
-    await expect(exchangeConnectedServiceOauthViaProxy(credentials, {
-      serviceId: 'gemini', publicKey: 'synthetic-key', code: 'one-use-code',
-      verifier: 'synthetic-verifier', redirectUri: 'http://localhost:54545/oauth2callback',
-    })).rejects.toThrow();
-    expect(exchangeRequests).toBe(1);
-  });
-
-  it('does not replay a one-use authorization code after a transport failure', async () => {
-    mockServerConfig();
-    let exchangeRequests = 0;
-    vi.stubGlobal('fetch', vi.fn(async (input: unknown) => {
-      if (new URL(String(input)).pathname.endsWith('/oauth/exchange')) {
-        exchangeRequests += 1;
-        if (exchangeRequests === 1) throw new TypeError('Connection lost after exchange');
-        return Response.json({ bundle: 'replayed-bundle' });
-      }
-      return Response.json({ ok: true });
-    }));
-    const { exchangeConnectedServiceOauthViaProxy } = await import('./apiConnectedServicesV2');
-    await expect(exchangeConnectedServiceOauthViaProxy(credentials, {
-      serviceId: 'gemini', publicKey: 'synthetic-key', code: 'one-use-code',
-      verifier: 'synthetic-verifier', redirectUri: 'http://localhost:54545/oauth2callback',
-    })).rejects.toThrow();
-    expect(exchangeRequests).toBe(1);
-  });
-
   it('starts OpenAI Codex device auth via the v2 endpoint', async () => {
     mockServerConfig();
     const fetchMock = vi.fn(async (input: unknown, _init?: RequestInit) => {

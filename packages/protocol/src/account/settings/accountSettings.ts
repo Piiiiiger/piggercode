@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 import { ActionsSettingsV1Schema, type ActionsSettingsV1 } from '../../actions/actionSettings.js';
-import { AcpCatalogSettingsV1Schema } from '../../acpCatalog/settingsV1.js';
 import {
   CodingPromptBehaviorV1Schema,
   DEFAULT_CODING_PROMPT_BEHAVIOR_V1,
@@ -396,7 +395,6 @@ export const AccountSettingsSchema = z.preprocess(
         deriveExpoPushNotificationChannelFromLegacySettings(DEFAULT_NOTIFICATIONS_SETTINGS_V1),
       ]),
       codingPromptBehaviorV1: CodingPromptBehaviorV1Schema.default(DEFAULT_CODING_PROMPT_BEHAVIOR_V1),
-      acpCatalogSettingsV1: AcpCatalogSettingsV1Schema.catch({ v: 2, backends: [] }).default({ v: 2, backends: [] }),
     })
     .passthrough(),
 );

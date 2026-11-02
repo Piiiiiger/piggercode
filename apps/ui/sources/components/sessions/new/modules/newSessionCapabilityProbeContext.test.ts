@@ -1,20 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
 describe('resolveNewSessionCapabilityProbeContext (stability)', () => {
-    it('uses the session runtime identity ahead of changed account defaults', async () => {
-        vi.resetModules();
-        vi.doUnmock('@piggercode/agents');
-        const { resolveNewSessionCapabilityProbeContext } = await import('./newSessionCapabilityProbeContext');
-        const { settingsDefaults } = await import('@/sync/domains/settings/settings');
-        const context = resolveNewSessionCapabilityProbeContext({
-            backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
-            settings: { ...settingsDefaults, opencodeBackendMode: 'server' },
-            sessionMetadata: { opencodeBackendMode: 'acp' },
-        });
-        expect(context?.capabilityParams).toEqual({ runtimeKindOverride: 'acp' });
-        expect(context?.cacheKeySuffixParts).toEqual(['acp']);
-    });
-
     it('returns stable references when runtimeKind is unchanged', async () => {
         vi.resetModules();
 

@@ -21,8 +21,6 @@ type SettingsRouteChromeDefinition = Readonly<{
 const SETTINGS_ROUTE_CHROME_DEFINITIONS: readonly SettingsRouteChromeDefinition[] = [
     { name: 'index', titleKey: 'settings.title', headerBackTitleKey: 'common.home' },
     { name: 'account', titleKey: 'settings.account' },
-    { name: 'acp-backend', titleKey: 'settings.acpCatalogBackendEditorTitle' },
-    { name: 'acp', titleKey: 'settings.acpCatalog' },
     { name: 'actions', titleKey: 'common.actions' },
     { name: 'actions/[actionId]', titleKey: 'common.actions' },
     { name: 'add-phone', titleKey: 'settings.addYourPhone' },

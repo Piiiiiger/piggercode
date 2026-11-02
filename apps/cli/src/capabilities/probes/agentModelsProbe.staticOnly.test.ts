@@ -16,16 +16,8 @@ vi.mock('./validateCatalogAcpProbeSpawn', () => ({
   validateCatalogAcpProbeSpawn: validateCatalogAcpProbeSpawnMock,
 }));
 
-const { createConfiguredAcpProbeBackendMock } = vi.hoisted(() => ({
-  createConfiguredAcpProbeBackendMock: vi.fn(async () => null),
-}));
-
 const { claudePreflightModelsProbeMock } = vi.hoisted(() => ({
   claudePreflightModelsProbeMock: vi.fn(async (): Promise<unknown | null> => null),
-}));
-
-vi.mock('./createConfiguredAcpProbeBackend', () => ({
-  createConfiguredAcpProbeBackend: createConfiguredAcpProbeBackendMock,
 }));
 
 vi.mock('@/backends/catalog', () => ({
@@ -34,9 +26,6 @@ vi.mock('@/backends/catalog', () => ({
       getPreflightSessionControlsProbeAdapter: async () => ({
         probeModelsRaw: claudePreflightModelsProbeMock,
       }),
-    },
-    kimi: {
-      getAcpBackendFactory: vi.fn(),
     },
   },
 }));
@@ -48,59 +37,8 @@ describe('probeAgentModelsBestEffort (static-only providers)', () => {
     resetAgentModelsProbeCacheForTests();
     createCatalogAcpBackendMock.mockReset();
     validateCatalogAcpProbeSpawnMock.mockClear();
-    createConfiguredAcpProbeBackendMock.mockClear();
     claudePreflightModelsProbeMock.mockReset();
     claudePreflightModelsProbeMock.mockResolvedValue(null);
-  });
-
-  it('does not start ACP backend for qwen model probing', async () => {
-    createCatalogAcpBackendMock.mockRejectedValue(new Error('unexpected acp backend creation'));
-    const res = await probeAgentModelsBestEffort({
-      agentId: 'qwen',
-      cwd: process.cwd(),
-      timeoutMs: 100,
-    });
-
-    expect(res.provider).toBe('qwen');
-    expect(res.source).toBe('static');
-    expect(createCatalogAcpBackendMock).not.toHaveBeenCalled();
-  });
-
-  it('starts the ACP backend for kimi model probing', async () => {
-    validateCatalogAcpProbeSpawnMock.mockResolvedValue({ ok: true });
-    const dispose = vi.fn(async () => undefined);
-    createCatalogAcpBackendMock.mockResolvedValue({
-      backend: {
-        startSession: async () => ({ sessionId: 'kimi-probe-session' }),
-        getSessionModelState: () => ({
-          availableModels: [
-            { id: 'kimi-code/kimi-for-coding', name: 'kimi-for-coding' },
-            { id: 'kimi-code/kimi-for-coding,thinking', name: 'kimi-for-coding (thinking)' },
-          ],
-        }),
-        getSessionConfigOptionsState: () => null,
-        dispose,
-      },
-    });
-
-    const res = await probeAgentModelsBestEffort({
-      agentId: 'kimi',
-      cwd: process.cwd(),
-      timeoutMs: 100,
-    });
-
-    expect(res.provider).toBe('kimi');
-    expect(res.source).toBe('dynamic');
-    expect(res.availableModels).toEqual([
-      { id: 'default', name: 'Default' },
-      { id: 'kimi-code/kimi-for-coding', name: 'kimi-for-coding' },
-      { id: 'kimi-code/kimi-for-coding,thinking', name: 'kimi-for-coding (thinking)' },
-    ]);
-    expect(createCatalogAcpBackendMock).toHaveBeenCalledWith('kimi', expect.objectContaining({
-      cwd: process.cwd(),
-      permissionMode: 'default',
-    }));
-    expect(dispose).toHaveBeenCalled();
   });
 
   it('falls back to curated static Claude model labels when dynamic probing is unavailable', async () => {

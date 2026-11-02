@@ -84,8 +84,6 @@ const FIELD_GUIDANCE_BY_ACTION_ID: Readonly<Record<string, Readonly<Record<strin
   'agents.models.list': {
     agentId: [{ text: 'Use listAgentBackends first if you do not already know the backend name', requiresActionIds: ['agents.backends.list'] }],
     backendTargetKey: [{
-      text: 'Required when using customAcp; pass the exact configured backendTargetKey such as acpBackend:review-bot',
-    }, {
       text: 'Use listAgentBackends first if you do not already know the backend name',
       requiresActionIds: ['agents.backends.list'],
     }],

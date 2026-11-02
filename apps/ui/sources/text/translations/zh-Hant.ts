@@ -276,50 +276,6 @@ const settingsAppearanceTranslationExtension = {
 } as const;
 
 const zhHantAcpCatalogSettingsExtension = {
-    acpCatalog: 'ACP 後端',
-    acpCatalogSubtitle: '管理內建與自訂 ACP 後端',
-    acpCatalogBuiltIn: '內建 ACP',
-    acpCatalogBuiltInFooter: '內建的通用 ACP 代理定義在共享目錄中，並透過共享 ACP 執行階段執行。',
-    acpCatalogBackends: '自訂後端',
-    acpCatalogBackendsFooter: '每個自訂後端都是一個可選擇的、相容 ACP 的 CLI 定義，擁有自己的啟動器、預設值與驗證設定。',
-    acpCatalogBackendsEmptyTitle: '沒有自訂 ACP 後端',
-    acpCatalogBackendsEmptySubtitle: '新增一個後端以建立可選擇的自訂 ACP 後端。',
-    acpCatalogAddBackend: '新增 ACP 後端',
-    acpCatalogAddBackendSubtitle: '建立自訂 ACP 後端',
-    acpCatalogBackendEditorTitle: 'ACP 後端',
-    acpCatalogBasics: '基礎',
-    acpCatalogLauncher: '啟動器',
-    acpCatalogEnv: '環境',
-    acpCatalogAddEnv: '新增環境變數',
-    acpCatalogAddEnvSubtitle: '儲存字面值或繫結已儲存的密鑰',
-    acpCatalogEnvEmptyTitle: '沒有環境變數',
-    acpCatalogEnvEmptySubtitle: '為此後端新增啟動時變數。',
-    acpCatalogAuth: '驗證',
-    acpCatalogAuthSupport: '驗證支援',
-    acpCatalogAuthParser: '狀態解析器',
-    acpCatalogCapabilities: '能力',
-    acpCatalogTransportProfile: '傳輸設定',
-    acpCatalogSupportsLoadSession: '支援恢復工作階段',
-    acpCatalogSupportsModes: '支援模式',
-    acpCatalogSupportsModels: '支援模型',
-    acpCatalogSupportsConfigOptions: '支援設定選項',
-    acpCatalogPromptImageSupport: '提示圖片支援',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: '名稱',
-    acpCatalogFieldTitle: '標題',
-    acpCatalogFieldDescription: '說明',
-    acpCatalogFieldCommand: '命令',
-    acpCatalogFieldArgs: '引數（每行一個）',
-    acpCatalogMachineLoginKey: '機器登入金鑰',
-    acpCatalogDocsUrl: '文件 URL',
-    acpCatalogLoginCommand: '登入命令',
-    acpCatalogLoginArgs: '登入引數（每行一個）',
-    acpCatalogStatusCommand: '狀態命令標記（每行一個）',
-    acpCatalogDefaultMode: '預設模式',
-    acpCatalogDefaultModel: '預設模型',
-    acpCatalogDeleteBackendTitle: '刪除 ACP 後端？',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `刪除「${name}」？`,
-    acpCatalogValidationFailed: 'ACP 目錄設定無效。',
 } as const;
 
 const acpCatalogTranslationExtension = {
@@ -1186,8 +1142,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
             openaiCodex: 'OpenAI Codex（OpenAI）',
             openai: 'OpenAI API 金鑰',
             anthropic: 'Anthropic API 金鑰',
-            gemini: 'Google Gemini（Google）',
-            antigravity: 'Google Antigravity',
             github: 'GitHub',
         },
         title: '已連線服務',
@@ -1361,12 +1315,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
             pasteRedirectUrlPromptBody:
                 '完成 OAuth 後，從瀏覽器網址列複製最終重新導向的 URL 並貼上到這裡。',
             providerOverrides: {
-                antigravity: {
-                    connectWebDescription: "下一步：使用 Google 登入。Antigravity 會顯示可複製的授權碼。",
-                    pasteRedirectUrlPromptBody: "1) 使用 Google 登入。2) 複製 antigravity.google 顯示的授權碼。3) 保持此登入頁面開啟，並貼到下方。",
-                    pasteRedirectUrlPlaceholder: "貼上 Antigravity 授權碼",
-                    pasteRedirectUrlTitle: "貼上授權碼",
-                },
                 claudeSubscription: {
                     connectWebDescription:
                         '下一步：在開啟的頁面登入。Claude 可能會顯示一段程式碼字串，而不是自動重新導向。',
@@ -2437,7 +2385,7 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
 		        mcpServersDetectedRefreshSubtitle: '掃描此機器上的提供者設定檔',
 		        mcpServersDetectedWarningsTitle: '偵測警告',
 		        mcpServersDetectedEmptyTitle: '未偵測到 MCP 伺服器',
-		        mcpServersDetectedEmptySubtitle: '點一下重新整理以掃描 Claude／Codex／OpenCode 設定。',
+		        mcpServersDetectedEmptySubtitle: '點一下重新整理以掃描 Claude／Codex 設定。',
 		        mcpServersImportTitle: '要匯入 MCP 伺服器嗎？',
 		        mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) => `要從 ${provider} 匯入「${name}」嗎？`,
 		        mcpServersImportAction: '匯入',
@@ -3911,105 +3859,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
                         subtitle: "提供給進階使用者的 Agent SDK 覆寫設定（於用戶端驗證）。"
                     }
                 }
-            },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "OpenCode 版本",
-                        footer: "自動模式優先使用 opencode，無法使用時改用 opencode2，並在啟動後偵測伺服器 API。穩定版一律選擇 opencode，但仍會偵測 V1 或 V2。V2 優先使用 opencode2，否則以已選擇 V2 的方式使用 opencode。Happier MCP 工具可透過 V2 的 ACP 模式使用；其伺服器 API 暫不支援動態 MCP 註冊。"
-                    },
-                    backendMode: {
-                        title: "後端模式",
-                        footer: "伺服器模式可解鎖提問與原生分叉。ACP 模式是舊版後備方案。"
-                    },
-                    server: {
-                        title: "伺服器連線",
-                        footer: "留空即可使用 Happier 管理的 OpenCode 伺服器生命週期。設定絕對 http(s) URL 以連線到現有的 OpenCode 伺服器。"
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "CLI 版本",
-                        subtitle: "選擇 Happier 要啟動的已安裝 OpenCode 指令。",
-                        options: {
-                            auto: { title: "自動（建議）", subtitle: "優先使用 opencode，無法使用時改用 opencode2。" },
-                            stable: { title: "穩定版", subtitle: "一律啟動 opencode，並在啟動後偵測伺服器 API。" },
-                            v2: { title: "V2", subtitle: "優先使用 opencode2；否則以已選擇 V2 的方式啟動 opencode。" }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "OpenCode 後端模式",
-                        subtitle: "選擇整合後端。",
-                        options: {
-                            server: {
-                                title: "伺服器（建議）",
-                                subtitle: "使用 OpenCode 伺服器 API，以獲得更完整的功能與更高可靠性。"
-                            },
-                            acp: {
-                                title: "ACP（舊版）",
-                                subtitle: "透過 ACP 路由 OpenCode；功能較少。"
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "現有 OpenCode 伺服器 URL",
-                        subtitle: "使用者自管 OpenCode 伺服器的可選覆寫位址。"
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "Cursor 命令列",
-                        footer: "當自動偵測不足時，使用指定的 Cursor 二進位檔。Happier 優先使用 cursor-agent，並可在啟用時回退到 agent。"
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Cursor 二進位路徑",
-                        subtitle: "可選的 cursor-agent 或 agent 絕對路徑。"
-                    },
-                    cursorApiEndpoint: {
-                        title: "Cursor API 端點",
-                        subtitle: "可選的 Cursor Agent API 端點覆寫。"
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "允許 agent 回退",
-                        subtitle: "當 cursor-agent 無法使用時使用 agent 命令。"
-                    }
-                }
-            },
-            customAcp: {
-                title: "自訂 ACP"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
             },
             codex: {
                 title: 'Codex',
@@ -5596,9 +5445,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         browseSourceCodexUserHome: "我的 Codex 主目錄",
         browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
         browseSourceClaudeDefault: "預設 Claude 設定",
-        browseSourceOpenCodeDefault: "預設 OpenCode 伺服器",
-        browseSourceAcpAgentSessions: '代理工作階段',
-        browseSourcePiDefault: "預設 Pi 代理目錄",
         browseCandidates: "可用工作階段",
         browseNoMachines: "目前尚無可用於直接工作階段的機器。",
         browseNoCandidates: "找不到這台機器與提供者對應的工作階段。",
@@ -5660,12 +5506,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         claudeCodeSessionIdCopied: 'Claude Code 工作階段 ID 已複製到剪貼簿',
         aiProvider: 'AI 提供者',
         failedToCopyClaudeCodeSessionId: '複製 Claude Code 工作階段 ID 失敗',
-        copilotSessionId: 'Copilot 工作階段 ID',
-        copilotSessionIdCopied: 'Copilot 工作階段 ID 已複製到剪貼簿',
-        cursorSessionId: 'Cursor 工作階段 ID',
-        cursorSessionIdCopied: 'Cursor 工作階段 ID 已複製到剪貼簿',
-        grokSessionId: "Grok 工作階段 ID",
-        grokSessionIdCopied: "Grok 工作階段 ID 已複製到剪貼簿",
         metadataCopied: '中繼資料已複製到剪貼簿',
         failedToCopyMetadata: '複製中繼資料失敗',
         failedToKillSession: '終止工作階段失敗',
@@ -5810,11 +5650,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         agent: {
             claude: 'Claude',
             codex: 'Codex',
-            customAcp: '自訂 ACP',
-            gemini: 'Gemini',
-            copilot: 'Copilot',
-            cursor: 'Cursor',
-            grok: 'Grok',
         },
           model: {
               title: '模型',
@@ -5849,16 +5684,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
             gpt5Low: 'GPT-5 低',
             gpt5Medium: 'GPT-5 中',
             gpt5High: 'GPT-5 高',
-        },
-        geminiPermissionMode: {
-            title: 'GEMINI 權限模式',
-            default: '預設',
-            readOnly: '唯讀',
-            safeYolo: '安全 YOLO',
-            yolo: 'YOLO',
-            badgeReadOnly: '唯讀',
-            badgeSafeYolo: '安全 YOLO',
-            badgeYolo: 'YOLO',
         },
         context: {
             remaining: ({ percent }: { percent: number }) => `剩餘 ${percent}%`,
@@ -6035,12 +5860,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         taskView: {
             moreTools: ({ count }: { count: number }) => `+${count} 個更多工具`,
         },
-        workspaceIndexingPermission: {
-            defaultTitle: '工作區索引',
-            description: '索引可幫助代理更快搜尋你的程式碼庫並提供更準確的答案。這可能會掃描工作區中的檔案。',
-            optionFallback: '選項',
-            chooseOptionHint: '請選擇下方的選項以繼續。',
-        },
         acpHistoryImport: {
             title: '匯入工作階段歷史記錄？',
             defaultNote: '此工作階段歷史記錄與 Happier 中既有內容不同。匯入可能會產生重複項。',
@@ -6090,9 +5909,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
             switchMode: '切換模式',
             taskOutput: '任務輸出',
             taskStop: '停止任務',
-        },
-        geminiExecute: {
-            cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
         },
         desc: {
             terminalCmd: ({ cmd }: { cmd: string }) => `終端機（命令：${cmd}）`,
@@ -8114,11 +7930,11 @@ settingsSession: {
                     "welcome": {
                         "title": "歡迎使用 Happier",
                         "everywhereTitle": "你的 AI 代理，出現在每個工作場景",
-                        "everywhereBody": "Claude Code、Codex、OpenCode、Pi，以及更多：手機、平板、瀏覽器或桌面端都能使用。",
+                        "everywhereBody": "Claude Code 和 Codex：手機、平板、瀏覽器或桌面端都能使用。",
                         "cockpitTitle": "你的行動 cockpit",
                         "cockpitBody": "聊天、檔案、Git、編輯器、終端機。打造並發布下一個專案所需的一切，都在指尖。",
                         "existingTitle": "既有工作階段，已經在那裡",
-                        "existingBody": "任何在你機器上執行的 Claude、Codex 或 OpenCode 工作階段，都可以在 Happier 中即時開啟。",
+                        "existingBody": "任何在你機器上執行的 Claude 或 Codex 工作階段，都可以在 Happier 中即時開啟。",
                         "voiceTitle": "可以一起腦力激盪的語音助理",
                         "voiceBody": "詢問代理正在做什麼，核准權限請求，並傳送訊息。全程免手動。",
                         "reviewTitle": "檢視 diff 並留下評論",
@@ -8126,7 +7942,7 @@ settingsSession: {
                         "subagentsTitle": "跨 provider 的 subagents",
                         "subagentsBody": "從 Claude 工作階段啟動 Codex subagents。把工作拆給多個代理。讓訊息在工作階段之間流轉。",
                         "tuisTitle": "使用你喜歡的 TUI",
-                        "tuisBody": "在原生終端機 UI 中執行 Claude Code、Codex 或 OpenCode。Happier 會擷取它，並同步到每台裝置。",
+                        "tuisBody": "在原生終端機 UI 中執行 Claude Code 或 Codex。Happier 會擷取它，並同步到每台裝置。",
                         "inboxTitle": "一個 inbox。所有工作階段。",
                         "inboxBody": "所有待核准事項、權限請求與待檢閱工作階段，跨所有機器集中在一個地方。",
                         "mcpTitle": "一個 MCP 設定。所有 provider。",
@@ -8153,7 +7969,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "你喜歡終端機？我們也是！",
                         "wideTitle": "你喜歡終端機？\n我們也是！",
-                        "body": "在原生終端機 UI 中執行 Claude Code、Codex 或 OpenCode。透過手機跟進、傳送訊息並核准權限。",
+                        "body": "在原生終端機 UI 中執行 Claude Code 或 Codex。透過手機跟進、傳送訊息並核准權限。",
                         "alt": "終端機 TUI 同步的抽象佔位圖。"
                     },
                     "cockpit": {
@@ -8163,8 +7979,8 @@ settingsSession: {
                         "alt": "行動 cockpit 的抽象佔位圖。"
                     },
                     "existingSessions": {
-                        "title": "既有 Claude、Codex、OpenCode 工作階段？已經在那裡。",
-                        "body": "瀏覽任何 Claude、Codex 或 OpenCode 工作階段，無論目前是否執行。",
+                        "title": "既有 Claude 和 Codex 工作階段？已經在那裡。",
+                        "body": "瀏覽任何 Claude 或 Codex 工作階段，無論目前是否執行。",
                         "alt": "既有 provider 工作階段的抽象佔位圖。"
                     },
                     "voiceAssistant": {
@@ -8837,7 +8653,7 @@ settingsSession: {
     chatFooter: {
         permissionsTerminalOnly: '權限只會顯示在終端機中。重設或傳送訊息即可從 app 控制。',
         sessionRunningLocally: '此工作階段正在這台電腦上以本機模式執行。你可以切換到遠端，從 app 控制它。',
-        sessionRunningLocallyAndRemotely: '此工作階段已在 OpenCode 中本機附加，且仍可從 app 控制。',
+        sessionRunningLocallyAndRemotely: '此工作階段也在本機終端機中開啟，且仍可從 app 控制。',
         switchingToRemote: '正在切換到遠端模式…',
         switchToRemote: '切換到遠端',
         detachLocalTerminal: '中斷終端機連線',
@@ -9109,9 +8925,6 @@ settingsSession: {
             cancel: '取消',
         },
         aiBackend: {
-            copilotSubtitleExperimental: 'GitHub Copilot CLI（實驗）',
-            cursorSubtitleExperimental: 'Cursor Agent CLI（實驗）',
-            grokSubtitleExperimental: "Grok Build CLI（實驗）",
         },
     },
 };

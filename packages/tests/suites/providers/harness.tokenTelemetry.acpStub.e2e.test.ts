@@ -26,15 +26,8 @@ describe('providers harness: token telemetry (acp stub provider)', () => {
 
       const envVars = [
         'PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB',
-        'PIGGERCODE_E2E_PROVIDER_OPENCODE',
         'PIGGERCODE_E2E_PROVIDER_CLAUDE',
         'PIGGERCODE_E2E_PROVIDER_CODEX',
-        'PIGGERCODE_E2E_PROVIDER_KILO',
-        'PIGGERCODE_E2E_PROVIDER_GEMINI',
-        'PIGGERCODE_E2E_PROVIDER_QWEN',
-        'PIGGERCODE_E2E_PROVIDER_KIMI',
-        'PIGGERCODE_E2E_PROVIDER_AUGGIE',
-        'PIGGERCODE_E2E_PROVIDER_PI',
         'PIGGERCODE_E2E_PROVIDER_SCENARIOS',
         'PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH',
       ] as const;
@@ -44,15 +37,8 @@ describe('providers harness: token telemetry (acp stub provider)', () => {
 
       try {
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX_ACP_STUB = '1';
-        process.env.PIGGERCODE_E2E_PROVIDER_OPENCODE = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CLAUDE = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_CODEX = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_KILO = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_GEMINI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_QWEN = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_KIMI = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_AUGGIE = '0';
-        process.env.PIGGERCODE_E2E_PROVIDER_PI = '0';
         process.env.PIGGERCODE_E2E_PROVIDER_SCENARIOS = 'acp_stub_usage_update';
         process.env.PIGGERCODE_E2E_PROVIDER_TOKEN_LEDGER_PATH = ledgerPath;
 

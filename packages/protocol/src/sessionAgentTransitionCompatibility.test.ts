@@ -24,22 +24,6 @@ const ReleasedTransitionSelectionSchema = z.object({
   ctx.addIssue({ code: 'custom', path: ['modelId'], message: 'modelId is required when providerConnectionId is set.' });
 });
 
-describe('compat — configured target selections and released inspection readers', () => {
-  it('keeps built-in selections readable while refusing exact configured identity', () => {
-    const builtIn = { v: 1, agentId: 'claude' };
-    const configured = { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } };
-    expect(ReleasedTransitionSelectionSchema.safeParse(builtIn).success).toBe(true);
-    expect(SessionAgentTransitionSelectionV1Schema.safeParse(builtIn).success).toBe(true);
-    expect(SessionAgentTransitionSelectionV1Schema.safeParse(configured).success).toBe(true);
-    expect(ReleasedTransitionSelectionSchema.safeParse(configured).success).toBe(false);
-    // The released batch reader has an array of that strict selection. One
-    // unsupported row rejects the whole request; clients must partition it.
-    const releasedBatch = z.object({ v: z.literal(1), sourceSessionId: z.string().trim().min(1), selections: z.array(ReleasedTransitionSelectionSchema).min(1) }).strict();
-    expect(releasedBatch.safeParse({ v: 1, sourceSessionId: 's', selections: [builtIn, configured] }).success).toBe(false);
-    expect(releasedBatch.safeParse({ v: 1, sourceSessionId: 's', selections: [builtIn] }).success).toBe(true);
-  });
-});
-
 /**
  * Section 6.7 compatibility directions for the predecessor tree.
  *

@@ -77,39 +77,6 @@ function createRegisteredMachine(machineId: string) {
   };
 }
 
-function setConfiguredAcpCatalogForTest(supportsLoadSession: boolean, enabled = true): void {
-  setActiveAccountSettingsSnapshot({
-    source: 'network',
-    settingsVersion: Date.now(),
-    loadedAtMs: Date.now(),
-    settingsSecretsReadKeys: [],
-    settings: accountSettingsParse({
-      acpCatalogSettingsV1: {
-        v: 2,
-        backends: [{
-          id: 'custom-kiro',
-          name: 'custom-kiro',
-          title: 'Custom Kiro',
-          command: 'kiro-cli',
-          args: [],
-          env: {},
-          transportProfile: 'generic',
-          capabilities: {
-            supportsLoadSession,
-            supportsModes: 'unknown',
-            supportsModels: 'unknown',
-            supportsConfigOptions: 'unknown',
-            promptImageSupport: 'unknown',
-          },
-          createdAt: 1,
-          updatedAt: 1,
-        }],
-      },
-      backendEnabledByTargetKey: { 'acpBackend:custom-kiro': enabled },
-    }),
-  });
-}
-
 async function findAvailableLocalPort(excludedPort?: number): Promise<number> {
   for (;;) {
     const server = createServer();
@@ -743,7 +710,7 @@ vi.mock('@/backends/catalog', async (importOriginal) => {
     resolveCatalogAgentId: vi.fn((agentId: string = 'codex') => (agentId === 'claude' ? 'claude' : 'codex')),
     resolveCatalogAgentIdForCliSubcommand: vi.fn((subcommand: string) => {
       const normalized = subcommand.trim();
-      return normalized === 'opencode' ? 'opencode' : normalized === 'claude' ? 'claude' : 'codex';
+      return normalized === 'claude' ? 'claude' : 'codex';
     }),
   };
 });
@@ -2207,7 +2174,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     }
   });
 
-  it('does not force-respawn orphaned dead OpenCode startup markers', async () => {
+  it('does not force-respawn orphaned dead Codex startup markers', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
     const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
     process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
@@ -2218,7 +2185,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       vi.mocked(reattachModule.reattachTrackedSessionsFromMarkers).mockImplementation(async () => ({
         orphanedDeadDaemonSessions: [
           {
-            sessionId: 'sess-opencode-startup-restart',
+            sessionId: 'sess-codex-startup-restart',
             pid: 7302,
           },
         ],
@@ -5110,10 +5077,10 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       const optionalPresentation = {
         ...terminalOwned,
         pid: 7515,
-        happySessionId: 'sess-detached-opencode',
+        happySessionId: 'sess-detached-codex',
         spawnOptions: {
-          directory: '/tmp/workspace-opencode',
-          backendTarget: { kind: 'builtInAgent' as const, agentId: 'opencode' as const },
+          directory: '/tmp/workspace-codex',
+          backendTarget: { kind: 'builtInAgent' as const, agentId: 'codex' as const },
           terminal: { mode: 'zellij' as const },
         },
       };
@@ -7365,156 +7332,6 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       } else {
         process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       }
-      await restoreDaemonExitBoundary(exitSpy);
-    }
-  });
-
-  it('derives the exact configured ACP resume identity while attaching an existing session', async () => {
-    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(createSessionRecordFixture({
-      id: 'sess_plain',
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        flavor: 'acp:custom-kiro',
-        acpConfiguredBackendV1: { v: 1, updatedAt: 1, backendId: 'custom-kiro', title: 'Custom Kiro' },
-        customAcpSessionId: 'provider-session-1',
-        path: '/tmp',
-      }),
-      dataEncryptionKey: null,
-    }));
-
-    try {
-      const { startDaemon } = await import('./startDaemon');
-
-      const run = startDaemon();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      const spawnSession = await waitForSpawnSessionRegistration();
-      setConfiguredAcpCatalogForTest(true);
-
-      await spawnSession({
-        directory: '/tmp',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        existingSessionId: 'sess_plain',
-        token: 't',
-      });
-
-      expect(spawnHappyCLI).toHaveBeenCalledTimes(1);
-      const firstCall = spawnHappyCLI.mock.calls[0];
-      if (!firstCall) {
-        throw new Error('Expected spawnHappyCLI to be called');
-      }
-      const argv = firstCall[0];
-      expect(argv[0]).toBe('acp-catalog');
-      expect(argv).toEqual(expect.arrayContaining(['--backend', 'custom-kiro']));
-      expect(argv).toEqual(expect.arrayContaining(['--existing-session', 'sess_plain']));
-      expect(argv).toEqual(expect.arrayContaining(['--resume', 'provider-session-1']));
-
-      harness.requestShutdown('happier-cli');
-      await run;
-    } finally {
-      spawnHappyCLI.mockClear();
-      if (refreshEnvOriginal === undefined) {
-        delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-      } else {
-        process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
-      }
-      await restoreDaemonExitBoundary(exitSpy);
-    }
-  });
-
-  it('routes an explicit load-capable configured ACP resume through the acp-catalog command', async () => {
-    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-
-    try {
-      const { startDaemon } = await import('./startDaemon');
-      const run = startDaemon();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      const spawnSession = await waitForSpawnSessionRegistration();
-      setConfiguredAcpCatalogForTest(true);
-
-      await spawnSession({
-        directory: '/tmp',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        resume: 'configured-session-1',
-        token: 't',
-      });
-
-      const argv = spawnHappyCLI.mock.calls[0]?.[0];
-      expect(argv).toEqual(expect.arrayContaining([
-        'acp-catalog',
-        '--backend', 'custom-kiro',
-        '--resume', 'configured-session-1',
-      ]));
-
-      harness.requestShutdown('happier-cli');
-      await run;
-    } finally {
-      spawnHappyCLI.mockClear();
-      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
-      await restoreDaemonExitBoundary(exitSpy);
-    }
-  });
-
-  it('rejects configured ACP resume when the current catalog declares static load unsupported', async () => {
-    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    try {
-      const { startDaemon } = await import('./startDaemon');
-      const run = startDaemon();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      const spawnSession = await waitForSpawnSessionRegistration();
-      setConfiguredAcpCatalogForTest(false);
-
-      const result = await spawnSession({
-        directory: '/tmp',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        resume: 'configured-session-1',
-        token: 't',
-      });
-
-      expect(result).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.RESUME_NOT_SUPPORTED });
-      expect(spawnHappyCLI).not.toHaveBeenCalled();
-      harness.requestShutdown('happier-cli');
-      await run;
-    } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
-      await restoreDaemonExitBoundary(exitSpy);
-    }
-  });
-
-  it('rejects configured ACP resume when the exact configured target is disabled', async () => {
-    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
-    const refreshEnvOriginal = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
-    try {
-      const { startDaemon } = await import('./startDaemon');
-      const run = startDaemon();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      const spawnSession = await waitForSpawnSessionRegistration();
-      setConfiguredAcpCatalogForTest(true, false);
-
-      const result = await spawnSession({
-        directory: '/tmp',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-        resume: 'configured-session-1',
-        token: 't',
-      });
-
-      expect(result).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.RESUME_NOT_SUPPORTED });
-      expect(spawnHappyCLI).not.toHaveBeenCalled();
-      harness.requestShutdown('happier-cli');
-      await run;
-    } finally {
-      if (refreshEnvOriginal === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
-      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = refreshEnvOriginal;
       await restoreDaemonExitBoundary(exitSpy);
     }
   });

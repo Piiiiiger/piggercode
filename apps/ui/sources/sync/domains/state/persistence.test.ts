@@ -125,24 +125,24 @@ describe('persistence', () => {
         });
 
         it('roundtrips session model modes', () => {
-            saveSessionModelModes({ abc: 'gemini-2.5-pro' });
-            expect(loadSessionModelModes()).toEqual({ abc: 'gemini-2.5-pro' });
+            saveSessionModelModes({ abc: 'gpt-5.5' });
+            expect(loadSessionModelModes()).toEqual({ abc: 'gpt-5.5' });
         });
 
         it('filters out invalid persisted model modes', () => {
             store.set(
                 'session-model-modes',
-                JSON.stringify({ abc: 'gemini-2.5-pro', bad: '   ', num: 12 }),
+                JSON.stringify({ abc: 'gpt-5.5', bad: '   ', num: 12 }),
             );
-            expect(loadSessionModelModes()).toEqual({ abc: 'gemini-2.5-pro' });
+            expect(loadSessionModelModes()).toEqual({ abc: 'gpt-5.5' });
         });
 
         it('preserves non-empty freeform model ids (for providers without a fixed catalog)', () => {
             store.set(
                 'session-model-modes',
-                JSON.stringify({ abc: 'gemini-2.5-pro', custom: 'claude-3-5-sonnet-latest', bad: '   ' }),
+                JSON.stringify({ abc: 'gpt-5.5', custom: 'claude-3-5-sonnet-latest', bad: '   ' }),
             );
-            expect(loadSessionModelModes()).toEqual({ abc: 'gemini-2.5-pro', custom: 'claude-3-5-sonnet-latest' });
+            expect(loadSessionModelModes()).toEqual({ abc: 'gpt-5.5', custom: 'claude-3-5-sonnet-latest' });
         });
     });
 
@@ -270,7 +270,7 @@ describe('persistence', () => {
             saveSessionDrafts({ s1: 'legacy draft' });
             saveSessionPermissionModes({ s1: 'yolo' });
             saveSessionPermissionModeUpdatedAts({ s1: 11 });
-            saveSessionModelModes({ s1: 'gemini-2.5-pro' });
+            saveSessionModelModes({ s1: 'gpt-5.5' });
             saveSessionModelModeUpdatedAts({ s1: 12 });
             saveSessionLastViewed({ s1: 13 });
             saveSessionMaterializedMaxSeqById({ s1: 9 });
@@ -284,7 +284,7 @@ describe('persistence', () => {
             expect(loadSessionPermissionModes()).toEqual({});
             expect(loadSessionPermissionModeUpdatedAts(sessionLocalScopeA)).toEqual({ s1: 11 });
             expect(loadSessionPermissionModeUpdatedAts()).toEqual({});
-            expect(loadSessionModelModes(sessionLocalScopeA)).toEqual({ s1: 'gemini-2.5-pro' });
+            expect(loadSessionModelModes(sessionLocalScopeA)).toEqual({ s1: 'gpt-5.5' });
             expect(loadSessionModelModes()).toEqual({});
             expect(loadSessionModelModeUpdatedAts(sessionLocalScopeA)).toEqual({ s1: 12 });
             expect(loadSessionModelModeUpdatedAts()).toEqual({});
@@ -297,7 +297,7 @@ describe('persistence', () => {
         it('does not overwrite existing scoped session-local state during activation', () => {
             saveSessionPermissionModes({ legacy: 'yolo' });
             saveSessionPermissionModeUpdatedAts({ legacy: 1 });
-            saveSessionModelModes({ legacy: 'gemini-2.5-pro' });
+            saveSessionModelModes({ legacy: 'gpt-5.5' });
             saveSessionModelModeUpdatedAts({ legacy: 2 });
             saveSessionLastViewed({ legacy: 3 });
             saveSessionMaterializedMaxSeqById({ legacy: 4 });
@@ -1096,8 +1096,8 @@ describe('persistence', () => {
                     selectedMachineId: null,
                     selectedPath: null,
                     selectedProfileId: null,
-                    agentType: 'customAcp',
-                    backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+                    agentType: 'codex',
+                    backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
                     permissionMode: 'default',
                     modelMode: 'default',
                     sessionType: 'simple',
@@ -1106,7 +1106,7 @@ describe('persistence', () => {
             );
 
             const draft = loadNewSessionDraft();
-            expect((draft as any)?.backendTarget).toEqual({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
+            expect((draft as any)?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'codex' });
         });
 
         it('roundtrips codexBackendMode when persisted', () => {
@@ -1172,27 +1172,6 @@ describe('persistence', () => {
             expect((draft as any)?.sessionType).toBeUndefined();
         });
 
-        it('migrates legacy auggieAllowIndexing into agentNewSessionOptionStateByAgentId', () => {
-            store.set(
-                'new-session-draft-v1',
-                JSON.stringify({
-                    input: '',
-                    selectedMachineId: null,
-                    selectedPath: null,
-                    selectedProfileId: null,
-                    agentType: 'auggie',
-                    permissionMode: 'default',
-                    modelMode: 'default',
-                    sessionType: 'simple',
-                    auggieAllowIndexing: true,
-                    updatedAt: Date.now(),
-                }),
-            );
-
-            const draft = loadNewSessionDraft();
-            expect((draft as any)?.agentNewSessionOptionStateByAgentId?.auggie?.allowIndexing).toBe(true);
-        });
-
         it('preserves nested connected-service binding option state when hydrating drafts', () => {
             store.set(
                 'new-session-draft-v1',
@@ -1241,7 +1220,7 @@ describe('persistence', () => {
                     selectedMachineId: null,
                     selectedPath: null,
                     selectedProfileId: null,
-                    agentType: 'gemini',
+                    agentType: 'codex',
                     permissionMode: 'bogus',
                     modelMode: 'default',
                     sessionType: 'simple',
@@ -1261,7 +1240,7 @@ describe('persistence', () => {
                     selectedMachineId: null,
                     selectedPath: null,
                     selectedProfileId: null,
-                    agentType: 'gemini',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     modelMode: '   ',
                     sessionType: 'simple',
@@ -1281,7 +1260,7 @@ describe('persistence', () => {
                     selectedMachineId: null,
                     selectedPath: null,
                     selectedProfileId: null,
-                    agentType: 'gemini',
+                    agentType: 'codex',
                     permissionMode: 'default',
                     modelMode: 'default',
                     sessionType: 'simple',

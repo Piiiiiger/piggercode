@@ -7,7 +7,7 @@ import {
 } from '@piggercode/protocol';
 import type { AnyAgentRuntimeKindsManifest } from './runtimeKinds.js';
 
-export const AGENT_IDS = ['claude', 'codex', 'opencode', 'gemini', 'auggie', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'agy', 'fx', 'droid', 'codebuddy'] as const;
+export const AGENT_IDS = ['claude', 'codex'] as const;
 export type AgentId = (typeof AGENT_IDS)[number];
 
 export const PERMISSION_MODES = SESSION_PERMISSION_MODES;
@@ -51,8 +51,6 @@ export type AgentSessionAuthSwitchTransition =
     | 'same_connected_group';
 export type AgentSessionCapabilities = Readonly<{
     sessionListing: AgentSessionCapabilitySupportLevel;
-    /** Canonical generic transport for listing agent-owned sessions, when one exists. */
-    sessionListingSource?: 'acp' | 'provider-native';
     sessionFork: Readonly<{
         conversation: AgentSessionCapabilitySupportLevel;
         fromMessage: AgentSessionCapabilitySupportLevel;
@@ -67,25 +65,9 @@ export type AgentSessionCapabilities = Readonly<{
 
 export type VendorResumeIdField =
     | 'claudeSessionId'
-    | 'codexSessionId'
-    | 'geminiSessionId'
-    | 'opencodeSessionId'
-    | 'auggieSessionId'
-    | 'qwenSessionId'
-    | 'kimiSessionId'
-    | 'kiloSessionId'
-    | 'kiroSessionId'
-    | 'devinSessionId'
-    | 'piSessionId'
-    | 'copilotSessionId'
-    | 'cursorSessionId'
-    | 'grokSessionId'
-    | 'agySessionId'
-    | 'fxSessionId'
-    | 'droidSessionId'
-    | 'codebuddySessionId';
+    | 'codexSessionId';
 
-export type CloudVendorKey = 'openai' | 'anthropic' | 'gemini' | 'antigravity';
+export type CloudVendorKey = 'openai' | 'anthropic';
 export type CloudConnectTargetStatus = 'wired' | 'experimental';
 
 export type ConnectedServiceKind = 'oauth' | 'token';

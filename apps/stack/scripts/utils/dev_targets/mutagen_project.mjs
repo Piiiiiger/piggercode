@@ -53,7 +53,6 @@ const DEFAULT_IGNORES = [
   '.dev',
   '.clawpatch',
   '.playwright-mcp',
-  '.antigravitycli',
   'evidence',
   'graphify-out',
   '/workspace',

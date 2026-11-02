@@ -52,36 +52,6 @@ describe('createConnectedServiceQuotaFetchers', () => {
     expect(loaded.map((params) => params.staleAfterMs)).toEqual([45_000, 45_000]);
   });
 
-  it('clamps generic stale-after host params before provider descriptors receive them', () => {
-    const loaded: number[] = [];
-    const descriptors = [
-      {
-        loadQuota: (params: Readonly<{
-          env: NodeJS.ProcessEnv;
-          staleAfterMs: number;
-        }>) => {
-          loaded.push(params.staleAfterMs);
-          return {
-            serviceId: 'gemini' as const,
-            fetch: async (
-              _params: Readonly<{
-                record: ConnectedServiceCredentialRecordV1;
-                now: number;
-                signal: AbortSignal;
-              }>,
-            ): Promise<ConnectedServiceQuotaSnapshotV1 | null> => null,
-          };
-        },
-      },
-    ];
-
-    createConnectedServiceQuotaFetchers({
-      PIGGERCODE_CONNECTED_SERVICES_QUOTAS_STALE_AFTER_MS: '1',
-    }, descriptors);
-
-    expect(loaded).toEqual([5_000]);
-  });
-
   it('uses direct provider quota endpoints when no proxy URL is configured', async () => {
     const now = 1_000_000;
     const fetchMock = vi.fn(async () => ({

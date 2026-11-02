@@ -7,20 +7,20 @@ describe('startOauthPkceWithPasteFallback', () => {
     const exchangeCodeForTokens = vi.fn(async () => ({ accessToken: 'selected' }));
     const tokens = await startOauthPkceWithPasteFallback({
       mode: 'paste', defaultPort: 0, callbackPath: '/oauth-callback',
-      pasteRedirectUri: 'https://antigravity.google/oauth-callback',
+      pasteRedirectUri: 'https://auth.example.test/oauth-callback',
       generateState: () => 'state', generatePkce: () => ({ verifier: 'verifier', challenge: 'challenge' }),
       buildAuthorizationUrl: ({ redirectUri }) => {
-        expect(redirectUri).toBe('https://antigravity.google/oauth-callback');
+        expect(redirectUri).toBe('https://auth.example.test/oauth-callback');
         return 'https://accounts.google.com/authorize';
       },
-      promptForPastedRedirectUrl: async () => 'https://antigravity.google/oauth-callback?code=code&state=state',
+      promptForPastedRedirectUrl: async () => 'https://auth.example.test/oauth-callback?code=code&state=state',
       exchangeCodeForTokens,
     });
     expect(tokens).toEqual({ accessToken: 'selected' });
     expect(exchangeCodeForTokens).toHaveBeenCalledWith({ code: 'code', verifier: 'verifier', state: 'state', port: 0 });
     await expect(startOauthPkceWithPasteFallback({
       mode: 'paste', defaultPort: 0, callbackPath: '/oauth-callback',
-      pasteRedirectUri: 'https://antigravity.google/oauth-callback',
+      pasteRedirectUri: 'https://auth.example.test/oauth-callback',
       generateState: () => 'state', generatePkce: () => ({ verifier: 'verifier', challenge: 'challenge' }),
       buildAuthorizationUrl: () => 'https://accounts.google.com/authorize',
       promptForPastedRedirectUrl: async () => 'code#wrong-state', exchangeCodeForTokens,

@@ -1,4 +1,4 @@
-import { AGENTS_CORE, type AgentId } from '@piggercode/agents';
+import { AGENTS_CORE, type AgentCore, type AgentId } from '@piggercode/agents';
 import type { AccountSettings, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { resolveCliConnectedServicesLaunchBindings } from '@/cli/connectedServicesLaunchAuth';
@@ -19,8 +19,8 @@ export async function resolveDirectCliConnectedServiceBindings(params: Readonly<
   authRaw: string | undefined;
   authJsonRaw: string | undefined;
 }>): Promise<ConnectedServiceBindingsV1 | null> {
-  const supportedServiceIds =
-    AGENTS_CORE[params.agentId].connectedServices?.supportedServiceIds ?? [];
+  const connectedServices: AgentCore['connectedServices'] = AGENTS_CORE[params.agentId].connectedServices;
+  const supportedServiceIds = connectedServices?.supportedServiceIds ?? [];
   if (
     supportedServiceIds.length === 0
     && params.authRaw === undefined

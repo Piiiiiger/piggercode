@@ -35,20 +35,6 @@ function rawSession(metadata: Record<string, unknown>, overrides: Record<string,
 }
 
 describe('evaluateSessionContinuationTargetSupport', () => {
-  it('distinguishes two configured targets sharing one executable', () => {
-    const settings = { acpCatalogSettingsV1: { v: 2, backends: ['a', 'b'].map((id) => ({
-      id, name: id, title: id, command: 'harmless-acp', args: ['--configuration', id], env: {}, createdAt: 1, updatedAt: 1,
-    })) } };
-    const selection = { v: 1, agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' } } as const;
-    expect(evaluateSessionContinuationTargetSupport({ selection, sourceAgentId: 'customAcp',
-      sourceBackendTarget: { kind: 'configuredAcpBackend', backendId: 'a' }, accountSettings: settings,
-    })).toMatchObject({ type: 'supported', targetAgentId: 'customAcp' });
-    expect(evaluateSessionContinuationTargetSupport({ selection, sourceAgentId: 'customAcp',
-      sourceBackendTarget: selection.backendTarget, accountSettings: settings,
-    })).toEqual({ type: 'unsupported', code: 'same_target' });
-    expect(evaluateSessionContinuationTargetSupport({ selection, sourceAgentId: 'claude', accountSettings: {} }))
-      .toEqual({ type: 'unsupported', code: 'target_unavailable' });
-  });
   it('accepts another catalog Agent', () => {
     expect(evaluateSessionContinuationTargetSupport({
       selection: { v: 1, agentId: 'codex' },
@@ -70,35 +56,11 @@ describe('evaluateSessionContinuationTargetSupport', () => {
     })).toEqual({ type: 'unsupported', code: 'target_unavailable' });
   });
 
-  it('rejects a configured ACP target as unproven in V1', () => {
-    expect(evaluateSessionContinuationTargetSupport({
-      selection: { v: 1, agentId: 'customAcp' },
-      sourceAgentId: 'claude',
-    })).toEqual({ type: 'unsupported', code: 'target_unavailable' });
-  });
-
-  it.each([
-    ['a mode for an Agent with no mode surface', { v: 1, agentId: 'gemini', acpSessionModeId: 'plan' }],
-    ['a malformed config-option override shape', { v: 1, agentId: 'codex', sessionConfigOptionOverrides: { v: 0 } }],
-  ] as const)('rejects %s before a transition can stop its source', (_label, selection) => {
-    expect(evaluateSessionContinuationTargetSupport({
-      selection: selection as never,
-      sourceAgentId: 'claude',
-    })).toEqual({ type: 'unsupported', code: 'target_unavailable' });
-  });
-
   it('defers an unknown dynamic native model to the ordinary launch owner', () => {
     expect(evaluateSessionContinuationTargetSupport({
       selection: { v: 1, agentId: 'codex', modelId: 'future-model' },
       sourceAgentId: 'claude',
     })).toEqual({ type: 'supported', targetAgentId: 'codex' });
-  });
-
-  it('defers an unknown Qwen ACP model to the ordinary launch owner', () => {
-    expect(evaluateSessionContinuationTargetSupport({
-      selection: { v: 1, agentId: 'qwen', modelId: 'runtime-advertised-model' },
-      sourceAgentId: 'claude',
-    })).toEqual({ type: 'supported', targetAgentId: 'qwen' });
   });
 
   it('reports the current Agent as same_target', () => {

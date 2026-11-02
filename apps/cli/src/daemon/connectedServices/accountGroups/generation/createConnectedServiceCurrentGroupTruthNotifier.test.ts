@@ -48,7 +48,7 @@ describe('createConnectedServiceCurrentGroupTruthNotifier', () => {
     await expect(notify({
       sessionId: 'session-1',
       serviceId: 'openai-codex',
-      applicationOwnerId: 'opencode',
+      applicationOwnerId: 'codex',
       currentTruth: {
         kind: 'current_auth_group_unavailable',
         groupId: 'group-1',
@@ -57,7 +57,7 @@ describe('createConnectedServiceCurrentGroupTruthNotifier', () => {
     })).resolves.toEqual({ ok: true });
     expect(applyRequestTimeBrokerCurrentTruth).toHaveBeenCalledWith(expect.objectContaining({
       sessionId: 'session-1',
-      applicationOwnerId: 'opencode',
+      applicationOwnerId: 'codex',
       currentTruth: expect.objectContaining({ kind: 'current_auth_group_unavailable' }),
     }));
     expect(callRpc).not.toHaveBeenCalled();

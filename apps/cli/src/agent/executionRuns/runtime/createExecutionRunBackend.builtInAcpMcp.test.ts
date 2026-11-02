@@ -40,7 +40,7 @@ describe('createExecutionRunBackend built-in ACP MCP context', () => {
         async startSession() {
           captured.first = await options.resolveMcpServers?.();
           captured.second = await options.resolveMcpServers?.();
-          return { sessionId: 'agy-run-session' as SessionId };
+          return { sessionId: 'codex-run-session' as SessionId };
         },
         async sendPrompt() {},
         async cancel() {},
@@ -56,8 +56,8 @@ describe('createExecutionRunBackend built-in ACP MCP context', () => {
     const accountSettings = { mcpServersSettingsV1: { v: 1, strictMode: false, servers: [], bindings: [] } };
     const backend = createExecutionRunBackend({
       cwd: '/workspace',
-      backendId: 'agy',
-      backendTarget: { kind: 'builtInAgent', agentId: 'agy' },
+      backendId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'read_only',
       accountSettings,
     });

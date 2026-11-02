@@ -58,21 +58,6 @@ describe('sessionDebugInformation', () => {
         expect(resolveProviderSessionArtifactPath({
             claudeTranscriptPath: ' /tmp/claude/session.jsonl ',
         })).toBe('/tmp/claude/session.jsonl');
-
-        expect(resolveProviderSessionArtifactPath({
-            piSessionFile: ' /tmp/pi/session.jsonl ',
-        })).toBe('/tmp/pi/session.jsonl');
-
-        expect(resolveProviderSessionArtifactPath({
-            agentRuntimeDescriptorV1: {
-                v: 1,
-                providerId: 'pi',
-                provider: {
-                    resumeStrategy: 'sessionFileAbsolutePreferred',
-                    sessionFile: ' /tmp/pi/from-runtime.jsonl ',
-                },
-            },
-        })).toBe('/tmp/pi/from-runtime.jsonl');
     });
 
     it('resolves provider session ids separately from provider artifact paths', () => {
@@ -80,17 +65,16 @@ describe('sessionDebugInformation', () => {
             metadata: {
                 agentRuntimeDescriptorV1: {
                     v: 1,
-                    providerId: 'pi',
+                    providerId: 'codex',
                     provider: {
                         resumeStrategy: 'sessionFileAbsolutePreferred',
                         vendorSessionId: 'pi-session-1',
                         sessionFile: '/tmp/pi/session.jsonl',
                     },
                 },
-                piSessionId: 'legacy-pi-session',
-                piSessionFile: '/tmp/pi/session.jsonl',
+                claudeSessionId: 'legacy-claude-session',
             },
-            vendorResumeIdField: 'piSessionId',
+            vendorResumeIdField: 'claudeSessionId',
         })).toBe('pi-session-1');
 
         expect(resolveProviderSessionIdForDebug({
@@ -110,10 +94,10 @@ describe('sessionDebugInformation', () => {
 
         expect(resolveProviderSessionIdForDebug({
             metadata: {
-                geminiSessionId: ' gemini-session-1 ',
+                claudeSessionId: ' claude-session-1 ',
             },
-            vendorResumeIdField: 'geminiSessionId',
-        })).toBe('gemini-session-1');
+            vendorResumeIdField: 'claudeSessionId',
+        })).toBe('claude-session-1');
     });
 
     it('adds the provider logs line only when a known artifact path exists', () => {

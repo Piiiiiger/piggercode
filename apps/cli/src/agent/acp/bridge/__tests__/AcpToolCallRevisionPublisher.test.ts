@@ -6,7 +6,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('publishes enriched call snapshots through one stable body id and localId', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -17,8 +17,8 @@ describe('createAcpToolCallRevisionPublisher', () => {
     expect(sendAcp).toHaveBeenCalledTimes(2);
     const [firstProvider, firstBody, firstOptions] = sendAcp.mock.calls[0]!;
     const [secondProvider, secondBody, secondOptions] = sendAcp.mock.calls[1]!;
-    expect(firstProvider).toBe('cursor');
-    expect(secondProvider).toBe('cursor');
+    expect(firstProvider).toBe('codex');
+    expect(secondProvider).toBe('codex');
     expect(firstBody.id).toBe(secondBody.id);
     expect(firstOptions.localId).toBe(firstBody.id);
     expect(secondOptions.localId).toBe(firstBody.id);
@@ -29,7 +29,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('rejects a locally stale call snapshot revision before it reaches the session writer', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -43,7 +43,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('separates call and result identities and ignores late call/result duplicates after terminalization', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -62,7 +62,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('allows only a strictly newer versioned call to enrich the stable call after its terminal result', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -96,7 +96,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('revises streaming results in place until the first terminal result', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -116,7 +116,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
 
   it('bounds finalized tombstones and clears active state on disposal', () => {
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp: vi.fn(),
       maxFinalizedCalls: 2,
@@ -135,7 +135,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('does not replace a rich unfinished call with a synthetic empty call after later active calls', () => {
     const sendAcp = vi.fn();
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp,
     });
@@ -179,7 +179,7 @@ describe('createAcpToolCallRevisionPublisher', () => {
   it('keeps captured-session-scale revisions at 271 call and 270 result identities', () => {
     const localIds: Array<{ type: string; localId: string }> = [];
     const publisher = createAcpToolCallRevisionPublisher({
-      provider: 'cursor',
+      provider: 'codex',
       namespace: { type: 'main' },
       sendAcp: (_provider, body, options) => {
         if (options?.localId) localIds.push({ type: body.type, localId: options.localId });

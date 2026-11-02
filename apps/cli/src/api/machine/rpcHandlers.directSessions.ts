@@ -10,7 +10,6 @@ import {
   DirectSessionStatusGetRequestSchema,
   DirectSessionTakeoverPersistRequestSchema,
   DirectSessionTakeoverRequestSchema,
-  DirectSessionsAcpSessionListCapabilityRequestSchema,
   DirectSessionsCandidatesListRequestSchema,
   DirectTranscriptPageRequestSchema,
   DirectTranscriptReadAfterRequestSchema,
@@ -24,7 +23,6 @@ import {
   type DirectSessionStatusGetResponse,
   type DirectSessionTakeoverPersistResponse,
   type DirectSessionTakeoverResponse,
-  type DirectSessionsAcpSessionListCapabilityResponse,
   type DirectSessionsCandidatesListResponse,
   type DirectTranscriptPageResponse,
   type DirectTranscriptReadAfterResponse,
@@ -310,18 +308,6 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
       const message = error instanceof Error ? error.message : 'Unknown error';
       return err('internal_error', message) satisfies DirectSessionFollowPolicySetResponse;
     }
-  });
-
-  rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSIONS_ACP_SESSION_LIST_CAPABILITY_GET, async (raw: unknown) => {
-    const parsed = DirectSessionsAcpSessionListCapabilityRequestSchema.safeParse(raw);
-    if (!parsed.success) return err('invalid_request');
-    return {
-      ok: true,
-      capability: 'acp_session_list_v1',
-      protocolVersion: 1,
-      sourceKind: 'acpSessionList',
-      resumeOnly: true,
-    } satisfies DirectSessionsAcpSessionListCapabilityResponse;
   });
 
   rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST, async (raw: unknown) => {

@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { buildBackendTargetKey } from '@piggercode/protocol';
 
 import { AGENTS_CORE } from '../manifest.js';
-import type { AgentId } from '../types.js';
 
 import {
   evaluateVendorResumeEligibility,
@@ -10,7 +9,6 @@ import {
   resolveVendorResumeIdFromSessionMetadata,
 } from './vendorResumePolicy.js';
 
-const cursorAgentId = 'cursor' as AgentId;
 
 describe('vendorResumePolicy', () => {
   it('exposes claudeSessionId as the Claude vendor resume id field', () => {
@@ -22,83 +20,6 @@ describe('vendorResumePolicy', () => {
     expect(resolveVendorResumeIdFromSessionMetadata('claude', { claudeSessionId: '   ' })).toBeNull();
   });
 
-  it('resolves provider session ids through an exact backend target', () => {
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'builtInAgent', agentId: 'claude' },
-      { flavor: 'claude', claudeSessionId: ' claude-1 ' },
-    )).toBe('claude-1');
-
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      {
-        acpConfiguredBackendV1: {
-          v: 1,
-          updatedAt: 1,
-          backendId: 'review-bot',
-          title: 'Review Bot',
-        },
-        customAcpSessionId: ' acp-1 ',
-      },
-    )).toBe('acp-1');
-  });
-
-  it('rejects stale or contradictory provider session ids for an exact backend target', () => {
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      {
-        acpConfiguredBackendV1: {
-          v: 1,
-          updatedAt: 1,
-          backendId: 'other-bot',
-          title: 'Other Bot',
-        },
-        customAcpSessionId: 'stale-acp-id',
-      },
-    )).toBeNull();
-
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      { flavor: 'acp:review-bot', customAcpSessionId: 'stale-flat-id' },
-    )).toBeNull();
-
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'builtInAgent', agentId: 'claude' },
-      { flavor: 'codex', claudeSessionId: 'stale-claude-id' },
-    )).toBeNull();
-
-    expect(resolveProviderSessionIdForBackendTarget(
-      { kind: 'builtInAgent', agentId: 'claude' },
-      {
-        flavor: 'claude',
-        acpConfiguredBackendV1: {
-          v: 1,
-          updatedAt: 1,
-          backendId: 'review-bot',
-          title: 'Review Bot',
-        },
-        claudeSessionId: 'stale-claude-id',
-      },
-    )).toBeNull();
-  });
-
-  it('resolves Cursor ACP session ids from cursorSessionId metadata', () => {
-    expect(AGENTS_CORE[cursorAgentId]?.resume.vendorResumeIdField).toBe('cursorSessionId');
-    expect(resolveVendorResumeIdFromSessionMetadata(cursorAgentId, { cursorSessionId: ' cursor-session ' })).toBe('cursor-session');
-  });
-
-  it('keeps Grok restart resume experimental until authenticated restart evidence closes the gate', () => {
-    expect(AGENTS_CORE.grok.resume).toEqual({
-      vendorResume: 'experimental',
-      vendorResumeIdField: 'grokSessionId',
-      experimentalResumePolicy: 'runtime_checked',
-    });
-    expect(resolveVendorResumeIdFromSessionMetadata('grok', { grokSessionId: ' grok-session ' })).toBe('grok-session');
-  });
-
-  it('keeps configured ACP targets out of the built-in AgentId resume policy', () => {
-    expect(AGENTS_CORE.customAcp.resume).toEqual({ vendorResume: 'unsupported' });
-  });
-
   it('prefers vendor session ids from agentRuntimeDescriptorV1 over legacy top-level metadata', () => {
     expect(resolveVendorResumeIdFromSessionMetadata('codex', {
       agentRuntimeDescriptorV1: {
@@ -108,47 +29,6 @@ describe('vendorResumePolicy', () => {
       },
       codexSessionId: 'legacy_thread',
     })).toBe('runtime_thread');
-  });
-
-  it('allows Pi sessions with a persisted resume id', () => {
-    expect(
-      evaluateVendorResumeEligibility({
-        agentId: 'pi',
-        metadata: { piSessionId: 'p1' },
-        accountSettings: {},
-      }),
-    ).toEqual({ eligible: true, vendorResumeId: 'p1' });
-  });
-
-  it('prefers Pi absolute session-file metadata over bare session ids for resume', () => {
-    expect(
-      evaluateVendorResumeEligibility({
-        agentId: 'pi',
-        metadata: {
-          piSessionId: 'p1',
-          agentRuntimeDescriptorV1: {
-            v: 1,
-            providerId: 'pi',
-            provider: {
-              resumeStrategy: 'sessionFileAbsolutePreferred',
-              vendorSessionId: 'p1',
-              sessionFile: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_p1.jsonl',
-            },
-          },
-        },
-        accountSettings: {},
-      }),
-    ).toEqual({ eligible: true, vendorResumeId: '/tmp/pi/sessions/2026-05-27T00-00-00-000Z_p1.jsonl' });
-  });
-
-  it('allows Cursor sessions with a persisted ACP session id and lets runtime load failures surface later', () => {
-    expect(
-      evaluateVendorResumeEligibility({
-        agentId: cursorAgentId,
-        metadata: { cursorSessionId: 'cursor-session' },
-        accountSettings: {},
-      }),
-    ).toEqual({ eligible: true, vendorResumeId: 'cursor-session' });
   });
 
   it('rejects when vendor resume id is missing', () => {

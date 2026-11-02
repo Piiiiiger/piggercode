@@ -40,9 +40,9 @@ function canonicalizeToolNameNonV2(toolName: string, input: unknown, description
 
     const inputObj = asRecord(input);
 
-    if (toolName === 'CodexPatch' || toolName === 'GeminiPatch') return 'Patch';
-    if (toolName === 'CodexDiff' || toolName === 'GeminiDiff') return 'Diff';
-    if (toolName === 'CodexReasoning' || toolName === 'GeminiReasoning' || toolName === 'think') return 'Reasoning';
+    if (toolName === 'CodexPatch') return 'Patch';
+    if (toolName === 'CodexDiff') return 'Diff';
+    if (toolName === 'CodexReasoning' || toolName === 'think') return 'Reasoning';
     const genericSubAgentToolName = canonicalizeGenericSubAgentToolName(toolName);
     if (genericSubAgentToolName) return genericSubAgentToolName;
     if (toolName === 'exit_plan_mode') return 'ExitPlanMode';
@@ -60,7 +60,6 @@ function canonicalizeToolNameNonV2(toolName: string, input: unknown, description
         lower === 'execute' ||
         lower === 'shell' ||
         lower === 'bash' ||
-        toolName === 'GeminiBash' ||
         toolName === 'CodexBash'
     ) {
         return 'Bash';
@@ -99,7 +98,7 @@ function canonicalizeToolNameNonV2(toolName: string, input: unknown, description
             !!firstNonEmptyString(inputObj?.query) ||
             !!firstNonEmptyString(inputObj?.pattern) ||
             !!firstNonEmptyString(inputObj?.text);
-        // Gemini internal "search" often has only items/locations and is intentionally minimal/hidden.
+        // An ACP-style internal "search" often has only items/locations and is intentionally minimal/hidden.
         return hasQuery ? 'CodeSearch' : toolName;
     }
 
@@ -108,7 +107,6 @@ function canonicalizeToolNameNonV2(toolName: string, input: unknown, description
             firstNonEmptyString(inputObj?.title) ??
             firstNonEmptyString(asRecord(inputObj?.toolCall)?.title) ??
             null;
-        if (title === 'Workspace Indexing Permission') return 'WorkspaceIndexingPermission';
     }
 
     return toolName;

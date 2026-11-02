@@ -583,7 +583,6 @@ graph LR
         GH[GitHub OAuth]
         OAI[OpenAI]
         ANT[Anthropic]
-        GEM[Gemini]
     end
 
     subgraph "Server"
@@ -595,12 +594,11 @@ graph LR
     DB[(Postgres)]
 
     Secret --> KeyTree --> Encrypt
-    GH & OAI & ANT & GEM --> Encrypt --> DB
+    GH & OAI & ANT --> Encrypt --> DB
 
     style GH fill:#fff3e0
     style OAI fill:#fff3e0
     style ANT fill:#fff3e0
-    style GEM fill:#fff3e0
 ```
 
 The server encrypts certain third-party tokens at rest:

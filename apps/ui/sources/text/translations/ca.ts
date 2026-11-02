@@ -268,52 +268,6 @@ const settingsAppearanceTranslationExtension = {
 } as const;
 
 const caAcpCatalogSettingsExtension = {
-    acpCatalog: 'Backends ACP',
-    acpCatalogSubtitle: 'Gestiona els backends ACP integrats i personalitzats',
-    acpCatalogBuiltIn: 'ACP integrat',
-    acpCatalogBuiltInFooter:
-        'Els agents ACP genèrics integrats es defineixen al catàleg compartit i s’executen mitjançant l’entorn d’execució ACP compartit.',
-    acpCatalogBackends: 'Backends personalitzats',
-    acpCatalogBackendsFooter:
-        'Cada backend personalitzat és una definició CLI compatible amb ACP seleccionable, amb el seu propi llançador, valors predeterminats i configuració d’autenticació.',
-    acpCatalogBackendsEmptyTitle: 'No hi ha backends ACP personalitzats',
-    acpCatalogBackendsEmptySubtitle: 'Afegeix un backend per crear una opció de backend ACP personalitzat seleccionable.',
-    acpCatalogAddBackend: 'Afegeix backend ACP',
-    acpCatalogAddBackendSubtitle: 'Crea una opció de backend ACP personalitzat',
-    acpCatalogBackendEditorTitle: 'Backend ACP',
-    acpCatalogBasics: 'Bàsics',
-    acpCatalogLauncher: 'Llançador',
-    acpCatalogEnv: 'Entorn',
-    acpCatalogAddEnv: 'Afegeix variable d’entorn',
-    acpCatalogAddEnvSubtitle: 'Desa valors literals o vincula Secrets desats',
-    acpCatalogEnvEmptyTitle: 'No hi ha variables d’entorn',
-    acpCatalogEnvEmptySubtitle: 'Afegeix variables d’inici per a aquest backend.',
-    acpCatalogAuth: 'Autenticació',
-    acpCatalogAuthSupport: "Compatibilitat amb autenticació",
-    acpCatalogAuthParser: "Analitzador d'estat",
-    acpCatalogCapabilities: 'Capacitats',
-    acpCatalogTransportProfile: 'Perfil de transport',
-    acpCatalogSupportsLoadSession: 'Admet reprendre sessions',
-    acpCatalogSupportsModes: 'Admet modes',
-    acpCatalogSupportsModels: 'Admet models',
-    acpCatalogSupportsConfigOptions: 'Admet opcions de configuració',
-    acpCatalogPromptImageSupport: 'Compatibilitat amb imatges en prompts',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: 'Nom',
-    acpCatalogFieldTitle: 'Títol',
-    acpCatalogFieldDescription: 'Descripció',
-    acpCatalogFieldCommand: 'Comanda',
-    acpCatalogFieldArgs: 'Arguments (un per línia)',
-    acpCatalogMachineLoginKey: 'Clau d’inici de sessió de la màquina',
-    acpCatalogDocsUrl: 'URL de la documentació',
-    acpCatalogLoginCommand: 'Ordre d’inici de sessió',
-    acpCatalogLoginArgs: 'Arguments d’inici de sessió (un per línia)',
-    acpCatalogStatusCommand: "Tokens de l'ordre d'estat (un per línia)",
-    acpCatalogDefaultMode: 'Mode per defecte',
-    acpCatalogDefaultModel: 'Model per defecte',
-    acpCatalogDeleteBackendTitle: 'Eliminar backend ACP?',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `Eliminar "${name}"?`,
-    acpCatalogValidationFailed: 'La configuració del catàleg ACP no és vàlida.',
 } as const;
 
 const acpCatalogTranslationExtension = {
@@ -1908,7 +1862,7 @@ export const ca: TranslationStructure = {
 			        mcpServersDetectedRefreshSubtitle: 'Escaneja els fitxers de configuració del proveïdor d’aquesta màquina',
 			        mcpServersDetectedWarningsTitle: 'Advertiments de detecció',
 			        mcpServersDetectedEmptyTitle: 'Encara no hi ha servidors MCP detectats',
-			        mcpServersDetectedEmptySubtitle: 'Fes clic a refresca per escanejar les configuracions de Claude/Codex/OpenCode.',
+			        mcpServersDetectedEmptySubtitle: 'Fes clic a refresca per escanejar les configuracions de Claude/Codex.',
 			        mcpServersImportTitle: 'Importa el servidor MCP?',
 			        mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) => `Importa "${name}" des de ${provider}?`,
 			        mcpServersImportAction: 'Importa',
@@ -2262,8 +2216,6 @@ export const ca: TranslationStructure = {
             openaiCodex: "Codex d'OpenAI",
             openai: 'Clau API d\'OpenAI',
             anthropic: 'Clau API d\'Anthropic',
-            gemini: 'Gemini de Google',
-            antigravity: 'Google Antigravity',
             github: 'GitHub',
         },
         title: 'Serveis connectats',
@@ -2536,12 +2488,6 @@ export const ca: TranslationStructure = {
             pasteRedirectUrlPromptBody:
                 'Després de completar OAuth, copia l\'URL final redirigida de la barra d\'adreces del navegador i enganxa-la aquí.',
             providerOverrides: {
-                antigravity: {
-                    connectWebDescription: "Pas següent: inicia sessió amb Google. Antigravity mostra un codi d’autorització per copiar.",
-                    pasteRedirectUrlPromptBody: "1) Inicia sessió amb Google. 2) Copia el codi d’autorització que apareix a antigravity.google. 3) Enganxa’l a continuació i mantén obert aquest inici de sessió.",
-                    pasteRedirectUrlPlaceholder: "Enganxa el codi d’autorització d’Antigravity",
-                    pasteRedirectUrlTitle: "Enganxa el codi d’autorització",
-                },
                 claudeSubscription: {
                     connectWebDescription:
                         'Pas següent: inicia sessió a la pàgina que s\'obre. Claude pot mostrar una cadena de codi en lloc de redirigir automàticament.',
@@ -3947,110 +3893,6 @@ export const ca: TranslationStructure = {
                     }
                 }
             },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "Versió d’OpenCode",
-                        footer: "Automàtic prefereix opencode, recorre a opencode2 i detecta l’API del servidor després d’iniciar-se. Estable sempre selecciona opencode, però igualment detecta V1 o V2. V2 prefereix opencode2 i, si no està disponible, usa opencode amb V2 seleccionat. Les eines MCP de Happier funcionen amb V2 en mode ACP; la seva API de servidor encara no permet el registre MCP dinàmic."
-                    },
-                    backendMode: {
-                        title: "Mode de backend",
-                        footer: "El mode servidor desbloqueja preguntes i bifurcació nativa. El mode ACP és un recurs antic."
-                    },
-                    server: {
-                        title: "Connexió del servidor",
-                        footer: "Deixa-ho buit per utilitzar el cicle de vida del servidor OpenCode gestionat per Happier. Defineix una URL http(s) absoluta per connectar-te a un servidor OpenCode existent."
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "Generació de CLI",
-                        subtitle: "Tria quina ordre d’OpenCode instal·lada inicia Happier.",
-                        options: {
-                            auto: { title: "Automàtic (recomanat)", subtitle: "Prefereix opencode i recorre a opencode2." },
-                            stable: { title: "Estable", subtitle: "Inicia sempre opencode i detecta l’API després d’iniciar-se." },
-                            v2: { title: "V2", subtitle: "Prefereix opencode2; si no està disponible, inicia opencode amb V2 seleccionat." }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "Mode de backend d’OpenCode",
-                        subtitle: "Tria el backend d’integració.",
-                        options: {
-                            server: {
-                                title: "Servidor (recomanat)",
-                                subtitle: "Fa servir les API del servidor OpenCode per obtenir més funcionalitats i fiabilitat."
-                            },
-                            acp: {
-                                title: "ACP (antic)",
-                                subtitle: "Fa passar OpenCode per ACP; menys funcionalitats."
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "URL del servidor OpenCode existent",
-                        subtitle: "Substitució opcional per a un servidor OpenCode gestionat per l’usuari."
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "CLI de Cursor",
-                        footer: "Fes servir un binari específic de Cursor quan la detecció automàtica no sigui suficient. Happier prefereix cursor-agent i pot tornar a agent quan està activat."
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Camí del binari de Cursor",
-                        subtitle: "Camí absolut opcional cap a cursor-agent o agent."
-                    },
-                    cursorApiEndpoint: {
-                        title: "Endpoint de l’API de Cursor",
-                        subtitle: "Sobreescriptura opcional de l’endpoint de l’API de Cursor Agent."
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "Permet el fallback a agent",
-                        subtitle: "Fes servir l’ordre agent quan cursor-agent no estigui disponible."
-                    }
-                }
-            },
-            customAcp: {
-                title: "ACP personalitzat"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            devin: { title: "Devin" },
-            agy: { title: 'Antigravity' },
-            fx: { title: "FX" },
-            droid: { title: "Factory Droid" },
-            codebuddy: { title: "CodeBuddy" },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
-            },
             codex: {
 	                title: 'Codex',
 	                sections: {
@@ -4530,9 +4372,6 @@ deps: {
             codexAcp: {
                 title: 'Adaptador ACP de Codex',
             },
-            agyAcpServer: {
-                title: "Servidor ACP d'Agy",
-            },
             githubCli: {
                 title: 'CLI de GitHub',
             },
@@ -4711,7 +4550,6 @@ deps: {
             installCommand: ({ command }: { command: string }) => `Instal·la: ${command} •`,
             installCliIfAvailable: ({ cli }: { cli: string }) => `Instal·la el CLI de ${cli} si està disponible •`,
             viewInstallationGuide: 'Veure la guia d’instal·lació →',
-            viewGeminiDocs: 'Veure la documentació de Gemini →',
         },
         worktree: {
             creating: ({ name }: { name: string }) => `Creant worktree '${name}'...`,
@@ -4807,18 +4645,6 @@ deps: {
             updateTitle: 'Actualitzar Codex ACP?',
             reinstallTitle: 'Reinstal·lar Codex ACP?',
             description: 'Això instal·la un adaptador ACP experimental al voltant de Codex que admet carregar/reprendre fils.',
-        },
-        agyAcpBanner: {
-            title: "Servidor ACP d'Agy",
-            install: "Instal·lar",
-            update: "Actualitzar",
-            reinstall: "Reinstal·lar",
-        },
-        agyAcpInstallModal: {
-            installTitle: "Instal·lar el servidor ACP d'Agy?",
-            updateTitle: "Actualitzar el servidor ACP d'Agy?",
-            reinstallTitle: "Reinstal·lar el servidor ACP d'Agy?",
-            description: "Això instal·la el servidor ACP oficial i fixat d'Agy que s'utilitza per a les sessions d'Agy. La CLI interactiva agy s'instal·la per separat.",
         },
         githubCliBanner: {
             title: 'GitHub CLI',
@@ -6119,9 +5945,6 @@ deps: {
         browseSourceCodexUserHome: "El meu directori Codex",
         browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
         browseSourceClaudeDefault: "Configuració predeterminada de Claude",
-        browseSourceOpenCodeDefault: "Servidor predeterminat d'OpenCode",
-        browseSourceAcpAgentSessions: "Sessions de l'agent",
-        browseSourcePiDefault: "Directori per defecte de l'agent Pi",
         browseCandidates: "Sessions disponibles",
         browseNoMachines: "Encara no hi ha màquines disponibles per a sessions directes.",
         browseNoCandidates: "No s'han trobat sessions del proveïdor per a aquesta màquina i aquest proveïdor.",
@@ -6187,40 +6010,6 @@ deps: {
         codexSessionId: 'ID de la sessió de Codex',
         codexSessionIdCopied: 'ID de la sessió de Codex copiat al porta-retalls',
         failedToCopyCodexSessionId: 'Ha fallat copiar l\'ID de la sessió de Codex',
-        opencodeSessionId: 'ID de la sessió d\'OpenCode',
-        opencodeSessionIdCopied: 'ID de la sessió d\'OpenCode copiat al porta-retalls',
-        auggieSessionId: 'ID de la sessió d\'Auggie',
-        auggieSessionIdCopied: 'ID de la sessió d\'Auggie copiat al porta-retalls',
-        geminiSessionId: 'ID de la sessió de Gemini',
-        geminiSessionIdCopied: 'ID de la sessió de Gemini copiat al porta-retalls',
-        qwenSessionId: 'ID de la sessió de Qwen Code',
-        qwenSessionIdCopied: 'ID de la sessió de Qwen Code copiat al porta-retalls',
-        kimiSessionId: 'ID de la sessió de Kimi',
-        kimiSessionIdCopied: 'ID de la sessió de Kimi copiat al porta-retalls',
-        kiloSessionId: 'ID de la sessió de Kilo',
-        kiloSessionIdCopied: 'ID de la sessió de Kilo copiat al porta-retalls',
-        kiroSessionId: 'ID de la sessió de Kiro',
-        kiroSessionIdCopied: 'ID de la sessió de Kiro copiat al porta-retalls',
-        devinSessionId: 'ID de la sessió de Devin',
-        devinSessionIdCopied: 'ID de la sessió de Devin copiat al porta-retalls',
-        agySessionId: "ID de la sessió d'Agy",
-        agySessionIdCopied: "ID de la sessió d'Agy copiat al porta-retalls",
-        fxSessionId: "ID de la sessió de FX",
-        fxSessionIdCopied: "ID de la sessió de FX copiat al porta-retalls",
-        droidSessionId: "ID de la sessió de Factory Droid",
-        codebuddySessionId: "ID de la sessió de CodeBuddy",
-        droidSessionIdCopied: "ID de la sessió de Factory Droid copiat al porta-retalls",
-        codebuddySessionIdCopied: "ID de la sessió de CodeBuddy copiat al porta-retalls",
-        customAcpSessionId: 'ID de la sessió d’ACP personalitzat',
-        grokSessionId: "ID de la sessió de Grok",
-        grokSessionIdCopied: "ID de la sessió de Grok copiat al porta-retalls",
-        customAcpSessionIdCopied: 'ID de la sessió d’ACP personalitzat copiat al porta-retalls',
-        piSessionId: 'ID de la sessio de Pi',
-        piSessionIdCopied: 'ID de la sessio de Pi copiat al porta-retalls',
-        copilotSessionId: 'ID de sessió de Copilot',
-        copilotSessionIdCopied: 'ID de sessió de Copilot copiat al porta-retalls',
-        cursorSessionId: 'ID de sessió de Cursor',
-        cursorSessionIdCopied: 'ID de sessió de Cursor copiat al porta-retalls',
         metadataCopied: 'Metadades copiades al porta-retalls',
         failedToCopyMetadata: 'Ha fallat copiar les metadades',
         failedToKillSession: 'Ha fallat finalitzar la sessió',
@@ -6424,27 +6213,6 @@ deps: {
         agent: {
             claude: 'Claude',
             codex: 'Codex',
-            opencode: 'OpenCode',
-            gemini: 'Gemini',
-            auggie: 'Auggie',
-            qwen: 'Qwen Code',
-            kimi: 'Kimi',
-            kilo: 'Kilo',
-            kiro: 'Kiro',
-            devin: 'Devin',
-            agy: 'Antigravity',
-            fx: "FX",
-            droid: "Factory Droid",
-            codebuddy: "CodeBuddy",
-        customAcp: 'ACP personalitzat',
-            pi: 'Pi',
-            copilot: 'Copilot',
-            cursor: 'Cursor',
-            grok: 'Grok',
-        },
-        auggieIndexingChip: {
-            on: 'Indexació activada',
-            off: 'Indexació desactivada',
         },
           model: {
               title: 'MODEL',
@@ -6484,31 +6252,6 @@ deps: {
             gpt5Low: 'GPT-5 Baix',
             gpt5Medium: 'GPT-5 Mitjà',
             gpt5High: 'GPT-5 Alt',
-        },
-        geminiPermissionMode: {
-            title: 'MODE DE PERMISOS GEMINI',
-            default: 'Per defecte',
-            readOnly: 'Només lectura',
-            safeYolo: 'YOLO segur',
-            yolo: 'YOLO',
-            badgeReadOnly: 'Només lectura',
-            badgeSafeYolo: 'YOLO segur',
-            badgeYolo: 'YOLO',
-        },
-        geminiModel: {
-            title: 'MODEL GEMINI',
-            gemini25Pro: {
-                label: 'Gemini 2.5 Pro',
-                description: 'Més capaç',
-            },
-            gemini25Flash: {
-                label: 'Gemini 2.5 Flash',
-                description: 'Ràpid i eficient',
-            },
-            gemini25FlashLite: {
-                label: 'Gemini 2.5 Flash Lite',
-                description: 'Més ràpid',
-            },
         },
         context: {
             remaining: ({ percent }: { percent: number }) => `${percent}% restant`,
@@ -6690,12 +6433,6 @@ deps: {
         taskView: {
             moreTools: ({ count }: { count: number }) => `+${count} eines més`,
         },
-        workspaceIndexingPermission: {
-            defaultTitle: 'Indexació de l’espai de treball',
-            description: 'La indexació ajuda l’agent a cercar el teu codi més ràpid i a donar respostes més precises. Pot escanejar fitxers del teu espai de treball.',
-            optionFallback: 'Opció',
-            chooseOptionHint: 'Tria una opció a continuació per continuar.',
-        },
         acpHistoryImport: {
             title: 'Importar l’historial de la sessió?',
             defaultNote: 'Aquest historial de sessió difereix del que ja hi ha a Happier. Importar-lo pot crear duplicats.',
@@ -6745,9 +6482,6 @@ deps: {
             switchMode: 'Canvia el mode',
             taskOutput: 'Sortida de la tasca',
             taskStop: 'Atura la tasca',
-        },
-        geminiExecute: {
-            cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
         },
         desc: {
             terminalCmd: ({ cmd }: { cmd: string }) => `Terminal(cmd: ${cmd})`,
@@ -9331,11 +9065,11 @@ settingsSession: {
                     "welcome": {
                         "title": "Benvingut a Happier",
                         "everywhereTitle": "Els teus agents d’IA, a tot arreu on treballes",
-                        "everywhereBody": "Claude Code, Codex, OpenCode, Pi i molt més: al telèfon, la tauleta, el navegador o l’escriptori.",
+                        "everywhereBody": "Claude Code i Codex: al telèfon, la tauleta, el navegador o l’escriptori.",
                         "cockpitTitle": "La teva cabina mòbil",
                         "cockpitBody": "Xat, fitxers, Git, editor, terminal. Tot el que necessites per crear i enviar el teu pròxim projecte, a l’abast dels dits.",
                         "existingTitle": "Sessions existents, ja disponibles",
-                        "existingBody": "Qualsevol sessió de Claude, Codex o OpenCode que s’executi a la teva màquina, obre-la a Happier en directe.",
+                        "existingBody": "Qualsevol sessió de Claude o Codex que s’executi a la teva màquina, obre-la a Happier en directe.",
                         "voiceTitle": "Un assistent de veu per pensar-hi plegats",
                         "voiceBody": "Pregunta què fan els teus agents, aprova sol·licituds de permís i envia missatges. Sense mans.",
                         "reviewTitle": "Revisa diffs i deixa comentaris",
@@ -9343,7 +9077,7 @@ settingsSession: {
                         "subagentsTitle": "Subagents entre proveïdors",
                         "subagentsBody": "Llança subagents de Codex des d’una sessió de Claude. Divideix la feina entre agents. Encaminia missatges entre sessions.",
                         "tuisTitle": "Fes servir les teves TUI preferides",
-                        "tuisBody": "Executa Claude Code, Codex o OpenCode a la seva interfície de terminal nativa. Happier ho captura i ho sincronitza amb tots els dispositius.",
+                        "tuisBody": "Executa Claude Code o Codex a la seva interfície de terminal nativa. Happier ho captura i ho sincronitza amb tots els dispositius.",
                         "inboxTitle": "Una safata d’entrada. Totes les sessions.",
                         "inboxBody": "Totes les aprovacions pendents, sol·licituds de permís i sessions preparades per revisar, de totes les màquines, en un sol lloc.",
                         "mcpTitle": "Una configuració MCP. Tots els proveïdors.",
@@ -9370,7 +9104,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "T’agrada el terminal? A nosaltres també!",
                         "wideTitle": "T’agrada el terminal?\nA nosaltres també!",
-                        "body": "Executa Claude Code, Codex o OpenCode a la seva interfície de terminal nativa. Segueix-ho, envia missatges i aprova permisos des del telèfon.",
+                        "body": "Executa Claude Code o Codex a la seva interfície de terminal nativa. Segueix-ho, envia missatges i aprova permisos des del telèfon.",
                         "alt": "Imatge abstracta de marcador per a sincronització de TUI de terminal."
                     },
                     "cockpit": {
@@ -9380,8 +9114,8 @@ settingsSession: {
                         "alt": "Imatge abstracta de marcador per a la cabina mòbil."
                     },
                     "existingSessions": {
-                        "title": "Sessions de Claude, Codex, OpenCode? Ja hi són.",
-                        "body": "Navega per qualsevol sessió de Claude, Codex o OpenCode, s’estigui executant o no.",
+                        "title": "Sessions de Claude o Codex? Ja hi són.",
+                        "body": "Navega per qualsevol sessió de Claude o Codex, s’estigui executant o no.",
                         "alt": "Imatge abstracta de marcador per a sessions de proveïdors existents."
                     },
                     "voiceAssistant": {
@@ -10039,7 +9773,7 @@ settingsSession: {
       chatFooter: {
           permissionsTerminalOnly: 'Els permisos només es mostren al terminal. Reinicia o envia un missatge per controlar des de l\'app.',
           sessionRunningLocally: 'This session is running locally.',
-          sessionRunningLocallyAndRemotely: 'Aquesta sessió està adjunta localment a OpenCode i encara es pot controlar des de l’app.',
+          sessionRunningLocallyAndRemotely: 'Aquesta sessió també està oberta en un terminal local i encara es pot controlar des de l’app.',
           switchingToRemote: 'Canviant al mode remot…',
           switchToRemote: 'Canvia a remot',
           detachLocalTerminal: 'Desconnecta el terminal',
@@ -10327,9 +10061,6 @@ settingsSession: {
             codex: 'Codex (Default)',
             openai: 'OpenAI (GPT-5)',
             azureOpenai: 'Azure OpenAI',
-            gemini: 'Gemini (Default)',
-            geminiApiKey: 'Gemini (API key)',
-            geminiVertex: 'Gemini (Vertex AI)',
         },
         groups: {
             favorites: 'Preferits',
@@ -10365,10 +10096,6 @@ settingsSession: {
             codex: {
                 title: 'Codex',
                 instructions: 'Executa `codex login` per iniciar sessió.',
-            },
-            geminiCli: {
-                title: 'Gemini CLI',
-                instructions: 'Executa `gemini auth` per iniciar sessió.',
             },
         },
         requirements: {
@@ -10466,23 +10193,6 @@ settingsSession: {
             selectAtLeastOneError: 'Selecciona com a mínim un backend d\'IA.',
             claudeSubtitle: 'CLI de Claude',
             codexSubtitle: 'CLI de Codex',
-            opencodeSubtitle: 'CLI d\'OpenCode',
-            geminiSubtitleExperimental: 'CLI de Gemini (experimental)',
-            auggieSubtitle: 'CLI d\'Auggie',
-            qwenSubtitleExperimental: 'CLI de Qwen Code (experimental)',
-            kimiSubtitleExperimental: 'CLI de Kimi Code (experimental)',
-            kiloSubtitleExperimental: 'CLI de Kilo (experimental)',
-            kiroSubtitleExperimental: 'CLI de Kiro (experimental)',
-            devinSubtitleExperimental: 'CLI de Devin (experimental)',
-            agySubtitleExperimental: "CLI d'Antigravity (experimental)",
-            fxSubtitleExperimental: "CLI de FX (experimental)",
-            droidSubtitleExperimental: "CLI de Factory Droid (experimental)",
-            codebuddySubtitleExperimental: "CLI de CodeBuddy Code (experimental)",
-            customAcpSubtitleExperimental: 'CLI d’ACP personalitzat (experimental)',
-            grokSubtitleExperimental: "CLI de Grok Build (experimental)",
-            piSubtitleExperimental: 'CLI de Pi (experimental)',
-            copilotSubtitleExperimental: 'GitHub Copilot CLI (en proves)',
-            cursorSubtitleExperimental: 'Cursor Agent CLI (en proves)',
         },
         tmux: {
             title: 'Tmux',

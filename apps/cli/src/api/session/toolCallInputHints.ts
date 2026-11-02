@@ -24,7 +24,7 @@ export function extractPermissionToolCallRawInput(options: unknown): unknown | n
 
     if (toolCallRecord.rawInput != null) return toolCallRecord.rawInput;
 
-    // Gemini ACP uses `toolCall.content` + `toolCall.locations` and leaves `input={}`.
+    // Some ACP agents send `toolCall.content` + `toolCall.locations` and leave `input={}`.
     if (Array.isArray(toolCallRecord.content)) {
       const locations = Array.isArray(toolCallRecord.locations) ? toolCallRecord.locations : [];
       return { items: toolCallRecord.content, locations };

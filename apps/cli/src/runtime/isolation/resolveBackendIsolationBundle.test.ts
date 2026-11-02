@@ -10,7 +10,7 @@ describe('resolveBackendIsolationBundle', () => {
       PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_HOME_DIR,
       PIGGERCODE_SERVER_URL: process.env.PIGGERCODE_SERVER_URL,
       PIGGERCODE_WEBAPP_URL: process.env.PIGGERCODE_WEBAPP_URL,
-      PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS: process.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS,
+      PIGGERCODE_CODEX_SERVER_TURN_INACTIVITY_TIMEOUT_MS: process.env.PIGGERCODE_CODEX_SERVER_TURN_INACTIVITY_TIMEOUT_MS,
       HOME: process.env.HOME,
       USERPROFILE: process.env.USERPROFILE,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
@@ -28,7 +28,7 @@ describe('resolveBackendIsolationBundle', () => {
       process.env.PIGGERCODE_HOME_DIR = homeDir;
       process.env.PIGGERCODE_SERVER_URL = 'https://api.example.test';
       process.env.PIGGERCODE_WEBAPP_URL = 'https://app.example.test';
-      process.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS = '123456';
+      process.env.PIGGERCODE_CODEX_SERVER_TURN_INACTIVITY_TIMEOUT_MS = '123456';
       process.env.HOME = join(homeDir, 'real-home');
       process.env.USERPROFILE = join(homeDir, 'real-profile');
       process.env.ANTHROPIC_API_KEY = 'native-user-auth';
@@ -62,7 +62,7 @@ describe('resolveBackendIsolationBundle', () => {
       expect(bundle.env.XDG_DATA_HOME).toBe(join(homeDir, 'real-data'));
       await bundle.cleanup?.();
       await expect(access(root)).rejects.toThrow();
-      expect(bundle.env.PIGGERCODE_OPENCODE_SERVER_TURN_INACTIVITY_TIMEOUT_MS).toBe('123456');
+      expect(bundle.env.PIGGERCODE_CODEX_SERVER_TURN_INACTIVITY_TIMEOUT_MS).toBe('123456');
       expect(bundle.env.HOME).toBe(join(homeDir, 'real-home'));
       expect(bundle.env.USERPROFILE).toBe(join(homeDir, 'real-profile'));
       expect(bundle.env.ANTHROPIC_API_KEY).toBe('native-user-auth');

@@ -209,8 +209,8 @@ vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightConfi
 
 describe('NewSessionEngineOptionDetail', () => {
     const backendTarget: BackendTargetRefV1 = {
-        kind: 'configuredAcpBackend',
-        backendId: 'custom-preset',
+        kind: 'builtInAgent',
+        agentId: 'codex',
     };
 
     beforeEach(() => {
@@ -372,8 +372,8 @@ describe('NewSessionEngineOptionDetail', () => {
             selectedSessionModeId="default"
             selectedConfigOverrides={{}}
             favoriteModelSelections={[
-                { backendTargetKey: 'acpBackend:custom-preset', modelId: 'preset-fast' },
-                { backendTargetKey: 'acpBackend:custom-preset', modelId: 'catalog-only' },
+                { backendTargetKey: 'agent:codex', modelId: 'preset-fast' },
+                { backendTargetKey: 'agent:codex', modelId: 'catalog-only' },
             ]}
             onToggleFavoriteModel={vi.fn()}
         />);
@@ -407,7 +407,7 @@ describe('NewSessionEngineOptionDetail', () => {
             selectedSessionModeId="default"
             selectedConfigOverrides={{}}
             favoriteModelSelections={[
-                { backendTargetKey: 'acpBackend:custom-preset', modelId: 'claude-sonnet-4-5' },
+                { backendTargetKey: 'agent:codex', modelId: 'claude-sonnet-4-5' },
             ]}
             onToggleFavoriteModel={vi.fn()}
         />);
@@ -544,71 +544,6 @@ describe('NewSessionEngineOptionDetail', () => {
             modelLabel: null,
             sessionModeId: 'default',
             configOverrides: {},
-        });
-    });
-
-    it('canonicalizes a unique provider-qualified custom model alias and retains its selected option controls', async () => {
-        modelOptionsState.value = [{
-            value: 'openai-codex/gpt-5.6-luna',
-            label: 'GPT-5.6 Luna',
-            description: 'OpenAI Codex',
-            modelOptions: [{
-                id: 'reasoning_effort',
-                name: 'Thinking',
-                type: 'select',
-                currentValue: 'medium',
-                options: [
-                    { value: 'low', name: 'Low' },
-                    { value: 'medium', name: 'Medium' },
-                    { value: 'high', name: 'High' },
-                    { value: 'xhigh', name: 'Max' },
-                ],
-            }],
-        }];
-        preflightModelsState.value = {
-            availableModels: [{ id: 'openai-codex/gpt-5.6-luna', name: 'GPT-5.6 Luna' }],
-            supportsFreeform: true,
-        };
-        let latestSelection: {
-            modelId: string;
-            modelLabel: string | null;
-            sessionModeId: string;
-            configOverrides: Readonly<Record<string, string>>;
-        } | null = null;
-
-        const { NewSessionEngineOptionDetail } = await import('./NewSessionEngineOptionDetail');
-        await renderScreen(<NewSessionEngineOptionDetail
-            backendTarget={{ kind: 'builtInAgent', agentId: 'pi' }}
-            selectedMachineId="machine-1"
-            capabilityServerId="server-1"
-            cwd="/repo"
-            selectedModelId="gpt-5.6-luna"
-            selectedSessionModeId="default"
-            selectedConfigOverrides={{}}
-            onSelectionChange={(selection) => {
-                latestSelection = selection;
-            }}
-        />);
-
-        expect(lastModelPickerOverlayProps?.selectedValue).toBe('openai-codex/gpt-5.6-luna');
-        expect(lastModelPickerOverlayProps?.selectedOptionControls).toEqual([
-            expect.objectContaining({
-                option: expect.objectContaining({
-                    id: 'reasoning_effort',
-                    options: expect.arrayContaining([{ value: 'low', name: 'Low' }]),
-                }),
-            }),
-        ]);
-
-        act(() => {
-            lastModelPickerOverlayProps.onSelectOptionControlValue('reasoning_effort', 'low');
-        });
-
-        expect(latestSelection).toEqual({
-            modelId: 'openai-codex/gpt-5.6-luna',
-            modelLabel: 'GPT-5.6 Luna',
-            sessionModeId: 'default',
-            configOverrides: { reasoning_effort: 'low' },
         });
     });
 

@@ -22,11 +22,11 @@ import { logger } from '@/ui/logger';
  * Prompt finalization: the one place a queued user message becomes the exact prompt and
  * metadata a provider receives (D-21a).
  *
- * remote-dev has FOUR independent prompt-dispatch owners — the ACP family, Codex, Claude and
- * Gemini each run their own loop — so there is no single dispatch site to hook. The module
- * every one of them already shares is the replay seed, which is why finalization is built as
- * an enclosing owner around it rather than as a fifth parallel path. Every send and steer
- * across all four families passes through here.
+ * There are several independent prompt-dispatch owners — the ACP family, Codex and Claude each
+ * run their own loop — so there is no single dispatch site to hook. The module every one of
+ * them already shares is the replay seed, which is why finalization is built as an enclosing
+ * owner around it rather than as another parallel path. Every send and steer across all
+ * families passes through here.
  */
 
 export type ProviderPromptDispatchSession = Readonly<{

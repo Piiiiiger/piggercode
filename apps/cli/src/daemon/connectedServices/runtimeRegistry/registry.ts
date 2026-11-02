@@ -403,7 +403,7 @@ export class ConnectedServiceRuntimeRegistry {
 
   /**
    * Resolve a LIVE runtime target by its broker selection identity (R3-6). Providers with a shared
-   * managed server (OpenCode/Pi) present this stable identity — not a per-session id — at the daemon
+   * managed server present this stable identity — not a per-session id — at the daemon
    * bridge; the daemon uses the matched live target's CURRENT binding as the canonical selection.
    * Any live target carrying the identity is equivalent (they share the same connected-service
    * binding, which is what the identity keys on); the lowest live pid wins for determinism.

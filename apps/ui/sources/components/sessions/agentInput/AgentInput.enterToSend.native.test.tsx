@@ -172,13 +172,13 @@ vi.mock('@/agents/catalog/catalog', () => ({
     getAgentIconSvgXml: () => null,
     getAgentIconSource: () => null,
     getAgentIconTintColor: () => undefined,
-    AGENT_IDS: ['codex', 'claude', 'opencode', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'codex',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({ displayNameKey: 'agents.codex', toolRendering: { hideUnknownToolsByDefault: false } }),
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
 }));

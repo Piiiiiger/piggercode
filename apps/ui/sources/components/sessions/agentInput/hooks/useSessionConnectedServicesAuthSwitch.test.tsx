@@ -1409,77 +1409,6 @@ describe('useSessionConnectedServicesAuthSwitch', () => {
         await hook.unmount();
     });
 
-    it('lets Gemini native-to-connected session switches reach the daemon when advertised by the manifest', async () => {
-        const { useSessionConnectedServicesAuthSwitch } = await import('./useSessionConnectedServicesAuthSwitch');
-
-        const hook = await renderHook(() =>
-            useSessionConnectedServicesAuthSwitch({
-                sessionId: 'session-1',
-                agentId: 'gemini',
-                machineId: 'machine-1',
-                serverId: 'server-1',
-                agentCore: AGENTS_CORE.gemini,
-                sessionMetadata: {
-                    connectedServices: {
-                        v: 1,
-                        bindingsByServiceId: {
-                            gemini: { source: 'native' },
-                        },
-                    },
-                },
-                settings: {
-                    connectedServicesProfileLabelByKey: { 'gemini/work': 'Work' },
-                    connectedServicesDefaultProfileByServiceId: {},
-                },
-                switchingDisabledReason: null,
-            }),
-        );
-
-        const popover = renderChipPopover(
-            hook.getCurrent().connectedServicesAuthChip?.collapsedContentPopover?.renderContent,
-        ) as React.ReactElement<{
-            resolveOptionAvailability: (params: {
-                serviceId: string;
-                binding: { source: string; selection?: string; profileId?: string };
-            }) => { disabled?: boolean; subtitle?: string };
-            setBindingForService: (serviceId: string, binding: unknown) => void;
-        }>;
-
-        expect(popover.props.resolveOptionAvailability({
-            serviceId: 'gemini',
-            binding: { source: 'connected', selection: 'profile', profileId: 'work' },
-        })).toEqual({});
-
-        await act(async () => {
-            popover.props.setBindingForService('gemini', {
-                source: 'connected',
-                selection: 'profile',
-                profileId: 'work',
-            });
-            await Promise.resolve();
-            await Promise.resolve();
-        });
-
-        expect(setSessionConnectedServiceAuthBindingMock).toHaveBeenCalledWith({
-            sessionId: 'session-1',
-            agentId: 'gemini',
-            machineId: 'machine-1',
-            serverId: 'server-1',
-            bindings: {
-                v: 1,
-                bindingsByServiceId: {
-                    gemini: {
-                        source: 'connected',
-                        selection: 'profile',
-                        profileId: 'work',
-                    },
-                },
-            },
-        });
-
-        await hook.unmount();
-    });
-
     it('lets the daemon return provider-state-sharing-required for Codex transitions when sharing is disabled', async () => {
         setSessionConnectedServiceAuthBindingMock.mockResolvedValueOnce({
             ok: false,
@@ -2326,7 +2255,7 @@ describe('useSessionConnectedServicesAuthSwitch', () => {
                     failurePhase: 'continuity',
                     source: 'session_view',
                     serviceId: 'openai-codex',
-                    agentId: 'opencode',
+                    agentId: 'codex',
                     retryable: false,
                     suggestedActions: [
                         CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS.openConnectedAccounts,
@@ -2342,11 +2271,11 @@ describe('useSessionConnectedServicesAuthSwitch', () => {
         const hook = await renderHook(() =>
             useSessionConnectedServicesAuthSwitch({
                 sessionId: 'session-1',
-                agentId: 'opencode',
+                agentId: 'codex',
                 machineId: 'machine-1',
                 serverId: 'server-1',
                 agentCore: {
-                    id: 'opencode',
+                    id: 'codex',
                     connectedServices: {
                         supportedServiceIds: ['openai-codex'],
                         sessionAuthSwitch: { continuityMode: 'restart_same_home' },
@@ -2383,74 +2312,10 @@ describe('useSessionConnectedServicesAuthSwitch', () => {
 
         expect(modalAlertMock).toHaveBeenCalledWith(
             'connectedServices.diagnostics.title.provider_session_state_unavailable_for_resume',
-            'connectedServices.diagnostics.body.provider_session_state_unavailable_for_resume:{"reason":"restart_rematerialize_required","agentId":"opencode"}',
+            'connectedServices.diagnostics.body.provider_session_state_unavailable_for_resume:{"reason":"restart_rematerialize_required","agentId":"codex"}',
             expect.any(Array),
         );
         expect(modalAlertMock.mock.calls[0]?.[1]).not.toBe('connectedServices.authSwitch.errors.providerStateSharingUnavailable');
-
-        await hook.unmount();
-    });
-
-    it('does not show provider-state-sharing copy for reachable stopped OpenCode restart/rematerialize switches', async () => {
-        setSessionConnectedServiceAuthBindingMock.mockResolvedValueOnce({
-            ok: true,
-            action: 'restart_requested',
-        });
-        const { useSessionConnectedServicesAuthSwitch } = await import('./useSessionConnectedServicesAuthSwitch');
-
-        const hook = await renderHook(() =>
-            useSessionConnectedServicesAuthSwitch({
-                sessionId: 'session-1',
-                agentId: 'opencode',
-                machineId: 'machine-1',
-                serverId: 'server-1',
-                agentCore: {
-                    id: 'opencode',
-                    connectedServices: {
-                        supportedServiceIds: ['openai-codex'],
-                        sessionAuthSwitch: { continuityMode: 'restart_same_home' },
-                    },
-                },
-                sessionMetadata: {
-                    connectedServices: {
-                        v: 1,
-                        bindingsByServiceId: {
-                            'openai-codex': { source: 'native' },
-                        },
-                    },
-                },
-                settings: {
-                    connectedServicesProfileLabelByKey: { 'openai-codex/happier': 'Happier' },
-                    connectedServicesDefaultProfileByServiceId: {},
-                },
-                switchingDisabledReason: null,
-                sessionActive: false,
-            }),
-        );
-        const popover = renderChipPopover(
-            hook.getCurrent().connectedServicesAuthChip?.collapsedContentPopover?.renderContent,
-        ) as React.ReactElement<{ setBindingForService: (serviceId: string, binding: unknown) => void }>;
-
-        await act(async () => {
-            popover.props.setBindingForService('openai-codex', {
-                source: 'connected',
-                selection: 'profile',
-                profileId: 'happier',
-            });
-            await Promise.resolve();
-        });
-
-        expect(setSessionConnectedServiceAuthBindingMock).toHaveBeenCalledWith(expect.objectContaining({
-            agentId: 'opencode',
-            machineId: 'machine-1',
-            serverId: 'server-1',
-        }));
-        expect(modalAlertMock).not.toHaveBeenCalled();
-        expect(routerPushMock).not.toHaveBeenCalledWith('/settings/connected-services/provider-state-sharing');
-        expect(hook.getCurrent().restartState).toEqual(expect.objectContaining({
-            status: 'restarting',
-            reason: 'manual_auth_switch',
-        }));
 
         await hook.unmount();
     });

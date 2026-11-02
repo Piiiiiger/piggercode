@@ -130,12 +130,6 @@ describe('updateExistingSessionAutomationTemplateMessage', () => {
                         flavor: 'codex',
                         codexSessionId: 'codex-session-1',
                         codexBackendMode: 'acp',
-                        acpConfiguredBackendV1: {
-                            v: 1,
-                            updatedAt: 20,
-                            backendId: 'review-bot',
-                            title: 'Review Bot',
-                        },
                     },
                     permissionMode: 'acceptEdits',
                     permissionModeUpdatedAt: 123,
@@ -154,7 +148,7 @@ describe('updateExistingSessionAutomationTemplateMessage', () => {
         expect(encryptedPayloads[0]).toEqual(expect.objectContaining({
             prompt: 'New message',
             displayText: 'New message',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             profileId: 'profile-1',
             permissionMode: 'safe-yolo',
             permissionModeUpdatedAt: 123,

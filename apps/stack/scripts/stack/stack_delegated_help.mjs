@@ -7,10 +7,10 @@ import { getStackHelpUsageLine } from './help_text.mjs';
 import { withStackEnv } from './stack_environment.mjs';
 import { stackExistsSync } from '../utils/stack/stacks.mjs';
 
-const DELEGATED_STACK_COMMANDS = new Set(['dev', 'start', 'build', 'typecheck', 'lint', 'test', 'review', 'doctor', 'mobile', 'mobile-dev-client']);
+const DELEGATED_STACK_COMMANDS = new Set(['dev', 'start', 'build', 'typecheck', 'lint', 'test', 'doctor', 'mobile', 'mobile-dev-client']);
 
 function resolveStackOnlyFlags(command) {
-  if (command === 'build' || command === 'typecheck' || command === 'lint' || command === 'test' || command === 'review') {
+  if (command === 'build' || command === 'typecheck' || command === 'lint' || command === 'test') {
     return ['--repo=default|main|active|dev|<owner/...>|<path>', '--repo-dir=<path>'];
   }
   if (command === 'dev' || command === 'start') {

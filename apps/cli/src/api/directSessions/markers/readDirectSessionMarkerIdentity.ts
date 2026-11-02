@@ -15,7 +15,7 @@ function readString(value: unknown): string | null {
 
 function readProviderId(value: unknown): DirectSessionsProviderId | null {
   const normalized = readString(value);
-  return normalized === 'claude' || normalized === 'codex' || normalized === 'opencode' || normalized === 'pi'
+  return normalized === 'claude' || normalized === 'codex'
     ? normalized
     : null;
 }
@@ -45,13 +45,7 @@ export function readDirectSessionMarkerRemoteSessionId(
   }
 
   const legacyId = readString(metadata?.[
-    providerId === 'codex'
-      ? 'codexSessionId'
-      : providerId === 'claude'
-        ? 'claudeSessionId'
-        : providerId === 'opencode'
-          ? 'opencodeSessionId'
-          : 'piSessionId'
+    providerId === 'codex' ? 'codexSessionId' : 'claudeSessionId'
   ]);
   if (legacyId) return legacyId;
 

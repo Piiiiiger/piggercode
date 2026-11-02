@@ -5,7 +5,7 @@ import { getAgentPickerOptions } from './agentPickerOptions';
 
 describe('agents/agentPickerOptions', () => {
     it('returns options preserving caller order', () => {
-        const selectedAgents: readonly AgentId[] = ['claude', 'codex', 'gemini'];
+        const selectedAgents: readonly AgentId[] = ['claude', 'codex'];
         const options = getAgentPickerOptions(selectedAgents);
         expect(options.map((option) => option.agentId)).toEqual(selectedAgents);
     });

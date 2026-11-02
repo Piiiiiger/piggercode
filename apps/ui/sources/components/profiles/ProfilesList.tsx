@@ -163,7 +163,6 @@ const ProfileRow = React.memo(function ProfileRow(props: ProfileRowProps) {
 
 export function ProfilesList(props: ProfilesListProps) {
     const { theme, rt } = useUnistyles();
-    const acpCatalogSettingsV1 = useSetting('acpCatalogSettingsV1');
     const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey');
     const settingsProfileEnabledById = useSetting('profileEnabledById') as ProfileEnabledById | undefined;
     const profileEnabledById = props.profileEnabledById ?? settingsProfileEnabledById;
@@ -173,10 +172,9 @@ export function ProfilesList(props: ProfilesListProps) {
     const resolvedBackendEntries = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1,
             backendEnabledByTargetKey,
         });
-    }, [acpCatalogSettingsV1, backendEnabledByTargetKey, enabledAgentIds]);
+    }, [backendEnabledByTargetKey, enabledAgentIds]);
     const strings = React.useMemo(() => getDefaultProfileListStrings(enabledAgentIds), [enabledAgentIds]);
     const {
         extraActions,

@@ -36,7 +36,7 @@ describe('useNewSessionPreflightModelsState', () => {
 
     function Harness() {
       useNewSessionPreflightModelsState({
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         selectedMachineId: 'machine-1',
         capabilityServerId: 'server-1',
         cwd: '/repo',
@@ -53,7 +53,7 @@ describe('useNewSessionPreflightModelsState', () => {
     expect(machineCapabilitiesInvokeMock).toHaveBeenCalledTimes(1);
     const request = machineCapabilitiesInvokeMock.mock.calls[0]?.[1];
     expect(request).toMatchObject({
-      id: 'cli.opencode',
+      id: 'cli.codex',
       method: 'probeModels',
       params: expect.objectContaining({ cwd: '/repo' }),
     });
@@ -224,37 +224,4 @@ describe('useNewSessionPreflightModelsState', () => {
     expect(values.slice(0, 2)).toEqual(['default', 'model-a']);
   });
 
-  it('uses cli.customAcp and forwards configured preset backendTarget', async () => {
-    const { useNewSessionPreflightModelsState } = await import('./useNewSessionPreflightModelsState');
-
-    machineCapabilitiesInvokeMock.mockClear();
-    resetDynamicModelProbeCacheForTests();
-
-    function Harness() {
-      useNewSessionPreflightModelsState({
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-        selectedMachineId: 'machine-1',
-        capabilityServerId: 'server-1',
-        cwd: '/repo',
-      });
-      return null;
-    }
-
-    let root!: renderer.ReactTestRenderer;
-    root = (await renderScreen(React.createElement(Harness))).tree;
-    await act(async () => {
-      root.unmount();
-    });
-
-    expect(machineCapabilitiesInvokeMock).toHaveBeenCalledTimes(1);
-    const request = machineCapabilitiesInvokeMock.mock.calls[0]?.[1];
-    expect(request).toMatchObject({
-      id: 'cli.customAcp',
-      method: 'probeModels',
-      params: expect.objectContaining({
-        cwd: '/repo',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      }),
-    });
-  });
 });

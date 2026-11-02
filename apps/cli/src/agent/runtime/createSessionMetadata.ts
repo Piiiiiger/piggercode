@@ -1,7 +1,7 @@
 /**
  * Session Metadata Factory
  *
- * Creates session state and metadata objects for all backends (Claude, Codex, Gemini).
+ * Creates session state and metadata objects for all backends (Claude Code, Codex).
  * This follows DRY principles by providing a single implementation for all backends.
  *
  * @module createSessionMetadata
@@ -56,7 +56,7 @@ export type BackendFlavor = string;
  * Options for creating session metadata.
  */
 export interface CreateSessionMetadataOptions {
-    /** Backend flavor (claude, codex, gemini) */
+    /** Backend flavor (claude, codex) */
     flavor: BackendFlavor;
     /** Provider-selected non-secret native directory overrides for later resume. */
     nativeAgentEnvironment?: SessionNativeEnvironment;
@@ -145,7 +145,7 @@ export interface SessionMetadataResult {
  * Creates session state and metadata for backend agents.
  *
  * This utility consolidates the common session metadata creation logic used by
- * Codex and Gemini backends, ensuring consistency across all backend implementations.
+ * agent backends, ensuring consistency across all backend implementations.
  *
  * @param opts - Options specifying flavor, machineId, and startedBy
  * @returns Object containing state and metadata for session creation
@@ -153,7 +153,7 @@ export interface SessionMetadataResult {
  * @example
  * ```typescript
  * const { state, metadata } = createSessionMetadata({
- *     flavor: 'gemini',
+ *     flavor: 'codex',
  *     machineId: settings.machineId,
  *     startedBy: opts.startedBy
  * });

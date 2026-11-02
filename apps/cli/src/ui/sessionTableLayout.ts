@@ -67,7 +67,7 @@ export type SessionSelectorColumnLayout = Readonly<{
 
 export function resolveSessionSelectorColumnLayout(termWidth: number): SessionSelectorColumnLayout | null {
   const indicatorWidth = 2;     // `› ` or `  `
-  const agentWidth = 8;          // 'opencode' is the longest agent id we ship
+  const agentWidth = 8;          // fits every shipped agent id
   const updatedWidth = 7;        // Fits the 'Updated' header without Ink wrapping.
   const idWidth = 9;             // shortened id is 8 chars + ellipsis
   const separatorWidth = 1;      // single space between cells

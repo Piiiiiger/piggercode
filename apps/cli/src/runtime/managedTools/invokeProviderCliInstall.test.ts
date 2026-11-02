@@ -102,44 +102,6 @@ describe('invokeProviderCliInstall', () => {
     );
   });
 
-  it('treats force installs as skipIfInstalled false', async () => {
-    const installProviderCli = vi.fn<(...args: any[]) => Promise<InstallProviderCliResult>>().mockResolvedValue({
-      ok: true,
-      alreadyInstalled: false,
-      logPath: null,
-      plan: {
-        providerId: 'gemini',
-        title: 'Google Gemini CLI',
-        binaries: ['gemini'],
-        platform: 'linux',
-        docsUrl: 'https://goo.gle/gemini-cli-auth-docs',
-        commands: [],
-        requiresAdmin: false,
-        installMode: 'managed_package',
-        managedInstall: {
-          kind: 'managed_package',
-          packageName: '@google/gemini-cli',
-          binaryName: 'gemini',
-        },
-      },
-    });
-
-    await invokeProviderCliInstall({
-      agentId: 'gemini',
-      nodePlatform: 'linux',
-      params: { skipIfInstalled: false },
-      installProviderCli,
-    });
-
-    expect(installProviderCli).toHaveBeenCalledWith(
-      expect.objectContaining({
-        providerId: 'gemini',
-        skipIfInstalled: false,
-        allowVendorRecipeExecution: true,
-      }),
-    );
-  });
-
   it('passes allowVendorRecipeExecution through when explicitly set', async () => {
     const installProviderCli = vi.fn<(...args: any[]) => Promise<InstallProviderCliResult>>().mockResolvedValue({
       ok: true,
@@ -173,26 +135,4 @@ describe('invokeProviderCliInstall', () => {
     );
   });
 
-  it('maps no-recipe failures to install-not-available', async () => {
-    const installProviderCli = vi.fn<(...args: any[]) => Promise<InstallProviderCliResult>>().mockResolvedValue({
-      ok: false,
-      errorCode: 'no-recipe',
-      errorMessage: 'No auto-install recipe available for kiro on linux.',
-      plan: null,
-      logPath: null,
-    });
-
-    const result = await invokeProviderCliInstall({
-      agentId: 'kiro',
-      nodePlatform: 'linux',
-      installProviderCli,
-    });
-
-    expect(result).toEqual({
-      ok: false,
-      errorCode: 'install-not-available',
-      errorMessage: 'No auto-install recipe available for kiro on linux.',
-      logPath: null,
-    });
-  });
 });

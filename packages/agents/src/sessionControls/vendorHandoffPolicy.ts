@@ -1,5 +1,5 @@
 import { buildBackendTargetKey } from '@piggercode/protocol';
-import type { AgentId } from '../types.js';
+import type { AgentId, AgentCore } from '../types.js';
 import { AGENTS_CORE } from '../manifest.js';
 import { isCodexVendorResumeBackendEnabled } from '../providerSettings/definitions/codex.js';
 import { resolvePersistedCodexRuntimeIdentity } from './codexRuntimeIdentity.js';
@@ -63,7 +63,7 @@ export function evaluateVendorHandoffEligibility(input: Readonly<{
     return { eligible: false, reasonCode: 'backend_disabled_by_account_settings' };
   }
 
-  const agent = AGENTS_CORE[input.agentId];
+  const agent: AgentCore = AGENTS_CORE[input.agentId];
   if (!agent.sessionStorage[input.storageMode]) {
     return { eligible: false, reasonCode: 'storage_mode_unsupported' };
   }

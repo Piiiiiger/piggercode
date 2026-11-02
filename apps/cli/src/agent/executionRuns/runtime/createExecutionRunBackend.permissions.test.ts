@@ -5,7 +5,7 @@ import { createExecutionRunPermissionHandler } from './createExecutionRunBackend
 describe('createExecutionRunPermissionHandler', () => {
   it('auto-approves write-like ACP tools for safe-yolo execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'copilot',
+      backendId: 'codex',
       permissionMode: 'safe-yolo',
     });
 
@@ -16,7 +16,7 @@ describe('createExecutionRunPermissionHandler', () => {
 
   it('denies write-like ACP tools for read-only execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'copilot',
+      backendId: 'codex',
       permissionMode: 'read_only',
     });
 
@@ -68,7 +68,7 @@ describe('createExecutionRunPermissionHandler', () => {
 
   it('auto-approves read-like ACP tools for read-only execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'opencode',
+      backendId: 'codex',
       permissionMode: 'read_only',
     });
 
@@ -79,7 +79,7 @@ describe('createExecutionRunPermissionHandler', () => {
 
   it('denies unknown, external MCP, and safe-name substring collisions in read-only execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'opencode',
+      backendId: 'codex',
       permissionMode: 'read_only',
     });
 
@@ -119,7 +119,7 @@ describe('createExecutionRunPermissionHandler', () => {
 
   it('denies all ACP tools for no_tools execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'opencode',
+      backendId: 'codex',
       permissionMode: 'no_tools',
     });
 
@@ -130,7 +130,7 @@ describe('createExecutionRunPermissionHandler', () => {
 
   it('still auto-approves session_title_set for no_tools execution runs', async () => {
     const handler = createExecutionRunPermissionHandler({
-      backendId: 'opencode',
+      backendId: 'codex',
       permissionMode: 'no_tools',
     });
 

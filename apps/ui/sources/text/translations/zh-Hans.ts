@@ -275,50 +275,6 @@ const settingsAppearanceTranslationExtension = {
 } as const;
 
 const zhHansAcpCatalogSettingsExtension = {
-    acpCatalog: 'ACP 后端',
-    acpCatalogSubtitle: '管理内置和自定义 ACP 后端',
-    acpCatalogBuiltIn: '内置 ACP',
-    acpCatalogBuiltInFooter: '内置的通用 ACP 代理定义在共享目录中，并通过共享 ACP 运行时运行。',
-    acpCatalogBackends: '自定义后端',
-    acpCatalogBackendsFooter: '每个自定义后端都是一个可选的、兼容 ACP 的 CLI 定义，拥有自己的启动器、默认值和认证设置。',
-    acpCatalogBackendsEmptyTitle: '没有自定义 ACP 后端',
-    acpCatalogBackendsEmptySubtitle: '添加一个后端以创建可选择的自定义 ACP 后端。',
-    acpCatalogAddBackend: '添加 ACP 后端',
-    acpCatalogAddBackendSubtitle: '创建一个自定义 ACP 后端',
-    acpCatalogBackendEditorTitle: 'ACP 后端',
-    acpCatalogBasics: '基础',
-    acpCatalogLauncher: '启动器',
-    acpCatalogEnv: '环境',
-    acpCatalogAddEnv: '添加环境变量',
-    acpCatalogAddEnvSubtitle: '存储字面值或绑定已保存的密钥',
-    acpCatalogEnvEmptyTitle: '没有环境变量',
-    acpCatalogEnvEmptySubtitle: '为此后端添加启动时变量。',
-    acpCatalogAuth: '认证',
-    acpCatalogAuthSupport: '认证支持',
-    acpCatalogAuthParser: '状态解析器',
-    acpCatalogCapabilities: '能力',
-    acpCatalogTransportProfile: '传输配置',
-    acpCatalogSupportsLoadSession: '支持恢复会话',
-    acpCatalogSupportsModes: '支持模式',
-    acpCatalogSupportsModels: '支持模型',
-    acpCatalogSupportsConfigOptions: '支持配置选项',
-    acpCatalogPromptImageSupport: '提示图片支持',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: '名称',
-    acpCatalogFieldTitle: '标题',
-    acpCatalogFieldDescription: '说明',
-    acpCatalogFieldCommand: '命令',
-    acpCatalogFieldArgs: '参数（每行一个）',
-    acpCatalogMachineLoginKey: '机器登录密钥',
-    acpCatalogDocsUrl: '文档 URL',
-    acpCatalogLoginCommand: '登录命令',
-    acpCatalogLoginArgs: '登录参数（每行一个）',
-    acpCatalogStatusCommand: '状态命令令牌（每行一个）',
-    acpCatalogDefaultMode: '默认模式',
-    acpCatalogDefaultModel: '默认模型',
-    acpCatalogDeleteBackendTitle: '删除 ACP 后端？',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `删除“${name}”？`,
-    acpCatalogValidationFailed: 'ACP 目录设置无效。',
 } as const;
 
 const acpCatalogTranslationExtension = {
@@ -1953,7 +1909,7 @@ export const zhHans: TranslationStructure = {
     mcpServersDetectedRefreshSubtitle: "扫描此设备上的提供方配置文件",
     mcpServersDetectedWarningsTitle: "检测警告",
     mcpServersDetectedEmptyTitle: "未检测到 MCP 服务器",
-    mcpServersDetectedEmptySubtitle: "点击刷新以扫描 Claude/Codex/OpenCode 配置。",
+    mcpServersDetectedEmptySubtitle: "点击刷新以扫描 Claude/Codex 配置。",
     mcpServersImportTitle: "导入 MCP 服务器？",
 		    mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) => `从 ${provider} 导入 “${name}” 吗？`,
     mcpServersImportAction: "导入",
@@ -2317,8 +2273,6 @@ export const zhHans: TranslationStructure = {
       openaiCodex: "OpenAI Codex（OpenAI）",
       openai: "OpenAI API 密钥",
       anthropic: "Anthropic API 密钥",
-      gemini: "Google Gemini（谷歌）",
-      antigravity: 'Google Antigravity',
       github: "GitHub",
     },
     title: "已连接服务",
@@ -2500,12 +2454,6 @@ export const zhHans: TranslationStructure = {
       pasteRedirectUrlPromptBody:
         "完成 OAuth 后，从浏览器地址栏复制最终重定向的 URL 并粘贴到这里。",
       providerOverrides: {
-        antigravity: {
-          connectWebDescription: "下一步：使用 Google 登录。Antigravity 会显示可复制的授权码。",
-          pasteRedirectUrlPromptBody: "1) 使用 Google 登录。2) 复制 antigravity.google 显示的授权码。3) 保持此登录页面打开，并粘贴到下方。",
-          pasteRedirectUrlPlaceholder: "粘贴 Antigravity 授权码",
-          pasteRedirectUrlTitle: "粘贴授权码",
-        },
         claudeSubscription: {
           connectWebDescription:
             "下一步：在打开的页面中登录。Claude 可能会显示一段代码字符串，而不是自动重定向。",
@@ -4031,110 +3979,6 @@ export const zhHans: TranslationStructure = {
                     }
                 }
             },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "OpenCode 版本",
-                        footer: "自动模式优先使用 opencode，不可用时改用 opencode2，并在启动后检测服务器 API。稳定版始终选择 opencode，但仍会检测 V1 或 V2。V2 优先使用 opencode2，否则以已选择 V2 的方式使用 opencode。Happier MCP 工具可通过 V2 的 ACP 模式使用；其服务器 API 暂不支持动态 MCP 注册。"
-                    },
-                    backendMode: {
-                        title: "后端模式",
-                        footer: "服务器模式可启用提问和原生分叉。ACP 模式是旧版兜底方案。"
-                    },
-                    server: {
-                        title: "服务器连接",
-                        footer: "留空即可使用 Happier 管理的 OpenCode 服务器生命周期。设置绝对 http(s) URL 以连接到现有 OpenCode 服务器。"
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "CLI 版本",
-                        subtitle: "选择 Happier 要启动的已安装 OpenCode 命令。",
-                        options: {
-                            auto: { title: "自动（推荐）", subtitle: "优先使用 opencode，不可用时改用 opencode2。" },
-                            stable: { title: "稳定版", subtitle: "始终启动 opencode，并在启动后检测服务器 API。" },
-                            v2: { title: "V2", subtitle: "优先使用 opencode2；否则以已选择 V2 的方式启动 opencode。" }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "OpenCode 后端模式",
-                        subtitle: "选择集成后端。",
-                        options: {
-                            server: {
-                                title: "服务器（推荐）",
-                                subtitle: "使用 OpenCode 服务器 API，获得更丰富的功能和更高的可靠性。"
-                            },
-                            acp: {
-                                title: "ACP（旧版）",
-                                subtitle: "通过 ACP 路由 OpenCode；功能更少。"
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "现有 OpenCode 服务器 URL",
-                        subtitle: "用户自管 OpenCode 服务器的可选覆盖地址。"
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "Cursor 命令行",
-                        footer: "当自动检测不足时，使用指定的 Cursor 二进制文件。Happier 优先使用 cursor-agent，并可在启用时回退到 agent。"
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Cursor 二进制路径",
-                        subtitle: "可选的 cursor-agent 或 agent 绝对路径。"
-                    },
-                    cursorApiEndpoint: {
-                        title: "Cursor API 端点",
-                        subtitle: "可选的 Cursor Agent API 端点覆盖。"
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "允许 agent 回退",
-                        subtitle: "当 cursor-agent 不可用时使用 agent 命令。"
-                    }
-                }
-            },
-            customAcp: {
-                title: "自定义 ACP"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            devin: { title: "Devin" },
-            agy: { title: 'Antigravity' },
-            fx: { title: "FX" },
-            droid: { title: "Factory Droid" },
-            codebuddy: { title: "CodeBuddy" },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
-            },
             codex: {
         title: "Codex",
         sections: {
@@ -4651,9 +4495,6 @@ export const zhHans: TranslationStructure = {
       codexAcp: {
         title: "Codex ACP 适配器",
       },
-      agyAcpServer: {
-          title: "Agy ACP 服务器",
-      },
       githubCli: {
         title: "GitHub 命令行工具",
       },
@@ -4847,7 +4688,6 @@ export const zhHans: TranslationStructure = {
       installCliIfAvailable: ({ cli }: { cli: string }) =>
         `如可用请安装 ${cli} CLI •`,
       viewInstallationGuide: "查看安装指南 →",
-      viewGeminiDocs: "查看 Gemini 文档 →",
     },
     worktree: {
       creating: ({ name }: { name: string }) =>
@@ -4948,18 +4788,6 @@ export const zhHans: TranslationStructure = {
       reinstallTitle: "重新安装 Codex ACP？",
       description:
         "这将安装一个围绕 Codex 的实验性 ACP 适配器，用于加载/恢复线程。",
-    },
-    agyAcpBanner: {
-        title: "Agy ACP 服务器",
-        install: "安装",
-        update: "更新",
-        reinstall: "重新安装",
-    },
-    agyAcpInstallModal: {
-        installTitle: "安装 Agy ACP 服务器？",
-        updateTitle: "更新 Agy ACP 服务器？",
-        reinstallTitle: "重新安装 Agy ACP 服务器？",
-        description: "这将安装用于 Agy 会话的官方固定版 Agy ACP 服务器。交互式 agy 命令行仍需单独安装。",
     },
         githubCliBanner: {
             title: 'GitHub CLI',
@@ -6272,9 +6100,6 @@ export const zhHans: TranslationStructure = {
     browseSourceCodexUserHome: "我的 Codex 主目录",
     browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
     browseSourceClaudeDefault: "默认 Claude 配置",
-    browseSourceOpenCodeDefault: "默认 OpenCode 服务器",
-    browseSourceAcpAgentSessions: '代理会话',
-    browseSourcePiDefault: "默认 Pi 代理目录",
     browseCandidates: "可用会话",
     browseNoMachines: "尚无可用于直连会话的机器。",
     browseNoCandidates: "未找到此机器和提供方对应的会话。",
@@ -6340,40 +6165,6 @@ export const zhHans: TranslationStructure = {
     codexSessionId: "Codex 会话 ID",
     codexSessionIdCopied: "Codex 会话 ID 已复制到剪贴板",
     failedToCopyCodexSessionId: "复制 Codex 会话 ID 失败",
-    opencodeSessionId: "OpenCode 会话 ID",
-    opencodeSessionIdCopied: "OpenCode 会话 ID 已复制到剪贴板",
-    geminiSessionId: "Gemini 会话 ID",
-    geminiSessionIdCopied: "Gemini 会话 ID 已复制到剪贴板",
-    auggieSessionId: "Auggie 会话 ID",
-    auggieSessionIdCopied: "Auggie 会话 ID 已复制到剪贴板",
-    qwenSessionId: "Qwen Code 会话 ID",
-    qwenSessionIdCopied: "Qwen Code 会话 ID 已复制到剪贴板",
-    kimiSessionId: "Kimi 会话 ID",
-    kimiSessionIdCopied: "Kimi 会话 ID 已复制到剪贴板",
-    kiloSessionId: "Kilo 会话 ID",
-    kiloSessionIdCopied: "Kilo 会话 ID 已复制到剪贴板",
-    kiroSessionId: "Kiro 会话 ID",
-    kiroSessionIdCopied: "Kiro 会话 ID 已复制到剪贴板",
-    devinSessionId: "Devin 会话 ID",
-    devinSessionIdCopied: "Devin 会话 ID 已复制到剪贴板",
-    agySessionId: "Agy 会话 ID",
-    agySessionIdCopied: "Agy 会话 ID 已复制到剪贴板",
-    fxSessionId: "FX 会话 ID",
-    fxSessionIdCopied: "FX 会话 ID 已复制到剪贴板",
-    droidSessionId: "Factory Droid 会话 ID",
-    codebuddySessionId: "CodeBuddy 会话 ID",
-    droidSessionIdCopied: "Factory Droid 会话 ID 已复制到剪贴板",
-    codebuddySessionIdCopied: "CodeBuddy 会话 ID 已复制到剪贴板",
-    customAcpSessionId: "自定义 ACP 会话 ID",
-    grokSessionId: "Grok 会话 ID",
-    grokSessionIdCopied: "Grok 会话 ID 已复制到剪贴板",
-    customAcpSessionIdCopied: "自定义 ACP 会话 ID 已复制到剪贴板",
-    piSessionId: "Pi 会话 ID",
-    piSessionIdCopied: "Pi 会话 ID 已复制到剪贴板",
-    copilotSessionId: "Copilot 会话 ID",
-    copilotSessionIdCopied: "Copilot 会话 ID 已复制到剪贴板",
-    cursorSessionId: "Cursor 会话 ID",
-    cursorSessionIdCopied: "Cursor 会话 ID 已复制到剪贴板",
     metadataCopied: "元数据已复制到剪贴板",
     failedToCopyMetadata: "复制元数据失败",
     failedToKillSession: "终止会话失败",
@@ -6596,27 +6387,6 @@ export const zhHans: TranslationStructure = {
     agent: {
       claude: "Claude",
       codex: "Codex",
-      opencode: "OpenCode",
-      gemini: "Gemini",
-      auggie: "Auggie",
-      qwen: "Qwen Code",
-      kimi: "Kimi",
-      kilo: "Kilo",
-      kiro: "Kiro",
-      devin: "Devin",
-      agy: 'Antigravity',
-      fx: "FX",
-      droid: "Factory Droid",
-      codebuddy: "CodeBuddy",
-      customAcp: "Custom ACP",
-      pi: "Pi",
-      copilot: "Copilot",
-      cursor: "Cursor",
-      grok: "Grok",
-    },
-    auggieIndexingChip: {
-      on: "已开启索引",
-      off: "已关闭索引",
     },
     model: {
       title: "模型",
@@ -6656,31 +6426,6 @@ export const zhHans: TranslationStructure = {
       gpt5Low: "GPT-5 低",
       gpt5Medium: "GPT-5 中",
       gpt5High: "GPT-5 高",
-    },
-    geminiPermissionMode: {
-      title: "GEMINI 权限模式",
-      default: "默认",
-      readOnly: "只读",
-      safeYolo: "安全 YOLO",
-      yolo: "YOLO",
-      badgeReadOnly: "只读",
-      badgeSafeYolo: "安全 YOLO",
-      badgeYolo: "YOLO",
-    },
-    geminiModel: {
-      title: "GEMINI 模型",
-      gemini25Pro: {
-        label: "Gemini 2.5 Pro",
-        description: "最强能力",
-      },
-      gemini25Flash: {
-        label: "Gemini 2.5 Flash",
-        description: "快速且高效",
-      },
-      gemini25FlashLite: {
-        label: "Gemini 2.5 Flash Lite",
-        description: "最快",
-      },
     },
     context: {
       remaining: ({ percent }: { percent: number }) => `剩余 ${percent}%`,
@@ -6879,13 +6624,6 @@ export const zhHans: TranslationStructure = {
     taskView: {
       moreTools: ({ count }: { count: number }) => `+${count} 个更多工具`,
     },
-    workspaceIndexingPermission: {
-      defaultTitle: "工作区索引",
-      description:
-        "索引可帮助代理更快地搜索你的代码库并提供更准确的答案。这可能会扫描工作区中的文件。",
-      optionFallback: "选项",
-      chooseOptionHint: "请选择下面的选项以继续。",
-    },
     acpHistoryImport: {
       title: "导入会话历史记录？",
       defaultNote:
@@ -6937,9 +6675,6 @@ export const zhHans: TranslationStructure = {
       switchMode: "切换模式",
       taskOutput: "任务输出",
       taskStop: "停止任务",
-    },
-    geminiExecute: {
-      cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
     },
     desc: {
       terminalCmd: ({ cmd }: { cmd: string }) => `终端(命令: ${cmd})`,
@@ -9588,11 +9323,11 @@ settingsSession: {
                     "welcome": {
                         "title": "欢迎使用 Happier",
                         "everywhereTitle": "你的 AI 代理，覆盖每一个工作场景",
-                        "everywhereBody": "Claude Code、Codex、OpenCode、Pi，以及更多：手机、平板、浏览器或桌面端都能使用。",
+                        "everywhereBody": "Claude Code 和 Codex：手机、平板、浏览器或桌面端都能使用。",
                         "cockpitTitle": "你的移动 cockpit",
                         "cockpitBody": "聊天、文件、Git、编辑器、终端。构建并发布下一个项目所需的一切，都在指尖。",
                         "existingTitle": "已有会话，已经在那里",
-                        "existingBody": "任何在你机器上运行的 Claude、Codex 或 OpenCode 会话，都可以在 Happier 中实时打开。",
+                        "existingBody": "任何在你机器上运行的 Claude 或 Codex 会话，都可以在 Happier 中实时打开。",
                         "voiceTitle": "可以一起头脑风暴的语音助手",
                         "voiceBody": "询问代理正在做什么，批准权限请求，并发送消息。全程免手动。",
                         "reviewTitle": "审查 diff 并留下评论",
@@ -9600,7 +9335,7 @@ settingsSession: {
                         "subagentsTitle": "跨 provider 的 subagents",
                         "subagentsBody": "从 Claude 会话启动 Codex subagents。把工作拆给多个代理。让消息在会话之间流转。",
                         "tuisTitle": "使用你喜欢的 TUI",
-                        "tuisBody": "在原生终端 UI 中运行 Claude Code、Codex 或 OpenCode。Happier 会捕获它，并同步到每台设备。",
+                        "tuisBody": "在原生终端 UI 中运行 Claude Code 或 Codex。Happier 会捕获它，并同步到每台设备。",
                         "inboxTitle": "一个 inbox。所有会话。",
                         "inboxBody": "所有待批准事项、权限请求和待审会话，跨所有机器集中在一个地方。",
                         "mcpTitle": "一个 MCP 配置。所有 provider。",
@@ -9627,7 +9362,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "你喜欢终端？我们也是！",
                         "wideTitle": "你喜欢终端？\n我们也是！",
-                        "body": "在原生终端 UI 中运行 Claude Code、Codex 或 OpenCode。通过手机跟进、发送消息并批准权限。",
+                        "body": "在原生终端 UI 中运行 Claude Code 或 Codex。通过手机跟进、发送消息并批准权限。",
                         "alt": "终端 TUI 同步的抽象占位图。"
                     },
                     "cockpit": {
@@ -9637,8 +9372,8 @@ settingsSession: {
                         "alt": "移动 cockpit 的抽象占位图。"
                     },
                     "existingSessions": {
-                        "title": "已有 Claude、Codex、OpenCode 会话？已经在那里。",
-                        "body": "浏览任何 Claude、Codex 或 OpenCode 会话，无论当前是否运行。",
+                        "title": "已有 Claude 和 Codex 会话？已经在那里。",
+                        "body": "浏览任何 Claude 或 Codex 会话，无论当前是否运行。",
                         "alt": "已有 provider 会话的抽象占位图。"
                     },
                     "voiceAssistant": {
@@ -10381,7 +10116,7 @@ settingsSession: {
     sessionRunningLocally:
       "此会话正在本机上以本地模式运行。你可以切换到远程以在应用中控制。",
     sessionRunningLocallyAndRemotely:
-      "此会话已在 OpenCode 中本地附加，同时仍可从应用中控制。",
+      "此会话也在本地终端中打开，同时仍可从应用中控制。",
     switchingToRemote: "正在切换到远程模式…",
     switchToRemote: "切换到远程",
     detachLocalTerminal: "断开终端",
@@ -10679,9 +10414,6 @@ settingsSession: {
       codex: "Codex（默认）",
       openai: "OpenAI (GPT-5)",
       azureOpenai: "Azure OpenAI",
-      gemini: "Gemini（默认）",
-      geminiApiKey: "Gemini（API 密钥）",
-      geminiVertex: "Gemini (Vertex AI)",
     },
     groups: {
       favorites: "收藏",
@@ -10717,10 +10449,6 @@ settingsSession: {
       codex: {
         title: "Codex",
         instructions: "运行 `codex login` 登录。",
-      },
-      geminiCli: {
-        title: "Gemini CLI",
-        instructions: "运行 `gemini auth` 登录。",
       },
     },
     requirements: {
@@ -10827,23 +10555,6 @@ settingsSession: {
       selectAtLeastOneError: "至少选择一个 AI 后端。",
       claudeSubtitle: "Claude 命令行",
       codexSubtitle: "Codex 命令行",
-      opencodeSubtitle: "OpenCode 命令行",
-      geminiSubtitleExperimental: "Gemini 命令行（实验）",
-      auggieSubtitle: "Auggie 命令行",
-      qwenSubtitleExperimental: "Qwen Code 命令行（实验）",
-      kimiSubtitleExperimental: "Kimi Code 命令行（实验）",
-      kiloSubtitleExperimental: "Kilo 命令行（实验）",
-      kiroSubtitleExperimental: "Kiro 命令行（实验）",
-      devinSubtitleExperimental: "Devin 命令行（实验）",
-      agySubtitleExperimental: "Antigravity 命令行（实验）",
-      fxSubtitleExperimental: "FX 命令行（实验）",
-      droidSubtitleExperimental: "Factory Droid 命令行（实验）",
-      codebuddySubtitleExperimental: "CodeBuddy Code 命令行（实验）",
-      customAcpSubtitleExperimental: "自定义 ACP 命令行（实验）",
-      grokSubtitleExperimental: "Grok Build 命令行（实验）",
-      piSubtitleExperimental: "Pi 命令行（实验）",
-      copilotSubtitleExperimental: "GitHub Copilot CLI（实验）",
-      cursorSubtitleExperimental: "Cursor Agent CLI（实验）",
     },
     tmux: {
       title: "tmux",

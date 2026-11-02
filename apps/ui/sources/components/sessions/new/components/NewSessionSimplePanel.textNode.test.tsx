@@ -227,7 +227,7 @@ vi.mock('@/sync/store/hooks', async (importOriginal) => {
 });
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['codex', 'claude', 'opencode', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'codex',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({ displayNameKey: 'agents.codex', toolRendering: { hideUnknownToolsByDefault: false } }),

@@ -7,7 +7,6 @@ import { getAgentSessionModesKind } from '@piggercode/agents';
 import { AsyncTtlCache, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { validateCatalogAcpProbeSpawn } from './validateCatalogAcpProbeSpawn';
-import { createConfiguredAcpProbeBackend } from './createConfiguredAcpProbeBackend';
 import { buildAgentProbeCacheKey } from './buildAgentProbeCacheKey';
 import { resolveAgentProbeVariant } from './resolveAgentProbeVariant';
 import { z } from 'zod';
@@ -248,38 +247,6 @@ export async function probeAgentModesBestEffort(params: {
     if (!entry?.getAcpBackendFactory) {
       agentModesProbeCache.setSuccess(cacheKey, fallback, { nowMs: nowMs2, ttlMs: PROBE_MODES_FAILURE_TTL_MS });
       return fallback;
-    }
-
-    let configuredBackend: AgentBackend | null = null;
-    try {
-      configuredBackend = await createConfiguredAcpProbeBackend({
-        agentId: params.agentId,
-        backendTarget: params.backendTarget,
-        cwd,
-        accountSettings: params.accountSettings,
-        credentials: params.credentials,
-        processEnv: params.processEnv,
-      });
-      if (configuredBackend) {
-        const ownedBackend = configuredBackend;
-        params.onNativeCleanup?.(() => ownedBackend.dispose());
-        params.signal?.throwIfAborted();
-        const modes = await probeModesFromAcpBackend({ backend: configuredBackend, timeoutMs }).catch(() => null);
-        if (modes) {
-          const res: ProbedAgentModesResult = { ...fallback, availableModes: modes, source: 'dynamic' };
-          agentModesProbeCache.setSuccess(cacheKey, res, { nowMs: nowMs2, ttlMs: PROBE_MODES_SUCCESS_TTL_MS });
-          return res;
-        }
-        agentModesProbeCache.setSuccess(cacheKey, fallback, { nowMs: nowMs2, ttlMs: PROBE_MODES_FAILURE_TTL_MS });
-        return fallback;
-      }
-    } catch {
-      agentModesProbeCache.setSuccess(cacheKey, fallback, { nowMs: nowMs2, ttlMs: PROBE_MODES_FAILURE_TTL_MS });
-      return fallback;
-    } finally {
-      if (configuredBackend) {
-        await configuredBackend.dispose().catch(() => {});
-      }
     }
 
     const spawnValidation = await validateCatalogAcpProbeSpawn(params.agentId, { processEnv: params.processEnv, cwd });

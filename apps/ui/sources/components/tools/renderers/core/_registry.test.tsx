@@ -24,7 +24,6 @@ vi.mock('../fileOps/CodeSearchView', () => ({ CodeSearchView: () => null }));
 vi.mock('../workflow/ReasoningView', () => ({ ReasoningView: () => null }));
 vi.mock('../workflow/SubAgentRunView', () => ({ SubAgentRunView: () => null }));
 vi.mock('../workflow/AgentTeamView', () => ({ AgentTeamView: () => null }));
-vi.mock('../system/WorkspaceIndexingPermissionView', () => ({ WorkspaceIndexingPermissionView: () => null }));
 vi.mock('../fileOps/DeleteView', () => ({ DeleteView: () => null }));
 vi.mock('../system/UnknownToolView', () => ({ UnknownToolView: () => null }));
 vi.mock('../system/TaskOutputView', () => ({ TaskOutputView: () => null }));

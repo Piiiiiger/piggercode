@@ -119,13 +119,3 @@ test('root import-cycle command delegates to the CLI guard', () => {
   );
 });
 
-test('root provider aliases expose Cursor smoke and extended presets', () => {
-  assert.equal(
-    rootPackage.scripts?.['test:providers:cursor:smoke'],
-    'yarn workspace @piggercode/tests providers:cursor:smoke',
-  );
-  assert.equal(
-    rootPackage.scripts?.['test:providers:cursor:extended'],
-    'yarn workspace @piggercode/tests providers:cursor:extended',
-  );
-});

@@ -4,18 +4,13 @@ import { createProbeTempDir } from './agentModelsProbe.testkit';
 import type { Credentials } from '@/persistence';
 import { probeAgentModelsBestEffort, resetAgentModelsProbeCacheForTests } from './agentModelsProbe';
 
-const { claudeProbeModelsRawMock, createConfiguredAcpProbeBackendMock } = vi.hoisted(() => ({
+const { claudeProbeModelsRawMock } = vi.hoisted(() => ({
   claudeProbeModelsRawMock: vi.fn(async () => [{ id: 'claude-account-model', name: 'Claude Account Model' }]),
-  createConfiguredAcpProbeBackendMock: vi.fn(async () => null),
-}));
-
-vi.mock('./createConfiguredAcpProbeBackend', () => ({
-  createConfiguredAcpProbeBackend: createConfiguredAcpProbeBackendMock,
 }));
 
 vi.mock('@/backends/catalog', () => ({
   AGENTS: {
-    opencode: {
+    codex: {
       resolveModelsProbeVariant: ({ connectedServices }: { connectedServices?: { bindingsByServiceId?: Record<string, { selection?: string; groupId?: string; profileId?: string }> } | null }) => {
         const binding = connectedServices?.bindingsByServiceId?.['openai-codex'];
         if (binding?.selection === 'group') return `test:group:${binding.groupId ?? ''}`;
@@ -44,53 +39,6 @@ vi.mock('@/backends/catalog', () => ({
 
 describe('probeAgentModelsBestEffort (cache)', () => {
   beforeEach(resetAgentModelsProbeCacheForTests);
-  it('partitions cached probe results by connected-services identity', async () => {
-
-    const fixture = await createProbeTempDir('happier-cli-model-probe-cs-cache');
-    try {
-      resetAgentModelsProbeCacheForTests();
-
-      const groupConnectedServices = {
-        v: 1,
-        bindingsByServiceId: {
-          'openai-codex': {
-            source: 'connected',
-            selection: 'group',
-            groupId: 'happier',
-            profileId: 'leeroy',
-          },
-        },
-      } as const;
-      const profileConnectedServices = {
-        v: 1,
-        bindingsByServiceId: {
-          'openai-codex': {
-            source: 'connected',
-            selection: 'profile',
-            profileId: 'leeroy',
-          },
-        },
-      } as const;
-
-      const group = await probeAgentModelsBestEffort({
-        agentId: 'opencode',
-        cwd: fixture.dir,
-        timeoutMs: 2_000,
-        connectedServices: groupConnectedServices,
-      });
-      const profile = await probeAgentModelsBestEffort({
-        agentId: 'opencode',
-        cwd: fixture.dir,
-        timeoutMs: 2_000,
-        connectedServices: profileConnectedServices,
-      });
-
-      expect(group.availableModels.map((model) => model.id)).toEqual(['default', 'group-model']);
-      expect(profile.availableModels.map((model) => model.id)).toEqual(['default', 'profile-model']);
-    } finally {
-      await fixture.cleanup();
-    }
-  });
 
   it('leaves provider-owned results transient and forwards auth context without generic caching', async () => {
     claudeProbeModelsRawMock.mockClear();

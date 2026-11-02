@@ -8,8 +8,6 @@ export async function assertCliPrereqs({
   git = false,
   yarn = false,
   codex = false,
-  coderabbit = false,
-  augment = false,
   claude = false,
 } = {}) {
   const missing = [];
@@ -53,31 +51,6 @@ export async function assertCliPrereqs({
           'Install Codex CLI and ensure `codex` is on PATH',
           'If using a managed install, ensure your PATH includes the Codex binary',
         ],
-      });
-    }
-  }
-
-  if (coderabbit) {
-    const hasCodeRabbit = await commandExists('coderabbit');
-    if (!hasCodeRabbit) {
-      missing.push({
-        name: 'coderabbit',
-        why: 'required to run CodeRabbit CLI review',
-        install: [
-          'Install CodeRabbit CLI: `curl -fsSL https://cli.coderabbit.ai/install.sh | sh`',
-          'Then authenticate: `coderabbit auth login`',
-        ],
-      });
-    }
-  }
-
-  if (augment) {
-    const hasAuggie = await commandExists('auggie');
-    if (!hasAuggie) {
-      missing.push({
-        name: 'auggie',
-        why: 'required to run Augment (Auggie) review',
-        install: ['Install Auggie CLI: `npm install -g @augmentcode/auggie`', 'Then authenticate: `auggie login`'],
       });
     }
   }

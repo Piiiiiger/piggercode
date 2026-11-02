@@ -364,40 +364,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
     expect(res).toMatchObject({ result: { data: { runId: 'run_1', permissionMode: 'default' } } });
   });
 
-  it('preserves failed execution-run service envelope codes and messages in fanout results', async () => {
-    const deps = createDeps();
-    deps.executionRunStart = vi.fn(async () => ({
-      ok: false,
-      code: 'execution_run_not_allowed',
-      message: 'Unable to resolve a default base branch for CodeRabbit review.',
-    }));
-    const executor = createActionExecutor(deps);
-
-    const res = await executor.execute('review.start', {
-      sessionId: 'session_1',
-      engineIds: ['coderabbit'],
-      instructions: 'Review this task.',
-      changeType: 'committed',
-      base: { kind: 'none' },
-    });
-
-    expect(res).toEqual({
-      ok: true,
-      result: {
-        intent: 'review',
-        sessionId: 'session_1',
-        results: [
-          {
-            key: 'coderabbit',
-            ok: false,
-            errorCode: 'execution_run_not_allowed',
-            error: 'Unable to resolve a default base branch for CodeRabbit review.',
-          },
-        ],
-      },
-    });
-  });
-
   it('defaults execution.run.send delivery to steer_if_supported and omits resume when unset', async () => {
     const deps = createDeps();
     const executor = createActionExecutor(deps);
@@ -687,60 +653,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
     });
   });
 
-  it('resolves spawn option sources from public target aliases accepted by session.spawn_new', async () => {
-    const deps = createDeps();
-    const executor = createActionExecutor(deps);
-
-    await executor.execute('action.options.resolve', {
-      actionId: 'session.spawn_new',
-      fieldPath: 'modelId',
-      target: 'agent:claude',
-      limit: 5,
-    });
-    await executor.execute('action.options.resolve', {
-      actionId: 'session.spawn_new',
-      fieldPath: 'profileId',
-      backend: 'claude',
-      limit: 3,
-    });
-    await executor.execute('action.options.resolve', {
-      actionId: 'session.spawn_new',
-      fieldPath: 'modelId',
-      backend: 'customAcp',
-      backendTargetKey: 'acpBackend:review-bot',
-      limit: 2,
-    });
-    const bareCustomAcp = await executor.execute('action.options.resolve', {
-      actionId: 'session.spawn_new',
-      fieldPath: 'modelId',
-      target: 'customAcp',
-    });
-    const conflictingCustomAcp = await executor.execute('action.options.resolve', {
-      actionId: 'session.spawn_new',
-      fieldPath: 'modelId',
-      agentId: 'claude',
-      target: 'customAcp',
-    });
-
-    expect(deps.agentsModelsList).toHaveBeenCalledWith({
-      agentId: 'claude',
-      backendTargetKey: 'agent:claude',
-      limit: 5,
-    });
-    expect(deps.sessionsSpawnProfilesList).toHaveBeenCalledWith({
-      agentId: 'claude',
-      backendTargetKey: 'agent:claude',
-      limit: 3,
-    });
-    expect(deps.agentsModelsList).toHaveBeenCalledWith({
-      agentId: 'customAcp',
-      backendTargetKey: 'acpBackend:review-bot',
-      limit: 2,
-    });
-    expect(bareCustomAcp).toEqual({ ok: false, errorCode: 'invalid_parameters', error: 'invalid_parameters' });
-    expect(conflictingCustomAcp).toEqual({ ok: false, errorCode: 'invalid_parameters', error: 'invalid_parameters' });
-  });
-
   it('routes machines.list to deps.machinesList', async () => {
     const deps = createDeps();
     const executor = createActionExecutor(deps);
@@ -840,25 +752,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
     expect(deps.agentsModelsList).toHaveBeenCalledWith({ agentId: 'claude', machineId: 'm1', limit: 3 });
   });
 
-  it('routes configured ACP backendTargetKey through agents.models.list', async () => {
-    const deps = createDeps();
-    const executor = createActionExecutor(deps);
-
-    const res = await executor.execute('agents.models.list', {
-      backendTargetKey: 'acpBackend:review-bot',
-      machineId: 'm1',
-      limit: 2,
-    });
-
-    expect(res.ok).toBe(true);
-    expect(deps.agentsModelsList).toHaveBeenCalledWith({
-      agentId: 'customAcp',
-      backendTargetKey: 'acpBackend:review-bot',
-      machineId: 'm1',
-      limit: 2,
-    });
-  });
-
   it('routes agents.session_modes.list and agents.config_options.list to provider option deps', async () => {
     const deps = createDeps();
     const executor = createActionExecutor(deps);
@@ -888,19 +781,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
       machineId: undefined,
       limit: 20,
     });
-  });
-
-  it('rejects ambiguous customAcp agentId for agents.models.list without backendTargetKey', async () => {
-    const deps = createDeps();
-    const executor = createActionExecutor(deps);
-
-    const res = await executor.execute('agents.models.list', {
-      agentId: 'customAcp',
-      machineId: 'm1',
-    });
-
-    expect(res).toEqual({ ok: false, errorCode: 'invalid_parameters', error: 'invalid_parameters' });
-    expect(deps.agentsModelsList).not.toHaveBeenCalled();
   });
 
   it('routes session.spawn_picker to deps.sessionSpawnPicker', async () => {
@@ -1150,25 +1030,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
     });
   });
 
-  it('resolves dependent model options from the canonical draftInput shape', async () => {
-    const deps = createDeps();
-    const executor = createActionExecutor(deps);
-
-    const res = await executor.execute('action.options.resolve', {
-      actionId: 'subagents.delegate.start',
-      fieldPath: 'modelId',
-      draftInput: { backendTargetKeys: ['agent:pi'] },
-    });
-
-    expect(res.ok).toBe(true);
-    expect(deps.agentsModelsList).toHaveBeenCalledWith({
-      agentId: 'pi',
-      backendTargetKey: 'agent:pi',
-      machineId: undefined,
-      limit: undefined,
-    });
-  });
-
   it('returns a typed missing dependency when dependent model options lack a backend target', async () => {
     const deps = createDeps();
     const executor = createActionExecutor(deps);
@@ -1182,32 +1043,6 @@ describe('createActionExecutor (inventory/discovery)', () => {
       ok: false,
       errorCode: 'missing_option_dependency',
       details: { requiredDraftPath: 'backendTargetKeys' },
-    });
-  });
-
-  it('filters resolved dynamic action options by query and limit', async () => {
-    const deps = createDeps();
-    const executor = createActionExecutor(deps);
-    (deps.agentsBackendsList as any).mockResolvedValueOnce({
-      items: [
-        { id: 'codex', title: 'Codex' },
-        { id: 'claude', title: 'Claude' },
-        { id: 'cursor', title: 'Cursor' },
-      ],
-    });
-
-    const res = await executor.execute('action.options.resolve', {
-      optionsSourceId: 'execution.backends.enabled',
-      query: 'cl',
-      limit: 1,
-    });
-
-    expect(res.ok).toBe(true);
-    expect((res as any).result).toEqual({
-      actionId: null,
-      fieldPath: null,
-      optionsSourceId: 'execution.backends.enabled',
-      options: [{ value: 'agent:claude', label: 'Claude' }],
     });
   });
 

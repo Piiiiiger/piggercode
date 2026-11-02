@@ -12,7 +12,6 @@ import { getAgentModelConfig, getAgentStaticModels } from '@piggercode/agents';
 import { AsyncTtlCache, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { validateCatalogAcpProbeSpawn } from './validateCatalogAcpProbeSpawn';
-import { createConfiguredAcpProbeBackend } from './createConfiguredAcpProbeBackend';
 import { buildAgentProbeCacheKey } from './buildAgentProbeCacheKey';
 import { resolveAgentProbeVariant } from './resolveAgentProbeVariant';
 import { spawn } from 'node:child_process';
@@ -525,38 +524,6 @@ export async function probeAgentModelsBestEffort(params: {
     }
 
     const timeoutMs = typeof params.timeoutMs === 'number' ? params.timeoutMs : DEFAULT_PROBE_MODELS_TIMEOUT_MS;
-
-    let configuredBackend: AgentBackend | null = null;
-    try {
-      configuredBackend = await createConfiguredAcpProbeBackend({
-        agentId: params.agentId,
-        backendTarget: params.backendTarget,
-        cwd,
-        accountSettings: params.accountSettings,
-        credentials: params.credentials,
-        processEnv: params.processEnv,
-      });
-      if (configuredBackend) {
-        const ownedBackend = configuredBackend;
-        params.onNativeCleanup?.(() => ownedBackend.dispose());
-        params.signal?.throwIfAborted();
-        const models = await probeModelsFromAcpBackend({ backend: configuredBackend, timeoutMs }).catch(() => null);
-        if (models) {
-          const res: ProbedAgentModelsResult = { ...fallback, availableModels: models, source: 'dynamic', observedAt: Date.now() };
-          if (!usesProviderOwnedCache) {
-            agentModelsProbeCache.setSuccess(cacheKey, res, { nowMs: nowMs2, ttlMs: PROBE_MODELS_SUCCESS_TTL_MS });
-          }
-          return res;
-        }
-        return failedResult();
-      }
-    } catch {
-      return failedResult();
-    } finally {
-      if (configuredBackend) {
-        await configuredBackend.dispose().catch(() => {});
-      }
-    }
 
     if (preflightModelsAdapter?.probeModelsRaw) {
       let provenance: { observedAt?: number; refreshError?: boolean; source?: 'dynamic' | 'static' } = {};

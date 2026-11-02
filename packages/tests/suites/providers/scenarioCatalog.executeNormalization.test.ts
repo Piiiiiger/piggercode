@@ -37,43 +37,4 @@ describe('scenarioCatalog: execute normalization', () => {
     expect(scenario.maxTraceEvents).toEqual({ toolCalls: 3, toolResults: 3 });
   });
 
-  it('accepts opencode execute traces when rawToolName is bash', async () => {
-    const scenario = scenarioCatalog.execute_trace_ok(acpProvider('opencode'));
-    expect(typeof scenario.verify).toBe('function');
-
-    await expect(
-      scenario.verify?.(
-        baseVerifyContext({
-          workspaceDir: '/tmp',
-          fixtures: {
-            examples: {
-              'acp/opencode/tool-call/Bash': [
-                {
-                  payload: {
-                    name: 'Bash',
-                    input: {
-                      _happier: { rawToolName: 'bash' },
-                    },
-                  },
-                },
-              ],
-              'acp/opencode/tool-result/Bash': [
-                {
-                  payload: {
-                    output: {
-                      stdout: 'TRACE_OK',
-                      exit_code: 0,
-                    },
-                    _happier: {
-                      rawToolName: 'bash',
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        }),
-      ),
-    ).resolves.toBeUndefined();
-  });
 });

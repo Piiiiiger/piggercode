@@ -436,11 +436,9 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
     const resolvedBackendEntriesRaw = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1: settings.acpCatalogSettingsV1,
             backendEnabledByTargetKey: settings.backendEnabledByTargetKey,
-            collapseConfiguredBackendProviderSentinels: true,
         });
-    }, [enabledAgentIds, settings.acpCatalogSettingsV1, settings.backendEnabledByTargetKey]);
+    }, [enabledAgentIds, settings.backendEnabledByTargetKey]);
     const resolvedBackendEntriesSignature = React.useMemo(
         () => buildNewSessionPopoverSignature(resolvedBackendEntriesRaw.map((entry) => ({
             target: entry.target,

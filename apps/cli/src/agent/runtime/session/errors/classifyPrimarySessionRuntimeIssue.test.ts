@@ -5,105 +5,6 @@ import { requireProviderCliCommand } from '@/runtime/managedTools/requireProvide
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 
 describe('classifyPrimarySessionRuntimeIssue', () => {
-  it.each([requireProviderCliCommand, requireProviderCliLaunchSpec])('preserves CLI resolution failures as actionable dependency errors', (requireCli) => {
-    let error: unknown;
-    try {
-      requireCli('pi', { processEnv: { HOME: '/missing-pi-home', PIGGERCODE_HOME_DIR: '/missing-happier-home', PATH: '' } });
-    } catch (failure) {
-      error = failure;
-    }
-    expect(error).toBeInstanceOf(ReferenceError);
-    expect(classifyPrimarySessionRuntimeIssue({ provider: 'pi', cause: 'session_error', error })).toMatchObject({
-      source: 'dependency_failure',
-      code: 'provider_cli_not_found',
-      sanitizedPreview: expect.stringContaining('Install'),
-    });
-  });
-
-  it('preserves a Pi-owned provider failure code and sanitized preview', () => {
-    const error = Object.assign(new Error('Pi provider reported provider failure after prompt acceptance'), {
-      piProviderFailure: {
-        code: 'provider_auth_failed',
-        sanitizedPreview: 'Pi provider reported provider failure after prompt acceptance: code=provider_auth_failed, message=Credential [REDACTED] was rejected',
-      },
-    });
-
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'pi',
-      cause: 'session_error',
-      error,
-      occurredAt: 123,
-    })).toMatchObject({
-      code: 'provider_auth_failed',
-      source: 'provider_session_error',
-      sanitizedPreview: 'Pi provider reported provider failure after prompt acceptance: code=provider_auth_failed, message=Credential [REDACTED] was rejected',
-    });
-  });
-
-  it('maps connected-service runtime auth classifications into usage-limit details', () => {
-    const error = new Error('provider limit reached') as Error & {
-      runtimeAuthClassification: {
-        kind: 'usage_limit';
-        serviceId: string;
-        profileId: string | null;
-        groupId: string | null;
-        resetsAtMs: number | null;
-        retryAfterMs?: number | null;
-        limitCategory?: 'usage_limit';
-        quotaScope?: 'account';
-        providerLimitId?: string | null;
-        planType: string | null;
-        rateLimits: unknown | null;
-        action?: { kind: 'open_url'; url: string } | null;
-        source: string;
-      };
-    };
-    error.runtimeAuthClassification = {
-      kind: 'usage_limit',
-      serviceId: 'openai-codex',
-      profileId: 'backup',
-      groupId: 'codex-main',
-      resetsAtMs: 2_000,
-      retryAfterMs: 30_000,
-      limitCategory: 'usage_limit',
-      quotaScope: 'account',
-      providerLimitId: 'weekly_tokens',
-      planType: 'pro',
-      rateLimits: {
-        primary: { usedPercent: 100 },
-        action: { kind: 'open_url', url: 'https://opencode.ai/billing' },
-      },
-      source: 'structured_provider_error',
-    };
-
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'codex',
-      cause: 'status_error',
-      error,
-      occurredAt: 1_000,
-    })).toMatchObject({
-      source: 'usage_limit',
-      usageLimit: {
-        v: 1,
-        resetAtMs: 2_000,
-        retryAfterMs: 30_000,
-        quotaScope: 'account',
-        recoverability: 'switch_account',
-        limitCategory: 'usage_limit',
-        providerLimitId: 'weekly_tokens',
-        planType: 'pro',
-        action: {
-          kind: 'open_url',
-          url: 'https://opencode.ai/billing',
-        },
-        connectedService: {
-          serviceId: 'openai-codex',
-          profileId: 'backup',
-          groupId: 'codex-main',
-        },
-      },
-    });
-  });
 
   it('does not turn ambiguous wall-clock usage-limit retry wording into a daemon-local reset time', () => {
     const occurredAt = new Date(2026, 4, 18, 13, 2, 41, 0).getTime();
@@ -119,42 +20,6 @@ describe('classifyPrimarySessionRuntimeIssue', () => {
         v: 1,
         resetAtMs: null,
         retryAfterMs: null,
-        quotaScope: 'unknown',
-        recoverability: 'wait',
-      },
-    });
-  });
-
-  it('uses shared provider-limit wording for quota exhaustion text', () => {
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'opencode',
-      cause: 'status_error',
-      error: new Error('Provider request failed because account credits exhausted.'),
-      occurredAt: 1_000,
-    })).toMatchObject({
-      source: 'usage_limit',
-      usageLimit: {
-        v: 1,
-        quotaScope: 'unknown',
-        recoverability: 'wait',
-      },
-    });
-  });
-
-  it('classifies Grok Build usage-balance exhaustion as a visible usage-limit issue', () => {
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'grok',
-      cause: 'status_error',
-      error: new Error(
-        'responses API error status = 402 Payment Required error_message = Grok Build usage balance exhausted',
-      ),
-      occurredAt: 1_000,
-    })).toMatchObject({
-      code: 'usage_limit',
-      source: 'usage_limit',
-      sanitizedPreview: 'Usage limit reached',
-      usageLimit: {
-        v: 1,
         quotaScope: 'unknown',
         recoverability: 'wait',
       },
@@ -301,84 +166,10 @@ describe('classifyPrimarySessionRuntimeIssue', () => {
     }
   });
 
-  it('maps connected-service dependency failures to dependency runtime issues', () => {
-    const error = new Error('context compaction dependency failed') as Error & {
-      runtimeAuthClassification: {
-        kind: 'dependency_failure';
-        serviceId: string;
-        profileId: string | null;
-        groupId: string | null;
-        resetsAtMs: null;
-        planType: null;
-        rateLimits: null;
-        source: string;
-      };
-    };
-    error.runtimeAuthClassification = {
-      kind: 'dependency_failure',
-      serviceId: 'claude-subscription',
-      profileId: 'primary',
-      groupId: 'claude-main',
-      resetsAtMs: null,
-      planType: null,
-      rateLimits: null,
-      source: 'stable_provider_message',
-    };
-
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'pi',
-      cause: 'status_error',
-      error,
-      occurredAt: 1_000,
-    })).toMatchObject({
-      code: 'dependency_failure',
-      source: 'dependency_failure',
-      sanitizedPreview: 'Provider dependency failed',
-    });
-    expect(classifyPrimarySessionRuntimeIssue({
-      provider: 'pi',
-      cause: 'status_error',
-      error,
-      occurredAt: 1_000,
-    }).usageLimit).toBeUndefined();
-  });
-
-  it('surfaces provider process exits after switch with structured connected-service context', () => {
-    const issue = classifyPrimarySessionRuntimeIssue({
-      provider: 'pi',
-      cause: 'process_exit',
-      occurredAt: 2_000,
-      error: {
-        providerProcessExitAfterSwitch: {
-          exitCode: 1,
-          signal: null,
-          lastStderrLine: 'session file 019e... not found',
-          vendorResumeId: '019e6942',
-          materializationRoot: '/tmp/happier/connected-services/pi',
-          effectiveStateMode: 'isolated',
-        },
-      },
-    });
-
-    expect(issue).toMatchObject({
-      source: 'provider_process_exit_after_switch',
-      code: 'provider_process_exit_after_switch',
-      sanitizedPreview: 'Provider process exited after connected-service switch',
-      providerProcessExitAfterSwitch: {
-        exitCode: 1,
-        signal: null,
-        lastStderrLine: 'session file 019e... not found',
-        vendorResumeId: '019e6942',
-        materializationRoot: '/tmp/happier/connected-services/pi',
-        effectiveStateMode: 'isolated',
-      },
-    });
-  });
-
   it('keeps incidental 401 identifiers out of auth issue classification', () => {
     expect(classifyPrimarySessionRuntimeIssue({
       cause: 'status_error',
-      error: new Error('[agy-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6'),
+      error: new Error('[provider-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6'),
       occurredAt: 1_000,
     })).toMatchObject({
       source: 'provider_status_error',

@@ -35,14 +35,14 @@ describe('createCurrentSessionTranscriptPort', () => {
     currentSession = secondSession;
 
     await port.sendAgentMessageCommitted(
-      'gemini' as any,
+      'codex' as any,
       { type: 'thinking', text: 'final' } as any,
       { localId: 'commit_1' },
     );
 
     expect(firstSession.sendAgentMessageCommitted).not.toHaveBeenCalled();
     expect(secondSession.sendAgentMessageCommitted).toHaveBeenCalledWith(
-      'gemini',
+      'codex',
       { type: 'thinking', text: 'final' },
       { localId: 'commit_1' },
     );
@@ -193,7 +193,7 @@ describe('createCurrentSessionTranscriptPort', () => {
     };
     let currentSession: typeof offlineSession | typeof attachedSession = offlineSession;
     const writer = createStreamedTranscriptWriter({
-      provider: 'gemini',
+      provider: 'codex',
       session: createCurrentSessionTranscriptPort(() => currentSession),
       makeLocalId: () => 'retained-segment-1',
       initialCheckpointDelayMs: 10_000,
@@ -211,7 +211,7 @@ describe('createCurrentSessionTranscriptPort', () => {
     await settleCommittedSnapshot();
 
     expect(attachedSession.sendAgentMessageCommitted).toHaveBeenCalledWith(
-      'gemini',
+      'codex',
       { type: 'message', message: 'retained' },
       expect.objectContaining({ localId: 'retained-segment-1' }),
     );

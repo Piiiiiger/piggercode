@@ -151,33 +151,10 @@ describe('getProviderSettingsPlugin', () => {
         }
     });
 
-    it('has a plugin entry for Agy', () => {
-        expect(getProviderSettingsPlugin('agy')).toMatchObject({ providerId: 'agy' });
-    });
-
     it('has a plugin entry for every registered backend', () => {
         for (const agentId of AGENT_IDS) {
             expect(getProviderSettingsPlugin(agentId)).not.toBeNull();
         }
-    });
-
-    it('exposes Cursor API endpoint override in provider settings UI sections', () => {
-        const cursorPlugin = getProviderSettingsPlugin('cursor');
-        const visibleFieldKeys = new Set(
-            cursorPlugin?.uiSections.flatMap((section) => section.fields.map((field) => field.key)) ?? [],
-        );
-
-        expect(visibleFieldKeys.has('cursorApiEndpoint')).toBe(true);
-    });
-
-    it('exposes Kimi ACP Python selector in provider settings UI sections', () => {
-        const kimiPlugin = getProviderSettingsPlugin('kimi');
-        const visibleFieldKeys = new Set(
-            kimiPlugin?.uiSections.flatMap((section) => section.fields.map((field) => field.key)) ?? [],
-        );
-
-        expect('kimiAcpPythonSelector' in PROVIDER_SETTINGS_DEFAULTS).toBe(false);
-        expect(visibleFieldKeys.has('kimiAcpPythonSelector')).toBe(false);
     });
 
     it('exposes Claude model discovery and unified terminal provider settings in UI sections', () => {

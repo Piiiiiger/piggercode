@@ -55,13 +55,6 @@ function sourceMetadata(): Record<string, unknown> {
 }
 
 describe('projectCurrentAgentSessionView', () => {
-  it('projects an exact configured target and removes the previous opaque ACP identity', () => {
-    const next = projectCurrentAgentSessionView({ metadata: { flavor: 'acp:a', customAcpSessionId: 'a-opaque' },
-      target: { agentId: 'customAcp', backendTarget: { kind: 'configuredAcpBackend', backendId: 'b' }, backendTitle: 'B', updatedAtMs: 3 },
-    });
-    expect(next).toMatchObject({ flavor: 'acp:b', acpConfiguredBackendV1: { v: 1, backendId: 'b', title: 'B', updatedAt: 3 } });
-    expect(next.customAcpSessionId).toBeUndefined();
-  });
   it('leaves exactly one declared identity and no flat vendor resume key', () => {
     const next = projectCurrentAgentSessionView({
       metadata: sourceMetadata(),
@@ -73,7 +66,6 @@ describe('projectCurrentAgentSessionView', () => {
       expect(next[key]).toBeUndefined();
     }
     expect(next.agentRuntimeDescriptorV1).toBeUndefined();
-    expect(next.acpConfiguredBackendV1).toBeUndefined();
   });
 
   it('enumerates every agent resume key from the manifest, not a local list', () => {
@@ -85,21 +77,6 @@ describe('projectCurrentAgentSessionView', () => {
       .filter((field): field is string => typeof field === 'string');
 
     expect([...listVendorResumeIdMetadataKeys()].sort()).toEqual([...new Set(expected)].sort());
-  });
-
-  it('drops every vendor resume key even when several are already present', () => {
-    const next = projectCurrentAgentSessionView({
-      metadata: {
-        ...sourceMetadata(),
-        codexSessionId: 'codex-native-1',
-        geminiSessionId: 'gemini-native-1',
-      },
-      target: { agentId: 'codex', updatedAtMs: UPDATED_AT },
-    });
-
-    expect(next.claudeSessionId).toBeUndefined();
-    expect(next.codexSessionId).toBeUndefined();
-    expect(next.geminiSessionId).toBeUndefined();
   });
 
   it('drops the source Agent continuity proof, never carrying a native path across Agents', () => {
@@ -236,15 +213,14 @@ describe('projectCurrentAgentSessionView', () => {
 
 describe('projectCurrentAgentSessionView — handoff carry policy', () => {
   const HANDOFF_SOURCE = {
-    flavor: 'opencode',
-    opencodeSessionId: 'op-old',
+    flavor: 'claude',
+    claudeSessionId: 'claude-old',
+    claudeTranscriptPath: '/home/u/.claude/x.jsonl',
     // Legacy residue from an earlier Agent: the exact state that made a Session
     // unresumable while handoff wrote resume keys through its own mutator.
-    claudeSessionId: 'stale-claude',
-    claudeTranscriptPath: '/home/u/.claude/x.jsonl',
-    opencodeServerBaseUrl: 'http://old.example',
-    opencodeBackendMode: 'server',
-    agentRuntimeDescriptorV1: { v: 1, providerId: 'opencode', provider: { backendMode: 'server' } },
+    codexSessionId: 'stale-codex',
+    codexBackendMode: 'appServer',
+    agentRuntimeDescriptorV1: { v: 1, providerId: 'claude', provider: {} },
     sessionWorkStateV1: { v: 1 },
     slashCommands: ['/compact'],
     modelOverrideV1: { v: 1, updatedAt: 1, modelId: 'sonnet' },
@@ -256,56 +232,6 @@ describe('projectCurrentAgentSessionView — handoff carry policy', () => {
     connectedServiceMaterializationIdentityV1: { v: 1, id: 'materialized-home-1' },
     path: '/repo/source',
   } as const;
-
-  it('writes only the target resume key and drops every other Agent key', () => {
-    const next = projectCurrentAgentSessionView({
-      metadata: { ...HANDOFF_SOURCE },
-      target: { agentId: 'opencode', updatedAtMs: 42 },
-      nativeResumeId: 'op-new',
-      agentScopedCurrentState: 'carry',
-    });
-
-    expect(next.opencodeSessionId).toBe('op-new');
-    expect(next.claudeSessionId).toBeUndefined();
-    expect(next.flavor).toBe('opencode');
-  });
-
-  it('carries the Agent-scoped facts a same-Agent machine move keeps true', () => {
-    const next = projectCurrentAgentSessionView({
-      metadata: { ...HANDOFF_SOURCE },
-      target: { agentId: 'opencode', updatedAtMs: 42 },
-      nativeResumeId: 'op-new',
-      agentScopedCurrentState: 'carry',
-    });
-
-    // The opencode handoff provider patch READS these to derive the target's
-    // server affinity, so clearing them here would break the move.
-    expect(next.opencodeServerBaseUrl).toBe('http://old.example');
-    expect(next.opencodeBackendMode).toBe('server');
-    expect(next.agentRuntimeDescriptorV1).toBeDefined();
-    expect(next.sessionWorkStateV1).toEqual({ v: 1 });
-    expect(next.slashCommands).toEqual(['/compact']);
-    expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 1, modelId: 'sonnet' });
-    // The SAME Agent moves machines, so its connected-service binding and the
-    // materialized home that carries those credentials are still true.
-    expect(next.connectedServices).toEqual(HANDOFF_SOURCE.connectedServices);
-    expect(next.connectedServicesUpdatedAt).toBe(11);
-    expect(next.connectedServiceMaterializationIdentityV1).toEqual({ v: 1, id: 'materialized-home-1' });
-  });
-
-  it('still clears everything Agent-scoped under the default transition policy', () => {
-    const next = projectCurrentAgentSessionView({
-      metadata: { ...HANDOFF_SOURCE },
-      target: { agentId: 'codex', updatedAtMs: 42 },
-    });
-
-    expect(next.opencodeSessionId).toBeUndefined();
-    expect(next.claudeSessionId).toBeUndefined();
-    expect(next.opencodeServerBaseUrl).toBeUndefined();
-    expect(next.agentRuntimeDescriptorV1).toBeUndefined();
-    expect(next.sessionWorkStateV1).toBeUndefined();
-    expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 42, modelId: null });
-  });
 
   /**
    * Section 8's work-state row has TWO clauses — "capture bounded display-safe snapshot into
@@ -366,16 +292,5 @@ describe('projectCurrentAgentSessionView — handoff carry policy', () => {
     for (const key of listVendorResumeIdMetadataKeys()) {
       expect(next[key]).toBeUndefined();
     }
-  });
-
-  it('ignores a blank native resume id rather than writing an empty key', () => {
-    const next = projectCurrentAgentSessionView({
-      metadata: { ...HANDOFF_SOURCE },
-      target: { agentId: 'opencode', updatedAtMs: 42 },
-      nativeResumeId: '   ',
-      agentScopedCurrentState: 'carry',
-    });
-
-    expect(next.opencodeSessionId).toBeUndefined();
   });
 });

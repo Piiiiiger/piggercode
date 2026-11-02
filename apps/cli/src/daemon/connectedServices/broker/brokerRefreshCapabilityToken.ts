@@ -3,8 +3,8 @@ import { createHmac, createHash, timingSafeEqual } from 'node:crypto';
 /**
  * Scoped broker-refresh capability token (least privilege; plan §2 item 6 / §5 item 3).
  *
- * SHARED, provider-agnostic core used by EVERY connected-service auth broker (the OpenCode plugin and
- * the Pi extension) and by the single daemon bridge preHandler that authorizes them. A broker must NOT
+ * SHARED, provider-agnostic core used by every connected-service auth broker and by the single
+ * daemon bridge preHandler that authorizes them. A broker must NOT
  * receive the daemon's full `controlToken` (which authorizes EVERY control endpoint). Instead the
  * daemon mints a NARROW capability token, scoped to the broker-refresh endpoints only, derived
  * deterministically from the master control token:
@@ -21,13 +21,13 @@ import { createHmac, createHash, timingSafeEqual } from 'node:crypto';
  *    compares — no extra persisted secret, no parallel token-store mechanism.
  *  - It is rebound to the daemon's master secret: a daemon restart re-mints `controlToken`, which
  *    rotates the scoped token.
- *  - It is PROVIDER-AGNOSTIC: OpenCode and Pi derive the SAME value, so a SINGLE bridge preHandler
- *    authorizes both brokers (no parallel per-provider refresh path / no parallel token mechanism).
+ *  - It is PROVIDER-AGNOSTIC: every broker derives the SAME value, so a SINGLE bridge preHandler
+ *    authorizes all brokers (no parallel per-provider refresh path / no parallel token mechanism).
  */
 /**
  * Scope label folded into the HMAC. Versioned so a future scope/format change is unambiguous and
  * never collides with the master token or another derived capability. Provider-agnostic: every broker
- * (OpenCode, Pi) folds the SAME label so the SAME scoped token authorizes the shared bridge.
+ * folds the SAME label so the SAME scoped token authorizes the shared bridge.
  */
 export const CONNECTED_SERVICE_BROKER_REFRESH_SCOPE_LABEL = 'happier:connected-service-broker-refresh:v1';
 

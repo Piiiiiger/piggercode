@@ -59,7 +59,7 @@ export type AgentActivityMergeDiagnostics = Readonly<{
 
 export type AgentActivityMergeResult = Readonly<{
     entries: readonly AgentActivityEntry[];
-    /** Which headline the roster was built from. `none` is the Codex/Gemini/OpenCode path. */
+    /** Which headline the roster was built from. `none` is the Codex path. */
     headlineSource: 'agentActivity' | 'workflow' | 'none';
     diagnostics: AgentActivityMergeDiagnostics;
 }>;

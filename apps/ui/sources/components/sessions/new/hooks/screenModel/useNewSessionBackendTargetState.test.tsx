@@ -16,24 +16,24 @@ vi.mock('@/sync/store/settingsWriters', () => ({
 
 const entries: ReadonlyArray<ResolvedBackendCatalogEntry> = [
     {
-        target: { kind: 'builtInAgent', agentId: 'customAcp' },
-        targetKey: 'agent:customAcp',
+        target: { kind: 'builtInAgent', agentId: 'claude' },
+        targetKey: 'agent:claude',
         family: 'builtInAgent',
-        providerAgentId: 'customAcp',
-        builtInAgentId: 'customAcp',
-        iconAgentId: 'customAcp',
-        title: 'Custom ACP',
-        subtitle: 'customAcp',
+        providerAgentId: 'claude',
+        builtInAgentId: 'claude',
+        iconAgentId: 'claude',
+        title: 'Claude',
+        subtitle: 'claude',
     },
     {
-        target: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-        targetKey: 'acpBackend:review-bot',
-        family: 'configuredAcpBackend',
-        providerAgentId: 'customAcp',
-        builtInAgentId: null,
-        iconAgentId: 'customAcp',
-        title: 'Review Bot',
-        subtitle: 'review-bot',
+        target: { kind: 'builtInAgent', agentId: 'codex' },
+        targetKey: 'agent:codex',
+        family: 'builtInAgent',
+        providerAgentId: 'codex',
+        builtInAgentId: 'codex',
+        iconAgentId: 'codex',
+        title: 'Codex',
+        subtitle: 'codex',
     },
 ];
 
@@ -42,52 +42,21 @@ describe('useNewSessionBackendTargetState', () => {
         applySettingsMock.mockReset();
     });
 
-    it('restores the last used configured ACP backend target instead of the provider sentinel', async () => {
+    it('restores the last used backend target', async () => {
         let observed: ReturnType<typeof useNewSessionBackendTargetState> | null = null;
 
         function Probe() {
             observed = useNewSessionBackendTargetState({
                 entries,
-                lastUsedAgent: 'customAcp',
-                lastUsedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+                lastUsedAgent: 'codex',
+                lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             } as any);
             return null;
         }
 
         await renderScreen(React.createElement(Probe));
 
-        expect((observed as ReturnType<typeof useNewSessionBackendTargetState> | null)?.backendTarget).toEqual({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
-    });
-
-    it('persists the exact configured ACP backend target when selection changes', async () => {
-        let observed: ReturnType<typeof useNewSessionBackendTargetState> | null = null;
-
-        function Probe() {
-            observed = useNewSessionBackendTargetState({
-                entries,
-                lastUsedAgent: 'customAcp',
-                lastUsedBackendTarget: null,
-            } as any);
-            return null;
-        }
-
-        let tree: renderer.ReactTestRenderer | null = null;
-        tree = (await renderScreen(React.createElement(Probe))).tree;
-
-        applySettingsMock.mockClear();
-
-        act(() => {
-            observed?.setBackendTarget({ kind: 'configuredAcpBackend', backendId: 'review-bot' });
-        });
-
-        expect(applySettingsMock).toHaveBeenCalledWith({
-            lastUsedAgent: 'customAcp',
-            lastUsedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-        });
-
-        act(() => {
-            tree?.unmount();
-        });
+        expect((observed as ReturnType<typeof useNewSessionBackendTargetState> | null)?.backendTarget).toEqual({ kind: 'builtInAgent', agentId: 'codex' });
     });
 
     it('does not persist a mount-resolved target before the user selects one', async () => {
@@ -96,7 +65,7 @@ describe('useNewSessionBackendTargetState', () => {
                 entries,
                 lastUsedAgent: 'claude',
                 lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-                routeBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+                routeBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             } as any);
             return null;
         }
@@ -108,7 +77,7 @@ describe('useNewSessionBackendTargetState', () => {
         expect(applySettingsMock).not.toHaveBeenCalled();
     });
 
-    it('prefers an explicit route configured ACP backend target over last-used built-in defaults', async () => {
+    it('prefers an explicit route backend target over last-used defaults', async () => {
         let observed: ReturnType<typeof useNewSessionBackendTargetState> | null = null;
 
         function Probe() {
@@ -116,7 +85,7 @@ describe('useNewSessionBackendTargetState', () => {
                 entries,
                 lastUsedAgent: 'claude',
                 lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-                routeBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+                routeBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             } as any);
             return null;
         }
@@ -124,8 +93,8 @@ describe('useNewSessionBackendTargetState', () => {
         await renderScreen(React.createElement(Probe));
 
         expect((observed as ReturnType<typeof useNewSessionBackendTargetState> | null)?.backendTarget).toEqual({
-            kind: 'configuredAcpBackend',
-            backendId: 'review-bot',
+            kind: 'builtInAgent',
+            agentId: 'codex',
         });
     });
 });

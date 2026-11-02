@@ -28,7 +28,6 @@ import { handleSelfUpdateCliCommand } from './commands/selfUpdate';
 import { handleSetupCliCommand } from './commands/setup';
 import { handleStatusCliCommand } from './commands/status';
 import { handleToolsCliCommand } from './commands/tools';
-import { handleConfiguredAcpCatalogCliCommand } from '@/agent/acp/catalog/configured/handleConfiguredAcpCatalogCliCommand';
 
 export type CommandContext = Readonly<{
   args: string[];
@@ -56,7 +55,6 @@ export const commandRegistry: Readonly<Record<string, CommandHandler>> = {
   attach: handleAttachCliCommand,
   automation: handleAutomationCliCommand,
   automations: handleAutomationCliCommand,
-  'acp-catalog': handleConfiguredAcpCatalogCliCommand,
   auth: handleAuthCliCommand,
   'bug-report': handleBugReportCliCommand,
   capabilities: handleCapabilitiesCliCommand,

@@ -27,7 +27,7 @@ describe('resolveSessionMediaDedupeKey', () => {
             path: '/workspace/generated/image.png',
             origin: {
                 source: 'provider-generated',
-                agentId: 'cursor',
+                agentId: 'codex',
                 toolCallId: 'image-call-1',
             },
         };
@@ -48,12 +48,12 @@ describe('resolveSessionMediaDedupeKey', () => {
         const first: SessionMediaSource = {
             kind: 'local-file',
             path: '/workspace/generated/image.png',
-            origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-call-1' },
+            origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-call-1' },
         };
         const second: SessionMediaSource = {
             kind: 'local-file',
             path: '/workspace/generated/image.png',
-            origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-call-2' },
+            origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-call-2' },
         };
 
         expect(resolveSessionMediaDedupeKey(first)).not.toBe(resolveSessionMediaDedupeKey(second));

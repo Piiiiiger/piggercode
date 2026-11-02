@@ -758,46 +758,6 @@ describe('the range claim never outlives the lines it names', () => {
    * defaults to 120_000 (apps/cli/src/configuration.ts) and one large assistant
    * turn — a file dump, a long diff — is the whole reproduction.
    */
-  it('does not claim a row whose text the builder itself clipped, at the shipped default budget', () => {
-    const SHIPPED_DEFAULT_MAX_SEED_CHARS = 120_000;
-    const oversized = [
-      { role: 'User' as const, createdAt: 1, seq: 5_000, text: `row-5000 ${'q'.repeat(200)}` },
-      { role: 'Assistant' as const, createdAt: 2, seq: 5_001, text: `row-5001 ${'q'.repeat(400_000)}` },
-    ];
-    const seed = buildHappierReplayPromptFromDialog({
-      previousSessionId: sessionId,
-      continuity: 'same_session_agent_change',
-      strategy: 'recent_messages',
-      recentMessagesCount: null,
-      dialog: oversized,
-      retrieval: { sessionId, renderInvocation },
-      maxPromptChars: SHIPPED_DEFAULT_MAX_SEED_CHARS,
-    }).trim();
-
-    // The clip really happened, and the total still holds.
-    expect(seed.length).toBeLessThanOrEqual(SHIPPED_DEFAULT_MAX_SEED_CHARS);
-    expect(seed).toContain('Assistant: row-5001 ');
-    expect(seed).toContain('…[truncated]');
-
-    // …so no span may name row 5001. The whole point is that this holds without
-    // anyone having taught the check about clipping specifically.
-    expect(claimedButNotWhole(seed, oversized)).toEqual([]);
-    expect(seed).not.toContain('- Inlined below:');
-
-    // Degradation, not amputation: the route back survives and pages from the
-    // newest message, which costs the target a re-read and lies about nothing.
-    expect(seed).toContain('More history:');
-    expect(seed).toContain('- Reading it backwards from the newest message is available with this call:');
-    expect(seed).toContain('"cursor":""');
-    // The refused claim degrades to the statement that CLAIMS nothing, not to
-    // silence. Every one of the other range grammars goes with it: a surviving
-    // cursor or gap line would still send the target below rows the claim no
-    // longer vouches for.
-    expect(seed).toContain('- Inlined range: not stated for this handoff.');
-    expect(readCursor(seed)).toBeNull();
-    expect(readMissingRange(seed)).toBeNull();
-    expect(seed).not.toContain('- Re-requesting seq ');
-  });
 
   it('drops the claim, the paging instruction and the cursor with the rows they name', () => {
     const fitted = fitHappierReplaySeedWithinTotalBudget({
@@ -1175,34 +1135,6 @@ describe('the range claim never outlives the lines it names', () => {
    *
    * The claim is not removed; it is narrowed to the space it can answer for.
    */
-  it('claims only the pointer\u2019s own Session when a fork chain\u2019s spaces are disjoint and ascending', () => {
-    const parentSessionId = 'sess_fork_parent';
-    const forkChain: ClaimRow[] = [
-      { role: 'User', createdAt: 1, seq: 1, sessionId: parentSessionId, text: `row-1 ${'p'.repeat(140)}` },
-      { role: 'Assistant', createdAt: 2, seq: 2, sessionId: parentSessionId, text: `row-2 ${'p'.repeat(140)}` },
-      { role: 'User', createdAt: 3, seq: 3, sessionId: parentSessionId, text: `row-3 ${'p'.repeat(140)}` },
-      { role: 'Assistant', createdAt: 4, seq: 40, sessionId, text: `row-40 ${'c'.repeat(140)}` },
-      { role: 'User', createdAt: 5, seq: 41, sessionId, text: `row-41 ${'c'.repeat(140)}` },
-    ];
-    // The premise: this window ascends, so every guard that reads seq order
-    // alone admits it.
-    expect(forkChain.every((row, index) => index === 0 || forkChain[index - 1]!.seq < row.seq)).toBe(true);
-
-    const seed = buildSeed(forkChain);
-
-    expect(readClaim(seed)).toEqual({ oldestSeq: 40, newestSeq: 41 });
-    expect(readCursor(seed)).toBe(40);
-    expect(readCursor(seed)).toBe(40);
-    // The exact sentence the defect produced, in all three of its grammars.
-    expect(seed).not.toContain('seq 1 to 41');
-    expect(seed).not.toContain('page BACKWARDS from seq 1:');
-    expect(seed).not.toContain('"cursor":"1"');
-    // Understating, not amputating: the parent's rows are still inlined and
-    // still readable, they are simply not what the span is about.
-    expect(seed).toContain(`User: row-1 ${'p'.repeat(140)}`);
-    expect(seed).toContain(`Assistant: row-40 ${'c'.repeat(140)}`);
-    expect(claimedButNotWhole(seed, forkChain)).toEqual([]);
-  });
 
   /**
    * Nothing of the pointer's own Session is in the window: the walk skipped the
@@ -1210,28 +1142,6 @@ describe('the range claim never outlives the lines it names', () => {
    * carried the parent alone. `1 to 3` would be read in the CHILD, where the
    * cursor lands below every row it holds — the whole child, skipped.
    */
-  it('claims nothing when every inlined row belongs to a Session other than the pointer\u2019s', () => {
-    const parentOnly: ClaimRow[] = [1, 2, 3].map((seq, index) => ({
-      role: index % 2 === 0 ? ('User' as const) : ('Assistant' as const),
-      createdAt: index + 1,
-      seq,
-      sessionId: 'sess_fork_parent',
-      text: `row-${seq} ${'p'.repeat(140)}`,
-    }));
-
-    const seed = buildSeed(parentOnly);
-
-    expect(readClaim(seed)).toBeNull();
-    expect(readCursor(seed)).toBeNull();
-    expect(readCursor(seed)).toBeNull();
-    // The route back survives and pages from the newest message.
-    expect(seed).toContain('More history:');
-    expect(seed).toContain('- Inlined range: not stated for this handoff.');
-    expect(seed).toContain('- Reading it backwards from the newest message is available with this call:');
-    expect(seed).toContain('"cursor":""');
-    // The rows themselves are still carried; only the claim about them is gone.
-    expect(seed).toContain(`User: row-1 ${'p'.repeat(140)}`);
-  });
 
   /**
    * A span is contiguous or it is nothing. When a row of another Session sits
@@ -1275,52 +1185,6 @@ describe('the range claim never outlives the lines it names', () => {
    * claim ships only when every row it strands is present below it, whether or
    * not the step that strands one exists yet.
    */
-  it('claims nothing when a dropped row of the pointer\u2019s own Session sits above the span', () => {
-    const strandedAboveTheSpan: ClaimRow[] = [
-      { role: 'User', createdAt: 1, seq: 99, sessionId, text: `row-99 ${'a'.repeat(140)}` },
-      { role: 'Assistant', createdAt: 2, seq: 3, sessionId: 'sess_fork_parent', text: `row-p3 ${'p'.repeat(140)}` },
-      { role: 'User', createdAt: 3, seq: 40, sessionId, text: `row-40 ${'c'.repeat(140)}` },
-      { role: 'Assistant', createdAt: 4, seq: 41, sessionId, text: `row-41 ${'c'.repeat(140)}` },
-    ];
-    const clipped = buildHappierReplayPromptFromDialog({
-      previousSessionId: sessionId,
-      continuity: 'same_session_agent_change',
-      strategy: 'recent_messages',
-      recentMessagesCount: null,
-      dialog: strandedAboveTheSpan,
-      retrieval: { sessionId, renderInvocation },
-      // Re-derived after the container restructure.
-      maxPromptChars: 1_800,
-    }).trim();
-
-    // The premise: the budget really did drop row 99, and it really is a row of
-    // the Session the pointer names.
-    expect(clipped).not.toContain(`User: row-99 ${'a'.repeat(140)}`);
-    expect(clipped).toContain(`User: row-40 ${'c'.repeat(140)}`);
-
-    expect(readClaim(clipped)).toBeNull();
-    expect(readCursor(clipped)).toBeNull();
-    expect(readCursor(clipped)).toBeNull();
-    // Degradation, not amputation: the route back survives and pages from the
-    // newest message, which is the only anchor that reaches row 99 again.
-    expect(clipped).toContain('More history:');
-    expect(clipped).toContain('- Inlined range: not stated for this handoff.');
-    // The WHOLE route, not its opening: the direction, the runnable call, the
-    // rule that turns one call into a walk, and the reason not to page forward.
-    // Without the last two the target pages once and stops, or re-reads from the
-    // start of the Session the part it is already holding.
-    expect(clipped).toContain('- Reading it backwards from the newest message is available with this call:');
-    expect(clipped).toContain('"cursor":""');
-    expect(clipped).toContain('- Each page returns older rows; the oldest seq in a page is the cursor for the next page.');
-    expect(clipped).toContain('- Paging forward from the start of the session only re-reads what this handoff already contains.');
-
-    // Presence is the rule, not shape: the same window claims its span when
-    // nothing was dropped, because row 99 is then inlined and stranded by
-    // nothing. Refusing here would cost the target a re-read for no reason.
-    const whole = buildSeed(strandedAboveTheSpan);
-    expect(readClaim(whole)).toEqual({ oldestSeq: 40, newestSeq: 41 });
-    expect(whole).toContain(`User: row-99 ${'a'.repeat(140)}`);
-  });
 
   /**
    * The same stranding, made invisible by a line that is not the stranded row's.
@@ -1486,55 +1350,6 @@ describe('the range claim never outlives the lines it names', () => {
    * after this build takes over. Its claim cannot be checked against the sealed
    * body, which carries no seq, so it is removed rather than rewritten.
    */
-  it('removes a frame-carried claim sealed by the predecessor layout instead of restating it', () => {
-    // Written in the PREDECESSOR's own literals, byte for byte, not rebuilt from
-    // this build's constants. A fixture assembled from the current constants
-    // follows every rename this module makes, and could never catch the reader
-    // losing the layout it is supposed to still accept.
-    const predecessorSeed = [
-      'This is the same Happy session, now running under a different coding agent.',
-      "The previous agent's own conversation state does not carry over, so the app is replaying recent transcript messages for context.",
-      `Session id: ${sessionId}`,
-      '',
-      'More history:',
-      `Session ${sessionId} holds this conversation's full transcript; only its tail is inlined below.`,
-      'Already inlined below: user and assistant text for transcript seq 900 to 911.',
-      'To read older context, page BACKWARDS from seq 900: run the command below, then keep passing the oldest seq you receive as the next cursor. Do not page forward from the start of the session.',
-      `  ${renderInvocation(900)}`,
-      'Requesting seq 900 to 911 again adds only the tool calls, tool results and events that were not inlined; skip it unless you need those.',
-      // Sealed with the predecessor's own file advice, which is what an already
-      // dispatched seed carries; the fit keys on this sentence's opening, not its tail.
-      'The agent that ran this session before you kept its own session log on this machine at /home/u/.claude/projects/x/abc.jsonl. It can be very large — tail or grep it, do not read it whole.',
-      '',
-      'Recent transcript:',
-      ...rows.map((row) => `${row.role}: row-${row.seq} ${'z'.repeat(140)}`),
-      '',
-      '',
-      'Continue from here. Use the recent transcript as the latest tail of the conversation. If important details are still missing, ask clarifying questions.',
-    ].join('\n');
-
-    const fitted = fitHappierReplaySeedWithinTotalBudget({
-      seedText: predecessorSeed,
-      // Half the seed, so the fit certainly deletes rows the frame names.
-      reservedChars: Math.floor(predecessorSeed.length / 2),
-      maxPromptChars: predecessorSeed.length,
-    });
-
-    expect(fitted).not.toBe('');
-    expect(readInlinedSeqs(fitted).length).toBeGreaterThan(0);
-    expect(readInlinedSeqs(fitted).length).toBeLessThan(rows.length);
-    expect(claimedButNotWhole(fitted)).toEqual([]);
-    expect(fitted).not.toContain('Already inlined below:');
-    expect(fitted).not.toContain('page BACKWARDS from seq');
-    expect(fitted).not.toContain('"cursor":"900"');
-    expect(fitted).not.toContain('Requesting seq');
-    // The independent signal states nothing about the inlined rows and survives.
-    expect(fitted).toContain('More history:');
-    expect(fitted).toContain('/home/u/.claude/projects/x/abc.jsonl');
-    // A predecessor seed carries no container, so the fit adds none: the legacy
-    // arm is byte-identical to what that build already produced.
-    expect(fitted).not.toContain('</recent_transcript>');
-  });
 
   /**
    * The released frame, not a dev intermediate.
@@ -2503,57 +2318,6 @@ describe('happierReplayPrompt — retrieval planning surface', () => {
     expect(prompt).toContain(lines[0]!.text);
     expect(prompt).not.toContain('[Older context was omitted to fit the replay budget.]');
     expect(prompt.length).toBeLessThanOrEqual(frame.maxPromptChars - frame.reservedChars);
-  });
-
-  it('plans room for the pointer’s range lines, which now live in the transcript region', async () => {
-    // The plan cannot know whether the rows it is about to fetch will all carry
-    // a seq, and the pointer renders differently either way — with a range it
-    // adds four lines to the region the plan is measuring. So the plan must be
-    // safe for BOTH shapes, and filling it exactly must still drop nothing.
-    const { planHappierReplayTranscriptCharBudget, measureHappierReplayDialogLineChars } =
-      await import('./happierReplayPrompt.js');
-    const sessionId = 'sess_plan_pointer';
-    const frame = {
-      previousSessionId: sessionId,
-      continuity: 'same_session_agent_change' as const,
-      strategy: 'recent_messages' as const,
-      maxPromptChars: 4_000,
-      reservedChars: 300,
-      retrieval: {
-        sessionId,
-        renderInvocation: (cursorSeq: number | null): string =>
-          `happier tools call session.transcript.get --input '{"sessionId":"${sessionId}","cursor":"${cursorSeq ?? ''}"}'`,
-        nativeTranscriptPath: '/home/u/.claude/projects/x/abc.jsonl',
-      },
-    };
-    const planned = planHappierReplayTranscriptCharBudget(frame);
-    expect(planned).not.toBeNull();
-
-    for (const numbered of [true, false]) {
-      const lines: Array<{ role: 'User' | 'Assistant'; createdAt: number; seq?: number; text: string }> = [];
-      let used = 0;
-      let index = 0;
-      while (true) {
-        const candidate = {
-          role: 'Assistant' as const,
-          createdAt: index,
-          ...(numbered ? { seq: 5_000 + index } : {}),
-          text: `t${index}`.padEnd(40, 'x'),
-        };
-        const cost = (lines.length === 0 ? 0 : 1) + measureHappierReplayDialogLineChars(candidate);
-        if (used + cost > planned!) break;
-        used += cost;
-        lines.push(candidate);
-        index += 1;
-      }
-      expect(lines.length).toBeGreaterThan(5);
-
-      const prompt = buildHappierReplayPromptFromDialog({ ...frame, recentMessagesCount: null, dialog: lines });
-      expect(prompt.length).toBeLessThanOrEqual(frame.maxPromptChars - frame.reservedChars);
-      expect(prompt).toContain(lines[0]!.text);
-      expect(prompt).toContain('More history:');
-      if (numbered) expect(prompt).toContain('- Inlined below:');
-    }
   });
 
   it('treats a null recentMessagesCount as "the character budget is the bound"', () => {

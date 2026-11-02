@@ -5,7 +5,6 @@ import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
-import { AcpCatalogSettingsSections } from '@/components/settings/acpCatalog/AcpCatalogSettingsSections';
 import { ProviderSetupFlow } from '@/components/settings/providers/setup/ProviderSetupFlow';
 import { AGENT_IDS, getAgentCore } from '@/agents/catalog/catalog';
 import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
@@ -15,9 +14,9 @@ import { t } from '@/text';
 export default React.memo(function ProviderSettingsIndexScreen() {
     const router = useRouter();
     const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey');
-    // Only the agents this build offers; Custom ACP is set up in the ACP sections below.
+    // Only the agents this build offers.
     const providerIds = React.useMemo(
-        () => AGENT_IDS.filter((agentId) => agentId !== 'customAcp' && isAgentOffered(agentId)),
+        () => AGENT_IDS.filter((agentId) => isAgentOffered(agentId)),
         [],
     );
 
@@ -44,7 +43,6 @@ export default React.memo(function ProviderSettingsIndexScreen() {
                 })}
             </ItemGroup>
             <ProviderSetupFlow providerIds={providerIds} />
-            {isAgentOffered('customAcp') ? <AcpCatalogSettingsSections /> : null}
         </ItemList>
     );
 });

@@ -4,7 +4,7 @@ import { buildSpawnChildProcessEnv, DAEMON_DECIDED_CHILD_ENV_KEYS } from '../../
 import type { HappierRuntimeServerContext } from '@/utils/env/resolveHappierRuntimeContextEnv';
 import { buildCgroupSelfMigratingHappyCliLaunchSpec } from '../linux/buildCgroupSelfMigratingHappyCliLaunchSpec';
 
-type TmuxSpawnAgentId = CatalogAgentId | 'acp-catalog';
+type TmuxSpawnAgentId = CatalogAgentId;
 
 export function buildTmuxWindowEnv(
   daemonEnv: NodeJS.ProcessEnv,

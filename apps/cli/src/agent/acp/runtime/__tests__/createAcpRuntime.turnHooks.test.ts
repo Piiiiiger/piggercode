@@ -37,7 +37,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -90,7 +90,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     const backend = createFakeAcpRuntimeBackend();
     const observedToolNames: string[] = [];
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -147,7 +147,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -167,7 +167,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     expect(taskStarted?.id).toEqual(expect.any(String));
     expect(taskComplete?.id).toBe(taskStarted.id);
     expect(completedTurns).toContainEqual(expect.objectContaining({
-      provider: 'pi',
+      provider: 'codex',
       providerTurnId: taskStarted.id,
     }));
   });
@@ -199,7 +199,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -259,7 +259,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -282,7 +282,7 @@ describe('createAcpRuntime (turn hooks)', () => {
 
     expect(sent.some((m) => m?.type === 'task_complete')).toBe(true);
     expect(completedTurns).toContainEqual(expect.objectContaining({
-      provider: 'pi',
+      provider: 'codex',
     }));
     expect(didFlushResolve).toBe(false);
 
@@ -305,7 +305,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: {
         ...createBasicSessionClient(),
@@ -327,12 +327,12 @@ describe('createAcpRuntime (turn hooks)', () => {
       expect.objectContaining({
         action: 'begin',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
       }),
       expect.objectContaining({
         action: 'complete',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
       }),
     ]);
   });
@@ -353,7 +353,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: {
         ...createBasicSessionClient(),
@@ -401,7 +401,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: {
         ...createBasicSessionClient(),
@@ -444,7 +444,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -476,7 +476,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     const backend = createFakeAcpRuntimeBackend();
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -508,7 +508,7 @@ describe('createAcpRuntime (turn hooks)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session: {
         ...createBasicSessionClient(),
@@ -529,12 +529,12 @@ describe('createAcpRuntime (turn hooks)', () => {
       expect.objectContaining({
         action: 'begin',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
       }),
       expect.objectContaining({
         action: 'cancel',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
       }),
     ]);
   });

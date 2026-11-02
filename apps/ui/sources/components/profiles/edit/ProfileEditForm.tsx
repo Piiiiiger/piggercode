@@ -130,10 +130,9 @@ export function ProfileEditForm({
     const resolvedBackendEntries = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1: settings.acpCatalogSettingsV1,
             backendEnabledByTargetKey,
         });
-    }, [backendEnabledByTargetKey, enabledAgentIds, settings.acpCatalogSettingsV1]);
+    }, [backendEnabledByTargetKey, enabledAgentIds]);
     const cliDetection = useCLIDetection(resolvedMachineId, {
         includeLoginStatus: Boolean(resolvedMachineId),
         serverId: activeServerId,
@@ -227,9 +226,7 @@ export function ProfileEditForm({
 
         return out;
     });
-    const transcriptStorageSettings = React.useMemo(() => ({
-        opencodeBackendMode: (settings as Record<string, unknown>).opencodeBackendMode,
-    }), [settings]);
+    const transcriptStorageSettings = React.useMemo(() => ({}), []);
     const [defaultTranscriptStorageModesByTargetKey, setDefaultTranscriptStorageModesByTargetKey] = React.useState<Record<string, SessionTranscriptStorageMode | null>>(() => {
         const explicitByTargetKey = (profile.defaultPersistenceModeByTargetKey as Record<string, SessionTranscriptStorageMode | undefined>) ?? {};
         const out: Record<string, SessionTranscriptStorageMode | null> = {};
@@ -608,7 +605,7 @@ export function ProfileEditForm({
             return false;
         }
 
-        const { defaultPermissionModeClaude, defaultPermissionModeCodex, defaultPermissionModeGemini, ...profileBase } = profile as any;
+        const { defaultPermissionModeClaude, defaultPermissionModeCodex, ...profileBase } = profile as any;
         const defaultPermissionModeByTargetKey = stripLegacyProviderSentinelTargetKeys(
             stripUndefinedRecordValues(
                 (profileBase.defaultPermissionModeByTargetKey as Record<string, PermissionMode | undefined>) ?? {},

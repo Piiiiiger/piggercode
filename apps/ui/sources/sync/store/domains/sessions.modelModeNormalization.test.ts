@@ -50,12 +50,12 @@ describe('sessions domain: modelMode normalization', () => {
                 active: false,
                 activeAt: 1,
                 metadata: {
-                    modelOverrideV1: { v: 1, updatedAt: 1000, modelId: 'gemini-2.5-pro' },
+                    modelOverrideV1: { v: 1, updatedAt: 1000, modelId: 'gpt-5.5' },
                 },
             } as any,
         ]);
 
-        expect(get().sessions.s1.modelMode).toBe('gemini-2.5-pro');
+        expect(get().sessions.s1.modelMode).toBe('gpt-5.5');
         expect(get().sessions.s1.modelModeUpdatedAt).toBe(1000);
     });
 
@@ -72,16 +72,16 @@ describe('sessions domain: modelMode normalization', () => {
             } as any,
         ]);
 
-        domain.updateSessionModelMode('s1', 'gemini-2.5-pro' as any);
+        domain.updateSessionModelMode('s1', 'gpt-5.5' as any);
 
-        expect(get().sessions.s1.modelMode).toBe('gemini-2.5-pro');
+        expect(get().sessions.s1.modelMode).toBe('gpt-5.5');
         expect(typeof get().sessions.s1.modelModeUpdatedAt).toBe('number');
     });
 
     it('persists a loaded session model mode without dropping unloaded session model modes', () => {
         vi.spyOn(Date, 'now').mockReturnValue(5000);
         saveSessionModelModes({
-            s_loaded: 'gemini-2.5-pro',
+            s_loaded: 'gpt-5.5',
             s_unloaded: 'claude-3-5-sonnet-latest',
         });
         saveSessionModelModeUpdatedAts({
@@ -231,42 +231,6 @@ describe('sessions domain: modelMode normalization', () => {
         expect(firstUpdatedAt).toBe(1000);
         expect(secondUpdatedAt).toBe(1000);
     });
-    it('drops a local model selection the Agent transition explicitly cleared', () => {
-        vi.spyOn(Date, 'now').mockReturnValue(1000);
-        const { get, domain } = createHarness();
-
-        domain.applySessions([
-            {
-                id: 's1',
-                createdAt: 1,
-                active: false,
-                activeAt: 1,
-                metadata: { flavor: 'gemini' },
-            } as any,
-        ]);
-        domain.updateSessionModelMode('s1', 'gemini-2.5-flash' as any);
-        expect(get().sessions.s1.modelMode).toBe('gemini-2.5-flash');
-
-        // The cutover to an Agent that accepts freeform model ids: the local
-        // selection is not "invalid" for Claude, so the selectability clamp
-        // cannot catch it. Only the transition's own clear tombstone can.
-        domain.applySessions([
-            {
-                id: 's1',
-                createdAt: 1,
-                active: false,
-                activeAt: 1,
-                metadata: {
-                    flavor: 'claude',
-                    modelOverrideV1: { v: 1, updatedAt: 2000, modelId: null },
-                },
-            } as any,
-        ]);
-
-        expect(get().sessions.s1.modelMode).toBe('default');
-        expect(get().sessions.s1.modelModeUpdatedAt).toBe(2000);
-    });
-
     it('keeps a local model selection that is newer than the clear tombstone', () => {
         vi.spyOn(Date, 'now').mockReturnValue(3000);
         const { get, domain } = createHarness();

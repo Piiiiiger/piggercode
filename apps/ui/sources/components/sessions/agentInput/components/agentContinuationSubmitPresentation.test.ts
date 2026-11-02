@@ -36,7 +36,7 @@ describe('resolveAgentContinuationSubmitPresentation', () => {
     it('always names the switch in words, for every Agent', () => {
         // This is the control that commits the switch. A glyph reads as nothing
         // to a screen reader, so the accessible name is a sentence in every case.
-        for (const agentId of ['claude', 'codex', 'kimi', 'auggie', 'customAcp', 'not-in-this-build']) {
+        for (const agentId of ['claude', 'codex', 'not-in-this-build']) {
             expect(resolveAgentContinuationSubmitPresentation({
                 agentId,
                 agentLabel: 'Target Agent',
@@ -47,7 +47,7 @@ describe('resolveAgentContinuationSubmitPresentation', () => {
     });
 
     it('draws every known Agent its own mark, with no per-Agent exception', () => {
-        for (const agentId of ['claude', 'codex', 'kimi', 'kilo', 'auggie', 'customAcp']) {
+        for (const agentId of ['claude', 'codex']) {
             expect(resolveAgentContinuationSubmitPresentation({ agentId, agentLabel: 'X' }).markAgentId)
                 .toBe(agentId);
         }
@@ -57,12 +57,12 @@ describe('resolveAgentContinuationSubmitPresentation', () => {
         // A hardcoded size would pass a same-shape assertion, so the scale is
         // driven to values no nominal constant could produce.
         pickerIconScale.mockReturnValue(1.5);
-        expect(resolveAgentContinuationSubmitPresentation({ agentId: 'kimi', agentLabel: 'Kimi' }).markSize)
+        expect(resolveAgentContinuationSubmitPresentation({ agentId: 'codex', agentLabel: 'Codex' }).markSize)
             .toBe(27);
-        expect(pickerIconScale).toHaveBeenLastCalledWith('kimi');
+        expect(pickerIconScale).toHaveBeenLastCalledWith('codex');
 
         pickerIconScale.mockReturnValue(0.8);
-        expect(resolveAgentContinuationSubmitPresentation({ agentId: 'auggie', agentLabel: 'Auggie' }).markSize)
+        expect(resolveAgentContinuationSubmitPresentation({ agentId: 'claude', agentLabel: 'Claude' }).markSize)
             .toBe(14);
     });
 

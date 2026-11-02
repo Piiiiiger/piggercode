@@ -77,7 +77,7 @@ describe('ToolTraceWriter', () => {
         direction: 'outbound',
         sessionId: 'sess_123',
         protocol: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         kind: 'tool-call',
         payload: {
           type: 'tool-call',

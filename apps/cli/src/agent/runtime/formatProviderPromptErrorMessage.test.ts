@@ -4,16 +4,16 @@ import { formatProviderPromptErrorMessage } from './formatProviderPromptErrorMes
 
 describe('formatProviderPromptErrorMessage', () => {
   it('formats provider prompt errors without publishing local stack frames', () => {
-    const error = new Error('OpenCode HTTP GET http://127.0.0.1:51235/session/ses_123 failed: 404 Not Found');
+    const error = new Error('Codex HTTP GET http://127.0.0.1:51235/session/ses_123 failed: 404 Not Found');
     error.stack = [
       `Error: ${error.message}`,
-      '    at fetchJson (/Users/leeroy/Documents/Development/happier/remote-dev/apps/cli/src/backends/opencode/server/client.ts:107:11)',
+      '    at fetchJson (/Users/leeroy/Documents/Development/happier/remote-dev/apps/cli/src/backends/codex/server/client.ts:107:11)',
       '    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)',
     ].join('\n');
 
     const formatted = formatProviderPromptErrorMessage(error);
 
-    expect(formatted).toContain('Error: OpenCode HTTP GET http://127.0.0.1:51235/session/ses_123 failed: 404 Not Found');
+    expect(formatted).toContain('Error: Codex HTTP GET http://127.0.0.1:51235/session/ses_123 failed: 404 Not Found');
     expect(formatted).not.toContain('/Users/leeroy');
     expect(formatted).not.toContain('client.ts:107');
     expect(formatted).not.toContain('processTicksAndRejections');
@@ -40,7 +40,7 @@ describe('formatProviderPromptErrorMessage', () => {
 
   it('does not add an auth hint for an incidental 401 identifier', () => {
     expect(formatProviderPromptErrorMessage(
-      new Error('[agy-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6'),
+      new Error('[provider-acp] WARN: failed to decode gen_metadata 401: cant skip wire type 6'),
       { authHint: 'Run provider login.' },
     )).not.toContain('Run provider login.');
   });

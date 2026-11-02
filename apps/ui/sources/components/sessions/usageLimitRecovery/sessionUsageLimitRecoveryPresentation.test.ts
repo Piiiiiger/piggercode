@@ -153,7 +153,7 @@ describe('sessionUsageLimitRecoveryPresentation', () => {
         ));
         const resetAtMs = Date.UTC(2026, 4, 17, 15, 0, 0);
 
-        for (const provider of ['codex', 'claude', 'opencode']) {
+        for (const provider of ['codex', 'claude']) {
             const presentation = buildSessionUsageLimitRecoveryPresentation({
                 featureEnabled: true,
                 latestTurnStatus: 'failed',
@@ -177,7 +177,7 @@ describe('sessionUsageLimitRecoveryPresentation', () => {
         const params = {
             featureEnabled: true,
             latestTurnStatus: 'failed',
-            issue: usageIssue('opencode', null),
+            issue: usageIssue('codex', null),
             recovery: null,
             rememberedMode: 'ask',
             translate: (key: string) => key,

@@ -40,28 +40,8 @@ const latestAgentInputProps = vi.hoisted(() => ({
 const latestContextSectionProps = vi.hoisted(() => ({
     value: null as any,
 }));
-const configuredAcpAccountSettings = {
-    acpCatalogSettingsV1: {
-        v: 2 as const,
-        backends: [{
-            id: 'review-bot',
-            name: 'review-bot',
-            title: 'Review Bot',
-            command: 'review-bot',
-            args: [],
-            env: {},
-            transportProfile: 'generic' as const,
-            capabilities: {
-                supportsLoadSession: true,
-                supportsModes: 'unknown' as const,
-                supportsModels: 'unknown' as const,
-                supportsConfigOptions: 'unknown' as const,
-                promptImageSupport: 'unknown' as const,
-            },
-            createdAt: 1,
-            updatedAt: 1,
-        }],
-    },
+const resumableCodexAccountSettings = {
+    codexBackendMode: 'appServer' as const,
 };
 
 vi.mock('@expo/vector-icons', () => ({
@@ -121,7 +101,7 @@ installAutomationScreensCommonModuleMocks({
         const { createStorageModuleStub } = await import('@/dev/testkit/mocks/storage');
         return createStorageModuleStub({
             useSession: () => sessionState.session,
-            useSettings: () => configuredAcpAccountSettings,
+            useSettings: () => resumableCodexAccountSettings,
             storage: Object.assign(
                 ((selector?: (value: StorageState) => unknown) => (
                     typeof selector === 'function'
@@ -517,13 +497,6 @@ describe('SessionAutomationCreateScreen', () => {
                 codexBackendMode: 'acp',
                 permissionMode: 'readOnly',
                 permissionModeUpdatedAt: 10,
-                acpConfiguredBackendV1: {
-                    v: 1,
-                    updatedAt: 20,
-                    backendId: 'review-bot',
-                    title: 'Review Bot',
-                },
-                customAcpSessionId: 'review-bot-session-1',
                 terminal: {
                     mode: 'tmux',
                     tmux: { target: 'happy-dev' },
@@ -545,7 +518,7 @@ describe('SessionAutomationCreateScreen', () => {
             directory: '/tmp/project',
             prompt: 'Send the latest automation QA summary into this session.',
             displayText: 'Send the latest automation QA summary into this session.',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             profileId: 'profile-1',
             permissionMode: 'safe-yolo',
             permissionModeUpdatedAt: 123,
@@ -627,7 +600,7 @@ describe('SessionAutomationCreateScreen', () => {
                 machineId: 'm1',
                 path: '/tmp/project',
                 homeDir: '/tmp',
-                flavor: 'pi',
+                flavor: 'codex',
             },
         };
         setStorageForSession({

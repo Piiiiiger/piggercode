@@ -47,58 +47,11 @@ const DirectSessionsClaudeConfigSourceSchema = z
   })
   .passthrough();
 
-const DirectSessionsOpenCodeServerSourceSchema = z
-  .object({
-    kind: z.literal('opencodeServer'),
-    baseUrl: z.string().url().nullish(),
-    directory: z.string().min(1).max(10_000).nullish(),
-  })
-  .passthrough();
-
-const DirectSessionsPiAgentDirSourceSchema = z
-  .object({
-    kind: z.literal('piAgentDir'),
-    // Resolved ~/.pi/agent directory; falls back to env PI_CODING_AGENT_DIR / ~/.pi/agent when nullish.
-    agentDir: z.string().min(1).max(10_000).nullish(),
-  })
-  .passthrough();
-
-/**
- * Generic source for agents whose ACP server advertises `session/list`. It carries no provider
- * identity and no filesystem location: candidates are produced by the agent itself over ACP and are
- * resume-only. `cwd` is the optional ACP working-directory filter and must be absolute.
- */
-const DirectSessionsAcpSessionListSourceSchema = z
-  .object({
-    kind: z.literal('acpSessionList'),
-    cwd: z.string().min(1).max(10_000).nullish(),
-  })
-  .passthrough();
-
 export const DirectSessionsSourceSchema = z.discriminatedUnion('kind', [
   DirectSessionsCodexHomeSourceSchema,
   DirectSessionsClaudeConfigSourceSchema,
-  DirectSessionsOpenCodeServerSourceSchema,
-  DirectSessionsPiAgentDirSourceSchema,
-  DirectSessionsAcpSessionListSourceSchema,
 ]);
 export type DirectSessionsSource = z.infer<typeof DirectSessionsSourceSchema>;
-
-/**
- * Negotiates only the generic ACP `session/list` browse source. This capability is intentionally
- * resume-only and grants no transcript, follow, takeover, terminal, or writer authority.
- */
-export const DirectSessionsAcpSessionListCapabilityRequestSchema = z.object({}).strict();
-export type DirectSessionsAcpSessionListCapabilityRequest = z.infer<typeof DirectSessionsAcpSessionListCapabilityRequestSchema>;
-
-export const DirectSessionsAcpSessionListCapabilityResponseSchema = z.object({
-  ok: z.literal(true),
-  capability: z.literal('acp_session_list_v1'),
-  protocolVersion: z.literal(1),
-  sourceKind: z.literal('acpSessionList'),
-  resumeOnly: z.literal(true),
-}).strict();
-export type DirectSessionsAcpSessionListCapabilityResponse = z.infer<typeof DirectSessionsAcpSessionListCapabilityResponseSchema>;
 
 export const DirectSessionsSearchModeSchema = z.enum(['fast', 'full']);
 export type DirectSessionsSearchMode = z.infer<typeof DirectSessionsSearchModeSchema>;

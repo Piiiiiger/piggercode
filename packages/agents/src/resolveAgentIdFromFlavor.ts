@@ -8,10 +8,6 @@ export function resolveAgentIdFromFlavor(flavor: unknown): AgentId | null {
   const normalized = flavor.trim().toLowerCase();
   if (!normalized) return null;
 
-  if (normalized.startsWith('acp:')) {
-    return 'customAcp';
-  }
-
   for (const id of AGENT_IDS) {
     if (id.toLowerCase() === normalized) return id;
   }

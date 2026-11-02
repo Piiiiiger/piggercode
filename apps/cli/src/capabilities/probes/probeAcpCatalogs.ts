@@ -4,7 +4,6 @@ import type { AgentBackend, AgentMessageHandler } from '@/agent/core';
 import { requireCatalogEntry } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';
 
-import { createConfiguredAcpProbeBackend } from './createConfiguredAcpProbeBackend';
 import type { PreflightSessionCatalogsRaw, PreflightSessionControlsProbeParams } from './preflightSessionControlsProbeAdapterTypes';
 import { validateCatalogAcpProbeSpawn } from './validateCatalogAcpProbeSpawn';
 import { remainingCatalogProbeMs, withCatalogProbeLifecycle } from './catalogProbeLifecycle';
@@ -32,32 +31,24 @@ export async function probeAcpCatalogs(
       remainingCatalogProbeMs(lifecycle);
     };
     remainingCatalogProbeMs(lifecycle);
-    backend = await createConfiguredAcpProbeBackend(params);
-    if (backend) await admitBackend(backend);
+    if (!requireCatalogEntry(params.agentId).getAcpBackendFactory) return unsupported;
+    const validation = await validateCatalogAcpProbeSpawn(params.agentId, { processEnv: params.processEnv, cwd: params.cwd });
     remainingCatalogProbeMs(lifecycle);
-    if (!backend) {
-      if (params.backendTarget?.kind === 'configuredAcpBackend') {
-        throw new Error('Configured ACP backend is unavailable');
-      }
-      if (!requireCatalogEntry(params.agentId).getAcpBackendFactory) return unsupported;
-      const validation = await validateCatalogAcpProbeSpawn(params.agentId, { processEnv: params.processEnv, cwd: params.cwd });
-      remainingCatalogProbeMs(lifecycle);
-      if (!validation.ok) {
-        throw new Error(validation.errorMessage);
-      }
-      const permissionHandler: AcpPermissionHandler = {
-        handleToolCall: async () => ({ decision: 'abort' }),
-      };
-      const created = await createCatalogAcpBackend(params.agentId, {
-        cwd: params.cwd,
-        env: params.processEnv ?? process.env,
-        mcpServers: {},
-        permissionHandler,
-        permissionMode: 'default',
-        readinessOnly: true,
-      });
-      await admitBackend(created.backend);
+    if (!validation.ok) {
+      throw new Error(validation.errorMessage);
     }
+    const permissionHandler: AcpPermissionHandler = {
+      handleToolCall: async () => ({ decision: 'abort' }),
+    };
+    const created = await createCatalogAcpBackend(params.agentId, {
+      cwd: params.cwd,
+      env: params.processEnv ?? process.env,
+      mcpServers: {},
+      permissionHandler,
+      permissionMode: 'default',
+      readinessOnly: true,
+    });
+    await admitBackend(created.backend);
 
     const commandsUpdate = new Promise<unknown[]>((resolve, reject) => {
       handler = (message) => {

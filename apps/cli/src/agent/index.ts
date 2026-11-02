@@ -2,7 +2,7 @@
  * Agent Module - Universal agent backend abstraction
  *
  * This module provides the core abstraction layer for different AI agents
- * (Claude, Codex, Gemini, OpenCode, etc.) that can be controlled through
+ * (Claude Code, Codex) that can be controlled through
  * the Happier CLI and app.
  */
 

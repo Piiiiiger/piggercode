@@ -138,11 +138,4 @@ describe('existing-state session handoff through the catalog', () => {
     });
   });
 
-  it('fails closed for providers without an existing-state handoff hook', async () => {
-    await expect(catalog.resolveExistingSessionHandoffStateThroughCatalog({
-      metadata: { flavor: 'opencode', machineId: 'source-machine', opencodeSessionId: 'opencode-thread' },
-      targetPath: '/target-workspace',
-      env: {},
-    })).rejects.toThrow(/existing-state handoff.*unsupported/i);
-  });
 });

@@ -6,7 +6,7 @@ export const CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY = 'happierConnectedServi
 export const CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD = 'connectedServiceIds';
 
 export const RELEASED_CONNECTED_SERVICE_IDS: readonly ConnectedServiceId[] = [
-  'openai-codex', 'openai', 'anthropic', 'claude-subscription', 'gemini', 'github',
+  'openai-codex', 'openai', 'anthropic', 'claude-subscription', 'github',
 ];
 
 // UI/server v0.2.16 and CLI v0.2.15 (22ac8263) use this closed six-service enum;

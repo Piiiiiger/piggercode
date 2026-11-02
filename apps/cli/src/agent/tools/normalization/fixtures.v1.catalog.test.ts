@@ -9,24 +9,21 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
     const keys = Object.keys(fixtures.examples);
 
     expect(keys).toEqual(expect.arrayContaining([
-      'acp/auggie/tool-call/Bash',
-      'acp/opencode/tool-call/execute',
-      'acp/gemini/permission-request/edit',
       'acp/codex/tool-call/execute',
       'codex/codex/tool-call/CodexBash',
       'claude/claude/tool-call/Bash',
     ]));
   });
 
-  it('applies key canonical tool-call transformations (execute→Bash, CodexDiff→Diff, CodexPatch→Patch, GeminiReasoning→Reasoning)', () => {
+  it('applies key canonical tool-call transformations (execute→Bash, CodexDiff→Diff, CodexPatch→Patch)', () => {
     const fixtures = loadFixtureV1();
 
-    const exec = firstFixtureEvent(fixtures, 'acp/opencode/tool-call/execute');
+    const exec = firstFixtureEvent(fixtures, 'acp/codex/tool-call/execute');
     expect(exec).toBeTruthy();
     const execPayload = asRecord(exec?.payload) ?? {};
     const execNorm = normalizeToolCallV2({
       protocol: 'acp',
-      provider: 'opencode',
+      provider: 'codex',
       toolName: String(execPayload.name ?? ''),
       rawInput: execPayload.input,
       callId: typeof execPayload.callId === 'string' ? execPayload.callId : undefined,
@@ -71,21 +68,9 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
     });
     expect(codexPatchNorm.canonicalToolName).toBe('Patch');
     expect(asRecord(asRecord(codexPatchNorm.input)?.changes)).toBeTruthy();
-
-    const reasoning = firstFixtureEvent(fixtures, 'acp/gemini/tool-call/GeminiReasoning');
-    expect(reasoning).toBeTruthy();
-    const reasoningPayload = asRecord(reasoning?.payload) ?? {};
-    const reasoningNorm = normalizeToolCallV2({
-      protocol: 'acp',
-      provider: 'gemini',
-      toolName: String(reasoningPayload.name ?? ''),
-      rawInput: reasoningPayload.input,
-      callId: typeof reasoningPayload.callId === 'string' ? reasoningPayload.callId : undefined,
-    });
-    expect(reasoningNorm.canonicalToolName).toBe('Reasoning');
   });
 
-  it('canonicalizes ACP lowercase tool names into canonical families (including heuristics for edit/write/fetch)', () => {
+  it('canonicalizes ACP lowercase tool names into canonical families', () => {
     const fixtures = loadFixtureV1();
 
     const normalizeFirst = (key: string, index = 0) => {
@@ -101,31 +86,11 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
       });
     };
 
-    expect(normalizeFirst('acp/opencode/tool-call/execute').canonicalToolName).toBe('Bash');
     expect(normalizeFirst('acp/codex/tool-call/execute').canonicalToolName).toBe('Bash');
-    expect(normalizeFirst('acp/gemini/tool-call/execute').canonicalToolName).toBe('Bash');
-
-    expect(normalizeFirst('acp/opencode/tool-call/read').canonicalToolName).toBe('Read');
     expect(normalizeFirst('acp/codex/tool-call/read').canonicalToolName).toBe('Read');
-    expect(normalizeFirst('acp/gemini/tool-call/read').canonicalToolName).toBe('Read');
-
-    expect(normalizeFirst('acp/gemini/tool-call/glob').canonicalToolName).toBe('Glob');
     expect(normalizeFirst('claude/claude/tool-call/Glob').canonicalToolName).toBe('Glob');
-
-    expect(normalizeFirst('acp/opencode/tool-call/search').canonicalToolName).toBe('CodeSearch');
     expect(normalizeFirst('acp/codex/tool-call/search').canonicalToolName).toBe('CodeSearch');
-    expect(normalizeFirst('acp/gemini/tool-call/search').canonicalToolName).toBe('CodeSearch');
-    expect(normalizeFirst('acp/auggie/tool-call/search').canonicalToolName).toBe('CodeSearch');
-
-    expect(normalizeFirst('acp/opencode/tool-call/edit', 0).canonicalToolName).toBe('Write');
-    expect(normalizeFirst('acp/opencode/tool-call/edit', 1).canonicalToolName).toBe('Edit');
     expect(normalizeFirst('acp/codex/tool-call/edit', 0).canonicalToolName).toBe('Patch');
-
-    expect(normalizeFirst('acp/gemini/tool-call/write', 0).canonicalToolName).toBe('Write');
-    expect(normalizeFirst('acp/gemini/tool-call/write', 1).canonicalToolName).toBe('TodoWrite');
-
-    expect(normalizeFirst('acp/auggie/tool-call/fetch', 0).canonicalToolName).toBe('WebSearch');
-    expect(normalizeFirst('acp/auggie/tool-call/fetch', 1).canonicalToolName).toBe('WebFetch');
   });
 
   it('normalizes MCP generic tools into a stable safe-display shape (title/subtitle + raw preserved)', () => {
@@ -163,37 +128,37 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
   it('promotes Happier shell-bridge tool calls to the underlying built-in or MCP tool', () => {
     const bridgeChangeTitle = normalizeToolCallV2({
       protocol: 'acp',
-      provider: 'pi',
+      provider: 'codex',
       toolName: 'execute',
       callId: 'run_shell_command-1',
       rawInput: {
         command:
-          `happier tools call --source happier --tool change_title --args-json '{"title":"Pi Tools Proof 2026-03-06"}' --json`,
+          `happier tools call --source happier --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
         happierToolsShellBridge: {
           kind: 'call',
           rawCommand:
-            `happier tools call --source happier --tool change_title --args-json '{"title":"Pi Tools Proof 2026-03-06"}' --json`,
+            `happier tools call --source happier --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
           sessionId: null,
           directory: null,
           source: 'happier',
           tool: 'change_title',
-          argsJson: '{"title":"Pi Tools Proof 2026-03-06"}',
-          args: { title: 'Pi Tools Proof 2026-03-06' },
+          argsJson: '{"title":"Tools Proof 2026-03-06"}',
+          args: { title: 'Tools Proof 2026-03-06' },
           json: true,
         },
       },
     });
     expect(bridgeChangeTitle.canonicalToolName).toBe('change_title');
-    expect(asRecord(bridgeChangeTitle.input)).toMatchObject({ title: 'Pi Tools Proof 2026-03-06' });
+    expect(asRecord(bridgeChangeTitle.input)).toMatchObject({ title: 'Tools Proof 2026-03-06' });
 
     const changeTitleResult = normalizeToolResultV2({
       protocol: 'acp',
-      provider: 'pi',
+      provider: 'codex',
       rawToolName: 'execute',
       canonicalToolName: 'change_title',
-      rawOutput: { stdout: 'Successfully changed chat title to: "Pi Tools Proof 2026-03-06"', exit_code: 0 },
+      rawOutput: { stdout: 'Successfully changed chat title to: "Tools Proof 2026-03-06"', exit_code: 0 },
     });
-    expect(asRecord(changeTitleResult)).toMatchObject({ title: 'Pi Tools Proof 2026-03-06' });
+    expect(asRecord(changeTitleResult)).toMatchObject({ title: 'Tools Proof 2026-03-06' });
 
     const toolsCallEnvelope = {
       v: 1,
@@ -203,32 +168,32 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
         source: 'happier',
         tool: 'change_title',
         isError: false,
-        output: { success: true, title: 'Pi Tools Proof 2026-03-06' },
+        output: { success: true, title: 'Tools Proof 2026-03-06' },
       },
     };
     const toolsCallText = JSON.stringify(toolsCallEnvelope);
 
     const toolsCallJsonStdout = normalizeToolResultV2({
       protocol: 'acp',
-      provider: 'pi',
+      provider: 'codex',
       rawToolName: 'execute',
       canonicalToolName: 'change_title',
       rawOutput: { stdout: toolsCallText, exit_code: 0 },
     });
-    expect(asRecord(toolsCallJsonStdout)).toMatchObject({ title: 'Pi Tools Proof 2026-03-06' });
+    expect(asRecord(toolsCallJsonStdout)).toMatchObject({ title: 'Tools Proof 2026-03-06' });
 
     const toolsCallJsonContent = normalizeToolResultV2({
       protocol: 'acp',
-      provider: 'pi',
+      provider: 'codex',
       rawToolName: 'execute',
       canonicalToolName: 'change_title',
       rawOutput: { content: [{ type: 'text', text: toolsCallText }], isError: false },
     });
-    expect(asRecord(toolsCallJsonContent)).toMatchObject({ title: 'Pi Tools Proof 2026-03-06' });
+    expect(asRecord(toolsCallJsonContent)).toMatchObject({ title: 'Tools Proof 2026-03-06' });
 
     const bridgeCustomMcp = normalizeToolCallV2({
       protocol: 'acp',
-      provider: 'auggie',
+      provider: 'codex',
       toolName: 'execute',
       callId: 'run_shell_command-2',
       rawInput: {
@@ -253,7 +218,7 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
 
     const customMcpResult = normalizeToolResultV2({
       protocol: 'acp',
-      provider: 'auggie',
+      provider: 'codex',
       rawToolName: 'execute',
       canonicalToolName: 'mcp__qa_marker_stdio_20260306__get_marker',
       rawOutput: { stdout: '{"renamed":true,"marker":"qa-marker-stdio-20260306"}', exit_code: 0 },

@@ -2750,7 +2750,7 @@ describe('createSessionMutationOutbox', () => {
             emitWithAck: async (event, payload) => {
                 emitted.push({ event, payload });
                 return event === 'message'
-                    ? { ok: true, id: 'message-1', seq: 1, localId: 'gemini-segment', didWrite: true }
+                    ? { ok: true, id: 'message-1', seq: 1, localId: 'codex-segment', didWrite: true }
                     : event === 'session-turn-mutation' && serverSupportsTurns
                         ? { result: 'success' }
                     : { ok: false, error: 'unsupported' };
@@ -2760,13 +2760,13 @@ describe('createSessionMutationOutbox', () => {
         const { createSessionTurnMutation, createTranscriptMessageAppendMutation } = await import('./sessionMutationTypes');
         const outbox = createSessionMutationOutbox({
             token: 'tok',
-            sessionId: 's-gemini-released',
+            sessionId: 's-codex-released',
             getSocket: () => socket,
             requestReconnect,
         });
         await outbox.setSessionSyncPendingInputServerContract(serverContract('released_server_v0_2_1'));
         await outbox.enqueueSessionTurn(createSessionTurnMutation({
-            sessionId: 's-gemini-released',
+            sessionId: 's-codex-released',
             action: 'complete',
             turnId: 'turn-released',
             mutationId: 'turn-released-complete',
@@ -2774,11 +2774,11 @@ describe('createSessionMutationOutbox', () => {
         }));
 
         await expect(outbox.enqueueTranscriptMessage(createTranscriptMessageAppendMutation({
-            sessionId: 's-gemini-released',
+            sessionId: 's-codex-released',
             provenance: { kind: 'non_dependent', source: 'external' },
-            localId: 'gemini-segment',
+            localId: 'codex-segment',
             messageRole: 'agent',
-            content: { t: 'plain', v: { role: 'agent', content: { type: 'text', text: 'Gemini output' } } },
+            content: { t: 'plain', v: { role: 'agent', content: { type: 'text', text: 'Codex output' } } },
             createdAt: 1_000,
             updatedAt: 1_100,
         }))).resolves.toEqual({ persisted: true, delivered: true });
@@ -2786,14 +2786,14 @@ describe('createSessionMutationOutbox', () => {
         expect(emitted).toEqual([{
             event: 'message',
             payload: {
-                sid: 's-gemini-released',
-                message: { t: 'plain', v: { role: 'agent', content: { type: 'text', text: 'Gemini output' } } },
-                localId: 'gemini-segment',
+                sid: 's-codex-released',
+                message: { t: 'plain', v: { role: 'agent', content: { type: 'text', text: 'Codex output' } } },
+                localId: 'codex-segment',
                 echoToSender: true,
                 messageRole: 'agent',
             },
         }]);
-        await expect(readPersistedOutboxMutations('s-gemini-released')).resolves.toEqual([
+        await expect(readPersistedOutboxMutations('s-codex-released')).resolves.toEqual([
             expect.objectContaining({
                 kind: 'session_turn',
                 mutationId: 'turn-released-complete',
@@ -2810,7 +2810,7 @@ describe('createSessionMutationOutbox', () => {
             event: 'session-turn-mutation',
             payload: expect.objectContaining({ mutationId: 'turn-released-complete' }),
         });
-        await expect(readPersistedOutboxMutations('s-gemini-released')).resolves.toEqual([]);
+        await expect(readPersistedOutboxMutations('s-codex-released')).resolves.toEqual([]);
         await outbox.close();
     });
 

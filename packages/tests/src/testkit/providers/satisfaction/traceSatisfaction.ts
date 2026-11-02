@@ -29,9 +29,9 @@ function normalizeToolName(toolName: unknown): string | null {
 
 function keyParts(key: string): { kind: string; toolName: string | null } | null {
   // Examples:
-  // - acp/opencode/tool-call/execute
-  // - acp/opencode/tool-result/execute
-  // - acp/opencode/permission-request/edit
+  // - acp/codex/tool-call/execute
+  // - acp/codex/tool-result/execute
+  // - acp/codex/permission-request/edit
   const parts = key.split('/').filter(Boolean);
   if (parts.length < 3) return null;
   const kind = parts[2];

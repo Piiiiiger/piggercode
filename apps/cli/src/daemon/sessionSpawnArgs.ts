@@ -35,13 +35,6 @@ export function buildHappySessionControlArgs(opts: Readonly<{
     args.push('--existing-session', existingSessionId);
   }
 
-  const configuredAcpBackendId = opts.backendTarget?.kind === 'configuredAcpBackend'
-    ? opts.backendTarget.backendId.trim()
-    : '';
-  if (configuredAcpBackendId) {
-    args.push('--backend', configuredAcpBackendId);
-  }
-
   const permissionMode = typeof opts.permissionMode === 'string' ? opts.permissionMode.trim() : '';
   if (permissionMode) {
     args.push('--permission-mode', normalizeDaemonSessionPermissionModeForBackend({

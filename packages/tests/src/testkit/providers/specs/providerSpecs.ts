@@ -38,7 +38,6 @@ function providerSpecSearchDirs(): string[] {
   return [
     join(repoRootDir(), 'apps', 'cli', 'src', 'backends'),
     join(repoRootDir(), 'packages', 'tests', 'fixtures', 'cli-backends'),
-    join(repoRootDir(), 'packages', 'tests', 'src', 'testkit', 'providers', 'fixtures', 'cli-backends'),
   ];
 }
 

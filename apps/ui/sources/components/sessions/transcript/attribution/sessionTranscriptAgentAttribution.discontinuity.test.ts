@@ -33,16 +33,16 @@ describe('sessionTranscriptAgentAttribution — discontinuous divider chain', ()
     }
 
     it('is neutral across a span the two enclosing dividers disagree about', () => {
-        // claude → codex at 15, then gemini → claude at 35: nothing proves who
+        // claude → codex at 15, then claude → codex at 35: nothing proves who
         // produced rows 16..35, so the span must not be labelled.
-        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'gemini', to: 'claude' });
+        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'claude', to: 'claude' });
 
         expect(index.boundaries.map((boundary) => boundary.seq)).toEqual([15, 35]);
         expect(resolveHistoricalAgentIdAtSeq(index, 30)).toBeNull();
     });
 
     it('keeps the spans the break does not touch', () => {
-        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'gemini', to: 'claude' });
+        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'claude', to: 'claude' });
 
         // Before the first divider and after the last one, each divider is the
         // only evidence and nothing contradicts it.
@@ -51,7 +51,7 @@ describe('sessionTranscriptAgentAttribution — discontinuous divider chain', ()
     });
 
     it('still attributes a continuous chain', () => {
-        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'codex', to: 'gemini' });
+        const index = buildChain({ from: 'claude', to: 'codex' }, { from: 'codex', to: 'claude' });
 
         expect(resolveHistoricalAgentIdAtSeq(index, 30)).toBe('codex');
     });

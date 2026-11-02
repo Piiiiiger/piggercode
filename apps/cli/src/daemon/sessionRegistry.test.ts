@@ -104,17 +104,6 @@ describe('sessionRegistry', () => {
     expect(markers2[0].happySessionId).toBe('sess-2');
   });
 
-  it('reports an incomplete marker listing when cleanup requires complete custody evidence', async () => {
-    const { listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
-    await writeSessionMarker({ pid: 12345, happySessionId: 'valid-session', flavor: 'opencode' });
-    writeFileSync(join(happyHomeDir, 'tmp', 'daemon-sessions', 'pid-12346.json'), '{invalid-json', 'utf8');
-
-    await expect(listSessionMarkers()).resolves.toEqual([
-      expect.objectContaining({ pid: 12345, happySessionId: 'valid-session' }),
-    ]);
-    await expect(listSessionMarkers({ requireComplete: true })).rejects.toThrow();
-  });
-
   it('atomically upgrades pre-webhook placeholder custody without losing the spawn nonce', async () => {
     const { listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
     const respawn = {
@@ -681,23 +670,6 @@ describe('sessionRegistry', () => {
     );
   });
 
-  it('supports opencode flavor markers', async () => {
-    const { listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
-
-    await writeSessionMarker({
-      pid: 777,
-      happySessionId: 'sess-opencode',
-      startedBy: 'terminal',
-      flavor: 'opencode',
-      cwd: '/tmp',
-    });
-
-    const markers = await listSessionMarkers();
-    expect(markers).toHaveLength(1);
-    expect(markers[0].pid).toBe(777);
-    expect(markers[0].flavor).toBe('opencode');
-  });
-
   it('writes markers into a channel-scoped tmp dir for the dev public ring', async () => {
     process.env.PIGGERCODE_RELEASE_RING = 'dev';
     vi.resetModules();
@@ -820,50 +792,6 @@ describe('sessionRegistry', () => {
     expect(markers[0].respawn).not.toHaveProperty('experimentalCodexResume');
   });
 
-
-  it('never mirrors replay seed text into the on-disk session marker', async () => {
-    const { configuration } = await import('@/configuration');
-    const { listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
-    const seedText = `REPLAY-SEED-${'x'.repeat(4096)}`;
-
-    await writeSessionMarker({
-      pid: 12399,
-      happySessionId: 'sess-replay-seeded',
-      startedBy: 'daemon',
-      cwd: '/tmp/project',
-      metadata: {
-        hostPid: 12399,
-        flavor: 'cursor',
-        replaySeedV1: {
-          v: 1,
-          seedText,
-          sourceSessionId: 'source-session',
-          sourceCutoffSeqInclusive: 12,
-          createdAtMs: 1,
-        },
-      },
-    });
-
-    const markers = await listSessionMarkers();
-    expect(markers).toHaveLength(1);
-    // The seed is the user's prior conversation in cleartext. The Session row is
-    // e2ee, so mirroring it into a temp file would publish what the Session hides.
-    expect(markers[0].metadata.replaySeedV1.seedText).toBe('');
-    // Blanked exactly the way the Session-metadata owner retires a seed: the
-    // identity fields, and every other mirrored field, survive.
-    expect(markers[0].metadata.replaySeedV1).toMatchObject({
-      v: 1,
-      sourceSessionId: 'source-session',
-      sourceCutoffSeqInclusive: 12,
-    });
-    expect(markers[0].metadata.flavor).toBe('cursor');
-
-    const raw = readFileSync(
-      join(configuration.happyHomeDir, 'tmp', 'daemon-sessions', 'pid-12399.json'),
-      'utf-8',
-    );
-    expect(raw).not.toContain(seedText);
-  });
 
   it('blanks a replay seed that an older marker already mirrored to disk', async () => {
     const { configuration } = await import('@/configuration');

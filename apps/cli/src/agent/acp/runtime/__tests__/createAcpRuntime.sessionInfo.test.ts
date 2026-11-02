@@ -34,7 +34,7 @@ describe('createAcpRuntime provider session info', () => {
       initialMetadata: createTestMetadata(),
     });
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -56,7 +56,7 @@ describe('createAcpRuntime provider session info', () => {
       initialMetadata: createTestMetadata(),
     });
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -75,7 +75,7 @@ describe('createAcpRuntime provider session info', () => {
 
     expect(getMetadata().summary?.text).toBe('Provider title');
     expect(getMetadata().providerSessionInfoV1).toMatchObject({
-      provider: 'cursor',
+      provider: 'codex',
       sessionId: 'provider-session-1',
       title: 'Provider title',
       updatedAt: '2026-07-11T10:00:00.000Z',
@@ -105,7 +105,7 @@ describe('createAcpRuntime provider session info', () => {
       },
     });
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -136,7 +136,7 @@ describe('createAcpRuntime provider session info', () => {
       initialMetadata: createTestMetadata(),
     });
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),

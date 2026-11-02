@@ -1355,48 +1355,6 @@ describe('SessionHeaderActionMenu handoff', () => {
     expect(dropdown.props.items.some((item: any) => item?.id === 'session.handoff')).toBe(true);
   });
 
-  it('seeds configured ACP backend targets into non-handoff action drafts', async () => {
-    resolveSessionActionDefaultBackendMock.mockReturnValue({
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'acp-backend' },
-      defaultBackendId: 'claude',
-    });
-
-
-    const screen = await renderScreen(<SessionHeaderActionMenu
-          sessionId="sess_1"
-          session={{
-            id: 'sess_1',
-            metadata: {
-              flavor: 'customAcp',
-              acpConfiguredBackendV1: {
-                v: 1,
-                updatedAt: 1,
-                backendId: 'acp-backend',
-                title: 'Review Bot',
-              },
-            },
-          } as any}
-        />);
-
-    const dropdown = screen.findByType('DropdownMenu' as any);
-    await act(async () => {
-      dropdown.props.onSelect('subagents.plan.start');
-    });
-    await flushHookEffects({ cycles: 1 });
-
-    expect(buildActionDraftInputMock).toHaveBeenCalledWith(expect.objectContaining({
-      actionId: 'subagents.plan.start',
-      sessionId: 'sess_1',
-      defaultBackendTarget: { kind: 'configuredAcpBackend', backendId: 'acp-backend' },
-      defaultBackendId: 'claude',
-      instructions: '',
-    }));
-    expect(createSessionActionDraftMock).toHaveBeenCalledWith('sess_1', {
-      actionId: 'subagents.plan.start',
-      input: { draft: true },
-    });
-  });
-
   it('adds a teleport action for session menus when a daemon voice agent conversation already exists', async () => {
     voiceSettingState.current = {
       providerId: 'local_conversation',

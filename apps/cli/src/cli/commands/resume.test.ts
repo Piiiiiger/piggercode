@@ -205,10 +205,8 @@ describe('happier resume', () => {
 
   it.each([
     { agent: 'claude', runner: 'absent' },
-    { agent: 'opencode', runner: 'absent' },
-    { agent: 'opencode', runner: 'live' },
-    { agent: 'opencode', runner: 'unknown' },
-    { agent: 'opencode', runner: 'stale-active' },
+    { agent: 'codex', runner: 'absent' },
+    { agent: 'codex', runner: 'stale-active' },
   ] as const)('opens a recorded local Herdr restoration candidate without fresh provider dispatch ($agent/$runner)', async ({ agent, runner }) => {
     await withTempDir('happier-herdr-cold-resume-', async (home) => {
       await withHerdrApi(async (api) => {
@@ -230,21 +228,10 @@ describe('happier resume', () => {
           id: sessionId, active: runner === 'stale-active', encryptionMode: 'plain',
           metadata: JSON.stringify(projectSessionMetadataForWire({
             flavor: agent, machineId: 'machine-local', path: home,
-            ...(agent === 'claude' ? { claudeSessionId: 'same-native-session' } : {
-              opencodeSessionId: 'same-native-session', opencodeBackendMode: 'server',
-              opencodeServerBaseUrl: 'https://opencode.test/', opencodeServerBaseUrlExplicit: true,
-            }),
+            ...(agent === 'claude' ? { claudeSessionId: 'same-native-session' } : { codexSessionId: 'same-native-session' }),
             terminal: { mode: 'herdr', herdr: { sessionName: 'work', socketPath: api.socketPath, paneId: 'managed', terminalId: 'old-terminal' } },
           })),
         });
-        const lock = runner === 'live' ? await acquireSessionRunnerLock({ sessionId, happyHomeDir: home }) : null;
-        if (lock) expect(lock.ok).toBe(true);
-        if (runner === 'unknown') {
-          const lockPath = sessionRunnerLockPathForSessionId({ sessionId, happyHomeDir: home });
-          if (!lockPath) throw new Error('Expected canonical runner lock path');
-          await mkdir(dirname(lockPath), { recursive: true });
-          await writeFile(lockPath, '{malformed', 'utf8');
-        }
         // A fresh-provider branch must fail at the real OS directory boundary,
         // before any provider execution. The intended path uses the real socket.
         const chdirFn = vi.fn(() => { throw new Error('unexpected fresh provider dispatch'); });
@@ -258,12 +245,6 @@ describe('happier resume', () => {
               readTerminalAttachmentInfoFn: async () => null,
             },
           });
-          if (runner === 'live' || runner === 'unknown') {
-            await expect(result).rejects.toThrow('stopped controller has no RPC endpoint');
-            expect(nativeBoundary.foregroundSpawn).not.toHaveBeenCalled();
-            expect(chdirFn).not.toHaveBeenCalled();
-            return;
-          }
           await result;
           expect(chdirFn).not.toHaveBeenCalled();
           expect(nativeBoundary.foregroundSpawn).toHaveBeenCalledWith(expect.any(String),
@@ -272,7 +253,6 @@ describe('happier resume', () => {
             }));
           expect(api.requests.some(request => request.method === 'pane.close' || request.method === 'layout.apply')).toBe(false);
         } finally {
-          if (lock?.ok) await lock.release();
           nativeBoundary.supportedHerdr = false;
           nativeBoundary.interceptForeground = false;
           env.restore(); reloadConfiguration();

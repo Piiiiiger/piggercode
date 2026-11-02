@@ -2,7 +2,7 @@
  * Codex ACP Backend Factory
  *
  * Creates an ACP backend for Codex via the optional `codex-acp` capability install.
- * Mirrors the Gemini ACP factory pattern (single place for command resolution).
+ * Single place for command resolution.
  */
 
 import { AcpBackend, type AcpBackendOptions, type AcpPermissionHandler } from '@/agent/acp/AcpBackend';

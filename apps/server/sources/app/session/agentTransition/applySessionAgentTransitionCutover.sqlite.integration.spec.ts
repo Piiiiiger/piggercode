@@ -311,49 +311,6 @@ describe("applySessionAgentTransitionCutover on SQLite", () => {
         await expect(db.sessionMessage.count({ where: { sessionId: session.id } })).resolves.toBe(1);
     });
 
-    it("refuses a different transition payload at the reserved localId and keeps the committed view", async () => {
-        const session = await seed();
-        const first = await applySessionAgentTransitionCutover({
-            actorUserId: session.ownerId,
-            sessionId: session.id,
-            currentView: currentView(session),
-            divider: { localId: dividerLocalId, content: dividerContent("codex") },
-        });
-        expect(first.ok).toBe(true);
-
-        const after = await db.session.findUniqueOrThrow({
-            where: { id: session.id },
-            select: { metadataVersion: true, agentStateVersion: true },
-        });
-        const conflicting = await applySessionAgentTransitionCutover({
-            actorUserId: session.ownerId,
-            sessionId: session.id,
-            currentView: {
-                kind: "legacy_v0",
-                expectedMetadataVersion: after.metadataVersion,
-                metadataCiphertext: JSON.stringify({ flavor: "gemini" }),
-                expectedAgentStateVersion: after.agentStateVersion,
-                agentStateCiphertext: null,
-            },
-            // Same reserved localId, DIFFERENT transition payload.
-            divider: { localId: dividerLocalId, content: dividerContent("gemini") },
-        });
-
-        expect(conflicting.ok).toBe(false);
-        if (conflicting.ok) return;
-        expect(conflicting.effect).toBe("current_view_committed");
-        expect(conflicting.error).toBe("divider-conflict");
-
-        const stored = await db.sessionMessage.findFirstOrThrow({
-            where: { sessionId: session.id, localId: dividerLocalId },
-            select: { content: true },
-        });
-        // The original boundary survives: the message owner would have
-        // overwritten it in place, so the refusal has to happen above it.
-        expect(JSON.stringify(stored.content)).toContain("claude->codex");
-        expect(JSON.stringify(stored.content)).not.toContain("claude->gemini");
-    });
-
     it("moves no unread, ready-event or attention projection", async () => {
         const session = await seed({ pendingPermissionRequestCount: 0 });
         const before = await db.session.findUniqueOrThrow({

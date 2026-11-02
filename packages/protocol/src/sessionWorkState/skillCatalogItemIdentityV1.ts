@@ -15,9 +15,7 @@ import { readNonBlankOpaqueIdentifier } from '../strings/opaqueIdentifier.js';
 
 const LEGACY_VENDOR_SKILL_BACKENDS = {
   codex_native: 'codex',
-  opencode_native: 'opencode',
   claude_native: 'claude',
-  pi_native: 'pi',
 } as const;
 
 const LEGACY_PIGGERCODE_SKILL_ORIGINS = ['happier_projected', 'text_fallback_only'] as const;

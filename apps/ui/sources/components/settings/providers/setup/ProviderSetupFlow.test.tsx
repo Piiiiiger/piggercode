@@ -215,15 +215,4 @@ describe('ProviderSetupFlow', () => {
         expect(screen.findAllByType('ProviderAuthenticationTerminalPane')).toHaveLength(0);
     });
 
-    it('renders provider setup rows through AgentIcon', async () => {
-        const { ProviderSetupFlow } = await import('./ProviderSetupFlow');
-        const screen = await renderScreen(React.createElement(ProviderSetupFlow, {
-            providerIds: ['cursor'],
-        }));
-
-        const option = screen.findByTestId('provider-setup-option-cursor');
-        const icon = option?.props.icon as React.ReactElement<Record<string, unknown>>;
-        expect(typeof icon.type === 'function' ? icon.type.name : icon.type).toBe('AgentIcon');
-        expect(icon.props.agentId).toBe('cursor');
-    });
 });

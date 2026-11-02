@@ -183,25 +183,6 @@ vi.mock('@/components/ui/overlays/FloatingOverlay', () => ({
 }));
 
 describe('LlmTaskRunnerConfigV1BackendModelPicker', () => {
-    it('probes models against the selected configured ACP backend target', async () => {
-        preflightModelArgs.length = 0;
-        const { LlmTaskRunnerConfigV1BackendModelPicker } = await import('./LlmTaskRunnerConfigV1BackendModelPicker');
-
-        await renderScreen(
-            <LlmTaskRunnerConfigV1BackendModelPicker
-                value={{
-                    v: 1,
-                    backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-backend' },
-                    modelId: 'default',
-                    permissionMode: 'no_tools',
-                } as any}
-                onChange={() => {}}
-            />,
-        );
-
-        expect(preflightModelArgs[0]?.backendTarget).toEqual({ kind: 'configuredAcpBackend', backendId: 'custom-backend' });
-    });
-
     it('does not emit raw period text nodes under non-Text parents on web', async () => {
         const { LlmTaskRunnerConfigV1BackendModelPicker } = await import('./LlmTaskRunnerConfigV1BackendModelPicker');
 

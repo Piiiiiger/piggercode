@@ -203,38 +203,6 @@ describe('ReviewFindingsMessageCard', () => {
     expect(screen.findAllByType('TextInput').at(-1)!.props.value).toBe('Please clarify.');
   });
 
-  it('falls back to disabling follow-up affordances for coderabbit when backend capabilities are unavailable', async () => {
-    sessionExecutionRunActionSpy.mockClear();
-    useExecutionRunsBackendsForSessionSpy.mockReturnValue(null);
-
-    const { ReviewFindingsMessageCard } = await import('./ReviewFindingsMessageCard');
-
-    const payload: any = {
-      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'coderabbit' },
-      summary: 'summary',
-      overviewMarkdown: '## Overview',
-      generatedAtMs: 1,
-      findings: [
-        { id: 'f1', title: 'T', severity: 'low', category: 'style', summary: 'S', filePath: 'a.ts', startLine: 1, endLine: 1 },
-      ],
-      questions: [{ id: 'q1', text: 'Need context?', status: 'open' }],
-      assumptions: [],
-    };
-
-    const screen = await renderScreen(React.createElement(ReviewFindingsMessageCard, { payload, sessionId: 'sess_1', canSendMessages: true }));
-    const tree = screen.tree;
-
-    const findingHeader = findTestInstanceByTypeContainingText(screen, 'Pressable', 'T');
-    expect(findingHeader).toBeDefined();
-    await act(async () => {
-      await pressTestInstanceAsync(findingHeader!);
-    });
-
-    expect(screen.getTextContent()).not.toContain('Ask reviewer');
-    expect(screen.getTextContent()).not.toContain('Answer reviewer');
-    expect(screen.getTextContent()).not.toContain('Answer question');
-  });
-
   it('hides follow-up affordances when retention metadata is missing (fail closed)', async () => {
     sessionExecutionRunActionSpy.mockClear();
     useExecutionRunsBackendsForSessionSpy.mockReturnValue(null);
@@ -242,7 +210,7 @@ describe('ReviewFindingsMessageCard', () => {
     const { ReviewFindingsMessageCard } = await import('./ReviewFindingsMessageCard');
 
     const payload: any = {
-      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'coderabbit' },
+      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'codex' },
       summary: 'summary',
       overviewMarkdown: '## Overview',
       generatedAtMs: 1,
@@ -304,7 +272,7 @@ describe('ReviewFindingsMessageCard', () => {
     const { ReviewFindingsMessageCard } = await import('./ReviewFindingsMessageCard');
 
     const payload: any = {
-      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'coderabbit' },
+      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'codex' },
       summary: 'summary',
       generatedAtMs: 1,
       findings: [
@@ -340,7 +308,7 @@ describe('ReviewFindingsMessageCard', () => {
     const { ReviewFindingsMessageCard } = await import('./ReviewFindingsMessageCard');
 
     const payload: any = {
-      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'coderabbit' },
+      runRef: { runId: 'run_1', callId: 'call_1', backendId: 'codex' },
       summary: 'summary',
       generatedAtMs: 1,
       findings: [

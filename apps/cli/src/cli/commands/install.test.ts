@@ -91,25 +91,25 @@ describe('runInstallCliCommand', () => {
       alreadyInstalled: false,
       logPath: null,
       plan: {
-        providerId: 'gemini',
-        title: 'Google Gemini CLI',
-        binaries: ['gemini'],
+        providerId: 'codex',
+        title: 'OpenAI Codex CLI',
+        binaries: ['codex'],
         platform: 'linux',
-        docsUrl: 'https://goo.gle/gemini-cli-auth-docs',
+        docsUrl: 'https://developers.openai.com/codex/cli',
         commands: [],
         requiresAdmin: false,
         installMode: 'managed_package',
         managedInstall: {
           kind: 'managed_package',
-          packageName: '@google/gemini-cli',
-          binaryName: 'gemini',
+          packageName: '@openai/codex',
+          binaryName: 'codex',
         },
       },
     });
 
     const stdout = captureStdout();
     try {
-      await runInstallCliCommand(makeContext(['install', 'provider', 'gemini', '--force']), {
+      await runInstallCliCommand(makeContext(['install', 'provider', 'codex', '--force']), {
         log: vi.fn(),
         error: vi.fn(),
         exit: vi.fn() as never,
@@ -122,12 +122,12 @@ describe('runInstallCliCommand', () => {
 
     expect(invokeProviderCliInstall).toHaveBeenCalledWith(
       expect.objectContaining({
-        agentId: 'gemini',
+        agentId: 'codex',
         params: { dryRun: false, skipIfInstalled: false },
       }),
     );
     // Non-TTY output: the install is a visible step that completes with its outcome.
-    expect(stdout.chunks.join('')).toContain('- [..] Installing Google Gemini CLI\n- [✓] Installed Google Gemini CLI via a managed package\n');
+    expect(stdout.chunks.join('')).toContain('- [..] Installing OpenAI Codex CLI\n- [✓] Installed OpenAI Codex CLI via a managed package\n');
   });
 
   it('defaults vendor recipe execution for explicit provider installs', async () => {

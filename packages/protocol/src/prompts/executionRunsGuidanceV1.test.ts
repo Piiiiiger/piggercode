@@ -55,21 +55,6 @@ describe('executionRunsGuidanceV1', () => {
     expect(result.text).toContain('model=claude-sonnet-4-5');
   });
 
-  it('distinguishes built-in and configured ACP backend targets in the fingerprint', () => {
-    const builtIn = normalizeExecutionRunsGuidanceFingerprintV1({
-      id: '1',
-      description: 'Use the review preset',
-      suggestedBackendTarget: { kind: 'builtInAgent', agentId: 'customAcp' },
-    });
-    const configured = normalizeExecutionRunsGuidanceFingerprintV1({
-      id: '2',
-      description: 'Use the review preset',
-      suggestedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review' },
-    });
-
-    expect(builtIn).not.toBe(configured);
-  });
-
   it('adds an overflow note when rules exceed the max char budget', () => {
     const entry1 = { id: '1', description: 'Rule one' };
     const entry2 = { id: '2', description: 'Rule two is intentionally longer than the overflow note' };

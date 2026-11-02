@@ -246,7 +246,7 @@ export function useCreateNewSession(params: Readonly<{
     permissionMode: PermissionMode;
     modelMode: ModelMode;
     /**
-     * Optional: seed ACP "agent mode" (e.g. OpenCode plan/build) at session start.
+     * Optional: seed ACP "agent mode" (e.g. plan/build) at session start.
      * Applied before the first message is sent.
      */
     acpSessionModeId?: string | null;

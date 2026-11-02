@@ -40,7 +40,6 @@ export function createEmptyCustomProfile(): AIBackendProfile {
         compatibilityByTargetKey: {
             'agent:claude': true,
             'agent:codex': true,
-            'agent:gemini': true,
         },
         envVarRequirements: [],
         isBuiltIn: false,

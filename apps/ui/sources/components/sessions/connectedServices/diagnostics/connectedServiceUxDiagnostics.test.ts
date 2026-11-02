@@ -15,7 +15,7 @@ describe('resolveConnectedServiceUxDiagnosticPresentation', () => {
             code: CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES.providerSessionStateUnavailableForResume,
             failurePhase: 'continuity',
             source: 'new_session',
-            agentId: 'pi',
+            agentId: 'codex',
             retryable: false,
             suggestedActions: [
                 CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS.startFreshUnderSelectedAccount,
@@ -39,7 +39,7 @@ describe('resolveConnectedServiceUxDiagnosticPresentation', () => {
         });
         expect(presentation?.bodyParams).toMatchObject({
             reason: 'no_resumable_session_file',
-            agentId: 'pi',
+            agentId: 'codex',
         });
     });
 

@@ -24,7 +24,6 @@ import { fail, info, neutral, ok, sectionTitle, warn } from '@piggercode/cli-com
  * Implements connect subcommands for storing Connected Services credentials (v2):
  * - connect codex: Store OpenAI Codex subscription OAuth (openai-codex) or OpenAI API key (openai)
  * - connect claude: Store Claude subscription auth (claude-subscription) or Anthropic API key (anthropic)
- * - connect gemini: Store Gemini OAuth (gemini)
  */
 export async function handleConnectCommand(args: string[]): Promise<void> {
     const { includeExperimental, subcommand, options } = parseConnectArgs(args);
@@ -104,7 +103,7 @@ ${chalk.bold('Description:')}
   without exposing credentials locally.
 
 ${chalk.bold('Examples:')}
-  happier connect ${targets[0]?.id ?? 'gemini'}
+  happier connect ${targets[0]?.id ?? 'claude'}
   happier connect status
 
 ${chalk.bold('Notes:')} 
@@ -281,7 +280,7 @@ async function handleConnectStatus(targets: ReadonlyArray<CloudConnectTarget>): 
 
     console.log('');
     console.log(chalk.gray('To connect a vendor, run: happier connect <vendor>'));
-    console.log(chalk.gray('Example: happier connect gemini'));
+    console.log(chalk.gray('Example: happier connect claude'));
     console.log('');
 }
 

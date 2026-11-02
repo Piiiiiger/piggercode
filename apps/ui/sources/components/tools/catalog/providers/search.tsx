@@ -4,7 +4,7 @@ import { ICON_SEARCH } from '../icons';
 import type { KnownToolDefinition } from '../_types';
 
 export const providerSearchTools = {
-    // Gemini internal tools - should be hidden (minimal)
+    // ACP-style internal search tools - should be hidden (minimal)
     'search': {
         title: t('tools.names.search'),
         icon: ICON_SEARCH,

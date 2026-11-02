@@ -260,8 +260,8 @@ describe('executeSessionComposerResolution', () => {
     const handled = await executeSessionComposerResolution({
       resolved: { kind: 'goal', command: 'set', objective: 'migrate plugin support' } as any,
       sessionId: 's1',
-      agentId: 'pi',
-      backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+      agentId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'default',
       actionExecutor: { execute: vi.fn() },
       setMessage: vi.fn(),
@@ -455,41 +455,6 @@ describe('executeSessionComposerResolution', () => {
     expect(clearDraft).toHaveBeenCalled();
     const draftArgs = createSessionActionDraft.mock.calls[0]?.[1] as any;
     expect(draftArgs?.input?.permissionMode).toBe('read_only');
-  });
-
-  it('does not inject coderabbit-specific config into review.start drafts (generic input only)', async () => {
-    const executeSessionComposerResolution = await loadSubject();
-    const actionExecutor = { execute: vi.fn(async () => ({ ok: true as const, result: { ok: true } })) };
-    const setMessage = vi.fn();
-    const clearDraft = vi.fn();
-
-    const handled = await executeSessionComposerResolution({
-      resolved: { kind: 'action', actionId: 'review.start', rest: '   ' },
-      sessionId: 's1',
-      agentId: 'coderabbit',
-      backendTarget: { kind: 'builtInAgent', agentId: 'coderabbit' },
-      permissionMode: 'read_only',
-      actionExecutor,
-      setMessage,
-      clearDraft,
-      trackMessageSent: vi.fn(),
-      navigateToRuns: vi.fn(),
-      modalAlert: vi.fn(),
-    });
-
-    expect(handled).toBe(true);
-    expect(createSessionActionDraft).toHaveBeenCalledWith(
-      's1',
-      expect.objectContaining({
-        actionId: 'review.start',
-        input: expect.objectContaining({
-          sessionId: 's1',
-          permissionMode: 'read_only',
-        }),
-      }),
-    );
-    const draftArgs = createSessionActionDraft.mock.calls[0]?.[1] as any;
-    expect(draftArgs?.input?.engines).toBeUndefined();
   });
 
   it('executes review.start via the action executor with a safe review permission mode', async () => {
@@ -760,57 +725,4 @@ describe('executeSessionComposerResolution', () => {
     expect(draftArgs?.input?.permissionMode).toBe('workspace_write');
   });
 
-  it('preserves configured ACP backend targets for subagent drafts and execution', async () => {
-    const executeSessionComposerResolution = await loadSubject();
-    const actionExecutor = { execute: vi.fn(async () => ({ ok: true as const, result: { runId: 'r1' } })) };
-
-    const handledDraft = await executeSessionComposerResolution({
-      resolved: { kind: 'action', actionId: 'subagents.plan.start', rest: '   ' },
-      sessionId: 's1',
-      agentId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      permissionMode: 'safe-yolo',
-      actionExecutor,
-      setMessage: vi.fn(),
-      clearDraft: vi.fn(),
-      trackMessageSent: vi.fn(),
-      navigateToRuns: vi.fn(),
-      modalAlert: vi.fn(),
-    });
-
-    expect(handledDraft).toBe(true);
-    const draftArgs = createSessionActionDraft.mock.calls[0]?.[1] as any;
-    expect(draftArgs?.input?.backendTargetKeys).toEqual(['acpBackend:review-bot']);
-    expect(draftArgs?.input?.permissionMode).toBe('read_only');
-
-    createSessionActionDraft.mockReset();
-    actionExecutor.execute.mockClear();
-
-    const handledExecute = await executeSessionComposerResolution({
-      resolved: { kind: 'action', actionId: 'subagents.plan.start', rest: 'Plan this.' },
-      sessionId: 's1',
-      agentId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      permissionMode: 'safe-yolo',
-      actionExecutor,
-      setMessage: vi.fn(),
-      clearDraft: vi.fn(),
-      trackMessageSent: vi.fn(),
-      navigateToRuns: vi.fn(),
-      modalAlert: vi.fn(),
-      previousMessage: '/h.plan Plan this.',
-    });
-
-    expect(handledExecute).toBe(true);
-    expect(actionExecutor.execute).toHaveBeenCalledWith(
-      'subagents.plan.start',
-      expect.objectContaining({
-        sessionId: 's1',
-        backendTargetKeys: ['acpBackend:review-bot'],
-        instructions: 'Plan this.',
-        permissionMode: 'read_only',
-      }),
-      { defaultSessionId: 's1', surface: 'ui_slash_command', placement: 'slash_command' },
-    );
-  });
 });

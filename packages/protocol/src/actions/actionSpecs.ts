@@ -588,7 +588,7 @@ const SessionSpawnTerminalInputSchema = z.object({
 function normalizeSpawnTargetAlias(value: string): string {
   const trimmed = value.trim();
   if (BackendTargetKeySchema.safeParse(trimmed).success) return trimmed;
-  return trimmed === 'customAcp' ? trimmed : `agent:${trimmed}`;
+  return `agent:${trimmed}`;
 }
 
 const SessionSpawnAttemptIdentifierSchema = z.string().refine((value) => value.trim().length > 0, {
@@ -678,14 +678,8 @@ export const SessionSpawnNewInputSchema = z.object({
     if (value.backendTarget) {
       aliases.push({ field: 'backendTarget', value: buildBackendTargetKey(value.backendTarget) });
     }
-    const concreteValues = aliases.map((alias) => alias.value).filter((alias) => alias !== 'customAcp');
-    const hasCustomAcpAlias = aliases.some((alias) => alias.value === 'customAcp');
-    if (aliases.length < 2 && !hasCustomAcpAlias) return;
-
-    const hasConflictingConcreteTargets = new Set(concreteValues).size > 1;
-    const hasBuiltInTarget = concreteValues.some((alias) => alias.startsWith('agent:'));
-    const hasConcreteAcpTarget = concreteValues.some((alias) => alias.startsWith('acpBackend:'));
-    if (!hasConflictingConcreteTargets && !(hasCustomAcpAlias && hasBuiltInTarget) && !(hasCustomAcpAlias && !hasConcreteAcpTarget)) return;
+    if (aliases.length < 2) return;
+    if (new Set(aliases.map((alias) => alias.value)).size <= 1) return;
 
     for (const alias of aliases) {
       ctx.addIssue({
@@ -763,16 +757,9 @@ const AgentsModelsListInputSchema = z.object({
       path: ['agentId'],
     });
   }
-  if (value.agentId === 'customAcp' && !value.backendTargetKey) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'backendTargetKey is required for customAcp',
-      path: ['backendTargetKey'],
-    });
-  }
   if (value.agentId && value.backendTargetKey) {
     const parsedTarget = parseBackendTargetKey(value.backendTargetKey);
-    const derivedAgentId = parsedTarget.kind === 'builtInAgent' ? parsedTarget.agentId : 'customAcp';
+    const derivedAgentId = parsedTarget.agentId;
     if (value.agentId !== derivedAgentId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -795,7 +782,7 @@ const SpawnDiscoveryAgentContextInputSchema = z.object({
 }).passthrough().superRefine((value, ctx) => {
   if (value.agentId && value.backendTargetKey) {
     const parsedTarget = parseBackendTargetKey(value.backendTargetKey);
-    const derivedAgentId = parsedTarget.kind === 'builtInAgent' ? parsedTarget.agentId : 'customAcp';
+    const derivedAgentId = parsedTarget.agentId;
     if (value.agentId !== derivedAgentId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -822,7 +809,7 @@ const SessionsSpawnMcpServersPreviewInputSchema = z.object({
 }).passthrough().superRefine((value, ctx) => {
   if (value.agentId && value.backendTargetKey) {
     const parsedTarget = parseBackendTargetKey(value.backendTargetKey);
-    const derivedAgentId = parsedTarget.kind === 'builtInAgent' ? parsedTarget.agentId : 'customAcp';
+    const derivedAgentId = parsedTarget.agentId;
     if (value.agentId !== derivedAgentId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -1230,7 +1217,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
         {
           path: 'base.kind',
           title: 'Base selection',
-          description: 'How to define the review base for tools that need it (e.g. CodeRabbit).',
+          description: 'How to define the review base.',
           widget: 'select',
           required: true,
           options: [
@@ -1254,14 +1241,6 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
           widget: 'text',
           visibleWhen: { op: 'eq', path: 'base.kind', value: 'commit' },
           requiredWhen: { op: 'eq', path: 'base.kind', value: 'commit' },
-        },
-        {
-          path: 'engines.coderabbit.configFiles',
-          title: 'CodeRabbit config files',
-          description: 'Optional extra config file(s) to pass to CodeRabbit via --config.',
-          widget: 'text_list',
-          listSeparator: 'comma',
-          visibleWhen: { op: 'includes', path: 'engineIds', value: 'coderabbit' },
         },
       ],
     },

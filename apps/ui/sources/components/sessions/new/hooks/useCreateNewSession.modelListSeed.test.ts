@@ -14,7 +14,7 @@ import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 
-const PI_PREFLIGHT_MODELS: PreflightModelList = {
+const CODEX_PREFLIGHT_MODELS: PreflightModelList = {
     availableModels: [
         { id: 'default', name: 'Default' },
         { id: 'zai/glm-5.3', name: 'GLM-5.3' },
@@ -272,65 +272,6 @@ describe('useCreateNewSession model list seeding', () => {
         vi.restoreAllMocks();
     });
 
-    it('seeds sessionModelsV1 from the wizard preflight probe for a dynamic agent without static models', async () => {
-        const harness = await setupUseCreateNewSessionHarness();
-
-        await runCreateSession(harness, {
-            agentType: 'pi',
-            modelMode: 'lmstudio/hadees/lfm2.5-2.6b@q8_0' as ModelMode,
-            preflightModels: PI_PREFLIGHT_MODELS,
-        });
-
-        expect(harness.publishModelsSeedSpy).toHaveBeenCalledTimes(1);
-        expect(harness.publishModelsSeedSpy).toHaveBeenCalledWith(expect.objectContaining({
-            sessionId: 'sess_pi_1',
-            serverId: 'server-b',
-            agentId: 'pi',
-            currentModelId: 'lmstudio/hadees/lfm2.5-2.6b@q8_0',
-            availableModels: PI_PREFLIGHT_MODELS.availableModels,
-            updatedAt: expect.any(Number),
-        }));
-    });
-
-    it('reports a best-effort seed failure without failing session creation', async () => {
-        const seedError = new Error('seed metadata unavailable');
-        const harness = await setupUseCreateNewSessionHarness({ publishModelsSeedError: seedError });
-        vi.spyOn(console, 'error').mockImplementation(() => {});
-
-        await runCreateSession(harness, {
-            agentType: 'pi',
-            preflightModels: PI_PREFLIGHT_MODELS,
-        });
-
-        expect(harness.captureExceptionSpy).toHaveBeenCalledWith(seedError);
-        expect(harness.modalAlertSpy).not.toHaveBeenCalled();
-    });
-
-    it('seeds with the default model marker when no model override was selected', async () => {
-        const harness = await setupUseCreateNewSessionHarness();
-
-        await runCreateSession(harness, {
-            agentType: 'pi',
-            modelMode: 'default' as ModelMode,
-            preflightModels: PI_PREFLIGHT_MODELS,
-        });
-
-        expect(harness.publishModelsSeedSpy).toHaveBeenCalledWith(expect.objectContaining({
-            currentModelId: 'default',
-        }));
-    });
-
-    it('does not seed when the wizard has no preflight model list', async () => {
-        const harness = await setupUseCreateNewSessionHarness();
-
-        await runCreateSession(harness, {
-            agentType: 'pi',
-            preflightModels: null,
-        });
-
-        expect(harness.publishModelsSeedSpy).not.toHaveBeenCalled();
-    });
-
     it('does not seed for agents whose curated static list already populates the picker', async () => {
         // claude ships staticModels in the catalog, so its in-session picker is never empty
         // before the runtime publishes.
@@ -338,33 +279,10 @@ describe('useCreateNewSession model list seeding', () => {
 
         await runCreateSession(harness, {
             agentType: 'claude',
-            preflightModels: PI_PREFLIGHT_MODELS,
+            preflightModels: CODEX_PREFLIGHT_MODELS,
         });
 
         expect(harness.publishModelsSeedSpy).not.toHaveBeenCalled();
     });
 
-    it('does not seed for static-only probe agents', async () => {
-        const harness = await setupUseCreateNewSessionHarness();
-
-        await runCreateSession(harness, {
-            agentType: 'kiro',
-            preflightModels: PI_PREFLIGHT_MODELS,
-        });
-
-        expect(harness.publishModelsSeedSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not seed configured ACP backend sessions', async () => {
-        const harness = await setupUseCreateNewSessionHarness();
-
-        await runCreateSession(harness, {
-            agentType: 'customAcp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'backend-1' },
-            preflightModels: PI_PREFLIGHT_MODELS,
-        });
-
-        expect(harness.machineSpawnNewSessionSpy).toHaveBeenCalledTimes(1);
-        expect(harness.publishModelsSeedSpy).not.toHaveBeenCalled();
-    });
 });

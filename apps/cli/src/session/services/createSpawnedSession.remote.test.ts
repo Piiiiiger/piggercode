@@ -95,7 +95,7 @@ describe('createSpawnedSession exact remote routing', () => {
     };
     const result = await createSpawnedSession({
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       spawnNonce: 'remote-attempt', permissionMode: 'safe-yolo',
     });
     expect(result).toMatchObject({ sessionId: 'remote-session', session: { host: 'remote', path: '/remote-only/repo' } });
@@ -114,7 +114,7 @@ describe('createSpawnedSession exact remote routing', () => {
     answer = () => null;
     await expect(createSpawnedSession({
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     })).rejects.toMatchObject({ code: 'DAEMON_RPC_UNAVAILABLE' });
     expect(calls.every((call) => call.method.startsWith('remote:'))).toBe(true);
     expect(boundary.spawn).not.toHaveBeenCalled();
@@ -124,7 +124,7 @@ describe('createSpawnedSession exact remote routing', () => {
   it('accepts a synchronous typed remote response without resolving a nonce', async () => {
     const result = await createSpawnedSession({
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     });
     expect(result.sessionId).toBe(session.id);
     expect(calls.map((call) => call.method)).toEqual([`remote:${RPC_METHODS.SPAWN_HAPPY_SESSION_PROVIDER_SAFE}`]);
@@ -135,7 +135,7 @@ describe('createSpawnedSession exact remote routing', () => {
     answer = () => ({ type: 'requestToApproveDirectoryCreation', directory: '/remote-only/new' });
     await expect(createSpawnedSession({
       credentials, machineId: 'remote', directory: '/remote-only/new',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     })).rejects.toMatchObject({ code: 'conflict', details: { directory: '/remote-only/new' } });
     expect(boundary.spawn).not.toHaveBeenCalled();
   });
@@ -148,7 +148,7 @@ describe('createSpawnedSession exact remote routing', () => {
     });
     await expect(createSpawnedSession({
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     })).rejects.toMatchObject({
       code: 'SPAWN_VALIDATION_FAILED', message: 'Selected target refused the launch',
       details: { errorDetail },
@@ -160,7 +160,7 @@ describe('createSpawnedSession exact remote routing', () => {
   it('keeps implicit local creation on the local control transport', async () => {
     const result = await createSpawnedSession({
       credentials, directory: '/local/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     });
     expect(result.sessionId).toBe('local-session');
     expect(calls).toEqual([]);
@@ -171,7 +171,7 @@ describe('createSpawnedSession exact remote routing', () => {
     disconnectNextSpawn = true;
     const attempt = {
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent' as const, agentId: 'opencode' as const },
+      backendTarget: { kind: 'builtInAgent' as const, agentId: 'codex' as const },
       spawnNonce: 'remote-attempt',
     };
     await expect(createSpawnedSession(attempt)).rejects.toMatchObject({ details: { spawnNonce: 'remote-attempt' } });
@@ -187,7 +187,7 @@ describe('createSpawnedSession exact remote routing', () => {
   it('rejects a blank explicit target rather than choosing the local daemon', async () => {
     await expect(createSpawnedSession({
       credentials, machineId: ' ', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     })).rejects.toMatchObject({ code: 'INVALID_REQUEST' });
     expect(boundary.spawn).not.toHaveBeenCalled();
     expect(calls).toEqual([]);
@@ -206,7 +206,7 @@ describe('createSpawnedSession exact remote routing', () => {
     });
     const attempt = {
       credentials, machineId: 'remote', directory: '/remote-only/repo',
-      backendTarget: { kind: 'builtInAgent' as const, agentId: 'opencode' as const },
+      backendTarget: { kind: 'builtInAgent' as const, agentId: 'codex' as const },
       spawnNonce: 'remote-forwarding-failure',
     };
     await expect(createSpawnedSession(attempt)).rejects.toMatchObject({

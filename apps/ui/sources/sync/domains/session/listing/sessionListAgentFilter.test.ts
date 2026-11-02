@@ -54,7 +54,6 @@ describe('session list agent filter', () => {
     it('keeps the picked agent, else picks the agent of the most recently updated session', () => {
         const recent: SessionListViewItem[] = [session('a', 'codex', 'p1', 10), session('b', 'claude', 'p1', 20)];
         expect(resolveSessionListAgentSelection('codex', recent)).toBe('codex');
-        expect(resolveSessionListAgentSelection('gemini', recent)).toBe('gemini');
         expect(resolveSessionListAgentSelection(null, recent)).toBe('claude');
         expect(resolveSessionListAgentSelection('not-an-agent', recent)).toBe('claude');
         expect(resolveSessionListAgentSelection(null, [])).toBeNull();
@@ -63,10 +62,10 @@ describe('session list agent filter', () => {
     it('offers the agents installed on the machines or used by sessions, plus the picked one, in catalog order', () => {
         const options = listSessionListAgentOptions({
             counts: new Map([['codex', 2]]),
-            installed: ['gemini', 'claude'],
-            selected: 'opencode',
+            installed: ['codex', 'claude'],
+            selected: 'codex',
         });
-        expect(options).toEqual(['claude', 'codex', 'opencode', 'gemini']);
+        expect(options).toEqual(['claude', 'codex']);
     });
 });
 

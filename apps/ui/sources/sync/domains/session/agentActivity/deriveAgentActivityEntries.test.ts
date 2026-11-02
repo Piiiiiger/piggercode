@@ -252,7 +252,7 @@ describe('deriveAgentActivityEntries', () => {
     });
 
     describe('the degrade paths', () => {
-        // Codex / Gemini / OpenCode: the publisher is composed for Claude only, so there is no
+        // Codex: the publisher is composed for Claude only, so there is no
         // unified headline at all. This must be indistinguishable from today, not an error and not
         // an empty roster.
         it('serves the local roster when no headline exists at all', () => {

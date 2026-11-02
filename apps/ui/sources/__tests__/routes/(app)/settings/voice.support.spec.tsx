@@ -55,7 +55,7 @@ vi.mock('@/constants/Languages', () => ({
 }));
 
 vi.mock('@/agents/hooks/useEnabledAgentIds', () => ({
-    useEnabledAgentIds: () => ['claude', 'codex', 'opencode'],
+    useEnabledAgentIds: () => ['claude', 'codex'],
 }));
 
 vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModelsState', () => ({

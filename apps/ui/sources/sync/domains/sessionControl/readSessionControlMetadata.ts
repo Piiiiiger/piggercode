@@ -1,4 +1,3 @@
-import { readAcpConfiguredBackendV1FromMetadata } from '@piggercode/protocol';
 import type { AgentId } from '@/agents/catalog/catalog';
 import {
     LEGACY_ACP_CONFIG_OPTIONS_STATE_KEY,
@@ -77,15 +76,11 @@ export function readSessionConfigOptionOverridesState(
     }) ?? null;
 }
 
-/** Match control metadata to the session's backend, preserving configured ACP identity. */
+/** Match control metadata to the session's backend. */
 export function matchesSessionControlProvider(params: Readonly<{
     agentId: AgentId;
     metadata: Metadata | null | undefined;
     provider: string | null | undefined;
 }>): boolean {
-    const configuredBackend = readAcpConfiguredBackendV1FromMetadata(params.metadata);
-    const expectedProvider = configuredBackend
-        ? `acp:${configuredBackend.backendId}`
-        : params.agentId;
-    return params.provider === expectedProvider;
+    return params.provider === params.agentId;
 }

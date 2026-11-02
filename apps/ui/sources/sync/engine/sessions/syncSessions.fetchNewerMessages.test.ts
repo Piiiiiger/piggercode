@@ -54,7 +54,7 @@ describe('fetchAndApplyNewerMessages', () => {
                     role: 'agent',
                     content: {
                         type: 'acp',
-                        provider: 'kimi',
+                        provider: 'codex',
                         data: { type: 'turn_aborted', id: 'task-1' },
                     },
                 },

@@ -89,7 +89,7 @@ describe('runPermissionModePromptLoop', () => {
     } });
     const permissionHandler = createProviderEnforcedPermissionHandler({ session, logPrefix: '[ready-test]' });
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', session, messageBuffer: new MessageBuffer(), mcpServers: {},
+      provider: 'codex', directory: '/tmp', session, messageBuffer: new MessageBuffer(), mcpServers: {},
       permissionHandler, turnAssistantPreviewTracker: tracker, onThinkingChange: () => {}, ensureBackend: async () => backend,
     });
     const queue = createModeQueue();
@@ -98,7 +98,7 @@ describe('runPermissionModePromptLoop', () => {
     let readyText: string | null = null;
     try {
       await runPermissionModePromptLoop({
-        providerName: 'Pi', agentMessageType: 'pi', explicitPermissionMode: undefined,
+        providerName: 'Codex', agentMessageType: 'codex', explicitPermissionMode: undefined,
         session, messageQueue: queue, permissionHandler, runtime,
         createOverrideSynchronizer: (isStarted) => createRuntimeOverrideSynchronizers({ session, runtime, isStarted }),
         messageBuffer: new MessageBuffer(), shouldExit: () => shouldExit,
@@ -142,7 +142,7 @@ describe('runPermissionModePromptLoop', () => {
       setSessionConfigOption: async () => undefined,
     };
     await runPermissionModePromptLoop({
-      providerName: 'Test Provider', agentMessageType: 'qwen', explicitPermissionMode: undefined,
+      providerName: 'Test Provider', agentMessageType: 'codex', explicitPermissionMode: undefined,
       session, messageQueue: state.messageQueue, permissionHandler, runtime,
       createOverrideSynchronizer: (isStarted) => createRuntimeOverrideSynchronizers({ session, runtime, isStarted }),
       messageBuffer: new MessageBuffer(), shouldExit: () => shouldExit,
@@ -201,7 +201,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -253,7 +253,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -307,7 +307,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     const loopPromise = runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       providerInputOutcomeObserver,
@@ -361,7 +361,7 @@ describe('runPermissionModePromptLoop', () => {
       })),
     };
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -387,8 +387,8 @@ describe('runPermissionModePromptLoop', () => {
       shouldExit = true;
     });
     const loopPromise = runPermissionModePromptLoop({
-      providerName: 'OpenCode',
-      agentMessageType: 'opencode',
+      providerName: 'Codex',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       providerInputOutcomeObserver,
@@ -442,7 +442,7 @@ describe('runPermissionModePromptLoop', () => {
     const queue = createModeQueue();
     const runtime = createRuntime();
     runtime.startOrLoad = vi.fn(async () => {
-      throw new Error('OpenCode runtime exited before prompt dispatch');
+      throw new Error('Codex runtime exited before prompt dispatch');
     });
     runtime.sendPromptWithMeta = vi.fn(async () => {});
     const messageBuffer = new MessageBuffer();
@@ -460,7 +460,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'opencode',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       providerInputOutcomeObserver,
@@ -489,9 +489,9 @@ describe('runPermissionModePromptLoop', () => {
       reason: 'runtime_disposed_before_delivery',
     });
     expect(blockPendingMessageDelivery).not.toHaveBeenCalled();
-    expect(sendAgentMessage).toHaveBeenCalledWith('opencode', expect.objectContaining({
+    expect(sendAgentMessage).toHaveBeenCalledWith('codex', expect.objectContaining({
       type: 'message',
-      message: expect.stringContaining('OpenCode runtime exited before prompt dispatch'),
+      message: expect.stringContaining('Codex runtime exited before prompt dispatch'),
     }));
   });
 
@@ -520,7 +520,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     const runPromise = runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -570,7 +570,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -622,7 +622,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue as any,
@@ -672,7 +672,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -723,7 +723,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -744,7 +744,7 @@ describe('runPermissionModePromptLoop', () => {
       formatPromptErrorMessage: formatProviderPromptErrorMessage,
     });
 
-    expect(sendAgentMessageSpy).toHaveBeenCalledWith('qwen', {
+    expect(sendAgentMessageSpy).toHaveBeenCalledWith('codex', {
       type: 'message',
       message: expect.stringContaining('"message": "Internal error"'),
     });
@@ -760,7 +760,7 @@ describe('runPermissionModePromptLoop', () => {
     const queue = createModeQueue();
     const runtime = createRuntime() as any;
     runtime.sendPromptWithMeta = vi.fn(async () => {
-      throw new Error('OpenCode session aborted');
+      throw new Error('Codex session aborted');
     });
     const messageBuffer = new MessageBuffer();
     const permissionHandler = {
@@ -773,7 +773,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'opencode',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -794,7 +794,7 @@ describe('runPermissionModePromptLoop', () => {
       formatPromptErrorMessage: formatProviderPromptErrorMessage,
     });
 
-    expect(sendAgentMessageSpy).not.toHaveBeenCalledWith('opencode', expect.objectContaining({
+    expect(sendAgentMessageSpy).not.toHaveBeenCalledWith('codex', expect.objectContaining({
       type: 'message',
     }));
   });
@@ -808,7 +808,7 @@ describe('runPermissionModePromptLoop', () => {
 
     let backend!: ReturnType<typeof createFakeAcpRuntimeBackend>;
     backend = createFakeAcpRuntimeBackend({
-      sessionId: 'pi-session-status-error',
+      sessionId: 'codex-session-status-error',
       sendPrompt: async () => {
         backend.emit({ type: 'status', status: 'error', detail: 'Model not found.' } satisfies AgentMessage);
       },
@@ -819,7 +819,7 @@ describe('runPermissionModePromptLoop', () => {
 
     const queue = createModeQueue();
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -838,8 +838,8 @@ describe('runPermissionModePromptLoop', () => {
 
     let shouldExit = false;
     await runPermissionModePromptLoop({
-      providerName: 'Pi',
-      agentMessageType: 'pi',
+      providerName: 'Codex',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -894,15 +894,15 @@ describe('runPermissionModePromptLoop', () => {
       sessionTurnLifecycle;
 
     const backend = createFakeAcpRuntimeBackend({
-      sessionId: 'pi-session-prompt-error',
+      sessionId: 'codex-session-prompt-error',
       sendPrompt: async () => {
-        throw new Error('PiRpcCommandResponseTimeoutError: Timed out waiting for Pi RPC response (get_state)');
+        throw new Error('ProviderRpcCommandResponseTimeoutError: Timed out waiting for provider RPC response (get_state)');
       },
     });
 
     const queue = createModeQueue();
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -920,8 +920,8 @@ describe('runPermissionModePromptLoop', () => {
 
     let shouldExit = false;
     await runPermissionModePromptLoop({
-      providerName: 'Pi',
-      agentMessageType: 'pi',
+      providerName: 'Codex',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -949,7 +949,7 @@ describe('runPermissionModePromptLoop', () => {
       if (!message || typeof message !== 'object') return false;
       const record = message as { type?: unknown; message?: unknown };
       return record.type === 'message' && typeof record.message === 'string'
-        && record.message.includes('PiRpcCommandResponseTimeoutError');
+        && record.message.includes('ProviderRpcCommandResponseTimeoutError');
     })).toBe(false);
     expect(sentMessages).toContainEqual(expect.objectContaining({
       type: 'turn_failed',
@@ -959,12 +959,12 @@ describe('runPermissionModePromptLoop', () => {
       expect.objectContaining({
         action: 'begin',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
       }),
       expect.objectContaining({
         action: 'fail',
         turnId: 'session-turn:turn-1',
-        provider: 'pi',
+        provider: 'codex',
         issue: expect.objectContaining({
           code: 'provider_session_error',
           source: 'provider_session_error',
@@ -1023,7 +1023,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1110,7 +1110,7 @@ describe('runPermissionModePromptLoop', () => {
     const modelApplyStarted = { value: false };
     const loopPromise = runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1226,7 +1226,7 @@ describe('runPermissionModePromptLoop', () => {
 
     const loopPromise = runPermissionModePromptLoop({
         providerName: 'Test Provider',
-        agentMessageType: 'qwen',
+        agentMessageType: 'codex',
         explicitPermissionMode: undefined,
         session,
         messageQueue: queue,
@@ -1312,7 +1312,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1401,7 +1401,7 @@ describe('runPermissionModePromptLoop', () => {
 
     const loopPromise = runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1482,7 +1482,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue as any,
@@ -1525,7 +1525,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue as any,
@@ -1583,7 +1583,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1644,7 +1644,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1690,7 +1690,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1744,7 +1744,7 @@ describe('runPermissionModePromptLoop', () => {
 
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1804,7 +1804,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1829,7 +1829,7 @@ describe('runPermissionModePromptLoop', () => {
     expect(runtime.startOrLoad).toHaveBeenNthCalledWith(1, { resumeId: 'resume-id', importHistory: false });
     expect(runtime.reset).toHaveBeenCalledTimes(1);
     expect(runtime.startOrLoad).toHaveBeenNthCalledWith(2, {});
-    expect(sendAgentMessageSpy).toHaveBeenCalledWith('qwen', { type: 'message', message: 'Resume failed; starting a new session.' });
+    expect(sendAgentMessageSpy).toHaveBeenCalledWith('codex', { type: 'message', message: 'Resume failed; starting a new session.' });
     expect(runtime.sendPrompt).toHaveBeenCalledWith('hello');
   });
 
@@ -1858,7 +1858,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await runPermissionModePromptLoop({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1904,7 +1904,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await expect((runPermissionModePromptLoop as unknown as (params: any) => Promise<void>)({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -1956,7 +1956,7 @@ describe('runPermissionModePromptLoop', () => {
 
     const error = await (runPermissionModePromptLoop as unknown as (params: any) => Promise<void>)({
       providerName: 'Test Provider',
-      agentMessageType: 'qwen',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -2004,7 +2004,7 @@ describe('runPermissionModePromptLoop', () => {
 
     const error = await (runPermissionModePromptLoop as unknown as (params: any) => Promise<void>)({
       providerName: 'Test Provider',
-      agentMessageType: 'cursor',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -2049,7 +2049,7 @@ describe('runPermissionModePromptLoop', () => {
     let shouldExit = false;
     await (runPermissionModePromptLoop as unknown as (params: any) => Promise<void>)({
       providerName: 'Test Provider',
-      agentMessageType: 'cursor',
+      agentMessageType: 'codex',
       explicitPermissionMode: undefined,
       session,
       messageQueue: queue,
@@ -2102,7 +2102,7 @@ describe('runPermissionModePromptLoop', () => {
       let exited = false;
       const loopPromise = (runPermissionModePromptLoop as unknown as (params: any) => Promise<void>)({
         providerName: 'Test Provider',
-        agentMessageType: 'cursor',
+        agentMessageType: 'codex',
         explicitPermissionMode: undefined,
         session,
         messageQueue: queue,

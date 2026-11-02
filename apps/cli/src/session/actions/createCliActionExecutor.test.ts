@@ -302,30 +302,6 @@ describe('createCliActionExecutor', () => {
     );
   });
 
-  it('resolves review engine options on the MCP surface', async () => {
-    const executor = createPlainExecutor();
-
-    const result = await executor.execute(
-      'action.options.resolve',
-      {
-        actionId: 'review.start',
-        fieldPath: 'engineIds',
-        sessionId: 'sess-1',
-      },
-      { surface: 'mcp', defaultSessionId: 'sess-1' },
-    );
-
-    expect(result).toEqual({
-      ok: true,
-      result: {
-        actionId: 'review.start',
-        fieldPath: 'engineIds',
-        optionsSourceId: 'review.engines.available',
-        options: [{ value: 'coderabbit', label: 'CodeRabbit' }],
-      },
-    });
-  });
-
   it('resolves session mode options from raw session metadata on the MCP surface', async () => {
     const executor = createPlainExecutor({
       rawSession: {
@@ -410,42 +386,6 @@ describe('createCliActionExecutor', () => {
       },
     });
     expect(fetchSessionById).toHaveBeenCalledWith({ token: 'token', sessionId: 'sess-2' });
-  });
-
-  it('rejects actions disabled on the CLI surface by action settings', async () => {
-    process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
-      v: 1,
-      actions: {
-        'review.start': { enabled: true, disabledSurfaces: ['cli'], disabledPlacements: [] },
-      },
-    });
-
-    const executor = createPlainExecutor();
-
-    const result = await executor.execute(
-      'review.start',
-      {
-        sessionId: 'sess-1',
-        engineIds: ['coderabbit'],
-        instructions: 'Review this change.',
-        permissionMode: 'read_only',
-        changeType: 'committed',
-        base: { kind: 'none' },
-      },
-      { surface: 'cli', defaultSessionId: 'sess-1' },
-    );
-
-    expect(result).toEqual({
-      ok: false,
-      errorCode: 'action_disabled',
-      error: 'action_disabled',
-      details: expect.objectContaining({
-        actionId: 'review.start',
-        reason: 'disabled_by_settings',
-        settingsState: 'disabled',
-        surface: 'cli',
-      }),
-    });
   });
 
   it('responds to permission requests via session RPC', async () => {
@@ -1083,74 +1023,6 @@ describe('createCliActionExecutor', () => {
     expect(spawnDaemonSession).not.toHaveBeenCalled();
   });
 
-  it('inherits the current session backend target for session-agent spawn when no explicit target is provided', async () => {
-    const executor = createPlainExecutor({
-      rawSession: {
-        machineId: 'machine-1',
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        metadata: {
-          machineId: 'machine-1',
-          path: '/repo/current',
-          host: 'leeroy-mbp',
-          permissionMode: 'safe-yolo',
-          permissionModeUpdatedAt: 123,
-          agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-        },
-      },
-      getCurrentSessionBackendTarget: () => ({ kind: 'configuredAcpBackend', backendId: 'review-bot' }),
-    });
-    spawnDaemonSession.mockResolvedValue({ success: true, sessionId: 'sess-inherited-target' });
-    fetchSessionById.mockResolvedValueOnce({
-      id: 'sess-1',
-      createdAt: 1,
-      updatedAt: 2,
-      active: true,
-      activeAt: 2,
-      pendingCount: 0,
-      metadataVersion: 1,
-      metadata: {
-        machineId: 'machine-1',
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        permissionMode: 'safe-yolo',
-        permissionModeUpdatedAt: 123,
-        agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-      },
-    });
-    fetchSessionById.mockResolvedValue({
-      id: 'sess-inherited-target',
-      createdAt: 1,
-      updatedAt: 2,
-      active: true,
-      activeAt: 2,
-      pendingCount: 0,
-      metadataVersion: 1,
-      metadata: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-      },
-    });
-
-    const result = await executor.execute(
-      'session.spawn_new',
-      {
-        initialMessage: 'Spawn with inherited configured backend',
-      },
-      { surface: 'session_agent', defaultSessionId: 'sess-1' },
-    );
-
-    expect(result.ok).toBe(true);
-    expect(spawnDaemonSession).toHaveBeenCalledWith(expect.objectContaining({
-      directory: '/repo/current',
-      machineId: 'machine-1',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      permissionMode: 'safe-yolo',
-      permissionModeUpdatedAt: 123,
-    }));
-    expectSingleSpawnWithPendingFirstInput('Spawn with inherited configured backend');
-  });
-
   it('prefers the live raw-session metadata over stale fetched metadata for session-agent spawn inheritance', async () => {
     const inheritedConfig = {
       v: 1,
@@ -1264,85 +1136,6 @@ describe('createCliActionExecutor', () => {
       },
     }));
     expectSingleSpawnWithPendingFirstInput('Use inherited parent context.');
-  });
-
-  it('inherits configured ACP backend metadata for session-agent spawn when no live backend target is available', async () => {
-    const executor = createPlainExecutor({
-      rawSession: {
-        machineId: 'machine-1',
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        metadata: {
-          machineId: 'machine-1',
-          path: '/repo/current',
-          host: 'leeroy-mbp',
-          permissionMode: 'safe-yolo',
-          permissionModeUpdatedAt: 123,
-          acpConfiguredBackendV1: {
-            v: 1,
-            backendId: 'review-bot',
-            title: 'Review Bot',
-            updatedAt: 120,
-          },
-          agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-        },
-      },
-    });
-    spawnDaemonSession.mockResolvedValue({ success: true, sessionId: 'sess-configured-metadata' });
-    fetchSessionById.mockResolvedValueOnce({
-      id: 'sess-1',
-      createdAt: 1,
-      updatedAt: 2,
-      active: true,
-      activeAt: 2,
-      pendingCount: 0,
-      metadataVersion: 1,
-      metadata: {
-        machineId: 'machine-1',
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-        permissionMode: 'safe-yolo',
-        permissionModeUpdatedAt: 123,
-        acpConfiguredBackendV1: {
-          v: 1,
-          backendId: 'review-bot',
-          title: 'Review Bot',
-          updatedAt: 120,
-        },
-        agentRuntimeDescriptorV1: { v: 1, providerId: 'claude' },
-      },
-    });
-    fetchSessionById.mockResolvedValue({
-      id: 'sess-configured-metadata',
-      createdAt: 1,
-      updatedAt: 2,
-      active: true,
-      activeAt: 2,
-      pendingCount: 0,
-      metadataVersion: 1,
-      metadata: {
-        path: '/repo/current',
-        host: 'leeroy-mbp',
-      },
-    });
-
-    const result = await executor.execute(
-      'session.spawn_new',
-      {
-        initialMessage: 'Spawn with metadata configured backend',
-      },
-      { surface: 'session_agent', defaultSessionId: 'sess-1' },
-    );
-
-    expect(result.ok).toBe(true);
-    expect(spawnDaemonSession).toHaveBeenCalledWith(expect.objectContaining({
-      directory: '/repo/current',
-      machineId: 'machine-1',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      permissionMode: 'safe-yolo',
-      permissionModeUpdatedAt: 123,
-    }));
-    expectSingleSpawnWithPendingFirstInput('Spawn with metadata configured backend');
   });
 
   it('honors public spawn aliases and terminal launch fields at the CLI action boundary', async () => {

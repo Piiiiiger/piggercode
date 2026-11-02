@@ -74,22 +74,13 @@ import type {
  */
 export const PERMISSION_MODES = SESSION_PERMISSION_MODES
 
-const CODEX_GEMINI_NON_DEFAULT_PERMISSION_MODES = ['read-only', 'safe-yolo', 'yolo'] as const
-export const CODEX_GEMINI_PERMISSION_MODES = ['default', ...CODEX_GEMINI_NON_DEFAULT_PERMISSION_MODES] as const
-
 export type PermissionMode = (typeof PERMISSION_MODES)[number]
 
 export function isPermissionMode(value: string): value is PermissionMode {
   return PERMISSION_MODES.includes(value as PermissionMode)
 }
 
-export type CodexGeminiPermissionMode = (typeof CODEX_GEMINI_PERMISSION_MODES)[number]
-
-export function isCodexGeminiPermissionMode(value: PermissionMode): value is CodexGeminiPermissionMode {
-  return (CODEX_GEMINI_PERMISSION_MODES as readonly string[]).includes(value)
-}
-
-// Codex supports the Codex/Gemini subset, plus bypassPermissions as an alias for yolo/full access.
+// Codex supports default, read-only, safe-yolo and yolo, plus bypassPermissions as an alias for yolo/full access.
 export const CODEX_PERMISSION_MODES = [
   'default',
   'read-only',
@@ -562,7 +553,6 @@ export type Metadata = {
     serviceIds: ConnectedServiceId[],
   },
   codexSessionId?: string, // Codex session/conversation ID (uuid)
-  customAcpSessionId?: string, // Configured ACP backend session ID (vendor resume)
   codexBackendMode?: 'mcp' | 'acp' | 'appServer',
   agentRuntimeDescriptorV1?: unknown,
   // Compact, count-only workflow activity headline (CWF3). The live invalidation pointer to durable
@@ -574,11 +564,6 @@ export type Metadata = {
   // metadata write as the workflow headline above, which it is derived from and does not replace.
   // Stored key is exactly `sessionAgentActivityHeadlineV1` in both repos (protocol-owned literal).
   sessionAgentActivityHeadlineV1?: unknown,
-  geminiSessionId?: string, // Gemini ACP session ID (opaque)
-  opencodeSessionId?: string, // OpenCode ACP session ID (opaque)
-  opencodeBackendMode?: 'server' | 'acp',
-  opencodeServerBaseUrl?: string,
-  opencodeServerBaseUrlExplicit?: true,
   directSessionV1?: DirectSessionMetadataV1,
   directSessionAttentionV1?: {
     v: 1,
@@ -589,19 +574,7 @@ export type Metadata = {
   },
   externalHistoryImportV1?: ExternalHistoryImportMetadataV1,
   handoffV1?: SessionHandoffMetadataV1,
-  auggieSessionId?: string, // Auggie ACP session ID (opaque)
-  qwenSessionId?: string, // Qwen Code ACP session ID (opaque)
-  kimiSessionId?: string, // Kimi ACP session ID (opaque)
-  kiloSessionId?: string, // Kilo ACP session ID (opaque)
-  kiroSessionId?: string, // Kiro ACP session ID (opaque)
-  devinSessionId?: string, // Devin ACP session ID (opaque)
-  piSessionId?: string, // Pi RPC session ID (opaque)
-  piSessionFile?: string, // Absolute Pi session file path (preferred resume primitive)
   sessionUsageLimitRecoveryV1?: SessionUsageLimitRecoveryV1,
-  copilotSessionId?: string, // Copilot ACP session ID (opaque)
-  cursorSessionId?: string, // Cursor ACP session ID (opaque)
-  grokSessionId?: string, // Grok ACP session ID (opaque)
-  auggieAllowIndexing?: boolean, // Auggie indexing enablement (spawn-time)
   tools?: string[],
   slashCommands?: string[],
   slashCommandDetails?: Array<{
@@ -610,7 +583,7 @@ export type Metadata = {
   }>,
   acpHistoryImportV1?: {
     v: 1,
-    provider: 'gemini' | 'codex' | 'opencode' | string,
+    provider: string,
     remoteSessionId: string,
     importedAt: number,
     lastImportedFingerprint?: string

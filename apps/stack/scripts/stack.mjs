@@ -111,7 +111,6 @@ const STACK_REPO_OVERRIDE_SCRIPT_BY_COMMAND = new Map([
   ['typecheck', resolveTopLevelNodeScriptFile('typecheck') || 'typecheck.mjs'],
   ['lint', resolveTopLevelNodeScriptFile('lint') || 'lint.mjs'],
   ['test', resolveTopLevelNodeScriptFile('test') || 'test_cmd.mjs'],
-  ['review', resolveTopLevelNodeScriptFile('review') || 'review.mjs'],
 ]);
 
 function stackAlreadyExistsError(stackName) {
@@ -2494,7 +2493,7 @@ async function main() {
     return;
   }
 
-  if (cmd === 'code' || cmd === 'cursor' || cmd === 'open') {
+  if (cmd === 'code' || cmd === 'open') {
     await runStackWorkspaceCommand({ command: cmd, rootDir, stackName, json, flags });
     return;
   }

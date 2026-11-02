@@ -57,19 +57,6 @@ installConnectedServicesCommonModuleMocks({
 describe('ConnectedServiceOauthPasteView button layout', () => {
   beforeEach(() => { vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 404 }))); });
   afterEach(() => { vi.unstubAllGlobals(); });
-  it('keeps new-service authorization and submission disabled until relay support is known', async () => {
-    openExternalUrlSpy.mockClear();
-    const { ConnectedServiceOauthPasteView } = await import('./ConnectedServiceOauthPasteView');
-    const screen = await renderScreen(<ConnectedServiceOauthPasteView serviceId="antigravity" profileId="work" onDone={() => {}} />);
-    await act(async () => { await flushHookEffects({ cycles: 2, turns: 2 }); });
-    const input = screen.findByTestId('connectedServices.oauthPaste.redirectUrlInput');
-    if (!input) throw new Error('missing redirect input');
-    await act(async () => { changeTextTestInstance(input, 'https://antigravity.google/oauth-callback?code=code-1&state=state-1'); });
-    expect(screen.findByTestId('connectedServices.oauthPaste.openAuthorizationButton')?.props.disabled).toBe(true);
-    expect(screen.findByTestId('connectedServices.oauthPaste.validateRedirectButton')?.props.disabled).toBe(true);
-    await screen.pressByTestIdAsync('connectedServices.oauthPaste.openAuthorizationButton');
-    expect(openExternalUrlSpy).not.toHaveBeenCalled();
-  });
   it('opens the authorization URL via a primary button', async () => {
     openExternalUrlSpy.mockClear();
     alertSpy.mockClear();

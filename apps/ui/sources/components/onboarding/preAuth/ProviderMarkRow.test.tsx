@@ -39,13 +39,12 @@ describe('ProviderMarkRow', () => {
 
     it('shows only the agents the build offers', async () => {
         const extra = Constants.expoConfig!.extra as Record<string, unknown>;
-        extra.app = { agentIds: ['claude', 'codex'] };
+        extra.app = { agentIds: ['claude'] };
         try {
             const screen = await renderScreen(<ProviderMarkRow />);
 
             expect(screen.findByTestId('provider-mark-claude')).toBeTruthy();
-            expect(screen.findByTestId('provider-mark-codex')).toBeTruthy();
-            expect(screen.findByTestId('provider-mark-gemini')).toBeNull();
+            expect(screen.findByTestId('provider-mark-codex')).toBeNull();
         } finally {
             delete extra.app;
         }

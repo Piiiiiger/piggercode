@@ -13,7 +13,6 @@ installSessionExecutionRunDetailsCommonModuleMocks({
             storage: {
                 getState: () => ({
                     settings: {
-                        acpCatalogSettingsV1: { v: 2, backends: [] },
                     },
                 }),
             },

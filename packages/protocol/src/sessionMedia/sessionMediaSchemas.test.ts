@@ -106,47 +106,6 @@ describe('session media v1 schemas', () => {
     expect(schema.safeParse({ kind: 'session_media.v1', payload: { media: [] } }).success).toBe(false);
   });
 
-  it('accepts a bounded unavailable-media state without fabricating persisted file metadata', () => {
-    const schema = readSchema('SessionMediaMessageMetaEnvelopeV1Schema');
-    const unavailable = {
-      id: 'b'.repeat(64),
-      role: 'output',
-      category: 'generated',
-      mediaKind: 'image',
-      code: 'provider_file_unavailable',
-      origin: {
-        source: 'provider-generated',
-        agentId: 'cursor',
-        toolCallIdHash: 'c'.repeat(64),
-      },
-    } as const;
-
-    expect(schema.parse({
-      kind: 'session_media.v1',
-      payload: { media: [], unavailable: [unavailable] },
-    })).toEqual({
-      kind: 'session_media.v1',
-      payload: { media: [], unavailable: [unavailable] },
-    });
-    expect(schema.safeParse({
-      kind: 'session_media.v1',
-      payload: {
-        media: [],
-        unavailable: [{ ...unavailable, path: '/tmp/not-a-real-image.png' }],
-      },
-    }).success).toBe(false);
-    expect(schema.safeParse({
-      kind: 'session_media.v1',
-      payload: {
-        media: [],
-        unavailable: [{
-          ...unavailable,
-          origin: { ...unavailable.origin, toolCallId: 'raw-provider-call-id' },
-        }],
-      },
-    }).success).toBe(false);
-  });
-
   it('bounds unavailable-media states and the combined durable envelope size', () => {
     const schema = readSchema('SessionMediaMessageMetaEnvelopeV1Schema');
     const unavailable = {

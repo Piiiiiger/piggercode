@@ -371,7 +371,7 @@ describe('SessionTurnLifecycle', () => {
         });
 
         const started = lifecycle.observeAcpLifecycleMarker({
-            provider: 'pi',
+            provider: 'codex',
             body: { type: 'task_started', id: 'provider-turn-1' },
         });
         await expect(started.pendingWrite).rejects.toThrow('ACP begin write failed');
@@ -393,12 +393,12 @@ describe('SessionTurnLifecycle', () => {
         });
 
         const started = lifecycle.observeAcpLifecycleMarker({
-            provider: 'pi',
+            provider: 'codex',
             body: { type: 'task_started', id: 'provider-turn-1' },
         });
         await started.pendingWrite;
         const failed = lifecycle.observeAcpLifecycleMarker({
-            provider: 'pi',
+            provider: 'codex',
             body: { type: 'turn_failed', id: 'provider-turn-1' },
         });
 

@@ -32,7 +32,7 @@ export type VitestRnShimOptions = Readonly<{
 
 const SHIM_INSTALLED_KEY = '__PIGGERCODE_VITEST_RN_SHIM_INSTALLED__';
 const ASSET_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ttf', '.otf']);
-const ALIAS_REQUIRE_ALLOWLIST = ['agents/providers/auggie/AuggieIndexingChip'];
+const ALIAS_REQUIRE_ALLOWLIST: string[] = [];
 
 function hasAssetExtension(path: string): boolean {
     for (const ext of ASSET_EXTENSIONS) {

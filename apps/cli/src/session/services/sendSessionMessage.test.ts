@@ -153,7 +153,7 @@ describe('sendSessionMessage', () => {
             role: 'agent',
             content: {
                 type: 'acp',
-                provider: 'pi',
+                provider: 'codex',
                 data: { type: 'message', message },
             },
         };
@@ -732,15 +732,15 @@ describe('sendSessionMessage', () => {
                     code: 'provider_status_error',
                     source: 'provider_status_error',
                     occurredAt: 101,
-                    provider: 'pi',
-                    sanitizedPreview: 'Pi provider reported assistant_message_end failed without details after prompt acceptance',
+                    provider: 'codex',
+                    sanitizedPreview: 'Codex provider reported assistant_message_end failed without details after prompt acceptance',
                 }),
             ]);
 
         expect(result).toEqual({
             ok: false,
             code: 'wait_failed',
-            message: 'Current turn failed: Pi provider reported assistant_message_end failed without details after prompt acceptance',
+            message: 'Current turn failed: Codex provider reported assistant_message_end failed without details after prompt acceptance',
         });
         expect(waitForIdleViaSocket).toHaveBeenCalled();
         expect(fetchEncryptedTranscriptPageAfterSeq).toHaveBeenCalledWith(expect.objectContaining({ limit: 100 }));
@@ -773,7 +773,7 @@ describe('sendSessionMessage', () => {
         const { result, fetchEncryptedTranscriptPageAfterSeq, waitForIdleViaSocket } =
             await sendAndWaitForRowsAfterCurrentUser(
                 [
-                    rawAcpMessage('Error: PiRpcCommandResponseTimeoutError: Timed out waiting for Pi RPC response (get_state)'),
+                    rawAcpMessage('Error: ProviderRpcCommandResponseTimeoutError: Timed out waiting for provider RPC response (get_state)'),
                     rawLifecycle('task_complete'),
                 ],
                 {
@@ -787,7 +787,7 @@ describe('sendSessionMessage', () => {
                             code: 'provider_turn_failed',
                             source: 'provider_session_error',
                             occurredAt: 101,
-                            provider: 'pi',
+                            provider: 'codex',
                             sanitizedPreview: 'Provider session failed',
                         },
                     },

@@ -169,7 +169,7 @@ describe('ExecutionRunManager execution-run registry integration', () => {
     const started = await manager.start({
       sessionId: 'parent_session_timeout',
       intent: 'review',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       instructions: 'Review this repo.',
       permissionMode: 'read_only',
       retentionPolicy: 'resumable',

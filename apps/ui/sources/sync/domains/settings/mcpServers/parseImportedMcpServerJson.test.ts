@@ -140,7 +140,7 @@ describe('parseImportedMcpServerJson', () => {
 
     it('finds MCP server containers nested inside common host wrappers', () => {
         const result = parseImportedMcpServerJson(`{
-          "copilot": {
+          "hostWrapper": {
             "mcp": {
               "servers": {
                 "github": {

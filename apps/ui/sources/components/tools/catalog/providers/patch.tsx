@@ -9,7 +9,7 @@ import type { KnownToolDefinition } from '../_types';
 export const providerPatchTools = {
     'edit': {
         title: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            // Gemini sends data in nested structure, try multiple locations
+            // ACP-style tools send data in a nested structure, try multiple locations
             let filePath: string | undefined;
 
             // 1. Check toolCall.content[0].path
@@ -48,61 +48,6 @@ export const providerPatchTools = {
         icon: ICON_EDIT,
         minimal: true,
         hideDefaultError: true,
-        input: z.object({
-            auto_approved: z.boolean().optional().describe('Whether changes were auto-approved'),
-            changes: z.record(z.string(), z.object({
-                add: z.object({
-                    content: z.string()
-                }).optional(),
-                modify: z.object({
-                    old_content: z.string(),
-                    new_content: z.string()
-                }).optional(),
-                delete: z.object({
-                    content: z.string()
-                }).optional()
-            }).passthrough()).describe('File changes to apply')
-        }).partial().passthrough(),
-        extractSubtitle: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            // Show the first file being modified
-            if (opts.tool.input?.changes && typeof opts.tool.input.changes === 'object') {
-                const files = Object.keys(opts.tool.input.changes);
-                if (files.length > 0) {
-                    const path = resolvePath(files[0], opts.metadata);
-                    const fileName = path.split('/').pop() || path;
-                    if (files.length > 1) {
-                        return t('tools.desc.modifyingMultipleFiles', {
-                            file: fileName,
-                            count: files.length - 1
-                        });
-                    }
-                    return fileName;
-                }
-            }
-            return null;
-        },
-        extractDescription: (opts: { metadata: Metadata | null, tool: ToolCall }) => {
-            // Show the number of files being modified
-            if (opts.tool.input?.changes && typeof opts.tool.input.changes === 'object') {
-                const files = Object.keys(opts.tool.input.changes);
-                const fileCount = files.length;
-                if (fileCount === 1) {
-                    const path = resolvePath(files[0], opts.metadata);
-                    const fileName = path.split('/').pop() || path;
-                    return t('tools.desc.modifyingFile', { file: fileName });
-                } else if (fileCount > 1) {
-                    return t('tools.desc.modifyingFiles', { count: fileCount });
-                }
-            }
-            return t('tools.names.applyChanges');
-        }
-    },
-    'GeminiPatch': {
-        title: t('tools.names.applyChanges'),
-        icon: ICON_EDIT,
-        minimal: true,
-        hideDefaultError: true,
-        isMutable: true,
         input: z.object({
             auto_approved: z.boolean().optional().describe('Whether changes were auto-approved'),
             changes: z.record(z.string(), z.object({

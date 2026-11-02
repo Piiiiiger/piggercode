@@ -1,5 +1,5 @@
 import { AGENTS_CORE } from '../../manifest.js';
-import { buildAcpConfiguredBackendV1, type BackendTargetRefV1 } from '@piggercode/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import { AGENT_IDS, type AgentId } from '../../types.js';
 
 /**
@@ -31,17 +31,8 @@ const AGENT_SCOPED_CONTINUITY_KEYS = [
   'claudeLastCheckpointId',
   'claudeLastAssistantUuid',
   'claudeSubscriptionAccessTokenRefreshV1',
-  'piSessionFile',
   'codexBackendMode',
-  'opencodeBackendMode',
-  'opencodeServerBaseUrl',
-  'opencodeServerBaseUrlExplicit',
-  'auggieAllowIndexing',
   'agentRuntimeDescriptorV1',
-  'acpConfiguredBackendV1',
-  // Configured targets own their opaque session/load identity independently of
-  // the customAcp catalog placeholder. It cannot cross a target continuation.
-  'customAcpSessionId',
   'acpTransportV1',
   'acpHistoryImportV1',
   'providerSessionInfoV1',
@@ -121,7 +112,6 @@ const AGENT_SELECTION_KEYS = [
 export type CurrentAgentSessionViewTargetV1 = Readonly<{
   agentId: AgentId;
   backendTarget?: BackendTargetRefV1;
-  backendTitle?: string;
   /** Target model intent. Omitted/null means "the target's own default". */
   modelId?: string | null;
   /** Target session/ACP mode intent. Omitted/null means "the target's own default". */
@@ -211,17 +201,7 @@ export function projectCurrentAgentSessionView(params: Readonly<{
     for (const key of AGENT_SCOPED_CONNECTED_SERVICE_KEYS) delete next[key];
   }
 
-  const backendTarget = params.target.backendTarget;
-  if (backendTarget?.kind === 'configuredAcpBackend') {
-    next.flavor = `acp:${backendTarget.backendId}`;
-    next.acpConfiguredBackendV1 = buildAcpConfiguredBackendV1({
-      backendId: backendTarget.backendId,
-      title: params.target.backendTitle ?? backendTarget.backendId,
-      updatedAt: params.target.updatedAtMs,
-    });
-  } else {
-    next.flavor = params.target.agentId;
-  }
+  next.flavor = params.target.agentId;
 
   const nativeResumeId = typeof params.nativeResumeId === 'string' ? params.nativeResumeId.trim() : '';
   if (nativeResumeId) {

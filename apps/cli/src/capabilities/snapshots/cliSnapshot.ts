@@ -91,8 +91,6 @@ const CLI_AUTH_ENV_KEYS = [
     'ANTHROPIC_API_KEY',
     'ANTHROPIC_AUTH_TOKEN',
     'OPENAI_API_KEY',
-    'GEMINI_API_KEY',
-    'GOOGLE_API_KEY',
 ] as const;
 
 const cliSnapshotCache = new AsyncTtlCache<DetectCliSnapshot>({

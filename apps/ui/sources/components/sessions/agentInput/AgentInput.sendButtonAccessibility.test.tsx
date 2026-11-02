@@ -115,13 +115,13 @@ vi.mock('@/agents/catalog/catalog', () => ({
     getAgentIconSvgXml: () => null,
     getAgentIconSource: () => null,
     getAgentIconTintColor: () => undefined,
-    AGENT_IDS: ['codex', 'claude', 'opencode', 'gemini'],
+    AGENT_IDS: ['codex', 'claude'],
     DEFAULT_AGENT_ID: 'codex',
     resolveAgentIdFromFlavor: () => null,
     getAgentCore: () => ({ displayNameKey: 'agents.codex', toolRendering: { hideUnknownToolsByDefault: false } }),
     getAgentBehavior: (agentId: string) => ({
         sessionUsage: {
-            contextUsageBadge: agentId === 'gemini' ? 'hidden' : agentId === 'codex' ? 'reportedOnly' : 'derived',
+            contextUsageBadge: agentId === 'codex' ? 'reportedOnly' : 'derived',
         },
     }),
 }));
@@ -374,7 +374,7 @@ describe('AgentInput (send button accessibility)', () => {
                     placeholder="Type"
                     onChangeText={() => {}}
                     onSend={() => {}}
-                    armedContinuationTarget={{ agentId: 'kimi', label: 'Kimi' }}
+                    armedContinuationTarget={{ agentId: 'codex', label: 'Codex' }}
                     autocompleteKinds={[]}
                     autocompleteSuggestions={async () => []}
                 />);
@@ -383,7 +383,7 @@ describe('AgentInput (send button accessibility)', () => {
         if (!send) throw new Error('session-composer-send not found');
         expect(send.props.accessibilityLabel).toBe('session.agentContinuation.sendLabel');
         const marks = send.findAllByType('AgentIcon' as any);
-        expect(marks.map((node) => node.props?.agentId)).toEqual(['kimi']);
+        expect(marks.map((node) => node.props?.agentId)).toEqual(['codex']);
         expect(send.findAllByType('Icon' as any).some((node) => node.props?.name === 'arrow-up'))
             .toBe(false);
 

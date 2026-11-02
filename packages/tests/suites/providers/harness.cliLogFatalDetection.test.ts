@@ -55,19 +55,6 @@ describe('providers harness: cli log fatal error detection', () => {
     await expect(readFatalProviderErrorFromCliLogs({ cliHome })).resolves.toContain('Account verification required');
   });
 
-  it('detects prompt runtime failures from cli logs', async () => {
-    const cliHome = await mkdtemp(join(tmpdir(), 'happier-cli-home-'));
-    const logsDir = join(cliHome, 'logs');
-    await mkdir(logsDir, { recursive: true });
-    await writeFile(
-      join(logsDir, '2026-02-09-14-13-12-pid-36813.log'),
-      '[Kimi] Error during prompt: {}\n',
-      'utf8',
-    );
-
-    await expect(readFatalProviderErrorFromCliLogs({ cliHome })).resolves.toContain('Prompt request failed');
-  });
-
   it('detects usage-limit runtime failures from cli logs', async () => {
     const cliHome = await mkdtemp(join(tmpdir(), 'happier-cli-home-'));
     const logsDir = join(cliHome, 'logs');
@@ -96,19 +83,6 @@ describe('providers harness: cli log fatal error detection', () => {
         extraLogPaths: [phaseStdoutPath],
       }),
     ).resolves.toContain('Usage limit exceeded');
-  });
-
-  it('does not treat "No API key found" warnings as fatal', async () => {
-    const cliHome = await mkdtemp(join(tmpdir(), 'happier-cli-home-'));
-    const logsDir = join(cliHome, 'logs');
-    await mkdir(logsDir, { recursive: true });
-    await writeFile(
-      join(logsDir, '2026-02-10-14-12-20-pid-2361.log'),
-      "[WARN] [Gemini] No API key found. Run 'happier connect gemini' to authenticate via Google OAuth, or set GEMINI_API_KEY environment variable.\n",
-      'utf8',
-    );
-
-    await expect(readFatalProviderErrorFromCliLogs({ cliHome })).resolves.toBeNull();
   });
 
   it('detects early fatal MCP-connect errors even with large noisy tails', async () => {

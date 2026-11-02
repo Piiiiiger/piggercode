@@ -37,15 +37,13 @@ export function ProfileCompatibilityIcon({ profile, size = 32, style }: Props) {
     useUnistyles(); // Subscribe to theme changes for re-render
     const styles = stylesheet;
     const enabledAgentIds = useEnabledAgentIds();
-    const acpCatalogSettingsV1 = useSetting('acpCatalogSettingsV1');
     const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey');
     const backendEntries = React.useMemo(() => {
         return getResolvedBackendCatalogEntries({
             enabledAgentIds,
-            acpCatalogSettingsV1: acpCatalogSettingsV1 as any,
             backendEnabledByTargetKey: backendEnabledByTargetKey as Record<string, boolean> | undefined,
         });
-    }, [acpCatalogSettingsV1, backendEnabledByTargetKey, enabledAgentIds]);
+    }, [backendEnabledByTargetKey, enabledAgentIds]);
 
     const glyphs = React.useMemo(() => {
         const items: Array<{ key: string; glyph: string; factor: number }> = [];

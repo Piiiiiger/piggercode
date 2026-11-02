@@ -76,10 +76,6 @@ describe('rpcHandlers (prompt assets)', () => {
         'agents.skill',
         'claude.skill',
         'claude.command',
-        'gemini.skill',
-        'copilot.skill',
-        'opencode.command',
-        'opencode.skill',
       ]));
 
       const discovered = await discover({

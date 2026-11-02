@@ -9,7 +9,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     const toolCallInputByProviderAndId = new Map<string, unknown>();
 
     const normalized = normalizeAcpSessionMessageBody({
-      provider: 'opencode',
+      provider: 'codex',
       body: { type: 'tool-call', callId: 'call_1', name: 'bash', input: {}, id: 'msg_1' },
       toolCallCanonicalNameByProviderAndId,
       permissionToolCallRawInputByProviderAndId,
@@ -24,7 +24,7 @@ describe('normalizeAcpSessionMessageBody', () => {
       _acp: expect.anything(),
       _happier: expect.objectContaining({
         protocol: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         rawToolName: 'bash',
         canonicalToolName: 'Bash',
       }),
@@ -37,7 +37,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     const toolCallInputByProviderAndId = new Map<string, unknown>();
 
     normalizeAcpSessionMessageBody({
-      provider: 'opencode',
+      provider: 'codex',
       body: { type: 'tool-call', callId: 'call_1', name: 'bash', input: {}, id: 'msg_1' },
       toolCallCanonicalNameByProviderAndId,
       permissionToolCallRawInputByProviderAndId,
@@ -45,7 +45,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     });
 
     const normalized = normalizeAcpSessionMessageBody({
-      provider: 'opencode',
+      provider: 'codex',
       body: {
         type: 'tool-result',
         callId: 'call_1',
@@ -67,7 +67,7 @@ describe('normalizeAcpSessionMessageBody', () => {
       _acp: expect.anything(),
       _happier: expect.objectContaining({
         protocol: 'acp',
-        provider: 'opencode',
+        provider: 'codex',
         rawToolName: 'bash',
         canonicalToolName: 'Bash',
       }),
@@ -80,7 +80,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     const toolCallInputByProviderAndId = new Map<string, unknown>();
 
     normalizeAcpSessionMessageBody({
-      provider: 'copilot',
+      provider: 'codex',
       body: {
         type: 'tool-call',
         callId: 'call_1',
@@ -96,7 +96,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     });
 
     const normalized = normalizeAcpSessionMessageBody({
-      provider: 'copilot',
+      provider: 'codex',
       body: {
         type: 'tool-result',
         callId: 'call_1',
@@ -129,7 +129,7 @@ describe('normalizeAcpSessionMessageBody', () => {
     const toolCallInputByProviderAndId = new Map<string, unknown>();
 
     const normalized = normalizeAcpSessionMessageBody({
-      provider: 'pi',
+      provider: 'codex',
       body: {
         type: 'tool-call',
         callId: 'pi_edit_1',
@@ -159,7 +159,7 @@ describe('normalizeAcpSessionMessageBody', () => {
         },
       ],
       _happier: expect.objectContaining({
-        provider: 'pi',
+        provider: 'codex',
         rawToolName: 'edit',
         canonicalToolName: 'MultiEdit',
       }),

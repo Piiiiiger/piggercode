@@ -21,22 +21,6 @@ const KNOWN_LLM_TOOLS = [
     supportsPromptStdin: false,
     supportsAutoExec: false,
   },
-  {
-    id: 'opencode',
-    cmd: 'opencode',
-    label: 'OpenCode',
-    note: 'Supports starting TUI with an initial prompt.',
-    supportsPromptStdin: false,
-    supportsAutoExec: false,
-  },
-  {
-    id: 'aider',
-    cmd: 'aider',
-    label: 'Aider',
-    note: 'Prompt injection varies by mode; copy/paste fallback supported.',
-    supportsPromptStdin: false,
-    supportsAutoExec: false,
-  },
 ];
 
 export function getKnownLlmTools() {

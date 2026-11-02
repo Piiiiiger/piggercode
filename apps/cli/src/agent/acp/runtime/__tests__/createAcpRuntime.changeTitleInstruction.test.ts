@@ -16,7 +16,7 @@ describe('createAcpRuntime (shared prompt ownership)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'opencode',
+      provider: 'codex',
       directory: '/tmp',
       session: createBasicSessionClient(),
       messageBuffer: new MessageBuffer(),
@@ -73,7 +73,7 @@ describe('createAcpRuntime (shared prompt ownership)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'gemini',
+      provider: 'codex',
       directory: '/tmp/workspace',
       happierSessionId: 'happy_session_123',
       session: createBasicSessionClient(),
@@ -102,7 +102,7 @@ describe('createAcpRuntime (shared prompt ownership)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'gemini',
+      provider: 'codex',
       directory: '/tmp/workspace',
       happierSessionId: 'happy_session_123',
       session: createBasicSessionClient(),

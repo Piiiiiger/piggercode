@@ -811,8 +811,7 @@ function normalizeExecutionBackendOptionValue(value: string): string {
 }
 
 function normalizeSpawnTargetOptionAlias(value: string): string {
-  const trimmed = value.trim();
-  return trimmed === 'customAcp' ? trimmed : normalizeExecutionBackendOptionValue(trimmed);
+  return normalizeExecutionBackendOptionValue(value.trim());
 }
 
 type AgentInventoryRequest =
@@ -859,19 +858,13 @@ function resolveSpawnTargetSelection(input: Record<string, unknown>): SpawnTarge
     return { ok: false };
   }
 
-  const concreteTargetKeys = targetKeys.filter((targetKey) => targetKey !== 'customAcp');
-  const uniqueConcreteTargetKeys = [...new Set(concreteTargetKeys)];
-  if (uniqueConcreteTargetKeys.length > 1) return { ok: false };
-  const hasCustomAcpAlias = targetKeys.includes('customAcp');
+  const uniqueTargetKeys = [...new Set(targetKeys)];
+  if (uniqueTargetKeys.length > 1) return { ok: false };
 
-  const backendTargetKey = uniqueConcreteTargetKeys[0];
-  if ((agentId === 'customAcp' || hasCustomAcpAlias) && backendTargetKey?.startsWith('agent:')) return { ok: false };
-  if (hasCustomAcpAlias && agentId && agentId !== 'customAcp') return { ok: false };
-  if (!backendTargetKey) return { ok: true, ...((agentId || hasCustomAcpAlias) ? { agentId: agentId || 'customAcp' } : {}) };
+  const backendTargetKey = uniqueTargetKeys[0];
+  if (!backendTargetKey) return { ok: true, ...(agentId ? { agentId } : {}) };
 
-  const parsedTarget = parseBackendTargetKey(backendTargetKey);
-  const derivedAgentId = parsedTarget.kind === 'builtInAgent' ? parsedTarget.agentId : 'customAcp';
-  if (hasCustomAcpAlias && derivedAgentId !== 'customAcp') return { ok: false };
+  const derivedAgentId = parseBackendTargetKey(backendTargetKey).agentId;
   if (agentId && agentId !== derivedAgentId) return { ok: false };
   return { ok: true, agentId: derivedAgentId, backendTargetKey };
 }
@@ -881,9 +874,6 @@ function resolveAgentInventoryRequest(input: Record<string, unknown>): AgentInve
   if (!targetSelection.ok) return { ok: false };
   const resolvedAgentId = targetSelection.agentId;
   const backendTargetKey = targetSelection.backendTargetKey;
-  if (resolvedAgentId === 'customAcp' && !backendTargetKey) {
-    return { ok: false };
-  }
   if (!resolvedAgentId) {
     return { ok: false };
   }
@@ -1861,7 +1851,7 @@ export function createActionExecutor(deps: ActionExecutorDeps): Readonly<{
               error: 'Select one backend target in draftInput before resolving dependent options.',
               details: {
                 requiredDraftPath: 'backendTargetKeys',
-                example: { draftInput: { backendTargetKeys: ['agent:pi'] } },
+                example: { draftInput: { backendTargetKeys: ['agent:codex'] } },
               },
             };
           }

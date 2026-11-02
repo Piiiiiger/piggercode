@@ -160,11 +160,11 @@ describe('AcpBackend prompt submission evidence', () => {
     const prompt = vi.fn(async (): Promise<PromptResponse> => ({ stopReason: 'end_turn' }));
     const requestExtension = vi.fn(async () => ({ status: 'queued' }));
     const backend = new AcpBackend({
-      agentName: 'grok',
+      agentName: 'codex',
       cwd: process.cwd(),
       command: process.execPath,
       args: [],
-      transportHandler: createAcpTestTransportHandler({ agentName: 'grok', idleTimeoutMs: 1 }),
+      transportHandler: createAcpTestTransportHandler({ agentName: 'codex', idleTimeoutMs: 1 }),
       inFlightSteer: {
         method: 'x.ai/interject',
         buildParams: ({ sessionId, prompt: text, deliveryIdentity }) => ({
@@ -349,45 +349,6 @@ describe('AcpBackend prompt submission evidence', () => {
         message: 'prompt response lost',
       });
       await expect(backend.waitForResponseComplete(250)).rejects.toThrow('prompt response lost');
-    } finally {
-      await backend.dispose();
-    }
-  });
-
-  it('keeps an exact Gemini empty-response error ambiguous when only generic output was observed', async () => {
-    const backend = createBackend('gemini');
-    let rejectPrompt!: (error: unknown) => void;
-    const promptResponse = new Promise<PromptResponse>((_resolve, reject) => {
-      rejectPrompt = reject;
-    });
-    let internals!: ReturnType<typeof installPromptPeer>;
-    let updateHandled: Promise<void> | null = null;
-    internals = installPromptPeer(backend, () => {
-      updateHandled = internals.handleSessionUpdate({
-        sessionId: 'test-session',
-        update: {
-          sessionUpdate: 'agent_message_chunk',
-          content: { type: 'text', text: 'uncorrelated Gemini output' },
-        },
-      });
-      return promptResponse;
-    });
-
-    try {
-      const evidence = await backend.sendPromptWithEvidence('test-session', 'hello');
-      expect(evidence.kind).toBe('effect_may_have_occurred');
-      if (evidence.kind !== 'effect_may_have_occurred') return;
-      await updateHandled;
-
-      rejectPrompt({
-        code: -32603,
-        message: 'Internal error',
-        data: { details: 'Model stream ended with empty response text.' },
-      });
-
-      await expect(evidence.finalResponseEvidence).rejects.toMatchObject({
-        phase: 'effect_may_have_occurred',
-      });
     } finally {
       await backend.dispose();
     }

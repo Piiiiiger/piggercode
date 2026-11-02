@@ -91,11 +91,10 @@ function buildProfile(): AIBackendProfile {
         defaultPermissionModeByTargetKey: {},
         defaultPersistenceModeByAgent: {},
         defaultPersistenceModeByTargetKey: {},
-        compatibility: { claude: true, codex: true, gemini: true },
+        compatibility: { claude: true, codex: true },
         compatibilityByTargetKey: {
             'agent:claude': true,
             'agent:codex': true,
-            'agent:gemini': true,
         },
         envVarRequirements: [],
         isBuiltIn: false,

@@ -89,7 +89,7 @@ export type ProviderRuntimeLocalHandoffMetadataBuilder = (params: Readonly<{
   metadata: Readonly<Record<string, unknown>>;
   trackedSession: TrackedSession;
   vendorResumeId: string;
-}>) => Partial<Pick<Metadata, 'claudeSessionId' | 'codexSessionId' | 'opencodeSessionId' | 'directSessionV1'>>;
+}>) => Partial<Pick<Metadata, 'claudeSessionId' | 'codexSessionId' | 'directSessionV1'>>;
 
 export type ProviderTerminalAttachmentRetirementHook = (params: Readonly<{
   happyHomeDir: string;

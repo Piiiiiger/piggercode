@@ -54,7 +54,7 @@ describe('useNewSessionPreflightSessionModesState (cwd)', () => {
     };
     function Harness() {
       latest = useNewSessionPreflightSessionModesState({
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         selectedMachineId: 'machine-1',
         capabilityServerId: 'server-1',
         cwd,
@@ -101,7 +101,7 @@ describe('useNewSessionPreflightSessionModesState (cwd)', () => {
 
     function Harness() {
       useNewSessionPreflightSessionModesState({
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         selectedMachineId: 'machine-1',
         capabilityServerId: 'server-1',
         cwd: '/repo',
@@ -117,53 +117,9 @@ describe('useNewSessionPreflightSessionModesState (cwd)', () => {
 
     expect(captured.length).toBeGreaterThan(0);
     expect(captured[0]).toMatchObject({
-      id: 'cli.opencode',
+      id: 'cli.codex',
       method: 'probeModes',
       params: expect.objectContaining({ timeoutMs: NEW_SESSION_CAPABILITY_PROBE_TIMEOUT_MS, cwd: '/repo' }),
-    });
-  });
-
-  it('uses cli.customAcp and forwards configured preset backendTarget', async () => {
-    vi.resetModules();
-    machineCapabilitiesInvokeMock.mockClear();
-    resetDynamicSessionModeProbeCacheForTests();
-
-    const { useNewSessionPreflightSessionModesState } = await import('./useNewSessionPreflightSessionModesState');
-
-    const captured: any[] = [];
-    machineCapabilitiesInvokeMock.mockImplementationOnce(async (_machineId: any, request: any, _options: any) => {
-      captured.push(request);
-      return {
-        supported: true as const,
-        response: { ok: true as const, result: { availableModes: [{ id: 'plan', name: 'Plan' }] } },
-      };
-    });
-
-    function Harness() {
-      useNewSessionPreflightSessionModesState({
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-        selectedMachineId: 'machine-1',
-        capabilityServerId: 'server-1',
-        cwd: '/repo',
-      });
-      return null;
-    }
-
-    let root!: renderer.ReactTestRenderer;
-    root = (await renderScreen(React.createElement(Harness))).tree;
-    await act(async () => {
-      root.unmount();
-    });
-
-    expect(captured.length).toBeGreaterThan(0);
-    expect(captured[0]).toMatchObject({
-      id: 'cli.customAcp',
-      method: 'probeModes',
-      params: expect.objectContaining({
-        timeoutMs: NEW_SESSION_CAPABILITY_PROBE_TIMEOUT_MS,
-        cwd: '/repo',
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      }),
     });
   });
 

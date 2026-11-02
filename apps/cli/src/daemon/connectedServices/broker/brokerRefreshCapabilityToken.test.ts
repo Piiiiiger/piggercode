@@ -53,7 +53,7 @@ describe('brokerRefreshCapabilityToken (shared, provider-agnostic)', () => {
   });
 
   it('pins a versioned, provider-agnostic scope label (the SAME token authorizes every broker)', () => {
-    // Provider-agnostic so the OpenCode plugin AND the Pi extension derive the SAME scoped token, and a
+    // Provider-agnostic so the provider plugin AND the provider extension derive the SAME scoped token, and a
     // SINGLE bridge preHandler (`requireBrokerRefreshAuth`) authorizes both. Versioned so a future
     // scope/format change is unambiguous.
     expect(CONNECTED_SERVICE_BROKER_REFRESH_SCOPE_LABEL).toBe('happier:connected-service-broker-refresh:v1');

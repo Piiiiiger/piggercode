@@ -7,29 +7,6 @@ import {
 } from '../../src/testkit/providers/presets/presets';
 
 describe('providers: parallel preset helpers', () => {
-  it('resolves all providers for all preset', () => {
-    expect(resolveProviderPresetIds('all')).toEqual([
-      'opencode',
-      'opencode_server',
-      'claude',
-      'codex',
-      'kilo',
-      'gemini',
-      'qwen',
-      'kimi',
-      'auggie',
-      'pi',
-      'cursor',
-      'copilot',
-      'grok',
-    ]);
-  });
-
-  it('resolves a single provider for specific preset', () => {
-    expect(resolveProviderPresetIds('codex')).toEqual(['codex']);
-    expect(resolveProviderPresetIds('gemini')).toEqual(['gemini']);
-    expect(resolveProviderPresetIds('qwen')).toEqual(['qwen']);
-  });
 
   it('returns null for unknown preset', () => {
     expect(resolveProviderPresetIds('unknown')).toBeNull();
@@ -44,25 +21,6 @@ describe('providers: parallel preset helpers', () => {
     expect(parseMaxParallel('0')).toBeNull();
     expect(parseMaxParallel('-2')).toBeNull();
     expect(parseMaxParallel('nope')).toBeNull();
-  });
-
-  it('filters non-ACP providers when acp-only scenarios are selected', () => {
-    const providerIds = resolveProviderPresetIds('all');
-    expect(providerIds).not.toBeNull();
-    expect(filterProviderIdsForScenarioSelection(providerIds!, 'acp_probe_models')).toEqual([
-      'opencode',
-      'opencode_server',
-      'codex',
-      'kilo',
-      'gemini',
-      'qwen',
-      'kimi',
-      'auggie',
-      'pi',
-      'cursor',
-      'copilot',
-      'grok',
-    ]);
   });
 
   it('does not filter providers for mixed or empty scenario selection', () => {

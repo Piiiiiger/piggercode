@@ -615,13 +615,13 @@ describe('executeBoundedBackendRun', () => {
         prompts.push(prompt);
         sendPromptCount += 1;
         if (sendPromptCount === 1) {
-          ctrl.buffer = 'I created the file pi-run-test.txt and printed its first line.';
+          ctrl.buffer = 'I created the file agent-run-test.txt and printed its first line.';
           return;
         }
         ctrl.buffer = [
           '{',
           '  \"summary\": \"Ok\",',
-          '  \"deliverables\": [{ \"id\": \"d1\", \"title\": \"pi-run-test.txt\" }]',
+          '  \"deliverables\": [{ \"id\": \"d1\", \"title\": \"agent-run-test.txt\" }]',
           '}',
         ].join('\n');
       },
@@ -664,7 +664,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_delegate_repair',
         intent: 'delegate',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         instructions: 'do the thing',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -673,7 +673,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers,
       sendAcp: () => {},
-      parentProvider: 'pi',
+      parentProvider: 'claude',
       getNowMs: () => 1,
       boundedTimeoutMs: null,
       finishRun,
@@ -691,7 +691,7 @@ describe('executeBoundedBackendRun', () => {
     );
   });
 
-  it('keeps a Pi artifact segment when bounded completion receives a later acknowledgement segment', async () => {
+  it('keeps an artifact segment when bounded completion receives a later acknowledgement segment', async () => {
     const runId = 'run_delegate_segment_artifact_1';
     const callId = 'subagent_run_delegate_segment_artifact_1';
     const sidechainId = callId;
@@ -766,8 +766,8 @@ describe('executeBoundedBackendRun', () => {
       sessionId: 'parent_session_delegate_segment_artifact',
       depth: 0,
       intent: 'delegate',
-      backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
-      backendId: 'pi',
+      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
+      backendId: 'claude',
       instructions: 'write the artifact',
       permissionMode: 'read_only',
       retentionPolicy: 'ephemeral',
@@ -785,7 +785,7 @@ describe('executeBoundedBackendRun', () => {
         runs,
         controllers,
         budgetRegistry: null,
-        parentProvider: 'pi',
+        parentProvider: 'claude',
         sendAcp: (_provider, body) => acpMessages.push(body),
         // Machine listing marker IO is outside the artifact/result contract under test.
         enqueueMarkerWrite: async () => {},
@@ -799,7 +799,7 @@ describe('executeBoundedBackendRun', () => {
       intent: 'delegate',
       ioMode: 'request_response',
       sendAcp: (_provider, body) => acpMessages.push(body),
-      parentProvider: 'pi',
+      parentProvider: 'claude',
       runs,
       backendSupportsResume: false,
       writeActivityMarker: async () => {},
@@ -815,7 +815,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_delegate_segment_artifact',
         intent: 'delegate',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         instructions: 'write the artifact',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -824,7 +824,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers,
       sendAcp: (_provider, body) => acpMessages.push(body),
-      parentProvider: 'pi',
+      parentProvider: 'claude',
       getNowMs: () => 1,
       boundedTimeoutMs: null,
       finishRun,
@@ -967,7 +967,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_delegate_repair_copycat',
         intent: 'delegate',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         instructions: 'delegate it',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -976,7 +976,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers,
       sendAcp: () => {},
-      parentProvider: 'pi',
+      parentProvider: 'claude',
       getNowMs: () => 1,
       boundedTimeoutMs: null,
       finishRun,
@@ -1038,7 +1038,7 @@ describe('executeBoundedBackendRun', () => {
               '      "severity": "medium",',
               '      "category": "correctness",',
               '      "summary": "The backend ignores the prompt parameter.",',
-              '      "filePath": "apps/cli/src/agent/reviews/engines/coderabbit/CodeRabbitReviewBackend.ts",',
+              '      "filePath": "apps/cli/src/agent/reviews/engines/codex/CodexReviewBackend.ts",',
               '      "startLine": 137,',
               '      "endLine": 137',
               '    }',
@@ -1097,7 +1097,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_review_repair_schema',
         intent: 'review',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         instructions: 'review it',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -1106,7 +1106,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers,
       sendAcp: () => {},
-      parentProvider: 'opencode',
+      parentProvider: 'claude',
       getNowMs: () => 1,
       boundedTimeoutMs: null,
       finishRun,
@@ -1281,7 +1281,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_liveness_active',
         intent: 'review',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         instructions: 'review it',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -1290,7 +1290,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers: new Map([[runId, ctrl]]),
       sendAcp: () => {},
-      parentProvider: 'opencode',
+      parentProvider: 'codex',
       getNowMs: () => 1,
       boundedTimeoutMs: 10,
       finishRun,
@@ -1771,7 +1771,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_timeout_probe_race',
         intent: 'review',
-        backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         instructions: 'review it',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -1780,7 +1780,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers: new Map([[runId, ctrl]]),
       sendAcp: () => {},
-      parentProvider: 'opencode',
+      parentProvider: 'codex',
       getNowMs: () => 1,
       boundedTimeoutMs: 10,
       finishRun,
@@ -1875,7 +1875,7 @@ describe('executeBoundedBackendRun', () => {
       params: {
         sessionId: 'parent_session_plan_repair',
         intent: 'plan',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         instructions: 'plan it',
         permissionMode: 'read_only',
         retentionPolicy: 'ephemeral',
@@ -1884,7 +1884,7 @@ describe('executeBoundedBackendRun', () => {
       },
       controllers,
       sendAcp: () => {},
-      parentProvider: 'pi',
+      parentProvider: 'codex',
       getNowMs: () => 1,
       boundedTimeoutMs: null,
       finishRun,

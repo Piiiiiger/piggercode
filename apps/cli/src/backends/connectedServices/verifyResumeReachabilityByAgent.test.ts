@@ -30,10 +30,7 @@ function baseInput(overrides?: Partial<VerifyResumeReachableInput>): VerifyResum
 }
 
 const providerCases: ReadonlyArray<Readonly<{ agentId: CatalogAgentId; reason: string }>> = [
-  { agentId: 'pi', reason: 'pi_session_file_not_found' },
   { agentId: 'codex', reason: 'codex_session_file_not_found' },
-  { agentId: 'gemini', reason: 'gemini_session_file_not_found' },
-  { agentId: 'opencode', reason: 'opencode_state_not_shared' },
   { agentId: 'claude', reason: 'claude_session_not_in_native_store' },
 ];
 
@@ -61,9 +58,4 @@ describe('verifyResumeReachabilityByAgent dispatch', () => {
     ).resolves.toEqual({ ok: true, resolvedPath: null });
   });
 
-  it('fails closed with the not-implemented reason for a provider without a reachability hook', async () => {
-    await expect(
-      verifyResumeReachabilityByAgent({ agentId: 'auggie', input: baseInput() }),
-    ).resolves.toEqual({ ok: false, reason: REACHABILITY_CHECK_NOT_IMPLEMENTED_REASON });
-  });
 });

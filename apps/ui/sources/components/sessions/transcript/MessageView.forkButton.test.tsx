@@ -565,18 +565,6 @@ describe('MessageView (fork button)', () => {
     expect(flowArgs.settings).toEqual(expect.objectContaining({ sessionReplayEnabled: true }));
   });
 
-  it('renders native OpenCode server fork-from-message when replay is disabled', async () => {
-    replayEnabled = false;
-    sessionMetadata = { machineId: 'm1', flavor: 'opencode', opencodeBackendMode: 'server' };
-
-    const { MessageView } = await import('./MessageView');
-    const message: any = { kind: 'agent-text', id: 'm1', createdAt: 1, text: 'hi', isThinking: false, seq: 5 };
-
-    const screen = await renderScreen(<MessageView message={message} metadata={null} sessionId="s1" />);
-
-    expect(screen.findByTestId('transcript-message-fork:m1')).toBeTruthy();
-  });
-
   it('still opens the strategy modal when session metadata machineId is missing', async () => {
     sessionMetadata = {};
     const { MessageView } = await import('./MessageView');

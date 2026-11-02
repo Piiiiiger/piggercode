@@ -17,36 +17,36 @@ describe('computeNextModelOverrideMetadata', () => {
         const base = buildMetadata();
         const next = computeNextModelOverrideMetadata({
             metadata: base,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 11,
         });
 
-        expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 11, modelId: 'gemini-2.5-pro' });
+        expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 11, modelId: 'gpt-5.5' });
     });
 
     it('applies a monotonic bump when model changes with an older updatedAt', () => {
         const base = buildMetadata({
-            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gemini-2.5-flash' },
+            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gpt-5.4' },
         });
 
         const next = computeNextModelOverrideMetadata({
             metadata: base,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 9,
         });
 
-        expect(next.modelOverrideV1?.modelId).toBe('gemini-2.5-pro');
+        expect(next.modelOverrideV1?.modelId).toBe('gpt-5.5');
         expect(next.modelOverrideV1?.updatedAt).toBe(11);
     });
 
     it('returns metadata unchanged when model and updatedAt are unchanged', () => {
         const base = buildMetadata({
-            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gemini-2.5-pro' },
+            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gpt-5.5' },
         });
 
         const next = computeNextModelOverrideMetadata({
             metadata: base,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 10,
         });
 
@@ -55,39 +55,39 @@ describe('computeNextModelOverrideMetadata', () => {
 
     it('updates timestamp when updatedAt is newer even for the same model id', () => {
         const base = buildMetadata({
-            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gemini-2.5-pro' },
+            modelOverrideV1: { v: 1, updatedAt: 10, modelId: 'gpt-5.5' },
         });
 
         const next = computeNextModelOverrideMetadata({
             metadata: base,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 12,
         });
 
-        expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 12, modelId: 'gemini-2.5-pro' });
+        expect(next.modelOverrideV1).toEqual({ v: 1, updatedAt: 12, modelId: 'gpt-5.5' });
     });
 
     it('applies a deterministic sequence across newer + stale updates', () => {
         const base = buildMetadata();
         const first = computeNextModelOverrideMetadata({
             metadata: base,
-            modelId: 'gemini-2.5-flash',
+            modelId: 'gpt-5.4',
             updatedAt: 10,
         });
         const second = computeNextModelOverrideMetadata({
             metadata: first,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 9,
         });
         const third = computeNextModelOverrideMetadata({
             metadata: second,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 15,
         });
 
-        expect(first.modelOverrideV1).toEqual({ v: 1, updatedAt: 10, modelId: 'gemini-2.5-flash' });
-        expect(second.modelOverrideV1).toEqual({ v: 1, updatedAt: 11, modelId: 'gemini-2.5-pro' });
-        expect(third.modelOverrideV1).toEqual({ v: 1, updatedAt: 15, modelId: 'gemini-2.5-pro' });
+        expect(first.modelOverrideV1).toEqual({ v: 1, updatedAt: 10, modelId: 'gpt-5.4' });
+        expect(second.modelOverrideV1).toEqual({ v: 1, updatedAt: 11, modelId: 'gpt-5.5' });
+        expect(third.modelOverrideV1).toEqual({ v: 1, updatedAt: 15, modelId: 'gpt-5.5' });
     });
 
     it('atomically clears prior-model option commands while preserving unrelated overrides', () => {
@@ -95,7 +95,7 @@ describe('computeNextModelOverrideMetadata', () => {
             metadata: buildMetadata({
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'codex',
                     updatedAt: 5,
                     currentModelId: 'model-a',
                     availableModels: [{
@@ -136,7 +136,7 @@ describe('computeNextModelOverrideMetadata', () => {
             metadata: buildMetadata({
                 sessionModelsV1: {
                     v: 1,
-                    provider: 'grok',
+                    provider: 'codex',
                     updatedAt: 5,
                     currentModelId: 'model-a',
                     availableModels: [{
@@ -169,7 +169,7 @@ describe('computeNextModelOverrideMetadata', () => {
         const metadata = buildMetadata({
             sessionModelsV1: {
                 v: 1,
-                provider: 'grok',
+                provider: 'codex',
                 updatedAt: 5,
                 currentModelId: 'model-a',
                 availableModels: [{
@@ -198,7 +198,7 @@ describe('publishModelOverrideToMetadata', () => {
 
         await publishModelOverrideToMetadata({
             sessionId: 's1',
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
             updatedAt: 12,
             updateSessionMetadataWithRetry: async (_sessionId, updater) => {
                 updates.push(updater(base));
@@ -209,7 +209,7 @@ describe('publishModelOverrideToMetadata', () => {
         expect(updates[0]?.modelOverrideV1).toEqual({
             v: 1,
             updatedAt: 12,
-            modelId: 'gemini-2.5-pro',
+            modelId: 'gpt-5.5',
         });
     });
 });

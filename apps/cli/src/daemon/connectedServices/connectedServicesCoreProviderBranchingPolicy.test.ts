@@ -11,15 +11,15 @@ const backendsConnectedServicesRoot = fileURLToPath(
 );
 
 const providerOrServiceIdPattern =
-  /(['"])(codex|claude|opencode|gemini|pi|openai-codex|claude-subscription|github|anthropic|openai)\1/gu;
+  /(['"])(codex|claude|openai-codex|claude-subscription|github|anthropic|openai)\1/gu;
 const providerBackendImportPattern =
-  /from\s+(['"])@\/backends\/(codex|claude|opencode|gemini|pi)(?:\/|\1)/gu;
+  /from\s+(['"])@\/backends\/(codex|claude)(?:\/|\1)/gu;
 const providerPersistedSessionMetadataPattern =
-  /\b(codex|claude|opencode|gemini|pi)SessionFile\b/gu;
+  /\b(codex|claude)SessionFile\b/gu;
 const providerQuotaEndpointLiteralPattern =
   /(chatgpt\.com\/backend-api\/wham|api\.anthropic\.com\/api\/oauth|PIGGERCODE_CONNECTED_SERVICES_(?:OPENAI_CODEX|CLAUDE_SUBSCRIPTION|ANTHROPIC)_[A-Z0-9_]*(?:USAGE_URL|RESET_CREDITS_URL|QUOTA_ENDPOINT|USER_AGENT))/gu;
 const providerQuotaLeafImportPattern =
-  /from\s+(['"]).*\/(?:claudeSubscriptionQuotaFetcher|geminiQuotaFetcher|openAiCodexQuotaFetcher|quotaFetcher)\1/gu;
+  /from\s+(['"]).*\/(?:claudeSubscriptionQuotaFetcher|openAiCodexQuotaFetcher|quotaFetcher)\1/gu;
 
 /**
  * Documented provider-owned seams in the daemon `connectedServices` core.

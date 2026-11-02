@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const BackendTargetKindSchema = z.enum(['builtInAgent', 'configuredAcpBackend']);
+export const BackendTargetKindSchema = z.enum(['builtInAgent']);
 export type BackendTargetKind = z.infer<typeof BackendTargetKindSchema>;
 
 const BuiltInAgentTargetSchema = z.object({
@@ -8,42 +8,25 @@ const BuiltInAgentTargetSchema = z.object({
   agentId: z.string().min(1),
 });
 
-const ConfiguredAcpBackendTargetSchema = z.object({
-  kind: z.literal('configuredAcpBackend'),
-  backendId: z.string().min(1),
-});
-
-export const BackendTargetRefSchema = z.union([BuiltInAgentTargetSchema, ConfiguredAcpBackendTargetSchema]);
+export const BackendTargetRefSchema = BuiltInAgentTargetSchema;
 export type BackendTargetRefV1 = z.infer<typeof BackendTargetRefSchema>;
 
-/** The 0.2 catalog placeholder identifies transport; a configured target keeps its own reference. */
 export function matchesBackendTargetAgentId(target: BackendTargetRefV1, agentId: string): boolean {
-  return agentId === (target.kind === 'builtInAgent' ? target.agentId : 'customAcp');
+  return agentId === target.agentId;
 }
 
-export const BackendTargetKeySchema = z.string().regex(/^(agent|acpBackend):.+$/, 'Invalid backend target key');
+export const BackendTargetKeySchema = z.string().regex(/^agent:.+$/, 'Invalid backend target key');
 export type BackendTargetKey = z.infer<typeof BackendTargetKeySchema>;
 
 export function buildBackendTargetKey(target: BackendTargetRefV1): BackendTargetKey {
-  return target.kind === 'builtInAgent'
-    ? BackendTargetKeySchema.parse(`agent:${target.agentId}`)
-    : BackendTargetKeySchema.parse(`acpBackend:${target.backendId}`);
+  return BackendTargetKeySchema.parse(`agent:${target.agentId}`);
 }
 
 export function parseBackendTargetKey(key: string): BackendTargetRefV1 {
   const parsed = BackendTargetKeySchema.parse(key);
-  if (parsed.startsWith('agent:')) {
-    return BackendTargetRefSchema.parse({ kind: 'builtInAgent', agentId: parsed.slice('agent:'.length) });
-  }
-  return BackendTargetRefSchema.parse({ kind: 'configuredAcpBackend', backendId: parsed.slice('acpBackend:'.length) });
+  return BackendTargetRefSchema.parse({ kind: 'builtInAgent', agentId: parsed.slice('agent:'.length) });
 }
 
 export function isBuiltInAgentTarget(target: BackendTargetRefV1): target is z.infer<typeof BuiltInAgentTargetSchema> {
   return target.kind === 'builtInAgent';
-}
-
-export function isConfiguredAcpBackendTarget(
-  target: BackendTargetRefV1,
-): target is z.infer<typeof ConfiguredAcpBackendTargetSchema> {
-  return target.kind === 'configuredAcpBackend';
 }

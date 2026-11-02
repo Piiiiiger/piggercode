@@ -9,7 +9,7 @@ describe('localOnlyAccountSettings', () => {
     it('strips UI-local lastUsedAgent from server-synced settings', () => {
         const stripped = stripLocalOnlyAccountSettings({
             lastUsedAgent: 'codex',
-            lastUsedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             lastNewSessionAgentPickerViewV1: { kind: 'favoriteModels' },
             clientEncryptionRequirementLocalV1: 'require_e2ee',
             clientEncryptionRequirementV1: 'require_e2ee',
@@ -25,14 +25,14 @@ describe('localOnlyAccountSettings', () => {
     it('picks UI-local lastUsedAgent for merge overlays', () => {
         const settings = settingsParse({
             lastUsedAgent: 'codex',
-            lastUsedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             lastNewSessionAgentPickerViewV1: { kind: 'favoriteModels' },
             clientEncryptionRequirementLocalV1: 'require_e2ee',
         });
         const picked = pickLocalOnlyAccountSettings(settings);
         expect(picked).toMatchObject({
             lastUsedAgent: 'codex',
-            lastUsedBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+            lastUsedBackendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             lastNewSessionAgentPickerViewV1: { kind: 'favoriteModels' },
             clientEncryptionRequirementLocalV1: 'require_e2ee',
         });

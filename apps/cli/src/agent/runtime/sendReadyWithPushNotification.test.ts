@@ -31,14 +31,14 @@ describe('sendReadyWithPushNotification', () => {
     sendReadyWithPushNotification({
       session: session as any,
       pushSender: { sendToAllDevices },
-      waitingForCommandLabel: 'Qwen Code',
-      logPrefix: '[Qwen]',
+      waitingForCommandLabel: 'Codex',
+      logPrefix: '[Codex]',
     })
 
     expect(session.sendSessionEvent).toHaveBeenCalledWith({ type: 'ready' })
     expect(sendToAllDevices).toHaveBeenCalledWith(
-      'Qwen Code',
-      'Qwen Code is waiting for your command',
+      'Codex',
+      'Codex is waiting for your command',
       { sessionId: 'session-123' },
     )
   })
@@ -50,8 +50,8 @@ describe('sendReadyWithPushNotification', () => {
     sendReadyWithPushNotification({
       session: session as any,
       pushSender: { sendToAllDevices },
-      waitingForCommandLabel: 'Qwen Code',
-      logPrefix: '[Qwen]',
+      waitingForCommandLabel: 'Codex',
+      logPrefix: '[Codex]',
       sessionTitle: 'Review branch',
       assistantPreviewText: 'The branch is ready to review.',
       includeAssistantPreviewText: true,
@@ -71,8 +71,8 @@ describe('sendReadyWithPushNotification', () => {
     sendReadyWithPushNotification({
       session: session as any,
       pushSender: { sendToAllDevices },
-      waitingForCommandLabel: 'Qwen Code',
-      logPrefix: '[Qwen]',
+      waitingForCommandLabel: 'Codex',
+      logPrefix: '[Codex]',
       sessionTitle: 'Review branch',
       assistantPreviewText: 'The branch is ready to review.',
       includeAssistantPreviewText: false,
@@ -80,7 +80,7 @@ describe('sendReadyWithPushNotification', () => {
 
     expect(sendToAllDevices).toHaveBeenCalledWith(
       'Review branch',
-      'Qwen Code is waiting for your command',
+      'Codex is waiting for your command',
       { sessionId: 'session-123' },
     )
   })
@@ -114,8 +114,8 @@ describe('sendReadyWithPushNotification', () => {
     sendReadyWithPushNotification({
       session: session as any,
       pushSender: { sendToAllDevices },
-      waitingForCommandLabel: 'OpenCode',
-      logPrefix: '[OpenCode]',
+      waitingForCommandLabel: 'Codex',
+      logPrefix: '[Codex]',
       loggerDebug,
     })
 

@@ -7,7 +7,7 @@ describe('makeTraceEvent', () => {
     const event = makeTraceEvent({
       ts: 1,
       protocol: 'acp',
-      provider: 'opencode',
+      provider: 'codex',
       kind: 'tool-call',
       payload: { type: 'tool-call', callId: 'c1', name: 'read', input: { file_path: '/tmp/x' } },
       direction: undefined,

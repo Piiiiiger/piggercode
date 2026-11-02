@@ -14,7 +14,7 @@ vi.mock('node:child_process', async (importOriginal) => ({
 vi.mock('ps-list', () => ({ default: psListMock }));
 
 type Completion = (error: Error | null, stdout: string, stderr: string) => void;
-const command = '/Users/alice/项目 with spaces/.runner-snapshots/bee5314ededb46bd/index.mjs opencode --started-by daemon';
+const command = '/Users/alice/项目 with spaces/.runner-snapshots/bee5314ededb46bd/index.mjs codex --started-by daemon';
 const rows = { metadata: '  28800 1 501 0.2 1.5 /Users/alice/项目 with spaces/node\n', commands: `  28800 ${command}\n` };
 
 describe('process snapshot locale isolation', () => {

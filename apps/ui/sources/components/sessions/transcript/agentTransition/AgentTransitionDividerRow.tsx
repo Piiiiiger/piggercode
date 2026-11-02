@@ -3,10 +3,9 @@ import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 
-import type { BackendTargetRefV1, SessionAgentTransitionDividerV1 } from '@piggercode/protocol';
+import type { SessionAgentTransitionDividerV1 } from '@piggercode/protocol';
 
 import { getAgentCore, isAgentId } from '@/agents/catalog/catalog';
-import { resolveExecutionRunBackendLabel } from '@/components/sessions/runs/resolveExecutionRunBackendLabel';
 import { Icon } from '@/components/ui/icons/Icon';
 import { TranscriptSeparatorRow } from '@/components/sessions/transcript/separators/TranscriptSeparatorRow';
 import {
@@ -34,10 +33,7 @@ import { openAgentTransitionHandedOverContextModal } from './openAgentTransition
  * name has no mark to draw either, and drawing one for an Agent this client
  * cannot identify would be inventing a brand for it.
  */
-function resolveAgentSlot(agentId: string, target?: BackendTargetRefV1): AgentTransitionTitleAgent {
-    if (target?.kind === 'configuredAcpBackend') {
-        return { label: resolveExecutionRunBackendLabel(target) ?? target.backendId, markAgentId: 'customAcp' };
-    }
+function resolveAgentSlot(agentId: string): AgentTransitionTitleAgent {
     return isAgentId(agentId)
         ? { label: t(getAgentCore(agentId).displayNameKey), markAgentId: agentId }
         : { label: agentId, markAgentId: null };
@@ -65,8 +61,8 @@ export function AgentTransitionDividerRow(props: Readonly<{
 }>): React.ReactElement {
     const { theme } = useUnistyles();
     const router = useRouter();
-    const from = resolveAgentSlot(props.divider.fromAgentId, props.divider.fromBackendTarget);
-    const to = resolveAgentSlot(props.divider.toAgentId, props.divider.toBackendTarget);
+    const from = resolveAgentSlot(props.divider.fromAgentId);
+    const to = resolveAgentSlot(props.divider.toAgentId);
     // The plain sentence stays the row's accessible name and the card's
     // subtitle: a screen reader is handed no marks, and neither is the modal
     // chrome, so both need the boundary said in words.

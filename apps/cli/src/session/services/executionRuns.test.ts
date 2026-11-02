@@ -59,7 +59,7 @@ function createMarker(params: Readonly<{
     runId: string;
     status: 'running' | 'succeeded';
     startedAtMs: number;
-    agentId?: 'claude' | 'opencode';
+    agentId?: 'claude' | 'codex';
     startRequestId?: string;
     startRequestFingerprint?: string;
 }>) {
@@ -232,7 +232,7 @@ describe('listExecutionRuns', () => {
     it('reapplies backend filters when falling back to marker-backed runs after rpc unavailability', async () => {
         callSessionRpc.mockRejectedValueOnce(new Error('RPC method not available'));
         listExecutionRunMarkers.mockResolvedValueOnce([
-            createMarker({ runId: 'run-marker-running', status: 'running', startedAtMs: 20, agentId: 'opencode' }),
+            createMarker({ runId: 'run-marker-running', status: 'running', startedAtMs: 20, agentId: 'codex' }),
             createMarker({ runId: 'run-marker-succeeded', status: 'succeeded', startedAtMs: 30 }),
         ]);
 

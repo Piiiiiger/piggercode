@@ -2,7 +2,7 @@
  * AgentBackend - Universal interface for AI agent backends
  * 
  * This module defines the core abstraction for different agent backends
- * (Claude, Codex, Gemini, OpenCode, etc.) that can be controlled through
+ * (Claude Code, Codex) that can be controlled through
  * the Happier CLI and app.
  * 
  * The AgentBackend interface provides a unified way to:
@@ -86,7 +86,7 @@ export type AgentTurnLivenessProbeResult = Readonly<{
 /**
  * Universal interface for agent backends.
  * 
- * All agent implementations (Claude, Codex, Gemini, etc.) should implement
+ * All agent implementations (Claude Code, Codex) should implement
  * this interface to be usable through the Happier CLI and app.
  */
 export interface AgentBackend {
@@ -186,7 +186,7 @@ export interface AgentBackend {
    * Respond to a permission request.
    *
    * **Implementation Note for ACP backends:**
-   * For ACP-based agents (Gemini, Codex via ACP), permission handling is done
+   * For ACP-based agents (Codex via ACP), permission handling is done
    * synchronously within the `requestPermission` RPC handler via `AcpPermissionHandler`.
    * This method only emits an internal `permission-response` event for UI/logging purposes.
    * The actual ACP response is already sent by the time this method is called.

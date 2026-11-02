@@ -57,7 +57,7 @@ describe('registerMachineTerminalRpcHandlers', () => {
     const buildLaunchSpec = vi.fn(() => ({
       runtime: 'binary' as const,
       filePath: '/opt/happier/bin/happier',
-      args: ['agy', 'auth', 'login'],
+      args: ['codex', 'auth', 'login'],
       env: { PIGGERCODE_CLI_TEST: '1' },
     }));
 
@@ -73,15 +73,15 @@ describe('registerMachineTerminalRpcHandlers', () => {
 
     const ensure = registered.get(RPC_METHODS.DAEMON_TERMINAL_ENSURE)!;
     const result = await ensure({
-      terminalKey: 'provider-login:machine-1:agy:primary',
-      launch: { kind: 'happier_cli', args: ['agy', 'auth', 'login'] },
+      terminalKey: 'provider-login:machine-1:codex:primary',
+      launch: { kind: 'happier_cli', args: ['codex', 'auth', 'login'] },
     });
 
     expect(result).toEqual(expect.objectContaining({ ok: true, reused: false }));
-    expect(buildLaunchSpec).toHaveBeenCalledWith(['agy', 'auth', 'login']);
+    expect(buildLaunchSpec).toHaveBeenCalledWith(['codex', 'auth', 'login']);
     expect(provider.spawned[0]).toEqual(expect.objectContaining({
       file: '/opt/happier/bin/happier',
-      args: ['agy', 'auth', 'login'],
+      args: ['codex', 'auth', 'login'],
       options: expect.objectContaining({
         env: expect.objectContaining({ PIGGERCODE_CLI_TEST: '1' }),
       }),

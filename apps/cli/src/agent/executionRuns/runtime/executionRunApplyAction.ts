@@ -44,10 +44,7 @@ export async function applyExecutionRunAction(args: Readonly<{
     const canFallback = (() => {
       const target = run.backendTarget;
       if (!target) return false;
-      if (target.kind !== 'builtInAgent') return false;
-      // Coderabbit runs are not follow-up capable unless we can resume the original vendor session.
-      if (target.agentId === 'coderabbit') return false;
-      return true;
+      return target.kind === 'builtInAgent';
     })();
     if (!canResume && !canFallback) {
       return { ok: false, errorCode: 'execution_run_action_not_supported', error: 'Follow-up is not supported for this run' };

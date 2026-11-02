@@ -16,7 +16,6 @@ type ReactActEnvironmentGlobal = typeof globalThis & {
 type ProfileCompatibility = {
     claude: boolean;
     codex: boolean;
-    gemini: boolean;
 };
 type ProfileRow = {
     id: string;
@@ -34,7 +33,6 @@ const profileEditPath = '/new/pick/profile-edit' as const;
 const testProfileCompatibility: ProfileCompatibility = {
     claude: true,
     codex: true,
-    gemini: true,
 };
 const testProfileRow: ProfileRow = {
     id: 'p1',
@@ -98,7 +96,7 @@ vi.mock('@/sync/domains/profiles/profileUtils', () => ({
 
 vi.mock('@/sync/domains/profiles/profileMutations', () => ({
     convertBuiltInProfileToCustom: <T,>(profile: T) => profile,
-    createEmptyCustomProfile: () => ({ id: 'new', name: '', isBuiltIn: false, compatibility: { claude: true, codex: true, gemini: true } }),
+    createEmptyCustomProfile: () => ({ id: 'new', name: '', isBuiltIn: false, compatibility: { claude: true, codex: true } }),
     duplicateProfileForEdit: <T,>(profile: T) => profile,
 }));
 

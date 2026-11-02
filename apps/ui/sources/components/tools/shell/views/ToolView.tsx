@@ -180,7 +180,7 @@ export const ToolView = React.memo<ToolViewProps>((props) => {
     let noStatus = false;
     let hideDefaultError = false;
     
-    // For some agents (e.g. Gemini): unknown tools should be rendered as minimal (hidden)
+    // For some agents: unknown tools should be rendered as minimal (hidden)
     // to avoid showing raw INPUT/OUTPUT for internal tools we haven't explicitly supported yet.
     if (headerModel.shouldHideBodyPermanently) {
         minimal = true;

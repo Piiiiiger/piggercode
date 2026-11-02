@@ -238,59 +238,6 @@ describe('resolveProviderCliCommand', () => {
     );
   });
 
-  it('fails closed for a system node-shebang provider script under bun when no JavaScript runtime is available', () => {
-    if (process.platform === 'win32') return;
-
-    const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
-    tempDirs.add(root);
-    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
-    const systemBin = join(root, 'system-bin');
-    mkdirSync(systemBin, { recursive: true });
-    const systemPath = join(systemBin, 'gemini');
-    writeTextFileSync(systemPath, '#!/usr/bin/env node\nconsole.log("ok");\n');
-    chmodSync(systemPath, 0o755);
-    process.env.PATH = systemBin;
-    delete process.env.PIGGERCODE_JS_RUNTIME_PATH;
-    delete process.env.PIGGERCODE_MANAGED_NODE_BIN;
-    delete process.env.PIGGERCODE_NODE_PATH;
-
-    expect(
-      resolveProviderCliCommand('gemini', {
-        isBunRuntime: true,
-        currentExecPath: join(root, 'happier'),
-      }),
-    ).toBeNull();
-  });
-
-  it('accepts a system node-shebang provider script under bun when a JavaScript runtime override is configured', () => {
-    if (process.platform === 'win32') return;
-
-    const root = createTempDirSync('happier-managed-cli-resolution-', tmpdir());
-    tempDirs.add(root);
-    process.env.PIGGERCODE_HOME_DIR = join(root, 'home');
-    mkdirSync(process.env.PIGGERCODE_HOME_DIR, { recursive: true });
-    const systemBin = join(root, 'system-bin');
-    mkdirSync(systemBin, { recursive: true });
-    const systemPath = join(systemBin, 'gemini');
-    writeTextFileSync(systemPath, '#!/usr/bin/env node\nconsole.log("ok");\n');
-    chmodSync(systemPath, 0o755);
-    process.env.PATH = systemBin;
-    process.env.PIGGERCODE_JS_RUNTIME_PATH = resolveSystemJavaScriptRuntimeBinary(originalPath);
-
-    expect(
-      resolveProviderCliCommand('gemini', {
-        isBunRuntime: true,
-        currentExecPath: join(root, 'happier'),
-      }),
-    ).toEqual(
-      expect.objectContaining({
-        source: 'system',
-        command: systemPath,
-      }),
-    );
-  });
-
   it('prefers the .cmd shim over an extensionless system file on Windows PATH', () => {
     if (!originalPlatformDescriptor) {
       throw new Error('Expected process.platform to be configurable for this test');

@@ -29,13 +29,13 @@ describe('surfacePrimarySessionRuntimeIssue', () => {
     const lifecycle = createSessionTurnLifecycle({ sessionId: 'surface-witness', enqueueSessionTurn: async (mutation) => {
       if (mutation.action === 'fail') await pendingWrite;
     } });
-    await lifecycle.beginTurn({ provider: 'agy' });
+    await lifecycle.beginTurn({ provider: 'codex' });
     const witnesses: unknown[] = [];
-    const pending = runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({ provider: 'agy', cause: 'session_error',
+    const pending = runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({ provider: 'codex', cause: 'session_error',
       error: new Error('provider failed'), occurredAt: 1_000, session: { sessionTurnLifecycle: lifecycle },
       onFailureTurn: (failure) => { witnesses.push(failure.issue); } });
     expect(witnesses).toHaveLength(1);
-    const duplicate = runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({ provider: 'agy', cause: 'session_error',
+    const duplicate = runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({ provider: 'codex', cause: 'session_error',
       error: new Error('provider failed'), occurredAt: 2_000, session: { sessionTurnLifecycle: lifecycle },
       suppressUntrustedDuplicate: true, onFailureTurn: (failure) => { witnesses.push(failure.issue); } });
     expect(witnesses[1]).toEqual(witnesses[0]);
@@ -83,13 +83,13 @@ describe('surfacePrimarySessionRuntimeIssue', () => {
     const failTurn = vi.fn();
 
     const issue = await runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({
-      provider: 'opencode',
+      provider: 'codex',
       providerTurnId: 'turn_model',
       occurredAt: 456,
       cause: 'session_error',
       error: {
         name: 'UnknownError',
-        message: 'OpenCode session failed',
+        message: 'Codex session failed',
         data: { message: 'Model not found: anthropic/claude-sonnet-4-6.' },
       },
       session: { sessionTurnLifecycle: createLifecycleStub({ failTurn }) },
@@ -98,31 +98,9 @@ describe('surfacePrimarySessionRuntimeIssue', () => {
     expect(issue).toMatchObject({
       code: 'provider_session_error',
       source: 'provider_session_error',
-      provider: 'opencode',
+      provider: 'codex',
       providerTurnId: 'turn_model',
       sanitizedPreview: 'Model not found: anthropic/claude-sonnet-4-6',
-    });
-    expect(failTurn).toHaveBeenCalledWith(expect.objectContaining({ issue }));
-  });
-
-  it('preserves Pi provider-session diagnostics through session error surfacing', async () => {
-    const failTurn = vi.fn();
-
-    const issue = await runtimeIssueSurface.surfacePrimarySessionRuntimeIssue({
-      provider: 'pi',
-      providerTurnId: 'pi-turn-provider-session',
-      occurredAt: 789,
-      cause: 'session_error',
-      error: new Error('Pi provider reported provider session failure after prompt acceptance'),
-      session: { sessionTurnLifecycle: createLifecycleStub({ failTurn }) },
-    });
-
-    expect(issue).toMatchObject({
-      code: 'provider_session_error',
-      source: 'provider_session_error',
-      provider: 'pi',
-      providerTurnId: 'pi-turn-provider-session',
-      sanitizedPreview: 'Pi provider reported provider session failure after prompt acceptance',
     });
     expect(failTurn).toHaveBeenCalledWith(expect.objectContaining({ issue }));
   });

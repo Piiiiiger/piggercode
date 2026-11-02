@@ -59,13 +59,4 @@ describe('commandRegistry install/update aliases', () => {
   it('registers tools command namespace', () => {
     expect(commandRegistry.tools).toBeTypeOf('function');
   });
-
-  it('registers built-in generic ACP agent commands', () => {
-    expect(commandRegistry.customAcp).toBeTypeOf('function');
-    expect(commandRegistry.kiro).toBeTypeOf('function');
-  });
-
-  it('registers the configured ACP catalog command namespace', () => {
-    expect(commandRegistry['acp-catalog']).toBeTypeOf('function');
-  });
 });

@@ -1,7 +1,7 @@
 /**
  * Atomic JSON writer
  *
- * Used for updating runtime auth stores (OpenCode/Pi/Codex) so consumers never read a partially-written file.
+ * Used for updating runtime auth stores (such as Codex's) so consumers never read a partially-written file.
  */
 
 import { mkdir, rename, unlink, writeFile, chmod } from 'node:fs/promises';

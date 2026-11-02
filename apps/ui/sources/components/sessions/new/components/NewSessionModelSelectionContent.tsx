@@ -52,7 +52,6 @@ function buildFavoriteBackendIdentity(entry: ResolvedBackendCatalogEntry): Favor
         backendTargetKey: entry.targetKey,
         providerAgentId: entry.providerAgentId,
         builtInAgentId: entry.builtInAgentId,
-        configuredBackendId: entry.target.kind === 'configuredAcpBackend' ? entry.target.backendId : null,
     };
 }
 

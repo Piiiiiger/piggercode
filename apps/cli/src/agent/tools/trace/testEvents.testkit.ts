@@ -30,14 +30,14 @@ export function scenarioToolResultThenToolCall(): string[] {
     makeTraceEvent({
       ts: 1,
       protocol: 'acp',
-      provider: 'opencode',
+      provider: 'codex',
       kind: 'tool-result',
       payload: { type: 'tool-result', callId: 'c1', output: { content: 'ok' } },
     }),
     makeTraceEvent({
       ts: 2,
       protocol: 'acp',
-      provider: 'opencode',
+      provider: 'codex',
       kind: 'tool-call',
       payload: { type: 'tool-call', callId: 'c1', name: 'read', input: { file_path: '/etc/hosts' } },
     }),
@@ -49,14 +49,14 @@ export function scenarioToolResultThenPermissionRequest(): string[] {
     makeTraceEvent({
       ts: 1,
       protocol: 'acp',
-      provider: 'gemini',
+      provider: 'codex',
       kind: 'tool-result',
       payload: { type: 'tool-result', callId: 'c1', output: { status: 'ok' } },
     }),
     makeTraceEvent({
       ts: 2,
       protocol: 'acp',
-      provider: 'gemini',
+      provider: 'codex',
       kind: 'permission-request',
       payload: { type: 'permission-request', permissionId: 'c1', toolName: 'read', input: { file_path: '/etc/hosts' } },
     }),

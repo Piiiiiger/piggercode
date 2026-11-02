@@ -25,10 +25,5 @@ export function shouldUseCandidateSource(
             && (selectedSource.projectId ?? '') === (candidateSource.projectId ?? '');
     }
 
-    if (selectedSource.kind === 'opencodeServer' && candidateSource.kind === 'opencodeServer') {
-        return (selectedSource.baseUrl ?? '') === (candidateSource.baseUrl ?? '')
-            && (selectedSource.directory ?? '') === (candidateSource.directory ?? '');
-    }
-
     return false;
 }

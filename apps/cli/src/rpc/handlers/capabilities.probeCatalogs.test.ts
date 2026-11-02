@@ -35,20 +35,8 @@ vi.mock('ps-list', async (importOriginal) => {
 describe('capabilities.invoke pre-session catalogs', () => {
   it('reports connected-service launch support from the registered materializer and lifecycle', async () => {
     const { call } = createEncryptedRpcTestClient({ scopePrefix: 'actual-auth-support', registerHandlers: registerCapabilitiesHandlers });
-    await expect(call(RPC_METHODS.CAPABILITIES_INVOKE, { id: 'cli.agy', method: 'connectedServiceAuthSupport' }))
-      .resolves.toMatchObject({ ok: true, result: { supportedServiceIds: ['antigravity'] } });
-    await expect(call(RPC_METHODS.CAPABILITIES_INVOKE, { id: 'cli.cursor', method: 'connectedServiceAuthSupport' }))
-      .resolves.toMatchObject({ ok: true, result: { supportedServiceIds: [] } });
-  });
-  it.each(['probeModels', 'probeModes', 'probeConfigOptions'])('refuses selected auth for an adapter without materialization: %s', async (method) => {
-    const { call } = createEncryptedRpcTestClient({ scopePrefix: `unsupported-auth-${method}`, registerHandlers: registerCapabilitiesHandlers });
-    await expect(call(RPC_METHODS.CAPABILITIES_INVOKE, {
-      id: 'cli.cursor', method, params: {
-        connectedServices: { v: 1, bindingsByServiceId: {
-          'openai-codex': { source: 'connected', selection: 'profile', profileId: 'fixture' },
-        } },
-      },
-    })).resolves.toMatchObject({ ok: false, error: { code: 'connected-service-preflight-failed' } });
+    await expect(call(RPC_METHODS.CAPABILITIES_INVOKE, { id: 'cli.codex', method: 'connectedServiceAuthSupport' }))
+      .resolves.toMatchObject({ ok: true, result: { supportedServiceIds: ['openai-codex', 'openai'] } });
   });
   it.each(['mkdir', 'write', 'promote', 'credential-http'] as const)('settles acquired selected-account artifacts before returning a catalog deadline: %s', async (boundary) => {
     await withTempDir('catalog-auth-custody-', async (cwd) => {
@@ -187,62 +175,6 @@ describe('capabilities.invoke pre-session catalogs', () => {
         vi.unstubAllEnvs();
         resetInMemoryAccountSettingsContextForTests();
         Object.defineProperties(configuration, descriptors);
-      }
-    });
-  }, 30_000);
-
-  it.each(['connected', 'native'] as const)('admits only native authentication when the catalog adapter cannot materialize a selected account: %s', async (source) => {
-    await withTempDir('catalog-unsupported-account-', async (cwd) => {
-      const credentialKeys = ['privateKeyFile', 'legacyPrivateKeyFile'] as const;
-      const credentialDescriptors = credentialKeys.map((key) => Object.getOwnPropertyDescriptor(configuration, key)!);
-      credentialKeys.forEach((key) => Object.defineProperty(configuration, key, { value: join(cwd, key), configurable: true }));
-      try {
-        const startupPath = join(cwd, 'native-startup');
-        const executable = await writeExecutableShim({
-          dir: cwd, fileName: 'cursor-fixture.mjs', contents: `#!${process.execPath}\n
-            import {writeFileSync} from 'node:fs';
-            writeFileSync(${JSON.stringify(startupPath)}, String(process.pid));
-            const send = message => process.stdout.write(JSON.stringify({jsonrpc:'2.0',...message})+'\\n');
-            let buffer = '';
-            process.stdin.on('data', chunk => {
-              buffer += chunk;
-              const lines = buffer.split('\\n'); buffer = lines.pop() || '';
-              for (const line of lines) {
-                if (!line.trim()) continue;
-                const request = JSON.parse(line);
-                if (request.method === 'initialize') send({id:request.id,result:{protocolVersion:1,
-                  agentCapabilities:{sessionCapabilities:{close:{}}},authMethods:[{id:'cursor_login',name:'Native login'}]}});
-                else if (request.method === 'session/new') {
-                  send({method:'session/update',params:{sessionId:'native-session',update:{sessionUpdate:'available_commands_update',
-                    availableCommands:[{name:'review',description:'Review the project'}]}}});
-                  send({id:request.id,result:{sessionId:'native-session'}});
-                } else if (request.id !== undefined) send({id:request.id,result:{}});
-              }
-            });
-          `,
-        });
-        const { call } = createEncryptedRpcTestClient({ scopePrefix: 'catalog-unsupported-account', registerHandlers: registerCapabilitiesHandlers });
-        const result = await call(RPC_METHODS.CAPABILITIES_INVOKE, {
-          id: 'cli.cursor', method: 'probeCatalogs', params: {
-            cwd, timeoutMs: 5_000,
-            connectedServices: { v: 1, bindingsByServiceId: {
-              'openai-codex': source === 'connected'
-                ? { source, selection: 'profile', profileId: 'selected-fixture' }
-                : { source },
-            } },
-            environmentVariables: { PIGGERCODE_CURSOR_PATH: executable },
-          },
-        });
-        if (source === 'connected') {
-          expect(result).toMatchObject({ ok: false, error: { code: 'connected-service-preflight-failed' } });
-          expect(existsSync(startupPath)).toBe(false);
-        } else {
-          expect(result).toMatchObject({ ok: true, result: { commands: { supported: true, items: [{ command: 'review' }] } } });
-          const pid = Number(await readFile(startupPath, 'utf8'));
-          expect(() => process.kill(pid, 0)).toThrow();
-        }
-      } finally {
-        credentialKeys.forEach((key, index) => Object.defineProperty(configuration, key, credentialDescriptors[index]));
       }
     });
   }, 30_000);
@@ -399,15 +331,15 @@ describe('capabilities.invoke pre-session catalogs', () => {
     });
   }, 30_000);
 
-  it('does not probe Gemini with ambient auth when its selected connected account is unavailable', async () => {
-    await withTempDir('gemini-preflight-catalogs-', async (cwd) => {
-      const { call } = createEncryptedRpcTestClient({ scopePrefix: 'gemini-catalog-test', registerHandlers: registerCapabilitiesHandlers });
+  it('does not probe Codex with ambient auth when its selected connected account is unavailable', async () => {
+    await withTempDir('codex-preflight-catalogs-', async (cwd) => {
+      const { call } = createEncryptedRpcTestClient({ scopePrefix: 'codex-catalog-test', registerHandlers: registerCapabilitiesHandlers });
       const response = await call(RPC_METHODS.CAPABILITIES_INVOKE, {
-        id: 'cli.gemini', method: 'probeCatalogs', params: {
+        id: 'cli.codex', method: 'probeCatalogs', params: {
           cwd, timeoutMs: 5_000,
-          environmentVariables: { PIGGERCODE_GEMINI_PATH: join(cwd, 'missing-native-cli') },
+          environmentVariables: { PIGGERCODE_CODEX_PATH: join(cwd, 'missing-native-cli') },
           connectedServices: { v: 1, bindingsByServiceId: {
-            'gemini': { source: 'connected', selection: 'group', groupId: 'fixture', profileId: 'fixture' },
+            'openai-codex': { source: 'connected', selection: 'group', groupId: 'fixture', profileId: 'fixture' },
           } },
         },
       });

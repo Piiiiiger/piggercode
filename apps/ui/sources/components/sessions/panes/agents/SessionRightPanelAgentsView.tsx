@@ -25,7 +25,7 @@ import { SessionSubagentLaunchSection } from '@/components/sessions/agents/launc
  *
  * The pane owns exactly one thing — where an action goes. What agents exist comes from the unified
  * spine (`useAgentActivitySurfaceModel`), so the roster is complete on a cold open however little
- * transcript has paged in (R-3) and a Codex or Gemini session degrades to local derivation without
+ * transcript has paged in (R-3) and a Codex session degrades to local derivation without
  * this file knowing. Anatomy, sections, ordering, status vocabulary, elapsed formatting, density,
  * insets, silence notes, run containment, emptiness and whether a row may be pressed at all belong
  * to `AgentActivitySurface`, which the compact work-state popover draws too — so this file contains

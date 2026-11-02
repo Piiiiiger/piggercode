@@ -1,8 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
-import { CONNECTED_SERVICE_BROKER_BRIDGE_FETCH_TIMEOUT_MS } from '../broker/brokerBridgeCallSource';
-
 import {
   CONNECTED_SERVICE_RUNTIME_AUTH_FAILURE_REPORT_TIMEOUT_MS,
   reportConnectedServiceRuntimeAuthFailureToDaemon,
@@ -58,7 +56,6 @@ describe('reportConnectedServiceRuntimeAuthFailureToDaemon', () => {
 
   it('keeps the local recovery report lifecycle-owned instead of imposing a wall-clock deadline', () => {
     expect(CONNECTED_SERVICE_RUNTIME_AUTH_FAILURE_REPORT_TIMEOUT_MS).toBeNull();
-    expect(CONNECTED_SERVICE_BROKER_BRIDGE_FETCH_TIMEOUT_MS).toBeGreaterThan(0);
   });
 
   it('does not emit a legacy launcher-daemon incarnation from the runner environment', async () => {

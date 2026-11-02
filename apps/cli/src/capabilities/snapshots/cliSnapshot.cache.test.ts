@@ -7,20 +7,20 @@ import { writePnpmNodeBridge } from '@/testkit/fs/executableShim';
 import type { DetectCliRequest } from './cliSnapshot';
 
 describe('detectCliSnapshotOnDaemonPath (cache)', () => {
-  const previousOpenCodePath = process.env.PIGGERCODE_OPENCODE_PATH;
+  const previousClaudePath = process.env.PIGGERCODE_CLAUDE_PATH;
 
   beforeEach(() => {
-    // Some CLI unit lanes provide a default OpenCode stub for machine-agnostic tests.
+    // Some CLI unit lanes provide a default Claude stub for machine-agnostic tests.
     // Cache behavior tests need full control over PATH vs overrides, so clear the global
     // override by default and let individual tests set it when needed.
-    delete process.env.PIGGERCODE_OPENCODE_PATH;
+    delete process.env.PIGGERCODE_CLAUDE_PATH;
   });
 
   afterEach(() => {
-    if (previousOpenCodePath === undefined) {
-      delete process.env.PIGGERCODE_OPENCODE_PATH;
+    if (previousClaudePath === undefined) {
+      delete process.env.PIGGERCODE_CLAUDE_PATH;
     } else {
-      process.env.PIGGERCODE_OPENCODE_PATH = previousOpenCodePath;
+      process.env.PIGGERCODE_CLAUDE_PATH = previousClaudePath;
     }
   });
 
@@ -85,7 +85,7 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
       method: 'oauth_cli' as const,
       source: 'command' as const,
     }));
-    const opencodeAuthProbe = vi.fn(async () => ({
+    const claudeAuthProbe = vi.fn(async () => ({
       state: 'logged_in' as const,
       method: 'oauth_cli' as const,
       source: 'command' as const,
@@ -100,11 +100,11 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
             detectAuthStatus: codexAuthProbe,
           }),
         },
-        opencode: {
-          id: 'opencode',
+        claude: {
+          id: 'claude',
           getCliAuthSpec: async () => ({
-            binaryNames: ['opencode'],
-            detectAuthStatus: opencodeAuthProbe,
+            binaryNames: ['claude'],
+            detectAuthStatus: claudeAuthProbe,
           }),
         },
       },
@@ -121,10 +121,10 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
         : '#!/bin/sh\necho "codex 0.0.0-test"\n',
     );
     await writeExecutableScript(
-      resolve(join(binDir, process.platform === 'win32' ? 'opencode.cmd' : 'opencode')),
+      resolve(join(binDir, process.platform === 'win32' ? 'claude.cmd' : 'claude')),
       process.platform === 'win32'
-        ? '@echo off\r\necho opencode 0.0.0-test\r\n'
-        : '#!/bin/sh\necho "opencode 0.0.0-test"\n',
+        ? '@echo off\r\necho claude 0.0.0-test\r\n'
+        : '#!/bin/sh\necho "claude 0.0.0-test"\n',
     );
 
     const prevPath = process.env.PATH;
@@ -141,7 +141,7 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
 
       expect(snapshot.clis.codex.isLoggedIn).toBe(true);
       expect(codexAuthProbe).toHaveBeenCalledTimes(1);
-      expect(opencodeAuthProbe).not.toHaveBeenCalled();
+      expect(claudeAuthProbe).not.toHaveBeenCalled();
     } finally {
       process.env.PATH = prevPath;
       await fixture.cleanup();
@@ -212,7 +212,7 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
 
     vi.doMock('@/backends/catalog', () => ({
       AGENTS: {
-        opencode: { id: 'opencode' },
+        claude: { id: 'claude' },
       },
     }));
 
@@ -223,14 +223,14 @@ describe('detectCliSnapshotOnDaemonPath (cache)', () => {
     const countFile = resolve(join(fixture.dir, 'count.txt'));
     await writeFile(countFile, '', 'utf8');
 
-    const opencodePath = resolve(join(binDir, 'opencode'));
+    const claudePath = resolve(join(binDir, 'claude'));
     await writeExecutableScript(
-      opencodePath,
+      claudePath,
       `#!/usr/bin/env node
 const fs = require("fs");
 const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
-process.stdout.write("opencode 1.2.3\\n");
+process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
 `,
     );
@@ -271,7 +271,7 @@ process.exit(0);
 
     vi.doMock('@/backends/catalog', () => ({
       AGENTS: {
-        opencode: { id: 'opencode' },
+        claude: { id: 'claude' },
       },
     }));
 
@@ -284,21 +284,21 @@ process.exit(0);
     const countFile = resolve(join(fixture.dir, 'count.txt'));
     await writeFile(countFile, '', 'utf8');
 
-    const opencodePath = resolve(join(binDir, 'opencode'));
-    const altOpencodePath = resolve(join(altBinDir, 'opencode'));
+    const claudePath = resolve(join(binDir, 'claude'));
+    const altClaudePath = resolve(join(altBinDir, 'claude'));
     const script = `#!/usr/bin/env node
 const fs = require("fs");
 const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
-process.stdout.write("opencode 1.2.3\\n");
+process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
 `;
-    await writeExecutableScript(opencodePath, script);
-    await writeExecutableScript(altOpencodePath, script);
+    await writeExecutableScript(claudePath, script);
+    await writeExecutableScript(altClaudePath, script);
 
     const prevPath = process.env.PATH;
     const prevCountFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
-    const prevOverride = process.env.PIGGERCODE_OPENCODE_PATH;
+    const prevOverride = process.env.PIGGERCODE_CLAUDE_PATH;
     const prevPnpmBin = process.env.PIGGERCODE_PNPM_BIN;
 
     process.env.PATH = `${binDir}${delimiter}${prevPath ?? ''}`;
@@ -318,7 +318,7 @@ process.exit(0);
       expect(afterSecond).toBe(afterFirst);
 
       // Set override - should invalidate cache and re-probe
-      process.env.PIGGERCODE_OPENCODE_PATH = altOpencodePath;
+      process.env.PIGGERCODE_CLAUDE_PATH = altClaudePath;
       await detectCliSnapshotOnDaemonPath({ includeLoginStatus: false });
       const afterThird = (await readFile(countFile, 'utf8')).length;
       expect(afterThird).toBeGreaterThan(afterSecond);
@@ -331,8 +331,8 @@ process.exit(0);
       process.env.PATH = prevPath;
       if (typeof prevCountFile === 'string') process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE = prevCountFile;
       else delete process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
-      if (typeof prevOverride === 'string') process.env.PIGGERCODE_OPENCODE_PATH = prevOverride;
-      else delete process.env.PIGGERCODE_OPENCODE_PATH;
+      if (typeof prevOverride === 'string') process.env.PIGGERCODE_CLAUDE_PATH = prevOverride;
+      else delete process.env.PIGGERCODE_CLAUDE_PATH;
       if (typeof prevPnpmBin === 'string') process.env.PIGGERCODE_PNPM_BIN = prevPnpmBin;
       else delete process.env.PIGGERCODE_PNPM_BIN;
       await fixture.cleanup();
@@ -344,7 +344,7 @@ process.exit(0);
 
     vi.doMock('@/backends/catalog', () => ({
       AGENTS: {
-        opencode: { id: 'opencode' },
+        claude: { id: 'claude' },
       },
     }));
 
@@ -355,14 +355,14 @@ process.exit(0);
     const countFile = resolve(join(fixture.dir, 'count.txt'));
     await writeFile(countFile, '', 'utf8');
 
-    const opencodePath = resolve(join(binDir, 'opencode'));
+    const claudePath = resolve(join(binDir, 'claude'));
     await writeExecutableScript(
-      opencodePath,
+      claudePath,
       `#!/usr/bin/env node
 const fs = require("fs");
 const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
-process.stdout.write("opencode 1.2.3\\n");
+process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
 `,
     );
@@ -409,7 +409,7 @@ process.exit(0);
 
     vi.doMock('@/backends/catalog', () => ({
       AGENTS: {
-        opencode: { id: 'opencode' },
+        claude: { id: 'claude' },
       },
     }));
 
@@ -420,14 +420,14 @@ process.exit(0);
     const countFile = resolve(join(fixture.dir, 'count.txt'));
     await writeFile(countFile, '', 'utf8');
 
-    const opencodePath = resolve(join(binDir, 'opencode'));
+    const claudePath = resolve(join(binDir, 'claude'));
     await writeExecutableScript(
-      opencodePath,
+      claudePath,
       `#!/usr/bin/env node
 const fs = require("fs");
 const countFile = process.env.PIGGERCODE_TEST_CLI_SNAPSHOT_COUNT_FILE;
 if (countFile) fs.appendFileSync(countFile, "1");
-process.stdout.write("opencode 1.2.3\\n");
+process.stdout.write("claude 1.2.3\\n");
 process.exit(0);
 `,
     );
@@ -452,7 +452,7 @@ process.exit(0);
       expect(afterSecond).toBe(afterFirst);
 
       // Change source preferences - should invalidate cache
-      process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ opencode: 'managed-first' });
+      process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON = JSON.stringify({ claude: 'managed-first' });
       await detectCliSnapshotOnDaemonPath({ includeLoginStatus: false });
       const afterThird = (await readFile(countFile, 'utf8')).length;
       expect(afterThird).toBeGreaterThan(afterSecond);

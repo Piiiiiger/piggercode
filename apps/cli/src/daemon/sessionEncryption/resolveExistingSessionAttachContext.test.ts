@@ -96,27 +96,6 @@ describe('resolveExistingSessionAttachContext', () => {
     }
   });
 
-  it('resolves configured ACP ids only for the matching backend target', async () => {
-    const metadata = JSON.stringify({
-      flavor: 'acp:legacy-label',
-      acpConfiguredBackendV1: { v: 1, updatedAt: 1, backendId: 'review-bot', title: 'Review Bot' },
-      customAcpSessionId: 'provider-1',
-    });
-    vi.mocked(fetchSessionByIdCompat)
-      .mockResolvedValueOnce(createSessionRecordFixture({ id: 'matching', encryptionMode: 'plain', metadata, dataEncryptionKey: null }))
-      .mockResolvedValueOnce(createSessionRecordFixture({ id: 'stale', encryptionMode: 'plain', metadata, dataEncryptionKey: null }));
-
-    const matching = await resolveExistingSessionAttachContext({
-      token: 't', sessionId: 'matching', backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' }, credentials: null,
-    });
-    const stale = await resolveExistingSessionAttachContext({
-      token: 't', sessionId: 'stale', backendTarget: { kind: 'configuredAcpBackend', backendId: 'other-bot' }, credentials: null,
-    });
-
-    expect(matching).toMatchObject({ ok: true, vendorResumeId: 'provider-1' });
-    expect(stale).toMatchObject({ ok: true, vendorResumeId: null });
-  });
-
   it('uses the server session sequence without consulting retired delivery watermark metadata', async () => {
     vi.mocked(fetchSessionByIdCompat).mockResolvedValueOnce(
       createSessionRecordFixture({

@@ -126,7 +126,7 @@ describe('ephemeral.task.run session RPC handler', () => {
       const res = await client.call<any, any>(SESSION_RPC_METHODS.EPHEMERAL_TASK_RUN, {
         kind: 'scm.commit_message',
         sessionId: 'sess_1',
-        input: { backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' } },
+        input: { backendTarget: { kind: 'builtInAgent', agentId: 'codex' } },
         permissionMode: 'no_tools',
       });
 
@@ -134,9 +134,9 @@ describe('ephemeral.task.run session RPC handler', () => {
       expect(res.result?.title).toBe('feat: update a');
       expect(createdBackendOpts).toEqual([
         {
-          backendId: 'customAcp',
+          backendId: 'codex',
           permissionMode: 'no_tools',
-          backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
         },
       ]);
       expect(String(capture.lastPrompt)).toContain('Commit message');

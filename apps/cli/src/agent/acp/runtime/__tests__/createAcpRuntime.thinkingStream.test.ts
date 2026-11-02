@@ -33,7 +33,7 @@ async function createRuntimeWithThinkingCommits(): Promise<{
   });
 
   const runtime = createAcpRuntime({
-    provider: 'pi',
+    provider: 'codex',
     directory: '/tmp',
     session,
     messageBuffer: new MessageBuffer(),

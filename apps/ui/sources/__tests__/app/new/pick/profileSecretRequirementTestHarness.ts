@@ -68,7 +68,7 @@ export function createMissingRequiredSecretScenario(): Readonly<{
             defaultPermissionModeByTargetKey: {},
             defaultPersistenceModeByAgent: {},
             defaultPersistenceModeByTargetKey: {},
-            compatibility: { codex: true, customAcp: false },
+            compatibility: { codex: true },
             compatibilityByTargetKey: {},
             envVarRequirements: [],
             isBuiltIn: true,

@@ -5,9 +5,6 @@ import type { AgentId } from '@piggercode/agents';
 import type { AcpConfigOptionOverridesV1, BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { sendAgentPromptPayload, sendAgentSteerPromptPayload } from '@/agent/core/AgentPromptPayload';
-import { createConfiguredAcpBackend } from '@/agent/acp/catalog/configured/createConfiguredAcpBackend';
-import { materializeConfiguredAcpEnvironment } from '@/agent/acp/catalog/configured/materializeConfiguredAcpEnvironment';
-import { resolveConfiguredAcpBackendFromAccountSettings } from '@/agent/acp/catalog/configured/resolveConfiguredAcpBackendFromAccountSettings';
 import { createExecutionRunPermissionHandler } from '@/agent/executionRuns/policy/executionRunPermissionDecision';
 import { getExecutionRunBackendDescriptor } from '@/agent/executionRuns/registry/executionRunBackendRegistry';
 import { resolveCustomHappierToolsContext } from '@/agent/tools/happierTools/customMcp/resolveCustomHappierToolsContext';
@@ -48,9 +45,6 @@ function resolveExecutionRunAccountSettings(params: Readonly<{
 }>): Readonly<Record<string, unknown>> | null {
   const explicitSettings = normalizeAccountSettings(params.accountSettings);
   if (explicitSettings) return explicitSettings;
-  if (params.backendTarget?.kind === 'configuredAcpBackend') {
-    return null;
-  }
   return normalizeAccountSettings(getActiveAccountSettingsSnapshot()?.settings ?? null);
 }
 
@@ -92,156 +86,6 @@ function createExecutionRunMcpServersResolver(opts: Readonly<{
       })();
     }
     return resolution;
-  };
-}
-
-function createLazyConfiguredAcpExecutionRunBackend(opts: Readonly<{
-  cwd: string;
-  backendTarget: BackendTargetRefV1;
-  modelId?: string;
-  permissionMode: string;
-  runId?: string;
-  credentials?: Awaited<ReturnType<typeof readCredentials>> | null;
-  accountSettings?: Readonly<Record<string, unknown>> | null;
-  resolveMcpServers: (context?: ExecutionRunMcpResolutionContext) => Promise<Record<string, McpServerConfig>>;
-  cleanupMcpMaterial: () => void;
-  interactivePermissionHandler?: AcpPermissionHandler;
-}>): AgentBackend {
-  const configuredBackendId = opts.backendTarget.kind === 'configuredAcpBackend'
-    ? opts.backendTarget.backendId
-    : '';
-  const runId = normalizeNonEmptyString(opts.runId);
-  const runPermissionScope = opts.interactivePermissionHandler && runId
-    ? createRunScopedExecutionPermissionHandler({ runId, handler: opts.interactivePermissionHandler })
-    : null;
-  const permissionHandler = createExecutionRunPermissionHandler({
-    backendId: configuredBackendId || 'customAcp',
-    permissionMode: opts.permissionMode,
-    interactiveHandler: runPermissionScope?.handler,
-  });
-  const handlers = new Set<Parameters<AgentBackend['onMessage']>[0]>();
-  const registeredHandlers = new Set<Parameters<AgentBackend['onMessage']>[0]>();
-  let resolvedBackendPromise: Promise<AgentBackend> | null = null;
-  const selectedModelId = normalizeNonEmptyString(opts.modelId);
-  let resolvedSessionModelId: string | undefined;
-
-  const resolveBackend = async (): Promise<AgentBackend> => {
-    if (resolvedBackendPromise) return await resolvedBackendPromise;
-    resolvedBackendPromise = (async () => {
-      if (opts.backendTarget.kind !== 'configuredAcpBackend') {
-        throw new Error(`Unsupported execution-run backend: customAcp`);
-      }
-      const credentials = opts.credentials ?? await readCredentials();
-      if (!credentials) {
-        throw new Error('Missing credentials for configured ACP execution run');
-      }
-      const settings = opts.accountSettings ?? (await bootstrapAccountSettingsContext({
-        credentials,
-        backendTarget: opts.backendTarget,
-      })).settings;
-      const backendDefinition = resolveConfiguredAcpBackendFromAccountSettings(settings, opts.backendTarget.backendId);
-      if (!backendDefinition) {
-        throw new Error(`Unknown configured ACP backend: ${opts.backendTarget.backendId}`);
-      }
-      resolvedSessionModelId = selectedModelId ?? normalizeNonEmptyString(backendDefinition.defaultModel);
-
-      const launchEnv = materializeConfiguredAcpEnvironment({
-        backend: backendDefinition,
-        accountSettings: settings,
-        credentials,
-      });
-      const resolvedMcpServers = await opts.resolveMcpServers({ credentials, accountSettings: settings });
-      const backend = createConfiguredAcpBackend({
-        cwd: opts.cwd,
-        backend: backendDefinition,
-        launchEnv,
-        mcpServers: resolvedMcpServers,
-        permissionHandler,
-      });
-      for (const handler of handlers) {
-        if (!registeredHandlers.has(handler)) {
-          backend.onMessage(handler);
-          registeredHandlers.add(handler);
-        }
-      }
-      return backend;
-    })();
-    return await resolvedBackendPromise;
-  };
-
-  const applySelectedModelId = async (backend: AgentBackend, sessionId: string): Promise<void> => {
-    const configurableBackend = backend as AgentBackend & {
-      setSessionModel?: (sessionId: string, modelId: string) => Promise<void>;
-    };
-    if (!resolvedSessionModelId || typeof configurableBackend.setSessionModel !== 'function') return;
-    await configurableBackend.setSessionModel(sessionId, resolvedSessionModelId);
-  };
-
-  return {
-    async startSession(initialPrompt) {
-      const backend = await resolveBackend();
-      const started = await backend.startSession(initialPrompt);
-      await applySelectedModelId(backend, started.sessionId);
-      return started;
-    },
-    async sendPrompt(sessionId, prompt) {
-      const backend = await resolveBackend();
-      await backend.sendPrompt(sessionId, prompt);
-    },
-    async sendPromptPayload(sessionId: string, payload: AgentPromptPayload) {
-      const backend = await resolveBackend();
-      await sendAgentPromptPayload(backend, sessionId, payload);
-    },
-    async sendSteerPrompt(sessionId, prompt) {
-      const backend = await resolveBackend();
-      if (typeof backend.sendSteerPrompt !== 'function') {
-        throw new Error('Backend does not support steering');
-      }
-      await backend.sendSteerPrompt(sessionId, prompt);
-    },
-    async sendSteerPromptPayload(sessionId: string, payload: AgentPromptPayload) {
-      const backend = await resolveBackend();
-      await sendAgentSteerPromptPayload(backend, sessionId, payload);
-    },
-    async cancel(sessionId) {
-      const backend = await resolveBackend();
-      await backend.cancel(sessionId);
-    },
-    onMessage(handler) {
-      handlers.add(handler);
-      void resolvedBackendPromise?.then((backend) => {
-        if (!registeredHandlers.has(handler)) {
-          backend.onMessage(handler);
-          registeredHandlers.add(handler);
-        }
-      }).catch(() => {});
-    },
-    offMessage(handler) {
-      handlers.delete(handler);
-      registeredHandlers.delete(handler);
-      void resolvedBackendPromise?.then((backend) => {
-        backend.offMessage?.(handler);
-      }).catch(() => {});
-    },
-    async respondToPermission(requestId, approved) {
-      const backend = await resolveBackend();
-      if (typeof backend.respondToPermission !== 'function') return;
-      await backend.respondToPermission(requestId, approved);
-    },
-    async waitForResponseComplete(timeoutMs) {
-      const backend = await resolveBackend();
-      if (typeof backend.waitForResponseComplete !== 'function') return;
-      await backend.waitForResponseComplete(timeoutMs);
-    },
-    async dispose() {
-      runPermissionScope?.dispose('Execution run disposed');
-      const backend = await resolvedBackendPromise?.catch(() => null);
-      try {
-        await backend?.dispose();
-      } finally {
-        opts.cleanupMcpMaterial();
-      }
-    },
   };
 }
 
@@ -303,27 +147,6 @@ export function createExecutionRunBackend(opts: Readonly<{
         agentId: opts.backendTarget.agentId as AgentId,
         backendTarget: opts.backendTarget,
         settings: accountSettings,
-      });
-    }
-    if (accountSettings && opts.backendTarget?.kind === 'configuredAcpBackend') {
-      assertBackendEnabledByAccountSettings({
-        backendTarget: opts.backendTarget,
-        settings: accountSettings,
-      });
-    }
-    if (backendId === 'customAcp' && opts.backendTarget?.kind === 'configuredAcpBackend') {
-      const runId = normalizeNonEmptyString(opts.runId);
-      return createLazyConfiguredAcpExecutionRunBackend({
-        cwd: opts.cwd,
-        backendTarget: opts.backendTarget,
-        modelId: opts.modelId,
-        permissionMode: opts.permissionMode,
-        ...(runId ? { runId } : {}),
-        credentials: null,
-        accountSettings,
-        resolveMcpServers,
-        cleanupMcpMaterial,
-        interactivePermissionHandler: opts.interactivePermissionHandler,
       });
     }
     const runId = normalizeNonEmptyString(opts.runId);

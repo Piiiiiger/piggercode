@@ -5,10 +5,10 @@ import type { ProviderScenario, ProviderUnderTest } from '../../src/testkit/prov
 
 function makeProvider(toolPermissionPromptsByModeYolo: boolean): ProviderUnderTest {
   return {
-    id: 'kimi',
-    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_KIMI',
+    id: 'codex',
+    enableEnvVar: 'PIGGERCODE_E2E_PROVIDER_CODEX',
     protocol: 'acp',
-    traceProvider: 'kimi',
+    traceProvider: 'codex',
     permissions: {
       v: 1,
       acp: {
@@ -25,7 +25,7 @@ function makeProvider(toolPermissionPromptsByModeYolo: boolean): ProviderUnderTe
       v: 1,
       tiers: { smoke: [], extended: [] },
     },
-    cli: { subcommand: 'kimi' },
+    cli: { subcommand: 'codex' },
   };
 }
 

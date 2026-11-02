@@ -191,58 +191,6 @@ async function main() {
 
     if (strategy.kind === 'expo_run_android') {
       plan.steps.push({ cmd: process.execPath, args: invocation.nodeArgs, cwd: rootDir, env: invocation.env });
-    } else if (strategy.kind === 'eas_local_dagger') {
-      const artifactOutRel = 'dist/ui-mobile/happier-dev-client-android.apk';
-      const outJsonRel = 'dist/ui-mobile/eas_build_dev_client_android.json';
-      const pipelineScript = `${repoRoot}/scripts/pipeline/run.mjs`;
-
-      plan.steps.push({
-        cmd: process.execPath,
-        args: [
-          pipelineScript,
-          'expo-native-build',
-          '--platform',
-          'android',
-          '--profile',
-          invocation.easBuildProfile,
-          '--out',
-          outJsonRel,
-          '--build-mode',
-          'local',
-          '--local-runtime',
-          'dagger',
-          '--artifact-out',
-          artifactOutRel,
-          '--secrets-source',
-          'auto',
-          '--keychain-service',
-          'happier/pipeline',
-        ],
-        cwd: repoRoot,
-        env: invocation.env,
-      });
-
-      const copyArtifactScript = join(rootDir, 'scripts', 'utils', 'mobile', 'copy_artifact.mjs');
-      const artifactAbs = join(repoRoot, artifactOutRel);
-      plan.steps.push({
-        cmd: process.execPath,
-        args: [copyArtifactScript, '--from', artifactAbs, '--to', cachedApkAbs],
-        cwd: repoRoot,
-        env: process.env,
-      });
-
-      const hasAdb = await commandExists('adb', { cwd: repoRoot, env: process.env, timeoutMs: 5_000 });
-      if (hasAdb) {
-        plan.steps.push({
-          cmd: 'adb',
-          args: ['install', '-r', cachedApkAbs],
-          cwd: repoRoot,
-          env: {
-            ...process.env,
-            ...(invocation.device ? { ANDROID_SERIAL: invocation.device } : {}),
-          },
-        });
-      }
     } else {
       // Fail closed: keep behavior explicit when nothing is configured.
       if (isTestStub) {
@@ -258,7 +206,6 @@ async function main() {
         text:
           `[mobile-dev-client] Android tooling not configured.\n` +
           `- To build/install on host: set ANDROID_HOME or ANDROID_SDK_ROOT and ensure adb+java are on PATH.\n` +
-          `- To use the pipeline fallback: ensure docker+dagger are on PATH, and provide Expo auth via EXPO_TOKEN or Keychain bundle (service 'happier/pipeline').\n` +
           `Missing: ${strategy.missing.join(', ')}`,
       });
       process.exit(1);

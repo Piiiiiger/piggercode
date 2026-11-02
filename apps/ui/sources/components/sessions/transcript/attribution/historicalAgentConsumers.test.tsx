@@ -97,23 +97,6 @@ describe('historical Agent consumers', () => {
             iconColorSecondary: '#111',
         };
 
-        it('renders a row from the previous Agent with that Agent unknown-tool policy', async () => {
-            const { buildToolHeaderModel } =
-                await import('@/components/tools/shell/presentation/buildToolHeaderModel');
-            // Gemini hides unknown tools by default; Claude does not. After a
-            // gemini -> claude switch the Gemini-era rows must keep Gemini's
-            // policy instead of silently un-hiding.
-            const index = indexForSwitch('gemini', 'claude');
-
-            const model = buildToolHeaderModel({
-                ...headerInput,
-                metadata: { flavor: 'claude' } as never,
-                historicalAgentId: resolveHistoricalAgentIdAtSeq(index, CLAUDE_ERA_SEQ),
-            });
-
-            expect(model.hideUnknownToolsByDefault).toBe(true);
-        });
-
         it('keeps the live-metadata answer when there is no historical evidence', async () => {
             const { buildToolHeaderModel } =
                 await import('@/components/tools/shell/presentation/buildToolHeaderModel');

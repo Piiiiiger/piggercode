@@ -103,7 +103,6 @@ describe('extractVoiceActionsFromAssistantText', () => {
           instructions: 'Review the repo.',
           changeType: 'committed',
           base: { kind: 'none' },
-          engines: { coderabbit: {} },
           permissionMode: 'read_only',
           runLocation: 'execution_run',
         },

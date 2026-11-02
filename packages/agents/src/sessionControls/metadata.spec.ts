@@ -48,7 +48,7 @@ describe('sessionAppliedModelV1', () => {
 describe('parseSessionModelsMetadataStateV1', () => {
     const base = {
         v: 1,
-        provider: 'grok',
+        provider: 'codex',
         updatedAt: 1,
         currentModelId: 'model-a',
     } as const;

@@ -38,17 +38,11 @@ function resolveExecutionRunBackendId(run: Readonly<Record<string, unknown>> | n
   if (backendTarget?.kind === 'builtInAgent' && typeof backendTarget.agentId === 'string' && backendTarget.agentId.trim()) {
     return backendTarget.agentId.trim();
   }
-  if (backendTarget?.kind === 'configuredAcpBackend' && typeof backendTarget.backendId === 'string' && backendTarget.backendId.trim()) {
-    return backendTarget.backendId.trim();
-  }
 
   const resumeHandle = run?.resumeHandle as Record<string, unknown> | undefined;
   const backendTargetFromHandle = resumeHandle?.backendTarget as Record<string, unknown> | undefined;
   if (backendTargetFromHandle?.kind === 'builtInAgent' && typeof backendTargetFromHandle.agentId === 'string' && backendTargetFromHandle.agentId.trim()) {
     return backendTargetFromHandle.agentId.trim();
-  }
-  if (backendTargetFromHandle?.kind === 'configuredAcpBackend' && typeof backendTargetFromHandle.backendId === 'string' && backendTargetFromHandle.backendId.trim()) {
-    return backendTargetFromHandle.backendId.trim();
   }
 
   const backendIdFromHandle = typeof resumeHandle?.backendId === 'string' ? resumeHandle.backendId.trim() : '';
@@ -57,22 +51,16 @@ function resolveExecutionRunBackendId(run: Readonly<Record<string, unknown>> | n
 
 function resolveExecutionRunBackendTarget(
   run: Readonly<Record<string, unknown>> | null | undefined,
-): { kind: 'builtInAgent'; agentId: string } | { kind: 'configuredAcpBackend'; backendId: string } | null {
+): { kind: 'builtInAgent'; agentId: string } | null {
   const backendTarget = run?.backendTarget as Record<string, unknown> | undefined;
   if (backendTarget?.kind === 'builtInAgent' && typeof backendTarget.agentId === 'string' && backendTarget.agentId.trim()) {
     return { kind: 'builtInAgent', agentId: backendTarget.agentId.trim() };
-  }
-  if (backendTarget?.kind === 'configuredAcpBackend' && typeof backendTarget.backendId === 'string' && backendTarget.backendId.trim()) {
-    return { kind: 'configuredAcpBackend', backendId: backendTarget.backendId.trim() };
   }
 
   const resumeHandle = run?.resumeHandle as Record<string, unknown> | undefined;
   const targetFromHandle = resumeHandle?.backendTarget as Record<string, unknown> | undefined;
   if (targetFromHandle?.kind === 'builtInAgent' && typeof targetFromHandle.agentId === 'string' && targetFromHandle.agentId.trim()) {
     return { kind: 'builtInAgent', agentId: targetFromHandle.agentId.trim() };
-  }
-  if (targetFromHandle?.kind === 'configuredAcpBackend' && typeof targetFromHandle.backendId === 'string' && targetFromHandle.backendId.trim()) {
-    return { kind: 'configuredAcpBackend', backendId: targetFromHandle.backendId.trim() };
   }
 
   const backendId = resolveExecutionRunBackendId(run);

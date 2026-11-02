@@ -47,13 +47,13 @@ describe('useCapabilityInstallability', () => {
   });
 
   it('caches installability results and avoids re-invoking within TTL', async () => {
-    const first = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.opencode' });
+    const first = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.codex' });
     await flushHookEffects();
     await first.unmount();
 
     expect(machineCapabilitiesInvokeSpy).toHaveBeenCalledTimes(1);
 
-    const second = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.opencode' });
+    const second = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.codex' });
     await flushHookEffects();
     await second.unmount();
 
@@ -61,11 +61,11 @@ describe('useCapabilityInstallability', () => {
   });
 
   it('does not share cached results across different capabilities', async () => {
-    const first = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.opencode' });
+    const first = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.codex' });
     await flushHookEffects();
     await first.unmount();
 
-    const second = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.codex' });
+    const second = await renderInstallability({ machineId: 'm1', serverId: 'server-a', capabilityId: 'cli.claude' });
     await flushHookEffects();
     await second.unmount();
 

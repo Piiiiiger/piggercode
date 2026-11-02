@@ -584,7 +584,7 @@ describe('switchSessionConnectedServiceAuth', () => {
         connectedServiceMaterializationIdentityV1: materializationIdentity,
         vendorResumeId: 'vendor-inactive-1',
         cwd: '/tmp/inactive-repo',
-        candidatePersistedSessionFile: '/tmp/inactive-repo/.pi/agent/sessions/--tmp-inactive-repo--/s.jsonl',
+        candidatePersistedSessionFile: '/tmp/inactive-repo/.claude/sessions/--tmp-inactive-repo--/s.jsonl',
       }),
       api: {
         listConnectedServiceProfiles: async () => ({
@@ -614,7 +614,7 @@ describe('switchSessionConnectedServiceAuth', () => {
       tracked: null,
       sessionId: 'sess_inactive',
       cwd: '/tmp/inactive-repo',
-      candidatePersistedSessionFile: '/tmp/inactive-repo/.pi/agent/sessions/--tmp-inactive-repo--/s.jsonl',
+      candidatePersistedSessionFile: '/tmp/inactive-repo/.claude/sessions/--tmp-inactive-repo--/s.jsonl',
     }));
   });
 
@@ -3323,166 +3323,6 @@ describe('switchSessionConnectedServiceAuth', () => {
 
     expect(tracked.spawnOptions?.connectedServices).toEqual(bindings('old-profile'));
   });
-
-  it('fails closed when PI continuity cannot prove resume reachability', async () => {
-    const tracked = trackedSession({
-      spawnOptions: {
-        directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
-        connectedServices: {
-          v: 1,
-          bindingsByServiceId: {
-            'openai-codex': { source: 'connected', selection: 'profile', profileId: 'old-profile' },
-          },
-        },
-      },
-    });
-
-    await expect(switchSessionConnectedServiceAuth({
-      core: createCore(),
-      postSwitchVerificationMode: {
-        kind: 'disabled_for_test_only',
-        reason: 'existing switch fixture does not exercise provider adoption verification',
-      },
-      getChildren: () => [tracked],
-      api: {
-        listConnectedServiceProfiles: async () => ({
-          serviceId: 'openai-codex',
-          profiles: [{ profileId: 'new-profile', status: 'connected' }],
-        }),
-        getConnectedServiceAuthGroup: async () => null,
-      },
-      resolveContinuity: async () => ({
-        mode: 'unsupported',
-        errorCode: 'provider_session_state_unavailable_for_resume',
-      }),
-      restartSession: async () => {
-        throw new Error('restart should not run');
-      },
-      hotApply: async () => ({ ok: true }),
-      registerHotApplyTargets: () => {},
-      emitSessionEvent: () => {},
-      request: {
-        sessionId: 'sess_1',
-        agentId: 'pi',
-        bindings: {
-          v: 1,
-          bindingsByServiceId: {
-            'openai-codex': { source: 'connected', selection: 'profile', profileId: 'new-profile' },
-          },
-        },
-      },
-    })).resolves.toMatchObject({
-      ok: false,
-      errorCode: 'provider_session_state_unavailable_for_resume',
-      serviceId: 'openai-codex',
-      diagnostics: {
-        failurePhase: 'continuity',
-        uxDiagnostic: expect.objectContaining({
-          code: 'provider_session_state_unavailable_for_resume',
-          failurePhase: 'continuity',
-          serviceId: 'openai-codex',
-          suggestedActions: expect.arrayContaining(['start_fresh_under_selected_account', 'open_connected_accounts']),
-        }),
-      },
-    });
-
-    expect(tracked.spawnOptions?.connectedServices).toEqual({
-      v: 1,
-      bindingsByServiceId: {
-        'openai-codex': { source: 'connected', selection: 'profile', profileId: 'old-profile' },
-      },
-    });
-  });
-
-  it('keeps PI continuity diagnostics path-safe in public auth-switch results', async () => {
-    const tracked = trackedSession({
-      spawnOptions: {
-        directory: '/tmp/project',
-        backendTarget: { kind: 'builtInAgent', agentId: 'pi' },
-        connectedServices: {
-          v: 1,
-          bindingsByServiceId: {
-            'openai-codex': { source: 'connected', selection: 'profile', profileId: 'old-profile' },
-          },
-        },
-      },
-    });
-
-    const result = await switchSessionConnectedServiceAuth({
-      core: createCore(),
-      postSwitchVerificationMode: {
-        kind: 'disabled_for_test_only',
-        reason: 'existing switch fixture does not exercise provider adoption verification',
-      },
-      getChildren: () => [tracked],
-      api: {
-        listConnectedServiceProfiles: async () => ({
-          serviceId: 'openai-codex',
-          profiles: [{ profileId: 'new-profile', status: 'connected' }],
-        }),
-        getConnectedServiceAuthGroup: async () => null,
-      },
-      resolveContinuity: async () => ({
-        mode: 'unsupported',
-        errorCode: 'provider_session_state_unavailable_for_resume',
-        diagnostics: {
-          materializationIdentityId: 'csm_pi_shared',
-          targetMaterializedRoot: '/tmp/materialized/csm_pi_shared/pi',
-          vendorResumeId: 'pi-session-1',
-          cwd: '/tmp/project',
-          candidatePersistedSessionFile: '/tmp/native/pi-session-1.jsonl',
-          requestedStateMode: 'shared',
-          effectiveStateMode: 'shared',
-          reachabilityMissReason: 'pi_session_file_not_found',
-        },
-      }),
-      restartSession: async () => {
-        throw new Error('restart should not run');
-      },
-      hotApply: async () => ({ ok: true }),
-      registerHotApplyTargets: () => {},
-      emitSessionEvent: () => {},
-      request: {
-        sessionId: 'sess_1',
-        agentId: 'pi',
-        bindings: {
-          v: 1,
-          bindingsByServiceId: {
-            'openai-codex': { source: 'connected', selection: 'profile', profileId: 'new-profile' },
-          },
-        },
-      },
-    });
-
-	    expect(result).toMatchObject({
-	      ok: false,
-	      errorCode: 'provider_session_state_unavailable_for_resume',
-	      diagnostics: {
-	        failurePhase: 'continuity',
-	        continuity: {
-	          requestedStateMode: 'shared',
-	          effectiveStateMode: 'shared',
-	          reachabilityMissReason: 'pi_session_file_not_found',
-        },
-        uxDiagnostic: expect.objectContaining({
-          code: 'provider_session_state_unavailable_for_resume',
-          diagnostics: {
-            reason: 'pi_session_file_not_found',
-          },
-        }),
-      },
-	    });
-
-	    if (!result.ok) {
-	      const diagnostics = JSON.stringify(result.diagnostics ?? {});
-	      expect(diagnostics).not.toContain('/tmp/materialized');
-	      expect(diagnostics).not.toContain('/tmp/native');
-	      expect(diagnostics).not.toContain('/tmp/project');
-	      expect(diagnostics).not.toContain('pi-session-1');
-	      expect(diagnostics).not.toContain('csm_pi_shared');
-	    }
-	  });
 
   it('returns restart failure diagnostics when a switch cannot restart the active session', async () => {
     const tracked = trackedSession();

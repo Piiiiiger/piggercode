@@ -118,10 +118,10 @@ vi.mock('@/sync/domains/state/storage', async () => {
           metadata: {
             path: '/tmp/project',
             host: 'localhost',
-            flavor: 'opencode',
+            flavor: 'codex',
             acpSessionModesV1: {
               v: 1,
-              provider: 'opencode',
+              provider: 'codex',
               updatedAt: 1,
               currentModeId: 'build',
               availableModes: [
@@ -215,25 +215,6 @@ describe('createDefaultActionExecutor plan mode integration', () => {
 
     expect(result.ok).toBe(true);
     expect(listAgentModelsForVoiceTool).toHaveBeenCalledWith({ agentId: 'claude', machineId: 'm1', limit: 3 });
-  });
-
-  it('forwards backendTargetKey to agents.models.list voice-tool routing', async () => {
-    const { createDefaultActionExecutor } = await import('./defaultActionExecutor');
-
-    const executor = createDefaultActionExecutor();
-    const result = await executor.execute(
-      'agents.models.list',
-      { backendTargetKey: 'acpBackend:review-bot', machineId: 'm1', limit: 2 },
-      { defaultSessionId: 's1', surface: 'voice_tool', placement: 'voice_panel' },
-    );
-
-    expect(result.ok).toBe(true);
-    expect(listAgentModelsForVoiceTool).toHaveBeenCalledWith({
-      agentId: 'customAcp',
-      backendTargetKey: 'acpBackend:review-bot',
-      machineId: 'm1',
-      limit: 2,
-    });
   });
 
   it('does not publish a session-mode override when starting a planner subagent run', async () => {

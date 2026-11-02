@@ -106,7 +106,7 @@ export async function reconcileIndexedSameAccountFanoutCandidates(input: Readonl
   readPersistedSessionAccountIdentity?: PersistedSessionAccountIdentityReader | null;
   /**
    * Does this candidate's provider require a LIVE session-runtime identity probe (codex) or is its
-   * account binding DAEMON-authoritative via broker/shared-group indirection (opencode/pi/claude)?
+   * account binding DAEMON-authoritative via broker/shared-group indirection (claude)?
    * Broker-indirection candidates are retained via their daemon-owned indexed identity WITHOUT a live
    * probe: the runtime cannot answer the probe (returns `unsupported_session_runtime_method`), and the
    * daemon already owns the effective selection. Absent ⇒ live-probe (backward-compatible default).

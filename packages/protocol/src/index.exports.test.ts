@@ -125,54 +125,6 @@ describe('protocol package root exports', () => {
         expect(typeof (protocol as any).DaemonPetImportResponseV1Schema?.safeParse).toBe('function');
     });
 
-    it('exports direct sessions daemon RPC schemas', () => {
-        expect(typeof protocol.DirectSessionsProviderIdSchema?.safeParse).toBe('function');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('codex')).toBe('codex');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('claude')).toBe('claude');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('opencode')).toBe('opencode');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('pi')).toBe('pi');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('devin')).toBe('devin');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('auggie')).toBe('auggie');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('qwen')).toBe('qwen');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('kilo')).toBe('kilo');
-        expect(protocol.DirectSessionsProviderIdSchema.parse('copilot')).toBe('copilot');
-        expect(protocol.DirectSessionsSourceSchema.safeParse({ kind: 'piAgentDir' }).success).toBe(true);
-        expect(protocol.DirectSessionsSourceSchema.safeParse({ kind: 'piAgentDir', agentDir: '/custom/.pi/agent' }).success).toBe(true);
-        expect(protocol.DirectSessionsSourceSchema.safeParse({ kind: 'piAgentDir', agentDir: '' }).success).toBe(false);
-        expect(typeof protocol.DirectSessionsCandidatesListRequestSchema?.safeParse).toBe('function');
-        expect(protocol.DirectSessionsAcpSessionListCapabilityResponseSchema.parse({
-            ok: true,
-            capability: 'acp_session_list_v1',
-            protocolVersion: 1,
-            sourceKind: 'acpSessionList',
-            resumeOnly: true,
-        })).toEqual({
-            ok: true,
-            capability: 'acp_session_list_v1',
-            protocolVersion: 1,
-            sourceKind: 'acpSessionList',
-            resumeOnly: true,
-        });
-        expect(protocol.DirectSessionsCandidatesListResponseSchema.safeParse({
-            ok: true,
-            candidates: [],
-            nextCursor: null,
-            capabilities: { deleteCandidate: true },
-        }).success).toBe(true);
-        expect(protocol.DirectSessionCandidateDeleteRequestSchema.safeParse({
-            machineId: 'machine-1',
-            providerId: 'kimi',
-            source: { kind: 'acpSessionList' },
-            remoteSessionId: 'provider-session-1',
-        }).success).toBe(true);
-        expect(protocol.DirectSessionCandidateDeleteResponseSchema.safeParse({ ok: true, deleted: true }).success).toBe(true);
-        expect(typeof protocol.DirectTranscriptPageRequestSchema?.safeParse).toBe('function');
-        expect(typeof protocol.DirectTranscriptReadAfterRequestSchema?.safeParse).toBe('function');
-        expect(typeof protocol.DirectSessionLinkEnsureRequestSchema?.safeParse).toBe('function');
-        expect(typeof protocol.DirectSessionTakeoverRequestSchema?.safeParse).toBe('function');
-        expect(typeof protocol.DirectSessionTakeoverPersistRequestSchema?.safeParse).toBe('function');
-    });
-
     it('exports session handoff schemas', () => {
         expect(typeof (protocol as any).SessionHandoffStartRequestSchema?.safeParse).toBe('function');
         expect(typeof (protocol as any).SessionHandoffPrepareTargetRequestSchema?.safeParse).toBe('function');
@@ -268,30 +220,12 @@ describe('protocol package root exports', () => {
         expect(typeof (protocol as any).getProfileEnvironmentVariables).toBe('function');
     });
 
-    it('exports ACP catalog settings schemas', () => {
-        expect(typeof (protocol as any).AcpCatalogSettingsV1Schema?.safeParse).toBe('function');
-        expect(typeof (protocol as any).AcpBackendDefinitionV1Schema?.safeParse).toBe('function');
-    });
-
-    it('exports configured ACP backend legacy aliases', () => {
-        expect(typeof (protocol as any).AcpConfiguredBackendV1Schema?.safeParse).toBe('function');
-        expect(typeof (protocol as any).buildAcpConfiguredBackendV1).toBe('function');
-        expect(typeof (protocol as any).readAcpConfiguredBackendV1FromMetadata).toBe('function');
-    });
-
-    it('exports backend target schemas and helpers', () => {
-        expect(typeof (protocol as any).BackendTargetRefSchema?.safeParse).toBe('function');
-        expect(typeof (protocol as any).buildBackendTargetKey).toBe('function');
-        expect((protocol as any).buildBackendTargetKey({ kind: 'configuredAcpBackend', backendId: 'review' })).toBe('acpBackend:review');
-    });
-
     it('exports session work-state and provider app-server schemas', () => {
         expect(typeof (protocol as any).SessionWorkStateV1Schema?.safeParse).toBe('function');
         expect(typeof (protocol as any).mergeSessionWorkStateV1).toBe('function');
         expect(typeof (protocol as any).mergeSessionWorkStateMetadataV1).toBe('function');
         expect(typeof (protocol as any).readDisplayableSessionWorkStateV1).toBe('function');
         expect(typeof (protocol as any).normalizeCodexAppServerGoalToSessionWorkStateItem).toBe('function');
-        expect(typeof (protocol as any).normalizeOpenCodeSessionTodosToWorkStateItems).toBe('function');
         expect(typeof (protocol as any).normalizeClaudeTaskEventToWorkStateItem).toBe('function');
         expect(typeof (protocol as any).SessionWorkStateGetResponseV1Schema?.safeParse).toBe('function');
     });

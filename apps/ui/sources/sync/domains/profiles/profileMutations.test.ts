@@ -16,7 +16,6 @@ describe('createEmptyCustomProfile', () => {
             compatibilityByTargetKey: {
                 'agent:claude': true,
                 'agent:codex': true,
-                'agent:gemini': true,
             },
             defaultPermissionModeByTargetKey: {},
             defaultPersistenceModeByTargetKey: {},

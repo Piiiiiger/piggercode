@@ -67,30 +67,6 @@ describe('connectedServiceChildEnvironment runtime auth context', () => {
     });
   });
 
-  it('round-trips the exact credential revision in the child selection envelope', () => {
-    const selections = new Map<ConnectedServiceId, ConnectedServiceResolvedSelection>([['gemini', {
-      kind: 'group' as const,
-      serviceId: 'gemini' as const,
-      groupId: 'main',
-      activeProfileId: 'work',
-      fallbackProfileId: 'backup',
-      generation: 7,
-      credentialRevision: ConnectedServiceCredentialRevisionV1Schema.parse('csr_abcdefghijklmnopqrstuv'),
-      record: {} as never,
-      policy: null,
-    }]]);
-    const serialized = serializeConnectedServiceChildSelections(selections);
-
-    expect(readConnectedServiceChildSelectionsFromEnv({
-      [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: serialized ?? undefined,
-    })).toEqual([expect.objectContaining({
-      serviceId: 'gemini',
-      groupId: 'main',
-      generation: 7,
-      credentialRevision: 'csr_abcdefghijklmnopqrstuv',
-    })]);
-  });
-
   it('resolves the current connected-service binding from session metadata', () => {
     const connectedServices = {
       v: 1,

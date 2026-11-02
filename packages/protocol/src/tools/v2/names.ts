@@ -34,7 +34,6 @@ export const KNOWN_CANONICAL_TOOL_NAMES_V2 = [
   'ExitPlanMode',
   'AskUserQuestion',
   'AcpHistoryImport',
-  'WorkspaceIndexingPermission',
   'change_title',
   'SubAgentRun',
   // Agent teams / swarm orchestration events (provider-agnostic).

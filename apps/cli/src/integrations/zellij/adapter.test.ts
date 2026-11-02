@@ -4631,7 +4631,7 @@ describe('createZellijTerminalHostAdapter', () => {
         'API Error: 401 Invalid authentication credentials',
         'ANTHROPIC_API_KEY=sk-ant-secret-value',
         'OPENAI_API_KEY=sk-openai-secret-value',
-        'GEMINI_ACCESS_TOKEN=gemini-access-secret',
+        'CODEX_ACCESS_TOKEN=codex-access-secret',
         'ANTHROPIC_AUTH_TOKEN: anthropic-auth-secret',
         'CLAUDE_CODE_OAUTH_TOKEN: claude-oauth-secret',
         'AWS_SECRET_ACCESS_KEY: aws-secret-value',

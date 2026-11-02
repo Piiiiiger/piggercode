@@ -31,7 +31,7 @@ describe('ACP update lifecycle → stable transcript revision integration', () =
   it('retains omitted snapshot fields, upgrades semantic identity, and uses one durable call localId', () => {
     const sent: Array<{ body: ACPMessageData; localId?: string }> = [];
     const forwarder = createAcpAgentMessageForwarder({
-      provider: 'cursor',
+      provider: 'codex',
       makeId: () => 'random-id',
       sendAcp: (_provider, body, options) => sent.push({ body, localId: options?.localId }),
     });
@@ -77,7 +77,7 @@ describe('ACP update lifecycle → stable transcript revision integration', () =
   it('publishes a truthful synthetic result when a completed call has no provider output', () => {
     const sent: Array<{ body: ACPMessageData; localId?: string }> = [];
     const forwarder = createAcpAgentMessageForwarder({
-      provider: 'cursor',
+      provider: 'codex',
       makeId: () => 'random-id',
       sendAcp: (_provider, body, options) => sent.push({ body, localId: options?.localId }),
     });
@@ -103,7 +103,7 @@ describe('ACP update lifecycle → stable transcript revision integration', () =
   it('publishes a terminal-only call before its streamed terminal output', () => {
     const sent: Array<{ body: ACPMessageData; localId?: string }> = [];
     const forwarder = createAcpAgentMessageForwarder({
-      provider: 'cursor',
+      provider: 'codex',
       makeId: () => 'random-id',
       sendAcp: (_provider, body, options) => sent.push({ body, localId: options?.localId }),
     });
@@ -123,7 +123,7 @@ describe('ACP update lifecycle → stable transcript revision integration', () =
   it('retains terminal output carried by a completed terminal-only update', () => {
     const sent: Array<{ body: ACPMessageData; localId?: string }> = [];
     const forwarder = createAcpAgentMessageForwarder({
-      provider: 'cursor',
+      provider: 'codex',
       makeId: () => 'random-id',
       sendAcp: (_provider, body, options) => sent.push({ body, localId: options?.localId }),
     });
@@ -143,7 +143,7 @@ describe('ACP update lifecycle → stable transcript revision integration', () =
   it('preserves exact opaque call ids instead of collapsing whitespace-distinct identities', () => {
     const sent: Array<{ body: ACPMessageData; localId?: string }> = [];
     const forwarder = createAcpAgentMessageForwarder({
-      provider: 'cursor',
+      provider: 'codex',
       makeId: () => 'random-id',
       sendAcp: (_provider, body, options) => sent.push({ body, localId: options?.localId }),
     });

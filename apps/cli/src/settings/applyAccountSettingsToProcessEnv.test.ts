@@ -164,7 +164,7 @@ describe('applyAccountSettingsToProcessEnv', () => {
         settings: {
           backendCliSourcePreferenceById: {
             codex: 'managed-first',
-            gemini: 'system-first',
+            claude: 'system-first',
             invalid: 'ignored',
           },
         },
@@ -172,7 +172,7 @@ describe('applyAccountSettingsToProcessEnv', () => {
       expect(process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON).toBe(
         JSON.stringify({
           codex: 'managed-first',
-          gemini: 'system-first',
+          claude: 'system-first',
         }),
       );
     } finally {
@@ -188,7 +188,7 @@ describe('applyAccountSettingsToProcessEnv', () => {
         settings: {
           backendCliSourcePreferenceByTargetKey: {
             'agent:codex': 'managed-first',
-            'agent:gemini': 'system-first',
+            'agent:claude': 'system-first',
           },
           backendCliSourcePreferenceById: {
             codex: 'system-first',
@@ -198,7 +198,7 @@ describe('applyAccountSettingsToProcessEnv', () => {
       expect(process.env.PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON).toBe(
         JSON.stringify({
           'agent:codex': 'managed-first',
-          'agent:gemini': 'system-first',
+          'agent:claude': 'system-first',
         }),
       );
     } finally {

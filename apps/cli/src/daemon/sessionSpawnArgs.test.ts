@@ -91,10 +91,4 @@ describe('buildHappySessionControlArgs', () => {
     expect(buildHappySessionControlArgs(obsoleteOptions)).toEqual([]);
   });
 
-  it('includes backend flag when the backend target is a configured ACP backend', () => {
-    expect(buildHappySessionControlArgs({
-      backendTarget: { kind: 'configuredAcpBackend', backendId: ' custom-kiro ' },
-    })).toEqual(['--backend', 'custom-kiro']);
-  });
-
 });

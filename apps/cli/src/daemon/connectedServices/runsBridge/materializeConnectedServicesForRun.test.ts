@@ -240,14 +240,14 @@ describe('createExecutionRunConnectedServicesBridge', () => {
       resolveAuthForSpawn: (async () => ({
         ...buildResolved(),
         env: {
-          OPENCODE_SERVER: 'http://x',
+          CODEX_SERVER: 'http://x',
           [PIGGERCODE_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY]: 'oc-pool-x',
         },
       })) as unknown as ResolveConnectedServiceAuthForRun,
       runtimeRegistry: registry,
     });
 
-    await bridge.materialize(buildRequest({ agentId: 'opencode' }));
+    await bridge.materialize(buildRequest({ agentId: 'codex' }));
 
     // No live session shares the pool, yet the run is resolvable by its broker selection identity.
     const resolved = registry.getByBrokerSelectionIdentity('oc-pool-x');

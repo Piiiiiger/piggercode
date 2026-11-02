@@ -225,7 +225,7 @@ describe('createCliActionDeps session controls', () => {
         metadata: {
           sessionModesV1: {
             v: 1,
-            provider: 'cursor',
+            provider: 'codex',
             updatedAt: 1,
             currentModeId: ' plan ',
             availableModes: [{ id: ' plan ', name: 'Plan' }],
@@ -250,7 +250,7 @@ describe('createCliActionDeps session controls', () => {
         metadata: {
           sessionModesV1: {
             v: 1,
-            provider: 'cursor',
+            provider: 'codex',
             updatedAt: 1,
             availableModes: [{ id: 'agent', name: 'Agent' }],
           },

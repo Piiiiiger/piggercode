@@ -141,7 +141,7 @@ export function resolveToolHeaderTextPresentation(params: {
 
     if (!knownTool) {
         const rawTitle = typeof title === 'string' ? title.trim() : '';
-        // When OpenCode (and other providers) emit simple lowercase tool names like "skill" or "question",
+        // When providers emit simple lowercase tool names like "skill" or "question",
         // prefer a minimally humanized title instead of showing raw lowercase.
         if (rawTitle && /^[a-z][a-z0-9]*$/.test(rawTitle)) {
             title = rawTitle[0]!.toUpperCase() + rawTitle.slice(1);

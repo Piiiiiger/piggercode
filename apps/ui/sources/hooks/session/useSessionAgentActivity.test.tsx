@@ -254,7 +254,7 @@ describe('useSessionAgentActivity', () => {
     }, 120_000);
 
     // The §5.2 degrade, as a first-class case: the publisher is composed for Claude only, so a
-    // Codex, Gemini or OpenCode session has no headline at all and must be indistinguishable from
+    // Codex session has no headline at all and must be indistinguishable from
     // today rather than empty or broken.
     it('serves the local roster for a backend that publishes no headline', async () => {
         seed({

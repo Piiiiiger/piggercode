@@ -112,43 +112,10 @@ function buildDiffFromFileDiff(filediff: UnknownRecord): string | null {
     return [`--- a/${filePath}`, `+++ b/${filePath}`, hunk].join('\n');
 }
 
-function buildDiffFromToolUseDiff(toolUseDiff: UnknownRecord): string | null {
-    const path = firstNonEmptyString(toolUseDiff.path, toolUseDiff.file, toolUseDiff.file_path) ?? 'unknown-file';
-    const rawEdits = Array.isArray(toolUseDiff.edits) ? toolUseDiff.edits : [];
-    const hunks = rawEdits
-        .map((rawEdit) => asRecord(rawEdit))
-        .filter((edit): edit is UnknownRecord => !!edit)
-        .map((edit) => {
-            const beforeText = firstNonEmptyString(edit.before_text, edit.beforeText, edit.old_text, edit.oldText, edit.before);
-            const afterText = firstNonEmptyString(edit.after_text, edit.afterText, edit.new_text, edit.newText, edit.after);
-            if (!beforeText && !afterText) return null;
-            const lineStart = typeof edit.line_start === 'number'
-                ? edit.line_start
-                : typeof edit.lineStart === 'number'
-                    ? edit.lineStart
-                    : undefined;
-            return diffHunkFromTexts({
-                beforeText: beforeText ?? '',
-                afterText: afterText ?? '',
-                lineStart,
-            });
-        })
-        .filter((hunk): hunk is string => typeof hunk === 'string' && hunk.length > 0);
-
-    if (hunks.length === 0) return null;
-    return [`--- a/${path}`, `+++ b/${path}`, ...hunks].join('\n');
-}
-
 function enrichEditResultWithDiffMetadata(record: UnknownRecord): void {
     const metadata = ensureMetadata(record);
     const existingDiff = firstNonEmptyString(metadata.diff);
     if (existingDiff) return;
-
-    const detailsDiff = firstNonEmptyString(asRecord(record.details)?.diff, asRecord(asRecord(record.output)?.details)?.diff);
-    if (detailsDiff) {
-        metadata.diff = detailsDiff;
-        return;
-    }
 
     const nestedOutputRecord = (() => {
         const outputValue = record.output;
@@ -160,23 +127,8 @@ function enrichEditResultWithDiffMetadata(record: UnknownRecord): void {
     const nestedOutputFileDiff = asRecord(asRecord(asRecord(record.output)?.metadata)?.filediff);
     const parsedNestedOutputFileDiff = asRecord(asRecord(nestedOutputRecord?.metadata)?.filediff);
     const fileDiff = metadataFileDiff ?? nestedOutputFileDiff ?? parsedNestedOutputFileDiff;
-    if (fileDiff) {
-        const diff = buildDiffFromFileDiff(fileDiff);
-        if (diff) {
-            metadata.diff = diff;
-            return;
-        }
-    }
-
-    const metrics = asRecord(record.metrics);
-    const nestedMetrics = asRecord(nestedOutputRecord?.metrics);
-    const toolUseDiff =
-        asRecord(metrics?.tool_use_diff) ??
-        asRecord(record.tool_use_diff) ??
-        asRecord(nestedMetrics?.tool_use_diff) ??
-        asRecord(nestedOutputRecord?.tool_use_diff);
-    if (!toolUseDiff) return;
-    const diff = buildDiffFromToolUseDiff(toolUseDiff);
+    if (!fileDiff) return;
+    const diff = buildDiffFromFileDiff(fileDiff);
     if (diff) metadata.diff = diff;
 }
 
@@ -219,7 +171,7 @@ export function normalizeEditInput(rawInput: unknown): UnknownRecord {
     if (oldText) out.old_string = oldText;
     if (newText) out.new_string = newText;
 
-    // Keep Gemini/Codex compatibility fields when present.
+    // Keep Codex compatibility fields when present.
     if (typeof record.oldText === 'string' && record.oldText.trim().length > 0) out.oldText = record.oldText;
     if (typeof record.newText === 'string' && record.newText.trim().length > 0) out.newText = record.newText;
 

@@ -1,4 +1,4 @@
-import { AGENTS_CORE, type AgentId } from '@piggercode/agents';
+import { AGENTS_CORE, type AgentId, type AgentCore } from '@piggercode/agents';
 import {
   readConnectedServicesDefaultAuthSettings,
   type ConnectedServicesDefaultAuthSettings,
@@ -56,7 +56,8 @@ export function resolveSpawnConnectedServicesDefaultDisposition(params: Readonly
   agentId: AgentId;
   serviceIds?: readonly ConnectedServiceId[];
 }>): SpawnConnectedServicesDefaultDisposition {
-  const supportedServiceIds = AGENTS_CORE[params.agentId].connectedServices?.supportedServiceIds ?? [];
+  const connectedServices: AgentCore['connectedServices'] = AGENTS_CORE[params.agentId].connectedServices;
+  const supportedServiceIds = connectedServices?.supportedServiceIds ?? [];
   if (supportedServiceIds.length === 0) return { kind: 'native' };
   const targetServiceIds = params.serviceIds
     ? supportedServiceIds.filter((serviceId) => params.serviceIds!.includes(serviceId))

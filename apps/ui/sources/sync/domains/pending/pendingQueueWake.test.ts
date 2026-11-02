@@ -523,25 +523,6 @@ describe('getPendingQueueWakeResumeOptions', () => {
         });
     });
 
-    it('returns gemini options when metadata contains a gemini resume id', () => {
-        const session: any = {
-            thinking: false,
-            agentState: null,
-            metadata: { machineId: 'm1', path: '/tmp', flavor: 'gemini', geminiSessionId: 'g1' },
-        };
-        expect(getPendingQueueWakeResumeOptions({
-            sessionId: 's1',
-            session,
-            resumeCapabilityOptions: { accountSettings: {} },
-        })).toEqual({
-            sessionId: 's1',
-            machineId: 'm1',
-            directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'gemini' },
-            resume: 'g1',
-        });
-    });
-
     it('passes through permission mode override when provided', () => {
         const session: any = {
             thinking: false,
@@ -564,89 +545,4 @@ describe('getPendingQueueWakeResumeOptions', () => {
         });
     });
 
-    it('adds OpenCode environment variables for wake resumes', () => {
-        const session: any = {
-            thinking: false,
-            agentState: null,
-            metadata: {
-                machineId: 'm1',
-                path: '/tmp',
-                flavor: 'opencode',
-                opencodeSessionId: 'oc-1',
-                opencodeBackendMode: 'server',
-                opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-                opencodeServerBaseUrlExplicit: true,
-            },
-        };
-        expect(getPendingQueueWakeResumeOptions({
-            sessionId: 's1',
-            session,
-            resumeCapabilityOptions: { accountSettings: {} },
-        })).toEqual({
-            sessionId: 's1',
-            machineId: 'm1',
-            directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
-            resume: 'oc-1',
-            environmentVariables: {
-                PIGGERCODE_OPENCODE_BACKEND_MODE: 'server',
-                PIGGERCODE_OPENCODE_SERVER_URL: 'http://127.0.0.1:4096/',
-                PIGGERCODE_OPENCODE_SERVER_URL_EXPLICIT: '1',
-            },
-        });
-    });
-
-    it('uses configured ACP backend backend targets for configured ACP wake resumes', () => {
-        const session: any = {
-            thinking: false,
-            agentState: null,
-            metadata: {
-                machineId: 'm1',
-                path: '/tmp',
-                flavor: 'acp:custom-kiro',
-                acpConfiguredBackendV1: {
-                    v: 1,
-                    updatedAt: 123,
-                    backendId: 'custom-kiro',
-                    title: 'Custom Kiro',
-                },
-                customAcpSessionId: 'custom-kiro-session-1',
-            },
-        };
-        expect(getPendingQueueWakeResumeOptions({
-            sessionId: 's1',
-            session,
-            resumeCapabilityOptions: {
-                accountSettings: {
-                    acpCatalogSettingsV1: {
-                        v: 2,
-                        backends: [{
-                            id: 'custom-kiro',
-                            name: 'custom-kiro',
-                            title: 'Custom Kiro',
-                            command: 'kiro-cli',
-                            args: [],
-                            env: {},
-                            transportProfile: 'generic',
-                            capabilities: {
-                                supportsLoadSession: true,
-                                supportsModes: 'unknown',
-                                supportsModels: 'unknown',
-                                supportsConfigOptions: 'unknown',
-                                promptImageSupport: 'unknown',
-                            },
-                            createdAt: 1,
-                            updatedAt: 1,
-                        }],
-                    },
-                },
-            },
-        })).toEqual({
-            sessionId: 's1',
-            machineId: 'm1',
-            directory: '/tmp',
-            backendTarget: { kind: 'configuredAcpBackend', backendId: 'custom-kiro' },
-            resume: 'custom-kiro-session-1',
-        });
-    });
 });

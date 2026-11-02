@@ -85,7 +85,7 @@ export function getPermissionModeOptionsForAgentType(agentType: AgentType): read
 }
 
 export function getPermissionModeOptionsForSession(agentType: AgentType, metadata: Metadata | null): readonly PermissionModeOption[] {
-    // ACP session modes (e.g. OpenCode plan/build) are surfaced via a separate UI control.
+    // ACP session modes (e.g. plan/build) are surfaced via a separate UI control.
     // Permission modes represent approval/sandbox intent only.
     return getPermissionModeOptionsForAgentType(agentType);
 }

@@ -61,7 +61,7 @@ describe('Claude work state normalization', () => {
           backendId: 'claude',
           updatedAt: 200,
           items: [
-            { id: 'todo:opencode:keep', kind: 'todo', origin: 'vendor', backendId: 'opencode', status: 'active', title: 'OpenCode todo', updatedAt: 200 },
+            { id: 'todo:codex:keep', kind: 'todo', origin: 'vendor', backendId: 'codex', status: 'active', title: 'Codex todo', updatedAt: 200 },
             { id: 'todo:derived:claude.todo:stale', kind: 'todo', origin: 'vendor', backendId: 'claude', status: 'pending', title: 'Stale Claude todo', updatedAt: 200 },
           ],
         },
@@ -71,7 +71,7 @@ describe('Claude work state normalization', () => {
     });
 
     expect(next.sessionWorkStateV1.items.map((item: any) => item.id)).toEqual([
-      'todo:opencode:keep',
+      'todo:codex:keep',
       snapshot.items[0].id,
     ]);
   });

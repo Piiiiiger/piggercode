@@ -1051,14 +1051,14 @@ describe('/session/[id]/info', () => {
     });
 
     it('shows the provider resume surfaces when the vendor resume id only exists in agentRuntimeDescriptorV1', async () => {
-        mockResolveAgentIdFromFlavor.mockReturnValue('opencode');
+        mockResolveAgentIdFromFlavor.mockReturnValue('codex');
         mockAgentCore = {
             resume: {
-                vendorResumeIdField: 'opencodeSessionId',
-                uiVendorResumeIdLabelKey: 'sessionInfo.openCodeSessionId',
-                uiVendorResumeIdCopiedKey: 'sessionInfo.openCodeSessionIdCopied',
+                vendorResumeIdField: 'codexSessionId',
+                uiVendorResumeIdLabelKey: 'sessionInfo.codexSessionId',
+                uiVendorResumeIdCopiedKey: 'sessionInfo.codexSessionIdCopied',
             },
-            displayNameKey: 'agents.opencode.displayName',
+            displayNameKey: 'agents.codex.displayName',
             ui: { agentPickerIconName: 'code-slash-outline' },
         };
         mockSession = {
@@ -1069,10 +1069,10 @@ describe('/session/[id]/info', () => {
             updatedAt: Date.now(),
             seq: 1,
             metadata: {
-                flavor: 'opencode',
+                flavor: 'codex',
                 agentRuntimeDescriptorV1: {
                     v: 1,
-                    providerId: 'opencode',
+                    providerId: 'codex',
                     provider: {
                         backendMode: 'server',
                         vendorSessionId: 'runtime-session-1234567890',
@@ -1082,18 +1082,18 @@ describe('/session/[id]/info', () => {
         };
 
         const screen = await renderInfoScreen();
-        expect(screen.findByTestId('sessionInfo.openCodeSessionId')).toBeTruthy();
+        expect(screen.findByTestId('sessionInfo.codexSessionId')).toBeTruthy();
         expect(screen.findByTestId('sessionInfo.copyResumeCommand')).toBeTruthy();
     });
 
     it('infers the provider from agentRuntimeDescriptorV1 when flavor is missing', async () => {
         mockAgentCore = {
             resume: {
-                vendorResumeIdField: 'opencodeSessionId',
-                uiVendorResumeIdLabelKey: 'sessionInfo.openCodeSessionId',
-                uiVendorResumeIdCopiedKey: 'sessionInfo.openCodeSessionIdCopied',
+                vendorResumeIdField: 'codexSessionId',
+                uiVendorResumeIdLabelKey: 'sessionInfo.codexSessionId',
+                uiVendorResumeIdCopiedKey: 'sessionInfo.codexSessionIdCopied',
             },
-            displayNameKey: 'agents.opencode.displayName',
+            displayNameKey: 'agents.codex.displayName',
             ui: { agentPickerIconName: 'code-slash-outline' },
         };
         mockSession = {
@@ -1106,7 +1106,7 @@ describe('/session/[id]/info', () => {
             metadata: {
                 agentRuntimeDescriptorV1: {
                     v: 1,
-                    providerId: 'opencode',
+                    providerId: 'codex',
                     provider: {
                         backendMode: 'server',
                         vendorSessionId: 'runtime-session-1234567890',
@@ -1116,13 +1116,13 @@ describe('/session/[id]/info', () => {
         };
 
         const screen = await renderInfoScreen();
-        expect(screen.findByTestId('sessionInfo.openCodeSessionId')).toBeTruthy();
+        expect(screen.findByTestId('sessionInfo.codexSessionId')).toBeTruthy();
         expect(mockResolveAgentIdFromFlavor).not.toHaveBeenCalled();
         const avatar = screen.findByTestId('session-info-avatar');
         if (!avatar) {
             throw new Error('expected session info avatar');
         }
-        expect(avatar.props.flavor).toBe('opencode');
+        expect(avatar.props.flavor).toBe('codex');
     });
 
     it('routes View Machine to the stable display target when live reachability differs', async () => {

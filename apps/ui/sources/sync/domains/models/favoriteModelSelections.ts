@@ -8,7 +8,6 @@ export const FavoriteModelSelectionV1Schema = z.object({
     modelId: z.string(),
     providerAgentId: z.string().optional(),
     builtInAgentId: z.string().nullable().optional(),
-    configuredBackendId: z.string().nullable().optional(),
     backendLabel: z.string().optional(),
     modelLabel: z.string().optional(),
     addedAtMs: z.number().int().nonnegative().optional(),
@@ -20,7 +19,6 @@ export type FavoriteModelBackendIdentity = Readonly<{
     backendTargetKey: string;
     providerAgentId?: string | null;
     builtInAgentId?: string | null;
-    configuredBackendId?: string | null;
 }>;
 
 export type FavoriteModelAvailabilityMode = 'dynamic' | 'static-only';
@@ -62,13 +60,7 @@ export function favoriteModelSelectionMatchesBackend(
         return true;
     }
 
-    const selectionConfiguredBackendId = normalizeOptionalString(selection.configuredBackendId);
-    const backendConfiguredBackendId = normalizeOptionalString(backend.configuredBackendId);
-    return Boolean(
-        selectionConfiguredBackendId
-        && backendConfiguredBackendId
-        && selectionConfiguredBackendId === backendConfiguredBackendId,
-    );
+    return false;
 }
 
 function addModelOptionAvailability(
@@ -164,7 +156,6 @@ export function toggleFavoriteModelSelection(params: Readonly<{
 
     const providerAgentId = normalizeOptionalString(params.backend.providerAgentId);
     const builtInAgentId = normalizeOptionalString(params.backend.builtInAgentId);
-    const configuredBackendId = normalizeOptionalString(params.backend.configuredBackendId);
     const backendLabel = normalizeOptionalString(params.backendLabel);
     const modelLabel = normalizeOptionalString(params.modelLabel);
 
@@ -175,7 +166,6 @@ export function toggleFavoriteModelSelection(params: Readonly<{
             modelId,
             ...(providerAgentId ? { providerAgentId } : {}),
             ...(builtInAgentId ? { builtInAgentId } : {}),
-            ...(configuredBackendId ? { configuredBackendId } : {}),
             ...(backendLabel ? { backendLabel } : {}),
             ...(modelLabel ? { modelLabel } : {}),
             ...(typeof params.addedAtMs === 'number' && Number.isFinite(params.addedAtMs)

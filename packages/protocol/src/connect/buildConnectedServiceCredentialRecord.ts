@@ -6,31 +6,17 @@ import {
 import { readClaudeOauthCredentialMetadata, readClaudeOauthCredentialOrganizationId, type ClaudeOauthCredentialMetadata } from '../providers/claude/oauthProfile.js';
 
 export type ConnectedServiceOauthCredentialRawMetadata = Readonly<{
-  project_id?: string;
   claudeAiOauth?: ClaudeOauthCredentialMetadata;
   'claude.ai_oauth'?: ClaudeOauthCredentialMetadata;
 }>;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function readString(value: unknown): string | undefined {
-  if (typeof value !== 'string') return undefined;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : undefined;
-}
-
 export function normalizeConnectedServiceOauthCredentialRawMetadata(
   raw: unknown,
-  serviceId?: ConnectedServiceId,
+  _serviceId?: ConnectedServiceId,
 ): ConnectedServiceOauthCredentialRawMetadata | null {
-  const root = isRecord(raw) ? raw : {};
-  const projectId = serviceId === 'antigravity' ? readString(root.project_id) : undefined;
   const claudeAiOauth = readClaudeOauthCredentialMetadata(raw);
   const normalized = {
     ...(claudeAiOauth ? { claudeAiOauth } : {}),
-    ...(projectId ? { project_id: projectId } : {}),
   };
   return Object.keys(normalized).length > 0 ? normalized : null;
 }

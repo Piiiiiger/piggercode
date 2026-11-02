@@ -18,14 +18,14 @@ const credentials: Credentials = {
   encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
 };
 
-const previousManagedServerStatePath = process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
+const previousManagedServerStatePath = process.env.PIGGERCODE_CODEX_SERVER_STATE_PATH;
 
 afterEach(() => {
   if (previousManagedServerStatePath === undefined) {
-    delete process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH;
+    delete process.env.PIGGERCODE_CODEX_SERVER_STATE_PATH;
     return;
   }
-  process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = previousManagedServerStatePath;
+  process.env.PIGGERCODE_CODEX_SERVER_STATE_PATH = previousManagedServerStatePath;
 });
 
 describe('evaluateCliSessionAttachEligibility', () => {
@@ -47,9 +47,8 @@ describe('evaluateCliSessionAttachEligibility', () => {
         const rawSession = createSessionRecordFixture({
           id: sessionId, active: true, encryptionMode: 'plain',
           metadata: JSON.stringify(projectSessionMetadataForWire({
-            flavor: 'opencode', machineId: 'machine-local', path: home,
-            opencodeSessionId: 'same-native-session', opencodeBackendMode: 'server',
-            opencodeServerBaseUrl: 'http://127.0.0.1:4096/', opencodeServerBaseUrlExplicit: true,
+            flavor: 'codex', machineId: 'machine-local', path: home,
+            codexSessionId: 'same-native-session', codexBackendMode: 'appServer',
             terminal: { mode: 'herdr', herdr: {
               sessionName: 'work', socketPath: '/herdr/work.sock', paneId: 'w1:p2', terminalId: 'old-terminal',
             } },
@@ -299,88 +298,17 @@ describe('evaluateCliSessionAttachEligibility', () => {
     });
   });
 
-  it.each(['devin', 'kimi'] as const)(
-    'accepts tmux-backed %s terminal attach through the shared local-control policy',
-    async (agentId) => {
-      const rawSession = createSessionRecordFixture({
-        id: `sid_local_${agentId}_tmux_1`,
-        active: true,
-        encryptionMode: 'plain',
-        metadata: JSON.stringify({
-          machineId: 'machine-local',
-          flavor: agentId,
-          host: 'leeroy-mbp',
-          path: '/tmp/workspace',
-          terminal: {
-            mode: 'tmux',
-            requested: 'tmux',
-            tmux: { target: `happy:${agentId}-session-1` },
-          },
-        }),
-      });
-
-      await expect(evaluateCliSessionAttachEligibility({
-        credentials,
-        rawSession,
-        currentMachineId: 'machine-local',
-        currentMachineHost: 'leeroy-mbp.local',
-        localAttachmentInfo: null,
-        insideTmux: false,
-      })).resolves.toMatchObject({
-        eligible: true,
-        attachStrategy: 'terminal_host',
-        agentId,
-        attachScope: 'local',
-        plan: expect.objectContaining({ type: 'tmux', target: `happy:${agentId}-session-1` }),
-      });
-    },
-  );
-
-  it('keeps terminal attach unavailable for an unsupported provider', async () => {
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_local_gemini_tmux_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        machineId: 'machine-local',
-        flavor: 'gemini',
-        host: 'leeroy-mbp',
-        path: '/tmp/workspace',
-        terminal: {
-          mode: 'tmux',
-          requested: 'tmux',
-          tmux: { target: 'happy:gemini-session-1' },
-        },
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-local',
-      currentMachineHost: 'leeroy-mbp.local',
-      localAttachmentInfo: null,
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: false,
-      agentId: 'gemini',
-      reasonCode: 'local_control_unsupported',
-    });
-  });
-
   it('accepts provider-attach sessions on the current machine without local terminal attachment state', async () => {
     const rawSession = createSessionRecordFixture({
-      id: 'sid_local_opencode_1',
+      id: 'sid_local_codex_1',
       active: true,
       encryptionMode: 'plain',
       metadata: JSON.stringify({
         machineId: 'machine-local',
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-        opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-        opencodeServerBaseUrlExplicit: true,
+        flavor: 'codex',
+        path: '/tmp/codex-workspace',
+        codexSessionId: 'codex-session-1',
+        codexBackendMode: 'appServer',
       }),
     });
 
@@ -393,193 +321,8 @@ describe('evaluateCliSessionAttachEligibility', () => {
     })).resolves.toMatchObject({
       eligible: true,
       attachStrategy: 'provider_attach',
-      agentId: 'opencode',
+      agentId: 'codex',
       attachScope: 'local',
-    });
-  });
-
-  it('attaches to an existing Herdr pane for a server-backed OpenCode session', async () => {
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_hosted_opencode_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        machineId: 'machine-local',
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-        opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-        opencodeServerBaseUrlExplicit: true,
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-local',
-      localAttachmentInfo: {
-        version: 1,
-        sessionId: 'sid_hosted_opencode_1',
-        terminal: {
-          mode: 'herdr',
-          requested: 'herdr',
-          herdr: {
-            sessionName: 'default',
-            socketPath: '/tmp/herdr.sock',
-            terminalId: 'term_1',
-          },
-        },
-        updatedAt: Date.now(),
-      },
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: true,
-      attachStrategy: 'terminal_host',
-      plan: { type: 'herdr', terminalId: 'term_1' },
-    });
-  });
-
-  it('accepts same-machine OpenCode sessions when the managed server state provides the local server URL', async () => {
-    const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-attach-'));
-    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
-      baseUrl: 'http://127.0.0.1:4096/',
-      pid: 12345,
-      startedAtMs: Date.now(),
-      status: 'ready',
-    }));
-
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_local_opencode_managed_state_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        machineId: 'machine-local',
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-local',
-      localAttachmentInfo: null,
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: true,
-      attachStrategy: 'provider_attach',
-      agentId: 'opencode',
-      attachScope: 'local',
-    });
-  });
-
-  it('uses an existing local terminal host for an OpenCode session', async () => {
-    const stateDir = await mkdtemp(join(tmpdir(), 'happier-opencode-attach-local-marker-'));
-    process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH = join(stateDir, 'managed-server.json');
-    await writeFile(process.env.PIGGERCODE_OPENCODE_SERVER_STATE_PATH, JSON.stringify({
-      baseUrl: 'http://127.0.0.1:4096/',
-      pid: 12345,
-      startedAtMs: Date.now(),
-      status: 'ready',
-    }));
-
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_local_opencode_local_marker_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        machineId: 'machine-before-reauth',
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-after-reauth',
-      localAttachmentInfo: {
-        version: 1,
-        sessionId: 'sid_local_opencode_local_marker_1',
-        terminal: {
-          mode: 'tmux',
-          requested: 'tmux',
-          tmux: { target: 'happy:opencode-1' },
-        },
-        updatedAt: Date.now(),
-      },
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: true,
-      attachStrategy: 'terminal_host',
-      agentId: 'opencode',
-      attachScope: 'local',
-      plan: expect.objectContaining({ type: 'tmux', target: 'happy:opencode-1' }),
-    });
-  });
-
-  it('accepts provider-attach sessions as remote when machine ownership is missing', async () => {
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_local_opencode_missing_machine_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-        opencodeServerBaseUrl: 'http://127.0.0.1:4096/',
-        opencodeServerBaseUrlExplicit: true,
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-local',
-      localAttachmentInfo: null,
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: true,
-      attachStrategy: 'provider_attach',
-      agentId: 'opencode',
-      attachScope: 'remote',
-    });
-  });
-
-  it('accepts provider-attach sessions as remote when they belong to another machine', async () => {
-    const rawSession = createSessionRecordFixture({
-      id: 'sid_remote_opencode_1',
-      active: true,
-      encryptionMode: 'plain',
-      metadata: JSON.stringify({
-        machineId: 'machine-remote',
-        flavor: 'opencode',
-        path: '/tmp/opencode-workspace',
-        opencodeSessionId: 'opencode-session-1',
-        opencodeBackendMode: 'server',
-        opencodeServerBaseUrl: 'https://remote.example.test/',
-        opencodeServerBaseUrlExplicit: true,
-      }),
-    });
-
-    await expect(evaluateCliSessionAttachEligibility({
-      credentials,
-      rawSession,
-      currentMachineId: 'machine-local',
-      localAttachmentInfo: null,
-      insideTmux: false,
-    })).resolves.toMatchObject({
-      eligible: true,
-      attachStrategy: 'provider_attach',
-      agentId: 'opencode',
-      attachScope: 'remote',
     });
   });
 });

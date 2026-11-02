@@ -17,7 +17,7 @@ vi.mock('@/hooks/server/useDaemonScopedMachineCapabilitiesCache', () => ({
                 response: {
                     protocolVersion: 1,
                     results: {
-                        'cli.cursor': {
+                        'cli.codex': {
                             ok: true,
                             checkedAt: 1,
                             data: { available: true },
@@ -34,13 +34,13 @@ vi.mock('@/sync/domains/state/storage', () => ({
 }));
 
 vi.mock('@/agents/hooks/useEnabledAgentIds', () => ({
-    useEnabledAgentIds: () => ['cursor'],
+    useEnabledAgentIds: () => ['codex'],
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['cursor'],
+    AGENT_IDS: ['codex'],
     getAgentCore: () => ({
-        cli: { detectKey: 'cursor-agent' },
+        cli: { detectKey: 'codex' },
         ui: {},
     }),
 }));
@@ -64,6 +64,6 @@ describe('MachineCliGlyphs', () => {
         }));
 
         const icons = tree.findAllByType('AgentIcon');
-        expect(icons.some((node) => node.props.agentId === 'cursor')).toBe(true);
+        expect(icons.some((node) => node.props.agentId === 'codex')).toBe(true);
     });
 });

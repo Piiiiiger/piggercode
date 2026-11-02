@@ -187,8 +187,7 @@ async function resolveProbeBackendContext(
         agentId && (AGENTS[agentId as keyof typeof AGENTS] as AgentCatalogEntry | undefined)?.needsAccountSettingsForProbes === true;
     const profileId = parseProbeProfileId(params);
     const shouldLoadAccountSettings =
-        backendTarget?.kind === 'configuredAcpBackend'
-        || needsAccountSettingsForProbes
+        needsAccountSettingsForProbes
         || profileId !== null
         || options.requireCredentials === true;
     if (!shouldLoadAccountSettings) {

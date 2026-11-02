@@ -31,7 +31,7 @@ describe('createAcpRuntime (history import)', () => {
       return { sessionId: 'ses_remote' };
     };
     const runtime = createAcpRuntime({
-      provider: 'pi', directory: '/tmp', mcpServers: {}, messageBuffer: new MessageBuffer(),
+      provider: 'codex', directory: '/tmp', mcpServers: {}, messageBuffer: new MessageBuffer(),
       permissionHandler: createApprovedPermissionHandler(), onThinkingChange: () => {}, ensureBackend: async () => backend,
       session: createBasicSessionClientWithOverrides({
         sessionTurnLifecycle: lifecycle,

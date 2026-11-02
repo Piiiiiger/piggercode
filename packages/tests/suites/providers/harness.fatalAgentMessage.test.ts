@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import {
   extractFatalAgentErrorMessage,
-  formatFatalProviderAssistantError,
 } from '../../src/testkit/providers/harness';
 
 describe('providers harness: fatal agent error extraction', () => {
@@ -12,7 +11,7 @@ describe('providers harness: fatal agent error extraction', () => {
         role: 'assistant',
         content: {
           type: 'text',
-          text: 'Error: Authentication required\n\nKimi appears not configured.',
+          text: 'Error: Authentication required\n\nCodex appears not configured.',
         },
       },
     ]);
@@ -59,7 +58,7 @@ describe('providers harness: fatal agent error extraction', () => {
             type: 'acp',
             data: {
               type: 'message',
-              message: 'Error: Authentication required\\n\\nOpenCode appears not configured.',
+              message: 'Error: Authentication required\\n\\nCodex appears not configured.',
             },
           },
         },
@@ -69,28 +68,4 @@ describe('providers harness: fatal agent error extraction', () => {
     expect(out).toContain('Authentication required');
   });
 
-  it('adds auth prerequisite guidance for OpenCode token refresh 401 in host-auth mode', () => {
-    const out = formatFatalProviderAssistantError({
-      providerId: 'opencode',
-      scenarioId: 'execute_trace_ok',
-      fatal: 'Error: Token refresh failed: 401',
-      env: {},
-    });
-
-    expect(out).toContain('Token refresh failed: 401');
-    expect(out).toContain('opencode auth login');
-    expect(out).toContain('OPENAI_API_KEY');
-  });
-
-  it('does not add host-auth guidance when OPENAI_API_KEY env auth is set', () => {
-    const out = formatFatalProviderAssistantError({
-      providerId: 'opencode_server',
-      scenarioId: 'execute_trace_ok',
-      fatal: 'Error: Token refresh failed: 401',
-      env: { OPENAI_API_KEY: 'set' },
-    });
-
-    expect(out).not.toContain('opencode auth login');
-    expect(out).not.toContain('OPENAI_API_KEY');
-  });
 });

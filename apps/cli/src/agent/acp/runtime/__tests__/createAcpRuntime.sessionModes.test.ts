@@ -17,7 +17,7 @@ describe('createAcpRuntime (session modes)', () => {
     const session = createBasicSessionClient();
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -42,7 +42,7 @@ describe('createAcpRuntime (session modes)', () => {
     const session = createBasicSessionClient();
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -69,7 +69,7 @@ describe('createAcpRuntime (session modes)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -88,7 +88,7 @@ describe('createAcpRuntime (session modes)', () => {
         type: 'context-compaction',
         phase: 'completed',
         lifecycleId: 'compact_1',
-        provider: 'pi',
+        provider: 'codex',
         source: 'provider-event',
         continuation: 'paused',
         pauseReason: 'provider-idle-after-compaction',
@@ -100,7 +100,7 @@ describe('createAcpRuntime (session modes)', () => {
         type: 'context-compaction',
         phase: 'completed',
         lifecycleId: 'compact_1',
-        provider: 'pi',
+        provider: 'codex',
         source: 'provider-event',
         continuation: 'paused',
         pauseReason: 'provider-idle-after-compaction',
@@ -118,7 +118,7 @@ describe('createAcpRuntime (session modes)', () => {
     } as any);
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -178,7 +178,7 @@ describe('createAcpRuntime (session modes)', () => {
     } as any);
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -220,7 +220,7 @@ describe('createAcpRuntime (session modes)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'pi',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -410,7 +410,7 @@ describe('createAcpRuntime (session modes)', () => {
     });
 
     const runtime = createAcpRuntime({
-      provider: 'cursor',
+      provider: 'codex',
       directory: '/tmp',
       session,
       messageBuffer: new MessageBuffer(),
@@ -449,7 +449,7 @@ describe('createAcpRuntime (session modes)', () => {
 
     expect(getMetadata().sessionModesV1).toMatchObject({
       v: 1,
-      provider: 'cursor',
+      provider: 'codex',
       currentModeId: 'ask',
       availableModes: [
         { id: 'ask', name: 'Ask' },
@@ -490,91 +490,8 @@ describe('createAcpRuntime (session modes)', () => {
     expect(lastSet).toEqual({ sessionId: 'sess_main', modeId: 'plan' });
   });
 
-  it('uses the mode config option directly for providers that require config-option mode switching', async () => {
-    let modeSetCalls = 0;
-    let lastSetConfig: { sessionId: string; configId: string; value: unknown } | null = null;
-    const backend = createFakeAcpRuntimeBackend({
-      async setSessionMode() {
-        modeSetCalls += 1;
-      },
-      async setSessionConfigOption(sessionId: string, configId: string, value: unknown) {
-        lastSetConfig = { sessionId, configId, value };
-      },
-    });
-
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session: createBasicSessionClient(),
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-    });
-
-    await runtime.startOrLoad({ resumeId: null });
-    await runtime.setSessionMode('plan');
-
-    expect(modeSetCalls).toBe(0);
-    expect(lastSetConfig).toEqual({
-      sessionId: 'sess_main',
-      configId: 'mode',
-      value: 'plan',
-    });
-  });
-
-  it('applies startup metadata mode overrides before deferred pending queue drain', async () => {
-    const calls: string[] = [];
-    const backend = createFakeAcpRuntimeBackend({
-      async startSession() {
-        calls.push('start');
-        return { sessionId: 'sess_main' };
-      },
-      async setSessionConfigOption(_sessionId: string, configId: string, value: unknown) {
-        calls.push(`config:${configId}:${String(value)}`);
-      },
-    });
-    const { session, getMetadata } = createSessionClientWithMetadata({
-      initialMetadata: {
-        ...createTestMetadata(),
-        acpSessionModeOverrideV1: { v: 1, updatedAt: 11, modeId: 'plan' },
-      } as Metadata,
-    });
-    const sessionWithSnapshot = {
-      ...session,
-      getMetadataSnapshot: getMetadata,
-    };
-
-    const runtime = createAcpRuntime({
-      provider: 'cursor',
-      directory: '/tmp',
-      session: sessionWithSnapshot,
-      messageBuffer: new MessageBuffer(),
-      mcpServers: {},
-      permissionHandler: createApprovedPermissionHandler(),
-      onThinkingChange: () => {},
-      ensureBackend: async () => backend,
-      pendingQueue: {
-        drainAfterStartOrLoad: true,
-        inputConsumer: {
-          drainPending: async () => {
-            calls.push('drain');
-            return { materialized: 0, stoppedReason: 'no_pending' };
-          },
-        },
-      },
-    });
-
-    await runtime.startOrLoad({ deferPendingDrain: true });
-    await runtime.drainPendingAfterStartOrLoad();
-
-    expect(calls).toEqual(['start', 'config:mode:plan', 'drain']);
-  });
-
   it.each([
-    { provider: 'cursor', modeId: 'plan', expected: 'config:mode:plan' },
-    { provider: 'agy', modeId: 'auto_edit', expected: 'mode:auto_edit' },
+    { provider: 'codex', modeId: 'auto_edit', expected: 'mode:auto_edit' },
   ] as const)('applies $provider explicit startup mode overrides before deferred pending queue drain', async ({ provider, modeId, expected }) => {
     const calls: string[] = [];
     const backend = createFakeAcpRuntimeBackend({

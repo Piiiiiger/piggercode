@@ -367,7 +367,7 @@ describe('sessionRunnerRespawnDescriptor', () => {
     } as const;
     const spawnOptions = {
       directory: '/tmp/repo',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       connectedServiceMaterializationIdentityV1: identity,
     } satisfies SpawnSessionOptions & {
       connectedServiceMaterializationIdentityV1: typeof identity;

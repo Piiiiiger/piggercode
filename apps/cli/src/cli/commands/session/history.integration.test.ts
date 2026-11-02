@@ -103,7 +103,7 @@ describe('happier session history (integration)', () => {
           role: 'agent',
           content: {
             type: 'acp',
-            provider: 'opencode',
+            provider: 'codex',
             data: {
               type: 'message',
               message: 'provider compact text',

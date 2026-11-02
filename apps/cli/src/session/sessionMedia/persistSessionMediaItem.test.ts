@@ -42,7 +42,7 @@ describe('persistSessionMediaItem', () => {
           role: 'output',
           category: 'generated',
           source: { kind: 'local-file', path: outputPath },
-          origin: { source: 'provider-generated', agentId: 'cursor' },
+          origin: { source: 'provider-generated', agentId: 'codex' },
           referenceImagePaths: [referencePath],
         },
       });
@@ -82,7 +82,7 @@ describe('persistSessionMediaItem', () => {
           role: 'output',
           category: 'generated',
           source: { kind: 'local-file', path: outputPath },
-          origin: { source: 'provider-generated', agentId: 'cursor', toolCallId: 'image-call-1' },
+          origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-call-1' },
           description: 'Architecture diagram\u0000 with control text',
           referenceImagePaths: [
             referencePath,
@@ -141,7 +141,7 @@ describe('persistSessionMediaItem', () => {
           role: 'output' as const,
           category: 'generated' as const,
           source: { kind: 'local-file' as const, path },
-          origin: { source: 'provider-generated' as const, agentId: 'cursor' },
+          origin: { source: 'provider-generated' as const, agentId: 'codex' },
         },
       });
 

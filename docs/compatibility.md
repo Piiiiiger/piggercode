@@ -70,12 +70,10 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
 
 ### Connected-service reader support in 0.2 development
 
-The Antigravity integration extends a released closed service enum. UI/server
-0.2.15 (`88d45f33`) and CLI 0.2.14 (`df8241c8`) supplied the original failing
-reader contracts; current UI 0.2.16, server 0.2.16 and CLI 0.2.15 stable/preview
-releases are independently resolved at `22ac8263`. Their release records and
-binary metadata establish the published component basis; they do not attest a
-particular deployment.
+Connected services form a closed enum that released readers validate strictly.
+The adapters below let a new service be added without breaking those readers.
+Every service in the current enum is already in the released set
+(`RELEASED_CONNECTED_SERVICE_IDS`), so the adapters are currently inert.
 
 `packages/protocol/src/connect/connectedServiceReaderSupport.ts` owns the
 recognized-service policy. Authenticated HTTP requests advertise reader support
@@ -112,9 +110,7 @@ they do not fall back to cached or native authentication. Ordinary network
 failures retain the existing account-settings cache policy.
 
 Remove these outward/default-carrier adapters when the supported closed-enum
-readers retire, consolidating at their existing owners. The undeployed 0.3 line
-uses qualified account services and its existing one-way upgrade boundary;
-0.2-created Antigravity data still needs its storage-ingress mapping there.
+readers retire, consolidating at their existing owners.
 
 ### Quota recovery details (0.2 development)
 
@@ -359,22 +355,6 @@ rules: reopening the session recovers status, while daemon restart loses the
 operation record. An authoritative missing record marks status unavailable and
 settles pending UI work without claiming completion. Retry uses a new request
 identity and the existing importer IDs to preserve accepted history.
-
-### ACP session-list browse source
-
-The released `cli-v0.2.12` and `cli-v0.2.12-preview.1` daemon at
-`a357c65536ba89669422977d6f7daf9aa0d17e73` does not register the ACP session-list
-capability method and its direct-session source schema rejects `{ kind: 'acpSessionList' }`.
-Updated UIs therefore probe `daemon.directSessions.acpSessionList.capability.get` through
-the canonical machine direct-sessions operation before sending that source. A missing method
-degrades only ACP candidate listing to `provider_unavailable`; legacy direct-session listing
-continues unchanged. Updated daemons advertise protocol version 1 with `resumeOnly: true`.
-That capability authorizes candidate listing for resume and nothing else: it does not imply
-transcript import, following, takeover, terminal identity, linking, or writer safety.
-
-The probe can be removed only when daemons predating this method are no longer supported.
-Directory validation remains daemon-owned after successful negotiation, and a relative `cwd`
-continues to return `invalid_request` rather than being reclassified as compatibility fallback.
 
 ### Priority-pool primary recovery (development)
 

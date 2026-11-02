@@ -271,51 +271,6 @@ describe('requestInactiveSessionResume', () => {
     expect(callMachineRpc).not.toHaveBeenCalled();
   });
 
-  it('preserves the exact configured ACP backend instead of substituting generic custom ACP', async () => {
-    callMachineRpc.mockResolvedValue({ type: 'success', sessionId: 'session-1' });
-
-    await expect(requestInactiveSessionResume({
-      credentials,
-      sessionId: 'session-1',
-      localId: 'local-1',
-      rawSession: rawSession(),
-      metadata: {
-        flavor: 'acp:review-bot',
-        machineId: 'machine-session',
-        path: '/repo',
-        acpConfiguredBackendV1: {
-          v: 1,
-          updatedAt: 1,
-          backendId: 'review-bot',
-          title: 'Review bot',
-        },
-      },
-    })).resolves.toEqual({ ok: true });
-
-    expect(callMachineRpc).toHaveBeenCalledWith(expect.objectContaining({
-      request: expect.objectContaining({
-        backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      }),
-    }));
-  });
-
-  it('fails closed instead of substituting generic custom ACP for malformed configured identity', async () => {
-    await expect(requestInactiveSessionResume({
-      credentials,
-      sessionId: 'session-1',
-      localId: 'local-1',
-      rawSession: rawSession(),
-      metadata: {
-        flavor: 'acp:review-bot',
-        machineId: 'machine-session',
-        path: '/repo',
-        acpConfiguredBackendV1: { v: 1, backendId: '' },
-      },
-    })).resolves.toEqual(expect.objectContaining({ ok: false, code: 'unsupported' }));
-
-    expect(callMachineRpc).not.toHaveBeenCalled();
-  });
-
   it('replaces stale persisted execution intent with only the current user authorization', async () => {
     callMachineRpc.mockResolvedValue({ type: 'success', sessionId: 'session-1' });
 

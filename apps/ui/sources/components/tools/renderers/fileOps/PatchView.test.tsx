@@ -203,14 +203,14 @@ describe('PatchView', () => {
                 'Patch',
                 {
                     changes: {
-                        'qa/opencode_permission_inside.txt': { type: 'add' },
+                        'qa/codex_permission_inside.txt': { type: 'add' },
                     },
                 },
                 {
                     metadata: {
                         files: [
                             {
-                                relativePath: 'qa/opencode_permission_inside.txt',
+                                relativePath: 'qa/codex_permission_inside.txt',
                                 before: '',
                                 after: 'INSIDE_WRITE_TEST_V1\n',
                             },
@@ -223,7 +223,7 @@ describe('PatchView', () => {
 
         expect(screen.findAllByType('ToolDiffView' as any)).toHaveLength(0);
         expect(getUniqueCodeLinesViews()).toHaveLength(1);
-        expect(syntaxHookSpy).toHaveBeenCalledWith('qa/opencode_permission_inside.txt');
+        expect(syntaxHookSpy).toHaveBeenCalledWith('qa/codex_permission_inside.txt');
     });
 
     it('renders text diff payloads when review comments are enabled', async () => {

@@ -99,7 +99,7 @@ vi.mock('../permissions/PermissionFooter', () => ({
 }));
 
 vi.mock('@/agents/catalog/catalog', () => ({
-    AGENT_IDS: ['claude', 'codex', 'gemini', 'opencode'],
+    AGENT_IDS: ['claude', 'codex'],
     DEFAULT_AGENT_ID: 'codex',
     getAgentCore: (agentId: string) => ({
         toolRendering: { hideUnknownToolsByDefault: false },

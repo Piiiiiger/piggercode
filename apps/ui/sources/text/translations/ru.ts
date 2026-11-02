@@ -271,52 +271,6 @@ const settingsAppearanceTranslationExtension = {
 
 const acpCatalogTranslationExtension = {
   settings: {
-    acpCatalog: 'ACP-бэкенды',
-    acpCatalogSubtitle: 'Управляйте встроенными и пользовательскими ACP-бэкендами',
-    acpCatalogBuiltIn: 'Встроенный ACP',
-    acpCatalogBuiltInFooter:
-      'Встроенные универсальные агенты ACP определены в общем каталоге и запускаются через общую среду выполнения ACP.',
-    acpCatalogBackends: 'Пользовательские бэкенды',
-    acpCatalogBackendsFooter:
-      'Каждый пользовательский бэкенд — это выбираемая CLI-конфигурация, совместимая с ACP, со своим запуском, настройками по умолчанию и параметрами аутентификации.',
-    acpCatalogBackendsEmptyTitle: 'Пользовательских ACP-бэкендов нет',
-    acpCatalogBackendsEmptySubtitle: 'Добавьте бэкенд, чтобы создать доступный для выбора пользовательский ACP-бэкенд.',
-    acpCatalogAddBackend: 'Добавить ACP-бэкенд',
-    acpCatalogAddBackendSubtitle: 'Создать пользовательский ACP-бэкенд',
-    acpCatalogBackendEditorTitle: 'ACP-бэкенд',
-    acpCatalogBasics: 'Основное',
-    acpCatalogLauncher: 'Запуск',
-    acpCatalogEnv: 'Окружение',
-    acpCatalogAddEnv: 'Добавить переменную окружения',
-    acpCatalogAddEnvSubtitle: 'Сохраняйте литеральные значения или привязывайте сохранённые секреты',
-    acpCatalogEnvEmptyTitle: 'Нет переменных окружения',
-    acpCatalogEnvEmptySubtitle: 'Добавьте переменные запуска для этого бэкенда.',
-    acpCatalogAuth: 'Аутентификация',
-    acpCatalogAuthSupport: 'Поддержка аутентификации',
-    acpCatalogAuthParser: 'Парсер статуса',
-    acpCatalogCapabilities: 'Возможности',
-    acpCatalogTransportProfile: 'Профиль транспорта',
-    acpCatalogSupportsLoadSession: 'Поддержка возобновления сеансов',
-    acpCatalogSupportsModes: 'Поддержка режимов',
-    acpCatalogSupportsModels: 'Поддержка моделей',
-    acpCatalogSupportsConfigOptions: 'Поддержка параметров конфигурации',
-    acpCatalogPromptImageSupport: 'Поддержка изображений в промпте',
-    acpCatalogFieldId: 'ID',
-    acpCatalogFieldName: 'Имя',
-    acpCatalogFieldTitle: 'Название',
-    acpCatalogFieldDescription: 'Описание',
-    acpCatalogFieldCommand: 'Команда',
-    acpCatalogFieldArgs: 'Аргументы (по одному на строку)',
-    acpCatalogMachineLoginKey: 'Ключ входа на машине',
-    acpCatalogDocsUrl: 'URL документации',
-    acpCatalogLoginCommand: 'Команда входа',
-    acpCatalogLoginArgs: 'Аргументы входа (по одному на строку)',
-    acpCatalogStatusCommand: 'Токены команды статуса (по одному на строку)',
-    acpCatalogDefaultMode: 'Режим по умолчанию',
-    acpCatalogDefaultModel: 'Модель по умолчанию',
-    acpCatalogDeleteBackendTitle: 'Удалить ACP-бэкенд?',
-    acpCatalogDeleteBackendConfirm: ({ name }: { name: string }) => `Удалить «${name}»?`,
-    acpCatalogValidationFailed: 'Настройки каталога ACP недействительны.',
   },
   newSession: {},
 } as const;
@@ -1950,7 +1904,7 @@ export const ru: TranslationStructure = {
 		    mcpServersDetectedRefreshSubtitle: "Сканировать файлы конфигурации поставщика на этом компьютере",
 		    mcpServersDetectedWarningsTitle: "Предупреждения об обнаружении",
 		    mcpServersDetectedEmptyTitle: "Серверы MCP не обнаружены",
-		    mcpServersDetectedEmptySubtitle: "Нажмите «Обновить», чтобы просканировать конфигурации Claude/Codex/OpenCode.",
+		    mcpServersDetectedEmptySubtitle: "Нажмите «Обновить», чтобы просканировать конфигурации Claude/Codex.",
 		    mcpServersImportTitle: "Импортировать сервер MCP?",
 		    mcpServersImportConfirm: ({ provider, name }: { provider: string; name: string }) => `Import "${name}" from ${provider}?`,
 		    mcpServersImportAction: "Импорт",
@@ -2314,8 +2268,6 @@ export const ru: TranslationStructure = {
       openaiCodex: "Codex от OpenAI",
       openai: "Ключ API OpenAI",
       anthropic: "Ключ API Anthropic",
-      gemini: "Gemini от Google",
-      antigravity: 'Google Antigravity',
       github: "GitHub",
     },
     title: "Подключённые сервисы",
@@ -2506,12 +2458,6 @@ export const ru: TranslationStructure = {
       pasteRedirectUrlPromptBody:
         "После завершения OAuth скопируйте итоговый URL редиректа из адресной строки браузера и вставьте его сюда.",
       providerOverrides: {
-        antigravity: {
-          connectWebDescription: "Следующий шаг: войдите через Google. Antigravity покажет код авторизации для копирования.",
-          pasteRedirectUrlPromptBody: "1) Войдите через Google. 2) Скопируйте код авторизации с antigravity.google. 3) Вставьте его ниже, оставив это окно входа открытым.",
-          pasteRedirectUrlPlaceholder: "Вставьте код авторизации Antigravity",
-          pasteRedirectUrlTitle: "Вставить код авторизации",
-        },
         claudeSubscription: {
           connectWebDescription:
             "Следующий шаг: войдите на открывшейся странице. Claude может показать строку кода вместо автоматического редиректа.",
@@ -4071,110 +4017,6 @@ export const ru: TranslationStructure = {
                     }
                 }
             },
-            opencode: {
-                title: "OpenCode",
-                sections: {
-                    cliGeneration: {
-                        title: "Версия OpenCode",
-                        footer: "Автовыбор предпочитает opencode, переключается на opencode2 и определяет API сервера после запуска. Стабильный режим всегда выбирает opencode, но всё равно определяет V1 или V2. V2 предпочитает opencode2, а иначе использует opencode с выбранным V2. Инструменты MCP Happier работают с V2 в режиме ACP; серверный API пока не поддерживает динамическую регистрацию MCP."
-                    },
-                    backendMode: {
-                        title: "Режим бэкенда",
-                        footer: "Серверный режим открывает вопросы и нативный форк. Режим ACP — устаревший резервный вариант."
-                    },
-                    server: {
-                        title: "Подключение к серверу",
-                        footer: "Оставьте пустым, чтобы использовать управляемый Happier жизненный цикл сервера OpenCode. Укажите абсолютный URL http(s), чтобы подключиться к существующему серверу OpenCode."
-                    }
-                },
-                fields: {
-                    opencodeCliGeneration: {
-                        title: "Поколение CLI",
-                        subtitle: "Выберите установленную команду OpenCode, которую запускает Happier.",
-                        options: {
-                            auto: { title: "Автоматически (рекомендуется)", subtitle: "Предпочитает opencode и переключается на opencode2." },
-                            stable: { title: "Стабильная", subtitle: "Всегда запускает opencode и определяет API после запуска." },
-                            v2: { title: "V2", subtitle: "Предпочитает opencode2; иначе запускает opencode с выбранным V2." }
-                        }
-                    },
-                    opencodeBackendMode: {
-                        title: "Режим бэкенда OpenCode",
-                        subtitle: "Выберите интеграционный бэкенд.",
-                        options: {
-                            server: {
-                                title: "Сервер (рекомендуется)",
-                                subtitle: "Использует серверные API OpenCode для более богатых функций и надежности."
-                            },
-                            acp: {
-                                title: "ACP (устаревший)",
-                                subtitle: "Направляет OpenCode через ACP; функций меньше."
-                            }
-                        }
-                    },
-                    opencodeServerBaseUrl: {
-                        title: "URL существующего сервера OpenCode",
-                        subtitle: "Необязательное переопределение для пользовательского сервера OpenCode."
-                    }
-                }
-            },
-            auggie: {
-                title: "Auggie"
-            },
-            copilot: {
-                title: "Copilot"
-            },
-            cursor: {
-                title: "Cursor",
-                sections: {
-                    cli: {
-                        title: "CLI Cursor",
-                        footer: "Используйте конкретный бинарный файл Cursor, когда автообнаружения недостаточно. Happier предпочитает cursor-agent и может использовать agent как fallback, если это включено."
-                    }
-                },
-                fields: {
-                    cursorBinaryPath: {
-                        title: "Путь к бинарному файлу Cursor",
-                        subtitle: "Необязательный абсолютный путь к cursor-agent или agent."
-                    },
-                    cursorApiEndpoint: {
-                        title: "API-эндпоинт Cursor",
-                        subtitle: "Необязательное переопределение API-эндпоинта Cursor Agent."
-                    },
-                    cursorAgentFallbackEnabled: {
-                        title: "Разрешить fallback на agent",
-                        subtitle: "Использовать команду agent, когда cursor-agent недоступен."
-                    }
-                }
-            },
-            customAcp: {
-                title: "Пользовательский ACP"
-            },
-            gemini: {
-                title: "Gemini"
-            },
-            kilo: {
-                title: "Kilo"
-            },
-            kimi: {
-                title: "Kimi"
-            },
-            kiro: {
-                title: "Kiro"
-            },
-            devin: { title: "Devin" },
-            agy: { title: 'Antigravity' },
-            fx: { title: "FX" },
-            droid: { title: "Factory Droid" },
-            codebuddy: { title: "CodeBuddy" },
-            grok: {
-                title: "Grok Build"
-            },
-            pi: {
-                title: "Pi"
-            },
-            qwen: {
-                title: "Qwen Code"
-            },
             codex: {
         title: "Codex",
         sections: {
@@ -4719,9 +4561,6 @@ export const ru: TranslationStructure = {
       codexAcp: {
         title: "Адаптер Codex ACP",
       },
-      agyAcpServer: {
-          title: "Сервер Agy ACP",
-      },
       githubCli: {
         title: "CLI GitHub",
       },
@@ -4926,7 +4765,6 @@ export const ru: TranslationStructure = {
       installCliIfAvailable: ({ cli }: { cli: string }) =>
         `Установите ${cli} CLI, если доступно •`,
       viewInstallationGuide: "Открыть руководство по установке →",
-      viewGeminiDocs: "Открыть документацию Gemini →",
     },
     worktree: {
       creating: ({ name }: { name: string }) =>
@@ -5033,18 +4871,6 @@ export const ru: TranslationStructure = {
       reinstallTitle: "Переустановить Codex ACP?",
       description:
         "Это установит экспериментальный ACP-адаптер для Codex, который поддерживает загрузку/возобновление тредов.",
-    },
-    agyAcpBanner: {
-        title: "Сервер Agy ACP",
-        install: "Установить",
-        update: "Обновить",
-        reinstall: "Переустановить",
-    },
-    agyAcpInstallModal: {
-        installTitle: "Установить сервер Agy ACP?",
-        updateTitle: "Обновить сервер Agy ACP?",
-        reinstallTitle: "Переустановить сервер Agy ACP?",
-        description: "Это установит официальный закреплённый сервер Agy ACP, который используется для сессий Agy. Интерактивный CLI agy устанавливается отдельно.",
     },
         githubCliBanner: {
             title: 'GitHub CLI',
@@ -5393,9 +5219,6 @@ export const ru: TranslationStructure = {
     browseSourceCodexUserHome: "Мой каталог Codex",
     browseSourceCodexConnectedServices: ({ service }: { service: string }) => `${service} connected services`,
     browseSourceClaudeDefault: "Стандартная конфигурация Claude",
-    browseSourceOpenCodeDefault: "Стандартный сервер OpenCode",
-    browseSourceAcpAgentSessions: 'Сессии агента',
-    browseSourcePiDefault: "Каталог агента Pi по умолчанию",
     browseCandidates: "Доступные сессии",
     browseNoMachines: "Для прямых сессий пока нет доступных машин.",
     browseNoCandidates: "Для этой машины и провайдера сессии не найдены.",
@@ -5463,40 +5286,6 @@ export const ru: TranslationStructure = {
     codexSessionId: "ID сессии Codex",
     codexSessionIdCopied: "ID сессии Codex скопирован в буфер обмена",
     failedToCopyCodexSessionId: "Не удалось скопировать ID сессии Codex",
-    opencodeSessionId: "ID сессии OpenCode",
-    opencodeSessionIdCopied: "ID сессии OpenCode скопирован в буфер обмена",
-    geminiSessionId: "ID сессии Gemini",
-    geminiSessionIdCopied: "ID сессии Gemini скопирован в буфер обмена",
-    auggieSessionId: "ID сессии Auggie",
-    auggieSessionIdCopied: "ID сессии Auggie скопирован в буфер обмена",
-    qwenSessionId: "ID сессии Qwen Code",
-    qwenSessionIdCopied: "ID сессии Qwen Code скопирован в буфер обмена",
-    kimiSessionId: "ID сессии Kimi",
-    kimiSessionIdCopied: "ID сессии Kimi скопирован в буфер обмена",
-    kiloSessionId: "ID сессии Kilo",
-    kiloSessionIdCopied: "ID сессии Kilo скопирован в буфер обмена",
-    kiroSessionId: "ID сессии Kiro",
-    kiroSessionIdCopied: "ID сессии Kiro скопирован в буфер обмена",
-    devinSessionId: "ID сессии Devin",
-    devinSessionIdCopied: "ID сессии Devin скопирован в буфер обмена",
-    agySessionId: "ID сессии Agy",
-    agySessionIdCopied: "ID сессии Agy скопирован в буфер обмена",
-    fxSessionId: "ID сессии FX",
-    fxSessionIdCopied: "ID сессии FX скопирован в буфер обмена",
-    droidSessionId: "ID сессии Factory Droid",
-    codebuddySessionId: "ID сессии CodeBuddy",
-    droidSessionIdCopied: "ID сессии Factory Droid скопирован в буфер обмена",
-    codebuddySessionIdCopied: "ID сессии CodeBuddy скопирован в буфер обмена",
-    customAcpSessionId: "ID пользовательской ACP-сессии",
-    grokSessionId: "ID сессии Grok",
-    grokSessionIdCopied: "ID сессии Grok скопирован в буфер обмена",
-    customAcpSessionIdCopied: "ID пользовательской ACP-сессии скопирован в буфер обмена",
-    piSessionId: "ID сессии Pi",
-    piSessionIdCopied: "ID сессии Pi скопирован в буфер обмена",
-    copilotSessionId: "ID сессии Copilot",
-    copilotSessionIdCopied: "ID сессии Copilot скопирован в буфер обмена",
-    cursorSessionId: "ID сессии Cursor",
-    cursorSessionIdCopied: "ID сессии Cursor скопирован в буфер обмена",
     metadataCopied: "Метаданные скопированы в буфер обмена",
     failedToCopyMetadata: "Не удалось скопировать метаданные",
     failedToKillSession: "Не удалось завершить сессию",
@@ -6781,27 +6570,6 @@ export const ru: TranslationStructure = {
     agent: {
       claude: "Claude",
       codex: "Codex",
-      opencode: "OpenCode",
-      gemini: "Gemini",
-      auggie: "Auggie",
-      qwen: "Qwen Code",
-      kimi: "Kimi",
-      kilo: "Kilo",
-      kiro: "Kiro",
-      devin: "Devin",
-      agy: 'Antigravity',
-      fx: "FX",
-      droid: "Factory Droid",
-      codebuddy: "CodeBuddy",
-      customAcp: "Пользовательский АКП",
-      pi: "Pi",
-      copilot: "Copilot",
-      cursor: "Cursor",
-      grok: "Grok",
-    },
-    auggieIndexingChip: {
-      on: "Индексация включена",
-      off: "Индексация выключена",
     },
       model: {
         title: "МОДЕЛЬ",
@@ -6841,31 +6609,6 @@ export const ru: TranslationStructure = {
       gpt5Low: "GPT-5 Низкий",
       gpt5Medium: "GPT-5 Средний",
       gpt5High: "GPT-5 Высокий",
-    },
-    geminiPermissionMode: {
-      title: "РЕЖИМ РАЗРЕШЕНИЙ",
-      default: "По умолчанию",
-      readOnly: "Только чтение",
-      safeYolo: "Безопасный YOLO",
-      yolo: "YOLO",
-      badgeReadOnly: "Только чтение",
-      badgeSafeYolo: "Безопасный YOLO",
-      badgeYolo: "YOLO",
-    },
-    geminiModel: {
-      title: "МОДЕЛЬ GEMINI",
-      gemini25Pro: {
-        label: "Gemini 2.5 Pro",
-        description: "Самая мощная",
-      },
-      gemini25Flash: {
-        label: "Gemini 2.5 Flash",
-        description: "Быстро и эффективно",
-      },
-      gemini25FlashLite: {
-        label: "Gemini 2.5 Flash Lite",
-        description: "Самая быстрая",
-      },
     },
     context: {
       remaining: ({ percent }: { percent: number }) => `Осталось ${percent}%`,
@@ -7065,13 +6808,6 @@ export const ru: TranslationStructure = {
     taskView: {
       moreTools: ({ count }: { count: number }) => `+${count} ещё инструментов`,
     },
-    workspaceIndexingPermission: {
-      defaultTitle: "Индексация рабочего пространства",
-      description:
-        "Индексация помогает агенту быстрее искать по вашему коду и давать более точные ответы. Она может просканировать файлы в рабочем пространстве.",
-      optionFallback: "Вариант",
-      chooseOptionHint: "Выберите вариант ниже, чтобы продолжить.",
-    },
     acpHistoryImport: {
       title: "Импортировать историю сессии?",
       defaultNote:
@@ -7124,9 +6860,6 @@ export const ru: TranslationStructure = {
       switchMode: "Сменить режим",
       taskOutput: "Вывод задачи",
       taskStop: "Остановить задачу",
-    },
-    geminiExecute: {
-      cwd: ({ cwd }: { cwd: string }) => `📁 ${cwd}`,
     },
     desc: {
       terminalCmd: ({ cmd }: { cmd: string }) => `Терминал(команда: ${cmd})`,
@@ -9883,11 +9616,11 @@ settingsSession: {
                     "welcome": {
                         "title": "Добро пожаловать в Happier",
                         "everywhereTitle": "Ваши AI-агенты везде, где вы работаете",
-                        "everywhereBody": "Claude Code, Codex, OpenCode, Pi и многое другое: на телефоне, планшете, в браузере или на desktop.",
+                        "everywhereBody": "Claude Code и Codex: на телефоне, планшете, в браузере или на desktop.",
                         "cockpitTitle": "Ваш мобильный cockpit",
                         "cockpitBody": "Чат, файлы, Git, редактор, терминал. Всё, что нужно, чтобы собрать и отправить следующий проект, у вас под рукой.",
                         "existingTitle": "Существующие сессии уже здесь",
-                        "existingBody": "Любую сессию Claude, Codex или OpenCode, запущенную на вашей машине, можно открыть в Happier вживую.",
+                        "existingBody": "Любую сессию Claude или Codex, запущенную на вашей машине, можно открыть в Happier вживую.",
                         "voiceTitle": "Голосовой ассистент для брейншторма",
                         "voiceBody": "Спросите, что делают ваши агенты, одобряйте запросы разрешений и отправляйте сообщения. Без рук.",
                         "reviewTitle": "Проверяйте diff и оставляйте комментарии",
@@ -9895,7 +9628,7 @@ settingsSession: {
                         "subagentsTitle": "Subagents между провайдерами",
                         "subagentsBody": "Запускайте subagents Codex из сессии Claude. Делите работу между агентами. Маршрутизируйте сообщения между сессиями.",
                         "tuisTitle": "Используйте любимые TUI",
-                        "tuisBody": "Запускайте Claude Code, Codex или OpenCode в их нативном терминальном UI. Happier захватывает его и синхронизирует на все устройства.",
+                        "tuisBody": "Запускайте Claude Code или Codex в их нативном терминальном UI. Happier захватывает его и синхронизирует на все устройства.",
                         "inboxTitle": "Один inbox. Каждая сессия.",
                         "inboxBody": "Все ожидающие одобрения, запросы разрешений и готовые к проверке сессии со всех машин в одном месте.",
                         "mcpTitle": "Один MCP-конфиг. Каждый провайдер.",
@@ -9922,7 +9655,7 @@ settingsSession: {
                     "terminalTuis": {
                         "title": "Любите терминал? Мы тоже!",
                         "wideTitle": "Любите терминал?\nМы тоже!",
-                        "body": "Запускайте Claude Code, Codex или OpenCode в их нативном терминальном UI. Следите, отправляйте сообщения и одобряйте разрешения с телефона.",
+                        "body": "Запускайте Claude Code или Codex в их нативном терминальном UI. Следите, отправляйте сообщения и одобряйте разрешения с телефона.",
                         "alt": "Абстрактное изображение-заглушка для синхронизации терминального TUI."
                     },
                     "cockpit": {
@@ -9932,8 +9665,8 @@ settingsSession: {
                         "alt": "Абстрактное изображение-заглушка для мобильного cockpit."
                     },
                     "existingSessions": {
-                        "title": "Сессии Claude, Codex, OpenCode? Уже здесь.",
-                        "body": "Просматривайте любые сессии Claude, Codex или OpenCode, запущенные сейчас или нет.",
+                        "title": "Сессии Claude и Codex? Уже здесь.",
+                        "body": "Просматривайте любые сессии Claude или Codex, запущенные сейчас или нет.",
                         "alt": "Абстрактное изображение-заглушка для существующих сессий провайдеров."
                     },
                     "voiceAssistant": {
@@ -10633,7 +10366,7 @@ settingsSession: {
     sessionRunningLocally:
       "Эта сессия запущена локально на этом компьютере. Вы можете переключиться на удалённый режим, чтобы управлять из приложения.",
     sessionRunningLocallyAndRemotely:
-      "Эта сессия локально подключена в OpenCode и по-прежнему управляется из приложения.",
+      "Эта сессия также открыта в локальном терминале и по-прежнему управляется из приложения.",
     switchingToRemote: "Переключение в удалённый режим…",
     switchToRemote: "Переключиться на удалённый",
     detachLocalTerminal: "Отсоединить терминал",
@@ -11027,9 +10760,6 @@ settingsSession: {
       codex: "Codex (по умолчанию)",
       openai: "OpenAI (GPT-5)",
       azureOpenai: "Azure OpenAI",
-      gemini: "Gemini (по умолчанию)",
-      geminiApiKey: "Gemini (ключ API)",
-      geminiVertex: "Gemini (Vertex AI)",
     },
     groups: {
       favorites: "Избранное",
@@ -11067,10 +10797,6 @@ settingsSession: {
       codex: {
         title: "Codex",
         instructions: "Выполните `codex login`, чтобы войти.",
-      },
-      geminiCli: {
-        title: "Gemini CLI",
-        instructions: "Выполните `gemini auth`, чтобы войти.",
       },
     },
     requirements: {
@@ -11184,23 +10910,6 @@ settingsSession: {
       selectAtLeastOneError: "Выберите хотя бы один бекенд ИИ.",
       claudeSubtitle: "CLI Claude",
       codexSubtitle: "CLI Codex",
-      opencodeSubtitle: "CLI OpenCode",
-      geminiSubtitleExperimental: "Gemini CLI (экспериментально)",
-      auggieSubtitle: "Auggie CLI",
-      qwenSubtitleExperimental: "Qwen Code CLI (экспериментально)",
-      kimiSubtitleExperimental: "Kimi Code CLI (экспериментально)",
-      kiloSubtitleExperimental: "Kilo CLI (экспериментально)",
-      kiroSubtitleExperimental: "Kiro CLI (экспериментально)",
-      devinSubtitleExperimental: "Devin CLI (экспериментально)",
-      agySubtitleExperimental: "Antigravity CLI (экспериментально)",
-      fxSubtitleExperimental: "FX CLI (экспериментально)",
-      droidSubtitleExperimental: "Factory Droid CLI (экспериментально)",
-      codebuddySubtitleExperimental: "CodeBuddy Code CLI (экспериментально)",
-      customAcpSubtitleExperimental: "Пользовательский ACP CLI (экспериментально)",
-      grokSubtitleExperimental: "Grok Build CLI (экспериментально)",
-      piSubtitleExperimental: "Pi CLI (экспериментально)",
-      copilotSubtitleExperimental: "GitHub Copilot CLI (экспериментально)",
-      cursorSubtitleExperimental: "Cursor Agent CLI (экспериментально)",
     },
     tmux: {
       title: "Tmux",

@@ -51,12 +51,12 @@ describe('mergeSessionMetadataForStartup', () => {
     it('preserves existing provider resume ids when next does not define them', () => {
         const nowMs = 1;
         const merged = mergeSessionMetadataForStartup({
-            current: { geminiSessionId: 'g1', codexSessionId: 'c1' } as any,
+            current: { claudeSessionId: 'g1', codexSessionId: 'c1' } as any,
             next: { hostPid: 2 } as any,
             nowMs,
         });
 
-        expect((merged as any).geminiSessionId).toBe('g1');
+        expect((merged as any).claudeSessionId).toBe('g1');
         expect((merged as any).codexSessionId).toBe('c1');
         expect(merged.hostPid).toBe(2);
     });

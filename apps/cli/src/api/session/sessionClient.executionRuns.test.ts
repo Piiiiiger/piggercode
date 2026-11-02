@@ -116,18 +116,18 @@ describe('ApiSessionClient execution-run backend wiring', () => {
 
     expect(sessionSocketStubState.executionRunHandlerContext).toBeTruthy();
     const createBackend = sessionSocketStubState.executionRunHandlerContext.createBackend as (args: Record<string, unknown>) => unknown;
-    const accountSettings = { backendEnabledByTargetKey: { 'acpBackend:review-bot': false } };
+    const accountSettings = { backendEnabledByTargetKey: { 'agent:codex': false } };
 
     createBackend({
-      backendId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+      backendId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'read_only',
       accountSettings,
     });
 
     expect(sessionSocketStubState.createExecutionRunBackendMock).toHaveBeenCalledWith(expect.objectContaining({
-      backendId: 'customAcp',
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+      backendId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'read_only',
       accountSettings,
       interactivePermissionHandler: expect.objectContaining({
@@ -157,8 +157,8 @@ describe('ApiSessionClient execution-run backend wiring', () => {
 
     sessionSocketStubState.executionRunHandlerContext.createBackend({
       runId: 'run-1',
-      backendId: 'opencode',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'default',
     });
     const backendArgs = sessionSocketStubState.createExecutionRunBackendMock.mock.calls.at(-1)?.[0];
@@ -191,16 +191,16 @@ describe('ApiSessionClient execution-run backend wiring', () => {
     const { ApiSessionClient } = await import('./sessionClient');
     const client = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's1', metadata: createTestMetadata({ path: '/tmp/original' }) }));
 
-    client.setRuntimeWorkingDirectory('/tmp/resumed-opencode');
+    client.setRuntimeWorkingDirectory('/tmp/resumed-codex');
 
-    expect(sessionSocketStubState.executionRunHandlerContext.resolveCwd()).toBe('/tmp/resumed-opencode');
+    expect(sessionSocketStubState.executionRunHandlerContext.resolveCwd()).toBe('/tmp/resumed-codex');
     sessionSocketStubState.executionRunHandlerContext.createBackend({
-      backendId: 'opencode',
-      backendTarget: { kind: 'builtInAgent', agentId: 'opencode' },
+      backendId: 'codex',
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       permissionMode: 'read_only',
     });
     expect(sessionSocketStubState.createExecutionRunBackendMock).toHaveBeenCalledWith(expect.objectContaining({
-      cwd: '/tmp/resumed-opencode',
+      cwd: '/tmp/resumed-codex',
     }));
 
     await client.close();

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
     buildBackendTargetKey,
-    isBuiltInAgentTarget,
     type BackendTargetRefV1,
     type ConnectedServiceBindingsV1,
 } from '@piggercode/protocol';
@@ -59,15 +58,11 @@ export function useNewSessionPreflightConfigOptionsState(params: Readonly<{
         setRefreshNonce((current) => current + 1);
     }, []);
 
-    const backendTargetKind = params.backendTarget.kind;
-    const backendTargetAgentId = isBuiltInAgentTarget(params.backendTarget) ? params.backendTarget.agentId : null;
-    const backendTargetBackendId = isBuiltInAgentTarget(params.backendTarget) ? null : params.backendTarget.backendId;
+    const backendTargetAgentId = params.backendTarget.agentId;
 
     const backendTarget = React.useMemo<BackendTargetRefV1>(() => {
-        return backendTargetKind === 'builtInAgent'
-            ? { kind: 'builtInAgent', agentId: backendTargetAgentId! }
-            : { kind: 'configuredAcpBackend', backendId: backendTargetBackendId! };
-    }, [backendTargetAgentId, backendTargetBackendId, backendTargetKind]);
+        return { kind: 'builtInAgent', agentId: backendTargetAgentId };
+    }, [backendTargetAgentId]);
 
     const agentType = React.useMemo(() => resolveProviderAgentIdForBackendTarget(backendTarget), [backendTarget]);
     const probeKey = React.useMemo(() => buildBackendTargetKey(backendTarget), [backendTarget]);

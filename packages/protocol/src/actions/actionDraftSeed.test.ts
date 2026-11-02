@@ -32,16 +32,4 @@ describe('buildActionDraftSeedInput', () => {
     });
   });
 
-  it('preserves configured ACP backend targets for backendTargetKeys fields', () => {
-    const spec = getActionSpec('subagents.plan.start');
-
-    const seed = buildActionDraftSeedInput(spec, {
-      defaultBackendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
-      instructions: 'Make a plan.',
-    });
-    expect(seed).toMatchObject({
-      backendTargetKeys: ['acpBackend:review-bot'],
-      instructions: 'Make a plan.',
-    });
-  });
 });

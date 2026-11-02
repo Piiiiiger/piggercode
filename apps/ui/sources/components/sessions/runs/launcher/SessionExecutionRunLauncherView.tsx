@@ -165,10 +165,9 @@ const SessionExecutionRunLauncherContent = React.memo((props: SessionExecutionRu
         return resolveExecutionRunLauncherBackendChoices({
             enabledAgentIds,
             executionRunsBackends,
-            acpCatalogSettingsV1: (settings as any)?.acpCatalogSettingsV1 ?? { v: 2, backends: [] },
             intent,
         });
-    }, [enabledAgentIds, executionRunsBackends, intent, settings]);
+    }, [enabledAgentIds, executionRunsBackends, intent]);
 
     const initialBackendTargetKey = React.useMemo(() => {
         const sessionAgent = (session as any)?.metadata?.agent;

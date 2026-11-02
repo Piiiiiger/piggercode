@@ -59,7 +59,7 @@ function matchesDynamicSessionControlAdapterImport(text: string): boolean {
   // depending on rebuilt/removed relative chunks or root-level appServer paths.
   const patterns: RegExp[] = [
     /CODEX_APP_SERVER_(?:CATALOG|GOAL|USAGE_LIMIT_RECOVERY)_CONTROL_ADAPTER_MODULE\s*=\s*['"]\.\/appServer\/[^'"]+['"]/,
-    /(?:CLAUDE|GEMINI|OPENCODE)_USAGE_LIMIT_RECOVERY_CONTROL_ADAPTER_MODULE\s*=\s*['"]@\/backends\/[^'"]+['"]/,
+    /CLAUDE_USAGE_LIMIT_RECOVERY_CONTROL_ADAPTER_MODULE\s*=\s*['"]@\/backends\/[^'"]+['"]/,
     /getSession(?:Goal|Catalog|UsageLimitRecovery)ControlAdapter:\s*async\s*\([^)]*\)\s*=>[\s\S]{0,320}(?:import|require)\(\s*['"]\.\/appServer\/[^'"]+['"]\s*\)/,
     /getSession(?:Goal|Catalog|UsageLimitRecovery)ControlAdapter:\s*async\s*\([^)]*\)\s*=>[\s\S]{0,320}(?:import|require)\(\s*['"]\.\/(?:codexAppServer)?(?:Goal|Catalog|UsageLimitRecovery)ControlAdapter-[^'"]+['"]\s*\)/,
     /getSessionUsageLimitRecoveryControlAdapter:\s*async\s*\([^)]*\)\s*=>[\s\S]{0,320}(?:import|require)\(\s*['"]@\/backends\/[^'"]+UsageLimitRecoveryControlAdapter['"]\s*\)/,
@@ -75,12 +75,10 @@ function matchesDynamicTerminalHostRegistryImport(text: string): boolean {
   return /import\(\s*['"]\.\/defaultRegistry-[^'"]+\.mjs['"]\s*\)/.test(text);
 }
 
-function containsStaticSessionControlAdapterWiring(text: string, agentId: 'claude' | 'codex' | 'gemini' | 'opencode'): boolean {
+function containsStaticSessionControlAdapterWiring(text: string, agentId: 'claude' | 'codex'): boolean {
   const expectedUsageAdapterByAgentId = {
     claude: 'claudeUsageLimitRecoveryControlAdapter',
     codex: 'codexAppServerUsageLimitRecoveryControlAdapter',
-    gemini: 'geminiUsageLimitRecoveryControlAdapter',
-    opencode: 'openCodeUsageLimitRecoveryControlAdapter',
   } satisfies Record<typeof agentId, string>;
   const usageAdapter = expectedUsageAdapterByAgentId[agentId];
   const usagePattern = new RegExp(
@@ -222,8 +220,6 @@ describe('CLI build output', () => {
     const sawStaticSessionControlWiringByAgentId = new Map([
       ['claude', false],
       ['codex', false],
-      ['gemini', false],
-      ['opencode', false],
     ] as const);
     for (const file of distFiles) {
       const text = await fs.readFile(file, 'utf8');
@@ -238,8 +234,6 @@ describe('CLI build output', () => {
     expect(Object.fromEntries(sawStaticSessionControlWiringByAgentId)).toEqual({
       claude: true,
       codex: true,
-      gemini: true,
-      opencode: true,
     });
     expect(offenders).toEqual([]);
   }, 60_000);

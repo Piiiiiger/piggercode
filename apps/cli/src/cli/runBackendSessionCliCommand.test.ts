@@ -217,9 +217,9 @@ describe('runBackendSessionCliCommand', () => {
 	    const loadRun = vi.fn().mockResolvedValue(run);
 
 	    const commandPromise = runBackendSessionCliCommand({
-	      context: { args: ['gemini'], terminalRuntime: null } as any,
+	      context: { args: ['codex'], terminalRuntime: null } as any,
 	      loadRun,
-	      agentIdForAccountSettings: 'gemini' as any,
+	      agentIdForAccountSettings: 'codex' as any,
 	    });
 
 	    await commandPromise;
@@ -450,44 +450,6 @@ describe('runBackendSessionCliCommand', () => {
     }));
   });
 
-  it('passes Cursor provider runtime settings through direct CLI session starts', async () => {
-    const credentials = { token: 'x' } as any;
-
-    vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(credentials);
-    vi.spyOn(authModule, 'ensureMachineIdForCredentials').mockResolvedValue({ machineId: 'machine-1' } as any);
-    vi.spyOn(accountSettingsModule, 'bootstrapAccountSettingsContext').mockResolvedValue({
-      source: 'network',
-      settings: {
-        cursorBinaryPath: '/opt/cursor/cursor-agent',
-        cursorAgentFallbackEnabled: false,
-        cursorApiEndpoint: 'https://cursor.example.test',
-      } as any,
-      settingsVersion: 1,
-      loadedAtMs: Date.now(),
-      whenRefreshed: null,
-    } as any);
-    vi.spyOn(providerSettingsModule, 'resolveProviderSpawnExtrasForRuntime').mockReturnValue({
-      cursorBinaryPath: '/opt/cursor/cursor-agent',
-      cursorAgentFallbackEnabled: false,
-      cursorApiEndpoint: 'https://cursor.example.test',
-    });
-
-    const run = vi.fn().mockResolvedValue(undefined);
-    const loadRun = vi.fn().mockResolvedValue(run);
-
-    await runBackendSessionCliCommand({
-      context: { args: ['cursor'], terminalRuntime: null } as any,
-      loadRun,
-      agentIdForAccountSettings: 'cursor' as any,
-    });
-
-    expect(run).toHaveBeenCalledWith(expect.objectContaining({
-      cursorBinaryPath: '/opt/cursor/cursor-agent',
-      cursorAgentFallbackEnabled: false,
-      cursorApiEndpoint: 'https://cursor.example.test',
-    }));
-  });
-
   it('can force account settings loading without a built-in agent id', async () => {
     const credentials = { token: 'x' } as any;
 
@@ -495,7 +457,7 @@ describe('runBackendSessionCliCommand', () => {
     vi.spyOn(authModule, 'ensureMachineIdForCredentials').mockResolvedValue({ machineId: 'machine-1' } as any);
     const bootstrapSpy = vi.spyOn(accountSettingsModule, 'bootstrapAccountSettingsContext').mockResolvedValue({
       source: 'network',
-      settings: { acpCatalogSettingsV1: { v: 2, backends: [] } } as any,
+      settings: { schemaVersion: 6, marker: 'no-agent-settings' } as any,
       settingsVersion: 1,
       loadedAtMs: Date.now(),
       whenRefreshed: null,
@@ -505,7 +467,7 @@ describe('runBackendSessionCliCommand', () => {
     const loadRun = vi.fn().mockResolvedValue(run);
 
     await runBackendSessionCliCommand({
-      context: { args: ['acp-catalog'], terminalRuntime: null } as any,
+      context: { args: ['some-command'], terminalRuntime: null } as any,
       loadRun,
       loadAccountSettings: true,
     });
@@ -521,7 +483,7 @@ describe('runBackendSessionCliCommand', () => {
     expect(run).toHaveBeenCalledWith(expect.objectContaining({
       accountSettingsContext: expect.objectContaining({
         settings: expect.objectContaining({
-          acpCatalogSettingsV1: { v: 2, backends: [] },
+          marker: 'no-agent-settings',
         }),
       }),
     }));

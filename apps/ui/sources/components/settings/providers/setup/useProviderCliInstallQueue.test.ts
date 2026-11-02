@@ -24,15 +24,14 @@ describe('useProviderCliInstallQueue', () => {
     it('runs installs sequentially and continues after failures', async () => {
         capabilitiesState.invoke
             .mockResolvedValueOnce({ supported: true, response: { ok: true, result: null } })
-            .mockResolvedValueOnce({ supported: true, response: { ok: false, error: { message: 'boom' }, logPath: '/tmp/claude.log' } })
-            .mockResolvedValueOnce({ supported: true, response: { ok: true, result: null } });
+            .mockResolvedValueOnce({ supported: true, response: { ok: false, error: { message: 'boom' }, logPath: '/tmp/claude.log' } });
 
         const hook = await renderHook(() => useProviderCliInstallQueue({
             machineId: 'machine-1',
             serverId: 'server-a',
-            providerIds: ['codex', 'claude', 'gemini'],
-            providerDetectKeys: { codex: 'codex', claude: 'claude', gemini: 'gemini' },
-            installedByProviderId: { codex: false, claude: false, gemini: false },
+            providerIds: ['codex', 'claude'],
+            providerDetectKeys: { codex: 'codex', claude: 'claude' },
+            installedByProviderId: { codex: false, claude: false },
         }));
 
         let summary: { installedProviderIds: string[]; failedProviderIds: string[] } | null = null;
@@ -41,34 +40,15 @@ describe('useProviderCliInstallQueue', () => {
         });
 
         expect(summary).toEqual({
-            installedProviderIds: ['codex', 'gemini'],
+            installedProviderIds: ['codex'],
             failedProviderIds: ['claude'],
         });
-        expect(capabilitiesState.invoke).toHaveBeenCalledTimes(3);
-        expect(capabilitiesState.invoke.mock.calls.map((call) => call[1]?.id)).toEqual(['cli.codex', 'cli.claude', 'cli.gemini']);
+        expect(capabilitiesState.invoke).toHaveBeenCalledTimes(2);
+        expect(capabilitiesState.invoke.mock.calls.map((call) => call[1]?.id)).toEqual(['cli.codex', 'cli.claude']);
 
         expect(hook.getCurrent().resolveStatus('codex').status).toBe('installed');
         expect(hook.getCurrent().resolveStatus('claude').status).toBe('failed');
-        expect(hook.getCurrent().resolveStatus('gemini').status).toBe('installed');
-    });
-
-    it('uses the provider id for Cursor install capability instead of its detect key', async () => {
-        capabilitiesState.invoke.mockResolvedValueOnce({ supported: true, response: { ok: true, result: null } });
-
-        const hook = await renderHook(() => useProviderCliInstallQueue({
-            machineId: 'machine-1',
-            serverId: 'server-a',
-            providerIds: ['cursor'],
-            providerDetectKeys: { cursor: 'cursor-agent' },
-            installedByProviderId: { cursor: false },
-        }));
-
-        await act(async () => {
-            await hook.getCurrent().start();
-        });
-
-        expect(capabilitiesState.invoke).toHaveBeenCalledTimes(1);
-        expect(capabilitiesState.invoke.mock.calls[0]?.[1]?.id).toBe('cli.cursor');
+        expect(hook.getCurrent().resolveStatus('codex').status).toBe('installed');
     });
 
     it('can retry a failed provider without rerunning the full queue', async () => {

@@ -1,6 +1,6 @@
 import type { StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 
-export type KnownProviderId = 'opencode' | 'codex' | 'claude' | 'kilo' | 'qwen' | 'kimi' | 'gemini' | 'auggie' | 'pi' | 'cursor' | 'copilot' | 'grok';
+export type KnownProviderId = 'codex' | 'claude';
 export type ProviderId = KnownProviderId | (string & { readonly __providerIdBrand?: unique symbol });
 
 export type ProviderProtocol = 'acp' | 'codex' | 'claude';

@@ -47,10 +47,10 @@ async function renderHarness(): Promise<{ getCurrent: () => HookValue; unmount: 
     metadata: {
       directSessionV1: {
         v: 1,
-        providerId: 'opencode',
+        providerId: 'codex',
         machineId: 'machine-1',
         remoteSessionId: 'remote-1',
-        source: { kind: 'opencodeServer', directory: '/tmp/workspace' },
+        source: { kind: 'codexHome', home: 'user' },
       },
     } as any,
   }));
@@ -201,10 +201,10 @@ describe('useDirectSessionRuntime', () => {
     const metadata = {
       directSessionV1: {
         v: 1,
-        providerId: 'opencode',
+        providerId: 'codex',
         machineId: 'machine-1',
         remoteSessionId: 'remote-1',
-        source: { kind: 'opencodeServer', directory: '/tmp/workspace' },
+        source: { kind: 'codexHome', home: 'user' },
       },
     } as any;
 
@@ -227,10 +227,10 @@ describe('useDirectSessionRuntime', () => {
     const createMetadata = () => ({
       directSessionV1: {
         v: 1,
-        providerId: 'opencode',
+        providerId: 'codex',
         machineId: 'machine-1',
         remoteSessionId: 'remote-1',
-        source: { kind: 'opencodeServer', directory: '/tmp/workspace' },
+        source: { kind: 'codexHome', home: 'user' },
       },
     } as any);
 

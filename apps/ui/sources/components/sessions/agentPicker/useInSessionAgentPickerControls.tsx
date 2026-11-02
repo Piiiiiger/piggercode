@@ -2,9 +2,7 @@ import * as React from 'react';
 
 import {
     buildAcpConfigOptionOverridesV1FromConfigOptions,
-    BackendTargetKeySchema,
     buildBackendTargetKey,
-    parseBackendTargetKey,
     type AccountProfile,
     type FeatureDecision,
     type SessionAgentTransitionSelectionV1,
@@ -211,7 +209,6 @@ function buildTargetSelection(
     return {
         v: 1,
         agentId: entry.providerAgentId,
-        ...(entry.target.kind === 'configuredAcpBackend' ? { backendTarget: entry.target } : {}),
         ...(selection.modelId !== 'default' ? { modelId: selection.modelId } : {}),
         ...(selection.sessionModeId !== null ? { acpSessionModeId: selection.sessionModeId } : {}),
         ...(overrides ? { sessionConfigOptionOverrides: overrides } : {}),
@@ -239,11 +236,7 @@ function buildArmedContinuation(
     entry: ResolvedBackendCatalogEntry,
     sourceAgentId: string,
     selection: SessionAgentPickerSelection,
-    sourceBackendTargetKey: string | null,
 ): ArmedAgentContinuation {
-    const sourceBackendTarget = sourceBackendTargetKey && BackendTargetKeySchema.safeParse(sourceBackendTargetKey).success
-        ? parseBackendTargetKey(sourceBackendTargetKey)
-        : null;
     return {
         backendTargetKey: entry.targetKey,
         modelLabel: selection.modelId !== 'default' ? selection.modelLabel ?? null : null,
@@ -251,7 +244,6 @@ function buildArmedContinuation(
             v: 1,
             mode: 'same_session',
             sourceAgentId,
-            ...(sourceBackendTarget?.kind === 'configuredAcpBackend' ? { sourceBackendTarget } : {}),
             selection: buildTargetSelection(entry, selection, Date.now()),
         },
     };
@@ -721,8 +713,7 @@ export function useInSessionAgentPickerControls(
                 ? row.entry.target.kind === 'builtInAgent'
                 : buildBackendTargetKey(persisted.intent.selection.backendTarget) === row.entry.targetKey)
             && (persisted.intent.sourceBackendTarget === undefined
-                ? !source.currentBackendTargetKey?.startsWith('acpBackend:')
-                : buildBackendTargetKey(persisted.intent.sourceBackendTarget) === source.currentBackendTargetKey);
+                || buildBackendTargetKey(persisted.intent.sourceBackendTarget) === source.currentBackendTargetKey);
         if (stillHonourable) {
             if (persisted.submission) {
                 armedLocalIdRef.current = {
@@ -778,7 +769,7 @@ export function useInSessionAgentPickerControls(
         });
         if (eligibility.status === 'eligible') {
             pendingArmRef.current = null;
-            persistArmedContinuation(buildArmedContinuation(entry, sourceAgentId, selection, source.currentBackendTargetKey));
+            persistArmedContinuation(buildArmedContinuation(entry, sourceAgentId, selection));
             return;
         }
         // A changed target selection must not leave an arm for the prior one.
@@ -810,7 +801,7 @@ export function useInSessionAgentPickerControls(
         if (eligibility.status === 'checking') return;
         pendingArmRef.current = null;
         if (eligibility.status === 'eligible') {
-            persistArmedContinuation(buildArmedContinuation(entry, pending.sourceAgentId, pending.selection, pending.sourceBackendTargetKey));
+            persistArmedContinuation(buildArmedContinuation(entry, pending.sourceAgentId, pending.selection));
         }
     }, [currentAgentId, featureEnabled, persistArmedContinuation, readInspection, readTargetSelection, source, targetEntries]);
 

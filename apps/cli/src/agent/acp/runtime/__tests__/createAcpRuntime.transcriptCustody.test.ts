@@ -100,7 +100,7 @@ describe('createAcpRuntime transcript custody', () => {
         }) satisfies ApiSessionClient['sendUserTextMessageCommitted'],
       };
       const runtime = createAcpRuntime({
-        provider: 'pi', directory, session, messageBuffer: new MessageBuffer(), mcpServers: {},
+        provider: 'codex', directory, session, messageBuffer: new MessageBuffer(), mcpServers: {},
         permissionHandler: createApprovedPermissionHandler(), onThinkingChange: () => {}, ensureBackend: async () => backend,
         sessionMedia: { persist: async () => ({ media: [], unavailable: [{
           id: 'unavailable-output', role: 'output', category: 'generated', mediaKind: 'image',

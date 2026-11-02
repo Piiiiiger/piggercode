@@ -31,7 +31,7 @@ exit 0
   const res = spawnSync('sh', [entrypoint, 'sh', '-lc', 'echo ok'], {
     env: buildStackHarnessEnv({
       binDirs: [binDir],
-      extraEnv: { PIGGERCODE_PROVIDER_CLIS: 'codex, Gemini ' },
+      extraEnv: { PIGGERCODE_PROVIDER_CLIS: 'codex, Claude ' },
     }),
     encoding: 'utf-8',
     timeout: 15000,
@@ -42,6 +42,6 @@ exit 0
 
   const log = readFileSync(logPath, 'utf-8');
   assert.match(log, /^install provider codex$/m);
-  assert.match(log, /^install provider gemini$/m);
+  assert.match(log, /^install provider claude$/m);
   assert.doesNotMatch(log, /providers install/);
 });

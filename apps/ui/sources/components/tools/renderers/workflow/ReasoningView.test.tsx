@@ -25,7 +25,7 @@ vi.mock('@/components/markdown/MarkdownView', () => ({
 describe('ReasoningView', () => {
     function makeTool(result: ToolCall['result']): ToolCall {
         return makeToolCall({
-            name: 'GeminiReasoning',
+            name: 'CodexReasoning',
             state: 'completed',
             input: { title: 'Thinking' },
             result,

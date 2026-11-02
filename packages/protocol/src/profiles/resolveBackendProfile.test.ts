@@ -150,36 +150,6 @@ describe('profiles (protocol)', () => {
     expect(result.candidates.map((c) => c.id)).toEqual(expect.arrayContaining(['p1', 'p2']));
   });
 
-  it('implements UI-compatible compatibility semantics', async () => {
-    const { isProfileCompatibleWithAgent, isProfileCompatibleWithBackendTarget } = await import('./index.js');
-
-    expect(
-      isProfileCompatibleWithBackendTarget(
-        { compatibilityByTargetKey: { 'agent:claude': true }, isBuiltIn: true },
-        { kind: 'builtInAgent', agentId: 'claude' },
-      ),
-    ).toBe(true);
-    expect(
-      isProfileCompatibleWithBackendTarget(
-        { compatibilityByTargetKey: { 'acpBackend:review': false }, isBuiltIn: false },
-        { kind: 'configuredAcpBackend', backendId: 'review' },
-      ),
-    ).toBe(false);
-    expect(
-      isProfileCompatibleWithBackendTarget(
-        { compatibilityByTargetKey: {}, isBuiltIn: true },
-        { kind: 'builtInAgent', agentId: 'claude' },
-      ),
-    ).toBe(false);
-    expect(
-      isProfileCompatibleWithBackendTarget(
-        { compatibilityByTargetKey: {}, isBuiltIn: false },
-        { kind: 'configuredAcpBackend', backendId: 'review' },
-      ),
-    ).toBe(true);
-    expect(isProfileCompatibleWithAgent({ compatibilityByTargetKey: { 'agent:claude': true }, isBuiltIn: true }, 'claude')).toBe(true);
-  });
-
   it('returns required env var names (secret vs config)', async () => {
     const { getRequiredSecretEnvVarNames, getRequiredConfigEnvVarNames, getMissingRequiredConfigEnvVarNames } = await import('./index.js');
 

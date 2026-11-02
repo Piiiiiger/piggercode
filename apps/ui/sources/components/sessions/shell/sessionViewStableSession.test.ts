@@ -332,12 +332,6 @@ describe('buildSessionViewShellSessionSignature', () => {
                 updatedAt,
                 configOptions: [{ id: 'effort', name: 'Effort', type: 'string', currentValue: 'low' }],
             },
-            acpConfiguredBackendV1: {
-                v: 1,
-                updatedAt,
-                backendId: 'appServer',
-                title: 'App Server',
-            },
         });
         const base = createSession({ metadata: createFreshMetadata(100) });
         const refreshed = createSession({ metadataVersion: 2, metadata: createFreshMetadata(200) });

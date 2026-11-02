@@ -39,17 +39,4 @@ describe('providers: ACP permission prompt matrix in provider specs', () => {
       expect(typeof outsideWriteMustCompleteByMode.yolo).toBe('boolean');
     }
   });
-
-  it('keeps Droid permission behavior unverified instead of scheduling unsafe matrix scenarios', async () => {
-    const providers = await loadProvidersFromCliSpecs();
-    const droid = providers.find((provider) => provider.id === 'droid');
-    expect(droid).toBeTruthy();
-    expect(droid?.permissions?.acp?.toolPermissionPromptsByMode).toBeUndefined();
-    expect(droid?.permissions?.acp?.outsideWorkspaceWriteAllowedByMode).toBeUndefined();
-    expect(droid?.permissions?.acp?.outsideWorkspaceWriteMustCompleteByMode).toBeUndefined();
-    expect([
-      ...(droid?.scenarioRegistry.tiers.smoke ?? []),
-      ...(droid?.scenarioRegistry.tiers.extended ?? []),
-    ].some((scenarioId) => scenarioId.startsWith('permission_mode_'))).toBe(false);
-  });
 });

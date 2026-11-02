@@ -29,9 +29,6 @@ function resolveAgentModelsSummaryLabel(input: Record<string, unknown> | null, r
     if (backendTargetKey) {
         try {
             const target = parseBackendTargetKey(backendTargetKey);
-            if (target.kind === 'configuredAcpBackend') {
-                return humanizeIdentifier(target.backendId);
-            }
             return humanizeIdentifier(target.agentId);
         } catch {
             // Fall back to legacy agent-id labeling when the input is malformed.

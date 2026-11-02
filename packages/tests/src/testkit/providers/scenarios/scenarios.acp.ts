@@ -13,13 +13,11 @@ function k(providerId: string, kind: 'tool-call' | 'tool-result' | 'permission-r
 
 function executeToolCallFixtureKeys(providerId: string): string[] {
   const keys = [k(providerId, 'tool-call', 'Bash'), k(providerId, 'tool-call', 'Terminal'), k(providerId, 'tool-call', 'execute')];
-  if (providerId === 'kimi') keys.push(k(providerId, 'tool-call', 'unknown'));
   return keys;
 }
 
 function executeToolResultFixtureKeys(providerId: string): string[] {
   const keys = [k(providerId, 'tool-result', 'Bash'), k(providerId, 'tool-result', 'Terminal'), k(providerId, 'tool-result', 'execute')];
-  if (providerId === 'kimi') keys.push(k(providerId, 'tool-result', 'unknown'));
   return keys;
 }
 
@@ -30,7 +28,6 @@ export function makeAcpReadInWorkspaceScenario(params: {
   filename?: string;
   content: string;
   useAbsolutePath?: boolean;
-  useExecuteFallbackOnReadFailure?: boolean;
 }): ProviderScenario {
   const filename = params.filename ?? 'e2e-read.txt';
   const filePathRel = filename;
@@ -47,29 +44,13 @@ export function makeAcpReadInWorkspaceScenario(params: {
       [
         'This is an automated test. You MUST use exactly one tool call.',
         `- Use the Read tool to read: ${params.useAbsolutePath ? join(workspaceDir, filePathRel) : filePathRel}`,
-        ...(params.useExecuteFallbackOnReadFailure
-          ? [
-              '- If the read tool fails, use the execute tool to run:',
-              `  cat "${join(workspaceDir, filePathRel)}"`,
-            ]
-          : []),
         '',
         'Then reply with EXACTLY two lines:',
         '1) the exact first line of that file (the unique READ_SENTINEL... token)',
         '2) DONE',
         `Note: current working directory is ${workspaceDir}`,
       ].join('\n'),
-    ...(params.useExecuteFallbackOnReadFailure
-      ? {
-          requiredAnyFixtureKeys: [
-            [k(params.providerId, 'tool-call', 'Read'), ...executeToolCallFixtureKeys(params.providerId)],
-            [k(params.providerId, 'tool-result', 'Read'), ...executeToolResultFixtureKeys(params.providerId)],
-          ],
-          allowPermissionAutoApproveInYolo: true,
-        }
-      : {
-          requiredFixtureKeys: [k(params.providerId, 'tool-call', 'Read'), k(params.providerId, 'tool-result', 'Read')],
-        }),
+    requiredFixtureKeys: [k(params.providerId, 'tool-call', 'Read'), k(params.providerId, 'tool-result', 'Read')],
     requiredTraceSubstrings: [sentinel],
   };
 }
@@ -81,7 +62,6 @@ export function makeAcpReadMissingFileScenario(params: {
   filename?: string;
 }): ProviderScenario {
   const filename = params.filename ?? 'e2e-missing.txt';
-  const useKimiFallback = params.providerId === 'kimi';
   return {
     id: params.id ?? 'read_missing_file_in_workspace',
     title: params.title ?? 'read: missing file returns an error (no retries)',
@@ -90,35 +70,13 @@ export function makeAcpReadMissingFileScenario(params: {
     prompt: ({ workspaceDir }) =>
       [
         'Run exactly one tool call:',
-        `- Use the read tool to read a file that does NOT exist: ${useKimiFallback ? join(workspaceDir, filename) : filename}`,
-        ...(useKimiFallback
-          ? [
-              '',
-              'If Read fails, immediately use execute to run:',
-              `  cat "${join(workspaceDir, filename)}"`,
-            ]
-          : []),
+        `- Use the read tool to read a file that does NOT exist: ${filename}`,
         '',
         'This is an automated test. Do not create the file. Do not retry with other tools if it fails.',
         'Then reply DONE.',
         `Note: current working directory is ${workspaceDir}`,
       ].join('\n'),
-    ...(useKimiFallback
-      ? {
-          requiredAnyFixtureKeys: [
-            [
-              k(params.providerId, 'tool-call', 'Read'),
-              ...executeToolCallFixtureKeys(params.providerId),
-            ],
-            [
-              k(params.providerId, 'tool-result', 'Read'),
-              ...executeToolResultFixtureKeys(params.providerId),
-            ],
-          ],
-        }
-      : {
-          requiredFixtureKeys: [k(params.providerId, 'tool-call', 'Read'), k(params.providerId, 'tool-result', 'Read')],
-        }),
+    requiredFixtureKeys: [k(params.providerId, 'tool-call', 'Read'), k(params.providerId, 'tool-result', 'Read')],
     requiredTraceSubstrings: [filename],
     verify: async ({ workspaceDir }) => {
       // Ensure provider did not "helpfully" create the missing file.
@@ -993,10 +951,6 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
    */
   requireTaskCompleteWhenNoToolAttempt?: boolean;
 }): ProviderScenario {
-  const shouldUseTmpOutsidePath =
-    params.providerId === 'opencode' ||
-    params.providerId === 'opencode_server' ||
-    params.providerId === 'kilo';
   const decision = params.decision ?? 'approve';
   const expectPermissionRequest = params.expectPermissionRequest ?? true;
   // Avoid OS temp directories: some providers (notably Codex) treat $TMPDIR and /tmp as writable roots
@@ -1021,7 +975,7 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
     tier: 'extended',
     yolo: false,
     // For ACP providers, permission prompts are provider-configurable via their own CLI/env settings
-    // (e.g. Codex sandbox_mode/approval_policy, OpenCode/Kilo OPENCODE_PERMISSION). Provider harness
+    // (e.g. Codex sandbox_mode/approval_policy). Provider harness
     // runs attach to an existing session and does not override permissionMode by default; force a
     // prompting mode for scenarios that expect permission requests so the provider is configured to ask.
     ...(expectPermissionRequest ? { messageMeta: { permissionMode: 'safe-yolo' } } : null),
@@ -1030,7 +984,6 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
       outsidePath = makeOutsideWorkspacePath({
         workspaceDir,
         prefix: `happier-e2e-outside-${decision}`,
-        ...(shouldUseTmpOutsidePath ? { strategy: 'tmpdir' } : null),
       });
       await cleanupOutsideWorkspacePath(outsidePath);
     },
@@ -1046,8 +999,7 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
                   outsidePath = makeOutsideWorkspacePath({
                     workspaceDir,
                     prefix: `happier-e2e-outside-${decision}`,
-                    ...(shouldUseTmpOutsidePath ? { strategy: 'tmpdir' } : null),
-                  });
+                              });
                 }
                 return outsidePath;
               })()}" && cat "${outsidePath}"'`,
@@ -1060,8 +1012,7 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
                   outsidePath = makeOutsideWorkspacePath({
                     workspaceDir,
                     prefix: `happier-e2e-outside-${decision}`,
-                    ...(shouldUseTmpOutsidePath ? { strategy: 'tmpdir' } : null),
-                  });
+                              });
                 }
                 return outsidePath;
               })()}`,
@@ -1093,7 +1044,6 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
               k(params.providerId, 'permission-request', 'Edit'),
               k(params.providerId, 'permission-request', 'Write'),
               k(params.providerId, 'permission-request', 'Patch'),
-              ...(shouldUseTmpOutsidePath ? [k(params.providerId, 'permission-request', 'external_directory')] : []),
               k(params.providerId, 'permission-request', 'edit'),
               k(params.providerId, 'permission-request', 'write'),
             ],
@@ -1137,8 +1087,7 @@ export function makeAcpPermissionOutsideWorkspaceScenario(params: {
                 k(params.providerId, 'permission-request', 'Edit'),
                 k(params.providerId, 'permission-request', 'Write'),
                 k(params.providerId, 'permission-request', 'Patch'),
-                ...(shouldUseTmpOutsidePath ? [k(params.providerId, 'permission-request', 'external_directory')] : []),
-                k(params.providerId, 'permission-request', 'edit'),
+                  k(params.providerId, 'permission-request', 'edit'),
                 k(params.providerId, 'permission-request', 'write'),
                 k(params.providerId, 'permission-request', 'unknown'),
               ];

@@ -69,12 +69,12 @@ describe('runReplaySummaryForDialog', () => {
     expect(String(calls[0]?.prompt ?? '')).toContain('Preserve exact identifiers, codes, names, numbers, paths, and user constraints when they matter.');
   });
 
-  it('passes configured ACP backend targets through to the text-prompt runner', async () => {
+  it('passes backend targets through to the text-prompt runner', async () => {
     const calls: Array<{ backendTarget: unknown }> = [];
 
     const runner: LlmTaskRunnerConfigV1 = {
       v: 1,
-      backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' },
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
       modelId: 'review-model',
       permissionMode: 'no_tools',
     } as any;
@@ -93,6 +93,6 @@ describe('runReplaySummaryForDialog', () => {
     });
 
     expect(out).toBe('SUMMARY_OK');
-    expect(calls).toEqual([{ backendTarget: { kind: 'configuredAcpBackend', backendId: 'review-bot' } }]);
+    expect(calls).toEqual([{ backendTarget: { kind: 'builtInAgent', agentId: 'codex' } }]);
   });
 });

@@ -616,17 +616,6 @@ describe('Action Spec Registry', () => {
     });
   });
 
-  it('requires backendTargetKey when listing models for customAcp', () => {
-    const spec = getActionSpec('agents.models.list');
-
-    expect(() =>
-      spec.inputSchema.parse({
-        agentId: 'customAcp',
-        machineId: 'machine-1',
-      }),
-    ).toThrow();
-  });
-
   it('rejects mismatched agentId and backendTargetKey when listing models', () => {
     const spec = getActionSpec('agents.models.list');
 
@@ -864,45 +853,6 @@ describe('Action Spec Registry', () => {
     expect(spec.inputSchema.safeParse({
       initialMessage: 'Hello',
       unsupportedSpawnField: true,
-    }).success).toBe(false);
-  });
-
-  it('rejects conflicting session.spawn_new convenience aliases', () => {
-    const spec = getActionSpec('session.spawn_new');
-
-    expect(spec.inputSchema.safeParse({ path: '/repo-a', directory: '/repo-b' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ initialMessage: 'A', initialPrompt: 'B' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ initialMessage: 'A', prompt: 'B' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ agentId: 'codex', backendTargetKey: 'agent:claude' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({
-      backend: 'agent:codex',
-      target: 'agent:claude',
-    }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({
-      agentId: 'claude',
-      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-    }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ backendTargetKey: 'claude' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ agentId: '   ' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ target: '   ' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ backend: '   ' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ target: 'customAcp' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({ agentId: 'customAcp' }).success).toBe(false);
-    expect(spec.inputSchema.safeParse({
-      agentId: 'customAcp',
-      backendTargetKey: 'acpBackend:review-bot',
-    }).success).toBe(true);
-    expect(spec.inputSchema.safeParse({
-      sessionConfigOptionOverrides: {
-        v: 1,
-        updatedAt: 10,
-        overrides: {
-          reasoning_effort: { updatedAt: 10, value: 'low' },
-        },
-      },
-      configOptions: {
-        reasoning_effort: 'xhigh',
-      },
     }).success).toBe(false);
   });
 

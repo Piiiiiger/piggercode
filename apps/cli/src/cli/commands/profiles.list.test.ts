@@ -107,11 +107,11 @@ describe('happier profiles list --json', () => {
       settings: {
         profiles: [
           {
-            id: 'custom-acp-login',
-            name: 'Custom ACP Login',
+            id: 'codex-login',
+            name: 'Codex Login',
             authMode: 'machineLogin',
-            compatibilityByTargetKey: { 'acpBackend:custom-preset': true },
-            requiresMachineLoginTargetKey: 'acpBackend:custom-preset',
+            compatibilityByTargetKey: { 'agent:codex': true },
+            requiresMachineLoginTargetKey: 'agent:codex',
             envVarRequirements: [],
           },
         ],
@@ -133,13 +133,13 @@ describe('happier profiles list --json', () => {
     expect(payload.data?.profiles).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: 'custom-acp-login',
+          id: 'codex-login',
           authMode: 'machineLogin',
-          requiresMachineLoginTargetKey: 'acpBackend:custom-preset',
+          requiresMachineLoginTargetKey: 'agent:codex',
         }),
       ]),
     );
-    const customAcpLogin = (payload.data?.profiles as any[]).find((profile) => profile?.id === 'custom-acp-login');
-    expect(customAcpLogin?.requiresMachineLogin).toBeUndefined();
+    const codexLogin = (payload.data?.profiles as any[]).find((profile) => profile?.id === 'codex-login');
+    expect(codexLogin?.requiresMachineLogin).toBeUndefined();
   });
 });

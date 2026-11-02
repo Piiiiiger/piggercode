@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { getSocketRooms, RELEASED_CONNECTED_SERVICE_READER_ROOM } from "./socketRooms";
+import { CURRENT_CONNECTED_SERVICE_READER_ROOM, getSocketRooms } from "./socketRooms";
 
 describe("getSocketRooms", () => {
     it("includes the shared user room for user-scoped clients", () => {
-        expect(getSocketRooms({ userId: "u1", clientType: "user-scoped" })).toEqual(["user:u1", "user-scoped:u1", RELEASED_CONNECTED_SERVICE_READER_ROOM]);
+        expect(getSocketRooms({ userId: "u1", clientType: "user-scoped" })).toEqual(["user:u1", "user-scoped:u1", CURRENT_CONNECTED_SERVICE_READER_ROOM]);
     });
 
     it("includes session room for session-scoped clients", () => {
@@ -12,7 +12,7 @@ describe("getSocketRooms", () => {
             "user:u1",
             "session:s1",
             "session:s1:u1",
-            RELEASED_CONNECTED_SERVICE_READER_ROOM,
+            CURRENT_CONNECTED_SERVICE_READER_ROOM,
         ]);
     });
 
@@ -20,7 +20,7 @@ describe("getSocketRooms", () => {
         expect(getSocketRooms({ userId: "u1", clientType: "machine-scoped", machineId: "m1" })).toEqual([
             "user-machines:u1",
             "machine:m1:u1",
-            RELEASED_CONNECTED_SERVICE_READER_ROOM,
+            CURRENT_CONNECTED_SERVICE_READER_ROOM,
         ]);
     });
 

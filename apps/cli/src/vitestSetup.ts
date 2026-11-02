@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, chmodSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -9,22 +9,6 @@ import { join } from 'node:path';
 const defaultHomeDir = join(tmpdir(), `happier-dev-test-${process.pid}`);
 process.env.PIGGERCODE_HOME_DIR = defaultHomeDir;
 mkdirSync(defaultHomeDir, { recursive: true });
-
-// CLI unit tests should be machine-agnostic: provider CLIs are not expected to be installed
-// on CI runners. Provide a default OpenCode CLI stub unless a test explicitly overrides it.
-const opencodePath = String(process.env.PIGGERCODE_OPENCODE_PATH ?? '').trim();
-if (!opencodePath) {
-  const binDir = join(tmpdir(), `happier-dev-test-bin-${process.pid}`);
-  mkdirSync(binDir, { recursive: true });
-  const stubPath = join(binDir, process.platform === 'win32' ? 'opencode.cmd' : 'opencode');
-  if (process.platform === 'win32') {
-    writeFileSync(stubPath, '@echo off\r\nexit /B 0\r\n', 'utf8');
-  } else {
-    writeFileSync(stubPath, '#!/bin/sh\nexit 0\n', 'utf8');
-    chmodSync(stubPath, 0o755);
-  }
-  process.env.PIGGERCODE_OPENCODE_PATH = stubPath;
-}
 
 // Status reads refresh the CLI update cache in the background (a detached `self check`, which
 // reaches the network). Tests exercise that path through explicit params, never by spawning it.
