@@ -36,10 +36,21 @@ export type DaemonServiceInstallConflictPlan = Readonly<{
   exactTargetIsConverged: boolean;
   competingServices: readonly InstalledDaemonServiceEntry[];
   foreignHomeConflicts: readonly InstalledDaemonServiceEntry[];
+  /**
+   * The target itself, still installed in this home under its name from before the rename. Install
+   * replaces it whatever the strategy: it is the same service, and keeping it would run a second
+   * daemon in this home. Always part of `servicesToRemove`.
+   */
+  previousNameServices: readonly InstalledDaemonServiceEntry[];
   servicesToRemove: readonly InstalledDaemonServiceEntry[];
 }>;
 
 export function daemonServiceMatchesInstallTarget(service: InstalledDaemonServiceEntry, target: DaemonServiceInstallTarget): boolean {
+  // Install writes this fork's names, so a service still under Happier's names is never the target.
+  return service.previousName !== true && daemonServiceHasInstallTargetIdentity(service, target);
+}
+
+function daemonServiceHasInstallTargetIdentity(service: InstalledDaemonServiceEntry, target: DaemonServiceInstallTarget): boolean {
   if (service.platform !== target.platform) {
     return false;
   }
@@ -167,9 +178,19 @@ export function resolveDaemonServiceInstallConflictPlan(params: Readonly<{
   strategy: DaemonServiceInstallStrategy;
   services: readonly InstalledDaemonServiceEntry[];
 }>): DaemonServiceInstallConflictPlan {
+  // A service under Happier's names belongs to this installation only when it runs in this home.
+  // One in another home is another installation (upstream Happier, or a home that was not moved),
+  // which this install leaves alone.
+  const ownServices = params.services.filter((service) =>
+    service.previousName !== true || happierHomeDirsMatch(service.happierHomeDir, params.target.happierHomeDir),
+  );
+  const previousNameServices = ownServices.filter((service) =>
+    service.previousName === true && daemonServiceHasInstallTargetIdentity(service, params.target),
+  );
+  const services = ownServices.filter((service) => !previousNameServices.includes(service));
   const duplicateTupleKeys = new Set<string>();
   const countsByTuple = new Map<string, number>();
-  for (const service of params.services) {
+  for (const service of services) {
     const tupleKey = resolveTupleKey(service);
     const nextCount = (countsByTuple.get(tupleKey) ?? 0) + 1;
     countsByTuple.set(tupleKey, nextCount);
@@ -178,8 +199,8 @@ export function resolveDaemonServiceInstallConflictPlan(params: Readonly<{
     }
   }
 
-  const exactTargetExists = params.services.some((service) => daemonServiceMatchesInstallTarget(service, params.target));
-  const competingServices = params.services.filter((service) =>
+  const exactTargetExists = services.some((service) => daemonServiceMatchesInstallTarget(service, params.target));
+  const competingServices = services.filter((service) =>
     isCompetingService(service, params.target) || duplicateTupleKeys.has(resolveTupleKey(service)),
   );
   const foreignHomeConflicts = competingServices.filter((service) =>
@@ -202,7 +223,7 @@ export function resolveDaemonServiceInstallConflictPlan(params: Readonly<{
     }
     return [];
   };
-  const servicesToRemove = resolveServicesToRemove();
+  const servicesToRemove = [...previousNameServices, ...resolveServicesToRemove()];
   const servicesToRemoveSet = new Set(servicesToRemove);
   const exactTargetIsConverged = exactTargetExists && (
     competingServices.length === 0
@@ -214,6 +235,7 @@ export function resolveDaemonServiceInstallConflictPlan(params: Readonly<{
     exactTargetIsConverged,
     competingServices,
     foreignHomeConflicts,
+    previousNameServices,
     servicesToRemove,
   };
 }

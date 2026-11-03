@@ -339,6 +339,14 @@ holding its `daemon.state.json` and `daemon.state.json.lock` — and only that s
   default-following service serves the persisted active profile, so a pinned service for another
   relay coexists with it; one for that same relay still competes. Pinned services for different
   relays coexist.
+- **Services under Happier's names.** Before the rename this fork installed `happier-daemon.<segment>`
+  units and `com.happier.cli.daemon.<segment>` LaunchAgents with `HAPPIER_*` keys
+  (`PREVIOUS_NAME_DAEMON_SERVICE` in `plan.ts`; Linux and macOS only). Only install discovers them
+  (`includePreviousNames`). One whose home is this home, directly or through a link such as
+  `~/.happier` → `~/.piggercode`, and whose identity is the target's is the target under its old
+  name: install removes it whatever the strategy, and a daemon that recorded its label is not an
+  owner conflict. Other ones in this home compete like any service; ones in another home are
+  another installation and are left alone.
 - **A service per relay is pinned.** `daemon service install` without `--instance`/`--ring` installs
   the single default-following service (an explicit `--server` only scopes that invocation); a relay
   gets its own service with `--server <id> … --instance <id>`, or through desktop setup's `pinned`

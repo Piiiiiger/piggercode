@@ -110,6 +110,7 @@ describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => 
                 exactTargetIsConverged: false,
                 competingServices: [],
                 foreignHomeConflicts: [],
+                previousNameServices: [],
                 servicesToRemove: [],
             },
             plan: { files: [], commands: [] },

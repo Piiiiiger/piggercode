@@ -8,6 +8,11 @@ export type DaemonServiceLifecycleConflict =
 export function evaluateDaemonServiceLifecycleOwnership(params: Readonly<{
   ownership: DaemonOwnerEvaluation;
   expectedServiceLabel: string;
+  /**
+   * The label the same service had before the rename (`resolveDaemonServicePreviousNameLaunchdLabel`).
+   * Only an install passes it: install replaces that service first, so its daemon is not a competitor.
+   */
+  replacedServiceLabel?: string;
 }>): Readonly<{ kind: 'ok' }> | DaemonServiceLifecycleConflict {
   const expectedServiceLabel = params.expectedServiceLabel.trim();
   if (!expectedServiceLabel) {
@@ -26,7 +31,8 @@ export function evaluateDaemonServiceLifecycleOwnership(params: Readonly<{
     return { kind: 'manual-owner-conflict', owner };
   }
 
-  if (owner.state.serviceLabel === expectedServiceLabel) {
+  if (owner.state.serviceLabel === expectedServiceLabel
+    || (params.replacedServiceLabel && owner.state.serviceLabel === params.replacedServiceLabel)) {
     return { kind: 'ok' };
   }
 

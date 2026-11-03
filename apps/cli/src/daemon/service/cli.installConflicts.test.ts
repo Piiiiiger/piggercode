@@ -21,6 +21,7 @@ const {
       exactTargetIsConverged: true,
       competingServices: [],
       foreignHomeConflicts: [],
+      previousNameServices: [],
       servicesToRemove: [],
     },
     autostart: 'at-login' as const,

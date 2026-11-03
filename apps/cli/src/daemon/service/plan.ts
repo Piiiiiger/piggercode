@@ -84,11 +84,25 @@ export type DaemonServiceUninstallPlan = Readonly<{
   commands: DaemonServicePlannedCommand[];
 }>;
 
-const DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX = 'com.piggercode.cli.daemon';
-const DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX = 'piggercode-daemon';
+export const DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX = 'com.piggercode.cli.daemon';
+export const DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX = 'piggercode-daemon';
 
 const LEGACY_DAEMON_SERVICE_LAUNCHD_LABEL = 'com.piggercode.cli.daemon';
 const LEGACY_DAEMON_SERVICE_SYSTEMD_UNIT_NAME = 'piggercode-daemon.service';
+
+/**
+ * The names this fork's daemon service had before it was renamed from Happier: launchd label
+ * `com.happier.cli.daemon.<segment>`, systemd unit `happier-daemon.<segment>.service`, and
+ * `HAPPIER_*` keys in the definition. Its daemon recorded that label. Installing replaces such a
+ * service when it runs in the same home, so an upgraded computer does not keep a second daemon
+ * (see `resolveDaemonServiceInstallConflictPlan`). Windows is not covered: this fork supports
+ * Linux and macOS.
+ */
+export const PREVIOUS_NAME_DAEMON_SERVICE = Object.freeze({
+  launchdLabelPrefix: 'com.happier.cli.daemon',
+  systemdUnitPrefix: 'happier-daemon',
+  envKeyPrefix: 'HAPPIER_',
+});
 
 export function resolveDaemonServiceChannelSegment(channel: PublicReleaseRingId): '' | 'preview' | 'dev' {
   const label = getReleaseRingCatalogEntry(channel).publicLabel;
@@ -144,6 +158,19 @@ export function resolveDaemonServiceLaunchdLabel(
   targetMode: DaemonServiceTargetMode = 'pinned',
 ): string {
   return `${DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX}.${resolveDaemonServiceIdentitySegment({
+    instanceId: instanceIdRaw,
+    channel,
+    targetMode,
+  })}`;
+}
+
+/** The label the same service had before the rename; see `PREVIOUS_NAME_DAEMON_SERVICE`. */
+export function resolveDaemonServicePreviousNameLaunchdLabel(
+  instanceIdRaw: string,
+  channel: PublicReleaseRingId = 'stable',
+  targetMode: DaemonServiceTargetMode = 'pinned',
+): string {
+  return `${PREVIOUS_NAME_DAEMON_SERVICE.launchdLabelPrefix}.${resolveDaemonServiceIdentitySegment({
     instanceId: instanceIdRaw,
     channel,
     targetMode,

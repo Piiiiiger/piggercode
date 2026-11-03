@@ -77,6 +77,21 @@ export function describeDaemonServiceInstallConflict(params: Readonly<{
   strategy: DaemonServiceInstallStrategy;
   conflictPlan: DaemonServiceInstallConflictPlan;
 }>): DaemonServiceInstallConflictNotice | null {
+  const competing = describeCompetingDaemonServices(params);
+  const previousNameServices = params.conflictPlan.previousNameServices;
+  if (previousNameServices.length === 0) {
+    return competing;
+  }
+  const replacement = `Would replace the same background service installed under its old Happier name: ${formatDaemonServiceLabels(previousNameServices)}.`;
+  return competing
+    ? { blocking: competing.blocking, message: `${competing.message} ${replacement}` }
+    : { blocking: false, message: replacement };
+}
+
+function describeCompetingDaemonServices(params: Readonly<{
+  strategy: DaemonServiceInstallStrategy;
+  conflictPlan: DaemonServiceInstallConflictPlan;
+}>): DaemonServiceInstallConflictNotice | null {
   if (params.conflictPlan.competingServices.length === 0) {
     return null;
   }
@@ -222,6 +237,7 @@ export async function previewDaemonServiceInstall(options: Readonly<{
       happierHomeDir: target.happierHomeDir,
       mode: target.mode,
       serversById: {},
+      includePreviousNames: true,
     })),
   ))
     .flat()

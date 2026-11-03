@@ -13,7 +13,10 @@ import { happierHomeDirsMatch } from '@/daemon/ownership/happierHomeDirComparabl
 import {
   DAEMON_SERVICE_AUTOSTART_ENV_KEY,
   DAEMON_SERVICE_BUNDLE_ID_ENV_KEY,
+  DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX,
   DAEMON_SERVICE_MANAGED_BY_ENV_KEY,
+  DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX,
+  PREVIOUS_NAME_DAEMON_SERVICE,
   parseDaemonServiceBundleId,
   type DaemonServiceAutostartMode,
   type DaemonServiceManagedBy,
@@ -36,6 +39,11 @@ export type InstalledDaemonServiceEntry = Readonly<{
   targetMode: DaemonServiceTargetMode;
   /** `desktop` when the definition carries the desktop marker; `null` (user-owned) otherwise. */
   managedBy?: DaemonServiceManagedBy | null;
+  /**
+   * Installed under Happier's names, from before this fork was renamed (`PREVIOUS_NAME_DAEMON_SERVICE`).
+   * Only discovery that asks for such services reports them.
+   */
+  previousName?: true;
 }>;
 
 type InstalledServicePathMatch = Readonly<{
@@ -43,36 +51,81 @@ type InstalledServicePathMatch = Readonly<{
   releaseChannel: PublicReleaseRingId;
   label: string;
   targetMode: DaemonServiceTargetMode;
+  previousName: boolean;
 }>;
 
-function parseInstalledServicePath(platform: 'darwin' | 'linux' | 'win32', path: string): InstalledServicePathMatch | null {
+/** How one naming of the service names its definition files: this fork's, or Happier's from before the rename. */
+type ServiceDefinitionNaming = Readonly<{
+  linuxPrefix: string;
+  darwinPrefix: string;
+  win32Prefix: string | null;
+  previousName: boolean;
+}>;
+
+const CURRENT_DEFINITION_NAMING: ServiceDefinitionNaming = {
+  linuxPrefix: DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX,
+  darwinPrefix: DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX,
+  win32Prefix: DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX,
+  previousName: false,
+};
+
+const PREVIOUS_DEFINITION_NAMING: ServiceDefinitionNaming = {
+  linuxPrefix: PREVIOUS_NAME_DAEMON_SERVICE.systemdUnitPrefix,
+  darwinPrefix: PREVIOUS_NAME_DAEMON_SERVICE.launchdLabelPrefix,
+  win32Prefix: null,
+  previousName: true,
+};
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function parseInstalledServicePath(
+  platform: 'darwin' | 'linux' | 'win32',
+  path: string,
+  options: Readonly<{ includePreviousNames?: boolean }> = {},
+): InstalledServicePathMatch | null {
+  return parseInstalledServicePathWithNaming(platform, path, CURRENT_DEFINITION_NAMING)
+    ?? (options.includePreviousNames ? parseInstalledServicePathWithNaming(platform, path, PREVIOUS_DEFINITION_NAMING) : null);
+}
+
+function isPreviousNameDefinitionPath(platform: 'darwin' | 'linux' | 'win32', path: string): boolean {
+  return parseInstalledServicePathWithNaming(platform, path, PREVIOUS_DEFINITION_NAMING) !== null;
+}
+
+/** A definition written under Happier's names carries `HAPPIER_*` keys instead of `PIGGERCODE_*` ones. */
+function resolveDefinitionEnvKey(platform: 'darwin' | 'linux' | 'win32', path: string, key: string): string {
+  return isPreviousNameDefinitionPath(platform, path)
+    ? key.replaceAll('PIGGERCODE_', PREVIOUS_NAME_DAEMON_SERVICE.envKeyPrefix)
+    : key;
+}
+
+function parseInstalledServicePathWithNaming(
+  platform: 'darwin' | 'linux' | 'win32',
+  path: string,
+  naming: ServiceDefinitionNaming,
+): InstalledServicePathMatch | null {
+  const prefix = platform === 'linux' ? naming.linuxPrefix : platform === 'darwin' ? naming.darwinPrefix : naming.win32Prefix;
+  if (!prefix) {
+    return null;
+  }
+  const extension = platform === 'linux' ? 'service' : platform === 'darwin' ? 'plist' : 'ps1';
   const fileName = platform === 'win32' ? win32Path.basename(path) : basename(path);
-  const rawLegacyMatch =
-    platform === 'linux'
-      ? /^piggercode-daemon\.service$/i.test(fileName)
-      : platform === 'darwin'
-        ? /^com\.piggercode\.cli\.daemon\.plist$/i.test(fileName)
-        : /^piggercode-daemon\.ps1$/i.test(fileName);
-  if (rawLegacyMatch) {
-    const label = platform === 'win32'
-      ? `PiggerCode\\${win32Path.basename(path, '.ps1')}`
-      : platform === 'darwin'
-        ? basename(path, '.plist')
-        : basename(path, '.service');
+  const label = platform === 'win32'
+    ? `PiggerCode\\${win32Path.basename(path, '.ps1')}`
+    : basename(path, `.${extension}`);
+  const escapedPrefix = escapeRegExp(prefix);
+  if (new RegExp(`^${escapedPrefix}\\.${extension}$`, 'i').test(fileName)) {
     return {
       serverId: 'default',
       releaseChannel: 'stable',
       label,
       targetMode: 'default-following',
+      previousName: naming.previousName,
     };
   }
 
-  const match =
-    platform === 'linux'
-      ? /^piggercode-daemon(?:\.(preview|dev))?\.(.+)\.service$/i.exec(fileName)
-      : platform === 'darwin'
-        ? /^com\.piggercode\.cli\.daemon(?:\.(preview|dev))?\.(.+)\.plist$/i.exec(fileName)
-        : /^piggercode-daemon(?:\.(preview|dev))?\.(.+)\.ps1$/i.exec(fileName);
+  const match = new RegExp(`^${escapedPrefix}(?:\\.(preview|dev))?\\.(.+)\\.${extension}$`, 'i').exec(fileName);
   if (!match) {
     return null;
   }
@@ -87,12 +140,7 @@ function parseInstalledServicePath(platform: 'darwin' | 'linux' | 'win32', path:
       ? 'publicdev'
       : 'stable';
   const targetMode: DaemonServiceTargetMode = serverId === 'default' ? 'default-following' : 'pinned';
-  const label = platform === 'win32'
-    ? `PiggerCode\\${win32Path.basename(path, '.ps1')}`
-    : platform === 'darwin'
-      ? basename(path, '.plist')
-      : basename(path, '.service');
-  return { serverId, releaseChannel, label, targetMode };
+  return { serverId, releaseChannel, label, targetMode, previousName: naming.previousName };
 }
 
 function normalizeParsedReleaseChannel(value: string | null): PublicReleaseRingId | null {
@@ -348,13 +396,14 @@ export function readInstalledDaemonServiceEnvValue(params: Readonly<{
     return null;
   }
 
+  const key = resolveDefinitionEnvKey(params.platform, params.path, params.key);
   if (params.platform === 'linux') {
-    return parseLinuxUnitValue(contents, params.key);
+    return parseLinuxUnitValue(contents, key);
   }
   if (params.platform === 'darwin') {
-    return parseDarwinPlistValue(contents, params.key);
+    return parseDarwinPlistValue(contents, key);
   }
-  return parseWindowsWrapperValue(contents, params.key);
+  return parseWindowsWrapperValue(contents, key);
 }
 
 export function isValidInstalledDaemonServiceFile(params: Readonly<{
@@ -396,11 +445,12 @@ function isValidInstalledDaemonServiceDefinition(params: Readonly<{
   path: string;
   expectedLabel: string;
 }>, contents: string): boolean {
+  const startupSourceKey = resolveDefinitionEnvKey(params.platform, params.path, 'PIGGERCODE_DAEMON_STARTUP_SOURCE');
   if (params.platform === 'darwin') {
     return parseDarwinPlistValue(contents, 'Label') === params.expectedLabel
       && hasDarwinDaemonStartSyncCommand(contents)
       && (
-        parseDarwinPlistValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
+        parseDarwinPlistValue(contents, startupSourceKey) === 'background-service'
         || hasLegacyManagedDarwinServiceEnv(params.path)
       );
   }
@@ -409,14 +459,14 @@ function isValidInstalledDaemonServiceDefinition(params: Readonly<{
     return /(^|\n)ExecStart=/.test(contents)
       && hasDaemonStartSyncCommand(contents)
       && (
-        parseLinuxUnitValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
+        parseLinuxUnitValue(contents, startupSourceKey) === 'background-service'
         || hasLegacyManagedLinuxServiceEnv(params.path)
       );
   }
 
   return hasDaemonStartSyncCommand(contents)
     && (
-      parseWindowsWrapperValue(contents, 'PIGGERCODE_DAEMON_STARTUP_SOURCE') === 'background-service'
+      parseWindowsWrapperValue(contents, startupSourceKey) === 'background-service'
       || hasLegacyManagedWindowsServiceEnv(params.path)
     );
 }
@@ -589,12 +639,29 @@ function inventoryUnavailable(cause: unknown): Error & Readonly<{ code: 'service
   ), { code: 'service_inventory_unavailable' as const });
 }
 
+/**
+ * A service from before the rename may name this home through a link (`~/.happier` pointing at
+ * `~/.piggercode` is a documented migration). It then runs in this home, so it reports this home.
+ */
+function resolvePreviousNameServiceHomeDir(declaredHomeDir: string | null, happierHomeDir: string): string | null {
+  if (!declaredHomeDir || happierHomeDirsMatch(declaredHomeDir, happierHomeDir)) {
+    return declaredHomeDir;
+  }
+  try {
+    return fs.realpathSync(declaredHomeDir) === fs.realpathSync(happierHomeDir) ? happierHomeDir : declaredHomeDir;
+  } catch {
+    return declaredHomeDir;
+  }
+}
+
 export async function discoverInstalledDaemonServiceEntries(params: Readonly<{
   platform: 'darwin' | 'linux' | 'win32';
   userHomeDir: string;
   happierHomeDir: string;
   mode: DaemonServiceMode;
   serversById: Readonly<Record<string, unknown>>;
+  /** Also report services still installed under Happier's names (`PREVIOUS_NAME_DAEMON_SERVICE`). */
+  includePreviousNames?: boolean;
 }>): Promise<readonly InstalledDaemonServiceEntry[]> {
   const servicesDir =
     params.platform === 'linux'
@@ -629,7 +696,7 @@ export async function discoverInstalledDaemonServiceEntries(params: Readonly<{
 
   return discoveredCandidates
     .flatMap(({ path, source }) => {
-      const parsed = parseInstalledServicePath(params.platform, path);
+      const parsed = parseInstalledServicePath(params.platform, path, { includePreviousNames: params.includePreviousNames });
       if (!parsed) {
         return [];
       }
@@ -671,15 +738,18 @@ export async function discoverInstalledDaemonServiceEntries(params: Readonly<{
         path,
         platform: params.platform,
         mode: params.mode,
-        happierHomeDir: metadata.happierHomeDir ?? (
-          params.platform === 'win32' && !definitionExists
-            ? deriveWindowsServiceHomeDirFromWrapperPath(path)
-            : null
-        ),
+        happierHomeDir: parsed.previousName
+          ? resolvePreviousNameServiceHomeDir(metadata.happierHomeDir, params.happierHomeDir)
+          : metadata.happierHomeDir ?? (
+            params.platform === 'win32' && !definitionExists
+              ? deriveWindowsServiceHomeDirFromWrapperPath(path)
+              : null
+          ),
         releaseChannel: metadata.releaseChannel,
         label: parsed.label,
         targetMode: metadata.targetMode,
         managedBy: readInstalledDaemonServiceManagedBy({ platform: params.platform, path }),
+        ...(parsed.previousName ? { previousName: true as const } : {}),
       }];
     });
 }

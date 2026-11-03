@@ -29,6 +29,7 @@ import {
   planDaemonServiceLifecycle,
   planDaemonServiceUninstall,
   resolveDaemonServiceLaunchdLabel,
+  resolveDaemonServicePreviousNameLaunchdLabel,
   resolveWindowsDaemonServiceLogPaths,
   resolveWindowsDaemonTaskName,
   DAEMON_SERVICE_AUTOSTART_ENV_KEY,
@@ -1519,6 +1520,11 @@ export async function runDaemonServiceCliCommand(params: Readonly<{
     const lifecycleOwnership = evaluateDaemonServiceLifecycleOwnership({
       ownership,
       expectedServiceLabel: paths.label,
+      replacedServiceLabel: resolveDaemonServicePreviousNameLaunchdLabel(
+        installRuntime.instanceId,
+        installRuntime.channel,
+        installRuntime.targetMode,
+      ),
     });
     const takeoverDecision = resolveDaemonServiceTakeoverDecision({
       lifecycleOwnership,
