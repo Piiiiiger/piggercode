@@ -176,8 +176,9 @@ export interface Settings {
   restartSessionRunnersOnUpdate?: boolean
   /**
    * Opt-in: let agents on this account's other machines run shell commands on this machine
-   * (`machine.command.run`). Off unless explicitly `true`. Device-local: only
-   * `piggercode machine remote-commands on|off` on this machine changes it.
+   * (`machine.command.run`). Off unless explicitly `true`. Device-local: changed by
+   * `piggercode machine remote-commands on|off` on this machine or by the app's machine screen through
+   * this machine's daemon (`writeRemoteCommandsEnabled`).
    */
   remoteCommandsEnabled?: boolean
   chromeMode?: boolean

@@ -49,6 +49,7 @@ import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverSc
 import { isMachineRpcTimeoutError } from '@/sync/runtime/orchestration/serverScopedRpc/machineRpcTimeoutError';
 import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
 import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
+import { MachineCommandSettingsResponseSchema } from '@piggercode/protocol';
 import { stopSessionViaDaemonMachineRpc } from './sessionStopStrategy';
 import {
     MACHINE_ENCRYPT_RAW_ATTRIBUTION_EVENTS,
@@ -862,6 +863,62 @@ export async function machineStopSession(
         };
     }
     return { ok: false, error: result.message };
+}
+
+/** The machine's remote-commands switch as the app sees it. */
+export type MachineRemoteCommandsState =
+    | Readonly<{ status: 'ok'; enabled: boolean }>
+    /** The machine can't take the call: its PiggerCode predates the switch, or it just went offline. */
+    | Readonly<{ status: 'unavailable' }>
+    /** The machine or the relay reported an error (`message` when it gave one). */
+    | Readonly<{ status: 'error'; message?: string }>;
+
+async function callMachineRemoteCommandsSettings(
+    machineId: string,
+    method: string,
+    payload: Readonly<Record<string, unknown>>,
+    options?: { serverId?: string | null },
+): Promise<MachineRemoteCommandsState> {
+    let result: unknown;
+    try {
+        result = await machineRpcWithServerScope<unknown, Readonly<Record<string, unknown>>>({
+            machineId,
+            method,
+            payload,
+            serverId: options?.serverId,
+        });
+    } catch (error) {
+        const code = readRpcErrorCode(error);
+        if (code === RPC_ERROR_CODES.METHOD_NOT_AVAILABLE || code === RPC_ERROR_CODES.METHOD_NOT_FOUND) {
+            return { status: 'unavailable' };
+        }
+        return error instanceof Error && error.message ? { status: 'error', message: error.message } : { status: 'error' };
+    }
+
+    if (isRpcMethodNotFoundResult(result)) return { status: 'unavailable' };
+    const parsed = MachineCommandSettingsResponseSchema.safeParse(result);
+    if (parsed.success) return { status: 'ok', enabled: parsed.data.remoteCommandsEnabled };
+    // A daemon handler that throws answers with an `{ error }` result rather than a failed call.
+    return isPlainObject(result) && typeof result.error === 'string' && result.error
+        ? { status: 'error', message: result.error }
+        : { status: 'error' };
+}
+
+/** Whether agents on the account's other machines may run commands on this machine. */
+export async function machineRemoteCommandsGet(
+    machineId: string,
+    options?: { serverId?: string | null },
+): Promise<MachineRemoteCommandsState> {
+    return await callMachineRemoteCommandsSettings(machineId, RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_GET, {}, options);
+}
+
+/** Turns the machine's remote-commands switch on or off; returns the state the machine reports. */
+export async function machineRemoteCommandsSet(
+    machineId: string,
+    enabled: boolean,
+    options?: { serverId?: string | null },
+): Promise<MachineRemoteCommandsState> {
+    return await callMachineRemoteCommandsSettings(machineId, RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_SET, { enabled }, options);
 }
 
 /**

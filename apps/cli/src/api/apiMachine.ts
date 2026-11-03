@@ -13,7 +13,7 @@ import { registerFileSystemHandlers } from '@/rpc/handlers/fileSystem';
 import { registerWorkspaceAnchorHandlers } from '@/rpc/handlers/workspaceAnchors/registerWorkspaceAnchorHandlers';
 import { registerWorkspaceFaviconHandlers } from '@/rpc/handlers/workspaceFavicon/registerWorkspaceFaviconHandlers';
 import { registerMachineFileBrowserHandlers } from '@/rpc/handlers/machineFileBrowser/registerMachineFileBrowserHandlers';
-import { registerMachineCommandHandler } from '@/rpc/handlers/machineCommand/registerMachineCommandHandler';
+import { registerMachineCommandHandlers } from '@/rpc/handlers/machineCommand/registerMachineCommandHandlers';
 import { decodeMachineStoredContent, encodeMachineStoredContent } from './machine/machineStoredContent';
 import {
     resolveFilesystemAccessPolicy,
@@ -398,7 +398,7 @@ export class ApiMachineClient {
             rpcHandlerManager: this.rpcHandlerManager,
             accessPolicy: filesystemAccessPolicy,
         });
-        registerMachineCommandHandler({
+        registerMachineCommandHandlers({
             rpcHandlerManager: this.rpcHandlerManager,
             workingDirectory: machineRpcWorkingDirectory,
             accessPolicy: filesystemAccessPolicy,

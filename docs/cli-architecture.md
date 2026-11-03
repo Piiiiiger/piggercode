@@ -1771,13 +1771,18 @@ Agents run commands on another machine of the same account through the `machine.
 (MCP tool `machine_command_run`, directly exposed to session agents). The caller's
 `createCliActionDeps.machineCommandRun` sends `daemon.machineCommand.run` to the target machine
 through the relay like any machine RPC (account-scoped, encrypted); the target's
-`registerMachineCommandHandler` runs it.
+`registerMachineCommandHandlers` runs it.
 
 - **Off until the machine allows it.** The target refuses (`remote_commands_disabled`) unless its own
-  device-local settings say `remoteCommandsEnabled: true`, which only `piggercode machine
-  remote-commands on|off|status` on that machine changes. It is read on every call, so turning it off
+  device-local settings say `remoteCommandsEnabled: true`. It is read on every call, so turning it off
   takes effect at once. The switch gates this agent path; the machine-level `bash` RPC above is a
   separate, older surface that it does not change.
+- **One switch, two ways to change it.** On the machine, `piggercode machine remote-commands
+  on|off|status`. From the app, the machine screen's switch sends `daemon.machineCommand.settings.get`
+  and `daemon.machineCommand.settings.set` to that machine, which works only while it is online and
+  asks for confirmation before turning it on. Both go through `writeRemoteCommandsEnabled`, so the
+  value stays in the machine's own settings file; the daemon log records each change made from the
+  app.
 - **Same execution as `bash`.** The command runs in the platform's default shell as the daemon's user
   through `executeShellCommandRequest`; a non-zero exit is a result (`success: false` with its
   `exitCode`), not a refusal. `cwd` may be absolute, `~/…` or relative to the machine's default

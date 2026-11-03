@@ -5,8 +5,8 @@ import { RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS } from './rpc.js';
 /**
  * A shell command that an agent on one machine runs on another machine of the same account
  * (`machine.command.run`, carried by `RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN`). The target machine
- * runs it only after its owner allowed remote commands there (`piggercode machine remote-commands on`);
- * the relay forwards the call like any other machine RPC.
+ * runs it only after its owner allowed remote commands there (the switch on the machine's page in the
+ * app, or `piggercode machine remote-commands on`); the relay forwards the call like any other machine RPC.
  */
 
 /** The timeout when the caller gives none; the machine `bash` RPC uses the same default. */
@@ -56,3 +56,18 @@ export const MachineCommandRunInputSchema = MachineCommandRunRequestSchema.exten
   machineId: z.string().min(1),
 });
 export type MachineCommandRunInput = z.infer<typeof MachineCommandRunInputSchema>;
+
+/**
+ * The machine's remote-commands switch, read or changed by a client of the account (the app's machine
+ * screen). The machine keeps it in its own settings; `piggercode machine remote-commands` changes the
+ * same value locally.
+ */
+export const MachineCommandSettingsSetRequestSchema = z.object({
+  enabled: z.boolean(),
+}).passthrough();
+export type MachineCommandSettingsSetRequest = z.infer<typeof MachineCommandSettingsSetRequestSchema>;
+
+export const MachineCommandSettingsResponseSchema = z.object({
+  remoteCommandsEnabled: z.boolean(),
+}).passthrough();
+export type MachineCommandSettingsResponse = z.infer<typeof MachineCommandSettingsResponseSchema>;

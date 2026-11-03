@@ -16,6 +16,7 @@ ${chalk.bold('Notes:')}
   • In interactive terminals, SSH host trust and pairing approval prompts are surfaced inline.
   • Use --yes to auto-accept setup prompts in non-interactive runs.
   • remote-commands on lets agents on your other machines run shell commands on this machine
-    (the machine.command.run tool). It is off until you turn it on here.
+    (the machine.command.run tool). It is off until you turn it on here or with the Remote commands
+    switch on this machine's page in the app.
   `);
 }

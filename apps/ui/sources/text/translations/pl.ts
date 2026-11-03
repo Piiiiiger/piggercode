@@ -10274,6 +10274,20 @@ settingsSession: {
       installablesSubtitle:
         "Zarządzaj instalowalnymi narzędziami dla tej maszyny.",
     },
+    remoteCommands: {
+      title: "Zdalne polecenia",
+      switchTitle: "Pozwól agentom uruchamiać polecenia na tym komputerze",
+      offSubtitle: "Wyłączone. Agenci na Twoich innych komputerach nie mogą tu uruchamiać poleceń.",
+      onSubtitle: "Włączone. Agenci na Twoich innych komputerach, np. Claude Code na Twoim serwerze, mogą tu uruchamiać polecenia jako użytkownik tego komputera.",
+      loading: "Sprawdzanie…",
+      offline: "Ten komputer jest offline. Zmień to, gdy będzie online.",
+      unavailable: "Nie można odczytać tego ustawienia. Komputer mógł właśnie przejść w tryb offline albo jego PiggerCode jest za stary na zdalne polecenia. Zaktualizuj go i spróbuj ponownie.",
+      loadFailed: ({ message }: { message: string }) => `Nie udało się odczytać ustawienia: ${message}`,
+      saveFailed: ({ message }: { message: string }) => `Nie udało się zmienić ustawienia: ${message}`,
+      confirmTitle: "Zezwolić na zdalne polecenia?",
+      confirmBody: ({ machine }: { machine: string }) => `Agenci na Twoich innych komputerach, np. Claude Code na Twoim serwerze, będą mogli uruchamiać dowolne polecenia na ${machine} jako jego użytkownik. Możesz to wyłączyć w dowolnej chwili.`,
+      confirmAction: "Zezwól",
+    },
     installables: {
       screenTitle: "Instalowalne",
       aboutGroupTitle: "Informacje",

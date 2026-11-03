@@ -11,7 +11,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { updateSettings } from '@/persistence';
 
 import type { FilesystemAccessPolicy } from '../fileSystem/accessPolicy/filesystemAccessPolicy';
-import { registerMachineCommandHandler } from './registerMachineCommandHandler';
+import { registerMachineCommandHandlers } from './registerMachineCommandHandlers';
 
 type Handler = (data: unknown) => Promise<unknown>;
 
@@ -29,17 +29,25 @@ function createTempDirectory(): string {
   return directory;
 }
 
-function registerHandler(workingDirectory: string, accessPolicy: FilesystemAccessPolicy = { kind: 'osUser' }): Handler {
+function registerHandlers(workingDirectory: string, accessPolicy: FilesystemAccessPolicy = { kind: 'osUser' }): Map<string, Handler> {
   const handlers = new Map<string, Handler>();
   const registrar: RpcHandlerRegistrar = {
     registerHandler(method, handler) {
       handlers.set(method, handler as Handler);
     },
   };
-  registerMachineCommandHandler({ rpcHandlerManager: registrar, workingDirectory, accessPolicy });
-  const handler = handlers.get(RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN);
-  if (!handler) throw new Error('machine command handler was not registered');
+  registerMachineCommandHandlers({ rpcHandlerManager: registrar, workingDirectory, accessPolicy });
+  return handlers;
+}
+
+function requireHandler(handlers: Map<string, Handler>, method: string): Handler {
+  const handler = handlers.get(method);
+  if (!handler) throw new Error(`${method} was not registered`);
   return handler;
+}
+
+function registerHandler(workingDirectory: string, accessPolicy: FilesystemAccessPolicy = { kind: 'osUser' }): Handler {
+  return requireHandler(registerHandlers(workingDirectory, accessPolicy), RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN);
 }
 
 async function setRemoteCommands(enabled: boolean): Promise<void> {
@@ -110,6 +118,28 @@ describe.skipIf(process.platform === 'win32')('machine command RPC on the target
 
       expect(await run({ cwd: workdir })).toMatchObject({ success: false, errorCode: 'invalid_request' });
       expect(await run({ command: 'true', timeoutMs: -1 })).toMatchObject({ success: false, errorCode: 'invalid_request' });
+    });
+  });
+
+  it('lets the app read and change the switch on this machine', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-machine-command-home-' }, async () => {
+      const workdir = createTempDirectory();
+      const handlers = registerHandlers(workdir);
+      const getSettings = requireHandler(handlers, RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_GET);
+      const setSettings = requireHandler(handlers, RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_SET);
+      const run = requireHandler(handlers, RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN);
+
+      expect(await getSettings({})).toEqual({ remoteCommandsEnabled: false });
+      expect(await setSettings({ enabled: true })).toEqual({ remoteCommandsEnabled: true });
+      expect(await getSettings({})).toEqual({ remoteCommandsEnabled: true });
+      expect(await run({ command: 'touch ran', cwd: workdir })).toMatchObject({ success: true, exitCode: 0 });
+
+      expect(await setSettings({ enabled: false })).toEqual({ remoteCommandsEnabled: false });
+      expect(await run({ command: 'touch ran-again', cwd: workdir })).toMatchObject({ errorCode: 'remote_commands_disabled' });
+      expect(existsSync(join(workdir, 'ran-again'))).toBe(false);
+
+      await expect(setSettings({ enabled: 'yes' })).rejects.toThrow();
+      expect(await getSettings({})).toEqual({ remoteCommandsEnabled: false });
     });
   });
 });

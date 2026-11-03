@@ -3,6 +3,7 @@ import { View, ScrollView, RefreshControl, Platform, Pressable } from 'react-nat
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
+import { MachineRemoteCommandsGroup } from '@/components/machines/MachineRemoteCommandsGroup';
 import { ItemGroupTitleWithAction } from '@/components/ui/lists/ItemGroupTitleWithAction';
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { Typography } from '@/constants/Typography';
@@ -1180,6 +1181,15 @@ export default function MachineDetailScreen() {
                 <ItemGroup title={detectedClisTitle}>
                     <DetectedClisList state={detectedCapabilities} />
                 </ItemGroup>
+
+                {machineId ? (
+                    <MachineRemoteCommandsGroup
+                        machineId={machineId}
+                        machineName={machineName}
+                        isOnline={isOnline}
+                        serverId={activeServerId}
+                    />
+                ) : null}
 
                 <ItemGroup title={t('machine.tools.title')}>
                     <Item

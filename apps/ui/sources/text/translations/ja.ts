@@ -10487,6 +10487,20 @@ settingsSession: {
       installablesSubtitle:
         "このマシンのインストール可能なツールを管理します。",
     },
+    remoteCommands: {
+      title: "リモートコマンド",
+      switchTitle: "このマシンでのコマンド実行をエージェントに許可",
+      offSubtitle: "オフ。ほかのマシンのエージェントはここでコマンドを実行できません。",
+      onSubtitle: "オン。ほかのマシンのエージェント（サーバー上の Claude Code など）が、このマシンのユーザーとしてここでコマンドを実行できます。",
+      loading: "確認中…",
+      offline: "このマシンはオフラインです。オンラインのときに変更してください。",
+      unavailable: "この設定を読み込めません。マシンがオフラインになったばかりか、PiggerCode がリモートコマンドに対応していない古いバージョンです。更新してから再度お試しください。",
+      loadFailed: ({ message }: { message: string }) => `設定を読み込めませんでした: ${message}`,
+      saveFailed: ({ message }: { message: string }) => `設定を変更できませんでした: ${message}`,
+      confirmTitle: "リモートコマンドを許可しますか？",
+      confirmBody: ({ machine }: { machine: string }) => `ほかのマシンのエージェント（サーバー上の Claude Code など）が、${machine} 上でそのユーザーとして任意のコマンドを実行できるようになります。いつでもオフにできます。`,
+      confirmAction: "許可",
+    },
     installables: {
       screenTitle: "インストール可能",
       aboutGroupTitle: "概要",

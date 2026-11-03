@@ -1,11 +1,13 @@
 import {
   MachineCommandRunRequestSchema,
+  MachineCommandSettingsSetRequestSchema,
   type MachineCommandRunResponse,
+  type MachineCommandSettingsResponse,
 } from '@piggercode/protocol';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
-import { readSettings } from '@/persistence';
+import { readSettings, updateSettings } from '@/persistence';
 import { logger } from '@/ui/logger';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
@@ -17,20 +19,28 @@ import {
 import { authorizeFilesystemPath } from '../fileSystem/accessPolicy/filesystemPathAuthorization';
 
 const REMOTE_COMMANDS_DISABLED_MESSAGE =
-  'Remote commands are turned off on this machine. Its owner can allow them with `piggercode machine remote-commands on`.';
+  'Remote commands are turned off on this machine. Turn them on in the app (machine page) or with `piggercode machine remote-commands on`.';
 
-/** Whether this machine's owner allowed remote commands here (device-local; off unless explicitly on). */
+/** Whether this machine accepts remote commands (device-local; off unless explicitly on). */
 export async function readRemoteCommandsEnabled(): Promise<boolean> {
   return (await readSettings()).remoteCommandsEnabled === true;
 }
 
+/** The one writer of the switch: `piggercode machine remote-commands` and the app's machine screen. */
+export async function writeRemoteCommandsEnabled(enabled: boolean): Promise<boolean> {
+  await updateSettings((current) => ({ ...current, remoteCommandsEnabled: enabled }));
+  return await readRemoteCommandsEnabled();
+}
+
 /**
- * `machine.command.run` on the target machine: an agent on another machine of the account asks this
- * daemon to run a shell command. Refused unless remote commands are on here; the working directory
- * goes through the machine's filesystem access policy, and the command runs through the same
- * executor as the machine `bash` RPC.
+ * Remote commands on the target machine:
+ * - `DAEMON_MACHINE_COMMAND_RUN`: an agent on another machine of the account asks this daemon to run a
+ *   shell command. Refused unless remote commands are on here; the working directory goes through the
+ *   machine's filesystem access policy, and the command runs through the same executor as the machine
+ *   `bash` RPC.
+ * - `DAEMON_MACHINE_COMMAND_SETTINGS_GET` / `_SET`: the app's machine screen reads and changes the switch.
  */
-export function registerMachineCommandHandler(params: Readonly<{
+export function registerMachineCommandHandlers(params: Readonly<{
   rpcHandlerManager: RpcHandlerRegistrar;
   workingDirectory: string;
   accessPolicy: FilesystemAccessPolicy;
@@ -71,6 +81,24 @@ export function registerMachineCommandHandler(params: Readonly<{
         exitCode: result.exitCode,
       });
       return result;
+    },
+  );
+
+  params.rpcHandlerManager.registerHandler<unknown, MachineCommandSettingsResponse>(
+    RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_GET,
+    async () => ({ remoteCommandsEnabled: await readRemoteCommandsEnabled() }),
+  );
+
+  params.rpcHandlerManager.registerHandler<unknown, MachineCommandSettingsResponse>(
+    RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_SET,
+    async (raw) => {
+      const parsed = MachineCommandSettingsSetRequestSchema.safeParse(raw);
+      if (!parsed.success) {
+        throw new Error('Invalid remote command settings request');
+      }
+      const enabled = await writeRemoteCommandsEnabled(parsed.data.enabled);
+      logger.infoFile(`[MACHINE COMMAND] Remote commands turned ${enabled ? 'on' : 'off'} from the app`);
+      return { remoteCommandsEnabled: enabled };
     },
   );
 }

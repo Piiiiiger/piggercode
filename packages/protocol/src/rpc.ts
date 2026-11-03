@@ -123,6 +123,9 @@ export const RPC_METHODS = {
   DAEMON_FILESYSTEM_LIST_DIRECTORY: 'daemon.filesystem.listDirectory',
   /** Runs a shell command for an agent on another machine of the account; see `machineCommand.ts`. */
   DAEMON_MACHINE_COMMAND_RUN: 'daemon.machineCommand.run',
+  /** Reads / changes whether this machine accepts `DAEMON_MACHINE_COMMAND_RUN` (its device-local switch). */
+  DAEMON_MACHINE_COMMAND_SETTINGS_GET: 'daemon.machineCommand.settings.get',
+  DAEMON_MACHINE_COMMAND_SETTINGS_SET: 'daemon.machineCommand.settings.set',
   STAT_FILE: 'statFile',
   RENAME_PATH: 'renamePath',
   DELETE_PATH: 'deletePath',

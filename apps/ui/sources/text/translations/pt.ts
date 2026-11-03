@@ -10374,6 +10374,20 @@ settingsSession: {
       installablesSubtitle:
         "Gerencie ferramentas instaláveis para esta máquina.",
     },
+    remoteCommands: {
+      title: "Comandos remotos",
+      switchTitle: "Permitir que agentes executem comandos nesta máquina",
+      offSubtitle: "Desativado. Agentes nas suas outras máquinas não podem executar comandos aqui.",
+      onSubtitle: "Ativado. Agentes nas suas outras máquinas, como o Claude Code no seu servidor, podem executar comandos aqui como o usuário desta máquina.",
+      loading: "Verificando…",
+      offline: "Esta máquina está offline. Altere isso quando ela estiver online.",
+      unavailable: "Não foi possível acessar esta configuração. A máquina pode ter acabado de ficar offline, ou o PiggerCode dela é antigo demais para comandos remotos. Atualize-o e tente novamente.",
+      loadFailed: ({ message }: { message: string }) => `Não foi possível ler a configuração: ${message}`,
+      saveFailed: ({ message }: { message: string }) => `Não foi possível alterar a configuração: ${message}`,
+      confirmTitle: "Permitir comandos remotos?",
+      confirmBody: ({ machine }: { machine: string }) => `Agentes nas suas outras máquinas, como o Claude Code no seu servidor, poderão executar qualquer comando em ${machine} como o usuário dela. Você pode desativar isso a qualquer momento.`,
+      confirmAction: "Permitir",
+    },
     installables: {
       screenTitle: "Instaláveis",
       aboutGroupTitle: "Sobre",

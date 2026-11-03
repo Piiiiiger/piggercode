@@ -1973,7 +1973,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'machine.command.run',
     title: 'Run a command on another machine',
-    description: 'Run a shell command on another machine connected to this account, like `ssh host command`, and return its stdout, stderr and exit code. It runs in that machine\'s default shell as its user, in cwd (absolute, ~/..., or relative to its home) or its home directory. The machine must allow remote commands: its owner runs `piggercode machine remote-commands on` on it. Find machine ids with machines.list.',
+    description: 'Run a shell command on another machine connected to this account, like `ssh host command`, and return its stdout, stderr and exit code. It runs in that machine\'s default shell as its user, in cwd (absolute, ~/..., or relative to its home) or its home directory. The machine must allow remote commands: its owner turns on the Remote commands switch on that machine\'s page in the app, or runs `piggercode machine remote-commands on` on it. Find machine ids with machines.list.',
     safety: 'danger',
     sideEffectClass: 'danger',
     approval: APPROVAL_RESULT_REQUIRED,

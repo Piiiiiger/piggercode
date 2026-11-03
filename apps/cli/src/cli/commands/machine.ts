@@ -6,8 +6,7 @@ import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/json
 import { resolveManagedCliReleaseChannelSync } from '@piggercode/cli-common/firstPartyRuntime';
 import { getLiveSystemTasksRunnerAdapter } from '@/capabilities/systemTasks/liveSystemTasksRunner';
 import { configuration } from '@/configuration';
-import { updateSettings } from '@/persistence';
-import { readRemoteCommandsEnabled } from '@/rpc/handlers/machineCommand/registerMachineCommandHandler';
+import { readRemoteCommandsEnabled, writeRemoteCommandsEnabled } from '@/rpc/handlers/machineCommand/registerMachineCommandHandlers';
 import { describeBackgroundServiceTargetMode } from '@/daemon/service/describeBackgroundServiceTargetMode';
 import { applyServerSelectionFromArgs } from '@/server/serverSelection';
 import { isInteractiveTerminal, promptInput } from '@/terminal/prompts/promptInput';
@@ -438,11 +437,9 @@ async function runRemoteCommandsSubcommand(args: readonly string[], json: boolea
   if (value !== 'on' && value !== 'off' && value !== 'status') {
     throw new Error('Usage: piggercode machine remote-commands on|off|status');
   }
-  if (value !== 'status') {
-    const enabled = value === 'on';
-    await updateSettings((current) => ({ ...current, remoteCommandsEnabled: enabled }));
-  }
-  const enabled = await readRemoteCommandsEnabled();
+  const enabled = value === 'status'
+    ? await readRemoteCommandsEnabled()
+    : await writeRemoteCommandsEnabled(value === 'on');
   if (json) {
     await printJsonEnvelope({ ok: true, kind: 'machine_remote_commands', data: { remoteCommandsEnabled: enabled } });
     return;
