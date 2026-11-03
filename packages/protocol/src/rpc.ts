@@ -121,6 +121,8 @@ export const RPC_METHODS = {
   GET_DIRECTORY_TREE: 'getDirectoryTree',
   DAEMON_FILESYSTEM_LIST_ROOTS: 'daemon.filesystem.listRoots',
   DAEMON_FILESYSTEM_LIST_DIRECTORY: 'daemon.filesystem.listDirectory',
+  /** Runs a shell command for an agent on another machine of the account; see `machineCommand.ts`. */
+  DAEMON_MACHINE_COMMAND_RUN: 'daemon.machineCommand.run',
   STAT_FILE: 'statFile',
   RENAME_PATH: 'renamePath',
   DELETE_PATH: 'deletePath',
@@ -264,6 +266,12 @@ export function resolveSocketRpcProviderStartingMethod(method: string): string |
     ? unprefixedMethod
     : null;
 }
+
+/**
+ * The relay's default ceiling for how long it waits on a forwarded RPC whose caller asks for a
+ * longer deadline. The relay's `PIGGERCODE_RPC_FORWARD_MAX_TIMEOUT_MS` overrides it.
+ */
+export const RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS = 300_000;
 
 export const RPC_ERROR_CODES = {
   METHOD_NOT_AVAILABLE: 'RPC_METHOD_NOT_AVAILABLE',

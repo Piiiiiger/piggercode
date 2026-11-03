@@ -1,4 +1,4 @@
-import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 function parsePositiveIntOrDefault(value: string | undefined, fallback: number): number {
     if (typeof value !== 'string') return fallback;
@@ -22,7 +22,7 @@ const RPC_FORWARD_CAPABILITIES_TIMEOUT_MS = parsePositiveIntOrDefault(
 );
 const RPC_FORWARD_MAX_TIMEOUT_MS = parsePositiveIntOrDefault(
     process.env.PIGGERCODE_RPC_FORWARD_MAX_TIMEOUT_MS,
-    300_000,
+    RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS,
 );
 const RPC_FORWARD_CALLER_LIFECYCLE_TIMEOUT_MS = 2_147_483_647;
 const RPC_FORWARD_CALLER_LIFECYCLE_METHODS = new Set<string>([

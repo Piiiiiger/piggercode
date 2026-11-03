@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Credentials } from '@/persistence';
 import { configuration } from '@/configuration';
 import {
+  MACHINE_COMMAND_DEFAULT_TIMEOUT_MS,
+  MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
   ReviewStartInputSchema,
   SessionUsageLimitRecoveryOperationResultV1Schema,
 } from '@piggercode/protocol';
@@ -2582,4 +2584,56 @@ describe('createCliActionDeps session controls', () => {
     expect(mocks.callSessionRpc).not.toHaveBeenCalled();
   });
 
+});
+
+describe('createCliActionDeps machine.command.run', () => {
+  beforeEach(() => {
+    mocks.callMachineRpc.mockClear();
+  });
+
+  function createDeps() {
+    return createCliActionDeps({
+      token: 'token',
+      credentials: createCredentials(),
+      sessionId: 'sess_1',
+      ctx: {
+        encryptionKey: new Uint8Array(32).fill(1),
+        encryptionVariant: 'legacy',
+      },
+      mode: 'plain',
+      rawSession: { metadata: {} },
+    });
+  }
+
+  it('sends the command to the target machine and waits for its timeout plus the trip back', async () => {
+    mocks.callMachineRpc.mockResolvedValueOnce({ success: false, stdout: '', stderr: 'boom', exitCode: 3, error: 'Command failed' });
+
+    const result = await createDeps().machineCommandRun({ machineId: 'machine-pc', command: 'make test', cwd: '~/code', timeoutMs: 120_000 });
+
+    expect(mocks.callMachineRpc).toHaveBeenCalledWith(expect.objectContaining({
+      machineId: 'machine-pc',
+      method: RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN,
+      request: { command: 'make test', cwd: '~/code', timeoutMs: 120_000 },
+      timeoutMs: 120_000 + MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
+    }));
+    expect(result).toEqual({ success: false, stdout: '', stderr: 'boom', exitCode: 3, error: 'Command failed' });
+  });
+
+  it('waits for the default command timeout when none is given', async () => {
+    mocks.callMachineRpc.mockResolvedValueOnce({ success: true, stdout: 'ok', stderr: '', exitCode: 0 });
+
+    await createDeps().machineCommandRun({ machineId: 'machine-pc', command: 'true' });
+
+    expect(mocks.callMachineRpc).toHaveBeenCalledWith(expect.objectContaining({
+      request: { command: 'true' },
+      timeoutMs: MACHINE_COMMAND_DEFAULT_TIMEOUT_MS + MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
+    }));
+  });
+
+  it('says the machine is offline or too old when it does not serve remote commands', async () => {
+    mocks.callMachineRpc.mockRejectedValueOnce(Object.assign(new Error('RPC method not available'), { rpcErrorCode: 'RPC_METHOD_NOT_AVAILABLE' }));
+
+    await expect(createDeps().machineCommandRun({ machineId: 'machine-pc', command: 'true' }))
+      .rejects.toThrow(/offline, or its PiggerCode is too old/);
+  });
 });

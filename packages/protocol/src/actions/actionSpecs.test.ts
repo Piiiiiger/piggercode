@@ -48,6 +48,7 @@ const RESULT_REQUIRED_BLOCKING_ACTION_IDS = [
   'sessions.spawn.mcp_servers.preview',
   'paths.list_recent',
   'machines.list',
+  'machine.command.run',
   'servers.list',
   'review.engines.list',
   'memory.search',

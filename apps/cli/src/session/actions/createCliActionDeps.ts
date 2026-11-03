@@ -3,6 +3,9 @@ import { randomUUID } from 'node:crypto';
 
 import {
   ACTION_OPERATION_RPC_METHODS_V1,
+  MACHINE_COMMAND_DEFAULT_TIMEOUT_MS,
+  MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
+  MachineCommandRunResponseSchema,
   ActionOperationListV1ResponseSchema,
   ActionOperationGetV1ResponseSchema,
   buildBackendTargetKey,
@@ -99,7 +102,7 @@ import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
 import { resolveSessionHandoffEligibility } from '@/session/handoff/resolveSessionHandoffEligibility';
 import { delay } from '@/utils/time';
 import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
-import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
+import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError, readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 import { routeSessionCatalogControl } from '@/session/catalogControls/sessionCatalogControlRouter';
 import { routeSessionGoalControl } from '@/session/goalControls/sessionGoalControlRouter';
 import { resolveCliFeatureDecisionForServer } from '@/features/featureDecisionService';
@@ -1609,6 +1612,28 @@ export function createCliActionDeps(params: Readonly<{
     machinesList: async ({ limit }) => params.credentials
       ? await listSpawnMachineItems({ credentials: params.credentials, limit })
       : { items: [] },
+    machineCommandRun: async ({ machineId, command, cwd, timeoutMs }) => {
+      if (!params.credentials) throw new Error('Not authenticated. Run `piggercode auth login` first.');
+      let response: unknown;
+      try {
+        response = await callMachineRpc({
+          credentials: params.credentials,
+          machineId,
+          method: RPC_METHODS.DAEMON_MACHINE_COMMAND_RUN,
+          request: { command, ...(cwd ? { cwd } : {}), ...(timeoutMs ? { timeoutMs } : {}) },
+          // Long enough for the command's own timeout plus the trip back through the relay.
+          timeoutMs: (timeoutMs ?? MACHINE_COMMAND_DEFAULT_TIMEOUT_MS) + MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
+        });
+      } catch (error) {
+        if (isRpcMethodNotAvailableError(error) || isRpcMethodNotFoundError(error)) {
+          throw new Error(`Machine ${machineId} is offline, or its PiggerCode is too old to run remote commands.`, { cause: error });
+        }
+        throw error;
+      }
+      const parsed = MachineCommandRunResponseSchema.safeParse(response);
+      if (!parsed.success) throw new Error('The machine returned an unexpected remote command result');
+      return parsed.data;
+    },
     serversList: async ({ limit }) => await listSpawnServerItems({ limit }),
     sessionsSpawnProfilesList: async ({ agentId, backendTargetKey, includeDisabled, limit }) => {
       if (!params.credentials) return { items: [] };

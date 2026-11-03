@@ -8,6 +8,8 @@ import {
 import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
+import { withConfiguredDaemonTestHome } from '@/daemon/testkit/fakeDaemonLifecycle.testkit';
+import { readSettings } from '@/persistence';
 import { captureStdout } from '@/testkit/logger/captureOutput';
 import { handleMachineCommand } from './machine';
 
@@ -513,5 +515,44 @@ describe('handleMachineCommand', () => {
     } finally {
       output.restore();
     }
+  });
+});
+
+describe('handleMachineCommand remote-commands', () => {
+  afterEach(() => {
+    process.exitCode = undefined;
+  });
+
+  it('turns remote commands on and off for this machine and reports the state', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-machine-remote-commands-' }, async () => {
+      const output = captureStdout();
+      try {
+        await handleMachineCommand(['remote-commands', 'status', '--json']);
+        await handleMachineCommand(['remote-commands', 'on', '--json']);
+        const afterOn = (await readSettings()).remoteCommandsEnabled;
+        await handleMachineCommand(['remote-commands', 'off', '--json']);
+        const afterOff = (await readSettings()).remoteCommandsEnabled;
+
+        expect(afterOn).toBe(true);
+        expect(afterOff).toBe(false);
+        const states = output.text().trim().split('\n').map((line) => JSON.parse(line).data.remoteCommandsEnabled);
+        expect(states).toEqual([false, true, false]);
+      } finally {
+        output.restore();
+      }
+    });
+  });
+
+  it('rejects an unknown state without changing the setting', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-machine-remote-commands-' }, async () => {
+      const output = captureStdout();
+      try {
+        await handleMachineCommand(['remote-commands', 'maybe', '--json']);
+      } finally {
+        output.restore();
+      }
+      expect(JSON.parse(output.text().trim())).toMatchObject({ ok: false, kind: 'machine_remote_commands' });
+      expect((await readSettings()).remoteCommandsEnabled).toBeUndefined();
+    });
   });
 });

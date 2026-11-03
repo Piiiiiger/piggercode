@@ -14,6 +14,7 @@ import { ExecutionRunStartRequestSchema } from '../executionRunStartRequest.js';
 import { MAX_EXECUTION_RUN_OBSERVATION_TIMEOUT_SECONDS } from '../executionRunObservationTimeout.js';
 import { SessionRollbackTargetSchema } from '../sessionRollback.js';
 import { SessionForkRpcParamsSchema } from '../sessionFork.js';
+import { MachineCommandRunInputSchema } from '../machineCommand.js';
 import { PendingFirstInputV1Schema } from '../spawnSession.js';
 import { SessionSpawnSourceContextV1Schema } from '../sessionSpawnSourceContextV1.js';
 import { SessionHandoffWorkspaceTransferSchema } from '../sessionControl/handoff/handoffSchemas.js';
@@ -1968,6 +1969,39 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
       fields: [{ path: 'limit', title: 'Limit', widget: 'text' }],
     },
     inputSchema: MachinesListInputSchema,
+  },
+  {
+    id: 'machine.command.run',
+    title: 'Run a command on another machine',
+    description: 'Run a shell command on another machine connected to this account, like `ssh host command`, and return its stdout, stderr and exit code. It runs in that machine\'s default shell as its user, in cwd (absolute, ~/..., or relative to its home) or its home directory. The machine must allow remote commands: its owner runs `piggercode machine remote-commands on` on it. Find machine ids with machines.list.',
+    safety: 'danger',
+    sideEffectClass: 'danger',
+    approval: APPROVAL_RESULT_REQUIRED,
+    placements: [],
+    bindings: { mcpToolName: 'machine_command_run' },
+    toolExposure: { session_agent: 'direct', mcp: 'direct' },
+    examples: {
+      mcp: { argsExample: '{"machineId":"<id from machines.list>","command":"uname -a && ls","cwd":"~/code"}' },
+    },
+    surfaces: {
+      ui_button: false,
+      ui_slash_command: false,
+      voice_tool: false,
+      voice_action_block: false,
+      session_agent: true,
+      mcp: true,
+      cli: true,
+    },
+    inputHints: {
+      title: 'Run a command on a machine',
+      fields: [
+        { path: 'machineId', title: 'Machine id', widget: 'text', required: true },
+        { path: 'command', title: 'Command', widget: 'textarea', required: true },
+        { path: 'cwd', title: 'Working directory', widget: 'text' },
+        { path: 'timeoutMs', title: 'Timeout (ms)', widget: 'text' },
+      ],
+    },
+    inputSchema: MachineCommandRunInputSchema,
   },
   {
     id: 'servers.list',

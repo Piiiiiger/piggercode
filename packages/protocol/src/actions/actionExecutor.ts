@@ -233,6 +233,7 @@ export type ActionExecutorDeps = Readonly<{
   // Local inventory + discovery (voice)
   pathsListRecent: (args: Readonly<{ machineId?: string; limit?: number }>) => Promise<unknown>;
   machinesList: (args: Readonly<{ limit?: number }>) => Promise<unknown>;
+  machineCommandRun: (args: Readonly<{ machineId: string; command: string; cwd?: string; timeoutMs?: number }>) => Promise<unknown>;
   serversList: (args: Readonly<{ limit?: number }>) => Promise<unknown>;
   reviewEnginesList: (args: Readonly<{ sessionId: string; includeDisabled?: boolean }>) => Promise<unknown>;
   agentsBackendsList: (args: Readonly<{ includeDisabled?: boolean; limit?: number }>) => Promise<unknown>;
@@ -2146,6 +2147,17 @@ export function createActionExecutor(deps: ActionExecutorDeps): Readonly<{
         if (actionId === 'machines.list') {
           const res = await deps.machinesList({
             ...(typeof (parsed.data as any).limit === 'number' ? { limit: (parsed.data as any).limit } : {}),
+          });
+          return { ok: true, result: res };
+        }
+
+        if (actionId === 'machine.command.run') {
+          const input = parsed.data as { machineId: string; command: string; cwd?: string; timeoutMs?: number };
+          const res = await deps.machineCommandRun({
+            machineId: input.machineId,
+            command: input.command,
+            ...(input.cwd ? { cwd: input.cwd } : {}),
+            ...(typeof input.timeoutMs === 'number' ? { timeoutMs: input.timeoutMs } : {}),
           });
           return { ok: true, result: res };
         }

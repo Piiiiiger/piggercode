@@ -16,6 +16,8 @@ export const ACTION_IDS = [
   'paths.list_recent',
   'machines.list',
   'servers.list',
+  // Machines
+  'machine.command.run',
   'review.engines.list',
   'agents.backends.list',
   'agents.models.list',

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { createActionExecutor, type ActionExecutorDeps } from './actionExecutor.js';
+import { RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS } from '../rpc.js';
 import { STRUCTURED_QUESTION_LIMITS } from '../tools/structuredQuestionAnswersV1.js';
 
 function createDeps(): ActionExecutorDeps {
@@ -21,6 +22,7 @@ function createDeps(): ActionExecutorDeps {
 
     pathsListRecent: vi.fn(async () => ({ items: [] })),
     machinesList: vi.fn(async () => ({ items: [] })),
+    machineCommandRun: vi.fn(async () => ({ success: true, stdout: 'Linux\n', stderr: '', exitCode: 0 })),
     serversList: vi.fn(async () => ({ items: [] })),
     reviewEnginesList: vi.fn(async () => ({ items: [] })),
     agentsBackendsList: vi.fn(async () => ({ items: [] })),
@@ -542,6 +544,37 @@ describe('createActionExecutor (inventory/discovery)', () => {
 
     expect(res).toEqual({ ok: false, errorCode: 'invalid_parameters', error: 'invalid_parameters' });
     expect(deps.sessionSpawnNew).not.toHaveBeenCalled();
+  });
+
+  it('routes machine.command.run to deps.machineCommandRun with the machine, command, directory and timeout', async () => {
+    const deps = createDeps();
+    const executor = createActionExecutor(deps);
+
+    const res = await executor.execute('machine.command.run' as any, {
+      machineId: 'm1',
+      command: 'uname -a',
+      cwd: '~/code',
+      timeoutMs: 60_000,
+    });
+
+    expect(res).toEqual({ ok: true, result: { success: true, stdout: 'Linux\n', stderr: '', exitCode: 0 } });
+    expect(deps.machineCommandRun).toHaveBeenCalledWith({ machineId: 'm1', command: 'uname -a', cwd: '~/code', timeoutMs: 60_000 });
+  });
+
+  it('rejects machine.command.run without a command or past the relay forwarding ceiling', async () => {
+    const deps = createDeps();
+    const executor = createActionExecutor(deps);
+
+    const missingCommand = await executor.execute('machine.command.run' as any, { machineId: 'm1' });
+    const tooLong = await executor.execute('machine.command.run' as any, {
+      machineId: 'm1',
+      command: 'sleep 1',
+      timeoutMs: RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS,
+    });
+
+    expect(missingCommand.ok).toBe(false);
+    expect(tooLong.ok).toBe(false);
+    expect(deps.machineCommandRun).not.toHaveBeenCalled();
   });
 
   it('routes paths.list_recent to deps.pathsListRecent', async () => {

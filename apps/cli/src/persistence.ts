@@ -174,6 +174,12 @@ export interface Settings {
    * CLI runtime onto the current one (idle runners only). Off unless explicitly `true`.
    */
   restartSessionRunnersOnUpdate?: boolean
+  /**
+   * Opt-in: let agents on this account's other machines run shell commands on this machine
+   * (`machine.command.run`). Off unless explicitly `true`. Device-local: only
+   * `piggercode machine remote-commands on|off` on this machine changes it.
+   */
+  remoteCommandsEnabled?: boolean
   chromeMode?: boolean
   /**
    * Per-server, per-account reconnect cursor for `/v2/changes`.

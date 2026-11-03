@@ -19,6 +19,7 @@ describe('createActionExecutor', () => {
             sessionSpawnPicker: async () => ({}),
             pathsListRecent: async () => ({ items: [] }),
             machinesList: async () => ({ items: [] }),
+            machineCommandRun: async () => ({ ok: false, errorCode: 'unsupported_action' }),
             serversList: async () => ({ items: [] }),
             reviewEnginesList: async () => ({ items: [] }),
             agentsBackendsList: async () => ({ items: [] }),

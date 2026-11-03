@@ -1760,6 +1760,35 @@ RPC is used to send commands over the Socket.IO connection:
 
 This mechanism allows the server and mobile clients to drive local actions without exposing a broad REST surface.
 
+The daemon also registers the session handler set at machine level, so `${machineId}:bash` runs a
+shell command on that machine for any client of the account (the app uses it, for example, to read
+environment variables); its working directory goes through the machine's filesystem access policy
+(`PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY`, the whole OS user when unset).
+
+### Remote commands for agents
+
+Agents run commands on another machine of the same account through the `machine.command.run` action
+(MCP tool `machine_command_run`, directly exposed to session agents). The caller's
+`createCliActionDeps.machineCommandRun` sends `daemon.machineCommand.run` to the target machine
+through the relay like any machine RPC (account-scoped, encrypted); the target's
+`registerMachineCommandHandler` runs it.
+
+- **Off until the machine allows it.** The target refuses (`remote_commands_disabled`) unless its own
+  device-local settings say `remoteCommandsEnabled: true`, which only `piggercode machine
+  remote-commands on|off|status` on that machine changes. It is read on every call, so turning it off
+  takes effect at once. The switch gates this agent path; the machine-level `bash` RPC above is a
+  separate, older surface that it does not change.
+- **Same execution as `bash`.** The command runs in the platform's default shell as the daemon's user
+  through `executeShellCommandRequest`; a non-zero exit is a result (`success: false` with its
+  `exitCode`), not a refusal. `cwd` may be absolute, `~/…` or relative to the machine's default
+  directory, and must pass the same filesystem access policy.
+- **Timeouts come from the relay.** The default is `MACHINE_COMMAND_DEFAULT_TIMEOUT_MS` (the `bash`
+  default). The maximum stays `MACHINE_COMMAND_REPLY_ALLOWANCE_MS` under the relay's default forwarding
+  ceiling (`RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS`), and the caller waits for the command's timeout plus
+  that allowance. A machine that is offline or predates the method fails with a message saying so.
+- **Audit.** The target writes each run (directory, command length, exit code; not the command text)
+  to its daemon log file.
+
 In the current development CLI, UI permission responses settle through
 `PermissionRequestCoordinator.completeRpcResponse`, including detached late responses
 and requests present only in Agent state. Provider waiters, cached late decisions,

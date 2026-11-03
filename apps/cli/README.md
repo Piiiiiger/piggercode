@@ -48,6 +48,7 @@ piggercode setup --relay https://<你的中继地址>
 
 - `~/.piggercode`：配置、凭据、日志和守护进程状态。用 `PIGGERCODE_HOME_DIR` 可以换位置。
 - 守护进程的 systemd 用户服务叫 `piggercode-daemon.<实例>`，默认实例是 `default`；macOS 上的 launchd 标签是 `com.piggercode.cli.daemon.<实例>`。
+- 远程执行命令：在一台电脑上运行 `piggercode machine remote-commands on` 后，同一账户下其他电脑上的 Claude Code 或 Codex 可以用 `machine_command_run` 工具在这台电脑上执行 shell 命令（类似 `ssh 主机 命令`），以运行 PiggerCode 的那个用户身份执行。默认关闭；`piggercode machine remote-commands off` 随时关掉，`status` 查看当前状态。
 - 从改名前的版本升级时，`piggercode service install` 会停掉并删除同一个家目录里旧名字的同一个服务（`happier-daemon.<实例>`，macOS 上是 `com.happier.cli.daemon.<实例>`），`~/.happier` 链接到 `~/.piggercode` 的情况也算同一个家目录。别的家目录里的旧服务不动。
 - 智能体看到的内置 MCP 服务叫 `piggercode`，工具名是 `mcp__piggercode__*`。旧会话里的 `mcp__happier__*` 工具调用照常显示。
 - 网页端上传的附件默认存到服务器上的 `~/Downloads`，可以在设置里改。

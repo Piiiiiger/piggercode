@@ -1351,6 +1351,19 @@ export {
   type MachineFileBrowserDirectoryEntry,
   type MachineFileBrowserRoot,
 } from './machineFileBrowser.js';
+export {
+  MACHINE_COMMAND_DEFAULT_TIMEOUT_MS,
+  MACHINE_COMMAND_MAX_TIMEOUT_MS,
+  MACHINE_COMMAND_REPLY_ALLOWANCE_MS,
+  MachineCommandErrorCodeSchema,
+  MachineCommandRunInputSchema,
+  MachineCommandRunRequestSchema,
+  MachineCommandRunResponseSchema,
+  type MachineCommandErrorCode,
+  type MachineCommandRunInput,
+  type MachineCommandRunRequest,
+  type MachineCommandRunResponse,
+} from './machineCommand.js';
 
 export {
   PendingFirstInputV1Schema,
@@ -1498,6 +1511,7 @@ export {
 export {
   RPC_ERROR_CODES,
   RPC_ERROR_MESSAGES,
+  RPC_FORWARD_DEFAULT_MAX_TIMEOUT_MS,
   RPC_METHODS,
   SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS,
   SESSION_RPC_METHODS,

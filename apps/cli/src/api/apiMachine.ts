@@ -13,6 +13,7 @@ import { registerFileSystemHandlers } from '@/rpc/handlers/fileSystem';
 import { registerWorkspaceAnchorHandlers } from '@/rpc/handlers/workspaceAnchors/registerWorkspaceAnchorHandlers';
 import { registerWorkspaceFaviconHandlers } from '@/rpc/handlers/workspaceFavicon/registerWorkspaceFaviconHandlers';
 import { registerMachineFileBrowserHandlers } from '@/rpc/handlers/machineFileBrowser/registerMachineFileBrowserHandlers';
+import { registerMachineCommandHandler } from '@/rpc/handlers/machineCommand/registerMachineCommandHandler';
 import { decodeMachineStoredContent, encodeMachineStoredContent } from './machine/machineStoredContent';
 import {
     resolveFilesystemAccessPolicy,
@@ -395,6 +396,11 @@ export class ApiMachineClient {
         });
         registerMachineFileBrowserHandlers({
             rpcHandlerManager: this.rpcHandlerManager,
+            accessPolicy: filesystemAccessPolicy,
+        });
+        registerMachineCommandHandler({
+            rpcHandlerManager: this.rpcHandlerManager,
+            workingDirectory: machineRpcWorkingDirectory,
             accessPolicy: filesystemAccessPolicy,
         });
         // SCM must be machine-scoped so the UI can view diffs/logs and perform staging/commit operations

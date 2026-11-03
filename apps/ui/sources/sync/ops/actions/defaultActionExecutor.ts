@@ -285,6 +285,7 @@ export function createDefaultActionExecutor(opts?: Readonly<{
 
     pathsListRecent: async ({ machineId, limit }) => await listRecentPathsForVoiceTool({ machineId, limit }),
     machinesList: async ({ limit }) => await listMachinesForVoiceTool({ limit }),
+    machineCommandRun: async () => ({ ok: false, error: 'unsupported_action:machine.command.run', errorCode: 'unsupported_action' }),
     serversList: async ({ limit }) => await listServersForVoiceTool({ limit }),
     reviewEnginesList: async ({ sessionId, includeDisabled }) => await listReviewEnginesForVoiceTool({ sessionId, includeDisabled }),
     agentsBackendsList: async (args) => {

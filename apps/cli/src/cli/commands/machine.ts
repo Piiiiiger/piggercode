@@ -6,6 +6,8 @@ import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/json
 import { resolveManagedCliReleaseChannelSync } from '@piggercode/cli-common/firstPartyRuntime';
 import { getLiveSystemTasksRunnerAdapter } from '@/capabilities/systemTasks/liveSystemTasksRunner';
 import { configuration } from '@/configuration';
+import { updateSettings } from '@/persistence';
+import { readRemoteCommandsEnabled } from '@/rpc/handlers/machineCommand/registerMachineCommandHandler';
 import { describeBackgroundServiceTargetMode } from '@/daemon/service/describeBackgroundServiceTargetMode';
 import { applyServerSelectionFromArgs } from '@/server/serverSelection';
 import { isInteractiveTerminal, promptInput } from '@/terminal/prompts/promptInput';
@@ -426,6 +428,30 @@ async function runSetupSubcommand(argsRaw: string[], deps: MachineCommandDeps): 
   }
 }
 
+/**
+ * `piggercode machine remote-commands on|off|status`: whether agents on this account's other
+ * machines may run shell commands on this machine (`machine.command.run`). Only this machine's own
+ * CLI changes it, so turning it on is always a local decision.
+ */
+async function runRemoteCommandsSubcommand(args: readonly string[], json: boolean): Promise<void> {
+  const value = (args.find((arg) => !arg.startsWith('-')) ?? 'status').trim().toLowerCase();
+  if (value !== 'on' && value !== 'off' && value !== 'status') {
+    throw new Error('Usage: piggercode machine remote-commands on|off|status');
+  }
+  if (value !== 'status') {
+    const enabled = value === 'on';
+    await updateSettings((current) => ({ ...current, remoteCommandsEnabled: enabled }));
+  }
+  const enabled = await readRemoteCommandsEnabled();
+  if (json) {
+    await printJsonEnvelope({ ok: true, kind: 'machine_remote_commands', data: { remoteCommandsEnabled: enabled } });
+    return;
+  }
+  console.log(enabled
+    ? 'Remote commands: on. Agents on your other machines can run shell commands here as this user.'
+    : 'Remote commands: off. Agents on other machines cannot run commands here.');
+}
+
 export async function handleMachineCommand(args: string[], deps: Partial<MachineCommandDeps> = {}): Promise<void> {
   const effectiveDeps: MachineCommandDeps = {
     ...DEFAULT_DEPS,
@@ -440,6 +466,11 @@ export async function handleMachineCommand(args: string[], deps: Partial<Machine
       return;
     }
 
+    if (subcommand === 'remote-commands') {
+      await runRemoteCommandsSubcommand(args.slice(1), json);
+      return;
+    }
+
     if (subcommand !== 'setup') {
       throw new Error(`Unknown machine subcommand: ${subcommand}`);
     }
@@ -451,7 +482,7 @@ export async function handleMachineCommand(args: string[], deps: Partial<Machine
       await printJsonEnvelope(
         {
           ok: false,
-          kind: 'machine_setup',
+          kind: subcommand === 'remote-commands' ? 'machine_remote_commands' : 'machine_setup',
           error: { code: mapped.code, ...(mapped.message ? { message: mapped.message } : {}) },
         },
         { exitCode: mapped.unexpected ? 2 : 1 },
