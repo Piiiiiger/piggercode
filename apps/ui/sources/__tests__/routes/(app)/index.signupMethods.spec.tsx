@@ -118,15 +118,24 @@ vi.mock('@/sync/api/capabilities/serverFeaturesClient', () => ({
     getServerFeaturesSnapshot: getServerFeaturesSnapshotMock,
 }));
 
+vi.mock('@/sync/api/capabilities/serverRetentionPolicyClient', () => ({
+    getServerRetentionPolicy: async () => null,
+}));
+
 describe('/ (welcome) signup methods', () => {
     beforeEach(() => {
+        // The relay a build names; the welcome only checks a relay once one is set.
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://relay.example.test';
         applyBrandHeroSeenSpy.mockReset();
         getReadyServerFeaturesMock.mockReset();
         getReadyServerFeaturesMock.mockResolvedValue(defaultWelcomeFeatures);
         getServerFeaturesSnapshotMock.mockReset();
         getServerFeaturesSnapshotMock.mockResolvedValue({ status: 'ready', features: defaultWelcomeFeatures });
     });
-    afterEach(standardCleanup);
+    afterEach(() => {
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
+        standardCleanup();
+    });
 
     it('uses an extended initial server-features timeout before showing the server unavailable state', async () => {
         vi.resetModules();
@@ -400,6 +409,29 @@ describe('/ (welcome) signup methods', () => {
         expect(screen.findAllByTestId('welcome-signup-provider')).toHaveLength(0);
         expect(screen.findAllByTestId('welcome-create-account')).toHaveLength(0);
         expect(screen.findByTestId('welcome-retry-server')).not.toBeNull();
+        expect(screen.findByTestId('welcome-change-relay')).not.toBeNull();
+    });
+
+    it('asks for a Relay instead of checking the app page when none is set', async () => {
+        // A desktop or native build made without a relay: its own page is not a relay.
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
+        vi.resetModules();
+        const { t } = await import('@/text');
+        getServerFeaturesSnapshotMock.mockClear();
+        getServerFeaturesSnapshotMock.mockResolvedValue({ status: 'unsupported', reason: 'invalid_payload' });
+
+        const screen = await renderWelcomeScreen();
+
+        await waitForWelcomeTestId(screen, 'welcome-relay-unset');
+
+        expect(getServerFeaturesSnapshotMock).not.toHaveBeenCalled();
+        const textContent = screen.getTextContent();
+        expect(textContent).toContain(t('setupOnboarding.preAuthTitle'));
+        expect(textContent).not.toContain(t('welcome.serverIncompatibleTitle'));
+        expect(screen.findAllByTestId('welcome-server-unavailable')).toHaveLength(0);
+        expect(screen.findAllByTestId('welcome-primary-start')).toHaveLength(0);
+        expect(screen.findAllByTestId('welcome-create-account')).toHaveLength(0);
+        expect(screen.findAllByTestId('welcome-retry-server')).toHaveLength(0);
         expect(screen.findByTestId('welcome-change-relay')).not.toBeNull();
     });
 });

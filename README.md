@@ -62,7 +62,7 @@ yarn -s typecheck
 ## 配置
 
 - 应用名、版本号、提供哪些代理和仓库链接都在 `apps/ui/appVariantConfig.cjs` 的 `APP_BRAND` 里。
-- 中继的地址不写在代码里。网页端直接使用自己所在的网址；CLI 用 `setup --relay <中继地址>` 连接，或者在环境变量 `PIGGERCODE_BUILTIN_RELAY_URL` 里给出默认中继；手机端在构建时用 `EXPO_PUBLIC_PIGGERCODE_SERVER_URL` 指定。
+- 中继的地址不写在代码里。网页端直接使用自己所在的网址；CLI 用 `setup --relay <中继地址>` 连接，或者在环境变量 `PIGGERCODE_BUILTIN_RELAY_URL` 里给出默认中继；手机端和桌面端可以在构建时用 `EXPO_PUBLIC_PIGGERCODE_SERVER_URL` 指定，没有指定时第一次打开会请你填中继地址（Releases 里的桌面版就是这样）。
 - 生产构建默认关闭的功能列在 `.github/feature-policy/production.json`。
 
 ## 部署（概要）

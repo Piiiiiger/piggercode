@@ -289,6 +289,29 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
         && options.showAnonymousSignup
         && !isReturningUser;
 
+    if (options.serverAvailability === 'unset') {
+        return (
+            <View testID="welcome-decision-panel" style={styles.decisionPanel}>
+                <View testID="welcome-relay-unset" style={styles.serverUnavailableBlock}>
+                    <Text style={styles.serverUnavailableTitle}>
+                        {t('setupOnboarding.preAuthTitle')}
+                    </Text>
+                    <Text style={styles.serverStatusBody}>
+                        {t('setupOnboarding.preAuthBody')}
+                    </Text>
+                </View>
+                <View style={styles.actionStack}>
+                    <DecisionActionRow
+                        testID="welcome-change-relay"
+                        title={t('setupOnboarding.addAndUseRelay')}
+                        iconName="graph"
+                        onPress={props.onChangeRelay}
+                    />
+                </View>
+            </View>
+        );
+    }
+
     if (options.serverAvailability === 'unavailable' || options.serverAvailability === 'incompatible') {
         return (
             <View testID="welcome-decision-panel" style={styles.decisionPanel}>

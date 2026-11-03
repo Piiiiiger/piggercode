@@ -61,6 +61,11 @@ function readWelcomeServerCheckRetryDelayMs(): number {
     return Math.max(1, Math.min(10_000, parsed));
 }
 
+function readActiveRelayUrl(): string {
+    const snapshot = getActiveServerSnapshot();
+    return snapshot?.serverUrl ? String(snapshot.serverUrl).trim() : '';
+}
+
 export default function Home() {
     const auth = useAuth();
     if (!auth.isAuthenticated) {
@@ -190,6 +195,12 @@ function NotAuthenticated() {
         };
         fireAndForget((async () => {
             try {
+                // No relay is set yet (a desktop or native build made without one). Ask for one: a probe
+                // would reach the app's own page, and its HTML would read as an unsupported relay.
+                if (!readActiveRelayUrl()) {
+                    if (mounted) setServerAvailability('unset');
+                    return;
+                }
                 if (mounted) setServerAvailability('loading');
 
                 const featuresSnapshot = await getServerFeaturesSnapshot({
@@ -413,11 +424,7 @@ function NotAuthenticated() {
         }
     };
 
-    const serverUrlForCopy = (() => {
-        const snapshot = getActiveServerSnapshot();
-        const raw = snapshot?.serverUrl ? String(snapshot.serverUrl).trim() : '';
-        return raw || t('status.unknown');
-    })();
+    const serverUrlForCopy = readActiveRelayUrl() || t('status.unknown');
     const authEntryOptions = useRemoteAuthEntryOptions({
         serverAvailability,
         serverUrlForCopy,

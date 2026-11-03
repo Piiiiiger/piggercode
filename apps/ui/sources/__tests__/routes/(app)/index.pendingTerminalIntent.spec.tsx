@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
 import { t } from '@/text';
 import { renderScreen } from '@/dev/testkit';
@@ -95,7 +95,13 @@ vi.mock('@/sync/domains/pending/pendingTerminalConnect', () => ({
 }));
 
 describe('/ (welcome) terminal connect intent notice', () => {
+    afterEach(() => {
+        delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
+    });
+
     it('shows terminal connect guidance when auth was initiated from a terminal link', async () => {
+        // The terminal link's relay is the active one.
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://company.example.test';
         vi.resetModules();
         const { default: Screen } = await import('@/app/(app)/index');
 

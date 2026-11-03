@@ -5,7 +5,8 @@ import { t } from '@/text';
 
 import type { FeaturesResponse } from '@piggercode/protocol';
 
-export type RemoteServerAvailability = 'loading' | 'ready' | 'legacy' | 'unavailable' | 'incompatible';
+/** `unset`: no relay is set on this device yet, so there is nothing to sign in to. */
+export type RemoteServerAvailability = 'loading' | 'ready' | 'legacy' | 'unavailable' | 'incompatible' | 'unset';
 
 export type RemoteSignupOptions = Readonly<{
     anonymousEnabled: boolean;

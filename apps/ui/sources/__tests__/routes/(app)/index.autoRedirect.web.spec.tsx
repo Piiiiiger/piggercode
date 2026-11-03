@@ -77,7 +77,7 @@ vi.mock('@/sync/domains/pending/pendingTerminalConnect', () => ({
 }));
 
 vi.mock('@/sync/domains/server/serverRuntime', () => ({
-    getActiveServerSnapshot: () => ({ serverUrl: '' }),
+    getActiveServerSnapshot: () => ({ serverUrl: 'https://relay.example.test' }),
 }));
 
 vi.mock('@/platform/cryptoRandom', () => ({
