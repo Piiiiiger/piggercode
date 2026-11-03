@@ -11,6 +11,10 @@ on:
         description: GitHub release to upload the installers to (empty = only keep them as workflow artifacts)
         required: false
         default: ''
+      platforms:
+        description: Builds to run, comma-separated (darwin-arm64, darwin-x64, windows-x64, linux-x64), or all
+        required: false
+        default: all
 
 permissions:
   contents: write
@@ -20,26 +24,40 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # A job-level `if` cannot see the matrix, so the platforms to build are picked here.
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - id: pick
+        shell: bash
+        env:
+          PLATFORMS: ${{ inputs.platforms }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, sys
+          builds = [
+              {"key": "darwin-arm64", "os": "macos-14", "target": "aarch64-apple-darwin"},
+              {"key": "darwin-x64", "os": "macos-14", "target": "x86_64-apple-darwin"},
+              {"key": "windows-x64", "os": "windows-2022", "target": "x86_64-pc-windows-msvc"},
+              {"key": "linux-x64", "os": "ubuntu-22.04", "target": "x86_64-unknown-linux-gnu"},
+          ]
+          want = [w.strip() for w in (os.environ.get("PLATFORMS") or "all").split(",") if w.strip()]
+          picked = [b for b in builds if "all" in want or b["key"] in want]
+          if not picked:
+              sys.exit(f"no platform matches {want}")
+          print("matrix=" + json.dumps({"include": picked}))
+          PY
+
   build:
     name: ${{ matrix.key }}
+    needs: plan
     runs-on: ${{ matrix.os }}
     timeout-minutes: 150
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - key: darwin-arm64
-            os: macos-14
-            target: aarch64-apple-darwin
-          - key: darwin-x64
-            os: macos-14
-            target: x86_64-apple-darwin
-          - key: windows-x64
-            os: windows-2022
-            target: x86_64-pc-windows-msvc
-          - key: linux-x64
-            os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
       APP_ENV: production
       PIGGERCODE_EMBEDDED_POLICY_ENV: production
@@ -74,9 +92,15 @@ jobs:
         with:
           bun-version: 1.4.2
 
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
+      # apps/ui/rust-toolchain.toml pins the toolchain; the build target goes onto that one.
+      - name: Rust toolchain and target
+        working-directory: apps/ui
+        shell: bash
+        run: |
+          toolchain=$(sed -n 's/^channel *= *"\(.*\)"/\1/p' rust-toolchain.toml)
+          rustup toolchain install "$toolchain" --profile minimal
+          rustup target add --toolchain "$toolchain" "${{ matrix.target }}"
+          rustup show active-toolchain
 
       - uses: Swatinem/rust-cache@v2
         with:
