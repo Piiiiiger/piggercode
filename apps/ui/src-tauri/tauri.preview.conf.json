@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Happier (preview)",
-  "mainBinaryName": "happier-desktop-preview",
-  "identifier": "dev.happier.app.preview",
+  "productName": "PiggerCode (preview)",
+  "mainBinaryName": "piggercode-desktop-preview",
+  "identifier": "dev.piggercode.app.preview",
   "plugins": {
     "deep-link": {
       "desktop": {
@@ -10,7 +10,7 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFCRTk2MjE4RjNCMEYxRUYKUldUdjhiRHpHR0xwcTFIUjMvb1FBbW5HOUFYSkd5aGlHa204MWZuRk50ekF5WVZQdU1mVkRWWnkK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXkgNDFGOTk1OUM0RDE3QUM2RApSV1J0ckJkTm5KWDVRUjJhbFRoSm9UdnRrWEFKdU9OeEJ3UXF0ZXNSKzJwYjFRa1ErZEZ1Q1dMbQo=",
       "endpoints": [
         "https://github.com/Piiiiiger/piggercode/releases/download/ui-desktop-preview/latest.json"
       ]
@@ -22,7 +22,7 @@
       {
         "label": "main",
         "create": false,
-        "title": "Happier (preview)",
+        "title": "PiggerCode (preview)",
         "width": 800,
         "height": 600,
         "visible": false,

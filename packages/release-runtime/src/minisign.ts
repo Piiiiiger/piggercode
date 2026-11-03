@@ -2,8 +2,12 @@ import { createHash, createPublicKey, verify } from 'node:crypto';
 
 const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
 
-export const DEFAULT_MINISIGN_PUBLIC_KEY = `untrusted comment: minisign public key 91AE28177BF6E43C
-RWQ85PZ7FyiukYbL3qv/bKnwgbT68wLVzotapeMFIb8n+c7pBQ7U8W2t
+/**
+ * The PiggerCode release signing key. Every first-party download (CLI, relay, the desktop app's setup)
+ * checks the release's checksums file against it; releases are signed with its secret half.
+ */
+export const DEFAULT_MINISIGN_PUBLIC_KEY = `untrusted comment: minisign public key 41F9959C4D17AC6D
+RWRtrBdNnJX5QR2alThJoTvtkXAJuONxBwQqtesR+2pb1QkQ+dFuCWLm
 `;
 
 function decodeBase64Line(line: string, expectedBytes?: number): Buffer {

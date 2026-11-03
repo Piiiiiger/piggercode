@@ -1,15 +1,13 @@
 //! Running-app Dock icon on macOS.
 //!
-//! Since macOS 26 every bundled app icon is drawn on the system's square tile,
-//! so the notch in Happier's mark shows the tile colour instead of the Dock
-//! behind it. An image set at runtime through
-//! `NSApplication.applicationIconImage` is drawn as-is, which keeps the notch
-//! transparent while the app runs. Tauri already does this for dev builds only
-//! (`#[cfg(dev)]` in tauri's `app.rs`); this applies the same artwork in every
-//! build.
+//! Since macOS 26 every bundled app icon is drawn on the system's square tile.
+//! An image set at runtime through `NSApplication.applicationIconImage` is drawn
+//! as-is, so the running app keeps the icon's own rounded tile. Tauri already
+//! does this for dev builds only (`#[cfg(dev)]` in tauri's `app.rs`); this
+//! applies the same artwork in every build.
 //!
 //! Finder, Launchpad and the Dock before launch still show the bundled
-//! `icons/AppIcon.icon`; only the running app's Dock tile changes.
+//! `icons/icon.icns`; only the running app's Dock tile changes.
 
 /// The mark in the macOS icon grid (824 of 1024, with the system icon shadow) on a transparent
 /// canvas, so it sits the same size as every bundled icon; `scripts/generateDesktopIcons.mjs`.

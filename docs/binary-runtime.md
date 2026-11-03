@@ -2,6 +2,27 @@
 
 Happier ships binary installers. First-party runtime paths must work on machines that do not have system `node`, `npm`, `npx`, `pnpm`, `yarn`, or `bunx`.
 
+## Releases in this fork
+
+PiggerCode publishes from this repository's GitHub Releases. Upstream's release automation
+(`release.yml`, Homebrew, npm, candidate pipelines) was removed; sections below that describe it are
+upstream background.
+
+- **Release key.** `DEFAULT_MINISIGN_PUBLIC_KEY` (`packages/release-runtime/src/minisign.ts`) is
+  the PiggerCode release key. First-party downloads (CLI self-update, the desktop app's CLI setup,
+  relay runtimes, optional components) verify the release's signed `checksums-*.txt` against it, and
+  the desktop updater feed uses the same key. Its secret half is not in the repository or in CI; a
+  release is signed where it is assembled.
+- **CLI.** `scripts/pipeline/release/build-cli-binaries.mjs` builds
+  `happier-v<version>-<os>-<arch>.tar.gz` per target and `checksums-happier-v<version>.txt`
+  (signed when `MINISIGN_SECRET_KEY` is set). They are published to the rolling `cli-stable` release.
+  Optional runtime components (the immutable `cli-vVERSION` releases described below) are not
+  published yet.
+- **Desktop.** `.github/workflows/desktop.yml` builds the Tauri app on GitHub-hosted runners for
+  darwin-arm64, darwin-x64, windows-x64 and linux-x64 and can upload the installers to a release.
+  There is no paid signing: macOS bundles get an ad-hoc signature with the hardened runtime off
+  (nothing is notarized), so the first launch needs "Open Anyway"; Windows shows SmartScreen once.
+
 ## Runtime contract
 
 In current development source, `scripts/pipeline/release/bun-standalone.entitlements.plist`

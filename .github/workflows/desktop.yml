@@ -1,0 +1,132 @@
+name: Desktop app
+
+# Builds the PiggerCode desktop app (Tauri) for macOS, Windows and Linux. Run it by hand from the
+# Actions tab or the API. With a release tag it also uploads the installers to that GitHub release.
+# The builds are not code-signed: macOS gets an ad-hoc signature (hardened runtime off, which only
+# notarization needs), so the first launch asks for "Open Anyway"; Windows shows SmartScreen once.
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: GitHub release to upload the installers to (empty = only keep them as workflow artifacts)
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: ${{ matrix.key }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: darwin-arm64
+            os: macos-14
+            target: aarch64-apple-darwin
+          - key: darwin-x64
+            os: macos-14
+            target: x86_64-apple-darwin
+          - key: windows-x64
+            os: windows-2022
+            target: x86_64-pc-windows-msvc
+          - key: linux-x64
+            os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+    env:
+      APP_ENV: production
+      PIGGERCODE_EMBEDDED_POLICY_ENV: production
+      EXPO_UNSTABLE_WEB_MODAL: '1'
+      CI: 'true'
+    steps:
+      - name: Allow long paths (Windows)
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
+      - uses: actions/checkout@v4
+
+      - name: Free disk space (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Linux packages for Tauri
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: yarn
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/ui/src-tauri -> target
+          key: ${{ matrix.target }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 600000
+
+      - name: Build shared packages
+        run: yarn -s build:packages
+
+      - name: Build the desktop app
+        working-directory: apps/ui
+        shell: bash
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ runner.os == 'macOS' && '-' || '' }}
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$RUNNER_OS" = macOS ]; then
+            extra=(--config '{"bundle":{"macOS":{"hardenedRuntime":false}}}')
+          fi
+          node ./scripts/runTauriCli.mjs build --target "${{ matrix.target }}" "${extra[@]}"
+
+      - name: Collect the installers
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle="apps/ui/src-tauri/target/${{ matrix.target }}/release/bundle"
+          mkdir -p dist/desktop
+          find "$bundle" -maxdepth 2 -type f \( -name '*.dmg' -o -name '*-setup.exe' -o -name '*.msi' \
+            -o -name '*.deb' -o -name '*.AppImage' -o -name '*.rpm' \) -exec cp {} dist/desktop/ \;
+          ls -la dist/desktop
+          [ -n "$(ls -A dist/desktop)" ]
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piggercode-desktop-${{ matrix.key }}
+          path: dist/desktop/*
+          if-no-files-found: error
+
+      - name: Upload to the release
+        if: inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ inputs.release_tag }}" dist/desktop/* --clobber --repo "${{ github.repository }}"
+
+      - name: Desktop app tests
+        if: runner.os == 'Linux'
+        working-directory: apps/ui/src-tauri
+        run: cargo test --locked --target ${{ matrix.target }}
