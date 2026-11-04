@@ -15,7 +15,7 @@ PiggerCode 是一个自托管、自用的工具。Claude Code 和 Codex 跑在�
 - **账号密码登录**：在「设置 → 账户 → 用户名和密码」里设好之后，任何浏览器都能用用户名和密码登录，登录一次就会记住。密码只在浏览器里用来解开账户密钥，不会发给中继。设置之前需要先用密钥登录一次。
 - **直连会话**：可以打开服务器上已有的 Codex 会话；发消息时直接在原会话里接管，删除时同步删掉服务器上的会话。
 - **共享文件夹**：发送的附件按原文件名存到服务器上的一个文件夹（默认 `~/Downloads`），同名文件自动编号，不会覆盖。网页里可以上传下载，也能按设置里给出的命令用 SSHFS 挂载到自己的电脑。
-- **桌面版**：macOS、Windows、Linux 安装包在本仓库的 Releases 里。第一次打开时填一次中继地址并登录，在应用里就能把这台电脑接入（它会装好后台服务，菜单栏或托盘里有图标）。
+- **桌面版**：macOS、Windows、Linux 安装包在本仓库的 Releases 里。第一次打开时填一次中继地址并登录，在应用里就能把这台电脑接入（它会装好后台服务，菜单栏或托盘里有图标）。macOS 和 Linux（AppImage）有新版本时会在应用里提示，点一下就能更新。
 - **远程命令**：在电脑详情页打开「远程命令」开关后，同一账户下其他电脑上的 Claude Code 或 Codex 可以在这台电脑上执行 shell 命令，类似 `ssh 主机 命令`。默认关闭，打开前会确认。
 - **干净**：没有使用统计、崩溃上报、应用评分、更新日志、反馈和原版文档链接，也不会从原版的服务器或仓库下载任何东西。
 
@@ -49,7 +49,7 @@ yarn workspace @piggercode/cli build
 发布（GitHub Releases）：
 
 - CLI：`node scripts/pipeline/release/build-cli-binaries.mjs --version <版本> --targets linux-x64,darwin-arm64,darwin-x64,windows-x64` 在 `dist/release-assets/cli` 里生成各平台的压缩包和 `checksums-happier-v<版本>.txt`。用发布密钥给校验和文件签名（`minisign -S`，或者构建时设 `MINISIGN_SECRET_KEY`），再把它们传到 `cli-stable` 发布里。CLI 的自动更新和桌面版的「接入这台电脑」都从这里下载，并用 `packages/release-runtime/src/minisign.ts` 里的公钥校验签名。
-- 桌面版：在 Actions 里手动运行 `Desktop app`（`.github/workflows/desktop.yml`），填上发布的 tag，就会构建 macOS（Apple 芯片、Intel）、Windows、Linux 安装包并上传。安装包没有付费签名：macOS 第一次打开要在「隐私与安全性」里点「仍要打开」，Windows 会提示一次 SmartScreen。
+- 桌面版：在 Actions 里手动运行 `Desktop app`（`.github/workflows/desktop.yml`），填上发布的 tag，就会构建 macOS（Apple 芯片、Intel）、Windows、Linux 安装包并上传。安装包没有付费签名：macOS 第一次打开要在「隐私与安全性」里点「仍要打开」，Windows 会提示一次 SmartScreen。应用内更新读取这个发布里的 `latest.json`：构建完成后，用发布密钥给 Linux 的 AppImage 和 macOS 的 `.app.tar.gz` 签名（minisign 签名再做 base64），把签名和下载地址写进 `latest.json` 再上传。公钥就是 `tauri.conf.json` 里的 `updater.pubkey`。
 
 测试和类型检查：
 

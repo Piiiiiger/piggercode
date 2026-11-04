@@ -134,6 +134,17 @@ jobs:
           mkdir -p dist/desktop
           find "$bundle" -maxdepth 2 -type f \( -name '*.dmg' -o -name '*-setup.exe' -o -name '*.msi' \
             -o -name '*.deb' -o -name '*.AppImage' -o -name '*.rpm' \) -exec cp {} dist/desktop/ \;
+          # The macOS in-app update package: the .app in a gzipped tar with the bundle at its root (what
+          # createUpdaterArtifacts makes, which needs the signing key here). The release key signs it
+          # outside CI; Linux updates use the AppImage itself.
+          if [ "$RUNNER_OS" = macOS ]; then
+            version=$(node -p "require('./apps/ui/src-tauri/tauri.conf.json').version")
+            arch=x64; [ "${{ matrix.target }}" = aarch64-apple-darwin ] && arch=aarch64
+            app=$(find "$bundle/macos" -maxdepth 1 -name '*.app' | head -1)
+            [ -n "$app" ]
+            COPYFILE_DISABLE=1 tar -czf "dist/desktop/$(basename "$app" .app)_${version}_${arch}.app.tar.gz" \
+              -C "$(dirname "$app")" "$(basename "$app")"
+          fi
           ls -la dist/desktop
           [ -n "$(ls -A dist/desktop)" ]
 
