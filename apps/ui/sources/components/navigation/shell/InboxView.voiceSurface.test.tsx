@@ -92,9 +92,6 @@ vi.mock('@/components/ui/lists/Item', () => ({
 }));
 
 
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner',
-}));
 
 vi.mock('@/components/navigation/Header', () => ({
     Header: 'Header',

@@ -21,7 +21,6 @@ const PENDING_EXTERNAL_CONNECT_KEY = 'pending_external_connect';
 const PENDING_EXTERNAL_CONNECT_GLOBAL_KEY = 'pending_external_connect__global';
 const AUTH_AUTO_REDIRECT_SUPPRESSED_UNTIL_KEY = 'auth_auto_redirect_suppressed_until';
 const AUTH_AUTO_REDIRECT_SUPPRESSED_UNTIL_GLOBAL_KEY = 'auth_auto_redirect_suppressed_until_global';
-const RECOVERY_KEY_REMINDER_DISMISSED_KEY = 'recovery_key_reminder_dismissed';
 
 function textToUtf8Bytes(value: string): Uint8Array {
     return new TextEncoder().encode(value);
@@ -254,29 +253,8 @@ function getAuthAutoRedirectSuppressedUntilGlobalKey(): string {
     return scopedStorageId(AUTH_AUTO_REDIRECT_SUPPRESSED_UNTIL_GLOBAL_KEY, scope);
 }
 
-async function getRecoveryKeyReminderDismissedKey(): Promise<string> {
-    return (await getServerScopedKeys(RECOVERY_KEY_REMINDER_DISMISSED_KEY)).primary;
-}
-
-function getRecoveryKeyReminderDismissedKeySync(): string | null {
-    const normalizedUrl = normalizeUrl(getActiveServerUrl());
-    if (!normalizedUrl) return null;
-
-    const activeServerId = normalizeServerId(getActiveServerId());
-    const resolvedServerId = resolveServerIdForUrl(normalizedUrl, activeServerId);
-    const activeServerProfile = activeServerId ? findServerProfileForIdentifier(activeServerId) : null;
-    const activeServerUrl = activeServerProfile
-        ? normalizeUrl(activeServerProfile.serverUrl)
-        : '';
-    const serverId = resolvedServerId ?? (activeServerUrl && activeServerUrl === normalizedUrl ? activeServerId : null);
-    if (!serverId) return null;
-
-    return makeScopedKey(RECOVERY_KEY_REMINDER_DISMISSED_KEY, sanitizeScopeToken(serverId));
-}
-
 // Cache for synchronous access
 const credentialsCacheByKey = new Map<string, string>();
-const recoveryKeyReminderDismissedCacheByKey = new Map<string, string>();
 
 export type TokenOnlyAuthCredentials = Readonly<{ token: string; secret?: never; encryption?: never }>;
 export type LegacyAuthCredentials = Readonly<{ token: string; secret: string; encryption?: never }>;
@@ -553,12 +531,6 @@ function parseCredentialsRaw(raw: string | null): AuthCredentials | null {
     }
 }
 
-function parseRecoveryKeyReminderDismissedRaw(raw: string | null): boolean {
-    if (!raw) return false;
-    const value = raw.trim().toLowerCase();
-    return value === '1' || value === 'true' || value === 'yes' || value === 'on';
-}
-
 async function readCredentialRawByKey(key: string): Promise<string | null> {
     if (Platform.OS === 'web') {
         try {
@@ -761,66 +733,6 @@ export const TokenStorage = {
     async suppressAuthAutoRedirectForMs(ms: number): Promise<void> {
         const durationMs = Number.isFinite(ms) ? Math.max(0, Math.floor(ms)) : 0;
         await TokenStorage.setAuthAutoRedirectSuppressedUntil(Date.now() + durationMs);
-    },
-
-    async getRecoveryKeyReminderDismissed(): Promise<boolean> {
-        const key = await getRecoveryKeyReminderDismissedKey();
-
-        if (Platform.OS === 'web') {
-            try {
-                const raw = localStorage.getItem(key);
-                return parseRecoveryKeyReminderDismissedRaw(raw);
-            } catch {
-                return false;
-            }
-        }
-
-        try {
-            const stored = await readNativeSecureStoreString(key);
-            recoveryKeyReminderDismissedCacheByKey.set(key, stored ?? '0');
-            return parseRecoveryKeyReminderDismissedRaw(stored);
-        } catch {
-            return false;
-        }
-    },
-
-    getCachedRecoveryKeyReminderDismissed(): boolean | null {
-        const key = getRecoveryKeyReminderDismissedKeySync();
-        if (!key) return null;
-
-        if (Platform.OS === 'web') {
-            try {
-                return parseRecoveryKeyReminderDismissedRaw(localStorage.getItem(key));
-            } catch {
-                return null;
-            }
-        }
-
-        if (!recoveryKeyReminderDismissedCacheByKey.has(key)) return null;
-        return parseRecoveryKeyReminderDismissedRaw(recoveryKeyReminderDismissedCacheByKey.get(key) ?? null);
-    },
-
-    async setRecoveryKeyReminderDismissed(value: boolean): Promise<boolean> {
-        const key = await getRecoveryKeyReminderDismissedKey();
-        const raw = value ? '1' : '0';
-
-        if (Platform.OS === 'web') {
-            try {
-                localStorage.setItem(key, raw);
-                recoveryKeyReminderDismissedCacheByKey.set(key, raw);
-                return true;
-            } catch {
-                return false;
-            }
-        }
-
-        try {
-            await writeNativeSecureStoreString(key, raw);
-            recoveryKeyReminderDismissedCacheByKey.set(key, raw);
-            return true;
-        } catch {
-            return false;
-        }
     },
 
     async getCredentials(): Promise<AuthCredentials | null> {

@@ -18,7 +18,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useVisibleSessionListViewData } from '@/hooks/session/useVisibleSessionListViewData';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
-import { RecoveryKeyReminderBanner } from '@/components/account/RecoveryKeyReminderBanner';
 import { layout } from '@/components/ui/layout/layout';
 import {
     createSessionFolder,
@@ -492,7 +491,6 @@ const SessionsListHeader = React.memo(function SessionsListHeader(props: Readonl
 }>) {
     return (
         <View>
-            <RecoveryKeyReminderBanner />
             {props.children}
         </View>
     );

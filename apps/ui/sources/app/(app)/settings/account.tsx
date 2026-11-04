@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { View, Pressable, Platform, useWindowDimensions } from 'react-native';
+import { View, Platform, useWindowDimensions } from 'react-native';
 import { useAuth } from '@/auth/context/AuthContext';
-import { Typography } from '@/constants/Typography';
-import { formatSecretKeyForBackup } from '@/auth/recovery/secretKeyBackup';
-import { CopiedPill } from '@/components/ui/copy/CopiedPill';
-import { useTemporaryCopyFeedback } from '@/components/ui/copy/useTemporaryCopyFeedback';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
@@ -43,7 +39,6 @@ import { buildAccountEncryptionMigrateToE2eeRequest } from '@/sync/ops/account/b
 import { getConnectedServiceCredentialPlain } from '@/sync/api/account/apiConnectedServicesV3';
 import { isWebMobileLikeQrScannerHost } from '@/utils/platform/webMobileHeuristics';
 import { AccountEncryptionMigrateInvalidParamsReasonSchema } from '@piggercode/protocol';
-import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { Icon } from '@/components/ui/icons/Icon';
 import { getActiveServerAccountScope } from '@/sync/domains/scope/activeServerAccountScope';
 import {
@@ -59,8 +54,6 @@ export default React.memo(() => {
     const auth = useAuth();
     const router = useRouter();
     const { width, height } = useWindowDimensions();
-    const [showSecret, setShowSecret] = useState(false);
-    const copyFeedback = useTemporaryCopyFeedback(2000);
     const [clientEncryptionRequirement, setClientEncryptionRequirement] = useSettingMutable('clientEncryptionRequirementV1');
     const [clientEncryptionRequirementLocal, setClientEncryptionRequirementLocal] = useSettingMutable('clientEncryptionRequirementLocalV1');
     const { connectAccount, isLoading: isConnecting } = useConnectAccount();
@@ -85,7 +78,6 @@ export default React.memo(() => {
         auth.credentials && isLegacyAuthCredentials(auth.credentials)
             ? auth.credentials.secret
             : '';
-    const formattedSecret = legacySecret ? formatSecretKeyForBackup(legacySecret) : '';
 
     // Profile display values
     const displayName = getDisplayName(profile);
@@ -149,20 +141,6 @@ export default React.memo(() => {
             throw e;
         }
     });
-
-    const handleShowSecret = () => {
-        setShowSecret(!showSecret);
-    };
-
-    const handleCopySecret = async () => {
-        if (!formattedSecret) return;
-        const copied = await setClipboardStringSafe(formattedSecret);
-        if (copied) {
-            copyFeedback.markCopied('secretKey');
-            return;
-        }
-        Modal.alert(t('common.error'), t('settingsAccount.secretKeyCopyFailed'));
-    };
 
     const handleLogout = async () => {
         const confirmed = await Modal.confirm(
@@ -303,7 +281,7 @@ export default React.memo(() => {
                 })()}
 
                 {/* Username and password sign-in (needs the account key held on this device) */}
-                {formattedSecret ? (
+                {legacySecret ? (
                     <ItemGroup>
                         <Item
                             testID="settings-account-password-item"
@@ -314,84 +292,6 @@ export default React.memo(() => {
                         />
                     </ItemGroup>
                 ) : null}
-
-                {/* Backup Section */}
-                {formattedSecret ? (
-                    <ItemGroup title={t('settingsAccount.backup')} footer={t('settingsAccount.backupDescription')}>
-                        <Item
-                            testID="settings-account-secret-key-item"
-                            title={t('settingsAccount.secretKey')}
-                            subtitle={showSecret ? t('settingsAccount.tapToHide') : t('settingsAccount.tapToReveal')}
-                            icon={
-                                <Icon
-                                    name={showSecret ? 'eye-slash' : 'eye'}
-                                    size={29}
-                                    color={theme.colors.accent.orange}
-                                />
-                            }
-                            onPress={handleShowSecret}
-                            rightElement={
-                                <Pressable testID="settings-account-secret-key-copy" onPress={handleCopySecret} hitSlop={12}>
-                                    {copyFeedback.isCopied('secretKey') ? (
-                                        <CopiedPill
-                                            visible
-                                            testID="settings-account-secret-key-copy-copied"
-                                        />
-                                    ) : (
-                                        <Icon
-                                            name="copy"
-                                            size={16}
-                                            color={theme.colors.text.secondary}
-                                        />
-                                    )}
-                                </Pressable>
-                            }
-                            showChevron={false}
-                        />
-                    </ItemGroup>
-                ) : null}
-
-                {/* Secret Key Display */}
-                {formattedSecret && showSecret && (
-                    <ItemGroup>
-                        <Pressable testID="settings-account-secret-key-revealed" onPress={handleCopySecret}>
-                            <View style={{
-                                backgroundColor: theme.colors.surface.base,
-                                paddingHorizontal: 16,
-                                paddingVertical: 14,
-                                width: '100%',
-                                maxWidth: layout.maxWidth,
-                                alignSelf: 'center'
-                            }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                                    <Text style={{
-                                        fontSize: 11,
-                                        color: theme.colors.text.secondary,
-                                        letterSpacing: 0.5,
-                                        textTransform: 'uppercase',
-                                        ...Typography.default('semiBold')
-                                    }}>
-                                        {t('settingsAccount.secretKeyLabel')}
-                                    </Text>
-                                    <Icon
-                                        name={copyFeedback.isCopied('secretKey') ? "check-circle" : "copy"}
-                                        size={16}
-                                        color={copyFeedback.isCopied('secretKey') ? theme.colors.state.success.foreground : theme.colors.text.secondary}
-                                    />
-                                </View>
-                                <Text style={{
-                                    fontSize: 13,
-                                    letterSpacing: 0.5,
-                                    lineHeight: 20,
-                                    color: theme.colors.text.primary,
-                                    ...Typography.mono()
-                                }}>
-                                    <Text testID="settings-account-secret-key-value">{formattedSecret}</Text>
-                                </Text>
-                            </View>
-                        </Pressable>
-                    </ItemGroup>
-                )}
 
                 {/* Analytics Section */}
                 {encryptionAccountOptOutEnabled && (

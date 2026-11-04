@@ -45,7 +45,7 @@ describe('authGetToken key-challenge gate', () => {
             .mockResolvedValueOnce(
                 jsonResponse({
                     features: {
-                        auth: { recovery: { providerReset: { enabled: false } }, ui: { recoveryKeyReminder: { enabled: true } } },
+                        auth: { recovery: { providerReset: { enabled: false } } },
                         sharing: { contentKeys: { enabled: false } },
                     },
                     capabilities: {},

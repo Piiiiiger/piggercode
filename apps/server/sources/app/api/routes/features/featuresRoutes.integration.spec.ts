@@ -339,18 +339,13 @@ describe("featuresRoutes", () => {
             expect(payload.capabilities.auth.recovery.providerReset.providers).toEqual([]);
         });
 
-        it("defaults recovery key reminder UI flag to enabled", async () => {
-            const payload = await getFeaturesPayload();
-            expect(payload.features.auth.ui.recoveryKeyReminder.enabled).toBe(true);
-        });
+        it("advertises no reminder to back up the secret key, whatever the environment says", async () => {
+            expect((await getFeaturesPayload()).features.auth).not.toHaveProperty("ui");
 
-        it("allows disabling recovery key reminder UI via PIGGERCODE_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED=0", async () => {
             resetEnv({
-                PIGGERCODE_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED: "0",
+                PIGGERCODE_FEATURE_AUTH_UI__RECOVERY_KEY_REMINDER_ENABLED: "1",
             });
-
-            const payload = await getFeaturesPayload();
-            expect(payload.features.auth.ui.recoveryKeyReminder.enabled).toBe(false);
+            expect((await getFeaturesPayload()).features.auth).not.toHaveProperty("ui");
         });
     });
 

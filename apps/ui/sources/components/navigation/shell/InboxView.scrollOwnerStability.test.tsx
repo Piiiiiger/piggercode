@@ -119,9 +119,6 @@ vi.mock('@/components/ui/lists/ItemGroup', () => ({
 }));
 vi.mock('@/components/ui/lists/Item', () => ({ Item: 'Item' }));
 vi.mock('@/components/ui/cards/UserCard', () => ({ UserCard: 'UserCard' }));
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner',
-}));
 vi.mock('@/components/navigation/Header', () => ({ Header: 'Header' }));
 vi.mock('@/components/inbox/cards/ApprovalInboxCard', () => ({ ApprovalInboxCard: 'ApprovalInboxCard' }));
 vi.mock('@/hooks/server/useFriendsIdentityReadiness', () => ({

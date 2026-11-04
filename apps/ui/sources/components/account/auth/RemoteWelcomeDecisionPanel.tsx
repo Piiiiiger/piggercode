@@ -428,9 +428,9 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
                             />
                         );
                         // A relay that offers username + password sign-in gets the form in place of the
-                        // secret-key login row; the form keeps a link to the secret-key flow.
+                        // secret-key login row: the password is the way in.
                         const loginButton = options.showPasswordLogin ? (
-                            <PasswordLoginForm onUseRecoveryKey={props.onRestore} />
+                            <PasswordLoginForm />
                         ) : (
                             <DecisionActionRow
                                 testID="welcome-secondary-login"

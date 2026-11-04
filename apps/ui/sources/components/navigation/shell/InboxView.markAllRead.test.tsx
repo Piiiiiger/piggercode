@@ -250,9 +250,6 @@ vi.mock('@/components/ui/lists/Item', () => ({
     ),
 }));
 vi.mock('@/components/ui/cards/UserCard', () => ({ UserCard: 'UserCard' }));
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner',
-}));
 // Rendered, not stubbed away: the mark-all action lives in the header slot and this suite
 // is about that action.
 vi.mock('@/components/navigation/Header', () => ({

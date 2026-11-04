@@ -285,12 +285,6 @@ const FEATURE_CATALOG_DEFINITION = {
     dependencies: [],
     representation: 'server',
   },
-  'auth.ui.recoveryKeyReminder': {
-    description: 'Recovery key reminder UI behavior.',
-    defaultFailMode: 'fail_closed',
-    dependencies: [],
-    representation: 'server',
-  },
   'auth.pairing.desktopQrMobileScan': {
     description: 'Pairing session support for desktop/web QR → logged-out mobile scan sign-in.',
     defaultFailMode: 'fail_closed',

@@ -262,9 +262,6 @@ export const UI_FEATURE_REGISTRY = {
     'auth.mtls': {
         settingsToggle: undefined,
     },
-    'auth.ui.recoveryKeyReminder': {
-        settingsToggle: undefined,
-    },
     'e2ee.keylessAccounts': {
         settingsToggle: undefined,
     },

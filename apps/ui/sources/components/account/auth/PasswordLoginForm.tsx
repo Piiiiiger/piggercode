@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useAuth } from '@/auth/context/AuthContext';
@@ -10,16 +10,11 @@ import { SETTINGS_TEXT_INPUT_METRICS } from '@/components/ui/forms/settingsTextI
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { t } from '@/text';
 
-export type PasswordLoginFormProps = Readonly<{
-    /** Opens the recovery-key sign-in for accounts without a password yet. */
-    onUseRecoveryKey: () => void;
-}>;
-
 /**
  * Username and password sign-in. A successful sign-in stores the credentials through the regular
  * auth owner, so the session survives reloads exactly like any other login.
  */
-export function PasswordLoginForm(props: PasswordLoginFormProps): React.ReactElement {
+export function PasswordLoginForm(): React.ReactElement {
     const auth = useAuth();
     const { theme } = useUnistyles();
     const styles = stylesheet;
@@ -95,15 +90,6 @@ export function PasswordLoginForm(props: PasswordLoginFormProps): React.ReactEle
                 loading={submitting}
                 onPress={() => void submit()}
             />
-            <Pressable
-                testID="password-login-use-recovery-key"
-                accessibilityRole="button"
-                onPress={props.onUseRecoveryKey}
-                hitSlop={8}
-                style={styles.recoveryLink}
-            >
-                <Text style={styles.recoveryLinkText}>{t('passwordLogin.useRecoveryKey')}</Text>
-            </Pressable>
         </View>
     );
 }
@@ -125,14 +111,5 @@ const stylesheet = StyleSheet.create((theme) => ({
     errorText: {
         fontSize: 13,
         color: theme.colors.state.danger.foreground,
-    },
-    recoveryLink: {
-        alignSelf: 'center',
-        paddingVertical: 4,
-    },
-    recoveryLinkText: {
-        fontSize: 13,
-        color: theme.colors.text.secondary,
-        textDecorationLine: 'underline',
     },
 }));

@@ -750,8 +750,9 @@ Both password routes are rate limited per IP. A signed-in client that holds the 
 or replaces the credential with `POST /v1/account/password`.
 
 Anyone who obtains the database can attempt offline guesses against the sealed secret at scrypt cost,
-so the password is only as strong as its length; the recovery key remains the way back when the
-password is lost.
+so the password is only as strong as its length. The app neither shows the Account secret nor asks
+for a backup of it: when the password is lost, any device that is still signed in holds the secret
+and sets a new password.
 
 ## Implementation references
 - Client crypto: `apps/cli/src/api/encryption.ts`

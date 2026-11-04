@@ -63,7 +63,7 @@ vi.mock('@/sync/api/capabilities/serverFeaturesClient', () => ({
                 sharing: { session: { enabled: true }, public: { enabled: true }, contentKeys: { enabled: true }, pendingQueueV2: { enabled: true } },
                 voice: { enabled: false, happierVoice: { enabled: false } },
                 social: { friends: { enabled: false } },
-                auth: { login: { keyChallenge: { enabled: true } }, recovery: { providerReset: { enabled: false } }, ui: { recoveryKeyReminder: { enabled: true } } },
+                auth: { login: { keyChallenge: { enabled: true } }, recovery: { providerReset: { enabled: false } } },
             },
             capabilities: {
                 oauth: { providers: { github: { enabled: true, configured: true } } },

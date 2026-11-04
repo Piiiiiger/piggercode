@@ -170,7 +170,6 @@ export function resolveAuthFeature(env: NodeJS.ProcessEnv): FeaturesPayloadDelta
     ];
 
     const autoRedirectEnabled = featureEnv.uiAutoRedirectEnabled;
-    const recoveryKeyReminderEnabled = featureEnv.uiRecoveryKeyReminderEnabled;
     const explicitAutoRedirectProviderId = featureEnv.uiAutoRedirectProviderId;
     const enabledExternalSignupProviders = signupMethods
         .filter((m) => m.enabled && m.id !== "anonymous")
@@ -238,11 +237,6 @@ export function resolveAuthFeature(env: NodeJS.ProcessEnv): FeaturesPayloadDelta
                 pairing: {
                     desktopQrMobileScan: {
                         enabled: featureEnv.pairingDesktopQrMobileScanEnabled,
-                    },
-                },
-                ui: {
-                    recoveryKeyReminder: {
-                        enabled: recoveryKeyReminderEnabled,
                     },
                 },
             },

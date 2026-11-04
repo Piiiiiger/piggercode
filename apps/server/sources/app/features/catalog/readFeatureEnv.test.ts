@@ -94,11 +94,9 @@ describe('readAuthFeatureEnv', () => {
   it('falls back to legacy auth recovery env vars', () => {
     const env: NodeJS.ProcessEnv = {
       AUTH_RECOVERY_PROVIDER_RESET_ENABLED: 'false',
-      AUTH_UI_RECOVERY_KEY_REMINDER_ENABLED: 'false',
     };
     const res = readAuthFeatureEnv(env);
     expect(res.recoveryProviderResetEnabled).toBe(false);
-    expect(res.uiRecoveryKeyReminderEnabled).toBe(false);
   });
 });
 

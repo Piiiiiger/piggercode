@@ -41,7 +41,7 @@ describe('PasswordLoginForm', () => {
         await setPasswordOnRelay(secret);
         const { PasswordLoginForm } = await import('./PasswordLoginForm');
 
-        const screen = await renderScreen(<PasswordLoginForm onUseRecoveryKey={() => {}} />);
+        const screen = await renderScreen(<PasswordLoginForm />);
         screen.changeTextByTestId('password-login-username', 'Pigger');
         screen.changeTextByTestId('password-login-password', 'correct horse battery');
         await flushHookEffects();
@@ -59,7 +59,7 @@ describe('PasswordLoginForm', () => {
         await setPasswordOnRelay(encodeBase64(new Uint8Array(32).fill(4), 'base64url'));
         const { PasswordLoginForm } = await import('./PasswordLoginForm');
 
-        const screen = await renderScreen(<PasswordLoginForm onUseRecoveryKey={() => {}} />);
+        const screen = await renderScreen(<PasswordLoginForm />);
         screen.changeTextByTestId('password-login-username', 'pigger');
         screen.changeTextByTestId('password-login-password', 'wrong horse battery');
         await flushHookEffects();
@@ -69,4 +69,14 @@ describe('PasswordLoginForm', () => {
         expect(authLoginMock).not.toHaveBeenCalled();
         expect(screen.findByTestId('password-login-username')?.props.value).toBe('pigger');
     }, 30_000);
+
+    it('offers the password only: no way in with a secret key', async () => {
+        installFakePasswordRelay(runtimeFetchMock);
+        const { PasswordLoginForm } = await import('./PasswordLoginForm');
+
+        const screen = await renderScreen(<PasswordLoginForm />);
+
+        expect(screen.findByTestId('password-login-submit')).toBeTruthy();
+        expect(screen.findByTestId('password-login-use-recovery-key')).toBeNull();
+    });
 });

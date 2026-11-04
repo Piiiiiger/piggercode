@@ -30,7 +30,6 @@ describe('useFriendsIdentityReadiness', () => {
                         social: { friends: { enabled: true } },
                         auth: {
                             recovery: { providerReset: { enabled: false } },
-                            ui: { recoveryKeyReminder: { enabled: true } },
                         },
                     },
                     capabilities: {
@@ -85,7 +84,6 @@ describe('useFriendsIdentityReadiness', () => {
                         social: { friends: { enabled: true } },
                         auth: {
                             recovery: { providerReset: { enabled: false } },
-                            ui: { recoveryKeyReminder: { enabled: true } },
                         },
                     },
                     capabilities: {
@@ -145,7 +143,6 @@ describe('useFriendsIdentityReadiness', () => {
                         social: { friends: { enabled: true } },
                         auth: {
                             recovery: { providerReset: { enabled: false } },
-                            ui: { recoveryKeyReminder: { enabled: true } },
                         },
                     },
                     capabilities: {

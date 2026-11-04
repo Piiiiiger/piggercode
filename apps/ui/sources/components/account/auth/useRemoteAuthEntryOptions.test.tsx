@@ -250,7 +250,7 @@ describe('RemoteWelcomeDecisionPanel', () => {
             .toBe(lightTheme.colors.button.primary.background);
     });
 
-    it('offers the password form in place of the secret-key row and keeps a link to the secret-key flow', async () => {
+    it('offers the password form in place of the secret-key row, with no link to a secret key', async () => {
         const onRestore = vi.fn();
         const options = deriveRemoteAuthEntryOptions(createInput({
             signupOptions: {
@@ -284,9 +284,9 @@ describe('RemoteWelcomeDecisionPanel', () => {
         expect(screen.findAllByTestId('welcome-secondary-login')).toHaveLength(0);
         expect(screen.findAllByTestId('welcome-signup-disabled')).toHaveLength(0);
 
-        await screen.pressByTestIdAsync('password-login-use-recovery-key');
-
-        expect(onRestore).toHaveBeenCalledTimes(1);
+        // The password is the way in: no secret-key link next to the form.
+        expect(screen.findByTestId('password-login-use-recovery-key')).toBeNull();
+        expect(onRestore).not.toHaveBeenCalled();
     });
 
     it('routes the restore action through the supplied login callback', async () => {

@@ -156,9 +156,6 @@ const BASE_ROOT_LAYOUT_FEATURES: RootLayoutFeatures = {
             pairing: {
                 desktopQrMobileScan: { enabled: true },
             },
-            ui: {
-                recoveryKeyReminder: { enabled: true },
-            },
         },
     },
     capabilities: {
@@ -417,10 +414,6 @@ export function createRootLayoutFeaturesResponse(overrides?: RootLayoutFeaturesO
                         ...BASE_ROOT_LAYOUT_FEATURES.features.auth.login.keyChallenge,
                         ...(nextAuth.login?.keyChallenge ?? {}),
                     },
-                },
-                ui: {
-                    ...BASE_ROOT_LAYOUT_FEATURES.features.auth.ui,
-                    ...(nextAuth.ui ?? {}),
                 },
             },
         },

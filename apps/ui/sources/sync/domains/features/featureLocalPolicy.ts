@@ -21,7 +21,6 @@ const LOCAL_POLICY_BY_FEATURE: Readonly<Partial<Record<FeatureId, FeatureLocalPo
     'attachments.uploads': (settings) => resolveUiFeatureToggleEnabled(settings, 'attachments.uploads'),
     'social.friends': (settings) => resolveUiFeatureToggleEnabled(settings, 'social.friends'),
     'auth.recovery.providerReset': () => true,
-    'auth.ui.recoveryKeyReminder': () => true,
     'app.analytics': () => true,
     'app.ui.storeReviewPrompts': () => true,
     'app.ui.sessionGettingStartedGuidance': () => true,

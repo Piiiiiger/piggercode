@@ -385,9 +385,6 @@ vi.mock('@expo/vector-icons', () => ({
     Octicons: 'Octicons',
 }));
 
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner',
-}));
 
 
 vi.mock('@/components/ui/layout/layout', () => ({

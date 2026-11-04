@@ -103,7 +103,6 @@ export type AuthFeatureEnv = Readonly<{
   pairingDesktopQrMobileScanEnabled: boolean;
   uiAutoRedirectEnabled: boolean;
   uiAutoRedirectProviderId: string;
-  uiRecoveryKeyReminderEnabled: boolean;
 }>;
 
 export type AuthMtlsIdentitySource = "san_email" | "san_upn" | "subject_cn" | "fingerprint";
@@ -388,7 +387,6 @@ export function readAuthFeatureEnv(env: NodeJS.ProcessEnv): AuthFeatureEnv {
   const legacyRecoveryProviderResetEnabled = env.AUTH_RECOVERY_PROVIDER_RESET_ENABLED;
   const legacyUiAutoRedirectEnabled = env.AUTH_UI_AUTO_REDIRECT;
   const legacyUiAutoRedirectProviderId = env.AUTH_UI_AUTO_REDIRECT_PROVIDER_ID;
-  const legacyUiRecoveryKeyReminderEnabled = env.AUTH_UI_RECOVERY_KEY_REMINDER_ENABLED;
 
   return {
     recoveryProviderResetEnabled: parseBooleanEnv(
@@ -407,10 +405,6 @@ export function readAuthFeatureEnv(env: NodeJS.ProcessEnv): AuthFeatureEnv {
     )
       .trim()
       .toLowerCase(),
-    uiRecoveryKeyReminderEnabled: parseBooleanEnv(
-      env[FEATURE_ENV_KEYS.authUiRecoveryKeyReminderEnabled] ?? legacyUiRecoveryKeyReminderEnabled,
-      true,
-    ),
   };
 }
 

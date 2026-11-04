@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { RecoveryKeyReminderBanner } from '@/components/account/RecoveryKeyReminderBanner';
 import { ApprovalInboxCard } from '@/components/inbox/cards/ApprovalInboxCard';
 import { InboxSessionAttentionGroupCard } from '@/components/inbox/sessionAttention/InboxSessionAttentionGroupCard';
 import { InboxSessionReviewRow } from '@/components/inbox/InboxSessionReviewRow';
@@ -65,8 +64,6 @@ export const InboxContent = React.memo(function InboxContent(props: Readonly<{
 
     return (
         <View style={[styles.content, presentation === 'popover' ? styles.compactContent : null]}>
-            <RecoveryKeyReminderBanner />
-
             {failedSessions.length > 0 || failedOperations.length > 0 ? (
                 <ListSection namespace="inbox" id="errors" title={t('inbox.errors')} surface={sectionSurface}>
                     {failedSessions.map((entry) => {

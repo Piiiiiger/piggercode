@@ -557,7 +557,7 @@ function plural({
 export const zhHans: TranslationStructure = {
     passwordLogin: {
         settingsTitle: "用户名和密码",
-        settingsItemSubtitle: "无需密钥即可在其他浏览器登录",
+        settingsItemSubtitle: "在你的其他设备和浏览器上登录",
         settingsIntro: "设置后，可以在任意浏览器用用户名和密码登录。密码只在你的设备上使用：它在本地解锁你的账户密钥，不会发送到 Relay。",
         usernameLabel: "用户名",
         passwordLabel: "密码",
@@ -569,13 +569,12 @@ export const zhHans: TranslationStructure = {
         usernameTaken: "该用户名已被占用。",
         secretUnavailable: "此设备上没有你的账户密钥，无法设置密码。请先在此设备上用密钥登录。",
         currentUsername: ({ username }: { username: string }) => `你的用户名：${username}`,
-        noPasswordYet: "尚未设置密码。设置后即可不用密钥登录。",
+        noPasswordYet: "尚未设置密码。设置后就能在你的其他设备和浏览器上登录。",
         save: "保存",
         saved: ({ username }: { username: string }) => `已保存。现在可以用 ${username} 和这个密码登录。`,
         signIn: "登录",
         invalidCredentials: "用户名或密码不正确，请检查后重试。",
         unavailable: "无法连接到 Relay，请检查网络后重试。",
-        useRecoveryKey: "改用密钥登录",
     },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
@@ -9166,12 +9165,8 @@ settingsSession: {
     backup: "备份",
     backupDescription:
       "您的密钥是恢复账户的唯一方法。请将其保存在安全的地方，比如密码管理器中。",
-    secretKey: "密钥",
     tapToReveal: "点击显示",
     tapToHide: "点击隐藏",
-    secretKeyLabel: "密钥（点击复制）",
-    secretKeyCopied: "密钥已复制到剪贴板。请将其保存在安全的地方！",
-    secretKeyCopyFailed: "复制密钥失败",
     dangerZone: "危险区域",
     logout: "登出",
     logoutSubtitle: "登出并清除本地数据",

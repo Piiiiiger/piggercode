@@ -64,7 +64,7 @@ describe('FeaturesResponseSchema', () => {
     // Default to enabled unless a server explicitly disables it.
     expect(parsed.features.auth.login.keyChallenge.enabled).toBe(true);
     expect((parsed as any).features.auth.pairing.desktopQrMobileScan.enabled).toBe(false);
-    expect(parsed.features.auth.ui.recoveryKeyReminder.enabled).toBe(false);
+    expect(parsed.features.auth).not.toHaveProperty('ui');
     expect((parsed as any).features.e2ee.keylessAccounts.enabled).toBe(false);
 
     expect(parsed.capabilities.bugReports).toEqual(DEFAULT_BUG_REPORTS_CAPABILITIES);
@@ -159,6 +159,16 @@ describe('FeaturesResponseSchema', () => {
     });
 
     expect(readMachineTransferServerRoutedMaxBytes(parsed)).toBe(2048);
+  });
+
+  it('accepts a relay that still advertises the secret-key backup reminder, and drops it', () => {
+    const parsed = FeaturesResponseSchema.parse({
+      features: { auth: { ui: { recoveryKeyReminder: { enabled: true } } } },
+      capabilities: {},
+    });
+
+    expect(parsed.features.auth).not.toHaveProperty('ui');
+    expect(parsed.features.auth.login.keyChallenge.enabled).toBe(true);
   });
 
   it('accepts legacy payloads that omit auth.login.methods', () => {

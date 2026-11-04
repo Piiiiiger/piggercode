@@ -14,7 +14,6 @@ vi.mock('react-native-unistyles', async () => {
     return createUnistylesMock();
 });
 
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({ RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner' }));
 vi.mock('@/components/inbox/cards/ApprovalInboxCard', () => ({ ApprovalInboxCard: 'ApprovalInboxCard' }));
 vi.mock('@/components/inbox/sessionAttention/InboxSessionAttentionGroupCard', () => ({ InboxSessionAttentionGroupCard: 'InboxSessionAttentionGroupCard' }));
 vi.mock('@/components/inbox/InboxSessionReviewRow', () => ({ InboxSessionReviewRow: 'InboxSessionReviewRow' }));
@@ -136,6 +135,14 @@ describe('InboxContent', () => {
         expect(sections.some((section) => section.props.id === 'approvals')).toBe(false);
         expect(sections.find((section) => section.props.id === 'needs-attention')?.findAllByType('ApprovalInboxCard' as never)).toHaveLength(1);
         expect(screen.tree.root.findByType('Item' as never).props.density).toBe('compact');
+    });
+
+    it('shows no reminder to back up a secret key', async () => {
+        const { InboxContent } = await import('./InboxContent');
+        const screen = await renderScreen(<InboxContent model={createModel()} />);
+
+        expect(screen.tree.root.findAllByType('RecoveryKeyReminderBanner' as never)).toHaveLength(0);
+        expect(screen.findByTestId('recovery-key-reminder')).toBeFalsy();
     });
 
     it('keeps the popover sections flat', async () => {

@@ -18,7 +18,6 @@ function createValidFeaturesResponse() {
             social: { friends: { enabled: true } },
             auth: {
                 recovery: { providerReset: { enabled: false } },
-                ui: { recoveryKeyReminder: { enabled: true } },
             },
         },
         capabilities: {

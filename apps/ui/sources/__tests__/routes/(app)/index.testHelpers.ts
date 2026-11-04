@@ -125,9 +125,6 @@ export function createWelcomeFeaturesResponse(
                 recovery: {
                     providerReset: { enabled: providerResetEnabled },
                 },
-                ui: {
-                    recoveryKeyReminder: { enabled: true },
-                },
             },
         },
         capabilities: {

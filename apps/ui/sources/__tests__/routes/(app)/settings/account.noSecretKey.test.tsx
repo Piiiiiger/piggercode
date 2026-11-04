@@ -3,7 +3,6 @@ import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { storage } from '@/sync/domains/state/storageStore';
 import { profileDefaults } from '@/sync/domains/profiles/profile';
-import { formatSecretKeyForBackup } from '@/auth/recovery/secretKeyBackup';
 import {
     renderScreen,
     standardCleanup,
@@ -36,11 +35,6 @@ vi.mock('@/auth/context/AuthContext', () => ({
     }),
 }));
 
-const clipboardMocks = vi.hoisted(() => ({
-    setStringAsync: vi.fn(async () => true),
-}));
-vi.mock('expo-clipboard', () => clipboardMocks);
-
 const modalMocks = vi.hoisted(() => ({
     show: vi.fn(),
     alert: vi.fn(),
@@ -57,16 +51,15 @@ installAccountSettingsRouteModuleMocks({
     },
 });
 
-describe('Settings → Account (secret key copy)', () => {
+describe('Settings → Account', () => {
     afterEach(() => {
         vi.restoreAllMocks();
         vi.unstubAllGlobals();
         standardCleanup();
     });
 
-    it('allows copying the secret key without revealing it', async () => {
+    it('shows no secret key, only the username and password sign-in', async () => {
         storage.getState().applyProfile({ ...profileDefaults, linkedProviders: [], username: null });
-
         const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
             const url = getServerFetchUrl(input).pathname;
             if (isFeaturesRequest(url)) {
@@ -79,22 +72,12 @@ describe('Settings → Account (secret key copy)', () => {
         });
         vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
-        clipboardMocks.setStringAsync.mockClear();
-        modalMocks.alert.mockClear();
-
         const { default: AccountScreen } = await import('@/app/(app)/settings/account');
         const screen = await renderScreen(<AccountScreen />);
-        const secretKeyItem = screen.findByTestId('settings-account-secret-key-item');
-        const copyButton = screen.findByTestId('settings-account-secret-key-copy');
 
-        expect(secretKeyItem).toBeTruthy();
-        expect(copyButton).toBeTruthy();
-
-        await screen.pressByTestIdAsync('settings-account-secret-key-copy');
-
-        const expected = formatSecretKeyForBackup('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-        expect(clipboardMocks.setStringAsync).toHaveBeenCalledWith(expected);
-        expect(modalMocks.alert).not.toHaveBeenCalledWith('common.success', 'settingsAccount.secretKeyCopied');
-        expect(screen.findByTestId('settings-account-secret-key-copy-copied')).toBeTruthy();
+        expect(screen.findByTestId('settings-account-password-item')).toBeTruthy();
+        expect(screen.findByTestId('settings-account-secret-key-item')).toBeFalsy();
+        expect(screen.findByTestId('settings-account-secret-key-copy')).toBeFalsy();
+        expect(screen.findByTestId('settings-account-secret-key-value')).toBeFalsy();
     });
 });

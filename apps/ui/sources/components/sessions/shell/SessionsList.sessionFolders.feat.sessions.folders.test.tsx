@@ -217,9 +217,6 @@ vi.mock('@/sync/ops/sessionOrganization', () => ({
     upsertSessionFolder: upsertSessionFolderSpy,
 }));
 
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: 'RecoveryKeyReminderBanner',
-}));
 
 
 vi.mock('@/components/ui/forms/dropdown/DropdownMenu', () => ({

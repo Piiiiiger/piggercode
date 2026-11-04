@@ -194,12 +194,6 @@ export const FeatureGatesSchema = z.object({
         })
         .optional()
         .default({ desktopQrMobileScan: DEFAULT_GATE_DISABLED }),
-      ui: z
-        .object({
-          recoveryKeyReminder: FeatureGateSchema.optional().default(DEFAULT_GATE_DISABLED),
-        })
-        .optional()
-        .default({ recoveryKeyReminder: DEFAULT_GATE_DISABLED }),
     })
     .optional()
     .default({
@@ -207,7 +201,6 @@ export const FeatureGatesSchema = z.object({
       mtls: DEFAULT_GATE_DISABLED,
       login: { keyChallenge: DEFAULT_GATE_ENABLED },
       pairing: { desktopQrMobileScan: DEFAULT_GATE_DISABLED },
-      ui: { recoveryKeyReminder: DEFAULT_GATE_DISABLED },
     }),
 });
 

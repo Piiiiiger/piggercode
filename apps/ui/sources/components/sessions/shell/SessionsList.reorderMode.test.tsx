@@ -34,8 +34,6 @@ const routerPushSpy = vi.fn();
 const setPinnedSessionKeysV1 = vi.fn();
 const setSessionListGroupOrderV1 = vi.fn();
 const setSessionTagsV1 = vi.fn();
-const recoveryBannerMountSpy = vi.fn();
-const recoveryBannerUnmountSpy = vi.fn();
 
 let pinnedSessionKeysV1: string[] = [];
 let sessionListGroupOrderV1: Record<string, string[]> = {};
@@ -88,17 +86,6 @@ installSessionShellCommonModuleMocks({
     }),
 });
 
-vi.mock('@/components/account/RecoveryKeyReminderBanner', () => ({
-    RecoveryKeyReminderBanner: () => {
-        React.useEffect(() => {
-            recoveryBannerMountSpy();
-            return () => {
-                recoveryBannerUnmountSpy();
-            };
-        }, []);
-        return React.createElement('RecoveryKeyReminderBanner');
-    },
-}));
 
 
 vi.mock('@/components/ui/text/Text', () => ({
@@ -178,21 +165,5 @@ describe('SessionsList (inline reorder)', () => {
         expect(findGestureByKind(items[0].props.reorderHandleGesture, 'pan')).toBeTruthy();
         // isBeingDragged is passed from SessionListRow
         expect(items[0].props.isBeingDragged).toBe(false);
-    });
-
-    it('keeps the recovery banner mounted across SessionsList rerenders', async () => {
-        recoveryBannerMountSpy.mockClear();
-        recoveryBannerUnmountSpy.mockClear();
-
-        const { SessionsList } = await import('./SessionsList');
-        const screen = await renderScreen(<SessionsList />);
-
-        expect(recoveryBannerMountSpy).toHaveBeenCalledTimes(1);
-        expect(recoveryBannerUnmountSpy).not.toHaveBeenCalled();
-
-        await screen.update(<SessionsList />);
-
-        expect(recoveryBannerMountSpy).toHaveBeenCalledTimes(1);
-        expect(recoveryBannerUnmountSpy).not.toHaveBeenCalled();
     });
 });
