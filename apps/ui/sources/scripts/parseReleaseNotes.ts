@@ -33,9 +33,7 @@ const OUT_PATH = path.join(ROOT, 'sources/changelog/releaseNotes/manifest.genera
 const OUT_ASSET_INDEX_PATH = path.join(ROOT, 'sources/changelog/releaseNotes/asset-index.generated.json');
 const EMPTY_RELEASE_NOTES_GENERATED_AT = new Date(0).toISOString();
 
-const REQUIRED_LOCALES = [
-    'ca', 'en', 'es', 'it', 'ja', 'pl', 'pt', 'ru', 'zh-Hans', 'zh-Hant',
-] as const;
+const REQUIRED_LOCALES = ['en', 'zh-Hans'] as const;
 
 const ListCardSchema = z.object({
     kind: z.literal('list'),

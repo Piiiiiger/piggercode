@@ -2,18 +2,8 @@ import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES, getLan
 import type { TranslationStructure, Translations } from './_types';
 import { getDeviceLocales } from './deviceLocales';
 import { applyProductName, resolveConfiguredCliCommandName, resolveConfiguredProductName } from './productName';
-import { ca } from './translations/ca';
-import { de } from './translations/de';
 import { en } from './translations/en';
-import { es } from './translations/es';
-import { fr } from './translations/fr';
-import { it } from './translations/it';
-import { ja } from './translations/ja';
-import { pl } from './translations/pl';
-import { pt } from './translations/pt';
-import { ru } from './translations/ru';
 import { zhHans } from './translations/zh-Hans';
-import { zhHant } from './translations/zh-Hant';
 
 export { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES, getLanguageEnglishName, getLanguageNativeName, type SupportedLanguage };
 
@@ -23,24 +13,14 @@ export { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES, getLan
  *
  * Metro runs with `inlineRequires` enabled (`apps/ui/metro.config.js`), which moves an imported
  * binding's `require` to the place the binding is referenced — but a module-scope `{ en, ru, ... }`
- * map is itself such a reference, so importing `t()` evaluated all ten locale modules at import
+ * map is itself such a reference, so importing `t()` evaluated every locale module at import
  * time. Referencing each tree from inside a thunk defers its `require` to the first lookup for that
  * language, which in practice means the active language and the English fallback. Where inline
  * requires are not applied (vitest), the thunks are ordinary closures and behaviour is unchanged.
  */
 const TRANSLATION_TREE_BY_LANGUAGE = {
     en: () => en,
-    ru: () => ru,
-    pl: () => pl,
-    es: () => es,
-    fr: () => fr,
-    it: () => it,
-    pt: () => pt,
-    ca: () => ca,
-    de: () => de,
     'zh-Hans': () => zhHans,
-    'zh-Hant': () => zhHant,
-    ja: () => ja,
 } satisfies Record<SupportedLanguage, () => TranslationStructure>;
 
 type TranslationFunction = (params: never) => string;
@@ -90,18 +70,14 @@ function isSupportedLanguage(value: string): value is SupportedLanguage {
     return (SUPPORTED_LANGUAGE_CODES as readonly string[]).includes(value);
 }
 
-function normalizeDeviceLanguageCode(languageCode: string | null | undefined, languageScriptCode: string | null | undefined): SupportedLanguage | null {
+function normalizeDeviceLanguageCode(languageCode: string | null | undefined): SupportedLanguage | null {
     if (typeof languageCode !== 'string') return null;
 
     const normalizedLanguageCode = languageCode.trim().toLowerCase();
     if (!normalizedLanguageCode) return null;
 
-    if (normalizedLanguageCode === 'zh') {
-        const normalizedScript = typeof languageScriptCode === 'string' ? languageScriptCode.trim().toLowerCase() : '';
-        if (normalizedScript === 'hant') return 'zh-Hant';
-        if (normalizedScript === 'hans') return 'zh-Hans';
-        return 'zh-Hans';
-    }
+    // Simplified Chinese is the one Chinese the app ships, so a Traditional-script device reads it too.
+    if (normalizedLanguageCode === 'zh') return 'zh-Hans';
 
     return isSupportedLanguage(normalizedLanguageCode) ? normalizedLanguageCode : null;
 }
@@ -109,7 +85,7 @@ function normalizeDeviceLanguageCode(languageCode: string | null | undefined, la
 function resolveLanguageFromDeviceLocales(): SupportedLanguage {
     if (cachedDeviceLanguage) return cachedDeviceLanguage;
     for (const locale of getDeviceLocales()) {
-        const resolved = normalizeDeviceLanguageCode(locale.languageCode ?? null, locale.languageScriptCode ?? null);
+        const resolved = normalizeDeviceLanguageCode(locale.languageCode ?? null);
         if (resolved) {
             cachedDeviceLanguage = resolved;
             return resolved;

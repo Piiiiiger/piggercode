@@ -12,7 +12,7 @@
 /**
  * Supported language codes
  */
-export type SupportedLanguage = 'en' | 'ru' | 'pl' | 'es' | 'fr' | 'it' | 'pt' | 'ca' | 'de' | 'zh-Hans' | 'zh-Hant' | 'ja';
+export type SupportedLanguage = 'en' | 'zh-Hans';
 
 /**
  * Language metadata interface
@@ -24,7 +24,8 @@ export interface LanguageInfo {
 }
 
 /**
- * All supported languages with their native and English names
+ * All supported languages with their native and English names. PiggerCode ships English and
+ * Simplified Chinese only; any other device language reads English.
  */
 export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageInfo> = {
     en: {
@@ -32,61 +33,11 @@ export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageInfo> = {
         nativeName: 'English',
         englishName: 'English'
     },
-    ru: {
-        code: 'ru',
-        nativeName: 'Русский',
-        englishName: 'Russian'
-    },
-    pl: {
-        code: 'pl',
-        nativeName: 'Polski',
-        englishName: 'Polish'
-    },
-    es: {
-        code: 'es',
-        nativeName: 'Español',
-        englishName: 'Spanish'
-    },
-    fr: {
-        code: 'fr',
-        nativeName: 'Français',
-        englishName: 'French'
-    },
-    it: {
-        code: 'it',
-        nativeName: 'Italiano',
-        englishName: 'Italian'
-    },
-    pt: {
-        code: 'pt',
-        nativeName: 'Português',
-        englishName: 'Portuguese'
-    },
-    ca: {
-        code: 'ca',
-        nativeName: 'Català',
-        englishName: 'Catalan'
-    },
-    de: {
-        code: 'de',
-        nativeName: 'Deutsch',
-        englishName: 'German'
-    },
     'zh-Hans': {
         code: 'zh-Hans',
         nativeName: '中文(简体)',
         englishName: 'Chinese (Simplified)'
     },
-'zh-Hant': {
-        code: 'zh-Hant',
-        nativeName: '中文(繁體)',
-        englishName: 'Chinese (Traditional)'
-    },
-    ja: {
-        code: 'ja',
-        nativeName: '日本語',
-        englishName: 'Japanese'
-    }
 } as const;
 
 /**

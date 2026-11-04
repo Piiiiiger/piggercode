@@ -1,17 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { en } from './translations/en';
-import { ru } from './translations/ru';
-import { pl } from './translations/pl';
-import { es } from './translations/es';
-import { fr } from './translations/fr';
-import { it as itLocale } from './translations/it';
-import { pt } from './translations/pt';
-import { ca } from './translations/ca';
 import { zhHans } from './translations/zh-Hans';
-import { de } from './translations/de';
-import { zhHant } from './translations/zh-Hant';
-import { ja } from './translations/ja';
 import {
     flattenTranslationLeaves,
     type TranslationLeaf,
@@ -28,17 +18,7 @@ const INBOX_SECTION_KEYS = ['inbox.errors'] as const;
 
 const CANONICAL_LOCALES = [
     { code: 'en', root: en },
-    { code: 'ru', root: ru },
-    { code: 'pl', root: pl },
-    { code: 'es', root: es },
-    { code: 'fr', root: fr },
-    { code: 'it', root: itLocale },
-    { code: 'pt', root: pt },
-    { code: 'ca', root: ca },
-    { code: 'de', root: de },
     { code: 'zh-Hans', root: zhHans },
-    { code: 'zh-Hant', root: zhHant },
-    { code: 'ja', root: ja },
 ] as const;
 
 function stringLeavesByLocale(root: unknown): Map<string, Extract<TranslationLeaf, { kind: 'string' }>> {

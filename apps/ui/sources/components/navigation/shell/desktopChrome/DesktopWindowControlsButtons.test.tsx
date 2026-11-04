@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderScreen } from '@/dev/testkit/render/renderScreen';
 import { setPreferredLanguageFromSettings } from '@/text';
+import { zhHans } from '@/text/translations/zh-Hans';
 import { DesktopWindowControlsButtons } from './DesktopWindowControlsButtons';
 
 vi.mock('react-native', async () => {
@@ -19,7 +20,7 @@ afterEach(() => setPreferredLanguageFromSettings(null));
 
 describe('DesktopWindowControlsButtons', () => {
     it('names each action in the selected language and changes maximize to restore', async () => {
-        setPreferredLanguageFromSettings('fr');
+        setPreferredLanguageFromSettings('zh-Hans');
         const onMinimize = vi.fn();
         const onToggleMaximize = vi.fn();
         const onClose = vi.fn();
@@ -27,9 +28,9 @@ describe('DesktopWindowControlsButtons', () => {
         const screen = await renderScreen(<DesktopWindowControlsButtons {...props} />);
 
         for (const [testId, label] of [
-            ['desktop-window-controls-minimize', 'Réduire la fenêtre'],
-            ['desktop-window-controls-toggle-maximize', 'Agrandir la fenêtre'],
-            ['desktop-window-controls-close', 'Fermer la fenêtre'],
+            ['desktop-window-controls-minimize', zhHans.common.minimizeWindow],
+            ['desktop-window-controls-toggle-maximize', zhHans.common.maximizeWindow],
+            ['desktop-window-controls-close', zhHans.common.closeWindow],
         ]) {
             const button = screen.findByTestId(testId);
             expect(button?.props.accessibilityRole).toBe('button');
@@ -42,6 +43,6 @@ describe('DesktopWindowControlsButtons', () => {
 
         await act(async () => screen.update(<DesktopWindowControlsButtons {...props} isMaximized />));
         expect(screen.findByTestId('desktop-window-controls-toggle-maximize')?.props.accessibilityLabel)
-            .toBe('Restaurer la fenêtre');
+            .toBe(zhHans.common.restoreWindow);
     });
 });

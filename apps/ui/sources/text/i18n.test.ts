@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { en } from './translations/en';
-import { ru } from './translations/ru';
+import { zhHans } from './translations/zh-Hans';
 import { hasTranslation, setPreferredLanguageFromSettings, t, tLoose } from './i18n';
 
 describe('text/i18n', () => {
@@ -25,15 +25,22 @@ describe('text/i18n', () => {
     it('resolves a non-default preferred language and returns to the default when it is cleared', () => {
         // Locale trees are materialized lazily, so a preferred language that is not the default is
         // the case that proves the right tree is reachable rather than silently falling back to `en`.
-        expect(ru.tabs.inbox).not.toBe(en.tabs.inbox);
+        expect(zhHans.tabs.inbox).not.toBe(en.tabs.inbox);
 
-        setPreferredLanguageFromSettings('ru');
-        expect(t('tabs.inbox')).toBe(ru.tabs.inbox);
+        setPreferredLanguageFromSettings('zh-Hans');
+        expect(t('tabs.inbox')).toBe(zhHans.tabs.inbox);
         expect(t('promptLibrary.profileStacksSubtitle', { count: 2 })).toBe(
-            ru.promptLibrary.profileStacksSubtitle({ count: 2 }),
+            zhHans.promptLibrary.profileStacksSubtitle({ count: 2 }),
         );
 
         setPreferredLanguageFromSettings(null);
+        expect(t('tabs.inbox')).toBe(en.tabs.inbox);
+    });
+
+    it('reads English for a saved preference in a language the app no longer ships', () => {
+        // Only English and Simplified Chinese ship; a device that picked another language before
+        // keeps that setting, and it must not leave the app without text.
+        setPreferredLanguageFromSettings('ja');
         expect(t('tabs.inbox')).toBe(en.tabs.inbox);
     });
 

@@ -13,10 +13,10 @@ it('reports unavailable native file actions in the selected language', async () 
         .then(() => null, (error: unknown) => error);
     setPreferredLanguageFromSettings('en');
     const english = await failure();
-    setPreferredLanguageFromSettings('fr');
-    const french = await failure();
+    setPreferredLanguageFromSettings('zh-Hans');
+    const chinese = await failure();
     expect(english).toBeInstanceOf(Error);
-    expect(french).toBeInstanceOf(Error);
-    if (!(english instanceof Error) || !(french instanceof Error)) throw new Error('Expected unavailable action errors');
-    expect(french.message).not.toBe(english.message);
+    expect(chinese).toBeInstanceOf(Error);
+    if (!(english instanceof Error) || !(chinese instanceof Error)) throw new Error('Expected unavailable action errors');
+    expect(chinese.message).not.toBe(english.message);
 });

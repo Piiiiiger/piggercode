@@ -1,17 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { setPreferredLanguageFromSettings, t } from '@/text';
-import { ca } from '@/text/translations/ca';
+import { t } from '@/text';
 import { en } from '@/text/translations/en';
-import { es } from '@/text/translations/es';
-import { fr } from '@/text/translations/fr';
-import { it as itLocale } from '@/text/translations/it';
-import { ja } from '@/text/translations/ja';
-import { pl } from '@/text/translations/pl';
-import { pt } from '@/text/translations/pt';
-import { ru } from '@/text/translations/ru';
 import { zhHans } from '@/text/translations/zh-Hans';
-import { zhHant } from '@/text/translations/zh-Hant';
 
 import {
     resolveAgentContinuationSubmitPresentation,
@@ -107,23 +98,13 @@ describe('resolveAgentContinuationSubmitPresentation', () => {
 
     it('puts the Agent at one end of the sentence in every language the app ships', () => {
         // The armed control is a label and one mark, so the mark can only sit at
-        // an end. Japanese already opens with the Agent where English closes with
-        // it, and this is the assumption that shape rests on: a translation that
-        // buried the name mid-sentence would need a third slot, and it should
+        // an end, and this is the assumption that shape rests on: a translation
+        // that buried the name mid-sentence would need a third slot, and it should
         // fail here rather than silently reorder the button's words.
         const probe = '\u0000';
         const sentences: ReadonlyArray<readonly [string, string]> = [
-            ['ca', ca.session.agentContinuation.sendLabel({ agent: probe })],
             ['en', en.session.agentContinuation.sendLabel({ agent: probe })],
-            ['es', es.session.agentContinuation.sendLabel({ agent: probe })],
-            ['fr', fr.session.agentContinuation.sendLabel({ agent: probe })],
-            ['it', itLocale.session.agentContinuation.sendLabel({ agent: probe })],
-            ['ja', ja.session.agentContinuation.sendLabel({ agent: probe })],
-            ['pl', pl.session.agentContinuation.sendLabel({ agent: probe })],
-            ['pt', pt.session.agentContinuation.sendLabel({ agent: probe })],
-            ['ru', ru.session.agentContinuation.sendLabel({ agent: probe })],
             ['zh-Hans', zhHans.session.agentContinuation.sendLabel({ agent: probe })],
-            ['zh-Hant', zhHant.session.agentContinuation.sendLabel({ agent: probe })],
         ];
 
         for (const [code, sentence] of sentences) {
@@ -133,27 +114,6 @@ describe('resolveAgentContinuationSubmitPresentation', () => {
                 parts[0]!.trim().length === 0 || parts[1]!.trim().length === 0,
                 `${code}: "${sentence.replace(probe, '{agent}')}" puts the Agent mid-sentence`,
             ).toBe(true);
-        }
-    });
-
-    it('opens with the mark in a language that opens with the Agent', () => {
-        // Japanese reads "{Agent} で続ける" where English reads "Continue with
-        // {Agent}". A mark pinned to the trailing side would put the verb before
-        // its subject there, so the side is read off the sentence, never fixed.
-        setPreferredLanguageFromSettings('ja');
-        try {
-            const presentation = resolveAgentContinuationSubmitPresentation({
-                agentId: 'claude',
-                agentLabel: 'Claude',
-            });
-            const spoken = t('session.agentContinuation.sendLabel', { agent: 'Claude' });
-
-            expect(presentation.accessibilityLabel).toBe(spoken);
-            expect(presentation.markPlacement).toBe('leading');
-            expect(presentation.label).not.toContain('Claude');
-            expect(`Claude ${presentation.label}`).toBe(spoken);
-        } finally {
-            setPreferredLanguageFromSettings(null);
         }
     });
 });

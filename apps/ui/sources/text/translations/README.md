@@ -1,7 +1,8 @@
 # Locale files
 
-One file per language, named for its code: `fr.ts`, `ja.ts`, `zh-Hant.ts`. `en.ts` is the source of
-truth — it holds the English AND defines the shape every other locale must match.
+One file per language, named for its code. PiggerCode ships two: `en.ts` and `zh-Hans.ts`; a device
+in any other language reads English. `en.ts` is the source of truth — it holds the English AND
+defines the shape every other locale must match.
 
 A locale file is TypeScript, not data. Values are either strings or **functions** whose parameters
 are typechecked and whose bodies interpolate `${...}`. `i18n.integrity.test.ts` requires every

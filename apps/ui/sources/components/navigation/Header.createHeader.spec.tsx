@@ -60,7 +60,7 @@ describe('createHeader', () => {
             getState: () => ({ index: 1 }),
         };
 
-        setPreferredLanguageFromSettings('fr');
+        setPreferredLanguageFromSettings('zh-Hans');
         const backLabel = t('common.back');
         const header = createHeader({
             options: {

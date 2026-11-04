@@ -2,16 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { ca } from '../../../../../apps/ui/sources/text/translations/ca';
 import { en } from '../../../../../apps/ui/sources/text/translations/en';
-import { es } from '../../../../../apps/ui/sources/text/translations/es';
-import { it as itLocale } from '../../../../../apps/ui/sources/text/translations/it';
-import { ja } from '../../../../../apps/ui/sources/text/translations/ja';
-import { pl } from '../../../../../apps/ui/sources/text/translations/pl';
-import { pt } from '../../../../../apps/ui/sources/text/translations/pt';
-import { ru } from '../../../../../apps/ui/sources/text/translations/ru';
 import { zhHans } from '../../../../../apps/ui/sources/text/translations/zh-Hans';
-import { zhHant } from '../../../../../apps/ui/sources/text/translations/zh-Hant';
 import { repoRootDir } from '../paths';
 
 import {
@@ -24,15 +16,7 @@ import {
 
 const translationsByLocale = {
   en,
-  ru,
-  pl,
-  es,
-  it: itLocale,
-  pt,
-  ca,
   'zh-Hans': zhHans,
-  'zh-Hant': zhHant,
-  ja,
 };
 
 describe('pet validation guards', () => {

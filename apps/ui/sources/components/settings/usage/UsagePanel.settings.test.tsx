@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flattenTestStyle, flushHookEffects, renderScreen, standardCleanup } from '@/dev/testkit';
 import { getStorage } from '@/sync/domains/state/storageStore';
 import { setPreferredLanguageFromSettings } from '@/text/i18n';
+import { zhHans } from '@/text/translations/zh-Hans';
 
 type AuthState = {
     credentials: { token: string } | null;
@@ -116,19 +117,19 @@ describe('UsagePanel settings behavior', () => {
         getStorage().setState((state) => ({
             settings: {
                 ...(state.settings ?? {}),
-                preferredLanguage: 'es',
+                preferredLanguage: 'zh-Hans',
             },
         }));
-        setPreferredLanguageFromSettings('es');
+        setPreferredLanguageFromSettings('zh-Hans');
 
         const { UsagePanel } = await import('./UsagePanel');
         const screen = await renderScreen(<UsagePanel />);
 
-        expect(screen.getTextContent()).toContain('Necesitas iniciar sesión para ver el uso.');
+        expect(screen.getTextContent()).toContain(zhHans.usage.errors.notAuthenticated);
     });
 
     it('shows a translated generic load error when the request fails unexpectedly', async () => {
-        setPreferredLanguageFromSettings('es');
+        setPreferredLanguageFromSettings('zh-Hans');
         authState.credentials = { token: 'token-1' };
         usageApiState.getUsageForPeriod.mockRejectedValue(new Error('network down'));
 
@@ -136,7 +137,7 @@ describe('UsagePanel settings behavior', () => {
         const screen = await renderScreen(<UsagePanel />);
         await flushHookEffects();
 
-        expect(screen.getTextContent()).toContain('No se pudo cargar el uso.');
+        expect(screen.getTextContent()).toContain(zhHans.usage.errors.failedToLoad);
     });
 
     it('passes the device locale through to usage date formatting when no app language override is set', async () => {

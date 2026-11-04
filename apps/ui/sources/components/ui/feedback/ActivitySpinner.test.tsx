@@ -97,7 +97,7 @@ function frameSheetFor(strip: { props: Record<string, unknown> } | undefined): s
 describe('ActivitySpinner (web)', () => {
     it.each(['wave', 'classicRing'] as const)('provides a localized accessible name for %s and preserves caller labels', async (variant) => {
         const { setPreferredLanguageFromSettings, t } = await import('@/text');
-        setPreferredLanguageFromSettings('fr');
+        setPreferredLanguageFromSettings('zh-Hans');
         try {
             const { ActivitySpinner } = await import('./ActivitySpinner');
             const { screen } = await renderSpinner({ variant });
