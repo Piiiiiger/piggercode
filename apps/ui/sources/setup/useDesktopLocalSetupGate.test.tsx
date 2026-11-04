@@ -852,6 +852,33 @@ describe('useDesktopLocalSetupGate — what may mutate the local daemon (R8/INV7
         expect(observedGate?.snapshot.state).toBe('ready');
     });
 
+    it('proves a ready computer once the account arrives after sign-in, instead of checking forever', async () => {
+        // The order a sign-in takes: the pre-auth warm-up has already read a ready computer, and
+        // the shell mounts the gate before the account the app signed in to is known.
+        answerStatus(READY_INSPECTION);
+        state.authenticatedThisRun = true;
+        state.accountId = null;
+        await desktopSetupCoordinator.inspect();
+        await renderGate();
+        expect(observedGate?.snapshot).toMatchObject({ state: 'checking', presentation: 'panel' });
+        expect(spies.machineRpc).not.toHaveBeenCalled();
+
+        state.accountId = 'acct_app';
+        await renderer.act(async () => {
+            refreshIdentity?.();
+        });
+        await settle();
+
+        expect(spies.machineRpc).toHaveBeenCalledWith({
+            machineId: 'machine-1',
+            serverId: 'custom-2',
+            method: RPC_METHODS.CAPABILITIES_DESCRIBE,
+            payload: {},
+        });
+        expect(observedGate?.verification.status).toBe('verified');
+        expect(observedGate?.snapshot).toMatchObject({ state: 'ready', presentation: 'hidden' });
+    });
+
     it('fails closed on the Home panel when the machine does not answer (INV10)', async () => {
         state.authenticatedThisRun = true;
         spies.machineRpc.mockImplementation(async () => {
@@ -1069,6 +1096,46 @@ describe('useDesktopLocalSetupGate — what may mutate the local daemon (R8/INV7
         expect(observedGate?.snapshot).toMatchObject({ state: 'setup', reason: 'daemon_not_converged' });
         expect(launches.startSetup).toHaveBeenCalledTimes(1);
         expect(launches.reconcile).not.toHaveBeenCalled();
+    });
+
+    it('proves again when a later read finds the same ready computer (F1)', async () => {
+        // Machines › Refresh or a tray click re-reads a computer that is still ready. The old
+        // verdict is retired with the facts it answered for, and the new facts are proved.
+        answerStatus(READY_INSPECTION);
+        await renderGate();
+        expect(observedGate?.snapshot.state).toBe('ready');
+
+        await renderer.act(async () => {
+            await desktopSetupCoordinator.inspect({ fresh: true });
+        });
+        await settle();
+
+        expect(spies.machineRpc).toHaveBeenCalledTimes(2);
+        expect(observedGate?.verification.status).toBe('verified');
+        expect(observedGate?.snapshot.state).toBe('ready');
+    });
+
+    it('proves the new facts when a re-read lands while a proof is still waiting (F1)', async () => {
+        answerStatus(READY_INSPECTION);
+        const firstProof = { answer: null as (() => void) | null };
+        spies.machineRpc.mockImplementationOnce(() => new Promise((resolve) => {
+            firstProof.answer = () => resolve({ ok: true });
+        }));
+        await renderGate();
+        expect(observedGate?.verification.status).toBe('verifying');
+
+        await renderer.act(async () => {
+            await desktopSetupCoordinator.inspect({ fresh: true });
+        });
+        await settle();
+        await renderer.act(async () => {
+            firstProof.answer?.();
+        });
+        await settle();
+
+        expect(spies.machineRpc).toHaveBeenCalledTimes(2);
+        expect(observedGate?.verification.status).toBe('verified');
+        expect(observedGate?.snapshot.state).toBe('ready');
     });
 
     it('keeps a settled verdict while the facts it was about stand (F1)', async () => {

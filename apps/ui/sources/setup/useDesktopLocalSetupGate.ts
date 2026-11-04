@@ -279,19 +279,6 @@ export function useDesktopLocalSetupGate(options: Readonly<{ enabled: boolean }>
     const inspection = inspectionRefreshing && !provingSucceededRun ? PENDING_INSPECTION : settledInspection;
     const keptApplies = keptBackgroundServiceApplies({ inspection, target: expectation, kept: keptBackgroundService });
 
-    // The entry path: this app open's ambient facts already describe a converged runtime, so the
-    // only thing left to prove is that the relay can reach it. Nothing re-reads here — an
-    // already-ready computer reveals without a second inspection (D3/C3).
-    React.useEffect(() => {
-        if (!options.enabled || proofAttemptRef.current === attemptKey) {
-            return;
-        }
-        if (!desktopLocalRuntimeConverged(inspection, expectation)) {
-            return;
-        }
-        runProof({ fresh: false });
-    }, [attemptKey, expectation, inspection, options.enabled, runProof]);
-
     // A verdict belongs to the facts it answered for. Any other reader can replace those facts —
     // Machines › Refresh, the background-service toggle's install, a settings verify or adopt, a
     // settings Start — and a computer that has since stopped converging then derived `setup` while
@@ -327,6 +314,26 @@ export function useDesktopLocalSetupGate(options: Readonly<{ enabled: boolean }>
         proofAttemptRef.current = null;
         setVerification({ status: 'idle' });
     }, [expectationIdentity]);
+
+    // The entry path: this app open's ambient facts already describe a converged runtime, so the
+    // only thing left to prove is that the relay can reach it. Nothing re-reads here — an
+    // already-ready computer reveals without a second inspection (D3/C3).
+    //
+    // The two effects above release a proof, and nothing but this effect asks again, so it runs
+    // after each release: it is declared after them (effects run in declaration order) for a
+    // release in the same commit (the account arriving after sign-in, a re-read replacing the
+    // facts), and it follows `verification.status` for a release when a proof settles on facts
+    // a re-read has since replaced. Otherwise it would start the proof they then release, whose
+    // answer is dropped, and the panel would check forever.
+    React.useEffect(() => {
+        if (!options.enabled || proofAttemptRef.current === attemptKey) {
+            return;
+        }
+        if (!desktopLocalRuntimeConverged(inspection, expectation)) {
+            return;
+        }
+        runProof({ fresh: false });
+    }, [attemptKey, expectation, inspection, options.enabled, runProof, verification.status]);
 
     const reachability = verification.status === 'verified'
         ? 'reachable'
