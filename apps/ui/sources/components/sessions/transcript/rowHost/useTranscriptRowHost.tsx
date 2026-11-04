@@ -29,6 +29,7 @@ import { TranscriptHotTail } from '@/components/sessions/transcript/segments/Tra
 import { WebTranscriptSplitFooter } from '@/components/sessions/transcript/web/WebTranscriptSplitFooter';
 import { OlderLoadProgressOverlay } from '@/components/sessions/transcript/OlderLoadProgressOverlay';
 import { OlderLoadContinuationOverlay } from '@/components/sessions/transcript/OlderLoadContinuationOverlay';
+import { TranscriptReadFailureOverlay } from '@/components/sessions/transcript/TranscriptReadFailureOverlay';
 import { CatchUpProgressOverlay } from '@/components/sessions/transcript/CatchUpProgressOverlay';
 import { resolveTranscriptListShellEdgeSlots } from '@/components/sessions/transcript/viewport/shell/transcriptListShellEdgeSlots';
 import {
@@ -38,6 +39,7 @@ import type { TranscriptMeasurementReconciler } from '@/components/sessions/tran
 import type { TranscriptItemHeightValiditySignature } from '@/components/sessions/transcript/measurement/transcriptItemHeightCache';
 import type { TranscriptRowLayoutMutation } from '@/components/sessions/transcript/measurement/TranscriptRowLayoutMutationContext';
 import type { TranscriptRollbackAction } from '@/sync/domains/sessionRollback/rollbackUiSupport';
+import type { SessionTranscriptReadFailure } from '@/sync/store/domains/transcriptLoading';
 import type { TranscriptRenderWindowProjection } from '@/components/sessions/transcript/viewport/window/resolveTranscriptRenderWindowProjection';
 import { TranscriptWindowGapRow } from '@/components/sessions/transcript/viewport/window/TranscriptWindowGapRow';
 
@@ -522,6 +524,8 @@ export type TranscriptItemsEdgeSlotsDeps = Readonly<{
     olderPaginationIsLoadingOlder: boolean;
     olderPaginationCanContinue: boolean;
     onContinueOlderPagination: () => void;
+    /** Reads the transcript again at once; settles with that read. */
+    onRetryTranscriptRead: () => Promise<void>;
     prependRangeReservePx: number;
     renderTranscriptItemAtIndex: (item: ChatTranscriptListItem, index: number) => React.ReactNode;
     sessionId: string;
@@ -531,6 +535,11 @@ export type TranscriptItemsEdgeSlotsDeps = Readonly<{
     showFirstPaintPlaceholder: boolean;
     transcriptHotColdSegments: TranscriptRenderWindowProjection<ChatTranscriptListItem>['hotCold'];
     transcriptOlderLoadSpinnerDelayMs: number;
+    /**
+     * The machine could not read this transcript and nothing of it is shown: the reader is told
+     * so, with a retry, instead of being offered an older page that cannot load.
+     */
+    transcriptReadFailure: SessionTranscriptReadFailure | null;
 }>;
 
 export function useTranscriptItemsEdgeSlots(deps: TranscriptItemsEdgeSlotsDeps) {
@@ -548,6 +557,7 @@ export function useTranscriptItemsEdgeSlots(deps: TranscriptItemsEdgeSlotsDeps) 
         olderPaginationIsLoadingOlder,
         olderPaginationCanContinue,
         onContinueOlderPagination,
+        onRetryTranscriptRead,
         prependRangeReservePx,
         renderTranscriptItemAtIndex,
         sessionId,
@@ -557,6 +567,7 @@ export function useTranscriptItemsEdgeSlots(deps: TranscriptItemsEdgeSlotsDeps) 
         showFirstPaintPlaceholder,
         transcriptHotColdSegments,
         transcriptOlderLoadSpinnerDelayMs,
+        transcriptReadFailure,
     } = deps;
     const listHeaderNode = React.useMemo(() => (
         <ListHeader />
@@ -633,6 +644,8 @@ export function useTranscriptItemsEdgeSlots(deps: TranscriptItemsEdgeSlotsDeps) 
     }), [flashListFooterNode, listHeaderNode, mainTranscriptListShellFrame]);
     const olderLoadOverlay = showFirstPaintPlaceholder
         ? null
+        : transcriptReadFailure
+            ? <TranscriptReadFailureOverlay failure={transcriptReadFailure} onRetry={onRetryTranscriptRead} />
         : (olderPaginationIsLoadingOlder || isLoadingOlder)
             ? <OlderLoadProgressOverlay />
             : olderPaginationCanContinue

@@ -7,7 +7,7 @@ import { Dimensions, Platform, View } from 'react-native';
 import { useCallback } from 'react';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { sync, type SessionViewportAnchorSnapshot } from '@/sync/sync';
-import { useSessionCatchingUpNewer, useSessionTailContiguousBoundary } from '@/sync/store/hooks';
+import { useSessionCatchingUpNewer, useSessionTailContiguousBoundary, useSessionTranscriptReadFailure } from '@/sync/store/hooks';
 import { useSessionScreenIsFocused } from '@/components/sessions/shell/useSessionScreenIsFocused';
 import { useSessionActionFieldOptionsForRowHeight } from '@/components/sessions/actions/useSessionActionFieldOptions';
 import { fireAndForget } from '@/utils/system/fireAndForget';
@@ -1159,6 +1159,11 @@ export const ChatListInternal = React.memo((props: ChatListInternalProps) => {
         return observeNativeStreamAppendOffsetEscapeHostRef.current(params);
     }, []);
     const isCatchingUpNewer = useSessionCatchingUpNewer(props.sessionId);
+    const transcriptReadFailure = useSessionTranscriptReadFailure(props.sessionId);
+    const retryTranscriptRead = React.useCallback(
+        () => sync.retrySessionTranscriptRead(props.sessionId),
+        [props.sessionId],
+    );
     // Tail-reset discontinuity floor: bounds the tail display to content contiguous with
     // the live tail while an older-page walk is filling a catch-up hole.
     const tailContiguousBoundary = useSessionTailContiguousBoundary(props.sessionId);
@@ -2366,6 +2371,7 @@ export const ChatListInternal = React.memo((props: ChatListInternalProps) => {
         // same prepend loader; target windows retain their separate cursors.
         olderPaginationCanContinue: !targetWindowActive && olderPagination.hasMore && !isScrollable(),
         onContinueOlderPagination: olderPagination.continueOlderLoad,
+        onRetryTranscriptRead: retryTranscriptRead,
         onRequestSwitchToRemote: props.onRequestSwitchToRemote,
         prependRangeReservePx: prependHost.slots.rangeReservePx,
         renderTranscriptItemAtIndex,
@@ -2376,6 +2382,9 @@ export const ChatListInternal = React.memo((props: ChatListInternalProps) => {
         showFirstPaintPlaceholder,
         transcriptHotColdSegments,
         transcriptOlderLoadSpinnerDelayMs: sync.getSyncTuning().transcriptOlderLoadSpinnerDelayMs,
+        // Only when nothing of the transcript is shown: rows already on screen keep their own
+        // "Earlier messages" continuation, which is itself the retry for an older page.
+        transcriptReadFailure: listData.length === 0 ? transcriptReadFailure : null,
     });
     const scrollObservationHost = useTranscriptScrollObservationHost({
         activeTargetWindowTargetRef,

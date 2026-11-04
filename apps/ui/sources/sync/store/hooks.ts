@@ -1,5 +1,6 @@
 import React from 'react';
 import type { SessionMessagesTailBoundary } from '@/sync/runtime/sessionMessagesTailDiscontinuity';
+import type { SessionTranscriptReadFailure } from '@/sync/store/domains/transcriptLoading';
 import { useShallow } from 'zustand/react/shallow';
 
 import type {
@@ -769,6 +770,14 @@ export function useSessionCatchingUpNewer(sessionId: string, enabled: boolean = 
     if (!enabled) return false;
     return (state.sessionCatchUpNewerInFlight[sessionId] ?? 0) > 0;
   });
+}
+
+/**
+ * The session's last failed Direct transcript read (the machine answered that it cannot read
+ * the history), until a read succeeds. Null when nothing failed.
+ */
+export function useSessionTranscriptReadFailure(sessionId: string): SessionTranscriptReadFailure | null {
+  return getStorage()((state) => state.sessionTranscriptReadFailure[sessionId] ?? null);
 }
 
 /**

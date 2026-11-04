@@ -2,6 +2,17 @@ import type { StoreGet, StoreSet } from './_shared';
 import type { SessionMessagesTailBoundary } from '@/sync/runtime/sessionMessagesTailDiscontinuity';
 
 /**
+ * The machine answered that it cannot read a Direct session's transcript (the daemon's
+ * `{ ok: false }` page or read-after answer). `failedAt` changes with every failed read, so a
+ * reader-requested retry can tell that its own read failed too.
+ */
+export type SessionTranscriptReadFailure = Readonly<{
+    code: string;
+    message: string;
+    failedAt: number;
+}>;
+
+/**
  * Transient per-session transcript loading signals.
  *
  * Today this domain owns the single canonical "newer catch-up in flight" signal
@@ -19,6 +30,9 @@ import type { SessionMessagesTailBoundary } from '@/sync/runtime/sessionMessages
  *
  * Fail-closed: an absent/zero count reads as "not catching up", so an unknown
  * session never shows a spinner.
+ *
+ * It also holds the last failed Direct transcript read per session, which the transcript
+ * presents instead of an "Earlier messages" continuation that can never load anything.
  */
 export type TranscriptLoadingDomain = {
     /** Per-session ref-count of in-flight newer catch-up flows. */
@@ -30,6 +44,10 @@ export type TranscriptLoadingDomain = {
      * discontinuity, the full loaded set is tail-contiguous.
      */
     sessionTailContiguousBoundary: Record<string, SessionMessagesTailBoundary>;
+    /** Per-session last failed Direct transcript read, until a read succeeds. Absent = none. */
+    sessionTranscriptReadFailure: Record<string, SessionTranscriptReadFailure>;
+    /** Record (or clear with null) the outcome of the session's latest Direct transcript read. */
+    setSessionTranscriptReadFailure: (sessionId: string, failure: SessionTranscriptReadFailure | null) => void;
     /** True while at least one newer catch-up flow is running for the session. */
     isSessionCatchingUpNewer: (sessionId: string) => boolean;
     /** Mark a newer catch-up flow as started for the session (ref-counted). */
@@ -54,6 +72,22 @@ export function createTranscriptLoadingDomain<S extends TranscriptLoadingDomain>
     return {
         sessionCatchUpNewerInFlight: {},
         sessionTailContiguousBoundary: {},
+        sessionTranscriptReadFailure: {},
+        setSessionTranscriptReadFailure: (sessionId, failure) => {
+            if (!sessionId) return;
+            set((state) => {
+                if (failure === null) {
+                    if (!(sessionId in state.sessionTranscriptReadFailure)) return state;
+                    const next = { ...state.sessionTranscriptReadFailure };
+                    delete next[sessionId];
+                    return { ...state, sessionTranscriptReadFailure: next };
+                }
+                return {
+                    ...state,
+                    sessionTranscriptReadFailure: { ...state.sessionTranscriptReadFailure, [sessionId]: failure },
+                };
+            });
+        },
         isSessionCatchingUpNewer: (sessionId) => {
             if (!sessionId) return false;
             return (get().sessionCatchUpNewerInFlight[sessionId] ?? 0) > 0;

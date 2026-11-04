@@ -5106,6 +5106,12 @@ export const zhHans: TranslationStructure = {
 	      earlierMessages: "更早的消息",
 	      laterMessages: "更晚的消息",
 	    },
+	    transcriptReadFailure: {
+	      title: "无法加载这段对话",
+	      body: "这个会话所在的机器没能读出它的历史记录。请重试；如果一直这样，请更新那台机器上的 Happier。",
+	      offlineBody: "这个会话所在的机器已离线。请让它重新上线后再试。",
+	      hideDetails: "收起详情",
+	    },
 	    rollback: {
 	      latestTurnA11y: '回退最新一轮',
 	      beforeUserMessageA11y: '回退到这条消息之前',

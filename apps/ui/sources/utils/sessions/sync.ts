@@ -1,4 +1,4 @@
-import { createBackoff, delay, linearBackoffDelay } from "@/utils/timing/time";
+import { createBackoff, linearBackoffDelay } from "@/utils/timing/time";
 import type { PauseController } from "@/utils/timing/pauseController";
 
 type InvalidateSyncCycleOutcome =
@@ -39,6 +39,10 @@ export class InvalidateSync {
         maxFailureCount: number | 'infinite';
     };
     private _shouldRetry: (e: any, failuresCount: number) => boolean;
+    /** Ends the current retry backoff wait early; set only while one is waiting. */
+    private _wakeBackoff: (() => void) | null = null;
+    /** Callers of {@link retryNow} waiting for the next command attempt to settle. */
+    private _attemptWaiters: (() => void)[] = [];
 
     constructor(
         command: () => Promise<void>,
@@ -167,12 +171,42 @@ export class InvalidateSync {
         });
     }
 
+    /**
+     * A reader asked to try again now: a retry backoff that is waiting ends early, and with
+     * nothing waiting this starts a run like {@link invalidate}. It settles when the next command
+     * attempt settles, whether that attempt succeeded or failed, so the caller can show that one
+     * attempt in progress. A paused sync still waits to resume; only the backoff is cut short.
+     */
+    retryNow(): Promise<void> {
+        if (this._stopped) {
+            return Promise.resolve();
+        }
+        const attempt = new Promise<void>((resolve) => {
+            this._attemptWaiters.push(resolve);
+        });
+        const wake = this._wakeBackoff;
+        if (wake) {
+            this._wakeBackoff = null;
+            wake();
+        } else {
+            this.invalidate();
+        }
+        return attempt;
+    }
+
+    private _settleAttemptWaiters = () => {
+        const waiters = this._attemptWaiters;
+        this._attemptWaiters = [];
+        for (const settle of waiters) settle();
+    };
+
     stop() {
         if (this._stopped) {
             return;
         }
         this._stopped = true;
         this._notifyPendings();
+        this._settleAttemptWaiters();
     }
 
     private _notifyPendings = () => {
@@ -225,8 +259,10 @@ export class InvalidateSync {
             try {
                 this._hasStartedCommandThisCycle = true;
                 await this._command();
+                this._settleAttemptWaiters();
                 return;
             } catch (e) {
+                this._settleAttemptWaiters();
                 failuresCount += 1;
 
                 if (!this._shouldRetry(e, failuresCount)) {
@@ -251,7 +287,16 @@ export class InvalidateSync {
                 const retryInfo = { failuresCount, nextDelayMs, nextRetryAt: Date.now() + nextDelayMs };
                 this._onRetryFailure?.(e, retryInfo);
                 this._onRetry?.(retryInfo);
-                await delay(nextDelayMs);
+                await new Promise<void>((resolve) => {
+                    const timer = setTimeout(() => {
+                        this._wakeBackoff = null;
+                        resolve();
+                    }, nextDelayMs);
+                    this._wakeBackoff = () => {
+                        clearTimeout(timer);
+                        resolve();
+                    };
+                });
             }
         }
     };

@@ -2299,6 +2299,17 @@ class Sync {
             await this.getOrCreateMessagesSync(normalized).invalidateAndAwait();
         }
 
+        /**
+         * A reader's retry of a transcript the machine could not read. It reads again now, not
+         * after the messages sync's backoff, and settles with that one read, which records its
+         * own outcome (`sessionTranscriptReadFailure`).
+         */
+        retrySessionTranscriptRead = (sessionId: string): Promise<void> => {
+            const normalized = String(sessionId ?? '').trim();
+            if (!normalized) return Promise.resolve();
+            return this.getOrCreateMessagesSync(normalized).retryNow();
+        }
+
         refreshSessionForSubmit = async (
             sessionId: string,
             options?: Readonly<{ serverId?: string | null }>,
@@ -5966,6 +5977,19 @@ class Sync {
           return [...ids];
       }
 
+      /**
+       * The machine's answer to one Direct transcript read decides what the reader is told: an
+       * `{ ok: false }` answer is kept, with its reason, until a later read succeeds.
+       */
+      private recordDirectTranscriptReadAnswer(
+          sessionId: string,
+          answer: Readonly<{ ok: true } | { ok: false; errorCode: string; error: string }>,
+      ): void {
+          storage.getState().setSessionTranscriptReadFailure(sessionId, answer.ok
+              ? null
+              : { code: answer.errorCode, message: answer.error, failedAt: Date.now() });
+      }
+
       private async fetchDirectSessionMessages(
           sessionId: string,
           directSessionLink: ReturnType<typeof readDirectSessionLink> extends infer T ? Exclude<T, null> : never,
@@ -5992,6 +6016,7 @@ class Sync {
           }, { serverId: this.getDirectSessionServerScope(sessionId) });
           if (!shouldContinue()) return;
 
+          this.recordDirectTranscriptReadAnswer(sessionId, page);
           if (!page.ok) {
               throw new Error(page.error);
           }
@@ -6006,6 +6031,7 @@ class Sync {
                   cursor: 'tail',
               }, { serverId: this.getDirectSessionServerScope(sessionId) });
               if (!shouldContinue()) return;
+              this.recordDirectTranscriptReadAnswer(sessionId, tail);
               if (!tail.ok) throw new Error(tail.error);
               tailCursor = tail.nextCursor;
           }
@@ -6114,6 +6140,7 @@ class Sync {
                   || this.directSessionTailStateBySessionId.get(sessionId) !== acceptedWindow
                   || (this.getDirectSessionTailCursor(sessionId) ?? 'tail') !== cursor) return 0;
 
+              this.recordDirectTranscriptReadAnswer(sessionId, tail);
               if (!tail.ok) {
                   throw new Error(tail.error);
               }
@@ -6400,6 +6427,7 @@ class Sync {
                           return { loaded: 0, hasMore: knownHasMore ?? true, status: 'not_ready' };
                       }
 
+                      this.recordDirectTranscriptReadAnswer(params.sessionId, page);
                       if (!page.ok) {
                           throw new Error(page.error);
                       }

@@ -48,6 +48,7 @@ function UnderfilledTranscript(props: Readonly<{
         olderPaginationIsLoadingOlder: pagination.isLoadingOlder,
         olderPaginationCanContinue: pagination.hasMore,
         onContinueOlderPagination: pagination.continueOlderLoad,
+        onRetryTranscriptRead: async () => {},
         prependRangeReservePx: 0,
         renderTranscriptItemAtIndex: () => null,
         sessionId: 'underfilled-transcript',
@@ -60,6 +61,7 @@ function UnderfilledTranscript(props: Readonly<{
             hotItemsCanonical: [], nativeEdgeSlotItems: [], splitIndex: 0, webFooterItems: [],
         },
         transcriptOlderLoadSpinnerDelayMs: 0,
+        transcriptReadFailure: null,
     });
     return slots.olderLoadOverlay;
 }

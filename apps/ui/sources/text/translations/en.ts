@@ -4958,6 +4958,12 @@ export const en = {
             earlierMessages: 'Earlier messages',
             laterMessages: 'Later messages',
         },
+        transcriptReadFailure: {
+            title: 'Couldn’t load this conversation',
+            body: 'The machine this session is on couldn’t read its history. Try again, and if it keeps happening, update Happier on that machine.',
+            offlineBody: 'The machine this session is on is offline. Bring it back online, then try again.',
+            hideDetails: 'Hide details',
+        },
         rollback: {
             latestTurnA11y: 'Roll back the latest turn',
             beforeUserMessageA11y: 'Roll back to before this message',

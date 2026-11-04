@@ -215,3 +215,40 @@ describe('InvalidateSync retry failure reporting', () => {
         });
     });
 });
+
+describe('InvalidateSync.retryNow', () => {
+    it('ends a retry backoff early, so a reader-requested retry runs at once', async () => {
+        await withFakeTimers(async () => {
+            const command = vi.fn(async () => {
+                throw new Error('unreadable');
+            });
+            const sync = new InvalidateSync(command, {
+                backoff: { minDelayMs: 30_000, maxDelayMs: 30_000, maxFailureCount: 'infinite' },
+            });
+
+            sync.invalidate();
+            await vi.advanceTimersByTimeAsync(0);
+            expect(command).toHaveBeenCalledTimes(1);
+
+            // Waiting out the 30 s backoff, until the reader asks.
+            await vi.advanceTimersByTimeAsync(1_000);
+            expect(command).toHaveBeenCalledTimes(1);
+            let retried = false;
+            void sync.retryNow().then(() => { retried = true; });
+            await vi.advanceTimersByTimeAsync(0);
+            expect(command).toHaveBeenCalledTimes(2);
+            // It settles with the attempt it started, though that attempt failed too.
+            expect(retried).toBe(true);
+
+            sync.stop();
+        });
+    });
+
+    it('starts a run like invalidate() when nothing is waiting', async () => {
+        const command = vi.fn(async () => {});
+        const sync = new InvalidateSync(command);
+        await sync.retryNow();
+        expect(command).toHaveBeenCalledTimes(1);
+        sync.stop();
+    });
+});
