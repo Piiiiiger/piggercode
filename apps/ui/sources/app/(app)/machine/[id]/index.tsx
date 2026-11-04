@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { MachineRemoteCommandsGroup } from '@/components/machines/MachineRemoteCommandsGroup';
+import { MachineSharedFoldersGroup } from '@/components/machines/MachineSharedFoldersGroup';
 import { ItemGroupTitleWithAction } from '@/components/ui/lists/ItemGroupTitleWithAction';
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { Typography } from '@/constants/Typography';
@@ -163,6 +164,16 @@ export default function MachineDetailScreen() {
     const sessions = useSessions();
     const allMachines = useAllMachines();
     const machine = useMachine(machineId!);
+    // The account's other machines, which this one can share folders with.
+    const sharedFolderTargets = useMemo(
+        () => allMachines
+            .filter((candidate) => candidate.id !== machineId)
+            .map((candidate) => ({
+                id: candidate.id,
+                name: candidate.metadata?.displayName || candidate.metadata?.host || candidate.id.slice(0, 8),
+            })),
+        [allMachines, machineId],
+    );
     const navigateToSession = useNavigateToSession();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isServerSwitching, setIsServerSwitching] = useState(false);
@@ -1188,6 +1199,16 @@ export default function MachineDetailScreen() {
                         machineName={machineName}
                         isOnline={isOnline}
                         serverId={activeServerId}
+                    />
+                ) : null}
+
+                {machineId ? (
+                    <MachineSharedFoldersGroup
+                        machineId={machineId}
+                        isOnline={isOnline}
+                        serverId={activeServerId}
+                        homeDir={machine?.metadata?.homeDir}
+                        targets={sharedFolderTargets}
                     />
                 ) : null}
 

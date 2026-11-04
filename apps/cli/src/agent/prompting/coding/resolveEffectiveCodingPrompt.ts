@@ -16,6 +16,7 @@ import {
 import { resolveCodingProviderBehaviorBlocks } from './providerPromptBehaviorRegistry';
 import { resolveCodingToolDeliveryBlocks } from './toolDeliveryPromptRegistry';
 import { resolveSessionCodingPromptSettings } from './resolveSessionCodingPromptSettings';
+import { resolveSharedFoldersPromptBlocks } from './sharedFoldersPromptBlocks';
 
 type FetchPromptArtifactRecord = (artifactId: string) => Promise<PromptArtifactRecord | null>;
 export type { PromptArtifactRecord };
@@ -107,9 +108,10 @@ export async function resolveEffectiveCodingPromptPlan(
       },
     });
   })();
+  const sharedFoldersBlocks = await resolveSharedFoldersPromptBlocks();
   const plan = buildPromptPlanV1({
     modality: 'coding',
-    blocks: [...basePlan.blocks, ...promptStackBlocks, ...providerBehaviorBlocks, ...toolDeliveryBlocks],
+    blocks: [...basePlan.blocks, ...promptStackBlocks, ...providerBehaviorBlocks, ...toolDeliveryBlocks, ...sharedFoldersBlocks],
   });
 
   return {

@@ -1370,6 +1370,31 @@ export {
 } from './machineCommand.js';
 
 export {
+  FolderShareAcceptErrorCodeSchema,
+  FolderShareAcceptRequestSchema,
+  FolderShareAcceptResponseSchema,
+  FolderShareAddRequestSchema,
+  FolderShareErrorCodeSchema,
+  FolderShareListResponseSchema,
+  FolderShareMutationResponseSchema,
+  FolderShareRemoveRequestSchema,
+  FolderShareSchema,
+  FolderShareSshTargetSchema,
+  FolderShareStateSchema,
+  type FolderShare,
+  type FolderShareAcceptErrorCode,
+  type FolderShareAcceptRequest,
+  type FolderShareAcceptResponse,
+  type FolderShareAddRequest,
+  type FolderShareErrorCode,
+  type FolderShareListResponse,
+  type FolderShareMutationResponse,
+  type FolderShareRemoveRequest,
+  type FolderShareSshTarget,
+  type FolderShareState,
+} from './folderShare.js';
+
+export {
   PendingFirstInputV1Schema,
   SPAWN_SESSION_ERROR_CODES,
   SPAWN_SESSION_ERROR_DETAIL_KINDS,

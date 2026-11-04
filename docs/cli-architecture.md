@@ -1794,6 +1794,44 @@ through the relay like any machine RPC (account-scoped, encrypted); the target's
 - **Audit.** The target writes each run (directory, command length, exit code; not the command text)
   to its daemon log file.
 
+### Shared folders
+
+A computer of the account shares chosen folders with another machine (the server), so that agents
+running there work on the computer's files; their builds, tests and git run on the computer through the
+remote commands above. The computer must be Linux for now (its sandbox is bubblewrap); the server needs
+sshfs and an SSH address the computer can reach. Protocol: `packages/protocol/src/folderShare.ts`.
+
+- **The computer owns its shares.** `integrations/folderShare/computerShares.ts` keeps them in the
+  computer's settings (`sharedFolders`, each folder relative to its home, and per server
+  `sharedFolderServers`) and keeps one connection per shared folder, started with the daemon
+  (`registerFolderShareHandlers`, disposed with the machine client) and started again 15 s after it
+  ends. The app's machine screen lists, adds and removes shares with `daemon.folderShare.list|add|remove`
+  on that computer while it is online; `list` reports each share's state (`connecting`, `connected`,
+  `retrying` with the last error).
+- **The server accepts the computer.** Adding a folder sends `daemon.folderShare.accept` to the server
+  through the relay (`callMachineRpc`, with the daemon's account credentials) carrying the computer's key
+  (`<PiggerCode home>/shared-folders/id_ed25519`, made once with ssh-keygen). The server
+  (`acceptRequest.ts`) refuses without sshfs or without `sharedFoldersSshAddress` (set there with
+  `piggercode machine shared-folders address <host[:port]>`). Otherwise it writes one line into its
+  user's `~/.ssh/authorized_keys` (`acceptedComputers.ts`): `restrict` plus the forced command
+  `piggercode machine shared-folders serve --label <label>` through the managed `bin/piggercode` link,
+  the bare ed25519 key, and the comment `piggercode-shared-folders:<machineId>`. That line is the only
+  record of an accepted computer; a computer keeps its label, and a new computer's label comes from its
+  host name. The answer gives the SSH user, address and the server's host keys, which become the only
+  keys the computer trusts for it (`<PiggerCode home>/shared-folders/known_hosts`).
+- **One connection per folder, made by the computer.** `folderConnection.ts` runs sftp-server in a
+  bubblewrap sandbox that holds only the shared folder (`sharingTools.ts`: system files read-only, no
+  network, no other processes, a one-line passwd and group) and pipes it to `ssh <server> "mount
+  <folder>"`. The forced command (`serve.ts`) mounts it at `~/local/<label>/<folder>` with
+  `sshfs -o passive` on that same connection, for as long as the connection lasts; it clears a mount a
+  dropped connection left behind and never mounts over files. It writes nothing to stdout, which is the
+  connection. Neither side forwards ports, and nothing listens on the computer.
+- **Agents on the server are told.** On a machine with accepted computers,
+  `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: `~/local/<label>/X` is `~/X` on that
+  machine id, and commands for it run there with `machine_command_run`.
+- **Stopping a share** ends its connection, so the server unmounts it. The server keeps the computer's
+  key line, which can only mount into that computer's own folder.
+
 In the current development CLI, UI permission responses settle through
 `PermissionRequestCoordinator.completeRpcResponse`, including detached late responses
 and requests present only in Agent state. Provider waiters, cached late decisions,

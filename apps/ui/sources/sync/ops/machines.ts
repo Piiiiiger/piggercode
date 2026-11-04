@@ -49,7 +49,13 @@ import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverSc
 import { isMachineRpcTimeoutError } from '@/sync/runtime/orchestration/serverScopedRpc/machineRpcTimeoutError';
 import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
 import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
-import { MachineCommandSettingsResponseSchema } from '@piggercode/protocol';
+import {
+    FolderShareListResponseSchema,
+    FolderShareMutationResponseSchema,
+    MachineCommandSettingsResponseSchema,
+    type FolderShare,
+    type FolderShareErrorCode,
+} from '@piggercode/protocol';
 import { stopSessionViaDaemonMachineRpc } from './sessionStopStrategy';
 import {
     MACHINE_ENCRYPT_RAW_ATTRIBUTION_EVENTS,
@@ -873,12 +879,21 @@ export type MachineRemoteCommandsState =
     /** The machine or the relay reported an error (`message` when it gave one). */
     | Readonly<{ status: 'error'; message?: string }>;
 
-async function callMachineRemoteCommandsSettings(
+/**
+ * One call to a machine-scoped feature RPC (remote commands, shared folders): the machine's answer, or
+ * `unavailable` when the machine cannot take the call (its PiggerCode predates the method, or it just
+ * went offline), or the error the machine or the relay reported.
+ */
+async function callMachineFeatureRpc(
     machineId: string,
     method: string,
     payload: Readonly<Record<string, unknown>>,
     options?: { serverId?: string | null },
-): Promise<MachineRemoteCommandsState> {
+): Promise<
+    | Readonly<{ status: 'answered'; result: unknown }>
+    | Readonly<{ status: 'unavailable' }>
+    | Readonly<{ status: 'error'; message?: string }>
+> {
     let result: unknown;
     try {
         result = await machineRpcWithServerScope<unknown, Readonly<Record<string, unknown>>>({
@@ -894,14 +909,28 @@ async function callMachineRemoteCommandsSettings(
         }
         return error instanceof Error && error.message ? { status: 'error', message: error.message } : { status: 'error' };
     }
-
     if (isRpcMethodNotFoundResult(result)) return { status: 'unavailable' };
-    const parsed = MachineCommandSettingsResponseSchema.safeParse(result);
-    if (parsed.success) return { status: 'ok', enabled: parsed.data.remoteCommandsEnabled };
-    // A daemon handler that throws answers with an `{ error }` result rather than a failed call.
+    return { status: 'answered', result };
+}
+
+/** A daemon handler that throws answers with an `{ error }` result rather than a failed call. */
+function readMachineHandlerError(result: unknown): Readonly<{ status: 'error'; message?: string }> {
     return isPlainObject(result) && typeof result.error === 'string' && result.error
         ? { status: 'error', message: result.error }
         : { status: 'error' };
+}
+
+async function callMachineRemoteCommandsSettings(
+    machineId: string,
+    method: string,
+    payload: Readonly<Record<string, unknown>>,
+    options?: { serverId?: string | null },
+): Promise<MachineRemoteCommandsState> {
+    const call = await callMachineFeatureRpc(machineId, method, payload, options);
+    if (call.status !== 'answered') return call;
+    const parsed = MachineCommandSettingsResponseSchema.safeParse(call.result);
+    if (parsed.success) return { status: 'ok', enabled: parsed.data.remoteCommandsEnabled };
+    return readMachineHandlerError(call.result);
 }
 
 /** Whether agents on the account's other machines may run commands on this machine. */
@@ -919,6 +948,65 @@ export async function machineRemoteCommandsSet(
     options?: { serverId?: string | null },
 ): Promise<MachineRemoteCommandsState> {
     return await callMachineRemoteCommandsSettings(machineId, RPC_METHODS.DAEMON_MACHINE_COMMAND_SETTINGS_SET, { enabled }, options);
+}
+
+/** The folders a machine shares with other machines of the account, as the app sees them. */
+export type MachineSharedFoldersState =
+    | Readonly<{ status: 'ok'; shares: readonly FolderShare[]; unsupported?: string }>
+    /** The machine can't take the call: its PiggerCode predates shared folders, or it just went offline. */
+    | Readonly<{ status: 'unavailable' }>
+    | Readonly<{ status: 'error'; message?: string }>;
+
+/** After sharing a folder or stopping: the machine's shares, or why nothing changed (`refused`). */
+export type MachineSharedFolderChange =
+    | Readonly<{ status: 'ok'; shares: readonly FolderShare[] }>
+    | Readonly<{ status: 'refused'; errorCode: FolderShareErrorCode; message: string }>
+    | Readonly<{ status: 'unavailable' }>
+    | Readonly<{ status: 'error'; message?: string }>;
+
+export async function machineSharedFoldersList(
+    machineId: string,
+    options?: { serverId?: string | null },
+): Promise<MachineSharedFoldersState> {
+    const call = await callMachineFeatureRpc(machineId, RPC_METHODS.DAEMON_FOLDER_SHARE_LIST, {}, options);
+    if (call.status !== 'answered') return call;
+    const parsed = FolderShareListResponseSchema.safeParse(call.result);
+    if (!parsed.success) return readMachineHandlerError(call.result);
+    return parsed.data.unsupported
+        ? { status: 'ok', shares: parsed.data.shares, unsupported: parsed.data.unsupported }
+        : { status: 'ok', shares: parsed.data.shares };
+}
+
+/** Shares `folder` (a path on that machine) of the machine with another machine of the account. */
+export async function machineSharedFolderAdd(
+    machineId: string,
+    request: Readonly<{ folder: string; serverMachineId: string }>,
+    options?: { serverId?: string | null },
+): Promise<MachineSharedFolderChange> {
+    return await changeMachineSharedFolders(machineId, RPC_METHODS.DAEMON_FOLDER_SHARE_ADD, request, options);
+}
+
+export async function machineSharedFolderRemove(
+    machineId: string,
+    request: Readonly<{ folder: string; serverMachineId: string }>,
+    options?: { serverId?: string | null },
+): Promise<MachineSharedFolderChange> {
+    return await changeMachineSharedFolders(machineId, RPC_METHODS.DAEMON_FOLDER_SHARE_REMOVE, request, options);
+}
+
+async function changeMachineSharedFolders(
+    machineId: string,
+    method: string,
+    payload: Readonly<Record<string, unknown>>,
+    options?: { serverId?: string | null },
+): Promise<MachineSharedFolderChange> {
+    const call = await callMachineFeatureRpc(machineId, method, payload, options);
+    if (call.status !== 'answered') return call;
+    const parsed = FolderShareMutationResponseSchema.safeParse(call.result);
+    if (!parsed.success) return readMachineHandlerError(call.result);
+    return parsed.data.ok
+        ? { status: 'ok', shares: parsed.data.shares }
+        : { status: 'refused', errorCode: parsed.data.errorCode, message: parsed.data.error };
 }
 
 /**

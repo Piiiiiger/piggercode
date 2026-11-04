@@ -24,6 +24,12 @@ export function installMachineDetailsCommonModuleMocks(
 
     vi.mock('react-native-reanimated', () => ({}));
 
+    // The machine screen is a navigator screen (its shared-folders group asks whether it is in view).
+    vi.mock('@react-navigation/native', async () => {
+        const { createReactNavigationNativeMock } = await import('@/dev/testkit/mocks/reactNavigation');
+        return createReactNavigationNativeMock();
+    });
+
     vi.mock('react-native', async () => {
         const { createReactNativeWebMock } = await import('@/dev/testkit/mocks/reactNative');
         return createReactNativeWebMock({

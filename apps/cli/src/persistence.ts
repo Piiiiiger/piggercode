@@ -181,6 +181,19 @@ export interface Settings {
    * this machine's daemon (`writeRemoteCommandsEnabled`).
    */
   remoteCommandsEnabled?: boolean
+  /**
+   * Shared folders (`folderShare.ts` in the protocol), on a computer: the folders it shares, each
+   * relative to its home, and per server how that server's accept said to reach it. Changed only by
+   * this machine's daemon (`computerShares.ts`), which the app's machine screen asks.
+   */
+  sharedFolders?: SharedFolderSetting[]
+  sharedFolderServers?: Record<string, SharedFolderServer>
+  /**
+   * Shared folders, on a server: the SSH address other machines of the account reach it at (`host` or
+   * `host:port`), set with `piggercode machine shared-folders address`. Folders are accepted only once
+   * it is set.
+   */
+  sharedFoldersSshAddress?: string
   chromeMode?: boolean
   /**
    * Per-server, per-account reconnect cursor for `/v2/changes`.
@@ -671,6 +684,23 @@ const credentialsSchema = z.object({
     machineKey: z.string().base64()
   }).nullish()
 })
+
+/** A folder this computer shares: `folder` relative to its home (`code`, `code/app`). */
+export type SharedFolderSetting = {
+  folder: string
+  serverMachineId: string
+}
+
+/** How this computer reaches a server it shares folders with, as the server's accept answered. */
+export type SharedFolderServer = {
+  user: string
+  host: string
+  port: number
+  /** The server's SSH host keys (`<type> <base64>`), the only ones trusted for it. */
+  hostKeys: string[]
+  /** This computer's folder on the server (`~/local/<name>`); each share mounts at `<root>/<folder>`. */
+  root: string
+}
 
 export type Credentials = {
   token: string,

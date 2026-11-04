@@ -787,6 +787,7 @@ export class ApiClient {
     }>,
   ): ApiMachineClient {
     return new ApiMachineClient(this.credential.token, machine, ownershipMetadata, {
+      accountCredentials: this.credential,
       connectedAccounts: this.createConnectedAccountCredentialResolver(),
       connectedServiceImportAccount: { api: this, credentials: this.credential },
     });

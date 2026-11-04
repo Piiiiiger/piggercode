@@ -9,6 +9,8 @@ ${chalk.bold('Usage:')}
   piggercode machine setup --ssh <user@host> [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--public-server-url <url>]]
   piggercode machine setup --ssh <user@host> [--service-mode <user|none>] [--install-relay-runtime] [--relay-runtime-mode <user|system>] [--yes] [--json]
   piggercode machine remote-commands on|off|status [--json]
+  piggercode machine shared-folders address [<host[:port]> | --clear] [--json]
+  piggercode machine shared-folders status [--json]
 
 ${chalk.bold('Notes:')}
   • This is a thin wrapper over the canonical remote SSH bootstrap task.
@@ -18,5 +20,8 @@ ${chalk.bold('Notes:')}
   • remote-commands on lets agents on your other machines run shell commands on this machine
     (the machine.command.run tool). It is off until you turn it on here or with the Remote commands
     switch on this machine's page in the app.
+  • shared-folders address, on a server, sets the SSH address your other machines reach it at
+    (host or host:port). Once it is set, a computer can share folders with this machine from
+    its page in the app; they appear here under ~/local/<computer>/. Needs sshfs on this machine.
   `);
 }

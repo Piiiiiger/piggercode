@@ -126,6 +126,12 @@ export const RPC_METHODS = {
   /** Reads / changes whether this machine accepts `DAEMON_MACHINE_COMMAND_RUN` (its device-local switch). */
   DAEMON_MACHINE_COMMAND_SETTINGS_GET: 'daemon.machineCommand.settings.get',
   DAEMON_MACHINE_COMMAND_SETTINGS_SET: 'daemon.machineCommand.settings.set',
+  /** Shared folders (see `folderShare.ts`): the folders this machine shares with other machines. */
+  DAEMON_FOLDER_SHARE_LIST: 'daemon.folderShare.list',
+  DAEMON_FOLDER_SHARE_ADD: 'daemon.folderShare.add',
+  DAEMON_FOLDER_SHARE_REMOVE: 'daemon.folderShare.remove',
+  /** On the server: authorizes a computer's key to mount the folders it shares. */
+  DAEMON_FOLDER_SHARE_ACCEPT: 'daemon.folderShare.accept',
   STAT_FILE: 'statFile',
   RENAME_PATH: 'renamePath',
   DELETE_PATH: 'deletePath',

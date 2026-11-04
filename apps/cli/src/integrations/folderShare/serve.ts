@@ -1,0 +1,121 @@
+import { spawn, spawnSync } from 'node:child_process';
+import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+
+/**
+ * `piggercode machine shared-folders serve --label <label>`, the forced command of a computer's key on
+ * this server (see `acceptedComputers.ts`). The computer runs `ssh <server> "mount <folder>"` with its
+ * sandboxed sftp-server on the other end of the connection; this mounts that folder at
+ * `~/local/<label>/<folder>` with sshfs in passive mode, over the same connection, for as long as the
+ * connection lasts. Nothing may be written to stdout: stdout is the connection. Errors go to stderr,
+ * which the computer shows as the reason a share is not connected.
+ */
+
+const LABEL_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+const SSHFS_OPTIONS = 'passive,idmap=user,dir_cache=yes,dcache_timeout=10';
+/** A mount that does not answer a `stat` within this long is the dead end of a dropped connection. */
+const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
+
+export type SharedFoldersServeSystem = Readonly<{
+  readMountinfo: () => string;
+  /** Whether the mount at `path` answers. */
+  answers: (path: string) => boolean;
+  unmount: (path: string) => void;
+  /** Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. */
+  runSshfs: (args: readonly string[]) => Promise<number>;
+  reportError: (message: string) => void;
+}>;
+
+export async function runSharedFoldersServe(params: Readonly<{
+  label: string;
+  originalCommand: string | undefined;
+  homeDir: string;
+  system?: SharedFoldersServeSystem;
+}>): Promise<number> {
+  const system = params.system ?? osServeSystem;
+  if (!LABEL_PATTERN.test(params.label)) {
+    system.reportError('piggercode shared folders: invalid label');
+    return 2;
+  }
+  const folder = parseMountRequest(params.originalCommand);
+  if (!folder) {
+    system.reportError('piggercode shared folders: this key can only mount a folder inside your home');
+    return 2;
+  }
+
+  const mountPoint = join(params.homeDir, 'local', params.label, folder);
+  mkdirSync(mountPoint, { recursive: true });
+  if (isMountPoint(system.readMountinfo(), mountPoint)) {
+    if (system.answers(mountPoint)) {
+      system.reportError(`piggercode shared folders: ${mountPoint} is already mounted on the server`);
+      return 3;
+    }
+    system.unmount(mountPoint);
+  }
+  if (readdirSync(mountPoint).length > 0) {
+    system.reportError(`piggercode shared folders: ${mountPoint} on the server is not empty, so nothing is mounted over it`);
+    return 3;
+  }
+  return await system.runSshfs(['-f', '-o', SSHFS_OPTIONS, `:${folder}`, mountPoint]);
+}
+
+/** `mount <folder>` with a folder relative to the computer's home; null for anything else. */
+function parseMountRequest(originalCommand: string | undefined): string | null {
+  if (!originalCommand?.startsWith('mount ')) return null;
+  const folder = originalCommand.slice('mount '.length).replace(/\/+$/, '');
+  if (!folder || folder.startsWith('/') || folder.startsWith('-') || /[\x00-\x1f\x7f]/.test(folder)) return null;
+  const segments = folder.split('/');
+  if (segments.some((segment) => segment === '' || segment === '.' || segment === '..')) return null;
+  return folder;
+}
+
+/** The shared folders mounted under `~/local` right now (sshfs mounts there), from mountinfo. */
+export function listSharedFolderMounts(homeDir: string, mountinfo: string = osServeSystem.readMountinfo()): string[] {
+  const root = `${join(homeDir, 'local')}/`;
+  return parseMountinfo(mountinfo)
+    .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(root))
+    .map((mount) => mount.path);
+}
+
+function isMountPoint(mountinfo: string, path: string): boolean {
+  return parseMountinfo(mountinfo).some((mount) => mount.path === path);
+}
+
+/** Mount points and their types; mountinfo escapes space, tab, newline and `\` in paths as octal. */
+function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type: string }>> {
+  const mounts: Array<Readonly<{ path: string; type: string }>> = [];
+  for (const line of mountinfo.split('\n')) {
+    const fields = line.split(' ');
+    const separator = fields.indexOf('-', 6);
+    if (fields.length < 5 || separator < 0) continue;
+    mounts.push({
+      path: fields[4]!.replace(/\\([0-7]{3})/g, (_, octal: string) => String.fromCharCode(parseInt(octal, 8))),
+      type: fields[separator + 1] ?? '',
+    });
+  }
+  return mounts;
+}
+
+const osServeSystem: SharedFoldersServeSystem = {
+  readMountinfo: () => readFileSync('/proc/self/mountinfo', 'utf8'),
+  answers: (path) => spawnSync('stat', ['-t', path], {
+    stdio: 'ignore',
+    timeout: MOUNT_ANSWER_TIMEOUT_MS,
+    killSignal: 'SIGKILL',
+  }).status === 0,
+  unmount: (path) => {
+    const result = spawnSync('fusermount3', ['-uz', path], { stdio: 'ignore' });
+    if (result.status !== 0) spawnSync('fusermount', ['-uz', path], { stdio: 'ignore' });
+  },
+  runSshfs: async (args) => await new Promise<number>((resolve) => {
+    const child = spawn('sshfs', [...args], { stdio: 'inherit' });
+    child.once('error', (error) => {
+      process.stderr.write(`piggercode shared folders: cannot run sshfs: ${error.message}\n`);
+      resolve(127);
+    });
+    child.once('exit', (code) => resolve(code ?? 1));
+  }),
+  reportError: (message) => {
+    process.stderr.write(`${message}\n`);
+  },
+};

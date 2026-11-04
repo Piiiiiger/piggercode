@@ -20,6 +20,8 @@ import type {
 import { showMachineHelp } from './machine/help';
 import { fail } from '@piggercode/cli-common/output';
 
+import { runSharedFoldersSubcommand } from './machine/sharedFolders';
+
 type SystemTasksRunnerAdapter = Readonly<{
   start: (params: Readonly<{ spec: SystemTaskSpec }>) => Promise<Readonly<{ taskId: string }>>;
   poll: (params: Readonly<{ taskId: string; cursor: number }>) => Promise<Readonly<{
@@ -468,6 +470,11 @@ export async function handleMachineCommand(args: string[], deps: Partial<Machine
       return;
     }
 
+    if (subcommand === 'shared-folders') {
+      await runSharedFoldersSubcommand(args.slice(1), json);
+      return;
+    }
+
     if (subcommand !== 'setup') {
       throw new Error(`Unknown machine subcommand: ${subcommand}`);
     }
@@ -479,7 +486,9 @@ export async function handleMachineCommand(args: string[], deps: Partial<Machine
       await printJsonEnvelope(
         {
           ok: false,
-          kind: subcommand === 'remote-commands' ? 'machine_remote_commands' : 'machine_setup',
+          kind: subcommand === 'remote-commands'
+            ? 'machine_remote_commands'
+            : subcommand === 'shared-folders' ? 'machine_shared_folders' : 'machine_setup',
           error: { code: mapped.code, ...(mapped.message ? { message: mapped.message } : {}) },
         },
         { exitCode: mapped.unexpected ? 2 : 1 },

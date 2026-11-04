@@ -3,6 +3,7 @@
  * Similar to ApiSessionClient but for machine-scoped connections
  */
 
+import { hostname } from 'node:os';
 import axios from 'axios';
 import { logger } from '@/ui/logger';
 import { configuration } from '@/configuration';
@@ -14,6 +15,7 @@ import { registerWorkspaceAnchorHandlers } from '@/rpc/handlers/workspaceAnchors
 import { registerWorkspaceFaviconHandlers } from '@/rpc/handlers/workspaceFavicon/registerWorkspaceFaviconHandlers';
 import { registerMachineFileBrowserHandlers } from '@/rpc/handlers/machineFileBrowser/registerMachineFileBrowserHandlers';
 import { registerMachineCommandHandlers } from '@/rpc/handlers/machineCommand/registerMachineCommandHandlers';
+import { registerFolderShareHandlers } from '@/rpc/handlers/folderShare/registerFolderShareHandlers';
 import { decodeMachineStoredContent, encodeMachineStoredContent } from './machine/machineStoredContent';
 import {
     resolveFilesystemAccessPolicy,
@@ -37,7 +39,7 @@ import {
     type ExactSessionTurnEndMutationV1,
 } from '@piggercode/protocol';
 import { fetchChanges, fetchChangesAccountId } from './changes';
-import { readAccountChangesCursor, writeAccountChangesCursor } from '@/persistence';
+import { readAccountChangesCursor, writeAccountChangesCursor, type Credentials } from '@/persistence';
 import { createAuthenticationHttpStatusError, isAuthenticationError, isAuthenticationStatus } from './client/httpStatusError';
 import { serializeAxiosErrorForLog } from './client/serializeAxiosErrorForLog';
 import { runSupervisedRequest } from '@/api/connection/requestSupervision/runSupervisedRequest';
@@ -76,6 +78,8 @@ import { fetchAccountProfile } from '@/api/accountProfile';
 import type { RpcHandlerActiveExecution } from '@/api/rpc/types';
 
 export type ApiMachineClientDeps = Readonly<{
+    /** The account credentials this daemon calls other machines of the account with (shared folders). */
+    accountCredentials?: Credentials;
     connectedAccounts?: ScmConnectedAccountCredentialResolver;
     connectedServiceImportAccount?: import('@/cloud/connectedServices/connectedServiceImport').ConnectedServiceImportAccount;
 }>;
@@ -403,6 +407,12 @@ export class ApiMachineClient {
             workingDirectory: machineRpcWorkingDirectory,
             accessPolicy: filesystemAccessPolicy,
         });
+        this.rpcLifecycleRegistrations.push(registerFolderShareHandlers({
+            rpcHandlerManager: this.rpcHandlerManager,
+            machineId: this.machine.id,
+            machineName: this.machine.metadata?.host || hostname(),
+            credentials: deps?.accountCredentials ?? null,
+        }));
         // SCM must be machine-scoped so the UI can view diffs/logs and perform staging/commit operations
         // even when no session is currently active.
         registerScmHandlers(this.rpcHandlerManager, machineRpcWorkingDirectory, {
