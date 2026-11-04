@@ -97,12 +97,40 @@ describe('Codex native paginated direct history (0.162.1 contract)', () => {
     expect(items[1]?.raw).toMatchObject({ content: { data: { output: { stdout: '/project', exitCode: 0 } } } });
   });
 
-  it('rejects native mixed media instead of importing only its text as complete history', async () => {
-    const f = await fixture([{ ...message('mixed', 'question with image', 'user'), item: { id: 'mixed', type: 'userMessage',
-      content: [{ type: 'text', text: 'question with image' }, { type: 'image', url: 'https://example.invalid/image.png' }] } }]);
-    await expect(loadDirectSessionTranscriptItems({ readPage: cursor => pageCodexTranscript({
+  it('keeps the text of a native user message and leaves out its media, like the live and rollout readers', async () => {
+    const f = await fixture([
+      { turnId: 'turn-mixed', startedAtMs: 1_000, completedAtMs: 2_000, item: { id: 'mixed', type: 'userMessage',
+        content: [{ type: 'text', text: 'question with image' }, { type: 'image', url: 'https://example.invalid/image.png' }] } },
+      { turnId: 'turn-image', startedAtMs: 1_000, completedAtMs: 2_000, item: { id: 'image-only', type: 'userMessage',
+        content: [{ type: 'localImage', path: '/tmp/screenshot.png' }] } },
+      message('a1', 'answer', 'agent'),
+    ]);
+    const items = await loadDirectSessionTranscriptItems({ readPage: cursor => pageCodexTranscript({
       ...f.params, direction: 'older', cursor,
-    }) })).rejects.toBeInstanceOf(DirectSessionsProviderUnavailableError);
+    }) });
+    expect(items.map(item => item.raw.role)).toEqual(['user', 'agent']);
+    expect(JSON.stringify(items)).toContain('question with image');
+    expect(JSON.stringify(items)).not.toContain('example.invalid');
+  });
+
+  it('leaves out native items that have no Direct row instead of failing the whole history', async () => {
+    // Codex 0.165 history: a web search, an image view, a subagent call and a finished review sit
+    // between a question and its answer. None has a row in the live or rollout readers either.
+    const between = (id: string, item: Record<string, unknown>) => ({ turnId: 'turn-u1', startedAtMs: 1_000,
+      completedAtMs: 2_000, item: { id, ...item } });
+    const f = await fixture([
+      message('u1', 'question', 'user'),
+      between('search-1', { type: 'webSearch', query: 'tauri updater', action: { type: 'search' }, results: null }),
+      between('view-1', { type: 'imageView', path: '/tmp/screenshot.png' }),
+      between('agent-call-1', { type: 'collabAgentToolCall', tool: 'spawnAgent', status: 'completed' }),
+      between('review-1', { type: 'exitedReviewMode', review: 'no findings' }),
+      message('a1', 'answer', 'agent'),
+    ]);
+    const items = await loadDirectSessionTranscriptItems({ readPage: cursor => pageCodexTranscript({
+      ...f.params, direction: 'older', cursor,
+    }) });
+    expect(items.map(item => item.raw.role)).toEqual(['user', 'agent']);
+    expect(JSON.stringify(items)).toContain('answer');
   });
 
   it('distinguishes confirmed empty native history from unavailable history', async () => {
