@@ -45,13 +45,13 @@ const TARGET: FolderConnectionTarget = {
   server: { user: 'pigger', host: 'server.example.test', port: 2200 },
   keyPath: '/state/id_ed25519',
   knownHostsPath: '/state/known_hosts',
-  tools: { ssh: 'ssh', sftpServer: '/usr/lib/ssh/sftp-server', bwrap: 'bwrap' },
+  tools: { ssh: 'ssh', sftpServer: '/usr/lib/ssh/sftp-server', sandbox: { kind: 'bubblewrap', command: 'bwrap' } },
 };
 
-function open() {
+function open(target: FolderConnectionTarget = TARGET) {
   const processes: FakeProcess[] = [];
   const events = { connected: 0, closed: [] as string[] };
-  const connection = openFolderConnection(TARGET, {
+  const connection = openFolderConnection(target, {
     onConnected: () => {
       events.connected += 1;
     },
@@ -91,6 +91,23 @@ describe('one shared folder’s connection', () => {
 
     expect(ssh.command).toBe('ssh');
     expect(ssh.args).toEqual(expect.arrayContaining(['-i', '/state/id_ed25519', 'StrictHostKeyChecking=yes', '-p', '2200']));
+    expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app']);
+    connection.close();
+  });
+
+  it('on a Mac, serves the folder from macOS’s sandbox, with nothing on extra pipes', async () => {
+    const { sftp, ssh, connection } = open({
+      ...TARGET,
+      folderPath: '/Users/pigger/code/my app',
+      homeDir: '/Users/pigger',
+      tools: { ssh: 'ssh', sftpServer: '/usr/libexec/sftp-server', sandbox: { kind: 'seatbelt', command: '/usr/bin/sandbox-exec' } },
+    });
+    await settle();
+
+    expect(sftp.command).toBe('/usr/bin/sandbox-exec');
+    expect(sftp.args[1]).toContain('(subpath "/Users/pigger/code/my app")');
+    expect(sftp.args.slice(-3)).toEqual(['/usr/libexec/sftp-server', '-d', '/Users/pigger']);
+    expect(sftp.stdio).toHaveLength(3);
     expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app']);
     connection.close();
   });

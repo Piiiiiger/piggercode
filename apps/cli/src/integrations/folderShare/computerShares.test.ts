@@ -14,7 +14,7 @@ import type { SharingToolsResult } from './sharingTools';
 
 const COMPUTER_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9';
 const HOST_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQKK0TckxnFot3LMp0B+2WElapYHkD6E8fo78SadK/n';
-const TOOLS: SharingToolsResult = { ok: true, tools: { ssh: 'ssh', sftpServer: '/usr/lib/ssh/sftp-server', bwrap: 'bwrap' } };
+const TOOLS: SharingToolsResult = { ok: true, tools: { ssh: 'ssh', sftpServer: '/usr/lib/ssh/sftp-server', sandbox: { kind: 'bubblewrap', command: 'bwrap' } } };
 const ACCEPTED: FolderShareAcceptResponse = {
   ok: true,
   ssh: { user: 'pigger', host: 'server.example.test', port: 2200, hostKeys: [HOST_KEY] },

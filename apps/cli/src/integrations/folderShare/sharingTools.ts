@@ -1,19 +1,30 @@
-import { accessSync, constants, lstatSync, readFileSync, readlinkSync } from 'node:fs';
+import { accessSync, constants, lstatSync, readFileSync, readlinkSync, realpathSync } from 'node:fs';
 import { userInfo } from 'node:os';
 
 import { commandExistsInPath } from '@/daemon/service/commandExistsInPath';
 
+import { buildSeatbeltProfile } from './seatbeltProfile';
+
 /**
  * What a computer needs to share folders: `ssh` to reach the server, `sftp-server` to serve the folder,
- * and bubblewrap to run sftp-server in a sandbox in which the shared folder is the only part of the
- * computer's files that exists. Linux only for now: macOS has no bubblewrap and needs its own sandbox.
+ * and a sandbox that keeps sftp-server inside the shared folder. Linux uses bubblewrap, in which the
+ * shared folder is the only part of the computer's files that exists; macOS uses its own sandbox
+ * (Seatbelt, through sandbox-exec), which denies every file but the shared folder (`seatbeltProfile.ts`).
  */
 
-export type SharingTools = Readonly<{ ssh: string; sftpServer: string; bwrap: string }>;
+export type SharingSandbox = Readonly<{ kind: 'bubblewrap' | 'seatbelt'; command: string }>;
+
+export type SharingTools = Readonly<{ ssh: string; sftpServer: string; sandbox: SharingSandbox }>;
 
 export type SharingToolsResult =
   | Readonly<{ ok: true; tools: SharingTools }>
   | Readonly<{ ok: false; reason: string }>;
+
+/** How the tools are looked for on this computer. */
+export type SharingToolsProbe = Readonly<{
+  isExecutable: (path: string) => boolean;
+  commandExists: (cmd: string, env: NodeJS.ProcessEnv, platform: NodeJS.Platform) => boolean;
+}>;
 
 const SFTP_SERVER_PATHS = [
   '/usr/lib/ssh/sftp-server',
@@ -22,35 +33,88 @@ const SFTP_SERVER_PATHS = [
   '/usr/libexec/sftp-server',
 ];
 
+const SANDBOX_EXEC = '/usr/bin/sandbox-exec';
+
 /** Top-level system folders sftp-server's loader may need; recreated in the sandbox as they are here. */
 const SYSTEM_ROOT_ENTRIES = ['/bin', '/sbin', '/lib', '/lib32', '/lib64'];
+
+const SYSTEM_PROBE: SharingToolsProbe = {
+  isExecutable,
+  commandExists: (cmd, env, platform) => commandExistsInPath({ cmd, envPath: env.PATH, platform }),
+};
 
 export function resolveSharingTools(
   env: NodeJS.ProcessEnv = process.env,
   platform: NodeJS.Platform = process.platform,
+  probe: SharingToolsProbe = SYSTEM_PROBE,
 ): SharingToolsResult {
-  if (platform !== 'linux') {
-    return { ok: false, reason: 'Sharing folders works on Linux computers for now.' };
+  if (platform !== 'linux' && platform !== 'darwin') {
+    return { ok: false, reason: 'Sharing folders works on Linux and macOS computers.' };
   }
-  const onPath = (cmd: string) => commandExistsInPath({ cmd, envPath: env.PATH, platform });
-  const sftpServer = SFTP_SERVER_PATHS.find(isExecutable);
-  if (!onPath('ssh') || !sftpServer) {
+  const sftpServer = SFTP_SERVER_PATHS.find(probe.isExecutable);
+  if (!probe.commandExists('ssh', env, platform) || !sftpServer) {
     return { ok: false, reason: 'Install OpenSSH (the ssh client and sftp-server) on this computer to share folders.' };
   }
-  if (!onPath('bwrap')) {
+  if (platform === 'darwin') {
+    if (!probe.isExecutable(SANDBOX_EXEC)) {
+      return {
+        ok: false,
+        reason: `This Mac has no ${SANDBOX_EXEC}, which keeps the server inside the folders you share.`,
+      };
+    }
+    return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'seatbelt', command: SANDBOX_EXEC } } };
+  }
+  if (!probe.commandExists('bwrap', env, platform)) {
     return {
       ok: false,
       reason: 'Install bubblewrap on this computer to share folders. It keeps the server inside the folders you share.',
     };
   }
-  return { ok: true, tools: { ssh: 'ssh', sftpServer, bwrap: 'bwrap' } };
+  return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'bubblewrap', command: 'bwrap' } } };
+}
+
+/** The sandboxed sftp-server for one shared folder: what to run, and what to write to its pipes from fd 3 on. */
+export type SandboxedSftpServer = Readonly<{ command: string; args: string[]; extraInputs: readonly string[] }>;
+
+/** sftp-server starts in `homeDir`, so the server asks for the folder by its path relative to the home. */
+export function buildSandboxedSftpServer(params: Readonly<{
+  tools: SharingTools;
+  folderPath: string;
+  homeDir: string;
+  identity?: () => Readonly<{ passwd: string; group: string }>;
+  realpath?: (path: string) => string;
+}>): SandboxedSftpServer {
+  const { tools, folderPath, homeDir } = params;
+  if (tools.sandbox.kind === 'seatbelt') {
+    const profile = buildSeatbeltProfile({
+      folderPath,
+      realFolderPath: realPathOf(folderPath, params.realpath ?? realpathSync.native),
+      homeDir,
+      sftpServer: tools.sftpServer,
+    });
+    return { command: tools.sandbox.command, args: ['-p', profile, tools.sftpServer, '-d', homeDir], extraInputs: [] };
+  }
+  const identity = (params.identity ?? sandboxIdentity)();
+  return {
+    command: tools.sandbox.command,
+    args: buildSandboxedSftpServerArgs({ folderPath, homeDir, sftpServer: tools.sftpServer }),
+    extraInputs: [identity.passwd, identity.group],
+  };
+}
+
+function realPathOf(path: string, realpath: (path: string) => string): string {
+  try {
+    return realpath(path);
+  } catch {
+    // Not there (yet): sftp-server will say so when the server asks for it.
+    return path;
+  }
 }
 
 /**
  * bubblewrap arguments that run sftp-server with only `folderPath` of the computer's files: system
  * files read-only, no network, no other processes, its own user and group only (passed on fds 3 and 4,
- * see `sandboxIdentity`). sftp-server starts in `homeDir`, so the server asks for the folder by its path
- * relative to the home.
+ * see `sandboxIdentity`).
  */
 export function buildSandboxedSftpServerArgs(params: Readonly<{
   folderPath: string;

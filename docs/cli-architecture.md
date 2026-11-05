@@ -1798,8 +1798,9 @@ through the relay like any machine RPC (account-scoped, encrypted); the target's
 
 A computer of the account shares chosen folders with another machine (the server), so that agents
 running there work on the computer's files; their builds, tests and git run on the computer through the
-remote commands above. The computer must be Linux for now (its sandbox is bubblewrap); the server needs
-sshfs and an SSH address the computer can reach. Protocol: `packages/protocol/src/folderShare.ts`.
+remote commands above. The computer is Linux (sandbox: bubblewrap) or macOS (sandbox: Seatbelt, through
+the system's `sandbox-exec`); the server needs sshfs and an SSH address the computer can reach.
+Protocol: `packages/protocol/src/folderShare.ts`.
 
 - **The computer owns its shares.** `integrations/folderShare/computerShares.ts` keeps them in the
   computer's settings (`sharedFolders`, each folder relative to its home, and per server
@@ -1820,9 +1821,15 @@ sshfs and an SSH address the computer can reach. Protocol: `packages/protocol/sr
   host name. The answer gives the SSH user, address and the server's host keys, which become the only
   keys the computer trusts for it (`<PiggerCode home>/shared-folders/known_hosts`).
 - **One connection per folder, made by the computer.** `folderConnection.ts` runs sftp-server in a
-  bubblewrap sandbox that holds only the shared folder (`sharingTools.ts`: system files read-only, no
-  network, no other processes, a one-line passwd and group) and pipes it to `ssh <server> "mount
-  <folder>"`. The forced command (`serve.ts`) mounts it at `~/local/<label>/<folder>` with
+  sandbox that keeps it inside the shared folder (`sharingTools.ts`) and pipes it to `ssh <server>
+  "mount <folder>"`. On Linux that is bubblewrap, holding only the shared folder: system files
+  read-only, no network, no other processes, a one-line passwd and group. On macOS it is a Seatbelt
+  profile (`seatbeltProfile.ts`, passed to `sandbox-exec -p`) that denies everything it does not name:
+  the shared folder by its real path, the attributes (not the contents) of the folders above it, and
+  the system files sftp-server starts from; no network. Seatbelt checks paths, so a hard link is the
+  escape to rule out: macOS refuses to link a file the sandbox cannot read. Checked on macOS 14 and 26
+  by driving the sandboxed sftp-server the way sshfs does. Files under the person's Desktop, Documents
+  or Downloads also need macOS's own permission for PiggerCode. The forced command (`serve.ts`) mounts it at `~/local/<label>/<folder>` with
   `sshfs -o passive` on that same connection, for as long as the connection lasts; it clears a mount a
   dropped connection left behind and never mounts over files. It writes nothing to stdout, which is the
   connection. Neither side forwards ports, and nothing listens on the computer.

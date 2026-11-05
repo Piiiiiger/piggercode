@@ -1,7 +1,7 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import type { Readable, Writable } from 'node:stream';
 
-import { buildSandboxedSftpServerArgs, sandboxIdentity, type SharingTools } from './sharingTools';
+import { buildSandboxedSftpServer, type SharingTools } from './sharingTools';
 
 /**
  * One shared folder's connection: this computer's sandboxed sftp-server on one end, an SSH session to
@@ -62,16 +62,18 @@ export function openFolderConnection(
   deps: Readonly<{ spawnPiped?: SpawnPiped; identity?: Readonly<{ passwd: string; group: string }> }> = {},
 ): FolderConnection {
   const spawnPiped = deps.spawnPiped ?? spawnWithPipes;
-  const identity = deps.identity ?? sandboxIdentity();
+  const identity = deps.identity;
   let connected = false;
   let finished = false;
   let lastError = '';
 
-  const sftp = spawnPiped(
-    target.tools.bwrap,
-    buildSandboxedSftpServerArgs({ folderPath: target.folderPath, homeDir: target.homeDir, sftpServer: target.tools.sftpServer }),
-    2,
-  );
+  const server = buildSandboxedSftpServer({
+    tools: target.tools,
+    folderPath: target.folderPath,
+    homeDir: target.homeDir,
+    ...(identity ? { identity: () => identity } : {}),
+  });
+  const sftp = spawnPiped(server.command, server.args, server.extraInputs.length);
   const ssh = spawnPiped(target.tools.ssh, buildFolderConnectionSshArgs(target), 0);
 
   const finish = (reason: string | null) => {
@@ -91,7 +93,7 @@ export function openFolderConnection(
       if (lines.length > 0) lastError = lines[lines.length - 1]!;
     });
     child.once('error', (error) => {
-      lastError = `Cannot run ${child === sftp ? target.tools.bwrap : target.tools.ssh}: ${error.message}`;
+      lastError = `Cannot run ${child === sftp ? server.command : target.tools.ssh}: ${error.message}`;
       finish(lastError);
     });
     // `close`, not `exit`: it comes after the child's output is read, so the server's last word (why it
@@ -101,8 +103,7 @@ export function openFolderConnection(
     child.stdin?.on('error', () => undefined);
   }
 
-  writeAndClose(sftp.stdio[3] as Writable | null | undefined, identity.passwd);
-  writeAndClose(sftp.stdio[4] as Writable | null | undefined, identity.group);
+  server.extraInputs.forEach((text, index) => writeAndClose(sftp.stdio[3 + index] as Writable | null | undefined, text));
   sftp.stdout?.once('data', () => {
     connected = true;
     if (!finished) events.onConnected();

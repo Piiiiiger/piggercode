@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildSandboxedSftpServerArgs, resolveSharingTools, type RootEntry } from './sharingTools';
+import { buildSandboxedSftpServer, buildSandboxedSftpServerArgs, resolveSharingTools, type RootEntry } from './sharingTools';
 
 describe('the sandbox a shared folder is served from', () => {
   it('holds the system read-only, the shared folder, and nothing else of the computer', () => {
@@ -29,8 +29,50 @@ describe('the sandbox a shared folder is served from', () => {
     expect(args.slice(-3)).toEqual(['/usr/lib/ssh/sftp-server', '-d', '/home/pigger']);
   });
 
-  it('is Linux-only for now, and says so elsewhere', () => {
-    expect(resolveSharingTools(process.env, 'darwin')).toEqual({ ok: false, reason: 'Sharing folders works on Linux computers for now.' });
+  it('shares from Linux and macOS, each through its own sandbox, and says what is missing', () => {
+    const mac = (present: readonly string[]) => ({
+      isExecutable: (path: string) => present.includes(path),
+      commandExists: (cmd: string) => cmd === 'ssh',
+    });
+
+    expect(resolveSharingTools({ PATH: '/usr/bin' }, 'darwin', mac(['/usr/libexec/sftp-server', '/usr/bin/sandbox-exec']))).toEqual({
+      ok: true,
+      tools: { ssh: 'ssh', sftpServer: '/usr/libexec/sftp-server', sandbox: { kind: 'seatbelt', command: '/usr/bin/sandbox-exec' } },
+    });
+    expect(resolveSharingTools({ PATH: '/usr/bin' }, 'darwin', mac(['/usr/libexec/sftp-server']))).toMatchObject({
+      ok: false,
+      reason: expect.stringContaining('sandbox-exec'),
+    });
     expect(resolveSharingTools({ PATH: '' }, 'linux')).toMatchObject({ ok: false, reason: expect.stringMatching(/OpenSSH|bubblewrap/) });
+    expect(resolveSharingTools(process.env, 'win32')).toEqual({ ok: false, reason: 'Sharing folders works on Linux and macOS computers.' });
+  });
+
+  it('runs sftp-server on a Mac inside the shared folder’s own sandbox profile, with no identity files', () => {
+    const server = buildSandboxedSftpServer({
+      tools: { ssh: 'ssh', sftpServer: '/usr/libexec/sftp-server', sandbox: { kind: 'seatbelt', command: '/usr/bin/sandbox-exec' } },
+      folderPath: '/Users/pigger/code/app',
+      homeDir: '/Users/pigger',
+      realpath: (path) => path,
+    });
+
+    expect(server.command).toBe('/usr/bin/sandbox-exec');
+    expect(server.args[0]).toBe('-p');
+    expect(server.args[1]).toContain('(allow file-read* file-write* (subpath "/Users/pigger/code/app"))');
+    expect(server.args.slice(2)).toEqual(['/usr/libexec/sftp-server', '-d', '/Users/pigger']);
+    expect(server.extraInputs).toEqual([]);
+  });
+
+  it('runs sftp-server on Linux in bubblewrap, with its user and group on the extra pipes', () => {
+    const server = buildSandboxedSftpServer({
+      tools: { ssh: 'ssh', sftpServer: '/usr/lib/ssh/sftp-server', sandbox: { kind: 'bubblewrap', command: 'bwrap' } },
+      folderPath: '/home/pigger/code',
+      homeDir: '/home/pigger',
+      identity: () => ({ passwd: 'pigger:x:1000:1000::/home/pigger:/bin/bash\n', group: 'pigger:x:1000:\n' }),
+    });
+
+    expect(server.command).toBe('bwrap');
+    expect(server.args).toContain('--unshare-all');
+    expect(server.args.slice(-3)).toEqual(['/usr/lib/ssh/sftp-server', '-d', '/home/pigger']);
+    expect(server.extraInputs).toEqual(['pigger:x:1000:1000::/home/pigger:/bin/bash\n', 'pigger:x:1000:\n']);
   });
 });

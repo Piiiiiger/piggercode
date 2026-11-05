@@ -49,7 +49,7 @@ piggercode setup --relay https://<你的中继地址>
 - `~/.piggercode`：配置、凭据、日志和守护进程状态。用 `PIGGERCODE_HOME_DIR` 可以换位置。
 - 守护进程的 systemd 用户服务叫 `piggercode-daemon.<实例>`，默认实例是 `default`；macOS 上的 launchd 标签是 `com.piggercode.cli.daemon.<实例>`。
 - 远程执行命令：在网页的电脑详情页打开「远程命令」开关（或在那台电脑上运行 `piggercode machine remote-commands on`）后，同一账户下其他电脑上的 Claude Code 或 Codex 可以用 `machine_command_run` 工具在这台电脑上执行 shell 命令（类似 `ssh 主机 命令`），以运行 PiggerCode 的那个用户身份执行。默认关闭；网页开关或 `piggercode machine remote-commands off` 随时关掉，`status` 查看当前状态。网页开关只在那台电脑在线时可用。
-- 共享文件夹：在网页的电脑详情页「共享文件夹」里选一个文件夹，共享给同一账户下的另一台电脑（服务器）。它会出现在服务器的 `~/local/<电脑名>/` 下，服务器上的 Claude Code 或 Codex 直接读写这些文件，编译、测试和 git 通过远程命令在这台电脑上执行。这台电脑目前要是 Linux，并装有 OpenSSH 和 bubblewrap；服务器要装 sshfs，并在服务器上运行一次 `piggercode machine shared-folders address <主机[:端口]>`，告诉它其他电脑通过什么 SSH 地址连到它。`piggercode machine shared-folders status` 查看接受了哪些电脑、挂载了什么。
+- 共享文件夹：在网页的电脑详情页「共享文件夹」里选一个文件夹，共享给同一账户下的另一台电脑（服务器）。它会出现在服务器的 `~/local/<电脑名>/` 下，服务器上的 Claude Code 或 Codex 直接读写这些文件，编译、测试和 git 通过远程命令在这台电脑上执行。这台电脑要是 Linux（装有 OpenSSH 和 bubblewrap）或 macOS（系统自带的就够了）；服务器要装 sshfs，并在服务器上运行一次 `piggercode machine shared-folders address <主机[:端口]>`，告诉它其他电脑通过什么 SSH 地址连到它。`piggercode machine shared-folders status` 查看接受了哪些电脑、挂载了什么。
 - 从改名前的版本升级时，`piggercode service install` 会停掉并删除同一个家目录里旧名字的同一个服务（`happier-daemon.<实例>`，macOS 上是 `com.happier.cli.daemon.<实例>`），`~/.happier` 链接到 `~/.piggercode` 的情况也算同一个家目录。别的家目录里的旧服务不动。
 - 智能体看到的内置 MCP 服务叫 `piggercode`，工具名是 `mcp__piggercode__*`。旧会话里的 `mcp__happier__*` 工具调用照常显示。
 - 网页端上传的附件默认存到服务器上的 `~/Downloads`，可以在设置里改。
