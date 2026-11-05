@@ -8,6 +8,7 @@ import {
     normalizeServerSelectionSettingsForProfileScopeIds,
 } from '@/sync/domains/server/selection/serverSelectionProfileScopeIds';
 import { useAllMachines, useMachineListByServerId, useSetting } from '@/sync/domains/state/storage';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 /**
  * Returns the ID of the primary machine from the active server selection.
@@ -61,8 +62,8 @@ export function usePrimaryMachineFromActiveSelection(): string | null {
                 ?? (serverId === activeServerSnapshot.serverId ? allMachines : null)
                 ?? [];
 
-            // Find the first non-revoked machine
-            const visibleMachines = machines.filter((machine) => !machine.revokedAt);
+            // Find the first non-revoked machine that runs agents
+            const visibleMachines = machines.filter((machine) => !machine.revokedAt && isMachineAgentHost(machine));
             if (visibleMachines.length > 0) {
                 return visibleMachines[0].id;
             }

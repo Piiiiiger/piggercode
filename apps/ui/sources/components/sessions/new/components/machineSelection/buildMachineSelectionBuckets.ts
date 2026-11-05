@@ -1,5 +1,5 @@
 import type { Machine } from '@/sync/domains/state/storageTypes';
-import { isMachineVisibleForLaunchSelection } from '@/sync/domains/machines/identity/filterVisibleMachines';
+import { isMachineLaunchTarget } from '@/sync/domains/machines/identity/machineAgentHost';
 
 import { resolveMachinePickerPresence } from '../resolveMachinePickerPresence';
 
@@ -50,9 +50,9 @@ export function buildMachineSelectionBuckets(params: BuildMachineSelectionBucket
     const disableOfflineMachines = params.disableOfflineMachines ?? true;
     const favoriteGroupPlacement = params.favoriteGroupPlacement ?? 'afterRecent';
 
-    const visibleMachines = params.machines.filter(isMachineVisibleForLaunchSelection);
-    const visibleRecentMachines = (params.recentMachines ?? []).filter(isMachineVisibleForLaunchSelection);
-    const visibleFavoriteMachines = (params.favoriteMachines ?? []).filter(isMachineVisibleForLaunchSelection);
+    const visibleMachines = params.machines.filter(isMachineLaunchTarget);
+    const visibleRecentMachines = (params.recentMachines ?? []).filter(isMachineLaunchTarget);
+    const visibleFavoriteMachines = (params.favoriteMachines ?? []).filter(isMachineLaunchTarget);
 
     const launchPinnedRecentMachines = disableOfflineMachines
         ? visibleRecentMachines.filter(isMachineSelectableForLaunch)

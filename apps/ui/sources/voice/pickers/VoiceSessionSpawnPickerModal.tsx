@@ -29,6 +29,7 @@ import {
 
 import type { VoiceSessionSpawnPickerResult } from './openVoiceSessionSpawnPicker';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 
 type Props = CustomModalInjectedProps & Readonly<{
@@ -74,7 +75,8 @@ export function VoiceSessionSpawnPickerModal(props: Props) {
   const styles = stylesheet;
   const { onClose, onResolve, setChrome } = props;
 
-  const machines = useAllMachines();
+  const allMachines = useAllMachines();
+  const machines = React.useMemo(() => allMachines.filter(isMachineAgentHost), [allMachines]);
   const sessions = useSessions();
   const recentMachinePaths = useSetting('recentMachinePaths') as any[] | undefined;
   const normalizedRecentMachinePaths = React.useMemo(

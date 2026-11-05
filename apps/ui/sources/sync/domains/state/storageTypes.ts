@@ -584,6 +584,8 @@ export const MachineMetadataSchema = z.object({
     windowsRemoteSessionConsole: z.enum(['hidden', 'visible']).optional(),
     daemonTerminalSessionAttachSupported: z.boolean().optional(),
     daemonSessionGoalControlsSupported: z.boolean().optional(),
+    // `false` on a computer connected through the desktop app: it never runs agent sessions.
+    agentsHosted: z.boolean().optional(),
     // Daemon status fields
     daemonLastKnownStatus: z.enum(['running', 'shutting-down']).optional(),
     daemonLastKnownPid: z.number().optional(),

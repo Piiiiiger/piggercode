@@ -2,6 +2,7 @@ import type { Machine } from '@/sync/domains/state/storageTypes';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
 import { isMachineReplaced, type MachineWithReplacement } from './machineIdentityTypes';
+import { isMachineAgentHost } from './machineAgentHost';
 
 export type MachineSpawnReadiness =
     | { status: 'ready'; machineId: string }
@@ -77,6 +78,7 @@ export function canAttemptMachineSpawn(params: Readonly<{
     spawnReadiness?: MachineSpawnReadiness | null;
     nowMs?: number;
 }>): boolean {
+    if (params.machine && !isMachineAgentHost(params.machine)) return false;
     const readiness = params.spawnReadiness ?? resolveMachineSpawnReadiness({
         selectedMachineId: params.selectedMachineId,
         machine: params.machine,

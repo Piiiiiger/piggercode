@@ -29,8 +29,9 @@ vi.mock('@/hooks/server/useDaemonScopedMachineCapabilitiesCache', () => ({
     }),
 }));
 
+const detectionTarget = vi.hoisted(() => ({ current: { daemonStateVersion: 1, isOnline: true, agentsHosted: true } }));
 vi.mock('@/sync/domains/state/storage', () => ({
-    useMachineCliDetectionTarget: () => ({ daemonStateVersion: 1, isOnline: true }),
+    useMachineCliDetectionTarget: () => detectionTarget.current,
 }));
 
 vi.mock('@/agents/hooks/useEnabledAgentIds', () => ({
@@ -65,5 +66,19 @@ describe('MachineCliGlyphs', () => {
 
         const icons = tree.findAllByType('AgentIcon');
         expect(icons.some((node) => node.props.agentId === 'codex')).toBe(true);
+    });
+
+    it('shows no agents for a computer that does not run them, even when their CLIs were detected there', async () => {
+        detectionTarget.current = { daemonStateVersion: 1, isOnline: true, agentsHosted: false };
+        try {
+            const tree = await renderScreen(React.createElement(MachineCliGlyphs, {
+                machineId: 'machine-1',
+                isOnline: true,
+            }));
+
+            expect(tree.findAllByType('AgentIcon')).toHaveLength(0);
+        } finally {
+            detectionTarget.current = { daemonStateVersion: 1, isOnline: true, agentsHosted: true };
+        }
     });
 });

@@ -1765,6 +1765,29 @@ shell command on that machine for any client of the account (the app uses it, fo
 environment variables); its working directory goes through the machine's filesystem access policy
 (`PIGGERCODE_MACHINE_RPC_WORKING_DIRECTORY`, the whole OS user when unset).
 
+### Computers that run no agents
+
+Agents (Codex, Claude Code) run on the account's servers. A computer connected through the desktop
+app, whose background service is desktop-managed (`PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop` in the
+service definition), runs none. It lends the servers its folders and its commands instead.
+
+- **The computer decides.** `daemon/agentHosting.ts` reads the service's marker. The daemon publishes
+  `agentsHosted: false` in its machine metadata, and its `spawnSession` refuses every session start with
+  `AGENTS_NOT_HOSTED`, whoever asks: the app, an agent's `session.spawn_new`, a handoff or an
+  automation. Shared folders and remote commands are unaffected. Machines that do not report the field
+  (servers, older daemons) run agents as before.
+- **The app never offers it.** One predicate, `isMachineAgentHost`
+  (`sync/domains/machines/identity/machineAgentHost.ts`), is false only for such a computer, and
+  `isMachineLaunchTarget` adds it to launch visibility. The predicate filters the places a session is
+  started, moved or attached to a machine:
+  - new-session targets: `useLaunchSelectionMachines`, the picker's per-server options, the selector
+    buckets and the default pick;
+  - `canAttemptMachineSpawn`, handoff targets and voice targets;
+  - the session explorer, provider-history browsing and the primary machine of settings screens.
+
+  On the computer's own screen there is no session launch, agent list, tools entry or agent probe.
+  Its machine rows show no agent icons, and Updates lists only its PiggerCode CLI.
+
 ### Remote commands for agents
 
 Agents run commands on another machine of the same account through the `machine.command.run` action

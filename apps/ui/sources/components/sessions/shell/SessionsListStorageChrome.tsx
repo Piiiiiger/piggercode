@@ -54,7 +54,9 @@ export const SessionsListStorageChrome = React.memo((props: SessionsListStorageC
     const styles = stylesheet;
     const items = props.data ?? EMPTY_ITEMS;
     const [picked, setPicked] = useLocalSettingMutable('sessionListAgentFilterV1');
-    const machines = useSessionExplorerMachines();
+    const explorerMachines = useSessionExplorerMachines();
+    // Only machines that run agents are probed for them or browsed for their provider history.
+    const machines = React.useMemo(() => explorerMachines.filter((machine) => machine.agentsHosted), [explorerMachines]);
     // The machines are the active server's, which is also where a null server id points the capability cache.
     const { installed, detect } = useInstalledAgentClis({ serverId: null, machines });
     const counts = React.useMemo(() => countSessionListSessionsByAgent(items), [items]);

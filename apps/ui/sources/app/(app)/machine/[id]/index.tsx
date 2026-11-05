@@ -57,6 +57,7 @@ import { WINDOWS_REMOTE_SESSION_LAUNCH_MODE_OPTIONS } from '@/sync/domains/sessi
 import { readDisplayMachineTargetForSession, readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveMachineSpawnReadiness } from '@/sync/domains/machines/identity/resolveMachineSpawnReadiness';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 import {
     MachineReplacementPickerModal,
     type MachineReplacementPickerCandidate,
@@ -237,11 +238,13 @@ export default function MachineDetailScreen() {
         };
     }, [requestedServerId]);
 
+    // A computer that runs no agents: no session launch, agent list or agent tools, and no probe for them.
+    const agentsHosted = isMachineAgentHost(machine);
     const { state: detectedCapabilities, refresh: refreshDetectedCapabilities } = useMachineCapabilitiesCache({
         machineId: machineId ?? null,
         serverId: activeServerId,
         cacheKeySalt: machine?.daemonStateVersion ?? 0,
-        enabled: Boolean(machineId && isOnline && !isServerSwitching),
+        enabled: Boolean(machineId && isOnline && !isServerSwitching && agentsHosted),
         request: CAPABILITIES_REQUEST_MACHINE_DETAILS,
     });
     const detectedCapabilitiesSnapshot = React.useMemo(() => {
@@ -947,7 +950,7 @@ export default function MachineDetailScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 {/* Launch section */}
-                {machine && (
+                {machine && agentsHosted && (
                     <>
                         {!machineCanLaunchSession && (
                             <ItemGroup>
@@ -1189,9 +1192,11 @@ export default function MachineDetailScreen() {
                 )}
 
                 {/* Detected CLIs */}
-                <ItemGroup title={detectedClisTitle}>
-                    <DetectedClisList state={detectedCapabilities} />
-                </ItemGroup>
+                {agentsHosted ? (
+                    <ItemGroup title={detectedClisTitle}>
+                        <DetectedClisList state={detectedCapabilities} />
+                    </ItemGroup>
+                ) : null}
 
                 {machineId ? (
                     <MachineRemoteCommandsGroup
@@ -1212,17 +1217,19 @@ export default function MachineDetailScreen() {
                     />
                 ) : null}
 
-                <ItemGroup title={t('machine.tools.title')}>
-                    <Item
-                        title={t('machine.tools.installablesTitle')}
-                        subtitle={t('machine.tools.installablesSubtitle')}
-                        showChevron={true}
-                        onPress={() => {
-                            if (!machineId) return;
-                            router.push(`/machine/${encodeURIComponent(machineId)}/installables?serverId=${encodeURIComponent(activeServerId)}`);
-                        }}
-                    />
-                </ItemGroup>
+                {agentsHosted ? (
+                    <ItemGroup title={t('machine.tools.title')}>
+                        <Item
+                            title={t('machine.tools.installablesTitle')}
+                            subtitle={t('machine.tools.installablesSubtitle')}
+                            showChevron={true}
+                            onPress={() => {
+                                if (!machineId) return;
+                                router.push(`/machine/${encodeURIComponent(machineId)}/installables?serverId=${encodeURIComponent(activeServerId)}`);
+                            }}
+                        />
+                    </ItemGroup>
+                ) : null}
 
                 {/* Daemon */}
                 <ItemGroup title={t('machine.daemon')}>

@@ -35,6 +35,7 @@ import {
   VOICE_CONVERSATION_SYSTEM_SESSION_KEY,
 } from './voiceConversationSystemSessionLookup';
 import { persistVoiceAutoTargetMachineId, readVoiceAutoTargetMachineId } from './voiceAutoTargetMachineSettings';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 export {
   findReusableVoiceConversationRuntimeSessionId,
@@ -152,12 +153,19 @@ function resolveSpawnTarget(state: any): { machineId: string; directory: string 
 function resolveVoiceHomeSpawnTarget(state: any): { machineId: string; directory: string } | null {
   const agentCfg: any = state?.settings?.voice?.adapters?.local_conversation?.agent ?? {};
   const fixedMachineId = agentCfg?.machineTargetMode === 'fixed' ? normalizeNonEmptyString(agentCfg?.machineTargetId) : null;
+  // A computer that runs no agents is never where the voice agent starts.
+  const isKnownNonAgentHost = (machineId: string): boolean => {
+    const machine = resolveMachineForActiveServerFromState(state, machineId) ?? state?.machines?.[machineId] ?? null;
+    return Boolean(machine) && !isMachineAgentHost(machine);
+  };
   if (fixedMachineId) {
     const fixedRouteMachineId = resolveReplacementAwareVoiceMachineId(fixedMachineId);
     const fixedDirectory = fixedRouteMachineId
       ? resolveVoiceHomeDirectory(state, fixedRouteMachineId) ?? resolveRecentVoiceDirectoryForMachine(state, fixedMachineId)
       : null;
-    if (fixedRouteMachineId && fixedDirectory) return { machineId: fixedRouteMachineId, directory: fixedDirectory };
+    if (fixedRouteMachineId && fixedDirectory && !isKnownNonAgentHost(fixedRouteMachineId)) {
+      return { machineId: fixedRouteMachineId, directory: fixedDirectory };
+    }
   }
 
   const isKnownInactiveMachine = (machineId: string): boolean => {
@@ -175,7 +183,7 @@ function resolveVoiceHomeSpawnTarget(state: any): { machineId: string; directory
       ?? state?.machines?.[stickyAutoMachineId]
       ?? null;
     const stickyDirectory = resolveVoiceHomeDirectory(state, stickyAutoMachineId);
-    if (stickyDirectory && stickyMachine?.active !== false) {
+    if (stickyDirectory && stickyMachine?.active !== false && !isKnownNonAgentHost(stickyAutoMachineId)) {
       return { machineId: stickyAutoMachineId, directory: stickyDirectory };
     }
   }
@@ -204,7 +212,7 @@ function resolveVoiceHomeSpawnTarget(state: any): { machineId: string; directory
     if (!machineId) continue;
     if (seenMachineIds.has(machineId)) continue;
     seenMachineIds.add(machineId);
-    if (isKnownInactiveMachine(machineId)) continue;
+    if (isKnownInactiveMachine(machineId) || isKnownNonAgentHost(machineId)) continue;
     const directory =
       resolveVoiceHomeDirectory(state, machineId)
       ?? resolveRecentVoiceDirectoryForMachine(state, originMachineId)

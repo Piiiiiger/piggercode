@@ -212,6 +212,7 @@ import {
 } from './machine/metadata';
 import { readCliUpdateFactsForThisCli } from '@/cli/runtime/update/cliUpdateFacts';
 import { createCliUpdateMetadataPublisher, type CliUpdateMetadataPublisher } from './machine/cliUpdateMetadataPublisher';
+import { agentsNotHostedResult, daemonHostsAgents } from './agentHosting';
 import { createDaemonShutdownController } from './lifecycle/shutdown';
 import { buildHostedRunnerSpawnConfig, buildTmuxSpawnConfig, buildTmuxWindowEnv } from './platform/tmux/spawnConfig';
 export { buildTmuxSpawnConfig, buildTmuxWindowEnv } from './platform/tmux/spawnConfig';
@@ -3041,10 +3042,13 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         };
 
             // Spawn a new session (sessionId reserved for future Happy session resume; vendor resume uses options.resume).
+                // A computer connected through the desktop app runs no agents, whoever asks.
+                const agentsHosted = daemonHostsAgents();
                 const spawnSession = async (
                   options: SpawnSessionOptions,
                   acceptanceHooks?: SpawnSessionRunnerAcceptanceHooks,
                 ): Promise<SpawnSessionResult> => {
+          if (!agentsHosted) return agentsNotHostedResult();
           let normalizedOptions: SpawnSessionOptions = {
             ...options,
             directory: normalizeSpawnSessionDirectory(options.directory, process.env),

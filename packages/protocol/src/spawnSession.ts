@@ -57,6 +57,8 @@ export const SPAWN_SESSION_ERROR_CODES = {
   SPAWN_FAILED: 'SPAWN_FAILED',
   DAEMON_RPC_UNAVAILABLE: 'DAEMON_RPC_UNAVAILABLE',
   DAEMON_UPGRADE_REQUIRED: 'DAEMON_UPGRADE_REQUIRED',
+  /** The machine does not run agent sessions (a computer connected through the desktop app). */
+  AGENTS_NOT_HOSTED: 'AGENTS_NOT_HOSTED',
   UNEXPECTED: 'UNEXPECTED',
 } as const;
 

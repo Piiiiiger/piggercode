@@ -3,7 +3,7 @@ import * as React from 'react';
 import type { Machine } from '@/sync/domains/state/storageTypes';
 import { listServerProfiles, type ServerProfile } from '@/sync/domains/server/serverProfiles';
 import { useMachineListByServerId, useMachineListStatusByServerId } from '@/sync/domains/state/storage';
-import { isMachineVisibleForLaunchSelection } from '@/sync/domains/machines/identity/filterVisibleMachines';
+import { isMachineLaunchTarget } from '@/sync/domains/machines/identity/machineAgentHost';
 
 import { useStableValueBySignature } from '@/hooks/ui/useStableValueBySignature';
 
@@ -145,7 +145,7 @@ export function useServerScopedMachineOptions(params: UseServerScopedMachineOpti
                 ? params.activeMachines
                 : (machineListByServerId[serverId] ?? []);
             const machines = (baseMachines ?? [])
-                .filter(isMachineVisibleForLaunchSelection)
+                .filter(isMachineLaunchTarget)
                 .map((machine) => buildServerScopedMachine(machine, { serverId, serverName }));
             return {
                 serverId,

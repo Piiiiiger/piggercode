@@ -165,6 +165,29 @@ describe('usePrimaryMachineFromActiveSelection', () => {
         expect(latest).toBe('m-ok');
     });
 
+    it('skips a computer that does not run agents', async () => {
+        const { usePrimaryMachineFromActiveSelection } = await import('./usePrimaryMachineFromActiveSelection');
+        const { useAllMachines } = await import('@/sync/domains/state/storage');
+        (useAllMachines as any).mockReturnValue([
+            { id: 'm-mac', revokedAt: null, metadata: { displayName: 'Mac', agentsHosted: false } },
+            { id: 'm-server', revokedAt: null, metadata: { displayName: 'Server' } },
+        ]);
+
+        const captured: PrimaryMachineSelection[] = [];
+        function Probe() {
+            const value = usePrimaryMachineFromActiveSelection();
+            React.useEffect(() => {
+                captured.push(value);
+            }, [value]);
+
+            return null;
+        }
+
+        await renderScreen(<Probe />);
+
+        expect(captured.at(-1)).toBe('m-server');
+    });
+
     it('uses machines from the first visible server in multi-server mode', async () => {
         const { usePrimaryMachineFromActiveSelection } = await import('./usePrimaryMachineFromActiveSelection');
         const { useAllMachines, useMachineListByServerId } = await import('@/sync/domains/state/storage');

@@ -29,6 +29,7 @@ import { DirectBrowseCandidatesList } from './DirectBrowseCandidatesList';
 import { shouldUseCandidateSource } from './shouldUseCandidateSource';
 import { useDirectBrowseCandidates, type DirectBrowseCandidate } from './useDirectBrowseCandidates';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 type DirectBrowseProviderId = DirectSessionsProviderId;
 type AppTheme = Theme;
@@ -84,7 +85,9 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
     const navigateToSession = useNavigateToSession();
     const { theme } = useUnistyles() as { theme: AppTheme };
     const styles = stylesheet;
-    const machines = useAllMachines();
+    const allMachines = useAllMachines();
+    // A computer that runs no agents has no provider history to browse here.
+    const machines = React.useMemo(() => allMachines.filter(isMachineAgentHost), [allMachines]);
     const profile = useProfile();
     const settings = useSettings();
     const providers = React.useMemo<ReadonlyArray<Readonly<{ id: DirectBrowseProviderId; label: string }>>>(

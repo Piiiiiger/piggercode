@@ -58,7 +58,7 @@ const settingsMock = vi.hoisted(() => ({
         'openai-codex/work': 'Work Profile',
     },
 }));
-let machinesState = [
+let machinesState: Array<{ id: string; active: boolean; metadata: { displayName: string; host: string; agentsHosted?: boolean } }> = [
     { id: 'machine-1', active: true, metadata: { displayName: 'MacBook Pro', host: 'mbp.local' } },
     { id: 'machine-2', active: false, metadata: { displayName: 'Linux Box', host: 'linux.local' } },
 ];
@@ -324,6 +324,23 @@ describe('DirectSessionsBrowseScreen', () => {
 
         const machineDropdown = findDropdownMenuByTriggerTestId(screen, 'direct-session-machine-picker-trigger');
         expect(machineDropdown?.props?.selectedId).toBe('machine-active');
+    });
+
+    it('never browses the provider history of a computer that does not run agents', async () => {
+        machinesState = [
+            { id: 'machine-mac', active: true, metadata: { displayName: 'Mac', host: 'mac.local', agentsHosted: false } },
+            { id: 'machine-server', active: true, metadata: { displayName: 'Server', host: 'server' } },
+        ];
+        const { DirectSessionsBrowseScreen } = await directSessionsBrowseScreenModulePromise;
+
+        const screen = await renderScreen(<DirectSessionsBrowseScreen />);
+
+        await flushHookEffects();
+
+        expect(candidatesListSpy).toHaveBeenCalledWith(expect.objectContaining({ machineId: 'machine-server' }));
+        expect(candidatesListSpy).not.toHaveBeenCalledWith(expect.objectContaining({ machineId: 'machine-mac' }));
+        const machineDropdown = findDropdownMenuByTriggerTestId(screen, 'direct-session-machine-picker-trigger');
+        expect(machineDropdown?.props?.selectedId).toBe('machine-server');
     });
 
     it('searches provider candidates through the daemon with the search field', async () => {

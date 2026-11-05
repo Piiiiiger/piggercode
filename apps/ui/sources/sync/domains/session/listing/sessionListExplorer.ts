@@ -13,6 +13,8 @@ export type SessionExplorerMachine = Readonly<{
     homeDir: string | null;
     /** Whether the explorer can list this machine's folders now. */
     online: boolean;
+    /** False for a computer that runs no agents: its folders show in the Files view only. */
+    agentsHosted?: boolean;
 }>;
 
 export type SessionExplorerFolderRef = Readonly<{
@@ -341,17 +343,19 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         const resolved = typeof raw === 'string' && raw.trim() ? resolveAbsolutePath(raw.trim(), machine.homeDir ?? undefined) : '';
         return resolved.startsWith(ROOT) ? trimTrailingSlashes(resolved) : null;
     };
+    const filesMode = input.mode === 'files';
     const knownMachines = new Map<string, SessionExplorerMachine>();
     for (const machine of input.machines) {
         knownMachines.set(sessionExplorerMachineKey(machine.serverId, machine.machineId), machine);
         // An online machine shows its top folder to browse; others show up with their sessions.
         if (!machine.online) continue;
+        // No session starts on a computer that runs no agents, so only the Files view browses it.
+        if (!filesMode && machine.agentsHosted === false) continue;
         const opened = openedPathOf(machine);
         if (opened) openedFolder(machineNode(machine), opened);
         else if (machine.homeDir) rootFolder(machineNode(machine), HOME);
     }
 
-    const filesMode = input.mode === 'files';
     const looseRows: Row[] = [];
     const seen = new Set<string>();
     let groupHeader: Header | null = null;

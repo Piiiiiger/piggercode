@@ -1,5 +1,5 @@
 import type { Machine } from '@/sync/domains/state/storageTypes';
-import { isMachineVisibleForLaunchSelection } from '@/sync/domains/machines/identity/filterVisibleMachines';
+import { isMachineAgentHost, isMachineLaunchTarget } from '@/sync/domains/machines/identity/machineAgentHost';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
 type RecentMachinePathEntry = Readonly<{ machineId?: string | null }> | null | undefined;
@@ -34,7 +34,7 @@ export function listPreferredMachineIds(params: Readonly<{
         if (!normalizedMachineId) return;
         const machine = machineById.get(normalizedMachineId);
         if (!machine) return;
-        if (!isMachineVisibleForLaunchSelection(machine)) return;
+        if (!isMachineLaunchTarget(machine)) return;
         if (onlineOnly && !isMachineOnline(machine)) return;
         pushUniqueMachineId(ordered, seen, normalizedMachineId);
     };
@@ -48,7 +48,7 @@ export function listPreferredMachineIds(params: Readonly<{
   }
 
   for (const machine of machines) {
-    if (!isMachineVisibleForLaunchSelection(machine)) continue;
+    if (!isMachineLaunchTarget(machine)) continue;
     if (isMachineOnline(machine)) {
       pushUniqueMachineId(ordered, seen, machine.id);
     }
@@ -58,16 +58,23 @@ export function listPreferredMachineIds(params: Readonly<{
     return ordered;
   }
 
+  // A remembered machine stays preferred while unknown or offline, but never one that runs no agents.
+  const pushRemembered = (machineId: unknown) => {
+    const machine = machineById.get(normalizeId(machineId));
+    if (machine && !isMachineAgentHost(machine)) return;
+    pushUniqueMachineId(ordered, seen, machineId);
+  };
+
   if (preferredMachineId) {
-    pushUniqueMachineId(ordered, seen, preferredMachineId);
+    pushRemembered(preferredMachineId);
   }
 
   for (const recent of recentMachinePaths) {
-    pushUniqueMachineId(ordered, seen, recent?.machineId);
+    pushRemembered(recent?.machineId);
   }
 
   for (const machine of machines) {
-    if (!isMachineVisibleForLaunchSelection(machine)) continue;
+    if (!isMachineLaunchTarget(machine)) continue;
     pushUniqueMachineId(ordered, seen, machine.id);
   }
 

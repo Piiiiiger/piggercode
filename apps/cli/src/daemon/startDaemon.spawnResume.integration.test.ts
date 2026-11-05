@@ -3270,6 +3270,35 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     }
   });
 
+  it('on a computer connected through the desktop app, refuses to start any agent session there', async () => {
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    const previousManagedBy = process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY;
+    const fixtureHome = await mkdtemp(join(tmpdir(), 'happier-agents-not-hosted-'));
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY = 'desktop';
+    let run: Promise<void> | null = null;
+    spawnHappyCLI.mockClear();
+    try {
+      const { startDaemon } = await import('./startDaemon');
+      run = startDaemon();
+      const spawnSession = await waitForSpawnSessionRegistration();
+      const result = await spawnSession({
+        directory: fixtureHome, backendTarget: { kind: 'builtInAgent', agentId: 'codex' }, token: 't',
+      });
+      expect(result).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.AGENTS_NOT_HOSTED });
+      expect(spawnHappyCLI).not.toHaveBeenCalled();
+    } finally {
+      if (run) { harness.requestShutdown('happier-cli'); await run; }
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      if (previousManagedBy === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY = previousManagedBy;
+      await restoreDaemonExitBoundary(exitSpy);
+      await rm(fixtureHome, { recursive: true, force: true });
+    }
+  });
+
   it('launches an app-created Codex App Server controller with an optional local Herdr client', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
     const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;

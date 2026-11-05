@@ -182,6 +182,7 @@ export function createStorageModuleStub<TOverrides extends object>(overrides: TO
         useMachineCliDetectionTarget: () => ({
             daemonStateVersion: 0,
             isOnline: false,
+            agentsHosted: true,
         }),
         useAllSessions: () => allSessions,
         useFriendRequestCount: () => 0,

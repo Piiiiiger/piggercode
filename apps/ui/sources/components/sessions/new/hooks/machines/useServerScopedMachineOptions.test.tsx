@@ -85,6 +85,20 @@ function createMachine(id: string): Machine {
 }
 
 describe('useServerScopedMachineOptions', () => {
+    it('lists only machines that run agents: a computer that does not is left out', async () => {
+        const captured: Array<ReturnType<typeof useServerScopedMachineOptions>> = [];
+        const mac = createMachine('mac');
+
+        await renderScreen(<Probe
+                    allowedServerIds={['server-a']}
+                    activeServerId="server-a"
+                    activeMachines={[createMachine('server'), { ...mac, metadata: { ...mac.metadata!, agentsHosted: false } }]}
+                    onGroups={(groups) => captured.push(groups)}
+                />);
+
+        expect(captured.at(-1)?.[0]?.machines.map((machine) => machine.id)).toEqual(['server']);
+    });
+
     it('refreshes groups when a machine freshness timestamp changes', async () => {
         const captured: Array<ReturnType<typeof useServerScopedMachineOptions>> = [];
         const activeAt = Date.now();

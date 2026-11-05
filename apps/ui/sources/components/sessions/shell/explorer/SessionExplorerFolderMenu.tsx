@@ -41,20 +41,23 @@ export function hasSessionExplorerFolderActions(actions: SessionExplorerFolderAc
 
 const NEW_SESSION_PREFIX = 'new-session:';
 const NO_COUNTS: ReadonlyMap<AgentId, number> = new Map();
+const NO_MACHINES: ReturnType<typeof useSessionExplorerMachines> = Object.freeze([]);
 
 /** The agents a session can start with on the folder's machine; detection runs while the menu is open. */
 function useNewSessionAgents(newSession: SessionExplorerFolderActions['newSession']): AgentId[] {
     const machines = useSessionExplorerMachines();
     const machineId = newSession?.machineId ?? null;
     const own = React.useMemo(() => machines.filter((machine) => machine.machineId === machineId), [machineId, machines]);
-    const { installed, detect } = useInstalledAgentClis({ serverId: null, machines: own });
+    // A computer that runs no agents starts no sessions: no agents to offer, nothing to detect.
+    const startsSessions = machineId != null && !own.some((machine) => !machine.agentsHosted);
+    const { installed, detect } = useInstalledAgentClis({ serverId: null, machines: startsSessions ? own : NO_MACHINES });
     React.useEffect(() => {
-        if (machineId) detect();
-    }, [detect, machineId]);
+        if (startsSessions) detect();
+    }, [detect, startsSessions]);
     const preferred = newSession?.preferredAgentId ?? null;
     return React.useMemo(
-        () => (machineId ? listSessionListAgentOptions({ counts: NO_COUNTS, installed, selected: preferred }) : []),
-        [installed, machineId, preferred],
+        () => (startsSessions ? listSessionListAgentOptions({ counts: NO_COUNTS, installed, selected: preferred }) : []),
+        [installed, preferred, startsSessions],
     );
 }
 

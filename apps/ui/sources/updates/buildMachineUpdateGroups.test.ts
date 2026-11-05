@@ -96,6 +96,44 @@ describe('buildMachineUpdateGroups (what the always-mounted pill counts)', () =>
         expect(buildUpdatesSummary(groups.flatMap((group) => group.items))).toMatchObject({ actionableCount: 1 });
     });
 
+    it('a computer that does not run agents shows only its PiggerCode CLI, never its agents or helpers', () => {
+        const claudeUpdate: MachineCapabilitiesSnapshot = {
+            response: {
+                protocolVersion: 1,
+                results: {
+                    'cli.claude': {
+                        ok: true,
+                        checkedAt: 1,
+                        data: { available: true, version: '2.1.3', latestVersion: '2.1.4', installSource: 'managed', updateSupported: true, updateCommand: null },
+                    },
+                },
+            },
+        };
+        const cliUpdate = {
+            currentVersion: '0.3.3',
+            latestVersion: '0.3.4',
+            channel: 'stable' as const,
+            installSource: 'managed' as const,
+            updateCommand: 'piggercode self update',
+            canUpdateRemotely: true,
+            lastUpdate: null,
+        };
+        const rows = (thisMachineId: string | null) => buildMachineUpdateGroups({
+            machines: [machine('server', { cliUpdate }), machine('mac', { cliUpdate, agentsHosted: false })],
+            thisMachineId,
+            thisComputerItem: null,
+            runs: NO_RUNS,
+            snapshots: new Map([['server', claudeUpdate], ['mac', claudeUpdate]]),
+        }).groups.flatMap((group) => group.items.map((item) => `${item.machineId}:${item.subject.kind}`));
+
+        for (const thisMachineId of [null, 'mac']) {
+            expect(rows(thisMachineId)).toEqual(expect.arrayContaining(['server:agent-cli', 'server:happier-cli']));
+            expect(rows(thisMachineId).filter((row) => row.startsWith('mac:'))).toEqual(
+                thisMachineId === 'mac' ? [] : ['mac:happier-cli'],
+            );
+        }
+    });
+
     it('an online machine whose tools were never checked is "not checked", never "up to date"', () => {
         const { groups, uncheckedMachineCount } = buildMachineUpdateGroups({
             machines: [machine('laptop'), machine('studio')],

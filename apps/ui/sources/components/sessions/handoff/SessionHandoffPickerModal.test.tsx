@@ -268,6 +268,26 @@ describe('SessionHandoffPickerModal', () => {
         expect(pathBrowserModuleLoadedMock).not.toHaveBeenCalled();
     });
 
+    it('never offers a computer that does not run agents as the place to move a session to', async () => {
+        const mac = makeReadyTargetMachine({ id: 'machine_mac' });
+        machineListByServerIdState.server_a.push({ ...mac, metadata: { ...(mac.metadata as object), agentsHosted: false } });
+        const { SessionHandoffPickerModal } = await import('./SessionHandoffPickerModal');
+
+        const tree = (await renderScreen(<SessionHandoffPickerModal
+                    onClose={vi.fn()}
+                    setChrome={vi.fn()}
+                    onResolve={vi.fn()}
+                    sessionId="sess_1"
+                    sourceMachineId="machine_source"
+                    serverId="server_a"
+                />)).tree;
+        await act(async () => {});
+
+        const offered = tree.findByType('MachineSelector' as any).props.machines.map((machine: { id: string }) => machine.id);
+        expect(offered).toContain('machine_target');
+        expect(offered).not.toContain('machine_mac');
+    });
+
     it('returns the selected machine and default handoff options', async () => {
         const onResolve = vi.fn();
         const onClose = vi.fn();

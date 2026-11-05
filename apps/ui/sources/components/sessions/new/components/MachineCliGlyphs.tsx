@@ -4,6 +4,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Typography } from '@/constants/Typography';
 import { Modal } from '@/modal';
 import { useDaemonScopedMachineCapabilitiesCache } from '@/hooks/server/useDaemonScopedMachineCapabilitiesCache';
+import { useMachineCliDetectionTarget } from '@/sync/domains/state/storage';
 import { DetectedClisModal } from '@/components/machines/DetectedClisModal';
 import { CAPABILITIES_REQUEST_NEW_SESSION } from '@/capabilities/requests';
 import type { AgentId } from '@/agents/catalog/catalog';
@@ -60,13 +61,16 @@ export const MachineCliGlyphs = React.memo(({ machineId, isOnline, serverId, aut
     const { theme } = useUnistyles();
     const styles = stylesheet;
     const enabledAgents = useEnabledAgentIds();
+    // Same narrow, reference-stable target the capabilities cache reads: a computer that runs no
+    // agents shows none and is not probed for them.
+    const agentsHosted = useMachineCliDetectionTarget(machineId).agentsHosted !== false;
 
     // The daemon-scoped cache owns the machine subscription (narrow + reference-stable). Reading
     // the whole machine record here as well would re-render every picker row on every heartbeat.
     const { state } = useDaemonScopedMachineCapabilitiesCache({
         machineId,
         serverId,
-        enabled: autoDetect && isOnline,
+        enabled: autoDetect && isOnline && agentsHosted,
         request: CAPABILITIES_REQUEST_NEW_SESSION,
     });
 
@@ -91,6 +95,8 @@ export const MachineCliGlyphs = React.memo(({ machineId, isOnline, serverId, aut
 
     const display = React.useMemo(() => resolveMachineCliLogoDisplay(availableAgentIds), [availableAgentIds]);
     const isLoading = state.status !== 'loaded';
+
+    if (!agentsHosted) return null;
 
     return (
         <Pressable

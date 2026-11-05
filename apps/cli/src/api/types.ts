@@ -324,6 +324,8 @@ export const MachineMetadataSchema = z.object({
   happyLibDir: z.string(),
   daemonTerminalSessionAttachSupported: z.boolean().optional(),
   daemonSessionGoalControlsSupported: z.boolean().optional(),
+  /** `false` on a computer connected through the desktop app: it never runs agent sessions (`daemon/agentHosting.ts`). */
+  agentsHosted: z.boolean().optional(),
   /** K5 — this machine's first-party CLI update facts (plan R13); absent from older daemons. */
   cliUpdate: CliUpdateFactsSchema.optional(),
 })

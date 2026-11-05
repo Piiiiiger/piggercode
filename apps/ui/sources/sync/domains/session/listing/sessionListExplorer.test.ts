@@ -282,6 +282,16 @@ describe('buildSessionExplorerItems', () => {
 });
 
 describe('buildSessionExplorerItems in the Files view', () => {
+    it('browses a computer that runs no agents in the Files view only, never as a place to start a session', () => {
+        const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'mac', homeDir: '/Users/u', online: true, agentsHosted: false };
+        const tops = (mode: 'sessions' | 'files') => build({ mode, machines: [vm, mac] }).items
+            .filter((item) => item.type === 'header' && item.depth === 0)
+            .map((item) => (item as Header).title);
+
+        expect(tops('sessions')).not.toContain('mac');
+        expect(tops('files')).toEqual(expect.arrayContaining(['mac', 'vm']));
+    });
+
     it('shows the folders and their files without sessions, asking for listings that include files', () => {
         const byPath: Record<string, SessionExplorerListing> = {
             '/home/u': { status: 'loaded', dirs: ['code'], files: ['notes.txt', '.bashrc'] },

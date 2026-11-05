@@ -38,6 +38,7 @@ import { machineMetadataPlatformToTarget } from '@/utils/path/machinePlatform';
 
 import type { SessionHandoffPickerResult } from './openSessionHandoffPicker';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 export type SessionHandoffPickerModalProps = CustomModalInjectedProps & Readonly<{
     sessionId: string;
@@ -156,7 +157,7 @@ export function SessionHandoffPickerModal({ onClose, setChrome, onResolve, sessi
             const machineId = normalizeId(machine?.id);
             if (!machineId) return false;
             if (machine?.revokedAt) return false;
-            return true;
+            return isMachineAgentHost(machine);
         });
     }, [allServerMachines]);
     const hasSelectableMachine = React.useMemo(

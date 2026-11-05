@@ -8,6 +8,8 @@ import type { MachineMetadata } from '@/api/types';
 import type { CliUpdateFacts } from '@piggercode/protocol';
 import packageJson from '../../../package.json';
 
+import { daemonHostsAgents } from '../agentHosting';
+
 const execFileAsync = promisify(execFile);
 
 export async function getPreferredHostName(): Promise<string> {
@@ -55,6 +57,7 @@ export function refreshMachineMetadataForCurrentDaemon(
     happyLibDir: projectPath(),
     daemonTerminalSessionAttachSupported: true,
     daemonSessionGoalControlsSupported: true,
+    agentsHosted: daemonHostsAgents(),
     ...(cliUpdate ? { cliUpdate } : {}),
   };
   if (
@@ -66,6 +69,7 @@ export function refreshMachineMetadataForCurrentDaemon(
     && current.happyLibDir === next.happyLibDir
     && current.daemonTerminalSessionAttachSupported === next.daemonTerminalSessionAttachSupported
     && current.daemonSessionGoalControlsSupported === next.daemonSessionGoalControlsSupported
+    && current.agentsHosted === next.agentsHosted
     && JSON.stringify(current.cliUpdate ?? null) === JSON.stringify(next.cliUpdate ?? null)
   ) {
     return current as MachineMetadata;

@@ -67,6 +67,7 @@ import { getPermissionsInUiWhileLocal } from '../domains/state/agentStateCapabil
 import { getSessionLocalControlState, type SessionLocalControlState } from '../domains/session/control/sessionLocalControl';
 import { resolveVisibleMachinesForActiveServerFromState } from './domains/machines/resolveMachinesForActiveServerFromState';
 import { isMachineVisibleForLaunchSelection } from '../domains/machines/identity/filterVisibleMachines';
+import { isMachineAgentHost } from '../domains/machines/identity/machineAgentHost';
 import { resolveServerIdForSessionIdFromLocalState } from '../runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { buildWorkspaceCacheKey, type WorkspaceScopeBase } from '../domains/workspaces/workspaceScope';
 import { buildSessionFolderAssignmentKey } from '../domains/session/folders';
@@ -1280,6 +1281,8 @@ export type SessionExplorerMachineSummary = Readonly<{
   online: boolean;
   /** Salts the machine's capability cache, as the new-session flow does. */
   daemonStateVersion: number;
+  /** False for a computer that runs no agents: it is browsed in the Files view, never offered for a session. */
+  agentsHosted: boolean;
 }>;
 
 const EMPTY_SESSION_EXPLORER_MACHINES: ReadonlyArray<SessionExplorerMachineSummary> = Object.freeze([]);
@@ -1293,9 +1296,10 @@ function selectSessionExplorerMachines(state: StorageState): ReadonlyArray<Sessi
     homeDir: typeof machine.metadata?.homeDir === 'string' && machine.metadata.homeDir.trim() ? machine.metadata.homeDir : null,
     online: isMachineOnline(machine),
     daemonStateVersion: typeof machine.daemonStateVersion === 'number' ? machine.daemonStateVersion : 0,
+    agentsHosted: isMachineAgentHost(machine),
   }));
   const signature = machines
-    .map((machine) => [machine.machineId, machine.label, machine.homeDir ?? '', machine.online ? '1' : '0', machine.daemonStateVersion].join('\u0000'))
+    .map((machine) => [machine.machineId, machine.label, machine.homeDir ?? '', machine.online ? '1' : '0', machine.daemonStateVersion, machine.agentsHosted ? '1' : '0'].join('\u0000'))
     .join('\n');
   if (sessionExplorerMachinesCache?.signature === signature) return sessionExplorerMachinesCache.machines;
   sessionExplorerMachinesCache = { signature, machines };
@@ -1325,7 +1329,7 @@ export function useLaunchSelectionMachines(): Machine[] {
       : state.isDataReady
         ? machines
         : [];
-    return getStableLaunchSelectionMachines(visibleMachines);
+    return getStableLaunchSelectionMachines(visibleMachines.filter(isMachineAgentHost));
   });
 }
 
@@ -1384,6 +1388,8 @@ export function useMachine(machineId: string): Machine | null {
 type MachineCliDetectionTarget = Readonly<{
   daemonStateVersion: number;
   isOnline: boolean;
+  /** False for a computer that runs no agents: its agent CLIs are neither probed nor shown. */
+  agentsHosted: boolean;
 }>;
 
 type MachineCliDetectionTargetCacheEntry = Readonly<{
@@ -1396,12 +1402,13 @@ const machineCliDetectionTargetCache = new Map<string, MachineCliDetectionTarget
 function getStableMachineCliDetectionTarget(machineId: string, machine: Machine | null): MachineCliDetectionTarget {
   const daemonStateVersion = machine?.daemonStateVersion ?? 0;
   const isOnline = machine ? isMachineOnline(machine) : false;
-  const signature = `${daemonStateVersion}:${isOnline ? 'online' : 'offline'}`;
+  const agentsHosted = isMachineAgentHost(machine);
+  const signature = `${daemonStateVersion}:${isOnline ? 'online' : 'offline'}:${agentsHosted ? 'agents' : 'no-agents'}`;
   const cached = machineCliDetectionTargetCache.get(machineId);
   if (cached?.signature === signature) {
     return cached.target;
   }
-  const target = { daemonStateVersion, isOnline };
+  const target = { daemonStateVersion, isOnline, agentsHosted };
   machineCliDetectionTargetCache.set(machineId, { signature, target });
   return target;
 }

@@ -3,7 +3,7 @@ import { act } from 'react-test-renderer';
 
 import { createSessionFixture, renderHook, standardCleanup } from '@/dev/testkit';
 
-import { useAllMachines, useFirstVisibleMachineId, useLaunchSelectionMachines, useMachineCliDetectionTarget, useMachineDisplayById, useMachineListByServerId, useSessionChatFooterState, useSessionForkSupportSource } from '@/sync/domains/state/storage';
+import { useAllMachines, useFirstVisibleMachineId, useLaunchSelectionMachines, useMachineCliDetectionTarget, useMachineDisplayById, useMachineListByServerId, useSessionChatFooterState, useSessionExplorerMachines, useSessionForkSupportSource } from '@/sync/domains/state/storage';
 import { storage } from '@/sync/domains/state/storageStore';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 
@@ -144,6 +144,46 @@ describe('useAllMachines', () => {
         }
     });
 
+    it('leaves a computer that does not run agents out of new-session targets, and marks it for the explorer', async () => {
+        const previousState = storage.getState();
+        try {
+            const activeAt = Date.now();
+            const machine = (id: string, agentsHosted?: boolean) => ({
+                id,
+                seq: 1,
+                createdAt: activeAt,
+                updatedAt: activeAt,
+                active: true,
+                activeAt,
+                metadata: {
+                    host: id, platform: 'linux', happyCliVersion: '1', happyHomeDir: '.happy', homeDir: '/home',
+                    ...(agentsHosted === undefined ? {} : { agentsHosted }),
+                },
+                metadataVersion: 1,
+                daemonState: null,
+                daemonStateVersion: 0,
+                revokedAt: null,
+            });
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                machines: { 'm-server': machine('m-server'), 'm-mac': machine('m-mac', false) },
+            }));
+
+            const launch = await renderHook(() => useLaunchSelectionMachines(), { flushOptions: { cycles: 1, turns: 4 } });
+            const explorer = await renderHook(() => useSessionExplorerMachines(), { flushOptions: { cycles: 1, turns: 4 } });
+
+            expect(launch.getCurrent().map((entry) => entry.id)).toEqual(['m-server']);
+            expect(new Map(explorer.getCurrent().map((entry) => [entry.machineId, entry.agentsHosted])))
+                .toEqual(new Map([['m-server', true], ['m-mac', false]]));
+
+            await launch.unmount();
+            await explorer.unmount();
+        } finally {
+            storage.setState(previousState);
+        }
+    });
+
     it('refreshes launch-selection machines when heartbeat freshness changes', async () => {
         const previousState = storage.getState();
         try {
@@ -243,6 +283,7 @@ describe('useAllMachines', () => {
             expect(hook.getCurrent()).toEqual({
                 daemonStateVersion: 7,
                 isOnline: true,
+                agentsHosted: true,
             });
 
             await hook.unmount();

@@ -12,6 +12,7 @@ import type { UpdateItem } from './items/updateItem';
 import { readCapabilityResultData } from './machineCapabilitySnapshots';
 import { observeMachineUpdateRun, type useMachineUpdateRuns } from './machineUpdateRuns';
 import { buildRemoteMachineUpdateFacts, type RemoteMachineUpdateFacts } from './remoteCliUpdateItems';
+import { isMachineAgentHost } from '@/sync/domains/machines/identity/machineAgentHost';
 
 export type UpdatesGroup = Readonly<{
     id: string;
@@ -120,7 +121,8 @@ export function buildMachineUpdateGroups(params: Readonly<{
             online: true,
             items: [
                 ...(params.thisComputerItem ? [params.thisComputerItem] : []),
-                ...(machineId
+                // A computer that runs no agents lists only its PiggerCode CLI.
+                ...(machineId && isMachineAgentHost(own)
                     ? buildMachineRows({ machineId, online: true, snapshot: params.snapshots.get(machineId) ?? null, runs: params.runs, installables })
                     : []),
             ],
@@ -136,13 +138,15 @@ export function buildMachineUpdateGroups(params: Readonly<{
             online: remote.online,
             items: [
                 remote.cliItem,
-                ...buildMachineRows({
-                    machineId: remote.machine.id,
-                    online: remote.online,
-                    snapshot: params.snapshots.get(remote.machine.id) ?? null,
-                    runs: params.runs,
-                    installables,
-                }),
+                ...(isMachineAgentHost(remote.machine)
+                    ? buildMachineRows({
+                        machineId: remote.machine.id,
+                        online: remote.online,
+                        snapshot: params.snapshots.get(remote.machine.id) ?? null,
+                        runs: params.runs,
+                        installables,
+                    })
+                    : []),
             ],
         });
     }

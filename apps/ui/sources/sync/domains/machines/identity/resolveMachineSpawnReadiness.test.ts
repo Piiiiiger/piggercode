@@ -48,6 +48,17 @@ describe('resolveMachineSpawnReadiness', () => {
         });
     });
 
+    it('never attempts a session on a computer that does not run agents, whatever its readiness', () => {
+        const computer: Machine = { ...onlineMachine, metadata: { ...onlineMachine.metadata!, agentsHosted: false } };
+
+        expect(canAttemptMachineSpawn({ selectedMachineId: 'machine-1', machine: computer })).toBe(false);
+        expect(canAttemptMachineSpawn({
+            selectedMachineId: 'machine-1',
+            machine: computer,
+            spawnReadiness: { status: 'ready', machineId: 'machine-1' },
+        })).toBe(false);
+    });
+
     it('allows an online machine attempt while exact readiness is unknown or probing', () => {
         expect(canAttemptMachineSpawn({ selectedMachineId: 'machine-1', machine: onlineMachine })).toBe(true);
         expect(canAttemptMachineSpawn({

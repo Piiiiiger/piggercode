@@ -439,6 +439,7 @@ export function useSessionListViewState({
         label: machine.label,
         homeDir: machine.homeDir,
         online: machine.online,
+        agentsHosted: machine.agentsHosted,
     })), [explorerMachineSummaries, explorerServerId]);
     const explorerPreviousItemsRef = React.useRef<ReadonlyArray<SessionListViewItem> | null>(null);
     const explorer = React.useMemo(() => {
