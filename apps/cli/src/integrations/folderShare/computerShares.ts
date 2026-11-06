@@ -13,7 +13,8 @@ import type {
   FolderShareState,
 } from '@piggercode/protocol';
 
-import { readSettings, updateSettings, type SharedFolderServer, type SharedFolderSetting } from '@/persistence';
+import { readSettings, updateSettings, type SharedFolderServer, type SharedFolderSetting } from '@/persistence'
+import { defaultServerLocation, parseServerLocation } from './serverLocation';
 import { logger } from '@/ui/logger';
 
 import { ensureSharedFoldersKey } from './computerKey';
@@ -58,6 +59,8 @@ export type ComputerShares = Readonly<{
 }>;
 
 type Runtime = {
+  /** Where its connection mounts the folder on the server; unset for a share from before places. A move starts a new runtime. */
+  at: string | undefined;
   state: FolderShareState;
   error?: string;
   connection: FolderConnection | null;
@@ -135,6 +138,7 @@ export function createComputerShares(deps: Readonly<{
     delete runtime.error;
     runtime.connection = openConnection({
       folder: share.folder,
+      ...(runtime.at !== undefined ? { at: runtime.at } : {}),
       folderPath: join(deps.homeDir, share.folder),
       homeDir: deps.homeDir,
       server: { user: server.user, host: server.host, port: server.port },
@@ -168,15 +172,16 @@ export function createComputerShares(deps: Readonly<{
   const reconcile = async (): Promise<void> => {
     if (stopped) return;
     const { shares, servers } = await readShared();
-    const wanted = new Set(shares.filter((share) => servers[share.serverMachineId]).map(shareKey));
+    const wanted = new Map(shares.filter((share) => servers[share.serverMachineId]).map((share) => [shareKey(share), share.at]));
     for (const [key, runtime] of runtimes) {
-      if (wanted.has(key)) continue;
+      // Still shared, at the same place on the server (a share from before places has none).
+      if (wanted.has(key) && wanted.get(key) === runtime.at) continue;
       dispose(runtime);
       runtimes.delete(key);
     }
-    for (const key of wanted) {
+    for (const [key, at] of wanted) {
       if (runtimes.has(key)) continue;
-      const runtime: Runtime = { state: 'connecting', connection: null, retryTimer: null };
+      const runtime: Runtime = { at, state: 'connecting', connection: null, retryTimer: null };
       runtimes.set(key, runtime);
       await connect(key, runtime);
     }
@@ -193,7 +198,8 @@ export function createComputerShares(deps: Readonly<{
       listed.push({
         folder: share.folder,
         serverMachineId: share.serverMachineId,
-        serverPath: `${server.root}/${share.folder}`,
+        // A share from before places stays where it was (`~/local/<label>/<folder>`) until it is moved.
+        serverPath: share.at !== undefined ? `~/${share.at}` : `${server.root}/${share.folder}`,
         state: runtime?.state ?? 'connecting',
         ...(runtime?.error ? { error: runtime.error } : {}),
       });
@@ -203,28 +209,18 @@ export function createComputerShares(deps: Readonly<{
 
   const changed = async (): Promise<FolderShareMutationResponse> => ({ ok: true, shares: (await list()).shares });
 
-  const add = async (request: FolderShareAddRequest): Promise<FolderShareMutationResponse> => {
-    const tools = resolveTools();
-    if (!tools.ok) return refused('unsupported', tools.reason);
-    const resolved = await resolveFolder(deps.homeDir, request.folder);
-    if (!resolved.ok) return refused('folder_not_allowed', resolved.error);
-    const folder = resolved.folder;
-    const serverMachineId = request.serverMachineId;
-    if (serverMachineId === deps.machineId) return refused('folder_not_allowed', 'Choose another machine to share this folder with.');
-
-    const { shares } = await readShared();
-    const sameServer = shares.filter((share) => share.serverMachineId === serverMachineId);
-    if (sameServer.some((share) => share.folder === folder)) return await changed();
-    const overlapping = sameServer.find((share) => folder.startsWith(`${share.folder}/`) || share.folder.startsWith(`${folder}/`));
-    if (overlapping) {
-      return refused('folder_not_allowed', `~/${folder} overlaps ~/${overlapping.folder}, which is already shared with that machine.`);
-    }
-
+  /**
+   * Has the server agree to every place this computer's folders show at there (the account-authenticated
+   * accept request; the server writes them into the key's forced command and mounts only there), and
+   * keeps how it is reached. The server's answer, or why there is none.
+   */
+  const agreeWithServer = async (serverMachineId: string, places: readonly string[]) => {
     const key = await ensureKey(deps.stateDir);
     const accepted = await deps.acceptOnServer(serverMachineId, {
       publicKey: key.publicKey,
       computerMachineId: deps.machineId,
       computerName: deps.machineName,
+      places: [...places],
     });
     if (accepted === 'unavailable') {
       return refused('server_unavailable', 'That machine did not answer. It may be offline, or its PiggerCode may be too old for shared folders.');
@@ -238,23 +234,81 @@ export function createComputerShares(deps: Readonly<{
       root: accepted.root,
     };
     if (!isUsableServer(server)) return refused('server_refused', 'That machine answered with an address or host keys that cannot be used.');
-
     await updateSettings((current) => ({
       ...current,
       sharedFolderServers: { ...(current.sharedFolderServers ?? {}), [serverMachineId]: server },
-      sharedFolders: [
-        ...(current.sharedFolders ?? []).filter((share) => !(share.serverMachineId === serverMachineId && share.folder === folder)),
-        { folder, serverMachineId },
-      ],
     }));
     await writeKnownHosts(knownHostsPath, (await readShared()).servers);
+    // A server from before places mounts every folder under `~/local` and agrees to none.
+    return { ok: true as const, places: accepted.places };
+  };
+
+  const add = async (request: FolderShareAddRequest): Promise<FolderShareMutationResponse> => {
+    const tools = resolveTools();
+    if (!tools.ok) return refused('unsupported', tools.reason);
+    const resolved = await resolveFolder(deps.homeDir, request.folder);
+    if (!resolved.ok) return refused('folder_not_allowed', resolved.error);
+    const folder = resolved.folder;
+    const serverMachineId = request.serverMachineId;
+    if (serverMachineId === deps.machineId) return refused('folder_not_allowed', 'Choose another machine to share this folder with.');
+
+    const location = parseServerLocation(request.at ?? defaultServerLocation(folder));
+    if (!location.ok) return refused('folder_not_allowed', location.error);
+    const at = location.at;
+
+    const { shares } = await readShared();
+    const sameServer = shares.filter((share) => share.serverMachineId === serverMachineId);
+    const existing = sameServer.find((share) => share.folder === folder);
+    const others = sameServer.filter((share) => share !== existing);
+    if (existing?.at === at) return await changed();
+    const overlapping = existing ? undefined : others.find((share) => folder.startsWith(`${share.folder}/`) || share.folder.startsWith(`${folder}/`));
+    if (overlapping) {
+      return refused('folder_not_allowed', `~/${folder} overlaps ~/${overlapping.folder}, which is already shared with that machine.`);
+    }
+    const taken = others.find((share) => share.at !== undefined && (share.at === at || at.startsWith(`${share.at}/`) || share.at.startsWith(`${at}/`)));
+    if (taken) {
+      return refused('folder_not_allowed', `~/${at} on that machine is where ~/${taken.folder} is shared; choose another place.`);
+    }
+
+    const agreed = await agreeWithServer(serverMachineId, [...placesOf(others), at]);
+    if (!agreed.ok) return agreed;
+    if (agreed.places === undefined && existing) {
+      return refused('server_refused', 'That machine\'s PiggerCode is too old to place shared folders; update it, then move the folder.');
+    }
+    // Moving it: its connection ends (the server unmounts it) and a new one mounts it at the new place.
+    // A server from before places takes a new folder under `~/local`, where it can mount it.
+    const placed: SharedFolderSetting = agreed.places === undefined ? { folder, serverMachineId } : { folder, serverMachineId, at };
+    await updateSettings((current) => ({
+      ...current,
+      sharedFolders: [
+        ...(current.sharedFolders ?? []).filter((share) => !(share.serverMachineId === serverMachineId && share.folder === folder)),
+        placed,
+      ],
+    }));
     await reconcile();
-    logger.infoFile('[SHARED FOLDERS] Shared a folder from the app', { serverMachineId, folderLength: folder.length });
+    logger.infoFile(existing ? '[SHARED FOLDERS] Moved a shared folder on its server' : '[SHARED FOLDERS] Shared a folder from the app', {
+      serverMachineId,
+      folderLength: folder.length,
+    });
     return await changed();
   };
 
   const remove = async (request: FolderShareRemoveRequest): Promise<FolderShareMutationResponse> => {
     const folder = request.folder.trim().replace(/\/+$/, '');
+    const onServer = (await readShared()).shares.filter((share) => share.serverMachineId === request.serverMachineId);
+    const removed = onServer.find((share) => share.folder === folder);
+    // First the server stops agreeing to its place, so the folder there goes once the connection ends.
+    // If the server cannot be told now, the place stays agreed, unused, until the next change with it.
+    if (removed?.at !== undefined) {
+      const withdrawn = await agreeWithServer(request.serverMachineId, placesOf(onServer.filter((share) => share !== removed)))
+        .catch((error: unknown) => refused('server_unavailable', error instanceof Error ? error.message : String(error)));
+      if (!withdrawn.ok) {
+        logger.warn('[SHARED FOLDERS] The server could not be told a share stopped; its place stays agreed until the next change', {
+          serverMachineId: request.serverMachineId,
+          reason: withdrawn.ok === false ? withdrawn.error : undefined,
+        });
+      }
+    }
     await updateSettings((current) => ({
       ...current,
       sharedFolders: (current.sharedFolders ?? []).filter(
@@ -277,6 +331,11 @@ export function createComputerShares(deps: Readonly<{
       runtimes.clear();
     },
   };
+}
+
+/** The places these shares show at on their server (shares from before places have none). */
+function placesOf(shares: readonly SharedFolderSetting[]): string[] {
+  return shares.flatMap((share) => (share.at !== undefined ? [share.at] : []));
 }
 
 function shareKey(share: Readonly<{ serverMachineId: string; folder: string }>): string {

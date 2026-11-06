@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { configuration } from '@/configuration';
 import { writeExecutableShimSync } from '@/testkit/fs/executableShim';
 
+import { listAcceptedComputers } from './acceptedComputers';
 import { buildSharedFoldersServeCommand } from './serveCommand';
 
 /** The managed install's `current` binary, as an update leaves it (stable ring). */
@@ -35,5 +36,12 @@ describe('the forced command a computer\'s key runs on this server', () => {
       expect(command).toContain("'machine' 'shared-folders' 'serve' '--label' 'mac'");
       expect(command).not.toContain(currentBinary());
     }
+  });
+
+  it('writes each place so that the record reads it back as the same place, which is all serve trusts', () => {
+    const command = buildSharedFoldersServeCommand('mac', { runsManagedInstall: () => false }, ['code', 'work/my app']);
+    const line = `restrict,command="${command}" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-mac`;
+
+    expect(listAcceptedComputers(line)).toEqual([{ machineId: 'machine-mac', label: 'mac', places: ['code', 'work/my app'] }]);
   });
 });

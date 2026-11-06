@@ -7,10 +7,10 @@ import { z } from 'zod';
  * The computer's daemon owns its shares. The app's machine screen lists, adds and removes them through
  * `DAEMON_FOLDER_SHARE_LIST` / `_ADD` / `_REMOVE` on that machine. To add one, the computer asks the
  * server's daemon to accept its key (`DAEMON_FOLDER_SHARE_ACCEPT`, through the relay like any machine
- * RPC). The server authorizes the key for one thing only, mounting into the computer's folder under
- * `~/local`, and answers with how to reach it over SSH and its host keys. The computer then connects out
- * to the server and serves the shared folder from a sandbox that contains nothing else of the computer;
- * the server mounts it with sshfs on that connection.
+ * RPC). The server authorizes the key for one thing only, mounting the computer's folders, and answers
+ * with how to reach it over SSH and its host keys. The computer then connects out to the server and
+ * serves the shared folder from a sandbox that contains nothing else of the computer; the server mounts
+ * it with sshfs on that connection, in its home where the user chose (`~/code` by default).
  */
 
 export const FolderShareStateSchema = z.enum([
@@ -27,7 +27,7 @@ export const FolderShareSchema = z.object({
   /** The shared folder, relative to the computer's home with `/` separators: `code`, `code/app`. */
   folder: z.string().min(1),
   serverMachineId: z.string().min(1),
-  /** Where the server mounts it, as a `~/…` path on the server: `~/local/laptop/code`. */
+  /** Where the server mounts it, as a `~/…` path on the server: `~/code`. */
   serverPath: z.string().min(1),
   state: FolderShareStateSchema,
   error: z.string().optional(),
@@ -45,6 +45,11 @@ export const FolderShareAddRequestSchema = z.object({
   /** An absolute path on the computer (its folder browser's answer) or a path relative to its home. */
   folder: z.string().min(1),
   serverMachineId: z.string().min(1),
+  /**
+   * Where it shows on the server, inside the server's home: `code`, `~/code`, `projects/app`. The
+   * folder's own name when absent. For a folder already shared with that server, it moves the share.
+   */
+  at: z.string().min(1).optional(),
 }).passthrough();
 export type FolderShareAddRequest = z.infer<typeof FolderShareAddRequestSchema>;
 
@@ -78,8 +83,14 @@ export const FolderShareAcceptRequestSchema = z.object({
   /** The computer's key: one `ssh-ed25519 <base64>` line, without options or comment. */
   publicKey: z.string().min(1),
   computerMachineId: z.string().min(1),
-  /** The computer's name; the server names the computer's folder under `~/local` after it. */
+  /** The computer's name; the server names the computer after it (its label, in the forced command). */
   computerName: z.string().min(1),
+  /**
+   * Every place in the server's home this computer's folders show at (`code`, `projects/app`): the
+   * server agrees to them, writes them into the key's forced command and mounts only there. Absent from
+   * a computer before places, which keeps what it had.
+   */
+  places: z.array(z.string().min(1)).optional(),
 }).passthrough();
 export type FolderShareAcceptRequest = z.infer<typeof FolderShareAcceptRequestSchema>;
 
@@ -107,8 +118,10 @@ export const FolderShareAcceptResponseSchema = z.union([
   z.object({
     ok: z.literal(true),
     ssh: FolderShareSshTargetSchema,
-    /** The computer's folder on the server, as a `~/…` path; each share mounts at `<root>/<folder>`. */
+    /** The computer's folder on the server, as a `~/…` path, for a share from before places: `<root>/<folder>`. */
     root: z.string().min(1),
+    /** The places the server agreed to (`places` of the request); absent from a server before places. */
+    places: z.array(z.string()).optional(),
   }).passthrough(),
   z.object({ ok: z.literal(false), errorCode: FolderShareAcceptErrorCodeSchema, error: z.string() }).passthrough(),
 ]);

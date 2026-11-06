@@ -13,6 +13,11 @@ import { buildSandboxedSftpServer, type SharingTools } from './sharingTools';
 export type FolderConnectionTarget = Readonly<{
   /** The folder relative to the home, as the server asks for it. */
   folder: string;
+  /**
+   * Where the server mounts it, relative to the server's home, as the server agreed (`serverLocation.ts`);
+   * unset for a share from before places, which the server mounts under `~/local`.
+   */
+  at?: string;
   folderPath: string;
   homeDir: string;
   server: Readonly<{ user: string; host: string; port: number }>;
@@ -52,7 +57,9 @@ export function buildFolderConnectionSshArgs(target: FolderConnectionTarget): st
     '-o', 'LogLevel=ERROR',
     '-p', String(target.server.port),
     `${target.server.user}@${target.server.host}`,
-    `mount ${target.folder}`,
+    // `mount <folder><TAB><place>`: neither may hold a control character, so the tab parts them
+    // (a server before places refuses it as a folder name; `serve.ts`).
+    target.at === undefined ? `mount ${target.folder}` : `mount ${target.folder}\t${target.at}`,
   ];
 }
 

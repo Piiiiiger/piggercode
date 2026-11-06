@@ -40,6 +40,7 @@ class FakeProcess extends EventEmitter {
 
 const TARGET: FolderConnectionTarget = {
   folder: 'code/my app',
+  at: 'my app',
   folderPath: '/home/pigger/code/my app',
   homeDir: '/home/pigger',
   server: { user: 'pigger', host: 'server.example.test', port: 2200 },
@@ -91,7 +92,7 @@ describe('one shared folder’s connection', () => {
 
     expect(ssh.command).toBe('ssh');
     expect(ssh.args).toEqual(expect.arrayContaining(['-i', '/state/id_ed25519', 'StrictHostKeyChecking=yes', '-p', '2200']));
-    expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app']);
+    expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app\tmy app']);
     connection.close();
   });
 
@@ -108,7 +109,7 @@ describe('one shared folder’s connection', () => {
     expect(sftp.args[1]).toContain('(subpath "/Users/pigger/code/my app")');
     expect(sftp.args.slice(-3)).toEqual(['/usr/libexec/sftp-server', '-d', '/Users/pigger']);
     expect(sftp.stdio).toHaveLength(3);
-    expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app']);
+    expect(ssh.args.slice(-2)).toEqual(['pigger@server.example.test', 'mount code/my app\tmy app']);
     connection.close();
   });
 

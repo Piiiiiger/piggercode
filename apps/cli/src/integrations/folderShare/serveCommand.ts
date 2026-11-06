@@ -19,8 +19,10 @@ import { buildHappyCliSubprocessLaunchSpec } from '@/utils/spawnHappyCLI';
 export function buildSharedFoldersServeCommand(
   label: string,
   deps: Readonly<{ runsManagedInstall?: () => boolean }> = {},
+  /** The places in this server's home the computer may mount its folders at (`--place`, one each). */
+  places: readonly string[] = [],
 ): string {
-  const args = ['machine', 'shared-folders', 'serve', '--label', label];
+  const args = ['machine', 'shared-folders', 'serve', '--label', label, ...places.flatMap((place) => ['--place', place])];
   const runsManagedInstall = deps.runsManagedInstall ?? (() => readCliUpdateFactsForThisCli().installSource === 'managed');
   if (runsManagedInstall()) {
     const { binaryPath } = resolveInstalledFirstPartyComponentPaths({

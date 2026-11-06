@@ -3,7 +3,8 @@ import { homedir } from 'node:os';
 import { printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { parseSshAddress } from '@/integrations/folderShare/acceptRequest';
 import { readAcceptedComputers } from '@/integrations/folderShare/acceptedComputers';
-import { listSharedFolderMounts, runSharedFoldersServe } from '@/integrations/folderShare/serve';
+import { runSharedFoldersServe } from '@/integrations/folderShare/serve';
+import { listSharedFolderMounts } from '@/integrations/folderShare/sharedFolderMounts';
 import { readSettings, updateSettings } from '@/persistence';
 
 /**
@@ -35,6 +36,8 @@ export async function runSharedFoldersSubcommand(args: readonly string[], json: 
 async function serve(args: readonly string[]): Promise<void> {
   const labelIndex = args.indexOf('--label');
   const label = labelIndex >= 0 ? args[labelIndex + 1] ?? '' : '';
+  // Its `--place`s are the server's record of where it may mount; `serve` reads them from that record
+  // (authorized_keys) as it mounts, not from these arguments, which a later change no longer updates.
   try {
     process.exitCode = await runSharedFoldersServe({
       label,
@@ -85,8 +88,8 @@ async function status(json: boolean): Promise<void> {
     ? `Accepting shared folders at ${data.address}.`
     : 'Not accepting shared folders (no SSH address set).');
   for (const computer of data.acceptedComputers) {
-    console.log(`  computer ${computer.machineId}: ~/local/${computer.label}/`);
+    console.log(`  computer ${computer.machineId}: ${computer.label}`);
   }
-  for (const mount of data.mounted) console.log(`  mounted: ${mount}`);
+  for (const mount of data.mounted) console.log(`  mounted: ${mount.path} (${mount.label}: ~/${mount.folder})`);
   for (const share of data.sharedFolders) console.log(`Sharing ~/${share.folder} with machine ${share.serverMachineId}.`);
 }

@@ -1,17 +1,30 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { lstatSync, mkdirSync, readFileSync, readdirSync, rmdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+
+import { listAcceptedComputers } from './acceptedComputers';
+import { parseServerLocation } from './serverLocation';
+import {
+  COMPUTER_LABEL_PATTERN,
+  SHARED_FOLDER_SOURCE_PREFIX,
+  isWithin,
+  listSharedFolderMounts,
+  readMountinfo,
+  type SharedFolderMount,
+} from './sharedFolderMounts';
+import { serverPlaceProblem } from './serverPlace';
 
 /**
- * `piggercode machine shared-folders serve --label <label>`, the forced command of a computer's key on
- * this server (see `acceptedComputers.ts`). The computer runs `ssh <server> "mount <folder>"` with its
- * sandboxed sftp-server on the other end of the connection; this mounts that folder at
- * `~/local/<label>/<folder>` with sshfs in passive mode, over the same connection, for as long as the
- * connection lasts. Nothing may be written to stdout: stdout is the connection. Errors go to stderr,
- * which the computer shows as the reason a share is not connected.
+ * `piggercode machine shared-folders serve --label <label> [--place <place>…]`, the forced command of a
+ * computer's key on this server (see `acceptedComputers.ts`). The computer runs
+ * `ssh <server> "mount <folder><TAB><place>"` with its sandboxed sftp-server on the other end of the
+ * connection; this mounts that folder at `~/<place>`, a place this server agreed to for that computer,
+ * with sshfs in passive mode, over the same connection, for as long as the connection lasts (a computer
+ * from before places asks `mount <folder>` and gets `~/local/<label>/<folder>`). Nothing may be written
+ * to stdout: stdout is the connection. Errors go to stderr, which the computer shows as the reason a
+ * share is not connected.
  */
 
-const LABEL_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 const SSHFS_OPTIONS = 'passive,idmap=user,dir_cache=yes,dcache_timeout=10';
 /** A mount that does not answer a `stat` within this long is the dead end of a dropped connection. */
 const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
@@ -42,27 +55,55 @@ export async function runSharedFoldersServe(params: Readonly<{
   system?: SharedFoldersServeSystem;
 }>): Promise<number> {
   const system = params.system ?? osServeSystem;
-  if (!LABEL_PATTERN.test(params.label)) {
+  if (!COMPUTER_LABEL_PATTERN.test(params.label)) {
     system.reportError('piggercode shared folders: invalid label');
     return 2;
   }
-  const folder = parseMountRequest(params.originalCommand);
-  if (!folder) {
+  const request = parseMountRequest(params.originalCommand);
+  if (!request) {
     system.reportError('piggercode shared folders: this key can only mount a folder inside your home');
     return 2;
   }
+  const { folder } = request;
+  // Where the user chose (`~/code` by default), or `~/local/<label>/<folder>` for a computer from before
+  // places, which asks for the folder alone.
+  let at: string | undefined;
+  if (request.at !== undefined) {
+    const location = parseServerLocation(request.at);
+    if (!location.ok) {
+      system.reportError(`piggercode shared folders: ${location.error}`);
+      return 2;
+    }
+    at = location.at;
+    if (!isAgreed(params.homeDir, params.label, at)) {
+      system.reportError(`piggercode shared folders: ~/${at} is not a place this server agreed to for this computer; share the folder there again from the app`);
+      return 2;
+    }
+  }
+  const place = at ?? `local/${params.label}/${folder}`;
+  const mountPoint = join(params.homeDir, place);
+  const shown = `~/${place}`;
 
-  const computerRoot = join(params.homeDir, 'local', params.label);
-  const mountPoint = join(computerRoot, folder);
-  // This computer's mounts on the way to the folder: the folder itself, or one it lies in (a share since
-  // removed). Nothing touches the path while one sits on it: through a dead connection's mount, mkdir
-  // fails and a stat waits until that connection is ended. Only mountinfo is read first.
-  const computerMounts = parseMountinfo(system.readMountinfo())
-    .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(`${computerRoot}/`));
+  // The shared folders mounted here on the way to the place: the place itself, or one it lies in.
+  // Another computer's is never touched. This computer's is a share it moved or dropped: nothing
+  // touches the path while that sits on it, since through a dead connection's mount mkdir fails and a
+  // stat waits until that connection is ended. Only mountinfo is read first.
+  const mounts = listSharedFolderMounts(params.homeDir, system.readMountinfo());
+  const othersOnTheWay = mounts.find((mount) => mount.label !== params.label && isWithin(mountPoint, mount.path));
+  if (othersOnTheWay) {
+    system.reportError(`piggercode shared folders: ${shown} on the server is in a folder another computer shares, so nothing is mounted there`);
+    return 3;
+  }
+  const computerMounts = mounts.filter((mount) => mount.label === params.label);
   const outermost = computerMounts
     .filter((mount) => isWithin(mountPoint, mount.path))
     .sort((left, right) => left.path.length - right.path.length)[0];
   if (outermost) {
+    // Unmounting it detaches everything mounted below it, which must all be this computer's.
+    if (mounts.some((mount) => mount.label !== params.label && isWithin(mount.path, outermost.path))) {
+      system.reportError(`piggercode shared folders: ${outermost.path} holds a folder another computer shares, so it is left alone`);
+      return 3;
+    }
     if (await system.answers(outermost.path)) {
       system.reportError(`piggercode shared folders: ${outermost.path} is already mounted on the server`);
       return 3;
@@ -82,54 +123,132 @@ export async function runSharedFoldersServe(params: Readonly<{
     }
     system.unmount(outermost.path);
   }
-  mkdirSync(mountPoint, { recursive: true });
-  if (readdirSync(mountPoint).length > 0) {
-    system.reportError(`piggercode shared folders: ${mountPoint} on the server is not empty, so nothing is mounted over it`);
+  // The place as it is on disk, now that no mount of this computer hangs on the way.
+  const problem = serverPlaceProblem(params.homeDir, place);
+  if (problem) {
+    system.reportError(`piggercode shared folders: ${problem} on the server, so nothing is mounted there`);
     return 3;
   }
-  return await system.runSshfs(['-f', '-o', SSHFS_OPTIONS, `:${folder}`, mountPoint]);
+  if (at !== undefined) removeEmptyLegacyFolders(params.homeDir, params.label, folder, mounts);
+  let made: string | undefined;
+  try {
+    try {
+      made = mkdirSync(mountPoint, { recursive: true });
+      if (readdirSync(mountPoint).length > 0) {
+        system.reportError(`piggercode shared folders: ${shown} on the server is not empty, so nothing is mounted over it`);
+        return 3;
+      }
+    } catch (error) {
+      system.reportError(`piggercode shared folders: cannot use ${shown} on the server: ${error instanceof Error ? error.message : String(error)}`);
+      return 3;
+    }
+    // Asked again: the app may have moved or stopped the share while a dropped connection was ended.
+    if (at !== undefined && !isAgreed(params.homeDir, params.label, at)) {
+      system.reportError(`piggercode shared folders: ${shown} is no longer a place this server agreed to for this computer`);
+      return 2;
+    }
+    // The mount names whose it is (`piggercode:<label>:<folder>`), so this server can tell its shared
+    // folders, and whose they are, wherever they are mounted.
+    const options = `${SSHFS_OPTIONS},fsname=${SHARED_FOLDER_SOURCE_PREFIX}${params.label}:${encodeURIComponent(folder)}`;
+    return await system.runSshfs(['-f', '-o', options, `:${folder}`, mountPoint]);
+  } finally {
+    // A share that moved or stopped leaves its place: the folder there goes once empty, with the folders
+    // made for it. A connection that only dropped keeps it for the next one (which may be mounting there
+    // already).
+    if (at !== undefined && !isAgreed(params.homeDir, params.label, at) && !mountedOnTheWay(params.homeDir, mountPoint, system)) {
+      removeEmptyFolders(mountPoint, made ?? mountPoint);
+    }
+  }
 }
 
-/** `mount <folder>` with a folder relative to the computer's home; null for anything else. */
-function parseMountRequest(originalCommand: string | undefined): string | null {
+/**
+ * Whether a shared folder is mounted at `path` or a folder it lies in now (another computer's, since):
+ * the folders there are then that computer's, never to be removed through its mount. Also when the
+ * mount table cannot be read.
+ */
+function mountedOnTheWay(homeDir: string, path: string, system: SharedFoldersServeSystem): boolean {
+  try {
+    return listSharedFolderMounts(homeDir, system.readMountinfo()).some((mount) => isWithin(path, mount.path));
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Whether this server agrees to `at` for the computer behind `label` now: its line in authorized_keys
+ * lists the place (`--place`), read by the parser the agreement itself uses (`acceptedComputers.ts`),
+ * so a place it cannot read is no place for a mount either. Read when a mount is asked for, again
+ * just before mounting, and once the mount ends.
+ */
+function isAgreed(homeDir: string, label: string, at: string): boolean {
+  let text: string;
+  try {
+    text = readFileSync(join(homeDir, '.ssh', 'authorized_keys'), 'utf8');
+  } catch {
+    return false;
+  }
+  const lines = listAcceptedComputers(text).filter((computer) => computer.label === label);
+  // A computer has one line; a copy made by hand must agree too.
+  return lines.length > 0 && lines.every((computer) => computer.places.includes(at));
+}
+
+/** `path` and the folders above it up to `top`, each once empty (a folder still mounted or not empty stays). */
+function removeEmptyFolders(path: string, top: string): void {
+  let current = path;
+  while (isWithin(current, top)) {
+    try {
+      rmdirSync(current);
+    } catch {
+      return;
+    }
+    if (current === top) return;
+    current = dirname(current);
+  }
+}
+
+/**
+ * A computer that moved to places leaves its `~/local/<label>/<folder>` behind: those folders go once
+ * empty, and `~/local` with them. Only plain folders, never through a symbolic link, and nothing while
+ * a shared folder is mounted on the way.
+ */
+function removeEmptyLegacyFolders(homeDir: string, label: string, folder: string, mounts: readonly SharedFolderMount[]): void {
+  const local = join(homeDir, 'local');
+  const deepest = join(local, label, folder);
+  if (mounts.some((mount) => isWithin(mount.path, local) || isWithin(local, mount.path))) return;
+  const chain: string[] = [];
+  for (let path = deepest; isWithin(path, local); path = dirname(path)) {
+    chain.unshift(path);
+    if (path === local) break;
+  }
+  // Every part, from ~/local down, must be a plain folder: a link would lead rmdir elsewhere.
+  for (const path of chain) {
+    try {
+      const stats = lstatSync(path);
+      if (stats.isSymbolicLink() || !stats.isDirectory()) return;
+    } catch {
+      return;
+    }
+  }
+  removeEmptyFolders(deepest, local);
+}
+
+/**
+ * `mount <folder>` or `mount <folder><TAB><location>`, the folder relative to the computer's home and
+ * the location relative to this server's home (`serverLocation.ts` checks it); null for anything else.
+ */
+function parseMountRequest(originalCommand: string | undefined): Readonly<{ folder: string; at?: string }> | null {
   if (!originalCommand?.startsWith('mount ')) return null;
-  const folder = originalCommand.slice('mount '.length).replace(/\/+$/, '');
+  const [rawFolder, at, ...rest] = originalCommand.slice('mount '.length).split('\t');
+  if (rest.length > 0 || rawFolder === undefined) return null;
+  const folder = rawFolder.replace(/\/+$/, '');
   if (!folder || folder.startsWith('/') || folder.startsWith('-') || /[\x00-\x1f\x7f]/.test(folder)) return null;
   const segments = folder.split('/');
   if (segments.some((segment) => segment === '' || segment === '.' || segment === '..')) return null;
-  return folder;
-}
-
-/** The shared folders mounted under `~/local` right now (sshfs mounts there), from mountinfo. */
-export function listSharedFolderMounts(homeDir: string, mountinfo: string = osServeSystem.readMountinfo()): string[] {
-  const root = `${join(homeDir, 'local')}/`;
-  return parseMountinfo(mountinfo)
-    .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(root))
-    .map((mount) => mount.path);
-}
-
-function isWithin(path: string, root: string): boolean {
-  return path === root || path.startsWith(`${root}/`);
-}
-
-/** Mount points, their types and devices; mountinfo escapes space, tab, newline and `\` in paths as octal. */
-function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type: string; device: string }>> {
-  const mounts: Array<Readonly<{ path: string; type: string; device: string }>> = [];
-  for (const line of mountinfo.split('\n')) {
-    const fields = line.split(' ');
-    const separator = fields.indexOf('-', 6);
-    if (fields.length < 5 || separator < 0) continue;
-    mounts.push({
-      path: fields[4]!.replace(/\\([0-7]{3})/g, (_, octal: string) => String.fromCharCode(parseInt(octal, 8))),
-      type: fields[separator + 1] ?? '',
-      device: fields[2]!,
-    });
-  }
-  return mounts;
+  return at === undefined ? { folder } : { folder, at };
 }
 
 const osServeSystem: SharedFoldersServeSystem = {
-  readMountinfo: () => readFileSync('/proc/self/mountinfo', 'utf8'),
+  readMountinfo,
   answers: async (path) => await new Promise<boolean>((resolve) => {
     const probe = spawn('stat', ['-t', path], { stdio: 'ignore' });
     const timer = setTimeout(() => {

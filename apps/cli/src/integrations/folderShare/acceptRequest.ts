@@ -16,8 +16,9 @@ import { buildSharedFoldersServeCommand } from './serveCommand';
 /**
  * The server's answer when a computer of the account asks it to accept its key for shared folders
  * (`DAEMON_FOLDER_SHARE_ACCEPT`). The server must have sshfs and know the SSH address other machines
- * reach it at; then it authorizes the key for mounting into the computer's folder under `~/local` and
- * nothing else, and tells the computer how to reach it and which host keys to trust.
+ * reach it at; then it authorizes the key for mounting the computer's folders at the places it asks
+ * for and the server agrees to (or under `~/local` for a computer before places) and nothing else, and
+ * tells the computer how to reach it, which host keys to trust and which places it agreed to.
  */
 
 const HOST_KEY_FILES = [
@@ -32,7 +33,7 @@ export type FolderShareAcceptSystem = Readonly<{
   sshfsInstalled: () => boolean;
   readSshAddress: () => Promise<string | undefined>;
   readHostKeys: () => string[];
-  serveCommand: (label: string) => string;
+  serveCommand: (label: string, places: readonly string[]) => string;
 }>;
 
 export async function answerFolderShareAccept(
@@ -55,12 +56,14 @@ export async function answerFolderShareAccept(
   if (hostKeys.length === 0) return refused('host_keys_missing', 'That machine’s SSH host keys cannot be read.');
 
   let label: string;
+  let places: readonly string[];
   try {
-    ({ label } = await acceptComputerKey({
+    ({ label, places } = await acceptComputerKey({
       homeDir: system.homeDir,
       machineId: parsed.data.computerMachineId,
       computerName: parsed.data.computerName,
       publicKey: parsed.data.publicKey,
+      ...(parsed.data.places ? { places: parsed.data.places } : {}),
       serveCommand: system.serveCommand,
     }));
   } catch (error) {
@@ -70,6 +73,7 @@ export async function answerFolderShareAccept(
     ok: true,
     ssh: { user: system.userName, host: address.host, port: address.port, hostKeys },
     root: `~/local/${label}`,
+    places: [...places],
   };
 }
 
@@ -114,6 +118,6 @@ function osAcceptSystem(): FolderShareAcceptSystem {
         return [];
       }
     }),
-    serveCommand: buildSharedFoldersServeCommand,
+    serveCommand: (label, places) => buildSharedFoldersServeCommand(label, {}, places),
   };
 }

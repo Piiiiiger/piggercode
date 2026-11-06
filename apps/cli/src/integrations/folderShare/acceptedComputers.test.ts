@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -30,7 +30,9 @@ function createHome(authorizedKeys?: string): string {
   return home;
 }
 
-const serveCommand = (label: string) => `/opt/piggercode/bin/piggercode machine shared-folders serve --label ${label}`;
+const serveCommand = (label: string, places: readonly string[] = []) => (
+  `/opt/piggercode/bin/piggercode machine shared-folders serve --label ${label}${places.map((place) => ` --place '${place}'`).join('')}`
+);
 
 function readAuthorizedKeys(home: string): string {
   return readFileSync(join(home, '.ssh', 'authorized_keys'), 'utf8');
@@ -48,13 +50,13 @@ describe('a computer key accepted for shared folders', () => {
       serveCommand,
     });
 
-    expect(accepted).toEqual({ label: 'laptop' });
+    expect(accepted).toEqual({ label: 'laptop', places: [] });
     const lines = readAuthorizedKeys(home).trim().split('\n');
     expect(lines[0]).toBe(OWNER_LINE);
     expect(lines[1]).toBe(
       `restrict,command="${serveCommand('laptop')}" ${KEY_A} piggercode-shared-folders:machine-laptop`,
     );
-    expect(listAcceptedComputers(readAuthorizedKeys(home))).toEqual([{ machineId: 'machine-laptop', label: 'laptop' }]);
+    expect(listAcceptedComputers(readAuthorizedKeys(home))).toEqual([{ machineId: 'machine-laptop', label: 'laptop', places: [] }]);
     expect(statSync(join(home, '.ssh', 'authorized_keys')).mode & 0o777).toBe(0o600);
   });
 
@@ -70,11 +72,11 @@ describe('a computer key accepted for shared folders', () => {
       serveCommand,
     });
 
-    expect(again).toEqual({ label: 'laptop' });
+    expect(again).toEqual({ label: 'laptop', places: [] });
     const text = readAuthorizedKeys(home);
     expect(text).not.toContain(KEY_A);
     expect(text).toContain(KEY_B);
-    expect(listAcceptedComputers(text)).toEqual([{ machineId: 'machine-laptop', label: 'laptop' }]);
+    expect(listAcceptedComputers(text)).toEqual([{ machineId: 'machine-laptop', label: 'laptop', places: [] }]);
   });
 
   it('gives a second computer with the same name its own folder', async () => {
@@ -129,5 +131,69 @@ describe('a computer key accepted for shared folders', () => {
       publicKey: KEY_A,
       serveCommand,
     })).rejects.toThrow(/machine id/i);
+  });
+
+  it('agrees to the places a computer asks for and writes them into its command', async () => {
+    const home = createHome(`${OWNER_LINE}\n`);
+
+    const accepted = await acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places: ['~/code', 'projects/app'], serveCommand });
+
+    expect(accepted).toEqual({ label: 'laptop', places: ['code', 'projects/app'] });
+    expect(readAuthorizedKeys(home)).toContain(`${serveCommand('laptop', ['code', 'projects/app'])}"`);
+    expect(listAcceptedComputers(readAuthorizedKeys(home))).toEqual([{ machineId: 'machine-laptop', label: 'laptop', places: ['code', 'projects/app'] }]);
+  });
+
+  it('keeps a computer\'s places when it asks again without any, as a computer from before places does', async () => {
+    const home = createHome();
+    await acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places: ['code'], serveCommand });
+
+    const again = await acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, serveCommand });
+
+    expect(again.places).toEqual(['code']);
+  });
+
+  it('never looks on disk at a place it already agreed to, which may hold that computer\'s mount', async () => {
+    const home = createHome();
+    await acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places: ['code'], serveCommand });
+    // As a hanging mount there would answer (or not at all); `serve` checks it again before mounting.
+    symlinkSync(home, join(home, 'code'));
+
+    const again = await acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places: ['code', 'notes'], serveCommand });
+
+    expect(again.places).toEqual(['code', 'notes']);
+  });
+
+  it('weighs a place against the others before looking on disk, and never looks through a mount on the way', async () => {
+    const home = createHome();
+    // ~/code holds a mount: what is on disk there is the computer's, and a dropped one would hang.
+    writeFileSync(join(home, 'code'), '');
+    const mountinfo = `91 30 0:52 / ${join(home, 'code')} rw - fuse.sshfs piggercode:desk:code rw\n`;
+    await acceptComputerKey({ homeDir: home, machineId: 'machine-desk', computerName: 'desk', publicKey: KEY_B, places: ['code'], serveCommand, mountinfo });
+
+    await expect(acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places: ['code/sub'], serveCommand, mountinfo }))
+      .rejects.toThrow(/another computer/);
+    // The computer that has it moves deeper: agreed, and `serve` checks the place once its mount there is gone.
+    const moved = await acceptComputerKey({ homeDir: home, machineId: 'machine-desk', computerName: 'desk', publicKey: KEY_B, places: ['code/sub'], serveCommand, mountinfo });
+    expect(moved.places).toEqual(['code/sub']);
+  });
+
+  it('reads a place written by hand as the server writes it, and none it cannot read', () => {
+    const line = (places: string) => `restrict,command="/srv/piggercode machine shared-folders serve --label laptop${places}" ${KEY_A} piggercode-shared-folders:machine-laptop`;
+
+    expect(listAcceptedComputers(line(" --place '~/code/'"))[0]!.places).toEqual(['code']);
+    expect(listAcceptedComputers(line(' --place \\"my projects\\"'))[0]!.places).toEqual([]);
+  });
+
+  it('agrees to no hidden place, none through a symbolic link, none overlapping another, and none of another computer', async () => {
+    const home = createHome();
+    mkdirSync(join(home, '.hidden'));
+    symlinkSync(join(home, '.hidden'), join(home, 'link'));
+    await acceptComputerKey({ homeDir: home, machineId: 'machine-desk', computerName: 'desk', publicKey: KEY_B, places: ['code'], serveCommand });
+    const ask = (places: string[]) => acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places, serveCommand });
+
+    for (const places of [['.ssh'], ['link'], ['notes', 'notes/app'], ['code'], ['code/sub']]) {
+      await expect(ask(places)).rejects.toThrow();
+    }
+    expect(listAcceptedComputers(readAuthorizedKeys(home)).map((computer) => computer.machineId)).toEqual(['machine-desk']);
   });
 });

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { FolderShareAcceptRequest, FolderShareAcceptResponse } from '@piggercode/protocol';
 
 import { withConfiguredDaemonTestHome } from '@/daemon/testkit/fakeDaemonLifecycle.testkit';
-import { readSettings } from '@/persistence';
+import { readSettings, updateSettings } from '@/persistence';
 
 import { createComputerShares, type AcceptOnServer } from './computerShares';
 import type { FolderConnectionEvents, FolderConnectionTarget } from './folderConnection';
@@ -38,6 +38,10 @@ function createHome(): string {
 /** The server end (its accept answer) and the connections, recorded instead of reaching a network. */
 function createComputer(options: Readonly<{
   accept?: FolderShareAcceptResponse | 'unavailable';
+  /** A server from before places: it agrees to none and mounts every folder under `~/local`. */
+  serverBeforePlaces?: boolean;
+  /** Called as the server is asked, with the connections so far. */
+  onAccept?: (connections: ReadonlyArray<{ closed: boolean }>) => void;
   tools?: SharingToolsResult;
   retryDelayMs?: number;
   now?: () => number;
@@ -47,7 +51,10 @@ function createComputer(options: Readonly<{
   const connections: Array<{ target: FolderConnectionTarget; events: FolderConnectionEvents; closed: boolean }> = [];
   const acceptOnServer: AcceptOnServer = async (serverMachineId, request) => {
     acceptCalls.push({ serverMachineId, request });
-    return options.accept ?? ACCEPTED;
+    options.onAccept?.(connections);
+    if (options.accept) return options.accept;
+    // The server agrees to the places it is asked for (its own checks are `acceptedComputers.ts`'s).
+    return options.serverBeforePlaces ? ACCEPTED : { ...ACCEPTED, places: request.places ?? [] };
   };
   const shares = createComputerShares({
     machineId: 'machine-laptop',
@@ -77,15 +84,17 @@ describe('folders this computer shares with a server', () => {
 
       expect(acceptCalls).toEqual([{
         serverMachineId: 'machine-server',
-        request: { publicKey: COMPUTER_KEY, computerMachineId: 'machine-laptop', computerName: 'laptop' },
+        request: { publicKey: COMPUTER_KEY, computerMachineId: 'machine-laptop', computerName: 'laptop', places: ['code'] },
       }]);
       expect(added).toEqual({
         ok: true,
-        shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/local/laptop/code', state: 'connecting' }],
+        // On the server it shows beside the home's other folders, under its own name.
+        shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/code', state: 'connecting' }],
       });
       expect(connections).toHaveLength(1);
       expect(connections[0]!.target).toMatchObject({
         folder: 'code',
+        at: 'code',
         folderPath: join(home, 'code'),
         homeDir: home,
         server: { user: 'pigger', host: 'server.example.test', port: 2200 },
@@ -94,7 +103,7 @@ describe('folders this computer shares with a server', () => {
 
       connections[0]!.events.onConnected();
       expect((await shares.list()).shares[0]).toMatchObject({ folder: 'code', state: 'connected' });
-      expect((await readSettings()).sharedFolders).toEqual([{ folder: 'code', serverMachineId: 'machine-server' }]);
+      expect((await readSettings()).sharedFolders).toEqual([{ folder: 'code', serverMachineId: 'machine-server', at: 'code' }]);
       shares.stop();
     });
   });
@@ -149,6 +158,95 @@ describe('folders this computer shares with a server', () => {
       await new Promise((resolve) => setTimeout(resolve, 30));
       expect(connections).toHaveLength(1);
       expect((await readSettings()).sharedFolders).toEqual([]);
+    });
+  });
+
+  it('places a share where the user names it on the server, and moves it there later once the server agrees', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const { shares, acceptCalls, connections } = createComputer();
+
+      const added = await shares.add({ folder: 'code', serverMachineId: 'machine-server', at: '~/projects/code' });
+      expect(added.ok && added.shares[0]!.serverPath).toBe('~/projects/code');
+      expect(connections[0]!.target.at).toBe('projects/code');
+
+      // Moving it: the old connection ends (the server unmounts it), a new one mounts it at the new place.
+      const moved = await shares.add({ folder: 'code', serverMachineId: 'machine-server', at: 'work/code' });
+      expect(moved.ok && moved.shares.map((share) => share.serverPath)).toEqual(['~/work/code']);
+      expect(connections[0]!.closed).toBe(true);
+      expect(connections).toHaveLength(2);
+      expect(connections[1]!.target.at).toBe('work/code');
+      expect(acceptCalls.map((call) => call.request.places)).toEqual([['projects/code'], ['work/code']]);
+      shares.stop();
+    });
+  });
+
+  it('refuses a place that is hidden, outside the home, or already holds another of its shares there', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const { shares } = createComputer();
+      await shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+
+      for (const at of ['.config/code', '/srv/code', 'bin']) {
+        expect(await shares.add({ folder: 'notes', serverMachineId: 'machine-server', at })).toMatchObject({ ok: false, errorCode: 'folder_not_allowed' });
+      }
+      expect(await shares.add({ folder: 'notes', serverMachineId: 'machine-server', at: 'code' })).toMatchObject({ ok: false, errorCode: 'folder_not_allowed' });
+      expect(await shares.add({ folder: 'notes', serverMachineId: 'machine-server', at: 'code/notes' })).toMatchObject({ ok: false, errorCode: 'folder_not_allowed' });
+      expect((await shares.list()).shares.map((share) => share.folder)).toEqual(['code']);
+      shares.stop();
+    });
+  });
+
+  it('keeps a share recorded before places where it was until the user moves it', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const first = createComputer();
+      await first.shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+      first.shares.stop();
+      await updateSettings((current) => ({
+        ...current,
+        sharedFolders: (current.sharedFolders ?? []).map(({ folder, serverMachineId }) => ({ folder, serverMachineId })),
+      }));
+
+      const restarted = createComputer();
+      await restarted.shares.start();
+      expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/local/laptop/code');
+      expect(restarted.connections[0]!.target.at).toBeUndefined();
+
+      await restarted.shares.add({ folder: 'code', serverMachineId: 'machine-server', at: '~/code' });
+      expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/code');
+      expect(restarted.connections.at(-1)!.target.at).toBe('code');
+      expect(restarted.acceptCalls.map((call) => call.request.places)).toEqual([['code']]);
+      restarted.shares.stop();
+    });
+  });
+
+  it('puts a folder under ~/local on a server from before places, and cannot move it there', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const { shares, connections } = createComputer({ serverBeforePlaces: true });
+
+      const added = await shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+      expect(added.ok && added.shares[0]!.serverPath).toBe('~/local/laptop/code');
+      expect(connections[0]!.target.at).toBeUndefined();
+
+      expect(await shares.add({ folder: 'code', serverMachineId: 'machine-server', at: 'work/code' }))
+        .toMatchObject({ ok: false, errorCode: 'server_refused' });
+      shares.stop();
+    });
+  });
+
+  it('withdraws a share\'s place on the server before its connection ends, so the server clears the place then', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const openAsAsked: boolean[] = [];
+      const { shares, acceptCalls, connections } = createComputer({
+        onAccept: (sofar) => openAsAsked.push(sofar.length > 0 && !sofar[0]!.closed),
+      });
+      await shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+      await shares.add({ folder: 'notes', serverMachineId: 'machine-server' });
+
+      await shares.remove({ folder: 'code', serverMachineId: 'machine-server' });
+
+      expect(acceptCalls.map((call) => call.request.places)).toEqual([['code'], ['code', 'notes'], ['notes']]);
+      expect(openAsAsked.at(-1)).toBe(true);
+      expect(connections[0]!.closed).toBe(true);
+      shares.stop();
     });
   });
 

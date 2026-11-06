@@ -24,7 +24,7 @@ function createSystem(overrides: Partial<FolderShareAcceptSystem> = {}): FolderS
     sshfsInstalled: () => true,
     readSshAddress: async () => 'server.example.test:2200',
     readHostKeys: () => [HOST_KEY],
-    serveCommand: (label) => `/srv/piggercode machine shared-folders serve --label ${label}`,
+    serveCommand: (label, places) => `/srv/piggercode machine shared-folders serve --label ${label}${places.map((place) => ` --place '${place}'`).join('')}`,
     ...overrides,
   };
 }
@@ -41,9 +41,17 @@ describe('a server asked to accept a computer’s shared folders', () => {
       ok: true,
       ssh: { user: 'pigger', host: 'server.example.test', port: 2200, hostKeys: [HOST_KEY] },
       root: '~/local/laptop',
+      places: [],
     });
     const authorized = readFileSync(join(system.homeDir, '.ssh', 'authorized_keys'), 'utf8');
-    expect(listAcceptedComputers(authorized)).toEqual([{ machineId: 'machine-laptop', label: 'laptop' }]);
+    expect(listAcceptedComputers(authorized)).toEqual([{ machineId: 'machine-laptop', label: 'laptop', places: [] }]);
+  });
+
+  it('answers with the places it agreed to, and refuses one it cannot', async () => {
+    const system = createSystem();
+
+    expect(await answerFolderShareAccept({ ...request, places: ['code'] }, system)).toMatchObject({ ok: true, places: ['code'] });
+    expect(await answerFolderShareAccept({ ...request, places: ['.ssh'] }, system)).toMatchObject({ ok: false, errorCode: 'invalid_request' });
   });
 
   it('declines, with what to do about it, when it cannot mount or cannot be reached', async () => {

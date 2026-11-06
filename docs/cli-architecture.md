@@ -1888,29 +1888,56 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   keys the computer trusts for it (`<PiggerCode home>/shared-folders/known_hosts`).
 - **One connection per folder, made by the computer.** `folderConnection.ts` runs sftp-server in a
   sandbox that keeps it inside the shared folder (`sharingTools.ts`) and pipes it to `ssh <server>
-  "mount <folder>"`. On Linux that is bubblewrap, holding only the shared folder: system files
+  "mount <folder><TAB><location>"`. On Linux that is bubblewrap, holding only the shared folder: system files
   read-only, no network, no other processes, a one-line passwd and group. On macOS it is a Seatbelt
   profile (`seatbeltProfile.ts`, passed to `sandbox-exec -p`) that denies everything it does not name:
   the shared folder by its real path, the attributes (not the contents) of the folders above it, and
   the system files sftp-server starts from; no network. Seatbelt checks paths, so a hard link is the
   escape to rule out: macOS refuses to link a file the sandbox cannot read. Checked on macOS 14 and 26
   by driving the sandboxed sftp-server the way sshfs does. Files under the person's Desktop, Documents
-  or Downloads also need macOS's own permission for PiggerCode. The forced command (`serve.ts`) mounts it at `~/local/<label>/<folder>` with
-  `sshfs -o passive` on that same connection, for as long as the connection lasts; it clears a mount a
-  dropped connection left behind and never mounts over files. It writes nothing to stdout, which is the
-  connection. Neither side forwards ports, and nothing listens on the computer.
+  or Downloads also need macOS's own permission for PiggerCode. The forced command (`serve.ts`) mounts it
+  where the user placed it in the server's home with `sshfs -o passive` on that same connection, for as
+  long as the connection lasts, naming the mount `piggercode:<label>:<folder>` so the server can tell
+  its shared folders and whose they are wherever they sit; it clears a mount a dropped connection left
+  behind and never mounts over files, nor in or over a folder another computer shares there. A
+  computer from before locations asks for the folder alone and gets `~/local/<label>/<folder>`; one
+  that moves out of `~/local` leaves no empty folders there.
+- **Where it shows.** The app asks when sharing, with the folder's own name beside the server's other
+  folders prefilled (`~/code`), and can move it later (the same `DAEMON_FOLDER_SHARE_ADD` with another
+  `at`: its connection ends and a new one mounts it at the new place). **The server agrees to each
+  place**: the computer sends the whole set in its account-authenticated `DAEMON_FOLDER_SHARE_ACCEPT`
+  (on share, move and stop; a stop withdraws the place before its connection ends), and the server
+  writes them into the key's forced command (`--place`). That line in `authorized_keys` is the record:
+  `serve` reads it, with the parser the agreement uses (`listAcceptedComputers`), when a mount is
+  asked for and again just before mounting, so the key alone can mount only at a place agreed now.
+  One rule for a place, `serverLocation.ts`: inside the home, never a hidden folder (`~/.ssh`,
+  `~/.config`), never `~/bin` or `~/local`, no quote. A new place must also be free of symbolic links
+  on disk (`serverPlace.ts`) and apart from the computer's other places and from every other
+  computer's; `serve` checks the place on disk again once no dead mount of the computer hangs on the
+  way. A share from before places stays under `~/local` until it is moved; on a server from before
+  places a new share goes there too. When a mount ends and its place is no longer agreed (the share
+  moved or stopped), `serve` removes the folder there once empty, with the folders it made for it,
+  never through a shared folder mounted there since; a connection that only dropped keeps the place
+  for the next one. It writes nothing to stdout, which
+  is the connection. Neither side forwards ports, and nothing listens on the computer.
+- **One reader of the mount table.** `sharedFolderMounts.ts` lists the shared folders mounted on the
+  server (tagged sshfs mounts anywhere in the home, legacy ones under `~/local/<label>/`), by the home
+  as named even where the home is reached through a symbolic link (the mount table names real paths).
+  `serve`, the agreement, the file-browser roots and the agents' prompt all read it.
 - **Agents on the server are told.** On a machine with accepted computers,
-  `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: `~/local/<label>/X` is `~/X` on that
-  machine id, and commands for it run there with `machine_command_run`.
-- **Pickers offer them first.** The server lists the folders mounted on it among its file-browser
-  roots (`DAEMON_FILESYSTEM_LIST_ROOTS`, after its own; `sharedFolderRoots.ts`: its mounts under
-  `~/local` and, from its accepted computers, whose they are — the root's `sharedFolder`). The folder
-  browser shows them at the top level, and every folder picker (`PathSelectionList`: new session,
-  handoff and the rest) lists them above favorites as "<computer> · <folder>", one press each. The
-  sidebar explorer shows each as a top folder of the server right after `~` (same name, the sessions
-  started in it below, its path not repeated under `~`), asked when the explorer first shows the
-  server and again on Refresh (`explorerDirectoryListings.ts`); a server whose tree starts at an
-  opened folder shows only that folder. One naming rule: `sharedFolderTitle`.
+  `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: each folder mounted now, as
+  `"~/code" here is "~/code" on computer machine id …` (the names quoted as data), how to find one
+  mounted later (`findmnt`, source `piggercode:<label>:<folder>`, the folder URI-encoded), and that
+  commands for it run there with `machine_command_run`.
+- **Pickers offer them first; the explorer marks them.** The server lists the folders mounted on it
+  among its file-browser roots (`DAEMON_FILESYSTEM_LIST_ROOTS`, after its own; `sharedFolderRoots.ts`:
+  its shared mounts, named by where they are, `~/code`, and whose they are — the root's
+  `sharedFolder`). The folder browser shows them at the top level, and every folder picker
+  (`PathSelectionList`: new session, handoff and the rest) lists them above favorites by that name,
+  one press each. The sidebar explorer marks such a folder where it sits in the server's tree (a link
+  mark, its computer in the label read aloud), and offers no rename or delete for the shared folder
+  itself; its roots are asked when the explorer first shows the server and again on Refresh
+  (`explorerDirectoryListings.ts`).
 - **Coming back after a drop.** A share whose connection had been working for at least the retry
   interval (15 s) connects again at once when it ends — a restart or a network change; an attempt that
   fails sooner waits the interval, so a server that keeps refusing is not hammered. On the server, a mount

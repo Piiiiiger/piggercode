@@ -689,6 +689,11 @@ const credentialsSchema = z.object({
 export type SharedFolderSetting = {
   folder: string
   serverMachineId: string
+  /**
+   * Where it shows on the server, relative to the server's home (`code`, `projects/app`); the folder's
+   * own name when unset (`serverLocation.ts`).
+   */
+  at?: string
 }
 
 /** How this computer reaches a server it shares folders with, as the server's accept answered. */
@@ -698,7 +703,10 @@ export type SharedFolderServer = {
   port: number
   /** The server's SSH host keys (`<type> <base64>`), the only ones trusted for it. */
   hostKeys: string[]
-  /** This computer's folder on the server (`~/local/<name>`); each share mounts at `<root>/<folder>`. */
+  /**
+   * This computer's folder on the server (`~/local/<name>`), where servers before shared-folder
+   * locations mount each share (`<root>/<folder>`).
+   */
   root: string
 }
 
