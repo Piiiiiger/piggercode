@@ -87,6 +87,8 @@ function PathDrillDownButton(props: Readonly<{
 
 
 export type PathSelectionListFavorite = Readonly<{ path: string; label?: string }>;
+/** A folder another computer shares with this machine, at its path here (`label` names it). */
+export type PathSelectionListSharedFolder = Readonly<{ path: string; label: string }>;
 export type PathSelectionListRecent = Readonly<{ path: string; lastUsedAt: number }>;
 
 /**
@@ -118,6 +120,8 @@ export type PathSelectionListProps = Readonly<{
     initialSuggestionMode?: PathSelectionInitialSuggestionMode;
     favorites: ReadonlyArray<PathSelectionListFavorite>;
     recents: ReadonlyArray<PathSelectionListRecent>;
+    /** Folders the user's computers share with this machine, listed first: one press, no folder levels. */
+    sharedFolders?: ReadonlyArray<PathSelectionListSharedFolder>;
     machineHomeDir: string;
     /**
      * RUX-3: predicate that decides whether a given absolute path is currently
@@ -198,6 +202,28 @@ function buildFavoriteOptions(
         });
 }
 
+function buildSharedFolderOptions(
+    sharedFolders: ReadonlyArray<PathSelectionListSharedFolder>,
+    machineHomeDir: string,
+    onCommit: (path: string) => void,
+    favoriteAccessory: FavoriteAccessoryFactory,
+    rootTestId: string,
+): ReadonlyArray<SelectionListOption> {
+    return sharedFolders.map((entry) => {
+        const absolutePath = resolveAbsolutePath(entry.path, machineHomeDir);
+        const optionId = `shared:${absolutePath}`;
+        return {
+            id: optionId,
+            label: entry.label,
+            subtitle: absolutePath,
+            subtitleEllipsizeMode: 'head',
+            onSelect: () => onCommit(absolutePath),
+            autocompleteValue: absolutePath,
+            rightAccessory: favoriteAccessory(absolutePath, `${rootTestId}:path-root:option:${optionId}`),
+        } satisfies SelectionListOption;
+    });
+}
+
 function buildRecentOptions(
     recents: ReadonlyArray<PathSelectionListRecent>,
     machineHomeDir: string,
@@ -267,6 +293,7 @@ export function PathSelectionList(props: PathSelectionListProps): React.ReactEle
         isFavorite,
         onToggleFavorite,
         maxHeight,
+        sharedFolders,
     } = props;
     const ROOT_TEST_ID = 'path-selection-list';
     const modalPortalTarget = useModalPortalTarget();
@@ -608,6 +635,14 @@ export function PathSelectionList(props: PathSelectionListProps): React.ReactEle
             },
             {
                 kind: 'static',
+                id: 'shared-folders',
+                title: t('newSession.pathPicker.sharedFoldersTitle'),
+                options: buildSharedFolderOptions(sharedFolders ?? [], machineHomeDir, onCommit, renderFavoriteAccessoryStatic, ROOT_TEST_ID),
+                // Shared folders carry path subtitles too.
+                disableSubtitleRanking: true,
+            },
+            {
+                kind: 'static',
                 id: 'favorites',
                 title: t('newSession.pathPicker.favoritesTitle'),
                 options: buildFavoriteOptions(visibleFavorites, machineHomeDir, onCommit, renderFavoriteAccessoryStatic, ROOT_TEST_ID),
@@ -644,6 +679,7 @@ export function PathSelectionList(props: PathSelectionListProps): React.ReactEle
         machineId,
         machinePlatform,
         onCommit,
+        sharedFolders,
         visibleFavorites,
         visibleRecents,
         renderFavoriteAccessoryStatic,

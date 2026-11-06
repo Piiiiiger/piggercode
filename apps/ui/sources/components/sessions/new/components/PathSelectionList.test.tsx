@@ -488,6 +488,29 @@ describe('PathSelectionList', () => {
         act(() => screen.tree.unmount());
     });
 
+    it('offers the folders the user\'s computers share with this machine first, each one press away', async () => {
+        const onCommit = vi.fn();
+        const { PathSelectionList } = await import('./PathSelectionList');
+        const screen = await renderScreen(
+            <PathSelectionList
+                initialValue=""
+                favorites={[{ path: '~/fav' }]}
+                recents={[]}
+                sharedFolders={[{ path: '~/local/mac/code', label: 'MacBook-Air · code' }]}
+                machineHomeDir="/home/pigger"
+                machineId="server-1"
+                serverId={null}
+                machinePlatform="unix"
+                onCommit={onCommit}
+                onRequestClose={() => {}}
+            />,
+        );
+        expect(screen.findByTestId('path-selection-list:section:shared-folders')).not.toBeNull();
+        await screen.pressByTestIdAsync('path-selection-list:path-root:option:shared:/home/pigger/local/mac/code');
+        expect(onCommit).toHaveBeenCalledWith('/home/pigger/local/mac/code');
+        act(() => screen.tree.unmount());
+    });
+
     it('Bug 4a: fires onCommit exactly once per row press (no double-commit)', async () => {
         const onCommit = vi.fn();
         const { PathSelectionList } = await import('./PathSelectionList');

@@ -4463,6 +4463,7 @@ export const en = {
             truncatedDirectoryInfo: ({ count }: { count: number }) => `Showing first ${count} items`,
             recentTitle: 'Recent',
             favoritesTitle: 'Favorites',
+            sharedFoldersTitle: 'Shared folders',
             suggestedTitle: 'Suggested',
             allTitle: 'All',
             emptyRecent: 'No recent paths',

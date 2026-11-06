@@ -4667,6 +4667,7 @@ export const zhHans: TranslationStructure = {
       truncatedDirectoryInfo: ({ count }: { count: number }) => `显示前 ${count} 项`,
       recentTitle: "最近",
       favoritesTitle: "收藏",
+      sharedFoldersTitle: "共享文件夹",
       suggestedTitle: "推荐",
       allTitle: "全部",
       emptyRecent: "没有最近的路径",

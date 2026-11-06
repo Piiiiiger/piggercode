@@ -1872,10 +1872,14 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   (`acceptRequest.ts`) refuses without sshfs or without `sharedFoldersSshAddress` (set there with
   `piggercode machine shared-folders address <host[:port]>`). Otherwise it writes one line into its
   user's `~/.ssh/authorized_keys` (`acceptedComputers.ts`): `restrict` plus the forced command
-  `piggercode machine shared-folders serve --label <label>` through the managed `bin/piggercode` link,
-  the bare ed25519 key, and the comment `piggercode-shared-folders:<machineId>`. That line is the only
-  record of an accepted computer; a computer keeps its label, and a new computer's label comes from its
-  host name. The answer gives the SSH user, address and the server's host keys, which become the only
+  `piggercode machine shared-folders serve --label <label>` through the managed install's `current`
+  binary (`<PiggerCode home>/cli/current/piggercode`, which updates repoint — `serveCommand.ts`, whenever
+  this CLI runs from its managed install by the K5 decision, also under the background service's
+  bundled JS runtime, and only if that binary is there to run), the bare ed25519 key, and the comment
+  `piggercode-shared-folders:<machineId>`. That line is the only record of an accepted computer; a
+  computer keeps its label, and a new computer's label comes from its host name. Nothing rewrites
+  these lines on its own: a line an earlier version wrote with its own versioned path is replaced when
+  the computer is accepted again (or by hand). The answer gives the SSH user, address and the server's host keys, which become the only
   keys the computer trusts for it (`<PiggerCode home>/shared-folders/known_hosts`).
 - **One connection per folder, made by the computer.** `folderConnection.ts` runs sftp-server in a
   sandbox that keeps it inside the shared folder (`sharingTools.ts`) and pipes it to `ssh <server>
@@ -1893,6 +1897,10 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **Agents on the server are told.** On a machine with accepted computers,
   `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: `~/local/<label>/X` is `~/X` on that
   machine id, and commands for it run there with `machine_command_run`.
+- **The app offers them first.** The new-session folder picker lists the folders the account's other
+  computers share with the selected machine, mounted now, above favorites — "<computer> · <folder>",
+  one press to its `~/local/<label>/<folder>` (`useFoldersSharedToMachine`: each computer's own
+  `DAEMON_FOLDER_SHARE_LIST`, asked when the picker opens).
 - **Stopping a share** ends its connection, so the server unmounts it. The server keeps the computer's
   key line, which can only mount into that computer's own folder.
 
