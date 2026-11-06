@@ -1,8 +1,16 @@
 import { realpathSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { mkdir, rename, rm, stat } from 'fs/promises';
-import { basename, dirname, resolve as resolvePath } from 'path';
+import { basename, dirname, join, relative, resolve as resolvePath } from 'path';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
+import {
+  isWithin,
+  listSharedFolderMounts,
+  readMountinfoIfAny,
+  realHomeOf,
+  type SharedFolderMount,
+} from '@/integrations/folderShare/sharedFolderMounts';
 import { logger } from '@/ui/logger';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
@@ -41,6 +49,19 @@ function resolveRealPathBestEffort(path: string): string {
   }
 }
 
+/**
+ * Why deleting, renaming or replacing `path` would act on another computer's files: it is a folder that
+ * computer shares here (`listSharedFolderMounts`), or it holds one, and the change would reach through
+ * the mount. Null when neither.
+ */
+function sharedFolderProblem(path: string, mounts: readonly SharedFolderMount[]): string | null {
+  const shared = mounts.find((mount) => isWithin(mount.path, path));
+  if (!shared) return null;
+  return shared.path === path
+    ? `${path} is a folder the computer ${shared.label} shares here; stop sharing it from that computer first`
+    : `${path} holds ${shared.path}, a folder the computer ${shared.label} shares here; stop sharing it from that computer first`;
+}
+
 function isRootPath(resolvedPath: string, protectedRoots: readonly string[]): boolean {
   const normalizedTarget = resolveRealPathBestEffort(resolvedPath);
   return protectedRoots.some((root) => normalizedTarget === resolveRealPathBestEffort(root));
@@ -53,8 +74,27 @@ export function registerPathMutationHandlers(
     accessPolicy: FilesystemAccessPolicy;
     getAdditionalAllowedReadDirs: () => ReadonlyArray<string>;
     getAdditionalAllowedWriteDirs: () => ReadonlyArray<string>;
+    /** Where the folders other computers share here are read: this home and the OS's mount table by default. */
+    sharedFolders?: Readonly<{ homeDir: string; readMountinfo: () => string }>;
   }>,
 ): void {
+  const sharedFolders = deps.sharedFolders ?? { homeDir: homedir(), readMountinfo: readMountinfoIfAny };
+  // Checked before anything resolves or stats the path, which through a dropped connection's mount
+  // would wait until that connection ends: as given first, then as it resolves, against the mounts as
+  // the mount table names them, and only while something is shared here.
+  const sharedFolderProblemAt = (resolvedPath: string): string | null => {
+    const mounts = listSharedFolderMounts(sharedFolders.homeDir, sharedFolders.readMountinfo());
+    if (mounts.length === 0) return null;
+    const realHome = realHomeOf(sharedFolders.homeDir);
+    const asMounted = realHome === sharedFolders.homeDir
+      ? mounts
+      : mounts.map((mount) => ({ ...mount, path: join(realHome, relative(sharedFolders.homeDir, mount.path)) }));
+    // As given, spelled through the home or as the mount table names it, before anything resolves it.
+    const asGiven = sharedFolderProblem(resolvedPath, mounts) ?? sharedFolderProblem(resolvedPath, asMounted);
+    // Inside a shared folder nothing here is at stake (shared folders never nest).
+    if (asGiven || [...mounts, ...asMounted].some((mount) => isWithin(resolvedPath, mount.path))) return asGiven;
+    return sharedFolderProblem(resolveRealPathBestEffort(resolvedPath), asMounted);
+  };
   const protectedRoots = resolveFilesystemPolicyProtectedRoots({
     defaultDirectory: deps.defaultDirectory,
     accessPolicy: deps.accessPolicy,
@@ -117,6 +157,10 @@ export function registerPathMutationHandlers(
     if (!toValidation.valid) {
       return { success: false, error: toValidation.error };
     }
+    const shared = sharedFolderProblemAt(fromValidation.resolvedPath) ?? sharedFolderProblemAt(toValidation.resolvedPath);
+    if (shared) {
+      return { success: false, error: shared };
+    }
 
     if (isRootPath(fromValidation.resolvedPath, protectedRoots)) {
       return { success: false, error: 'Cannot rename the working directory root' };
@@ -155,6 +199,10 @@ export function registerPathMutationHandlers(
     });
     if (!validation.valid) {
       return { success: false, error: validation.error };
+    }
+    const shared = sharedFolderProblemAt(validation.resolvedPath);
+    if (shared) {
+      return { success: false, error: shared };
     }
 
     if (isRootPath(validation.resolvedPath, protectedRoots)) {

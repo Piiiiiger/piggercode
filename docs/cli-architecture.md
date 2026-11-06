@@ -1923,7 +1923,11 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **One reader of the mount table.** `sharedFolderMounts.ts` lists the shared folders mounted on the
   server (tagged sshfs mounts anywhere in the home, legacy ones under `~/local/<label>/`), by the home
   as named even where the home is reached through a symbolic link (the mount table names real paths).
-  `serve`, the agreement, the file-browser roots and the agents' prompt all read it.
+  `serve`, the agreement, the file-browser roots, the agents' prompt and the guard below all read it.
+- **Their files stay theirs.** The server's daemon refuses to delete, rename or replace a shared
+  folder, or a folder holding one (`pathMutationHandlers.ts`), before anything resolves or stats the
+  path: that would act on the computer's own files through the mount (and through a dropped
+  connection's, wait for it). What is inside a shared folder changes as anywhere else.
 - **Agents on the server are told.** On a machine with accepted computers,
   `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: each folder mounted now, as
   `"~/code" here is "~/code" on computer machine id …` (the names quoted as data), how to find one
@@ -1936,8 +1940,8 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   (`PathSelectionList`: new session, handoff and the rest) lists them above favorites by that name,
   one press each. The sidebar explorer marks such a folder where it sits in the server's tree (a link
   mark, its computer in the label read aloud), and offers no rename or delete for the shared folder
-  itself; its roots are asked when the explorer first shows the server and again on Refresh
-  (`explorerDirectoryListings.ts`).
+  itself (the server refuses them anyway, also before its roots answered); its roots are asked when
+  the explorer first shows the server and again on Refresh (`explorerDirectoryListings.ts`).
 - **Coming back after a drop.** A share whose connection had been working for at least the retry
   interval (15 s) connects again at once when it ends — a restart or a network change; an attempt that
   fails sooner waits the interval, so a server that keeps refusing is not hammered. On the server, a mount

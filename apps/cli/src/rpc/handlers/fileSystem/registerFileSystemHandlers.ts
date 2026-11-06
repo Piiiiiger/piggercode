@@ -28,6 +28,8 @@ export function registerFileSystemHandlers(
     accessPolicy?: FilesystemAccessPolicy;
     getAdditionalAllowedReadDirs?: () => ReadonlyArray<string>;
     getAdditionalAllowedWriteDirs?: () => ReadonlyArray<string>;
+    /** Where the folders other computers share here are read: this home and the OS's mount table by default. */
+    sharedFolders?: Readonly<{ homeDir: string; readMountinfo: () => string }>;
   }>,
 ): Readonly<{
   transferSessionStore: TransferSessionStore;
@@ -67,6 +69,7 @@ export function registerFileSystemHandlers(
     accessPolicy,
     getAdditionalAllowedReadDirs: () => normalizeAllowedDirectories(getAdditionalAllowedReadDirs),
     getAdditionalAllowedWriteDirs: () => normalizeAllowedDirectories(getAdditionalAllowedWriteDirs),
+    ...(opts?.sharedFolders ? { sharedFolders: opts.sharedFolders } : {}),
   });
   registerSessionTransferRpcHandlers(rpcHandlerManager, {
     workingDirectory: effectiveWorkingDirectory,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { RpcHandlerManager } from '@/api/rpc/RpcHandlerManager';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { statSync } from 'node:fs';
@@ -102,6 +102,59 @@ describe('filesystem path mutations', () => {
 
       const removed = await deletePath({ path: 'dir', recursive: true });
       expect(removed).toMatchObject({ success: true });
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+
+  it('leaves a folder another computer shares here alone, and every folder that holds one', async () => {
+    const workspace = mkdtempSync(join(tmpdir(), 'happier-files-shared-'));
+    try {
+      mkdirSync(join(workspace, 'projects', 'app'), { recursive: true });
+      mkdirSync(join(workspace, 'other'), { recursive: true });
+      // The mount table as Linux gives it, with that computer's mount at projects/app.
+      const mountinfo = `91 30 0:52 / ${join(workspace, 'projects', 'app')} rw,nosuid,nodev,relatime shared:2 - fuse.sshfs piggercode:laptop:app rw,user_id=1000,group_id=1000\n`;
+      const mgr = createRpcHandlerManager();
+      registerFileSystemHandlers(mgr as unknown as RpcHandlerManager, workspace, {
+        sharedFolders: { homeDir: workspace, readMountinfo: () => mountinfo },
+      });
+      const deletePath = mgr.handlers.get(RPC_METHODS.DELETE_PATH)!;
+      const renamePath = mgr.handlers.get(RPC_METHODS.RENAME_PATH)!;
+
+      for (const path of ['projects/app', 'projects']) {
+        expect(await deletePath({ path, recursive: true })).toMatchObject({ success: false });
+        expect(await renamePath({ from: path, to: 'moved' })).toMatchObject({ success: false });
+      }
+      expect(await renamePath({ from: 'other', to: 'projects', overwrite: true })).toMatchObject({ success: false });
+      expect(statSync(join(workspace, 'projects', 'app')).isDirectory()).toBe(true);
+
+      // Anything else changes as before.
+      expect(await renamePath({ from: 'other', to: 'renamed' })).toMatchObject({ success: true });
+      expect(await deletePath({ path: 'renamed', recursive: true })).toMatchObject({ success: true });
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+
+  it('knows them under a home reached through a symbolic link, by the path as given or as it resolves', async () => {
+    const workspace = mkdtempSync(join(tmpdir(), 'happier-files-shared-link-'));
+    try {
+      mkdirSync(join(workspace, 'real', 'projects', 'app'), { recursive: true });
+      const real = realpathSync(join(workspace, 'real'));
+      const home = join(workspace, 'home');
+      symlinkSync(real, home);
+      // The mount table names the real path.
+      const mountinfo = `91 30 0:52 / ${join(real, 'projects', 'app')} rw,relatime - fuse.sshfs piggercode:laptop:app rw\n`;
+      const mgr = createRpcHandlerManager();
+      registerFileSystemHandlers(mgr as unknown as RpcHandlerManager, home, {
+        sharedFolders: { homeDir: home, readMountinfo: () => mountinfo },
+      });
+      const deletePath = mgr.handlers.get(RPC_METHODS.DELETE_PATH)!;
+
+      for (const path of [join(home, 'projects'), join(real, 'projects'), join(real, 'projects', 'app')]) {
+        expect(await deletePath({ path, recursive: true })).toMatchObject({ success: false });
+      }
+      expect(statSync(join(real, 'projects', 'app')).isDirectory()).toBe(true);
     } finally {
       rmSync(workspace, { recursive: true, force: true });
     }
