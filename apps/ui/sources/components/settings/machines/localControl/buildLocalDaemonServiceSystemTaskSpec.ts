@@ -13,6 +13,8 @@ type LocalDaemonServiceTaskKind =
     // K2/R17 — updates the desktop-managed CLI of the app's channel through the acquisition owner,
     // then restarts a running service daemon. The executor refuses a CLI the app did not place.
     | 'cli.update.v1'
+    // Has the installed managed CLI look up its newest release itself (`self check`); downloads nothing.
+    | 'cli.check.v1'
     | 'cli.pathExposure.ensure.v1'
     | 'cli.pathExposure.remove.v1';
 

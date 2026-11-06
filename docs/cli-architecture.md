@@ -529,7 +529,20 @@ daemon republishes, so the app compares against the latest version the machine l
 "Check for updates" is one action in the app (`useCheckForUpdatesNow`, offered in Settings › About
 and on the Updates surface): this app's own check plus that request to every online machine. On the
 desktop, this computer's row comes from the local inspection, which is read again whenever its
-daemon republishes its facts (`UpdateFactsBackgroundRuntime`).
+daemon's published versions disagree with it (`UpdateFactsBackgroundRuntime`).
+
+**The desktop app keeps this computer's CLI current.** When the app opens and on "check for
+updates", it has the installed managed CLI look for a newer release itself (`cli.check.v1`: hsetup
+runs that CLI's `self check`, which downloads nothing), so it learns of a release whatever version
+the CLI runs, then reads this computer again. When the row offers an update, the app runs it
+(`cli.update.v1`, the row's own action) without being asked — once per version in an app session;
+a failed update stays on the row with its retry. The update restarts every running service of this
+home, so the app does this only when it is the app's alone and in order
+(`canKeepThisComputerCliCurrent`): a CLI the app installed, every service here listed and managed by
+the app (none the person set up), and the service for the app's relay `connected` for the account
+the app is on. Otherwise the row's Update button is left to the person. Such a computer runs no
+agents, so the restart only reconnects its shared folders. `cli.check.v1` checks the releases of the
+CLI the computer actually runs (its adopted ring), never the app's ring by default.
 
 **Remote.** The daemon's `tool.systemTasks` capability lists `cli.update.v1` only when
 `canUpdateRemotely` and, for a daemon a background service started (its service label is in its

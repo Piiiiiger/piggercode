@@ -17,6 +17,8 @@ export type ThisComputerCliUpdate = Readonly<{
     item: UpdateItem | null;
     machineId: string | null;
     run: () => Promise<void>;
+    /** `run` would start the update now (the desktop app, a row, and the account it acts for). */
+    canRun: boolean;
 }>;
 
 const NOOP = async () => {};
@@ -92,5 +94,6 @@ export function useThisComputerCliUpdate(): ThisComputerCliUpdate {
         if (!desktop || !item || !startContext) return;
         await task.start(startContext);
     }, [desktop, item, startContext, task.start]);
-    return React.useMemo(() => ({ item, machineId, run: desktop ? run : NOOP }), [desktop, item, machineId, run]);
+    const canRun = desktop && item !== null && startContext !== null;
+    return React.useMemo(() => ({ item, machineId, run: desktop ? run : NOOP, canRun }), [canRun, desktop, item, machineId, run]);
 }

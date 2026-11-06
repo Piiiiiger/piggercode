@@ -1,14 +1,16 @@
 import * as React from 'react';
 
 import { ensureMachineUpdateFactsBackground } from '@/capabilities/ensureAgentInstallablesBackground';
+import { checkThisComputerCliNow } from '@/components/settings/machines/localControl/checkThisComputerCli';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
 import { desktopSetupCoordinator } from '@/setup/desktopSetupCoordinator';
-import { useAllMachines } from '@/sync/domains/state/storage';
+import { useActiveServerAccountScope, useAllMachines } from '@/sync/domains/state/storage';
 import type { Machine } from '@/sync/domains/state/storageTypes';
 import { isTauriDesktop } from '@/utils/platform/tauri';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
-import { readThisComputerCliFacts } from './useThisComputerCliUpdate';
+import { canKeepThisComputerCliCurrent, useKeepThisComputerCliCurrent } from './keepThisComputerCliCurrent';
+import { readThisComputerCliFacts, useThisComputerCliUpdate } from './useThisComputerCliUpdate';
 
 /**
  * Keeps the Updates summary's coverage: asks each online machine for its tools' update facts
@@ -19,7 +21,8 @@ import { readThisComputerCliFacts } from './useThisComputerCliUpdate';
 export function UpdateFactsBackgroundRuntime(props: Readonly<{ enabled: boolean }>): null {
     const machines = useAllMachines();
     // These machines' server: the facts land in that server's cache entries, the ones the summary reads.
-    const serverId = useActiveServerSnapshot().serverId;
+    const activeServer = useActiveServerSnapshot();
+    const serverId = activeServer.serverId;
     const onlineKey = React.useMemo(
         () => machines.filter((machine) => isMachineOnline(machine)).map((machine) => machine.id).sort().join('\u0000'),
         [machines],
@@ -45,6 +48,24 @@ export function UpdateFactsBackgroundRuntime(props: Readonly<{ enabled: boolean 
         inspected: local ? { currentVersion: local.currentVersion, latestVersion: local.latestVersion } : null,
         machines,
         reread,
+    });
+    const thisComputer = useThisComputerCliUpdate();
+    const accountId = useActiveServerAccountScope()?.accountId ?? null;
+    const appRelay = React.useMemo(
+        () => activeServer.serverUrl
+            ? { relayUrl: activeServer.serverUrl, localRelayUrl: activeServer.activeLocalRelayUrl ?? null, accountId }
+            : null,
+        [accountId, activeServer.activeLocalRelayUrl, activeServer.serverUrl],
+    );
+    const keepAllowed = React.useMemo(() => canKeepThisComputerCliCurrent(inspection, appRelay), [appRelay, inspection]);
+    const check = React.useCallback(() => checkThisComputerCliNow(), []);
+    useKeepThisComputerCliCurrent({
+        enabled: props.enabled && desktop,
+        allowed: keepAllowed,
+        item: thisComputer.item,
+        canUpdate: thisComputer.canRun,
+        check,
+        update: thisComputer.run,
     });
     return null;
 }
