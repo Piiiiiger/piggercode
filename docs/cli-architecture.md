@@ -1906,7 +1906,8 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   interval (15 s) connects again at once when it ends — a restart or a network change; an attempt that
   fails sooner waits the interval, so a server that keeps refusing is not hammered. On the server, a mount
   that still answers belongs to a live connection and the new one is refused; a mount left hanging by
-  a dropped connection has its FUSE connection aborted (`/sys/fs/fuse/connections/<n>/abort`) before it
+  a dropped connection (the folder's own, or one the folder lies in, from a share since removed) has its
+  FUSE connection aborted (`/sys/fs/fuse/connections/<n>/abort`) before it
   is unmounted and mounted again. Until then nothing touches the path except a 5 s `stat` that is never
   waited on longer: a request that sshfs already took holds its caller, beyond SIGKILL, until the abort
   (mkdir there fails). Without the abort, the old sshfs unmounts by path when its transport

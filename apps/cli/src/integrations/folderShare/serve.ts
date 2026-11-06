@@ -52,13 +52,17 @@ export async function runSharedFoldersServe(params: Readonly<{
     return 2;
   }
 
-  const mountPoint = join(params.homeDir, 'local', params.label, folder);
-  // Nothing touches the path while a mount sits on it: through a dead connection's mount, mkdir fails
-  // and a stat waits until that connection is ended. Only mountinfo is read first.
-  const mounted = findMount(system.readMountinfo(), mountPoint);
-  if (mounted) {
-    if (await system.answers(mountPoint)) {
-      system.reportError(`piggercode shared folders: ${mountPoint} is already mounted on the server`);
+  const computerRoot = join(params.homeDir, 'local', params.label);
+  const mountPoint = join(computerRoot, folder);
+  // This computer's mounts on the way to the folder: the folder itself, or one it lies in (a share since
+  // removed). Nothing touches the path while one sits on it: through a dead connection's mount, mkdir
+  // fails and a stat waits until that connection is ended. Only mountinfo is read first.
+  const inTheWay = parseMountinfo(system.readMountinfo()).filter((mount) => mount.type === 'fuse.sshfs'
+    && mount.path.startsWith(`${computerRoot}/`)
+    && (mount.path === mountPoint || mountPoint.startsWith(`${mount.path}/`)));
+  for (const mounted of inTheWay) {
+    if (await system.answers(mounted.path)) {
+      system.reportError(`piggercode shared folders: ${mounted.path} is already mounted on the server`);
       return 3;
     }
     // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End
@@ -69,10 +73,10 @@ export async function runSharedFoldersServe(params: Readonly<{
     // computer connects again.
     const notEnded = system.abortConnection(mounted.device);
     if (notEnded !== null) {
-      system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mountPoint}: ${notEnded}`);
+      system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mounted.path}: ${notEnded}`);
       return 3;
     }
-    system.unmount(mountPoint);
+    system.unmount(mounted.path);
   }
   mkdirSync(mountPoint, { recursive: true });
   if (readdirSync(mountPoint).length > 0) {
@@ -98,10 +102,6 @@ export function listSharedFolderMounts(homeDir: string, mountinfo: string = osSe
   return parseMountinfo(mountinfo)
     .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(root))
     .map((mount) => mount.path);
-}
-
-function findMount(mountinfo: string, path: string): Readonly<{ path: string; type: string; device: string }> | undefined {
-  return parseMountinfo(mountinfo).find((mount) => mount.path === path);
 }
 
 /** Mount points, their types and devices; mountinfo escapes space, tab, newline and `\` in paths as octal. */

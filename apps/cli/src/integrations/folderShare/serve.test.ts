@@ -96,6 +96,20 @@ describe('serving a computer’s folder on this server', () => {
     expect(calls.steps).toEqual(['abort 0:43', 'unmount', 'sshfs']);
   });
 
+  it('ends a dead mount the requested folder lies in (a share since removed) before mounting the folder', async () => {
+    const home = createHome();
+    const removedShare = join(home, 'local', 'laptop', 'code');
+    mkdirSync(removedShare, { recursive: true });
+    const { system, calls } = createSystem({ mounted: removedShare, mountAnswers: false });
+
+    const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code/app', homeDir: home, system });
+
+    expect(code).toBe(0);
+    expect(calls.unmounted).toEqual([removedShare]);
+    expect(calls.steps).toEqual(['abort 0:43', 'unmount', 'sshfs']);
+    expect(calls.sshfs[0]!.at(-1)).toBe(join(removedShare, 'app'));
+  });
+
   it('mounts nothing over a hanging mount whose connection cannot be ended, and says why', async () => {
     const home = createHome();
     const mountPoint = join(home, 'local', 'laptop', 'code');
