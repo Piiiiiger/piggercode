@@ -508,17 +508,34 @@ a rollback floor to this transaction before it ships.
 
 **K5 — per-machine update facts.** `readCliUpdateFacts` (`apps/cli/src/cli/runtime/update/cliUpdateFacts.ts`,
 schema `CliUpdateFactsSchema` in `@piggercode/protocol`) reports `currentVersion`, the ring-filtered
-cached `latestVersion`, `channel`, `installSource` (`managed` only when the running executable is
-inside its ring's recorded install; npm/brew name their own update command), `updateCommand`,
-`canUpdateRemotely` and `lastUpdate`. Every daemon publishes it in its encrypted machine metadata
-as `cliUpdate` on its first connect after start and again whenever `last-update.json` changes
-(the daemon watches its install root — no poller; `watchLastCliUpdateResult`), and
-`daemon status --json` extends `cliUpdate` with it. The update-check cache has one writer (`self check`, `recordCliUpdateCheck`) and one
-ring-filtered reader (`readCachedCliUpdateState`, `packages/cli-common/src/update`) used by the
-notice, the status, doctor repair and K5; doctor never writes it or calls npm itself.
+cached `latestVersion`, `channel`, `installSource` (`managed` only when the running entry is
+inside its ring's recorded install — the executable itself, or the `package-dist` script when the
+background service starts it through the bundled JS runtime; npm/brew name their own update
+command), `updateCommand`, `canUpdateRemotely` and `lastUpdate`. Every daemon publishes it in its
+encrypted machine metadata as `cliUpdate` on its first connect after start, whenever
+`last-update.json` changes (the daemon watches its install root — no poller;
+`watchLastCliUpdateResult`) and whenever the version-check cache is rewritten
+(`watchCliUpdateCheckCache`, a watch on the cache folder), and `daemon status --json` extends
+`cliUpdate` with it. The update-check cache has one writer (`self check`, `recordCliUpdateCheck`)
+and one ring-filtered reader (`readCachedCliUpdateState`, `packages/cli-common/src/update`) used by
+the notice, the status, doctor repair and K5; doctor never writes it or calls npm itself.
+
+**Freshness.** The app's update-facts request reaches `tool.systemTasks` on every online machine.
+Each read runs the machine's daily version check when it is due, and the app's "check for updates"
+(the request's `bypassCache`) runs it at once (`maybeRefreshCliUpdateCacheInBackground`: a detached
+`self check --quiet` under the check's single-flight lock, which the check gives back when it ends —
+or at once when it could not start — so a check right after a failed one is not held back). The check rewrites the cache and the
+daemon republishes, so the app compares against the latest version the machine last looked up.
+"Check for updates" is one action in the app (`useCheckForUpdatesNow`, offered in Settings › About
+and on the Updates surface): this app's own check plus that request to every online machine. On the
+desktop, this computer's row comes from the local inspection, which is read again whenever its
+daemon republishes its facts (`UpdateFactsBackgroundRuntime`).
 
 **Remote.** The daemon's `tool.systemTasks` capability lists `cli.update.v1` only when
-`canUpdateRemotely` (presence = capability; older daemons never list it). The kind starts
+`canUpdateRemotely` and, for a daemon a background service started (its service label is in its
+environment), the update's own restart plan includes that service
+(`wouldUpdateRestartServiceDaemon`), so an update never reports success while the daemon keeps its
+old version (presence = capability; older daemons never list it). The kind starts
 `self update` detached from the daemon's own binary (output to `logs/cli-update-<ms>.log`) and
 answers `{ started: true, currentVersion, channel, logPath }` only once the updater reported on
 its admission pipe (`updaterAdmission.ts`: fd 3, one JSON line, then closed — stdout/stderr stay on
@@ -1787,6 +1804,10 @@ service definition), runs none. It lends the servers its folders and its command
 
   On the computer's own screen there is no session launch, agent list, tools entry or agent probe.
   Its machine rows show no agent icons, and Updates lists only its PiggerCode CLI.
+- **Its own agents are left alone.** Detection (`detectCliSnapshotOnDaemonPath`) reports no agent CLI
+  there and never runs one to find out, so no app version lists them. Every action on the agent CLI
+  capabilities — install, update, the probes that would run them — is refused with
+  `agents-not-hosted`.
 
 ### Remote commands for agents
 
