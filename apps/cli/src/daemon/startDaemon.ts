@@ -8801,9 +8801,10 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 });
               });
 
-              // Daemon-owned metadata, K5 CLI update facts included: published on every (re)connect
-              // and whenever an update attempt records its end (a failure before activation, or a
-              // manual daemon the update did not restart) — a restarted daemon publishes on connect.
+              // Daemon-owned metadata, K5 CLI update facts included: published on every (re)connect,
+              // whenever an update attempt records its end (a failure before activation, or a manual
+              // daemon the update did not restart) and whenever a version check rewrites its cache —
+              // a restarted daemon publishes on connect.
               cliUpdateMetadataPublisher?.stop();
               cliUpdateMetadataPublisher = createCliUpdateMetadataPublisher({
                 updateMachineMetadata: async (handler) => await connectedApiMachine.updateMachineMetadata(handler),
@@ -8814,6 +8815,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               });
               cliUpdateMetadataPublisher.watch({
                 channel: configuration.publicReleaseRing,
+                homeDir: configuration.happyHomeDir,
                 processEnv: { ...process.env, PIGGERCODE_HOME_DIR: configuration.happyHomeDir },
               });
               const publishDaemonMetadata = cliUpdateMetadataPublisher.publish;

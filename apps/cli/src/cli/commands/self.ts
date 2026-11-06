@@ -33,6 +33,7 @@ import {
 import { handleSelfMigrateCommand } from './self/handleSelfMigrateCommand';
 import { maybeRunVersionGatedRuntimeMigration } from './self/maybeRunVersionGatedRuntimeMigration';
 import { maybeRunDoctorRepair } from './self/maybeRunDoctorRepair';
+import { releaseSpawnedCliUpdateCheckLock } from '@/cli/runtime/update/autoUpdateNotice';
 import { resolveRunningCliPackageManagerOrigin } from '@/cli/runtime/update/cliUpdateFacts';
 import { reportUpdaterAdmission } from '@/cli/runtime/update/updaterAdmission';
 import {
@@ -199,7 +200,15 @@ async function runSelfUpdateStep<T>(
 async function cmdCheck(argv: string[], rawArgv: readonly string[] = process.argv): Promise<void> {
   const channelResolution = resolveSelfReleaseChannel({ args: argv, rawArgv });
   const channel = channelResolution.ringId;
-  const quiet = argv.includes('--quiet');
+  try {
+    await checkChannel(channel, argv.includes('--quiet'));
+  } finally {
+    // A background check (spawned under the check lock) gives the lock back however it ended.
+    releaseSpawnedCliUpdateCheckLock({ homeDir: configuration.happyHomeDir, publicReleaseRing: channel, env: process.env });
+  }
+}
+
+async function checkChannel(channel: SelfChannel, quiet: boolean): Promise<void> {
   const installSource = detectInstallSource(process.argv[1] ?? '');
 
   if (installSource === 'binary') {

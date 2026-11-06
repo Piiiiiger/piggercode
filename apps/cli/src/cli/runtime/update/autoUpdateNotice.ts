@@ -3,7 +3,9 @@ import { existsSync } from 'node:fs';
 
 import {
   acquireSingleFlightLock,
+  releaseSingleFlightLock,
   compareVersions,
+  type DetachedSpawnResult,
   doesVersionMatchReleaseRing,
   formatUpdateNotice,
   readUpdateCache,
@@ -19,6 +21,8 @@ import { parseRuntimeContextPrefixArgs } from '@/utils/env/runtimeContextArgv';
 
 const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const DEFAULT_CHECK_LOCK_TTL_MS = 2 * 60 * 1000;
+/** When the spawning process took the check lock, so the spawned check can give back exactly that lock. */
+const SPAWNED_CHECK_LOCK_ENV_KEY = 'PIGGERCODE_CLI_UPDATE_CHECK_LOCK_ACQUIRED_AT';
 
 function envNumber(env: NodeJS.ProcessEnv, key: string): number | null {
   const raw = String(env[key] ?? '').trim();
@@ -108,7 +112,7 @@ export function maybeRefreshCliUpdateCacheInBackground(params: Readonly<{
   publicReleaseRing: PublicReleaseRingId;
   nowMs?: number;
   checkIntervalMs?: number;
-  spawnDetached?: (args: { script: string; args: string[]; cwd: string; env: NodeJS.ProcessEnv }) => void;
+  spawnDetached?: (args: { script: string; args: string[]; cwd: string; env: NodeJS.ProcessEnv }) => DetachedSpawnResult | void;
 }>): void {
   const env = params.env;
   if (!updateChecksEnabled(env)) return;
@@ -128,16 +132,40 @@ export function maybeRefreshCliUpdateCacheInBackground(params: Readonly<{
   const lockTtlMs = envNumber(env, 'PIGGERCODE_CLI_UPDATE_CHECK_LOCK_TTL_MS') ?? DEFAULT_CHECK_LOCK_TTL_MS;
   const lockPath = resolveCliUpdateCheckLockPath({ homeDir: params.homeDir, publicReleaseRing: params.publicReleaseRing });
   if (!acquireSingleFlightLock({ lockPath, nowMs: now, ttlMs: lockTtlMs, pid: process.pid })) return;
+  let started = false;
   try {
-    spawnImpl({
+    const spawned = spawnImpl({
       script: entry,
       args: ['self', 'check', '--quiet', ...resolveSelfChannelArgs(params.publicReleaseRing)],
       cwd: params.cliRootDir,
-      env: { ...env, PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED: '1' },
+      // The check gives the lock back when it ends (`releaseSpawnedCliUpdateCheckLock`); the TTL only
+      // covers a check that never ends.
+      env: { ...env, PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED: '1', [SPAWNED_CHECK_LOCK_ENV_KEY]: String(now) },
     });
+    started = spawned?.started !== false;
   } catch {
     // Best-effort: update checks must never crash the CLI.
   }
+  // Nothing started (the spawn reported it, or threw), so nothing will give the lock back.
+  if (!started) releaseSingleFlightLock({ lockPath, acquiredAtMs: now });
+}
+
+/**
+ * The end of a `self check` this module spawned: it gives back the single-flight lock it was started
+ * under, so the next check — "check for updates" right after a check that failed offline — is not
+ * held back for the rest of the lock's TTL. A check started any other way holds no lock.
+ */
+export function releaseSpawnedCliUpdateCheckLock(params: Readonly<{
+  homeDir: string;
+  publicReleaseRing: PublicReleaseRingId;
+  env: NodeJS.ProcessEnv;
+}>): void {
+  const acquiredAtMs = Number(params.env[SPAWNED_CHECK_LOCK_ENV_KEY] ?? '');
+  if (!Number.isFinite(acquiredAtMs) || acquiredAtMs <= 0) return;
+  releaseSingleFlightLock({
+    lockPath: resolveCliUpdateCheckLockPath({ homeDir: params.homeDir, publicReleaseRing: params.publicReleaseRing }),
+    acquiredAtMs,
+  });
 }
 
 export function maybeAutoUpdateNotice(params: Readonly<{
@@ -150,7 +178,7 @@ export function maybeAutoUpdateNotice(params: Readonly<{
   nowMs?: number;
   notifyIntervalMs?: number;
   checkIntervalMs?: number;
-  spawnDetached?: (args: { script: string; args: string[]; cwd: string; env: NodeJS.ProcessEnv }) => void;
+  spawnDetached?: (args: { script: string; args: string[]; cwd: string; env: NodeJS.ProcessEnv }) => DetachedSpawnResult | void;
 }>): void {
   const env = params.env;
   if (!updateChecksEnabled(env)) return;

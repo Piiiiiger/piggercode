@@ -3,7 +3,12 @@ import {
 } from '@piggercode/protocol';
 
 import { type Capability } from '../service';
+import { maybeRefreshCliUpdateCacheInBackground } from '@/cli/runtime/update/autoUpdateNotice';
 import { readCliUpdateFactsForThisCli } from '@/cli/runtime/update/cliUpdateFacts';
+import { configuration } from '@/configuration';
+import { resolveDaemonServiceLabelFromEnv } from '@/daemon/ownership/daemonOwnershipMetadata';
+import { projectPath } from '@/projectPath';
+import { logger } from '@/ui/logger';
 
 import { CLI_UPDATE_SYSTEM_TASK_KIND } from '../systemTasks/kinds/cliUpdateRemote';
 import { getLiveSystemTasksRunnerAdapter } from '../systemTasks/liveSystemTasksRunner';
@@ -83,11 +88,23 @@ export function createProtocolSystemTasksRunnerAdapter(
   };
 }
 
+type CliUpdateCheckParams = Omit<Parameters<typeof maybeRefreshCliUpdateCacheInBackground>[0], 'checkIntervalMs' | 'nowMs'>;
+
 export function createSystemTasksCapability(
   runner: SystemTasksRunnerAdapter = createUnsupportedRunner(),
-  params: Readonly<{ listKinds?: () => string[] }> = {},
+  params: Readonly<{
+    listKinds?: () => string[] | Promise<string[]>;
+    /**
+     * This machine's CLI version check (K5 freshness). Every read of this capability is the app
+     * asking for update facts, so it runs the daily check when that is due, and at once when the
+     * request is the app's "check now" (`bypassCache`). The check runs detached and rewrites its
+     * cache; the daemon republishes its facts when the cache changes.
+     */
+    cliUpdateCheck?: () => CliUpdateCheckParams;
+  }> = {},
 ): Capability {
   const listKinds = params.listKinds ?? (() => [...SYSTEM_TASK_KIND_IDS]);
+  const cliUpdateCheck = params.cliUpdateCheck;
   return {
     descriptor: {
       id: 'tool.systemTasks',
@@ -99,11 +116,19 @@ export function createSystemTasksCapability(
         respond: { title: 'Respond' },
       },
     },
-    detect: async () => ({
-      available: true,
-      kinds: listKinds(),
-      methods: ['start', 'poll', 'respond'],
-    }),
+    detect: async ({ request }) => {
+      if (cliUpdateCheck) {
+        maybeRefreshCliUpdateCacheInBackground({
+          ...cliUpdateCheck(),
+          ...(request.params?.bypassCache === true ? { checkIntervalMs: 0 } : {}),
+        });
+      }
+      return {
+        available: true,
+        kinds: await listKinds(),
+        methods: ['start', 'poll', 'respond'],
+      };
+    },
     invoke: async ({ method, params }) => {
       if (method === 'start') {
         const parsed = SystemTaskSpecSchema.safeParse((params ?? {}).spec);
@@ -149,5 +174,32 @@ export function createSystemTasksCapability(
 }
 
 export const systemTasksCapability: Capability = createSystemTasksCapability(getLiveSystemTasksRunnerAdapter(), {
-  listKinds: () => listAdvertisedSystemTaskKinds({ canUpdateCliRemotely: readCliUpdateFactsForThisCli().canUpdateRemotely }),
+  listKinds: async () => listAdvertisedSystemTaskKinds({ canUpdateCliRemotely: await canThisDaemonUpdateItsCliRemotely() }),
+  cliUpdateCheck: () => ({
+    homeDir: configuration.happyHomeDir,
+    cliRootDir: projectPath(),
+    env: process.env,
+    publicReleaseRing: configuration.publicReleaseRing,
+  }),
 });
+
+/**
+ * `cli.update.v1` is offered when this CLI can replace itself (K5 `canUpdateRemotely`) and, for a
+ * daemon a background service started (its service label is in its environment, kept across a
+ * self-restart), the update's own restart plan includes that service — otherwise the daemon would
+ * keep its old version after an update that reports success. A daemon no service started is offered
+ * the update as before.
+ */
+async function canThisDaemonUpdateItsCliRemotely(): Promise<boolean> {
+  if (!readCliUpdateFactsForThisCli().canUpdateRemotely) return false;
+  const serviceLabel = resolveDaemonServiceLabelFromEnv();
+  if (!serviceLabel) return true;
+  try {
+    // Loaded only here: the restart owner brings the service-management modules with it.
+    const { wouldUpdateRestartServiceDaemon } = await import('@/cli/runtime/update/restartServiceDaemonAfterUpdate');
+    return await wouldUpdateRestartServiceDaemon({ channel: configuration.publicReleaseRing, serviceLabel });
+  } catch (error) {
+    logger.warn('[capabilities] Could not tell whether an update would restart this background service; not offering a remote update', error);
+    return false;
+  }
+}

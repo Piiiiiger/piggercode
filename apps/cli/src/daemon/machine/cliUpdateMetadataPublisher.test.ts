@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { runManagedCliUpdate } from '@piggercode/cli-common/firstPartyRuntime';
+import { recordCliUpdateCheck } from '@piggercode/cli-common/update';
 
 import type { MachineMetadata } from '@/api/types';
 import { readCliUpdateFacts } from '@/cli/runtime/update/cliUpdateFacts';
@@ -17,7 +18,7 @@ import { initialMachineMetadata } from './metadata';
  * whose release download fails) and the real directory watch. Only the relay write — the machine
  * socket — is replaced by a recorder, as the boundary it is.
  */
-describe('the daemon republishes its CLI update facts when the update record changes', () => {
+describe('the daemon republishes its CLI update facts when the update record or the version check changes', () => {
   let homeDir = '';
   let execPath = '';
   beforeEach(() => {
@@ -57,7 +58,7 @@ describe('the daemon republishes its CLI update facts when the update record cha
       }),
       onError: () => {},
     });
-    publisher.watch({ channel: 'stable', processEnv: { PIGGERCODE_HOME_DIR: homeDir } });
+    publisher.watch({ channel: 'stable', homeDir, processEnv: { PIGGERCODE_HOME_DIR: homeDir } });
     return { publisher, published };
   }
 
@@ -85,6 +86,20 @@ describe('the daemon republishes its CLI update facts when the update record cha
     }
   });
 
+  it('republishes the latest version when a version check rewrites its cache, whoever ran the check', async () => {
+    const { publisher, published } = setup();
+    try {
+      // What `self check` (and the background refresh it runs as) records; the cache folder did not
+      // exist when the daemon started watching.
+      recordCliUpdateCheck({
+        homeDir, publicReleaseRing: 'stable', latest: '1.1.0', current: '1.0.0', runtimeVersion: null, invokerVersion: '1.0.0',
+      });
+      await vi.waitFor(() => expect(published.at(-1)?.cliUpdate?.latestVersion).toBe('1.1.0'));
+    } finally {
+      publisher.stop();
+    }
+  });
+
   it('coalesces a burst of record changes during a held publish into one trailing publish of the last record', async () => {
     const heldPublishes: Array<() => void> = [];
     const published: MachineMetadata[] = [];
@@ -103,8 +118,9 @@ describe('the daemon republishes its CLI update facts when the update record cha
       }),
       onError: () => {},
       watchRecord: ({ onChange }) => { notify = onChange; return () => {}; },
+      watchCheckCache: () => () => {},
     });
-    publisher.watch({ channel: 'stable' });
+    publisher.watch({ channel: 'stable', homeDir });
 
     facts.value = 1;
     notify();

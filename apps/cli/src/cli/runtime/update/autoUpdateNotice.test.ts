@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { withTempDirSync } from '@/testkit/fs/tempDir';
 import { captureConsoleText } from '@/testkit/logger/captureOutput';
 
-import { maybeAutoUpdateNotice } from './autoUpdateNotice';
+import { maybeAutoUpdateNotice, maybeRefreshCliUpdateCacheInBackground, releaseSpawnedCliUpdateCheckLock } from './autoUpdateNotice';
 
 function writeJson(path: string, value: unknown) {
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
@@ -376,6 +376,54 @@ describe('maybeAutoUpdateNotice', () => {
       });
 
       expect(spawnDetached).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('lets the next check run as soon as the spawned check has finished, but never while it runs', () => {
+    withUpdateHomeDir((homeDir) => {
+      const spawnedEnvs: NodeJS.ProcessEnv[] = [];
+      // "Check now": the daily interval does not hold it back, only a check still running does.
+      const checkNow = () => maybeRefreshCliUpdateCacheInBackground({
+        homeDir,
+        cliRootDir: '/repo/apps/cli',
+        env: {},
+        publicReleaseRing: 'stable',
+        checkIntervalMs: 0,
+        spawnDetached: ({ env }) => { spawnedEnvs.push(env); },
+      });
+
+      checkNow();
+      checkNow();
+      expect(spawnedEnvs).toHaveLength(1);
+
+      // A check that started later than this one (after the lock expired) is not this one's to end.
+      releaseSpawnedCliUpdateCheckLock({ homeDir, publicReleaseRing: 'stable', env: { PIGGERCODE_CLI_UPDATE_CHECK_LOCK_ACQUIRED_AT: '1' } });
+      checkNow();
+      expect(spawnedEnvs).toHaveLength(1);
+
+      // The spawned `self check` ends (looked the release up, or failed offline) and gives the lock back.
+      releaseSpawnedCliUpdateCheckLock({ homeDir, publicReleaseRing: 'stable', env: spawnedEnvs[0]! });
+      checkNow();
+      expect(spawnedEnvs).toHaveLength(2);
+    });
+  });
+
+  it('gives the lock back at once when the check could not be started', () => {
+    withUpdateHomeDir((homeDir) => {
+      const attempts: number[] = [];
+      const checkNow = (started: boolean) => maybeRefreshCliUpdateCacheInBackground({
+        homeDir,
+        cliRootDir: '/repo/apps/cli',
+        env: {},
+        publicReleaseRing: 'stable',
+        checkIntervalMs: 0,
+        // The real launcher never throws: it reports a launch that failed.
+        spawnDetached: () => { attempts.push(attempts.length); return { started, admission: null }; },
+      });
+
+      checkNow(false);
+      checkNow(true);
+      expect(attempts).toHaveLength(2);
     });
   });
 

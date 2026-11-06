@@ -1,5 +1,5 @@
 import { spawnSync, spawn } from 'node:child_process';
-import { closeSync, mkdirSync, openSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { closeSync, mkdirSync, openSync, readFileSync, watch, writeFileSync, unlinkSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 
 import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
@@ -397,6 +397,42 @@ function ringFileSuffix(ring: PublicReleaseRingId): string {
 
 export function resolveCliUpdateCachePath(params: Readonly<{ homeDir: string; publicReleaseRing: PublicReleaseRingId }>): string {
   return join(params.homeDir, 'cache', `update${ringFileSuffix(params.publicReleaseRing)}.json`);
+}
+
+/**
+ * Give back a single-flight lock its holder took at `acquiredAtMs`. A lock taken by another holder
+ * since (after this one expired) is left alone; a missing or unreadable lock needs no release.
+ */
+export function releaseSingleFlightLock(params: Readonly<{ lockPath: string; acquiredAtMs: number }>): void {
+  try {
+    const parsed = JSON.parse(readFileSync(params.lockPath, 'utf8'));
+    if (Number(parsed?.acquiredAtMs) !== params.acquiredAtMs) return;
+    unlinkSync(params.lockPath);
+  } catch {
+    // Already gone or unreadable: nothing of this holder's is left to release.
+  }
+}
+
+/**
+ * Call `onChange` whenever a ring's version-check cache is (re)written — by `self check`, the
+ * background refresh that runs it, or any other process of this home — so a running daemon can
+ * republish the latest version it advertises. Watches the cache DIRECTORY, created when missing,
+ * so a replace by rename never ends the watch. Returns the stop function.
+ */
+export function watchCliUpdateCheckCache(params: Readonly<{
+  homeDir: string;
+  publicReleaseRing: PublicReleaseRingId;
+  onChange: () => void;
+  onError?: (error: unknown) => void;
+}>): () => void {
+  const cachePath = resolveCliUpdateCachePath(params);
+  const cacheFileName = basename(cachePath);
+  mkdirSync(dirname(cachePath), { recursive: true });
+  const watcher = watch(dirname(cachePath), { persistent: false }, (_event, fileName) => {
+    if (String(fileName ?? '') === cacheFileName) params.onChange();
+  });
+  watcher.on('error', (error) => params.onError?.(error));
+  return () => watcher.close();
 }
 
 export function resolveCliUpdateCheckLockPath(params: Readonly<{ homeDir: string; publicReleaseRing: PublicReleaseRingId }>): string {

@@ -256,6 +256,26 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
     });
   });
 
+  it('says an update restarts a service daemon only when its own restart plan includes that service', async () => {
+    await withTempDir('happier-self-update-restart-reach-', async (homeDir) => {
+      patchHome(homeDir);
+      const { writeDaemonState, installService } = await loadWithSpawnRecorder();
+      const { wouldUpdateRestartServiceDaemon } = await import('./restartServiceDaemonAfterUpdate');
+      const defaultLabel = installService({ targetMode: 'default-following' });
+      const reaches = async (serviceLabel: string) => await wouldUpdateRestartServiceDaemon({ channel: 'stable', serviceLabel });
+
+      // Installed, but the running daemon is not the one its service started (a manual daemon):
+      // the update restarts nothing, so the service's daemon would not move to the new version.
+      writeDaemonState(serviceState('1.0.0', undefined));
+      expect(await reaches(defaultLabel)).toBe(false);
+
+      // The service's own daemon runs: the update restarts exactly that service, no other label.
+      writeDaemonState(serviceState('1.0.0', defaultLabel));
+      expect(await reaches(defaultLabel)).toBe(true);
+      expect(await reaches('com.piggercode.cli.daemon.system')).toBe(false);
+    });
+  });
+
   it('leaves a manual daemon and another channel\'s service daemon running', async () => {
     await withTempDir('happier-self-update-restart-skip-', async (homeDir) => {
       patchHome(homeDir);

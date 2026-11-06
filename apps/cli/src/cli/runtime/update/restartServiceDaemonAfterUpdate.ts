@@ -129,6 +129,26 @@ async function observeServiceBeforeUpdate(
  * payload, and each of these comes back; a manual daemon and another ring's services are not the
  * update's to restart.
  */
+/**
+ * Whether an update would restart the background service whose daemon carries `serviceLabel` onto
+ * the version it installs: the same restart plan the update makes, asked beforehand. A daemon whose
+ * service the plan leaves out — a system service, a service that is not running its daemon, a
+ * daemon that restarted itself — would keep its old version after an update that reports success.
+ */
+export async function wouldUpdateRestartServiceDaemon(params: Readonly<{
+  channel: PublicReleaseRingId;
+  serviceLabel: string;
+  processEnv?: NodeJS.ProcessEnv;
+}>): Promise<boolean> {
+  const plan = await planServiceDaemonsRestartAfterUpdate({
+    channel: params.channel,
+    ...(params.processEnv ? { processEnv: params.processEnv } : {}),
+    // Only asked; a later update reports what it could not restart.
+    reportUnownedRestartFailure: () => {},
+  });
+  return plan.restart !== null && plan.labels.includes(params.serviceLabel);
+}
+
 export async function planServiceDaemonsRestartAfterUpdate(params: Readonly<{
   channel: PublicReleaseRingId;
   /** The invoking scope's owner, only to name a service label this CLI does not manage. */
