@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs';
 import { chmod, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -154,10 +155,19 @@ function checkPlaces(params: Readonly<{
   for (const at of places) {
     const mountPoint = join(params.homeDir, at);
     if (params.own.includes(at) || params.mounts.some((mount) => isWithin(mountPoint, mount.path))) continue;
-    const problem = serverPlaceProblem(params.homeDir, at);
+    const problem = serverPlaceProblem(params.homeDir, at) ?? filesIn(mountPoint, at);
     if (problem) throw new Error(`${problem}, so no folder is shared there.`);
   }
   return places;
+}
+
+/** Why a folder that is already there cannot take a mount: it holds files, which the mount would hide. */
+function filesIn(path: string, at: string): string | null {
+  try {
+    return readdirSync(path).length > 0 ? `~/${at} on this machine already has files in it` : null;
+  } catch {
+    return null;
+  }
 }
 
 function placesOverlap(left: string, right: string): boolean {

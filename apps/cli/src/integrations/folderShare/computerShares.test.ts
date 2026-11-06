@@ -42,6 +42,8 @@ function createComputer(options: Readonly<{
   serverBeforePlaces?: boolean;
   /** Called as the server is asked, with the connections so far. */
   onAccept?: (connections: ReadonlyArray<{ closed: boolean }>) => void;
+  /** Holds each answer until it resolves, as a slow server would. */
+  acceptGate?: () => Promise<void>;
   tools?: SharingToolsResult;
   retryDelayMs?: number;
   now?: () => number;
@@ -52,6 +54,7 @@ function createComputer(options: Readonly<{
   const acceptOnServer: AcceptOnServer = async (serverMachineId, request) => {
     acceptCalls.push({ serverMachineId, request });
     options.onAccept?.(connections);
+    await options.acceptGate?.();
     if (options.accept) return options.accept;
     // The server agrees to the places it is asked for (its own checks are `acceptedComputers.ts`'s).
     return options.serverBeforePlaces ? ACCEPTED : { ...ACCEPTED, places: request.places ?? [] };
@@ -195,26 +198,69 @@ describe('folders this computer shares with a server', () => {
     });
   });
 
-  it('keeps a share recorded before places where it was until the user moves it', async () => {
+  /** Shares of these folders as a CLI from before places recorded them: no place, so under `~/local` on the server. */
+  async function recordShareBeforePlaces(...folders: string[]): Promise<void> {
+    const first = createComputer();
+    for (const folder of folders) await first.shares.add({ folder, serverMachineId: 'machine-server' });
+    first.shares.stop();
+    await updateSettings((current) => ({
+      ...current,
+      sharedFolders: (current.sharedFolders ?? []).map((share) => ({ folder: share.folder, serverMachineId: share.serverMachineId })),
+    }));
+  }
+
+  it('moves a share recorded before places to its folder\'s own name as the daemon starts, once the server agrees', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
-      const first = createComputer();
-      await first.shares.add({ folder: 'code', serverMachineId: 'machine-server' });
-      first.shares.stop();
-      await updateSettings((current) => ({
-        ...current,
-        sharedFolders: (current.sharedFolders ?? []).map(({ folder, serverMachineId }) => ({ folder, serverMachineId })),
-      }));
+      await recordShareBeforePlaces('code');
 
       const restarted = createComputer();
       await restarted.shares.start();
-      expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/local/laptop/code');
-      expect(restarted.connections[0]!.target.at).toBeUndefined();
 
-      await restarted.shares.add({ folder: 'code', serverMachineId: 'machine-server', at: '~/code' });
-      expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/code');
+      // It connected where it was, then the server agreed to ~/code and it connected there.
+      expect(restarted.connections[0]!.target.at).toBeUndefined();
+      expect(restarted.connections[0]!.closed).toBe(true);
       expect(restarted.connections.at(-1)!.target.at).toBe('code');
+      expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/code');
       expect(restarted.acceptCalls.map((call) => call.request.places)).toEqual([['code']]);
       restarted.shares.stop();
+    });
+  });
+
+  it('lets the app change shares while older ones move as the daemon starts, and never moves one it stopped', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      await recordShareBeforePlaces('code', 'notes');
+      let answer!: () => void;
+      const slowServer = new Promise<void>((resolve) => {
+        answer = resolve;
+      });
+      const restarted = createComputer({ acceptGate: () => slowServer });
+
+      const starting = restarted.shares.start();
+      await vi.waitFor(() => expect(restarted.acceptCalls).toHaveLength(1));
+      // The app stops sharing notes while the server still weighs ~/code.
+      const stopping = restarted.shares.remove({ folder: 'notes', serverMachineId: 'machine-server' });
+      answer();
+      await Promise.all([starting, stopping]);
+
+      expect((await restarted.shares.list()).shares.map((share) => share.serverPath)).toEqual(['~/code']);
+      expect(restarted.acceptCalls.map((call) => call.request.places)).toEqual([['code']]);
+      restarted.shares.stop();
+    });
+  });
+
+  it('keeps a share recorded before places where it was while its server refuses that place or cannot place it', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      await recordShareBeforePlaces('code');
+      const refusing = { ok: false, errorCode: 'invalid_request', error: '~/code on this machine already has files in it, so no folder is shared there.' } as const;
+
+      for (const options of [{ accept: refusing }, { serverBeforePlaces: true }]) {
+        const restarted = createComputer(options);
+        await restarted.shares.start();
+
+        expect((await restarted.shares.list()).shares[0]!.serverPath).toBe('~/local/laptop/code');
+        expect(restarted.connections.every((connection) => connection.target.at === undefined)).toBe(true);
+        restarted.shares.stop();
+      }
     });
   });
 

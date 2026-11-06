@@ -22,6 +22,7 @@ ${chalk.bold('Notes:')}
     switch on this machine's page in the app.
   • shared-folders address, on a server, sets the SSH address your other machines reach it at
     (host or host:port). Once it is set, a computer can share folders with this machine from
-    its page in the app; they appear here under ~/local/<computer>/. Needs sshfs on this machine.
+    its page in the app; each appears here where it is placed (~/<folder name> by default, beside your
+    other folders). Needs sshfs on this machine.
   `);
 }

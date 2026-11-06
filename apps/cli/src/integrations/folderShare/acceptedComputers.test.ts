@@ -177,6 +177,17 @@ describe('a computer key accepted for shared folders', () => {
     expect(moved.places).toEqual(['code/sub']);
   });
 
+  it('refuses a new place that already has files in it, which the mount would hide', async () => {
+    const home = createHome();
+    mkdirSync(join(home, 'code'));
+    writeFileSync(join(home, 'code', 'notes.txt'), '');
+    mkdirSync(join(home, 'empty'));
+    const ask = (places: string[]) => acceptComputerKey({ homeDir: home, machineId: 'machine-laptop', computerName: 'laptop', publicKey: KEY_A, places, serveCommand });
+
+    await expect(ask(['code'])).rejects.toThrow(/already has files/);
+    expect((await ask(['empty'])).places).toEqual(['empty']);
+  });
+
   it('reads a place written by hand as the server writes it, and none it cannot read', () => {
     const line = (places: string) => `restrict,command="/srv/piggercode machine shared-folders serve --label laptop${places}" ${KEY_A} piggercode-shared-folders:machine-laptop`;
 

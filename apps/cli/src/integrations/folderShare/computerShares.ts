@@ -320,8 +320,33 @@ export function createComputerShares(deps: Readonly<{
     return await changed();
   };
 
+  /**
+   * Moves a share from before places to its folder's own name on its server (`~/code`), the change the
+   * app's 「更改位置…」 makes, once that server agrees (it refuses a place that holds files or another
+   * computer's share). Read again first, since the app may have moved or stopped it meanwhile. One that
+   * cannot move stays under `~/local` and is tried again the next time the daemon starts; after a server
+   * that does not answer, its other shares wait for that too.
+   */
+  const placeLegacyShare = async (folder: string, serverMachineId: string, away: Set<string>): Promise<void> => {
+    const share = (await readShared()).shares.find((candidate) => candidate.serverMachineId === serverMachineId && candidate.folder === folder);
+    if (stopped || !share || share.at !== undefined || away.has(serverMachineId)) return;
+    const moved = await add({ folder, serverMachineId });
+    if (!moved.ok && moved.errorCode === 'server_unavailable') away.add(serverMachineId);
+    logger.infoFile(
+      moved.ok ? '[SHARED FOLDERS] Placed a share from before places at its own name' : '[SHARED FOLDERS] A share from before places stays under ~/local',
+      { serverMachineId, ...(moved.ok ? {} : { reason: moved.error }) },
+    );
+  };
+
   return {
-    start: () => serialized(reconcile),
+    start: async () => {
+      await serialized(reconcile);
+      // One at a time between the app's own changes, which wait behind each one only.
+      const away = new Set<string>();
+      for (const share of (await readShared()).shares.filter((candidate) => candidate.at === undefined)) {
+        await serialized(() => placeLegacyShare(share.folder, share.serverMachineId, away));
+      }
+    },
     list,
     add: (request) => serialized(() => add(request)),
     remove: (request) => serialized(() => remove(request)),

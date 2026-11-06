@@ -1912,10 +1912,12 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   asked for and again just before mounting, so the key alone can mount only at a place agreed now.
   One rule for a place, `serverLocation.ts`: inside the home, never a hidden folder (`~/.ssh`,
   `~/.config`), never `~/bin` or `~/local`, no quote. A new place must also be free of symbolic links
-  on disk (`serverPlace.ts`) and apart from the computer's other places and from every other
-  computer's; `serve` checks the place on disk again once no dead mount of the computer hangs on the
-  way. A share from before places stays under `~/local` until it is moved; on a server from before
-  places a new share goes there too. When a mount ends and its place is no longer agreed (the share
+  on disk (`serverPlace.ts`), empty if it is there already (a mount would hide its files), and apart
+  from the computer's other places and from every other computer's; `serve` checks the place on disk
+  again once no dead mount of the computer hangs on the way. A share from before places moves to its
+  folder's own name when the computer's daemon starts (the same move the app makes, once the server
+  agrees); it stays under `~/local` while the server refuses that place, cannot place shares or does
+  not answer, and on a server from before places a new share goes there too. When a mount ends and its place is no longer agreed (the share
   moved or stopped), `serve` removes the folder there once empty, with the folders it made for it,
   never through a shared folder mounted there since; a connection that only dropped keeps the place
   for the next one. It writes nothing to stdout, which
