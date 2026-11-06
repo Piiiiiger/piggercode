@@ -18,13 +18,19 @@ function createHome(): string {
 }
 
 /** The OS side of a mount: mountinfo, sshfs and fusermount, recorded instead of run. */
-function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boolean; abortFails?: string; onUnmount?: () => void }> = {}) {
-  const calls: { sshfs: string[][]; unmounted: string[]; errors: string[]; steps: string[] } = { sshfs: [], unmounted: [], errors: [], steps: [] };
+function createSystem(options: Readonly<{ mounted?: string | readonly string[]; mountAnswers?: boolean; abortFails?: string; onUnmount?: () => void }> = {}) {
+  const calls: { sshfs: string[][]; unmounted: string[]; errors: string[]; steps: string[]; probed: string[] } = { sshfs: [], unmounted: [], errors: [], steps: [], probed: [] };
+  const mounted = typeof options.mounted === 'string' ? [options.mounted] : options.mounted ?? [];
   const system: SharedFoldersServeSystem = {
-    readMountinfo: () => options.mounted
-      ? `36 25 0:43 / ${options.mounted.replace(/ /g, '\\040')} rw,nosuid,nodev - fuse.sshfs :code rw,user_id=1000\n`
-      : '22 1 8:1 / / rw,relatime - ext4 /dev/sda1 rw\n',
-    answers: async () => options.mountAnswers === true,
+    readMountinfo: () => [
+      '22 1 8:1 / / rw,relatime - ext4 /dev/sda1 rw',
+      ...mounted.map((path, index) => `${36 + index} 25 0:${43 + index} / ${path.replace(/ /g, '\\040')} rw,nosuid,nodev - fuse.sshfs :code rw,user_id=1000`),
+      '',
+    ].join('\n'),
+    answers: async (path) => {
+      calls.probed.push(path);
+      return options.mountAnswers === true;
+    },
     abortConnection: (device) => {
       calls.steps.push(`abort ${device}`);
       return options.abortFails ?? null;
@@ -108,6 +114,21 @@ describe('serving a computer’s folder on this server', () => {
     expect(calls.unmounted).toEqual([removedShare]);
     expect(calls.steps).toEqual(['abort 0:43', 'unmount', 'sshfs']);
     expect(calls.sshfs[0]!.at(-1)).toBe(join(removedShare, 'app'));
+  });
+
+  it('ends every connection a dead outer mount takes with it, and asks only the outer one', async () => {
+    const home = createHome();
+    const removedShare = join(home, 'local', 'laptop', 'code');
+    mkdirSync(join(removedShare, 'app'), { recursive: true });
+    // `code` (a share since removed) died with `code/app` mounted inside it; unmounting `code` detaches both.
+    const { system, calls } = createSystem({ mounted: [removedShare, join(removedShare, 'app')], mountAnswers: false });
+
+    const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code/app', homeDir: home, system });
+
+    expect(code).toBe(0);
+    expect(calls.probed).toEqual([removedShare]);
+    expect(calls.steps).toEqual(['abort 0:43', 'abort 0:44', 'unmount', 'sshfs']);
+    expect(calls.unmounted).toEqual([removedShare]);
   });
 
   it('mounts nothing over a hanging mount whose connection cannot be ended, and says why', async () => {

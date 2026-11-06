@@ -57,26 +57,30 @@ export async function runSharedFoldersServe(params: Readonly<{
   // This computer's mounts on the way to the folder: the folder itself, or one it lies in (a share since
   // removed). Nothing touches the path while one sits on it: through a dead connection's mount, mkdir
   // fails and a stat waits until that connection is ended. Only mountinfo is read first.
-  const inTheWay = parseMountinfo(system.readMountinfo()).filter((mount) => mount.type === 'fuse.sshfs'
-    && mount.path.startsWith(`${computerRoot}/`)
-    && (mount.path === mountPoint || mountPoint.startsWith(`${mount.path}/`)));
-  for (const mounted of inTheWay) {
-    if (await system.answers(mounted.path)) {
-      system.reportError(`piggercode shared folders: ${mounted.path} is already mounted on the server`);
+  const computerMounts = parseMountinfo(system.readMountinfo())
+    .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(`${computerRoot}/`));
+  const outermost = computerMounts
+    .filter((mount) => isWithin(mountPoint, mount.path))
+    .sort((left, right) => left.path.length - right.path.length)[0];
+  if (outermost) {
+    if (await system.answers(outermost.path)) {
+      system.reportError(`piggercode shared folders: ${outermost.path} is already mounted on the server`);
       return 3;
     }
-    // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End
-    // that connection before unmounting: its sshfs, when its transport finally closes, unmounts by path,
-    // and would take the new mount with it while anything still held the old one (an agent working in the
-    // folder). An aborted connection leaves the path alone (libfuse's fuse_kern_unmount); only an sshfs
-    // already exiting before the abort can still unmount it, which ends the new connection, and the
-    // computer connects again.
-    const notEnded = system.abortConnection(mounted.device);
-    if (notEnded !== null) {
-      system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mounted.path}: ${notEnded}`);
-      return 3;
+    // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End the
+    // connections of it and of every mount under it (the unmount detaches them all) before unmounting:
+    // each sshfs, when its transport finally closes, unmounts by path, and would take the new mount with
+    // it while anything still held the old one (an agent working in the folder). An aborted connection
+    // leaves the path alone (libfuse's fuse_kern_unmount); only an sshfs already exiting before the abort
+    // can still unmount it, which ends the new connection, and the computer connects again.
+    for (const mount of computerMounts.filter((candidate) => isWithin(candidate.path, outermost.path))) {
+      const notEnded = system.abortConnection(mount.device);
+      if (notEnded !== null) {
+        system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mount.path}: ${notEnded}`);
+        return 3;
+      }
     }
-    system.unmount(mounted.path);
+    system.unmount(outermost.path);
   }
   mkdirSync(mountPoint, { recursive: true });
   if (readdirSync(mountPoint).length > 0) {
@@ -102,6 +106,10 @@ export function listSharedFolderMounts(homeDir: string, mountinfo: string = osSe
   return parseMountinfo(mountinfo)
     .filter((mount) => mount.type === 'fuse.sshfs' && mount.path.startsWith(root))
     .map((mount) => mount.path);
+}
+
+function isWithin(path: string, root: string): boolean {
+  return path === root || path.startsWith(`${root}/`);
 }
 
 /** Mount points, their types and devices; mountinfo escapes space, tab, newline and `\` in paths as octal. */
