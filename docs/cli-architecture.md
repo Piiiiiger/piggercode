@@ -1798,10 +1798,13 @@ environment variables); its working directory goes through the machine's filesys
 ### Computers that run no agents
 
 Agents (Codex, Claude Code) run on the account's servers. A computer connected through the desktop
-app, whose background service is desktop-managed (`PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop` in the
-service definition), runs none. It lends the servers its folders and its commands instead.
+app runs none. It lends the servers its folders and its commands instead. Its background service says
+so: every install the desktop app performs names the app in the service definition
+(`PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID`), the default-following service as well as one for a further
+relay, which is also desktop-managed (`PIGGERCODE_DAEMON_SERVICE_MANAGED_BY=desktop`). A terminal
+install has neither.
 
-- **The computer decides.** `daemon/agentHosting.ts` reads the service's marker. The daemon publishes
+- **The computer decides.** `daemon/agentHosting.ts` reads those markers. The daemon publishes
   `agentsHosted: false` in its machine metadata, and its `spawnSession` refuses every session start with
   `AGENTS_NOT_HOSTED`, whoever asks: the app, an agent's `session.spawn_new`, a handoff or an
   automation. Shared folders and remote commands are unaffected. Machines that do not report the field

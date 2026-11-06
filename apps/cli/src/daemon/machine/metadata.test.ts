@@ -49,6 +49,23 @@ describe('initialMachineMetadata', () => {
     }
   });
 
+  it('counts the desktop app\'s own install of the default service as a computer that runs no agents', () => {
+    const previousManagedBy = process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY;
+    const previousBundleId = process.env.PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID;
+    try {
+      // "Connect this computer" installs the default-following service: it names the app, and only a
+      // service for a further relay is also desktop-managed.
+      delete process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY;
+      process.env.PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID = 'dev.piggercode.app';
+      expect(refreshMachineMetadataForCurrentDaemon(initialMachineMetadata, initialMachineMetadata.host).agentsHosted).toBe(false);
+    } finally {
+      if (previousManagedBy === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_MANAGED_BY = previousManagedBy;
+      if (previousBundleId === undefined) delete process.env.PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID;
+      else process.env.PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID = previousBundleId;
+    }
+  });
+
   it('publishes the daemon\'s CLI update facts (K5) and keeps them when nothing changed', () => {
     const cliUpdate = {
       currentVersion: '0.2.13',
