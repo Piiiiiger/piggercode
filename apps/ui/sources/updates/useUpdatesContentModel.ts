@@ -13,8 +13,9 @@ import { buildMachineUpdateGroups, readUpdatableInstallables, type UpdatesGroup 
 import { buildUpdatesSummary, type UpdatesSummary } from './items/buildUpdatesSummary';
 import type { UpdateItem } from './items/updateItem';
 import { useMachinesCapabilitySnapshots } from './machineCapabilitySnapshots';
-import { markUpdateCompletionsSeen, refreshMachineUpdateFacts, runMachineItemUpdate, useMachineUpdateRuns, useUnseenUpdateCompletions, useUpdateBatch, type UpdateAllProgress } from './machineUpdateRuns';
+import { markUpdateCompletionsSeen, runMachineItemUpdate, useMachineUpdateRuns, useUnseenUpdateCompletions, useUpdateBatch, type UpdateAllProgress } from './machineUpdateRuns';
 import { useAppUpdateStatus } from './useAppUpdateStatus';
+import { useCheckForUpdatesNow } from './useCheckForUpdatesNow';
 import { useThisComputerCliUpdate } from './useThisComputerCliUpdate';
 
 export type { UpdatesGroup };
@@ -134,10 +135,10 @@ export function useUpdatesContentModel(): UpdatesContentModel {
 
     const { batch, updateAll, stopAfterCurrent } = useUpdateBatch(updateScope, allItems, executeItem);
 
+    const checkEverythingNow = useCheckForUpdatesNow(app.checkNow);
     const checkNow = React.useCallback(() => {
-        void app.checkNow();
-        for (const machineId of onlineKey ? onlineKey.split('\u0000') : []) refreshMachineUpdateFacts(serverId, machineId);
-    }, [app, onlineKey, serverId]);
+        void checkEverythingNow();
+    }, [checkEverythingNow]);
 
     const openWhatsNew = React.useCallback(() => {
         if (releaseNotesLauncher.open()) return;

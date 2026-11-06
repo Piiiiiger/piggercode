@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useCliUpdateTask } from '@/components/settings/machines/localControl/useCliUpdateTask';
 import { buildLocalDaemonServiceSystemTaskSpec } from '@/components/settings/machines/localControl/buildLocalDaemonServiceSystemTaskSpec';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
-import { readKeptCliUpdateCommand } from '@/setup/deriveDesktopLocalSetupSnapshot';
+import { readKeptCliUpdateCommand, type DesktopLocalInspection, type DesktopLocalReadinessFacts } from '@/setup/deriveDesktopLocalSetupSnapshot';
 import { desktopSetupCoordinator, resolveThisComputerServiceForActiveRelay } from '@/setup/desktopSetupCoordinator';
 import { useActiveServerAccountScope } from '@/sync/domains/state/storage';
 import { t } from '@/text';
@@ -22,6 +22,30 @@ export type ThisComputerCliUpdate = Readonly<{
 const NOOP = async () => {};
 
 /**
+ * What this computer's local inspection says about its one PiggerCode CLI. The machine is the one
+ * that answers for the app's relay — its own pinned service's when it has one here — so this
+ * computer's row replaces that machine's row in the relay's machine list. The CLI facts are this
+ * computer's one CLI's whichever service reports them, so they stay known even when the app relay's
+ * own service could not be read; only the machine is then unknown. `null` until an inspection answered.
+ */
+export function readThisComputerCliFacts(inspection: DesktopLocalInspection): Readonly<{
+    facts: DesktopLocalReadinessFacts;
+    machineId: string | null;
+    currentVersion: string | null;
+    latestVersion: string | null;
+}> | null {
+    const serving = resolveThisComputerServiceForActiveRelay(inspection);
+    const facts = serving?.facts ?? (inspection.status === 'resolved' ? inspection.facts : null);
+    if (!facts) return null;
+    return {
+        facts,
+        machineId: serving?.facts.auth.machineId ?? null,
+        currentVersion: facts.acquisition.version ?? facts.cliUpdate?.currentVersion ?? null,
+        latestVersion: facts.cliUpdate?.latestVersion ?? null,
+    };
+}
+
+/**
  * This computer's Happier CLI row, from the one ambient inspection (never a read of its own) and
  * the one shared CLI-update action (S-10). Cheap: it subscribes to state other surfaces already
  * hold, so the always-mounted summary may use it.
@@ -36,17 +60,12 @@ export function useThisComputerCliUpdate(): ThisComputerCliUpdate {
     const serverId = useActiveServerSnapshot().serverId;
     const activeScope = useActiveServerAccountScope();
     const task = useCliUpdateTask();
-    // The machine is the one that answers for the app's relay — its own pinned service's when it has
-    // one here — so this row replaces that machine's row in the relay's machine list. The CLI facts
-    // are this computer's one CLI's, whichever service reports them.
-    const serving = desktop ? resolveThisComputerServiceForActiveRelay(inspection) : null;
-    // The command line is this computer's one CLI whichever service reports it, so it stays listed
-    // even when the app relay's own service could not be read; only the machine is then unknown.
-    const facts = desktop ? serving?.facts ?? (inspection.status === 'resolved' ? inspection.facts : null) : null;
-    const machineId = serving?.facts.auth.machineId ?? null;
+    const local = desktop ? readThisComputerCliFacts(inspection) : null;
+    const facts = local?.facts ?? null;
+    const machineId = local?.machineId ?? null;
     const cliUpdate = facts?.cliUpdate ?? null;
     const provenance = facts?.acquisition.provenance ?? null;
-    const currentVersion = facts?.acquisition.version ?? cliUpdate?.currentVersion ?? null;
+    const currentVersion = local?.currentVersion ?? null;
     const keptCliUpdateCommand = facts ? readKeptCliUpdateCommand(facts) : null;
 
     const item = React.useMemo(() => {

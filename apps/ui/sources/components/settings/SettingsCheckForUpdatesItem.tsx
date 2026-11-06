@@ -6,16 +6,19 @@ import { Item } from '@/components/ui/lists/Item';
 import { describeUpdateItem } from '@/components/updates/describeUpdateItem';
 import { t } from '@/text';
 import { useAppUpdateStatus, type AppUpdateStatus } from '@/updates/useAppUpdateStatus';
+import { useCheckForUpdatesNow } from '@/updates/useCheckForUpdatesNow';
 
 /**
  * Settings › About › Check for updates: this app's own update, on the same owner as the Updates
- * screen (`useAppUpdateStatus`). The row says where the app stands; pressing it checks now, or takes
- * the next step of an update that is waiting (download, restart). The chrome's Updates entry hides
+ * screen (`useAppUpdateStatus`). The row says where the app stands; pressing it checks everything
+ * now — this app and every online machine, the same check as the Updates screen's — or takes the
+ * next step of an app update that is waiting (download, restart). The chrome's Updates entry hides
  * itself when nothing is waiting, so this is the place a check can always be asked for.
  */
 export function SettingsCheckForUpdatesItem() {
     const status = useAppUpdateStatus();
-    return <CheckForUpdatesItem status={status} />;
+    const checkNow = useCheckForUpdatesNow(status.checkNow);
+    return <CheckForUpdatesItem status={{ model: status.model, run: status.run, checkNow }} />;
 }
 
 export function CheckForUpdatesItem(props: Readonly<{ status: Pick<AppUpdateStatus, 'model' | 'run' | 'checkNow'> }>) {
