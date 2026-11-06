@@ -29,8 +29,11 @@ function comparablePath(path: string, platform: NodeJS.Platform): string {
 
 /**
  * Where the running CLI came from. `managed` only when this process runs a version the managed
- * install of its own ring recorded (`current.version` present and the executable inside that
- * install's `versions/`) — the install the one update transaction can replace and restore.
+ * install of its own ring recorded (`current.version` present and the running entry inside that
+ * install's `versions/`) — the install the one update transaction can replace and restore. The
+ * entry is the executable itself, or the script when the background service starts the managed
+ * package through the bundled JS runtime (`<runtime> <versions>/<version>/package-dist/index.mjs`),
+ * whose executable lives outside `versions/`.
  */
 function resolveRunningCliInstallSource(params: Readonly<{
   homeDir: string;
@@ -47,7 +50,9 @@ function resolveRunningCliInstallSource(params: Readonly<{
   });
   const { currentVersionId } = readInstalledVersionMarkersSync(layout);
   const versionsDir = `${comparablePath(layout.versionsDir, params.platform)}/`;
-  if (currentVersionId && comparablePath(params.execPath, params.platform).startsWith(versionsDir)) {
+  const runsManagedEntry = [params.execPath, params.invokedPath]
+    .some((entry) => comparablePath(entry, params.platform).startsWith(versionsDir));
+  if (currentVersionId && runsManagedEntry) {
     return { installSource: 'managed', packageManagerCommand: null };
   }
   const origin = resolveRunningCliPackageManagerOrigin(params);

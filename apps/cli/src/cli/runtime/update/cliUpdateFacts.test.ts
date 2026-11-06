@@ -54,6 +54,18 @@ describe('readCliUpdateFacts (K5)', () => {
     });
   });
 
+  it('reports a managed install when its service runs the managed package through the bundled JS runtime', () => {
+    // The background service starts `<js runtime> <versions>/<version>/package-dist/index.mjs`, so the
+    // process executable is the runtime's, outside `versions/`, and the managed entry is the script.
+    installManaged('cli', '0.3.2');
+    const runtime = join(homeDir, 'tools', 'js-runtime', 'current', 'runtime', 'bin', 'node');
+    const entry = join(homeDir, 'cli', 'versions', '0.3.2', 'package-dist', 'index.mjs');
+
+    expect(readCliUpdateFacts({
+      homeDir, publicReleaseRing: 'stable', currentVersion: '0.3.2', execPath: runtime, invokedPath: entry, platform: 'linux', npmPackageName: '@piggercode/cli',
+    })).toMatchObject({ installSource: 'managed', updateCommand: 'piggercode self update', canUpdateRemotely: true });
+  });
+
   it('does not offer a remote update on Windows', () => {
     const execPath = installManaged('cli', '0.2.13');
     expect(readCliUpdateFacts({
@@ -117,6 +129,11 @@ describe('readCliUpdateFacts (K5)', () => {
     installManaged('cli', '0.2.13');
     expect(readCliUpdateFacts({
       homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath: stray, invokedPath: stray, platform: 'linux', npmPackageName: '@piggercode/cli',
+    })).toMatchObject({ installSource: 'other', updateCommand: null, canUpdateRemotely: false });
+    // A script outside the managed layout run by the bundled JS runtime is not the managed install either.
+    const runtime = join(homeDir, 'tools', 'js-runtime', 'current', 'runtime', 'bin', 'node');
+    expect(readCliUpdateFacts({
+      homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath: runtime, invokedPath: join(homeDir, 'somewhere', 'index.mjs'), platform: 'linux', npmPackageName: '@piggercode/cli',
     })).toMatchObject({ installSource: 'other', updateCommand: null, canUpdateRemotely: false });
   });
 });
