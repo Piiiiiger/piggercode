@@ -1902,6 +1902,16 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   `~/local` and, from its accepted computers, whose they are — the root's `sharedFolder`). The folder
   browser shows them at the top level, and every folder picker (`PathSelectionList`: new session,
   handoff and the rest) lists them above favorites as "<computer> · <folder>", one press each.
+- **Coming back after a drop.** A share whose connection had been working for at least the retry
+  interval (15 s) connects again at once when it ends — a restart or a network change; an attempt that
+  fails sooner waits the interval, so a server that keeps refusing is not hammered. On the server, a mount
+  that still answers belongs to a live connection and the new one is refused; a mount left hanging by
+  a dropped connection has its FUSE connection aborted (`/sys/fs/fuse/connections/<n>/abort`) before it
+  is unmounted and mounted again. Without the abort, the old sshfs unmounts by path when its transport
+  finally closes, taking the new mount with it while anything still held the old one. Only an sshfs
+  that was already exiting before the abort can still do that; the new connection then ends and the
+  computer connects again. Recovering such a mount needs the server's fusectl
+  (`/sys/fs/fuse/connections`); without it the new connection is refused with the reason.
 - **Stopping a share** ends its connection, so the server unmounts it. The server keeps the computer's
   key line, which can only mount into that computer's own folder.
 

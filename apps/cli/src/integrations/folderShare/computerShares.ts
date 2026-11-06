@@ -34,8 +34,10 @@ import { resolveSharingTools, type SharingToolsResult } from './sharingTools';
  */
 
 /**
- * The wait before a share connects again after its connection ended: soon enough to come back shortly
+ * The wait before a share connects again after an attempt failed: soon enough to come back shortly
  * after a network change or a server restart, slow enough not to hammer a server that keeps refusing.
+ * A connection that had been working for at least this long is tried again at once when it ends —
+ * a restart or a network change, not a server that refuses.
  */
 const RETRY_DELAY_MS = 15_000;
 
@@ -60,6 +62,8 @@ type Runtime = {
   error?: string;
   connection: FolderConnection | null;
   retryTimer: ReturnType<typeof setTimeout> | null;
+  /** When the current connection was mounted on the server (`deps.now()`); unset until then. */
+  connectedAt?: number;
 };
 
 const HOST_KEY_PATTERN = /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) [A-Za-z0-9+/]+={0,2}$/;
@@ -77,11 +81,14 @@ export function createComputerShares(deps: Readonly<{
   openConnection?: (target: FolderConnectionTarget, events: FolderConnectionEvents) => FolderConnection;
   ensureKey?: (dir: string) => Promise<Readonly<{ keyPath: string; publicKey: string }>>;
   retryDelayMs?: number;
+  /** Test seam: the clock that says how long a connection had been working. */
+  now?: () => number;
 }>): ComputerShares {
   const resolveTools = deps.resolveTools ?? (() => resolveSharingTools());
   const openConnection = deps.openConnection ?? openFolderConnection;
   const ensureKey = deps.ensureKey ?? ensureSharedFoldersKey;
   const retryDelayMs = deps.retryDelayMs ?? RETRY_DELAY_MS;
+  const now = deps.now ?? Date.now;
   const knownHostsPath = join(deps.stateDir, 'known_hosts');
   const runtimes = new Map<string, Runtime>();
   let stopped = false;
@@ -94,15 +101,15 @@ export function createComputerShares(deps: Readonly<{
     return run;
   };
 
-  const fail = (key: string, runtime: Runtime, reason: string) => {
+  const fail = (key: string, runtime: Runtime, reason: string, delayMs: number = retryDelayMs) => {
     if (stopped || runtimes.get(key) !== runtime) return;
     runtime.state = 'retrying';
     runtime.error = reason;
-    logger.debug('[SHARED FOLDERS] A share is not connected; trying again later', { reason });
+    logger.debug('[SHARED FOLDERS] A share is not connected; trying again', { reason, delayMs });
     runtime.retryTimer = setTimeout(() => {
       runtime.retryTimer = null;
       void serialized(() => connect(key, runtime));
-    }, retryDelayMs);
+    }, delayMs);
     runtime.retryTimer.unref?.();
   };
 
@@ -138,11 +145,14 @@ export function createComputerShares(deps: Readonly<{
       onConnected: () => {
         if (runtimes.get(key) !== runtime) return;
         runtime.state = 'connected';
+        runtime.connectedAt = now();
         delete runtime.error;
       },
       onClosed: (reason) => {
+        const wasWorking = runtime.connectedAt !== undefined && now() - runtime.connectedAt >= retryDelayMs;
         runtime.connection = null;
-        fail(key, runtime, reason);
+        delete runtime.connectedAt;
+        fail(key, runtime, reason, wasWorking ? 0 : retryDelayMs);
       },
     });
   };

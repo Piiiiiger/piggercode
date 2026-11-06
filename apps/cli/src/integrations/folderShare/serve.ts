@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -20,6 +20,11 @@ export type SharedFoldersServeSystem = Readonly<{
   readMountinfo: () => string;
   /** Whether the mount at `path` answers. */
   answers: (path: string) => boolean;
+  /**
+   * Ends the FUSE connection behind a mount (`device` as mountinfo gives it, `0:47`): null once ended,
+   * otherwise why it could not be.
+   */
+  abortConnection: (device: string) => string | null;
   unmount: (path: string) => void;
   /** Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. */
   runSshfs: (args: readonly string[]) => Promise<number>;
@@ -45,9 +50,21 @@ export async function runSharedFoldersServe(params: Readonly<{
 
   const mountPoint = join(params.homeDir, 'local', params.label, folder);
   mkdirSync(mountPoint, { recursive: true });
-  if (isMountPoint(system.readMountinfo(), mountPoint)) {
+  const mounted = findMount(system.readMountinfo(), mountPoint);
+  if (mounted) {
     if (system.answers(mountPoint)) {
       system.reportError(`piggercode shared folders: ${mountPoint} is already mounted on the server`);
+      return 3;
+    }
+    // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End
+    // that connection before unmounting: its sshfs, when its transport finally closes, unmounts by path,
+    // and would take the new mount with it while anything still held the old one (an agent working in the
+    // folder). An aborted connection leaves the path alone (libfuse's fuse_kern_unmount); only an sshfs
+    // already exiting before the abort can still unmount it, which ends the new connection, and the
+    // computer connects again.
+    const notEnded = system.abortConnection(mounted.device);
+    if (notEnded !== null) {
+      system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mountPoint}: ${notEnded}`);
       return 3;
     }
     system.unmount(mountPoint);
@@ -77,13 +94,13 @@ export function listSharedFolderMounts(homeDir: string, mountinfo: string = osSe
     .map((mount) => mount.path);
 }
 
-function isMountPoint(mountinfo: string, path: string): boolean {
-  return parseMountinfo(mountinfo).some((mount) => mount.path === path);
+function findMount(mountinfo: string, path: string): Readonly<{ path: string; type: string; device: string }> | undefined {
+  return parseMountinfo(mountinfo).find((mount) => mount.path === path);
 }
 
-/** Mount points and their types; mountinfo escapes space, tab, newline and `\` in paths as octal. */
-function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type: string }>> {
-  const mounts: Array<Readonly<{ path: string; type: string }>> = [];
+/** Mount points, their types and devices; mountinfo escapes space, tab, newline and `\` in paths as octal. */
+function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type: string; device: string }>> {
+  const mounts: Array<Readonly<{ path: string; type: string; device: string }>> = [];
   for (const line of mountinfo.split('\n')) {
     const fields = line.split(' ');
     const separator = fields.indexOf('-', 6);
@@ -91,6 +108,7 @@ function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type:
     mounts.push({
       path: fields[4]!.replace(/\\([0-7]{3})/g, (_, octal: string) => String.fromCharCode(parseInt(octal, 8))),
       type: fields[separator + 1] ?? '',
+      device: fields[2]!,
     });
   }
   return mounts;
@@ -103,6 +121,17 @@ const osServeSystem: SharedFoldersServeSystem = {
     timeout: MOUNT_ANSWER_TIMEOUT_MS,
     killSignal: 'SIGKILL',
   }).status === 0,
+  // fusectl names a connection by its device, which for FUSE (major 0) is the minor number.
+  abortConnection: (device) => {
+    const minor = /^0:(\d+)$/.exec(device)?.[1];
+    if (!minor) return `unexpected device ${device}`;
+    try {
+      writeFileSync(`/sys/fs/fuse/connections/${minor}/abort`, '1');
+      return null;
+    } catch (error) {
+      return error instanceof Error ? error.message : String(error);
+    }
+  },
   unmount: (path) => {
     const result = spawnSync('fusermount3', ['-uz', path], { stdio: 'ignore' });
     if (result.status !== 0) spawnSync('fusermount', ['-uz', path], { stdio: 'ignore' });

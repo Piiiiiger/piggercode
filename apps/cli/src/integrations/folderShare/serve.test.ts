@@ -18,17 +18,23 @@ function createHome(): string {
 }
 
 /** The OS side of a mount: mountinfo, sshfs and fusermount, recorded instead of run. */
-function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boolean }> = {}) {
-  const calls: { sshfs: string[][]; unmounted: string[]; errors: string[] } = { sshfs: [], unmounted: [], errors: [] };
+function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boolean; abortFails?: string }> = {}) {
+  const calls: { sshfs: string[][]; unmounted: string[]; errors: string[]; steps: string[] } = { sshfs: [], unmounted: [], errors: [], steps: [] };
   const system: SharedFoldersServeSystem = {
     readMountinfo: () => options.mounted
       ? `36 25 0:43 / ${options.mounted.replace(/ /g, '\\040')} rw,nosuid,nodev - fuse.sshfs :code rw,user_id=1000\n`
       : '22 1 8:1 / / rw,relatime - ext4 /dev/sda1 rw\n',
     answers: () => options.mountAnswers === true,
+    abortConnection: (device) => {
+      calls.steps.push(`abort ${device}`);
+      return options.abortFails ?? null;
+    },
     unmount: (path) => {
+      calls.steps.push('unmount');
       calls.unmounted.push(path);
     },
     runSshfs: async (args) => {
+      calls.steps.push('sshfs');
       calls.sshfs.push([...args]);
       return 0;
     },
@@ -65,7 +71,7 @@ describe('serving a computer’s folder on this server', () => {
     expect(existsSync(join(home, 'local'))).toBe(false);
   });
 
-  it('clears a mount its dropped connection left behind, then mounts again', async () => {
+  it('ends a dropped connection\'s hanging mount before mounting again, so its sshfs cannot unmount the new one later', async () => {
     const home = createHome();
     const mountPoint = join(home, 'local', 'laptop', 'code');
     mkdirSync(mountPoint, { recursive: true });
@@ -75,7 +81,21 @@ describe('serving a computer’s folder on this server', () => {
 
     expect(code).toBe(0);
     expect(calls.unmounted).toEqual([mountPoint]);
-    expect(calls.sshfs).toHaveLength(1);
+    // Its connection is ended first: the old sshfs then leaves the path (and the new mount) alone.
+    expect(calls.steps).toEqual(['abort 0:43', 'unmount', 'sshfs']);
+  });
+
+  it('mounts nothing over a hanging mount whose connection cannot be ended, and says why', async () => {
+    const home = createHome();
+    const mountPoint = join(home, 'local', 'laptop', 'code');
+    mkdirSync(mountPoint, { recursive: true });
+    const { system, calls } = createSystem({ mounted: mountPoint, mountAnswers: false, abortFails: 'EACCES: permission denied' });
+
+    const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code', homeDir: home, system });
+
+    expect(code).not.toBe(0);
+    expect(calls.steps).toEqual(['abort 0:43']);
+    expect(calls.errors[0]).toMatch(/EACCES/);
   });
 
   it('leaves a working mount alone instead of mounting the folder twice', async () => {
@@ -87,8 +107,7 @@ describe('serving a computer’s folder on this server', () => {
     const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code', homeDir: home, system });
 
     expect(code).not.toBe(0);
-    expect(calls.unmounted).toEqual([]);
-    expect(calls.sshfs).toEqual([]);
+    expect(calls.steps).toEqual([]);
     expect(calls.errors[0]).toMatch(/already mounted/);
   });
 

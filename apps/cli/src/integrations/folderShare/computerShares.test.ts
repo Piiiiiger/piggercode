@@ -39,6 +39,8 @@ function createHome(): string {
 function createComputer(options: Readonly<{
   accept?: FolderShareAcceptResponse | 'unavailable';
   tools?: SharingToolsResult;
+  retryDelayMs?: number;
+  now?: () => number;
 }> = {}) {
   const home = createHome();
   const acceptCalls: Array<Readonly<{ serverMachineId: string; request: FolderShareAcceptRequest }>> = [];
@@ -60,7 +62,8 @@ function createComputer(options: Readonly<{
       connections.push(connection);
       return { close: () => { connection.closed = true; } };
     },
-    retryDelayMs: 5,
+    retryDelayMs: options.retryDelayMs ?? 5,
+    ...(options.now ? { now: options.now } : {}),
   });
   return { home, shares, acceptCalls, connections };
 }
@@ -108,6 +111,27 @@ describe('folders this computer shares with a server', () => {
       await vi.waitFor(() => expect(connections).toHaveLength(2));
       expect((await shares.list()).shares[0]).toMatchObject({ state: 'connecting' });
       expect((await shares.list()).shares[0]!.error).toBeUndefined();
+      shares.stop();
+    });
+  });
+
+  it('comes straight back after a connection that had been working ends, and waits after one that failed at once', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      let now = 0;
+      const { shares, connections } = createComputer({ retryDelayMs: 60_000, now: () => now });
+      await shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+      connections[0]!.events.onConnected();
+
+      // Up for a whole retry interval, then a network change or a restart ends it: no wait.
+      now = 60_000;
+      connections[0]!.events.onClosed('Connection reset by peer');
+      await vi.waitFor(() => expect(connections).toHaveLength(2));
+
+      // The next attempt fails before it ever worked: that one waits the retry interval.
+      connections[1]!.events.onClosed('Connection refused');
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(connections).toHaveLength(2);
+      expect((await shares.list()).shares[0]).toMatchObject({ state: 'retrying', error: 'Connection refused' });
       shares.stop();
     });
   });
