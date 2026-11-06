@@ -9979,6 +9979,9 @@ settingsSession: {
       moveTitle: ({ folder }: { folder: string }) => `${folder} 放在哪里？`,
       moveConfirm: "移动",
       moveFailedTitle: "没有移动成功",
+      placeIgnoredTitle: "这台电脑还不能更改位置",
+      placeIgnoredBody: ({ place, actual }: { place: string; actual: string }) =>
+        `这台电脑上的 PiggerCode 太旧，没能放到 ${place}，现在在 ${actual}。先在这台电脑的页面更新命令行，再试一次。`,
       stopTitle: ({ folder }: { folder: string }) => `停止共享 ${folder}？`,
       stopBody: ({ machine }: { machine: string }) => `「${machine}」会卸载它，文件仍然留在这台电脑上。`,
       stopAction: "停止共享",

@@ -1917,7 +1917,8 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   again once no dead mount of the computer hangs on the way. A share from before places moves to its
   folder's own name when the computer's daemon starts (the same move the app makes, once the server
   agrees); it stays under `~/local` while the server refuses that place, cannot place shares or does
-  not answer, and on a server from before places a new share goes there too. When a mount ends and its place is no longer agreed (the share
+  not answer, and on a server from before places a new share goes there too. When a computer that
+  cannot place shares ignores the place asked for, the app says so instead of seeming to have moved it. When a mount ends and its place is no longer agreed (the share
   moved or stopped), `serve` removes the folder there once empty, with the folders it made for it,
   never through a shared folder mounted there since; a connection that only dropped keeps the place
   for the next one. It writes nothing to stdout, which

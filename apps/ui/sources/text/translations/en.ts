@@ -9725,6 +9725,9 @@ settingsSession: {
             moveTitle: ({ folder }: { folder: string }) => `Where should ${folder} show?`,
             moveConfirm: 'Move',
             moveFailedTitle: 'The folder was not moved',
+            placeIgnoredTitle: 'This computer cannot place it yet',
+            placeIgnoredBody: ({ place, actual }: { place: string; actual: string }) =>
+                `This computer's PiggerCode is too old to put the folder at ${place}; it is at ${actual}. Update its command line on this computer's page, then try again.`,
             stopTitle: ({ folder }: { folder: string }) => `Stop sharing ${folder}?`,
             stopBody: ({ machine }: { machine: string }) => `${machine} unmounts it. The files stay on this computer.`,
             stopAction: 'Stop sharing',

@@ -60,18 +60,28 @@ type MachineRpcCall = Readonly<{ machineId: string; method: string; payload: Rea
 const SERVER = { id: 'machine-server', name: 'server' };
 
 /** The laptop's daemon, answering the way its shared-folder handlers do. */
-function connectLaptop(initial: Readonly<{ shares?: FolderShare[]; refuseAdd?: string }> = {}) {
+function connectLaptop(initial: Readonly<{
+    shares?: FolderShare[];
+    refuseAdd?: string;
+    ignoresPlace?: boolean;
+    /** Folders the computer reaches through a symbolic link, by the name it resolves them to. */
+    links?: Readonly<Record<string, string>>;
+}> = {}) {
     const laptop = { shares: [...(initial.shares ?? [])] };
     machineRpcMock.mockImplementation(async (call: MachineRpcCall) => {
         expect(call.machineId).toBe('machine-laptop');
         if (call.method === RPC_METHODS.DAEMON_FOLDER_SHARE_LIST) return { shares: laptop.shares };
         if (call.method === RPC_METHODS.DAEMON_FOLDER_SHARE_ADD) {
             if (initial.refuseAdd) return { ok: false, errorCode: 'server_refused', error: initial.refuseAdd };
-            const folder = String(call.payload.folder).replace('/home/pigger/', '');
-            const serverPath = call.payload.at ?? `~/${folder}`;
+            const picked = String(call.payload.folder).replace('/home/pigger/', '');
+            const folder = initial.links?.[picked] ?? picked;
+            // As the computer reads a place (trimmed, no trailing slashes or `~/`); one from before places
+            // ignores it: it shares under ~/local and moves nothing.
+            const place = String(call.payload.at ?? folder).trim().replace(/\/+$/, '').replace(/^~\//, '');
+            const serverPath = initial.ignoresPlace ? `~/local/laptop/${folder}` : `~/${place}`;
             const existing = laptop.shares.find((share) => share.folder === folder);
             if (existing) {
-                laptop.shares = laptop.shares.map((share) => (share === existing ? { ...share, serverPath } : share));
+                if (!initial.ignoresPlace) laptop.shares = laptop.shares.map((share) => (share === existing ? { ...share, serverPath } : share));
                 return { ok: true, shares: laptop.shares };
             }
             laptop.shares.push({ folder, serverMachineId: String(call.payload.serverMachineId), serverPath, state: 'connecting' });
@@ -208,7 +218,7 @@ describe('MachineSharedFoldersGroup', () => {
             shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/code', state: 'connected' }],
         });
         choose('machine.sharedFolders.moveAction');
-        promptMock.mockResolvedValue('~/projects/code');
+        promptMock.mockResolvedValue('~/projects/code/');
         const group = await renderGroup();
 
         await group.press('machine-shared-folder:code');
@@ -220,10 +230,54 @@ describe('MachineSharedFoldersGroup', () => {
         );
         expect(machineRpcMock).toHaveBeenCalledWith(expect.objectContaining({
             method: RPC_METHODS.DAEMON_FOLDER_SHARE_ADD,
-            payload: { folder: 'code', serverMachineId: 'machine-server', at: '~/projects/code' },
+            payload: { folder: 'code', serverMachineId: 'machine-server', at: '~/projects/code/' },
         }));
         expect(laptop.shares[0]!.serverPath).toBe('~/projects/code');
         expect(calledMethods()).not.toContain(RPC_METHODS.DAEMON_FOLDER_SHARE_REMOVE);
+        expect(alertMock).not.toHaveBeenCalledWith('machine.sharedFolders.placeIgnoredTitle', expect.anything());
+    });
+
+    it('says so when a computer too old to place shares puts a new one under ~/local', async () => {
+        // Picked through a link: the computer names the folder by what it resolves to.
+        connectLaptop({ ignoresPlace: true, links: { 'code-link': 'code' } });
+        pickFolderMock.mockResolvedValue('/home/pigger/code-link');
+        promptMock.mockResolvedValue('~/code');
+        const group = await renderGroup();
+
+        await group.press('machine-shared-folders-add');
+
+        expect(alertMock).toHaveBeenCalledWith('machine.sharedFolders.placeIgnoredTitle', {
+            key: 'machine.sharedFolders.placeIgnoredBody',
+            params: { place: '~/code', actual: '~/local/laptop/code' },
+        });
+    });
+
+    it('reads the place as the computer does, so a valid one is never taken for an old computer', async () => {
+        connectLaptop({ shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/code', state: 'connected' }] });
+        choose('machine.sharedFolders.moveAction');
+        promptMock.mockResolvedValue('  ~/work /');
+        const group = await renderGroup();
+
+        await group.press('machine-shared-folder:code');
+
+        expect(alertMock).not.toHaveBeenCalledWith('machine.sharedFolders.placeIgnoredTitle', expect.anything());
+    });
+
+    it('says so when the computer is too old to put the folder where the user chose', async () => {
+        connectLaptop({
+            shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/local/laptop/code', state: 'connected' }],
+            ignoresPlace: true,
+        });
+        choose('machine.sharedFolders.moveAction');
+        promptMock.mockResolvedValue('~/code');
+        const group = await renderGroup();
+
+        await group.press('machine-shared-folder:code');
+
+        expect(alertMock).toHaveBeenCalledWith('machine.sharedFolders.placeIgnoredTitle', {
+            key: 'machine.sharedFolders.placeIgnoredBody',
+            params: { place: '~/code', actual: '~/local/laptop/code' },
+        });
     });
 
     it('suggests the folder\'s own name beside the server\'s folders when moving a share from under ~/local', async () => {

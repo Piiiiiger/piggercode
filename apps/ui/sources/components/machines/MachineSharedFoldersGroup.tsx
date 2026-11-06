@@ -30,12 +30,26 @@ export type MachineSharedFoldersGroupProps = Readonly<{
     targets: readonly SharedFoldersTarget[];
 }>;
 
+/** A place asked for, as a computer reads it (`parseServerLocation`): trimmed, without trailing slashes or `~/`. */
+function askedPlace(raw: string): string {
+    const trimmed = raw.trim().replace(/\/+$/, '');
+    return trimmed === '~' ? '' : trimmed.startsWith('~/') ? trimmed.slice(2) : trimmed;
+}
+
+/** Where a computer lists a share, as it gives it: `~/<place>`. */
+function listedPlace(serverPath: string): string {
+    return serverPath.startsWith('~/') ? serverPath.slice(2) : serverPath;
+}
+
+const shareKey = (share: Readonly<{ serverMachineId: string; folder: string }>) => `${share.serverMachineId}\n${share.folder}`;
+
 /**
  * The folders this machine shares with other machines of the account (shared folders): agents there
  * work on a shared folder's files, which stay on this machine. The machine itself owns its shares and
  * their connections, so they are read and changed through it while it is online. Sharing a folder asks
  * first, saying exactly what the other machine gets.
  */
+
 export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps) {
     const { machineId, isOnline, serverId, homeDir, targets } = props;
     const isFocused = useIsFocused();
@@ -77,13 +91,26 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
         [targets],
     );
 
-    const applyChange = React.useCallback((result: MachineSharedFolderChange, failedTitle: string) => {
+    const applyChange = React.useCallback((
+        result: MachineSharedFolderChange,
+        failedTitle: string,
+        asked?: Readonly<{ at: string; isShare: (share: FolderShare) => boolean }>,
+    ) => {
         if (result.status === 'ok') {
             setState((previous) => ({
                 status: 'ok',
                 shares: result.shares,
                 ...(previous?.status === 'ok' && previous.unsupported ? { unsupported: previous.unsupported } : {}),
             }));
+            // A computer from before places shares the folder, or keeps it, under ~/local whatever place
+            // was asked: say so instead of seeming to have done it.
+            const share = asked && result.shares.find(asked.isShare);
+            if (share && asked && listedPlace(share.serverPath) !== askedPlace(asked.at)) {
+                Modal.alert(
+                    t('machine.sharedFolders.placeIgnoredTitle'),
+                    t('machine.sharedFolders.placeIgnoredBody', { place: `~/${askedPlace(asked.at)}`, actual: share.serverPath }),
+                );
+            }
             return;
         }
         Modal.alert(
@@ -126,16 +153,19 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
             { defaultValue: `~/${name}`, confirmText: t('machine.sharedFolders.confirmAction') },
         );
         if (at === null) return;
+        // The share this adds is the one the computer did not list before (its own name for the folder).
+        const before = state?.status === 'ok' ? new Set(state.shares.map(shareKey)) : null;
         setBusy(true);
         try {
             applyChange(
                 await machineSharedFolderAdd(machineId, { folder, serverMachineId: target.id, at }, { serverId }),
                 t('machine.sharedFolders.addFailedTitle'),
+                { at, isShare: (share) => before !== null && share.serverMachineId === target.id && !before.has(shareKey(share)) },
             );
         } finally {
             setBusy(false);
         }
-    }, [applyChange, chooseTarget, homeDir, machineId, serverId]);
+    }, [applyChange, chooseTarget, homeDir, machineId, serverId, state]);
 
     const onMove = React.useCallback(async (share: FolderShare) => {
         const machine = machineName(share.serverMachineId);
@@ -153,6 +183,7 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
             applyChange(
                 await machineSharedFolderAdd(machineId, { folder: share.folder, serverMachineId: share.serverMachineId, at }, { serverId }),
                 t('machine.sharedFolders.moveFailedTitle'),
+                { at, isShare: (candidate) => shareKey(candidate) === shareKey(share) },
             );
         } finally {
             setBusy(false);
