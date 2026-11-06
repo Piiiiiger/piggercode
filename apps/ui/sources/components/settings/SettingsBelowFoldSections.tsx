@@ -10,6 +10,7 @@ import { requestReview } from '@/utils/system/requestReview';
 import { ICON_SIZE, Icon } from '@/components/ui/icons/Icon';
 import { resolveConfiguredRepositoryUrl } from '@/sync/runtime/appBrand';
 import { openExternalUrl } from '@/utils/url/openExternalUrl';
+import { SettingsCheckForUpdatesItem } from './SettingsCheckForUpdatesItem';
 
 type SettingsBelowFoldSectionsRouter = ReturnType<typeof useRouter>;
 type SettingsBelowFoldSectionsTheme = ReturnType<typeof useUnistyles>['theme'];
@@ -414,6 +415,7 @@ const SettingsAboutSection = React.memo(function SettingsAboutSection({
                     }}
                 />
             ) : null}
+            <SettingsCheckForUpdatesItem />
             <Item
                 title={t('common.version')}
                 detail={appVersion}

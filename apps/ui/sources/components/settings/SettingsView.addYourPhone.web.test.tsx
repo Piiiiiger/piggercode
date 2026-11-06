@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 import { createPassThroughComponent } from '@/dev/testkit/mocks/components';
@@ -234,6 +235,22 @@ describe('SettingsView (web)', () => {
         screen.pressRow('settings-add-your-phone-shortcut');
         expect(routerPushSpy).toHaveBeenCalledTimes(1);
         expect(routerPushSpy).toHaveBeenCalledWith('/settings/add-phone');
+    });
+
+    it('offers a manual check for updates in About, beside the version', async () => {
+        windowDimensions = { width: 1600, height: 900 };
+        vi.resetModules();
+        const { SettingsView } = await import('./SettingsView');
+
+        const screen = await renderSettingsView(<SettingsView />);
+        // About is the last of the sections Settings renders after its first frame, one stage per frame.
+        for (let stage = 0; stage < 8 && !screen.findRow('settings-check-updates-row'); stage += 1) {
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 20));
+            });
+        }
+
+        expect(screen.findRow('settings-check-updates-row')).toBeTruthy();
     });
 
     it('hides “Add your phone” on phone-sized web', async () => {
