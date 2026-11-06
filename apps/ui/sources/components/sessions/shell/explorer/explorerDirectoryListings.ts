@@ -1,13 +1,21 @@
 import * as React from 'react';
 
 import {
+    getCachedMachineFileBrowserRoots,
     getMachineFileBrowserDirectoriesVersion,
     getMachineFileBrowserDirectoryState,
     listMachineFileBrowserDirectoryEntries,
+    listMachineFileBrowserRoots,
     subscribeMachineFileBrowserDirectories,
     warmMachineFileBrowserDirectoryCache,
+    warmMachineFileBrowserRoots,
 } from '@/sync/domains/input/machineFileBrowser';
-import type { SessionExplorerFolderRef, SessionExplorerListing } from '@/sync/domains/session/listing/sessionListExplorer';
+import type {
+    SessionExplorerFolderRef,
+    SessionExplorerListing,
+    SessionExplorerMachineRef,
+    SessionExplorerSharedFolder,
+} from '@/sync/domains/session/listing/sessionListExplorer';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 
 // The Sessions view lists folders only, the Files view folders and files; the machine file browser owns
@@ -45,6 +53,30 @@ export function useExplorerListingReader(): ExplorerListingReader {
         getMachineFileBrowserDirectoriesVersion,
     );
     return React.useMemo(() => createExplorerListingReader(listingsVersion), [listingsVersion]);
+}
+
+/**
+ * The folders the user's computers share with a machine, as its last roots answer listed them (the
+ * machine file browser's roots cache); null before it was asked. Read through the same version as the
+ * listings: a roots answer bumps it.
+ */
+export function readExplorerSharedFolders(machine: SessionExplorerMachineRef): ReadonlyArray<SessionExplorerSharedFolder> | null {
+    const roots = getCachedMachineFileBrowserRoots({ machineId: machine.machineId, serverId: machine.serverId });
+    return roots ? roots.filter((root) => root.sharedFolder) : null;
+}
+
+/** Asks machines that were never asked which folders are shared with them. */
+export function requestExplorerSharedFolders(machines: ReadonlyArray<SessionExplorerMachineRef>): void {
+    for (const machine of machines) {
+        fireAndForget(warmMachineFileBrowserRoots({ machineId: machine.machineId, serverId: machine.serverId }), { tag: 'sessionExplorer.sharedFolders' });
+    }
+}
+
+/** Asks them again (the explorer's Refresh), keeping what shows until the answer arrives. */
+export function refreshExplorerSharedFolders(machines: ReadonlyArray<SessionExplorerMachineRef>): void {
+    for (const machine of machines) {
+        fireAndForget(listMachineFileBrowserRoots({ machineId: machine.machineId, serverId: machine.serverId }), { tag: 'sessionExplorer.refreshSharedFolders' });
+    }
 }
 
 /** Lists folders that were never listed; a folder already loading shares that request. */

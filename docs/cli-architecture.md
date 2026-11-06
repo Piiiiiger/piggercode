@@ -1816,7 +1816,9 @@ install has neither.
   - new-session targets: `useLaunchSelectionMachines`, the picker's per-server options, the selector
     buckets and the default pick;
   - `canAttemptMachineSpawn`, handoff targets and voice targets;
-  - the session explorer, provider-history browsing and the primary machine of settings screens.
+  - the session explorer (which lists such a computer in neither its Sessions nor its Files view: the
+    folders it shares show on the server), provider-history browsing and the primary machine of
+    settings screens.
 
   On the computer's own screen there is no session launch, agent list, tools entry or agent probe.
   Its machine rows show no agent icons, and Updates lists only its PiggerCode CLI.
@@ -1904,7 +1906,11 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   roots (`DAEMON_FILESYSTEM_LIST_ROOTS`, after its own; `sharedFolderRoots.ts`: its mounts under
   `~/local` and, from its accepted computers, whose they are — the root's `sharedFolder`). The folder
   browser shows them at the top level, and every folder picker (`PathSelectionList`: new session,
-  handoff and the rest) lists them above favorites as "<computer> · <folder>", one press each.
+  handoff and the rest) lists them above favorites as "<computer> · <folder>", one press each. The
+  sidebar explorer shows each as a top folder of the server right after `~` (same name, the sessions
+  started in it below, its path not repeated under `~`), asked when the explorer first shows the
+  server and again on Refresh (`explorerDirectoryListings.ts`); a server whose tree starts at an
+  opened folder shows only that folder. One naming rule: `sharedFolderTitle`.
 - **Coming back after a drop.** A share whose connection had been working for at least the retry
   interval (15 s) connects again at once when it ends — a restart or a network change; an attempt that
   fails sooner waits the interval, so a server that keeps refusing is not hammered. On the server, a mount

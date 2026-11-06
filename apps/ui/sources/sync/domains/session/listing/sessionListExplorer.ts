@@ -1,3 +1,4 @@
+import { sharedFolderTitle } from '@/sync/domains/input/sharedFolderTitle';
 import { resolveAbsolutePath } from '@/utils/path/pathUtils';
 import { formatPathRelativeToHome } from '@/utils/sessions/formatPathRelativeToHome';
 
@@ -13,8 +14,23 @@ export type SessionExplorerMachine = Readonly<{
     homeDir: string | null;
     /** Whether the explorer can list this machine's folders now. */
     online: boolean;
-    /** False for a computer that runs no agents: its folders show in the Files view only. */
+    /** False for a computer that runs no agents: the explorer lists it in neither view; the folders it shares show on the server. */
     agentsHosted?: boolean;
+}>;
+
+/** A machine of the explorer, by identity. */
+export type SessionExplorerMachineRef = Readonly<{ serverId: string; machineId: string }>;
+
+/**
+ * A folder one of the user's computers shares with a machine, mounted there now: a root of that
+ * machine's file browser carrying `sharedFolder` (`MachineFileBrowserRoot`).
+ */
+export type SessionExplorerSharedFolder = Readonly<{
+    /** The machine's own name for it: `<computer label>/<folder>`. */
+    label: string;
+    /** Where it is mounted on the machine. */
+    path: string;
+    sharedFolder?: Readonly<{ folder: string; computerMachineId?: string }>;
 }>;
 
 export type SessionExplorerFolderRef = Readonly<{
@@ -64,6 +80,11 @@ export type BuildSessionExplorerInput = Readonly<{
     mode?: SessionExplorerMode;
     /** The previous result, so unchanged folder rows keep their objects. */
     previousItems?: ReadonlyArray<SessionListViewItem> | null;
+    /**
+     * The folders shared with a machine as its last answer listed them (only the roots with
+     * `sharedFolder` count); null before it was asked.
+     */
+    getSharedFolders?: (machine: SessionExplorerMachineRef) => ReadonlyArray<SessionExplorerSharedFolder> | null;
 }>;
 
 export type SessionExplorerResult = Readonly<{
@@ -72,6 +93,8 @@ export type SessionExplorerResult = Readonly<{
     openFolders: SessionExplorerFolderRef[];
     /** Open folders on online machines that were never listed; the caller loads them. */
     foldersToList: SessionExplorerFolderRef[];
+    /** Online machines that run agents and were never asked which folders are shared with them. */
+    sharedFoldersToAsk: SessionExplorerMachineRef[];
 }>;
 
 export const SESSION_EXPLORER_HEADER_KEY = 'explorer';
@@ -97,6 +120,7 @@ const ROOT = '/';
 // Machine-level children besides `~` and `/`; folder names never reach this level.
 const OPENED = ':opened';
 const OTHER = ':other';
+const SHARED = ':shared:';
 
 export function sessionExplorerMachineKey(serverId: string, machineId: string): string {
     return `explorer:${serverId}:${machineId}`;
@@ -181,6 +205,23 @@ function rootFolder(parent: Node, root: typeof HOME | typeof ROOT): Node {
         browse: parent.browse,
     });
     parent.children.set(root, node);
+    return node;
+}
+
+/** A folder one of the user's computers shares with this machine, as a top folder beside its `~`. */
+function sharedFolderRoot(machineNode: Node, shared: Readonly<{ path: string; name: string }>): Node {
+    const existing = machineNode.children.get(`${SHARED}${shared.path}`);
+    if (existing) return existing;
+    const { machine } = machineNode;
+    const node = createNode({
+        name: shared.name,
+        key: sessionExplorerFolderKey({ serverId: machine.serverId, machineId: machine.machineId, path: shared.path }),
+        path: shared.path,
+        kind: 'root',
+        machine,
+        browse: true,
+    });
+    machineNode.children.set(`${SHARED}${shared.path}`, node);
     return node;
 }
 
@@ -307,12 +348,17 @@ function sameHeader(a: Header, b: Header): boolean {
         || (key === 'workspaceScopeHint' && sameScopeHint(a.workspaceScopeHint, b.workspaceScopeHint)));
 }
 
-const MACHINE_CHILD_ORDER: Readonly<Record<string, number>> = { [OPENED]: 0, [HOME]: 1, [ROOT]: 2, [OTHER]: 3 };
+// The folders shared with the machine come right after its `~`.
+const MACHINE_CHILD_ORDER: Readonly<Record<string, number>> = { [OPENED]: 0, [HOME]: 1, [SHARED]: 2, [ROOT]: 3, [OTHER]: 4 };
+
+function machineChildOrder(key: string): number {
+    return MACHINE_CHILD_ORDER[key.startsWith(SHARED) ? SHARED : key] ?? 5;
+}
 
 function sortChildren(node: Node): Node[] {
     if (node.kind === 'machine') {
         return [...node.children.entries()]
-            .sort(([a], [b]) => (MACHINE_CHILD_ORDER[a] ?? 4) - (MACHINE_CHILD_ORDER[b] ?? 4))
+            .sort(([a, left], [b, right]) => machineChildOrder(a) - machineChildOrder(b) || compareNames(left.name, right.name))
             .map(([, child]) => child);
     }
     const children = [...node.children.values()];
@@ -347,13 +393,48 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
     const knownMachines = new Map<string, SessionExplorerMachine>();
     for (const machine of input.machines) {
         knownMachines.set(sessionExplorerMachineKey(machine.serverId, machine.machineId), machine);
+    }
+    // The folders the user's computers share with a machine show as its own top folders beside `~`,
+    // named "<computer> · <folder>", and hold the sessions started in them; that path is not shown a
+    // second time under `~`. A tree that starts at an opened folder shows only that folder.
+    const sharedRoots = new Map<string, ReadonlyArray<Readonly<{ path: string; name: string }>>>();
+    const sharedRootsOf = (machine: SessionExplorerMachine): ReadonlyArray<Readonly<{ path: string; name: string }>> => {
+        const key = sessionExplorerMachineKey(machine.serverId, machine.machineId);
+        const known = sharedRoots.get(key);
+        if (known) return known;
+        const roots = openedPathOf(machine) ? [] : (input.getSharedFolders?.(machine) ?? []).flatMap((root) => {
+            if (!root.sharedFolder) return [];
+            const computerId = root.sharedFolder.computerMachineId;
+            const computer = computerId ? knownMachines.get(sessionExplorerMachineKey(machine.serverId, computerId)) : undefined;
+            return [{ path: trimTrailingSlashes(root.path), name: sharedFolderTitle(root, computer?.label) }];
+        });
+        sharedRoots.set(key, roots);
+        return roots;
+    };
+    const sharedRootHolding = (machine: SessionExplorerMachine, absolutePath: string) => {
+        let holder: Readonly<{ root: Readonly<{ path: string; name: string }>; below: string[] }> | null = null;
+        for (const root of sharedRootsOf(machine)) {
+            const below = segmentsBelow(absolutePath, root.path);
+            if (below && (!holder || root.path.length > holder.root.path.length)) holder = { root, below };
+        }
+        return holder;
+    };
+    const sharedFoldersToAsk: SessionExplorerMachineRef[] = [];
+    for (const machine of input.machines) {
         // An online machine shows its top folder to browse; others show up with their sessions.
         if (!machine.online) continue;
-        // No session starts on a computer that runs no agents, so only the Files view browses it.
-        if (!filesMode && machine.agentsHosted === false) continue;
+        // A computer that runs no agents lends its folders to the servers, where they show.
+        if (machine.agentsHosted === false) continue;
         const opened = openedPathOf(machine);
-        if (opened) openedFolder(machineNode(machine), opened);
-        else if (machine.homeDir) rootFolder(machineNode(machine), HOME);
+        if (opened) {
+            openedFolder(machineNode(machine), opened);
+            continue;
+        }
+        if (machine.homeDir) rootFolder(machineNode(machine), HOME);
+        if (input.getSharedFolders && input.getSharedFolders(machine) === null) {
+            sharedFoldersToAsk.push({ serverId: machine.serverId, machineId: machine.machineId });
+        }
+        for (const shared of sharedRootsOf(machine)) sharedFolderRoot(machineNode(machine), shared);
     }
 
     const looseRows: Row[] = [];
@@ -392,6 +473,18 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
                 online: false,
             };
             knownMachines.set(machineKey, machine);
+        }
+        // A computer that runs no agents gets no tree of its own: a session it once ran shows on its own.
+        if (machine.agentsHosted === false) {
+            looseRows.push(item);
+            continue;
+        }
+        const shared = sharedRootHolding(machine, trimTrailingSlashes(resolveAbsolutePath(path.trim(), machine.homeDir ?? undefined)));
+        if (shared) {
+            let node = sharedFolderRoot(machineNode(machine), shared.root);
+            for (const segment of shared.below) node = childFolder(node, segment);
+            node.sessions.push(item);
+            continue;
         }
         const opened = openedPathOf(machine);
         if (opened) {
@@ -489,6 +582,9 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             }
             for (const name of listing?.dirs ?? []) {
                 if (!input.showHidden && name.startsWith('.') && !node.children.has(name)) continue;
+                // A shared folder shows once, as its own top folder.
+                const childPath = joinPath(node.path, name);
+                if (sharedRootsOf(machine).some((root) => root.path === childPath)) continue;
                 childFolder(node, name);
             }
         }
@@ -547,5 +643,5 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         for (const machine of machines) emit(machine, 0, null);
     }
     out.push(...looseRows.map((row) => placeRow(row, `${SESSION_EXPLORER_HEADER_KEY}:loose`, 0)));
-    return { items: out, openFolders, foldersToList };
+    return { items: out, openFolders, foldersToList, sharedFoldersToAsk };
 }

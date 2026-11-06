@@ -46,6 +46,7 @@ import {
     type MachineFileBrowserRoot,
 } from '@/sync/domains/input/machineFileBrowser';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
+import { sharedFolderTitle } from '@/sync/domains/input/sharedFolderTitle';
 import { useAllMachines, useMachineListByServerId } from '@/sync/domains/state/storage';
 import { getMachineDisplayName } from '@/utils/sessions/machineUtils';
 import { t } from '@/text';
@@ -264,11 +265,11 @@ function useSharedFolders(machineId: string | null, serverId: string | null): Re
     const computerNames = roots.map((root) => {
         const computerId = root.sharedFolder?.computerMachineId;
         const computer = computerId ? machines.find((machine) => machine.id === computerId) : undefined;
-        return (computer ? getMachineDisplayName(computer) : null) || root.label.split('/')[0] || root.label;
+        return computer ? getMachineDisplayName(computer) : null;
     });
     const namesKey = computerNames.join('\u0000');
     return React.useMemo(
-        () => roots.map((root, index) => ({ path: root.path, label: `${computerNames[index]} · ${root.sharedFolder?.folder ?? root.label}` })),
+        () => roots.map((root, index) => ({ path: root.path, label: sharedFolderTitle(root, computerNames[index]) })),
         // `computerNames` is read through `namesKey`, so a machine list refresh that renames nothing keeps the rows.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [namesKey, roots],

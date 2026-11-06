@@ -62,7 +62,7 @@ export function getMachineFileBrowserDirectoriesVersion(): number {
     return directoriesVersion;
 }
 
-/** Called whenever a directory starts or finishes listing, fails, or leaves the cache. */
+/** Called whenever a directory starts or finishes listing, fails, or leaves the cache, and when a machine's roots arrive. */
 export function subscribeMachineFileBrowserDirectories(listener: () => void): () => void {
     directoryListeners.add(listener);
     return () => {
@@ -193,7 +193,11 @@ function setCachedMachineFileBrowserRoots(input: {
     serverId?: string | null;
     roots: MachineFileBrowserRoot[];
 }): void {
-    rootsCache.set(getRootsCacheKey(input.machineId, input.serverId), input.roots.slice());
+    const key = getRootsCacheKey(input.machineId, input.serverId);
+    const unchanged = JSON.stringify(rootsCache.get(key) ?? null) === JSON.stringify(input.roots);
+    rootsCache.set(key, input.roots.slice());
+    // Readers of the directories also read the roots (the explorer's shared folders): they hear of a change.
+    if (!unchanged) notifyDirectoryListeners();
 }
 
 function setCachedMachineFileBrowserEntries(input: {

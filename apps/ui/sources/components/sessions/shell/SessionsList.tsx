@@ -57,7 +57,7 @@ import { DraggableSessionFolderHeaderFrame } from './DraggableSessionFolderHeade
 import { ProjectGroupHeader } from './ProjectGroupHeader';
 import { SessionExplorerFileRow, SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
 import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
-import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
+import { refreshExplorerFolder, refreshExplorerListings, refreshExplorerSharedFolders } from './explorer/explorerDirectoryListings';
 import {
     createExplorerFolder,
     deleteExplorerFile,
@@ -1940,12 +1940,16 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
 
     const collapsedKeys = collapsedGroupKeysV1 ?? EMPTY_COLLAPSED_GROUP_KEYS;
     const handleRefreshExplorer = React.useCallback(() => {
-        refreshExplorerListings(explorerActionStateRef.current.explorerOpenFolders);
+        const current = explorerActionStateRef.current;
+        refreshExplorerListings(current.explorerOpenFolders);
+        // And which folders are shared with each server now.
+        refreshExplorerSharedFolders(current.explorerMachines.filter((machine) => machine.online && machine.agentsHosted !== false));
     }, []);
     // Open Folder: the picked folder becomes the top of that machine's tree.
     const handleOpenExplorerFolder = React.useCallback(async () => {
         const current = explorerActionStateRef.current;
-        const online = current.explorerMachines.filter((machine) => machine.online);
+        // The explorer shows no tree for a computer that runs no agents, so it opens no folder there.
+        const online = current.explorerMachines.filter((machine) => machine.online && machine.agentsHosted !== false);
         if (online.length === 0) {
             Modal.alert(t('sessionsList.explorerOpenFolder'), t('sessionsList.explorerOpenFolderNoMachine'));
             return;

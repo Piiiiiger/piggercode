@@ -61,6 +61,34 @@ describe('machineFileBrowser domain', () => {
         expect(getCachedMachineFileBrowserEntries({ machineId: 'machine-1', serverId: 'server-1', directoryPath: '/Users/leeroy' })).not.toBeNull();
     });
 
+    it('tells directory readers when a machine\'s roots change, and only then', async () => {
+        const ops = await import('@/sync/ops/machineFileBrowser');
+        (ops.machineFilesystemListRoots as any).mockReset();
+        clearCachedMachineFileBrowserRoots({ machineId: 'machine-roots' });
+        // The roots a server answers with, a folder one of the user's computers shares with it among them.
+        (ops.machineFilesystemListRoots as any).mockResolvedValue({
+            ok: true,
+            roots: [
+                { id: '/', label: '/', path: '/' },
+                { id: 'shared-folder:/home/u/local/mac/code', label: 'mac/code', path: '/home/u/local/mac/code', sharedFolder: { folder: 'code' } },
+            ],
+        });
+        const listener = vi.fn();
+        const unsubscribe = subscribeMachineFileBrowserDirectories(listener);
+        try {
+            await listMachineFileBrowserRoots({ machineId: 'machine-roots' });
+            await listMachineFileBrowserRoots({ machineId: 'machine-roots' });
+            expect(listener).toHaveBeenCalledTimes(1);
+
+            // The share went away.
+            (ops.machineFilesystemListRoots as any).mockResolvedValue({ ok: true, roots: [{ id: '/', label: '/', path: '/' }] });
+            await listMachineFileBrowserRoots({ machineId: 'machine-roots' });
+            expect(listener).toHaveBeenCalledTimes(2);
+        } finally {
+            unsubscribe();
+        }
+    });
+
     it('dedupes in-flight warm requests and clears machine-scoped caches independently', async () => {
         const ops = await import('@/sync/ops/machineFileBrowser');
         (ops.machineFilesystemListDirectory as any).mockReset();

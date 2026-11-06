@@ -282,14 +282,76 @@ describe('buildSessionExplorerItems', () => {
 });
 
 describe('buildSessionExplorerItems in the Files view', () => {
-    it('browses a computer that runs no agents in the Files view only, never as a place to start a session', () => {
+    it('lists a computer that runs no agents in neither view: the folders it shares show on the server', () => {
         const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'mac', homeDir: '/Users/u', online: true, agentsHosted: false };
-        const tops = (mode: 'sessions' | 'files') => build({ mode, machines: [vm, mac] }).items
-            .filter((item) => item.type === 'header' && item.depth === 0)
+        const tops = (mode: 'sessions' | 'files') => build({ mode, machines: [vm, mac], items: [row('elsewhere', '/srv/x')] }).items
+            .filter((item) => item.type === 'header' && item.headerKind !== 'explorerStatus')
             .map((item) => (item as Header).title);
 
         expect(tops('sessions')).not.toContain('mac');
-        expect(tops('files')).toEqual(expect.arrayContaining(['mac', 'vm']));
+        expect(tops('files')).not.toContain('mac');
+    });
+
+    it('shows a session such a computer once ran on its own, without the computer or its folders', () => {
+        const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'mac', homeDir: '/Users/u', online: true, agentsHosted: false };
+        const result = build({ machines: [vm, mac], items: [row('old', '/Users/u/proj', { machineId: 'm2' })] });
+
+        const titles = result.items.filter((item): item is Header => item.type === 'header').map((item) => item.title);
+        expect(titles).not.toContain('mac');
+        expect(titles).not.toContain('proj');
+        expect(result.items.some((item) => item.type === 'session' && item.session.id === 'old')).toBe(true);
+        expect(result.foldersToList.some((folder) => folder.machineId === 'm2')).toBe(false);
+    });
+
+    describe('folders the user\'s computers share with a server', () => {
+        const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'PiggerdeMacBook-Air', homeDir: '/Users/u', online: true, agentsHosted: false };
+        const mount = '/home/u/local/piggerdemacbook-air/code';
+        const sharedWithVm: BuildSessionExplorerInput['getSharedFolders'] = (machine) => (machine.machineId === 'm1'
+            ? [
+                { label: '/', path: '/' },
+                { label: 'piggerdemacbook-air/code', path: mount, sharedFolder: { folder: 'code', computerMachineId: 'm2' } },
+            ]
+            : null);
+        const headers = (items: SessionListViewItem[]) => items.filter((item): item is Header => item.type === 'header');
+
+        it('show as top folders right after ~, named after the computer, holding the sessions started in them', () => {
+            const result = build({
+                machines: [vm, mac],
+                items: [row('in-share', `${mount}/app`), row('at-home', '/home/u/proj')],
+                getSharedFolders: sharedWithVm,
+            });
+
+            const tops = headers(result.items).filter((item) => item.depth === 0).map((item) => item.title);
+            expect(tops).toEqual(['~', 'PiggerdeMacBook-Air · code']);
+            const inShare = result.items.find((item): item is Row => item.type === 'session' && item.session.id === 'in-share')!;
+            const app = headers(result.items).find((item) => item.groupKey === inShare.groupKey)!;
+            expect(app.title).toBe('app');
+            expect(app.treeParentKey).toBe(folder(mount));
+            // The share's path is not built a second time under ~.
+            expect(headers(result.items).some((item) => item.groupKey === folder('/home/u/local'))).toBe(false);
+        });
+
+        it('do not show again under ~ when its folders are listed', () => {
+            const result = build({
+                machines: [vm, mac],
+                getSharedFolders: sharedWithVm,
+                collapsedKeys: { [folder('/home/u/local')]: false, [folder('/home/u/local/piggerdemacbook-air')]: false },
+                getListing: listings({
+                    '/home/u': { status: 'loaded', dirs: ['local'] },
+                    '/home/u/local': { status: 'loaded', dirs: ['piggerdemacbook-air'] },
+                    '/home/u/local/piggerdemacbook-air': { status: 'loaded', dirs: ['code'] },
+                }),
+            });
+
+            expect(headers(result.items).filter((item) => item.groupKey === folder(mount))).toHaveLength(1);
+        });
+
+        it('are asked for once per machine that runs agents and is online', () => {
+            const result = build({ machines: [vm, mac], getSharedFolders: () => null });
+
+            expect(result.sharedFoldersToAsk).toEqual([{ serverId: 's1', machineId: 'm1' }]);
+            expect(build({ machines: [vm, mac], getSharedFolders: sharedWithVm }).sharedFoldersToAsk).toEqual([]);
+        });
     });
 
     it('shows the folders and their files without sessions, asking for listings that include files', () => {

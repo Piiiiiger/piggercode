@@ -23,6 +23,7 @@ import {
     buildSessionExplorerItems,
     type SessionExplorerFolderRef,
     type SessionExplorerMachine,
+    type SessionExplorerMachineRef,
 } from '@/sync/domains/session/listing/sessionListExplorer';
 import {
     buildSessionListIndexFromViewData,
@@ -79,11 +80,17 @@ import {
     type SessionListHeaderFilterInput,
 } from '../sessionListFilters';
 import { useSessionListSnapshotWhenInactive } from '../surface/useSessionListSnapshotWhenInactive';
-import { requestExplorerListings, useExplorerListingReader } from '../explorer/explorerDirectoryListings';
+import {
+    readExplorerSharedFolders,
+    requestExplorerListings,
+    requestExplorerSharedFolders,
+    useExplorerListingReader,
+} from '../explorer/explorerDirectoryListings';
 import { resolveSessionOrganizationMutationScope, type SessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
 
 const EMPTY_SESSION_KEYS: ReadonlyArray<string> = Object.freeze([]);
 const EMPTY_EXPLORER_FOLDERS: ReadonlyArray<SessionExplorerFolderRef> = Object.freeze([]);
+const EMPTY_EXPLORER_MACHINES: ReadonlyArray<SessionExplorerMachineRef> = Object.freeze([]);
 const EMPTY_EXPLORER_ROOT_PATHS: Readonly<Record<string, string>> = Object.freeze({});
 const EMPTY_SESSION_LIST_GROUP_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
 const EMPTY_SESSION_WORKSPACE_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
@@ -459,6 +466,8 @@ export function useSessionListViewState({
             otherLocationsTitle: t('sessionsList.explorerOtherLocations'),
             mode: explorerMode,
             previousItems: explorerPreviousItemsRef.current,
+            // Read with the listings: a roots answer bumps the version `readExplorerListing` follows.
+            getSharedFolders: readExplorerSharedFolders,
         });
     }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerMode, explorerRootPaths, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
     explorerPreviousItemsRef.current = explorer?.items ?? null;
@@ -466,6 +475,10 @@ export function useSessionListViewState({
     React.useEffect(() => {
         if (explorerFoldersToList.length > 0) requestExplorerListings(explorerFoldersToList);
     }, [explorerFoldersToList]);
+    const explorerSharedFoldersToAsk = explorer?.sharedFoldersToAsk ?? EMPTY_EXPLORER_MACHINES;
+    React.useEffect(() => {
+        if (explorerSharedFoldersToAsk.length > 0) requestExplorerSharedFolders(explorerSharedFoldersToAsk);
+    }, [explorerSharedFoldersToAsk]);
 
     const folderPresentedData = React.useMemo(() => {
         if (explorer) return explorer.items;
