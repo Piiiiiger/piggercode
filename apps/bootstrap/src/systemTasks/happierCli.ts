@@ -10,6 +10,7 @@ import {
   prepareFirstPartyComponentPayloadFromGitHubRelease,
   readDefaultManagedReleaseChannelSync,
   readHappierCliChoiceSync,
+  STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
   resolveHappierCliSearchPath,
   runManagedCliUpdate,
   type FirstPartyAcquisitionOptions,
@@ -72,6 +73,22 @@ export type SetupCapableLocalHappierCli = ResolvedLocalFirstPartyCommand & Reado
  * app's channel the default and leaving the user's service as another ring's to remove. Only a
  * computer with neither uses the app's own channel (and its first install becomes the default).
  */
+/**
+ * The environment a local CLI command runs with for `releaseRing`: every inherited release-channel
+ * selector cleared (they outrank the CLI's own hints), and the channel named once — so the command
+ * reads and writes that ring's state, whatever the app's process inherited.
+ */
+export function pinLocalHappierCliReleaseChannel(processEnv: NodeJS.ProcessEnv, releaseRing: PublicReleaseRingId): NodeJS.ProcessEnv {
+  return { ...withoutLocalHappierCliReleaseChannel(processEnv), PIGGERCODE_PUBLIC_RELEASE_CHANNEL: releaseRing };
+}
+
+/** `processEnv` without any release-channel selector (to resolve which ring a command should name). */
+export function withoutLocalHappierCliReleaseChannel(processEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const cleared: NodeJS.ProcessEnv = { ...processEnv };
+  for (const key of STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS) delete cleared[key];
+  return cleared;
+}
+
 export function resolveLocalHappierCliReleaseRing(params: Readonly<{
   appRing: PublicReleaseRingId;
   processEnv: NodeJS.ProcessEnv;
@@ -253,6 +270,39 @@ async function readLocalHappierCliVersion(params: Readonly<{
     );
   }
   return version;
+}
+
+/**
+ * Has this computer's managed CLI look up its newest release now — its own `self check`, the one
+ * writer of its update cache, which downloads nothing — so the CLI's next status read reports the
+ * latest version. The ring is passed the way `self check` names it.
+ */
+export async function checkLocalHappierCliForUpdate(params: Readonly<{
+  cli: SetupCapableLocalHappierCli;
+  releaseRing: PublicReleaseRingId;
+  processEnv?: NodeJS.ProcessEnv;
+  signal?: AbortSignal;
+}>): Promise<void> {
+  const ringArgs = params.releaseRing === 'preview' ? ['--preview'] : params.releaseRing === 'publicdev' ? ['--dev'] : [];
+  const result = await runCommandCapture({
+    command: params.cli.command,
+    args: ['self', 'check', '--quiet', ...ringArgs],
+    env: pinLocalHappierCliReleaseChannel(resolveLocalHappierCliEnv(params.processEnv ?? process.env), params.releaseRing),
+    signal: params.signal,
+  }).catch((error: unknown) => {
+    params.signal?.throwIfAborted();
+    if (error instanceof CommandTimeoutError) {
+      throw new systemTasks.SystemTaskExecutionError('cli_command_timeout', error.message);
+    }
+    const message = error instanceof Error && error.message.trim() ? error.message.trim() : 'Failed to spawn Happier CLI.';
+    throw new systemTasks.SystemTaskExecutionError('cli_spawn_failed', message);
+  });
+  if (result.status !== 0) {
+    throw new systemTasks.SystemTaskExecutionError(
+      'cli_check_failed',
+      result.stderr.trim() || result.stdout.trim() || `Could not check for a newer PiggerCode CLI with ${params.cli.command}.`,
+    );
+  }
 }
 
 /** Whether `version` (base only; an unreadable one never does) is a CLI desktop setup can drive. */

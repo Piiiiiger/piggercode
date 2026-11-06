@@ -5,6 +5,7 @@ import type { SystemTaskJsonObject, SystemTaskJsonValue } from '@piggercode/prot
 
 import { createSecureAccessTailscaleHandler } from './kinds/secureAccessTailscale.js';
 import { createCliPathExposureEnsureHandler, createCliPathExposureRemoveHandler } from './kinds/cliPathExposure.js';
+import { createCliCheckHandler } from './kinds/cliCheck.js';
 import { createCliUpdateHandler } from './kinds/cliUpdate.js';
 import {
   createDaemonServiceAutostartSetHandler,
@@ -99,6 +100,10 @@ export function createHsetupSystemTaskRegistry(deps: HsetupRegistryDeps = {}): S
     {
       kind: 'cli.update.v1',
       handler: createCliUpdateHandler(),
+    },
+    {
+      kind: 'cli.check.v1',
+      handler: createCliCheckHandler(),
     },
     {
       kind: 'system.noop.v1',

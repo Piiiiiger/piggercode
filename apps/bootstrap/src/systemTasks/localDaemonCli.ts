@@ -15,7 +15,9 @@ import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRin
 
 import {
   readLocalHappierCliChoiceFacts,
+  pinLocalHappierCliReleaseChannel,
   resolveLocalHappierCliReleaseRing,
+  withoutLocalHappierCliReleaseChannel,
   resolveVersionedLocalHappierCli,
   runLocalHappierJsonCommand,
   type LocalHappierCliChoiceFacts,
@@ -345,9 +347,9 @@ async function runInvocationJsonCommand(params: Readonly<{
   /** Added on top of the invocation's (or the cleared inherited) env for this one command. */
   extraEnv?: Readonly<Record<string, string>>;
 }>): Promise<unknown> {
-  const processEnv = { ...(params.invocation?.processEnv ?? clearInheritedRelaySelectors(process.env)), ...(params.extraEnv ?? {}) };
-  for (const key of STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS) delete processEnv[key];
-  processEnv.PIGGERCODE_PUBLIC_RELEASE_CHANNEL = resolveLocalHappierCliReleaseRing({ appRing: params.releaseRing, processEnv });
+  const inherited = { ...(params.invocation?.processEnv ?? clearInheritedRelaySelectors(process.env)), ...(params.extraEnv ?? {}) };
+  const ring = resolveLocalHappierCliReleaseRing({ appRing: params.releaseRing, processEnv: withoutLocalHappierCliReleaseChannel(inherited) });
+  const processEnv = pinLocalHappierCliReleaseChannel(inherited, ring);
   return await runLocalHappierJsonCommand({
     args: params.args,
     releaseRing: params.releaseRing,
