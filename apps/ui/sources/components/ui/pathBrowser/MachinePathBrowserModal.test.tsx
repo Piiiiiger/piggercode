@@ -527,6 +527,39 @@ describe('MachinePathBrowserModal', () => {
         expect(onResolve).toHaveBeenCalledWith('/Users/leeroy');
     });
 
+    it('shows a folder another computer shares once, where it sits, not again as a top folder', async () => {
+        const listRoots = listMachineFileBrowserRootsMock.getMockImplementation()!;
+        // The server lists its shared folders as roots too, for the list pickers.
+        listMachineFileBrowserRootsMock.mockImplementation(async () => ({
+            ok: true as const,
+            roots: [
+                { id: '/', label: '/', path: '/' },
+                { id: 'shared-folder:/Users/leeroy', label: '~/leeroy', path: '/Users/leeroy' },
+            ],
+        }));
+        try {
+            const { MachinePathBrowserModal } = await import('./MachinePathBrowserModal');
+            const screen = await renderScreen(<MachinePathBrowserModal
+                        machineId="machine-1"
+                        initialPath="/Users/leeroy"
+                        onResolve={vi.fn()}
+                        onClose={vi.fn()}
+                    />);
+            let confirmButton = await waitForTestId(screen, PATH_BROWSER_CONFIRM_TEST_ID);
+            for (let index = 0; index < 8 && confirmButton?.props?.disabled !== false; index += 1) {
+                await flushHookEffects({ cycles: 1, turns: 1 });
+                confirmButton = screen.findByTestId(PATH_BROWSER_CONFIRM_TEST_ID);
+            }
+
+            // As many matches as a folder listed once (a row renders its test id on more than one element).
+            const once = screen.findAllByTestId(getPathBrowserRowTestId('/Users')).length;
+            expect(once).toBeGreaterThan(0);
+            expect(screen.findAllByTestId(getPathBrowserRowTestId('/Users/leeroy'))).toHaveLength(once);
+        } finally {
+            listMachineFileBrowserRootsMock.mockImplementation(listRoots);
+        }
+    });
+
     it('shows the initial path chain while the root listing is still pending', async () => {
         listMachineFileBrowserRootsMock.mockImplementationOnce(async () => await new Promise(() => {}));
 

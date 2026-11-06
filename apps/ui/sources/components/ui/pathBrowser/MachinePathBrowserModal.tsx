@@ -331,8 +331,25 @@ function buildInitialPathPreviewEntries(params: Readonly<{
     }];
 }
 
+/**
+ * The roots a tree starts from. A root inside another (a folder another computer shares, which the server
+ * also lists as a root for the list pickers) already shows where it sits; listing it again would put one
+ * path in two rows, which the list keys by path.
+ */
+function topLevelRoots<T extends Readonly<{ path: string }>>(roots: readonly T[]): T[] {
+    const comparable = (path: string) => path.replace(/\\/g, '/').replace(/\/+$/, '') || '/';
+    return roots.filter((root, index) => {
+        const path = comparable(root.path);
+        return !roots.some((other, otherIndex) => {
+            const outer = comparable(other.path);
+            if (outer === path) return otherIndex < index;
+            return outer === '/' ? path.startsWith('/') : path.startsWith(`${outer}/`);
+        });
+    });
+}
+
 function toRootEntries(machineId: string, serverId?: string | null) {
-    return (getCachedMachineFileBrowserRoots({ machineId, serverId }) ?? []).map((root) => ({
+    return topLevelRoots(getCachedMachineFileBrowserRoots({ machineId, serverId }) ?? []).map((root) => ({
         name: root.label,
         path: root.path,
         type: 'directory' as const,
@@ -442,7 +459,7 @@ export function MachinePathBrowserView(props: MachinePathBrowserViewProps): Reac
             if (!result.ok) return result;
             return {
                 ok: true,
-                entries: result.roots.map((root) => ({
+                entries: topLevelRoots(result.roots).map((root) => ({
                     name: root.label,
                     path: root.path,
                     type: 'directory' as const,
@@ -477,7 +494,7 @@ export function MachinePathBrowserView(props: MachinePathBrowserViewProps): Reac
             if (!result.ok) return result;
             return {
                 ok: true,
-                entries: result.roots.map((root) => ({
+                entries: topLevelRoots(result.roots).map((root) => ({
                     name: root.label,
                     path: root.path,
                     type: 'directory' as const,

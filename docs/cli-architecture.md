@@ -1939,7 +1939,8 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **Pickers offer them first; the explorer marks them.** The server lists the folders mounted on it
   among its file-browser roots (`DAEMON_FILESYSTEM_LIST_ROOTS`, after its own; `sharedFolderRoots.ts`:
   its shared mounts, named by where they are, `~/code`, and whose they are — the root's
-  `sharedFolder`). The folder browser shows them at the top level, and every folder picker
+  `sharedFolder`). The folder browser shows each one where it sits (a root inside another root is
+  not listed again at the top: one path in two rows confuses the list), and every folder picker
   (`PathSelectionList`: new session, handoff and the rest) lists them above favorites by that name,
   one press each. The sidebar explorer marks such a folder where it sits in the server's tree (a link
   mark, its computer in the label read aloud), and offers no rename or delete for the shared folder
