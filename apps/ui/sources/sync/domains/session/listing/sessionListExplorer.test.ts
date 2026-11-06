@@ -305,45 +305,47 @@ describe('buildSessionExplorerItems in the Files view', () => {
 
     describe('folders the user\'s computers share with a server', () => {
         const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'PiggerdeMacBook-Air', homeDir: '/Users/u', online: true, agentsHosted: false };
-        const mount = '/home/u/local/piggerdemacbook-air/code';
+        const mount = '/home/u/code';
         const sharedWithVm: BuildSessionExplorerInput['getSharedFolders'] = (machine) => (machine.machineId === 'm1'
             ? [
                 { label: '/', path: '/' },
-                { label: 'piggerdemacbook-air/code', path: mount, sharedFolder: { folder: 'code', computerMachineId: 'm2' } },
+                { label: '~/code', path: mount, sharedFolder: { folder: 'code', computerMachineId: 'm2', computerLabel: 'piggerdemacbook-air' } },
             ]
             : null);
         const headers = (items: SessionListViewItem[]) => items.filter((item): item is Header => item.type === 'header');
 
-        it('show as top folders right after ~, named after the computer, holding the sessions started in them', () => {
+        it('are marked where they sit under ~, with the computer they come from, and cannot be renamed or deleted there', () => {
             const result = build({
                 machines: [vm, mac],
-                items: [row('in-share', `${mount}/app`), row('at-home', '/home/u/proj')],
+                items: [row('in-share', `${mount}/app`)],
                 getSharedFolders: sharedWithVm,
+                getListing: listings({ '/home/u': { status: 'loaded', dirs: ['Downloads', 'code'] } }),
             });
 
-            const tops = headers(result.items).filter((item) => item.depth === 0).map((item) => item.title);
-            expect(tops).toEqual(['~', 'PiggerdeMacBook-Air · code']);
+            const code = headers(result.items).find((item) => item.groupKey === folder(mount))!;
+            expect(code).toMatchObject({ title: 'code', explorerSharedFrom: 'PiggerdeMacBook-Air', explorerCanChange: false });
+            const downloads = headers(result.items).find((item) => item.groupKey === folder('/home/u/Downloads'))!;
+            expect(downloads.explorerSharedFrom).toBeUndefined();
+            expect(downloads.explorerCanChange).toBe(true);
+            // Its sessions sit in it, as in any folder.
             const inShare = result.items.find((item): item is Row => item.type === 'session' && item.session.id === 'in-share')!;
-            const app = headers(result.items).find((item) => item.groupKey === inShare.groupKey)!;
-            expect(app.title).toBe('app');
-            expect(app.treeParentKey).toBe(folder(mount));
-            // The share's path is not built a second time under ~.
-            expect(headers(result.items).some((item) => item.groupKey === folder('/home/u/local'))).toBe(false);
+            expect(headers(result.items).find((item) => item.groupKey === inShare.groupKey)!.treeParentKey).toBe(folder(mount));
         });
 
-        it('do not show again under ~ when its folders are listed', () => {
-            const result = build({
-                machines: [vm, mac],
-                getSharedFolders: sharedWithVm,
-                collapsedKeys: { [folder('/home/u/local')]: false, [folder('/home/u/local/piggerdemacbook-air')]: false },
-                getListing: listings({
-                    '/home/u': { status: 'loaded', dirs: ['local'] },
-                    '/home/u/local': { status: 'loaded', dirs: ['piggerdemacbook-air'] },
-                    '/home/u/local/piggerdemacbook-air': { status: 'loaded', dirs: ['code'] },
-                }),
-            });
+        it('leave rename and delete to the server while it has not said which of its folders are shared', () => {
+            const listing = listings({ '/home/u': { status: 'loaded', dirs: ['Downloads', 'code'] } });
+            const canChange = (getSharedFolders: BuildSessionExplorerInput['getSharedFolders']) => headers(build({ machines: [vm], getSharedFolders, getListing: listing }).items)
+                .find((item) => item.groupKey === folder('/home/u/Downloads'))!.explorerCanChange;
 
-            expect(headers(result.items).filter((item) => item.groupKey === folder(mount))).toHaveLength(1);
+            // An answer that never comes does not lock every folder: the server refuses a shared one itself.
+            expect(canChange(() => null)).toBe(true);
+            expect(canChange(() => [])).toBe(true);
+        });
+
+        it('name an unknown computer by the server\'s label for it', () => {
+            const result = build({ machines: [vm], getSharedFolders: sharedWithVm, getListing: listings({ '/home/u': { status: 'loaded', dirs: ['code'] } }) });
+
+            expect(headers(result.items).find((item) => item.groupKey === folder(mount))!.explorerSharedFrom).toBe('piggerdemacbook-air');
         });
 
         it('are asked for once per machine that runs agents and is online', () => {

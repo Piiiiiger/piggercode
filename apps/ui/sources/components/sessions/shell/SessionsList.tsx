@@ -2156,6 +2156,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         onToggle={() => handleToggleExplorerFolder(item)}
                         onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
                         folderActions={explorerFolderActionsFor(item)}
+                        sharedFrom={item.explorerSharedFrom}
                     />
                 </SessionListHeaderFrame>
             );

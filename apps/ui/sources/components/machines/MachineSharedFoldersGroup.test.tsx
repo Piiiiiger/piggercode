@@ -10,6 +10,7 @@ import { flushHookEffects, renderScreen, standardCleanup } from '@/dev/testkit';
 const machineRpcMock = vi.hoisted(() => vi.fn());
 const confirmMock = vi.hoisted(() => vi.fn());
 const alertMock = vi.hoisted(() => vi.fn());
+const promptMock = vi.hoisted(() => vi.fn());
 const pickFolderMock = vi.hoisted(() => vi.fn());
 
 vi.mock('react-native', async () => {
@@ -28,6 +29,7 @@ vi.mock('@/modal', async () => (await import('@/dev/testkit/mocks/modal')).insta
     spies: {
         confirm: (...args) => confirmMock(...args),
         alert: (...args) => alertMock(...args),
+        prompt: (...args) => promptMock(...args),
     },
 })());
 
@@ -53,7 +55,7 @@ vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', a
     })(importOriginal);
 });
 
-type MachineRpcCall = Readonly<{ machineId: string; method: string; payload: Readonly<{ folder?: string; serverMachineId?: string }> }>;
+type MachineRpcCall = Readonly<{ machineId: string; method: string; payload: Readonly<{ folder?: string; serverMachineId?: string; at?: string }> }>;
 
 const SERVER = { id: 'machine-server', name: 'server' };
 
@@ -66,12 +68,13 @@ function connectLaptop(initial: Readonly<{ shares?: FolderShare[]; refuseAdd?: s
         if (call.method === RPC_METHODS.DAEMON_FOLDER_SHARE_ADD) {
             if (initial.refuseAdd) return { ok: false, errorCode: 'server_refused', error: initial.refuseAdd };
             const folder = String(call.payload.folder).replace('/home/pigger/', '');
-            laptop.shares.push({
-                folder,
-                serverMachineId: String(call.payload.serverMachineId),
-                serverPath: `~/local/laptop/${folder}`,
-                state: 'connecting',
-            });
+            const serverPath = call.payload.at ?? `~/${folder}`;
+            const existing = laptop.shares.find((share) => share.folder === folder);
+            if (existing) {
+                laptop.shares = laptop.shares.map((share) => (share === existing ? { ...share, serverPath } : share));
+                return { ok: true, shares: laptop.shares };
+            }
+            laptop.shares.push({ folder, serverMachineId: String(call.payload.serverMachineId), serverPath, state: 'connecting' });
             return { ok: true, shares: laptop.shares };
         }
         if (call.method === RPC_METHODS.DAEMON_FOLDER_SHARE_REMOVE) {
@@ -109,6 +112,13 @@ async function renderGroup(options: Readonly<{ isOnline?: boolean; targets?: Rea
 
 const calledMethods = () => machineRpcMock.mock.calls.map(([call]) => (call as MachineRpcCall).method);
 
+/** The share's menu (`Modal.alert` with its actions): the user picks the action named `text`. */
+function choose(text: string) {
+    alertMock.mockImplementation((_title: unknown, _message: unknown, buttons?: ReadonlyArray<{ text: unknown; onPress?: () => void }>) => {
+        buttons?.find((button) => button.text === text)?.onPress?.();
+    });
+}
+
 describe('MachineSharedFoldersGroup', () => {
     afterEach(() => {
         standardCleanup();
@@ -116,13 +126,14 @@ describe('MachineSharedFoldersGroup', () => {
         machineRpcMock.mockReset();
         confirmMock.mockReset();
         alertMock.mockReset();
+        promptMock.mockReset();
         pickFolderMock.mockReset();
     });
 
-    it('shares a folder the user picks, after saying what the other machine gets', async () => {
+    it('shares a folder the user picks where the user places it on the other machine, its own name by default', async () => {
         const laptop = connectLaptop();
         pickFolderMock.mockResolvedValue('/home/pigger/code');
-        confirmMock.mockResolvedValue(true);
+        promptMock.mockResolvedValue('~/code');
         const group = await renderGroup();
         expect(group.add()?.props.disabled).toBe(false);
         expect(group.add()?.props.subtitle).toBe('machine.sharedFolders.addSubtitle');
@@ -130,14 +141,14 @@ describe('MachineSharedFoldersGroup', () => {
         await group.press('machine-shared-folders-add');
 
         expect(pickFolderMock).toHaveBeenCalledWith(expect.objectContaining({ machineId: 'machine-laptop', initialPath: '/home/pigger' }));
-        expect(confirmMock).toHaveBeenCalledWith(
+        expect(promptMock).toHaveBeenCalledWith(
             { key: 'machine.sharedFolders.confirmTitle', params: { folder: '~/code', machine: 'server' } },
             { key: 'machine.sharedFolders.confirmBody', params: { folder: '~/code', machine: 'server' } },
-            { confirmText: 'machine.sharedFolders.confirmAction' },
+            { defaultValue: '~/code', confirmText: 'machine.sharedFolders.confirmAction' },
         );
         expect(machineRpcMock).toHaveBeenCalledWith(expect.objectContaining({
             method: RPC_METHODS.DAEMON_FOLDER_SHARE_ADD,
-            payload: { folder: '/home/pigger/code', serverMachineId: 'machine-server' },
+            payload: { folder: '/home/pigger/code', serverMachineId: 'machine-server', at: '~/code' },
         }));
         expect(laptop.shares).toHaveLength(1);
         expect(group.share('code')?.props.title).toBe('~/code');
@@ -151,7 +162,7 @@ describe('MachineSharedFoldersGroup', () => {
         pickFolderMock.mockResolvedValue(null);
         await group.press('machine-shared-folders-add');
         pickFolderMock.mockResolvedValue('/home/pigger/code');
-        confirmMock.mockResolvedValue(false);
+        promptMock.mockResolvedValue(null);
         await group.press('machine-shared-folders-add');
 
         expect(calledMethods()).not.toContain(RPC_METHODS.DAEMON_FOLDER_SHARE_ADD);
@@ -160,7 +171,7 @@ describe('MachineSharedFoldersGroup', () => {
     it('passes on why the folder was not shared, in the machine’s words', async () => {
         connectLaptop({ refuseAdd: 'sshfs is not installed there.' });
         pickFolderMock.mockResolvedValue('/home/pigger/code');
-        confirmMock.mockResolvedValue(true);
+        promptMock.mockResolvedValue('~/code');
         const group = await renderGroup();
 
         await group.press('machine-shared-folders-add');
@@ -171,13 +182,14 @@ describe('MachineSharedFoldersGroup', () => {
 
     it('stops sharing after the user confirms', async () => {
         const laptop = connectLaptop({
-            shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/local/laptop/code', state: 'connected' }],
+            shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/code', state: 'connected' }],
         });
         confirmMock.mockResolvedValue(true);
+        choose('machine.sharedFolders.stopAction');
         const group = await renderGroup();
         expect(group.share('code')?.props.subtitle).toEqual({
             key: 'machine.sharedFolders.connected',
-            params: { machine: 'server', path: '~/local/laptop/code' },
+            params: { machine: 'server', path: '~/code' },
         });
 
         await group.press('machine-shared-folder:code');
@@ -189,6 +201,43 @@ describe('MachineSharedFoldersGroup', () => {
         );
         expect(laptop.shares).toEqual([]);
         expect(group.share('code')).toBeFalsy();
+    });
+
+    it('moves a share to where the user names it on the other machine', async () => {
+        const laptop = connectLaptop({
+            shares: [{ folder: 'code', serverMachineId: 'machine-server', serverPath: '~/code', state: 'connected' }],
+        });
+        choose('machine.sharedFolders.moveAction');
+        promptMock.mockResolvedValue('~/projects/code');
+        const group = await renderGroup();
+
+        await group.press('machine-shared-folder:code');
+
+        expect(promptMock).toHaveBeenCalledWith(
+            { key: 'machine.sharedFolders.moveTitle', params: { folder: '~/code' } },
+            { key: 'machine.sharedFolders.placeBody', params: { machine: 'server' } },
+            { defaultValue: '~/code', confirmText: 'machine.sharedFolders.moveConfirm' },
+        );
+        expect(machineRpcMock).toHaveBeenCalledWith(expect.objectContaining({
+            method: RPC_METHODS.DAEMON_FOLDER_SHARE_ADD,
+            payload: { folder: 'code', serverMachineId: 'machine-server', at: '~/projects/code' },
+        }));
+        expect(laptop.shares[0]!.serverPath).toBe('~/projects/code');
+        expect(calledMethods()).not.toContain(RPC_METHODS.DAEMON_FOLDER_SHARE_REMOVE);
+    });
+
+    it('suggests the folder\'s own name beside the server\'s folders when moving a share from under ~/local', async () => {
+        connectLaptop({
+            shares: [{ folder: 'work/code', serverMachineId: 'machine-server', serverPath: '~/local/laptop/work/code', state: 'connected' }],
+        });
+        choose('machine.sharedFolders.moveAction');
+        promptMock.mockResolvedValue(null);
+        const group = await renderGroup();
+
+        await group.press('machine-shared-folder:work/code');
+
+        expect(promptMock.mock.calls[0]![2]).toMatchObject({ defaultValue: '~/code' });
+        expect(calledMethods()).not.toContain(RPC_METHODS.DAEMON_FOLDER_SHARE_ADD);
     });
 
     it('follows a share while it connects, and stops asking once it is connected', async () => {
@@ -256,7 +305,7 @@ describe('MachineSharedFoldersGroup', () => {
     it('asks which machine to share with when there is more than one', async () => {
         connectLaptop();
         pickFolderMock.mockResolvedValue('/home/pigger/code');
-        confirmMock.mockResolvedValue(true);
+        promptMock.mockResolvedValue('~/code');
         alertMock.mockImplementation((_title: unknown, _body: unknown, buttons?: Array<{ text: string; onPress?: () => void }>) => {
             buttons?.find((button) => button.text === 'mac')?.onPress?.();
         });
@@ -267,7 +316,7 @@ describe('MachineSharedFoldersGroup', () => {
         expect(alertMock).toHaveBeenCalledWith('machine.sharedFolders.chooseMachineTitle', 'machine.sharedFolders.chooseMachineBody', expect.any(Array));
         expect(machineRpcMock).toHaveBeenCalledWith(expect.objectContaining({
             method: RPC_METHODS.DAEMON_FOLDER_SHARE_ADD,
-            payload: { folder: '/home/pigger/code', serverMachineId: 'machine-mac' },
+            payload: { folder: '/home/pigger/code', serverMachineId: 'machine-mac', at: '~/code' },
         }));
     });
 });

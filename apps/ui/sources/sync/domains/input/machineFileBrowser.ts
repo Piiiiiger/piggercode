@@ -11,7 +11,7 @@ export type MachineFileBrowserRoot = Readonly<{
     label: string;
     path: string;
     /** A folder one of the user's computers shares with this machine, mounted there now. */
-    sharedFolder?: Readonly<{ folder: string; computerMachineId?: string }>;
+    sharedFolder?: Readonly<{ folder: string; computerMachineId?: string; computerLabel?: string }>;
 }>;
 
 export type MachineFileBrowserEntry = Readonly<{
@@ -245,6 +245,7 @@ export async function listMachineFileBrowserRoots(input: {
                 sharedFolder: {
                     folder: root.sharedFolder.folder,
                     ...(root.sharedFolder.computerMachineId ? { computerMachineId: root.sharedFolder.computerMachineId } : {}),
+                    ...(root.sharedFolder.computerLabel ? { computerLabel: root.sharedFolder.computerLabel } : {}),
                 },
             } : {}),
         }));

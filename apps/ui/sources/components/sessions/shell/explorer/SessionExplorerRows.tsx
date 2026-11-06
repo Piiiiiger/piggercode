@@ -70,6 +70,10 @@ const stylesheet = StyleSheet.create((theme) => ({
     titleQuiet: {
         color: theme.colors.text.secondary,
     },
+    sharedMark: {
+        marginLeft: 4,
+        justifyContent: 'center',
+    },
     meta: {
         flexDirection: 'row' as const,
         alignItems: 'center' as const,
@@ -129,6 +133,8 @@ export type SessionExplorerFolderRowProps = Readonly<{
     onCreateSession: (() => void) | null;
     /** What the folder's ⋯ and right-click (long-press on phones) menu offers; null for no menu. */
     folderActions?: SessionExplorerFolderActions | null;
+    /** Set on a folder one of the user's computers shares with this machine: that computer's name. */
+    sharedFrom?: string;
     testID?: string;
 }>;
 
@@ -164,7 +170,9 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
     } : {};
     const a11yLabel = props.kind === 'machine'
         ? t('sessionsList.explorerMachineA11y', { name: props.title, count: props.sessionCount })
-        : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
+        : props.sharedFrom !== undefined
+            ? t('sessionsList.explorerSharedFolderA11y', { name: props.title, computer: props.sharedFrom, count: props.sessionCount })
+            : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
 
     // The toggle and + are sibling buttons: a button inside another is merged into it by screen readers.
     return (
@@ -205,6 +213,12 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                 >
                     {props.title}
                 </Text>
+                {props.sharedFrom !== undefined ? (
+                    // A shared folder: its files are on the computer it comes from.
+                    <View testID={props.testID ? `${props.testID}:shared` : undefined} style={styles.sharedMark}>
+                        <Icon name="link" size={12} color={theme.colors.accent.blue} />
+                    </View>
+                ) : null}
                 {props.sessionCount > 0 ? (
                     <View style={styles.meta}>
                         {props.activeSessionCount > 0 ? <View style={styles.liveDot} /> : null}

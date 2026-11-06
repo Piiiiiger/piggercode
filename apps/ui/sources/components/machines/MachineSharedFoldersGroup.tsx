@@ -117,22 +117,47 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
         });
         if (!folder) return;
         const shown = formatPathRelativeToHome(folder, homeDir ?? undefined);
-        const confirmed = await Modal.confirm(
+        // One step confirms it and says where it shows on the server: beside the home's other
+        // folders, under its own name, unless the user names or places it otherwise.
+        const name = folder.split(/[\\/]/).filter(Boolean).pop() ?? shown;
+        const at = await Modal.prompt(
             t('machine.sharedFolders.confirmTitle', { folder: shown, machine: target.name }),
             t('machine.sharedFolders.confirmBody', { folder: shown, machine: target.name }),
-            { confirmText: t('machine.sharedFolders.confirmAction') },
+            { defaultValue: `~/${name}`, confirmText: t('machine.sharedFolders.confirmAction') },
         );
-        if (!confirmed) return;
+        if (at === null) return;
         setBusy(true);
         try {
             applyChange(
-                await machineSharedFolderAdd(machineId, { folder, serverMachineId: target.id }, { serverId }),
+                await machineSharedFolderAdd(machineId, { folder, serverMachineId: target.id, at }, { serverId }),
                 t('machine.sharedFolders.addFailedTitle'),
             );
         } finally {
             setBusy(false);
         }
     }, [applyChange, chooseTarget, homeDir, machineId, serverId]);
+
+    const onMove = React.useCallback(async (share: FolderShare) => {
+        const machine = machineName(share.serverMachineId);
+        // A share from before places sits under ~/local; moving it suggests its own name beside the
+        // server's other folders.
+        const suggested = share.serverPath.startsWith('~/local/') ? `~/${share.folder.split('/').pop() ?? share.folder}` : share.serverPath;
+        const at = await Modal.prompt(
+            t('machine.sharedFolders.moveTitle', { folder: `~/${share.folder}` }),
+            t('machine.sharedFolders.placeBody', { machine }),
+            { defaultValue: suggested, confirmText: t('machine.sharedFolders.moveConfirm') },
+        );
+        if (at === null || at.trim() === share.serverPath) return;
+        setBusy(true);
+        try {
+            applyChange(
+                await machineSharedFolderAdd(machineId, { folder: share.folder, serverMachineId: share.serverMachineId, at }, { serverId }),
+                t('machine.sharedFolders.moveFailedTitle'),
+            );
+        } finally {
+            setBusy(false);
+        }
+    }, [applyChange, machineId, machineName, serverId]);
 
     const onStop = React.useCallback(async (share: FolderShare) => {
         const confirmed = await Modal.confirm(
@@ -151,6 +176,14 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
             setBusy(false);
         }
     }, [applyChange, machineId, machineName, serverId]);
+
+    const onShareActions = React.useCallback((share: FolderShare) => {
+        Modal.alert(t('machine.sharedFolders.actionsTitle', { folder: share.folder }), undefined, [
+            { text: t('machine.sharedFolders.moveAction'), onPress: () => void onMove(share) },
+            { text: t('machine.sharedFolders.stopAction'), style: 'destructive' as const, onPress: () => void onStop(share) },
+            { text: t('common.cancel'), style: 'cancel' as const },
+        ]);
+    }, [onMove, onStop]);
 
     const shares = state?.status === 'ok' ? state.shares : [];
     const addSubtitle = !isOnline
@@ -185,7 +218,7 @@ export function MachineSharedFoldersGroup(props: MachineSharedFoldersGroupProps)
                         subtitleLines={0}
                         disabled={!isOnline || busy}
                         onPress={() => {
-                            void onStop(share);
+                            onShareActions(share);
                         }}
                     />
                 );

@@ -46,9 +46,6 @@ import {
     type MachineFileBrowserRoot,
 } from '@/sync/domains/input/machineFileBrowser';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
-import { sharedFolderTitle } from '@/sync/domains/input/sharedFolderTitle';
-import { useAllMachines, useMachineListByServerId } from '@/sync/domains/state/storage';
-import { getMachineDisplayName } from '@/utils/sessions/machineUtils';
 import { t } from '@/text';
 import { Pressable, type GestureResponderEvent } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
@@ -225,9 +222,8 @@ type SharedRootsState = Readonly<{ target: string | null; roots: readonly Machin
 /**
  * The folders the user's computers share with this machine, mounted there now: the machine's own
  * answer, as roots of its file browser (`sharedFolder`) — the same answer the folder browser lists.
- * The cached answer first, then asked again when the picker opens; named after the computer each one
- * belongs to, on the picker's relay. Listed first, so a shared folder is one press away instead of a
- * walk through ~/local.
+ * The cached answer first, then asked again when the picker opens. Listed first, so a shared folder is
+ * one press away.
  */
 function useSharedFolders(machineId: string | null, serverId: string | null): ReadonlyArray<PathSelectionListSharedFolder> {
     // The relay the picker reaches: its own, or the active one (which can change under it).
@@ -258,22 +254,9 @@ function useSharedFolders(machineId: string | null, serverId: string | null): Re
         };
     }, [machineId, serverId, target]);
 
-    const activeMachines = useAllMachines();
-    const machineListByServerId = useMachineListByServerId();
-    const machines = !serverId || serverId === activeServerId ? activeMachines : machineListByServerId[serverId] ?? [];
     const roots = current.roots;
-    const computerNames = roots.map((root) => {
-        const computerId = root.sharedFolder?.computerMachineId;
-        const computer = computerId ? machines.find((machine) => machine.id === computerId) : undefined;
-        return computer ? getMachineDisplayName(computer) : null;
-    });
-    const namesKey = computerNames.join('\u0000');
-    return React.useMemo(
-        () => roots.map((root, index) => ({ path: root.path, label: sharedFolderTitle(root, computerNames[index]) })),
-        // `computerNames` is read through `namesKey`, so a machine list refresh that renames nothing keeps the rows.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [namesKey, roots],
-    );
+    // Named by where they are on this machine (`~/code`, the server's label for them).
+    return React.useMemo(() => roots.map((root) => ({ path: root.path, label: root.label })), [roots]);
 }
 
 function buildSharedFolderOptions(

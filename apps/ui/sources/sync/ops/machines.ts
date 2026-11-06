@@ -980,7 +980,8 @@ export async function machineSharedFoldersList(
 /** Shares `folder` (a path on that machine) of the machine with another machine of the account. */
 export async function machineSharedFolderAdd(
     machineId: string,
-    request: Readonly<{ folder: string; serverMachineId: string }>,
+    /** `at`: where it shows on the server, in its home (`~/code`); for a folder already shared there, it moves it. */
+    request: Readonly<{ folder: string; serverMachineId: string; at?: string }>,
     options?: { serverId?: string | null },
 ): Promise<MachineSharedFolderChange> {
     return await changeMachineSharedFolders(machineId, RPC_METHODS.DAEMON_FOLDER_SHARE_ADD, request, options);
