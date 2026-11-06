@@ -9,6 +9,7 @@ import { executionRunsCapability } from '@/capabilities/registry/toolExecutionRu
 import { systemTasksCapability } from '@/capabilities/registry/toolSystemTasks';
 import { installableDepCapabilities } from '@/capabilities/registry/installableDeps';
 import { withProviderCliUpdates } from '@/capabilities/cliUpdate/providerCliUpdates';
+import { agentsNotHostedResult, daemonHostsAgents } from '@/daemon/agentHosting';
 import { createCapabilitiesService } from '@/capabilities/service';
 import type { Capability } from '@/capabilities/service';
 import type {
@@ -655,14 +656,32 @@ type CliCapabilitiesOptions = Readonly<{
     hasSessionAgentTransition?: () => boolean;
 }>;
 
+/**
+ * On a computer that runs no agents (`daemonHostsAgents`), every agent-owned capability — each agent
+ * CLI and the agents' own helpers (Codex ACP) — answers detection with nothing found, before any
+ * provider detector runs or reads anything, and refuses every action: install, update, upgrade and
+ * the probes that would run the person's own Codex or Claude Code.
+ */
+function withoutAgents(cap: Capability): Capability {
+    const nothingFound = cap.descriptor.kind === 'dep' ? { installed: false } : { available: false };
+    return {
+        ...cap,
+        detect: async () => nothingFound,
+        invoke: async () => ({
+            ok: false,
+            error: { code: 'agents-not-hosted', message: agentsNotHostedResult().errorMessage },
+        }),
+    };
+}
+
 export async function createCliCapabilitiesService(options?: CliCapabilitiesOptions): Promise<ReturnType<typeof createCapabilitiesService>> {
+    const hostsAgents = daemonHostsAgents();
     const cliCapabilities = await Promise.all(
         (Object.values(AGENTS) as AgentCatalogEntry[]).map(async (entry) => {
-            if (entry.getCliCapabilityOverride) {
-                const override = await entry.getCliCapabilityOverride();
-                return withProviderCliUpdates(augmentCliCapabilityWithProbeModels(override, entry.id), entry.id);
-            }
-            return withProviderCliUpdates(createGenericCliCapability(entry.id), entry.id);
+            const capability = entry.getCliCapabilityOverride
+                ? withProviderCliUpdates(augmentCliCapabilityWithProbeModels(await entry.getCliCapabilityOverride(), entry.id), entry.id)
+                : withProviderCliUpdates(createGenericCliCapability(entry.id), entry.id);
+            return hostsAgents ? capability : withoutAgents(capability);
         }),
     );
 
@@ -672,7 +691,7 @@ export async function createCliCapabilitiesService(options?: CliCapabilitiesOpti
             return [...(await entry.getCapabilities())];
         }),
     );
-    const extraCapabilities: Capability[] = extraCapabilitiesNested.flat();
+    const extraCapabilities: Capability[] = extraCapabilitiesNested.flat().map((capability) => hostsAgents ? capability : withoutAgents(capability));
 
     const hasSessionAgentTransition = options?.hasSessionAgentTransition;
     const daemonCapabilities: Capability[] = hasSessionAgentTransition ? [{

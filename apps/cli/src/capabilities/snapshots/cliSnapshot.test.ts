@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdirSync, writeFileSync, chmodSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, chmodSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { detectCliSnapshotOnDaemonPath } from './cliSnapshot';
@@ -17,6 +17,7 @@ const SCOPED_ENV_KEYS = [
   'PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON',
   'PIGGERCODE_CLAUDE_PATH',
   'PIGGERCODE_CODEX_PATH',
+  'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
   'PIGGERCODE_PNPM_BIN',
   'PIGGERCODE_JS_RUNTIME_PATH',
   'PIGGERCODE_MANAGED_NODE_BIN',
@@ -68,6 +69,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
     setEnv('PIGGERCODE_BACKEND_CLI_SOURCE_PREFERENCES_JSON', undefined);
     setEnv('PIGGERCODE_CLAUDE_PATH', undefined);
     setEnv('PIGGERCODE_CODEX_PATH', undefined);
+    setEnv('PIGGERCODE_DAEMON_SERVICE_MANAGED_BY', undefined);
   });
 
   afterEach(() => {
@@ -92,6 +94,24 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       expect(snapshot.clis.claude.version).toBe('2.0.69');
     },
   );
+
+  it('on a computer connected through the desktop app, reports no agent and never runs one to find out', async () => {
+    const binDir = join(workDir, 'bin');
+    mkdirSync(binDir, { recursive: true });
+    const ran = join(workDir, 'agent-ran');
+    const claudePath = makeExecutableShim({ dir: binDir, name: 'claude', stdout: `echo ran >> "${ran}"\necho "2.0.70 (Claude Code)"` });
+    const codexPath = makeExecutableShim({ dir: binDir, name: 'codex', stdout: `echo ran >> "${ran}"\necho "codex-cli 0.164.0"` });
+    setEnv('PIGGERCODE_CLAUDE_PATH', claudePath);
+    setEnv('PIGGERCODE_CODEX_PATH', codexPath);
+    // What the desktop app writes into the background service it installs.
+    setEnv('PIGGERCODE_DAEMON_SERVICE_MANAGED_BY', 'desktop');
+
+    const snapshot = await detectCliSnapshotOnDaemonPath({ bypassCache: true, includeLoginStatus: true });
+
+    expect(snapshot.clis.claude.available).toBe(false);
+    expect(snapshot.clis.codex.available).toBe(false);
+    expect(existsSync(ran)).toBe(false);
+  });
 
   it('detects Claude when PIGGERCODE_CLAUDE_PATH is set even when it is not on PATH', async () => {
     const binDir = join(workDir, 'bin');

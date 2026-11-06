@@ -7,6 +7,7 @@ import { promisify } from 'util';
 
 import { AGENTS, type CatalogAgentId, type CliDetectSpec } from '@/backends/catalog';
 import { resolveCliAuthHomeDir } from '@/capabilities/cliAuth/shared';
+import { daemonHostsAgents } from '@/daemon/agentHosting';
 import type { CliAuthSpec, CliAuthStatus } from '@/backends/types';
 import { resolveProviderCliCommand } from '@/runtime/managedTools/providerCliResolution';
 import { resolveJavaScriptRuntimeExecutable } from '@/runtime/js/resolveJavaScriptRuntimeExecutable';
@@ -645,9 +646,13 @@ export async function detectCliSnapshotOnDaemonPath(data: DetectCliRequest): Pro
         const cached2 = cliSnapshotCache.get(cacheKey);
         if (!data?.bypassCache && cached2?.kind === 'success' && cliSnapshotCache.isFresh(cached2)) return cached2.value;
 
-    const names = requestedCliNames.length > 0
-        ? requestedCliNames
-        : Object.keys(AGENTS) as DetectCliName[];
+    // A computer that runs no agents (connected through the desktop app) has none to report, and
+    // never runs the person's own Codex or Claude Code to find out.
+    const names = !daemonHostsAgents()
+        ? []
+        : requestedCliNames.length > 0
+            ? requestedCliNames
+            : Object.keys(AGENTS) as DetectCliName[];
 
     const pairs = await Promise.all(
         names.map(async (name) => {
