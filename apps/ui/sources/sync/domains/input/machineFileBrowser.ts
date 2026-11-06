@@ -10,6 +10,8 @@ export type MachineFileBrowserRoot = Readonly<{
     id: string;
     label: string;
     path: string;
+    /** A folder one of the user's computers shares with this machine, mounted there now. */
+    sharedFolder?: Readonly<{ folder: string; computerMachineId?: string }>;
 }>;
 
 export type MachineFileBrowserEntry = Readonly<{
@@ -235,6 +237,12 @@ export async function listMachineFileBrowserRoots(input: {
             id: root.id.trim(),
             label: root.label.trim(),
             path: root.path.trim(),
+            ...(root.sharedFolder ? {
+                sharedFolder: {
+                    folder: root.sharedFolder.folder,
+                    ...(root.sharedFolder.computerMachineId ? { computerMachineId: root.sharedFolder.computerMachineId } : {}),
+                },
+            } : {}),
         }));
 
     setCachedMachineFileBrowserRoots({ machineId: input.machineId, serverId: input.serverId, roots });

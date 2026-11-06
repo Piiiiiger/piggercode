@@ -39,7 +39,15 @@ import { formatPathRelativeToHome } from '@/utils/sessions/formatPathRelativeToH
 import { resolveDirectoryFavoriteComparisonKey } from '@/components/sessions/new/hooks/favoriteDirectoriesToggle';
 import { InputBrowseButton } from '@/components/ui/buttons/InputBrowseButton';
 import { useModalPortalTarget } from '@/modal/portal/ModalPortalTarget';
-import { listMachineFileBrowserDirectoryEntries } from '@/sync/domains/input/machineFileBrowser';
+import {
+    getCachedMachineFileBrowserRoots,
+    listMachineFileBrowserDirectoryEntries,
+    listMachineFileBrowserRoots,
+    type MachineFileBrowserRoot,
+} from '@/sync/domains/input/machineFileBrowser';
+import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
+import { useAllMachines, useMachineListByServerId } from '@/sync/domains/state/storage';
+import { getMachineDisplayName } from '@/utils/sessions/machineUtils';
 import { t } from '@/text';
 import { Pressable, type GestureResponderEvent } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
@@ -120,8 +128,6 @@ export type PathSelectionListProps = Readonly<{
     initialSuggestionMode?: PathSelectionInitialSuggestionMode;
     favorites: ReadonlyArray<PathSelectionListFavorite>;
     recents: ReadonlyArray<PathSelectionListRecent>;
-    /** Folders the user's computers share with this machine, listed first: one press, no folder levels. */
-    sharedFolders?: ReadonlyArray<PathSelectionListSharedFolder>;
     machineHomeDir: string;
     /**
      * RUX-3: predicate that decides whether a given absolute path is currently
@@ -200,6 +206,73 @@ function buildFavoriteOptions(
                 rightAccessory: favoriteAccessory(absolutePath, accessoryTestIdPrefix),
             } satisfies SelectionListOption;
         });
+}
+
+const NO_SHARED_ROOTS: readonly MachineFileBrowserRoot[] = [];
+
+function sharedRootsOf(roots: readonly MachineFileBrowserRoot[] | null): readonly MachineFileBrowserRoot[] {
+    const shared = (roots ?? []).filter((root) => root.sharedFolder);
+    return shared.length === 0 ? NO_SHARED_ROOTS : shared;
+}
+
+function cachedSharedRoots(machineId: string | null, serverId: string | null): readonly MachineFileBrowserRoot[] {
+    return machineId ? sharedRootsOf(getCachedMachineFileBrowserRoots({ machineId, serverId })) : NO_SHARED_ROOTS;
+}
+
+type SharedRootsState = Readonly<{ target: string | null; roots: readonly MachineFileBrowserRoot[] }>;
+
+/**
+ * The folders the user's computers share with this machine, mounted there now: the machine's own
+ * answer, as roots of its file browser (`sharedFolder`) — the same answer the folder browser lists.
+ * The cached answer first, then asked again when the picker opens; named after the computer each one
+ * belongs to, on the picker's relay. Listed first, so a shared folder is one press away instead of a
+ * walk through ~/local.
+ */
+function useSharedFolders(machineId: string | null, serverId: string | null): ReadonlyArray<PathSelectionListSharedFolder> {
+    // The relay the picker reaches: its own, or the active one (which can change under it).
+    const activeServerId = useActiveServerSnapshot().serverId;
+    const target = machineId ? `${serverId ?? activeServerId}\u0000${machineId}` : null;
+    const [state, setState] = React.useState<SharedRootsState>(() => ({ target, roots: cachedSharedRoots(machineId, serverId) }));
+    // Another machine (the handoff picker switches targets) starts from its own cached answer, never the
+    // previous machine's folders; adjusted while rendering, so those are never painted.
+    let current = state;
+    if (state.target !== target) {
+        current = { target, roots: cachedSharedRoots(machineId, serverId) };
+        setState(current);
+    }
+    React.useEffect(() => {
+        if (!machineId) return;
+        let cancelled = false;
+        void listMachineFileBrowserRoots({ machineId, serverId }).then((result) => {
+            if (cancelled || !result.ok) return;
+            const shared = sharedRootsOf(result.roots);
+            setState((previous) => (
+                previous.target !== target || JSON.stringify(previous.roots) === JSON.stringify(shared)
+                    ? previous
+                    : { target, roots: shared }
+            ));
+        }).catch(() => {});
+        return () => {
+            cancelled = true;
+        };
+    }, [machineId, serverId, target]);
+
+    const activeMachines = useAllMachines();
+    const machineListByServerId = useMachineListByServerId();
+    const machines = !serverId || serverId === activeServerId ? activeMachines : machineListByServerId[serverId] ?? [];
+    const roots = current.roots;
+    const computerNames = roots.map((root) => {
+        const computerId = root.sharedFolder?.computerMachineId;
+        const computer = computerId ? machines.find((machine) => machine.id === computerId) : undefined;
+        return (computer ? getMachineDisplayName(computer) : null) || root.label.split('/')[0] || root.label;
+    });
+    const namesKey = computerNames.join('\u0000');
+    return React.useMemo(
+        () => roots.map((root, index) => ({ path: root.path, label: `${computerNames[index]} · ${root.sharedFolder?.folder ?? root.label}` })),
+        // `computerNames` is read through `namesKey`, so a machine list refresh that renames nothing keeps the rows.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [namesKey, roots],
+    );
 }
 
 function buildSharedFolderOptions(
@@ -293,8 +366,8 @@ export function PathSelectionList(props: PathSelectionListProps): React.ReactEle
         isFavorite,
         onToggleFavorite,
         maxHeight,
-        sharedFolders,
     } = props;
+    const sharedFolders = useSharedFolders(machineId, serverId ?? null);
     const ROOT_TEST_ID = 'path-selection-list';
     const modalPortalTarget = useModalPortalTarget();
 

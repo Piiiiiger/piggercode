@@ -64,6 +64,7 @@ describe('registerMachineFileBrowserHandlers', () => {
     registerMachineFileBrowserHandlers({
       rpcHandlerManager: registrar,
       deps: {
+        sharedFolderRoots: async () => [],
         resolveRoots: async () => [{ id: root, label: root, path: root }],
         maxEntries: 200,
         statConcurrency: 4,
@@ -108,6 +109,7 @@ describe('registerMachineFileBrowserHandlers', () => {
     registerMachineFileBrowserHandlers({
       rpcHandlerManager: registrar,
       deps: {
+        sharedFolderRoots: async () => [],
         resolveRoots: async (input) => {
           seenPlatforms.push(input?.platform);
           return [{ id: '/', label: '/', path: '/' }];
@@ -233,6 +235,25 @@ describe('registerMachineFileBrowserHandlers', () => {
           { id: resolvedRootB, label: resolvedRootB, path: resolvedRootB },
         ],
       });
+    });
+  });
+
+  it('lists the folders the user\'s computers share with this machine after its own roots', async () => {
+    const root = createTempDirectory();
+    const shared = { id: 'shared-folder:/home/me/local/mac/code', label: 'mac/code', path: '/home/me/local/mac/code', sharedFolder: { folder: 'code', computerMachineId: 'machine-mac' } };
+    const { handlers, registrar } = createRegistrar();
+    registerMachineFileBrowserHandlers({
+      rpcHandlerManager: registrar,
+      deps: {
+        resolveRoots: async () => [{ id: root, label: root, path: root }],
+        sharedFolderRoots: async () => [shared],
+        platform: 'linux',
+      },
+    });
+
+    await expect(handlers.get(RPC_METHODS.DAEMON_FILESYSTEM_LIST_ROOTS)!({})).resolves.toEqual({
+      ok: true,
+      roots: [{ id: root, label: root, path: root }, shared],
     });
   });
 });

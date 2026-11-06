@@ -1897,10 +1897,11 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **Agents on the server are told.** On a machine with accepted computers,
   `sharedFoldersPromptBlocks.ts` adds a block to coding sessions: `~/local/<label>/X` is `~/X` on that
   machine id, and commands for it run there with `machine_command_run`.
-- **The app offers them first.** The new-session folder picker lists the folders the account's other
-  computers share with the selected machine, mounted now, above favorites — "<computer> · <folder>",
-  one press to its `~/local/<label>/<folder>` (`useFoldersSharedToMachine`: each computer's own
-  `DAEMON_FOLDER_SHARE_LIST`, asked when the picker opens).
+- **Pickers offer them first.** The server lists the folders mounted on it among its file-browser
+  roots (`DAEMON_FILESYSTEM_LIST_ROOTS`, after its own; `sharedFolderRoots.ts`: its mounts under
+  `~/local` and, from its accepted computers, whose they are — the root's `sharedFolder`). The folder
+  browser shows them at the top level, and every folder picker (`PathSelectionList`: new session,
+  handoff and the rest) lists them above favorites as "<computer> · <folder>", one press each.
 - **Stopping a share** ends its connection, so the server unmounts it. The server keeps the computer's
   key line, which can only mount into that computer's own folder.
 

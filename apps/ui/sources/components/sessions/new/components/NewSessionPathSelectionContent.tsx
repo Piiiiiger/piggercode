@@ -28,7 +28,6 @@ import type { PathTargetPlatform } from '@/utils/path/browseSegments';
 
 import { PathSelectionList } from './PathSelectionList';
 import type { PathSelectionInitialSuggestionMode } from './createPathSelectionInputBehavior';
-import { useFoldersSharedToMachine } from '@/components/machines/useFoldersSharedToMachine';
 
 export type NewSessionPathSelectionContentProps = Readonly<{
     machineHomeDir: string;
@@ -69,12 +68,6 @@ export type NewSessionPathSelectionContentProps = Readonly<{
 }>;
 
 export function NewSessionPathSelectionContent(props: NewSessionPathSelectionContentProps) {
-    // The folders the user's computers share with this machine: offered first, one press each.
-    const shared = useFoldersSharedToMachine(props.machineId, props.serverId ?? null);
-    const sharedFolders = React.useMemo(
-        () => shared.map((folder) => ({ path: folder.path, label: `${folder.computerName} · ${folder.folder}` })),
-        [shared],
-    );
     const [optimisticFavoriteDirectories, setOptimisticFavoriteDirectories] = React.useState<ReadonlyArray<string>>(
         () => normalizeDirectoryFavoritePaths(props.favoriteDirectories, props.machineHomeDir),
     );
@@ -171,7 +164,6 @@ export function NewSessionPathSelectionContent(props: NewSessionPathSelectionCon
                 initialSuggestionMode={props.initialSuggestionMode}
                 favorites={favorites}
                 recents={recents}
-                sharedFolders={sharedFolders}
                 machineHomeDir={props.machineHomeDir}
                 machineId={props.machineId}
                 serverId={props.serverId ?? null}

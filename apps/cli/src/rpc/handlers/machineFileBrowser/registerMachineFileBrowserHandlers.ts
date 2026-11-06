@@ -1,4 +1,5 @@
 import { realpathSync } from 'node:fs'
+import { homedir } from 'node:os'
 import { posix, win32 } from 'node:path'
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types'
@@ -13,12 +14,15 @@ import { resolveMachineFileBrowserConfig } from './machineFileBrowserConfig'
 import { listMachineBrowseDirectory } from './listMachineBrowseDirectory'
 import { listMachineBrowseRoots } from './listMachineBrowseRoots'
 import { resolveMachineBrowseRoots } from './resolveMachineBrowseRoots'
+import { listSharedFolderRoots } from '@/integrations/folderShare/sharedFolderRoots'
 
 type RegisterMachineFileBrowserHandlersParams = Readonly<{
   rpcHandlerManager: RpcHandlerRegistrar
   accessPolicy?: FilesystemAccessPolicy
   deps?: Readonly<{
     resolveRoots?: typeof resolveMachineBrowseRoots
+    /** The shared folders mounted here (`listSharedFolderRoots` in this user's home unless replaced). */
+    sharedFolderRoots?: () => Promise<MachineFileBrowserRoot[]>
     maxEntries?: number
     statConcurrency?: number
     platform?: NodeJS.Platform
@@ -65,11 +69,14 @@ export function registerMachineFileBrowserHandlers(params: RegisterMachineFileBr
   const platform = params.deps?.platform ?? process.platform
   const accessPolicy = params.accessPolicy ?? resolveFilesystemAccessPolicy({ platform })
   const restrictedRoots = rootsFromRestrictedPolicy(accessPolicy, platform)
+  const sharedFolderRoots = params.deps?.sharedFolderRoots ?? (async () => await listSharedFolderRoots({ homeDir: homedir() }))
 
   params.rpcHandlerManager.registerHandler(
     RPC_METHODS.DAEMON_FILESYSTEM_LIST_ROOTS,
     async () => await listMachineBrowseRoots({
-      resolveRoots: async () => restrictedRoots ?? await resolveRoots({ platform }),
+      // The folders the user's computers share with this machine come after its own roots, so a
+      // picker finds them without walking ~/local. A restricted policy lists only its own roots.
+      resolveRoots: async () => restrictedRoots ?? [...await resolveRoots({ platform }), ...await sharedFolderRoots()],
     }),
   )
 

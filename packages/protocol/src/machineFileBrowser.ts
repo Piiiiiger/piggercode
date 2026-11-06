@@ -4,6 +4,16 @@ export const MachineFileBrowserRootSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   path: z.string().min(1),
+  /**
+   * Set on a server for a folder one of the user's computers shares with it, mounted there now
+   * (`~/local/<computer>/<folder>`): which folder of which computer it is. Readers that predate it
+   * show the root by its label.
+   */
+  sharedFolder: z.object({
+    /** The folder on that computer, relative to its home: `code`, `code/app`. */
+    folder: z.string().min(1),
+    computerMachineId: z.string().min(1).optional(),
+  }).passthrough().optional(),
 }).passthrough();
 export type MachineFileBrowserRoot = z.infer<typeof MachineFileBrowserRootSchema>;
 

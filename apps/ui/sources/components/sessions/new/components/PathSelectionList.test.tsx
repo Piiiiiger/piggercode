@@ -19,6 +19,8 @@ installNewSessionComponentsCommonModuleMocks({
 // Hoisted mocks so the production module sees them at import time.
 const openMachinePathBrowserModalMock = vi.hoisted(() => vi.fn());
 const listMachineFileBrowserDirectoryEntriesMock = vi.hoisted(() => vi.fn());
+type RootsAnswer = { ok: true; roots: unknown[] } | { ok: false; error: string };
+const listMachineFileBrowserRootsMock = vi.hoisted(() => vi.fn(async (_input: unknown): Promise<RootsAnswer> => ({ ok: true, roots: [] })));
 
 vi.mock('@/components/ui/pathBrowser/openMachinePathBrowserModal', () => ({
     openMachinePathBrowserModal: (input: unknown) => openMachinePathBrowserModalMock(input),
@@ -26,11 +28,16 @@ vi.mock('@/components/ui/pathBrowser/openMachinePathBrowserModal', () => ({
 
 vi.mock('@/sync/domains/input/machineFileBrowser', () => ({
     listMachineFileBrowserDirectoryEntries: (input: unknown) => listMachineFileBrowserDirectoryEntriesMock(input),
+    // The machine's file-browser roots: where a server lists the folders the user's computers share with it.
+    listMachineFileBrowserRoots: (input: unknown) => listMachineFileBrowserRootsMock(input),
+    getCachedMachineFileBrowserRoots: () => null,
 }));
 
 beforeEach(() => {
     openMachinePathBrowserModalMock.mockReset();
     listMachineFileBrowserDirectoryEntriesMock.mockReset();
+    listMachineFileBrowserRootsMock.mockClear();
+    listMachineFileBrowserRootsMock.mockImplementation(async () => ({ ok: true, roots: [] }));
 });
 
 // The canonical `@/components/ui/text/Text` primitive depends on
@@ -489,6 +496,14 @@ describe('PathSelectionList', () => {
     });
 
     it('offers the folders the user\'s computers share with this machine first, each one press away', async () => {
+        // The server lists them among its file-browser roots, next to its own.
+        listMachineFileBrowserRootsMock.mockImplementation(async () => ({
+            ok: true as const,
+            roots: [
+                { id: '/', label: '/', path: '/' },
+                { id: 'shared-folder:/home/pigger/local/mac/code', label: 'mac/code', path: '/home/pigger/local/mac/code', sharedFolder: { folder: 'code', computerMachineId: 'machine-mac' } },
+            ],
+        }));
         const onCommit = vi.fn();
         const { PathSelectionList } = await import('./PathSelectionList');
         const screen = await renderScreen(
@@ -496,7 +511,6 @@ describe('PathSelectionList', () => {
                 initialValue=""
                 favorites={[{ path: '~/fav' }]}
                 recents={[]}
-                sharedFolders={[{ path: '~/local/mac/code', label: 'MacBook-Air · code' }]}
                 machineHomeDir="/home/pigger"
                 machineId="server-1"
                 serverId={null}
@@ -505,9 +519,43 @@ describe('PathSelectionList', () => {
                 onRequestClose={() => {}}
             />,
         );
-        expect(screen.findByTestId('path-selection-list:section:shared-folders')).not.toBeNull();
+        await vi.waitFor(() => expect(screen.findByTestId('path-selection-list:section:shared-folders')).not.toBeNull());
+        expect(listMachineFileBrowserRootsMock).toHaveBeenCalledWith({ machineId: 'server-1', serverId: null });
         await screen.pressByTestIdAsync('path-selection-list:path-root:option:shared:/home/pigger/local/mac/code');
         expect(onCommit).toHaveBeenCalledWith('/home/pigger/local/mac/code');
+        act(() => screen.tree.unmount());
+    });
+
+    it('lists only the shared folders of the machine it now points at, even when that machine cannot answer', async () => {
+        listMachineFileBrowserRootsMock.mockImplementation(async (input: unknown) => (
+            (input as { machineId: string }).machineId === 'server-1'
+                ? { ok: true, roots: [{ id: 'shared-folder:/home/pigger/local/mac/code', label: 'mac/code', path: '/home/pigger/local/mac/code', sharedFolder: { folder: 'code' } }] }
+                : { ok: false, error: 'machine_offline' }
+        ));
+        const { PathSelectionList } = await import('./PathSelectionList');
+        const listFor = (machineId: string) => (
+            <PathSelectionList
+                initialValue=""
+                favorites={[]}
+                recents={[]}
+                machineHomeDir="/home/pigger"
+                machineId={machineId}
+                serverId={null}
+                machinePlatform="unix"
+                onCommit={() => {}}
+                onRequestClose={() => {}}
+            />
+        );
+        const screen = await renderScreen(listFor('server-1'));
+        await vi.waitFor(() => expect(screen.findByTestId('path-selection-list:section:shared-folders')).not.toBeNull());
+
+        // The handoff picker points the list at another machine, which cannot answer right now.
+        await act(async () => {
+            screen.tree.update(listFor('server-2'));
+        });
+
+        await vi.waitFor(() => expect(listMachineFileBrowserRootsMock).toHaveBeenCalledWith({ machineId: 'server-2', serverId: null }));
+        expect(screen.findByTestId('path-selection-list:section:shared-folders')).toBeNull();
         act(() => screen.tree.unmount());
     });
 
