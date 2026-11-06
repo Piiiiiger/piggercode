@@ -18,8 +18,12 @@ const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
 
 export type SharedFoldersServeSystem = Readonly<{
   readMountinfo: () => string;
-  /** Whether the mount at `path` answers. */
-  answers: (path: string) => boolean;
+  /**
+   * Whether the mount at `path` answers within MOUNT_ANSWER_TIMEOUT_MS, never waiting longer: a request
+   * a dead connection's sshfs already took holds its caller, beyond even SIGKILL, until that connection
+   * is aborted, so a probe that does not answer is left behind to end with the abort.
+   */
+  answers: (path: string) => Promise<boolean>;
   /**
    * Ends the FUSE connection behind a mount (`device` as mountinfo gives it, `0:47`): null once ended,
    * otherwise why it could not be.
@@ -49,10 +53,11 @@ export async function runSharedFoldersServe(params: Readonly<{
   }
 
   const mountPoint = join(params.homeDir, 'local', params.label, folder);
-  mkdirSync(mountPoint, { recursive: true });
+  // Nothing touches the path while a mount sits on it: through a dead connection's mount, mkdir fails
+  // and a stat waits until that connection is ended. Only mountinfo is read first.
   const mounted = findMount(system.readMountinfo(), mountPoint);
   if (mounted) {
-    if (system.answers(mountPoint)) {
+    if (await system.answers(mountPoint)) {
       system.reportError(`piggercode shared folders: ${mountPoint} is already mounted on the server`);
       return 3;
     }
@@ -69,6 +74,7 @@ export async function runSharedFoldersServe(params: Readonly<{
     }
     system.unmount(mountPoint);
   }
+  mkdirSync(mountPoint, { recursive: true });
   if (readdirSync(mountPoint).length > 0) {
     system.reportError(`piggercode shared folders: ${mountPoint} on the server is not empty, so nothing is mounted over it`);
     return 3;
@@ -116,11 +122,22 @@ function parseMountinfo(mountinfo: string): Array<Readonly<{ path: string; type:
 
 const osServeSystem: SharedFoldersServeSystem = {
   readMountinfo: () => readFileSync('/proc/self/mountinfo', 'utf8'),
-  answers: (path) => spawnSync('stat', ['-t', path], {
-    stdio: 'ignore',
-    timeout: MOUNT_ANSWER_TIMEOUT_MS,
-    killSignal: 'SIGKILL',
-  }).status === 0,
+  answers: async (path) => await new Promise<boolean>((resolve) => {
+    const probe = spawn('stat', ['-t', path], { stdio: 'ignore' });
+    const timer = setTimeout(() => {
+      probe.kill('SIGKILL');
+      probe.unref();
+      resolve(false);
+    }, MOUNT_ANSWER_TIMEOUT_MS);
+    probe.once('error', () => {
+      clearTimeout(timer);
+      resolve(false);
+    });
+    probe.once('exit', (code) => {
+      clearTimeout(timer);
+      resolve(code === 0);
+    });
+  }),
   // fusectl names a connection by its device, which for FUSE (major 0) is the minor number.
   abortConnection: (device) => {
     const minor = /^0:(\d+)$/.exec(device)?.[1];

@@ -18,13 +18,13 @@ function createHome(): string {
 }
 
 /** The OS side of a mount: mountinfo, sshfs and fusermount, recorded instead of run. */
-function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boolean; abortFails?: string }> = {}) {
+function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boolean; abortFails?: string; onUnmount?: () => void }> = {}) {
   const calls: { sshfs: string[][]; unmounted: string[]; errors: string[]; steps: string[] } = { sshfs: [], unmounted: [], errors: [], steps: [] };
   const system: SharedFoldersServeSystem = {
     readMountinfo: () => options.mounted
       ? `36 25 0:43 / ${options.mounted.replace(/ /g, '\\040')} rw,nosuid,nodev - fuse.sshfs :code rw,user_id=1000\n`
       : '22 1 8:1 / / rw,relatime - ext4 /dev/sda1 rw\n',
-    answers: () => options.mountAnswers === true,
+    answers: async () => options.mountAnswers === true,
     abortConnection: (device) => {
       calls.steps.push(`abort ${device}`);
       return options.abortFails ?? null;
@@ -32,6 +32,7 @@ function createSystem(options: Readonly<{ mounted?: string; mountAnswers?: boole
     unmount: (path) => {
       calls.steps.push('unmount');
       calls.unmounted.push(path);
+      options.onUnmount?.();
     },
     runSshfs: async (args) => {
       calls.steps.push('sshfs');
@@ -71,11 +72,21 @@ describe('serving a computer’s folder on this server', () => {
     expect(existsSync(join(home, 'local'))).toBe(false);
   });
 
-  it('ends a dropped connection\'s hanging mount before mounting again, so its sshfs cannot unmount the new one later', async () => {
+  it('ends a dropped connection\'s hanging mount before touching its path, so its sshfs cannot unmount the new one later', async () => {
     const home = createHome();
     const mountPoint = join(home, 'local', 'laptop', 'code');
-    mkdirSync(mountPoint, { recursive: true });
-    const { system, calls } = createSystem({ mounted: mountPoint, mountAnswers: false });
+    mkdirSync(join(home, 'local', 'laptop'), { recursive: true });
+    // Through its path, a hanging mount gives nothing usable (mkdir there fails, a stat waits) until it is
+    // unmounted, which leaves the empty folder underneath.
+    writeFileSync(mountPoint, '');
+    const { system, calls } = createSystem({
+      mounted: mountPoint,
+      mountAnswers: false,
+      onUnmount: () => {
+        rmSync(mountPoint);
+        mkdirSync(mountPoint);
+      },
+    });
 
     const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code', homeDir: home, system });
 
