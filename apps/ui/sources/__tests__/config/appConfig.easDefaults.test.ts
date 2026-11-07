@@ -130,7 +130,7 @@ describe('app.config.js', () => {
         expect(exp.slug).toBe('happier');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.dev.internal');
         expect(exp.android?.package).toBe('dev.happier.app.internaldev');
-        expect(exp.scheme).toBe('happier-internaldev');
+        expect(exp.scheme).toBe('piggercode-internaldev');
     });
 
     it('exposes variant under extra.app when APP_ENV is set', () => {
@@ -158,7 +158,7 @@ describe('app.config.js', () => {
         expect(exp.name).toBe('PiggerCode (dev)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.publicdev');
         expect(exp.android?.package).toBe('dev.happier.app.publicdev');
-        expect(exp.scheme).toBe('happier-dev');
+        expect(exp.scheme).toBe('piggercode-dev');
         expect(featurePolicyEnv).toBe('preview');
         expect(exp.updates?.requestHeaders?.['expo-channel-name']).toBe('dev');
     });
@@ -231,7 +231,7 @@ describe('app.config.js', () => {
         expect(exp.name).toBe('PiggerCode (internal preview)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.internalpreview');
         expect(exp.android?.package).toBe('dev.happier.app.internalpreview');
-        expect(exp.scheme).toBe('happier-internalpreview');
+        expect(exp.scheme).toBe('piggercode-internalpreview');
         expect(featurePolicyEnv).toBe('preview');
         expect(exp.updates?.requestHeaders?.['expo-channel-name']).toBe('internalpreview');
     });
