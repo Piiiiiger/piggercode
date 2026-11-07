@@ -327,32 +327,49 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
         }
     }, [effectiveSelectedMachineId, interaction, lockScope?.serverId, navigateToSession, props, selectedProviderId, selectedSource]);
 
+    // Leaving the screen stops a running "add all": the rest is not linked, and nothing is shown after.
+    const screenOpenRef = React.useRef(true);
+    const linkAllRunningRef = React.useRef(false);
+    React.useEffect(() => {
+        screenOpenRef.current = true;
+        return () => {
+            screenOpenRef.current = false;
+        };
+    }, []);
+
     // Puts every listed session in the session list, one after another. Linking is idempotent, so
     // pressing it again after a failure only adds the ones still missing.
     const handleLinkAll = React.useCallback(async () => {
-        if (!effectiveSelectedMachineId || !selectedProviderId || !selectedSource || linkAllProgress) return;
+        if (!effectiveSelectedMachineId || !selectedProviderId || !selectedSource || linkAllProgress || linkAllRunningRef.current) return;
         const listed = candidates;
         if (listed.length === 0) return;
         let added = 0;
         const failures: string[] = [];
+        linkAllRunningRef.current = true;
         setLinkAllProgress({ done: 0, total: listed.length });
-        for (const candidate of listed) {
-            try {
-                const result = await linkDirectBrowseCandidate({
-                    machineId: effectiveSelectedMachineId,
-                    providerId: selectedProviderId,
-                    source: selectedSource,
-                    serverId: lockScope?.serverId ?? null,
-                    candidate,
-                });
-                if (result.ok) added += 1;
-                else failures.push(result.error);
-            } catch (linkError) {
-                failures.push(linkError instanceof Error ? linkError.message : t('directSessions.browseLinkFailed'));
+        try {
+            for (const candidate of listed) {
+                if (!screenOpenRef.current) return;
+                try {
+                    const result = await linkDirectBrowseCandidate({
+                        machineId: effectiveSelectedMachineId,
+                        providerId: selectedProviderId,
+                        source: selectedSource,
+                        serverId: lockScope?.serverId ?? null,
+                        candidate,
+                    });
+                    if (result.ok) added += 1;
+                    else failures.push(result.error);
+                } catch (linkError) {
+                    failures.push(linkError instanceof Error ? linkError.message : t('directSessions.browseLinkFailed'));
+                }
+                if (screenOpenRef.current) setLinkAllProgress({ done: added + failures.length, total: listed.length });
             }
-            setLinkAllProgress({ done: added + failures.length, total: listed.length });
+        } finally {
+            linkAllRunningRef.current = false;
+            if (screenOpenRef.current) setLinkAllProgress(null);
         }
-        setLinkAllProgress(null);
+        if (!screenOpenRef.current) return;
         if (failures.length === 0) {
             Modal.alert(t('directSessions.browseLinkAllDoneTitle'), t('directSessions.browseLinkAllDone', { added }));
         } else {
