@@ -112,6 +112,48 @@ async function stopSessionOnly(params: StopSessionAndMaybeArchiveParams): Promis
     throw new HappyError(resolveSessionStopFailureMessage(stopResult, params.stopErrorMessage), false);
 }
 
+/** Whether the session runs, as this device's list of the current server has it; null when it is not there. */
+function readSessionActive(sessionId: string): boolean | null {
+    const session = storage.getState().sessions[sessionId];
+    return session ? session.active === true : null;
+}
+
+/** How long a delete waits for a session that was asked to stop to end. */
+const STOP_BEFORE_DELETE_WAIT_MS = 15_000;
+
+/**
+ * Stops a session that is about to be deleted, so its runner does not keep working on a deleted session (and a
+ * linked provider conversation is not written while it is deleted). Resolves to null once its machine stopped
+ * it, it has no runner left to stop, or, asked to stop, it ended within 15 s; otherwise to why it could not
+ * be stopped. A session this device's list does not show (another server is open now) counts as still running.
+ */
+export async function stopSessionBeforeDelete(params: Readonly<{
+    sessionId: string;
+    stopSession: () => Promise<SessionMutationResult>;
+    stopErrorMessage: string;
+    isActive?: (sessionId: string) => boolean | null;
+    waitMs?: number;
+    pollMs?: number;
+}>): Promise<string | null> {
+    let stopResult: SessionMutationResult;
+    try {
+        stopResult = await params.stopSession();
+    } catch (error) {
+        return error instanceof Error && error.message ? error.message : params.stopErrorMessage;
+    }
+    if (stopResult.success || isStopTargetMissing(stopResult)) return null;
+    if (!isStopAcceptedAndPending(stopResult)) {
+        return resolveSessionStopFailureMessage(stopResult, params.stopErrorMessage);
+    }
+    const isActive = params.isActive ?? readSessionActive;
+    const deadline = Date.now() + (params.waitMs ?? STOP_BEFORE_DELETE_WAIT_MS);
+    while (isActive(params.sessionId) !== false) {
+        if (Date.now() >= deadline) return t('sessionInfo.stopSessionStillRunning');
+        await delay(Math.min(params.pollMs ?? 250, Math.max(0, deadline - Date.now())));
+    }
+    return null;
+}
+
 export async function stopSessionAndMaybeArchive(params: StopSessionAndMaybeArchiveParams): Promise<void | false> {
     if (params.archiveAfterStop === 'never') {
         await stopSessionOnly(params);

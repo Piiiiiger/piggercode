@@ -16,6 +16,7 @@ import { createSessionActionTarget } from './sessionActionContext';
 import {
     SESSION_ACTION_ARCHIVE_ID,
     SESSION_ACTION_CLEAR_ATTENTION_STANDING_ID,
+    SESSION_ACTION_DELETE_ID,
     SESSION_ACTION_EDIT_TAGS_ID,
     SESSION_ACTION_MARK_READ_ID,
     SESSION_ACTION_MOVE_TO_FOLDER_ID,
@@ -25,7 +26,7 @@ import {
     SESSION_ACTION_STOP_ID,
     SESSION_ACTION_UNARCHIVE_ID,
 } from './sessionActionIds';
-import { executeSessionAction } from './sessionActionExecution';
+import { confirmSessionDelete, executeSessionAction } from './sessionActionExecution';
 import { executeSessionBulkAction, SESSION_BULK_ACTION_IDS } from './sessionBulkActionExecution';
 import { isSessionArchivePending, stopSessionAndMaybeArchive } from '../sessionStopArchiveFlow';
 import { createDeferred } from '@/dev/testkit';
@@ -552,5 +553,92 @@ describe('executeSessionAction', () => {
             expect(archiveSession).not.toHaveBeenCalled();
             expect(readArchiving()).toBe(false);
         });
+    });
+});
+
+describe('deleting a session', () => {
+    beforeEach(() => {
+        vi.mocked(Modal.confirm).mockClear();
+        vi.mocked(Modal.confirm).mockResolvedValue(true);
+    });
+
+    function inactiveTarget() {
+        return createSessionActionTarget({ session: createSession(), serverId: 'server_1', currentUserId: 'user_1', isConnected: false });
+    }
+
+    it('deletes a session that does not run without stopping it', async () => {
+        const stopSession = vi.fn(async () => ({ success: true }));
+        const deleteSession = vi.fn(async () => ({ success: true }));
+        await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: inactiveTarget(), context: { operations: { stopSession, deleteSession } } });
+        expect(stopSession).not.toHaveBeenCalled();
+        expect(deleteSession).toHaveBeenCalledWith('session_1', { serverId: 'server_1' });
+        expect(Modal.confirm).not.toHaveBeenCalled();
+    });
+
+    it('stops a running session, then deletes it', async () => {
+        const calls: string[] = [];
+        const stopSession = vi.fn(async () => { calls.push('stop'); return { success: true }; });
+        const deleteSession = vi.fn(async () => { calls.push('delete'); return { success: true }; });
+        await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: createTarget({ active: true }), context: { operations: { stopSession, deleteSession } } });
+        expect(calls).toEqual(['stop', 'delete']);
+        expect(stopSession).toHaveBeenCalledWith('session_1', { serverId: 'server_1' });
+    });
+
+    it('deletes once a stop is accepted, or when nothing is left to stop', async () => {
+        for (const stopResult of [
+            { success: false, code: 'session_stop_requested', recovery: 'wait_for_inactive' as const },
+            { success: false, code: 'session_stop_not_found' },
+        ]) {
+            const deleteSession = vi.fn(async () => ({ success: true }));
+            await executeSessionAction({
+                actionId: SESSION_ACTION_DELETE_ID,
+                target: createTarget({ active: true }),
+                context: { operations: { stopSession: vi.fn(async () => stopResult), deleteSession, isSessionActive: () => false } },
+            });
+            expect(deleteSession).toHaveBeenCalledTimes(1);
+        }
+        expect(Modal.confirm).not.toHaveBeenCalled();
+    });
+
+    it('asks before deleting a session that was asked to stop but still runs', async () => {
+        const deleteSession = vi.fn(async () => ({ success: true }));
+        vi.mocked(Modal.confirm).mockResolvedValueOnce(false);
+        const kept = await executeSessionAction({
+            actionId: SESSION_ACTION_DELETE_ID,
+            target: createTarget({ active: true }),
+            context: { operations: {
+                stopSession: vi.fn(async () => ({ success: false, code: 'session_stop_requested', recovery: 'wait_for_inactive' as const })),
+                deleteSession,
+                // Not in this device's list (another server is open): counted as running.
+                isSessionActive: () => null,
+            } },
+        });
+        expect(kept).toBe(false);
+        expect(deleteSession).not.toHaveBeenCalled();
+    }, 30_000);
+
+    it('asks before deleting a session that could not be stopped', async () => {
+        const stopSession = vi.fn(async () => ({ success: false, message: 'machine offline' }));
+        const deleteSession = vi.fn(async () => ({ success: true }));
+        vi.mocked(Modal.confirm).mockResolvedValueOnce(false);
+        const kept = await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: createTarget({ active: true }), context: { operations: { stopSession, deleteSession } } });
+        expect(kept).toBe(false);
+        expect(deleteSession).not.toHaveBeenCalled();
+        expect(vi.mocked(Modal.confirm).mock.calls[0]?.[1]).toBe(t('sessionInfo.deleteSessionStopFailed', { reason: 'machine offline' }));
+
+        vi.mocked(Modal.confirm).mockResolvedValueOnce(true);
+        await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: createTarget({ active: true }), context: { operations: { stopSession, deleteSession } } });
+        expect(deleteSession).toHaveBeenCalledTimes(1);
+    });
+
+    it('says in its confirmation when the session is stopped first', async () => {
+        await confirmSessionDelete(inactiveTarget());
+        await confirmSessionDelete(createTarget({ active: true }));
+        await confirmSessionDelete();
+        expect(vi.mocked(Modal.confirm).mock.calls.map((call) => call[1])).toEqual([
+            t('sessionInfo.deleteSessionWarning'),
+            t('sessionInfo.deleteRunningSessionWarning'),
+            t('sessionInfo.deleteSessionWarning'),
+        ]);
     });
 });

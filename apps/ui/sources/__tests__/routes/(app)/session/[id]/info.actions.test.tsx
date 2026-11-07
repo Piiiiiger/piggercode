@@ -103,14 +103,14 @@ describe('session info lifecycle actions', () => {
                 observedAt: 124,
             },
         },
-    ])('renders Stop but not Delete for a $name', async ({ controlServiceabilityV1 }) => {
+    ])('renders Stop, and Delete that stops it first, for a $name', async ({ controlServiceabilityV1 }) => {
         testState.session = createOwnedSessionWithTerminalControl(controlServiceabilityV1);
         const { default: SessionInfoRoute } = await import('@/app/(app)/session/[id]/info');
 
         const screen = await renderScreen(<SessionInfoRoute />);
 
         expect(screen.findByTestId('sessionInfo.stopSession')).toBeTruthy();
-        expect(screen.findByTestId('sessionInfo.deleteSession')).toBeNull();
+        expect(screen.findByTestId('sessionInfo.deleteSession')).toBeTruthy();
     });
 
     it.each([

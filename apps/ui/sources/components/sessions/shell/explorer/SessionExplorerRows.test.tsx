@@ -94,6 +94,32 @@ describe('SessionExplorerFolderRow', () => {
         expect(screen.findByTestId('folder:new-session')).toBeNull();
     });
 
+    it('says when a folder is gone from its machine, and only then', async () => {
+        const { SessionExplorerFolderRow } = await import('./SessionExplorerRows');
+        const render = async (missing: boolean) => await renderScreen(
+            <SessionExplorerFolderRow
+                testID="folder"
+                title="vm"
+                depth={1}
+                kind="folder"
+                expanded
+                sessionCount={4}
+                activeSessionCount={1}
+                onToggle={vi.fn()}
+                onCreateSession={vi.fn()}
+                missing={missing}
+            />,
+        );
+        const gone = await render(true);
+        expect(gone.findByTestId('folder:missing')).not.toBeNull();
+        expect(gone.findByTestId('folder')?.props.accessibilityLabel).toBe('sessionsList.explorerMissingFolderA11y');
+        expect(gone.findByTestId('folder:count')).not.toBeNull();
+
+        const present = await render(false);
+        expect(present.findByTestId('folder:missing')).toBeNull();
+        expect(present.findByTestId('folder')?.props.accessibilityLabel).toBe('sessionsList.explorerFolderA11y');
+    });
+
     function folderActions() {
         return {
             newSession: { machineId: 'm1', preferredAgentId: 'claude' as const, start: vi.fn() },

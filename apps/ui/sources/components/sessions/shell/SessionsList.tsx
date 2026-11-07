@@ -14,6 +14,7 @@ import { SessionListVirtualizedList } from '@/components/ui/lists/flashListCompa
 import { usePathname, useRouter } from 'expo-router';
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 import { SessionListViewItem, storage, useSetting } from '@/sync/domains/state/storage';
+import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useVisibleSessionListViewData } from '@/hooks/session/useVisibleSessionListViewData';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -1324,10 +1325,17 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         refreshExplorerFolder({ serverId: target.serverId, machineId: target.machineId, rootPath: parentPath });
     }, []);
 
-    // Delete folder: the folder that held it lists again; its own listing is gone with it.
+    // Delete folder (with the sessions started in it): the folder that held it lists again; its own listing is gone with it.
     const handleDeleteExplorerFolder = React.useCallback(async (item: Extract<SessionListViewItem, { type: 'header' }>) => {
         const target = explorerFolderTarget(item.workspaceScopeHint, explorerActionStateRef.current.explorerMachines);
-        if (!target || !await deleteExplorerFolder(target, Object.values(storage.getState().sessions))) return;
+        // The store holds the open server's sessions: read them only while the server opened at the start is
+        // still open, without a switch away and back meanwhile (that empties the store until it loads again).
+        const opened = getActiveServerSnapshot();
+        const readSessions = () => {
+            const now = getActiveServerSnapshot();
+            return now.serverId === opened.serverId && now.generation === opened.generation ? Object.values(storage.getState().sessions) : null;
+        };
+        if (!target || !await deleteExplorerFolder(target, readSessions, { missing: item.explorerMissing === true })) return;
         clearCachedMachineFileBrowserEntries({ machineId: target.machineId, serverId: target.serverId, directoryPath: target.path });
         const parentPath = target.path.slice(0, target.path.lastIndexOf('/')) || '/';
         refreshExplorerFolder({ serverId: target.serverId, machineId: target.machineId, rootPath: parentPath });
@@ -2157,6 +2165,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
                         folderActions={explorerFolderActionsFor(item)}
                         sharedFrom={item.explorerSharedFrom}
+                        missing={item.explorerMissing === true}
                     />
                 </SessionListHeaderFrame>
             );

@@ -247,3 +247,64 @@ describe('stopSessionAndMaybeArchive', () => {
         expect(isPending()).toBe(false);
     });
 });
+
+describe('stopSessionBeforeDelete', () => {
+    const requested = { success: false, code: 'session_stop_requested', recovery: 'wait_for_inactive' as const };
+
+    it('goes ahead at once when the machine stopped the session or nothing is left to stop', async () => {
+        const { stopSessionBeforeDelete } = await import('./sessionStopArchiveFlow');
+        const isActive = vi.fn(() => true);
+        for (const result of [{ success: true }, { success: false, code: 'session_stop_not_found' }]) {
+            await expect(stopSessionBeforeDelete({ sessionId: 's1', stopSession: async () => result, stopErrorMessage: 'stop failed', isActive })).resolves.toBeNull();
+        }
+        expect(isActive).not.toHaveBeenCalled();
+    });
+
+    it('waits for a session asked to stop to end', async () => {
+        const { stopSessionBeforeDelete } = await import('./sessionStopArchiveFlow');
+        let polls = 0;
+        await expect(stopSessionBeforeDelete({
+            sessionId: 's1',
+            stopSession: async () => requested,
+            stopErrorMessage: 'stop failed',
+            isActive: () => ++polls < 3,
+            pollMs: 1,
+        })).resolves.toBeNull();
+        expect(polls).toBe(3);
+    });
+
+    it('says the session still runs when it did not end in time, or cannot be seen', async () => {
+        const { stopSessionBeforeDelete } = await import('./sessionStopArchiveFlow');
+        for (const state of [true, null]) {
+            const started = Date.now();
+            await expect(stopSessionBeforeDelete({
+                sessionId: 's1',
+                stopSession: async () => requested,
+                stopErrorMessage: 'stop failed',
+                isActive: () => state,
+                waitMs: 30,
+                pollMs: 5,
+            })).resolves.toBe('sessionInfo.stopSessionStillRunning');
+            expect(Date.now() - started).toBeLessThan(2_000);
+        }
+    });
+
+    it('says why a stop failed', async () => {
+        const { stopSessionBeforeDelete } = await import('./sessionStopArchiveFlow');
+        await expect(stopSessionBeforeDelete({
+            sessionId: 's1',
+            stopSession: async () => ({ success: false, message: 'machine offline' }),
+            stopErrorMessage: 'stop failed',
+        })).resolves.toBe('machine offline');
+        await expect(stopSessionBeforeDelete({
+            sessionId: 's1',
+            stopSession: async () => { throw new Error('socket closed'); },
+            stopErrorMessage: 'stop failed',
+        })).resolves.toBe('socket closed');
+        await expect(stopSessionBeforeDelete({
+            sessionId: 's1',
+            stopSession: async () => ({ success: false, recovery: 'retry_when_runtime_available' }),
+            stopErrorMessage: 'stop failed',
+        })).resolves.toBe('sessionInfo.stopSessionControlUnavailable');
+    });
+});

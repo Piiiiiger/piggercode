@@ -47,6 +47,8 @@ export type SessionExplorerListing = Readonly<{
     /** File names, for a listing that includes files. */
     files?: ReadonlyArray<string> | null;
     truncated?: boolean;
+    /** The machine said the folder is not there (its last listing failed with "no such file or directory"). */
+    missing?: boolean;
 }>;
 
 /** Sessions: folders with the sessions that started in them. Files: folders and their files, without sessions. */
@@ -275,23 +277,30 @@ export type SessionExplorerPlacement = Readonly<{
     metadata?: Readonly<{ machineId?: string | null; path?: string | null }> | null;
 }>;
 
-/** The sessions that started in `folder.path` or a folder inside it on that machine, and how many still run. */
-export function countSessionsInExplorerFolder(
-    sessions: Iterable<SessionExplorerPlacement>,
+/** The sessions that started in `folder.path` or a folder inside it on that machine. */
+export function sessionsInExplorerFolder<T extends SessionExplorerPlacement>(
+    sessions: Iterable<T>,
     folder: Readonly<{ machineId: string; path: string; homeDir: string | null }>,
-): { total: number; running: number } {
+): T[] {
     const folderPath = trimTrailingSlashes(folder.path);
-    let total = 0;
-    let running = 0;
+    const inside: T[] = [];
     for (const session of sessions) {
         const path = session.metadata?.path?.trim();
         if (!path || session.metadata?.machineId !== folder.machineId) continue;
         const absolute = trimTrailingSlashes(resolveAbsolutePath(path, folder.homeDir ?? undefined));
         if (segmentsBelow(absolute, folderPath) === null) continue;
-        total += 1;
-        if (session.active === true) running += 1;
+        inside.push(session);
     }
-    return { total, running };
+    return inside;
+}
+
+/** The sessions that started in `folder.path` or a folder inside it on that machine, and how many still run. */
+export function countSessionsInExplorerFolder(
+    sessions: Iterable<SessionExplorerPlacement>,
+    folder: Readonly<{ machineId: string; path: string; homeDir: string | null }>,
+): { total: number; running: number } {
+    const inside = sessionsInExplorerFolder(sessions, folder);
+    return { total: inside.length, running: inside.filter((session) => session.active === true).length };
 }
 
 function summarize(node: Node, summaries: Map<Node, Summary>): Summary {
@@ -495,7 +504,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         return node.kind !== 'folder' || summary.sessionCount > 0;
     };
 
-    const emit = (node: Node, depth: number, parentKey: string | null): void => {
+    const emit = (node: Node, depth: number, parentKey: string | null, parentMissing: boolean): void => {
         const summary = summaries.get(node) ?? EMPTY_SUMMARY;
         if (input.sessionFoldersOnly && summary.sessionCount === 0) return;
         const expanded = isExpanded(node, summary);
@@ -503,6 +512,15 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         // Folders are made and deleted where the tree lists an online machine's own folders.
         const managesFolders = !input.sessionFoldersOnly && node.browse && node.path !== null && machine.online;
         const shared = node.path === null ? undefined : sharedFromOf(machine).get(node.path);
+        const listingFolder: SessionExplorerFolderRef | null = !input.sessionFoldersOnly && node.browse && node.path !== null
+            ? (filesMode
+                ? { serverId: machine.serverId, machineId: machine.machineId, path: node.path, includeFiles: true }
+                : { serverId: machine.serverId, machineId: machine.machineId, path: node.path })
+            : null;
+        const listing = listingFolder && !parentMissing ? input.getListing(listingFolder) : null;
+        // A folder that shows only for the sessions started in it, and is gone from its machine: its
+        // listing said so, or a folder above it is gone. It stays (with its sessions) until it is deleted.
+        const missing = node.kind === 'folder' && (parentMissing || listing?.missing === true);
         pushHeader({
             type: 'header',
             headerKind: 'pathFolder',
@@ -519,7 +537,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
                 : { serverId: machine.serverId, machineId: machine.machineId, rootPath: node.path },
             explorerNodeKind: node.kind,
             explorerExpanded: expanded,
-            explorerCanCreateFolder: managesFolders,
+            explorerCanCreateFolder: managesFolders && !missing,
             // A shared folder itself is the share: renaming or deleting it here would act on the
             // computer's files, so only what is inside it can change. The machine refuses that too
             // (before it said which of its folders are shared, and for a folder holding one).
@@ -529,19 +547,16 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
                 && shared === undefined
                 && !explorerPathHoldsHomeFolder(node.path, machine.homeDir),
             ...(shared !== undefined ? { explorerSharedFrom: shared } : {}),
+            ...(missing ? { explorerMissing: true } : {}),
             serverId: machine.serverId,
         });
         if (!expanded) return;
 
-        let listing: SessionExplorerListing | null = null;
-        if (!input.sessionFoldersOnly && node.browse && node.path !== null) {
-            const folder: SessionExplorerFolderRef = filesMode
-                ? { serverId: machine.serverId, machineId: machine.machineId, path: node.path, includeFiles: true }
-                : { serverId: machine.serverId, machineId: machine.machineId, path: node.path };
-            listing = input.getListing(folder);
+        // Below a folder that is gone nothing is listed: it is gone too.
+        if (listingFolder && !parentMissing) {
             if (machine.online) {
-                openFolders.push(folder);
-                if (!listing) foldersToList.push(folder);
+                openFolders.push(listingFolder);
+                if (!listing) foldersToList.push(listingFolder);
             }
             for (const name of listing?.dirs ?? []) {
                 if (!input.showHidden && name.startsWith('.') && !node.children.has(name)) continue;
@@ -549,7 +564,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             }
         }
 
-        for (const child of sortChildren(node)) emit(child, depth + 1, node.key);
+        for (const child of sortChildren(node)) emit(child, depth + 1, node.key, missing);
         for (const row of node.sessions) out.push(placeRow(row, node.key, depth + 1));
         // Files view: the folder's files come after its subfolders.
         const files = filesMode && node.path !== null
@@ -570,7 +585,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             });
         }
 
-        if (input.sessionFoldersOnly || !node.browse || node.path === null) return;
+        if (input.sessionFoldersOnly || !node.browse || node.path === null || missing) return;
         const shownNothing = node.children.size === 0 && node.sessions.length === 0 && files.length === 0;
         let status: SessionExplorerStatus | null = null;
         if (listing?.status === 'loaded') {
@@ -598,9 +613,9 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
 
     const machines = [...machineNodes.values()].sort((a, b) => compareNames(a.name, b.name));
     if (machines.length === 1) {
-        for (const root of sortChildren(machines[0]!)) emit(root, 0, null);
+        for (const root of sortChildren(machines[0]!)) emit(root, 0, null, false);
     } else {
-        for (const machine of machines) emit(machine, 0, null);
+        for (const machine of machines) emit(machine, 0, null, false);
     }
     out.push(...looseRows.map((row) => placeRow(row, `${SESSION_EXPLORER_HEADER_KEY}:loose`, 0)));
     return { items: out, openFolders, foldersToList, sharedFoldersToAsk };

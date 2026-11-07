@@ -70,6 +70,19 @@ const stylesheet = StyleSheet.create((theme) => ({
     titleQuiet: {
         color: theme.colors.text.secondary,
     },
+    titleMissing: {
+        flex: 0,
+        flexShrink: 1,
+        textDecorationLine: 'line-through' as const,
+    },
+    missingNote: {
+        flex: 1,
+        minWidth: 0,
+        marginLeft: 6,
+        fontSize: 12,
+        color: theme.colors.text.secondary,
+        ...Typography.default(),
+    },
     sharedMark: {
         marginLeft: 4,
         justifyContent: 'center',
@@ -135,6 +148,8 @@ export type SessionExplorerFolderRowProps = Readonly<{
     folderActions?: SessionExplorerFolderActions | null;
     /** Set on a folder one of the user's computers shares with this machine: that computer's name. */
     sharedFrom?: string;
+    /** The folder is gone from its machine; it shows only for the sessions started in it. */
+    missing?: boolean;
     testID?: string;
 }>;
 
@@ -170,6 +185,8 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
     } : {};
     const a11yLabel = props.kind === 'machine'
         ? t('sessionsList.explorerMachineA11y', { name: props.title, count: props.sessionCount })
+        : props.missing === true
+            ? t('sessionsList.explorerMissingFolderA11y', { name: props.title, count: props.sessionCount })
         : props.sharedFrom !== undefined
             ? t('sessionsList.explorerSharedFolderA11y', { name: props.title, computer: props.sharedFrom, count: props.sessionCount })
             : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
@@ -206,13 +223,20 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                     style={[
                         styles.title,
                         props.kind !== 'folder' ? styles.titleStrong : null,
-                        props.kind === 'folder' && props.sessionCount === 0 ? styles.titleQuiet : null,
+                        props.kind === 'folder' && (props.sessionCount === 0 || props.missing === true) ? styles.titleQuiet : null,
+                        props.missing === true ? styles.titleMissing : null,
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="middle"
                 >
                     {props.title}
                 </Text>
+                {props.missing === true ? (
+                    // Gone from the machine: only its sessions keep it in the tree.
+                    <Text testID={props.testID ? `${props.testID}:missing` : undefined} style={styles.missingNote} numberOfLines={1}>
+                        {t('sessionsList.explorerFolderMissing')}
+                    </Text>
+                ) : null}
                 {props.sharedFrom !== undefined ? (
                     // A shared folder: its files are on the computer it comes from.
                     <View testID={props.testID ? `${props.testID}:shared` : undefined} style={styles.sharedMark}>

@@ -87,6 +87,8 @@ export type SessionActionExecutionOperations = Readonly<{
     renameSession?: (sessionId: string, title: string, opts?: Readonly<{ serverId?: string | null }>) => Promise<SessionActionOperationResult>;
     resumeSession?: (sessionId: string) => void | Promise<void>;
     deleteSession?: (sessionId: string, opts?: Readonly<{ serverId?: string | null }>) => Promise<SessionActionOperationResult>;
+    /** Whether a session runs, for a delete that waits for its stop; null when unknown. Defaults to the store. */
+    isSessionActive?: (sessionId: string) => boolean | null;
     setPinned?: (
         sessionId: string,
         pinned: boolean,

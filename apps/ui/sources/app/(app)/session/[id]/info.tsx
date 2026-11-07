@@ -962,9 +962,9 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
     });
 
     const handleDeleteSession = useCallback(async () => {
-        if (!await confirmSessionDelete()) return;
+        if (!await confirmSessionDelete(sessionActionTarget)) return;
         performDelete();
-    }, [performDelete]);
+    }, [performDelete, sessionActionTarget]);
 
     const handleRenameSession = useCallback(async () => {
         if (!canRenameSession) return;

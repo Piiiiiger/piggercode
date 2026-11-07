@@ -189,9 +189,9 @@ export function useSessionRowActionMenu(params: Readonly<{
 
     const confirmDeleteSession = React.useCallback(async () => {
         if (!target.canDelete) return;
-        if (!await confirmSessionDelete()) return;
+        if (!await confirmSessionDelete(target)) return;
         performDeleteMutation();
-    }, [performDeleteMutation, target.canDelete]);
+    }, [performDeleteMutation, target]);
 
     const handleRenameSession = React.useCallback(async () => {
         const newName = await Modal.prompt(

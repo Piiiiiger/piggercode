@@ -85,7 +85,9 @@ export function createSessionActionTarget(params: Readonly<{
         canRename: hasAdminAccess,
         canMoveToFolder: getSessionStorageKind(session) !== 'direct',
         canResume,
-        canDelete: isOwnedByCurrentUser && !isActive && !hasPreservedTerminalHost && params.isConnected !== true,
+        // A running session is stopped first, then deleted. A terminal kept on its machine that cannot be
+        // asked to stop would outlive the session, so that session has no Delete.
+        canDelete: isOwnedByCurrentUser && (!hasPreservedTerminalHost || hasStoppableTerminalHost),
         readStateAction: isArchived
             ? { kind: 'none', visible: false }
             : resolveSessionReadStateAction(session),

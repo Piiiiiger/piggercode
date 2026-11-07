@@ -67,8 +67,9 @@ describe('buildSessionRowMoreMenuItems', () => {
             SESSION_ACTION_STOP_ID,
             SESSION_ACTION_ARCHIVE_ID,
             SESSION_ACTION_MOVE_TO_FOLDER_ID,
+            SESSION_ACTION_DELETE_ID,
         ]);
-        expect(items.at(-1)?.disabled).toBe(false);
+        expect(items.find((item) => item.id === SESSION_ACTION_MOVE_TO_FOLDER_ID)?.disabled).toBe(false);
     });
 
     it('places contextual items after frequent session actions', () => {
@@ -113,10 +114,11 @@ describe('buildSessionRowMoreMenuItems', () => {
             SESSION_ACTION_MARK_UNREAD_ID,
             'session.copyDebugInformation',
             SESSION_ACTION_ARCHIVE_ID,
+            SESSION_ACTION_DELETE_ID,
         ]);
     });
 
-    it('ends with Delete in red once the session is stopped', () => {
+    it('ends with Delete in red, for a running session too', () => {
         const session: SessionListRenderableSession = {
             id: 'session_1', active: false, archivedAt: null, owner: 'user_1', accessLevel: undefined,
             seq: 4, lastViewedSessionSeq: 4, latestTurnStatus: 'completed', createdAt: 1, updatedAt: 1, activeAt: 1,
@@ -142,7 +144,8 @@ describe('buildSessionRowMoreMenuItems', () => {
         });
         expect(stoppedItems.at(-1)?.id).toBe(SESSION_ACTION_DELETE_ID);
 
-        expect(deleteItem({ active: true }, true)).toBeUndefined();
+        // A running session is stopped first when deleted.
+        expect(deleteItem({ active: true }, true)).toMatchObject({ destructive: true });
         expect(deleteItem({ owner: 'user_2', accessLevel: 'edit' }, false)).toBeUndefined();
     });
 
@@ -193,6 +196,7 @@ describe('buildSessionRowMoreMenuItems', () => {
             'session.fork',
             SESSION_ACTION_STOP_ID,
             SESSION_ACTION_ARCHIVE_ID,
+            SESSION_ACTION_DELETE_ID,
         ]);
         const reminder = items.find((item) => item.id === 'attention-reminder');
         expect(reminder?.subtitle).toBeUndefined();

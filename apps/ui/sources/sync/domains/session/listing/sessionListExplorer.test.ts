@@ -281,6 +281,48 @@ describe('buildSessionExplorerItems', () => {
     });
 });
 
+describe('buildSessionExplorerItems with a folder gone from its machine', () => {
+    it('marks a folder whose listing says it is not there, and the folders below it, without listing them or a status row', () => {
+        const result = build({
+            items: [row('a', '/home/u/code/vm/happier', { active: true }), row('b', '/home/u/code/vm/drone')],
+            getListing: listings({
+                '/home/u': { status: 'loaded', dirs: ['code'] },
+                '/home/u/code': { status: 'loaded', dirs: ['happier'] },
+                '/home/u/code/vm': { status: 'error', dirs: null, missing: true },
+            }),
+        });
+        expect(outline(result.items)).toEqual([
+            '# Explorer', 'v ~', '  v code', '    > happier',
+            '    v vm', '      v drone', '        • b', '      v happier', '        • a',
+        ]);
+        const byKey = new Map(result.items.flatMap((item) => (item.type === 'header' && item.groupKey ? [[item.groupKey, item] as const] : [])));
+        const vmFolder = byKey.get(folder('/home/u/code/vm'));
+        expect(vmFolder?.explorerMissing).toBe(true);
+        // It can still be deleted (that removes its sessions), but nothing is made inside it.
+        expect([vmFolder?.explorerCanCreateFolder, vmFolder?.explorerCanChange]).toEqual([false, true]);
+        expect(byKey.get(folder('/home/u/code/vm/happier'))?.explorerMissing).toBe(true);
+        expect(byKey.get(folder('/home/u/code/vm/drone'))?.explorerMissing).toBe(true);
+        expect(byKey.get(folder('/home/u/code'))?.explorerMissing).toBeUndefined();
+        expect(byKey.get(folder('/home/u/code/happier'))?.explorerMissing).toBeUndefined();
+        // Nothing below the gone folder is listed; the gone folder itself is listed again on a refresh.
+        expect(result.foldersToList).toEqual([]);
+        expect(result.openFolders.map((target) => target.path)).toEqual(['/home/u', '/home/u/code', '/home/u/code/vm']);
+    });
+
+    it('keeps an ordinary failed listing as an error', () => {
+        const result = build({
+            items: [row('a', '/home/u/code/app')],
+            getListing: listings({
+                '/home/u': { status: 'loaded', dirs: ['code'] },
+                '/home/u/code': { status: 'loaded', dirs: ['app'] },
+                '/home/u/code/app': { status: 'error', dirs: null },
+            }),
+        });
+        expect(outline(result.items)).toEqual(['# Explorer', 'v ~', '  v code', '    v app', '      • a']);
+        expect(folders(result.items).get('app')?.explorerMissing).toBeUndefined();
+    });
+});
+
 describe('buildSessionExplorerItems in the Files view', () => {
     it('lists a computer that runs no agents in neither view: the folders it shares show on the server', () => {
         const mac: SessionExplorerMachine = { serverId: 's1', machineId: 'm2', label: 'mac', homeDir: '/Users/u', online: true, agentsHosted: false };

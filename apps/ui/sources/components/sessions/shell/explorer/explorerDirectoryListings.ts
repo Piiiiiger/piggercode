@@ -24,6 +24,11 @@ function directoryTarget(folder: SessionExplorerFolderRef) {
     return { machineId: folder.machineId, serverId: folder.serverId, directoryPath: folder.path, includeFiles: folder.includeFiles === true };
 }
 
+/** Whether a listing failed because the folder is not there (Node's ENOENT, as the machine passes it on). */
+export function isMissingFolderListingError(error: string | null): boolean {
+    return error !== null && /\bENOENT\b|no such file or directory/i.test(error);
+}
+
 /** A folder's subfolders (and files, for a Files listing) as the explorer shows them; null before it was ever listed. */
 export function readExplorerListing(folder: SessionExplorerFolderRef): SessionExplorerListing | null {
     const state = getMachineFileBrowserDirectoryState(directoryTarget(folder));
@@ -33,6 +38,7 @@ export function readExplorerListing(folder: SessionExplorerFolderRef): SessionEx
         dirs: state.entries ? state.entries.filter((entry) => entry.type === 'directory').map((entry) => entry.name) : null,
         files: state.entries ? state.entries.filter((entry) => entry.type === 'file').map((entry) => entry.name) : null,
         truncated: state.truncated,
+        ...(isMissingFolderListingError(state.error) ? { missing: true } : {}),
     };
 }
 

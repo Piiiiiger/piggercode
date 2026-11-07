@@ -203,11 +203,12 @@ describe('session action availability', () => {
             SESSION_ACTION_RENAME_ID,
             SESSION_ACTION_STOP_ID,
             SESSION_ACTION_ARCHIVE_ID,
+            SESSION_ACTION_DELETE_ID,
         ]);
         expect(infoActionIds).toEqual(expect.arrayContaining(rowLifecycleActionIds));
     });
 
-    it('shows session-info delete only for inactive sessions owned by the current user', () => {
+    it('shows session-info delete only for sessions owned by the current user', () => {
         const sharedSession: SessionListRenderableSession = {
             id: 'shared_session',
             active: false,
@@ -268,8 +269,9 @@ describe('session action availability', () => {
         expect(listVisibleSessionActionIds({ target: sharedTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
         expect(listVisibleSessionActionIds({ target: ownedTarget, surface: 'sessionInfo' })).toContain(SESSION_ACTION_DELETE_ID);
         expect(listVisibleSessionActionIds({ target: adminTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
-        expect(listVisibleSessionActionIds({ target: activeTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
-        expect(listVisibleSessionActionIds({ target: connectedTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
+        // A running or connected session is stopped first, then deleted.
+        expect(listVisibleSessionActionIds({ target: activeTarget, surface: 'sessionInfo' })).toContain(SESSION_ACTION_DELETE_ID);
+        expect(listVisibleSessionActionIds({ target: connectedTarget, surface: 'sessionInfo' })).toContain(SESSION_ACTION_DELETE_ID);
     });
 
     it('lists Delete in the row menus exactly where session info offers it', () => {
@@ -290,11 +292,11 @@ describe('session action availability', () => {
         });
 
         expect(stopped.canDelete).toBe(true);
-        expect(running.canDelete).toBe(false);
+        expect(running.canDelete).toBe(true);
         for (const surface of ['rowMenu', 'nativeContextMenu'] as const) {
             expect(listVisibleSessionActionIds({ target: stopped, surface })).toContain(SESSION_ACTION_DELETE_ID);
-            // A running session is stopped first (Stop is in the same menu); then Delete appears.
-            expect(listVisibleSessionActionIds({ target: running, surface })).not.toContain(SESSION_ACTION_DELETE_ID);
+            // A running session has Delete too: it is stopped first.
+            expect(listVisibleSessionActionIds({ target: running, surface })).toContain(SESSION_ACTION_DELETE_ID);
             expect(listVisibleSessionActionIds({ target: shared, surface })).not.toContain(SESSION_ACTION_DELETE_ID);
         }
         expect(listVisibleSessionActionIds({ target: stopped, surface: 'sessionHeader' })).not.toContain(SESSION_ACTION_DELETE_ID);
@@ -331,7 +333,8 @@ describe('session action availability', () => {
         expect(presentation.working).toBe(false);
         expect(listVisibleSessionActionIds({ target, surface: 'sessionInfo' })).toContain(SESSION_ACTION_STOP_ID);
         expect(listVisibleSessionActionIds({ target, surface: 'rowMenu' })).toContain(SESSION_ACTION_STOP_ID);
-        expect(target.canDelete).toBe(false);
+        // Its terminal can be asked to stop, so Delete stops it first.
+        expect(target.canDelete).toBe(true);
     });
 
     it('offers canonical Stop for an exact recoverable preserved terminal host', () => {
@@ -360,7 +363,8 @@ describe('session action availability', () => {
 
         expect(listVisibleSessionActionIds({ target, surface: 'sessionInfo' })).toContain(SESSION_ACTION_STOP_ID);
         expect(listVisibleSessionActionIds({ target, surface: 'rowMenu' })).toContain(SESSION_ACTION_STOP_ID);
-        expect(target.canDelete).toBe(false);
+        // Its terminal can be asked to stop, so Delete stops it first.
+        expect(target.canDelete).toBe(true);
     });
 
     it('withholds Delete without exposing Stop for an exact unknown preserved terminal host', () => {

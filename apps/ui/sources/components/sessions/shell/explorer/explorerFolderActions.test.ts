@@ -80,17 +80,43 @@ describe('createExplorerFolder', () => {
 });
 
 describe('deleteExplorerFolder', () => {
-    const sessionsIn = (active: boolean) => [{ active, metadata: { machineId: 'm1', path: '/home/u/code/happier' } }];
+    type FolderSessions = Parameters<typeof import('./explorerFolderActions').deleteExplorerFolder>[1];
+    type FakeSession = { id: string; active: boolean; metadata: { machineId: string; path: string }; owner?: string; accessLevel?: string };
+    const session = (id: string, active: boolean, path = '/home/u/code/happier', extra: Partial<FakeSession> = {}): FakeSession => (
+        { id, active, metadata: { machineId: 'm1', path }, ...extra }
+    );
+    /** The sessions as the store holds them; a stop the machine confirms ends the session there, as the server reports. */
+    function folderWorld(...initial: FakeSession[]) {
+        const sessions = [...initial];
+        const calls: string[] = [];
+        const read = (() => sessions) as unknown as FolderSessions;
+        const ops = {
+            stopSession: vi.fn(async (id: string): Promise<{ success: boolean; message?: string }> => {
+                calls.push(`stop:${id}`);
+                const found = sessions.find((entry) => entry.id === id);
+                if (found) found.active = false;
+                return { success: true };
+            }),
+            deleteSession: vi.fn(async (id: string): Promise<{ success: boolean; message?: string }> => {
+                calls.push(`delete:${id}`);
+                return { success: true };
+            }),
+            isSessionActive: (id: string) => sessions.find((entry) => entry.id === id)?.active ?? null,
+        };
+        return { sessions, calls, read, ops };
+    }
 
-    it('deletes the folder with what it holds once confirmed, and says that sessions started there', async () => {
+    it('deletes the folder and the sessions started in it once confirmed', async () => {
         const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', false), session('b', false, '/home/u/code'), session('elsewhere', false, '/home/u/notes'));
         Modal.confirm.mockResolvedValueOnce(false);
-        await expect(deleteExplorerFolder(code, sessionsIn(false))).resolves.toBe(false);
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(false);
         expect(machineRpc).not.toHaveBeenCalled();
+        expect(world.calls).toEqual([]);
 
         Modal.confirm.mockResolvedValueOnce(true);
-        machineRpc.mockResolvedValueOnce({ success: true });
-        await expect(deleteExplorerFolder(code, sessionsIn(false))).resolves.toBe(true);
+        machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(true);
         expect(Modal.confirm).toHaveBeenLastCalledWith(
             'files.repositoryTree.deleteFolder.title',
             'files.repositoryTree.deleteFolder.body\n\nsessionsList.explorerDeleteFolderSessions',
@@ -99,15 +125,132 @@ describe('deleteExplorerFolder', () => {
         expect(rpcCalls(RPC_METHODS.DELETE_PATH)).toEqual([
             expect.objectContaining({ machineId: 'm1', serverId: 's1', payload: { path: '/home/u/code', recursive: true } }),
         ]);
+        // The folder first, then its sessions; sessions elsewhere stay.
+        expect(world.calls).toEqual(['folder', 'delete:a', 'delete:b']);
+        expect(world.ops.deleteSession).toHaveBeenCalledWith('a', { serverId: 's1' });
+        expect(Modal.alert).not.toHaveBeenCalled();
     });
 
-    it('keeps the folder while a session runs in it, and never deletes the home folder or a folder holding it', async () => {
+    it('stops the sessions running in the folder before deleting anything', async () => {
         const { Modal, deleteExplorerFolder } = await load();
-        await expect(deleteExplorerFolder(code, sessionsIn(true))).resolves.toBe(false);
-        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderRunning');
+        const world = folderWorld(session('run', true), session('idle', false));
+        Modal.confirm.mockResolvedValueOnce(true);
+        machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(true);
+        expect(Modal.confirm).toHaveBeenLastCalledWith(
+            'files.repositoryTree.deleteFolder.title',
+            'files.repositoryTree.deleteFolder.body\n\nsessionsList.explorerDeleteFolderSessions sessionsList.explorerDeleteFolderRunning',
+            expect.anything(),
+        );
+        expect(world.calls).toEqual(['stop:run', 'folder', 'delete:run', 'delete:idle']);
+    });
 
-        await expect(deleteExplorerFolder({ ...code, path: '/home/u' }, [])).resolves.toBe(false);
-        await expect(deleteExplorerFolder({ ...code, path: '/home' }, [])).resolves.toBe(false);
+    it('reads the sessions again after the confirmation, stopping one that started meanwhile', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', false));
+        Modal.confirm.mockImplementationOnce(async () => {
+            // While the dialog is open, the session is resumed and another one starts there.
+            world.sessions[0]!.active = true;
+            world.sessions.push(session('b', true, '/home/u/code/new'));
+            return true;
+        });
+        machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(true);
+        expect(world.calls).toEqual(['stop:a', 'stop:b', 'folder', 'delete:a', 'delete:b']);
+    });
+
+    it('keeps the folder when a stopped session runs again before it goes', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', true), session('b', true));
+        Modal.confirm.mockResolvedValueOnce(true);
+        const stop = world.ops.stopSession;
+        world.ops.stopSession = vi.fn(async (id: string): Promise<{ success: boolean; message?: string }> => {
+            const result = await stop(id);
+            // A is resumed (by another device) while B is being stopped.
+            if (id === 'b') world.sessions[0]!.active = true;
+            return result;
+        });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops, waitMs: 30, pollMs: 5 })).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderStopFailed');
+        expect(machineRpc).not.toHaveBeenCalled();
+        expect(world.calls).toEqual(['stop:a', 'stop:b']);
+    });
+
+    it('deletes nothing when a running session cannot be stopped', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('run', true));
+        world.ops.stopSession = vi.fn(async (id: string): Promise<{ success: boolean; message?: string }> => {
+            world.calls.push(`stop:${id}`);
+            return { success: false, message: 'machine offline' };
+        });
+        Modal.confirm.mockResolvedValueOnce(true);
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderStopFailed');
+        expect(world.calls).toEqual(['stop:run']);
+        expect(machineRpc).not.toHaveBeenCalled();
+    });
+
+    it('deletes nothing once the sessions cannot be read for this server any more', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('run', true));
+        let open = true;
+        const read = (() => (open ? world.sessions : null)) as unknown as FolderSessions;
+        Modal.confirm.mockImplementationOnce(async () => { open = false; return true; });
+        await expect(deleteExplorerFolder(code, read, { ops: world.ops })).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderServerChanged');
+        expect(world.calls).toEqual([]);
+        expect(machineRpc).not.toHaveBeenCalled();
+    });
+
+    it('keeps the sessions when the folder could not be deleted, and says which sessions failed afterwards', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', false), session('b', false));
+        Modal.confirm.mockResolvedValueOnce(true);
+        machineRpc.mockResolvedValueOnce({ success: false, error: 'permission denied' });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('common.error', 'permission denied');
+        expect(world.calls).toEqual([]);
+
+        Modal.confirm.mockResolvedValueOnce(true);
+        machineRpc.mockResolvedValueOnce({ success: true });
+        world.ops.deleteSession.mockResolvedValueOnce({ success: false, message: 'server said no' });
+        await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(true);
+        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderSessionsFailed');
+    });
+
+    it('deletes only the sessions of a folder that is already gone', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('run', true));
+        Modal.confirm.mockResolvedValueOnce(true);
+        await expect(deleteExplorerFolder(code, world.read, { missing: true, ops: world.ops })).resolves.toBe(true);
+        expect(Modal.confirm).toHaveBeenLastCalledWith(
+            'sessionsList.explorerDeleteMissingFolderTitle',
+            'sessionsList.explorerDeleteMissingFolderBody sessionsList.explorerDeleteFolderRunning',
+            expect.objectContaining({ confirmText: 'sessionInfo.deleteSession', destructive: true }),
+        );
+        expect(world.calls).toEqual(['stop:run', 'delete:run']);
+        expect(machineRpc).not.toHaveBeenCalled();
+    });
+
+    it('refuses while a session there runs that cannot be stopped from here, and leaves stopped shared sessions alone', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const running = folderWorld(session('shared', true, '/home/u/code/happier', { owner: 'someone', accessLevel: 'edit' }));
+        await expect(deleteExplorerFolder(code, running.read, { ops: running.ops })).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('files.repositoryTree.deleteFolder.title', 'sessionsList.explorerDeleteFolderBlocked');
+        expect(Modal.confirm).not.toHaveBeenCalled();
+
+        const stopped = folderWorld(session('shared', false, '/home/u/code/happier', { owner: 'someone', accessLevel: 'edit' }));
+        Modal.confirm.mockResolvedValueOnce(true);
+        machineRpc.mockResolvedValueOnce({ success: true });
+        await expect(deleteExplorerFolder(code, stopped.read, { ops: stopped.ops })).resolves.toBe(true);
+        expect(stopped.calls).toEqual([]);
+    });
+
+    it('never deletes the home folder or a folder holding it', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld();
+        await expect(deleteExplorerFolder({ ...code, path: '/home/u' }, world.read, { ops: world.ops })).resolves.toBe(false);
+        await expect(deleteExplorerFolder({ ...code, path: '/home' }, world.read, { ops: world.ops })).resolves.toBe(false);
         expect(Modal.confirm).not.toHaveBeenCalled();
         expect(machineRpc).not.toHaveBeenCalled();
     });

@@ -43,6 +43,8 @@ export type SessionListViewItem =
         explorerCanChange?: boolean;
         /** Set on an explorer folder that one of the user's computers shares with this machine: that computer's name. */
         explorerSharedFrom?: string;
+        /** Explorer: the folder is gone from its machine; it shows only for the sessions started in it. */
+        explorerMissing?: boolean;
         /** Explorer: why an open folder shows nothing yet, or that its listing was cut short. */
         explorerStatus?: 'loading' | 'error' | 'empty' | 'truncated' | 'offline';
         renderWorkspaceKey?: string;

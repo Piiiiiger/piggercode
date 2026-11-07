@@ -16,6 +16,7 @@ import {
     isSessionActiveArchiveResult,
     isSessionArchivePending,
     stopSessionAndMaybeArchive,
+    stopSessionBeforeDelete,
 } from '@/components/sessions/sessionStopArchiveFlow';
 
 import {
@@ -123,9 +124,42 @@ async function runStopArchiveFlow(params: Readonly<{
     });
 }
 
-/** The one confirmation before a session is deleted, wherever Delete is offered. */
-export async function confirmSessionDelete(): Promise<boolean> {
-    return await Modal.confirm(t('sessionInfo.deleteSession'), t('sessionInfo.deleteSessionWarning'), {
+/** Whether deleting this session stops it first: it runs, or keeps a terminal that can be asked to stop. */
+export function sessionDeleteStopsFirst(
+    target: Pick<SessionActionTarget, 'isActive' | 'isConnected' | 'hasStoppableTerminalHost'>,
+): boolean {
+    return target.isActive || target.isConnected || target.hasStoppableTerminalHost;
+}
+
+/** The one confirmation before a session is deleted, wherever Delete is offered; it says when the session is stopped first. */
+export async function confirmSessionDelete(
+    target?: Pick<SessionActionTarget, 'isActive' | 'isConnected' | 'hasStoppableTerminalHost'>,
+): Promise<boolean> {
+    const body = target && sessionDeleteStopsFirst(target)
+        ? t('sessionInfo.deleteRunningSessionWarning')
+        : t('sessionInfo.deleteSessionWarning');
+    return await Modal.confirm(t('sessionInfo.deleteSession'), body, {
+        cancelText: t('common.cancel'),
+        confirmText: t('sessionInfo.deleteSession'),
+        destructive: true,
+    });
+}
+
+/**
+ * Stops a session before it is deleted. When it cannot be stopped (its machine is offline, for one), asks
+ * whether to delete it anyway. Resolves to whether the delete goes ahead.
+ */
+async function stopBeforeDelete(target: SessionActionTarget, context?: SessionActionExecutionContext): Promise<boolean> {
+    const stopSession = resolveStopSession(context);
+    const isSessionActive = context?.operations?.isSessionActive;
+    const problem = await stopSessionBeforeDelete({
+        sessionId: target.sessionId,
+        stopSession: async () => await stopSession(target.sessionId, { serverId: target.serverId }),
+        stopErrorMessage: t('sessionInfo.failedToStopSession'),
+        ...(isSessionActive ? { isActive: isSessionActive } : {}),
+    });
+    if (problem === null) return true;
+    return await Modal.confirm(t('sessionInfo.deleteSession'), t('sessionInfo.deleteSessionStopFailed', { reason: problem }), {
         cancelText: t('common.cancel'),
         confirmText: t('sessionInfo.deleteSession'),
         destructive: true,
@@ -237,6 +271,7 @@ export async function executeSessionAction(params: Readonly<{
             );
             return;
         case SESSION_ACTION_DELETE_ID:
+            if (sessionDeleteStopsFirst(params.target) && !await stopBeforeDelete(params.target, params.context)) return false;
             throwIfFailed(
                 await resolveDeleteSession(params.context)(params.target.sessionId, { serverId: params.target.serverId }),
                 t('sessionInfo.failedToDeleteSession'),

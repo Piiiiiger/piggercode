@@ -64,7 +64,7 @@ export function listVisibleSessionActionIds(params: Readonly<{
         ids.push(SESSION_ACTION_UNARCHIVE_ID);
     }
 
-    // Delete is offered where it can run: the owner's inactive session without a live terminal host.
+    // Delete is offered to the owner; a running session is stopped first (`sessionDeleteStopsFirst`).
     if (target.canDelete && (surface === 'sessionInfo' || surface === 'rowMenu' || surface === 'nativeContextMenu')) {
         ids.push(SESSION_ACTION_DELETE_ID);
     }
