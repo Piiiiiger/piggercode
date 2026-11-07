@@ -264,6 +264,7 @@ export async function claudeRemote(opts: {
         ...resolveClaudeSessionEnvOverlay({
             claudeCodeExperimentalAgentTeamsEnabled: mode.claudeCodeExperimentalAgentTeamsEnabled,
             claudeCodeIncludeInNativeHistory: mode.claudeCodeIncludeInNativeHistory,
+            cwd: opts.path,
         }),
         ...resolveClaudeConfigDirEnvOverlay(process.env),
         ...(happierSessionId ? { PIGGERCODE_SESSION_ID: happierSessionId } : {}),

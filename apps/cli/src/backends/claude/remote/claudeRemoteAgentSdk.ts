@@ -688,6 +688,7 @@ export async function claudeRemoteAgentSdk(opts: {
         const sessionEnvOverlay = resolveClaudeSessionEnvOverlay({
             claudeCodeExperimentalAgentTeamsEnabled: mode.claudeCodeExperimentalAgentTeamsEnabled,
             claudeCodeIncludeInNativeHistory: mode.claudeCodeIncludeInNativeHistory,
+            cwd: opts.path,
         });
         const resumeSessionAt =
             typeof opts.resumeSessionAt === 'string' && opts.resumeSessionAt.trim().length > 0

@@ -505,6 +505,7 @@ export async function claudeLocalLauncher(
                             ...resolveClaudeSessionEnvOverlay({
                                 claudeCodeExperimentalAgentTeamsEnabled: session.claudeCodeExperimentalAgentTeamsEnabled,
                                 claudeCodeIncludeInNativeHistory: session.claudeCodeIncludeInNativeHistory,
+                                cwd: session.path,
                             }),
                         },
                         happierMcpConfigJson: baseMcpConfigJson,

@@ -416,7 +416,11 @@ export async function buildClaudeUnifiedTerminalSpawn<Mode extends EnhancedMode 
   const happierSessionId = normalizeCurrentHappierSessionId(input.happySessionId);
   const env = withCurrentHappierSessionId(buildClaudeEnv({
     ...input.envOverlay,
-    ...resolveClaudeSessionEnvOverlay({ claudeCodeIncludeInNativeHistory: input.first.mode.claudeCodeIncludeInNativeHistory }),
+    ...resolveClaudeSessionEnvOverlay({
+      claudeCodeIncludeInNativeHistory: input.first.mode.claudeCodeIncludeInNativeHistory,
+      cwd: input.path,
+      baseEnv: { ...process.env, ...input.envOverlay },
+    }),
   }), happierSessionId ?? '');
   const statuslineSettings = resolveStatuslineOverlaySettings({ input, deps, env });
   const materializedMcpConfig = await materializeClaudeMcpConfigArgsForSpawn(
