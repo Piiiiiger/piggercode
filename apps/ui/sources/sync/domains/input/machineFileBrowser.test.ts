@@ -8,6 +8,7 @@ import {
     getMachineFileBrowserDirectoryState,
     listMachineFileBrowserDirectoryEntries,
     listMachineFileBrowserRoots,
+    revalidateMachineFileBrowserDirectory,
     subscribeMachineFileBrowserDirectories,
     warmMachineFileBrowserDirectoryCache,
 } from './machineFileBrowser';
@@ -229,6 +230,84 @@ describe('machineFileBrowser domain', () => {
         (ops.machineFilesystemListDirectory as any).mockResolvedValueOnce({ ok: true, path: '/home/u', entries: [], truncated: false });
         await warmMachineFileBrowserDirectoryCache(target);
         expect(listener.mock.calls.length).toBe(notifiedCount);
+    });
+
+    it('revalidates a directory quietly: readers hear only of a change, and a running listing goes first', async () => {
+        const ops = await import('@/sync/ops/machineFileBrowser');
+        const list = ops.machineFilesystemListDirectory as any;
+        list.mockReset();
+        clearCachedMachineFileBrowserEntries({ machineId: 'machine-3' });
+        const target = { machineId: 'machine-3', serverId: 'server-1', directoryPath: '/home/u/work', includeFiles: false };
+        const answer = (names: string[]) => ({
+            ok: true,
+            path: '/home/u/work',
+            entries: names.map((name) => ({ name, path: `/home/u/work/${name}`, type: 'directory', modified: 1 })),
+            truncated: false,
+        });
+        list.mockResolvedValueOnce(answer(['buff', 'servers']));
+        await warmMachineFileBrowserDirectoryCache(target);
+        const listener = vi.fn();
+        const unsubscribe = subscribeMachineFileBrowserDirectories(listener);
+
+        // Nothing changed on the machine: nobody is told, and no loading state shows.
+        list.mockResolvedValueOnce(answer(['buff', 'servers']));
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(false);
+        expect(listener).not.toHaveBeenCalled();
+
+        // A folder went away there: readers are told once, with the new listing.
+        list.mockResolvedValueOnce(answer(['servers']));
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(true);
+        expect(listener).toHaveBeenCalledTimes(1);
+        expect(getCachedMachineFileBrowserEntries(target)?.map((entry) => entry.name)).toEqual(['servers']);
+        expect(getMachineFileBrowserDirectoryState(target)).toMatchObject({ loading: false, error: null });
+
+        // A failure is told once while it stays the same, keeps the last listing, and its end is told too.
+        list.mockResolvedValueOnce({ ok: false, error: "ENOENT: no such file or directory, scandir '/home/u/work'" });
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(true);
+        list.mockResolvedValueOnce({ ok: false, error: "ENOENT: no such file or directory, scandir '/home/u/work'" });
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(false);
+        expect(getMachineFileBrowserDirectoryState(target)).toMatchObject({ entries: [{ name: 'servers' }], error: expect.stringContaining('ENOENT') });
+        list.mockResolvedValueOnce(answer(['servers']));
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(true);
+        expect(getMachineFileBrowserDirectoryState(target)).toMatchObject({ error: null });
+        expect(listener).toHaveBeenCalledTimes(3);
+
+        // A request that fails on the way changes nothing.
+        list.mockRejectedValueOnce(new Error('socket closed'));
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(false);
+
+        // While a listing runs (a refresh, a folder opened), the revalidation stays out of its way.
+        let finish!: (value: unknown) => void;
+        list.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+        const refresh = listMachineFileBrowserDirectoryEntries(target);
+        const callsBefore = list.mock.calls.length;
+        await expect(revalidateMachineFileBrowserDirectory(target)).resolves.toBe(false);
+        expect(list.mock.calls.length).toBe(callsBefore);
+        finish(answer(['servers', 'code']));
+        await refresh;
+        expect(getCachedMachineFileBrowserEntries(target)?.map((entry) => entry.name)).toEqual(['code', 'servers']);
+
+        // An answer overtaken by a newer listing, or by a clear (a folder deleted), is dropped.
+        for (const overtake of [
+            async () => {
+                list.mockResolvedValueOnce(answer(['code', 'new', 'servers']));
+                await listMachineFileBrowserDirectoryEntries(target);
+            },
+            async () => {
+                clearCachedMachineFileBrowserEntries({ machineId: 'machine-3', directoryPath: '/home/u/work' });
+            },
+        ]) {
+            let late!: (value: unknown) => void;
+            list.mockReturnValueOnce(new Promise((resolve) => { late = resolve; }));
+            const stale = revalidateMachineFileBrowserDirectory(target);
+            await overtake();
+            const after = getCachedMachineFileBrowserEntries(target)?.map((entry) => entry.name) ?? null;
+            late(answer(['old']));
+            await expect(stale).resolves.toBe(false);
+            expect(getCachedMachineFileBrowserEntries(target)?.map((entry) => entry.name) ?? null).toEqual(after);
+            expect(after).not.toEqual(['old']);
+        }
+        unsubscribe();
     });
 });
 

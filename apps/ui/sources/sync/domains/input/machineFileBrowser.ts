@@ -49,6 +49,11 @@ const rootsWarmInFlight = new Map<string, Promise<ListMachineFileBrowserRootsRes
 const directoryWarmInFlight = new Map<string, Promise<ListMachineFileBrowserDirectoryEntriesResult>>();
 const directoryLoadingCounts = new Map<string, number>();
 const directoryErrors = new Map<string, string>();
+const directoryRevalidateInFlight = new Set<string>();
+// A revalidation sent before a newer listing of its directory started, or before cached listings were cleared
+// (a folder deleted or renamed), answers for an older state and is dropped.
+const directoryListingStarts = new Map<string, number>();
+let directoryClearEpoch = 0;
 const directoryListeners = new Set<() => void>();
 let directoriesVersion = 0;
 
@@ -152,6 +157,7 @@ export function clearCachedMachineFileBrowserEntries(input: {
     directoryPath?: string | null;
     serverId?: string | null;
 }): void {
+    directoryClearEpoch += 1;
     const serverPrefix = typeof input.serverId === 'string' || input.serverId === null ? `${input.serverId ?? ''}:${input.machineId}:` : null;
     const directoryPath = typeof input.directoryPath === 'string' ? input.directoryPath : null;
     if (directoryPath != null) {
@@ -272,6 +278,7 @@ export async function listMachineFileBrowserDirectoryEntries(input: {
         serverId?: string | null;
 }): Promise<ListMachineFileBrowserDirectoryEntriesResult> {
     const key = getDirectoryCacheKey(input.machineId, input.directoryPath, input.includeFiles, input.serverId);
+    directoryListingStarts.set(key, (directoryListingStarts.get(key) ?? 0) + 1);
     directoryLoadingCounts.set(key, (directoryLoadingCounts.get(key) ?? 0) + 1);
     notifyDirectoryListeners();
     try {
@@ -281,25 +288,12 @@ export async function listMachineFileBrowserDirectoryEntries(input: {
         }, { serverId: input.serverId });
 
         if (!response.ok) {
-            const error = (typeof response.error === 'string' ? response.error.trim() : '') || 'unknown_error';
+            const error = readListingError(response.error);
             directoryErrors.set(key, error);
             return { ok: false, error };
         }
 
-        const entries = sortDirectoryEntries(response.entries.flatMap((entry) => {
-            if (!entry || typeof entry.name !== 'string' || typeof entry.path !== 'string') return [];
-            const rawName = entry.name.trim();
-            const rawPath = entry.path.trim();
-            if (!rawName || !rawPath) return [];
-            if (entry.type !== 'file' && entry.type !== 'directory') return [];
-            return [{
-                name: rawName,
-                path: rawPath,
-                type: entry.type,
-                sizeBytes: typeof entry.size === 'number' && Number.isFinite(entry.size) && entry.size >= 0 ? Math.floor(entry.size) : undefined,
-                modifiedMs: typeof entry.modified === 'number' && Number.isFinite(entry.modified) && entry.modified >= 0 ? Math.floor(entry.modified) : undefined,
-            } satisfies MachineFileBrowserEntry];
-        }));
+        const entries = normalizeDirectoryEntries(response.entries);
 
         setCachedMachineFileBrowserEntries({
             machineId: input.machineId,
@@ -316,6 +310,87 @@ export async function listMachineFileBrowserDirectoryEntries(input: {
         if (remaining > 0) directoryLoadingCounts.set(key, remaining);
         else directoryLoadingCounts.delete(key);
         notifyDirectoryListeners();
+    }
+}
+
+function readListingError(error: unknown): string {
+    return (typeof error === 'string' ? error.trim() : '') || 'unknown_error';
+}
+
+type RawDirectoryEntry = Readonly<{ name?: unknown; path?: unknown; type?: unknown; size?: unknown; modified?: unknown }> | null | undefined;
+
+function normalizeDirectoryEntries(raw: ReadonlyArray<RawDirectoryEntry>): MachineFileBrowserEntry[] {
+    return sortDirectoryEntries(raw.flatMap((entry) => {
+        if (!entry || typeof entry.name !== 'string' || typeof entry.path !== 'string') return [];
+        const rawName = entry.name.trim();
+        const rawPath = entry.path.trim();
+        if (!rawName || !rawPath) return [];
+        if (entry.type !== 'file' && entry.type !== 'directory') return [];
+        return [{
+            name: rawName,
+            path: rawPath,
+            type: entry.type as MachineFileBrowserEntry['type'],
+            sizeBytes: typeof entry.size === 'number' && Number.isFinite(entry.size) && entry.size >= 0 ? Math.floor(entry.size) : undefined,
+            modifiedMs: typeof entry.modified === 'number' && Number.isFinite(entry.modified) && entry.modified >= 0 ? Math.floor(entry.modified) : undefined,
+        } satisfies MachineFileBrowserEntry];
+    }));
+}
+
+function sameDirectoryEntries(left: ReadonlyArray<MachineFileBrowserEntry>, right: ReadonlyArray<MachineFileBrowserEntry>): boolean {
+    return left.length === right.length && left.every((entry, index) => {
+        const other = right[index]!;
+        return entry.name === other.name
+            && entry.path === other.path
+            && entry.type === other.type
+            && entry.sizeBytes === other.sizeBytes
+            && entry.modifiedMs === other.modifiedMs;
+    });
+}
+
+/**
+ * Lists a directory again in the background, for a view that keeps it current (the explorer while it shows):
+ * no loading state, and readers hear only of a change (other entries, cut short or not, a failure that came or
+ * went). Skipped while that directory is being listed or revalidated. A failed request leaves the cache as it
+ * was. Resolves to whether readers were told of a change.
+ */
+export async function revalidateMachineFileBrowserDirectory(input: {
+    machineId: string;
+    directoryPath: string;
+    includeFiles: boolean;
+    serverId?: string | null;
+}): Promise<boolean> {
+    const key = getDirectoryCacheKey(input.machineId, input.directoryPath, input.includeFiles, input.serverId);
+    if (directoryRevalidateInFlight.has(key) || (directoryLoadingCounts.get(key) ?? 0) > 0) return false;
+    directoryRevalidateInFlight.add(key);
+    const clearEpoch = directoryClearEpoch;
+    const listingStarts = directoryListingStarts.get(key) ?? 0;
+    try {
+        const response = await machineFilesystemListDirectory(input.machineId, {
+            path: input.directoryPath,
+            includeFiles: input.includeFiles,
+        }, { serverId: input.serverId });
+        // A listing or a clear since this was sent (a refresh, a folder opened, deleted or renamed) is newer.
+        if (directoryClearEpoch !== clearEpoch || (directoryListingStarts.get(key) ?? 0) !== listingStarts) return false;
+        if (!response.ok) {
+            const error = readListingError(response.error);
+            if (directoryErrors.get(key) === error) return false;
+            directoryErrors.set(key, error);
+            notifyDirectoryListeners();
+            return true;
+        }
+        const entries = normalizeDirectoryEntries(response.entries);
+        const truncated = response.truncated === true;
+        const cached = directoryEntriesCache.get(key);
+        const hadError = directoryErrors.delete(key);
+        const unchanged = cached !== undefined && cached.truncated === truncated && sameDirectoryEntries(cached.entries, entries);
+        if (unchanged && !hadError) return false;
+        if (!unchanged) directoryEntriesCache.set(key, { entries, truncated });
+        notifyDirectoryListeners();
+        return true;
+    } catch {
+        return false;
+    } finally {
+        directoryRevalidateInFlight.delete(key);
     }
 }
 

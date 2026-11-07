@@ -84,6 +84,7 @@ import {
     readExplorerSharedFolders,
     requestExplorerListings,
     requestExplorerSharedFolders,
+    useExplorerAutoRefresh,
     useExplorerListingReader,
 } from '../explorer/explorerDirectoryListings';
 import { resolveSessionOrganizationMutationScope, type SessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
@@ -475,6 +476,9 @@ export function useSessionListViewState({
     React.useEffect(() => {
         if (explorerFoldersToList.length > 0) requestExplorerListings(explorerFoldersToList);
     }, [explorerFoldersToList]);
+    // Changes made on a machine (an agent, a terminal) show within seconds, without pressing Refresh.
+    // Only while the list shows: on phones it stays mounted behind an open session.
+    useExplorerAutoRefresh(explorer?.openFolders ?? EMPTY_EXPLORER_FOLDERS, explorerEnabled && sessionListSurfaceDataActive);
     const explorerSharedFoldersToAsk = explorer?.sharedFoldersToAsk ?? EMPTY_EXPLORER_MACHINES;
     React.useEffect(() => {
         if (explorerSharedFoldersToAsk.length > 0) requestExplorerSharedFolders(explorerSharedFoldersToAsk);

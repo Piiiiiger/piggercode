@@ -6,6 +6,7 @@ import {
     getMachineFileBrowserDirectoryState,
     listMachineFileBrowserDirectoryEntries,
     listMachineFileBrowserRoots,
+    revalidateMachineFileBrowserDirectory,
     subscribeMachineFileBrowserDirectories,
     warmMachineFileBrowserDirectoryCache,
     warmMachineFileBrowserRoots,
@@ -16,6 +17,7 @@ import type {
     SessionExplorerMachineRef,
     SessionExplorerSharedFolder,
 } from '@/sync/domains/session/listing/sessionListExplorer';
+import { isHostVisible, startRuntimeActiveGatedInterval } from '@/utils/runtime/isRuntimeActive';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 
 // The Sessions view lists folders only, the Files view folders and files; the machine file browser owns
@@ -110,4 +112,43 @@ export function refreshExplorerFolder(hint: Readonly<{ serverId: string; machine
     refreshExplorerListings([false, true]
         .map((includeFiles) => ({ serverId: hint.serverId, machineId: hint.machineId, path: hint.rootPath, includeFiles }))
         .filter((folder) => getMachineFileBrowserDirectoryState(directoryTarget(folder)) !== null));
+}
+
+/** How often the explorer lists its open folders again while it shows, so changes made on the machine appear. */
+export const EXPLORER_AUTO_REFRESH_MS = 3_000;
+/** At most this many folders are asked in one round; the others come in the next rounds. */
+export const EXPLORER_AUTO_REFRESH_BATCH = 12;
+
+/** The folders one auto-refresh round asks, taking turns from `cursor`; and where the next round starts. */
+export function pickExplorerAutoRefreshRound<T>(folders: ReadonlyArray<T>, cursor: number, batch = EXPLORER_AUTO_REFRESH_BATCH): Readonly<{ folders: T[]; next: number }> {
+    if (folders.length === 0) return { folders: [], next: 0 };
+    const start = cursor % folders.length;
+    const count = Math.min(batch, folders.length);
+    return {
+        folders: Array.from({ length: count }, (_, index) => folders[(start + index) % folders.length]!),
+        next: (start + count) % folders.length,
+    };
+}
+
+/**
+ * Keeps the explorer's open folders current: while it shows and the app is in front, each open folder is
+ * listed again every EXPLORER_AUTO_REFRESH_MS in the background (`revalidateMachineFileBrowserDirectory`:
+ * nothing flickers, and the tree changes only where a folder did), and once at once when the app comes back
+ * to the front. A folder an agent or a terminal changed on the machine then shows the change within seconds.
+ */
+export function useExplorerAutoRefresh(openFolders: ReadonlyArray<SessionExplorerFolderRef>, enabled: boolean): void {
+    const foldersRef = React.useRef(openFolders);
+    foldersRef.current = openFolders;
+    React.useEffect(() => {
+        if (!enabled) return;
+        let cursor = 0;
+        return startRuntimeActiveGatedInterval(() => {
+            if (!isHostVisible()) return;
+            const round = pickExplorerAutoRefreshRound(foldersRef.current, cursor);
+            cursor = round.next;
+            for (const folder of round.folders) {
+                fireAndForget(revalidateMachineFileBrowserDirectory(directoryTarget(folder)), { tag: 'sessionExplorer.autoRefresh' });
+            }
+        }, EXPLORER_AUTO_REFRESH_MS);
+    }, [enabled]);
 }
