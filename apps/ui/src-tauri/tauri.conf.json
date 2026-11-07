@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "PiggerCode",
   "mainBinaryName": "piggercode-desktop",
-  "version": "0.3.18",
+  "version": "0.3.19",
   "identifier": "dev.piggercode.app",
   "build": {
     "frontendDist": "../dist",
