@@ -3,6 +3,7 @@ import { lstatSync, mkdirSync, readFileSync, readdirSync, rmdirSync, writeFileSy
 import { dirname, join } from 'node:path';
 
 import { listAcceptedComputers } from './acceptedComputers';
+import { MOUNT_DEAD_AFTER_MS, watchMount, type MountWatch } from './mountWatchdog';
 import { parseServerLocation } from './serverLocation';
 import {
   COMPUTER_LABEL_PATTERN,
@@ -43,9 +44,14 @@ export type SharedFoldersServeSystem = Readonly<{
    */
   abortConnection: (device: string) => string | null;
   unmount: (path: string) => void;
-  /** Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. */
-  runSshfs: (args: readonly string[]) => Promise<number>;
+  /**
+   * Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. An
+   * aborted `signal` ends it.
+   */
+  runSshfs: (args: readonly string[], signal?: AbortSignal) => Promise<number>;
   reportError: (message: string) => void;
+  /** Watches the mount while sshfs serves it (`watchMount`); none where not given. */
+  watchMount?: (path: string, handlers: Readonly<{ onDead: () => void; onAnswer: () => void }>) => MountWatch;
 }>;
 
 export async function runSharedFoldersServe(params: Readonly<{
@@ -150,7 +156,37 @@ export async function runSharedFoldersServe(params: Readonly<{
     // The mount names whose it is (`piggercode:<label>:<folder>`), so this server can tell its shared
     // folders, and whose they are, wherever they are mounted.
     const options = `${SSHFS_OPTIONS},fsname=${SHARED_FOLDER_SOURCE_PREFIX}${params.label}:${encodeURIComponent(folder)}`;
-    return await system.runSshfs(['-f', '-o', options, `:${folder}`, mountPoint]);
+    // A mount that stops answering (the computer sleeps, the connection stalls) would hang whatever touches
+    // it until this connection is ended, which may take hours: end it then. The aborted mount answers at
+    // once with an error until the computer connects again, and that new connection replaces it.
+    // Only this connection's own mount is ended: its device, noted from the mount table as soon as the mount
+    // shows there (no earlier mount of this computer is left at the place by now), and only while it is still
+    // the mount at the place. A newer connection of the computer may have replaced it there by then.
+    const ended = new AbortController();
+    const mountHere = () => listSharedFolderMounts(params.homeDir, system.readMountinfo())
+      .find((candidate) => candidate.path === mountPoint && candidate.label === params.label);
+    let ownDevice: string | null = null;
+    const noteOwnDevice = () => {
+      if (ownDevice === null) ownDevice = mountHere()?.device ?? null;
+      if (ownDevice !== null) clearInterval(deviceLookup);
+    };
+    const deviceLookup = setInterval(noteOwnDevice, 500);
+    deviceLookup.unref?.();
+    const watch = system.watchMount?.(mountPoint, {
+      onAnswer: noteOwnDevice,
+      onDead: () => {
+        system.reportError(`piggercode shared folders: ${shown} did not answer for ${Math.round(MOUNT_DEAD_AFTER_MS / 1000)} s, so this connection is ended; the computer connects again once it can`);
+        const notEnded = ownDevice !== null && mountHere()?.device === ownDevice ? system.abortConnection(ownDevice) : null;
+        if (notEnded !== null) system.reportError(`piggercode shared folders: cannot end the mount at ${shown}: ${notEnded}`);
+        ended.abort();
+      },
+    });
+    try {
+      return await system.runSshfs(['-f', '-o', options, `:${folder}`, mountPoint], ended.signal);
+    } finally {
+      clearInterval(deviceLookup);
+      watch?.stop();
+    }
   } finally {
     // A share that moved or stopped leaves its place: the folder there goes once empty, with the folders
     // made for it. A connection that only dropped keeps it for the next one (which may be mounting there
@@ -265,14 +301,24 @@ const osServeSystem: SharedFoldersServeSystem = {
     const result = spawnSync('fusermount3', ['-uz', path], { stdio: 'ignore' });
     if (result.status !== 0) spawnSync('fusermount', ['-uz', path], { stdio: 'ignore' });
   },
-  runSshfs: async (args) => await new Promise<number>((resolve) => {
+  runSshfs: async (args, signal) => await new Promise<number>((resolve) => {
     const child = spawn('sshfs', [...args], { stdio: 'inherit' });
+    // sshfs ends by itself once its FUSE connection is aborted; a kill makes sure.
+    const end = () => {
+      child.kill('SIGTERM');
+      setTimeout(() => child.kill('SIGKILL'), 5_000).unref();
+    };
+    signal?.addEventListener('abort', end, { once: true });
     child.once('error', (error) => {
       process.stderr.write(`piggercode shared folders: cannot run sshfs: ${error.message}\n`);
       resolve(127);
     });
-    child.once('exit', (code) => resolve(code ?? 1));
+    child.once('exit', (code) => {
+      signal?.removeEventListener('abort', end);
+      resolve(code ?? 1);
+    });
   }),
+  watchMount: (path, handlers) => watchMount({ path, ...handlers }),
   reportError: (message) => {
     process.stderr.write(`${message}\n`);
   },

@@ -91,6 +91,99 @@ describe('serving a computer’s folder on this server', () => {
     expect(calls.sshfs).toEqual([['-f', '-o', 'passive,idmap=user,dir_cache=yes,dcache_timeout=10,fsname=piggercode:laptop:code', ':code', join(home, 'code')]]);
   });
 
+  it('ends its own connection when the mount stops answering, and only its own mount', async () => {
+    const home = createHome();
+    agree(home, 'laptop', ['code']);
+    const { system, calls, mount } = createSystem({ mounted: { path: '/elsewhere/other', source: 'piggercode:desk:other' } });
+    let watched: string | null = null;
+    let stopped = false;
+    let signal: AbortSignal | undefined;
+    const serving: SharedFoldersServeSystem = {
+      ...system,
+      watchMount: (path, handlers) => {
+        watched = path;
+        // sshfs mounted and answered once; then the mount stops answering.
+        mount({ path, source: 'piggercode:laptop:code' });
+        handlers.onAnswer();
+        queueMicrotask(handlers.onDead);
+        return { stop: () => { stopped = true; } };
+      },
+      runSshfs: async (args, aborted) => {
+        signal = aborted;
+        await system.runSshfs(args, aborted);
+        if (!aborted?.aborted) await new Promise<void>((resolve) => aborted?.addEventListener('abort', () => resolve(), { once: true }));
+        return 1;
+      },
+    };
+
+    const code = await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code\tcode', homeDir: home, system: serving });
+
+    expect(code).toBe(1);
+    expect(watched).toBe(join(home, 'code'));
+    expect(signal?.aborted).toBe(true);
+    expect(stopped).toBe(true);
+    // The second mount in the table is this connection's (0:44); the other computer's (0:43) stays.
+    expect(calls.steps.filter((step) => step.startsWith('abort'))).toEqual(['abort 0:44']);
+    expect(calls.errors.some((message) => message.includes('did not answer for 90 s'))).toBe(true);
+  });
+
+  it('ends its own mount even when it never answered', async () => {
+    const home = createHome();
+    agree(home, 'laptop', ['code']);
+    const { system, calls, mount } = createSystem();
+    const serving: SharedFoldersServeSystem = {
+      ...system,
+      watchMount: (path, handlers) => {
+        // sshfs mounted, but the mount never answers; the watchdog gives up later.
+        mount({ path, source: 'piggercode:laptop:code' });
+        const timer = setTimeout(handlers.onDead, 700);
+        return { stop: () => clearTimeout(timer) };
+      },
+      runSshfs: async (args, aborted) => {
+        await system.runSshfs(args, aborted);
+        if (!aborted?.aborted) await new Promise<void>((resolve) => aborted?.addEventListener('abort', () => resolve(), { once: true }));
+        return 1;
+      },
+    };
+
+    await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code\tcode', homeDir: home, system: serving });
+
+    expect(calls.steps.filter((step) => step.startsWith('abort'))).toEqual(['abort 0:43']);
+  });
+
+  it('leaves a newer connection\'s mount at the place alone when its own has gone', async () => {
+    const home = createHome();
+    agree(home, 'laptop', ['code']);
+    const { system, calls, mount } = createSystem();
+    let replaced = false;
+    const serving: SharedFoldersServeSystem = {
+      ...system,
+      watchMount: (path, handlers) => {
+        mount({ path, source: 'piggercode:laptop:code' });
+        handlers.onAnswer();
+        // A newer connection of the computer replaced it (its own mount is unmounted, a new one is there).
+        mount({ path, source: 'piggercode:laptop:code' });
+        replaced = true;
+        queueMicrotask(handlers.onDead);
+        return { stop: () => {} };
+      },
+      readMountinfo: () => {
+        const table = system.readMountinfo().split('\n');
+        // Once replaced, the first mount of the place (0:43) is gone; only the newer one (0:44) is listed.
+        return replaced ? table.filter((line) => !line.includes(' 0:43 ')).join('\n') : table.join('\n');
+      },
+      runSshfs: async (args, aborted) => {
+        await system.runSshfs(args, aborted);
+        if (!aborted?.aborted) await new Promise<void>((resolve) => aborted?.addEventListener('abort', () => resolve(), { once: true }));
+        return 1;
+      },
+    };
+
+    await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code\tcode', homeDir: home, system: serving });
+
+    expect(calls.steps.filter((step) => step.startsWith('abort'))).toEqual([]);
+  });
+
   it('mounts only at a place the server agreed to for this computer', async () => {
     const home = createHome();
     agree(home, 'laptop', ['notes']);

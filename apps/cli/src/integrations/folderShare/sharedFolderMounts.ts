@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { readFileSync, realpathSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 
 /**
  * The shared folders mounted on this server, from its mount table. Every reader of them goes through
@@ -165,14 +165,19 @@ export function createSharedFolderHealth(deps: Readonly<{
   const now = deps.now ?? Date.now;
   const asked = new Map<string, { at: number; answers: Promise<boolean>; probeRunning: boolean }>();
   return {
-    /** Whether `path` lies in a shared folder: one read of the mount table, nothing touches the folder. */
+    /**
+     * Whether `path` lies in a shared folder: one read of the mount table, nothing touches the folder. The
+     * path is taken as written (`..` and `.` resolved, no links followed: that would touch the folder).
+     */
     covers(path: string): boolean {
-      return listSharedFolderMounts(homeDirOf(), readTable()).some((mount) => isWithin(path, mount.path));
+      const normalized = resolve(path);
+      return listSharedFolderMounts(homeDirOf(), readTable()).some((mount) => isWithin(normalized, mount.path));
     },
     async check(path: string): Promise<SharedFolderPathCheck> {
       const homeDir = homeDirOf();
+      const normalized = resolve(path);
       const mount = listSharedFolderMounts(homeDir, readTable())
-        .filter((candidate) => isWithin(path, candidate.path))
+        .filter((candidate) => isWithin(normalized, candidate.path))
         .sort((left, right) => right.path.length - left.path.length)[0];
       if (!mount) return { inSharedFolder: false, problem: null };
       const key = `${mount.device} ${mount.path}`;

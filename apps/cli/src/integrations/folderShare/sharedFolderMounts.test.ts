@@ -66,6 +66,19 @@ describe('whether a path in a shared folder can be used now', () => {
     expect(asked).toEqual([]);
   });
 
+  it('reads a path as written, with `..`, `.` and repeated or trailing slashes resolved', async () => {
+    const { asked, probe } = probes(true);
+    const health = createSharedFolderHealth({ homeDir: () => home, readMountinfo: mountinfo, probe });
+
+    for (const path of ['/home/u/work/../code/app', '/home/u/./code', '/home/u//code/', '/home/u/code/app/']) {
+      expect(health.covers(path)).toBe(true);
+    }
+    expect(health.covers('/home/u/code/../work')).toBe(false);
+    expect(health.covers('/home/u/codex')).toBe(false);
+    expect(await health.check('/home/u/work/../code/app')).toEqual({ inSharedFolder: true, problem: null });
+    expect(asked).toEqual(['/home/u/code']);
+  });
+
   it('lets a path in a shared folder be used while that folder answers', async () => {
     const { asked, probe } = probes(true);
     const health = createSharedFolderHealth({ homeDir: () => home, readMountinfo: mountinfo, probe });
