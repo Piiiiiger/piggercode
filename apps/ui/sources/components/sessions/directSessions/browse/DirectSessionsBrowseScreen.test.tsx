@@ -491,6 +491,40 @@ describe('DirectSessionsBrowseScreen', () => {
         expect(routerNavigateSpy.mock.calls[0]?.[1]?.dangerouslySingular?.()).toBe('session');
     });
 
+    it('adds every listed provider session to the session list at once, staying on the list', async () => {
+        candidatesListSpy.mockImplementationOnce(async () => ({
+            ok: true,
+            candidates: [
+                { remoteSessionId: 'codex-session-1', title: 'Existing Codex Session', updatedAtMs: 1_700_000_000_000, details: { path: '/tmp/worktree' } },
+                { remoteSessionId: 'codex-session-2', title: 'Second Codex Session', updatedAtMs: 1_690_000_000_000, details: { path: '/tmp/other' } },
+                { remoteSessionId: 'codex-session-3', title: 'Third Codex Session', updatedAtMs: 1_680_000_000_000, details: { path: '/tmp/third' } },
+            ],
+            nextCursor: null,
+        }));
+        linkEnsureSpy.mockRejectedValueOnce(new Error('machine offline'));
+        const { DirectSessionsBrowseScreen } = await directSessionsBrowseScreenModulePromise;
+        const screen = await renderScreen(<DirectSessionsBrowseScreen />);
+        await flushHookEffects();
+
+        await screen.pressByTestIdAsync('direct-session-candidates-link-all');
+        await flushHookEffects();
+
+        // Each one is linked as opening it alone would link it, and one that fails does not stop the rest.
+        expect(linkEnsureSpy).toHaveBeenCalledTimes(3);
+        expect(linkEnsureSpy).toHaveBeenNthCalledWith(1, expect.objectContaining({ machineId: 'machine-1', providerId: 'codex', remoteSessionId: 'codex-session-1' }));
+        expect(linkEnsureSpy).toHaveBeenNthCalledWith(3, expect.objectContaining({
+            machineId: 'machine-1',
+            providerId: 'codex',
+            remoteSessionId: 'codex-session-3',
+            titleHint: 'Third Codex Session',
+            directoryHint: '/tmp/third',
+        }));
+        expect(routerNavigateSpy).not.toHaveBeenCalled();
+        // One summary at the end, saying some were not added.
+        expect(modalAlertSpy).toHaveBeenCalledTimes(1);
+        expect(modalAlertSpy).toHaveBeenCalledWith('common.error', 'directSessions.browseLinkAllPartial');
+    });
+
     it('switches to the codex connected-service source before linking', async () => {
         const { DirectSessionsBrowseScreen } = await directSessionsBrowseScreenModulePromise;
         const screen = await renderScreen(<DirectSessionsBrowseScreen />);
@@ -735,6 +769,7 @@ describe('DirectSessionsBrowseScreen', () => {
         expect(onPickRemoteSessionId).toHaveBeenCalledWith('codex-session-1');
         expect(routerPushSpy).not.toHaveBeenCalled();
         expect(linkEnsureSpy).not.toHaveBeenCalled();
+        expect(screen.findByTestId('direct-session-candidates-link-all')).toBeNull();
     });
 
 });

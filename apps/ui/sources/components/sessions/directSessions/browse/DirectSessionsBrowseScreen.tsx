@@ -36,6 +36,41 @@ type AppTheme = Theme;
 
 const DIRECT_BROWSE_SEARCH_DEBOUNCE_MS = 250;
 
+/** Links one listed provider session into the session list; opening a session and adding them all both go through here. */
+async function linkDirectBrowseCandidate(params: Readonly<{
+    machineId: string;
+    providerId: DirectBrowseProviderId;
+    source: DirectSessionsSource;
+    serverId: string | null;
+    candidate: DirectBrowseCandidate;
+}>) {
+    const { candidate } = params;
+    const linkEnsureExtras = resolveDirectBrowseLinkEnsureRequestExtras({
+        providerId: params.providerId,
+        source: params.source,
+        candidate,
+    });
+    const candidateSource = linkEnsureExtras.source && typeof linkEnsureExtras.source === 'object'
+        ? (linkEnsureExtras.source as DirectSessionsSource)
+        : undefined;
+    const effectiveSource: DirectSessionsSource = candidateSource && shouldUseCandidateSource(params.source, candidateSource)
+        ? candidateSource
+        : params.source;
+    const directoryHint = readDirectBrowseCandidatePath(candidate.details);
+    const request = {
+        machineId: params.machineId,
+        providerId: params.providerId,
+        remoteSessionId: candidate.remoteSessionId,
+        ...(candidate.title ? { titleHint: candidate.title } : {}),
+        ...(directoryHint ? { directoryHint } : {}),
+        ...linkEnsureExtras,
+        source: effectiveSource,
+    };
+    return params.serverId
+        ? await machineDirectSessionLinkEnsure(request, { serverId: params.serverId })
+        : await machineDirectSessionLinkEnsure(request);
+}
+
 export type DirectSessionsBrowseScopeLock = Readonly<{
     machineId: string;
     serverId?: string | null;
@@ -123,6 +158,7 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
         lockScope ? 'locked' : sourceOptions[0]?.key ?? null
     ));
     const [linkingSessionId, setLinkingSessionId] = React.useState<string | null>(null);
+    const [linkAllProgress, setLinkAllProgress] = React.useState<Readonly<{ done: number; total: number }> | null>(null);
     const [deletingSessionId, setDeletingSessionId] = React.useState<string | null>(null);
     const [searchQuery, setSearchQuery] = React.useState('');
     const [candidateSearchTerm, setCandidateSearchTerm] = React.useState('');
@@ -272,29 +308,13 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
         }
         setLinkingSessionId(candidate.remoteSessionId);
         try {
-            const linkEnsureExtras = resolveDirectBrowseLinkEnsureRequestExtras({
-                providerId: selectedProviderId,
-                source: selectedSource,
-                candidate,
-            });
-            const candidateSource = linkEnsureExtras.source && typeof linkEnsureExtras.source === 'object'
-                ? (linkEnsureExtras.source as DirectSessionsSource)
-                : undefined;
-            const effectiveSource: DirectSessionsSource = candidateSource && shouldUseCandidateSource(selectedSource, candidateSource)
-                ? candidateSource
-                : selectedSource;
-            const request = {
+            const result = await linkDirectBrowseCandidate({
                 machineId: effectiveSelectedMachineId,
                 providerId: selectedProviderId,
-                remoteSessionId: candidate.remoteSessionId,
-                ...(candidate.title ? { titleHint: candidate.title } : {}),
-                ...(readDirectBrowseCandidatePath(candidate.details) ? { directoryHint: readDirectBrowseCandidatePath(candidate.details)! } : {}),
-                ...linkEnsureExtras,
-                source: effectiveSource,
-            };
-            const result = lockScope?.serverId
-                ? await machineDirectSessionLinkEnsure(request, { serverId: lockScope.serverId })
-                : await machineDirectSessionLinkEnsure(request);
+                source: selectedSource,
+                serverId: lockScope?.serverId ?? null,
+                candidate,
+            });
             if (!result.ok) {
                 Modal.alert(t('common.error'), result.error);
                 return;
@@ -306,6 +326,39 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
             setLinkingSessionId(null);
         }
     }, [effectiveSelectedMachineId, interaction, lockScope?.serverId, navigateToSession, props, selectedProviderId, selectedSource]);
+
+    // Puts every listed session in the session list, one after another. Linking is idempotent, so
+    // pressing it again after a failure only adds the ones still missing.
+    const handleLinkAll = React.useCallback(async () => {
+        if (!effectiveSelectedMachineId || !selectedProviderId || !selectedSource || linkAllProgress) return;
+        const listed = candidates;
+        if (listed.length === 0) return;
+        let added = 0;
+        const failures: string[] = [];
+        setLinkAllProgress({ done: 0, total: listed.length });
+        for (const candidate of listed) {
+            try {
+                const result = await linkDirectBrowseCandidate({
+                    machineId: effectiveSelectedMachineId,
+                    providerId: selectedProviderId,
+                    source: selectedSource,
+                    serverId: lockScope?.serverId ?? null,
+                    candidate,
+                });
+                if (result.ok) added += 1;
+                else failures.push(result.error);
+            } catch (linkError) {
+                failures.push(linkError instanceof Error ? linkError.message : t('directSessions.browseLinkFailed'));
+            }
+            setLinkAllProgress({ done: added + failures.length, total: listed.length });
+        }
+        setLinkAllProgress(null);
+        if (failures.length === 0) {
+            Modal.alert(t('directSessions.browseLinkAllDoneTitle'), t('directSessions.browseLinkAllDone', { added }));
+        } else {
+            Modal.alert(t('common.error'), t('directSessions.browseLinkAllPartial', { added, failed: failures.length, error: failures[0] ?? '' }));
+        }
+    }, [candidates, effectiveSelectedMachineId, linkAllProgress, lockScope?.serverId, selectedProviderId, selectedSource]);
 
     return (
         <PopoverScope boundaryRef={popoverBoundaryRef}>
@@ -419,6 +472,8 @@ export const DirectSessionsBrowseScreen = React.memo((props: Readonly<{
                     onSelectCandidate={(candidate) => { void handleOpenCandidate(candidate); }}
                     onDeleteCandidate={(candidate) => { void handleDeleteCandidate(candidate); }}
                     onLoadMore={() => { void loadMore(); }}
+                    linkAllProgress={linkAllProgress}
+                    onLinkAll={interaction === 'pickRemoteSessionId' ? null : () => { void handleLinkAll(); }}
                 />
             </ItemList>
         </PopoverScope>

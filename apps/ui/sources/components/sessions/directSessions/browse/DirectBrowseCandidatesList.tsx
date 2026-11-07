@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
+import { Icon } from '@/components/ui/icons/Icon';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
@@ -77,6 +78,9 @@ export const DirectBrowseCandidatesList = React.memo(function DirectBrowseCandid
     onSelectCandidate: (candidate: DirectBrowseCandidate) => void;
     onDeleteCandidate: (candidate: DirectBrowseCandidate) => void;
     onLoadMore: () => void;
+    /** Adds every listed session to the session list; null where the list only picks one. */
+    onLinkAll: (() => void) | null;
+    linkAllProgress: Readonly<{ done: number; total: number }> | null;
 }>) {
     const { theme } = useUnistyles() as { theme: AppTheme };
     const styles = stylesheet;
@@ -119,6 +123,19 @@ export const DirectBrowseCandidatesList = React.memo(function DirectBrowseCandid
                 </View>
             ) : (
                 <>
+                    {props.onLinkAll ? (
+                        <Item
+                            testID="direct-session-candidates-link-all"
+                            title={t('directSessions.browseLinkAll')}
+                            subtitle={props.linkAllProgress
+                                ? t('directSessions.browseLinkAllProgress', props.linkAllProgress)
+                                : t('directSessions.browseLinkAllSubtitle', { count: props.candidates.length })}
+                            icon={<Icon name="plus-circle" size={20} color={theme.colors.text.secondary} />}
+                            onPress={props.onLinkAll}
+                            loading={props.linkAllProgress !== null}
+                            disabled={props.linkAllProgress !== null}
+                        />
+                    ) : null}
                     {props.candidates.map((candidate) => (
                         <Item
                             key={candidate.remoteSessionId}
