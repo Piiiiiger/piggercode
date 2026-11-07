@@ -1,4 +1,6 @@
+import { spawn } from 'node:child_process';
 import { readFileSync, realpathSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { join, relative } from 'node:path';
 
 /**
@@ -97,3 +99,108 @@ function parseMountinfo(mountinfo: string): MountinfoEntry[] {
   }
   return mounts;
 }
+
+/** A shared folder that does not answer a `stat` within this long is the dead end of a dropped connection. */
+export const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
+
+export type MountProbe = Readonly<{ answers: Promise<boolean>; exited: Promise<void> }>;
+
+/**
+ * Asks whether the mount at `path` answers, from a separate `stat` started outside the mount, so this
+ * process never waits on it. The answer comes within MOUNT_ANSWER_TIMEOUT_MS: false when the probe has not
+ * finished by then. A probe a dead connection holds cannot be killed before that connection is aborted; it
+ * is left behind, and `exited` settles once it is gone.
+ */
+export function startMountProbe(path: string): MountProbe {
+  const probe = spawn('stat', ['-t', path], { cwd: '/', stdio: 'ignore' });
+  const exited = new Promise<void>((resolve) => {
+    probe.once('exit', () => resolve());
+    probe.once('error', () => resolve());
+  });
+  const answers = new Promise<boolean>((resolve) => {
+    const timer = setTimeout(() => {
+      probe.kill('SIGKILL');
+      probe.unref();
+      resolve(false);
+    }, MOUNT_ANSWER_TIMEOUT_MS);
+    probe.once('error', () => {
+      clearTimeout(timer);
+      resolve(false);
+    });
+    probe.once('exit', (code) => {
+      clearTimeout(timer);
+      resolve(code === 0);
+    });
+  });
+  return { answers, exited };
+}
+
+/** Whether the mount at `path` answers (`startMountProbe`). */
+export async function mountAnswers(path: string): Promise<boolean> {
+  return await startMountProbe(path).answers;
+}
+
+/** How long one answer of a shared folder stands before the folder is asked again. */
+const SHARED_FOLDER_ANSWER_FRESH_MS = 10_000;
+
+export type SharedFolderPathCheck = Readonly<{ inSharedFolder: boolean; problem: string | null }>;
+
+/**
+ * Checks a path before this process starts anything there or touches it. A folder another computer shares
+ * here answers only while that computer's connection is up; anything started in it while the connection
+ * hangs (a process's working directory, a stat, a realpath) waits until the connection is ended, and in a
+ * daemon that holds every other request too. So a path in a shared folder is used only while the folder
+ * answers. A path elsewhere costs one read of the mount table. One probe at a time per folder: an answer
+ * stands for 10 s, and while a probe is held by a dead connection no other is started.
+ */
+export function createSharedFolderHealth(deps: Readonly<{
+  homeDir?: () => string;
+  readMountinfo?: () => string;
+  probe?: (path: string) => MountProbe;
+  now?: () => number;
+}> = {}) {
+  const homeDirOf = deps.homeDir ?? homedir;
+  const readTable = deps.readMountinfo ?? readMountinfoIfAny;
+  const probe = deps.probe ?? startMountProbe;
+  const now = deps.now ?? Date.now;
+  const asked = new Map<string, { at: number; answers: Promise<boolean>; probeRunning: boolean }>();
+  return {
+    /** Whether `path` lies in a shared folder: one read of the mount table, nothing touches the folder. */
+    covers(path: string): boolean {
+      return listSharedFolderMounts(homeDirOf(), readTable()).some((mount) => isWithin(path, mount.path));
+    },
+    async check(path: string): Promise<SharedFolderPathCheck> {
+      const homeDir = homeDirOf();
+      const mount = listSharedFolderMounts(homeDir, readTable())
+        .filter((candidate) => isWithin(path, candidate.path))
+        .sort((left, right) => right.path.length - left.path.length)[0];
+      if (!mount) return { inSharedFolder: false, problem: null };
+      const key = `${mount.device} ${mount.path}`;
+      let entry = asked.get(key);
+      if (!entry || (!entry.probeRunning && now() - entry.at > SHARED_FOLDER_ANSWER_FRESH_MS)) {
+        const started = probe(mount.path);
+        const fresh = { at: now(), answers: started.answers, probeRunning: true };
+        void started.exited.then(() => {
+          fresh.probeRunning = false;
+        });
+        asked.set(key, fresh);
+        entry = fresh;
+      }
+      if (await entry.answers) return { inSharedFolder: true, problem: null };
+      const shown = isWithin(mount.path, homeDir) ? `~/${relative(homeDir, mount.path)}` : mount.path;
+      return {
+        inSharedFolder: true,
+        problem: `${shown} is a folder the computer ${mount.label} shares here, and that computer is not answering now (asleep or offline). Try again once it is back.`,
+      };
+    },
+  };
+}
+
+const sharedFolderHealth = createSharedFolderHealth();
+
+/**
+ * `createSharedFolderHealth()` for this process. Callers ask `isInSharedFolder` first and await
+ * `checkSharedFolderPath` only for a path in a shared folder, so everything else starts as before.
+ */
+export const isInSharedFolder = (path: string): boolean => sharedFolderHealth.covers(path);
+export const checkSharedFolderPath = (path: string): Promise<SharedFolderPathCheck> => sharedFolderHealth.check(path);

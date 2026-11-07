@@ -11,6 +11,7 @@ import { validatePath } from '@/rpc/handlers/pathSecurity';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
 import { toRepoRootLiteralPathspec } from './backends/git/literalPathspec';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
 
 export type ScmExecResult = {
     success: boolean;
@@ -86,7 +87,7 @@ function writeChildStdin(childStdin: ChildStdinLike | null | undefined, stdin: s
     }
 }
 
-export function runScmCommand(input: {
+export async function runScmCommand(input: {
     bin: 'git' | 'sl';
     cwd: string;
     args: string[];
@@ -95,9 +96,19 @@ export function runScmCommand(input: {
     maxOutputBytes?: number;
     env?: Record<string, string | undefined>;
 }): Promise<ScmExecResult> {
-    return new Promise((resolvePromise) => {
-        const child = spawn(input.bin, input.args, {
-            cwd: input.cwd,
+    // In a folder another computer shares here: only while it answers, and started outside it and pointed
+    // at it (-C / --cwd). Started inside a folder whose connection hangs, the process would hold this one.
+    const inSharedFolder = isInSharedFolder(input.cwd);
+    if (inSharedFolder) {
+        const shared = await checkSharedFolderPath(input.cwd);
+        if (shared.problem) return { success: false, stdout: '', stderr: shared.problem, exitCode: -1 };
+    }
+    const args = inSharedFolder
+        ? [input.bin === 'git' ? '-C' : '--cwd', input.cwd, ...input.args]
+        : input.args;
+    return await new Promise((resolvePromise) => {
+        const child = spawn(input.bin, args, {
+            cwd: inSharedFolder ? '/' : input.cwd,
             env: input.env ? { ...process.env, ...input.env } : process.env,
             stdio: ['pipe', 'pipe', 'pipe'],
             windowsHide: true,
@@ -154,6 +165,8 @@ export function runScmCommand(input: {
         const timer = setTimeout(() => {
             timedOut = true;
             child.kill('SIGKILL');
+            // Answer now: a process a hung folder holds cannot end before that folder's connection does.
+            done({ success: false, stdout, stderr, exitCode: -1, timedOut, outputLimitExceeded });
         }, timeoutMs);
 
         child.stdout.on('data', (chunk) => {

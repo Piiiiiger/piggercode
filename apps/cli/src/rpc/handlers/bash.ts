@@ -6,6 +6,7 @@ import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { MACHINE_COMMAND_DEFAULT_TIMEOUT_MS } from '@piggercode/protocol';
 import type { FilesystemAccessPolicy } from './fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from './fileSystem/accessPolicy/filesystemPathAuthorization';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
 
 const execAsync = promisify(exec);
 
@@ -113,6 +114,12 @@ async function executeArgvRequest(
  */
 export async function executeShellCommandRequest(data: BashRequest, cwd: string | undefined): Promise<BashResponse> {
     try {
+        // Never in a folder another computer shares here while it does not answer: the shell would wait
+        // on its connection and hold this process (`checkSharedFolderPath`).
+        if (typeof cwd === 'string' && isInSharedFolder(cwd)) {
+            const shared = await checkSharedFolderPath(cwd);
+            if (shared.problem) return { success: false, stdout: '', stderr: shared.problem, exitCode: 1, error: shared.problem };
+        }
         // Build options with shell enabled by default
         // Note: ExecOptions doesn't support boolean for shell, but exec() uses the default shell when shell is undefined
         const options: ExecOptions = {

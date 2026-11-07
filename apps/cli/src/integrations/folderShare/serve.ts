@@ -6,9 +6,11 @@ import { listAcceptedComputers } from './acceptedComputers';
 import { parseServerLocation } from './serverLocation';
 import {
   COMPUTER_LABEL_PATTERN,
+  MOUNT_ANSWER_TIMEOUT_MS,
   SHARED_FOLDER_SOURCE_PREFIX,
   isWithin,
   listSharedFolderMounts,
+  mountAnswers,
   readMountinfo,
   type SharedFolderMount,
 } from './sharedFolderMounts';
@@ -26,8 +28,6 @@ import { serverPlaceProblem } from './serverPlace';
  */
 
 const SSHFS_OPTIONS = 'passive,idmap=user,dir_cache=yes,dcache_timeout=10';
-/** A mount that does not answer a `stat` within this long is the dead end of a dropped connection. */
-const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
 
 export type SharedFoldersServeSystem = Readonly<{
   readMountinfo: () => string;
@@ -249,22 +249,7 @@ function parseMountRequest(originalCommand: string | undefined): Readonly<{ fold
 
 const osServeSystem: SharedFoldersServeSystem = {
   readMountinfo,
-  answers: async (path) => await new Promise<boolean>((resolve) => {
-    const probe = spawn('stat', ['-t', path], { stdio: 'ignore' });
-    const timer = setTimeout(() => {
-      probe.kill('SIGKILL');
-      probe.unref();
-      resolve(false);
-    }, MOUNT_ANSWER_TIMEOUT_MS);
-    probe.once('error', () => {
-      clearTimeout(timer);
-      resolve(false);
-    });
-    probe.once('exit', (code) => {
-      clearTimeout(timer);
-      resolve(code === 0);
-    });
-  }),
+  answers: mountAnswers,
   // fusectl names a connection by its device, which for FUSE (major 0) is the minor number.
   abortConnection: (device) => {
     const minor = /^0:(\d+)$/.exec(device)?.[1];

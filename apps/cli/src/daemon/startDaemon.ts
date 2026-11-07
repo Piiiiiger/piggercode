@@ -393,6 +393,7 @@ import {
 import { requestPlannedRunnerRestart } from './plannedRunnerRestart/requestPlannedRunnerRestart';
 import { createRestartCompletionWaiters } from './plannedRunnerRestart/completionWaiters';
 import type { PlannedRunnerRestartNotSignaledReason } from './plannedRunnerRestart/types';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
 import {
   summarizeSessionRunnerEndpoint,
   restartAllSessionRunnersOnCurrentRuntime,
@@ -3282,6 +3283,14 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
             return await spawnConcurrencyGate.run(async () => {
               const resolvedDirectory = normalizedOptions.directory;
+              // A folder of a computer that is not answering would hold this daemon: a session started there
+              // waits on its dead connection, and so would every other request (`checkSharedFolderPath`).
+              if (typeof resolvedDirectory === 'string' && isInSharedFolder(resolvedDirectory)) {
+                const sharedFolder = await checkSharedFolderPath(resolvedDirectory);
+                if (sharedFolder.problem) {
+                  return { type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED, errorMessage: sharedFolder.problem };
+                }
+              }
               let {
                 directory,
                 sessionId,
