@@ -341,9 +341,23 @@ function applySnapshotToSpawnOptions(
   return next;
 }
 
+/**
+ * A 「终端」 session is one CLI's conversation, so it reopens with that CLI even when a request names
+ * another agent (the 0.3.22 app reopened every terminal session as Claude).
+ */
+function keepTerminalSessionAgent(params: ResolveSessionRuntimeSnapshotParams): ResolveSessionRuntimeSnapshotParams {
+  if (params.persistedMetadata?.nativeTerminal !== true) return params;
+  const agentId = inferAgentIdFromSessionMetadata(params.persistedMetadata);
+  const requested = params.incomingOptions.backendTarget;
+  if (!agentId || requested?.kind !== 'builtInAgent' || requested.agentId === agentId) return params;
+  const { resume: _resumeForAnotherAgent, ...incomingOptions } = params.incomingOptions;
+  return { ...params, incomingOptions: { ...incomingOptions, backendTarget: { kind: 'builtInAgent', agentId } } };
+}
+
 export function resolveSessionRuntimeSnapshot(
-  params: ResolveSessionRuntimeSnapshotParams,
+  rawParams: ResolveSessionRuntimeSnapshotParams,
 ): ResolveSessionRuntimeSnapshotResult {
+  const params = keepTerminalSessionAgent(rawParams);
   const connectedServices = chooseConnectedServicesCandidate([
     readConnectedServicesCandidate(
       params.persistedMetadata?.connectedServices,
@@ -398,10 +412,10 @@ export function resolveSessionRuntimeSnapshot(
 
   const persistedNativeEnvironment = readSessionNativeEnvironment(params.persistedMetadata?.nativeAgentEnvironmentV1);
   const trackedNativeEnvironment = readSessionNativeEnvironment(params.trackedSpawnOptions?.environmentVariables);
-  // A session keeps the kind it was created with: a 「终端」 session respawns as one, and a request
-  // cannot turn an existing chat session into one.
-  const { nativeTerminal: _requestedNativeTerminal, ...incomingOptions } = params.incomingOptions;
-  const nativeTerminal = params.persistedMetadata?.nativeTerminal === true
+  const { nativeTerminal: requestedNativeTerminal, ...incomingOptions } = params.incomingOptions;
+  // A 「终端」 session stays one; a chat session becomes one when the app opens it as a terminal.
+  const nativeTerminal = requestedNativeTerminal === true
+    || params.persistedMetadata?.nativeTerminal === true
     || params.trackedSpawnOptions?.nativeTerminal === true;
   return {
     snapshot,

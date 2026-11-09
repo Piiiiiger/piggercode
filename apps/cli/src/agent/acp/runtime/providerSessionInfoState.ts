@@ -24,6 +24,13 @@ export function applyProviderSessionInfoUpdate(params: Readonly<{
   sessionId: string;
   observedAt: number;
   update: ProviderSessionInfoUpdate;
+  /**
+   * `initialize` (default, chat sessions): the provider's title names an untitled session once.
+   * `follow` (「终端」 sessions, where the CLI is the only one naming the conversation): the session
+   * title keeps following the provider's title, across renames and new conversations, until the
+   * session is named differently.
+   */
+  titlePolicy?: 'initialize' | 'follow';
 }>): Metadata {
   const currentParse = ProviderSessionInfoV1Schema.safeParse(params.metadata.providerSessionInfoV1);
   const current = currentParse.success ? currentParse.data : undefined;
@@ -42,7 +49,11 @@ export function applyProviderSessionInfoUpdate(params: Readonly<{
   if (!parsed.success) return params.metadata;
 
   const providerTitle = parsed.data.title;
-  const shouldInitializeTitle = !hasDurableHappierTitle(params.metadata)
+  const previousProviderTitle = typeof current?.title === 'string' ? current.title.trim() : '';
+  const titleFollowsProvider = params.titlePolicy === 'follow'
+    && previousProviderTitle.length > 0
+    && params.metadata.summary?.text?.trim() === previousProviderTitle;
+  const shouldInitializeTitle = (!hasDurableHappierTitle(params.metadata) || titleFollowsProvider)
     && typeof providerTitle === 'string'
     && providerTitle.length > 0;
 

@@ -41,7 +41,7 @@ function baseIncomingOptions(overrides: Partial<SpawnSessionOptions> = {}): Spaw
 }
 
 describe('resolveSessionRuntimeSnapshot', () => {
-  it('keeps a 「终端」 session a terminal session on every respawn and never turns a chat session into one', () => {
+  it('keeps a 「终端」 session a terminal session on every respawn, and opens a chat session as one only when asked', () => {
     const fromMetadata = resolveSessionRuntimeSnapshot({
       incomingOptions: baseIncomingOptions(),
       persistedMetadata: { nativeTerminal: true },
@@ -55,11 +55,30 @@ describe('resolveSessionRuntimeSnapshot', () => {
     });
     expect(fromTracked.spawnOptions.nativeTerminal).toBe(true);
 
-    const chat = resolveSessionRuntimeSnapshot({
+    const chatReopenedAsTerminal = resolveSessionRuntimeSnapshot({
       incomingOptions: baseIncomingOptions({ nativeTerminal: true }),
       persistedMetadata: { flavor: 'claude' },
     });
+    expect(chatReopenedAsTerminal.spawnOptions.nativeTerminal).toBe(true);
+
+    const chat = resolveSessionRuntimeSnapshot({
+      incomingOptions: baseIncomingOptions(),
+      persistedMetadata: { flavor: 'claude' },
+    });
     expect(chat.spawnOptions.nativeTerminal).toBeUndefined();
+  });
+
+  it('reopens a 「终端」 session with its own CLI and conversation even when the request names another agent', () => {
+    // The 0.3.22 app reopened every terminal session as Claude.
+    const reopened = resolveSessionRuntimeSnapshot({
+      incomingOptions: baseIncomingOptions({ backendTarget: { kind: 'builtInAgent', agentId: 'claude' } }),
+      persistedMetadata: { flavor: 'codex', nativeTerminal: true, codexSessionId: 'thread-1' },
+    });
+    expect(reopened.spawnOptions).toMatchObject({
+      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+      resume: 'thread-1',
+      nativeTerminal: true,
+    });
   });
 
   it('restores native account directories through the runtime snapshot while preserving explicit overrides', () => {

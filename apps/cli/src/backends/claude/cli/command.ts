@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { runClaude, type StartOptions } from '@/backends/claude/runClaude';
-import { runClaudeNativeTerminal } from '@/backends/claude/nativeTerminal/runClaudeNativeTerminal';
+import { claudeNativeTerminal } from '@/backends/claude/nativeTerminal/claudeNativeTerminal';
 import { isClaudeCliJavaScriptFile } from '@/backends/claude/utils/resolveClaudeCliPath';
 import { readCredentials, readSettings } from '@/persistence';
 import { logger } from '@/ui/logger';
@@ -17,6 +17,7 @@ import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfile
 import { resolveProfileForAgent } from '@/settings/profiles/resolveProfileForAgent';
 import { resolveProviderOutgoingMessageMetaExtras } from '@/settings/providerSettings';
 import { ensureDaemonRunningForSessionCommand, shouldAutoStartDaemonAfterAuth } from '@/daemon/ensureDaemon';
+import { runNativeTerminal } from '@/terminal/nativeTerminal/runNativeTerminal';
 import { isInteractiveTerminal } from '@/terminal/prompts/promptInput';
 import { promptSecret } from '@/terminal/prompts/promptSecret';
 import { configuration } from '@/configuration';
@@ -302,11 +303,12 @@ ${chalk.bold.cyan(`Claude Code Options (from \`${providerHelpCommand}\`):`)}
     try {
       await withSessionRunnerOwnership(async () => {
         if (options.existingSessionId) await claimSessionRunnerOwnership(options.existingSessionId);
-        await runClaudeNativeTerminal({
+        await runNativeTerminal({
+          provider: claudeNativeTerminal,
           credentials,
           startedBy,
           ...(options.existingSessionId ? { existingSessionId: options.existingSessionId } : {}),
-          ...(parsed.resume ? { resumeClaudeSessionId: parsed.resume } : {}),
+          ...(parsed.resume ? { resumeId: parsed.resume } : {}),
           terminalRuntime: context.terminalRuntime,
         });
       });

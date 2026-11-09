@@ -3324,7 +3324,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
               // NOTE: existing-session idempotency is handled before entering the spawn concurrency gate.
               let effectiveResume = normalizedResume;
-              const catalogAgentId = resolveCatalogAgentIdFromBackendTarget(backendTarget);
+              let catalogAgentId = resolveCatalogAgentIdFromBackendTarget(backendTarget);
 
               let sessionAttachPayload: import('@/agent/runtime/sessionAttachPayload').SessionAttachFilePayload | null = null;
               let existingSessionPersistedMetadata: Record<string, unknown> | null = null;
@@ -3374,6 +3374,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   ...runtimeSnapshot.spawnOptions,
                   ...(requestExecutionAuthorization ? { executionAuthorization: requestExecutionAuthorization } : {}),
                 };
+                // The snapshot keeps a 「终端」 session on its own CLI whatever agent the request named.
+                backendTarget = normalizedOptions.backendTarget;
+                catalogAgentId = resolveCatalogAgentIdFromBackendTarget(backendTarget);
                 resume = normalizedOptions.resume;
                 permissionMode = normalizedOptions.permissionMode;
                 permissionModeUpdatedAt = normalizedOptions.permissionModeUpdatedAt;

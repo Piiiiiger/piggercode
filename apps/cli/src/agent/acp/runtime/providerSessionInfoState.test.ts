@@ -47,6 +47,46 @@ describe('applyProviderSessionInfoUpdate', () => {
     expect(updated.providerSessionInfoV1?.title).toBe('Later provider title');
   });
 
+  it('keeps a terminal session named after its CLI\'s title, until the session is named differently', () => {
+    const named = applyProviderSessionInfoUpdate({
+      metadata: createMetadata(),
+      provider: 'claude',
+      sessionId: 'c-1',
+      observedAt: 100,
+      update: { title: 'Fix login' },
+      titlePolicy: 'follow',
+    });
+    const renamedInCli = applyProviderSessionInfoUpdate({
+      metadata: named,
+      provider: 'claude',
+      sessionId: 'c-1',
+      observedAt: 200,
+      update: { title: 'Login fix, part 2' },
+      titlePolicy: 'follow',
+    });
+    expect(renamedInCli.summary).toEqual({ text: 'Login fix, part 2', updatedAt: 200 });
+
+    const nextConversation = applyProviderSessionInfoUpdate({
+      metadata: renamedInCli,
+      provider: 'claude',
+      sessionId: 'c-2',
+      observedAt: 300,
+      update: { title: 'Release notes' },
+      titlePolicy: 'follow',
+    });
+    expect(nextConversation.summary).toEqual({ text: 'Release notes', updatedAt: 300 });
+
+    const renamedInApp = applyProviderSessionInfoUpdate({
+      metadata: { ...nextConversation, summary: { text: 'My name', updatedAt: 400 } },
+      provider: 'claude',
+      sessionId: 'c-2',
+      observedAt: 500,
+      update: { title: 'Release notes v2' },
+      titlePolicy: 'follow',
+    });
+    expect(renamedInApp.summary).toEqual({ text: 'My name', updatedAt: 400 });
+  });
+
   it('never overwrites an explicit durable PiggerCode title', () => {
     const updated = applyProviderSessionInfoUpdate({
       metadata: createMetadata({

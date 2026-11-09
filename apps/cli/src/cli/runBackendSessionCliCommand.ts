@@ -26,6 +26,7 @@ import {
 import { partitionProviderSessionArgs, type ProviderSessionArgPartitionResult } from '@/cli/providerSessionArgPartition';
 import { buildRootHelpText } from '@/cli/buildRootHelpText';
 import { claimSessionRunnerOwnership, withSessionRunnerOwnership } from '@/daemon/sessionRunnerLock';
+import { runNativeTerminal, type NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
 import { isInteractiveTerminal } from '@/terminal/prompts/promptInput';
 import { promptSecret } from '@/terminal/prompts/promptSecret';
 import { maybePassthroughProviderCliInfoRequest, passthroughProviderCliArgs } from '@/cli/providerCliPassthrough';
@@ -95,6 +96,8 @@ export async function runBackendSessionCliCommand<Extra extends Record<string, u
   versionFlags?: readonly string[];
   resolveExtraOptions?: (args: string[], parsed: ProviderSessionArgPartitionResult) => Extra;
   resolveDirectConnectedServiceEnvironmentFn?: typeof resolveDirectConnectedServiceEnvironment;
+  /** Runs `--native-terminal` sessions: the provider's own CLI with nothing PiggerCode adds. */
+  loadNativeTerminal?: () => Promise<NativeTerminalProvider>;
 }): Promise<void> {
   return withSessionRunnerOwnership(async () => {
     try {
@@ -165,7 +168,11 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
         await claimSessionRunnerOwnership(normalizedExistingSessionId);
       }
 
-      const runPromise = params.loadRun();
+      if (parsed.nativeTerminal && !params.loadNativeTerminal) {
+        throw new Error(`${agentId ?? 'This agent'} has no terminal sessions.`);
+      }
+      const nativeTerminalPromise = parsed.nativeTerminal ? params.loadNativeTerminal?.() ?? null : null;
+      const runPromise = nativeTerminalPromise ? null : params.loadRun();
 
       let credentials = await readCredentials();
       if (!credentials) {
@@ -186,7 +193,20 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
         }
       }
 
-      const run = await runPromise;
+      if (nativeTerminalPromise) {
+        // A 「终端」 session: none of the account-settings defaults, profiles or connected services
+        // below; the CLI runs as the user's own.
+        await runNativeTerminal({
+          provider: await nativeTerminalPromise,
+          credentials,
+          startedBy,
+          ...(normalizedExistingSessionId ? { existingSessionId: normalizedExistingSessionId } : {}),
+          ...(resume ? { resumeId: resume } : {}),
+          terminalRuntime: params.context.terminalRuntime,
+        });
+        return;
+      }
+      const run = await (runPromise ?? params.loadRun());
 
       let accountSettingsContext: AccountSettingsContext | null = null;
       const agentIdForProfiles = params.agentIdForAccountSettings ?? params.agentIdForDeprecatedAliases;

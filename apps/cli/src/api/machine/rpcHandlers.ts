@@ -726,6 +726,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
       codexBackendMode,
       agentRuntimeDescriptorV1,
       mcpSelection,
+      nativeTerminal,
       sourceContext,
       requestOrigin,
     } = params || {};
@@ -911,6 +912,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
       windowsRemoteSessionLaunchMode,
       windowsRemoteSessionConsole,
       mcpSelection: normalizedMcpSelection,
+      ...(nativeTerminal === true ? { nativeTerminal: true } : {}),
       ...(normalizedAgentRuntimeDescriptorV1 ? { agentRuntimeDescriptorV1: normalizedAgentRuntimeDescriptorV1 } : {}),
       ...(normalizedCodexBackendMode ? { codexBackendMode: normalizedCodexBackendMode } : {}),
     });

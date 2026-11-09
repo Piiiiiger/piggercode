@@ -12,6 +12,7 @@ function resolveCodexDaemonBackendMode(params: DaemonSpawnRuntimeSelection): 'mc
 }
 
 export const codexDaemonSpawnHooks: DaemonSpawnHooks = {
+  nativeTerminalPresentation: { kind: 'runner', startingMode: 'local' },
   resolveTerminalPresentation: ({ host, runtimeSelection, processEnv }) => {
     const admitted = processEnv.PIGGERCODE_CODEX_BACKEND_MODE;
     const mode = resolveCodexBackendModeForRun({

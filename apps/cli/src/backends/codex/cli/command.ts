@@ -9,6 +9,7 @@ export async function handleCodexCliCommand(context: CommandContext): Promise<vo
   await runBackendSessionCliCommand({
     context,
     loadRun: async () => (await import('@/backends/codex/runCodex')).runCodex,
+    loadNativeTerminal: async () => (await import('@/backends/codex/nativeTerminal/codexNativeTerminal')).codexNativeTerminal,
     agentIdForAccountSettings: 'codex',
     directoryFlags: ['-C', '--cd'],
     forwardModelFlag: true,

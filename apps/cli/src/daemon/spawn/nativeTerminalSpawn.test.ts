@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { claudeDaemonSpawnHooks } from '@/backends/claude/daemon/spawnHooks';
+import { codexDaemonSpawnHooks } from '@/backends/codex/daemon/spawnHooks';
 import { resolveTerminalRequestFromSpawnOptions } from '@/terminal/runtime/terminalConfig';
 
 import { resolveNativeTerminalHostRequest, resolveNativeTerminalSpawn } from './nativeTerminalSpawn';
@@ -10,6 +11,13 @@ describe('resolveNativeTerminalSpawn', () => {
     expect(resolveNativeTerminalSpawn({ requested: true, agentId: 'claude', hooks: claudeDaemonSpawnHooks })).toEqual({
       ok: true,
       presentation: { kind: 'runner', startingMode: 'local', childEnv: { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '0' } },
+    });
+  });
+
+  it('starts Codex terminal sessions as a local runner', () => {
+    expect(resolveNativeTerminalSpawn({ requested: true, agentId: 'codex', hooks: codexDaemonSpawnHooks })).toEqual({
+      ok: true,
+      presentation: { kind: 'runner', startingMode: 'local' },
     });
   });
 

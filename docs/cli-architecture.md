@@ -1720,19 +1720,30 @@ Sessions can be started by:
 
 Daemon session spawning uses `registerCommonHandlers` to expose a controlled RPC surface (shell commands, file operations, search/diff helpers).
 
-**Terminal sessions (「终端」).** A spawn with `nativeTerminal` starts the agent's own terminal app instead of
-a chat: for Claude, plain `claude` in a tmux window (`backends/claude/nativeTerminal/`). The provider's
-spawn hooks own it (`nativeTerminalPresentation`; an agent without one refuses the request), the daemon
-always hosts it in tmux and fails rather than start it without a terminal, and the runner gets
-`--native-terminal` (`buildHappySessionControlArgs`). That runner adds no system prompt, MCP server, hooks
-or settings: `claude` gets only `--session-id <id>`, or `--resume <id>` once the conversation has a
-transcript. It registers the session (metadata `nativeTerminal: true`, `claudeSessionId`), keeps it alive,
-names it from Claude's own title in the transcript (`readClaudeTitleRecord` through
-`applyProviderSessionInfoUpdate`), stops `claude` when the app stops the session, and ends the session when
-`claude` exits, keeping a failed exit on screen until Enter. Respawns keep the kind the session was made
-with (`resolveSessionRuntimeSnapshot`), and spawn coalescing never joins a terminal and a chat request. The
-app shows such a session as that terminal, attached with `piggercode attach`, and starts or reopens one only
-where the daemon publishes `daemonNativeTerminalSessionsSupported` (`machineStartsNativeTerminalSessions`).
+**Terminal sessions (「终端」).** Claude and Codex sessions run as the agent's own terminal app, not a chat: plain
+`claude` or `codex` in a tmux window. A spawn with `nativeTerminal` (also on the machine RPC, which passes it
+through `buildBaseSpawnOptions`) starts one; the provider's spawn hooks own it (`nativeTerminalPresentation`;
+an agent without one refuses the request), the daemon always hosts it in tmux and fails rather than start it
+without a terminal, and the runner gets `--native-terminal` (`buildHappySessionControlArgs`). The runner
+(`terminal/nativeTerminal/runNativeTerminal.ts`, with each provider's launch in
+`backends/<provider>/nativeTerminal/`) adds no system prompt, MCP server, hooks or settings. It takes the text
+typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
+would queue it, and passes it as the CLI's first prompt after `--`. `claude` gets only `--session-id <id>`, or
+`--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`. Codex
+cannot be told a new thread's id, so the runner reads it every 3 s from the files the `codex` process (or its
+child, for an npm wrapper) holds open: the rollout and `thread-writer-locks/<id>.lock` (Linux `/proc`, macOS
+`lsof`), and records it as `codexSessionId`, following `/new` and `/resume`. Titles come from the CLI: Claude's
+own title in the transcript (`readClaudeTitleRecord`), Codex's thread name in `session_index.jsonl` or else its
+first message, through `applyProviderSessionInfoUpdate`. The runner stops the CLI when the app stops the
+session and ends the session when the CLI exits, keeping a failed exit on screen until Enter. Respawns keep a
+terminal a terminal (`resolveSessionRuntimeSnapshot`), and a chat session becomes one when a request asks for
+it; its chat runtime record (`agentRuntimeDescriptorV1`) is dropped on attach so the conversation the terminal
+writes is the one reopened. Spawn coalescing never joins a terminal and a chat request. The app
+(`components/sessions/nativeTerminal/nativeTerminalSessions.ts`) starts every Claude and Codex session as a
+terminal, shows a stopped chat session as its terminal (reopening it resumes the same conversation), and
+offers 「切到终端」 on a chat that still runs (stop, wait until it ended, reopen). It does so only where the
+daemon publishes `daemonNativeTerminalSessionsSupported`; elsewhere sessions stay chats. A daemon from CLI
+0.3.16–0.3.17 starts Claude terminals only and refuses Codex ones ("codex has no terminal sessions").
 PiggerCode's queue, ready push, stuck-turn watchdog and subagent limit belong to the chat runtime and do not
 apply.
 
