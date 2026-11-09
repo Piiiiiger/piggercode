@@ -5,6 +5,7 @@ import { renderHook, renderScreen, flushHookEffects } from '@/dev/testkit';
 import { createExpoRouterMock } from '@/dev/testkit/mocks/router';
 import type { Router } from 'expo-router';
 import { createNewSessionPromptStore } from '@/components/sessions/new/hooks/screenModel/newSessionPromptStore';
+import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput/agentInputContracts';
 
 vi.mock('@/text', async () => {
     const { createTextModuleMock } = await import('@/dev/testkit/mocks/text');
@@ -156,7 +157,7 @@ describe('useNewSessionAgentInputPresentation', () => {
         expect(hook.getCurrent().agentInputExtraActionChips.some((chip) => chip.key === 'new-session-automate')).toBe(true);
     });
 
-    it('offers the 终端 chip only for Claude on a machine that starts terminal sessions, and it starts one at once', async () => {
+    it('starts Claude and Codex sessions as terminals where the machine can: an open-terminal chip, and no chips that only shape a chat', async () => {
         const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
         const handleCreateSession = vi.fn();
         const machine = (daemonNativeTerminalSessionsSupported: boolean) => ({
@@ -191,12 +192,12 @@ describe('useNewSessionAgentInputPresentation', () => {
                 agentType,
                 agentOptionState: null,
                 setAgentOptionStateForCurrentAgent: vi.fn(),
-                connectedServicesAuthChip: null,
+                connectedServicesAuthChip: { key: 'test-connected-services-auth' } as AgentInputExtraActionChip,
                 showAutomationActionChips: false,
                 showServerPickerChip: false,
                 targetServerId: null,
                 targetServerName: 'Server A',
-                mcpChip: null,
+                mcpChip: { key: 'test-mcp' } as AgentInputExtraActionChip,
                 directSessionsFeatureEnabled: false,
                 supportsDirectTranscriptStorage: false,
                 transcriptStorage: 'persisted',
@@ -207,17 +208,73 @@ describe('useNewSessionAgentInputPresentation', () => {
                 windowsTerminalAvailable: false,
                 setWindowsRemoteSessionLaunchModeOverride: vi.fn(),
             }));
-            return hook.getCurrent().agentInputExtraActionChips;
+            return hook.getCurrent().agentInputExtraActionChips.map((chip) => chip.key);
         };
 
-        const terminalChip = (await chipsFor('claude', true)).find((chip) => chip.key === 'new-session-native-terminal');
-        expect(terminalChip).toBeDefined();
+        for (const agentType of ['claude', 'codex'] as const) {
+            const keys = await chipsFor(agentType, true);
+            expect(keys).toContain('new-session-native-terminal');
+            expect(keys).not.toContain('test-mcp');
+            expect(keys).not.toContain('test-connected-services-auth');
+        }
+        const onOlderCli = await chipsFor('claude', false);
+        expect(onOlderCli).not.toContain('new-session-native-terminal');
+        expect(onOlderCli).toEqual(expect.arrayContaining(['test-mcp', 'test-connected-services-auth']));
+    });
+
+    it('opens an empty terminal from its chip at once', async () => {
+        const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
+        const handleCreateSession = vi.fn();
+        const hook = await renderHook(() => useNewSessionAgentInputPresentation({
+            theme: sessionAgentInputTheme,
+            selectedMachine: {
+                id: 'm1',
+                metadata: { host: 'vm', platform: 'linux', daemonNativeTerminalSessionsSupported: true },
+            } as unknown as Parameters<typeof useNewSessionAgentInputPresentation>[0]['selectedMachine'],
+            automationFeatureEnabled: false,
+            automationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
+            effectiveAutomationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
+            setAutomationDraft: vi.fn(),
+            repoScmSnapshot: null,
+            checkoutChipModel: { selectedOptionId: 'current_path', options: [{ id: 'current_path', kind: 'current_path', path: '/repo' }] },
+            checkoutPickerOpen: false,
+            setCheckoutPickerOpen: vi.fn(),
+            checkoutCreationDraft: null,
+            selectedMachineId: 'm1',
+            selectedPath: '/repo',
+            setSelectedPath: vi.fn(),
+            setCheckoutCreationDraft: vi.fn(),
+            pendingGitWorktreeBaseRefRef: { current: null },
+            pendingGitWorktreeSourceKindRef: { current: 'current' },
+            shouldReconcileInitialHydratedCheckoutCreationDraftRef: { current: false },
+            router: createExpoRouterMock().state.router as unknown as Router,
+            promptStore: createNewSessionPromptStore(''),
+            setSessionPrompt: vi.fn(),
+            handleCreateSession,
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+            agentType: 'codex',
+            agentOptionState: null,
+            setAgentOptionStateForCurrentAgent: vi.fn(),
+            connectedServicesAuthChip: null,
+            showAutomationActionChips: false,
+            showServerPickerChip: false,
+            targetServerId: null,
+            targetServerName: 'Server A',
+            mcpChip: null,
+            directSessionsFeatureEnabled: false,
+            supportsDirectTranscriptStorage: false,
+            transcriptStorage: 'persisted',
+            hasUserSelectedTranscriptStorageRef: { current: false },
+            setTranscriptStorage: vi.fn(),
+            selectedMachineIsWindows: false,
+            effectiveWindowsRemoteSessionLaunchMode: null,
+            windowsTerminalAvailable: false,
+            setWindowsRemoteSessionLaunchModeOverride: vi.fn(),
+        }));
+        const terminalChip = hook.getCurrent().agentInputExtraActionChips.find((chip) => chip.key === 'new-session-native-terminal');
         const action = terminalChip!.collapsedAction!({ tint: '#000', dismiss: vi.fn(), blurInput: vi.fn() });
         (Array.isArray(action) ? action[0] : action).onPress?.();
         expect(handleCreateSession).toHaveBeenCalledWith({ initialMessage: 'skip', nativeTerminal: true });
-
-        expect((await chipsFor('codex', true)).some((chip) => chip.key === 'new-session-native-terminal')).toBe(false);
-        expect((await chipsFor('claude', false)).some((chip) => chip.key === 'new-session-native-terminal')).toBe(false);
     });
 
     it('adds a link-file chip that appends the selected file path into the draft prompt', async () => {

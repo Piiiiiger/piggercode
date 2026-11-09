@@ -118,16 +118,18 @@ function readSessionActive(sessionId: string): boolean | null {
     return session ? session.active === true : null;
 }
 
-/** How long a delete waits for a session that was asked to stop to end. */
-const STOP_BEFORE_DELETE_WAIT_MS = 15_000;
+/** How long a stop waits for a session that was asked to stop to end. */
+const STOP_WAIT_MS = 15_000;
 
 /**
- * Stops a session that is about to be deleted, so its runner does not keep working on a deleted session (and a
- * linked provider conversation is not written while it is deleted). Resolves to null once its machine stopped
- * it, it has no runner left to stop, or, asked to stop, it ended within 15 s; otherwise to why it could not
- * be stopped. A session this device's list does not show (another server is open now) counts as still running.
+ * Stops a session and waits until its runner is gone: before a delete (so the runner does not keep working on
+ * a deleted session, nor write a linked provider conversation while it is deleted) and before a chat is
+ * reopened as a terminal (so two runners never write one conversation). Resolves to null once its machine
+ * stopped it, it has no runner left to stop, or, asked to stop, it ended within 15 s; otherwise to why it
+ * could not be stopped. A session this device's list does not show (another server is open now) counts as
+ * still running.
  */
-export async function stopSessionBeforeDelete(params: Readonly<{
+export async function stopSessionAndWaitUntilEnded(params: Readonly<{
     sessionId: string;
     stopSession: () => Promise<SessionMutationResult>;
     stopErrorMessage: string;
@@ -146,7 +148,7 @@ export async function stopSessionBeforeDelete(params: Readonly<{
         return resolveSessionStopFailureMessage(stopResult, params.stopErrorMessage);
     }
     const isActive = params.isActive ?? readSessionActive;
-    const deadline = Date.now() + (params.waitMs ?? STOP_BEFORE_DELETE_WAIT_MS);
+    const deadline = Date.now() + (params.waitMs ?? STOP_WAIT_MS);
     while (isActive(params.sessionId) !== false) {
         if (Date.now() >= deadline) return t('sessionInfo.stopSessionStillRunning');
         await delay(Math.min(params.pollMs ?? 250, Math.max(0, deadline - Date.now())));

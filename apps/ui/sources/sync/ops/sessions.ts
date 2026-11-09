@@ -204,6 +204,8 @@ export interface ResumeSessionOptions {
      * before any pending user-message queue is drained.
      */
     initialGoal?: SessionInitialGoalRequestV1;
+    /** Opens the session as its CLI in a terminal (「终端」), including an older chat session. */
+    nativeTerminal?: boolean;
     /**
      * When true, use the requested machine/directory even if the current session metadata
      * still points at a previously reachable machine. This is required for session handoff
@@ -288,6 +290,7 @@ async function runResumeSession(
             initialTranscriptAfterSeq,
             executionAuthorization,
             initialGoal,
+            nativeTerminal,
             preferRequestedMachineTarget,
             preferScopedMachineRpc,
         } = preparedOptions;
@@ -306,8 +309,10 @@ async function runResumeSession(
             };
         }
 
+        const opensAsTerminal = nativeTerminal === true
+            || storage.getState().sessions[sessionId]?.metadata?.nativeTerminal === true;
         if (
-            storage.getState().sessions[sessionId]?.metadata?.nativeTerminal === true
+            opensAsTerminal
             && !machineStartsNativeTerminalSessions({
                 state: storage.getState(),
                 machineId,
@@ -354,6 +359,7 @@ async function runResumeSession(
             ...(typeof initialTranscriptAfterSeq === 'number' ? { initialTranscriptAfterSeq } : {}),
             ...(executionAuthorization ? { executionAuthorization } : {}),
             ...(initialGoal ? { initialGoal } : {}),
+            ...(opensAsTerminal ? { nativeTerminal: true as const } : {}),
             experimentalCodexAcp,
             codexBackendMode,
             ...(agentRuntimeDescriptorV1 ? { agentRuntimeDescriptorV1 } : {}),

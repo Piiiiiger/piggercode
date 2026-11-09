@@ -10,6 +10,7 @@ import { getAgentModelConfig, getAgentSessionModesKind } from '@piggercode/agent
 export const CLAUDE_CORE: AgentCoreConfig = {
     id: 'claude',
     displayNameKey: 'agentInput.agent.claude',
+    nativeTerminalSessions: true,
     subtitleKey: 'profiles.aiBackend.claudeSubtitle',
     permissionModeI18nPrefix: 'agentInput.permissionMode',
     availability: { experimental: false },

@@ -10,6 +10,7 @@ import { getAgentModelConfig, getAgentSessionModesKind } from '@piggercode/agent
 export const CODEX_CORE: AgentCoreConfig = {
     id: 'codex',
     displayNameKey: 'agentInput.agent.codex',
+    nativeTerminalSessions: true,
     subtitleKey: 'profiles.aiBackend.codexSubtitle',
     permissionModeI18nPrefix: 'agentInput.codexPermissionMode',
     availability: { experimental: false },

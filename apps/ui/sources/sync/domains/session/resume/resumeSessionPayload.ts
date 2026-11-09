@@ -43,6 +43,8 @@ export type ResumeHappySessionRpcParams = CodexBackendTransportFields & {
     initialTranscriptAfterSeq?: number;
     executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
     initialGoal?: SessionInitialGoalRequestV1;
+    /** The CLI runs as itself in a terminal; chat backend choices do not apply. */
+    nativeTerminal?: true;
 };
 
 type BuildResumeHappySessionRpcInput = Omit<ResumeHappySessionRpcParams, 'type' | keyof CodexBackendTransportFields> & {
@@ -73,6 +75,7 @@ const ResumeHappySessionRpcParamsSchema = z.object({
     initialTranscriptAfterSeq: z.number().int().min(0).optional(),
     executionAuthorization: SpawnSessionExecutionAuthorizationSchema.optional(),
     initialGoal: SessionInitialGoalRequestV1Schema.optional(),
+    nativeTerminal: z.literal(true).optional(),
     experimentalCodexAcp: z.literal(true).optional(),
     codexBackendMode: z.enum(['mcp', 'acp', 'appServer']).optional(),
 });
@@ -94,7 +97,10 @@ export function buildResumeHappySessionRpcParams(input: BuildResumeHappySessionR
         normalizedModelId !== 'default' &&
         typeof modelUpdatedAt === 'number' &&
         Number.isFinite(modelUpdatedAt);
-    const codexTransportFields = buildCodexBackendTransportFields({ codexBackendMode, experimentalCodexAcp, agentRuntimeDescriptorV1 });
+    // A terminal runs the CLI itself, so no chat backend (mode or runtime record) goes with it.
+    const codexTransportFields: CodexBackendTransportFields = rest.nativeTerminal
+        ? {}
+        : buildCodexBackendTransportFields({ codexBackendMode, experimentalCodexAcp, agentRuntimeDescriptorV1 });
     const canonicalCodexBackendMode = codexTransportFields.codexBackendMode;
 
     const params: ResumeHappySessionRpcParams = {
@@ -108,6 +114,7 @@ export function buildResumeHappySessionRpcParams(input: BuildResumeHappySessionR
                 : {}
         )),
         ...(() => {
+            if (rest.nativeTerminal) return {};
             if (agentRuntimeDescriptorV1) {
                 return { agentRuntimeDescriptorV1 };
             }

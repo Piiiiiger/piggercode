@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { t } from '@/text';
 import { Modal } from '@/modal';
+import { newSessionStartsTerminal } from '@/components/sessions/nativeTerminal/nativeTerminalSessions';
 import { sync } from '@/sync/sync';
 import { useApplySettings } from '@/sync/store/settingsWriters';
 import { storage } from '@/sync/domains/state/storage';
@@ -368,6 +369,19 @@ export function useCreateNewSession(params: Readonly<{
             Modal.alert(t('common.error'), t('newSession.noPathSelected'));
             return;
         }
+        // Claude and Codex sessions start as the CLI's own terminal, which gets the typed text as its
+        // first prompt.
+        const startsTerminal = opts?.nativeTerminal === true || newSessionStartsTerminal({
+            agentId: current.agentType,
+            machine: current.selectedMachine,
+            automationEnabled: current.authoringDraft?.automation?.enabled === true,
+            sourceContext: current.sourceContext != null,
+        });
+        if (startsTerminal && opts?.afterCreated) {
+            // Attachments and review comments travel as a chat message after the start.
+            Modal.alert(t('common.error'), t('newSession.terminalAttachmentsUnsupported'));
+            return;
+        }
 
         const persistedOperationReentry = current.persistedOperationReentry;
         if (persistedOperationReentry) {
@@ -444,7 +458,8 @@ export function useCreateNewSession(params: Readonly<{
                 : current.promptStore.getPrompt();
             const shouldSendInitialMessage = (opts?.initialMessage ?? 'send') !== 'skip';
             const shouldPrepareInitialMessage = shouldSendInitialMessage && sessionPromptText.trim();
-            const resolvedInitialMessage = shouldPrepareInitialMessage
+            // A terminal gets the text exactly as typed (its own slash commands included).
+            const resolvedInitialMessage = shouldPrepareInitialMessage && !startsTerminal
                 ? resolveSessionComposerSend({
                     input: sessionPromptText,
                     executionRunsEnabled: current.executionRunsEnabled === true,
@@ -821,7 +836,7 @@ export function useCreateNewSession(params: Readonly<{
                     ? { profileId: current.selectedProfileId }
                     : {}),
             };
-            let daemonFirstTurnText = '';
+            let daemonFirstTurnText = startsTerminal && shouldSendInitialMessage ? sessionPromptText.trim() : '';
             if (resolvedInitialMessage) {
                 if (daemonOwnsFirstTurn && resolvedInitialMessage.kind === 'template') {
                     daemonFirstTurnText = (await expandPromptTemplateInvocation({
@@ -876,7 +891,7 @@ export function useCreateNewSession(params: Readonly<{
                         sourceContext: current.sourceContext ?? null,
                     }),
                     ...spawnSessionExtras,
-                    ...(opts?.nativeTerminal === true ? { nativeTerminal: true } : {}),
+                    ...(startsTerminal ? { nativeTerminal: true } : {}),
                     spawnNonce: launchAttempt.spawnNonce,
                     userAttemptId: launchAttempt.attemptId,
                     firstTurnLocalId: launchAttempt.firstTurnLocalId,
@@ -1003,7 +1018,9 @@ export function useCreateNewSession(params: Readonly<{
                 let postSpawnSessionRouteSuffix = '';
                 let postSpawnReplacementHref: string | null = null;
                 const createdSessionId = result.sessionId;
-                const shouldRunBuiltInPostSpawnFollowUp = !retryableLaunchAttempt?.phaseErrors.uploading_attachments;
+                // A terminal has no chat to send a first message to: the CLI got it at launch.
+                const shouldRunBuiltInPostSpawnFollowUp = !startsTerminal
+                    && !retryableLaunchAttempt?.phaseErrors.uploading_attachments;
 
                 const runAfterCreatedFollowUp = async (): Promise<void> => {
                     if (!opts?.afterCreated) {
@@ -1259,7 +1276,7 @@ export function useCreateNewSession(params: Readonly<{
                     getStoredSession: (sessionId) => storage.getState().sessions[sessionId] ?? null,
                     ensureSessionVisibleForMessageRoute: sync.ensureSessionVisibleForMessageRoute,
                 });
-                if (opts?.nativeTerminal === true && storage.getState().sessions[createdSessionId]?.active !== true) {
+                if (startsTerminal && storage.getState().sessions[createdSessionId]?.active !== true) {
                     // The terminal opens once the runner is online; until then the session is starting,
                     // not ended (the sessions store settles this marker as the runner comes online).
                     storage.getState().markSessionResuming(createdSessionId);
@@ -1269,7 +1286,7 @@ export function useCreateNewSession(params: Readonly<{
                 const firstTurnTextForRoute = handedFirstTurnToDaemon
                     ? daemonFirstTurnText
                     : initialMessageText.trim();
-                if (firstTurnTextForRoute && !preserveLaunchAttemptForFirstTurnRetry) {
+                if (firstTurnTextForRoute && !preserveLaunchAttemptForFirstTurnRetry && !startsTerminal) {
                     const state = storage.getState();
                     const session = state.sessions[createdSessionId] ?? null;
                     if (session) {

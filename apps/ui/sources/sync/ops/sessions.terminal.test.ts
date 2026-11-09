@@ -75,6 +75,25 @@ describe('session resume terminal settings', () => {
         expect(machineRPC).toHaveBeenCalledWith('machine-1', 'spawn-happy-session', expect.objectContaining({ type: 'resume-session' }), expect.anything());
     });
 
+    it('opens a Codex chat as a terminal on its conversation, without the chat backend it ran on', async () => {
+        const machine = createMachineFixture();
+        storage.setState({
+            machines: { 'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } } },
+        });
+        expect(await resumeSession({
+            ...options,
+            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+            resume: 'thread-1',
+            codexBackendMode: 'appServer',
+            nativeTerminal: true,
+        })).toMatchObject({ type: 'success' });
+
+        const payload = machineRPC.mock.calls[0]?.[2];
+        expect(payload).toMatchObject({ type: 'resume-session', resume: 'thread-1', nativeTerminal: true });
+        expect(payload).not.toHaveProperty('codexBackendMode');
+        expect(payload).not.toHaveProperty('agentRuntimeDescriptorV1');
+    });
+
     it('omits terminal when the resolved machine disables tmux', async () => {
         storage.setState({ settings: {
             ...storage.getState().settings,

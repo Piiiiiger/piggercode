@@ -46,6 +46,11 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
     sourceContextChip?: AgentInputExtraActionChip | null;
     /** Starts a 「终端」 session at once, when the agent and the machine can run one. */
     nativeTerminalChip?: AgentInputExtraActionChip | null;
+    /**
+     * The session starts as the CLI's own terminal: chips that only shape a chat session (its
+     * sign-in, MCP servers, transcript storage, agent options, run shortcuts) would do nothing.
+     */
+    startsTerminal?: boolean;
 }>): ReadonlyArray<AgentInputExtraActionChip> {
     const serverPickerActionChip = React.useMemo<AgentInputExtraActionChip | null>(() => {
         if (!params.showServerPickerChip) return null;
@@ -87,7 +92,8 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
     ]);
 
     return React.useMemo(() => {
-        const baseChips = getNewSessionAgentInputExtraActionChips({
+        const terminal = params.startsTerminal === true;
+        const baseChips = terminal ? [] : getNewSessionAgentInputExtraActionChips({
             agentId: params.agentId,
             agentOptionState: params.agentOptionState,
             setAgentOptionState: params.setAgentOptionState,
@@ -103,7 +109,7 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         if (params.nativeTerminalChip) {
             chips.push(params.nativeTerminalChip);
         }
-        if (params.connectedServicesAuthChip) {
+        if (params.connectedServicesAuthChip && !terminal) {
             chips.push(params.connectedServicesAuthChip);
         }
         if (params.showAutomationActionChips) {
@@ -115,10 +121,10 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         if (serverPickerActionChip) {
             chips.push(serverPickerActionChip);
         }
-        if (params.mcpChip) {
+        if (params.mcpChip && !terminal) {
             chips.push(params.mcpChip);
         }
-        if (storageActionChip) {
+        if (storageActionChip && !terminal) {
             chips.push(storageActionChip);
         }
         if (params.selectedMachineIsWindows && params.windowsRemoteSessionLaunchMode) {
@@ -129,10 +135,12 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
             }));
         }
 
-        chips.push(...buildNewSessionActionShortcutChips({
-            stateSnapshot: storage.getState(),
-            onPressAction: params.onActionShortcutPress,
-        }));
+        if (!terminal) {
+            chips.push(...buildNewSessionActionShortcutChips({
+                stateSnapshot: storage.getState(),
+                onPressAction: params.onActionShortcutPress,
+            }));
+        }
 
         return [...chips, ...baseChips];
     }, [
@@ -147,6 +155,7 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         params.setAgentOptionState,
         params.showAutomationActionChips,
         params.sourceContextChip,
+        params.startsTerminal,
         params.windowsRemoteSessionLaunchMode,
         params.windowsTerminalAvailable,
         params.onWindowsRemoteSessionLaunchModeChange,

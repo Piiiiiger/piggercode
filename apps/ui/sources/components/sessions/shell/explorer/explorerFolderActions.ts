@@ -1,6 +1,6 @@
 import { Modal } from '@/modal';
 import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
-import { stopSessionBeforeDelete } from '@/components/sessions/sessionStopArchiveFlow';
+import { stopSessionAndWaitUntilEnded } from '@/components/sessions/sessionStopArchiveFlow';
 import {
     countSessionsInExplorerFolder,
     explorerChildFolderPath,
@@ -257,7 +257,7 @@ export async function deleteExplorerFolder(
         const toStop = inside.filter((target) => target.canDelete && sessionRuns(target) && !stopped.has(target.sessionId));
         if (toStop.length === 0) break;
         for (const target of toStop) {
-            const problem = await stopSessionBeforeDelete({
+            const problem = await stopSessionAndWaitUntilEnded({
                 sessionId: target.sessionId,
                 stopSession: async () => await ops.stopSession(target.sessionId, { serverId: folder.serverId }),
                 stopErrorMessage: t('sessionInfo.failedToStopSession'),

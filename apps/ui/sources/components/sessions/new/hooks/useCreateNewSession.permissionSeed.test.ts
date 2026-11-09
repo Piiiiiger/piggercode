@@ -2252,6 +2252,103 @@ describe('useCreateNewSession permission seeding', () => {
         expect(syncSendMessageSpy).not.toHaveBeenCalled();
     });
 
+    function renderCreateSessionHook(
+        harness: Awaited<ReturnType<typeof setupUseCreateNewSessionHarness>>,
+        params: Readonly<{ agentType: 'claude' | 'codex'; machineMetadata: Record<string, unknown>; prompt: string }>,
+    ) {
+        const handle: { current: null | ((opts?: any) => Promise<void>) } = { current: null };
+        const machineEnvPresence: UseMachineEnvPresenceResult = {
+            isPreviewEnvSupported: false,
+            isLoading: false,
+            meta: {},
+            refreshedAt: null,
+            refresh: () => {},
+        };
+        function Test() {
+            const hook = harness.useCreateNewSession({
+                draftId: '8e0a5dd1-b1df-43dd-b51e-b7787b30362e',
+                launchIntentSignature: 'test-launch-intent',
+                router: { push: vi.fn(), replace: vi.fn() },
+                selectedMachineId: 'm1',
+                selectedPath: '/tmp',
+                selectedMachine: {
+                    metadata: params.machineMetadata,
+                    daemonState: { startedWithCliVersion: '0.3.18' },
+                },
+                setIsCreating: vi.fn(),
+                setIsResumeSupportChecking: vi.fn(),
+                settings: { experiments: false } as unknown as Settings,
+                useProfiles: false,
+                selectedProfileId: null,
+                profileMap: new Map(),
+                recentMachinePaths: [],
+                agentType: params.agentType as any,
+                permissionMode: 'default' as PermissionMode,
+                modelMode: 'default' as ModelMode,
+                promptStore: createNewSessionPromptStore(params.prompt),
+                resumeSessionId: '',
+                agentNewSessionOptions: null,
+                machineEnvPresence,
+                secrets: [],
+                secretBindingsByProfileId: {},
+                selectedSecretIdByProfileIdByEnvVarName: {},
+                sessionOnlySecretValueByProfileIdByEnvVarName: {},
+                selectedMachineCapabilities: null,
+                targetServerId: 'server-a',
+                allowedTargetServerIds: ['server-a'],
+            });
+            handle.current = hook.handleCreateSession as any;
+            return React.createElement('View');
+        }
+        return { Test, handle };
+    }
+
+    it.each(['claude', 'codex'] as const)(
+        'starts a %s session as its own CLI in a terminal, typing what was written into it instead of a chat message',
+        async (agentType) => {
+            const harness = await setupUseCreateNewSessionHarness();
+            harness.machineSpawnNewSessionSpy.mockImplementationOnce(async (options: unknown) => {
+                harness.captured.value = options as SpawnPayloadCapture;
+                return { type: 'success', sessionId: 'sess_terminal', pendingFirstInputTransferred: true };
+            });
+            const { Test, handle } = renderCreateSessionHook(harness, {
+                agentType,
+                machineMetadata: { daemonNativeTerminalSessionsSupported: true },
+                prompt: 'Fix the login bug',
+            });
+            await renderScreen(React.createElement(Test));
+
+            await act(async () => {
+                await handle.current?.();
+            });
+
+            expect(harness.captured.value).toEqual(expect.objectContaining({
+                nativeTerminal: true,
+                pendingFirstInput: expect.objectContaining({ text: 'Fix the login bug' }),
+            }));
+            expect(harness.markSessionOptimisticThinkingSpy).not.toHaveBeenCalled();
+            expect(harness.upsertPendingMessageSpy).not.toHaveBeenCalled();
+            expect(harness.followUpSpawnedSessionWithServerScopeSpy).not.toHaveBeenCalled();
+        },
+    );
+
+    it('refuses attachments for a session that starts as a terminal, which has no chat to send them to', async () => {
+        const harness = await setupUseCreateNewSessionHarness();
+        const { Test, handle } = renderCreateSessionHook(harness, {
+            agentType: 'claude',
+            machineMetadata: { daemonNativeTerminalSessionsSupported: true },
+            prompt: 'Look at this screenshot',
+        });
+        await renderScreen(React.createElement(Test));
+
+        await act(async () => {
+            await handle.current?.({ initialMessage: 'skip', afterCreated: vi.fn() });
+        });
+
+        expect(harness.machineSpawnNewSessionSpy).not.toHaveBeenCalled();
+        expect(harness.modalAlertSpy).toHaveBeenCalledWith('common.error', 'newSession.terminalAttachmentsUnsupported');
+    });
+
     it('can skip sending the initial message when requested', async () => {
         const {
             useCreateNewSession,

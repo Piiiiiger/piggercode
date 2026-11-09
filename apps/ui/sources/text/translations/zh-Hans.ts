@@ -4623,9 +4623,10 @@ export const zhHans: TranslationStructure = {
       "请在此机器上启动守护进程，或在创建会话前选择另一台机器。",
     machineOfflineCannotStartStatus: "离线（无法启动会话）",
     nativeTerminalChip: {
-      label: "终端",
-      a11y: "在终端中打开 Claude Code",
+      label: "直接打开",
+      a11y: "不带第一条消息直接打开终端",
     },
+    terminalAttachmentsUnsupported: "终端会话不能带附件。先打开会话，再在终端里把文件路径告诉它。",
     automationChip: {
       default: "自动化",
       interval: ({ minutes }: { minutes: number }) => `每 ${minutes} 分钟`,
@@ -9535,14 +9536,18 @@ settingsSession: {
   },
 
   sessionNativeTerminal: {
-    title: "Claude Code · 终端",
-    aboutTitle: "原生 Claude Code",
-    aboutBody:
-      "这个会话直接在机器上运行 Claude Code，PiggerCode 不加任何提示词、工具或钩子。PiggerCode 的消息排队、完成通知、卡住检测和子代理上限在这里不起作用。",
-    starting: "正在启动 Claude Code…",
+    title: ({ agent }: { agent: string }) => `${agent} · 终端`,
+    aboutTitle: "终端会话",
+    aboutBody: ({ agent }: { agent: string }) =>
+      `这个会话直接在机器上运行 ${agent}，就像在命令行里启动它一样：你在里面打字，它自己的更新、设置和命令都照常生效。PiggerCode 不加任何提示词、工具或钩子，所以 PiggerCode 的消息排队、完成通知、卡住检测和子代理上限在这里不起作用。`,
+    starting: ({ agent }: { agent: string }) => `正在启动 ${agent}…`,
     endedTitle: "终端已关闭",
-    endedBody: "重新打开会继续同一个 Claude Code 对话。",
+    endedBody: "重新打开会继续同一段对话。",
     reopen: "重新打开",
+    switchTitle: "这段对话还在以聊天方式运行",
+    switchBody: ({ agent }: { agent: string }) => `切到终端后，在 ${agent} 里接着这段对话。会先停下聊天。`,
+    switchAction: "切到终端",
+    switchFailed: "没能停下聊天。",
   },
   terminalEmbedded: {
     dockMenuA11y: "停靠终端",

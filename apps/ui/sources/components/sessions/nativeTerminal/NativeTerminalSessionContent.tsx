@@ -2,7 +2,9 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { useSessionMachineTarget } from '@/components/sessions/model/useSessionMachineTarget';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+
+import { getAgentCore } from '@/agents/catalog/catalog';
 import type { EmbeddedTerminalRendererHandle } from '@/components/sessions/terminal/embeddedTerminalRendererHandle';
 import { useSessionEmbeddedTerminalPty } from '@/components/sessions/terminal/useSessionEmbeddedTerminalPty';
 import { EmbeddedTerminalPane } from '@/components/terminal/embedded/EmbeddedTerminalPane';
@@ -13,8 +15,9 @@ import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import { Modal } from '@/modal';
 import { getStorage } from '@/sync/domains/state/storage';
-import { resumeSession } from '@/sync/ops/sessions';
 import { t } from '@/text';
+
+import { reopenSessionAsTerminal } from './openSessionAsTerminal';
 
 type NativeTerminalSessionContentProps = Readonly<{
     sessionId: string;
@@ -22,8 +25,9 @@ type NativeTerminalSessionContentProps = Readonly<{
 }>;
 
 /**
- * The whole view of a 「终端」 session: native Claude Code's own terminal, attached through the
- * machine (`piggercode attach`). There is no transcript or composer; the user types into Claude.
+ * The whole view of a 「终端」 session: the CLI's own terminal (Claude Code or Codex), attached
+ * through the machine (`piggercode attach`). There is no transcript or composer; the user types
+ * into the CLI.
  */
 export const NativeTerminalSessionContent = React.memo(function NativeTerminalSessionContent(props: NativeTerminalSessionContentProps) {
     const state = getStorage()((storeState): 'running' | 'starting' | 'ended' => {
@@ -32,22 +36,26 @@ export const NativeTerminalSessionContent = React.memo(function NativeTerminalSe
         // A start (new or reopened) the machine accepted, until its runner comes online.
         return session?.resumingAt != null ? 'starting' : 'ended';
     });
-    if (state === 'running') return <NativeTerminalSessionPane sessionId={props.sessionId} />;
-    if (state === 'starting') return <NativeTerminalSessionStarting />;
+    const agentName = getStorage()((storeState) => {
+        const agentId = resolveAgentIdFromSessionMetadata(storeState.sessions[props.sessionId]?.metadata);
+        return agentId ? t(getAgentCore(agentId).displayNameKey) : 'CLI';
+    });
+    if (state === 'running') return <NativeTerminalSessionPane sessionId={props.sessionId} agentName={agentName} />;
+    if (state === 'starting') return <NativeTerminalSessionStarting agentName={agentName} />;
     return <NativeTerminalSessionEnded sessionId={props.sessionId} serverId={props.serverId} />;
 });
 
-const NativeTerminalSessionStarting = React.memo(function NativeTerminalSessionStarting() {
+const NativeTerminalSessionStarting = React.memo(function NativeTerminalSessionStarting(props: Readonly<{ agentName: string }>) {
     const { theme } = useUnistyles();
     return (
         <View style={styles.ended} testID="session-native-terminal-starting">
             <ActivitySpinner size="small" color={theme.colors.text.secondary} />
-            <Text style={styles.endedBody}>{t('sessionNativeTerminal.starting')}</Text>
+            <Text style={styles.endedBody}>{t('sessionNativeTerminal.starting', { agent: props.agentName })}</Text>
         </View>
     );
 });
 
-const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(props: Readonly<{ sessionId: string }>) {
+const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(props: Readonly<{ sessionId: string; agentName: string }>) {
     const terminalRef = React.useRef<EmbeddedTerminalRendererHandle | null>(null);
     const controller = useSessionEmbeddedTerminalPty({
         sessionId: props.sessionId,
@@ -55,14 +63,15 @@ const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(
         terminalMode: 'session_attach',
         terminalRef,
     });
+    const { agentName } = props;
     const explain = React.useCallback(() => {
-        Modal.alert(t('sessionNativeTerminal.aboutTitle'), t('sessionNativeTerminal.aboutBody'));
-    }, []);
+        Modal.alert(t('sessionNativeTerminal.aboutTitle'), t('sessionNativeTerminal.aboutBody', { agent: agentName }));
+    }, [agentName]);
 
     return (
         <View style={styles.fill}>
             <EmbeddedTerminalPane
-                title={t('sessionNativeTerminal.title')}
+                title={t('sessionNativeTerminal.title', { agent: agentName })}
                 controller={controller}
                 terminalRef={terminalRef}
                 testIdPrefix="session-native-terminal"
@@ -80,25 +89,15 @@ const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(
 });
 
 const NativeTerminalSessionEnded = React.memo(function NativeTerminalSessionEnded(props: NativeTerminalSessionContentProps) {
-    const machineTarget = useSessionMachineTarget(props.sessionId);
-    const claudeSessionId = getStorage()((state) => state.sessions[props.sessionId]?.metadata?.claudeSessionId ?? null);
+    const [reopening, setReopening] = React.useState(false);
     const reopen = React.useCallback(async () => {
-        if (!machineTarget) {
-            Modal.alert(t('common.error'), t('session.machineOfflineCannotResume'));
-            return;
+        setReopening(true);
+        try {
+            await reopenSessionAsTerminal({ sessionId: props.sessionId, serverId: props.serverId });
+        } finally {
+            setReopening(false);
         }
-        const result = await resumeSession({
-            sessionId: props.sessionId,
-            machineId: machineTarget.machineId,
-            directory: machineTarget.basePath,
-            backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-            ...(claudeSessionId ? { resume: claudeSessionId } : {}),
-            ...(props.serverId ? { serverId: props.serverId } : {}),
-        });
-        if (result.type === 'error') {
-            Modal.alert(t('common.error'), result.errorMessage || t('session.resumeFailed'));
-        }
-    }, [claudeSessionId, machineTarget, props.serverId, props.sessionId]);
+    }, [props.serverId, props.sessionId]);
 
     return (
         <View style={styles.ended} testID="session-native-terminal-ended">
@@ -108,6 +107,7 @@ const NativeTerminalSessionEnded = React.memo(function NativeTerminalSessionEnde
                 size="normal"
                 title={t('sessionNativeTerminal.reopen')}
                 action={reopen}
+                loading={reopening}
                 testID="session-native-terminal-reopen"
             />
         </View>

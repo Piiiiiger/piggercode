@@ -120,6 +120,7 @@ let syncErrorState: {
     serverId?: string;
 } | null = null;
 let isDataReadyState = false;
+let machineState: any = null;
 let sessionState: any = {
     id: 's1',
     seq: 1,
@@ -251,7 +252,7 @@ installSessionShellCommonModuleMocks({
             useAutomations: () => [],
             useSessionAutomationsEnabledCount: () => 0,
             useAllMachines: () => [],
-            useMachine: () => null,
+            useMachine: () => machineState,
         }),
 });
 
@@ -398,6 +399,7 @@ describe('SessionView (data ready gating)', () => {
         endpointConnectivityStatus = 'online';
         syncErrorState = null;
         isDataReadyState = false;
+        machineState = null;
         sessionState = {
             id: 's1',
             seq: 1,
@@ -442,6 +444,42 @@ describe('SessionView (data ready gating)', () => {
         expect(screen.tree.findByType('NativeTerminalSessionContent' as never).props.sessionId).toBe('s1');
         expect(screen.findAllByTestId('session-composer-input')).toHaveLength(0);
         expect(screen.findAllByTestId('session-header-action-menu-trigger')).toHaveLength(1);
+    });
+
+    it('shows a stopped Codex chat as its terminal on a machine that starts terminal sessions, and a running one as a chat that offers the switch', async () => {
+        machineState = { id: 'm1', metadata: { daemonNativeTerminalSessionsSupported: true } };
+        sessionState = { ...sessionState, active: false };
+        const { SessionView } = await sessionViewModulePromise;
+
+        const stopped = await renderScreen(
+            <AppPaneProvider>
+                <SessionView id="s1" />
+            </AppPaneProvider>,
+        );
+        expect(stopped.tree.findByType('NativeTerminalSessionContent' as never).props.sessionId).toBe('s1');
+        expect(stopped.findAllByTestId('session-composer-input')).toHaveLength(0);
+
+        sessionState = { ...sessionState, active: true };
+        const running = await renderScreen(
+            <AppPaneProvider>
+                <SessionView id="s1" />
+            </AppPaneProvider>,
+        );
+        expect(running.tree.findAllByType('NativeTerminalSessionContent' as never)).toHaveLength(0);
+        expect(running.findAllByTestId('session-switch-to-terminal-banner').length).toBeGreaterThan(0);
+    });
+
+    it('keeps a stopped chat a chat on a machine whose CLI cannot start terminal sessions', async () => {
+        sessionState = { ...sessionState, active: false };
+        const { SessionView } = await sessionViewModulePromise;
+
+        const screen = await renderScreen(
+            <AppPaneProvider>
+                <SessionView id="s1" />
+            </AppPaneProvider>,
+        );
+        expect(screen.tree.findAllByType('NativeTerminalSessionContent' as never)).toHaveLength(0);
+        expect(screen.findAllByTestId('session-switch-to-terminal-banner')).toHaveLength(0);
     });
 
     it('does not pass route hydration blocking state into an already loaded same-server session', async () => {

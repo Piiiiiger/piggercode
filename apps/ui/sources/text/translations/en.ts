@@ -4419,9 +4419,10 @@ export const en = {
         machineOfflineInlineBody: 'Start the daemon on this machine or choose another machine before creating a session.',
         machineOfflineCannotStartStatus: 'offline (cannot start session)',
         nativeTerminalChip: {
-            label: 'Terminal',
-            a11y: 'Open Claude Code in a terminal',
+            label: 'Open terminal',
+            a11y: 'Open the terminal without a first message',
         },
+        terminalAttachmentsUnsupported: 'Terminal sessions take no attachments. Open the session, then give the file path in the terminal.',
         automationChip: {
             default: 'Automate',
             interval: ({ minutes }: { minutes: number }) => `Every ${minutes}m`,
@@ -9350,13 +9351,17 @@ settingsSession: {
     },
 
     sessionNativeTerminal: {
-        title: 'Claude Code · Terminal',
-        aboutTitle: 'Native Claude Code',
-        aboutBody: 'This session runs Claude Code itself on the machine, with no PiggerCode prompt, tools or hooks. PiggerCode\'s message queue, done notifications, stuck-turn check and subagent limit don\'t apply here.',
-        starting: 'Starting Claude Code…',
+        title: ({ agent }: { agent: string }) => `${agent} · Terminal`,
+        aboutTitle: 'A terminal session',
+        aboutBody: ({ agent }: { agent: string }) => `This session runs ${agent} itself on the machine, as if you started it in a shell: you type into it, and its own updates, settings and commands apply. PiggerCode adds no prompt, tools or hooks, so its message queue, done notifications, stuck-turn check and subagent limit don't apply here.`,
+        starting: ({ agent }: { agent: string }) => `Starting ${agent}…`,
         endedTitle: 'The terminal has closed',
-        endedBody: 'Reopen continues the same Claude Code conversation.',
+        endedBody: 'Reopen continues the same conversation.',
         reopen: 'Reopen',
+        switchTitle: 'This conversation still runs as a chat',
+        switchBody: ({ agent }: { agent: string }) => `Switch to the terminal to continue it in ${agent} itself. The chat stops first.`,
+        switchAction: 'Switch to terminal',
+        switchFailed: 'Could not stop the chat.',
     },
     terminalEmbedded: {
         dockMenuA11y: 'Dock terminal',

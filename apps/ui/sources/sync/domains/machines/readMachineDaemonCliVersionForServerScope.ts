@@ -37,5 +37,9 @@ export function readMachineDaemonCliVersionForServerScope(params: MachineServerS
  * so starting and reopening a terminal session both ask this first.
  */
 export function machineStartsNativeTerminalSessions(params: MachineServerScopeParams): boolean {
-    return readMachineForServerScope(params)?.metadata?.daemonNativeTerminalSessionsSupported === true;
+    return machineRecordStartsNativeTerminalSessions(readMachineForServerScope(params));
+}
+
+export function machineRecordStartsNativeTerminalSessions(machine: Machine | null | undefined): boolean {
+    return machine?.metadata?.daemonNativeTerminalSessionsSupported === true;
 }

@@ -16,7 +16,7 @@ import {
     isSessionActiveArchiveResult,
     isSessionArchivePending,
     stopSessionAndMaybeArchive,
-    stopSessionBeforeDelete,
+    stopSessionAndWaitUntilEnded,
 } from '@/components/sessions/sessionStopArchiveFlow';
 
 import {
@@ -152,7 +152,7 @@ export async function confirmSessionDelete(
 async function stopBeforeDelete(target: SessionActionTarget, context?: SessionActionExecutionContext): Promise<boolean> {
     const stopSession = resolveStopSession(context);
     const isSessionActive = context?.operations?.isSessionActive;
-    const problem = await stopSessionBeforeDelete({
+    const problem = await stopSessionAndWaitUntilEnded({
         sessionId: target.sessionId,
         stopSession: async () => await stopSession(target.sessionId, { serverId: target.serverId }),
         stopErrorMessage: t('sessionInfo.failedToStopSession'),

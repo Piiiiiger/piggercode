@@ -312,6 +312,8 @@ import { useOpenSessionTarget } from '@/components/sessions/panes/open/useOpenSe
 import type { SessionPaneUrlState } from '@/components/sessions/panes/url/sessionPaneUrlState';
 import { useSessionPaneUrlSync } from '@/components/sessions/panes/url/useSessionPaneUrlSync';
 import { NativeTerminalSessionContent } from '@/components/sessions/nativeTerminal/NativeTerminalSessionContent';
+import { sessionCanSwitchToTerminal, sessionShowsTerminal } from '@/components/sessions/nativeTerminal/nativeTerminalSessions';
+import { switchChatSessionToTerminal } from '@/components/sessions/nativeTerminal/openSessionAsTerminal';
 import { SessionResumeProvider } from '@/components/sessions/model/SessionResumeContext';
 import { useSessionResumeRequestListener } from '@/components/sessions/model/sessionResumeRequests';
 import { resolveSessionResumeMachineTarget } from './sessionResumeMachineTarget';
@@ -1854,8 +1856,9 @@ export const SessionView = React.memo((props: SessionViewProps) => {
         showAutomations,
     ]);
 
-    // A 「终端」 session has no transcript or composer: its view is the native terminal.
-    const nativeTerminalSession = session?.metadata?.nativeTerminal === true;
+    // Claude and Codex sessions show their CLI's own terminal: no transcript or composer.
+    const sessionMachine = useMachine(typeof session?.metadata?.machineId === 'string' ? session.metadata.machineId : '');
+    const nativeTerminalSession = session ? sessionShowsTerminal({ session, machine: sessionMachine }) : false;
     const normalSessionContent = session && shouldRenderSessionSurface
         ? (props.contentOverride ?? (nativeTerminalSession ? (
             <NativeTerminalSessionContent sessionId={sessionId} serverId={currentSessionRouteServerId ?? null} />
@@ -3288,6 +3291,21 @@ function SessionViewLoaded({
         sessionId,
         sessionRouteServerId,
     ]);
+    // A Claude or Codex chat that still runs: offer to continue it in the CLI's own terminal.
+    const canSwitchToTerminal = sessionCanSwitchToTerminal({ session, machine: sessionMachineRecord });
+    const [switchingToTerminal, setSwitchingToTerminal] = React.useState(false);
+    const handleSwitchToTerminal = React.useCallback(async () => {
+        if (!hasWriteAccess) {
+            Modal.alert(t('common.error'), t('session.sharing.noEditPermission'));
+            return;
+        }
+        setSwitchingToTerminal(true);
+        try {
+            await switchChatSessionToTerminal({ sessionId, serverId: sessionRouteServerId || null });
+        } finally {
+            setSwitchingToTerminal(false);
+        }
+    }, [hasWriteAccess, sessionId, sessionRouteServerId]);
     const handleUsageLimitRecoveryAction = React.useCallback(async (kind: SessionUsageLimitRecoveryActionKind) => {
         if (usageLimitRecoveryPendingActionRef.current) return;
         const showUsageLimitRecoveryOperationFailure = (
@@ -6397,6 +6415,23 @@ function SessionViewLoaded({
                         actionAccessibilityLabel={visibleStaleSessionRunnerNoticePresentation.banner.primaryAction.accessibilityLabel}
                         disabled={visibleStaleSessionRunnerNoticePresentation.banner.primaryAction.disabled || !hasWriteAccess}
                         onActionPress={() => void handleStaleSessionRunnerRestart()}
+                    />
+                </ComposerAuxiliaryFrame>
+            ) : null}
+            {canSwitchToTerminal ? (
+                <ComposerAuxiliaryFrame>
+                    <SessionWarningActionBanner
+                        testID="session-switch-to-terminal-banner"
+                        actionTestID="session-switch-to-terminal"
+                        tone="neutral"
+                        iconName="terminal"
+                        title={t('sessionNativeTerminal.switchTitle')}
+                        body={t('sessionNativeTerminal.switchBody', { agent: t(getAgentCore(agentId).displayNameKey) })}
+                        actionLabel={t('sessionNativeTerminal.switchAction')}
+                        actionAccessibilityLabel={t('sessionNativeTerminal.switchAction')}
+                        actionBusy={switchingToTerminal}
+                        disabled={switchingToTerminal || !hasWriteAccess}
+                        onActionPress={() => void handleSwitchToTerminal()}
                     />
                 </ComposerAuxiliaryFrame>
             ) : null}

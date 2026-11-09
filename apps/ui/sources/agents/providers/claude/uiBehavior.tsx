@@ -39,7 +39,6 @@ export const CLAUDE_UI_BEHAVIOR_OVERRIDE: AgentUiBehavior = {
     attachedSessionTerminal: {
         isAvailable: ({ session }) => isClaudeUnifiedAttachedSessionTerminalAvailable(session),
     },
-    nativeTerminalSessions: true,
     mcpServers: {
         supportsDetectedConfigScan: true,
     },

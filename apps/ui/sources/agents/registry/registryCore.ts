@@ -29,6 +29,11 @@ export type MachineLoginKey = string;
 export type AgentCoreConfig = Readonly<{
     id: AgentId;
     /**
+     * Sessions run as the agent's own terminal app on the machine (「终端」), with nothing PiggerCode adds
+     * (the daemon's `nativeTerminalPresentation` hook). Absent: the agent's sessions are chats.
+     */
+    nativeTerminalSessions?: true;
+    /**
      * Translation key for the agent display name in UI.
      * (Resolved via `t(...)` in UI modules.)
      */
@@ -210,6 +215,10 @@ export { DEFAULT_AGENT_ID };
 
 export function isAgentId(value: unknown): value is AgentId {
     return typeof value === 'string' && (AGENT_IDS as readonly string[]).includes(value);
+}
+
+export function agentSupportsNativeTerminalSessions(agentId: AgentId): boolean {
+    return getAgentCore(agentId).nativeTerminalSessions === true;
 }
 
 export function getAgentCore(id: AgentId): AgentCoreConfig {
