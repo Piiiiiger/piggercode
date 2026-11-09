@@ -5118,6 +5118,9 @@ export const zhHans: TranslationStructure = {
 	    },
 	    resuming: "正在恢复...",
 	    resumeFailed: "恢复会话失败",
+	    permissionPrompt: {
+	      switchedToYolo: "已切换到 YOLO，正在自动批准…也可以在这里直接处理。",
+	    },
         pendingActivation: {
             waiting_offline: { title: '消息已加入此机器的队列', body: '这台机器及其守护进程恢复在线后，消息将被处理。' },
             waiting: { title: '等待恢复', body: '守护进程恢复此会话时，你的消息会安全地保留在队列中。' },

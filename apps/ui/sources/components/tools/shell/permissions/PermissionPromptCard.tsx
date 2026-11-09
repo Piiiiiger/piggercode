@@ -157,7 +157,7 @@ export const PermissionPromptCard = React.memo(function PermissionPromptCard(pro
             {showRuntimeModeContext ? (
                 <View testID="permission-prompt-runtime-mode-context" style={styles.runtimeModeContext}>
                     <Text style={styles.runtimeModeContextText}>
-                        {t('session.resuming')}
+                        {t('session.permissionPrompt.switchedToYolo')}
                     </Text>
                 </View>
             ) : null}
@@ -183,27 +183,25 @@ export const PermissionPromptCard = React.memo(function PermissionPromptCard(pro
                 </View>
             ) : null}
 
-            {showRuntimeModeContext ? null : (
-                <View style={styles.actions}>
-                    <PermissionFooter
-                        embedded={true}
-                        alignFirstButtonToStart={true}
-                        permission={{
-                            id: props.request.id,
-                            status: 'pending',
-                            ...(typeof props.request.permissionSuggestions !== 'undefined'
-                                ? { suggestions: props.request.permissionSuggestions }
-                                : {}),
-                        }}
-                        sessionId={props.sessionId}
-                        toolName={props.request.tool}
-                        toolInput={props.request.arguments}
-                        metadata={props.metadata || null}
-                        canApprovePermissions={props.canApprovePermissions}
-                        disabledReason={props.disabledReason}
-                    />
-                </View>
-            )}
+            <View style={styles.actions}>
+                <PermissionFooter
+                    embedded={true}
+                    alignFirstButtonToStart={true}
+                    permission={{
+                        id: props.request.id,
+                        status: 'pending',
+                        ...(typeof props.request.permissionSuggestions !== 'undefined'
+                            ? { suggestions: props.request.permissionSuggestions }
+                            : {}),
+                    }}
+                    sessionId={props.sessionId}
+                    toolName={props.request.tool}
+                    toolInput={props.request.arguments}
+                    metadata={props.metadata || null}
+                    canApprovePermissions={props.canApprovePermissions}
+                    disabledReason={props.disabledReason}
+                />
+            </View>
         </View>
     );
 });

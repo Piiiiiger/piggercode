@@ -4970,6 +4970,9 @@ export const en = {
         },
         resuming: 'Resuming...',
         resumeFailed: 'Failed to resume session',
+        permissionPrompt: {
+            switchedToYolo: 'Switched to YOLO. Approving automatically… You can still answer here.',
+        },
         pendingActivation: {
             waiting_offline: { title: 'Message queued for this machine', body: 'It will be processed when this machine and its daemon are back online.' },
             waiting: { title: 'Waiting to resume', body: 'Your message is safely queued while the daemon resumes this session.' },

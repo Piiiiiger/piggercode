@@ -260,7 +260,7 @@ describe('PermissionPromptCard (preview)', () => {
         expect(screen.findAllByTestId('permission-prompt-card')).toHaveLength(0);
     });
 
-    it('shows runtime mode context for permission prompts older than the current YOLO intent', async () => {
+    it('keeps approve and deny available while a newer YOLO choice is being applied', async () => {
         permissionFooterRenderSpy.mockClear();
         toolDetailSetting = 'summary';
         mockedToolName = 'Bash';
@@ -290,6 +290,10 @@ describe('PermissionPromptCard (preview)', () => {
         );
 
         expect(screen.findByTestId('permission-prompt-runtime-mode-context')).toBeTruthy();
-        expect(permissionFooterRenderSpy).not.toHaveBeenCalled();
+        expect(screen.getTextContent()).toContain('session.permissionPrompt.switchedToYolo');
+        expect(screen.getTextContent()).not.toContain('session.resuming');
+        // The agent may not apply the new mode (an older CLI, a request YOLO cannot answer): the
+        // user must never be left with a prompt that has no way to answer it.
+        expect(permissionFooterRenderSpy).toHaveBeenCalled();
     });
 });
