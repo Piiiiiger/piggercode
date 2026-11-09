@@ -209,6 +209,8 @@ export function createTerminalPtySessionManager(params: Readonly<{
     if (!timeoutMs) return;
 
     for (const [terminalId, session] of sessionsById) {
+      // A terminal someone is waiting to read is being watched, not idle.
+      if (session.outputWaiters.size > 0) continue;
       if (current - session.lastActivityAtMs < timeoutMs) continue;
       try {
         session.pty.kill();
@@ -422,6 +424,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
       };
       session.outputWaiters.add(wake);
     });
+    session.lastActivityAtMs = now();
     const after = readNow(input);
     return after.ok ? { ...after, waited: true } : after;
   };

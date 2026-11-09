@@ -225,6 +225,23 @@ describe('TerminalPtySessionManager', () => {
       .toMatchObject({ ok: true, events: [], nextCursor: 1, waited: true });
   });
 
+  it('never counts a terminal someone is waiting to read as idle', async () => {
+    const provider = new FakePtyProvider();
+    const manager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      config: defaultConfig({ idleTimeoutMs: 20 }),
+      env: { SHELL: '/bin/bash' },
+      platform: 'linux',
+    });
+    const ensured = manager.ensure({ terminalKey: 'k1', cwd: '/tmp', cols: 80, rows: 24 });
+    if (!ensured.ok) throw new Error('expected ok');
+
+    expect(await manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10, waitMs: 100 }))
+      .toMatchObject({ ok: true, events: [], waited: true });
+    expect(await manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 }))
+      .toMatchObject({ ok: true });
+  });
+
   it('ends a held read when the terminal closes', async () => {
     const provider = new FakePtyProvider();
     const manager = createTerminalPtySessionManager({
