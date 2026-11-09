@@ -274,6 +274,9 @@ vi.mock('@/components/sessions/transcript/ChatHeaderView', () => ({
         props.rightElement ?? null,
     ),
 }));
+vi.mock('@/components/sessions/nativeTerminal/NativeTerminalSessionContent', () => ({
+    NativeTerminalSessionContent: (props: any) => React.createElement('NativeTerminalSessionContent', props),
+}));
 vi.mock('@/components/sessions/transcript/AgentContentView', () => ({
     AgentContentView: (props: any) => React.createElement('AgentContentView', props, props.input ?? null),
 }));
@@ -423,6 +426,21 @@ describe('SessionView (data ready gating)', () => {
         );
 
         expect(screen.findAllByTestId('session-composer-input')).toHaveLength(1);
+        expect(screen.findAllByTestId('session-header-action-menu-trigger')).toHaveLength(1);
+    });
+
+    it('shows a 「终端」 session as its native terminal, with the header but no chat transcript or composer', async () => {
+        sessionState = { ...sessionState, metadata: { ...sessionState.metadata, flavor: 'claude', nativeTerminal: true } };
+        const { SessionView } = await sessionViewModulePromise;
+
+        const screen = await renderScreen(
+            <AppPaneProvider>
+                <SessionView id="s1" />
+            </AppPaneProvider>,
+        );
+
+        expect(screen.tree.findByType('NativeTerminalSessionContent' as never).props.sessionId).toBe('s1');
+        expect(screen.findAllByTestId('session-composer-input')).toHaveLength(0);
         expect(screen.findAllByTestId('session-header-action-menu-trigger')).toHaveLength(1);
     });
 

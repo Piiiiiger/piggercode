@@ -156,6 +156,8 @@ function buildSpawnSemanticFingerprint(options: SpawnSessionOptions): Json {
       options.sessionConfigOptionOverrides,
     ),
     ...(transcriptStorage ? { transcriptStorage } : {}),
+    // A 「终端」 session and a chat session are different sessions, never one in-flight result.
+    ...(options.nativeTerminal === true ? { nativeTerminal: true } : {}),
   };
 }
 

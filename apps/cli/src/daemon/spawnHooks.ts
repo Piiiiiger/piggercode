@@ -73,6 +73,11 @@ export function resolveDefaultDaemonTerminalPresentation(params: Readonly<{
 }
 
 export type DaemonSpawnHooks = Readonly<{
+  /**
+   * How a 「终端」 session runs: the provider's own terminal app in a tmux window, with nothing
+   * PiggerCode adds (`daemon/spawn/nativeTerminalSpawn.ts`). Absent: the provider has none.
+   */
+  nativeTerminalPresentation?: DaemonTerminalPresentation;
   validateSpawn?: (params: DaemonSpawnRuntimeSelection) => Promise<DaemonSpawnValidationResult>;
   buildExtraEnvForChild?: (params: DaemonSpawnRuntimeSelection) => Record<string, string>;
   resolveTerminalPresentation?: (params: Readonly<{

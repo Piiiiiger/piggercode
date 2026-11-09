@@ -57,6 +57,7 @@ export function refreshMachineMetadataForCurrentDaemon(
     happyLibDir: projectPath(),
     daemonTerminalSessionAttachSupported: true,
     daemonSessionGoalControlsSupported: true,
+    daemonNativeTerminalSessionsSupported: true,
     agentsHosted: daemonHostsAgents(),
     ...(cliUpdate ? { cliUpdate } : {}),
   };
@@ -69,6 +70,7 @@ export function refreshMachineMetadataForCurrentDaemon(
     && current.happyLibDir === next.happyLibDir
     && current.daemonTerminalSessionAttachSupported === next.daemonTerminalSessionAttachSupported
     && current.daemonSessionGoalControlsSupported === next.daemonSessionGoalControlsSupported
+    && current.daemonNativeTerminalSessionsSupported === next.daemonNativeTerminalSessionsSupported
     && current.agentsHosted === next.agentsHosted
     && JSON.stringify(current.cliUpdate ?? null) === JSON.stringify(next.cliUpdate ?? null)
   ) {

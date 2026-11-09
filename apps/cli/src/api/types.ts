@@ -324,6 +324,8 @@ export const MachineMetadataSchema = z.object({
   happyLibDir: z.string(),
   daemonTerminalSessionAttachSupported: z.boolean().optional(),
   daemonSessionGoalControlsSupported: z.boolean().optional(),
+  /** The daemon starts 「终端」 sessions (`SpawnSessionOptions.nativeTerminal`); older daemons would start a chat. */
+  daemonNativeTerminalSessionsSupported: z.boolean().optional(),
   /** `false` on a computer connected through the desktop app: it never runs agent sessions (`daemon/agentHosting.ts`). */
   agentsHosted: z.boolean().optional(),
   /** K5 — this machine's first-party CLI update facts (plan R13); absent from older daemons. */
@@ -542,6 +544,11 @@ export type Metadata = {
   machineId?: string,
   sessionWorkspaceLocationV1?: SessionWorkspaceLocationV1,
   claudeSessionId?: string, // Claude Code session ID
+  /**
+   * A 「终端」 session: native `claude` in a tmux window with nothing PiggerCode adds; the app shows
+   * that terminal instead of a chat. Set once by the creating runner; respawns keep it.
+   */
+  nativeTerminal?: boolean,
   claudeTranscriptPath?: string | null, // Claude Code transcript path (hooks)
   claudeLastCheckpointId?: string | null, // Claude SDK file checkpoint UUID (remote)
   claudeLastAssistantUuid?: string | null, // Claude SDK assistant message UUID (resume anchoring)

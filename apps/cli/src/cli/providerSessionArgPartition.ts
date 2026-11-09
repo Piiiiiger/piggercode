@@ -26,6 +26,8 @@ export interface ProviderSessionArgPartitionResult {
   readonly modelId?: string;
   readonly modelUpdatedAt?: number;
   readonly existingSessionId?: string;
+  /** Run the provider's own terminal app with nothing PiggerCode adds (a 「终端」 session). */
+  readonly nativeTerminal?: boolean;
   readonly resume?: string;
   readonly startingMode?: 'local' | 'remote' | string;
   readonly directory?: string;
@@ -101,6 +103,7 @@ export function partitionProviderSessionArgs(options: ProviderSessionArgPartitio
   let modelId: string | undefined;
   let modelUpdatedAt: number | undefined;
   let existingSessionId: string | undefined;
+  let nativeTerminal = false;
   let resume: string | undefined;
   let startingMode: 'local' | 'remote' | string | undefined;
   let directory: string | undefined;
@@ -281,6 +284,10 @@ export function partitionProviderSessionArgs(options: ProviderSessionArgPartitio
       }
       continue;
     }
+    if (arg === '--native-terminal') {
+      nativeTerminal = true;
+      continue;
+    }
     if (arg === '--resume' || arg === '-r') {
       const value = readOptionalValue(args, i);
       if (options.forwardResumeFlag) {
@@ -331,6 +338,7 @@ export function partitionProviderSessionArgs(options: ProviderSessionArgPartitio
     ...(modelId ? { modelId } : {}),
     ...(typeof modelUpdatedAt === 'number' ? { modelUpdatedAt } : {}),
     ...(existingSessionId ? { existingSessionId } : {}),
+    ...(nativeTerminal ? { nativeTerminal } : {}),
     ...(resume ? { resume } : {}),
     ...(startingMode ? { startingMode } : {}),
     ...(directory ? { directory } : {}),

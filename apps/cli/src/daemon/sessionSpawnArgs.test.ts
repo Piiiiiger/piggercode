@@ -49,6 +49,12 @@ describe('buildHappySessionControlArgs', () => {
     })).toEqual([]);
   });
 
+  it('passes a native terminal session to the runner as --native-terminal', () => {
+    expect(buildHappySessionControlArgs({ nativeTerminal: true, existingSessionId: 's1' }))
+      .toEqual(['--existing-session', 's1', '--native-terminal']);
+    expect(buildHappySessionControlArgs({ nativeTerminal: false })).toEqual([]);
+  });
+
   it('includes resume and existing-session flags when values are present', () => {
     expect(buildHappySessionControlArgs({
       resume: '  resume-id  ',

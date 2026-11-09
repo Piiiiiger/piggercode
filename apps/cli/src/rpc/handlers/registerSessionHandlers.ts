@@ -159,6 +159,12 @@ export interface SpawnSessionOptions {
      */
     windowsTerminalWindowName?: string;
     /**
+     * A 「终端」 session: the daemon runs the provider's own terminal app (`claude`) in a tmux window,
+     * with no PiggerCode prompt, MCP server or hooks, and the app shows that terminal. Existing
+     * sessions keep the kind they were created with (`resolveSessionRuntimeSnapshot`).
+     */
+    nativeTerminal?: boolean;
+    /**
      * Session-scoped profile identity for display/debugging across devices.
      * This is NOT the profile content; actual runtime behavior is still driven
      * by environmentVariables passed for this spawn.

@@ -22,6 +22,8 @@ import type { NewSessionCheckoutCreationDraft } from '@/sync/domains/state/newSe
 import type { NewSessionTranscriptStorage } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
 import { t } from '@/text';
 import { createNewSessionLinkedFilesActionChip } from '@/components/sessions/agentInput/definitions/createLinkedFilesActionChip';
+import { createNativeTerminalSessionActionChip } from '@/components/sessions/agentInput/definitions/createNativeTerminalSessionActionChip';
+import { agentSupportsNativeTerminalSessions } from '@/agents/registry/registryUiBehavior';
 import type { MachineSpawnReadiness } from '@/sync/domains/machines/identity/resolveMachineSpawnReadiness';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
@@ -231,8 +233,19 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
         });
     }, [params.agentType, params.backendTarget, params.handleCreateSession, params.promptStore]);
 
+    const nativeTerminalAvailable = agentSupportsNativeTerminalSessions(params.agentType)
+        && params.selectedMachine?.metadata?.daemonNativeTerminalSessionsSupported === true;
+    const handleNativeTerminalPress = React.useCallback(() => {
+        params.handleCreateSession({ initialMessage: 'skip', nativeTerminal: true });
+    }, [params.handleCreateSession]);
+    const nativeTerminalChip = React.useMemo<AgentInputExtraActionChip | null>(
+        () => nativeTerminalAvailable ? createNativeTerminalSessionActionChip({ onPress: handleNativeTerminalPress }) : null,
+        [handleNativeTerminalPress, nativeTerminalAvailable],
+    );
+
     const agentInputExtraActionChips = useNewSessionAgentInputExtraActionChips({
         agentId: params.agentType,
+        nativeTerminalChip,
         agentOptionState: params.agentOptionState,
         setAgentOptionState: params.setAgentOptionStateForCurrentAgent,
         connectedServicesAuthChip: params.connectedServicesAuthChip,

@@ -41,6 +41,27 @@ function baseIncomingOptions(overrides: Partial<SpawnSessionOptions> = {}): Spaw
 }
 
 describe('resolveSessionRuntimeSnapshot', () => {
+  it('keeps a 「终端」 session a terminal session on every respawn and never turns a chat session into one', () => {
+    const fromMetadata = resolveSessionRuntimeSnapshot({
+      incomingOptions: baseIncomingOptions(),
+      persistedMetadata: { nativeTerminal: true },
+    });
+    expect(fromMetadata.spawnOptions.nativeTerminal).toBe(true);
+
+    const fromTracked = resolveSessionRuntimeSnapshot({
+      incomingOptions: baseIncomingOptions(),
+      persistedMetadata: null,
+      trackedSpawnOptions: baseIncomingOptions({ nativeTerminal: true }),
+    });
+    expect(fromTracked.spawnOptions.nativeTerminal).toBe(true);
+
+    const chat = resolveSessionRuntimeSnapshot({
+      incomingOptions: baseIncomingOptions({ nativeTerminal: true }),
+      persistedMetadata: { flavor: 'claude' },
+    });
+    expect(chat.spawnOptions.nativeTerminal).toBeUndefined();
+  });
+
   it('restores native account directories through the runtime snapshot while preserving explicit overrides', () => {
     const metadata = { nativeAgentEnvironmentV1: {
       CLAUDE_CONFIG_DIR: '/accounts/original', CODEX_HOME: '/accounts/codex',

@@ -1720,6 +1720,22 @@ Sessions can be started by:
 
 Daemon session spawning uses `registerCommonHandlers` to expose a controlled RPC surface (shell commands, file operations, search/diff helpers).
 
+**Terminal sessions (「终端」).** A spawn with `nativeTerminal` starts the agent's own terminal app instead of
+a chat: for Claude, plain `claude` in a tmux window (`backends/claude/nativeTerminal/`). The provider's
+spawn hooks own it (`nativeTerminalPresentation`; an agent without one refuses the request), the daemon
+always hosts it in tmux and fails rather than start it without a terminal, and the runner gets
+`--native-terminal` (`buildHappySessionControlArgs`). That runner adds no system prompt, MCP server, hooks
+or settings: `claude` gets only `--session-id <id>`, or `--resume <id>` once the conversation has a
+transcript. It registers the session (metadata `nativeTerminal: true`, `claudeSessionId`), keeps it alive,
+names it from Claude's own title in the transcript (`readClaudeTitleRecord` through
+`applyProviderSessionInfoUpdate`), stops `claude` when the app stops the session, and ends the session when
+`claude` exits, keeping a failed exit on screen until Enter. Respawns keep the kind the session was made
+with (`resolveSessionRuntimeSnapshot`), and spawn coalescing never joins a terminal and a chat request. The
+app shows such a session as that terminal, attached with `piggercode attach`, and starts or reopens one only
+where the daemon publishes `daemonNativeTerminalSessionsSupported` (`machineStartsNativeTerminalSessions`).
+PiggerCode's queue, ready push, stuck-turn watchdog and subagent limit belong to the chat runtime and do not
+apply.
+
 In development builds, Claude's metadata producer supplies its explicit non-secret native account-directory override to `createSessionMetadata`, which publishes it in `nativeAgentEnvironmentV1`. `resolveSessionRuntimeSnapshot` restores it before spawn environment validation, with explicit incoming overrides taking precedence. `sessionNativeEnvironment` owns the allowlist also consumed by durable respawn descriptors; arbitrary shell variables and credentials are not copied into metadata. The shared factory does not infer native directories from another Agent's ambient environment. Older session metadata without this optional field retains its existing behavior.
 
 Before resuming a provider conversation under another Happier session id, daemon spawn admission checks matching tracked provider targets and resume ids through the existing process-presence classifier. A live or unverified sibling runner blocks the new launch; a positively absent runner does not. This prevents an old entry from starting another runner after a terminal restart creates a replacement entry.

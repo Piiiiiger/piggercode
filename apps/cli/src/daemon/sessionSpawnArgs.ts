@@ -22,6 +22,8 @@ export function buildHappySessionControlArgs(opts: Readonly<{
   resume?: string;
   existingSessionId?: string;
   backendTarget?: BackendTargetRefV1;
+  /** A 「终端」 session: the runner starts the provider's own terminal app and adds nothing to it. */
+  nativeTerminal?: boolean;
 }>): string[] {
   const args: string[] = [];
 
@@ -33,6 +35,10 @@ export function buildHappySessionControlArgs(opts: Readonly<{
   const existingSessionId = typeof opts.existingSessionId === 'string' ? opts.existingSessionId.trim() : '';
   if (existingSessionId) {
     args.push('--existing-session', existingSessionId);
+  }
+
+  if (opts.nativeTerminal === true) {
+    args.push('--native-terminal');
   }
 
   const permissionMode = typeof opts.permissionMode === 'string' ? opts.permissionMode.trim() : '';

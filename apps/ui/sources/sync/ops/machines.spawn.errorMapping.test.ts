@@ -230,6 +230,34 @@ describe('machineSpawnNewSession error mapping', () => {
     }));
   });
 
+  it('sends a 「终端」 session only to a machine whose daemon starts them, never as a chat to an older one', async () => {
+    const { machineSpawnNewSession } = await import('./machines');
+    const terminalSpawn = {
+      machineId: 'machine-1',
+      directory: '/tmp',
+      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
+      serverId: 'server-b',
+      accountSettingsVersionHint: 12,
+      nativeTerminal: true,
+    } as const;
+
+    const refused = await machineSpawnNewSession(terminalSpawn);
+    expect(refused).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST });
+    expect(machineRpcWithServerScopeMock).not.toHaveBeenCalled();
+
+    const machine = storage.getState().machines['machine-1']!;
+    storage.setState({
+      machines: {
+        'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } },
+      },
+    });
+    machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-1' });
+    await expect(machineSpawnNewSession(terminalSpawn)).resolves.toMatchObject({ type: 'success', sessionId: 'session-1' });
+    expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
+      payload: expect.objectContaining({ nativeTerminal: true }),
+    }));
+  });
+
   it('forwards an optional spawn nonce in the daemon spawn payload', async () => {
     machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-1' });
 

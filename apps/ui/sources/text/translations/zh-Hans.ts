@@ -4622,6 +4622,10 @@ export const zhHans: TranslationStructure = {
     machineOfflineInlineBody:
       "请在此机器上启动守护进程，或在创建会话前选择另一台机器。",
     machineOfflineCannotStartStatus: "离线（无法启动会话）",
+    nativeTerminalChip: {
+      label: "终端",
+      a11y: "在终端中打开 Claude Code",
+    },
     automationChip: {
       default: "自动化",
       interval: ({ minutes }: { minutes: number }) => `每 ${minutes} 分钟`,
@@ -9530,6 +9534,16 @@ settingsSession: {
       `此连接对应 ${serverUrl}。是否切换服务器并继续？`,
   },
 
+  sessionNativeTerminal: {
+    title: "Claude Code · 终端",
+    aboutTitle: "原生 Claude Code",
+    aboutBody:
+      "这个会话直接在机器上运行 Claude Code，PiggerCode 不加任何提示词、工具或钩子。PiggerCode 的消息排队、完成通知、卡住检测和子代理上限在这里不起作用。",
+    starting: "正在启动 Claude Code…",
+    endedTitle: "终端已关闭",
+    endedBody: "重新打开会继续同一个 Claude Code 对话。",
+    reopen: "重新打开",
+  },
   terminalEmbedded: {
     dockMenuA11y: "停靠终端",
     attachedSessionTitle: "CLI 界面",

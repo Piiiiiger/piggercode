@@ -311,6 +311,7 @@ import { useMobileWorkspaceExperienceState } from '@/components/workspaceCockpit
 import { useOpenSessionTarget } from '@/components/sessions/panes/open/useOpenSessionTarget';
 import type { SessionPaneUrlState } from '@/components/sessions/panes/url/sessionPaneUrlState';
 import { useSessionPaneUrlSync } from '@/components/sessions/panes/url/useSessionPaneUrlSync';
+import { NativeTerminalSessionContent } from '@/components/sessions/nativeTerminal/NativeTerminalSessionContent';
 import { SessionResumeProvider } from '@/components/sessions/model/SessionResumeContext';
 import { useSessionResumeRequestListener } from '@/components/sessions/model/sessionResumeRequests';
 import { resolveSessionResumeMachineTarget } from './sessionResumeMachineTarget';
@@ -1853,8 +1854,12 @@ export const SessionView = React.memo((props: SessionViewProps) => {
         showAutomations,
     ]);
 
+    // A 「终端」 session has no transcript or composer: its view is the native terminal.
+    const nativeTerminalSession = session?.metadata?.nativeTerminal === true;
     const normalSessionContent = session && shouldRenderSessionSurface
-        ? (props.contentOverride ?? (
+        ? (props.contentOverride ?? (nativeTerminalSession ? (
+            <NativeTerminalSessionContent sessionId={sessionId} serverId={currentSessionRouteServerId ?? null} />
+        ) : (
             <SessionViewLoadedWithPendingMessages
                 authSurfaceState={authSurfaceState}
                 key={sessionId}
@@ -1878,15 +1883,16 @@ export const SessionView = React.memo((props: SessionViewProps) => {
                 sessionRunnerRuntimeStatusMachineId={sessionRunnerRuntimeStatusRetention.machineId}
                 onSessionRunnerRuntimeStatusInvalidated={sessionRunnerRuntimeStatusRetention.invalidateAndRefresh}
             />
-        ))
+        )))
         : null;
+    const sessionContentReplacesTranscript = props.contentOverride != null || nativeTerminalSession;
     return (
         <SessionDirectSessionRuntimeProvider value={directSessionRuntime}>
         <SessionScreenTestIdsProvider enabled={surfaceFocused}>
-            {session && shouldRenderSessionSurface && props.contentOverride == null ? (
+            {session && shouldRenderSessionSurface && !sessionContentReplacesTranscript ? (
                 <SessionPendingMessagesRefresh sessionId={sessionId} />
             ) : null}
-            {session && shouldRenderSessionSurface && props.contentOverride != null ? (
+            {session && shouldRenderSessionSurface && sessionContentReplacesTranscript ? (
                 <SessionContentOverrideViewedLifecycle
                     sessionId={sessionId}
                     serverId={session.serverId ?? currentSessionRouteServerId}

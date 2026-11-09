@@ -45,6 +45,7 @@ import {
 } from '@/rpc/handlers/registerSessionHandlers';
 import { resolveCanonicalCodexBackendMode } from '@/rpc/handlers/codexBackendMode';
 import { buildTrackedSpawnOptions, resolveDaemonTerminalPresentation } from '@/daemon/spawnHooks';
+import { resolveNativeTerminalHostRequest, resolveNativeTerminalSpawn } from '@/daemon/spawn/nativeTerminalSpawn';
 import { logger } from '@/ui/logger';
 import { authAndSetupMachineIfNeeded } from '@/ui/auth';
 import { configuration, reloadConfiguration } from '@/configuration';
@@ -3519,6 +3520,14 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               const daemonSpawnHooks = catalogEntry.getDaemonSpawnHooks
                 ? await catalogEntry.getDaemonSpawnHooks()
                 : null;
+              const nativeTerminal = resolveNativeTerminalSpawn({
+                requested: normalizedOptions.nativeTerminal === true,
+                agentId: catalogAgentId,
+                hooks: daemonSpawnHooks,
+              });
+              if (!nativeTerminal.ok) {
+                return { type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST, errorMessage: nativeTerminal.errorMessage };
+              }
 
               let spawnResourceCleanupOnFailure: (() => void) | null = null;
               let spawnResourceCleanupOnExit: (() => void) | null = null;
@@ -3832,7 +3841,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 });
                 const terminalRequest = resolveTerminalRequestFromSpawnOptions({
                   happyHomeDir: configuration.happyHomeDir,
-                  terminal: downgradeLegacyImplicitTmuxRequest ? undefined : normalizedOptions.terminal,
+                  terminal: nativeTerminal.presentation
+                    ? resolveNativeTerminalHostRequest(normalizedOptions.terminal)
+                    : downgradeLegacyImplicitTmuxRequest ? undefined : normalizedOptions.terminal,
                   environmentVariables: extraEnv,
                 });
                 const selectedHost = terminalRequest.requested === 'tmux'
@@ -3841,7 +3852,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   ? terminalRequest.requested
                   : null;
                 const terminalPresentation = selectedHost
-                  ? resolveDaemonTerminalPresentation({
+                  ? nativeTerminal.presentation ?? resolveDaemonTerminalPresentation({
                     hooks: daemonSpawnHooks,
                     host: selectedHost,
                     agentId: catalogAgentId,
@@ -3922,6 +3933,15 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
             let tmuxFallbackReason: string | null = null;
 
+            if (!tmuxAvailable && nativeTerminal.presentation) {
+              cleanupSpawnResources();
+              await cleanupSessionAttachResources(new Error('tmux unavailable for a terminal session'));
+              return {
+                type: 'error',
+                errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_FAILED,
+                errorMessage: 'Terminal sessions need tmux on this machine. Install tmux, then try again.',
+              };
+            }
             if (!tmuxAvailable && tmuxRunnerRequested) {
               tmuxFallbackReason = 'tmux is not available on this machine';
               logger.debug('[DAEMON RUN] tmux requested but tmux is not available; falling back to regular spawning');
@@ -3951,6 +3971,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             const sessionControlArgs = buildHappySessionControlArgs({
               resume: effectiveResume,
               existingSessionId: normalizedExistingSessionId,
+              nativeTerminal: nativeTerminal.presentation !== null,
               backendTarget,
               permissionMode,
               permissionModeUpdatedAt,
@@ -4270,6 +4291,15 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     type: 'error',
                     errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_FAILED,
                     errorMessage: 'Tmux runner launch could not be safely completed. Inspect tmux before retrying; no fallback runner was started.',
+                  };
+                }
+                if (nativeTerminal.presentation) {
+                  cleanupSpawnResources();
+                  await cleanupSessionAttachResources(new Error('tmux window for a terminal session failed'));
+                  return {
+                    type: 'error',
+                    errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_FAILED,
+                    errorMessage: `The terminal session could not open a tmux window: ${tmuxResult.error ?? 'tmux failed'}`,
                   };
                 }
                 tmuxFallbackReason = tmuxResult.error ?? 'tmux spawn failed';

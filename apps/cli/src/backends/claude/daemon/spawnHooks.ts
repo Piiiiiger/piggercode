@@ -9,6 +9,8 @@ import { normalizeClaudeRemoteMode } from '@/backends/claude/remote/normalizeCla
 import { PIGGERCODE_CLAUDE_ENDPOINT_STATE_ENV_KEY } from '@/backends/claude/endpointRecovery/claudeEndpointArtifacts';
 
 export const claudeDaemonSpawnHooks: DaemonSpawnHooks = {
+  // `runClaudeNativeTerminal`: plain `claude` in the window, so never the unified terminal's hooks.
+  nativeTerminalPresentation: { kind: 'runner', startingMode: 'local', childEnv: { PIGGERCODE_CLAUDE_UNIFIED_TERMINAL_PIN: '0' } },
   resolveTerminalPresentation: ({ host, accountSettings, processEnv }) => {
     const defaults = accountSettings
       ? resolveProviderOutgoingMessageMetaExtras({ agentId: 'claude', settings: accountSettings, session: null })

@@ -73,6 +73,8 @@ const SpawnDaemonSessionRequestCompatSchema = z.object({
   connectedServiceMaterializationIdentityV1: ConnectedServiceMaterializationIdentityV1Schema.optional(),
   mcpSelection: SessionMcpSelectionV1Schema.optional(),
   transcriptStorage: z.enum(['persisted', 'direct']).optional(),
+  /** A 「终端」 session: the provider's own terminal app in tmux, with nothing PiggerCode adds. */
+  nativeTerminal: z.boolean().optional(),
   /**
    * Typed source recipe for a Replay-seeded child.
    *
@@ -153,6 +155,7 @@ const SPAWN_SESSION_OPTION_KEYS = [
   'materializationDiagnostics',
   'mcpSelection',
   'transcriptStorage',
+  'nativeTerminal',
 ] as const satisfies readonly (keyof SpawnSessionOptions)[];
 
 type SpawnSessionOptionKey = (typeof SPAWN_SESSION_OPTION_KEYS)[number];

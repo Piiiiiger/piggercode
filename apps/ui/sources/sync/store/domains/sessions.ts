@@ -840,10 +840,14 @@ export function createSessionsDomain<S extends SessionsDomain & SessionsDomainDe
                         || (session.latestReadyEventAt ?? 0) > (previousSession?.latestReadyEventAt ?? 0);
                     const connectedIdleWithoutPendingWork =
                         isLiveOwner && hasTerminalTurnProjection && mergedOptimisticThinkingAt === null;
+                    // A 「终端」 session runs native Claude Code with no turns PiggerCode sees: its runner
+                    // being live is the whole start.
+                    const nativeTerminalLive = isLiveOwner && session.metadata?.nativeTerminal === true;
                     const shouldSettleResuming =
                         runtimePresence.thinking === true
                         || (isLiveOwner && activityAdvanced)
-                        || connectedIdleWithoutPendingWork;
+                        || connectedIdleWithoutPendingWork
+                        || nativeTerminalLive;
                     if (shouldSettleResuming) {
                         mergedResumingAt = null;
                         resumingTimeouts.cancel(session.id);

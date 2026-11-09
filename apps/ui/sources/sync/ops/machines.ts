@@ -41,7 +41,7 @@ import {
 } from '../domains/session/spawn/spawnAttemptNonceStore';
 import { createUiSessionSpawnUserAttemptId } from '../domains/session/spawn/spawnSessionNonce';
 import { storage } from '../domains/state/storage';
-import { readMachineDaemonCliVersionForServerScope } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
+import { machineStartsNativeTerminalSessions, readMachineDaemonCliVersionForServerScope } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
 import { isPlainObject, normalizeSpawnSessionResult } from './_shared';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { mergeMachineMetadataForVersionMismatch } from './machineMetadataMerge';
@@ -272,6 +272,22 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
                     'Update or reconnect the CLI to continue from this Session. Continuing from an existing '
                     + 'Session requires Happier CLI 0.2.10-dev.76 or newer on this '
                     + `machine (detected ${versionLabel}).`,
+            };
+        }
+
+        if (
+            preparedOptions.nativeTerminal === true
+            && !machineStartsNativeTerminalSessions({
+                state: storage.getState(),
+                machineId,
+                serverId: effectiveServerId,
+                activeServerId: profileScope.serverId,
+            })
+        ) {
+            return {
+                type: 'error',
+                errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
+                errorMessage: 'Update the PiggerCode CLI on this machine to open terminal sessions.',
             };
         }
 

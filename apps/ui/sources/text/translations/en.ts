@@ -4418,6 +4418,10 @@ export const en = {
         machineOfflineInlineTitle: 'Machine is offline',
         machineOfflineInlineBody: 'Start the daemon on this machine or choose another machine before creating a session.',
         machineOfflineCannotStartStatus: 'offline (cannot start session)',
+        nativeTerminalChip: {
+            label: 'Terminal',
+            a11y: 'Open Claude Code in a terminal',
+        },
         automationChip: {
             default: 'Automate',
             interval: ({ minutes }: { minutes: number }) => `Every ${minutes}m`,
@@ -9345,6 +9349,15 @@ settingsSession: {
             `This connection is for ${serverUrl}. Switch servers and continue?`,
     },
 
+    sessionNativeTerminal: {
+        title: 'Claude Code · Terminal',
+        aboutTitle: 'Native Claude Code',
+        aboutBody: 'This session runs Claude Code itself on the machine, with no PiggerCode prompt, tools or hooks. PiggerCode\'s message queue, done notifications, stuck-turn check and subagent limit don\'t apply here.',
+        starting: 'Starting Claude Code…',
+        endedTitle: 'The terminal has closed',
+        endedBody: 'Reopen continues the same Claude Code conversation.',
+        reopen: 'Reopen',
+    },
     terminalEmbedded: {
         dockMenuA11y: 'Dock terminal',
         attachedSessionTitle: 'Agent CLI',

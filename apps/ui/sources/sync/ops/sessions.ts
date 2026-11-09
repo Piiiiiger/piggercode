@@ -13,7 +13,7 @@ import { storage } from '../domains/state/storage';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { areServerProfileIdentifiersEquivalent } from '@/sync/domains/server/serverProfiles';
 import { resolveSessionArchiveServerId } from '@/sync/domains/session/listing/sessionArchiveState';
-import { readMachineDaemonCliVersionForServerScope } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
+import { machineStartsNativeTerminalSessions, readMachineDaemonCliVersionForServerScope } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
 import { nowServerMs } from '../runtime/time';
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
@@ -303,6 +303,25 @@ async function runResumeSession(
                 type: 'error',
                 errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
                 errorMessage: 'No reachable machine target found to resume session',
+            };
+        }
+
+        if (
+            storage.getState().sessions[sessionId]?.metadata?.nativeTerminal === true
+            && !machineStartsNativeTerminalSessions({
+                state: storage.getState(),
+                machineId,
+                serverId,
+                activeServerId: storage.getState().profileScope?.serverId ?? null,
+            })
+        ) {
+            if (shouldPresentAsResuming) {
+                storage.getState().clearSessionResuming(sessionId);
+            }
+            return {
+                type: 'error',
+                errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
+                errorMessage: 'Update the PiggerCode CLI on this machine to open terminal sessions.',
             };
         }
 

@@ -58,6 +58,8 @@ const MetadataObjectSchema = z.object({
         targetWorkspaceRootPath: z.string().optional(),
     }).optional(),
     claudeSessionId: z.string().optional(), // Claude Code session ID
+    // A 「终端」 session: native Claude Code in tmux on the machine; the session view is that terminal.
+    nativeTerminal: z.boolean().optional().catch(undefined),
     codexSessionId: z.string().optional(), // Codex session/conversation ID (uuid)
     codexBackendMode: z.enum(['mcp', 'acp', 'appServer']).optional(),
     agentRuntimeDescriptorV1: createAgentRuntimeDescriptorV1Schema(z).optional(),
@@ -584,6 +586,8 @@ export const MachineMetadataSchema = z.object({
     windowsRemoteSessionConsole: z.enum(['hidden', 'visible']).optional(),
     daemonTerminalSessionAttachSupported: z.boolean().optional(),
     daemonSessionGoalControlsSupported: z.boolean().optional(),
+    // The daemon starts 「终端」 sessions; an older one would start a chat session instead.
+    daemonNativeTerminalSessionsSupported: z.boolean().optional(),
     // `false` on a computer connected through the desktop app: it never runs agent sessions.
     agentsHosted: z.boolean().optional(),
     // Daemon status fields

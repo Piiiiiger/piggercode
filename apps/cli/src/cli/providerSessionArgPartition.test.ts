@@ -8,6 +8,17 @@ afterEach(() => {
 
 describe('partitionProviderSessionArgs', () => {
 
+  it('consumes --native-terminal as a session flag instead of passing it to the provider', () => {
+    const result = partitionProviderSessionArgs({
+      args: ['claude', '--started-by', 'daemon', '--native-terminal', '--resume', 'abc'],
+      providerSubcommand: 'claude',
+      forwardResumeFlag: true,
+    });
+
+    expect(result).toMatchObject({ startedBy: 'daemon', nativeTerminal: true, resume: 'abc' });
+    expect(result.providerArgs).toEqual(['--resume', 'abc']);
+  });
+
   it('consumes common PiggerCode session flags and preserves provider args', () => {
     const result = partitionProviderSessionArgs({
       args: [

@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { runClaude, type StartOptions } from '@/backends/claude/runClaude';
+import { runClaudeNativeTerminal } from '@/backends/claude/nativeTerminal/runClaudeNativeTerminal';
 import { isClaudeCliJavaScriptFile } from '@/backends/claude/utils/resolveClaudeCliPath';
 import { readCredentials, readSettings } from '@/persistence';
 import { logger } from '@/ui/logger';
@@ -293,6 +294,28 @@ ${chalk.bold.cyan(`Claude Code Options (from \`${providerHelpCommand}\`):`)}
         logger.debug('[claude] Failed to auto-start daemon (non-fatal)', error);
       });
     }
+  }
+
+  if (parsed.nativeTerminal) {
+    // A 「终端」 session: native Claude Code with nothing PiggerCode adds (no account-settings
+    // defaults, profiles, prompt, MCP server or hooks).
+    try {
+      await withSessionRunnerOwnership(async () => {
+        if (options.existingSessionId) await claimSessionRunnerOwnership(options.existingSessionId);
+        await runClaudeNativeTerminal({
+          credentials,
+          startedBy,
+          ...(options.existingSessionId ? { existingSessionId: options.existingSessionId } : {}),
+          ...(parsed.resume ? { resumeClaudeSessionId: parsed.resume } : {}),
+          terminalRuntime: context.terminalRuntime,
+        });
+      });
+    } catch (error) {
+      logger.fatal(error);
+      console.error(fail(error instanceof Error ? error.message : 'Unknown error'));
+      process.exit(1);
+    }
+    return;
   }
 
   if (!explicitClaudeSubcommand) {

@@ -30,6 +30,22 @@ function coerceTextContent(content: unknown): string | null {
   return readDirectSessionTitleCandidate(text);
 }
 
+/**
+ * The title a Claude transcript record sets, if any: `/rename` writes `custom-title`, Claude's own
+ * naming writes `ai-title`. Claude keeps the latest of each and lets a rename win over its own name.
+ */
+export function readClaudeTitleRecord(value: unknown): Readonly<{ kind: 'custom' | 'ai'; title: string | null }> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  if (record.type === 'custom-title' && typeof record.customTitle === 'string') {
+    return { kind: 'custom', title: readDirectSessionTitleCandidate(record.customTitle) };
+  }
+  if (record.type === 'ai-title' && typeof record.aiTitle === 'string') {
+    return { kind: 'ai', title: readDirectSessionTitleCandidate(record.aiTitle) };
+  }
+  return null;
+}
+
 async function readClaudeTitleFromTail(filePath: string): Promise<string | null> {
   const fileSize = (await stat(filePath).catch(() => null))?.size ?? 0;
   let endOffsetBytes = fileSize;
@@ -50,17 +66,14 @@ async function readClaudeTitleFromTail(filePath: string): Promise<string | null>
     }));
     if (!page) break;
     for (let index = page.items.length - 1; index >= 0; index -= 1) {
-      const value = page.items[index]?.value;
-      if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
-      const record = value as Record<string, unknown>;
-      if (!sawCustomTitle && record.type === 'custom-title' && typeof record.customTitle === 'string') {
+      const titleRecord = readClaudeTitleRecord(page.items[index]?.value);
+      if (!sawCustomTitle && titleRecord?.kind === 'custom') {
         sawCustomTitle = true;
-        const customTitle = readDirectSessionTitleCandidate(record.customTitle);
-        if (customTitle) return customTitle;
+        if (titleRecord.title) return titleRecord.title;
       }
-      if (!sawAiTitle && record.type === 'ai-title' && typeof record.aiTitle === 'string') {
+      if (!sawAiTitle && titleRecord?.kind === 'ai') {
         sawAiTitle = true;
-        aiTitle = readDirectSessionTitleCandidate(record.aiTitle);
+        aiTitle = titleRecord.title;
       }
       if (sawCustomTitle && sawAiTitle) return aiTitle;
     }

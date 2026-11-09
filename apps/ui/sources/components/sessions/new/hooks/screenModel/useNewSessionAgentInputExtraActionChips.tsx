@@ -44,6 +44,8 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
      * attempt carries a source context. Owned by `useNewSessionSourceContext`.
      */
     sourceContextChip?: AgentInputExtraActionChip | null;
+    /** Starts a 「终端」 session at once, when the agent and the machine can run one. */
+    nativeTerminalChip?: AgentInputExtraActionChip | null;
 }>): ReadonlyArray<AgentInputExtraActionChip> {
     const serverPickerActionChip = React.useMemo<AgentInputExtraActionChip | null>(() => {
         if (!params.showServerPickerChip) return null;
@@ -98,6 +100,9 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         if (params.sourceContextChip) {
             chips.push(params.sourceContextChip);
         }
+        if (params.nativeTerminalChip) {
+            chips.push(params.nativeTerminalChip);
+        }
         if (params.connectedServicesAuthChip) {
             chips.push(params.connectedServicesAuthChip);
         }
@@ -136,6 +141,7 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         params.checkoutActionChip,
         params.connectedServicesAuthChip,
         params.mcpChip,
+        params.nativeTerminalChip,
         params.onActionShortcutPress,
         params.selectedMachineIsWindows,
         params.setAgentOptionState,

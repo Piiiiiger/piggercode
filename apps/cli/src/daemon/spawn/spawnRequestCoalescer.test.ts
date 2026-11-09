@@ -212,6 +212,18 @@ describe('computeDaemonSpawnRequestKey', () => {
     expect(a.key).not.toBe(b.key);
   });
 
+  it('never coalesces a terminal session with a chat session for the same folder', () => {
+    const chat = computeDaemonSpawnRequestKey({ directory: '/tmp/repo', backendTarget: { kind: 'builtInAgent', agentId: 'claude' } });
+    const terminal = computeDaemonSpawnRequestKey({
+      directory: '/tmp/repo',
+      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
+      nativeTerminal: true,
+    });
+    expect(chat.kind).toBe('new');
+    expect(terminal.kind).toBe('new');
+    expect(terminal.key).not.toBe(chat.key);
+  });
+
   it('includes the Windows Terminal window name in the new-session key', () => {
     const a = computeDaemonSpawnRequestKey({
       directory: '/tmp/repo',

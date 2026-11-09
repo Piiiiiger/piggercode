@@ -70,6 +70,12 @@ export interface SpawnSessionOptions {
     agentRuntimeDescriptorV1?: AgentRuntimeDescriptorV1;
     terminal?: TerminalSpawnOptions | null;
     /**
+     * A 「终端」 session: the machine runs the agent's own terminal app (native Claude Code) in tmux,
+     * with nothing PiggerCode adds, and the session view shows that terminal. Only machines whose
+     * daemon publishes `daemonNativeTerminalSessionsSupported` receive it (`machineSpawnNewSession`).
+     */
+    nativeTerminal?: boolean;
+    /**
      * Windows-only: how a daemon-spawned remote session should be hosted locally.
      */
     windowsRemoteSessionLaunchMode?: WindowsRemoteSessionLaunchMode;
@@ -126,6 +132,7 @@ export type SpawnHappySessionRpcParams = CodexBackendTransportFields & {
     modelUpdatedAt?: number
     sessionConfigOptionOverrides?: AcpConfigOptionOverridesV1
     terminal?: TerminalSpawnOptions
+    nativeTerminal?: boolean
     windowsRemoteSessionLaunchMode?: WindowsRemoteSessionLaunchMode
     windowsRemoteSessionConsole?: 'hidden' | 'visible'
     windowsTerminalWindowName?: string
@@ -254,6 +261,7 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
         codexBackendMode,
         agentRuntimeDescriptorV1,
         terminal,
+        nativeTerminal,
         windowsRemoteSessionLaunchMode,
         windowsRemoteSessionConsole,
         windowsTerminalWindowName,
@@ -328,6 +336,9 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
 
     if (terminal) {
         params.terminal = terminal;
+    }
+    if (nativeTerminal === true) {
+        params.nativeTerminal = true;
     }
     if (
         windowsRemoteSessionLaunchMode === 'hidden'

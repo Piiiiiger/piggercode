@@ -5,22 +5,37 @@ type MachineDaemonCliVersionState = Readonly<{
     machineListByServerId?: Readonly<Record<string, readonly Machine[] | null | undefined>>;
 }>;
 
-export function readMachineDaemonCliVersionForServerScope(params: Readonly<{
+type MachineServerScopeParams = Readonly<{
     state: MachineDaemonCliVersionState;
     machineId: string;
     serverId?: string | null;
     activeServerId?: string | null;
-}>): string | null {
+}>;
+
+/** The machine record as the target server sees it: the active server's map, or that server's own list. */
+export function readMachineForServerScope(params: MachineServerScopeParams): Machine | undefined {
     const machineId = typeof params.machineId === 'string' ? params.machineId.trim() : '';
-    if (!machineId) return null;
+    if (!machineId) return undefined;
 
     const serverId = typeof params.serverId === 'string' ? params.serverId.trim() : '';
     const activeServerId = typeof params.activeServerId === 'string' ? params.activeServerId.trim() : '';
-    const machine = !serverId || serverId === activeServerId
+    return !serverId || serverId === activeServerId
         ? params.state.machines[machineId]
         : activeServerId
             ? params.state.machineListByServerId?.[serverId]?.find((candidate) => candidate.id === machineId)
             : undefined;
-    const version = machine?.daemonState?.startedWithCliVersion;
+}
+
+export function readMachineDaemonCliVersionForServerScope(params: MachineServerScopeParams): string | null {
+    const version = readMachineForServerScope(params)?.daemonState?.startedWithCliVersion;
     return typeof version === 'string' && version.trim().length > 0 ? version.trim() : null;
+}
+
+/**
+ * Whether the machine's daemon starts 「终端」 sessions (it publishes `daemonNativeTerminalSessionsSupported`).
+ * An older daemon would drop the request's `nativeTerminal`, or the session's, and run a chat instead,
+ * so starting and reopening a terminal session both ask this first.
+ */
+export function machineStartsNativeTerminalSessions(params: MachineServerScopeParams): boolean {
+    return readMachineForServerScope(params)?.metadata?.daemonNativeTerminalSessionsSupported === true;
 }

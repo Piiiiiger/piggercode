@@ -283,6 +283,27 @@ describe('sessions domain: resuming lifecycle', () => {
         expect(get().sessions.s1?.resumingAt ?? null).toBeNull();
     });
 
+    it('settles the start of a 「终端」 session, which has no turns, as soon as its runner is online', async () => {
+        mockSessionsDomainBoundaries();
+
+        let nowMs = Date.parse('2026-02-05T00:00:00.000Z');
+        vi.spyOn(Date, 'now').mockImplementation(() => nowMs);
+        vi.spyOn(globalThis, 'setTimeout');
+
+        const { createReducer } = await import('../../reducer/reducer');
+        const { createSessionsDomain } = await import('./sessions');
+        const { get, domain } = createHarness(createSessionsDomain, createReducer);
+        const metadata = { path: '/repo', host: 'vm', flavor: 'claude', nativeTerminal: true };
+
+        domain.applySessions([baseSession({ active: false, presence: 12345, metadata })]);
+        domain.markSessionResuming('s1');
+        expect(get().sessions.s1?.resumingAt).toBe(nowMs);
+
+        nowMs += 500;
+        domain.applySessions([baseSession({ active: true, activeAt: nowMs, presence: 'online', metadata })]);
+        expect(get().sessions.s1?.resumingAt ?? null).toBeNull();
+    });
+
     it('does not resurrect resumingAt from a mere presence heartbeat on a finished idle session', async () => {
         mockSessionsDomainBoundaries();
 

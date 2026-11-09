@@ -398,15 +398,21 @@ export function resolveSessionRuntimeSnapshot(
 
   const persistedNativeEnvironment = readSessionNativeEnvironment(params.persistedMetadata?.nativeAgentEnvironmentV1);
   const trackedNativeEnvironment = readSessionNativeEnvironment(params.trackedSpawnOptions?.environmentVariables);
+  // A session keeps the kind it was created with: a 「终端」 session respawns as one, and a request
+  // cannot turn an existing chat session into one.
+  const { nativeTerminal: _requestedNativeTerminal, ...incomingOptions } = params.incomingOptions;
+  const nativeTerminal = params.persistedMetadata?.nativeTerminal === true
+    || params.trackedSpawnOptions?.nativeTerminal === true;
   return {
     snapshot,
     spawnOptions: applySnapshotToSpawnOptions({
-      ...params.incomingOptions,
+      ...incomingOptions,
+      ...(nativeTerminal ? { nativeTerminal: true } : {}),
       ...((persistedNativeEnvironment || trackedNativeEnvironment) ? {
         environmentVariables: {
           ...trackedNativeEnvironment,
           ...persistedNativeEnvironment,
-          ...params.incomingOptions.environmentVariables,
+          ...incomingOptions.environmentVariables,
         },
       } : {}),
     }, snapshot),

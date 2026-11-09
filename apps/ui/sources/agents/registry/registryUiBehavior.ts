@@ -95,6 +95,11 @@ export type AgentUiBehavior = Readonly<{
             session: Session;
         }) => boolean;
     }>;
+    /**
+     * 「终端」 sessions: the agent's own terminal app on the machine, with nothing PiggerCode adds
+     * (the daemon's `nativeTerminalPresentation` hook). Absent: the agent has none.
+     */
+    nativeTerminalSessions?: true;
     guidance?: Readonly<{
         includeInSessionGettingStartedCliExamples?: boolean;
     }>;
@@ -291,6 +296,7 @@ function mergeAgentUiBehavior(a: AgentUiBehavior, b: AgentUiBehavior): AgentUiBe
                 },
             }
             : {}),
+        ...(a.nativeTerminalSessions || b.nativeTerminalSessions ? { nativeTerminalSessions: true as const } : {}),
         ...(a.guidance || b.guidance ? { guidance: { ...(a.guidance ?? {}), ...(b.guidance ?? {}) } } : {}),
         ...(a.sessionUsage || b.sessionUsage ? { sessionUsage: { ...(a.sessionUsage ?? {}), ...(b.sessionUsage ?? {}) } } : {}),
         ...(a.workState || b.workState ? { workState: { ...(a.workState ?? {}), ...(b.workState ?? {}) } } : {}),
@@ -367,6 +373,10 @@ export const AGENTS_UI_BEHAVIOR: Readonly<Record<AgentId, AgentUiBehavior>> = Ob
 export function resolveAgentUiBehaviorFromFlavor(flavor: unknown): AgentUiBehavior | null {
     const agentId = typeof flavor === 'string' ? resolveAgentIdFromFlavor(flavor) : null;
     return agentId ? AGENTS_UI_BEHAVIOR[agentId] ?? null : null;
+}
+
+export function agentSupportsNativeTerminalSessions(agentId: AgentId): boolean {
+    return AGENTS_UI_BEHAVIOR[agentId].nativeTerminalSessions === true;
 }
 
 export function isAttachedSessionTerminalAvailableForSession(session: Session): boolean {

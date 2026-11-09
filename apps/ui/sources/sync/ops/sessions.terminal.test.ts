@@ -59,6 +59,22 @@ describe('session resume terminal settings', () => {
         });
     });
 
+    it('reopens a 「终端」 session only on a machine whose daemon starts them, never as a chat', async () => {
+        storage.setState({
+            sessions: { 'session-1': createSessionFixture({ metadata: { ...createSessionFixture().metadata!, nativeTerminal: true } }) },
+        });
+        expect(await resumeSession(options)).toMatchObject({ type: 'error' });
+        expect(machineRPC).not.toHaveBeenCalled();
+        expect(storage.getState().sessions['session-1']?.resumingAt ?? null).toBeNull();
+
+        const machine = createMachineFixture();
+        storage.setState({
+            machines: { 'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } } },
+        });
+        expect(await resumeSession(options)).toMatchObject({ type: 'success' });
+        expect(machineRPC).toHaveBeenCalledWith('machine-1', 'spawn-happy-session', expect.objectContaining({ type: 'resume-session' }), expect.anything());
+    });
+
     it('omits terminal when the resolved machine disables tmux', async () => {
         storage.setState({ settings: {
             ...storage.getState().settings,

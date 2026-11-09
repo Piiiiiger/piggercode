@@ -155,6 +155,11 @@ export type HandleCreateSessionOptions = Readonly<{
      * new account begins a clean conversation instead of fail-closing again on an unreachable resume.
      */
     startFreshUnderNewAccount?: boolean;
+    /**
+     * Start a 「终端」 session: native Claude Code in a terminal on the machine (no first message;
+     * the user types into Claude). Machines that cannot start one refuse it (`machineSpawnNewSession`).
+     */
+    nativeTerminal?: boolean;
 }>;
 
 function normalizeLaunchScopePart(value: unknown): string {
@@ -634,7 +639,7 @@ export function useCreateNewSession(params: Readonly<{
 
             const activeAutomationDraft = authoringDraft.automation ?? null;
 
-            if (activeAutomationDraft?.enabled === true) {
+            if (activeAutomationDraft?.enabled === true && opts?.nativeTerminal !== true) {
                 await current.persistDraftForLaunch?.();
                 if (current.draftScope) {
                     launchDraftCurrentness = captureSessionDraftCurrentness({
@@ -871,6 +876,7 @@ export function useCreateNewSession(params: Readonly<{
                         sourceContext: current.sourceContext ?? null,
                     }),
                     ...spawnSessionExtras,
+                    ...(opts?.nativeTerminal === true ? { nativeTerminal: true } : {}),
                     spawnNonce: launchAttempt.spawnNonce,
                     userAttemptId: launchAttempt.attemptId,
                     firstTurnLocalId: launchAttempt.firstTurnLocalId,
@@ -1253,6 +1259,12 @@ export function useCreateNewSession(params: Readonly<{
                     getStoredSession: (sessionId) => storage.getState().sessions[sessionId] ?? null,
                     ensureSessionVisibleForMessageRoute: sync.ensureSessionVisibleForMessageRoute,
                 });
+                if (opts?.nativeTerminal === true && storage.getState().sessions[createdSessionId]?.active !== true) {
+                    // The terminal opens once the runner is online; until then the session is starting,
+                    // not ended (the sessions store settles this marker as the runner comes online).
+                    storage.getState().markSessionResuming(createdSessionId);
+                    storage.getState().armSessionResumingFallback(createdSessionId);
+                }
 
                 const firstTurnTextForRoute = handedFirstTurnToDaemon
                     ? daemonFirstTurnText

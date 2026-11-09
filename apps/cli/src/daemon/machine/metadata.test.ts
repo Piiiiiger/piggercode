@@ -23,6 +23,12 @@ describe('initialMachineMetadata', () => {
     });
   });
 
+  it('tells the app that this daemon starts 「终端」 sessions, also after a restart onto this version', () => {
+    expect(initialMachineMetadata.daemonNativeTerminalSessionsSupported).toBe(true);
+    const older = { ...initialMachineMetadata, daemonNativeTerminalSessionsSupported: undefined };
+    expect(refreshMachineMetadataForCurrentDaemon(older, older.host).daemonNativeTerminalSessionsSupported).toBe(true);
+  });
+
   it('returns the existing metadata object when every daemon-owned field is current', () => {
     const current = {
       ...initialMachineMetadata,
