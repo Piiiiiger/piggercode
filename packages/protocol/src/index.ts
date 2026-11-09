@@ -2535,6 +2535,7 @@ export {
 } from './daemonExecutionRuns.js';
 
 export {
+  DAEMON_TERMINAL_READ_MAX_WAIT_MS,
   DaemonTerminalErrorCodeSchema,
   DaemonTerminalErrorSchema,
   DaemonTerminalLaunchIntentSchema,

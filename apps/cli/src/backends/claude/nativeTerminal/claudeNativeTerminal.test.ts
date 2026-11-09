@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeServerSession } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
-import { followClaudeTitle } from './claudeNativeTerminal';
+import { claudeNativeTerminalEnv, followClaudeTitle } from './claudeNativeTerminal';
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
 
 const dirs: string[] = [];
@@ -46,6 +46,15 @@ describe('planClaudeNativeTerminalLaunch', () => {
       transcriptExists: () => false,
       newClaudeSessionId: () => 'new-id',
     })).toEqual({ claudeSessionId: 'new-id', args: ['--session-id', 'new-id', '--', '--help me fix the login bug'] });
+  });
+});
+
+describe('claudeNativeTerminalEnv', () => {
+  it('skips the git status Claude spends minutes on in a folder another computer shares, as chat sessions do', () => {
+    expect(claudeNativeTerminalEnv({ baseEnv: { PATH: '/bin' }, directory: '/home/u/code/repo', inSharedFolder: () => true })
+      .CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS).toBe('1');
+    expect(claudeNativeTerminalEnv({ baseEnv: { PATH: '/bin' }, directory: '/srv/repo', inSharedFolder: () => false })
+      .CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS).toBeUndefined();
   });
 });
 

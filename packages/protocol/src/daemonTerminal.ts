@@ -61,11 +61,20 @@ export const DaemonTerminalEnsureResponseSchema = z.union([
 ]);
 export type DaemonTerminalEnsureResponse = z.infer<typeof DaemonTerminalEnsureResponseSchema>;
 
+/** Longest wait a terminal read may ask for (the relay forwards a request for 30 s by default). */
+export const DAEMON_TERMINAL_READ_MAX_WAIT_MS = 25_000;
+
 export const DaemonTerminalStreamReadRequestSchema = z.object({
   terminalId: z.string().min(1),
   cursor: z.number().int().min(0),
   maxBytes: z.number().int().min(1).max(1024 * 1024).optional(),
   maxEvents: z.number().int().min(1).max(2048).optional(),
+  /**
+   * When there is nothing new yet, wait up to this long for output before answering, so output reaches
+   * the app the moment it appears. Kept under the relay's 30 s request limit. Older daemons ignore it
+   * and answer at once.
+   */
+  waitMs: z.number().int().min(0).max(DAEMON_TERMINAL_READ_MAX_WAIT_MS).optional(),
 }).passthrough();
 export type DaemonTerminalStreamReadRequest = z.infer<typeof DaemonTerminalStreamReadRequestSchema>;
 
@@ -111,6 +120,8 @@ export const DaemonTerminalStreamReadResponseSchema = z.union([
     events: z.array(DaemonTerminalStreamEventSchema),
     nextCursor: z.number().int().min(0),
     done: z.boolean(),
+    /** The daemon held this read open for `waitMs`: an empty answer means the wait ran out, ask again at once. */
+    waited: z.boolean().optional(),
   }).passthrough(),
   DaemonTerminalErrorSchema,
 ]);

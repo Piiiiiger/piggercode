@@ -5,6 +5,7 @@ import { join } from 'node:path';
 
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
 import { prepareClaudeSubprocessEnv } from '@/backends/claude/spawn/buildClaudeSubprocessEnv';
+import { resolveClaudeSessionEnvOverlay } from '@/backends/claude/spawn/resolveClaudeSessionEnvOverlay';
 import { getProjectPath } from '@/backends/claude/utils/path';
 import { startFileWatcher } from '@/integrations/watcher/startFileWatcher';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
@@ -32,7 +33,7 @@ export const claudeNativeTerminal: NativeTerminalProvider = {
     const transcriptPath = join(projectDir, `${launch.claudeSessionId}.jsonl`);
     return {
       cli: { command: claude.command, args: [...claude.args, ...launch.args] },
-      env: prepareClaudeSubprocessEnv({ baseEnv: process.env }),
+      env: claudeNativeTerminalEnv({ baseEnv: process.env, directory }),
       metadata: { claudeSessionId: launch.claudeSessionId },
       // Claude creates this folder with the first message; the title watcher needs it before.
       beforeStart: async () => {
@@ -44,6 +45,26 @@ export const claudeNativeTerminal: NativeTerminalProvider = {
     };
   },
 };
+
+/**
+ * Claude Code's environment in a terminal: the user's own, plus what chat sessions get for the folder
+ * (`resolveClaudeSessionEnvOverlay`): in a folder another computer shares here, no `git status` before
+ * the first answer, which reads the whole repository over the connection and takes minutes.
+ */
+export function claudeNativeTerminalEnv(params: Readonly<{
+  baseEnv: NodeJS.ProcessEnv;
+  directory: string;
+  inSharedFolder?: (path: string) => boolean;
+}>): NodeJS.ProcessEnv {
+  return prepareClaudeSubprocessEnv({
+    baseEnv: params.baseEnv,
+    envOverlay: resolveClaudeSessionEnvOverlay({
+      cwd: params.directory,
+      baseEnv: params.baseEnv,
+      ...(params.inSharedFolder ? { inSharedFolder: params.inSharedFolder } : {}),
+    }),
+  });
+}
 
 /** Names the session after the title Claude gives the conversation (a `/rename` wins). */
 export function followClaudeTitle(params: Readonly<{

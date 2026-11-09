@@ -14,7 +14,7 @@ type ErrorResult = Readonly<{
 }>;
 
 type EnsureOk = Readonly<{ ok: true; terminalId: string; reused: boolean }>;
-type ReadOk = Readonly<{ ok: true; terminalId: string; events: readonly DaemonTerminalStreamEvent[]; nextCursor: number; done: boolean }>;
+type ReadOk = Readonly<{ ok: true; terminalId: string; events: readonly DaemonTerminalStreamEvent[]; nextCursor: number; done: boolean; waited?: boolean }>;
 type SimpleOk = Readonly<{ ok: true }>;
 
 export type TerminalPtySessionManagerConfig = Readonly<{
@@ -45,7 +45,8 @@ type TerminalPtyEnsureInput = Readonly<{
 
 export type TerminalPtySessionManager = Readonly<{
   ensure: (input: TerminalPtyEnsureInput) => EnsureOk | ErrorResult;
-  read: (input: Readonly<{ terminalId: string; cursor: number; maxBytes: number; maxEvents: number }>) => ReadOk | ErrorResult;
+  /** With `waitMs`, a read that finds nothing new waits that long for output (or the end) before answering. */
+  read: (input: Readonly<{ terminalId: string; cursor: number; maxBytes: number; maxEvents: number; waitMs?: number }>) => Promise<ReadOk | ErrorResult>;
   input: (input: Readonly<{ terminalId: string; data: string }>) => SimpleOk | ErrorResult;
   resize: (input: Readonly<{ terminalId: string; cols: number; rows: number }>) => SimpleOk | ErrorResult;
   close: (input: Readonly<{ terminalId: string }>) => SimpleOk | ErrorResult;
@@ -146,7 +147,15 @@ type PtySession = {
   ended: boolean;
   lastActivityAtMs: number;
   urlDetector: ReturnType<typeof createTerminalUrlDetector>;
+  /** Reads waiting for output; called and cleared when output arrives or the terminal ends or closes. */
+  outputWaiters: Set<() => void>;
 };
+
+function wakeOutputWaiters(session: PtySession): void {
+  const waiters = [...session.outputWaiters];
+  session.outputWaiters.clear();
+  for (const wake of waiters) wake();
+}
 
 function splitByApproxBytesUtf8(input: string, maxBytes: number): string[] {
   const safeMaxBytes = Math.max(1, Math.trunc(maxBytes));
@@ -237,6 +246,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
       }
     }
     sessionsById.delete(terminalId);
+    wakeOutputWaiters(session);
     if (terminalIdByKey.get(session.terminalKey) === terminalId) {
       terminalIdByKey.delete(session.terminalKey);
     }
@@ -320,6 +330,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
       ended: false,
       lastActivityAtMs: now(),
       urlDetector,
+      outputWaiters: new Set(),
     };
 
     session.disposables.push(
@@ -335,6 +346,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
           for (const url of urls) {
             pushEvent(session.buffer, { t: 'url', ...url }, config);
           }
+          wakeOutputWaiters(session);
         }
       }),
     );
@@ -344,6 +356,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
         session.lastActivityAtMs = now();
         session.ended = true;
         pushEvent(session.buffer, { t: 'exit', exitCode: e.exitCode ?? null, signal: typeof e.signal === 'number' ? e.signal : null }, config);
+        wakeOutputWaiters(session);
       }),
     );
 
@@ -378,7 +391,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
     });
   };
 
-  const read = (input: Readonly<{ terminalId: string; cursor: number; maxBytes: number; maxEvents: number }>): ReadOk | ErrorResult => {
+  const readNow = (input: Readonly<{ terminalId: string; cursor: number; maxBytes: number; maxEvents: number }>): ReadOk | ErrorResult => {
     reapIdle();
     const session = sessionsById.get(input.terminalId);
     if (!session) return okDisabled('terminal_not_found');
@@ -391,6 +404,26 @@ export function createTerminalPtySessionManager(params: Readonly<{
       done: session.ended,
     });
     return { ok: true, terminalId: input.terminalId, events, nextCursor, done };
+  };
+
+  const read = async (input: Readonly<{ terminalId: string; cursor: number; maxBytes: number; maxEvents: number; waitMs?: number }>): Promise<ReadOk | ErrorResult> => {
+    const first = readNow(input);
+    const waitMs = Math.max(0, Math.trunc(input.waitMs ?? 0));
+    const session = sessionsById.get(input.terminalId);
+    if (!first.ok || first.events.length > 0 || first.done || waitMs === 0 || !session) return first;
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(() => {
+        session.outputWaiters.delete(wake);
+        resolve();
+      }, waitMs);
+      const wake = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      session.outputWaiters.add(wake);
+    });
+    const after = readNow(input);
+    return after.ok ? { ...after, waited: true } : after;
   };
 
   const inputData = (input: Readonly<{ terminalId: string; data: string }>): SimpleOk | ErrorResult => {

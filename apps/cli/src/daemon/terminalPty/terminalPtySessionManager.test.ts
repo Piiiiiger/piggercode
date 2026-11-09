@@ -123,7 +123,7 @@ describe('TerminalPtySessionManager', () => {
     expect(provider.spawned[0]?.pty.resizes).toEqual([]);
   });
 
-  it('streams PTY output via cursor reads', () => {
+  it('streams PTY output via cursor reads', async () => {
     const provider = new FakePtyProvider();
     const manager = createTerminalPtySessionManager({
       ptyProvider: provider,
@@ -141,13 +141,13 @@ describe('TerminalPtySessionManager', () => {
 
     pty.emitData('hello');
 
-    const read1 = manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
+    const read1 = await manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
     expect(read1.ok).toBe(true);
     if (!read1.ok) throw new Error('expected ok');
     expect(read1.events).toEqual([{ t: 'data', data: 'hello' }]);
     expect(read1.nextCursor).toBe(1);
 
-    const read2 = manager.read({ terminalId: ensured.terminalId, cursor: read1.nextCursor, maxBytes: 1024, maxEvents: 10 });
+    const read2 = await manager.read({ terminalId: ensured.terminalId, cursor: read1.nextCursor, maxBytes: 1024, maxEvents: 10 });
     expect(read2.ok).toBe(true);
     if (!read2.ok) throw new Error('expected ok');
     expect(read2.events).toEqual([]);
@@ -202,7 +202,48 @@ describe('TerminalPtySessionManager', () => {
     });
   });
 
-  it('emits a gap event when the cursor is too old', () => {
+  it('holds a read open until output arrives, so typing echoes at once, and answers empty when the wait ends', async () => {
+    const provider = new FakePtyProvider();
+    const manager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      config: defaultConfig(),
+      env: { SHELL: '/bin/bash' },
+      platform: 'linux',
+    });
+    const ensured = manager.ensure({ terminalKey: 'k1', cwd: '/tmp', cols: 80, rows: 24 });
+    if (!ensured.ok) throw new Error('expected ok');
+    const pty = provider.spawned[0]?.pty;
+    if (!pty) throw new Error('missing fake pty');
+
+    const startedAt = Date.now();
+    const waiting = manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10, waitMs: 10_000 });
+    setTimeout(() => pty.emitData('echo'), 20);
+    expect(await waiting).toMatchObject({ ok: true, events: [{ t: 'data', data: 'echo' }], nextCursor: 1 });
+    expect(Date.now() - startedAt).toBeLessThan(5_000);
+
+    expect(await manager.read({ terminalId: ensured.terminalId, cursor: 1, maxBytes: 1024, maxEvents: 10, waitMs: 50 }))
+      .toMatchObject({ ok: true, events: [], nextCursor: 1, waited: true });
+  });
+
+  it('ends a held read when the terminal closes', async () => {
+    const provider = new FakePtyProvider();
+    const manager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      config: defaultConfig(),
+      env: { SHELL: '/bin/bash' },
+      platform: 'linux',
+    });
+    const ensured = manager.ensure({ terminalKey: 'k1', cwd: '/tmp', cols: 80, rows: 24 });
+    if (!ensured.ok) throw new Error('expected ok');
+
+    const startedAt = Date.now();
+    const waiting = manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10, waitMs: 10_000 });
+    setTimeout(() => manager.close({ terminalId: ensured.terminalId }), 20);
+    expect(await waiting).toMatchObject({ ok: false, errorCode: 'terminal_not_found' });
+    expect(Date.now() - startedAt).toBeLessThan(5_000);
+  });
+
+  it('emits a gap event when the cursor is too old', async () => {
     const provider = new FakePtyProvider();
     const manager = createTerminalPtySessionManager({
       ptyProvider: provider,
@@ -222,7 +263,7 @@ describe('TerminalPtySessionManager', () => {
     pty.emitData('b');
     pty.emitData('c');
 
-    const read = manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
+    const read = await manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
     expect(read.ok).toBe(true);
     if (!read.ok) throw new Error('expected ok');
     expect(read.events).toEqual([
@@ -233,7 +274,7 @@ describe('TerminalPtySessionManager', () => {
     expect(read.nextCursor).toBe(3);
   });
 
-  it('appends an exit event and marks done when caught up', () => {
+  it('appends an exit event and marks done when caught up', async () => {
     const provider = new FakePtyProvider();
     const manager = createTerminalPtySessionManager({
       ptyProvider: provider,
@@ -251,7 +292,7 @@ describe('TerminalPtySessionManager', () => {
 
     pty.emitExit({ exitCode: 0, signal: 0 });
 
-    const read1 = manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
+    const read1 = await manager.read({ terminalId: ensured.terminalId, cursor: 0, maxBytes: 1024, maxEvents: 10 });
     expect(read1.ok).toBe(true);
     if (!read1.ok) throw new Error('expected ok');
     expect(read1.events).toEqual([{ t: 'exit', exitCode: 0, signal: 0 }]);

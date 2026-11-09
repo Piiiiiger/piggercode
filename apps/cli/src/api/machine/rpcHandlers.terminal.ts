@@ -150,11 +150,12 @@ export function registerMachineTerminalRpcHandlers(params: Readonly<{
     const parsed = DaemonTerminalStreamReadRequestSchema.safeParse(raw);
     if (!parsed.success) return err('terminal_invalid_request');
 
-    return getSessionManager().read({
+    return await getSessionManager().read({
       terminalId: parsed.data.terminalId,
       cursor: parsed.data.cursor,
       maxBytes: parsed.data.maxBytes ?? config.readDefaults.maxBytes,
       maxEvents: parsed.data.maxEvents ?? config.readDefaults.maxEvents,
+      ...(parsed.data.waitMs ? { waitMs: parsed.data.waitMs } : {}),
     });
   });
 
