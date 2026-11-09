@@ -8,6 +8,9 @@ const LONG_RUNNING_RPC_METHODS = new Set([
     'conversation/fork',
     // A timeout cannot establish whether Codex accepted this side effect. Keep the
     // request lifecycle-owned so slow admission never becomes ambiguous delivery.
+    // turn/start has one bounded escape instead: when Codex shows no sign of accepting the
+    // prompt within readCodexAppServerTurnStartStallTimeoutMs, the runtime kills that
+    // app-server (a dead process cannot accept later) and retries once on a fresh one.
     'turn/start',
     'turn/steer',
 ]);
@@ -50,4 +53,14 @@ export function readCodexAppServerRequestTimeoutMs(method: string, env?: NodeJS.
         return readCodexAppServerStartupRpcTimeoutMs(env, baseTimeoutMs);
     }
     return baseTimeoutMs;
+}
+
+/**
+ * How long turn/start may go unanswered, with no sign that Codex accepted the prompt, before
+ * the runtime treats the app-server as wedged. Codex can legitimately hold admission while
+ * optional MCP servers get their startup grace (60s) and required ones their startup timeout
+ * (60s), so the default leaves room for both plus margin.
+ */
+export function readCodexAppServerTurnStartStallTimeoutMs(env?: NodeJS.ProcessEnv): number {
+    return clampRpcTimeoutMs(env?.PIGGERCODE_CODEX_APP_SERVER_TURN_START_STALL_TIMEOUT_MS, 180_000, 30 * 60_000);
 }

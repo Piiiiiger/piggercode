@@ -4,6 +4,7 @@ import {
     readCodexAppServerRequestTimeoutMs,
     readCodexAppServerRpcTimeoutMs,
     readCodexAppServerStartupRpcTimeoutMs,
+    readCodexAppServerTurnStartStallTimeoutMs,
 } from './codexAppServerRpcTimeout';
 
 describe('codexAppServerRpcTimeout', () => {
@@ -56,5 +57,18 @@ describe('codexAppServerRpcTimeout', () => {
 
         expect(readCodexAppServerStartupRpcTimeoutMs(env)).toBe(25_000);
         expect(readCodexAppServerRequestTimeoutMs('initialize', env)).toBe(25_000);
+    });
+
+    it('bounds an unanswered turn/start at 3 minutes unless configured', () => {
+        expect(readCodexAppServerTurnStartStallTimeoutMs({} as NodeJS.ProcessEnv)).toBe(180_000);
+        expect(readCodexAppServerTurnStartStallTimeoutMs({
+            PIGGERCODE_CODEX_APP_SERVER_TURN_START_STALL_TIMEOUT_MS: '500',
+        } as NodeJS.ProcessEnv)).toBe(500);
+        expect(readCodexAppServerTurnStartStallTimeoutMs({
+            PIGGERCODE_CODEX_APP_SERVER_TURN_START_STALL_TIMEOUT_MS: '99999999',
+        } as NodeJS.ProcessEnv)).toBe(1_800_000);
+        expect(readCodexAppServerTurnStartStallTimeoutMs({
+            PIGGERCODE_CODEX_APP_SERVER_TURN_START_STALL_TIMEOUT_MS: 'nope',
+        } as NodeJS.ProcessEnv)).toBe(180_000);
     });
 });

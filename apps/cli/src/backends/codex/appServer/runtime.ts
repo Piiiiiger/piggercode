@@ -96,7 +96,14 @@ import {
 import {
     readCodexAppServerResumeRecoveryTimeoutMs,
     readCodexAppServerRpcTimeoutMs,
+    readCodexAppServerTurnStartStallTimeoutMs,
 } from './client/codexAppServerRpcTimeout';
+import {
+    awaitCodexTurnStartAdmission,
+    describeCodexTurnStartStall,
+    isCodexAppServerTurnStartStalledError,
+} from './turns/codexAppServerTurnStartWatchdog';
+import { ProviderPromptSubmissionRejectedBeforeEffectError } from '@/agent/runtime/providerPromptSubmission';
 import {
     createCodexAppServerStreamEventBridge,
     type CodexAppServerStreamUpdate,
@@ -411,6 +418,8 @@ type CodexAppServerUndeliverablePrompt = Readonly<{
     localIds?: readonly string[] | null;
     text: string;
     userMessageSeq: number | null;
+    /** Why it was not delivered; omitted means Codex rejected it before accepting it. */
+    reason?: 'provider_unavailable_before_acceptance';
 }>;
 
 type CodexAppServerPendingProviderPrompt = CodexAppServerUndeliverablePrompt & {
@@ -1281,6 +1290,11 @@ export function createCodexAppServerRuntime(params: Readonly<{
     }>;
     rememberUsageLimitRecoveryPreference?: (() => Promise<void>) | null;
     createClient?: () => Promise<DisposableCodexAppServerClient>;
+    /**
+     * Stops the app-server process behind createClient() when disposing a client alone would
+     * leave it running (a shared server). The next createClient() must start a fresh one.
+     */
+    terminateAppServer?: (() => Promise<void>) | null;
 }>): Readonly<{
     getSessionId: () => string | null;
     getPublishedSessionId: () => string | null;
@@ -1343,6 +1357,11 @@ export function createCodexAppServerRuntime(params: Readonly<{
     rollbackConversation: (request: SessionRollbackRpcParams) => Promise<SessionRollbackRpcResult>;
 }> {
     const runtimeEnv = params.processEnv ?? process.env;
+    const turnStartStallTimeoutMs = readCodexAppServerTurnStartStallTimeoutMs(runtimeEnv);
+    // turn/start is bounded only when the app-server behind it can be stopped for sure: a
+    // runtime-owned stdio process, or a shared server with terminateAppServer. A daemon-owned
+    // server cannot be stopped from here, so there turn/start keeps waiting as before.
+    const canStopUnresponsiveAppServer = !params.createClient || Boolean(params.terminateAppServer);
     const asyncQuestionSession = supportsAsyncQuestionDelivery(params.session) ? params.session : null;
     const contextWindowRecoveryConfig = resolveCodexContextWindowRecoveryConfig({
         configured: params.contextWindowRecovery,
@@ -1751,6 +1770,18 @@ export function createCodexAppServerRuntime(params: Readonly<{
     const clearPendingProviderPrompt = (pending: CodexAppServerPendingProviderPrompt | null | undefined): void => {
         if (!pending) return;
         pendingProviderPrompts.delete(pending);
+    };
+
+    const reportProviderPromptNotDelivered = (
+        pending: CodexAppServerPendingProviderPrompt,
+        reason: NonNullable<CodexAppServerUndeliverablePrompt['reason']>,
+    ): void => {
+        onUndeliverablePrompts?.([{
+            ...codexAppServerPromptLocalIdPayload(pending.localIds),
+            text: pending.text,
+            userMessageSeq: pending.userMessageSeq,
+            reason,
+        }]);
     };
 
     const emitAllPendingProviderPromptsAsUndeliverable = (): void => {
@@ -4617,6 +4648,30 @@ export function createCodexAppServerRuntime(params: Readonly<{
         }
     };
 
+    // Codex left turn/start unanswered. Kill its app-server, so the prompt can never be accepted
+    // later and the next ensureClient() starts a fresh one. Resolves true only when that
+    // process is known to be gone.
+    const stopUnresponsiveAppServer = async (failure: Error): Promise<boolean> => {
+        let stopped = true;
+        try {
+            // A stdio client's dispose() returns once its process has closed.
+            await disposeClient({ pendingTurnError: failure });
+        } catch (error) {
+            stopped = false;
+            logger.warn('[codex-app-server] Disposing the unresponsive app-server client failed', error);
+        }
+        if (params.terminateAppServer) {
+            try {
+                await params.terminateAppServer();
+                stopped = true;
+            } catch (error) {
+                stopped = false;
+                logger.warn('[codex-app-server] Could not confirm the unresponsive Codex app-server stopped', error);
+            }
+        }
+        return stopped;
+    };
+
     const resumeThread = async (
         client: DisposableCodexAppServerClient,
         requestedThreadId: string,
@@ -5235,8 +5290,15 @@ export function createCodexAppServerRuntime(params: Readonly<{
             if (!interruptTurnId) {
                 if (pendingTurn?.promise !== activeTurn.promise) return;
                 // If we can't resolve the turn id, fall back to tearing down the runtime; this will
-                // abort the active work without relying on turn-scoped cancellation.
+                // abort the active work without relying on turn-scoped cancellation. Codex never
+                // named the turn, so its app-server is likely stuck: stop a shared one as well,
+                // or the next prompt would reconnect to the same stuck process.
                 await disposeClient();
+                try {
+                    await params.terminateAppServer?.();
+                } catch (error) {
+                    logger.warn('[codex-app-server] Failed to stop the Codex app-server after a cancel without a turn id', error);
+                }
                 return;
             }
             const interrupt = await requestCodexTurnInterruptWithStartupRetry({
@@ -5482,9 +5544,23 @@ export function createCodexAppServerRuntime(params: Readonly<{
                         ...baseTurnStartParams,
                         ...buildCurrentPermissionParams('turn'),
                     };
+                    // Any of these means Codex took the prompt, so a slow answer is no longer
+                    // provably undelivered and must not end in a restart.
+                    const hasTurnAdmissionEvidence = (): boolean => pendingProviderPrompt.accepted
+                        || pendingTurnHasProviderAttributedActivity
+                        || pendingTurn?.promise !== activeTurn.promise;
+                    const requestTurnStart = (requestParams: Record<string, unknown>): Promise<unknown> => {
+                        const request = requestWithManagedPermissionFallback(client, 'turn/start', 'turn', requestParams);
+                        if (!canStopUnresponsiveAppServer) return request;
+                        return awaitCodexTurnStartAdmission({
+                            work: request,
+                            stallTimeoutMs: turnStartStallTimeoutMs,
+                            hasAdmissionEvidence: hasTurnAdmissionEvidence,
+                        });
+                    };
                     let response: unknown;
                     try {
-                        response = await requestWithManagedPermissionFallback(client, 'turn/start', 'turn', turnStartParams);
+                        response = await requestTurnStart(turnStartParams);
                         if (Object.prototype.hasOwnProperty.call(turnStartParams, 'permissions')) {
                             permissionSupport = 'supported';
                         }
@@ -5495,7 +5571,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
                                 ...baseTurnStartParams,
                                 ...buildCurrentLegacyPermissionParams('turn'),
                             };
-                            response = await requestWithManagedPermissionFallback(client, 'turn/start', 'turn', turnStartParams);
+                            response = await requestTurnStart(turnStartParams);
                         } else {
                             throw error;
                         }
@@ -5529,6 +5605,28 @@ export function createCodexAppServerRuntime(params: Readonly<{
                     return;
                 } catch (error) {
                     const failure = error instanceof Error ? error : new Error(String(error));
+                    if (isCodexAppServerTurnStartStalledError(failure)) {
+                        // Codex never acknowledged this prompt. Stop its app-server so it cannot
+                        // accept the prompt later, and hand the prompt back to the queue as not
+                        // delivered: the user retries it (later queued prompts wait behind it).
+                        // A cancel() meanwhile has already reported it.
+                        const alreadyReported = !pendingProviderPrompts.has(pendingProviderPrompt);
+                        clearPendingProviderPrompt(pendingProviderPrompt);
+                        const appServerStopped = await stopUnresponsiveAppServer(failure);
+                        logger.warn('[codex-app-server] Codex did not answer turn/start; stopped its app-server and returned the prompt as not delivered', {
+                            threadId: activeThreadId,
+                            stalledAfterMs: failure.stalledAfterMs,
+                            appServerStopped,
+                        });
+                        const shown = new Error(describeCodexTurnStartStall(failure.stalledAfterMs, appServerStopped));
+                        // Unconfirmed stop: the runner blocks the prompt as an uncertain delivery.
+                        if (!appServerStopped) throw shown;
+                        if (!alreadyReported) {
+                            reportProviderPromptNotDelivered(pendingProviderPrompt, 'provider_unavailable_before_acceptance');
+                        }
+                        // Carries the same reason, so the runner's own block agrees with the report.
+                        throw new ProviderPromptSubmissionRejectedBeforeEffectError('provider_unavailable_before_acceptance', shown);
+                    }
                     const failedTurnHadMeaningfulActivity = activeTurnHasMeaningfulContextWindowRecoveryActivity;
                     await finishPendingTurn({
                         error: failure,

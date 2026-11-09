@@ -343,7 +343,12 @@ export async function runCodex(opts: {
             providerTurnId: string;
             appliedModelId?: string;
         }>) => void) | null) => void;
-        setOnUndeliverablePrompts?: (callback: ((prompts: ReadonlyArray<Readonly<{ localIds?: readonly string[] | null; text: string; userMessageSeq: number | null }>>) => void) | null) => void;
+        setOnUndeliverablePrompts?: (callback: ((prompts: ReadonlyArray<Readonly<{
+            localIds?: readonly string[] | null;
+            text: string;
+            userMessageSeq: number | null;
+            reason?: 'provider_unavailable_before_acceptance';
+        }>>) => void) | null) => void;
         compactContext: (command: string) => Promise<void>;
         refreshGoal?: () => Promise<unknown>;
         setGoal?: (
@@ -1934,7 +1939,10 @@ export async function runCodex(opts: {
                     },
                 }
                 : codexSharedAppServer
-                    ? { createClient: codexSharedAppServer.createClient }
+                    ? {
+                        createClient: codexSharedAppServer.createClient,
+                        terminateAppServer: codexSharedAppServer.terminate,
+                    }
                     : {}),
             initialConnectedServiceRuntimeIdentity,
             initializeChatGptAuthTokens: !useCodexAppServerDaemonProxy,
@@ -2071,7 +2079,7 @@ export async function runCodex(opts: {
                 }
                 void blockProviderPromptDeliveryBeforeAcceptance({
                     localIds,
-                    reason: 'provider_rejected_before_acceptance',
+                    reason: prompt.reason ?? 'provider_rejected_before_acceptance',
                     userMessageSeq: prompt.userMessageSeq,
                 });
             }

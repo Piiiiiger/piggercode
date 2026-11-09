@@ -30,6 +30,7 @@ import { createExecutionRunPermissionHandler } from '@/agent/executionRuns/polic
 import { MessageQueue2 } from '@/agent/runtime/modeMessageQueue';
 import { createSessionProviderInputConsumer } from '@/agent/runtime/sessionInput/SessionProviderInputConsumer';
 import { waitForCondition } from '@/testkit/async/waitFor';
+import { createCodexAppServerClient } from './client/createCodexAppServerClient';
 import { createApiSessionClientFixture, createMutableApiSessionClientFixture } from '@/testkit/backends/sessionFixtures';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { runScmCommand } from '@/scm/runtime';
@@ -619,6 +620,18 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '                await appendFile(requestLogPath, JSON.stringify({ id: null, method: "test/process-exit", params: null, result: null, error: null }) + "\\n");',
         '                process.exit(19);',
         '            }, 15);',
+        '            continue;',
+        '        }',
+        // A wedged app-server: turn/start is read and never answered.
+        '        if (text === "stall-turn-start-once" && matchingTurnStartCount === 1) continue;',
+        '        if (text === "slow-turn-start-after-started") {',
+        '            process.stdout.write(JSON.stringify({ method: "turn/started", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
+        '            setTimeout(() => {',
+        '                process.stdout.write(JSON.stringify({ id: msg.id, result: { turn: { id: turnId }, threadId: msg.params?.threadId ?? null } }) + "\\n");',
+        '            }, 700);',
+        '            setTimeout(() => {',
+        '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
+        '            }, 760);',
         '            continue;',
         '        }',
         '        const respondDelayMs = (text === "connected-service-invalidation-before-acceptance" || text === "connected-service-invalidation-before-acceptance-after-activity") && matchingTurnStartCount === 1 ? 120000 : (text === "steer-delay-over-one-second" || text === "cancel-delay-over-one-second") ? 1250 : text === "steer-delay" ? 60 : (text === "overlap-start" || text === "unknown-terminal-before-turn-start-response" || text === "owned-terminal-before-turn-start-response" || text === "owned-then-unknown-terminal-before-turn-start-response" || text === "unknown-then-owned-terminal-before-turn-start-response") ? 80 : 0;',
@@ -4411,6 +4424,120 @@ describe('createCodexAppServerRuntime', () => {
         );
         expect(sendUserTextMessageCommitted).not.toHaveBeenCalled();
         await activeTurn;
+    });
+
+    describe('when Codex leaves turn/start unanswered', () => {
+        const stallEnv = (): NodeJS.ProcessEnv => ({
+            ...process.env,
+            PIGGERCODE_CODEX_APP_SERVER_TURN_START_STALL_TIMEOUT_MS: '300',
+        });
+        const countRequests = async (requestLogPath: string, method: string): Promise<number> => (
+            (await readRequestLog(requestLogPath)).filter((entry) => entry.method === method).length
+        );
+
+        it('stops the stuck app-server, returns the prompt as not delivered, and the next prompt runs on a fresh one', async () => {
+            const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-stalled-turn-start-');
+            const undeliverablePrompts: unknown[] = [];
+            const acceptedPrompts: Array<Readonly<{ localIds?: readonly string[] | null; providerTurnId: string }>> = [];
+            const runtime = createCodexAppServerRuntime({
+                directory: root,
+                processEnv: stallEnv(),
+                onThinkingChange: vi.fn(),
+                session: { updateMetadata: vi.fn() } as any,
+            });
+            runtime.setOnUndeliverablePrompts((prompts) => { undeliverablePrompts.push(...prompts); });
+            runtime.setOnPromptAcceptedByProvider((prompt) => { acceptedPrompts.push(prompt); });
+
+            await runtime.startOrLoad({});
+            const failure = await runtime.sendPrompt('stall-turn-start-once', { localId: 'pending-stalled-1', userMessageSeq: 7 })
+                .then(() => null, (error: unknown) => error);
+            expect(failure).toMatchObject({
+                name: 'ProviderPromptSubmissionRejectedBeforeEffectError',
+                reason: 'provider_unavailable_before_acceptance',
+                message: expect.stringMatching(/did not respond to this message.*restarted it.*not delivered/),
+            });
+
+            expect(undeliverablePrompts).toEqual([
+                expect.objectContaining({
+                    localIds: ['pending-stalled-1'],
+                    userMessageSeq: 7,
+                    reason: 'provider_unavailable_before_acceptance',
+                }),
+            ]);
+            expect(acceptedPrompts).toEqual([]);
+            expect(runtime.isTurnInFlight()).toBe(false);
+            expect(await countRequests(requestLogPath, 'turn/start')).toBe(1);
+
+            await runtime.sendPrompt('after-stall', { localId: 'pending-after-stall' });
+            expect(await countRequests(requestLogPath, 'initialize')).toBe(2);
+            expect(await countRequests(requestLogPath, 'thread/resume')).toBe(1);
+            expect(acceptedPrompts).toContainEqual(expect.objectContaining({ localIds: ['pending-after-stall'] }));
+        });
+
+        it('reports a prompt the user stopped during the stall only once', async () => {
+            // cancel() waits up to one RPC timeout for a turn id that never comes.
+            const { root } = await createRuntimeFixture('happier-codex-app-server-runtime-stalled-turn-start-cancel-', { rpcTimeoutMs: 1000 });
+            const undeliverablePrompts: unknown[] = [];
+            const runtime = createCodexAppServerRuntime({
+                directory: root,
+                processEnv: stallEnv(),
+                onThinkingChange: vi.fn(),
+                session: { updateMetadata: vi.fn() } as any,
+            });
+            runtime.setOnUndeliverablePrompts((prompts) => { undeliverablePrompts.push(...prompts); });
+
+            await runtime.startOrLoad({});
+            const sending = runtime.sendPrompt('stall-turn-start-once', { localId: 'pending-stalled-2', userMessageSeq: 8 });
+            const settled = sending.then(() => 'resolved', () => 'rejected');
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            const cancelling = runtime.cancel();
+            expect(await settled).toBe('rejected');
+            await cancelling;
+
+            expect(undeliverablePrompts).toEqual([
+                expect.objectContaining({ localIds: ['pending-stalled-2'], userMessageSeq: 8 }),
+            ]);
+        });
+
+        it('keeps waiting when the app-server behind the session cannot be stopped from here', async () => {
+            const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-stalled-turn-start-daemon-');
+            const runtime = createCodexAppServerRuntime({
+                directory: root,
+                processEnv: stallEnv(),
+                onThinkingChange: vi.fn(),
+                session: { updateMetadata: vi.fn() } as any,
+                // Like the daemon proxy: a client whose server this runtime cannot stop.
+                createClient: () => createCodexAppServerClient({ cwd: root }),
+            });
+
+            await runtime.startOrLoad({});
+            const settled = vi.fn();
+            runtime.sendPrompt('stall-turn-start-once', { localId: 'pending-daemon-1' }).then(settled, settled);
+            await new Promise((resolve) => setTimeout(resolve, 900));
+
+            expect(settled).not.toHaveBeenCalled();
+            expect(await countRequests(requestLogPath, 'turn/start')).toBe(1);
+            expect(await countRequests(requestLogPath, 'initialize')).toBe(1);
+        });
+
+        it('keeps waiting for a slow turn/start once Codex has started the turn', async () => {
+            const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-slow-turn-start-');
+            const undeliverablePrompts: unknown[] = [];
+            const runtime = createCodexAppServerRuntime({
+                directory: root,
+                processEnv: stallEnv(),
+                onThinkingChange: vi.fn(),
+                session: { updateMetadata: vi.fn() } as any,
+            });
+            runtime.setOnUndeliverablePrompts((prompts) => { undeliverablePrompts.push(...prompts); });
+
+            await runtime.startOrLoad({});
+            await runtime.sendPrompt('slow-turn-start-after-started', { localId: 'pending-slow-1' });
+
+            expect(await countRequests(requestLogPath, 'turn/start')).toBe(1);
+            expect(await countRequests(requestLogPath, 'initialize')).toBe(1);
+            expect(undeliverablePrompts).toEqual([]);
+        });
     });
 
     it('returns an unconfirmed steer to Pending custody when its provider turn ends without a user-message echo', async () => {

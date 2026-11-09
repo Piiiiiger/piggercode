@@ -197,4 +197,150 @@ describe('createCodexSharedAppServer', () => {
     expect(terminateProcess).toHaveBeenCalledWith(child);
     expect(removeRuntimeDirectory).toHaveBeenCalledWith('/tmp/happier-codex-private');
   });
+
+  it.skipIf(process.platform === 'win32')('replaces a stopped native server with a new process at the same socket', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'happier-codex-shared-respawn-'));
+    const executable = join(directory, 'fake-shared-server.mjs');
+    await writeFile(executable, [
+      'import { mkdir } from "node:fs/promises";',
+      'import { dirname } from "node:path";',
+      'import { createServer } from "node:http";',
+      `import WebSocket from ${JSON.stringify(pathToFileURL(createRequire(import.meta.url).resolve('ws-node')).href)};`,
+      'const socketPath = process.argv.find(arg => arg.startsWith("unix://")).slice(7);',
+      'await mkdir(dirname(socketPath), { recursive: true });',
+      'const server = createServer();',
+      'const sockets = new WebSocket.WebSocketServer({ server });',
+      'sockets.on("connection", socket => socket.on("message", data => {',
+      '  const message = JSON.parse(data.toString());',
+      '  if (message.method === "initialize") socket.send(JSON.stringify({ id: message.id, result: {} }));',
+      '  else if (message.method === "test/pid") socket.send(JSON.stringify({ id: message.id, result: { pid: process.pid } }));',
+      '}));',
+      'server.listen(socketPath);',
+    ].join('\n'));
+    const server = await createCodexSharedAppServer({
+      directory,
+      processEnv: createCodexAppServerProcessEnv(executable, { CODEX_HOME: join(directory, 'home') }),
+      dependencies: { createRuntimeDirectory: async () => await mkdtemp(join('/tmp', 'c-')) },
+    });
+    const clients: Awaited<ReturnType<typeof server.createClient>>[] = [];
+    try {
+      const first = await server.createClient();
+      clients.push(first);
+      const firstPid = (await first.request('test/pid') as { pid: number }).pid;
+
+      await server.terminate();
+      const second = await server.createClient();
+      clients.push(second);
+      const secondPid = (await second.request('test/pid') as { pid: number }).pid;
+
+      expect(secondPid).not.toBe(firstPid);
+      expect(() => process.kill(firstPid, 0)).toThrow();
+    } finally {
+      await Promise.all(clients.map((client) => client.dispose().catch(() => undefined)));
+      await server.dispose();
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it('starts a replacement server at the same endpoint after the server exits or is stopped', async () => {
+    const children = [41, 42, 43].map((pid) => Object.assign(new EventEmitter(), { pid, stderr: new EventEmitter() }));
+    let spawnCount = 0;
+    const spawnProcess = vi.fn(() => children[spawnCount++] as never);
+    const createClient = vi.fn(async (params: unknown) => ({ params, dispose: vi.fn(async () => undefined) }));
+    const terminateProcess = vi.fn(async (child: EventEmitter) => { child.emit('exit', null, 'SIGTERM'); });
+    const resetSocketDirectory = vi.fn(async () => undefined);
+    const server = await createCodexSharedAppServer({
+      directory: '/workspace',
+      processEnv: { HOME: '/home/test' },
+      dependencies: {
+        createRuntimeDirectory: async () => '/tmp/happier-codex-private',
+        resolveInvocation: async ({ args }) => ({ command: '/usr/bin/codex', args }),
+        spawnProcess,
+        waitForSocket: vi.fn(async () => undefined),
+        createClient: createClient as never,
+        terminateProcess,
+        removeRuntimeDirectory: vi.fn(async () => undefined),
+        resetSocketDirectory,
+      },
+    });
+    const listenArgs = ['app-server', '--listen', 'unix:///tmp/happier-codex-private/private/app-server.sock'];
+
+    await server.createClient();
+    await server.createClient();
+    expect(spawnProcess).toHaveBeenCalledTimes(1);
+
+    children[0]!.emit('exit', 1, null);
+    await server.createClient();
+    expect(spawnProcess).toHaveBeenCalledTimes(2);
+    expect(spawnProcess).toHaveBeenLastCalledWith('/usr/bin/codex', listenArgs, expect.anything());
+    expect(resetSocketDirectory).toHaveBeenCalledWith('/tmp/happier-codex-private/private');
+
+    await server.terminate();
+    expect(terminateProcess).toHaveBeenLastCalledWith(children[1]);
+    await server.createClient();
+    expect(spawnProcess).toHaveBeenCalledTimes(3);
+    expect(spawnProcess).toHaveBeenLastCalledWith('/usr/bin/codex', listenArgs, expect.anything());
+    expect(server.endpoint).toBe('unix:///tmp/happier-codex-private/private/app-server.sock');
+
+    await server.dispose();
+    expect(terminateProcess).toHaveBeenLastCalledWith(children[2]);
+  });
+
+  function createFakeSharedServerDependencies() {
+    const children = [51, 52, 53].map((pid) => Object.assign(new EventEmitter(), { pid, stderr: new EventEmitter() }));
+    let spawnCount = 0;
+    return {
+      children,
+      dependencies: {
+        createRuntimeDirectory: async () => '/tmp/happier-codex-private',
+        resolveInvocation: async ({ args }: { args: string[] }) => ({ command: '/usr/bin/codex', args }),
+        spawnProcess: vi.fn(() => children[spawnCount++] as never),
+        waitForSocket: vi.fn(async () => undefined),
+        createClient: vi.fn(async (params: unknown) => ({ params, dispose: vi.fn(async () => undefined) })) as never,
+        terminateProcess: vi.fn(async () => undefined),
+        removeRuntimeDirectory: vi.fn(async () => undefined),
+        resetSocketDirectory: vi.fn(async () => undefined),
+        stopExitTimeoutMs: 30,
+      },
+    };
+  }
+
+  it('reports a stop it cannot confirm, so the caller does not treat the server as gone', async () => {
+    const { dependencies } = createFakeSharedServerDependencies();
+    const server = await createCodexSharedAppServer({ directory: '/workspace', processEnv: { HOME: '/home/test' }, dependencies });
+    try {
+      await expect(server.terminate()).rejects.toThrow(/did not exit/);
+    } finally {
+      await server.dispose();
+    }
+  });
+
+  it('does not start a replacement once the server is disposed during the restart', async () => {
+    const { children, dependencies } = createFakeSharedServerDependencies();
+    let releaseReset!: () => void;
+    dependencies.resetSocketDirectory = vi.fn(() => new Promise<void>((resolve) => { releaseReset = resolve; }));
+    const server = await createCodexSharedAppServer({ directory: '/workspace', processEnv: { HOME: '/home/test' }, dependencies });
+    await server.createClient();
+
+    children[0]!.emit('exit', 1, null);
+    const reconnect = server.createClient();
+    await vi.waitFor(() => expect(dependencies.resetSocketDirectory).toHaveBeenCalled());
+    await server.dispose();
+    releaseReset();
+
+    await expect(reconnect).rejects.toThrow(/disposed/);
+    expect(dependencies.spawnProcess).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start a replacement beside a server whose exit was never confirmed', async () => {
+    const { dependencies } = createFakeSharedServerDependencies();
+    const server = await createCodexSharedAppServer({ directory: '/workspace', processEnv: { HOME: '/home/test' }, dependencies });
+    try {
+      await expect(server.terminate()).rejects.toThrow(/did not exit/);
+      await expect(server.createClient()).rejects.toThrow(/did not exit/);
+      expect(dependencies.spawnProcess).toHaveBeenCalledTimes(1);
+    } finally {
+      await server.dispose();
+    }
+  });
 });
