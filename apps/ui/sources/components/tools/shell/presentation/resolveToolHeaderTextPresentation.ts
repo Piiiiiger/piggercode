@@ -5,6 +5,7 @@ import { knownTools } from '@/components/tools/catalog';
 import { inferToolNameForRendering } from '@/components/tools/normalization/policy/toolNameInference';
 import { formatMCPSubtitle, formatMCPTitle } from '@/components/tools/renderers/system/MCPToolView';
 import { t } from '@/text';
+import { isGenericMcpToolName } from '@/components/tools/normalization/policy/isGenericMcpToolName';
 
 const KNOWN_TOOL_KEYS = Object.keys(knownTools);
 
@@ -64,7 +65,7 @@ export function resolveToolHeaderTextPresentation(params: {
 }): ToolHeaderTextPresentation {
     const { tool, metadata } = params;
 
-    if (tool.name.startsWith('mcp__')) {
+    if (isGenericMcpToolName(tool.name)) {
         return {
             normalizedToolName: tool.name,
             usedInferenceFallback: false,

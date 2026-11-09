@@ -47,6 +47,7 @@ import { readCoarsePrimaryPointer, useRowActionHoverHost } from '@/components/se
 import { shouldShowTranscriptRowPinAction } from '@/components/sessions/transcript/messageCopyVisibility';
 import type { ToolRowPinAction } from '@/components/sessions/transcript/toolCalls/ToolCallPinAction';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isGenericMcpToolName } from '@/components/tools/normalization/policy/isGenericMcpToolName';
 import {
     TranscriptRowSeqProvider,
     useHistoricalTranscriptAgentId,
@@ -196,7 +197,7 @@ export const ToolView = React.memo<ToolViewProps>((props) => {
         }
     }
 
-    const collapsedDetailLevel = toolForRendering.name.startsWith('mcp__') || headerModel.shouldCollapseUnknownToolByDefault
+    const collapsedDetailLevel = isGenericMcpToolName(toolForRendering.name) || headerModel.shouldCollapseUnknownToolByDefault
         ? 'title'
         : resolveToolViewDetailLevel({
               toolName: normalizedToolName,

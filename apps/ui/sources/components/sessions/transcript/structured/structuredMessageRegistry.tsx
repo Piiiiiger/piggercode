@@ -4,6 +4,7 @@ import type { ZodSchema } from 'zod';
 import { ReviewCommentsV1Schema } from '@/sync/domains/input/reviewComments/reviewCommentMeta';
 import { ReviewCommentsMessageCard } from '@/components/sessions/reviews/messages/ReviewCommentsMessageCard';
 import {
+    BackgroundToolCompletionV1Schema,
     DelegateOutputV1Schema,
     ExecutionRunCompletionV1Schema,
     PlanOutputV1Schema,
@@ -29,6 +30,7 @@ import { SubagentLaunchMessageCard } from '@/components/sessions/subagents/messa
 import { SubagentCommandMessageCard } from '@/components/sessions/subagents/messages/SubagentCommandMessageCard';
 import type { TranscriptInteraction } from '@/utils/sessions/deriveTranscriptInteraction';
 import { ExecutionRunCompletionMessageCard } from '@/components/sessions/runs/messages/ExecutionRunCompletionMessageCard';
+import { BackgroundToolCompletionMessageCard } from '@/components/tools/messages/BackgroundToolCompletionMessageCard';
 
 export type StructuredMessageKind =
     | 'participant_message.v1'
@@ -41,6 +43,7 @@ export type StructuredMessageKind =
     | 'plan_output.v1'
     | 'delegate_output.v1'
     | 'execution_run_completion.v1'
+    | 'background_tool_completion.v1'
     | 'voice_agent_turn.v1'
     | 'session_synopsis.v1'
     | 'session_summary_shard.v1';
@@ -159,6 +162,11 @@ const structuredMessageRegistryEntries: readonly StructuredMessageRegistryEntry<
         kind: 'execution_run_completion.v1',
         schema: ExecutionRunCompletionV1Schema,
         render: (payload) => <ExecutionRunCompletionMessageCard payload={payload} />,
+    },
+    {
+        kind: 'background_tool_completion.v1',
+        schema: BackgroundToolCompletionV1Schema,
+        render: (payload) => <BackgroundToolCompletionMessageCard payload={payload} />,
     },
     {
         kind: 'voice_agent_turn.v1',

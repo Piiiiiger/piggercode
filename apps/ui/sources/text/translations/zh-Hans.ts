@@ -6580,6 +6580,15 @@ export const zhHans: TranslationStructure = {
       commandDiffHint:
         "命令预览会隐藏一小段用于清理环境的前缀，以便更易阅读。完整的原始命令如下所示。",
     },
+    backgroundCompletion: {
+      finished: ({ tool }: { tool: string }) => `${tool}已在后台完成，AI 正在继续处理。`,
+      failed: ({ tool }: { tool: string }) => `${tool}在后台失败，AI 正在继续处理。`,
+    },
+    machineCommand: {
+      title: "远程命令",
+      titleOn: ({ machine }: { machine: string }) => `远程命令 · ${machine}`,
+      exitCode: ({ code }: { code: number }) => `退出码 ${code}`,
+    },
     webFetch: {
       httpStatus: ({ status }: { status: number }) => `HTTP ${status}`,
     },

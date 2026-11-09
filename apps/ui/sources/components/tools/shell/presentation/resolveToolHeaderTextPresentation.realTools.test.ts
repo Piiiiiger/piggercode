@@ -24,6 +24,17 @@ function makeToolCall(overrides: Partial<ToolCall>): ToolCall {
 }
 
 describe('resolveToolHeaderTextPresentation (real known tools)', () => {
+    it('renders PiggerCode remote commands as a command rather than a generic MCP call', () => {
+        const tool = makeToolCall({
+            name: 'mcp__piggercode__machine_command_run',
+            input: { machineId: 'machine-1', cwd: '~/code', command: 'du -sh .' },
+        });
+        const model = resolveToolHeaderTextPresentation({ tool, metadata: null });
+        expect(model.title).not.toContain('MCP');
+        expect(model.title).toBe('Remote command');
+        expect(model.subtitle).toBe('du -sh .');
+    });
+
     it('renders Read with Read File title and path subtitle', () => {
         const tool = makeToolCall({ name: 'Read', input: { file_path: '/tmp/example.txt' } });
         const model = resolveToolHeaderTextPresentation({ tool, metadata: null });

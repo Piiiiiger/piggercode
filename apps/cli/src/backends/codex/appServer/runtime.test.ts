@@ -974,6 +974,18 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '            }, 70);',
         '            continue;',
         '        }',
+        '        if (text === "bridge-background-mcp-result-after-turn-closed") {',
+        '            setTimeout(() => {',
+        '                process.stdout.write(JSON.stringify({ method: "item/started", params: { threadId: msg.params?.threadId ?? null, turnId, item: { id: "bg_mcp_1", type: "mcpToolCall", server: "piggercode", tool: "machine_command_run", arguments: { machineId: "m1", command: "du -sh ." } } } }) + "\\n");',
+        '            }, 6);',
+        '            setTimeout(() => {',
+        '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
+        '            }, 12);',
+        '            setTimeout(() => {',
+        '                process.stdout.write(JSON.stringify({ method: "item/completed", params: { threadId: msg.params?.threadId ?? null, turnId, item: { id: "bg_mcp_1", type: "mcpToolCall", server: "piggercode", tool: "machine_command_run", status: "completed", result: { content: [{ type: "text", text: "34G" }] } } } }) + "\\n");',
+        '            }, 400);',
+        '            continue;',
+        '        }',
         '        if (text === "bridge-duplicate-command-result-during-terminal-drain") {',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "item/started", params: { threadId: msg.params?.threadId ?? null, turnId, item: { id: "drain_dup_cmd_1", type: "commandExecution", command: "yarn test", cwd: "/repo" } } }) + "\\n");',
@@ -6021,6 +6033,64 @@ describe('createCodexAppServerRuntime', () => {
         expect(eventOrder.at(-1)).toBe('thinking-stopped');
         expect(runtime.hasActiveProviderTurn()).toBe(false);
         expect(runtime.isTurnInFlight()).toBe(false);
+    });
+
+    it('shows an MCP result that arrives after the turn closed and hands it to the agent', async () => {
+        const { root } = await createRuntimeFixture('happier-codex-app-server-runtime-background-mcp-');
+
+        const eventOrder: string[] = [];
+        const sessionTurnLifecycle = createSessionTurnLifecycleTestDouble({
+            completeTurn: vi.fn(async () => {
+                eventOrder.push('completed-status');
+            }),
+        });
+        const enqueueSessionUserMessage = vi.fn(async () => {
+            eventOrder.push('notice');
+        });
+        const session = {
+            updateMetadata: vi.fn(),
+            sessionTurnLifecycle,
+            sendCodexMessage: vi.fn((message: { type?: string; callId?: string }) => {
+                if (message.type === 'tool-call-result' && message.callId === 'bg_mcp_1') {
+                    eventOrder.push('tool-result');
+                }
+            }),
+            enqueueSessionUserMessage,
+        };
+        const runtime = createCodexAppServerRuntime({
+            directory: root,
+            onThinkingChange: vi.fn(),
+            session: session as any,
+        });
+
+        await runtime.startOrLoad({});
+        await runtime.sendPrompt('bridge-background-mcp-result-after-turn-closed');
+        await waitForCondition(() => eventOrder.includes('notice'), {
+            timeoutMs: 2_000,
+            intervalMs: 10,
+            label: 'background MCP result handed to the agent',
+        });
+
+        // The turn closed without the result; the result then lands on the call, then the agent hears of it.
+        expect(eventOrder.indexOf('completed-status')).toBeLessThan(eventOrder.indexOf('tool-result'));
+        expect(eventOrder.indexOf('tool-result')).toBeLessThan(eventOrder.indexOf('notice'));
+        expect(enqueueSessionUserMessage).toHaveBeenCalledTimes(1);
+        expect(enqueueSessionUserMessage).toHaveBeenCalledWith(expect.objectContaining({
+            localId: 'codex-background-tool:bg_mcp_1',
+            inputOrigin: 'session_generated',
+            requestedAction: { v: 1, kind: 'steer_if_active' },
+            meta: expect.objectContaining({
+                happier: expect.objectContaining({
+                    kind: 'background_tool_completion.v1',
+                    payload: expect.objectContaining({
+                        callId: 'bg_mcp_1',
+                        toolName: 'mcp__piggercode__machine_command_run',
+                        status: 'completed',
+                    }),
+                }),
+            }),
+        }));
+        expect(runtime.hasActiveProviderTurn()).toBe(false);
     });
 
     it('cancels pending Codex turn finalization when same-turn command starts during settle', async () => {

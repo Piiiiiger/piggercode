@@ -6404,6 +6404,15 @@ export const en = {
             commandDiffTitle: 'Raw command',
             commandDiffHint: 'The command preview hides a short environment-cleanup prefix to keep it readable. The full raw command is shown below.',
         },
+        backgroundCompletion: {
+            finished: ({ tool }: { tool: string }) => `${tool} finished in the background. The agent is continuing.`,
+            failed: ({ tool }: { tool: string }) => `${tool} failed in the background. The agent is continuing.`,
+        },
+        machineCommand: {
+            title: 'Remote command',
+            titleOn: ({ machine }: { machine: string }) => `Remote command · ${machine}`,
+            exitCode: ({ code }: { code: number }) => `Exit code ${code}`,
+        },
         webFetch: {
             httpStatus: ({ status }: { status: number }) => `HTTP ${status}`,
         },

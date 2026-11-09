@@ -11,6 +11,7 @@ import { useSetting } from '@/sync/domains/state/storage';
 import { ToolTimelineRowHeader } from '@/components/tools/shell/views/timeline/ToolTimelineRowHeader';
 import { resolveToolViewDetailLevel } from '@/components/tools/normalization/policy/resolveToolViewDetailLevel';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isGenericMcpToolName } from '@/components/tools/normalization/policy/isGenericMcpToolName';
 import {
     resolveToolViewDetailLevelDefaultForChromeMode,
     type ToolViewDetailLevelSetting,
@@ -52,7 +53,7 @@ export const ToolTimelinePreviewRow = React.memo(function ToolTimelinePreviewRow
         });
 
         const toolForRendering = model.toolForRendering;
-        if (toolForRendering.name.startsWith('mcp__') || model.shouldCollapseUnknownToolByDefault) {
+        if (isGenericMcpToolName(toolForRendering.name) || model.shouldCollapseUnknownToolByDefault) {
             return 'title';
         }
 

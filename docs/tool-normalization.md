@@ -103,6 +103,10 @@ the app applies a **rendering-only normalization** to infer a canonical tool nam
 
 This is intentionally narrower than CLI normalization: it exists to keep older data renderable.
 
+MCP tools (`mcp__<server>__<tool>`) render through the generic MCP view (puzzle icon, `MCP: Server Tool`, collapsed to the
+title) unless the app catalog has an entry for that exact name; `isGenericMcpToolName` is the one check every header, row and
+detail-level path uses. PiggerCode's own `mcp__piggercode__machine_command_run` has such an entry and renders as a remote command.
+
 ---
 
 ## CLI: tool normalization (V2)

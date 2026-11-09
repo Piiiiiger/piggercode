@@ -19,6 +19,13 @@ export {
 } from './structuredMessages/executionRunCompletionV1.js';
 
 export {
+  BACKGROUND_TOOL_COMPLETION_KIND,
+  buildBackgroundToolCompletionInputV1,
+  BackgroundToolCompletionV1Schema,
+  type BackgroundToolCompletionV1,
+} from './structuredMessages/backgroundToolCompletionV1.js';
+
+export {
   MachineUpdateMetadataRequestSchema,
   MachineUpdateMetadataResponseSchema,
   type MachineUpdateMetadataRequest,

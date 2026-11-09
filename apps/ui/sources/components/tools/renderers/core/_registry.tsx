@@ -24,6 +24,8 @@ import { LSView } from '../fileOps/LSView';
 import { ChangeTitleView } from '../workflow/ChangeTitleView';
 import { DeleteView } from '../fileOps/DeleteView';
 import { MCPToolView } from '../system/MCPToolView';
+import { MachineCommandView } from '../system/MachineCommandView';
+import { MACHINE_COMMAND_RUN_TOOL_NAME } from '../../catalog/providers/machineCommand';
 import { UnknownToolView } from '../system/UnknownToolView';
 import { SubAgentRunView } from '../workflow/SubAgentRunView';
 import { TaskOutputView } from '../system/TaskOutputView';
@@ -85,8 +87,15 @@ export const toolViewRegistry: Record<KnownCanonicalToolNameV2, ToolViewComponen
     AgentTeamSendMessage: AgentTeamView,
 };
 
+// MCP tools of PiggerCode's own server that have a view of their own (and a catalog entry).
+const firstPartyMcpToolViews: Readonly<Record<string, ToolViewComponent>> = {
+    [MACHINE_COMMAND_RUN_TOOL_NAME]: MachineCommandView,
+};
+
 // Helper function to get the appropriate view component for a tool
 export function getToolViewComponent(toolName: string): ToolViewComponent | null {
+    const firstPartyMcpToolView = firstPartyMcpToolViews[toolName];
+    if (firstPartyMcpToolView) return firstPartyMcpToolView;
     if (toolName.startsWith('mcp__')) return MCPToolView;
     const normalizedName = normalizeToolNameForView(toolName);
     const parsed = KnownCanonicalToolNameV2Schema.safeParse(normalizedName);

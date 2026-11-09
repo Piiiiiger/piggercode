@@ -6,6 +6,7 @@ import { providerSearchTools } from './providers/search';
 import { providerPatchTools } from './providers/patch';
 import { providerDiffTools } from './providers/diff';
 import { providerAskUserQuestionTools } from './providers/askUserQuestion';
+import { providerMachineCommandTools } from './providers/machineCommand';
 
 export const knownToolsProviders = {
     ...providerShellTools,
@@ -15,4 +16,5 @@ export const knownToolsProviders = {
     ...providerPatchTools,
     ...providerDiffTools,
     ...providerAskUserQuestionTools,
+    ...providerMachineCommandTools,
 } satisfies Record<string, KnownToolDefinition>;

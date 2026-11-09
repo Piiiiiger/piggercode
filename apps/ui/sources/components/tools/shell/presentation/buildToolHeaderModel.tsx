@@ -10,6 +10,7 @@ import { normalizeToolCallForRendering } from '@/components/tools/normalization/
 import { resolveToolHeaderTextPresentation } from '@/components/tools/shell/presentation/resolveToolHeaderTextPresentation';
 import { getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isGenericMcpToolName } from '@/components/tools/normalization/policy/isGenericMcpToolName';
 
 export type ToolHeaderModel = Readonly<{
     toolForRendering: ToolCall;
@@ -49,7 +50,7 @@ export function buildToolHeaderModel(input: {
 
     const hasSpecificView = !!getToolViewComponent(normalizedToolName);
     const isUnknownTool =
-        !toolForRendering.name.startsWith('mcp__') &&
+        !isGenericMcpToolName(toolForRendering.name) &&
         !knownTool &&
         !hasSpecificView;
 
@@ -97,7 +98,7 @@ function resolveToolHeaderIcon(params: {
     iconColorPrimary: string;
     iconColorSecondary: string;
 }): React.ReactNode {
-    if (params.tool.name.startsWith('mcp__')) {
+    if (isGenericMcpToolName(params.tool.name)) {
         return <Icon name="puzzle-piece" size={params.iconSize} color={params.iconColorSecondary} />;
     }
 

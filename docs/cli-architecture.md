@@ -1855,6 +1855,16 @@ through the relay like any machine RPC (account-scoped, encrypted); the target's
   that allowance. A machine that is offline or predates the method fails with a message saying so.
 - **Audit.** The target writes each run (directory, command length, exit code; not the command text)
   to its daemon log file.
+- **In the transcript.** The app shows `mcp__piggercode__machine_command_run` as a remote command
+  (the machine's name, the command, its output and a non-zero exit code) instead of a generic MCP call:
+  `components/tools/catalog/providers/machineCommand.tsx` and `MachineCommandView`, which reads the
+  machine's reply with `MachineCommandRunResponseSchema` from either provider's MCP result shape.
+- **Results that arrive after the turn (Codex).** Codex calls MCP tools from scripts that hand control
+  back to the model after a while, so the model can end its turn before a slow command (or one waiting
+  on approval) returns. The app-server runtime keeps the MCP calls still running when it closes the turn
+  (`backgroundMcpToolNamesByItemId`); when one completes it shows the result on the call and enqueues a
+  session-generated `background_tool_completion.v1` notice (steering a running turn, or starting the next
+  one), so the agent reports the result without the user asking. User-stopped turns are not followed up.
 
 ### Shared folders
 

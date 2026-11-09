@@ -1,4 +1,8 @@
-import { buildUsageLimitIssueFingerprint, isSessionUsageLimitRecoveryForIssue } from '@piggercode/protocol';
+import {
+    buildBackgroundToolCompletionInputV1,
+    buildUsageLimitIssueFingerprint,
+    isSessionUsageLimitRecoveryForIssue,
+} from '@piggercode/protocol';
 import { randomUUID } from 'node:crypto';
 import { canPublishSessionResumeIdentity } from '@/session/metadata/sessionIdentityPublication';
 import { join } from 'node:path';
@@ -756,6 +760,21 @@ function readProviderUserMessageClientId(value: unknown): string | null {
     return readPendingLocalId(item.clientId) ?? readPendingLocalId(item.client_id);
 }
 
+/** The canonical `mcp__<server>__<tool>` name of an MCP call item, or null for any other item. */
+function readMcpToolCallName(value: unknown): string | null {
+    if (readNormalizedProviderEventItemType(value) !== 'mcptoolcall') return null;
+    const item = readProviderEventItemRecord(value);
+    const server = trimStringValue(item?.server);
+    const tool = trimStringValue(item?.tool) ?? trimStringValue(item?.name);
+    return server && tool ? canonicalizeCodexMcpToolName(`mcp__${server}__${tool}`) : null;
+}
+
+function readBackgroundToolCompletionStatus(value: unknown): 'completed' | 'failed' {
+    const item = readProviderEventItemRecord(value);
+    const status = trimStringValue(item?.status)?.toLowerCase();
+    return status === 'failed' || (item?.error !== undefined && item.error !== null) ? 'failed' : 'completed';
+}
+
 function isBlockingCodexAppServerItemStart(value: unknown): boolean {
     const itemId = readProviderEventItemId(value);
     if (!itemId) return false;
@@ -1409,7 +1428,12 @@ export function createCodexAppServerRuntime(params: Readonly<{
     let activeTurnAcceptsSteer = false;
     let lastPublishedInFlightSteerAvailability: boolean | null = null;
     let activeTurnHasMeaningfulContextWindowRecoveryActivity = false;
-    const activeProviderTurnItemIds = new Set<string>();
+    // Blocking items of the active turn by provider item id, with the canonical tool name for MCP calls.
+    const activeProviderTurnItemIds = new Map<string, string | null>();
+    // MCP calls still running when their turn was closed: Codex scripts hand control back to the model
+    // before a slow tool returns, and the model may end its turn. Their late result is shown and handed
+    // to the agent (`deliverBackgroundMcpToolCompletion`).
+    const backgroundMcpToolNamesByItemId = new Map<string, string>();
     let latestConnectedServiceRuntimeIdentity: CodexConnectedServiceRuntimeAppliedIdentity | null =
         params.initialConnectedServiceRuntimeIdentity ?? null;
     // A disposed process has no live proof. Retain its applied selection only as
@@ -3516,6 +3540,9 @@ export function createCodexAppServerRuntime(params: Readonly<{
         pendingTurnBlockingItemDrainTimer = setTimeout(() => {
             pendingTurnBlockingItemDrainTimer = null;
             if (!pendingTurn || scheduledPendingTurnFlushReason !== 'turn-end') return;
+            for (const [itemId, mcpToolName] of activeProviderTurnItemIds) {
+                if (mcpToolName) backgroundMcpToolNamesByItemId.set(itemId, mcpToolName);
+            }
             activeProviderTurnItemIds.clear();
             scheduledPendingTurnFlushReason = null;
             void runBridgeWork({
@@ -3808,7 +3835,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
         if (!pendingTurn || !notificationMatchesPendingTurn(notificationParams)) return;
         if (!isBlockingCodexAppServerItemStart(notificationParams)) return;
         const itemId = readProviderEventItemId(notificationParams);
-        if (itemId) activeProviderTurnItemIds.add(itemId);
+        if (itemId) activeProviderTurnItemIds.set(itemId, readMcpToolCallName(notificationParams));
     };
 
     const trackActiveProviderTurnItemCompletion = (notificationParams: unknown): boolean => {
@@ -3829,6 +3856,53 @@ export function createCodexAppServerRuntime(params: Readonly<{
             itemId,
             readProviderEventTurnId(notificationParams),
         );
+    };
+
+    const isBackgroundMcpToolCompletion = (notificationParams: unknown): boolean => {
+        const itemId = readProviderEventItemId(notificationParams);
+        return itemId !== null && backgroundMcpToolNamesByItemId.has(itemId);
+    };
+
+    /**
+     * An MCP call that outlived its turn has finished: show its result on the call, then tell the
+     * agent, which otherwise would not learn of it until the user asked again. The notice goes in
+     * like any session-generated input (steering a running turn, or starting the next one).
+     */
+    const deliverBackgroundMcpToolCompletion = async (notificationParams: unknown): Promise<void> => {
+        const itemId = readProviderEventItemId(notificationParams);
+        const toolName = itemId ? backgroundMcpToolNamesByItemId.get(itemId) : undefined;
+        if (!itemId || !toolName) return;
+        backgroundMcpToolNamesByItemId.delete(itemId);
+
+        const streamScopeId = readThreadId(notificationParams) ?? threadId;
+        if (streamScopeId) {
+            const context: StreamUpdateContext = { sidechainId: null, streamScopeId };
+            if (!shouldSkipDuplicateBlockingProviderItemCompletion(context, notificationParams)) {
+                for (const update of streamEventBridge.onNotification({ method: 'item/completed', params: notificationParams })) {
+                    if (update.type === 'tool-result') await applyStreamUpdate(update, context);
+                }
+            }
+        }
+
+        const session = params.session;
+        if (typeof session.enqueueSessionUserMessage !== 'function') return;
+        const notice = buildBackgroundToolCompletionInputV1({
+            v: 1,
+            callId: itemId,
+            toolName,
+            status: readBackgroundToolCompletionStatus(notificationParams),
+            finishedAtMs: Date.now(),
+        });
+        logger.debug('[codex-app-server] Handing a background tool result to the agent', { itemId, toolName });
+        // Detached: the input is accepted through the provider, which needs this bridge work to finish.
+        startDetachedProviderProjection('background-tool-completion', async () => {
+            await session.enqueueSessionUserMessage!({
+                ...notice,
+                localId: `codex-background-tool:${itemId}`,
+                inputOrigin: 'session_generated',
+                requestedAction: { v: 1, kind: 'steer_if_active' },
+            });
+        });
     };
 
     const adoptNativeTurnFromProviderActivity = async (
@@ -4059,6 +4133,14 @@ export function createCodexAppServerRuntime(params: Readonly<{
     ): void => {
         client.registerNotificationHandler(method, (notificationParams) => {
             if (attachedClientGeneration !== clientLifecycleGeneration) return;
+            // The history boundary drops everything of a closed turn (replays). A background MCP call
+            // closed with its turn still owes its result, so it is routed here before that filter.
+            if (method === 'item/completed' && isBackgroundMcpToolCompletion(notificationParams)) {
+                return runBridgeWork({
+                    operation: 'provider-notification',
+                    details: { method },
+                }, () => deliverBackgroundMcpToolCompletion(notificationParams));
+            }
             const historyIdentityParams = (() => {
                 const record = readRecord(notificationParams);
                 const activeTurn = pendingTurn;

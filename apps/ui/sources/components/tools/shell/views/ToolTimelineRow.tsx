@@ -46,6 +46,7 @@ import { buildApprovalToolCallLocation, doesApprovalMatchToolCall } from './tool
 import type { TranscriptInteraction } from '@/utils/sessions/deriveTranscriptInteraction';
 import { isAskUserQuestionToolName } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
+import { isGenericMcpToolName } from '@/components/tools/normalization/policy/isGenericMcpToolName';
 import {
     TranscriptRowSeqProvider,
     useHistoricalTranscriptAgentId,
@@ -179,7 +180,7 @@ export const ToolTimelineRow = React.memo((props: {
     });
 
     const collapsedDetailLevel =
-        toolForRendering.name.startsWith('mcp__') || shouldCollapseUnknownToolByDefault
+        isGenericMcpToolName(toolForRendering.name) || shouldCollapseUnknownToolByDefault
             ? 'title'
             : resolveToolViewDetailLevel({
                   toolName: normalizedToolName,
