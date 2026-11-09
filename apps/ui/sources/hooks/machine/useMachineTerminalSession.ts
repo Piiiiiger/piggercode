@@ -27,6 +27,12 @@ import {
 } from '@/sync/ops/machineTerminal';
 import { delay } from '@/utils/timing/time';
 
+/**
+ * How long the machine may hold a terminal read open waiting for output, so output (and the echo of
+ * what is typed) arrives the moment it appears instead of at the next ask. Under the relay's 30 s limit.
+ */
+const TERMINAL_READ_WAIT_MS = 15_000;
+
 export type TerminalStatus = 'idle' | 'connecting' | 'connected' | 'error' | 'exited';
 
 export function useMachineTerminalSession(params: Readonly<{
@@ -277,7 +283,8 @@ export function useMachineTerminalSession(params: Readonly<{
                 const read = await machineTerminalStreamRead(params.machineId, {
                     terminalId,
                     cursor: cursorRef.current,
-                });
+                    waitMs: TERMINAL_READ_WAIT_MS,
+                }, { timeoutMs: TERMINAL_READ_WAIT_MS + 10_000 });
                 if (canceled) return;
 
                 if (!read.ok) {
@@ -308,8 +315,12 @@ export function useMachineTerminalSession(params: Readonly<{
                 }
 
                 if (read.events.length === 0) {
-                    idleCount = Math.min(10, idleCount + 1);
-                    await delay(Math.min(250, 60 + idleCount * 10));
+                    // A machine that held the read open answers empty only once its wait ran out: ask again
+                    // at once. An older one answers empty right away: pause between asks as before.
+                    if (read.waited !== true) {
+                        idleCount = Math.min(10, idleCount + 1);
+                        await delay(Math.min(250, 60 + idleCount * 10));
+                    }
                 } else {
                     idleCount = 0;
                 }

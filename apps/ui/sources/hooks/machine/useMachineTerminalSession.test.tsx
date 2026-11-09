@@ -134,6 +134,53 @@ describe('useMachineTerminalSession', () => {
         vi.restoreAllMocks();
     });
 
+    it('asks the machine to hold each read open, and pauses between empty answers only for a machine that answers at once', async () => {
+        const { delay } = await import('@/utils/timing/time');
+        const order: string[] = [];
+        vi.mocked(delay).mockImplementation(async () => {
+            order.push('pause');
+        });
+        const empty = { ok: true, terminalId: 'terminal-1', events: [], nextCursor: 0, done: false } as const;
+        machineTerminalStreamReadMock
+            // Held open until its wait ran out: ask again at once.
+            .mockImplementationOnce(async () => {
+                order.push('read');
+                return { ...empty, waited: true };
+            })
+            // An older machine answers empty at once: pause before asking again.
+            .mockImplementationOnce(async () => {
+                order.push('read');
+                return empty;
+            })
+            .mockImplementation(async () => {
+                order.push('read');
+                return { ...empty, done: true };
+            });
+
+        const terminalRef = { current: null };
+        const launch = { kind: 'session_attach', sessionId: 'session-1' } as const;
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session:session-1:attached',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+
+            expect(machineTerminalStreamReadMock.mock.calls[0]?.[1]).toMatchObject({ waitMs: 15_000 });
+            expect(machineTerminalStreamReadMock.mock.calls[0]?.[2]?.timeoutMs).toBeGreaterThan(15_000);
+            expect(order.slice(0, 4)).toEqual(['read', 'read', 'pause', 'read']);
+        } finally {
+            vi.mocked(delay).mockImplementation(async () => undefined);
+            await hook.unmount();
+        }
+    });
+
     it('keeps the stable terminal key on a typed session-attach request', async () => {
         const terminalRef = { current: null };
         const launch = { kind: 'session_attach', sessionId: 'session-1' } as const;
