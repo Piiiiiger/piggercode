@@ -3499,6 +3499,9 @@ export {
   DEFAULT_USAGE_LIMIT_RECOVERY_SETTINGS_V1,
   SESSION_PENDING_QUEUE_DELIVERY_TIMINGS,
   SESSION_PENDING_QUEUE_DRAIN_MODES,
+  SESSION_SUBAGENT_LIMIT_MAX,
+  SessionSubagentLimitSchema,
+  resolveSessionSubagentLimit,
   SessionAgentSpawnPolicyV1Schema,
   SessionPendingQueueDeliveryTimingSchema,
   SessionPendingQueueDrainModeSchema,
@@ -3522,6 +3525,7 @@ export {
   type SessionAgentSpawnPolicyV1,
   type SessionPendingQueueDeliveryTiming,
   type SessionPendingQueueDrainMode,
+  type SessionSubagentLimit,
   type UsageLimitRecoverySettingsV1,
   type NotificationsSettingsV1,
 } from './account/settings/index.js';

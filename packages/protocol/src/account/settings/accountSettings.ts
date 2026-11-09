@@ -315,6 +315,25 @@ export const SessionPendingQueueDeliveryTimingSchema = z
   .catch(DEFAULT_SESSION_PENDING_QUEUE_DELIVERY_TIMING);
 export type SessionPendingQueueDeliveryTiming = z.infer<typeof SessionPendingQueueDeliveryTimingSchema>;
 
+// The most subagents one session may run at the same time. null leaves the provider's own
+// default; 0 turns subagents off.
+export const SESSION_SUBAGENT_LIMIT_MAX = 16;
+export const SessionSubagentLimitSchema = z
+  .number()
+  .int()
+  .min(0)
+  .max(SESSION_SUBAGENT_LIMIT_MAX)
+  .nullable()
+  .catch(null);
+export type SessionSubagentLimit = z.infer<typeof SessionSubagentLimitSchema>;
+
+export function resolveSessionSubagentLimit(settingsLike: unknown): number | null {
+  const rec = settingsLike && typeof settingsLike === 'object' && !Array.isArray(settingsLike)
+    ? (settingsLike as Record<string, unknown>)
+    : null;
+  return SessionSubagentLimitSchema.parse(rec?.sessionSubagentLimit);
+}
+
 function backfillLegacyTargetKeyedAccountSettings(raw: Record<string, unknown>): Record<string, unknown> {
   const next = { ...raw };
 
@@ -381,6 +400,7 @@ export const AccountSettingsSchema = z.preprocess(
         DEFAULT_SESSION_PENDING_QUEUE_DELIVERY_TIMING,
       ),
       sessionAgentSpawnPolicyV1: SessionAgentSpawnPolicyV1Schema.default(DEFAULT_SESSION_AGENT_SPAWN_POLICY_V1),
+      sessionSubagentLimit: SessionSubagentLimitSchema.default(null),
       connectedServicesDefaultAuthByAgentIdV1: ConnectedServicesDefaultAuthByAgentIdV1Schema.default(
         DEFAULT_CONNECTED_SERVICES_DEFAULT_AUTH_BY_AGENT_ID_V1,
       ),

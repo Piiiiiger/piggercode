@@ -52,6 +52,9 @@ import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { createEventShapeLoggerForLog } from '@/diagnostics/eventShapeForLog';
 import { readTailTextFile } from '@/utils/fs/readTailTextFile';
 import { buildClaudeAgentSdkHooks } from './agentSdk/buildClaudeAgentSdkHooks';
+import { CLAUDE_SUBAGENT_TOOL_NAMES } from './agentSdk/claudeSubagentLimit';
+import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
+import { resolveSessionSubagentLimit } from '@piggercode/protocol';
 import {
     normalizeClaudeProviderTaskEvent,
     readClaudeSessionHookProviderTaskActivity,
@@ -597,8 +600,14 @@ export async function claudeRemoteAgentSdk(opts: {
         return result;
     };
 
+	    // Read on every launch, so a changed limit applies to the next one.
+	    const readSubagentLimit = (): number | null => (
+	        resolveSessionSubagentLimit(getActiveAccountSettingsSnapshot()?.settings ?? null)
+	    );
 	    const builtHooks = buildClaudeAgentSdkHooks({
 	        cwd: opts.path,
+	        // No hook at all while unlimited: sessions without a limit run exactly as before.
+	        getSubagentLimit: readSubagentLimit() === null ? null : readSubagentLimit,
 	        claudeConfigDir,
 	        getMode: () => mode,
 	        onSessionFound: (sessionId, data) => recordSessionFound(sessionId, data as any),
@@ -762,6 +771,8 @@ export async function claudeRemoteAgentSdk(opts: {
             maxThinkingTokens:
                 typeof mode.claudeRemoteMaxThinkingTokens === 'number' ? mode.claudeRemoteMaxThinkingTokens : undefined,
             hooks,
+            // With subagents off, the model does not see the tools at all.
+            ...(readSubagentLimit() === 0 ? { disallowedTools: [...CLAUDE_SUBAGENT_TOOL_NAMES] } : {}),
             ...(claudeSubscriptionRefreshSelection ? {
                 getOAuthToken: createClaudeSubscriptionAccessTokenRefreshCallback({
                     sessionId: daemonRefreshSessionId,

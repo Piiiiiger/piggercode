@@ -9,6 +9,11 @@ import {
     PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,
 } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { claudeRemoteAgentSdk } from './claudeRemoteAgentSdk';
+import {
+    resetActiveAccountSettingsSnapshotForTests,
+    setActiveAccountSettingsSnapshot,
+} from '@/settings/accountSettings/activeAccountSettingsSnapshot';
+import type { AccountSettings } from '@piggercode/protocol';
 import { makeMode } from './claudeRemoteAgentSdk.testkit';
 import type { EnhancedMode } from '../loop';
 import type { Query } from '@anthropic-ai/claude-agent-sdk';
@@ -3456,6 +3461,68 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
                 decision: { behavior: 'allow', updatedPermissions },
             },
         });
+    });
+
+    it('hides the subagent tools and adds the limit hook when the account turns subagents off', async () => {
+        const setSubagentLimit = (sessionSubagentLimit: number | null) => setActiveAccountSettingsSnapshot({
+            source: 'none',
+            settings: { sessionSubagentLimit } as AccountSettings,
+            settingsVersion: 0,
+            loadedAtMs: 0,
+            settingsSecretsReadKeys: [],
+        });
+        let capturedOptions: any = null;
+        const createQuery = vi.fn((params: any) => {
+            capturedOptions = params.options;
+            return {
+                async *[Symbol.asyncIterator]() {
+                    yield { type: 'result' } as any;
+                },
+                close: vi.fn(),
+                setPermissionMode: vi.fn(),
+                setModel: vi.fn(),
+                setMaxThinkingTokens: vi.fn(),
+                supportedCommands: vi.fn(async () => []),
+                supportedModels: vi.fn(async () => []),
+            } as any;
+        });
+        const run = async () => {
+            let didSendFirst = false;
+            await claudeRemoteAgentSdk({
+                sessionId: null,
+                transcriptPath: null,
+                path: '/tmp',
+                claudeArgs: [],
+                claudeExecutablePath: '/tmp/claude',
+                canCallTool: async () => ({ behavior: 'allow', updatedInput: {} }),
+                isAborted: () => false,
+                nextMessage: vi.fn(async () => {
+                    if (didSendFirst) return null;
+                    didSendFirst = true;
+                    return { message: 'hello', mode: makeMode() };
+                }),
+                onReady: () => {},
+                onSessionFound: () => {},
+                onMessage: () => {},
+                createQuery,
+            } as any);
+        };
+
+        try {
+            setSubagentLimit(0);
+            await run();
+            expect(capturedOptions.disallowedTools).toEqual(['Agent', 'Task', 'SendMessage']);
+            expect(capturedOptions.hooks.PreToolUse.map((entry: { matcher: string }) => entry.matcher))
+                .toEqual(['AskUserQuestion', 'Agent|Task|SendMessage']);
+
+            setSubagentLimit(2);
+            await run();
+            expect(capturedOptions.disallowedTools).toBeUndefined();
+            expect(capturedOptions.hooks.PreToolUse.map((entry: { matcher: string }) => entry.matcher))
+                .toEqual(['AskUserQuestion', 'Agent|Task|SendMessage']);
+        } finally {
+            resetActiveAccountSettingsSnapshotForTests();
+        }
     });
 
     it('does not register a PreToolUse hook that rewrites Bash commands', async () => {

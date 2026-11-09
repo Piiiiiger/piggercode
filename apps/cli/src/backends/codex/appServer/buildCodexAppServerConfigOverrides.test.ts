@@ -91,4 +91,19 @@ describe('buildCodexAppServerConfigOverrides', () => {
             happierSessionId: 'offline-session-123',
         })).toEqual([]);
     });
+
+    it('applies the subagent limit before explicit Codex arguments', () => {
+        expect(buildCodexAppServerConfigOverrides({}, { subagentLimit: null })).toEqual([]);
+        expect(buildCodexAppServerConfigOverrides({}, { subagentLimit: 0 })).toEqual([
+            'features.multi_agent=false',
+            'features.multi_agent_v2=false',
+        ]);
+        expect(buildCodexAppServerConfigOverrides({}, {
+            subagentLimit: 2,
+            codexArgs: ['-c', 'agents.max_concurrent_threads_per_session=4'],
+        })).toEqual([
+            'agents.max_concurrent_threads_per_session=2',
+            'agents.max_concurrent_threads_per_session=4',
+        ]);
+    });
 });

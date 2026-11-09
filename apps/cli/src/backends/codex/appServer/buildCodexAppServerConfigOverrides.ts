@@ -61,6 +61,16 @@ function assignInjectedServerKeys(serverNames: readonly string[]): Map<string, s
     return assigned;
 }
 
+// Pushed before the caller's own -c arguments, so an explicit Codex argument still wins.
+function buildCodexSubagentLimitOverrides(limit: number | null): string[] {
+    if (limit === null || !Number.isInteger(limit) || limit < 0) return [];
+    if (limit === 0) {
+        // Both generations of Codex's subagent tools (multi_agent is on by default).
+        return ['features.multi_agent=false', 'features.multi_agent_v2=false'];
+    }
+    return [`agents.max_concurrent_threads_per_session=${limit}`];
+}
+
 export function buildCodexAppServerConfigOverrides(
     mcpServers: Readonly<Record<string, McpServerConfig>>,
     options: Readonly<{
@@ -68,11 +78,13 @@ export function buildCodexAppServerConfigOverrides(
         happierMcpToolCallTimeoutMs?: number;
         processEnv?: NodeJS.ProcessEnv;
         codexArgs?: readonly string[];
+        /** The account's subagent limit: null keeps Codex's default, 0 turns subagents off. */
+        subagentLimit?: number | null;
     }> = {},
 ): string[] {
     const serverNames = Object.keys(mcpServers);
     const injectedKeys = assignInjectedServerKeys(serverNames);
-    const overrides: string[] = [];
+    const overrides: string[] = [...buildCodexSubagentLimitOverrides(options.subagentLimit ?? null)];
     // Keep Codex's native configuration values opaque: Codex owns TOML parsing.
     const codexArgs = options.codexArgs ?? [];
     for (let index = 0; index < codexArgs.length; index += 1) {

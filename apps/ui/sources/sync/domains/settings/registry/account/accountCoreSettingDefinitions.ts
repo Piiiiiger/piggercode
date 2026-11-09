@@ -5,6 +5,7 @@ import {
     SessionPendingQueueDeliveryTimingSchema,
     DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME,
     SessionPendingQueueDrainModeSchema,
+    SessionSubagentLimitSchema,
     UsageLimitRecoverySettingsV1Schema as ProtocolUsageLimitRecoverySettingsV1Schema,
     buildSettingArtifacts,
     defineSettingDefinitions,
@@ -415,6 +416,12 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
         description: 'Whether queued pending messages wait for foreground readiness or all tracked runtime activity to become idle',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
+    },
+    sessionSubagentLimit: {
+        schema: SessionSubagentLimitSchema,
+        default: null,
+        description: 'The most subagents one session may run at the same time; null keeps the provider default, 0 turns subagents off',
+        storageScope: 'account',
     },
     sessionUsageGaugeLabels: {
         schema: z.boolean(), default: false,

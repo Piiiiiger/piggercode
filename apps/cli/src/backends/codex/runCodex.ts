@@ -37,6 +37,7 @@ import { MessageBuffer } from "@/ui/ink/messageBuffer";
 import { trimIdent } from "@/utils/trimIdent";
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
 import { readPendingLocalId } from '@piggercode/protocol';
+import { resolveSessionSubagentLimit } from '@piggercode/protocol';
 import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 import type { CodexSessionConfig } from './types';
 import { registerKillSessionHandler } from '@/rpc/handlers/killSession';
@@ -1737,6 +1738,7 @@ export async function runCodex(opts: {
     if (useCodexAppServer) {
         codexAppServerConfigOverrides = buildCodexAppServerConfigOverrides(mcpServers, {
             codexArgs: opts.codexArgs,
+            subagentLimit: resolveSessionSubagentLimit(opts.accountSettingsContext?.settings ?? null),
             happierSessionId: codexProviderProcessEnv.PIGGERCODE_SESSION_ID,
             happierMcpToolCallTimeoutMs: configuration.codexHappierMcpToolCallTimeoutMs,
             processEnv: codexAppServerProcessEnv,

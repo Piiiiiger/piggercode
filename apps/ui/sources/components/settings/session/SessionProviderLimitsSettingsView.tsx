@@ -13,9 +13,35 @@ import { useSettingMutable } from '@/sync/domains/state/storage';
 import { ProviderUsageGaugeSettingsGroup } from '@/components/settings/connectedServices/ProviderUsageGaugeSettingsGroup';
 import { Icon } from '@/components/ui/icons/Icon';
 
+const SUBAGENT_LIMIT_CHOICES = [1, 2, 3, 5] as const;
+
 export const SessionProviderLimitsSettingsView = React.memo(function SessionProviderLimitsSettingsView() {
     const { theme } = useUnistyles();
     const popoverBoundaryRef = React.useRef<any>(null);
+    const [subagentLimit, setSubagentLimit] = useSettingMutable('sessionSubagentLimit');
+    const [openSubagentLimitMenu, setOpenSubagentLimitMenu] = React.useState(false);
+    const subagentLimitCounts = Array.from(new Set<number>([
+        ...SUBAGENT_LIMIT_CHOICES,
+        // A limit set elsewhere stays selectable.
+        ...(typeof subagentLimit === 'number' && subagentLimit > 0 ? [subagentLimit] : []),
+    ])).sort((left, right) => left - right);
+    const subagentLimitOptions = [
+        {
+            id: 'unlimited',
+            title: t('settingsSession.subagentLimit.unlimitedTitle'),
+            subtitle: t('settingsSession.subagentLimit.unlimitedSubtitle'),
+        },
+        {
+            id: '0',
+            title: t('settingsSession.subagentLimit.offTitle'),
+            subtitle: t('settingsSession.subagentLimit.offSubtitle'),
+        },
+        ...subagentLimitCounts.map((count) => ({
+            id: String(count),
+            title: t('settingsSession.subagentLimit.countTitle', { count }),
+        })),
+    ];
+    const subagentLimitSelectedId = typeof subagentLimit === 'number' ? String(subagentLimit) : 'unlimited';
     const usageLimitRecoveryEnabled = useFeatureEnabled('sessions.usageLimitRecovery');
     const [usageLimitRecoverySettingsV1, setUsageLimitRecoverySettingsV1] = useSettingMutable('usageLimitRecoverySettingsV1');
     const [openUsageLimitRecoveryMenu, setOpenUsageLimitRecoveryMenu] = React.useState(false);
@@ -68,6 +94,37 @@ export const SessionProviderLimitsSettingsView = React.memo(function SessionProv
     ];
     return (
         <ItemList ref={popoverBoundaryRef} style={{ paddingTop: 0 }}>
+            <ItemGroup title={t('settingsSession.subagentLimit.title')} footer={t('settingsSession.subagentLimit.footer')}>
+                <DropdownMenu
+                    open={openSubagentLimitMenu}
+                    onOpenChange={setOpenSubagentLimitMenu}
+                    variant="selectable"
+                    search={false}
+                    selectedId={subagentLimitSelectedId}
+                    showCategoryTitles={false}
+                    matchTriggerWidth={true}
+                    connectToTrigger={true}
+                    rowKind="item"
+                    popoverBoundaryRef={popoverBoundaryRef}
+                    itemTrigger={{
+                        title: t('settingsSession.subagentLimit.limitTitle'),
+                        icon: <Icon name="robot" size={29} color={theme.colors.accent.indigo} />,
+                        itemProps: { testID: 'settings-session-subagentLimit-trigger' },
+                    }}
+                    items={subagentLimitOptions}
+                    onSelect={(id) => {
+                        if (id === 'unlimited') {
+                            setSubagentLimit(null);
+                        } else {
+                            const count = Number(id);
+                            if (!Number.isInteger(count) || count < 0) return;
+                            setSubagentLimit(count);
+                        }
+                        setOpenSubagentLimitMenu(false);
+                    }}
+                />
+            </ItemGroup>
+
             {usageLimitRecoveryEnabled ? (
                 <ItemGroup title={t('settingsSession.usageLimitRecovery.title')} footer={t('settingsSession.usageLimitRecovery.footer')}>
                     <DropdownMenu

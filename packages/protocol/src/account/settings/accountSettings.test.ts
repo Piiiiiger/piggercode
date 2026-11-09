@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { accountSettingsParse, isExpoPushNotificationChannelEnabled } from './accountSettings.js';
+import {
+  accountSettingsParse,
+  isExpoPushNotificationChannelEnabled,
+  resolveSessionSubagentLimit,
+} from './accountSettings.js';
 import { resolveConnectedServicesProviderStateSharingPolicyV1 } from './connectedServicesSettings.js';
 import { isActionEnabledByActionsSettings } from '../../actions/actionSettings.js';
 
@@ -103,6 +107,18 @@ describe('accountSettings', () => {
   it('accepts drain-all pending queue mode and falls back to one-at-a-time for malformed values', () => {
     expect(accountSettingsParse({ sessionPendingQueueDrainMode: 'drain_all' }).sessionPendingQueueDrainMode).toBe('drain_all');
     expect(accountSettingsParse({ sessionPendingQueueDrainMode: 'everything' }).sessionPendingQueueDrainMode).toBe('one_at_a_time');
+  });
+
+  it('leaves subagents unlimited by default and keeps only whole limits from 0 to 16', () => {
+    expect(accountSettingsParse({}).sessionSubagentLimit).toBeNull();
+    expect(accountSettingsParse({ sessionSubagentLimit: 0 }).sessionSubagentLimit).toBe(0);
+    expect(accountSettingsParse({ sessionSubagentLimit: 3 }).sessionSubagentLimit).toBe(3);
+    expect(accountSettingsParse({ sessionSubagentLimit: -1 }).sessionSubagentLimit).toBeNull();
+    expect(accountSettingsParse({ sessionSubagentLimit: 2.5 }).sessionSubagentLimit).toBeNull();
+    expect(accountSettingsParse({ sessionSubagentLimit: 99 }).sessionSubagentLimit).toBeNull();
+    expect(accountSettingsParse({ sessionSubagentLimit: '2' }).sessionSubagentLimit).toBeNull();
+    expect(resolveSessionSubagentLimit({ sessionSubagentLimit: 0 })).toBe(0);
+    expect(resolveSessionSubagentLimit(null)).toBeNull();
   });
 
   it('defaults pending queue delivery timing to foreground-ready and falls back for malformed values', () => {

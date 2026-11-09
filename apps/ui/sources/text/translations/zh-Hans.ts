@@ -7827,7 +7827,7 @@ settingsSession: {
         },
         providerLimits: {
             title: '提供商限制和用量',
-            entrySubtitle: '用量限制恢复和输入栏旁边的提供商用量指示器。',
+            entrySubtitle: '子代理上限、用量限制恢复和输入栏旁边的提供商用量指示器。',
         },
         resume: {
             title: '恢复和交接',
@@ -7953,6 +7953,16 @@ settingsSession: {
       resumePromptCustomSelectedSubtitle: "恢复后发送自定义继续提示。",
       customResumePromptTitle: "自定义继续提示",
       customResumePromptPlaceholder: "从你上次停下的地方继续。",
+    },
+    subagentLimit: {
+      title: "子代理",
+      footer: "每个子代理都有自己的上下文，同时开多个会明显加快用量消耗。对之后新开或重启的 Claude 和 Codex 会话生效。",
+      limitTitle: "同时运行的子代理",
+      unlimitedTitle: "不限",
+      unlimitedSubtitle: "由 Claude 和 Codex 自己决定。",
+      offTitle: "不使用子代理",
+      offSubtitle: "所有工作都由主代理自己完成。",
+      countTitle: ({ count }: { count: number }) => `最多 ${count} 个`,
     },
     providerUsageGauge: {
       title: "提供方使用量",

@@ -7649,7 +7649,7 @@ settingsSession: {
           },
           providerLimits: {
               title: 'Provider limits and usage',
-              entrySubtitle: 'Usage-limit recovery and the provider usage gauge shown beside the composer.',
+              entrySubtitle: 'Subagent limit, usage-limit recovery, and the provider usage gauge shown beside the composer.',
           },
           resume: {
               title: 'Resume and handoff',
@@ -7751,6 +7751,16 @@ settingsSession: {
               resumePromptCustomSelectedSubtitle: 'Send a custom continuation prompt after recovery.',
               customResumePromptTitle: 'Custom continuation prompt',
               customResumePromptPlaceholder: 'Continue from where you left off.',
+          },
+          subagentLimit: {
+              title: 'Subagents',
+              footer: 'Each subagent works in its own context, so several at once use up quota much faster. Applies to Claude and Codex sessions started or restarted after the change.',
+              limitTitle: 'Subagents at once',
+              unlimitedTitle: 'No limit',
+              unlimitedSubtitle: 'Claude and Codex decide for themselves.',
+              offTitle: 'Off',
+              offSubtitle: 'The agent does all the work itself.',
+              countTitle: ({ count }: { count: number }) => `At most ${count}`,
           },
           providerUsageGauge: {
               title: 'Provider usage',

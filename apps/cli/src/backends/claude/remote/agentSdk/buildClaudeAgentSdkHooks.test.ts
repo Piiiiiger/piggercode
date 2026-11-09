@@ -156,4 +156,37 @@ describe('buildClaudeAgentSdkHooks', () => {
     } });
     expect(output).not.toHaveProperty('hookSpecificOutput.decision.updatedInput');
   });
+
+  it('adds a subagent limit hook only when a limit getter is given, and refuses launches over it', async () => {
+    expect((buildHooks().hooks.PreToolUse as Array<{ matcher: string }>).map((entry) => entry.matcher))
+      .toEqual(['AskUserQuestion']);
+
+    const { hooks } = buildClaudeAgentSdkHooks({
+      cwd: '/tmp/project',
+      claudeConfigDir: null,
+      getMode: makeMode,
+      onSessionFound: () => {},
+      onSessionHook: () => {},
+      canCallTool: vi.fn(async (): Promise<PermissionResult> => ({ behavior: 'allow', updatedInput: {} })),
+      getSubagentLimit: () => 1,
+    });
+    const preToolUse = hooks.PreToolUse as Array<{ matcher: string; hooks: Array<(input: unknown, toolUseId?: string) => Promise<any>> }>;
+    expect(preToolUse.map((entry) => entry.matcher)).toEqual(['AskUserQuestion', 'Agent|Task|SendMessage']);
+    expect(Object.keys(hooks)).toEqual(expect.arrayContaining(['PostToolUseFailure', 'PermissionDenied', 'Stop']));
+    const limitHook = preToolUse[1]!.hooks[0]!;
+
+    const first = await limitHook({ hook_event_name: 'PreToolUse', tool_name: 'Agent', tool_input: {} }, 'call-1');
+    expect(first.hookSpecificOutput).toBeUndefined();
+    const second = await limitHook({ hook_event_name: 'PreToolUse', tool_name: 'Agent', tool_input: {} }, 'call-2');
+    expect(second.hookSpecificOutput).toEqual({
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'deny',
+      permissionDecisionReason: expect.stringContaining('at most 1 subagent'),
+    });
+
+    const failure = hooks.PostToolUseFailure as Array<{ hooks: Array<(input: unknown) => Promise<unknown>> }>;
+    await failure[0]!.hooks[0]!({ hook_event_name: 'PostToolUseFailure', tool_name: 'Agent', tool_use_id: 'call-1' });
+    const third = await limitHook({ hook_event_name: 'PreToolUse', tool_name: 'Agent', tool_input: {} }, 'call-3');
+    expect(third.hookSpecificOutput).toBeUndefined();
+  });
 });

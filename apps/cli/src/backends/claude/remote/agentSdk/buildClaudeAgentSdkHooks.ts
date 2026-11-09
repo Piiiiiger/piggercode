@@ -6,6 +6,8 @@ import type { PermissionResult } from '@/backends/claude/sdk/types';
 import { buildClaudePermissionHookResponse } from '@/backends/claude/utils/buildClaudePermissionHookResponse';
 import { resolveClaudePermissionHookTimeoutSeconds } from '@/backends/claude/utils/permissionHookTimeout';
 
+import { CLAUDE_SUBAGENT_TOOL_NAMES, createClaudeSubagentLimitTracker } from './claudeSubagentLimit';
+
 function readString(value: unknown): string | null {
   return typeof value === 'string' && value.length > 0 ? value : null;
 }
@@ -40,19 +42,62 @@ export function buildClaudeAgentSdkHooks(params: Readonly<{
       decisionReason?: string | null;
     },
   ) => Promise<PermissionResult>;
+  /** The account's subagent limit, read on every launch: null = no limit, 0 = none. */
+  getSubagentLimit?: (() => number | null) | null;
 }>): Readonly<{
   hooks: Record<string, unknown>;
 }> {
+  const subagentLimit = params.getSubagentLimit
+    ? createClaudeSubagentLimitTracker({ getLimit: params.getSubagentLimit })
+    : null;
   const buildObservationHook = () => ({
     hooks: [
       async (input: any) => {
         if (input && typeof input === 'object' && !Array.isArray(input)) {
+          subagentLimit?.observeHook(input as Record<string, unknown>);
           params.onSessionHook(input as Record<string, unknown>);
         }
         return { continue: true, suppressOutput: true };
       },
     ],
   });
+  const buildSubagentLimitObservationHook = () => ({
+    hooks: [
+      async (input: unknown) => {
+        subagentLimit?.observeHook(readRecord(input));
+        return { continue: true, suppressOutput: true };
+      },
+    ],
+  });
+  const subagentLimitHooks = subagentLimit ? {
+    PreToolUse: [{
+      matcher: CLAUDE_SUBAGENT_TOOL_NAMES.join('|'),
+      hooks: [
+        async (input: unknown, toolUseId: string | undefined) => {
+          const payload = readRecord(input);
+          const refusal = subagentLimit.admitToolUse({
+            toolName: readString(payload.tool_name) ?? readString(payload.toolName),
+            toolInput: payload.tool_input ?? payload.toolInput,
+            toolUseId: readString(toolUseId) ?? readString(payload.tool_use_id) ?? readString(payload.toolUseId),
+          });
+          if (!refusal) return { continue: true, suppressOutput: true };
+          return {
+            continue: true,
+            suppressOutput: true,
+            hookSpecificOutput: {
+              hookEventName: 'PreToolUse',
+              permissionDecision: 'deny',
+              permissionDecisionReason: refusal,
+            },
+          };
+        },
+      ],
+    }],
+    // Failed or refused calls and the main turn's end only matter to the counter.
+    PostToolUseFailure: [buildSubagentLimitObservationHook()],
+    PermissionDenied: [buildSubagentLimitObservationHook()],
+    Stop: [buildSubagentLimitObservationHook()],
+  } : null;
   const permissionHookTimeoutSeconds = resolveClaudePermissionHookTimeoutSeconds();
   const buildPermissionHook = (hookEventName: 'PermissionRequest' | 'PreToolUse') =>
     async (input: unknown, toolUseId: string | undefined, options: { signal?: AbortSignal } | undefined) => {
@@ -119,7 +164,12 @@ export function buildClaudeAgentSdkHooks(params: Readonly<{
       matcher: 'AskUserQuestion',
       hooks: [buildPermissionHook('PreToolUse')],
       timeout: permissionHookTimeoutSeconds,
-    }],
+    }, ...(subagentLimitHooks?.PreToolUse ?? [])],
+    ...(subagentLimitHooks ? {
+      PostToolUseFailure: subagentLimitHooks.PostToolUseFailure,
+      PermissionDenied: subagentLimitHooks.PermissionDenied,
+      Stop: subagentLimitHooks.Stop,
+    } : {}),
   };
 
   return { hooks };
