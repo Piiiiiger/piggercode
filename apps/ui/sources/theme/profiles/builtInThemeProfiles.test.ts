@@ -394,6 +394,8 @@ const pitchDarkSeed = {
 describe('built-in theme profiles', () => {
     it('exposes curated themes as read-only cloneable presets with locked seed palettes', () => {
         expect(BUILT_IN_THEME_PROFILES.map((definition) => definition.presetId)).toEqual([
+            'claudeCodeDark',
+            'claudeCodeLight',
             'premiumDark',
             'pitchDark',
             'sunsetDark',

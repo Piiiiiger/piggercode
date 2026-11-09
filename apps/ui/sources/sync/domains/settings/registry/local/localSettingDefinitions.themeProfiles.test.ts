@@ -8,7 +8,7 @@ describe('LOCAL_SETTING_DEFINITIONS theme profiles', () => {
         expect(LOCAL_SETTING_DEFINITIONS.themeProfiles.analytics).toBeUndefined();
         expect(LOCAL_SETTING_DEFINITIONS.themeProfiles.default).toEqual({
             profiles: [],
-            activeProfileIds: { light: null, dark: null },
+            activeProfileIds: { light: 'claudeCodeLight', dark: 'claudeCodeDark' },
         });
     });
 });

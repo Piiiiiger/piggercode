@@ -13,9 +13,10 @@ import type { ThemeProfileMode, ThemeProfileSelectionByMode, ThemeProfileV1, The
 import { getBuiltInThemeProfileDefinition, isBuiltInThemeProfilePresetId } from './builtInThemeProfiles';
 import { inferThemeProfileAssetAppearance, isThemeProfileAssetAppearance } from './themeProfileAssetAppearance';
 
+// Claude Code's look is the app's default; any other preset or the plain base theme stays one choice away.
 export const DEFAULT_THEME_PROFILE_SELECTION_BY_MODE: ThemeProfileSelectionByMode = Object.freeze({
-    light: null,
-    dark: null,
+    light: 'claudeCodeLight',
+    dark: 'claudeCodeDark',
 });
 
 export const DEFAULT_THEME_PROFILES_LOCAL_STATE: ThemeProfilesLocalStateV1 = Object.freeze({

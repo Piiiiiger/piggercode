@@ -1,10 +1,11 @@
-import { COMMUNITY_BUILT_IN_THEME_PROFILES } from './communityBuiltInThemeProfiles';
+import { CLAUDE_CODE_THEME_PROFILES, COMMUNITY_BUILT_IN_THEME_PROFILES } from './communityBuiltInThemeProfiles';
 import { createBuiltInProfile } from './builtInThemeProfileFactory';
 import { classicDarkProfile } from './classicDarkThemeProfile';
 import { pitchDarkProfile, premiumDarkProfile, sunsetDarkProfile, tokyoNightProfile } from './builtInDarkThemeProfiles';
 import type { BuiltInThemeProfileDefinition, BuiltInThemeProfilePresetId } from './themeProfileTypes';
 
 export const BUILT_IN_THEME_PROFILES: readonly BuiltInThemeProfileDefinition[] = [
+    ...CLAUDE_CODE_THEME_PROFILES,
     {
         presetId: 'premiumDark',
         translationKey: 'settingsAppearance.themeProfiles.presets.premiumDark',

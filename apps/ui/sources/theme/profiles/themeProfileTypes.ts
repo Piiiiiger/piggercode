@@ -33,6 +33,8 @@ export type ThemeProfilesLocalStateV1 = Readonly<{
 }>;
 
 export type BuiltInThemeProfilePresetId =
+    | 'claudeCodeDark'
+    | 'claudeCodeLight'
     | 'premiumDark'
     | 'pitchDark'
     | 'sunsetDark'

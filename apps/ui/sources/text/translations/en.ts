@@ -225,6 +225,8 @@ const settingsAppearanceTranslationExtension = {
     presetsGroup: 'Built-in presets',
     presetsFooter: 'Built-in profiles are read-only. Clone one to customize it.',
     presets: {
+      claudeCodeDark: 'Claude Code Dark',
+      claudeCodeLight: 'Claude Code Light',
       premiumDark: 'Crisp Dark',
       pitchDark: 'Pitch Dark',
       sunsetDark: 'Sunset Dark',

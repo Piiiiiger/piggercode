@@ -106,10 +106,10 @@ describe('localSettingsParse', () => {
         expect(localSettingsParse({ brandHeroSeenAt: 'yesterday' }).brandHeroSeenAt).toBeNull();
     });
 
-    it('defaults theme profiles to an empty local-only state', () => {
+    it('defaults theme profiles to no custom profiles with the Claude Code look active', () => {
         expect(localSettingsParse(null).themeProfiles).toEqual({
             profiles: [],
-            activeProfileIds: { light: null, dark: null },
+            activeProfileIds: { light: 'claudeCodeLight', dark: 'claudeCodeDark' },
         });
     });
 
@@ -122,7 +122,7 @@ describe('localSettingsParse', () => {
         expect(parsed.themePreference).toBe('dark');
         expect(parsed.themeProfiles).toEqual({
             profiles: [],
-            activeProfileIds: { light: null, dark: null },
+            activeProfileIds: { light: 'claudeCodeLight', dark: 'claudeCodeDark' },
         });
     });
 

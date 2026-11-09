@@ -249,6 +249,8 @@ describe('Theme profile settings screen', () => {
         expect(builtInDropdown?.props.items.map((item: { id: string }) => item.id)).toEqual([
             'light',
             'dark',
+            'claudeCodeDark',
+            'claudeCodeLight',
             'premiumDark',
             'pitchDark',
             'sunsetDark',

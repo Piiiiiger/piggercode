@@ -198,6 +198,28 @@ const createLightProfile = (presetId: BuiltInThemeProfilePresetId, name: string,
     createCuratedBuiltInProfile(presetId, name, 'light', { light: createCuratedThemeOverrides(palette), dark: {} })
 );
 
+/**
+ * Claude Code's look: Anthropic's warm neutrals with the Claude orange as the accent, and Claude
+ * Code's own state colors (success, error, warning, permission, plan mode). These are the default
+ * profiles (`DEFAULT_THEME_PROFILE_SELECTION_BY_MODE`).
+ */
+export const CLAUDE_CODE_THEME_PROFILES: readonly BuiltInThemeProfileDefinition[] = [
+    createDarkProfile('claudeCodeDark', 'Claude Code Dark', {
+        canvas: '#1F1E1D', base: '#262624', inset: '#1A1918', elevated: '#30302E', selected: '#3A3936', pressed: '#45443F',
+        pressedOverlay: 'rgba(250,249,245,0.07)', sectionTint: 'rgba(255,255,255,0.014)', ripple: 'rgba(250,249,245,0.11)', borderDefault: 'rgba(222,220,209,0.10)', borderSurface: 'rgba(222,220,209,0.13)', borderStrong: 'rgba(222,220,209,0.22)', borderModal: 'rgba(222,220,209,0.16)', highlight: 'rgba(250,249,245,0.04)',
+        textPrimary: '#FAF9F5', textSecondary: '#C2C0B6', textTertiary: '#9C9A92', textLink: '#E08A6D', textDestructive: '#FF6B80', textPlaceholder: '#8A887F', textDisabled: '#6F6D66',
+        activeBackground: 'rgba(217,119,87,0.16)', activeBorder: 'rgba(217,119,87,0.40)', activeForeground: '#D97757', successForeground: '#4EBA65', successBackground: 'rgba(78,186,101,0.12)', successBorder: 'rgba(78,186,101,0.25)', warningForeground: '#FFC107', warningBackground: 'rgba(255,193,7,0.11)', warningBorder: 'rgba(255,193,7,0.24)', dangerForeground: '#FF6B80', dangerBackground: 'rgba(255,107,128,0.13)', dangerBorder: 'rgba(255,107,128,0.27)', infoForeground: '#B1B9F9', infoBackground: 'rgba(177,185,249,0.12)', infoBorder: 'rgba(177,185,249,0.26)', neutralBackground: 'rgba(194,192,182,0.10)', neutralBorder: 'rgba(194,192,182,0.20)',
+        buttonBackground: '#30302E', buttonDisabled: '#3A3936', inputBackground: '#2B2A27', switchActive: '#D97757', radioDot: '#1F1E1D', syntaxKeyword: '#E39B7B', syntaxString: '#A3C47E', syntaxComment: '#8A887F', syntaxNumber: '#E7B35C', syntaxFunction: '#B1B9F9', diffAddedForeground: '#B6E3BC', diffRemovedForeground: '#F6B7C0', diffHunkForeground: '#C9CEFB', permissionPlan: '#5FB3A8', permissionReadOnly: '#B1B9F9', overlayScrimSoft: 'rgba(20,20,19,0.60)', overlayScrim: 'rgba(20,20,19,0.76)', overlayScrimStrong: 'rgba(20,20,19,0.88)', overlayScrimWizard: 'rgba(20,20,19,0.80)',
+    }),
+    createLightProfile('claudeCodeLight', 'Claude Code Light', {
+        canvas: '#F5F4ED', base: '#FAF9F5', inset: '#F0EEE6', elevated: '#FFFFFF', selected: '#E8E6DC', pressed: '#DEDCD1',
+        pressedOverlay: 'rgba(20,20,19,0.05)', sectionTint: 'rgba(0,0,0,0.012)', ripple: 'rgba(20,20,19,0.08)', borderDefault: 'rgba(31,30,29,0.10)', borderSurface: 'rgba(31,30,29,0.13)', borderStrong: 'rgba(31,30,29,0.22)', borderModal: 'rgba(31,30,29,0.15)', highlight: 'transparent',
+        textPrimary: '#141413', textSecondary: '#3D3D3A', textTertiary: '#6B6A64', textLink: '#AE5630', textDestructive: '#AB2B3F', textPlaceholder: '#7A7973', textDisabled: '#A3A29B',
+        activeBackground: 'rgba(201,100,66,0.10)', activeBorder: 'rgba(201,100,66,0.32)', activeForeground: '#AE5630', successForeground: '#2C7A39', successBackground: 'rgba(44,122,57,0.10)', successBorder: 'rgba(44,122,57,0.22)', warningForeground: '#966C1E', warningBackground: 'rgba(150,108,30,0.10)', warningBorder: 'rgba(150,108,30,0.22)', dangerForeground: '#AB2B3F', dangerBackground: 'rgba(171,43,63,0.10)', dangerBorder: 'rgba(171,43,63,0.22)', infoForeground: '#4A5BD8', infoBackground: 'rgba(87,105,247,0.10)', infoBorder: 'rgba(87,105,247,0.24)', neutralBackground: 'rgba(61,61,58,0.07)', neutralBorder: 'rgba(61,61,58,0.14)',
+        buttonBackground: '#F0EEE6', buttonDisabled: '#E8E6DC', inputBackground: '#FFFFFF', switchActive: '#C96442', radioDot: '#FFFFFF', syntaxKeyword: '#AE5630', syntaxString: '#2C7A39', syntaxComment: '#7A7973', syntaxNumber: '#966C1E', syntaxFunction: '#4A5BD8', diffAddedForeground: '#1F6B30', diffRemovedForeground: '#9E2A3C', diffHunkForeground: '#3F51D8', permissionPlan: '#006666', permissionReadOnly: '#4A5BD8', overlayScrimSoft: 'rgba(20,20,19,0.20)', overlayScrim: 'rgba(20,20,19,0.34)', overlayScrimStrong: 'rgba(20,20,19,0.50)', overlayScrimWizard: 'rgba(20,20,19,0.42)',
+    }),
+] as const;
+
 export const COMMUNITY_BUILT_IN_THEME_PROFILES: readonly BuiltInThemeProfileDefinition[] = [
     createDarkProfile('catppuccinMocha', 'Catppuccin Mocha', {
         canvas: '#11111B', base: '#1E1E2E', inset: '#181825', elevated: '#313244', selected: '#45475A', pressed: '#585B70',
