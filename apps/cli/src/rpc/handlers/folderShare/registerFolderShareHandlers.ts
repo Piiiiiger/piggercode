@@ -16,6 +16,7 @@ import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import { configuration } from '@/configuration';
 import { answerFolderShareAccept } from '@/integrations/folderShare/acceptRequest';
 import { createComputerShares, type AcceptOnServer, type ComputerShares } from '@/integrations/folderShare/computerShares';
+import { readRemoteCommandsEnabled } from '@/rpc/handlers/machineCommand/registerMachineCommandHandlers';
 import type { Credentials } from '@/persistence';
 import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
 import { logger } from '@/ui/logger';
@@ -43,6 +44,9 @@ export function registerFolderShareHandlers(params: Readonly<{
     homeDir: realHomeDir(),
     stateDir: join(configuration.happyHomeDir, 'shared-folders'),
     acceptOnServer: createAcceptOnServer(params.credentials),
+    // Remote commands are the consent for the account's other machines to run commands here;
+    // a server this computer shares folders with then also gets `ssh <computer>`.
+    shellAllowed: readRemoteCommandsEnabled,
   });
 
   params.rpcHandlerManager.registerHandler<unknown, FolderShareListResponse>(

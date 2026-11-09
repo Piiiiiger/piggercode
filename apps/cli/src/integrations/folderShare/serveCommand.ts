@@ -22,7 +22,20 @@ export function buildSharedFoldersServeCommand(
   /** The places in this server's home the computer may mount its folders at (`--place`, one each). */
   places: readonly string[] = [],
 ): string {
-  const args = ['machine', 'shared-folders', 'serve', '--label', label, ...places.flatMap((place) => ['--place', place])];
+  return buildPiggercodeShellCommand(
+    ['machine', 'shared-folders', 'serve', '--label', label, ...places.flatMap((place) => ['--place', place])],
+    deps,
+  );
+}
+
+/**
+ * A shell command that runs this PiggerCode with `args` and keeps working across updates (as above):
+ * the forced command of a computer's key, and the ProxyCommand of `ssh <computer>`.
+ */
+export function buildPiggercodeShellCommand(
+  args: readonly string[],
+  deps: Readonly<{ runsManagedInstall?: () => boolean }> = {},
+): string {
   const runsManagedInstall = deps.runsManagedInstall ?? (() => readCliUpdateFactsForThisCli().installSource === 'managed');
   if (runsManagedInstall()) {
     const { binaryPath } = resolveInstalledFirstPartyComponentPaths({
@@ -33,7 +46,7 @@ export function buildSharedFoldersServeCommand(
     if (isExecutable(binaryPath)) return buildPosixShellCommand([binaryPath, ...args]);
   }
 
-  const launch = buildHappyCliSubprocessLaunchSpec(args);
+  const launch = buildHappyCliSubprocessLaunchSpec([...args]);
   const command = buildPosixShellCommand([launch.filePath, ...launch.args]);
   const env = launch.env ?? {};
   return Object.keys(env).length === 0 ? command : `${buildPosixShellEnvironmentAssignments(env)} ${command}`;

@@ -39,6 +39,9 @@ describe('the sandbox a shared folder is served from', () => {
       ok: true,
       tools: { ssh: 'ssh', sftpServer: '/usr/libexec/sftp-server', sandbox: { kind: 'seatbelt', command: '/usr/bin/sandbox-exec' } },
     });
+    // With sshd the server can also open a shell here (`shellLink.ts`); without it, folders still share.
+    expect(resolveSharingTools({ PATH: '/usr/bin' }, 'darwin', mac(['/usr/libexec/sftp-server', '/usr/bin/sandbox-exec', '/usr/sbin/sshd'])))
+      .toMatchObject({ ok: true, tools: { sshd: '/usr/sbin/sshd' } });
     expect(resolveSharingTools({ PATH: '/usr/bin' }, 'darwin', mac(['/usr/libexec/sftp-server']))).toMatchObject({
       ok: false,
       reason: expect.stringContaining('sandbox-exec'),

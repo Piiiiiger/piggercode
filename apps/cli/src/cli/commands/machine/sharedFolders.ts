@@ -4,6 +4,14 @@ import { printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { parseSshAddress } from '@/integrations/folderShare/acceptRequest';
 import { readAcceptedComputers } from '@/integrations/folderShare/acceptedComputers';
 import { runSharedFoldersServe } from '@/integrations/folderShare/serve';
+import { buildPiggercodeShellCommand } from '@/integrations/folderShare/serveCommand';
+import {
+  SHELL_REQUEST,
+  runSharedFolderShellConnect,
+  runSharedFolderShellServe,
+  serverShellDir,
+} from '@/integrations/folderShare/shellServe';
+import { configuration } from '@/configuration';
 import { listSharedFolderMounts } from '@/integrations/folderShare/sharedFolderMounts';
 import { readSettings, updateSettings } from '@/persistence';
 
@@ -13,14 +21,25 @@ import { readSettings, updateSettings } from '@/persistence';
  *   reach it at. A server accepts shared folders only once it is set.
  * - `status`: the address, the computers whose folders this machine accepts, what is mounted under
  *   `~/local` now, and the folders this machine shares itself.
- * - `serve --label <label>`: the forced command of a computer's key (`serve.ts`). Not for people, and it
- *   writes nothing to stdout, which is the connection, not even when it fails.
+ * - `serve --label <label>`: the forced command of a computer's key (`serve.ts`; `shell` in
+ *   `shellServe.ts`). Not for people, and it writes nothing to stdout, which is the connection, not even
+ *   when it fails.
+ * - `connect <computer>`: the ProxyCommand of `ssh <computer>` (`shellServe.ts`).
  */
 export async function runSharedFoldersSubcommand(args: readonly string[], json: boolean): Promise<void> {
   const [action, ...rest] = args;
   if (action === 'serve') {
     await serve(rest);
     return;
+  }
+  if (action === 'connect') {
+    process.exit(await runSharedFolderShellConnect({
+      label: rest[0] ?? '',
+      shellDir: serverShellDir(configuration.happyHomeDir),
+      input: process.stdin,
+      output: process.stdout,
+      reportError: (message) => process.stderr.write(`${message}\n`),
+    }));
   }
   if (action === 'address') {
     await address(rest, json);
@@ -39,6 +58,17 @@ async function serve(args: readonly string[]): Promise<void> {
   // Its `--place`s are the server's record of where it may mount; `serve` reads them from that record
   // (authorized_keys) as it mounts, not from these arguments, which a later change no longer updates.
   try {
+    if (process.env.SSH_ORIGINAL_COMMAND === SHELL_REQUEST) {
+      // Ends with its connection: stdin may still be held open by the computer's side.
+      process.exit(await runSharedFolderShellServe({
+        label,
+        shellDir: serverShellDir(configuration.happyHomeDir),
+        connectCommand: buildPiggercodeShellCommand(['machine', 'shared-folders', 'connect', label]),
+        input: process.stdin,
+        output: process.stdout,
+        reportError: (message) => process.stderr.write(`${message}\n`),
+      }));
+    }
     process.exitCode = await runSharedFoldersServe({
       label,
       originalCommand: process.env.SSH_ORIGINAL_COMMAND,

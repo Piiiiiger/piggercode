@@ -1,4 +1,5 @@
 import { mkdir, realpath, rename, stat, writeFile } from 'node:fs/promises';
+import { userInfo } from 'node:os';
 import { isAbsolute, join, relative, sep } from 'node:path';
 
 import type {
@@ -25,6 +26,14 @@ import {
   type FolderConnectionTarget,
 } from './folderConnection';
 import { resolveSharingTools, type SharingToolsResult } from './sharingTools';
+import {
+  ensureComputerShellFiles,
+  openShellLink,
+  type ComputerShellFiles,
+  type ShellLink,
+  type ShellLinkEvents,
+  type ShellLinkTarget,
+} from './shellLink';
 
 /**
  * The folders this computer shares with servers of its account, and their one owner. The settings hold
@@ -69,6 +78,15 @@ type Runtime = {
   connectedAt?: number;
 };
 
+type ShellRuntime = {
+  spare: ShellLink | null;
+  inUse: Set<ShellLink>;
+  retryTimer: ReturnType<typeof setTimeout> | null;
+  opening: boolean;
+  /** When the spare's server answered (`deps.now()`); unset until then. */
+  readyAt?: number;
+};
+
 const HOST_KEY_PATTERN = /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) [A-Za-z0-9+/]+={0,2}$/;
 const SSH_WORD_PATTERN = /^[A-Za-z0-9._:\-[\]]+$/;
 
@@ -86,6 +104,16 @@ export function createComputerShares(deps: Readonly<{
   retryDelayMs?: number;
   /** Test seam: the clock that says how long a connection had been working. */
   now?: () => number;
+  /**
+   * Whether the account's other machines may run commands here (remote commands): a server this
+   * computer shares folders with may then open a shell here, `ssh <computer>` (`shellLink.ts`).
+   */
+  shellAllowed?: () => Promise<boolean>;
+  /** This computer's login name, the user `ssh <computer>` logs in as. */
+  computerUser?: string;
+  platform?: NodeJS.Platform;
+  openShell?: (target: ShellLinkTarget, events: ShellLinkEvents, deps: Readonly<{ mayServe: () => Promise<boolean> }>) => ShellLink;
+  ensureShellFiles?: typeof ensureComputerShellFiles;
 }>): ComputerShares {
   const resolveTools = deps.resolveTools ?? (() => resolveSharingTools());
   const openConnection = deps.openConnection ?? openFolderConnection;
@@ -95,6 +123,13 @@ export function createComputerShares(deps: Readonly<{
   const knownHostsPath = join(deps.stateDir, 'known_hosts');
   const runtimes = new Map<string, Runtime>();
   let stopped = false;
+  const shellAllowed = deps.shellAllowed ?? (async () => false);
+  const openShell = deps.openShell ?? openShellLink;
+  const ensureShellFiles = deps.ensureShellFiles ?? ensureComputerShellFiles;
+  const shellDir = join(deps.stateDir, 'shell');
+  /** Per server this computer shares folders with: one spare shell connection, and the ones in use. */
+  const shells = new Map<string, ShellRuntime>();
+  let shellFiles: Promise<ComputerShellFiles> | null = null;
 
   // Adding, removing and (re)connecting read the settings and then act on them; one at a time.
   let queue: Promise<unknown> = Promise.resolve();
@@ -161,6 +196,85 @@ export function createComputerShares(deps: Readonly<{
     });
   };
 
+  /**
+   * Keeps one spare shell connection open to the server, so `ssh <computer>` there finds one at once;
+   * when a spare is used, the next one opens. A spare that drops comes back like a share does; a server
+   * that does not open shells (older PiggerCode) is asked again only at the next change of the shares.
+   */
+  const openSpareShell = async (serverMachineId: string, runtime: ShellRuntime): Promise<void> => {
+    if (stopped || shells.get(serverMachineId) !== runtime || runtime.spare || runtime.opening) return;
+    runtime.opening = true;
+    try {
+      const server = (await readShared()).servers[serverMachineId];
+      const tools = resolveTools();
+      if (!server || !tools.ok || !tools.tools.sshd) return;
+      const { keyPath } = await ensureKey(deps.stateDir);
+      shellFiles ??= ensureShellFiles({ shellDir, platform: deps.platform ?? process.platform, sftpServer: tools.tools.sftpServer });
+      const shell = await shellFiles;
+      if (stopped || shells.get(serverMachineId) !== runtime) return;
+      let link: ShellLink | null = null;
+      link = openShell({
+        server: { user: server.user, host: server.host, port: server.port },
+        keyPath,
+        knownHostsPath,
+        ssh: tools.tools.ssh,
+        sshd: tools.tools.sshd,
+        user: deps.computerUser ?? userInfo().username,
+        shell,
+        authorizedKeysPath: join(shellDir, `authorized_keys.${serverMachineId}`),
+      }, {
+        onReady: () => {
+          runtime.readyAt = now();
+        },
+        onInUse: () => {
+          if (!link || runtime.spare !== link) return;
+          runtime.spare = null;
+          runtime.inUse.add(link);
+          delete runtime.readyAt;
+          void openSpareShell(serverMachineId, runtime);
+        },
+        onClosed: (reason, stage) => {
+          if (!link) return;
+          runtime.inUse.delete(link);
+          if (runtime.spare !== link) return;
+          runtime.spare = null;
+          const wasWaiting = runtime.readyAt !== undefined && now() - runtime.readyAt >= retryDelayMs;
+          delete runtime.readyAt;
+          if (stage === 'announce') {
+            logger.infoFile('[SHARED FOLDERS] The server does not open a shell on this computer', { serverMachineId, reason });
+            return;
+          }
+          retryShell(serverMachineId, runtime, wasWaiting ? 0 : retryDelayMs);
+        },
+      }, { mayServe: shellAllowed });
+      runtime.spare = link;
+    } catch (error) {
+      shellFiles = null;
+      logger.debug('[SHARED FOLDERS] Could not open a shell connection', { serverMachineId, error: errorMessage(error) });
+      retryShell(serverMachineId, runtime, retryDelayMs);
+    } finally {
+      runtime.opening = false;
+    }
+  };
+
+  const retryShell = (serverMachineId: string, runtime: ShellRuntime, delayMs: number) => {
+    if (stopped || shells.get(serverMachineId) !== runtime || runtime.retryTimer) return;
+    runtime.retryTimer = setTimeout(() => {
+      runtime.retryTimer = null;
+      void openSpareShell(serverMachineId, runtime);
+    }, delayMs);
+    runtime.retryTimer.unref?.();
+  };
+
+  const disposeShell = (runtime: ShellRuntime) => {
+    if (runtime.retryTimer) clearTimeout(runtime.retryTimer);
+    runtime.retryTimer = null;
+    runtime.spare?.close();
+    runtime.spare = null;
+    for (const link of runtime.inUse) link.close();
+    runtime.inUse.clear();
+  };
+
   const dispose = (runtime: Runtime) => {
     if (runtime.retryTimer) clearTimeout(runtime.retryTimer);
     runtime.retryTimer = null;
@@ -184,6 +298,20 @@ export function createComputerShares(deps: Readonly<{
       const runtime: Runtime = { at, state: 'connecting', connection: null, retryTimer: null };
       runtimes.set(key, runtime);
       await connect(key, runtime);
+    }
+    const shellServers = new Set(shares.filter((share) => servers[share.serverMachineId]).map((share) => share.serverMachineId));
+    for (const [serverMachineId, runtime] of shells) {
+      if (shellServers.has(serverMachineId)) continue;
+      disposeShell(runtime);
+      shells.delete(serverMachineId);
+    }
+    for (const serverMachineId of shellServers) {
+      let runtime = shells.get(serverMachineId);
+      if (!runtime) {
+        runtime = { spare: null, inUse: new Set(), retryTimer: null, opening: false };
+        shells.set(serverMachineId, runtime);
+      }
+      void openSpareShell(serverMachineId, runtime);
     }
   };
 
@@ -354,6 +482,8 @@ export function createComputerShares(deps: Readonly<{
       stopped = true;
       for (const runtime of runtimes.values()) dispose(runtime);
       runtimes.clear();
+      for (const runtime of shells.values()) disposeShell(runtime);
+      shells.clear();
     },
   };
 }

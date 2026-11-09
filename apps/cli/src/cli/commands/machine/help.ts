@@ -19,7 +19,9 @@ ${chalk.bold('Notes:')}
   • Use --yes to auto-accept setup prompts in non-interactive runs.
   • remote-commands on lets agents on your other machines run shell commands on this machine
     (the machine.command.run tool). It is off until you turn it on here or with the Remote commands
-    switch on this machine's page in the app.
+    switch on this machine's page in the app. While it is on, a server this machine shares folders
+    with can also open a shell here with \`ssh <this machine's name>\` (no Remote Login needed;
+    on the server, put Include ~/.piggercode/shared-folders/shell/ssh_config at the top of ~/.ssh/config).
   • shared-folders address, on a server, sets the SSH address your other machines reach it at
     (host or host:port). Once it is set, a computer can share folders with this machine from
     its page in the app; each appears here where it is placed (~/<folder name> by default, beside your

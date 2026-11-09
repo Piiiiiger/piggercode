@@ -44,6 +44,16 @@ export type SpawnPiped = (command: string, args: readonly string[], extraFds: nu
 const KEEPALIVE_ARGS = ['-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=3'];
 
 export function buildFolderConnectionSshArgs(target: FolderConnectionTarget): string[] {
+  // `mount <folder><TAB><place>`: neither may hold a control character, so the tab parts them
+  // (a server before places refuses it as a folder name; `serve.ts`).
+  return buildServerSshArgs(target, target.at === undefined ? `mount ${target.folder}` : `mount ${target.folder}\t${target.at}`);
+}
+
+/** `ssh` to the server with this computer's key, asking its forced command for `request`. */
+export function buildServerSshArgs(
+  target: Readonly<{ server: FolderConnectionTarget['server']; keyPath: string; knownHostsPath: string }>,
+  request: string,
+): string[] {
   return [
     '-F', '/dev/null', '-T',
     '-o', 'BatchMode=yes',
@@ -57,9 +67,7 @@ export function buildFolderConnectionSshArgs(target: FolderConnectionTarget): st
     '-o', 'LogLevel=ERROR',
     '-p', String(target.server.port),
     `${target.server.user}@${target.server.host}`,
-    // `mount <folder><TAB><place>`: neither may hold a control character, so the tab parts them
-    // (a server before places refuses it as a folder name; `serve.ts`).
-    target.at === undefined ? `mount ${target.folder}` : `mount ${target.folder}\t${target.at}`,
+    request,
   ];
 }
 

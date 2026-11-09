@@ -1995,6 +1995,22 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   (`/sys/fs/fuse/connections`); without it the new connection is refused with the reason.
 - **Stopping a share** ends its connection, so the server unmounts it. The server keeps the computer's
   key line, which can only mount into that computer's own folder.
+- **`ssh <computer>` from the server** (`shellLink.ts`, `shellServe.ts`). While remote commands are on
+  (the consent for the account's other machines to run commands here), a computer keeps one spare
+  connection to each server it shares folders with: `ssh <server> shell`, through the same key and forced
+  command. It announces the computer's user and the host key of a user-level sshd; the server pins that
+  key, answers with its own client key (the only key that may log in), and waits on
+  `~/.piggercode/shared-folders/shell/<computer>.sock`. On the server, `ssh <computer>` reaches that
+  socket through its ProxyCommand, `piggercode machine shared-folders connect <computer>` (the server
+  writes the alias to `shell/<computer>.conf`; the top of `~/.ssh/config` includes `shell/ssh_config` once, so
+  the alias's settings come first). Only
+  then does the computer start `/usr/sbin/sshd -i` for that one SSH connection, after checking remote
+  commands are still on, and open the next spare. The alias shares no master connection (`ControlMaster no`,
+  `ControlPath none`, whatever the rest of the config says): every `ssh` takes
+  a fresh spare, so turning remote commands off stops the next command (one already running finishes).
+  Each computer's host key is pinned in its own `shell/<computer>.known_hosts`. Remote Login stays off and
+  nothing listens on the computer. A spare that drops comes back like a share; a server too old for `shell`
+  is asked again only when the shares change.
 
 In the current development CLI, UI permission responses settle through
 `PermissionRequestCoordinator.completeRpcResponse`, including detached late responses

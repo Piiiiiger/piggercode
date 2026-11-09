@@ -14,7 +14,13 @@ import { buildSeatbeltProfile } from './seatbeltProfile';
 
 export type SharingSandbox = Readonly<{ kind: 'bubblewrap' | 'seatbelt'; command: string }>;
 
-export type SharingTools = Readonly<{ ssh: string; sftpServer: string; sandbox: SharingSandbox }>;
+export type SharingTools = Readonly<{
+  ssh: string;
+  sftpServer: string;
+  sandbox: SharingSandbox;
+  /** OpenSSH's sshd, run as this user for `ssh <computer>` from a server (`shellLink.ts`); absent: no shell. */
+  sshd?: string;
+}>;
 
 export type SharingToolsResult =
   | Readonly<{ ok: true; tools: SharingTools }>
@@ -34,6 +40,8 @@ const SFTP_SERVER_PATHS = [
 ];
 
 const SANDBOX_EXEC = '/usr/bin/sandbox-exec';
+/** sshd re-executes itself and must be named by its absolute path. */
+const SSHD_PATH = '/usr/sbin/sshd';
 
 /** Top-level system folders sftp-server's loader may need; recreated in the sandbox as they are here. */
 const SYSTEM_ROOT_ENTRIES = ['/bin', '/sbin', '/lib', '/lib32', '/lib64'];
@@ -62,7 +70,7 @@ export function resolveSharingTools(
         reason: `This Mac has no ${SANDBOX_EXEC}, which keeps the server inside the folders you share.`,
       };
     }
-    return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'seatbelt', command: SANDBOX_EXEC } } };
+    return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'seatbelt', command: SANDBOX_EXEC }, ...sshdOf(probe) } };
   }
   if (!probe.commandExists('bwrap', env, platform)) {
     return {
@@ -70,7 +78,11 @@ export function resolveSharingTools(
       reason: 'Install bubblewrap on this computer to share folders. It keeps the server inside the folders you share.',
     };
   }
-  return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'bubblewrap', command: 'bwrap' } } };
+  return { ok: true, tools: { ssh: 'ssh', sftpServer, sandbox: { kind: 'bubblewrap', command: 'bwrap' }, ...sshdOf(probe) } };
+}
+
+function sshdOf(probe: SharingToolsProbe): Readonly<{ sshd?: string }> {
+  return probe.isExecutable(SSHD_PATH) ? { sshd: SSHD_PATH } : {};
 }
 
 /** The sandboxed sftp-server for one shared folder: what to run, and what to write to its pipes from fd 3 on. */

@@ -11,6 +11,7 @@ import { readSettings, updateSettings } from '@/persistence';
 import { createComputerShares, type AcceptOnServer } from './computerShares';
 import type { FolderConnectionEvents, FolderConnectionTarget } from './folderConnection';
 import type { SharingToolsResult } from './sharingTools';
+import type { ShellLinkEvents, ShellLinkTarget } from './shellLink';
 
 const COMPUTER_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9';
 const HOST_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQKK0TckxnFot3LMp0B+2WElapYHkD6E8fo78SadK/n';
@@ -47,10 +48,13 @@ function createComputer(options: Readonly<{
   tools?: SharingToolsResult;
   retryDelayMs?: number;
   now?: () => number;
+  /** Whether remote commands are on (the consent for a server's `ssh <computer>`). */
+  shellAllowed?: boolean;
 }> = {}) {
   const home = createHome();
   const acceptCalls: Array<Readonly<{ serverMachineId: string; request: FolderShareAcceptRequest }>> = [];
   const connections: Array<{ target: FolderConnectionTarget; events: FolderConnectionEvents; closed: boolean }> = [];
+  const shellLinks: Array<{ target: ShellLinkTarget; events: ShellLinkEvents; mayServe: () => Promise<boolean>; closed: boolean }> = [];
   const acceptOnServer: AcceptOnServer = async (serverMachineId, request) => {
     acceptCalls.push({ serverMachineId, request });
     options.onAccept?.(connections);
@@ -74,8 +78,17 @@ function createComputer(options: Readonly<{
     },
     retryDelayMs: options.retryDelayMs ?? 5,
     ...(options.now ? { now: options.now } : {}),
+    shellAllowed: async () => options.shellAllowed ?? true,
+    computerUser: 'pigger',
+    platform: 'darwin',
+    ensureShellFiles: async ({ shellDir }) => ({ configPath: join(shellDir, 'sshd_config'), hostPublicKey: HOST_KEY }),
+    openShell: (target, events, deps) => {
+      const link = { target, events, mayServe: deps.mayServe, closed: false };
+      shellLinks.push(link);
+      return { close: () => { link.closed = true; } };
+    },
   });
-  return { home, shares, acceptCalls, connections };
+  return { home, shares, acceptCalls, connections, shellLinks };
 }
 
 describe('folders this computer shares with a server', () => {
@@ -309,6 +322,44 @@ describe('folders this computer shares with a server', () => {
       expect(restarted.connections.map((connection) => connection.target.folder)).toEqual(['code']);
       expect(restarted.acceptCalls).toEqual([]);
       restarted.shares.stop();
+    });
+  });
+
+  it('keeps one spare shell connection to each server it shares with, opening the next as one is used', async () => {
+    await withConfiguredDaemonTestHome({ prefix: 'piggercode-shared-folders-' }, async () => {
+      const sshd: SharingToolsResult = TOOLS.ok ? { ok: true, tools: { ...TOOLS.tools, sshd: '/usr/sbin/sshd' } } : TOOLS;
+      const computer = createComputer({ tools: sshd, shellAllowed: false });
+      await computer.shares.add({ folder: 'code', serverMachineId: 'machine-server' });
+      await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(1));
+
+      const [spare] = computer.shellLinks;
+      expect(spare!.target).toMatchObject({
+        server: { user: 'pigger', host: 'server.example.test', port: 2200 },
+        sshd: '/usr/sbin/sshd',
+        user: 'pigger',
+        authorizedKeysPath: expect.stringMatching(/shell[/\\]authorized_keys\.machine-server$/),
+      });
+      // The consent is read when the server uses the link, so turning remote commands off stops shells at once.
+      await expect(spare!.mayServe()).resolves.toBe(false);
+
+      spare!.events.onReady();
+      spare!.events.onInUse();
+      await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(2));
+      expect(spare!.closed).toBe(false);
+
+      // An older server refuses `shell`: it is asked again when the shares change, not on a timer.
+      computer.shellLinks[1]!.events.onClosed('this key can only mount a folder', 'announce');
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      expect(computer.shellLinks).toHaveLength(2);
+      await computer.shares.add({ folder: 'notes', serverMachineId: 'machine-server' });
+      await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(3));
+
+      // A spare that drops comes back by itself.
+      computer.shellLinks[2]!.events.onClosed('The connection to the server was lost.', 'waiting');
+      await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(4));
+
+      computer.shares.stop();
+      expect(computer.shellLinks.map((link) => link.closed)).toEqual([true, false, false, true]);
     });
   });
 
