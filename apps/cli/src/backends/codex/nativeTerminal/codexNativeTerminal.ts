@@ -1,11 +1,11 @@
-import { watch, type FSWatcher } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
-import { readDirectSessionTitleCandidate } from '@/api/directSessions/title/readDirectSessionTitleCandidate';
-import { readCodexSessionTitleFromRollout } from '@/backends/codex/directSessions/readCodexSessionTitleFromRollout';
+import { collectCodexSessionRolloutFiles } from '@/backends/codex/directSessions/collectCodexSessionRolloutFiles';
+import { readCodexSessionMetaFromRollout } from '@/backends/codex/localControl/rolloutDiscovery';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';
 import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { TmuxUtilities } from '@/integrations/tmux';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { createJsonlFileTail } from '@/terminal/nativeTerminal/jsonlFileTail';
 import type { NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
@@ -13,13 +13,7 @@ import type { NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runN
 import { logger } from '@/ui/logger';
 import { stripNestedSessionDetectionEnv } from '@/utils/processEnv/stripNestedSessionDetectionEnv';
 
-import { readCodexThreadsHeldByProcess, type HeldCodexThread } from './readCodexThreadsHeldByProcess';
-
-/**
- * How often the session looks at what the terminal's `codex` writes. Reading /proc costs next to
- * nothing; on macOS each look runs pgrep and lsof (tens of milliseconds), about 1% of a core per
- * Codex terminal.
- */
+/** How often the session reads the terminal's window title (one tmux call). */
 const FOLLOW_INTERVAL_MS = 3_000;
 
 /** Native Codex as a 「终端」 session: `codex`, or `codex resume <id>`, with nothing added. */
@@ -27,7 +21,7 @@ export const codexNativeTerminal: NativeTerminalProvider = {
   flavor: 'codex',
   name: 'Codex',
   logPrefix: '[codex-terminal]',
-  planLaunch: ({ resumeId, firstPrompt }) => {
+  planLaunch: ({ directory, resumeId, firstPrompt }) => {
     const launch = planCodexNativeTerminalLaunch({ resumeThreadId: resumeId, firstPrompt });
     const codex = requireProviderCliLaunchSpec('codex', { processEnv: process.env });
     const env = stripNestedSessionDetectionEnv(process.env);
@@ -37,10 +31,10 @@ export const codexNativeTerminal: NativeTerminalProvider = {
       cli: { command: codex.command, args: [...codex.args, ...launch.args] },
       env,
       metadata: launch.threadId ? { codexSessionId: launch.threadId } : {},
-      follow: ({ session, childPid }) => followCodexThread({
+      follow: ({ session }) => followCodexThread({
         session,
-        childPid,
         codexHome,
+        directory,
         initialThreadId: launch.threadId,
       }),
     };
@@ -58,62 +52,49 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
 }
 
 /**
- * Records which conversation the terminal's `codex` writes (`codexSessionId`, so reopening resumes
- * it) and names the session after it: the name given in Codex, else its first message. Codex can
- * switch conversations in one terminal (`/new`, `/resume`), so this keeps looking while it runs.
+ * Records which conversation the terminal's `codex` shows (`codexSessionId`, so reopening resumes
+ * it) and names the session after it. One shared Codex service writes every terminal's
+ * conversations, so nothing on disk says which one is this terminal's. Codex does show it in the
+ * window title (`<conversation title> | <folder>`, only the folder until it names a new one): the
+ * title is looked up in Codex's index (`session_index.jsonl`) among the conversations started in
+ * this folder, newest first. This follows `/new`, `/resume` and renames.
  */
 export function followCodexThread(params: Readonly<{
   session: NativeTerminalSessionClient;
-  childPid: number | null;
   codexHome: string;
+  /** The session's folder, where Codex runs. */
+  directory: string;
   /** The conversation the terminal reopened, already recorded on the session. */
   initialThreadId: string | null;
-  readHeldThreads?: (pid: number) => Promise<readonly HeldCodexThread[]>;
+  readWindowTitle?: () => Promise<string | null>;
   intervalMs?: number;
 }>): () => Promise<void> {
-  const { session, childPid } = params;
-  if (childPid === null) return async () => undefined;
-  const readHeldThreads = params.readHeldThreads ?? readCodexThreadsHeldByProcess;
-  const threadNames = createCodexThreadNames(join(params.codexHome, 'session_index.jsonl'));
-  // What the terminal writes, and what the session has recorded: a write that fails (the relay is
+  const { session } = params;
+  const readWindowTitle = params.readWindowTitle ?? readTmuxPaneTitle;
+  const threads = createCodexThreadIndex(params.codexHome);
+  const folderName = basename(params.directory);
+  // What the terminal shows, and what the session has recorded: a write the relay rejected (it was
   // away) is tried again on the next look.
   let threadId = params.initialThreadId;
   let recordedThreadId = params.initialThreadId;
-  let rolloutPath: string | null = null;
-  let firstMessageTitle: string | null = null;
   let recordedTitle: string | null = null;
 
   const look = async (): Promise<void> => {
-    const held = await readHeldThreads(childPid);
-    const current = held.find((thread) => thread.threadId === threadId);
-    if (current) {
-      rolloutPath = current.rolloutPath ?? rolloutPath;
-    } else if (held.length > 0) {
-      // Codex writes another conversation now. Sub-agents write their own beside the main one,
-      // which is the oldest: Codex thread ids start with their creation time.
-      const next = [...held].sort((a, b) => a.threadId.localeCompare(b.threadId))[0]!;
-      threadId = next.threadId;
-      rolloutPath = next.rolloutPath;
-      firstMessageTitle = null;
-      recordedTitle = null;
+    const title = readCodexConversationTitle(await readWindowTitle(), folderName);
+    if (!title) return;
+    const shownThreadId = await threads.find({ title, directory: params.directory, preferred: threadId });
+    if (!shownThreadId) return;
+    if (shownThreadId !== threadId) recordedTitle = null;
+    threadId = shownThreadId;
+    if (shownThreadId !== recordedThreadId) {
+      await session.updateMetadata((metadata) => ({ ...metadata, codexSessionId: shownThreadId }));
+      recordedThreadId = shownThreadId;
     }
-    if (!threadId) return;
-    const lookedThreadId = threadId;
-    if (lookedThreadId !== recordedThreadId) {
-      await session.updateMetadata((metadata) => ({ ...metadata, codexSessionId: lookedThreadId }));
-      recordedThreadId = lookedThreadId;
-    }
-
-    const named = await threadNames.read(lookedThreadId);
-    if (!named && !firstMessageTitle && rolloutPath) {
-      firstMessageTitle = await readCodexSessionTitleFromRollout(rolloutPath);
-    }
-    const title = named ?? firstMessageTitle;
-    if (!title || title === recordedTitle) return;
+    if (title === recordedTitle) return;
     await session.updateMetadata((metadata) => applyProviderSessionInfoUpdate({
       metadata,
       provider: 'codex',
-      sessionId: lookedThreadId,
+      sessionId: shownThreadId,
       observedAt: Date.now(),
       update: { title },
       titlePolicy: 'follow',
@@ -123,83 +104,87 @@ export function followCodexThread(params: Readonly<{
 
   let stopped = false;
   let running: Promise<void> | null = null;
-  let lookAgain = false;
-  // One look at a time; a request during a look runs one more after it.
-  const lookNow = (): Promise<void> => {
-    if (running) {
-      lookAgain = true;
-      return running;
-    }
-    running = (async () => {
-      do {
-        lookAgain = false;
-        await look().catch((error) => {
-          logger.debug('[codex-terminal] Could not follow the Codex conversation', error);
-        });
-      } while (lookAgain && !stopped);
-    })().finally(() => {
-      running = null;
-    });
-    return running;
-  };
-  // Codex takes a conversation's writer lock when it starts writing it (a first message, `/new`,
-  // `/resume`): look at once, so quitting right after does not leave the session on the old one.
-  // Codex makes the lock folder with its first conversation, so until it exists every poll tries
-  // to watch it again.
-  const locksDir = join(params.codexHome, 'thread-writer-locks');
-  let locksWatcher: FSWatcher | null = null;
-  const watchLocks = () => {
-    if (locksWatcher || stopped) return;
-    try {
-      const watcher = watch(locksDir, { persistent: false }, () => {
-        if (!stopped) void lookNow();
-      });
-      watcher.on('error', () => {
-        watcher.close();
-        if (locksWatcher === watcher) locksWatcher = null;
-      });
-      locksWatcher = watcher;
-    } catch {
-      // Not there yet.
-    }
-  };
   let timer: NodeJS.Timeout | null = null;
   const schedule = () => {
     timer = setTimeout(() => {
-      watchLocks();
-      void lookNow().then(() => {
-        if (!stopped) schedule();
-      });
+      running = look()
+        .catch((error) => {
+          logger.debug('[codex-terminal] Could not follow the Codex conversation', error);
+        })
+        .finally(() => {
+          running = null;
+          if (!stopped) schedule();
+        });
     }, params.intervalMs ?? FOLLOW_INTERVAL_MS);
     timer.unref?.();
   };
-  watchLocks();
   schedule();
 
   return async () => {
     stopped = true;
     if (timer) clearTimeout(timer);
-    locksWatcher?.close();
-    locksWatcher = null;
     await running;
   };
 }
 
-/** The names given to Codex conversations (`/rename`), from `session_index.jsonl`; the last one wins. */
-function createCodexThreadNames(indexPath: string) {
-  const tail = createJsonlFileTail(indexPath);
-  const names = new Map<string, string>();
+/** The conversation title in Codex's window title (`<title> | <folder>`); none while it has none. */
+export function readCodexConversationTitle(windowTitle: string | null, folderName: string): string | null {
+  const suffix = ` | ${folderName}`;
+  if (!windowTitle || !folderName || !windowTitle.endsWith(suffix)) return null;
+  return windowTitle.slice(0, -suffix.length).trim() || null;
+}
+
+/** The title Codex gave this terminal's window (tmux keeps it as the pane title). */
+async function readTmuxPaneTitle(): Promise<string | null> {
+  const pane = process.env.TMUX_PANE;
+  if (!pane || !process.env.TMUX) return null;
+  const result = await new TmuxUtilities().executeTmuxCommand(['display-message', '-p', '-t', pane, '#{pane_title}']);
+  return result?.returncode === 0 ? result.stdout.replace(/\r?\n$/, '') : null;
+}
+
+/** Codex's conversation names (`session_index.jsonl`, the last line for an id wins) and folders. */
+function createCodexThreadIndex(codexHome: string) {
+  const tail = createJsonlFileTail(join(codexHome, 'session_index.jsonl'));
+  const names = new Map<string, Readonly<{ name: string; order: number }>>();
+  const folders = new Map<string, string>();
+  let order = 0;
+
+  const folderOf = async (threadId: string): Promise<string | null> => {
+    const known = folders.get(threadId);
+    if (known) return known;
+    for (const rollout of await collectCodexSessionRolloutFiles({ codexHome, remoteSessionId: threadId })) {
+      const cwd = (await readCodexSessionMetaFromRollout(rollout.filePath))?.cwd;
+      if (typeof cwd === 'string' && cwd.trim()) {
+        // A conversation's folder never changes; one not found yet is looked up again.
+        folders.set(threadId, cwd.trim());
+        return cwd.trim();
+      }
+    }
+    return null;
+  };
+
   return {
-    read: async (threadId: string): Promise<string | null> => {
+    find: async (params: Readonly<{ title: string; directory: string; preferred: string | null }>): Promise<string | null> => {
       await tail.readNew((value) => {
         if (!value || typeof value !== 'object') return;
         const record = value as Record<string, unknown>;
         if (typeof record.id !== 'string' || typeof record.thread_name !== 'string') return;
-        const name = readDirectSessionTitleCandidate(record.thread_name);
-        if (name) names.set(record.id, name);
-        else names.delete(record.id);
+        names.set(record.id, { name: record.thread_name.trim(), order: order++ });
       });
-      return names.get(threadId) ?? null;
+      if (params.preferred && names.get(params.preferred)?.name === params.title) return params.preferred;
+      const candidates = [...names]
+        .filter(([, entry]) => entry.name === params.title)
+        .sort((a, b) => b[1].order - a[1].order);
+      for (const [candidate] of candidates) {
+        if (sameFolder(await folderOf(candidate), params.directory)) return candidate;
+      }
+      return null;
     },
   };
+}
+
+function sameFolder(a: string | null, b: string): boolean {
+  if (!a) return false;
+  const trim = (path: string) => path.replace(/[\\/]+$/, '') || path;
+  return trim(a) === trim(b);
 }

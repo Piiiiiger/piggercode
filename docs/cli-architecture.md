@@ -1730,11 +1730,13 @@ without a terminal, and the runner gets `--native-terminal` (`buildHappySessionC
 typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
 would queue it, and passes it as the CLI's first prompt after `--`. `claude` gets only `--session-id <id>`, or
 `--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`. Codex
-cannot be told a new thread's id, so the runner reads it every 3 s from the files the `codex` process (or its
-child, for an npm wrapper) holds open: the rollout and `thread-writer-locks/<id>.lock` (Linux `/proc`, macOS
-`lsof`), and records it as `codexSessionId`, following `/new` and `/resume`. Titles come from the CLI: Claude's
-own title in the transcript (`readClaudeTitleRecord`), Codex's thread name in `session_index.jsonl` or else its
-first message, through `applyProviderSessionInfoUpdate`. The runner stops the CLI when the app stops the
+cannot be told a new thread's id, and one shared Codex service (`codex app-server`) writes every terminal's
+threads, so no file says which thread is this terminal's. Codex shows it in the window title (`<thread name> |
+<folder>`): every 3 s the runner reads its tmux pane title, finds that name in `session_index.jsonl` among the
+threads whose rollout started in the session's folder (newest first), and records it as `codexSessionId`,
+following `/new`, `/resume` and renames. Titles come from the CLI: Claude's own title in the transcript
+(`readClaudeTitleRecord`), Codex's thread name from the window title, through `applyProviderSessionInfoUpdate`
+with the `follow` title policy (the session title follows the CLI's until the session is renamed). The runner stops the CLI when the app stops the
 session and ends the session when the CLI exits, keeping a failed exit on screen until Enter. Respawns keep a
 terminal a terminal (`resolveSessionRuntimeSnapshot`), and a chat session becomes one when a request asks for
 it; its chat runtime record (`agentRuntimeDescriptorV1`) is dropped on attach so the conversation the terminal

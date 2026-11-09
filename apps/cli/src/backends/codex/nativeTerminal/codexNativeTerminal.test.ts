@@ -1,4 +1,3 @@
-import { spawn } from 'node:child_process';
 import { appendFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -7,11 +6,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeServerSession } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
-import { followCodexThread, planCodexNativeTerminalLaunch } from './codexNativeTerminal';
-import { readCodexThreadsHeldByProcess, type HeldCodexThread } from './readCodexThreadsHeldByProcess';
+import { followCodexThread, planCodexNativeTerminalLaunch, readCodexConversationTitle } from './codexNativeTerminal';
 
-const ROOT = '01a1c03e-91d3-7dc3-a965-9f0c6ff6e973';
-const SUBAGENT = '01a1c03f-0000-7000-8000-000000000001';
+const FIRST = '01a1c03e-91d3-7dc3-a965-9f0c6ff6e973';
+const SAME_NAME_ELSEWHERE = '01a1c03f-0000-7000-8000-000000000001';
 const NEXT = '01a1c040-0000-7000-8000-000000000002';
 
 const dirs: string[] = [];
@@ -25,15 +23,16 @@ async function codexHome(): Promise<string> {
   return dir;
 }
 
-async function writeRollout(home: string, threadId: string, firstMessage: string | null): Promise<string> {
+/** A conversation as Codex keeps it: its rollout (with the folder it runs in) and its name in the index. */
+async function conversation(home: string, threadId: string, cwd: string, name: string): Promise<void> {
   const file = join(home, 'sessions', '2026', '11', '10', `rollout-2026-11-10T09-00-00-${threadId}.jsonl`);
   await mkdir(dirname(file), { recursive: true });
-  const lines: unknown[] = [{ type: 'session_meta', payload: { id: threadId, cwd: '/repo' } }];
-  if (firstMessage) {
-    lines.push({ type: 'response_item', payload: { type: 'message', role: 'user', content: [{ type: 'input_text', text: firstMessage }] } });
-  }
-  await writeFile(file, lines.map((line) => `${JSON.stringify(line)}\n`).join(''));
-  return file;
+  await writeFile(file, `${JSON.stringify({ type: 'session_meta', payload: { id: threadId, cwd } })}\n`);
+  await rename(home, threadId, name);
+}
+
+async function rename(home: string, threadId: string, name: string): Promise<void> {
+  await appendFile(join(home, 'session_index.jsonl'), `${JSON.stringify({ id: threadId, thread_name: name, updated_at: '2026-11-10T00:00:00Z' })}\n`);
 }
 
 describe('planCodexNativeTerminalLaunch', () => {
@@ -44,96 +43,80 @@ describe('planCodexNativeTerminalLaunch', () => {
   });
 
   it('reopens the conversation the session had', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: ROOT, firstPrompt: null }))
-      .toEqual({ threadId: ROOT, args: ['resume', ROOT] });
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null }))
+      .toEqual({ threadId: FIRST, args: ['resume', FIRST] });
   });
 });
 
-describe.skipIf(process.platform !== 'linux')('readCodexThreadsHeldByProcess', () => {
-  it('finds the conversation a running process writes from the files it holds open', async () => {
-    const home = await codexHome();
-    const rollout = await writeRollout(home, ROOT, null);
-    const lock = join(home, 'thread-writer-locks', `${ROOT}.lock`);
-    await mkdir(dirname(lock), { recursive: true });
-    await writeFile(lock, '');
-    const child = spawn('/bin/sh', ['-c', 'exec 3>>"$1" 4>>"$2"; sleep 30', 'sh', rollout, lock], { stdio: 'ignore' });
-    try {
-      await vi.waitFor(async () => {
-        expect(await readCodexThreadsHeldByProcess(child.pid!)).toEqual([{ threadId: ROOT, rolloutPath: rollout }]);
-      }, { timeout: 5_000 });
-    } finally {
-      child.kill('SIGKILL');
-    }
-  });
-
-  it('finds nothing for a process that writes no conversation, or one that is gone', async () => {
-    const child = spawn('/bin/sh', ['-c', 'sleep 30'], { stdio: 'ignore' });
-    try {
-      expect(await readCodexThreadsHeldByProcess(child.pid!)).toEqual([]);
-    } finally {
-      child.kill('SIGKILL');
-    }
-    expect(await readCodexThreadsHeldByProcess(2 ** 30)).toEqual([]);
+describe('readCodexConversationTitle', () => {
+  it('reads the conversation title Codex puts before the folder in its window title', () => {
+    expect(readCodexConversationTitle('Fix login | repo', 'repo')).toBe('Fix login');
+    expect(readCodexConversationTitle('A | B | repo', 'repo')).toBe('A | B');
+    expect(readCodexConversationTitle('repo', 'repo')).toBeNull();
+    expect(readCodexConversationTitle('bash', 'repo')).toBeNull();
+    expect(readCodexConversationTitle(null, 'repo')).toBeNull();
   });
 });
 
 describe('followCodexThread', () => {
-  it('records the conversation the terminal writes, names the session after its first message, then after a rename in Codex', async () => {
+  it('records the conversation the terminal shows, the one with that name in this folder, and follows it to the next', async () => {
     const home = await codexHome();
-    const rollout = await writeRollout(home, ROOT, 'Fix the login bug');
-    const next = await writeRollout(home, NEXT, 'Write the release notes');
-    let held: HeldCodexThread[] = [];
+    await conversation(home, FIRST, '/work/repo', 'Fix login');
+    await conversation(home, SAME_NAME_ELSEWHERE, '/work/other/repo', 'Fix login');
+    let windowTitle = 'repo';
     const server = fakeServerSession();
     const stop = followCodexThread({
       session: server.session,
-      childPid: 4242,
       codexHome: home,
+      directory: '/work/repo',
       initialThreadId: null,
-      readHeldThreads: async (pid) => (pid === 4242 ? held : []),
+      readWindowTitle: async () => windowTitle,
       intervalMs: 10,
     });
     try {
-      held = [{ threadId: ROOT, rolloutPath: rollout }];
+      windowTitle = 'Fix login | repo';
       await vi.waitFor(() => expect(server.metadata()).toMatchObject({
-        codexSessionId: ROOT,
-        providerSessionInfoV1: { provider: 'codex', sessionId: ROOT, title: 'Fix the login bug' },
+        codexSessionId: FIRST,
+        summary: { text: 'Fix login' },
+        providerSessionInfoV1: { provider: 'codex', sessionId: FIRST, title: 'Fix login' },
       }));
 
-      await appendFile(join(home, 'session_index.jsonl'), `${JSON.stringify({ id: ROOT, thread_name: 'Login fix', updated_at: '2026-11-10T00:00:01Z' })}\n`);
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({
-        summary: { text: 'Login fix' },
-        providerSessionInfoV1: { sessionId: ROOT, title: 'Login fix' },
-      }));
-
-      // `/new` in Codex: the same process now writes another conversation.
-      held = [{ threadId: NEXT, rolloutPath: next }];
+      // `/new`: a conversation Codex has not named yet, then named.
+      windowTitle = 'repo';
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      expect(server.metadata()).toMatchObject({ codexSessionId: FIRST });
+      await conversation(home, NEXT, '/work/repo', 'Release notes');
+      windowTitle = 'Release notes | repo';
       await vi.waitFor(() => expect(server.metadata()).toMatchObject({
         codexSessionId: NEXT,
-        providerSessionInfoV1: { sessionId: NEXT, title: 'Write the release notes' },
+        summary: { text: 'Release notes' },
       }));
     } finally {
       await stop();
     }
   });
 
-  it('looks as soon as Codex starts writing a conversation, not a poll later', async () => {
+  it('keeps a reopened conversation and takes its renames', async () => {
     const home = await codexHome();
-    const rollout = await writeRollout(home, ROOT, 'Fix the login bug');
-    await mkdir(join(home, 'thread-writer-locks'), { recursive: true });
-    let held: HeldCodexThread[] = [];
+    await conversation(home, FIRST, '/work/repo', 'Fix login');
+    let windowTitle = 'Fix login | repo';
     const server = fakeServerSession();
     const stop = followCodexThread({
       session: server.session,
-      childPid: 4242,
       codexHome: home,
-      initialThreadId: null,
-      readHeldThreads: async () => held,
-      intervalMs: 60_000,
+      directory: '/work/repo',
+      initialThreadId: FIRST,
+      readWindowTitle: async () => windowTitle,
+      intervalMs: 10,
     });
     try {
-      held = [{ threadId: ROOT, rolloutPath: rollout }];
-      await writeFile(join(home, 'thread-writer-locks', `${ROOT}.lock`), '');
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: ROOT }), { timeout: 2_000 });
+      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ summary: { text: 'Fix login' } }));
+      await rename(home, FIRST, 'Login fix');
+      windowTitle = 'Login fix | repo';
+      await vi.waitFor(() => expect(server.metadata()).toMatchObject({
+        summary: { text: 'Login fix' },
+        providerSessionInfoV1: { sessionId: FIRST, title: 'Login fix' },
+      }));
     } finally {
       await stop();
     }
@@ -141,100 +124,24 @@ describe('followCodexThread', () => {
 
   it('records the conversation and its title again after a write the relay rejected', async () => {
     const home = await codexHome();
-    const rollout = await writeRollout(home, ROOT, 'Fix the login bug');
+    await conversation(home, FIRST, '/work/repo', 'Fix login');
     const server = fakeServerSession();
     vi.mocked(server.session.updateMetadata)
       .mockRejectedValueOnce(new Error('relay away'))
       .mockRejectedValueOnce(new Error('relay away'));
     const stop = followCodexThread({
       session: server.session,
-      childPid: 4242,
       codexHome: home,
+      directory: '/work/repo',
       initialThreadId: null,
-      readHeldThreads: async () => [{ threadId: ROOT, rolloutPath: rollout }],
+      readWindowTitle: async () => 'Fix login | repo',
       intervalMs: 10,
     });
     try {
       await vi.waitFor(() => expect(server.metadata()).toMatchObject({
-        codexSessionId: ROOT,
-        providerSessionInfoV1: { sessionId: ROOT, title: 'Fix the login bug' },
+        codexSessionId: FIRST,
+        providerSessionInfoV1: { sessionId: FIRST, title: 'Fix login' },
       }));
-    } finally {
-      await stop();
-    }
-  });
-
-  it('watches for new conversations once Codex makes its lock folder after the terminal started', async () => {
-    const home = await codexHome();
-    const rollout = await writeRollout(home, ROOT, 'Fix the login bug');
-    // The process holds the conversation only briefly: it quits right after starting it.
-    let heldUntil = 0;
-    const server = fakeServerSession();
-    const stop = followCodexThread({
-      session: server.session,
-      childPid: 4242,
-      codexHome: home,
-      initialThreadId: null,
-      readHeldThreads: async () => (Date.now() < heldUntil ? [{ threadId: ROOT, rolloutPath: rollout }] : []),
-      intervalMs: 1_000,
-    });
-    try {
-      await mkdir(join(home, 'thread-writer-locks'));
-      await new Promise((resolve) => setTimeout(resolve, 1_300));
-      heldUntil = Date.now() + 150;
-      await writeFile(join(home, 'thread-writer-locks', `${ROOT}.lock`), '');
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: ROOT }), { timeout: 1_500 });
-    } finally {
-      await stop();
-    }
-  });
-
-  it('stays with the conversation it follows while Codex also writes sub-agent conversations', async () => {
-    const home = await codexHome();
-    const root = await writeRollout(home, ROOT, 'Fix the login bug');
-    const subagent = await writeRollout(home, SUBAGENT, 'Read the auth module');
-    const server = fakeServerSession();
-    const stop = followCodexThread({
-      session: server.session,
-      childPid: 4242,
-      codexHome: home,
-      initialThreadId: null,
-      readHeldThreads: async () => [
-        { threadId: SUBAGENT, rolloutPath: subagent },
-        { threadId: ROOT, rolloutPath: root },
-      ],
-      intervalMs: 10,
-    });
-    try {
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: ROOT }));
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      expect(server.metadata()).toMatchObject({ codexSessionId: ROOT, providerSessionInfoV1: { sessionId: ROOT } });
-    } finally {
-      await stop();
-    }
-  });
-
-  it('keeps a reopened conversation when Codex holds it', async () => {
-    const home = await codexHome();
-    const root = await writeRollout(home, ROOT, 'Fix the login bug');
-    const subagent = await writeRollout(home, '01a1c03d-0000-7000-8000-000000000003', 'An older sub-agent');
-    const server = fakeServerSession();
-    const stop = followCodexThread({
-      session: server.session,
-      childPid: 4242,
-      codexHome: home,
-      initialThreadId: ROOT,
-      readHeldThreads: async () => [
-        { threadId: '01a1c03d-0000-7000-8000-000000000003', rolloutPath: subagent },
-        { threadId: ROOT, rolloutPath: root },
-      ],
-      intervalMs: 10,
-    });
-    try {
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({
-        providerSessionInfoV1: { sessionId: ROOT, title: 'Fix the login bug' },
-      }));
-      expect(server.metadata().codexSessionId).not.toBe('01a1c03d-0000-7000-8000-000000000003');
     } finally {
       await stop();
     }
