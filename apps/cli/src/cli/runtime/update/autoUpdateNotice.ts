@@ -17,6 +17,7 @@ import {
 } from '@piggercode/cli-common/update';
 import { resolveManagedCliToolNameForRing } from '@piggercode/cli-common/firstPartyRuntime';
 import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import { readStartedByArg } from '@/cli/readStartedByArg';
 import { parseRuntimeContextPrefixArgs } from '@/utils/env/runtimeContextArgv';
 
 const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000;
@@ -183,6 +184,9 @@ export function maybeAutoUpdateNotice(params: Readonly<{
   const env = params.env;
   if (!updateChecksEnabled(env)) return;
   if (!params.isTTY) return;
+  // A runner the daemon started owns no human's terminal: its pane belongs to the agent (a 「终端」
+  // session shows native Claude Code there), and the daemon keeps its own update facts.
+  if (readStartedByArg(params.argv).value === 'daemon') return;
   if (String(env.PIGGERCODE_CLI_UPDATE_CHECK_SPAWNED ?? '').trim() === '1') return;
   if (isVersionInvocation(params.argv)) return;
 

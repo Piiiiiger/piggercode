@@ -59,6 +59,44 @@ describe('maybeAutoUpdateNotice', () => {
     });
   });
 
+  it('prints nothing into a terminal the daemon started a session runner in', () => {
+    withUpdateHomeDir((homeDir) => {
+      const output = captureConsoleText();
+      try {
+        const cacheDir = join(homeDir, 'cache');
+        mkdirSync(cacheDir, { recursive: true });
+        writeJson(join(cacheDir, 'update.json'), {
+          checkedAt: 1,
+          latest: '9.9.9',
+          current: '1.0.0',
+          runtimeVersion: null,
+          invokerVersion: '1.0.0',
+          updateAvailable: true,
+          notifiedAt: null,
+        });
+        const spawnDetached = vi.fn();
+
+        maybeAutoUpdateNotice({
+          argv: ['claude', '--happy-starting-mode', 'local', '--started-by', 'daemon', '--native-terminal'],
+          isTTY: true,
+          homeDir,
+          cliRootDir: '/repo/apps/cli',
+          env: {},
+          publicReleaseRing: 'stable',
+          nowMs: 100_000,
+          spawnDetached,
+          notifyIntervalMs: 1000,
+          checkIntervalMs: 1000,
+        });
+
+        expect(output.text()).toBe('');
+        expect(spawnDetached).not.toHaveBeenCalled();
+      } finally {
+        output.restore();
+      }
+    });
+  });
+
   it('suppresses an inconsistent cached downgrade even when updateAvailable is stale true', () => {
     withUpdateHomeDir((homeDir) => {
       const output = captureConsoleText();

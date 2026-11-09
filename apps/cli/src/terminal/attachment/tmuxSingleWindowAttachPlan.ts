@@ -4,6 +4,8 @@ const PLACEHOLDER_COMMAND = 'sleep 2147483647';
 export type TmuxSingleWindowAttachPlan = Readonly<{
   tempSessionName: string;
   createSessionArgs: string[];
+  /** The attached view is just the session's window (a 「终端」 session's Claude Code), with no tmux status line. */
+  hideStatusArgs: string[];
   linkWindowArgs: string[];
   killPlaceholderWindowArgs: string[];
   attachSessionArgs: string[];
@@ -36,6 +38,7 @@ export function createTmuxSingleWindowAttachPlan(params: Readonly<{
       PLACEHOLDER_WINDOW_NAME,
       PLACEHOLDER_COMMAND,
     ],
+    hideStatusArgs: ['set-option', '-t', tempSessionName, 'status', 'off'],
     linkWindowArgs: ['link-window', '-s', params.target, '-t', `${tempSessionName}:`],
     killPlaceholderWindowArgs: ['kill-window', '-t', `${tempSessionName}:${PLACEHOLDER_WINDOW_NAME}`],
     attachSessionArgs: ['attach-session', '-t', tempSessionName],

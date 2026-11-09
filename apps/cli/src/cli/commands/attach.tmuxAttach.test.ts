@@ -47,6 +47,11 @@ describe('runTmuxAttach', () => {
         stdio: 'ignore',
       },
       {
+        args: ['set-option', '-t', 'happy-attach-sid-1-1234-5678', 'status', 'off'],
+        env: expect.any(Object),
+        stdio: 'ignore',
+      },
+      {
         args: ['link-window', '-s', 'happy:window-1', '-t', 'happy-attach-sid-1-1234-5678:'],
         env: expect.any(Object),
         stdio: 'ignore',

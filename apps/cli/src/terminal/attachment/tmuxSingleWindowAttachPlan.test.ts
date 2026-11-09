@@ -22,6 +22,7 @@ describe('createTmuxSingleWindowAttachPlan', () => {
         '__happier_attach_placeholder__',
         'sleep 2147483647',
       ],
+      hideStatusArgs: ['set-option', '-t', 'happy-attach-cm-session_1-1234-5678', 'status', 'off'],
       linkWindowArgs: [
         'link-window',
         '-s',
