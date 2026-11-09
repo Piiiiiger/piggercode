@@ -128,7 +128,7 @@ describe('followCodexThread', () => {
     }
   });
 
-  it('tells two conversations with the same name in this folder apart by the one Codex writes now', async () => {
+  it('takes the one Codex wrote last among conversations of the same name, and keeps it while another terminal writes to its namesake', async () => {
     const home = await codexHome();
     await conversation(home, FIRST, '/work/repo', 'Fix login');
     await conversation(home, NEXT, '/work/repo', 'Fix login');
@@ -145,9 +145,9 @@ describe('followCodexThread', () => {
     });
     try {
       await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: FIRST }));
-      // `/resume` to the other one of that name, and a message in it.
       await write(home, NEXT, 2_100_000_000);
-      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: NEXT }));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(server.metadata()).toMatchObject({ codexSessionId: FIRST });
     } finally {
       await stop();
     }

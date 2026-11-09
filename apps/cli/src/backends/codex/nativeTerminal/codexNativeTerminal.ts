@@ -57,8 +57,11 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
  * conversations, so nothing on disk says which one is this terminal's. Codex does show it in the
  * window title (`<conversation title> | <folder>`, only the folder until it names a new one): the
  * title is looked up in Codex's index (`session_index.jsonl`) among the conversations started in
- * this folder. Two of the same name there are told apart by the one Codex wrote last, which is the
- * one in use. This follows `/new`, `/resume` and renames.
+ * this folder. This follows `/new`, `/resume` and renames. A name alone cannot tell two conversations
+ * of the same name apart: the terminal keeps the one it follows while its name still shows (so two
+ * terminals never take each other's), and a name new to it goes to the one Codex wrote last, the one
+ * just named. Switching within one terminal to another conversation of the very same name keeps the
+ * first one recorded.
  */
 export function followCodexThread(params: Readonly<{
   session: NativeTerminalSessionClient;
@@ -83,7 +86,7 @@ export function followCodexThread(params: Readonly<{
   const look = async (): Promise<void> => {
     const title = readCodexConversationTitle(await readWindowTitle(), folderName);
     if (!title) return;
-    const shownThreadId = await threads.find({ title, directory: params.directory });
+    const shownThreadId = await threads.find({ title, directory: params.directory, current: threadId });
     if (!shownThreadId) return;
     if (shownThreadId !== threadId) recordedTitle = null;
     threadId = shownThreadId;
@@ -168,7 +171,7 @@ function createCodexThreadIndex(codexHome: string) {
   };
 
   return {
-    find: async (params: Readonly<{ title: string; directory: string }>): Promise<string | null> => {
+    find: async (params: Readonly<{ title: string; directory: string; current: string | null }>): Promise<string | null> => {
       await tail.readNew((value) => {
         if (!value || typeof value !== 'object') return;
         const record = value as Record<string, unknown>;
@@ -179,6 +182,7 @@ function createCodexThreadIndex(codexHome: string) {
       for (const [candidate, name] of names) {
         if (name === params.title && sameFolder(await folderOf(candidate), params.directory)) inFolder.push(candidate);
       }
+      if (params.current && inFolder.includes(params.current)) return params.current;
       if (inFolder.length <= 1) return inFolder[0] ?? null;
       const written = await Promise.all(inFolder.map(async (candidate) => ({ candidate, at: await lastWrittenAt(candidate) })));
       return written.sort((a, b) => b.at - a.at)[0]!.candidate;
