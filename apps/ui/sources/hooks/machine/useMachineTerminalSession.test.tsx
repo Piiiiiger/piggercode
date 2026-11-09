@@ -10,6 +10,7 @@ const machineTerminalRestartMock = vi.hoisted(() => vi.fn());
 const machineTerminalStreamReadMock = vi.hoisted(() => vi.fn());
 const machineTerminalCloseMock = vi.hoisted(() => vi.fn());
 const clearTerminalOutputMock = vi.hoisted(() => vi.fn());
+const surfaceClearNonceRef = vi.hoisted(() => ({ current: null as null | { current: number } }));
 const hydrateTerminalRendererIfNeededMock = vi.hoisted(() => vi.fn());
 const replaceSurfaceStateMock = vi.hoisted(() => vi.fn());
 const setDetectedUrlMock = vi.hoisted(() => vi.fn());
@@ -51,7 +52,8 @@ vi.mock('@/components/sessions/terminal/useEmbeddedTerminalTransportHandlers', (
 }));
 
 vi.mock('@/components/sessions/terminal/useTerminalSurfaceState', () => ({
-    useTerminalSurfaceState: () => ({
+    useTerminalSurfaceState: (params: { clearNonceRef: { current: number } }) => ({
+        ...((surfaceClearNonceRef.current = params.clearNonceRef), {}),
         detectedUrl: null,
         clearTerminalOutput: clearTerminalOutputMock,
         hydrateTerminalRendererIfNeeded: hydrateTerminalRendererIfNeededMock,
@@ -177,6 +179,39 @@ describe('useMachineTerminalSession', () => {
             expect(order.slice(0, 4)).toEqual(['read', 'read', 'pause', 'read']);
         } finally {
             vi.mocked(delay).mockImplementation(async () => undefined);
+            await hook.unmount();
+        }
+    });
+
+    it('shows what was typed after Clear while a read was held open', async () => {
+        let answerHeldRead: (value: unknown) => void = () => undefined;
+        machineTerminalStreamReadMock
+            .mockImplementationOnce(() => new Promise((resolve) => {
+                answerHeldRead = resolve;
+            }))
+            .mockResolvedValue({ ok: true, terminalId: 'terminal-1', events: [], nextCursor: 1, done: true });
+        const terminalRef = { current: null };
+        const launch = { kind: 'session_attach', sessionId: 'session-1' } as const;
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session:session-1:attached',
+            terminalRef,
+        }));
+        clearTerminalOutputMock.mockImplementation(() => {
+            if (surfaceClearNonceRef.current) surfaceClearNonceRef.current.current += 1;
+        });
+        try {
+            await flushHookEffects();
+            hook.getCurrent().clearTerminal();
+            answerHeldRead({ ok: true, terminalId: 'terminal-1', events: [{ t: 'data', data: 'typed' }], nextCursor: 1, done: false, waited: true });
+            await flushHookEffects();
+
+            expect(writeTerminalOutputMock).toHaveBeenCalledWith('typed');
+        } finally {
             await hook.unmount();
         }
     });

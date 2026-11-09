@@ -305,7 +305,9 @@ export function useMachineTerminalSession(params: Readonly<{
                     }));
                 }
 
-                if (readClearNonce !== clearNonceRef.current) {
+                // Output that was on its way when the terminal was cleared is dropped. A read the machine
+                // held open only got output after its wait began, so what arrived after Clear stays.
+                if (readClearNonce !== clearNonceRef.current && read.waited !== true) {
                     if (read.events.some((event) => event.t === 'exit') || read.done) {
                         exitTerminalSession();
                         return;
