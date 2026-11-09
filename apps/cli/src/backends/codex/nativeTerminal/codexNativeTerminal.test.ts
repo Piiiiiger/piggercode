@@ -1,4 +1,4 @@
-import { appendFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, mkdtemp, rm, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -29,6 +29,12 @@ async function conversation(home: string, threadId: string, cwd: string, name: s
   await mkdir(dirname(file), { recursive: true });
   await writeFile(file, `${JSON.stringify({ type: 'session_meta', payload: { id: threadId, cwd } })}\n`);
   await rename(home, threadId, name);
+}
+
+/** Codex writing to a conversation (its rollout's modification time moves on). */
+async function write(home: string, threadId: string, atSeconds: number): Promise<void> {
+  const file = join(home, 'sessions', '2026', '11', '10', `rollout-2026-11-10T09-00-00-${threadId}.jsonl`);
+  await utimes(file, atSeconds, atSeconds);
 }
 
 async function rename(home: string, threadId: string, name: string): Promise<void> {
@@ -117,6 +123,31 @@ describe('followCodexThread', () => {
         summary: { text: 'Login fix' },
         providerSessionInfoV1: { sessionId: FIRST, title: 'Login fix' },
       }));
+    } finally {
+      await stop();
+    }
+  });
+
+  it('tells two conversations with the same name in this folder apart by the one Codex writes now', async () => {
+    const home = await codexHome();
+    await conversation(home, FIRST, '/work/repo', 'Fix login');
+    await conversation(home, NEXT, '/work/repo', 'Fix login');
+    await write(home, FIRST, 2_000_000_000);
+    await write(home, NEXT, 1_000_000_000);
+    const server = fakeServerSession();
+    const stop = followCodexThread({
+      session: server.session,
+      codexHome: home,
+      directory: '/work/repo',
+      initialThreadId: null,
+      readWindowTitle: async () => 'Fix login | repo',
+      intervalMs: 10,
+    });
+    try {
+      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: FIRST }));
+      // `/resume` to the other one of that name, and a message in it.
+      await write(home, NEXT, 2_100_000_000);
+      await vi.waitFor(() => expect(server.metadata()).toMatchObject({ codexSessionId: NEXT }));
     } finally {
       await stop();
     }

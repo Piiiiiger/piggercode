@@ -57,7 +57,8 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
  * conversations, so nothing on disk says which one is this terminal's. Codex does show it in the
  * window title (`<conversation title> | <folder>`, only the folder until it names a new one): the
  * title is looked up in Codex's index (`session_index.jsonl`) among the conversations started in
- * this folder, newest first. This follows `/new`, `/resume` and renames.
+ * this folder. Two of the same name there are told apart by the one Codex wrote last, which is the
+ * one in use. This follows `/new`, `/resume` and renames.
  */
 export function followCodexThread(params: Readonly<{
   session: NativeTerminalSessionClient;
@@ -82,7 +83,7 @@ export function followCodexThread(params: Readonly<{
   const look = async (): Promise<void> => {
     const title = readCodexConversationTitle(await readWindowTitle(), folderName);
     if (!title) return;
-    const shownThreadId = await threads.find({ title, directory: params.directory, preferred: threadId });
+    const shownThreadId = await threads.find({ title, directory: params.directory });
     if (!shownThreadId) return;
     if (shownThreadId !== threadId) recordedTitle = null;
     threadId = shownThreadId;
@@ -145,9 +146,8 @@ async function readTmuxPaneTitle(): Promise<string | null> {
 /** Codex's conversation names (`session_index.jsonl`, the last line for an id wins) and folders. */
 function createCodexThreadIndex(codexHome: string) {
   const tail = createJsonlFileTail(join(codexHome, 'session_index.jsonl'));
-  const names = new Map<string, Readonly<{ name: string; order: number }>>();
+  const names = new Map<string, string>();
   const folders = new Map<string, string>();
-  let order = 0;
 
   const folderOf = async (threadId: string): Promise<string | null> => {
     const known = folders.get(threadId);
@@ -162,23 +162,26 @@ function createCodexThreadIndex(codexHome: string) {
     }
     return null;
   };
+  const lastWrittenAt = async (threadId: string): Promise<number> => {
+    const rollouts = await collectCodexSessionRolloutFiles({ codexHome, remoteSessionId: threadId });
+    return Math.max(0, ...rollouts.map((rollout) => rollout.mtimeMs));
+  };
 
   return {
-    find: async (params: Readonly<{ title: string; directory: string; preferred: string | null }>): Promise<string | null> => {
+    find: async (params: Readonly<{ title: string; directory: string }>): Promise<string | null> => {
       await tail.readNew((value) => {
         if (!value || typeof value !== 'object') return;
         const record = value as Record<string, unknown>;
         if (typeof record.id !== 'string' || typeof record.thread_name !== 'string') return;
-        names.set(record.id, { name: record.thread_name.trim(), order: order++ });
+        names.set(record.id, record.thread_name.trim());
       });
-      if (params.preferred && names.get(params.preferred)?.name === params.title) return params.preferred;
-      const candidates = [...names]
-        .filter(([, entry]) => entry.name === params.title)
-        .sort((a, b) => b[1].order - a[1].order);
-      for (const [candidate] of candidates) {
-        if (sameFolder(await folderOf(candidate), params.directory)) return candidate;
+      const inFolder: string[] = [];
+      for (const [candidate, name] of names) {
+        if (name === params.title && sameFolder(await folderOf(candidate), params.directory)) inFolder.push(candidate);
       }
-      return null;
+      if (inFolder.length <= 1) return inFolder[0] ?? null;
+      const written = await Promise.all(inFolder.map(async (candidate) => ({ candidate, at: await lastWrittenAt(candidate) })));
+      return written.sort((a, b) => b.at - a.at)[0]!.candidate;
     },
   };
 }
