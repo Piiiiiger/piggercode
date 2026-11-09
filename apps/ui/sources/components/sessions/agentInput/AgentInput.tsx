@@ -86,6 +86,7 @@ import { AgentInputContentPopover, type AgentInputContentPopoverConfig } from '.
 import { AgentInputEngineDetail } from './components/AgentInputEngineDetail';
 import { AgentInputModelDiscoveryDetail, type AgentInputModelDetailState, type SessionModelDiscoveryContext } from './components/AgentInputModelDiscoveryDetail';
 import { AgentInputContextUsageBadge } from './components/AgentInputContextUsageBadge';
+import { AgentInputWorkingStatus } from './components/AgentInputWorkingStatus';
 import { AgentInputProviderUsageBadge } from './components/AgentInputProviderUsageBadge';
 import { mergeOptionPickerProbes } from '@/components/sessions/pickers/mergeOptionPickerProbes';
 import { AgentInputAttachmentsRow } from './components/AgentInputAttachmentsRow';
@@ -305,6 +306,8 @@ interface AgentInputProps {
         color: string;
         dotColor: string;
         isPulsing?: boolean;
+        /** Set while the agent works: the row shows the live working line instead of the dot. */
+        working?: { sessionId: string; startedAt: number | null };
     };
     statusBadges?: ReadonlyArray<AgentInputStatusBadgeDescriptor>;
     statusTrailingActions?: React.ReactNode;
@@ -3278,7 +3281,15 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                 {(props.connectionStatus || contextUsageState || props.providerUsageGauge || props.statusTrailingActions || (props.statusBadges && props.statusBadges.length > 0)) && (
                     <View style={styles.statusContainer}>
                         <View style={styles.statusRow}>
-                            {props.connectionStatus && (
+                            {props.connectionStatus?.working ? (
+                                <AgentInputWorkingStatus
+                                    testID={AGENT_INPUT_TEST_IDS.connectionStatusText}
+                                    sessionId={props.connectionStatus.working.sessionId}
+                                    startedAt={props.connectionStatus.working.startedAt}
+                                    text={props.connectionStatus.text}
+                                    color={props.connectionStatus.color}
+                                />
+                            ) : props.connectionStatus && (
                                 <View style={styles.connectionStatusGroup}>
                                     <StatusDot
                                         color={props.connectionStatus.dotColor}

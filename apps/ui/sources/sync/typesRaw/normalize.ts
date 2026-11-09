@@ -12,7 +12,12 @@ import { markUnsupportedContentMeta } from '../domains/messages/unsupportedConte
 import { hasSessionMediaRenderItems } from '../domains/sessionMedia/sessionMediaMessageMeta';
 import { rawRecordSchema, type AgentEvent, type RawAgentContent, type RawRecord, type UsageData } from './schemas';
 import { isSessionToolAnswerDeliveryMeta, normalizeClaudeActivityStatusSignal } from '@piggercode/protocol';
-import { buildUsageDataFromTokenCountMessage } from './tokenCountUsage';
+import {
+    buildUsageDataFromTokenCountMessage,
+    readClaudeModelCallUsage,
+    readTokenCountModelCallUsage,
+    type ModelCallUsage,
+} from './tokenCountUsage';
 
 // Normalized types
 //
@@ -101,6 +106,8 @@ export type NormalizedMessage = ({
     sidechainId?: string,
     meta?: MessageMeta,
     usage?: UsageData,
+    /** Tokens one model call generated, for the live per-turn count (see `readModelCallUsage`). */
+    modelCallUsage?: ModelCallUsage,
 } & TranscriptObservationMetadata;
 
 function readNonEmptyString(value: unknown): string | undefined {
@@ -676,7 +683,8 @@ export function normalizeRawMessage(
 	                      isSidechain: Boolean(sidechainId) || legacyIsSidechain || metaIsSidechain,
 	                      content,
 	                      meta: raw.meta,
-	                      usage: raw.content.data.message.usage
+	                      usage: raw.content.data.message.usage,
+	                      ...readClaudeModelCallUsage(raw.content.data.message, id),
 	                  } satisfies NormalizedMessage;
                     return filterNormalizedEventRoleOutput(normalized, opts?.messageRole);
 	            } else if (isOutputUserData(raw.content.data)) {
@@ -821,6 +829,7 @@ export function normalizeRawMessage(
               if (raw.content.data.type === 'token_count') {
                   const usage = buildUsageDataFromTokenCountMessage(raw.content.data);
                   if (!usage) return null;
+                  const modelCallUsage = readTokenCountModelCallUsage(raw.content.data, `codex:${id}`);
                   return {
                       id,
                       ...(seq !== undefined ? { seq } : {}),
@@ -831,6 +840,7 @@ export function normalizeRawMessage(
                     ...(structuredSidechain.sidechainId ? { sidechainId: structuredSidechain.sidechainId } : {}),
                     content: [],
                     usage,
+                    ...(modelCallUsage ? { modelCallUsage } : {}),
                     meta: raw.meta
                 } satisfies NormalizedMessage;
             }

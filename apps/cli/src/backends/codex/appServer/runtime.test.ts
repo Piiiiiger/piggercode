@@ -8649,6 +8649,8 @@ describe('createCodexAppServerRuntime', () => {
                 output: 2_500,
                 thought: 500,
             }),
+            // The call's own usage: the app adds these up for the running turn's live token count.
+            last: expect.objectContaining({ total: 1_200, output: 250 }),
         }));
 
         const modelsState = session.getMetadataSnapshot()?.[SESSION_MODELS_STATE_KEY] as {

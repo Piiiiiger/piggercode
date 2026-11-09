@@ -73,3 +73,33 @@ export function buildUsageDataFromTokenCountMessage(raw: unknown): UsageData | n
         ...(contextWindowTokens !== null ? { context_window_tokens: contextWindowTokens } : {}),
     };
 }
+
+/**
+ * Output tokens of one model call, keyed so a call reported more than once counts once. The live
+ * status line sums these for the running turn (`useSessionTurnOutputTokens`).
+ */
+export type ModelCallUsage = Readonly<{ key: string; outputTokens: number }>;
+
+/**
+ * A Codex `token_count` report carries thread totals; the call's own usage rides in `last`
+ * (written by CLIs from 0.3.13 on). Without it there is no per-call figure to add.
+ */
+export function readTokenCountModelCallUsage(raw: unknown, key: string): ModelCallUsage | null {
+    const last = asRecord(asRecord(raw)?.last);
+    const outputTokens = last ? readTokenCountNumber(last, ['output', 'output_tokens', 'completion_tokens']) : null;
+    return outputTokens !== null ? { key, outputTokens } : null;
+}
+
+/**
+ * Claude repeats one API message's usage on every block of it, so the call is keyed by the API
+ * message id and the latest figure wins.
+ */
+export function readClaudeModelCallUsage(
+    message: Readonly<{ usage?: UsageData; id?: unknown }>,
+    fallbackKey: string,
+): { modelCallUsage?: ModelCallUsage } {
+    const outputTokens = readNonNegativeInteger(message.usage?.output_tokens);
+    if (outputTokens === null) return {};
+    const apiMessageId = typeof message.id === 'string' && message.id.trim() ? message.id.trim() : null;
+    return { modelCallUsage: { key: `claude:${apiMessageId ?? fallbackKey}`, outputTokens } };
+}

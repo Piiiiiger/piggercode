@@ -4313,7 +4313,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
                                 type: 'token_count',
                                 tokens: totalBreakdown,
                                 ...(contextWindowTokens !== null ? { size: contextWindowTokens } : {}),
-                                ...(lastBreakdown ? { used: lastBreakdown.total } : {}),
+                                ...(lastBreakdown ? { used: lastBreakdown.total, last: lastBreakdown } : {}),
                                 ...(currentModelId ? { model: currentModelId } : {}),
                                 ...(threadId ? { key: `codex-app-server:${threadId}` } : {}),
                                 id: randomUUID(),

@@ -258,6 +258,7 @@ vi.mock('@/constants/Typography', () => ({
         keyHint: () => ({}),
         pillLabel: () => ({}),
         timestamp: () => ({}),
+        tabular: () => ({}),
     },
 }));
 

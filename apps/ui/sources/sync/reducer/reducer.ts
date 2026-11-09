@@ -116,6 +116,7 @@
 
 import { Message, ToolCall } from "../domains/messages/messageTypes";
 import { AgentEvent, NormalizedMessage, UsageData } from "../typesRaw";
+import type { ModelCallUsage } from "../typesRaw/tokenCountUsage";
 import { createTracer, traceMessages, TracerState } from "./reducerTracer";
 import { AgentState } from "../domains/state/storageTypes";
 import { MessageMeta } from "../domains/messages/messageMetaTypes";
@@ -256,6 +257,12 @@ export type ReducerState = {
         contextWindowTokens?: number;
         timestamp: number;
     };
+    /**
+     * Output tokens of each model call seen live, in arrival order, for the running turn's count in
+     * the status line (`useSessionTurnOutputTokens` sums the calls since the turn started).
+     */
+    modelCallUsage?: Array<{ key: string; at: number; outputTokens: number }>;
+    modelCallUsageIndexByKey?: Map<string, number>;
 };
 
 export function createReducer(): ReducerState {
@@ -510,6 +517,7 @@ export function reducer(
 	        changed,
 	        allocateId,
 	        processUsageData,
+	        recordModelCallUsage,
 	        lastMainThinkingMessageId,
             lastMainStreamMessageId,
             lastMainStreamKey,
@@ -677,6 +685,37 @@ function readContextWindowTokensFromUsage(usage: UsageData): number | null {
 
 function readContextUsedTokensFromUsage(usage: UsageData): number | null {
     return readContextUsageTelemetryNumber(usage, 'context_used_tokens');
+}
+
+/**
+ * Output tokens of the model calls reported at or after `sinceMs` (the running turn's start), or null
+ * when none was. Calls arrive mostly in order, but older pages can load later, so all are checked.
+ */
+export function sumModelCallOutputTokensSince(state: ReducerState | null | undefined, sinceMs: number): number | null {
+    const calls = state?.modelCallUsage;
+    if (!calls) return null;
+    let total = 0;
+    let counted = false;
+    for (const call of calls) {
+        if (call.at < sinceMs) continue;
+        total += call.outputTokens;
+        counted = true;
+    }
+    return counted ? total : null;
+}
+
+/** Counts one model call's output once; a call reported again (Claude, per block) keeps its latest figure. */
+function recordModelCallUsage(state: ReducerState, call: ModelCallUsage, timestamp: number) {
+    const calls = state.modelCallUsage ?? (state.modelCallUsage = []);
+    const indexByKey = state.modelCallUsageIndexByKey ?? (state.modelCallUsageIndexByKey = new Map());
+    const existingIndex = indexByKey.get(call.key);
+    if (existingIndex !== undefined) {
+        const existing = calls[existingIndex];
+        calls[existingIndex] = { ...existing, outputTokens: Math.max(existing.outputTokens, call.outputTokens) };
+        return;
+    }
+    indexByKey.set(call.key, calls.length);
+    calls.push({ key: call.key, at: timestamp, outputTokens: call.outputTokens });
 }
 
 function processUsageData(state: ReducerState, usage: UsageData, timestamp: number) {

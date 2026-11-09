@@ -1,6 +1,7 @@
 import type { TracedMessage } from '../reducerTracer';
 import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import type { UsageData } from '../../typesRaw';
+import type { ModelCallUsage } from '../../typesRaw/tokenCountUsage';
 import type { ReducerState } from '../reducer';
 import type { ToolCall } from '../../domains/messages/messageTypes';
 import { clearAllMainMergeCursors, setStreamMergeCursor, setThinkingMergeCursor } from '../helpers/mergeCursors';
@@ -18,6 +19,7 @@ export function runUserAndTextPhase(params: Readonly<{
     changed: Set<string>;
     allocateId: () => string;
     processUsageData: (state: ReducerState, usage: UsageData, timestamp: number) => void;
+    recordModelCallUsage: (state: ReducerState, call: ModelCallUsage, timestamp: number) => void;
     lastMainThinkingMessageId: string | null;
     lastMainStreamMessageId: string | null;
     lastMainStreamKey: string | null;
@@ -29,6 +31,7 @@ export function runUserAndTextPhase(params: Readonly<{
         changed,
         allocateId,
         processUsageData,
+        recordModelCallUsage,
     } = params;
     const isPermissionRequestToolCall = params.isPermissionRequestToolCall;
 
@@ -118,6 +121,9 @@ export function runUserAndTextPhase(params: Readonly<{
             // Process usage data if present
             if (msg.usage && !isRecoveredHistory) {
                 processUsageData(state, msg.usage, msg.createdAt);
+            }
+            if (msg.modelCallUsage && !isRecoveredHistory) {
+                recordModelCallUsage(state, msg.modelCallUsage, msg.createdAt);
             }
 
 	            // Process text and thinking content (tool calls handled in Phase 2)

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Animated, Platform, View, type ViewStyle } from 'react-native';
 
+import { Text } from '@/components/ui/text/Text';
 import { useIsHostVisible } from '@/hooks/ui/useIsHostVisible';
 import { useReducedMotionPreference } from '@/hooks/ui/useReducedMotionPreference';
 
@@ -14,6 +15,8 @@ export interface StatusDotProps {
     testID?: string;
     /** Keep pulsing state visible while disabling its animation. */
     animationEnabled?: boolean;
+    /** Draw this character in `color` instead of a filled dot (the composer's working mark). */
+    glyph?: string;
 }
 
 export const StatusDot = React.memo((props: StatusDotProps) => {
@@ -26,7 +29,8 @@ export const StatusDot = React.memo((props: StatusDotProps) => {
     return <StaticStatusDot {...props} />;
 });
 
-function resolveBaseDotStyle(color: string, size: number): ViewStyle {
+function resolveBaseDotStyle(color: string, size: number, glyph?: string): ViewStyle {
+    if (glyph) return { alignItems: 'center', justifyContent: 'center' };
     return {
         width: size,
         height: size,
@@ -35,18 +39,25 @@ function resolveBaseDotStyle(color: string, size: number): ViewStyle {
     };
 }
 
-function WebStatusDot({ color, isPulsing, size = 6, style, testID, animationEnabled = true }: StatusDotProps) {
+function DotGlyph({ glyph, color, size }: { glyph?: string; color: string; size: number }) {
+    if (!glyph) return null;
+    return <Text style={{ color, fontSize: size, lineHeight: Math.round(size * 1.2) }}>{glyph}</Text>;
+}
+
+function WebStatusDot({ color, isPulsing, size = 6, style, testID, animationEnabled = true, glyph }: StatusDotProps) {
     const hostVisible = useIsHostVisible();
     const reducedMotion = useReducedMotionPreference();
     return (
         <View
             testID={testID}
             style={[
-                resolveBaseDotStyle(color, size),
+                resolveBaseDotStyle(color, size, glyph),
                 isPulsing && animationEnabled && hostVisible && !reducedMotion ? webPulseStyle : null,
                 style,
             ]}
-        />
+        >
+            <DotGlyph glyph={glyph} color={color} size={size} />
+        </View>
     );
 }
 
@@ -56,19 +67,21 @@ function WebStatusDot({ color, isPulsing, size = 6, style, testID, animationEnab
  * `PulsingStatusDot`, which the parent mounts behind a stable `isPulsing` boundary, keeping the
  * Rules of Hooks intact (each subcomponent has a fixed hook order).
  */
-function StaticStatusDot({ color, size = 6, style, testID }: StatusDotProps) {
+function StaticStatusDot({ color, size = 6, style, testID, glyph }: StatusDotProps) {
     return (
         <View
             testID={testID}
             style={[
-                resolveBaseDotStyle(color, size),
+                resolveBaseDotStyle(color, size, glyph),
                 style,
             ]}
-        />
+        >
+            <DotGlyph glyph={glyph} color={color} size={size} />
+        </View>
     );
 }
 
-function PulsingStatusDot({ color, size = 6, style, testID, animationEnabled = true }: StatusDotProps) {
+function PulsingStatusDot({ color, size = 6, style, testID, animationEnabled = true, glyph }: StatusDotProps) {
     const hostVisible = useIsHostVisible();
     const reducedMotion = useReducedMotionPreference();
     const shouldAnimate = animationEnabled && hostVisible && !reducedMotion;
@@ -103,11 +116,13 @@ function PulsingStatusDot({ color, size = 6, style, testID, animationEnabled = t
         <Animated.View
             testID={testID}
             style={[
-                resolveBaseDotStyle(color, size),
+                resolveBaseDotStyle(color, size, glyph),
                 { opacity },
                 style,
             ]}
-        />
+        >
+            <DotGlyph glyph={glyph} color={color} size={size} />
+        </Animated.View>
     );
 }
 

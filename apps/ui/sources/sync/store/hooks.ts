@@ -23,6 +23,7 @@ import {
   type OpenApprovalArtifactForSession,
 } from '../domains/artifacts/approvalArtifacts';
 import { isAutomationLinkedToSession } from '../domains/automations/automationSessionLink';
+import { sumModelCallOutputTokensSince } from '@/sync/reducer/reducer';
 import type { LocalSettings } from '../domains/settings/localSettings';
 import type { AgentTextMessage, Message } from '../domains/messages/messageTypes';
 import type { Settings } from '../domains/settings/settings';
@@ -1157,6 +1158,16 @@ export function useSessionUsage(sessionId: string) {
       return session?.reducerState?.latestUsage ?? null;
     })
   );
+}
+
+/**
+ * Output tokens the model generated since `sinceMs` (the running turn's start), or null before the
+ * turn's first model call reported usage. Re-renders only when the total changes.
+ */
+export function useSessionTurnOutputTokens(sessionId: string, sinceMs: number | null): number | null {
+  return getStorage()((state) => (
+    sinceMs === null ? null : sumModelCallOutputTokensSince(state.sessionMessages[sessionId]?.reducerState, sinceMs)
+  ));
 }
 
 export function useSettings(): Settings {

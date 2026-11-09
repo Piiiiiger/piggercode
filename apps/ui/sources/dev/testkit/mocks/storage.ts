@@ -169,6 +169,7 @@ export function createStorageModuleStub<TOverrides extends object>(overrides: TO
         useSessionVisibleReadSeq: () => null,
         useSessionSubagentSourceMessages: sessionMessagesHooks.useSessionSubagentSourceMessages,
         useSessionMessagesVersion: () => 0,
+        useSessionTurnOutputTokens: () => null,
         useSessionsReady: () => true,
         useSessionRpcAvailabilityState: () => ({
             sessionExists: false,

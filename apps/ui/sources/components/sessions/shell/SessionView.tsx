@@ -164,7 +164,7 @@ import { tracking, trackMessageSent } from '@/track';
 import { isRunningOnMac } from '@/utils/platform/platform';
 import { randomUUID } from '@/platform/randomUUID';
 import { useDeviceType, useHeaderHeight, useIsLandscape, useIsTablet } from '@/utils/platform/responsive';
-import { getSessionAvatarId, getSessionName, listPendingPermissionRequests, shouldReadTranscriptForPendingRequests, shouldShowAbortButtonForSessionState, useSessionStatus, type PendingPermissionRequest } from '@/utils/sessions/sessionUtils';
+import { getSessionAvatarId, getSessionName, listPendingPermissionRequests, resolveRunningTurnStartedAt, shouldReadTranscriptForPendingRequests, shouldShowAbortButtonForSessionState, useSessionStatus, type PendingPermissionRequest } from '@/utils/sessions/sessionUtils';
 import { deriveTranscriptInteractionFromSession } from '@/utils/sessions/deriveTranscriptInteraction';
 import { runAfterInteractionsWithFallback } from '@/utils/timing/runAfterInteractionsWithFallback';
 import { isVersionSupported, MINIMUM_CLI_VERSION } from '@/utils/system/versionUtils';
@@ -1390,7 +1390,13 @@ const SessionAgentInputRuntimeStatusBoundary = React.memo(function SessionAgentI
         subscribeToSession: false,
         subscribeToTranscript: false,
     });
+    const isRestartingForAuthSwitch = connectedServicesRestartState?.status === 'restarting'
+        || connectedServicesRestartState?.status === 'pending_confirmation'
+        || connectedServicesRestartState?.status === 'failed';
+    const isWorking = sessionStatus.state === 'thinking' && !isRestartingForAuthSwitch;
+    const runningTurnStartedAt = isWorking ? resolveRunningTurnStartedAt(session) : null;
     const connectionStatus = React.useMemo(() => ({
+        ...(isWorking ? { working: { sessionId: session.id, startedAt: runningTurnStartedAt } } : {}),
         text: connectedServicesRestartState?.status === 'restarting'
             || connectedServicesRestartState?.status === 'pending_confirmation'
             ? t('connectedServices.authSwitch.status.restarting')
@@ -1409,6 +1415,9 @@ const SessionAgentInputRuntimeStatusBoundary = React.memo(function SessionAgentI
     }), [
         connectedServicesRestartState?.status,
         inactiveStatusText,
+        isWorking,
+        runningTurnStartedAt,
+        session.id,
         sessionStatus.isPulsing,
         sessionStatus.state,
         sessionStatus.statusColor,

@@ -430,6 +430,21 @@ export function getSessionStatus(session: SessionStatusSource, nowMs: number = D
 /**
  * Hook wrapper around `getSessionStatus` that keeps vibing text stable while the session is thinking.
  */
+/**
+ * Server time the running turn started, for the composer's elapsed-time readout: when the server saw
+ * the turn go in progress, or the local send time until then. Null when no turn is known to run.
+ */
+export function resolveRunningTurnStartedAt(session: Readonly<{
+    latestTurnStatus?: Session['latestTurnStatus'];
+    latestTurnStatusObservedAt?: Session['latestTurnStatusObservedAt'];
+    optimisticThinkingAt?: Session['optimisticThinkingAt'];
+}>): number | null {
+    if (session.latestTurnStatus === 'in_progress' && typeof session.latestTurnStatusObservedAt === 'number') {
+        return session.latestTurnStatusObservedAt;
+    }
+    return typeof session.optimisticThinkingAt === 'number' ? session.optimisticThinkingAt : null;
+}
+
 export function useSessionStatus(session: SessionStatusSource, options: UseSessionStatusOptions = {}): SessionStatus {
     const { theme } = useUnistyles();
     const sessionId = typeof session.id === 'string' ? session.id : '';
