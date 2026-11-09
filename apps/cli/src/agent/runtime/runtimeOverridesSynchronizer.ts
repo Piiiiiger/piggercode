@@ -39,10 +39,18 @@ export async function initializeRuntimeOverridesSynchronizer(params: Readonly<{
   };
 
   const explicitPermissionMode = params.explicitPermissionMode;
+  // An explicit mode is the newest choice when this process starts: saved metadata from before
+  // must not replace it, but a mode picked in the app afterwards must (switching to YOLO while a
+  // permission prompt waits has to reach the running turn). Without its own timestamp (a terminal
+  // flag) the explicit mode counts as chosen now.
+  const explicitPermissionModeChosenAt = explicitPermissionMode
+    ? (snapshot.permissionMode.updatedAt > 0 ? snapshot.permissionMode.updatedAt : Date.now())
+    : 0;
 
   const applyPermissionMode = (next: { intent: PermissionMode; updatedAt: number } | null): void => {
     if (!next) return;
     if (next.updatedAt <= snapshot.permissionMode.updatedAt) return;
+    if (next.updatedAt <= explicitPermissionModeChosenAt) return;
     snapshot.permissionMode.current = next.intent;
     snapshot.permissionMode.updatedAt = next.updatedAt;
     params.onPermissionModeApplied?.();
@@ -82,9 +90,7 @@ export async function initializeRuntimeOverridesSynchronizer(params: Readonly<{
 
   const syncFromMetadata = (): void => {
     const metadata = params.session.getMetadataSnapshot();
-    if (!explicitPermissionMode) {
-      applyPermissionMode(resolvePermissionIntentFromMetadataSnapshot({ metadata }));
-    }
+    applyPermissionMode(resolvePermissionIntentFromMetadataSnapshot({ metadata }));
     applyModelOverride(resolveModelOverrideFromMetadataSnapshot({ metadata }));
   };
 

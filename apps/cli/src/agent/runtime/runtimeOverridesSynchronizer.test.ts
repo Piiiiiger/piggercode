@@ -93,6 +93,33 @@ describe('initializeRuntimeOverridesSynchronizer', () => {
     expect(onPermissionModeApplied).toHaveBeenCalledTimes(1);
   });
 
+  it('applies a permission mode picked in the app after the session was started with an explicit mode', async () => {
+    // The daemon spawns every app-started session with `--permission-mode <draft mode>
+    // --permission-mode-updated-at <when it was picked>`. Switching to YOLO later (for example while a
+    // permission prompt waits) must reach the running session instead of waiting for the next prompt.
+    let metadata: any = { permissionMode: 'default', permissionModeUpdatedAt: 1_000 };
+    const onPermissionModeApplied = vi.fn();
+    const sync = await initializeRuntimeOverridesSynchronizer({
+      explicitPermissionMode: 'default',
+      sessionKind: 'fresh',
+      session: {
+        getMetadataSnapshot: () => metadata,
+        fetchLatestUserPermissionIntentFromTranscript: async () => null,
+      },
+      permissionMode: { current: 'default', updatedAt: 1_000 },
+      modelOverride: { current: null, updatedAt: 0 },
+      onPermissionModeApplied,
+    });
+    await sync.seedFromSession();
+    onPermissionModeApplied.mockClear();
+
+    metadata = { permissionMode: 'yolo', permissionModeUpdatedAt: 2_000 };
+    sync.syncFromMetadata();
+
+    expect(sync.getSnapshot().permissionMode).toEqual({ current: 'yolo', updatedAt: 2_000 });
+    expect(onPermissionModeApplied).toHaveBeenCalledTimes(1);
+  });
+
   it('syncs permission mode and model override from metadata when newer', async () => {
     const session = {
       getMetadataSnapshot: () =>
