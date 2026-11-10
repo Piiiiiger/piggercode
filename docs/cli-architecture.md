@@ -1728,8 +1728,17 @@ without a terminal, and the runner gets `--native-terminal` (`buildHappySessionC
 (`terminal/nativeTerminal/runNativeTerminal.ts`, with each provider's launch in
 `backends/<provider>/nativeTerminal/`) adds no system prompt, MCP server, hooks or settings. It takes the text
 typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
-would queue it, and passes it as the CLI's first prompt after `--`. `claude` gets only `--session-id <id>`, or
-`--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`. Codex
+would queue it, and passes it as the CLI's first prompt after `--`; with nothing typed the CLI opens without one. `claude` gets
+`--session-id <id>`, or `--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`.
+Since CLI 0.3.24 both also get the new-session screen's choices, which the runner reads from its session-control flags
+(`--model`, `--permission-mode`, `--agent-mode`) and from the session's config-option overrides
+(`NativeTerminalControls`): `claude --model <id> --permission-mode <mode>`, the mode from
+`resolveClaudeSdkPermissionModeFromEnhancedMode` (plan mode is Claude's `plan`; 「默认」 passes none), and
+`codex --model <id>` with `resolveCodexCliPermissionArgs` (`--ask-for-approval`/`--sandbox`; 「CLI 设置」 passes none so
+config.toml decides; codex 0.167 takes only `on-request` or `never`), thinking as `-c model_reasoning_effort="…"` and Fast as
+`-c service_tier="fast"`. Codex's collaboration modes have no start flag, so the new-session screen offers only an agent's
+static modes (Claude's build and plan) and asks no machine for others; it takes no attachments or review comments either,
+and its `@` offers files only (`/` the CLI's commands). Codex
 cannot be told a new thread's id, and one shared Codex service (`codex app-server`) writes every terminal's
 threads, so no file says which thread is this terminal's. Codex shows it in the window title (`<thread name> |
 <folder>`): every 3 s the runner reads its tmux pane title, finds that name in `session_index.jsonl` among the
@@ -1763,7 +1772,10 @@ of their own; plain Ctrl+C still goes to the program. A view given output from b
 (on reopening; `useTerminalSurfaceState`) gets it without its copies, which already happened. A new stream (a re-attach, or another
 terminal in the same view) starts on a fully reset terminal (RIS through xterm's write queue, also in the native WebView),
 so mouse and focus reporting left on by the previous attach do not type mouse moves into the next one before tmux runs
-again; the pane's Clear button only erases the screen, keeping the running program's modes.
+again; the pane's Clear button only erases the screen, keeping the running program's modes. WebKit (the desktop app on
+macOS, Safari) with a Chinese or Japanese input method inserts a shifted key's character (the "(" of Shift+9) before the
+key's keydown, which xterm.js 5.5 drops and then types the key's own "9"; `webkitImeInput.ts` sends such an insertion and
+cancels that keydown (xtermjs/xterm.js#5887, open).
 PiggerCode's queue, ready push, stuck-turn watchdog and subagent limit belong to the chat runtime and do not
 apply.
 
