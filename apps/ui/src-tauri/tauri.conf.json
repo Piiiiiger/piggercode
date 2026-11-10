@@ -32,6 +32,7 @@
         "titleBarStyle": "Overlay",
         "backgroundColor": "#F5F5F5",
         "dragDropEnabled": false,
+      "backgroundThrottling": "disabled",
         "resizable": true,
         "fullscreen": false
       }
