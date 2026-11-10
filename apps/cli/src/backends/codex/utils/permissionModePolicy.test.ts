@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { PermissionMode } from '@/api/types';
 
-import {
-  resolveCodexAppServerPolicyForPermissionMode,
-  resolveCodexMcpPolicyForPermissionMode,
-} from './permissionModePolicy';
+import { resolveCodexAppServerPolicyForPermissionMode, resolveCodexCliPermissionArgs, resolveCodexMcpPolicyForPermissionMode } from './permissionModePolicy';
 
 describe('resolveCodexMcpPolicyForPermissionMode', () => {
   it.each([
@@ -22,6 +19,18 @@ describe('resolveCodexMcpPolicyForPermissionMode', () => {
       expect(resolveCodexMcpPolicyForPermissionMode(permissionMode)).toEqual(expected);
     },
   );
+});
+
+describe('resolveCodexCliPermissionArgs', () => {
+  it('gives codex the approvals and sandbox of a chosen mode, and nothing for 「CLI 设置」', () => {
+    expect(resolveCodexCliPermissionArgs('default')).toEqual([]);
+    expect(resolveCodexCliPermissionArgs('read-only')).toEqual(['--ask-for-approval', 'never', '--sandbox', 'read-only']);
+    expect(resolveCodexCliPermissionArgs('yolo')).toEqual(['--ask-for-approval', 'never', '--sandbox', 'danger-full-access']);
+  });
+
+  it('asks on request where the policy says untrusted, which codex 0.167 refuses at start', () => {
+    expect(resolveCodexCliPermissionArgs('plan')).toEqual(['--ask-for-approval', 'on-request', '--sandbox', 'workspace-write']);
+  });
 });
 
 describe('resolveCodexAppServerPolicyForPermissionMode', () => {

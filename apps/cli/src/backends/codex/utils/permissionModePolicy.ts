@@ -83,6 +83,18 @@ export function resolveCodexMcpPolicyForPermissionMode(permissionMode: Permissio
   }
 }
 
+/**
+ * The `codex` command-line flags for a permission mode. 「CLI 设置」 (`default`) passes none, so the
+ * user's own config.toml decides. codex 0.167 takes only `on-request` or `never` for approvals and
+ * refuses to start on `untrusted`; the CLI asks on request there instead.
+ */
+export function resolveCodexCliPermissionArgs(permissionMode: PermissionMode): string[] {
+  if (permissionMode === 'default') return [];
+  const { approvalPolicy, sandbox } = resolveCodexMcpPolicyForPermissionMode(permissionMode);
+  const cliApprovalPolicy = approvalPolicy === 'never' ? 'never' : 'on-request';
+  return ['--ask-for-approval', cliApprovalPolicy, '--sandbox', sandbox];
+}
+
 export function resolveCodexAppServerPolicyForPermissionMode(
   permissionMode: PermissionMode,
   params: Readonly<{ directory: string; autoReviewAvailable?: boolean; managedScalarFallback?: boolean }>,

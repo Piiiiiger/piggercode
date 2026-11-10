@@ -16,16 +16,17 @@ import { logger } from '@/ui/logger';
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
 import { createClaudeTranscriptTitleFollower } from './claudeTranscriptTitleFollower';
 
-/** Native Claude Code as a 「终端」 session: `claude` with only the conversation to open. */
+/** Native Claude Code as a 「终端」 session: `claude` with the conversation to open and the screen's choices. */
 export const claudeNativeTerminal: NativeTerminalProvider = {
   flavor: 'claude',
   name: 'Claude Code',
   logPrefix: '[claude-terminal]',
-  planLaunch: ({ directory, resumeId, firstPrompt }) => {
+  planLaunch: ({ directory, resumeId, firstPrompt, controls }) => {
     const projectDir = getProjectPath(directory);
     const launch = planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: resumeId,
       firstPrompt,
+      controls,
       transcriptExists: (claudeSessionId) => existsSync(join(projectDir, `${claudeSessionId}.jsonl`)),
       newClaudeSessionId: randomUUID,
     });

@@ -309,6 +309,11 @@ ${chalk.bold.cyan(`Claude Code Options (from \`${providerHelpCommand}\`):`)}
           startedBy,
           ...(options.existingSessionId ? { existingSessionId: options.existingSessionId } : {}),
           ...(parsed.resume ? { resumeId: parsed.resume } : {}),
+          controls: {
+            permissionMode: parsed.permissionMode ?? null,
+            agentModeId: parsed.agentModeId ?? null,
+            modelId: parsed.modelId ?? null,
+          },
           terminalRuntime: context.terminalRuntime,
         });
       });

@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fakeServerSession } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
+import { configOptionOverrides, fakeServerSession, NO_CONTROLS } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
 import { followCodexThread, planCodexNativeTerminalLaunch, readCodexConversationTitle } from './codexNativeTerminal';
 
@@ -43,14 +43,50 @@ async function rename(home: string, threadId: string, name: string): Promise<voi
 
 describe('planCodexNativeTerminalLaunch', () => {
   it('starts a new conversation, with the text typed in the new-session screen as its first prompt', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null })).toEqual({ threadId: null, args: [] });
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: '-v fix the login bug' }))
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS })).toEqual({ threadId: null, args: [] });
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: '-v fix the login bug', controls: NO_CONTROLS }))
       .toEqual({ threadId: null, args: ['--', '-v fix the login bug'] });
   });
 
   it('reopens the conversation the session had', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null }))
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null, controls: NO_CONTROLS }))
       .toEqual({ threadId: FIRST, args: ['resume', FIRST] });
+  });
+});
+
+describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices', () => {
+  it('starts codex with the chosen model, permissions, thinking and speed', () => {
+    expect(planCodexNativeTerminalLaunch({
+      resumeThreadId: null,
+      firstPrompt: 'hi',
+      controls: {
+        ...NO_CONTROLS,
+        modelId: 'gpt-6.1-sol',
+        permissionMode: 'safe-yolo',
+        configOptionOverrides: configOptionOverrides({ reasoning_effort: 'high', service_tier: 'fast' }),
+      },
+    }).args).toEqual([
+      '--model', 'gpt-6.1-sol',
+      '--ask-for-approval', 'never', '--sandbox', 'workspace-write',
+      '-c', 'model_reasoning_effort="high"', '-c', 'service_tier="fast"',
+      '--', 'hi',
+    ]);
+  });
+
+  it('leaves approvals and sandbox to the Codex config for 「CLI 设置」, and Standard speed to Codex', () => {
+    expect(planCodexNativeTerminalLaunch({
+      resumeThreadId: null,
+      firstPrompt: null,
+      controls: { ...NO_CONTROLS, permissionMode: 'default', configOptionOverrides: configOptionOverrides({ service_tier: 'standard' }) },
+    }).args).toEqual([]);
+  });
+
+  it('reopens a conversation with the same choices', () => {
+    expect(planCodexNativeTerminalLaunch({
+      resumeThreadId: FIRST,
+      firstPrompt: null,
+      controls: { ...NO_CONTROLS, permissionMode: 'yolo', modelId: 'gpt-6.1-sol' },
+    }).args).toEqual(['--model', 'gpt-6.1-sol', '--ask-for-approval', 'never', '--sandbox', 'danger-full-access', 'resume', FIRST]);
   });
 });
 

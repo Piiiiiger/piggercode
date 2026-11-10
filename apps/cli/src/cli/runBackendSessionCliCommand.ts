@@ -202,6 +202,11 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
           startedBy,
           ...(normalizedExistingSessionId ? { existingSessionId: normalizedExistingSessionId } : {}),
           ...(resume ? { resumeId: resume } : {}),
+          controls: {
+            permissionMode: resolved.permissionMode ?? null,
+            agentModeId: resolved.agentModeId ?? null,
+            modelId: resolved.modelId ?? null,
+          },
           terminalRuntime: params.context.terminalRuntime,
         });
         return;

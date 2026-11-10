@@ -1,10 +1,12 @@
 import { randomUUID } from 'node:crypto';
 
+import { readNewestSessionConfigOptionOverridesMetadataStateV1, type SessionConfigOptionOverridesMetadataStateV1 } from '@piggercode/agents';
+
 import { createSessionMetadata, type BackendFlavor } from '@/agent/runtime/createSessionMetadata';
 import { createStartupMetadataOverrides } from '@/agent/runtime/createStartupMetadataOverrides';
 import { initializeBackendApiContext } from '@/agent/runtime/initializeBackendApiContext';
 import { initializeBackendRunSession } from '@/agent/runtime/initializeBackendRunSession';
-import type { Metadata } from '@/api/types';
+import type { Metadata, PermissionMode } from '@/api/types';
 import { initialMachineMetadata } from '@/daemon/machine/metadata';
 import { clearPendingFirstInputFromEnv, readPendingFirstInputFromEnv } from '@/daemon/spawn/pendingFirstInput';
 import type { Credentials } from '@/persistence';
@@ -22,6 +24,16 @@ export type NativeTerminalLaunch = Readonly<{
   beforeStart?: () => Promise<void>;
 }>;
 
+/** What the new-session screen chose for the CLI; the provider passes each as the CLI's own flag. */
+export type NativeTerminalControls = Readonly<{
+  permissionMode: PermissionMode | null;
+  /** An agent mode, such as Claude's plan mode. */
+  agentModeId: string | null;
+  modelId: string | null;
+  /** The screen's other choices by option id, such as Codex's thinking and speed. */
+  configOptionOverrides: SessionConfigOptionOverridesMetadataStateV1 | null;
+}>;
+
 /** What a CLI needs to run as a 「终端」 session. */
 export type NativeTerminalProvider = Readonly<{
   flavor: BackendFlavor;
@@ -34,6 +46,7 @@ export type NativeTerminalProvider = Readonly<{
     resumeId: string | null;
     /** What the user typed when creating the session; the CLI gets it as its first prompt. */
     firstPrompt: string | null;
+    controls: NativeTerminalControls;
   }>) => NativeTerminalLaunch;
 }>;
 
@@ -43,6 +56,8 @@ export type RunNativeTerminalOptions = Readonly<{
   startedBy: 'daemon' | 'terminal';
   existingSessionId?: string;
   resumeId?: string;
+  /** The session-control flags the daemon passed (`--permission-mode`, `--agent-mode`, `--model`). */
+  controls: Omit<NativeTerminalControls, 'configOptionOverrides'>;
   terminalRuntime: TerminalRuntimeFlags | null;
 }>;
 
@@ -60,18 +75,22 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     credentials: opts.credentials,
     machineMetadata: initialMachineMetadata,
   });
-  const launch = opts.provider.planLaunch({
-    directory,
-    resumeId: opts.resumeId?.trim() || null,
-    firstPrompt,
-  });
-
   const { state, metadata } = createSessionMetadata({
     flavor: opts.provider.flavor,
     machineId,
     directory,
     startedBy: opts.startedBy,
     terminalRuntime: opts.terminalRuntime,
+  });
+  const launch = opts.provider.planLaunch({
+    directory,
+    resumeId: opts.resumeId?.trim() || null,
+    firstPrompt,
+    controls: {
+      ...opts.controls,
+      // The daemon hands these over in the environment; the session metadata has just taken them.
+      configOptionOverrides: readNewestSessionConfigOptionOverridesMetadataStateV1(metadata as Record<string, unknown>),
+    },
   });
   const { session } = await initializeBackendRunSession({
     api,

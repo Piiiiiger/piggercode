@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fakeServerSession } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
+import { fakeServerSession, NO_CONTROLS } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
 import { claudeNativeTerminalEnv, followClaudeTitle } from './claudeNativeTerminal';
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
@@ -19,12 +19,14 @@ describe('planClaudeNativeTerminalLaunch', () => {
     expect(planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: null,
       firstPrompt: null,
+      controls: NO_CONTROLS,
       transcriptExists: () => false,
       newClaudeSessionId: () => 'new-id',
     })).toEqual({ claudeSessionId: 'new-id', args: ['--session-id', 'new-id'] });
     expect(planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: 'old-id',
       firstPrompt: null,
+      controls: NO_CONTROLS,
       transcriptExists: (id) => id === 'old-id',
       newClaudeSessionId: () => 'new-id',
     })).toEqual({ claudeSessionId: 'old-id', args: ['--resume', 'old-id'] });
@@ -34,6 +36,7 @@ describe('planClaudeNativeTerminalLaunch', () => {
     expect(planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: 'old-id',
       firstPrompt: null,
+      controls: NO_CONTROLS,
       transcriptExists: () => false,
       newClaudeSessionId: () => 'new-id',
     })).toEqual({ claudeSessionId: 'old-id', args: ['--session-id', 'old-id'] });
@@ -43,9 +46,38 @@ describe('planClaudeNativeTerminalLaunch', () => {
     expect(planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: null,
       firstPrompt: '--help me fix the login bug',
+      controls: NO_CONTROLS,
       transcriptExists: () => false,
       newClaudeSessionId: () => 'new-id',
     })).toEqual({ claudeSessionId: 'new-id', args: ['--session-id', 'new-id', '--', '--help me fix the login bug'] });
+  });
+});
+
+describe('planClaudeNativeTerminalLaunch with the new-session screen\'s choices', () => {
+  const args = (controls: Partial<typeof NO_CONTROLS>, resume: string | null = null) => planClaudeNativeTerminalLaunch({
+    resumeClaudeSessionId: resume,
+    firstPrompt: resume ? null : 'hi',
+    controls: { ...NO_CONTROLS, ...controls },
+    transcriptExists: () => resume !== null,
+    newClaudeSessionId: () => 'new-id',
+  }).args;
+
+  it('starts claude with the chosen model and its own name for the chosen permissions', () => {
+    expect(args({ modelId: 'opus', permissionMode: 'bypassPermissions' }))
+      .toEqual(['--session-id', 'new-id', '--model', 'opus', '--permission-mode', 'bypassPermissions', '--', 'hi']);
+    expect(args({ permissionMode: 'read-only' })).toEqual(['--session-id', 'new-id', '--permission-mode', 'dontAsk', '--', 'hi']);
+    expect(args({ permissionMode: 'safe-yolo' })).toEqual(['--session-id', 'new-id', '--permission-mode', 'auto', '--', 'hi']);
+  });
+
+  it('starts in plan mode when plan was chosen, and leaves the default permissions to claude', () => {
+    expect(args({ permissionMode: 'safe-yolo', agentModeId: 'plan' }))
+      .toEqual(['--session-id', 'new-id', '--permission-mode', 'plan', '--', 'hi']);
+    expect(args({ permissionMode: 'default', agentModeId: 'build' })).toEqual(['--session-id', 'new-id', '--', 'hi']);
+  });
+
+  it('reopens a conversation with the same choices', () => {
+    expect(args({ modelId: 'sonnet', permissionMode: 'safe-yolo' }, 'old-id'))
+      .toEqual(['--resume', 'old-id', '--model', 'sonnet', '--permission-mode', 'auto']);
   });
 });
 

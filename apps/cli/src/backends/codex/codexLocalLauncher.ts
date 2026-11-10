@@ -22,7 +22,7 @@ import { bootstrapCodexTuiHome } from './appServer/bootstrapCodexTuiHome';
 
 import { CodexRolloutMirror } from './localControl/codexRolloutMirror';
 import { discoverCodexRolloutFileOnce } from './localControl/rolloutDiscovery';
-import { resolveCodexMcpPolicyForPermissionMode } from './utils/permissionModePolicy';
+import { resolveCodexCliPermissionArgs } from './utils/permissionModePolicy';
 import {
   createDeferredRemoteSwitchController,
   createLocalTurnLifecycleController,
@@ -130,15 +130,9 @@ function buildCodexTuiArgs(opts: {
   // Always enforce working directory to match the Happy session path.
   args.push('--cd', opts.cwd);
 
-  // When the user picked Happier's 'default' mode, don't inject --ask-for-approval or --sandbox
-  // so the Codex CLI falls back to the user's ~/.codex/config.toml (top-level approval_policy /
-  // sandbox_mode, or a `profile = "..."`-selected profile). Any non-'default' mode still wins,
-  // overriding config.toml as before.
-  if (opts.permissionMode !== 'default') {
-    const { approvalPolicy, sandbox } = resolveCodexMcpPolicyForPermissionMode(opts.permissionMode);
-    args.push('--ask-for-approval', approvalPolicy);
-    args.push('--sandbox', sandbox);
-  }
+  // 'default' passes nothing, so the Codex CLI falls back to the user's ~/.codex/config.toml
+  // (top-level approval_policy / sandbox_mode, or a `profile = "..."`-selected profile).
+  args.push(...resolveCodexCliPermissionArgs(opts.permissionMode));
 
   if (opts.codexArgs && opts.codexArgs.length > 0) {
     args.push(...opts.codexArgs);

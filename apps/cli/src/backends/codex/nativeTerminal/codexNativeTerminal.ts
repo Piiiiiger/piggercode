@@ -1,14 +1,17 @@
 import { basename, join } from 'node:path';
 
+import { readSpawnConfigOptionOverrideValue } from '@piggercode/protocol';
+
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
 import { collectCodexSessionRolloutFiles } from '@/backends/codex/directSessions/collectCodexSessionRolloutFiles';
 import { readCodexSessionMetaFromRollout } from '@/backends/codex/localControl/rolloutDiscovery';
+import { resolveCodexCliPermissionArgs } from '@/backends/codex/utils/permissionModePolicy';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';
 import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { TmuxUtilities } from '@/integrations/tmux';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { createJsonlFileTail } from '@/terminal/nativeTerminal/jsonlFileTail';
-import type { NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
+import type { NativeTerminalControls, NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
 import type { NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runNativeTerminalSession';
 import { logger } from '@/ui/logger';
 import { stripNestedSessionDetectionEnv } from '@/utils/processEnv/stripNestedSessionDetectionEnv';
@@ -16,13 +19,13 @@ import { stripNestedSessionDetectionEnv } from '@/utils/processEnv/stripNestedSe
 /** How often the session reads the terminal's window title (one tmux call). */
 const FOLLOW_INTERVAL_MS = 3_000;
 
-/** Native Codex as a 「终端」 session: `codex`, or `codex resume <id>`, with nothing added. */
+/** Native Codex as a 「终端」 session: `codex`, or `codex resume <id>`, with the screen's choices. */
 export const codexNativeTerminal: NativeTerminalProvider = {
   flavor: 'codex',
   name: 'Codex',
   logPrefix: '[codex-terminal]',
-  planLaunch: ({ directory, resumeId, firstPrompt }) => {
-    const launch = planCodexNativeTerminalLaunch({ resumeThreadId: resumeId, firstPrompt });
+  planLaunch: ({ directory, resumeId, firstPrompt, controls }) => {
+    const launch = planCodexNativeTerminalLaunch({ resumeThreadId: resumeId, firstPrompt, controls });
     const codex = requireProviderCliLaunchSpec('codex', { processEnv: process.env });
     const env = stripNestedSessionDetectionEnv(process.env);
     delete env[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
@@ -45,10 +48,30 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
   resumeThreadId: string | null;
   /** Typed in the new-session screen; after `--` so text that starts with a dash stays text. */
   firstPrompt: string | null;
+  controls: NativeTerminalControls;
 }>): Readonly<{ threadId: string | null; args: string[] }> {
+  const choices = codexControlArgs(params.controls);
   const resume = params.resumeThreadId?.trim() ?? '';
-  if (resume) return { threadId: resume, args: ['resume', resume] };
-  return { threadId: null, args: params.firstPrompt ? ['--', params.firstPrompt] : [] };
+  if (resume) return { threadId: resume, args: [...choices, 'resume', resume] };
+  return { threadId: null, args: [...choices, ...(params.firstPrompt ? ['--', params.firstPrompt] : [])] };
+}
+
+/**
+ * The model, permissions, thinking and speed chosen in the new-session screen. Thinking and speed are
+ * the Codex app-server's `reasoning_effort` and `service_tier` options; the CLI takes them as the
+ * config keys `model_reasoning_effort` and `service_tier` (codex 0.167), Fast as `"fast"`.
+ */
+function codexControlArgs(controls: NativeTerminalControls): string[] {
+  const args = controls.modelId ? ['--model', controls.modelId] : [];
+  args.push(...resolveCodexCliPermissionArgs(controls.permissionMode ?? 'default'));
+  const reasoningEffort = readSpawnConfigOptionOverrideValue(controls.configOptionOverrides, 'reasoning_effort');
+  if (typeof reasoningEffort === 'string' && reasoningEffort.trim()) {
+    args.push('-c', `model_reasoning_effort=${JSON.stringify(reasoningEffort.trim())}`);
+  }
+  if (readSpawnConfigOptionOverrideValue(controls.configOptionOverrides, 'service_tier') === 'fast') {
+    args.push('-c', 'service_tier="fast"');
+  }
+  return args;
 }
 
 /**
