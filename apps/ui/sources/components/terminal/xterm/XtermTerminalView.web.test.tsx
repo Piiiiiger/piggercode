@@ -40,9 +40,12 @@ class MockTerminal {
 
     /**
      * The two input modes a program can leave on (xterm's `modes`): any-motion mouse reporting and focus reporting.
-     * As in xterm, DECSET/DECRST set them, a full reset (RIS) clears them, and erasing the screen leaves them.
+     * As in xterm, DECSET/DECRST set them, a full reset (RIS, `ESC c`, or `reset()`) clears them, and erasing the
+     * screen leaves them. With `deferWrites`, written data waits for `flush()`, as in xterm's own write queue.
      */
     modes = { mouseTrackingMode: 'none' as 'none' | 'any', sendFocusMode: false };
+    deferWrites = false;
+    private queued: string[] = [];
 
     constructor(options: Record<string, unknown> = {}) {
         this.options = options;
@@ -62,12 +65,20 @@ class MockTerminal {
     attachCustomKeyEventHandler = attachCustomKeyEventHandlerSpy;
     parser = { registerOscHandler: registerOscHandlerSpy };
     write = vi.fn((data: string, callback?: () => void) => {
-        for (const [, mode, flag] of data.matchAll(/\x1b\[\?(\d+)([hl])/g)) {
+        if (this.deferWrites) this.queued.push(data);
+        else this.parse(data);
+        callback?.();
+    });
+    flush() {
+        for (const data of this.queued.splice(0)) this.parse(data);
+    }
+    private parse(data: string) {
+        for (const [sequence, mode, flag] of data.matchAll(/\x1bc|\x1b\[\?(\d+)([hl])/g)) {
+            if (sequence === '\x1bc') this.modes = { mouseTrackingMode: 'none', sendFocusMode: false };
             if (mode === '1003') this.modes.mouseTrackingMode = flag === 'h' ? 'any' : 'none';
             if (mode === '1004') this.modes.sendFocusMode = flag === 'h';
         }
-        callback?.();
-    });
+    }
     reset = vi.fn(() => {
         this.modes = { mouseTrackingMode: 'none', sendFocusMode: false };
     });
@@ -306,21 +317,55 @@ describe('XtermTerminalView.web', () => {
         expect(writeTextSpy).toHaveBeenCalledWith('selected text');
     });
 
-    it('starts a new stream with no mouse or focus reporting left on by the previous program', async () => {
+    it('starts a new stream with no mouse or focus reporting left on, after the output xterm still has queued', async () => {
         const { XtermTerminalView } = await import('./XtermTerminalView.web');
         const ref = React.createRef<import('./XtermTerminalView.web').XtermTerminalHandle>();
         await act(async () => {
             root.render(<XtermTerminalView ref={ref} fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
         });
         const term = terminalInstances[0]!;
-        // tmux turns these on for Claude Code; a re-attach starts a new stream before tmux runs again, and a terminal
-        // still reporting would send every mouse move to it as typed text.
+        // tmux turns these on for Claude Code. A re-attach starts a new stream before tmux runs again, and a terminal
+        // still reporting would send every mouse move to it as typed text; some of the old output may still be queued.
+        term.deferWrites = true;
         term.write('\x1b[?1003h\x1b[?1004h');
-        expect(term.modes).toEqual({ mouseTrackingMode: 'any', sendFocusMode: true });
 
-        act(() => ref.current!.clear());
+        act(() => ref.current!.reset());
+        term.flush();
 
         expect(term.modes).toEqual({ mouseTrackingMode: 'none', sendFocusMode: false });
+    });
+
+    it('keeps the program\'s mouse and focus reporting when the screen is only cleared', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        const ref = React.createRef<import('./XtermTerminalView.web').XtermTerminalHandle>();
+        await act(async () => {
+            root.render(<XtermTerminalView ref={ref} fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+        const term = terminalInstances[0]!;
+        term.write('\x1b[?1003h\x1b[?1004h');
+
+        // The pane's Clear button: tmux keeps running and still expects the modes it turned on.
+        act(() => ref.current!.clear());
+
+        expect(term.modes).toEqual({ mouseTrackingMode: 'any', sendFocusMode: true });
+    });
+
+    it('drops a refused program copy once the user copies their own selection', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        await act(async () => {
+            root.render(<XtermTerminalView fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+        writeTextSpy.mockRejectedValueOnce(new DOMException('Not allowed', 'NotAllowedError'));
+        osc52Handler()!(`c;${utf8Base64('older program copy')}`);
+        await act(async () => {});
+
+        const keyHandler = attachCustomKeyEventHandlerSpy.mock.calls[0]![0] as (event: KeyboardEvent) => boolean;
+        selectionText = 'my selection';
+        expect(keyHandler(copyKey())).toBe(false);
+        selectionText = '';
+        keyHandler(copyKey());
+
+        expect(writeTextSpy.mock.calls.map(([text]) => text)).toEqual(['older program copy', 'my selection']);
     });
 
     it('lets the browser paste on the paste shortcut, so pasted images reach the page', async () => {

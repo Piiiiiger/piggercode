@@ -11,6 +11,17 @@ import {
     updateTerminalSurfaceState,
 } from './terminalSurfaceStateCache';
 
+/**
+ * The output a view is given, `text` ending at `end` in the terminal's output, without the copies (OSC 52) made before
+ * `liveFrom`: those went to the clipboard when they happened, before this view showed the terminal, and must not
+ * overwrite a newer copy now (a view reopened later replays them). Copies from `liveFrom` on are this view's to make.
+ */
+function shownOutput(text: string, end: number, liveFrom: number): string {
+    const split = Math.min(text.length, Math.max(0, liveFrom - (end - text.length)));
+    if (split === 0) return text;
+    return text.slice(0, split).replace(/\x1b\]52;[^\x07\x1b]*(?:\x07|\x1b\\)/g, '') + text.slice(split);
+}
+
 export function useTerminalSurfaceState(params: Readonly<{
     terminalKey: string;
     terminalRef: React.MutableRefObject<EmbeddedTerminalRendererHandle | null>;
@@ -33,6 +44,8 @@ export function useTerminalSurfaceState(params: Readonly<{
     const renderedEndRef = React.useRef(0);
     /** Whether this view's renderer shows the terminal's output from its start (nothing missing in between). */
     const screenWholeRef = React.useRef(true);
+    /** Where the terminal's output stood when this view started showing it: copies before it are history. */
+    const liveFromRef = React.useRef(initialSurfaceState.outputEnd);
     const wholeScreenOnly = params.wholeScreenOnly === true;
 
     const updateSurfaceState = React.useCallback((updater: (current: ReturnType<typeof createEmptyTerminalSurfaceState>) => ReturnType<typeof createEmptyTerminalSurfaceState>) => {
@@ -63,6 +76,7 @@ export function useTerminalSurfaceState(params: Readonly<{
         renderedEndRef.current = 0;
         // Cleared together with the record: the view shows the output from its (new) start.
         screenWholeRef.current = true;
+        liveFromRef.current = 0;
         updateSurfaceState((current) => ({
             ...current,
             terminalId: params.terminalIdRef.current,
@@ -100,6 +114,9 @@ export function useTerminalSurfaceState(params: Readonly<{
         params.cursorRef.current = state.cursor;
         setDetectedUrl(state.detectedUrl);
 
+        // The output started again (a new stream, or cleared elsewhere): all of it is new to this view.
+        if (state.outputEnd < liveFromRef.current) liveFromRef.current = 0;
+
         if (!renderer) {
             renderedEndRef.current = state.outputEnd;
             return;
@@ -117,15 +134,17 @@ export function useTerminalSurfaceState(params: Readonly<{
             return;
         }
         if (unseen > 0 && unseen <= state.output.length) {
-            renderer.write(state.output.slice(state.output.length - unseen));
+            const shown = shownOutput(state.output.slice(state.output.length - unseen), state.outputEnd, liveFromRef.current);
+            if (shown) renderer.write(shown);
         } else {
             // Cleared, or further behind than the kept output: show the kept output from the start, unless it
             // no longer reaches back to the start and the view draws a full-screen program.
             renderer.clear();
             const fromStart = state.outputEnd === state.output.length;
-            if (state.output && (fromStart || !wholeScreenOnly)) {
-                renderer.write(state.output);
-            }
+            const shown = state.output && (fromStart || !wholeScreenOnly)
+                ? shownOutput(state.output, state.outputEnd, liveFromRef.current)
+                : '';
+            if (shown) renderer.write(shown);
             screenWholeRef.current = fromStart;
         }
         renderedEndRef.current = state.outputEnd;
@@ -163,8 +182,10 @@ export function useTerminalSurfaceState(params: Readonly<{
         params.terminalRendererHandleRef.current = null;
         renderedEndRef.current = 0;
         screenWholeRef.current = true;
+        liveFromRef.current = cached.outputEnd;
         setDetectedUrl(cached.detectedUrl);
-        params.terminalRef.current?.clear();
+        // Another terminal's stream: none of the previous one's modes carry over.
+        params.terminalRef.current?.reset();
     }, [params.cursorRef, params.terminalIdRef, params.terminalKey, params.terminalRef, params.terminalRendererHandleRef]);
 
     return {

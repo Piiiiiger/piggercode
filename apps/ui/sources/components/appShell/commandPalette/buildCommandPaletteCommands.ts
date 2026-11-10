@@ -1,10 +1,7 @@
 import type { ActionId } from '@piggercode/protocol';
-import { listActionSpecs } from '@piggercode/protocol';
 
 import type { Command } from './types';
 import type { KeyboardCommandId } from '@/keyboard';
-import { storage } from '@/sync/domains/state/storage';
-import { isActionEnabledInState } from '@/sync/domains/settings/actionsSettings';
 import { t } from '@/text';
 
 function normalizeId(value: unknown): string {
@@ -189,15 +186,6 @@ export function buildCommandPaletteCommands(params: Readonly<{
       action: () => nav.navigateToSession(sessionId),
     });
   }
-
-  const state = storage.getState() as any;
-  const actionSpecs = listActionSpecs().filter((spec) =>
-    isActionEnabledInState(state as any, spec.id, { surface: 'ui_button', placement: 'command_palette' } as any),
-  );
-  const commandPaletteActionSpecs = actionSpecs.filter((spec) => (spec.placements ?? []).includes('command_palette'));
-  const byId = new Map(commandPaletteActionSpecs.map((spec) => [spec.id, spec]));
-
-
 
   cmds.push({
     id: 'sign-out',

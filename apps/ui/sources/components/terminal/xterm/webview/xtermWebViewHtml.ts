@@ -355,8 +355,21 @@ export function buildXtermWebViewHtml(params: Readonly<{
         pendingWrite = '';
         isWriting = false;
         try {
-          // A full reset, not just an erase: the previous program's mouse and focus reporting must not carry over.
-          term.reset();
+          term.clear();
+          term.write('\\x1b[2J\\x1b[H');
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function resetTerminal() {
+        if (!term) return;
+        pendingWrite = '';
+        isWriting = false;
+        try {
+          // RIS as output, after what xterm still has queued: a new stream must not inherit the previous
+          // program's mouse and focus reporting.
+          term.write('\\x1bc');
         } catch (e) {
           // ignore
         }
@@ -369,6 +382,10 @@ export function buildXtermWebViewHtml(params: Readonly<{
 
         if (message.type === 'write') {
           if (typeof payload.data === 'string') enqueueWrite(payload.data);
+          return;
+        }
+        if (message.type === 'reset') {
+          resetTerminal();
           return;
         }
         if (message.type === 'clear') {

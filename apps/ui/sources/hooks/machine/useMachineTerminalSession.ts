@@ -288,7 +288,8 @@ export function useMachineTerminalSession(params: Readonly<{
             if (terminalIdChanged && !shouldPreserveReusedSurfaceState) {
                 cursorRef.current = 0;
                 terminalRendererHandleRef.current = params.terminalRef.current;
-                params.terminalRef.current?.clear();
+                // A new stream: the previous attach's mouse and focus reporting must not carry over.
+                params.terminalRef.current?.reset();
                 replaceSurfaceState({
                     terminalId: ensured.terminalId,
                     cursor: 0,

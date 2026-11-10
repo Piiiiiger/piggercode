@@ -9,7 +9,7 @@ import { useTerminalSurfaceState } from './useTerminalSurfaceState';
 
 // The xterm view is the boundary: a fake renderer records what reaches the screen.
 function fakeRenderer() {
-    return { write: vi.fn((_data: string) => {}), clear: vi.fn(() => {}) };
+    return { write: vi.fn((_data: string) => {}), clear: vi.fn(() => {}), reset: vi.fn(() => {}) };
 }
 
 async function mountSurface(terminalKey: string, renderer: EmbeddedTerminalRendererHandle, options: Readonly<{ wholeScreenOnly?: boolean }> = {}) {
@@ -66,6 +66,23 @@ describe('useTerminalSurfaceState', () => {
         expect(writer.clear).not.toHaveBeenCalled();
         expect(writer.write.mock.calls).toEqual([[chunk]]);
     });
+    it('shows a reopened view its history without the clipboard copies in it, which already happened', async () => {
+        const key = 'session-attach:copies';
+        const writer = fakeRenderer();
+        const writerHook = await mountSurface(key, writer, { wholeScreenOnly: true });
+        const output = 'before \x1b]52;c;QUFB\x07after';
+        writerHook.getCurrent().writeTerminalOutput(output);
+        // The view the copy happens in writes it as it arrives.
+        expect(writer.write.mock.calls).toContainEqual([output]);
+
+        // Reopened later (after the user copied something else): replaying copy A must not overwrite the clipboard.
+        const reopened = fakeRenderer();
+        const reopenedHook = await mountSurface(key, reopened, { wholeScreenOnly: true });
+        reopened.write.mockClear();
+        reopenedHook.getCurrent().hydrateTerminalRendererIfNeeded();
+        expect(reopened.write.mock.calls.map(([data]) => data).join('')).toBe('before after');
+    });
+
     it('gives a new view of a full-screen program its output only from the start, never just the end of it', async () => {
         const key = 'session-attach:reopened-view';
         const reader = fakeRenderer();

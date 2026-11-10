@@ -1758,9 +1758,12 @@ mode at once when the pane has no history and no selection of its own: one wheel
 the mouse would otherwise freeze the view on its blank first screen and swallow typing. The app's terminal
 (`components/terminal/xterm/XtermTerminalView.web.tsx`) writes what a program copies (OSC 52, tmux's own mouse
 selection included) to the clipboard of the computer the view is on, never answers a clipboard query, and keeps a
-copy WebKit refused outside a key press for the next Cmd+C (Ctrl+Shift+C off a Mac); plain Ctrl+C still goes to the
-program. It starts every new stream with a full terminal reset (as does the native WebView terminal), so mouse and
-focus reporting left on by the previous attach do not type mouse moves into the next one before tmux runs again.
+copy WebKit refused outside a key press for the next Cmd+C (Ctrl+Shift+C off a Mac), until the user copies a selection
+of their own; plain Ctrl+C still goes to the program. A view given output from before it started showing the terminal
+(on reopening; `useTerminalSurfaceState`) gets it without its copies, which already happened. A new stream (a re-attach, or another
+terminal in the same view) starts on a fully reset terminal (RIS through xterm's write queue, also in the native WebView),
+so mouse and focus reporting left on by the previous attach do not type mouse moves into the next one before tmux runs
+again; the pane's Clear button only erases the screen, keeping the running program's modes.
 PiggerCode's queue, ready push, stuck-turn watchdog and subagent limit belong to the chat runtime and do not
 apply.
 

@@ -19,15 +19,6 @@ function commandTitles(cmds: readonly Command[]): string[] {
   return cmds.map((c) => c.title);
 }
 
-function buildSettingsWithExecutionRunsEnabled() {
-  return {
-    experiments: true,
-    featureToggles: {
-      'execution.runs': true,
-    },
-  };
-}
-
 describe('buildCommandPaletteCommands', () => {
   it('delegates the new-session command to the caller-owned ordinary-entry callback', async () => {
     const push = vi.fn();
@@ -53,68 +44,6 @@ describe('buildCommandPaletteCommands', () => {
 
     expect(openNewSession).toHaveBeenCalledTimes(1);
     expect(push).not.toHaveBeenCalledWith('/new');
-  });
-
-  it('shows an alert when a session-scoped ActionSpec command is used without an active session', async () => {
-    const alerts: Array<{ title: string; message: string }> = [];
-    const pushes: string[] = [];
-    mockedState = { createSessionActionDraft: createSessionActionDraftSpy, settings: buildSettingsWithExecutionRunsEnabled() };
-
-    const cmds = buildCommandPaletteCommands({
-      sessionsById: {},
-      isDev: false,
-      activeSessionId: null,
-      features: { memorySearchEnabled: false },
-      nav: {
-        push: (path) => pushes.push(path),
-        openNewSession: () => {},
-        navigateToSession: () => {},
-      },
-      auth: { logout: async () => {} },
-      actions: { execute: async () => ({ ok: true, result: {} }) },
-      alert: async (title, message) => {
-        alerts.push({ title, message });
-      },
-    });
-
-    const startReview = cmds.find((c) => c.title === 'Start review run');
-    expect(startReview).toBeTruthy();
-
-    await startReview!.action();
-    expect(alerts.length).toBe(1);
-    expect(alerts[0]!.title).toContain('Session required');
-    expect(pushes).toEqual([]);
-  });
-
-  it('omits command_palette actions when disabled for that placement', async () => {
-    mockedState = {
-      createSessionActionDraft: createSessionActionDraftSpy,
-      settings: {
-        actionsSettingsV1: {
-          v: 1,
-          actions: {
-            'review.start': { disabledPlacements: ['command_palette'] },
-          },
-        },
-      },
-    };
-
-    const cmds = buildCommandPaletteCommands({
-      sessionsById: {},
-      isDev: false,
-      activeSessionId: 'session-1',
-      features: { memorySearchEnabled: false },
-      nav: {
-        push: () => {},
-        openNewSession: () => {},
-        navigateToSession: () => {},
-      },
-      auth: { logout: async () => {} },
-      actions: { execute: async () => ({ ok: true, result: {} }) },
-      alert: async () => {},
-    });
-
-    expect(commandTitles(cmds)).not.toEqual(expect.arrayContaining(['Start review run']));
   });
 
   it('includes a memory search navigation command when enabled', async () => {

@@ -12,7 +12,10 @@ import { resolveKeyboardPlatform } from '@/keyboard/runtime';
 
 export type XtermTerminalHandle = Readonly<{
     write: (data: string) => void;
+    /** Erases the screen and scrollback; the program's modes (mouse, paste) stay as it set them. */
     clear: () => void;
+    /** Starts a new stream on a terminal as fresh as a new view's: screen, scrollback and modes. */
+    reset: () => void;
     focus: () => void;
     hasSelection: () => boolean;
     getSelectionText: () => string;
@@ -316,10 +319,15 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
                 return;
             }
             resetWriteState();
-            // A new stream starts on a terminal as fresh as a new view's. Erasing the screen alone would keep what the
-            // previous program turned on: tmux's mouse and focus reporting would type every mouse move into the next
-            // attach before tmux runs again.
-            term.reset();
+            term.clear();
+            term.write('\x1b[2J\x1b[H');
+        },
+        reset: () => {
+            resetWriteState();
+            // RIS as output, so it lands after what xterm still has queued. Erasing alone would keep the previous
+            // program's modes: tmux's mouse and focus reporting would type every mouse move into the next attach
+            // before tmux runs again.
+            terminalRef.current?.write('\x1bc');
         },
         focus: () => terminalRef.current?.focus(),
         hasSelection: () => terminalRef.current?.hasSelection() ?? false,
@@ -391,6 +399,8 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
                 event.stopPropagation();
 
                 const selection = term.getSelection();
+                // The user's own copy is newer than one a program made earlier.
+                copiedByProgram.text = null;
                 if (selection && typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
                     void navigator.clipboard.writeText(selection).catch(() => {});
                 } else if (typeof document !== 'undefined') {

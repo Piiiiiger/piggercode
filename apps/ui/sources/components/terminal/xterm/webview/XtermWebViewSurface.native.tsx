@@ -16,6 +16,7 @@ function createMessageId(): string {
 export type XtermWebViewSurfaceHandle = Readonly<{
     write: (data: string) => void;
     clear: () => void;
+    reset: () => void;
     focus: () => void;
 }>;
 
@@ -111,6 +112,11 @@ export const XtermWebViewSurface = React.forwardRef<XtermWebViewSurfaceHandle, X
                     pendingWriteRef.current = '';
                     if (!readyRef.current) return;
                     postEnvelope({ v: 1, type: 'clear', payload: {} });
+                },
+                reset: () => {
+                    pendingWriteRef.current = '';
+                    if (!readyRef.current) return;
+                    postEnvelope({ v: 1, type: 'reset', payload: {} });
                 },
                 focus: () => {
                     requestNativeFocus();

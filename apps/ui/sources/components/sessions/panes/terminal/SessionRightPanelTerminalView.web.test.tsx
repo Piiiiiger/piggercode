@@ -16,6 +16,7 @@ const storageGetStateSpy = vi.fn();
 const terminalHandleInstances: Array<{
     write: ReturnType<typeof vi.fn>;
     clear: ReturnType<typeof vi.fn>;
+    reset: ReturnType<typeof vi.fn>;
     focus: ReturnType<typeof vi.fn>;
 }> = [];
 
@@ -89,6 +90,7 @@ vi.mock('@/components/terminal/xterm/XtermTerminalView.web', () => ({
         const handle = React.useMemo(() => ({
             write: vi.fn(),
             clear: vi.fn(),
+            reset: vi.fn(),
             focus: vi.fn(),
             hasSelection: () => false,
             getSelectionText: () => '',

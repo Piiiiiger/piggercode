@@ -109,7 +109,7 @@ describe('buildXtermWebViewHtml', () => {
         expect(html).toContain('screenReaderMode: false');
     });
 
-    it('starts a new stream with a full terminal reset, so no mouse or focus reporting is left on', async () => {
+    it('resets the terminal for a new stream, after its queued output, and only erases it on clear', async () => {
         vi.resetModules();
         vi.doMock('./xtermWebViewAssets.generated', () => ({
             XTERM_WEBVIEW_BUNDLE_JS: '/* bundled-xterm */',
@@ -132,8 +132,11 @@ describe('buildXtermWebViewHtml', () => {
             allowCdnFallback: false,
         });
 
-        // Erasing the screen would leave the previous program's modes on (RIS resets them).
-        expect(html).toMatch(/function clearTerminal\(\) \{[^}]*term\.reset\(\);/);
+        // A new stream: RIS through the write queue, so the previous program's modes do not carry over.
+        expect(html).toMatch(/function resetTerminal\(\) \{[^}]*term\.write\('\\x1bc'\);/);
+        expect(html).toContain("if (message.type === 'reset') {");
+        // The Clear button: the running program keeps the modes it turned on.
+        expect(html).not.toMatch(/function clearTerminal\(\) \{[^}]*term\.reset\(/);
     });
 
     it('focuses the xterm input from native WebView user gestures', async () => {
