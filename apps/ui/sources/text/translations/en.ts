@@ -9389,6 +9389,7 @@ settingsSession: {
     },
     terminalEmbedded: {
         dockMenuA11y: 'Dock terminal',
+        pasteImageFailed: 'Could not paste the image',
         attachedSessionTitle: 'Agent CLI',
         settings: {
             locationTitle: 'Embedded terminal location',

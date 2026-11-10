@@ -15,6 +15,7 @@ const openSpy = vi.fn();
 const attachCustomKeyEventHandlerSpy = vi.fn();
 const onDataSpy = vi.fn();
 const disposeSpy = vi.fn();
+const pasteSpy = vi.fn();
 const viewportTimerObservedDisposedSpy = vi.fn();
 const terminalConstructorOptions: Record<string, unknown>[] = [];
 
@@ -40,6 +41,7 @@ class MockTerminal {
     getSelection = vi.fn(() => '');
     attachCustomKeyEventHandler = attachCustomKeyEventHandlerSpy;
     write = vi.fn((_data: string, callback?: () => void) => callback?.());
+    paste = pasteSpy;
     dispose = () => {
         this.disposed = true;
         disposeSpy();
@@ -96,6 +98,7 @@ describe('XtermTerminalView.web', () => {
         attachCustomKeyEventHandlerSpy.mockReset();
         onDataSpy.mockReset();
         disposeSpy.mockReset();
+        pasteSpy.mockReset();
         viewportTimerObservedDisposedSpy.mockReset();
         terminalConstructorOptions.length = 0;
         container = document.createElement('div');
@@ -197,5 +200,48 @@ describe('XtermTerminalView.web', () => {
 
         expect(viewportTimerObservedDisposedSpy).toHaveBeenCalledWith(false);
         expect(disposeSpy).toHaveBeenCalledTimes(1);
+    });
+    it('lets the browser paste on the paste shortcut, so pasted images reach the page', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        await act(async () => {
+            root.render(<XtermTerminalView fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+
+        const keyHandler = attachCustomKeyEventHandlerSpy.mock.calls[0]![0] as (event: KeyboardEvent) => boolean;
+        const preventDefault = vi.fn();
+        const handled = keyHandler({ type: 'keydown', key: 'v', ctrlKey: true, metaKey: false, altKey: false, shiftKey: false, preventDefault, stopPropagation: vi.fn() } as unknown as KeyboardEvent);
+
+        // xterm leaves the key alone and the browser's own paste runs.
+        expect(handled).toBe(false);
+        expect(preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('pastes a copied image as the path of its upload on the machine', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        const onPasteImages = vi.fn(async (_images: readonly File[]) => ["/home/me/Shots (Mac) it's/paste one.png"]);
+        await act(async () => {
+            root.render(
+                <XtermTerminalView testID="terminal" fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} onPasteImages={onPasteImages} />,
+            );
+        });
+
+        const image = new File([new Uint8Array([137, 80, 78, 71])], 'image.png', { type: 'image/png' });
+        const paste = new Event('paste', { bubbles: true, cancelable: true });
+        Object.defineProperty(paste, 'clipboardData', {
+            value: {
+                items: [{ kind: 'file', type: 'image/png', getAsFile: () => image }],
+                getData: () => '',
+            },
+        });
+        await act(async () => {
+            container.querySelector('[data-testid="terminal"]')!.dispatchEvent(paste);
+            // The upload answers asynchronously.
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        });
+
+        expect(paste.defaultPrevented).toBe(true);
+        expect(onPasteImages).toHaveBeenCalledWith([image]);
+        // Typed like a dropped file, so Claude Code and Codex attach it as an image.
+        expect(pasteSpy.mock.calls).toEqual([["/home/me/Shots\\ \\(Mac\\)\\ it\\'s/paste\\ one.png"]]);
     });
 });

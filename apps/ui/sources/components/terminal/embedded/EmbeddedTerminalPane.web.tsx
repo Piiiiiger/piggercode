@@ -38,6 +38,7 @@ export const EmbeddedTerminalPane = React.memo(function EmbeddedTerminalPaneWeb(
                     onInput={props.controller.onInput}
                     onResize={props.controller.onResize}
                     onReady={props.controller.onReady}
+                    onPasteImages={props.controller.onPasteImages}
                 />
             )}
         />

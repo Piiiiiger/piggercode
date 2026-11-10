@@ -17,4 +17,6 @@ export type EmbeddedTerminalPaneController = Readonly<{
     requestRestart: () => void;
     retryConnect: () => void;
     dismissDetectedUrl: () => void;
+    /** Puts pasted images on the terminal's machine and answers their paths; absent where that is not possible. */
+    onPasteImages?: (images: readonly File[]) => Promise<readonly string[]>;
 }>;

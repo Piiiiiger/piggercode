@@ -8,6 +8,8 @@ import { Terminal } from '@xterm/xterm';
 
 import '@xterm/xterm/css/xterm.css';
 
+import { resolveKeyboardPlatform } from '@/keyboard/runtime';
+
 export type XtermTerminalHandle = Readonly<{
     write: (data: string) => void;
     clear: () => void;
@@ -20,6 +22,12 @@ export type XtermTerminalViewProps = Readonly<{
     onInput: (data: string) => void;
     onResize: (cols: number, rows: number) => void;
     onReady: (cols: number, rows: number) => void;
+    /**
+     * Uploads pasted images to the terminal's machine and answers the path of each upload. The paths are
+     * then pasted like dropped files, which Claude Code and Codex attach as images. Without it, an image on
+     * the clipboard is not handed to the terminal.
+     */
+    onPasteImages?: (images: readonly File[]) => Promise<readonly string[]>;
     fontSize: number;
     testID?: string;
 }>;
@@ -28,6 +36,53 @@ const DEFAULT_FONT_FAMILY =
     'Menlo, ui-monospace, SFMono-Regular, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
 
 const OUTPUT_PREVIEW_MAX_CHARS = 4096;
+
+/** The image files on a paste's clipboard: a screenshot, or copied image files. */
+function readClipboardImages(data: DataTransfer | null | undefined): File[] {
+    const images: File[] = [];
+    for (const item of Array.from(data?.items ?? [])) {
+        if (item.kind !== 'file' || !item.type.startsWith('image/')) continue;
+        const file = item.getAsFile();
+        if (file) images.push(file);
+    }
+    return images;
+}
+
+/**
+ * The clipboard read on request, for a paste key that brings no paste event of its own. Text only
+ * when the browser does not allow reading images.
+ */
+async function readClipboardContents(): Promise<Readonly<{ images: File[]; text: string }>> {
+    const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
+    if (!clipboard) return { images: [], text: '' };
+    if (typeof clipboard.read === 'function') {
+        try {
+            const images: File[] = [];
+            let text = '';
+            for (const item of await clipboard.read()) {
+                const imageType = item.types.find((type) => type.startsWith('image/'));
+                if (imageType) {
+                    images.push(new File([await item.getType(imageType)], 'image', { type: imageType }));
+                } else if (!text && item.types.includes('text/plain')) {
+                    text = await (await item.getType('text/plain')).text();
+                }
+            }
+            return { images, text };
+        } catch {
+            // Reading everything was refused; text may still be allowed.
+        }
+    }
+    const text = typeof clipboard.readText === 'function' ? await clipboard.readText().catch(() => '') : '';
+    return { images: [], text };
+}
+
+/**
+ * A path as a terminal types a dropped file: every character a shell reads specially is escaped, so a
+ * shell, Claude Code and Codex all read it as one path. Letters outside ASCII stay as they are.
+ */
+function typedPath(path: string): string {
+    return path.replace(/[^A-Za-z0-9_\-.,:/@%+=\u0080-\uffff]/g, (char) => `\\${char}`);
+}
 
 function disposeTerminalAfterPendingViewportSync(term: Terminal): void {
     if (typeof window === 'undefined') {
@@ -55,9 +110,11 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
     const onInputRef = React.useRef(props.onInput);
     const onResizeRef = React.useRef(props.onResize);
     const onReadyRef = React.useRef(props.onReady);
+    const onPasteImagesRef = React.useRef(props.onPasteImages);
     onInputRef.current = props.onInput;
     onResizeRef.current = props.onResize;
     onReadyRef.current = props.onReady;
+    onPasteImagesRef.current = props.onPasteImages;
 
     const pendingWriteRef = React.useRef('');
     const writeRafRef = React.useRef<number | null>(null);
@@ -156,6 +213,29 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         scheduleFlushWrites();
     }, [scheduleFlushWrites]);
 
+    // Pasted images go to the machine first; their paths then go in as pastes, one per image.
+    const pasteImages = React.useCallback(async (images: readonly File[]) => {
+        const upload = onPasteImagesRef.current;
+        if (!upload || images.length === 0) return;
+        const paths = await upload(images);
+        const term = terminalRef.current;
+        if (!term) return;
+        for (const path of paths) {
+            term.paste(typedPath(path));
+        }
+    }, []);
+
+    const pasteFromClipboard = React.useCallback(async () => {
+        const { images, text } = await readClipboardContents();
+        if (images.length > 0 && onPasteImagesRef.current) {
+            await pasteImages(images);
+            return;
+        }
+        if (text) {
+            terminalRef.current?.paste(text);
+        }
+    }, [pasteImages]);
+
     const reportSize = React.useCallback((cols: number, rows: number, kind: 'ready' | 'resize') => {
         const previous = lastReportedSizeRef.current;
         if (!previous || previous.cols !== cols || previous.rows !== rows) {
@@ -246,7 +326,8 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
 
             const key = String((event as KeyboardEvent).key ?? '').toLowerCase();
             const isCopy = (event.ctrlKey || event.metaKey) && key === 'c';
-            const isPaste = (event.ctrlKey || event.metaKey) && key === 'v';
+            const isMac = resolveKeyboardPlatform() === 'macos';
+            const isPasteKey = key === 'v' && !event.altKey;
 
             if (isCopy && term.hasSelection()) {
                 event.preventDefault();
@@ -266,22 +347,16 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
                 return false;
             }
 
-            if (isPaste) {
+            if (isPasteKey && (isMac ? event.metaKey : event.ctrlKey)) {
+                // The browser pastes (see the paste listener): its paste carries images as well as text.
+                return false;
+            }
+
+            if (isPasteKey && isMac && event.ctrlKey && !event.metaKey) {
+                // Ctrl+V is Claude Code's image paste on a Mac. No browser paste comes with it, so read the clipboard.
                 event.preventDefault();
                 event.stopPropagation();
-
-                if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
-                    navigator.clipboard
-                        .readText()
-                        .then((text) => {
-                            if (!text) {
-                                return;
-                            }
-                            onInputRef.current(text);
-                        })
-                        .catch(() => {});
-                }
-
+                void pasteFromClipboard();
                 return false;
             }
 
@@ -291,6 +366,17 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         const dataDisposable = term.onData((data) => {
             onInputRef.current(data);
         });
+
+        // Ahead of xterm (capture), which would paste only the clipboard's text.
+        const onPaste = (event: ClipboardEvent) => {
+            if (!onPasteImagesRef.current) return;
+            const images = readClipboardImages(event.clipboardData);
+            if (images.length === 0) return;
+            event.preventDefault();
+            event.stopPropagation();
+            void pasteImages(images);
+        };
+        container.addEventListener('paste', onPaste, true);
 
         const initTimer = typeof window !== 'undefined'
             ? window.setTimeout(() => {
@@ -318,6 +404,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
 
         return () => {
             dataDisposable.dispose();
+            container.removeEventListener('paste', onPaste, true);
 
             if (initTimer !== null && typeof window !== 'undefined') {
                 window.clearTimeout(initTimer);
@@ -336,7 +423,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
             resetWriteState();
             disposeTerminalAfterPendingViewportSync(term);
         };
-    }, [fitTerminal, props.fontSize, resetWriteState, scheduleFlushWrites, theme.colors.surface.base, theme.colors.surface.selected, theme.colors.text.primary]);
+    }, [fitTerminal, pasteFromClipboard, pasteImages, props.fontSize, resetWriteState, scheduleFlushWrites, theme.colors.surface.base, theme.colors.surface.selected, theme.colors.text.primary]);
 
     React.useEffect(() => {
         const term = terminalRef.current;
