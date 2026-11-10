@@ -63,6 +63,8 @@ class MockTerminal {
     hasSelection = vi.fn(() => selectionText.length > 0);
     getSelection = vi.fn(() => selectionText);
     attachCustomKeyEventHandler = attachCustomKeyEventHandlerSpy;
+    textarea = document.createElement('textarea');
+    input = vi.fn();
     parser = { registerOscHandler: registerOscHandlerSpy };
     write = vi.fn((data: string, callback?: () => void) => {
         if (this.deferWrites) this.queued.push(data);
@@ -366,6 +368,23 @@ describe('XtermTerminalView.web', () => {
         keyHandler(copyKey());
 
         expect(writeTextSpy.mock.calls.map(([text]) => text)).toEqual(['older program copy', 'my selection']);
+    });
+
+    it('types the "(" of Shift+9 that WebKit\'s input method delivers before the key, not the key\'s own "9"', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        await act(async () => {
+            root.render(<XtermTerminalView fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+        const term = terminalInstances[0]!;
+        const keyHandler = attachCustomKeyEventHandlerSpy.mock.calls[0]![0] as (event: KeyboardEvent) => boolean;
+
+        keyHandler(copyKey({ key: 'Shift', keyCode: 16, shiftKey: true, metaKey: false }));
+        term.textarea.dispatchEvent(new InputEvent('input', { data: '(', inputType: 'insertText', composed: true }));
+        const nine = copyKey({ key: '9', keyCode: 57, shiftKey: true, metaKey: false });
+
+        expect(keyHandler(nine)).toBe(false);
+        expect(nine.preventDefault).toHaveBeenCalled();
+        expect(term.input).toHaveBeenCalledWith('(', true);
     });
 
     it('lets the browser paste on the paste shortcut, so pasted images reach the page', async () => {

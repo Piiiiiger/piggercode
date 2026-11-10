@@ -10,6 +10,8 @@ import '@xterm/xterm/css/xterm.css';
 
 import { resolveKeyboardPlatform } from '@/keyboard/runtime';
 
+import { createWebKitImeInput } from './webkitImeInput';
+
 export type XtermTerminalHandle = Readonly<{
     write: (data: string) => void;
     /** Erases the screen and scrollback; the program's modes (mouse, paste) stay as it set them. */
@@ -384,7 +386,16 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
             return true;
         });
 
+        // WebKit with a Chinese or Japanese input method: the "(" of Shift+9 must not come out as "9".
+        const imeInput = createWebKitImeInput((data) => term.input(data, true));
+        const onTextareaInput = (event: Event) => imeInput.onInput(event as InputEvent);
+        const textarea = term.textarea;
+        textarea?.addEventListener('input', onTextareaInput);
+
         term.attachCustomKeyEventHandler((event) => {
+            if (!imeInput.onKey(event)) {
+                return false;
+            }
             if (event.type !== 'keydown') {
                 return true;
             }
@@ -483,6 +494,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         return () => {
             dataDisposable.dispose();
             osc52Disposable.dispose();
+            textarea?.removeEventListener('input', onTextareaInput);
             container.removeEventListener('paste', onPaste, true);
 
             if (initTimer !== null && typeof window !== 'undefined') {
