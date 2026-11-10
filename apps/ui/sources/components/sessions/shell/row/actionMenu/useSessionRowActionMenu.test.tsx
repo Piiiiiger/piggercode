@@ -21,7 +21,7 @@ vi.mock('@/modal', async () => {
 // The server request is the boundary; the action and its confirmation run for real.
 vi.mock('@/sync/ops', async (importOriginal) => ({
     ...(await importOriginal<typeof import('@/sync/ops')>()),
-    sessionDeleteWithServerScope: opsState.deleteSession,
+    sessionTrashWithServerScope: opsState.deleteSession,
 }));
 
 describe('useSessionRowActionMenu', () => {

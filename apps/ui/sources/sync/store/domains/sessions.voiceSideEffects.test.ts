@@ -107,6 +107,7 @@ function createHarness(createSessionsDomain: any, createReducer: any) {
         sessionScmStatus: {},
         sessionLastViewed: {},
         isDataReady: false,
+        deletedSessionIds: {},
         machines: {},
         sessionMessages: {
             s1: {

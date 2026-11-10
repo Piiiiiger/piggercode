@@ -42,10 +42,12 @@ export async function checkSessionAccess(
             accountId: true,
             active: true,
             lastActiveAt: true,
+            trashedAt: true,
         }
     });
 
-    if (!session) {
+    // A session in the trash (回收站) is gone for everyone, shared users included, until it is restored.
+    if (!session || session.trashedAt) {
         return null;
     }
 

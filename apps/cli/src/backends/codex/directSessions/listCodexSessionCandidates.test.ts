@@ -12,6 +12,13 @@ import {
   writeFakeCodexAppServerThreadListScript,
 } from '@/backends/codex/appServer/testkit/fakeCodexAppServer';
 
+const trashedDigests = vi.hoisted(() => new Set<string>());
+vi.mock('@/api/directSessions/trash/directSessionTrash', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/api/directSessions/trash/directSessionTrash')>()),
+  readTrashedCopyDigests: async () => trashedDigests,
+}));
+
+import { directSessionTrashDigest } from '@/api/directSessions/trash/directSessionTrash';
 import { listCodexSessionCandidates } from './listCodexSessionCandidates';
 
 function sessionMetaLine(payload: Record<string, unknown>): string {
@@ -103,6 +110,40 @@ describe('listCodexSessionCandidates', () => {
     expect(second.candidates[0]?.title).toBe('hello');
     expect(second.candidates[0]?.activity).toBe('idle');
     expect(second.nextCursor).toBeNull();
+  });
+
+  it('leaves trashed copies out before paging, and only the copy in the trashed Codex home', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'happier-codex-direct-list-trashed-'));
+    const codexHome = join(root, 'codex-home');
+    const archivedDir = join(codexHome, 'archived_sessions');
+    await mkdir(join(codexHome, 'sessions'), { recursive: true });
+    await mkdir(archivedDir, { recursive: true });
+    const trashedId = '33333333-3333-3333-3333-333333333333';
+    const keptId = '44444444-4444-4444-4444-444444444444';
+    // The trashed thread sits in Codex's archive (that is how the trash keeps it) and is the newest.
+    await writeFile(join(archivedDir, `rollout-2026-01-05T00-00-00-${trashedId}.jsonl`), sessionMetaLine({ id: trashedId, timestamp: '2026-01-05T00:00:00.000Z', cwd: '/repo/t' }), 'utf8');
+    await writeFile(join(codexHome, 'sessions', `rollout-2026-01-01T00-00-00-${keptId}.jsonl`), sessionMetaLine({ id: keptId, timestamp: '2026-01-01T00:00:00.000Z', cwd: '/repo/k' }), 'utf8');
+    await utimes(join(archivedDir, `rollout-2026-01-05T00-00-00-${trashedId}.jsonl`), new Date('2026-01-05T00:00:00.000Z'), new Date('2026-01-05T00:00:00.000Z'));
+    await utimes(join(codexHome, 'sessions', `rollout-2026-01-01T00-00-00-${keptId}.jsonl`), new Date('2026-01-01T00:00:00.000Z'), new Date('2026-01-01T00:00:00.000Z'));
+
+    const list = () => listCodexSessionCandidates({
+      source: { kind: 'codexHome', home: 'user' },
+      env: createDirectSessionsEnv(codexHome),
+      activeServerDir: join(root, 'servers', 'cloud'),
+      limit: 1,
+    });
+    trashedDigests.clear();
+    expect((await list()).candidates.map((c) => c.remoteSessionId)).toEqual([trashedId]);
+
+    // The same thread id trashed in ANOTHER Codex home does not hide this one.
+    trashedDigests.add(directSessionTrashDigest('codex', join(root, 'other-home'), trashedId));
+    expect((await list()).candidates.map((c) => c.remoteSessionId)).toEqual([trashedId]);
+
+    trashedDigests.add(directSessionTrashDigest('codex', codexHome, trashedId));
+    const page = await list();
+    expect(page.candidates.map((c) => c.remoteSessionId)).toEqual([keptId]);
+    expect(page.nextCursor).toBeNull();
+    trashedDigests.clear();
   });
 
   it('uses session_meta.id when a continuation rollout filename contains a composite id', async () => {

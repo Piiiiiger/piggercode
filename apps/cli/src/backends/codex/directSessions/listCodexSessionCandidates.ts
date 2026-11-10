@@ -4,6 +4,8 @@ import { logger } from '@/utils/logger';
 
 import { createCodexAppServerClient } from '../appServer/client/createCodexAppServerClient';
 import { listCodexDirectSessionCandidatesViaExistingAppServerClient } from '../appServer/session/listCodexDirectSessionCandidatesViaAppServer';
+import { canonicalCodexHomeIdentity } from './codexCopyIdentity';
+import { directSessionTrashDigest, readTrashedCopyDigests } from '@/api/directSessions/trash/directSessionTrash';
 import { listCodexDirectSessionCandidatesViaRollouts } from './listCodexDirectSessionCandidatesViaRollouts';
 import { resolveCodexHomeEntriesForDirectSessionsSource } from './resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveCodexAppServerProcessEnv } from '../appServer/resolveCodexAppServerProcessEnv';
@@ -50,6 +52,7 @@ async function listCodexSessionCandidatesViaAppServerWithBudget(params: Readonly
   activeServerDir: string;
   env: NodeJS.ProcessEnv;
   searchTerm?: string;
+  isTrashed?: (codexHome: string, remoteSessionId: string) => Promise<boolean>;
 }>): Promise<Readonly<{ candidates: DirectSessionCandidateV1[]; incomplete: boolean }>> {
   const budgetMs = resolveCodexDirectListAppServerBudgetMs(params.env);
   const homeEntries = await resolveCodexHomeEntriesForDirectSessionsSource({
@@ -117,7 +120,11 @@ async function listCodexSessionCandidatesViaAppServerWithBudget(params: Readonly
       incomplete = true;
       continue;
     }
-    listed.push(...result.map((candidate) => ({
+    const visible: DirectSessionCandidateV1[] = [];
+    for (const candidate of result) {
+      if (!(await params.isTrashed?.(homeEntry.codexHome, candidate.remoteSessionId))) visible.push(candidate);
+    }
+    listed.push(...visible.map((candidate) => ({
       ...candidate,
       details: {
         ...(candidate.details ?? {}),
@@ -150,6 +157,17 @@ export async function listCodexSessionCandidates(params: Readonly<{
   const startedAtMs = Date.now();
   const startMemory = process.memoryUsage();
   const offset = decodeIndexCursor(params.cursor);
+  const trashedCopies = await readTrashedCopyDigests();
+  const identityByHome = new Map<string, Promise<string>>();
+  const isTrashed = async (codexHome: string, remoteSessionId: string): Promise<boolean> => {
+    if (trashedCopies.size === 0) return false;
+    let identity = identityByHome.get(codexHome);
+    if (!identity) {
+      identity = canonicalCodexHomeIdentity(codexHome);
+      identityByHome.set(codexHome, identity);
+    }
+    return trashedCopies.has(directSessionTrashDigest('codex', await identity, remoteSessionId));
+  };
   const searchTerm = typeof params.searchTerm === 'string' ? params.searchTerm.trim().toLowerCase() : '';
   const limit = Math.max(1, Math.trunc(params.limit));
   const rolloutListing = await listCodexDirectSessionCandidatesViaRollouts({
@@ -160,6 +178,7 @@ export async function listCodexSessionCandidates(params: Readonly<{
     limit,
     searchTerm,
     searchMode: params.searchMode,
+    isTrashed,
   });
   const exactRolloutMatch = Boolean(searchTerm)
     && rolloutListing.candidates.some((candidate) => candidate.remoteSessionId.toLowerCase() === searchTerm)
@@ -171,6 +190,7 @@ export async function listCodexSessionCandidates(params: Readonly<{
       activeServerDir: params.activeServerDir,
       env,
       searchTerm,
+      isTrashed,
     });
   const appServerCandidates = appServerListing.candidates;
   const searchIncomplete = Boolean(rolloutListing.searchIncomplete || appServerListing.incomplete);
@@ -206,6 +226,7 @@ export async function listCodexSessionCandidates(params: Readonly<{
       limit: offset + limit,
       searchTerm,
       searchMode: params.searchMode,
+      isTrashed,
     })
     : rolloutListing;
 

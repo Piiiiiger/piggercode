@@ -26,7 +26,7 @@ import { decodeMachineStoredContent, encodeMachineStoredContent } from './machin
 import { openSessionDataEncryptionKey } from './client/openSessionDataEncryptionKey';
 import { serializeAxiosErrorForLog } from './client/serializeAxiosErrorForLog';
 import { logServerEndpointFailure } from './client/serverEndpointFailureLog';
-import { HttpStatusError } from './client/httpStatusError';
+import { HttpStatusError, SessionTrashedError, isSessionTrashedResponse } from './client/httpStatusError';
 import { resolveServerHttpBaseUrl } from './client/serverHttpBaseUrl';
 import {
   ConnectedServiceAuthGroupGenerationConflictError,
@@ -571,6 +571,10 @@ export class ApiClient {
 
         // Never log raw Axios errors: they can contain bearer tokens or vendor keys.
         logger.debug('[API] [ERROR] Failed to get or create session:', serializeAxiosErrorForLog(error));
+
+        if (axios.isAxiosError(error) && isSessionTrashedResponse(error.response?.status, error.response?.data)) {
+          throw new SessionTrashedError();
+        }
 
         const terminalAuthStatus = axios.isAxiosError(error) ? error.response?.status : undefined;
         if (terminalAuthStatus === 401 || terminalAuthStatus === 403) {

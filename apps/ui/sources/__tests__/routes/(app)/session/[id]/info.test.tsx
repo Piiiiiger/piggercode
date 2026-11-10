@@ -262,6 +262,7 @@ vi.mock('@/sync/ops', () => ({
     sessionArchiveWithServerScope: sessionArchiveSpy,
     sessionDelete: sessionDeleteSpy,
     sessionDeleteWithServerScope: sessionDeleteSpy,
+    sessionTrashWithServerScope: sessionDeleteSpy,
     sessionRename: vi.fn(),
     sessionSetManualReadStateWithServerScope: sessionReadStateSpy,
     sessionStop: sessionStopSpy,

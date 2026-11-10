@@ -364,6 +364,7 @@ vi.mock('@/hooks/ui/useHappyAction', () => ({
 vi.mock('@/sync/sync', () => ({
     sync: {
         fetchMoreSessions: fetchMoreSessionsMock,
+        refreshTrashedSessions: vi.fn(async () => undefined),
         markSessionListScrollActivity: markSessionListScrollActivityMock,
     },
 }));

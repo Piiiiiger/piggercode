@@ -101,7 +101,6 @@ describe('deleteExplorerFolder', () => {
                 calls.push(`delete:${id}`);
                 return { success: true };
             }),
-            isSessionActive: (id: string) => sessions.find((entry) => entry.id === id)?.active ?? null,
         };
         return { sessions, calls, read, ops };
     }
@@ -157,6 +156,83 @@ describe('deleteExplorerFolder', () => {
         machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
         await expect(deleteExplorerFolder(code, world.read, { ops: world.ops })).resolves.toBe(true);
         expect(world.calls).toEqual(['stop:a', 'stop:b', 'folder', 'delete:a', 'delete:b']);
+    });
+
+    it('goes by the server for a session just stopped, though this device still shows it running', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', true));
+        Modal.confirm.mockResolvedValue(true);
+        // This device's copy stays active/connected (a snapshot), while the server has the session ended.
+        const server = new Map<string, boolean>([['a', true]]);
+        const ops = {
+            ...world.ops,
+            stopSession: vi.fn(async (id: string) => { world.calls.push(`stop:${id}`); server.set(id, false); return { success: true }; }),
+            readServerActive: vi.fn(async (id: string) => server.get(id) ?? null),
+        };
+        machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
+        await expect(deleteExplorerFolder(code, world.read, { ops, waitMs: 30, pollMs: 5 })).resolves.toBe(true);
+        expect(world.calls).toEqual(['stop:a', 'folder', 'delete:a']);
+        expect(Modal.alert).not.toHaveBeenCalled();
+
+        // The server says it runs again (resumed elsewhere): the folder stays, whatever this device shows.
+        machineRpc.mockReset();
+        world.calls.length = 0;
+        server.set('a', true);
+        const resumed = { ...ops, stopSession: vi.fn(async () => { server.set('a', true); return { success: true }; }) };
+        await expect(deleteExplorerFolder(code, world.read, { ops: resumed, waitMs: 30, pollMs: 5 })).resolves.toBe(false);
+        expect(machineRpc).not.toHaveBeenCalled();
+        expect(world.calls).toEqual([]);
+    });
+
+    it('waits on the server, not on this device, when the machine accepts a stop that is still under way', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', true));
+        Modal.confirm.mockResolvedValue(true);
+        // The runner takes the stop and ends shortly; this device's copy keeps showing it running.
+        const server = new Map<string, boolean>([['a', true]]);
+        const ops = {
+            ...world.ops,
+            stopSession: vi.fn(async (id: string) => {
+                world.calls.push(`stop:${id}`);
+                setTimeout(() => server.set(id, false), 10);
+                return { success: false, code: 'session_stop_requested', recovery: 'wait_for_inactive', message: 'Stop requested' } as const;
+            }),
+            readServerActive: vi.fn(async (id: string) => server.get(id) ?? null),
+        };
+        machineRpc.mockImplementationOnce(async () => { world.calls.push('folder'); return { success: true }; });
+        await expect(deleteExplorerFolder(code, world.read, { ops, waitMs: 1_000, pollMs: 5 })).resolves.toBe(true);
+        expect(world.calls).toEqual(['stop:a', 'folder', 'delete:a']);
+        expect(Modal.alert).not.toHaveBeenCalled();
+    });
+
+    it('keeps the folder when a session starts in it while the server is asked about the one just stopped', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', true));
+        Modal.confirm.mockResolvedValue(true);
+        let answer: ((active: boolean) => void) | null = null;
+        const ops = {
+            ...world.ops,
+            readServerActive: vi.fn(() => new Promise<boolean | null>((resolve) => { answer = resolve; })),
+        };
+        const deleting = deleteExplorerFolder(code, world.read, { ops, waitMs: 60, pollMs: 5 });
+        await vi.waitFor(() => expect(answer).not.toBeNull());
+        world.sessions.push(session('b', true));
+        answer!(false);
+
+        await expect(deleting).resolves.toBe(false);
+        expect(machineRpc).not.toHaveBeenCalled();
+        expect(world.calls).toEqual(['stop:a']);
+    });
+
+    it('keeps the folder when the server does not answer whether a stopped session has ended', async () => {
+        const { Modal, deleteExplorerFolder } = await load();
+        const world = folderWorld(session('a', true));
+        Modal.confirm.mockResolvedValue(true);
+        const ops = { ...world.ops, readServerActive: vi.fn(() => new Promise<boolean | null>(() => {})) };
+        await expect(deleteExplorerFolder(code, world.read, { ops, waitMs: 30, pollMs: 5 })).resolves.toBe(false);
+        expect(machineRpc).not.toHaveBeenCalled();
+        expect(world.calls).toEqual(['stop:a']);
+        expect(Modal.alert).toHaveBeenCalledWith(expect.any(String), 'sessionsList.explorerDeleteFolderStopFailed');
     });
 
     it('keeps the folder when a stopped session runs again before it goes', async () => {
@@ -253,6 +329,43 @@ describe('deleteExplorerFolder', () => {
         await expect(deleteExplorerFolder({ ...code, path: '/home' }, world.read, { ops: world.ops })).resolves.toBe(false);
         expect(Modal.confirm).not.toHaveBeenCalled();
         expect(machineRpc).not.toHaveBeenCalled();
+    });
+});
+
+describe('hydrateExplorerFolderSessions', () => {
+    const folder = { serverId: 's1', machineId: 'm1', path: '/work/folder1', homeDir: null } as const;
+
+    it('loads the listed sessions of the folder that the store does not hold yet, and nothing else', async () => {
+        const { hydrateExplorerFolderSessions } = await load();
+        const loaded = new Set(['a']);
+        const load_ = vi.fn(async (id: string) => { loaded.add(id); });
+
+        await hydrateExplorerFolderSessions(folder, {
+            listedSessions: [
+                { id: 'a', metadata: { machineId: 'm1', path: '/work/folder1' } },
+                { id: 'b', metadata: { machineId: 'm1', path: '/work/folder1/sub' } },
+                { id: 'elsewhere', metadata: { machineId: 'm1', path: '/work/other' } },
+                { id: 'other-machine', metadata: { machineId: 'm2', path: '/work/folder1' } },
+            ],
+            isLoaded: (id) => loaded.has(id),
+            load: load_,
+        });
+
+        expect(load_.mock.calls).toEqual([['b']]);
+    });
+
+    it('goes on when one session cannot be loaded', async () => {
+        const { hydrateExplorerFolderSessions } = await load();
+        const load_ = vi.fn(async (id: string) => { if (id === 'a') throw new Error('offline'); });
+        await expect(hydrateExplorerFolderSessions(folder, {
+            listedSessions: [
+                { id: 'a', metadata: { machineId: 'm1', path: '/work/folder1' } },
+                { id: 'b', metadata: { machineId: 'm1', path: '/work/folder1' } },
+            ],
+            isLoaded: () => false,
+            load: load_,
+        })).resolves.toBeUndefined();
+        expect(load_).toHaveBeenCalledTimes(2);
     });
 });
 

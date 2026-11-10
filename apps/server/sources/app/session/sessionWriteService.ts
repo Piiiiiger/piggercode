@@ -205,6 +205,7 @@ export function selectSessionActivityBadgeInputs() {
         lastRuntimeIssue: true,
         active: true,
         archivedAt: true,
+        trashedAt: true,
     } as const;
 }
 
@@ -222,6 +223,7 @@ function toSessionActivityBadgeInputs(
         lastRuntimeIssue: value?.lastRuntimeIssue ?? null,
         active: value?.active ?? true,
         archivedAt: value?.archivedAt ?? null,
+        trashedAt: value?.trashedAt ?? null,
     };
 }
 
@@ -836,9 +838,9 @@ export async function applySessionTurnMutationInTx(params: Readonly<{
 async function ensureSessionEditAccess(tx: Tx, params: { actorUserId: string; sessionId: string }): Promise<EnsureSessionEditAccessResult> {
     const session = await tx.session.findUnique({
         where: { id: params.sessionId },
-        select: { accountId: true, encryptionMode: true },
+        select: { accountId: true, encryptionMode: true, trashedAt: true },
     });
-    if (!session) {
+    if (!session || session.trashedAt) {
         return { ok: false, error: "session-not-found" };
     }
 

@@ -57,6 +57,7 @@ export async function applyReleasedUiV021SessionEnd(params: Readonly<{
             select: {
                 accountId: true,
                 archivedAt: true,
+                trashedAt: true,
                 active: true,
                 lastActiveAt: true,
                 seq: true,
@@ -79,7 +80,7 @@ export async function applyReleasedUiV021SessionEnd(params: Readonly<{
         if (session.accountId !== params.accountId) {
             return { status: "rejected" as const, reason: "unauthorized" as const };
         }
-        if (session.archivedAt !== null) {
+        if (session.archivedAt !== null || session.trashedAt) {
             return { status: "rejected" as const, reason: "archived" as const };
         }
 

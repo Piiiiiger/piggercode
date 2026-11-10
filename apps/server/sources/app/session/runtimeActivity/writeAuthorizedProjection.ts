@@ -25,13 +25,13 @@ export async function writeAuthorizedSessionRuntimeActivityProjection(params: Re
     return await inTx(async (tx): Promise<AuthorizedActivityWriteResult> => {
         const session = await tx.session.findUnique({
             where: { id: params.sessionId },
-            select: { active: true, archivedAt: true, lastActiveAt: true },
+            select: { active: true, archivedAt: true, trashedAt: true, lastActiveAt: true },
         });
         if (!session) return { status: "rejected", reason: "not_found" };
         if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...params })) {
             return { status: "rejected", reason: "unauthorized" };
         }
-        if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+        if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
         if (!session.active || session.lastActiveAt.getTime() !== params.boundCommittedFence.getTime()) {
             return { status: "rejected", reason: "superseded" };
         }

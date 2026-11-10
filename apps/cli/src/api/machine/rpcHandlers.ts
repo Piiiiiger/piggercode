@@ -257,6 +257,8 @@ export type MachineRpcHandlers = {
 };
 
 export type MachineRpcHandlerDeps = Readonly<{
+  /** The token of the daemon's own authenticated connection; the session trash binds its authority to this account, not to whatever is on disk now. */
+  connectedAccountToken?: string;
   connectedServiceImportAccount?: ConnectedServiceImportAccount;
   runReplaySummaryForDialog?: typeof runReplaySummaryForDialog;
   promptAssetsHomedir?: () => string;
@@ -1164,6 +1166,7 @@ export function registerMachineRpcHandlers(params: Readonly<{
     rpcHandlerManager,
     spawnSession,
     stopSession: stopSessionConfirmed,
+    ...(params.deps?.connectedAccountToken ? { connectedAccountToken: params.deps.connectedAccountToken } : {}),
     emitDirectSessionTranscriptUpdate: params.deps?.emitDirectSessionTranscriptUpdate,
     ...(actionOperationRuntime ? { actionOperations: actionOperationRuntime } : {}),
   });

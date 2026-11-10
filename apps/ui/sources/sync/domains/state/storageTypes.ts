@@ -434,6 +434,8 @@ export interface Session {
      * Optional for mixed-version safety with older servers.
      */
     archivedAt?: number | null,
+    /** Set only on rows of the trash list (回收站); a session in the trash is not part of any other list. */
+    trashedAt?: number | null,
     /**
      * Server-side pending queue (V2) summary fields.
      * Optional for mixed-version safety with older servers.

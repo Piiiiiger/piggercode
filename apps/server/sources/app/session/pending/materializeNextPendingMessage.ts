@@ -142,6 +142,7 @@ async function tryRejoinProviderClaimInTx(params: Readonly<{
                         id: params.sessionId,
                         active: true,
                         archivedAt: null,
+                        trashedAt: null,
                         lastActiveAt: params.trustedPublisherFence.committedFence,
                     },
                     data: { pendingBlockedCount, pendingVersion: { increment: 1 } },
@@ -345,6 +346,7 @@ async function materializeNextPendingMessageInTx(
             pendingUserActionRequestCount: true,
             active: true,
             archivedAt: true,
+            trashedAt: true,
             runtimeActivityState: true,
             runtimeActivityActiveCount: true,
             runtimeActivityObservedAt: true,
@@ -396,6 +398,7 @@ async function materializeNextPendingMessageInTx(
                     pendingUserActionRequestCount: true,
                     active: true,
                     archivedAt: true,
+                    trashedAt: true,
                     runtimeActivityState: true,
                     runtimeActivityActiveCount: true,
                     runtimeActivityObservedAt: true,
@@ -677,12 +680,14 @@ async function materializeNextPendingMessageInTx(
                     pendingUserActionRequestCount: true,
                     active: true,
                     archivedAt: true,
+                    trashedAt: true,
                 } as const;
                 const sessionFence = await tx.session.updateMany({
                     where: {
                         id: sessionId,
                         active: true,
                         archivedAt: null,
+                        trashedAt: null,
                         lastActiveAt: params.trustedPublisherFence.committedFence,
                         ...(consumesRuntimeActivity
                             ? { runtimeActivityRevision: BigInt(params.expectedRuntimeActivityRevision!) }

@@ -147,6 +147,7 @@ export function registerPublicShareReadRoutes(app: Fastify): void {
                 where: { id: publicShare.sessionId },
                 select: {
                     id: true,
+                    trashedAt: true,
                     seq: true,
                     encryptionMode: true,
                     createdAt: true,
@@ -162,7 +163,7 @@ export function registerPublicShareReadRoutes(app: Fastify): void {
                     },
                 },
             });
-            if (!session) {
+            if (!session || session.trashedAt) {
                 return { error: 'Public share not found or expired' };
             }
             const sessionEncryptionMode: "e2ee" | "plain" = session.encryptionMode === "plain" ? "plain" : "e2ee";
@@ -338,9 +339,9 @@ export function registerPublicShareReadRoutes(app: Fastify): void {
 
             const session = await tx.session.findUnique({
                 where: { id: publicShare.sessionId },
-                select: { encryptionMode: true },
+                select: { encryptionMode: true, trashedAt: true },
             });
-            if (!session) {
+            if (!session || session.trashedAt) {
                 return { error: 'Public share not found or expired' };
             }
             const sessionEncryptionMode: "e2ee" | "plain" = session.encryptionMode === "plain" ? "plain" : "e2ee";

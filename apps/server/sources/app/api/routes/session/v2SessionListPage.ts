@@ -165,6 +165,7 @@ async function findV2SessionListRowByIdWithSelect(params: Readonly<{
         where: {
             ...visibilityWhere,
             id: sessionId,
+            trashedAt: null,
         },
         select,
     }) as V2SessionListRowCompat | null;
@@ -258,6 +259,7 @@ export function createV2ActiveSessionListRowsWhere(
 ): Prisma.SessionWhereInput {
     return {
         archivedAt: null,
+        trashedAt: null,
         active: true,
         lastActiveAt: { gt: resolveActiveSessionHeartbeatFloor(now) },
     };

@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 
 import type { ApiMachineClient } from '@/api/apiMachine';
 import type { DaemonLocallyPersistedState } from '@/persistence';
-import { readDaemonState, writeDaemonStateIfLockOwned } from '@/persistence';
+import { readCredentials, readDaemonState, writeDaemonStateIfLockOwned } from '@/persistence';
 import { projectPath } from '@/projectPath';
 import { logger } from '@/ui/logger';
 import { gcExecutionRunMarkers } from '@/daemon/executionRunRegistry';
@@ -19,6 +19,7 @@ import {
   recoverWorkspaceReplicationJobsAfterRestart,
 } from '@/workspaces/replication/state/workspaceReplicationGc';
 import { recoverSessionHandoffPrepareTargetJobsAfterRestart } from '@/session/handoff/prepare/sessionHandoffPrepareTargetJobStore';
+import { reconcileTrashedDirectSessions, resolveTrashAuthority } from '@/api/directSessions/trash/directSessionTrash';
 
 import type { TrackedSession } from '../types';
 import { cleanupPidSessionResources } from '../sessions/cleanupPidSessionResources';
@@ -187,9 +188,55 @@ export function startDaemonHeartbeatLoop(params: Readonly<{
     return sessionHandoffPrepareTargetRecoveryPromise;
   };
 
+  // The machine's session trash (回收站) drops entries older than the retention window: once at daemon start
+  // (a machine that was off catches up) and then hourly. A pass never overlaps the previous one.
+  const trashPruneIntervalMs = 60 * 60 * 1000;
+  let trashPruneRunning = false;
+  let lastTrashPruneStartedAtMs = 0;
+  const pruneSessionTrashIfDue = (): void => {
+    const nowMs = Date.now();
+    if (trashPruneRunning || nowMs - lastTrashPruneStartedAtMs < trashPruneIntervalMs) return;
+    trashPruneRunning = true;
+    lastTrashPruneStartedAtMs = nowMs;
+    void (async () => {
+      try {
+        // The daemon acts for the account it is connected as. If the stored credentials were replaced by another
+        // account since, or the daemon is not connected, this pass touches nothing.
+        const connectedToken = getApiMachineForSessions()?.getConnectedAccountToken();
+        const authority = connectedToken ? resolveTrashAuthority(connectedToken) : null;
+        const storedCredentials = await readCredentials();
+        const storedAuthority = storedCredentials ? resolveTrashAuthority(storedCredentials.token) : null;
+        if (!connectedToken || !authority || storedAuthority !== authority) {
+          // Not connected yet (the start-up pass runs before the machine connection is up), or no matching account:
+          // nothing was done, so the next heartbeat tick may try again instead of waiting a whole interval.
+          lastTrashPruneStartedAtMs = 0;
+          return;
+        }
+        const result = await reconcileTrashedDirectSessions({
+          nowMs,
+          authority,
+          resolveOps: async (providerId) => (await import('@/backends/catalog')).getDirectSessionProviderOps(providerId),
+          // The daemon's own authenticated session: a 404 means the PiggerCode session is in the trash, purged or deleted.
+          confirmSessionState: async (sessionId) => {
+            const { fetchSessionById } = await import('@/session/transport/http/sessionsHttp');
+            return (await fetchSessionById({ token: connectedToken, sessionId })) ? 'live' : 'gone';
+          },
+        });
+        if (result.pruned > 0 || result.healed > 0 || result.failed > 0) {
+          logger.debug(`[DAEMON RUN] Session trash: ${result.pruned} deleted, ${result.healed} restored, ${result.failed} left for the next run`);
+        }
+      } catch (error) {
+        logger.debug('[DAEMON RUN] Failed to reconcile the session trash', error);
+      } finally {
+        trashPruneRunning = false;
+      }
+    })();
+  };
+
   // Kick off recovery immediately; do not wait for the first heartbeat tick.
   void ensureWorkspaceReplicationRecovery();
   void ensureSessionHandoffPrepareTargetRecovery();
+  pruneSessionTrashIfDue();
 
   const intervalHandle = setInterval(async () => {
     // During shutdown we must not mutate local daemon state (especially daemon.state.json),
@@ -284,6 +331,8 @@ export function startDaemonHeartbeatLoop(params: Readonly<{
       } catch (error) {
         logger.debug('[DAEMON RUN] Failed to gc workspace replication cas', error);
       }
+
+      pruneSessionTrashIfDue();
 
       // Cleanup any spawn resources for sessions no longer tracked (e.g. stopSession removed them).
       const cleanupPidMapIfUntracked = async (map: Map<number, unknown>) => {

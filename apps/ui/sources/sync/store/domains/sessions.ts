@@ -1103,9 +1103,20 @@ export function createSessionsDomain<S extends SessionsDomain & SessionsDomainDe
                 );
             }
 
+            // A session that comes back (restored from the trash) is no longer gone.
+            let nextDeletedSessionIds = state.deletedSessionIds;
+            for (const applied of sessions) {
+                if (nextDeletedSessionIds[applied.id] !== true) continue;
+                if (nextDeletedSessionIds === state.deletedSessionIds) {
+                    nextDeletedSessionIds = { ...nextDeletedSessionIds };
+                }
+                delete nextDeletedSessionIds[applied.id];
+            }
+
             const nextStateBase = {
                 ...state,
                 sessions: mergedSessions,
+                deletedSessionIds: nextDeletedSessionIds,
                 sessionListRenderables: mergedRenderables,
                 sessionListRenderableDelta: buildNextSessionListRenderableDelta({
                     previous: state.sessionListRenderableDelta,

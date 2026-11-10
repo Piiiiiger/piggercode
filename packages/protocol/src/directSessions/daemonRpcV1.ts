@@ -111,6 +111,45 @@ export const DirectSessionCandidateDeleteResponseSchema = z.union([
 ]);
 export type DirectSessionCandidateDeleteResponse = z.infer<typeof DirectSessionCandidateDeleteResponseSchema>;
 
+/**
+ * Trashing a linked session moves the provider's copy aside on the machine (the machine keeps it for
+ * `SESSION_TRASH_RETENTION_DAYS` days); restoring puts it back. Both take the delete request's shape and
+ * are separate methods on purpose: a machine that predates them answers "method not found", whereas an
+ * unknown flag on the delete method would be ignored and delete the provider copy for good.
+ */
+/** Trash also names the PiggerCode session: the machine records it and asks the server about it before it deletes or heals the copy. */
+export const DirectSessionCandidateTrashRequestSchema = DirectSessionCandidateDeleteRequestSchema.extend({
+  sessionId: z.string().min(1),
+});
+export type DirectSessionCandidateTrashRequest = z.infer<typeof DirectSessionCandidateTrashRequestSchema>;
+
+export const DirectSessionCandidateTrashResponseSchema = z.union([
+  z.object({ ok: z.literal(true), trashed: z.literal(true) }).passthrough(),
+  z.object({
+    ok: z.literal(false),
+    errorCode: z.enum(['invalid_request', 'machine_offline', 'provider_unavailable', 'internal_error']),
+    error: z.string().min(1),
+    /** The provider keeps no copy it could move aside or bring back: the session may then change without the machine. */
+    unsupported: z.boolean().optional(),
+  }).passthrough(),
+]);
+export type DirectSessionCandidateTrashResponse = z.infer<typeof DirectSessionCandidateTrashResponseSchema>;
+
+export const DirectSessionCandidateRestoreRequestSchema = DirectSessionCandidateDeleteRequestSchema;
+export type DirectSessionCandidateRestoreRequest = DirectSessionCandidateDeleteRequest;
+
+export const DirectSessionCandidateRestoreResponseSchema = z.union([
+  z.object({ ok: z.literal(true), restored: z.literal(true) }).passthrough(),
+  z.object({
+    ok: z.literal(false),
+    errorCode: z.enum(['invalid_request', 'machine_offline', 'provider_unavailable', 'internal_error']),
+    error: z.string().min(1),
+    /** The provider keeps no copy it could move aside or bring back: the session may then change without the machine. */
+    unsupported: z.boolean().optional(),
+  }).passthrough(),
+]);
+export type DirectSessionCandidateRestoreResponse = z.infer<typeof DirectSessionCandidateRestoreResponseSchema>;
+
 export const DirectSessionLinkEnsureRequestSchema = z
   .object({
     machineId: z.string().min(1),

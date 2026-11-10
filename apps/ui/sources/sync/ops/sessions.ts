@@ -49,15 +49,20 @@ import { normalizeSpawnSessionResult } from './_shared';
 import { isAccountSettingsScopeChangedDuringSpawnPreparationError } from '@/sync/engine/settings/accountSettingsSpawnPreparationError';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { readMachineControlTargetForSession } from './sessionMachineTarget';
-import { machineDirectSessionCandidateDelete } from './machineDirectSessions';
+import {
+    machineDirectSessionCandidateDelete,
+    machineDirectSessionCandidateRestore,
+    machineDirectSessionCandidateTrash,
+} from './machineDirectSessions';
 import { readDirectSessionLink } from '../domains/session/directSessions/readDirectSessionLink';
 import { log } from '@/log';
+import { t } from '@/text';
 import { stopSessionUsingCanonicalStrategy } from './sessionStopStrategy';
 import type { Metadata } from '../domains/state/storageTypes';
 import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
 import { supportsSessionForkRequestId } from '@/utils/system/versionUtils';
 import { throwIfSessionArchiveAborted, withSessionArchiveDeadline, type SessionArchiveRequestOptions } from './sessionArchiveLifecycle';
-import { AsyncTimeoutError } from '@/utils/timing/time';
+import { AsyncTimeoutError, delay } from '@/utils/timing/time';
 export { sessionRipgrep } from './sessionRipgrep';
 export type { SessionRipgrepResponse } from './sessionRipgrep';
 
@@ -851,7 +856,7 @@ const SESSION_ACTIVE_ARCHIVE_MESSAGE = 'Cannot archive an active session';
 type ArchiveRequestParams = Readonly<{
     sessionId: string;
     serverId?: string | null;
-    action: 'archive' | 'unarchive';
+    action: 'archive' | 'unarchive' | 'trash' | 'restore';
     signal?: AbortSignal;
 }>;
 
@@ -989,44 +994,61 @@ export async function sessionDelete(sessionId: string): Promise<{ success: boole
     });
 }
 
+type ProviderCopyChange = 'trash' | 'restore' | 'delete';
+type ProviderCopyOutcome = Readonly<{ success: true; changed: boolean }> | Readonly<{ success: false; message: string }>;
+
 /**
- * A session linked to a provider session (direct storage) keeps its conversation on the machine.
- * Deleting the session deletes that provider session first, so the machine and the list stay in
- * sync; when the machine cannot confirm the deletion, the Happier session is kept.
+ * A session linked to a provider session (direct storage) keeps its conversation on the machine. Trashing,
+ * restoring and deleting the session do the same to that provider copy first, so the machine and the list
+ * stay in sync; when the machine cannot confirm the change, the Happier session is left as it was.
+ * `metadata` is passed for a session that is not in the store (one in the trash).
+ *
+ * Deleting for good lets a provider that cannot delete its copy keep the Happier-only delete. Trash and restore
+ * proceed without the machine only when the machine says the provider keeps no copy it could move
+ * (`unsupported`): any other negative answer (a runner still live, a timeout, an offline machine) refuses.
  */
-async function deleteLinkedProviderSession(
+async function changeLinkedProviderSession(
+    change: ProviderCopyChange,
     sessionId: string,
     serverId: string | null,
-): Promise<{ success: true } | { success: false; message: string }> {
-    const link = readDirectSessionLink(storage.getState().sessions[sessionId]?.metadata);
-    if (!link) return { success: true };
+    metadata?: unknown,
+): Promise<ProviderCopyOutcome> {
+    const link = readDirectSessionLink(metadata ?? storage.getState().sessions[sessionId]?.metadata);
+    if (!link) return { success: true, changed: false };
+    const request = {
+        machineId: link.machineId,
+        providerId: link.providerId,
+        source: link.source,
+        remoteSessionId: link.remoteSessionId,
+    };
     try {
-        const response = await machineDirectSessionCandidateDelete({
-            machineId: link.machineId,
-            providerId: link.providerId,
-            source: link.source,
-            remoteSessionId: link.remoteSessionId,
-        }, { serverId });
-        if (response.ok) return { success: true };
-        // A provider that cannot delete, or no longer resolves, its copy keeps the Happier-only delete.
-        if (response.errorCode === 'provider_unavailable' || response.errorCode === 'invalid_request') {
-            log.log(`[sessionDelete] kept the provider session of ${sessionId}: ${response.errorCode}: ${response.error}`);
-            return { success: true };
+        const response = change === 'trash'
+            ? await machineDirectSessionCandidateTrash({ ...request, sessionId }, { serverId })
+            : change === 'restore'
+                ? await machineDirectSessionCandidateRestore(request, { serverId })
+                : await machineDirectSessionCandidateDelete(request, { serverId });
+        if (response.ok) return { success: true, changed: true };
+        const keepsNoCopy = change === 'delete'
+            ? response.errorCode === 'provider_unavailable' || response.errorCode === 'invalid_request'
+            : (response as { unsupported?: unknown }).unsupported === true;
+        if (keepsNoCopy) {
+            log.log(`[sessionTrash] left the provider session of ${sessionId} alone (${change}): ${response.errorCode}: ${response.error}`);
+            return { success: true, changed: false };
         }
         return { success: false, message: response.error };
     } catch (error) {
         return {
             success: false,
-            message: error instanceof Error ? error.message : 'Failed to delete the provider session',
+            message: error instanceof Error ? error.message : 'Failed to change the provider session',
         };
     }
 }
 
 export async function sessionDeleteWithServerScope(
     sessionId: string,
-    opts?: Readonly<{ serverId?: string | null }>,
+    opts?: Readonly<{ serverId?: string | null; metadata?: unknown }>,
 ): Promise<{ success: boolean; message?: string }> {
-    const providerDeletion = await deleteLinkedProviderSession(sessionId, opts?.serverId ?? null);
+    const providerDeletion = await changeLinkedProviderSession('delete', sessionId, opts?.serverId ?? null, opts?.metadata);
     if (!providerDeletion.success) return { success: false, message: providerDeletion.message };
 
     const context = await resolveServerScopedSessionContext({ serverId: opts?.serverId ?? null });
@@ -1063,6 +1085,177 @@ export async function sessionDeleteWithServerScope(
             success: false,
             message: error instanceof Error ? error.message : 'Unknown error',
         };
+    }
+}
+
+type TrashServerResult = Readonly<{ success: boolean; message?: string }>;
+
+/**
+ * The server half of trash and restore. A trash request waits for a session that is still winding down
+ * (409 `session-active`) the way archive does, within the same deadline.
+ */
+async function requestTrashTransition(
+    sessionId: string,
+    serverId: string | null,
+    action: 'trash' | 'restore',
+): Promise<TrashServerResult> {
+    // The body is read inside the request's consumer callback, so the deadline also covers a stalled body.
+    const attempt = async (signal?: AbortSignal): Promise<TrashServerResult & { sessionActive?: boolean }> => (
+        await archiveRequestWithContext({ sessionId, serverId, action, ...(signal ? { signal } : {}) }, async (response) => {
+            if (response.ok) {
+                await response.json().catch(() => null);
+                return { success: true } as const;
+            }
+            const message = await response.text().catch(() => '');
+            if (response.status === 409) return { success: false, sessionActive: true, message: SESSION_ACTIVE_TRASH_MESSAGE } as const;
+            return { success: false, message: message || (action === 'trash' ? 'Failed to delete session' : 'Failed to restore session') } as const;
+        })
+    );
+    try {
+        if (action === 'restore') return await attempt();
+        return await withSessionArchiveDeadline(async ({ signal, deadlineMs, retryActiveSession }) => {
+            let result = await attempt(signal);
+            while (retryActiveSession && result.sessionActive && Date.now() < deadlineMs) {
+                await delay(Math.min(200, Math.max(0, deadlineMs - Date.now())));
+                if (signal.aborted || Date.now() >= deadlineMs) break;
+                result = await attempt(signal);
+            }
+            return result;
+        });
+    } catch (error) {
+        if (error instanceof AsyncTimeoutError) return { success: false, message: SESSION_ACTIVE_TRASH_MESSAGE };
+        return { success: false, message: error instanceof Error ? error.message : 'Unknown error' };
+    }
+}
+
+const SESSION_ACTIVE_TRASH_MESSAGE = 'The session is still running';
+
+type SessionServerPresence = 'present' | 'absent' | 'unknown';
+
+/**
+ * Asks the server whether the session is still listed for its owner. A trashed (or deleted) session answers 404,
+ * so `absent` after a trash means the trash committed even if its reply was lost. Anything else unreadable is `unknown`.
+ */
+async function readSessionServerPresence(sessionId: string, serverId: string | null): Promise<SessionServerPresence> {
+    const classify = async (response: Response): Promise<SessionServerPresence> => (
+        response.status === 404 ? 'absent' : response.ok ? 'present' : 'unknown'
+    );
+    try {
+        return await requestSessionDetailFromServer(sessionId, serverId, classify);
+    } catch {
+        return 'unknown';
+    }
+}
+
+/** GET of the session's detail on its server (the open one over the socket, another one over its URL); `consume` reads the response. */
+async function requestSessionDetailFromServer<T>(
+    sessionId: string,
+    serverId: string | null,
+    consume: (response: Response) => Promise<T>,
+): Promise<T> {
+    const context = await resolveServerScopedSessionContext({ serverId });
+    const path = `/v2/sessions/${sessionId}`;
+    if (context.scope === 'active') {
+        return await apiSocket.request(path, { method: 'GET' }, consume);
+    }
+    const response = await runtimeFetchWithServerReachability({
+        serverUrl: context.targetServerUrl,
+        token: context.token,
+        url: `${context.targetServerUrl}${path}`,
+        init: { method: 'GET', headers: { Authorization: `Bearer ${context.token}` } },
+        timeoutMs: context.timeoutMs,
+    });
+    return await consume(response);
+}
+
+/**
+ * Whether the server lists the session as running right now: the server's own answer, not this device's copy
+ * of it (which can lag behind a stop). `null` when the server cannot say (unreachable, refused, or the session is gone).
+ */
+export async function sessionServerActiveState(
+    sessionId: string,
+    opts?: Readonly<{ serverId?: string | null }>,
+): Promise<boolean | null> {
+    const serverId = opts?.serverId ?? resolvePreferredServerIdForSessionId(sessionId) ?? null;
+    try {
+        return await requestSessionDetailFromServer(sessionId, serverId, async (response) => {
+            if (!response.ok) return null;
+            const body = await response.json().catch(() => null) as { session?: { active?: unknown } } | null;
+            const active = body?.session?.active;
+            return typeof active === 'boolean' ? active : null;
+        });
+    } catch {
+        return null;
+    }
+}
+
+/** Puts the machine copy back the way it was after the server step failed; best effort, the server error is what the caller shows. */
+async function compensateProviderCopy(
+    change: 'trash' | 'restore',
+    sessionId: string,
+    serverId: string | null,
+    metadata: unknown,
+): Promise<void> {
+    const undone = await changeLinkedProviderSession(change, sessionId, serverId, metadata);
+    if (!undone.success) {
+        log.log(`[sessionTrash] could not undo the provider change of ${sessionId} (${change}): ${undone.message}`);
+    }
+}
+
+/**
+ * Delete a session the way the Delete action does: it goes to the trash (回收站) for
+ * `SESSION_TRASH_RETENTION_DAYS` days and can be restored. The provider copy of a linked session is moved
+ * aside on its machine first; when the machine cannot do that the session stays where it was, and when the
+ * server then refuses, the machine copy is put back.
+ */
+export async function sessionTrashWithServerScope(
+    sessionId: string,
+    opts?: Readonly<{ serverId?: string | null }>,
+): Promise<{ success: boolean; message?: string }> {
+    const serverId = opts?.serverId ?? resolvePreferredServerIdForSessionId(sessionId) ?? null;
+    const metadata = storage.getState().sessions[sessionId]?.metadata;
+    const providerChange = await changeLinkedProviderSession('trash', sessionId, serverId, metadata);
+    if (!providerChange.success) return { success: false, message: providerChange.message };
+    const result = await requestTrashTransition(sessionId, serverId, 'trash');
+    if (result.success || !providerChange.changed) return result;
+    // A failed request may still have committed (its reply lost): ask before undoing the machine copy.
+    switch (await readSessionServerPresence(sessionId, serverId)) {
+        case 'absent':
+            return { success: true };
+        case 'present':
+            await compensateProviderCopy('restore', sessionId, serverId, metadata);
+            return result;
+        case 'unknown':
+            // Keep the machine entry: the daemon's hourly reconciliation restores the copy if the trash did not commit.
+            return { success: false, message: t('sessionTrash.resultPending') };
+    }
+}
+
+/**
+ * Put a trashed session back. The machine's provider copy comes back first, so a machine that is offline
+ * leaves the session in the trash (with the error shown) rather than listed without its conversation; when
+ * the server then refuses, the machine copy goes back to the trash.
+ */
+export async function sessionRestoreFromTrashWithServerScope(
+    sessionId: string,
+    opts?: Readonly<{ serverId?: string | null; metadata?: unknown }>,
+): Promise<{ success: boolean; message?: string }> {
+    const serverId = opts?.serverId ?? resolvePreferredServerIdForSessionId(sessionId) ?? null;
+    const providerChange = await changeLinkedProviderSession('restore', sessionId, serverId, opts?.metadata);
+    if (!providerChange.success) return { success: false, message: providerChange.message };
+    const result = await requestTrashTransition(sessionId, serverId, 'restore');
+    if (result.success || !providerChange.changed) return result;
+    switch (await readSessionServerPresence(sessionId, serverId)) {
+        case 'present':
+            // The restore committed (its reply was lost): the machine copy is already where it belongs.
+            return { success: true };
+        case 'absent':
+            await compensateProviderCopy('trash', sessionId, serverId, opts?.metadata);
+            return result;
+        case 'unknown':
+            // Put the copy back in the trash either way: if the restore did commit, the daemon's reconciliation heals it.
+            await compensateProviderCopy('trash', sessionId, serverId, opts?.metadata);
+            return { success: false, message: t('sessionTrash.resultPending') };
     }
 }
 

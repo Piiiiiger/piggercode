@@ -35,12 +35,12 @@ export async function isTrustedPendingPublisherFenceCurrent(params: Readonly<{
     })) return false;
     const session = await params.tx.session.findUnique({
         where: { id: params.sessionId },
-        select: { accountId: true, active: true, archivedAt: true, lastActiveAt: true },
+        select: { accountId: true, active: true, archivedAt: true, trashedAt: true, lastActiveAt: true },
     });
     return session !== null
         && session.accountId === params.actorUserId
         && session.active
-        && session.archivedAt === null
+        && (session.archivedAt === null && !session.trashedAt)
         && session.lastActiveAt.getTime() === params.fence.committedFence.getTime();
 }
 
@@ -65,13 +65,13 @@ export async function acquireTrustedPendingPublisherAuthority(params: Readonly<{
 
     const session = await params.tx.session.findUnique({
         where: { id: params.sessionId },
-        select: { accountId: true, active: true, archivedAt: true, lastActiveAt: true, updatedAt: true },
+        select: { accountId: true, active: true, archivedAt: true, trashedAt: true, lastActiveAt: true, updatedAt: true },
     });
     if (
         session === null
         || session.accountId !== params.actorUserId
         || !session.active
-        || session.archivedAt !== null
+        || (session.archivedAt !== null || session.trashedAt)
         || session.lastActiveAt.getTime() !== params.fence.committedFence.getTime()
     ) return false;
 
@@ -82,6 +82,7 @@ export async function acquireTrustedPendingPublisherAuthority(params: Readonly<{
                 accountId: params.actorUserId,
                 active: true,
                 archivedAt: null,
+                trashedAt: null,
                 lastActiveAt: params.fence.committedFence,
                 updatedAt: session.updatedAt,
             },

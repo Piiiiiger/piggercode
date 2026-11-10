@@ -4,6 +4,7 @@ import {
   DIRECT_SESSION_TAKEOVER_ACTION_IDS,
   DirectSessionAttachRequestSchema,
   DirectSessionCandidateDeleteRequestSchema,
+  DirectSessionCandidateTrashRequestSchema,
   DirectSessionDetachRequestSchema,
   DirectSessionFollowPolicySetRequestSchema,
   DirectSessionLinkEnsureRequestSchema,
@@ -16,6 +17,8 @@ import {
   normalizeCodexBackendMode,
   type DirectSessionAttachResponse,
   type DirectSessionCandidateDeleteResponse,
+  type DirectSessionCandidateRestoreResponse,
+  type DirectSessionCandidateTrashResponse,
   type DirectSessionDetachResponse,
   type DirectSessionFollowPolicySetResponse,
   type DirectSessionTranscriptDeltaEphemeral,
@@ -31,7 +34,10 @@ import {
 import { readCredentials } from '@/persistence';
 import { listSessionMarkers } from '@/daemon/sessionRegistry';
 import { getDirectSessionProviderOps } from '@/backends/catalog';
-import { DirectSessionsProviderUnavailableError } from '@/backends/directSessions/providerOps';
+import {
+  DirectSessionsProviderUnavailableError,
+  DirectSessionsProviderUnsupportedError,
+} from '@/backends/directSessions/providerOps';
 
 import type { ActionOperationRunner } from '@/daemon/actionOperations/actionOperationRunner';
 import type { ActionOperationAccessScope } from '@/daemon/actionOperations/actionOperationTypes';
@@ -40,6 +46,12 @@ import { importDirectSessionTranscript } from '@/api/directSessions/import/impor
 import { createManagedDirectSessionFollowLease } from '@/api/directSessions/backgroundFollow/createManagedDirectSessionFollowLease';
 import { updateSessionMetadataWithDirectSessionFollowPolicy } from '@/api/directSessions/backgroundFollow/directSessionBackgroundFollowMetadata';
 import { createDirectSessionFollowLeaseManager } from '@/api/directSessions/leases/createDirectSessionFollowLeaseManager';
+import {
+  deleteDirectSessionForGood,
+  resolveTrashAuthority,
+  restoreTrashedDirectSession,
+  trashDirectSession,
+} from '@/api/directSessions/trash/directSessionTrash';
 import { ensureDirectSessionLink } from '@/api/directSessions/linking/ensureDirectSessionLink';
 import { validateDirectMachineSource } from '@/api/directSessions/security/validateDirectMachineSource';
 import { findTrustedDirectSessionOwner } from '@/api/directSessions/takeover/findTrustedDirectSessionOwner';
@@ -79,6 +91,11 @@ function errFromProviderFailure(error: unknown, fallback: DirectSessionsErrorCod
     return err('provider_unavailable', error.message);
   }
   return err(fallback, error instanceof Error ? error.message : 'Unknown error');
+}
+
+/** Tells the UI a trash/restore failure means "this provider keeps no copy", the only failure it may proceed past. */
+function withUnsupportedMark<T extends object>(error: unknown, response: T): T | (T & { unsupported: true }) {
+  return error instanceof DirectSessionsProviderUnsupportedError ? { ...response, unsupported: true } : response;
 }
 
 function requireProviderOp<TOp>(
@@ -140,6 +157,8 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
   rpcHandlerManager: RpcHandlerRegistrar;
   spawnSession?: (options: SpawnSessionOptions) => Promise<SpawnSessionResult>;
   stopSession?: (sessionId: string) => Promise<boolean>;
+  /** The token of the daemon's own authenticated connection (see `MachineRpcHandlerDeps`); without one, the stored credentials stand in. */
+  connectedAccountToken?: string;
   actionOperations?: Readonly<{ runner: ActionOperationRunner; getScope: () => Promise<ActionOperationAccessScope> }>;
   emitDirectSessionTranscriptUpdate?: (payload: DirectSessionTranscriptDeltaEphemeral) => void;
 }>): void {
@@ -354,19 +373,23 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
     }
   });
 
-  rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE, async (raw: unknown) => {
+  /**
+   * Delete, trash and restore all change the provider's copy under a possible live runner, so they share one
+   * request check: a valid request on a valid source, and no Happier runner still owning the session.
+   */
+  const guardProviderCopyChange = async (raw: unknown, runningMessage: string) => {
     const parsed = DirectSessionCandidateDeleteRequestSchema.safeParse(raw);
-    if (!parsed.success) return err('invalid_request') satisfies DirectSessionCandidateDeleteResponse;
+    if (!parsed.success) return { ok: false as const, response: err('invalid_request') };
     const validatedSource = validateDirectMachineSource({
       providerId: parsed.data.providerId,
       source: parsed.data.source,
       env: process.env,
     });
     if (!validatedSource.ok) {
-      return err('invalid_request', validatedSource.error) satisfies DirectSessionCandidateDeleteResponse;
+      return { ok: false as const, response: err('invalid_request', validatedSource.error) };
     }
 
-    // Deleting the provider transcript under a live Happier runner would break that session.
+    // Changing the provider transcript under a live Happier runner would break that session.
     const liveMarkers = (await listSessionMarkers().catch(() => []))
       .filter((marker) => Number.isFinite(marker.pid) && marker.pid > 0 && isPidAlive(marker.pid));
     const owner = findTrustedDirectSessionOwner({
@@ -375,22 +398,77 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
       remoteSessionId: parsed.data.remoteSessionId,
       isPidAlive,
     });
-    if (owner) {
-      return err(
-        'provider_unavailable',
-        'This session is still running in PiggerCode. Stop it before deleting it.',
-      ) satisfies DirectSessionCandidateDeleteResponse;
-    }
+    if (owner) return { ok: false as const, response: err('provider_unavailable', runningMessage) };
 
-    try {
-      const providerOps = await getDirectSessionProviderOps(parsed.data.providerId);
-      await requireProviderOp(providerOps.deleteCandidate, parsed.data.providerId, 'candidate deletion')({
+    return {
+      ok: true as const,
+      target: {
+        providerId: parsed.data.providerId,
         source: validatedSource.source,
         remoteSessionId: parsed.data.remoteSessionId,
+      },
+    };
+  };
+
+  rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE, async (raw: unknown) => {
+    const guarded = await guardProviderCopyChange(raw, 'This session is still running in PiggerCode. Stop it before deleting it.');
+    if (!guarded.ok) return guarded.response satisfies DirectSessionCandidateDeleteResponse;
+
+    try {
+      await deleteDirectSessionForGood({
+        ...guarded.target,
+        ops: await getDirectSessionProviderOps(guarded.target.providerId),
       });
       return { ok: true, deleted: true } satisfies DirectSessionCandidateDeleteResponse;
     } catch (error) {
       return errFromProviderFailure(error) satisfies DirectSessionCandidateDeleteResponse;
+    }
+  });
+
+  rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH, async (raw: unknown) => {
+    const guarded = await guardProviderCopyChange(raw, 'This session is still running in PiggerCode. Stop it before deleting it.');
+    if (!guarded.ok) return guarded.response satisfies DirectSessionCandidateTrashResponse;
+    const trashRequest = DirectSessionCandidateTrashRequestSchema.safeParse(raw);
+    if (!trashRequest.success) return err('invalid_request') satisfies DirectSessionCandidateTrashResponse;
+    // The entry records which server and account own the session; only a daemon of that authority may act on it
+    // later. That is the account this daemon is connected as. If the stored credentials were replaced by another
+    // account since, refuse: the entry would name an account that does not own the session.
+    const credentials = await readCredentials().catch(() => null);
+    const storedAuthority = credentials ? resolveTrashAuthority(credentials.token) : null;
+    const authority = params.connectedAccountToken ? resolveTrashAuthority(params.connectedAccountToken) : storedAuthority;
+    if (!authority) return err('internal_error', 'not_authenticated') satisfies DirectSessionCandidateTrashResponse;
+    if (storedAuthority !== authority) {
+      return err(
+        'internal_error',
+        'The signed-in account changed since this daemon started. Restart the daemon, then try again.',
+      ) satisfies DirectSessionCandidateTrashResponse;
+    }
+
+    try {
+      await trashDirectSession({
+        ...guarded.target,
+        sessionId: trashRequest.data.sessionId,
+        authority,
+        ops: await getDirectSessionProviderOps(guarded.target.providerId),
+      });
+      return { ok: true, trashed: true } satisfies DirectSessionCandidateTrashResponse;
+    } catch (error) {
+      return withUnsupportedMark(error, errFromProviderFailure(error)) satisfies DirectSessionCandidateTrashResponse;
+    }
+  });
+
+  rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_RESTORE, async (raw: unknown) => {
+    const guarded = await guardProviderCopyChange(raw, 'This session is running in PiggerCode.');
+    if (!guarded.ok) return guarded.response satisfies DirectSessionCandidateRestoreResponse;
+
+    try {
+      await restoreTrashedDirectSession({
+        ...guarded.target,
+        ops: await getDirectSessionProviderOps(guarded.target.providerId),
+      });
+      return { ok: true, restored: true } satisfies DirectSessionCandidateRestoreResponse;
+    } catch (error) {
+      return withUnsupportedMark(error, errFromProviderFailure(error)) satisfies DirectSessionCandidateRestoreResponse;
     }
   });
 

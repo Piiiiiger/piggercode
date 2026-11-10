@@ -19,6 +19,7 @@ vi.mock('@/configuration', () => ({
   configuration: {
     activeServerDir: '/tmp/happier-test-active-server',
     happyHomeDir: '/tmp/happier-test-home',
+    serverUrl: 'https://server.test',
     logsDir: '/tmp',
     isDaemonProcess: false,
   },
@@ -50,6 +51,12 @@ function registerWithActionOperations(params: Parameters<typeof registerMachineD
   registerMachineDirectSessionsRpcHandlers({ ...params, actionOperations: {
     runner, getScope: async () => ({ accountId: 'account-1', machineId: 'm1' }),
   } });
+}
+
+/** A credential whose token decodes to an account, as the trash authority needs. */
+function fakeAccountCredentials(accountId = 'acct-1') {
+  const part = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
+  return { token: `${part({ alg: 'none' })}.${part({ sub: accountId })}.sig`, encryption: null };
 }
 
 function jsonlLine(value: unknown): string {
@@ -1313,6 +1320,115 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       method: 'thread/delete',
       params: { threadId: 'remote_codex_already_deleted' },
     }));
+  });
+
+  it('trashes a codex candidate through thread/archive, restores it through thread/unarchive, and deletes it for good from the trash', async () => {
+    readCredentialsMock.mockResolvedValue(fakeAccountCredentials());
+    const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-trash-');
+    const request = {
+      machineId: 'm1',
+      sessionId: 'sess-1',
+      providerId: 'codex',
+      remoteSessionId: 'remote_codex_delete',
+      source: { kind: 'codexHome', home: 'user' },
+    };
+    const trashRoot = join('/tmp/happier-test-home', 'trash', 'direct-sessions');
+    await rm(trashRoot, { recursive: true, force: true });
+    const methods = async () => (await readRequests()).map((r) => r.method).filter((m) => m?.startsWith('thread/') && m !== 'thread/list');
+
+    try {
+      expect(await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH)!(request)).toEqual({ ok: true, trashed: true });
+      expect(await methods()).toEqual(['thread/archive']);
+
+      expect(await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_RESTORE)!(request)).toEqual({ ok: true, restored: true });
+      expect(await methods()).toEqual(['thread/archive', 'thread/unarchive']);
+
+      await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH)!(request);
+      expect(await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE)!(request)).toEqual({ ok: true, deleted: true });
+      expect(await methods()).toEqual(['thread/archive', 'thread/unarchive', 'thread/archive', 'thread/unarchive', 'thread/delete']);
+    } finally {
+      await rm(trashRoot, { recursive: true, force: true });
+      await rm(`${trashRoot}.locks`, { recursive: true, force: true });
+    }
+  });
+
+  it('marks a trash of a provider that keeps no movable copy as unsupported, and a live runner as a plain refusal', async () => {
+    readCredentialsMock.mockResolvedValue(fakeAccountCredentials());
+    vi.stubEnv('PIGGERCODE_CLAUDE_CONFIG_DIR', '/tmp');
+    const registered = new Map<string, (params: any) => Promise<any>>();
+    registerMachineDirectSessionsRpcHandlers({
+      rpcHandlerManager: { registerHandler: (m: string, h: (p: any) => Promise<any>) => { registered.set(m, h); } } as any,
+    });
+    const request = {
+      machineId: 'm1',
+      sessionId: 'sess-1',
+      providerId: 'claude',
+      remoteSessionId: 'claude-trash-1',
+      source: { kind: 'claudeConfig', configDir: '/tmp', projectId: null },
+    };
+    for (const method of [RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH, RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_RESTORE]) {
+      const res = await registered.get(method)!(request);
+      // Restoring a copy that was never trashed on this machine is a success; trashing one is the unsupported case.
+      if (method === RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH) {
+        expect(res).toEqual(expect.objectContaining({ ok: false, errorCode: 'provider_unavailable', unsupported: true }));
+      } else {
+        expect(res).toEqual({ ok: true, restored: true });
+      }
+    }
+  });
+
+  it('refuses to trash when the stored credentials name a different account than the one the daemon is connected as', async () => {
+    const { readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-trash-drift-');
+    const registered = new Map<string, (params: any) => Promise<any>>();
+    registerMachineDirectSessionsRpcHandlers({
+      rpcHandlerManager: { registerHandler: (m: string, h: (p: any) => Promise<any>) => { registered.set(m, h); } } as any,
+      connectedAccountToken: fakeAccountCredentials('acct-1').token,
+    });
+    readCredentialsMock.mockResolvedValue(fakeAccountCredentials('acct-2'));
+
+    const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH)!({
+      machineId: 'm1',
+      sessionId: 'sess-1',
+      providerId: 'codex',
+      remoteSessionId: 'remote_codex_delete',
+      source: { kind: 'codexHome', home: 'user' },
+    });
+
+    expect(res).toEqual(expect.objectContaining({ ok: false, errorCode: 'internal_error' }));
+    expect(res.error).toContain('account changed');
+    expect((await readRequests()).some((r) => r.method === 'thread/archive')).toBe(false);
+  });
+
+  it('refuses to trash a provider session that a live PiggerCode runner still owns', async () => {
+    readCredentialsMock.mockResolvedValue(fakeAccountCredentials());
+    const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-trash-owned-');
+    const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');
+    const markerPath = join(markerDir, `pid-${process.pid}.json`);
+    await mkdir(markerDir, { recursive: true });
+    await writeFile(markerPath, JSON.stringify({
+      pid: process.pid,
+      happySessionId: 'sess_running_codex',
+      happyHomeDir: '/tmp/happier-test-home',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      flavor: 'codex',
+      metadata: { flavor: 'codex', codexSessionId: 'remote_codex_delete' },
+    }), 'utf8');
+
+    try {
+      const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH)!({
+        machineId: 'm1',
+        sessionId: 'sess-1',
+        providerId: 'codex',
+        remoteSessionId: 'remote_codex_delete',
+        source: { kind: 'codexHome', home: 'user' },
+      });
+      expect(res).toEqual(expect.objectContaining({ ok: false, errorCode: 'provider_unavailable' }));
+      expect(res.unsupported).toBeUndefined();
+      expect((await readRequests()).some((r) => r.method === 'thread/archive')).toBe(false);
+    } finally {
+      await rm(markerPath, { force: true });
+    }
   });
 
   it('refuses to delete a provider session that a live PiggerCode runner still owns', async () => {

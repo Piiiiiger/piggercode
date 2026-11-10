@@ -55,6 +55,18 @@ export class DirectSessionsProviderUnavailableError extends Error {
 }
 
 /**
+ * The provider keeps no copy that could be moved aside or brought back (it has no trash operation at all), as
+ * opposed to a provider that has copies but cannot move one right now. Only this answer lets a session go to
+ * (or come back from) the trash without its machine.
+ */
+export class DirectSessionsProviderUnsupportedError extends DirectSessionsProviderUnavailableError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DirectSessionsProviderUnsupportedError';
+  }
+}
+
+/**
  * Transcript, activity and takeover members are optional: a resume-only source (ACP `session/list`)
  * can enumerate candidates without owning the provider's transcript store or process lifecycle.
  */
@@ -67,6 +79,18 @@ export type DirectSessionProviderOps = Readonly<{
     searchMode?: 'fast' | 'full';
   }>) => Promise<DirectSessionCandidatesPage>;
   deleteCandidate?: (params: Readonly<{
+    source: DirectSessionsSource;
+    remoteSessionId: string;
+  }>) => Promise<void>;
+  /** The provider's name for the store a source points at (a Codex home), so equal remote ids in different stores stay distinct. */
+  resolveCopyIdentity?: (params: Readonly<{ source: DirectSessionsSource }>) => Promise<string>;
+  /** Moves the provider's copy aside (it stays recoverable) when its session goes to the trash. */
+  trashCandidate?: (params: Readonly<{
+    source: DirectSessionsSource;
+    remoteSessionId: string;
+  }>) => Promise<void>;
+  /** Puts a trashed provider copy back. */
+  restoreCandidate?: (params: Readonly<{
     source: DirectSessionsSource;
     remoteSessionId: string;
   }>) => Promise<void>;

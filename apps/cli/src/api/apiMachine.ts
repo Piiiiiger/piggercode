@@ -455,6 +455,7 @@ export class ApiMachineClient {
             },
             deps: {
                 ...deps,
+                connectedAccountToken: this.token,
                 connectedServiceImportAccount: this.connectedServiceImportAccount,
                 machineRpcWorkingDirectory: this.machineRpcWorkingDirectory,
                 filesystemAccessPolicy: this.filesystemAccessPolicy,
@@ -470,6 +471,11 @@ export class ApiMachineClient {
             },
         });
         this.rpcLifecycleRegistrations.push(machineRpcLifecycleRegistration);
+    }
+
+    /** The token this daemon connected with. The account it names is the one the daemon acts for, whatever is written to disk later. */
+    getConnectedAccountToken(): string {
+        return this.token;
     }
 
     onUpdate(listener: (update: Update) => boolean | void): () => void {

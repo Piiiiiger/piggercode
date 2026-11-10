@@ -11,7 +11,7 @@ import {
 } from '@/sync/domains/session/listing/sessionListExplorer';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { decodeBase64 } from '@/encryption/base64';
-import { sessionDeleteWithServerScope, sessionStopWithServerScope } from '@/sync/ops';
+import { sessionTrashWithServerScope, sessionStopWithServerScope, sessionServerActiveState } from '@/sync/ops';
 import { machineCreateDirectory, machineDeletePath, machineReadFile, machineRenamePath } from '@/sync/ops/machines';
 import { delay } from '@/utils/timing/time';
 import { saveFileBytes } from '@/sync/runtime/files/saveFileBytes';
@@ -172,19 +172,52 @@ export async function downloadExplorerFile(file: ExplorerFolderTarget): Promise<
     }
 }
 
+/**
+ * The session store holds only the sessions this device has loaded in full, while the list shows every session
+ * (from its light rows). Deleting a folder acts on the sessions started in it, so each one the store lacks is
+ * loaded first: a session that is not loaded would otherwise be neither stopped nor sent to the trash, and
+ * would stay behind in a folder that is gone.
+ */
+export async function hydrateExplorerFolderSessions(
+    folder: ExplorerFolderTarget,
+    deps: Readonly<{
+        listedSessions: Iterable<SessionExplorerPlacement & Readonly<{ id: string }>>;
+        isLoaded: (sessionId: string) => boolean;
+        load: (sessionId: string) => Promise<unknown>;
+    }>,
+): Promise<void> {
+    const missing = sessionsInExplorerFolder(deps.listedSessions, folder).filter((session) => !deps.isLoaded(session.id));
+    await Promise.all(missing.map((session) => deps.load(session.id).catch(() => undefined)));
+}
+
 /** What deleting a folder's sessions uses; tests replace it. */
 export type ExplorerFolderSessionOps = Readonly<{
     stopSession: typeof sessionStopWithServerScope;
-    deleteSession: typeof sessionDeleteWithServerScope;
-    isSessionActive?: (sessionId: string) => boolean | null;
+    deleteSession: typeof sessionTrashWithServerScope;
+    /** Whether the server lists the session as running (its own answer; null when it cannot say). */
+    readServerActive?: (sessionId: string, options: { serverId: string }) => Promise<boolean | null>;
 }>;
 
 const defaultSessionOps: ExplorerFolderSessionOps = {
     stopSession: sessionStopWithServerScope,
-    deleteSession: sessionDeleteWithServerScope,
+    deleteSession: sessionTrashWithServerScope,
+    readServerActive: sessionServerActiveState,
 };
 
 type FolderSessionTarget = ReturnType<typeof createSessionActionTarget>;
+
+/** The server's answer, or null (it cannot say) when it has not come by the deadline. */
+async function serverAnswerBy<T>(answer: Promise<T>, deadline: number): Promise<T | null> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const late = new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), Math.max(0, deadline - Date.now()));
+    });
+    try {
+        return await Promise.race([answer, late]);
+    } finally {
+        clearTimeout(timer);
+    }
+}
 
 function sessionRuns(target: FolderSessionTarget): boolean {
     return target.isActive || target.isConnected || target.hasStoppableTerminalHost;
@@ -261,7 +294,8 @@ export async function deleteExplorerFolder(
                 sessionId: target.sessionId,
                 stopSession: async () => await ops.stopSession(target.sessionId, { serverId: folder.serverId }),
                 stopErrorMessage: t('sessionInfo.failedToStopSession'),
-                ...(ops.isSessionActive ? { isActive: ops.isSessionActive } : {}),
+                // A stop the machine took but has not finished is waited on below, by the server's answer.
+                isActive: () => false,
             });
             if (problem !== null) {
                 Modal.alert(title, t('sessionsList.explorerDeleteFolderStopFailed', { reason: problem }));
@@ -270,13 +304,34 @@ export async function deleteExplorerFolder(
             stopped.add(target.sessionId);
         }
     }
-    // Nothing may run there when the folder goes: the sessions just stopped must show as ended (one resumed
-    // meanwhile, or started, keeps the folder).
+    // Nothing may run there when the folder goes. A session just stopped counts as ended by the server's own
+    // answer (this device's copy of it can still show it running a while after the server has it ended); one
+    // resumed meanwhile, or started, keeps the folder.
     const deadline = Date.now() + (options.waitMs ?? 15_000);
     let inside = readInside();
     for (;;) {
         if (refuseUnreadable(inside) || refuseBlocked(inside)) return false;
-        if (!inside.some((target) => target.canDelete && (target.isActive || target.isConnected))) break;
+        const deletable = inside.filter((target) => target.canDelete);
+        const runsLocally = (target: FolderSessionTarget) => target.isActive || target.isConnected;
+        // Only the sessions just stopped are asked; the others (started meanwhile) are judged by this device's copy.
+        const runs = await Promise.all(deletable.map(async (target) => {
+            if (!stopped.has(target.sessionId) || !ops.readServerActive) return runsLocally(target);
+            const active = await serverAnswerBy(
+                ops.readServerActive(target.sessionId, { serverId: folder.serverId }).catch(() => null),
+                deadline,
+            );
+            return active !== false;
+        }));
+        // Asking the server takes time: the folder counts as settled only if, read again now, it holds the same
+        // sessions and none of those not just stopped runs (one may have started or resumed meanwhile).
+        const askedIds = new Set(deletable.map((target) => target.sessionId));
+        inside = readInside();
+        if (refuseUnreadable(inside) || refuseBlocked(inside)) return false;
+        const nowDeletable = inside.filter((target) => target.canDelete);
+        const settled = !runs.some(Boolean)
+            && nowDeletable.length === askedIds.size
+            && nowDeletable.every((target) => askedIds.has(target.sessionId) && (stopped.has(target.sessionId) || !runsLocally(target)));
+        if (settled) break;
         if (Date.now() >= deadline) {
             Modal.alert(title, t('sessionsList.explorerDeleteFolderStopFailed', { reason: t('sessionInfo.stopSessionStillRunning') }));
             return false;

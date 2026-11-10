@@ -195,6 +195,8 @@ function coerceLegacySessionRecord(raw: unknown): V2SessionRecord | null {
         active,
         activeAt,
         archivedAt: readNullableNumber(raw.archivedAt),
+        // Present only on the trash list's rows (回收站); every other list leaves it off.
+        ...(typeof raw.trashedAt === 'number' ? { trashedAt: raw.trashedAt } : {}),
         encryptionMode: raw.encryptionMode === 'plain' ? 'plain' : raw.encryptionMode === 'e2ee' ? 'e2ee' : undefined,
         metadata,
         metadataVersion,

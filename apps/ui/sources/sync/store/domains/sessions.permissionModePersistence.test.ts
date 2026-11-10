@@ -150,6 +150,7 @@ function createHarness() {
         reviewCommentsDraftsByWorkspaceCacheKey: {},
         actionDraftsBySessionId: {},
         isDataReady: false,
+        deletedSessionIds: {},
         machines: {},
         sessionMessages: {},
         settings: { groupInactiveSessionsByProject: false },

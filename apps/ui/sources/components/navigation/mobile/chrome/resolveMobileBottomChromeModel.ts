@@ -16,7 +16,9 @@ function isSessionHistoryRoutePathname(pathname: string): boolean {
     return pathname === '/session/recent'
         || pathname === '/session/recent/'
         || pathname === '/session/archived'
-        || pathname === '/session/archived/';
+        || pathname === '/session/archived/'
+        || pathname === '/session/trash'
+        || pathname === '/session/trash/';
 }
 
 function resolvePersistedSessionSurface(

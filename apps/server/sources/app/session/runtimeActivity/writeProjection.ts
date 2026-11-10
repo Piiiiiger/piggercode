@@ -28,6 +28,7 @@ export async function writeSessionRuntimeActivityProjectionInTx(params: Readonly
         where: { id: params.sessionId },
         select: {
             archivedAt: true,
+            trashedAt: true,
             runtimeActivityState: true,
             runtimeActivityActiveCount: true,
             runtimeActivityObservedAt: true,
@@ -37,7 +38,7 @@ export async function writeSessionRuntimeActivityProjectionInTx(params: Readonly
     if (!session) {
         return { status: "rejected", reason: "not_found" };
     }
-    if (session.archivedAt !== null) {
+    if (session.archivedAt !== null || session.trashedAt) {
         return { status: "rejected", reason: "archived" };
     }
 
@@ -60,6 +61,7 @@ export async function writeSessionRuntimeActivityProjectionInTx(params: Readonly
         where: {
             id: params.sessionId,
             archivedAt: null,
+            trashedAt: null,
             runtimeActivityRevision: session.runtimeActivityRevision,
         },
         data: {
@@ -72,12 +74,12 @@ export async function writeSessionRuntimeActivityProjectionInTx(params: Readonly
     if (updated.count === 0) {
         const currentLifecycle = await params.tx.session.findUnique({
             where: { id: params.sessionId },
-            select: { archivedAt: true },
+            select: { archivedAt: true, trashedAt: true },
         });
         if (!currentLifecycle) {
             return { status: "rejected", reason: "not_found" };
         }
-        if (currentLifecycle.archivedAt !== null) {
+        if (currentLifecycle.archivedAt !== null || currentLifecycle.trashedAt) {
             return { status: "rejected", reason: "archived" };
         }
         throw new Error("Session Runtime Activity projection changed concurrently");
@@ -106,6 +108,7 @@ export async function writeSessionRuntimeActivityObserverLossInTx(params: Readon
         where: { id: params.sessionId },
         select: {
             archivedAt: true,
+            trashedAt: true,
             runtimeActivityState: true,
             runtimeActivityActiveCount: true,
             runtimeActivityObservedAt: true,
@@ -113,7 +116,7 @@ export async function writeSessionRuntimeActivityObserverLossInTx(params: Readon
         },
     });
     if (!session) return { status: "rejected", reason: "not_found" };
-    if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+    if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
 
     const current = readStoredSessionRuntimeActivityProjection(session);
     if (current.state === "idle") return { status: "unchanged", projection: current };

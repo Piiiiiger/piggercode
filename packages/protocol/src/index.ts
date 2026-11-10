@@ -2586,6 +2586,10 @@ export {
   DirectSessionsCandidatesListResponseSchema,
   DirectSessionCandidateDeleteRequestSchema,
   DirectSessionCandidateDeleteResponseSchema,
+  DirectSessionCandidateTrashRequestSchema,
+  DirectSessionCandidateTrashResponseSchema,
+  DirectSessionCandidateRestoreRequestSchema,
+  DirectSessionCandidateRestoreResponseSchema,
   DirectSessionLinkEnsureRequestSchema,
   DirectSessionLinkEnsureResponseSchema,
   DirectSessionActivityV1Schema,
@@ -2617,6 +2621,10 @@ export {
   type DirectSessionsCandidatesListResponse,
   type DirectSessionCandidateDeleteRequest,
   type DirectSessionCandidateDeleteResponse,
+  type DirectSessionCandidateTrashRequest,
+  type DirectSessionCandidateTrashResponse,
+  type DirectSessionCandidateRestoreRequest,
+  type DirectSessionCandidateRestoreResponse,
   type DirectSessionLinkEnsureRequest,
   type DirectSessionLinkEnsureResponse,
   type DirectSessionActivityV1,
@@ -3705,3 +3713,5 @@ export {
 } from './machines/machineContentKeyTransitionV1.js';
 
 export { assertAccountKeyProvisioningAllowed, AccountKeyProvisioningUnavailableError, verifyAccountContentPublicKeyBinding, createAccountContentPublicKeyBindingMessage } from './auth/accountKeyProvisioning.js';
+
+export { SESSION_TRASH_RETENTION_DAYS, SESSION_TRASH_RETENTION_MS } from './sessionTrash.js';

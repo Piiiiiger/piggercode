@@ -63,6 +63,7 @@ export function createSessionFolderAssignmentSessionWhere(params: Readonly<{
 }>): Prisma.SessionWhereInput {
     return {
         archivedAt: params.archived ? { not: null } : null,
+        trashedAt: null,
         ...(params.cursorWhere ?? {}),
         sessionFolderAssignments: {
             some: {

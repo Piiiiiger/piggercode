@@ -44,6 +44,7 @@ import { t } from '@/text';
 import { Modal } from '@/modal';
 import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Item } from '@/components/ui/lists/Item';
+import { SessionTrashListItem } from '@/components/sessions/trash/SessionTrashListItem';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { sync } from '@/sync/sync';
 import { fireAndForget } from '@/utils/system/fireAndForget';
@@ -63,6 +64,7 @@ import {
     createExplorerFolder,
     deleteExplorerFile,
     deleteExplorerFolder,
+    hydrateExplorerFolderSessions,
     downloadExplorerFile,
     explorerFolderTarget,
     renameExplorerFile,
@@ -1335,6 +1337,13 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
             const now = getActiveServerSnapshot();
             return now.serverId === opened.serverId && now.generation === opened.generation ? Object.values(storage.getState().sessions) : null;
         };
+        if (target) {
+            await hydrateExplorerFolderSessions(target, {
+                listedSessions: Object.values(storage.getState().sessionListRenderables),
+                isLoaded: (sessionId) => storage.getState().sessions[sessionId] !== undefined,
+                load: (sessionId) => sync.ensureSessionVisibleForMessageRoute(sessionId, { serverId: target.serverId }),
+            });
+        }
         if (!target || !await deleteExplorerFolder(target, readSessions, { missing: item.explorerMissing === true })) return;
         clearCachedMachineFileBrowserEntries({ machineId: target.machineId, serverId: target.serverId, directoryPath: target.path });
         const parentPath = target.path.slice(0, target.path.lastIndexOf('/')) || '/';
@@ -2588,6 +2597,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                     icon={<Icon name="archive" size={20} color={theme.colors.text.secondary} />}
                     onPress={() => router.push('/session/archived')}
                 />
+                <SessionTrashListItem />
             </ItemGroup>
         );
     }, [hideInactiveSessions, router, styles.footerContainer, theme.colors.text.secondary]);

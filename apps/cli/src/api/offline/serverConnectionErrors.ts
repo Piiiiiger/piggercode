@@ -53,7 +53,7 @@ import chalk from 'chalk';
 import { writeConsoleLogBestEffort } from '@/utils/writeConsoleBestEffort';
 import { exponentialBackoffDelay } from '@/utils/time';
 import { logger } from '@/ui/logger';
-import { isAuthenticationError } from '@/api/client/httpStatusError';
+import { isAuthenticationError, isSessionTrashedError } from '@/api/client/httpStatusError';
 
 /**
  * Configuration for offline reconnection behavior.
@@ -207,6 +207,14 @@ export function startOfflineReconnection<TSession>(
                 logger.debug('[OfflineReconnection] Authentication error, stopping retries');
                 config.onNotify('❌ Authentication failed. Please re-authenticate with `piggercode auth`.');
                 return; // Don't schedule retry - this is a permanent failure
+            }
+
+            // The session was trashed (on another device, or after a create whose reply was lost): it stays
+            // trashed until the user restores it, so retrying cannot help.
+            if (isSessionTrashedError(e)) {
+                logger.debug('[OfflineReconnection] Session is in the trash, stopping retries');
+                config.onNotify('This session is in the trash. Restore it in the app, then start it again.');
+                return;
             }
 
             // Retryable error: network error, 5xx, or onReconnected failure

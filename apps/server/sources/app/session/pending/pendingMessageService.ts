@@ -159,6 +159,21 @@ async function retryPendingDeliveryResolutionRace<T>(operation: () => Promise<T>
     }
 }
 
+/**
+ * Every Pending mutation transaction starts here: the session is read inside the same transaction that writes,
+ * so a session that was trashed (回收站) after the caller's access check is refused instead of written to.
+ */
+async function inAvailableSessionTx<T>(
+    sessionId: string,
+    run: (tx: PendingServiceTx) => Promise<T>,
+): Promise<T | { ok: false; error: "session-not-found" }> {
+    return await inTx(async (tx) => {
+        const session = await tx.session.findUnique({ where: { id: sessionId }, select: { trashedAt: true } });
+        if (!session || session.trashedAt) return { ok: false, error: "session-not-found" } as const;
+        return await run(tx);
+    });
+}
+
 export type { PendingMessageRow } from "@/app/session/pending/mapPendingMessageRow";
 
 export type ListPendingMessagesResult =
@@ -359,7 +374,7 @@ export async function enqueuePendingMessage(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const session = await tx.session.findUnique({
                 where: { id: sessionId },
                 select: {
@@ -672,7 +687,7 @@ export async function updatePendingMessage(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const session = await tx.session.findUnique({
                 where: { id: sessionId },
                 select: { encryptionMode: true },
@@ -778,7 +793,7 @@ export async function updatePendingRequestedAction(params: {
         const currentActionValue = currentAction.data;
         const nextUpdatedAt = new Date(Math.max(Date.now(), existing.updatedAt.getTime() + 1));
 
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const retriesProvenPreEffectBlock =
                 existing.deliveryState === "blocked"
                 && !isPendingDeliveryProviderEffectPossibleV1(normalizePendingDeliveryStatusV1({
@@ -939,7 +954,7 @@ export async function deletePendingMessage(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: { status: true, deliveryState: true, deliveryBlockedReason: true },
@@ -1027,7 +1042,7 @@ export async function markPendingActivationFailed(params: Readonly<{
     const access = await resolveSessionPendingOwnerAccess(params.actorUserId, params.sessionId);
     if (!access.ok) return { ok: false, error: access.error };
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const didFail = await markPendingActivationAuthorizationFailedInTx({
                 tx,
                 sessionId: params.sessionId,
@@ -1308,7 +1323,7 @@ export async function resolveAcceptedPendingDelivery(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await retryPendingDeliveryResolutionRace(() => inTx(async (tx) => {
+        return await retryPendingDeliveryResolutionRace(() => inAvailableSessionTx(params.sessionId, async (tx) => {
             if (!await acquireTrustedPendingPublisherAuthority({
                 tx,
                 actorUserId,
@@ -1477,7 +1492,7 @@ export async function blockPendingDelivery(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: {
@@ -1614,7 +1629,7 @@ export async function markPendingDeliveryHandled(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await retryPendingDeliveryResolutionRace(() => inTx(async (tx) => {
+        return await retryPendingDeliveryResolutionRace(() => inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: { status: true, deliveryState: true, deliveryBlockedReason: true, discardedReason: true, messageRole: true, content: true, requestedAction: true, position: true },
@@ -1668,7 +1683,7 @@ export async function dismissPendingDelivery(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await retryPendingDeliveryResolutionRace(() => inTx(async (tx) => {
+        return await retryPendingDeliveryResolutionRace(() => inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: { status: true, deliveryState: true, deliveryBlockedReason: true, discardedReason: true },
@@ -1737,7 +1752,7 @@ export async function sendPendingDeliveryAsNew(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await retryPendingDeliveryResolutionRace(() => inTx(async (tx) => {
+        return await retryPendingDeliveryResolutionRace(() => inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: {
@@ -1834,7 +1849,7 @@ export async function discardPendingMessage(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: { status: true, deliveryState: true, deliveryBlockedReason: true, discardedReason: true },
@@ -1918,7 +1933,7 @@ export async function restorePendingMessage(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const existing = await tx.sessionPendingMessage.findUnique({
                 where: { sessionId_localId: { sessionId, localId } },
                 select: { status: true, deliveryState: true, deliveryBlockedReason: true, discardedReason: true },
@@ -1988,7 +2003,7 @@ export async function reorderPendingMessages(params: {
     if (!access.ok) return { ok: false, error: access.error };
 
     try {
-        return await inTx(async (tx) => {
+        return await inAvailableSessionTx(params.sessionId, async (tx) => {
             const queued = await tx.sessionPendingMessage.findMany({
                 where: { sessionId, status: "queued" },
                 select: { localId: true, deliveryState: true, deliveryBlockedReason: true, position: true },

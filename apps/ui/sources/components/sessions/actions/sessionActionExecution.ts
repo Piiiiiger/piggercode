@@ -4,7 +4,7 @@ import { storage } from '@/sync/domains/state/storage';
 import { HappyError } from '@/utils/errors/errors';
 import {
     sessionArchiveWithServerScope,
-    sessionDeleteWithServerScope,
+    sessionTrashWithServerScope,
     sessionRename,
     sessionSetManualReadStateWithServerScope,
     sessionStopWithServerScope,
@@ -67,7 +67,7 @@ function resolveRenameSession(context: SessionActionExecutionContext | undefined
 }
 
 function resolveDeleteSession(context: SessionActionExecutionContext | undefined) {
-    return context?.operations?.deleteSession ?? sessionDeleteWithServerScope;
+    return context?.operations?.deleteSession ?? sessionTrashWithServerScope;
 }
 
 function resolveResumeSession(context: SessionActionExecutionContext | undefined) {

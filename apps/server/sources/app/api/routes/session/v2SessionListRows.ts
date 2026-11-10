@@ -62,6 +62,7 @@ const V2_SESSION_LIST_ROW_BASE_SELECT = {
     updatedAt: true,
     meaningfulActivityAt: true,
     archivedAt: true,
+    trashedAt: true,
     encryptionMode: true,
     metadata: true,
     metadataVersion: true,
@@ -272,6 +273,8 @@ export function mapV2SessionListRow(params: Readonly<{ row: V2SessionListRowComp
         active: row.active,
         activeAt: row.lastActiveAt.getTime(),
         archivedAt: row.archivedAt?.getTime() ?? null,
+        // Only the trash list returns trashed rows; every other list leaves the key off.
+        ...(row.trashedAt ? { trashedAt: row.trashedAt.getTime() } : {}),
         encryptionMode: row.encryptionMode === "plain" ? "plain" : "e2ee",
         metadata: row.metadata,
         metadataVersion: row.metadataVersion,

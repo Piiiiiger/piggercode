@@ -131,13 +131,13 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
         return await inTx(async (tx): Promise<RegisterPublisherResult> => {
             const session = await tx.session.findUnique({
                 where: { id: binding.sessionId },
-                select: { archivedAt: true, lastActiveAt: true, publisherGeneration: true },
+                select: { archivedAt: true, trashedAt: true, lastActiveAt: true, publisherGeneration: true },
             });
             if (!session) return { status: "rejected", reason: "not_found" };
             if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...binding })) {
                 return { status: "rejected", reason: "unauthorized" };
             }
-            if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+            if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
             if (session.publisherGeneration >= MAX_PUBLISHER_GENERATION) {
                 return { status: "rejected", reason: "revision_overflow" };
             }
@@ -157,6 +157,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                 where: {
                     id: binding.sessionId,
                     archivedAt: null,
+                    trashedAt: null,
                     lastActiveAt: session.lastActiveAt,
                     publisherGeneration: session.publisherGeneration,
                 },
@@ -258,7 +259,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
         if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...params.binding })) {
             return { status: "rejected", reason: "unauthorized" };
         }
-        if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+        if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
         if (
             params.authority.kind !== "legacy-heartbeat"
             && session.publisherGeneration !== params.authority.publisherGeneration
@@ -288,6 +289,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                         id: params.binding.sessionId,
                         active: false,
                         archivedAt: null,
+                        trashedAt: null,
                         lastActiveAt: session.lastActiveAt,
                         publisherGeneration: params.authority.publisherGeneration,
                         publisherGenerationLastActiveAt: session.lastActiveAt,
@@ -303,6 +305,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                 id: params.binding.sessionId,
                 active: true,
                 archivedAt: null,
+                trashedAt: null,
                 lastActiveAt: params.authority.kind === "generation"
                     ? session.lastActiveAt
                     : params.authority.committedFence,
@@ -363,6 +366,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
             select: {
                 active: true,
                 archivedAt: true,
+                trashedAt: true,
                 lastActiveAt: true,
                 publisherGeneration: true,
                 publisherGenerationLastActiveAt: true,
@@ -372,7 +376,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
         if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...params.binding })) {
             return { status: "rejected", reason: "machine_control_unavailable" };
         }
-        if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+        if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
         if (!session.active) return { status: "already_inactive" };
         const authority = session.publisherGeneration > 0n
             && session.publisherGenerationLastActiveAt?.getTime() === session.lastActiveAt.getTime()
@@ -450,6 +454,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                 id: registration.binding.sessionId,
                 active: true,
                 archivedAt: null,
+                trashedAt: null,
                 lastActiveAt: registration.committedFence,
                 publisherGeneration: registration.publisherGeneration,
                 publisherGenerationLastActiveAt: registration.committedFence,
@@ -498,6 +503,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                     select: {
                         active: true,
                         archivedAt: true,
+                        trashedAt: true,
                         lastActiveAt: true,
                         publisherGeneration: true,
                         publisherGenerationLastActiveAt: true,
@@ -507,7 +513,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                 if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...registration.binding })) {
                     return { status: "rejected", reason: "unauthorized" };
                 }
-                if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+                if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
                 if (
                     session.publisherGeneration !== registration.publisherGeneration
                     || session.lastActiveAt.getTime() !== registration.committedFence.getTime()
@@ -522,6 +528,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                         id: registration.binding.sessionId,
                         active: session.active,
                         archivedAt: null,
+                        trashedAt: null,
                         lastActiveAt: registration.committedFence,
                         publisherGeneration: registration.publisherGeneration,
                         publisherGenerationLastActiveAt: registration.committedFence,
@@ -574,6 +581,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                 select: {
                     active: true,
                     archivedAt: true,
+                    trashedAt: true,
                     lastActiveAt: true,
                     publisherGeneration: true,
                     publisherGenerationLastActiveAt: true,
@@ -588,7 +596,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
             if (!await hasCurrentSessionScopedMachineAccessInTx({ tx: params.tx, ...registration.binding })) {
                 return { status: "rejected", reason: "unauthorized" };
             }
-            if (session.archivedAt !== null) return { status: "rejected", reason: "archived" };
+            if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" };
             if (
                 !session.active
                 || session.publisherGeneration !== registration.publisherGeneration
@@ -726,6 +734,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                         select: {
                             active: true,
                             archivedAt: true,
+                            trashedAt: true,
                             lastActiveAt: true,
                             publisherGeneration: true,
                             publisherGenerationLastActiveAt: true,
@@ -735,7 +744,7 @@ export function createSessionPublisherPresence(options: Readonly<{ now?: () => D
                     if (!await hasCurrentSessionScopedMachineAccessInTx({ tx, ...registration.binding })) {
                         return { status: "rejected", reason: "unauthorized" } as const;
                     }
-                    if (session.archivedAt !== null) return { status: "rejected", reason: "archived" } as const;
+                    if (session.archivedAt !== null || session.trashedAt) return { status: "rejected", reason: "archived" } as const;
                     if (
                         session.publisherGeneration !== registration.publisherGeneration
                         || session.lastActiveAt.getTime() !== registration.committedFence.getTime()

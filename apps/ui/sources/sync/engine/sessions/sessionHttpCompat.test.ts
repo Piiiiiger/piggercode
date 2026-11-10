@@ -216,6 +216,7 @@ describe('session record coercion carries the server-materialized unread entry f
         const request = v2ListRequest([rawSessionRow({
             meaningfulActivityAt: 25,
             archivedAt: null,
+            trashedAt: 29,
             encryptionMode: 'plain',
             lastViewedSessionSeq: 5,
             pendingPermissionRequestCount: 0,
@@ -247,6 +248,7 @@ describe('session record coercion carries the server-materialized unread entry f
         expect(declaredFields.length).toBeGreaterThan(20);
         const missing = declaredFields.filter((field) => !(field in (coerced as Record<string, unknown>)));
         expect(missing).toEqual([]);
+        expect(coerced?.trashedAt).toBe(29);
         expect(coerced?.pendingActivationAuthorization).toEqual({
             status: 'waiting',
             requestId: 'activation-1',

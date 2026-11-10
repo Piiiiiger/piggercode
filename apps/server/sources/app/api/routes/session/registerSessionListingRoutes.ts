@@ -158,13 +158,13 @@ async function findV1SessionListRowsWithSelect(params: Readonly<{
     const { userId, sessionSelect, shareSessionSelect } = params;
     return await Promise.all([
         db.session.findMany({
-            where: { accountId: userId, archivedAt: null },
+            where: { accountId: userId, archivedAt: null, trashedAt: null },
             orderBy: { updatedAt: 'desc' },
             take: 150,
             select: sessionSelect,
         }),
         db.sessionShare.findMany({
-            where: { sharedWithUserId: userId, session: { archivedAt: null } },
+            where: { sharedWithUserId: userId, session: { archivedAt: null, trashedAt: null } },
             orderBy: { session: { updatedAt: 'desc' } },
             take: 150,
             select: createV1SessionShareSelect(shareSessionSelect),
@@ -327,7 +327,7 @@ export function registerSessionListingRoutes(app: Fastify) {
             const decoded = await timing.measureAsync("cursor", async () => resolveV2SessionListCursorForVisibleRows({
                 cursor,
                 userId,
-                cursorRowWhere: { archivedAt: null },
+                cursorRowWhere: { archivedAt: null, trashedAt: null },
             }));
             if (!decoded) {
                 return reply.code(400).send({ error: 'Invalid cursor format' });
@@ -337,6 +337,7 @@ export function registerSessionListingRoutes(app: Fastify) {
 
         const where = {
             archivedAt: null,
+            trashedAt: null,
             ...createV2SessionListCursorWhere(decodedCursor),
         };
 
@@ -392,7 +393,7 @@ export function registerSessionListingRoutes(app: Fastify) {
             const decoded = await timing.measureAsync("cursor", async () => resolveV2SessionListCursorForVisibleRows({
                 cursor,
                 userId,
-                cursorRowWhere: { archivedAt: { not: null } },
+                cursorRowWhere: { archivedAt: { not: null }, trashedAt: null },
             }));
             if (!decoded) {
                 return reply.code(400).send({ error: 'Invalid cursor format' });
@@ -402,6 +403,55 @@ export function registerSessionListingRoutes(app: Fastify) {
 
         const where = {
             archivedAt: { not: null },
+            trashedAt: null,
+            ...createV2SessionListCursorWhere(decodedCursor),
+        };
+
+        const sessions = await timing.measureAsync("query", async () => findV2SessionListRows({
+            userId,
+            where,
+            orderBy: V2_SESSION_LIST_ORDER_BY,
+            take: limit + 1,
+        }));
+
+        const payload = timing.measure("page", () => createV2SessionListPage({ rows: sessions, userId, limit,
+            supportedConnectedServiceIds: readConnectedServiceReaderSupport(request.query?.[CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY]) }));
+        timing.apply(reply);
+        return reply.send({ ...payload, sessions: projectSessionRowsForReader(payload.sessions,
+            readConnectedServiceReaderSupport(request.query?.[CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY])) });
+    });
+
+    // The owner's trashed sessions (回收站), paged like the archived list. Nothing else returns these rows.
+    app.get('/v2/sessions/trash', {
+        preHandler: app.authenticate,
+        schema: {
+            response: {
+                200: V2SessionListResponseSchema,
+                400: z.object({ error: z.literal('Invalid cursor format') }),
+            },
+            querystring: V2_PAGED_SESSION_LIST_QUERYSTRING_SCHEMA,
+        },
+    }, async (request, reply) => {
+        const userId = request.userId;
+        const timing = createV2SessionListServerTiming(request);
+        const { cursor, limit = 50 } = request.query || {};
+
+        let decodedCursor: { sessionId: string; meaningfulActivityAt: number } | undefined;
+        if (cursor) {
+            const decoded = await timing.measureAsync("cursor", async () => resolveV2SessionListCursorForVisibleRows({
+                cursor,
+                userId,
+                cursorRowWhere: { accountId: userId, trashedAt: { not: null } },
+            }));
+            if (!decoded) {
+                return reply.code(400).send({ error: 'Invalid cursor format' });
+            }
+            decodedCursor = decoded;
+        }
+
+        const where = {
+            accountId: userId,
+            trashedAt: { not: null },
             ...createV2SessionListCursorWhere(decodedCursor),
         };
 

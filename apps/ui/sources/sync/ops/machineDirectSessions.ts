@@ -3,6 +3,10 @@ import {
     DirectSessionLinkEnsureResponseSchema,
     DirectSessionCandidateDeleteRequestSchema,
     DirectSessionCandidateDeleteResponseSchema,
+    DirectSessionCandidateRestoreRequestSchema,
+    DirectSessionCandidateRestoreResponseSchema,
+    DirectSessionCandidateTrashRequestSchema,
+    DirectSessionCandidateTrashResponseSchema,
     DirectSessionStatusGetRequestSchema,
     DirectSessionStatusGetResponseSchema,
     DirectSessionTakeoverPersistStartResponseSchema,
@@ -19,6 +23,10 @@ import {
     type DirectSessionLinkEnsureResponse,
     type DirectSessionCandidateDeleteRequest,
     type DirectSessionCandidateDeleteResponse,
+    type DirectSessionCandidateRestoreRequest,
+    type DirectSessionCandidateRestoreResponse,
+    type DirectSessionCandidateTrashRequest,
+    type DirectSessionCandidateTrashResponse,
     type DirectSessionStatusGetRequest,
     type DirectSessionStatusGetResponse,
     type DirectSessionTakeoverPersistStartResponse,
@@ -101,6 +109,34 @@ export async function machineDirectSessionCandidateDelete(
         input,
         requestSchema: DirectSessionCandidateDeleteRequestSchema,
         responseSchema: DirectSessionCandidateDeleteResponseSchema,
+        opts,
+    });
+}
+
+export async function machineDirectSessionCandidateTrash(
+    input: DirectSessionCandidateTrashRequest,
+    opts?: MachineDirectSessionsOpts,
+): Promise<DirectSessionCandidateTrashResponse> {
+    return callDirectSessionMachineRpc({
+        machineId: input.machineId,
+        method: RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_TRASH,
+        input,
+        requestSchema: DirectSessionCandidateTrashRequestSchema,
+        responseSchema: DirectSessionCandidateTrashResponseSchema,
+        opts,
+    });
+}
+
+export async function machineDirectSessionCandidateRestore(
+    input: DirectSessionCandidateRestoreRequest,
+    opts?: MachineDirectSessionsOpts,
+): Promise<DirectSessionCandidateRestoreResponse> {
+    return callDirectSessionMachineRpc({
+        machineId: input.machineId,
+        method: RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_RESTORE,
+        input,
+        requestSchema: DirectSessionCandidateRestoreRequestSchema,
+        responseSchema: DirectSessionCandidateRestoreResponseSchema,
         opts,
     });
 }

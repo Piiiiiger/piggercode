@@ -360,6 +360,7 @@ import {
 } from '@/utils/system/versionUtils';
 import { applyMessageCatchUpDecision } from '@/sync/runtime/orchestration/applyMessageCatchUpDecision';
 import { readDirectSessionLink, type DirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';
+import { useSessionTrashStore } from '@/sync/domains/session/trash/sessionTrashStore';
 import { stableJsonStringify } from '@/utils/json/stableJsonStringify';
 import { normalizeDirectTranscriptMessages } from '@/sync/runtime/directSessions/normalizeDirectTranscriptMessages';
 import { readStoredSessionRawRecord } from '@/sync/runtime/readStoredSessionContent';
@@ -991,6 +992,9 @@ class Sync {
     private sessionListScrollSettleTimer: ReturnType<typeof setTimeout> | null = null;
     private sessionListScrollIdleResolvers: Array<() => void> = [];
     private fetchMoreArchivedSessionsInFlight: Promise<void> | null = null;
+    private trashRefreshGeneration = 0;
+    /** Bumped when a session is deleted or trashed; a by-id hydration started before that must not apply (it would clear the newer tombstone). */
+    private sessionHydrationEpochs = new Map<string, number>();
     private archivedSessionListNextCursor: string | null = null;
     private archivedSessionListHasMore = false;
     private messagesSync = new Map<string, InvalidateSync>();
@@ -2107,6 +2111,9 @@ class Sync {
         this.fetchMoreArchivedSessionsInFlight = null;
         this.archivedSessionListNextCursor = null;
         this.archivedSessionListHasMore = false;
+        this.trashRefreshGeneration += 1;
+        this.sessionHydrationEpochs.clear();
+        useSessionTrashStore.getState().reset();
         this.sessionDataKeys.clear();
         this.sessionDataKeyEnvelopes.clear();
         this.machineDataKeys.clear();
@@ -4360,6 +4367,84 @@ class Sync {
         });
         this.fetchMoreArchivedSessionsInFlight = promise;
         return promise;
+    }
+
+    /**
+     * Reads the active server's trash (回收站) into `useSessionTrashStore`. The trash is not part of the
+     * session store, so its rows are collected here as they decrypt. The previous list stays until the new
+     * read has rows; a newer read (or a server switch) supersedes an older one. A failed read leaves the
+     * list as it was and marks the store `error`, so the screen can offer a retry instead of showing "empty".
+     */
+    public refreshTrashedSessions = async (): Promise<void> => {
+        if (!this.credentials) return;
+        const refreshGeneration = ++this.trashRefreshGeneration;
+        const scopeGeneration = this.serverScopeGeneration;
+        const shouldContinue = () => this.serverScopeGeneration === scopeGeneration && this.trashRefreshGeneration === refreshGeneration;
+        const collected = new Map<string, Session>();
+        const reported = new Set<string>();
+        let pagesDone = false;
+        const trashStore = useSessionTrashStore.getState();
+        trashStore.update({ status: 'loading', complete: false });
+        const publish = () => {
+            if (!shouldContinue()) return;
+            const hydratedAll = [...reported].every((id) => collected.has(id));
+            useSessionTrashStore.getState().update({
+                sessions: [...collected.values()],
+                count: reported.size,
+                ...(pagesDone ? { status: 'ready' as const, complete: hydratedAll } : {}),
+            });
+        };
+        try {
+            let cursor: string | null = null;
+            do {
+                const result = await fetchAndApplySessions({
+                    clientEncryptionRequirement: resolveUiClientEncryptionRequirement({
+                        syncedSettings: storage.getState().settings,
+                        localSettings: storage.getState().settings,
+                    }),
+                    sessionListPath: '/v2/sessions/trash',
+                    sessionListCursor: cursor,
+                    sessionListMaxPages: 1,
+                    serverId: String(getActiveServerSnapshot().serverId ?? '').trim() || null,
+                    credentials: this.credentials,
+                    encryption: this.encryption,
+                    sessionDataKeys: this.sessionDataKeys,
+                    sessionDataKeyEnvelopes: this.sessionDataKeyEnvelopes,
+                    shouldContinue,
+                    onSnapshotFetched: (sessionIds) => {
+                        for (const id of sessionIds) reported.add(id);
+                        publish();
+                    },
+                    applySessions: (sessions) => {
+                        for (const session of sessions) {
+                            if (typeof session.trashedAt === 'number') collected.set(session.id, session as Session);
+                        }
+                        publish();
+                    },
+                    repairInvalidReadStateV1: (params) => this.repairInvalidReadStateV1(params),
+                    log,
+                });
+                if (!shouldContinue()) return;
+                cursor = result.hasNext ? result.nextCursor : null;
+            } while (cursor);
+            pagesDone = true;
+            // An empty trash applies no rows, so publish the (possibly empty) result once the read is done.
+            publish();
+        } catch (error) {
+            if (shouldContinue()) useSessionTrashStore.getState().update({ status: 'error', complete: false });
+            throw error;
+        }
+    }
+
+    private trashRefreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+    /** Re-reads the trash shortly after a session was trashed, restored or deleted; bursts collapse into one read. */
+    public scheduleTrashRefresh = (): void => {
+        if (this.trashRefreshTimer) clearTimeout(this.trashRefreshTimer);
+        this.trashRefreshTimer = setTimeout(() => {
+            this.trashRefreshTimer = null;
+            fireAndForget(this.refreshTrashedSessions(), { tag: 'Sync.scheduleTrashRefresh', logToConsole: false });
+        }, 500);
     }
 
     private isSessionKnownOnActiveServer = (sessionId: string): boolean => {
@@ -7840,6 +7925,11 @@ class Sync {
           return finish('ok');
       }
 
+    private invalidateSessionHydration(sessionId: string): void {
+        const normalized = String(sessionId ?? '').trim();
+        if (normalized) this.sessionHydrationEpochs.set(normalized, (this.sessionHydrationEpochs.get(normalized) ?? 0) + 1);
+    }
+
     private hydrateSessionShellByIdFromSocket(
         sessionId: string,
         reason: string,
@@ -7856,6 +7946,8 @@ class Sync {
         const scopedServerId = sourceServerId ?? resolvePreferredServerIdForSessionId(normalized);
         const stagedSessionDataKeys = new Map(this.sessionDataKeys);
         const stagedSessionDataKeyEnvelopes = new Map(this.sessionDataKeyEnvelopes);
+        const hydrationEpoch = this.sessionHydrationEpochs.get(normalized) ?? 0;
+        const isCurrentHydration = () => shouldContinue() && (this.sessionHydrationEpochs.get(normalized) ?? 0) === hydrationEpoch;
         fireAndForget((async () => {
             const result = await fetchSessionByIdWithServerScope({
                 sessionId: normalized,
@@ -7867,13 +7959,13 @@ class Sync {
                 activeRequest: (path, init) => apiSocket.request(path, init),
                 getExistingSession: (targetSessionId) => storage.getState().sessions[targetSessionId] ?? null,
                 applySessions: (sessions) => {
-                    if (!shouldContinue()) return;
+                    if (!isCurrentHydration()) return;
                     this.applySessions(sessions);
                 },
                 log,
                 includeTurnsProjection: reason === 'socket-update-turn-projection',
             });
-            if (!shouldContinue()) return;
+            if (!isCurrentHydration()) return;
             if (!result.ok) {
                 log.log(`[Sync.socketHydrateSession] ${reason} failed for ${normalized}: ${result.errorCode ?? 'unknown'}`);
                 this.sessionsSync.invalidate();
@@ -7929,6 +8021,8 @@ class Sync {
               hydrateSessionById: (sessionId, reason) => {
                   this.hydrateSessionShellByIdFromSocket(sessionId, reason, sourceServerId, shouldContinue);
               },
+              onSessionTrashMayHaveChanged: () => this.scheduleTrashRefresh(),
+              onSessionDeleted: (sessionId) => this.invalidateSessionHydration(sessionId),
               applyMessages: (sessionId, messages) => this.applyMessages(sessionId, messages),
                 onSessionVisible: (sessionId) => this.onSessionVisible(sessionId),
                 isSessionMessagesLoaded: (sessionId) => storage.getState().sessionMessages[sessionId]?.isLoaded === true,

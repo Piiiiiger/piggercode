@@ -91,6 +91,7 @@ function createHarness(createSessionsDomain: any, initialState: Record<string, a
         reviewCommentsDraftsByWorkspaceCacheKey: {},
         actionDraftsBySessionId: {},
         isDataReady: false,
+        deletedSessionIds: {},
         machines: {},
         machineDisplayById: {},
         sessionMessages: {},

@@ -121,6 +121,8 @@ describe("pendingMessageService", () => {
             updatedAt,
         });
         currentTx.session.findUnique
+            // The mutation transaction first confirms the session is not in the trash.
+            .mockResolvedValueOnce({ trashedAt: null })
             .mockResolvedValueOnce({
                 accountId: "u1",
                 active: true,
@@ -656,7 +658,7 @@ describe("pendingMessageService", () => {
         })).resolves.toEqual({ ok: false, error: "forbidden" });
 
         expect(currentTx.accessKey.findUnique).toHaveBeenCalledTimes(1);
-        expect(currentTx.session.findUnique).toHaveBeenCalledTimes(1);
+        expect(currentTx.session.findUnique).toHaveBeenCalledTimes(2);
         expect(currentTx.session.update).toHaveBeenCalledTimes(1);
         expect(currentTx.sessionPendingMessage.findUnique).not.toHaveBeenCalled();
         expect(currentTx.sessionPendingMessage.findFirst).not.toHaveBeenCalled();

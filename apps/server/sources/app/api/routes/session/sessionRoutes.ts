@@ -2,6 +2,7 @@ import { type Fastify } from "../../types";
 import { registerSessionCreateOrLoadRoute } from "./registerSessionCreateOrLoadRoute";
 import { registerSessionDeleteRoute } from "./registerSessionDeleteRoute";
 import { registerSessionArchiveRoutes } from "./registerSessionArchiveRoutes";
+import { registerSessionTrashRoutes } from "./registerSessionTrashRoutes";
 import { registerSessionListingRoutes } from "./registerSessionListingRoutes";
 import { registerSessionFolderAssignmentRoutes } from "./registerSessionFolderAssignmentRoutes";
 import { registerSessionOrganizationRoutes } from "./registerSessionOrganizationRoutes";
@@ -18,6 +19,7 @@ export function sessionRoutes(app: Fastify) {
     registerSessionFolderAssignmentRoutes(app);
     registerSessionCreateOrLoadRoute(app);
     registerSessionArchiveRoutes(app);
+    registerSessionTrashRoutes(app);
     registerSessionMessageRoutes(app);
     registerSessionSystemRecordRoutes(app);
     registerSessionAgentTransitionRoute(app);

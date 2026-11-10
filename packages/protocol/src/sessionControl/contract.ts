@@ -326,6 +326,8 @@ export const V2SessionRecordSchema = z
     active: z.boolean(),
     activeAt: z.number().int().nonnegative(),
     archivedAt: z.number().int().nonnegative().nullable().optional(),
+    /** Set while the session is in the trash (回收站); only the trash list returns such rows. */
+    trashedAt: z.number().int().nonnegative().nullable().optional(),
     encryptionMode: AccountEncryptionModeSchema.optional(),
     metadata: z.string(),
     metadataVersion: z.number().int().nonnegative(),

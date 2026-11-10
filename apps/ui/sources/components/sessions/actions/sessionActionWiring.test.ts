@@ -12,6 +12,7 @@ const forbiddenUiOperationNames = [
     'sessionSetManualReadStateWithServerScope',
     'sessionDelete',
     'sessionDeleteWithServerScope',
+    'sessionTrashWithServerScope',
     'stopSessionAndMaybeArchive',
 ] as const;
 

@@ -66,6 +66,9 @@ export function registerSessionCreateOrLoadRoute(app: Fastify) {
                 },
             });
 
+            // A session in the trash is not loaded or revived by its tag; it must be restored (or purged) first.
+            if (existing?.trashedAt) return { conflict: "session-trashed" as const };
+
             if (existing) {
                 log(
                     { module: "session-create", sessionId: existing.id, userId, tag },
@@ -212,6 +215,9 @@ export function registerSessionCreateOrLoadRoute(app: Fastify) {
             return { session: created, loadUpdate: null, resolution: "created" as const };
         });
 
+        if ("conflict" in resolved) {
+            return reply.code(409).send({ error: resolved.conflict });
+        }
         const loadUpdate = resolved.loadUpdate;
         if (loadUpdate) {
             const projection = {

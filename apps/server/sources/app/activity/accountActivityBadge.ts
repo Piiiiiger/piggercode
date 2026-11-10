@@ -18,6 +18,7 @@ export type SessionActivityBadgeInputs = Readonly<{
     lastRuntimeIssue?: SessionRuntimeIssueV1 | string | null;
     active?: boolean | null;
     archivedAt?: Date | null;
+    trashedAt?: Date | null;
 }>;
 
 type SessionActivityBadgeRow = Readonly<{
@@ -56,7 +57,7 @@ function parseStoredTurnStatus(value: SessionActivityBadgeInputs["latestTurnStat
 
 export function computeSessionContributesToActivityBadge(session: SessionActivityBadgeInputs): boolean {
     if (session.active === false) return false;
-    if (session.archivedAt) return false;
+    if (session.archivedAt || session.trashedAt) return false;
 
     const seq = typeof session.seq === "number" ? session.seq : 0;
     const lastViewedSessionSeq = typeof session.lastViewedSessionSeq === "number" ? session.lastViewedSessionSeq : null;
@@ -98,6 +99,7 @@ export async function computeAccountActivityBadgeCounts(accountIds: ReadonlyArra
             accountId: { in: normalizedAccountIds },
             active: true,
             archivedAt: null,
+            trashedAt: null,
         },
         select: {
             accountId: true,

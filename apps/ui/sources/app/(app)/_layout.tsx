@@ -360,6 +360,14 @@ const RootLayoutShell = React.memo(function RootLayoutShell(): React.ReactElemen
                 }}
             />
             <Stack.Screen
+                name="session/trash"
+                options={{
+                    headerShown: true,
+                    headerTitle: t('sessionTrash.title'),
+                    headerBackTitle: t('common.back'),
+                }}
+            />
+            <Stack.Screen
                 name="terminal/connect"
                 options={mixedUseRouteScreenOptions.terminal}
             />

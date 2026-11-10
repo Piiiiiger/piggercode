@@ -13,6 +13,7 @@ import {
   type DirectSessionProviderOps,
 } from '@/backends/directSessions/providerOps';
 
+import { canonicalCodexHomeIdentity } from './codexCopyIdentity';
 import { getCodexDirectSessionActivity } from './getCodexDirectSessionActivity';
 import { getCodexDirectSessionWorkingDirectory } from './getCodexDirectSessionWorkingDirectory';
 import { listCodexSessionCandidates } from './listCodexSessionCandidates';
@@ -20,7 +21,7 @@ import { pageCodexTranscript } from './pageCodexTranscript';
 import { readAfterCodexTranscript } from './readAfterCodexTranscript';
 import { resolveCodexHomeEntriesForDirectSessionsSource } from './resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveCodexAppServerProcessEnv } from '../appServer/resolveCodexAppServerProcessEnv';
-import { deleteCodexThreadViaAppServer } from '../appServer/session/deleteCodexThreadViaAppServer';
+import { deleteCodexThreadViaAppServer, setCodexThreadArchivedViaAppServer } from '../appServer/session/deleteCodexThreadViaAppServer';
 import {
   CODEX_APP_SERVER_DAEMON_PROXY_TRANSPORT,
   CODEX_APP_SERVER_TRANSPORT_ENV_KEY,
@@ -67,6 +68,19 @@ function resolveCodexTakeoverSourceAuth(params: Readonly<{
   };
 }
 
+async function resolveSingleCodexHomeEntry(source: DirectSessionsSource) {
+  const homeEntries = await resolveCodexHomeEntriesForDirectSessionsSource({
+    source,
+    activeServerDir: configuration.activeServerDir,
+    env: process.env,
+  });
+  const homeEntry = homeEntries.length === 1 ? homeEntries[0] : undefined;
+  if (!homeEntry) {
+    throw new DirectSessionsProviderUnavailableError('Codex session deletion needs exactly one Codex home for this source.');
+  }
+  return homeEntry;
+}
+
 export const codexDirectSessionProviderOps: DirectSessionProviderOps = {
   listCandidates: async ({ source, cursor, limit, searchTerm, searchMode }) => {
     const res = await listCodexSessionCandidates({ source, activeServerDir: configuration.activeServerDir, cursor, limit, searchTerm, searchMode });
@@ -78,16 +92,17 @@ export const codexDirectSessionProviderOps: DirectSessionProviderOps = {
     };
   },
   deleteCandidate: async ({ source, remoteSessionId }) => {
-    const homeEntries = await resolveCodexHomeEntriesForDirectSessionsSource({
-      source,
-      activeServerDir: configuration.activeServerDir,
-      env: process.env,
-    });
-    const homeEntry = homeEntries.length === 1 ? homeEntries[0] : undefined;
-    if (!homeEntry) {
-      throw new DirectSessionsProviderUnavailableError('Codex session deletion needs exactly one Codex home for this source.');
-    }
+    const homeEntry = await resolveSingleCodexHomeEntry(source);
     await deleteCodexThreadViaAppServer({ homeEntry, env: process.env, threadId: remoteSessionId });
+  },
+  resolveCopyIdentity: async ({ source }) => await canonicalCodexHomeIdentity((await resolveSingleCodexHomeEntry(source)).codexHome),
+  trashCandidate: async ({ source, remoteSessionId }) => {
+    const homeEntry = await resolveSingleCodexHomeEntry(source);
+    await setCodexThreadArchivedViaAppServer({ homeEntry, env: process.env, threadId: remoteSessionId, archived: true });
+  },
+  restoreCandidate: async ({ source, remoteSessionId }) => {
+    const homeEntry = await resolveSingleCodexHomeEntry(source);
+    await setCodexThreadArchivedViaAppServer({ homeEntry, env: process.env, threadId: remoteSessionId, archived: false });
   },
   getActivity: async ({ source, remoteSessionId }) => {
     const res = await getCodexDirectSessionActivity({ source, activeServerDir: configuration.activeServerDir, remoteSessionId });

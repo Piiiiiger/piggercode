@@ -135,3 +135,29 @@ export function createAuthenticationHttpStatusError(
 ): HttpStatusErrorWithCode {
   return createHttpStatusError(status, message, 'not_authenticated');
 }
+
+/**
+ * The server refused to load a session by its tag because that session is in the trash (回收站): 409
+ * `session-trashed`. It stays that way until the user restores it in the app, so retrying changes nothing; a
+ * typed code (not a message) lets every retry loop recognise it.
+ */
+export const SESSION_TRASHED_CODE = 'session_trashed';
+
+export class SessionTrashedError extends Error {
+  readonly code = SESSION_TRASHED_CODE;
+  readonly response: Readonly<{ status: number }> = { status: 409 };
+
+  constructor() {
+    super('This session is in the trash. Restore it in the app to continue.');
+    this.name = 'SessionTrashedError';
+  }
+}
+
+export function isSessionTrashedError(error: unknown): boolean {
+  return asRecord(error)?.code === SESSION_TRASHED_CODE;
+}
+
+/** Whether a `POST /v1/sessions` response body is the server's "this tag belongs to a trashed session" answer. */
+export function isSessionTrashedResponse(status: number | null | undefined, data: unknown): boolean {
+  return status === 409 && asRecord(data)?.error === 'session-trashed';
+}

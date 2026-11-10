@@ -18,7 +18,7 @@ import { inTx, type Tx } from "@/storage/inTx";
  *
  * What the transaction proves before anything is written:
  * - the actor OWNS the Session (an edit share is not enough to replace its Agent);
- * - the Session exists, is `archivedAt: null`, and is `active: false` — a stopped
+ * - the Session exists, is `archivedAt: null, trashedAt: null`, and is `active: false` — a stopped
  *   source is the whole point of the preceding confirmed stop;
  * - the caller's `expectedMetadataVersion` still holds.
  *
@@ -142,6 +142,7 @@ export async function commitSessionAgentCurrentViewInTx(params: Readonly<{
         select: {
             active: true,
             archivedAt: true,
+            trashedAt: true,
             metadata: true,
             metadataVersion: true,
             agentState: true,
@@ -173,7 +174,7 @@ export async function commitSessionAgentCurrentViewInTx(params: Readonly<{
         };
     }
 
-    if (session.archivedAt !== null) {
+    if (session.archivedAt !== null || session.trashedAt) {
         return { ok: false, error: "archived" };
     }
     // Read first so a still-running source is reported as `session-active`
@@ -195,6 +196,7 @@ export async function commitSessionAgentCurrentViewInTx(params: Readonly<{
         additionalWhere: {
             active: false,
             archivedAt: null,
+            trashedAt: null,
             agentStateVersion: currentView.expectedAgentStateVersion,
         },
         additionalData: {
@@ -217,10 +219,10 @@ export async function commitSessionAgentCurrentViewInTx(params: Readonly<{
         // precondition. Name which one, using the freshly re-read row.
         const fresh = await tx.session.findUnique({
             where: { id: sessionId },
-            select: { active: true, archivedAt: true, agentStateVersion: true },
+            select: { active: true, archivedAt: true, trashedAt: true, agentStateVersion: true },
         });
         if (!fresh) return { ok: false, error: "session-not-found" };
-        if (fresh.archivedAt !== null) return { ok: false, error: "archived" };
+        if (fresh.archivedAt !== null || fresh.trashedAt) return { ok: false, error: "archived" };
         if (fresh.active) return { ok: false, error: "session-active" };
         return { ok: false, error: "version-mismatch" };
     }

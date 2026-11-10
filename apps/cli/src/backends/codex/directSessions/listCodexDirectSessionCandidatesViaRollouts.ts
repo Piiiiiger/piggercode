@@ -181,6 +181,8 @@ export async function listCodexDirectSessionCandidatesViaRollouts(params: Readon
   limit?: number;
   searchTerm?: string;
   searchMode?: 'fast' | 'full';
+  /** Copies in the trash are not browsable; they are left out before the list is ordered and paged. */
+  isTrashed?: (codexHome: string, remoteSessionId: string) => Promise<boolean>;
 }>): Promise<Readonly<{ candidates: DirectSessionCandidateV1[]; totalCount: number; searchIncomplete?: boolean }>> {
   const env = params.env ?? process.env;
   const homeEntries = await resolveCodexHomeEntriesForDirectSessionsSource({
@@ -205,6 +207,7 @@ export async function listCodexDirectSessionCandidatesViaRollouts(params: Readon
       for (const entry of files) {
         const resumeId = await resolveResumeIdFromRolloutFile(entry.filePath);
         if (!resumeId) continue;
+        if (await params.isTrashed?.(homeEntry.codexHome, resumeId)) continue;
         const existing = grouped.get(resumeId);
         const entrySortMs = parseRolloutTimestampMs(entry.filePath);
         if (!existing) {

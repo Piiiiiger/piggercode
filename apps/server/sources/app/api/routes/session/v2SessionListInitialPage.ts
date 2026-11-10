@@ -173,10 +173,11 @@ export function createV2SessionListAttentionRowsWhere(
     source: SessionAttentionPredicateSource,
 ): Prisma.SessionWhereInput {
     if (source === "materialized") {
-        return { archivedAt: null, needsAttention: true };
+        return { archivedAt: null, trashedAt: null, needsAttention: true };
     }
     return {
         archivedAt: null,
+        trashedAt: null,
         AND: [{
             OR: [
                 { lastViewedSessionSeq: null, seq: { gt: 0 } },
@@ -527,7 +528,7 @@ export async function createV2SessionListInitialPage(params: V2SessionListInitia
         pinnedPlan.sessionIdsToRead.length > 0
             ? measureQuery(() => findV2SessionListRows({
                 userId: params.userId,
-                where: { archivedAt: null, id: { in: pinnedPlan.sessionIdsToRead } },
+                where: { archivedAt: null, trashedAt: null, id: { in: pinnedPlan.sessionIdsToRead } },
                 orderBy: { id: "desc" },
                 take: pinnedPlan.sessionIdsToRead.length,
             }))

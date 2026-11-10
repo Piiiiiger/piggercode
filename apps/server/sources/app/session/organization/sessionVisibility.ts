@@ -6,5 +6,6 @@ export function createVisibleUnarchivedOrganizationSessionWhere(accountId: strin
     return {
         ...createV2SessionListVisibilityWhere({ userId: accountId }),
         archivedAt: null,
+        trashedAt: null,
     };
 }

@@ -53,6 +53,8 @@ export const RPC_METHODS = {
   DAEMON_PROMPT_REGISTRY_INSTALL: 'daemon.promptRegistry.install',
   DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST: 'daemon.directSessions.candidates.list',
   DAEMON_DIRECT_SESSION_CANDIDATE_DELETE: 'daemon.directSessions.candidate.delete',
+  DAEMON_DIRECT_SESSION_CANDIDATE_TRASH: 'daemon.directSessions.candidate.trash',
+  DAEMON_DIRECT_SESSION_CANDIDATE_RESTORE: 'daemon.directSessions.candidate.restore',
   DAEMON_DIRECT_SESSION_LINK_ENSURE: 'daemon.directSessions.link.ensure',
   DAEMON_DIRECT_SESSION_ATTACH: 'daemon.directSessions.attach',
   DAEMON_DIRECT_SESSION_DETACH: 'daemon.directSessions.detach',

@@ -46,6 +46,7 @@ describe("pending publisher authority", () => {
                 accountId: "account-1",
                 active: true,
                 archivedAt: null,
+                trashedAt: null,
                 lastActiveAt: committedFence,
                 updatedAt,
             },

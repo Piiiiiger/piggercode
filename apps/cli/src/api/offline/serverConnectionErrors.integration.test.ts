@@ -16,7 +16,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { HttpStatusError } from '@/api/client/httpStatusError';
+import { HttpStatusError, SessionTrashedError } from '@/api/client/httpStatusError';
 import { startOfflineReconnection, printOfflineWarning, connectionState, isNetworkError, NETWORK_ERROR_CODES } from './serverConnectionErrors';
 
 // Mock axios - only isAxiosError needed for error type detection
@@ -335,6 +335,25 @@ describe('startOfflineReconnection', () => {
             expect(onNotify).toHaveBeenCalledWith(
                 '❌ Authentication failed. Please re-authenticate with `piggercode auth`.'
             );
+            await Promise.resolve();
+            expect(attemptCount).toBe(1);
+
+            handle.cancel();
+        });
+
+        it('should stop retrying, with recovery guidance, when the session was trashed', async () => {
+            let attemptCount = 0;
+            const { handle, onNotify } = createTestHandle({
+                onReconnected: async () => {
+                    attemptCount++;
+                    throw new SessionTrashedError();
+                },
+            });
+            await vi.waitFor(() => {
+                expect(attemptCount).toBe(1);
+            });
+
+            expect(onNotify).toHaveBeenCalledWith('This session is in the trash. Restore it in the app, then start it again.');
             await Promise.resolve();
             expect(attemptCount).toBe(1);
 

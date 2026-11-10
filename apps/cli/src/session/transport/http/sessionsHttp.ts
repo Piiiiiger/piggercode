@@ -17,7 +17,7 @@ import {
 import type { Credentials } from '@/persistence';
 import { resolveSessionEncryptionContext } from '@/api/client/encryptionKey';
 import { resolveSessionStoredContentEncryptionMode } from '@/session/transport/encryption/sessionEncryptionContext';
-import { createHttpStatusError, isAuthenticationStatus } from '@/api/client/httpStatusError';
+import { SessionTrashedError, createHttpStatusError, isAuthenticationStatus, isSessionTrashedResponse } from '@/api/client/httpStatusError';
 import { encodeBase64, encrypt } from '@/api/encryption';
 import { resolveSessionCreateEncryptionMode } from '@/api/session/resolveSessionCreateEncryptionMode';
 import { assertSessionEncryptionModeAllowedByEffectiveClientRequirement } from '@/settings/accountSettings/resolveEffectiveClientEncryptionRequirement';
@@ -430,6 +430,9 @@ export async function getOrCreateSessionByTag(params: Readonly<{
 
   if (isAuthenticationStatus(response.status)) {
     throwAuthenticationStatusError(response.status);
+  }
+  if (isSessionTrashedResponse(response.status, response.data)) {
+    throw new SessionTrashedError();
   }
   if (response.status !== 200) {
     throw new Error(`Unexpected status from /v1/sessions: ${response.status}`);

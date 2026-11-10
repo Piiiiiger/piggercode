@@ -134,6 +134,7 @@ type SocketSessionHydrationReason =
     | 'socket-update-unpatchable'
     | 'socket-update-attention-unknown'
     | 'socket-update-turn-projection'
+    | 'socket-new-session'
     | 'share-visibility-change';
 
 type ActivityRenderablePatch = Readonly<{
@@ -1156,6 +1157,10 @@ export async function handleSocketUpdate(params: {
     applySessions: ApplySessions;
     fetchSessions: () => void;
     hydrateSessionById?: (sessionId: string, reason: SocketSessionHydrationReason) => void;
+    /** A session left or came back (deleted, trashed or restored): the trash list and its count may differ now. */
+    onSessionTrashMayHaveChanged?: () => void;
+    /** A session was deleted or trashed: a hydration of it that is still in flight must not apply. */
+    onSessionDeleted?: (sessionId: string) => void;
     applyMessages: (sessionId: string, messages: NormalizedMessage[]) => void;
     onSessionVisible: (sessionId: string) => void;
     isSessionMessagesLoaded: (sessionId: string) => boolean;
@@ -1192,6 +1197,8 @@ export async function handleSocketUpdate(params: {
         applySessions,
         fetchSessions,
         hydrateSessionById,
+        onSessionTrashMayHaveChanged,
+        onSessionDeleted,
         applyMessages,
         onSessionVisible,
         isSessionMessagesLoaded,
@@ -1234,6 +1241,8 @@ export async function handleSocketUpdate(params: {
         applySessions,
         fetchSessions,
         hydrateSessionById,
+        onSessionTrashMayHaveChanged,
+        onSessionDeleted,
         applyMessages,
         onSessionVisible,
         isSessionMessagesLoaded,
@@ -1303,6 +1312,10 @@ export async function handleUpdateContainer(params: {
     applySessions: ApplySessions;
     fetchSessions: () => void;
     hydrateSessionById?: (sessionId: string, reason: SocketSessionHydrationReason) => void;
+    /** A session left or came back (deleted, trashed or restored): the trash list and its count may differ now. */
+    onSessionTrashMayHaveChanged?: () => void;
+    /** A session was deleted or trashed: a hydration of it that is still in flight must not apply. */
+    onSessionDeleted?: (sessionId: string) => void;
     applyMessages: (sessionId: string, messages: NormalizedMessage[]) => void;
     onSessionVisible: (sessionId: string) => void;
     isSessionMessagesLoaded: (sessionId: string) => boolean;
@@ -1339,6 +1352,8 @@ export async function handleUpdateContainer(params: {
         applySessions,
         fetchSessions,
         hydrateSessionById,
+        onSessionTrashMayHaveChanged,
+        onSessionDeleted,
         applyMessages,
         onSessionVisible,
         isSessionMessagesLoaded,
@@ -1549,9 +1564,15 @@ export async function handleUpdateContainer(params: {
         if (!shouldContinue()) return;
         recordSessionInvalidationRequested('socketNewSession');
         invalidateSessions();
+        // The list refetch covers the main list only; a restored archived session reaches an open archive view
+        // (and the store's tombstone for it is cleared) through the by-id owner.
+        hydrateSessionById?.(updateData.body.id, 'socket-new-session');
+        onSessionTrashMayHaveChanged?.();
     } else if (updateData.body.t === 'delete-session') {
         log.log('🗑️ Delete session update received');
         if (!shouldContinue()) return;
+        onSessionTrashMayHaveChanged?.();
+        onSessionDeleted?.(updateData.body.sid);
         socketSessionApplyCoalescer.dropSessionIds([updateData.body.sid]);
         socketMessageApplyCoalescer.dropSessionIds([updateData.body.sid]);
         durableMessageProjectionPatchCoalescer.dropSessionIds([updateData.body.sid]);

@@ -95,6 +95,7 @@ function createHarness(createSessionsDomain: any, createReducer: any) {
         reviewCommentsDraftsByWorkspaceCacheKey: {},
         actionDraftsBySessionId: {},
         isDataReady: false,
+        deletedSessionIds: {},
         machines: {},
         machineDisplayById: {},
         sessionMessages: {

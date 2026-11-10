@@ -30,6 +30,7 @@ export async function applyPendingSessionStateChange(params: {
             pendingUserActionRequestCount: true,
             active: true,
             archivedAt: true,
+            trashedAt: true,
         },
     });
     const baseData: {

@@ -362,6 +362,8 @@ model Session {
     needsAttention    Boolean             @default(dbgenerated())
     active            Boolean             @default(false)
     archivedAt        DateTime?
+    // Set while the session sits in the trash (回收站); the server hard-deletes it 7 days later.
+    trashedAt         DateTime?
     lastActiveAt      DateTime            @default(now())
     pendingActivationRequestId String?
     pendingActivationRequestedAt DateTime?
@@ -442,6 +444,7 @@ model Session {
     // has no equivalent, so adopting it would also diverge the three datasources.
     @@index([accountId, needsAttention, meaningfulActivityAt, id])
     @@index([accountId, archivedAt])
+    @@index([trashedAt])
     @@index([lastActiveAt, updatedAt])
 }
 
