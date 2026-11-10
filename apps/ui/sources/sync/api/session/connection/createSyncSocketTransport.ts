@@ -4,16 +4,12 @@ import { ConnectedServiceIdSchema, CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_
 import type { ManagedConnectionTransport, TransportDisconnectEvent } from '@piggercode/connection-supervisor';
 import { readComputerUiFocusState, subscribeToRuntimeActiveChange } from '@/utils/runtime/isRuntimeActive';
 import { applyUiClientUpgradeRequired } from '@/sync/runtime/clientCompatibility/uiClientUpgradeRequired';
+import { isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
 
 type SyncSocket = Socket;
 
 function isSocketActive(socket: SyncSocket): boolean {
     return (socket as unknown as { active?: boolean }).active === true;
-}
-
-function isAlreadyDisconnectedSocketError(error: unknown): boolean {
-    if (!(error instanceof Error)) return false;
-    return error.message.toLowerCase().includes('socket has been disconnected');
 }
 
 export function createSyncSocketTransport(params: Readonly<{
@@ -101,7 +97,7 @@ export function createSyncSocketTransport(params: Readonly<{
                 socket.disconnect();
             } catch (error) {
                 intentionalDisconnect = false;
-                if (isAlreadyDisconnectedSocketError(error)) {
+                if (isSocketIoDisconnectedError(error)) {
                     return;
                 }
                 throw error;

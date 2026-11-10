@@ -1,7 +1,7 @@
 import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { isRpcMethodNotAvailableError, readRpcErrorCode, type RpcErrorCarrier } from '@/sync/runtime/rpcErrors';
-import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError, isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
 
 const TERMINAL_AUTO_RETRY_BASE_DELAY_MS = 250;
 const TERMINAL_AUTO_RETRY_MAX_DELAY_MS = 4_000;
@@ -9,7 +9,8 @@ export const TERMINAL_AUTO_RETRY_MAX_ATTEMPTS = 6;
 const TERMINAL_RECOVERABLE_SESSION_ERROR_CODES = new Set(['terminal_not_found']);
 
 export function isRecoverableTerminalRpcError(error: unknown): boolean {
-    if (isSocketIoAckTimeoutError(error)) {
+    // A timed-out or dropped connection comes back by itself: reconnect the terminal, don't give up.
+    if (isSocketIoAckTimeoutError(error) || isSocketIoDisconnectedError(error)) {
         return true;
     }
     if (!error || typeof error !== 'object') {

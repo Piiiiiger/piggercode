@@ -268,6 +268,30 @@ describe('useMachineTerminalSession', () => {
         await next.unmount();
     });
 
+    it('reconnects by itself when the connection drops during a read, instead of showing an error', async () => {
+        const terminalRef = { current: null };
+        machineTerminalStreamReadMock.mockRejectedValueOnce(new Error('socket has been disconnected'));
+
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: '/repo',
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'terminal-key-socket-drop',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            expect(hook.getCurrent().error).toBeNull();
+            await vi.waitFor(async () => {
+                await flushHookEffects();
+                expect(machineTerminalEnsureMock).toHaveBeenCalledTimes(2);
+            }, { timeout: 3_000 });
+        } finally {
+            await hook.unmount();
+        }
+    });
+
     it('releases the reader lease after a fatal RPC failure so another pane can retry', async () => {
         const terminalRef = { current: null };
         machineTerminalEnsureMock.mockRejectedValueOnce(new Error('rpc exploded'));
