@@ -1740,12 +1740,27 @@ with the `follow` title policy (the session title follows the CLI's until the se
 session and ends the session when the CLI exits, keeping a failed exit on screen until Enter. Respawns keep a
 terminal a terminal (`resolveSessionRuntimeSnapshot`), and a chat session becomes one when a request asks for
 it; its chat runtime record (`agentRuntimeDescriptorV1`) is dropped on attach so the conversation the terminal
-writes is the one reopened. Spawn coalescing never joins a terminal and a chat request. The app
-(`components/sessions/nativeTerminal/nativeTerminalSessions.ts`) starts every Claude and Codex session as a
-terminal, shows a stopped chat session as its terminal (reopening it resumes the same conversation), and
-offers 「切到终端」 on a chat that still runs (stop, wait until it ended, reopen). It does so only where the
-daemon publishes `daemonNativeTerminalSessionsSupported`; elsewhere sessions stay chats. A daemon from CLI
-0.3.16–0.3.17 starts Claude terminals only and refuses Codex ones ("codex has no terminal sessions").
+writes is the one reopened. Spawn coalescing never joins a terminal and a chat request. Since app 0.3.29 the app
+has no chat view: every session is its CLI's terminal. Its spawn and resume payload builders
+(`sync/domains/session/{spawn/spawnSessionPayload,resume/resumeSessionPayload}.ts`) always send `nativeTerminal`,
+and `machineSpawnNewSession` / `resumeSession` refuse a machine whose daemon does not publish
+`daemonNativeTerminalSessionsSupported` ("Update the PiggerCode CLI on this machine…") instead of starting a chat.
+The session view (`components/sessions/nativeTerminal/NativeTerminalSessionContent.tsx`) attaches to a running
+terminal, reopens a stopped session as its terminal (resuming the same conversation, an older chat's too), and
+offers 「切到终端」 on a chat that still runs (stop, wait until it ended, reopen). A daemon from CLI 0.3.16–0.3.17
+starts Claude terminals only and refuses Codex ones ("codex has no terminal sessions").
+The app's view of a terminal is one `piggercode attach` (`terminal/attachment/tmuxAttach.ts`, planned in
+`tmuxSingleWindowAttachPlan.ts`): a temporary tmux session holding just the agent's window, with no status line,
+destroyed with its client. Since CLI 0.3.23 it first sets two options on the agent's window: `allow-passthrough on`,
+because Claude Code and Codex send each copy as an OSC 52 wrapped in tmux passthrough (their `tmux load-buffer -w`
+path does not always find the app's client), and a `pane-mode-changed` hook that leaves tmux's scroll-back (copy)
+mode at once when the pane has no history and no selection of its own: one wheel turn or drag before the CLI takes
+the mouse would otherwise freeze the view on its blank first screen and swallow typing. The app's terminal
+(`components/terminal/xterm/XtermTerminalView.web.tsx`) writes what a program copies (OSC 52, tmux's own mouse
+selection included) to the clipboard of the computer the view is on, never answers a clipboard query, and keeps a
+copy WebKit refused outside a key press for the next Cmd+C (Ctrl+Shift+C off a Mac); plain Ctrl+C still goes to the
+program. It starts every new stream with a full terminal reset (as does the native WebView terminal), so mouse and
+focus reporting left on by the previous attach do not type mouse moves into the next one before tmux runs again.
 PiggerCode's queue, ready push, stuck-turn watchdog and subagent limit belong to the chat runtime and do not
 apply.
 

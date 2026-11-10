@@ -355,8 +355,8 @@ export function buildXtermWebViewHtml(params: Readonly<{
         pendingWrite = '';
         isWriting = false;
         try {
-          term.clear();
-          term.write('\\x1b[2J\\x1b[H');
+          // A full reset, not just an erase: the previous program's mouse and focus reporting must not carry over.
+          term.reset();
         } catch (e) {
           // ignore
         }

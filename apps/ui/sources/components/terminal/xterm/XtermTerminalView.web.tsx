@@ -39,6 +39,39 @@ const DEFAULT_FONT_FAMILY =
 
 const OUTPUT_PREVIEW_MAX_CHARS = 4096;
 
+/**
+ * The text a program copies through the terminal (OSC 52, `ESC ] 52 ; <targets> ; <base64> BEL`), as tmux sends
+ * when its mouse selection ends. A query (`?`) is never answered, so no program reads this computer's clipboard.
+ */
+function readOsc52CopiedText(data: string): string | null {
+    const separator = data.indexOf(';');
+    if (separator < 0) return null;
+    const payload = data.slice(separator + 1).trim();
+    if (payload.length === 0 || payload === '?') return null;
+    try {
+        const bytes = Uint8Array.from(atob(payload), (char) => char.charCodeAt(0));
+        const text = new TextDecoder().decode(bytes);
+        return text.length > 0 ? text : null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Puts text on this computer's clipboard; false when the browser refuses (WebKit allows it only during a key press or
+ * a click). No hidden-textarea fallback: selecting one would take the keyboard away from the terminal.
+ */
+async function writeClipboardText(text: string): Promise<boolean> {
+    const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
+    if (!clipboard || typeof clipboard.writeText !== 'function') return false;
+    try {
+        await clipboard.writeText(text);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 /** The image files on a paste's clipboard: a screenshot, or copied image files. */
 function readClipboardImages(data: DataTransfer | null | undefined): File[] {
     const images: File[] = [];
@@ -283,8 +316,10 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
                 return;
             }
             resetWriteState();
-            term.clear();
-            term.write('\x1b[2J\x1b[H');
+            // A new stream starts on a terminal as fresh as a new view's. Erasing the screen alone would keep what the
+            // previous program turned on: tmux's mouse and focus reporting would type every mouse move into the next
+            // attach before tmux runs again.
+            term.reset();
         },
         focus: () => terminalRef.current?.focus(),
         hasSelection: () => terminalRef.current?.hasSelection() ?? false,
@@ -304,6 +339,8 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
             scrollback: 5000,
             screenReaderMode: false,
             disableStdin: !inputEnabledRef.current,
+            // A program holding the mouse (tmux, a full-screen CLI) still lets Option+drag select natively on a Mac.
+            macOptionClickForcesSelection: true,
             theme: {
                 background: theme.colors.surface.base,
                 foreground: theme.colors.text.primary,
@@ -324,6 +361,20 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         }
 
         term.open(container);
+
+        // What a program copies (Claude Code or Codex through tmux, or tmux's own selection) goes onto this computer's
+        // clipboard. WebKit allows that only during a key press or a click, so a refused copy waits for the copy key.
+        const copiedByProgram: { text: string | null } = { text: null };
+        const osc52Disposable = term.parser.registerOscHandler(52, (data) => {
+            const text = readOsc52CopiedText(data);
+            if (text !== null) {
+                copiedByProgram.text = text;
+                void writeClipboardText(text).then((copied) => {
+                    if (copied && copiedByProgram.text === text) copiedByProgram.text = null;
+                });
+            }
+            return true;
+        });
 
         term.attachCustomKeyEventHandler((event) => {
             if (event.type !== 'keydown') {
@@ -350,6 +401,16 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
                     }
                 }
 
+                return false;
+            }
+
+            // Cmd+C, or Ctrl+Shift+C off a Mac: plain Ctrl+C without a selection still interrupts the program.
+            if (isCopy && (event.metaKey || event.shiftKey) && copiedByProgram.text !== null) {
+                event.preventDefault();
+                event.stopPropagation();
+                const text = copiedByProgram.text;
+                copiedByProgram.text = null;
+                void writeClipboardText(text);
                 return false;
             }
 
@@ -411,6 +472,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
 
         return () => {
             dataDisposable.dispose();
+            osc52Disposable.dispose();
             container.removeEventListener('paste', onPaste, true);
 
             if (initTimer !== null && typeof window !== 'undefined') {

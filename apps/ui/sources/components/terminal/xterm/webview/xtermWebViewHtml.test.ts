@@ -109,6 +109,33 @@ describe('buildXtermWebViewHtml', () => {
         expect(html).toContain('screenReaderMode: false');
     });
 
+    it('starts a new stream with a full terminal reset, so no mouse or focus reporting is left on', async () => {
+        vi.resetModules();
+        vi.doMock('./xtermWebViewAssets.generated', () => ({
+            XTERM_WEBVIEW_BUNDLE_JS: '/* bundled-xterm */',
+            XTERM_WEBVIEW_CSS: '',
+        }));
+
+        const { buildXtermWebViewHtml } = await import('./xtermWebViewHtml');
+
+        const html = buildXtermWebViewHtml({
+            theme: {
+                backgroundColor: '#000',
+                textColor: '#fff',
+                cursorColor: '#fff',
+                selectionBackgroundColor: '#222',
+                isDark: true,
+            },
+            fontSizePx: 14,
+            lineHeightPx: 18,
+            maxChunkBytes: 64_000,
+            allowCdnFallback: false,
+        });
+
+        // Erasing the screen would leave the previous program's modes on (RIS resets them).
+        expect(html).toMatch(/function clearTerminal\(\) \{[^}]*term\.reset\(\);/);
+    });
+
     it('focuses the xterm input from native WebView user gestures', async () => {
         vi.resetModules();
         vi.doMock('./xtermWebViewAssets.generated', () => ({
