@@ -1736,7 +1736,8 @@ Since CLI 0.3.24 both also get the new-session screen's choices, which the runne
 `resolveClaudeSdkPermissionModeFromEnhancedMode` (plan mode is Claude's `plan`; 「默认」 passes none), and
 `codex --model <id>` with `resolveCodexCliPermissionArgs` (`--ask-for-approval`/`--sandbox`; 「CLI 设置」 passes none so
 config.toml decides; codex 0.167 takes only `on-request` or `never`), thinking as `-c model_reasoning_effort="…"` and Fast as
-`-c service_tier="fast"`. Codex's collaboration modes have no start flag, so the new-session screen offers only an agent's
+`-c service_tier="fast"`. codex 0.167 takes `-c` only without its shared background server, so a Codex session with a chosen
+thinking or speed runs embedded (Codex says so in a startup warning); one without keeps the shared server. Codex's collaboration modes have no start flag, so the new-session screen offers only an agent's
 static modes (Claude's build and plan) and asks no machine for others; it takes no attachments or review comments either,
 and its `@` offers files only (`/` the CLI's commands). Codex
 cannot be told a new thread's id, and one shared Codex service (`codex app-server`) writes every terminal's
