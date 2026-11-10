@@ -701,6 +701,7 @@ describe('SessionRightPanelTerminalView.web', () => {
             terminalId: null,
             cursor: 5,
             output: 'hello',
+            outputEnd: 5,
             detectedUrl: null,
         });
 
@@ -723,6 +724,7 @@ describe('SessionRightPanelTerminalView.web', () => {
             terminalId: 't1',
             cursor: 5,
             output: 'hello',
+            outputEnd: 5,
             detectedUrl: null,
         });
         expect(terminalHandleInstances[0]?.write).toHaveBeenCalledWith('hello');

@@ -260,6 +260,7 @@ export function useMachineTerminalSession(params: Readonly<{
                     terminalId: ensured.terminalId,
                     cursor: 0,
                     output: '',
+                    outputEnd: 0,
                     detectedUrl: null,
                 });
                 setDetectedUrl(null);

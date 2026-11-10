@@ -36,6 +36,7 @@ vi.mock('@/components/sessions/terminal/terminalSurfaceStateCache', () => ({
         terminalId: null,
         cursor: 0,
         output: '',
+        outputEnd: 0,
         detectedUrl: null,
     }),
     readTerminalSurfaceState: () => null,

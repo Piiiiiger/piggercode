@@ -3,7 +3,10 @@ import type { DaemonTerminalStreamEventUrl } from '@piggercode/protocol';
 export type TerminalSurfaceState = Readonly<{
     terminalId: string | null;
     cursor: number;
+    /** The latest output, kept to show the terminal again in a view that opens; at most the last 64,000 characters. */
     output: string;
+    /** How many characters of output the terminal has had since it started or was cleared; `output` is the end of them. */
+    outputEnd: number;
     detectedUrl: DaemonTerminalStreamEventUrl | null;
 }>;
 
@@ -18,6 +21,7 @@ export function createEmptyTerminalSurfaceState(): TerminalSurfaceState {
         terminalId: null,
         cursor: 0,
         output: '',
+        outputEnd: 0,
         detectedUrl: null,
     };
 }

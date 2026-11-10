@@ -24,7 +24,8 @@ export function useTerminalSurfaceState(params: Readonly<{
         [params.terminalKey],
     );
     const [detectedUrl, setDetectedUrl] = React.useState<DaemonTerminalStreamEventUrl | null>(initialSurfaceState.detectedUrl);
-    const renderedOutputRef = React.useRef('');
+    /** How far into the terminal's output (counted like `outputEnd`) this view's renderer has been written. */
+    const renderedEndRef = React.useRef(0);
 
     const updateSurfaceState = React.useCallback((updater: (current: ReturnType<typeof createEmptyTerminalSurfaceState>) => ReturnType<typeof createEmptyTerminalSurfaceState>) => {
         return updateTerminalSurfaceState(params.terminalKey, updater);
@@ -51,32 +52,37 @@ export function useTerminalSurfaceState(params: Readonly<{
             params.terminalRendererHandleRef.current = renderer;
             renderer.clear();
         }
-        renderedOutputRef.current = '';
+        renderedEndRef.current = 0;
         updateSurfaceState((current) => ({
             ...current,
             terminalId: params.terminalIdRef.current,
             cursor: params.cursorRef.current,
             output: '',
+            outputEnd: 0,
         }));
-    }, [params.clearNonceRef, params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef, renderedOutputRef, updateSurfaceState]);
+    }, [params.clearNonceRef, params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef, updateSurfaceState]);
 
+    // Output goes into the record, and every other view of this terminal writes what it has not shown yet
+    // (applySurfaceStateToRenderer). This view writes the output itself while it is in step with the record,
+    // so a chunk longer than the record keeps still shows whole.
     const writeTerminalOutput = React.useCallback((data: string) => {
         if (!data) {
             return;
         }
         const renderer = params.terminalRef.current;
-        if (renderer) {
-            params.terminalRendererHandleRef.current = renderer;
+        const recordEnd = (readTerminalSurfaceState(params.terminalKey) ?? createEmptyTerminalSurfaceState()).outputEnd;
+        if (renderer && params.terminalRendererHandleRef.current === renderer && renderedEndRef.current === recordEnd) {
             renderer.write(data);
+            renderedEndRef.current += data.length;
         }
-        renderedOutputRef.current += data;
         updateSurfaceState((current) => ({
             ...current,
             terminalId: params.terminalIdRef.current,
             cursor: params.cursorRef.current,
             output: current.output + data,
+            outputEnd: current.outputEnd + data.length,
         }));
-    }, [params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef, renderedOutputRef, updateSurfaceState]);
+    }, [params.cursorRef, params.terminalIdRef, params.terminalKey, params.terminalRef, params.terminalRendererHandleRef, updateSurfaceState]);
 
     const applySurfaceStateToRenderer = React.useCallback((state: ReturnType<typeof createEmptyTerminalSurfaceState>) => {
         const renderer = params.terminalRef.current;
@@ -85,38 +91,30 @@ export function useTerminalSurfaceState(params: Readonly<{
         setDetectedUrl(state.detectedUrl);
 
         if (!renderer) {
-            renderedOutputRef.current = state.output;
+            renderedEndRef.current = state.outputEnd;
             return;
         }
 
         if (params.terminalRendererHandleRef.current !== renderer) {
             params.terminalRendererHandleRef.current = renderer;
             renderer.clear();
-            renderedOutputRef.current = '';
+            renderedEndRef.current = 0;
         }
 
-        if (state.output === renderedOutputRef.current) {
+        const unseen = state.outputEnd - renderedEndRef.current;
+        if (unseen === 0) {
             return;
         }
-
-        if (!state.output) {
+        if (unseen > 0 && unseen <= state.output.length) {
+            renderer.write(state.output.slice(state.output.length - unseen));
+        } else {
+            // Cleared, or further behind than the kept output: show the kept output from the start.
             renderer.clear();
-            renderedOutputRef.current = '';
-            return;
-        }
-
-        if (state.output.startsWith(renderedOutputRef.current)) {
-            const suffix = state.output.slice(renderedOutputRef.current.length);
-            if (suffix) {
-                renderer.write(suffix);
+            if (state.output) {
+                renderer.write(state.output);
             }
-            renderedOutputRef.current = state.output;
-            return;
         }
-
-        renderer.clear();
-        renderer.write(state.output);
-        renderedOutputRef.current = state.output;
+        renderedEndRef.current = state.outputEnd;
     }, [params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef]);
 
     const hydrateTerminalRendererIfNeeded = React.useCallback(() => {
@@ -146,7 +144,7 @@ export function useTerminalSurfaceState(params: Readonly<{
         params.terminalIdRef.current = cached.terminalId;
         params.cursorRef.current = cached.cursor;
         params.terminalRendererHandleRef.current = null;
-        renderedOutputRef.current = '';
+        renderedEndRef.current = 0;
         setDetectedUrl(cached.detectedUrl);
         params.terminalRef.current?.clear();
     }, [params.cursorRef, params.terminalIdRef, params.terminalKey, params.terminalRef, params.terminalRendererHandleRef]);
