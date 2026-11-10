@@ -6,7 +6,6 @@ import { loadPendingOutboxForSession, savePendingOutboxMessage } from '@/sync/do
 import { getPersistenceStorage } from '@/sync/domains/state/persistence';
 import { scopedSessionLocalStateKey } from '@/sync/domains/state/sessionLocalStateKeys';
 import { setActiveServerId, upsertServerProfile } from '@/sync/domains/server/serverProfiles';
-import { getPendingMessageVisualState } from '@/components/sessions/pending/pendingMessageVisualState';
 import { ServerFetchWriteTimeoutError } from '@/sync/http/client';
 
 import {
@@ -1681,40 +1680,4 @@ describe('pendingQueueV2 scoped refresh reconciliation', () => {
         expect((await replayPersistedPendingOutboxForSession(sessionId, scope))).toEqual([]);
     });
 
-    it('converges an ambiguous POST to the matching server snapshot without showing Message not sent', async () => {
-        const sessionId = 'ambiguous-snapshot-session';
-        const localId = 'ambiguous-snapshot-local';
-        const server = upsertServerProfile({ serverUrl: 'https://ambiguous.example.test', name: 'Ambiguous' });
-        const scope = { serverId: server.id, accountId: 'account' } as const;
-        storage.getState().applySessions([{ ...buildSession({ sessionId }), encryptionMode: 'plain' }]);
-        setActiveServerId(server.id, { scope: 'tab' });
-        storage.getState().activateProfileScope(scope);
-        (await persist({ sessionId, localId, text: 'committed despite response loss', scope, operation: 'enqueue' }));
-
-        await expect(retryPendingOutboxOperationV2({
-            sessionId,
-            localId,
-            outboxScope: scope,
-            request: async () => { throw new ServerFetchWriteTimeoutError(); },
-        })).resolves.toEqual({ accepted: false });
-        expect(storage.getState().sessionPending[sessionId]?.messages[0]?.sendState).toBe('unconfirmed');
-
-        const encryption = await Encryption.create(new Uint8Array(32).fill(11));
-        await fetchAndApplyPendingMessagesV2({
-            sessionId,
-            encryption,
-            outboxScope: scope,
-            isOutboxScopeCurrent: () => true,
-            request: async () => response(localId, 'queued', 'committed despite response loss'),
-        });
-
-        const reconciled = storage.getState().sessionPending[sessionId]?.messages[0];
-        expect(reconciled).toMatchObject({
-            localId,
-            source: 'server_pending',
-            text: 'committed despite response loss',
-        });
-        expect(reconciled).not.toHaveProperty('sendState');
-        expect(getPendingMessageVisualState(reconciled!)).toMatchObject({ kind: 'queued' });
-    });
 });

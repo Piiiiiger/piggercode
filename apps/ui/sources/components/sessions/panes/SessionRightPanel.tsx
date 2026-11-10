@@ -2,18 +2,15 @@ import * as React from 'react';
 import { Platform, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
-import { FrozenSubtree } from '@/components/ui/performance/FrozenSubtree';
 
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import { IconAction } from '@/components/ui/buttons/IconAction';
 import { SegmentedTabBar, SEGMENTED_TAB_ICON_SIZE_PX, type SegmentedTab } from '@/components/ui/navigation/SegmentedTabBar';
 import { useAppPaneScope } from '@/components/appShell/panes/hooks/useAppPaneScope';
-import { SessionRightPanelAgentsView } from '@/components/sessions/panes/agents/SessionRightPanelAgentsView';
 import { SessionBrowseFilesSurface } from '@/components/sessions/panes/surfaces/SessionBrowseFilesSurface';
 import { SessionGitSurface } from '@/components/sessions/panes/surfaces/SessionGitSurface';
 import { SessionTerminalSurface } from '@/components/sessions/panes/surfaces/SessionTerminalSurface';
-import { SessionTranscriptNavigationPane } from '@/components/sessions/panes/SessionTranscriptNavigationPane';
 import { useSessionFileDetailsOpener } from '@/components/sessions/panes/useSessionFileDetailsOpener';
 import { useSessionTerminalAvailability } from '@/components/sessions/terminal/useSessionTerminalAvailability';
 import { t } from '@/text';
@@ -23,7 +20,6 @@ import { resolveSessionHeaderActionTargetPx } from '@/components/sessions/action
 
 import { usePaneActionRail } from '@/components/appShell/panes/PaneActionRailContext';
 import { getSessionRightPanelTabs, type SessionRightTabId as RightTabId } from './sessionRightPanelTabs';
-import { useSessionRunningAgentCount } from './useSessionRunningAgentCount';
 
 export type SessionRightPanelProps = Readonly<{
     sessionId: string;
@@ -83,11 +79,12 @@ export const SessionRightPanel = React.memo((props: SessionRightPanelProps) => {
     const hideHeader = externalRail && props.presentation !== 'screen';
     const terminalTabAvailable = terminalAvailability.sidebarTabAvailable;
     const closeButtonAtStart = props.presentation === 'screen' && Platform.OS !== 'web';
-    const rawActiveTab = (scopeState?.right.activeTabId as RightTabId | null) ?? 'git';
-    const activeTab: RightTabId =
-        rawActiveTab === 'terminal' && !terminalTabAvailable
-            ? 'git'
-            : rawActiveTab;
+    const savedTab = scopeState?.right.activeTabId ?? null;
+    // A tab the panel no longer offers (a terminal on a machine without one, or an older saved
+    // transcript-navigation or agents tab) opens git instead.
+    const activeTab: RightTabId = savedTab === 'files' || (savedTab === 'terminal' && terminalTabAvailable)
+        ? savedTab
+        : 'git';
 
     const setActiveTab = React.useCallback((tabId: RightTabId) => {
         pane.openRight({ tabId });
@@ -96,13 +93,10 @@ export const SessionRightPanel = React.memo((props: SessionRightPanelProps) => {
 
     React.useEffect(() => {
         if (!scopeState?.right.isOpen) return;
-        if (!scopeState.right.activeTabId) {
-            pane.setRightTab('git');
+        if (scopeState.right.activeTabId !== activeTab) {
+            pane.setRightTab(activeTab);
         }
-        if (scopeState.right.activeTabId === 'terminal' && !terminalTabAvailable) {
-            pane.setRightTab('git');
-        }
-    }, [pane, scopeState?.right.activeTabId, scopeState?.right.isOpen, terminalTabAvailable]);
+    }, [activeTab, pane, scopeState?.right.activeTabId, scopeState?.right.isOpen]);
 
     const closeButton = (
         <IconAction
@@ -156,28 +150,6 @@ export const SessionRightPanel = React.memo((props: SessionRightPanelProps) => {
                             />
                         </React.Suspense>
                     </RightTabSurface>
-                    <RightTabSurface
-                        isActive={activeTab === 'navigation'}
-                        testID={resolveOptionalSessionScreenTestId(sessionScreenTestIdsEnabled, 'session-rightpanel-surface-navigation')}
-                    >
-                        <SessionTranscriptNavigationPane
-                            onRequestClose={props.onRequestClose ?? pane.closeRight}
-                            sessionId={props.sessionId}
-                            testIDPrefix="session-transcript-navigation"
-                        />
-                    </RightTabSurface>
-                    <RightTabSurface
-                        isActive={activeTab === 'agents'}
-                        // The roster subscribes to session state and re-derives the whole agent list
-                        // from it. Left running behind another tab it re-derives on every transcript
-                        // update for the rest of the session's life, so this surface freezes instead.
-                        inactiveRetention="suspended"
-                        testID={resolveOptionalSessionScreenTestId(sessionScreenTestIdsEnabled, 'session-rightpanel-surface-agents')}
-                    >
-                        <React.Suspense fallback={<PaneLoadingFallback color={theme.colors.text.secondary} />}>
-                            <SessionRightPanelAgentsView sessionId={props.sessionId} scopeId={props.scopeId} />
-                        </React.Suspense>
-                    </RightTabSurface>
                     {terminalTabAvailable && (
                         <RightTabSurface
                             isActive={activeTab === 'terminal'}
@@ -202,13 +174,12 @@ const SessionRightPanelTabBar = React.memo((props: Readonly<{
     testIDPrefix?: string;
 }>) => {
     const { theme } = useUnistyles();
-    const runningAgentCount = useSessionRunningAgentCount(props.sessionId);
     const tabs = React.useMemo((): ReadonlyArray<SegmentedTab<RightTabId>> => (
-        getSessionRightPanelTabs(props.terminalAvailable, runningAgentCount).map((tab) => ({
+        getSessionRightPanelTabs(props.terminalAvailable).map((tab) => ({
             ...tab,
             icon: <Icon name={tab.icon} size={SEGMENTED_TAB_ICON_SIZE_PX} color={theme.colors.text.secondary} />,
         }))
-    ), [props.terminalAvailable, runningAgentCount, theme.colors.text.secondary]);
+    ), [props.terminalAvailable, theme.colors.text.secondary]);
     return <SegmentedTabBar tabs={tabs} activeTabId={props.activeTab} onSelectTab={props.onSelectTab} testIDPrefix={props.testIDPrefix} />;
 });
 
@@ -223,22 +194,8 @@ const PaneLoadingFallback = React.memo((props: Readonly<{ color: string }>) => {
     );
 });
 
-/**
- * What an inactive tab is allowed to keep doing.
- *
- * `'live'` is the historical behaviour: the surface stays mounted and keeps working off every store
- * update it subscribes to. That is correct for a surface that owns something running — the embedded
- * terminal has to stay attached to its session whether or not you are looking at it.
- *
- * `'suspended'` keeps the surface mounted but stops it rendering (`FrozenSubtree`). Its state, and
- * therefore its scroll position and hydrated content, survive; only the work stops. Choose it for a
- * surface that merely projects session state, where re-deriving behind another tab is pure waste.
- */
-type RightTabInactiveRetention = 'live' | 'suspended';
-
 const RightTabSurface = React.memo((props: Readonly<{
     isActive: boolean;
-    inactiveRetention?: RightTabInactiveRetention;
     testID?: string;
     children: React.ReactNode;
 }>) => {
@@ -251,14 +208,9 @@ const RightTabSurface = React.memo((props: Readonly<{
 
     if (!active && !hasMounted) return null;
 
-    // Web already drops an inactive surface out of layout with `display:'none'`; native keeps it in
-    // layout at `opacity:0`, so this is where the retained cost actually lives. Keeping the web path
-    // byte-identical also keeps its Suspense boundaries where they are today.
-    const suspendInactive = props.inactiveRetention === 'suspended' && Platform.OS !== 'web';
-
     // `opacity: 0` hides a surface from eyes, not from VoiceOver or TalkBack: without this an
     // inactive native tab keeps offering its whole subtree to the screen-reader cursor, so swiping
-    // through the Git tab walks into Files, Agents and the terminal. Web's `display:'none'` already
+    // through the Git tab walks into Files and the terminal. Web's `display:'none'` already
     // does this, and the sibling git sub-tab surface already carries the same pair.
     const inactiveA11yProps = Platform.OS === 'web' || active
         ? null
@@ -280,9 +232,7 @@ const RightTabSurface = React.memo((props: Readonly<{
             ]}
             {...(inactiveA11yProps ?? {})}
         >
-            {suspendInactive
-                ? <FrozenSubtree frozen={!active}>{props.children}</FrozenSubtree>
-                : props.children}
+            {props.children}
         </View>
     );
 });

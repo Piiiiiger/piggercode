@@ -78,7 +78,6 @@ vi.mock('@/components/ui/text/Text', () => ({
     TextInput: 'TextInput',
 }));
 vi.mock('@/components/machines/InstallableDepInstaller', () => ({ InstallableDepInstaller: () => null }));
-vi.mock('@/components/sessions/runs/ExecutionRunRow', () => ({ ExecutionRunRow: () => null }));
 vi.mock('@/components/ui/pathBrowser/PathInputBrowseButton', () => ({
     PathInputBrowseButton: (props: any) => React.createElement('PathInputBrowseButton', {
         testID: props.testID ?? 'path-browser-trigger',

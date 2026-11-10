@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
+import { createMachineFixture } from '@/dev/testkit/fixtures/machineFixtures';
 import { createSessionFixture } from '@/dev/testkit/fixtures/sessionFixtures';
 
 import {
@@ -42,6 +43,14 @@ vi.mock('../api/session/apiSocket', () => ({
 
 const sessionsModulePromise = import('./sessions');
 
+/** Machines whose daemon starts sessions as their CLI in a terminal (CLI 0.3.19 and later), as every resume needs. */
+function createTerminalMachines(ids: readonly string[]) {
+    return Object.fromEntries(ids.map((id) => {
+        const machine = createMachineFixture({ id });
+        return [id, { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } }];
+    }));
+}
+
 function makeResponse(opts: Readonly<{ ok: boolean; status?: number; json?: unknown; text?: string }>): Response {
     return {
         ok: opts.ok,
@@ -59,7 +68,12 @@ describe('sessions ops server-scoped routing', () => {
         prepareAccountSettingsForDaemonSpawnMock.mockResolvedValue({});
         readMachineTargetForSessionMock.mockReturnValue(null);
         apiRequestMock.mockReset();
-        storage.setState({ sessions: {}, sessionListRenderables: {} });
+        storage.setState({
+            sessions: {},
+            sessionListRenderables: {},
+            profileScope: { serverId: 'server-b', accountId: 'account-a' },
+            machines: createTerminalMachines(['machine-1', 'reachable-machine', 'requested-machine', 'stale-machine']),
+        });
     });
 
     it.each([false, true])('does not unarchive or start an archived pending-input consumer (active: %s)', async (active) => {
@@ -423,25 +437,6 @@ describe('sessions ops server-scoped routing', () => {
         expect(call && typeof call === 'object').toBe(true);
         expect(call?.payload && typeof call.payload === 'object').toBe(true);
         expect(call?.payload as Record<string, unknown>).not.toHaveProperty('connectedServices');
-    });
-
-    it('passes codexBackendMode through resumeSession when requested', async () => {
-        machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'sess-1' });
-        const { resumeSession } = await sessionsModulePromise;
-        await resumeSession({
-            sessionId: 'session-1',
-            machineId: 'machine-1',
-            directory: '/tmp',
-            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-            codexBackendMode: 'appServer',
-            serverId: 'server-b',
-        } as any);
-
-        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
-            payload: expect.objectContaining({
-                codexBackendMode: 'appServer',
-            }),
-        }));
     });
 
     it('prefers reachable machine target from session for resumeSession', async () => {

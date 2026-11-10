@@ -181,10 +181,6 @@ vi.mock('@/components/sessions/agentInput', () => ({
     },
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-    PermissionFooter: () => null,
-}));
-
 vi.mock('@/components/model/ModelPickerOverlay', () => ({
     ModelPickerOverlay: () => null,
 }));
@@ -277,11 +273,6 @@ vi.mock('@/components/sessions/attachments/useAttachmentDraftManager', () => ({
         clearDrafts: vi.fn(),
         applyDraftPatch: vi.fn(),
     }),
-}));
-
-vi.mock('@/components/sessions/attachments/uploadAttachmentDraftsToSession', () => ({
-    uploadAttachmentDraftsToSession: vi.fn(),
-    formatAttachmentsBlock: vi.fn(() => ''),
 }));
 
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({

@@ -116,7 +116,7 @@ export function useAppPaneScope(scopeId: string): AppPaneScopeApi {
     }, [dispatch, scopeId]);
 
     // The api object lands in `useCallback`/`useMemo` dependency lists at ~29 callsites
-    // (`useOpenAttachedSessionTerminal`, `SessionHeaderTranscriptNavigationButton`, ...),
+    // (`useOpenAttachedSessionTerminal`, ...),
     // whose results are then compared by identity further up — notably by
     // `SessionHeaderActionMenu`'s `onSelectExtraItem` guard. Returning a fresh literal per
     // render invalidated all of them on every host render, so the comparator never held.

@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-    buildCompatibleSpawnHappySessionRpcParams,
-    buildSpawnHappySessionRpcParams,
-    supportsSpawnPendingFirstInput,
-} from './spawnSessionPayload';
+import { buildSpawnHappySessionRpcParams } from './spawnSessionPayload';
 
 describe('buildSpawnHappySessionRpcParams', () => {
+    it('asks the daemon to start every session as its CLI in a terminal', () => {
+        expect(buildSpawnHappySessionRpcParams({
+            machineId: 'machine-1',
+            directory: '/tmp/workspace',
+            backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
+        } as any)).toEqual(expect.objectContaining({ nativeTerminal: true }));
+    });
+
     it('preserves exact nonblank opaque model identifiers', () => {
         expect(buildSpawnHappySessionRpcParams({
             machineId: 'machine-1',
@@ -170,30 +174,6 @@ describe('buildSpawnHappySessionRpcParams', () => {
         }));
     });
 
-    it('uses the durable handoff only for daemon versions that consume it', () => {
-        const options = {
-            machineId: 'machine-1',
-            directory: '/tmp/workspace',
-            backendTarget: { kind: 'builtInAgent', agentId: 'claude' as const },
-            pendingFirstInput: { text: 'prompt', localId: 'first-turn-1' },
-        } as const;
-
-        expect(supportsSpawnPendingFirstInput('0.2.10-dev.40')).toBe(false);
-        expect(supportsSpawnPendingFirstInput('0.2.10-dev.41')).toBe(true);
-        expect(supportsSpawnPendingFirstInput('0.2.10')).toBe(true);
-        expect(buildCompatibleSpawnHappySessionRpcParams({
-            options,
-            daemonCliVersion: '0.2.10-dev.40',
-        })).not.toHaveProperty('pendingFirstInput');
-        expect(buildCompatibleSpawnHappySessionRpcParams({
-            options,
-            daemonCliVersion: '0.2.10-dev.41',
-        })).toHaveProperty('pendingFirstInput', options.pendingFirstInput);
-    });
-
-    // A creation ingress that drops `sourceContext` produces an ordinary blank
-    // Session and reports success — a silent, invisible wrong outcome. This
-    // payload owner is the UI half of the "no ingress drops the recipe" invariant.
     it('forwards the typed source recipe to the daemon spawn payload', () => {
         const sourceContext = {
             v: 1,
@@ -222,22 +202,4 @@ describe('buildSpawnHappySessionRpcParams', () => {
         expect(params).not.toHaveProperty('sourceContext');
     });
 
-    it('keeps the recipe on the current payload shape for a compatible daemon', () => {
-        const sourceContext = {
-            v: 1,
-            kind: 'session_replay',
-            sourceSessionId: 'sess_source',
-            forkPoint: { type: 'latest' },
-        } as const;
-
-        expect(buildCompatibleSpawnHappySessionRpcParams({
-            options: {
-                machineId: 'machine-1',
-                directory: '/tmp/workspace',
-                backendTarget: { kind: 'builtInAgent', agentId: 'claude' as const },
-                sourceContext,
-            } as any,
-            daemonCliVersion: '0.2.10',
-        })).toHaveProperty('sourceContext', sourceContext);
-    });
 });

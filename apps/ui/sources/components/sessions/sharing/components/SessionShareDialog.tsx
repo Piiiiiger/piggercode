@@ -30,7 +30,6 @@ interface SessionShareDialogProps {
     /** Callback when user removes a share */
     onRemoveShare: (shareId: string) => void;
     /** Callback when user wants to create/manage public link */
-    onManagePublicLink: () => void;
 }
 
 /**
@@ -51,7 +50,6 @@ export const SessionShareDialog = memo(function SessionShareDialog({
     onAddShare,
     onUpdateShare,
     onRemoveShare,
-    onManagePublicLink,
     onClose,
 }: SessionShareDialogProps & CustomModalInjectedProps) {
     const { theme } = useUnistyles();
@@ -93,14 +91,6 @@ export const SessionShareDialog = memo(function SessionShareDialog({
                             onPress={() => {
                                 onClose();
                                 onAddShare();
-                            }}
-                        />
-                        <Item
-                            title={t('session.sharing.publicLink')}
-                            icon={<Icon name="link" size={29} color={theme.colors.accent.blue} />}
-                            onPress={() => {
-                                onClose();
-                                onManagePublicLink();
                             }}
                             showDivider={false}
                         />

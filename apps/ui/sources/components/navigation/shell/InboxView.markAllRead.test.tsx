@@ -265,12 +265,6 @@ vi.mock('@/components/inbox/cards/ApprovalInboxCard', () => ({ ApprovalInboxCard
 vi.mock('@/components/inbox/actionOperations/ActionOperationLedger', () => ({
     ActionOperationLedger: 'ActionOperationLedger',
 }));
-vi.mock('@/components/tools/shell/permissions/PermissionPromptCard', () => ({
-    PermissionPromptCard: 'PermissionPromptCard',
-}));
-vi.mock('@/components/tools/shell/userActions/UserActionPromptCard', () => ({
-    UserActionPromptCard: 'UserActionPromptCard',
-}));
 vi.mock('@/hooks/server/useFriendsIdentityReadiness', () => ({
     useFriendsIdentityReadiness: () => ({ isReady: true }),
 }));

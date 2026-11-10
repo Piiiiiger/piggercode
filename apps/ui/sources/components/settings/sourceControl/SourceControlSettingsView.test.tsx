@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { DEFAULT_AGENT_ID } from '@/agents/catalog/catalog';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
@@ -93,6 +93,12 @@ vi.mock('@/components/ui/lists/Item', () => ({
 }));
 
 describe('SourceControlSettingsView', () => {
+    // The store first, once its mock options are set: the mock wraps the real module, and loading that from inside
+    // the view's own imports deadlocks on the app's import cycles (vitest awaits the mock while the view awaits it).
+    beforeAll(async () => {
+        await import('@/sync/domains/state/storage');
+    });
+
     it('renders commit strategy options and updates setting when selected', async () => {
         filesDiffPresentationStyleValue = 'split';
         const { SourceControlSettingsView } = await import('./SourceControlSettingsView');

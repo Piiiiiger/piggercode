@@ -94,16 +94,6 @@ vi.mock('@/log', () => ({
   log: { log: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock('@/voice/context/voiceHooks', () => ({
-  voiceHooks: {
-    onSessionFocus: vi.fn(),
-    onSessionOffline: vi.fn(),
-    onSessionOnline: vi.fn(),
-    onMessages: vi.fn(),
-    reportContextualUpdate: vi.fn(),
-  },
-}));
-
 import { sync } from './sync';
 import { storage } from './domains/state/storage';
 import type { Machine } from './domains/state/storageTypes';

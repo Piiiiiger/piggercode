@@ -92,69 +92,6 @@ describe('useOpenSessionTarget', () => {
         observedState = null;
     });
 
-    it('opens an agent transcript as a details tab where a pane fits', async () => {
-        const screen = await renderScreen(
-            <AppPaneProvider>
-                <OpenerHost target={{ kind: 'transcript', scope: SIDECHAIN_SCOPE, title: 'Reviewer' }} />
-                <Probe />
-            </AppPaneProvider>,
-        );
-
-        await pressTestInstanceAsync(screen.findByTestId('open')!, 'open');
-
-        expect(routerPushSpy).not.toHaveBeenCalled();
-        const scope = observedState?.scopes?.['session:s1'];
-        expect(scope?.details?.isOpen).toBe(true);
-        expect(scope?.details?.tabs?.[0]?.key).toBe('transcript:sidechain:wf/a1');
-        expect(scope?.details?.tabs?.[0]?.title).toBe('Reviewer');
-    });
-
-    it('opens the SAME agent transcript as a full screen on a phone', async () => {
-        layoutState.deviceType = 'phone';
-        layoutState.windowWidthPx = 390;
-        layoutState.platformOS = 'ios';
-
-        const screen = await renderScreen(
-            <AppPaneProvider>
-                <OpenerHost target={{ kind: 'transcript', scope: SIDECHAIN_SCOPE, title: 'Reviewer' }} />
-                <Probe />
-            </AppPaneProvider>,
-        );
-
-        await pressTestInstanceAsync(screen.findByTestId('open')!, 'open');
-
-        expect(routerPushSpy).toHaveBeenCalledWith('/session/s1/transcript?sidechainId=wf%2Fa1&title=Reviewer');
-        expect(observedState?.scopes?.['session:s1']?.details?.isOpen ?? false).toBe(false);
-    });
-
-    it('opens the agent roster in the right pane, or on its own screen where there is none', async () => {
-        const wide = await renderScreen(
-            <AppPaneProvider>
-                <OpenerHost target={{ kind: 'agentRoster' }} />
-                <Probe />
-            </AppPaneProvider>,
-        );
-        await pressTestInstanceAsync(wide.findByTestId('open')!, 'open');
-        expect(routerPushSpy).not.toHaveBeenCalled();
-        expect(observedState?.scopes?.['session:s1']?.right?.isOpen).toBe(true);
-        expect(observedState?.scopes?.['session:s1']?.right?.activeTabId).toBe('agents');
-        await wide.unmount();
-
-        layoutState.deviceType = 'phone';
-        layoutState.windowWidthPx = 390;
-        layoutState.platformOS = 'ios';
-        observedState = null;
-        const phone = await renderScreen(
-            <AppPaneProvider>
-                <OpenerHost target={{ kind: 'agentRoster' }} />
-                <Probe />
-            </AppPaneProvider>,
-        );
-        await pressTestInstanceAsync(phone.findByTestId('open')!, 'open');
-        expect(routerPushSpy).toHaveBeenCalledWith('/session/s1/agents');
-        expect(observedState?.scopes?.['session:s1']?.right?.isOpen ?? false).toBe(false);
-    });
-
     it('reveals a file without replacing its existing details tab', async () => {
         const screen = await renderScreen(<AppPaneProvider><OpenerHost target={{ kind: 'file', path: 'src/a.ts' }} /><Probe /></AppPaneProvider>);
         await pressTestInstanceAsync(screen.findByTestId('open')!, 'open');

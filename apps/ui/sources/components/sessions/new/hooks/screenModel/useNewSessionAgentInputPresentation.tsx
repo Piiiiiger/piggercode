@@ -1,29 +1,20 @@
 import * as React from 'react';
-import { View } from 'react-native';
 
-import type { ActionId, BackendTargetRefV1, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
+import type { BackendTargetRefV1, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 import type { Router } from 'expo-router';
 
-import type { AutomationSettingsValue } from '@/components/automations/editor/AutomationSettingsForm';
 import { useNewSessionCheckoutActionChip } from '@/components/sessions/new/hooks/screenModel/useNewSessionCheckoutActionChip';
 import { useNewSessionAgentInputExtraActionChips } from '@/components/sessions/new/hooks/screenModel/useNewSessionAgentInputExtraActionChips';
-import { getAutomationChipLabel } from '@/components/sessions/new/modules/automationChipModel';
-import type { NewSessionAutomationDraft } from '@/sync/domains/automations/automationDraft';
-import { sanitizeNewSessionAutomationDraft } from '@/sync/domains/automations/automationDraft';
-import { buildExecutionRunActionDraftInputForUi } from '@/sync/domains/actions/buildExecutionRunActionDraftInputForUi';
 import type { AgentId } from '@/agents/catalog/catalog';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput/agentInputContracts';
 import type { HandleCreateSessionOptions } from '@/components/sessions/new/hooks/useCreateNewSession';
 import type { NewSessionPromptStore } from '@/components/sessions/new/hooks/screenModel/newSessionPromptStore';
 import type { ScmWorkingSnapshot, Machine } from '@/sync/domains/state/storageTypes';
-import { storage } from '@/sync/domains/state/storage';
 import type { NewSessionCheckoutChipModel } from '@/components/sessions/new/modules/newSessionCheckoutChipModel';
 import type { NewSessionCheckoutCreationDraft } from '@/sync/domains/state/newSessionCheckoutDraft';
 import type { NewSessionTranscriptStorage } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
 import { t } from '@/text';
 import { createNewSessionLinkedFilesActionChip } from '@/components/sessions/agentInput/definitions/createLinkedFilesActionChip';
-import { createNativeTerminalSessionActionChip } from '@/components/sessions/agentInput/definitions/createNativeTerminalSessionActionChip';
-import { newSessionStartsTerminal } from '@/components/sessions/nativeTerminal/nativeTerminalSessions';
 import type { MachineSpawnReadiness } from '@/sync/domains/machines/identity/resolveMachineSpawnReadiness';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
@@ -78,10 +69,6 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
     theme: ThemeLike;
     selectedMachine: Machine | null;
     selectedMachineSpawnReadiness?: MachineSpawnReadiness | null;
-    automationFeatureEnabled: boolean;
-    automationDraft: NewSessionAutomationDraft;
-    effectiveAutomationDraft: AutomationSettingsValue;
-    setAutomationDraft: React.Dispatch<React.SetStateAction<NewSessionAutomationDraft>>;
     repoScmSnapshot: ScmWorkingSnapshot | null;
     checkoutChipModel: NewSessionCheckoutChipModel;
     checkoutPickerOpen: boolean;
@@ -103,7 +90,6 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
     agentOptionState?: Record<string, unknown> | null;
     setAgentOptionStateForCurrentAgent: (key: string, next: unknown) => void;
     connectedServicesAuthChip?: AgentInputExtraActionChip | null;
-    showAutomationActionChips: boolean;
     showServerPickerChip: boolean;
     targetServerId: string | null;
     targetServerName: string;
@@ -168,10 +154,6 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
         params.theme.colors.state.danger.foreground,
     ]);
 
-    const handleAutomationSettingsChange = React.useCallback((next: AutomationSettingsValue) => {
-        params.setAutomationDraft(sanitizeNewSessionAutomationDraft(next));
-    }, [params.setAutomationDraft]);
-
     const handleAppendLinkedPath = React.useCallback((path: string) => {
         const base = params.promptStore.getPrompt();
         const spacer = base.length === 0 || base.endsWith(' ') || base.endsWith('\n') ? '' : ' ';
@@ -187,11 +169,6 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
             onPickPath: handleAppendLinkedPath,
         });
     }, [handleAppendLinkedPath, params.selectedMachineId, params.selectedPath, params.targetServerId]);
-
-    const handleTranscriptStorageChange = React.useCallback((next: 'direct' | 'persisted') => {
-        params.hasUserSelectedTranscriptStorageRef.current = true;
-        params.setTranscriptStorage(next);
-    }, [params.hasUserSelectedTranscriptStorageRef, params.setTranscriptStorage]);
 
     const checkoutActionChip = useNewSessionCheckoutActionChip({
         repoScmSnapshot: params.repoScmSnapshot,
@@ -213,67 +190,15 @@ export function useNewSessionAgentInputPresentation(params: Readonly<{
         machineHomeDir: params.selectedMachine?.metadata?.homeDir ?? null,
     });
 
-    const handleActionShortcutPress = React.useCallback((actionId: ActionId) => {
-        const instructions = params.promptStore.getPrompt();
-        params.handleCreateSession({
-            initialMessage: 'skip',
-            afterCreated: async ({ sessionId }) => {
-                const input = buildExecutionRunActionDraftInputForUi({
-                    actionId,
-                    sessionId,
-                    defaultBackendTarget: params.backendTarget,
-                    defaultBackendId: params.agentType,
-                    instructions,
-                });
-                storage.getState().createSessionActionDraft(sessionId, {
-                    actionId,
-                    input,
-                });
-            },
-        });
-    }, [params.agentType, params.backendTarget, params.handleCreateSession, params.promptStore]);
-
-    // A Claude or Codex session starts as the CLI's own terminal; its chip opens one with no first message.
-    const startsTerminal = newSessionStartsTerminal({
-        agentId: params.agentType,
-        machine: params.selectedMachine,
-        automationEnabled: params.effectiveAutomationDraft.enabled,
-        sourceContext: params.sourceContextChip != null,
-    });
-    const handleNativeTerminalPress = React.useCallback(() => {
-        params.handleCreateSession({ initialMessage: 'skip', nativeTerminal: true });
-    }, [params.handleCreateSession]);
-    const nativeTerminalChip = React.useMemo<AgentInputExtraActionChip | null>(
-        () => startsTerminal ? createNativeTerminalSessionActionChip({ onPress: handleNativeTerminalPress }) : null,
-        [handleNativeTerminalPress, startsTerminal],
-    );
-
     const agentInputExtraActionChips = useNewSessionAgentInputExtraActionChips({
-        agentId: params.agentType,
-        startsTerminal,
-        nativeTerminalChip,
-        agentOptionState: params.agentOptionState,
-        setAgentOptionState: params.setAgentOptionStateForCurrentAgent,
-        connectedServicesAuthChip: params.connectedServicesAuthChip,
-        showAutomationActionChips: params.showAutomationActionChips,
-        automationDraft: params.effectiveAutomationDraft,
-        automationLabel: getAutomationChipLabel(params.automationDraft),
-        onAutomationChange: handleAutomationSettingsChange,
         checkoutActionChip,
         showServerPickerChip: params.showServerPickerChip,
         targetServerId: params.targetServerId,
         targetServerName: params.targetServerName,
-        mcpChip: params.mcpChip,
-        sourceContextChip: params.sourceContextChip,
-        directSessionsFeatureEnabled: params.directSessionsFeatureEnabled,
-        supportsDirectTranscriptStorage: params.supportsDirectTranscriptStorage,
-        transcriptStorage: params.transcriptStorage,
-        onTranscriptStorageChange: handleTranscriptStorageChange,
         selectedMachineIsWindows: params.selectedMachineIsWindows,
         windowsRemoteSessionLaunchMode: params.effectiveWindowsRemoteSessionLaunchMode,
         windowsTerminalAvailable: params.windowsTerminalAvailable,
         onWindowsRemoteSessionLaunchModeChange: params.setWindowsRemoteSessionLaunchModeOverride,
-        onActionShortcutPress: handleActionShortcutPress,
     });
     const combinedExtraActionChips = React.useMemo(
         () => [linkFileChip, ...agentInputExtraActionChips],

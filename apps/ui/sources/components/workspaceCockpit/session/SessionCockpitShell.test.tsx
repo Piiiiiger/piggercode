@@ -93,11 +93,6 @@ vi.mock('@/components/sessions/panes/SessionDetailsPanel', () => ({
     SessionDetailsPanel: (props: Record<string, unknown>) => React.createElement('SessionDetailsPanel', props),
 }));
 
-vi.mock('@/components/sessions/panes/SessionTranscriptNavigationPane', () => ({
-    SessionTranscriptNavigationPane: (props: Record<string, unknown>) =>
-        React.createElement('SessionTranscriptNavigationPane', props),
-}));
-
 vi.mock('@/components/sessions/panes/surfaces/SessionBrowseFilesSurface', () => ({
     SessionBrowseFilesSurface: (props: Record<string, unknown>) => React.createElement('SessionBrowseFilesSurface', props),
 }));
@@ -451,32 +446,6 @@ describe('SessionCockpitSurfaceScreen', () => {
             paddingTop: 0,
             paddingBottom: 0,
         });
-    });
-
-    it.each([
-        ['browse', 'SessionBrowseFilesSurface'],
-        ['git', 'SessionGitSurface'],
-        ['navigation', 'SessionTranscriptNavigationPane'],
-        ['terminal', 'SessionTerminalSurface'],
-        ['tabs', 'SessionDetailsPanel'],
-    ] as const)('renders the %s surface inside shared session chrome', async (surface, expectedType) => {
-        const screen = await renderScreen(
-            <AppPaneProvider>
-                <CockpitSurfaceHarness
-                    sessionId="s_1"
-                    scopeId="session:s_1"
-                    surface={surface}
-                    routeServerId="server-b"
-                    safeAreaPadding={false}
-                    terminalTabAvailable
-                />
-            </AppPaneProvider>,
-        );
-
-        const sessionViews = screen.tree.findAllByType('SessionView' as never);
-        expect(sessionViews).toHaveLength(1);
-        expect(sessionViews[0]?.props.contentOverride).toBeTruthy();
-        expect(screen.tree.findByType(expectedType as never)).toBeTruthy();
     });
 
     it('keeps git surface detail-opening callbacks stable across cockpit rerenders', async () => {

@@ -8,11 +8,11 @@ const navigatorState = vi.hoisted(() => ({
     screenOptions: null as null | Record<string, unknown>,
     navigationContainerLinking: null as null | Record<string, unknown>,
     registeredChrome: null as null | {
-        switchSurface: (surface: 'chat' | 'browse' | 'git' | 'navigation' | 'tabs' | 'terminal') => void;
+        switchSurface: (surface: 'chat' | 'browse' | 'git' | 'tabs' | 'terminal') => void;
     },
     localSettingReads: [] as string[],
     persistedSurfaces: [] as Array<Readonly<{ sessionId: string; surface: string }>>,
-    surfaceSwitchers: [] as Array<(surface: 'chat' | 'browse' | 'git' | 'navigation' | 'tabs' | 'terminal') => void>,
+    surfaceSwitchers: [] as Array<(surface: 'chat' | 'browse' | 'git' | 'tabs' | 'terminal') => void>,
 }));
 
 const navigationFocusState = vi.hoisted(() => {
@@ -70,7 +70,7 @@ vi.mock('@react-navigation/bottom-tabs', () => {
             }) => {
                 navigatorState.screenOptions = screenOptions ?? null;
                 const [activeRouteName, setActiveRouteName] = React.useState(initialRouteName ?? null);
-                const routes = ['chat', 'browse', 'git', 'navigation', 'tabs', 'terminal'].map((name) => ({ key: name, name }));
+                const routes = ['chat', 'browse', 'git', 'tabs', 'terminal'].map((name) => ({ key: name, name }));
                 return React.createElement(
                     NavigateContext.Provider,
                     { value: setActiveRouteName },
@@ -111,7 +111,7 @@ vi.mock('./SessionCockpitSurfaceNavigation', () => ({
         value,
     }: {
         children?: React.ReactNode;
-        value: { switchSurface: (surface: 'chat' | 'browse' | 'git' | 'navigation' | 'tabs' | 'terminal') => void };
+        value: { switchSurface: (surface: 'chat' | 'browse' | 'git' | 'tabs' | 'terminal') => void };
     }) => {
         navigatorState.surfaceSwitchers.push(value.switchSurface);
         return React.createElement(React.Fragment, null, children);
@@ -120,7 +120,7 @@ vi.mock('./SessionCockpitSurfaceNavigation', () => ({
 
 vi.mock('./SessionCockpitChromeRegistry', () => ({
     useSessionCockpitChromeRegister: () => (model: {
-        switchSurface: (surface: 'chat' | 'browse' | 'git' | 'navigation' | 'tabs' | 'terminal') => void;
+        switchSurface: (surface: 'chat' | 'browse' | 'git' | 'tabs' | 'terminal') => void;
     }) => {
         navigatorState.registeredChrome = model;
         return () => {};
@@ -201,11 +201,11 @@ describe('SessionCockpitTabNavigator keyboard behavior', () => {
         );
 
         await act(async () => {
-            navigatorState.surfaceSwitchers[0]?.('navigation');
+            navigatorState.surfaceSwitchers[0]?.('git');
         });
 
         expect(navigatorState.localSettingReads).not.toContain('sessionLastMobileSurfaceBySessionId');
-        expect(navigatorState.persistedSurfaces).toEqual([{ sessionId: 's1', surface: 'navigation' }]);
+        expect(navigatorState.persistedSurfaces).toEqual([{ sessionId: 's1', surface: 'git' }]);
     });
 
     it('keeps an inactive chat scene mounted while excluding its descendants, then restores activity on focus', async () => {
@@ -218,7 +218,7 @@ describe('SessionCockpitTabNavigator keyboard behavior', () => {
             const { SessionCockpitTabNavigator } = await import('./SessionCockpitTabNavigator');
             const screen = await renderScreen(
                 <SessionCockpitTabNavigator
-                    initialSurface="navigation"
+                    initialSurface="git"
                     scopeId="session:s1"
                     sessionId="s1"
                     terminalTabAvailable
@@ -258,7 +258,7 @@ describe('SessionCockpitTabNavigator keyboard behavior', () => {
             const { SessionCockpitTabNavigator } = await import('./SessionCockpitTabNavigator');
             const screen = await renderScreen(
                 <SessionCockpitTabNavigator
-                    initialSurface="navigation"
+                    initialSurface="git"
                     scopeId="session:s1"
                     sessionId="s1"
                     terminalTabAvailable

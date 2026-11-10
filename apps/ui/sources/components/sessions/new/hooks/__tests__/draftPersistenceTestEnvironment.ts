@@ -512,9 +512,6 @@ vi.mock('@/components/sessions/agentInput/components/AgentInputChipPickerPopover
         React.createElement('AgentInputChipPickerPopover', props, props.children),
 }));
 
-vi.mock('@/components/automations/editor/AutomationSettingsForm', () => ({
-    AutomationSettingsForm: (props: Record<string, unknown>) => React.createElement('AutomationSettingsForm', props),
-}));
 
 vi.mock('@react-navigation/native', () => ({
     useIsFocused: () => true,
@@ -828,10 +825,6 @@ vi.mock('@/components/sessions/new/hooks/serverTarget/useNewSessionServerTargetS
     },
 }));
 
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: featureFlags.automationsEnabled }),
-}));
-
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: (featureId: string) => {
         if (featureId === 'mcp.servers') return featureFlags.mcpServersEnabled;
@@ -920,13 +913,7 @@ vi.mock('@/components/sessions/new/newSessionScreenStyles', () => ({
     newSessionScreenStyles: {},
 }));
 
-vi.mock('@/components/sessions/new/modules/automationChipModel', () => ({
-    getAutomationChipLabel: () => 'Automation',
-}));
 
-vi.mock('@/components/sessions/agentInput/sessionActions/listAgentInputActionChipActionIds', () => ({
-    listAgentInputActionChipActionIds: () => [],
-}));
 
 vi.mock('@piggercode/protocol', async (importOriginal) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -937,9 +924,6 @@ vi.mock('@piggercode/protocol', async (importOriginal) => {
     };
 });
 
-vi.mock('@/sync/domains/actions/buildActionDraftInput', () => ({
-    buildActionDraftInput: () => ({}),
-}));
 
 vi.mock('@piggercode/agents', async (importOriginal) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -42,7 +42,6 @@ import {
 import { sessionTagKey } from './sessionTagUtils';
 import { t } from '@/text';
 import { Modal } from '@/modal';
-import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Item } from '@/components/ui/lists/Item';
 import { SessionTrashListItem } from '@/components/sessions/trash/SessionTrashListItem';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
@@ -50,10 +49,7 @@ import { sync } from '@/sync/sync';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 import type { SessionListStorageFilter } from '@/sync/domains/session/sessionStorageKind';
 import { FolderGroupHeader } from './sessionFolderHeader';
-import {
-    asSessionFolderHeaderItem,
-    readSessionFolderDepth,
-} from './sessionFolderShellTypes';
+import { asSessionFolderHeaderItem } from './sessionFolderShellTypes';
 import { SessionFolderScopeBreadcrumb } from './sessionFolderScopeBreadcrumb';
 import { DraggableSessionFolderHeaderFrame } from './DraggableSessionFolderHeaderFrame';
 import { ProjectGroupHeader } from './ProjectGroupHeader';
@@ -104,7 +100,6 @@ import { storeTempData } from '@/utils/sessions/tempDataStore';
 import { resolveNewSessionDraftRouteIdentity } from '@/components/sessions/new/navigation/newSessionDraftRouteIdentity';
 import { buildNewSessionLaunchRouteParams } from '@/components/sessions/new/navigation/newSessionRouteParams';
 import type { Session } from '@/sync/domains/state/storageTypes';
-import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import {
     buildVisibleSessionNavigationEntries,
     findVisibleSessionNavigationEntryByScope,
@@ -242,12 +237,6 @@ const SESSION_LIST_IDLE_MOVE_RESULT = Object.freeze({
 function buildStringListSignature(values: ReadonlyArray<string> | null | undefined): string {
     if (!values || values.length === 0) return '';
     return values.join('\u0001');
-}
-
-function buildStringSetSignature(values: ReadonlySet<string> | null | undefined): string {
-    if (!values) return '*';
-    if (values.size === 0) return '';
-    return Array.from(values).sort((left, right) => left.localeCompare(right)).join('\u0001');
 }
 
 function buildSessionRowStoreKeySetFromScopes(
@@ -674,12 +663,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     const sessionListIdentityDisplay = useSessionListIdentityDisplay();
     const sessionListActiveColorMode = useSetting('sessionListActiveColorModeV1');
     const sessionListSectionModeRaw = useSetting('sessionListSectionModeV1');
-    const sessionReplayEnabled = useSetting('sessionReplayEnabled');
-    const executionRunsEnabled = useFeatureEnabled('execution.runs');
-    const forkActionContext = React.useMemo(() => ({
-        replayEnabled: sessionReplayEnabled === true,
-        executionRunsEnabled: executionRunsEnabled === true,
-    }), [executionRunsEnabled, sessionReplayEnabled]);
     const sessionListSectionMode: SessionListOrderingSectionMode = sessionListSectionModeRaw === 'single'
         ? 'single'
         : 'activity';
@@ -2392,8 +2375,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         compactSessionViewMinimal: Boolean(compactSessionView && compactSessionViewMinimal),
         currentUserId,
         draggingSessionKey,
-        forkExecutionRunsEnabled: forkActionContext.executionRunsEnabled,
-        forkReplayEnabled: forkActionContext.replayEnabled,
         folderActionsEnabled,
         folderViewEnabled,
         hasMultipleMachines,
@@ -2439,8 +2420,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         compactSessionViewMinimal,
         currentUserId,
         draggingSessionKey,
-        forkActionContext.executionRunsEnabled,
-        forkActionContext.replayEnabled,
         folderActionsEnabled,
         folderViewEnabled,
         hasMultipleMachines,
@@ -2495,7 +2474,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 draggingSessionKey={draggingSessionKey}
                 folderActionsEnabled={folderActionsEnabled}
                 folderViewEnabled={folderViewEnabled}
-                forkActionContext={forkActionContext}
                 getRowMoveActionHandlers={getRowMoveActionHandlers}
                 getRowNativeContextMenuOpenChangeHandler={getRowNativeContextMenuOpenChangeHandler}
                 getRowSetTagsHandler={getRowSetTagsHandler}
@@ -2519,7 +2497,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         );
     }, [
         draggingSessionKey,
-        forkActionContext,
         selection.activeServerId,
         surfaceOwnership.dataActive,
         nativeContextMenuSessionKey,

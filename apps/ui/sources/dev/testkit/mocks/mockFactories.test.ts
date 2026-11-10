@@ -3,45 +3,6 @@ import renderer, { act } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('UI testkit mock factories', () => {
-    it('creates a ToolSectionView mock that preserves sibling exports', async () => {
-        const { createToolSectionViewModuleMock } = await import('./toolSectionView');
-        type ToolSectionViewModule = typeof import('@/components/tools/shell/presentation/ToolSectionView');
-        const ToolSectionSpacingProvider: ToolSectionViewModule['ToolSectionSpacingProvider'] = ({ children }) =>
-            React.createElement('ToolSectionSpacingProvider', null, children);
-        const ToolSectionView: ToolSectionViewModule['ToolSectionView'] = React.memo(({ children }) =>
-            React.createElement(React.Fragment, null, children));
-        const actual: ToolSectionViewModule = {
-            ToolSectionSpacingProvider,
-            ToolSectionView,
-        };
-
-        const moduleMock = await createToolSectionViewModuleMock({
-            importOriginal: async <T,>() => actual as T,
-            mode: 'host',
-        });
-
-        expect(moduleMock.ToolSectionSpacingProvider).toBe(ToolSectionSpacingProvider);
-
-        let screen: ReturnType<typeof renderer.create> | undefined;
-        await act(async () => {
-            screen = renderer.create(
-                React.createElement(moduleMock.ToolSectionView, { title: 'Input', fullWidth: true, children: 'Body' }),
-            );
-        });
-        const rendered = screen;
-        if (!rendered) {
-            throw new Error('Expected ToolSectionView mock to render');
-        }
-        const section = rendered.root.findByType('ToolSectionView');
-
-        expect(section.props.title).toBe('Input');
-        expect(section.props.fullWidth).toBe(true);
-        expect(section.children).toEqual(['Body']);
-
-        await act(async () => {
-            rendered.unmount();
-        });
-    });
 
     it('creates a React Native web mock with merged platform and AppState overrides', async () => {
         const { createReactNativeWebMock } = await import('./reactNative');

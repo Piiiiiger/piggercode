@@ -108,10 +108,6 @@ vi.mock('expo-linear-gradient', () => ({
     LinearGradient: 'LinearGradient',
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-    PermissionFooter: () => null,
-}));
-
 const featureEnabledState: Record<string, boolean> = { voice: false };
 
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({

@@ -29,17 +29,6 @@ vi.mock('@/track', () => ({
     trackPaywallError: vi.fn(),
 }));
 
-vi.mock('@/voice/context/voiceHooks', () => ({
-    voiceHooks: {
-        onSessionFocus: vi.fn(),
-        onSessionOffline: vi.fn(),
-        onSessionOnline: vi.fn(),
-        onMessages: vi.fn(),
-        onReady: vi.fn(),
-        reportContextualUpdate: vi.fn(),
-    },
-}));
-
 const emitWithAckMock = vi.hoisted(() => vi.fn(async () => ({
     result: 'success',
     version: 2,

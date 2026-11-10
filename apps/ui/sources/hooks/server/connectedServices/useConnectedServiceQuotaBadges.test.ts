@@ -70,8 +70,6 @@ describe('useConnectedServiceQuotaBadges', () => {
     vi.clearAllMocks();
     const { __resetConnectedServiceQuotaSnapshotStore } = await import('@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore');
     __resetConnectedServiceQuotaSnapshotStore();
-    const { __resetProviderAccountUsageSnapshotCache } = await import('@/sync/domains/connectedServices/accountUsage/cache');
-    __resetProviderAccountUsageSnapshotCache();
   });
 
   it('returns badges for pinned meters after snapshot fetch', async () => {

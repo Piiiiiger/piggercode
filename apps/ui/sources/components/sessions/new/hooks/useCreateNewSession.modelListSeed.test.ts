@@ -168,16 +168,9 @@ async function setupUseCreateNewSessionHarness(params: Readonly<{
     vi.doMock('@/components/sessions/new/modules/materializeNewSessionCheckout', () => ({
         materializeNewSessionCheckout: materializeNewSessionCheckoutSpy,
     }));
-    vi.doMock('@/sync/ops/workspaces', () => ({
-        deleteWorkspaceCheckout: vi.fn(async () => ({ success: true, workspace: { id: 'ws_generated', locationIds: ['loc_generated'], checkoutIds: [], defaultLocationId: 'loc_generated', defaultCheckoutId: null, displayName: 'workspace' } })),
-    }));
     vi.doMock('@/sync/runtime/orchestration/serverScopedRpc/followUpSpawnedSession', async (importOriginal) => ({
         ...(await importOriginal<typeof import('@/sync/runtime/orchestration/serverScopedRpc/followUpSpawnedSession')>()),
         followUpSpawnedSessionWithServerScope: followUpSpawnedSessionWithServerScopeSpy,
-    }));
-    vi.doMock('@/sync/ops/sessionGoals', () => ({
-        sessionGoalSet: vi.fn(async () => ({ ok: true as const })),
-        sessionGoalClear: vi.fn(async () => ({ ok: true as const })),
     }));
     vi.doMock('@/sync/ops/actions/defaultActionExecutor', () => ({
         createDefaultActionExecutor: vi.fn(() => ({

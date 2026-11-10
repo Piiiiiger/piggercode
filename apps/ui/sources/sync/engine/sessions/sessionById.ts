@@ -10,7 +10,6 @@ import {
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
-import { reportNewAgentRequestsFromSessionTransition } from '@/voice/context/reportNewAgentRequestsFromSessionTransition';
 import {
   createNotAuthenticatedError,
   isAuthenticationResponseStatus,
@@ -354,9 +353,7 @@ export async function fetchAndApplySessionById(params: Readonly<{
     rollbackEligibleTurnStarts: rollbackEligibleTurnStarts ? [...rollbackEligibleTurnStarts] : undefined,
   };
 
-  const previousSession = params.getExistingSession?.(sessionId);
   params.applySessions([nextSession]);
-  reportNewAgentRequestsFromSessionTransition(previousSession, nextSession);
 
   return {
     ok: true,

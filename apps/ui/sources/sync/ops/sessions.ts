@@ -3,8 +3,7 @@
  */
 
 import { apiSocket } from '../api/session/apiSocket';
-import { createRpcCallError, isRpcMethodNotAvailableError, readRpcErrorCode as readSessionRpcErrorCode } from '../runtime/rpcErrors';
-import { assertRpcResponseWithSuccess } from '../runtime/assertRpcResponseWithSuccess';
+import { isRpcMethodNotAvailableError, readRpcErrorCode as readSessionRpcErrorCode } from '../runtime/rpcErrors';
 import { buildResumeHappySessionRpcParams, type ResumeHappySessionRpcParams } from '../domains/session/resume/resumeSessionPayload';
 import { resolveTerminalSpawnOptions } from '../domains/settings/terminalSettings';
 import { readForkSessionRpcTimeoutMsFromEnv, readSpawnSessionRpcTimeoutMsFromEnv } from '../domains/session/spawn/spawnSessionRpcTimeout';
@@ -17,7 +16,6 @@ import { machineStartsNativeTerminalSessions, readMachineDaemonCliVersionForServ
 import { nowServerMs } from '../runtime/time';
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
-import { emitSessionMetadataUpdateWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/emitSessionMetadataUpdateWithServerScope';
 import { resolvePreferredServerIdForSessionId } from '@/sync/runtime/orchestration/serverScopedRpc/resolvePreferredServerIdForSessionId';
 import { resolveServerScopedSessionContext } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerScopedSessionContext';
 import { sessionRpcWithPreferredSessionScope } from '@/sync/runtime/orchestration/serverScopedRpc/sessionRpcWithPreferredSessionScope';
@@ -143,8 +141,6 @@ interface SessionBashResponse {
     error?: string;
 }
 
-const INACTIVE_SESSION_RPC_UNAVAILABLE_ERROR = 'Session RPC unavailable for inactive session';
-
 // Response types for spawn session
 export type ResumeSessionResult = SpawnSessionResult;
 
@@ -191,13 +187,6 @@ export interface ResumeSessionOptions {
      */
     accountSettingsVersionHint?: number;
     /**
-     * Legacy transport fallback for older daemon boundaries.
-     * Prefer codexBackendMode for new resume callers.
-     */
-    experimentalCodexAcp?: boolean;
-    codexBackendMode?: import('@piggercode/agents').CodexBackendMode;
-    agentRuntimeDescriptorV1?: import('@piggercode/protocol').AgentRuntimeDescriptorV1;
-    /**
      * Transcript cursor to use when the resume request is caused by a just-committed
      * wake message. The daemon should catch up after this seq so that prompt is
      * consumed without replaying older turns.
@@ -209,8 +198,6 @@ export interface ResumeSessionOptions {
      * before any pending user-message queue is drained.
      */
     initialGoal?: SessionInitialGoalRequestV1;
-    /** Opens the session as its CLI in a terminal (「终端」), including an older chat session. */
-    nativeTerminal?: boolean;
     /**
      * When true, use the requested machine/directory even if the current session metadata
      * still points at a previously reachable machine. This is required for session handoff
@@ -288,14 +275,10 @@ async function runResumeSession(
             agentModeUpdatedAt,
             modelId,
             modelUpdatedAt,
-            experimentalCodexAcp,
-            codexBackendMode,
-            agentRuntimeDescriptorV1,
             accountSettingsVersionHint,
             initialTranscriptAfterSeq,
             executionAuthorization,
             initialGoal,
-            nativeTerminal,
             preferRequestedMachineTarget,
             preferScopedMachineRpc,
         } = preparedOptions;
@@ -314,11 +297,9 @@ async function runResumeSession(
             };
         }
 
-        const opensAsTerminal = nativeTerminal === true
-            || storage.getState().sessions[sessionId]?.metadata?.nativeTerminal === true;
+        // Every session opens as its CLI in a terminal, an older chat session too.
         if (
-            opensAsTerminal
-            && !machineStartsNativeTerminalSessions({
+            !machineStartsNativeTerminalSessions({
                 state: storage.getState(),
                 machineId,
                 serverId,
@@ -364,10 +345,6 @@ async function runResumeSession(
             ...(typeof initialTranscriptAfterSeq === 'number' ? { initialTranscriptAfterSeq } : {}),
             ...(executionAuthorization ? { executionAuthorization } : {}),
             ...(initialGoal ? { initialGoal } : {}),
-            ...(opensAsTerminal ? { nativeTerminal: true as const } : {}),
-            experimentalCodexAcp,
-            codexBackendMode,
-            ...(agentRuntimeDescriptorV1 ? { agentRuntimeDescriptorV1 } : {}),
         });
 
         const result = await machineRpcWithConnectedServiceAuthAdmission<ResumeHappySessionRpcParams>({
@@ -1257,11 +1234,6 @@ export async function sessionRestoreFromTrashWithServerScope(
             await compensateProviderCopy('trash', sessionId, serverId, opts?.metadata);
             return { success: false, message: t('sessionTrash.resultPending') };
     }
-}
-
-// Session rename types
-interface SessionRenameRequest {
-    title: string;
 }
 
 interface SessionRenameResponse {

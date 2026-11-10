@@ -73,210 +73,6 @@ describe('useNewSessionAgentInputPresentation', () => {
         expect(contentChange).not.toBe(first);
     });
 
-    it('exposes automation controls via an action chip (no inline automation section)', async () => {
-        const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
-        const routerMock = createExpoRouterMock();
-        const router = {
-            back: () => routerMock.state.router.back(),
-            canGoBack: vi.fn(() => false),
-            push: (value: any) => routerMock.state.router.push(value),
-            navigate: vi.fn<Router['navigate']>(),
-            replace: (value: any) => routerMock.state.router.replace(value),
-            dismiss: vi.fn<Router['dismiss']>(),
-            dismissTo: vi.fn<Router['dismissTo']>(),
-            dismissAll: vi.fn<Router['dismissAll']>(),
-            canDismiss: vi.fn(() => false),
-            setParams: vi.fn() as any,
-            reload: vi.fn<Router['reload']>(),
-            prefetch: vi.fn<Router['prefetch']>(),
-        } as unknown as Router;
-
-        const hook = await renderHook(() => useNewSessionAgentInputPresentation({
-            theme: sessionAgentInputTheme,
-            selectedMachine: null,
-            automationFeatureEnabled: true,
-            automationDraft: {
-                enabled: true,
-                name: 'Nightly',
-                description: 'Run nightly work',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: true,
-                name: 'Nightly',
-                description: 'Run nightly work',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
-            repoScmSnapshot: null,
-            checkoutChipModel: {
-                selectedOptionId: 'current_path',
-                options: [{ id: 'current_path', kind: 'current_path', path: '/repo' }],
-            },
-            checkoutPickerOpen: false,
-            setCheckoutPickerOpen: vi.fn(),
-            checkoutCreationDraft: null,
-            selectedMachineId: null,
-            selectedPath: '/repo',
-            setSelectedPath: vi.fn(),
-            setCheckoutCreationDraft: vi.fn(),
-            pendingGitWorktreeBaseRefRef: { current: null },
-            pendingGitWorktreeSourceKindRef: { current: 'current' },
-            shouldReconcileInitialHydratedCheckoutCreationDraftRef: { current: false },
-            router,
-            promptStore: createNewSessionPromptStore(''),
-            setSessionPrompt: vi.fn(),
-            handleCreateSession: vi.fn(),
-            backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-            agentType: 'claude',
-            agentOptionState: null,
-            setAgentOptionStateForCurrentAgent: vi.fn(),
-            connectedServicesAuthChip: null,
-            showAutomationActionChips: true,
-            showServerPickerChip: false,
-            targetServerId: null,
-            targetServerName: 'Server A',
-            mcpChip: null,
-            directSessionsFeatureEnabled: false,
-            supportsDirectTranscriptStorage: false,
-            transcriptStorage: 'persisted',
-            hasUserSelectedTranscriptStorageRef: { current: false },
-            setTranscriptStorage: vi.fn(),
-            selectedMachineIsWindows: false,
-            effectiveWindowsRemoteSessionLaunchMode: null,
-            windowsTerminalAvailable: false,
-            setWindowsRemoteSessionLaunchModeOverride: vi.fn(),
-        }));
-
-        expect(hook.getCurrent().agentInputExtraActionChips.some((chip) => chip.key === 'new-session-automate')).toBe(true);
-    });
-
-    it('starts Claude and Codex sessions as terminals where the machine can: an open-terminal chip, and no chips that only shape a chat', async () => {
-        const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
-        const handleCreateSession = vi.fn();
-        const machine = (daemonNativeTerminalSessionsSupported: boolean) => ({
-            id: 'm1',
-            metadata: { host: 'vm', platform: 'linux', daemonNativeTerminalSessionsSupported },
-        }) as unknown as Parameters<typeof useNewSessionAgentInputPresentation>[0]['selectedMachine'];
-        const chipsFor = async (agentType: 'claude' | 'codex', supported: boolean) => {
-            const hook = await renderHook(() => useNewSessionAgentInputPresentation({
-                theme: sessionAgentInputTheme,
-                selectedMachine: machine(supported),
-                automationFeatureEnabled: false,
-                automationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
-                effectiveAutomationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
-                setAutomationDraft: vi.fn(),
-                repoScmSnapshot: null,
-                checkoutChipModel: { selectedOptionId: 'current_path', options: [{ id: 'current_path', kind: 'current_path', path: '/repo' }] },
-                checkoutPickerOpen: false,
-                setCheckoutPickerOpen: vi.fn(),
-                checkoutCreationDraft: null,
-                selectedMachineId: 'm1',
-                selectedPath: '/repo',
-                setSelectedPath: vi.fn(),
-                setCheckoutCreationDraft: vi.fn(),
-                pendingGitWorktreeBaseRefRef: { current: null },
-                pendingGitWorktreeSourceKindRef: { current: 'current' },
-                shouldReconcileInitialHydratedCheckoutCreationDraftRef: { current: false },
-                router: createExpoRouterMock().state.router as unknown as Router,
-                promptStore: createNewSessionPromptStore(''),
-                setSessionPrompt: vi.fn(),
-                handleCreateSession,
-                backendTarget: { kind: 'builtInAgent', agentId: agentType },
-                agentType,
-                agentOptionState: null,
-                setAgentOptionStateForCurrentAgent: vi.fn(),
-                connectedServicesAuthChip: { key: 'test-connected-services-auth' } as AgentInputExtraActionChip,
-                showAutomationActionChips: false,
-                showServerPickerChip: false,
-                targetServerId: null,
-                targetServerName: 'Server A',
-                mcpChip: { key: 'test-mcp' } as AgentInputExtraActionChip,
-                directSessionsFeatureEnabled: false,
-                supportsDirectTranscriptStorage: false,
-                transcriptStorage: 'persisted',
-                hasUserSelectedTranscriptStorageRef: { current: false },
-                setTranscriptStorage: vi.fn(),
-                selectedMachineIsWindows: false,
-                effectiveWindowsRemoteSessionLaunchMode: null,
-                windowsTerminalAvailable: false,
-                setWindowsRemoteSessionLaunchModeOverride: vi.fn(),
-            }));
-            return hook.getCurrent().agentInputExtraActionChips.map((chip) => chip.key);
-        };
-
-        for (const agentType of ['claude', 'codex'] as const) {
-            const keys = await chipsFor(agentType, true);
-            expect(keys).toContain('new-session-native-terminal');
-            expect(keys).not.toContain('test-mcp');
-            expect(keys).not.toContain('test-connected-services-auth');
-        }
-        const onOlderCli = await chipsFor('claude', false);
-        expect(onOlderCli).not.toContain('new-session-native-terminal');
-        expect(onOlderCli).toEqual(expect.arrayContaining(['test-mcp', 'test-connected-services-auth']));
-    });
-
-    it('opens an empty terminal from its chip at once', async () => {
-        const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
-        const handleCreateSession = vi.fn();
-        const hook = await renderHook(() => useNewSessionAgentInputPresentation({
-            theme: sessionAgentInputTheme,
-            selectedMachine: {
-                id: 'm1',
-                metadata: { host: 'vm', platform: 'linux', daemonNativeTerminalSessionsSupported: true },
-            } as unknown as Parameters<typeof useNewSessionAgentInputPresentation>[0]['selectedMachine'],
-            automationFeatureEnabled: false,
-            automationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
-            effectiveAutomationDraft: { enabled: false, name: '', description: '', scheduleKind: 'interval', everyMinutes: 30, cronExpr: '0 * * * *', timezone: 'UTC' },
-            setAutomationDraft: vi.fn(),
-            repoScmSnapshot: null,
-            checkoutChipModel: { selectedOptionId: 'current_path', options: [{ id: 'current_path', kind: 'current_path', path: '/repo' }] },
-            checkoutPickerOpen: false,
-            setCheckoutPickerOpen: vi.fn(),
-            checkoutCreationDraft: null,
-            selectedMachineId: 'm1',
-            selectedPath: '/repo',
-            setSelectedPath: vi.fn(),
-            setCheckoutCreationDraft: vi.fn(),
-            pendingGitWorktreeBaseRefRef: { current: null },
-            pendingGitWorktreeSourceKindRef: { current: 'current' },
-            shouldReconcileInitialHydratedCheckoutCreationDraftRef: { current: false },
-            router: createExpoRouterMock().state.router as unknown as Router,
-            promptStore: createNewSessionPromptStore(''),
-            setSessionPrompt: vi.fn(),
-            handleCreateSession,
-            backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-            agentType: 'codex',
-            agentOptionState: null,
-            setAgentOptionStateForCurrentAgent: vi.fn(),
-            connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
-            showServerPickerChip: false,
-            targetServerId: null,
-            targetServerName: 'Server A',
-            mcpChip: null,
-            directSessionsFeatureEnabled: false,
-            supportsDirectTranscriptStorage: false,
-            transcriptStorage: 'persisted',
-            hasUserSelectedTranscriptStorageRef: { current: false },
-            setTranscriptStorage: vi.fn(),
-            selectedMachineIsWindows: false,
-            effectiveWindowsRemoteSessionLaunchMode: null,
-            windowsTerminalAvailable: false,
-            setWindowsRemoteSessionLaunchModeOverride: vi.fn(),
-        }));
-        const terminalChip = hook.getCurrent().agentInputExtraActionChips.find((chip) => chip.key === 'new-session-native-terminal');
-        const action = terminalChip!.collapsedAction!({ tint: '#000', dismiss: vi.fn(), blurInput: vi.fn() });
-        (Array.isArray(action) ? action[0] : action).onPress?.();
-        expect(handleCreateSession).toHaveBeenCalledWith({ initialMessage: 'skip', nativeTerminal: true });
-    });
-
     it('adds a link-file chip that appends the selected file path into the draft prompt', async () => {
         const { useNewSessionAgentInputPresentation } = await import('./useNewSessionAgentInputPresentation');
         const routerMock = createExpoRouterMock();
@@ -310,26 +106,6 @@ describe('useNewSessionAgentInputPresentation', () => {
         const hook = await renderHook(() => useNewSessionAgentInputPresentation({
             theme: sessionAgentInputTheme,
             selectedMachine: null,
-            automationFeatureEnabled: true,
-            automationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
             repoScmSnapshot: null,
             checkoutChipModel: {
                 selectedOptionId: 'current_path',
@@ -354,7 +130,6 @@ describe('useNewSessionAgentInputPresentation', () => {
             agentOptionState: null,
             setAgentOptionStateForCurrentAgent: vi.fn(),
             connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
             showServerPickerChip: false,
             targetServerId: 'srv',
             targetServerName: 'Server A',
@@ -454,26 +229,6 @@ describe('useNewSessionAgentInputPresentation', () => {
         const renderPresentation = () => useNewSessionAgentInputPresentation({
             theme: sessionAgentInputTheme,
             selectedMachine: null,
-            automationFeatureEnabled: false,
-            automationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
             repoScmSnapshot: null,
             checkoutChipModel: {
                 selectedOptionId: 'current_path',
@@ -498,7 +253,6 @@ describe('useNewSessionAgentInputPresentation', () => {
             agentOptionState: null,
             setAgentOptionStateForCurrentAgent: vi.fn(),
             connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
             showServerPickerChip: false,
             targetServerId: 'srv',
             targetServerName: 'Server A',
@@ -569,26 +323,6 @@ describe('useNewSessionAgentInputPresentation', () => {
                 metadata: {},
             } as any,
             selectedMachineSpawnReadiness: { status: 'unknown', machineId: 'm1' },
-            automationFeatureEnabled: false,
-            automationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
             repoScmSnapshot: null,
             checkoutChipModel: {
                 selectedOptionId: 'current_path',
@@ -613,7 +347,6 @@ describe('useNewSessionAgentInputPresentation', () => {
             agentOptionState: null,
             setAgentOptionStateForCurrentAgent: vi.fn(),
             connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
             showServerPickerChip: false,
             targetServerId: null,
             targetServerName: 'Server A',
@@ -664,26 +397,6 @@ describe('useNewSessionAgentInputPresentation', () => {
                 metadata: {},
             } as any,
             selectedMachineSpawnReadiness: { status: 'unknown', machineId: 'm1' },
-            automationFeatureEnabled: false,
-            automationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
             repoScmSnapshot: null,
             checkoutChipModel: {
                 selectedOptionId: 'current_path',
@@ -708,7 +421,6 @@ describe('useNewSessionAgentInputPresentation', () => {
             agentOptionState: null,
             setAgentOptionStateForCurrentAgent: vi.fn(),
             connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
             showServerPickerChip: false,
             targetServerId: null,
             targetServerName: 'Server A',
@@ -761,26 +473,6 @@ describe('useNewSessionAgentInputPresentation', () => {
                 metadata: {},
             } as any,
             selectedMachineSpawnReadiness: { status: 'rpcUnavailable', machineId: 'm1' },
-            automationFeatureEnabled: false,
-            automationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            effectiveAutomationDraft: {
-                enabled: false,
-                name: '',
-                description: '',
-                scheduleKind: 'interval',
-                everyMinutes: 30,
-                cronExpr: '0 * * * *',
-                timezone: 'UTC',
-            },
-            setAutomationDraft: vi.fn(),
             repoScmSnapshot: null,
             checkoutChipModel: {
                 selectedOptionId: 'current_path',
@@ -805,7 +497,6 @@ describe('useNewSessionAgentInputPresentation', () => {
             agentOptionState: null,
             setAgentOptionStateForCurrentAgent: vi.fn(),
             connectedServicesAuthChip: null,
-            showAutomationActionChips: false,
             showServerPickerChip: false,
             targetServerId: null,
             targetServerName: 'Server A',

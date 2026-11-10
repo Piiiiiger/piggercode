@@ -16,10 +16,6 @@ import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEn
 import type { getConnectedServiceQuotaSnapshotPlain } from '@/sync/api/account/apiConnectedServicesQuotasV3';
 import { renderScreen } from '@/dev/testkit';
 import { resolveAuthCredentialsScopeKey } from '@/auth/storage/resolveAuthCredentialsScopeKey';
-import {
-  __resetProviderAccountUsageSnapshotCache,
-  writeProviderAccountUsageSnapshotToCache,
-} from '@/sync/domains/connectedServices/accountUsage/cache';
 
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -168,7 +164,6 @@ describe('ConnectedServiceDetailView quotas', () => {
     // The quota snapshot store is a module-level cache keyed by scope; reset it so
     // each scenario re-runs the plain/sealed endpoint decision from a clean slate.
     __resetConnectedServiceQuotaSnapshotStore();
-    __resetProviderAccountUsageSnapshotCache();
     useFeatureEnabledSpy.mockReset();
     useFeatureEnabledSpy.mockImplementation((featureId: string) => featureId !== 'connectedServices.accountGroups');
     applySettingsSpy.mockClear();
@@ -371,27 +366,6 @@ describe('ConnectedServiceDetailView quotas', () => {
     expect(applySettingsSpy).toHaveBeenCalledWith({
       connectedServicesQuotaPinnedMeterIdsByKey: { 'openai-codex/work': ['weekly'] },
     });
-  });
-
-  it('renders the AccountBlock usage meter from the connected-service quota view without duplicating cached provider account usage', async () => {
-    setFeatureFlags({ connectedServices: true, 'connectedServices.quotas': true });
-    fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
-    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(buildWeeklySnapshot());
-    writeProviderAccountUsageSnapshotToCache({
-      credentialScope: resolveAuthCredentialsScopeKey(stableCredentials),
-      snapshot: buildAccountUsageSnapshot(),
-    });
-
-    const { ConnectedServiceDetailView } = await import('./ConnectedServiceDetailView');
-    const screen = await renderScreen(<ConnectedServiceDetailView />);
-    await act(async () => {
-      await flushHookEffects({ cycles: 4, turns: 4 });
-    });
-
-    expect(getConnectedServiceQuotaSnapshotPlainSpy).toHaveBeenCalled();
-    expect(screen.findByTestId('account-block:work:usage')).toBeTruthy();
-    expect(screen.findByTestId('account-block:work:meter:weekly')).toBeTruthy();
-    expect(screen.findAllByTestId('account-block:work:meter:account-usage-weekly')).toHaveLength(0);
   });
 
   it('loads plaintext quota snapshots for plaintext accounts', async () => {

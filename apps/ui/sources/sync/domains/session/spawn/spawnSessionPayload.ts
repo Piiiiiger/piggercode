@@ -70,12 +70,6 @@ export interface SpawnSessionOptions {
     agentRuntimeDescriptorV1?: AgentRuntimeDescriptorV1;
     terminal?: TerminalSpawnOptions | null;
     /**
-     * A 「终端」 session: the machine runs the agent's own terminal app (native Claude Code) in tmux,
-     * with nothing PiggerCode adds, and the session view shows that terminal. Only machines whose
-     * daemon publishes `daemonNativeTerminalSessionsSupported` receive it (`machineSpawnNewSession`).
-     */
-    nativeTerminal?: boolean;
-    /**
      * Windows-only: how a daemon-spawned remote session should be hosted locally.
      */
     windowsRemoteSessionLaunchMode?: WindowsRemoteSessionLaunchMode;
@@ -132,7 +126,12 @@ export type SpawnHappySessionRpcParams = CodexBackendTransportFields & {
     modelUpdatedAt?: number
     sessionConfigOptionOverrides?: AcpConfigOptionOverridesV1
     terminal?: TerminalSpawnOptions
-    nativeTerminal?: boolean
+    /**
+     * Every session runs as the agent's own CLI (Claude Code or Codex) in tmux, with nothing PiggerCode
+     * adds, and the session view shows that terminal. Only machines whose daemon publishes
+     * `daemonNativeTerminalSessionsSupported` receive a spawn at all (`machineSpawnNewSession`).
+     */
+    nativeTerminal: true
     windowsRemoteSessionLaunchMode?: WindowsRemoteSessionLaunchMode
     windowsRemoteSessionConsole?: 'hidden' | 'visible'
     windowsTerminalWindowName?: string
@@ -150,94 +149,6 @@ export type SpawnHappySessionRpcParams = CodexBackendTransportFields & {
      */
     accountSettingsVersionHint?: number
 };
-
-export type LegacySpawnHappySessionRpcParams = {
-    type: 'spawn-in-directory'
-    directory: string
-    approvedNewDirectoryCreation?: boolean
-    agent?: string
-    profileId?: string
-    environmentVariables?: Record<string, string>
-    resume?: string
-    permissionMode?: PermissionMode
-    permissionModeUpdatedAt?: number
-    modelId?: string
-    modelUpdatedAt?: number
-    experimentalCodexAcp?: boolean
-    terminal?: TerminalSpawnOptions
-    windowsRemoteSessionConsole?: 'hidden' | 'visible'
-    connectedServices?: unknown
-    connectedServicesUpdatedAt?: number
-};
-
-export type CompatibleSpawnHappySessionRpcParams =
-    | SpawnHappySessionRpcParams
-    | LegacySpawnHappySessionRpcParams;
-
-export function shouldUseLegacySpawnHappySessionRpcParams(daemonCliVersion?: string | null): boolean {
-    const normalizedVersion = typeof daemonCliVersion === 'string' ? daemonCliVersion.trim() : '';
-    return normalizedVersion.length > 0
-        && !isVersionSupported(normalizedVersion, MINIMUM_CLI_BACKEND_TARGET_SPAWN_VERSION);
-}
-
-export function supportsSpawnPendingFirstInput(daemonCliVersion?: string | null): boolean {
-    const normalizedVersion = typeof daemonCliVersion === 'string' ? daemonCliVersion.trim() : '';
-    return normalizedVersion.length > 0
-        && isVersionSupported(normalizedVersion, MINIMUM_CLI_SPAWN_PENDING_FIRST_INPUT_VERSION);
-}
-
-export function supportsSpawnSourceContext(daemonCliVersion?: string | null): boolean {
-    const normalizedVersion = typeof daemonCliVersion === 'string' ? daemonCliVersion.trim() : '';
-    return normalizedVersion.length > 0
-        && isVersionSupported(normalizedVersion, MINIMUM_CLI_SOURCE_CONTEXT_SPAWN_VERSION);
-}
-
-function resolveLegacyWindowsRemoteSessionConsole(params: Readonly<{
-    windowsRemoteSessionLaunchMode?: WindowsRemoteSessionLaunchMode;
-    windowsRemoteSessionConsole?: 'hidden' | 'visible';
-}>): 'hidden' | 'visible' | undefined {
-    if (params.windowsRemoteSessionConsole === 'hidden' || params.windowsRemoteSessionConsole === 'visible') {
-        return params.windowsRemoteSessionConsole;
-    }
-    if (params.windowsRemoteSessionLaunchMode === 'hidden') return 'hidden';
-    if (params.windowsRemoteSessionLaunchMode === 'console') return 'visible';
-    return undefined;
-}
-
-function buildLegacySpawnHappySessionRpcParams(options: SpawnSessionOptions): LegacySpawnHappySessionRpcParams {
-    const params = buildSpawnHappySessionRpcParams(options);
-    const legacyAgent = params.backendTarget.kind === 'builtInAgent' ? params.backendTarget.agentId.trim() : '';
-    if (legacyAgent.length === 0) {
-        throw new Error('Legacy spawn payload is only available for built-in agents');
-    }
-
-    const legacyConsole = resolveLegacyWindowsRemoteSessionConsole({
-        windowsRemoteSessionLaunchMode: params.windowsRemoteSessionLaunchMode,
-        windowsRemoteSessionConsole: params.windowsRemoteSessionConsole,
-    });
-
-    return {
-        type: 'spawn-in-directory',
-        directory: params.directory,
-        approvedNewDirectoryCreation: params.approvedNewDirectoryCreation,
-        agent: legacyAgent,
-        profileId: params.profileId,
-        environmentVariables: params.environmentVariables,
-        resume: params.resume,
-        permissionMode: params.permissionMode,
-        permissionModeUpdatedAt: params.permissionModeUpdatedAt,
-        ...(typeof params.modelId === 'string' && typeof params.modelUpdatedAt === 'number'
-            ? {
-                modelId: params.modelId,
-                modelUpdatedAt: params.modelUpdatedAt,
-            }
-            : {}),
-        ...(params.codexBackendMode === 'acp' ? { experimentalCodexAcp: true } : {}),
-        ...(params.terminal ? { terminal: params.terminal } : {}),
-        ...(legacyConsole ? { windowsRemoteSessionConsole: legacyConsole } : {}),
-        ...(params.connectedServices !== undefined ? { connectedServices: params.connectedServices } : {}),
-    };
-}
 
 export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): SpawnHappySessionRpcParams {
     const {
@@ -261,7 +172,6 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
         codexBackendMode,
         agentRuntimeDescriptorV1,
         terminal,
-        nativeTerminal,
         windowsRemoteSessionLaunchMode,
         windowsRemoteSessionConsole,
         windowsTerminalWindowName,
@@ -283,6 +193,7 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
 
     const params: SpawnHappySessionRpcParams = {
         type: 'spawn-in-directory',
+        nativeTerminal: true,
         directory,
         transcriptStorage,
         approvedNewDirectoryCreation,
@@ -337,9 +248,6 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
     if (terminal) {
         params.terminal = terminal;
     }
-    if (nativeTerminal === true) {
-        params.nativeTerminal = true;
-    }
     if (
         windowsRemoteSessionLaunchMode === 'hidden'
         || windowsRemoteSessionLaunchMode === 'windows_terminal'
@@ -354,19 +262,4 @@ export function buildSpawnHappySessionRpcParams(options: SpawnSessionOptions): S
     }
 
     return params;
-}
-
-export function buildCompatibleSpawnHappySessionRpcParams(params: Readonly<{
-    options: SpawnSessionOptions;
-    daemonCliVersion?: string | null;
-}>): CompatibleSpawnHappySessionRpcParams {
-    if (!shouldUseLegacySpawnHappySessionRpcParams(params.daemonCliVersion)) {
-        const current = buildSpawnHappySessionRpcParams(params.options);
-        if (supportsSpawnPendingFirstInput(params.daemonCliVersion)) {
-            return current;
-        }
-        const { pendingFirstInput: _pendingFirstInput, ...compatible } = current;
-        return compatible;
-    }
-    return buildLegacySpawnHappySessionRpcParams(params.options);
 }

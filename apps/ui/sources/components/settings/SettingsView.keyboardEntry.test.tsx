@@ -94,9 +94,6 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => ({
     getAgentCore: () => ({ uiConnectedService: { serviceId: 'anthropic', label: 'Anthropic', connectRoute: null } }),
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: false, discoverable: false, blockedBy: 'server' }),
-}));
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({ useFeatureEnabled: () => false }));
 vi.mock('@/hooks/auth/useScannedAuthUrlProcessor', () => ({
     useScannedAuthUrlProcessor: () => ({ processAuthUrl: vi.fn() }),

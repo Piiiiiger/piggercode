@@ -16,7 +16,6 @@ import { selectSessionRightTab, toggleSessionReview } from './sessionPaneActions
 import { SessionGitActionRailBadge, SessionGitActionRailTooltip } from './SessionGitActionRailBadge';
 import { useSessionGitActionRailBadge } from './SessionGitActionRailBadge';
 import { formatGitActionRailAccessibilityLabel } from '@/components/ui/navigation/tabBadge/gitActionRailAccessibility';
-import { useSessionRunningAgentCount } from './useSessionRunningAgentCount';
 
 const styles = StyleSheet.create((theme) => ({
     rail: {
@@ -50,9 +49,8 @@ export const SessionActionRail = React.memo((props: Readonly<{
     const pane = useAppPaneScope(props.scopeId);
     const rightPaneHiddenByDetails = usePaneActionRailRightPaneHiddenByDetails();
     const terminal = useSessionTerminalAction(props);
-    const runningAgentCount = useSessionRunningAgentCount(props.sessionId);
     const gitBadge = useSessionGitActionRailBadge(props.sessionId);
-    const tabs = getSessionRightPanelTabs(false, runningAgentCount);
+    const tabs = getSessionRightPanelTabs(false);
     const reviewActive = Boolean(pane.scopeState?.details.isOpen && pane.scopeState.details.activeTabKey === SESSION_DETAILS_SCM_REVIEW_TAB_KEY);
 
     const renderAction = (action: Readonly<{

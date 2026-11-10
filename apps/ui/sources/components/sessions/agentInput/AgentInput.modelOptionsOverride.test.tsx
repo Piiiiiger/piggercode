@@ -113,10 +113,6 @@ vi.mock('react-native-svg', () => ({
     SvgXml: (props: Record<string, unknown>) => React.createElement('SvgXml', props, null),
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-    PermissionFooter: () => null,
-}));
-
 vi.mock('@/sync/domains/state/storageStore', async () => {
     const { createStorageStoreMock } = await import('@/dev/testkit/mocks/storage');
     const store = createStorageStoreMock({ sessionMessages: {}, localSettings: { uiFontScale: 1 } } as any);

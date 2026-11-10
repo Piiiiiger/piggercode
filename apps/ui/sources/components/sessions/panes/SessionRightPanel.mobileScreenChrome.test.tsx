@@ -75,10 +75,6 @@ vi.mock('@/components/sessions/panes/git/SessionRightPanelGitView', () => ({
     SessionRightPanelGitView: () => React.createElement('GitView'),
 }));
 
-vi.mock('@/components/sessions/panes/agents/SessionRightPanelAgentsView', () => ({
-    SessionRightPanelAgentsView: () => React.createElement('AgentsView'),
-}));
-
 vi.mock('@/components/sessions/panes/terminal/SessionRightPanelTerminalView', () => ({
     SessionRightPanelTerminalView: () => React.createElement('TerminalView'),
 }));

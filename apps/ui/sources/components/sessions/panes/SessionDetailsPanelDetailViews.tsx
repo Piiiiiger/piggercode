@@ -4,13 +4,7 @@ import type { SessionCommitDetailsViewProps } from '@/components/sessions/files/
 import type { SessionFileDetailsViewProps } from '@/components/sessions/files/views/SessionFileDetailsView';
 import type { SessionScmReviewDetailsViewProps } from '@/components/sessions/files/views/SessionScmReviewDetailsView';
 import type { SessionScmStashDetailsViewProps } from '@/components/sessions/files/views/SessionScmStashDetailsView';
-import type { SessionTranscriptDetailsViewProps } from '@/components/sessions/panes/details/SessionTranscriptDetailsView';
 
-type SessionSubagentDetailsViewProps = Readonly<{
-    sessionId: string;
-    scopeId: string;
-    subagentId: string;
-}>;
 
 const loadSessionFileDetailsView = async () => (await import('@/components/sessions/files/views/SessionFileDetailsView')).SessionFileDetailsView;
 
@@ -34,16 +28,4 @@ const loadSessionScmStashDetailsView = async () => (await import('@/components/s
 
 export function SessionScmStashDetailsViewForPanel(props: SessionScmStashDetailsViewProps) {
     return <SessionPaneLazyLoader testID="session-scm-stash-details-loading" load={loadSessionScmStashDetailsView} props={props} />;
-}
-
-const loadSessionSubagentDetailsView = async () => (await import('@/components/sessions/agents/details/SessionSubagentDetailsView')).SessionSubagentDetailsView;
-
-export function SessionSubagentDetailsViewForPanel(props: SessionSubagentDetailsViewProps) {
-    return <SessionPaneLazyLoader testID="session-subagent-details-loading" load={loadSessionSubagentDetailsView} props={props} />;
-}
-
-const loadSessionTranscriptDetailsView = async () => (await import('@/components/sessions/panes/details/SessionTranscriptDetailsView')).SessionTranscriptDetailsView;
-
-export function SessionTranscriptDetailsViewForPanel(props: SessionTranscriptDetailsViewProps) {
-    return <SessionPaneLazyLoader testID="session-transcript-details-loading" load={loadSessionTranscriptDetailsView} props={props} />;
 }

@@ -3,11 +3,8 @@ import { listActionSpecs } from '@piggercode/protocol';
 
 import type { Command } from './types';
 import type { KeyboardCommandId } from '@/keyboard';
-import { getEnabledAgentIds } from '@/agents/catalog/enabled';
 import { storage } from '@/sync/domains/state/storage';
 import { isActionEnabledInState } from '@/sync/domains/settings/actionsSettings';
-import { buildExecutionRunActionDraftInputForUi } from '@/sync/domains/actions/buildExecutionRunActionDraftInputForUi';
-import { resolveSessionActionDefaultBackend } from '@/sync/domains/session/resolveSessionActionDefaultBackend';
 import { t } from '@/text';
 
 function normalizeId(value: unknown): string {
@@ -31,15 +28,6 @@ function readSessionLabel(session: any): Readonly<{ title: string; subtitle: str
   return { title, subtitle };
 }
 
-async function requireSession(
-  activeSessionId: string | null,
-  alert: (title: string, message: string) => void | Promise<void>,
-): Promise<string | null> {
-  if (activeSessionId) return activeSessionId;
-  await alert(t('commandPalette.commands.sessionRequiredTitle'), t('commandPalette.commands.sessionRequiredBody'));
-  return null;
-}
-
 export type PetCommandSurface = 'desktopOverlay' | 'appShell' | 'none';
 
 export type PetCommandControls = Readonly<{
@@ -55,8 +43,6 @@ export function buildCommandPaletteCommands(params: Readonly<{
   isDev: boolean;
   activeSessionId: string | null;
   features: Readonly<{
-    executionRunsEnabled: boolean;
-    voiceEnabled: boolean;
     memorySearchEnabled: boolean;
     petsCompanionEnabled?: boolean;
   }>;
@@ -211,82 +197,7 @@ export function buildCommandPaletteCommands(params: Readonly<{
   const commandPaletteActionSpecs = actionSpecs.filter((spec) => (spec.placements ?? []).includes('command_palette'));
   const byId = new Map(commandPaletteActionSpecs.map((spec) => [spec.id, spec]));
 
-  if (features.executionRunsEnabled) {
-    const startReview = byId.get('review.start');
-    const startPlan = byId.get('subagents.plan.start');
-    const startDelegate = byId.get('subagents.delegate.start');
-    for (const entry of [
-      startReview ? { spec: startReview, title: t('commandPalette.commands.startReviewRunTitle'), intent: 'review' as const } : null,
-      startPlan ? { spec: startPlan, title: t('commandPalette.commands.startPlanRunTitle'), intent: 'plan' as const } : null,
-      startDelegate ? { spec: startDelegate, title: t('commandPalette.commands.startDelegationRunTitle'), intent: 'delegate' as const } : null,
-    ]) {
-      if (!entry) continue;
-      cmds.push({
-        id: `action:${entry.spec.id}`,
-        title: entry.title,
-        subtitle: t('commandPalette.commands.executionRunsSubtitle'),
-        icon: 'code',
-        category: t('commandPalette.commands.runsCategory'),
-        action: async () => {
-          const sessionId = await requireSession(activeSessionId, alert);
-          if (!sessionId) return;
-          const session = sessionsById?.[sessionId] ?? null;
-          const defaultBackend = resolveSessionActionDefaultBackend({
-            session,
-            enabledAgentIds: getEnabledAgentIds({
-              backendEnabledByTargetKey: storage.getState().settings?.backendEnabledByTargetKey,
-            }),
-          });
 
-          storage.getState().createSessionActionDraft(sessionId, {
-            actionId: entry.spec.id as any,
-            input: buildExecutionRunActionDraftInputForUi({
-              actionId: entry.spec.id as any,
-              sessionId,
-              defaultBackendTarget: defaultBackend?.backendTarget ?? null,
-              defaultBackendId: defaultBackend?.defaultBackendId ?? null,
-              instructions: '',
-            }),
-          });
-          nav.navigateToSession(sessionId);
-        },
-      });
-    }
-
-    const list = byId.get('execution.run.list');
-    if (list) {
-      cmds.push({
-        id: `action:${list.id}`,
-        title: t('commandPalette.commands.openSessionRunsTitle'),
-        subtitle: activeSessionId ? t('commandPalette.commands.runsForCurrentSessionSubtitle') : t('commandPalette.commands.runsAcrossMachinesSubtitle'),
-        icon: 'list',
-        category: t('commandPalette.commands.runsCategory'),
-        action: async () => {
-          if (activeSessionId) {
-            nav.push(`/session/${encodeURIComponent(activeSessionId)}/runs`);
-            return;
-          }
-          nav.push('/runs');
-        },
-      });
-    }
-  }
-
-  if (features.voiceEnabled) {
-    const reset = byId.get('ui.voice_global.reset');
-    if (reset) {
-      cmds.push({
-        id: `action:${reset.id}`,
-        title: t('commandPalette.commands.resetVoiceAgentTitle'),
-        subtitle: t('commandPalette.commands.voiceSubtitle'),
-        icon: 'arrow-clockwise',
-        category: t('commandPalette.commands.voiceCategory'),
-        action: async () => {
-          await actions.execute('ui.voice_global.reset', {}, { defaultSessionId: activeSessionId });
-        },
-      });
-    }
-  }
 
   cmds.push({
     id: 'sign-out',

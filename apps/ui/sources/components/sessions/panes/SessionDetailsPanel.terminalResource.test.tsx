@@ -30,15 +30,6 @@ vi.mock('@/constants/Typography', () => ({
     Typography: { default: () => ({}) },
 }));
 
-vi.mock('@/agents/registry/sessionSubagentUiBehavior', () => ({
-    renderProviderSessionDetailsTab: () => null,
-    resolveProviderSessionDetailsTabIconName: () => null,
-}));
-
-vi.mock('@/components/sessions/runs/launcher/SessionExecutionRunLauncherView', () => ({
-    SessionExecutionRunLauncherView: 'SessionExecutionRunLauncherView',
-}));
-
 vi.mock('@/components/ui/feedback/ActivitySpinner', () => ({ ActivitySpinner: 'ActivityIndicator' }));
 vi.mock('@/components/ui/scroll/useWebScrollLockBypass', () => ({ useWebScrollLockBypass: () => {} }));
 vi.mock('@/components/ui/scroll/resolveWebScrollableElement', () => ({ resolveWebScrollableElementWithin: () => null }));
@@ -61,9 +52,6 @@ vi.mock('@/components/ui/icons/Icon', () => ({ Icon: 'Icon' }));
 vi.mock('@/components/sessions/shell/sessionPinIcons', () => ({
     PinIcon: 'PinIcon',
     PinSlashIcon: 'PinSlashIcon',
-}));
-vi.mock('./details/sessionTranscriptDetailsResource', () => ({
-    isSessionTranscriptDetailsResource: () => false,
 }));
 
 const terminalViewSpy = vi.fn();

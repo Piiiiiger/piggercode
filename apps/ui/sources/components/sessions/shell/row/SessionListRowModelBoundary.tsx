@@ -41,7 +41,6 @@ import type {
     SessionListRowStoreState,
 } from './sessionListRowModelTypes';
 import type { SessionListRowStoreSubscriptionMode } from './sessionListVisibleRowStoreScopes';
-import type { SessionItemProps } from '../SessionItem';
 
 const EMPTY_SESSION_LIST_ROW_STORE_STATE: SessionListRowStoreState = Object.freeze({});
 
@@ -61,7 +60,6 @@ export type SessionListRowModelBoundaryProps = Readonly<{
     draggingSessionKey: string | null;
     folderViewEnabled: boolean;
     folderActionsEnabled: boolean;
-    forkActionContext?: SessionItemProps['forkActionContext'];
     getRowMoveActionHandlers: (input: Readonly<{
         sourceLabel: string;
         sourceRowId: string;
@@ -341,7 +339,6 @@ const SessionListRowModelBoundaryContent = React.memo(function SessionListRowMod
             activityTimeMode={rowModel.activity.mode === 'updatedAt' ? 'updatedAt' : undefined}
             folderDepth={rowModel.folder.depth}
             treeRow={rowModel.folder.tree}
-            forkActionContext={props.forkActionContext}
             onMoveToFolder={props.folderActionsEnabled ? moveActionHandlers.onMoveToFolder : undefined}
             onMoveToWorkspaceRoot={props.folderActionsEnabled ? moveActionHandlers.onMoveToWorkspaceRoot : undefined}
             onMoveUp={props.folderViewEnabled ? moveActionHandlers.onMoveUp : undefined}

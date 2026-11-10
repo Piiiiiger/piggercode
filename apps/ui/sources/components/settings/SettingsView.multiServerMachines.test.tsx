@@ -219,10 +219,6 @@ vi.mock('@/agents/catalog/catalog', () => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: false }),
-}));
-
 vi.mock('@/utils/platform/navigateWithBlurOnWeb', () => ({
     navigateWithBlurOnWeb: (fn: () => void) => fn(),
 }));

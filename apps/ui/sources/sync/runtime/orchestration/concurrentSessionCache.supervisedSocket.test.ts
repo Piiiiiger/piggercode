@@ -199,6 +199,13 @@ describe('concurrent session cache supervised sockets', () => {
         mockConcurrentSessionCacheDeps();
         await configureConcurrentSelection();
 
+        // The app's sync owner turns server networking off while the app is in the background; do what it does.
+        const {
+            invalidateAllServerReachabilitySupervisors,
+            setServerReachabilityNetworkAllowed,
+        } = await import('@/sync/runtime/connectivity/serverReachabilitySupervisorPool');
+        setServerReachabilityNetworkAllowed(false);
+
         const { startConcurrentSessionCacheSync, stopConcurrentSessionCacheSync } = await import('./concurrentSessionCache');
         startConcurrentSessionCacheSync();
 
@@ -211,6 +218,9 @@ describe('concurrent session cache supervised sockets', () => {
         expect(fakeSocket.connect).toHaveBeenCalledTimes(0);
 
         appState.currentState = 'active';
+        // And back on, re-probing at once, when the app comes back.
+        setServerReachabilityNetworkAllowed(true);
+        await invalidateAllServerReachabilitySupervisors();
         expect(appStateHandlers.size).toBeGreaterThan(0);
         for (const handler of appStateHandlers) {
             handler('active');

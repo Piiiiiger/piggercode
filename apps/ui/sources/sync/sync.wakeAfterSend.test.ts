@@ -19,16 +19,6 @@ vi.mock('@/log', () => ({
     log: { log: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock('@/voice/context/voiceHooks', () => ({
-    voiceHooks: {
-        onSessionFocus: vi.fn(),
-        onSessionOffline: vi.fn(),
-        onSessionOnline: vi.fn(),
-        onMessages: vi.fn(),
-        reportContextualUpdate: vi.fn(),
-    },
-}));
-
 const ensureSessionRuntimeForPendingInputSpy = vi.hoisted(() => vi.fn(async (_options: unknown) => ({ type: 'success' as const })));
 const getServerFeaturesSnapshotMock = vi.hoisted(() => vi.fn());
 vi.mock('@/sync/api/capabilities/serverFeaturesClient', () => ({

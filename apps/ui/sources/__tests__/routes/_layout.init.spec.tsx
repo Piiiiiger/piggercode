@@ -331,13 +331,6 @@ vi.mock('@/track/useTrackScreens', () => ({
     useTrackScreens: () => {},
 }));
 
-vi.mock('@/realtime/RealtimeProvider', () => {
-    const React = require('react');
-    return {
-        RealtimeProvider: ({ children }: { children: React.ReactNode }) => React.createElement('RealtimeProvider', null, children),
-    };
-});
-
 vi.mock('@/components/web/FaviconPermissionIndicator', () => {
     const React = require('react');
     return {

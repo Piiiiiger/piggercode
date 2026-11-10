@@ -10,7 +10,6 @@ import {
     markSessionVisible,
     setActiveViewingSessionId,
 } from '@/sync/domains/session/activeViewingSession';
-import { useVoiceTargetStore } from '@/voice/runtime/voiceTargetStore';
 import * as executionRunActivityBus from '@/sync/runtime/executionRuns/executionRunActivityBus';
 import { resetTranscriptStreamSegmentAssemblyForTests } from '@/sync/engine/sessions/transcriptStreamSegmentAssembly';
 import { flushMachineActivityUpdates, handleEphemeralSocketUpdate, handleSocketUpdate, handleUpdateContainer } from './socket';
@@ -484,12 +483,6 @@ describe('socket update handling: execution-run-updated ephemerals', () => {
 describe('socket update handling: transcript stream segment ephemerals', () => {
     beforeEach(() => {
         storage.setState(initialStorageState, true);
-        useVoiceTargetStore.setState({
-            scope: 'global',
-            primaryActionSessionId: null,
-            trackedSessionIds: [],
-            lastFocusedSessionId: null,
-        });
         storage.setState((prev) => ({
             ...prev,
             settings: {
@@ -502,12 +495,6 @@ describe('socket update handling: transcript stream segment ephemerals', () => {
 
     afterEach(() => {
         clearActiveViewingSessionsForServerScopeReset();
-        useVoiceTargetStore.setState({
-            scope: 'global',
-            primaryActionSessionId: null,
-            trackedSessionIds: [],
-            lastFocusedSessionId: null,
-        });
         vi.useRealTimers();
     });
 
@@ -687,72 +674,6 @@ describe('socket update handling: transcript stream segment ephemerals', () => {
         await vi.runAllTimersAsync();
 
         expect(applyMessages).not.toHaveBeenCalled();
-    });
-
-    it('applies queued hidden stream segments when a voice consumer becomes active before the coalescing window flushes', async () => {
-        vi.useFakeTimers();
-        const sessionId = 'voice_live_consumer_stream_session';
-        enableTranscriptStreamingCoalescingForTest();
-        storage.getState().applySessions([buildSession(sessionId, 'plain')]);
-
-        const applyMessages = vi.fn();
-
-        await handleEphemeralSocketUpdate({
-            update: buildTranscriptStreamSegmentUpdate(
-                sessionId,
-                buildPlainTranscriptStreamSegmentContent('queued for voice', 'segment-voice-live'),
-                'segment-voice-live',
-            ),
-            addActivityUpdate: vi.fn(),
-            addMachineActivityUpdate: vi.fn(),
-            getSessionEncryption: vi.fn(() => null),
-            getSession: (id: string) => storage.getState().sessions[id],
-            applyMessages,
-        });
-
-        expect(applyMessages).not.toHaveBeenCalled();
-
-        useVoiceTargetStore.getState().setPrimaryActionSessionId(sessionId);
-        await vi.runAllTimersAsync();
-
-        expect(applyMessages).toHaveBeenCalledTimes(1);
-        expect(applyMessages.mock.calls[0]?.[1]?.[0]).toMatchObject({
-            localId: 'segment-voice-live',
-            content: [{ type: 'text', text: 'queued for voice' }],
-        });
-    });
-
-    it('applies queued hidden stream segments when the voice readback target is last focused', async () => {
-        vi.useFakeTimers();
-        const sessionId = 'voice_readback_stream_session';
-        enableTranscriptStreamingCoalescingForTest();
-        storage.getState().applySessions([buildSession(sessionId, 'plain')]);
-
-        const applyMessages = vi.fn();
-
-        await handleEphemeralSocketUpdate({
-            update: buildTranscriptStreamSegmentUpdate(
-                sessionId,
-                buildPlainTranscriptStreamSegmentContent('queued for readback', 'segment-voice-readback'),
-                'segment-voice-readback',
-            ),
-            addActivityUpdate: vi.fn(),
-            addMachineActivityUpdate: vi.fn(),
-            getSessionEncryption: vi.fn(() => null),
-            getSession: (id: string) => storage.getState().sessions[id],
-            applyMessages,
-        });
-
-        expect(applyMessages).not.toHaveBeenCalled();
-
-        useVoiceTargetStore.getState().setLastFocusedSessionId(sessionId);
-        await vi.runAllTimersAsync();
-
-        expect(applyMessages).toHaveBeenCalledTimes(1);
-        expect(applyMessages.mock.calls[0]?.[1]?.[0]).toMatchObject({
-            localId: 'segment-voice-readback',
-            content: [{ type: 'text', text: 'queued for readback' }],
-        });
     });
 
     it('applies queued hidden stream segments before applying newly visible segments', async () => {

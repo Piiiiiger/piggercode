@@ -3,23 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { sessionNeedsLiveTranscript, sessionScmMutationSignalWanted } from './sessionRealtimeVisibility';
 
 describe('sessionNeedsLiveTranscript', () => {
-    it('returns visible and voice reasons as full transcript consumers', () => {
-        expect(sessionNeedsLiveTranscript({
-            sessionId: 's1',
-            isVisible: true,
-        })).toEqual({ active: true, reasons: ['visible'] });
-
-        expect(sessionNeedsLiveTranscript({
-            sessionId: 's1',
-            voicePrimaryActionSessionId: 's1',
-            voiceTrackedSessionIds: ['s2'],
-        })).toEqual({ active: true, reasons: ['voicePrimaryAction'] });
-
-        expect(sessionNeedsLiveTranscript({
-            sessionId: 's1',
-            voiceTrackedSessionIds: ['s1'],
-        })).toEqual({ active: true, reasons: ['voiceTracked'] });
-    });
 
     it('does not treat unrelated same-root sessions as SCM consumers without an explicit same-project scope', () => {
         const decision = sessionNeedsLiveTranscript({

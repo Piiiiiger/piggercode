@@ -70,10 +70,6 @@ vi.mock('@/components/sessions/files/views/SessionScmStashDetailsView', () => ({
     SessionScmStashDetailsView: (props: any) => React.createElement('SessionScmStashDetailsView', props),
 }));
 
-vi.mock('@/components/sessions/agents/details/SessionSubagentDetailsView', () => ({
-    SessionSubagentDetailsView: (props: any) => React.createElement('SessionSubagentDetailsView', props),
-}));
-
 vi.mock('./SessionDetailsPanelDetailViews', () => ({
     SessionCommitDetailsViewForPanel: (props: any) => React.createElement('SessionCommitDetailsView', props),
     SessionFileDetailsViewForPanel: (props: any) => React.createElement('SessionFileDetailsView', props),

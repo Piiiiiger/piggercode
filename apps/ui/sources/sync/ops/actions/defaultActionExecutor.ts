@@ -28,26 +28,9 @@ import { delegateSessionHandoffToSourceDaemon } from '@/sync/ops/delegatedSessio
 import { sessionRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc';
 import { sendSessionMessageWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionSendMessage';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
-import { voiceActivityController } from '@/voice/activity/voiceActivityController';
-import { voiceSessionManager } from '@/voice/session/voiceSession';
-import { VOICE_AGENT_GLOBAL_SESSION_ID } from '@/voice/agent/voiceAgentGlobalSessionId';
-import { teleportVoiceAgentToSessionRoot } from '@/voice/agent/teleportVoiceAgentToSessionRoot';
 import { storage } from '@/sync/domains/state/storage';
 import { getStructuredQuestionAnswersV1Supported } from '@/sync/domains/state/agentStateCapabilities';
-import { resetVoiceAgentPersistenceState } from '@/voice/persistence/resetVoiceAgentPersistenceState';
 import type { ArtifactHeader } from '@/sync/domains/artifacts/artifactTypes';
-import { openSessionForVoiceTool } from '@/voice/tools/actionImpl/openSession';
-import { spawnSessionForVoiceTool } from '@/voice/tools/actionImpl/spawnSession';
-import { spawnSessionWithPickerForVoiceTool } from '@/voice/tools/actionImpl/spawnSessionPicker';
-import { setPrimaryActionSessionId, setTrackedSessionIds } from '@/voice/tools/actionImpl/sessionTargets';
-import { listSessionsForVoiceTool } from '@/voice/tools/actionImpl/sessionList';
-import { getSessionActivityForVoiceTool } from '@/voice/tools/actionImpl/sessionActivity';
-import { getSessionRecentMessagesForVoiceTool } from '@/voice/tools/actionImpl/sessionRecentMessages';
-import { listRecentPathsForVoiceTool } from '@/voice/tools/actionImpl/pathsListRecent';
-import { listMachinesForVoiceTool } from '@/voice/tools/actionImpl/machinesList';
-import { listServersForVoiceTool } from '@/voice/tools/actionImpl/serversList';
-import { listReviewEnginesForVoiceTool } from '@/voice/tools/actionImpl/reviewEnginesList';
-import { listAgentBackendsForVoiceTool, listAgentModelsForVoiceTool } from '@/voice/tools/actionImpl/agentCatalogList';
 import { sync } from '@/sync/sync';
 import { publishAcpSessionModeOverrideToMetadata } from '@/sync/engine/overrides/acpSessionModeOverridePublish';
 import { updatePromptDoc } from '@/sync/ops/promptLibrary/promptDocs';
@@ -68,6 +51,13 @@ import {
   resolveSessionModeActionControl,
   serializeSessionModeActionOptions,
 } from './sessionModeActionSupport';
+import { router } from 'expo-router';
+import { navigateToSessionRoute } from '@/hooks/session/navigateToSessionRoute';
+
+/** Actions only the removed voice assistant implemented: they fail visibly instead of doing nothing. */
+const unsupportedAction = (actionId: string) => async () => (
+  { ok: false, error: `unsupported_action:${actionId}`, errorCode: 'unsupported_action' } as const
+);
 
 export function createDefaultActionExecutor(opts?: Readonly<{
   resolveServerIdForSessionId?: (sessionId: string) => string | null;
@@ -132,14 +122,11 @@ export function createDefaultActionExecutor(opts?: Readonly<{
     executionRunAction: sessionExecutionRunAction,
     executionRunWait: async () => ({ ok: false, error: 'unsupported_action:execution.run.wait', errorCode: 'unsupported_action' }),
 
-    sessionOpen: async ({ sessionId }) =>
-      opts?.openSession
-        ? (await opts.openSession(sessionId), { ok: true, status: 'opened', sessionId } as const)
-        : await openSessionForVoiceTool({
-          sessionId,
-          resolveServerIdForSessionId: opts?.resolveServerIdForSessionId,
-          resolveServerNameForSessionId: opts?.resolveServerNameForSessionId,
-        }),
+    sessionOpen: async ({ sessionId }) => {
+      if (opts?.openSession) await opts.openSession(sessionId);
+      else navigateToSessionRoute({ router, sessionId, serverId: opts?.resolveServerIdForSessionId?.(sessionId) ?? null });
+      return { ok: true, status: 'opened', sessionId } as const;
+    },
 
     sessionFork: async ({
       sessionId,
@@ -209,11 +196,7 @@ export function createDefaultActionExecutor(opts?: Readonly<{
         if (opts?.openSession) {
           await opts.openSession(childSessionId);
         } else {
-          await openSessionForVoiceTool({
-            sessionId: childSessionId,
-            resolveServerIdForSessionId: opts?.resolveServerIdForSessionId,
-            resolveServerNameForSessionId: opts?.resolveServerNameForSessionId,
-          });
+          navigateToSessionRoute({ router, sessionId: childSessionId, serverId: opts?.resolveServerIdForSessionId?.(childSessionId) ?? null });
         }
         }
       return { ok: true, status: 'forked', parentSessionId: sid, childSessionId };
@@ -277,25 +260,15 @@ export function createDefaultActionExecutor(opts?: Readonly<{
       });
     },
 
-    sessionSpawnNew: async (input) =>
-      await spawnSessionForVoiceTool(input),
-
-    sessionSpawnPicker: async ({ tag, agentId, modelId, initialMessage }) =>
-      await spawnSessionWithPickerForVoiceTool({ tag, agentId, modelId, initialMessage }),
-
-    pathsListRecent: async ({ machineId, limit }) => await listRecentPathsForVoiceTool({ machineId, limit }),
-    machinesList: async ({ limit }) => await listMachinesForVoiceTool({ limit }),
+    sessionSpawnNew: unsupportedAction('session.spawn_new'),
+    sessionSpawnPicker: unsupportedAction('session.spawn_picker'),
+    pathsListRecent: unsupportedAction('paths.list_recent'),
+    machinesList: unsupportedAction('machines.list'),
     machineCommandRun: async () => ({ ok: false, error: 'unsupported_action:machine.command.run', errorCode: 'unsupported_action' }),
-    serversList: async ({ limit }) => await listServersForVoiceTool({ limit }),
-    reviewEnginesList: async ({ sessionId, includeDisabled }) => await listReviewEnginesForVoiceTool({ sessionId, includeDisabled }),
-    agentsBackendsList: async (args) => {
-      const { includeDisabled, limit } = args as AgentsBackendsListArgs;
-      return await listAgentBackendsForVoiceTool({ includeDisabled, limit });
-    },
-    agentsModelsList: async (args) => {
-      const { agentId, machineId, limit, backendTargetKey } = args as AgentsModelsListArgs;
-      return await listAgentModelsForVoiceTool({ agentId, machineId, limit, backendTargetKey });
-    },
+    serversList: unsupportedAction('servers.list'),
+    reviewEnginesList: unsupportedAction('review.engines.list'),
+    agentsBackendsList: unsupportedAction('agents.backends.list'),
+    agentsModelsList: unsupportedAction('agents.models.list'),
 
     sessionSendMessage: async ({ sessionId, message, requestedAction, serverId }) =>
       await sendSessionMessageWithServerScope({ sessionId, message, requestedAction, serverId }),
@@ -432,44 +405,14 @@ export function createDefaultActionExecutor(opts?: Readonly<{
       };
     },
 
-    sessionTargetPrimarySet: async ({ sessionId }) => await setPrimaryActionSessionId({ sessionId }),
-    sessionTargetTrackedSet: async ({ sessionIds }) => await setTrackedSessionIds({ sessionIds }),
-    sessionList: async ({ limit, cursor, includeLastMessagePreview }) => await listSessionsForVoiceTool({ limit, cursor, includeLastMessagePreview }),
-    sessionActivityGet: async ({ sessionId, windowSeconds }) => await getSessionActivityForVoiceTool({ sessionId, windowSeconds }),
-    sessionTranscriptGet: async ({ sessionId, limit, cursor, roles, maxCharsPerMessage }) => {
-      const roleSet = Array.isArray(roles) ? new Set(roles) : null;
-      const res = await getSessionRecentMessagesForVoiceTool({
-        sessionId,
-        limit,
-        cursor,
-        includeUser: roleSet ? roleSet.has('user') : true,
-        includeAssistant: roleSet ? roleSet.has('assistant') : true,
-        maxCharsPerMessage,
-      });
-      if (!res.ok) return res;
-      return {
-        ok: true,
-        sessionId: res.sessionId,
-        items: res.messages.map((message) => ({
-          id: String(message.id ?? ''),
-          createdAt: Number(message.createdAt ?? 0),
-          role: message.role === 'assistant' ? 'assistant' : message.role === 'tool' ? 'tool' : 'user',
-          kind: message.role === 'tool' ? 'tool_call' : 'message',
-          text: String(message.text ?? ''),
-        })),
-        nextCursor: res.nextCursor,
-        hasMore: Boolean(res.nextCursor),
-      };
-    },
-    sessionRecentMessagesGet: async ({ sessionId, defaultSessionId, limit, cursor, includeUser, includeAssistant, maxCharsPerMessage }) =>
-      await getSessionRecentMessagesForVoiceTool({ sessionId, defaultSessionId, limit, cursor, includeUser, includeAssistant, maxCharsPerMessage }),
-
-    resetGlobalVoiceAgent: async () => {
-      await resetVoiceAgentPersistenceState({
-        stop: async () => await voiceSessionManager.stop(VOICE_AGENT_GLOBAL_SESSION_ID),
-      });
-    },
-    teleportVoiceAgentToSessionRoot: async ({ sessionId }) => await teleportVoiceAgentToSessionRoot({ sessionId }),
+    sessionTargetPrimarySet: unsupportedAction('session.target.primary.set'),
+    sessionTargetTrackedSet: unsupportedAction('session.target.tracked.set'),
+    sessionList: unsupportedAction('session.list'),
+    sessionActivityGet: unsupportedAction('session.activity.get'),
+    sessionTranscriptGet: unsupportedAction('session.transcript.get'),
+    sessionRecentMessagesGet: unsupportedAction('session.recent_messages.get'),
+    resetGlobalVoiceAgent: async () => {},
+    teleportVoiceAgentToSessionRoot: async () => {},
 
     daemonMemorySearch: async ({ machineId, query, serverId }) =>
       await machineRpcWithServerScope({

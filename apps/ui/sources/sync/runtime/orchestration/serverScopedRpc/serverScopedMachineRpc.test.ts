@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { resetScopedMachineDataKeyCacheForTests } from './serverScopedRpcPool';
@@ -102,6 +102,11 @@ function installScopedFallback(): Readonly<{
 }
 
 describe('machineRpcWithServerScope', () => {
+    // The harness keeps the real apiSocket its mock wraps; load it before any case reaches for it.
+    beforeAll(async () => {
+        await import('@/sync/api/session/apiSocket');
+    });
+
     it('uses raw JSON for active plain Machine RPC through the real keyless encryption owner', async () => {
         const { Encryption } = await import('@/sync/encryption/encryption');
         const encryption = Encryption.createWithoutKeyMaterial();
@@ -219,88 +224,6 @@ describe('machineRpcWithServerScope', () => {
         await expect(activeApiSocketHarness.real.machineRPC('machine-1', 'method-test', {}))
             .rejects.toMatchObject({ rpcErrorCode: 'machine_rpc_context_unavailable' });
         expect(emitWithAck).not.toHaveBeenCalled();
-    });
-
-    it.each([
-        { failure: 'crypto', reply: null, expectedErrorCode: 'machine_rpc_decryption_failed' },
-        { failure: 'decoded refusal', reply: { error: 'Target denied the capability request', errorCode: RPC_ERROR_CODES.FORBIDDEN }, expectedErrorCode: RPC_ERROR_CODES.FORBIDDEN },
-        { failure: 'decoded refusal without message', reply: { ok: false, errorCode: RPC_ERROR_CODES.FORBIDDEN }, expectedErrorCode: RPC_ERROR_CODES.FORBIDDEN },
-        { failure: 'decoded method not found', reply: { ok: false, errorCode: RPC_ERROR_CODES.METHOD_NOT_FOUND }, expectedErrorCode: 'UNEXPECTED' },
-        { failure: 'decoded crypto refusal', reply: { ok: false, errorCode: 'rpc_params_decryption_failed' }, expectedErrorCode: 'rpc_params_decryption_failed' },
-    ])('preserves a target $failure failure through handoff preflight before source mutation', async ({ failure, reply, expectedErrorCode }) => {
-        const { emitWithAck } = installScopedFallback();
-        const { Encryption } = await import('@/sync/encryption/encryption');
-        const { createRootLayoutFeaturesResponse } = await import('@/dev/testkit/fixtures/featureFixtures');
-        const { createSessionFixture } = await import('@/dev/testkit/fixtures/sessionFixtures');
-        const encryption = await Encryption.create(new Uint8Array(32).fill(1));
-        createEncryptionSpy.mockResolvedValue(encryption);
-        emitWithAck.mockImplementation(async () => {
-            if (failure === 'crypto') return { ok: true, result: 'undecryptable-response' };
-            const machine = encryption.getMachineEncryption('machine-1');
-            if (!machine) throw new Error('Expected initialized machine encryption');
-            return { ok: true, result: await machine.encodeRpcPayload(reply) };
-        });
-        getActiveServerSnapshotSpy.mockReturnValue({ serverId: 'server-a', serverUrl: 'https://server-a.example.test', generation: 1 });
-        listServerProfilesSpy.mockReturnValue([{ id: 'server-b', serverUrl: 'https://server-b.example.test' }]);
-        const features = createRootLayoutFeaturesResponse({ features: {
-            sessions: { enabled: true, handoff: { enabled: true } },
-            machines: { enabled: true, transfer: { enabled: true, directPeer: { enabled: true }, serverRouted: { enabled: true } } },
-        } });
-        vi.stubGlobal('fetch', vi.fn(createServerFetchWithReachabilityProbe(async (input) => Response.json(
-            String(input).includes('/v1/features') ? features : [{ id: 'machine-1', dataEncryptionKey: null }],
-        ))));
-        const { completeSessionHandoff } = await import('@/sync/ops/sessionHandoffs');
-        const metadata = createSessionFixture().metadata;
-        if (!metadata) throw new Error('Expected session fixture metadata');
-        const result = await completeSessionHandoff({ sessionId: 'handoff-session', sourceMachineId: 'machine-source', targetMachineId: 'machine-1',
-            serverId: 'server-b', sessionStorageMode: 'direct', preferredTransportStrategies: ['direct_peer'], sourceMetadata: metadata });
-        expect(result).toMatchObject({ ok: false, errorCode: expectedErrorCode });
-        if (failure === 'crypto' || failure === 'decoded crypto refusal') {
-            const { t } = await import('@/text');
-            expect(result).toMatchObject({ errorMessage: t('errors.machineRpcDecryptionFailed') });
-        }
-        expect(emitWithAck.mock.calls.map((call) => (call[1] as { method: string }).method))
-            .toEqual(['machine-1:daemon.sessionHandoff.capability.v2.get']);
-    });
-
-    it.each([
-        { target: 'undecryptable', expected: { status: 'error', errorCode: 'machine_rpc_decryption_failed' } },
-        { target: 'disconnected', expected: { status: 'error', errorCode: RPC_ERROR_CODES.METHOD_NOT_AVAILABLE } },
-        { target: 'missing-method', expected: { status: 'unavailable' } },
-        { target: 'old-capability', expected: { status: 'unavailable' } },
-        { target: 'supported', expected: { status: 'available' } },
-    ])('distinguishes existing-state capability from a $target target through encrypted machine RPC', async ({ target, expected }) => {
-        installScopedFallback();
-        const { Encryption } = await import('@/sync/encryption/encryption');
-        const encryption = await Encryption.create(new Uint8Array(32).fill(1));
-        createEncryptionSpy.mockResolvedValue(encryption);
-        getActiveServerSnapshotSpy.mockReturnValue({ serverId: 'server-a', serverUrl: 'https://server-a.example.test', generation: 1 });
-        listServerProfilesSpy.mockReturnValue([{ id: 'server-b', serverUrl: 'https://server-b.example.test' }]);
-        vi.stubGlobal('fetch', vi.fn(createServerFetchWithReachabilityProbe(async () => Response.json([
-            { id: 'machine-source', dataEncryptionKey: null }, { id: 'machine-target', dataEncryptionKey: null },
-        ]))));
-        const emitWithAck = async (_event: string, payload: { method: string }) => {
-            const isTarget = payload.method.startsWith('machine-target:');
-            if (isTarget && target === 'undecryptable') return { ok: true, result: 'undecryptable-response' };
-            if (isTarget && (target === 'disconnected' || target === 'missing-method')) {
-                return { ok: false, error: 'RPC target unavailable', errorCode: target === 'disconnected'
-                    ? RPC_ERROR_CODES.METHOD_NOT_AVAILABLE : RPC_ERROR_CODES.METHOD_NOT_FOUND };
-            }
-            const cipher = encryption.getMachineEncryption(isTarget ? 'machine-target' : 'machine-source');
-            if (!cipher) throw new Error('Expected machine encryption');
-            return { ok: true, result: await cipher.encodeRpcPayload({ protocolVersion: 2, atomicTargetResume: true, targetCleanup: true,
-                ...(!isTarget || target !== 'old-capability' ? { existingState: true } : {}) }) };
-        };
-        createEphemeralSocketSpy.mockReset();
-        createEphemeralSocketSpy.mockResolvedValue({ timeout: () => ({ emitWithAck }), disconnect: vi.fn() });
-        const { renderHook } = await import('@/dev/testkit');
-        const { useSessionHandoffExistingStateAvailability } = await import('@/sync/domains/sessionHandoff/useSessionHandoffExistingStateAvailability');
-        const hook = await renderHook(() => useSessionHandoffExistingStateAvailability({ serverId: 'server-b', sourceMachineId: 'machine-source', targetMachineId: 'machine-target', agentId: 'claude' }));
-        try {
-            await vi.waitFor(() => expect(hook.getCurrent()).toMatchObject(expected));
-        } finally {
-            await hook.unmount();
-        }
     });
 
     it('preserves authorization on active direct machine RPC calls', async () => {

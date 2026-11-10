@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+
 import type {
     AccountProfile,
     AcpConfigOptionOverridesV1,
@@ -7,16 +7,14 @@ import type {
     DirectSessionsSource,
     PendingDeliveryDetailV1,
 } from '@piggercode/protocol';
-import type { DetailsTab } from '@/components/appShell/panes/model/appPaneReducer';
 import type { AgentId } from './registryCore';
 import { AGENT_IDS, getAgentCore, resolveAgentIdFromFlavor } from './registryCore';
 import type { CapabilityDetectResult, CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
 import type { ResumeCapabilityOptions } from '@/agents/runtime/resumeCapabilities';
-import { t, type TranslationKey } from '@/text';
+import { type TranslationKey } from '@/text';
 import type { Settings } from '@/sync/domains/settings/settings';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { NonSteerablePayloadReason } from '@/sync/domains/session/control/submitMode';
-import type { SessionSubagent } from '@/sync/domains/session/subagents/types';
 import type { GoalActionCapabilities } from '@/components/sessions/workState/goalActionVisibility';
 import { CODEX_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/codex/uiBehavior';
 import { CLAUDE_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/claude/uiBehavior';
@@ -234,20 +232,6 @@ export type AgentUiBehavior = Readonly<{
             metaOverrides?: Record<string, unknown>;
         }) => SessionComposerNonSteerablePayloadReason | null;
     }>;
-    sessionSubagents?: Readonly<{
-        renderLaunchCards?: (ctx: {
-            sessionId: string;
-            scopeId: string;
-            session: Session;
-            subagents: readonly SessionSubagent[];
-        }) => readonly ReactNode[];
-        renderDetailsTab?: (ctx: {
-            sessionId: string;
-            scopeId: string;
-            tab: DetailsTab;
-        }) => ReactNode | null;
-        getDetailsTabIconName?: (ctx: { tab: DetailsTab }) => string | null;
-    }>;
 }>;
 
 export type NewSessionPreflightContext = Readonly<{
@@ -322,9 +306,6 @@ function mergeAgentUiBehavior(a: AgentUiBehavior, b: AgentUiBehavior): AgentUiBe
         ...(a.sessionHandoff || b.sessionHandoff ? { sessionHandoff: { ...(a.sessionHandoff ?? {}), ...(b.sessionHandoff ?? {}) } } : {}),
         ...(a.payload || b.payload ? { payload: { ...(a.payload ?? {}), ...(b.payload ?? {}) } } : {}),
         ...(a.sessionComposer || b.sessionComposer ? { sessionComposer: { ...(a.sessionComposer ?? {}), ...(b.sessionComposer ?? {}) } } : {}),
-        ...(a.sessionSubagents || b.sessionSubagents
-            ? { sessionSubagents: { ...(a.sessionSubagents ?? {}), ...(b.sessionSubagents ?? {}) } }
-            : {}),
     };
 }
 

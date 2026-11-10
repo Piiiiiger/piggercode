@@ -64,8 +64,6 @@ function WebCommandPaletteProvider({ children }: { children: React.ReactNode }) 
     })));
     const navigateToSession = useNavigateToSession();
     const segments = useSegments();
-    const executionRunsEnabled = useFeatureEnabled('execution.runs');
-    const voiceEnabled = useFeatureEnabled('voice');
     const memorySearchEnabled = useFeatureEnabled('memory.search');
     const petsCompanionEnabled = useFeatureEnabled('pets.companion');
     const applySettings = useApplySettings();
@@ -145,7 +143,7 @@ function WebCommandPaletteProvider({ children }: { children: React.ReactNode }) 
             sessionsById: sessions as any,
             isDev: __DEV__ === true,
             activeSessionId,
-            features: { executionRunsEnabled, voiceEnabled, memorySearchEnabled, petsCompanionEnabled },
+            features: { memorySearchEnabled, petsCompanionEnabled },
             shortcutLabels,
             petControls,
             nav: {
@@ -161,7 +159,7 @@ function WebCommandPaletteProvider({ children }: { children: React.ReactNode }) 
                 await Modal.alertAsync(title, message);
             },
         });
-    }, [segments, executionRunsEnabled, voiceEnabled, memorySearchEnabled, petsCompanionEnabled, shortcutLabels, petControls, router, openNewSession, navigateToSession, logout, actionExecutor]);
+    }, [segments, memorySearchEnabled, petsCompanionEnabled, shortcutLabels, petControls, router, openNewSession, navigateToSession, logout, actionExecutor]);
 
     const showCommandPalette = useCallback(() => {
         if (Platform.OS !== 'web' || !commandPaletteEnabled) return;

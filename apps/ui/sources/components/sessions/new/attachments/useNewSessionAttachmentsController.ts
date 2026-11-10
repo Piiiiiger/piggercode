@@ -5,22 +5,16 @@ import { createReviewCommentsActionChip } from '@/components/sessions/agentInput
 import { createAttachmentActionChip } from '@/components/sessions/agentInput/sessionActions/createAttachmentActionChip';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput/agentInputContracts';
 import type { AgentInputSendOptions } from '@/components/sessions/agentInput/agentInputSendOptions';
-import { mergeMessageMetaOverrides } from '@/components/sessions/agentInput/structuredInputMentions';
 import type { AttachmentDraft } from '@/components/sessions/attachments/attachmentDraftModel';
 import { openAttachmentFilePickerFiles, openAttachmentFilePickerImages } from '@/components/sessions/attachments/attachmentFilePickerActions';
-import { attachRecoverableAttachmentDrafts } from '@/components/sessions/attachments/recoverableAttachmentDrafts';
-import { resolveReviewCommentDraftAnchorsForPrompt } from '@/components/sessions/reviews/comments/resolveReviewCommentDraftAnchorsForPrompt';
 import { useWorkspaceReviewCommentDraftHandlers } from '@/components/sessions/reviews/comments/useWorkspaceReviewCommentDraftHandlers';
 import { useAttachmentDraftManager } from '@/components/sessions/attachments/useAttachmentDraftManager';
 import { useAttachmentsUploadConfig } from '@/components/sessions/attachments/useAttachmentsUploadConfig';
-import { formatAttachmentsBlock, uploadAttachmentDraftsToSession } from '@/components/sessions/attachments/uploadAttachmentDraftsToSession';
 import { blurActiveElementOnWeb, deferOnWeb } from '@/utils/platform/deferOnWeb';
 import { nativeReadClipboardImageAttachment } from '@/utils/files/nativeClipboardImageAttachment';
 import { Modal } from '@/modal';
 import { t } from '@/text';
-import { followUpSpawnedSessionWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/followUpSpawnedSession';
 import type { HandleCreateSessionOptions } from '@/components/sessions/new/hooks/useCreateNewSession';
-import { buildReviewCommentsOutboundMessage } from '@/sync/domains/input/reviewComments/buildReviewCommentsOutboundMessage';
 import {
     filterReviewCommentDraftsIncludedInPrompt,
 } from '@/sync/domains/input/reviewComments/reviewCommentPrompt';
@@ -250,102 +244,8 @@ export function useNewSessionAttachmentsController(params: Readonly<{
             return;
         }
 
-        const initialPrompt = promptText;
-        submit({
-            initialMessage: 'skip',
-            afterCreated: async ({ sessionId, effectiveSpawnServerId, launchAttempt }) => {
-                const trimmed = initialPrompt.trim();
-                let attachmentsBlock = '';
-                let attachmentsMetaOverrides: Record<string, unknown> | undefined;
-                const messageLocalId = launchAttempt.attachmentMessageLocalId;
-                let outbound: {
-                    text: string;
-                    displayText?: string;
-                    metaOverrides?: Record<string, unknown>;
-                } | null = null;
-
-                try {
-                    if (hasAttachments) {
-                        const { uploaded } = await uploadAttachmentDraftsToSession({
-                            sessionId,
-                            drafts: draftsSnapshotRef.current,
-                            messageLocalId,
-                            config: attachmentsUploadConfig,
-                            applyDraftPatch: applyNewSessionDraftPatch,
-                        });
-                        attachmentsBlock = formatAttachmentsBlock(uploaded);
-                        attachmentsMetaOverrides = {
-                            happier: {
-                                kind: 'attachments.v1',
-                                payload: {
-                                    attachments: uploaded.map((attachment) => ({
-                                        name: attachment.name,
-                                        path: attachment.path,
-                                        mimeType: attachment.mimeType,
-                                        sizeBytes: attachment.sizeBytes,
-                                        sha256: attachment.sha256,
-                                    })),
-                                },
-                            },
-                        };
-                    }
-
-                    const reviewCommentDraftsForPrompt = hasReviewCommentDrafts
-                        ? await resolveReviewCommentDraftAnchorsForPrompt({
-                            drafts: includedReviewCommentDrafts,
-                            reviewScope: discoverableReviewCommentsScope,
-                        })
-                        : [];
-
-                    // One envelope per message: `mergeMessageMetaOverrides` folds the composer's
-                    // `mentions[]` into the attachments envelope instead of one replacing the other.
-                    const outboundMetaOverrides = mergeMessageMetaOverrides(
-                        attachmentsMetaOverrides,
-                        structuredInputMetaOverrides,
-                    );
-
-                    outbound = hasReviewCommentDrafts
-                        ? buildReviewCommentsOutboundMessage({
-                            sessionId,
-                            drafts: reviewCommentDraftsForPrompt,
-                            additionalMessage: attachmentsBlock
-                                ? (trimmed.length > 0 ? `${trimmed}\n\n${attachmentsBlock}` : attachmentsBlock)
-                                : trimmed,
-                            displayTextSuffix: attachmentsBlock || null,
-                            metaOverrides: outboundMetaOverrides,
-                        })
-                        : {
-                            text: trimmed.length > 0 ? `${trimmed}\n\n${attachmentsBlock}` : attachmentsBlock,
-                            displayText: trimmed || undefined,
-                            metaOverrides: outboundMetaOverrides,
-                        };
-
-                    await followUpSpawnedSessionWithServerScope({
-                        sessionId,
-                        targetServerId: effectiveSpawnServerId ?? params.targetServerId,
-                        initialMessageText: outbound.text,
-                        displayText: outbound.displayText,
-                        messageLocalId,
-                        profileId: params.selectedProfileId,
-                        metaOverrides: outbound.metaOverrides,
-                    });
-                    if (hasAttachments) {
-                        clearDraftsForFlow();
-                    }
-                    if (hasReviewCommentDrafts) {
-                        clearReviewCommentsForFlow();
-                    }
-                } catch (error) {
-                    throw attachRecoverableAttachmentDrafts(error, {
-                        draftText: outbound?.text ?? trimmed,
-                        displayText: outbound?.displayText ?? (trimmed || undefined),
-                        profileId: params.selectedProfileId,
-                        metaOverrides: outbound?.metaOverrides ?? attachmentsMetaOverrides,
-                        attachmentDrafts: draftsSnapshotRef.current,
-                    });
-                }
-            },
-        });
+        // Every session is the CLI's own terminal: files and review comments cannot go along as a first message.
+        Modal.alert(t('common.error'), t('newSession.terminalAttachmentsUnsupported'));
     }, [
         applyNewSessionDraftPatch,
         attachmentsUploadConfig,

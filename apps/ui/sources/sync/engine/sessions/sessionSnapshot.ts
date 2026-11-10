@@ -1,16 +1,10 @@
-import {
-    V2SessionListResponseSchema,
-    isSessionEncryptionModeAllowedByClientRequirement,
-    type ClientEncryptionRequirement,
-    type V2SessionListResponse,
-} from '@piggercode/protocol';
+import { isSessionEncryptionModeAllowedByClientRequirement, type ClientEncryptionRequirement, type V2SessionListResponse } from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { serverFetch } from '@/sync/http/client';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { computeHasUnreadActivity } from '@/sync/domains/messages/unread';
 import { resolveSessionReadableSeq } from '@/sync/domains/session/readCursor/resolveSessionReadableSeq';
-import { reportNewAgentRequestsFromSessionTransition } from '@/voice/context/reportNewAgentRequestsFromSessionTransition';
 import { runTasksWithLimit } from '@/sync/runtime/orchestration/runTasksWithLimit';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
@@ -1065,10 +1059,8 @@ function applyHydratedSessions(params: {
         'sync.sessions.snapshot.applyHydrated',
         { sessions: currentSessions.length },
         () => {
-            const previousSessionsById = new Map<string, Session | null | undefined>();
             const previousRenderablesById = new Map<string, SessionListRenderableSession | null | undefined>();
             for (const session of currentSessions) {
-                previousSessionsById.set(session.id, params.getExistingSession?.(session.id));
                 previousRenderablesById.set(session.id, params.getCurrentSessionListRenderable?.(session.id));
             }
             const sessionsForStore = currentSessions.map(stripHydratedSessionListUiState);
@@ -1079,9 +1071,6 @@ function applyHydratedSessions(params: {
             });
             if (metadataUnavailablePatches.length > 0 && params.applySessionListRenderablePatches) {
                 params.applySessionListRenderablePatches(metadataUnavailablePatches);
-            }
-            for (const session of sessionsForStore) {
-                reportNewAgentRequestsFromSessionTransition(previousSessionsById.get(session.id), session as Session);
             }
         },
     );

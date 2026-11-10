@@ -158,10 +158,6 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: false, discoverable: false, blockedBy: 'server' }),
-}));
-
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: (featureId: string) => {
         if (featureId === 'pets.companion') return shared.petsCompanionEnabled;

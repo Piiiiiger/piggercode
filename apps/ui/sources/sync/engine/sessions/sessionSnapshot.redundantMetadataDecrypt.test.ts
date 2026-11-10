@@ -14,10 +14,6 @@ import type { V2SessionRecord } from '@piggercode/protocol';
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';
 
-vi.mock('@/voice/context/voiceHooks', () => ({
-    voiceHooks: { onAgentRequest: vi.fn() },
-}));
-
 vi.mock('@/sync/domains/server/serverRuntime', () => ({
     getActiveServerSnapshot: () => ({
         serverId: 'test',

@@ -138,11 +138,6 @@ vi.mock('@/components/sessions/attachments/useAttachmentDraftManager', () => ({
     }),
 }));
 
-vi.mock('@/components/sessions/attachments/uploadAttachmentDraftsToSession', () => ({
-    uploadAttachmentDraftsToSession: vi.fn(),
-    formatAttachmentsBlock: vi.fn(() => ''),
-}));
-
 vi.mock('@/components/machines/InstallableDepInstaller', () => ({
     InstallableDepInstaller: () => null,
 }));

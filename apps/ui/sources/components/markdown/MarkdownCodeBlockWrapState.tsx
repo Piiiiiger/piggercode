@@ -3,7 +3,6 @@ import { useStore } from 'zustand';
 import { createStore } from 'zustand/vanilla';
 
 import { useSetting } from '@/sync/domains/state/storage';
-import { useTranscriptRowLayoutMutation } from '@/components/sessions/transcript/measurement/TranscriptRowLayoutMutationContext';
 
 function createWrapStore() {
     // Keep explicit false choices too, so changing the account default only affects untouched blocks.
@@ -34,15 +33,13 @@ export function useMarkdownCodeBlockWrap(): readonly [boolean, (wrapped: boolean
     const store = key && retainedStore ? retainedStore : localStore;
     const blockKey = key ?? '';
     const wrapped = useStore(store, state => state.get(blockKey) ?? defaultWrapped);
-    const notifyLayoutMutation = useTranscriptRowLayoutMutation();
     const setWrapped = React.useCallback((next: boolean) => {
         if (store.getState().get(blockKey) === next) return;
-        notifyLayoutMutation({ reason: next ? 'expand' : 'collapse', sourceId: blockKey });
         store.setState((previous) => {
             const updated = new Map(previous);
             updated.set(blockKey, next);
             return updated;
         }, true);
-    }, [blockKey, notifyLayoutMutation, store]);
+    }, [blockKey, store]);
     return [wrapped, setWrapped];
 }

@@ -38,7 +38,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: false, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       nav: {
         push,
         openNewSession,
@@ -55,54 +55,6 @@ describe('buildCommandPaletteCommands', () => {
     expect(push).not.toHaveBeenCalledWith('/new');
   });
 
-  it('includes ActionSpec-derived commands when enabled (execution runs + voice)', async () => {
-    const pushes: string[] = [];
-    const executorCalls: Array<{ actionId: string }> = [];
-    mockedState = { createSessionActionDraft: createSessionActionDraftSpy, settings: buildSettingsWithExecutionRunsEnabled() };
-
-    const cmds = buildCommandPaletteCommands({
-      sessionsById: {},
-      isDev: false,
-      activeSessionId: 'session-1',
-      features: { executionRunsEnabled: true, voiceEnabled: true, memorySearchEnabled: false },
-      nav: {
-        push: (path) => pushes.push(path),
-        openNewSession: () => {},
-        navigateToSession: () => {},
-      },
-      auth: {
-        logout: async () => {},
-      },
-      actions: {
-        execute: async (actionId) => {
-          executorCalls.push({ actionId });
-          return { ok: true, result: {} };
-        },
-      },
-      alert: async () => {},
-    });
-
-    expect(commandTitles(cmds)).toEqual(
-      expect.arrayContaining([
-        'Start review run',
-        'Start plan run',
-        'Start delegation run',
-        'Open session runs',
-        'Reset voice agent',
-      ]),
-    );
-
-    const reset = cmds.find((c) => c.title === 'Reset voice agent');
-    expect(reset).toBeTruthy();
-    await reset!.action();
-    expect(executorCalls).toEqual([{ actionId: 'ui.voice_global.reset' }]);
-
-    const startReview = cmds.find((c) => c.title === 'Start review run');
-    expect(startReview).toBeTruthy();
-    await startReview!.action();
-    expect(createSessionActionDraftSpy).toHaveBeenCalled();
-  });
-
   it('shows an alert when a session-scoped ActionSpec command is used without an active session', async () => {
     const alerts: Array<{ title: string; message: string }> = [];
     const pushes: string[] = [];
@@ -112,7 +64,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: true, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       nav: {
         push: (path) => pushes.push(path),
         openNewSession: () => {},
@@ -134,47 +86,6 @@ describe('buildCommandPaletteCommands', () => {
     expect(pushes).toEqual([]);
   });
 
-  it('uses UI-normalized permission defaults for execution-run drafts', async () => {
-    createSessionActionDraftSpy.mockClear();
-    mockedState = { createSessionActionDraft: createSessionActionDraftSpy, settings: buildSettingsWithExecutionRunsEnabled() };
-
-    const cmds = buildCommandPaletteCommands({
-      sessionsById: {
-        'session-1': { id: 'session-1', metadata: { agent: 'codex', name: 'x' } },
-      },
-      isDev: false,
-      activeSessionId: 'session-1',
-      features: { executionRunsEnabled: true, voiceEnabled: false, memorySearchEnabled: false },
-      nav: {
-        push: () => {},
-        openNewSession: () => {},
-        navigateToSession: () => {},
-      },
-      auth: { logout: async () => {} },
-      actions: { execute: async () => ({ ok: true, result: {} }) },
-      alert: async () => {},
-    });
-
-    const expectations: Array<Readonly<{ title: string; actionId: string; permissionMode: string }>> = [
-      { title: 'Start review run', actionId: 'review.start', permissionMode: 'read_only' },
-      { title: 'Start plan run', actionId: 'subagents.plan.start', permissionMode: 'read_only' },
-      { title: 'Start delegation run', actionId: 'subagents.delegate.start', permissionMode: 'workspace_write' },
-    ];
-
-    for (const expected of expectations) {
-      createSessionActionDraftSpy.mockClear();
-      const command = cmds.find((entry) => entry.title === expected.title);
-      expect(command).toBeTruthy();
-      await command!.action();
-
-      expect(createSessionActionDraftSpy).toHaveBeenCalledTimes(1);
-      const call = createSessionActionDraftSpy.mock.calls[0] ?? [];
-      const created = call[1] as any;
-      expect(created?.actionId).toBe(expected.actionId);
-      expect(created?.input?.permissionMode).toBe(expected.permissionMode);
-    }
-  });
-
   it('omits command_palette actions when disabled for that placement', async () => {
     mockedState = {
       createSessionActionDraft: createSessionActionDraftSpy,
@@ -192,7 +103,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: 'session-1',
-      features: { executionRunsEnabled: true, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       nav: {
         push: () => {},
         openNewSession: () => {},
@@ -214,7 +125,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: false, voiceEnabled: false, memorySearchEnabled: true },
+      features: { memorySearchEnabled: true },
       nav: {
         push: (path) => pushes.push(path),
         openNewSession: () => {},
@@ -238,7 +149,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: false, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       shortcutLabels: {
         'commandPalette.open': 'Cmd+K',
         'session.new': 'Cmd+Shift+N',
@@ -265,7 +176,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: false, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       nav: {
         push: () => {},
         openNewSession: () => {},
@@ -287,7 +198,7 @@ describe('buildCommandPaletteCommands', () => {
       sessionsById: {},
       isDev: false,
       activeSessionId: null,
-      features: { executionRunsEnabled: false, voiceEnabled: false, memorySearchEnabled: false },
+      features: { memorySearchEnabled: false },
       nav: {
         push: (path) => pushes.push(path),
         openNewSession: () => {},
@@ -317,8 +228,6 @@ describe('buildCommandPaletteCommands', () => {
       isDev: false,
       activeSessionId: null,
       features: {
-        executionRunsEnabled: false,
-        voiceEnabled: false,
         memorySearchEnabled: false,
         petsCompanionEnabled: true,
       },
@@ -369,8 +278,6 @@ describe('buildCommandPaletteCommands', () => {
       isDev: false,
       activeSessionId: null,
       features: {
-        executionRunsEnabled: false,
-        voiceEnabled: false,
         memorySearchEnabled: false,
         petsCompanionEnabled: true,
       },
@@ -406,8 +313,6 @@ describe('buildCommandPaletteCommands', () => {
       isDev: false,
       activeSessionId: null,
       features: {
-        executionRunsEnabled: false,
-        voiceEnabled: false,
         memorySearchEnabled: false,
         petsCompanionEnabled: false,
       },

@@ -1,15 +1,8 @@
 import type { DetailsTab } from '@/components/appShell/panes/model/appPaneReducer';
 import { PANE_SIZING_DEFAULTS } from '@/components/appShell/panes/layout/paneSizing';
-import { createSessionSubagentDetailsTab } from '@/components/sessions/agents/navigation/createSessionSubagentDetailsTab';
-import { resolveSessionSubagentFullRoute } from '@/components/sessions/agents/navigation/resolveSessionSubagentFullRoute';
-import {
-    createSessionFileDetailsTab,
-    createSessionTranscriptDetailsTab,
-} from '@/components/sessions/panes/details/sessionDetailsTabBuilders';
-import type { TranscriptJumpScope } from '@/components/sessions/transcript/viewport/jump/transcriptJumpTargetTypes';
+import { createSessionFileDetailsTab } from '@/components/sessions/panes/details/sessionDetailsTabBuilders';
 import { resolvePaneLayout } from '@/components/ui/panels/paneBreakpoints';
 import { buildScopedSessionRouteHref } from '@/hooks/session/sessionRouteServerScope';
-import type { SessionSubagent } from '@/sync/domains/session/subagents/types';
 
 /**
  * The ONE answer to "where does this session thing open — a pane, or a whole screen?".
@@ -42,15 +35,6 @@ export type SessionPaneSlot = 'details' | 'right';
 export type SessionOpenTarget =
     /** A workspace file, at its details view. */
     | Readonly<{ kind: 'file'; path: string }>
-    /**
-     * A transcript, read. A `sidechain` scope is an agent's own transcript; a `main` scope is the
-     * session's own conversation, which has a screen of its own and is never a read-only pane copy.
-     */
-    | Readonly<{ kind: 'transcript'; scope: TranscriptJumpScope; title?: string | null }>
-    /** A locally derived unit of work, at the subagent details surface. */
-    | Readonly<{ kind: 'subagent'; subagent: SessionSubagent }>
-    /** The full agent roster — the right pane's Agents tab, or its own screen where there is none. */
-    | Readonly<{ kind: 'agentRoster' }>
     /** The workspace file browser — the right pane's Files tab, or its own screen. */
     | Readonly<{ kind: 'fileBrowser'; revealPath?: string }>
     | Readonly<{ kind: 'sourceControl' }>
@@ -64,7 +48,7 @@ export type SessionOpenTarget =
 export type SessionOpenPlacement =
     | Readonly<{ kind: 'route'; href: string }>
     | Readonly<{ kind: 'detailsTab'; tab: DetailsTab }>
-    | Readonly<{ kind: 'rightTab'; tabId: 'agents' | 'files' | 'git' | 'terminal' }>;
+    | Readonly<{ kind: 'rightTab'; tabId: 'files' | 'git' | 'terminal' }>;
 
 export type SessionOpenLayout = Readonly<{
     containerWidthPx: number;
@@ -151,40 +135,6 @@ export function resolveSessionOpenPlacement(params: Readonly<{
             if (!path) return null;
             if (!canLayoutHostSessionPane(layout, 'details')) return route('/file', { path });
             return { kind: 'detailsTab', tab: createSessionFileDetailsTab(path) };
-        }
-        case 'transcript': {
-            const scope = target.scope;
-            // The main transcript IS the session screen. Opening a second, read-only copy of it in a
-            // pane would be two surfaces claiming one conversation, so this scope resolves to the
-            // screen on every device rather than to a tab on a wide one.
-            if (scope.kind === 'main') return route('');
-            const sidechainId = scope.sidechainId.trim();
-            if (!sidechainId) return null;
-            const title = target.title?.trim();
-            if (!canLayoutHostSessionPane(layout, 'details')) {
-                return route('/transcript', {
-                    sidechainId,
-                    ...(title ? { title } : null),
-                });
-            }
-            return {
-                kind: 'detailsTab',
-                tab: createSessionTranscriptDetailsTab({ scope, title: title ?? null }),
-            };
-        }
-        case 'subagent': {
-            const fullRoute = resolveSessionSubagentFullRoute({ sessionId, subagent: target.subagent });
-            // `canOpen` is the subagent's own answer to whether the details surface can render it.
-            // A layout with room for a pane still cannot host one this subagent refuses, so the
-            // route stays the fallback for both refusals rather than only the layout's.
-            if (!canLayoutHostSessionPane(layout, 'details') || !target.subagent.capabilities.canOpen) {
-                return fullRoute ? { kind: 'route', href: fullRoute } : null;
-            }
-            return { kind: 'detailsTab', tab: createSessionSubagentDetailsTab(target.subagent) };
-        }
-        case 'agentRoster': {
-            if (!canLayoutHostSessionPane(layout, 'right')) return route('/agents');
-            return { kind: 'rightTab', tabId: 'agents' };
         }
         case 'fileBrowser': {
             if (!canLayoutHostSessionPane(layout, 'right')) return route('/files');

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { View, Pressable } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { useSocketStatus } from '@/sync/domains/state/storage';
 import { ActivitySpinner, HERO_SPINNER_SIZE } from '@/components/ui/feedback/ActivitySpinner';
 import {
     useVisibleSessionListPaneState,
@@ -25,8 +24,6 @@ import { FriendsView } from '@/components/navigation/shell/FriendsView';
 import { SessionsListWrapper } from '@/components/sessions/shell/SessionsListWrapper';
 import { Header } from '@/components/navigation/Header';
 import { HeaderLogo } from '@/components/ui/navigation/HeaderLogo';
-import { VoiceSurface } from '@/components/voice/surface/VoiceSurface';
-import { StatusDot } from '@/components/ui/status/StatusDot';
 import { Typography } from '@/constants/Typography';
 import { t } from '@/text';
 import { isUsingCustomServer } from '@/sync/domains/server/serverConfig';
@@ -35,7 +32,6 @@ import { ConnectionStatusControl } from '@/components/navigation/ConnectionStatu
 import { ActionOperationActivityButton } from '@/components/inbox/actionOperations/ActionOperationActivityButton';
 import { useFriendsEnabled } from '@/hooks/server/useFriendsEnabled';
 import { useFriendsIdentityReadiness } from '@/hooks/server/useFriendsIdentityReadiness';
-import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useInboxAvailable } from '@/hooks/inbox/useInboxAvailable';
 import { useTabState } from '@/hooks/ui/useTabState';
@@ -212,8 +208,6 @@ const HeaderRight = React.memo(({ activeTab }: { activeTab: ActiveTabType }) => 
     const isCustomServer = isUsingCustomServer();
     const friendsIdentityReadiness = useFriendsIdentityReadiness();
     const friendsIdentityReady = friendsIdentityReadiness.isReady;
-    const automationsSupport = useAutomationsSupport();
-    const showAutomations = automationsSupport?.enabled !== false;
     const handleNewSession = React.useCallback((event?: unknown) => {
         const { draftId, draftOrigin } = resolveNewSessionOrdinaryEntryRoute({
             forceFresh: shouldForceFreshNewSessionEntryFromPressEvent(event),
@@ -225,15 +219,6 @@ const HeaderRight = React.memo(({ activeTab }: { activeTab: ActiveTabType }) => 
         return (
             <View style={styles.headerButtonsRow}>
                 <ActionOperationActivityButton testID="main-header-action-operations" />
-                {showAutomations ? (
-                    <Pressable
-                        onPress={() => router.push('/automations')}
-                        hitSlop={15}
-                        style={styles.headerButton}
-                    >
-                        <Icon name="timer" size={20} color={theme.colors.chrome.header.foreground} />
-                    </Pressable>
-                ) : null}
                 <Pressable
                     testID="main-header-start-new-session"
                     onPress={handleNewSession}
@@ -412,7 +397,6 @@ const PhoneTabbedMainViewContent = React.memo(function PhoneTabbedMainViewConten
     const { theme } = useUnistyles();
     const friendsEnabled = useFriendsEnabled();
     const inboxEnabled = useInboxAvailable();
-    const voiceEnabled = useFeatureEnabled('voice');
     // Tab state management
     // NOTE: Zen tab removed - the feature never got to a useful state
     const { activeTab, setActiveTab } = useTabState();
@@ -477,7 +461,6 @@ const PhoneTabbedMainViewContent = React.memo(function PhoneTabbedMainViewConten
                     headerShadowVisible={false}
                     headerTransparent={true}
                 />
-                {voiceEnabled ? <VoiceSurface variant="sidebar" /> : null}
             </View>
             {renderTabContent()}
         </View>

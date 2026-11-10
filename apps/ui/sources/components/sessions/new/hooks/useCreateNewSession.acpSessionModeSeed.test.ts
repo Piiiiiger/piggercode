@@ -21,8 +21,8 @@ type StorageState = {
   updateSessionPermissionMode: ReturnType<typeof vi.fn>;
   updateSessionModelMode: ReturnType<typeof vi.fn>;
   updateSessionDraft: ReturnType<typeof vi.fn>;
-  markSessionOptimisticThinking: ReturnType<typeof vi.fn>;
-  upsertPendingMessage: ReturnType<typeof vi.fn>;
+  markSessionResuming: ReturnType<typeof vi.fn>;
+  armSessionResumingFallback: ReturnType<typeof vi.fn>;
 } & Record<string, unknown>;
 
 let storageState: StorageState = {
@@ -32,8 +32,8 @@ let storageState: StorageState = {
   updateSessionPermissionMode: vi.fn(),
   updateSessionModelMode: vi.fn(),
   updateSessionDraft: vi.fn(),
-  markSessionOptimisticThinking: vi.fn(),
-  upsertPendingMessage: vi.fn(),
+  markSessionResuming: vi.fn(),
+  armSessionResumingFallback: vi.fn(),
 };
 
 installNewSessionScreenModelCommonModuleMocks({
@@ -76,8 +76,8 @@ async function setupHarness(options?: Readonly<{
     updateSessionPermissionMode: vi.fn(),
     updateSessionModelMode: vi.fn(),
     updateSessionDraft: vi.fn(),
-    markSessionOptimisticThinking: vi.fn(),
-    upsertPendingMessage: vi.fn(),
+    markSessionResuming: vi.fn(),
+    armSessionResumingFallback: vi.fn(),
     ...(options?.storageState ?? {}),
   };
   vi.doMock('@/sync/sync', () => ({
@@ -224,7 +224,7 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     vi.restoreAllMocks();
   });
 
-  it('passes agent mode through spawn options before sending the initial message', async () => {
+  it('passes agent mode through spawn options, with the first prompt for the terminal', async () => {
     const { useCreateNewSession, machineSpawnNewSessionSpy, publishModeSpy, sendMessageSpy } = await setupHarness();
 
     let handleCreateSession: null | (() => Promise<void>) = null;
@@ -282,8 +282,10 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     expect(publishModeSpy).not.toHaveBeenCalled();
     expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
       agentModeId: 'plan',
+      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
     }));
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
+    // The terminal types the first prompt itself; nothing goes out as a chat message.
+    expect(sendMessageSpy).not.toHaveBeenCalled();
   });
 
   it('passes agent mode through spawn options for staticAgentModes (Claude)', async () => {
@@ -347,8 +349,10 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     expect(publishModeSpy).not.toHaveBeenCalled();
     expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
       agentModeId: 'plan',
+      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
     }));
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
+    // The terminal types the first prompt itself; nothing goes out as a chat message.
+    expect(sendMessageSpy).not.toHaveBeenCalled();
   });
 
   it('passes agent mode through spawn options for Codex appServer', async () => {
@@ -409,8 +413,10 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     expect(publishModeSpy).not.toHaveBeenCalled();
     expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
       agentModeId: 'plan',
+      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
     }));
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
+    // The terminal types the first prompt itself; nothing goes out as a chat message.
+    expect(sendMessageSpy).not.toHaveBeenCalled();
   });
 
   it('passes transient ACP config option overrides through spawn options for Codex appServer', async () => {
@@ -483,8 +489,9 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
           speed: { updatedAt: 123, value: 'fast' },
         },
       },
+      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
     }));
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
+    expect(sendMessageSpy).not.toHaveBeenCalled();
   });
 
   it('prefers an explicit codex backend-mode override when spawning a seeded Codex session', async () => {
@@ -554,194 +561,4 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     }));
   });
 
-  it('expands prompt templates before sending the initial session message', async () => {
-    const { useCreateNewSession, sendMessageSpy } = await setupHarness({
-      storageState: {
-        settings: {
-          promptInvocationsV1: {
-            v: 1,
-            entries: [
-              {
-                id: 'tmpl_1',
-                token: '/qa-check',
-                title: 'QA Template',
-                target: { kind: 'doc', artifactId: 'artifact_prompt_1' },
-                behavior: 'insert_and_send',
-                allowArgs: true,
-                availableIn: 'global',
-              },
-            ],
-          },
-        },
-        artifacts: {
-          artifact_prompt_1: {
-            id: 'artifact_prompt_1',
-            body: JSON.stringify({
-              v: 1,
-              markdown: 'Expanded QA Template',
-              createdAtMs: 1,
-              updatedAtMs: 1,
-            }),
-          },
-        },
-      },
-    });
-
-    let handleCreateSession: null | (() => Promise<void>) = null;
-    const settings = { experiments: false } as unknown as Settings;
-    const machineEnvPresence: UseMachineEnvPresenceResult = {
-      isPreviewEnvSupported: false,
-      isLoading: false,
-      meta: {},
-      refreshedAt: null,
-      refresh: () => {},
-    };
-
-    function Test() {
-      const hook = useCreateNewSession({
-        draftId: '8e0a5dd1-b1df-43dd-b51e-b7787b30362e',
-        launchIntentSignature: 'test-launch-intent',
-        router: { push: vi.fn(), replace: vi.fn() },
-        selectedMachineId: 'm1',
-        selectedPath: '/tmp',
-        selectedMachine: { metadata: {} },
-        setIsCreating: vi.fn(),
-        setIsResumeSupportChecking: vi.fn(),
-        settings,
-        useProfiles: false,
-        selectedProfileId: null,
-        profileMap: new Map(),
-        recentMachinePaths: [],
-        agentType: 'codex' as any,
-        permissionMode: 'default' as PermissionMode,
-        modelMode: 'default' as ModelMode,
-        acpSessionModeId: null,
-        promptStore: createNewSessionPromptStore('/qa-check this is a UI QA check'),
-        resumeSessionId: '',
-        agentNewSessionOptions: null,
-        machineEnvPresence,
-        secrets: [],
-        secretBindingsByProfileId: {},
-        selectedSecretIdByProfileIdByEnvVarName: {},
-        sessionOnlySecretValueByProfileIdByEnvVarName: {},
-        selectedMachineCapabilities: null,
-        targetServerId: null,
-        allowedTargetServerIds: ['server-a'],
-      } as any);
-
-      handleCreateSession = hook.handleCreateSession as () => Promise<void>;
-      return React.createElement('View');
-    }
-
-    await renderScreen(React.createElement(Test));
-
-    await act(async () => {
-      await handleCreateSession?.();
-    });
-
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
-    const call = sendMessageSpy.mock.calls[0];
-    expect(call).toBeDefined();
-    if (!call) {
-      throw new Error('expected sendMessage to be called');
-    }
-    const [sessionId, initialMessageText, displayText, metaOverrides, options] = call;
-    expect(sessionId).toBe('sess_new');
-    expect(initialMessageText).toBe('Expanded QA Template\n\nthis is a UI QA check');
-    expect(displayText).toBeUndefined();
-    expect(metaOverrides).toBeUndefined();
-    expect(options).toBeUndefined();
-  });
-
-  it('inserts prompt templates without creating a new session when behavior is insert', async () => {
-    const { useCreateNewSession, sendMessageSpy, machineSpawnNewSessionSpy } = await setupHarness({
-      storageState: {
-        settings: {
-          promptInvocationsV1: {
-            v: 1,
-            entries: [
-              {
-                id: 'tmpl_1',
-                token: '/qa-check',
-                title: 'QA Template',
-                target: { kind: 'doc', artifactId: 'artifact_prompt_1' },
-                behavior: 'insert',
-                allowArgs: true,
-                availableIn: 'global',
-              },
-            ],
-          },
-        },
-        artifacts: {
-          artifact_prompt_1: {
-            id: 'artifact_prompt_1',
-            body: JSON.stringify({
-              v: 1,
-              markdown: 'Expanded QA Template',
-              createdAtMs: 1,
-              updatedAtMs: 1,
-            }),
-          },
-        },
-      },
-    });
-
-    let handleCreateSession: null | (() => Promise<void>) = null;
-    const setSessionPrompt = vi.fn();
-    const settings = { experiments: false } as unknown as Settings;
-    const machineEnvPresence: UseMachineEnvPresenceResult = {
-      isPreviewEnvSupported: false,
-      isLoading: false,
-      meta: {},
-      refreshedAt: null,
-      refresh: () => {},
-    };
-
-    function Test() {
-      const hook = useCreateNewSession({
-        draftId: '8e0a5dd1-b1df-43dd-b51e-b7787b30362e',
-        launchIntentSignature: 'test-launch-intent',
-        router: { push: vi.fn(), replace: vi.fn() },
-        selectedMachineId: 'm1',
-        selectedPath: '/tmp',
-        selectedMachine: { metadata: {} },
-        setIsCreating: vi.fn(),
-        setIsResumeSupportChecking: vi.fn(),
-        settings,
-        useProfiles: false,
-        selectedProfileId: null,
-        profileMap: new Map(),
-        recentMachinePaths: [],
-        agentType: 'codex' as any,
-        permissionMode: 'default' as PermissionMode,
-        modelMode: 'default' as ModelMode,
-        acpSessionModeId: null,
-        promptStore: createNewSessionPromptStore('/qa-check this is a UI QA check'),
-        setSessionPrompt,
-        resumeSessionId: '',
-        agentNewSessionOptions: null,
-        machineEnvPresence,
-        secrets: [],
-        secretBindingsByProfileId: {},
-        selectedSecretIdByProfileIdByEnvVarName: {},
-        sessionOnlySecretValueByProfileIdByEnvVarName: {},
-        selectedMachineCapabilities: null,
-        targetServerId: null,
-        allowedTargetServerIds: ['server-a'],
-      } as any);
-
-      handleCreateSession = hook.handleCreateSession as () => Promise<void>;
-      return React.createElement('View');
-    }
-
-    await renderScreen(React.createElement(Test));
-
-    await act(async () => {
-      await handleCreateSession?.();
-    });
-
-    expect(setSessionPrompt).toHaveBeenCalledWith('Expanded QA Template\n\nthis is a UI QA check');
-    expect(machineSpawnNewSessionSpy).not.toHaveBeenCalled();
-    expect(sendMessageSpy).not.toHaveBeenCalled();
-  });
 });

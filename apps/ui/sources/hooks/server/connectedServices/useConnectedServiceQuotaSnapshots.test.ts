@@ -153,8 +153,6 @@ describe('useConnectedServiceQuotaSnapshots', () => {
     fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
     const { __resetConnectedServiceQuotaSnapshotStore } = await import('@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore');
     __resetConnectedServiceQuotaSnapshotStore();
-    const { __resetProviderAccountUsageSnapshotCache } = await import('@/sync/domains/connectedServices/accountUsage/cache');
-    __resetProviderAccountUsageSnapshotCache();
   });
 
   afterEach(() => {
@@ -545,56 +543,4 @@ describe('useConnectedServiceQuotaSnapshots', () => {
     await hook.unmount();
   });
 
-  it('uses the connected-service quota view for a connected-service profile request even when cached account usage exists', async () => {
-    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(makeQuotaSnapshot({
-      serviceId: 'openai-codex',
-      meterId: 'view-weekly',
-    }));
-    const accountUsage = makeProviderAccountUsageSnapshot({ meterId: 'account-usage-weekly', used: 65 });
-    const { writeProviderAccountUsageSnapshotToCache } = await import('@/sync/domains/connectedServices/accountUsage/cache');
-    writeProviderAccountUsageSnapshotToCache({
-      credentialScope: resolveAuthCredentialsScopeKey(stableCredentials),
-      snapshot: accountUsage,
-    });
-
-    const { useConnectedServiceQuotaSnapshots } = await import('./useConnectedServiceQuotaSnapshots');
-    const hook = await renderHook(() => useConnectedServiceQuotaSnapshots([
-      { serviceId: 'openai-codex', profileId: 'work' },
-    ]));
-    await flushHookEffects({ cycles: 5, turns: 5 });
-
-    expect(getConnectedServiceQuotaSnapshotPlainSpy).toHaveBeenCalledWith(stableCredentials, {
-      serviceId: 'openai-codex',
-      profileId: 'work',
-    });
-    expect(hook.getCurrent().snapshotsByKey['openai-codex/work']).toEqual(expect.objectContaining({
-      serviceId: 'openai-codex',
-      profileId: 'work',
-    }));
-    expect(hook.getCurrent().snapshotsByKey['openai-codex/work']?.meters[0]?.meterId).toBe('view-weekly');
-    await hook.unmount();
-  });
-
-  it('prefers the connected-service quota view ahead of cached account usage for connected bindings', async () => {
-    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(makeQuotaSnapshot({
-      serviceId: 'openai-codex',
-      meterId: 'view-weekly',
-    }));
-    const accountUsage = makeProviderAccountUsageSnapshot({ meterId: 'account-usage-weekly', used: 95 });
-    const { writeProviderAccountUsageSnapshotToCache } = await import('@/sync/domains/connectedServices/accountUsage/cache');
-    writeProviderAccountUsageSnapshotToCache({
-      credentialScope: resolveAuthCredentialsScopeKey(stableCredentials),
-      snapshot: accountUsage,
-    });
-
-    const { useConnectedServiceQuotaSnapshots } = await import('./useConnectedServiceQuotaSnapshots');
-    const hook = await renderHook(() => useConnectedServiceQuotaSnapshots([
-      { serviceId: 'openai-codex', profileId: 'work' },
-    ]));
-    await flushHookEffects({ cycles: 5, turns: 5 });
-
-    expect(getConnectedServiceQuotaSnapshotPlainSpy).toHaveBeenCalledTimes(1);
-    expect(hook.getCurrent().snapshotsByKey['openai-codex/work']?.meters[0]?.meterId).toBe('view-weekly');
-    await hook.unmount();
-  });
 });

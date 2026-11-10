@@ -11,13 +11,19 @@ vi.mock('@/sync/api/session/apiSocket', () => ({ apiSocket: { machineRPC } }));
 
 import { ensureSessionRuntimeForPendingInput, resumeSession } from './sessions';
 
+/** A machine whose daemon starts sessions as their CLI in a terminal (CLI 0.3.19 and later). */
+function createTerminalMachineFixture() {
+    const machine = createMachineFixture();
+    return { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } };
+}
+
 describe('session resume terminal settings', () => {
     const originalState = storage.getState();
     beforeEach(() => {
         machineRPC.mockReset().mockResolvedValue({ type: 'success', sessionId: 'session-1' });
         storage.setState({
             sessions: { 'session-1': createSessionFixture() },
-            machines: { 'machine-1': createMachineFixture() },
+            machines: { 'machine-1': createTerminalMachineFixture() },
             settings: { ...settingsDefaults, sessionUseTmux: true, sessionTmuxSessionName: '', sessionTmuxIsolated: true },
         });
     });
@@ -59,33 +65,26 @@ describe('session resume terminal settings', () => {
         });
     });
 
-    it('reopens a 「终端」 session only on a machine whose daemon starts them, never as a chat', async () => {
-        storage.setState({
-            sessions: { 'session-1': createSessionFixture({ metadata: { ...createSessionFixture().metadata!, nativeTerminal: true } }) },
-        });
+    it('reopens every session as a terminal, an old chat too, and only on a machine whose daemon starts them', async () => {
+        // The session is an old chat: nothing in it or in the request asks for a terminal.
+        storage.setState({ machines: { 'machine-1': createMachineFixture() } });
         expect(await resumeSession(options)).toMatchObject({ type: 'error' });
         expect(machineRPC).not.toHaveBeenCalled();
         expect(storage.getState().sessions['session-1']?.resumingAt ?? null).toBeNull();
 
-        const machine = createMachineFixture();
-        storage.setState({
-            machines: { 'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } } },
-        });
+        storage.setState({ machines: { 'machine-1': createTerminalMachineFixture() } });
         expect(await resumeSession(options)).toMatchObject({ type: 'success' });
-        expect(machineRPC).toHaveBeenCalledWith('machine-1', 'spawn-happy-session', expect.objectContaining({ type: 'resume-session' }), expect.anything());
+        expect(machineRPC).toHaveBeenCalledWith('machine-1', 'spawn-happy-session', expect.objectContaining({
+            type: 'resume-session',
+            nativeTerminal: true,
+        }), expect.anything());
     });
 
     it('opens a Codex chat as a terminal on its conversation, without the chat backend it ran on', async () => {
-        const machine = createMachineFixture();
-        storage.setState({
-            machines: { 'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } } },
-        });
         expect(await resumeSession({
             ...options,
             backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
             resume: 'thread-1',
-            codexBackendMode: 'appServer',
-            nativeTerminal: true,
         })).toMatchObject({ type: 'success' });
 
         const payload = machineRPC.mock.calls[0]?.[2];

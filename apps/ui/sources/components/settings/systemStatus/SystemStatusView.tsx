@@ -30,7 +30,6 @@ import {
   useMachineListByServerId,
   useMachineListStatusByServerId,
   useProfile,
-  useRealtimeStatus,
   useSocketStatus,
 } from '@/sync/domains/state/storage';
 import { machineCollectBugReportDiagnostics } from '@/sync/ops/machines';
@@ -87,7 +86,6 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
 
   const profile = useProfile();
   const isDataReady = useIsDataReady();
-  const realtimeStatus = useRealtimeStatus();
   const socket = useSocketStatus();
   const lastSyncAt = useLastSyncAt();
   const appRuntimeInfo = React.useMemo(() => readCurrentAppRuntimeInfo(), []);
@@ -199,7 +197,6 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
       },
       ui: {
         isDataReady,
-        realtimeStatus,
         socketStatus: socket.status,
         socketLastError: socket.lastError,
         socketLastErrorAt: socket.lastErrorAt,
@@ -357,11 +354,6 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
             title={t('systemStatus.ui.dataReady')}
             detail={isDataReady ? t('common.yes') : t('common.no')}
             icon={<Icon name="pulse" size={24} color={theme.colors.accent.indigo} />}
-          />
-          <Item
-            title={t('systemStatus.ui.realtime')}
-            detail={String(realtimeStatus)}
-            icon={<Icon name="wifi-high" size={24} color={theme.colors.accent.blue} />}
           />
           <Item
             title={t('systemStatus.ui.socket')}

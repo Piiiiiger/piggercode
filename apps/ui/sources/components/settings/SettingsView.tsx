@@ -1,11 +1,10 @@
-import { View, Pressable, Platform, useWindowDimensions } from 'react-native';
+import { View, Platform, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import * as React from 'react';
 import { Text } from '@/components/ui/text/Text';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import Constants from 'expo-constants';
-import { Typography } from "@/constants/Typography";
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
@@ -21,11 +20,10 @@ import { useHappyAction } from '@/hooks/ui/useHappyAction';
 import { getDisplayName, getAvatarUrl, getBio } from '@/sync/domains/profiles/profile';
 import { Avatar } from '@/components/ui/avatar/Avatar';
 import { t } from '@/text';
-import { canRequestReview, requestReview } from '@/utils/system/requestReview';
+import { canRequestReview } from '@/utils/system/requestReview';
 import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromConnectedServiceId } from '@/agents/catalog/catalog';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { fireAndForget } from '@/utils/system/fireAndForget';
-import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useScannedAuthUrlProcessor } from '@/hooks/auth/useScannedAuthUrlProcessor';
 import type { FeatureId } from '@piggercode/protocol';
@@ -54,13 +52,10 @@ export const SettingsView = React.memo(function SettingsView() {
     const isPhoneSizedWeb = Platform.OS === 'web' && isWebMobileLikeQrScannerHost({ width, height });
     const [devModeEnabled, setDevModeEnabled] = useLocalSettingMutable('devModeEnabled');
     const usageReportingEnabled = useFeatureEnabled('usage.reporting');
-    const executionRunsEnabled = useFeatureEnabled('execution.runs');
     const connectedServicesEnabled = useFeatureEnabled('connectedServices');
     const memorySearchEnabled = useFeatureEnabled('memory.search');
-    const voiceEnabled = useFeatureEnabled('voice');
     const sourceControlEnabled = useFeatureEnabled('scm.writeOperations');
     const attachmentsUploadsEnabled = useFeatureEnabled('attachments.uploads');
-    const promptsLibraryEnabled = useFeatureEnabled('prompts.library');
     const mcpServersEnabled = useFeatureEnabled('mcp.servers');
     const petsCompanionEnabled = useFeatureEnabled('pets.companion');
     const petsSyncEnabled = useFeatureEnabled('pets.sync');
@@ -68,9 +63,6 @@ export const SettingsView = React.memo(function SettingsView() {
     const [showRateUs, setShowRateUs] = React.useState(false);
     const useProfiles = useSetting('useProfiles');
     const terminalUseTmux = useSetting('sessionUseTmux');
-    const automationsSupport = useAutomationsSupport();
-    const showAutomations = automationsSupport?.discoverable !== false;
-    const automationsNeedLocalEnablement = automationsSupport?.blockedBy === 'local_policy';
     const profile = useProfile();
     const displayName = getDisplayName(profile);
     const avatarUrl = getAvatarUrl(profile);
@@ -398,16 +390,12 @@ export const SettingsView = React.memo(function SettingsView() {
                 <SettingsBelowFoldSections
                     appVersion={appVersion}
                     attachmentsUploadsEnabled={attachmentsUploadsEnabled}
-                    automationsNeedLocalEnablement={automationsNeedLocalEnablement}
                     connectedServicesEnabled={connectedServicesEnabled}
                     devModeEnabled={devModeEnabled}
-                    executionRunsEnabled={executionRunsEnabled}
                     handleVersionClick={handleVersionClick}
                     mcpServersEnabled={mcpServersEnabled}
                     memorySearchEnabled={memorySearchEnabled}
-                    promptsLibraryEnabled={promptsLibraryEnabled}
                     router={router}
-                    showAutomations={showAutomations}
                     showChangelog={showChangelog}
                     showRateUs={showRateUs}
                     sourceControlEnabled={sourceControlEnabled}
@@ -415,7 +403,6 @@ export const SettingsView = React.memo(function SettingsView() {
                     terminalUseTmux={terminalUseTmux}
                     theme={theme}
                     useProfiles={useProfiles}
-                    voiceEnabled={voiceEnabled}
                 />
             ) : null}
 

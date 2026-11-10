@@ -30,9 +30,8 @@ import {
 } from '@/sync/domains/session/activeViewingSession';
 import { resolveSessionActionDefaultBackend } from '@/sync/domains/session/resolveSessionActionDefaultBackend';
 import { storage } from './domains/state/storage';
-import { ApiMessage } from './api/types/apiTypes';
 import type { ApiEphemeralActivityUpdate } from './api/types/apiTypes';
-import { Session, Machine, MetadataSchema, type Metadata } from './domains/state/storageTypes';
+import { Session, MetadataSchema, type Metadata } from './domains/state/storageTypes';
 import { InvalidateSync } from '@/utils/sessions/sync';
 import { PauseController } from '@/utils/timing/pauseController';
 import {
@@ -106,12 +105,12 @@ import { Platform, AppState } from 'react-native';
 import { buildOutgoingUserTextRecord } from './domains/messages/outgoingUserMessage';
 import { resolveSentFrom } from './domains/messages/sentFrom';
 import { NormalizedMessage, normalizeRawMessage, RawRecord, RawRecordSchema } from './typesRaw';
-import { applySettings, Settings, settingsDefaults, settingsParse, SUPPORTED_SCHEMA_VERSION } from './domains/settings/settings';
+import { Settings } from './domains/settings/settings';
 import {
     assertUiSessionEncryptionModeAllowed,
     resolveUiClientEncryptionRequirement,
 } from './domains/settings/clientEncryptionRequirement';
-import { Profile, profileDefaults } from './domains/profiles/profile';
+import { profileDefaults } from './domains/profiles/profile';
 import {
     loadSessionMaterializedMaxSeqById,
     saveSessionMaterializedMaxSeqById,
@@ -143,7 +142,6 @@ import {
     serverAccountScopeKeySuffix,
     type ServerAccountScope,
 } from './domains/scope/serverAccountScope';
-import { getPendingQueueWakeResumeOptions } from './domains/pending/pendingQueueWake';
 import {
     areAccountSettingsScopesEqual,
     createAccountSettingsScope,
@@ -222,7 +220,6 @@ import { applyCrashReportsOptOut } from '@/utils/system/sentry';
 import { parseToken } from '@/utils/auth/parseToken';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 import { isTauriDesktop } from '@/utils/platform/tauri';
-import { RevenueCat } from './domains/purchases';
 import { purchasesDefaults } from './domains/purchases/purchases';
 import { trackPaywallPresented, trackPaywallPurchased, trackPaywallCancelled, trackPaywallRestored, trackPaywallError } from '@/track';
 import { getActiveServerSnapshot } from './domains/server/serverRuntime';
@@ -244,14 +241,13 @@ import { scmStatusSync } from '@/scm/scmStatusSync';
 import { ingestWorkspaceMutationMessages } from '@/scm/refresh/workspaceMutationIngestionRuntime';
 import { projectManager } from './runtime/orchestration/projectManager';
 import { clearMountedSessionRealtimeScmConsumerScopes } from './runtime/sessionRealtimeScmConsumers';
-import { voiceHooks } from '@/voice/context/voiceHooks';
 import { notifyActivityReady } from '@/activity/notifications/runtime/activityLocalNotificationBus';
 import { Message } from './domains/messages/messageTypes';
 import { EncryptionCache } from './encryption/encryptionCache';
 import { nowServerMs } from './runtime/time';
 import { getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 import { computeNextReadStateV1 } from './domains/state/readStateV1';
-import { updateSessionMetadataWithRetry as updateSessionMetadataWithRetryRpc, type UpdateMetadataAck } from './domains/session/metadata/updateSessionMetadataWithRetry';
+import { updateSessionMetadataWithRetry as updateSessionMetadataWithRetryRpc } from './domains/session/metadata/updateSessionMetadataWithRetry';
 import type { ArtifactHeader, DecryptedArtifact } from './domains/artifacts/artifactTypes';
 import type { Automation, AutomationRun } from './domains/automations/automationTypes';
 import { getUserProfile } from './api/social/apiFriends';
@@ -268,7 +264,6 @@ import {
     updateAutomation as updateAutomationApi,
 } from './api/automations/apiAutomations';
 import { kvBulkGet } from './api/account/apiKv';
-import { FeedItem } from './domains/social/feedTypes';
 import { UserProfile } from './domains/social/friendTypes';
 import { HappyError } from '@/utils/errors/errors';
 import {
@@ -277,21 +272,9 @@ import {
     createAccountSettingsRetryingStatus,
     createAccountSettingsSyncedStatus,
 } from './domains/settings/accountSettingsSyncStatus';
-import {
-    dbgSettings,
-    isSettingsSyncDebugEnabled,
-    summarizeSettings,
-    summarizeSettingsDelta,
-    warnSettings,
-} from './domains/settings/debugSettings';
+import { dbgSettings, warnSettings } from './domains/settings/debugSettings';
 import { stripLocalOnlyAccountSettings } from './domains/settings/localOnlyAccountSettings';
-import {
-    decryptSecretValueWithKeys,
-    deriveSettingsSecretsKeySet,
-    encryptSecretString,
-    sealSecretsDeep,
-} from './encryption/secretSettings';
-import { didControlReturnToMobile } from './domains/session/control/controlledByUserTransitions';
+import { decryptSecretValueWithKeys, deriveSettingsSecretsKeySet, encryptSecretString } from './encryption/secretSettings';
 import type { SessionMessageDirectBypassReason } from './domains/session/control/submitMode';
 import { buildResumeCapabilityOptionsFromUiState } from '@/agents/registry/registryUiBehavior';
 import { submitSessionUserMessage } from './domains/session/input/submitSessionUserMessage';
@@ -300,7 +283,6 @@ import type {
     SessionSubmitPort,
     SubmitSessionUserMessageResult,
 } from './domains/session/input/types';
-import type { SavedSecret } from './domains/settings/savedSecretTypes';
 import type { PermissionMode } from './domains/permissions/permissionTypes';
 import { getPermissionModeOverrideForSpawn } from './domains/permissions/permissionModeOverride';
 import { scheduleDebouncedPendingSettingsFlush } from './engine/pending/pendingSettings';
@@ -363,7 +345,6 @@ import { readDirectSessionLink, type DirectSessionLink } from '@/sync/domains/se
 import { useSessionTrashStore } from '@/sync/domains/session/trash/sessionTrashStore';
 import { stableJsonStringify } from '@/utils/json/stableJsonStringify';
 import { normalizeDirectTranscriptMessages } from '@/sync/runtime/directSessions/normalizeDirectTranscriptMessages';
-import { readStoredSessionRawRecord } from '@/sync/runtime/readStoredSessionContent';
 import { resolvePreferredServerIdForSessionId } from '@/sync/runtime/orchestration/serverScopedRpc/resolvePreferredServerIdForSessionId';
 import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { emitSessionMetadataUpdateWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/emitSessionMetadataUpdateWithServerScope';
@@ -382,31 +363,18 @@ import { resolveServerScopedSessionContext } from '@/sync/runtime/orchestration/
 import { resolveScopedPendingSessionEncryption } from '@/sync/runtime/orchestration/serverScopedRpc/resolveScopedPendingSessionEncryption';
 import { getServerFeaturesSnapshot } from '@/sync/api/capabilities/serverFeaturesClient';
 import { sessionRpcWithPreferredSessionScope } from '@/sync/runtime/orchestration/serverScopedRpc/sessionRpcWithPreferredSessionScope';
-import { sessionRpcWithServerAccountScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc';
 import {
     machineDirectSessionTranscriptPage,
     machineDirectSessionTranscriptReadAfter,
 } from '@/sync/ops/machineDirectSessions';
-import {
-    createArtifactViaApi,
-    createArtifactWithHeaderViaApi,
-    fetchAndApplyArtifactsList,
-    fetchArtifactWithBodyFromApi,
-    handleDeleteArtifactSocketUpdate,
-    handleNewArtifactSocketUpdate,
-    handleUpdateArtifactSocketUpdate,
-    updateArtifactViaApi,
-    updateArtifactWithHeaderViaApi,
-    type ArtifactDataKeyCache,
-} from './engine/artifacts/syncArtifacts';
-import { fetchAndApplyFeed, handleNewFeedPostUpdate, handleRelationshipUpdatedSocketUpdate, handleTodoKvBatchUpdate } from './engine/social/syncFeed';
+import { createArtifactViaApi, createArtifactWithHeaderViaApi, fetchAndApplyArtifactsList, fetchArtifactWithBodyFromApi, updateArtifactViaApi, updateArtifactWithHeaderViaApi, type ArtifactDataKeyCache } from './engine/artifacts/syncArtifacts';
+import { fetchAndApplyFeed } from './engine/social/syncFeed';
 import { fetchAndApplyFriends } from './engine/social/syncFriends';
-import { fetchAndApplyProfile, handleUpdateAccountSocketUpdate, registerPushTokenIfAvailable } from './engine/account/syncAccount';
-import { buildMachineFromMachineActivityEphemeralUpdate, buildUpdatedMachineFromSocketUpdate, fetchAndApplyMachines, type MachineDataKeyCacheEntry } from './engine/machines/syncMachines';
+import { fetchAndApplyProfile, registerPushTokenIfAvailable } from './engine/account/syncAccount';
+import { fetchAndApplyMachines, type MachineDataKeyCacheEntry } from './engine/machines/syncMachines';
 import { fetchAndApplyAutomationRuns, fetchAndApplyAutomations } from './engine/automations/syncAutomations';
 import { fetchAndApplyAccountPets } from './engine/pets/syncAccountPets';
 import { applyTodoSocketUpdates as applyTodoSocketUpdatesEngine, fetchTodos as fetchTodosEngine } from './engine/todos/syncTodos';
-import { planSyncActionsFromChanges } from './runtime/orchestration/changesPlanner';
 import { applyPlannedChangeActions } from './runtime/orchestration/changesApplier';
 import { runSocketReconnectCatchUpViaChanges } from './runtime/orchestration/socketReconnectViaChanges';
 import {
@@ -417,7 +385,7 @@ import {
 } from './runtime/orchestration/sessionDraftSyncRuntime';
 import { verifyChangesCursorMaterializationProofs } from './runtime/orchestration/cursorMaterializationDetector';
 import { fetchAndApplySessionFolderAssignments } from '@/sync/ops/sessionOrganization';
-import { readMachineControlTargetForSession, readMachineTargetForSession } from './ops/sessionMachineTarget';
+import { readMachineControlTargetForSession } from './ops/sessionMachineTarget';
 import { deriveSessionAuthoringSnapshot } from './domains/sessionAuthoring/deriveSessionAuthoringSnapshot';
 import { socketEmitWithAckFallback } from './engine/socket/socketEmitWithAckFallback';
 import { publishPermissionModeToMetadata as publishPermissionModeToMetadataEngine } from './engine/overrides/permissionModePublish';
@@ -444,16 +412,7 @@ import {
 import { migrateLegacySessionDrafts } from '@/sync/domains/input/drafts/sessionDraftLegacyMigration';
 import { serverFetch } from './http/client';
 import { logNativeUpdateFetchFailure } from '@/sync/runtime/nativeUpdate/logNativeUpdateFetchFailure';
-import {
-    buildUpdatedSessionFromSocketUpdate,
-    fetchAndApplySessions,
-    fetchAndApplyMessages,
-    fetchAndApplyNewerMessages,
-    fetchAndApplyOlderMessages,
-    handleDeleteSessionSocketUpdate,
-    handleNewMessageSocketUpdate,
-    repairInvalidReadStateV1 as repairInvalidReadStateV1Engine,
-} from './engine/sessions/syncSessions';
+import { fetchAndApplySessions, fetchAndApplyMessages, fetchAndApplyNewerMessages, fetchAndApplyOlderMessages, handleDeleteSessionSocketUpdate, repairInvalidReadStateV1 as repairInvalidReadStateV1Engine } from './engine/sessions/syncSessions';
 import { fetchAndApplyTargetWindowMessages, clearTargetWindowRequestEpochs } from './engine/sessions/fetchAndApplyTargetWindowMessages';
 import { fetchAndApplyTranscriptRepair } from './engine/sessions/fetchAndApplyTranscriptRepair';
 import {
@@ -466,7 +425,6 @@ import {
     USER_MESSAGE_HISTORY_REMOTE_PAGE_SIZE,
     type FetchUserMessageHistoryPageResult,
 } from './engine/sessions/fetchUserMessageHistoryPage';
-import { fetchAndApplySessionById } from './engine/sessions/sessionById';
 import { getForkedTranscriptSnapshotCached } from './domains/sessionFork/forkedTranscriptSnapshot';
 import { resolveSessionMessageRouteId } from './domains/messages/messageRouteIds';
 import {
@@ -495,22 +453,12 @@ import {
     type PendingQueueReadEncryption,
 } from './engine/pending/pendingQueueV2';
 import { createPendingQueueRequest } from './engine/pending/createPendingQueueRequest';
-import {
-    resolvePendingInputServerWireMode,
-    type PendingInputServerWireMode,
-} from './engine/pending/pendingInputServerWireContract';
+import { resolvePendingInputServerWireMode } from './engine/pending/pendingInputServerWireContract';
 import {
     isPendingOutboxProjectionForIdentity,
     pendingOutboxProjectionIdentityKey,
 } from './engine/pending/pendingOutboxProjectionIdentity';
-import {
-    flushActivityUpdates as flushActivityUpdatesEngine,
-    flushMachineActivityUpdates as flushMachineActivityUpdatesEngine,
-    handleEphemeralSocketUpdate,
-    handleSocketUpdate,
-    parseUpdateContainer,
-    resetSocketSessionProjectionStateForServerScope,
-} from './engine/socket/socket';
+import { flushActivityUpdates as flushActivityUpdatesEngine, flushMachineActivityUpdates as flushMachineActivityUpdatesEngine, handleEphemeralSocketUpdate, handleSocketUpdate, resetSocketSessionProjectionStateForServerScope } from './engine/socket/socket';
 import { actionOperationStore } from './domains/actionOperations/actionOperationStore';
 import { openActionOperationRevisionEphemeral } from './domains/actionOperations/actionOperationEphemeral';
 
@@ -867,10 +815,6 @@ function sanitizePendingMessageMetaForExplicitSubmit(rawRecord: unknown): Record
     const sanitized = { ...(meta as Record<string, unknown>) };
     delete sanitized[SESSION_USER_MESSAGE_DELIVERY_INTENT_META_KEY];
     return Object.keys(sanitized).length > 0 ? sanitized : undefined;
-}
-
-function readOptionalSessionMetadataString(value: unknown): string | null {
-    return typeof value === 'string' && value.trim().length > 0 ? value : null;
 }
 
 type FetchSessionsOptions = Readonly<{
@@ -2281,11 +2225,6 @@ class Sync {
             this.replayDeferredMessagesFetch(sessionId);
             this.getOrCreateMessagesSync(sessionId).invalidateCoalesced();
 
-            // Notify voice assistant about session visibility
-            const session = storage.getState().sessions[sessionId];
-            if (session) {
-                voiceHooks.onSessionFocus(sessionId, session.metadata || undefined);
-        }
     }
 
         materializeExistingSessionDraft = async (sessionId: string): Promise<void> => {
@@ -6130,7 +6069,7 @@ class Sync {
           if (options?.mode === 'replace') this.resetSessionTranscriptState(sessionId);
           let changedMessageIds: readonly string[] = [];
           if (normalizedMessages.length > 0) {
-              changedMessageIds = this.applyMessages(sessionId, normalizedMessages, { notifyVoice: false }).changed;
+              changedMessageIds = this.applyMessages(sessionId, normalizedMessages, { notifyActivity: false }).changed;
           }
           if (options?.mode === 'merge_latest') {
               const previous = this.sessionMessagesTailDiscontinuityBySessionId.get(sessionId);
@@ -6254,7 +6193,7 @@ class Sync {
 
               const normalizedMessages = normalizeDirectTranscriptMessages(tail.items);
               if (normalizedMessages.length > 0) {
-                  this.applyMessages(sessionId, normalizedMessages, { notifyVoice: false });
+                  this.applyMessages(sessionId, normalizedMessages, { notifyActivity: false });
               }
               this.setDirectSessionTailCursor(sessionId, tail.nextCursor ?? null);
               this.recordDirectSessionSourcePage(sessionId, tail.items);
@@ -6316,7 +6255,7 @@ class Sync {
 
           const normalizedMessages = normalizeDirectTranscriptMessages(items);
           if (normalizedMessages.length > 0) {
-              const applied = this.applyMessages(sessionId, normalizedMessages, { notifyVoice: false, notifyActivity: true });
+              const applied = this.applyMessages(sessionId, normalizedMessages, { notifyActivity: true });
               if (!applied.hasReadyEvent) {
                   const sessionMessages = storage.getState().sessionMessages[sessionId];
                   const changedMessages = applied.changed
@@ -6546,7 +6485,7 @@ class Sync {
                       const normalizedMessages = normalizeDirectTranscriptMessages(page.items);
                       let changedMessageIds: readonly string[] = [];
                       if (normalizedMessages.length > 0) {
-                          changedMessageIds = this.applyMessages(params.sessionId, normalizedMessages, { notifyVoice: false }).changed;
+                          changedMessageIds = this.applyMessages(params.sessionId, normalizedMessages, { notifyActivity: false }).changed;
                       }
                       if (opaqueGap) {
                           const nextGap = applyTailDiscontinuityOpaqueOlderPage({
@@ -6647,7 +6586,7 @@ class Sync {
                   isSessionKnown: (id) => this.isSessionKnownOnResolvedOwnerServer(id),
                   request: requestMessages,
                   sessionReceivedMessages: this.sessionReceivedMessages,
-                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyVoice: false }),
+                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyActivity: false }),
                   ...this.getMessageDecryptBatchOptions(),
                   log,
               });
@@ -6821,7 +6760,7 @@ class Sync {
                   isRouteMessageIdLoaded: (routeMessageId) => this.isRouteMessageIdLoaded(normalizedSessionId, routeMessageId),
                   request: this.createSessionMessagesRequest(normalizedSessionId),
                   sessionReceivedMessages: this.sessionReceivedMessages,
-                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyVoice: false }),
+                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyActivity: false }),
                   getWindowState: () => this.getSessionTargetWindowState(normalizedSessionId),
                   setWindowState: (state) => this.setSessionTargetWindowState(normalizedSessionId, state),
                   now: () => Date.now(),
@@ -6915,7 +6854,7 @@ class Sync {
                   isSessionKnown: (id) => this.isSessionKnownOnResolvedOwnerServer(id),
                   request: requestMessages,
                   sessionReceivedMessages: this.sessionReceivedMessages,
-                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyVoice: false }),
+                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyActivity: false }),
                   markMessagesLoaded: () => {},
                   onMessagesPage: (page) => {
                       this.updateSessionMessagesPaginationFromPage(
@@ -7357,7 +7296,7 @@ class Sync {
                   isSessionKnown: (id) => this.isSessionKnownOnResolvedOwnerServer(id),
                   request: requestMessages,
                   sessionReceivedMessages: this.sessionReceivedMessages,
-                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyVoice: false }),
+                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyActivity: false }),
                   onNormalizedMessages: (messages) => ingestWorkspaceMutationMessages(sessionId, messages),
                   onTaskLifecycleEvent: (event) => this.applySessionThinkingFromTaskLifecycle(sessionId, event),
                   onMessagesPage: (page) => {
@@ -7437,7 +7376,7 @@ class Sync {
                   isSessionKnown: (id) => this.isSessionKnownOnResolvedOwnerServer(id),
                   request: requestMessages,
                   sessionReceivedMessages: this.sessionReceivedMessages,
-                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyVoice: false }),
+                  applyMessages: (sid, messages) => this.applyMessages(sid, messages, { notifyActivity: false }),
                   onNormalizedMessages: (messages) => ingestWorkspaceMutationMessages(sessionId, messages),
                   ...this.getMessageDecryptBatchOptions(),
                   log,
@@ -8033,7 +7972,6 @@ class Sync {
               markSessionTranscriptDeferred: (sessionId, marker) => this.markSessionTranscriptDeferred(sessionId, marker),
               markSessionTranscriptStale: (sessionId, marker) => this.markSessionTranscriptStale(sessionId, marker),
               markSessionStateHydrationDeferred: (sessionId) => this.markSessionStateHydrationDeferred(sessionId),
-              onReadyProjectionAdvance: (sessionId, seq) => this.notifyReadyProjectionAdvance(sessionId, seq),
               assumeUsers: (userIds) => this.assumeUsers(userIds),
               applyTodoSocketUpdates: (changes) => this.applyTodoSocketUpdates(changes),
               invalidateMachines: () => this.machinesSync.invalidate(),
@@ -8098,7 +8036,7 @@ class Sync {
             },
             getSessionEncryption,
             getSession: (sessionId) => storage.getState().sessions[sessionId],
-            applyMessages: (sessionId, messages) => this.applyMessages(sessionId, messages, { notifyVoice: false, notifyActivity: true }),
+            applyMessages: (sessionId, messages) => this.applyMessages(sessionId, messages, { notifyActivity: true }),
             updateDirectSessionTranscript: (ephemeralUpdate) => this.handleDirectSessionTranscriptEphemeralUpdate(ephemeralUpdate),
             applyActionOperationRevision: async (ephemeralUpdate) => {
                 if (!this.encryption || !shouldContinue()) return;
@@ -8144,22 +8082,6 @@ class Sync {
         );
     }
 
-    private shouldNotifyReadyProjectionSeq(sessionId: string, seq: number | null): boolean {
-        if (seq === null) return true;
-        if (!Number.isFinite(seq)) return true;
-        const normalizedSeq = Math.trunc(seq);
-        const previous = this.readyNotificationProgressBySessionId[sessionId];
-        if (previous && previous.seq >= normalizedSeq) return false;
-        this.readyNotificationProgressBySessionId = {
-            ...this.readyNotificationProgressBySessionId,
-            [sessionId]: {
-                seq: normalizedSeq,
-                transcriptNotified: false,
-            },
-        };
-        return true;
-    }
-
     private shouldNotifyReadyFromMessages(sessionId: string, seq: number | null): boolean {
         if (seq === null) return true;
         if (!Number.isFinite(seq)) return true;
@@ -8188,15 +8110,10 @@ class Sync {
         return false;
     }
 
-    private notifyReadyProjectionAdvance(sessionId: string, seq: number): void {
-        if (!this.shouldNotifyReadyProjectionSeq(sessionId, seq)) return;
-        voiceHooks.onReady(sessionId, []);
-    }
-
     private applyMessages = (
         sessionId: string,
         messages: NormalizedMessage[],
-        options?: { notifyVoice?: boolean; notifyActivity?: boolean }
+        options?: { notifyActivity?: boolean }
     ) => {
         const result = storage.getState().applyMessages(sessionId, messages);
         const tailGap = this.sessionMessagesTailDiscontinuityBySessionId.get(sessionId);
@@ -8231,9 +8148,8 @@ class Sync {
                 logToConsole: false,
             });
         }
-        const notifyVoice = options?.notifyVoice !== false;
-        const notifyActivity = options?.notifyActivity ?? notifyVoice;
-        if (notifyVoice || notifyActivity) {
+        const notifyActivity = options?.notifyActivity ?? true;
+        if (notifyActivity) {
             let m: Message[] = [];
             for (let messageId of result.changed) {
                 const message = storage.getState().sessionMessages[sessionId].messagesMap[messageId];
@@ -8244,16 +8160,8 @@ class Sync {
             const liveEffectMessages = m.filter((message) => (
                 !isRecoveredHistoryTranscriptObservationProvenance(message.transcriptObservationProvenance)
             ));
-            if (notifyVoice && liveEffectMessages.length > 0) {
-                voiceHooks.onMessages(sessionId, liveEffectMessages);
-            }
             if (result.hasReadyEvent && this.shouldNotifyReadyFromMessages(sessionId, result.latestReadyEventSeq)) {
-                if (notifyVoice) {
-                    voiceHooks.onReady(sessionId, liveEffectMessages);
-                }
-                if (notifyActivity) {
-                    notifyActivityReady(sessionId, liveEffectMessages);
-                }
+                notifyActivityReady(sessionId, liveEffectMessages);
             }
         }
         return result;
@@ -8404,8 +8312,6 @@ class Sync {
     private applySessions = (sessions: (Omit<Session, "presence"> & {
         presence?: "online" | number;
     })[]) => {
-        const active = storage.getState().getActiveSessions();
-
         // When multi-server mode is enabled, we use `activeServerSessionIds` as a conservative
         // guard to avoid cross-server message fetches after the initial session snapshot. Ensure
         // that any newly-applied sessions (via socket updates, create flows, etc.) are treated as
@@ -8416,8 +8322,6 @@ class Sync {
             }
         }
         storage.getState().applySessions(sessions);
-        const newActive = storage.getState().getActiveSessions();
-        this.applySessionDiff(active, newActive);
     }
 
     private readSessionMessagesCatchUpAfterSeq(sessionId: string): number {
@@ -8488,21 +8392,6 @@ class Sync {
         this.sessionMaterializedMaxSeqDirty = false;
         if (!this.pendingSettingsScope) return;
         saveSessionMaterializedMaxSeqById(this.sessionMaterializedMaxSeqById, this.pendingSettingsScope);
-    }
-
-    private applySessionDiff = (active: Session[], newActive: Session[]) => {
-        let wasActive = new Set(active.map(s => s.id));
-        let isActive = new Set(newActive.map(s => s.id));
-        for (let s of active) {
-            if (!isActive.has(s.id)) {
-                voiceHooks.onSessionOffline(s.id, s.metadata ?? undefined);
-            }
-        }
-        for (let s of newActive) {
-            if (!wasActive.has(s.id)) {
-                voiceHooks.onSessionOnline(s.id, s.metadata ?? undefined);
-            }
-        }
     }
 
 }

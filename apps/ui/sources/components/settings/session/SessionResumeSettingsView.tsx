@@ -197,15 +197,6 @@ export const SessionResumeSettingsView = React.memo(function SessionResumeSettin
                     </>
                 ) : null}
             </ItemGroup>
-
-            <ItemGroup title={t('settingsSession.handoff.groupTitle')} footer={t('settingsSession.handoff.groupFooter')}>
-                <Item
-                    title={t('settingsSession.handoff.title')}
-                    subtitle={t('settingsSession.handoff.entrySubtitle')}
-                    icon={<Icon name="arrows-left-right" size={29} color={theme.colors.accent.green} />}
-                    onPress={() => router.push('/settings/session/handoff')}
-                />
-            </ItemGroup>
         </ItemList>
     );
 });

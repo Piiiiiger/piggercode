@@ -1,47 +1,23 @@
 import * as React from 'react';
 import { useSessionArchivePending } from '@/hooks/session/useSessionArchivePending';
 import { Pressable, View } from 'react-native';
-import { listActionSpecs } from '@piggercode/protocol';
 import { useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 
-import { storage, useSessionOrganizationProjection, useSetting, useSettings } from '@/sync/domains/state/storage';
+import { storage, useSessionOrganizationProjection, useSettings } from '@/sync/domains/state/storage';
 import { useSessionAttentionStandingInputs } from '@/hooks/session/useSessionAttentionStandingInputs';
 import { resolveSessionAttentionStanding } from '@/sync/domains/session/organization/attentionStanding';
 import { buildSessionOrganizationListViewState } from '@/sync/domains/session/organization/viewState';
 import { sessionTagKey } from '@/components/sessions/shell/sessionTagUtils';
-import { useEnabledAgentIds } from '@/agents/hooks/useEnabledAgentIds';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { StorageState } from '@/sync/store/types';
 import { DropdownMenu, type DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
-import { isActionEnabledInState } from '@/sync/domains/settings/actionsSettings';
-import { buildExecutionRunActionDraftInputForUi } from '@/sync/domains/actions/buildExecutionRunActionDraftInputForUi';
 import { t } from '@/text';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 import { Modal } from '@/modal';
-import { createDefaultActionExecutor } from '@/sync/ops/actions/defaultActionExecutor';
-import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { usePreferredServerIdForSession } from '@/sync/runtime/orchestration/serverScopedRpc/usePreferredServerIdForSession';
-import { canForkConversation } from '@/sync/domains/sessionFork/forkUiSupport';
-import { openSessionForkStrategyFlow } from '@/components/sessions/fork/openSessionForkStrategyFlow';
-import { runSessionHandoffPickerFlow } from '@/sync/domains/sessionHandoff/runSessionHandoffPickerFlow';
-import { resolveSessionHandoffSourceMachineId } from '@/sync/domains/sessionHandoff/resolveSessionHandoffSourceMachineId';
-import {
-  resolveSessionHandoffUiAvailability,
-} from '@/sync/domains/sessionHandoff/resolveSessionHandoffUiAvailability';
-import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
-import { useServerFeaturesSnapshotForServerId } from '@/sync/domains/features/featureDecisionRuntime';
-import { resolveSessionActionDefaultBackend } from '@/sync/domains/session/resolveSessionActionDefaultBackend';
-import { getVoiceAgentSessionTeleportAvailability } from '@/voice/agent/getVoiceAgentSessionTeleportAvailability';
-import { teleportVoiceAgentToSessionRoot } from '@/voice/agent/teleportVoiceAgentToSessionRoot';
-import { useHasGlobalVoiceAgentConversation } from '@/voice/agent/useHasGlobalVoiceAgentConversation';
-import { navigateWithBlurOnWeb } from '@/utils/platform/navigateWithBlurOnWeb';
-import { deferOnWeb } from '@/utils/platform/deferOnWeb';
-import { useSessionHandoffSourceReachability } from '@/sync/domains/sessionHandoff/useSessionHandoffSourceReachability';
-import { useSessionMachineTarget } from '@/components/sessions/model/useSessionMachineTarget';
-import { completeSessionForkNavigation } from '@/components/sessions/transcript/forkContext/completeSessionForkNavigation';
 import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
 import { confirmSessionStop, executeSessionAction } from '@/components/sessions/actions/sessionActionExecution';
 import { listVisibleSessionActionIds } from '@/components/sessions/actions/sessionActionAvailability';
@@ -172,22 +148,9 @@ function SessionHeaderActionMenuInner(props: SessionHeaderActionMenuProps) {
   const { theme } = useUnistyles();
   const router = useRouter();
   const navigateToSession = useNavigateToSession();
-  const enabledAgentIds = useEnabledAgentIds();
   const settings = useSettings();
-  const sessionReplayEnabled = useSetting('sessionReplayEnabled');
-  const voice = useSetting('voice');
-  const hasGlobalVoiceAgentConversation = useHasGlobalVoiceAgentConversation();
-  const sessionHandoffEnabled = useFeatureEnabled('sessions.handoff');
-  const executionRunsEnabled = useFeatureEnabled('execution.runs');
   const sessionServerId = usePreferredServerIdForSession(props.sessionId);
   const archivePending = useSessionArchivePending(props.sessionId, sessionServerId);
-  // Scoped to THIS Session's server, like the in-Session picker: the child is
-  // created on that server, so an unrelated selected server must not decide
-  // whether this conversation may continue with another Agent.
-  const agentSwitchingEnabled = useFeatureEnabled('sessions.agentSwitching', {
-    scopeKind: 'spawn',
-    serverId: sessionServerId,
-  });
   const readStateSignature = storage((state) =>
     buildSessionHeaderReadStateSignature(state, props.sessionId),
   );
@@ -223,58 +186,7 @@ function SessionHeaderActionMenuInner(props: SessionHeaderActionMenuProps) {
     }),
     [attentionStandingEnabled, isAttentionStandingSession, readStateSignature, session, sessionServerId, settings],
   );
-  const reachableMachineId = useSessionMachineTarget(props.sessionId)?.machineId ?? null;
-  const sourceMachineId = React.useMemo(
-    () => resolveSessionHandoffSourceMachineId({
-      reachableMachineId,
-      sessionMetadata: session.metadata as any,
-    }),
-    [session.metadata, reachableMachineId],
-  );
-  const serverSnapshot = useServerFeaturesSnapshotForServerId(sessionServerId, { enabled: Boolean(sessionServerId) });
-  const runtimeAvailability = useSessionHandoffSourceReachability({
-    serverId: sessionServerId,
-    sourceMachineId,
-  });
-  const handoffAvailability = resolveSessionHandoffUiAvailability({
-    sessionId: props.sessionId,
-    session,
-    sessionHandoffFeatureEnabled: sessionHandoffEnabled,
-    serverSnapshot,
-    runtimeAvailability,
-  });
-  const executor = React.useMemo(
-    () => createDefaultActionExecutor({
-      resolveServerIdForSessionId: resolveServerIdForSessionIdFromLocalCache,
-      openSession: (childSessionId: string) => completeSessionForkNavigation({
-        childSessionId,
-        parentSessionId: props.sessionId,
-        serverId: sessionServerId ?? null,
-        navigate: (targetSessionId, options) => {
-          void navigateToSession(targetSessionId, { serverId: options?.serverId ?? sessionServerId ?? null });
-        },
-      }),
-    }),
-    [navigateToSession, props.sessionId, sessionServerId],
-  );
-  const teleportAvailability = React.useMemo(
-    () => getVoiceAgentSessionTeleportAvailability({ voice, sessionId: props.sessionId }),
-    [props.sessionId, voice],
-  );
-  const showTeleportAction = teleportAvailability.ok && hasGlobalVoiceAgentConversation;
   const actions = React.useMemo(() => {
-    const actionItems: DropdownMenuItem[] = listActionSpecs()
-      .filter((spec) => spec.surfaces.ui_button === true)
-      .filter((spec) => isActionEnabledInState({ settings } as any, spec.id, { surface: 'ui_button', placement: 'session_action_menu' } as any))
-      .filter((spec) => Array.isArray(spec.placements) && spec.placements.includes('session_action_menu' as any))
-      .filter((spec) => spec.id !== 'session.fork' || canForkConversation({ session, replayEnabled: sessionReplayEnabled, agentSwitchingEnabled }) === true)
-      .filter((spec) => spec.id !== 'session.handoff' || handoffAvailability.available)
-      .map((spec) => ({
-        id: spec.id,
-        title: spec.title,
-        subtitle: spec.description,
-      }));
-
     const out: DropdownMenuItem[] = [];
 
     if (Array.isArray(props.extraItems) && props.extraItems.length > 0) {
@@ -299,27 +211,11 @@ function SessionHeaderActionMenuInner(props: SessionHeaderActionMenuProps) {
       }
     }
 
-    if (showTeleportAction) {
-      out.push({
-        id: 'voice.teleport',
-        title: t('voiceSurface.a11y.teleport'),
-        subtitle: undefined,
-      });
-    }
-
-    out.push(...actionItems);
     return out;
   }, [
     props.extraItems,
     archivePending,
-    agentSwitchingEnabled,
-    session,
     sessionActionTarget,
-    sessionHandoffEnabled,
-    sessionReplayEnabled,
-    settings,
-    showTeleportAction,
-    handoffAvailability.available,
     theme.colors.chrome.header.foreground,
   ]);
 
@@ -333,20 +229,6 @@ function SessionHeaderActionMenuInner(props: SessionHeaderActionMenuProps) {
       onSelect={(actionId) => {
         setOpen(false);
         if (props.onSelectExtraItem?.(actionId) === true) return;
-        if (actionId === 'header.openRuns') {
-          router.push((`/session/${props.sessionId}/runs`) as any);
-          return;
-        }
-        if (actionId === 'header.openAutomations') {
-          navigateWithBlurOnWeb(() => router.push((`/session/${props.sessionId}/automations`) as any));
-          return;
-        }
-        if (actionId === 'voice.teleport') {
-          fireAndForget(teleportVoiceAgentToSessionRoot({ sessionId: props.sessionId }), {
-            tag: 'SessionHeaderActionMenu.execute.voiceTeleport',
-          });
-          return;
-        }
         const manualReadState = resolveManualReadStateFromSessionActionId(actionId);
         if (manualReadState) {
           const sessionActionId = manualReadState === 'read'
@@ -478,62 +360,6 @@ function SessionHeaderActionMenuInner(props: SessionHeaderActionMenuProps) {
           })(), { tag: 'SessionHeaderActionMenu.execute.sessionUnarchive' });
           return;
         }
-        if (actionId === 'session.fork') {
-          // A launcher only. The header must not also run the old auto-strategy
-          // path behind the modal: the user chooses Native, Replay or Configure
-          // before any fork effect is issued.
-          deferOnWeb(() => {
-            openSessionForkStrategyFlow({
-              sessionId: props.sessionId,
-              forkSupportSource: session,
-              serverId: sessionServerId ?? null,
-              machineId: reachableMachineId ?? session.metadata?.machineId ?? null,
-              forkPoint: { type: 'latest' },
-              settings,
-              replayEnabled: sessionReplayEnabled,
-              executionRunsEnabled: executionRunsEnabled === true,
-              agentSwitchingEnabled,
-              navigateToSession: (childSessionId, options) => {
-                void navigateToSession(childSessionId, { serverId: options?.serverId ?? sessionServerId ?? null });
-              },
-              navigateToNewSession: (route) => {
-                router.push(route as any);
-              },
-            });
-          });
-          return;
-        }
-        if (actionId === 'session.handoff') {
-          // Defer opening the modal on web so the dropdown press/unmount cycle completes before we
-          // mount another portal-backed surface (avoids flakey immediate dismissals in e2e).
-          deferOnWeb(() => {
-            fireAndForget((async () => {
-              const serverId = sessionServerId;
-              const res = await runSessionHandoffPickerFlow({
-                execute: executor.execute as any,
-                sessionId: props.sessionId,
-                sourceMachineId: sourceMachineId ?? null,
-                serverId,
-                placement: 'session_action_menu',
-              });
-              if (!res?.ok) return;
-            })(), { tag: 'SessionHeaderActionMenu.execute.sessionHandoff' });
-          });
-          return;
-        }
-        const defaultBackend = resolveSessionActionDefaultBackend({
-          session,
-          enabledAgentIds,
-        });
-        if (!defaultBackend) return;
-        const input = buildExecutionRunActionDraftInputForUi({
-          actionId: actionId as any,
-          sessionId: props.sessionId,
-          defaultBackendTarget: defaultBackend.backendTarget,
-          defaultBackendId: defaultBackend.defaultBackendId,
-          instructions: '',
-        });
-        storage.getState().createSessionActionDraft(props.sessionId, { actionId, input });
       }}
       trigger={({ toggle }) => (
             <Pressable

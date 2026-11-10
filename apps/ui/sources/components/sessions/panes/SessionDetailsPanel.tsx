@@ -7,11 +7,6 @@ import { Text } from '@/components/ui/text/Text';
 import { FileIcon } from '@/components/ui/media/FileIcon';
 import { Typography } from '@/constants/Typography';
 import { useAppPaneScope } from '@/components/appShell/panes/hooks/useAppPaneScope';
-import {
-    renderProviderSessionDetailsTab,
-    resolveProviderSessionDetailsTabIconName,
-} from '@/agents/registry/sessionSubagentUiBehavior';
-import { SessionExecutionRunLauncherView } from '@/components/sessions/runs/launcher/SessionExecutionRunLauncherView';
 import { SessionEmbeddedTerminalPane } from '@/components/sessions/terminal/SessionEmbeddedTerminalPane';
 import { PinIcon, PinSlashIcon } from '@/components/sessions/shell/sessionPinIcons';
 import { t } from '@/text';
@@ -29,10 +24,7 @@ import {
     SessionFileDetailsViewForPanel,
     SessionScmReviewDetailsViewForPanel,
     SessionScmStashDetailsViewForPanel,
-    SessionSubagentDetailsViewForPanel,
-    SessionTranscriptDetailsViewForPanel,
 } from './SessionDetailsPanelDetailViews';
-import { isSessionTranscriptDetailsResource } from './details/sessionTranscriptDetailsResource';
 
 export type SessionDetailsPanelProps = Readonly<{
     sessionId: string;
@@ -187,22 +179,6 @@ function isTerminalResource(value: unknown): value is Readonly<{ kind: 'terminal
     if (!value || typeof value !== 'object') return false;
     const maybe = value as { kind?: unknown };
     return maybe.kind === 'terminal';
-}
-
-function isSubagentResource(value: unknown): value is Readonly<{ kind: 'subagent'; subagentId: string }> {
-    if (!value || typeof value !== 'object') return false;
-    const maybe = value as { kind?: unknown; subagentId?: unknown };
-    return maybe.kind === 'subagent' && typeof maybe.subagentId === 'string' && maybe.subagentId.trim().length > 0;
-}
-
-function isExecutionRunLauncherResource(value: unknown): value is Readonly<{
-    kind: 'executionRunLauncher';
-    intent?: 'review' | 'plan' | 'delegate';
-}> {
-    if (!value || typeof value !== 'object') return false;
-    const maybe = value as { kind?: unknown; intent?: unknown };
-    if (maybe.kind !== 'executionRunLauncher') return false;
-    return maybe.intent == null || maybe.intent === 'review' || maybe.intent === 'plan' || maybe.intent === 'delegate';
 }
 
 function shouldKeepInactiveDetailsTabMounted(tab: Readonly<{ resource?: unknown }> | null | undefined): boolean {
@@ -371,66 +347,6 @@ export const SessionDetailsPanel = React.memo((props: SessionDetailsPanelProps) 
                 );
             }
         }
-        if (resource?.kind === 'subagent') {
-            if (isSubagentResource(tab.resource)) {
-                return (
-                    <React.Suspense fallback={renderLoadingFallback()}>
-                        <SessionSubagentDetailsViewForPanel
-                            sessionId={props.sessionId}
-                            scopeId={props.scopeId}
-                            subagentId={tab.resource.subagentId}
-                        />
-                    </React.Suspense>
-                );
-            }
-        }
-        if (resource?.kind === 'transcript') {
-            if (isSessionTranscriptDetailsResource(tab.resource)) {
-                // Same-session, enforced rather than assumed. This panel is scoped to ONE session:
-                // its neighbours (files, commits, terminal, subagents) all resolve against
-                // `props.sessionId`, and a transcript carrying a different one would render another
-                // session's conversation under this session's chrome. Routing a cross-session open
-                // is a product decision, not plumbing, so the refusal is explicit and visible.
-                if (tab.resource.scope.sessionId !== props.sessionId) {
-                    return (
-                        <View style={styles.empty} testID="session-details-transcript-session-mismatch">
-                            <Text style={styles.emptyText}>
-                                {t('session.detailsPanel.transcriptFromOtherSession')}
-                            </Text>
-                        </View>
-                    );
-                }
-                return (
-                    <React.Suspense fallback={renderLoadingFallback()}>
-                        <SessionTranscriptDetailsViewForPanel
-                            scope={tab.resource.scope}
-                            testID="session-details-transcript"
-                        />
-                    </React.Suspense>
-                );
-            }
-        }
-        if (resource?.kind === 'executionRunLauncher') {
-            if (isExecutionRunLauncherResource(tab.resource)) {
-                return (
-                    <SessionExecutionRunLauncherView
-                        sessionId={props.sessionId}
-                        scopeId={props.scopeId}
-                        presentation="panel"
-                        initialIntent={tab.resource.intent}
-                        onRequestClose={() => pane.closeDetailsTab(tab.key)}
-                    />
-                );
-            }
-        }
-        const providerDetailsTab = renderProviderSessionDetailsTab({
-            sessionId: props.sessionId,
-            scopeId: props.scopeId,
-            tab,
-        });
-        if (providerDetailsTab) {
-            return providerDetailsTab;
-        }
 
         return (
             <View style={styles.empty}>
@@ -473,11 +389,7 @@ export const SessionDetailsPanel = React.memo((props: SessionDetailsPanelProps) 
                                         ? 'archive'
                                         : tab.kind === 'terminal'
                                             ? 'terminal'
-                                            : tab.kind === 'executionRunLauncher'
-                                                ? 'play'
-                                                : tab.kind === 'transcript'
-                                                    ? 'chat-circle-dots'
-                                                    : resolveProviderSessionDetailsTabIconName(tab) ?? 'circle';
+                                            : 'circle';
                         return (
                             <View
                                 key={tab.key}

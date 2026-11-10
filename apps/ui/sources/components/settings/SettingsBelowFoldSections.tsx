@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+
 import * as React from 'react';
 import { useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
@@ -7,7 +7,7 @@ import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { t } from '@/text';
 import { trackWhatsNewClicked } from '@/track';
 import { requestReview } from '@/utils/system/requestReview';
-import { ICON_SIZE, Icon } from '@/components/ui/icons/Icon';
+import { Icon } from '@/components/ui/icons/Icon';
 import { resolveConfiguredRepositoryUrl } from '@/sync/runtime/appBrand';
 import { openExternalUrl } from '@/utils/url/openExternalUrl';
 import { SettingsCheckForUpdatesItem } from './SettingsCheckForUpdatesItem';
@@ -18,16 +18,12 @@ type SettingsBelowFoldSectionsTheme = ReturnType<typeof useUnistyles>['theme'];
 type SettingsBelowFoldSectionsProps = Readonly<{
     appVersion: string;
     attachmentsUploadsEnabled: boolean;
-    automationsNeedLocalEnablement: boolean;
     connectedServicesEnabled: boolean;
     devModeEnabled: boolean;
-    executionRunsEnabled: boolean;
     handleVersionClick: () => void;
     mcpServersEnabled: boolean;
     memorySearchEnabled: boolean;
-    promptsLibraryEnabled: boolean;
     router: SettingsBelowFoldSectionsRouter;
-    showAutomations: boolean;
     showChangelog: boolean;
     showRateUs: boolean;
     sourceControlEnabled: boolean;
@@ -35,22 +31,17 @@ type SettingsBelowFoldSectionsProps = Readonly<{
     terminalUseTmux: boolean | null | undefined;
     theme: SettingsBelowFoldSectionsTheme;
     useProfiles: boolean | null | undefined;
-    voiceEnabled: boolean;
 }>;
 
 export const SettingsBelowFoldSections = React.memo(function SettingsBelowFoldSections({
     appVersion,
     attachmentsUploadsEnabled,
-    automationsNeedLocalEnablement,
     connectedServicesEnabled,
     devModeEnabled,
-    executionRunsEnabled,
     handleVersionClick,
     mcpServersEnabled,
     memorySearchEnabled,
-    promptsLibraryEnabled,
     router,
-    showAutomations,
     showChangelog,
     showRateUs,
     sourceControlEnabled,
@@ -58,7 +49,6 @@ export const SettingsBelowFoldSections = React.memo(function SettingsBelowFoldSe
     terminalUseTmux,
     theme,
     useProfiles,
-    voiceEnabled,
 }: SettingsBelowFoldSectionsProps) {
     return (
         <>
@@ -67,19 +57,14 @@ export const SettingsBelowFoldSections = React.memo(function SettingsBelowFoldSe
                     connectedServicesEnabled={connectedServicesEnabled}
                     mcpServersEnabled={mcpServersEnabled}
                     memorySearchEnabled={memorySearchEnabled}
-                    promptsLibraryEnabled={promptsLibraryEnabled}
                     router={router}
                     theme={theme}
                     useProfiles={useProfiles}
-                    voiceEnabled={voiceEnabled}
                 />
             ) : null}
             {stage >= 2 ? (
                 <SettingsSessionsBehaviorSection
-                    automationsNeedLocalEnablement={automationsNeedLocalEnablement}
-                    executionRunsEnabled={executionRunsEnabled}
                     router={router}
-                    showAutomations={showAutomations}
                     terminalUseTmux={terminalUseTmux}
                     theme={theme}
                 />
@@ -114,22 +99,18 @@ type SettingsAiAndAgentsSectionProps = Readonly<Pick<SettingsBelowFoldSectionsPr
     | 'connectedServicesEnabled'
     | 'mcpServersEnabled'
     | 'memorySearchEnabled'
-    | 'promptsLibraryEnabled'
     | 'router'
     | 'theme'
     | 'useProfiles'
-    | 'voiceEnabled'
 >>;
 
 const SettingsAiAndAgentsSection = React.memo(function SettingsAiAndAgentsSection({
     connectedServicesEnabled,
     mcpServersEnabled,
     memorySearchEnabled,
-    promptsLibraryEnabled,
     router,
     theme,
     useProfiles,
-    voiceEnabled,
 }: SettingsAiAndAgentsSectionProps) {
     return (
         <ItemGroup title={t('settings.aiAndAgents')}>
@@ -138,16 +119,6 @@ const SettingsAiAndAgentsSection = React.memo(function SettingsAiAndAgentsSectio
                 subtitle={t('settingsProviders.entrySubtitle')}
                 icon={<Icon name="sparkle" size={29} color={theme.colors.accent.orange} />}
                 onPress={() => router.push('/settings/providers')}
-            />
-            <Item
-                title={t('subAgentGuidance.settings.groupTitle')}
-                subtitle={t('settingsSession.subAgentGuidanceEntry.openSubtitle')}
-                icon={(
-                    <View style={{ width: 29, height: 29, alignItems: 'center', justifyContent: 'center' }}>
-                        <Icon name="robot" size={ICON_SIZE.lg} color={theme.colors.accent.orange} />
-                    </View>
-                )}
-                onPress={() => router.push('/settings/sub-agent')}
             />
             {useProfiles && (
                 <Item
@@ -174,23 +145,6 @@ const SettingsAiAndAgentsSection = React.memo(function SettingsAiAndAgentsSectio
                     onPress={() => router.push('/settings/mcp')}
                 />
             )}
-            {promptsLibraryEnabled ? (
-                <Item
-                    testID="settings-prompts"
-                    title={t('settings.prompts')}
-                    subtitle={t('settings.promptsSubtitle')}
-                    icon={<Icon name="books" size={29} color={theme.colors.accent.blue} />}
-                    onPress={() => router.push('/settings/prompts')}
-                />
-            ) : null}
-            {voiceEnabled ? (
-                <Item
-                    title={t('settings.voiceAssistant')}
-                    subtitle={t('settings.voiceAssistantSubtitle')}
-                    icon={<Icon name="microphone" size={29} color={theme.colors.state.success.foreground} />}
-                    onPress={() => router.push('/settings/voice')}
-                />
-            ) : null}
             {memorySearchEnabled ? (
                 <Item
                     title={t('settings.memorySearch')}
@@ -204,19 +158,13 @@ const SettingsAiAndAgentsSection = React.memo(function SettingsAiAndAgentsSectio
 });
 
 type SettingsSessionsBehaviorSectionProps = Readonly<Pick<SettingsBelowFoldSectionsProps,
-    | 'automationsNeedLocalEnablement'
-    | 'executionRunsEnabled'
     | 'router'
-    | 'showAutomations'
     | 'terminalUseTmux'
     | 'theme'
 >>;
 
 const SettingsSessionsBehaviorSection = React.memo(function SettingsSessionsBehaviorSection({
-    automationsNeedLocalEnablement,
-    executionRunsEnabled,
     router,
-    showAutomations,
     terminalUseTmux,
     theme,
 }: SettingsSessionsBehaviorSectionProps) {
@@ -235,35 +183,11 @@ const SettingsSessionsBehaviorSection = React.memo(function SettingsSessionsBeha
                 onPress={() => router.push('/settings/actions')}
             />
             <Item
-                title={t('settings.transcript')}
-                subtitle={t('settings.transcriptSubtitle')}
-                icon={<Icon name="chats-circle" size={29} color={theme.colors.accent.indigo} />}
-                onPress={() => router.push('/settings/session/transcript')}
-            />
-            <Item
                 title={t('settings.permissions')}
                 subtitle={t('settings.permissionsSubtitle')}
                 icon={<Icon name="shield" size={29} color={theme.colors.accent.indigo} />}
                 onPress={() => router.push('/settings/session/permissions')}
             />
-            {showAutomations ? (
-                <Item
-                    title={t('settings.automations')}
-                    subtitle={automationsNeedLocalEnablement
-                        ? t('settingsFeatures.expAutomationsSubtitle')
-                        : t('settings.automationsSubtitle')}
-                    icon={<Icon name="timer" size={29} color={theme.colors.accent.blue} />}
-                    onPress={() => router.push(automationsNeedLocalEnablement ? '/settings/features' : '/automations')}
-                />
-            ) : null}
-            {executionRunsEnabled ? (
-                <Item
-                    title={t('runs.title')}
-                    subtitle={t('settings.executionRunsSubtitle')}
-                    icon={<Icon name="play" size={29} color={theme.colors.state.success.foreground} />}
-                    onPress={() => router.push('/runs')}
-                />
-            ) : null}
         </ItemGroup>
     );
 });

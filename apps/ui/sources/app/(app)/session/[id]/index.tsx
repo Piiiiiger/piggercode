@@ -3,7 +3,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { SessionView } from '@/components/sessions/shell/SessionView';
 import { SessionInvalidLinkFallback } from '@/components/sessions/shell/SessionInvalidLinkFallback';
-import { TranscriptSameSessionHandoffProvider } from '@/components/sessions/transcript/viewport/lifecycle/transcriptSameSessionHandoff';
 import type { AttachmentDraft } from '@/components/sessions/attachments/attachmentDraftModel';
 import { parseSessionPaneUrlState } from '@/components/sessions/panes/url/sessionPaneUrlState';
 import { useAppPaneScope } from '@/components/appShell/panes/hooks/useAppPaneScope';
@@ -186,11 +185,7 @@ export default React.memo(() => {
     }
 
     return (
-        <TranscriptSameSessionHandoffProvider
-            desiredExperience={cockpitEnabled ? 'cockpit' : 'classic'}
-            sessionId={sessionId}
-        >
-            {(experience) => experience === 'cockpit'
+        cockpitEnabled
                 ? (
                     <SessionCockpitShell
                         sessionId={sessionId}
@@ -220,7 +215,6 @@ export default React.memo(() => {
                         routeAnchorOverride={Platform.OS === 'web' ? undefined : true}
                         routeHydrationState={routeHydrationState}
                     />
-                )}
-        </TranscriptSameSessionHandoffProvider>
+                )
     );
 });

@@ -188,9 +188,6 @@ vi.mock('@/components/ui/forms/dropdown/DropdownMenu', () => ({
 vi.mock('@/components/machines/InstallableDepInstaller', () => ({
     InstallableDepInstaller: () => null,
 }));
-vi.mock('@/components/sessions/runs/ExecutionRunRow', () => ({
-    ExecutionRunRow: () => null,
-}));
 vi.mock('@/sync/domains/session/spawn/windowsRemoteSessionLaunchModeOptions', () => ({
     WINDOWS_REMOTE_SESSION_LAUNCH_MODE_OPTIONS: [],
 }));

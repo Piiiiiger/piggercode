@@ -16,7 +16,6 @@ import type { PermissionMode, ModelMode } from '@/sync/domains/permissions/permi
 import { findModelOptionForEffectiveModelId, getModelOptionsForSession, type ModelOption, type SessionModelOptionsContext } from '@/sync/domains/models/modelOptions';
 import { describeEffectiveModelMode } from '@/sync/domains/models/describeEffectiveModelMode';
 import { Modal } from '@/modal';
-import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 import { SyncPerformanceReactProfiler } from '@/components/ui/performance/SyncPerformanceReactProfiler';
 import {
     getPermissionModeBadgeLabelForAgentType,
@@ -35,19 +34,11 @@ import { resolveComposerSuggestionKind } from '@/components/autocomplete/compose
 import type { ComposerSuggestionKindId } from '@/components/autocomplete/composerSuggestionGrammar';
 import type { OptionPickerProbeState } from '@/components/sessions/pickers/OptionPickerOverlay';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import {
-    useSessionMessagesById,
-    useSessionMessagesReducerState,
-    useSessionMessagesVersion,
-    useSessionTranscriptIds,
-    useSetting,
-} from '@/sync/domains/state/storage';
+import { useSetting } from '@/sync/domains/state/storage';
 import { useUserMessageHistory } from '@/hooks/session/useUserMessageHistory';
-import { Theme } from '@/theme';
 import { t } from '@/text';
 
 import { Metadata } from '@/sync/domains/state/storageTypes';
-import { getProfileEnvironmentVariables, type AIBackendProfile } from '@/sync/domains/profiles/profileCompatibility';
 import { DEFAULT_AGENT_ID, getAgentBehavior, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
@@ -99,7 +90,6 @@ import { resolveAgentInputCommandMenuAnchor } from './commandMenu/resolveAgentIn
 import { useTextInputCaretRect } from '@/hooks/ui/textInputCaretRect';
 import { createBackdropNativeStyle, createBackdropWebStyle } from '@/components/ui/overlays/createBackdropLayerStyle';
 import type { PermissionModePickerStyles } from './components/permissionModePickerStyles';
-import { AgentInputAttentionRequests } from './components/AgentInputPermissionRequests';
 import { AgentInputSubmitButton } from './components/AgentInputSubmitButton';
 import {
     DEFAULT_OPTION_CHIP_CYCLE_MAX_OPTIONS,
@@ -124,14 +114,10 @@ import {
 import type { PendingPermissionRequest } from '@/utils/sessions/sessionUtils';
 import type { OpenApprovalArtifactForSession } from '@/sync/domains/artifacts/approvalArtifacts';
 import { Text } from '@/components/ui/text/Text';
-import type { PermissionToolCallMessageLocation } from '@/utils/sessions/permissions/permissionToolCallLocationTypes';
-import { resolvePermissionToolCallLocations } from '@/utils/sessions/permissions/resolvePermissionToolCallLocations';
-import { resolveApprovalToolCallLocations } from '@/utils/sessions/approvals/resolveApprovalToolCallLocations';
 import {
     resolvePermissionPromptSurface,
     shouldShowGenericPermissionPromptForRequest,
 } from '@/utils/sessions/permissions/permissionPromptPolicy';
-import { buildSessionMessageRouteId } from '@/sync/domains/messages/messageRouteIds';
 import { normalizeNodeForView } from '@/components/ui/rendering/normalizeNodeForView';
 import { WebDropTargetView } from '@/components/sessions/files/repositoryTree/WebDropTargetView';
 import { useWebFileDropZone } from '@/hooks/ui/useWebFileDropZone';
@@ -200,7 +186,6 @@ const AGENT_INPUT_PANEL_PADDING_BOTTOM = 8;
 const AGENT_INPUT_PANEL_RADIUS = COMPOSER_SURFACE_RADIUS;
 const AGENT_INPUT_PANEL_VERTICAL_CHROME_HEIGHT = AGENT_INPUT_PANEL_PADDING_TOP + AGENT_INPUT_PANEL_PADDING_BOTTOM;
 const AGENT_INPUT_VARIABLE_SECTION_CONTENT_PADDING_BOTTOM = 4;
-const EMPTY_PERMISSION_LOCATIONS_BY_ID = new Map<string, PermissionToolCallMessageLocation | null>();
 const AGENT_INPUT_TEST_IDS = {
     sessionInput: 'session-composer-input',
     sessionSend: 'session-composer-send',
@@ -425,83 +410,6 @@ interface AgentInputProps {
     approvalRequests?: ReadonlyArray<OpenApprovalArtifactForSession>;
     canApprovePermissions?: boolean;
     permissionDisabledReason?: 'public' | 'readOnly' | 'notGranted' | 'inactive';
-}
-
-function AgentInputAttentionRequestsWithLocations(
-    props: Omit<React.ComponentProps<typeof AgentInputAttentionRequests>, 'permissionLocationsById' | 'approvalLocationsByArtifactId'>
-) {
-    const { ids: committedMessageIdsOldestFirst } = useSessionTranscriptIds(props.sessionId);
-    const committedMessagesById = useSessionMessagesById(props.sessionId);
-    const committedMessagesReducerState = useSessionMessagesReducerState(props.sessionId);
-    const permissionLocationVersion = useSessionMessagesVersion(props.sessionId, props.permissionRequests.length > 0);
-    const approvalLocationVersion = useSessionMessagesVersion(props.sessionId, (props.approvalRequests?.length ?? 0) > 0);
-
-    const permissionLocationsById = React.useMemo(() => {
-        if (props.permissionRequests.length === 0) {
-            return EMPTY_PERMISSION_LOCATIONS_BY_ID;
-        }
-
-        const ids = props.permissionRequests.map((request) => request.id);
-        return new Map(
-            resolvePermissionToolCallLocations({
-                permissionIds: ids,
-                messageIdsOldestFirst: committedMessageIdsOldestFirst,
-                messagesById: committedMessagesById,
-                resolveRouteMessageId: (messageId, _message) =>
-                    buildSessionMessageRouteId({
-                        messageId,
-                        messagesById: committedMessagesById,
-                        reducerState: committedMessagesReducerState,
-                    }),
-            }),
-        );
-    }, [
-        committedMessageIdsOldestFirst,
-        committedMessagesById,
-        committedMessagesReducerState,
-        permissionLocationVersion,
-        props.permissionRequests,
-    ]);
-
-    const approvalLocationsByArtifactId = React.useMemo(() => {
-        const approvalRequests = props.approvalRequests ?? [];
-        if (approvalRequests.length === 0) {
-            return EMPTY_PERMISSION_LOCATIONS_BY_ID;
-        }
-
-        return new Map(
-            resolveApprovalToolCallLocations({
-                approvals: approvalRequests.map((entry) => ({
-                    artifactId: entry.artifact.id,
-                    approval: entry.approval,
-                })),
-                sessionId: props.sessionId,
-                messageIdsOldestFirst: committedMessageIdsOldestFirst,
-                messagesById: committedMessagesById,
-                resolveRouteMessageId: (messageId, _message) =>
-                    buildSessionMessageRouteId({
-                        messageId,
-                        messagesById: committedMessagesById,
-                        reducerState: committedMessagesReducerState,
-                    }),
-            }),
-        );
-    }, [
-        approvalLocationVersion,
-        committedMessageIdsOldestFirst,
-        committedMessagesById,
-        committedMessagesReducerState,
-        props.approvalRequests,
-        props.sessionId,
-    ]);
-
-    return (
-        <AgentInputAttentionRequests
-            {...props}
-            permissionLocationsById={permissionLocationsById}
-            approvalLocationsByArtifactId={approvalLocationsByArtifactId}
-        />
-    );
 }
 
 type AgentInputHiddenUsageOverflowProps = Readonly<{
@@ -2950,61 +2858,6 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
         </View>
     );
 
-    const renderComposerAttentionRequests = () => (
-        props.sessionId && hasComposerAttentionRequests ? (
-            <View
-                testID="agentInput.permissionRequests.fixed"
-                onLayout={(event) => {
-                    updateLayoutHeight(setComposerAttentionHeightPx, event.nativeEvent.layout.height);
-                }}
-            >
-                {composerPermissionRequests.length > 0 || pendingApprovalRequests.length > 0 ? (
-                    <AgentInputAttentionRequestsWithLocations
-                        sessionId={props.sessionId}
-                        permissionRequests={composerPermissionRequests}
-                        approvalRequests={pendingApprovalRequests}
-                        metadata={props.metadata || null}
-                        canApprovePermissions={canApprovePermissions}
-                        disabledReason={props.permissionDisabledReason}
-                        maxHeightPx={permissionRequestsMaxHeightPx}
-                        onContentSizeChange={(_w, h) => {
-                            permissionRequestsFades.onContentSizeChange?.(_w, h);
-                        }}
-                        onLayout={(e) => {
-                            permissionRequestsFades.onViewportLayout?.(e);
-                        }}
-                        onScroll={(e) => {
-                            permissionRequestsFades.onScroll?.(e);
-                        }}
-                        fadeVisibility={permissionRequestsFades.visibility}
-                    />
-                ) : (
-                    <AgentInputAttentionRequests
-                        sessionId={props.sessionId}
-                        permissionRequests={composerPermissionRequests}
-                        approvalRequests={pendingApprovalRequests}
-                        permissionLocationsById={EMPTY_PERMISSION_LOCATIONS_BY_ID}
-                        approvalLocationsByArtifactId={EMPTY_PERMISSION_LOCATIONS_BY_ID}
-                        metadata={props.metadata || null}
-                        canApprovePermissions={canApprovePermissions}
-                        disabledReason={props.permissionDisabledReason}
-                        maxHeightPx={permissionRequestsMaxHeightPx}
-                        onContentSizeChange={(_w, h) => {
-                            permissionRequestsFades.onContentSizeChange?.(_w, h);
-                        }}
-                        onLayout={(e) => {
-                            permissionRequestsFades.onViewportLayout?.(e);
-                        }}
-                        onScroll={(e) => {
-                            permissionRequestsFades.onScroll?.(e);
-                        }}
-                        fadeVisibility={permissionRequestsFades.visibility}
-                    />
-                )}
-            </View>
-        ) : null
-    );
-
     const renderVariableContentBeforeInput = () => {
         if (!hasVariableContentBeforeInput) return null;
 
@@ -3423,7 +3276,6 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                     ) : null}
                     {Platform.OS === 'web' ? (
                         <>
-                            {renderComposerAttentionRequests()}
                             <ScrollView
                                 style={[
                                     styles.nativeKeyboardVariableSection,
@@ -3444,7 +3296,6 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                         </>
                     ) : (
                         <View style={styles.nativeKeyboardPanelContent}>
-                            {renderComposerAttentionRequests()}
                             <View
                                 style={[
                                     styles.nativeKeyboardVariableSection,

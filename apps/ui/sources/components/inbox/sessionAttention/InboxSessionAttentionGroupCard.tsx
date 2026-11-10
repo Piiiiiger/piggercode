@@ -5,8 +5,6 @@ import { StyleSheet } from 'react-native-unistyles';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { PendingPermissionRequest } from '@/utils/sessions/sessionUtils';
 
-import { PermissionPromptCard } from '@/components/tools/shell/permissions/PermissionPromptCard';
-import { UserActionPromptCard } from '@/components/tools/shell/userActions/UserActionPromptCard';
 import { deriveTranscriptInteractionFromSession } from '@/utils/sessions/deriveTranscriptInteraction';
 import { getSessionName } from '@/utils/sessions/sessionUtils';
 import { InboxSessionAttentionHeader } from './InboxSessionAttentionHeader';
@@ -50,42 +48,12 @@ export const InboxSessionAttentionGroupCard = React.memo(function InboxSessionAt
                 onOpenSession={props.onOpenSession}
             />
 
-            <View style={styles.items}>
-                {props.permissionRequests.map((request) => (
-                    <PermissionPromptCard
-                        key={request.id}
-                        request={request}
-                        location={null}
-                        sessionId={props.session.id}
-                        metadata={props.session.metadata}
-                        canApprovePermissions={transcriptInteraction.canApprovePermissions}
-                        disabledReason={transcriptInteraction.permissionDisabledReason}
-                    />
-                ))}
-
-                {props.userActionRequests.map((request) => (
-                    <UserActionPromptCard
-                        key={request.id}
-                        request={request}
-                        location={null}
-                        sessionId={props.session.id}
-                        metadata={props.session.metadata}
-                        canApprovePermissions={transcriptInteraction.canApprovePermissions}
-                        disabledReason={transcriptInteraction.permissionDisabledReason}
-                    />
-                ))}
-            </View>
             {props.showDivider ? <View style={styles.divider} /> : null}
         </View>
     );
 });
 
 const styles = StyleSheet.create((theme) => ({
-    items: {
-        gap: 12,
-        paddingHorizontal: 16,
-        paddingBottom: 16,
-    },
     divider: {
         height: 1,
         marginLeft: 16,

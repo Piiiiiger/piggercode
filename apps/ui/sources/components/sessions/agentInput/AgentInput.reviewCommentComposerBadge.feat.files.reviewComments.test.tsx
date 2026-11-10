@@ -94,10 +94,6 @@ vi.mock('expo-linear-gradient', () => ({
     LinearGradient: 'LinearGradient',
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-    PermissionFooter: () => null,
-}));
-
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: () => false,
 }));

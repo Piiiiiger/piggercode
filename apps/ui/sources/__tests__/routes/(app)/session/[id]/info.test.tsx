@@ -45,8 +45,6 @@ const sessionDeleteSpy = vi.fn(async () => ({ success: true }));
 const modalAlertSpy = vi.fn();
 const modalConfirmSpy = vi.fn(async () => true);
 const modalPromptSpy = vi.fn(async () => 'urgent, review');
-const createDefaultActionExecutorSpy = vi.fn<(options: unknown) => unknown>();
-const completeSessionForkNavigationSpy = vi.fn<(params: unknown) => Promise<void>>(async () => undefined);
 const setPinnedSessionKeysV1Spy = vi.fn();
 const setSessionTagsV1Spy = vi.fn();
 const openMoveSheetSpy = vi.fn(async () => null as any);
@@ -65,9 +63,7 @@ let sessionTagsV1: unknown = null;
 let sessionFoldersV1: unknown = null;
 let sessionOrganizationProjection: any = null;
 let resolvedServerId = 'server-1';
-let sessionHandoffFeatureEnabled = false;
 let sessionFoldersFeatureEnabled = false;
-let automationsEnabled = false;
 let serverFeaturesSnapshot: any = {
     status: 'ready',
     features: {
@@ -278,14 +274,8 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
     };
 });
 vi.mock('@/hooks/session/useSessionSharingSupport', () => ({ useSessionSharingSupport: () => false }));
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: automationsEnabled }),
-}));
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: (featureId: string) => {
-        if (featureId === 'sessions.handoff') {
-            return sessionHandoffFeatureEnabled;
-        }
         if (featureId === 'sessions.folders') {
             return sessionFoldersFeatureEnabled;
         }
@@ -310,15 +300,6 @@ vi.mock('@/sync/ops/sessionOrganization', () => ({
     setSessionTagLabels: sessionOrganizationOps.setSessionTagAssignments,
     setSessionFolderAssignment: sessionOrganizationOps.setSessionFolderAssignment,
     sessionSetAttentionStandingWithServerScope: sessionOrganizationOps.sessionSetAttentionStandingWithServerScope,
-}));
-vi.mock('@/hooks/server/useSessionExecutionRunsSupported', () => ({
-    useSessionExecutionRunsSupported: (sessionId: string) => useSessionExecutionRunsSupportedSpy(sessionId),
-}));
-vi.mock('@/sync/ops/actions/defaultActionExecutor', () => ({
-    createDefaultActionExecutor: (options: unknown) => createDefaultActionExecutorSpy(options),
-}));
-vi.mock('@/components/sessions/transcript/forkContext/completeSessionForkNavigation', () => ({
-    completeSessionForkNavigation: (params: unknown) => completeSessionForkNavigationSpy(params),
 }));
 vi.mock(
     '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache',
@@ -360,21 +341,6 @@ vi.mock('@/sync/domains/features/featureDecisionRuntime', () => ({
     useServerFeaturesSnapshotForServerId: () => serverFeaturesSnapshot,
 }));
 vi.mock('@/sync/domains/settings/actionsSettings', () => ({ isActionEnabledInState: () => true }));
-vi.mock('@/sync/domains/sessionFork/forkUiSupport', () => ({ canForkConversation: () => true }));
-vi.mock('@/components/sessions/fork/openSessionForkStrategyFlow', () => ({ openSessionForkStrategyFlow: vi.fn() }));
-vi.mock('@/sync/domains/sessionHandoff/handoffUiSupport', () => ({ canHandoffConversation: () => true }));
-vi.mock('@/sync/domains/sessionHandoff/runSessionHandoffPickerFlow', () => ({ runSessionHandoffPickerFlow: vi.fn() }));
-vi.mock('@piggercode/protocol', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@piggercode/protocol')>();
-    return {
-        ...actual,
-        getActionSpec: () => ({
-            id: 'session.handoff',
-            title: 'Hand off session',
-            description: 'Move the current session',
-        }),
-    };
-});
 vi.mock('@piggercode/agents', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@piggercode/agents')>();
     return {
@@ -448,8 +414,6 @@ describe('/session/[id]/info', () => {
         modalConfirmSpy.mockImplementation(async () => true);
         modalPromptSpy.mockClear();
         modalPromptSpy.mockResolvedValue('urgent, review');
-        createDefaultActionExecutorSpy.mockClear();
-        completeSessionForkNavigationSpy.mockClear();
         setPinnedSessionKeysV1Spy.mockClear();
         setSessionTagsV1Spy.mockClear();
         openMoveSheetSpy.mockClear();
@@ -478,9 +442,7 @@ describe('/session/[id]/info', () => {
         sessionTagsV1 = null;
         sessionFoldersV1 = null;
         resetSessionOrganizationProjection();
-        sessionHandoffFeatureEnabled = false;
         sessionFoldersFeatureEnabled = false;
-        automationsEnabled = false;
         serverFeaturesSnapshot = {
             status: 'ready',
             features: {
@@ -520,7 +482,6 @@ describe('/session/[id]/info', () => {
         vi.clearAllMocks();
         useHappyActionMock.mockReset();
         useHappyActionMock.mockImplementation((fn: any) => [false, fn] as const);
-        createDefaultActionExecutorSpy.mockReturnValue({});
     });
 
     afterEach(() => {
@@ -609,33 +570,6 @@ describe('/session/[id]/info', () => {
         mockSessionId = ['session-2 '] as any;
         await renderInfoScreen();
         expect(useSessionSpy).toHaveBeenCalledWith('session-2');
-    });
-
-    it('keeps scoped route helpers stable when only volatile session fields change', async () => {
-        mockServerId = 'server-b';
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: true,
-            accessLevel: null,
-            createdAt: 100,
-            updatedAt: 200,
-            seq: 1,
-            metadata: {},
-        };
-
-        const screen = await renderScreen(<Screen />);
-        expect(createDefaultActionExecutorSpy).toHaveBeenCalledTimes(1);
-
-        mockSession = {
-            ...mockSession,
-            updatedAt: 300,
-            seq: 2,
-            thinkingAt: 301,
-        };
-
-        await screen.update(<Screen />);
-
-        expect(createDefaultActionExecutorSpy).toHaveBeenCalledTimes(1);
     });
 
     it('derives status from the route session without duplicate store subscriptions', async () => {
@@ -742,313 +676,6 @@ describe('/session/[id]/info', () => {
         await screen.update(<Screen />);
 
         expect(itemListRenderSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not subscribe to execution-run session signals while the runs feature is disabled', async () => {
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: true,
-            accessLevel: null,
-            createdAt: 100,
-            updatedAt: 200,
-            seq: 1,
-            metadata: {},
-        };
-
-        await renderInfoScreen();
-
-        expect(useSessionExecutionRunsSupportedSpy).not.toHaveBeenCalled();
-    });
-
-    it('routes forked child session opens through the shared fork completion helper with scoped hrefs', async () => {
-        mockServerId = 'server-b';
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {},
-        };
-
-        await renderInfoScreen();
-
-        const executorOptions = createDefaultActionExecutorSpy.mock.calls[0]?.[0] as any;
-        expect(executorOptions?.openSession).toEqual(expect.any(Function));
-
-        await act(async () => { await executorOptions.openSession('child-session'); });
-
-        expect(completeSessionForkNavigationSpy).toHaveBeenCalledWith({
-            childSessionId: 'child-session',
-            parentSessionId: 'session-1234567890abcdef',
-            serverId: 'server-b',
-            navigate: expect.any(Function),
-        });
-
-        const helperParams = completeSessionForkNavigationSpy.mock.calls[0]?.[0] as any;
-        await act(async () => { helperParams.navigate('next-child'); });
-        expect(routerNavigateSpy).toHaveBeenCalledWith('/session/next-child?serverId=server-b', expect.any(Object));
-    });
-
-    it('fails closed and hides the handoff quick action when direct peer truth is runtime-unknown and server-routed fallback would make the UI untruthful', async () => {
-        sessionHandoffFeatureEnabled = true;
-        serverFeaturesSnapshot = {
-            status: 'ready',
-            features: {
-                features: {
-                    sessions: {
-                        enabled: true,
-                        handoff: {
-                            enabled: true,
-                        },
-                    },
-                    machines: {
-                        enabled: true,
-                        transfer: {
-                            enabled: true,
-                            directPeer: {
-                                enabled: true,
-                            },
-                            serverRouted: {
-                                enabled: true,
-                            },
-                        },
-                    },
-                },
-                capabilities: {},
-            },
-        };
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {
-                machineId: 'machine_source',
-                flavor: 'claude',
-                claudeSessionId: 'claude-session-1',
-            },
-        };
-
-        const screen = await renderInfoScreen();
-        const handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(0);
-    });
-
-    it('fails closed and hides the handoff quick action when the selected server only exposes direct-peer handoff transport', async () => {
-        sessionHandoffFeatureEnabled = true;
-        serverFeaturesSnapshot = {
-            status: 'ready',
-            features: {
-                features: {
-                    sessions: {
-                        enabled: true,
-                        handoff: {
-                            enabled: true,
-                        },
-                    },
-                    machines: {
-                        enabled: true,
-                        transfer: {
-                            enabled: true,
-                            directPeer: {
-                                enabled: true,
-                            },
-                            serverRouted: {
-                                enabled: false,
-                            },
-                        },
-                    },
-                },
-                capabilities: {},
-            },
-        };
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {
-                machineId: 'machine_source',
-                flavor: 'claude',
-                claudeSessionId: 'claude-session-1',
-            },
-        };
-
-        const screen = await renderInfoScreen();
-        const handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(0);
-    });
-
-    it('shows the handoff quick action when server-routed transfer is the available transport', async () => {
-        sessionHandoffFeatureEnabled = true;
-        serverFeaturesSnapshot = {
-            status: 'ready',
-            features: {
-                features: {
-                    sessions: {
-                        enabled: true,
-                        handoff: {
-                            enabled: true,
-                        },
-                    },
-                    machines: {
-                        enabled: true,
-                        transfer: {
-                            enabled: true,
-                            directPeer: {
-                                enabled: false,
-                            },
-                            serverRouted: {
-                                enabled: true,
-                            },
-                        },
-                    },
-                },
-                capabilities: {},
-            },
-        };
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {
-                machineId: 'machine_source',
-                flavor: 'claude',
-                claudeSessionId: 'claude-session-1',
-            },
-        };
-
-        const screen = await renderInfoScreen();
-        const handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(1);
-    });
-
-    it('reacts when machine-rpc direct-peer viability becomes available for the reachable machine target after metadata goes stale', async () => {
-        sessionHandoffFeatureEnabled = true;
-        resolvedServerId = 'server_reactive_info';
-        resolveServerIdForSessionIdFromLocalCacheSpy.mockReturnValue('server_reactive_info');
-        readMachineTargetForSessionSpy.mockReturnValue({
-            machineId: 'machine_rebound',
-            basePath: '/workspace/repo',
-        });
-        serverFeaturesSnapshot = {
-            status: 'ready',
-            features: {
-                features: {
-                    sessions: {
-                        enabled: true,
-                        handoff: {
-                            enabled: true,
-                        },
-                    },
-                    machines: {
-                        enabled: true,
-                        transfer: {
-                            enabled: true,
-                            directPeer: {
-                                enabled: true,
-                            },
-                            serverRouted: {
-                                enabled: false,
-                            },
-                        },
-                    },
-                },
-                capabilities: {},
-            },
-        };
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {
-                machineId: 'machine_source',
-                flavor: 'claude',
-                claudeSessionId: 'claude-session-1',
-            },
-        };
-
-        const screen = await renderInfoScreen();
-        let handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(0);
-
-        const { recordCachedMachineRpcDirectRouteViable } = await import('@/sync/domains/transfers/runtime/transferRouteCache');
-        await act(async () => {
-            recordCachedMachineRpcDirectRouteViable({
-                serverId: 'server_reactive_info',
-                remoteMachineId: 'machine_rebound',
-            });
-        });
-        await flushHookEffects({ cycles: 10 });
-
-        handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(1);
-    });
-
-    it('falls back to the preferred session server when the local server cache misses and still surfaces handoff after a scoped reachability probe succeeds', async () => {
-        sessionHandoffFeatureEnabled = true;
-        resolvedServerId = 'server_preferred_info';
-        resolveServerIdForSessionIdFromLocalCacheSpy.mockReturnValue(null);
-        resolvePreferredServerIdForSessionIdSpy.mockReturnValue('server_preferred_info');
-        usePreferredServerIdForSessionSpy.mockReturnValue('server_preferred_info');
-        machineRpcWithServerScopeSpy.mockResolvedValue({ ok: true });
-        serverFeaturesSnapshot = {
-            status: 'ready',
-            features: {
-                features: {
-                    sessions: {
-                        enabled: true,
-                        handoff: {
-                            enabled: true,
-                        },
-                    },
-                    machines: {
-                        enabled: true,
-                        transfer: {
-                            enabled: true,
-                            directPeer: {
-                                enabled: true,
-                            },
-                            serverRouted: {
-                                enabled: false,
-                            },
-                        },
-                    },
-                },
-                capabilities: {},
-            },
-        };
-        mockSession = {
-            id: 'session-1234567890abcdef',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {
-                machineId: 'machine_source',
-                flavor: 'claude',
-                claudeSessionId: 'claude-session-1',
-            },
-        };
-
-        const screen = await renderInfoScreen();
-        await flushHookEffects({ cycles: 10 });
-
-        const handoffItems = screen.findAllByType('Item' as any).filter((node: any) => node.props?.title === 'Hand off session');
-        expect(handoffItems).toHaveLength(1);
     });
 
     it('shows the provider resume surfaces when the vendor resume id only exists in agentRuntimeDescriptorV1', async () => {
@@ -1163,6 +790,7 @@ describe('/session/[id]/info', () => {
     });
 
     it('opens a new session seeded from the current session configuration', async () => {
+        mockResolveAgentIdFromFlavor.mockReturnValue('codex');
         mockServerId = 'server-b';
         usePreferredServerIdForSessionSpy.mockImplementation(() => 'server-b');
         readMachineTargetForSessionSpy.mockReturnValue({
@@ -1288,25 +916,6 @@ describe('/session/[id]/info', () => {
         expect(screen.findByTestId('sessionInfo.viewSessionLogTitle')).toBeTruthy();
         screen.pressByTestId('sessionInfo.viewSessionLogTitle');
         expect(routerPushSpy).toHaveBeenCalledWith('/session/session-1/log?serverId=server-b');
-    });
-
-    it('routes session automations through the current route scope', async () => {
-        mockServerId = 'server-b';
-        automationsEnabled = true;
-        mockSession = {
-            id: 'session-1',
-            active: false,
-            accessLevel: null,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-            seq: 1,
-            metadata: {},
-        };
-
-        const screen = await renderInfoScreen();
-        screen.pressByTestId('sessionInfo.automationsTitle');
-
-        expect(routerPushSpy).toHaveBeenCalledWith('/session/session-1/automations?serverId=server-b');
     });
 
     it('forwards selected server scope when pressing mark-unread quick action', async () => {

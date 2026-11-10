@@ -41,64 +41,6 @@ vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', (
   machineRpcWithServerScope: vi.fn(),
 }));
 
-vi.mock('@/voice/activity/voiceActivityController', () => ({
-  voiceActivityController: { clearSession: vi.fn() },
-}));
-
-vi.mock('@/voice/session/voiceSession', () => ({
-  voiceSessionManager: { stopSession: vi.fn() },
-}));
-
-vi.mock('@/voice/tools/actionImpl/openSession', () => ({
-  openSessionForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/spawnSession', () => ({
-  spawnSessionForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/spawnSessionPicker', () => ({
-  spawnSessionWithPickerForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/sessionTargets', () => ({
-  setPrimaryActionSessionId: vi.fn(),
-  setTrackedSessionIds: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/sessionList', () => ({
-  listSessionsForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/sessionActivity', () => ({
-  getSessionActivityForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/sessionRecentMessages', () => ({
-  getSessionRecentMessagesForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/pathsListRecent', () => ({
-  listRecentPathsForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/machinesList', () => ({
-  listMachinesForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/serversList', () => ({
-  listServersForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/reviewEnginesList', () => ({
-  listReviewEnginesForVoiceTool: vi.fn(),
-}));
-
-vi.mock('@/voice/tools/actionImpl/agentCatalogList', () => ({
-  listAgentBackendsForVoiceTool,
-  listAgentModelsForVoiceTool,
-}));
-
 vi.mock('@/sync/sync', () => ({
   sync: {
     patchSessionMetadataWithRetry,
@@ -187,34 +129,6 @@ describe('createDefaultActionExecutor plan mode integration', () => {
       method: SESSION_RPC_METHODS.SESSION_TERMINAL_COMPOSER_CLEAR,
       payload: { sessionId: 's1', expectedStateAtMs: 42 },
     });
-  });
-
-  it('forwards limit to agents.backends.list voice-tool routing', async () => {
-    const { createDefaultActionExecutor } = await import('./defaultActionExecutor');
-
-    const executor = createDefaultActionExecutor();
-    const result = await executor.execute(
-      'agents.backends.list',
-      { includeDisabled: true, limit: 2 },
-      { defaultSessionId: 's1', surface: 'voice_tool', placement: 'voice_panel' },
-    );
-
-    expect(result.ok).toBe(true);
-    expect(listAgentBackendsForVoiceTool).toHaveBeenCalledWith({ includeDisabled: true, limit: 2 });
-  });
-
-  it('forwards limit to agents.models.list voice-tool routing', async () => {
-    const { createDefaultActionExecutor } = await import('./defaultActionExecutor');
-
-    const executor = createDefaultActionExecutor();
-    const result = await executor.execute(
-      'agents.models.list',
-      { agentId: 'claude', machineId: 'm1', limit: 3 },
-      { defaultSessionId: 's1', surface: 'voice_tool', placement: 'voice_panel' },
-    );
-
-    expect(result.ok).toBe(true);
-    expect(listAgentModelsForVoiceTool).toHaveBeenCalledWith({ agentId: 'claude', machineId: 'm1', limit: 3 });
   });
 
   it('does not publish a session-mode override when starting a planner subagent run', async () => {

@@ -1,7 +1,6 @@
 import type { ApiEphemeralActivityUpdate, ApiMessage, ApiUpdateContainer } from '@/sync/api/types/apiTypes';
 import type { Encryption } from '@/sync/encryption/encryption';
 import type { NormalizedMessage } from '@/sync/typesRaw';
-import type { EphemeralUpdate } from '@piggercode/protocol/updates';
 import { isPlainMachineDataKeyMarker, type ActionOperationRevisionEphemeralV1 } from '@piggercode/protocol';
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
 import type { Machine } from '@/sync/domains/state/storageTypes';
@@ -18,8 +17,6 @@ import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetr
 import { scmStatusSync } from '@/scm/scmStatusSync';
 import { ingestWorkspaceMutationMessages } from '@/scm/refresh/workspaceMutationIngestionRuntime';
 import { deliverHiddenSessionScmMutationSignal } from '@/sync/engine/sessions/hiddenSessionScmMutationSignal';
-import { voiceHooks } from '@/voice/context/voiceHooks';
-import { reportNewAgentRequestsFromSessionTransition } from '@/voice/context/reportNewAgentRequestsFromSessionTransition';
 import { deriveNewAgentRequests } from '@/sync/domains/permissions/deriveNewAgentRequests';
 import { notifyActivityAgentRequest } from '@/activity/notifications/runtime/activityLocalNotificationBus';
 import { didControlReturnToMobile } from '@/sync/domains/session/control/controlledByUserTransitions';
@@ -1942,12 +1939,6 @@ export async function handleUpdateContainer(params: {
                     toolArgs: nextRequest.toolArgs,
                 });
             }
-
-            // Check for new permission requests and notify voice assistant
-            reportNewAgentRequestsFromSessionTransition(
-                { id: updateData.body.id, agentState: currentSession.agentState ?? null } as Session,
-                { id: updateData.body.id, agentState: agentState ?? null } as Session,
-            );
 
             // Re-fetch messages when control returns to mobile (local -> remote mode switch)
             // This catches up on any messages that were exchanged while desktop had control

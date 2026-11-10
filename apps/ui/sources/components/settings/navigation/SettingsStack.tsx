@@ -4,12 +4,11 @@ import { Stack } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
 
 import { createAppStackScreenOptions } from '@/components/navigation/createAppStackScreenOptions';
-import { getSettingsStackScreenDefinitions, type SettingsStackScope } from './settingsRouteRegistry';
+import { getSettingsStackScreenDefinitions } from './settingsRouteRegistry';
 import { t } from '@/text';
 import { isRunningOnMac } from '@/utils/platform/platform';
 
-export function SettingsStack({ scope = 'settings', screenLayout }: Readonly<{
-    scope?: SettingsStackScope;
+export function SettingsStack({ screenLayout }: Readonly<{
     screenLayout?: React.ComponentProps<typeof Stack>['screenLayout'];
 }>) {
     const { theme } = useUnistyles();
@@ -19,7 +18,7 @@ export function SettingsStack({ scope = 'settings', screenLayout }: Readonly<{
         shouldUseCustomHeader,
         theme,
     }), [shouldUseCustomHeader, theme]);
-    const screenDefinitions = React.useMemo(() => getSettingsStackScreenDefinitions(t, scope), [scope]);
+    const screenDefinitions = React.useMemo(() => getSettingsStackScreenDefinitions(t), []);
 
     return (
         <Stack screenOptions={screenOptions} screenLayout={screenLayout}>

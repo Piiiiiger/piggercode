@@ -183,8 +183,17 @@ vi.mock('@/auth/context/AuthContext', () => ({
     useAuth: () => ({ credentials: authCredentials }),
 }));
 
-vi.mock('@/components/sessions/transcript/AgentContentView', () => ({
-    AgentContentView: (props: any) => React.createElement('AgentContentView', props, props.input ?? null),
+vi.mock('@/components/sessions/shell/SessionHeaderView', () => ({
+    SessionHeaderView: () => null,
+}));
+// The terminal itself attaches through the machine; this suite is about the panes around it.
+vi.mock('@/components/sessions/nativeTerminal/NativeTerminalSessionContent', () => ({
+    NativeTerminalSessionContent: (props: any) => React.createElement('NativeTerminalSessionContent', props),
+}));
+vi.mock('@/components/sessions/panes/url/useSessionPaneUrlSync', () => ({
+    useSessionPaneUrlSync: (input: any) => {
+        lastUrlSyncEnabled = Boolean(input?.enabled);
+    },
 }));
 vi.mock('@/components/appShell/panes/AppPaneScopeHost', () => ({
     AppPaneScopeHost: (props: any) => React.createElement('AppPaneScopeHost', props, props.main ?? null),
@@ -206,31 +215,11 @@ vi.mock('@/components/appShell/panes/hooks/useAppPaneScope', () => ({
         scopeState: rightScopeState,
     }),
 }));
-vi.mock('@/components/sessions/panes/url/useSessionPaneUrlSync', () => ({
-    useSessionPaneUrlSync: (input: any) => {
-        lastUrlSyncEnabled = Boolean(input?.enabled);
-    },
-}));
-vi.mock('@/components/sessions/transcript/ChatHeaderView', () => ({
-    ChatHeaderView: () => null,
-}));
-vi.mock('@/components/sessions/transcript/ChatList', () => ({
-    ChatList: () => React.createElement('ChatList'),
-}));
-vi.mock('@/components/sessions/pending/PendingMessagesDragReorderList', () => ({
-    PendingMessagesDragReorderList: () => React.createElement('PendingMessagesDragReorderList'),
-}));
-vi.mock('@/components/ui/empty/EmptyMessages', () => ({
-    EmptyMessages: () => React.createElement('EmptyMessages'),
-}));
 vi.mock('@/components/ui/forms/Deferred', () => ({
     Deferred: (props: any) => React.createElement(React.Fragment, null, props.children),
 }));
 vi.mock('@/components/sessions/actions/SessionHeaderActionMenu', () => ({
     SessionHeaderActionMenu: () => null,
-}));
-vi.mock('@/components/voice/surface/VoiceSurface', () => ({
-    VoiceSurface: () => null,
 }));
 vi.mock('@/components/sessions/attachments/AttachmentFilePicker', () => ({
     AttachmentFilePicker: () => null,
@@ -245,12 +234,6 @@ vi.mock('@/utils/platform/responsive', () => ({
     useIsLandscape: () => false,
     useIsTablet: () => true,
 }));
-vi.mock('@/hooks/session/useDraft', () => ({
-    useDraft: () => ({ clearDraft: vi.fn(), setDraftValue: vi.fn() }),
-}));
-vi.mock('@/components/sessions/model/inactiveSessionUi', () => ({
-    getInactiveSessionUiState: () => ({ noticeKind: 'none', inactiveStatusTextKey: null, shouldShowInput: true }),
-}));
 vi.mock('@/components/sessions/model/resolveSessionMachineReachability', () => ({
     resolveSessionMachineReachability: () => true,
 }));
@@ -260,10 +243,6 @@ vi.mock('@/components/sessions/model/useSessionMachineReachability', () => ({
 vi.mock('@/sync/domains/server/serverRuntime', () => ({
     getActiveServerSnapshot: () => ({ serverId: 'server-1' }),
     subscribeActiveServer: () => () => {},
-}));
-vi.mock('@/voice/session/voiceSession', () => ({
-    useVoiceSessionSnapshot: () => ({ status: 'disconnected' }),
-    voiceSessionManager: {},
 }));
 vi.mock('@/sync/sync', () => ({
         sync: {
@@ -300,27 +279,11 @@ vi.mock('@/sync/ops/actions/defaultActionExecutor', () => ({
 vi.mock('@/components/sessions/agentInput', () => ({
     AgentInput: () => null,
 }));
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: false }),
-}));
 vi.mock('@/scm/scmStatusSync', () => ({
     scmStatusSync: { run: async () => {}, invalidateFromAutoRefresh: () => {} },
 }));
-vi.mock('@/sync/ops/actions/sessionActionExecutor', () => ({
-    createSessionActionExecutor: () => ({ execute: vi.fn() }),
-}));
-vi.mock('@/sync/domains/input/slashCommands/resolveSessionComposerSend', () => ({
-    resolveSessionComposerSend: () => ({ kind: 'send', text: '' }),
-}));
-vi.mock('@/sync/domains/permissions/permissionModeApply', () => ({
-    applyPermissionModeSelection: async () => {},
-}));
 vi.mock('@/sync/domains/sessionControl/sessionModeControl', () => ({
     supportsSessionModeOverrides: () => false,
-}));
-vi.mock('@/sync/domains/session/control/localControlSwitch', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/sync/domains/session/control/localControlSwitch')>()),
-    shouldRenderChatTimelineForSession: () => true,
 }));
 vi.mock('@/sync/runtime/time', () => ({
     nowServerMs: () => 0,
@@ -382,6 +345,17 @@ describe('SessionView (right pane auto-open)', () => {
         await screen.unmount();
     });
 
+    it('hosts the terminal inside the session pane host, so the git, files and details panes render beside it', async () => {
+        const screen = await renderSessionView();
+
+        const hosts = screen.tree.root.findAllByType('AppPaneScopeHost' as never);
+        expect(hosts).toHaveLength(1);
+        expect(hosts[0]!.props.scopeId).toBe('session:s1');
+        expect(hosts[0]!.findAllByType('NativeTerminalSessionContent' as never)).toHaveLength(1);
+
+        await screen.unmount();
+    });
+
     it('does not force open right pane when the user previously interacted (activeTabId set)', async () => {
         sessionsRightPaneDefaultOpen = true;
         rightScopeState = {
@@ -422,54 +396,5 @@ describe('SessionView (right pane auto-open)', () => {
         expect(lastUrlSyncEnabled).toBe(false);
 
         await screen.unmount();
-    });
-
-    it('re-fetches pending messages when the session view remounts with a pending queue rendered', async () => {
-        const { PendingMessagesTranscriptBlock } = await import('@/components/sessions/pending/PendingMessagesTranscriptBlock');
-        const { SessionView } = await import('./SessionView');
-        const tree = React.createElement(
-            React.Fragment,
-            null,
-            React.createElement(PendingMessagesTranscriptBlock, {
-                sessionId: 's1',
-                pendingMessages: [
-                    {
-                        id: 'p1',
-                        text: 'pending',
-                        displayText: undefined,
-                        createdAt: 1,
-                        updatedAt: 1,
-                        localId: 'p1',
-                        rawRecord: {},
-                    },
-                ],
-                discardedMessages: [],
-            }),
-            React.createElement(SessionView, { id: 's1' }),
-        );
-        const screen = await renderScreen(tree, {
-            wrapper: AppPaneProviderWrapper,
-        });
-
-        // `SessionView` fetches pending messages via `runAfterInteractionsWithFallback`, which schedules
-        // a `setTimeout(0)` on web. Wait a tick so the side-effect can run deterministically.
-        await new Promise<void>((resolve) => setTimeout(resolve, 0));
-
-        expect(fetchPendingMessagesSpy).toHaveBeenCalledTimes(1);
-        expect(fetchPendingMessagesSpy).toHaveBeenCalledWith('s1');
-
-        await screen.unmount();
-
-        const remountedScreen = await renderScreen(tree, {
-            wrapper: AppPaneProviderWrapper,
-        });
-
-        await new Promise<void>((resolve) => setTimeout(resolve, 0));
-
-        expect(fetchPendingMessagesSpy).toHaveBeenCalledTimes(2);
-        expect(fetchPendingMessagesSpy).toHaveBeenNthCalledWith(1, 's1');
-        expect(fetchPendingMessagesSpy).toHaveBeenNthCalledWith(2, 's1');
-
-        await remountedScreen.unmount();
     });
 });

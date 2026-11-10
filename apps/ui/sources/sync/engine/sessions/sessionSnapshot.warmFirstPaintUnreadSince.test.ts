@@ -18,11 +18,6 @@ import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnap
  * Voice announcements are a genuine side-effect boundary reached by the hydrated
  * apply path; the session-list logic under test runs unchanged beneath it.
  */
-vi.mock('@/voice/context/voiceHooks', () => ({
-    voiceHooks: {
-        onAgentRequest: vi.fn(),
-    },
-}));
 
 vi.mock('@/sync/domains/server/serverRuntime', () => ({
     getActiveServerSnapshot: () => ({

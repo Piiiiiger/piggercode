@@ -7,7 +7,7 @@ import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { Avatar } from '@/components/ui/avatar/Avatar';
-import { storage, useSession, useIsDataReady, useLocalSetting, useSessionOrganizationProjection, useSetting } from '@/sync/domains/state/storage';
+import { useSession, useIsDataReady, useLocalSetting, useSessionOrganizationProjection, useSetting } from '@/sync/domains/state/storage';
 import { getSessionName, useSessionStatus, formatOSPlatform, formatPathRelativeToHome, getSessionAvatarId, type SessionStatus } from '@/utils/sessions/sessionUtils';
 import { Modal } from '@/modal';
 import { useUnistyles } from 'react-native-unistyles';
@@ -31,39 +31,20 @@ import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromFlavor } from '@/agen
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { getAgentVendorResumeId } from '@/agents/runtime/resumeCapabilities';
 import { useSessionSharingSupport } from '@/hooks/session/useSessionSharingSupport';
-import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
-import { useSessionExecutionRunsSupported } from '@/hooks/server/useSessionExecutionRunsSupported';
 import { Text } from '@/components/ui/text/Text';
 import { StatusDot } from '@/components/ui/status/StatusDot';
-import { createDefaultActionExecutor } from '@/sync/ops/actions/defaultActionExecutor';
-import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { usePreferredServerIdForSession } from '@/sync/runtime/orchestration/serverScopedRpc/usePreferredServerIdForSession';
-import { isActionEnabledInState } from '@/sync/domains/settings/actionsSettings';
-import { canForkConversation } from '@/sync/domains/sessionFork/forkUiSupport';
-import { openSessionForkStrategyFlow } from '@/components/sessions/fork/openSessionForkStrategyFlow';
-import { runSessionHandoffPickerFlow } from '@/sync/domains/sessionHandoff/runSessionHandoffPickerFlow';
-import { resolveSessionHandoffSourceMachineId } from '@/sync/domains/sessionHandoff/resolveSessionHandoffSourceMachineId';
-import {
-    resolveSessionHandoffUiAvailability,
-} from '@/sync/domains/sessionHandoff/resolveSessionHandoffUiAvailability';
 import { readDisplayMachineTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { useSessionMachineTarget } from '@/components/sessions/model/useSessionMachineTarget';
-import { getActionSpec } from '@piggercode/protocol';
 import { SessionRetentionNotice } from '@/components/sessions/info/SessionRetentionNotice';
 import { useSessionRouteServerScope, type SessionRouteServerScope } from '@/hooks/session/sessionRouteServerScope';
-import { useServerFeaturesSnapshotForServerId } from '@/sync/domains/features/featureDecisionRuntime';
-import {
-    useSessionHandoffSourceReachability,
-    type SessionHandoffRuntimeAvailability,
-} from '@/sync/domains/sessionHandoff/useSessionHandoffSourceReachability';
 import { safeRouterBack } from '@/utils/navigation/safeRouterBack';
 import { buildNewSessionTempDataFromSessionConfiguration } from '@/components/sessions/authoring/draft/sessionConfigurationSeed';
 import { storeTempData } from '@/utils/sessions/tempDataStore';
 import { resolveNewSessionDraftRouteIdentity } from '@/components/sessions/new/navigation/newSessionDraftRouteIdentity';
 import { buildNewSessionLaunchRouteParams } from '@/components/sessions/new/navigation/newSessionRouteParams';
-import { completeSessionForkNavigation } from '@/components/sessions/transcript/forkContext/completeSessionForkNavigation';
 import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
 import { useSessionAttentionStandingInputs } from '@/hooks/session/useSessionAttentionStandingInputs';
 import { resolveSessionAttentionStanding } from '@/sync/domains/session/organization/attentionStanding';
@@ -278,21 +259,15 @@ function areSessionInfoContentPropsEqual(
     previous: Readonly<{
         session: Session;
         sessionServerId: string | null;
-        sourceMachineIdForHandoff: string | null;
-        runtimeAvailability: SessionHandoffRuntimeAvailability;
         routeScope: SessionRouteServerScope;
     }>,
     next: Readonly<{
         session: Session;
         sessionServerId: string | null;
-        sourceMachineIdForHandoff: string | null;
-        runtimeAvailability: SessionHandoffRuntimeAvailability;
         routeScope: SessionRouteServerScope;
     }>,
 ): boolean {
     return previous.sessionServerId === next.sessionServerId
-        && previous.sourceMachineIdForHandoff === next.sourceMachineIdForHandoff
-        && previous.runtimeAvailability === next.runtimeAvailability
         && previous.routeScope === next.routeScope
         && areSessionInfoStaticFieldsEqual(previous.session, next.session);
 }
@@ -451,39 +426,14 @@ function SessionInfoActivityGroup({
     );
 }
 
-function SessionInfoExecutionRunsAction({
-    sessionId,
-    routeScope,
-    router,
-}: Readonly<{
-    sessionId: string;
-    routeScope: SessionRouteServerScope;
-    router: ReturnType<typeof useRouter>;
-}>) {
-    const { theme } = useUnistyles();
-    const sessionExecutionRunsSupported = useSessionExecutionRunsSupported(sessionId);
-    if (!sessionExecutionRunsSupported) return null;
 
-    return (
-        <Item
-            title={t('runs.title')}
-            subtitle={t('sessionInfo.executionRunsSubtitle')}
-            icon={<Icon name="play" size={29} color={theme.colors.accent.blue} />}
-            onPress={() => router.push(routeScope.buildHref(sessionId, { suffix: '/runs' }))}
-        />
-    );
-}
-
-function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandoff, runtimeAvailability, routeScope }: Readonly<{
+function SessionInfoContent({ session, sessionServerId, routeScope }: Readonly<{
     session: Session;
     sessionServerId: string | null;
-    sourceMachineIdForHandoff: string | null;
-    runtimeAvailability: SessionHandoffRuntimeAvailability;
     routeScope: SessionRouteServerScope;
 }>) {
     const { theme } = useUnistyles();
     const router = useRouter();
-    const navigateToSession = useNavigateToSession();
     const localDevModeEnabled = useLocalSetting('devModeEnabled');
     const devModeEnabled = isSessionDebugInformationEnabled(localDevModeEnabled);
     const sessionName = getSessionName(session);
@@ -491,81 +441,19 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
         subscribeToSession: false,
         subscribeToTranscript: false,
     });
-    const executionRunsEnabled = useFeatureEnabled('execution.runs');
-    const sessionHandoffEnabled = useFeatureEnabled('sessions.handoff');
     const sessionFoldersEnabled = useFeatureEnabled('sessions.folders');
-    // Scoped to THIS Session's server, like the in-Session picker: the child is
-    // created on that server, so an unrelated selected server must not decide
-    // whether this conversation may continue with another Agent.
-    const agentSwitchingEnabled = useFeatureEnabled('sessions.agentSwitching', {
-        scopeKind: 'spawn',
-        serverId: sessionServerId,
-    });
-    const serverSnapshot = useServerFeaturesSnapshotForServerId(sessionServerId, { enabled: Boolean(sessionServerId) });
     const useProfiles = useSetting('useProfiles') === true;
     const profilesSetting = useSetting('profiles');
     const profiles = Array.isArray(profilesSetting) ? profilesSetting : [];
-    const actionsSettingsV1 = useSetting('actionsSettingsV1');
-    const sessionReplayEnabled = useSetting('sessionReplayEnabled') === true;
-    // The four fields the fork request's Replay options are derived from, read
-    // narrowly so this screen does not subscribe to the whole settings object.
-    const sessionReplayMaxSeedChars = useSetting('sessionReplayMaxSeedChars');
-    const sessionReplayStrategy = useSetting('sessionReplayStrategy');
-    const sessionReplaySummaryRunnerV1 = useSetting('sessionReplaySummaryRunnerV1');
     const hideInactiveSessions = useSetting('hideInactiveSessions') === true;
     const { openMoveSheet } = useSessionListMoveSheet();
     const sharingSupported = useSessionSharingSupport();
-    const automationsSupport = useAutomationsSupport();
-    const showAutomations = automationsSupport?.enabled !== false;
     const [expandedRawJsonSection, setExpandedRawJsonSection] = React.useState<RawJsonSectionId | null>(null);
     // Check if CLI version is outdated
     const isCliOutdated = session.metadata?.version && !isVersionSupported(session.metadata.version, MINIMUM_CLI_VERSION);
     const canManageSharing = !session.accessLevel || session.accessLevel === 'admin';
     const agentId = resolveAgentIdFromSessionMetadata(session.metadata) ?? resolveAgentIdFromFlavor(session.metadata?.flavor) ?? DEFAULT_AGENT_ID;
     const core = getAgentCore(agentId);
-    const executor = React.useMemo(
-        () => createDefaultActionExecutor({
-            resolveServerIdForSessionId: resolveServerIdForSessionIdFromLocalCache,
-            openSession: (childSessionId) => completeSessionForkNavigation({
-                childSessionId,
-                parentSessionId: session.id,
-                serverId: routeScope.serverId,
-                navigate: (targetSessionId, options) => {
-                    void navigateToSession(targetSessionId, { serverId: options?.serverId ?? routeScope.serverId });
-                },
-            }),
-        }),
-        [navigateToSession, routeScope, session.id],
-    );
-
-    const forkActionEnabled = React.useMemo(() => {
-        return isActionEnabledInState(
-            storage.getState() as any,
-            'session.fork' as any,
-            { surface: 'ui_button', placement: 'session_info' } as any,
-        );
-    }, [actionsSettingsV1]);
-
-    const forkSupported = React.useMemo(() => {
-        return canForkConversation({ session, replayEnabled: sessionReplayEnabled, agentSwitchingEnabled }) === true;
-    }, [agentSwitchingEnabled, session, sessionReplayEnabled]);
-    const handoffActionSpec = React.useMemo(() => getActionSpec('session.handoff'), []);
-    const handoffActionEnabled = React.useMemo(() => {
-        return isActionEnabledInState(
-            storage.getState() as any,
-            'session.handoff' as any,
-            { surface: 'ui_button', placement: 'session_info' } as any,
-        );
-    }, [actionsSettingsV1]);
-    const handoffAvailability = resolveSessionHandoffUiAvailability({
-        sessionId: session.id,
-        session,
-        sessionHandoffFeatureEnabled: sessionHandoffEnabled,
-        serverSnapshot,
-        runtimeAvailability,
-    });
-    const handoffSupported = handoffAvailability.available;
-
     const vendorResumeLabelKey = core.resume.uiVendorResumeIdLabelKey;
     const vendorResumeCopiedKey = core.resume.uiVendorResumeIdCopiedKey;
     const vendorResumeId = React.useMemo(() => {
@@ -642,7 +530,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
             metadata: session.metadata,
         });
     }, [session.id, session.updatedAt, session.metadata]);
-    const reachableMachineId = reachableMachineTarget?.machineId ?? null;
     const newSessionSeedTarget = reachableMachineTarget
         && (!displayMachineTarget || reachableMachineTarget.machineId === displayMachineTarget.machineId)
         ? reachableMachineTarget
@@ -873,47 +760,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
     const [archivingSession, performArchive] = useHappyAction(handleArchive);
     const archivePending = useSessionArchivePending(session.id, scopedMutationServerId);
 
-    // A launcher only, exactly like the Session header: strategy is chosen
-    // before any fork effect is issued, from every UI entry point.
-    const performFork = useCallback(() => {
-        openSessionForkStrategyFlow({
-            sessionId: session.id,
-            forkSupportSource: session,
-            serverId: sessionServerId ?? null,
-            machineId: reachableMachineId ?? (typeof session.metadata?.machineId === 'string'
-                ? session.metadata.machineId
-                : null),
-            forkPoint: { type: 'latest' },
-            settings: {
-                sessionReplayEnabled,
-                sessionReplayMaxSeedChars,
-                sessionReplayStrategy,
-                sessionReplaySummaryRunnerV1,
-            },
-            replayEnabled: sessionReplayEnabled,
-            executionRunsEnabled: executionRunsEnabled === true,
-            agentSwitchingEnabled,
-            navigateToSession: (childSessionId, options) => {
-                void navigateToSession(childSessionId, { serverId: options?.serverId ?? sessionServerId ?? null });
-            },
-            navigateToNewSession: (route) => {
-                router.push(route as any);
-            },
-        });
-    }, [
-        agentSwitchingEnabled,
-        executionRunsEnabled,
-        reachableMachineId,
-        routeScope,
-        router,
-        session,
-        sessionReplayEnabled,
-        sessionReplayMaxSeedChars,
-        sessionReplayStrategy,
-        sessionReplaySummaryRunnerV1,
-        sessionServerId,
-    ]);
-
     const handleNewSessionSameSetup = useCallback(() => {
         const draftId = resolveNewSessionDraftRouteIdentity({ routeDraftId: undefined }).draftId;
         const dataId = storeTempData(buildNewSessionTempDataFromSessionConfiguration({
@@ -934,19 +780,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
             },
         } as any);
     }, [newSessionSeedDirectory, newSessionSeedMachineId, router, session, sessionServerId]);
-
-    const handleHandoffAction = useCallback(async () => {
-        const res = await runSessionHandoffPickerFlow({
-            execute: executor.execute as any,
-            sessionId: session.id,
-            sourceMachineId: sourceMachineIdForHandoff,
-            serverId: sessionServerId,
-            placement: 'session_info',
-        });
-        if (!res?.ok) return;
-    }, [executor.execute, session.id, sessionServerId, sourceMachineIdForHandoff]);
-
-    const [handingOffSession, performHandoff] = useHappyAction(handleHandoffAction);
 
     const handleArchiveSession = useCallback(async () => {
         await performArchive();
@@ -1078,15 +911,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
                             onPress={handleRenameSession}
                         />
                     )}
-                    {!session.accessLevel && forkActionEnabled && forkSupported && (
-                        <Item
-                            testID="session-info-fork-session"
-                            title={t('sessionInfo.forkSession')}
-                            subtitle={t('sessionInfo.forkSessionSubtitle')}
-                            icon={<Icon name="git-branch" size={29} color={theme.colors.accent.blue} />}
-                            onPress={performFork}
-                        />
-                    )}
                     <Item
                         testID="session-info-new-session-same-setup"
                         title={t('sessionInfo.newSessionSameSetup')}
@@ -1102,15 +926,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
                             copy={sessionDebugInformation.text}
                         />
                     ) : null}
-                    {!session.accessLevel && handoffActionEnabled && handoffSupported && (
-                        <Item
-                            title={handoffActionSpec.title}
-                            subtitle={handoffActionSpec.description}
-                            icon={<Icon name="arrows-left-right" size={24} color={theme.colors.accent.blue} />}
-                            onPress={performHandoff}
-                            loading={handingOffSession}
-                        />
-                    )}
                     <SessionInfoAttentionActionItems
                         sessionId={session.id}
                         scopedMutationServerId={scopedMutationServerId}
@@ -1138,21 +953,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
                             {...moveToFolderInfoItemProps}
                             onPress={performMoveToFolder}
                             loading={movingToFolder}
-                        />
-                    ) : null}
-                    {executionRunsEnabled ? (
-                        <SessionInfoExecutionRunsAction
-                            sessionId={session.id}
-                            routeScope={routeScope}
-                            router={router}
-                        />
-                    ) : null}
-                    {showAutomations ? (
-                        <Item
-                            title={t('sessionInfo.automationsTitle')}
-                            subtitle={t('sessionInfo.automationsSubtitle')}
-                            icon={<Icon name="timer" size={29} color={theme.colors.accent.blue} />}
-                            onPress={() => router.push(routeScope.buildHref(session.id, { suffix: '/automations' }))}
                         />
                     ) : null}
                     {!session.active && Boolean(vendorResumeId) && (
@@ -1456,19 +1256,6 @@ export default () => {
     const session = useSession(sessionId);
     const isDataReady = useIsDataReady();
     const sessionServerId = usePreferredServerIdForSession(sessionId);
-    const reachableMachineIdForHandoff = useSessionMachineTarget(sessionId)?.machineId ?? null;
-    const sourceMachineIdForHandoff = React.useMemo(
-        () => resolveSessionHandoffSourceMachineId({
-            reachableMachineId: reachableMachineIdForHandoff,
-            sessionMetadata: session?.metadata as any,
-        }),
-        [reachableMachineIdForHandoff, session?.metadata],
-    );
-    const runtimeAvailability = useSessionHandoffSourceReachability({
-        serverId: sessionServerId,
-        sourceMachineId: sourceMachineIdForHandoff,
-    });
-
     // Handle three states: loading, deleted, and exists.
     // If the session record is already present, fail open and render it even if global hydration
     // is still in progress; otherwise deep links can get stuck in a permanent spinner state.
@@ -1500,8 +1287,6 @@ export default () => {
             <MemoizedSessionInfoContent
                 session={contentSession ?? session}
                 sessionServerId={sessionServerId}
-                sourceMachineIdForHandoff={sourceMachineIdForHandoff}
-                runtimeAvailability={runtimeAvailability}
                 routeScope={routeScope}
             />
         </View>

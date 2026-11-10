@@ -25,7 +25,6 @@ import { flushHookEffects, renderHook, renderScreen } from '@/dev/testkit';
 import { useConnectedServiceQuotaSnapshot } from './useConnectedServiceQuotaSnapshot';
 import { __resetConnectedServiceQuotaSnapshotStore } from '@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore';
 import { resolveAuthCredentialsScopeKey } from '@/auth/storage/resolveAuthCredentialsScopeKey';
-import { __resetProviderAccountUsageSnapshotCache } from '@/sync/domains/connectedServices/accountUsage/cache';
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -258,7 +257,6 @@ async function mountHook(props: HookProps) {
 describe('useConnectedServiceQuotaSnapshot', () => {
   beforeEach(() => {
     __resetConnectedServiceQuotaSnapshotStore();
-    __resetProviderAccountUsageSnapshotCache();
     pinnedFixture.value = {};
     currentCredentials = stableCredentials;
     vi.clearAllMocks();
@@ -575,42 +573,6 @@ describe('useConnectedServiceQuotaSnapshot', () => {
     await flushHookEffects({ turns: 3 });
 
     expect(hook.getCurrent().error).toBeNull();
-  });
-
-  it('uses the connected-service quota view for a settings account card even when cached provider account usage exists', async () => {
-    fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
-    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(snapshotFor('work', 2, 'View', {
-      meters: [{
-        meterId: 'view-weekly',
-        label: 'View weekly',
-        used: 48,
-        limit: 100,
-        unit: 'count',
-        utilizationPct: null,
-        resetsAt: null,
-        status: 'ok',
-        details: { limitCategory: 'usage_limit' },
-      }],
-    }));
-    const snapshot = accountUsageSnapshot({ serviceId: 'anthropic', profileId: 'work', meterId: 'account-usage-weekly' });
-    const { writeProviderAccountUsageSnapshotToCache } = await import('@/sync/domains/connectedServices/accountUsage/cache');
-    writeProviderAccountUsageSnapshotToCache({
-      credentialScope: resolveAuthCredentialsScopeKey(stableCredentials),
-      snapshot,
-    });
-
-    const hook = await mountHook({ serviceId: 'anthropic', profileId: 'work' });
-
-    expect(getConnectedServiceQuotaSnapshotPlainSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ token: 't' }),
-      { serviceId: 'anthropic', profileId: 'work' },
-    );
-    expect(hook.getCurrent().snapshot).toEqual(expect.objectContaining({
-      serviceId: 'anthropic',
-      profileId: 'work',
-    }));
-    expect(hook.getCurrent().snapshot?.meters[0]?.meterId).toBe('view-weekly');
-    expect(hook.getCurrent().canRefresh).toBe(true);
   });
 
   it('consumes recovery credit through the connected-service quota view path', async () => {

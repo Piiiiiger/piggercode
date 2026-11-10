@@ -31,9 +31,7 @@ import {
     clearActiveViewingSessionsForNonSessionRoute,
     getActiveViewingSessionId,
 } from '@/sync/domains/session/activeViewingSession';
-import { NotificationsSettingsV1Schema } from '@piggercode/protocol';
 import { useTrackScreens } from '@/track/useTrackScreens';
-import { RealtimeProvider } from '@/realtime/RealtimeProvider';
 import { FaviconPermissionIndicator } from '@/components/web/FaviconPermissionIndicator';
 import { CommandPaletteProvider } from '@/components/appShell/commandPalette/CommandPaletteProvider';
 import { StatusBarProvider } from '@/components/ui/layout/StatusBarProvider';
@@ -729,18 +727,16 @@ function AppBoot(props: {
                             <StatusBarProvider />
                             <AppPaneModalProvider>
                                 <CommandPaletteProvider>
-                                    <RealtimeProvider>
-                                        <ThemePreferenceTransitionHost>
-                                            <HorizontalSafeAreaWrapper>
-                                                <RootAppShell
-                                                    isDesktopPetOverlayWindow={isDesktopPetOverlayWindow}
-                                                    isTablet={isTablet}
-                                                    isTerminalConnectRoute={isTerminalConnectRoute}
-                                                    safeArea={safeArea}
-                                                />
-                                            </HorizontalSafeAreaWrapper>
-                                        </ThemePreferenceTransitionHost>
-                                    </RealtimeProvider>
+                                    <ThemePreferenceTransitionHost>
+                                        <HorizontalSafeAreaWrapper>
+                                            <RootAppShell
+                                                isDesktopPetOverlayWindow={isDesktopPetOverlayWindow}
+                                                isTablet={isTablet}
+                                                isTerminalConnectRoute={isTerminalConnectRoute}
+                                                safeArea={safeArea}
+                                            />
+                                        </HorizontalSafeAreaWrapper>
+                                    </ThemePreferenceTransitionHost>
                                 </CommandPaletteProvider>
                             </AppPaneModalProvider>
                         </ThemeProvider>

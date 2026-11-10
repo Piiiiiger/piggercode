@@ -84,10 +84,6 @@ import {
     createCopySessionDebugInformationMenuItem,
     SESSION_COPY_DEBUG_INFORMATION_MENU_ITEM_ID,
 } from '@/components/sessions/debug/sessionDebugMenuItem';
-import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
-import { canForkConversation } from '@/sync/domains/sessionFork/forkUiSupport';
-import { resolveMachineTargetForSessionFromState } from '@/sync/ops/sessionMachineTarget';
-import { fireAndForget } from '@/utils/system/fireAndForget';
 import { sessionExplorerIconInset } from './explorer/sessionExplorerLayout';
 
 const SESSION_LIST_MINIMAL_IDENTITY_GAP = 8;
@@ -100,25 +96,6 @@ const SESSION_TREE_ROW_LEADING_INSET = 6;
 const SESSION_FOLDER_ROW_CHROME_INDENT_STEP = 12;
 const SESSION_FOLDER_ROW_INDENT_CAP = 3;
 const SESSION_DELETE_DRAFT_MENU_ITEM_ID = 'session-draft.delete';
-
-let sessionForkStrategyFlowModulePromise:
-    Promise<typeof import('@/components/sessions/fork/openSessionForkStrategyFlow')> | null = null;
-
-function loadSessionForkStrategyFlowModule() {
-    if (!sessionForkStrategyFlowModulePromise) {
-        sessionForkStrategyFlowModulePromise = import(
-            '@/components/sessions/fork/openSessionForkStrategyFlow'
-        ).catch((error: unknown) => {
-            sessionForkStrategyFlowModulePromise = null;
-            throw error;
-        });
-    }
-    return sessionForkStrategyFlowModulePromise;
-}
-
-function preloadSessionForkStrategyFlowModule(): void {
-    void loadSessionForkStrategyFlowModule().catch(() => undefined);
-}
 
 type SessionItemActivityTimeMode = 'meaningful' | 'updatedAt';
 type SessionItemActiveColorMode = 'activityAndAttention' | 'attentionOnly' | 'allActive';
@@ -166,10 +143,6 @@ type SessionItemBaseProps = Readonly<{
     onMoveToFolder?: () => void;
     onMoveToWorkspaceRoot?: () => void;
     onMoveUp?: () => void;
-    forkActionContext?: Readonly<{
-        replayEnabled: boolean;
-        executionRunsEnabled: boolean;
-    }>;
 }>;
 
 export type SessionItemProps = SessionItemBaseProps & Readonly<{
@@ -208,10 +181,6 @@ function normalizeSessionItemActiveColorMode(value: unknown): SessionItemActiveC
         default:
             return 'activityAndAttention';
     }
-}
-
-function normalizeSessionItemWorkingIndicatorMode(value: unknown): SessionItemWorkingIndicatorMode {
-    return value === 'pulse' ? 'pulse' : 'spinner';
 }
 
 const stylesheet = StyleSheet.create((theme) => ({
@@ -725,7 +694,6 @@ const SessionItemContent = React.memo(
         onMoveToFolder,
         onMoveToWorkspaceRoot,
         onMoveUp,
-        forkActionContext,
         sessionStatus,
         sessionNameResolved,
         sessionSubtitle,
@@ -755,10 +723,6 @@ const SessionItemContent = React.memo(
         const localDevModeEnabled = useLocalSetting('devModeEnabled');
         const devModeEnabled = isSessionDebugInformationEnabled(localDevModeEnabled);
         const router = useRouter();
-        const agentSwitchingEnabled = useFeatureEnabled('sessions.agentSwitching', {
-            scopeKind: 'spawn',
-            serverId: serverId ?? null,
-        });
         const resolvedSelectionKey = selectionKey ?? '';
         const rowSelection = useOptionalSessionListSelectionRow(resolvedSelectionKey);
         const identitySkeletonOpacity = React.useRef(new Animated.Value(0.45)).current;
@@ -866,47 +830,6 @@ const SessionItemContent = React.memo(
                 Modal.alert(t('common.error'), t('errors.unknownError'));
             }
         }, [draft, onDeleteDraft]);
-        const showForkAction = forkActionContext != null && canForkConversation({
-            session: resolvedSession,
-            replayEnabled: forkActionContext.replayEnabled,
-            agentSwitchingEnabled,
-        });
-        const openForkFlow = React.useCallback(() => {
-            fireAndForget((async () => {
-                const { openSessionForkStrategyFlow } = await loadSessionForkStrategyFlowModule();
-                const currentSession = storage.getState().sessions[resolvedSession.id] ?? resolvedSession;
-                const reachableMachineTarget = resolveMachineTargetForSessionFromState(
-                    storage.getState(),
-                    resolvedSession.id,
-                );
-                openSessionForkStrategyFlow({
-                    sessionId: resolvedSession.id,
-                    forkSupportSource: currentSession,
-                    serverId: serverId ?? null,
-                    machineId: reachableMachineTarget?.machineId ?? currentSession.metadata?.machineId ?? null,
-                    forkPoint: { type: 'latest' },
-                    settings: storage.getState().settings,
-                    replayEnabled: forkActionContext?.replayEnabled === true,
-                    executionRunsEnabled: forkActionContext?.executionRunsEnabled === true,
-                    agentSwitchingEnabled,
-                    navigateToSession: (childSessionId, options) => {
-                        void navigateToSession(childSessionId, {
-                            serverId: options?.serverId ?? serverId ?? null,
-                        });
-                    },
-                    navigateToNewSession: (route) => {
-                        router.push(route as any);
-                    },
-                });
-            })(), { tag: 'SessionItem.openSessionForkStrategyFlow' });
-        }, [
-            agentSwitchingEnabled,
-            forkActionContext,
-            navigateToSession,
-            resolvedSession,
-            router,
-            serverId,
-        ]);
         const leadingMenuItems = React.useMemo(() => {
             const items: DropdownMenuItem[] = [];
             if (draft && onDeleteDraft) {
@@ -919,23 +842,11 @@ const SessionItemContent = React.memo(
             if (devModeEnabled) {
                 items.push(createCopySessionDebugInformationMenuItem({ iconColor: rowActionIconColor }));
             }
-            if (showForkAction) {
-                items.push({
-                    id: 'session.fork',
-                    title: t('sessionInfo.forkSession'),
-                    subtitle: undefined,
-                    icon: <Icon name="git-branch" size={16} color={rowActionIconColor} />,
-                });
-            }
             return items;
-        }, [devModeEnabled, draft, onDeleteDraft, rowActionIconColor, showForkAction]);
+        }, [devModeEnabled, draft, onDeleteDraft, rowActionIconColor]);
         const handleSelectLeadingMenuItem = React.useCallback(async (itemId: string) => {
             if (itemId === SESSION_DELETE_DRAFT_MENU_ITEM_ID) {
                 await confirmDeleteDraft();
-                return;
-            }
-            if (itemId === 'session.fork') {
-                openForkFlow();
                 return;
             }
             if (itemId !== SESSION_COPY_DEBUG_INFORMATION_MENU_ITEM_ID) return;
@@ -943,7 +854,7 @@ const SessionItemContent = React.memo(
             if (copied) {
                 copyFeedback.markCopied(resolvedSession.id);
             }
-        }, [confirmDeleteDraft, copyFeedback, openForkFlow, resolvedSession.id, resolveSessionDebugInformation]);
+        }, [confirmDeleteDraft, copyFeedback, resolvedSession.id, resolveSessionDebugInformation]);
         const supportsPin = typeof onTogglePinned === 'function';
         const supportsTag = tagsEnabled === true && typeof onSetTags === 'function';
         const handleTogglePinnedAction = React.useCallback(() => {
@@ -1017,11 +928,8 @@ const SessionItemContent = React.memo(
             isBeingDraggedRef.current = isBeingDragged === true;
         }, [isBeingDragged]);
         const handleRowPointerEnter = React.useCallback(() => {
-            if (showForkAction) {
-                preloadSessionForkStrategyFlowModule();
-            }
             setIsRowHovered(true);
-        }, [showForkAction]);
+        }, []);
 
         const handleRowPointerLeave = React.useCallback(() => {
             setIsRowHovered(false);

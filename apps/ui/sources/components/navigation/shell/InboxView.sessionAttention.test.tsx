@@ -312,14 +312,6 @@ vi.mock('@/components/ui/layout/layout', () => ({
     useLayoutMaxWidth: () => 960,
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionPromptCard', () => ({
-    PermissionPromptCard: ({ request }: any) => React.createElement('PermissionPromptCard', { request }),
-}));
-
-vi.mock('@/components/tools/shell/userActions/UserActionPromptCard', () => ({
-    UserActionPromptCard: ({ request }: any) => React.createElement('UserActionPromptCard', { request }),
-}));
-
 function collectText(node: renderer.ReactTestRenderer): string[] {
     return node.root
         .findAll((entry) => String(entry.type) === 'Text')
@@ -347,8 +339,6 @@ describe('InboxView session attention', () => {
         tree = (await renderScreen(<InboxView />)).tree;
 
         expect(tree!.findAllByTestId('inbox.session_attention.server-attention.session-1')).toHaveLength(1);
-        expect(tree!.findAllByType('PermissionPromptCard')).toHaveLength(1);
-        expect(tree!.findAllByType('UserActionPromptCard')).toHaveLength(1);
 
         const text = collectText(tree!);
         expect(text).toContain('Repo session');
@@ -370,7 +360,7 @@ describe('InboxView session attention', () => {
         );
     });
 
-    it('keeps permission and user-action rows of an idle live session past the runtime staleness window', async () => {
+    it('keeps the attention of an idle live session past the runtime staleness window', async () => {
         vi.useFakeTimers();
         attentionFixtureMode = 'idle';
         idleAttentionObservedAt = 1_000_000;
@@ -379,15 +369,13 @@ describe('InboxView session attention', () => {
         const { InboxView } = await import('./InboxView');
         const tree = (await renderScreen(<InboxView />)).tree;
 
-        expect(tree.findAllByType('PermissionPromptCard')).toHaveLength(1);
-        expect(tree.findAllByType('UserActionPromptCard')).toHaveLength(1);
+        expect(tree.findAllByTestId('inbox.session_attention.server-attention.session-1')).toHaveLength(1);
 
         await renderer.act(async () => {
             await vi.advanceTimersByTimeAsync(SESSION_RUNTIME_STATUS_STALE_SIGNAL_MS + 1);
         });
 
-        expect(tree.findAllByType('PermissionPromptCard')).toHaveLength(1);
-        expect(tree.findAllByType('UserActionPromptCard')).toHaveLength(1);
+        expect(tree.findAllByTestId('inbox.session_attention.server-attention.session-1')).toHaveLength(1);
     });
 
     it('renders unread sessions in inbox and does not list shared sessions there', async () => {

@@ -17,7 +17,7 @@ import { Modal } from '@/modal';
 import { getStorage } from '@/sync/domains/state/storage';
 import { t } from '@/text';
 
-import { reopenSessionAsTerminal } from './openSessionAsTerminal';
+import { reopenSessionAsTerminal, switchChatSessionToTerminal } from './openSessionAsTerminal';
 
 type NativeTerminalSessionContentProps = Readonly<{
     sessionId: string;
@@ -25,14 +25,15 @@ type NativeTerminalSessionContentProps = Readonly<{
 }>;
 
 /**
- * The whole view of a 「终端」 session: the CLI's own terminal (Claude Code or Codex), attached
+ * The whole view of every session: the CLI's own terminal (Claude Code or Codex), attached
  * through the machine (`piggercode attach`). There is no transcript or composer; the user types
  * into the CLI.
  */
 export const NativeTerminalSessionContent = React.memo(function NativeTerminalSessionContent(props: NativeTerminalSessionContentProps) {
-    const state = getStorage()((storeState): 'running' | 'starting' | 'ended' => {
+    const state = getStorage()((storeState): 'running' | 'chat' | 'starting' | 'ended' => {
         const session = storeState.sessions[props.sessionId];
-        if (session?.active === true) return 'running';
+        // A chat started before every session became a terminal has no terminal to attach to.
+        if (session?.active === true) return session.metadata?.nativeTerminal === true ? 'running' : 'chat';
         // A start (new or reopened) the machine accepted, until its runner comes online.
         return session?.resumingAt != null ? 'starting' : 'ended';
     });
@@ -41,6 +42,7 @@ export const NativeTerminalSessionContent = React.memo(function NativeTerminalSe
         return agentId ? t(getAgentCore(agentId).displayNameKey) : 'CLI';
     });
     if (state === 'running') return <NativeTerminalSessionPane sessionId={props.sessionId} agentName={agentName} />;
+    if (state === 'chat') return <NativeTerminalSessionChatRunning sessionId={props.sessionId} serverId={props.serverId} agentName={agentName} />;
     if (state === 'starting') return <NativeTerminalSessionStarting agentName={agentName} />;
     return <NativeTerminalSessionEnded sessionId={props.sessionId} serverId={props.serverId} />;
 });
@@ -89,26 +91,67 @@ const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(
 });
 
 const NativeTerminalSessionEnded = React.memo(function NativeTerminalSessionEnded(props: NativeTerminalSessionContentProps) {
-    const [reopening, setReopening] = React.useState(false);
-    const reopen = React.useCallback(async () => {
-        setReopening(true);
+    const { sessionId, serverId } = props;
+    const reopen = React.useCallback(() => reopenSessionAsTerminal({ sessionId, serverId }), [serverId, sessionId]);
+    return (
+        <NativeTerminalSessionNotice
+            testID="session-native-terminal-ended"
+            title={t('sessionNativeTerminal.endedTitle')}
+            body={t('sessionNativeTerminal.endedBody')}
+            actionTitle={t('sessionNativeTerminal.reopen')}
+            actionTestID="session-native-terminal-reopen"
+            onAction={reopen}
+        />
+    );
+});
+
+/** A chat that still runs: switching stops it, then reopens the same conversation in the terminal. */
+const NativeTerminalSessionChatRunning = React.memo(function NativeTerminalSessionChatRunning(
+    props: NativeTerminalSessionContentProps & Readonly<{ agentName: string }>,
+) {
+    const { sessionId, serverId } = props;
+    const switchToTerminal = React.useCallback(() => switchChatSessionToTerminal({ sessionId, serverId }), [serverId, sessionId]);
+    return (
+        <NativeTerminalSessionNotice
+            testID="session-native-terminal-chat-running"
+            title={t('sessionNativeTerminal.switchTitle')}
+            body={t('sessionNativeTerminal.switchBody', { agent: props.agentName })}
+            actionTitle={t('sessionNativeTerminal.switchAction')}
+            actionTestID="session-native-terminal-switch"
+            onAction={switchToTerminal}
+        />
+    );
+});
+
+const NativeTerminalSessionNotice = React.memo(function NativeTerminalSessionNotice(props: Readonly<{
+    testID: string;
+    title: string;
+    body: string;
+    actionTitle: string;
+    actionTestID: string;
+    onAction: () => Promise<unknown>;
+}>) {
+    const { onAction } = props;
+    const [busy, setBusy] = React.useState(false);
+    const run = React.useCallback(async () => {
+        setBusy(true);
         try {
-            await reopenSessionAsTerminal({ sessionId: props.sessionId, serverId: props.serverId });
+            await onAction();
         } finally {
-            setReopening(false);
+            setBusy(false);
         }
-    }, [props.serverId, props.sessionId]);
+    }, [onAction]);
 
     return (
-        <View style={styles.ended} testID="session-native-terminal-ended">
-            <Text style={styles.endedTitle}>{t('sessionNativeTerminal.endedTitle')}</Text>
-            <Text style={styles.endedBody}>{t('sessionNativeTerminal.endedBody')}</Text>
+        <View style={styles.ended} testID={props.testID}>
+            <Text style={styles.endedTitle}>{props.title}</Text>
+            <Text style={styles.endedBody}>{props.body}</Text>
             <RoundButton
                 size="normal"
-                title={t('sessionNativeTerminal.reopen')}
-                action={reopen}
-                loading={reopening}
-                testID="session-native-terminal-reopen"
+                title={props.actionTitle}
+                action={run}
+                loading={busy}
+                testID={props.actionTestID}
             />
         </View>
     );

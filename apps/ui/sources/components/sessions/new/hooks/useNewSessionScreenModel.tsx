@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, useWindowDimensions, InteractionManager } from 'react-native';
-import { useLaunchSelectionMachines, useSessionRecentPathEntries, storage, useSetting, useSettingMutable, useSettings } from '@/sync/domains/state/storage';
+import { useLaunchSelectionMachines, useSessionRecentPathEntries, useSetting, useSettingMutable, useSettings } from '@/sync/domains/state/storage';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
 import { useRouter, useLocalSearchParams, useNavigation, usePathname } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
@@ -11,16 +11,15 @@ import { Modal } from '@/modal';
 import { sync } from '@/sync/sync';
 import { getTempData, type NewSessionData } from '@/utils/sessions/tempDataStore';
 import { fireAndForget } from '@/utils/system/fireAndForget';
-import { tryShowDaemonUnavailableAlertForRpcError } from '@/utils/errors/daemonUnavailableAlert';
-import { type PermissionMode, type ModelMode } from '@/sync/domains/permissions/permissionTypes';
+import { type ModelMode } from '@/sync/domains/permissions/permissionTypes';
 import { normalizePermissionModeForAgentType } from '@/sync/domains/permissions/permissionModeOptions';
 import {
     getProfileEnvironmentVariables,
     isProfileCompatibleWithBackendTarget,
     type AIBackendProfile,
 } from '@/sync/domains/profiles/profileCompatibility';
-import { getBuiltInProfile, DEFAULT_PROFILES, getProfilePrimaryCli, isProfileEnabled } from '@/sync/domains/profiles/profileUtils';
-import { DEFAULT_AGENT_ID, getAgentCore, isAgentId, resolveAgentIdFromCliDetectKey, type AgentId } from '@/agents/catalog/catalog';
+import { getBuiltInProfile, DEFAULT_PROFILES, isProfileEnabled } from '@/sync/domains/profiles/profileUtils';
+import { getAgentCore, isAgentId, resolveAgentIdFromCliDetectKey, type AgentId } from '@/agents/catalog/catalog';
 import { useEnabledAgentIds } from '@/agents/hooks/useEnabledAgentIds';
 import { resolveBackendTargetFromRouteParams } from '@/agents/backendCatalog/backendTargetRouteParams';
 import {
@@ -29,18 +28,14 @@ import {
 } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 
 import type { NewSessionDraft } from '@/sync/domains/state/persistence';
-import { NewSessionEngineOptionDetail } from '@/components/sessions/new/components/NewSessionEngineOptionDetail';
 import { consumeProfileIdParam } from '@/profileRouteParams';
 import { normalizeOptionalParam } from '@/profileRouteParams';
 import { useFocusEffect } from '@react-navigation/native';
 import { useMachineEnvPresence } from '@/hooks/machine/useMachineEnvPresence';
-import { normalizeSessionAuthoringConnectedServices } from '@/sync/domains/sessionAuthoring/sessionAuthoringNormalization';
-import type { CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
 import {
     buildNewSessionOptionsFromUiState,
     buildSpawnEnvironmentVariablesFromUiState,
 } from '@/agents/catalog/catalog';
-import { getSecretSatisfaction } from '@/utils/secrets/secretSatisfaction';
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';
 import { buildProfileEnvironmentVariablesForSession, useProfileMap } from '@/components/sessions/new/modules/profileHelpers';
 import { newSessionScreenStyles } from '@/components/sessions/new/newSessionScreenStyles';
@@ -53,13 +48,10 @@ import { buildNewSessionProfileSelectionPopover } from '@/components/sessions/ne
 import { useNewSessionAgentPickerControls } from '@/components/sessions/new/hooks/screenModel/useNewSessionAgentPickerControls';
 import { resolveNewSessionCapabilityServerId } from '@/components/sessions/new/modules/resolveNewSessionCapabilityServerId';
 import { resolveNewSessionCapabilityProbeContext } from '@/components/sessions/new/modules/newSessionCapabilityProbeContext';
-import type { NewSessionTranscriptStorage } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
 import {
     resolveNextSelectableBackendEntryForNewSession,
 } from '@/components/sessions/new/modules/newSessionAgentSelection';
-import type { AgentInputChipPickerOption } from '@/components/sessions/agentInput/components/AgentInputChipPickerTypes';
 import type { OptionPickerProbeState } from '@/components/sessions/pickers/OptionPickerOverlay';
-import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { resolveLocalFeaturePolicyEnabled } from '@/sync/domains/features/featureLocalPolicy';
 import { useNewSessionConnectedServices } from '@/components/sessions/new/modules/useNewSessionConnectedServices';
@@ -79,13 +71,7 @@ import { useNewSessionPreflightModelsState } from '@/components/sessions/new/hoo
 import { useNewSessionPreflightConfigOptionsState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPreflightConfigOptionsState';
 import { useNewSessionPreflightSessionModesState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPreflightSessionModesState';
 import { useNewSessionRepoScmSnapshot } from '@/components/sessions/new/hooks/screenModel/useNewSessionRepoScmSnapshot';
-import {
-    buildAcpConfigOptionOverridesV1,
-    buildBackendTargetKey,
-    type AcpConfigOptionOverridesV1,
-    type BackendTargetRefV1,
-    type WindowsRemoteSessionLaunchMode,
-} from '@piggercode/protocol';
+import { buildAcpConfigOptionOverridesV1, buildBackendTargetKey, type AcpConfigOptionOverridesV1, type WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 import { useNewSessionMcpSelection } from '@/components/sessions/new/hooks/useNewSessionMcpSelection';
 import { resolveEffectiveWindowsRemoteSessionLaunchMode } from '@/sync/domains/session/spawn/windowsRemoteSessionLaunchMode';
 import { useNewSessionAvailabilityState } from '@/components/sessions/new/hooks/screenModel/useNewSessionAvailabilityState';
@@ -103,11 +89,11 @@ import { useNewSessionSourceContext } from '@/components/sessions/new/sourceCont
 import { useNewSessionTranscriptStorageState } from '@/components/sessions/new/hooks/screenModel/useNewSessionTranscriptStorageState';
 import { useNewSessionAgentAuthoringOptionsState } from '@/components/sessions/new/hooks/screenModel/useNewSessionAgentAuthoringOptionsState';
 import { useNewSessionPermissionModeState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPermissionModeState';
-import { useNewSessionPromptAutomationState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPromptAutomationState';
+import { useNewSessionPromptState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPromptState';
+import { DEFAULT_NEW_SESSION_AUTOMATION_DRAFT } from '@/sync/domains/automations/automationDraft';
 import { useNewSessionSecretSelectionState } from '@/components/sessions/new/hooks/screenModel/useNewSessionSecretSelectionState';
 import { useNewSessionHappyRouteFlag } from '@/components/sessions/new/hooks/screenModel/useNewSessionHappyRouteFlag';
 import type { NewSessionScreenModel } from '@/components/sessions/new/hooks/newSessionScreenModelTypes';
-import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';
 import { NewSessionPathSelectionContent } from '@/components/sessions/new/components/NewSessionPathSelectionContent';
 import { machineMetadataPlatformToTarget } from '@/utils/path/machinePlatform';
 import { NewSessionMachineSelectionContent } from '@/components/sessions/new/components/NewSessionMachineSelectionContent';
@@ -145,9 +131,6 @@ import {
     useNewSessionDraftHostSnapshot,
     useNewSessionDraftPromptProjection,
 } from '@/components/sessions/drafts/useNewSessionDraftProjection';
-
-// Configuration constants
-const RECENT_PATHS_DEFAULT_VISIBLE = 5;
 // Native skills and commands are discovered for the selected launch scope before spawn.
 // Vendor plugins remain session-published catalogs.
 //
@@ -218,15 +201,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         path: pathParam,
         profileId: profileIdParam,
         spawnServerId: spawnServerIdParam,
-        automation: automationParam,
-        automationEnabled: automationEnabledParam,
-        automationName: automationNameParam,
-        automationDescription: automationDescriptionParam,
-        automationScheduleKind: automationScheduleKindParam,
-        automationEveryMinutes: automationEveryMinutesParam,
-        automationCronExpr: automationCronExprParam,
-        automationTimezone: automationTimezoneParam,
-        automationEditId: automationEditIdParam,
         resumeSessionId: resumeSessionIdParam,
         secretId: secretIdParam,
         secretSessionOnlyId,
@@ -245,15 +219,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         path?: string | string[];
         profileId?: string;
         spawnServerId?: string;
-        automation?: string;
-        automationEnabled?: string;
-        automationName?: string;
-        automationDescription?: string;
-        automationScheduleKind?: string;
-        automationEveryMinutes?: string;
-        automationCronExpr?: string;
-        automationTimezone?: string;
-        automationEditId?: string;
         resumeSessionId?: string;
         secretId?: string;
         secretSessionOnlyId?: string;
@@ -358,8 +323,9 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         seed: tempSessionData,
         targetServerId: targetServerId ?? null,
     });
-    const automationsSupport = useAutomationsSupport({ scopeKind: 'spawn', serverId: targetServerId });
-    const automationFeatureEnabled = automationsSupport?.enabled === true;
+    // Automations went with the chat: the authoring model still carries a draft, and it stays off.
+    const automationFeatureEnabled = false;
+    const automationDraft = DEFAULT_NEW_SESSION_AUTOMATION_DRAFT;
 
     const capabilityServerId = React.useMemo(() => {
         return resolveNewSessionCapabilityServerId({
@@ -895,24 +861,9 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         promptStore,
         setSessionPrompt,
         hasUserEditedSessionPrompt,
-        automationDraft,
-        setAutomationDraft,
-        automationEditId,
-        automationRequestedByRoute,
-    } = useNewSessionPromptAutomationState({
+    } = useNewSessionPromptState({
         prompt,
         dataId,
-        automationParam,
-        automationEnabledParam,
-        automationNameParam,
-        automationDescriptionParam,
-        automationScheduleKindParam,
-        automationEveryMinutesParam,
-        automationCronExprParam,
-        automationTimezoneParam,
-        automationEditIdParam,
-        automationFeatureEnabled,
-        persistedDraftEntryIntent: scopedPersistedDraft?.entryIntent,
         hydratedTempAuthoringDraft,
         hydratedPersistedAuthoringDraft: hydratedPersistedContentAuthoringDraft,
     });
@@ -1750,8 +1701,8 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
             : null,
         acpSessionModeId,
         sessionConfigOptionOverrides,
-        automationEditId,
-        automationRequestedByRoute,
+        automationEditId: null,
+        automationRequestedByRoute: false,
         selectedSecretId,
         selectedSecretIdByProfileIdByEnvVarName,
         getSessionOnlySecretValueEncByProfileIdByEnvVarName: () => getSessionOnlySecretValueEncByProfileIdByEnvVarName() ?? {},
@@ -1863,7 +1814,7 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         sessionConfigOptionOverrides,
         promptStore,
         setSessionPrompt,
-        automationEditId,
+        automationEditId: null,
         resumeSessionId,
         agentNewSessionOptions,
         executionRunsEnabled,
@@ -1897,10 +1848,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         theme,
         selectedMachine,
         selectedMachineSpawnReadiness,
-        automationFeatureEnabled,
-        automationDraft,
-        effectiveAutomationDraft,
-        setAutomationDraft,
         repoScmSnapshot,
         checkoutChipModel,
         checkoutPickerOpen,
@@ -1922,7 +1869,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         agentOptionState,
         setAgentOptionStateForCurrentAgent,
         connectedServicesAuthChip,
-        showAutomationActionChips: newSessionAuthoringContext.showAutomationActionChips,
         showServerPickerChip,
         targetServerId,
         targetServerName,

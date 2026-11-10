@@ -1,14 +1,11 @@
 import { z } from 'zod';
-import { buildCodexAgentRuntimeDescriptor, type CodexBackendMode } from '@piggercode/agents';
 import {
-    AgentRuntimeDescriptorV1Schema,
     BackendTargetRefSchema,
     SessionAttachMetadataIdentityPolicySchema,
     SessionAuthoringValueV1Schema,
     SessionInitialGoalRequestV1Schema,
     SpawnSessionExecutionAuthorizationSchema,
     type SessionAttachMetadataIdentityPolicy,
-    type AgentRuntimeDescriptorV1,
     type BackendTargetRefV1,
     type SessionInitialGoalRequestV1,
     type SessionAuthoringValueV1,
@@ -16,17 +13,15 @@ import {
 import { SpawnSessionTerminalSchema } from '@piggercode/protocol/spawnSession';
 import { isPermissionMode, type PermissionMode } from '../../permissions/permissionTypes';
 
-import { buildCodexBackendTransportFields, type CodexBackendTransportFields } from '../codexBackendTransport';
 import { readNonBlankSessionControlIdentifier } from '@/sync/domains/sessionControl/opaqueIdentifiers';
 import type { TerminalSpawnOptions } from '@/sync/domains/settings/terminalSettings';
 
-export type ResumeHappySessionRpcParams = CodexBackendTransportFields & {
+export type ResumeHappySessionRpcParams = {
     type: 'resume-session';
     sessionId: string;
     directory: string;
     backendTarget: BackendTargetRefV1;
     resume?: string;
-    agentRuntimeDescriptorV1?: AgentRuntimeDescriptorV1;
     environmentVariables?: Record<string, string>;
     terminal?: TerminalSpawnOptions;
     connectedServices?: SessionAuthoringValueV1['connectedServices'];
@@ -43,14 +38,11 @@ export type ResumeHappySessionRpcParams = CodexBackendTransportFields & {
     initialTranscriptAfterSeq?: number;
     executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
     initialGoal?: SessionInitialGoalRequestV1;
-    /** The CLI runs as itself in a terminal; chat backend choices do not apply. */
-    nativeTerminal?: true;
+    /** Every session runs as its CLI in a terminal: no chat backend goes with it. */
+    nativeTerminal: true;
 };
 
-type BuildResumeHappySessionRpcInput = Omit<ResumeHappySessionRpcParams, 'type' | keyof CodexBackendTransportFields> & {
-    codexBackendMode?: CodexBackendMode;
-    experimentalCodexAcp?: boolean;
-};
+type BuildResumeHappySessionRpcInput = Omit<ResumeHappySessionRpcParams, 'type' | 'nativeTerminal'>;
 
 const ResumeHappySessionRpcParamsSchema = z.object({
     type: z.literal('resume-session'),
@@ -58,7 +50,6 @@ const ResumeHappySessionRpcParamsSchema = z.object({
     directory: z.string().min(1),
     backendTarget: BackendTargetRefSchema,
     resume: z.string().min(1).optional(),
-    agentRuntimeDescriptorV1: AgentRuntimeDescriptorV1Schema.optional(),
     environmentVariables: z.record(z.string(), z.string()).optional(),
     terminal: SpawnSessionTerminalSchema.optional(),
     connectedServices: SessionAuthoringValueV1Schema.shape.connectedServices.optional(),
@@ -75,18 +66,13 @@ const ResumeHappySessionRpcParamsSchema = z.object({
     initialTranscriptAfterSeq: z.number().int().min(0).optional(),
     executionAuthorization: SpawnSessionExecutionAuthorizationSchema.optional(),
     initialGoal: SessionInitialGoalRequestV1Schema.optional(),
-    nativeTerminal: z.literal(true).optional(),
-    experimentalCodexAcp: z.literal(true).optional(),
-    codexBackendMode: z.enum(['mcp', 'acp', 'appServer']).optional(),
+    nativeTerminal: z.literal(true),
 });
 
 export function buildResumeHappySessionRpcParams(input: BuildResumeHappySessionRpcInput): ResumeHappySessionRpcParams {
     const {
         modelId,
         modelUpdatedAt,
-        codexBackendMode,
-        experimentalCodexAcp,
-        agentRuntimeDescriptorV1,
         connectedServices,
         connectedServicesUpdatedAt,
         ...rest
@@ -97,39 +83,17 @@ export function buildResumeHappySessionRpcParams(input: BuildResumeHappySessionR
         normalizedModelId !== 'default' &&
         typeof modelUpdatedAt === 'number' &&
         Number.isFinite(modelUpdatedAt);
-    // A terminal runs the CLI itself, so no chat backend (mode or runtime record) goes with it.
-    const codexTransportFields: CodexBackendTransportFields = rest.nativeTerminal
-        ? {}
-        : buildCodexBackendTransportFields({ codexBackendMode, experimentalCodexAcp, agentRuntimeDescriptorV1 });
-    const canonicalCodexBackendMode = codexTransportFields.codexBackendMode;
 
     const params: ResumeHappySessionRpcParams = {
         type: 'resume-session',
         ...rest,
-        ...codexTransportFields,
+        nativeTerminal: true,
         ...(connectedServices === undefined || connectedServices === null ? {} : { connectedServices }),
         ...(connectedServices === undefined || connectedServices === null ? {} : (
             typeof connectedServicesUpdatedAt === 'number' && Number.isFinite(connectedServicesUpdatedAt)
                 ? { connectedServicesUpdatedAt }
                 : {}
         )),
-        ...(() => {
-            if (rest.nativeTerminal) return {};
-            if (agentRuntimeDescriptorV1) {
-                return { agentRuntimeDescriptorV1 };
-            }
-
-            if (rest.backendTarget.kind === 'builtInAgent' && rest.backendTarget.agentId === 'codex' && canonicalCodexBackendMode) {
-                return {
-                    agentRuntimeDescriptorV1: buildCodexAgentRuntimeDescriptor({
-                        backendMode: canonicalCodexBackendMode,
-                        vendorSessionId: rest.resume,
-                    }),
-                };
-            }
-
-            return {};
-        })(),
         ...(includeModelOverride ? { modelId: normalizedModelId, modelUpdatedAt } : {}),
     };
     // Validate shape early to avoid accidentally sending secrets in wrong fields.

@@ -1,9 +1,11 @@
 import { DEFAULT_AGENT_ID } from '@piggercode/agents';
 import { z } from 'zod';
 import { SecretStringSchema } from '../../encryption/secretSettings';
-import { DEFAULT_ELEVENLABS_VOICE_ID } from '@/realtime/elevenlabs/defaults';
 import { VoiceLocalSttSchema } from './voiceLocalSttSettings';
 import { VoiceLocalTtsSchema } from './voiceLocalTtsSettings';
+
+/** Voice was removed with the chat; the setting keeps its stored default so synced settings still parse. */
+export const DEFAULT_ELEVENLABS_VOICE_ID = 'EST9Ui6982FZPSi7gCHi';
 
 export const VoiceProviderIdSchema = z.enum([
   'off',

@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { t } from '@/text';
 import { Modal } from '@/modal';
-import { newSessionStartsTerminal } from '@/components/sessions/nativeTerminal/nativeTerminalSessions';
 import { sync } from '@/sync/sync';
 import { useApplySettings } from '@/sync/store/settingsWriters';
 import { storage } from '@/sync/domains/state/storage';
@@ -38,36 +37,15 @@ import type { SessionSpawnSourceContextV1 } from '@piggercode/protocol';
 import { parsePermissionIntentAlias } from '@piggercode/agents';
 import type { CodexBackendMode } from '@piggercode/agents';
 import { nowServerMs } from '@/sync/runtime/time';
-import { encodeAutomationTemplateCiphertextForAccount } from '@/sync/domains/automations/encodeAutomationTemplateCiphertextForAccount';
-import { resolveSessionComposerSend } from '@/sync/domains/input/slashCommands/resolveSessionComposerSend';
-import { expandPromptTemplateInvocation } from '@/sync/domains/input/slashCommands/expandPromptTemplateInvocation';
-import { executeSessionComposerResolution } from '@/sync/domains/input/slashCommands/executeSessionComposerResolution';
-import { resolvePromptInvocationComposerSendAction } from '@/sync/domains/input/slashCommands/promptInvocationBehavior';
-import { createDefaultActionExecutor } from '@/sync/ops/actions/defaultActionExecutor';
-import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { readNonBlankSessionControlIdentifier } from '@/sync/domains/sessionControl/opaqueIdentifiers';
 import type { PreflightModelList } from '@/sync/domains/models/modelOptions';
-import { getModelOptionsForAgentType } from '@/sync/domains/models/modelOptions';
 
 function getActiveNewSessionDraftScope() {
     return storage.getState().profileScope ?? null;
 }
-
-import {
-    buildAutomationScheduleFromDraft,
-    normalizeAutomationDescription,
-    normalizeAutomationName,
-    validateAutomationTemplateTarget,
-} from '@/sync/domains/automations/automationValidation';
-import {
-    classifyLaunchRetryFailure,
-    isDaemonUnavailableAlertError,
-    promptDaemonUnavailableRetry,
-    showDaemonUnavailableAlert,
-} from '@/utils/errors/daemonUnavailableAlert';
+import { showDaemonUnavailableAlert } from '@/utils/errors/daemonUnavailableAlert';
 import { captureExceptionIfEnabled } from '@/utils/system/sentry';
-import { fireAndForget } from '@/utils/system/fireAndForget';
 import { useMountedRef } from '@/hooks/ui/useMountedRef';
 import { buildScopedSessionRouteHref } from '@/hooks/session/sessionRouteServerScope';
 import type { SessionMcpSelectionV1 } from '@piggercode/protocol';
@@ -76,35 +54,11 @@ import { materializeNewSessionCheckout } from '@/components/sessions/new/modules
 import { rollbackNewSessionArtifacts } from '@/components/sessions/new/modules/rollbackNewSessionArtifacts';
 import { resolveConnectedServiceSwitchUnavailablePresentation } from '@/components/sessions/new/modules/connectedServiceSwitchUnavailable';
 import { translateConnectedServiceUxDiagnosticBody } from '@/components/sessions/connectedServices/diagnostics/connectedServiceUxDiagnostics';
-import {
-    followUpSpawnedSessionWithServerScope,
-    requireSpawnedSessionVisibleForRoute,
-} from '@/sync/runtime/orchestration/serverScopedRpc/followUpSpawnedSession';
-import {
-    buildOutgoingUserTextRecord,
-    projectLocalOutboundUserMessage,
-} from '@/sync/domains/messages/outgoingUserMessage';
-import { resolveSentFrom } from '@/sync/domains/messages/sentFrom';
+import { requireSpawnedSessionVisibleForRoute } from '@/sync/runtime/orchestration/serverScopedRpc/followUpSpawnedSession';
 import { mergeMessageMetaOverrides } from '@/components/sessions/agentInput/structuredInputMentions';
-import { supportsSpawnPendingFirstInput } from '@/sync/domains/session/spawn/spawnSessionPayload';
-import {
-    buildAutomationTemplateFromSessionAuthoringDraft,
-    buildNewSessionAuthoringDraftFromResolvedInputs,
-    buildSpawnSessionOptionsFromAuthoringDraft,
-} from '@/components/sessions/authoring/draft/sessionAuthoringDraftAdapters';
+import { buildNewSessionAuthoringDraftFromResolvedInputs, buildSpawnSessionOptionsFromAuthoringDraft } from '@/components/sessions/authoring/draft/sessionAuthoringDraftAdapters';
 import type { SessionAuthoringDraft } from '@/components/sessions/authoring/draft/sessionAuthoringDraft';
-import {
-    adoptNewSessionLaunchAttemptCustody,
-    createNewSessionLaunchAttempt,
-    isNewSessionLaunchAttemptInScope,
-    markNewSessionLaunchAttemptComplete,
-    markNewSessionLaunchAttemptCreated,
-    markNewSessionLaunchAttemptFailed,
-    markNewSessionLaunchAttemptSendingFirstTurn,
-    markNewSessionLaunchAttemptSpawning,
-    shouldSpawnForNewSessionLaunchAttempt,
-    type NewSessionLaunchAttempt,
-} from '@/components/sessions/new/modules/newSessionLaunchAttempt';
+import { adoptNewSessionLaunchAttemptCustody, createNewSessionLaunchAttempt, isNewSessionLaunchAttemptInScope, markNewSessionLaunchAttemptComplete, markNewSessionLaunchAttemptCreated, markNewSessionLaunchAttemptFailed, markNewSessionLaunchAttemptSpawning, shouldSpawnForNewSessionLaunchAttempt, type NewSessionLaunchAttempt } from '@/components/sessions/new/modules/newSessionLaunchAttempt';
 import {
     actionOperationReentry,
     resolvePersistedNewSessionOperationIdentity,
@@ -114,15 +68,7 @@ import {
 import { actionOperationStore } from '@/sync/domains/actionOperations/actionOperationStore';
 import { acknowledgeActionOperationPresented } from '@/sync/domains/actionOperations/acknowledgeActionOperationPresented';
 import { reconcileSpawnAttemptCustodyFromOperation } from '@/sync/domains/session/spawn/spawnAttemptNonceStore';
-import {
-    captureSessionDraftLaunchCurrentness,
-    captureSessionDraftCurrentness,
-    clearSessionDraftLaunchCurrentness,
-    clearSessionDraftCurrentness,
-    getSessionDraftSnapshot,
-    readSessionDraftLaunchCurrentness,
-    type SessionDraftCurrentness,
-} from '@/sync/ops/sessionDrafts/sessionDraftRepository';
+import { captureSessionDraftLaunchCurrentness, clearSessionDraftLaunchCurrentness, clearSessionDraftCurrentness, getSessionDraftSnapshot, readSessionDraftLaunchCurrentness, type SessionDraftCurrentness } from '@/sync/ops/sessionDrafts/sessionDraftRepository';
 
 type MutableSettingsDelta = {
     -readonly [TKey in keyof Settings]?: Settings[TKey];
@@ -149,18 +95,12 @@ export type HandleCreateSessionOptions = Readonly<{
      * own token and keeps the rest (INV-4). That decision has one owner and is not repeated here.
      */
     structuredInputMetaOverrides?: Record<string, unknown>;
-    afterCreated?: (context: CreatedSessionFollowUpContext) => void | Promise<void>;
     /**
      * D2: relaunch under the newly-selected connected-service account WITHOUT resume continuity, after
      * the "switch unavailable" dialog offered "start fresh". Drops the vendor resume reference so the
      * new account begins a clean conversation instead of fail-closing again on an unreachable resume.
      */
     startFreshUnderNewAccount?: boolean;
-    /**
-     * Start a 「终端」 session: native Claude Code in a terminal on the machine (no first message;
-     * the user types into Claude). Machines that cannot start one refuse it (`machineSpawnNewSession`).
-     */
-    nativeTerminal?: boolean;
 }>;
 
 function normalizeLaunchScopePart(value: unknown): string {
@@ -181,10 +121,6 @@ function buildNewSessionLaunchScopeKey(params: Readonly<{
         `profiles:${params.useProfiles ? 'on' : 'off'}`,
         `profile:${normalizeLaunchScopePart(params.selectedProfileId)}`,
     ].join('|');
-}
-
-function isFirstTurnFollowUpTimeout(error: unknown): boolean {
-    return isSocketIoAckTimeoutError(error);
 }
 
 function readTrackedSpawnCreatedSessionId(operation: ActionOperationSnapshotV1): string | null {
@@ -369,19 +305,6 @@ export function useCreateNewSession(params: Readonly<{
             Modal.alert(t('common.error'), t('newSession.noPathSelected'));
             return;
         }
-        // Claude and Codex sessions start as the CLI's own terminal, which gets the typed text as its
-        // first prompt.
-        const startsTerminal = opts?.nativeTerminal === true || newSessionStartsTerminal({
-            agentId: current.agentType,
-            machine: current.selectedMachine,
-            automationEnabled: current.authoringDraft?.automation?.enabled === true,
-            sourceContext: current.sourceContext != null,
-        });
-        if (startsTerminal && opts?.afterCreated) {
-            // Attachments and review comments travel as a chat message after the start.
-            Modal.alert(t('common.error'), t('newSession.terminalAttachmentsUnsupported'));
-            return;
-        }
 
         const persistedOperationReentry = current.persistedOperationReentry;
         if (persistedOperationReentry) {
@@ -457,33 +380,6 @@ export function useCreateNewSession(params: Readonly<{
                 ? opts.inputTextOverride
                 : current.promptStore.getPrompt();
             const shouldSendInitialMessage = (opts?.initialMessage ?? 'send') !== 'skip';
-            const shouldPrepareInitialMessage = shouldSendInitialMessage && sessionPromptText.trim();
-            // A terminal gets the text exactly as typed (its own slash commands included).
-            const resolvedInitialMessage = shouldPrepareInitialMessage && !startsTerminal
-                ? resolveSessionComposerSend({
-                    input: sessionPromptText,
-                    executionRunsEnabled: current.executionRunsEnabled === true,
-                    // A new session has no live runtime registry yet. Preserve the user's text and
-                    // let the provider handle `/goal` until the attached runner can advertise the
-                    // callable controls used by the local goal UI.
-                    goalControlsAvailable: false,
-                    promptInvocationsV1: storage.getState().settings.promptInvocationsV1,
-                })
-                : null;
-
-            if (
-                resolvedInitialMessage?.kind === 'template'
-                && resolvePromptInvocationComposerSendAction(resolvedInitialMessage.behavior) === 'insert'
-            ) {
-                const expanded = await expandPromptTemplateInvocation({
-                    targetArtifactId: resolvedInitialMessage.targetArtifactId,
-                    argsText: resolvedInitialMessage.rest,
-                });
-                current.setSessionPrompt?.(expanded);
-                current.setIsCreating(false);
-                return;
-            }
-
             const updatedPaths = [
                 { machineId: current.selectedMachineId, path: effectiveSelectedPath },
                 ...current.recentMachinePaths.filter((rp) => (
@@ -652,78 +548,6 @@ export function useCreateNewSession(params: Readonly<{
                 automation: current.authoringDraft?.automation ?? null,
             });
 
-            const activeAutomationDraft = authoringDraft.automation ?? null;
-
-            if (activeAutomationDraft?.enabled === true && opts?.nativeTerminal !== true) {
-                await current.persistDraftForLaunch?.();
-                if (current.draftScope) {
-                    launchDraftCurrentness = captureSessionDraftCurrentness({
-                        scope: current.draftScope,
-                        address: { kind: 'newSession', draftId: current.draftId },
-                    });
-                }
-                const schedule = buildAutomationScheduleFromDraft(activeAutomationDraft);
-                const template = buildAutomationTemplateFromSessionAuthoringDraft({
-                    ...authoringDraft,
-                    ...spawnSessionExtras,
-                    windowsTerminalWindowName: windowsTerminalWindowName || null,
-                });
-                validateAutomationTemplateTarget({
-                    targetType: 'new_session',
-                    template,
-                });
-                const templateCiphertext = await encodeAutomationTemplateCiphertextForAccount({
-                    credentials: sync.getCredentials(),
-                    template,
-                    encryptRaw: (value) => sync.encryption.encryptAutomationTemplateRaw(value),
-                });
-
-                const normalizedAutomationInput = {
-                    enabled: true,
-                    name: normalizeAutomationName(activeAutomationDraft.name),
-                    description: normalizeAutomationDescription(activeAutomationDraft.description),
-                    schedule,
-                    templateCiphertext,
-                };
-                const automationEditId = typeof current.automationEditId === 'string'
-                    ? current.automationEditId.trim()
-                    : '';
-
-                if (automationEditId.length > 0) {
-                    await sync.updateAutomation(automationEditId, normalizedAutomationInput);
-                    current.disableDraftPersistence?.();
-                    if (current.draftScope && launchDraftCurrentness) {
-                        await clearSessionDraftCurrentness({
-                            scope: current.draftScope,
-                            address: { kind: 'newSession', draftId: current.draftId },
-                            currentness: launchDraftCurrentness,
-                        });
-                    }
-                    current.onLaunchUserAttemptIdChange?.(null);
-                    await sync.refreshAutomations();
-                    current.router.replace(`/automations/${automationEditId}` as any);
-                    return;
-                }
-
-                await sync.createAutomation({
-                    ...normalizedAutomationInput,
-                    targetType: 'new_session',
-                    assignments: [{ machineId: current.selectedMachineId, enabled: true, priority: 100 }],
-                });
-                current.disableDraftPersistence?.();
-                if (current.draftScope && launchDraftCurrentness) {
-                    await clearSessionDraftCurrentness({
-                        scope: current.draftScope,
-                        address: { kind: 'newSession', draftId: current.draftId },
-                        currentness: launchDraftCurrentness,
-                    });
-                }
-                current.onLaunchUserAttemptIdChange?.(null);
-                await sync.refreshAutomations();
-                current.router.replace('/automations' as any);
-                return;
-            }
-
             // A retryable attempt may only be reused for the same text. The launch-intent
             // signature deliberately excludes the live composer text (it is no longer a render
             // input), so the text comparison that used to happen through the signature happens
@@ -814,9 +638,6 @@ export function useCreateNewSession(params: Readonly<{
                 }
             }
 
-            const daemonOwnsFirstTurn = supportsSpawnPendingFirstInput(
-                current.selectedMachine?.daemonState?.startedWithCliVersion,
-            );
             const firstTurnMetaOverrides = mergeMessageMetaOverrides((() => {
                 const agentCore = getAgentCore(current.agentType);
                 if (
@@ -836,18 +657,9 @@ export function useCreateNewSession(params: Readonly<{
                     ? { profileId: current.selectedProfileId }
                     : {}),
             };
-            let daemonFirstTurnText = startsTerminal && shouldSendInitialMessage ? sessionPromptText.trim() : '';
-            if (resolvedInitialMessage) {
-                if (daemonOwnsFirstTurn && resolvedInitialMessage.kind === 'template') {
-                    daemonFirstTurnText = (await expandPromptTemplateInvocation({
-                        targetArtifactId: resolvedInitialMessage.targetArtifactId,
-                        argsText: resolvedInitialMessage.rest,
-                    })).trim();
-                } else if (resolvedInitialMessage.kind === 'send') {
-                    daemonFirstTurnText = resolvedInitialMessage.text.trim();
-                }
-            }
-            let handedFirstTurnToDaemon = false;
+            // Every session starts as the CLI's own terminal, which gets the text exactly as typed
+            // (its own slash commands included) as its first prompt.
+            const daemonFirstTurnText = shouldSendInitialMessage ? sessionPromptText.trim() : '';
 
             let actualPath = effectiveSelectedPath;
             let result: Awaited<ReturnType<typeof machineSpawnNewSession>>;
@@ -891,7 +703,6 @@ export function useCreateNewSession(params: Readonly<{
                         sourceContext: current.sourceContext ?? null,
                     }),
                     ...spawnSessionExtras,
-                    ...(startsTerminal ? { nativeTerminal: true } : {}),
                     spawnNonce: launchAttempt.spawnNonce,
                     userAttemptId: launchAttempt.attemptId,
                     firstTurnLocalId: launchAttempt.firstTurnLocalId,
@@ -914,13 +725,6 @@ export function useCreateNewSession(params: Readonly<{
                 } finally {
                     releaseUserRequestLease();
                 }
-                handedFirstTurnToDaemon = result.type === 'success'
-                    && daemonFirstTurnText.length > 0
-                    && (
-                        result.pendingFirstInputTransferred === true
-                        || (result.pendingFirstInputTransferred === undefined && daemonOwnsFirstTurn)
-                    );
-
                 operationCustody = result.spawnAttemptCustody;
                 if (
                     operationCustody?.status === 'unresolved'
@@ -1009,266 +813,8 @@ export function useCreateNewSession(params: Readonly<{
                     current.setIsCreating(false);
                     return;
                 }
-                let postSpawnFollowUpError: unknown = null;
-                let postSpawnFollowUpRetry: (() => Promise<void>) | null = null;
-                let suppressPostSpawnFollowUpAlert = false;
-                let postSpawnFailurePhase: 'sending_first_turn' | 'uploading_attachments' = 'sending_first_turn';
-                let preserveLaunchAttemptForFirstTurnRetry = false;
-                let initialMessageText = '';
-                let postSpawnSessionRouteSuffix = '';
-                let postSpawnReplacementHref: string | null = null;
                 const createdSessionId = result.sessionId;
-                // A terminal has no chat to send a first message to: the CLI got it at launch.
-                const shouldRunBuiltInPostSpawnFollowUp = !startsTerminal
-                    && !retryableLaunchAttempt?.phaseErrors.uploading_attachments;
-
-                const runAfterCreatedFollowUp = async (): Promise<void> => {
-                    if (!opts?.afterCreated) {
-                        return;
-                    }
-                    try {
-                        await opts.afterCreated({
-                            sessionId: createdSessionId,
-                            effectiveSpawnServerId: resolvedTargetServerId,
-                            launchAttempt,
-                        });
-                    } catch (error) {
-                        postSpawnFollowUpError = error;
-                        postSpawnFailurePhase = 'uploading_attachments';
-                        postSpawnFollowUpRetry = runAfterCreatedFollowUp;
-                        throw error;
-                    }
-                };
-
-                const runBuiltInPostSpawnFollowUp = async (): Promise<void> => {
-                    launchAttempt = markNewSessionLaunchAttemptSendingFirstTurn(launchAttempt);
-                    launchAttemptRef.current = launchAttempt;
-
-                    if (!handedFirstTurnToDaemon && resolvedInitialMessage) {
-                        if (resolvedInitialMessage.kind === 'template') {
-                            initialMessageText = await expandPromptTemplateInvocation({
-                                targetArtifactId: resolvedInitialMessage.targetArtifactId,
-                                argsText: resolvedInitialMessage.rest,
-                            });
-                        } else if (resolvedInitialMessage.kind === 'send') {
-                            initialMessageText = resolvedInitialMessage.text;
-                        } else if (resolvedInitialMessage.kind === 'noop') {
-                            initialMessageText = '';
-                        } else {
-                            initialMessageText = '';
-                        }
-                    }
-
-                    if (!handedFirstTurnToDaemon) {
-                        await followUpSpawnedSessionWithServerScope({
-                            sessionId: createdSessionId,
-                            targetServerId: resolvedTargetServerId,
-                            initialMessageText,
-                            messageLocalId: launchAttempt.firstTurnLocalId,
-                            metaOverrides: firstTurnMetaOverrides,
-                            profileId: profilesActive ? (current.selectedProfileId ?? '') : null,
-                        });
-                    }
-
-                    if (
-                        resolvedInitialMessage
-                        && (resolvedInitialMessage.kind === 'action' || resolvedInitialMessage.kind === 'goal')
-                    ) {
-                        const actionExecutor = createDefaultActionExecutor({
-                            resolveServerIdForSessionId: (sessionId) => {
-                                if (sessionId === createdSessionId && resolvedTargetServerId) {
-                                    return resolvedTargetServerId;
-                                }
-                                return resolveServerIdForSessionIdFromLocalCache(sessionId);
-                            },
-                            openSession: (sessionId) => {
-                                if (sessionId === createdSessionId) {
-                                    postSpawnReplacementHref = buildScopedSessionRouteHref({
-                                        sessionId,
-                                        serverId: resolvedTargetServerId,
-                                    });
-                                }
-                            },
-                        });
-
-                        await executeSessionComposerResolution({
-                            resolved: resolvedInitialMessage,
-                            sessionId: createdSessionId,
-                            agentId: current.agentType,
-                            backendTarget: current.backendTarget ?? null,
-                            permissionMode: current.permissionMode,
-                            actionExecutor,
-                            previousMessage: sessionPromptText,
-                            setMessage: () => {},
-                            clearDraft: () => {},
-                            trackMessageSent: () => {},
-                            navigateToRuns: () => {
-                                postSpawnSessionRouteSuffix = '/runs';
-                            },
-                            navigateToPetSettings: () => {
-                                postSpawnReplacementHref = '/settings/pets';
-                            },
-                            modalAlert: (title, message) => Modal.alert(title, message),
-                        });
-                    }
-                };
-
-                if (shouldRunBuiltInPostSpawnFollowUp) {
-                    try {
-                        await runBuiltInPostSpawnFollowUp();
-                    } catch (error) {
-                        postSpawnFollowUpError = error;
-                        postSpawnFailurePhase = 'sending_first_turn';
-                        postSpawnFollowUpRetry = async () => {
-                            await runBuiltInPostSpawnFollowUp();
-                            await runAfterCreatedFollowUp();
-                        };
-                    }
-                }
-
-                storage.getState().updateSessionPermissionMode(result.sessionId, current.permissionMode);
-                if (getAgentCore(current.agentType).model.supportsSelection && current.modelMode && current.modelMode !== 'default') {
-                    storage.getState().updateSessionModelMode(result.sessionId, current.modelMode);
-                }
-
-                // Seed the session's model list from the wizard probe. Providers without a static
-                // catalog publish `sessionModelsV1` only once their runtime starts (first prompt),
-                // so without this seed the in-session model picker offers nothing but the current
-                // model, "Use CLI settings", and freeform custom until then. Best-effort and
-                // seed-only: the runtime publish stays authoritative, a lost race is a no-op, and
-                // a failed seed merely leaves the picker as it is today.
-                const preflightModelsForSeed = current.preflightModels;
-                const agentModelConfig = getAgentCore(current.agentType).model;
-                // `getModelOptionsForAgentType` always includes the `default` pseudo-entry, so
-                // "no option besides default" is exactly "no curated static catalog" — the
-                // agents whose picker would otherwise be empty until the runtime publishes.
-                const hasCuratedStaticModels = getModelOptionsForAgentType(current.agentType)
-                    .some((option) => option.value !== 'default');
-                if (
-                    preflightModelsForSeed
-                    && preflightModelsForSeed.availableModels.length > 0
-                    && backendTarget.kind === 'builtInAgent'
-                    && agentModelConfig.supportsSelection === true
-                    && agentModelConfig.dynamicProbe !== 'static-only'
-                    && !hasCuratedStaticModels
-                ) {
-                    fireAndForget(sync.publishSessionModelsSeedToMetadata({
-                        sessionId: createdSessionId,
-                        serverId: resolvedTargetServerId,
-                        agentId: current.agentType,
-                        currentModelId: spawnModelId ?? 'default',
-                        availableModels: preflightModelsForSeed.availableModels,
-                        updatedAt: spawnPermissionModeUpdatedAt,
-                    }), {
-                        tag: 'new-session-model-list-seed',
-                        onError: captureExceptionIfEnabled,
-                    });
-                }
-
-                if (!postSpawnFollowUpError && opts?.afterCreated) {
-                    try {
-                        await runAfterCreatedFollowUp();
-                    } catch (error) {
-                        postSpawnFollowUpError = error;
-                    }
-                }
-
-                const retryFailurePhaseByAttemptPhase = {
-                    uploading_attachments: 'upload',
-                    sending_first_turn: 'send',
-                } as const;
-                const classifyCurrentPostSpawnFailure = (failure: unknown) => classifyLaunchRetryFailure({
-                    phase: retryFailurePhaseByAttemptPhase[postSpawnFailurePhase],
-                    failure,
-                });
-
-                while (
-                    postSpawnFollowUpError
-                    && postSpawnFollowUpRetry
-                    && isDaemonUnavailableAlertError(postSpawnFollowUpError)
-                    && classifyCurrentPostSpawnFailure(postSpawnFollowUpError).kind === 'retryable'
-                ) {
-                    current.setIsCreating(false);
-                    const retryResolution = await promptDaemonUnavailableRetry({
-                        titleKey: 'newSession.daemonRpcUnavailableTitle',
-                        bodyKey: 'newSession.daemonRpcUnavailableBody',
-                        machine: current.selectedMachine,
-                    });
-                    suppressPostSpawnFollowUpAlert = true;
-
-                    if (retryResolution !== 'retry' || !mountedRef.current) {
-                        break;
-                    }
-
-                    if (!isLaunchScopeStillActive()) {
-                        operationReentryRegistration?.markSetupNeedsAttention(createdSessionId);
-                        launchAttemptRef.current = null;
-                        current.setIsCreating(false);
-                        return;
-                    }
-
-                    current.setIsCreating(true);
-                    try {
-                        await postSpawnFollowUpRetry();
-                        postSpawnFollowUpError = null;
-                        postSpawnFollowUpRetry = null;
-                    } catch (error) {
-                        suppressPostSpawnFollowUpAlert = false;
-                        postSpawnFollowUpError = error;
-                    }
-                }
-
-                if (!isLaunchScopeStillActive()) {
-                    operationReentryRegistration?.markSetupNeedsAttention(createdSessionId);
-                    launchAttemptRef.current = null;
-                    current.setIsCreating(false);
-                    return;
-                }
-
-                if (
-                    postSpawnFollowUpError
-                    && postSpawnFailurePhase === 'sending_first_turn'
-                    && isFirstTurnFollowUpTimeout(postSpawnFollowUpError)
-                ) {
-                    launchAttempt = markNewSessionLaunchAttemptFailed(launchAttempt, {
-                        phase: postSpawnFailurePhase,
-                        error: postSpawnFollowUpError,
-                        retryable: true,
-                    });
-                    launchAttemptRef.current = launchAttempt;
-                    postSpawnFollowUpError = null;
-                    postSpawnFollowUpRetry = null;
-                    suppressPostSpawnFollowUpAlert = true;
-                    preserveLaunchAttemptForFirstTurnRetry = true;
-                }
-
-                if (postSpawnFollowUpError) {
-                    operationReentryRegistration?.markSetupNeedsAttention(createdSessionId);
-                    const retryFailureClassification = classifyCurrentPostSpawnFailure(postSpawnFollowUpError);
-                    launchAttempt = markNewSessionLaunchAttemptFailed(launchAttempt, {
-                        phase: postSpawnFailurePhase,
-                        error: postSpawnFollowUpError,
-                        retryable: retryFailureClassification.kind === 'retryable',
-                    });
-                    launchAttemptRef.current = launchAttempt;
-
-                    if (!suppressPostSpawnFollowUpAlert) {
-                        const followUpDetail = postSpawnFollowUpError instanceof Error
-                            ? postSpawnFollowUpError.message
-                            : t('common.error');
-                        Modal.alert(
-                            t('newSession.createdWithSetupIssueTitle'),
-                            `${t('newSession.createdWithSetupIssueBody')}\n\n${t('common.details')}: ${followUpDetail}`,
-                        );
-                    }
-
-                    current.setIsCreating(false);
-                    return;
-                }
-
-                if (!preserveLaunchAttemptForFirstTurnRetry) {
-                    launchAttempt = markNewSessionLaunchAttemptComplete(launchAttempt);
-                }
+                launchAttempt = markNewSessionLaunchAttemptComplete(launchAttempt);
 
                 await requireSpawnedSessionVisibleForRoute({
                     sessionId: createdSessionId,
@@ -1276,83 +822,51 @@ export function useCreateNewSession(params: Readonly<{
                     getStoredSession: (sessionId) => storage.getState().sessions[sessionId] ?? null,
                     ensureSessionVisibleForMessageRoute: sync.ensureSessionVisibleForMessageRoute,
                 });
-                if (startsTerminal && storage.getState().sessions[createdSessionId]?.active !== true) {
+                if (storage.getState().sessions[createdSessionId]?.active !== true) {
                     // The terminal opens once the runner is online; until then the session is starting,
                     // not ended (the sessions store settles this marker as the runner comes online).
                     storage.getState().markSessionResuming(createdSessionId);
                     storage.getState().armSessionResumingFallback(createdSessionId);
                 }
 
-                const firstTurnTextForRoute = handedFirstTurnToDaemon
-                    ? daemonFirstTurnText
-                    : initialMessageText.trim();
-                if (firstTurnTextForRoute && !preserveLaunchAttemptForFirstTurnRetry && !startsTerminal) {
-                    const state = storage.getState();
-                    const session = state.sessions[createdSessionId] ?? null;
-                    if (session) {
-                        state.markSessionOptimisticThinking(createdSessionId);
-                    }
-                    projectLocalOutboundUserMessage({
-                        sessionId: createdSessionId,
-                        localId: launchAttempt.firstTurnLocalId,
-                        text: firstTurnTextForRoute,
-                        displayText: firstTurnTextForRoute,
-                        rawRecord: buildOutgoingUserTextRecord({
-                            text: firstTurnTextForRoute,
-                            sentFrom: resolveSentFrom(),
-                            displayText: firstTurnTextForRoute,
-                            agentId: current.agentType,
-                            modelMode: current.modelMode,
-                            permissionMode: current.permissionMode,
-                            settings: state.settings,
-                            session,
-                            metaOverrides: pendingFirstInputMeta,
-                        }),
-                        deliveryStatus: 'accepted',
-                    });
-                }
-
                 const sessionRoute = buildScopedSessionRouteHref({
                     sessionId: createdSessionId,
                     serverId: resolvedTargetServerId,
-                    suffix: postSpawnSessionRouteSuffix,
                 });
 
                 if (mountedRef.current && isLaunchScopeStillActive()) {
-                    current.router.replace(postSpawnReplacementHref ?? sessionRoute, {
+                    current.router.replace(sessionRoute, {
                         dangerouslySingular() {
                             return 'session';
                         },
                     });
                 }
 
-                if (!preserveLaunchAttemptForFirstTurnRetry) {
-                    if (operationCustody?.status === 'completed') {
-                        await completeMachineSpawnAttemptCustody({
-                            machineId: current.selectedMachineId,
-                            serverId: resolvedTargetServerId,
-                            custody: operationCustody,
-                        });
-                    }
-                    launchAttemptRef.current = null;
-                    current.disableDraftPersistence?.();
-                    if (launchDraftScope && launchDraftCurrentness) {
-                        await clearSessionDraftCurrentness({
-                            scope: launchDraftScope,
-                            address: { kind: 'newSession', draftId: current.draftId },
-                            currentness: launchDraftCurrentness,
-                        });
-                    }
-                    if (launchDraftScope) {
-                        clearSessionDraftLaunchCurrentness({
-                            scope: launchDraftScope,
-                            address: { kind: 'newSession', draftId: current.draftId },
-                            userAttemptId: launchAttempt.attemptId,
-                        });
-                    }
-                    current.onLaunchUserAttemptIdChange?.(null);
-                    operationReentryRegistration?.markWorkflowComplete(createdSessionId);
+                if (operationCustody?.status === 'completed') {
+                    await completeMachineSpawnAttemptCustody({
+                        machineId: current.selectedMachineId,
+                        serverId: resolvedTargetServerId,
+                        custody: operationCustody,
+                    });
                 }
+                launchAttemptRef.current = null;
+                current.disableDraftPersistence?.();
+                if (launchDraftScope && launchDraftCurrentness) {
+                    await clearSessionDraftCurrentness({
+                        scope: launchDraftScope,
+                        address: { kind: 'newSession', draftId: current.draftId },
+                        currentness: launchDraftCurrentness,
+                    });
+                }
+                if (launchDraftScope) {
+                    clearSessionDraftLaunchCurrentness({
+                        scope: launchDraftScope,
+                        address: { kind: 'newSession', draftId: current.draftId },
+                        userAttemptId: launchAttempt.attemptId,
+                    });
+                }
+                current.onLaunchUserAttemptIdChange?.(null);
+                operationReentryRegistration?.markWorkflowComplete(createdSessionId);
                 const persistedPresentedOperation = current.persistedOperationReentry?.operation;
                 const presentedOperation = persistedPresentedOperation?.state === 'succeeded'
                     && readTrackedSpawnCreatedSessionId(persistedPresentedOperation) === createdSessionId

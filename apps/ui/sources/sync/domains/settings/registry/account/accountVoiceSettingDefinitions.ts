@@ -1,6 +1,6 @@
 import { defineSettingDefinitions } from '@piggercode/protocol';
 
-import { DEFAULT_ELEVENLABS_VOICE_ID } from '@/realtime/elevenlabs/defaults';
+import { DEFAULT_ELEVENLABS_VOICE_ID } from '@/sync/domains/settings/voiceSettings';
 import { VoiceSettingsSchema, voiceSettingsDefaults, type VoiceSettings } from '@/sync/domains/settings/voiceSettings';
 
 function hasNonEmptyString(value: unknown): value is string {

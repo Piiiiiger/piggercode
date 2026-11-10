@@ -68,11 +68,8 @@ describe('settings navigation architecture', () => {
         const settingsLayout = readFileSync(SETTINGS_LAYOUT_PATH, 'utf8');
         expect(settingsLayout).toContain('SettingsStack');
 
-        for (const scope of ['settings', 'prompts'] as const) {
-            const root = scope === 'settings' ? SETTINGS_ROUTES_ROOT : join(SETTINGS_ROUTES_ROOT, scope);
-            expect(getSettingsStackScreenDefinitions((key) => key, scope).map((entry) => entry.name).sort())
-                .toEqual(stackRouteNames(root));
-        }
+        expect(getSettingsStackScreenDefinitions((key) => key).map((entry) => entry.name).sort())
+            .toEqual(stackRouteNames(SETTINGS_ROUTES_ROOT));
     });
 
     it('keeps settings screens from declaring their own static Stack.Screen chrome', () => {

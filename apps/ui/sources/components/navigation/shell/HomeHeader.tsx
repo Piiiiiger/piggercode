@@ -8,7 +8,6 @@ import { getServerInfo } from '@/sync/domains/server/serverConfig';
 import { Image } from 'expo-image';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { t } from '@/text';
-import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { Text } from '@/components/ui/text/Text';
 import { useConnectionHealth } from '@/components/navigation/connectionStatus/useConnectionHealth';
 import { UpdatesPopoverButton } from '@/components/updates/UpdatesPopoverButton';
@@ -76,15 +75,13 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
 
 export const HomeHeader = React.memo(() => {
     const { theme } = useUnistyles();
-    const automationsSupport = useAutomationsSupport();
-    const showAutomations = automationsSupport?.enabled !== false;
 
     return (
         <View style={{ backgroundColor: theme.colors.background.canvas }}>
             <Header
                 title={<HeaderTitleWithSubtitle />}
                 headerRight={() => <HeaderRight />}
-                headerLeft={() => <HeaderLeft showAutomations={showAutomations} />}
+                headerLeft={() => <HeaderLeft />}
                 headerShadowVisible={false}
                 headerTransparent={true}
             />
@@ -100,7 +97,7 @@ export const HomeHeaderNotAuth = React.memo(() => {
         <Header
             title={<HeaderTitleWithSubtitle subtitle={serverInfo.isCustom ? serverInfo.hostname + (serverInfo.port ? `:${serverInfo.port}` : '') : undefined} />}
             headerRight={() => <HeaderRightNotAuth />}
-            headerLeft={() => <HeaderLeft showAutomations={false} />}
+            headerLeft={() => <HeaderLeft />}
             headerShadowVisible={false}
             headerBackgroundColor={theme.colors.background.canvas}
         />
@@ -149,7 +146,7 @@ function HeaderRightNotAuth() {
     );
 }
 
-function HeaderLeft(props: { showAutomations: boolean }) {
+function HeaderLeft() {
     const router = useRouter();
     const updates = useSharedUpdatesSummary();
     const styles = stylesheet;
@@ -170,17 +167,6 @@ function HeaderLeft(props: { showAutomations: boolean }) {
             {updates.visible ? (
                 <UpdatesPopoverButton summary={updates} variant="header" testID="home-header-updates-pill" />
             ) : logo}
-            {props.showAutomations ? (
-                <Pressable
-                    onPress={() => router.push('/automations')}
-                    hitSlop={15}
-                    style={styles.headerButton}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('automations.openA11y')}
-                >
-                    <Icon name="timer" size={20} color={theme.colors.chrome.header.foreground} />
-                </Pressable>
-            ) : null}
         </View>
     );
 }

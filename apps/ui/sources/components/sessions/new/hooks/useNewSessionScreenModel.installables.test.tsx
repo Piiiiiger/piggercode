@@ -451,10 +451,6 @@ vi.mock('@/components/sessions/new/hooks/useCreateNewSession', () => ({
     }),
 }));
 
-vi.mock('@/components/sessions/agentInput/sessionActions/listAgentInputActionChipActionIds', () => ({
-    listAgentInputActionChipActionIds: () => agentInputActionChipActionIdsState.value,
-}));
-
 vi.mock('@/utils/system/fireAndForget', () => ({
     fireAndForget: (promise: Promise<unknown>) => {
         pendingFireAndForget.push(promise);
@@ -464,10 +460,6 @@ vi.mock('@/utils/system/fireAndForget', () => ({
 
 vi.mock('@/utils/sessions/tempDataStore', () => ({
     getTempData: () => null,
-}));
-
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: false }),
 }));
 
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
@@ -1041,147 +1033,6 @@ describe('useNewSessionScreenModel (installables)', () => {
         expect(model?.wizardProps?.profiles.selectedProfileId).toBe('profile-1');
         expect(model?.wizardProps?.agent.agentType).toBe('codex');
         expect(model?.wizardProps?.agent.agentLabel).toBe('agentInput.agent.codex');
-    });
-
-    it('shows a storage chip for direct-capable agents when direct sessions are enabled', async () => {
-        featureEnabledState.sessionsDirect = true;
-        settingsState.lastUsedAgent = 'codex';
-        settingsState.newSessionDefaultPersistenceModeV1 = 'persisted';
-        settingsState.newSessionDefaultPersistenceModeByTargetKeyV1 = {};
-        persistedDraft.agentType = 'codex';
-        cliAvailabilityState.value = {
-            timestamp: 1,
-            available: { codex: true, claude: true },
-        };
-
-        const hook = await renderNewSessionScreenModel();
-        let model = hook.getCurrent();
-
-        const chips = model?.simpleProps?.agentInputExtraActionChips ?? [];
-        expect(chips.some((chip: { key: string }) => chip.key === 'new-session-storage')).toBe(true);
-    });
-
-    it('seeds execution-run action chips with UI-normalized permission defaults', async () => {
-        agentInputActionChipActionIdsState.value = ['review.start'];
-
-        const hook = await renderNewSessionScreenModel();
-        let model = hook.getCurrent();
-
-        const chips = model?.simpleProps?.agentInputExtraActionChips ?? [];
-        const reviewChip = chips.find((chip: { key: string }) => chip.key === 'new-session-action:review.start');
-        expect(reviewChip).toBeTruthy();
-        expect(reviewChip?.controlId).toBe('shortcuts');
-        expect(typeof reviewChip?.collapsedAction).toBe('function');
-
-        const rendered = reviewChip.render({
-            chipStyle: () => null,
-            iconColor: '#000',
-            showLabel: true,
-            textStyle: {},
-            countTextStyle: {},
-            popoverAnchorRef: { current: null },
-        }) as React.ReactElement<{ onPress?: () => void }>;
-
-        await invokeHookAction(() => rendered.props.onPress?.());
-
-        expect(handleCreateSessionMock).toHaveBeenCalledTimes(1);
-        expect(createSessionActionDraftMock).toHaveBeenCalledWith(
-            'session-created',
-            expect.objectContaining({
-                actionId: 'review.start',
-                input: expect.objectContaining({
-                        permissionMode: 'read_only',
-                    changeType: 'uncommitted',
-                }),
-            }),
-        );
-    });
-
-    it('defaults the storage chip from the global persistence setting', async () => {
-        featureEnabledState.sessionsDirect = true;
-        settingsState.lastUsedAgent = 'codex';
-        settingsState.newSessionDefaultPersistenceModeV1 = 'direct';
-        settingsState.newSessionDefaultPersistenceModeByTargetKeyV1 = {};
-        settingsState.useProfiles = false;
-        settingsState.profiles = [];
-        persistedDraft.agentType = 'codex';
-        persistedDraft.selectedProfileId = null;
-        delete (persistedDraft as any).transcriptStorage;
-        cliAvailabilityState.value = {
-            timestamp: 1,
-            available: { codex: true, claude: true },
-        };
-
-        const hook = await renderNewSessionScreenModel();
-        let model = hook.getCurrent();
-
-        const chips = model?.simpleProps?.agentInputExtraActionChips ?? [];
-        const storageChip = chips.find((chip: { key: string }) => chip.key === 'new-session-storage');
-        expect(storageChip).toBeTruthy();
-        expect(storageChip?.controlId).toBe('storage');
-        expect(storageChip?.collapsedAction).toBeUndefined();
-        expect(storageChip?.collapsedOptionsPopover?.selectedOptionId).toBe('direct');
-        const storageSection = storageChip?.collapsedOptionsPopover?.rootStep?.sections?.[0];
-        const storageOptions = storageSection && storageSection.kind === 'static' ? storageSection.options : [];
-        expect(storageOptions.map((option: { id: string }) => option.id)).toEqual([
-            'persisted',
-            'direct',
-        ]);
-
-        const chipScreen = await renderScreen(storageChip.render({
-            chipStyle: () => null,
-            iconColor: '#000',
-            showLabel: true,
-            textStyle: {},
-        }));
-        expect(chipScreen.getTextContent()).toContain('sessionsList.storageDirectTab');
-    });
-
-    it('prefers selected profile storage defaults over account defaults', async () => {
-        featureEnabledState.sessionsDirect = true;
-        settingsState.lastUsedAgent = 'codex';
-        settingsState.newSessionDefaultPersistenceModeV1 = 'persisted';
-        settingsState.newSessionDefaultPersistenceModeByTargetKeyV1 = { 'agent:codex': 'persisted' };
-        settingsState.useProfiles = true;
-        settingsState.profiles = [{
-            id: 'profile-1',
-            name: 'Profile One',
-            environmentVariables: [],
-            defaultPermissionModeByAgent: {},
-            defaultPermissionModeByTargetKey: {},
-            defaultPersistenceModeByAgent: {},
-            defaultPersistenceModeByTargetKey: { 'agent:codex': 'direct' },
-            compatibility: { codex: true, claude: true },
-            compatibilityByTargetKey: {},
-            envVarRequirements: [],
-            isBuiltIn: false,
-            defaultEnabled: true,
-            createdAt: 0,
-            updatedAt: 0,
-            version: '1.0.0',
-        }];
-        persistedDraft.agentType = 'codex';
-        persistedDraft.selectedProfileId = 'profile-1';
-        delete (persistedDraft as any).transcriptStorage;
-        cliAvailabilityState.value = {
-            timestamp: 1,
-            available: { codex: true, claude: true },
-        };
-
-        const hook = await renderNewSessionScreenModel();
-        let model = hook.getCurrent();
-
-        const chips = model?.simpleProps?.agentInputExtraActionChips ?? [];
-        const storageChip = chips.find((chip: { key: string }) => chip.key === 'new-session-storage');
-        expect(storageChip).toBeTruthy();
-
-        const chipScreen = await renderScreen(storageChip.render({
-            chipStyle: () => null,
-            iconColor: '#000',
-            showLabel: true,
-            textStyle: {},
-        }));
-        expect(chipScreen.getTextContent()).toContain('sessionsList.storageDirectTab');
     });
 
     it('shows a Windows session-mode chip on Windows machines through the canonical control and shared options popover', async () => {

@@ -68,6 +68,7 @@ describe('machineSpawnNewSession error mapping', () => {
             happyCliVersion: '0.2.0',
             happyHomeDir: '/Users/alice/.piggercode',
             homeDir: '/Users/alice',
+            daemonNativeTerminalSessionsSupported: true,
           },
           metadataVersion: 1,
           daemonState: null,
@@ -230,29 +231,31 @@ describe('machineSpawnNewSession error mapping', () => {
     }));
   });
 
-  it('sends a 「终端」 session only to a machine whose daemon starts them, never as a chat to an older one', async () => {
+  it('starts every session as a terminal, and only on a machine whose daemon starts them, never as a chat on an older one', async () => {
     const { machineSpawnNewSession } = await import('./machines');
-    const terminalSpawn = {
+    // Nothing in the request asks for a terminal: every session is one.
+    const spawn = {
       machineId: 'machine-1',
       directory: '/tmp',
       backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
       serverId: 'server-b',
       accountSettingsVersionHint: 12,
-      nativeTerminal: true,
     } as const;
+    const machine = storage.getState().machines['machine-1']!;
+    const setStartsTerminals = (supported: boolean) => storage.setState({
+      machines: {
+        'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: supported } },
+      },
+    });
 
-    const refused = await machineSpawnNewSession(terminalSpawn);
+    setStartsTerminals(false);
+    const refused = await machineSpawnNewSession(spawn);
     expect(refused).toMatchObject({ type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST });
     expect(machineRpcWithServerScopeMock).not.toHaveBeenCalled();
 
-    const machine = storage.getState().machines['machine-1']!;
-    storage.setState({
-      machines: {
-        'machine-1': { ...machine, metadata: { ...machine.metadata!, daemonNativeTerminalSessionsSupported: true } },
-      },
-    });
+    setStartsTerminals(true);
     machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-1' });
-    await expect(machineSpawnNewSession(terminalSpawn)).resolves.toMatchObject({ type: 'success', sessionId: 'session-1' });
+    await expect(machineSpawnNewSession(spawn)).resolves.toMatchObject({ type: 'success', sessionId: 'session-1' });
     expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
       payload: expect.objectContaining({ nativeTerminal: true }),
     }));
@@ -1294,220 +1297,7 @@ describe('machineSpawnNewSession error mapping', () => {
     expect(result).toMatchObject({ type: 'success', sessionId: 'session-legacy' });
   });
 
-  it('builds a legacy spawn payload for older daemon versions', async () => {
-    storage.getState().applyMachines([
-      {
-        id: 'machine-legacy',
-        seq: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        active: true,
-        activeAt: 1,
-        metadata: {
-          host: 'legacy-machine', platform: 'darwin', happyCliVersion: '0.0.99',
-          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
-        },
-        metadataVersion: 0,
-        daemonState: {
-          startedWithCliVersion: '0.0.99',
-        },
-        daemonStateVersion: 1,
-      },
-    ]);
-    machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-legacy' });
-
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-legacy',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-      codexBackendMode: 'acp',
-      serverId: 'server-b',
-    });
-
-    expect(result).toMatchObject({ type: 'success', sessionId: 'session-legacy' });
-    expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
-      payload: expect.objectContaining({
-        type: 'spawn-in-directory',
-        directory: '/tmp',
-        agent: 'codex',
-        experimentalCodexAcp: true,
-      }),
-    }));
-    expect(machineRpcWithServerScopeMock.mock.calls[0]?.[0]?.payload).not.toHaveProperty('backendTarget');
-  });
-
-  it('reports when transport compatibility strips pending first input', async () => {
-    storage.getState().applyMachines([
-      {
-        id: 'machine-legacy-first-input',
-        seq: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        active: true,
-        activeAt: 1,
-        metadata: {
-          host: 'legacy-first-input-machine', platform: 'darwin', happyCliVersion: '0.2.10-dev.40',
-          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
-        },
-        metadataVersion: 0,
-        daemonState: {
-          startedWithCliVersion: '0.2.10-dev.40',
-        },
-        daemonStateVersion: 1,
-      },
-    ]);
-    machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-with-ui-follow-up' });
-
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-legacy-first-input',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-      serverId: 'server-b',
-      pendingFirstInput: { text: 'do not lose me', localId: 'first-turn-1' },
-    });
-
-    expect(result).toMatchObject({
-      type: 'success',
-      sessionId: 'session-with-ui-follow-up',
-      pendingFirstInputTransferred: false,
-    });
-    expect(machineRpcWithServerScopeMock.mock.calls[0]?.[0]?.payload).not.toHaveProperty('pendingFirstInput');
-  });
-
-  it('uses the daemon acknowledgement instead of inferring first-input custody from its version', async () => {
-    storage.getState().applyMachines([
-      {
-        id: 'machine-modern-first-input',
-        seq: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        active: true,
-        activeAt: 1,
-        metadata: {
-          host: 'modern-first-input-machine', platform: 'darwin', happyCliVersion: '0.2.10-dev.80',
-          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
-        },
-        metadataVersion: 0,
-        daemonState: {
-          startedWithCliVersion: '0.2.10-dev.80',
-        },
-        daemonStateVersion: 1,
-      },
-    ]);
-    machineRpcWithServerScopeMock.mockResolvedValueOnce({
-      type: 'success',
-      sessionId: 'session-with-daemon-rejection',
-      pendingFirstInputAccepted: false,
-    });
-
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-modern-first-input',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-      serverId: 'server-b',
-      pendingFirstInput: { text: 'do not lose me', localId: 'first-turn-2' },
-    });
-
-    expect(result).toMatchObject({
-      type: 'success',
-      sessionId: 'session-with-daemon-rejection',
-      pendingFirstInputTransferred: false,
-    });
-    expect(machineRpcWithServerScopeMock.mock.calls[0]?.[0]?.payload).toHaveProperty('pendingFirstInput');
-  });
-
-  it('keeps the modern spawn payload for compatible 0.1.0 dev daemon versions', async () => {
-    storage.getState().applyMachines([
-      {
-        id: 'machine-dev',
-        seq: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        active: true,
-        activeAt: 1,
-        metadata: {
-          host: 'dev-machine', platform: 'darwin', happyCliVersion: '0.1.0-dev',
-          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
-        },
-        metadataVersion: 0,
-        daemonState: {
-          startedWithCliVersion: '0.1.0-dev.1775063171.91734',
-        },
-        daemonStateVersion: 1,
-      },
-    ]);
-    machineRpcWithServerScopeMock.mockResolvedValueOnce({ type: 'success', sessionId: 'session-dev' });
-
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-dev',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-      codexBackendMode: 'acp',
-      serverId: 'server-b',
-    });
-
-    expect(result).toMatchObject({ type: 'success', sessionId: 'session-dev' });
-    expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
-      payload: expect.objectContaining({
-        type: 'spawn-in-directory',
-        directory: '/tmp',
-        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
-      }),
-    }));
-    expect(machineRpcWithServerScopeMock.mock.calls[0]?.[0]?.payload).not.toHaveProperty('agent');
-  });
-
-  it('maps misleading legacy daemon directory errors into a compatibility hint when the app sent a directory', async () => {
-    storage.getState().applyMachines([
-      {
-        id: 'machine-legacy',
-        seq: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        active: true,
-        activeAt: 1,
-        metadata: {
-          host: 'legacy-machine', platform: 'darwin', happyCliVersion: '0.0.99',
-          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
-        },
-        metadataVersion: 0,
-        daemonState: {
-          startedWithCliVersion: '0.0.99',
-        },
-        daemonStateVersion: 1,
-      },
-    ]);
-    machineRpcWithServerScopeMock.mockResolvedValueOnce({
-      type: 'error',
-      errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-      errorMessage: 'Directory is required',
-    });
-
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-legacy',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-      serverId: 'server-b',
-    });
-
-    expect(result).toEqual({
-      type: 'error',
-      errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-      errorMessage: expect.stringContaining('incompatible'),
-    });
-    if (result.type !== 'error') throw new Error('expected an error result');
-    expect(result.errorMessage).toContain('re-authorize');
-  });
-
-  // A legacy daemon strips an unknown `sourceContext` silently and reports
-  // success, so a downgraded source-context spawn would create an ordinary blank
-  // Session with no visible failure. The client detects this case locally.
-  it('refuses a source-context spawn instead of downgrading it to legacy params', async () => {
+  it('refuses a session on a machine whose CLI cannot run it as a terminal, without starting anything there', async () => {
     storage.getState().applyMachines([
       {
         id: 'machine-legacy',
@@ -1532,72 +1322,13 @@ describe('machineSpawnNewSession error mapping', () => {
       directory: '/tmp',
       backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
       serverId: 'server-b',
-      sourceContext: {
-        v: 1,
-        kind: 'session_replay',
-        sourceSessionId: 'sess_source',
-        forkPoint: { type: 'latest' },
-      },
-    } as any);
+    });
 
     expect(result.type).toBe('error');
     if (result.type !== 'error') throw new Error('expected an error result');
     expect(result.errorCode).toBe(SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST);
-    expect(result.errorMessage).toContain('Update or reconnect the CLI');
+    expect(result.errorMessage).toContain('Update the PiggerCode CLI');
     // No blank Session is created behind the user's back.
-    expect(machineRpcWithServerScopeMock).not.toHaveBeenCalled();
-  });
-
-  it('refuses a source-context spawn when the daemon version is unknown', async () => {
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-1',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-      serverId: 'server-b',
-      sourceContext: {
-        v: 1,
-        kind: 'session_replay',
-        sourceSessionId: 'sess_source',
-        forkPoint: { type: 'latest' },
-      },
-    } as any);
-
-    expect(result).toMatchObject({
-      type: 'error',
-      errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-    });
-    expect(machineRpcWithServerScopeMock).not.toHaveBeenCalled();
-  });
-
-  it('refuses a source-context spawn for a supported older v0.2 daemon', async () => {
-    storage.setState((state) => ({
-      machines: {
-        ...state.machines,
-        'machine-1': {
-          ...state.machines['machine-1']!,
-          daemonState: { startedWithCliVersion: '0.2.0' },
-        },
-      },
-    }));
-    const { machineSpawnNewSession } = await import('./machines');
-    const result = await machineSpawnNewSession({
-      machineId: 'machine-1',
-      directory: '/tmp',
-      backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-      serverId: 'server-b',
-      sourceContext: {
-        v: 1,
-        kind: 'session_replay',
-        sourceSessionId: 'sess_source',
-        forkPoint: { type: 'latest' },
-      },
-    } as any);
-
-    expect(result).toMatchObject({
-      type: 'error',
-      errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-    });
     expect(machineRpcWithServerScopeMock).not.toHaveBeenCalled();
   });
 

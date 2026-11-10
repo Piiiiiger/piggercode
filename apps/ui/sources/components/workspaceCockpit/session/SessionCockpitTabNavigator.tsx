@@ -20,15 +20,14 @@ type SessionCockpitTabParamList = {
     chat: undefined;
     browse: undefined;
     git: undefined;
-    navigation: undefined;
     tabs: undefined;
     terminal: undefined;
 };
 
 const Tab = createBottomTabNavigator<SessionCockpitTabParamList>();
 
-const SESSION_COCKPIT_SURFACES_WITH_TERMINAL: readonly SessionMobileSurface[] = ['chat', 'browse', 'git', 'navigation', 'tabs', 'terminal'];
-const SESSION_COCKPIT_SURFACES_WITHOUT_TERMINAL: readonly SessionMobileSurface[] = ['chat', 'browse', 'git', 'navigation', 'tabs'];
+const SESSION_COCKPIT_SURFACES_WITH_TERMINAL: readonly SessionMobileSurface[] = ['chat', 'browse', 'git', 'tabs', 'terminal'];
+const SESSION_COCKPIT_SURFACES_WITHOUT_TERMINAL: readonly SessionMobileSurface[] = ['chat', 'browse', 'git', 'tabs'];
 const DISABLED_NAVIGATION_LINKING = { enabled: false, prefixes: [] };
 const SESSION_COCKPIT_TAB_SCREEN_OPTIONS = {
     headerShown: false,

@@ -1,6 +1,5 @@
 import { getServerFetchUrl, matchServerFetchUrl } from '@/dev/testkit/mocks/serverFetch';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { TranscriptRowShellItem } from '@/components/sessions/transcript/measurement/transcriptRowShellSignature';
 
 vi.mock('react-native', async () => {
     const { createReactNativeWebMock } = await import('@/dev/testkit/mocks/reactNative');
@@ -1423,56 +1422,6 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
         await expect(sync.loadOlderMessages(sessionId)).resolves.toMatchObject({ status: 'no_more' });
     });
 
-    it('stages a hosted-to-direct handoff before retiring hosted rows and numeric pagination', async () => {
-        const sessionId = 'hosted_to_direct_handoff';
-        const { sync } = await import('./sync');
-        const { buildSessionHandoffMetadataPatch } = await import('./ops/buildSessionHandoffMetadataPatch');
-        const internals = sync as unknown as {
-            encryption: { getSessionEncryption: () => null };
-            fetchMessages(id: string): Promise<void>;
-            openSessionTailDiscontinuityFromSnapshotPage(id: string, prefix: number, page: { messages: Array<{ seq: number }> }): void;
-        };
-        internals.encryption = { getSessionEncryption: () => null };
-        const hosted = { ...createSession(sessionId), encryptionMode: 'plain' as const };
-        storage.getState().applySessions([hosted]);
-        requestMock.mockResolvedValueOnce(Response.json({
-            messages: [1, 1000].map((seq) => ({ id: `hosted-${seq}`, seq, localId: null, createdAt: seq,
-                content: { t: 'plain', v: { role: 'user', content: { type: 'text', text: `hosted ${seq}` } } } })),
-            hasMore: true, nextBeforeSeq: 1,
-        }));
-        await internals.fetchMessages(sessionId);
-        internals.openSessionTailDiscontinuityFromSnapshotPage(sessionId, 1, { messages: [{ seq: 1000 }] });
-        const accepted = storage.getState().sessionMessages[sessionId];
-        storage.getState().applySessions([{ ...hosted, metadata: buildSessionHandoffMetadataPatch({
-            metadata: { path: '/workspace', host: 'host', machineId: 'source-machine' },
-            providerId: 'codex', sourceMachineId: 'source-machine', targetMachineId: 'machine-1',
-            sessionStorageBefore: 'persisted', sessionStorageAfter: 'direct', targetPath: '/workspace',
-            transportStrategy: 'direct_peer', completedAtMs: 2, targetRemoteSessionId: 'vendor-session-1',
-            targetDirectSource: { kind: 'codexHome', home: 'user' },
-        }) }]);
-        machineDirectSessionTranscriptReadAfterMock.mockResolvedValue({ ok: true, items: [], nextCursor: 'tail-now', truncated: false });
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({ ok: false, error: 'temporarily offline' });
-        await expect(internals.fetchMessages(sessionId)).rejects.toThrow('temporarily offline');
-        expect(storage.getState().sessionMessages[sessionId]).toBe(accepted);
-        expect(storage.getState().getSessionTailContiguousBoundary(sessionId)).toEqual({ kind: 'seq', seq: 1000 });
-
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({ ok: true,
-            items: [{ id: 'direct-initial', createdAtMs: 2000, raw: { role: 'user', content: { type: 'text', text: 'direct initial' } } }],
-            nextCursor: 'direct-older', tailCursor: 'direct-tail', hasMore: true,
-        }).mockResolvedValueOnce({ ok: true,
-            items: [{ id: 'direct-older-row', createdAtMs: 1500, raw: { role: 'user', content: { type: 'text', text: 'direct older' } } }],
-            nextCursor: null, hasMore: false,
-        });
-        await internals.fetchMessages(sessionId);
-        expect(Object.values(storage.getState().sessionMessages[sessionId]?.messagesById ?? {}).map((message) => message.realID))
-            .toEqual(['direct-initial']);
-        expect(storage.getState().getSessionTailContiguousBoundary(sessionId)).toBeNull();
-        expect(sync.getSessionTailDiscontinuityOlderAvailability(sessionId)).toBeNull();
-        await sync.loadOlderMessages(sessionId);
-        expect(machineDirectSessionTranscriptPageMock).toHaveBeenLastCalledWith(expect.objectContaining({ cursor: 'direct-older' }), expect.anything());
-        expect(machineDirectSessionTranscriptReadAfterMock).not.toHaveBeenCalled();
-    });
-
     it.each(['hosted', 'direct', 'direct-link'] as const)('discards a held %s initial page after the Session switches transcript source', async (source) => {
         const sessionId = `held_${source}_handoff`;
         const { sync } = await import('./sync');
@@ -2107,103 +2056,6 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
         await sync.loadOlderMessages(sessionId);
         expect(machineDirectSessionTranscriptPageMock).toHaveBeenLastCalledWith(
             expect.objectContaining({ cursor: 'prefix-older' }), expect.anything(),
-        );
-    });
-
-    it.each(['snapshot', 'forward', 'push'] as const)('bridges a direct source gap with raw tool-result identity and reveals visible %s tail rows', async (tailSource) => {
-        const sessionId = `direct_tool_result_gap_${tailSource}`;
-        storage.getState().applySessions([createDirectSession(sessionId)]);
-        const toolCall = {
-            id: 'source-call', createdAtMs: 1,
-            raw: { role: 'agent', content: { type: 'codex', data: {
-                type: 'tool-call', id: 'call-event', callId: 'tool-1', name: 'exec', input: {},
-            } } },
-        };
-        const toolResult = (id: string, createdAtMs: number) => ({
-            id, createdAtMs,
-            raw: { role: 'agent', content: { type: 'codex', data: {
-                type: 'tool-call-result', id, callId: 'tool-1', output: id,
-            } } },
-        });
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({
-            ok: true, items: [toolCall], nextCursor: 'original-older', tailCursor: 'initial-tail', hasMore: true,
-        });
-        const { sync } = await import('./sync');
-        const internals = sync as unknown as {
-            fetchMessages: (id: string) => Promise<void>;
-            handleDirectSessionTranscriptEphemeralUpdate: (update: {
-                sessionId: string;
-                items: Array<{ id: string; createdAtMs: number; raw: { role: string; content: { type: string; text: string } } }>;
-                fromCursor: string;
-                nextCursor: string;
-                truncated: boolean;
-            }) => Promise<void>;
-        };
-        await internals.fetchMessages(sessionId);
-        machineDirectSessionTranscriptReadAfterMock.mockResolvedValueOnce({
-            ok: true, items: [toolResult('prefix-result', 2)], nextCursor: 'capped-tail', truncated: false, truncationReason: 'page_limit',
-        });
-        await sync.refreshSessionMessages(sessionId);
-        const prefix = storage.getState().sessionMessages[sessionId];
-        expect(prefix?.reducerState.messageIds.has('prefix-result')).toBe(false);
-        const toolId = prefix?.reducerState.toolIdToMessageId.get('tool-1');
-        expect(toolId).toBeDefined();
-        const visibleTail = {
-            id: 'island-text', createdAtMs: 11, raw: { role: 'user', content: { type: 'text', text: 'latest' } },
-        };
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({
-            ok: true,
-            items: [toolResult('island-result', 10), ...(tailSource === 'snapshot' ? [visibleTail] : [])],
-            nextCursor: 'island-older', tailCursor: 'island-tail', hasMore: true,
-        });
-        await sync.refreshSessionMessages(sessionId);
-        if (tailSource !== 'snapshot') {
-            expect(storage.getState().getSessionTailContiguousBoundary(sessionId))
-                .toEqual({ kind: 'messageIds', messageIds: [] });
-            if (tailSource === 'forward') {
-                machineDirectSessionTranscriptReadAfterMock.mockResolvedValueOnce({
-                    ok: true, items: [visibleTail], nextCursor: 'visible-tail', truncated: false,
-                });
-                await sync.refreshSessionMessages(sessionId);
-            } else {
-                await internals.handleDirectSessionTranscriptEphemeralUpdate({
-                    sessionId, items: [visibleTail], fromCursor: 'island-tail', nextCursor: 'visible-tail', truncated: false,
-                });
-            }
-        }
-        const accepted = storage.getState().sessionMessages[sessionId];
-        const islandId = accepted?.reducerState.messageIds.get('island-text');
-        expect(islandId).toBeDefined();
-        expect(accepted?.messagesById[toolId!]).toBeDefined();
-        const { resolveTranscriptRenderWindowProjection } = await import('@/components/sessions/transcript/viewport/window/resolveTranscriptRenderWindowProjection');
-        const { createTranscriptWindowGapItem } = await import('@/components/sessions/transcript/viewport/window/transcriptWindowGapItem');
-        const { collectTranscriptNavigationMessageIdsForItem } = await import('@/components/sessions/transcript/viewport/lifecycle/transcriptRowClassification');
-        const items: TranscriptRowShellItem[] = (accepted?.messageIdsOldestFirst ?? []).map((messageId) => ({
-            kind: 'message' as const, id: messageId, messageId, createdAt: accepted!.messagesById[messageId].createdAt, seq: null,
-        }));
-        const projection = resolveTranscriptRenderWindowProjection({
-            activeThinkingMessageId: null, createWindowGapItem: createTranscriptWindowGapItem,
-            entrySliceWindow: null, expandedToolCallsAnchorMessageIds: new Set<string>(),
-            items, listOrientation: 'standard', platformOS: 'web', rendererKind: 'legendList', sessionId,
-            targetWindowState: sync.getSessionTargetWindowState(sessionId),
-            transcriptNativeHotTailItemCount: 0, transcriptWebHotTailItemCount: 0,
-            tailContiguousBoundary: storage.getState().getSessionTailContiguousBoundary(sessionId),
-            resolveMessageIds: collectTranscriptNavigationMessageIdsForItem,
-        });
-        expect(projection.listData.map((item) => item.id))
-            .toEqual(['transcript-window-gap:tail:older', islandId]);
-        expect(storage.getState().getSessionTailContiguousBoundary(sessionId))
-            .toEqual({ kind: 'messageIds', messageIds: [islandId] });
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({
-            ok: true, items: [toolResult('prefix-result', 2)], nextCursor: 'island-older', hasMore: true,
-        });
-        // Real raw overlap bridges even when the returned opaque cursor is unchanged.
-        await sync.loadOlderMessages(sessionId);
-        expect(storage.getState().getSessionTailContiguousBoundary(sessionId)).toBeNull();
-        machineDirectSessionTranscriptPageMock.mockResolvedValueOnce({ ok: true, items: [], nextCursor: null, hasMore: false });
-        await sync.loadOlderMessages(sessionId);
-        expect(machineDirectSessionTranscriptPageMock).toHaveBeenLastCalledWith(
-            expect.objectContaining({ cursor: 'original-older' }), expect.anything(),
         );
     });
 

@@ -85,10 +85,6 @@ vi.mock('@/hooks/server/useFriendsIdentityReadiness', () => ({
     useFriendsIdentityReadiness: () => ({ ready: true }),
 }));
 
-vi.mock('@/hooks/server/useAutomationsSupport', () => ({
-    useAutomationsSupport: () => ({ enabled: true }),
-}));
-
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: () => false,
 }));
@@ -152,10 +148,6 @@ vi.mock('@/components/navigation/Header', () => ({
 
 vi.mock('@/components/ui/navigation/HeaderLogo', () => ({
     HeaderLogo: 'HeaderLogo',
-}));
-
-vi.mock('@/components/voice/surface/VoiceSurface', () => ({
-    VoiceSurface: 'VoiceSurface',
 }));
 
 vi.mock('@/components/ui/status/StatusDot', () => ({

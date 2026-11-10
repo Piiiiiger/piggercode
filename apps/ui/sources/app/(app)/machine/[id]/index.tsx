@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { View, ScrollView, RefreshControl, Platform, Pressable } from 'react-native';
+import { View, RefreshControl, Platform, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
@@ -11,22 +11,13 @@ import { Typography } from '@/constants/Typography';
 import { useSessions, useAllMachines, useMachine, storage, useSetting, useSettingMutable, useSettings } from '@/sync/domains/state/storage';
 import type { Machine, MachineMetadata, Session } from '@/sync/domains/state/storageTypes';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
-import {
-    machineStopDaemon,
-    machineStopSession,
-    machineUpdateMetadata,
-    machineExecutionRunsList,
-    machineClearReplacementFromAccount,
-    machineReplaceInAccount,
-    machineRevokeFromAccount,
-} from '@/sync/ops';
-import { sessionExecutionRunStop } from '@/sync/ops/sessionExecutionRuns';
+import { machineStopDaemon, machineUpdateMetadata, machineClearReplacementFromAccount, machineReplaceInAccount, machineRevokeFromAccount } from '@/sync/ops';
 import { Modal } from '@/modal';
 import { formatPathRelativeToHome, getSessionName, getSessionSubtitle } from '@/utils/sessions/sessionUtils';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 import { sync } from '@/sync/sync';
 import { fireAndForget } from '@/utils/system/fireAndForget';
-import { tryShowDaemonUnavailableAlertForRpcError, tryShowDaemonUnavailableAlertForRpcFailure } from '@/utils/errors/daemonUnavailableAlert';
+import { tryShowDaemonUnavailableAlertForRpcError } from '@/utils/errors/daemonUnavailableAlert';
 import { useUnistyles, StyleSheet } from 'react-native-unistyles';
 import { t } from '@/text';
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
@@ -44,8 +35,6 @@ import {
 import { Switch } from '@/components/ui/forms/Switch';
 import { CAPABILITIES_REQUEST_MACHINE_DETAILS } from '@/capabilities/requests';
 import { setActiveServerAndSwitch } from '@/sync/domains/server/activeServerSwitch';
-import type { DaemonExecutionRunEntry } from '@piggercode/protocol';
-import { ExecutionRunRow } from '@/components/sessions/runs/ExecutionRunRow';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { useMountedShouldContinue } from '@/hooks/ui/useMountedShouldContinue';
 import { PathInputBrowseButton } from '@/components/ui/pathBrowser/PathInputBrowseButton';
@@ -206,13 +195,6 @@ export default function MachineDetailScreen() {
     const settings = useSettings();
     const applySettings = useApplySettings();
     const activeServerId = getActiveServerId();
-    const [executionRunsState, setExecutionRunsState] = useState<
-        | { status: 'idle' | 'loading'; runs: readonly DaemonExecutionRunEntry[] }
-        | { status: 'loaded'; runs: readonly DaemonExecutionRunEntry[] }
-        | { status: 'error'; runs: readonly DaemonExecutionRunEntry[]; error: string }
-    >({ status: 'idle', runs: [] });
-    const [showFinishedRuns, setShowFinishedRuns] = useState(false);
-    const [stoppingRunId, setStoppingRunId] = useState<string | null>(null);
 
     const requestedServerId = typeof serverIdParam === 'string' ? serverIdParam.trim() : '';
     React.useEffect(() => {
@@ -565,42 +547,11 @@ export default function MachineDetailScreen() {
             }, async () => {
                 await sync.refreshMachines();
                 refreshDetectedCapabilities({ bypassCache: true });
-                if (machineId && isOnline && !isServerSwitching) {
-                    setExecutionRunsState((prev) => ({ status: 'loading', runs: prev.runs }));
-                    const res = await machineExecutionRunsList(machineId, { serverId: activeServerId });
-                    if (res.ok) {
-                        setExecutionRunsState({ status: 'loaded', runs: res.runs });
-                    } else {
-                        setExecutionRunsState((prev) => ({ status: 'error', runs: prev.runs, error: res.error }));
-                    }
-                }
             });
         } finally {
             setIsRefreshing(false);
         }
     };
-
-    React.useEffect(() => {
-        if (!machineId) return;
-        if (!isOnline) return;
-        if (isServerSwitching) return;
-
-        let cancelled = false;
-        setExecutionRunsState((prev) => ({ status: 'loading', runs: prev.runs }));
-        fireAndForget((async () => {
-            const res = await machineExecutionRunsList(machineId, { serverId: activeServerId });
-            if (cancelled) return;
-            if (res.ok) {
-                setExecutionRunsState({ status: 'loaded', runs: res.runs });
-            } else {
-                setExecutionRunsState((prev) => ({ status: 'error', runs: prev.runs, error: res.error }));
-            }
-        })(), { tag: 'MachineDetailScreen.fetchExecutionRuns' });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [activeServerId, isOnline, isServerSwitching, machineId]);
 
     const refreshCapabilities = useCallback(async () => {
         if (!machineId) return;
@@ -1296,178 +1247,6 @@ export default function MachineDetailScreen() {
                             subtitle={String(machine.daemonStateVersion)}
                         />
                 </ItemGroup>
-
-                {/* Execution runs */}
-                {executionRunsState.status !== 'idle' && (
-                    <ItemGroup title={t('runs.title')}>
-                        <Item
-                            title={t('runs.showFinished')}
-                            showChevron={false}
-                            rightElement={(
-                                <Switch
-                                    value={showFinishedRuns}
-                                    onValueChange={setShowFinishedRuns}
-                                    disabled={executionRunsState.status === 'loading'}
-                                />
-                            )}
-                        />
-                        {executionRunsState.status === 'loading' ? (
-                            <Item
-                                title={t('common.loading')}
-                                showChevron={false}
-                                rightElement={<ActivitySpinner size="small" color={theme.colors.text.secondary} />}
-                            />
-                        ) : executionRunsState.status === 'error' ? (
-                            <Item
-                                title={t('common.error')}
-                                subtitle={executionRunsState.error}
-                                subtitleStyle={{ color: theme.colors.text.secondary }}
-                                showChevron={false}
-                            />
-                        ) : (showFinishedRuns ? executionRunsState.runs : executionRunsState.runs.filter((r) => r.status === 'running')).length === 0 ? (
-                            <Item
-                                title={t('runs.empty')}
-                                subtitle={t('runs.empty')}
-                                subtitleStyle={{ color: theme.colors.text.secondary }}
-                                showChevron={false}
-                            />
-                        ) : (
-                            (() => {
-                                const visibleRuns = showFinishedRuns
-                                    ? executionRunsState.runs
-                                    : executionRunsState.runs.filter((r) => r.status === 'running');
-
-                                const grouped = new Map<string, DaemonExecutionRunEntry[]>();
-                                for (const run of visibleRuns) {
-                                    const key = run.happySessionId;
-                                    const list = grouped.get(key) ?? [];
-                                    list.push(run);
-                                    grouped.set(key, list);
-                                }
-                                const orderedSessionIds = Array.from(grouped.keys()).sort();
-
-                                return orderedSessionIds.flatMap((sessionId) => {
-                                    const runs = grouped.get(sessionId) ?? [];
-                                    runs.sort((a, b) => (a.startedAtMs ?? 0) - (b.startedAtMs ?? 0));
-
-                                    const header = (
-                                        <Item
-                                            key={`sess-${sessionId}`}
-                                            title={t('runs.sessionTitle', { sessionId })}
-                                            subtitle={t('runs.openSession')}
-                                            subtitleStyle={{ color: theme.colors.text.secondary }}
-                                            onPress={() => navigateToSession(sessionId)}
-                                            rightElement={<Icon name="caret-right" size={20} color={theme.colors.text.secondary} />}
-                                        />
-                                    );
-
-                                    const rows = runs.slice(0, 20).map((run) => {
-                                        const detailParts: string[] = [t('runs.detail.pid', { pid: run.pid })];
-                                        const cpu = (run as any).process?.cpu;
-                                        const memory = (run as any).process?.memory;
-                                        if (typeof cpu === 'number' && Number.isFinite(cpu)) {
-                                            detailParts.push(t('runs.detail.cpu', { percent: cpu.toFixed(1) }));
-                                        }
-                                        if (typeof memory === 'number' && Number.isFinite(memory)) {
-                                            detailParts.push(t('runs.detail.memory', { megabytes: Math.round(memory / (1024 * 1024)) }));
-                                        }
-
-                                        const canStop = run.status === 'running';
-                                        const onStop = async () => {
-                                            if (!machineId) return;
-                                            if (!canStop) return;
-                                            setStoppingRunId(run.runId);
-                                            const stopSessionProcess = async () => {
-                                                const stopResult = await machineStopSession(machineId, run.happySessionId, { serverId: activeServerId });
-                                                if (stopResult.ok) return;
-
-                                                const shownDaemonUnavailable = tryShowDaemonUnavailableAlertForRpcFailure({
-                                                    rpcErrorCode: stopResult.errorCode ?? null,
-                                                    message: stopResult.error ?? null,
-                                                    machine,
-                                                    onRetry: () => {
-                                                        void stopSessionProcess();
-                                                    },
-                                                    shouldContinue,
-                                                });
-                                                if (!shownDaemonUnavailable) {
-                                                    Modal.alert(t('common.error'), stopResult.error || t('runs.stop.failedToStopSession'));
-                                                }
-                                            };
-                                            try {
-                                                const res = await sessionExecutionRunStop(
-                                                    run.happySessionId,
-                                                    { runId: run.runId },
-                                                    { serverId: activeServerId },
-                                                );
-                                                if ((res as any)?.ok === false) {
-                                                    const confirmed = await Modal.confirm(
-                                                        t('runs.stop.stopRunFailedTitle'),
-                                                        t('runs.stop.stopRunFailedBody'),
-                                                        { confirmText: t('runs.stop.stopSession'), cancelText: t('common.cancel'), destructive: true },
-                                                    );
-                                                    if (confirmed) {
-                                                        await stopSessionProcess();
-                                                    } else {
-                                                        Modal.alert(t('common.error'), String((res as any).error ?? t('runs.stop.failedToStopRun')));
-                                                    }
-                                                }
-                                            } catch (error) {
-                                                const confirmed = await Modal.confirm(
-                                                    t('runs.stop.stopRunFailedTitle'),
-                                                    t('runs.stop.stopRunFailedBody'),
-                                                    { confirmText: t('runs.stop.stopSession'), cancelText: t('common.cancel'), destructive: true },
-                                                );
-                                                if (confirmed) {
-                                                    await stopSessionProcess();
-                                                } else {
-                                                    Modal.alert(
-                                                        t('common.error'),
-                                                        error instanceof Error ? error.message : t('runs.stop.failedToStopRun'),
-                                                    );
-                                                }
-                                            } finally {
-                                                setStoppingRunId(null);
-                                                const refreshed = await machineExecutionRunsList(machineId, { serverId: activeServerId });
-                                                if (refreshed.ok) {
-                                                    setExecutionRunsState({ status: 'loaded', runs: refreshed.runs });
-                                                }
-                                            }
-                                        };
-
-                                        return (
-                                            <ExecutionRunRow
-                                                key={run.runId}
-                                                run={run as any}
-                                                subtitle={`${t('runs.runLabel', { runId: run.runId })} · ${detailParts.join(' · ')}`}
-                                                onPress={() => router.push(`/session/${run.happySessionId}/runs/${run.runId}` as any)}
-                                                rightAccessory={canStop ? (
-                                                    <Pressable
-                                                        accessibilityRole="button"
-                                                        accessibilityLabel={t('runs.stop.stopRunA11y')}
-                                                        onPress={onStop}
-                                                        disabled={stoppingRunId === run.runId}
-                                                        style={({ pressed }) => ({
-                                                            opacity: pressed ? 0.7 : 1,
-                                                        })}
-                                                    >
-                                                        {stoppingRunId === run.runId ? (
-                                                            <ActivitySpinner size="small" color={theme.colors.text.secondary} />
-                                                        ) : (
-                                                            <Icon name="stop-circle" size={20} color={theme.colors.accent.orange} />
-                                                        )}
-                                                    </Pressable>
-                                                ) : null}
-                                            />
-                                        );
-                                    });
-
-                                    return [header, ...rows];
-                                });
-                            })()
-                        )}
-                    </ItemGroup>
-                )}
 
                 {/* Previous Sessions (debug view) */}
                 {previousSessions.length > 0 && (

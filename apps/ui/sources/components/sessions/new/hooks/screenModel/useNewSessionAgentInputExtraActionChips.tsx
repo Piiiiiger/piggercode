@@ -1,56 +1,25 @@
 import * as React from 'react';
-import type { ActionId, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
+import type { WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 
-import type { AgentId } from '@/agents/catalog/catalog';
-import {
-    getNewSessionAgentInputExtraActionChips,
-} from '@/agents/catalog/catalog';
-import type { NewSessionAutomationDraft } from '@/sync/domains/automations/automationDraft';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput/agentInputContracts';
-import { createAutomationToggleActionChip } from '@/components/sessions/agentInput/definitions/createAutomationToggleActionChip';
 import { createServerActionChip } from '@/components/sessions/agentInput/definitions/createServerActionChip';
-import { createTranscriptStorageActionChip } from '@/components/sessions/agentInput/definitions/createTranscriptStorageActionChip';
 import { createWindowsRemoteSessionLaunchModeActionChip } from '@/components/sessions/agentInput/definitions/createWindowsRemoteSessionLaunchModeActionChip';
-import { buildNewSessionActionShortcutChips } from '@/components/sessions/agentInput/sessionActions/buildNewSessionActionShortcutChips';
 import { NewSessionServerSelectionContent } from '@/components/sessions/new/components/NewSessionServerSelectionContent';
-import { storage } from '@/sync/domains/state/storage';
-import type { NewSessionTranscriptStorage } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
 
+/**
+ * The chips beside the new-session composer. Every session starts as the CLI's own terminal, so only
+ * the choices the CLI does not make itself remain: where it runs (checkout, server) and, on Windows,
+ * how its window is hosted.
+ */
 export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
-    agentId: AgentId;
-    agentOptionState?: Record<string, unknown> | null;
-    setAgentOptionState: (key: string, next: unknown) => void;
-    connectedServicesAuthChip?: AgentInputExtraActionChip | null;
-    showAutomationActionChips: boolean;
-    automationDraft: NewSessionAutomationDraft;
-    automationLabel: string;
-    onAutomationChange: (next: NewSessionAutomationDraft) => void;
     checkoutActionChip?: AgentInputExtraActionChip | null;
     showServerPickerChip: boolean;
     targetServerId: string | null;
     targetServerName: string;
-    mcpChip?: AgentInputExtraActionChip | null;
-    directSessionsFeatureEnabled: boolean;
-    supportsDirectTranscriptStorage: boolean;
-    transcriptStorage: NewSessionTranscriptStorage;
-    onTranscriptStorageChange: (next: NewSessionTranscriptStorage) => void;
     selectedMachineIsWindows: boolean;
     windowsRemoteSessionLaunchMode: WindowsRemoteSessionLaunchMode | null;
     windowsTerminalAvailable: boolean;
     onWindowsRemoteSessionLaunchModeChange: (next: WindowsRemoteSessionLaunchMode) => void;
-    onActionShortcutPress: (actionId: ActionId) => void;
-    /**
-     * The removable "continue from this Session" chip, when this authoring
-     * attempt carries a source context. Owned by `useNewSessionSourceContext`.
-     */
-    sourceContextChip?: AgentInputExtraActionChip | null;
-    /** Starts a 「终端」 session at once, when the agent and the machine can run one. */
-    nativeTerminalChip?: AgentInputExtraActionChip | null;
-    /**
-     * The session starts as the CLI's own terminal: chips that only shape a chat session (its
-     * sign-in, MCP servers, transcript storage, agent options, run shortcuts) would do nothing.
-     */
-    startsTerminal?: boolean;
 }>): ReadonlyArray<AgentInputExtraActionChip> {
     const serverPickerActionChip = React.useMemo<AgentInputExtraActionChip | null>(() => {
         if (!params.showServerPickerChip) return null;
@@ -69,63 +38,13 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
         });
     }, [params.showServerPickerChip, params.targetServerId, params.targetServerName]);
 
-    const automationActionChip = React.useMemo<AgentInputExtraActionChip>(() => {
-        return createAutomationToggleActionChip({
-            enabled: params.automationDraft.enabled,
-            label: params.automationLabel,
-            value: params.automationDraft,
-            onChange: params.onAutomationChange,
-        });
-    }, [params.automationDraft, params.automationLabel, params.onAutomationChange]);
-
-    const storageActionChip = React.useMemo<AgentInputExtraActionChip | null>(() => {
-        if (!params.directSessionsFeatureEnabled || !params.supportsDirectTranscriptStorage) return null;
-        return createTranscriptStorageActionChip({
-            transcriptStorage: params.transcriptStorage,
-            onStorageChange: params.onTranscriptStorageChange,
-        });
-    }, [
-        params.directSessionsFeatureEnabled,
-        params.onTranscriptStorageChange,
-        params.supportsDirectTranscriptStorage,
-        params.transcriptStorage,
-    ]);
-
     return React.useMemo(() => {
-        const terminal = params.startsTerminal === true;
-        const baseChips = terminal ? [] : getNewSessionAgentInputExtraActionChips({
-            agentId: params.agentId,
-            agentOptionState: params.agentOptionState,
-            setAgentOptionState: params.setAgentOptionState,
-        }) ?? [];
         const chips: AgentInputExtraActionChip[] = [];
-
-        // First: it is the one chip that changes what this Session *is* rather
-        // than how it is configured, and its composer badge should lead the
-        // attachment row.
-        if (params.sourceContextChip) {
-            chips.push(params.sourceContextChip);
-        }
-        if (params.nativeTerminalChip) {
-            chips.push(params.nativeTerminalChip);
-        }
-        if (params.connectedServicesAuthChip && !terminal) {
-            chips.push(params.connectedServicesAuthChip);
-        }
-        if (params.showAutomationActionChips) {
-            chips.push(automationActionChip);
-        }
         if (params.checkoutActionChip) {
             chips.push(params.checkoutActionChip);
         }
         if (serverPickerActionChip) {
             chips.push(serverPickerActionChip);
-        }
-        if (params.mcpChip && !terminal) {
-            chips.push(params.mcpChip);
-        }
-        if (storageActionChip && !terminal) {
-            chips.push(storageActionChip);
         }
         if (params.selectedMachineIsWindows && params.windowsRemoteSessionLaunchMode) {
             chips.push(createWindowsRemoteSessionLaunchModeActionChip({
@@ -134,33 +53,13 @@ export function useNewSessionAgentInputExtraActionChips(params: Readonly<{
                 onModeChange: params.onWindowsRemoteSessionLaunchModeChange,
             }));
         }
-
-        if (!terminal) {
-            chips.push(...buildNewSessionActionShortcutChips({
-                stateSnapshot: storage.getState(),
-                onPressAction: params.onActionShortcutPress,
-            }));
-        }
-
-        return [...chips, ...baseChips];
+        return chips;
     }, [
-        params.agentId,
-        params.agentOptionState,
         params.checkoutActionChip,
-        params.connectedServicesAuthChip,
-        params.mcpChip,
-        params.nativeTerminalChip,
-        params.onActionShortcutPress,
         params.selectedMachineIsWindows,
-        params.setAgentOptionState,
-        params.showAutomationActionChips,
-        params.sourceContextChip,
-        params.startsTerminal,
         params.windowsRemoteSessionLaunchMode,
         params.windowsTerminalAvailable,
         params.onWindowsRemoteSessionLaunchModeChange,
-        automationActionChip,
         serverPickerActionChip,
-        storageActionChip,
     ]);
 }

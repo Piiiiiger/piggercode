@@ -16,14 +16,6 @@ import { encodeV2SessionListCursorV1, type V2SessionRecord } from '@piggercode/p
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';
 
-const onAgentRequest = vi.fn();
-
-vi.mock('@/voice/context/voiceHooks', () => ({
-    voiceHooks: {
-        onAgentRequest: (...args: Parameters<typeof onAgentRequest>) => onAgentRequest(...args),
-    },
-}));
-
 vi.mock('@/sync/domains/server/serverRuntime', () => ({
     getActiveServerSnapshot: () => ({
         serverId: 'test',
@@ -1050,125 +1042,7 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
         expect(applySessions).not.toHaveBeenCalled();
     });
 
-    it('announces newly fetched agent requests relative to existing session state', async () => {
-        const requestSpy = vi.fn(async () =>
-            jsonResponse({
-                sessions: [
-                    buildSessionRow({
-                        id: 's1',
-                        encryptionMode: 'plain',
-                        metadata: JSON.stringify({ path: '/repo', host: 'dev' }),
-                        agentState: JSON.stringify({
-                            requests: {
-                                req_1: {
-                                    tool: 'AskUserQuestion',
-                                    kind: 'user_action',
-                                    arguments: { question: 'Choose one' },
-                                    createdAt: 1,
-                                },
-                            },
-                            completedRequests: {},
-                        }),
-                    }),
-                ],
-                nextCursor: null,
-                hasNext: false,
-            }),
-        );
-
-        const { encryption } = createEncryptionHarness();
-
-        await fetchAndApplySessions({
-            credentials: { token: 't', secret: 's' },
-            encryption,
-            sessionDataKeys: new Map<string, Uint8Array>(),
-            request: requestSpy,
-            applySessions: () => {},
-            getExistingSession: () => buildExistingSession({
-                id: 's1',
-                agentState: {
-                    requests: {},
-                    completedRequests: {},
-                },
-            }),
-            repairInvalidReadStateV1: async () => {},
-            log: { log: () => {} },
-        });
-
-        expect(onAgentRequest).toHaveBeenCalledWith(
-            's1',
-            'req_1',
-            'user_action',
-            'AskUserQuestion',
-            { question: 'Choose one' },
-        );
-    });
-
-    it('captures previous sessions before applySessions mutates storage', async () => {
-        let storedSession = buildExistingSession({
-            id: 's1',
-            agentState: {
-                requests: {},
-                completedRequests: {},
-            },
-        });
-
-        const requestSpy = vi.fn(async () =>
-            jsonResponse({
-                sessions: [
-                    buildSessionRow({
-                        id: 's1',
-                        encryptionMode: 'plain',
-                        metadata: JSON.stringify({ path: '/repo', host: 'dev' }),
-                        agentState: JSON.stringify({
-                            requests: {
-                                req_1: {
-                                    tool: 'AskUserQuestion',
-                                    kind: 'user_action',
-                                    arguments: { question: 'Choose one' },
-                                    createdAt: 1,
-                                },
-                            },
-                            completedRequests: {},
-                        }),
-                    }),
-                ],
-                nextCursor: null,
-                hasNext: false,
-            }),
-        );
-
-        const { encryption } = createEncryptionHarness();
-
-        await fetchAndApplySessions({
-            credentials: { token: 't', secret: 's' },
-            encryption,
-            sessionDataKeys: new Map<string, Uint8Array>(),
-            request: requestSpy,
-            applySessions: (sessions) => {
-                const [nextSession] = sessions;
-                if (!nextSession) throw new Error('expected one hydrated session');
-                storedSession = buildExistingSession({
-                    ...nextSession,
-                    presence: nextSession.presence ?? 'online',
-                });
-            },
-            getExistingSession: () => storedSession,
-            repairInvalidReadStateV1: async () => {},
-            log: { log: () => {} },
-        });
-
-        expect(onAgentRequest).toHaveBeenCalledWith(
-            's1',
-            'req_1',
-            'user_action',
-            'AskUserQuestion',
-            { question: 'Choose one' },
-        );
-    });
-
     it('bypasses decrypt for plaintext sessions and parses metadata/agentState JSON', async () => {
-        onAgentRequest.mockReset();
         const requestSpy = vi.fn(async () =>
             jsonResponse({
                 sessions: [
@@ -4693,7 +4567,6 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
     });
 
     it('pages through /v2/sessions and applies decrypted sessions with share and key cache mapping', async () => {
-        onAgentRequest.mockReset();
         const requestSpy = vi.fn(async (path: string) => {
             const parsed = new URL(path, 'https://example.test');
             expect(parsed.pathname).toBe('/v2/sessions');
@@ -4919,7 +4792,6 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
     });
 
     it.each([401, 403] as const)('throws terminal auth for session list status %s', async (status) => {
-        onAgentRequest.mockReset();
         const requestSpy = vi.fn(async () => new Response('auth failed', { status }));
         const { encryption } = createEncryptionHarness();
 
@@ -4941,7 +4813,6 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
     });
 
     it('falls back to /v1/sessions when /v2/sessions response shape is invalid', async () => {
-        onAgentRequest.mockReset();
         vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
             if (String(input).includes('/v2/sessions')) {
                 return jsonResponse({ sessions: 'bad-shape', hasNext: false });
@@ -4980,7 +4851,6 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
     });
 
     it('throws when both /v2/sessions and /v1/sessions response shapes are invalid', async () => {
-        onAgentRequest.mockReset();
         vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
             if (String(input).includes('/v2/sessions')) {
                 return jsonResponse({ sessions: 'bad-shape', hasNext: false });
@@ -5002,7 +4872,6 @@ describe('fetchAndApplySessions (/v2/sessions snapshot)', () => {
     });
 
     it('uses injected request transport when provided', async () => {
-        onAgentRequest.mockReset();
         const fetchSpy = vi.fn();
         vi.stubGlobal('fetch', fetchSpy as unknown as typeof fetch);
 

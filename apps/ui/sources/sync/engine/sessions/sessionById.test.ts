@@ -2,14 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { fetchAndApplySessionById, type SessionByIdEncryption } from './sessionById';
 
-const onAgentRequest = vi.fn();
-
-vi.mock('@/voice/context/voiceHooks', () => ({
-  voiceHooks: {
-    onAgentRequest: (...args: Parameters<typeof onAgentRequest>) => onAgentRequest(...args),
-  },
-}));
-
 function createDeferred<T>(): {
   promise: Promise<T>;
   resolve: (value: T) => void;
@@ -286,140 +278,7 @@ describe('fetchAndApplySessionById', () => {
     expect(applySessions).not.toHaveBeenCalled();
   });
 
-  it('announces new fetched agent requests relative to existing session state', async () => {
-    onAgentRequest.mockReset();
-    const applySessions = vi.fn();
-    const request = vi.fn(async () => new Response(JSON.stringify({
-      session: {
-        id: 's1',
-        createdAt: 1,
-        updatedAt: 2,
-        seq: 3,
-        active: true,
-        activeAt: 2,
-        encryptionMode: 'plain',
-        dataEncryptionKey: 'unused-plain-key',
-        metadataVersion: 1,
-        metadata: JSON.stringify({ readStateV1: null }),
-        agentStateVersion: 2,
-        agentState: JSON.stringify({
-          controlledByUser: true,
-          requests: {
-            req_1: {
-              tool: 'AskUserQuestion',
-              kind: 'user_action',
-              arguments: { question: 'Pick a color' },
-              createdAt: 1,
-            },
-          },
-          completedRequests: {},
-        }),
-        share: null,
-      },
-    }), { status: 200 }));
-
-    await fetchAndApplySessionById({
-      sessionId: 's1',
-      clientEncryptionRequirement: 'follow_account' as const,
-      credentials: { token: 't' } as any,
-      encryption: {
-        decryptEncryptionKey: async () => null,
-        initializeSessions: async () => {},
-        getSessionEncryption: () => null,
-      },
-      sessionDataKeys: new Map<string, Uint8Array>(),
-      request,
-      applySessions,
-      getExistingSession: () => ({
-        id: 's1',
-        agentState: {
-          controlledByUser: true,
-          requests: {},
-          completedRequests: {},
-        },
-      } as any),
-      log: { log: () => {} },
-    });
-
-    expect(onAgentRequest).toHaveBeenCalledWith(
-      's1',
-      'req_1',
-      'user_action',
-      'AskUserQuestion',
-      { question: 'Pick a color' },
-    );
-  });
-
-  it('captures the previous session before applySessions updates storage', async () => {
-    onAgentRequest.mockReset();
-
-    let storedSession = {
-      id: 's1',
-      agentState: {
-        controlledByUser: true,
-        requests: {},
-        completedRequests: {},
-      },
-    } as any;
-
-    const request = vi.fn(async () => new Response(JSON.stringify({
-      session: {
-        id: 's1',
-        createdAt: 1,
-        updatedAt: 2,
-        seq: 3,
-        active: true,
-        activeAt: 2,
-        encryptionMode: 'plain',
-        dataEncryptionKey: null,
-        metadataVersion: 1,
-        metadata: JSON.stringify({ readStateV1: null }),
-        agentStateVersion: 2,
-        agentState: JSON.stringify({
-          controlledByUser: true,
-          requests: {
-            req_1: {
-              tool: 'AskUserQuestion',
-              kind: 'user_action',
-              arguments: { question: 'Pick a color' },
-              createdAt: 1,
-            },
-          },
-          completedRequests: {},
-        }),
-        share: null,
-      },
-    }), { status: 200 }));
-
-    await fetchAndApplySessionById({
-      sessionId: 's1',
-      clientEncryptionRequirement: 'follow_account' as const,
-      credentials: { token: 't' } as any,
-      encryption: {
-        decryptEncryptionKey: async () => null,
-        initializeSessions: async () => {},
-        getSessionEncryption: () => null,
-      },
-      sessionDataKeys: new Map<string, Uint8Array>(),
-      request,
-      applySessions: ([nextSession]) => {
-        storedSession = nextSession as any;
-      },
-      getExistingSession: () => storedSession,
-      log: { log: () => {} },
-    });
-
-    expect(onAgentRequest).toHaveBeenCalledWith(
-      's1',
-      'req_1',
-      'user_action',
-      'AskUserQuestion',
-      { question: 'Pick a color' },
-    );
-  });
-
   it('applies a plaintext session row by id', async () => {
-    onAgentRequest.mockReset();
     const applySessions = vi.fn();
     const decryptEncryptionKey = vi.fn(async () => null);
     const initializeSessions = vi.fn(async () => {});
@@ -660,7 +519,6 @@ describe('fetchAndApplySessionById', () => {
   });
 
   it('initializes session encryption when dataEncryptionKey is present', async () => {
-    onAgentRequest.mockReset();
     const applySessions = vi.fn();
     const decryptEncryptionKey = vi.fn(async () => new Uint8Array([1, 2, 3]));
     const initializeSessions = vi.fn(async () => {});

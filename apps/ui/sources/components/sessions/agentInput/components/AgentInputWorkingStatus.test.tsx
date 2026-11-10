@@ -2,13 +2,13 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { renderScreen } from '@/dev/testkit';
-import { installToolShellPresentationCommonModuleMocks } from '@/components/tools/shell/presentation/toolShellPresentationTestHelpers';
+import { installAgentInputCommonModuleMocks } from '../agentInputTestHelpers';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 const turnOutputTokens = vi.hoisted(() => ({ value: null as number | null, sinceMs: [] as Array<number | null> }));
 
-installToolShellPresentationCommonModuleMocks({
+installAgentInputCommonModuleMocks({
     storage: async () => {
         const { createStorageModuleStub } = await import('@/dev/testkit/mocks/storage');
         return createStorageModuleStub({

@@ -135,10 +135,6 @@ function mockCommonDeps() {
             React.createElement('Text', props, props.children),
     }));
 
-    vi.doMock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-        PermissionFooter: () => null,
-    }));
-
 
     vi.doMock('@/components/sessions/sourceControl/status', () => ({
         SourceControlStatusBadge: () => null,

@@ -164,10 +164,6 @@ vi.mock('expo-image', () => ({
     Image: (props: Record<string, unknown>) => React.createElement('Image', props, null),
 }));
 
-vi.mock('@/components/tools/shell/permissions/PermissionFooter', () => ({
-    PermissionFooter: () => null,
-}));
-
 vi.mock('@/agents/catalog/catalog', () => ({
     getAgentIconSvgXml: () => null,
     getAgentIconSource: () => null,

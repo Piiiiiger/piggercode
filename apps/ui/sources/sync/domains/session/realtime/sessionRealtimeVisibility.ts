@@ -1,10 +1,6 @@
 export type SessionLiveTranscriptReason =
     | 'visible'
     | 'explicitTranscriptConsumer'
-    | 'voicePrimaryAction'
-    | 'voiceTracked'
-    | 'voiceReadback'
-    | 'voiceBoundTarget'
     | 'scmSameSession';
 
 export type SessionRealtimeScmScope = Readonly<{
@@ -19,10 +15,6 @@ export type SessionNeedsLiveTranscriptInput = Readonly<{
     sessionId: string;
     isVisible?: boolean;
     explicitTranscriptConsumerSessionIds?: ReadonlyArray<string>;
-    voicePrimaryActionSessionId?: string | null;
-    voiceTrackedSessionIds?: ReadonlyArray<string>;
-    voiceReadbackSessionIds?: ReadonlyArray<string>;
-    voiceBoundTargetSessionIds?: ReadonlyArray<string>;
     sessionScmScope?: SessionRealtimeScmScope | null;
     scmMountedScopes?: ReadonlyArray<SessionRealtimeScmScope>;
 }>;
@@ -66,18 +58,6 @@ export function sessionNeedsLiveTranscript(input: SessionNeedsLiveTranscriptInpu
     if (input.isVisible === true) pushReason(reasons, 'visible');
     if (includesSessionId(input.explicitTranscriptConsumerSessionIds, sessionId)) {
         pushReason(reasons, 'explicitTranscriptConsumer');
-    }
-    if (normalizeText(input.voicePrimaryActionSessionId) === sessionId) {
-        pushReason(reasons, 'voicePrimaryAction');
-    }
-    if (includesSessionId(input.voiceTrackedSessionIds, sessionId)) {
-        pushReason(reasons, 'voiceTracked');
-    }
-    if (includesSessionId(input.voiceReadbackSessionIds, sessionId)) {
-        pushReason(reasons, 'voiceReadback');
-    }
-    if (includesSessionId(input.voiceBoundTargetSessionIds, sessionId)) {
-        pushReason(reasons, 'voiceBoundTarget');
     }
 
     // Hidden sessions in the same canonical project scope intentionally do NOT become full

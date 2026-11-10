@@ -5,8 +5,6 @@ import { clearActiveViewingSessionsForServerScopeReset, markSessionVisible } fro
 import { storage } from '@/sync/domains/state/storage';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { clearMountedSessionRealtimeTranscriptConsumers } from '@/sync/runtime/sessionRealtimeTranscriptConsumers';
-import { useVoiceTargetStore } from '@/voice/runtime/voiceTargetStore';
-import { voiceSessionBindingStore } from '@/voice/sessionBinding/voiceSessionBindingStore';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
 import { deriveSessionRuntimePresentationState } from '@/sync/domains/session/attention/deriveSessionRuntimePresentationState';
 import { buildSessionListIndexFromViewData } from '@/sync/domains/session/listing/sessionListIndex';
@@ -85,16 +83,6 @@ describe('socket update handling: plaintext update-session', () => {
         resetSocketSessionProjectionStateForServerScope();
         clearActiveViewingSessionsForServerScopeReset();
         clearMountedSessionRealtimeTranscriptConsumers();
-        useVoiceTargetStore.setState({
-            scope: 'global',
-            primaryActionSessionId: null,
-            trackedSessionIds: [],
-            lastFocusedSessionId: null,
-        });
-        voiceSessionBindingStore.setState((state) => ({
-            ...state,
-            bindingsByConversationSessionId: {},
-        }));
         storage.setState(initialStorageState, true);
     });
 
@@ -552,16 +540,6 @@ describe('socket update handling: plaintext update-session', () => {
     afterEach(() => {
         clearActiveViewingSessionsForServerScopeReset();
         clearMountedSessionRealtimeTranscriptConsumers();
-        useVoiceTargetStore.setState({
-            scope: 'global',
-            primaryActionSessionId: null,
-            trackedSessionIds: [],
-            lastFocusedSessionId: null,
-        });
-        voiceSessionBindingStore.setState((state) => ({
-            ...state,
-            bindingsByConversationSessionId: {},
-        }));
         syncPerformanceTelemetry.configure({ enabled: false });
         syncPerformanceTelemetry.reset();
         vi.useRealTimers();

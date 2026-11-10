@@ -20,12 +20,7 @@ import { RPC_ERROR_CODES, RPC_METHODS, isRpcMethodNotFoundResult } from '@pigger
 import { apiSocket } from '../api/session/apiSocket';
 import type { MachineMetadata } from '../domains/state/storageTypes';
 import {
-    buildCompatibleSpawnHappySessionRpcParams,
     buildSpawnHappySessionRpcParams,
-    shouldUseLegacySpawnHappySessionRpcParams,
-    supportsSpawnPendingFirstInput,
-    supportsSpawnSourceContext,
-    type CompatibleSpawnHappySessionRpcParams,
     type SpawnHappySessionRpcParams,
     type SpawnSessionOptions,
 } from '../domains/session/spawn/spawnSessionPayload';
@@ -41,7 +36,7 @@ import {
 } from '../domains/session/spawn/spawnAttemptNonceStore';
 import { createUiSessionSpawnUserAttemptId } from '../domains/session/spawn/spawnSessionNonce';
 import { storage } from '../domains/state/storage';
-import { machineStartsNativeTerminalSessions, readMachineDaemonCliVersionForServerScope } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
+import { machineStartsNativeTerminalSessions } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
 import { isPlainObject, normalizeSpawnSessionResult } from './_shared';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { mergeMachineMetadataForVersionMismatch } from './machineMetadataMerge';
@@ -144,54 +139,6 @@ function resolveSpawnAttemptTargetFingerprint(params: Readonly<{
     }, machineHomeDir);
 }
 
-function readMachineDaemonCliVersion(params: Readonly<{
-    machineId: string;
-    effectiveServerId: string;
-    activeServerId: string;
-}>): string | null {
-    const state = storage.getState();
-    return readMachineDaemonCliVersionForServerScope({
-        state,
-        machineId: params.machineId,
-        serverId: params.effectiveServerId,
-        activeServerId: params.activeServerId,
-    });
-}
-
-function remapLegacyDirectoryCompatibilityError(params: Readonly<{
-    result: SpawnSessionResult;
-    directory: string;
-    daemonCliVersion: string | null;
-}>): SpawnSessionResult {
-    if (params.result.type !== 'error') {
-        return params.result;
-    }
-
-    if (params.result.errorCode !== SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST) {
-        return params.result;
-    }
-
-    const sentDirectory = params.directory.trim();
-    if (!sentDirectory) {
-        return params.result;
-    }
-
-    const normalizedMessage = params.result.errorMessage.trim().toLowerCase();
-    if (normalizedMessage !== 'directory is required') {
-        return params.result;
-    }
-
-    const versionLabel = params.daemonCliVersion ?? 'an older preview build';
-    return {
-        type: 'error',
-        errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-        errorMessage:
-            `The selected machine rejected the session directory even though the app sent one. ` +
-            `This usually means the machine is running an incompatible daemon (${versionLabel}) ` +
-            `or a stale machine registration. Restart or re-authorize the CLI on that machine, then update it to a compatible 0.1.0-dev or v0.2.0+ build.`,
-    };
-}
-
 // Exported session operation functions
 
 /**
@@ -248,36 +195,11 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
             ...options,
             ...accountSettingsPreparation,
         };
-        const daemonCliVersion = readMachineDaemonCliVersion({
-            machineId,
-            effectiveServerId,
-            activeServerId: profileScope.serverId,
-        });
-        pendingFirstInputTransferred = preparedOptions.pendingFirstInput !== undefined
-            && supportsSpawnPendingFirstInput(daemonCliVersion);
+        // Only a daemon that starts terminals receives a spawn, and every such daemon takes the first prompt.
+        pendingFirstInputTransferred = preparedOptions.pendingFirstInput !== undefined;
 
         if (
-            preparedOptions.sourceContext
-            && !supportsSpawnSourceContext(daemonCliVersion)
-        ) {
-            // The legacy params shape has no `sourceContext`, and the daemon
-            // behind it would strip an unknown field silently — creating an
-            // ordinary blank Session and reporting success. Continuing from a
-            // Session is required semantics, so refuse rather than downgrade.
-            const versionLabel = daemonCliVersion ?? 'unknown';
-            return {
-                type: 'error',
-                errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-                errorMessage:
-                    'Update or reconnect the CLI to continue from this Session. Continuing from an existing '
-                    + 'Session requires Happier CLI 0.2.10-dev.76 or newer on this '
-                    + `machine (detected ${versionLabel}).`,
-            };
-        }
-
-        if (
-            preparedOptions.nativeTerminal === true
-            && !machineStartsNativeTerminalSessions({
+            !machineStartsNativeTerminalSessions({
                 state: storage.getState(),
                 machineId,
                 serverId: effectiveServerId,
@@ -296,19 +218,6 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
         // creator, which alone can authenticate persisted source lineage.
         requiresDaemonSourceContextValidation = preparedOptions.sourceContext !== undefined;
 
-        if (
-            shouldUseLegacySpawnHappySessionRpcParams(daemonCliVersion)
-            && preparedOptions.backendTarget.kind !== 'builtInAgent'
-        ) {
-            const versionLabel = daemonCliVersion ?? 'unknown';
-            return {
-                type: 'error',
-                errorCode: SPAWN_SESSION_ERROR_CODES.INVALID_REQUEST,
-                errorMessage:
-                    'The selected backend target requires a compatible 0.1.0-dev build or Happier CLI v0.2.0 ' +
-                    `or newer on this machine (detected ${versionLabel}).`,
-            };
-        }
         const targetFingerprint = resolveSpawnAttemptTargetFingerprint({
             options: preparedOptions,
             effectiveServerId,
@@ -410,13 +319,10 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
             // semantic launch below with the same nonce; never mint a second attempt identity.
         }
 
-        const params = buildCompatibleSpawnHappySessionRpcParams({
-            options: { ...preparedOptions, spawnNonce: activeAttempt.record.nonce },
-            daemonCliVersion,
-        });
+        const params = buildSpawnHappySessionRpcParams({ ...preparedOptions, spawnNonce: activeAttempt.record.nonce });
         spawnSubmitted = true;
         const callSpawnRpc = async (method: string) => (
-            await machineRpcWithConnectedServiceAuthAdmission<CompatibleSpawnHappySessionRpcParams>({
+            await machineRpcWithConnectedServiceAuthAdmission<SpawnHappySessionRpcParams>({
                 machineId,
                 method,
                 payload: params,
@@ -442,11 +348,7 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
                 return await callSpawnRpc(RPC_METHODS.SPAWN_HAPPY_SESSION);
             }
         })();
-        const normalized = remapLegacyDirectoryCompatibilityError({
-            result: normalizeSpawnSessionResult(result),
-            directory: preparedOptions.directory,
-            daemonCliVersion,
-        });
+        const normalized = normalizeSpawnSessionResult(result);
         if (
             normalized.type === 'success'
             && typeof normalized.pendingFirstInputAccepted === 'boolean'

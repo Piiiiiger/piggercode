@@ -14,7 +14,6 @@ import { useAppPaneScope } from '@/components/appShell/panes/hooks/useAppPaneSco
 import { useDetailsTabCount } from '@/components/appShell/panes/hooks/useDetailsTabCount';
 import type { AttachmentDraft } from '@/components/sessions/attachments/attachmentDraftModel';
 import { SessionDetailsPanel } from '@/components/sessions/panes/SessionDetailsPanel';
-import { SessionTranscriptNavigationPane } from '@/components/sessions/panes/SessionTranscriptNavigationPane';
 import {
     createSessionCommitDetailsTab,
     createSessionDetailsTerminalTab,
@@ -269,18 +268,6 @@ export const SessionCockpitSurfaceScreen = React.memo((props: SessionCockpitSurf
                         onOpenStashDetails={openStashDetails}
                     />
                 </React.Suspense>
-            </SessionCockpitFullscreenSurface>,
-        );
-    }
-
-    if (props.surface === 'navigation') {
-        return renderSessionChrome(
-            <SessionCockpitFullscreenSurface screenTestID="session-transcript-navigation-screen" safeAreaPadding={false}>
-                <SessionTranscriptNavigationPane
-                    onRequestClose={revealChatSurface}
-                    onRevealTranscript={revealChatSurface}
-                    sessionId={props.sessionId}
-                />
             </SessionCockpitFullscreenSurface>,
         );
     }
