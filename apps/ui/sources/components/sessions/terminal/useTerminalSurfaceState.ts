@@ -18,6 +18,11 @@ export function useTerminalSurfaceState(params: Readonly<{
     cursorRef: React.MutableRefObject<number>;
     terminalRendererHandleRef: React.MutableRefObject<EmbeddedTerminalRendererHandle | null>;
     clearNonceRef: React.MutableRefObject<number>;
+    /**
+     * A full-screen program (an agent CLI attached through tmux) draws its screen as updates to what it drew
+     * before, so only its whole output rebuilds that screen: a view is never given just the end of it.
+     */
+    wholeScreenOnly?: boolean;
 }>) {
     const initialSurfaceState = React.useMemo(
         () => readTerminalSurfaceState(params.terminalKey) ?? createEmptyTerminalSurfaceState(),
@@ -26,6 +31,9 @@ export function useTerminalSurfaceState(params: Readonly<{
     const [detectedUrl, setDetectedUrl] = React.useState<DaemonTerminalStreamEventUrl | null>(initialSurfaceState.detectedUrl);
     /** How far into the terminal's output (counted like `outputEnd`) this view's renderer has been written. */
     const renderedEndRef = React.useRef(0);
+    /** Whether this view's renderer shows the terminal's output from its start (nothing missing in between). */
+    const screenWholeRef = React.useRef(true);
+    const wholeScreenOnly = params.wholeScreenOnly === true;
 
     const updateSurfaceState = React.useCallback((updater: (current: ReturnType<typeof createEmptyTerminalSurfaceState>) => ReturnType<typeof createEmptyTerminalSurfaceState>) => {
         return updateTerminalSurfaceState(params.terminalKey, updater);
@@ -53,6 +61,8 @@ export function useTerminalSurfaceState(params: Readonly<{
             renderer.clear();
         }
         renderedEndRef.current = 0;
+        // Cleared together with the record: the view shows the output from its (new) start.
+        screenWholeRef.current = true;
         updateSurfaceState((current) => ({
             ...current,
             terminalId: params.terminalIdRef.current,
@@ -99,6 +109,7 @@ export function useTerminalSurfaceState(params: Readonly<{
             params.terminalRendererHandleRef.current = renderer;
             renderer.clear();
             renderedEndRef.current = 0;
+            screenWholeRef.current = true;
         }
 
         const unseen = state.outputEnd - renderedEndRef.current;
@@ -108,14 +119,20 @@ export function useTerminalSurfaceState(params: Readonly<{
         if (unseen > 0 && unseen <= state.output.length) {
             renderer.write(state.output.slice(state.output.length - unseen));
         } else {
-            // Cleared, or further behind than the kept output: show the kept output from the start.
+            // Cleared, or further behind than the kept output: show the kept output from the start, unless it
+            // no longer reaches back to the start and the view draws a full-screen program.
             renderer.clear();
-            if (state.output) {
+            const fromStart = state.outputEnd === state.output.length;
+            if (state.output && (fromStart || !wholeScreenOnly)) {
                 renderer.write(state.output);
             }
+            screenWholeRef.current = fromStart;
         }
         renderedEndRef.current = state.outputEnd;
-    }, [params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef]);
+    }, [params.cursorRef, params.terminalIdRef, params.terminalRef, params.terminalRendererHandleRef, wholeScreenOnly]);
+
+    /** Whether the view shows the terminal's output from its start; false after it was given only the end of it. */
+    const isScreenWhole = React.useCallback(() => screenWholeRef.current, []);
 
     const hydrateTerminalRendererIfNeeded = React.useCallback(() => {
         const renderer = params.terminalRef.current;
@@ -145,6 +162,7 @@ export function useTerminalSurfaceState(params: Readonly<{
         params.cursorRef.current = cached.cursor;
         params.terminalRendererHandleRef.current = null;
         renderedEndRef.current = 0;
+        screenWholeRef.current = true;
         setDetectedUrl(cached.detectedUrl);
         params.terminalRef.current?.clear();
     }, [params.cursorRef, params.terminalIdRef, params.terminalKey, params.terminalRef, params.terminalRendererHandleRef]);
@@ -158,6 +176,7 @@ export function useTerminalSurfaceState(params: Readonly<{
         clearTerminalOutput,
         writeTerminalOutput,
         hydrateTerminalRendererIfNeeded,
+        isScreenWhole,
         setDetectedUrl,
     } as const;
 }

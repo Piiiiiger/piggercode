@@ -56,10 +56,6 @@ vi.mock('@/utils/url/openExternalUrl', () => ({
     openExternalUrl: vi.fn(),
 }));
 
-vi.mock('@/components/sessions/terminal/terminalErrorCopy', () => ({
-    resolveTerminalErrorCopy: () => null,
-}));
-
 import { EmbeddedTerminalPaneFrame } from './EmbeddedTerminalPaneFrame';
 import { embeddedTerminalPaneStyles } from './embeddedTerminalPaneStyles';
 import type { EmbeddedTerminalPaneController } from './types';
@@ -134,5 +130,33 @@ describe('EmbeddedTerminalPaneFrame', () => {
 
         const surface = screen.findByTestId('embedded-terminal-surface');
         expect(flattenStyle(surface?.props.style).marginBottom).toBe(216);
+    });
+    it('says what a connecting terminal waits for, with no retry to press', async () => {
+        const controller: EmbeddedTerminalPaneController = {
+            status: 'connecting',
+            error: 'terminal_machine_waiting',
+            detectedUrl: null,
+            onInput: () => {},
+            onResize: () => {},
+            onReady: () => {},
+            clearTerminal: () => {},
+            requestRestart: () => {},
+            retryConnect: () => {},
+            dismissDetectedUrl: () => {},
+        };
+
+        const screen = await renderScreen(
+            React.createElement(EmbeddedTerminalPaneFrame, {
+                title: 'Agent terminal',
+                controller,
+                surface: React.createElement('TerminalSurface'),
+                testIdPrefix: 'agent-terminal',
+                platformOS: 'web',
+            }),
+        );
+
+        expect(screen.findByTestId('agent-terminal-overlay')).toBeTruthy();
+        expect(screen.findByTestId('agent-terminal-overlay-body')?.props.children).toBe('terminalEmbedded.errors.machineWaiting');
+        expect(screen.findByTestId('agent-terminal-retry')).toBeNull();
     });
 });

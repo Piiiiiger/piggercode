@@ -7,7 +7,7 @@ export type TerminalErrorCopy = Readonly<{
 const COPY_BY_ERROR_CODE: Record<string, TerminalErrorCopy> = {
     terminal_missing_machine_target: { bodyKey: 'terminalEmbedded.errors.missingMachineTarget' },
     terminal_rpc_target_unavailable: { bodyKey: 'terminalEmbedded.errors.rpcTargetUnavailable' },
-    terminal_machine_unreachable: { bodyKey: 'terminalEmbedded.errors.machineUnreachable' },
+    terminal_machine_waiting: { bodyKey: 'terminalEmbedded.errors.machineWaiting' },
     terminal_disabled: { bodyKey: 'terminalEmbedded.errors.disabled' },
     terminal_not_found: { bodyKey: 'terminalEmbedded.errors.notFound' },
     terminal_cwd_denied: { bodyKey: 'terminalEmbedded.errors.cwdDenied' },

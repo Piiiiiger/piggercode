@@ -12,8 +12,9 @@ function fakeRenderer() {
     return { write: vi.fn((_data: string) => {}), clear: vi.fn(() => {}) };
 }
 
-async function mountSurface(terminalKey: string, renderer: EmbeddedTerminalRendererHandle) {
+async function mountSurface(terminalKey: string, renderer: EmbeddedTerminalRendererHandle, options: Readonly<{ wholeScreenOnly?: boolean }> = {}) {
     const params = {
+        ...options,
         terminalKey,
         terminalRef: { current: renderer },
         terminalIdRef: { current: 'terminal-1' as string | null },
@@ -64,5 +65,32 @@ describe('useTerminalSurfaceState', () => {
 
         expect(writer.clear).not.toHaveBeenCalled();
         expect(writer.write.mock.calls).toEqual([[chunk]]);
+    });
+    it('gives a new view of a full-screen program its output only from the start, never just the end of it', async () => {
+        const key = 'session-attach:reopened-view';
+        const reader = fakeRenderer();
+        const readerHook = await mountSurface(key, reader, { wholeScreenOnly: true });
+        readerHook.getCurrent().writeTerminalOutput('a'.repeat(40_000));
+
+        // Everything is still kept: a view opened now shows it all.
+        const early = fakeRenderer();
+        const earlyHook = await mountSurface(key, early, { wholeScreenOnly: true });
+        early.write.mockClear();
+        earlyHook.getCurrent().hydrateTerminalRendererIfNeeded();
+        expect(early.write.mock.calls.map(([data]) => data).join('')).toBe('a'.repeat(40_000));
+        expect(earlyHook.getCurrent().isScreenWhole()).toBe(true);
+
+        // More than is kept: a view opened now is given nothing rather than the end alone.
+        readerHook.getCurrent().writeTerminalOutput('b'.repeat(40_000));
+        const late = fakeRenderer();
+        const lateHook = await mountSurface(key, late, { wholeScreenOnly: true });
+        late.write.mockClear();
+        lateHook.getCurrent().hydrateTerminalRendererIfNeeded();
+        expect(late.write).not.toHaveBeenCalled();
+        expect(lateHook.getCurrent().isScreenWhole()).toBe(false);
+
+        // Attached afresh: the view starts again from the new output's start.
+        lateHook.getCurrent().clearTerminalOutput();
+        expect(lateHook.getCurrent().isScreenWhole()).toBe(true);
     });
 });

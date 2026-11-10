@@ -9595,7 +9595,7 @@ settingsSession: {
     errors: {
       missingMachineTarget: "此会话缺少机器目标。",
       rpcTargetUnavailable: "此机器的 RPC 不可用。",
-      machineUnreachable: "无法连接到机器。",
+      machineWaiting: "正在等待机器连上…",
       disabled: "守护进程配置已禁用终端支持。请启用后重启守护进程。",
       notFound: "未找到终端会话。请尝试重启。",
       cwdDenied: "守护进程没有权限使用此工作目录。",

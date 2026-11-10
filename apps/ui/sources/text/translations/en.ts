@@ -9409,7 +9409,7 @@ settingsSession: {
         errors: {
             missingMachineTarget: 'This session is missing a machine target.',
             rpcTargetUnavailable: 'Machine RPC is unavailable for this machine.',
-            machineUnreachable: 'Machine is unreachable.',
+            machineWaiting: 'Waiting for the machine to connect…',
             disabled: 'Terminal support is disabled by the daemon configuration. Enable it and restart the daemon.',
             notFound: 'Terminal session not found. Try restarting.',
             cwdDenied: 'The daemon does not have permission to use this working directory.',

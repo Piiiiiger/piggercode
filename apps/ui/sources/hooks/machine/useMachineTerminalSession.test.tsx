@@ -27,6 +27,16 @@ const initialTerminalSize = vi.hoisted(() => ({
 const latestTerminalSizeRef = vi.hoisted(() => ({
     current: initialTerminalSize,
 }));
+// One launch object for every render: a new one each render would re-run the connection effect forever.
+const agentLaunch = { kind: 'session_attach', sessionId: 'session-1' } as const;
+
+// What the kept output says about a terminal, and whether the view shows its output from the start.
+const surfaceWorld = vi.hoisted(() => ({
+    cached: null as null | { terminalId: string | null; cursor: number; output: string; outputEnd: number; detectedUrl: null },
+    screenWhole: true,
+}));
+// Stable like the real hook's callback (a new function each render would re-run the connection effect forever).
+const isScreenWholeMock = vi.hoisted(() => () => surfaceWorld.screenWhole);
 const terminalReaderLeaseState = vi.hoisted(() => ({
     ownerByKey: new Map<string, symbol>(),
 }));
@@ -39,7 +49,7 @@ vi.mock('@/components/sessions/terminal/terminalSurfaceStateCache', () => ({
         outputEnd: 0,
         detectedUrl: null,
     }),
-    readTerminalSurfaceState: () => null,
+    readTerminalSurfaceState: () => surfaceWorld.cached,
 }));
 
 vi.mock('@/components/sessions/terminal/useEmbeddedTerminalTransportHandlers', () => ({
@@ -58,6 +68,7 @@ vi.mock('@/components/sessions/terminal/useTerminalSurfaceState', () => ({
         detectedUrl: null,
         clearTerminalOutput: clearTerminalOutputMock,
         hydrateTerminalRendererIfNeeded: hydrateTerminalRendererIfNeededMock,
+        isScreenWhole: isScreenWholeMock,
         replaceSurfaceState: replaceSurfaceStateMock,
         setDetectedUrl: setDetectedUrlMock,
         syncDetectedUrl: syncDetectedUrlMock,
@@ -103,6 +114,8 @@ describe('useMachineTerminalSession', () => {
         machineTerminalStreamReadMock.mockReset();
         machineTerminalCloseMock.mockReset();
         terminalReaderLeaseState.ownerByKey.clear();
+        surfaceWorld.cached = null;
+        surfaceWorld.screenWhole = true;
         clearTerminalOutputMock.mockReset();
         hydrateTerminalRendererIfNeededMock.mockReset();
         replaceSurfaceStateMock.mockReset();
@@ -389,5 +402,137 @@ describe('useMachineTerminalSession', () => {
 
         await finished.unmount();
         await next.unmount();
+    });
+    it('waits for a machine this app sees as offline instead of failing, and connects once it is back', async () => {
+        const terminalRef = { current: null };
+        const launch = { kind: 'session_attach', sessionId: 'session-1' } as const;
+        const hook = await renderHook((reachable: boolean) => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch,
+            machineReachable: reachable,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:waiting',
+            terminalRef,
+        }), { initialProps: false });
+        try {
+            await flushHookEffects();
+            expect(hook.getCurrent().status).toBe('connecting');
+            expect(hook.getCurrent().error).toBe('terminal_machine_waiting');
+            expect(machineTerminalEnsureMock).not.toHaveBeenCalled();
+
+            await hook.rerender(true);
+            await flushHookEffects();
+            expect(machineTerminalEnsureMock).toHaveBeenCalledTimes(1);
+            expect(hook.getCurrent().error).toBeNull();
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('keeps reconnecting for as long as this app is offline, instead of giving up with an error', async () => {
+        vi.useFakeTimers();
+        const terminalRef = { current: null };
+        // Offline, nothing reaches the machine: connecting fails as well as reading.
+        const offline = () => Promise.reject(new Error('socket has been disconnected'));
+        for (let i = 0; i < 9; i += 1) machineTerminalEnsureMock.mockImplementationOnce(offline);
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: '/repo',
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'terminal-key-offline',
+            terminalRef,
+        }));
+        try {
+            for (let i = 0; i < 12; i += 1) {
+                await vi.advanceTimersByTimeAsync(5_000);
+                expect(hook.getCurrent().status).not.toBe('error');
+            }
+            // Back online: the tenth attempt connects.
+            expect(machineTerminalEnsureMock.mock.calls.length).toBeGreaterThanOrEqual(10);
+        } finally {
+            await hook.unmount();
+            vi.useRealTimers();
+        }
+    });
+
+    it('attaches an agent terminal again when output was dropped before the view read it', async () => {
+        const terminalRef = { current: null };
+        machineTerminalStreamReadMock.mockResolvedValueOnce({
+            ok: true,
+            terminalId: 'terminal-1',
+            events: [{ t: 'gap', droppedBefore: 120 }, { t: 'data', data: '\x1b[27;54H7' }],
+            nextCursor: 500,
+            done: false,
+        });
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:gap',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(machineTerminalRestartMock).toHaveBeenCalledTimes(1);
+            expect(writeTerminalOutputMock).not.toHaveBeenCalledWith('\r\n[Output truncated]\r\n');
+            expect(writeTerminalOutputMock).not.toHaveBeenCalledWith('\x1b[27;54H7');
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('attaches an agent terminal again when a new view could be given only the end of its output', async () => {
+        const terminalRef = { current: null };
+        // The kept output of this attach no longer reaches back to its start.
+        surfaceWorld.cached = { terminalId: 'terminal-1', cursor: 4_000, output: 'tail of the output', outputEnd: 90_000, detectedUrl: null };
+        surfaceWorld.screenWhole = false;
+        machineTerminalEnsureMock.mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: true });
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:reopened',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(machineTerminalRestartMock).toHaveBeenCalledTimes(1);
+        } finally {
+            await hook.unmount();
+        }
+    });
+    it('has an agent terminal attached afresh when a second view of it could be given only the end of its output', async () => {
+        const terminalRef = { current: null };
+        // Another view already reads this terminal.
+        terminalReaderLeaseState.ownerByKey.set('session-attach:second-view', Symbol('other view'));
+        surfaceWorld.cached = { terminalId: 'terminal-1', cursor: 4_000, output: 'tail of the output', outputEnd: 90_000, detectedUrl: null };
+        surfaceWorld.screenWhole = false;
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:second-view',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            expect(machineTerminalEnsureMock).not.toHaveBeenCalled();
+            expect(machineTerminalRestartMock).toHaveBeenCalledWith('machine-1', expect.objectContaining({
+                terminalKey: 'session-attach:second-view',
+                launch: { kind: 'session_attach', sessionId: 'session-1' },
+            }));
+        } finally {
+            await hook.unmount();
+        }
     });
 });

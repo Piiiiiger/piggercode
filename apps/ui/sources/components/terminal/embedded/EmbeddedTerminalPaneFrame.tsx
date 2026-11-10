@@ -66,7 +66,9 @@ export const EmbeddedTerminalPaneFrame = React.memo(function EmbeddedTerminalPan
     const overlayBody = React.useMemo(() => {
         if (props.controller.status !== 'error') {
             if (props.controller.status === 'exited') return t('errors.tryAgain');
-            return t('common.loading');
+            // Connecting while it waits for something (the machine to come back): say what it waits for.
+            const waitingFor = resolveTerminalErrorCopy(props.controller.error);
+            return waitingFor ? t(waitingFor.bodyKey) : t('common.loading');
         }
         const copy = resolveTerminalErrorCopy(props.controller.error);
         if (copy) return t(copy.bodyKey);
@@ -155,7 +157,7 @@ export const EmbeddedTerminalPaneFrame = React.memo(function EmbeddedTerminalPan
                 {shouldShowOverlay ? (
                     <View testID={testId('overlay')} style={styles.overlay} pointerEvents="auto">
                         <Text style={styles.overlayTitle}>{overlayTitle}</Text>
-                        <Text style={styles.overlayBody}>{overlayBody}</Text>
+                        <Text testID={testId('overlay-body')} style={styles.overlayBody}>{overlayBody}</Text>
 
                         {props.controller.status === 'error' ? (
                             <Pressable testID={testId('retry')} onPress={props.controller.retryConnect} style={styles.overlayRetry}>

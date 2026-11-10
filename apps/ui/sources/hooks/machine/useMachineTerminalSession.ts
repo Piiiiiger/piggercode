@@ -25,6 +25,8 @@ import {
     machineTerminalRestart,
     machineTerminalStreamRead,
 } from '@/sync/ops/machineTerminal';
+import { isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
+import { log } from '@/log';
 import { delay } from '@/utils/timing/time';
 
 /**
@@ -55,6 +57,8 @@ export function useMachineTerminalSession(params: Readonly<{
     const [error, setError] = React.useState<string | null>(null);
 
     const [connectionNonce, bumpConnectionNonce] = React.useReducer((x: number) => x + 1, 0);
+    // An agent CLI attached through tmux draws a full screen: its view needs the output from the start.
+    const wholeScreenOnly = params.launch?.kind === 'session_attach';
     const restartRequestedRef = React.useRef(false);
     const autoRetryAttemptRef = React.useRef(0);
     const autoRetryTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -69,6 +73,7 @@ export function useMachineTerminalSession(params: Readonly<{
         detectedUrl,
         clearTerminalOutput,
         hydrateTerminalRendererIfNeeded,
+        isScreenWhole,
         replaceSurfaceState,
         setDetectedUrl,
         syncDetectedUrl,
@@ -81,6 +86,7 @@ export function useMachineTerminalSession(params: Readonly<{
         cursorRef,
         terminalRendererHandleRef,
         clearNonceRef,
+        wholeScreenOnly,
     });
     const { initialTerminalSize, latestTerminalSizeRef, onInput, onResize, onReady } = useEmbeddedTerminalTransportHandlers({
         machineId: params.machineId,
@@ -97,9 +103,11 @@ export function useMachineTerminalSession(params: Readonly<{
         autoRetryTimeoutRef.current = null;
     }, []);
 
-    const scheduleAutoRetry = React.useCallback(() => {
+    const scheduleAutoRetry = React.useCallback((options?: Readonly<{ whileOffline?: boolean }>) => {
         const nextAttempt = autoRetryAttemptRef.current + 1;
-        if (nextAttempt > TERMINAL_AUTO_RETRY_MAX_ATTEMPTS) {
+        // A dropped connection (this app offline, e.g. in the background) comes back by itself: keep trying at
+        // the longest pause instead of giving up after the usual attempts.
+        if (nextAttempt > TERMINAL_AUTO_RETRY_MAX_ATTEMPTS && options?.whileOffline !== true) {
             return false;
         }
 
@@ -193,6 +201,20 @@ export function useMachineTerminalSession(params: Readonly<{
                 setError(null);
                 setStatus(cachedSurfaceState.terminalId ? 'connected' : 'connecting');
                 hydrateTerminalRendererIfNeeded();
+                // Another view reads this terminal. A full-screen program's screen this view could not be given
+                // whole comes from a fresh attach: the reading view follows it, and its output reaches both views.
+                const size = latestTerminalSizeRef.current ?? initialTerminalSize;
+                if (wholeScreenOnly && !isScreenWhole() && params.machineId && params.launch && size) {
+                    const restarted = await machineTerminalRestart(params.machineId, {
+                        terminalKey: params.terminalKey,
+                        cols: size.cols,
+                        rows: size.rows,
+                        launch: params.launch,
+                    }).catch((error: unknown) => ({ ok: false as const, errorCode: error instanceof Error ? error.message : 'terminal_error' }));
+                    if (!restarted.ok) {
+                        log.log(`[terminal] a second view of ${params.terminalKey} could not attach afresh: ${restarted.errorCode}`);
+                    }
+                }
                 return;
             }
 
@@ -208,7 +230,10 @@ export function useMachineTerminalSession(params: Readonly<{
                 return;
             }
             if (params.machineReachable === false) {
-                failTerminalSession('terminal_machine_unreachable');
+                // This app sees the machine as offline (often this app is the one reconnecting): wait for it
+                // without calling it an error; the terminal connects again once the machine is back.
+                releaseReaderLease();
+                setError('terminal_machine_waiting');
                 return;
             }
             if (!initialTerminalSize) {
@@ -272,6 +297,12 @@ export function useMachineTerminalSession(params: Readonly<{
                     cursor: previousCursor,
                 });
                 hydrateTerminalRendererIfNeeded();
+                // A view that was given only the end of a full-screen program's output attaches again: tmux then
+                // sends the whole screen.
+                if (wholeScreenOnly && !isScreenWhole()) {
+                    requestRestart();
+                    return;
+                }
             }
             setStatus('connected');
 
@@ -333,6 +364,11 @@ export function useMachineTerminalSession(params: Readonly<{
                     if (event.t === 'data') {
                         writeTerminalOutput(event.data);
                     } else if (event.t === 'gap') {
+                        if (wholeScreenOnly) {
+                            // Output was dropped before this view read it: the screen can no longer be rebuilt.
+                            requestRestart();
+                            return;
+                        }
                         writeTerminalOutput('\r\n[Output truncated]\r\n');
                     } else if (event.t === 'url') {
                         syncDetectedUrl(event);
@@ -350,7 +386,7 @@ export function useMachineTerminalSession(params: Readonly<{
 
         void start().catch((e) => {
             if (canceled) return;
-            if (isRecoverableTerminalRpcError(e) && scheduleAutoRetry()) {
+            if (isRecoverableTerminalRpcError(e) && scheduleAutoRetry({ whileOffline: isSocketIoDisconnectedError(e) })) {
                 return;
             }
             failTerminalSession(e instanceof Error ? e.message : 'terminal_error');
@@ -372,9 +408,12 @@ export function useMachineTerminalSession(params: Readonly<{
         params.machineRpcTargetAvailable,
         params.terminalKey,
         params.terminalRef,
+        isScreenWhole,
         replaceSurfaceState,
+        requestRestart,
         resetAutoRetryState,
         scheduleAutoRetry,
+        wholeScreenOnly,
         setDetectedUrl,
         syncDetectedUrl,
         updateSurfaceState,
