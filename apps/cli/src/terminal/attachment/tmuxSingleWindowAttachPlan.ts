@@ -1,5 +1,11 @@
 const PLACEHOLDER_WINDOW_NAME = '__happier_attach_placeholder__';
 const PLACEHOLDER_COMMAND = 'sleep 2147483647';
+/**
+ * A pane in tmux's scroll-back (copy) mode with no history and no selection: there is nothing to scroll back to, the
+ * view is frozen and typing is swallowed. One wheel turn or drag before the CLI takes the mouse (its first second, on
+ * a blank screen) puts a pane there; a drag's own selection is left to finish its copy.
+ */
+const EMPTY_SCROLLBACK = '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}';
 
 export type TmuxSingleWindowAttachPlan = Readonly<{
   tempSessionName: string;
@@ -8,6 +14,12 @@ export type TmuxSingleWindowAttachPlan = Readonly<{
   hideStatusArgs: string[];
   linkWindowArgs: string[];
   killPlaceholderWindowArgs: string[];
+  /**
+   * Window options for the agent's window, so every view of it has them: programs may pass escape sequences through
+   * tmux (Claude Code and Codex send a copy to the clipboard of the computer the view is on that way), and the window
+   * leaves scroll-back mode at once when it has nothing to scroll back to. Not needed to attach.
+   */
+  viewOptionsArgs: string[];
   /**
    * Attaches, and in the same tmux command marks the session to be destroyed once no client is attached: the
    * daemon ends an attach by closing its terminal, which kills this process before `cleanupSessionArgs` runs.
@@ -45,6 +57,10 @@ export function createTmuxSingleWindowAttachPlan(params: Readonly<{
     hideStatusArgs: ['set-option', '-t', tempSessionName, 'status', 'off'],
     linkWindowArgs: ['link-window', '-s', params.target, '-t', `${tempSessionName}:`],
     killPlaceholderWindowArgs: ['kill-window', '-t', `${tempSessionName}:${PLACEHOLDER_WINDOW_NAME}`],
+    viewOptionsArgs: [
+      'set-option', '-q', '-w', '-t', params.target, 'allow-passthrough', 'on',
+      ';', 'set-hook', '-w', '-t', params.target, 'pane-mode-changed', `if-shell -F '${EMPTY_SCROLLBACK}' 'send-keys -X cancel'`,
+    ],
     attachSessionArgs: ['attach-session', '-t', tempSessionName, ';', 'set-option', '-t', tempSessionName, 'destroy-unattached', 'on'],
     cleanupSessionArgs: ['kill-session', '-t', tempSessionName],
   };

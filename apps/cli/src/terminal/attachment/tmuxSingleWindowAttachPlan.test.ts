@@ -35,6 +35,12 @@ describe('createTmuxSingleWindowAttachPlan', () => {
         '-t',
         'happy-attach-cm-session_1-1234-5678:__happier_attach_placeholder__',
       ],
+      // Clipboard copies pass through to the app, and an empty scroll-back never holds the view.
+      viewOptionsArgs: [
+        'set-option', '-q', '-w', '-t', 'happy:happy-123-claude', 'allow-passthrough', 'on',
+        ';', 'set-hook', '-w', '-t', 'happy:happy-123-claude', 'pane-mode-changed',
+        "if-shell -F '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}' 'send-keys -X cancel'",
+      ],
       // The temporary session goes as soon as its client does, even when the attach process is killed.
       attachSessionArgs: [
         'attach-session',

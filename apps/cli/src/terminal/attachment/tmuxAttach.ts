@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 
 
 import { isTmuxAvailable, normalizeExitCode } from '@/integrations/tmux';
+import { logger } from '@/ui/logger';
 
 import { createTerminalAttachPlan } from './terminalAttachPlan';
 import { createTmuxSingleWindowAttachPlan } from './tmuxSingleWindowAttachPlan';
@@ -116,6 +117,12 @@ export async function runTmuxAttach(params: {
   if (killPlaceholderExit !== 0) {
     await spawnTmuxFn({ args: singleWindowAttachPlan.cleanupSessionArgs, env, stdio: 'ignore' });
     return killPlaceholderExit;
+  }
+
+  const viewOptionsExit = await spawnTmuxFn({ args: singleWindowAttachPlan.viewOptionsArgs, env, stdio: 'ignore' });
+  if (viewOptionsExit !== 0) {
+    // The view still works: copies stay on the session's machine and an empty scroll-back can hold it until Escape.
+    logger.infoFile('[TERMINAL ATTACH] tmux view options were not applied', { target: plan.target, exitCode: viewOptionsExit });
   }
 
   const attachExit = await spawnTmuxFn({ args: singleWindowAttachPlan.attachSessionArgs, env, stdio: 'inherit' });

@@ -62,7 +62,19 @@ describe('runTmuxAttach', () => {
         stdio: 'ignore',
       },
       {
-        args: ['attach-session', '-t', 'happy-attach-sid-1-1234-5678'],
+        args: [
+          'set-option', '-q', '-w', '-t', 'happy:window-1', 'allow-passthrough', 'on',
+          ';', 'set-hook', '-w', '-t', 'happy:window-1', 'pane-mode-changed',
+          "if-shell -F '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}' 'send-keys -X cancel'",
+        ],
+        env: expect.any(Object),
+        stdio: 'ignore',
+      },
+      {
+        args: [
+          'attach-session', '-t', 'happy-attach-sid-1-1234-5678',
+          ';', 'set-option', '-t', 'happy-attach-sid-1-1234-5678', 'destroy-unattached', 'on',
+        ],
         env: expect.any(Object),
         stdio: 'inherit',
       },
