@@ -35,7 +35,8 @@ import { delay } from '@/utils/timing/time';
  */
 const TERMINAL_READ_WAIT_MS = 15_000;
 
-export type TerminalStatus = 'idle' | 'connecting' | 'connected' | 'error' | 'exited';
+/** `reconnecting`: connecting again while the view still shows the terminal's screen (it stays in sight). */
+export type TerminalStatus = 'idle' | 'connecting' | 'reconnecting' | 'connected' | 'error' | 'exited';
 
 export function useMachineTerminalSession(params: Readonly<{
     machineId: string | null;
@@ -57,8 +58,11 @@ export function useMachineTerminalSession(params: Readonly<{
     const [error, setError] = React.useState<string | null>(null);
 
     const [connectionNonce, bumpConnectionNonce] = React.useReducer((x: number) => x + 1, 0);
-    // An agent CLI attached through tmux draws a full screen: its view needs the output from the start.
-    const wholeScreenOnly = params.launch?.kind === 'session_attach';
+    // An agent CLI attached through tmux draws a full screen (its view needs the output from the start), and
+    // only its login links are worth a bar of their own: other links stay clickable in the screen itself.
+    const isAgentTerminal = params.launch?.kind === 'session_attach';
+    /** Whether the view shows this terminal's screen, so that connecting again keeps it in sight. */
+    const screenShownRef = React.useRef(false);
     const restartRequestedRef = React.useRef(false);
     const autoRetryAttemptRef = React.useRef(0);
     const autoRetryTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -86,7 +90,7 @@ export function useMachineTerminalSession(params: Readonly<{
         cursorRef,
         terminalRendererHandleRef,
         clearNonceRef,
-        wholeScreenOnly,
+        wholeScreenOnly: isAgentTerminal,
     });
     const { initialTerminalSize, latestTerminalSizeRef, onInput, onResize, onReady } = useEmbeddedTerminalTransportHandlers({
         machineId: params.machineId,
@@ -118,11 +122,13 @@ export function useMachineTerminalSession(params: Readonly<{
             bumpConnectionNonce();
         }, resolveTerminalAutoRetryDelayMs(nextAttempt));
         setError(null);
-        setStatus('connecting');
+        setStatus(screenShownRef.current ? 'reconnecting' : 'connecting');
         return true;
     }, []);
 
     const requestRestart = React.useCallback(() => {
+        // The screen is cleared and drawn again from a fresh attach.
+        screenShownRef.current = false;
         resetAutoRetryState();
         restartRequestedRef.current = true;
         clearTerminalOutput();
@@ -145,6 +151,7 @@ export function useMachineTerminalSession(params: Readonly<{
 
     React.useEffect(() => {
         terminalReaderOwnerTokenRef.current = Symbol(params.terminalKey);
+        screenShownRef.current = false;
     }, [params.terminalKey]);
 
     React.useEffect(() => {
@@ -199,12 +206,13 @@ export function useMachineTerminalSession(params: Readonly<{
                 terminalIdRef.current = cachedSurfaceState.terminalId;
                 cursorRef.current = cachedSurfaceState.cursor;
                 setError(null);
+                screenShownRef.current = cachedSurfaceState.terminalId !== null;
                 setStatus(cachedSurfaceState.terminalId ? 'connected' : 'connecting');
                 hydrateTerminalRendererIfNeeded();
                 // Another view reads this terminal. A full-screen program's screen this view could not be given
                 // whole comes from a fresh attach: the reading view follows it, and its output reaches both views.
                 const size = latestTerminalSizeRef.current ?? initialTerminalSize;
-                if (wholeScreenOnly && !isScreenWhole() && params.machineId && params.launch && size) {
+                if (isAgentTerminal && !isScreenWhole() && params.machineId && params.launch && size) {
                     const restarted = await machineTerminalRestart(params.machineId, {
                         terminalKey: params.terminalKey,
                         cols: size.cols,
@@ -219,7 +227,7 @@ export function useMachineTerminalSession(params: Readonly<{
             }
 
             setError(null);
-            setStatus('connecting');
+            setStatus(screenShownRef.current ? 'reconnecting' : 'connecting');
 
             if (!params.machineId || (!params.cwd && !params.launch)) {
                 failTerminalSession('terminal_missing_machine_target');
@@ -299,11 +307,12 @@ export function useMachineTerminalSession(params: Readonly<{
                 hydrateTerminalRendererIfNeeded();
                 // A view that was given only the end of a full-screen program's output attaches again: tmux then
                 // sends the whole screen.
-                if (wholeScreenOnly && !isScreenWhole()) {
+                if (isAgentTerminal && !isScreenWhole()) {
                     requestRestart();
                     return;
                 }
             }
+            screenShownRef.current = true;
             setStatus('connected');
 
             let idleCount = 0;
@@ -364,14 +373,16 @@ export function useMachineTerminalSession(params: Readonly<{
                     if (event.t === 'data') {
                         writeTerminalOutput(event.data);
                     } else if (event.t === 'gap') {
-                        if (wholeScreenOnly) {
+                        if (isAgentTerminal) {
                             // Output was dropped before this view read it: the screen can no longer be rebuilt.
                             requestRestart();
                             return;
                         }
                         writeTerminalOutput('\r\n[Output truncated]\r\n');
                     } else if (event.t === 'url') {
-                        syncDetectedUrl(event);
+                        if (!isAgentTerminal || event.kind === 'auth') {
+                            syncDetectedUrl(event);
+                        }
                     } else if (event.t === 'exit') {
                         sawExit = true;
                     }
@@ -413,7 +424,7 @@ export function useMachineTerminalSession(params: Readonly<{
         requestRestart,
         resetAutoRetryState,
         scheduleAutoRetry,
-        wholeScreenOnly,
+        isAgentTerminal,
         setDetectedUrl,
         syncDetectedUrl,
         updateSurfaceState,

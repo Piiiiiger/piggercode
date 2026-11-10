@@ -56,7 +56,10 @@ export const EmbeddedTerminalPaneFrame = React.memo(function EmbeddedTerminalPan
         void openExternalUrl(url, props.platformOS === 'web' ? { platformOS: 'web' } : undefined);
     }, [props.controller.detectedUrl?.url, props.platformOS]);
 
-    const shouldShowOverlay = props.controller.status !== 'connected';
+    // Connecting again keeps the screen in sight under a small badge; only a terminal with nothing to show yet,
+    // or one that failed or ended, is covered.
+    const isReconnecting = props.controller.status === 'reconnecting';
+    const shouldShowOverlay = props.controller.status !== 'connected' && !isReconnecting;
     const overlayTitle = props.controller.status === 'error'
         ? t('common.error')
         : props.controller.status === 'exited'
@@ -74,6 +77,11 @@ export const EmbeddedTerminalPaneFrame = React.memo(function EmbeddedTerminalPan
         if (copy) return t(copy.bodyKey);
         return props.controller.error ? String(props.controller.error) : t('errors.tryAgain');
     }, [props.controller.error, props.controller.status]);
+
+    const reconnectingLabel = React.useMemo(() => {
+        const waitingFor = resolveTerminalErrorCopy(props.controller.error);
+        return waitingFor ? t(waitingFor.bodyKey) : t('terminalEmbedded.reconnecting');
+    }, [props.controller.error]);
 
     return (
         <View testID={testId('root')} style={styles.container}>
@@ -154,6 +162,11 @@ export const EmbeddedTerminalPaneFrame = React.memo(function EmbeddedTerminalPan
             <View testID={testId('surface')} style={terminalSurfaceStyle}>
                 {props.surface}
                 {props.footer}
+                {isReconnecting ? (
+                    <View testID={testId('reconnecting')} style={styles.reconnecting} pointerEvents="none">
+                        <Text style={styles.reconnectingLabel}>{reconnectingLabel}</Text>
+                    </View>
+                ) : null}
                 {shouldShowOverlay ? (
                     <View testID={testId('overlay')} style={styles.overlay} pointerEvents="auto">
                         <Text style={styles.overlayTitle}>{overlayTitle}</Text>

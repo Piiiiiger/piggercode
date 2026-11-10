@@ -535,4 +535,55 @@ describe('useMachineTerminalSession', () => {
             await hook.unmount();
         }
     });
+    it('keeps the screen in sight while it connects again after a dropped connection', async () => {
+        const terminalRef = { current: null };
+        machineTerminalStreamReadMock
+            .mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', events: [{ t: 'data', data: '> ' }], nextCursor: 1, done: false })
+            .mockRejectedValueOnce(new Error('socket has been disconnected'));
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:reconnecting',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(hook.getCurrent().status).toBe('reconnecting');
+            expect(hook.getCurrent().error).toBeNull();
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('puts only the login links of an agent terminal in the link bar', async () => {
+        const terminalRef = { current: null };
+        const login = { t: 'url', url: 'https://claude.ai/oauth/authorize?code=1', kind: 'auth' } as const;
+        machineTerminalStreamReadMock.mockResolvedValueOnce({
+            ok: true,
+            terminalId: 'terminal-1',
+            events: [{ t: 'url', url: 'https://example.com/docs', kind: 'generic' }, login],
+            nextCursor: 2,
+            done: false,
+        });
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:links',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(syncDetectedUrlMock.mock.calls).toEqual([[login]]);
+        } finally {
+            await hook.unmount();
+        }
+    });
 });

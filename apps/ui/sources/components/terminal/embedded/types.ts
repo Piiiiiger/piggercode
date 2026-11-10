@@ -1,4 +1,4 @@
-export type EmbeddedTerminalPaneStatus = 'idle' | 'connecting' | 'connected' | 'error' | 'exited';
+export type EmbeddedTerminalPaneStatus = 'idle' | 'connecting' | 'reconnecting' | 'connected' | 'error' | 'exited';
 
 export type EmbeddedTerminalDetectedUrl = Readonly<{
     url: string;

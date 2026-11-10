@@ -9576,6 +9576,7 @@ settingsSession: {
   terminalEmbedded: {
     dockMenuA11y: "停靠终端",
     pasteImageFailed: "无法粘贴图片",
+    reconnecting: "正在重新连接…",
     attachedSessionTitle: "CLI 界面",
     settings: {
       locationTitle: "嵌入式终端位置",

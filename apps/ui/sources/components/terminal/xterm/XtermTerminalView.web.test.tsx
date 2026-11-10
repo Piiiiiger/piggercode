@@ -244,4 +244,31 @@ describe('XtermTerminalView.web', () => {
         // Typed like a dropped file, so Claude Code and Codex attach it as an image.
         expect(pasteSpy.mock.calls).toEqual([["/home/me/Shots\\ \\(Mac\\)\\ it\\'s/paste\\ one.png"]]);
     });
+    it('takes no typing or pasting while the terminal is not connected, and takes it again once it is', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        const onPasteImages = vi.fn(async (_images: readonly File[]) => ['/home/me/Downloads/paste.png']);
+        const view = (inputEnabled: boolean) => (
+            <XtermTerminalView testID="terminal" fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} onPasteImages={onPasteImages} inputEnabled={inputEnabled} />
+        );
+        await act(async () => {
+            root.render(view(false));
+        });
+        expect(terminalConstructorOptions[0]).toEqual(expect.objectContaining({ disableStdin: true }));
+
+        const image = new File([new Uint8Array([137, 80, 78, 71])], 'image.png', { type: 'image/png' });
+        const paste = new Event('paste', { bubbles: true, cancelable: true });
+        Object.defineProperty(paste, 'clipboardData', {
+            value: { items: [{ kind: 'file', type: 'image/png', getAsFile: () => image }], getData: () => '' },
+        });
+        await act(async () => {
+            container.querySelector('[data-testid="terminal"]')!.dispatchEvent(paste);
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        });
+        expect(onPasteImages).not.toHaveBeenCalled();
+
+        await act(async () => {
+            root.render(view(true));
+        });
+        expect(terminalConstructorOptions[0]?.disableStdin).toBe(false);
+    });
 });

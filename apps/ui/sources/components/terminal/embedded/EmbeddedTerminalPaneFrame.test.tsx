@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { renderScreen } from '@/dev/testkit';
+import { findTestInstanceByTypeContainingText, renderScreen } from '@/dev/testkit';
 import { installEmbeddedTerminalPaneCommonModuleMocks } from './embeddedTerminalPaneTestHelpers';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -158,5 +158,34 @@ describe('EmbeddedTerminalPaneFrame', () => {
         expect(screen.findByTestId('agent-terminal-overlay')).toBeTruthy();
         expect(screen.findByTestId('agent-terminal-overlay-body')?.props.children).toBe('terminalEmbedded.errors.machineWaiting');
         expect(screen.findByTestId('agent-terminal-retry')).toBeNull();
+    });
+    it('keeps the screen in sight under a small badge while it reconnects', async () => {
+        const controller: EmbeddedTerminalPaneController = {
+            status: 'reconnecting',
+            error: null,
+            detectedUrl: null,
+            onInput: () => {},
+            onResize: () => {},
+            onReady: () => {},
+            clearTerminal: () => {},
+            requestRestart: () => {},
+            retryConnect: () => {},
+            dismissDetectedUrl: () => {},
+        };
+
+        const screen = await renderScreen(
+            React.createElement(EmbeddedTerminalPaneFrame, {
+                title: 'Agent terminal',
+                controller,
+                surface: React.createElement('TerminalSurface'),
+                testIdPrefix: 'agent-terminal',
+                platformOS: 'web',
+            }),
+        );
+
+        expect(screen.findByTestId('agent-terminal-overlay')).toBeNull();
+        const badge = screen.findByTestId('agent-terminal-reconnecting');
+        expect(badge).toBeTruthy();
+        expect(findTestInstanceByTypeContainingText(badge!, 'Text', 'terminalEmbedded.reconnecting')).toBeTruthy();
     });
 });

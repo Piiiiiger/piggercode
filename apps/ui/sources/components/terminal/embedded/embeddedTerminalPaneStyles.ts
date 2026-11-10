@@ -91,6 +91,22 @@ export const embeddedTerminalPaneStyles = StyleSheet.create((theme) => ({
         color: theme.colors.text.secondary,
         ...Typography.default('semiBold'),
     },
+    reconnecting: {
+        position: 'absolute',
+        top: 8,
+        right: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: theme.colors.border.default,
+        backgroundColor: theme.colors.surface.inset,
+    },
+    reconnectingLabel: {
+        fontSize: 12,
+        color: theme.colors.text.secondary,
+        ...Typography.default(),
+    },
     overlay: {
         ...StyleSheet.absoluteFillObject,
         alignItems: 'center',

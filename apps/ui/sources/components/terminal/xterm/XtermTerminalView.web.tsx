@@ -28,6 +28,8 @@ export type XtermTerminalViewProps = Readonly<{
      * the clipboard is not handed to the terminal.
      */
     onPasteImages?: (images: readonly File[]) => Promise<readonly string[]>;
+    /** False while the terminal is not connected: typing or pasting then would be lost, so the terminal takes none. */
+    inputEnabled?: boolean;
     fontSize: number;
     testID?: string;
 }>;
@@ -111,10 +113,12 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
     const onResizeRef = React.useRef(props.onResize);
     const onReadyRef = React.useRef(props.onReady);
     const onPasteImagesRef = React.useRef(props.onPasteImages);
+    const inputEnabledRef = React.useRef(props.inputEnabled !== false);
     onInputRef.current = props.onInput;
     onResizeRef.current = props.onResize;
     onReadyRef.current = props.onReady;
     onPasteImagesRef.current = props.onPasteImages;
+    inputEnabledRef.current = props.inputEnabled !== false;
 
     const pendingWriteRef = React.useRef('');
     const writeRafRef = React.useRef<number | null>(null);
@@ -216,16 +220,17 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
     // Pasted images go to the machine first; their paths then go in as pastes, one per image.
     const pasteImages = React.useCallback(async (images: readonly File[]) => {
         const upload = onPasteImagesRef.current;
-        if (!upload || images.length === 0) return;
+        if (!upload || images.length === 0 || !inputEnabledRef.current) return;
         const paths = await upload(images);
         const term = terminalRef.current;
-        if (!term) return;
+        if (!term || !inputEnabledRef.current) return;
         for (const path of paths) {
             term.paste(typedPath(path));
         }
     }, []);
 
     const pasteFromClipboard = React.useCallback(async () => {
+        if (!inputEnabledRef.current) return;
         const { images, text } = await readClipboardContents();
         if (images.length > 0 && onPasteImagesRef.current) {
             await pasteImages(images);
@@ -298,6 +303,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
             fontSize: Math.max(8, Math.round(props.fontSize)),
             scrollback: 5000,
             screenReaderMode: false,
+            disableStdin: !inputEnabledRef.current,
             theme: {
                 background: theme.colors.surface.base,
                 foreground: theme.colors.text.primary,
@@ -369,7 +375,8 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
 
         // Ahead of xterm (capture), which would paste only the clipboard's text.
         const onPaste = (event: ClipboardEvent) => {
-            if (!onPasteImagesRef.current) return;
+            // Input off (not connected): xterm takes no paste either.
+            if (!onPasteImagesRef.current || !inputEnabledRef.current) return;
             const images = readClipboardImages(event.clipboardData);
             if (images.length === 0) return;
             event.preventDefault();
@@ -445,6 +452,12 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
 
         fitTerminal('resize');
     }, [fitTerminal, props.fontSize, theme.colors.surface.base, theme.colors.surface.selected, theme.colors.text.primary]);
+
+    const inputEnabled = props.inputEnabled !== false;
+    React.useEffect(() => {
+        const term = terminalRef.current;
+        if (term) term.options.disableStdin = !inputEnabled;
+    }, [inputEnabled]);
 
     return (
         <div
