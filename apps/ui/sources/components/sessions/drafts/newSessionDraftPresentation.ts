@@ -10,7 +10,6 @@ export type NewSessionDraftRowPresentation = Readonly<{
 
 export type NewSessionDraftSummaryNames = Readonly<{
     unavailableMachineIds?: ReadonlySet<string>;
-    attachmentNeedsAttentionDraftIds?: ReadonlySet<string>;
 }>;
 
 function readAuthoringValue(draft: NewSessionDraftProjection, fieldId: string): unknown {
@@ -56,9 +55,6 @@ function resolveStatusKey(
     const machineId = readNonblankString(readAuthoringValue(draft, 'machineId'));
     if (machineId && names.unavailableMachineIds?.has(machineId)) {
         return 'sessionDrafts.status.machineUnavailable';
-    }
-    if (names.attachmentNeedsAttentionDraftIds?.has(draft.draftId)) {
-        return 'sessionDrafts.status.attachmentNeedsAttention';
     }
     if (draft.status === 'pending') return resolveSessionDraftStatusKey(draft.status);
     return null;

@@ -24,12 +24,6 @@ import { fireAndForget } from '@/utils/system/fireAndForget';
 import { restoreFocusToBestTarget, type FocusReturnTarget, useFocusReturnFallbackRef } from '@/keyboard/focusReturn';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 import {
-    getNewSessionAttachmentDraftsRevision,
-    readNewSessionAttachmentDrafts,
-    subscribeNewSessionAttachmentDrafts,
-} from '@/components/sessions/new/attachments/newSessionAttachmentDraftStore';
-import { resolveNewSessionDraftAttachmentFlowId } from '@/components/sessions/new/attachments/newSessionDraftAttachmentFlowId';
-import {
     buildNewSessionDraftRowPresentation,
     resolveNewSessionDraftAgentId,
     type NewSessionDraftSummaryNames,
@@ -181,7 +175,6 @@ const NewSessionDraftRow = React.memo(function NewSessionDraftRow(props: Readonl
 export const NewSessionDraftsSectionView = React.memo(function NewSessionDraftsSectionView(props: Readonly<{
     drafts: readonly NewSessionDraftProjection[];
     unavailableMachineIds?: ReadonlySet<string>;
-    attachmentNeedsAttentionDraftIds?: ReadonlySet<string>;
     onContinue: (draftId: string) => void;
     onDelete: (draftId: string) => Promise<boolean>;
     deleteDisabledDraftIds?: ReadonlySet<string>;
@@ -195,7 +188,6 @@ export const NewSessionDraftsSectionView = React.memo(function NewSessionDraftsS
     }> | null>(null);
     const names: NewSessionDraftSummaryNames = {
         unavailableMachineIds: props.unavailableMachineIds,
-        attachmentNeedsAttentionDraftIds: props.attachmentNeedsAttentionDraftIds,
     };
     const handleDelete = React.useCallback(async (draftId: string) => {
         const deletedIndex = props.drafts.findIndex((draft) => draft.draftId === draftId);
@@ -267,11 +259,6 @@ export const NewSessionDraftsSection = React.memo(function NewSessionDraftsSecti
     const machines = useLaunchSelectionMachines();
     const drafts = useNewSessionDraftProjections();
     const actionOperations = useAllActionOperations(scope?.accountId ?? '');
-    const attachmentDraftRevision = React.useSyncExternalStore(
-        subscribeNewSessionAttachmentDrafts,
-        getNewSessionAttachmentDraftsRevision,
-        getNewSessionAttachmentDraftsRevision,
-    );
     const deleteDisabledDraftIds = React.useMemo(() => new Set(drafts.flatMap((draft) => (
         resolvePersistedNewSessionOperationIdentity({
             draftScope: scope,
@@ -291,12 +278,6 @@ export const NewSessionDraftsSection = React.memo(function NewSessionDraftsSecti
                 : [];
         }));
     }, [drafts, isDataReady, machines]);
-    const attachmentNeedsAttentionDraftIds = React.useMemo(() => new Set(drafts.flatMap((draft) => (
-        readNewSessionAttachmentDrafts(resolveNewSessionDraftAttachmentFlowId(draft.draftId))
-            .some((attachment) => attachment.status === 'error')
-            ? [draft.draftId]
-            : []
-    ))), [attachmentDraftRevision, drafts]);
     const handleContinue = React.useCallback((draftId: string) => {
         router.push({ pathname: '/new', params: { draftId } });
     }, [router]);
@@ -330,7 +311,6 @@ export const NewSessionDraftsSection = React.memo(function NewSessionDraftsSecti
         <NewSessionDraftsSectionView
             drafts={drafts}
             unavailableMachineIds={unavailableMachineIds}
-            attachmentNeedsAttentionDraftIds={attachmentNeedsAttentionDraftIds}
             onContinue={handleContinue}
             onDelete={handleDelete}
             deleteDisabledDraftIds={deleteDisabledDraftIds}

@@ -125,19 +125,6 @@ vi.mock('@/components/sessions/attachments/useAttachmentsUploadConfig', () => ({
     useAttachmentsUploadConfig: () => ({ maxFileBytes: 1 }),
 }));
 
-vi.mock('@/components/sessions/attachments/useAttachmentDraftManager', () => ({
-    useAttachmentDraftManager: () => ({
-        filePickerRef: { current: null },
-        drafts: [],
-        hasSendableAttachments: false,
-        agentInputAttachments: [],
-        addWebFiles: () => {},
-        addPickedAttachments: () => {},
-        applyDraftPatch: () => {},
-        clearDrafts: () => {},
-    }),
-}));
-
 vi.mock('@/components/machines/InstallableDepInstaller', () => ({
     InstallableDepInstaller: () => null,
 }));

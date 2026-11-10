@@ -167,7 +167,7 @@ describe('AgentInput (attachments drag overlay)', () => {
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
             onAttachmentsAdded: () => { },
-            hasSendableAttachments: false,
+            canSendWithoutText: false,
         }));
 
         await activatePanelDropZone(screen);
@@ -194,7 +194,7 @@ describe('AgentInput (attachments drag overlay)', () => {
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
             onAttachmentsAdded: () => { },
-            hasSendableAttachments: false,
+            canSendWithoutText: false,
         }));
 
         expect(lastMultiTextInputProps).not.toBeNull();
@@ -231,7 +231,7 @@ describe('AgentInput (attachments drag overlay)', () => {
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
             onAttachmentsAdded,
-            hasSendableAttachments: false,
+            canSendWithoutText: false,
             attachments: [{
                 key: 'existing',
                 label: 'existing.txt',

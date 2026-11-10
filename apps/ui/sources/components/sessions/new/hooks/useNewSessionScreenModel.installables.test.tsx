@@ -769,7 +769,7 @@ describe('useNewSessionScreenModel (installables)', () => {
         expect(model?.variant).toBe('simple');
     });
 
-    it('enables workspace, native skill and slash suggestions before a session exists', async () => {
+    it('offers files and the CLI\'s slash commands before a session exists, and no session or skill references', async () => {
         cliAvailabilityState.value = {
             ...cliAvailabilityState.value,
             available: { codex: true, claude: true },
@@ -788,16 +788,13 @@ describe('useNewSessionScreenModel (installables)', () => {
                 .map(([params]) => params as { machineId: string; serverId: string; payload: { method?: string; params?: unknown } })
                 .filter((params) => params.payload?.method === 'probeCatalogs');
             expect(nativeCalls()).toEqual([]);
-            expect(model?.simpleProps?.emptyAutocompleteKinds).toEqual(['file', 'session', 'skill', 'slashCommand']);
+            expect(model?.simpleProps?.emptyAutocompleteKinds).toEqual(['file', 'slashCommand']);
             await act(async () => {
                 const suggestions = await model?.simpleProps?.emptyAutocompleteSuggestions('/go');
                 expect(suggestions?.some((suggestion: { text?: string }) => suggestion.text === '/goal')).toBe(true);
             });
             await flushHookEffects();
             const current = hook.getCurrent();
-            expect(await current?.simpleProps?.emptyAutocompleteSuggestions('$project')).toEqual(expect.arrayContaining([
-                expect.objectContaining({ text: '$project-check', structuredInput: expect.objectContaining({ origin: 'codex_native' }) }),
-            ]));
             expect(await current?.simpleProps?.emptyAutocompleteSuggestions('/project')).toEqual(expect.arrayContaining([
                 expect.objectContaining({ text: '/project-check' }),
             ]));
@@ -809,40 +806,6 @@ describe('useNewSessionScreenModel (installables)', () => {
             })]);
         } finally {
             machineRpcWithServerScopeMock.mockReset();
-        }
-    });
-
-    it('scopes the `@session` picker to the server this session will spawn on', async () => {
-        // The kind being eligible is not the same fact as the host declaring its spawn target.
-        // Without `serverId: targetServerId` the resolver has no server to scope to, so `@session`
-        // silently offers nothing here — which is the whole affordance, and the assertion above
-        // (an `emptyAutocompleteKinds` array plus a `/` query) cannot see it.
-        const listed = (serverId: string, ids: readonly string[]) => ids.map((id) => ({
-            type: 'session',
-            serverId,
-            session: {
-                id,
-                active: true,
-                updatedAt: 10,
-                metadata: { name: `Session ${id}`, path: '/repo' },
-            },
-        }));
-        storageState.sessionListViewDataByServerId = {
-            // `s1` is the mocked `targetServerId`; `s_active` is the active server, deliberately
-            // different, so scoping to the wrong one is observable.
-            s1: listed('s1', ['peer']),
-            s_active: listed('s_active', ['elsewhere']),
-        };
-
-        try {
-            const hook = await renderNewSessionScreenModel();
-            const model = hook.getCurrent();
-
-            const suggestions = await model?.simpleProps?.emptyAutocompleteSuggestions('@session:');
-
-            expect(suggestions?.map((suggestion: { key?: string }) => suggestion.key)).toEqual(['session-peer']);
-        } finally {
-            storageState.sessionListViewDataByServerId = {};
         }
     });
 

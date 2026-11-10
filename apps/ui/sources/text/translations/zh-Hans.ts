@@ -1201,7 +1201,6 @@ export const zhHans: TranslationStructure = {
     copy: "复制",
     copyWithLabel: ({ label }: { label: string }) => `复制 ${label}`,
     paste: "粘贴",
-    pasteImage: "粘贴图片",
     expand: "展开",
     collapse: "收起",
     command: "命令",
@@ -1210,9 +1209,6 @@ export const zhHans: TranslationStructure = {
     home: "主页",
     message: "消息",
     send: "发送",
-    attach: "附加",
-    addImage: "添加图片",
-    addFile: "添加文件",
     linkFile: "链接文件",
     files: "文件",
     path: "路径",
@@ -2984,11 +2980,6 @@ export const zhHans: TranslationStructure = {
 
   attachments: {
     alerts: {
-      fileTooLargeTitle: "文件过大",
-      fileTooLargeBody: ({ count }: { count: number }) =>
-        `已跳过 ${count} 个超过最大附件大小的文件。`,
-      noClipboardImageTitle: "剪贴板中没有图片",
-      noClipboardImageBody: "请先复制图片，然后将其粘贴为附件。",
     },
   },
 
@@ -4551,6 +4542,7 @@ export const zhHans: TranslationStructure = {
 
   newSession: {
     terminalHostUnavailableTitle: "终端宿主不可用",
+    firstPromptPlaceholder: "第一句话（可留空，直接打开终端）",
     terminalHostUnavailableBody: ({ host }: { host: string }) => `请在此设备上安装或更新 ${host} 并重启其服务器，或选择其他终端宿主。草稿已保留。`,
     ...newSessionMcpTranslationExtension,
     ...acpCatalogTranslationExtension.newSession,
@@ -4626,7 +4618,6 @@ export const zhHans: TranslationStructure = {
       label: "直接打开",
       a11y: "不带第一条消息直接打开终端",
     },
-    terminalAttachmentsUnsupported: "终端会话不能带附件。先打开会话，再在终端里把文件路径告诉它。",
     automationChip: {
       default: "自动化",
       interval: ({ minutes }: { minutes: number }) => `每 ${minutes} 分钟`,
@@ -5998,7 +5989,7 @@ export const zhHans: TranslationStructure = {
 
   sessionDrafts: {
     sectionTitle: '草稿', badge: '草稿', untitled: '未命名草稿', continueEditing: '继续编辑', startAnother: '开始另一份',
-    status: { offline: '离线', syncing: '同步中', conflict: '冲突', machineUnavailable: '机器不可用', attachmentNeedsAttention: '附件需要处理', startInterrupted: '启动中断' },
+    status: { offline: '离线', syncing: '同步中', conflict: '冲突', machineUnavailable: '机器不可用', startInterrupted: '启动中断' },
     new: { action: '新建草稿' }, delete: { action: '删除草稿', confirmTitle: '删除草稿？', confirmDescription: '此草稿将从你的设备中移除。' },
     conflict: { title: '草稿冲突', description: '此字段已在另一台设备上更改。', mine: '此设备', synced: '已同步', useSynced: '使用同步版本', keepDevice: '保留设备版本', copyMine: '复制我的版本', copied: '已复制', copyFailed: '无法复制', field: { text: '文本', mentions: '提及', attachments: '附件', recipient: '接收者', agentContinuation: '代理延续', executionRunDelivery: '运行交付' } },
   },
@@ -7142,18 +7133,11 @@ export const zhHans: TranslationStructure = {
                   reviewComments: {
           title: ({ count }: { count: number }) => `审阅评论（${count}）`,
           placeholder: "添加审查评论…",
-          jump: "跳转",
           addCommentA11y: "添加评论",
           closeCommentA11y: "关闭评论",
-          draftsChipLabel: ({ count }: { count: number }) => `审阅（${count}）`,
-          modalSubtitle: "查看哪些评论会随下一条消息发送。",
           modalSummary: ({ included, count }: { included: number; count: number }) =>
             `已为下一次提示选择 ${included}/${count} 条`,
           goToComposer: '前往消息输入框',
-          detachOrDiscardTitle: "移除审阅评论？",
-          detachOrDiscardBody:
-            "分离会保留评论，但不随下一次提示发送。丢弃会删除这些评论。",
-          detachFromPrompt: "从提示中分离",
           errors: {
             empty: "评论不能为空",
             couldNotMapSelection: "无法将选择映射到差异行",

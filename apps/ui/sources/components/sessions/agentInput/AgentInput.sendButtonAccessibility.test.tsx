@@ -863,27 +863,26 @@ describe('AgentInput (send button accessibility)', () => {
         await screen.unmount();
     });
 
-    it('does not set the empty-input accessibility hint when there is sendable auxiliary content', async () => {
+    it('sends with nothing typed when the host needs no text, as a new session\'s first prompt is optional', async () => {
         const { AgentInput } = await import('./AgentInput');
         const onSend = vi.fn();
 
         const screen = await renderScreen(<AgentInput
-                    sessionId="session-1"
                     value=""
                     placeholder="Type"
                     onChangeText={() => {}}
                     onSend={onSend}
-                    hasSendableAttachments={true}
+                    canSendWithoutText={true}
                     autocompleteKinds={[]}
                     autocompleteSuggestions={async () => []}
                 />);
 
-        const send = screen.findByTestId('session-composer-send');
+        const send = screen.findByTestId('new-session-composer-send');
         expect(send).toBeTruthy();
-        if (!send) throw new Error('session-composer-send not found');
+        if (!send) throw new Error('new-session-composer-send not found');
         expect(send.props.accessibilityHint).toBeUndefined();
 
-        await screen.pressByTestIdAsync('session-composer-send');
+        await screen.pressByTestIdAsync('new-session-composer-send');
         expect(onSend).toHaveBeenCalledTimes(1);
 
         await screen.unmount();
@@ -1056,7 +1055,7 @@ describe('AgentInput (send button accessibility)', () => {
             placeholder="Type"
             onChangeText={onChangeText}
             onSend={onSend}
-            hasSendableAttachments={true}
+            canSendWithoutText={true}
             autocompleteKinds={[]}
             autocompleteSuggestions={async () => []}
         />);

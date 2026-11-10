@@ -29,15 +29,17 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/agents/catalog/catalog')>();
   return {
     ...actual,
-    getAgentCore: () => ({
-      sessionModes: {
-        kind: 'staticAgentModes',
-        staticOptions: [
-          { id: 'default', nameKey: 'agentInput.mode.build', descriptionKey: 'agentInput.mode.buildDescription' },
-          { id: 'plan', nameKey: 'agentInput.mode.plan', descriptionKey: 'agentInput.mode.planDescription' },
-        ],
-      },
-    }),
+    getAgentCore: (agentId: Parameters<typeof actual.getAgentCore>[0]) => agentId === 'claude'
+      ? {
+        sessionModes: {
+          kind: 'staticAgentModes',
+          staticOptions: [
+            { id: 'default', nameKey: 'agentInput.mode.build', descriptionKey: 'agentInput.mode.buildDescription' },
+            { id: 'plan', nameKey: 'agentInput.mode.plan', descriptionKey: 'agentInput.mode.planDescription' },
+          ],
+        },
+      }
+      : actual.getAgentCore(agentId),
   };
 });
 
@@ -52,9 +54,6 @@ describe('useNewSessionPreflightSessionModesState (staticAgentModes)', () => {
     function Harness() {
       latest = useNewSessionPreflightSessionModesState({
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
-        selectedMachineId: null,
-        capabilityServerId: 'server-1',
-        cwd: '/repo',
       });
       return null;
     }
@@ -63,11 +62,29 @@ describe('useNewSessionPreflightSessionModesState (staticAgentModes)', () => {
     root = (await renderScreen(React.createElement(Harness))).tree;
 
     expect(machineCapabilitiesInvokeMock).toHaveBeenCalledTimes(0);
-    expect(latest.probe.phase).toBe('idle');
-    expect(latest.probe.onRefresh).toBeUndefined();
     expect((latest.modeOptions ?? []).map((o: any) => o.id)).toEqual(['default', 'plan']);
     expect((latest.modeOptions ?? [])[0]?.name).toBe('t:agentInput.mode.build');
 
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  it('offers Codex no mode to start in, as its terminal takes none at start, and probes nothing', async () => {
+    vi.resetModules();
+    machineCapabilitiesInvokeMock.mockClear();
+    const { useNewSessionPreflightSessionModesState } = await import('./useNewSessionPreflightSessionModesState');
+    let latest: any = null;
+    function Harness() {
+      latest = useNewSessionPreflightSessionModesState({
+        backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+      });
+      return null;
+    }
+    let root!: renderer.ReactTestRenderer;
+    root = (await renderScreen(React.createElement(Harness))).tree;
+    expect(machineCapabilitiesInvokeMock).toHaveBeenCalledTimes(0);
+    expect(latest.modeOptions ?? []).toEqual([]);
     await act(async () => {
       root.unmount();
     });

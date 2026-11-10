@@ -206,16 +206,20 @@ describe('useNewSessionScreenModel (draft hydration — core)', () => {
         expect(JSON.parse(signatureForSourceB as string)).toMatchObject({ sourceContext: sourceContextB });
     });
 
+    // The server the screen targets, as the launch draft records it.
+    async function savedTargetServerId(): Promise<string | undefined> {
+        await renderNewSessionScreenModel(() => {});
+        await act(async () => {
+            persistDraftNowRef.current?.();
+        });
+        return (saveNewSessionDraftMock.mock.calls.at(-1)?.[0] as { targetServerId?: string } | undefined)?.targetServerId;
+    }
+
     it('hydrates the persisted target server when no route server is selected', async () => {
         targetServerState.allowedTargetServerIds = ['server-a', 'server-b'];
         persistedDraft.targetServerId = 'server-b';
 
-        let model: any = null;
-        await renderNewSessionScreenModel((nextModel) => {
-            model = nextModel;
-        });
-
-        expect(model?.simpleProps?.targetServerId).toBe('server-b');
+        expect(await savedTargetServerId()).toBe('server-b');
     });
 
     it('prefers the route target server over the persisted target server', async () => {
@@ -223,24 +227,14 @@ describe('useNewSessionScreenModel (draft hydration — core)', () => {
         persistedDraft.targetServerId = 'server-b';
         searchParamsState.value = { spawnServerId: 'server-c' };
 
-        let model: any = null;
-        await renderNewSessionScreenModel((nextModel) => {
-            model = nextModel;
-        });
-
-        expect(model?.simpleProps?.targetServerId).toBe('server-c');
+        expect(await savedTargetServerId()).toBe('server-c');
     });
 
     it('ignores an unavailable persisted target server', async () => {
         targetServerState.allowedTargetServerIds = ['server-a'];
         persistedDraft.targetServerId = 'server-b';
 
-        let model: any = null;
-        await renderNewSessionScreenModel((nextModel) => {
-            model = nextModel;
-        });
-
-        expect(model?.simpleProps?.targetServerId).not.toBe('server-b');
+        expect(await savedTargetServerId()).not.toBe('server-b');
     });
 
     it('persists the current target server with the launch draft', async () => {
@@ -396,7 +390,6 @@ describe('useNewSessionScreenModel (draft hydration — core)', () => {
         const secondProps = model?.simpleProps;
 
         expect(secondProps?.modelOptionsProbe).toBe(firstProps?.modelOptionsProbe);
-        expect(secondProps?.acpSessionModeProbe).toBe(firstProps?.acpSessionModeProbe);
         expect(secondProps?.acpConfigOptionsProbe).toBe(firstProps?.acpConfigOptionsProbe);
         expect(secondProps?.connectionStatus).toBe(firstProps?.connectionStatus);
         expect(secondProps?.machinePopover).toBe(firstProps?.machinePopover);
@@ -413,27 +406,6 @@ describe('useNewSessionScreenModel (draft hydration — core)', () => {
         expect(model?.simpleProps?.machinePopover).toBe(firstProps?.machinePopover);
 
         await hook.unmount();
-    });
-
-    it('keeps the default attachment flow id stable across new-session route remounts', async () => {
-        let firstModel: any = null;
-        const firstHook = await renderNewSessionScreenModel((nextModel) => {
-            firstModel = nextModel;
-        });
-        const firstAttachmentFlowId = firstModel?.simpleProps?.attachmentFlowId;
-        expect(typeof firstAttachmentFlowId).toBe('string');
-        expect(firstAttachmentFlowId.length).toBeGreaterThan(0);
-
-        await firstHook.unmount();
-
-        let secondModel: any = null;
-        const secondHook = await renderNewSessionScreenModel((nextModel) => {
-            secondModel = nextModel;
-        });
-
-        expect(secondModel?.simpleProps?.attachmentFlowId).toBe(firstAttachmentFlowId);
-
-        await secondHook.unmount();
     });
 
     it('keeps the agent picker probe stable when CLI detection remains in the same phase', async () => {

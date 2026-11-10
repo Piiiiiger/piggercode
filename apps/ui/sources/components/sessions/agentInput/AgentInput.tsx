@@ -405,7 +405,8 @@ interface AgentInputProps {
     extraActionChips?: ReadonlyArray<AgentInputExtraActionChip>;
     attachments?: ReadonlyArray<AgentInputAttachment>;
     onAttachmentsAdded?: (files: readonly File[]) => void;
-    hasSendableAttachments?: boolean;
+    /** Sending needs no text: the new-session screen opens a terminal even with no first prompt. */
+    canSendWithoutText?: boolean;
     permissionRequests?: ReadonlyArray<PendingPermissionRequest>;
     approvalRequests?: ReadonlyArray<OpenApprovalArtifactForSession>;
     canApprovePermissions?: boolean;
@@ -1144,7 +1145,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
     const [liveTextStatus, setLiveTextStatus] = React.useState(() => resolveLiveInputTextStatus(props.value));
     const liveTextStatusRef = React.useRef(liveTextStatus);
     const hasText = liveTextStatus.hasText;
-    const hasSendableContent = hasText || props.hasSendableAttachments === true;
+    const hasSendableContent = hasText || props.canSendWithoutText === true;
     const micPressHandler = voiceEnabled ? props.onMicPress : undefined;
     const micActive = voiceEnabled && props.isMicActive === true;
     const [fileDragActive, setFileDragActive] = React.useState(false);
@@ -2656,7 +2657,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
     // Handle keyboard navigation
     const handleKeyPress = React.useCallback((event: KeyPressEvent): boolean => {
         const eventInputText = event.inputState?.text ?? inputRef.current?.getText?.() ?? inputStateRef.current.text;
-        const hasSendableInput = resolveLiveInputTextStatus(eventInputText).hasText || props.hasSendableAttachments === true;
+        const hasSendableInput = resolveLiveInputTextStatus(eventInputText).hasText || props.canSendWithoutText === true;
         const sendShortcutAction = resolveComposerSendShortcutAction(event, {
             keyboardShortcutsV2Enabled,
             keyboardSingleKeyShortcutsEnabled,
@@ -2756,16 +2757,16 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
             }
         }
         return false; // Key was not handled
-    }, [handleCommandMenuKey, props.hasSendableAttachments, handleSend, props.onPermissionModeChange, keyboardShortcutsV2Enabled, keyboardSingleKeyShortcutsEnabled, keyboardShortcutOverridesV1, keyboardShortcutDisabledCommandIdsV1, permissionModeOrder, effectivePermissionPolicy.effectiveMode, messageHistory, applyHistoryInputText, sendActionDisabled, isHistoryBrowsing, hasRetainedHistorySession, enterToSendEnabled, canStopFromComposer, isAborting, runAbortShortcutAction]);
+    }, [handleCommandMenuKey, props.canSendWithoutText, handleSend, props.onPermissionModeChange, keyboardShortcutsV2Enabled, keyboardSingleKeyShortcutsEnabled, keyboardShortcutOverridesV1, keyboardShortcutDisabledCommandIdsV1, permissionModeOrder, effectivePermissionPolicy.effectiveMode, messageHistory, applyHistoryInputText, sendActionDisabled, isHistoryBrowsing, hasRetainedHistorySession, enterToSendEnabled, canStopFromComposer, isAborting, runAbortShortcutAction]);
 
     const handleSubmitEditing = React.useCallback(() => {
         if (Platform.OS === 'web') return;
         if (!enterToSendEnabled) return;
         if (sendActionDisabled) return;
-        const hasSendableInput = liveTextStatus.hasText || props.hasSendableAttachments === true;
+        const hasSendableInput = liveTextStatus.hasText || props.canSendWithoutText === true;
         if (!hasSendableInput) return;
         handleSend();
-    }, [enterToSendEnabled, handleSend, liveTextStatus.hasText, props.hasSendableAttachments, sendActionDisabled]);
+    }, [enterToSendEnabled, handleSend, liveTextStatus.hasText, props.canSendWithoutText, sendActionDisabled]);
 
     const submitBehavior = React.useMemo<MultiTextInputSubmitBehavior | undefined>(() => {
         if (Platform.OS === 'web') return undefined;

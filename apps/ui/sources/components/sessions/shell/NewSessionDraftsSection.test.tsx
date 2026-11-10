@@ -125,17 +125,13 @@ describe('NewSessionDraftsSection', () => {
         expect(presentation.statusKey).toBeNull();
     });
 
-    it('surfaces current machine and local attachment problems without exposing their raw state', () => {
+    it('surfaces a machine that is no longer available without exposing its raw state', () => {
         const unavailableMachine = buildNewSessionDraftRowPresentation(draft({ status: 'clean' }), {
             unavailableMachineIds: new Set(['machine-a']),
         });
-        const attachmentProblem = buildNewSessionDraftRowPresentation(draft({ status: 'clean' }), {
-            attachmentNeedsAttentionDraftIds: new Set(['00000000-0000-4000-8000-000000000001']),
-        });
 
         expect(unavailableMachine.statusKey).toBe('sessionDrafts.status.machineUnavailable');
-        expect(attachmentProblem.statusKey).toBe('sessionDrafts.status.attachmentNeedsAttention');
-        expect(JSON.stringify(attachmentProblem)).not.toContain('/Users/alice');
+        expect(JSON.stringify(unavailableMachine)).not.toContain('/Users/alice');
     });
 
     it('does not delete or restore focus when launch custody begins while confirmation is open', async () => {

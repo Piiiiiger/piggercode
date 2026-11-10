@@ -156,7 +156,7 @@ describe('AgentInput (image attachment thumbnails)', () => {
             autocompleteKinds: [],
             autocompleteSuggestions: async () => [],
             attachments,
-            hasSendableAttachments: true,
+            canSendWithoutText: true,
         }));
     }
 

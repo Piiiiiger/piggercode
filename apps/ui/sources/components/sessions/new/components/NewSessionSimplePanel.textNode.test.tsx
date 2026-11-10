@@ -261,20 +261,6 @@ vi.mock('@/components/sessions/attachments/useAttachmentsUploadConfig', () => ({
     }),
 }));
 
-vi.mock('@/components/sessions/attachments/useAttachmentDraftManager', () => ({
-    useAttachmentDraftManager: () => ({
-        filePickerRef: { current: null },
-        drafts: [],
-        hasSendableAttachments: false,
-        agentInputAttachments: [],
-        addWebFiles: vi.fn(),
-        addPickedAttachments: vi.fn(),
-        removeDraft: vi.fn(),
-        clearDrafts: vi.fn(),
-        applyDraftPatch: vi.fn(),
-    }),
-}));
-
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: () => false,
 }));
@@ -736,6 +722,55 @@ describe('NewSessionSimplePanel', () => {
             invokeTestInstanceHandler(sendButton, 'onPress', undefined, 'new-session-composer-send');
         });
 
+        expect(handleCreateSession).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens the terminal with or without a first prompt, and takes no attachments', async () => {
+        const { NewSessionSimplePanel } = await import('./NewSessionSimplePanel');
+        const handleCreateSession = vi.fn();
+
+        const screen = await renderScreen(<NewSessionSimplePanel
+                    popoverBoundaryRef={{ current: null } as unknown as React.RefObject<any>}
+                    headerHeight={44}
+                    safeAreaTop={0}
+                    safeAreaBottom={0}
+                    newSessionTopPadding={0}
+                    newSessionSidePadding={0}
+                    newSessionBottomPadding={0}
+                    containerStyle={{}}
+                    promptStore={createNewSessionPromptStore('')}
+                    setSessionPrompt={() => {}}
+                    handleCreateSession={handleCreateSession}
+                    canCreate={true}
+                    isCreating={false}
+                    emptyAutocompleteKinds={[]}
+                    emptyAutocompleteSuggestions={async () => []}
+                    sessionPromptInputMaxHeight={200}
+                    agentInputExtraActionChips={[]}
+                    agentType="claude"
+                    handleAgentClick={() => {}}
+                    permissionMode="default"
+                    handlePermissionModeChange={() => {}}
+                    modelMode="default"
+                    setModelMode={() => {}}
+                    modelOptions={[{ value: 'default', label: 'Default', description: '' }]}
+                    connectionStatus={undefined}
+                    machineName={undefined}
+                    selectedPath=""
+                    showResumePicker={false}
+                    resumeSessionId={null}
+                    isResumeSupportChecking={false}
+                    useProfiles={false}
+                    selectedProfileId={null}
+        />);
+
+        expect(agentInputPropsRef.current?.canSendWithoutText).toBe(true);
+        expect(agentInputPropsRef.current?.attachments).toBeUndefined();
+        expect(agentInputPropsRef.current?.onAttachmentsAdded).toBeUndefined();
+
+        act(() => {
+            invokeTestInstanceHandler(screen.findByTestId('new-session-composer-send'), 'onPress', undefined, 'new-session-composer-send');
+        });
         expect(handleCreateSession).toHaveBeenCalledTimes(1);
     });
 });

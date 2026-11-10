@@ -1064,7 +1064,6 @@ export const en = {
         copyWithLabel: ({ label }: { label: string }) => `Copy ${label}`,
         copied: 'Copied',
         paste: 'Paste',
-        pasteImage: 'Paste image',
         expand: 'Expand',
         collapse: 'Collapse',
         command: 'Command',
@@ -1073,9 +1072,6 @@ export const en = {
         home: 'Home',
         message: 'Message',
         send: 'Send',
-        attach: 'Attach',
-        addImage: 'Add image',
-        addFile: 'Add file',
         linkFile: 'Link file',
         files: 'Files',
         path: 'Path',
@@ -2834,11 +2830,6 @@ export const en = {
 
     attachments: {
         alerts: {
-            fileTooLargeTitle: 'File too large',
-            fileTooLargeBody: ({ count }: { count: number }) =>
-                `Skipped ${count} ${plural({ count, singular: 'file', plural: 'files' })} that exceed the max attachment size.`,
-            noClipboardImageTitle: 'No clipboard image',
-            noClipboardImageBody: 'Copy an image, then paste it as an attachment.',
         },
     },
 
@@ -4352,6 +4343,7 @@ export const en = {
 
     newSession: {
       terminalHostUnavailableTitle: "Terminal host unavailable",
+      firstPromptPlaceholder: "First message (optional: leave it empty to just open the terminal)",
       terminalHostUnavailableBody: ({ host }: { host: string }) => `Install or update ${host} and restart its server on this machine, or choose another terminal host. Your draft is kept.`,
         ...newSessionMcpTranslationExtension,
         ...acpCatalogTranslationExtension.newSession,
@@ -4422,7 +4414,6 @@ export const en = {
             label: 'Open terminal',
             a11y: 'Open the terminal without a first message',
         },
-        terminalAttachmentsUnsupported: 'Terminal sessions take no attachments. Open the session, then give the file path in the terminal.',
         automationChip: {
             default: 'Automate',
             interval: ({ minutes }: { minutes: number }) => `Every ${minutes}m`,
@@ -5844,7 +5835,7 @@ export const en = {
 
     sessionDrafts: {
         sectionTitle: 'Drafts', badge: 'Draft', untitled: 'Untitled draft', continueEditing: 'Continue editing', startAnother: 'Start another',
-        status: { offline: 'Offline', syncing: 'Syncing', conflict: 'Conflict', machineUnavailable: 'Machine unavailable', attachmentNeedsAttention: 'Attachment needs attention', startInterrupted: 'Start interrupted' },
+        status: { offline: 'Offline', syncing: 'Syncing', conflict: 'Conflict', machineUnavailable: 'Machine unavailable', startInterrupted: 'Start interrupted' },
         new: { action: 'New draft' },
         delete: { action: 'Delete draft', confirmTitle: 'Delete draft?', confirmDescription: 'This draft will be removed from your devices.' },
         conflict: {
@@ -6931,16 +6922,10 @@ export const en = {
                   reviewComments: {
                     title: ({ count }: { count: number }) => `Review comments (${count})`,
                   placeholder: 'Add a review comment…',
-                    jump: 'Jump',
                     addCommentA11y: 'Add comment',
                     closeCommentA11y: 'Close comment',
-                    draftsChipLabel: ({ count }: { count: number }) => `Review (${count})`,
-                    modalSubtitle: 'Review which comments will be sent with your next message.',
                     modalSummary: ({ included, count }: { included: number; count: number }) => `${included} of ${count} selected for the next prompt`,
                     goToComposer: 'Go to composer',
-                    detachOrDiscardTitle: 'Remove review comments?',
-                    detachOrDiscardBody: 'Detach keeps the comments saved but excludes them from the next prompt. Discard deletes them.',
-                    detachFromPrompt: 'Detach from prompt',
                   errors: {
                       empty: 'Comment cannot be empty',
                       couldNotMapSelection: 'Could not map selection to a diff line',

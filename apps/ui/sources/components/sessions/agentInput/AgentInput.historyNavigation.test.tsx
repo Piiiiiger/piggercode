@@ -341,7 +341,7 @@ describe('AgentInput (history navigation)', () => {
         isSendDisabled={false}
         disabled={false}
         showAbortButton={false}
-        hasSendableAttachments={true}
+        canSendWithoutText={true}
       />
     );
 

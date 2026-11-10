@@ -168,8 +168,6 @@ function createFloatingPanelProps() {
         modelOptions: [{ value: 'default', label: 'Default', description: '' }],
         connectionStatus: undefined,
         machineName: 'Builder',
-        selectedMachineId: 'machine-1',
-        selectedMachineHomeDir: '/Users/alice',
         selectedPath: '/repo',
         showResumePicker: false,
         resumeSessionId: null,
@@ -228,8 +226,6 @@ describe('NewSessionSimplePanel keyboard scaffold integration', () => {
                     modelOptions={[{ value: 'default', label: 'Default', description: '' }]}
                     connectionStatus={undefined}
                     machineName="Builder"
-                    selectedMachineId="machine-1"
-                    selectedMachineHomeDir="/Users/alice"
                     selectedPath="/repo"
                     showResumePicker={false}
                     resumeSessionId={null}
@@ -471,8 +467,6 @@ describe('NewSessionSimplePanel keyboard scaffold integration', () => {
             modelOptions: [{ value: 'default', label: 'Default', description: '' }],
             connectionStatus: undefined,
             machineName: 'Builder',
-            selectedMachineId: 'machine-1',
-            selectedMachineHomeDir: '/Users/alice',
             selectedPath: '/repo',
             showResumePicker: false,
             resumeSessionId: null,

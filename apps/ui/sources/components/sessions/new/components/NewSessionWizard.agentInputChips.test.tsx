@@ -81,19 +81,6 @@ vi.mock('@/components/sessions/attachments/useAttachmentsUploadConfig', () => ({
     useAttachmentsUploadConfig: () => ({ maxFileBytes: 1 }),
 }));
 
-vi.mock('@/components/sessions/attachments/useAttachmentDraftManager', () => ({
-    useAttachmentDraftManager: () => ({
-        filePickerRef: { current: null },
-        drafts: [],
-        hasSendableAttachments: false,
-        agentInputAttachments: [],
-        addWebFiles: () => {},
-        addPickedAttachments: () => {},
-        applyDraftPatch: () => {},
-        clearDrafts: () => {},
-    }),
-}));
-
 vi.mock('@/components/ui/popover', () => ({
     PopoverPortalTargetProvider: (props: Record<string, unknown> & { children?: React.ReactNode }) =>
         React.createElement('PopoverPortalTargetProvider', props, props.children),
@@ -354,6 +341,18 @@ describe('NewSessionWizard agent input chips', () => {
         expect(agentInputProps.onMachineClick).toBeUndefined();
         expect(agentInputProps.onPathClick).toBeUndefined();
         expect(agentInputProps.onResumeClick).toBeUndefined();
+    });
+
+    it('opens the terminal with or without a first prompt, and takes no attachments', async () => {
+        const { NewSessionWizard } = await import('./NewSessionWizard');
+        AgentInputMock.mockClear();
+
+        await renderScreen(React.createElement(NewSessionWizard, buildProps() as any));
+
+        const agentInputProps = (AgentInputMock.mock.calls[0]?.[0] ?? {}) as any;
+        expect(agentInputProps.canSendWithoutText).toBe(true);
+        expect(agentInputProps.attachments).toBeUndefined();
+        expect(agentInputProps.onAttachmentsAdded).toBeUndefined();
     });
 
     it('passes ACP config probe props through to AgentInput for the wizard action menu popover', async () => {

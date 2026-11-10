@@ -123,7 +123,6 @@ export function useNewSessionWizardProps(params: Readonly<{
     favoriteModelSelections?: readonly FavoriteModelSelectionV1[];
     setFavoriteModelSelections?: (favorites: FavoriteModelSelectionV1[]) => void;
     acpSessionModeOptions?: NewSessionWizardAgentProps['acpSessionModeOptions'];
-    acpSessionModeProbe?: NewSessionWizardAgentProps['acpSessionModeProbe'];
     acpSessionModeId?: NewSessionWizardAgentProps['acpSessionModeId'];
     setAcpSessionModeId?: NewSessionWizardAgentProps['setAcpSessionModeId'];
     acpConfigOptions?: NewSessionWizardAgentProps['acpConfigOptions'];
@@ -174,7 +173,6 @@ export function useNewSessionWizardProps(params: Readonly<{
     isResumeSupportChecking: boolean;
     sessionPromptInputMaxHeight?: number;
     agentInputExtraActionChips?: ReadonlyArray<AgentInputExtraActionChip>;
-    attachmentFlowId?: string | null;
     resumePersistedLaunchKey?: string | null;
 }>): Readonly<{
     profiles: NewSessionWizardProfilesProps;
@@ -376,7 +374,6 @@ export function useNewSessionWizardProps(params: Readonly<{
             favoriteModelSelections: params.favoriteModelSelections,
             setFavoriteModelSelections: params.setFavoriteModelSelections,
             acpSessionModeOptions: params.acpSessionModeOptions,
-            acpSessionModeProbe: params.acpSessionModeProbe,
             acpSessionModeId: params.acpSessionModeId,
             setAcpSessionModeId: params.setAcpSessionModeId,
             acpConfigOptions: params.acpConfigOptions,
@@ -408,7 +405,6 @@ export function useNewSessionWizardProps(params: Readonly<{
         params.modelOptionsProbe,
         params.acpSessionModeId,
         params.acpSessionModeOptions,
-        params.acpSessionModeProbe,
         params.acpConfigOptions,
         params.acpConfigOptionsProbe,
         params.acpConfigOptionOverrides,
@@ -490,7 +486,6 @@ export function useNewSessionWizardProps(params: Readonly<{
             resumeIsChecking: params.isResumeSupportChecking,
             inputMaxHeight: params.sessionPromptInputMaxHeight,
             agentInputExtraActionChips: params.agentInputExtraActionChips,
-            attachmentFlowId: params.attachmentFlowId,
             resumePersistedLaunchKey: params.resumePersistedLaunchKey,
         };
         // NOTE: Agent selection doesn't affect these props, but keeping dependencies
@@ -500,7 +495,6 @@ export function useNewSessionWizardProps(params: Readonly<{
         enabled,
         params.agentType,
         params.agentInputExtraActionChips,
-        params.attachmentFlowId,
         params.resumePersistedLaunchKey,
         params.canCreate,
         params.connectionStatus,

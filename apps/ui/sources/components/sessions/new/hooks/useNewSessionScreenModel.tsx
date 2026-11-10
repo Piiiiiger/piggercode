@@ -115,7 +115,6 @@ import { stableJsonStringify } from '@/utils/json/stableJsonStringify';
 import { NEW_SESSION_CAPABILITY_PROBE_TIMEOUT_MS } from '@/components/sessions/new/modules/newSessionCapabilityProbeTimeoutMs';
 import type { ComposerSuggestionKindId } from '@/components/autocomplete/composerSuggestionKinds';
 import { resolveNewSessionFileSuggestionScope } from '@/components/sessions/new/modules/resolveNewSessionFileSuggestionScope';
-import { resolveNewSessionDraftAttachmentFlowId } from '@/components/sessions/new/attachments/newSessionDraftAttachmentFlowId';
 
 
 import { useStableValueBySignature } from '@/hooks/ui/useStableValueBySignature';
@@ -144,7 +143,8 @@ import {
 // would have named its server. It names that server directly instead (`targetServerId`, the
 // server this new session will spawn on), which keeps D-8's same-server rule exact rather than
 // approximate. The reference itself stays relative (`session:<id>`) and carries no server.
-const NEW_SESSION_COMPOSER_SUGGESTION_KINDS: readonly ComposerSuggestionKindId[] = ['file', 'session', 'skill', 'slashCommand'];
+// The first prompt goes to the CLI as typed: `@` offers files and `/` the CLI's own commands.
+const NEW_SESSION_COMPOSER_SUGGESTION_KINDS: readonly ComposerSuggestionKindId[] = ['file', 'slashCommand'];
 const readAbsentComposerCatalogs = () => undefined;
 const subscribeAbsentComposerCatalogs = (_listener: () => void) => () => {};
 const styles = newSessionScreenStyles;
@@ -351,10 +351,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
     const [favoriteBackendTargetKeys, setFavoriteBackendTargetKeys] = useSettingMutable('favoriteBackendTargetKeysV1');
     const [lastNewSessionAgentPickerView, setLastNewSessionAgentPickerView] = useSettingMutable('lastNewSessionAgentPickerViewV1');
     const [dismissedCLIWarnings, setDismissedCLIWarnings] = useSettingMutable('dismissedCLIWarnings');
-    const effectiveAttachmentFlowId = React.useMemo(
-        () => resolveNewSessionDraftAttachmentFlowId(draftId),
-        [draftId],
-    );
     const hydratedTempAuthoringDraft = React.useMemo(() => {
         return tempSessionData
             ? buildNewSessionAuthoringDraftFromTempData(tempSessionData)
@@ -817,15 +813,7 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         connectedServices: connectedServicesBindingsPayload,
     });
 
-    const { preflightModes: preflightSessionModes, modeOptions: acpSessionModeOptions, probe: acpSessionModeProbeState } =
-        useNewSessionPreflightSessionModesState({
-            backendTarget,
-            selectedMachineId,
-            capabilityServerId,
-            cwd: selectedPath,
-            probeContext: resolveNewSessionCapabilityProbeContext({ backendTarget, settings }),
-            connectedServices: connectedServicesBindingsPayload,
-        });
+    const { modeOptions: acpSessionModeOptions } = useNewSessionPreflightSessionModesState({ backendTarget });
     const { configOptions: acpConfigOptions, probe: acpConfigOptionsProbeState } = useNewSessionPreflightConfigOptionsState({
         backendTarget,
         selectedMachineId,
@@ -1910,10 +1898,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         error: modelOptionsProbeState.error,
         onRefresh: modelOptionsProbeState.onRefresh,
     }), [modelOptionsProbeState.onRefresh, modelOptionsProbeState.phase, modelOptionsProbeState.error]);
-    const acpSessionModeProbe = React.useMemo(() => ({
-        phase: acpSessionModeProbeState.phase,
-        onRefresh: acpSessionModeProbeState.onRefresh,
-    }), [acpSessionModeProbeState.onRefresh, acpSessionModeProbeState.phase]);
     const acpConfigOptionsProbe = React.useMemo(() => ({
         phase: acpConfigOptionsProbeState.phase,
         onRefresh: acpConfigOptionsProbeState.onRefresh,
@@ -1980,7 +1964,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         favoriteModelSelections,
         setFavoriteModelSelections,
         acpSessionModeOptions,
-        acpSessionModeProbe,
         acpSessionModeId,
         setAcpSessionModeId: setRememberedAcpSessionModeId,
         acpConfigOptions: acpConfigOptions ?? undefined,
@@ -2028,7 +2011,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         isResumeSupportChecking,
         sessionPromptInputMaxHeight,
         agentInputExtraActionChips,
-        attachmentFlowId: effectiveAttachmentFlowId,
         resumePersistedLaunchKey,
     });
 
@@ -2082,7 +2064,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         modelOptions,
         modelOptionsProbe,
         acpSessionModeOptions,
-        acpSessionModeProbe,
         acpSessionModeId,
         setAcpSessionModeId: setRememberedAcpSessionModeId,
         acpConfigOptions: acpConfigOptions ?? undefined,
@@ -2092,8 +2073,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         connectionStatus,
         machineName: selectedMachine?.metadata?.displayName || selectedMachine?.metadata?.host,
         machinePopover,
-        selectedMachineId,
-        selectedMachineHomeDir: selectedMachine?.metadata?.homeDir ?? null,
         selectedPath,
         pathPopover,
         showResumePicker,
@@ -2104,8 +2083,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         selectedProfileId,
         profilePopover,
         agentInputExtraActionChips,
-        targetServerId,
-        attachmentFlowId: effectiveAttachmentFlowId,
         resumePersistedLaunchKey,
     });
 

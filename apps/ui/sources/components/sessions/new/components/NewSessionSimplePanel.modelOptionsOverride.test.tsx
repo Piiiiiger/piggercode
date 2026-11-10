@@ -621,7 +621,6 @@ describe('NewSessionSimplePanel (modelOptionsOverride)', () => {
                             { id: 'default', name: 'Default' },
                             { id: 'plan', name: 'Plan' },
                         ],
-                        acpSessionModeProbe: { phase: 'loading', onRefresh: () => {} },
                         acpSessionModeId: null,
                         setAcpSessionModeId: () => {},
                         connectionStatus: undefined,
@@ -641,7 +640,6 @@ describe('NewSessionSimplePanel (modelOptionsOverride)', () => {
                 { id: 'plan', name: 'Plan' },
             ]);
             expect(props.acpSessionModeSelectedIdOverride).toBeNull();
-            expect(props.acpSessionModeOptionsOverrideProbe?.phase).toBe('loading');
             expect(typeof props.onAcpSessionModeChange).toBe('function');
         } finally {
             act(() => {

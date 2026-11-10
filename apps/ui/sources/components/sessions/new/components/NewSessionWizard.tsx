@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Color from 'color';
 import { Typography } from '@/constants/Typography';
 import { AgentInput } from '@/components/sessions/agentInput';
-import { AttachmentFilePicker } from '@/components/sessions/attachments/AttachmentFilePicker';
 import { PopoverBoundaryProvider } from '@/components/ui/popover';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
@@ -46,7 +45,7 @@ import type { HandleCreateSessionOptions } from '../hooks/useCreateNewSession';
 import { buildNewSessionProfileSelectionPopover } from '@/components/sessions/new/components/buildNewSessionProfileSelectionPopover';
 import { NewSessionProfilesBrowserContent } from '@/components/sessions/new/components/NewSessionProfilesBrowserContent';
 import { resolveRequestedSessionModeId, type AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
-import { useNewSessionAttachmentsController } from '@/components/sessions/new/attachments/useNewSessionAttachmentsController';
+import { useNewSessionSend } from '@/components/sessions/new/hooks/useNewSessionSend';
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';
 import {
     ComposerKeyboardScaffold,
@@ -123,7 +122,6 @@ export interface NewSessionWizardAgentProps {
     favoriteModelSelections?: readonly FavoriteModelSelectionV1[];
     setFavoriteModelSelections?: (favorites: FavoriteModelSelectionV1[]) => void;
     acpSessionModeOptions?: ReadonlyArray<Readonly<{ id: string; name: string; description?: string }>>;
-    acpSessionModeProbe?: React.ComponentProps<typeof AgentInput>['acpSessionModeOptionsOverrideProbe'];
     acpSessionModeId?: string | null;
     setAcpSessionModeId?: (modeId: string | null) => void;
     acpConfigOptions?: React.ComponentProps<typeof AgentInput>['acpConfigOptionsOverride'];
@@ -177,7 +175,6 @@ export interface NewSessionWizardFooterProps {
     resumeIsChecking?: boolean;
     inputMaxHeight?: number;
     agentInputExtraActionChips?: React.ComponentProps<typeof AgentInput>['extraActionChips'];
-    attachmentFlowId?: string | null;
     resumePersistedLaunchKey?: string | null;
 }
 
@@ -287,26 +284,9 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
         scrollToWizardSection('agent');
     }, [scrollToWizardSection]);
 
-    const {
-        attachmentsUploadsEnabled,
-        filePickerRef,
-        hasSendableAttachments,
-        agentInputAttachments,
-        addWebFiles,
-        addPickedAttachments,
-        extraActionChips,
-        handleSend,
-    } = useNewSessionAttachmentsController({
-        flowId: props.footer.attachmentFlowId,
-        isCreating: props.footer.isCreating,
+    const handleSend = useNewSessionSend({
         promptStore: props.footer.promptStore,
         handleCreateSession: props.footer.handleCreateSession,
-        selectedProfileId: props.profiles.selectedProfileId,
-        targetServerId: props.machine.serverId,
-        selectedMachineId: props.machine.selectedMachine?.id ?? null,
-        selectedMachineHomeDir: props.machine.selectedMachine?.metadata?.homeDir ?? null,
-        selectedPath: props.machine.selectedPath,
-        baseActionChips: props.footer.agentInputExtraActionChips,
         resumePersistedLaunchKey: props.footer.resumePersistedLaunchKey,
     });
     const renderIconNode = React.useCallback(
@@ -573,16 +553,14 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                                         value={sessionPrompt}
                                         onChangeText={setSessionPrompt}
                                         onSend={handleSend}
+                                        canSendWithoutText
                                         isSendDisabled={!canCreate}
                                         isSending={isCreating}
                                         submitAccessibilityLabel={props.footer.submitAccessibilityLabel}
-                                        placeholder={t('session.inputPlaceholder')}
+                                        placeholder={t('newSession.firstPromptPlaceholder')}
                                         autocompleteKinds={emptyAutocompleteKinds}
                                         autocompleteSuggestions={emptyAutocompleteSuggestions}
-                                        extraActionChips={extraActionChips}
-                                        attachments={agentInputAttachments}
-                                        onAttachmentsAdded={attachmentsUploadsEnabled ? addWebFiles : undefined}
-                                        hasSendableAttachments={hasSendableAttachments}
+                                        extraActionChips={props.footer.agentInputExtraActionChips}
                                         inputMaxHeight={inputMaxHeight}
                                         agentType={agentType}
                                         agentLabel={props.agent.agentLabel}
@@ -600,7 +578,6 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                                         modelOptionsOverrideProbe={modelOptionsProbe}
                                         acpSessionModeOptionsOverride={props.agent.acpSessionModeOptions}
                                         acpSessionModeSelectedIdOverride={props.agent.acpSessionModeId ?? null}
-                                        acpSessionModeOptionsOverrideProbe={props.agent.acpSessionModeProbe}
                                         onAcpSessionModeChange={
                                             (props.agent.acpSessionModeOptions?.length ?? 0) > 0 && props.agent.setAcpSessionModeId
                                                 ? (modeId) => props.agent.setAcpSessionModeId?.(resolveRequestedSessionModeId(modeId, props.agent.acpSessionModeOptions) || null)
@@ -625,9 +602,6 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                                         resumePopover={props.footer.resumePopover}
                                         resumeIsChecking={resumeIsChecking}
                                         contentPaddingHorizontal={0}
-                                        attachmentsUploadsEnabled={attachmentsUploadsEnabled}
-                                        filePickerRef={filePickerRef}
-                                        onAttachmentsPicked={addPickedAttachments}
                                         {...(useProfiles ? {
                                             profileId: selectedProfileId,
                                             profilePopover,
@@ -1099,18 +1073,12 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
 });
 
 type NewSessionWizardComposerInputProps = React.ComponentProps<typeof AgentInput> & Readonly<{
-    attachmentsUploadsEnabled: boolean;
     composerReservedHeight: number;
-    filePickerRef: React.ComponentPropsWithRef<typeof AttachmentFilePicker>['ref'];
-    onAttachmentsPicked: React.ComponentProps<typeof AttachmentFilePicker>['onAttachmentsPicked'];
 }>;
 
 function NewSessionWizardComposerInput(props: NewSessionWizardComposerInputProps) {
     const {
-        attachmentsUploadsEnabled,
         composerReservedHeight,
-        filePickerRef,
-        onAttachmentsPicked,
         ...agentInputProps
     } = props;
     const availablePanelHeight = useComposerAvailablePanelHeight();
@@ -1123,15 +1091,10 @@ function NewSessionWizardComposerInput(props: NewSessionWizardComposerInputProps
     });
 
     return (
-        <>
-            <AgentInput
-                {...agentInputProps}
-                maxPanelHeight={maxPanelHeight}
-                panelMaxHeightMode="host-constrained"
-            />
-            {attachmentsUploadsEnabled ? (
-                <AttachmentFilePicker ref={filePickerRef} onAttachmentsPicked={onAttachmentsPicked} multiple />
-            ) : null}
-        </>
+        <AgentInput
+            {...agentInputProps}
+            maxPanelHeight={maxPanelHeight}
+            panelMaxHeightMode="host-constrained"
+        />
     );
 }
