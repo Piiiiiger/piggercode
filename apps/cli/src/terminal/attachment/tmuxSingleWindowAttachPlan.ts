@@ -8,6 +8,10 @@ export type TmuxSingleWindowAttachPlan = Readonly<{
   hideStatusArgs: string[];
   linkWindowArgs: string[];
   killPlaceholderWindowArgs: string[];
+  /**
+   * Attaches, and in the same tmux command marks the session to be destroyed once no client is attached: the
+   * daemon ends an attach by closing its terminal, which kills this process before `cleanupSessionArgs` runs.
+   */
   attachSessionArgs: string[];
   cleanupSessionArgs: string[];
 }>;
@@ -41,7 +45,7 @@ export function createTmuxSingleWindowAttachPlan(params: Readonly<{
     hideStatusArgs: ['set-option', '-t', tempSessionName, 'status', 'off'],
     linkWindowArgs: ['link-window', '-s', params.target, '-t', `${tempSessionName}:`],
     killPlaceholderWindowArgs: ['kill-window', '-t', `${tempSessionName}:${PLACEHOLDER_WINDOW_NAME}`],
-    attachSessionArgs: ['attach-session', '-t', tempSessionName],
+    attachSessionArgs: ['attach-session', '-t', tempSessionName, ';', 'set-option', '-t', tempSessionName, 'destroy-unattached', 'on'],
     cleanupSessionArgs: ['kill-session', '-t', tempSessionName],
   };
 }

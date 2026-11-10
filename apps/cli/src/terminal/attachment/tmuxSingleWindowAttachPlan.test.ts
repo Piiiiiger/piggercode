@@ -35,10 +35,17 @@ describe('createTmuxSingleWindowAttachPlan', () => {
         '-t',
         'happy-attach-cm-session_1-1234-5678:__happier_attach_placeholder__',
       ],
+      // The temporary session goes as soon as its client does, even when the attach process is killed.
       attachSessionArgs: [
         'attach-session',
         '-t',
         'happy-attach-cm-session_1-1234-5678',
+        ';',
+        'set-option',
+        '-t',
+        'happy-attach-cm-session_1-1234-5678',
+        'destroy-unattached',
+        'on',
       ],
       cleanupSessionArgs: [
         'kill-session',
