@@ -1,7 +1,8 @@
 import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { isRpcMethodNotAvailableError, readRpcErrorCode, type RpcErrorCarrier } from '@/sync/runtime/rpcErrors';
-import { isSocketIoAckTimeoutError, isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
+import { isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
 
 const TERMINAL_AUTO_RETRY_BASE_DELAY_MS = 250;
 const TERMINAL_AUTO_RETRY_MAX_DELAY_MS = 4_000;

@@ -5,7 +5,7 @@ import {
     type SpawnSessionErrorDetail,
     type SpawnSessionResult,
 } from '@piggercode/protocol';
-import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
 
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
     return Boolean(value) && typeof value === 'object' && !Array.isArray(value);

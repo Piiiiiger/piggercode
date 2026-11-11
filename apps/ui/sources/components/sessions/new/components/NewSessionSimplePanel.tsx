@@ -499,6 +499,7 @@ function NewSessionSimplePanelComposer({
                         canSendWithoutText
                         isSendDisabled={!props.canCreate}
                         isSending={props.isCreating}
+                        disabled={props.isCreating}
                         placeholder={t('newSession.firstPromptPlaceholder')}
                         autocompleteKinds={props.emptyAutocompleteKinds}
                         autocompleteSuggestions={props.emptyAutocompleteSuggestions}

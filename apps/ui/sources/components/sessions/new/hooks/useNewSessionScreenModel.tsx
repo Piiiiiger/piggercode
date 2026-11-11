@@ -171,7 +171,7 @@ function setNavigationParams(navigation: unknown, params: Record<string, unknown
     return true;
 }
 
-export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>): NewSessionScreenModel {
+export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; onDraftRemoved?: () => void }>): NewSessionScreenModel {
     const { theme, rt } = useUnistyles();
     const router = useRouter();
     const navigation = useNavigation();
@@ -854,13 +854,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         dataId,
         hydratedTempAuthoringDraft,
         hydratedPersistedAuthoringDraft: hydratedPersistedContentAuthoringDraft,
-    });
-    useNewSessionDraftPromptProjection({
-        scope: draftScope,
-        draftId,
-        promptStore,
-        hasLocalEdit: hasUserEditedSessionPrompt,
-        preferInitialPrompt: hydratedTempAuthoringDraft?.displayText !== undefined || typeof prompt === 'string',
     });
     const [isCreatingLocally, setIsCreating] = React.useState(false);
     const accountActionOperations = useAllActionOperations(draftScope?.accountId ?? '');
@@ -1698,6 +1691,21 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string }>
         draftScope,
         draftId,
         launchUserAttemptId,
+    });
+
+    const onDraftRemoved = params?.onDraftRemoved;
+    const retireRemovedDraft = React.useCallback(() => {
+        // Launch completion already disables persistence before clearing its draft.
+        // Only an editor that was still active needs a fresh draft route.
+        if (disableDraftPersistence()) onDraftRemoved?.();
+    }, [disableDraftPersistence, onDraftRemoved]);
+    useNewSessionDraftPromptProjection({
+        scope: draftScope,
+        draftId,
+        promptStore,
+        hasLocalEdit: hasUserEditedSessionPrompt,
+        preferInitialPrompt: hydratedTempAuthoringDraft?.displayText !== undefined || typeof prompt === 'string',
+        onDraftRemoved: retireRemovedDraft,
     });
 
     // V1 requires the source Session and the target to share a server. Block

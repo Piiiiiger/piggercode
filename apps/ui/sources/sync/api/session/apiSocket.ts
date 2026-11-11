@@ -25,7 +25,9 @@ import {
     subscribeServerReachabilityState,
 } from '@/sync/runtime/connectivity/serverReachabilitySupervisorPool';
 import { createNotAuthenticatedError } from '@/sync/runtime/connectivity/authErrors';
-import { isSocketIoAckTimeoutError, raceSocketIoAckTimeout } from '@/sync/runtime/socketIoAckTimeout';
+import { isRetryOfKnownFailure } from '@/sync/runtime/connectivity/isRetryOfKnownFailure';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
+import { raceSocketIoAckTimeout } from '@/sync/runtime/socketIoAckTimeout';
 import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 import { t } from '@/text';
 
@@ -723,6 +725,10 @@ class ApiSocket {
         });
     }
 
+    private isFailurePresented(): boolean {
+        return this.currentStatus === 'disconnected' || this.currentStatus === 'error';
+    }
+
     private applyManagedConnectionState(state: ManagedConnectionState) {
         this.currentConnectionState = state;
         for (const listener of this.connectionStateListeners) {
@@ -730,7 +736,7 @@ class ApiSocket {
         }
         switch (state.phase) {
             case 'connecting':
-                this.updateStatus('connecting');
+                if (!isRetryOfKnownFailure(state, this.isFailurePresented())) this.updateStatus('connecting');
                 return;
             case 'auth_failed':
                 this.updateStatus('error');

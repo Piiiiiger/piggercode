@@ -146,6 +146,7 @@ const loadNewSessionDraftMock = vi.hoisted(() => vi.fn(() => JSON.parse(JSON.str
 export const TEST_DRAFT_ID = '8e0a5dd1-b1df-43dd-b51e-b7787b30362e';
 const repositoryHarnessState = vi.hoisted(() => ({
     seeding: false,
+    liveDraftSubscriptions: false,
     seeded: false,
     lastSavedDraft: {} as Record<string, unknown>,
 }));
@@ -571,7 +572,10 @@ vi.mock('@/sync/ops/sessionDrafts/sessionDraftRepository', async (importOriginal
         // explicitly. Repository subscription behavior is covered by the projection owner tests;
         // suppressing notifications here prevents unrelated autosave updates from recursively
         // re-entering the oversized mocked screen graph.
-        subscribeSessionDraft: () => () => undefined,
+        // A test that proves a reaction to repository changes opts into the real subscription.
+        subscribeSessionDraft: (...args: Parameters<typeof actual.subscribeSessionDraft>) => (
+            repositoryHarnessState.liveDraftSubscriptions ? actual.subscribeSessionDraft(...args) : () => undefined
+        ),
         getSessionDraftSnapshot: (...args: Parameters<typeof actual.getSessionDraftSnapshot>) => {
             if (!repositoryHarnessState.seeding) loadNewSessionDraftMock();
             return actual.getSessionDraftSnapshot(...args);
@@ -947,6 +951,11 @@ export async function runFocusEffects(): Promise<Array<void | (() => void)>> {
 }
 
 /** Restores deterministic state for `beforeEach`. */
+/** Deliver repository notifications to the screen's draft projection for the rest of this test. */
+export function enableLiveDraftSubscriptions(): void {
+    repositoryHarnessState.liveDraftSubscriptions = true;
+}
+
 export async function resetDraftPersistenceState(): Promise<void> {
     const { deleteSessionDraft } = await import('@/sync/ops/sessionDrafts/sessionDraftRepository');
     repositoryHarnessState.seeding = true;
@@ -956,6 +965,7 @@ export async function resetDraftPersistenceState(): Promise<void> {
     });
     repositoryHarnessState.seeding = false;
     repositoryHarnessState.seeded = false;
+    repositoryHarnessState.liveDraftSubscriptions = false;
     repositoryHarnessState.lastSavedDraft = {};
     platformOsState.value = 'web';
     modalShowMock.mockReset();
@@ -1212,7 +1222,8 @@ export async function replaceRepositoryDraftFromPersistedFixture(): Promise<void
             serverId: persistedDraft.targetServerId ?? null,
             text: persistedDraft.input,
         }),
-        materializationIntent: 'userEdit',
+        // This fixture represents an existing saved draft, including empty-prompt drafts.
+        materializationIntent: 'seeded',
     });
     writeSessionDraftLocalSupplement({
         scope,

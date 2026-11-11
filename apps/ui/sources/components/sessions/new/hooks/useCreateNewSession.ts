@@ -37,7 +37,7 @@ import type { SessionSpawnSourceContextV1 } from '@piggercode/protocol';
 import { parsePermissionIntentAlias } from '@piggercode/agents';
 import type { CodexBackendMode } from '@piggercode/agents';
 import { nowServerMs } from '@/sync/runtime/time';
-import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
 import { readNonBlankSessionControlIdentifier } from '@/sync/domains/sessionControl/opaqueIdentifiers';
 import type { PreflightModelList } from '@/sync/domains/models/modelOptions';
 

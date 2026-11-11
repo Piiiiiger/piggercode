@@ -1,10 +1,4 @@
-export function createSocketIoAckTimeoutError(): Error {
-    return new Error('operation has timed out');
-}
-
-export function isSocketIoAckTimeoutError(error: unknown): boolean {
-    return error instanceof Error && error.message === 'operation has timed out';
-}
+import { createSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
 
 /** socket.io rejects a call waiting for its answer this way when the connection drops (it reconnects by itself). */
 export function isSocketIoDisconnectedError(error: unknown): boolean {

@@ -556,6 +556,7 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                                         canSendWithoutText
                                         isSendDisabled={!canCreate}
                                         isSending={isCreating}
+                                        disabled={isCreating}
                                         submitAccessibilityLabel={props.footer.submitAccessibilityLabel}
                                         placeholder={t('newSession.firstPromptPlaceholder')}
                                         autocompleteKinds={emptyAutocompleteKinds}

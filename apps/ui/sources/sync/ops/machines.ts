@@ -38,7 +38,7 @@ import { createUiSessionSpawnUserAttemptId } from '../domains/session/spawn/spaw
 import { storage } from '../domains/state/storage';
 import { machineStartsNativeTerminalSessions } from '../domains/machines/readMachineDaemonCliVersionForServerScope';
 import { isPlainObject, normalizeSpawnSessionResult } from './_shared';
-import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
 import { mergeMachineMetadataForVersionMismatch } from './machineMetadataMerge';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { isMachineRpcTimeoutError } from '@/sync/runtime/orchestration/serverScopedRpc/machineRpcTimeoutError';

@@ -45,7 +45,7 @@ import { RPC_ERROR_CODES, RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/p
 import { prepareAccountSettingsForDaemonSpawnIfNeeded } from './accountSettingsDaemonSpawnPreparation';
 import { normalizeSpawnSessionResult } from './_shared';
 import { isAccountSettingsScopeChangedDuringSpawnPreparationError } from '@/sync/engine/settings/accountSettingsSpawnPreparationError';
-import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
+import { isSocketIoAckTimeoutError } from '@piggercode/protocol/rpcErrors';
 import { readMachineControlTargetForSession } from './sessionMachineTarget';
 import {
     machineDirectSessionCandidateDelete,
