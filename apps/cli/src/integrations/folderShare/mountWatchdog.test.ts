@@ -49,6 +49,26 @@ describe('watchMount', () => {
     watch.stop();
   });
 
+  it('leaves a connection alone while data still moves through it, however long one probe waits behind a big copy', async () => {
+    // 2026-11-11: copies of tens of MB queued the probe for over 90 s on a slow link; ending that busy
+    // connection failed the copy with "Input/output error".
+    const { probe } = delayedProbes([Infinity]);
+    let moved = 0;
+    const onDead = vi.fn();
+    watchMount({ path: '/home/u/code', onDead, probe, progress: () => moved, now: () => Date.now(), intervalMs: 1_000, deadAfterMs: 3_000 });
+    for (let second = 0; second < 10; second += 1) {
+      moved += 64 * 1024;
+      await vi.advanceTimersByTimeAsync(1_000);
+    }
+    expect(onDead).not.toHaveBeenCalled();
+
+    // The data stops (the computer went to sleep): the connection counts as dead once nothing has moved for long enough.
+    await vi.advanceTimersByTimeAsync(2_500);
+    expect(onDead).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(onDead).toHaveBeenCalledTimes(1);
+  });
+
   it('calls onDead once when a probe has not come back for long enough, without piling up probes', async () => {
     const { asked, probe } = delayedProbes([0, Infinity]);
     const onDead = vi.fn();

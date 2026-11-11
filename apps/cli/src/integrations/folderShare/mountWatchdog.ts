@@ -4,9 +4,10 @@ import { spawn } from 'node:child_process';
 export const MOUNT_WATCH_INTERVAL_MS = 20_000;
 
 /**
- * How long one request to a shared folder may go unanswered before its connection counts as dead. A slow but
- * working connection answers in the end (a big copy queues requests ahead of the probe for seconds); a
- * sleeping computer's mount never does, and otherwise hangs everything that touches it for hours.
+ * How long one request to a shared folder may go unanswered, with no data moving through the connection either,
+ * before the connection counts as dead. A big copy over a slow link queues requests ahead of the probe for minutes
+ * while its data keeps moving; a sleeping computer's mount moves nothing, and otherwise hangs everything that
+ * touches it for hours.
  */
 export const MOUNT_DEAD_AFTER_MS = 90_000;
 
@@ -34,13 +35,18 @@ export function startPatientMountProbe(path: string): PatientMountProbe {
  * stalls, leaves the mount hanging: every process that touches it waits (a daemon too) until the connection
  * is ended, which the SSH session alone may not notice for hours. Every MOUNT_WATCH_INTERVAL_MS this asks the
  * mount with a probe from outside it (`startPatientMountProbe`, one at a time), and calls `onDead` once a probe has
- * gone MOUNT_DEAD_AFTER_MS without coming back. A probe that comes back late, or with an error, still shows
- * the mount answers: only one that hangs counts. `onAnswer` is called whenever a probe comes back.
+ * gone MOUNT_DEAD_AFTER_MS without coming back while `progress` (a count that grows as data moves through the
+ * connection) has not changed for as long either: a busy connection is not a dead one (2026-11-11: copies of tens
+ * of MB over a slow link held the probe past 90 s, and ending the connection failed them). A probe that comes back
+ * late, or with an error, still shows the mount answers: only one that hangs counts. `onAnswer` is called whenever
+ * a probe comes back.
  */
 export function watchMount(params: Readonly<{
   path: string;
   onDead: () => void;
   onAnswer?: () => void;
+  /** Grows while data moves through the connection; null (or absent) where that cannot be seen. */
+  progress?: () => number | null;
   probe?: (path: string) => PatientMountProbe;
   now?: () => number;
   intervalMs?: number;
@@ -53,6 +59,8 @@ export function watchMount(params: Readonly<{
   let stopped = false;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let running: { startedAt: number; probe: PatientMountProbe } | null = null;
+  let lastProgress = params.progress?.() ?? null;
+  let movedAt = now();
 
   const schedule = (): void => {
     timer = setTimeout(tick, intervalMs);
@@ -61,6 +69,11 @@ export function watchMount(params: Readonly<{
   function tick(): void {
     timer = null;
     if (stopped) return;
+    const progress = params.progress?.() ?? null;
+    if (progress !== null && progress !== lastProgress) {
+      lastProgress = progress;
+      movedAt = now();
+    }
     if (running === null) {
       const entry = { startedAt: now(), probe: probe(params.path) };
       running = entry;
@@ -68,7 +81,7 @@ export function watchMount(params: Readonly<{
         if (running === entry) running = null;
         if (!stopped) params.onAnswer?.();
       });
-    } else if (now() - running.startedAt >= deadAfterMs) {
+    } else if (now() - running.startedAt >= deadAfterMs && now() - movedAt >= deadAfterMs) {
       stopped = true;
       params.onDead();
       return;

@@ -46,12 +46,17 @@ export type SharedFoldersServeSystem = Readonly<{
   unmount: (path: string) => void;
   /**
    * Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. An
-   * aborted `signal` ends it.
+   * aborted `signal` ends it; `onStarted` gets its process id.
    */
-  runSshfs: (args: readonly string[], signal?: AbortSignal) => Promise<number>;
+  runSshfs: (args: readonly string[], signal?: AbortSignal, onStarted?: (pid: number) => void) => Promise<number>;
   reportError: (message: string) => void;
   /** Watches the mount while sshfs serves it (`watchMount`); none where not given. */
-  watchMount?: (path: string, handlers: Readonly<{ onDead: () => void; onAnswer: () => void }>) => MountWatch;
+  watchMount?: (
+    path: string,
+    handlers: Readonly<{ onDead: () => void; onAnswer: () => void; progress: () => number | null }>,
+  ) => MountWatch;
+  /** Bytes the process has written so far (Linux `/proc/<pid>/io`), or null where that cannot be read. */
+  bytesWrittenBy?: (pid: number) => number | null;
 }>;
 
 export async function runSharedFoldersServe(params: Readonly<{
@@ -172,17 +177,23 @@ export async function runSharedFoldersServe(params: Readonly<{
     };
     const deviceLookup = setInterval(noteOwnDevice, 500);
     deviceLookup.unref?.();
+    // sshfs carries every byte of the connection: what it has written grows while the computer answers, also
+    // while one request waits behind a big copy for minutes.
+    let sshfsPid: number | null = null;
     const watch = system.watchMount?.(mountPoint, {
       onAnswer: noteOwnDevice,
+      progress: () => (sshfsPid === null ? null : system.bytesWrittenBy?.(sshfsPid) ?? null),
       onDead: () => {
-        system.reportError(`piggercode shared folders: ${shown} did not answer for ${Math.round(MOUNT_DEAD_AFTER_MS / 1000)} s, so this connection is ended; the computer connects again once it can`);
+        system.reportError(`piggercode shared folders: ${shown} did not answer for ${Math.round(MOUNT_DEAD_AFTER_MS / 1000)} s and no data moved, so this connection is ended; the computer connects again once it can`);
         const notEnded = ownDevice !== null && mountHere()?.device === ownDevice ? system.abortConnection(ownDevice) : null;
         if (notEnded !== null) system.reportError(`piggercode shared folders: cannot end the mount at ${shown}: ${notEnded}`);
         ended.abort();
       },
     });
     try {
-      return await system.runSshfs(['-f', '-o', options, `:${folder}`, mountPoint], ended.signal);
+      return await system.runSshfs(['-f', '-o', options, `:${folder}`, mountPoint], ended.signal, (pid) => {
+        sshfsPid = pid;
+      });
     } finally {
       clearInterval(deviceLookup);
       watch?.stop();
@@ -301,8 +312,9 @@ const osServeSystem: SharedFoldersServeSystem = {
     const result = spawnSync('fusermount3', ['-uz', path], { stdio: 'ignore' });
     if (result.status !== 0) spawnSync('fusermount', ['-uz', path], { stdio: 'ignore' });
   },
-  runSshfs: async (args, signal) => await new Promise<number>((resolve) => {
+  runSshfs: async (args, signal, onStarted) => await new Promise<number>((resolve) => {
     const child = spawn('sshfs', [...args], { stdio: 'inherit' });
+    if (child.pid !== undefined) onStarted?.(child.pid);
     // sshfs ends by itself once its FUSE connection is aborted; a kill makes sure.
     const end = () => {
       child.kill('SIGTERM');
@@ -319,6 +331,14 @@ const osServeSystem: SharedFoldersServeSystem = {
     });
   }),
   watchMount: (path, handlers) => watchMount({ path, ...handlers }),
+  bytesWrittenBy: (pid) => {
+    try {
+      const written = /^wchar:\s*(\d+)$/m.exec(readFileSync(`/proc/${pid}/io`, 'utf8'));
+      return written ? Number(written[1]) : null;
+    } catch {
+      return null;
+    }
+  },
   reportError: (message) => {
     process.stderr.write(`${message}\n`);
   },

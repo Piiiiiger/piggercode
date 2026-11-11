@@ -127,6 +127,36 @@ describe('serving a computer’s folder on this server', () => {
     expect(calls.errors.some((message) => message.includes('did not answer for 90 s'))).toBe(true);
   });
 
+  it('lets the watchdog see the data sshfs moves, so a connection busy with a big copy is not taken for a dead one', async () => {
+    const home = createHome();
+    agree(home, 'laptop', ['code']);
+    const { system } = createSystem();
+    const written = new Map<number, number>([[4321, 5_000]]);
+    const seen: Array<number | null> = [];
+    let progress: (() => number | null) | null = null;
+    const serving: SharedFoldersServeSystem = {
+      ...system,
+      bytesWrittenBy: (pid) => written.get(pid) ?? null,
+      watchMount: (_path, handlers) => {
+        progress = handlers.progress;
+        return { stop: () => {} };
+      },
+      runSshfs: async (_args, _aborted, onStarted) => {
+        seen.push(progress?.() ?? null);
+        onStarted?.(4321);
+        seen.push(progress?.() ?? null);
+        written.set(4321, 9_000);
+        seen.push(progress?.() ?? null);
+        return 0;
+      },
+    };
+
+    await runSharedFoldersServe({ label: 'laptop', originalCommand: 'mount code\tcode', homeDir: home, system: serving });
+
+    // Nothing to read before sshfs runs; then what sshfs itself has written.
+    expect(seen).toEqual([null, 5_000, 9_000]);
+  });
+
   it('ends its own mount even when it never answered', async () => {
     const home = createHome();
     agree(home, 'laptop', ['code']);
