@@ -52,6 +52,34 @@ afterEach(() => {
 });
 
 describe('useSessionMachineReachability', () => {
+    it('calls the session\'s computer unreachable while the relay has it inactive, as it does when it is offline', async () => {
+        // An inactive computer is no target for calls; its sessions must still read as waiting for it, not as
+        // sessions whose computer is unknown (which are tried anyway).
+        const previousState = storage.getState();
+        try {
+            const serverId = getActiveServerSnapshot().serverId;
+            const machine = { ...baseMachine, active: false, activeAt: Date.now() - 60_000 };
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                machines: { 'machine-1': machine as any },
+                machineListByServerId: { [serverId]: [machine as any] },
+                sessions: { visible: baseSession('visible', 1) as any },
+            }));
+
+            const hook = await renderHook(() => useSessionMachineReachability('visible'), { flushOptions: { cycles: 1, turns: 4 } });
+
+            expect(hook.getCurrent()).toEqual({
+                machineReachable: false,
+                machineOnline: false,
+                machineRpcTargetAvailable: false,
+            });
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
     it('ignores unrelated session updates from background streams', async () => {
         const previousState = storage.getState();
         try {

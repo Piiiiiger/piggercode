@@ -229,19 +229,20 @@ export function useMachineTerminalSession(params: Readonly<{
             setError(null);
             setStatus(screenShownRef.current ? 'reconnecting' : 'connecting');
 
+            if (params.machineReachable === false) {
+                // This app sees the machine as offline (often this app is the one reconnecting): wait for it
+                // without calling it an error; the terminal connects again once the machine is back. Checked first:
+                // an offline machine is no target for calls either, so it also arrives without a machine id.
+                releaseReaderLease();
+                setError('terminal_machine_waiting');
+                return;
+            }
             if (!params.machineId || (!params.cwd && !params.launch)) {
                 failTerminalSession('terminal_missing_machine_target');
                 return;
             }
             if (params.machineRpcTargetAvailable === false) {
                 failTerminalSession('terminal_rpc_target_unavailable');
-                return;
-            }
-            if (params.machineReachable === false) {
-                // This app sees the machine as offline (often this app is the one reconnecting): wait for it
-                // without calling it an error; the terminal connects again once the machine is back.
-                releaseReaderLease();
-                setError('terminal_machine_waiting');
                 return;
             }
             if (!initialTerminalSize) {

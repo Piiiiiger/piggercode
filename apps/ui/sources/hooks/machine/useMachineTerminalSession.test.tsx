@@ -252,6 +252,25 @@ describe('useMachineTerminalSession', () => {
         await hook.unmount();
     });
 
+    it('waits for the session\'s computer while it is offline, instead of calling the session one without a computer', async () => {
+        // An offline computer is no target for calls, so the session has no machine id to call until it is back.
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: null,
+            cwd: null,
+            launch: { kind: 'session_attach', sessionId: 'session-offline' },
+            machineReachable: false,
+            machineRpcTargetAvailable: false,
+            terminalKey: 'terminal-key-offline-machine',
+            terminalRef: { current: null },
+        }));
+        await flushHookEffects();
+
+        expect(hook.getCurrent().error).toBe('terminal_machine_waiting');
+        expect(hook.getCurrent().status).not.toBe('error');
+
+        await hook.unmount();
+    });
+
     it('releases the reader lease after an early validation error so another pane can connect', async () => {
         const terminalRef = { current: null };
         const failed = await renderHook(() => useMachineTerminalSession({
