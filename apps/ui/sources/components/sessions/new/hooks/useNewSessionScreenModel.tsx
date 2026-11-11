@@ -69,7 +69,6 @@ import { useNewSessionBackendTargetState } from '@/components/sessions/new/hooks
 import { useNewSessionMachinePathState } from '@/components/sessions/new/hooks/screenModel/useNewSessionMachinePathState';
 import { useNewSessionPreflightModelsState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModelsState';
 import { useNewSessionPreflightConfigOptionsState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPreflightConfigOptionsState';
-import { useNewSessionPreflightSessionModesState } from '@/components/sessions/new/hooks/screenModel/useNewSessionPreflightSessionModesState';
 import { useNewSessionRepoScmSnapshot } from '@/components/sessions/new/hooks/screenModel/useNewSessionRepoScmSnapshot';
 import { buildAcpConfigOptionOverridesV1, buildBackendTargetKey, type AcpConfigOptionOverridesV1, type WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 import { useNewSessionMcpSelection } from '@/components/sessions/new/hooks/useNewSessionMcpSelection';
@@ -813,7 +812,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         connectedServices: connectedServicesBindingsPayload,
     });
 
-    const { modeOptions: acpSessionModeOptions } = useNewSessionPreflightSessionModesState({ backendTarget });
     const { configOptions: acpConfigOptions, probe: acpConfigOptionsProbeState } = useNewSessionPreflightConfigOptionsState({
         backendTarget,
         selectedMachineId,
@@ -1806,7 +1804,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         backendTarget,
         permissionMode,
         modelMode,
-        acpSessionModeId,
         sessionConfigOptionOverrides,
         promptStore,
         setSessionPrompt,
@@ -1971,7 +1968,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         modelOptionsProbe,
         favoriteModelSelections,
         setFavoriteModelSelections,
-        acpSessionModeOptions,
         acpSessionModeId,
         setAcpSessionModeId: setRememberedAcpSessionModeId,
         acpConfigOptions: acpConfigOptions ?? undefined,
@@ -2071,7 +2067,6 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         setModelMode: setRememberedModelMode,
         modelOptions,
         modelOptionsProbe,
-        acpSessionModeOptions,
         acpSessionModeId,
         setAcpSessionModeId: setRememberedAcpSessionModeId,
         acpConfigOptions: acpConfigOptions ?? undefined,

@@ -224,7 +224,8 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
     vi.restoreAllMocks();
   });
 
-  it('passes agent mode through spawn options, with the first prompt for the terminal', async () => {
+  it('starts the terminal with the first prompt and no agent mode, even one an earlier screen remembered', async () => {
+    // A terminal switches its own modes (Claude: Shift+Tab), so the screen no longer offers or sends one.
     const { useCreateNewSession, machineSpawnNewSessionSpy, publishModeSpy, sendMessageSpy } = await setupHarness();
 
     let handleCreateSession: null | (() => Promise<void>) = null;
@@ -281,140 +282,9 @@ describe('useCreateNewSession (ACP mode seeding)', () => {
 
     expect(publishModeSpy).not.toHaveBeenCalled();
     expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
-      agentModeId: 'plan',
       pendingFirstInput: expect.objectContaining({ text: 'hello' }),
     }));
-    // The terminal types the first prompt itself; nothing goes out as a chat message.
-    expect(sendMessageSpy).not.toHaveBeenCalled();
-  });
-
-  it('passes agent mode through spawn options for staticAgentModes (Claude)', async () => {
-    const { useCreateNewSession, machineSpawnNewSessionSpy, publishModeSpy, sendMessageSpy } = await setupHarness();
-
-    const { getAgentCore } = await import('@/agents/catalog/catalog');
-    (getAgentCore as any).mockReturnValue({ sessionModes: { kind: 'staticAgentModes' }, model: { supportsSelection: false } });
-
-    let handleCreateSession: null | (() => Promise<void>) = null;
-    const settings = { experiments: false } as unknown as Settings;
-    const machineEnvPresence: UseMachineEnvPresenceResult = {
-      isPreviewEnvSupported: false,
-      isLoading: false,
-      meta: {},
-      refreshedAt: null,
-      refresh: () => {},
-    };
-
-    function Test() {
-      const hook = useCreateNewSession({
-        draftId: '8e0a5dd1-b1df-43dd-b51e-b7787b30362e',
-        launchIntentSignature: 'test-launch-intent',
-        router: { push: vi.fn(), replace: vi.fn() },
-        selectedMachineId: 'm1',
-        selectedPath: '/tmp',
-        selectedMachine: { metadata: {} },
-        setIsCreating: vi.fn(),
-        setIsResumeSupportChecking: vi.fn(),
-        settings,
-        useProfiles: false,
-        selectedProfileId: null,
-        profileMap: new Map(),
-        recentMachinePaths: [],
-        agentType: 'claude' as any,
-        permissionMode: 'default' as PermissionMode,
-        modelMode: 'default' as ModelMode,
-        acpSessionModeId: 'plan',
-        promptStore: createNewSessionPromptStore('hello'),
-        resumeSessionId: '',
-        agentNewSessionOptions: null,
-        machineEnvPresence,
-        secrets: [],
-        secretBindingsByProfileId: {},
-        selectedSecretIdByProfileIdByEnvVarName: {},
-        sessionOnlySecretValueByProfileIdByEnvVarName: {},
-        selectedMachineCapabilities: null,
-        targetServerId: null,
-        allowedTargetServerIds: ['server-a'],
-      } as any);
-
-      handleCreateSession = hook.handleCreateSession as () => Promise<void>;
-      return React.createElement('View');
-    }
-
-    await renderScreen(React.createElement(Test));
-
-    await act(async () => {
-      await handleCreateSession?.();
-    });
-
-    expect(publishModeSpy).not.toHaveBeenCalled();
-    expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
-      agentModeId: 'plan',
-      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
-    }));
-    // The terminal types the first prompt itself; nothing goes out as a chat message.
-    expect(sendMessageSpy).not.toHaveBeenCalled();
-  });
-
-  it('passes agent mode through spawn options for Codex appServer', async () => {
-    const { useCreateNewSession, machineSpawnNewSessionSpy, publishModeSpy, sendMessageSpy } = await setupHarness();
-
-    let handleCreateSession: null | (() => Promise<void>) = null;
-    const settings = { codexBackendMode: 'appServer' } as unknown as Settings;
-    const machineEnvPresence: UseMachineEnvPresenceResult = {
-      isPreviewEnvSupported: false,
-      isLoading: false,
-      meta: {},
-      refreshedAt: null,
-      refresh: () => {},
-    };
-
-    function Test() {
-      const hook = useCreateNewSession({
-        draftId: '8e0a5dd1-b1df-43dd-b51e-b7787b30362e',
-        launchIntentSignature: 'test-launch-intent',
-        router: { push: vi.fn(), replace: vi.fn() },
-        selectedMachineId: 'm1',
-        selectedPath: '/tmp',
-        selectedMachine: { metadata: {} },
-        setIsCreating: vi.fn(),
-        setIsResumeSupportChecking: vi.fn(),
-        settings,
-        useProfiles: false,
-        selectedProfileId: null,
-        profileMap: new Map(),
-        recentMachinePaths: [],
-        agentType: 'codex' as any,
-        permissionMode: 'default' as PermissionMode,
-        modelMode: 'default' as ModelMode,
-        acpSessionModeId: 'plan',
-        promptStore: createNewSessionPromptStore('hello'),
-        resumeSessionId: '',
-        agentNewSessionOptions: null,
-        machineEnvPresence,
-        secrets: [],
-        secretBindingsByProfileId: {},
-        selectedSecretIdByProfileIdByEnvVarName: {},
-        sessionOnlySecretValueByProfileIdByEnvVarName: {},
-        selectedMachineCapabilities: null,
-        targetServerId: null,
-        allowedTargetServerIds: ['server-a'],
-      } as any);
-
-      handleCreateSession = hook.handleCreateSession as () => Promise<void>;
-      return React.createElement('View');
-    }
-
-    await renderScreen(React.createElement(Test));
-
-    await act(async () => {
-      await handleCreateSession?.();
-    });
-
-    expect(publishModeSpy).not.toHaveBeenCalled();
-    expect(machineSpawnNewSessionSpy).toHaveBeenCalledWith(expect.objectContaining({
-      agentModeId: 'plan',
-      pendingFirstInput: expect.objectContaining({ text: 'hello' }),
-    }));
+    expect(machineSpawnNewSessionSpy.mock.calls[0]?.[0]?.agentModeId ?? null).toBeNull();
     // The terminal types the first prompt itself; nothing goes out as a chat message.
     expect(sendMessageSpy).not.toHaveBeenCalled();
   });

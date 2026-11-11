@@ -795,10 +795,6 @@ vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModel
     useNewSessionPreflightModelsState: () => ({ preflightModels: null, modelOptions: [], probe: { phase: 'idle', refresh: vi.fn() } }),
 }));
 
-vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightSessionModesState', () => ({
-    useNewSessionPreflightSessionModesState: () => ({ preflightModes: null, modeOptions: [], probe: { phase: 'idle', refresh: vi.fn() } }),
-}));
-
 vi.mock('@/components/sessions/new/modules/canCreateNewSession', () => ({
     canCreateNewSession: () => true,
 }));

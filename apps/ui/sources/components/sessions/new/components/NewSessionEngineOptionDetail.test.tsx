@@ -53,13 +53,6 @@ const agentCoreState = vi.hoisted<{
     dynamicProbe: 'dynamic',
 }));
 
-const modeOptionsState = vi.hoisted(() => ({
-    value: [
-        { id: 'default', name: 'Build', description: 'Default build mode.' },
-        { id: 'review', name: 'Review', description: 'Review and critique mode.' },
-    ],
-}));
-
 const configOptionsState = vi.hoisted(() => ({
     value: [] as ReadonlyArray<AgentInputOptionControl>,
 }));
@@ -71,12 +64,10 @@ let lastModelPickerOverlayProps: any = null;
 const probeRefreshSpies = {
     cli: vi.fn(),
     models: vi.fn(),
-    modes: vi.fn(),
     config: vi.fn(),
 };
 const preflightHookCalls = vi.hoisted(() => ({
     models: [] as Array<Record<string, unknown>>,
-    modes: [] as Array<Record<string, unknown>>,
     config: [] as Array<Record<string, unknown>>,
 }));
 
@@ -184,16 +175,6 @@ vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModel
     },
 }));
 
-vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightSessionModesState', () => ({
-    useNewSessionPreflightSessionModesState: (params: Record<string, unknown>) => {
-        preflightHookCalls.modes.push(params);
-        return {
-            modeOptions: modeOptionsState.value,
-            probe: { phase: 'idle', onRefresh: probeRefreshSpies.modes },
-        };
-    },
-}));
-
 vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightConfigOptionsState', () => ({
     useNewSessionPreflightConfigOptionsState: (params: Record<string, unknown>) => {
         preflightHookCalls.config.push(params);
@@ -221,20 +202,14 @@ describe('NewSessionEngineOptionDetail', () => {
         preflightModelsState.value = { availableModels: [], supportsFreeform: false };
         agentCoreState.supportsFreeform = true;
         agentCoreState.dynamicProbe = 'dynamic';
-        modeOptionsState.value = [
-            { id: 'default', name: 'Build', description: 'Default build mode.' },
-            { id: 'review', name: 'Review', description: 'Review and critique mode.' },
-        ];
         configOptionsState.value = [];
         lastModelPickerOverlayProps = null;
         probeEnabledState.models = true;
         probeEnabledState.config = true;
         probeRefreshSpies.cli.mockClear();
         probeRefreshSpies.models.mockClear();
-        probeRefreshSpies.modes.mockClear();
         probeRefreshSpies.config.mockClear();
         preflightHookCalls.models = [];
-        preflightHookCalls.modes = [];
         preflightHookCalls.config = [];
     });
 
@@ -262,7 +237,6 @@ describe('NewSessionEngineOptionDetail', () => {
         expect(preflightHookCalls.models[0]?.connectedServices).toEqual(connectedServices);
         expect(preflightHookCalls.config).toHaveLength(1);
         expect(preflightHookCalls.config[0]?.connectedServices).toEqual(connectedServices);
-        expect(preflightHookCalls.modes.every((call) => call.connectedServices === connectedServices)).toBe(true);
     });
 
     it('renders an engine favorite action in the model header and toggles it without refreshing models', async () => {

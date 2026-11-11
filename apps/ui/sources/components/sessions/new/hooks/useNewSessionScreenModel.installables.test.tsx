@@ -83,9 +83,6 @@ const chromeSafeAreaInsetsState = vi.hoisted(() => ({
 const preflightModelOptionsByTargetKeyState = vi.hoisted(() => ({
     value: {} as Record<string, Array<{ value: string; label: string; description?: string }>>,
 }));
-const preflightSessionModeOptionsByTargetKeyState = vi.hoisted(() => ({
-    value: {} as Record<string, Array<{ id: string; name: string; description?: string }>>,
-}));
 const preflightConfigOptionsByTargetKeyState = vi.hoisted(() => ({
     value: {} as Record<string, Array<{
         id: string;
@@ -577,17 +574,6 @@ vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightModel
     },
 }));
 
-vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightSessionModesState', () => ({
-    useNewSessionPreflightSessionModesState: (params: { backendTarget: any }) => {
-        const targetKey = buildBackendTargetKey(params.backendTarget);
-        return {
-            preflightModes: null,
-            modeOptions: preflightSessionModeOptionsByTargetKeyState.value[targetKey] ?? [],
-            probe: { phase: 'idle', refresh: vi.fn() },
-        };
-    },
-}));
-
 vi.mock('@/components/sessions/new/hooks/screenModel/useNewSessionPreflightConfigOptionsState', () => ({
     useNewSessionPreflightConfigOptionsState: (params: { backendTarget: any }) => {
         const targetKey = buildBackendTargetKey(params.backendTarget);
@@ -710,7 +696,6 @@ describe('useNewSessionScreenModel (installables)', () => {
         featureEnabledState.sessionsDirect = false;
         featureEnabledCalls.length = 0;
         preflightModelOptionsByTargetKeyState.value = {};
-        preflightSessionModeOptionsByTargetKeyState.value = {};
         preflightConfigOptionsByTargetKeyState.value = {};
         chromeSafeAreaInsetsState.value = { top: 0, bottom: 0, left: 0, right: 0 };
 

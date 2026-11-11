@@ -191,7 +191,6 @@ export function useCreateNewSession(params: Readonly<{
      * Optional: seed ACP "agent mode" (e.g. plan/build) at session start.
      * Applied before the first message is sent.
      */
-    acpSessionModeId?: string | null;
     sessionConfigOptionOverrides?: AcpConfigOptionOverridesV1 | null;
 
     /**
@@ -493,7 +492,6 @@ export function useCreateNewSession(params: Readonly<{
                 : undefined;
             const spawnPermissionMode = parsePermissionIntentAlias(current.permissionMode) ?? 'default';
             const spawnPermissionModeUpdatedAt = nowServerMs();
-            const normalizedAcpModeId = readNonBlankSessionControlIdentifier(current.acpSessionModeId) ?? '';
             const spawnModelId =
                 getAgentCore(current.agentType).model.supportsSelection === true &&
                 typeof current.modelMode === 'string' &&
@@ -543,7 +541,6 @@ export function useCreateNewSession(params: Readonly<{
                 codexBackendMode: typeof spawnSessionExtras.codexBackendMode === 'string'
                     ? spawnSessionExtras.codexBackendMode as CodexBackendMode
                     : null,
-                acpSessionModeId: normalizedAcpModeId || null,
                 sessionConfigOptionOverrides: current.sessionConfigOptionOverrides ?? null,
                 automation: current.authoringDraft?.automation ?? null,
             });
@@ -699,7 +696,6 @@ export function useCreateNewSession(params: Readonly<{
                         machineId: current.selectedMachineId,
                         serverId: resolvedTargetServerId,
                         approvedNewDirectoryCreation: true,
-                        agentModeUpdatedAt: normalizedAcpModeId ? spawnPermissionModeUpdatedAt : null,
                         sourceContext: current.sourceContext ?? null,
                     }),
                     ...spawnSessionExtras,
