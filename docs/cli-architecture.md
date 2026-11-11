@@ -1738,10 +1738,14 @@ through `buildBaseSpawnOptions`) starts one; the provider's spawn hooks own it (
 an agent without one refuses the request), the daemon always hosts it in tmux and fails rather than start it
 without a terminal, and the runner gets `--native-terminal` (`buildHappySessionControlArgs`). The runner
 (`terminal/nativeTerminal/runNativeTerminal.ts`, with each provider's launch in
-`backends/<provider>/nativeTerminal/`) adds no system prompt, MCP server, hooks or settings. It takes the text
+`backends/<provider>/nativeTerminal/`) adds no system prompt, MCP server or hooks, and only Claude's renderer as a setting (below). It takes the text
 typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
 would queue it, and passes it as the CLI's first prompt after `--`; with nothing typed the CLI opens without one. `claude` gets
 `--session-id <id>`, or `--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`.
+Since CLI 0.3.26 `claude` also gets `--settings '{"tui":"default"}'`: a running `claude` switches renderer when `tui`
+changes in a settings file, and a session switched out of the fullscreen renderer that way stays blank or cut off until
+`claude` restarts; a flag outranks the settings files. The default renderer because the app draws it correctly, while a
+fullscreen screen is left with stray characters after a view reattaches.
 Since CLI 0.3.24 both also get the new-session screen's choices, which the runner reads from its session-control flags
 (`--model`, `--permission-mode`, `--agent-mode`) and from the session's config-option overrides
 (`NativeTerminalControls`): `claude --model <id> --permission-mode <mode>`, the mode from
