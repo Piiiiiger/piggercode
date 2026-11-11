@@ -19,6 +19,7 @@ This folder documents how Happier works internally, with a focus on protocol, ba
 - claude-feature-matrix.md: Low-level Claude implementation matrix and unified-architecture migration notes.
 - acp-provider-feature-matrix.md: Canonical-source map for shared ACP agent behavior and documentation boundaries.
 - issue-triage.md: How the GitHub issue triage workflows are wired to maintainer tooling.
+- upstream.md: The upstream Happier commit PiggerCode has been reviewed through, and what each review ported or deferred.
 
 ## Conventions
 - Paths and field names reflect the current implementation in `apps/server`.
