@@ -2247,6 +2247,29 @@ describe('sync.fetchMessages server-scoped known-session checks', () => {
         expect(notifyActivityReadyMock).toHaveBeenCalledWith(sessionId);
     });
 
+    it('leaves a session the app shows live to its transcript, which carries the reply for the notification', async () => {
+        const sessionId = 'session_ready_cursor_live_transcript';
+        storage.getState().applySessions([{ ...createSession(sessionId), encryptionMode: 'plain', latestReadyEventSeq: 1 }]);
+        markSessionVisible(sessionId);
+        try {
+            const { sync } = await import('./sync');
+            (sync as any).encryption = {
+                getSessionEncryption: () => null,
+            };
+            await (sync as any).handleUpdate({
+                id: 'ready-cursor-live-2',
+                seq: 102,
+                createdAt: Date.now(),
+                body: { t: 'update-session', id: sessionId, latestReadyEventSeq: 2, latestReadyEventAt: Date.now() },
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            expect(notifyActivityReadyMock).not.toHaveBeenCalled();
+        } finally {
+            markSessionHidden(sessionId);
+        }
+    });
+
     it('emits activity ready notifications for pushed direct-session transcript deltas when voice is suppressed', async () => {
         const sessionId = 'direct_session_push_ready_notification';
         storage.getState().applySessions([createDirectSession(sessionId)]);

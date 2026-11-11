@@ -1130,14 +1130,26 @@ describe('socket update handling: plaintext update-session', () => {
             pendingPermissionRequestCount: 0,
             pendingUserActionRequestCount: 0,
         }]);
-        const decryptedAgentState = { controlledByUser: false, requests: { permission: { status: 'pending' } } };
-        const decryptAgentState = vi.fn(async () => decryptedAgentState);
+        const pendingAgentState = {
+            controlledByUser: false,
+            requests: { permission: { tool: 'Bash', arguments: { command: 'ls' }, createdAt: 2_200 } },
+        };
+        // Count the platform crypto adapter's work; the session's own decryption (cache, in-flight
+        // sharing) stays real, so every reader of this update shares one decryption.
+        const crypto = new SecretBoxEncryption(new Uint8Array(32));
+        let cryptoDecrypts = 0;
+        const countingCrypto: Encryptor & Decryptor = {
+            encrypt: data => crypto.encrypt(data),
+            decrypt: async (data, options) => {
+                cryptoDecrypts += 1;
+                return crypto.decrypt(data, options);
+            },
+        };
+        const sessionEncryption = new SessionEncryption('s1', countingCrypto, new EncryptionCache());
+        const encryptedAgentState = await sessionEncryption.encryptAgentState(pendingAgentState);
         const params = buildBaseParams({
             encryption: {
-                getSessionEncryption: () => ({
-                    decryptMetadata: vi.fn(async () => ({ path: '/work', host: 'devbox' })),
-                    decryptAgentState,
-                }),
+                getSessionEncryption: () => sessionEncryption,
                 getMachineEncryption: () => null,
                 removeSessionEncryption: () => {},
             } as unknown as HandleUpdateContainerBaseParams['encryption'],
@@ -1154,32 +1166,42 @@ describe('socket update handling: plaintext update-session', () => {
                     id: 's1',
                     pendingPermissionRequestCount: 1,
                     pendingUserActionRequestCount: 0,
-                    agentState: { version: 2, value: 'encrypted-agent-state' },
+                    agentState: { version: 2, value: encryptedAgentState },
                 },
             },
         });
 
-        expect(decryptAgentState).toHaveBeenCalledTimes(1);
+        expect(cryptoDecrypts).toBe(1);
         const applySessionsSpy = params.applySessions as unknown as ReturnType<typeof vi.fn>;
         expect(applySessionsSpy).toHaveBeenCalledTimes(1);
         const updatedSession = applySessionsSpy.mock.calls[0]?.[0]?.[0] as Session;
         expect(updatedSession).toEqual(expect.objectContaining({
-            agentState: decryptedAgentState,
+            agentState: expect.objectContaining(pendingAgentState),
             agentStateVersion: 2,
             pendingPermissionRequestCount: 1,
             pendingUserActionRequestCount: 0,
         }));
     });
 
-    it('tells the user when a terminal session they are not looking at starts waiting for them', async () => {
+    it('tells the user each time a terminal session the app has never opened starts waiting for them', async () => {
         const sessionId = 's_terminal_wait';
-        storage.getState().applySessions([{
-            ...buildSession(sessionId),
-            encryptionMode: 'e2ee',
-            agentState: {},
+        // Only its list row: the app has not opened this session, so it holds no session object for it.
+        storage.getState().replaceSessionListRenderables([{
+            id: sessionId,
+            seq: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            active: true,
+            activeAt: 1,
+            archivedAt: null,
+            metadataVersion: 1,
             agentStateVersion: 1,
-            pendingPermissionRequestCount: 0,
-            pendingUserActionRequestCount: 0,
+            metadata: { path: '/tmp', host: 'localhost' },
+            thinking: false,
+            thinkingAt: 0,
+            presence: 'online',
+            hasPendingPermissionRequests: false,
+            hasPendingUserActionRequests: false,
         }]);
         const sessionEncryption = new SessionEncryption(sessionId, new SecretBoxEncryption(new Uint8Array(32)), new EncryptionCache());
         const params = buildBaseParams({
@@ -1188,7 +1210,6 @@ describe('socket update handling: plaintext update-session', () => {
                 getMachineEncryption: () => null,
                 removeSessionEncryption: () => {},
             } as unknown as HandleUpdateContainerBaseParams['encryption'],
-            applySessions: rows => storage.getState().applySessions(rows),
         });
         const events: ActivityLocalNotificationEvent[] = [];
         const unsubscribe = subscribeActivityLocalNotifications(event => {
@@ -1210,13 +1231,25 @@ describe('socket update handling: plaintext update-session', () => {
         };
         try {
             await agentStateUpdate(2, { terminalWaiting: { on: 'permission', since: 50 } }, [1, 0]);
+            await vi.waitFor(() => expect(events).toHaveLength(1));
             await agentStateUpdate(3, { terminalWaiting: null }, [0, 0]);
-            await agentStateUpdate(4, { terminalWaiting: { on: 'exited', exitCode: 3, since: 70 } }, [0, 1]);
+            // The next prompt is told again, though the first one already raised the same count.
+            await agentStateUpdate(4, { terminalWaiting: { on: 'permission', since: 60 } }, [1, 0]);
+            await vi.waitFor(() => expect(events).toHaveLength(2));
+            await agentStateUpdate(5, { terminalWaiting: null }, [0, 0]);
+            await agentStateUpdate(6, { terminalWaiting: { on: 'exited', exitCode: 3, since: 70 } }, [0, 1]);
+            await vi.waitFor(() => expect(events).toHaveLength(3));
+            await agentStateUpdate(7, { terminalWaiting: null }, [0, 0]);
+            // A chat session's request has its own notification; this one is not a terminal's.
+            await agentStateUpdate(8, { requests: { r1: { tool: 'Bash', arguments: {}, createdAt: 80 } } }, [1, 0]);
+            await new Promise((resolve) => setTimeout(resolve, 20));
 
             expect(events).toEqual([
                 { kind: 'terminal-wait', sessionId, waiting: { on: 'permission', since: 50 } },
+                { kind: 'terminal-wait', sessionId, waiting: { on: 'permission', since: 60 } },
                 { kind: 'terminal-wait', sessionId, waiting: { on: 'exited', exitCode: 3, since: 70 } },
             ]);
+            expect(storage.getState().sessions[sessionId]).toBeUndefined();
         } finally {
             unsubscribe();
         }

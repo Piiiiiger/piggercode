@@ -8096,6 +8096,9 @@ class Sync {
     }
 
     private notifyReadyProjectionAdvance(sessionId: string, seq: number): void {
+        // A session whose transcript this app applies live is told from that transcript, with the reply.
+        const sourceServerId = String(getActiveServerSnapshot().serverId ?? '').trim() || null;
+        if (resolveSessionLiveConsumption(sessionId, sourceServerId).isFullContentConsumer) return;
         if (!this.claimReadyNotification(sessionId, seq)) return;
         notifyActivityReady(sessionId);
     }

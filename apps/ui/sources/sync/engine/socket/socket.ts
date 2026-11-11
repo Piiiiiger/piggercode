@@ -9,6 +9,7 @@ import { isSessionVisible } from '@/sync/domains/session/activeViewingSession';
 import { computeNextSessionSeqFromUpdate } from '@/sync/domains/session/sequence/realtimeSessionSeq';
 import { normalizeSessionOrderingNumber, reconcileSessionSnapshot, resolveSessionPresence, shouldPreserveSessionRequestProjection } from '@/sync/domains/session/sessionLifecycleProjection';
 import { resolveSessionLiveConsumption } from '@/sync/runtime/sessionLiveConsumption';
+import { announceTerminalWaitStart } from './terminalWaitNotifications';
 import type { MachineActivityUpdate } from '@/sync/reducer/machineActivityAccumulator';
 import { storage } from '@/sync/domains/state/storage';
 import { projectManager } from '@/sync/runtime/orchestration/projectManager';
@@ -18,8 +19,7 @@ import { scmStatusSync } from '@/scm/scmStatusSync';
 import { ingestWorkspaceMutationMessages } from '@/scm/refresh/workspaceMutationIngestionRuntime';
 import { deliverHiddenSessionScmMutationSignal } from '@/sync/engine/sessions/hiddenSessionScmMutationSignal';
 import { deriveNewAgentRequests } from '@/sync/domains/permissions/deriveNewAgentRequests';
-import { deriveNewTerminalWait } from '@/sync/domains/session/attention/deriveNewTerminalWait';
-import { notifyActivityAgentRequest, notifyActivityTerminalWait } from '@/activity/notifications/runtime/activityLocalNotificationBus';
+import { notifyActivityAgentRequest } from '@/activity/notifications/runtime/activityLocalNotificationBus';
 import { didControlReturnToMobile } from '@/sync/domains/session/control/controlledByUserTransitions';
 import { writeSyncDebugLog } from '@/sync/runtime/syncDebugLogging';
 import {
@@ -1632,6 +1632,17 @@ export async function handleUpdateContainer(params: {
     } else if (updateData.body.t === 'update-session') {
         const session = getSocketSessionApplyBase(updateData.body.id);
         const cachedRenderable = storage.getState().sessionListRenderables[updateData.body.id];
+        // Before either path below patches the list row: the row is what the app last knew of this
+        // session's pending requests, open or not.
+        if (!isPlainSessionBlockedByClientRequirement(updateData.body.id)) {
+            void announceTerminalWaitStart({
+                sessionId: updateData.body.id,
+                previous: cachedRenderable ?? session,
+                update: updateData.body,
+                encryptionMode: session ? (session.encryptionMode === 'plain' ? 'plain' : 'e2ee') : null,
+                sessionEncryption: encryption.getSessionEncryption(updateData.body.id),
+            });
+        }
         const fullContentConsumerActive = isSessionFullContentConsumerActiveForRealtime(updateData.body.id, sourceServerId);
         const hiddenSessionNeedsDetailedAgentState =
             Boolean(session)
@@ -1924,10 +1935,6 @@ export async function handleUpdateContainer(params: {
                     toolArgs: nextRequest.toolArgs,
                 });
             }
-            // A 「终端」 session's wait raises its pending counts, so a session the app does not show is
-            // hydrated for it too.
-            const newTerminalWait = deriveNewTerminalWait(currentSession.agentState, agentState);
-            if (newTerminalWait) notifyActivityTerminalWait(updateData.body.id, newTerminalWait);
 
             // Re-fetch messages when control returns to mobile (local -> remote mode switch)
             // This catches up on any messages that were exchanged while desktop had control
