@@ -120,4 +120,44 @@ describe('runNativeTerminalSession', () => {
     expect(server.calls).toEqual(['stop-following', 'death', 'close']);
     expect(exit).toHaveBeenCalledWith(0);
   });
+
+  it('clears what the terminal waited for before the timed shutdown starts when the user quits the CLI', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const push = fakePushService();
+    const previousTimeout = process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
+    process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = '250';
+    // The relay takes the prompt at once, then becomes slower than the shutdown may wait.
+    const record = vi.mocked(server.session.updateAgentState).getMockImplementation()!;
+    let writes = 0;
+    vi.mocked(server.session.updateAgentState).mockImplementation(async (handler) => {
+      writes += 1;
+      if (writes === 2) await new Promise((resolve) => setTimeout(resolve, 800));
+      return record(handler);
+    });
+    try {
+      const exit = vi.fn();
+      await runNativeTerminalSession({
+        session: server.session,
+        cli: { command: '/bin/sh', args: ['-c', 'sleep 0.3'] },
+        cwd,
+        env: process.env,
+        follow: ({ reportActivity }) => {
+          reportActivity({ kind: 'waiting', on: 'permission' });
+          return async () => undefined;
+        },
+        notifications: push.notifications(),
+        process: new EventEmitter(),
+        exit,
+        logPrefix: '[test-terminal]',
+      });
+
+      expect(server.agentState().terminalWaiting).toBeNull();
+      expect(server.calls).toEqual(['death', 'close']);
+      expect(exit).toHaveBeenCalledWith(0);
+    } finally {
+      if (previousTimeout === undefined) delete process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
+      else process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
+    }
+  });
 });

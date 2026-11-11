@@ -139,14 +139,13 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
 
   const exitCode = await cliExit;
   logger.debug(`${params.logPrefix} The CLI exited with code ${exitCode}`);
-  if (!stopping) {
-    await stopFollowing();
-    // Its writes go on behind the screen below; the session's end waits for them.
-    void activity.cliExited(exitCode);
-  }
+  // The user quit the CLI: its report goes out while the screen below shows, and is done before the
+  // timed shutdown starts, so a slow relay cannot cut the session's end short.
+  const exitReported = stopping ? Promise.resolve() : stopFollowing().then(() => activity.cliExited(exitCode));
   if (exitCode !== 0 && params.holdFailedExit) {
     await Promise.race([params.holdFailedExit(exitCode), termination.whenTerminated]);
   }
+  await exitReported;
   // Quitting the CLI is the user's own way out, so the session ends as planned, never as a crash
   // the daemon would restart.
   termination.requestTermination({ kind: 'exit', code: 0 });
