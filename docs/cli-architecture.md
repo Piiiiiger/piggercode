@@ -1749,12 +1749,17 @@ fullscreen screen is left with stray characters after a view reattaches.
 Since CLI 0.3.24 both also get the new-session screen's choices, which the runner reads from its session-control flags
 (`--model`, `--permission-mode`, `--agent-mode`) and from the session's config-option overrides
 (`NativeTerminalControls`): `claude --model <id> --permission-mode <mode>`, the mode from
-`resolveClaudeSdkPermissionModeFromEnhancedMode` (plan mode is Claude's `plan`; 「默认」 passes none), and
+`resolveClaudeSdkPermissionModeFromEnhancedMode` (plan mode is Claude's `plan`; 「默认」 passes none); since CLI 0.3.28 also
+the chosen thinking level as `--effort <level>` (`resolveClaudeEffectiveEffortForModel`: only with a chosen model that has
+that level, and also when it is the model's usual one, because claude would otherwise use the `effortLevel` of its own
+settings files) and Ultracode as `"ultracode": true` in the one `--settings` flag (then no `--effort`: Ultracode sets the
+level), and
 `codex --model <id>` with `resolveCodexCliPermissionArgs` (`--ask-for-approval`/`--sandbox`; 「CLI 设置」 passes none so
 config.toml decides; codex 0.167 takes only `on-request` or `never`), thinking as `-c model_reasoning_effort="…"` and Fast as
 `-c service_tier="fast"`. codex 0.167 takes `-c` only without its shared background server, so a Codex session with a chosen
-thinking or speed runs embedded (Codex says so in a startup warning); one without keeps the shared server. Codex's collaboration modes have no start flag, so the new-session screen offers only an agent's
-static modes (Claude's build and plan) and asks no machine for others; it takes no attachments or review comments either,
+thinking or speed runs embedded (Codex says so in a startup warning); one without keeps the shared server. Since app
+0.3.33 the new-session screen offers no agent mode and sends none (a terminal switches its own: Claude with Shift+Tab;
+`--agent-mode` stays for older apps); it takes no attachments or review comments either,
 and its `@` offers files only (`/` the CLI's commands). Codex
 cannot be told a new thread's id, and one shared Codex service (`codex app-server`) writes every terminal's
 threads, so no file says which thread is this terminal's. Codex shows it in the window title (`<thread name> |
@@ -1781,7 +1786,12 @@ destroyed with its client. Since CLI 0.3.23 it first sets two options on the age
 because Claude Code and Codex send each copy as an OSC 52 wrapped in tmux passthrough (their `tmux load-buffer -w`
 path does not always find the app's client), and a `pane-mode-changed` hook that leaves tmux's scroll-back (copy)
 mode at once when the pane has no history and no selection of its own: one wheel turn or drag before the CLI takes
-the mouse would otherwise freeze the view on its blank first screen and swallow typing. The app's terminal
+the mouse would otherwise freeze the view on its blank first screen and swallow typing. Since CLI 0.3.28 the view's
+temporary session has tmux's `mouse` on (whatever the machine's tmux config says), and the scroll-back moves one line
+per wheel turn instead of tmux's five (`bind-key` in the `copy-mode` and `copy-mode-vi` tables of PiggerCode's own tmux
+server): the app reports one turn per line the wheel or trackpad moved (`components/terminal/xterm/wheelTurns.ts`;
+xterm.js 5.5 reports one per wheel event, however far it scrolled, so a trackpad's many small events scrolled several
+times too far), scaled by the per-device 外观 › 终端 › 滚轮速度 setting (`terminalWheelSpeed`, half/equal/double). The app's terminal
 (`components/terminal/xterm/XtermTerminalView.web.tsx`) writes what a program copies (OSC 52, tmux's own mouse
 selection included) to the clipboard of the computer the view is on, never answers a clipboard query, and keeps a
 copy WebKit refused outside a key press for the next Cmd+C (Ctrl+Shift+C off a Mac), until the user copies a selection
@@ -2054,6 +2064,14 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   there, and refuses with the computer's name while the folder does not answer. git in a shared folder
   starts from `/` with `-C`, so a folder dropping right after the check cannot hold the daemon either, and a
   timed-out SCM command answers at once.
+- **No synchronous filesystem call on a user path in the daemon.** A path a request names may lie in a
+  mount that hangs, and `realpathSync`, `statSync` or `existsSync` on it would stop the whole event loop
+  (every terminal stream, the connection to the relay) until the mount's connection ends. The request
+  paths (`authorizeFilesystemPath`, `validatePath`, `validateMachineBrowsePath`, the path mutations, the
+  SCM `resolveCwd`/`normalizePathspec`, the capability probe's working directory) therefore resolve with
+  `fs/promises`, so a hung path holds only that request. `userPathEventLoop.test.ts` pins this. A call
+  that waits on a hung mount still occupies one of libuv's worker threads, which is why the guard above
+  runs first wherever it applies.
 - **Their files stay theirs.** The server's daemon refuses to delete, rename or replace a shared
   folder, or a folder holding one (`pathMutationHandlers.ts`), before anything resolves or stats the
   path: that would act on the computer's own files through the mount (and through a dropped
