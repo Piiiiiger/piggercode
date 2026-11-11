@@ -32,6 +32,11 @@ export type NativeTerminalActivityReporter = Readonly<{
    * user to read its last words, and the user is told; a clean quit was the user's own doing.
    */
   cliExited: (exitCode: number) => Promise<void>;
+  /**
+   * Writes again what the terminal waits for if the last write did not reach the relay. The runner
+   * calls it with its heartbeat, so a lost clear heals while the CLI shows nothing new.
+   */
+  retryUnsaved: () => void;
   /** The session ends (for any reason): clears what the terminal waited for, without telling anyone. */
   end: () => Promise<void>;
   /** Resolves once the session writes started so far are done. */
@@ -70,8 +75,8 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   };
 
   // What the terminal waits for, and whether the session has it. A write that did not reach the relay
-  // (away for longer than a write waits) is made again with the next report, and when the session ends,
-  // so a prompt that is gone never stays on the session.
+  // (away for longer than a write waits) is made again with the next report or heartbeat, and when the
+  // session ends, so a prompt that is gone never stays on the session.
   let waiting: NativeTerminalWaiting | null = null;
   let waitingPublished = true;
   let waitingWritesInFlight = 0;
@@ -187,11 +192,16 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
       }
       await writes;
     },
+    retryUnsaved: retryWaiting,
     end: async () => {
       turnInProgress = false;
       if (waiting) void changeWaiting(null);
-      else retryWaiting();
       await writes;
+      // A write that was still on its way and failed gets one more try before the session ends.
+      if (!waitingPublished) {
+        void writeWaiting(waiting);
+        await writes;
+      }
     },
     flush: () => writes,
   };

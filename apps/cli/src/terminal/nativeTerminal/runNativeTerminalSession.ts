@@ -92,17 +92,20 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     });
   });
 
-  const heartbeat = startSessionHeartbeatLoop({
-    getThinking: () => false,
-    getMode: () => 'local',
-    keepAlive: (thinking, mode) => session.keepAlive(thinking, mode),
-  });
   const activity = createNativeTerminalActivityReporter({
     session,
     agentName: params.notifications.agentName,
     logPrefix: params.logPrefix,
     pushSender: params.notifications.pushSender,
     readAccountSettings: params.notifications.readAccountSettings,
+  });
+  const heartbeat = startSessionHeartbeatLoop({
+    getThinking: () => false,
+    getMode: () => 'local',
+    keepAlive: (thinking, mode) => {
+      session.keepAlive(thinking, mode);
+      activity.retryUnsaved();
+    },
   });
   const stopFollower = params.follow({
     session,
@@ -138,7 +141,8 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
   logger.debug(`${params.logPrefix} The CLI exited with code ${exitCode}`);
   if (!stopping) {
     await stopFollowing();
-    await activity.cliExited(exitCode);
+    // Its writes go on behind the screen below; the session's end waits for them.
+    void activity.cliExited(exitCode);
   }
   if (exitCode !== 0 && params.holdFailedExit) {
     await Promise.race([params.holdFailedExit(exitCode), termination.whenTerminated]);

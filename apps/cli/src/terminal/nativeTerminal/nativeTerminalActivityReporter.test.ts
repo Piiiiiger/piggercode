@@ -139,4 +139,27 @@ describe('createNativeTerminalActivityReporter', () => {
     expect(server.events).toEqual([{ type: 'ready' }]);
     await vi.waitFor(() => expect(push.sent).toHaveLength(1));
   });
+
+  it('heals a lost clear with the heartbeat while the CLI shows nothing new, and at the end when it failed on its way', async () => {
+    const { server, reporter } = setup();
+    reporter.report({ kind: 'waiting', on: 'permission' });
+    await reporter.flush();
+    vi.mocked(server.session.updateAgentState).mockRejectedValueOnce(new Error('relay away'));
+    reporter.report({ kind: 'idle' });
+    await reporter.flush();
+    expect(server.agentState().terminalWaiting).not.toBeNull();
+
+    // Claude stays idle, so no report comes; the runner's heartbeat retries.
+    reporter.retryUnsaved();
+    await reporter.flush();
+    expect(server.agentState().terminalWaiting).toBeNull();
+
+    // The session ends while a clear is still on its way, and that clear fails.
+    reporter.report({ kind: 'waiting', on: 'question' });
+    await reporter.flush();
+    vi.mocked(server.session.updateAgentState).mockRejectedValueOnce(new Error('relay away'));
+    reporter.report({ kind: 'idle' });
+    await reporter.end();
+    expect(server.agentState().terminalWaiting).toBeNull();
+  });
 });
