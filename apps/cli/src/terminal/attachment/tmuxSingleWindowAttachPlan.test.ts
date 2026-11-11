@@ -22,7 +22,11 @@ describe('createTmuxSingleWindowAttachPlan', () => {
         '__happier_attach_placeholder__',
         'sleep 2147483647',
       ],
-      hideStatusArgs: ['set-option', '-t', 'happy-attach-cm-session_1-1234-5678', 'status', 'off'],
+      // The view shows just the window, and takes the mouse so the wheel reaches the program or the scroll-back.
+      viewSessionOptionsArgs: [
+        'set-option', '-t', 'happy-attach-cm-session_1-1234-5678', 'status', 'off',
+        ';', 'set-option', '-t', 'happy-attach-cm-session_1-1234-5678', 'mouse', 'on',
+      ],
       linkWindowArgs: [
         'link-window',
         '-s',
@@ -40,6 +44,11 @@ describe('createTmuxSingleWindowAttachPlan', () => {
         'set-option', '-q', '-w', '-t', 'happy:happy-123-claude', 'allow-passthrough', 'on',
         ';', 'set-hook', '-w', '-t', 'happy:happy-123-claude', 'pane-mode-changed',
         "if-shell -F '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}' 'send-keys -X cancel'",
+        // The app reports one wheel turn per line scrolled, so the scroll-back moves one line per turn.
+        ';', 'bind-key', '-T', 'copy-mode', 'WheelUpPane', 'send-keys', '-X', 'scroll-up',
+        ';', 'bind-key', '-T', 'copy-mode', 'WheelDownPane', 'send-keys', '-X', 'scroll-down',
+        ';', 'bind-key', '-T', 'copy-mode-vi', 'WheelUpPane', 'send-keys', '-X', 'scroll-up',
+        ';', 'bind-key', '-T', 'copy-mode-vi', 'WheelDownPane', 'send-keys', '-X', 'scroll-down',
       ],
       // The temporary session goes as soon as its client does, even when the attach process is killed.
       attachSessionArgs: [

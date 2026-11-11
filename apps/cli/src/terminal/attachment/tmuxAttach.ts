@@ -104,8 +104,8 @@ export async function runTmuxAttach(params: {
 
   const createExit = await spawnTmuxFn({ args: singleWindowAttachPlan.createSessionArgs, env, stdio: 'ignore' });
   if (createExit !== 0) return createExit;
-  // Cosmetic: a status line that stays is no reason to refuse the attach.
-  await spawnTmuxFn({ args: singleWindowAttachPlan.hideStatusArgs, env, stdio: 'ignore' });
+  // A status line that stays, or a wheel that does not scroll, is no reason to refuse the attach.
+  await spawnTmuxFn({ args: singleWindowAttachPlan.viewSessionOptionsArgs, env, stdio: 'ignore' });
 
   const linkExit = await spawnTmuxFn({ args: singleWindowAttachPlan.linkWindowArgs, env, stdio: 'ignore' });
   if (linkExit !== 0) {

@@ -22,6 +22,7 @@ import { getGeneratedAvatarComponentForStyle } from '@/components/ui/avatar/avat
 import type { AvatarStyleId } from '@/sync/domains/settings/registry/account/avatarStyleSetting';
 import { resolveStatusBarStyleForThemePreference } from '@/components/ui/layout/statusBarStyle';
 import { useReducedMotionPreference } from '@/hooks/ui/useReducedMotionPreference';
+import { isTerminalWheelSpeedId } from '@/sync/domains/settings/registry/local/terminalWheelSpeedSetting';
 import { runThemePreferenceChange } from '@/components/settings/appearance/themePreferenceTransition';
 import { applyThemeRuntimeSelection } from '@/theme/profiles/themeProfileRuntime';
 import {
@@ -102,6 +103,7 @@ export default React.memo(function AppearanceSettingsScreen() {
     const [themeProfiles, setThemeProfiles] = useLocalSettingMutable('themeProfiles');
     const [uiFontScale, setUiFontScale] = useLocalSettingMutable('uiFontScale');
     const [uiItemDensity, setUiItemDensity] = useLocalSettingMutable('uiItemDensity');
+    const [terminalWheelSpeed, setTerminalWheelSpeed] = useLocalSettingMutable('terminalWheelSpeed');
     const [loadingIndicatorStyle, setLoadingIndicatorStyle] = useLocalSettingMutable('loadingIndicatorStyle');
     const [loadingIndicatorSpeed, setLoadingIndicatorSpeed] = useLocalSettingMutable('loadingIndicatorSpeed');
     const [loadingIndicatorPause, setLoadingIndicatorPause] = useLocalSettingMutable('loadingIndicatorPause');
@@ -124,6 +126,7 @@ export default React.memo(function AppearanceSettingsScreen() {
     const [openLightThemeMenu, setOpenLightThemeMenu] = React.useState(false);
     const [openDarkThemeMenu, setOpenDarkThemeMenu] = React.useState(false);
     const [openItemDensityMenu, setOpenItemDensityMenu] = React.useState(false);
+    const [openWheelSpeedMenu, setOpenWheelSpeedMenu] = React.useState(false);
     const [openContentWidthMenu, setOpenContentWidthMenu] = React.useState(false);
     const [openDetailsTabsMenu, setOpenDetailsTabsMenu] = React.useState(false);
     const [openAvatarStyleMenu, setOpenAvatarStyleMenu] = React.useState(false);
@@ -232,6 +235,14 @@ export default React.memo(function AppearanceSettingsScreen() {
                 title: t('settingsAppearance.itemDensityOptions.compact'),
                 subtitle: t('settingsAppearance.itemDensityOptions.compactDescription'),
             },
+        ];
+    }, []);
+
+    const wheelSpeedMenuItems = React.useMemo(() => {
+        return [
+            { id: 'slow', title: t('settingsAppearance.terminalWheelSpeedOptions.slow'), subtitle: t('settingsAppearance.terminalWheelSpeedOptions.slowDescription') },
+            { id: 'normal', title: t('settingsAppearance.terminalWheelSpeedOptions.normal'), subtitle: t('settingsAppearance.terminalWheelSpeedOptions.normalDescription') },
+            { id: 'fast', title: t('settingsAppearance.terminalWheelSpeedOptions.fast'), subtitle: t('settingsAppearance.terminalWheelSpeedOptions.fastDescription') },
         ];
     }, []);
 
@@ -436,6 +447,34 @@ export default React.memo(function AppearanceSettingsScreen() {
                     }}
                 />
             </ItemGroup>
+
+            {/* Phones have no wheel: their terminal scrolls by touch. */}
+            {Platform.OS === 'web' ? (
+                <ItemGroup title={t('settingsAppearance.terminal')}>
+                    <DropdownMenu
+                        open={openWheelSpeedMenu}
+                        onOpenChange={setOpenWheelSpeedMenu}
+                        variant="selectable"
+                        search={false}
+                        selectedId={terminalWheelSpeed}
+                        showCategoryTitles={false}
+                        matchTriggerWidth={true}
+                        connectToTrigger={true}
+                        rowKind="item"
+                        itemTrigger={{
+                            title: t('settingsAppearance.terminalWheelSpeed'),
+                            subtitle: t('settingsAppearance.terminalWheelSpeedDescription'),
+                            icon: <Icon name="terminal" size={29} color={theme.colors.accent.indigo} />,
+                            showSelectedSubtitle: false,
+                        }}
+                        items={wheelSpeedMenuItems}
+                        onSelect={(itemId) => {
+                            if (!isTerminalWheelSpeedId(itemId)) return;
+                            setTerminalWheelSpeed(itemId);
+                        }}
+                    />
+                </ItemGroup>
+            ) : null}
 
             <ItemGroup title={t('settingsAppearance.chatCodeBlocks.title')}>
                 <Item

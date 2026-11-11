@@ -13,6 +13,7 @@ const focusSpy = vi.fn();
 const loadAddonSpy = vi.fn();
 const openSpy = vi.fn();
 const attachCustomKeyEventHandlerSpy = vi.fn();
+const attachCustomWheelEventHandlerSpy = vi.fn();
 const onDataSpy = vi.fn();
 const disposeSpy = vi.fn();
 const pasteSpy = vi.fn();
@@ -43,7 +44,7 @@ class MockTerminal {
      * As in xterm, DECSET/DECRST set them, a full reset (RIS, `ESC c`, or `reset()`) clears them, and erasing the
      * screen leaves them. With `deferWrites`, written data waits for `flush()`, as in xterm's own write queue.
      */
-    modes = { mouseTrackingMode: 'none' as 'none' | 'any', sendFocusMode: false };
+    modes = { mouseTrackingMode: 'none' as 'none' | 'vt200' | 'any', sendFocusMode: false };
     deferWrites = false;
     private queued: string[] = [];
 
@@ -63,6 +64,9 @@ class MockTerminal {
     hasSelection = vi.fn(() => selectionText.length > 0);
     getSelection = vi.fn(() => selectionText);
     attachCustomKeyEventHandler = attachCustomKeyEventHandlerSpy;
+    attachCustomWheelEventHandler = attachCustomWheelEventHandlerSpy;
+    /** xterm's root element and its screen, sized by the test: jsdom does no layout. */
+    element = Object.assign(document.createElement('div'), { className: 'xterm' });
     textarea = document.createElement('textarea');
     input = vi.fn();
     parser = { registerOscHandler: registerOscHandlerSpy };
@@ -139,6 +143,7 @@ describe('XtermTerminalView.web', () => {
         loadAddonSpy.mockReset();
         openSpy.mockReset();
         attachCustomKeyEventHandlerSpy.mockReset();
+        attachCustomWheelEventHandlerSpy.mockReset();
         onDataSpy.mockReset();
         disposeSpy.mockReset();
         pasteSpy.mockReset();
@@ -200,6 +205,31 @@ describe('XtermTerminalView.web', () => {
         });
 
         expect(focusSpy.mock.calls.length).toBe(initialFocusCalls + 1);
+    });
+
+    it('scrolls a program that takes the mouse (tmux) one line per line the wheel moved, at the chosen speed', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+        await act(async () => {
+            root.render(<XtermTerminalView fontSize={14} wheelSpeed={0.5} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+        const term = terminalInstances[0]!;
+        expect(term.options.scrollSensitivity).toBe(0.5);
+        const screen = Object.assign(document.createElement('div'), { className: 'xterm-screen' });
+        screen.getBoundingClientRect = () => ({ height: 24 * 20 }) as DOMRect;
+        term.element.appendChild(screen);
+        term.modes.mouseTrackingMode = 'vt200';
+        const turns: number[] = [];
+        term.element.addEventListener('wheel', (event) => turns.push((event as WheelEvent).deltaY));
+        const onWheel = attachCustomWheelEventHandlerSpy.mock.calls[0]![0] as (event: WheelEvent) => boolean;
+
+        // 6 rows of trackpad movement at half speed: three one-line turns, each reported by xterm itself.
+        expect(onWheel(new WheelEvent('wheel', { deltaY: 6 * 20, deltaMode: WheelEvent.DOM_DELTA_PIXEL }))).toBe(false);
+        expect(turns).toEqual([1, 1, 1]);
+
+        await act(async () => {
+            root.render(<XtermTerminalView fontSize={14} wheelSpeed={2} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
+        });
+        expect(term.options.scrollSensitivity).toBe(2);
     });
 
     it('opts out of xterm screen reader DOM mode in the web surface', async () => {

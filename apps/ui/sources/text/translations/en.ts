@@ -4080,6 +4080,17 @@ export const en = {
             compact: 'Compact',
             compactDescription: 'Fit more rows on screen with tighter spacing',
         },
+        terminal: 'Terminal',
+        terminalWheelSpeed: 'Wheel speed',
+        terminalWheelSpeedDescription: 'How far the mouse wheel or trackpad scrolls a terminal',
+        terminalWheelSpeedOptions: {
+            slow: 'Slow',
+            slowDescription: 'Half as far as you scroll',
+            normal: 'Standard',
+            normalDescription: 'As far as you scroll',
+            fast: 'Fast',
+            fastDescription: 'Twice as far as you scroll',
+        },
     },
 
     settingsChannelBridges: {

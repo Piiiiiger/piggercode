@@ -11,6 +11,7 @@ import '@xterm/xterm/css/xterm.css';
 import { resolveKeyboardPlatform } from '@/keyboard/runtime';
 
 import { createWebKitImeInput } from './webkitImeInput';
+import { createWheelTurnReporter } from './wheelTurns';
 
 export type XtermTerminalHandle = Readonly<{
     write: (data: string) => void;
@@ -36,6 +37,8 @@ export type XtermTerminalViewProps = Readonly<{
     /** False while the terminal is not connected: typing or pasting then would be lost, so the terminal takes none. */
     inputEnabled?: boolean;
     fontSize: number;
+    /** Lines scrolled per line the mouse wheel or trackpad moved (the terminal wheel speed setting); default 1. */
+    wheelSpeed?: number;
     testID?: string;
 }>;
 
@@ -152,6 +155,9 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
     const onReadyRef = React.useRef(props.onReady);
     const onPasteImagesRef = React.useRef(props.onPasteImages);
     const inputEnabledRef = React.useRef(props.inputEnabled !== false);
+    const wheelSpeed = props.wheelSpeed ?? 1;
+    const wheelSpeedRef = React.useRef(wheelSpeed);
+    wheelSpeedRef.current = wheelSpeed;
     onInputRef.current = props.onInput;
     onResizeRef.current = props.onResize;
     onReadyRef.current = props.onReady;
@@ -347,6 +353,7 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
             fontFamily: DEFAULT_FONT_FAMILY,
             fontSize: Math.max(8, Math.round(props.fontSize)),
             scrollback: 5000,
+            scrollSensitivity: wheelSpeedRef.current,
             screenReaderMode: false,
             disableStdin: !inputEnabledRef.current,
             // A program holding the mouse (tmux, a full-screen CLI) still lets Option+drag select natively on a Mac.
@@ -371,6 +378,20 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         }
 
         term.open(container);
+
+        // A program that takes the mouse (tmux, whose scroll-back the wheel moves) gets one wheel turn per line moved.
+        term.attachCustomWheelEventHandler(createWheelTurnReporter({
+            takesWheel: () => term.modes.mouseTrackingMode !== 'none' && term.modes.mouseTrackingMode !== 'x10',
+            rowHeight: () => {
+                const screen = term.element?.querySelector('.xterm-screen');
+                return screen && term.rows > 0 ? screen.getBoundingClientRect().height / term.rows : 0;
+            },
+            rows: () => term.rows,
+            speed: () => wheelSpeedRef.current,
+            dispatch: (turn) => {
+                term.element?.dispatchEvent(turn);
+            },
+        }));
 
         // What a program copies (Claude Code or Codex through tmux, or tmux's own selection) goes onto this computer's
         // clipboard. WebKit allows that only during a key press or a click, so a refused copy waits for the copy key.
@@ -542,6 +563,11 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         const term = terminalRef.current;
         if (term) term.options.disableStdin = !inputEnabled;
     }, [inputEnabled]);
+
+    React.useEffect(() => {
+        const term = terminalRef.current;
+        if (term) term.options.scrollSensitivity = wheelSpeed;
+    }, [wheelSpeed]);
 
     return (
         <div

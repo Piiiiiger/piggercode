@@ -21,6 +21,7 @@ import {
     LoadingIndicatorSpeedIdSchema,
     LoadingIndicatorStyleIdSchema,
 } from './loadingIndicatorStyleSetting';
+import { DEFAULT_TERMINAL_WHEEL_SPEED_ID, TerminalWheelSpeedIdSchema } from './terminalWheelSpeedSetting';
 import {
     SESSION_LIST_FOLDER_SORT_MODE_DEFAULT_V1,
     SESSION_LIST_FOLDER_SORT_MODES_V1,
@@ -550,6 +551,13 @@ export const LOCAL_SETTING_DEFINITIONS = defineSettingDefinitions({
         default: 900,
         description: 'Container height basis for bottom pane height scaling',
         storageScope: 'local',
+    },
+    terminalWheelSpeed: {
+        schema: TerminalWheelSpeedIdSchema,
+        default: DEFAULT_TERMINAL_WHEEL_SPEED_ID,
+        description: 'How far the mouse wheel or trackpad scrolls a terminal (web and desktop)',
+        storageScope: 'local',
+        analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'device_user' },
     },
     embeddedTerminalDockLocation: {
         schema: z.enum(['sidebar', 'details', 'bottom']),

@@ -4245,6 +4245,17 @@ export const zhHans: TranslationStructure = {
       compact: "紧凑",
       compactDescription: "使用更紧凑的间距以在屏幕上显示更多行",
     },
+    terminal: "终端",
+    terminalWheelSpeed: "滚轮速度",
+    terminalWheelSpeedDescription: "鼠标滚轮或触控板在终端里滚动的快慢",
+    terminalWheelSpeedOptions: {
+      slow: "慢",
+      slowDescription: "滚动距离是手指移动的一半",
+      normal: "标准",
+      normalDescription: "手指移动多少，终端就滚动多少",
+      fast: "快",
+      fastDescription: "滚动距离是手指移动的两倍",
+    },
   },
 
   settingsChannelBridges: {

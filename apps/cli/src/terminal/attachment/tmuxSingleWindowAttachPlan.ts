@@ -7,17 +7,30 @@ const PLACEHOLDER_COMMAND = 'sleep 2147483647';
  */
 const EMPTY_SCROLLBACK = '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}';
 
+/** tmux's scroll-back (both key tables) moves one line per wheel turn. */
+const ONE_LINE_PER_WHEEL_TURN = (['copy-mode', 'copy-mode-vi'] as const).flatMap((table) => [
+  ';', 'bind-key', '-T', table, 'WheelUpPane', 'send-keys', '-X', 'scroll-up',
+  ';', 'bind-key', '-T', table, 'WheelDownPane', 'send-keys', '-X', 'scroll-down',
+]);
+
 export type TmuxSingleWindowAttachPlan = Readonly<{
   tempSessionName: string;
   createSessionArgs: string[];
-  /** The attached view is just the session's window (a 「终端」 session's Claude Code), with no tmux status line. */
-  hideStatusArgs: string[];
+  /**
+   * The attached view is just the session's window (a 「终端」 session's Claude Code), with no tmux status line, and
+   * takes the mouse (tmux's `mouse` option, for this view's session only): the wheel then reaches the program when it
+   * takes the mouse and tmux's scroll-back when it does not, whatever the machine's own tmux config says.
+   */
+  viewSessionOptionsArgs: string[];
   linkWindowArgs: string[];
   killPlaceholderWindowArgs: string[];
   /**
    * Window options for the agent's window, so every view of it has them: programs may pass escape sequences through
    * tmux (Claude Code and Codex send a copy to the clipboard of the computer the view is on that way), and the window
-   * leaves scroll-back mode at once when it has nothing to scroll back to. Not needed to attach.
+   * leaves scroll-back mode at once when it has nothing to scroll back to. Then one line of scroll-back per wheel
+   * turn, in place of tmux's five: the app reports one turn per line the wheel or trackpad moved
+   * (`components/terminal/xterm/wheelTurns.ts`), so the scroll-back moves as far as the hand did. Key bindings
+   * belong to the whole tmux server, which is PiggerCode's own. Not needed to attach.
    */
   viewOptionsArgs: string[];
   /**
@@ -54,12 +67,16 @@ export function createTmuxSingleWindowAttachPlan(params: Readonly<{
       PLACEHOLDER_WINDOW_NAME,
       PLACEHOLDER_COMMAND,
     ],
-    hideStatusArgs: ['set-option', '-t', tempSessionName, 'status', 'off'],
+    viewSessionOptionsArgs: [
+      'set-option', '-t', tempSessionName, 'status', 'off',
+      ';', 'set-option', '-t', tempSessionName, 'mouse', 'on',
+    ],
     linkWindowArgs: ['link-window', '-s', params.target, '-t', `${tempSessionName}:`],
     killPlaceholderWindowArgs: ['kill-window', '-t', `${tempSessionName}:${PLACEHOLDER_WINDOW_NAME}`],
     viewOptionsArgs: [
       'set-option', '-q', '-w', '-t', params.target, 'allow-passthrough', 'on',
       ';', 'set-hook', '-w', '-t', params.target, 'pane-mode-changed', `if-shell -F '${EMPTY_SCROLLBACK}' 'send-keys -X cancel'`,
+      ...ONE_LINE_PER_WHEEL_TURN,
     ],
     attachSessionArgs: ['attach-session', '-t', tempSessionName, ';', 'set-option', '-t', tempSessionName, 'destroy-unattached', 'on'],
     cleanupSessionArgs: ['kill-session', '-t', tempSessionName],

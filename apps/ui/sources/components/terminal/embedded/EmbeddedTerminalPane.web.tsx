@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { resolveCodeEditorFontMetrics } from '@/components/ui/code/editor/codeEditorFontMetrics';
 import { useLocalSetting } from '@/sync/domains/state/storage';
+import { TERMINAL_WHEEL_SPEED_LINES } from '@/sync/domains/settings/registry/local/terminalWheelSpeedSetting';
 import { XtermTerminalView, type XtermTerminalHandle } from '@/components/terminal/xterm/XtermTerminalView.web';
 import type { EmbeddedTerminalRendererHandle } from '@/components/sessions/terminal/embeddedTerminalRendererHandle';
 import { EmbeddedTerminalPaneFrame } from './EmbeddedTerminalPaneFrame';
@@ -19,6 +20,7 @@ export type EmbeddedTerminalPaneProps = Readonly<{
 
 export const EmbeddedTerminalPane = React.memo(function EmbeddedTerminalPaneWeb(props: EmbeddedTerminalPaneProps) {
     const uiFontScale = useLocalSetting('uiFontScale');
+    const terminalWheelSpeed = useLocalSetting('terminalWheelSpeed');
     const fontMetrics = React.useMemo(() => resolveCodeEditorFontMetrics({ uiFontScale }), [uiFontScale]);
     const xtermRef = props.terminalRef as React.MutableRefObject<XtermTerminalHandle | null>;
 
@@ -35,6 +37,7 @@ export const EmbeddedTerminalPane = React.memo(function EmbeddedTerminalPaneWeb(
                     testID={props.testIdPrefix ? `${props.testIdPrefix}-xterm` : undefined}
                     ref={xtermRef}
                     fontSize={fontMetrics.fontSize}
+                    wheelSpeed={TERMINAL_WHEEL_SPEED_LINES[terminalWheelSpeed]}
                     onInput={props.controller.onInput}
                     onResize={props.controller.onResize}
                     onReady={props.controller.onReady}
