@@ -78,11 +78,13 @@ export function announceTerminalWaitStart(params: Readonly<{
     /** The session's mode when the app holds the session; a list row alone does not say. */
     encryptionMode: 'plain' | 'e2ee' | null;
     sessionEncryption: AgentStateDecryptor | null;
+    /** False once the app moved to another server or account while this was being read. */
+    shouldContinue: () => boolean;
 }>): Promise<void> | null {
     if (!didPendingRequestsStart(params.previous, params.update)) return null;
     return readTerminalWaiting(params)
         .then((waiting) => {
-            if (waiting) notifyActivityTerminalWait(params.sessionId, waiting);
+            if (waiting && params.shouldContinue()) notifyActivityTerminalWait(params.sessionId, waiting);
         })
         .catch((error) => {
             console.warn('[terminal-wait] Could not read what the terminal waits for', error);

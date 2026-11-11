@@ -1255,6 +1255,71 @@ describe('socket update handling: plaintext update-session', () => {
         }
     });
 
+    it('tells a client that requires e2ee about an encrypted terminal session it only lists, not about a plain one', async () => {
+        storage.getState().applySettingsLocal({ clientEncryptionRequirementLocalV1: 'require_e2ee' });
+        const row = (id: string) => ({
+            id,
+            seq: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            active: true,
+            activeAt: 1,
+            archivedAt: null,
+            metadataVersion: 1,
+            agentStateVersion: 1,
+            metadata: { path: '/tmp', host: 'localhost' },
+            thinking: false,
+            thinkingAt: 0,
+            presence: 'online' as const,
+            hasPendingPermissionRequests: false,
+            hasPendingUserActionRequests: false,
+        });
+        storage.getState().replaceSessionListRenderables([row('s_e2ee_listed'), row('s_plain_listed')]);
+        const sessionEncryption = new SessionEncryption('s_e2ee_listed', new SecretBoxEncryption(new Uint8Array(32)), new EncryptionCache());
+        const params = buildBaseParams({
+            encryption: {
+                getSessionEncryption: (id: string) => (id === 's_e2ee_listed' ? sessionEncryption : null),
+                getMachineEncryption: () => null,
+                removeSessionEncryption: () => {},
+            } as unknown as HandleUpdateContainerBaseParams['encryption'],
+        });
+        const events: ActivityLocalNotificationEvent[] = [];
+        const unsubscribe = subscribeActivityLocalNotifications(event => events.push(event));
+        const waiting = { terminalWaiting: { on: 'question' as const, since: 90 } };
+        try {
+            await handleUpdateContainer({
+                ...params,
+                updateData: {
+                    id: 'e2ee-listed-wait', seq: 2, createdAt: 1_002,
+                    body: {
+                        t: 'update-session', id: 's_e2ee_listed',
+                        pendingPermissionRequestCount: 0, pendingUserActionRequestCount: 1,
+                        agentState: { version: 2, value: await sessionEncryption.encryptAgentState(waiting) },
+                    },
+                },
+            });
+            await handleUpdateContainer({
+                ...params,
+                updateData: {
+                    id: 'plain-listed-wait', seq: 3, createdAt: 1_003,
+                    body: {
+                        t: 'update-session', id: 's_plain_listed',
+                        pendingPermissionRequestCount: 0, pendingUserActionRequestCount: 1,
+                        agentState: { version: 2, value: JSON.stringify(waiting) },
+                    },
+                },
+            });
+            await vi.waitFor(() => expect(events).toHaveLength(1));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+
+            expect(events).toEqual([
+                { kind: 'terminal-wait', sessionId: 's_e2ee_listed', waiting: { on: 'question', since: 90 } },
+            ]);
+        } finally {
+            unsubscribe();
+        }
+    });
+
     it('reports ready cursor projection advances once for update-session payloads', async () => {
         vi.useFakeTimers();
         storage.getState().applySessions([{

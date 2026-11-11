@@ -1633,14 +1633,20 @@ export async function handleUpdateContainer(params: {
         const session = getSocketSessionApplyBase(updateData.body.id);
         const cachedRenderable = storage.getState().sessionListRenderables[updateData.body.id];
         // Before either path below patches the list row: the row is what the app last knew of this
-        // session's pending requests, open or not.
-        if (!isPlainSessionBlockedByClientRequirement(updateData.body.id)) {
+        // session's pending requests, open or not. A session the app holds no object for is e2ee when
+        // its decryptor is set up, which also satisfies a client that requires e2ee.
+        const announceEncryption = encryption.getSessionEncryption(updateData.body.id);
+        const announceEncryptionMode = session
+            ? (session.encryptionMode === 'plain' ? 'plain' : 'e2ee')
+            : (announceEncryption ? 'e2ee' : null);
+        if (announceEncryptionMode === 'e2ee' || !isPlainSessionBlockedByClientRequirement(updateData.body.id)) {
             void announceTerminalWaitStart({
                 sessionId: updateData.body.id,
                 previous: cachedRenderable ?? session,
                 update: updateData.body,
-                encryptionMode: session ? (session.encryptionMode === 'plain' ? 'plain' : 'e2ee') : null,
-                sessionEncryption: encryption.getSessionEncryption(updateData.body.id),
+                encryptionMode: announceEncryptionMode,
+                sessionEncryption: announceEncryption,
+                shouldContinue,
             });
         }
         const fullContentConsumerActive = isSessionFullContentConsumerActiveForRealtime(updateData.body.id, sourceServerId);
