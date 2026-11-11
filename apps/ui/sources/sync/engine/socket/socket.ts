@@ -18,7 +18,8 @@ import { scmStatusSync } from '@/scm/scmStatusSync';
 import { ingestWorkspaceMutationMessages } from '@/scm/refresh/workspaceMutationIngestionRuntime';
 import { deliverHiddenSessionScmMutationSignal } from '@/sync/engine/sessions/hiddenSessionScmMutationSignal';
 import { deriveNewAgentRequests } from '@/sync/domains/permissions/deriveNewAgentRequests';
-import { notifyActivityAgentRequest } from '@/activity/notifications/runtime/activityLocalNotificationBus';
+import { deriveNewTerminalWait } from '@/sync/domains/session/attention/deriveNewTerminalWait';
+import { notifyActivityAgentRequest, notifyActivityTerminalWait } from '@/activity/notifications/runtime/activityLocalNotificationBus';
 import { didControlReturnToMobile } from '@/sync/domains/session/control/controlledByUserTransitions';
 import { writeSyncDebugLog } from '@/sync/runtime/syncDebugLogging';
 import {
@@ -1923,6 +1924,10 @@ export async function handleUpdateContainer(params: {
                     toolArgs: nextRequest.toolArgs,
                 });
             }
+            // A 「终端」 session's wait raises its pending counts, so a session the app does not show is
+            // hydrated for it too.
+            const newTerminalWait = deriveNewTerminalWait(currentSession.agentState, agentState);
+            if (newTerminalWait) notifyActivityTerminalWait(updateData.body.id, newTerminalWait);
 
             // Re-fetch messages when control returns to mobile (local -> remote mode switch)
             // This catches up on any messages that were exchanged while desktop had control

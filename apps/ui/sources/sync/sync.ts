@@ -546,11 +546,6 @@ export type SyncMessageTransport = Readonly<{
     send: (event: string, payload: unknown) => unknown;
 }>;
 
-type ReadyNotificationProgress = Readonly<{
-    seq: number;
-    transcriptNotified: boolean;
-}>;
-
 function createDefaultMessageTransport(): SyncMessageTransport {
     return {
         emitWithAck: <T>(event: string, payload: unknown, opts?: { timeoutMs?: number }) =>
@@ -1010,7 +1005,8 @@ class Sync {
     private sessionMaterializedMaxSeqById: Record<string, number> = {};
     private deferredTranscriptState: DeferredTranscriptState = createDeferredTranscriptState();
     private deferredSessionStateHydrationState: DeferredSessionStateHydrationState = createDeferredSessionStateHydrationState();
-    private readyNotificationProgressBySessionId: Record<string, ReadyNotificationProgress> = {};
+    /** The newest ready event each session's "finished" notification went out for. */
+    private readyNotifiedSeqBySessionId: Record<string, number> = {};
     private sessionMaterializedMaxSeqFlushTimer: ReturnType<typeof setTimeout> | null = null;
     private sessionMaterializedMaxSeqDirty = false;
     private nativeInactiveCheckpointTimer: ReturnType<typeof setTimeout> | null = null;
@@ -1786,7 +1782,7 @@ class Sync {
         this.sessionMaterializedMaxSeqById = {};
         this.deferredTranscriptState = createDeferredTranscriptState();
         this.deferredSessionStateHydrationState = createDeferredSessionStateHydrationState();
-        this.readyNotificationProgressBySessionId = {};
+        this.readyNotifiedSeqBySessionId = {};
         storage.getState().clearSettingsScope();
         storage.getState().clearProfileScope();
         storage.getState().clearPetsScope();
@@ -1824,7 +1820,7 @@ class Sync {
         this.sessionMaterializedMaxSeqById = loadSessionMaterializedMaxSeqById(scope);
         this.deferredTranscriptState = createDeferredTranscriptState();
         this.deferredSessionStateHydrationState = createDeferredSessionStateHydrationState();
-        this.readyNotificationProgressBySessionId = {};
+        this.readyNotifiedSeqBySessionId = {};
         this.sessionMaterializedMaxSeqDirty = false;
         dbgSettings('Sync.activateAccountSettingsScope: loaded pendingSettings', {
             scope,
@@ -7972,6 +7968,7 @@ class Sync {
               markSessionTranscriptDeferred: (sessionId, marker) => this.markSessionTranscriptDeferred(sessionId, marker),
               markSessionTranscriptStale: (sessionId, marker) => this.markSessionTranscriptStale(sessionId, marker),
               markSessionStateHydrationDeferred: (sessionId) => this.markSessionStateHydrationDeferred(sessionId),
+              onReadyProjectionAdvance: (sessionId, seq) => this.notifyReadyProjectionAdvance(sessionId, seq),
               assumeUsers: (userIds) => this.assumeUsers(userIds),
               applyTodoSocketUpdates: (changes) => this.applyTodoSocketUpdates(changes),
               invalidateMachines: () => this.machinesSync.invalidate(),
@@ -8082,32 +8079,25 @@ class Sync {
         );
     }
 
-    private shouldNotifyReadyFromMessages(sessionId: string, seq: number | null): boolean {
-        if (seq === null) return true;
-        if (!Number.isFinite(seq)) return true;
+    /**
+     * One "finished" notification per ready event, from whichever of its two signals arrives first:
+     * the session's ready cursor (every session, open or not) or the event in a loaded transcript.
+     */
+    private claimReadyNotification(sessionId: string, seq: number | null): boolean {
+        if (seq === null || !Number.isFinite(seq)) return true;
         const normalizedSeq = Math.trunc(seq);
-        const previous = this.readyNotificationProgressBySessionId[sessionId];
-        if (!previous || previous.seq < normalizedSeq) {
-            this.readyNotificationProgressBySessionId = {
-                ...this.readyNotificationProgressBySessionId,
-                [sessionId]: {
-                    seq: normalizedSeq,
-                    transcriptNotified: true,
-                },
-            };
-            return true;
-        }
-        if (previous.seq === normalizedSeq && previous.transcriptNotified === false) {
-            this.readyNotificationProgressBySessionId = {
-                ...this.readyNotificationProgressBySessionId,
-                [sessionId]: {
-                    seq: normalizedSeq,
-                    transcriptNotified: true,
-                },
-            };
-            return true;
-        }
-        return false;
+        const notifiedSeq = this.readyNotifiedSeqBySessionId[sessionId];
+        if (notifiedSeq !== undefined && notifiedSeq >= normalizedSeq) return false;
+        this.readyNotifiedSeqBySessionId = {
+            ...this.readyNotifiedSeqBySessionId,
+            [sessionId]: normalizedSeq,
+        };
+        return true;
+    }
+
+    private notifyReadyProjectionAdvance(sessionId: string, seq: number): void {
+        if (!this.claimReadyNotification(sessionId, seq)) return;
+        notifyActivityReady(sessionId);
     }
 
     private applyMessages = (
@@ -8160,7 +8150,7 @@ class Sync {
             const liveEffectMessages = m.filter((message) => (
                 !isRecoveredHistoryTranscriptObservationProvenance(message.transcriptObservationProvenance)
             ));
-            if (result.hasReadyEvent && this.shouldNotifyReadyFromMessages(sessionId, result.latestReadyEventSeq)) {
+            if (result.hasReadyEvent && this.claimReadyNotification(sessionId, result.latestReadyEventSeq)) {
                 notifyActivityReady(sessionId, liveEffectMessages);
             }
         }

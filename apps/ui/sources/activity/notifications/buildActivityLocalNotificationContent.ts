@@ -91,6 +91,27 @@ export function buildActivityLocalNotificationContent(params: Readonly<{
         };
     }
 
+    if (params.event.kind === 'terminal-wait') {
+        // Only the terminal answers: no request id or category, so no answer buttons.
+        const { waiting } = params.event;
+        return {
+            title,
+            body: waiting.on === 'exited'
+                ? t('notifications.activity.terminalExitedBody', { code: waiting.exitCode })
+                : waiting.on === 'permission'
+                    ? t('notifications.activity.terminalWaitingPermissionBody')
+                    : t('notifications.activity.terminalWaitingQuestionBody'),
+            data: baseData,
+            expo: {
+                channelId: waiting.on === 'permission'
+                    ? PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS.permissionRequestsV1
+                    : waiting.on === 'question'
+                        ? PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS.userActionRequestsV1
+                        : PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS.defaultV1,
+            },
+        };
+    }
+
     return {
         title,
         body: summarizeAgentRequestBody(params.event.requestKind, params.event.toolName, params.event.toolArgs, params.includeRequestMessageText !== false),

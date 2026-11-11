@@ -319,8 +319,19 @@ export const MetadataSchema = z.preprocess((value) => {
 
 export type Metadata = z.infer<typeof MetadataSchema>;
 
+/**
+ * What a 「终端」 session's terminal waits for the user to do (written by the CLI's native runner): answer
+ * the CLI's prompt, or read the last words of a CLI that quit with an error. Only the terminal answers.
+ */
+export const TerminalWaitingSchema = z.union([
+    z.object({ on: z.enum(['permission', 'question']), since: z.number() }),
+    z.object({ on: z.literal('exited'), exitCode: z.number(), since: z.number() }),
+]);
+export type TerminalWaiting = z.infer<typeof TerminalWaitingSchema>;
+
 const AgentStateObjectSchema = z.object({
     controlledByUser: z.boolean().nullish(),
+    terminalWaiting: TerminalWaitingSchema.nullish().catch(null),
     localControl: z.object({
         attached: z.boolean().nullish(),
         topology: z.enum(['exclusive', 'shared']).nullish(),

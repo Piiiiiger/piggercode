@@ -1171,6 +1171,57 @@ describe('socket update handling: plaintext update-session', () => {
         }));
     });
 
+    it('tells the user when a terminal session they are not looking at starts waiting for them', async () => {
+        const sessionId = 's_terminal_wait';
+        storage.getState().applySessions([{
+            ...buildSession(sessionId),
+            encryptionMode: 'e2ee',
+            agentState: {},
+            agentStateVersion: 1,
+            pendingPermissionRequestCount: 0,
+            pendingUserActionRequestCount: 0,
+        }]);
+        const sessionEncryption = new SessionEncryption(sessionId, new SecretBoxEncryption(new Uint8Array(32)), new EncryptionCache());
+        const params = buildBaseParams({
+            encryption: {
+                getSessionEncryption: () => sessionEncryption,
+                getMachineEncryption: () => null,
+                removeSessionEncryption: () => {},
+            } as unknown as HandleUpdateContainerBaseParams['encryption'],
+            applySessions: rows => storage.getState().applySessions(rows),
+        });
+        const events: ActivityLocalNotificationEvent[] = [];
+        const unsubscribe = subscribeActivityLocalNotifications(event => {
+            if (event.sessionId === sessionId) events.push(event);
+        });
+        // What the CLI's runner writes, with the pending counts the relay publishes for it.
+        const agentStateUpdate = async (seq: number, agentState: Record<string, unknown>, counts: [number, number]) => {
+            await handleUpdateContainer({
+                ...params,
+                updateData: {
+                    id: `terminal-wait-${seq}`, seq, createdAt: 1_000 + seq,
+                    body: {
+                        t: 'update-session', id: sessionId,
+                        pendingPermissionRequestCount: counts[0], pendingUserActionRequestCount: counts[1],
+                        agentState: { version: seq, value: await sessionEncryption.encryptAgentState(agentState) },
+                    },
+                },
+            });
+        };
+        try {
+            await agentStateUpdate(2, { terminalWaiting: { on: 'permission', since: 50 } }, [1, 0]);
+            await agentStateUpdate(3, { terminalWaiting: null }, [0, 0]);
+            await agentStateUpdate(4, { terminalWaiting: { on: 'exited', exitCode: 3, since: 70 } }, [0, 1]);
+
+            expect(events).toEqual([
+                { kind: 'terminal-wait', sessionId, waiting: { on: 'permission', since: 50 } },
+                { kind: 'terminal-wait', sessionId, waiting: { on: 'exited', exitCode: 3, since: 70 } },
+            ]);
+        } finally {
+            unsubscribe();
+        }
+    });
+
     it('reports ready cursor projection advances once for update-session payloads', async () => {
         vi.useFakeTimers();
         storage.getState().applySessions([{

@@ -63,6 +63,13 @@ function shouldNotifyForEvent(
         return localSettings.localNotificationsShowReady !== false;
     }
 
+    if (event.kind === 'terminal-wait') {
+        // A CLI that quit with an error ended its turn for good: it follows the "finished" switch.
+        if (event.waiting.on === 'exited') return localSettings.localNotificationsShowReady !== false;
+        if (event.waiting.on === 'permission') return localSettings.localNotificationsShowPendingPermissionRequests !== false;
+        return localSettings.localNotificationsShowPendingUserActionRequests !== false;
+    }
+
     if (event.requestKind === 'permission') {
         return localSettings.localNotificationsShowPendingPermissionRequests !== false;
     }

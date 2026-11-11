@@ -276,4 +276,47 @@ describe('ActivityLocalNotificationRuntime', () => {
             tree?.unmount();
         });
     });
+
+    it('tells the desktop user when a terminal session waits for them, each kind behind its own switch', async () => {
+        reactNativeRuntime.platformOs = 'web';
+        isTauriDesktopValue = true;
+        localSettingsValue = {
+            ...localSettingsValue,
+            localNotificationsShowPendingUserActionRequests: false,
+        };
+
+        const { ActivityLocalNotificationRuntime } = await import('./ActivityLocalNotificationRuntime');
+        const { notifyActivityTerminalWait } = await import('./activityLocalNotificationBus');
+
+        let tree: renderer.ReactTestRenderer | null = null;
+        tree = (await renderScreen(<ActivityLocalNotificationRuntime />)).tree;
+
+        await act(async () => {
+            notifyActivityTerminalWait('session-1', { on: 'permission', since: 1 });
+            // Questions are switched off on this device.
+            notifyActivityTerminalWait('session-1', { on: 'question', since: 2 });
+            // A CLI that quit with an error follows the "finished" switch.
+            notifyActivityTerminalWait('session-1', { on: 'exited', exitCode: 3, since: 3 });
+        });
+
+        expect(sendExpoLocalNotification).not.toHaveBeenCalled();
+        expect(sendTauriLocalNotification.mock.calls).toEqual([
+            [{ title: 'Ready session', body: 'notifications.activity.terminalWaitingPermissionBody' }],
+            [{ title: 'Ready session', body: 'notifications.activity.terminalExitedBody' }],
+        ]);
+
+        localSettingsValue = { ...localSettingsValue, localNotificationsShowReady: false };
+        sendTauriLocalNotification.mockClear();
+        await act(async () => {
+            tree?.update(<ActivityLocalNotificationRuntime />);
+        });
+        await act(async () => {
+            notifyActivityTerminalWait('session-1', { on: 'exited', exitCode: 1, since: 4 });
+        });
+        expect(sendTauriLocalNotification).not.toHaveBeenCalled();
+
+        await act(async () => {
+            tree?.unmount();
+        });
+    });
 });

@@ -1,4 +1,5 @@
 import type { Message } from '@/sync/domains/messages/messageTypes';
+import type { TerminalWaiting } from '@/sync/domains/state/storageTypes';
 import type { AgentRequestKind } from '@/utils/sessions/permissions/permissionPromptPolicy';
 
 export type ActivityLocalNotificationEvent =
@@ -14,6 +15,12 @@ export type ActivityLocalNotificationEvent =
         requestKind: AgentRequestKind;
         toolName: string;
         toolArgs: unknown;
+    }>
+    | Readonly<{
+        /** A 「终端」 session's terminal waits for the user: a prompt, or a CLI that quit with an error. */
+        kind: 'terminal-wait';
+        sessionId: string;
+        waiting: TerminalWaiting;
     }>;
 
 type Listener = (event: ActivityLocalNotificationEvent) => void;
@@ -27,16 +34,7 @@ export function subscribeActivityLocalNotifications(listener: Listener): () => v
     };
 }
 
-export function notifyActivityReady(sessionId: string, messages?: Message[]): void {
-    const normalizedSessionId = typeof sessionId === 'string' ? sessionId.trim() : '';
-    if (!normalizedSessionId) return;
-
-    const event: ActivityLocalNotificationEvent = {
-        kind: 'ready',
-        sessionId: normalizedSessionId,
-        messages,
-    };
-
+function publish(event: ActivityLocalNotificationEvent): void {
     for (const listener of Array.from(listeners)) {
         try {
             listener(event);
@@ -44,6 +42,18 @@ export function notifyActivityReady(sessionId: string, messages?: Message[]): vo
             // ignore listener failures
         }
     }
+}
+
+export function notifyActivityReady(sessionId: string, messages?: Message[]): void {
+    const normalizedSessionId = typeof sessionId === 'string' ? sessionId.trim() : '';
+    if (!normalizedSessionId) return;
+    publish({ kind: 'ready', sessionId: normalizedSessionId, messages });
+}
+
+export function notifyActivityTerminalWait(sessionId: string, waiting: TerminalWaiting): void {
+    const normalizedSessionId = typeof sessionId === 'string' ? sessionId.trim() : '';
+    if (!normalizedSessionId) return;
+    publish({ kind: 'terminal-wait', sessionId: normalizedSessionId, waiting });
 }
 
 export function notifyActivityAgentRequest(params: Readonly<{
@@ -58,22 +68,14 @@ export function notifyActivityAgentRequest(params: Readonly<{
     const toolName = typeof params.toolName === 'string' ? params.toolName.trim() : '';
     if (!sessionId || !requestId || !toolName) return;
 
-    const event: ActivityLocalNotificationEvent = {
+    publish({
         kind: 'agent-request',
         sessionId,
         requestId,
         requestKind: params.requestKind,
         toolName,
         toolArgs: params.toolArgs,
-    };
-
-    for (const listener of Array.from(listeners)) {
-        try {
-            listener(event);
-        } catch {
-            // ignore listener failures
-        }
-    }
+    });
 }
 
 export function resetActivityLocalNotificationRuntimeForTests(): void {
