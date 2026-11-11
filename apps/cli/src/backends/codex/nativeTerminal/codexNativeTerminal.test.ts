@@ -4,9 +4,10 @@ import { dirname, join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
 import { configOptionOverrides, fakeServerSession, NO_CONTROLS } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
-import { followCodexThread, planCodexNativeTerminalLaunch, readCodexConversationTitle } from './codexNativeTerminal';
+import { followCodexThread, planCodexNativeTerminalLaunch, readCodexWindowTitle } from './codexNativeTerminal';
 
 const FIRST = '01a1c03e-91d3-7dc3-a965-9f0c6ff6e973';
 const SAME_NAME_ELSEWHERE = '01a1c03f-0000-7000-8000-000000000001';
@@ -90,13 +91,34 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
   });
 });
 
-describe('readCodexConversationTitle', () => {
+describe('readCodexWindowTitle', () => {
   it('reads the conversation title Codex puts before the folder in its window title', () => {
-    expect(readCodexConversationTitle('Fix login | repo', 'repo')).toBe('Fix login');
-    expect(readCodexConversationTitle('A | B | repo', 'repo')).toBe('A | B');
-    expect(readCodexConversationTitle('repo', 'repo')).toBeNull();
-    expect(readCodexConversationTitle('bash', 'repo')).toBeNull();
-    expect(readCodexConversationTitle(null, 'repo')).toBeNull();
+    expect(readCodexWindowTitle('Fix login | repo', 'repo').conversationTitle).toBe('Fix login');
+    expect(readCodexWindowTitle('A | B | repo', 'repo').conversationTitle).toBe('A | B');
+    expect(readCodexWindowTitle('repo', 'repo').conversationTitle).toBeNull();
+    expect(readCodexWindowTitle('bash', 'repo').conversationTitle).toBeNull();
+    expect(readCodexWindowTitle(null, 'repo').conversationTitle).toBeNull();
+  });
+
+  // Titles codex 0.167.1 showed in tmux during one turn that asked for an approval (2026-11-11).
+  it('reads what Codex shows: a spinner while it works, "Action Required" while it waits, nothing when idle', () => {
+    expect(readCodexWindowTitle('\u2839 repo', 'repo')).toEqual({ activity: { kind: 'working' }, conversationTitle: null });
+    expect(readCodexWindowTitle('\u280b Create probe.txt with hi | repo', 'repo')).toEqual({
+      activity: { kind: 'working' },
+      conversationTitle: 'Create probe.txt with hi',
+    });
+    expect(readCodexWindowTitle('[ . ] Action Required | Create probe.txt with hi | repo', 'repo')).toEqual({
+      activity: { kind: 'waiting', on: 'permission' },
+      conversationTitle: 'Create probe.txt with hi',
+    });
+    expect(readCodexWindowTitle('[ ! ] Action Required | repo', 'repo')).toEqual({
+      activity: { kind: 'waiting', on: 'permission' },
+      conversationTitle: null,
+    });
+    expect(readCodexWindowTitle('Create probe.txt with hi | repo', 'repo').activity).toEqual({ kind: 'idle' });
+    expect(readCodexWindowTitle('repo', 'repo').activity).toEqual({ kind: 'idle' });
+    // The shell's title before Codex sets its own says nothing about Codex.
+    expect(readCodexWindowTitle('pigger', 'repo').activity).toBeNull();
   });
 });
 
@@ -107,16 +129,21 @@ describe('followCodexThread', () => {
     await conversation(home, SAME_NAME_ELSEWHERE, '/work/other/repo', 'Fix login');
     let windowTitle = 'repo';
     const server = fakeServerSession();
+    const reported: NativeTerminalActivity[] = [];
     const stop = followCodexThread({
       session: server.session,
       codexHome: home,
       directory: '/work/repo',
       initialThreadId: null,
       readWindowTitle: async () => windowTitle,
+      reportActivity: (activity) => reported.push(activity),
       intervalMs: 10,
     });
     try {
+      windowTitle = '\u2839 Fix login | repo';
+      await vi.waitFor(() => expect(reported).toContainEqual({ kind: 'working' }));
       windowTitle = 'Fix login | repo';
+      await vi.waitFor(() => expect(reported.at(-1)).toEqual({ kind: 'idle' }));
       await vi.waitFor(() => expect(server.metadata()).toMatchObject({
         codexSessionId: FIRST,
         summary: { text: 'Fix login' },

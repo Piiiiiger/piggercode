@@ -1,5 +1,21 @@
 export type ActivityNotificationEvent =
   | Readonly<{
+    /** A 「终端」 CLI shows a prompt; it can only be answered in that terminal. */
+    topic: 'terminal_waiting';
+    sessionId: string;
+    sessionTitle?: string | null;
+    agentDisplayName: string;
+    on: 'permission' | 'question';
+  }>
+  | Readonly<{
+    /** A 「终端」 CLI quit by itself (not stopped from the app). */
+    topic: 'session_ended';
+    sessionId: string;
+    sessionTitle?: string | null;
+    agentDisplayName: string;
+    exitCode: number;
+  }>
+  | Readonly<{
     topic: 'ready';
     sessionId: string;
     sessionTitle?: string | null;

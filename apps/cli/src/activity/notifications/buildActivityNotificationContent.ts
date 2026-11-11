@@ -225,6 +225,28 @@ export function buildActivityNotificationContent(
     };
   }
 
+  if (event.topic === 'terminal_waiting') {
+    // No request id or kind: those would give the phone notification answer buttons, and this
+    // prompt can only be answered in the terminal.
+    return {
+      title: event.sessionTitle ?? event.agentDisplayName,
+      body: event.on === 'permission'
+        ? `${event.agentDisplayName} is waiting for your approval in the terminal`
+        : `${event.agentDisplayName} is waiting for your answer in the terminal`,
+      data: { sessionId: event.sessionId },
+    };
+  }
+
+  if (event.topic === 'session_ended') {
+    return {
+      title: event.sessionTitle ?? event.agentDisplayName,
+      body: event.exitCode === 0
+        ? `${event.agentDisplayName} exited`
+        : `${event.agentDisplayName} exited with code ${event.exitCode}`,
+      data: { sessionId: event.sessionId },
+    };
+  }
+
   if (event.topic === 'permission_request' || event.topic === 'user_action_request') {
     const kind = event.topic === 'user_action_request' ? 'user_action' : 'permission';
     const toolDetails = options.requestIncludeMessageText === false ? null : typeof event.toolDetails === 'string' && event.toolDetails.trim()

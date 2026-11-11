@@ -10,6 +10,7 @@ import type { Metadata, PermissionMode } from '@/api/types';
 import { initialMachineMetadata } from '@/daemon/machine/metadata';
 import { clearPendingFirstInputFromEnv, readPendingFirstInputFromEnv } from '@/daemon/spawn/pendingFirstInput';
 import type { Credentials } from '@/persistence';
+import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
 
 import { runNativeTerminalSession, type NativeTerminalFollower } from './runNativeTerminalSession';
@@ -112,6 +113,13 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     cwd: directory,
     env: launch.env,
     follow: launch.follow,
+    notifications: {
+      agentName: opts.provider.name,
+      pushSender: api.push(),
+      // Only the notification choices are read (cached between reads); the CLI itself gets none of
+      // the account's settings.
+      readAccountSettings: () => bootstrapAccountSettingsContext({ credentials: opts.credentials }),
+    },
     process,
     exit: (code) => process.exit(code),
     holdFailedExit: (exitCode) => holdFailedExitUntilEnter(opts.provider.name, exitCode),

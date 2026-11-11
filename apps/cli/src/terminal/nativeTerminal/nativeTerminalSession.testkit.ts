@@ -1,6 +1,8 @@
+import { accountSettingsParse } from '@piggercode/protocol';
 import { vi } from 'vitest';
 
-import type { Metadata } from '@/api/types';
+import type { AgentState, Metadata } from '@/api/types';
+import type { SessionEventMessage } from '@/api/session/sessionMessageTypes';
 
 import type { NativeTerminalControls } from './runNativeTerminal';
 import type { NativeTerminalSessionClient } from './runNativeTerminalSession';
@@ -33,12 +35,22 @@ export function fakeServerSession() {
     happyLibDir: '/opt/piggercode',
     happyToolsDir: '/opt/piggercode/tools/unpacked',
   };
+  let agentState: AgentState = {};
+  const events: SessionEventMessage[] = [];
   const calls: string[] = [];
   const session = {
     sessionId: 'session-1',
     keepAlive: vi.fn(),
     updateMetadata: vi.fn(async (handler: (current: Metadata) => Metadata) => {
       metadata = handler(metadata);
+    }),
+    getMetadataSnapshot: () => metadata,
+    getAgentStateSnapshot: () => agentState,
+    updateAgentState: vi.fn(async (handler: (current: AgentState) => AgentState) => {
+      agentState = handler(agentState);
+    }),
+    sendSessionEvent: vi.fn((event: SessionEventMessage) => {
+      events.push(event);
     }),
     sendSessionDeath: vi.fn(async () => {
       calls.push('death');
@@ -56,6 +68,32 @@ export function fakeServerSession() {
     session: session as unknown as NativeTerminalSessionClient,
     handlers,
     calls,
+    events,
     metadata: () => metadata,
+    agentState: () => agentState,
+  };
+}
+
+/** The user's devices behind the push service (a network boundary): records what they would show. */
+export function fakePushService() {
+  const sent: Array<{ title: string; body: string; data: Record<string, unknown> }> = [];
+  return {
+    sent,
+    sender: {
+      sendToAllDevicesAsync: vi.fn(async (title: string, body: string, data: Record<string, unknown>) => {
+        sent.push({ title, body, data });
+      }),
+      sendToAllDevices: vi.fn(),
+    },
+    /** What the runner needs to reach the user, for an account that never changed its notification settings. */
+    notifications: (agentName = 'Claude Code') => ({
+      agentName,
+      pushSender: {
+        sendToAllDevicesAsync: async (title: string, body: string, data: Record<string, unknown>) => {
+          sent.push({ title, body, data });
+        },
+      },
+      readAccountSettings: async () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
+    }),
   };
 }

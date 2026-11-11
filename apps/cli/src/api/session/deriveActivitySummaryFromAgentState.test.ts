@@ -7,6 +7,26 @@ import {
 import { deriveActivitySummaryFromAgentState } from './deriveActivitySummaryFromAgentState';
 
 describe('deriveActivitySummaryFromAgentState', () => {
+  it('counts a prompt a terminal CLI shows as a pending request of its kind', () => {
+    expect(deriveActivitySummaryFromAgentState({ terminalWaiting: { on: 'permission', since: 1 } })).toEqual({
+      pendingPermissionRequestCount: 1,
+      pendingUserActionRequestCount: 0,
+    });
+    expect(deriveActivitySummaryFromAgentState({ terminalWaiting: { on: 'question', since: 1 } })).toEqual({
+      pendingPermissionRequestCount: 0,
+      pendingUserActionRequestCount: 1,
+    });
+    // A CLI that quit with an error keeps its terminal open until the user has read it.
+    expect(deriveActivitySummaryFromAgentState({ terminalWaiting: { on: 'exited', exitCode: 1, since: 1 } })).toEqual({
+      pendingPermissionRequestCount: 0,
+      pendingUserActionRequestCount: 1,
+    });
+    expect(deriveActivitySummaryFromAgentState({ terminalWaiting: null })).toEqual({
+      pendingPermissionRequestCount: 0,
+      pendingUserActionRequestCount: 0,
+    });
+  });
+
   it('counts unresolved permission and user-action requests separately', () => {
     expect(deriveActivitySummaryFromAgentState({
       requests: {

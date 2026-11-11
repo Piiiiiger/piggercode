@@ -22,8 +22,12 @@ function isTopicEnabled(channel: {
     connectedServiceQuotaBlocked?: boolean;
     connectedServiceQuotaRecovered?: boolean;
   };
-}, topic: ActivityNotificationEvent['topic']): boolean {
+}, event: ActivityNotificationEvent): boolean {
   if (channel.enabled !== true) return false;
+  const topic = event.topic;
+  // A terminal prompt follows the switch of the request it is; a CLI that quit follows "finished".
+  if (topic === 'terminal_waiting') return event.on === 'permission' ? channel.topics.permissionRequest === true : channel.topics.userActionRequest === true;
+  if (topic === 'session_ended') return channel.topics.ready === true;
   if (topic === 'ready') return channel.topics.ready === true;
   if (topic === 'permission_request') return channel.topics.permissionRequest === true;
   if (topic === 'user_action_request') return channel.topics.userActionRequest === true;
@@ -160,7 +164,7 @@ export async function dispatchActivityNotificationAsync(params: Readonly<{
   });
   let attemptedChannels = 0;
   let deliveredChannels = 0;
-  const eligibleChannelCount = channels.filter((channel) => isTopicEnabled(channel, params.event.topic)).length;
+  const eligibleChannelCount = channels.filter((channel) => isTopicEnabled(channel, params.event)).length;
   if (duplicateSuppressed && eligibleChannelCount > 0) {
     return {
       attemptedChannels: 0,
@@ -170,7 +174,7 @@ export async function dispatchActivityNotificationAsync(params: Readonly<{
   }
 
   for (const channel of channels) {
-    if (!isTopicEnabled(channel, params.event.topic)) continue;
+    if (!isTopicEnabled(channel, params.event)) continue;
     attemptedChannels += 1;
     try {
       if (channel.kind === 'expo_push') {
@@ -180,7 +184,11 @@ export async function dispatchActivityNotificationAsync(params: Readonly<{
           event: params.event,
           sender: params.expoPushSender,
           suppressIfComputerFocused: params.settings?.notificationsSettingsV1?.mutePhoneWhenComputerFocused === true
-            && (params.event.topic === 'ready' || params.event.topic === 'permission_request' || params.event.topic === 'user_action_request'),
+            && (params.event.topic === 'ready'
+              || params.event.topic === 'permission_request'
+              || params.event.topic === 'user_action_request'
+              || params.event.topic === 'terminal_waiting'
+              || params.event.topic === 'session_ended'),
         });
         deliveredChannels += 1;
         continue;

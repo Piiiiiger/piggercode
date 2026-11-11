@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fakeServerSession } from './nativeTerminalSession.testkit';
+import { fakePushService, fakeServerSession } from './nativeTerminalSession.testkit';
 import { runNativeTerminalSession } from './runNativeTerminalSession';
 
 const dirs: string[] = [];
@@ -27,6 +27,7 @@ function runWith(params: Readonly<{
   holdFailedExit?: (code: number) => Promise<void>;
 }>) {
   const exit = vi.fn();
+  const push = fakePushService();
   const followed: Array<number | null> = [];
   const done = runNativeTerminalSession({
     session: params.server.session,
@@ -39,12 +40,13 @@ function runWith(params: Readonly<{
         params.server.calls.push('stop-following');
       };
     },
+    notifications: push.notifications(),
     process: new EventEmitter(),
     exit,
     ...(params.holdFailedExit ? { holdFailedExit: params.holdFailedExit } : {}),
     logPrefix: '[test-terminal]',
   });
-  return { done, exit, followed };
+  return { done, exit, followed, push };
 }
 
 describe('runNativeTerminalSession', () => {
@@ -52,7 +54,7 @@ describe('runNativeTerminalSession', () => {
     const cwd = await tempDir();
     const server = fakeServerSession();
 
-    const { done, exit, followed } = runWith({
+    const { done, exit, followed, push } = runWith({
       server,
       cwd,
       script: 'printf "%s\\n" "$@" > "$OUT"; pwd >> "$OUT"; sleep 1',
@@ -65,12 +67,15 @@ describe('runNativeTerminalSession', () => {
     expect(server.session.keepAlive).toHaveBeenCalledWith(false, 'local');
     expect(server.calls).toEqual(['stop-following', 'death', 'close']);
     expect(exit).toHaveBeenCalledWith(0);
+    // The user quit the CLI themselves: nobody needs telling.
+    expect(push.sent).toEqual([]);
+    expect(server.agentState().terminalWaiting).toBeUndefined();
   });
 
   it('stops the CLI when the app stops the session', async () => {
     const cwd = await tempDir();
     const server = fakeServerSession();
-    const { done, exit } = runWith({
+    const { done, exit, push } = runWith({
       server,
       cwd,
       script: 'trap "echo stopped > \\"$OUT\\"; exit 0" TERM; while :; do sleep 0.1; done',
@@ -84,6 +89,8 @@ describe('runNativeTerminalSession', () => {
     expect((await readFile(join(cwd, 'out.txt'), 'utf8')).trim()).toBe('stopped');
     expect(server.calls).toEqual(['stop-following', 'death', 'close']);
     expect(exit).toHaveBeenCalledWith(0);
+    // The app stopped it, so nobody needs telling.
+    expect(push.sent).toEqual([]);
   });
 
   it('keeps a failed CLI on screen until the user closes it, and never asks the daemon for a restart', async () => {
@@ -93,7 +100,7 @@ describe('runNativeTerminalSession', () => {
     const holdFailedExit = vi.fn((_code: number) => new Promise<void>((resolve) => {
       release = resolve;
     }));
-    const { done, exit } = runWith({
+    const { done, exit, push } = runWith({
       server,
       cwd,
       script: 'exit 3',
@@ -101,10 +108,15 @@ describe('runNativeTerminalSession', () => {
     });
 
     await vi.waitFor(() => expect(holdFailedExit).toHaveBeenCalledWith(3));
-    expect(server.calls).toEqual([]);
+    // The CLI is gone: the user hears about it at once, and the session waits for them while its
+    // last words stay on screen.
+    await vi.waitFor(() => expect(push.sent.map((sent) => sent.body)).toEqual(['Claude Code exited with code 3']));
+    expect(server.agentState().terminalWaiting).toEqual({ on: 'exited', exitCode: 3, since: expect.any(Number) });
+    expect(server.calls).toEqual(['stop-following']);
     release();
     await done;
 
+    expect(server.agentState().terminalWaiting).toBeNull();
     expect(server.calls).toEqual(['stop-following', 'death', 'close']);
     expect(exit).toHaveBeenCalledWith(0);
   });

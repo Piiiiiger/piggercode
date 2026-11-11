@@ -9,20 +9,37 @@ import type { ApiSessionClient } from '@/api/session/sessionClient';
 import { registerKillSessionHandler } from '@/rpc/handlers/killSession';
 import { logger } from '@/ui/logger';
 
-export type NativeTerminalSessionClient = Pick<
+import {
+  createNativeTerminalActivityReporter,
+  type NativeTerminalActivity,
+  type NativeTerminalActivitySession,
+  type NativeTerminalNotificationSettings,
+} from './nativeTerminalActivityReporter';
+
+export type NativeTerminalSessionClient = NativeTerminalActivitySession & Pick<
   ApiSessionClient,
   'sessionId' | 'keepAlive' | 'updateMetadata' | 'sendSessionDeath' | 'close' | 'rpcHandlerManager'
 >;
 
 /**
  * Follows what the CLI does with its conversation while it runs (which conversation it writes,
- * the title it gets) and records it on the session. Returns how to stop following.
+ * the title it gets) and records it on the session, and tells `reportActivity` what the CLI shows
+ * (working, waiting at a prompt, idle). Returns how to stop following.
  */
 export type NativeTerminalFollower = (params: Readonly<{
   session: NativeTerminalSessionClient;
   /** The CLI's process, when it started. */
   childPid: number | null;
+  reportActivity: (activity: NativeTerminalActivity) => void;
 }>) => () => Promise<void>;
+
+/** How the session reaches the user's devices when a turn ends, a prompt waits or the CLI quits. */
+export type NativeTerminalNotifications = Readonly<{
+  /** The CLI's name in notifications, e.g. "Claude Code". */
+  agentName: string;
+  pushSender: Parameters<typeof createNativeTerminalActivityReporter>[0]['pushSender'];
+  readAccountSettings: () => Promise<NativeTerminalNotificationSettings | null>;
+}>;
 
 type ProcessLike = Pick<EventEmitter, 'on' | 'removeListener'>;
 
@@ -32,6 +49,7 @@ export type RunNativeTerminalSessionParams = Readonly<{
   cwd: string;
   env: NodeJS.ProcessEnv;
   follow: NativeTerminalFollower;
+  notifications: NativeTerminalNotifications;
   process: ProcessLike;
   exit: (code: number) => void;
   /**
@@ -78,17 +96,34 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     getMode: () => 'local',
     keepAlive: (thinking, mode) => session.keepAlive(thinking, mode),
   });
-  const stopFollowing = params.follow({ session, childPid: typeof child.pid === 'number' ? child.pid : null });
+  const activity = createNativeTerminalActivityReporter({
+    session,
+    agentName: params.notifications.agentName,
+    logPrefix: params.logPrefix,
+    pushSender: params.notifications.pushSender,
+    readAccountSettings: params.notifications.readAccountSettings,
+  });
+  const stopFollower = params.follow({
+    session,
+    childPid: typeof child.pid === 'number' ? child.pid : null,
+    reportActivity: activity.report,
+  });
+  let following: Promise<void> | null = null;
+  const stopFollowing = () => (following ??= stopFollower());
+  // Set before the CLI is stopped, so its exit is not mistaken for the user quitting it.
+  let stopping = false;
 
   const termination = registerRunnerTerminationHandlers({
     process: params.process,
     exit: params.exit,
     sessionExitReport: { sessionId: session.sessionId },
     onTerminate: async () => {
+      stopping = true;
       if (cliRunning) child.kill('SIGTERM');
       await cliExit;
       clearInterval(heartbeat);
       await stopFollowing();
+      await activity.end();
       await session.sendSessionDeath();
       await session.close();
     },
@@ -100,6 +135,10 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
 
   const exitCode = await cliExit;
   logger.debug(`${params.logPrefix} The CLI exited with code ${exitCode}`);
+  if (!stopping) {
+    await stopFollowing();
+    await activity.cliExited(exitCode);
+  }
   if (exitCode !== 0 && params.holdFailedExit) {
     await Promise.race([params.holdFailedExit(exitCode), termination.whenTerminated]);
   }

@@ -18,17 +18,19 @@ const PENDING_REQUEST_COVERAGE_OPTIONS = {
 } as const;
 
 export function deriveActivitySummaryFromAgentState(agentState: AgentState | null | undefined): ActivitySummary {
+  // What a 「终端」 session's terminal waits for is a pending request too, though only the terminal answers it.
+  const terminalWaitingOn = agentState?.terminalWaiting?.on;
+  let pendingPermissionRequestCount = terminalWaitingOn === 'permission' ? 1 : 0;
+  let pendingUserActionRequestCount = terminalWaitingOn === 'question' || terminalWaitingOn === 'exited' ? 1 : 0;
+
   const requests = agentState?.requests;
   const completedRequests = agentState?.completedRequests ?? null;
   if (!requests || typeof requests !== 'object') {
     return {
-      pendingPermissionRequestCount: 0,
-      pendingUserActionRequestCount: 0,
+      pendingPermissionRequestCount,
+      pendingUserActionRequestCount,
     };
   }
-
-  let pendingPermissionRequestCount = 0;
-  let pendingUserActionRequestCount = 0;
 
   for (const [requestId, request] of Object.entries(requests)) {
     if (!request || typeof request !== 'object') continue;

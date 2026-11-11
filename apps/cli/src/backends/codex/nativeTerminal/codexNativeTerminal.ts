@@ -11,6 +11,7 @@ import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/
 import { TmuxUtilities } from '@/integrations/tmux';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { createJsonlFileTail } from '@/terminal/nativeTerminal/jsonlFileTail';
+import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
 import type { NativeTerminalControls, NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
 import type { NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runNativeTerminalSession';
 import { logger } from '@/ui/logger';
@@ -34,11 +35,12 @@ export const codexNativeTerminal: NativeTerminalProvider = {
       cli: { command: codex.command, args: [...codex.args, ...launch.args] },
       env,
       metadata: launch.threadId ? { codexSessionId: launch.threadId } : {},
-      follow: ({ session }) => followCodexThread({
+      follow: ({ session, reportActivity }) => followCodexThread({
         session,
         codexHome,
         directory,
         initialThreadId: launch.threadId,
+        reportActivity,
       }),
     };
   },
@@ -93,6 +95,8 @@ export function followCodexThread(params: Readonly<{
   directory: string;
   /** The conversation the terminal reopened, already recorded on the session. */
   initialThreadId: string | null;
+  /** Told what Codex shows (working, waiting for an approval, idle), from the same window title. */
+  reportActivity?: (activity: NativeTerminalActivity) => void;
   readWindowTitle?: () => Promise<string | null>;
   intervalMs?: number;
 }>): () => Promise<void> {
@@ -107,7 +111,9 @@ export function followCodexThread(params: Readonly<{
   let recordedTitle: string | null = null;
 
   const look = async (): Promise<void> => {
-    const title = readCodexConversationTitle(await readWindowTitle(), folderName);
+    const shown = readCodexWindowTitle(await readWindowTitle(), folderName);
+    if (shown.activity) params.reportActivity?.(shown.activity);
+    const title = shown.conversationTitle;
     if (!title) return;
     const shownThreadId = await threads.find({ title, directory: params.directory, current: threadId });
     if (!shownThreadId) return;
@@ -154,11 +160,36 @@ export function followCodexThread(params: Readonly<{
   };
 }
 
-/** The conversation title in Codex's window title (`<title> | <folder>`); none while it has none. */
-export function readCodexConversationTitle(windowTitle: string | null, folderName: string): string | null {
+/** Codex shows a spinner before the title while it works (braille dots, codex 0.167). */
+const CODEX_WORKING_PREFIX = /^[\u2800-\u28ff] /;
+/** And this, blinking between `[ . ]` and `[ ! ]`, while a prompt waits for the user. */
+const CODEX_ACTION_REQUIRED_PREFIX = /^\[ [.!] \] Action Required(?: \| |$)/;
+
+/**
+ * What Codex's window title says (`[<state> ]<conversation title> | <folder>`, only the folder until
+ * it names a new conversation): what it shows (working, waiting for the user, idle) and the
+ * conversation's title. A title that is not Codex's (the shell's, before Codex starts) says nothing.
+ */
+export function readCodexWindowTitle(windowTitle: string | null, folderName: string): Readonly<{
+  activity: NativeTerminalActivity | null;
+  conversationTitle: string | null;
+}> {
+  const shown = windowTitle?.trim() ?? '';
+  if (!shown || !folderName) return { activity: null, conversationTitle: null };
+  let rest = shown;
+  let activity: NativeTerminalActivity = { kind: 'idle' };
+  if (CODEX_ACTION_REQUIRED_PREFIX.test(rest)) {
+    // Codex's title cannot tell an approval from a question; most of its prompts are approvals.
+    activity = { kind: 'waiting', on: 'permission' };
+    rest = rest.replace(CODEX_ACTION_REQUIRED_PREFIX, '');
+  } else if (CODEX_WORKING_PREFIX.test(rest)) {
+    activity = { kind: 'working' };
+    rest = rest.replace(CODEX_WORKING_PREFIX, '');
+  }
   const suffix = ` | ${folderName}`;
-  if (!windowTitle || !folderName || !windowTitle.endsWith(suffix)) return null;
-  return windowTitle.slice(0, -suffix.length).trim() || null;
+  if (rest === folderName || rest === '') return { activity, conversationTitle: null };
+  if (!rest.endsWith(suffix)) return { activity: null, conversationTitle: null };
+  return { activity, conversationTitle: rest.slice(0, -suffix.length).trim() || null };
 }
 
 /** The title Codex gave this terminal's window (tmux keeps it as the pane title). */

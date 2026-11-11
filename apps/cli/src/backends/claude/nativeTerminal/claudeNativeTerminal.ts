@@ -7,6 +7,7 @@ import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSess
 import { prepareClaudeSubprocessEnv } from '@/backends/claude/spawn/buildClaudeSubprocessEnv';
 import { resolveClaudeSessionEnvOverlay } from '@/backends/claude/spawn/resolveClaudeSessionEnvOverlay';
 import { getProjectPath } from '@/backends/claude/utils/path';
+import { resolveConfiguredClaudeConfigDir } from '@/backends/claude/utils/resolveConfiguredClaudeConfigDir';
 import { startFileWatcher } from '@/integrations/watcher/startFileWatcher';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import type { NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
@@ -14,6 +15,7 @@ import type { NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runN
 import { logger } from '@/ui/logger';
 
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
+import { claudeSessionStatusPath, followClaudeSessionStatus } from './claudeSessionStatusFollower';
 import { createClaudeTranscriptTitleFollower } from './claudeTranscriptTitleFollower';
 
 /** Native Claude Code as a 「终端」 session: `claude` with the conversation to open and the screen's choices. */
@@ -32,9 +34,10 @@ export const claudeNativeTerminal: NativeTerminalProvider = {
     });
     const claude = requireProviderCliLaunchSpec('claude', { processEnv: process.env });
     const transcriptPath = join(projectDir, `${launch.claudeSessionId}.jsonl`);
+    const env = claudeNativeTerminalEnv({ baseEnv: process.env, directory });
     return {
       cli: { command: claude.command, args: [...claude.args, ...launch.args] },
-      env: claudeNativeTerminalEnv({ baseEnv: process.env, directory }),
+      env,
       metadata: { claudeSessionId: launch.claudeSessionId },
       // Claude creates this folder with the first message; the title watcher needs it before.
       beforeStart: async () => {
@@ -42,7 +45,17 @@ export const claudeNativeTerminal: NativeTerminalProvider = {
           logger.debug('[claude-terminal] Could not create the Claude project folder', error);
         });
       },
-      follow: ({ session }) => followClaudeTitle({ session, transcriptPath, claudeSessionId: launch.claudeSessionId }),
+      follow: ({ session, childPid, reportActivity }) => {
+        const stopTitle = followClaudeTitle({ session, transcriptPath, claudeSessionId: launch.claudeSessionId });
+        // Claude keeps what it shows in a record named after its process (the CLI is started directly).
+        const stopStatus = childPid === null ? null : followClaudeSessionStatus({
+          statusPath: claudeSessionStatusPath(resolveConfiguredClaudeConfigDir({ env }), childPid),
+          reportActivity,
+        });
+        return async () => {
+          await Promise.all([stopTitle(), stopStatus?.()]);
+        };
+      },
     };
   },
 };

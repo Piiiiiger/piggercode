@@ -808,6 +808,17 @@ export type Metadata = {
  */
 export type InFlightSteerUnavailableReason = 'backend_unsupported' | 'unsafe_window' | 'turn_settling' | 'user_terminal_draft';
 
+/** What a 「终端」 CLI's prompt waits for: an approval, or an answer to its question. */
+export type NativeTerminalWaitingOn = 'permission' | 'question';
+
+/**
+ * What a 「终端」 session's terminal waits for the user to do: answer the CLI's prompt, or (after the
+ * CLI quit with an error) read its last words and press Enter.
+ */
+export type NativeTerminalWaiting =
+  | { on: NativeTerminalWaitingOn, since: number }
+  | { on: 'exited', exitCode: number, since: number };
+
 export type AgentState = {
   controlledByUser?: boolean | null | undefined
   localControl?: {
@@ -897,4 +908,9 @@ export type AgentState = {
         updatedPermissions?: unknown
       }
     }
+    /**
+     * The 「终端」 session's terminal waits for the user (set and cleared by the native runner): only the
+     * terminal can answer it, and the session's pending counts include it.
+     */
+    terminalWaiting?: NativeTerminalWaiting | null
   }
