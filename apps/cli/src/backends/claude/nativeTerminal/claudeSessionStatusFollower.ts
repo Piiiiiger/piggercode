@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
 import { logger } from '@/ui/logger';
 
@@ -46,7 +47,7 @@ export function followClaudeSessionStatus(params: Readonly<{
     } catch (error) {
       // Claude writes it once it has started, and removes it when it quits.
       if ((error as NodeJS.ErrnoException)?.code !== 'ENOENT') {
-        logger.debug('[claude-terminal] Could not read the Claude status', error);
+        logger.infoFile('[claude-terminal] Could not read the Claude status', serializeAxiosErrorForLog(error));
       }
       return;
     }

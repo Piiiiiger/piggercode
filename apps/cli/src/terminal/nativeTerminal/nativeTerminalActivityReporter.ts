@@ -4,6 +4,7 @@ import { dispatchActivityNotificationAsync } from '@/activity/notifications/disp
 import type { ExpoPushActivityNotificationSender } from '@/activity/notifications/sendExpoPushActivityNotification';
 import { getSessionNotificationTitle } from '@/agent/runtime/readyNotificationContext';
 import { sendReadyWithPushNotification } from '@/agent/runtime/sendReadyWithPushNotification';
+import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import type { NativeTerminalWaiting, NativeTerminalWaitingOn } from '@/api/types';
 import { logger } from '@/ui/logger';
@@ -69,7 +70,7 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   let writes: Promise<void> = Promise.resolve();
   const write = (label: string, run: () => Promise<void>): Promise<void> => {
     writes = writes.then(run).catch((error) => {
-      logger.debug(`${params.logPrefix} Could not ${label}`, error);
+      logger.infoFile(`${params.logPrefix} Could not ${label}`, serializeAxiosErrorForLog(error));
     });
     return writes;
   };
@@ -115,7 +116,7 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
       const known = params.readAccountSettings();
       if (known) return known;
     } catch (error) {
-      logger.debug(`${params.logPrefix} Could not read the notification settings`, error);
+      logger.infoFile(`${params.logPrefix} Could not read the notification settings`, serializeAxiosErrorForLog(error));
     }
     return { settings: accountSettingsParse({}), settingsSecretsReadKeys: [] };
   };
@@ -127,7 +128,7 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
       expoPushSender: params.pushSender,
       event,
     }).catch((error) => {
-      logger.debug(`${params.logPrefix} Could not send a notification`, error);
+      logger.infoFile(`${params.logPrefix} Could not send a notification`, serializeAxiosErrorForLog(error));
     });
   };
 

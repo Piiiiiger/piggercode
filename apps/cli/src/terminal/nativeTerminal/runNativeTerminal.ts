@@ -6,6 +6,7 @@ import { createSessionMetadata, type BackendFlavor } from '@/agent/runtime/creat
 import { createStartupMetadataOverrides } from '@/agent/runtime/createStartupMetadataOverrides';
 import { initializeBackendApiContext } from '@/agent/runtime/initializeBackendApiContext';
 import { initializeBackendRunSession } from '@/agent/runtime/initializeBackendRunSession';
+import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import type { Metadata, PermissionMode } from '@/api/types';
 import { initialMachineMetadata } from '@/daemon/machine/metadata';
 import { clearPendingFirstInputFromEnv, readPendingFirstInputFromEnv } from '@/daemon/spawn/pendingFirstInput';
@@ -138,7 +139,7 @@ function notificationSettingsReader(credentials: Credentials, logPrefix: string)
     void bootstrapAccountSettingsContext({ credentials, mode: 'fast' })
       .then((context) => context.whenRefreshed)
       .catch((error) => {
-        logger.debug(`${logPrefix} Could not refresh the notification settings`, error);
+        logger.infoFile(`${logPrefix} Could not refresh the notification settings`, serializeAxiosErrorForLog(error));
       });
   };
   refresh();
