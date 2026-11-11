@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+const path = require('node:path');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { APP_BRAND, getAppEnvironmentConfig } = require('./appVariantConfig.cjs');
 const { EXPO_PROJECT_CONFIG } = require('./appProjectConfig.cjs');
@@ -195,13 +197,15 @@ const updatesNativeDebugEnabled =
 
 const updatesUrl = (process.env.EXPO_UPDATES_URL || '').trim() || `https://u.expo.dev/${easProjectId}`;
 const updatesChannel = (process.env.EXPO_UPDATES_CHANNEL || '').trim() || appEnvironmentConfig.updatesChannel;
-const updatesConfig = {
+// Without an EAS project id (this fork ships none) expo-updates is disabled, so the app never asks
+// Expo's servers for OTA bundles.
+const updatesConfig = easProjectId ? {
     url: updatesUrl,
     requestHeaders: {
         "expo-channel-name": updatesChannel
     },
     ...(updatesNativeDebugEnabled === true ? { useNativeDebug: true } : {})
-};
+} : { enabled: false };
 
 const normalizeCiFlag = (raw) => {
     const value = String(raw ?? '').trim().toLowerCase();
@@ -276,6 +280,13 @@ if (!process.env.EXPO_PUBLIC_PIGGERCODE_MODEL_PACK_MANIFESTS) {
     });
 }
 
+// Android needs a versionCode that rises with every release so a newer APK installs over an older one.
+// major*1_000_000 + minor*1_000 + patch of the app version (0.3.31 -> 3031).
+const androidVersionCode = (() => {
+    const [major, minor, patch] = (versionOverride || APP_BRAND.version).split('.').map((part) => Number.parseInt(part, 10) || 0);
+    return major * 1_000_000 + minor * 1_000 + patch;
+})();
+
 const baseExpoConfig = {
         name,
         slug,
@@ -338,7 +349,10 @@ const baseExpoConfig = {
             ],
             edgeToEdgeEnabled: true,
             package: androidPackage,
-            googleServicesFile: "./google-services.json",
+            versionCode: androidVersionCode,
+            // Firebase config for push. Not checked in (upstream's belongs to another package id): the android
+            // workflow writes it from the ANDROID_GOOGLE_SERVICES_JSON secret when present.
+            ...(fs.existsSync(path.join(__dirname, 'google-services.json')) ? { googleServicesFile: "./google-services.json" } : {}),
             intentFilters: appEnvironmentConfig.enableAssociatedDomains ? [
                 {
                     "action": "VIEW",
@@ -455,7 +469,7 @@ const baseExpoConfig = {
             router: {
                 root: "./sources/app"
             },
-            eas: { projectId: easProjectId },
+            ...(easProjectId ? { eas: { projectId: easProjectId } } : {}),
             app: {
                 // `variant` is used by the JS app runtime for environment-specific guidance and lanes.
                 // Keep the native identity (`APP_ENV`) separate so we can ship preview-lane behavior to

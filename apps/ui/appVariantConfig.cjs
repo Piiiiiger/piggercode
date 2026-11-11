@@ -6,7 +6,9 @@ const releaseRings = require(path.resolve(__dirname, '..', '..', 'packages', 're
 
 // The identity this fork's app shows: the name in titles, menus and copy, the command people type, the
 // version in Settings, the coding agents it offers and its source repository (Settings > About).
-// Native bundle ids and update channels keep upstream's values.
+// The production Android package is this fork's own (dev.piggercode.app, the desktop identifier), so upstream
+// store updates never replace it and no upstream deep-link domains are claimed. iOS bundle ids and the other
+// rings keep upstream's values.
 const APP_BRAND = Object.freeze({
     productName: 'PiggerCode',
     cliCommandName: 'piggercode',
@@ -81,8 +83,8 @@ const APP_ENVIRONMENT_CONFIGS = {
     production: buildProductionConfig({
         name: productName,
         iosBundleId: 'dev.happier.app',
-        androidPackage: 'dev.happier.app',
-        enableAssociatedDomains: true,
+        androidPackage: 'dev.piggercode.app',
+        enableAssociatedDomains: false,
     }),
 };
 

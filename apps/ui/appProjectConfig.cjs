@@ -3,7 +3,9 @@
 const EXPO_PROJECT_CONFIG = Object.freeze({
     owner: 'happier-dev',
     slug: 'happier',
-    easProjectId: '2a550bd7-e4d2-4f59-ab47-dcb778775cee',
+    // Upstream's EAS project id is deliberately not shipped: with no project id expo-updates stays off.
+    // Set EXPO_PUBLIC_EAS_PROJECT_ID to this fork's own Expo project to enable updates and Expo push tokens.
+    easProjectId: '',
 });
 
 module.exports = { EXPO_PROJECT_CONFIG };

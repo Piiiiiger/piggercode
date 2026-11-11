@@ -43,3 +43,4 @@ public/pierre-diff-worker*.js
 .eas/keys/
 
 .env.local
+google-services.json

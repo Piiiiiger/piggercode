@@ -4,8 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const DEFAULT_EAS_PROJECT_ID = '2a550bd7-e4d2-4f59-ab47-dcb778775cee';
-const DEFAULT_UPDATES_URL = `https://u.expo.dev/${DEFAULT_EAS_PROJECT_ID}`;
+const TEST_EAS_PROJECT_ID = 'test-eas-project-id';
 
 function getUiDir(): string {
     return join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
@@ -119,11 +118,11 @@ describe('app.config.js', () => {
         });
     });
 
-    it('includes a default EAS project id so EAS can link dynamic configs', () => {
+    it('ships no EAS project id and keeps expo-updates off unless one is provided', () => {
         const exp = withCleanEnv(() => getPublicConfig());
 
-        expect(exp.extra?.eas?.projectId).toBe(DEFAULT_EAS_PROJECT_ID);
-        expect(exp.updates?.url).toBe(DEFAULT_UPDATES_URL);
+        expect(exp.extra?.eas).toBeUndefined();
+        expect(exp.updates).toEqual({ enabled: false });
         expect(exp.extra?.app?.variant).toBe('development');
         expect(exp.extra?.app?.identityVariant).toBe('internaldev');
         expect(exp.owner).toBe('happier-dev');
@@ -146,6 +145,7 @@ describe('app.config.js', () => {
     it('maps the publicdev environment to the public dev identity while keeping preview-like public behavior', () => {
         const { exp, featurePolicyEnv } = withCleanEnv(() => {
             process.env.APP_ENV = 'publicdev';
+            process.env.EXPO_PUBLIC_EAS_PROJECT_ID = TEST_EAS_PROJECT_ID;
             const exp = getPublicConfig();
             return {
                 exp,
@@ -219,6 +219,7 @@ describe('app.config.js', () => {
     it('maps the internalpreview environment to the internal preview identity', () => {
         const { exp, featurePolicyEnv } = withCleanEnv(() => {
             process.env.APP_ENV = 'internalpreview';
+            process.env.EXPO_PUBLIC_EAS_PROJECT_ID = TEST_EAS_PROJECT_ID;
             const exp = getPublicConfig();
             return {
                 exp,
@@ -244,17 +245,10 @@ describe('app.config.js', () => {
         });
 
         expect(exp.extra?.app?.variant).toBe('preview');
-        // Production identity still enables universal links / app links.
-        expect(exp.ios?.associatedDomains).toEqual([
-            'applinks:cloud.happier.dev',
-            'applinks:app.happier.dev',
-        ]);
-        const data = exp.android?.intentFilters?.[0]?.data;
-        const dataItems = Array.isArray(data) ? data : data ? [data] : [];
-        expect(dataItems.map((item) => item?.host)).toEqual([
-            'cloud.happier.dev',
-            'app.happier.dev',
-        ]);
+        // The fork's own package id claims none of upstream's link domains.
+        expect(exp.android?.package).toBe('dev.piggercode.app');
+        expect(exp.ios?.associatedDomains).toEqual([]);
+        expect(exp.android?.intentFilters).toEqual([]);
     });
 
     it('names and versions the app as PiggerCode with the piggercode command', () => {
@@ -419,7 +413,6 @@ describe('app.config.js', () => {
 
         expect(exp.owner).toBe('example-owner');
         expect(exp.slug).toBe('example-slug');
-        expect(exp.extra?.eas?.projectId).toBe(DEFAULT_EAS_PROJECT_ID);
     });
 
     it('enables iOS background audio by default in development', () => {
@@ -471,6 +464,7 @@ describe('app.config.js', () => {
             process.env.PIGGERCODE_EXPO_DEVCLIENT_LAUNCH_MODE = 'most-recent';
             process.env.PIGGERCODE_EXPO_DEVCLIENT_SILENT_LAUNCH = 'true';
             process.env.PIGGERCODE_EXPO_USE_NATIVE_DEBUG = 'true';
+            process.env.EXPO_PUBLIC_EAS_PROJECT_ID = TEST_EAS_PROJECT_ID;
             return getPublicConfig();
         });
 
