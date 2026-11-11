@@ -29,7 +29,11 @@ export type ShellLinkTarget = Readonly<{
   authorizedKeysPath: string;
 }>;
 
-export type ShellLinkStage = 'announce' | 'waiting' | 'in_use';
+/**
+ * Where the link was when it ended. `unreachable`: ssh itself failed (exit 255: network gone, timed out, closed while
+ * connecting) before the server answered, which says nothing about whether the server opens shells.
+ */
+export type ShellLinkStage = 'announce' | 'unreachable' | 'waiting' | 'in_use';
 
 export type ShellLinkEvents = Readonly<{
   /** The server answered: the link waits there for `ssh`. */
@@ -76,7 +80,9 @@ export function openShellLink(
   };
   const closedReason = () => lastError || (stage === 'announce'
     ? 'The server did not answer the shell request.'
-    : 'The connection to the server was lost.');
+    : stage === 'unreachable'
+      ? 'Could not reach the server.'
+      : 'The connection to the server was lost.');
 
   const startShell = async () => {
     stage = 'in_use';
@@ -140,7 +146,11 @@ export function openShellLink(
     lastError = line;
   });
   ssh.once('error', (error) => finish(`Cannot run ${target.ssh}: ${error.message}`));
-  ssh.once('close', () => finish(closedReason()));
+  ssh.once('close', (code) => {
+    // ssh's own failures exit 255; a server that refuses `shell` answers with its command's status.
+    if (stage === 'announce' && code === 255) stage = 'unreachable';
+    finish(closedReason());
+  });
   ssh.stdin?.on('error', () => undefined);
   ssh.stdout?.on('data', onData);
   ssh.stdin?.write(`${target.user} ${target.shell.hostPublicKey}\n`);

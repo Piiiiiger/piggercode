@@ -358,8 +358,13 @@ describe('folders this computer shares with a server', () => {
       computer.shellLinks[2]!.events.onClosed('The connection to the server was lost.', 'waiting');
       await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(4));
 
+      // So does one that could not reach the server at all (2026-11-11: a drop while it connected left remote commands
+      // off for good, taken for a server that refuses shells).
+      computer.shellLinks[3]!.events.onClosed('ssh: connect to host server.example.test port 2200: Connection timed out', 'unreachable');
+      await vi.waitFor(() => expect(computer.shellLinks).toHaveLength(5));
+
       computer.shares.stop();
-      expect(computer.shellLinks.map((link) => link.closed)).toEqual([true, false, false, true]);
+      expect(computer.shellLinks.map((link) => link.closed)).toEqual([true, false, false, false, true]);
     });
   });
 

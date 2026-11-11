@@ -2120,8 +2120,10 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   `ControlPath none`, whatever the rest of the config says): every `ssh` takes
   a fresh spare, so turning remote commands off stops the next command (one already running finishes).
   Each computer's host key is pinned in its own `shell/<computer>.known_hosts`. Remote Login stays off and
-  nothing listens on the computer. A spare that drops comes back like a share; a server too old for `shell`
-  is asked again only when the shares change.
+  nothing listens on the computer. A spare that drops comes back like a share, and since CLI 0.3.29 so does one
+  whose `ssh` failed before the server answered (exit 255: network gone, timed out); a server that answered it is
+  too old for `shell` is asked again only when the shares change. (Before 0.3.29 a drop during that first answer
+  was taken for an old server, leaving remote commands off until the computer's daemon restarted.)
 
 In the current development CLI, UI permission responses settle through
 `PermissionRequestCoordinator.completeRpcResponse`, including detached late responses

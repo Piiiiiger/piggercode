@@ -198,8 +198,9 @@ export function createComputerShares(deps: Readonly<{
 
   /**
    * Keeps one spare shell connection open to the server, so `ssh <computer>` there finds one at once;
-   * when a spare is used, the next one opens. A spare that drops comes back like a share does; a server
-   * that does not open shells (older PiggerCode) is asked again only at the next change of the shares.
+   * when a spare is used, the next one opens. A spare that drops, or that could not reach the server, comes back
+   * like a share does; a server that answered that it does not open shells (older PiggerCode) is asked again only
+   * at the next change of the shares.
    */
   const openSpareShell = async (serverMachineId: string, runtime: ShellRuntime): Promise<void> => {
     if (stopped || shells.get(serverMachineId) !== runtime || runtime.spare || runtime.opening) return;

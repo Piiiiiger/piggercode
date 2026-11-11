@@ -110,4 +110,13 @@ describe('a computer\'s spare shell connection to its server', () => {
     processes[0]!.child.emit('close', 2, null);
     expect(events.onClosed).toHaveBeenCalledWith('piggercode shared folders: this key can only mount a folder inside your home', 'announce');
   });
+
+  it('tells a connection that failed before the server could answer from a server that refused', async () => {
+    // ssh exits 255 for its own failures (network gone, timed out, closed while connecting): the server said nothing.
+    const { events, processes } = setup();
+    processes[0]!.stderr.write('ssh: connect to host server.example.test port 2200: Connection timed out\n');
+    await new Promise((resolve) => setImmediate(resolve));
+    processes[0]!.child.emit('close', 255, null);
+    expect(events.onClosed).toHaveBeenCalledWith('ssh: connect to host server.example.test port 2200: Connection timed out', 'unreachable');
+  });
 });
