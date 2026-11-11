@@ -2,7 +2,7 @@
 # Installs the PiggerCode APK in the running emulator, launches it, waits, then saves a screenshot and the logcat to
 # ./smoke and fails if the app crashed or is not running. It never logs in.
 set -u
-apk="$1"
+apk=$(ls $1)
 pkg=dev.piggercode.app
 mkdir -p smoke
 adb install -r "$apk" || { echo "install failed"; exit 1; }
