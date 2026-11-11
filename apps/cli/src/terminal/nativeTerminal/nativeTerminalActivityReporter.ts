@@ -19,7 +19,7 @@ export type NativeTerminalActivitySession = Pick<
   'sessionId' | 'sendSessionEvent' | 'updateAgentState' | 'getMetadataSnapshot' | 'getAgentStateSnapshot'
 >;
 
-/** The user's notification choices (account settings), read when there is something to send. */
+/** The user's notification choices (account settings). */
 export type NativeTerminalNotificationSettings = Readonly<{
   settings: AccountSettings;
   settingsSecretsReadKeys: ReadonlyArray<Uint8Array>;
@@ -32,7 +32,7 @@ export type NativeTerminalActivityReporter = Readonly<{
    * user to read its last words, and the user is told; a clean quit was the user's own doing.
    */
   cliExited: (exitCode: number) => Promise<void>;
-  /** The session ends (for any reason): clears a prompt the CLI left, without telling anyone. */
+  /** The session ends (for any reason): clears what the terminal waited for, without telling anyone. */
   end: () => Promise<void>;
   /** Resolves once the session writes started so far are done. */
   flush: () => Promise<void>;
@@ -55,11 +55,11 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   pushSender: ExpoPushActivityNotificationSender & Readonly<{
     sendToAllDevices?: (title: string, body: string, data: { sessionId: string }) => void;
   }>;
-  readAccountSettings: () => Promise<NativeTerminalNotificationSettings | null>;
+  /** The notification choices as last read, without waiting for the relay; null while unknown. */
+  readAccountSettings: () => NativeTerminalNotificationSettings | null;
 }>): NativeTerminalActivityReporter {
   const { session } = params;
   let turnInProgress = false;
-  let waiting: NativeTerminalWaiting['on'] | null = null;
   // Session writes run one after another, so a prompt's start and end reach the session in order.
   let writes: Promise<void> = Promise.resolve();
   const write = (label: string, run: () => Promise<void>): Promise<void> => {
@@ -69,46 +69,69 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
     return writes;
   };
 
+  // What the terminal waits for, and whether the session has it. A write that did not reach the relay
+  // (away for longer than a write waits) is made again with the next report, and when the session ends,
+  // so a prompt that is gone never stays on the session.
+  let waiting: NativeTerminalWaiting | null = null;
+  let waitingPublished = true;
+  let waitingWritesInFlight = 0;
+  const writeWaiting = (next: NativeTerminalWaiting | null): Promise<void> => {
+    waitingWritesInFlight += 1;
+    return write('record what the terminal waits for', async () => {
+      try {
+        await session.updateAgentState((state) => ({ ...state, terminalWaiting: next }));
+        if (waiting === next) waitingPublished = true;
+      } catch (error) {
+        if (waiting === next) waitingPublished = false;
+        throw error;
+      } finally {
+        waitingWritesInFlight -= 1;
+      }
+    });
+  };
+  const changeWaiting = (next: NativeTerminalWaiting | null): Promise<void> => {
+    waiting = next;
+    waitingPublished = false;
+    return writeWaiting(next);
+  };
+  const retryWaiting = (): void => {
+    if (!waitingPublished && waitingWritesInFlight === 0) void writeWaiting(waiting);
+  };
+
   // A runner that died while its CLI showed a prompt left it recorded; this runner starts clean.
   if (session.getAgentStateSnapshot()?.terminalWaiting) {
-    void write('clear an old prompt', () => session.updateAgentState((state) => ({ ...state, terminalWaiting: null })));
+    void changeWaiting(null);
   }
 
   const sessionTitle = () => getSessionNotificationTitle(() => session.getMetadataSnapshot());
-  // Settings that cannot be read (the relay is away) count as untouched ones: every notification on.
-  const readSettings = async (): Promise<NativeTerminalNotificationSettings> => {
+  // Choices not known yet count as untouched ones: every notification on.
+  const notificationSettings = (): NativeTerminalNotificationSettings => {
     try {
-      const read = await params.readAccountSettings();
-      if (read) return read;
+      const known = params.readAccountSettings();
+      if (known) return known;
     } catch (error) {
       logger.debug(`${params.logPrefix} Could not read the notification settings`, error);
     }
     return { settings: accountSettingsParse({}), settingsSecretsReadKeys: [] };
   };
   const notify = (event: Parameters<typeof dispatchActivityNotificationAsync>[0]['event']): void => {
-    void (async () => {
-      const notificationSettings = await readSettings();
-      await dispatchActivityNotificationAsync({
-        settings: notificationSettings.settings,
-        settingsSecretsReadKeys: notificationSettings.settingsSecretsReadKeys,
-        expoPushSender: params.pushSender,
-        event,
-      });
-    })().catch((error) => {
+    const { settings, settingsSecretsReadKeys } = notificationSettings();
+    void dispatchActivityNotificationAsync({
+      settings,
+      settingsSecretsReadKeys,
+      expoPushSender: params.pushSender,
+      event,
+    }).catch((error) => {
       logger.debug(`${params.logPrefix} Could not send a notification`, error);
     });
   };
 
-  const recordWaiting = (next: NativeTerminalWaiting | null): Promise<void> => {
-    waiting = next?.on ?? null;
-    return write('record what the terminal waits for', () => session.updateAgentState((state) => ({
-      ...state,
-      terminalWaiting: next,
-    })));
-  };
   const setWaiting = (next: NativeTerminalWaitingOn | null): void => {
-    if (next === waiting) return;
-    void recordWaiting(next ? { on: next, since: Date.now() } : null);
+    if ((waiting?.on ?? null) === next) {
+      retryWaiting();
+      return;
+    }
+    void changeWaiting(next ? { on: next, since: Date.now() } : null);
     if (!next) return;
     notify({
       topic: 'terminal_waiting',
@@ -120,17 +143,15 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   };
 
   const turnFinished = (): void => {
-    void write('report the finished turn', async () => {
-      const notificationSettings = await readSettings();
-      sendReadyWithPushNotification({
-        session,
-        pushSender: params.pushSender,
-        waitingForCommandLabel: params.agentName,
-        logPrefix: params.logPrefix,
-        sessionTitle: sessionTitle(),
-        accountSettings: notificationSettings.settings,
-        settingsSecretsReadKeys: notificationSettings.settingsSecretsReadKeys,
-      });
+    const { settings, settingsSecretsReadKeys } = notificationSettings();
+    sendReadyWithPushNotification({
+      session,
+      pushSender: params.pushSender,
+      waitingForCommandLabel: params.agentName,
+      logPrefix: params.logPrefix,
+      sessionTitle: sessionTitle(),
+      accountSettings: settings,
+      settingsSecretsReadKeys,
     });
   };
 
@@ -151,24 +172,25 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
       turnFinished();
     },
     cliExited: async (exitCode) => {
-      setWaiting(null);
       turnInProgress = false;
-      if (exitCode === 0) {
-        await writes;
-        return;
+      // A prompt the CLI left is cleared first, so the exit starts a wait of its own in the app.
+      setWaiting(null);
+      if (exitCode !== 0) {
+        void changeWaiting({ on: 'exited', exitCode, since: Date.now() });
+        notify({
+          topic: 'session_ended',
+          sessionId: session.sessionId,
+          sessionTitle: sessionTitle(),
+          agentDisplayName: params.agentName,
+          exitCode,
+        });
       }
-      await recordWaiting({ on: 'exited', exitCode, since: Date.now() });
-      notify({
-        topic: 'session_ended',
-        sessionId: session.sessionId,
-        sessionTitle: sessionTitle(),
-        agentDisplayName: params.agentName,
-        exitCode,
-      });
+      await writes;
     },
     end: async () => {
       turnInProgress = false;
-      if (waiting) await recordWaiting(null);
+      if (waiting) void changeWaiting(null);
+      else retryWaiting();
       await writes;
     },
     flush: () => writes,

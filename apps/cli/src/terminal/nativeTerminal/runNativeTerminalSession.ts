@@ -38,7 +38,8 @@ export type NativeTerminalNotifications = Readonly<{
   /** The CLI's name in notifications, e.g. "Claude Code". */
   agentName: string;
   pushSender: Parameters<typeof createNativeTerminalActivityReporter>[0]['pushSender'];
-  readAccountSettings: () => Promise<NativeTerminalNotificationSettings | null>;
+  /** The notification choices as last read, without waiting for the relay; null while unknown. */
+  readAccountSettings: () => NativeTerminalNotificationSettings | null;
 }>;
 
 type ProcessLike = Pick<EventEmitter, 'on' | 'removeListener'>;

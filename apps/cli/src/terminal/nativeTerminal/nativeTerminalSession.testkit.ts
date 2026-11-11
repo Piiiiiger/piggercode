@@ -93,7 +93,7 @@ export function fakePushService() {
           sent.push({ title, body, data });
         },
       },
-      readAccountSettings: async () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
+      readAccountSettings: () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
     }),
   };
 }

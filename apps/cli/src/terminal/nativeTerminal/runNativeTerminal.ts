@@ -10,9 +10,12 @@ import type { Metadata, PermissionMode } from '@/api/types';
 import { initialMachineMetadata } from '@/daemon/machine/metadata';
 import { clearPendingFirstInputFromEnv, readPendingFirstInputFromEnv } from '@/daemon/spawn/pendingFirstInput';
 import type { Credentials } from '@/persistence';
+import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
+import { logger } from '@/ui/logger';
 
+import type { NativeTerminalNotificationSettings } from './nativeTerminalActivityReporter';
 import { runNativeTerminalSession, type NativeTerminalFollower } from './runNativeTerminalSession';
 
 export type NativeTerminalLaunch = Readonly<{
@@ -116,15 +119,36 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     notifications: {
       agentName: opts.provider.name,
       pushSender: api.push(),
-      // Only the notification choices are read (cached between reads); the CLI itself gets none of
-      // the account's settings.
-      readAccountSettings: () => bootstrapAccountSettingsContext({ credentials: opts.credentials }),
+      readAccountSettings: notificationSettingsReader(opts.credentials, opts.provider.logPrefix),
     },
     process,
     exit: (code) => process.exit(code),
     holdFailedExit: (exitCode) => holdFailedExitUntilEnter(opts.provider.name, exitCode),
     logPrefix: opts.provider.logPrefix,
   });
+}
+
+/**
+ * The account's notification choices, as last read: each look also refreshes them in the background
+ * (cached between reads), so a notification never waits for the relay. Only these choices are used;
+ * the CLI got its environment before the first read and gets none of the account's settings.
+ */
+function notificationSettingsReader(credentials: Credentials, logPrefix: string): () => NativeTerminalNotificationSettings | null {
+  const refresh = (): void => {
+    void bootstrapAccountSettingsContext({ credentials, mode: 'fast' })
+      .then((context) => context.whenRefreshed)
+      .catch((error) => {
+        logger.debug(`${logPrefix} Could not refresh the notification settings`, error);
+      });
+  };
+  refresh();
+  return () => {
+    refresh();
+    const snapshot = getActiveAccountSettingsSnapshot();
+    return snapshot && snapshot.source !== 'none'
+      ? { settings: snapshot.settings, settingsSecretsReadKeys: snapshot.settingsSecretsReadKeys }
+      : null;
+  };
 }
 
 export function takeNativeTerminalFirstPrompt(env: NodeJS.ProcessEnv): string | null {

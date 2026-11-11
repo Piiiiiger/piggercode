@@ -14,7 +14,7 @@ function setup() {
     logPrefix: '[test-terminal]',
     pushSender: push.sender,
     // An account that never changed its notification settings.
-    readAccountSettings: async () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
+    readAccountSettings: () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
   });
   return { server, push, reporter };
 }
@@ -95,5 +95,48 @@ describe('createNativeTerminalActivityReporter', () => {
     expect(server.agentState().terminalWaiting).toBeNull();
     expect(server.events).toEqual([]);
     expect(push.sent).toHaveLength(1);
+  });
+
+  it('writes a cleared prompt again when the relay did not take it, so a gone prompt never stays on the session', async () => {
+    const { server, reporter } = setup();
+    reporter.report({ kind: 'waiting', on: 'permission' });
+    await reporter.flush();
+
+    // The relay is away for longer than a write waits.
+    vi.mocked(server.session.updateAgentState).mockRejectedValueOnce(new Error('relay away'));
+    reporter.report({ kind: 'working' });
+    await reporter.flush();
+    expect(server.agentState().terminalWaiting).toEqual({ on: 'permission', since: expect.any(Number) });
+
+    reporter.report({ kind: 'working' });
+    await reporter.flush();
+    expect(server.agentState().terminalWaiting).toBeNull();
+
+    // Also when the session ends right after the failed write.
+    reporter.report({ kind: 'waiting', on: 'question' });
+    await reporter.flush();
+    vi.mocked(server.session.updateAgentState).mockRejectedValueOnce(new Error('relay away'));
+    reporter.report({ kind: 'idle' });
+    await reporter.flush();
+    await reporter.end();
+    expect(server.agentState().terminalWaiting).toBeNull();
+  });
+
+  it('reports a finished turn at once, without waiting for the notification choices', async () => {
+    const server = fakeServerSession();
+    const push = fakePushService();
+    const reporter = createNativeTerminalActivityReporter({
+      session: server.session,
+      agentName: 'Codex',
+      logPrefix: '[test-terminal]',
+      pushSender: push.sender,
+      readAccountSettings: () => null,
+    });
+
+    reporter.report({ kind: 'working' });
+    reporter.report({ kind: 'idle' });
+
+    expect(server.events).toEqual([{ type: 'ready' }]);
+    await vi.waitFor(() => expect(push.sent).toHaveLength(1));
   });
 });

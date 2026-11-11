@@ -1799,7 +1799,9 @@ PiggerCode's queue, stuck-turn watchdog and subagent limit belong to the chat ru
 at a prompt, idle) through one owner, `terminal/nativeTerminal/nativeTerminalActivityReporter.ts`; each provider's
 `follow` only reads it. Claude Code keeps it in `<config dir>/sessions/<pid>.json` (`status` busy/idle/waiting and
 `waitingFor`; "input needed" is a question, "dialog open" a dialog the user opened and ignored, any other wait an
-approval), read once a second (`claudeSessionStatusFollower.ts`). Codex shows it in the same window title the runner
+approval), read once a second (`claudeSessionStatusFollower.ts`). Claude stays `busy` while a background agent of its
+own works, so a turn that ends then is reported once Claude is idle; its away recaps leave the status alone (checked
+on 2.1.322). Codex shows it in the same window title the runner
 reads every 3 s: a braille spinner before the title while it works, `[ . ] Action Required` / `[ ! ] Action Required`
 while a prompt waits (`readCodexWindowTitle`; the title cannot tell an approval from a question, so it counts as an
 approval). The reporter turns that into:
@@ -1810,14 +1812,21 @@ approval). The reporter turns that into:
 - a CLI that quits by itself with an error: its terminal keeps the last words on screen until Enter, and that wait is
   `terminalWaiting` `{ on: 'exited', exitCode, since }` plus a `session_ended` push. A clean quit (exit code 0) is the
   user's own doing and a stop from the app is the app's: neither tells anyone.
-`terminalWaiting` is cleared when the prompt goes away and before the session ends, and a new runner clears one a dead
-runner left. `deriveActivitySummaryFromAgentState` counts it (approval → `pendingPermissionRequestCount`, question or
-exit → `pendingUserActionRequestCount`), so the relay's attention list and badge include it and the app hydrates a
-hidden session's `agentState` for it. Pushes follow the account's channel switches (`terminal_waiting` the request
-switches, `session_ended` the ready switch), read with `bootstrapAccountSettingsContext` when there is something to
-send; the CLI gets none of the account's settings. In the app, `deriveNewTerminalWait` (socket `update-session`) raises
-a `terminal-wait` local notification, and the session's ready cursor (`latestReadyEventSeq`) raises the "finished"
-one for every session, open or not, once per ready event whichever signal comes first (`claimReadyNotification`).
+`terminalWaiting` is cleared when the prompt goes away and before the session ends; a write the relay did not take is
+made again with the next report and at the end, and a new runner clears one a dead runner left.
+`deriveActivitySummaryFromAgentState` counts it (approval → `pendingPermissionRequestCount`, question or exit →
+`pendingUserActionRequestCount`), so the relay's attention list and badge include it. Pushes follow the account's
+channel switches (`terminal_waiting` the request switches, `session_ended` the ready switch) as last read: each push
+starts a `bootstrapAccountSettingsContext` refresh in `fast` mode (cache first, network in the background), so neither
+the ready event nor a session write waits for the relay. The runner reads only the notification choices; the CLI got
+its environment before and gets none of the account's settings.
+In the app, every `update-session` passes `announceTerminalWaitStart` (`sync/engine/socket/terminalWaitNotifications.ts`)
+before it patches the session's list row: a pending count turning non-zero there (the row is what the app keeps for
+every listed session, open or not) is the cue to decrypt that update's `agentState`, and a `terminalWaiting` in it
+raises a `terminal-wait` local notification (approval, question, or exit with its code); a chat session's request
+keeps its own notification. The session's ready cursor (`latestReadyEventSeq`) raises the "finished" one for every
+session, once per ready event whichever of the cursor and the transcript comes first (`claimReadyNotification`); a
+session whose transcript the app applies live is left to the transcript, which carries the reply's text.
 `ActivityLocalNotificationRuntime` skips a notification for the session on screen in a focused window.
 
 In development builds, Claude's metadata producer supplies its explicit non-secret native account-directory override to `createSessionMetadata`, which publishes it in `nativeAgentEnvironmentV1`. `resolveSessionRuntimeSnapshot` restores it before spawn environment validation, with explicit incoming overrides taking precedence. `sessionNativeEnvironment` owns the allowlist also consumed by durable respawn descriptors; arbitrary shell variables and credentials are not copied into metadata. The shared factory does not infer native directories from another Agent's ambient environment. Older session metadata without this optional field retains its existing behavior.
