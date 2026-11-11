@@ -32,8 +32,6 @@ jobs:
       PIGGERCODE_EMBEDDED_POLICY_ENV: production
       EXPO_UNSTABLE_WEB_MODAL: '1'
       CI: 'true'
-      # The owner's relay: the app starts pointed at it instead of upstream's cloud.
-      EXPO_PUBLIC_PIGGERCODE_SERVER_URL: https://code.pigger.si
       # The shipped APK is arm64 only (a universal one is roughly twice the size). x86_64 is built as well because
       # the emulator of the smoke job cannot run arm64 code; it is stripped from the shipped APK below.
       PIGGERCODE_ANDROID_BUILD_ARCHS: arm64-v8a,x86_64
