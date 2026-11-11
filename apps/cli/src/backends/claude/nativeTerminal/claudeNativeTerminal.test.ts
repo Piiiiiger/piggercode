@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fakeServerSession, NO_CONTROLS } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
+import { configOptionOverrides, fakeServerSession, NO_CONTROLS } from '@/terminal/nativeTerminal/nativeTerminalSession.testkit';
 
 import { claudeNativeTerminalEnv, followClaudeTitle } from './claudeNativeTerminal';
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
@@ -99,6 +99,29 @@ describe('planClaudeNativeTerminalLaunch with the new-session screen\'s choices'
   it('reopens a conversation with the same choices', () => {
     expect(args({ modelId: 'sonnet', permissionMode: 'safe-yolo' }, 'old-id'))
       .toEqual([...RENDERER, '--resume', 'old-id', '--model', 'sonnet', '--permission-mode', 'auto']);
+  });
+
+  it('starts claude at the thinking level chosen for the model, the model\'s usual one included', () => {
+    // Claude would otherwise use the level in its own settings files, which the screen does not show.
+    for (const level of ['max', 'xhigh']) {
+      expect(args({ modelId: 'claude-opus-5-5', configOptionOverrides: configOptionOverrides({ reasoning_effort: level }) }))
+        .toEqual([...RENDERER, '--session-id', 'new-id', '--model', 'claude-opus-5-5', '--effort', level, '--', 'hi']);
+    }
+  });
+
+  it('leaves the thinking level to claude when no model was chosen to check it against', () => {
+    expect(args({ configOptionOverrides: configOptionOverrides({ reasoning_effort: 'max' }) }))
+      .toEqual([...RENDERER, '--session-id', 'new-id', '--', 'hi']);
+  });
+
+  it('turns Ultracode on in the one settings flag claude reads, which then sets the thinking level itself', () => {
+    const launched = args({
+      modelId: 'claude-opus-5-5',
+      configOptionOverrides: configOptionOverrides({ ultracode: 'true', reasoning_effort: 'max' }),
+    });
+    expect(launched.filter((arg) => arg === '--settings')).toHaveLength(1);
+    expect(JSON.parse(launched[launched.indexOf('--settings') + 1] ?? '')).toEqual({ tui: 'default', ultracode: true });
+    expect(launched).not.toContain('--effort');
   });
 });
 
