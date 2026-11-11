@@ -32,7 +32,7 @@ export function registerWriteFileHandler(
     const path = typeof data?.path === 'string' ? data.path : '';
     logger.debug('Write file request:', path);
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
       targetPath: path,
       defaultDirectory: deps.defaultDirectory,
       accessPolicy: deps.accessPolicy,

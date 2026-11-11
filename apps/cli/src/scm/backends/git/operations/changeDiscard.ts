@@ -23,7 +23,7 @@ export async function gitChangeDiscard(input: {
     const errors: string[] = [];
 
     for (const entry of entries) {
-        const normalized = normalizePathspec(entry.path, context.cwd);
+        const normalized = await normalizePathspec(entry.path, context.cwd);
         if (!normalized.ok) {
             return {
                 success: false,

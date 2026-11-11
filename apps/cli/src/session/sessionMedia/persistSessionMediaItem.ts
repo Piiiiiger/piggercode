@@ -234,7 +234,7 @@ async function prepareSource(input: Readonly<{
         return failure(localPathResult.code, localPathResult.error);
     }
 
-    const sourceAuthorization = authorizeFilesystemPath({
+    const sourceAuthorization = await authorizeFilesystemPath({
         targetPath: localPathResult.path,
         defaultDirectory: input.workingDirectory,
         accessPolicy: input.accessPolicy ?? { kind: 'osUser' },
@@ -318,7 +318,7 @@ export async function persistSessionMediaItem(params: Readonly<{
     const config = params.config ?? DEFAULT_SESSION_MEDIA_TRANSFER_CONFIG;
     const transferCategory = persistedSessionMediaCategoryToTransferCategory(params.input.category);
     const tempUploadRoot = join(tmpdir(), 'piggercode', 'uploads', randomUUID());
-    const resolvedTarget = resolveConfiguredSessionMediaTransferTarget({
+    const resolvedTarget = await resolveConfiguredSessionMediaTransferTarget({
         config,
         tempUploadRoot,
         workingDirectory: params.workingDirectory,
@@ -354,7 +354,7 @@ export async function persistSessionMediaItem(params: Readonly<{
     });
     const mediaPath = joinSessionMediaPath(resolvedTarget.uploadBasePath, messageLocalId, fileName);
     const sizeBytes = prepared.kind === 'buffer' ? prepared.bytes.byteLength : prepared.sizeBytes;
-    const uploadTarget = resolveWorkspaceFileUploadTarget({
+    const uploadTarget = await resolveWorkspaceFileUploadTarget({
         workingDirectory: params.workingDirectory,
         accessPolicy: params.accessPolicy,
         path: mediaPath,

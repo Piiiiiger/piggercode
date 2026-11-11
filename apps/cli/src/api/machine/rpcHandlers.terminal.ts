@@ -109,11 +109,11 @@ export function registerMachineTerminalRpcHandlers(params: Readonly<{
     return input.terminalKey ? { terminalKey: input.terminalKey } : null;
   };
 
-  const resolveCwd = (cwdInput: unknown): { ok: true; cwd: string } | ReturnType<typeof err> => {
+  const resolveCwd = async (cwdInput: unknown): Promise<{ ok: true; cwd: string } | ReturnType<typeof err>> => {
     const raw = typeof cwdInput === 'string' && cwdInput.trim().length > 0 ? cwdInput.trim() : workingDirectory;
     const expanded = expandHomeDirPath(raw, env, platform);
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
       targetPath: expanded,
       defaultDirectory: workingDirectory,
       accessPolicy,
@@ -130,7 +130,7 @@ export function registerMachineTerminalRpcHandlers(params: Readonly<{
     const parsed = DaemonTerminalEnsureRequestSchema.safeParse(raw);
     if (!parsed.success) return err('terminal_invalid_request');
 
-    const cwd = resolveCwd(parsed.data.cwd);
+    const cwd = await resolveCwd(parsed.data.cwd);
     if (!cwd.ok) return cwd;
     const resolvedLaunch = resolveLaunch(parsed.data);
     if (!resolvedLaunch) return err('terminal_spawn_failed');
@@ -185,7 +185,7 @@ export function registerMachineTerminalRpcHandlers(params: Readonly<{
     const parsed = DaemonTerminalRestartRequestSchema.safeParse(raw);
     if (!parsed.success) return err('terminal_invalid_request');
 
-    const cwd = resolveCwd(parsed.data.cwd);
+    const cwd = await resolveCwd(parsed.data.cwd);
     if (!cwd.ok) return cwd;
     const resolvedLaunch = resolveLaunch(parsed.data);
     if (!resolvedLaunch) return err('terminal_spawn_failed');

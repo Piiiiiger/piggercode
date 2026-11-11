@@ -17,7 +17,7 @@ export async function listMachineBrowseDirectory(input: Readonly<{
     return { ok: false, error: 'Invalid machine file browser directory request', errorCode: 'invalid_request' }
   }
 
-  const validation = validateMachineBrowsePath({
+  const validation = await validateMachineBrowsePath({
     targetPath: parsed.data.path,
     roots: input.roots,
     platform: input.platform,

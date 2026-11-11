@@ -22,12 +22,12 @@ afterEach(() => {
 });
 
 describe('resolveWorkspaceFileUploadTarget', () => {
-    it('allows absolute upload destinations outside the default directory by default', () => {
+    it('allows absolute upload destinations outside the default directory by default', async () => {
         const workspace = createWorkspace();
         const outside = createWorkspace();
 
         expect(
-            resolveWorkspaceFileUploadTarget({
+            await resolveWorkspaceFileUploadTarget({
                 workingDirectory: workspace,
                 path: join(outside, 'file.txt'),
                 sizeBytes: 5,
@@ -41,11 +41,11 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         });
     });
 
-    it('returns the resolved workspace destination with validated size and overwrite state', () => {
+    it('returns the resolved workspace destination with validated size and overwrite state', async () => {
         const workspace = createWorkspace();
 
         expect(
-            resolveWorkspaceFileUploadTarget({
+            await resolveWorkspaceFileUploadTarget({
                 workingDirectory: workspace,
                 path: 'nested/file.txt',
                 sizeBytes: 5,
@@ -59,7 +59,7 @@ describe('resolveWorkspaceFileUploadTarget', () => {
                 overwrite: true,
             },
         });
-        const result = resolveWorkspaceFileUploadTarget({
+        const result = await resolveWorkspaceFileUploadTarget({
             workingDirectory: workspace,
             path: 'nested/file.txt',
             sizeBytes: 5,
@@ -72,14 +72,14 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         }
     });
 
-    it('allows configured extra write directories outside the workspace root', () => {
+    it('allows configured extra write directories outside the workspace root', async () => {
         const workspace = createWorkspace();
         const extraRoot = createWorkspace();
         const allowedDir = join(extraRoot, 'attachments');
         mkdirSync(allowedDir, { recursive: true });
 
         expect(
-            resolveWorkspaceFileUploadTarget({
+            await resolveWorkspaceFileUploadTarget({
                 workingDirectory: workspace,
                 path: join(allowedDir, 'message.txt'),
                 sizeBytes: 5,
@@ -98,11 +98,11 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         });
     });
 
-    it('rejects absolute upload destinations outside configured restricted roots', () => {
+    it('rejects absolute upload destinations outside configured restricted roots', async () => {
         const workspace = createWorkspace();
         const outside = createWorkspace();
 
-        const result = resolveWorkspaceFileUploadTarget({
+        const result = await resolveWorkspaceFileUploadTarget({
             workingDirectory: workspace,
             path: join(outside, 'file.txt'),
             sizeBytes: 5,
@@ -119,7 +119,7 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         const stagedPath = join(workspace, '.staged-upload');
         writeFileSync(stagedPath, 'hello\n', 'utf8');
 
-        const result = resolveWorkspaceFileUploadTarget({
+        const result = await resolveWorkspaceFileUploadTarget({
             workingDirectory: workspace,
             path: 'nested/file.txt',
             sizeBytes: 6,
@@ -156,11 +156,11 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         expect(readFileSync(join(workspace, 'nested', 'file.txt'), 'utf8')).toBe('hello\n');
     });
 
-    it('fails closed when the selected session-routed size limit is exceeded', () => {
+    it('fails closed when the selected session-routed size limit is exceeded', async () => {
         const workspace = createWorkspace();
 
         expect(
-            resolveWorkspaceFileUploadTarget({
+            await resolveWorkspaceFileUploadTarget({
                 workingDirectory: workspace,
                 path: 'large.bin',
                 sizeBytes: 5,
@@ -173,11 +173,11 @@ describe('resolveWorkspaceFileUploadTarget', () => {
         });
     });
 
-    it('rejects invalid size values before path validation', () => {
+    it('rejects invalid size values before path validation', async () => {
         const workspace = createWorkspace();
 
         expect(
-            resolveWorkspaceFileUploadTarget({
+            await resolveWorkspaceFileUploadTarget({
                 workingDirectory: workspace,
                 path: 'file.txt',
                 sizeBytes: -1,

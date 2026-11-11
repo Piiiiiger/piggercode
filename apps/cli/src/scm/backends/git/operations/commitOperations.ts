@@ -125,7 +125,7 @@ export async function gitCommitCreate(input: {
                 };
             }
 
-            const normalizedPatchPath = normalizePaths([patch.path], context.cwd);
+            const normalizedPatchPath = await normalizePaths([patch.path], context.cwd);
             if (!normalizedPatchPath.ok) {
                 return {
                     success: false,
@@ -197,7 +197,7 @@ export async function gitCommitCreate(input: {
         }
 
         if (request.scope?.kind === 'paths') {
-            const normalizedInclude = normalizePaths(request.scope.include, context.cwd);
+            const normalizedInclude = await normalizePaths(request.scope.include, context.cwd);
             if (!normalizedInclude.ok) {
                 return {
                     success: false,
@@ -207,7 +207,7 @@ export async function gitCommitCreate(input: {
             }
 
             const normalizedExclude = request.scope.exclude && request.scope.exclude.length > 0
-                ? normalizePaths(request.scope.exclude, context.cwd)
+                ? await normalizePaths(request.scope.exclude, context.cwd)
                 : { ok: true as const, normalizedPaths: [] as string[] };
             if (!normalizedExclude.ok) {
                 return {

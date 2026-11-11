@@ -1,6 +1,5 @@
-import { realpathSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { mkdir, rename, rm, stat } from 'fs/promises';
+import { mkdir, realpath, rename, rm, stat } from 'fs/promises';
 import { basename, dirname, join, relative, resolve as resolvePath } from 'path';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
@@ -35,13 +34,13 @@ type RenamePathResponse = Readonly<{ success: true } | { success: false; error: 
 type DeletePathRequest = Readonly<{ path: string; recursive?: boolean }>;
 type DeletePathResponse = Readonly<{ success: true } | { success: false; error: string }>;
 
-function resolveRealPathBestEffort(path: string): string {
+async function resolveRealPathBestEffort(path: string): Promise<string> {
   const resolved = resolvePath(path);
   try {
-    return realpathSync(resolved);
+    return await realpath(resolved);
   } catch {
     try {
-      const parent = realpathSync(dirname(resolved));
+      const parent = await realpath(dirname(resolved));
       return resolvePath(parent, basename(resolved));
     } catch {
       return resolved;
@@ -62,9 +61,10 @@ function sharedFolderProblem(path: string, mounts: readonly SharedFolderMount[])
     : `${path} holds ${shared.path}, a folder the computer ${shared.label} shares here; stop sharing it from that computer first`;
 }
 
-function isRootPath(resolvedPath: string, protectedRoots: readonly string[]): boolean {
-  const normalizedTarget = resolveRealPathBestEffort(resolvedPath);
-  return protectedRoots.some((root) => normalizedTarget === resolveRealPathBestEffort(root));
+async function isRootPath(resolvedPath: string, protectedRoots: readonly string[]): Promise<boolean> {
+  const normalizedTarget = await resolveRealPathBestEffort(resolvedPath);
+  const realRoots = await Promise.all(protectedRoots.map((root) => resolveRealPathBestEffort(root)));
+  return realRoots.some((root) => normalizedTarget === root);
 }
 
 export function registerPathMutationHandlers(
@@ -82,7 +82,7 @@ export function registerPathMutationHandlers(
   // Checked before anything resolves or stats the path, which through a dropped connection's mount
   // would wait until that connection ends: as given first, then as it resolves, against the mounts as
   // the mount table names them, and only while something is shared here.
-  const sharedFolderProblemAt = (resolvedPath: string): string | null => {
+  const sharedFolderProblemAt = async (resolvedPath: string): Promise<string | null> => {
     const mounts = listSharedFolderMounts(sharedFolders.homeDir, sharedFolders.readMountinfo());
     if (mounts.length === 0) return null;
     const realHome = realHomeOf(sharedFolders.homeDir);
@@ -93,7 +93,7 @@ export function registerPathMutationHandlers(
     const asGiven = sharedFolderProblem(resolvedPath, mounts) ?? sharedFolderProblem(resolvedPath, asMounted);
     // Inside a shared folder nothing here is at stake (shared folders never nest).
     if (asGiven || [...mounts, ...asMounted].some((mount) => isWithin(resolvedPath, mount.path))) return asGiven;
-    return sharedFolderProblem(resolveRealPathBestEffort(resolvedPath), asMounted);
+    return sharedFolderProblem(await resolveRealPathBestEffort(resolvedPath), asMounted);
   };
   const protectedRoots = resolveFilesystemPolicyProtectedRoots({
     defaultDirectory: deps.defaultDirectory,
@@ -104,7 +104,7 @@ export function registerPathMutationHandlers(
     const path = typeof data?.path === 'string' ? data.path : '';
     logger.debug('Stat file request:', path);
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
       targetPath: path,
       defaultDirectory: deps.defaultDirectory,
       accessPolicy: deps.accessPolicy,
@@ -139,13 +139,13 @@ export function registerPathMutationHandlers(
     const overwrite = Boolean(data?.overwrite);
     logger.debug('Rename path request:', from, '->', to);
 
-    const fromValidation = authorizeFilesystemPath({
+    const fromValidation = await authorizeFilesystemPath({
       targetPath: from,
       defaultDirectory: deps.defaultDirectory,
       accessPolicy: deps.accessPolicy,
       additionalAllowedDirs: deps.getAdditionalAllowedWriteDirs(),
     });
-    const toValidation = authorizeFilesystemPath({
+    const toValidation = await authorizeFilesystemPath({
       targetPath: to,
       defaultDirectory: deps.defaultDirectory,
       accessPolicy: deps.accessPolicy,
@@ -157,15 +157,15 @@ export function registerPathMutationHandlers(
     if (!toValidation.valid) {
       return { success: false, error: toValidation.error };
     }
-    const shared = sharedFolderProblemAt(fromValidation.resolvedPath) ?? sharedFolderProblemAt(toValidation.resolvedPath);
+    const shared = await sharedFolderProblemAt(fromValidation.resolvedPath) ?? await sharedFolderProblemAt(toValidation.resolvedPath);
     if (shared) {
       return { success: false, error: shared };
     }
 
-    if (isRootPath(fromValidation.resolvedPath, protectedRoots)) {
+    if (await isRootPath(fromValidation.resolvedPath, protectedRoots)) {
       return { success: false, error: 'Cannot rename the working directory root' };
     }
-    if (isRootPath(toValidation.resolvedPath, protectedRoots)) {
+    if (await isRootPath(toValidation.resolvedPath, protectedRoots)) {
       return { success: false, error: 'Cannot rename into the working directory root' };
     }
 
@@ -191,7 +191,7 @@ export function registerPathMutationHandlers(
     const recursive = Boolean(data?.recursive);
     logger.debug('Delete path request:', path, 'recursive:', recursive);
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
       targetPath: path,
       defaultDirectory: deps.defaultDirectory,
       accessPolicy: deps.accessPolicy,
@@ -200,12 +200,12 @@ export function registerPathMutationHandlers(
     if (!validation.valid) {
       return { success: false, error: validation.error };
     }
-    const shared = sharedFolderProblemAt(validation.resolvedPath);
+    const shared = await sharedFolderProblemAt(validation.resolvedPath);
     if (shared) {
       return { success: false, error: shared };
     }
 
-    if (isRootPath(validation.resolvedPath, protectedRoots)) {
+    if (await isRootPath(validation.resolvedPath, protectedRoots)) {
       return { success: false, error: 'Cannot delete the working directory root' };
     }
 

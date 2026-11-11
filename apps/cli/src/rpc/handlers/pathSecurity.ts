@@ -1,4 +1,4 @@
-import { realpathSync } from 'fs';
+import { realpath } from 'fs/promises';
 import { basename, dirname, isAbsolute, relative, resolve, sep } from 'path';
 
 export interface PathValidationResult {
@@ -7,13 +7,13 @@ export interface PathValidationResult {
     resolvedPath?: string;
 }
 
-function resolveRealPathThroughExistingAncestor(targetPath: string): string {
+async function resolveRealPathThroughExistingAncestor(targetPath: string): Promise<string> {
     let candidate = targetPath;
     const missingSegments: string[] = [];
 
     for (;;) {
         try {
-            return resolve(realpathSync(candidate), ...missingSegments);
+            return resolve(await realpath(candidate), ...missingSegments);
         } catch {
             const parent = dirname(candidate);
             if (parent === candidate) return targetPath;
@@ -57,11 +57,11 @@ export function validateWorkspaceInspectionPath(targetPath: string): PathValidat
  * @param additionalAllowedDirs - Extra absolute directories that are also permitted
  * @returns Validation result
  */
-export function validatePath(
+export async function validatePath(
     targetPath: string,
     workingDirectory: string,
     additionalAllowedDirs?: ReadonlyArray<string>,
-): PathValidationResult {
+): Promise<PathValidationResult> {
     if (!workingDirectory || typeof workingDirectory !== 'string') {
         return { valid: false, error: 'Access denied: Invalid working directory' };
     }
@@ -69,7 +69,7 @@ export function validatePath(
     // Resolve and realpath the working directory to ensure comparisons stay consistent on platforms
     // where e.g. /var is a symlink to /private/var (macOS).
     const resolvedWorkingDir = resolve(workingDirectory);
-    const realWorkingDir = resolveRealPathThroughExistingAncestor(resolvedWorkingDir);
+    const realWorkingDir = await resolveRealPathThroughExistingAncestor(resolvedWorkingDir);
 
     // Resolve the target against the real working dir to keep it on the same canonical root.
     const resolvedTarget = resolve(realWorkingDir, targetPath);
@@ -80,16 +80,16 @@ export function validatePath(
 
     // Resolve symlinks for the target when possible to prevent traversal via symlinks.
     // If the file doesn't exist yet, validate based on the realpath of its parent directory.
-    const realTarget = resolveRealPathThroughExistingAncestor(resolvedTarget);
+    const realTarget = await resolveRealPathThroughExistingAncestor(resolvedTarget);
 
-    const allowedDirs = [realWorkingDir, ...resolvedExtraDirs].map((dir) => {
+    const allowedDirs = await Promise.all([realWorkingDir, ...resolvedExtraDirs].map(async (dir) => {
         try {
-            return realpathSync(dir);
+            return await realpath(dir);
         } catch {
             // Directory may not exist yet (e.g., upload dir before first upload).
             return dir;
         }
-    });
+    }));
 
     for (const dir of allowedDirs) {
         const rel = relative(dir, realTarget);

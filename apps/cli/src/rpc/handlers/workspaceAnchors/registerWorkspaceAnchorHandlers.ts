@@ -53,7 +53,7 @@ export function registerWorkspaceAnchorHandlers(
         return { success: false, errorCode: 'INVALID_REQUEST', error: 'Invalid workspace anchor resolution request' };
       }
 
-      const workspace = authorizeFilesystemPath({
+      const workspace = await authorizeFilesystemPath({
         targetPath: parsed.data.workspacePath,
         defaultDirectory: deps.defaultDirectory,
         accessPolicy: deps.accessPolicy,
@@ -127,7 +127,7 @@ async function readAuthorizedWorkspaceFile(params: Readonly<{
     return { ok: false, reason: 'Workspace file path is outside the workspace' };
   }
 
-  const validation = authorizeFilesystemPath({
+  const validation = await authorizeFilesystemPath({
     targetPath: absolutePath,
     defaultDirectory: params.defaultDirectory,
     accessPolicy: params.accessPolicy,

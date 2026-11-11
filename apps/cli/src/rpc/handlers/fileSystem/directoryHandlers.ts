@@ -59,7 +59,7 @@ export function registerDirectoryHandlers(
       const path = typeof data?.path === 'string' ? data.path : '';
       logger.debug('Create directory request:', path);
 
-      const validation = authorizeFilesystemPath({
+      const validation = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: deps.defaultDirectory,
         accessPolicy: deps.accessPolicy,
@@ -85,7 +85,7 @@ export function registerDirectoryHandlers(
       const path = typeof data?.path === 'string' ? data.path : '';
       logger.debug('List directory request:', path);
 
-      const validation = authorizeFilesystemPath({
+      const validation = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: deps.defaultDirectory,
         accessPolicy: deps.accessPolicy,
@@ -126,7 +126,7 @@ export function registerDirectoryHandlers(
       const maxDepth = typeof data?.maxDepth === 'number' ? data.maxDepth : Number(data?.maxDepth ?? 0);
       logger.debug('Get directory tree request:', path, 'maxDepth:', maxDepth);
 
-      const validation = authorizeFilesystemPath({
+      const validation = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: deps.defaultDirectory,
         accessPolicy: deps.accessPolicy,

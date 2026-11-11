@@ -1,4 +1,4 @@
-import { existsSync } from 'fs';
+import { access } from 'fs/promises';
 import { join } from 'node:path';
 
 import type {
@@ -29,7 +29,7 @@ export async function detectSaplingRepo(input: { cwd: string }): Promise<ScmRepo
     }
 
     const rootPath = root.stdout.trim();
-    const mode = existsSync(join(rootPath, '.sl')) ? '.sl' : '.git';
+    const mode = await access(join(rootPath, '.sl')).then(() => '.sl' as const, () => '.git' as const);
     return {
         isRepo: true,
         rootPath,

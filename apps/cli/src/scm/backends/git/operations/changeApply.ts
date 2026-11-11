@@ -31,7 +31,7 @@ export async function gitChangeInclude(input: {
         };
     }
 
-    const normalized = normalizePaths(paths, context.cwd);
+    const normalized = await normalizePaths(paths, context.cwd);
     if (!normalized.ok) {
         return {
             success: false,
@@ -81,7 +81,7 @@ export async function gitChangeExclude(input: {
         };
     }
 
-    const normalized = normalizePaths(paths, context.cwd);
+    const normalized = await normalizePaths(paths, context.cwd);
     if (!normalized.ok) {
         return {
             success: false,

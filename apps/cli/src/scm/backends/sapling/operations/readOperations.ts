@@ -42,7 +42,7 @@ export async function saplingDiffFile(input: {
     request: ScmDiffFileRequest;
 }): Promise<ScmDiffFileResponse> {
     const { context, request } = input;
-    const pathspec = normalizePathspec(request.path, context.cwd);
+    const pathspec = await normalizePathspec(request.path, context.cwd);
     if (!pathspec.ok) {
         return {
             success: false,

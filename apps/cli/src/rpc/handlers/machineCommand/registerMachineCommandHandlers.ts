@@ -62,7 +62,7 @@ export function registerMachineCommandHandlers(params: Readonly<{
       }
 
       const requestedCwd = parsed.data.cwd ? expandHomeDirPath(parsed.data.cwd) : defaultDirectory;
-      const cwd = authorizeFilesystemPath({
+      const cwd = await authorizeFilesystemPath({
         targetPath: requestedCwd,
         defaultDirectory,
         accessPolicy: params.accessPolicy,

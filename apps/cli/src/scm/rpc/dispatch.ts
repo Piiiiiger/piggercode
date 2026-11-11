@@ -78,7 +78,7 @@ export async function runScmRoute<TRequest extends ScmRequestBase, TResponse ext
             defaultDirectory: resolveTildePath(input.workingDirectory),
             accessPolicy,
         });
-        const cwdResult = resolveCwd(input.request.cwd, normalizedWorkingDirectory, accessPolicy);
+        const cwdResult = await resolveCwd(input.request.cwd, normalizedWorkingDirectory, accessPolicy);
         if (!cwdResult.ok) {
             return invalidPathResponse<TResponse>(cwdResult.error);
         }
@@ -132,7 +132,7 @@ export async function runScmProvisioningRoute<TRequest extends ScmRequestBase, T
             defaultDirectory: resolveTildePath(input.workingDirectory),
             accessPolicy,
         });
-        const cwdResult = resolveCwd(input.request.cwd, normalizedWorkingDirectory, accessPolicy);
+        const cwdResult = await resolveCwd(input.request.cwd, normalizedWorkingDirectory, accessPolicy);
         if (!cwdResult.ok) {
             return invalidPathResponse<TResponse>(cwdResult.error);
         }

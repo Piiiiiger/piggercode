@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { isAbsolute, relative, sep } from 'path';
 import path from 'node:path';
-import { realpathSync } from 'node:fs';
+import { realpath } from 'node:fs/promises';
 
 import { createScmCapabilities, type ScmWorkingSnapshot } from '@piggercode/protocol';
 
@@ -26,12 +26,12 @@ const DEFAULT_SCM_MAX_OUTPUT_BYTES = 4 * 1024 * 1024;
 
 export type ScmFilesystemAccessPolicy = FilesystemAccessPolicy;
 
-function authorizeScmCwd(
+async function authorizeScmCwd(
     rawCwd: string,
     defaultDirectory: string,
     accessPolicy: ScmFilesystemAccessPolicy
-): { ok: true; cwd: string } | { ok: false; error: string } {
-    const validation = authorizeFilesystemPath({
+): Promise<{ ok: true; cwd: string } | { ok: false; error: string }> {
+    const validation = await authorizeFilesystemPath({
         targetPath: rawCwd,
         defaultDirectory,
         accessPolicy,
@@ -206,11 +206,11 @@ export async function runScmCommand(input: {
     });
 }
 
-export function resolveCwd(
+export async function resolveCwd(
     rawCwd: string | undefined,
     workingDirectory: string,
     accessPolicy: ScmFilesystemAccessPolicy = { kind: 'osUser' }
-): { ok: true; cwd: string } | { ok: false; error: string } {
+): Promise<{ ok: true; cwd: string } | { ok: false; error: string }> {
     const normalizedWorkingDirectory = resolveTildePath(workingDirectory);
     if (!rawCwd) return authorizeScmCwd(normalizedWorkingDirectory, normalizedWorkingDirectory, accessPolicy);
 
@@ -218,16 +218,13 @@ export function resolveCwd(
     return authorizeScmCwd(normalizedRawCwd, normalizedWorkingDirectory, accessPolicy);
 }
 
-export function normalizePathspec(rawPath: string, cwd: string): { ok: true; pathspec: string } | { ok: false; error: string } {
-    const canonicalCwd = (() => {
-        try {
-            return realpathSync(path.resolve(cwd));
-        } catch {
-            return path.resolve(cwd);
-        }
-    })();
+export async function normalizePathspec(
+    rawPath: string,
+    cwd: string
+): Promise<{ ok: true; pathspec: string } | { ok: false; error: string }> {
+    const canonicalCwd = await realpath(path.resolve(cwd)).catch(() => path.resolve(cwd));
 
-    const validation = validatePath(rawPath, canonicalCwd);
+    const validation = await validatePath(rawPath, canonicalCwd);
     if (!validation.valid || !validation.resolvedPath) {
         return { ok: false, error: validation.error || `Invalid path: ${rawPath}` };
     }

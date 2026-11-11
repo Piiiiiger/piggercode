@@ -1,12 +1,12 @@
 import { normalizePathspec } from '../../../runtime';
 
-export function normalizePaths(
+export async function normalizePaths(
     paths: string[],
     cwd: string
-): { ok: true; normalizedPaths: string[] } | { ok: false; error: string } {
+): Promise<{ ok: true; normalizedPaths: string[] } | { ok: false; error: string }> {
     const normalizedPaths: string[] = [];
     for (const path of paths) {
-        const normalized = normalizePathspec(path, cwd);
+        const normalized = await normalizePathspec(path, cwd);
         if (!normalized.ok) {
             return { ok: false, error: normalized.error };
         }

@@ -23,9 +23,9 @@ afterEach(() => {
 });
 
 describe('authorizeFilesystemPath', () => {
-  it('allows absolute paths outside the default directory for the os-user policy', () => {
+  it('allows absolute paths outside the default directory for the os-user policy', async () => {
     expect(
-      authorizeFilesystemPath({
+      await authorizeFilesystemPath({
         targetPath: '/outside/project/file.txt',
         defaultDirectory: '/home/alice',
         accessPolicy: { kind: 'osUser' },
@@ -33,9 +33,9 @@ describe('authorizeFilesystemPath', () => {
     ).toEqual({ valid: true, resolvedPath: resolve('/outside/project/file.txt') });
   });
 
-  it('resolves relative paths against the default directory for the os-user policy', () => {
+  it('resolves relative paths against the default directory for the os-user policy', async () => {
     expect(
-      authorizeFilesystemPath({
+      await authorizeFilesystemPath({
         targetPath: 'notes/todo.txt',
         defaultDirectory: '/home/alice',
         accessPolicy: { kind: 'osUser' },
@@ -43,8 +43,8 @@ describe('authorizeFilesystemPath', () => {
     ).toEqual({ valid: true, resolvedPath: resolve('/home/alice/notes/todo.txt') });
   });
 
-  it('rejects paths containing null bytes', () => {
-    const result = authorizeFilesystemPath({
+  it('rejects paths containing null bytes', async () => {
+    const result = await authorizeFilesystemPath({
       targetPath: '/home/alice/project\0/file.txt',
       defaultDirectory: '/home/alice',
       accessPolicy: { kind: 'osUser' },
@@ -55,9 +55,9 @@ describe('authorizeFilesystemPath', () => {
     expect(result.error).toContain('invalid characters');
   });
 
-  it('allows paths inside a restricted root', () => {
+  it('allows paths inside a restricted root', async () => {
     expect(
-      authorizeFilesystemPath({
+      await authorizeFilesystemPath({
         targetPath: '/srv/project/file.txt',
         defaultDirectory: '/home/alice',
         accessPolicy: { kind: 'restrictedRoots', roots: ['/srv/project'] },
@@ -65,8 +65,8 @@ describe('authorizeFilesystemPath', () => {
     ).toEqual({ valid: true, resolvedPath: resolve('/srv/project/file.txt') });
   });
 
-  it('rejects sibling-prefix collisions in restricted mode', () => {
-    const result = authorizeFilesystemPath({
+  it('rejects sibling-prefix collisions in restricted mode', async () => {
+    const result = await authorizeFilesystemPath({
       targetPath: '/home/alice2/project/file.txt',
       defaultDirectory: '/home/alice',
       accessPolicy: { kind: 'restrictedRoots', roots: ['/home/alice'] },
@@ -77,9 +77,9 @@ describe('authorizeFilesystemPath', () => {
     expect(result.error).toContain('outside the allowed directories');
   });
 
-  it('allows children whose basename starts with dots inside restricted roots', () => {
+  it('allows children whose basename starts with dots inside restricted roots', async () => {
     expect(
-      authorizeFilesystemPath({
+      await authorizeFilesystemPath({
         targetPath: '/home/alice/..project/file.txt',
         defaultDirectory: '/home/alice',
         accessPolicy: { kind: 'restrictedRoots', roots: ['/home/alice'] },
@@ -87,9 +87,9 @@ describe('authorizeFilesystemPath', () => {
     ).toEqual({ valid: true, resolvedPath: resolve('/home/alice/..project/file.txt') });
   });
 
-  it('allows dynamic additional directories outside restricted roots', () => {
+  it('allows dynamic additional directories outside restricted roots', async () => {
     expect(
-      authorizeFilesystemPath({
+      await authorizeFilesystemPath({
         targetPath: '/tmp/happier/uploads/file.txt',
         defaultDirectory: '/home/alice',
         accessPolicy: { kind: 'restrictedRoots', roots: ['/home/alice'] },
@@ -98,13 +98,13 @@ describe('authorizeFilesystemPath', () => {
     ).toEqual({ valid: true, resolvedPath: resolve('/tmp/happier/uploads/file.txt') });
   });
 
-  it('rejects symlinks that escape a restricted root', () => {
+  it('rejects symlinks that escape a restricted root', async () => {
     const allowed = createTempRoot('happier-fs-policy-allowed');
     const outside = createTempRoot('happier-fs-policy-outside');
     const link = join(allowed, 'link');
     symlinkSync(outside, link);
 
-    const result = authorizeFilesystemPath({
+    const result = await authorizeFilesystemPath({
       targetPath: join(link, 'missing', 'secret.txt'),
       defaultDirectory: allowed,
       accessPolicy: { kind: 'restrictedRoots', roots: [allowed] },
@@ -115,14 +115,14 @@ describe('authorizeFilesystemPath', () => {
     expect(result.error).toContain('outside the allowed directories');
   });
 
-  it('allows a non-existent descendant through a symlink-aliased restricted root', () => {
+  it('allows a non-existent descendant through a symlink-aliased restricted root', async () => {
     const container = createTempRoot('happier-fs-policy-alias');
     const realRoot = join(container, 'real-root');
     const aliasRoot = join(container, 'alias-root');
     mkdirSync(realRoot, { recursive: true });
     symlinkSync(realRoot, aliasRoot);
 
-    const result = authorizeFilesystemPath({
+    const result = await authorizeFilesystemPath({
       targetPath: join(aliasRoot, '.piggercode', 'uploads', 'generated'),
       defaultDirectory: aliasRoot,
       accessPolicy: { kind: 'restrictedRoots', roots: [aliasRoot] },
@@ -134,8 +134,8 @@ describe('authorizeFilesystemPath', () => {
     });
   });
 
-  it('handles Windows sibling-prefix collisions and mixed separators', () => {
-    const allowed = authorizeFilesystemPath({
+  it('handles Windows sibling-prefix collisions and mixed separators', async () => {
+    const allowed = await authorizeFilesystemPath({
       targetPath: 'C:/Users/alice/work\\repo/file.txt',
       defaultDirectory: 'C:\\Users\\alice',
       accessPolicy: { kind: 'restrictedRoots', roots: ['C:\\Users\\alice\\work'] },
@@ -143,7 +143,7 @@ describe('authorizeFilesystemPath', () => {
     });
     expect(allowed).toEqual({ valid: true, resolvedPath: 'C:\\Users\\alice\\work\\repo\\file.txt' });
 
-    const rejected = authorizeFilesystemPath({
+    const rejected = await authorizeFilesystemPath({
       targetPath: 'C:\\Users\\alice2\\work\\repo\\file.txt',
       defaultDirectory: 'C:\\Users\\alice',
       accessPolicy: { kind: 'restrictedRoots', roots: ['C:\\Users\\alice'] },

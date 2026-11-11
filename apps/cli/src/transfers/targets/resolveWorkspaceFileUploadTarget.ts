@@ -25,7 +25,7 @@ function normalizeSizeBytes(value: unknown): number | null {
     return sizeBytes;
 }
 
-export function resolveWorkspaceFileUploadTarget(input: Readonly<{
+export async function resolveWorkspaceFileUploadTarget(input: Readonly<{
     workingDirectory: string;
     accessPolicy?: FilesystemAccessPolicy;
     path: unknown;
@@ -35,7 +35,7 @@ export function resolveWorkspaceFileUploadTarget(input: Readonly<{
     renameIfExists?: boolean;
     additionalAllowedWriteDirs?: readonly string[];
     sessionRpcTransferMaxBytes?: number | null;
-}>): WorkspaceFileUploadTargetResult {
+}>): Promise<WorkspaceFileUploadTargetResult> {
     const path = typeof input.path === 'string' ? input.path : '';
     const sizeBytes = normalizeSizeBytes(input.sizeBytes);
     const overwrite = Boolean(input.overwrite);
@@ -53,7 +53,7 @@ export function resolveWorkspaceFileUploadTarget(input: Readonly<{
         return { success: false, error: 'File exceeds upload size limit' };
     }
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: input.workingDirectory,
         accessPolicy: input.accessPolicy ?? { kind: 'osUser' },

@@ -7,8 +7,8 @@ import {
 import { resolveConfiguredSessionMediaTransferTarget } from '../sessionMedia/resolveSessionMediaTransferTarget';
 
 describe('resolveAttachmentTransferTarget', () => {
-  it('keeps workspace uploads inside the workspace transfer substrate', () => {
-    expect(resolveConfiguredAttachmentTransferTarget({
+  it('keeps workspace uploads inside the workspace transfer substrate', async () => {
+    expect(await resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'workspace',
         workspaceRelativeDir: '.piggercode/uploads',
@@ -29,8 +29,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('rejects workspace uploads outside restricted filesystem roots', () => {
-    const result = resolveConfiguredAttachmentTransferTarget({
+  it('rejects workspace uploads outside restricted filesystem roots', async () => {
+    const result = await resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'workspace',
         workspaceRelativeDir: '.piggercode/uploads',
@@ -54,8 +54,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('keeps os_temp uploads inside the configured temp transfer root', () => {
-    const result = resolveConfiguredAttachmentTransferTarget({
+  it('keeps os_temp uploads inside the configured temp transfer root', async () => {
+    const result = await resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'os_temp',
         workspaceRelativeDir: '.piggercode/uploads',
@@ -77,8 +77,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('resolves generated media into the workspace generated media directory', () => {
-    expect(resolveConfiguredSessionMediaTransferTarget({
+  it('resolves generated media into the workspace generated media directory', async () => {
+    expect(await resolveConfiguredSessionMediaTransferTarget({
       category: 'generated',
       config: {
         uploadLocation: 'workspace',
@@ -99,8 +99,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('resolves artifact media into the workspace artifacts media directory', () => {
-    expect(resolveConfiguredSessionMediaTransferTarget({
+  it('resolves artifact media into the workspace artifacts media directory', async () => {
+    expect(await resolveConfiguredSessionMediaTransferTarget({
       category: 'artifacts',
       config: {
         uploadLocation: 'workspace',
@@ -121,8 +121,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('rejects Windows drive-root workspace media directories', () => {
-    expect(resolveConfiguredSessionMediaTransferTarget({
+  it('rejects Windows drive-root workspace media directories', async () => {
+    expect(await resolveConfiguredSessionMediaTransferTarget({
       category: 'generated',
       config: {
         uploadLocation: 'workspace',
@@ -138,8 +138,8 @@ describe('resolveAttachmentTransferTarget', () => {
     });
   });
 
-  it('rejects os_temp storage for durable generated media categories', () => {
-    expect(resolveConfiguredSessionMediaTransferTarget({
+  it('rejects os_temp storage for durable generated media categories', async () => {
+    expect(await resolveConfiguredSessionMediaTransferTarget({
       category: 'generated',
       config: {
         uploadLocation: 'os_temp',

@@ -225,7 +225,7 @@ export function registerBashHandler(
             if (data.cwd === '/') {
                 cwd = undefined;
             } else {
-                const validation = authorizeFilesystemPath({
+                const validation = await authorizeFilesystemPath({
                     targetPath: data.cwd,
                     defaultDirectory: workingDirectory,
                     accessPolicy,

@@ -7,8 +7,8 @@ import { describe, expect, it } from 'vitest';
 import { validateMachineBrowsePath } from './machineBrowsePathPolicy';
 
 describe('validateMachineBrowsePath', () => {
-  it('accepts absolute paths within the discovered roots', () => {
-    expect(validateMachineBrowsePath({
+  it('accepts absolute paths within the discovered roots', async () => {
+    expect(await validateMachineBrowsePath({
       targetPath: '/Users/leeroy',
       roots: [{ id: '/', label: '/', path: '/' }],
       platform: 'darwin',
@@ -18,22 +18,22 @@ describe('validateMachineBrowsePath', () => {
     });
   });
 
-  it('rejects relative paths and paths outside allowed windows roots', () => {
-    expect(validateMachineBrowsePath({
+  it('rejects relative paths and paths outside allowed windows roots', async () => {
+    expect(await validateMachineBrowsePath({
       targetPath: 'relative/path',
       roots: [{ id: '/', label: '/', path: '/' }],
       platform: 'darwin',
     })).toMatchObject({ valid: false });
 
-    expect(validateMachineBrowsePath({
+    expect(await validateMachineBrowsePath({
       targetPath: 'D:\\work',
       roots: [{ id: 'C:\\', label: 'C:', path: 'C:\\' }],
       platform: 'win32',
     })).toMatchObject({ valid: false });
   });
 
-  it('accepts absolute Windows paths when the injected platform is win32', () => {
-    expect(validateMachineBrowsePath({
+  it('accepts absolute Windows paths when the injected platform is win32', async () => {
+    expect(await validateMachineBrowsePath({
       targetPath: 'C:\\Users\\alice\\repo',
       roots: [{ id: 'C:\\', label: 'C:', path: 'C:\\' }],
       platform: 'win32',
@@ -43,7 +43,7 @@ describe('validateMachineBrowsePath', () => {
     });
   });
 
-  it('does not realpath Windows paths through the host filesystem when the injected platform is win32', () => {
+  it('does not realpath Windows paths through the host filesystem when the injected platform is win32', async () => {
     const previousCwd = process.cwd();
     const workspace = mkdtempSync(join(tmpdir(), 'happier-machine-browse-windows-'));
     const fakeWindowsPathOnHost = join(workspace, 'C:\\Users\\alice\\repo');
@@ -52,7 +52,7 @@ describe('validateMachineBrowsePath', () => {
     try {
       process.chdir(workspace);
 
-      expect(validateMachineBrowsePath({
+      expect(await validateMachineBrowsePath({
         targetPath: 'C:\\Users\\alice\\repo',
         roots: [{ id: 'C:\\', label: 'C:', path: 'C:\\' }],
         platform: 'win32',
@@ -66,7 +66,7 @@ describe('validateMachineBrowsePath', () => {
     }
   });
 
-  it('rejects symlinked directories that escape an allowed root', () => {
+  it('rejects symlinked directories that escape an allowed root', async () => {
     const workspace = mkdtempSync(join(tmpdir(), 'happier-machine-browse-root-'));
     const outside = mkdtempSync(join(tmpdir(), 'happier-machine-browse-outside-'));
 
@@ -76,7 +76,7 @@ describe('validateMachineBrowsePath', () => {
       mkdirSync(root, { recursive: true });
       symlinkSync(outside, linkPath, process.platform === 'win32' ? 'junction' : 'dir');
 
-      expect(validateMachineBrowsePath({
+      expect(await validateMachineBrowsePath({
         targetPath: linkPath,
         roots: [{ id: 'root', label: 'Root', path: root }],
       })).toMatchObject({ valid: false });

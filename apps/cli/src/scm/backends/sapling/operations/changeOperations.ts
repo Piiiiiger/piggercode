@@ -1,4 +1,4 @@
-import { rmSync } from 'fs';
+import { rm } from 'fs/promises';
 import path from 'node:path';
 
 import type { ScmChangeApplyResponse, ScmChangeDiscardRequest, ScmChangeDiscardResponse } from '@piggercode/protocol';
@@ -41,7 +41,7 @@ export async function saplingChangeDiscard(input: {
     const removePaths: string[] = [];
 
     for (const entry of entries) {
-        const normalized = normalizePathspec(entry.path, context.cwd);
+        const normalized = await normalizePathspec(entry.path, context.cwd);
         if (!normalized.ok) {
             return {
                 success: false,
@@ -81,7 +81,7 @@ export async function saplingChangeDiscard(input: {
     for (const entry of removePaths) {
         const absolutePath = path.join(context.cwd, entry);
         try {
-            rmSync(absolutePath, { force: true, recursive: true });
+            await rm(absolutePath, { force: true, recursive: true });
         } catch (error) {
             return {
                 success: false,

@@ -44,7 +44,7 @@ import {
     type ConnectedServiceBindingsV1,
 } from '@piggercode/protocol';
 import { invokeProviderCliInstall as invokeSharedProviderCliInstall } from '@/runtime/managedTools/invokeProviderCliInstall';
-import { existsSync, statSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import { dirname, resolve as resolvePath } from 'node:path';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -121,19 +121,19 @@ function titleCase(value: string): string {
     return `${value[0].toUpperCase()}${value.slice(1)}`;
 }
 
-function isExistingDirectory(value: string): boolean {
+async function isExistingDirectory(value: string): Promise<boolean> {
     if (!value) return false;
     try {
-        return statSync(value).isDirectory();
+        return (await stat(value)).isDirectory();
     } catch {
         return false;
     }
 }
 
-function resolveClosestExistingDirectory(value: string): string {
+async function resolveClosestExistingDirectory(value: string): Promise<string> {
     let candidate = resolvePath(value);
     for (let attempt = 0; attempt < 32; attempt += 1) {
-        if (isExistingDirectory(candidate)) return candidate;
+        if (await isExistingDirectory(candidate)) return candidate;
         const parent = dirname(candidate);
         if (!parent || parent === candidate) break;
         candidate = parent;
@@ -141,19 +141,19 @@ function resolveClosestExistingDirectory(value: string): string {
     return candidate;
 }
 
-function resolveProbeCwd(raw: unknown): string {
+async function resolveProbeCwd(raw: unknown): Promise<string> {
     const rawValue = typeof raw === 'string' ? raw.trim() : '';
     const fallback = (process.env.HOME ?? '').toString().trim() || os.homedir() || process.cwd();
     const initial = rawValue || process.cwd();
 
-    const candidate = resolveClosestExistingDirectory(initial);
-    if (isExistingDirectory(candidate)) return candidate;
+    const candidate = await resolveClosestExistingDirectory(initial);
+    if (await isExistingDirectory(candidate)) return candidate;
 
-    const fallbackCandidate = resolveClosestExistingDirectory(fallback);
-    if (isExistingDirectory(fallbackCandidate)) return fallbackCandidate;
+    const fallbackCandidate = await resolveClosestExistingDirectory(fallback);
+    if (await isExistingDirectory(fallbackCandidate)) return fallbackCandidate;
 
-    const cwdCandidate = resolveClosestExistingDirectory(process.cwd());
-    if (isExistingDirectory(cwdCandidate)) return cwdCandidate;
+    const cwdCandidate = await resolveClosestExistingDirectory(process.cwd());
+    if (await isExistingDirectory(cwdCandidate)) return cwdCandidate;
 
     return process.cwd();
 }
@@ -443,7 +443,7 @@ async function prepareAndInvokeCliProbeMethod(
     if (lifecycle) remainingCatalogProbeMs(lifecycle);
     const timeoutMsRaw = (params ?? {}).timeoutMs;
     const timeoutMs = typeof timeoutMsRaw === 'number' ? timeoutMsRaw : DEFAULT_PROBE_MODELS_TIMEOUT_MS;
-    const cwd = resolveProbeCwd((params ?? {}).cwd);
+    const cwd = await resolveProbeCwd((params ?? {}).cwd);
     const profileId = parseProbeProfileId(params);
     let profileProcessEnv: NodeJS.ProcessEnv;
     try {

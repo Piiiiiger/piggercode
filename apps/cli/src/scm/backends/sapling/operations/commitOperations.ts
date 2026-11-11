@@ -74,7 +74,7 @@ export async function saplingCommitCreate(input: {
     if (request.scope?.kind === 'paths') {
         const includedPaths: string[] = [];
         for (const path of request.scope.include) {
-            const normalized = normalizePathspec(path, context.cwd);
+            const normalized = await normalizePathspec(path, context.cwd);
             if (!normalized.ok) {
                 return {
                     success: false,
@@ -87,7 +87,7 @@ export async function saplingCommitCreate(input: {
 
         const excluded = new Set<string>();
         for (const path of request.scope.exclude ?? []) {
-            const normalized = normalizePathspec(path, context.cwd);
+            const normalized = await normalizePathspec(path, context.cwd);
             if (!normalized.ok) {
                 return {
                     success: false,

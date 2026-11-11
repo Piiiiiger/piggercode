@@ -1,4 +1,5 @@
-import { copyFileSync, existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, resolve } from 'node:path';
 
@@ -86,9 +87,10 @@ export async function createGitTemporaryIndex(input: {
                 error: sourceIndex.error,
             };
         }
-        if (existsSync(sourceIndex.indexPath)) {
-            copyFileSync(sourceIndex.indexPath, indexPath);
-        }
+        // The repository's own index may sit on a slow or hung mount; the temp dir is local.
+        await copyFile(sourceIndex.indexPath, indexPath).catch((error: NodeJS.ErrnoException) => {
+            if (error.code !== 'ENOENT') throw error;
+        });
         return {
             success: true,
             tempIndex: {

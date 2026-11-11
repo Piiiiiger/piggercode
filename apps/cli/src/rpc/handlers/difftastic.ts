@@ -30,7 +30,7 @@ export function registerDifftasticHandler(
 
         let cwd = workingDirectory;
         if (data.cwd) {
-            const validation = authorizeFilesystemPath({
+            const validation = await authorizeFilesystemPath({
                 targetPath: data.cwd,
                 defaultDirectory: workingDirectory,
                 accessPolicy,

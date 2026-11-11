@@ -61,6 +61,8 @@ describe('registerBashHandler', () => {
             argv: ['git', 'worktree', 'remove', '--force', '--', 'C:/repo/.dev/worktree/feature branch'],
             cwd: process.cwd(),
         });
+        // The cwd is authorized asynchronously first; the child exists to the handler only after that.
+        await vi.waitFor(() => expect(spawnMock).toHaveBeenCalled());
 
         child.stdout.write('ok');
         child.stdout.end();

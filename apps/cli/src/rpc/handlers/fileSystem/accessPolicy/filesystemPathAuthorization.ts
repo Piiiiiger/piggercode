@@ -1,4 +1,3 @@
-import { realpathSync } from 'node:fs';
 import { realpath } from 'node:fs/promises';
 import { basename, dirname, posix, win32 } from 'node:path';
 
@@ -29,36 +28,7 @@ function pathApi(platform: NodeJS.Platform) {
   return platform === 'win32' ? win32 : posix;
 }
 
-function resolveRealPathForAuthorization(pathValue: string, platform: NodeJS.Platform): string {
-  const resolved = normalizeFilesystemPathForPolicy(pathValue, platform);
-  if (platform !== process.platform) {
-    return resolved;
-  }
-
-  const api = pathApi(platform);
-  const missingSegments: string[] = [];
-  let candidate = resolved;
-  while (true) {
-    try {
-      const realAncestor = realpathSync(candidate);
-      return normalizeFilesystemPathForPolicy(
-        api.join(realAncestor, ...missingSegments.reverse()),
-        platform,
-      );
-    } catch {
-      const parent = dirname(candidate);
-      if (parent === candidate) return resolved;
-      missingSegments.push(basename(candidate));
-      candidate = parent;
-    }
-  }
-}
-
-function resolveAllowedRootForAuthorization(pathValue: string, platform: NodeJS.Platform): string {
-  return resolveRealPathForAuthorization(pathValue, platform);
-}
-
-async function resolveRealPathForAuthorizationAsync(pathValue: string, platform: NodeJS.Platform): Promise<string> {
+async function resolveRealPathForAuthorization(pathValue: string, platform: NodeJS.Platform): Promise<string> {
   const resolved = normalizeFilesystemPathForPolicy(pathValue, platform);
   if (platform !== process.platform) {
     return resolved;
@@ -90,10 +60,16 @@ function isWithinResolvedRoot(targetPath: string, rootPath: string, platform: No
     || (relativePath !== '..' && !relativePath.startsWith(`..${api.sep}`) && !api.isAbsolute(relativePath));
 }
 
-function isWithinRoot(targetPath: string, rootPath: string, platform: NodeJS.Platform): boolean {
-  const target = filesystemPathComparisonKey(resolveRealPathForAuthorization(targetPath, platform), platform);
-  const root = filesystemPathComparisonKey(resolveAllowedRootForAuthorization(rootPath, platform), platform);
-  return isWithinResolvedRoot(target, root, platform);
+async function isWithinRoot(targetPath: string, rootPath: string, platform: NodeJS.Platform): Promise<boolean> {
+  const [target, root] = await Promise.all([
+    resolveRealPathForAuthorization(targetPath, platform),
+    resolveRealPathForAuthorization(rootPath, platform),
+  ]);
+  return isWithinResolvedRoot(
+    filesystemPathComparisonKey(target, platform),
+    filesystemPathComparisonKey(root, platform),
+    platform,
+  );
 }
 
 function normalizeAdditionalAllowedDirs(
@@ -137,7 +113,9 @@ export function resolveFilesystemTargetPath(input: Readonly<{
   return { valid: true, resolvedPath };
 }
 
-export function authorizeFilesystemPath(input: AuthorizeFilesystemPathInput): FilesystemPathAuthorizationResult {
+export async function authorizeFilesystemPath(
+  input: AuthorizeFilesystemPathInput,
+): Promise<FilesystemPathAuthorizationResult> {
   const platform = input.platform ?? process.platform;
   const resolved = resolveFilesystemTargetPath({
     targetPath: input.targetPath,
@@ -157,7 +135,7 @@ export function authorizeFilesystemPath(input: AuthorizeFilesystemPathInput): Fi
     ...normalizeAdditionalAllowedDirs(input.additionalAllowedDirs, platform),
   ];
   for (const root of allowedRoots) {
-    if (isWithinRoot(resolved.resolvedPath, root, platform)) {
+    if (await isWithinRoot(resolved.resolvedPath, root, platform)) {
       return resolved;
     }
   }
@@ -185,7 +163,7 @@ export async function prepareFilesystemPathAuthorizer(
     ...normalizeAdditionalAllowedDirs(input.additionalAllowedDirs, platform),
   ];
   const resolvedRootKeys = await Promise.all(allowedRoots.map(async (root) => (
-    filesystemPathComparisonKey(await resolveRealPathForAuthorizationAsync(root, platform), platform)
+    filesystemPathComparisonKey(await resolveRealPathForAuthorization(root, platform), platform)
   )));
 
   return async (targetPath) => {
@@ -197,7 +175,7 @@ export async function prepareFilesystemPathAuthorizer(
     if (!resolved.valid) return resolved;
 
     const resolvedTargetKey = filesystemPathComparisonKey(
-      await resolveRealPathForAuthorizationAsync(resolved.resolvedPath, platform),
+      await resolveRealPathForAuthorization(resolved.resolvedPath, platform),
       platform,
     );
     for (const root of resolvedRootKeys) {

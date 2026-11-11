@@ -66,13 +66,13 @@ export function resolveSessionMediaTransferTarget(input: Readonly<{
     };
 }
 
-export function resolveConfiguredSessionMediaTransferTarget(input: Readonly<{
+export async function resolveConfiguredSessionMediaTransferTarget(input: Readonly<{
     config: SessionMediaTransferConfig;
     tempUploadRoot: string;
     workingDirectory: string;
     category: SessionMediaCategory;
     accessPolicy?: FilesystemAccessPolicy;
-}>): ConfiguredSessionMediaTransferTargetResult {
+}>): Promise<ConfiguredSessionMediaTransferTargetResult> {
     const workspaceRelativeDir = normalizeSessionMediaWorkspaceRelativeDir(input.config.workspaceRelativeDir);
     const effectiveConfig = workspaceRelativeDir
         ? { ...input.config, workspaceRelativeDir }
@@ -106,7 +106,7 @@ export function resolveConfiguredSessionMediaTransferTarget(input: Readonly<{
         };
     }
 
-    const authorization = authorizeFilesystemPath({
+    const authorization = await authorizeFilesystemPath({
         targetPath: target.uploadBasePath,
         defaultDirectory: input.workingDirectory,
         accessPolicy: input.accessPolicy ?? { kind: 'osUser' },

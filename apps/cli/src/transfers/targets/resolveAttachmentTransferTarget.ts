@@ -39,12 +39,12 @@ export function resolveAttachmentTransferTarget(
   });
 }
 
-export function resolveConfiguredAttachmentTransferTarget(input: Readonly<{
+export async function resolveConfiguredAttachmentTransferTarget(input: Readonly<{
   config: AttachmentTransferConfig;
   tempUploadRoot: string;
   workingDirectory: string;
   accessPolicy?: FilesystemAccessPolicy;
-}>): ConfiguredAttachmentTransferTargetResult {
+}>): Promise<ConfiguredAttachmentTransferTargetResult> {
   return resolveConfiguredSessionMediaTransferTarget({
     config: input.config,
     tempUploadRoot: input.tempUploadRoot,

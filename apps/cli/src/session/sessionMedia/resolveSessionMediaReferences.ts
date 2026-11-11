@@ -42,7 +42,7 @@ export async function resolveSessionMediaReferences(input: Readonly<{
   const seen = new Set<string>();
   for (const path of input.paths.slice(0, 64)) {
     try {
-      const authorization = authorizeFilesystemPath({
+      const authorization = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: input.workingDirectory,
         accessPolicy: input.accessPolicy,

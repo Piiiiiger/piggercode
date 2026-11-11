@@ -150,7 +150,7 @@ export function registerBulkTransferUploadRpcHandlers(
       }
 
       if (request.t === 'session_file_upload_v1') {
-        const target = resolveWorkspaceFileUploadTarget({
+        const target = await resolveWorkspaceFileUploadTarget({
           workingDirectory: deps.workingDirectory,
           accessPolicy: deps.accessPolicy,
           path: request.path,
@@ -190,7 +190,7 @@ export function registerBulkTransferUploadRpcHandlers(
       }
 
       const attachmentWorkingDirectory = resolveAttachmentWorkingDirectory(request, deps.workingDirectory);
-      const resolvedTarget = resolveConfiguredAttachmentTransferTarget({
+      const resolvedTarget = await resolveConfiguredAttachmentTransferTarget({
         config,
         tempUploadRoot,
         workingDirectory: attachmentWorkingDirectory,
@@ -231,7 +231,7 @@ export function registerBulkTransferUploadRpcHandlers(
         fileName: request.fileName,
       });
 
-      const target = resolveWorkspaceFileUploadTarget({
+      const target = await resolveWorkspaceFileUploadTarget({
         workingDirectory: attachmentWorkingDirectory,
         accessPolicy: deps.accessPolicy,
         path,

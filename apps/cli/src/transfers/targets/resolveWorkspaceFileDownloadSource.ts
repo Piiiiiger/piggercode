@@ -38,7 +38,7 @@ export async function resolveWorkspaceFileDownloadSource(input: Readonly<{
         return { success: false, error: 'Missing path' };
     }
 
-    const validation = authorizeFilesystemPath({
+    const validation = await authorizeFilesystemPath({
         targetPath: path,
         defaultDirectory: input.workingDirectory,
         accessPolicy: input.accessPolicy ?? { kind: 'osUser' },
