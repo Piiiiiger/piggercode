@@ -9,6 +9,7 @@ import { mapWithConcurrency } from '@/api/directSessions/discovery/mapWithConcur
 import { readCodexSessionMetaFromRollout } from '../localControl/rolloutDiscovery';
 import { parseCodexRolloutFilename } from '../utils/codexSessionFiles';
 import { readCodexSessionTitleFromRollout } from './readCodexSessionTitleFromRollout';
+import { isCodexGuardianReviewSource } from './isCodexGuardianReviewSource';
 import type { CodexDirectSessionHomeEntry } from './resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveCodexHomeEntriesForDirectSessionsSource } from './resolveCodexHomeEntriesForDirectSessionsSource';
 
@@ -76,13 +77,14 @@ function isCanonicalCodexThreadId(value: string): boolean {
 async function resolveResumeIdFromRolloutFile(filePath: string): Promise<string | null> {
   const filename = parseCodexRolloutFilename(filePath);
   if (!filename) return null;
+  const metadata = await readCodexSessionMetaFromRollout(filePath);
+  if (isCodexGuardianReviewSource(metadata?.source)) return null;
 
   // Codex rollout filenames end with the thread UUID, optionally followed by a turn UUID for
   // continuations (`<thread>_<turn>`). Both filename forms identify the resumable thread directly.
   // Other suffixes need metadata to prove the ID; never expose an unresolved suffix as a resume ID.
   if (filename.threadId) return filename.threadId;
 
-  const metadata = await readCodexSessionMetaFromRollout(filePath);
   const metadataId = typeof metadata?.id === 'string' ? metadata.id.trim() : '';
   return isCanonicalCodexThreadId(metadataId) ? metadataId : null;
 }

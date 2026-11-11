@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { readClaudeSessionTitle } from './readClaudeSessionTitle';
 
@@ -23,6 +23,24 @@ describe('readClaudeSessionTitle', () => {
     ].join(''), 'utf8');
 
     await expect(readClaudeSessionTitle(filePath)).resolves.toBe('Manual title');
+  });
+
+  it('parses only title-bearing records while scanning a transcript tail', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'happier-claude-title-prefilter-'));
+    const filePath = join(root, 'session-one.jsonl');
+    await writeFile(filePath, [
+      jsonlLine({ type: 'user', message: { content: 'Initial user prompt' } }),
+      jsonlLine({ type: 'ai-title', aiTitle: 'AI title' }),
+      jsonlLine({ type: 'user', message: { content: 'What does an "ai-title" record look like?' } }),
+      ...Array.from({ length: 520 }, () => jsonlLine({ type: 'progress', data: 'x'.repeat(4_096) })),
+    ].join(''), 'utf8');
+    const parse = vi.spyOn(JSON, 'parse');
+    try {
+      await expect(readClaudeSessionTitle(filePath)).resolves.toBe('AI title');
+      expect(parse.mock.calls.length).toBeLessThan(10);
+    } finally {
+      parse.mockRestore();
+    }
   });
 
   it('uses the latest AI title after a custom title is cleared', async () => {

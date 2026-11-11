@@ -1055,6 +1055,13 @@ Local state lives under `~/.piggercode` (or `PIGGERCODE_HOME_DIR`):
 - `daemon.state.json`: daemon PID + control port + version.
 - `logs/`: CLI/daemon logs.
 
+Settings reads and updates share the parser, migrations and derived-field normalization in
+`persistence.ts`. Read-only `readSettings()` callers keep a warning and defaults when loading
+fails. Under the settings lock, `updateSettings()` uses the same loader without that fallback:
+only `ENOENT` permits initialization from defaults. Other read, parse and migration errors reject
+before the updater or the temporary write runs, so an unreadable `settings.json` is never replaced
+by defaults.
+
 In current development source, protected local files and MCP runtime
 configuration use the shared Windows ACL boundary in
 `packages/cli-common/src/fs/windowsProtectedAcl.ts`. It grants only the current
@@ -1235,6 +1242,11 @@ does not automatically recreate a pane. Terminal supervision retires the exact
 optional attachment without treating its loss as controller death. An explicit
 switch or attach can request a local client again; this is not a claim that every
 cold host-restoration path has completed live validation.
+Every tmux target the CLI builds for a window (liveness probes, input capture, kill-window,
+attach plans, the daemon's unbound-host disposal) carries the exact `=session:` prefix, because
+window ids (`@N`) are reused after a tmux server restart. Liveness first resolves the target with
+`has-session`; a successful `display-message` for a missing window is not ownership proof.
+
 Detached tmux creation uses the configured session `default-size` when no client
 is attached to that session. The shared tmux command owner reconciles the exact
 created window instead of inheriting dimensions from clients of unrelated sessions
@@ -2138,6 +2150,13 @@ separate ownership scopes. Coordinator-owned requests settle through their exist
 waiter lifecycle, while state-only requests use the same durable request store.
 Automatic history can replay only while its request remains absent, including on
 the first write after a version conflict.
+
+In development source, journal and dead-letter reads treat only a missing file
+(`ENOENT`) as absent. Other filesystem failures reject journal startup and admission
+without replacing unread data. Startup failures include the filesystem error code
+in the normal file log. Once filesystem access is restored, reconstructing the
+runtime retries the original journal. Readable malformed queue data still follows
+the existing quarantine path.
 
 This is runtime-owned recovery: reconstructing an ApiSessionClient for the same
 session resumes admitted settlements after a process restart. Closing drains local

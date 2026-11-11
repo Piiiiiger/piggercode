@@ -4276,7 +4276,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   tmuxWindowId: tmuxResult.windowId ?? '',
                   ...(tmuxTmpDir ? { tmuxTmpDir } : {}),
                   disposeUnboundHost: async () => {
-                    const target = tmuxResult.windowId ?? '';
+                    const target = `${tmuxSession}:${tmuxResult.windowId ?? ''}`;
                     if (!await tmux.killWindow(target)) {
                       throw new Error(`Failed to dispose unbound tmux window ${target}`);
                     }
@@ -8999,7 +8999,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       fileState,
       currentCliVersion: configuration.currentCliVersion,
       requestShutdown,
-      isShuttingDown: () => shutdownInitiated,
+      isShuttingDown: () => shutdownInitiated || daemonLockHandle === null,
       requestSelfRestart: async (selfRestartParams) =>
         await requestDaemonSelfRestartWithLockHandoff({
           getCurrentDaemonLockHandle: () => daemonLockHandle,

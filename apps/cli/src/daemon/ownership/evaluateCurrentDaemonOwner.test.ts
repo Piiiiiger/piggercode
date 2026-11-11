@@ -129,6 +129,51 @@ describe('evaluateCurrentDaemonOwner', () => {
         });
     });
 
+    it.each([
+        { inventoryScope: 'unavailable', expectedKind: 'none' },
+        { inventoryScope: 'home-only', expectedKind: 'none' },
+        { inventoryScope: 'released-relay', expectedKind: 'conflict' },
+    ] as const)('requires proven scope before treating $inventoryScope inventory as a daemon owner', async ({ inventoryScope, expectedKind }) => {
+        await withTempDir('happier-daemon-owner-scope-evidence-', async (homeDir) => {
+            envScope.patch({
+                PIGGERCODE_HOME_DIR: homeDir,
+                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                PIGGERCODE_SERVER_URL: 'http://127.0.0.1:43127',
+                PIGGERCODE_WEBAPP_URL: 'http://127.0.0.1:43127',
+                PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
+                PIGGERCODE_DAEMON_PROCESS_INVENTORY_FALLBACK: '1',
+            });
+            vi.resetModules();
+            const { projectPath } = await import('@/projectPath');
+            // OS inventory cannot read ownership environment on Windows and may be partial elsewhere.
+            vi.doMock('@/daemon/doctor', async (importOriginal) => ({
+                ...await importOriginal<typeof import('@/daemon/doctor')>(),
+                findAllHappyProcesses: async () => [{
+                    pid: process.pid + 1000,
+                    command: `${process.execPath} ${projectPath()}/src/index.ts daemon start-sync`,
+                    type: 'dev-daemon',
+                    ...(inventoryScope === 'unavailable' ? {} : {
+                        daemonOwnershipEnvironmentVariables: {
+                            PIGGERCODE_HOME_DIR: homeDir,
+                            ...(inventoryScope === 'released-relay' ? {
+                                PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
+                                PIGGERCODE_SERVER_URL: 'http://127.0.0.1:43127',
+                            } : {}),
+                        },
+                    }),
+                } satisfies HappyProcessInfo],
+            }));
+
+            const { evaluateCurrentDaemonOwner } = await import('./evaluateCurrentDaemonOwner');
+            const evaluation = await evaluateCurrentDaemonOwner();
+            expect(evaluation.kind).toBe(expectedKind);
+            if (evaluation.kind === 'conflict') {
+                expect(evaluation.owner.source).toBe('process');
+                expect(evaluation.owner.state.pid).toBe(process.pid + 1000);
+            }
+        });
+    });
+
     it('ignores a state-less daemon process from the same runtime when it belongs to another daemon scope', async () => {
         await withTempDir('happier-daemon-owner-scope-mismatch-', async (homeDir) => {
             envScope.patch({

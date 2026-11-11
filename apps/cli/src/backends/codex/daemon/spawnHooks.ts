@@ -6,6 +6,7 @@ import {
   type DaemonSpawnHooks,
   type DaemonSpawnRuntimeSelection,
 } from '@/daemon/spawnHooks';
+import { validateProviderCliSpawn } from '@/runtime/managedTools/validateProviderCliSpawn';
 
 function resolveCodexDaemonBackendMode(params: DaemonSpawnRuntimeSelection): 'mcp' | 'acp' | 'appServer' | null {
   return resolveDaemonSpawnRuntimeCodexBackendMode(params) ?? null;
@@ -27,7 +28,10 @@ export const codexDaemonSpawnHooks: DaemonSpawnHooks = {
     return host === 'tmux' ? { kind: 'runner', startingMode: 'remote' } : { kind: 'none' };
   },
   validateSpawn: async (runtimeSelection) => {
-    if (resolveCodexDaemonBackendMode(runtimeSelection) !== 'acp') return { ok: true };
+    // The runner launches the Codex CLI itself; refuse before any session exists when it is missing.
+    if (resolveCodexDaemonBackendMode(runtimeSelection) !== 'acp') {
+      return await validateProviderCliSpawn({ agentId: 'codex', processEnv: runtimeSelection.environmentVariables ?? process.env });
+    }
 
     let resolved: { command: string; args: string[] };
     try {

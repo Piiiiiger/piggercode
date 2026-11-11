@@ -10,6 +10,15 @@ const TITLE_SCAN_CHUNK_MAX_ITEMS = 64;
 const TITLE_SCAN_TOTAL_MAX_BYTES = 1024 * 1024;
 const TITLE_SCAN_TOTAL_MAX_ITEMS = 512;
 
+// JSON.stringify writes the type values "custom-title" and "ai-title" verbatim, so a line without
+// their shared suffix cannot be a title record. Checking raw bytes first skips JSON.parse for
+// nearly every transcript line; the record type is still checked after parsing.
+const TITLE_RECORD_MARKER = Buffer.from('-title"');
+
+function mayBeTitleRecord(lineBytes: Buffer): boolean {
+  return lineBytes.includes(TITLE_RECORD_MARKER);
+}
+
 function coerceTextContent(content: unknown): string | null {
   if (typeof content === 'string') {
     return readDirectSessionTitleCandidate(content);
@@ -63,6 +72,7 @@ async function readClaudeTitleFromTail(filePath: string): Promise<string | null>
       // The byte page already bounds memory. Every JSONL record consumes at
       // least one byte, so do not stop at 64 items and reread the same chunk.
       maxItems: TITLE_SCAN_CHUNK_MAX_BYTES,
+      lineFilter: mayBeTitleRecord,
     }));
     if (!page) break;
     for (let index = page.items.length - 1; index >= 0; index -= 1) {

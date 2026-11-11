@@ -153,3 +153,27 @@ describe('codexDaemonSpawnHooks.buildExtraEnvForChild', () => {
     ).toEqual({});
   });
 });
+
+describe('codexDaemonSpawnHooks.validateSpawn (Codex CLI launch requirement)', () => {
+  async function createIsolatedSpawnEnv(): Promise<NodeJS.ProcessEnv> {
+    const home = await createTempDir('happier-codex-spawnhooks-home-');
+    tempDirs.add(home);
+    return { PATH: home, HOME: home, PIGGERCODE_HOME_DIR: home };
+  }
+
+  it('rejects a non-ACP spawn when no Codex CLI is resolvable', async () => {
+    const environmentVariables = await createIsolatedSpawnEnv();
+
+    const res = await codexDaemonSpawnHooks.validateSpawn!({ environmentVariables });
+
+    expect(res.ok).toBe(false);
+  });
+
+  it('admits a non-ACP spawn when the Codex CLI is resolvable from the spawn environment', async () => {
+    const environmentVariables = { ...await createIsolatedSpawnEnv(), PATH: await createFakeBin('codex') };
+
+    const res = await codexDaemonSpawnHooks.validateSpawn!({ codexBackendMode: 'appServer', environmentVariables });
+
+    expect(res).toEqual({ ok: true });
+  });
+});

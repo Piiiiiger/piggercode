@@ -15,6 +15,9 @@ describe('resolveDaemonServiceListEntries', () => {
     'PIGGERCODE_HOME_DIR',
     'PIGGERCODE_ACTIVE_SERVER_ID',
     'PIGGERCODE_PUBLIC_RELEASE_CHANNEL',
+    'PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID',
+    'PIGGERCODE_DAEMON_SERVICE_MANAGED_BY',
+    'PATH',
   ]);
 
   afterEach(() => {
@@ -26,7 +29,11 @@ describe('resolveDaemonServiceListEntries', () => {
     vi.resetModules();
   });
 
-  it('matches a default-following systemd unit installed through the managed default shim', async () => {
+  it.each([
+    { platform: 'linux', bundleId: undefined },
+    { platform: 'linux', bundleId: 'dev.piggercode.app' },
+    { platform: 'darwin', bundleId: 'dev.piggercode.app' },
+  ] as const)('matches an installed default-following service after shell PATH changes ($platform, bundle=$bundleId)', async ({ platform, bundleId }) => {
     await withTempDir('happier-daemon-service-list-managed-default-shim-', async (userHomeDir) => {
       const happierHomeDir = join(userHomeDir, '.piggercode');
       const managedBinDir = join(happierHomeDir, 'bin');
@@ -41,16 +48,20 @@ describe('resolveDaemonServiceListEntries', () => {
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
+        PIGGERCODE_DAEMON_SERVICE_BUNDLE_ID: undefined,
+        PIGGERCODE_DAEMON_SERVICE_MANAGED_BY: undefined,
+        PATH: '/opt/install-shell/bin:/usr/bin:/bin',
       });
       vi.resetModules();
 
-      const [{ planDaemonServiceInstall }, { resolveDaemonServiceListEntries }] = await Promise.all([
+      const [{ planDaemonServiceInstall }, { resolveDaemonServiceListEntries }, { previewDaemonServiceInstall }] = await Promise.all([
         import('./plan'),
         import('./cli'),
+        import('./installer'),
       ]);
 
       const runtime = {
-        platform: 'linux' as const,
+        platform,
         channel: 'preview' as const,
         targetMode: 'default-following' as const,
         instanceId: 'cloud',
@@ -66,8 +77,9 @@ describe('resolveDaemonServiceListEntries', () => {
       };
 
       const expectedPlan = planDaemonServiceInstall({
-        platform: 'linux',
+        platform,
         mode: 'user',
+        bundleId,
         channel: runtime.channel,
         targetMode: 'default-following',
         instanceId: runtime.instanceId,
@@ -84,6 +96,11 @@ describe('resolveDaemonServiceListEntries', () => {
       const expectedServicePath = expectedPlan.files[0]?.path ?? '';
       mkdirSync(dirname(expectedServicePath), { recursive: true });
       writeFileSync(expectedServicePath, expectedPlan.files[0]?.content ?? '', 'utf8');
+
+      envScope.patch({ PATH: '/opt/login shell/bin:/usr/bin:/bin' });
+
+      const reinstall = await previewDaemonServiceInstall({ ...runtime, mode: 'user', nodePath: defaultShimPath });
+      expect(reinstall.exactTargetMatchesExpectedDefinition).toBe(true);
 
       const entries = await resolveDaemonServiceListEntries(runtime, { mode: 'user' });
       const defaultEntry = entries.find((entry) => entry.path === expectedServicePath) ?? null;
