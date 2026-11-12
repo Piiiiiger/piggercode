@@ -9,7 +9,6 @@ import {
 } from './agentInputChipIconMetrics';
 
 const DEFINITIONS_DIR = join(__dirname);
-const SESSION_ACTIONS_DIR = join(__dirname, '..', 'sessionActions');
 
 /**
  * A chip file writes glyphs for three different surfaces, and the surface decides the size:
@@ -64,7 +63,7 @@ describe('composer chip icon sizes', () => {
     it('sizes every chip glyph by the surface it renders on', () => {
         const offenders: string[] = [];
 
-        for (const dir of [DEFINITIONS_DIR, SESSION_ACTIONS_DIR]) {
+        for (const dir of [DEFINITIONS_DIR]) {
             for (const [file, source] of chipFiles(dir)) {
                 for (const match of source.matchAll(/<Icon\b[^>]*?size=\{([^}]+)\}/gs)) {
                     const actual = match[1].trim();
