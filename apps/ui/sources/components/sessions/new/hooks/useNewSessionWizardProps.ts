@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import type { AgentId } from '@/agents/catalog/catalog';
 import type { NewSessionPromptStore } from '@/components/sessions/new/hooks/screenModel/newSessionPromptStore';
+import type { NewSessionSendTarget } from '@/components/sessions/new/hooks/useNewSessionSend';
 import type { ResolvedBackendCatalogEntry } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { t } from '@/text';
 import { getRequiredSecretEnvVarNames } from '@/sync/domains/profiles/profileSecrets';
@@ -174,6 +175,7 @@ export function useNewSessionWizardProps(params: Readonly<{
     sessionPromptInputMaxHeight?: number;
     agentInputExtraActionChips?: ReadonlyArray<AgentInputExtraActionChip>;
     resumePersistedLaunchKey?: string | null;
+    getSendTarget?: () => NewSessionSendTarget;
 }>): Readonly<{
     profiles: NewSessionWizardProfilesProps;
     wizardSections: NewSessionWizardSectionProps | null;
@@ -487,6 +489,7 @@ export function useNewSessionWizardProps(params: Readonly<{
             inputMaxHeight: params.sessionPromptInputMaxHeight,
             agentInputExtraActionChips: params.agentInputExtraActionChips,
             resumePersistedLaunchKey: params.resumePersistedLaunchKey,
+            getSendTarget: params.getSendTarget,
         };
         // NOTE: Agent selection doesn't affect these props, but keeping dependencies
         // broad mirrors the previous in-screen memoization behavior and avoids subtle
@@ -496,6 +499,7 @@ export function useNewSessionWizardProps(params: Readonly<{
         params.agentType,
         params.agentInputExtraActionChips,
         params.resumePersistedLaunchKey,
+        params.getSendTarget,
         params.canCreate,
         params.connectionStatus,
         params.emptyAutocompleteKinds,

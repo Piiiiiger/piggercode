@@ -1,5 +1,7 @@
 import { getReadyServerFeatures } from '@/sync/api/capabilities/getReadyServerFeatures';
+import { assertRpcResponseWithSuccess } from '@/sync/runtime/assertRpcResponseWithSuccess';
 import { resolvePreferredServerIdForSessionId } from '@/sync/runtime/orchestration/serverScopedRpc/resolvePreferredServerIdForSessionId';
+import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { readRpcErrorCode } from '@/sync/runtime/rpcErrors';
 import { canUseSessionRpc, readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import {
@@ -158,6 +160,54 @@ export function createSessionFileTransferRpcCaller(params: Readonly<{
             }
 
             return response;
+        },
+    };
+}
+
+/** A machine and folder that have no session yet: the new-session screen's computer and folder. */
+export type MachineFileTransferTarget = Readonly<{
+    machineId: string;
+    serverId?: string | null;
+    directory: string;
+}>;
+
+/**
+ * The same calls to a machine before any session runs there (images pasted into the new-session
+ * screen go to the computer the session will run on before it starts). The folder stands in for
+ * the session's own, so workspace uploads land in it. The shared transfer policy decides as for a
+ * session whose machine is known and whose own RPC is not there yet: direct to the machine, or not.
+ */
+export function createMachineFileTransferRpcCaller(target: MachineFileTransferTarget & Readonly<{
+    transferSizeBytes?: number | null;
+}>): SessionFileTransferRpcCaller {
+    const machineTarget: SessionFileTransferMachineTarget = { machineId: target.machineId, basePath: target.directory };
+    return {
+        call: async <TResponse extends TransferRpcSuccess | TransferRpcFailure, TRequest>(
+            callParams: SessionFileTransferRpcCallParams<TRequest>,
+        ): Promise<TResponse> => {
+            const serverId = target.serverId ?? undefined;
+            const route = resolveSessionFileTransferRouteAvailability({
+                serverId,
+                machineTargetAvailable: true,
+                sessionRpcAvailable: false,
+                sessionRpcTransferSizeBytes: target.transferSizeBytes,
+                serverFeatures: await getReadyServerFeatures({ serverId }),
+            });
+            if (route.kind === 'unavailable') return route.response as TResponse;
+            if (route.route.kind !== 'machine_rpc_direct') {
+                // Only a session's own RPC can stream through the server; there is none yet.
+                return { success: false, error: INACTIVE_SESSION_RPC_UNAVAILABLE_ERROR } as TResponse;
+            }
+            const payload = callParams.toMachineRequest
+                ? callParams.toMachineRequest({ request: callParams.request, machineTarget })
+                : callParams.request;
+            const response = await machineRpcWithServerScope<TResponse, TRequest>({
+                machineId: target.machineId,
+                serverId: target.serverId,
+                method: callParams.machineMethod,
+                payload,
+            });
+            return assertRpcResponseWithSuccess<TResponse>(response);
         },
     };
 }

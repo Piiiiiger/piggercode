@@ -1,7 +1,11 @@
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { rebaseWorkspaceRootRequestToMachineTarget } from '@/sync/runtime/sessionMachineRpcFallback';
 
-import { createSessionFileTransferRpcCaller } from './sessionFileTransferRpcCaller';
+import {
+    createMachineFileTransferRpcCaller,
+    createSessionFileTransferRpcCaller,
+    type MachineFileTransferTarget,
+} from './sessionFileTransferRpcCaller';
 
 import type { BulkTransferFailureResponse, BulkTransferFileReader } from './uploadBulkPayloadFromFile';
 import { uploadBulkPayloadFromFile } from './uploadBulkPayloadFromFile';
@@ -42,17 +46,23 @@ type SessionAttachmentsUploadAbortResponse =
     | Readonly<{ success: true }>
     | SessionRpcFailure;
 
-export async function uploadDaemonSessionAttachmentFromReader(params: Readonly<{
-    sessionId: string;
+/** A session's machine and folder, or a machine and folder before its session starts. */
+export type DaemonAttachmentUploadTarget =
+    | Readonly<{ sessionId: string }>
+    | Readonly<{ machine: MachineFileTransferTarget }>;
+
+export async function uploadDaemonSessionAttachmentFromReader(params: DaemonAttachmentUploadTarget & Readonly<{
     fileReader: BulkTransferFileReader;
     request: SessionAttachmentsUploadInitRequest;
     signal?: AbortSignal | null;
     onProgress?: ((progress: Readonly<{ uploadedBytes: number; totalBytes: number }>) => void) | null;
 }>): Promise<SessionAttachmentsUploadFinalizeResponse | BulkTransferFailureResponse> {
-    const transferClient = createSessionFileTransferRpcCaller({
-        sessionId: params.sessionId,
-        sessionRpcTransferSizeBytes: params.fileReader.sizeBytes,
-    });
+    const transferClient = 'machine' in params
+        ? createMachineFileTransferRpcCaller({ ...params.machine, transferSizeBytes: params.fileReader.sizeBytes })
+        : createSessionFileTransferRpcCaller({
+            sessionId: params.sessionId,
+            sessionRpcTransferSizeBytes: params.fileReader.sizeBytes,
+        });
 
     let previousUploadedBytes = 0;
 

@@ -43,6 +43,7 @@ import { coerceNewSessionModelMode } from '@/components/sessions/new/hooks/newSe
 import { useCreateNewSession } from '@/components/sessions/new/hooks/useCreateNewSession';
 import { toggleHomeAwareDirectoryFavorite } from '@/components/sessions/new/hooks/favoriteDirectoriesToggle';
 import { useNewSessionSimplePanelProps } from '@/components/sessions/new/hooks/useNewSessionSimplePanelProps';
+import { resolveNewSessionSendTarget } from '@/components/sessions/new/hooks/useNewSessionSend';
 import { useNewSessionWizardProps } from '@/components/sessions/new/hooks/useNewSessionWizardProps';
 import { buildNewSessionProfileSelectionPopover } from '@/components/sessions/new/components/buildNewSessionProfileSelectionPopover';
 import { useNewSessionAgentPickerControls } from '@/components/sessions/new/hooks/screenModel/useNewSessionAgentPickerControls';
@@ -705,6 +706,14 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         return machines.find(m => m.id === selectedMachineId) ?? null;
     }, [selectedMachineId, machines]);
     const selectedMachineHomeDir = selectedMachine?.metadata?.homeDir ?? null;
+    // Where images pasted here go before the session starts: its computer and (absolute) folder,
+    // read from the same requested path the launch itself uses.
+    const getNewSessionSendTarget = React.useCallback(() => resolveNewSessionSendTarget({
+        machineId: selectedMachineId ?? null,
+        serverId: targetServerId ?? null,
+        path: getRequestedPath(),
+        homeDir: selectedMachineHomeDir,
+    }), [getRequestedPath, selectedMachineHomeDir, selectedMachineId, targetServerId]);
     const composerWorkspace = React.useMemo(() => resolveNewSessionFileSuggestionScope({
         targetServerId, selectedMachineId, selectedMachineHomeDir, selectedPath,
     }), [selectedMachineId, selectedMachineHomeDir, selectedPath, targetServerId]);
@@ -2016,6 +2025,7 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         sessionPromptInputMaxHeight,
         agentInputExtraActionChips,
         resumePersistedLaunchKey,
+        getSendTarget: getNewSessionSendTarget,
     });
 
     const { profilePopover } = React.useMemo(() => {
@@ -2087,6 +2097,7 @@ export function useNewSessionScreenModel(params?: Readonly<{ draftId?: string; o
         profilePopover,
         agentInputExtraActionChips,
         resumePersistedLaunchKey,
+        getSendTarget: getNewSessionSendTarget,
     });
 
     return buildNewSessionScreenVariantModel({

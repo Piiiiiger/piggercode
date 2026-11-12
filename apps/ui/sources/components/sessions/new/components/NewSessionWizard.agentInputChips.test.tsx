@@ -343,7 +343,7 @@ describe('NewSessionWizard agent input chips', () => {
         expect(agentInputProps.onResumeClick).toBeUndefined();
     });
 
-    it('opens the terminal with or without a first prompt, and takes no attachments', async () => {
+    it('opens the terminal with or without a first prompt, and takes pasted or dropped images', async () => {
         const { NewSessionWizard } = await import('./NewSessionWizard');
         AgentInputMock.mockClear();
 
@@ -351,8 +351,8 @@ describe('NewSessionWizard agent input chips', () => {
 
         const agentInputProps = (AgentInputMock.mock.calls[0]?.[0] ?? {}) as any;
         expect(agentInputProps.canSendWithoutText).toBe(true);
-        expect(agentInputProps.attachments).toBeUndefined();
-        expect(agentInputProps.onAttachmentsAdded).toBeUndefined();
+        expect(agentInputProps.attachments).toEqual([]);
+        expect(typeof agentInputProps.onAttachmentsAdded).toBe('function');
     });
 
     it('passes ACP config probe props through to AgentInput for the wizard action menu popover', async () => {

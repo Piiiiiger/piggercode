@@ -22,12 +22,11 @@ import {
 } from '@/components/sessions/new/components/NewSessionComposerCloseButton';
 import { safeRouterBack } from '@/utils/navigation/safeRouterBack';
 import { AgentInput } from '@/components/sessions/agentInput';
-import type { AgentInputSendOptions } from '@/components/sessions/agentInput/agentInputSendOptions';
 import { PopoverBoundaryProvider } from '@/components/ui/popover';
 import { t } from '@/text';
 import { resolveRequestedSessionModeId, type AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 import type { HandleCreateSessionOptions } from '../hooks/useCreateNewSession';
-import { useNewSessionSend } from '@/components/sessions/new/hooks/useNewSessionSend';
+import { useNewSessionSend, type NewSessionSendTarget } from '@/components/sessions/new/hooks/useNewSessionSend';
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';
 import {
     useNewSessionPromptValue,
@@ -132,6 +131,8 @@ export type NewSessionSimplePanelProps = Readonly<{
     setSessionConfigOptionOverride?: (configId: string, value: string) => void;
     connectionStatus: React.ComponentProps<typeof AgentInput>['connectionStatus'];
     machineName: string | undefined;
+    /** The computer and folder the session starts in (read when sending): where pasted images go first. */
+    getSendTarget?: () => NewSessionSendTarget;
     machinePopover?: React.ComponentProps<typeof AgentInput>['machinePopover'];
     selectedPath: string;
     pathPopover?: React.ComponentProps<typeof AgentInput>['pathPopover'];
@@ -264,9 +265,19 @@ export const NewSessionSimplePanel = React.memo(function NewSessionSimplePanel(p
     // re-composite every frame, and that is what tore the frost into horizontal bands on the way
     // out. The keyboard goes down anyway when the input unmounts, so there is nothing to gain by
     // starting it early.
+    const send = useNewSessionSend({
+        promptStore: props.promptStore,
+        handleCreateSession: props.handleCreateSession,
+        resumePersistedLaunchKey: props.resumePersistedLaunchKey,
+        getSendTarget: props.getSendTarget,
+    });
+    const { cancelPendingSend } = send;
+
     const handleDismissScreen = React.useCallback(() => {
         if (isDismissingRef.current) return;
         isDismissingRef.current = true;
+        // Images still uploading must not start a session once the screen is on its way out.
+        cancelPendingSend();
         dismissSafetyTimerRef.current = setTimeout(() => {
             dismissSafetyTimerRef.current = null;
             isDismissingRef.current = false;
@@ -296,7 +307,7 @@ export const NewSessionSimplePanel = React.memo(function NewSessionSimplePanel(p
         }, (finished) => {
             if (finished) runOnJS(leave)();
         });
-    }, [cardExitProgress, navigation, reducedMotion, router]);
+    }, [cancelPendingSend, cardExitProgress, navigation, reducedMotion, router]);
 
     // Rise plus a touch of scale. Travel alone reads as a panel being repositioned; the small scale
     // is what makes it read as a surface arriving. `fromScale` is the shared modal token rather than
@@ -314,12 +325,6 @@ export const NewSessionSimplePanel = React.memo(function NewSessionSimplePanel(p
             ],
         };
     }, [cardExitProgress, enterProgress]);
-
-    const handleSend = useNewSessionSend({
-        promptStore: props.promptStore,
-        handleCreateSession: props.handleCreateSession,
-        resumePersistedLaunchKey: props.resumePersistedLaunchKey,
-    });
 
     return (
         <ComposerKeyboardScaffold
@@ -417,7 +422,7 @@ export const NewSessionSimplePanel = React.memo(function NewSessionSimplePanel(p
                             ) : null}
                             <NewSessionSimplePanelComposer
                                 panelProps={props}
-                                onSend={handleSend}
+                                send={send}
                             />
                         </View>
                     </Animated.View>
@@ -450,12 +455,12 @@ export const NewSessionSimplePanel = React.memo(function NewSessionSimplePanel(p
 
 type NewSessionSimplePanelComposerProps = Readonly<{
     panelProps: NewSessionSimplePanelProps;
-    onSend: (options?: AgentInputSendOptions) => void;
+    send: ReturnType<typeof useNewSessionSend>;
 }>;
 
 function NewSessionSimplePanelComposer({
     panelProps: props,
-    onSend,
+    send,
 }: NewSessionSimplePanelComposerProps): React.ReactElement {
     // The composer scaffold computes the available panel height synchronously at mount
     // (seeded from the viewport + safe-area insets), so the bottom-anchored panel can
@@ -495,7 +500,9 @@ function NewSessionSimplePanelComposer({
                     <AgentInput
                         value={sessionPrompt}
                         onChangeText={props.setSessionPrompt}
-                        onSend={onSend}
+                        onSend={send.onSend}
+                        attachments={send.attachments}
+                        onAttachmentsAdded={send.onAttachmentsAdded}
                         canSendWithoutText
                         isSendDisabled={!props.canCreate}
                         isSending={props.isCreating}

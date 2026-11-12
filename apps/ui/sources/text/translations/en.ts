@@ -4358,6 +4358,8 @@ export const en = {
     newSession: {
       terminalHostUnavailableTitle: "Terminal host unavailable",
       firstPromptPlaceholder: "First message (optional: leave it empty to just open the terminal)",
+      imageUploadFailed: "Could not put the image on the computer",
+      imagesOnly: "Only images can be added here; other files were left out.",
       terminalHostUnavailableBody: ({ host }: { host: string }) => `Install or update ${host} and restart its server on this machine, or choose another terminal host. Your draft is kept.`,
         ...newSessionMcpTranslationExtension,
         ...acpCatalogTranslationExtension.newSession,

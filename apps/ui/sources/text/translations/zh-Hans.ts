@@ -4557,6 +4557,8 @@ export const zhHans: TranslationStructure = {
   newSession: {
     terminalHostUnavailableTitle: "终端宿主不可用",
     firstPromptPlaceholder: "第一句话（可留空，直接打开终端）",
+    imageUploadFailed: "无法把图片放到这台电脑上",
+    imagesOnly: "这里只能添加图片，其他文件没有加进来。",
     terminalHostUnavailableBody: ({ host }: { host: string }) => `请在此设备上安装或更新 ${host} 并重启其服务器，或选择其他终端宿主。草稿已保留。`,
     ...newSessionMcpTranslationExtension,
     ...acpCatalogTranslationExtension.newSession,

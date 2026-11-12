@@ -725,7 +725,7 @@ describe('NewSessionSimplePanel', () => {
         expect(handleCreateSession).toHaveBeenCalledTimes(1);
     });
 
-    it('opens the terminal with or without a first prompt, and takes no attachments', async () => {
+    it('opens the terminal with or without a first prompt, and takes pasted or dropped images', async () => {
         const { NewSessionSimplePanel } = await import('./NewSessionSimplePanel');
         const handleCreateSession = vi.fn();
 
@@ -765,8 +765,8 @@ describe('NewSessionSimplePanel', () => {
         />);
 
         expect(agentInputPropsRef.current?.canSendWithoutText).toBe(true);
-        expect(agentInputPropsRef.current?.attachments).toBeUndefined();
-        expect(agentInputPropsRef.current?.onAttachmentsAdded).toBeUndefined();
+        expect(agentInputPropsRef.current?.attachments).toEqual([]);
+        expect(typeof agentInputPropsRef.current?.onAttachmentsAdded).toBe('function');
 
         act(() => {
             invokeTestInstanceHandler(screen.findByTestId('new-session-composer-send'), 'onPress', undefined, 'new-session-composer-send');

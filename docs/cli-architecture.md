@@ -1763,8 +1763,12 @@ config.toml decides; codex 0.167 takes only `on-request` or `never`), thinking a
 `-c service_tier="fast"`. codex 0.167 takes `-c` only without its shared background server, so a Codex session with a chosen
 thinking or speed runs embedded (Codex says so in a startup warning); one without keeps the shared server. Since app
 0.3.33 the new-session screen offers no agent mode and sends none (a terminal switches its own: Claude with Shift+Tab;
-`--agent-mode` stays for older apps); it takes no attachments or review comments either,
-and its `@` offers files only (`/` the CLI's commands). Codex
+`--agent-mode` stays for older apps); it takes no review comments and no files other than images,
+and its `@` offers files only (`/` the CLI's commands). Since app 0.3.34 images pasted or dropped there are put on the
+session's computer when it is sent, where a terminal's pasted image goes (the attachment settings; `useNewSessionSend`,
+machine-scoped `sessionAttachmentsUploadFile` through the shared transfer policy, the folder made absolute with that
+computer's home), and their absolute paths end the first prompt, one per line: Claude and Codex read an image from its
+path. They stay in the screen until it closes on a started session, so another try reuses the uploads. Codex
 cannot be told a new thread's id, and one shared Codex service (`codex app-server`) writes every terminal's
 threads, so no file says which thread is this terminal's. Codex shows it in the window title (`<thread name> |
 <folder>`): every 3 s the runner reads its tmux pane title, finds that name in `session_index.jsonl` among the

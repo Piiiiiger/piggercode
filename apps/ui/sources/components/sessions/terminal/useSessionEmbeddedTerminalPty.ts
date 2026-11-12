@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { namePastedImage } from '@/components/sessions/attachments/namePastedImage';
 import { useAttachmentsUploadConfig } from '@/components/sessions/attachments/useAttachmentsUploadConfig';
 import { useSessionMachineReachability } from '@/components/sessions/model/useSessionMachineReachability';
 import { useSessionMachineTarget } from '@/components/sessions/model/useSessionMachineTarget';
@@ -10,16 +11,6 @@ import { randomUUID } from '@/platform/randomUUID';
 import { sessionAttachmentsUploadFile } from '@/sync/domains/transfers/ops/uploadSessionAttachment';
 import { t } from '@/text';
 import type { SessionTerminalMode } from './sessionTerminalMode';
-
-/**
- * A name of its own for a pasted image (screenshots all arrive as "image.png"), so uploads never
- * collide and the typed path has no spaces.
- */
-function namePastedImage(image: File, index: number, now: Date): File {
-    const subtype = image.type.slice('image/'.length).replace(/\+.*$/, '').replace(/^jpeg$/, 'jpg') || 'png';
-    const stamp = now.toISOString().replace(/[-:]/g, '').replace('T', '-').replace(/\..*$/, '');
-    return new File([image], `pasted-${stamp}-${now.getMilliseconds()}-${index + 1}.${subtype}`, { type: image.type });
-}
 
 export function useSessionEmbeddedTerminalPty(params: Readonly<{
     sessionId: string;

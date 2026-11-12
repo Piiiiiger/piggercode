@@ -45,7 +45,7 @@ import type { HandleCreateSessionOptions } from '../hooks/useCreateNewSession';
 import { buildNewSessionProfileSelectionPopover } from '@/components/sessions/new/components/buildNewSessionProfileSelectionPopover';
 import { NewSessionProfilesBrowserContent } from '@/components/sessions/new/components/NewSessionProfilesBrowserContent';
 import { resolveRequestedSessionModeId, type AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
-import { useNewSessionSend } from '@/components/sessions/new/hooks/useNewSessionSend';
+import { useNewSessionSend, type NewSessionSendTarget } from '@/components/sessions/new/hooks/useNewSessionSend';
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';
 import {
     ComposerKeyboardScaffold,
@@ -176,6 +176,8 @@ export interface NewSessionWizardFooterProps {
     inputMaxHeight?: number;
     agentInputExtraActionChips?: React.ComponentProps<typeof AgentInput>['extraActionChips'];
     resumePersistedLaunchKey?: string | null;
+    /** The computer and folder the session starts in (read when sending): where pasted images go first. */
+    getSendTarget?: () => NewSessionSendTarget;
 }
 
 export interface NewSessionWizardProps {
@@ -284,10 +286,11 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
         scrollToWizardSection('agent');
     }, [scrollToWizardSection]);
 
-    const handleSend = useNewSessionSend({
+    const send = useNewSessionSend({
         promptStore: props.footer.promptStore,
         handleCreateSession: props.footer.handleCreateSession,
         resumePersistedLaunchKey: props.footer.resumePersistedLaunchKey,
+        getSendTarget: props.footer.getSendTarget,
     });
     const renderIconNode = React.useCallback(
         (
@@ -552,7 +555,9 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                                         composerReservedHeight={12 + newSessionBottomPadding}
                                         value={sessionPrompt}
                                         onChangeText={setSessionPrompt}
-                                        onSend={handleSend}
+                                        onSend={send.onSend}
+                                        attachments={send.attachments}
+                                        onAttachmentsAdded={send.onAttachmentsAdded}
                                         canSendWithoutText
                                         isSendDisabled={!canCreate}
                                         isSending={isCreating}

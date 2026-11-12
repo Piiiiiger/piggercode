@@ -1,6 +1,9 @@
 import type { AttachmentsUploadFileSource } from '@/sync/domains/attachments/attachmentsUploadFileSource';
 import { openLocalUploadSourceReader, resolveLocalUploadSourceSizeBytes } from '@/sync/runtime/files/localUploadSourceReader';
-import { uploadDaemonSessionAttachmentFromReader } from '@/sync/domains/transfers/runtime/bulkTransferPipeline';
+import {
+    uploadDaemonSessionAttachmentFromReader,
+    type DaemonAttachmentUploadTarget,
+} from '@/sync/domains/transfers/runtime/bulkTransferPipeline';
 import { readRpcErrorCode } from '@/sync/runtime/rpcErrors';
 
 export type AttachmentsUploadLocation = 'shared_folder' | 'workspace' | 'os_temp';
@@ -95,8 +98,11 @@ async function resolveSizeBytesWithTimeout(source: AttachmentsUploadFileSource):
     });
 }
 
-export async function sessionAttachmentsUploadFile(args: Readonly<{
-    sessionId: string;
+/**
+ * Puts a file where attachments go (the attachment settings) on a session's machine, or, with
+ * `machine`, on the computer and folder a session is about to start in.
+ */
+export async function sessionAttachmentsUploadFile(args: DaemonAttachmentUploadTarget & Readonly<{
     file: AttachmentsUploadFileSource;
     messageLocalId: string;
     config: AttachmentsUploadConfig;
@@ -123,7 +129,7 @@ export async function sessionAttachmentsUploadFile(args: Readonly<{
 
         const reader = await openLocalUploadSourceReader(args.file);
         const bulkUpload = await uploadDaemonSessionAttachmentFromReader({
-            sessionId: args.sessionId,
+            ...('machine' in args ? { machine: args.machine } : { sessionId: args.sessionId }),
             fileReader: {
                 sizeBytes: described.sizeBytes,
                 readBytes: async (offset, length) => await reader.readBytes(offset, length),
