@@ -1742,6 +1742,10 @@ without a terminal, and the runner gets `--native-terminal` (`buildHappySessionC
 typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
 would queue it, and passes it as the CLI's first prompt after `--`; with nothing typed the CLI opens without one. `claude` gets
 `--session-id <id>`, or `--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`.
+Since CLI 0.3.30 `codex` also always gets `--no-alt-screen` (new and reopened): codex 0.167 otherwise draws the
+conversation itself in the alternate screen, and a terminal whose first turn ran during a slow start (a folder on a
+shared mount) could keep showing only the header while the turn ran and finished (the thread itself was intact).
+Written into the terminal, the conversation is the tmux pane's history, scrolled like Claude's; `resume` replays it there.
 Since CLI 0.3.26 `claude` also gets `--settings '{"tui":"default"}'`: a running `claude` switches renderer when `tui`
 changes in a settings file, and a session switched out of the fullscreen renderer that way stays blank or cut off until
 `claude` restarts; a flag outranks the settings files. The default renderer because the app draws it correctly, while a

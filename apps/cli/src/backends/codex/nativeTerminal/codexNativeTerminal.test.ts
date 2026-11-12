@@ -44,14 +44,20 @@ async function rename(home: string, threadId: string, name: string): Promise<voi
 
 describe('planCodexNativeTerminalLaunch', () => {
   it('starts a new conversation, with the text typed in the new-session screen as its first prompt', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS })).toEqual({ threadId: null, args: [] });
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS })).toEqual({ threadId: null, args: ['--no-alt-screen'] });
     expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: '-v fix the login bug', controls: NO_CONTROLS }))
-      .toEqual({ threadId: null, args: ['--', '-v fix the login bug'] });
+      .toEqual({ threadId: null, args: ['--no-alt-screen', '--', '-v fix the login bug'] });
   });
 
   it('reopens the conversation the session had', () => {
     expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null, controls: NO_CONTROLS }))
-      .toEqual({ threadId: FIRST, args: ['resume', FIRST] });
+      .toEqual({ threadId: FIRST, args: ['--no-alt-screen', 'resume', FIRST] });
+  });
+
+  it('writes the conversation into the terminal itself, new or reopened, so the pane keeps it', () => {
+    for (const resumeThreadId of [null, FIRST]) {
+      expect(planCodexNativeTerminalLaunch({ resumeThreadId, firstPrompt: 'hi', controls: NO_CONTROLS }).args[0]).toBe('--no-alt-screen');
+    }
   });
 });
 
@@ -67,6 +73,7 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
         configOptionOverrides: configOptionOverrides({ reasoning_effort: 'high', service_tier: 'fast' }),
       },
     }).args).toEqual([
+      '--no-alt-screen',
       '--model', 'gpt-6.1-sol',
       '--ask-for-approval', 'never', '--sandbox', 'workspace-write',
       '-c', 'model_reasoning_effort="high"', '-c', 'service_tier="fast"',
@@ -79,7 +86,7 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
       resumeThreadId: null,
       firstPrompt: null,
       controls: { ...NO_CONTROLS, permissionMode: 'default', configOptionOverrides: configOptionOverrides({ service_tier: 'standard' }) },
-    }).args).toEqual([]);
+    }).args).toEqual(['--no-alt-screen']);
   });
 
   it('reopens a conversation with the same choices', () => {
@@ -87,7 +94,7 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
       resumeThreadId: FIRST,
       firstPrompt: null,
       controls: { ...NO_CONTROLS, permissionMode: 'yolo', modelId: 'gpt-6.1-sol' },
-    }).args).toEqual(['--model', 'gpt-6.1-sol', '--ask-for-approval', 'never', '--sandbox', 'danger-full-access', 'resume', FIRST]);
+    }).args).toEqual(['--no-alt-screen', '--model', 'gpt-6.1-sol', '--ask-for-approval', 'never', '--sandbox', 'danger-full-access', 'resume', FIRST]);
   });
 });
 

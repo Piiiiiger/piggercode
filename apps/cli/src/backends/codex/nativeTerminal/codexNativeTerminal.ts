@@ -52,7 +52,11 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
   firstPrompt: string | null;
   controls: NativeTerminalControls;
 }>): Readonly<{ threadId: string | null; args: string[] }> {
-  const choices = codexControlArgs(params.controls);
+  // Codex writes its conversation into the terminal, as in a multiplexer it should: in its own
+  // alternate screen (codex 0.167's default), a terminal whose first turn ran during a slow start
+  // sometimes kept showing only the header while the turn ran and finished (seen 2026-11-13 in a
+  // folder on a shared mount). Written into the terminal, tmux keeps it as the pane's history.
+  const choices = ['--no-alt-screen', ...codexControlArgs(params.controls)];
   const resume = params.resumeThreadId?.trim() ?? '';
   if (resume) return { threadId: resume, args: [...choices, 'resume', resume] };
   return { threadId: null, args: [...choices, ...(params.firstPrompt ? ['--', params.firstPrompt] : [])] };
