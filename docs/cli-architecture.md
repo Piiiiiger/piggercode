@@ -1742,10 +1742,10 @@ without a terminal, and the runner gets `--native-terminal` (`buildHappySessionC
 typed in the new-session screen out of `PIGGERCODE_DAEMON_PENDING_FIRST_INPUT` before the session bootstrap
 would queue it, and passes it as the CLI's first prompt after `--`; with nothing typed the CLI opens without one. `claude` gets
 `--session-id <id>`, or `--resume <id>` once the conversation has a transcript; `codex` gets nothing, or `resume <thread id>`.
-Since CLI 0.3.30 `codex` also always gets `--no-alt-screen` (new and reopened): codex 0.167 otherwise draws the
-conversation itself in the alternate screen, and a terminal whose first turn ran during a slow start (a folder on a
-shared mount) could keep showing only the header while the turn ran and finished (the thread itself was intact).
-Written into the terminal, the conversation is the tmux pane's history, scrolled like Claude's; `resume` replays it there.
+Since CLI 0.3.30 `codex` also always gets `--no-alt-screen` (new and reopened): the conversation is written into the
+terminal instead of codex 0.167's own alternate screen, so it is the tmux pane's history, scrolled and selected like
+Claude's; `resume` replays it there and a resize rewrites it at the new width. (It came with a Codex terminal that showed
+only its header; that was the view's Ctrl+L, below, which CLI 0.3.31 no longer sends.)
 Since CLI 0.3.26 `claude` also gets `--settings '{"tui":"default"}'`: a running `claude` switches renderer when `tui`
 changes in a settings file, and a session switched out of the fullscreen renderer that way stays blank or cut off until
 `claude` restarts; a flag outranks the settings files. The default renderer because the app draws it correctly, while a
@@ -1790,7 +1790,10 @@ offers 「切到终端」 on a chat that still runs (stop, wait until it ended, 
 starts Claude terminals only and refuses Codex ones ("codex has no terminal sessions").
 The app's view of a terminal is one `piggercode attach` (`terminal/attachment/tmuxAttach.ts`, planned in
 `tmuxSingleWindowAttachPlan.ts`): a temporary tmux session holding just the agent's window, with no status line,
-destroyed with its client. Since CLI 0.3.23 it first sets two options on the agent's window: `allow-passthrough on`,
+destroyed with its client. Since CLI 0.3.31 it types nothing into a session its metadata marks a 「终端」 (`nativeTerminal`;
+`shouldRefreshRemoteControlOnAttach`):
+the Ctrl+L that repaints a daemon chat runner's remote-control banner made Codex 0.167 clear its screen and drop the
+conversation shown, each time the app opened a Codex terminal. Since CLI 0.3.23 it first sets two options on the agent's window: `allow-passthrough on`,
 because Claude Code and Codex send each copy as an OSC 52 wrapped in tmux passthrough (their `tmux load-buffer -w`
 path does not always find the app's client), and a `pane-mode-changed` hook that leaves tmux's scroll-back (copy)
 mode at once when the pane has no history and no selection of its own: one wheel turn or drag before the CLI takes

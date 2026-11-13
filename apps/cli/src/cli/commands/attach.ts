@@ -144,8 +144,15 @@ function printMissingAttachInfo(sessionId: string): void {
   console.error(chalk.gray('This usually means the session was not started with an attachable terminal host, or it was started on another machine.'));
 }
 
+/**
+ * A daemon-started chat runner draws a remote-control banner in its terminal, and a Ctrl+L makes it
+ * repaint for the view that attaches. A 「终端」 session's terminal is the CLI itself, which tmux
+ * repaints for every client: there the key is typed into the CLI, and Codex 0.167 takes it as
+ * "clear the screen", dropping the conversation it shows (every time the app opened a Codex
+ * terminal, 2026-11-13).
+ */
 function shouldRefreshRemoteControlOnAttach(metadata: Record<string, unknown> | null): boolean {
-  return metadata?.startedBy === 'daemon';
+  return metadata?.startedBy === 'daemon' && metadata.nativeTerminal !== true;
 }
 
 async function resolveAttachContext(
@@ -429,8 +436,11 @@ export async function handleAttachCommand(
     }
     if (eligibility.attachStrategy === 'managed_provider_attach') {
       const terminal = await restoreManagedTerminal();
-      const exitCode = await runTerminalHostAttach({ sessionId: resolvedSessionId, terminal, refreshRemoteControl: true },
-        { runTmuxAttachFn, runZellijAttachFn, runHerdrAttachFn });
+      const exitCode = await runTerminalHostAttach({
+        sessionId: resolvedSessionId,
+        terminal,
+        refreshRemoteControl: shouldRefreshRemoteControlOnAttach(eligibility.metadata),
+      }, { runTmuxAttachFn, runZellijAttachFn, runHerdrAttachFn });
       if (exitCode === null) throw new Error('The restored managed terminal is not attachable.');
       if (exitCode !== 0) process.exit(exitCode);
       return;

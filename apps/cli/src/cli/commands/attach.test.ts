@@ -23,6 +23,7 @@ import { createTerminalAttachmentId, readTerminalAttachmentInfo, writeTerminalAt
 import { buildTerminalHostHandleFromAttachmentMetadata } from '@/agent/runtime/terminal/attachmentMetadata';
 import { withConfiguredDaemonTestHome } from '@/daemon/testkit/fakeDaemonLifecycle.testkit';
 import { acquireSessionRunnerLock } from '@/daemon/sessionRunnerLock';
+import { runTmuxAttach } from '@/terminal/attachment/tmuxAttach';
 
 import { handleAttachCommand } from './attach';
 
@@ -339,6 +340,60 @@ describe('piggercode attach', () => {
       sessionId: 'sid_daemon_claude_1',
       refreshRemoteControl: true,
     }));
+  });
+
+  it('types nothing into a 「终端」 session it attaches to', async () => {
+    // Its terminal is the CLI itself: Codex 0.167 takes Ctrl+L as "clear the screen" and drops the conversation shown.
+    const credentials: Credentials = {
+      token: 'token-1',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
+    };
+    const terminal = {
+      mode: 'tmux' as const,
+      requested: 'tmux' as const,
+      tmux: { target: 'happy:session-1', tmpDir: '/tmp/happy-tmux' },
+    };
+    const rawSession = createSessionRecordFixture({
+      id: 'sid_terminal_codex_1',
+      active: true,
+      encryptionMode: 'plain',
+      metadata: JSON.stringify({
+        machineId: 'machine-local',
+        path: '/tmp/codex-workspace',
+        host: 'test',
+        flavor: 'codex',
+        startedBy: 'daemon',
+        nativeTerminal: true,
+        terminal,
+      }),
+    });
+    const tmuxCommands: string[][] = [];
+
+    await handleAttachCommand(['sid_terminal_codex_1'], {
+      readCredentialsFn: async () => credentials,
+      readSettingsFn: async () => localSettings,
+      fetchSessionByIdFn: async () => rawSession,
+      readTerminalAttachmentInfoFn: async () => ({
+        version: 1,
+        sessionId: 'sid_terminal_codex_1',
+        updatedAt: Date.now(),
+        terminal,
+      }),
+      isTmuxAvailableFn: async () => true,
+      runProviderAttachFn: async () => false as const,
+      runTmuxAttachFn: (params) => runTmuxAttach(params, {
+        isTmuxAvailableFn: async () => true,
+        insideTmux: false,
+        currentTmuxSocketPath: null,
+        spawnTmuxFn: async ({ args }) => {
+          tmuxCommands.push(args);
+          return 0;
+        },
+      }),
+    });
+
+    expect(tmuxCommands.some((args) => args.includes('attach-session'))).toBe(true);
+    expect(tmuxCommands.filter((args) => args[0] === 'send-keys')).toEqual([]);
   });
 
   it('falls back to persisted local attachment info when session metadata is unavailable', async () => {
