@@ -7,19 +7,83 @@ import { fakePushService, fakeServerSession } from './nativeTerminalSession.test
 function setup() {
   const server = fakeServerSession();
   const push = fakePushService();
+  const running: boolean[] = [];
   void server.session.updateMetadata((metadata) => ({ ...metadata, name: 'Fix the login page' }));
   const reporter = createNativeTerminalActivityReporter({
     session: server.session,
     agentName: 'Claude Code',
+    agentId: 'claude',
     logPrefix: '[test-terminal]',
     pushSender: push.sender,
     // An account that never changed its notification settings.
     readAccountSettings: () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
+    onTurnRunningChange: (next) => running.push(next),
   });
-  return { server, push, reporter };
+  return { server, push, reporter, running };
 }
 
 describe('createNativeTerminalActivityReporter', () => {
+  it('records each turn on the session, from the first sign of work until the CLI is idle again', async () => {
+    const { server, reporter, running } = setup();
+
+    reporter.report({ kind: 'idle' });
+    expect(reporter.turnRunning()).toBe(false);
+    expect(server.turns).toEqual([]);
+
+    reporter.report({ kind: 'working' });
+    reporter.report({ kind: 'waiting', on: 'permission' });
+    reporter.report({ kind: 'working' });
+    expect(reporter.turnRunning()).toBe(true);
+    expect(running).toEqual([true]);
+
+    // Claude finished, but a shell it started in the background still runs: the turn is over.
+    reporter.report({ kind: 'idle', background: true });
+    reporter.report({ kind: 'idle' });
+    await reporter.flush();
+    expect(reporter.turnRunning()).toBe(false);
+    expect(running).toEqual([true, false]);
+    expect(server.turns).toEqual([
+      { action: 'begin', provider: 'claude' },
+      { action: 'complete', provider: 'claude' },
+    ]);
+    expect(server.events).toEqual([{ type: 'ready' }]);
+  });
+
+  it('counts the CLI as unused only once its input box shows with nothing running, from the moment that began', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      vi.setSystemTime(1_000);
+      const { reporter } = setup();
+      // Nothing reported yet: what the CLI shows is not known, so it does not count as unused.
+      expect(reporter.quietSince()).toBeNull();
+
+      vi.setSystemTime(2_000);
+      reporter.report({ kind: 'working' });
+      expect(reporter.quietSince()).toBeNull();
+      reporter.report({ kind: 'waiting', on: 'question' });
+      expect(reporter.quietSince()).toBeNull();
+      reporter.report({ kind: 'idle', background: true });
+      expect(reporter.quietSince()).toBeNull();
+
+      vi.setSystemTime(3_000);
+      reporter.report({ kind: 'idle' });
+      vi.setSystemTime(9_000);
+      reporter.report({ kind: 'idle' });
+      expect(reporter.quietSince()).toBe(3_000);
+
+      // What the CLI shows can no longer be read: it may be working, so it no longer counts as unused,
+      // and the next idle it shows starts the count again.
+      reporter.report({ kind: 'unknown' });
+      expect(reporter.quietSince()).toBeNull();
+      expect(reporter.turnRunning()).toBe(false);
+      vi.setSystemTime(12_000);
+      reporter.report({ kind: 'idle' });
+      expect(reporter.quietSince()).toBe(12_000);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('tells the app and the phone once when a turn ends, not when the CLI starts idle', async () => {
     const { server, push, reporter } = setup();
 
@@ -128,6 +192,7 @@ describe('createNativeTerminalActivityReporter', () => {
     const reporter = createNativeTerminalActivityReporter({
       session: server.session,
       agentName: 'Codex',
+      agentId: 'codex',
       logPrefix: '[test-terminal]',
       pushSender: push.sender,
       readAccountSettings: () => null,

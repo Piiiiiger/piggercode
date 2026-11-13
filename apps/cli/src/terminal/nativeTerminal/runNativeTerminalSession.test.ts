@@ -3,9 +3,11 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import { accountSettingsParse } from '@piggercode/protocol';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { NativeTerminalActivity } from './nativeTerminalActivityReporter';
 import { fakePushService, fakeServerSession } from './nativeTerminalSession.testkit';
 import { runNativeTerminalSession } from './runNativeTerminalSession';
 
@@ -25,29 +27,43 @@ function runWith(params: Readonly<{
   script: string;
   cwd: string;
   holdFailedExit?: (code: number) => Promise<void>;
+  /** The account's settings (an account that never changed any by default; null: not known yet). */
+  settings?: Record<string, unknown> | null;
+  /** When someone last typed into the terminal (0 by default: no view shows it; null: cannot tell). */
+  lastInputAt?: () => Promise<number | null>;
 }>) {
   const exit = vi.fn();
   const push = fakePushService();
   const followed: Array<number | null> = [];
+  // What the follower tells the runner the CLI shows; set before the runner first waits.
+  let report: (activity: NativeTerminalActivity) => void = () => undefined;
   const done = runNativeTerminalSession({
     session: params.server.session,
     cli: { command: '/bin/sh', args: ['-c', params.script, 'cli', '--session-id', 'c-1'] },
     cwd: params.cwd,
     env: { ...process.env, OUT: join(params.cwd, 'out.txt') },
-    follow: ({ childPid }) => {
+    follow: ({ childPid, reportActivity }) => {
       followed.push(childPid);
+      report = reportActivity;
       return async () => {
         params.server.calls.push('stop-following');
       };
     },
+    agentId: 'claude',
     notifications: push.notifications(),
+    readAccountSettings: () => (params.settings === null
+      ? null
+      : { settings: accountSettingsParse(params.settings ?? {}), settingsSecretsReadKeys: [] }),
+    readLastInputAt: params.lastInputAt ?? (async () => 0),
     process: new EventEmitter(),
     exit,
     ...(params.holdFailedExit ? { holdFailedExit: params.holdFailedExit } : {}),
     logPrefix: '[test-terminal]',
   });
-  return { done, exit, followed, push };
+  return { done, exit, followed, push, report: (activity: NativeTerminalActivity) => report(activity) };
 }
+
+const LOOPS_UNTIL_STOPPED = 'trap "echo stopped > \\"$OUT\\"; exit 0" TERM; while :; do sleep 0.1; done';
 
 describe('runNativeTerminalSession', () => {
   it('runs the CLI in the session folder, follows its process, and ends the session when the CLI exits', async () => {
@@ -146,7 +162,9 @@ describe('runNativeTerminalSession', () => {
           reportActivity({ kind: 'waiting', on: 'permission' });
           return async () => undefined;
         },
+        agentId: 'claude',
         notifications: push.notifications(),
+        readAccountSettings: () => null,
         process: new EventEmitter(),
         exit,
         logPrefix: '[test-terminal]',
@@ -158,6 +176,92 @@ describe('runNativeTerminalSession', () => {
     } finally {
       if (previousTimeout === undefined) delete process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS;
       else process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = previousTimeout;
+    }
+  });
+
+  it('tells the app at once when the CLI starts working and when it is done', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const { done, report } = runWith({ server, cwd, script: 'sleep 0.5' });
+
+    vi.mocked(server.session.keepAlive).mockClear();
+    report({ kind: 'working' });
+    expect(server.session.keepAlive).toHaveBeenLastCalledWith(true, 'local');
+    report({ kind: 'idle' });
+    expect(server.session.keepAlive).toHaveBeenLastCalledWith(false, 'local');
+    await done;
+    expect(server.turns.map((turn) => turn.action)).toEqual(['begin', 'complete']);
+  });
+
+  it('stops a CLI left unused past the account\'s limit, as the app\'s stop would, but never one that works, asks, runs a shell or is typed into', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
+    try {
+      let typedAt = 0;
+      const { done, exit, report } = runWith({
+        server,
+        cwd,
+        script: LOOPS_UNTIL_STOPPED,
+        settings: { sessionIdleStopAfterMinutes: 60 },
+        lastInputAt: async () => typedAt,
+      });
+      const minutes = (count: number) => vi.advanceTimersByTimeAsync(count * 60_000);
+
+      // Before the CLI shows its input box, nothing says it is unused.
+      await minutes(120);
+      report({ kind: 'working' });
+      await minutes(120);
+      report({ kind: 'waiting', on: 'question' });
+      await minutes(120);
+      report({ kind: 'idle', background: true });
+      await minutes(120);
+      expect(server.calls).toEqual([]);
+
+      report({ kind: 'idle' });
+      await minutes(59);
+      // The user opens the terminal and starts typing a prompt they have not sent yet, then closes
+      // the view (tmux no longer lists a client for it).
+      typedAt = Date.now();
+      await minutes(2);
+      typedAt = 0;
+      await minutes(56);
+      expect(server.calls).toEqual([]);
+      await minutes(3);
+      vi.useRealTimers();
+      await done;
+
+      expect((await readFile(join(cwd, 'out.txt'), 'utf8')).trim()).toBe('stopped');
+      expect(server.calls).toEqual(['stop-following', 'death', 'close']);
+      expect(exit).toHaveBeenCalledWith(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('never stops an unused CLI when the limit is off, or while the account\'s choice or typing cannot be told', async () => {
+    const cases = [
+      { settings: { sessionIdleStopAfterMinutes: null } },
+      { settings: null },
+      { settings: { sessionIdleStopAfterMinutes: 60 }, lastInputAt: async () => null },
+    ];
+    for (const options of cases) {
+      const cwd = await tempDir();
+      const server = fakeServerSession();
+      vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
+      try {
+        const { done, report } = runWith({ server, cwd, script: LOOPS_UNTIL_STOPPED, ...options });
+        report({ kind: 'idle' });
+        await vi.advanceTimersByTimeAsync(48 * 60 * 60_000);
+        expect(server.calls).toEqual([]);
+
+        vi.useRealTimers();
+        await server.handlers.get(RPC_METHODS.KILL_SESSION)!({});
+        await done;
+        expect(server.calls).toEqual(['stop-following', 'death', 'close']);
+      } finally {
+        vi.useRealTimers();
+      }
     }
   });
 });

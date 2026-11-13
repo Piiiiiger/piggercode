@@ -7,10 +7,10 @@ import { logger } from '@/ui/logger';
 
 /**
  * Claude Code's own record of what one of its processes shows: `<config dir>/sessions/<pid>.json`,
- * rewritten on every change (Claude Code 2.1.322). `status` is `busy`, `idle` or `waiting`; a wait
- * names what it waits for (`waitingFor`): "input needed" is a question, "dialog open" is a dialog the
- * user opened (such as `/config`), anything else ("permission prompt", "sandbox request", …) is an
- * approval.
+ * rewritten on every change (Claude Code 2.1.322). `status` is `busy`, `idle` or `waiting`, or
+ * `shell` (2.1.323): idle while a shell Claude started in the background still runs. A wait names what
+ * it waits for (`waitingFor`): "input needed" is a question, "dialog open" is a dialog the user opened
+ * (such as `/config`), anything else ("permission prompt", "sandbox request", …) is an approval.
  */
 export function claudeSessionStatusPath(claudeConfigDir: string, claudePid: number): string {
   return join(claudeConfigDir, 'sessions', `${claudePid}.json`);
@@ -22,6 +22,7 @@ export function readClaudeSessionActivity(record: unknown): NativeTerminalActivi
   const { status, waitingFor } = record as { status?: unknown; waitingFor?: unknown };
   if (status === 'busy') return { kind: 'working' };
   if (status === 'idle') return { kind: 'idle' };
+  if (status === 'shell') return { kind: 'idle', background: true };
   if (status !== 'waiting') return null;
   if (waitingFor === 'dialog open') return null;
   return { kind: 'waiting', on: waitingFor === 'input needed' ? 'question' : 'permission' };
@@ -33,13 +34,24 @@ export function readClaudeSessionActivity(record: unknown): NativeTerminalActivi
  */
 const STATUS_READ_INTERVAL_MS = 1_000;
 
-/** Reports what Claude shows each time its record changes. Returns how to stop. */
+/**
+ * Reports what Claude shows each time its record changes, and once that it cannot tell (no record, an
+ * unreadable one, or a state it does not know); the record read after that is reported even if it is
+ * the one reported before. Returns how to stop.
+ */
 export function followClaudeSessionStatus(params: Readonly<{
   statusPath: string;
   reportActivity: (activity: NativeTerminalActivity) => void;
   intervalMs?: number;
 }>): () => Promise<void> {
   let lastRaw: string | null = null;
+  let unknownReported = false;
+  const reportUnknown = (): void => {
+    lastRaw = null;
+    if (unknownReported) return;
+    unknownReported = true;
+    params.reportActivity({ kind: 'unknown' });
+  };
   const read = async (): Promise<void> => {
     let raw: string;
     try {
@@ -49,6 +61,7 @@ export function followClaudeSessionStatus(params: Readonly<{
       if ((error as NodeJS.ErrnoException)?.code !== 'ENOENT') {
         logger.infoFile('[claude-terminal] Could not read the Claude status', serializeAxiosErrorForLog(error));
       }
+      reportUnknown();
       return;
     }
     if (raw === lastRaw) return;
@@ -56,12 +69,18 @@ export function followClaudeSessionStatus(params: Readonly<{
     try {
       record = JSON.parse(raw);
     } catch {
-      // A rewrite in progress; the next read sees it whole.
+      // Half written (a rewrite in progress) or broken: not known until a whole record is read.
+      reportUnknown();
+      return;
+    }
+    const activity = readClaudeSessionActivity(record);
+    if (!activity) {
+      reportUnknown();
       return;
     }
     lastRaw = raw;
-    const activity = readClaudeSessionActivity(record);
-    if (activity) params.reportActivity(activity);
+    unknownReported = false;
+    params.reportActivity(activity);
   };
 
   let stopped = false;

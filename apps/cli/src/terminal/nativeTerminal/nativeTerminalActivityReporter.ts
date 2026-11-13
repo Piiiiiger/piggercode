@@ -9,25 +9,41 @@ import type { ApiSessionClient } from '@/api/session/sessionClient';
 import type { NativeTerminalWaiting, NativeTerminalWaitingOn } from '@/api/types';
 import { logger } from '@/ui/logger';
 
-/** What the CLI shows: a turn in progress, a prompt waiting for the user, or its input box. */
+/**
+ * What the CLI shows: a turn in progress, a prompt waiting for the user, or its input box; `background`
+ * marks an input box while work the CLI started in the background (Claude's background shells) runs on.
+ * `unknown`: what it shows could not be read, or is something the follower does not know (a dialog the
+ * user opened); what was last known stays, except that the CLI no longer counts as unused.
+ */
 export type NativeTerminalActivity =
   | Readonly<{ kind: 'working' }>
-  | Readonly<{ kind: 'idle' }>
-  | Readonly<{ kind: 'waiting'; on: NativeTerminalWaitingOn }>;
+  | Readonly<{ kind: 'idle'; background?: boolean }>
+  | Readonly<{ kind: 'waiting'; on: NativeTerminalWaitingOn }>
+  | Readonly<{ kind: 'unknown' }>;
 
 export type NativeTerminalActivitySession = Pick<
   ApiSessionClient,
   'sessionId' | 'sendSessionEvent' | 'updateAgentState' | 'getMetadataSnapshot' | 'getAgentStateSnapshot'
->;
+> & Readonly<{
+  sessionTurnLifecycle: Pick<ApiSessionClient['sessionTurnLifecycle'], 'beginTurn' | 'completeTurn'>;
+}>;
 
-/** The user's notification choices (account settings). */
-export type NativeTerminalNotificationSettings = Readonly<{
+/** The account's settings as last read (the user's notification choices among them). */
+export type NativeTerminalAccountSettings = Readonly<{
   settings: AccountSettings;
   settingsSecretsReadKeys: ReadonlyArray<Uint8Array>;
 }>;
 
 export type NativeTerminalActivityReporter = Readonly<{
   report: (activity: NativeTerminalActivity) => void;
+  /** Whether a turn runs: from the CLI's first sign of work until it shows its input box again. */
+  turnRunning: () => boolean;
+  /**
+   * Since when the CLI has shown its input box with nothing running and no prompt waiting; null while
+   * it works, waits for the user, runs background work, is gone, or has not shown its input box yet
+   * (a CLI whose state cannot be read is never taken for an unused one).
+   */
+  quietSince: () => number | null;
   /**
    * The CLI quit by itself (not stopped from the app). With an error, its terminal now waits for the
    * user to read its last words, and the user is told; a clean quit was the user's own doing.
@@ -46,6 +62,8 @@ export type NativeTerminalActivityReporter = Readonly<{
 
 /**
  * Turns what a 「终端」 CLI shows into what the user's devices are told, the same way for every CLI:
+ * - a turn is recorded on the session from its first sign of work until the CLI is idle again, which
+ *   the app shows as running;
  * - a turn that ends is the session's `ready` event (the app's "finished" notification and the
  *   phone's push);
  * - a prompt waiting for the user, or a CLI that quit with an error and waits for the user to close its
@@ -57,15 +75,33 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   session: NativeTerminalActivitySession;
   /** The CLI's name in notifications, e.g. "Claude Code". */
   agentName: string;
+  /** The agent the session's turn records name, e.g. "claude". */
+  agentId: string;
   logPrefix: string;
   pushSender: ExpoPushActivityNotificationSender & Readonly<{
     sendToAllDevices?: (title: string, body: string, data: { sessionId: string }) => void;
   }>;
-  /** The notification choices as last read, without waiting for the relay; null while unknown. */
-  readAccountSettings: () => NativeTerminalNotificationSettings | null;
+  /** The account's settings as last read, without waiting for the relay; null while unknown. */
+  readAccountSettings: () => NativeTerminalAccountSettings | null;
+  /** Called when a turn starts or ends, so the runner can tell the app at once. */
+  onTurnRunningChange?: (running: boolean) => void;
 }>): NativeTerminalActivityReporter {
   const { session } = params;
   let turnInProgress = false;
+  let quietSince: number | null = null;
+  // Turn records go out through the session's turn lifecycle, which keeps their order; one that fails
+  // leaves only the app's running mark behind until the next turn, so it is logged, not retried here.
+  const recordTurn = (label: string, run: () => Promise<unknown>): void => {
+    void run().catch((error) => {
+      logger.infoFile(`${params.logPrefix} Could not ${label}`, serializeAxiosErrorForLog(error));
+    });
+  };
+  const setTurnInProgress = (next: boolean): void => {
+    if (turnInProgress === next) return;
+    turnInProgress = next;
+    if (next) recordTurn('record the start of a turn', () => session.sessionTurnLifecycle.beginTurn({ provider: params.agentId }));
+    params.onTurnRunningChange?.(next);
+  };
   // Session writes run one after another, so a prompt's start and end reach the session in order.
   let writes: Promise<void> = Promise.resolve();
   const write = (label: string, run: () => Promise<void>): Promise<void> => {
@@ -111,7 +147,7 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
 
   const sessionTitle = () => getSessionNotificationTitle(() => session.getMetadataSnapshot());
   // Choices not known yet count as untouched ones: every notification on.
-  const notificationSettings = (): NativeTerminalNotificationSettings => {
+  const notificationSettings = (): NativeTerminalAccountSettings => {
     try {
       const known = params.readAccountSettings();
       if (known) return known;
@@ -149,6 +185,7 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   };
 
   const turnFinished = (): void => {
+    recordTurn('record the end of a turn', () => session.sessionTurnLifecycle.completeTurn({ provider: params.agentId }));
     const { settings, settingsSecretsReadKeys } = notificationSettings();
     sendReadyWithPushNotification({
       session,
@@ -163,22 +200,33 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
 
   return {
     report: (activity) => {
+      if (activity.kind === 'unknown') {
+        quietSince = null;
+        return;
+      }
+      const quiet = activity.kind === 'idle' && activity.background !== true;
+      if (!quiet) quietSince = null;
+      else quietSince ??= Date.now();
       if (activity.kind === 'waiting') {
-        turnInProgress = true;
         setWaiting(activity.on);
+        setTurnInProgress(true);
         return;
       }
       setWaiting(null);
       if (activity.kind === 'working') {
-        turnInProgress = true;
+        setTurnInProgress(true);
         return;
       }
       if (!turnInProgress) return;
-      turnInProgress = false;
       turnFinished();
+      setTurnInProgress(false);
     },
+    turnRunning: () => turnInProgress,
+    quietSince: () => quietSince,
     cliExited: async (exitCode) => {
-      turnInProgress = false;
+      quietSince = null;
+      // The session's end closes a turn the CLI left open.
+      setTurnInProgress(false);
       // A prompt the CLI left is cleared first, so the exit starts a wait of its own in the app.
       setWaiting(null);
       if (exitCode !== 0) {
@@ -195,7 +243,8 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
     },
     retryUnsaved: retryWaiting,
     end: async () => {
-      turnInProgress = false;
+      quietSince = null;
+      setTurnInProgress(false);
       if (waiting) void changeWaiting(null);
       await writes;
       // A write that was still on its way and failed gets one more try before the session ends.

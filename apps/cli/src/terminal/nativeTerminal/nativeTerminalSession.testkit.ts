@@ -1,4 +1,3 @@
-import { accountSettingsParse } from '@piggercode/protocol';
 import { vi } from 'vitest';
 
 import type { AgentState, Metadata } from '@/api/types';
@@ -38,9 +37,20 @@ export function fakeServerSession() {
   let agentState: AgentState = {};
   const events: SessionEventMessage[] = [];
   const calls: string[] = [];
+  // The turn records the relay keeps for the session (what the app shows as running).
+  const turns: Array<Readonly<{ action: 'begin' | 'complete'; provider: string | null | undefined }>> = [];
   const session = {
     sessionId: 'session-1',
     keepAlive: vi.fn(),
+    sessionTurnLifecycle: {
+      beginTurn: vi.fn(async (input: { provider?: string | null }) => {
+        turns.push({ action: 'begin', provider: input.provider });
+        return { turnId: `turn-${turns.length}` };
+      }),
+      completeTurn: vi.fn(async (input: { provider?: string | null } = {}) => {
+        turns.push({ action: 'complete', provider: input.provider });
+      }),
+    },
     updateMetadata: vi.fn(async (handler: (current: Metadata) => Metadata) => {
       metadata = handler(metadata);
     }),
@@ -69,6 +79,7 @@ export function fakeServerSession() {
     handlers,
     calls,
     events,
+    turns,
     metadata: () => metadata,
     agentState: () => agentState,
   };
@@ -85,7 +96,7 @@ export function fakePushService() {
       }),
       sendToAllDevices: vi.fn(),
     },
-    /** What the runner needs to reach the user, for an account that never changed its notification settings. */
+    /** What the runner needs to reach the user. */
     notifications: (agentName = 'Claude Code') => ({
       agentName,
       pushSender: {
@@ -93,7 +104,6 @@ export function fakePushService() {
           sent.push({ title, body, data });
         },
       },
-      readAccountSettings: () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
     }),
   };
 }

@@ -3511,6 +3511,10 @@ export {
   SESSION_SUBAGENT_LIMIT_MAX,
   SessionSubagentLimitSchema,
   resolveSessionSubagentLimit,
+  SESSION_IDLE_STOP_DEFAULT_MINUTES,
+  SESSION_IDLE_STOP_MAX_MINUTES,
+  SessionIdleStopAfterMinutesSchema,
+  resolveSessionIdleStopAfterMinutes,
   SessionAgentSpawnPolicyV1Schema,
   SessionPendingQueueDeliveryTimingSchema,
   SessionPendingQueueDrainModeSchema,
@@ -3535,6 +3539,7 @@ export {
   type SessionPendingQueueDeliveryTiming,
   type SessionPendingQueueDrainMode,
   type SessionSubagentLimit,
+  type SessionIdleStopAfterMinutes,
   type UsageLimitRecoverySettingsV1,
   type NotificationsSettingsV1,
 } from './account/settings/index.js';

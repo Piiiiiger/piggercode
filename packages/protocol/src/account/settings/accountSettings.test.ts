@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   accountSettingsParse,
   isExpoPushNotificationChannelEnabled,
+  resolveSessionIdleStopAfterMinutes,
   resolveSessionSubagentLimit,
 } from './accountSettings.js';
 import { resolveConnectedServicesProviderStateSharingPolicyV1 } from './connectedServicesSettings.js';
@@ -119,6 +120,19 @@ describe('accountSettings', () => {
     expect(accountSettingsParse({ sessionSubagentLimit: '2' }).sessionSubagentLimit).toBeNull();
     expect(resolveSessionSubagentLimit({ sessionSubagentLimit: 0 })).toBe(0);
     expect(resolveSessionSubagentLimit(null)).toBeNull();
+  });
+
+  it('stops a terminal session after three idle hours by default, never when turned off, and keeps only whole minutes up to a week', () => {
+    expect(accountSettingsParse({}).sessionIdleStopAfterMinutes).toBe(180);
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: null }).sessionIdleStopAfterMinutes).toBeNull();
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: 60 }).sessionIdleStopAfterMinutes).toBe(60);
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: 0 }).sessionIdleStopAfterMinutes).toBe(180);
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: 1.5 }).sessionIdleStopAfterMinutes).toBe(180);
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: 7 * 24 * 60 + 1 }).sessionIdleStopAfterMinutes).toBe(180);
+    expect(accountSettingsParse({ sessionIdleStopAfterMinutes: '60' }).sessionIdleStopAfterMinutes).toBe(180);
+    expect(resolveSessionIdleStopAfterMinutes({ sessionIdleStopAfterMinutes: 720 })).toBe(720);
+    expect(resolveSessionIdleStopAfterMinutes({ sessionIdleStopAfterMinutes: null })).toBeNull();
+    expect(resolveSessionIdleStopAfterMinutes(null)).toBe(180);
   });
 
   it('defaults pending queue delivery timing to foreground-ready and falls back for malformed values', () => {

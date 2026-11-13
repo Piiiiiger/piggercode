@@ -18,6 +18,10 @@ export {
   SessionPendingQueueDrainModeSchema,
   SessionSubagentLimitSchema,
   resolveSessionSubagentLimit,
+  SESSION_IDLE_STOP_DEFAULT_MINUTES,
+  SESSION_IDLE_STOP_MAX_MINUTES,
+  SessionIdleStopAfterMinutesSchema,
+  resolveSessionIdleStopAfterMinutes,
   SessionAgentSpawnPolicyV1Schema,
   UsageLimitRecoverySettingsV1Schema,
   type AccountSettings,
@@ -27,6 +31,7 @@ export {
   type SessionPendingQueueDeliveryTiming,
   type SessionPendingQueueDrainMode,
   type SessionSubagentLimit,
+  type SessionIdleStopAfterMinutes,
   type UsageLimitRecoverySettingsV1,
 } from './accountSettings.js';
 

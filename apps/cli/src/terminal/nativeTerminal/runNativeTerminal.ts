@@ -16,7 +16,7 @@ import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/boot
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
 import { logger } from '@/ui/logger';
 
-import type { NativeTerminalNotificationSettings } from './nativeTerminalActivityReporter';
+import type { NativeTerminalAccountSettings } from './nativeTerminalActivityReporter';
 import { runNativeTerminalSession, type NativeTerminalFollower } from './runNativeTerminalSession';
 
 export type NativeTerminalLaunch = Readonly<{
@@ -117,11 +117,12 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     cwd: directory,
     env: launch.env,
     follow: launch.follow,
+    agentId: opts.provider.flavor,
     notifications: {
       agentName: opts.provider.name,
       pushSender: api.push(),
-      readAccountSettings: notificationSettingsReader(opts.credentials, opts.provider.logPrefix),
     },
+    readAccountSettings: accountSettingsReader(opts.credentials, opts.provider.logPrefix),
     process,
     exit: (code) => process.exit(code),
     holdFailedExit: (exitCode) => holdFailedExitUntilEnter(opts.provider.name, exitCode),
@@ -130,16 +131,17 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
 }
 
 /**
- * The account's notification choices, as last read: each look also refreshes them in the background
- * (cached between reads), so a notification never waits for the relay. Only these choices are used;
- * the CLI got its environment before the first read and gets none of the account's settings.
+ * The account's settings, as last read: each look also refreshes them in the background (cached
+ * between reads, fetched at most once per cache lifetime), so a notification or the unused check never
+ * waits for the relay. Only the notification choices and the unused limit are used; the CLI got its
+ * environment before the first read and gets none of the account's settings.
  */
-function notificationSettingsReader(credentials: Credentials, logPrefix: string): () => NativeTerminalNotificationSettings | null {
+function accountSettingsReader(credentials: Credentials, logPrefix: string): () => NativeTerminalAccountSettings | null {
   const refresh = (): void => {
     void bootstrapAccountSettingsContext({ credentials, mode: 'fast' })
       .then((context) => context.whenRefreshed)
       .catch((error) => {
-        logger.infoFile(`${logPrefix} Could not refresh the notification settings`, serializeAxiosErrorForLog(error));
+        logger.infoFile(`${logPrefix} Could not refresh the account settings`, serializeAxiosErrorForLog(error));
       });
   };
   refresh();

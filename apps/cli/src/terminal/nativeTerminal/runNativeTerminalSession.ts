@@ -2,6 +2,7 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import type { EventEmitter } from 'node:events';
 
 import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
+import { resolveSessionIdleStopAfterMinutes } from '@piggercode/protocol';
 
 import { registerRunnerTerminationHandlers } from '@/agent/runtime/runnerTerminationHandlers';
 import { startSessionHeartbeatLoop } from '@/agent/runtime/session/startSessionHeartbeatLoop';
@@ -12,9 +13,10 @@ import { logger } from '@/ui/logger';
 import {
   createNativeTerminalActivityReporter,
   type NativeTerminalActivity,
+  type NativeTerminalAccountSettings,
   type NativeTerminalActivitySession,
-  type NativeTerminalNotificationSettings,
 } from './nativeTerminalActivityReporter';
+import { readTerminalLastInputAt } from './terminalInputActivity';
 
 export type NativeTerminalSessionClient = NativeTerminalActivitySession & Pick<
   ApiSessionClient,
@@ -38,9 +40,10 @@ export type NativeTerminalNotifications = Readonly<{
   /** The CLI's name in notifications, e.g. "Claude Code". */
   agentName: string;
   pushSender: Parameters<typeof createNativeTerminalActivityReporter>[0]['pushSender'];
-  /** The notification choices as last read, without waiting for the relay; null while unknown. */
-  readAccountSettings: () => NativeTerminalNotificationSettings | null;
 }>;
+
+/** How often the runner looks whether its CLI has sat unused for longer than the account allows. */
+const IDLE_STOP_CHECK_INTERVAL_MS = 60_000;
 
 type ProcessLike = Pick<EventEmitter, 'on' | 'removeListener'>;
 
@@ -50,7 +53,19 @@ export type RunNativeTerminalSessionParams = Readonly<{
   cwd: string;
   env: NodeJS.ProcessEnv;
   follow: NativeTerminalFollower;
+  /** The agent the session's turn records name, e.g. "claude". */
+  agentId: string;
   notifications: NativeTerminalNotifications;
+  /**
+   * The account's settings as last read, without waiting for the relay (null while unknown): the
+   * notification choices, and how long the CLI may sit unused (`sessionIdleStopAfterMinutes`).
+   */
+  readAccountSettings: () => NativeTerminalAccountSettings | null;
+  /**
+   * When someone last typed into the terminal from a view of it (0: no view shows it), or null when
+   * that cannot be told. Defaults to asking tmux.
+   */
+  readLastInputAt?: () => Promise<number | null>;
   process: ProcessLike;
   exit: (code: number) => void;
   /**
@@ -64,7 +79,9 @@ export type RunNativeTerminalSessionParams = Readonly<{
 /**
  * One 「终端」 session: the CLI owns the terminal (stdin, stdout and stderr are its own), and this
  * runner only keeps the PiggerCode session alive, follows the conversation, and ends the session
- * when the CLI exits or the app stops it. It writes nothing to the terminal while the CLI runs.
+ * when the CLI exits, the app stops it, or the CLI sat unused for longer than the account allows
+ * (stopped the way the app stops it; reopening resumes the conversation). It writes nothing to the
+ * terminal while the CLI runs.
  */
 export async function runNativeTerminalSession(params: RunNativeTerminalSessionParams): Promise<void> {
   const { session } = params;
@@ -92,20 +109,24 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     });
   });
 
+  const sendHeartbeat = (thinking: boolean): void => {
+    session.keepAlive(thinking, 'local');
+    activity.retryUnsaved();
+  };
   const activity = createNativeTerminalActivityReporter({
     session,
     agentName: params.notifications.agentName,
+    agentId: params.agentId,
     logPrefix: params.logPrefix,
     pushSender: params.notifications.pushSender,
-    readAccountSettings: params.notifications.readAccountSettings,
+    readAccountSettings: params.readAccountSettings,
+    // The app learns at once that a turn started or ended, not at the next heartbeat.
+    onTurnRunningChange: (running) => sendHeartbeat(running),
   });
   const heartbeat = startSessionHeartbeatLoop({
-    getThinking: () => false,
+    getThinking: () => activity.turnRunning(),
     getMode: () => 'local',
-    keepAlive: (thinking, mode) => {
-      session.keepAlive(thinking, mode);
-      activity.retryUnsaved();
-    },
+    keepAlive: (thinking) => sendHeartbeat(thinking),
   });
   const stopFollower = params.follow({
     session,
@@ -117,12 +138,45 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
   // Set before the CLI is stopped, so its exit is not mistaken for the user quitting it.
   let stopping = false;
 
+  // A CLI left unused for longer than the account allows is stopped the way the app stops it: its
+  // input box showing with nothing running, and nobody typing into it. Whatever cannot be told (the
+  // account's choice, the CLI's state, typing) keeps the session running.
+  const readLastInputAt = params.readLastInputAt ?? (() => readTerminalLastInputAt());
+  // The latest typing seen at any look, so a view closed right after typing still counts it.
+  let lastSeenInputAt = 0;
+  const stopIfUnused = async (): Promise<void> => {
+    if (activity.quietSince() === null) return;
+    const inputAt = await readLastInputAt();
+    if (inputAt === null) return;
+    lastSeenInputAt = Math.max(lastSeenInputAt, inputAt);
+    // Read after the look, so a choice changed meanwhile ("never", a longer time) counts.
+    const known = params.readAccountSettings();
+    const stopAfterMinutes = known ? resolveSessionIdleStopAfterMinutes(known.settings) : null;
+    const quietSince = activity.quietSince();
+    if (stopAfterMinutes === null || quietSince === null || stopping) return;
+    if (Date.now() - Math.max(quietSince, lastSeenInputAt) < stopAfterMinutes * 60_000) return;
+    logger.infoFile(`${params.logPrefix} The CLI sat unused for ${stopAfterMinutes} min: stopping the session`);
+    termination.requestTermination({ kind: 'killSession' });
+  };
+  let idleCheckRunning = false;
+  const idleStopCheck = setInterval(() => {
+    if (idleCheckRunning || stopping) return;
+    idleCheckRunning = true;
+    void stopIfUnused()
+      .catch((error) => logger.infoFile(`${params.logPrefix} Could not check whether the CLI is unused`, error))
+      .finally(() => {
+        idleCheckRunning = false;
+      });
+  }, IDLE_STOP_CHECK_INTERVAL_MS);
+  idleStopCheck.unref?.();
+
   const termination = registerRunnerTerminationHandlers({
     process: params.process,
     exit: params.exit,
     sessionExitReport: { sessionId: session.sessionId },
     onTerminate: async () => {
       stopping = true;
+      clearInterval(idleStopCheck);
       if (cliRunning) child.kill('SIGTERM');
       await cliExit;
       clearInterval(heartbeat);

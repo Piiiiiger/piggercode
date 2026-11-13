@@ -327,6 +327,29 @@ export const SessionSubagentLimitSchema = z
   .catch(null);
 export type SessionSubagentLimit = z.infer<typeof SessionSubagentLimitSchema>;
 
+// How long a 「终端」 session's CLI may sit unused (its input box showing, nothing running, no prompt
+// waiting) before its runner stops the session; null never stops one. Reopening resumes the same
+// conversation. The owner chose three hours (2026-11-14).
+export const SESSION_IDLE_STOP_DEFAULT_MINUTES = 180;
+export const SESSION_IDLE_STOP_MAX_MINUTES = 7 * 24 * 60;
+export const SessionIdleStopAfterMinutesSchema = z
+  .number()
+  .int()
+  .min(1)
+  .max(SESSION_IDLE_STOP_MAX_MINUTES)
+  .nullable()
+  .catch(SESSION_IDLE_STOP_DEFAULT_MINUTES);
+export type SessionIdleStopAfterMinutes = z.infer<typeof SessionIdleStopAfterMinutesSchema>;
+
+export function resolveSessionIdleStopAfterMinutes(settingsLike: unknown): number | null {
+  const rec = settingsLike && typeof settingsLike === 'object' && !Array.isArray(settingsLike)
+    ? (settingsLike as Record<string, unknown>)
+    : null;
+  return rec && Object.prototype.hasOwnProperty.call(rec, 'sessionIdleStopAfterMinutes')
+    ? SessionIdleStopAfterMinutesSchema.parse(rec.sessionIdleStopAfterMinutes)
+    : SESSION_IDLE_STOP_DEFAULT_MINUTES;
+}
+
 export function resolveSessionSubagentLimit(settingsLike: unknown): number | null {
   const rec = settingsLike && typeof settingsLike === 'object' && !Array.isArray(settingsLike)
     ? (settingsLike as Record<string, unknown>)
@@ -401,6 +424,7 @@ export const AccountSettingsSchema = z.preprocess(
       ),
       sessionAgentSpawnPolicyV1: SessionAgentSpawnPolicyV1Schema.default(DEFAULT_SESSION_AGENT_SPAWN_POLICY_V1),
       sessionSubagentLimit: SessionSubagentLimitSchema.default(null),
+      sessionIdleStopAfterMinutes: SessionIdleStopAfterMinutesSchema.default(SESSION_IDLE_STOP_DEFAULT_MINUTES),
       connectedServicesDefaultAuthByAgentIdV1: ConnectedServicesDefaultAuthByAgentIdV1Schema.default(
         DEFAULT_CONNECTED_SERVICES_DEFAULT_AUTH_BY_AGENT_ID_V1,
       ),

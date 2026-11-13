@@ -115,7 +115,8 @@ export function followCodexThread(params: Readonly<{
 
   const look = async (): Promise<void> => {
     const shown = readCodexWindowTitle(await readWindowTitle(), folderName);
-    if (shown.activity) params.reportActivity?.(shown.activity);
+    // A title that tells nothing (unreadable, or not Codex's) leaves what Codex shows unknown.
+    params.reportActivity?.(shown.activity ?? { kind: 'unknown' });
     const title = shown.conversationTitle;
     if (!title) return;
     const shownThreadId = await threads.find({ title, directory: params.directory, current: threadId });
