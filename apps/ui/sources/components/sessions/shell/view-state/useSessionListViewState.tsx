@@ -88,9 +88,13 @@ import {
     useExplorerListingReader,
 } from '../explorer/explorerDirectoryListings';
 import { resolveSessionOrganizationMutationScope, type SessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
+import { recentSessionKey } from '../recent/recentSessions';
+
+type SessionListSessionRow = Extract<SessionListViewItem, { type: 'session' }>;
 
 const EMPTY_SESSION_KEYS: ReadonlyArray<string> = Object.freeze([]);
 const EMPTY_EXPLORER_FOLDERS: ReadonlyArray<SessionExplorerFolderRef> = Object.freeze([]);
+const EMPTY_RECENT_CANDIDATE_ROWS: ReadonlyArray<SessionListSessionRow> = Object.freeze([]);
 const EMPTY_EXPLORER_MACHINES: ReadonlyArray<SessionExplorerMachineRef> = Object.freeze([]);
 const EMPTY_EXPLORER_ROOT_PATHS: Readonly<Record<string, string>> = Object.freeze({});
 const EMPTY_SESSION_LIST_GROUP_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
@@ -484,6 +488,24 @@ export function useSessionListViewState({
         if (explorerSharedFoldersToAsk.length > 0) requestExplorerSharedFolders(explorerSharedFoldersToAsk);
     }, [explorerSharedFoldersToAsk]);
 
+    // Every session the explorer holds, also those inside closed folders: the 「最近」 box picks from
+    // these. Searching and the Files view show no box.
+    const recentCandidateRows = React.useMemo((): ReadonlyArray<SessionListSessionRow> => {
+        if (!explorerEnabled || explorerMode !== 'sessions' || headerFiltersActive || !agentFilteredData) {
+            return EMPTY_RECENT_CANDIDATE_ROWS;
+        }
+        const seen = new Set<string>();
+        const rows: SessionListSessionRow[] = [];
+        for (const item of agentFilteredData) {
+            if (item.type !== 'session') continue;
+            const key = recentSessionKey(item);
+            if (seen.has(key)) continue;
+            seen.add(key);
+            rows.push(item);
+        }
+        return rows;
+    }, [agentFilteredData, explorerEnabled, explorerMode, headerFiltersActive]);
+
     const folderPresentedData = React.useMemo(() => {
         if (explorer) return explorer.items;
         if (!agentFilteredData) return agentFilteredData;
@@ -637,6 +659,7 @@ export function useSessionListViewState({
         folderActionsEnabled,
         folderViewEnabled,
         explorerEnabled,
+        recentCandidateRows,
         explorerOpenFolders: explorer?.openFolders ?? EMPTY_EXPLORER_FOLDERS,
         explorerShowHidden: explorerShowHidden === true,
         setExplorerShowHidden,

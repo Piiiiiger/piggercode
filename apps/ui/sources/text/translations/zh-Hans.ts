@@ -6163,6 +6163,7 @@ export const zhHans: TranslationStructure = {
       noPresets: '没有已保存的预设', noPresetsMessage: '下次选择自定义提醒时即可保存。',
     },
     workingSectionTitle: '正在工作',
+    recentSectionTitle: '最近',
     hideInactiveSessions: '隐藏非活动会话',
     showInactiveSessions: '显示非活动会话',
   },
@@ -7992,6 +7993,14 @@ settingsSession: {
       offTitle: "不使用子代理",
       offSubtitle: "所有工作都由主代理自己完成。",
       countTitle: ({ count }: { count: number }) => `最多 ${count} 个`,
+    },
+    idleStop: {
+      title: "闲置会话",
+      footer: "终端会话在这段时间里没有运行、没有等你回答、也没有后台命令在跑，就像点了「停止」一样自动停止。之后点「重新打开」，接着原来的对话。",
+      itemTitle: "自动停止闲置会话",
+      neverTitle: "从不",
+      hoursTitle: ({ count }: { count: number }) => `闲置 ${count} 小时后`,
+      minutesTitle: ({ count }: { count: number }) => `闲置 ${count} 分钟后`,
     },
     providerUsageGauge: {
       title: "提供方使用量",

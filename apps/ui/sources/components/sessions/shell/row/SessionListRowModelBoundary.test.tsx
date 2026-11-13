@@ -241,6 +241,14 @@ describe('SessionListRowModelBoundary', () => {
         standardCleanup();
     });
 
+    it('keeps a row shown outside the list out of selections', async () => {
+        const { SessionListRowModelBoundary } = await import('./SessionListRowModelBoundary');
+        await renderScreen(<SessionListRowModelBoundary {...createBoundaryProps()} selectionDisabled />);
+        expect(rowRenderProps.at(-1)?.selectionKey).toBe('');
+        await renderScreen(<SessionListRowModelBoundary {...createBoundaryProps()} />);
+        expect(rowRenderProps.at(-1)?.selectionKey).toBeUndefined();
+    });
+
     it('keeps folder actions available with the folder view disabled', async () => {
         const { SessionListRowModelBoundary } = await import('./SessionListRowModelBoundary');
         const onMoveToFolder = vi.fn();

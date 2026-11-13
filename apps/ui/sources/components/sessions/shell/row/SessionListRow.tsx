@@ -158,7 +158,8 @@ export const SessionListRow = React.memo(function SessionListRow(props: SessionL
     const sessionItem = (
         <SessionItem
             {...itemProps}
-            selectionKey={sessionKey}
+            // A row outside the list (the 「最近」 box) passes '' to stay out of selections.
+            selectionKey={itemProps.selectionKey ?? sessionKey}
             reorderHandleGesture={isWeb && rowDragEnabled ? gesture : undefined}
             isBeingDragged={isBeingDragged}
         />

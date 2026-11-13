@@ -6,6 +6,8 @@ import {
     DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME,
     SessionPendingQueueDrainModeSchema,
     SessionSubagentLimitSchema,
+    SessionIdleStopAfterMinutesSchema,
+    SESSION_IDLE_STOP_DEFAULT_MINUTES,
     UsageLimitRecoverySettingsV1Schema as ProtocolUsageLimitRecoverySettingsV1Schema,
     buildSettingArtifacts,
     defineSettingDefinitions,
@@ -421,6 +423,12 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
         schema: SessionSubagentLimitSchema,
         default: null,
         description: 'The most subagents one session may run at the same time; null keeps the provider default, 0 turns subagents off',
+        storageScope: 'account',
+    },
+    sessionIdleStopAfterMinutes: {
+        schema: SessionIdleStopAfterMinutesSchema,
+        default: SESSION_IDLE_STOP_DEFAULT_MINUTES,
+        description: 'Minutes a terminal session may sit unused before its runner stops it; null never stops one',
         storageScope: 'account',
     },
     sessionUsageGaugeLabels: {

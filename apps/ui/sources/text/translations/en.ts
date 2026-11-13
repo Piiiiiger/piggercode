@@ -6020,6 +6020,7 @@ export const en = {
             noPresets: 'No saved presets', noPresetsMessage: 'Save one the next time you choose a custom reminder.',
         },
         workingSectionTitle: 'Working',
+        recentSectionTitle: 'Recent',
         hideInactiveSessions: 'Hide inactive sessions',
         showInactiveSessions: 'Show inactive sessions',
     },
@@ -7791,6 +7792,14 @@ settingsSession: {
               offTitle: 'Off',
               offSubtitle: 'The agent does all the work itself.',
               countTitle: ({ count }: { count: number }) => `At most ${count}`,
+          },
+          idleStop: {
+              title: 'Idle sessions',
+              footer: 'A terminal session that has not worked, asked you anything or run a background command for this long stops as if you pressed Stop. Reopen it to continue the same conversation.',
+              itemTitle: 'Stop idle sessions',
+              neverTitle: 'Never',
+              hoursTitle: ({ count }: { count: number }) => (count === 1 ? 'After 1 hour idle' : `After ${count} hours idle`),
+              minutesTitle: ({ count }: { count: number }) => (count === 1 ? 'After 1 minute idle' : `After ${count} minutes idle`),
           },
           providerUsageGauge: {
               title: 'Provider usage',

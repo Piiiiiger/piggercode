@@ -60,6 +60,10 @@ describe('resolveSessionListSecondaryLineMode', () => {
     it('uses path mode for date-grouped rows', () => {
         expect(resolveSessionListSecondaryLineMode({ groupKind: 'date' })).toBe('path');
     });
+
+    it('says where a row of the 「最近」 box lives, since it sits outside its folder', () => {
+        expect(resolveSessionListSecondaryLineMode({ groupKind: 'recent' })).toBe('path');
+    });
 });
 
 describe('deriveSessionListAttentionState', () => {

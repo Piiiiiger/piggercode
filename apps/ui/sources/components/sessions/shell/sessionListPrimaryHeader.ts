@@ -10,6 +10,7 @@ const SESSION_LIST_PRIMARY_HEADER_KINDS = new Set<SessionListHeaderKind>([
     'inactive',
     'sessions',
     'explorer',
+    'recent',
 ]);
 
 export function isSessionListPrimaryHeaderKind(headerKind: SessionListHeaderKind | null | undefined): boolean {

@@ -82,6 +82,8 @@ export type SessionListRowModelBoundaryProps = Readonly<{
     rowStoreSubscriptionMode: SessionListRowStoreSubscriptionMode;
     settings: SessionListRowPresentationSettings;
     viewableSessionRowKeys: ReadonlySet<string> | null;
+    /** A row outside the list (the 「最近」 box) takes no part in selecting sessions: a click opens it. */
+    selectionDisabled?: boolean;
 }>;
 
 function subscribeToNoRowStoreUpdates(): () => void {
@@ -332,6 +334,7 @@ const SessionListRowModelBoundaryContent = React.memo(function SessionListRowMod
             onSetTags={onSetTags}
             tagsEnabled={rowModel.tagsEnabled}
             selected={rowModel.isSelected}
+            {...(props.selectionDisabled ? { selectionKey: '' } : null)}
             isFirst={rowModel.adjacency.isFirst}
             isLast={rowModel.adjacency.isLast}
             isSingle={rowModel.adjacency.isSingle}

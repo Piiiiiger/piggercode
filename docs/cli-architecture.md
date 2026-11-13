@@ -1820,7 +1820,8 @@ PiggerCode's queue, stuck-turn watchdog and subagent limit belong to the chat ru
 at a prompt, idle) through one owner, `terminal/nativeTerminal/nativeTerminalActivityReporter.ts`; each provider's
 `follow` only reads it. Claude Code keeps it in `<config dir>/sessions/<pid>.json` (`status` busy/idle/waiting and
 `waitingFor`; "input needed" is a question, "dialog open" a dialog the user opened and ignored, any other wait an
-approval), read once a second (`claudeSessionStatusFollower.ts`). Claude stays `busy` while a background agent of its
+approval; since 2.1.323 also `shell`, idle while a background shell Claude started still runs, read as idle with
+background work), read once a second (`claudeSessionStatusFollower.ts`). Claude stays `busy` while a background agent of its
 own works, so a turn that ends then is reported once Claude is idle; its away recaps leave the status alone (checked
 on 2.1.322). Codex shows it in the same window title the runner
 reads every 3 s: a braille spinner before the title while it works, `[ . ] Action Required` / `[ ! ] Action Required`
@@ -1839,8 +1840,33 @@ made again with the next report and at the end, and a new runner clears one a de
 `pendingUserActionRequestCount`), so the relay's attention list and badge include it. Pushes follow the account's
 channel switches (`terminal_waiting` the request switches, `session_ended` the ready switch) as last read: each push
 starts a `bootstrapAccountSettingsContext` refresh in `fast` mode (cache first, network in the background), so neither
-the ready event nor a session write waits for the relay. The runner reads only the notification choices; the CLI got
-its environment before and gets none of the account's settings.
+the ready event nor a session write waits for the relay. The runner reads only the notification choices and the idle
+limit below; the CLI got its environment before and gets none of the account's settings.
+
+**Running turns, the 「最近」 box and idle stop (after CLI 0.3.31 / app 0.3.34).** The reporter also records each turn
+on the session through the canonical turn lifecycle (`beginTurn` at the first sign of work or a prompt,
+`completeTurn` when the CLI is idle again; the session's end cancels one left open), and the runner's heartbeat
+carries `thinking` while it runs, sent at once when a turn starts or ends. The app therefore shows a terminal's turn
+like a chat's (`latestTurnStatus: 'in_progress'`, kept fresh by the heartbeat's turn touch): the row's spinner, and
+"finished, not yet opened" from the ready cursor. Before, the runner sent `thinking: false` always and terminals never
+showed as running. The sidebar's explorer gets the 「最近」 box above the list (`components/sessions/shell/recent/`):
+the five sessions used last, running ones and ones waiting for the user first, then by the time each row shows; stopped
+ones count too. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
+drop or bulk selection: a click opens the session), it does not scroll with the list, folds with its header (collapse
+key `recent`), and shows only in the explorer's Sessions view, not while searching (the List layout keeps its own
+attention and working bands).
+The runner stops its session the way the app's stop does (`killSession` termination) once, for the account's
+`sessionIdleStopAfterMinutes` (default 180, `null` never; Settings › Session › Runtime), the CLI has shown its input box
+with nothing running, no prompt and no background work (`quietSince`: armed only by an observed idle state, and
+disarmed by `unknown`, which a follower reports when it cannot read what the CLI shows or does not know it, e.g. a
+dialog the user opened) and nobody has typed into a view of it (`terminalInputActivity.ts`: the latest tmux
+`client_activity` of the clients showing the runner's pane, looked at every minute while the CLI is quiet and kept, so
+closing the view right after typing still counts; opening a view counts too. A view opened, typed into and closed
+between two looks just as the limit runs out is not seen: that loses at most an unsent draft, not the conversation.
+tmux's `window_activity` cannot stand in, since Claude redraws its idle screen every minute). Settings are read after that look and
+refreshed at most once per cache lifetime; whatever cannot be told (settings never read, the CLI's state, typing
+outside tmux) keeps the session running. Reopening resumes the same conversation. Runners keep the CLI version they started with, so a session gets
+all of this once reopened on a newer CLI.
 In the app, every `update-session` passes `announceTerminalWaitStart` (`sync/engine/socket/terminalWaitNotifications.ts`)
 before it patches the session's list row: a pending count turning non-zero there (the row is what the app keeps for
 every listed session, open or not) is the cue to decrypt that update's `agentState`, and a `terminalWaiting` in it

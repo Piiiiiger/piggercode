@@ -95,9 +95,10 @@ export function deriveSessionListAttentionState(input: Readonly<{
 }
 
 export function resolveSessionListSecondaryLineMode(params: Readonly<{
-    groupKind?: 'active' | 'date' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | null;
+    groupKind?: 'active' | 'date' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'recent' | null;
 }>): SessionListSecondaryLineMode {
-    if (params.groupKind === 'date') {
+    // A 「最近」 row sits outside its folder, so with nothing else to say it says where it is.
+    if (params.groupKind === 'date' || params.groupKind === 'recent') {
         return 'path';
     }
     return 'status';

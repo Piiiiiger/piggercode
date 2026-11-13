@@ -16,6 +16,15 @@ import { useApplySettings } from '@/sync/store/settingsWriters';
 import { WINDOWS_REMOTE_SESSION_LAUNCH_MODE_OPTIONS } from '@/sync/domains/session/spawn/windowsRemoteSessionLaunchModeOptions';
 import { Icon } from '@/components/ui/icons/Icon';
 
+/** The idle times offered for stopping an unused terminal session, in minutes. */
+const IDLE_STOP_CHOICES_MINUTES = [60, 180, 720, 1440] as const;
+
+function idleStopTitle(minutes: number): string {
+    return minutes % 60 === 0
+        ? t('settingsSession.idleStop.hoursTitle', { count: minutes / 60 })
+        : t('settingsSession.idleStop.minutesTitle', { count: minutes });
+}
+
 export const SessionRuntimeSettingsView = React.memo(function SessionRuntimeSettingsView() {
     const { theme } = useUnistyles();
     const useTmux = useSetting('sessionUseTmux');
@@ -29,6 +38,14 @@ export const SessionRuntimeSettingsView = React.memo(function SessionRuntimeSett
     const [terminalConnectLegacySecretExportEnabled, setTerminalConnectLegacySecretExportEnabled] = useSettingMutable('terminalConnectLegacySecretExportEnabled');
     const [openWindowsRemoteSessionLaunchModeMenu, setOpenWindowsRemoteSessionLaunchModeMenu] = React.useState(false);
     const [openTerminalHostMenu, setOpenTerminalHostMenu] = React.useState(false);
+    const [idleStopAfterMinutes, setIdleStopAfterMinutes] = useSettingMutable('sessionIdleStopAfterMinutes');
+    const [openIdleStopMenu, setOpenIdleStopMenu] = React.useState(false);
+    const idleStopMinutes = Array.from(new Set<number>([
+        ...IDLE_STOP_CHOICES_MINUTES,
+        // A time set elsewhere stays selectable.
+        ...(typeof idleStopAfterMinutes === 'number' ? [idleStopAfterMinutes] : []),
+    ])).sort((left, right) => left - right);
+    const idleStopSelectedId = typeof idleStopAfterMinutes === 'number' ? String(idleStopAfterMinutes) : 'never';
     const selectedTerminalHost = resolveTerminalHost({ settings: {
         sessionUseTmux: useTmux, sessionTerminalHost: terminalHost,
         sessionTmuxByMachineId: {}, sessionTerminalHostByMachineId: {},
@@ -36,6 +53,33 @@ export const SessionRuntimeSettingsView = React.memo(function SessionRuntimeSett
 
     return (
         <ItemList style={{ paddingTop: 0 }}>
+            <ItemGroup title={t('settingsSession.idleStop.title')} footer={t('settingsSession.idleStop.footer')}>
+                <DropdownMenu
+                    open={openIdleStopMenu}
+                    onOpenChange={setOpenIdleStopMenu}
+                    items={[
+                        ...idleStopMinutes.map((minutes) => ({ id: String(minutes), title: idleStopTitle(minutes) })),
+                        { id: 'never', title: t('settingsSession.idleStop.neverTitle') },
+                    ]}
+                    selectedId={idleStopSelectedId}
+                    onSelect={(id) => {
+                        setIdleStopAfterMinutes(id === 'never' ? null : Number(id));
+                        setOpenIdleStopMenu(false);
+                    }}
+                    itemTrigger={{
+                        itemProps: { testID: 'settings-session-idleStop-trigger' },
+                        title: t('settingsSession.idleStop.itemTitle'),
+                        subtitle: typeof idleStopAfterMinutes === 'number'
+                            ? idleStopTitle(idleStopAfterMinutes)
+                            : t('settingsSession.idleStop.neverTitle'),
+                        icon: <Icon name="timer" size={29} color={theme.colors.accent.indigo} />,
+                    }}
+                    rowKind="item"
+                    connectToTrigger
+                    variant="default"
+                />
+            </ItemGroup>
+
             <ItemGroup title={t('settingsSession.terminalHostTitle')}>
                 <DropdownMenu
                     open={openTerminalHostMenu}

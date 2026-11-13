@@ -74,6 +74,14 @@ import { sessionExplorerMachineKey, type SessionExplorerMachine } from '@/sync/d
 import { SessionListHeaderFrame } from './SessionListHeaderFrame';
 import { resolveSessionListRowModelAdjacency } from './row/buildSessionListRowModels';
 import { SessionListRowModelBoundary } from './row/SessionListRowModelBoundary';
+import { RecentSessionsBox } from './recent/RecentSessionsBox';
+import {
+    buildSessionListSelectedItems,
+    type SessionListSelectedItem,
+    type SessionListSelectedSessionItem,
+} from './sessionListSelectedItems';
+import { RECENT_SESSIONS_GROUP_KEY } from './recent/recentSessions';
+import { useRecentSessionRows } from './recent/useRecentSessionRows';
 import { useSessionListIdentityDisplay } from './SessionListIdentity';
 import type {
     SessionListRowPresentationSettings,
@@ -193,6 +201,11 @@ const stylesheet = StyleSheet.create((theme) => ({
         alignItems: 'stretch',
         backgroundColor: theme.colors.background.canvas,
     },
+    contentColumn: {
+        flex: 1,
+        flexDirection: 'column',
+        maxWidth: layout.maxWidth,
+    },
     contentContainer: {
         position: 'relative',
         flex: 1,
@@ -223,6 +236,15 @@ const NATIVE_LIST_SCROLL_EVENT_THROTTLE_MS = 16;
 const NATIVE_LIST_MAINTAIN_VISIBLE_CONTENT_POSITION = Object.freeze({ disabled: true });
 const EMPTY_SESSION_KEYS: ReadonlyArray<string> = Object.freeze([]);
 const EMPTY_COLLAPSED_GROUP_KEYS: Readonly<Record<string, boolean>> = Object.freeze({});
+const NO_RECENT_PRIORITY_ROW_KEYS: ReadonlySet<string> = new Set();
+const NO_RECENT_ROW_MOVE_ACTIONS = Object.freeze({});
+function ignoreRecentRowEvent(): void {}
+function getNoRecentRowMoveActions(): typeof NO_RECENT_ROW_MOVE_ACTIONS {
+    return NO_RECENT_ROW_MOVE_ACTIONS;
+}
+function getNoRecentRowNativeContextMenu(): (next: boolean) => void {
+    return ignoreRecentRowEvent;
+}
 const EMPTY_SESSION_LIST_VIEW_ITEMS: ReadonlyArray<SessionListViewItem> = Object.freeze([]);
 const EMPTY_SESSION_LIST_ROW_STORE_SCOPES: ReadonlyArray<{ sessionId: string; serverId?: string | null }> = Object.freeze([]);
 const EMPTY_SESSION_ROW_STORE_KEY_SET: ReadonlySet<string> = Object.freeze(new Set<string>());
@@ -639,6 +661,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         folderActionsEnabled,
         folderViewEnabled,
         explorerEnabled,
+        recentCandidateRows,
+        selectable,
         explorerOpenFolders,
         explorerShowHidden,
         setExplorerShowHidden,
@@ -2524,6 +2548,73 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         unregisterTreeRowBounds,
     ]);
 
+    // The 「最近」 box: the same rows, outside the list. They do not drag, drop or join a selection (a
+    // click opens the session), and on phones the folder's row keeps the long-press menu, so one
+    // session never opens two.
+    const recentRankedRows = useRecentSessionRows(recentCandidateRows, surfaceOwnership.dataActive);
+    // The open session's row is marked in the box as in its folder.
+    const recentSelectedRowsRef = React.useRef<ReadonlyArray<SessionListSelectedItem> | null>(null);
+    const recentRows = React.useMemo(() => (buildSessionListSelectedItems({
+        items: recentRankedRows,
+        pathname,
+        selectable,
+        previousItems: recentSelectedRowsRef.current,
+    }) ?? []).filter((item): item is SessionListSelectedSessionItem => item.type === 'session'), [pathname, recentRankedRows, selectable]);
+    recentSelectedRowsRef.current = recentRows;
+    const recentCollapsed = Boolean(collapsedKeys[RECENT_SESSIONS_GROUP_KEY]);
+    const toggleRecentCollapsed = React.useCallback(() => {
+        handleToggleCollapse(RECENT_SESSIONS_GROUP_KEY);
+    }, [handleToggleCollapse]);
+    const renderRecentRow = React.useCallback((
+        item: SessionListSessionItem,
+        index: number,
+        rows: ReadonlyArray<SessionListSessionItem>,
+    ) => (
+        <SessionListRowModelBoundary
+            activeServerId={selection.activeServerId}
+            adjacency={resolveSessionListRowModelAdjacency(rows, index)}
+            dataActive={surfaceOwnership.dataActive}
+            dataIndex={index}
+            dragEnabled={false}
+            draggingSessionKey={draggingSessionKey}
+            folderActionsEnabled={false}
+            folderViewEnabled={folderViewEnabled}
+            getRowMoveActionHandlers={getNoRecentRowMoveActions}
+            getRowNativeContextMenuOpenChangeHandler={getNoRecentRowNativeContextMenu}
+            getRowSetTagsHandler={getRowSetTagsHandler}
+            getRowTogglePinnedHandler={getRowTogglePinnedHandler}
+            groupKey={RECENT_SESSIONS_GROUP_KEY}
+            item={item}
+            nativeContextMenuSessionKey={null}
+            onDragStart={ignoreRecentRowEvent}
+            onDropResult={handleA11yTreeDropResult}
+            onDragCancel={handleStableDragCancel}
+            resolveDropResult={resolveStableDropResult}
+            onRegisterTreeRowBounds={ignoreRecentRowEvent}
+            onUnregisterTreeRowBounds={ignoreRecentRowEvent}
+            overlayShared={dropOverlayShared}
+            prioritySessionRowKeys={NO_RECENT_PRIORITY_ROW_KEYS}
+            rowStoreSubscriptionEnabled
+            rowStoreSubscriptionMode={rowStoreSubscriptionMode}
+            settings={rowPresentationSettings}
+            viewableSessionRowKeys={null}
+            selectionDisabled
+        />
+    ), [
+        draggingSessionKey,
+        dropOverlayShared,
+        folderViewEnabled,
+        getRowSetTagsHandler,
+        getRowTogglePinnedHandler,
+        handleA11yTreeDropResult,
+        handleStableDragCancel,
+        resolveStableDropResult,
+        rowPresentationSettings,
+        rowStoreSubscriptionMode,
+        selection.activeServerId,
+        surfaceOwnership.dataActive,
+    ]);
+
     const renderHeaderItemRef = React.useRef(renderHeaderItem);
     renderHeaderItemRef.current = renderHeaderItem;
     const renderSessionItemRef = React.useRef(renderSessionItem);
@@ -2659,6 +2750,13 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     return (
         <SessionListSelectionStoreProvider store={sessionListSelectionStore}>
             <View ref={focusReturnFallbackRef} style={styles.container} {...keyboardZoneProps}>
+                <View style={styles.contentColumn}>
+                <RecentSessionsBox
+                    rows={recentRows}
+                    collapsed={recentCollapsed}
+                    onToggleCollapsed={toggleRecentCollapsed}
+                    renderRow={renderRecentRow}
+                />
                 <View
                     ref={listViewportRef}
                     style={styles.contentContainer}
@@ -2683,6 +2781,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         tagsEnabled={sessionTagsEnabled === true}
                         onRequestMoveToFolder={folderActionsEnabled ? handleRequestBulkMoveToFolder : undefined}
                     />
+                </View>
                 </View>
             </View>
         </SessionListSelectionStoreProvider>

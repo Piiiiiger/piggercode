@@ -24,7 +24,7 @@ export type SessionListViewItem =
     | {
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus' | 'explorerFile';
+        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus' | 'explorerFile' | 'recent';
         groupKey?: string;
         workspaceKey?: string;
         workspace?: SessionFolderWorkspaceRefV1;
@@ -64,7 +64,8 @@ export type SessionListViewItem =
         session: SessionListRenderableSession;
         section?: 'active' | 'inactive';
         groupKey?: string;
-        groupKind?: 'active' | 'date' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder';
+        /** `recent`: a copy of the row in the 「最近」 box above the list. */
+        groupKind?: 'active' | 'date' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'recent';
         folderId?: string | null;
         folderDepth?: number;
         pinned?: boolean;
