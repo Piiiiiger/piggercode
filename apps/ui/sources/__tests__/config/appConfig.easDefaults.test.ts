@@ -258,7 +258,7 @@ describe('app.config.js', () => {
         });
 
         expect(exp.name).toBe('PiggerCode');
-        expect(exp.version).toBe('0.3.34');
+        expect(exp.version).toBe('0.3.35');
         expect(exp.extra?.app?.productName).toBe('PiggerCode');
         expect(exp.extra?.app?.cliCommandName).toBe('piggercode');
         expect(exp.extra?.app?.agentIds).toEqual(['claude', 'codex']);
