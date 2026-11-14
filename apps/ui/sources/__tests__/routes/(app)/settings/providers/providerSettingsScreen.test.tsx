@@ -456,11 +456,15 @@ vi.mock('@/components/settings/providers/authentication/useProviderAuthenticatio
     useProviderAuthenticationState: (params: any) => {
         const providerId = params.providerId;
         const authStatus = cliDetectionState.authStatus?.[providerId] ?? null;
+        // A terminal login, as the real hook reports one: shown only in the desktop app.
         return {
             canLaunchAuth: true,
             machineId: null,
             machineHomeDir: null,
             authLaunches: [{ kind: 'primary', initialCommand: 'codex login' }],
+            primaryLaunchSurface: params.desktopControls ? 'terminal' : null,
+            deviceCodeLaunchSurface: null,
+            showActions: params.desktopControls,
             authStatus,
             canCheckNow: true,
             loginActionKind: authStatus?.state === 'logged_in' ? 'reauthenticate' : 'login',

@@ -152,6 +152,23 @@ Defined/used in the CLI capability system:
 - `tool.<name>`: tool capability (e.g. `tool.tmux`)
 - `dep.<name>`: dependency capability (e.g. `dep.codex-acp`)
 
+### Provider login (`authLaunches`, login status)
+
+`packages/agents/src/localCli.ts` declares each provider's login launch. A launch with `signIn: 'link_then_code'`
+prints a sign-in link and then reads the code the sign-in page shows (Claude: `claude auth login`, which has no
+folder-trust question). The app (Settings › Providers › <provider> › Authentication, and the provider setup flow) shows
+such a login as that link and a box for the code wherever it runs (`ProviderAuthenticationLinkLogin`: the login runs
+in a machine terminal nobody sees, the daemon's URL detection finds the link, the code is typed into it, and the shell
+exits when the login ends either way); any other launch needs a terminal, which only the desktop app shows. One owner
+decides which (`resolveProviderAuthLaunchSurface`, through `useProviderAuthenticationState`).
+
+The `cli.<agentId>` login status (`includeLoginStatus`) carries `expiresAt` when the CLI says when the login ends
+(PiggerCode CLI 0.3.34+); the app shows the time left. Claude Code keeps it in its credentials file as
+`claudeAiOauth.refreshTokenExpiresAt` (about 30 days; the access token's `expiresAt` lasts hours and is renewed with the
+refresh token, so it no longer decides whether Claude is logged in). Without that file (Claude Code on macOS keeps its
+login in the Keychain) the daemon asks `claude auth status --json` (`loggedIn`, `email`, `loginExpiresAt`), which
+takes a second or two.
+
 ### Agent CLI updates (`cli.<agentId>`)
 
 Every `cli.<agentId>` capability is wrapped by `apps/cli/src/capabilities/cliUpdate/providerCliUpdates.ts`, so update behavior is provider-agnostic and driven by catalog facts in `packages/agents/src/providers/providerCliRuntime.ts` (`managedInstall`, `npmPackageName`, `nativeUpdate`):

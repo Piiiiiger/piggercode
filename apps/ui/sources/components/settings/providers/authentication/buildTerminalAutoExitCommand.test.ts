@@ -15,6 +15,12 @@ describe('buildTerminalAutoExitCommand', () => {
         );
     });
 
+    it('exits the shell whatever the command did, when asked to', () => {
+        expect(buildTerminalAutoExitCommand(`'/usr/local/bin/claude' auth login`, 'linux', { exit: 'always' })).toBe(
+            `'/usr/local/bin/claude' auth login; exit`,
+        );
+    });
+
     it('returns an empty command for blank input', () => {
         expect(buildTerminalAutoExitCommand('   ', 'darwin')).toBe('');
     });

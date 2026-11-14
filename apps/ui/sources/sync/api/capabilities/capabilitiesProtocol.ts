@@ -38,6 +38,8 @@ export type CliAuthStatusData = {
     accountLabel?: string | null;
     reason?: 'missing_credentials' | 'expired' | 'cli_missing' | 'probe_failed' | 'timeout' | 'unsupported' | 'interactive_blocked' | 'not_configured' | null;
     source?: 'env' | 'file' | 'command' | 'mixed' | null;
+    /** When the login ends (ms since the epoch), when the machine's CLI says (PiggerCode CLI 0.3.34+). */
+    expiresAt?: number | null;
     checkedAt: number;
 };
 

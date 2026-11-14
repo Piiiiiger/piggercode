@@ -43,6 +43,7 @@ import { getPermissionModeLabelForAgentType, getPermissionModeOptionsForAgentTyp
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import { ProviderAuthenticationCard } from '@/components/settings/providers/authentication/ProviderAuthenticationCard';
 import { ProviderAuthenticationTerminalPane } from '@/components/settings/providers/authentication/ProviderAuthenticationTerminalPane';
+import { ProviderAuthenticationLinkLogin } from '@/components/settings/providers/authentication/ProviderAuthenticationLinkLogin';
 import { scheduleProviderAuthenticationRefreshes } from '@/components/settings/providers/authentication/scheduleProviderAuthenticationRefreshes';
 import { useProviderAuthenticationState } from '@/components/settings/providers/authentication/useProviderAuthenticationState';
 import { resolveEffectiveConfiguredRuntimeControlSurface } from '@/sync/domains/session/control/effectiveRuntimeControlSurface';
@@ -331,9 +332,19 @@ const ProviderSettingsScreenInner = React.memo(function ProviderSettingsScreenIn
         providerId,
         cliAvailability,
         authPlugin,
+        desktopControls: supportsDesktopControls,
         primaryMachine,
     });
     const [selectedAuthLaunchKind, setSelectedAuthLaunchKind] = React.useState<ProviderLocalAuthLaunch['kind'] | null>(null);
+    const selectedAuthLaunch = providerAuthentication.authLaunches.find((launch) => launch.kind === selectedAuthLaunchKind) ?? null;
+    const selectedAuthLaunchSurface = selectedAuthLaunchKind === 'primary'
+        ? providerAuthentication.primaryLaunchSurface
+        : selectedAuthLaunchKind === 'device_code'
+            ? providerAuthentication.deviceCodeLaunchSurface
+            : null;
+    const linkLoginOpen = selectedAuthLaunch !== null && selectedAuthLaunchSurface === 'link';
+    /** A new number starts the link login over (a new link). */
+    const [linkLoginAttempt, setLinkLoginAttempt] = React.useState(0);
     const providerCliAvailable = cliAvailability.available[providerId];
     const providerCliManagedInstalled = cliAvailability.resolutionSource[providerId] === 'managed';
     const providerCliCapabilityId = buildAgentCliCapabilityId(providerId);
@@ -422,6 +433,13 @@ const ProviderSettingsScreenInner = React.memo(function ProviderSettingsScreenIn
     const handleProviderAuthTerminalExit = React.useCallback(() => {
         closeProviderAuthTerminal();
     }, [closeProviderAuthTerminal]);
+    const closeProviderLinkLogin = React.useCallback(() => {
+        setSelectedAuthLaunchKind(null);
+        triggerProviderAuthRefreshes();
+    }, [triggerProviderAuthRefreshes]);
+    const restartProviderLinkLogin = React.useCallback(() => {
+        setLinkLoginAttempt((attempt) => attempt + 1);
+    }, []);
     const readFieldValue = React.useCallback((field: ProviderSettingFieldDef) => {
         return readProviderSettingsFieldValue({
             field,
@@ -570,17 +588,32 @@ const ProviderSettingsScreenInner = React.memo(function ProviderSettingsScreenIn
                     <ProviderAuthenticationCard
                         providerId={providerId}
                         state={providerAuthentication}
-                        showActions={supportsDesktopControls}
+                        showActions={providerAuthentication.showActions}
                         onCheckNow={() => cliAvailability.refresh({ bypassCache: true, includeLoginStatusForAgentIds: [providerId] })}
-                        activeAuthLaunchKind={authTerminalOpen ? selectedAuthLaunchKind : null}
+                        activeAuthLaunchKind={authTerminalOpen || linkLoginOpen ? selectedAuthLaunchKind : null}
                         onLaunchAuth={(kind) => {
-                            if (!providerAuthentication.canLaunchAuth || !supportsDesktopControls) return;
-                            const launch = providerAuthentication.authLaunches.find((candidate) => candidate.kind === kind);
-                            if (!launch) return;
+                            const surface = kind === 'primary'
+                                ? providerAuthentication.primaryLaunchSurface
+                                : providerAuthentication.deviceCodeLaunchSurface;
+                            if (!providerAuthentication.canLaunchAuth || !surface) return;
                             setSelectedAuthLaunchKind(kind);
-                            pane.openBottom({ tabId: PROVIDER_AUTH_TERMINAL_TAB_ID });
+                            if (surface === 'terminal') {
+                                pane.openBottom({ tabId: PROVIDER_AUTH_TERMINAL_TAB_ID });
+                            }
                         }}
                     />
+                    {linkLoginOpen && selectedAuthLaunch ? (
+                        <ProviderAuthenticationLinkLogin
+                            key={`${providerAuthentication.machineId ?? 'none'}:${providerId}:${linkLoginAttempt}`}
+                            providerId={providerId}
+                            machineId={providerAuthentication.machineId}
+                            machineHomeDir={providerAuthentication.machineHomeDir}
+                            authLaunch={selectedAuthLaunch}
+                            onEnded={triggerProviderAuthRefreshes}
+                            onRequestClose={closeProviderLinkLogin}
+                            onRestart={restartProviderLinkLogin}
+                        />
+                    ) : null}
 
                 <ProviderSettingsFields
                     sections={plugin?.uiSections ?? []}
@@ -753,7 +786,7 @@ const ProviderSettingsScreenInner = React.memo(function ProviderSettingsScreenIn
                             providerId={providerId}
                             machineId={providerAuthentication.machineId}
                             machineHomeDir={providerAuthentication.machineHomeDir}
-                            authLaunch={providerAuthentication.authLaunches.find((launch) => launch.kind === selectedAuthLaunchKind) ?? null}
+                            authLaunch={selectedAuthLaunchSurface === 'terminal' ? selectedAuthLaunch : null}
                             onRequestClose={closeProviderAuthTerminal}
                             onTerminalExit={handleProviderAuthTerminalExit}
                         />

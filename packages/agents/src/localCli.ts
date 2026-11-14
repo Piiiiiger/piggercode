@@ -3,10 +3,17 @@ import { getProviderCliRuntimeSpec } from './providers/providerCliRuntime.js';
 
 export type AgentCliAuthSupport = 'login_terminal' | 'status_only' | 'manual_only' | 'unsupported';
 
+/**
+ * `link_then_code`: the command prints a sign-in link and then waits for the code the sign-in page shows, so the app
+ * can offer the link and a box for the code instead of a terminal.
+ */
+export type AgentCliSignInFlow = 'link_then_code';
+
 type AgentCliLaunchBase = Readonly<{
   kind: 'primary' | 'device_code';
   args: ReadonlyArray<string>;
   initialInput?: string | null;
+  signIn?: AgentCliSignInFlow;
 }>;
 
 export type AgentCliLaunchCommand =
@@ -30,6 +37,7 @@ type AgentLocalCliConfigInput = Readonly<{
         target?: 'provider_cli' | 'happier_cli';
         args: ReadonlyArray<string>;
         initialInput?: string | null;
+        signIn?: AgentCliSignInFlow;
       }>
   >;
 }>;
@@ -46,6 +54,7 @@ function createAgentLocalCliConfig(agentId: AgentId, input: AgentLocalCliConfigI
         kind: launch.kind,
         args: launch.args,
         ...(launch.initialInput !== undefined ? { initialInput: launch.initialInput } : {}),
+        ...(launch.signIn !== undefined ? { signIn: launch.signIn } : {}),
       };
       return launch.target === 'happier_cli'
         ? { ...shared, target: 'happier_cli' }
@@ -58,10 +67,11 @@ export const AGENT_LOCAL_CLI_CONFIG: Readonly<Record<AgentId, AgentLocalCliConfi
   claude: createAgentLocalCliConfig('claude', {
     machineLoginKey: 'claude-code',
     authSupport: 'login_terminal',
+    // `claude auth login` (Claude Code 2.1): no folder-trust question, plain output, the code read from the terminal.
     authLaunches: [{
       kind: 'primary',
-      args: [],
-      initialInput: '/login\r',
+      args: ['auth', 'login'],
+      signIn: 'link_then_code',
     }],
   }),
   codex: createAgentLocalCliConfig('codex', {

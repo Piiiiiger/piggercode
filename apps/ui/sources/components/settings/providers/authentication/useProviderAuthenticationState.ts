@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { AgentId } from '@/agents/catalog/catalog';
 import type { ProviderLocalAuthPlugin } from '@/agents/providers/shared/providerLocalAuthPlugin';
 import type { CLIAvailability } from '@/hooks/auth/useCLIDetection';
+import { resolveProviderAuthLaunchSurface } from './providerAuthLaunchSurface';
 
 export type ProviderAuthenticationState = Readonly<ReturnType<typeof useProviderAuthenticationState>>;
 
@@ -10,6 +11,8 @@ export function useProviderAuthenticationState(params: Readonly<{
     providerId: AgentId;
     cliAvailability: CLIAvailability;
     authPlugin: ProviderLocalAuthPlugin | null;
+    /** Whether this app shows terminals for logins (the desktop app). */
+    desktopControls: boolean;
     primaryMachine: Readonly<{
         id: string;
         metadata?: {
@@ -37,6 +40,15 @@ export function useProviderAuthenticationState(params: Readonly<{
             : [];
         const canLaunchAuth = cliAvailable === true && Boolean(machineId) && authLaunches.some((launch) => Boolean(launch.initialCommand));
         const loginActionKind = authStatus?.state === 'logged_in' ? 'reauthenticate' : 'login';
+        const primaryLaunchSurface = resolveProviderAuthLaunchSurface(
+            authLaunches.find((launch) => launch.kind === 'primary'),
+            params.desktopControls,
+        );
+        const deviceCodeLaunchSurface = resolveProviderAuthLaunchSurface(
+            authLaunches.find((launch) => launch.kind === 'device_code'),
+            params.desktopControls,
+        );
+        const showActions = params.desktopControls || primaryLaunchSurface !== null || deviceCodeLaunchSurface !== null;
 
         return {
             authStatus,
@@ -47,10 +59,13 @@ export function useProviderAuthenticationState(params: Readonly<{
             supportsLoginTerminal,
             canLaunchAuth,
             authLaunches,
+            primaryLaunchSurface,
+            deviceCodeLaunchSurface,
+            showActions,
             loginActionKind,
             docsUrl: params.authPlugin?.docsUrl ?? null,
             support: params.authPlugin?.support ?? 'unsupported',
             statusHelpText: params.authPlugin?.statusHelpText ?? null,
         } as const;
-    }, [params.authPlugin, params.cliAvailability, params.primaryMachine, params.providerId]);
+    }, [params.authPlugin, params.cliAvailability, params.desktopControls, params.primaryMachine, params.providerId]);
 }

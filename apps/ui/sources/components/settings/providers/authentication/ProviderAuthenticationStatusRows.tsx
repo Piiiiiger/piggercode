@@ -5,6 +5,8 @@ import { Item } from '@/components/ui/lists/Item';
 import { t } from '@/text';
 import type { CliAuthStatusData } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { Icon } from '@/components/ui/icons/Icon';
+import { formatResetCountdown } from '@/sync/domains/connectedServices/formatResetCountdown';
+import { RESET_COUNTDOWN_TEXT } from '@/text/resetCountdownText';
 
 function resolveAuthStateSubtitle(authStatus: CliAuthStatusData | null): string {
     if (!authStatus) return t('settingsProviders.authentication.stateUnknown');
@@ -51,6 +53,13 @@ export const ProviderAuthenticationStatusRows = React.memo(function ProviderAuth
     const methodSubtitle = resolveAuthMethodSubtitle(props.authStatus?.method);
     const reasonSubtitle = resolveAuthReasonSubtitle(props.authStatus?.reason);
     const sourceSubtitle = resolveAuthSourceSubtitle(props.authStatus?.source);
+    const loginEndsAt =
+        props.authStatus?.state === 'logged_in'
+        && typeof props.authStatus.expiresAt === 'number'
+        && Number.isFinite(props.authStatus.expiresAt)
+            ? props.authStatus.expiresAt
+            : null;
+    const nowMs = Date.now();
     const checkedAtSubtitle =
         props.authStatus?.checkedAt && Number.isFinite(props.authStatus.checkedAt)
             ? new Date(props.authStatus.checkedAt).toLocaleString()
@@ -73,6 +82,20 @@ export const ProviderAuthenticationStatusRows = React.memo(function ProviderAuth
                     icon={<Icon name="person" size={20} color={theme.colors.text.secondary} />}
                     mode="info"
                     copy={props.authStatus.accountLabel}
+                />
+            ) : null}
+            {loginEndsAt !== null ? (
+                <Item
+                    testID="settings-provider-auth-login-ends"
+                    title={t('settingsProviders.authentication.loginEndsTitle')}
+                    subtitle={loginEndsAt > nowMs
+                        ? t('settingsProviders.authentication.loginEnds', {
+                            remaining: formatResetCountdown(nowMs, loginEndsAt, RESET_COUNTDOWN_TEXT) ?? '',
+                            date: new Date(loginEndsAt).toLocaleString(),
+                        })
+                        : t('settingsProviders.authentication.loginEnded', { date: new Date(loginEndsAt).toLocaleString() })}
+                    icon={<Icon name="clock" size={20} color={theme.colors.text.secondary} />}
+                    mode="info"
                 />
             ) : null}
             {methodSubtitle ? (

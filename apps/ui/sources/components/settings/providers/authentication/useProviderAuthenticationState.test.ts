@@ -42,6 +42,7 @@ describe('useProviderAuthenticationState', () => {
                 providerId: 'codex' as any,
                 cliAvailability,
                 authPlugin,
+                desktopControls: true,
                 primaryMachine,
             })
         );
@@ -86,6 +87,7 @@ describe('useProviderAuthenticationState', () => {
                 providerId: 'codex' as any,
                 cliAvailability,
                 authPlugin,
+                desktopControls: true,
                 primaryMachine,
             })
         );
@@ -125,6 +127,7 @@ describe('useProviderAuthenticationState', () => {
                 providerId: 'codex' as any,
                 cliAvailability,
                 authPlugin,
+                desktopControls: true,
                 primaryMachine,
             })
         );
@@ -133,4 +136,48 @@ describe('useProviderAuthenticationState', () => {
         expect(hook.getCurrent().machineHomeDir).toBe(null);
     });
 
+    it('offers a link-then-code login wherever the app runs, and a terminal login only in the desktop app', async () => {
+        const plugins: Record<'claude' | 'codex', ProviderLocalAuthPlugin> = {
+            claude: {
+                providerId: 'claude',
+                support: 'login_terminal',
+                buildAuthLaunches: () => [{ kind: 'primary', initialCommand: 'claude auth login', signIn: 'link_then_code' }],
+            },
+            codex: {
+                providerId: 'codex',
+                support: 'login_terminal',
+                buildAuthLaunches: () => [{ kind: 'primary', initialCommand: 'codex login' }],
+            },
+        };
+        const cliAvailability: CLIAvailability = {
+            available: { claude: true, codex: true } as any,
+            login: { claude: null, codex: null } as any,
+            authStatus: { claude: null, codex: null } as any,
+            resolvedPath: { claude: '/usr/bin/claude', codex: '/usr/bin/codex' } as any,
+            resolvedCommand: {} as any,
+            resolutionSource: { claude: 'system', codex: 'system' } as any,
+            tmux: null,
+            isDetecting: false,
+            timestamp: 123,
+            refresh: () => {},
+        };
+        const surface = async (providerId: 'claude' | 'codex', desktopControls: boolean) => {
+            const hook = await renderHook(() =>
+                useProviderAuthenticationState({
+                    providerId,
+                    cliAvailability,
+                    authPlugin: plugins[providerId],
+                    desktopControls,
+                    primaryMachine: { id: 'm1', metadata: {} },
+                })
+            );
+            const state = hook.getCurrent();
+            return { surface: state.primaryLaunchSurface, showActions: state.showActions };
+        };
+
+        await expect(surface('claude', false)).resolves.toEqual({ surface: 'link', showActions: true });
+        await expect(surface('claude', true)).resolves.toEqual({ surface: 'link', showActions: true });
+        await expect(surface('codex', false)).resolves.toEqual({ surface: null, showActions: false });
+        await expect(surface('codex', true)).resolves.toEqual({ surface: 'terminal', showActions: true });
+    });
 });

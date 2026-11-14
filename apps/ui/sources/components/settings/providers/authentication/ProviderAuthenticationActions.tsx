@@ -5,12 +5,15 @@ import { Item } from '@/components/ui/lists/Item';
 import { t } from '@/text';
 import type { ProviderLocalAuthLaunch } from '@/agents/providers/shared/providerLocalAuthPlugin';
 import { Icon } from '@/components/ui/icons/Icon';
+import type { ProviderAuthLaunchSurface } from './providerAuthLaunchSurface';
 
 export const ProviderAuthenticationActions = React.memo(function ProviderAuthenticationActions(props: Readonly<{
     canCheckNow: boolean;
     canLaunchAuth: boolean;
     hasPrimaryLaunch: boolean;
     hasDeviceCodeLaunch: boolean;
+    /** How the primary login shows: a sign-in link and a box for the code, or a terminal. */
+    primaryLaunchSurface?: ProviderAuthLaunchSurface | null;
     activeAuthLaunchKind?: ProviderLocalAuthLaunch['kind'] | null;
     loginActionKind: 'login' | 'reauthenticate';
     docsUrl?: string | null;
@@ -26,9 +29,11 @@ export const ProviderAuthenticationActions = React.memo(function ProviderAuthent
                     title={props.loginActionKind === 'reauthenticate'
                         ? t('settingsProviders.authentication.reauthenticateTitle')
                         : t('settingsProviders.authentication.logInTitle')}
-                    subtitle={props.loginActionKind === 'reauthenticate'
-                        ? t('settingsProviders.authentication.reauthenticateSubtitle')
-                        : t('settingsProviders.authentication.logInSubtitle')}
+                    subtitle={props.primaryLaunchSurface === 'link'
+                        ? t('settingsProviders.authentication.linkLogin.actionSubtitle')
+                        : props.loginActionKind === 'reauthenticate'
+                            ? t('settingsProviders.authentication.reauthenticateSubtitle')
+                            : t('settingsProviders.authentication.logInSubtitle')}
                     icon={<Icon name="sign-in" size={20} color={theme.colors.text.secondary} />}
                     disabled={props.activeAuthLaunchKind != null}
                     onPress={() => props.onLaunchAuth('primary')}

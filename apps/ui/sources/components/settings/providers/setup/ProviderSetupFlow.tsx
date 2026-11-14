@@ -19,6 +19,7 @@ import { getActiveServerId } from '@/sync/domains/server/serverProfiles';
 import { t } from '@/text';
 import { ProviderAuthenticationCard } from '../authentication/ProviderAuthenticationCard';
 import { ProviderAuthenticationTerminalPane } from '../authentication/ProviderAuthenticationTerminalPane';
+import { ProviderAuthenticationLinkLogin } from '../authentication/ProviderAuthenticationLinkLogin';
 import { useProviderAuthenticationState } from '../authentication/useProviderAuthenticationState';
 import type { ProviderLocalAuthLaunch } from '@/agents/providers/shared/providerLocalAuthPlugin';
 import {
@@ -105,8 +106,19 @@ export const ProviderSetupFlow = React.memo(function ProviderSetupFlow(props: Re
         providerId: activeProviderId ?? 'codex',
         cliAvailability,
         authPlugin,
+        desktopControls: supportsDesktopControls,
         primaryMachine: machine ?? null,
     });
+    const selectedAuthLaunch = terminalAuthSelection?.providerId === activeProviderId
+        ? authState.authLaunches.find((launch) => launch.kind === terminalAuthSelection.kind) ?? null
+        : null;
+    const selectedAuthLaunchSurface = !selectedAuthLaunch
+        ? null
+        : selectedAuthLaunch.kind === 'primary'
+            ? authState.primaryLaunchSurface
+            : authState.deviceCodeLaunchSurface;
+    /** A new number starts the link login over (a new link). */
+    const [linkLoginAttempt, setLinkLoginAttempt] = React.useState(0);
     const providerDetectKeys = React.useMemo(() => {
         const out: Partial<Record<AgentId, string>> = {};
         for (const providerId of selectedProviderIds) {
@@ -235,7 +247,7 @@ export const ProviderSetupFlow = React.memo(function ProviderSetupFlow(props: Re
                     <ProviderAuthenticationCard
                         providerId={activeProviderId}
                         state={authState}
-                        showActions={supportsDesktopControls}
+                        showActions={authState.showActions}
                         onCheckNow={() => {
                             cliAvailability.refresh({
                                 bypassCache: true,
@@ -244,17 +256,35 @@ export const ProviderSetupFlow = React.memo(function ProviderSetupFlow(props: Re
                         }}
                         activeAuthLaunchKind={terminalAuthSelection?.providerId === activeProviderId ? terminalAuthSelection.kind : null}
                         onLaunchAuth={(kind) => {
-                            if (!supportsDesktopControls) return;
+                            const surface = kind === 'primary' ? authState.primaryLaunchSurface : authState.deviceCodeLaunchSurface;
+                            if (!surface) return;
                             setTerminalAuthSelection({ providerId: activeProviderId, kind });
                         }}
                     />
-                    {supportsDesktopControls && terminalAuthSelection?.providerId === activeProviderId ? (
+                    {selectedAuthLaunch && selectedAuthLaunchSurface === 'link' ? (
+                        <ProviderAuthenticationLinkLogin
+                            key={`${machineId ?? 'none'}:${activeProviderId}:${linkLoginAttempt}`}
+                            providerId={activeProviderId}
+                            machineId={machineId}
+                            machineHomeDir={authState.machineHomeDir}
+                            authLaunch={selectedAuthLaunch}
+                            onEnded={() => {
+                                cliAvailability.refresh({
+                                    bypassCache: true,
+                                    includeLoginStatusForAgentIds: [activeProviderId],
+                                });
+                            }}
+                            onRequestClose={() => setTerminalAuthSelection(null)}
+                            onRestart={() => setLinkLoginAttempt((attempt) => attempt + 1)}
+                        />
+                    ) : null}
+                    {selectedAuthLaunch && selectedAuthLaunchSurface === 'terminal' && terminalAuthSelection ? (
                         <View style={{ minHeight: 320 }}>
                             <ProviderAuthenticationTerminalPane
                                 providerId={activeProviderId}
                                 machineId={machineId}
                                 machineHomeDir={authState.machineHomeDir}
-                                authLaunch={authState.authLaunches.find((launch) => launch.kind === terminalAuthSelection.kind) ?? null}
+                                authLaunch={selectedAuthLaunch}
                                 onRequestClose={() => setTerminalAuthSelection(null)}
                                 onTerminalExit={() => {
                                     cliAvailability.refresh({

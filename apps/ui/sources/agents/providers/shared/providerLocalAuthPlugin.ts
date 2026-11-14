@@ -1,4 +1,5 @@
 import type { AgentId } from '@/agents/catalog/catalog';
+import type { AgentCliSignInFlow } from '@piggercode/agents';
 import type { DaemonTerminalLaunchIntent } from '@piggercode/protocol';
 
 export type ProviderLocalAuthSupport = 'login_terminal' | 'status_only' | 'manual_only' | 'unsupported';
@@ -6,6 +7,7 @@ export type ProviderLocalAuthSupport = 'login_terminal' | 'status_only' | 'manua
 type ProviderLocalAuthLaunchBase = Readonly<{
     kind: 'primary' | 'device_code';
     initialInput?: string | null;
+    signIn?: AgentCliSignInFlow;
 }>;
 
 export type ProviderLocalAuthLaunch =

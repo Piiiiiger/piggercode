@@ -35,6 +35,7 @@ export function createCatalogProviderLocalAuthPlugin(providerId: AgentId): Provi
                     const shared = {
                         kind: launch.kind,
                         ...(launch.initialInput ? { initialInput: launch.initialInput } : {}),
+                        ...(launch.signIn ? { signIn: launch.signIn } : {}),
                     };
                     if (launch.target === 'happier_cli') {
                         return {

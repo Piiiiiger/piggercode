@@ -139,6 +139,7 @@ export {
   getAgentLocalCliConfig,
   type AgentCliAuthSupport,
   type AgentCliLaunchCommand,
+  type AgentCliSignInFlow,
   type AgentLocalCliConfig,
 } from './localCli.js';
 export {

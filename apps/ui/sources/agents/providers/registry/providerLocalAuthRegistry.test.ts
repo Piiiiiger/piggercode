@@ -9,14 +9,14 @@ describe('provider local auth registry', () => {
         expect(new Set(AGENT_IDS.map((agentId) => getProviderLocalAuthPlugin(agentId)?.providerId ?? null))).toEqual(new Set(AGENT_IDS));
     });
 
-    it('returns a Claude launch strategy that starts the CLI and submits /login as terminal input', () => {
+    it('signs in to Claude with `claude auth login`, which prints a link and then asks for the code', () => {
         const plugin = getProviderLocalAuthPlugin('claude');
         const launches = plugin?.buildAuthLaunches?.({ resolvedPath: '/usr/local/bin/claude' }) ?? [];
 
         expect(launches).toEqual([{
             kind: 'primary',
-            initialCommand: '/usr/local/bin/claude',
-            initialInput: '/login\r',
+            initialCommand: '/usr/local/bin/claude auth login',
+            signIn: 'link_then_code',
         }]);
     });
 

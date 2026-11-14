@@ -9,21 +9,13 @@ import { Typography } from '@/constants/Typography';
 import type { ConnectedServiceQuotaMeterV1 } from '@piggercode/protocol';
 
 import { deriveQuotaMeterValues } from '@/sync/domains/connectedServices/deriveQuotaUtilizationPct';
-import { formatResetCountdown, isResetCountdownOutdated, type ResetCountdownFormatter } from '@/sync/domains/connectedServices/formatResetCountdown';
+import { formatResetCountdown, isResetCountdownOutdated } from '@/sync/domains/connectedServices/formatResetCountdown';
+import { RESET_COUNTDOWN_TEXT } from '@/text/resetCountdownText';
 import { resolveQuotaTone } from '@/sync/domains/connectedServices/resolveQuotaTone';
 import { t } from '@/text';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
 
 type IoniconName = IconName;
-
-const RESET_COUNTDOWN_FORMATTER: ResetCountdownFormatter = {
-  durationNow: () => t('connectedServices.quota.duration.now'),
-  durationOutdated: () => t('connectedServices.quota.duration.outdated'),
-  durationDaysHours: ({ days, hours }) => t('connectedServices.quota.duration.daysHours', { days, hours }),
-  durationHoursMinutes: ({ hours, minutes }) => t('connectedServices.quota.duration.hoursMinutes', { hours, minutes }),
-  durationHours: ({ hours }) => t('connectedServices.quota.duration.hours', { hours }),
-  durationMinutes: ({ minutes }) => t('connectedServices.quota.duration.minutes', { minutes }),
-};
 
 const stylesheet = StyleSheet.create((theme) => ({
   subtitleRow: {
@@ -63,7 +55,7 @@ export const ConnectedServiceQuotaMeterRow = React.memo(function ConnectedServic
   // remaining label instead of composing the nonsense phrase "resets in outdated".
   const resetText = isResetCountdownOutdated(props.nowMs, props.meter.resetAtMs ?? props.meter.resetsAt)
     ? null
-    : formatResetCountdown(props.nowMs, props.meter.resetAtMs ?? props.meter.resetsAt, RESET_COUNTDOWN_FORMATTER);
+    : formatResetCountdown(props.nowMs, props.meter.resetAtMs ?? props.meter.resetsAt, RESET_COUNTDOWN_TEXT);
   const right = remaining === null
     ? remainingText
     : resetText

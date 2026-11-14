@@ -24,8 +24,9 @@ export const ProviderAuthenticationCard = React.memo(function ProviderAuthentica
                 <ProviderAuthenticationActions
                     canCheckNow={props.state.canCheckNow}
                     canLaunchAuth={props.state.canLaunchAuth}
-                    hasPrimaryLaunch={props.state.authLaunches.some((launch) => launch.kind === 'primary')}
-                    hasDeviceCodeLaunch={props.state.authLaunches.some((launch) => launch.kind === 'device_code')}
+                    hasPrimaryLaunch={props.state.primaryLaunchSurface !== null}
+                    hasDeviceCodeLaunch={props.state.deviceCodeLaunchSurface !== null}
+                    primaryLaunchSurface={props.state.primaryLaunchSurface}
                     activeAuthLaunchKind={props.activeAuthLaunchKind}
                     loginActionKind={props.state.loginActionKind}
                     docsUrl={props.state.docsUrl}
