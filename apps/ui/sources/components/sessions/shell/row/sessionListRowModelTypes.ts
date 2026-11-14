@@ -103,6 +103,8 @@ export type SessionListRowModel = Readonly<{
         timestamp: number | null;
         label: string;
         bucket: string;
+        /** When the running turn started (server time), while the row shows it working; the row shows its running time then. */
+        runningSince?: number | null;
     }>;
     isIdentityLoading: boolean;
     title: string;

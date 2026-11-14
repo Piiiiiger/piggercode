@@ -17,6 +17,7 @@ import {
     getSessionName,
     getSessionStatus,
     getSessionSubtitle,
+    resolveRunningTurnStartedAt,
 } from '@/utils/sessions/sessionUtils';
 import {
     resolveNextSessionRuntimePresentationFreshnessAtMs,
@@ -419,6 +420,9 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
             timestamp: activityTimestamp,
             label: activityLabel,
             bucket: activityLabel,
+            runningSince: rowAttentionState === 'working' && !presentsArchiving && !presentsRetainedWorking
+                ? resolveRunningTurnStartedAt(resolvedSession)
+                : null,
         },
         isIdentityLoading: resolveRowIdentityLoading({
             session: resolvedSession,

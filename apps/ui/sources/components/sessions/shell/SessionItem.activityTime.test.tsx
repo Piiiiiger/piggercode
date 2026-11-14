@@ -691,6 +691,48 @@ describe('SessionItem activity time', () => {
         expect(screen.getTextContent()).not.toContain('Subtitle');
     });
 
+    it('shows how long a running turn has run, next to its working mark, in place of how long ago', async () => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(1_800_000_000_000);
+        try {
+            mockSessionStatus = {
+                state: 'thinking',
+                isConnected: true,
+                statusText: 'working on it',
+                shouldShowStatus: true,
+                statusColor: '#07f',
+                statusDotColor: '#0f0',
+                isPulsing: true,
+            };
+            const { SessionItem } = await importSessionItemForTest();
+            const props = {
+                session: createSession('sess_running_time'),
+                serverId: 'server_a',
+                pinned: false,
+                selected: false,
+                isFirst: true,
+                isLast: true,
+                isSingle: true,
+                variant: 'default' as const,
+                compact: true,
+                compactMinimal: true,
+            };
+            const base = createSessionRowModelForProps(props);
+            const screen = await renderScreen(
+                <SessionItem
+                    {...props}
+                    rowModel={{ ...base, activity: { ...base.activity, label: '7m', runningSince: 1_800_000_000_000 - 174_000 } }}
+                />,
+            );
+
+            expect(findWorkingSpinner(screen, 'sess_running_time-trailing')).toBeTruthy();
+            expect(screen.getTextContent()).toContain('2m 54s');
+            expect(screen.getTextContent()).not.toContain('7m');
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
     it('renders one working indicator in very compact mode without working status text', async () => {
         mockSessionStatus = {
             state: 'thinking',

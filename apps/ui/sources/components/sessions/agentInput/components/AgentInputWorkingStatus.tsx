@@ -5,42 +5,19 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Typography } from '@/constants/Typography';
 import { StatusDot } from '@/components/ui/status/StatusDot';
 import { Text } from '@/components/ui/text/Text';
+import { formatWorkingElapsed, useRunningTurnServerClock } from '@/components/sessions/workState/runningTurnClock';
 import { useSessionTurnOutputTokens } from '@/sync/domains/state/storage';
-import { nowServerMs } from '@/sync/runtime/time';
-import { startRuntimeActiveGatedInterval } from '@/utils/runtime/isRuntimeActive';
 
 // Claude Code's working mark, in the theme's active accent (the Claude orange in the Claude Code
 // profiles). It pulses through the shared status-dot animation, which stops while the window is
 // hidden and under reduced motion.
 const WORKING_GLYPH = '✻';
 const WORKING_GLYPH_SIZE = 13;
-const CLOCK_TICK_MS = 1000;
-
-export function formatWorkingElapsed(elapsedMs: number): string {
-    const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    if (minutes > 0) return `${minutes}m ${seconds}s`;
-    return `${seconds}s`;
-}
 
 export function formatWorkingTokens(tokens: number): string {
     if (tokens < 1000) return `${tokens}`;
     const thousands = tokens / 1000;
     return `${thousands < 100 ? thousands.toFixed(1).replace(/\.0$/, '') : Math.round(thousands)}k`;
-}
-
-/** Server time, refreshed once a second while `startedAt` is set and the app is active. */
-function useServerClock(startedAt: number | null): number {
-    const [now, setNow] = React.useState(() => nowServerMs());
-    React.useEffect(() => {
-        if (startedAt === null) return;
-        setNow(nowServerMs());
-        return startRuntimeActiveGatedInterval(() => setNow(nowServerMs()), CLOCK_TICK_MS);
-    }, [startedAt]);
-    return now;
 }
 
 /**
@@ -57,7 +34,7 @@ export const AgentInputWorkingStatus = React.memo(function AgentInputWorkingStat
 }>) {
     const { theme } = useUnistyles();
     const outputTokens = useSessionTurnOutputTokens(props.sessionId, props.startedAt);
-    const now = useServerClock(props.startedAt);
+    const now = useRunningTurnServerClock(props.startedAt);
 
     const verb = props.text.length > 0 ? props.text.charAt(0).toUpperCase() + props.text.slice(1) : props.text;
     const details: string[] = [];

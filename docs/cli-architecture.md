@@ -1843,12 +1843,15 @@ starts a `bootstrapAccountSettingsContext` refresh in `fast` mode (cache first, 
 the ready event nor a session write waits for the relay. The runner reads only the notification choices and the idle
 limit below; the CLI got its environment before and gets none of the account's settings.
 
-**Running turns, the 「最近」 box and idle stop (after CLI 0.3.31 / app 0.3.34).** The reporter also records each turn
-on the session through the canonical turn lifecycle (`beginTurn` at the first sign of work or a prompt,
-`completeTurn` when the CLI is idle again; the session's end cancels one left open), and the runner's heartbeat
-carries `thinking` while it runs, sent at once when a turn starts or ends. The app therefore shows a terminal's turn
-like a chat's (`latestTurnStatus: 'in_progress'`, kept fresh by the heartbeat's turn touch): the row's spinner, and
-"finished, not yet opened" from the ready cursor. Before, the runner sent `thinking: false` always and terminals never
+**Running turns, the 「最近」 box and idle stop (CLI 0.3.32 / app 0.3.35; running time since CLI 0.3.33 / app
+0.3.36).** The reporter also records each turn on the session through the canonical turn lifecycle (`beginTurn` at
+the first sign of work or a prompt, `completeTurn` when the CLI is idle again; the session's end cancels one left
+open). The app shows a terminal's turn like a chat's: `latestTurnStatus: 'in_progress'` stays live through the
+runner's heartbeat (`activeAt`), so the row shows its spinner, and "finished, not yet opened" comes from the ready
+cursor. The heartbeat itself says `thinking: false` (0.3.32 said `true` while a turn ran): a thinking heartbeat
+touches the open turn, and the server's `latestTurnStatusObservedAt` for an open turn is its last update, so without
+touches it stays the turn's start, which `resolveRunningTurnStartedAt` reads and the row shows as its running time
+(`2m 54s`, `components/sessions/workState/runningTurnClock.ts`) in place of how long ago. Before 0.3.32 terminals never
 showed as running. The sidebar's explorer gets the 「最近」 box above the list (`components/sessions/shell/recent/`):
 the five sessions used last, running ones and ones waiting for the user first, then by the time each row shows; stopped
 ones count too. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,

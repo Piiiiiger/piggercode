@@ -435,6 +435,39 @@ describe('buildSessionListRowModel', () => {
         expect(model.activity.label).toBe('4m');
     });
 
+    it('carries when a running turn started, so the row can show how long it has run; an idle row carries nothing', () => {
+        const running = buildSessionListRowModel({
+            item: createSessionItem(createRenderable('s1', {
+                active: true,
+                activeAt: NOW_MS - 5_000,
+                latestTurnStatus: 'in_progress',
+                latestTurnStatusObservedAt: NOW_MS - 174_000,
+            })),
+            state: {},
+            isFirst: true,
+            isLast: true,
+            isSingle: true,
+            settings: createSettings({ runtimeNowMs: NOW_MS, relativeNowMs: NOW_MS }),
+        });
+        expect(running.attention.rowState).toBe('working');
+        expect(running.activity.runningSince).toBe(NOW_MS - 174_000);
+
+        const idle = buildSessionListRowModel({
+            item: createSessionItem(createRenderable('s2', {
+                active: true,
+                activeAt: NOW_MS - 5_000,
+                latestTurnStatus: 'completed',
+                latestTurnStatusObservedAt: NOW_MS - 60_000,
+            })),
+            state: {},
+            isFirst: true,
+            isLast: true,
+            isSingle: true,
+            settings: createSettings({ runtimeNowMs: NOW_MS, relativeNowMs: NOW_MS }),
+        });
+        expect(idle.activity.runningSince ?? null).toBeNull();
+    });
+
     it('keeps active attention status visible when the group would otherwise prefer a path subtitle', () => {
         const model = buildSessionListRowModel({
             item: createSessionItem(createRenderable('s1', {

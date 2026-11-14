@@ -30,6 +30,7 @@ import { ContextMenu } from '@/components/ui/forms/dropdown/ContextMenu';
 import { CopiedPill } from '@/components/ui/copy/CopiedPill';
 import { useTemporaryCopyFeedback } from '@/components/ui/copy/useTemporaryCopyFeedback';
 import { SessionRowAttentionIndicator } from './row/SessionRowAttentionIndicator';
+import { RunningTurnElapsed } from './row/RunningTurnElapsed';
 import type { SessionRowAttentionState, SessionRowPresentation } from './row/resolveSessionRowPresentation';
 import type { SessionListRowModel } from './row/sessionListRowModelTypes';
 import {
@@ -162,6 +163,8 @@ type SessionItemRenderProps = Omit<SessionItemBaseProps, 'activityTimeMode' | 's
     agentActivityLabel: string | null;
     isSessionIdentityLoading: boolean;
     activityTimeLabel: string;
+    /** When the running turn started: the row then shows how long it has run instead of how long ago. */
+    activityRunningSince: number | null;
     rowAttentionState: SessionRowAttentionState;
     rowPresentation: SessionRowPresentation;
     workingIndicatorMode: SessionItemWorkingIndicatorMode;
@@ -704,6 +707,7 @@ const SessionItemContent = React.memo(
         agentActivityLabel,
         isSessionIdentityLoading,
         activityTimeLabel,
+        activityRunningSince,
         rowAttentionState,
         rowPresentation,
         workingIndicatorMode,
@@ -1149,7 +1153,10 @@ const SessionItemContent = React.memo(
         const trailingAttentionIndicator = isMinimal ? rowPresentation.attentionIndicator : 'none';
         const showTrailingAttentionIndicator = trailingAttentionIndicator !== 'none';
         const trailingAttentionReplacesTime = trailingAttentionIndicator === 'working';
-        const showTrailingActivityTime = Boolean(activityTimeLabel) && !trailingAttentionReplacesTime;
+        // A running turn shows how long it has run, next to its working mark; otherwise the mark
+        // stands in for how long ago the session was active.
+        const showTrailingRunningTime = activityRunningSince !== null;
+        const showTrailingActivityTime = showTrailingRunningTime || (Boolean(activityTimeLabel) && !trailingAttentionReplacesTime);
         const hasTrailingMeta = showTrailingAttentionIndicator || showTrailingActivityTime;
         const resolvedSessionListIdentityDisplay =
             sessionListIdentityDisplay === 'agentLogo' || sessionListIdentityDisplay === 'none'
@@ -1653,7 +1660,12 @@ const SessionItemContent = React.memo(
                                     animationEnabled={attentionIndicatorAnimationEnabled}
                                 />
                             ) : null}
-                            {showTrailingActivityTime ? (
+                            {showTrailingRunningTime ? (
+                                <RunningTurnElapsed
+                                    startedAt={activityRunningSince}
+                                    style={[styles.activityTime, isMinimal ? styles.activityTimeMinimal : null]}
+                                />
+                            ) : showTrailingActivityTime ? (
                                 <Text
                                     style={[styles.activityTime, isMinimal ? styles.activityTimeMinimal : null]}
                                     numberOfLines={1}
@@ -1828,6 +1840,7 @@ function SessionItemFromRowModel(props: SessionItemProps & { rowModel: SessionLi
             agentActivityLabel={rowModel.agentActivityLabel}
             isSessionIdentityLoading={rowModel.isIdentityLoading}
             activityTimeLabel={rowModel.activity.label}
+            activityRunningSince={rowModel.activity.runningSince ?? null}
             rowAttentionState={rowModel.attention.rowState}
             rowPresentation={rowModel.presentation}
             workingIndicatorMode={rowModel.workingIndicatorMode}

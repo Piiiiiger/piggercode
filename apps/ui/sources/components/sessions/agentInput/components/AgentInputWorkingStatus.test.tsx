@@ -51,7 +51,8 @@ describe('AgentInputWorkingStatus', () => {
 
 describe('working status formats', () => {
     it('formats elapsed time and token counts the way Claude Code does', async () => {
-        const { formatWorkingElapsed, formatWorkingTokens } = await import('./AgentInputWorkingStatus');
+        const { formatWorkingTokens } = await import('./AgentInputWorkingStatus');
+        const { formatWorkingElapsed } = await import('@/components/sessions/workState/runningTurnClock');
         expect(formatWorkingElapsed(0)).toBe('0s');
         expect(formatWorkingElapsed(72_000)).toBe('1m 12s');
         expect(formatWorkingElapsed(3_780_000)).toBe('1h 3m');
