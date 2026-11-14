@@ -12,7 +12,7 @@ const releaseRings = require(path.resolve(__dirname, '..', '..', 'packages', 're
 const APP_BRAND = Object.freeze({
     productName: 'PiggerCode',
     cliCommandName: 'piggercode',
-    version: '0.3.40',
+    version: '0.3.41',
     agentIds: Object.freeze(['claude', 'codex']),
     repositoryUrl: 'https://github.com/Piiiiiger/piggercode',
 });
