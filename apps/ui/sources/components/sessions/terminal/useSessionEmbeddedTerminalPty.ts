@@ -18,6 +18,8 @@ export function useSessionEmbeddedTerminalPty(params: Readonly<{
     terminalKey: string;
     terminalMode: SessionTerminalMode;
     terminalRef: React.MutableRefObject<EmbeddedTerminalRendererHandle | null>;
+    /** Whether this terminal's screen is the one shown; a covered view does not take the session's window. */
+    viewFocused?: boolean;
 }>) {
     const machineTarget = useSessionMachineTarget(params.sessionId);
     const { machineReachable, machineRpcTargetAvailable } = useSessionMachineReachability(params.sessionId);
@@ -39,6 +41,7 @@ export function useSessionEmbeddedTerminalPty(params: Readonly<{
         machineRpcTargetAvailable,
         terminalKey: params.terminalKey,
         terminalRef: params.terminalRef,
+        viewFocused: params.viewFocused,
     });
 
     // Pasted images go where chat attachments go (the attachment settings), then their paths are typed.

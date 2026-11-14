@@ -27,6 +27,8 @@ import {
     machineTerminalStreamRead,
 } from '@/sync/ops/machineTerminal';
 import { isSocketIoDisconnectedError } from '@/sync/runtime/socketIoAckTimeout';
+import { isHostVisible, subscribeToRuntimeActiveChange } from '@/utils/runtime/isRuntimeActive';
+import { readHostWindowFocus } from '@/utils/runtime/readHostWindowFocus';
 import { log } from '@/log';
 import { delay } from '@/utils/timing/time';
 
@@ -35,6 +37,11 @@ import { delay } from '@/utils/timing/time';
  * what is typed) arrives the moment it appears instead of at the next ask. Under the relay's 30 s limit.
  */
 const TERMINAL_READ_WAIT_MS = 15_000;
+
+/** Whether someone is looking at this device's view: the app in front and, where it has one, its window focused. */
+function isViewInUse(): boolean {
+    return isHostVisible() && readHostWindowFocus() !== false;
+}
 
 /** `reconnecting`: connecting again while the view still shows the terminal's screen (it stays in sight). */
 export type TerminalStatus = 'idle' | 'connecting' | 'reconnecting' | 'connected' | 'error' | 'exited';
@@ -49,6 +56,8 @@ export function useMachineTerminalSession(params: Readonly<{
     terminalRef: React.MutableRefObject<EmbeddedTerminalRendererHandle | null>;
     initialCommand?: string | null;
     closeOnUnmount?: boolean;
+    /** Whether this view's screen is the one shown in the app (not covered by another screen or surface). */
+    viewFocused?: boolean;
 }>) {
     const initialSurfaceState = React.useMemo(
         () => readTerminalSurfaceState(params.terminalKey) ?? createEmptyTerminalSurfaceState(),
@@ -143,6 +152,54 @@ export function useMachineTerminalSession(params: Readonly<{
         bumpConnectionNonce();
     }, [resetAutoRetryState]);
 
+    /**
+     * The window of a full-screen program attached through tmux takes the size of the device whose view was last in
+     * use (`window-size latest`). Typing, a click or a wheel turn tells tmux so; coming back to a device does not, and
+     * its view keeps showing the window sized for the other one. So a view coming into use (opened on an attach that
+     * already ran, its app back in front, its window focused) tells the machine: a repaint makes this device's tmux
+     * client the latest, and the window takes its size again. Until the view reads a terminal, the claim waits.
+     */
+    const windowClaimPendingRef = React.useRef(true);
+    const connectedTerminalIdRef = React.useRef<string | null>(null);
+    const viewFocusedRef = React.useRef(params.viewFocused !== false);
+    viewFocusedRef.current = params.viewFocused !== false;
+    const viewInUseRef = React.useRef(false);
+    const claimWindow = React.useCallback(() => {
+        const machineId = params.machineId;
+        const terminalId = connectedTerminalIdRef.current;
+        if (!isAgentTerminal || !windowClaimPendingRef.current || !machineId || !terminalId) return;
+        if (!viewFocusedRef.current || !isViewInUse()) return;
+        windowClaimPendingRef.current = false;
+        void machineTerminalRepaint(machineId, { terminalId }).then((answer) => {
+            if (!answer.ok) log.log(`[terminal] ${params.terminalKey} could not take the window: ${answer.errorCode}`);
+        }, (error: unknown) => {
+            // Not delivered: the view's next connection asks again.
+            windowClaimPendingRef.current = true;
+            log.log(`[terminal] ${params.terminalKey} could not take the window: ${error instanceof Error ? error.message : 'terminal_error'}`);
+        });
+    }, [isAgentTerminal, params.machineId, params.terminalKey]);
+
+    // Coming into use: the app back in front, its window focused, or this view's screen shown again over another one.
+    const noteViewInUse = React.useCallback(() => {
+        const nowInUse = viewFocusedRef.current && isViewInUse();
+        if (nowInUse && !viewInUseRef.current) {
+            windowClaimPendingRef.current = true;
+            claimWindow();
+        }
+        viewInUseRef.current = nowInUse;
+    }, [claimWindow]);
+
+    React.useEffect(() => {
+        if (!isAgentTerminal) return;
+        viewInUseRef.current = viewFocusedRef.current && isViewInUse();
+        return subscribeToRuntimeActiveChange(noteViewInUse, { includeWindowFocus: true });
+    }, [isAgentTerminal, noteViewInUse]);
+
+    React.useEffect(() => {
+        if (!isAgentTerminal) return;
+        noteViewInUse();
+    }, [isAgentTerminal, noteViewInUse, params.viewFocused]);
+
     React.useEffect(() => {
         return () => {
             safeTimeoutClear(autoRetryTimeoutRef.current);
@@ -153,6 +210,8 @@ export function useMachineTerminalSession(params: Readonly<{
     React.useEffect(() => {
         terminalReaderOwnerTokenRef.current = Symbol(params.terminalKey);
         screenShownRef.current = false;
+        // Another terminal in this view: its window is this device's to take as well.
+        windowClaimPendingRef.current = true;
     }, [params.terminalKey]);
 
     React.useEffect(() => {
@@ -187,12 +246,14 @@ export function useMachineTerminalSession(params: Readonly<{
         };
 
         const failTerminalSession = (errorCode: string) => {
+            connectedTerminalIdRef.current = null;
             releaseReaderLease();
             setStatus('error');
             setError(errorCode);
         };
 
         const exitTerminalSession = () => {
+            connectedTerminalIdRef.current = null;
             releaseReaderLease();
             setStatus('exited');
             setError(null);
@@ -226,10 +287,13 @@ export function useMachineTerminalSession(params: Readonly<{
             clearTerminalOutput();
             cursorRef.current = redrawnFrom;
             updateSurfaceState((current) => ({ ...current, terminalId, cursor: redrawnFrom }));
+            // The repaint made this device's client the latest: the window has its size.
+            windowClaimPendingRef.current = false;
             return true;
         };
 
         const start = async () => {
+            connectedTerminalIdRef.current = null;
             const previousTerminalId = terminalIdRef.current;
             const previousCursor = cursorRef.current;
             const cachedSurfaceState = readTerminalSurfaceState(params.terminalKey) ?? createEmptyTerminalSurfaceState();
@@ -311,6 +375,10 @@ export function useMachineTerminalSession(params: Readonly<{
             restartRequestedRef.current = false;
 
             if (canceled) return;
+            if (ensured.ok && !ensured.reused) {
+                // A new attach's client is already the latest: the window has this device's size.
+                windowClaimPendingRef.current = false;
+            }
             if (!ensured.ok) {
                 if (isRecoverableTerminalSessionErrorCode(ensured.errorCode) && scheduleAutoRetry()) {
                     return;
@@ -353,6 +421,8 @@ export function useMachineTerminalSession(params: Readonly<{
             }
             screenShownRef.current = true;
             setStatus('connected');
+            connectedTerminalIdRef.current = ensured.terminalId;
+            claimWindow();
 
             let idleCount = 0;
             while (!canceled) {
@@ -454,8 +524,10 @@ export function useMachineTerminalSession(params: Readonly<{
 
         return () => {
             canceled = true;
+            connectedTerminalIdRef.current = null;
         };
     }, [
+        claimWindow,
         connectionNonce,
         hydrateTerminalRendererIfNeeded,
         initialTerminalSize,

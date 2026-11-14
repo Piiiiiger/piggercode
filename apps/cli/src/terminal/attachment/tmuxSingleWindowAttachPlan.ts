@@ -27,7 +27,9 @@ export type TmuxSingleWindowAttachPlan = Readonly<{
   /**
    * Window options for the agent's window, so every view of it has them: programs may pass escape sequences through
    * tmux (Claude Code and Codex send a copy to the clipboard of the computer the view is on that way), and the window
-   * leaves scroll-back mode at once when it has nothing to scroll back to. Then one line of scroll-back per wheel
+   * leaves scroll-back mode at once when it has nothing to scroll back to. The window takes the size of the view
+   * last in use (`window-size latest`): a larger view of it shows blank space around it (`fill-character`, tmux 3.3+;
+   * `-q` lets an older tmux skip it) instead of tmux's rows of dots. Then one line of scroll-back per wheel
    * turn, in place of tmux's five: the app reports one turn per line the wheel or trackpad moved
    * (`components/terminal/xterm/wheelTurns.ts`), so the scroll-back moves as far as the hand did. Key bindings
    * belong to the whole tmux server, which is PiggerCode's own. Not needed to attach.
@@ -75,6 +77,7 @@ export function createTmuxSingleWindowAttachPlan(params: Readonly<{
     killPlaceholderWindowArgs: ['kill-window', '-t', `${tempSessionName}:${PLACEHOLDER_WINDOW_NAME}`],
     viewOptionsArgs: [
       'set-option', '-q', '-w', '-t', params.target, 'allow-passthrough', 'on',
+      ';', 'set-option', '-q', '-w', '-t', params.target, 'fill-character', ' ',
       ';', 'set-hook', '-w', '-t', params.target, 'pane-mode-changed', `if-shell -F '${EMPTY_SCROLLBACK}' 'send-keys -X cancel'`,
       ...ONE_LINE_PER_WHEEL_TURN,
     ],

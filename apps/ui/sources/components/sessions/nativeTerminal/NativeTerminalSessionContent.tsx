@@ -22,6 +22,8 @@ import { reopenSessionAsTerminal, switchChatSessionToTerminal } from './openSess
 type NativeTerminalSessionContentProps = Readonly<{
     sessionId: string;
     serverId: string | null;
+    /** Whether the session's own screen is the one shown (not covered by its files, info or another surface). */
+    viewFocused?: boolean;
 }>;
 
 /**
@@ -41,7 +43,7 @@ export const NativeTerminalSessionContent = React.memo(function NativeTerminalSe
         const agentId = resolveAgentIdFromSessionMetadata(storeState.sessions[props.sessionId]?.metadata);
         return agentId ? t(getAgentCore(agentId).displayNameKey) : 'CLI';
     });
-    if (state === 'running') return <NativeTerminalSessionPane sessionId={props.sessionId} agentName={agentName} />;
+    if (state === 'running') return <NativeTerminalSessionPane sessionId={props.sessionId} agentName={agentName} viewFocused={props.viewFocused} />;
     if (state === 'chat') return <NativeTerminalSessionChatRunning sessionId={props.sessionId} serverId={props.serverId} agentName={agentName} />;
     if (state === 'starting') return <NativeTerminalSessionStarting agentName={agentName} />;
     return <NativeTerminalSessionEnded sessionId={props.sessionId} serverId={props.serverId} />;
@@ -57,13 +59,14 @@ const NativeTerminalSessionStarting = React.memo(function NativeTerminalSessionS
     );
 });
 
-const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(props: Readonly<{ sessionId: string; agentName: string }>) {
+const NativeTerminalSessionPane = React.memo(function NativeTerminalSessionPane(props: Readonly<{ sessionId: string; agentName: string; viewFocused?: boolean }>) {
     const terminalRef = React.useRef<EmbeddedTerminalRendererHandle | null>(null);
     const controller = useSessionEmbeddedTerminalPty({
         sessionId: props.sessionId,
         terminalKey: `session-attach:${props.sessionId}`,
         terminalMode: 'session_attach',
         terminalRef,
+        viewFocused: props.viewFocused,
     });
     const { agentName } = props;
     const explain = React.useCallback(() => {

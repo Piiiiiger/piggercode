@@ -49,6 +49,8 @@ export type SessionCockpitSurfaceScreenProps = Readonly<{
     initialAttachmentDrafts?: readonly AttachmentDraft[] | null;
     terminalTabAvailable?: boolean;
     routeHydrationState?: SessionRouteHydrationState | null;
+    /** Whether the session's route is focused in the app's navigator (not covered by another screen). */
+    routeFocused?: boolean;
 }>;
 
 export const SessionCockpitSurfaceScreen = React.memo((props: SessionCockpitSurfaceScreenProps) => {
@@ -221,11 +223,13 @@ export const SessionCockpitSurfaceScreen = React.memo((props: SessionCockpitSurf
             safeAreaTopMode={safeAreaTopMode}
             headerSafeAreaTopMode={headerSafeAreaTopMode}
             surfaceFocusedOverride={isFocused}
+            parentRouteFocused={props.routeFocused}
             chatBottomSpacing="none"
         />
     ), [
         headerSafeAreaTopMode,
         isFocused,
+        props.routeFocused,
         props.initialAttachmentDrafts,
         props.jumpToSeq,
         props.paneUrlState,

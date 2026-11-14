@@ -42,6 +42,8 @@ describe('createTmuxSingleWindowAttachPlan', () => {
       // Clipboard copies pass through to the app, and an empty scroll-back never holds the view.
       viewOptionsArgs: [
         'set-option', '-q', '-w', '-t', 'happy:happy-123-claude', 'allow-passthrough', 'on',
+        // A view larger than the window (another device's size is in use) shows blank space around it, not dots.
+        ';', 'set-option', '-q', '-w', '-t', 'happy:happy-123-claude', 'fill-character', ' ',
         ';', 'set-hook', '-w', '-t', 'happy:happy-123-claude', 'pane-mode-changed',
         "if-shell -F '#{&&:#{==:#{pane_mode},copy-mode},#{&&:#{==:#{history_size},0},#{?selection_present,0,1}}}' 'send-keys -X cancel'",
         // The app reports one wheel turn per line scrolled, so the scroll-back moves one line per turn.

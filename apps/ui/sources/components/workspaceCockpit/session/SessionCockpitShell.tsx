@@ -5,6 +5,7 @@ import { SessionLateralSwipeContent } from '@/components/navigation/mobile/chrom
 import type { SessionPaneUrlState } from '@/components/sessions/panes/url/sessionPaneUrlState';
 import { useSignalSessionCockpitDismiss } from '@/hooks/session/useSignalSessionCockpitDismiss';
 import type { SessionRouteHydrationState } from '@/sync/domains/session/sessionRouteHydrationState';
+import { useSessionScreenIsFocused } from '@/components/sessions/shell/useSessionScreenIsFocused';
 
 import type { SessionMobileSurface } from './sessionCockpitState';
 import { SessionCockpitTabNavigator } from './SessionCockpitTabNavigator';
@@ -24,6 +25,9 @@ type SessionCockpitShellProps = Readonly<{
 
 export const SessionCockpitShell = React.memo((props: SessionCockpitShellProps) => {
     useSignalSessionCockpitDismiss(props.sessionId);
+    // Read here, in the app's own navigator: the cockpit's tabs live in a navigator of their own, which cannot see
+    // another screen (the session's info) covering the whole session.
+    const routeFocused = useSessionScreenIsFocused();
 
     // The lateral-swipe motion wraps the shell rather than anything below it: this is
     // the narrowest owner that covers header, transcript and composer together while
@@ -41,6 +45,7 @@ export const SessionCockpitShell = React.memo((props: SessionCockpitShellProps) 
                 initialAttachmentDrafts={props.initialAttachmentDrafts}
                 terminalTabAvailable={props.terminalTabAvailable}
                 routeHydrationState={props.routeHydrationState}
+                routeFocused={routeFocused}
             />
         </SessionLateralSwipeContent>
     );

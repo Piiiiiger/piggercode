@@ -1794,7 +1794,14 @@ The app's view of a terminal is one `piggercode attach` (`terminal/attachment/tm
 destroyed with its client. The daemon runs it in a PTY (`daemon.terminal.*`, `api/machine/rpcHandlers.terminal.ts`) keyed
 by the session and, since CLI 0.3.35 and app 0.3.40, by the app install asking (`viewerId` in the `session_attach`
 launch, from `getAppInstallId`): each device is then its own tmux client, and tmux (`window-size latest`) gives the
-window the size of the device that attached, redrew or typed last, drawing it correctly on the others. Before, every
+window the size of the device that attached, redrew, typed or clicked last, drawing it correctly on the others; a view
+larger than the window shows blank space around it (`fill-character ' '` on the agent's window, CLI 0.3.36; tmux's
+default is rows of `·`). Since app 0.3.41 a view also takes the window back when it comes into use without input: when
+it starts reading an attach that already ran, when its app comes to the front or its window gets focus
+(`subscribeToRuntimeActiveChange` with window focus), and when its screen is shown again over another one (the
+session view's `surfaceFocused`; on a phone also the session route's own focus, read by `SessionCockpitShell` outside
+the cockpit's tab navigator, because the session's info covers the whole cockpit while its tab stays focused), it
+sends the repaint below, which makes its client the latest. A covered view never takes the window. Before, every
 device read one shared PTY, and each one's size change (or reconnect) resized it under the others; an app without a
 viewer id, or an older CLI, still shares one. A view that lacks the start of an attach's output (a reopened view, whose
 kept output is only the last 64,000 characters; one that fell behind the daemon's buffer, a `gap`; a second pane of

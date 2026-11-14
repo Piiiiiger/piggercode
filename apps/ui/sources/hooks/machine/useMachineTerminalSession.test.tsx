@@ -30,6 +30,7 @@ const latestTerminalSizeRef = vi.hoisted(() => ({
 }));
 // One launch object for every render: a new one each render would re-run the connection effect forever.
 const agentLaunch = { kind: 'session_attach', sessionId: 'session-1' } as const;
+const otherAgentLaunch = { kind: 'session_attach', sessionId: 'session-2' } as const;
 
 // What the kept output says about a terminal, and whether the view shows its output from the start.
 const surfaceWorld = vi.hoisted(() => ({
@@ -38,6 +39,12 @@ const surfaceWorld = vi.hoisted(() => ({
 }));
 // Stable like the real hook's callback (a new function each render would re-run the connection effect forever).
 const isScreenWholeMock = vi.hoisted(() => () => surfaceWorld.screenWhole);
+// Whether this device's view is in use (app in front, window focused), and who listens for changes of it.
+const viewWorld = vi.hoisted(() => ({
+    visible: true,
+    focused: true as boolean | undefined,
+    listeners: new Set<() => void>(),
+}));
 const terminalReaderLeaseState = vi.hoisted(() => ({
     ownerByKey: new Map<string, symbol>(),
 }));
@@ -105,6 +112,27 @@ vi.mock('@/components/sessions/terminal/terminalReaderLeaseRegistry', () => ({
     subscribeTerminalReaderLeaseAvailability: () => () => {},
 }));
 
+// The app's lifecycle signals (AppState, page visibility, window focus): an environment adapter.
+vi.mock('@/utils/runtime/isRuntimeActive', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/utils/runtime/isRuntimeActive')>()),
+    isHostVisible: () => viewWorld.visible,
+    subscribeToRuntimeActiveChange: (listener: () => void) => {
+        viewWorld.listeners.add(listener);
+        return () => {
+            viewWorld.listeners.delete(listener);
+        };
+    },
+}));
+vi.mock('@/utils/runtime/readHostWindowFocus', () => ({
+    readHostWindowFocus: () => viewWorld.focused,
+}));
+
+function changeViewInUse(change: Readonly<{ visible?: boolean; focused?: boolean }>) {
+    if (change.visible !== undefined) viewWorld.visible = change.visible;
+    if (change.focused !== undefined) viewWorld.focused = change.focused;
+    for (const listener of [...viewWorld.listeners]) listener();
+}
+
 vi.mock('@/utils/timing/time', () => ({
     delay: vi.fn(async () => undefined),
 }));
@@ -117,6 +145,9 @@ describe('useMachineTerminalSession', () => {
         machineTerminalStreamReadMock.mockReset();
         machineTerminalCloseMock.mockReset();
         terminalReaderLeaseState.ownerByKey.clear();
+        viewWorld.visible = true;
+        viewWorld.focused = true;
+        viewWorld.listeners.clear();
         surfaceWorld.cached = null;
         surfaceWorld.screenWhole = true;
         clearTerminalOutputMock.mockReset();
@@ -656,6 +687,140 @@ describe('useMachineTerminalSession', () => {
             expect(hook.getCurrent().status).toBe('exited');
         } finally {
             await hook.unmount();
+        }
+    });
+
+    it('takes the window for this device when its view opens on an attach that already ran, and again each time it comes back into use', async () => {
+        const terminalRef = { current: null };
+        machineTerminalEnsureMock.mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: true });
+        // A held read: the view stays connected.
+        machineTerminalStreamReadMock.mockImplementation(() => new Promise(() => {}));
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:claim',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(1);
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+
+            // Another window or device is used meanwhile, then this one again.
+            changeViewInUse({ focused: false });
+            changeViewInUse({ focused: true });
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(2);
+            changeViewInUse({ visible: false });
+            changeViewInUse({ visible: true });
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(3);
+
+            // Still in use: nothing more to tell.
+            changeViewInUse({});
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(3);
+            // Its screen was whole: nothing was cleared.
+            expect(clearTerminalOutputMock).not.toHaveBeenCalled();
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('does not take the window for a terminal covered by another screen, and takes it once its screen is shown again', async () => {
+        const terminalRef = { current: null };
+        machineTerminalEnsureMock.mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: true });
+        machineTerminalStreamReadMock.mockImplementation(() => new Promise(() => {}));
+        const hook = await renderHook((props: Readonly<{ viewFocused: boolean }>) => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:covered',
+            terminalRef,
+            viewFocused: props.viewFocused,
+        }), { initialProps: { viewFocused: false } });
+        try {
+            await flushHookEffects();
+            // The app goes to the background and comes back while the session's files are shown.
+            changeViewInUse({ visible: false });
+            changeViewInUse({ visible: true });
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).not.toHaveBeenCalled();
+
+            await hook.rerender({ viewFocused: true });
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(1);
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('takes the window of the next conversation a view is reused for', async () => {
+        const terminalRef = { current: null };
+        machineTerminalEnsureMock
+            .mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: true })
+            .mockResolvedValueOnce({ ok: true, terminalId: 'terminal-2', reused: true });
+        machineTerminalStreamReadMock.mockImplementation(() => new Promise(() => {}));
+        const hook = await renderHook((props: Readonly<{ second: boolean }>) => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: props.second ? otherAgentLaunch : agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: props.second ? 'session-attach:session-2' : 'session-attach:session-1',
+            terminalRef,
+        }), { initialProps: { second: false } });
+        try {
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+
+            await hook.rerender({ second: true });
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(2);
+            expect(machineTerminalRepaintMock).toHaveBeenLastCalledWith('machine-1', { terminalId: 'terminal-2' });
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('leaves the window alone after a new attach, which already has it, and for a shell terminal', async () => {
+        const terminalRef = { current: null };
+        machineTerminalEnsureMock
+            .mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: false })
+            .mockResolvedValueOnce({ ok: true, terminalId: 'shell-1', reused: true });
+        machineTerminalStreamReadMock.mockImplementation(() => new Promise(() => {}));
+        const agent = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:fresh',
+            terminalRef,
+        }));
+        const shell = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: '/home/me/project',
+            launch: null,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session:shell',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            expect(machineTerminalEnsureMock).toHaveBeenCalledTimes(2);
+            expect(machineTerminalRepaintMock).not.toHaveBeenCalled();
+        } finally {
+            await shell.unmount();
+            await agent.unmount();
         }
     });
 

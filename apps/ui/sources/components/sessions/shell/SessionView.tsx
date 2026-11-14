@@ -316,6 +316,11 @@ type SessionViewProps = Readonly<{
     safeAreaTopMode?: 'internal' | 'external';
     headerSafeAreaTopMode?: 'internal' | 'external';
     surfaceFocusedOverride?: boolean | null;
+    /**
+     * Whether the route holding this view is focused in the app's navigator, for a view inside a navigator of its own
+     * (the phone's session cockpit): there another screen can cover the whole session while its tab stays focused.
+     */
+    parentRouteFocused?: boolean;
     chatBottomSpacing?: 'default' | 'none';
 }>;
 
@@ -651,7 +656,7 @@ export const SessionView = React.memo((props: SessionViewProps) => {
         ? (props.contentOverride ?? (
             <AppPaneScopeHost
                 scopeId={paneScopeId}
-                main={<NativeTerminalSessionContent sessionId={sessionId} serverId={currentSessionRouteServerId ?? null} />}
+                main={<NativeTerminalSessionContent sessionId={sessionId} serverId={currentSessionRouteServerId ?? null} viewFocused={surfaceFocused && props.parentRouteFocused !== false} />}
             />
         ))
         : null;
