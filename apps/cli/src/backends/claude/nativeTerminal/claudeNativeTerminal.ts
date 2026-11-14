@@ -17,23 +17,27 @@ import { logger } from '@/ui/logger';
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
 import { claudeSessionStatusPath, followClaudeSessionStatus } from './claudeSessionStatusFollower';
 import { createClaudeTranscriptTitleFollower } from './claudeTranscriptTitleFollower';
+import { readClaudeLastReplyChoices } from './claudeTranscriptReplyChoices';
 
 /** Native Claude Code as a 「终端」 session: `claude` with the conversation to open and the screen's choices. */
 export const claudeNativeTerminal: NativeTerminalProvider = {
   flavor: 'claude',
   name: 'Claude Code',
   logPrefix: '[claude-terminal]',
-  planLaunch: ({ directory, resumeId, firstPrompt, controls }) => {
+  planLaunch: async ({ directory, resumeId, firstPrompt, controls }) => {
     const projectDir = getProjectPath(directory);
+    const transcriptOf = (claudeSessionId: string) => join(projectDir, `${claudeSessionId}.jsonl`);
+    const resumeTranscript = resumeId?.trim() ? transcriptOf(resumeId.trim()) : null;
     const launch = planClaudeNativeTerminalLaunch({
       resumeClaudeSessionId: resumeId,
       firstPrompt,
       controls,
-      transcriptExists: (claudeSessionId) => existsSync(join(projectDir, `${claudeSessionId}.jsonl`)),
+      transcriptExists: (claudeSessionId) => existsSync(transcriptOf(claudeSessionId)),
+      lastReplyChoices: resumeTranscript ? await readClaudeLastReplyChoices(resumeTranscript) : null,
       newClaudeSessionId: randomUUID,
     });
     const claude = requireProviderCliLaunchSpec('claude', { processEnv: process.env });
-    const transcriptPath = join(projectDir, `${launch.claudeSessionId}.jsonl`);
+    const transcriptPath = transcriptOf(launch.claudeSessionId);
     const env = claudeNativeTerminalEnv({ baseEnv: process.env, directory });
     return {
       cli: { command: claude.command, args: [...claude.args, ...launch.args] },

@@ -1758,7 +1758,11 @@ Since CLI 0.3.24 both also get the new-session screen's choices, which the runne
 the chosen thinking level as `--effort <level>` (`resolveClaudeEffectiveEffortForModel`: only with a chosen model that has
 that level, and also when it is the model's usual one, because claude would otherwise use the `effortLevel` of its own
 settings files) and Ultracode as `"ultracode": true` in the one `--settings` flag (then no `--effort`: Ultracode sets the
-level), and
+level); since CLI 0.3.37 a resumed Claude conversation without a chosen model or level goes on with the model and level of
+its last reply (`readClaudeLastReplyChoices`: the newest reply in the transcript that is not a subagent's or a `<synthetic>`
+notice, its `requestedModel`/`message.model` and `effort`), because claude's own `--resume` keeps neither and the app's
+「重新打开」 sends none; a level goes only with the model it was used with, and an unreadable transcript leaves both to
+claude's settings files (logged), and
 `codex --model <id>` with `resolveCodexCliPermissionArgs` (`--ask-for-approval`/`--sandbox`; 「CLI 设置」 passes none so
 config.toml decides; codex 0.167 takes only `on-request` or `never`), thinking as `-c model_reasoning_effort="…"` and Fast as
 `-c service_tier="fast"`. codex 0.167 takes `-c` only without its shared background server, so a Codex session with a chosen

@@ -52,7 +52,7 @@ export type NativeTerminalProvider = Readonly<{
     /** What the user typed when creating the session; the CLI gets it as its first prompt. */
     firstPrompt: string | null;
     controls: NativeTerminalControls;
-  }>) => NativeTerminalLaunch;
+  }>) => NativeTerminalLaunch | Promise<NativeTerminalLaunch>;
 }>;
 
 export type RunNativeTerminalOptions = Readonly<{
@@ -87,7 +87,7 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     startedBy: opts.startedBy,
     terminalRuntime: opts.terminalRuntime,
   });
-  const launch = opts.provider.planLaunch({
+  const launch = await opts.provider.planLaunch({
     directory,
     resumeId: opts.resumeId?.trim() || null,
     firstPrompt,

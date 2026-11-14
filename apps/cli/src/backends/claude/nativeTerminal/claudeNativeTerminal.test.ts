@@ -101,6 +101,23 @@ describe('planClaudeNativeTerminalLaunch with the new-session screen\'s choices'
       .toEqual([...RENDERER, '--resume', 'old-id', '--model', 'sonnet', '--permission-mode', 'auto']);
   });
 
+  it('reopens a conversation on the model and thinking level it last answered with, unless others were chosen', () => {
+    // claude's own --resume keeps neither: it would take the ones in its settings files.
+    const reopen = (controls: Partial<typeof NO_CONTROLS>) => planClaudeNativeTerminalLaunch({
+      resumeClaudeSessionId: 'old-id',
+      firstPrompt: null,
+      controls: { ...NO_CONTROLS, ...controls },
+      transcriptExists: () => true,
+      lastReplyChoices: { modelId: 'claude-opus-5-5', effort: 'max' },
+      newClaudeSessionId: () => 'new-id',
+    }).args;
+    expect(reopen({})).toEqual([...RENDERER, '--resume', 'old-id', '--model', 'claude-opus-5-5', '--effort', 'max']);
+    expect(reopen({ configOptionOverrides: configOptionOverrides({ reasoning_effort: 'medium' }) }))
+      .toEqual([...RENDERER, '--resume', 'old-id', '--model', 'claude-opus-5-5', '--effort', 'medium']);
+    // A level goes only with the model it was used with.
+    expect(reopen({ modelId: 'claude-fable-5-2' })).toEqual([...RENDERER, '--resume', 'old-id', '--model', 'claude-fable-5-2']);
+  });
+
   it('starts claude at the thinking level chosen for the model, the model\'s usual one included', () => {
     // Claude would otherwise use the level in its own settings files, which the screen does not show.
     for (const level of ['max', 'xhigh']) {
