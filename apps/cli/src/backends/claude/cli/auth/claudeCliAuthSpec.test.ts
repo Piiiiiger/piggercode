@@ -289,13 +289,15 @@ describe('claudeCliAuthSpec', () => {
     tempDirs.push(dir);
     const profileDir = join(dir, 'piggercode-claude');
     await mkdir(profileDir, { recursive: true });
-    // The stand-in reports, as its account, the profile it was asked about.
+    // The stand-in is logged in to that profile only.
+    const loggedIn = '{"loggedIn":true,"email":"profile@example.test","loginExpiresAt":null}';
+    const loggedOut = '{"loggedIn":false,"loginExpiresAt":null}';
     const claudePath = await writeExecutableShim({
       dir,
       fileName: process.platform === 'win32' ? 'claude.cmd' : 'claude',
       contents: process.platform === 'win32'
-        ? '@echo off\r\necho {"loggedIn":true,"email":"%CLAUDE_CONFIG_DIR%","loginExpiresAt":null}\r\n'
-        : '#!/bin/sh\nprintf \'{"loggedIn":true,"email":"%s","loginExpiresAt":null}\' "$CLAUDE_CONFIG_DIR"\n',
+        ? `@echo off\r\nif "%CLAUDE_CONFIG_DIR%"=="${profileDir}" (echo ${loggedIn}) else (echo ${loggedOut})\r\n`
+        : `#!/bin/sh\nif [ "$CLAUDE_CONFIG_DIR" = '${profileDir}' ]; then echo '${loggedIn}'; else echo '${loggedOut}'; fi\n`,
     });
     envScope.patch({
       HOME: dir,
@@ -309,7 +311,7 @@ describe('claudeCliAuthSpec', () => {
     await expect(claudeCliAuthSpec.detectAuthStatus!({ resolvedPath: claudePath })).resolves.toMatchObject({
       state: 'logged_in',
       source: 'command',
-      accountLabel: profileDir,
+      accountLabel: 'profile@example.test',
     });
   });
 });
