@@ -7,7 +7,6 @@ import { fakePushService, fakeServerSession } from './nativeTerminalSession.test
 function setup() {
   const server = fakeServerSession();
   const push = fakePushService();
-  const running: boolean[] = [];
   void server.session.updateMetadata((metadata) => ({ ...metadata, name: 'Fix the login page' }));
   const reporter = createNativeTerminalActivityReporter({
     session: server.session,
@@ -17,31 +16,26 @@ function setup() {
     pushSender: push.sender,
     // An account that never changed its notification settings.
     readAccountSettings: () => ({ settings: accountSettingsParse({}), settingsSecretsReadKeys: [] }),
-    onTurnRunningChange: (next) => running.push(next),
   });
-  return { server, push, reporter, running };
+  return { server, push, reporter };
 }
 
 describe('createNativeTerminalActivityReporter', () => {
   it('records each turn on the session, from the first sign of work until the CLI is idle again', async () => {
-    const { server, reporter, running } = setup();
+    const { server, reporter } = setup();
 
     reporter.report({ kind: 'idle' });
-    expect(reporter.turnRunning()).toBe(false);
     expect(server.turns).toEqual([]);
 
     reporter.report({ kind: 'working' });
     reporter.report({ kind: 'waiting', on: 'permission' });
     reporter.report({ kind: 'working' });
-    expect(reporter.turnRunning()).toBe(true);
-    expect(running).toEqual([true]);
+    expect(server.turns).toEqual([{ action: 'begin', provider: 'claude' }]);
 
     // Claude finished, but a shell it started in the background still runs: the turn is over.
     reporter.report({ kind: 'idle', background: true });
     reporter.report({ kind: 'idle' });
     await reporter.flush();
-    expect(reporter.turnRunning()).toBe(false);
-    expect(running).toEqual([true, false]);
     expect(server.turns).toEqual([
       { action: 'begin', provider: 'claude' },
       { action: 'complete', provider: 'claude' },
@@ -75,7 +69,6 @@ describe('createNativeTerminalActivityReporter', () => {
       // and the next idle it shows starts the count again.
       reporter.report({ kind: 'unknown' });
       expect(reporter.quietSince()).toBeNull();
-      expect(reporter.turnRunning()).toBe(false);
       vi.setSystemTime(12_000);
       reporter.report({ kind: 'idle' });
       expect(reporter.quietSince()).toBe(12_000);

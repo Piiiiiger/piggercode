@@ -179,18 +179,19 @@ describe('runNativeTerminalSession', () => {
     }
   });
 
-  it('tells the app at once when the CLI starts working and when it is done', async () => {
+  it('records a turn at once when the CLI starts working and when it is done, without touching it', async () => {
     const cwd = await tempDir();
     const server = fakeServerSession();
     const { done, report } = runWith({ server, cwd, script: 'sleep 0.5' });
 
-    vi.mocked(server.session.keepAlive).mockClear();
     report({ kind: 'working' });
-    expect(server.session.keepAlive).toHaveBeenLastCalledWith(true, 'local');
+    expect(server.turns.map((turn) => turn.action)).toEqual(['begin']);
     report({ kind: 'idle' });
-    expect(server.session.keepAlive).toHaveBeenLastCalledWith(false, 'local');
-    await done;
     expect(server.turns.map((turn) => turn.action)).toEqual(['begin', 'complete']);
+    await done;
+    // A heartbeat that says "thinking" would touch the turn and move the time the app reads as its
+    // start; the turn record alone says the CLI is working.
+    expect(server.session.keepAlive).not.toHaveBeenCalledWith(true, expect.anything());
   });
 
   it('stops a CLI left unused past the account\'s limit, as the app\'s stop would, but never one that works, asks, runs a shell or is typed into', async () => {

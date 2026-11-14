@@ -109,10 +109,6 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     });
   });
 
-  const sendHeartbeat = (thinking: boolean): void => {
-    session.keepAlive(thinking, 'local');
-    activity.retryUnsaved();
-  };
   const activity = createNativeTerminalActivityReporter({
     session,
     agentName: params.notifications.agentName,
@@ -120,13 +116,16 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     logPrefix: params.logPrefix,
     pushSender: params.notifications.pushSender,
     readAccountSettings: params.readAccountSettings,
-    // The app learns at once that a turn started or ended, not at the next heartbeat.
-    onTurnRunningChange: (running) => sendHeartbeat(running),
   });
+  // The session's turn record says when the CLI works. The heartbeat keeps saying "not thinking":
+  // a thinking heartbeat touches the open turn, which moves the time the app reads as its start.
   const heartbeat = startSessionHeartbeatLoop({
-    getThinking: () => activity.turnRunning(),
+    getThinking: () => false,
     getMode: () => 'local',
-    keepAlive: (thinking) => sendHeartbeat(thinking),
+    keepAlive: (thinking, mode) => {
+      session.keepAlive(thinking, mode);
+      activity.retryUnsaved();
+    },
   });
   const stopFollower = params.follow({
     session,

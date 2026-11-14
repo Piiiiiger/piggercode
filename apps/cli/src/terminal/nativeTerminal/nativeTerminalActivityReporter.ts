@@ -36,8 +36,6 @@ export type NativeTerminalAccountSettings = Readonly<{
 
 export type NativeTerminalActivityReporter = Readonly<{
   report: (activity: NativeTerminalActivity) => void;
-  /** Whether a turn runs: from the CLI's first sign of work until it shows its input box again. */
-  turnRunning: () => boolean;
   /**
    * Since when the CLI has shown its input box with nothing running and no prompt waiting; null while
    * it works, waits for the user, runs background work, is gone, or has not shown its input box yet
@@ -63,7 +61,8 @@ export type NativeTerminalActivityReporter = Readonly<{
 /**
  * Turns what a 「终端」 CLI shows into what the user's devices are told, the same way for every CLI:
  * - a turn is recorded on the session from its first sign of work until the CLI is idle again, which
- *   the app shows as running;
+ *   the app shows as running, with the time it has run (nothing else touches the turn, so its
+ *   observed time stays its start);
  * - a turn that ends is the session's `ready` event (the app's "finished" notification and the
  *   phone's push);
  * - a prompt waiting for the user, or a CLI that quit with an error and waits for the user to close its
@@ -83,8 +82,6 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
   }>;
   /** The account's settings as last read, without waiting for the relay; null while unknown. */
   readAccountSettings: () => NativeTerminalAccountSettings | null;
-  /** Called when a turn starts or ends, so the runner can tell the app at once. */
-  onTurnRunningChange?: (running: boolean) => void;
 }>): NativeTerminalActivityReporter {
   const { session } = params;
   let turnInProgress = false;
@@ -100,7 +97,6 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
     if (turnInProgress === next) return;
     turnInProgress = next;
     if (next) recordTurn('record the start of a turn', () => session.sessionTurnLifecycle.beginTurn({ provider: params.agentId }));
-    params.onTurnRunningChange?.(next);
   };
   // Session writes run one after another, so a prompt's start and end reach the session in order.
   let writes: Promise<void> = Promise.resolve();
@@ -221,7 +217,6 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
       turnFinished();
       setTurnInProgress(false);
     },
-    turnRunning: () => turnInProgress,
     quietSince: () => quietSince,
     cliExited: async (exitCode) => {
       quietSince = null;
