@@ -44,7 +44,6 @@ const focusState = vi.hoisted(() => ({
     isFocused: true,
     listeners: new Set<() => void>(),
 }));
-const draftListState = vi.hoisted(() => ({ count: 0 }));
 installSessionShellCommonModuleMocks({
     featureEnabled: async () => ({
         useFeatureEnabled: (featureId: string) => featureId === 'sessions.direct' && featureDecisionState.enabled,
@@ -155,11 +154,6 @@ vi.mock('@/components/sessions/shell/SessionsList', () => ({
         return React.createElement('SessionsListContent', props);
     },
 }));
-vi.mock('@/components/sessions/shell/NewSessionDraftsSection', () => ({
-    useNewSessionDraftProjections: () => Array.from({ length: draftListState.count }, (_, index) => ({
-        draftId: `draft-${index}`,
-    })),
-}));
 vi.mock('@react-navigation/native', () => ({
     useIsFocused: () => React.useSyncExternalStore(
         (listener) => {
@@ -209,7 +203,6 @@ describe('SessionsListWrapper (empty state)', () => {
         accountScopeState.scope = { serverId: 'server-a', accountId: 'account-a' };
         focusState.isFocused = true;
         focusState.listeners.clear();
-        draftListState.count = 0;
         const { resetSessionListPaneRetentionForTests } = await import('./surface/sessionListPaneRetention');
         resetSessionListPaneRetentionForTests();
     });
@@ -223,17 +216,6 @@ describe('SessionsListWrapper (empty state)', () => {
         const screen = await renderSessionsListWrapper();
 
         expect(() => screen.findByType('SessionGettingStartedGuidance' as any)).not.toThrow();
-
-        await screen.unmount();
-    });
-
-    it('renders the real list surface when drafts exist without sessions', async () => {
-        draftListState.count = 2;
-
-        const screen = await renderSessionsListWrapper();
-
-        expect(screen.findByType('SessionsListContent' as any).props.data).toEqual([]);
-        expect(() => screen.findByType('SessionGettingStartedGuidance' as any)).toThrow();
 
         await screen.unmount();
     });

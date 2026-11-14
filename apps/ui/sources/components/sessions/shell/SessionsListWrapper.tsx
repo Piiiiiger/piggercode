@@ -28,7 +28,6 @@ import {
     updateRetainedSessionListPaneActiveSessionId,
     useSessionListPaneSourceScopeKey,
 } from '@/components/sessions/shell/surface/sessionListPaneRetention';
-import { useNewSessionDraftProjections } from '@/components/sessions/shell/NewSessionDraftsSection';
 
 const stylesheet = StyleSheet.create((theme) => ({
     container: {
@@ -118,7 +117,6 @@ const SessionsListWrapperContent = React.memo((props: { pathname: string; surfac
     const directSessionsEnabled = useFeatureEnabled('sessions.direct');
     // Happier and direct sessions share one list.
     const storageKind: SessionListStorageFilter = 'all';
-    const newSessionDrafts = useNewSessionDraftProjections();
     const pathname = props.pathname;
     const surfaceRoutePathname = props.surfaceRoutePathname;
     const sourceScopeKey = useSessionListPaneSourceScopeKey();
@@ -251,7 +249,7 @@ const SessionsListWrapperContent = React.memo((props: { pathname: string; surfac
                 </View>
             </View>
         );
-    } else if (visibleSessionCount === 0 && newSessionDrafts.length === 0) {
+    } else if (visibleSessionCount === 0) {
         content = (
             <View style={styles.container}>
                 {storageChrome}

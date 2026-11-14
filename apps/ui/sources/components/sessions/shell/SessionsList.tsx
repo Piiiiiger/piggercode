@@ -182,7 +182,6 @@ import { SessionListSelectionActionBarHost } from './selection/SessionListSelect
 import { Icon } from '@/components/ui/icons/Icon';
 import { readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveSessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
-import { NewSessionDraftsSection } from './NewSessionDraftsSection';
 
 const BULK_MUTATION_SCOPE_REQUIREMENT_BY_REASON = {
     'server-id': 'a server id',
@@ -2645,7 +2644,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
 
     const renderVirtualizedHeader = React.useCallback(() => (
         <SessionsListHeader>
-            <NewSessionDraftsSection density={rowPresentationSettings.density} />
             <SessionFolderScopeBreadcrumb
                 breadcrumbs={folderBreadcrumbs}
                 onClear={handleClearSessionFolderFocus}
@@ -2653,7 +2651,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 rootTitle={folderBreadcrumbRootTitle}
             />
         </SessionsListHeader>
-    ), [folderBreadcrumbRootTitle, folderBreadcrumbs, handleClearSessionFolderFocus, handleSelectSessionFolderBreadcrumb, rowPresentationSettings.density]);
+    ), [folderBreadcrumbRootTitle, folderBreadcrumbs, handleClearSessionFolderFocus, handleSelectSessionFolderBreadcrumb]);
 
     const renderVirtualizedFooter = React.useCallback(() => {
         return (

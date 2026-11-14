@@ -5850,7 +5850,7 @@ export const en = {
     },
 
     sessionDrafts: {
-        sectionTitle: 'Drafts', badge: 'Draft', untitled: 'Untitled draft', continueEditing: 'Continue editing', startAnother: 'Start another',
+        badge: 'Draft', continueEditing: 'Continue editing', startAnother: 'Start another',
         status: { offline: 'Offline', syncing: 'Syncing', conflict: 'Conflict', machineUnavailable: 'Machine unavailable', startInterrupted: 'Start interrupted' },
         new: { action: 'New draft' },
         delete: { action: 'Delete draft', confirmTitle: 'Delete draft?', confirmDescription: 'This draft will be removed from your devices.' },
