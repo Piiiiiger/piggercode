@@ -572,6 +572,7 @@ async function detectCliAuthStatus(params: { name: DetectCliName; resolvedPath: 
             ...(draft.accountLabel !== undefined ? { accountLabel: draft.accountLabel } : {}),
             ...(draft.reason !== undefined ? { reason: draft.reason } : {}),
             ...(draft.source !== undefined ? { source: draft.source } : {}),
+            ...(draft.expiresAt !== undefined ? { expiresAt: draft.expiresAt } : {}),
         };
     } catch {
         return null;

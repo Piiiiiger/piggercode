@@ -1,10 +1,8 @@
 import { createCatalogCliAuthSpec } from '@/capabilities/cliAuth/createCatalogCliAuthSpec';
-import { runCliCommandBestEffort } from '@/capabilities/cliAuth/shared';
+import { CLI_AUTH_COMMAND_PROBE_TIMEOUT_MS, runCliCommandBestEffort } from '@/capabilities/cliAuth/shared';
 import type { CliAuthSpec } from '@/backends/types';
 
 import { readCodexEnvironmentAuthState } from './readCodexEnvironmentAuthState';
-
-const DEFAULT_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS = 6_000;
 
 function resolveCodexCliAuthProbeTimeoutMs(): number {
   const raw = process.env.PIGGERCODE_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS;
@@ -12,7 +10,7 @@ function resolveCodexCliAuthProbeTimeoutMs(): number {
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;
   }
-  return DEFAULT_CODEX_CLI_AUTH_PROBE_TIMEOUT_MS;
+  return CLI_AUTH_COMMAND_PROBE_TIMEOUT_MS;
 }
 
 export const codexCliAuthSpec = createCatalogCliAuthSpec('codex', {

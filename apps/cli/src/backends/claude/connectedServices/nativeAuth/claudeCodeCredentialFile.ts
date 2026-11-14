@@ -43,7 +43,10 @@ export type ClaudeCodeCredentialFileParseResult =
       status: 'ok';
       hasAccessToken: boolean;
       hasRefreshToken: boolean;
+      /** When the access token ends (hours after it was issued; Claude Code renews it with the refresh token). */
       expiresAt: number | null;
+      /** When the login itself ends (`claude auth status` calls it `loginExpiresAt`; about 30 days). */
+      refreshTokenExpiresAt: number | null;
       scopes: readonly string[];
     }>
   | Readonly<{
@@ -51,6 +54,7 @@ export type ClaudeCodeCredentialFileParseResult =
       hasAccessToken: false;
       hasRefreshToken: false;
       expiresAt: null;
+      refreshTokenExpiresAt: null;
       scopes: readonly string[];
     }>;
 
@@ -89,6 +93,7 @@ export function parseClaudeCodeCredentialFile(value: unknown): ClaudeCodeCredent
       hasAccessToken: false,
       hasRefreshToken: false,
       expiresAt: null,
+      refreshTokenExpiresAt: null,
       scopes: [],
     };
   }
@@ -98,6 +103,7 @@ export function parseClaudeCodeCredentialFile(value: unknown): ClaudeCodeCredent
     hasAccessToken: Boolean(readString(credential.accessToken)),
     hasRefreshToken: Boolean(readString(credential.refreshToken)),
     expiresAt: readNumber(credential.expiresAt),
+    refreshTokenExpiresAt: readNumber(credential.refreshTokenExpiresAt),
     scopes: parseClaudeCodeCredentialScopes(
       Array.isArray(credential.scopes)
         ? credential.scopes.filter((scope): scope is string => typeof scope === 'string')

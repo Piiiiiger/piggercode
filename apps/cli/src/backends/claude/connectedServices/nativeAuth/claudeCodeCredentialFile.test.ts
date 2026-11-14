@@ -405,6 +405,7 @@ describe('claudeCodeCredentialFile', () => {
       hasAccessToken: true,
       hasRefreshToken: false,
       expiresAt: REALISTIC_EXPIRES_AT_MS,
+      refreshTokenExpiresAt: null,
       scopes: ['user:inference', 'user:profile', 'user:sessions:claude_code'],
     });
     expect(JSON.stringify(safe)).not.toContain('secret-placeholder');

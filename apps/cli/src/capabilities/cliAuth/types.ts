@@ -27,6 +27,8 @@ export type CliAuthStatus = Readonly<{
   accountLabel?: string | null;
   reason?: CliAuthReason | null;
   source?: CliAuthSource | null;
+  /** When the login ends (ms since the epoch), when the CLI says; a renewed access token does not move it. */
+  expiresAt?: number | null;
   checkedAt: number;
 }>;
 

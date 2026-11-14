@@ -13,10 +13,15 @@ export function resolveCliAuthHomeDir(): string {
   return resolveHomeDirFromEnvironment(process.env);
 }
 
+/** How long a CLI's own login-status command may take (`codex login status`, `claude auth status`). */
+export const CLI_AUTH_COMMAND_PROBE_TIMEOUT_MS = 6_000;
+
 export async function runCliCommandBestEffort(params: Readonly<{
   resolvedPath: string;
   args: string[];
   timeoutMs?: number;
+  /** The command's environment (default: this process's). */
+  env?: NodeJS.ProcessEnv;
 }>): Promise<Readonly<{ ok: boolean; stdout: string; stderr: string; exitCode: number | null }>> {
   const timeoutMs = typeof params.timeoutMs === 'number' ? params.timeoutMs : 1_000;
   const isWindows = process.platform === 'win32';
@@ -41,6 +46,7 @@ export async function runCliCommandBestEffort(params: Readonly<{
       const { stdout, stderr } = await execFileAsync(runtimeExecutable, [params.resolvedPath, ...params.args], {
         timeout: timeoutMs,
         windowsHide: true,
+        ...(params.env ? { env: params.env } : {}),
       });
       return { ok: true, stdout: asString(stdout), stderr: asString(stderr), exitCode: 0 };
     }
@@ -54,6 +60,7 @@ export async function runCliCommandBestEffort(params: Readonly<{
       const { stdout, stderr } = await execFileAsync(invocation.command, invocation.args, {
         timeout: timeoutMs,
         windowsHide: true,
+        ...(params.env ? { env: params.env } : {}),
         windowsVerbatimArguments: invocation.windowsVerbatimArguments,
       });
       return { ok: true, stdout: asString(stdout), stderr: asString(stderr), exitCode: 0 };
@@ -62,6 +69,7 @@ export async function runCliCommandBestEffort(params: Readonly<{
     const { stdout, stderr } = await execFileAsync(params.resolvedPath, params.args, {
       timeout: timeoutMs,
       windowsHide: true,
+      ...(params.env ? { env: params.env } : {}),
     });
     return { ok: true, stdout: asString(stdout), stderr: asString(stderr), exitCode: 0 };
   } catch (error) {
