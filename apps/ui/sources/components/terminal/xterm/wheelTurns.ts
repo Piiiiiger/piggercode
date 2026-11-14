@@ -1,3 +1,5 @@
+import type { Terminal } from '@xterm/xterm';
+
 /**
  * The wheel of a program that takes the mouse: tmux in a 「终端」 view (its scroll-back), or a full-screen CLI.
  *
@@ -62,4 +64,32 @@ export function createWheelTurnReporter(terminal: WheelTurnTerminal): (event: Wh
         }
         return false;
     };
+}
+
+/** The parts of an xterm terminal the wheel turns use. */
+export type XtermWheelSurface = Pick<Terminal, 'modes' | 'rows' | 'element'>;
+
+/** True while the program in the terminal takes wheel reports (X10 mouse tracking reports clicks only). */
+export function programTakesWheel(term: XtermWheelSurface): boolean {
+    const mode = term.modes.mouseTrackingMode;
+    return mode !== 'none' && mode !== 'x10';
+}
+
+/**
+ * The wheel turns of an xterm terminal, for its `attachCustomWheelEventHandler`. The desktop terminal and the phone's
+ * WebView terminal (whose finger swipes arrive as wheel movement) both use it.
+ */
+export function createXtermWheelTurnReporter(term: XtermWheelSurface, speed: () => number): (event: WheelEvent) => boolean {
+    return createWheelTurnReporter({
+        takesWheel: () => programTakesWheel(term),
+        rowHeight: () => {
+            const screen = term.element?.querySelector('.xterm-screen');
+            return screen && term.rows > 0 ? screen.getBoundingClientRect().height / term.rows : 0;
+        },
+        rows: () => term.rows,
+        speed,
+        dispatch: (turn) => {
+            term.element?.dispatchEvent(turn);
+        },
+    });
 }

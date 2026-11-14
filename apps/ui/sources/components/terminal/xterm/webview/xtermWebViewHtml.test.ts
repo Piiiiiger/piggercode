@@ -163,8 +163,7 @@ describe('buildXtermWebViewHtml', () => {
         });
 
         expect(html).toContain('function focusTerminal()');
-        expect(html).toContain("root.addEventListener('pointerdown', focusTerminal");
-        expect(html).toContain("root.addEventListener('touchstart', focusTerminal");
+        expect(html).toContain("root.addEventListener('pointerdown'");
         expect(html).toContain("root.addEventListener('mousedown', focusTerminal");
         expect(html).toContain('focusTerminal();');
     });

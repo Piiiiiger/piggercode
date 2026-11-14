@@ -1802,7 +1802,10 @@ temporary session has tmux's `mouse` on (whatever the machine's tmux config says
 per wheel turn instead of tmux's five (`bind-key` in the `copy-mode` and `copy-mode-vi` tables of PiggerCode's own tmux
 server): the app reports one turn per line the wheel or trackpad moved (`components/terminal/xterm/wheelTurns.ts`;
 xterm.js 5.5 reports one per wheel event, however far it scrolled, so a trackpad's many small events scrolled several
-times too far), scaled by the per-device 外观 › 终端 › 滚轮速度 setting (`terminalWheelSpeed`, half/equal/double). The app's terminal
+times too far), scaled by the per-device 外观 › 终端 › 滚轮速度 setting (`terminalWheelSpeed`, half/equal/double). In the
+phone app's terminal (a WebView page, `components/terminal/xterm/webview/xtermWebViewHtml.ts`) a one-finger swipe goes
+through the same wheel turns while the program takes the mouse, one line per row the finger moved (xterm.js scrolls its
+own lines on a swipe only when no program takes the mouse); a tap, not a swipe, opens the keyboard. The app's terminal
 (`components/terminal/xterm/XtermTerminalView.web.tsx`) writes what a program copies (OSC 52, tmux's own mouse
 selection included) to the clipboard of the computer the view is on, never answers a clipboard query, and keeps a
 copy WebKit refused outside a key press for the next Cmd+C (Ctrl+Shift+C off a Mac), until the user copies a selection
@@ -1813,7 +1816,14 @@ so mouse and focus reporting left on by the previous attach do not type mouse mo
 again; the pane's Clear button only erases the screen, keeping the running program's modes. WebKit (the desktop app on
 macOS, Safari) with a Chinese or Japanese input method inserts a shifted key's character (the "(" of Shift+9) before the
 key's keydown, which xterm.js 5.5 drops and then types the key's own "9"; `webkitImeInput.ts` sends such an insertion and
-cancels that keydown (xtermjs/xterm.js#5887, open).
+cancels that keydown (xtermjs/xterm.js#5887, open). Both terminals count character widths with Unicode 11
+(`@xterm/addon-unicode11`), as tmux and the CLIs do: with xterm's default Unicode 6 table an emoji such as ✅ took one
+column where tmux 3.3a gives it two, shifting the rest of its line. Both draw with WebGL (`@xterm/addon-webgl`) and
+fall back to xterm's DOM renderer when WebGL is missing or its context is lost; on an Android phone the DOM renderer let
+rows run past their last column, which was then cut off. All views of a session share its tmux window, whose size
+follows the latest active view: when that width changes (a phone after the desktop), tmux rewraps the old screen and
+Claude Code (2.1.325) prints its banner and input again below it without clearing the old copy; Ctrl+L redraws only
+its input area.
 PiggerCode's queue, stuck-turn watchdog and subagent limit belong to the chat runtime and do not apply.
 
 **Terminal notifications (since CLI 0.3.27, app 0.3.32).** The runner reports what the CLI shows (working, waiting

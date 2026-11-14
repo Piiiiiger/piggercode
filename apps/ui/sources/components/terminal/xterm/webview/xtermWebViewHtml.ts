@@ -40,6 +40,8 @@ export function buildXtermWebViewHtml(params: Readonly<{
                 import('https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/+esm'),
                 import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/+esm'),
                 import('https://cdn.jsdelivr.net/npm/@xterm/addon-web-links@0.11.0/+esm'),
+                import('https://cdn.jsdelivr.net/npm/@xterm/addon-unicode11@0.8.0/+esm'),
+                import('https://cdn.jsdelivr.net/npm/@xterm/addon-webgl@0.18.0/+esm'),
               ]`;
 
     return `<!DOCTYPE html>
@@ -229,11 +231,13 @@ export function buildXtermWebViewHtml(params: Readonly<{
 
         const cdnImports = ${cdnModuleImports || 'null'};
         if (cdnImports) {
-          const [xterm, fit, links] = await Promise.all(cdnImports);
+          const [xterm, fit, links, unicode11, webgl] = await Promise.all(cdnImports);
           globalThis.PIGGERCODE_XTERM_WEBVIEW = {
             Terminal: xterm.Terminal,
             FitAddon: fit.FitAddon,
             WebLinksAddon: links.WebLinksAddon,
+            Unicode11Addon: unicode11.Unicode11Addon,
+            WebglAddon: webgl.WebglAddon,
           };
         }
 
@@ -338,6 +342,46 @@ export function buildXtermWebViewHtml(params: Readonly<{
         try { term && term.focus(); } catch (e) {}
       }
 
+      // A finger swipe moves a program's scroll-back the way the wheel does. xterm scrolls its own lines on a swipe,
+      // but not while a program takes the mouse (tmux in a 「终端」 view, whose scroll-back holds the conversation):
+      // then the swipe goes to xterm as wheel movement, which the wheel turns hand on one report per line. A tap
+      // opens the keyboard; a swipe does not.
+      const TOUCH_TAP_SLOP_PX = 10;
+
+      function installTouchScroll(root, takesWheel) {
+        let lastY = null;
+        let startY = 0;
+        let swiped = false;
+        root.addEventListener('touchstart', (event) => {
+          const touches = event.touches;
+          lastY = touches && touches.length === 1 ? touches[0].clientY : null;
+          startY = lastY;
+          swiped = false;
+        }, { capture: true, passive: true });
+        root.addEventListener('touchmove', (event) => {
+          const touches = event.touches;
+          if (lastY === null || !touches || touches.length !== 1) return;
+          const touch = touches[0];
+          if (!swiped && Math.abs(touch.clientY - startY) <= TOUCH_TAP_SLOP_PX) return;
+          swiped = true;
+          const deltaY = lastY - touch.clientY;
+          lastY = touch.clientY;
+          if (!term || !term.element || !takesWheel(term)) return;
+          if (event.cancelable) event.preventDefault();
+          term.element.dispatchEvent(new WheelEvent('wheel', {
+            deltaY,
+            deltaMode: 0,
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            cancelable: true,
+          }));
+        }, { capture: true, passive: false });
+        root.addEventListener('touchend', () => {
+          if (lastY !== null && !swiped) focusTerminal();
+          lastY = null;
+        }, { capture: true, passive: true });
+      }
+
       function scheduleReadyFitAttempt(delayMs) {
         setTimeout(() => {
           readyFitAttemptCount += 1;
@@ -420,6 +464,8 @@ export function buildXtermWebViewHtml(params: Readonly<{
         }
 
         term = new mod.Terminal({
+          // The Unicode 11 width table below is a proposed xterm API.
+          allowProposedApi: true,
           cursorBlink: true,
           fontFamily: 'Menlo, ui-monospace, SFMono-Regular, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace',
           fontSize: DEFAULT_CONFIG.fontSizePx,
@@ -441,11 +487,36 @@ export function buildXtermWebViewHtml(params: Readonly<{
             term.loadAddon(new mod.WebLinksAddon());
           }
         } catch {}
+        // Character widths as tmux and the CLIs count them (Unicode 6 makes symbols such as ⏵ the wrong
+        // width, so the cursor drifts and lines overwrite each other).
+        try {
+          if (mod.Unicode11Addon) {
+            term.loadAddon(new mod.Unicode11Addon());
+            term.unicode.activeVersion = '11';
+          }
+        } catch {}
 
         term.open(root);
-        root.addEventListener('pointerdown', focusTerminal, { capture: true, passive: true });
-        root.addEventListener('touchstart', focusTerminal, { capture: true, passive: true });
+        // The desktop's renderer: WebGL draws each character in its own cells. xterm's DOM renderer lays measured
+        // glyphs out in a row, and on some phones a row runs past its last column, which is then cut off. Without
+        // WebGL, or once the phone takes the WebGL context back (an app in the background may lose it), xterm draws
+        // with its DOM renderer.
+        if (mod.WebglAddon) {
+          try {
+            const webgl = new mod.WebglAddon();
+            webgl.onContextLoss(() => webgl.dispose());
+            term.loadAddon(webgl);
+          } catch (e) {}
+        }
+        // A program that takes the mouse (tmux in a 「终端」 view) gets one wheel turn per line moved, as on the desktop.
+        if (mod.createXtermWheelTurnReporter && term.attachCustomWheelEventHandler) {
+          term.attachCustomWheelEventHandler(mod.createXtermWheelTurnReporter(term, () => 1));
+        }
+        root.addEventListener('pointerdown', (event) => {
+          if (event.pointerType !== 'touch') focusTerminal();
+        }, { capture: true, passive: true });
         root.addEventListener('mousedown', focusTerminal, { capture: true, passive: true });
+        if (mod.programTakesWheel) installTouchScroll(root, mod.programTakesWheel);
         term.onData((data) => {
           if (typeof data === 'string' && data) {
             sendEnvelope({ v: 1, type: 'input', payload: { data } });

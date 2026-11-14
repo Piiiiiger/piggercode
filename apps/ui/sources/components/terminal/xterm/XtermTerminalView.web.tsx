@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useUnistyles } from 'react-native-unistyles';
 
 import { FitAddon } from '@xterm/addon-fit';
+import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
 import { Terminal } from '@xterm/xterm';
@@ -11,7 +12,7 @@ import '@xterm/xterm/css/xterm.css';
 import { resolveKeyboardPlatform } from '@/keyboard/runtime';
 
 import { createWebKitImeInput } from './webkitImeInput';
-import { createWheelTurnReporter } from './wheelTurns';
+import { createXtermWheelTurnReporter } from './wheelTurns';
 
 export type XtermTerminalHandle = Readonly<{
     write: (data: string) => void;
@@ -349,6 +350,8 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         }
 
         const term = new Terminal({
+            // The Unicode 11 width table below is a proposed xterm API.
+            allowProposedApi: true,
             cursorBlink: true,
             fontFamily: DEFAULT_FONT_FAMILY,
             fontSize: Math.max(8, Math.round(props.fontSize)),
@@ -371,27 +374,23 @@ export const XtermTerminalView = React.forwardRef<XtermTerminalHandle, XtermTerm
         fitAddonRef.current = fitAddon;
         term.loadAddon(fitAddon);
         term.loadAddon(new WebLinksAddon());
+        // Character widths as tmux and the CLIs count them: with xterm's default Unicode 6 table symbols such
+        // as ⏵ take the wrong width, the cursor drifts and a status line overwrites the line next to it.
+        term.loadAddon(new Unicode11Addon());
+        term.unicode.activeVersion = '11';
         try {
-            term.loadAddon(new WebglAddon());
+            const webgl = new WebglAddon();
+            // A GPU that takes the context back (a driver reset, a sleeping computer) leaves xterm's DOM renderer drawing.
+            webgl.onContextLoss(() => webgl.dispose());
+            term.loadAddon(webgl);
         } catch {
-            // WebGL renderer unavailable; fall back to canvas.
+            // No WebGL: xterm draws with its DOM renderer.
         }
 
         term.open(container);
 
         // A program that takes the mouse (tmux, whose scroll-back the wheel moves) gets one wheel turn per line moved.
-        term.attachCustomWheelEventHandler(createWheelTurnReporter({
-            takesWheel: () => term.modes.mouseTrackingMode !== 'none' && term.modes.mouseTrackingMode !== 'x10',
-            rowHeight: () => {
-                const screen = term.element?.querySelector('.xterm-screen');
-                return screen && term.rows > 0 ? screen.getBoundingClientRect().height / term.rows : 0;
-            },
-            rows: () => term.rows,
-            speed: () => wheelSpeedRef.current,
-            dispatch: (turn) => {
-                term.element?.dispatchEvent(turn);
-            },
-        }));
+        term.attachCustomWheelEventHandler(createXtermWheelTurnReporter(term, () => wheelSpeedRef.current));
 
         // What a program copies (Claude Code or Codex through tmux, or tmux's own selection) goes onto this computer's
         // clipboard. WebKit allows that only during a key press or a click, so a refused copy waits for the copy key.

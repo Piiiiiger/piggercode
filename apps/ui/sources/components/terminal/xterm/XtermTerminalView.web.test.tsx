@@ -11,6 +11,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const fitSpy = vi.fn();
 const focusSpy = vi.fn();
 const loadAddonSpy = vi.fn();
+const webglDisposeSpy = vi.fn();
+const webglContextLossListeners: Array<() => void> = [];
 const openSpy = vi.fn();
 const attachCustomKeyEventHandlerSpy = vi.fn();
 const attachCustomWheelEventHandlerSpy = vi.fn();
@@ -45,6 +47,8 @@ class MockTerminal {
      * screen leaves them. With `deferWrites`, written data waits for `flush()`, as in xterm's own write queue.
      */
     modes = { mouseTrackingMode: 'none' as 'none' | 'vt200' | 'any', sendFocusMode: false };
+    /** xterm's width table (its `unicode` API): Unicode 6 until an addon switches it. */
+    unicode = { activeVersion: '6' };
     deferWrites = false;
     private queued: string[] = [];
 
@@ -114,8 +118,17 @@ vi.mock('@xterm/addon-web-links', () => ({
     WebLinksAddon: class {},
 }));
 
+vi.mock('@xterm/addon-unicode11', () => ({
+    Unicode11Addon: class Unicode11Addon {},
+}));
+
 vi.mock('@xterm/addon-webgl', () => ({
-    WebglAddon: class {},
+    WebglAddon: class WebglAddon {
+        onContextLoss = (listener: () => void) => {
+            webglContextLossListeners.push(listener);
+        };
+        dispose = webglDisposeSpy;
+    },
 }));
 
 vi.mock('@xterm/xterm/css/xterm.css', () => ({}));
@@ -150,6 +163,8 @@ describe('XtermTerminalView.web', () => {
         viewportTimerObservedDisposedSpy.mockReset();
         terminalConstructorOptions.length = 0;
         terminalInstances.length = 0;
+        webglContextLossListeners.length = 0;
+        webglDisposeSpy.mockClear();
         registerOscHandlerSpy.mockClear();
         selectionText = '';
         writeTextSpy.mockReset().mockResolvedValue(undefined);
@@ -230,6 +245,35 @@ describe('XtermTerminalView.web', () => {
             root.render(<XtermTerminalView fontSize={14} wheelSpeed={2} onInput={() => {}} onResize={() => {}} onReady={() => {}} />);
         });
         expect(term.options.scrollSensitivity).toBe(2);
+    });
+
+    it('counts character widths the way tmux and the CLIs do (Unicode 11), so a status line cannot overwrite its neighbour', async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+
+        await act(async () => {
+            root.render(
+                <XtermTerminalView fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />,
+            );
+        });
+
+        expect(terminalConstructorOptions.at(-1)).toEqual(expect.objectContaining({ allowProposedApi: true }));
+        expect(loadAddonSpy.mock.calls.some(([addon]) => addon?.constructor?.name === 'Unicode11Addon')).toBe(true);
+        expect(terminalInstances.at(-1)?.unicode.activeVersion).toBe('11');
+    });
+
+    it("draws with WebGL, and with xterm's DOM renderer once the GPU takes the context back", async () => {
+        const { XtermTerminalView } = await import('./XtermTerminalView.web');
+
+        await act(async () => {
+            root.render(
+                <XtermTerminalView fontSize={14} onInput={() => {}} onResize={() => {}} onReady={() => {}} />,
+            );
+        });
+
+        expect(loadAddonSpy.mock.calls.some(([addon]) => addon?.constructor?.name === 'WebglAddon')).toBe(true);
+        expect(webglDisposeSpy).not.toHaveBeenCalled();
+        webglContextLossListeners.at(-1)?.();
+        expect(webglDisposeSpy).toHaveBeenCalledTimes(1);
     });
 
     it('opts out of xterm screen reader DOM mode in the web surface', async () => {

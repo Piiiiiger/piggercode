@@ -42,11 +42,18 @@ function createEntrySource() {
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
+import { Unicode11Addon } from '@xterm/addon-unicode11';
+import { WebglAddon } from '@xterm/addon-webgl';
+import { createXtermWheelTurnReporter, programTakesWheel } from './sources/components/terminal/xterm/wheelTurns';
 
 globalThis.PIGGERCODE_XTERM_WEBVIEW = {
   Terminal,
   FitAddon,
   WebLinksAddon,
+  Unicode11Addon,
+  WebglAddon,
+  createXtermWheelTurnReporter,
+  programTakesWheel,
 };
 `;
 }
