@@ -1,10 +1,16 @@
+import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { renderHook, standardCleanup } from '@/dev/testkit';
+import { flushHookEffects, renderHook, standardCleanup } from '@/dev/testkit';
+import { createMachineFixture } from '@/dev/testkit/fixtures/machineFixtures';
+import { createSessionFixture } from '@/dev/testkit/fixtures/sessionFixtures';
+import type { Machine, Session } from '@/sync/domains/state/storageTypes';
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 const uploadToMachineSpy = vi.hoisted(() => vi.fn());
+const realStorageRef = vi.hoisted(() => ({ current: null as null | typeof import('@/sync/domains/state/storageStore')['storage'] }));
+const terminalEnsureSpy = vi.hoisted(() => vi.fn());
 const alertSpy = vi.hoisted(() => vi.fn());
 
 // The machine end of an upload: the chunked transfer to the session's machine.
@@ -13,9 +19,10 @@ vi.mock('@/sync/domains/transfers/runtime/bulkTransferPipeline', async (importOr
     uploadDaemonSessionAttachmentFromReader: (...args: unknown[]) => uploadToMachineSpy(...args),
 }));
 
-// The terminal's own machine calls (no machine is known here, so none are made).
+// The terminal's own machine calls (made only where a test gives the session a machine).
 vi.mock('@/sync/ops/machineTerminal', () => ({
-    machineTerminalEnsure: vi.fn(),
+    machineTerminalEnsure: (...args: unknown[]) => terminalEnsureSpy(...args),
+    machineTerminalRepaint: vi.fn(),
     machineTerminalRestart: vi.fn(),
     machineTerminalStreamRead: vi.fn(),
     machineTerminalClose: vi.fn(),
@@ -27,11 +34,17 @@ vi.mock('@/modal', () => ({
     Modal: { alert: (...args: unknown[]) => alertSpy(...args) },
 }));
 
-// Settings left unset: the attachment defaults apply.
+// Settings left unset: the attachment defaults apply. Sessions and machines are the app's real store.
 vi.mock('@/sync/domains/state/storage', async () => {
-    const { createStorageModuleStub } = await import('@/dev/testkit/mocks/storage');
-    return createStorageModuleStub({});
+    const { createStorageModuleStub, createStorageStoreProxy } = await import('@/dev/testkit/mocks/storage');
+    const store = createStorageStoreProxy(() => {
+        if (!realStorageRef.current) throw new Error('Real storage must be initialized before rendering');
+        return realStorageRef.current;
+    });
+    return createStorageModuleStub({ storage: store, getStorage: () => store });
 });
+
+realStorageRef.current = (await import('@/sync/domains/state/storageStore')).storage;
 
 type UploadCall = Readonly<{ sessionId: string; request: Readonly<{ fileName: string; uploadLocation: string; sharedFolderPath?: string }> }>;
 
@@ -106,5 +119,40 @@ describe('useSessionEmbeddedTerminalPty pasted images', () => {
         expect(paths).toEqual([]);
         expect(uploadToMachineSpy).toHaveBeenCalledTimes(1);
         expect(alertSpy).toHaveBeenCalledWith(expect.any(String), 'File exceeds maximum allowed size');
+    });
+});
+
+describe('useSessionEmbeddedTerminalPty attach', () => {
+    function seedSessionsAndMachines(state: Readonly<{ sessions: Record<string, Session>; machines: Record<string, Machine> }>) {
+        realStorageRef.current!.setState(state);
+    }
+
+    afterEach(() => {
+        seedSessionsAndMachines({ sessions: {}, machines: {} });
+        standardCleanup();
+    });
+
+    it('attaches to the session as this app install, so each device gets an attach of its own', async () => {
+        const now = Date.now();
+        seedSessionsAndMachines({
+            sessions: { 'session-1': createSessionFixture({ active: true, activeAt: now, updatedAt: now }) },
+            machines: { 'machine-1': createMachineFixture({ active: true, activeAt: now, updatedAt: now }) },
+        });
+        terminalEnsureSpy.mockReset();
+        // The machine turns the terminal down: nothing more is asked of it.
+        terminalEnsureSpy.mockResolvedValue({ ok: false, errorCode: 'terminal_disabled', error: 'terminal_disabled' });
+        const hook = await renderSessionTerminal();
+
+        await act(async () => {
+            hook.getCurrent().onReady(80, 24);
+        });
+        await flushHookEffects();
+
+        const { getAppInstallId } = await import('@/sync/domains/state/appInstallId');
+        const installId = getAppInstallId();
+        expect(installId).toBeTruthy();
+        expect(terminalEnsureSpy).toHaveBeenCalledWith('machine-1', expect.objectContaining({
+            launch: { kind: 'session_attach', sessionId: 'session-1', viewerId: installId },
+        }));
     });
 });

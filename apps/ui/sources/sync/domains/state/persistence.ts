@@ -51,7 +51,8 @@ const pendingSettingsSchemaByKey: Readonly<Record<string, z.ZodTypeAny>> = Objec
     ...PROVIDER_SETTINGS_SHAPE,
 });
 
-function deviceAnalyticsIdKey(): string {
+// Named for its first use (analytics); kept so every install keeps the id it already has.
+function appInstallIdKey(): string {
     return 'device-analytics-id-v1';
 }
 
@@ -360,19 +361,19 @@ export function loadSettings(): { settings: unknown; version: number | null } {
     return { settings: {}, version: null };
 }
 
-export function loadDeviceAnalyticsId(): string | null {
+export function loadAppInstallId(): string | null {
     const mmkv = getPersistenceStorage();
-    const raw = mmkv.getString(deviceAnalyticsIdKey());
+    const raw = mmkv.getString(appInstallIdKey());
     if (typeof raw !== 'string') return null;
     const trimmed = raw.trim();
     return trimmed || null;
 }
 
-export function saveDeviceAnalyticsId(value: string): void {
+export function saveAppInstallId(value: string): void {
     const mmkv = getPersistenceStorage();
     const trimmed = value.trim();
     if (!trimmed) return;
-    mmkv.set(deviceAnalyticsIdKey(), trimmed);
+    mmkv.set(appInstallIdKey(), trimmed);
 }
 
 export function saveSettings(settings: Settings, version: number) {

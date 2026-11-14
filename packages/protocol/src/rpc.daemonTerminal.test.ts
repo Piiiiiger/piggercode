@@ -26,5 +26,9 @@ describe('RPC_METHODS (daemon terminal)', () => {
   it('includes daemon.terminal.restart', () => {
     expect((RPC_METHODS as any).DAEMON_TERMINAL_RESTART).toBe('daemon.terminal.restart');
   });
+
+  it('includes daemon.terminal.repaint', () => {
+    expect((RPC_METHODS as any).DAEMON_TERMINAL_REPAINT).toBe('daemon.terminal.repaint');
+  });
 });
 

@@ -10,6 +10,8 @@ function createFakeDisposable(): Disposable {
 class FakePty implements PtyProcess {
   public readonly writes: string[] = [];
   public readonly resizes: Array<Readonly<{ cols: number; rows: number }>> = [];
+  private static nextPid = 4100;
+  public readonly pid = FakePty.nextPid++;
   private readonly onDataListeners = new Set<(data: string) => void>();
   private readonly onExitListeners = new Set<(e: PtyExitEvent) => void>();
 
@@ -94,6 +96,53 @@ describe('TerminalPtySessionManager', () => {
 
     const second = manager.ensure({ terminalKey: 'k1', cwd: '/tmp', cols: 81, rows: 25 });
     expect(second).toEqual({ ok: true, terminalId: first.terminalId, reused: true });
+  });
+
+  it('tells a repaintable terminal\'s process group its window changed, and answers where the redrawn view starts', () => {
+    const provider = new FakePtyProvider();
+    const signalled: Array<readonly [number, string]> = [];
+    const manager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      config: defaultConfig(),
+      now: () => 0,
+      env: { SHELL: '/bin/bash' },
+      platform: 'linux',
+      signalProcessGroup: (pid, signal) => signalled.push([pid, signal]),
+    });
+    const attachLaunch = { file: 'piggercode', args: ['attach', 's1'] };
+
+    const attach = manager.ensure({ terminalKey: 'session-attach:s1', cwd: '/tmp', launch: attachLaunch, repaintable: true });
+    const shell = manager.ensure({ terminalKey: 'shell', cwd: '/tmp' });
+    if (!attach.ok || !shell.ok) throw new Error('expected ok');
+    const attachPty = provider.spawned[0]!.pty;
+    attachPty.emitData('first');
+    attachPty.emitData('second');
+
+    expect(manager.repaint({ terminalId: attach.terminalId })).toEqual({ ok: true, cursor: 2 });
+    expect(signalled).toEqual([[attachPty.pid, 'SIGWINCH']]);
+    expect(manager.repaint({ terminalId: shell.terminalId })).toMatchObject({ ok: false, errorCode: 'terminal_repaint_unsupported' });
+    expect(manager.repaint({ terminalId: 'gone' })).toMatchObject({ ok: false, errorCode: 'terminal_not_found' });
+
+    // Attached afresh, it can still be repainted.
+    const again = manager.restart({ terminalKey: 'session-attach:s1', cwd: '/tmp', launch: attachLaunch, repaintable: true });
+    if (!again.ok) throw new Error('expected ok');
+    expect(manager.repaint({ terminalId: again.terminalId })).toEqual({ ok: true, cursor: 0 });
+    expect(signalled.at(-1)).toEqual([provider.spawned[2]!.pty.pid, 'SIGWINCH']);
+  });
+
+  it('has no repaint for a Windows terminal, which has no process group to tell', () => {
+    const provider = new FakePtyProvider();
+    const manager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      config: defaultConfig(),
+      now: () => 0,
+      env: {},
+      platform: 'win32',
+      signalProcessGroup: () => { throw new Error('no process groups on Windows'); },
+    });
+    const attach = manager.ensure({ terminalKey: 'session-attach:s1', cwd: 'C:\\', launch: { file: 'piggercode.exe', args: ['attach', 's1'] }, repaintable: true });
+    if (!attach.ok) throw new Error('expected ok');
+    expect(manager.repaint({ terminalId: attach.terminalId })).toMatchObject({ ok: false, errorCode: 'terminal_repaint_unsupported' });
   });
 
   it('reports resize-unavailable without recording unsupported dimensions', () => {

@@ -5,6 +5,8 @@ import {
     DaemonTerminalEnsureResponseSchema,
     DaemonTerminalInputRequestSchema,
     DaemonTerminalInputResponseSchema,
+    DaemonTerminalRepaintRequestSchema,
+    DaemonTerminalRepaintResponseSchema,
     DaemonTerminalResizeRequestSchema,
     DaemonTerminalResizeResponseSchema,
     DaemonTerminalRestartRequestSchema,
@@ -17,6 +19,8 @@ import {
     type DaemonTerminalEnsureResponse,
     type DaemonTerminalInputRequest,
     type DaemonTerminalInputResponse,
+    type DaemonTerminalRepaintRequest,
+    type DaemonTerminalRepaintResponse,
     type DaemonTerminalResizeRequest,
     type DaemonTerminalResizeResponse,
     type DaemonTerminalRestartRequest,
@@ -133,6 +137,30 @@ export async function machineTerminalClose(
     const parsed = DaemonTerminalCloseResponseSchema.safeParse(response);
     if (!parsed.success) {
         throwUnsupportedResponse(RPC_METHODS.DAEMON_TERMINAL_CLOSE);
+    }
+    return parsed.data;
+}
+
+/**
+ * Has a full-screen program's view drawn whole again in place (CLI 0.3.35+). A machine that cannot answers with an
+ * error code, and one too old to know the call fails it: either way the caller attaches afresh instead.
+ */
+export async function machineTerminalRepaint(
+    machineId: string,
+    input: DaemonTerminalRepaintRequest,
+    opts?: MachineTerminalOpts,
+): Promise<DaemonTerminalRepaintResponse> {
+    const payload = DaemonTerminalRepaintRequestSchema.parse(input);
+    const response = await machineRpcWithServerScope<unknown, DaemonTerminalRepaintRequest>({
+        machineId,
+        serverId: opts?.serverId,
+        timeoutMs: opts?.timeoutMs ?? undefined,
+        method: RPC_METHODS.DAEMON_TERMINAL_REPAINT,
+        payload,
+    });
+    const parsed = DaemonTerminalRepaintResponseSchema.safeParse(response);
+    if (!parsed.success) {
+        throwUnsupportedResponse(RPC_METHODS.DAEMON_TERMINAL_REPAINT);
     }
     return parsed.data;
 }

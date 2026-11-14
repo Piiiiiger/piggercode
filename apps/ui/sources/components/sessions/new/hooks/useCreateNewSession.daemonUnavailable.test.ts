@@ -150,8 +150,8 @@ async function createHarness() {
   vi.doMock('@/sync/domains/state/persistence', () => ({
     clearNewSessionDraft: vi.fn(),
     loadSettings: () => ({ settings: {}, version: null }),
-    loadDeviceAnalyticsId: () => null,
-    saveDeviceAnalyticsId: vi.fn(),
+    loadAppInstallId: () => null,
+    saveAppInstallId: vi.fn(),
     saveSettings: vi.fn(),
     loadPendingSettings: () => ({}),
     savePendingSettings: vi.fn(),

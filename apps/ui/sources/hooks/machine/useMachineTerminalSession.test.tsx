@@ -7,6 +7,7 @@ import { useMachineTerminalSession } from './useMachineTerminalSession';
 
 const machineTerminalEnsureMock = vi.hoisted(() => vi.fn());
 const machineTerminalRestartMock = vi.hoisted(() => vi.fn());
+const machineTerminalRepaintMock = vi.hoisted(() => vi.fn());
 const machineTerminalStreamReadMock = vi.hoisted(() => vi.fn());
 const machineTerminalCloseMock = vi.hoisted(() => vi.fn());
 const clearTerminalOutputMock = vi.hoisted(() => vi.fn());
@@ -80,6 +81,7 @@ vi.mock('@/components/sessions/terminal/useTerminalSurfaceState', () => ({
 vi.mock('@/sync/ops/machineTerminal', () => ({
     machineTerminalEnsure: (...args: unknown[]) => machineTerminalEnsureMock(...args),
     machineTerminalRestart: (...args: unknown[]) => machineTerminalRestartMock(...args),
+    machineTerminalRepaint: (...args: unknown[]) => machineTerminalRepaintMock(...args),
     machineTerminalStreamRead: (...args: unknown[]) => machineTerminalStreamReadMock(...args),
     machineTerminalClose: (...args: unknown[]) => machineTerminalCloseMock(...args),
 }));
@@ -111,12 +113,17 @@ describe('useMachineTerminalSession', () => {
     beforeEach(() => {
         machineTerminalEnsureMock.mockReset();
         machineTerminalRestartMock.mockReset();
+        machineTerminalRepaintMock.mockReset();
         machineTerminalStreamReadMock.mockReset();
         machineTerminalCloseMock.mockReset();
         terminalReaderLeaseState.ownerByKey.clear();
         surfaceWorld.cached = null;
         surfaceWorld.screenWhole = true;
         clearTerminalOutputMock.mockReset();
+        // As the real surface state: a cleared view shows the output from its (new) start.
+        clearTerminalOutputMock.mockImplementation(() => {
+            surfaceWorld.screenWhole = true;
+        });
         hydrateTerminalRendererIfNeededMock.mockReset();
         replaceSurfaceStateMock.mockReset();
         setDetectedUrlMock.mockReset();
@@ -137,6 +144,8 @@ describe('useMachineTerminalSession', () => {
             terminalId: 'terminal-2',
             reused: false,
         });
+        // The machine redraws the screen; its output starts at 900.
+        machineTerminalRepaintMock.mockResolvedValue({ ok: true, cursor: 900 });
         machineTerminalStreamReadMock.mockResolvedValue({
             ok: true,
             terminalId: 'terminal-1',
@@ -476,7 +485,7 @@ describe('useMachineTerminalSession', () => {
         }
     });
 
-    it('attaches an agent terminal again when output was dropped before the view read it', async () => {
+    it('has an agent terminal\'s screen drawn again in place when output was dropped before the view read it', async () => {
         const terminalRef = { current: null };
         machineTerminalStreamReadMock.mockResolvedValueOnce({
             ok: true,
@@ -497,15 +506,19 @@ describe('useMachineTerminalSession', () => {
         try {
             await flushHookEffects();
             await flushHookEffects();
-            expect(machineTerminalRestartMock).toHaveBeenCalledTimes(1);
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+            expect(clearTerminalOutputMock).toHaveBeenCalled();
+            expect(machineTerminalRestartMock).not.toHaveBeenCalled();
             expect(writeTerminalOutputMock).not.toHaveBeenCalledWith('\r\n[Output truncated]\r\n');
             expect(writeTerminalOutputMock).not.toHaveBeenCalledWith('\x1b[27;54H7');
+            // It reads on from the redrawn screen, not from the older output after the gap.
+            expect(machineTerminalStreamReadMock.mock.calls[1]?.[1]).toMatchObject({ terminalId: 'terminal-1', cursor: 900 });
         } finally {
             await hook.unmount();
         }
     });
 
-    it('attaches an agent terminal again when a new view could be given only the end of its output', async () => {
+    it('has an agent terminal\'s screen drawn again in place when a new view could be given only the end of its output', async () => {
         const terminalRef = { current: null };
         // The kept output of this attach no longer reaches back to its start.
         surfaceWorld.cached = { terminalId: 'terminal-1', cursor: 4_000, output: 'tail of the output', outputEnd: 90_000, detectedUrl: null };
@@ -523,12 +536,15 @@ describe('useMachineTerminalSession', () => {
         try {
             await flushHookEffects();
             await flushHookEffects();
-            expect(machineTerminalRestartMock).toHaveBeenCalledTimes(1);
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+            expect(clearTerminalOutputMock).toHaveBeenCalled();
+            expect(machineTerminalRestartMock).not.toHaveBeenCalled();
+            expect(machineTerminalStreamReadMock.mock.calls[0]?.[1]).toMatchObject({ terminalId: 'terminal-1', cursor: 900 });
         } finally {
             await hook.unmount();
         }
     });
-    it('has an agent terminal attached afresh when a second view of it could be given only the end of its output', async () => {
+    it('has an agent terminal\'s screen drawn again for a second view that could be given only the end of its output', async () => {
         const terminalRef = { current: null };
         // Another view already reads this terminal.
         terminalReaderLeaseState.ownerByKey.set('session-attach:second-view', Symbol('other view'));
@@ -546,11 +562,140 @@ describe('useMachineTerminalSession', () => {
         try {
             await flushHookEffects();
             expect(machineTerminalEnsureMock).not.toHaveBeenCalled();
-            expect(machineTerminalRestartMock).toHaveBeenCalledWith('machine-1', expect.objectContaining({
-                terminalKey: 'session-attach:second-view',
-                launch: { kind: 'session_attach', sessionId: 'session-1' },
-            }));
+            expect(machineTerminalRepaintMock).toHaveBeenCalledWith('machine-1', { terminalId: 'terminal-1' });
+            expect(machineTerminalRestartMock).not.toHaveBeenCalled();
+            // The view that reads the terminal reads on from where it is, and nothing it shows is cleared.
+            expect(machineTerminalStreamReadMock).not.toHaveBeenCalled();
+            expect(clearTerminalOutputMock).not.toHaveBeenCalled();
         } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('keeps a view before the gap until its redraw is answered, so a dropped connection or a reopened view asks again', async () => {
+        const terminalRef = { current: null };
+        const gapRead = {
+            ok: true,
+            terminalId: 'terminal-1',
+            events: [{ t: 'gap', droppedBefore: 120 }, { t: 'data', data: '\x1b[27;54H7' }],
+            nextCursor: 500,
+            done: false,
+        };
+        // The machine reports the gap to every read that starts before it.
+        machineTerminalStreamReadMock.mockResolvedValueOnce(gapRead).mockResolvedValueOnce(gapRead);
+        let answerFirstRepaint: (answer: unknown) => void = () => {};
+        machineTerminalRepaintMock.mockImplementationOnce(() => new Promise((resolve) => {
+            answerFirstRepaint = resolve;
+        }));
+        // The cursor each change of the kept output would leave (what a reopened view would start from).
+        const keptCursors = () => updateSurfaceStateMock.mock.calls.map(([update]) =>
+            (update as (current: { cursor: number }) => { cursor: number })({ cursor: -1 }).cursor);
+        const hook = await renderHook((props: Readonly<{ reachable: boolean }>) => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: props.reachable,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:dropped-redraw',
+            terminalRef,
+        }), { initialProps: { reachable: true } });
+        try {
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(1);
+            expect(keptCursors()).not.toContain(500);
+            // The connection drops while the redraw is on its way, and its answer never counts.
+            await hook.rerender({ reachable: false });
+            answerFirstRepaint({ ok: false, errorCode: 'terminal_error', error: 'terminal_error' });
+            await flushHookEffects();
+            expect(machineTerminalRestartMock).not.toHaveBeenCalled();
+            expect(keptCursors()).not.toContain(500);
+
+            await hook.rerender({ reachable: true });
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(2);
+            expect(machineTerminalStreamReadMock.mock.calls.map(([, request]) => (request as { cursor: number }).cursor)).toEqual([0, 0, 900]);
+            expect(writeTerminalOutputMock).not.toHaveBeenCalledWith('\x1b[27;54H7');
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('drops a read that was on its way when the view was cleared, a gap in it too, and still ends with the terminal', async () => {
+        let answerRead: (value: unknown) => void = () => undefined;
+        machineTerminalStreamReadMock.mockImplementationOnce(() => new Promise((resolve) => {
+            answerRead = resolve;
+        }));
+        const terminalRef = { current: null };
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:cleared-gap',
+            terminalRef,
+        }));
+        clearTerminalOutputMock.mockImplementation(() => {
+            if (surfaceClearNonceRef.current) surfaceClearNonceRef.current.current += 1;
+        });
+        try {
+            await flushHookEffects();
+            hook.getCurrent().clearTerminal();
+            answerRead({
+                ok: true,
+                terminalId: 'terminal-1',
+                events: [{ t: 'gap', droppedBefore: 120 }, { t: 'exit', exitCode: 0, signal: null }],
+                nextCursor: 500,
+                done: true,
+            });
+            await flushHookEffects();
+
+            expect(machineTerminalRepaintMock).not.toHaveBeenCalled();
+            expect(machineTerminalRestartMock).not.toHaveBeenCalled();
+            expect(hook.getCurrent().status).toBe('exited');
+        } finally {
+            await hook.unmount();
+        }
+    });
+
+    it('attaches an agent terminal afresh when its machine cannot draw the screen again (an older CLI or another host)', async () => {
+        const terminalRef = { current: null };
+        surfaceWorld.cached = { terminalId: 'terminal-1', cursor: 4_000, output: 'tail of the output', outputEnd: 90_000, detectedUrl: null };
+        surfaceWorld.screenWhole = false;
+        machineTerminalEnsureMock.mockResolvedValueOnce({ ok: true, terminalId: 'terminal-1', reused: true });
+        machineTerminalRepaintMock
+            .mockResolvedValueOnce({ ok: false, errorCode: 'terminal_repaint_unsupported', error: 'terminal_repaint_unsupported' })
+            .mockRejectedValueOnce(new Error('Unsupported response from machine RPC (daemon.terminal.repaint)'));
+        terminalReaderLeaseState.ownerByKey.set('session-attach:old-second-view', Symbol('other view'));
+        // The second pane first: it clears nothing, while the reading view's fallback clears the shared screen.
+        const secondView = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:old-second-view',
+            terminalRef,
+        }));
+        const hook = await renderHook(() => useMachineTerminalSession({
+            machineId: 'machine-1',
+            cwd: null,
+            launch: agentLaunch,
+            machineReachable: true,
+            machineRpcTargetAvailable: true,
+            terminalKey: 'session-attach:no-repaint',
+            terminalRef,
+        }));
+        try {
+            await flushHookEffects();
+            await flushHookEffects();
+            expect(machineTerminalRepaintMock).toHaveBeenCalledTimes(2);
+            expect(machineTerminalRestartMock).toHaveBeenCalledTimes(2);
+            expect(machineTerminalRestartMock).toHaveBeenCalledWith('machine-1', expect.objectContaining({ terminalKey: 'session-attach:no-repaint' }));
+            expect(machineTerminalRestartMock).toHaveBeenCalledWith('machine-1', expect.objectContaining({ terminalKey: 'session-attach:old-second-view' }));
+        } finally {
+            await secondView.unmount();
             await hook.unmount();
         }
     });

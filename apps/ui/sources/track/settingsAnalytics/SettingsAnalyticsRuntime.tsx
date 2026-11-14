@@ -10,7 +10,7 @@ import { buildAccountSettingsSnapshot } from './buildAccountSettingsSnapshot';
 import { buildFeatureAnalyticsSnapshot } from './buildFeatureAnalyticsSnapshot';
 import { buildLocalSettingsSnapshot } from './buildLocalSettingsSnapshot';
 import { diffAnalyticsProperties } from './diffAnalyticsSnapshot';
-import { getDeviceAnalyticsId } from './deviceAnalyticsIdentity';
+import { getAppInstallId } from '@/sync/domains/state/appInstallId';
 import { flushTrackingClient } from './flushTrackingClient';
 
 export function SettingsAnalyticsRuntime() {
@@ -53,7 +53,7 @@ export function SettingsAnalyticsRuntime() {
         }
         previousAccountPropertiesRef.current = accountProperties;
 
-        const deviceAnalyticsId = getDeviceAnalyticsId();
+        const deviceAnalyticsId = getAppInstallId();
         if (deviceAnalyticsId) {
             const changedLocalProperties = diffAnalyticsProperties(previousLocalPropertiesRef.current, localSnapshot.properties);
             if (changedLocalProperties) {

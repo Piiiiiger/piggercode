@@ -22,6 +22,7 @@ import type { EmbeddedTerminalRendererHandle } from '@/components/sessions/termi
 import {
     machineTerminalClose,
     machineTerminalEnsure,
+    machineTerminalRepaint,
     machineTerminalRestart,
     machineTerminalStreamRead,
 } from '@/sync/ops/machineTerminal';
@@ -197,6 +198,37 @@ export function useMachineTerminalSession(params: Readonly<{
             setError(null);
         };
 
+        // A full-screen program's view that lacks the start of its output is drawn whole again in place: tmux sends
+        // the whole screen (modes included) when told its window changed. Much quicker than attaching afresh, which
+        // starts a new CLI. Answers where that output starts, or null when the machine cannot (an older CLI, or
+        // another terminal host) and the caller attaches afresh instead.
+        const repaintOnMachine = async (machineId: string, terminalId: string): Promise<number | null> => {
+            const repainted = await machineTerminalRepaint(machineId, { terminalId })
+                .catch((error: unknown) => ({ ok: false as const, errorCode: error instanceof Error ? error.message : 'terminal_error' }));
+            if (!repainted.ok) {
+                log.log(`[terminal] ${params.terminalKey} attaches afresh: no repaint (${repainted.errorCode})`);
+                return null;
+            }
+            return repainted.cursor;
+        };
+
+        // The reading view: only once the machine has answered does it clear and read on from where the redrawn
+        // screen starts (older output is skipped). Until then nothing changes, so a reconnect or a reopened view meets
+        // the same incomplete screen or gap and asks again. False: it stopped here (canceled, or a fresh attach was
+        // requested instead).
+        const redrawAndReadOn = async (machineId: string, terminalId: string): Promise<boolean> => {
+            const redrawnFrom = await repaintOnMachine(machineId, terminalId);
+            if (canceled) return false;
+            if (redrawnFrom === null) {
+                requestRestart();
+                return false;
+            }
+            clearTerminalOutput();
+            cursorRef.current = redrawnFrom;
+            updateSurfaceState((current) => ({ ...current, terminalId, cursor: redrawnFrom }));
+            return true;
+        };
+
         const start = async () => {
             const previousTerminalId = terminalIdRef.current;
             const previousCursor = cursorRef.current;
@@ -210,9 +242,16 @@ export function useMachineTerminalSession(params: Readonly<{
                 setStatus(cachedSurfaceState.terminalId ? 'connected' : 'connecting');
                 hydrateTerminalRendererIfNeeded();
                 // Another view reads this terminal. A full-screen program's screen this view could not be given
-                // whole comes from a fresh attach: the reading view follows it, and its output reaches both views.
+                // whole is drawn again (or, failing that, comes from a fresh attach): the reading view gets that
+                // output, and it reaches both views.
                 const size = latestTerminalSizeRef.current ?? initialTerminalSize;
                 if (isAgentTerminal && !isScreenWhole() && params.machineId && params.launch && size) {
+                    // The reading view reads on from where it is, and the redrawn screen reaches this view through
+                    // the kept output; nothing is cleared, so a redraw lost on the way is asked for again next time.
+                    if (cachedSurfaceState.terminalId && (await repaintOnMachine(params.machineId, cachedSurfaceState.terminalId)) !== null) {
+                        return;
+                    }
+                    if (canceled) return;
                     const restarted = await machineTerminalRestart(params.machineId, {
                         terminalKey: params.terminalKey,
                         cols: size.cols,
@@ -307,10 +346,8 @@ export function useMachineTerminalSession(params: Readonly<{
                     cursor: previousCursor,
                 });
                 hydrateTerminalRendererIfNeeded();
-                // A view that was given only the end of a full-screen program's output attaches again: tmux then
-                // sends the whole screen.
-                if (isAgentTerminal && !isScreenWhole()) {
-                    requestRestart();
+                // A view that was given only the end of a full-screen program's output has it drawn whole again.
+                if (isAgentTerminal && !isScreenWhole() && !(await redrawAndReadOn(params.machineId, ensured.terminalId))) {
                     return;
                 }
             }
@@ -338,19 +375,22 @@ export function useMachineTerminalSession(params: Readonly<{
                     return;
                 }
 
-                const priorCursor = cursorRef.current;
-                cursorRef.current = read.nextCursor;
-                if (read.nextCursor !== priorCursor) {
-                    updateSurfaceState((current) => ({
-                        ...current,
-                        terminalId,
-                        cursor: read.nextCursor,
-                    }));
-                }
+                const readOn = () => {
+                    const priorCursor = cursorRef.current;
+                    cursorRef.current = read.nextCursor;
+                    if (read.nextCursor !== priorCursor) {
+                        updateSurfaceState((current) => ({
+                            ...current,
+                            terminalId,
+                            cursor: read.nextCursor,
+                        }));
+                    }
+                };
 
                 // Output that was on its way when the terminal was cleared is dropped. A read the machine
                 // held open only got output after its wait began, so what arrived after Clear stays.
                 if (readClearNonce !== clearNonceRef.current && read.waited !== true) {
+                    readOn();
                     if (read.events.some((event) => event.t === 'exit') || read.done) {
                         exitTerminalSession();
                         return;
@@ -358,6 +398,18 @@ export function useMachineTerminalSession(params: Readonly<{
                     idleCount = 0;
                     continue;
                 }
+
+                // Output was dropped before this view read it: a full-screen program's screen can no longer be rebuilt
+                // from it, so it is drawn whole again before anything of this read is shown (all of it is older). The
+                // cursor stays before the gap until the machine answered, so a reconnect or a reopened view meets the
+                // gap again instead of reading past it.
+                if (isAgentTerminal && read.events.some((event) => event.t === 'gap')) {
+                    if (!(await redrawAndReadOn(params.machineId, terminalId))) return;
+                    idleCount = 0;
+                    continue;
+                }
+
+                readOn();
 
                 if (read.events.length === 0) {
                     // A machine that held the read open answers empty only once its wait ran out: ask again
@@ -375,11 +427,6 @@ export function useMachineTerminalSession(params: Readonly<{
                     if (event.t === 'data') {
                         writeTerminalOutput(event.data);
                     } else if (event.t === 'gap') {
-                        if (isAgentTerminal) {
-                            // Output was dropped before this view read it: the screen can no longer be rebuilt.
-                            requestRestart();
-                            return;
-                        }
                         writeTerminalOutput('\r\n[Output truncated]\r\n');
                     } else if (event.t === 'url') {
                         if (!isAgentTerminal || event.kind === 'auth') {

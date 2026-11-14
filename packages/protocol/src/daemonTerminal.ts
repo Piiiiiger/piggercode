@@ -8,6 +8,7 @@ export const DaemonTerminalErrorCodeSchema = z.enum([
   'terminal_invalid_request',
   'terminal_busy',
   'terminal_resize_unavailable',
+  'terminal_repaint_unsupported',
 ]);
 export type DaemonTerminalErrorCode = z.infer<typeof DaemonTerminalErrorCodeSchema>;
 
@@ -22,6 +23,11 @@ export const DaemonTerminalLaunchIntentSchema = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('session_attach'),
     sessionId: z.string().trim().min(1).max(512),
+    /**
+     * The app install asking: each one gets its own attach, so tmux sizes the window for the device in use instead of
+     * every device resizing one shared terminal (CLI 0.3.35+; older machines ignore it and share one).
+     */
+    viewerId: z.string().trim().min(1).max(128).optional(),
   }),
   z.object({
     kind: z.literal('happier_cli'),
@@ -162,6 +168,18 @@ export const DaemonTerminalCloseResponseSchema = z.union([
   DaemonTerminalErrorSchema,
 ]);
 export type DaemonTerminalCloseResponse = z.infer<typeof DaemonTerminalCloseResponseSchema>;
+
+export const DaemonTerminalRepaintRequestSchema = z.object({
+  terminalId: z.string().min(1),
+}).passthrough();
+export type DaemonTerminalRepaintRequest = z.infer<typeof DaemonTerminalRepaintRequestSchema>;
+
+export const DaemonTerminalRepaintResponseSchema = z.union([
+  /** `cursor`: where the redrawn view starts in the terminal's output; a view reads on from there. */
+  z.object({ ok: z.literal(true), cursor: z.number().int().min(0) }).passthrough(),
+  DaemonTerminalErrorSchema,
+]);
+export type DaemonTerminalRepaintResponse = z.infer<typeof DaemonTerminalRepaintResponseSchema>;
 
 export const DaemonTerminalRestartRequestSchema = buildDaemonTerminalLaunchRequestSchema();
 export type DaemonTerminalRestartRequest = z.infer<typeof DaemonTerminalRestartRequestSchema>;

@@ -141,7 +141,7 @@ vi.mock('@/sync/domains/state/persistence', () => ({
     loadSessionMaterializedMaxSeqById: () => ({}),
     loadChangesCursor: () => null,
     loadLastChangesCursorByAccountId: () => ({}),
-    loadDeviceAnalyticsId: () => null,
+    loadAppInstallId: () => null,
     saveSettings: vi.fn(),
     saveLocalSettings: vi.fn(),
     savePurchases: vi.fn(),
@@ -163,7 +163,7 @@ vi.mock('@/sync/domains/state/persistence', () => ({
     pruneStaleInstanceChangesCursors: vi.fn(),
     saveLastChangesCursorByAccountId: vi.fn(),
     savePendingSettings: vi.fn(),
-    saveDeviceAnalyticsId: vi.fn(),
+    saveAppInstallId: vi.fn(),
     clearPersistence: vi.fn(),
 }));
 

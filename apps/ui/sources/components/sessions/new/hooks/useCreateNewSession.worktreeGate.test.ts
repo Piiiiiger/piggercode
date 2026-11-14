@@ -265,8 +265,8 @@ vi.mock('@/sync/domains/state/persistence', async (importOriginal) => {
     return {
         ...actual,
         loadSettings: () => ({ settings: {}, version: null }),
-        loadDeviceAnalyticsId: () => null,
-        saveDeviceAnalyticsId: vi.fn(),
+        loadAppInstallId: () => null,
+        saveAppInstallId: vi.fn(),
         saveSettings: vi.fn(),
         loadPendingSettings: () => ({}),
         savePendingSettings: vi.fn(),

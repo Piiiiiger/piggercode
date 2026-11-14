@@ -106,8 +106,8 @@ async function setupHarness(options?: Readonly<{
       overrides: {
         clearNewSessionDraft: vi.fn(),
         loadSettings: () => ({ settings: {}, version: null }),
-        loadDeviceAnalyticsId: () => null,
-        saveDeviceAnalyticsId: vi.fn(),
+        loadAppInstallId: () => null,
+        saveAppInstallId: vi.fn(),
         saveSettings: vi.fn(),
         loadPendingSettings: () => ({}),
         savePendingSettings: vi.fn(),

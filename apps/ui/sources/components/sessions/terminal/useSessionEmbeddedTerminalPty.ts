@@ -8,6 +8,7 @@ import type { EmbeddedTerminalRendererHandle } from '@/components/sessions/termi
 import { useMachineTerminalSession } from '@/hooks/machine/useMachineTerminalSession';
 import { Modal } from '@/modal';
 import { randomUUID } from '@/platform/randomUUID';
+import { getAppInstallId } from '@/sync/domains/state/appInstallId';
 import { sessionAttachmentsUploadFile } from '@/sync/domains/transfers/ops/uploadSessionAttachment';
 import { t } from '@/text';
 import type { SessionTerminalMode } from './sessionTerminalMode';
@@ -20,11 +21,14 @@ export function useSessionEmbeddedTerminalPty(params: Readonly<{
 }>) {
     const machineTarget = useSessionMachineTarget(params.sessionId);
     const { machineReachable, machineRpcTargetAvailable } = useSessionMachineReachability(params.sessionId);
+    // Each app install attaches on its own (its own tmux client), so the session's window takes the size of the
+    // device in use instead of every device resizing one shared terminal.
+    const viewerId = React.useMemo(() => getAppInstallId(), []);
     const launch = React.useMemo(
         () => params.terminalMode === 'session_attach'
-            ? { kind: 'session_attach' as const, sessionId: params.sessionId }
+            ? { kind: 'session_attach' as const, sessionId: params.sessionId, ...(viewerId ? { viewerId } : {}) }
             : null,
-        [params.sessionId, params.terminalMode],
+        [params.sessionId, params.terminalMode, viewerId],
     );
 
     const controller = useMachineTerminalSession({

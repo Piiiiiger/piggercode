@@ -12,6 +12,8 @@ export const RPC_METHODS = {
   DAEMON_TERMINAL_RESIZE: 'daemon.terminal.resize',
   DAEMON_TERMINAL_CLOSE: 'daemon.terminal.close',
   DAEMON_TERMINAL_RESTART: 'daemon.terminal.restart',
+  /** Has a full-screen program's view drawn whole again, keeping its attach (CLI 0.3.35+; older machines lack it). */
+  DAEMON_TERMINAL_REPAINT: 'daemon.terminal.repaint',
   DAEMON_MEMORY_SEARCH: 'daemon.memory.search',
   DAEMON_MEMORY_GET_WINDOW: 'daemon.memory.getWindow',
   DAEMON_MEMORY_ENSURE_UP_TO_DATE: 'daemon.memory.ensureUpToDate',

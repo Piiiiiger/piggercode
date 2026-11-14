@@ -12,15 +12,17 @@ export type ClaudeNativeTerminalLaunch = Readonly<{
 }>;
 
 /**
- * Claude Code's default renderer, given as a flag. A running `claude` switches renderer when `tui` changes in a
+ * Claude Code's fullscreen renderer, given as a flag. A running `claude` switches renderer when `tui` changes in a
  * settings file, and a session switched out of the fullscreen renderer that way stays blank or cut off until claude
  * restarts (2026-11-11: every terminal started before `~/.claude/settings.json` got `"tui": "default"`). A flag
- * outranks the settings files, so no later edit reaches a running terminal. Default rather than fullscreen: the app
- * draws it correctly, while a fullscreen screen is left with stray characters after a view reattaches.
+ * outranks the settings files, so no later edit reaches a running terminal. Fullscreen rather than default: each
+ * device views a session through its own tmux client, and the window takes the size of the device in use; the
+ * fullscreen renderer draws its screen anew at every size, while the default one reflows what it printed into
+ * broken, repeated lines (2026-11-14, phone and computer open at once).
  * Claude reads one `--settings` flag, so Ultracode, when chosen, goes in the same one.
  */
 function claudeSettingsArgs(ultracode: boolean): string[] {
-  return ['--settings', JSON.stringify(ultracode ? { tui: 'default', ultracode: true } : { tui: 'default' })];
+  return ['--settings', JSON.stringify(ultracode ? { tui: 'fullscreen', ultracode: true } : { tui: 'fullscreen' })];
 }
 
 /**

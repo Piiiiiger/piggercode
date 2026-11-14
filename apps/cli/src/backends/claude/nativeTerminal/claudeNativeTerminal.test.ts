@@ -10,7 +10,7 @@ import { claudeNativeTerminalEnv, followClaudeTitle } from './claudeNativeTermin
 import { planClaudeNativeTerminalLaunch } from './claudeNativeTerminalLaunch';
 
 /** Claude Code's default renderer, given as a flag (it outranks every settings file). */
-const RENDERER = ['--settings', '{"tui":"default"}'];
+const RENDERER = ['--settings', '{"tui":"fullscreen"}'];
 
 const dirs: string[] = [];
 afterEach(async () => {
@@ -45,7 +45,7 @@ describe('planClaudeNativeTerminalLaunch', () => {
     })).toEqual({ claudeSessionId: 'old-id', args: [...RENDERER, '--session-id', 'old-id'] });
   });
 
-  it('keeps claude on its default renderer whatever a settings file says, now or later', () => {
+  it('keeps claude on its fullscreen renderer whatever a settings file says, now or later', () => {
     // A running claude switches renderer when `tui` changes in a settings file, and a session switched out of
     // the fullscreen renderer that way stays blank or cut off; a flag outranks the files, so the switch never comes.
     for (const resume of [null, 'old-id']) {
@@ -59,7 +59,7 @@ describe('planClaudeNativeTerminalLaunch', () => {
       const at = args.indexOf('--settings');
       expect(at).toBeGreaterThanOrEqual(0);
       expect(at).toBeLessThan(args.indexOf('--'));
-      expect(JSON.parse(args[at + 1] ?? '')).toEqual({ tui: 'default' });
+      expect(JSON.parse(args[at + 1] ?? '')).toEqual({ tui: 'fullscreen' });
     }
   });
 
@@ -120,7 +120,7 @@ describe('planClaudeNativeTerminalLaunch with the new-session screen\'s choices'
       configOptionOverrides: configOptionOverrides({ ultracode: 'true', reasoning_effort: 'max' }),
     });
     expect(launched.filter((arg) => arg === '--settings')).toHaveLength(1);
-    expect(JSON.parse(launched[launched.indexOf('--settings') + 1] ?? '')).toEqual({ tui: 'default', ultracode: true });
+    expect(JSON.parse(launched[launched.indexOf('--settings') + 1] ?? '')).toEqual({ tui: 'fullscreen', ultracode: true });
     expect(launched).not.toContain('--effort');
   });
 });

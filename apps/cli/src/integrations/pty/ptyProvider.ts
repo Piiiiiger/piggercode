@@ -32,6 +32,8 @@ export type PtyForkOptions = Readonly<{
 }>;
 
 export type PtyProcess = Readonly<{
+  /** The launched program's pid, which leads its own process group; absent when a relay process owns the PTY. */
+  pid?: number;
   write: (data: string) => void;
   resize: (cols: number, rows: number) => void;
   kill: (signal?: string) => void;

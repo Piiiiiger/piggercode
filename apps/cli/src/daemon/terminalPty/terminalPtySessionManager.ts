@@ -41,6 +41,11 @@ type TerminalPtyEnsureInput = Readonly<{
   rows?: number;
   initialCommand?: string;
   launch?: TerminalPtyLaunchSpec;
+  /**
+   * Whether the launched program draws its whole view again, terminal modes included, when told its window changed:
+   * a tmux client does (`repaint`).
+   */
+  repaintable?: boolean;
 }>;
 
 export type TerminalPtySessionManager = Readonly<{
@@ -51,6 +56,8 @@ export type TerminalPtySessionManager = Readonly<{
   resize: (input: Readonly<{ terminalId: string; cols: number; rows: number }>) => SimpleOk | ErrorResult;
   close: (input: Readonly<{ terminalId: string }>) => SimpleOk | ErrorResult;
   restart: (input: TerminalPtyEnsureInput) => EnsureOk | ErrorResult;
+  /** Has the terminal's program draw its view whole again, without a new launch; `cursor` is where that output starts. */
+  repaint: (input: Readonly<{ terminalId: string }>) => Readonly<{ ok: true; cursor: number }> | ErrorResult;
 }>;
 
 function okDisabled(errorCode: DaemonTerminalErrorCode): ErrorResult {
@@ -149,6 +156,7 @@ type PtySession = {
   urlDetector: ReturnType<typeof createTerminalUrlDetector>;
   /** Reads waiting for output; called and cleared when output arrives or the terminal ends or closes. */
   outputWaiters: Set<() => void>;
+  repaintable: boolean;
 };
 
 function wakeOutputWaiters(session: PtySession): void {
@@ -194,8 +202,11 @@ export function createTerminalPtySessionManager(params: Readonly<{
   now?: () => number;
   env?: NodeJS.ProcessEnv;
   platform?: NodeJS.Platform;
+  /** Sends `signal` to the process group led by `pid` (a PTY's launched program leads its own). */
+  signalProcessGroup?: (pid: number, signal: NodeJS.Signals) => void;
 }>): TerminalPtySessionManager {
   const now = params.now ?? (() => Date.now());
+  const signalProcessGroup = params.signalProcessGroup ?? ((pid: number, signal: NodeJS.Signals) => process.kill(-pid, signal));
   const env = params.env ?? process.env;
   const platform = params.platform ?? process.platform;
   const config = params.config;
@@ -333,6 +344,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
       lastActivityAtMs: now(),
       urlDetector,
       outputWaiters: new Set(),
+      repaintable: input.repaintable === true,
     };
 
     session.disposables.push(
@@ -390,6 +402,7 @@ export function createTerminalPtySessionManager(params: Readonly<{
       rows: input.rows,
       initialCommand: input.initialCommand,
       launch: input.launch,
+      repaintable: input.repaintable,
     });
   };
 
@@ -461,6 +474,27 @@ export function createTerminalPtySessionManager(params: Readonly<{
 
   const close = (input: Readonly<{ terminalId: string }>): SimpleOk | ErrorResult => closeById(input.terminalId);
 
+  // The window-change signal goes to the terminal's process group, as the kernel sends it on a real resize: the
+  // launched program and the tmux client it runs both get it, and the client redraws in full (a same-size resize
+  // sends no signal at all). Windows terminals have no process groups.
+  const repaint = (input: Readonly<{ terminalId: string }>): Readonly<{ ok: true; cursor: number }> | ErrorResult => {
+    reapIdle();
+    const session = sessionsById.get(input.terminalId);
+    if (!session || session.ended) return okDisabled('terminal_not_found');
+    const pid = session.pty.pid;
+    if (!session.repaintable || platform === 'win32' || typeof pid !== 'number' || pid <= 0) {
+      return okDisabled('terminal_repaint_unsupported');
+    }
+    session.lastActivityAtMs = now();
+    const cursor = session.buffer.baseCursor + session.buffer.events.length;
+    try {
+      signalProcessGroup(pid, 'SIGWINCH');
+    } catch {
+      return okDisabled('terminal_not_found');
+    }
+    return { ok: true, cursor };
+  };
+
   return {
     ensure,
     restart,
@@ -468,5 +502,6 @@ export function createTerminalPtySessionManager(params: Readonly<{
     input: inputData,
     resize,
     close,
+    repaint,
   };
 }

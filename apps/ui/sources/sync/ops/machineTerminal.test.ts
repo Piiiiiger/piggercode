@@ -75,4 +75,22 @@ describe('machine terminal ops (server-scoped routing)', () => {
             }),
         }));
     });
+
+    it('answers where a repainted screen starts, and fails for a machine too old to know the call', async () => {
+        const { machineTerminalRepaint } = await import('./machineTerminal');
+        machineRpcWithServerScopeMock.mockResolvedValueOnce({ ok: true, cursor: 4321 });
+        await expect(machineTerminalRepaint('machine-1', { terminalId: 't1' })).resolves.toEqual({ ok: true, cursor: 4321 });
+        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
+            machineId: 'machine-1',
+            method: RPC_METHODS.DAEMON_TERMINAL_REPAINT,
+            payload: { terminalId: 't1' },
+        }));
+
+        machineRpcWithServerScopeMock.mockResolvedValueOnce({ ok: false, errorCode: 'terminal_repaint_unsupported', error: 'terminal_repaint_unsupported' });
+        await expect(machineTerminalRepaint('machine-1', { terminalId: 't1' })).resolves.toMatchObject({ ok: false, errorCode: 'terminal_repaint_unsupported' });
+
+        // An older CLI has no such method and answers with an RPC error instead of a terminal result.
+        machineRpcWithServerScopeMock.mockResolvedValueOnce({ error: 'Method not found' });
+        await expect(machineTerminalRepaint('machine-1', { terminalId: 't1' })).rejects.toThrow('daemon.terminal.repaint');
+    });
 });

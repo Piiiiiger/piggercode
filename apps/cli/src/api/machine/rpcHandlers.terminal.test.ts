@@ -12,6 +12,8 @@ import { createTerminalPtySessionManager } from '@/daemon/terminalPty/terminalPt
 import type { PtyProcess, PtyProvider, PtySpawnParams } from '@/integrations/pty/ptyProvider';
 
 class FakePty implements PtyProcess {
+  private static nextPid = 7100;
+  public readonly pid = FakePty.nextPid++;
   write(): void { }
   resize(): void { }
   kill(): void { }
@@ -31,6 +33,70 @@ class FakePtyProvider implements PtyProvider {
 }
 
 describe('registerMachineTerminalRpcHandlers', () => {
+  it('gives each app install its own attach of a session, and redraws a tmux-hosted one in place', async () => {
+    const suiteDir = await mkdtemp(join(tmpdir(), 'happier-terminal-attach-viewer-'));
+    const provider = new FakePtyProvider();
+    const signalled: Array<readonly [number, string]> = [];
+    const sessionManager = createTerminalPtySessionManager({
+      ptyProvider: provider,
+      env: { SHELL: '/bin/bash' } as any,
+      platform: 'linux',
+      now: () => 0,
+      signalProcessGroup: (pid, signal) => signalled.push([pid, signal]),
+      config: {
+        maxSessions: 10,
+        idleTimeoutMs: 60_000,
+        bufferMaxBytes: 1_000_000,
+        bufferMaxEvents: 1000,
+        urlParseBufferLimit: 32_768,
+        maxWriteChunkBytes: 16_384,
+        defaultCols: 80,
+        defaultRows: 24,
+      },
+    });
+    const registered = new Map<string, (params: any) => Promise<any>>();
+    const rpcHandlerManager = {
+      registerHandler: (method: string, handler: (params: any) => Promise<any>) => registered.set(method, handler),
+    } as unknown as RpcHandlerManager;
+    const hosts: Record<string, string> = { 'tmux-session': 'tmux', 'zellij-session': 'zellij' };
+
+    registerMachineTerminalRpcHandlers({
+      rpcHandlerManager,
+      deps: {
+        env: { PIGGERCODE_DAEMON_TERMINAL_ENABLED: '1' },
+        platform: 'linux',
+        workingDirectory: suiteDir,
+        sessionManager,
+        buildHappyCliSubprocessLaunchSpecFn: (args) => ({ runtime: 'binary' as const, filePath: '/opt/piggercode', args }),
+        readTerminalAttachmentInfoFn: async ({ sessionId }) => (hosts[sessionId]
+          ? { version: 1, sessionId, terminal: { mode: hosts[sessionId] }, updatedAt: 0 } as any
+          : null),
+      },
+    });
+    const ensure = registered.get(RPC_METHODS.DAEMON_TERMINAL_ENSURE)!;
+    const repaint = registered.get(RPC_METHODS.DAEMON_TERMINAL_REPAINT)!;
+
+    const phone = await ensure({ launch: { kind: 'session_attach', sessionId: 'tmux-session', viewerId: 'phone' }, cols: 50, rows: 30 });
+    const desktop = await ensure({ launch: { kind: 'session_attach', sessionId: 'tmux-session', viewerId: 'desktop' }, cols: 160, rows: 45 });
+    const phoneAgain = await ensure({ launch: { kind: 'session_attach', sessionId: 'tmux-session', viewerId: 'phone' }, cols: 50, rows: 30 });
+    expect(phone).toEqual(expect.objectContaining({ ok: true, reused: false }));
+    expect(desktop).toEqual(expect.objectContaining({ ok: true, reused: false }));
+    expect(desktop.terminalId).not.toBe(phone.terminalId);
+    expect(phoneAgain).toEqual(expect.objectContaining({ ok: true, reused: true, terminalId: phone.terminalId }));
+    expect(provider.spawned.map((spawn) => spawn.options.cols)).toEqual([50, 160]);
+
+    await expect(repaint({ terminalId: phone.terminalId })).resolves.toEqual({ ok: true, cursor: 0 });
+    expect(signalled).toHaveLength(1);
+    expect(signalled[0]![1]).toBe('SIGWINCH');
+
+    // Another host, or no record of one: the view attaches afresh instead.
+    const zellij = await ensure({ launch: { kind: 'session_attach', sessionId: 'zellij-session', viewerId: 'phone' }, cols: 50, rows: 30 });
+    const unknown = await ensure({ launch: { kind: 'session_attach', sessionId: 'gone-session', viewerId: 'phone' }, cols: 50, rows: 30 });
+    await expect(repaint({ terminalId: zellij.terminalId })).resolves.toMatchObject({ ok: false, errorCode: 'terminal_repaint_unsupported' });
+    await expect(repaint({ terminalId: unknown.terminalId })).resolves.toMatchObject({ ok: false, errorCode: 'terminal_repaint_unsupported' });
+    expect(signalled).toHaveLength(1);
+  });
+
   it('launches a typed PiggerCode CLI intent through the daemon current-runtime resolver', async () => {
     const suiteDir = await mkdtemp(join(tmpdir(), 'happier-terminal-cli-'));
     const provider = new FakePtyProvider();

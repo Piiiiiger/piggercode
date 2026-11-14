@@ -1746,10 +1746,11 @@ Since CLI 0.3.30 `codex` also always gets `--no-alt-screen` (new and reopened): 
 terminal instead of codex 0.167's own alternate screen, so it is the tmux pane's history, scrolled and selected like
 Claude's; `resume` replays it there and a resize rewrites it at the new width. (It came with a Codex terminal that showed
 only its header; that was the view's Ctrl+L, below, which CLI 0.3.31 no longer sends.)
-Since CLI 0.3.26 `claude` also gets `--settings '{"tui":"default"}'`: a running `claude` switches renderer when `tui`
+Since CLI 0.3.26 `claude` also gets its renderer as a `--settings` flag: a running `claude` switches renderer when `tui`
 changes in a settings file, and a session switched out of the fullscreen renderer that way stays blank or cut off until
-`claude` restarts; a flag outranks the settings files. The default renderer because the app draws it correctly, while a
-fullscreen screen is left with stray characters after a view reattaches.
+`claude` restarts; a flag outranks the settings files. CLI 0.3.26–0.3.34 passed `{"tui":"default"}`; since CLI 0.3.35 it
+is `{"tui":"fullscreen"}`: the window takes the size of the device in use (below), and the fullscreen renderer draws its
+screen anew at every size, while the default one reflowed what it had printed into broken, repeated lines.
 Since CLI 0.3.24 both also get the new-session screen's choices, which the runner reads from its session-control flags
 (`--model`, `--permission-mode`, `--agent-mode`) and from the session's config-option overrides
 (`NativeTerminalControls`): `claude --model <id> --permission-mode <mode>`, the mode from
@@ -1790,7 +1791,22 @@ offers 「切到终端」 on a chat that still runs (stop, wait until it ended, 
 starts Claude terminals only and refuses Codex ones ("codex has no terminal sessions").
 The app's view of a terminal is one `piggercode attach` (`terminal/attachment/tmuxAttach.ts`, planned in
 `tmuxSingleWindowAttachPlan.ts`): a temporary tmux session holding just the agent's window, with no status line,
-destroyed with its client. Since CLI 0.3.31 it types nothing into a session its metadata marks a 「终端」 (`nativeTerminal`;
+destroyed with its client. The daemon runs it in a PTY (`daemon.terminal.*`, `api/machine/rpcHandlers.terminal.ts`) keyed
+by the session and, since CLI 0.3.35 and app 0.3.40, by the app install asking (`viewerId` in the `session_attach`
+launch, from `getAppInstallId`): each device is then its own tmux client, and tmux (`window-size latest`) gives the
+window the size of the device that attached, redrew or typed last, drawing it correctly on the others. Before, every
+device read one shared PTY, and each one's size change (or reconnect) resized it under the others; an app without a
+viewer id, or an older CLI, still shares one. A view that lacks the start of an attach's output (a reopened view, whose
+kept output is only the last 64,000 characters; one that fell behind the daemon's buffer, a `gap`; a second pane of
+the same terminal) has the screen drawn again in place (`daemon.terminal.repaint`, `useMachineTerminalSession`): the
+daemon sends the window-change signal to the attach's process group as a real resize would (a same-size resize sends
+none), tmux redraws the whole window and sends its terminal modes again (mouse, bracketed paste, cursor; not the
+alternate screen, which a fresh view does without), and the reading view clears and reads on from the cursor the daemon
+answers (a second pane clears nothing: the redraw reaches it through the kept output). A redraw not answered before the
+connection dropped is asked for again when it is back.
+Only tmux-hosted sessions on macOS and Linux (the session's attachment record says tmux); other hosts, Windows and
+older CLIs answer `terminal_repaint_unsupported` or do not know the call, and the view attaches afresh as before (a new
+`piggercode attach`, about a second of CLI start-up). Since CLI 0.3.31 it types nothing into a session its metadata marks a 「终端」 (`nativeTerminal`;
 `shouldRefreshRemoteControlOnAttach`):
 the Ctrl+L that repaints a daemon chat runner's remote-control banner made Codex 0.167 clear its screen and drop the
 conversation shown, each time the app opened a Codex terminal. Since CLI 0.3.23 it first sets two options on the agent's window: `allow-passthrough on`,
@@ -1820,10 +1836,10 @@ cancels that keydown (xtermjs/xterm.js#5887, open). Both terminals count charact
 (`@xterm/addon-unicode11`), as tmux and the CLIs do: with xterm's default Unicode 6 table an emoji such as ✅ took one
 column where tmux 3.3a gives it two, shifting the rest of its line. Both draw with WebGL (`@xterm/addon-webgl`) and
 fall back to xterm's DOM renderer when WebGL is missing or its context is lost; on an Android phone the DOM renderer let
-rows run past their last column, which was then cut off. All views of a session share its tmux window, whose size
-follows the latest active view: when that width changes (a phone after the desktop), tmux rewraps the old screen and
-Claude Code (2.1.325) prints its banner and input again below it without clearing the old copy; Ctrl+L redraws only
-its input area.
+rows run past their last column, which was then cut off. All views of a session show its one tmux window, whose size
+follows the device in use (above). With Claude Code's default renderer a width change made tmux rewrap the old screen
+and Claude Code (2.1.325) print its banner and input again below it without clearing the old copy (Ctrl+L redrew only
+its input area); the fullscreen renderer (CLI 0.3.35) draws the whole screen at the new size instead.
 PiggerCode's queue, stuck-turn watchdog and subagent limit belong to the chat runtime and do not apply.
 
 **Terminal notifications (since CLI 0.3.27, app 0.3.32).** The runner reports what the CLI shows (working, waiting
