@@ -2,7 +2,8 @@ name: Android app
 
 # Builds the PiggerCode Android APK (arm64-v8a, package dev.piggercode.app), signs it with the release key from the
 # repository secrets and smoke-tests it in an emulator. Run it by hand from the Actions tab or the API. With a release
-# tag it also uploads the signed APK to that GitHub release (created as a prerelease when it does not exist yet).
+# tag, once the smoke test passed, it uploads the signed APK to that GitHub release (created as a prerelease when it
+# does not exist yet) and then the latest.json installed apps update themselves from.
 #
 # Secrets: ANDROID_KEYSTORE_BASE64 (PKCS12 keystore), ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS.
 # Optional: ANDROID_GOOGLE_SERVICES_JSON (the owner's Firebase config for this package id). When present it is
@@ -128,19 +129,6 @@ jobs:
           path: dist/smoke/*.apk
           if-no-files-found: error
 
-      - name: Upload to the release
-        if: inputs.release_tag != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          tag="${{ inputs.release_tag }}"
-          if ! gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-            gh release create "$tag" --repo "${{ github.repository }}" --target "${{ github.sha }}" --prerelease \
-              --title "PiggerCode Android" --notes "PiggerCode Android APK (arm64-v8a), signed with the PiggerCode release key."
-          fi
-          gh release upload "$tag" dist/android/*.apk --clobber --repo "${{ github.repository }}"
-
   smoke:
     name: smoke
     needs: build
@@ -174,3 +162,38 @@ jobs:
           name: piggercode-android-smoke
           path: smoke/*
           if-no-files-found: warn
+
+  publish:
+    name: publish
+    # The release gets a build only once it passed the emulator smoke test: first the APK, then the latest.json
+    # installed apps read to update themselves (apps/ui/sources/updates/android/androidApkUpdater.android.ts).
+    needs: [build, smoke]
+    if: inputs.release_tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: piggercode-android
+          path: apk
+
+      - name: Upload the APK and latest.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ inputs.release_tag }}"
+          repo="${{ github.repository }}"
+          if ! gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+            gh release create "$tag" --repo "$repo" --target "${{ github.sha }}" --prerelease \
+              --title "PiggerCode Android" --notes "PiggerCode Android APK (arm64-v8a), signed with the PiggerCode release key."
+          fi
+          apk=$(ls apk/piggercode-*-android-arm64.apk)
+          name=$(basename "$apk")
+          version=${name#piggercode-}
+          version=${version%-android-arm64.apk}
+          size=$(stat -c %s "$apk")
+          gh release upload "$tag" "$apk" --clobber --repo "$repo"
+          url="https://github.com/${repo}/releases/download/${tag}/${name}"
+          printf '{"version":"%s","url":"%s","size":%s}\n' "$version" "$url" "$size" > latest.json
+          cat latest.json
+          gh release upload "$tag" latest.json --clobber --repo "$repo"

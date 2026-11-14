@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { Linking, Platform } from 'react-native';
 
-import { desktopUpdater } from '@/desktop/updates/desktopUpdater';
-import { useDesktopUpdater } from '@/desktop/updates/useDesktopUpdater';
 import { useUpdates } from '@/hooks/inbox/useUpdates';
 import { useNativeUpdateStatus } from '@/hooks/ui/useNativeUpdate';
 import { t } from '@/text';
-import { isTauriDesktop } from '@/utils/platform/tauri';
 
+import { getAppPackageUpdater, resolveAppPackageUpdates } from './appPackageUpdater';
 import { buildAppUpdateItem, type AppUpdateItemModel } from './items/buildAppUpdateItem';
+import { usePackageUpdater } from './packageUpdater';
 import { useWebUiDeploymentFreshness } from './useWebUiDeploymentFreshness';
 
 export type AppUpdateStatus = Readonly<{
@@ -19,7 +18,7 @@ export type AppUpdateStatus = Readonly<{
     run: () => Promise<void>;
     /** The explicit "Check for updates". */
     checkNow: () => Promise<void>;
-    /** "Skip this version" — the desktop app only; keyed to the offered version. */
+    /** "Skip this version" — the desktop and Android apps; keyed to the offered version. */
     skipVersion: (() => void) | null;
 }>;
 
@@ -32,24 +31,26 @@ export function useAppUpdateStatus(): AppUpdateStatus {
     const nativeUpdateStatus = useNativeUpdateStatus();
     const nativeUpdateUrl = nativeUpdateStatus?.updateUrl ?? null;
     const nativeRequired = nativeUpdateStatus?.required === true;
-    const desktop = useDesktopUpdater();
+    const packageUpdates = resolveAppPackageUpdates();
+    const packageUpdater = getAppPackageUpdater();
+    const packageUpdate = usePackageUpdater(packageUpdater);
     const ota = useUpdates();
     const webUi = useWebUiDeploymentFreshness();
     const otaDownloadProgress = typeof ota.downloadProgress === 'number' ? ota.downloadProgress : null;
 
     const model = React.useMemo(() => buildAppUpdateItem({
         platformOs: Platform.OS,
-        desktopHost: isTauriDesktop(),
+        packageUpdates,
         title: t('updates.thisAppTitle'),
         native: { updateUrl: nativeUpdateUrl, required: nativeRequired },
         webUiUpdateAvailable: webUi.updateAvailable,
-        desktop,
+        packageUpdate,
         ota: {
             isDownloading: ota.isDownloading === true,
             downloadProgress: otaDownloadProgress,
             isUpdatePending: ota.isUpdatePending === true,
         },
-    }), [desktop, nativeRequired, nativeUpdateUrl, ota.isDownloading, ota.isUpdatePending, otaDownloadProgress, webUi.updateAvailable]);
+    }), [nativeRequired, nativeUpdateUrl, ota.isDownloading, ota.isUpdatePending, otaDownloadProgress, packageUpdate, packageUpdates, webUi.updateAvailable]);
 
     const reloadOta = ota.reloadApp;
     const checkOta = ota.checkForUpdates;
@@ -69,25 +70,25 @@ export function useAppUpdateStatus(): AppUpdateStatus {
             case 'ota':
                 await reloadOta();
                 return;
-            case 'desktop':
-                if (item.action.verb === 'restart') return desktopUpdater.install();
-                if (item.action.verb === 'retry') return desktopUpdater.retry();
-                return desktopUpdater.download();
+            case 'package':
+                if (item.action.verb === 'restart' || item.action.verb === 'install') return packageUpdater.install();
+                if (item.action.verb === 'retry') return packageUpdater.retry();
+                return packageUpdater.download();
             case 'none':
                 return;
         }
-    }, [model, nativeUpdateUrl, reloadOta, reloadWeb]);
+    }, [model, nativeUpdateUrl, packageUpdater, reloadOta, reloadWeb]);
 
     const checkNow = React.useCallback(async () => {
-        await Promise.all([desktopUpdater.check({ force: true }), checkOta()]);
-    }, [checkOta]);
+        await Promise.all([packageUpdater.check({ force: true }), checkOta()]);
+    }, [checkOta, packageUpdater]);
 
-    const skippable = model.channel === 'desktop' && model.item.state === 'available' && !model.item.skipped;
+    const skippable = model.channel === 'package' && model.item.state === 'available' && !model.item.skipped;
     return React.useMemo(() => ({
         model,
-        checkedAt: desktop.checkedAt,
+        checkedAt: packageUpdate.checkedAt,
         run,
         checkNow,
-        skipVersion: skippable ? desktopUpdater.skipVersion : null,
-    }), [checkNow, desktop.checkedAt, model, run, skippable]);
+        skipVersion: skippable ? packageUpdater.skipVersion : null,
+    }), [checkNow, model, packageUpdate.checkedAt, packageUpdater, run, skippable]);
 }

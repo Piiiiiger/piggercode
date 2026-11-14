@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { UpdatesContent } from '@/components/updates/UpdatesContent';
 import { UpdatesPopoverButton } from '@/components/updates/UpdatesPopoverButton';
 import { Text } from '@/components/ui/text/Text';
-import type { DesktopUpdaterSnapshot } from '@/desktop/updates/desktopUpdater';
+import type { PackageUpdaterSnapshot } from '@/updates/packageUpdater';
 import { buildAppUpdateItem } from '@/updates/items/buildAppUpdateItem';
 import {
     buildAgentCliUpdateItem,
@@ -26,8 +26,8 @@ type DemoState = 'available' | 'downloading' | 'ready' | 'failed';
 
 const IDLE = { running: false, step: null, errorMessage: null } as const;
 
-function desktopSnapshot(state: DemoState): DesktopUpdaterSnapshot {
-    const base: DesktopUpdaterSnapshot = {
+function desktopSnapshot(state: DemoState): PackageUpdaterSnapshot {
+    const base: PackageUpdaterSnapshot = {
         phase: 'available',
         version: '0.2.14',
         currentVersion: '0.2.13',
@@ -46,11 +46,11 @@ function desktopSnapshot(state: DemoState): DesktopUpdaterSnapshot {
 function buildDemoGroups(state: DemoState): UpdatesGroup[] {
     const app = buildAppUpdateItem({
         platformOs: 'web',
-        desktopHost: true,
+        packageUpdates: 'desktop',
         title: 'Happier',
         native: { updateUrl: null, required: false },
         webUiUpdateAvailable: false,
-        desktop: desktopSnapshot(state),
+        packageUpdate: desktopSnapshot(state),
         ota: { isDownloading: false, downloadProgress: null, isUpdatePending: false },
     }).item;
     const thisCli = buildThisComputerCliUpdateItem({

@@ -9367,6 +9367,7 @@ settingsSession: {
       update: "更新",
       updateAll: "全部更新",
       restart: "重启以更新",
+      install: "安装更新",
       reload: "重新加载",
       storeIos: "在 App Store 中更新",
       storeAndroid: "在 Google Play 中更新",

@@ -27,7 +27,7 @@ function appItem(overrides: Partial<UpdateItem>): UpdateItem {
 async function renderRow(item: UpdateItem) {
     const run = vi.fn(async () => {});
     const checkNow = vi.fn(async () => {});
-    const screen = await renderScreen(<CheckForUpdatesItem status={{ model: { channel: 'desktop', item }, run, checkNow }} />);
+    const screen = await renderScreen(<CheckForUpdatesItem status={{ model: { channel: 'package', item }, run, checkNow }} />);
     const row = screen.findByTestId('settings-check-updates-row');
     if (!row) throw new Error('the Check for updates row did not render');
     return { row, run, checkNow };

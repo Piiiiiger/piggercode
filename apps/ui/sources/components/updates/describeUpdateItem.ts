@@ -91,6 +91,8 @@ function describeActionLabel(item: UpdateItem): string | null {
             return t('common.retry');
         case 'restart':
             return t('updates.action.restart');
+        case 'install':
+            return t('updates.action.install');
         case 'reload':
             return t('updates.action.reload');
         case 'store':

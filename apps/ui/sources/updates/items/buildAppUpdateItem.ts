@@ -1,17 +1,19 @@
-import type { DesktopUpdaterSnapshot } from '@/desktop/updates/desktopUpdater';
+import type { AppPackageUpdates } from '@/updates/appPackageUpdater';
+import type { PackageUpdaterSnapshot } from '@/updates/packageUpdater';
 
 import { buildUpdateItemId, type UpdateItem } from './updateItem';
 
 /** Which owner the "This app" row speaks for, and so which one its action runs. */
-export type AppUpdateChannel = 'desktop' | 'native-store' | 'web-ui' | 'ota' | 'none';
+export type AppUpdateChannel = 'package' | 'native-store' | 'web-ui' | 'ota' | 'none';
 
 export type AppUpdateFacts = Readonly<{
     platformOs: string;
-    desktopHost: boolean;
+    /** The package update this app has (`updates/appPackageUpdater.ts`). */
+    packageUpdates: AppPackageUpdates;
     title: string;
     native: Readonly<{ updateUrl: string | null; required: boolean }>;
     webUiUpdateAvailable: boolean;
-    desktop: DesktopUpdaterSnapshot;
+    packageUpdate: PackageUpdaterSnapshot;
     ota: Readonly<{ isDownloading: boolean; downloadProgress: number | null; isUpdatePending: boolean }>;
 }>;
 
@@ -37,23 +39,28 @@ function wholePercent(fraction: number | null): number | null {
     return Math.max(0, Math.min(100, Math.floor(fraction * 100)));
 }
 
-function buildDesktopItem(base: UpdateItem, desktop: DesktopUpdaterSnapshot): UpdateItem {
-    const versions = { currentVersion: desktop.currentVersion, latestVersion: desktop.version, skipped: desktop.skipped };
-    switch (desktop.phase) {
+/**
+ * The desktop app installs its downloaded update by restarting; the Android app hands the APK to Android's
+ * installer.
+ */
+function buildPackageItem(base: UpdateItem, update: PackageUpdaterSnapshot, packageUpdates: AppPackageUpdates): UpdateItem {
+    const versions = { currentVersion: update.currentVersion, latestVersion: update.version, skipped: update.skipped };
+    const viaInstaller = packageUpdates === 'android';
+    switch (update.phase) {
         case 'checking':
             return { ...base, state: 'checking' };
         case 'upToDate':
-            return { ...base, currentVersion: desktop.currentVersion, state: 'upToDate' };
+            return { ...base, currentVersion: update.currentVersion, state: 'upToDate' };
         case 'available':
             return { ...base, ...versions, state: 'available', action: { kind: 'run', verb: 'update' } };
         case 'downloading':
-            return { ...base, ...versions, state: 'running', step: 'downloading', progressPercent: desktop.downloadPercent };
+            return { ...base, ...versions, state: 'running', step: 'downloading', progressPercent: update.downloadPercent };
         case 'ready':
-            return { ...base, ...versions, state: 'ready', action: { kind: 'run', verb: 'restart' } };
+            return { ...base, ...versions, state: 'ready', action: { kind: 'run', verb: viaInstaller ? 'install' : 'restart' } };
         case 'installing':
-            return { ...base, ...versions, state: 'running', step: 'restarting' };
+            return { ...base, ...versions, state: 'running', step: viaInstaller ? 'installing' : 'restarting' };
         case 'failed':
-            if (desktop.failure === 'check') {
+            if (update.failure === 'check') {
                 // No answer yet is not "up to date": the row says it could not check, with Retry.
                 return { ...base, ...versions, state: 'unknown', failure: { kind: 'appCheck' }, action: { kind: 'run', verb: 'retry' } };
             }
@@ -61,7 +68,7 @@ function buildDesktopItem(base: UpdateItem, desktop: DesktopUpdaterSnapshot): Up
                 ...base,
                 ...versions,
                 state: 'failed',
-                failure: desktop.failure === 'install' ? { kind: 'appInstall' } : { kind: 'appDownload' },
+                failure: update.failure === 'install' ? { kind: 'appInstall' } : { kind: 'appDownload' },
                 action: { kind: 'run', verb: 'retry' },
             };
         case 'idle':
@@ -71,8 +78,9 @@ function buildDesktopItem(base: UpdateItem, desktop: DesktopUpdaterSnapshot): Up
 
 /**
  * The "This app" row (R13 (e)): one classification over the app's update owners, in the order they
- * can apply — a required store update, a store update, a newer web build, the desktop updater, an
- * OTA bundle. Release notes are not updates and are not an input.
+ * can apply — a required store update, a store update, a newer web build, the package updater, an
+ * OTA bundle. Release notes are not updates and are not an input. "The package updater" is the desktop
+ * app's or the Android app's own (`packageUpdates`).
  */
 export function buildAppUpdateItem(facts: AppUpdateFacts): AppUpdateItemModel {
     const base: UpdateItem = { ...BASE, title: facts.title };
@@ -89,8 +97,8 @@ export function buildAppUpdateItem(facts: AppUpdateFacts): AppUpdateItemModel {
     if (facts.platformOs === 'web' && facts.webUiUpdateAvailable) {
         return { channel: 'web-ui', item: { ...base, state: 'available', action: { kind: 'run', verb: 'reload' } } };
     }
-    if (facts.desktopHost || facts.desktop.phase !== 'idle') {
-        return { channel: 'desktop', item: buildDesktopItem(base, facts.desktop) };
+    if (facts.packageUpdates !== null || facts.packageUpdate.phase !== 'idle') {
+        return { channel: 'package', item: buildPackageItem(base, facts.packageUpdate, facts.packageUpdates) };
     }
     if (facts.ota.isDownloading) {
         return {

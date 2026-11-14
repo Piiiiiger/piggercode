@@ -3,8 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { flushHookEffects, renderHook, standardCleanup } from '@/dev/testkit';
 
-import { createDesktopUpdaterStore, type DesktopUpdaterStore } from './desktopUpdater';
-import { useDesktopUpdater } from './useDesktopUpdater';
+import { usePackageUpdater, type PackageUpdaterStore } from '@/updates/packageUpdater';
+
+import { createDesktopUpdaterStore } from './desktopUpdater';
 
 type TauriInvoke = (command: string, args?: Record<string, unknown>) => unknown | Promise<unknown>;
 type EventHandler = (event: { payload: unknown }) => void;
@@ -83,7 +84,7 @@ async function settle() {
 }
 
 describe('desktop app updater (one owner for every surface)', () => {
-    let store: DesktopUpdaterStore;
+    let store: PackageUpdaterStore;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -104,7 +105,7 @@ describe('desktop app updater (one owner for every surface)', () => {
     it('stays idle outside Tauri and in a source development bundle', async () => {
         installDesktop(null);
         store = createDesktopUpdaterStore();
-        const web = await renderHook(() => useDesktopUpdater(store));
+        const web = await renderHook(() => usePackageUpdater(store));
         expect(web.getCurrent()?.phase).toBe('idle');
 
         delete process.env[UPDATE_CHECKS_ENV];
@@ -112,7 +113,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         const invoke = vi.fn(async () => offer('9.9.9'));
         installDesktop(invoke);
         store = createDesktopUpdaterStore();
-        const dev = await renderHook(() => useDesktopUpdater(store));
+        const dev = await renderHook(() => usePackageUpdater(store));
         await settle();
         expect(invoke).not.toHaveBeenCalled();
         expect(dev.getCurrent()?.phase).toBe('idle');
@@ -123,7 +124,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         installDesktop(invoke);
         (globals.window as Record<string, unknown>).location = { href: 'tauri://localhost/desktop/pet-overlay' };
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
         expect(invoke).not.toHaveBeenCalled();
         expect(hook.getCurrent()?.phase).toBe('idle');
@@ -137,8 +138,8 @@ describe('desktop app updater (one owner for every surface)', () => {
         installDesktop(invoke);
         store = createDesktopUpdaterStore();
 
-        const pill = await renderHook(() => useDesktopUpdater(store));
-        const settingsRow = await renderHook(() => useDesktopUpdater(store));
+        const pill = await renderHook(() => usePackageUpdater(store));
+        const settingsRow = await renderHook(() => usePackageUpdater(store));
         await settle();
 
         expect(invoke.mock.calls.filter(([command]) => command === 'desktop_fetch_update')).toHaveLength(1);
@@ -165,7 +166,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         });
         const harness = installDesktop(invoke);
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
 
         await act(async () => { await store.download(); });
@@ -190,7 +191,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         });
         installDesktop(invoke);
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
 
         await act(async () => { await store.download(); });
@@ -210,7 +211,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         });
         const harness = installDesktop(invoke);
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
         expect(hook.getCurrent()).toMatchObject({ phase: 'failed', failure: 'check' });
         const checks = () => invoke.mock.calls.length;
@@ -243,7 +244,7 @@ describe('desktop app updater (one owner for every surface)', () => {
         const invoke = vi.fn(async () => offer(version));
         const harness = installDesktop(invoke);
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
 
         act(() => store.skipVersion());
@@ -258,7 +259,7 @@ describe('desktop app updater (one owner for every surface)', () => {
     it('resumes at ready when the offered version was already downloaded', async () => {
         installDesktop(vi.fn(async () => offer('1.2.0', { downloaded: true })));
         store = createDesktopUpdaterStore();
-        const hook = await renderHook(() => useDesktopUpdater(store));
+        const hook = await renderHook(() => usePackageUpdater(store));
         await settle();
         expect(hook.getCurrent()?.phase).toBe('ready');
     });

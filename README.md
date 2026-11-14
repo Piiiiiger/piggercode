@@ -50,6 +50,7 @@ yarn workspace @piggercode/cli build
 
 - CLI：`node scripts/pipeline/release/build-cli-binaries.mjs --version <版本> --targets linux-x64,darwin-arm64,darwin-x64,windows-x64` 在 `dist/release-assets/cli` 里生成各平台的压缩包和 `checksums-happier-v<版本>.txt`。用发布密钥给校验和文件签名（`minisign -S`，或者构建时设 `MINISIGN_SECRET_KEY`），再把它们传到 `cli-stable` 发布里。CLI 的自动更新和桌面版的「接入这台电脑」都从这里下载，并用 `packages/release-runtime/src/minisign.ts` 里的公钥校验签名。
 - 桌面版：在 Actions 里手动运行 `Desktop app`（`.github/workflows/desktop.yml`），填上发布的 tag，就会构建 macOS（Apple 芯片、Intel）、Windows、Linux 安装包并上传。安装包没有付费签名：macOS 第一次打开要在「隐私与安全性」里点「仍要打开」，Windows 会提示一次 SmartScreen。应用内更新读取这个发布里的 `latest.json`：构建完成后，用发布密钥给 Linux 的 AppImage 和 macOS 的 `.app.tar.gz` 签名（minisign 签名再做 base64），把签名和下载地址写进 `latest.json` 再上传。公钥就是 `tauri.conf.json` 里的 `updater.pubkey`。
+- 安卓版：在 Actions 里手动运行 `Android app`（`.github/workflows/android.yml`），`release_tag` 填 `ui-android-stable`，就会构建用发布密钥签名的 arm64 APK；模拟器冒烟测试通过后才把 APK 上传到这个发布，接着写入 `latest.json`（版本号、下载地址、大小）。装好的应用在启动时、回到前台时（距上次检查满一天）和「设置 › 关于 › 检查更新」时读取它，有新版就把 APK 下载到应用缓存，再交给安卓的安装界面原地更新（同一个包名和签名、更高的 versionCode，数据保留）。安卓不允许商店以外的应用静默安装：要在安装界面点一下确认，第一次还要允许 PiggerCode「安装未知应用」。
 
 测试和类型检查：
 

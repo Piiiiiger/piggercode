@@ -343,6 +343,9 @@ const baseExpoConfig = {
                 "android.permission.MODIFY_AUDIO_SETTINGS",
                 "android.permission.ACCESS_NETWORK_STATE",
                 "android.permission.POST_NOTIFICATIONS",
+                // The app updates itself from the APK on its release: it hands the download to Android's installer
+                // (sources/updates/android/androidApkUpdater.android.ts).
+                "android.permission.REQUEST_INSTALL_PACKAGES",
             ],
             blockedPermissions: [
                 "android.permission.ACTIVITY_RECOGNITION"

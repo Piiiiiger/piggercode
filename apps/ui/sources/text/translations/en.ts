@@ -9187,6 +9187,7 @@ settingsSession: {
             update: 'Update',
             updateAll: 'Update all',
             restart: 'Restart to update',
+            install: 'Install update',
             reload: 'Reload',
             storeIos: 'Update in App Store',
             storeAndroid: 'Update in Google Play',

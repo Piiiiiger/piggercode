@@ -37,7 +37,7 @@ export type UpdateItemState =
     | 'offline';
 
 /** What the row's action button does. `none` rows have no button. */
-export type UpdateItemActionKind = 'update' | 'retry' | 'restart' | 'reload' | 'store';
+export type UpdateItemActionKind = 'update' | 'retry' | 'restart' | 'install' | 'reload' | 'store';
 
 export type UpdateItemAction =
     | Readonly<{ kind: 'none' }>
