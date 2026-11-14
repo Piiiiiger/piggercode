@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
@@ -10,6 +11,8 @@ import { t } from '@/text';
 import { getFileLanguageFromPath } from '@/utils/code/fileLanguage';
 import { isHoverCapablePrimaryPointer } from '@/utils/platform/webMobileHeuristics';
 
+import type { SessionListRowPresentationSettings } from '../row/sessionListRowModelTypes';
+import { resolveSessionRowAttentionIndicatorColor } from '../row/sessionRowAttentionColors';
 import {
     SESSION_EXPLORER_CHEVRON_GAP,
     SESSION_EXPLORER_CHEVRON_SLOT,
@@ -20,6 +23,7 @@ import {
     SessionExplorerFolderMenu,
     type SessionExplorerFolderActions,
 } from './SessionExplorerFolderMenu';
+import { useExplorerFolderWorking } from './useExplorerFolderWorking';
 
 type ExplorerHeader = Extract<SessionListViewItem, { type: 'header' }>;
 export type SessionExplorerNodeKind = NonNullable<ExplorerHeader['explorerNodeKind']>;
@@ -128,6 +132,9 @@ const stylesheet = StyleSheet.create((theme) => ({
     },
 }));
 
+/** The working mark's size on a session row (`SessionRowAttentionIndicator`), so a folder's reads the same. */
+const WORKING_SPINNER_SIZE = 16;
+
 function folderIcon(kind: SessionExplorerNodeKind, expanded: boolean): IconName {
     if (kind === 'machine') return 'desktop';
     if (kind === 'other') return 'stack';
@@ -141,6 +148,12 @@ export type SessionExplorerFolderRowProps = Readonly<{
     expanded: boolean;
     sessionCount: number;
     activeSessionCount: number;
+    /** The ids of the sessions below the folder, one per line (`explorerSessionIds`). */
+    sessionIds?: string;
+    /** The list is in use: while it is not, the row keeps what it showed. */
+    dataActive?: boolean;
+    /** How a session row shows background work (the list's setting), so the folder reads its sessions the same way. */
+    backgroundWorkAttentionMode?: SessionListRowPresentationSettings['backgroundWorkAttentionMode'];
     onToggle: () => void;
     /** Starts a session in this folder; null where no session can start (a machine row). */
     onCreateSession: (() => void) | null;
@@ -155,7 +168,8 @@ export type SessionExplorerFolderRowProps = Readonly<{
 
 /**
  * One folder of the session explorer, VS Code style: chevron, folder, name, then how many sessions
- * sit below it and a dot while one runs. Pressing the row opens or closes it; + starts a session
+ * sit below it, with a dot while one is open, or the working spinner while one runs a turn (so a
+ * closed folder still shows it). Pressing the row opens or closes it; + starts a session
  * in the folder; ⋯, a right-click or a long press opens the folder's menu. On a pointer that hovers,
  * + and ⋯ show on hover, focus, open folders and while the menu is open; elsewhere always. The menu
  * itself mounts only while open.
@@ -174,6 +188,9 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
     const iconColor = theme.colors.text.secondary;
     const showCreate = !hoverReveal || hovered || focused || props.expanded || menuAnchor !== null;
     const hasMenu = hasSessionExplorerFolderActions(props.folderActions);
+    const listActive = props.dataActive !== false;
+    // A session below runs a turn: the row shows the working spinner its session rows show, open or closed.
+    const working = useExplorerFolderWorking(props.sessionIds, listActive, props.backgroundWorkAttentionMode);
     const closeMenu = React.useCallback(() => setMenuAnchor(null), []);
     // Web only: a right-click opens the folder's menu instead of the browser's.
     const rowContextMenuProps = isWeb && hasMenu ? {
@@ -183,13 +200,14 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
             setMenuAnchor('row');
         },
     } : {};
-    const a11yLabel = props.kind === 'machine'
+    const baseA11yLabel = props.kind === 'machine'
         ? t('sessionsList.explorerMachineA11y', { name: props.title, count: props.sessionCount })
         : props.missing === true
             ? t('sessionsList.explorerMissingFolderA11y', { name: props.title, count: props.sessionCount })
         : props.sharedFrom !== undefined
             ? t('sessionsList.explorerSharedFolderA11y', { name: props.title, computer: props.sharedFrom, count: props.sessionCount })
             : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
+    const a11yLabel = working ? t('sessionsList.explorerFolderWorkingA11y', { label: baseA11yLabel }) : baseA11yLabel;
 
     // The toggle and + are sibling buttons: a button inside another is merged into it by screen readers.
     return (
@@ -245,7 +263,16 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                 ) : null}
                 {props.sessionCount > 0 ? (
                     <View style={styles.meta}>
-                        {props.activeSessionCount > 0 ? <View style={styles.liveDot} /> : null}
+                        {working ? (
+                            <ActivitySpinner
+                                testID={props.testID ? `${props.testID}:working` : undefined}
+                                size={WORKING_SPINNER_SIZE}
+                                color={resolveSessionRowAttentionIndicatorColor({ indicator: 'working', theme, workingSpinnerTone: 'neutral' })}
+                                animationEnabled={listActive}
+                            />
+                        ) : props.activeSessionCount > 0 ? (
+                            <View testID={props.testID ? `${props.testID}:live` : undefined} style={styles.liveDot} />
+                        ) : null}
                         <Text testID={props.testID ? `${props.testID}:count` : undefined} style={styles.count}>
                             {props.sessionCount}
                         </Text>

@@ -2176,6 +2176,9 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         expanded={item.explorerExpanded === true}
                         sessionCount={item.sessionCount ?? 0}
                         activeSessionCount={item.activeSessionCount ?? 0}
+                        sessionIds={item.explorerSessionIds}
+                        dataActive={surfaceOwnership.dataActive}
+                        backgroundWorkAttentionMode={rowPresentationSettings.backgroundWorkAttentionMode}
                         onToggle={() => handleToggleExplorerFolder(item)}
                         onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
                         folderActions={explorerFolderActionsFor(item)}
@@ -2323,6 +2326,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         folderActionsEnabled,
         folderViewEnabled,
         dropOverlayShared,
+        surfaceOwnership.dataActive,
+        rowPresentationSettings.backgroundWorkAttentionMode,
         handleAddFolderToProject,
         handleAddSessionSubfolder,
         handleCreateSessionFromProject,

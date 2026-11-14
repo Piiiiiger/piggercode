@@ -114,7 +114,7 @@ type Node = {
     sessions: Row[];
 };
 
-type Summary = Readonly<{ sessionCount: number; activeSessionCount: number; newest: Row | null }>;
+type Summary = Readonly<{ sessionCount: number; activeSessionCount: number; newest: Row | null; sessionIds: readonly string[] }>;
 
 const HOME = '~';
 const ROOT = '/';
@@ -307,7 +307,9 @@ function summarize(node: Node, summaries: Map<Node, Summary>): Summary {
     let sessionCount = node.sessions.length;
     let activeSessionCount = 0;
     let newest: Row | null = null;
+    const sessionIds: string[] = [];
     for (const row of node.sessions) {
+        sessionIds.push(row.session.id);
         if (row.session.active) activeSessionCount += 1;
         if (!newest || row.session.createdAt > newest.session.createdAt) newest = row;
     }
@@ -315,14 +317,15 @@ function summarize(node: Node, summaries: Map<Node, Summary>): Summary {
         const summary = summarize(child, summaries);
         sessionCount += summary.sessionCount;
         activeSessionCount += summary.activeSessionCount;
+        sessionIds.push(...summary.sessionIds);
         if (summary.newest && (!newest || summary.newest.session.createdAt > newest.session.createdAt)) newest = summary.newest;
     }
-    const summary = { sessionCount, activeSessionCount, newest };
+    const summary = { sessionCount, activeSessionCount, newest, sessionIds };
     summaries.set(node, summary);
     return summary;
 }
 
-const EMPTY_SUMMARY: Summary = { sessionCount: 0, activeSessionCount: 0, newest: null };
+const EMPTY_SUMMARY: Summary = { sessionCount: 0, activeSessionCount: 0, newest: null, sessionIds: [] };
 
 function sameScopeHint(a: Header['workspaceScopeHint'], b: Header['workspaceScopeHint']): boolean {
     if (!a || !b) return a === b;
@@ -531,6 +534,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             depth,
             sessionCount: summary.sessionCount,
             activeSessionCount: summary.activeSessionCount,
+            explorerSessionIds: [...summary.sessionIds].sort().join('\n'),
             seedSessionId: summary.newest?.session.id ?? null,
             workspaceScopeHint: node.path === null
                 ? null

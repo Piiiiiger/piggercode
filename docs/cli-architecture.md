@@ -1894,7 +1894,13 @@ the five sessions used last, running ones and ones waiting for the user first, t
 ones count too. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
 drop or bulk selection: a click opens the session), it does not scroll with the list, folds with its header (collapse
 key `recent`), and shows only in the explorer's Sessions view, not while searching (the List layout keeps its own
-attention and working bands).
+attention and working bands). Since app 0.3.42 an explorer folder row shows the row's working spinner in place of its
+open-session dot while a session below it runs a turn, open or closed (`explorerSessionIds` on the folder header;
+`useExplorerFolderWorking` reads each session's row attention state through the rows' own
+`deriveSessionListRowAttentionState`, so the folder spins exactly when a row below shows its working spinner and not
+for a request waiting on the user; one look per store change, clock tick and background-work setting serves every
+folder), and its accessibility label says so. Like session rows in a list of ordinary size, a folder spinner in the
+render buffer just out of view keeps turning; a hidden window, an inactive list and reduced motion stop it.
 The runner stops its session the way the app's stop does (`killSession` termination) once, for the account's
 `sessionIdleStopAfterMinutes` (default 180, `null` never; Settings › Session › Runtime), the CLI has shown its input box
 with nothing running, no prompt and no background work (`quietSince`: armed only by an observed idle state, and

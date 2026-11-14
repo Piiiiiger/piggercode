@@ -117,6 +117,8 @@ describe('buildSessionExplorerItems', () => {
         expect(code.treeParentKey).toBe(home.treeKey);
         expect([home.sessionCount, home.activeSessionCount, home.seedSessionId]).toEqual([3, 1, 'c']);
         expect([code.sessionCount, code.activeSessionCount]).toEqual([2, 1]);
+        // Which sessions sit below each folder, so its row can tell when one of them runs a turn.
+        expect([home.explorerSessionIds, code.explorerSessionIds]).toEqual(['a\nb\nc', 'a\nc']);
         expect(code.workspaceScopeHint).toEqual({ serverId: 's1', machineId: 'm1', rootPath: '/home/u/code' });
     });
 

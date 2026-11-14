@@ -280,6 +280,46 @@ function resolveRowSubtitle(input: Readonly<{
     };
 }
 
+/**
+ * What a session's list row shows about its work (working, waiting on a request, failed, unread, …): the row and an
+ * explorer folder (which shows when a session below it works) both read it here, so they never disagree.
+ */
+export function deriveSessionListRowAttentionState(input: Readonly<{
+    session: SessionStatusSource;
+    state?: Partial<SessionListRowStateSnapshot>;
+    /** `getSessionStatus(session, nowMs).state` */
+    sessionState: ReturnType<typeof getSessionStatus>['state'];
+    backgroundWorkAttentionMode: SessionListRowPresentationSettings['backgroundWorkAttentionMode'];
+}>): ReturnType<typeof deriveSessionListAttentionState> {
+    const { session } = input;
+    const state = input.state ?? {};
+    return deriveSessionListAttentionState({
+        hasUnreadMessages: resolveHasUnreadMessages(state, session),
+        pendingCount: readPendingCount(state, session),
+        pendingBlockedCount: readPendingBlockedCount(state, session),
+        sessionState: input.sessionState,
+        backgroundWorkAttentionMode: input.backgroundWorkAttentionMode,
+        runtimeActivityState: session.runtimeActivityState,
+        runtimeActivityActiveCount: session.runtimeActivityActiveCount,
+        latestTurnStatus: session.latestTurnStatus ?? null,
+        latestTurnStatusObservedAt: normalizeFiniteTimestamp(session.latestTurnStatusObservedAt),
+        lastRuntimeIssue: session.lastRuntimeIssue ?? null,
+        seq: normalizeFiniteTimestamp(session.seq),
+        meaningfulActivityAt: resolveMeaningfulActivityAt(state, session),
+        latestReadyEventSeq:
+            state.messages?.latestReadyEventSeq
+            ?? (session as Session).latestReadyEventSeq
+            ?? (session as SessionListRenderableSession).latestReadyEventSeq
+            ?? null,
+        latestReadyEventAt:
+            state.messages?.latestReadyEventAt
+            ?? (session as Session).latestReadyEventAt
+            ?? (session as SessionListRenderableSession).latestReadyEventAt
+            ?? null,
+        lastViewedSessionSeq: resolveLastViewedSessionSeq(session) ?? null,
+    });
+}
+
 export function buildSessionListRowModel(input: BuildSessionListRowModelInput): SessionListRowModel {
     const { item, settings } = input;
     const sessionId = String(item.session.id);
@@ -305,30 +345,11 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
     const pendingCount = readPendingCount(input.state ?? {}, resolvedSession);
     const pendingBlockedCount = readPendingBlockedCount(input.state ?? {}, resolvedSession);
     const hasUnreadMessages = resolveHasUnreadMessages(input.state ?? {}, resolvedSession);
-    const attentionState = deriveSessionListAttentionState({
-        hasUnreadMessages,
-        pendingCount,
-        pendingBlockedCount,
+    const attentionState = deriveSessionListRowAttentionState({
+        session: resolvedSession,
+        state: input.state,
         sessionState: status.state,
         backgroundWorkAttentionMode: settings.backgroundWorkAttentionMode,
-        runtimeActivityState: resolvedSession.runtimeActivityState,
-        runtimeActivityActiveCount: resolvedSession.runtimeActivityActiveCount,
-        latestTurnStatus: resolvedSession.latestTurnStatus ?? null,
-        latestTurnStatusObservedAt: normalizeFiniteTimestamp(resolvedSession.latestTurnStatusObservedAt),
-        lastRuntimeIssue: resolvedSession.lastRuntimeIssue ?? null,
-        seq: normalizeFiniteTimestamp(resolvedSession.seq),
-        meaningfulActivityAt: resolveMeaningfulActivityAt(input.state ?? {}, resolvedSession),
-        latestReadyEventSeq:
-            input.state?.messages?.latestReadyEventSeq
-            ?? (resolvedSession as Session).latestReadyEventSeq
-            ?? (resolvedSession as SessionListRenderableSession).latestReadyEventSeq
-            ?? null,
-        latestReadyEventAt:
-            input.state?.messages?.latestReadyEventAt
-            ?? (resolvedSession as Session).latestReadyEventAt
-            ?? (resolvedSession as SessionListRenderableSession).latestReadyEventAt
-            ?? null,
-        lastViewedSessionSeq: resolveLastViewedSessionSeq(resolvedSession) ?? null,
     });
     const derivedRowAttentionState = resolveSessionRowAttentionState(attentionState);
     // Retained working placement holds the session in the working group while

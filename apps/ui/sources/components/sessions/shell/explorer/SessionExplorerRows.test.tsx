@@ -3,6 +3,9 @@ import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderScreen, standardCleanup } from '@/dev/testkit';
+import { storage } from '@/sync/domains/state/storageStore';
+
+import { recentTestSession } from '../recent/recentSessions.testkit';
 
 vi.mock('@/text', async () => {
     const { installTextModuleMock } = await import('@/dev/testkit/mocks/text');
@@ -44,6 +47,7 @@ vi.mock('@/components/ui/forms/dropdown/DropdownMenu', () => ({
 afterEach(() => {
     menuState.current = null;
     standardCleanup();
+    storage.setState({ sessionListRenderables: {} } as never);
 });
 
 describe('SessionExplorerFolderRow', () => {
@@ -72,6 +76,81 @@ describe('SessionExplorerFolderRow', () => {
         expect(onCreateSession).toHaveBeenCalledTimes(1);
         expect(onToggle).toHaveBeenCalledTimes(1);
         expect(screen.findByTestId('folder:count')).not.toBeNull();
+    });
+
+    it('shows the working spinner instead of its dot while a session below it runs a turn, and says so', async () => {
+        const { SessionExplorerFolderRow } = await import('./SessionExplorerRows');
+        const now = Date.now();
+        const idle = recentTestSession('idle', now);
+        const busy = recentTestSession('busy', now);
+        storage.setState({ sessionListRenderables: { idle, busy } } as never);
+        const screen = await renderScreen(
+            <SessionExplorerFolderRow
+                testID="folder"
+                title="buff"
+                depth={1}
+                kind="folder"
+                expanded={false}
+                sessionCount={2}
+                activeSessionCount={2}
+                sessionIds={'busy\nidle'}
+                dataActive
+                onToggle={vi.fn()}
+                onCreateSession={null}
+            />,
+        );
+        const shows = () => ({
+            working: screen.findByTestId('folder:working') !== null,
+            live: screen.findByTestId('folder:live') !== null,
+            label: screen.findByTestId('folder')?.props.accessibilityLabel,
+        });
+        expect(shows()).toEqual({ working: false, live: true, label: 'sessionsList.explorerFolderA11y' });
+
+        await act(async () => {
+            storage.setState({
+                sessionListRenderables: { idle, busy: { ...busy, latestTurnStatus: 'in_progress', latestTurnStatusObservedAt: Date.now() } },
+            } as never);
+        });
+        expect(shows()).toEqual({ working: true, live: false, label: 'sessionsList.explorerFolderWorkingA11y' });
+
+        await act(async () => {
+            storage.setState({
+                sessionListRenderables: { idle, busy: { ...busy, latestTurnStatus: 'completed', latestTurnStatusObservedAt: Date.now() } },
+            } as never);
+        });
+        expect(shows()).toEqual({ working: false, live: true, label: 'sessionsList.explorerFolderA11y' });
+    });
+
+    it('keeps its dot while the running session waits for the user\'s answer, as that session\'s row does', async () => {
+        const { SessionExplorerFolderRow } = await import('./SessionExplorerRows');
+        const now = Date.now();
+        storage.setState({
+            sessionListRenderables: {
+                asking: recentTestSession('asking', now, {
+                    latestTurnStatus: 'in_progress',
+                    latestTurnStatusObservedAt: now,
+                    hasPendingPermissionRequests: true,
+                }),
+            },
+        } as never);
+        const screen = await renderScreen(
+            <SessionExplorerFolderRow
+                testID="folder"
+                title="buff"
+                depth={1}
+                kind="folder"
+                expanded={false}
+                sessionCount={1}
+                activeSessionCount={1}
+                sessionIds="asking"
+                dataActive
+                onToggle={vi.fn()}
+                onCreateSession={null}
+            />,
+        );
+
+        expect(screen.findByTestId('folder:working')).toBeNull();
+        expect(screen.findByTestId('folder:live')).not.toBeNull();
     });
 
     it('shows no session count for a folder without sessions and no + where sessions cannot start', async () => {

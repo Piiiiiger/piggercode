@@ -33,6 +33,11 @@ export type SessionListViewItem =
         treeParentKey?: string | null;
         /** Explorer: sessions below this folder that are running. */
         activeSessionCount?: number;
+        /**
+         * Explorer: the ids of the sessions below this folder, sorted and one per line (a string, so an
+         * unchanged folder keeps its row object); its row shows when one of them runs a turn.
+         */
+        explorerSessionIds?: string;
         /** Explorer: a machine, its top folder (`~`, `/` or an opened folder), a folder inside one, or Other locations. */
         explorerNodeKind?: 'machine' | 'root' | 'folder' | 'other';
         /** Explorer: whether the folder shows what is inside it. */

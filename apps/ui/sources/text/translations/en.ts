@@ -5911,6 +5911,7 @@ export const en = {
         explorerCollapseAll: 'Collapse folders',
         explorerShowHidden: 'Show hidden folders',
         explorerFolderA11y: ({ name, count }: { name: string; count: number }) => `Folder ${name}, ${count} sessions`,
+        explorerFolderWorkingA11y: ({ label }: { label: string }) => `${label}, a session is running`,
         explorerSharedFolderA11y: ({ name, computer, count }: { name: string; computer: string; count: number }) => `Folder ${name}, shared from ${computer || 'another computer'}, ${count} sessions`,
         explorerMachineA11y: ({ name, count }: { name: string; count: number }) => `Machine ${name}, ${count} sessions`,
         explorerNewSessionA11y: ({ name }: { name: string }) => `New session in ${name}`,

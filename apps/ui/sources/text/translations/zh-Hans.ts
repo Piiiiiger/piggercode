@@ -6060,6 +6060,7 @@ export const zhHans: TranslationStructure = {
     explorerCollapseAll: '折叠全部文件夹',
     explorerShowHidden: '显示隐藏文件夹',
     explorerFolderA11y: ({ name, count }: { name: string; count: number }) => `文件夹 ${name}，${count} 个会话`,
+    explorerFolderWorkingA11y: ({ label }: { label: string }) => `${label}，有会话正在运行`,
     explorerSharedFolderA11y: ({ name, computer, count }: { name: string; computer: string; count: number }) => `文件夹 ${name}（共享自${computer || '另一台电脑'}），${count} 个会话`,
     explorerMachineA11y: ({ name, count }: { name: string; count: number }) => `机器 ${name}，${count} 个会话`,
     explorerNewSessionA11y: ({ name }: { name: string }) => `在 ${name} 中新建会话`,
