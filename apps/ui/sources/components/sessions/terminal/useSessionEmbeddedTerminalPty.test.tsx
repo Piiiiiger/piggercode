@@ -1,5 +1,5 @@
 import { act } from 'react-test-renderer';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
 import { flushHookEffects, renderHook, standardCleanup } from '@/dev/testkit';
 import { createMachineFixture } from '@/dev/testkit/fixtures/machineFixtures';
@@ -154,5 +154,54 @@ describe('useSessionEmbeddedTerminalPty attach', () => {
         expect(terminalEnsureSpy).toHaveBeenCalledWith('machine-1', expect.objectContaining({
             launch: { kind: 'session_attach', sessionId: 'session-1', viewerId: installId },
         }));
+    });
+});
+
+describe('useSessionEmbeddedTerminalPty typing', () => {
+    // The relay's HTTP end: the request that dates the session's activity.
+    let relayRequest: MockInstance;
+
+    beforeEach(async () => {
+        const { apiSocket } = await import('@/sync/api/session/apiSocket');
+        relayRequest = vi.spyOn(apiSocket, 'request').mockImplementation(async () => new Response(
+            JSON.stringify({ success: true, meaningfulActivityAt: 1 }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ));
+    });
+
+    afterEach(() => {
+        relayRequest.mockRestore();
+        standardCleanup();
+    });
+
+    it('tells the relay the session is in use when Enter is typed into its CLI, not at every key', async () => {
+        const hook = await renderSessionTerminal();
+
+        await act(async () => {
+            hook.getCurrent().onInput('fix the box');
+        });
+        await flushHookEffects();
+        expect(relayRequest).not.toHaveBeenCalled();
+
+        await act(async () => {
+            hook.getCurrent().onInput('\r');
+        });
+        await flushHookEffects();
+        expect(relayRequest).toHaveBeenCalledTimes(1);
+        expect(relayRequest).toHaveBeenCalledWith(
+            '/v2/sessions/session-1/terminal-input',
+            expect.objectContaining({ method: 'POST' }),
+        );
+    });
+
+    it('does not count typing into a shell in the session\'s folder', async () => {
+        const hook = await renderSessionTerminal();
+        await hook.rerender(shellTerminal);
+
+        await act(async () => {
+            hook.getCurrent().onInput('ls\r');
+        });
+        await flushHookEffects();
+        expect(relayRequest).not.toHaveBeenCalled();
     });
 });

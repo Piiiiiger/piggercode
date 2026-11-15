@@ -10,6 +10,7 @@ import { Modal } from '@/modal';
 import { randomUUID } from '@/platform/randomUUID';
 import { getAppInstallId } from '@/sync/domains/state/appInstallId';
 import { sessionAttachmentsUploadFile } from '@/sync/domains/transfers/ops/uploadSessionAttachment';
+import { sessionRecordTerminalInput } from '@/sync/ops/sessionTerminalInput';
 import { t } from '@/text';
 import type { SessionTerminalMode } from './sessionTerminalMode';
 
@@ -44,9 +45,18 @@ export function useSessionEmbeddedTerminalPty(params: Readonly<{
         viewFocused: params.viewFocused,
     });
 
+    const { sessionId } = params;
+    // Enter sends what the user typed to the session's CLI: the session is in use now, for the 「最近」
+    // box, the list's order and every device, whatever its runner reports. A shell in its folder is not.
+    const { onInput: sendInput } = controller;
+    const recordsUse = params.terminalMode === 'session_attach';
+    const onInput = React.useCallback((data: string) => {
+        sendInput(data);
+        if (recordsUse && data.includes('\r')) sessionRecordTerminalInput(sessionId);
+    }, [recordsUse, sendInput, sessionId]);
+
     // Pasted images go where chat attachments go (the attachment settings), then their paths are typed.
     const uploadConfig = useAttachmentsUploadConfig();
-    const { sessionId } = params;
     const terminalKeyRef = React.useRef(params.terminalKey);
     terminalKeyRef.current = params.terminalKey;
     const onPasteImages = React.useCallback(async (images: readonly File[]): Promise<readonly string[]> => {
@@ -70,5 +80,5 @@ export function useSessionEmbeddedTerminalPty(params: Readonly<{
         return terminalKeyRef.current === terminalKey ? paths : [];
     }, [sessionId, uploadConfig]);
 
-    return { ...controller, onPasteImages };
+    return { ...controller, onInput, onPasteImages };
 }

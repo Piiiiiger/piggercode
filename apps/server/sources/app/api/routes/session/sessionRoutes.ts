@@ -10,6 +10,7 @@ import { registerSessionMessageRoutes } from "./registerSessionMessageRoutes";
 import { registerSessionAgentTransitionRoute } from "./registerSessionAgentTransitionRoute";
 import { registerSessionPatchRoute } from "./registerSessionPatchRoute";
 import { registerSessionReadStateRoutes } from "./registerSessionReadStateRoutes";
+import { registerSessionTerminalInputRoute } from "./registerSessionTerminalInputRoute";
 import { registerSessionTurnRoutes } from "./registerSessionTurnRoutes";
 import { registerSessionSystemRecordRoutes } from "./registerSessionSystemRecordRoutes";
 
@@ -26,5 +27,6 @@ export function sessionRoutes(app: Fastify) {
     registerSessionPatchRoute(app);
     registerSessionTurnRoutes(app);
     registerSessionReadStateRoutes(app);
+    registerSessionTerminalInputRoute(app);
     registerSessionDeleteRoute(app);
 }

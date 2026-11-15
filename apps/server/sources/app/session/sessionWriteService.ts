@@ -2126,6 +2126,63 @@ export async function applySessionReadCursorOperation(params: {
     }
 }
 
+export type RecordSessionTerminalInputResult =
+    | { ok: true; meaningfulActivityAt: number; participantCursors: ParticipantCursor[] }
+    | { ok: false; error: "invalid-params" | "session-not-found" | "forbidden" | "internal" };
+
+/**
+ * The session's owner typed into its terminal (pressed Enter in an app's view of it). A terminal
+ * session stores no message for what the user types, and the CLI's own turn reports depend on the
+ * runner the session started with, so this is how the user's use of the session reaches its activity:
+ * like a sent chat message, it is the session's latest meaningful activity, which every device's list
+ * orders and dates the session by. Timed by this server's clock, never the client's.
+ */
+export async function recordSessionTerminalInput(params: {
+    actorUserId: string;
+    sessionId: string;
+}): Promise<RecordSessionTerminalInputResult> {
+    const sessionId = typeof params.sessionId === "string" ? params.sessionId : "";
+    const actorUserId = typeof params.actorUserId === "string" ? params.actorUserId : "";
+    if (!sessionId || !actorUserId) {
+        return { ok: false, error: "invalid-params" };
+    }
+
+    try {
+        return await inTx(async (tx): Promise<RecordSessionTerminalInputResult> => {
+            const access = await ensureSessionOwnerAccess(tx, { actorUserId, sessionId });
+            if (!access.ok) return { ok: false, error: access.error };
+
+            const now = new Date();
+            const { count } = await tx.session.updateMany({
+                where: {
+                    id: sessionId,
+                    OR: [{ meaningfulActivityAt: null }, { meaningfulActivityAt: { lt: now } }],
+                },
+                data: { meaningfulActivityAt: now },
+            });
+            if (count === 0) {
+                // A later activity is already recorded: nothing changes and nobody needs telling.
+                const current = await tx.session.findUnique({
+                    where: { id: sessionId },
+                    select: { meaningfulActivityAt: true, createdAt: true },
+                });
+                if (!current) return { ok: false, error: "session-not-found" };
+                return {
+                    ok: true,
+                    meaningfulActivityAt: (current.meaningfulActivityAt ?? current.createdAt).getTime(),
+                    participantCursors: [],
+                };
+            }
+
+            const participantCursors = await markSessionParticipantsChanged({ tx, sessionId });
+            return { ok: true, meaningfulActivityAt: now.getTime(), participantCursors };
+        });
+    } catch (error) {
+        log({ module: "session-write", level: "error", sessionId }, `Could not record terminal input: ${String(error)}`);
+        return { ok: false, error: "internal" };
+    }
+}
+
 export type PatchSessionResult =
     | {
         ok: true;

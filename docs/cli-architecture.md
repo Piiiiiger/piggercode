@@ -1903,7 +1903,14 @@ the five sessions used last, running ones and ones waiting for the user first, t
 ones count too. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
 drop or bulk selection: a click opens the session), it does not scroll with the list, folds with its header (collapse
 key `recent`), and shows only in the explorer's Sessions view, not while searching (the List layout keeps its own
-attention and working bands). Since app 0.3.42 an explorer folder row shows the row's working spinner in place of its
+attention and working bands). What the user types counts as use (app and relay 0.3.44): Enter in an app's view of a
+session's terminal (`useSessionEmbeddedTerminalPty`, attach views only, not the folder's shell) calls `POST
+/v2/sessions/:sessionId/terminal-input` (`sync/ops/sessionTerminalInput.ts`, one request per session at a time); the
+relay sets the session's `meaningfulActivityAt` by its own clock, as a sent chat message does, and sends
+`update-session` to the owner's devices, so the box, the list order and the row's time follow the conversation the
+user types into on any device, whatever its runner reports (runners before CLI 0.3.32 report no turns, and they send
+no ready event for a turn that ends with a background shell). A relay without the route answers 404 and the session
+stays dated by its runner. Since app 0.3.42 an explorer folder row shows the row's working spinner in place of its
 open-session dot while a session below it runs a turn, open or closed (`explorerSessionIds` on the folder header;
 `useExplorerFolderWorking` reads each session's row attention state through the rows' own
 `deriveSessionListRowAttentionState`, so the folder spins exactly when a row below shows its working spinner and not
