@@ -113,6 +113,46 @@ describe('SessionRowAttentionIndicator', () => {
         expect(flattenStyle(dot.props.style).animationName).toBeUndefined();
     });
 
+    it.each([
+        ['ready', 'ready', 'success'],
+        ['permission', 'permission_required', 'warning'],
+        ['action', 'action_required', 'warning'],
+        ['failed', 'failed', 'danger'],
+    ] as const)('says a %s turn in words when the row gives it a label, in place of the bare dot', async (indicator, attentionState, variant) => {
+        const { SessionRowAttentionIndicator } = await import('./SessionRowAttentionIndicator');
+        const screen = await renderScreen(
+            <SessionRowAttentionIndicator
+                indicator={indicator}
+                sessionId="labelled"
+                attentionState={attentionState}
+                label="the state in words"
+                animationEnabled={false}
+            />,
+        );
+
+        const label = screen.findByTestId('session-row-attention-indicator-label-labelled:label');
+        expect(label?.props.children).toBe('the state in words');
+        expect(screen.findByTestId(`session-row-attention-indicator-label-labelled:variant:${variant}`)).toBeTruthy();
+        // The state stays findable by its attention state, and the bare dot gives way to the label.
+        expect(screen.findByTestId(`session-list-attention-indicator-labelled-${attentionState}`)).toBeTruthy();
+        expect(screen.findByTestId('session-row-attention-indicator-dot-labelled')).toBeNull();
+    });
+
+    it('keeps the bare dot for a finished turn when the row gives no label, and the spinner even with one', async () => {
+        const { SessionRowAttentionIndicator } = await import('./SessionRowAttentionIndicator');
+        const dotScreen = await renderScreen(
+            <SessionRowAttentionIndicator indicator="ready" sessionId="bare" attentionState="ready" animationEnabled={false} />,
+        );
+        expect(dotScreen.findByTestId('session-row-attention-indicator-dot-bare')).toBeTruthy();
+        expect(dotScreen.findByTestId('session-row-attention-indicator-label-bare:label')).toBeNull();
+
+        const workingScreen = await renderScreen(
+            <SessionRowAttentionIndicator indicator="working" sessionId="busy" attentionState="working" label="working" animationEnabled={false} />,
+        );
+        expect(workingScreen.findByTestId('session-row-attention-indicator-spinner-busy')).toBeTruthy();
+        expect(workingScreen.findByTestId('session-row-attention-indicator-label-busy:label')).toBeNull();
+    });
+
     it.each(['spinner', 'pulse'] as const)('keeps the %s working mark and shows unread only at its center until read', async (workingMode) => {
         const { SessionRowAttentionIndicator } = await import('./SessionRowAttentionIndicator');
         const element = (hasUnreadMessages: boolean) => <SessionRowAttentionIndicator indicator="working" attentionState="working"

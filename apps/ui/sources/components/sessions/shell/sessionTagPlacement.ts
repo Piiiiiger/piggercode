@@ -34,7 +34,8 @@ const ESTIMATED_TAG_CHARACTER_WIDTH = 5.5;
 const ESTIMATED_TAG_HORIZONTAL_CHROME = 16;
 const COMPACT_ROW_NON_TITLE_CHROME = 102;
 const TRAILING_META_WIDTH = 28;
-const COMPACT_TITLE_MIN_WIDTH = 92;
+/** The least width a row's title keeps beside what sits to its right (tags, the time, a status label). */
+export const SESSION_ROW_TITLE_MIN_WIDTH = 92;
 
 export function resolveSessionTagPlacement(input: ResolveSessionTagPlacementInput): SessionTagPlacement {
     if (input.hasRowActions) return 'below';
@@ -90,7 +91,7 @@ export function planSessionTagDisplay(input: ResolveSessionTagPlacementInput): S
     }
 
     const trailingMetaWidth = input.hasTrailingMeta ? TRAILING_META_WIDTH : 0;
-    const availableTagWidth = input.rowWidth - COMPACT_ROW_NON_TITLE_CHROME - trailingMetaWidth - COMPACT_TITLE_MIN_WIDTH;
+    const availableTagWidth = input.rowWidth - COMPACT_ROW_NON_TITLE_CHROME - trailingMetaWidth - SESSION_ROW_TITLE_MIN_WIDTH;
     return tagWidth <= availableTagWidth
         ? {
             placement: 'inline',

@@ -2555,7 +2555,10 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     // The 「最近」 box: the same rows, outside the list. They do not drag, drop or join a selection (a
     // click opens the session), and on phones the folder's row keeps the long-press menu, so one
     // session never opens two.
-    const recentRankedRows = useRecentSessionRows(recentCandidateRows, surfaceOwnership.dataActive);
+    // Ranked while folded too (unchanged sessions keep their rank): a folded box still needs to know it has rows,
+    // or after a restart it would hide its header with nothing to unfold.
+    const recentRankedRows = useRecentSessionRows(recentCandidateRows, surfaceOwnership.dataActive, backgroundWorkAttentionMode);
+    const recentCollapsed = Boolean(collapsedKeys[RECENT_SESSIONS_GROUP_KEY]);
     // The open session's row is marked in the box as in its folder.
     const recentSelectedRowsRef = React.useRef<ReadonlyArray<SessionListSelectedItem> | null>(null);
     const recentRows = React.useMemo(() => (buildSessionListSelectedItems({
@@ -2565,7 +2568,6 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         previousItems: recentSelectedRowsRef.current,
     }) ?? []).filter((item): item is SessionListSelectedSessionItem => item.type === 'session'), [pathname, recentRankedRows, selectable]);
     recentSelectedRowsRef.current = recentRows;
-    const recentCollapsed = Boolean(collapsedKeys[RECENT_SESSIONS_GROUP_KEY]);
     const toggleRecentCollapsed = React.useCallback(() => {
         handleToggleCollapse(RECENT_SESSIONS_GROUP_KEY);
     }, [handleToggleCollapse]);

@@ -1135,7 +1135,7 @@ export const en = {
         archiving: 'archiving…',
         backgroundActive: ({ count }: { count: number }) => `${count} running in background`,
         activityUnknown: 'activity status unavailable',
-        readyForReview: 'ready for review',
+        readyForReview: 'finished',
         offline: 'offline',
         lastSeen: ({ time }: { time: string }) => `last seen ${time}`,
         actionRequired: 'action required',

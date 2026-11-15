@@ -4,6 +4,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
 import { StatusDot } from '@/components/ui/status/StatusDot';
+import { StatusPill, type StatusPillVariant } from '@/components/ui/status/StatusPill';
 import type {
     SessionRowAttentionIndicator as SessionRowAttentionIndicatorKind,
     SessionRowAttentionState,
@@ -13,6 +14,14 @@ import { resolveSessionRowAttentionIndicatorColor } from './sessionRowAttentionC
 /** Fills the indicator's 16 px slot, so the working mark reads at the scale of the row's agent icons. */
 const DEFAULT_WORKING_SPINNER_SIZE = 16;
 const UNREAD_CENTER_SIZE = 3;
+
+/** The states a row can say in words, in the same hue its dot has (`sessionRowAttentionColors`). */
+const LABELLED_INDICATOR_VARIANTS: Partial<Record<SessionRowAttentionIndicatorKind, StatusPillVariant>> = {
+    ready: 'success',
+    permission: 'warning',
+    action: 'warning',
+    failed: 'danger',
+};
 
 const stylesheet = StyleSheet.create((theme) => ({
     container: {
@@ -36,6 +45,11 @@ const stylesheet = StyleSheet.create((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    // A labelled state gives way to the row's title: the pill shrinks and its label truncates.
+    labelled: {
+        flexShrink: 1,
+        minWidth: 0,
+    },
 }));
 
 export const SessionRowAttentionIndicator = React.memo(function SessionRowAttentionIndicator(props: Readonly<{
@@ -43,6 +57,11 @@ export const SessionRowAttentionIndicator = React.memo(function SessionRowAttent
     sessionId: string;
     attentionState: SessionRowAttentionState;
     accessibilityLabel?: string;
+    /**
+     * The state in words. Given, a finished turn, a request waiting for the user or a failure shows as a
+     * labelled pill instead of the bare dot, so it reads at a glance and not by color alone.
+     */
+    label?: string;
     hasUnreadMessages?: boolean;
     workingMode?: 'spinner' | 'pulse';
     workingSpinnerTone?: 'info' | 'neutral';
@@ -67,6 +86,33 @@ export const SessionRowAttentionIndicator = React.memo(function SessionRowAttent
         || props.indicator === 'action'
         || props.indicator === 'failed'
         || (props.indicator === 'working' && props.workingMode === 'pulse');
+    const labelledVariant = props.label ? LABELLED_INDICATOR_VARIANTS[props.indicator] : undefined;
+
+    if (labelledVariant && props.label) {
+        return (
+            <View
+                testID={`session-row-attention-indicator-${props.sessionId}`}
+                accessibilityLabel={props.accessibilityLabel ?? props.label}
+                accessibilityRole="image"
+                style={stylesheet.labelled}
+            >
+                <View
+                    testID={`session-list-attention-indicator-${props.sessionId}-${props.attentionState}`}
+                    style={stylesheet.labelled}
+                >
+                    <StatusPill
+                        testID={`session-row-attention-indicator-label-${props.sessionId}`}
+                        variant={labelledVariant}
+                        label={props.label}
+                        labelNumberOfLines={1}
+                        style={stylesheet.labelled}
+                        // The row's own animation gate (hidden, off screen, inactive list) holds the pulse too.
+                        isPulsing={shouldPulse && props.animationEnabled !== false}
+                    />
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View

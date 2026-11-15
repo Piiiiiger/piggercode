@@ -52,7 +52,7 @@ import {
     SESSION_LIST_ROW_TITLE_TEXT_METRICS,
     shouldUseReadableNativePhoneMinimalSessionRow,
 } from './sessionListRowDensity';
-import { planSessionTagDisplay } from './sessionTagPlacement';
+import { planSessionTagDisplay, SESSION_ROW_TITLE_MIN_WIDTH } from './sessionTagPlacement';
 import { useIsTablet } from '@/utils/platform/responsive';
 import type { SessionStatus } from '@/utils/sessions/sessionUtils';
 import { useSessionRowActionMenu } from './row/actionMenu/useSessionRowActionMenu';
@@ -406,6 +406,10 @@ const stylesheet = StyleSheet.create((theme) => ({
     sessionContentMinimalWithIdentity: {
         marginLeft: SESSION_LIST_MINIMAL_IDENTITY_GAP,
     },
+    // A status label to the right (「已完成」, a request) gives way before the title does.
+    sessionContentBesideTrailingLabel: {
+        minWidth: SESSION_ROW_TITLE_MIN_WIDTH,
+    },
     sessionTitleRow: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -487,12 +491,17 @@ const stylesheet = StyleSheet.create((theme) => ({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
+        // It shrinks only when the title holds its least width (beside a status label): the label truncates.
+        flexShrink: 1,
+        minWidth: 0,
     },
     trailingMetaRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
         gap: 2,
+        flexShrink: 1,
+        minWidth: 0,
     },
     rowActionsRow: {
         flexDirection: 'row',
@@ -638,6 +647,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 10,
         color: theme.colors.text.secondary,
         ...Typography.default(),
+        flexShrink: 0,
     },
     activityTimeMinimal: {
         fontSize: 10,
@@ -1152,6 +1162,15 @@ const SessionItemContent = React.memo(
         const shouldMuteTitle = rowPresentation.titleTone === 'quiet';
         const trailingAttentionIndicator = isMinimal ? rowPresentation.attentionIndicator : 'none';
         const showTrailingAttentionIndicator = trailingAttentionIndicator !== 'none';
+        // A minimal row has no status line, so what waits for the user says it in words where the time is.
+        const trailingAttentionLabel = (
+            trailingAttentionIndicator === 'ready'
+            || trailingAttentionIndicator === 'permission'
+            || trailingAttentionIndicator === 'action'
+            || trailingAttentionIndicator === 'failed'
+        ) && statusLineText.trim().length > 0
+            ? statusLineText
+            : undefined;
         const trailingAttentionReplacesTime = trailingAttentionIndicator === 'working';
         // A running turn shows how long it has run, next to its working mark; otherwise the mark
         // stands in for how long ago the session was active.
@@ -1355,6 +1374,7 @@ const SessionItemContent = React.memo(
                         compact ? styles.sessionContentCompact : null,
                         isMinimal ? styles.sessionContentMinimal : null,
                         isMinimal && (shouldRenderSessionListIdentity || shouldRenderSelectionCheckbox) ? styles.sessionContentMinimalWithIdentity : null,
+                        trailingAttentionLabel ? styles.sessionContentBesideTrailingLabel : null,
                     ]}
                 >
                     <View style={styles.sessionTitleRow}>
@@ -1654,6 +1674,7 @@ const SessionItemContent = React.memo(
                                     sessionId={`${resolvedSession.id}-trailing`}
                                     attentionState={rowAttentionState}
                                     accessibilityLabel={rowAttentionAccessibilityLabel}
+                                    label={trailingAttentionLabel}
                                     hasUnreadMessages={hasUnreadMessages}
                                     workingMode={workingIndicatorMode}
                                     workingSpinnerTone="neutral"

@@ -1275,7 +1275,7 @@ export const zhHans: TranslationStructure = {
     archiving: "正在归档…",
     backgroundActive: ({ count }: { count: number }) => `后台运行 ${count} 项`,
     activityUnknown: "活动状态不可用",
-    readyForReview: "已可审核",
+    readyForReview: "已完成",
     offline: "离线",
     lastSeen: ({ time }: { time: string }) => `最后活跃时间 ${time}`,
     actionRequired: "需要操作",

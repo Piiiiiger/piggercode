@@ -105,9 +105,17 @@ export function resolveSessionRowPresentation(input: Readonly<{
 
     if (input.density === 'minimal') {
         // A minimal row draws no secondary line, but the marker still needs the
-        // key: it is what the row is announced with.
-        return presentsStanding
-            ? { attentionIndicator, titleTone, secondaryLine: 'none', statusTextKey: 'status.keptInAttention' }
+        // key: it is what the row is announced with, and a finished or failed
+        // turn says it in words beside the time.
+        const minimalStatusTextKey = presentsStanding
+            ? 'status.keptInAttention'
+            : input.attentionState === 'ready'
+                ? 'status.readyForReview'
+                : input.attentionState === 'failed'
+                    ? 'status.error'
+                    : undefined;
+        return minimalStatusTextKey
+            ? { attentionIndicator, titleTone, secondaryLine: 'none', statusTextKey: minimalStatusTextKey }
             : { attentionIndicator, titleTone, secondaryLine: 'none' };
     }
 

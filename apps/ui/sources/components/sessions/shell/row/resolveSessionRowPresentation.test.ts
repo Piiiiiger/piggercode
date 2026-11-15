@@ -360,7 +360,7 @@ describe('resolveSessionRowPresentation', () => {
         });
     });
 
-    it('keeps ready minimal rows to the left indicator', () => {
+    it('names a finished or failed turn on a minimal row that draws no status line', () => {
         expect(resolveSessionRowPresentation({
             attentionState: 'ready',
             density: 'minimal',
@@ -370,6 +370,18 @@ describe('resolveSessionRowPresentation', () => {
             attentionIndicator: 'ready',
             titleTone: 'emphasized',
             secondaryLine: 'none',
+            statusTextKey: 'status.readyForReview',
+        });
+        expect(resolveSessionRowPresentation({
+            attentionState: 'failed',
+            density: 'minimal',
+            requestedSecondaryLineMode: 'status',
+            hasPathSubtitle: false,
+        })).toEqual({
+            attentionIndicator: 'failed',
+            titleTone: 'emphasized',
+            secondaryLine: 'none',
+            statusTextKey: 'status.error',
         });
     });
 

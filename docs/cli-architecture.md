@@ -1899,8 +1899,11 @@ touches the open turn, and the server's `latestTurnStatusObservedAt` for an open
 touches it stays the turn's start, which `resolveRunningTurnStartedAt` reads and the row shows as its running time
 (`2m 54s`, `components/sessions/workState/runningTurnClock.ts`) in place of how long ago. Before 0.3.32 terminals never
 showed as running. The sidebar's explorer gets the 「最近」 box above the list (`components/sessions/shell/recent/`):
-the five sessions used last, running ones and ones waiting for the user first, then by the time each row shows; stopped
-ones count too. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
+the five sessions used last: first the ones whose row has something to tell the user (its own attention state: a running
+turn, a prompt waiting for them, a finished turn not yet opened, a failure), then the ones done and already seen or
+stopped, so those are the first a newer session replaces; each part by the time its row shows (app 0.3.45; before, only
+running and waiting rows went first). A very compact row says a finished turn, a request and a failure in words where
+the time is (a `StatusPill` with the row's status text, «已完成» / «需要权限» / «需要操作» / «错误»), not only by a dot. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
 drop or bulk selection: a click opens the session), it does not scroll with the list, folds with its header (collapse
 key `recent`), and shows only in the explorer's Sessions view, not while searching (the List layout keeps its own
 attention and working bands). What the user types counts as use (app and relay 0.3.44): Enter in an app's view of a

@@ -1293,7 +1293,7 @@ describe('SessionItem activity time', () => {
         expect(screen.findAllByType(AvatarMock)[0].props.hasUnreadMessages).toBe(false);
     });
 
-    it('renders canonical ready attention beside the trailing time in very compact mode', async () => {
+    it('says a finished turn in words beside the trailing time in very compact mode', async () => {
         mockSessionStatus = {
             state: 'waiting',
             isConnected: true,
@@ -1324,12 +1324,14 @@ describe('SessionItem activity time', () => {
 
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_ready')).toBeNull();
         expect(screen.findByTestId('session-list-attention-indicator-sess_compact_ready-trailing-ready')).toBeTruthy();
+        expect(screen.findByTestId('session-row-attention-indicator-sess_compact_ready-trailing')?.props.accessibilityLabel).toBe('status.readyForReview');
+        expect(screen.findByTestId('session-row-attention-indicator-label-sess_compact_ready-trailing:label')?.props.children).toBe('status.readyForReview');
         expect(screen.findAllByType('StatusDot')).toHaveLength(1);
         expect(screen.getTextContent()).not.toContain('online');
         expect(screen.getTextContent()).toContain('1m');
     });
 
-    it('renders canonical failed attention beside the trailing time in very compact mode', async () => {
+    it('says a failed turn in words beside the trailing time in very compact mode', async () => {
         mockSessionStatus = {
             state: 'waiting',
             isConnected: true,
@@ -1361,6 +1363,7 @@ describe('SessionItem activity time', () => {
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_failed')).toBeNull();
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_failed-trailing')?.props.accessibilityLabel).toBe('status.error');
         expect(screen.findByTestId('session-list-attention-indicator-sess_compact_failed-trailing-failed')).toBeTruthy();
+        expect(screen.findByTestId('session-row-attention-indicator-label-sess_compact_failed-trailing:label')?.props.children).toBe('status.error');
         expect(screen.findAllByType('StatusDot')).toHaveLength(1);
         expect(screen.getTextContent()).not.toContain('online');
         expect(screen.getTextContent()).toContain('1m');
@@ -1437,7 +1440,7 @@ describe('SessionItem activity time', () => {
         expect(screen.getTextContent()).toContain('1m');
     });
 
-    it('renders a distinct accessible permission indicator in very compact mode', async () => {
+    it('says a permission request in words in very compact mode', async () => {
         mockSessionStatus = {
             state: 'permission_required',
             isConnected: true,
@@ -1468,8 +1471,8 @@ describe('SessionItem activity time', () => {
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_permission')).toBeNull();
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_permission-trailing')?.props.accessibilityLabel).toBe('permission required');
         expect(screen.findByTestId('session-list-attention-indicator-sess_compact_permission-trailing-permission_required')).toBeTruthy();
+        expect(screen.findByTestId('session-row-attention-indicator-label-sess_compact_permission-trailing:label')?.props.children).toBe('permission required');
         expect(screen.findAllByType('StatusDot')).toHaveLength(1);
-        expect(screen.getTextContent()).not.toContain('permission required');
         expect(screen.getTextContent()).toContain('1m');
     });
 
@@ -1524,7 +1527,7 @@ describe('SessionItem activity time', () => {
         expect(useSessionStatusSpy).not.toHaveBeenCalled();
     });
 
-    it('renders a distinct accessible action indicator in very compact mode', async () => {
+    it('says a prompt waiting for the user in words in very compact mode', async () => {
         mockSessionStatus = {
             state: 'action_required',
             isConnected: true,
@@ -1555,8 +1558,8 @@ describe('SessionItem activity time', () => {
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_action')).toBeNull();
         expect(screen.findByTestId('session-row-attention-indicator-sess_compact_action-trailing')?.props.accessibilityLabel).toBe('action required');
         expect(screen.findByTestId('session-list-attention-indicator-sess_compact_action-trailing-action_required')).toBeTruthy();
+        expect(screen.findByTestId('session-row-attention-indicator-label-sess_compact_action-trailing:label')?.props.children).toBe('action required');
         expect(screen.findAllByType('StatusDot')).toHaveLength(1);
-        expect(screen.getTextContent()).not.toContain('action required');
         expect(screen.getTextContent()).toContain('1m');
     });
 

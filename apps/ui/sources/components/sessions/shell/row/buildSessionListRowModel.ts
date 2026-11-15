@@ -111,7 +111,8 @@ function resolveLatestPendingMessageCreatedAt(snapshot: Partial<SessionListRowSt
     return latest;
 }
 
-function resolveSessionListRowSession(
+/** The session a row reads: its list item's snapshot, with the store's live row state over it. */
+export function resolveSessionListRowSession(
     storeSession: SessionListRenderableSession | undefined,
     rowSession: Session | SessionListRenderableSession,
 ): Session | SessionListRenderableSession {
@@ -159,6 +160,14 @@ function resolveSessionListRowSession(
         ...(pendingBlockedCount === null ? {} : { pendingBlockedCount }),
         meaningfulActivityAt,
     };
+}
+
+/** The activity time a row shows in its default (`meaningful`) mode: when the session was last used. */
+export function resolveSessionListRowMeaningfulActivityAt(
+    snapshot: Partial<SessionListRowStateSnapshot>,
+    session: SessionStatusSource,
+): number | null {
+    return resolveMeaningfulActivityAt(snapshot, session);
 }
 
 function resolveMeaningfulActivityAt(
@@ -320,6 +329,55 @@ export function deriveSessionListRowAttentionState(input: Readonly<{
     });
 }
 
+/**
+ * The attention state a session's list row shows, from the session it reads (`resolveSessionListRowSession`), the row's
+ * store snapshot (messages and pending included), its status at `getSessionStatus`'s state, the rows' background-work
+ * setting and the item's placement. The one owner of it: the row and a surface that ranks rows by it (the 「最近」 box)
+ * read the same answer. `presentsRetainedWorking`: the working state is the placement's (stale live signals held in the
+ * working group), which the row presents as a paused working row.
+ */
+export function resolveSessionListRowAttention(input: Readonly<{
+    session: SessionStatusSource;
+    state?: Partial<SessionListRowStateSnapshot>;
+    sessionState: ReturnType<typeof getSessionStatus>['state'];
+    backgroundWorkAttentionMode: SessionListRowPresentationSettings['backgroundWorkAttentionMode'];
+    workingPlacementReason?: SessionListRowSessionItem['workingPlacementReason'];
+}>): Readonly<{
+    listAttentionState: ReturnType<typeof deriveSessionListAttentionState>;
+    rowAttentionState: ReturnType<typeof resolveSessionRowAttentionState>;
+    presentsArchiving: boolean;
+    presentsRetainedWorking: boolean;
+}> {
+    const listAttentionState = deriveSessionListRowAttentionState({
+        session: input.session,
+        state: input.state,
+        sessionState: input.sessionState,
+        backgroundWorkAttentionMode: input.backgroundWorkAttentionMode,
+    });
+    const derivedRowAttentionState = resolveSessionRowAttentionState(listAttentionState);
+    // Retained working placement holds the session in the working group while
+    // its live signals are stale. Present it as a PAUSED working row (working
+    // indicator without animation) unless a more alerting state applies —
+    // otherwise the user sees a session in the working group with no
+    // indicator at all.
+    // A committed archive in flight speaks through the working indicator and the
+    // status line ("archiving…" from `getSessionStatus`), whatever the session was doing.
+    const presentsArchiving = input.sessionState === 'archiving';
+    const presentsRetainedWorking = !presentsArchiving
+        && input.workingPlacementReason === 'working-retained'
+        && (
+            derivedRowAttentionState === 'quiet'
+            || derivedRowAttentionState === 'unread'
+            || derivedRowAttentionState === 'pending'
+        );
+    return {
+        listAttentionState,
+        rowAttentionState: presentsArchiving || presentsRetainedWorking ? 'working' : derivedRowAttentionState,
+        presentsArchiving,
+        presentsRetainedWorking,
+    };
+}
+
 export function buildSessionListRowModel(input: BuildSessionListRowModelInput): SessionListRowModel {
     const { item, settings } = input;
     const sessionId = String(item.session.id);
@@ -345,31 +403,18 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
     const pendingCount = readPendingCount(input.state ?? {}, resolvedSession);
     const pendingBlockedCount = readPendingBlockedCount(input.state ?? {}, resolvedSession);
     const hasUnreadMessages = resolveHasUnreadMessages(input.state ?? {}, resolvedSession);
-    const attentionState = deriveSessionListRowAttentionState({
+    const {
+        listAttentionState: attentionState,
+        rowAttentionState,
+        presentsArchiving,
+        presentsRetainedWorking,
+    } = resolveSessionListRowAttention({
         session: resolvedSession,
         state: input.state,
         sessionState: status.state,
         backgroundWorkAttentionMode: settings.backgroundWorkAttentionMode,
+        workingPlacementReason: item.workingPlacementReason,
     });
-    const derivedRowAttentionState = resolveSessionRowAttentionState(attentionState);
-    // Retained working placement holds the session in the working group while
-    // its live signals are stale. Present it as a PAUSED working row (working
-    // indicator without animation) unless a more alerting state applies —
-    // otherwise the user sees a session in the working group with no
-    // indicator at all.
-    // A committed archive in flight speaks through the working indicator and the
-    // status line ("archiving…" from `getSessionStatus`), whatever the session was doing.
-    const presentsArchiving = status.state === 'archiving';
-    const presentsRetainedWorking = !presentsArchiving
-        && item.workingPlacementReason === 'working-retained'
-        && (
-            derivedRowAttentionState === 'quiet'
-            || derivedRowAttentionState === 'unread'
-            || derivedRowAttentionState === 'pending'
-        );
-    const rowAttentionState = presentsArchiving || presentsRetainedWorking
-        ? 'working'
-        : derivedRowAttentionState;
     // Attention standing is the person's own instruction to keep a read, idle
     // session in the band. It comes off the placement reason and stays OUT of the
     // attention state on purpose: the session has nothing new in it, so the row
