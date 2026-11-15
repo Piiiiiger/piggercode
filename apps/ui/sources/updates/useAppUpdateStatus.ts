@@ -8,6 +8,7 @@ import { t } from '@/text';
 import { getAppPackageUpdater, resolveAppPackageUpdates } from './appPackageUpdater';
 import { buildAppUpdateItem, type AppUpdateItemModel } from './items/buildAppUpdateItem';
 import { usePackageUpdater } from './packageUpdater';
+import { trackUpdateCheck } from './updateCheckInFlight';
 import { useWebUiDeploymentFreshness } from './useWebUiDeploymentFreshness';
 
 export type AppUpdateStatus = Readonly<{
@@ -55,6 +56,11 @@ export function useAppUpdateStatus(): AppUpdateStatus {
     const reloadOta = ota.reloadApp;
     const checkOta = ota.checkForUpdates;
     const reloadWeb = webUi.reload;
+    const checkWeb = webUi.check;
+    const checkNow = React.useCallback(async () => {
+        await Promise.all([packageUpdater.check({ force: true }), checkOta(), checkWeb()]);
+    }, [checkOta, checkWeb, packageUpdater]);
+
     const run = React.useCallback(async () => {
         const { channel, item } = model;
         if (item.action.kind !== 'run') return;
@@ -71,24 +77,26 @@ export function useAppUpdateStatus(): AppUpdateStatus {
                 await reloadOta();
                 return;
             case 'package':
+                // A check that failed is asked again as the explicit check, which every surface shows running.
+                if (item.failure?.kind === 'appCheck') return trackUpdateCheck(checkNow);
                 if (item.action.verb === 'restart' || item.action.verb === 'install') return packageUpdater.install();
                 if (item.action.verb === 'retry') return packageUpdater.retry();
                 return packageUpdater.download();
             case 'none':
                 return;
         }
-    }, [model, nativeUpdateUrl, packageUpdater, reloadOta, reloadWeb]);
+    }, [checkNow, model, nativeUpdateUrl, packageUpdater, reloadOta, reloadWeb]);
 
-    const checkNow = React.useCallback(async () => {
-        await Promise.all([packageUpdater.check({ force: true }), checkOta()]);
-    }, [checkOta, packageUpdater]);
-
+    // The app's answers: the desktop or Android package's, the web build's (one of them is null).
+    const checkedAt = packageUpdate.checkedAt == null && webUi.checkedAt == null
+        ? null
+        : Math.max(packageUpdate.checkedAt ?? 0, webUi.checkedAt ?? 0);
     const skippable = model.channel === 'package' && model.item.state === 'available' && !model.item.skipped;
     return React.useMemo(() => ({
         model,
-        checkedAt: packageUpdate.checkedAt,
+        checkedAt,
         run,
         checkNow,
         skipVersion: skippable ? packageUpdater.skipVersion : null,
-    }), [checkNow, model, packageUpdate.checkedAt, packageUpdater, run, skippable]);
+    }), [checkNow, checkedAt, model, packageUpdater, run, skippable]);
 }

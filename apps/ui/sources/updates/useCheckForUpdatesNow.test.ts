@@ -32,6 +32,7 @@ vi.mock('@/sync/domains/server/serverRuntime', async (importOriginal) => ({
     subscribeActiveServer: () => () => {},
 }));
 
+import { useUpdateCheckInFlight } from './updateCheckInFlight';
 import { useCheckForUpdatesNow } from './useCheckForUpdatesNow';
 
 describe('Check for updates', () => {
@@ -54,5 +55,37 @@ describe('Check for updates', () => {
         expect(request.bypassCache).toBe(true);
         // The machine's own CLI version check answers through `tool.systemTasks`.
         expect(request.requests?.map((entry) => entry.id)).toContain('tool.systemTasks');
+    });
+
+    it('tells every surface a check is running until it settles, a failed one too', async () => {
+        fleet.machines = [];
+        const settle: Array<(error?: Error) => void> = [];
+        const checkApp = vi.fn(() => new Promise<void>((resolve, reject) => {
+            settle.push((error) => (error ? reject(error) : resolve()));
+        }));
+        const pressed = await renderHook(() => ({ checkNow: useCheckForUpdatesNow(checkApp), checking: useUpdateCheckInFlight() }));
+        const elsewhere = await renderHook(() => useUpdateCheckInFlight());
+        expect([pressed.getCurrent().checking, elsewhere.getCurrent()]).toEqual([false, false]);
+
+        let run: Promise<void> = Promise.resolve();
+        await act(async () => {
+            run = pressed.getCurrent().checkNow();
+        });
+        expect([pressed.getCurrent().checking, elsewhere.getCurrent()]).toEqual([true, true]);
+        await act(async () => {
+            settle[0]?.();
+            await run;
+        });
+        expect([pressed.getCurrent().checking, elsewhere.getCurrent()]).toEqual([false, false]);
+
+        await act(async () => {
+            run = pressed.getCurrent().checkNow().catch(() => {});
+        });
+        expect(elsewhere.getCurrent()).toBe(true);
+        await act(async () => {
+            settle[1]?.(new Error('offline'));
+            await run;
+        });
+        expect(elsewhere.getCurrent()).toBe(false);
     });
 });

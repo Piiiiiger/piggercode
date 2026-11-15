@@ -7,6 +7,7 @@ import { isTauriDesktop } from '@/utils/platform/tauri';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 
 import { refreshMachineUpdateFacts } from './machineUpdateRuns';
+import { trackUpdateCheck } from './updateCheckInFlight';
 
 /**
  * "Check for updates", wherever it is offered (Settings › About, the Updates surface): this app
@@ -27,6 +28,6 @@ export function useCheckForUpdatesNow(checkApp: () => Promise<void>): () => Prom
     return React.useCallback(async () => {
         for (const machineId of onlineKey ? onlineKey.split('\u0000') : []) refreshMachineUpdateFacts(serverId, machineId);
         if (desktop) void checkThisComputerCliNow();
-        await checkApp();
+        await trackUpdateCheck(checkApp);
     }, [checkApp, desktop, onlineKey, serverId]);
 }

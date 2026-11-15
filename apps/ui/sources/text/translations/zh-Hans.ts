@@ -9403,6 +9403,7 @@ settingsSession: {
       offline: "离线时无法更新",
       skipped: ({ version }: { version: string }) => `已跳过 ${version}`,
       checking: "正在检查…",
+      withCheckedAt: ({ status, time }: { status: string; time: string }) => `${status} · 上次检查：${time}`,
       failedGeneric: "更新未完成，请重试。",
       remoteUnsupported: "这台机器无法远程更新其命令行工具。请在该机器上直接更新。",
       archiveExpandedByteLimit: "下载的运行时超过了解压大小限制。请更新 Happier 后重试。",

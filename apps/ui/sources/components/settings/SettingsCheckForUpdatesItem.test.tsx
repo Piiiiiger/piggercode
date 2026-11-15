@@ -24,10 +24,15 @@ function appItem(overrides: Partial<UpdateItem>): UpdateItem {
     } as UpdateItem;
 }
 
-async function renderRow(item: UpdateItem) {
+async function renderRow(item: UpdateItem, options: Readonly<{ checking?: boolean; checkedAt?: number | null }> = {}) {
     const run = vi.fn(async () => {});
     const checkNow = vi.fn(async () => {});
-    const screen = await renderScreen(<CheckForUpdatesItem status={{ model: { channel: 'package', item }, run, checkNow }} />);
+    const screen = await renderScreen(
+        <CheckForUpdatesItem
+            status={{ model: { channel: 'package', item }, run, checkNow, checkedAt: options.checkedAt ?? null }}
+            checking={options.checking ?? false}
+        />,
+    );
     const row = screen.findByTestId('settings-check-updates-row');
     if (!row) throw new Error('the Check for updates row did not render');
     return { row, run, checkNow };
@@ -59,5 +64,15 @@ describe('Settings › About › Check for updates', () => {
             expect(run).toHaveBeenCalledTimes(1);
             expect(checkNow).not.toHaveBeenCalled();
         }
+    });
+
+    it('spins and says it is checking while a check runs, then says when it last checked', async () => {
+        const checking = await renderRow(appItem({ state: 'upToDate' }), { checking: true, checkedAt: Date.now() - 3_600_000 });
+        expect(checking.row.props.loading).toBe(true);
+        expect(checking.row.props.subtitle).toBe('updates.row.checking');
+
+        const checked = await renderRow(appItem({ state: 'upToDate' }), { checking: false, checkedAt: Date.now() });
+        expect(checked.row.props.loading).toBe(false);
+        expect(checked.row.props.subtitle).toMatchObject({ key: 'updates.row.withCheckedAt' });
     });
 });

@@ -153,6 +153,7 @@ export default function UpdatesDemoScreen() {
             stopAfterCurrent: noop,
             batch: null,
             checkNow: noop,
+            checking: false,
             skipAppVersion: null,
             openWhatsNew: noop,
             whatsNewUnread: false,

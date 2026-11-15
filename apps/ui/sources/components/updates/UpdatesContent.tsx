@@ -86,7 +86,7 @@ const SummaryHeader = React.memo(function SummaryHeader(props: Readonly<{ model:
             </View>
             <View style={[styles.headerActions, stacked ? styles.headerActionsStacked : null]}>
                 {!model.batch && props.presentation === 'screen' ? (
-                    <UpdatesTextButton label={t('updates.action.checkNow')} onPress={model.checkNow} testID="updates.checkNow" />
+                    <UpdatesTextButton label={t('updates.action.checkNow')} onPress={model.checkNow} busy={model.checking} testID="updates.checkNow" />
                 ) : null}
                 {header.showUpdateAll ? (
                     <RoundButton size="small" title={t('updates.action.updateAll')} onPress={() => void model.updateAll()} testID="updates.updateAll" />
@@ -209,7 +209,7 @@ export const UpdatesContent = React.memo(function UpdatesContent(props: Readonly
                             : model.summary.status === 'offline'
                                 ? t('updates.summary.offlineDescription')
                                 : t('updates.summary.upToDateDescription')}
-                        action={<UpdatesTextButton label={t('updates.action.checkNow')} onPress={model.checkNow} testID="updates.empty.checkNow" />}
+                        action={<UpdatesTextButton label={t('updates.action.checkNow')} onPress={model.checkNow} busy={model.checking} testID="updates.empty.checkNow" />}
                     />
                 </View>
             ) : (

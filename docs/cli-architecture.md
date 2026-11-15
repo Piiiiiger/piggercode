@@ -529,7 +529,16 @@ daemon republishes, so the app compares against the latest version the machine l
 "Check for updates" is one action in the app (`useCheckForUpdatesNow`, offered in Settings › About
 and on the Updates surface): this app's own check plus that request to every online machine. On the
 desktop, this computer's row comes from the local inspection, which is read again whenever its
-daemon's published versions disagree with it (`UpdateFactsBackgroundRuntime`).
+daemon's published versions disagree with it (`UpdateFactsBackgroundRuntime`). Since app 0.3.43 the
+app's own check (the desktop or Android package, Expo OTA where enabled, and on the web the served
+deployment, `/.well-known/happier-ui-deployment`, which before was asked only at first use, on reconnect
+and when the tab became visible) is counted while it runs (`updates/updateCheckInFlight.ts`), a failed
+check asked again from its row included (`useAppUpdateStatus.run` retries it as the explicit check):
+the Settings row shows `Item`'s loading spinner and "Checking…", the Updates screen's text button its
+spinner, and afterwards the row says when the app last checked (`AppUpdateStatus.checkedAt`, the
+package's or the web build's; an answer without a valid deployment id is not a check). The machines'
+answers arrive on their own rows. A check that never settles keeps the spinner (no deadline exists for
+these checks).
 
 **The desktop app keeps this computer's CLI current.** When the app opens and on "check for
 updates", it has the installed managed CLI look for a newer release itself (`cli.check.v1`: hsetup

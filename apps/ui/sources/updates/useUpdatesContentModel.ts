@@ -15,6 +15,7 @@ import type { UpdateItem } from './items/updateItem';
 import { useMachinesCapabilitySnapshots } from './machineCapabilitySnapshots';
 import { markUpdateCompletionsSeen, runMachineItemUpdate, useMachineUpdateRuns, useUnseenUpdateCompletions, useUpdateBatch, type UpdateAllProgress } from './machineUpdateRuns';
 import { useAppUpdateStatus } from './useAppUpdateStatus';
+import { useUpdateCheckInFlight } from './updateCheckInFlight';
 import { useCheckForUpdatesNow } from './useCheckForUpdatesNow';
 import { useThisComputerCliUpdate } from './useThisComputerCliUpdate';
 
@@ -36,6 +37,8 @@ export type UpdatesContentModel = Readonly<{
     stopAfterCurrent: () => void;
     batch: UpdateAllProgress | null;
     checkNow: () => void;
+    /** A "Check for updates" (from here or Settings) is still running. */
+    checking: boolean;
     skipAppVersion: (() => void) | null;
     /** Release notes stay reachable from the This app group (R13 (e)). */
     openWhatsNew: () => void;
@@ -136,6 +139,7 @@ export function useUpdatesContentModel(): UpdatesContentModel {
     const { batch, updateAll, stopAfterCurrent } = useUpdateBatch(updateScope, allItems, executeItem);
 
     const checkEverythingNow = useCheckForUpdatesNow(app.checkNow);
+    const checking = useUpdateCheckInFlight();
     const checkNow = React.useCallback(() => {
         void checkEverythingNow();
     }, [checkEverythingNow]);
@@ -163,8 +167,9 @@ export function useUpdatesContentModel(): UpdatesContentModel {
         stopAfterCurrent,
         batch,
         checkNow,
+        checking,
         skipAppVersion: app.skipVersion,
         openWhatsNew,
         whatsNewUnread: releaseNotes.hasUnread,
-    }), [app.skipVersion, batch, checkNow, checkedAt, groups, openWhatsNew, releaseNotes.hasUnread, runItem, sessionsRunningOn, stopAfterCurrent, summary, uncheckedMachineCount, updateAll]);
+    }), [app.skipVersion, batch, checkNow, checkedAt, checking, groups, openWhatsNew, releaseNotes.hasUnread, runItem, sessionsRunningOn, stopAfterCurrent, summary, uncheckedMachineCount, updateAll]);
 }

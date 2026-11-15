@@ -199,6 +199,7 @@ describe('UpdatesPopoverButton', () => {
             checkedAt: null, uncheckedMachineCount: 0, sessionsRunningOn: new Set(['local']),
             runItem: async () => {}, updateAll: async () => {}, stopAfterCurrent: () => {}, batch: null,
             checkNow: () => {}, skipAppVersion: null, openWhatsNew: () => {}, whatsNewUnread: false,
+            checking: false,
         };
         const screen = await renderScreen(<UpdatesContent model={model} presentation="popover" />);
         const hasNote = () => screen.findAll((node) => typeof node.props?.accessibilityLabel === 'string')

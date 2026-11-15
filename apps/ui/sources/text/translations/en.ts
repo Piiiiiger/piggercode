@@ -9223,6 +9223,7 @@ settingsSession: {
             offline: 'Can’t update while offline',
             skipped: ({ version }: { version: string }) => `${version} skipped`,
             checking: 'Checking…',
+            withCheckedAt: ({ status, time }: { status: string; time: string }) => `${status} · checked ${time}`,
             failedGeneric: 'The update didn’t finish. Try again.',
             remoteUnsupported: 'This machine can’t update its command line remotely. Update it on the machine.',
             archiveExpandedByteLimit: "The downloaded runtime exceeds the extraction size limit. Update Happier before retrying.",
