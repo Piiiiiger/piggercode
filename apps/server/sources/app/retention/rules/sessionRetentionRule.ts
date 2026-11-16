@@ -2,6 +2,8 @@ import { db } from '@/storage/db';
 import { activityCache } from '@/app/presence/sessionCache';
 import { deleteOwnedSession } from '@/app/session/delete/deleteOwnedSession';
 
+import { inactiveSessionWhere } from './inactiveSessionWhere';
+
 export async function pruneInactiveSessionsOnce(params: {
     cutoff: Date;
     batchSize: number;
@@ -16,9 +18,7 @@ export async function pruneInactiveSessionsOnce(params: {
     const limit = Math.max(1, params.batchSize);
     const candidates = await db.session.findMany({
         where: {
-            active: false,
-            updatedAt: { lt: params.cutoff },
-            lastActiveAt: { lt: params.cutoff },
+            ...inactiveSessionWhere(params.cutoff),
             ...(params.afterSessionId ? { id: { gt: params.afterSessionId } } : null),
         },
         orderBy: { id: 'asc' },
@@ -45,11 +45,7 @@ export async function pruneInactiveSessionsOnce(params: {
         const ok = await deleteOwnedSession({
             sessionId: candidate.id,
             reason: 'retention_policy',
-            sessionWhereGuard: {
-                active: false,
-                updatedAt: { lt: params.cutoff },
-                lastActiveAt: { lt: params.cutoff },
-            },
+            sessionWhereGuard: inactiveSessionWhere(params.cutoff),
         });
         if (ok) {
             deleted += 1;

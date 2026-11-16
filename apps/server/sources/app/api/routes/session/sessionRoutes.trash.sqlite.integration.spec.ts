@@ -13,6 +13,7 @@ import { createAppCloseTracker } from "../../testkit/appLifecycle";
 import { sessionRoutes } from "./sessionRoutes";
 
 const { trackApp, closeTrackedApps } = createAppCloseTracker();
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function createTestApp() {
     const app = Fastify({ logger: false });
@@ -176,5 +177,25 @@ describe("session trash (SQLite integration)", () => {
         expect(await checkSessionAccess(owner.id, sessionId)).toBeNull();
         await app.inject({ method: "POST", url: `/v2/sessions/${sessionId}/restore`, headers });
         expect(await checkSessionAccess(owner.id, sessionId)).not.toBeNull();
+    });
+
+    it("gives a session moved to the trash for being unused seven new days when the owner restores it", async () => {
+        const app = createTestApp();
+        const { sessionId, headers } = await createOwnerWithSession();
+        const unusedSince = new Date(Date.now() - 8 * DAY_MS);
+        await db.session.update({ where: { id: sessionId }, data: { updatedAt: unusedSince, lastActiveAt: unusedSince } });
+        const { trashUnusedSessions } = await import("@/app/retention/rules/sessionAutoTrashRule");
+
+        expect(await trashUnusedSessions({ now: new Date() })).toEqual({ trashed: 1 });
+        expect(await listIds(app, "/v2/sessions/trash", headers)).toEqual([sessionId]);
+
+        const restored = await app.inject({ method: "POST", url: `/v2/sessions/${sessionId}/restore`, headers });
+        expect(restored.json()).toEqual({ success: true, trashedAt: null });
+        expect(await trashUnusedSessions({ now: new Date() })).toEqual({ trashed: 0 });
+        expect(await listIds(app, "/v2/sessions", headers)).toEqual([sessionId]);
+
+        // Unused for seven days after the restore, it moves again.
+        expect(await trashUnusedSessions({ now: new Date(Date.now() + 8 * DAY_MS) })).toEqual({ trashed: 1 });
+        expect(await listIds(app, "/v2/sessions", headers)).toEqual([]);
     });
 });

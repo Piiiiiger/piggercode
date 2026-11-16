@@ -55,8 +55,8 @@ export function installStartServerCommonWiringMocks(): void {
   vi.mock('@/app/retention/runtime/startRetentionWorker', () => ({
     startRetentionWorker: vi.fn(() => null),
   }))
-  vi.mock('@/app/retention/runtime/startSessionTrashPurgeWorker', () => ({
-    startSessionTrashPurgeWorker: vi.fn(() => ({ stop: vi.fn() })),
+  vi.mock('@/app/retention/runtime/startSessionTrashWorker', () => ({
+    startSessionTrashWorker: vi.fn(() => ({ stop: vi.fn() })),
   }))
   vi.mock('@/app/features/catalog/serverFeatureGate', () => ({
     isServerFeatureEnabledForRequest: vi.fn(() => false),

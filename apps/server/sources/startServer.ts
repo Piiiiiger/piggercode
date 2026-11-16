@@ -55,7 +55,7 @@ import { startPresenceRedisWorker } from '@/app/presence/presenceRedisQueue';
 import { initializeServerSentry } from '@/app/monitoring/sentry';
 import { inferAndApplyTailscaleServePublicServerUrl } from '@/app/integrations/tailscale/tailscaleServePublicUrlInference';
 import { startRetentionWorker } from '@/app/retention/runtime/startRetentionWorker';
-import { startSessionTrashPurgeWorker } from '@/app/retention/runtime/startSessionTrashPurgeWorker';
+import { startSessionTrashWorker } from '@/app/retention/runtime/startSessionTrashWorker';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 import { initializeServerIdentityCache } from '@/app/serverIdentity/serverIdentity';
 import { isServerFeatureEnabledForRequest } from '@/app/features/catalog/serverFeatureGate';
@@ -342,9 +342,9 @@ export async function startServer(flavor: ServerFlavor): Promise<void> {
                 retentionWorker.stop();
             });
         }
-        const sessionTrashPurgeWorker = startSessionTrashPurgeWorker();
-        onShutdown('session-trash-purge-worker', async () => {
-            sessionTrashPurgeWorker.stop();
+        const sessionTrashWorker = startSessionTrashWorker();
+        onShutdown('session-trash-worker', async () => {
+            sessionTrashWorker.stop();
         });
         // SQLite intentionally uses one Prisma connection. Exact table counts can hold that
         // sole connection long enough to starve readiness and presence transactions.

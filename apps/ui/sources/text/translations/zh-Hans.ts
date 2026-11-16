@@ -4873,7 +4873,7 @@ export const zhHans: TranslationStructure = {
 
   sessionTrash: {
     title: "回收站",
-    description: "删除的会话会在这里保留 7 天，之后永久删除。",
+    description: "删除的会话和 7 天没用过的会话会在这里保留 7 天，之后永久删除。",
     empty: "回收站是空的",
     today: "今天",
     yesterday: "昨天",

@@ -4673,7 +4673,7 @@ export const en = {
 
     sessionTrash: {
         title: 'Trash',
-        description: 'Deleted sessions stay here for 7 days, then they are deleted for good.',
+        description: 'Sessions you delete, and sessions nobody has used for 7 days, stay here for 7 days, then they are deleted for good.',
         empty: 'The trash is empty',
         today: 'Today',
         yesterday: 'Yesterday',
